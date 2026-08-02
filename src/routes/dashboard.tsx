@@ -44,8 +44,8 @@ function Dashboard() {
     <PageShell>
       <PageHeader
         eyebrow="Agosto 2026"
-        title="Buenas tardes, aquí está tu panorama"
-        subtitle="Todo tu patrimonio, flujo e inversiones consolidados en tiempo real."
+        title="Buenas tardes Oscar"
+        subtitle="Aquí está tu panorama financiero en tiempo real."
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

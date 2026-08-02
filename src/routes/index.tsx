@@ -291,7 +291,7 @@ function Landing() {
           </div>
           <div className="flex items-center gap-3">
             <Lock className="h-5 w-5 text-primary" />
-            <p className="text-sm text-muted-foreground">Autenticación con email o Google.</p>
+            <p className="text-sm text-muted-foreground">Autenticación con email o proveedor seguro.</p>
           </div>
           <Button asChild className="ml-auto rounded-full">
             <Link to="/auth" search={{ mode: "signup" }}>
