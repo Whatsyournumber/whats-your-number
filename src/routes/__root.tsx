@@ -4,16 +4,19 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
+  useNavigate,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { Search, Upload } from "lucide-react";
+import { Loader2, LogOut, Search, Upload } from "lucide-react";
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppSidebar } from "@/components/app-sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
@@ -133,32 +136,73 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SidebarProvider>
-        <div className="flex min-h-screen w-full bg-background">
-          <AppSidebar />
-          <div className="flex min-w-0 flex-1 flex-col">
-            <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border bg-background/80 px-4 backdrop-blur-xl">
-              <SidebarTrigger />
-              <div className="ml-2 hidden items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground md:flex">
-                <Search className="h-3.5 w-3.5" />
-                <span>Pregúntale al AI Advisor…</span>
-              </div>
-              <div className="ml-auto flex items-center gap-2">
-                <Button variant="outline" size="sm" className="gap-2 rounded-full">
+      <AuthProvider>
+        <RootLayout />
+        <Toaster />
+      </AuthProvider>
+    </QueryClientProvider>
+  );
+}
+
+const PUBLIC_PATHS = ["/", "/auth"];
+
+function RootLayout() {
+  const pathname = useRouterState({ select: (r) => r.location.pathname });
+
+  if (PUBLIC_PATHS.includes(pathname)) {
+    return <Outlet />;
+  }
+
+  return <AppShell />;
+}
+
+function AppShell() {
+  const { user, loading, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !user) navigate({ to: "/auth", search: { mode: "login" } });
+  }, [loading, user, navigate]);
+
+  if (loading || !user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  return (
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full bg-background">
+        <AppSidebar />
+        <div className="flex min-w-0 flex-1 flex-col">
+          <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border bg-background/80 px-4 backdrop-blur-xl">
+            <SidebarTrigger />
+            <div className="ml-2 hidden items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground md:flex">
+              <Search className="h-3.5 w-3.5" />
+              <span>Pregúntale al AI Advisor…</span>
+            </div>
+            <div className="ml-auto flex items-center gap-2">
+              <Button asChild variant="outline" size="sm" className="gap-2 rounded-full">
+                <Link to="/configuracion">
                   <Upload className="h-3.5 w-3.5" />
                   <span className="hidden sm:inline">Importar</span>
-                </Button>
-                <ThemeToggle />
-              </div>
-            </header>
-            {/* Required: nested routes render here. */}
-            <main className="flex-1">
-              <Outlet />
-            </main>
-          </div>
+                </Link>
+              </Button>
+              <ThemeToggle />
+              <Button variant="ghost" size="sm" className="gap-2 rounded-full" onClick={() => void signOut()}>
+                <LogOut className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Salir</span>
+              </Button>
+            </div>
+          </header>
+          {/* Required: nested routes render here. */}
+          <main className="flex-1">
+            <Outlet />
+          </main>
         </div>
-        <Toaster />
-      </SidebarProvider>
-    </QueryClientProvider>
+      </div>
+    </SidebarProvider>
   );
 }

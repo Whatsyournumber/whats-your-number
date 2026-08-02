@@ -1,15 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { FileSpreadsheet, FileText, Upload } from "lucide-react";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
+import { StatementImporter } from "@/components/statement-importer";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { accounts, categories, excludedTypes, fmt, rules, topMerchants, transactions } from "@/lib/data";
-import { cn } from "@/lib/utils";
+import { accounts, categories, excludedTypes, fmt, rules, topMerchants } from "@/lib/data";
 
 export const Route = createFileRoute("/configuracion")({
   head: () => ({
@@ -38,58 +36,20 @@ function Configuracion() {
         </TabsList>
 
         <TabsContent value="importacion" className="space-y-4">
-          <Panel title="Subir estados de cuenta" description="PDF de tarjetas, CSV bancarios o Excel — la IA extrae y clasifica cada movimiento">
-            <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-elevated/40 px-6 py-12 text-center">
-              <Upload className="h-6 w-6 text-muted-foreground" />
-              <p className="mt-3 text-sm font-medium">Arrastra tus archivos aquí</p>
-              <p className="mt-1 text-xs text-muted-foreground">Extraemos fecha, comercio, descripción, monto y moneda</p>
-              <div className="mt-4 flex gap-2">
-                <Button size="sm" className="rounded-full gap-2">
-                  <FileText className="h-3.5 w-3.5" /> PDF
-                </Button>
-                <Button size="sm" variant="outline" className="rounded-full gap-2">
-                  <FileSpreadsheet className="h-3.5 w-3.5" /> CSV / Excel
-                </Button>
-              </div>
+          <StatementImporter />
+
+          <Panel title="No se consideran gasto" description="Estos movimientos van únicamente al módulo Patrimonio">
+            <div className="flex flex-wrap gap-2">
+              {excludedTypes.map((e) => (
+                <Badge key={e} variant="secondary" className="rounded-full">
+                  {e}
+                </Badge>
+              ))}
             </div>
+            <p className="mt-4 text-xs text-muted-foreground">
+              Compras de activos, traspasos y pagos de tarjeta afectan tu balance, no tu gasto. Así tu tasa de ahorro nunca queda distorsionada.
+            </p>
           </Panel>
-
-          <div className="grid gap-4 lg:grid-cols-2">
-            <Panel title="Última importación" description="10 movimientos clasificados automáticamente">
-              <div className="space-y-2">
-                {transactions.map((t) => (
-                  <div key={t.id} className="flex items-center gap-3 rounded-xl bg-elevated/60 px-3 py-2">
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium">{t.merchant}</p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {t.date} · {t.subcategory}
-                        {t.tag && ` · ${t.tag}`}
-                      </p>
-                    </div>
-                    <div className="ml-auto text-right">
-                      <p className={cn("numeric text-sm font-semibold", t.excluded && "text-muted-foreground line-through")}>
-                        {fmt(t.amount)}
-                      </p>
-                      {t.excluded && <span className="text-[10px] text-primary">→ Patrimonio</span>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Panel>
-
-            <Panel title="No se consideran gasto" description="Estos movimientos van únicamente al módulo Patrimonio">
-              <div className="flex flex-wrap gap-2">
-                {excludedTypes.map((e) => (
-                  <Badge key={e} variant="secondary" className="rounded-full">
-                    {e}
-                  </Badge>
-                ))}
-              </div>
-              <p className="mt-4 text-xs text-muted-foreground">
-                Compras de activos, traspasos y pagos de tarjeta afectan tu balance, no tu gasto. Así tu tasa de ahorro nunca queda distorsionada.
-              </p>
-            </Panel>
-          </div>
         </TabsContent>
 
         <TabsContent value="cuentas" className="space-y-4">

@@ -1,194 +1,186 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { ArrowUpRight, Banknote, PiggyBank, TrendingUp, Wallet, Waves } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { motion } from "motion/react";
 import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Line,
+  ArrowRight,
+  Bot,
+  FileText,
   LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+  Lock,
+  PieChart,
+  ShieldCheck,
+  Sparkles,
+  Wallet,
+} from "lucide-react";
 
-import { ChartTooltip, axisProps } from "@/components/chart-kit";
-import { KpiCard } from "@/components/kpi-card";
-import { PageHeader, PageShell, Panel } from "@/components/page";
-import { Progress } from "@/components/ui/progress";
-import { current, fmt, fmtCompact, goals, insights, months, previous, upcomingPayments } from "@/lib/data";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Dashboard — Finance OS" },
-      { name: "description", content: "Tu situación financiera completa en menos de 30 segundos: patrimonio, ingresos, gastos y ahorro." },
-      { property: "og:title", content: "Dashboard — Finance OS" },
-      { property: "og:description", content: "Patrimonio neto, flujo libre, tasa de ahorro y metas en un solo panel." },
+      { title: "Finance OS — Tu CFO personal con IA" },
+      {
+        name: "description",
+        content:
+          "Consolida patrimonio, gastos, inversiones y cash flow en una sola plataforma. Sube tus estados de cuenta en PDF o CSV y deja que la IA clasifique todo.",
+      },
+      { property: "og:title", content: "Finance OS — Tu CFO personal con IA" },
+      {
+        property: "og:description",
+        content: "Patrimonio, gastos, portafolio e insights con IA. Importa PDF y CSV en segundos.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Dashboard,
+  component: Landing,
 });
 
-const delta = (a: number, b: number) => ((a - b) / b) * 100;
+const features = [
+  {
+    icon: FileText,
+    title: "Importación inteligente",
+    desc: "Sube el PDF de tu tarjeta o un CSV bancario. La IA extrae fecha, comercio, monto y categoría.",
+  },
+  {
+    icon: PieChart,
+    title: "Análisis de gastos",
+    desc: "Categorías, subcategorías, comercios recurrentes y presupuestos vivos mes a mes.",
+  },
+  {
+    icon: LineChart,
+    title: "Patrimonio y portafolio",
+    desc: "Activos, pasivos, asignación y rendimiento contra el mercado en un solo panel.",
+  },
+  {
+    icon: Bot,
+    title: "AI Advisor",
+    desc: "Pregunta en lenguaje natural y recibe insights, anomalías y proyecciones de retiro.",
+  },
+];
 
-function Dashboard() {
-  const savingsRate = (current.savings / current.income) * 100;
-  const prevRate = (previous.savings / previous.income) * 100;
-  const freeCash = current.savings - current.investments;
-  const prevFree = previous.savings - previous.investments;
+const metrics = [
+  { label: "Módulos", value: "10" },
+  { label: "Clasificación IA", value: "PDF · CSV" },
+  { label: "Datos cifrados", value: "100%" },
+];
+
+function Landing() {
+  const { user } = useAuth();
 
   return (
-    <PageShell>
-      <PageHeader
-        eyebrow="Agosto 2026"
-        title="Buenas tardes, aquí está tu panorama"
-        subtitle="Todo tu patrimonio, flujo e inversiones consolidados en tiempo real."
-      />
+    <div className="relative min-h-screen overflow-hidden bg-background">
+      <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[900px] -translate-x-1/2 rounded-full opacity-[0.12] blur-3xl" />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <KpiCard
-          label="Patrimonio neto"
-          value={fmt(current.netWorth)}
-          delta={delta(current.netWorth, previous.netWorth)}
-          hint="vs julio"
-          icon={Wallet}
-          accent
-          index={0}
-        />
-        <KpiCard label="Ingresos" value={fmt(current.income)} delta={delta(current.income, previous.income)} icon={Banknote} index={1} />
-        <KpiCard label="Gastos" value={fmt(current.expenses)} delta={delta(current.expenses, previous.expenses)} inverse icon={TrendingUp} index={2} />
-        <KpiCard label="Ahorro" value={fmt(current.savings)} delta={delta(current.savings, previous.savings)} icon={PiggyBank} index={3} />
-        <KpiCard
-          label="Flujo libre"
-          value={fmt(freeCash)}
-          {...(prevFree > 0 ? { delta: delta(freeCash, prevFree) } : {})}
-          hint="tras inversiones"
-          icon={Waves}
-          index={4}
-        />
+      <header className="relative z-10 mx-auto flex w-full max-w-6xl items-center gap-3 px-6 py-6">
+        <div className="wealth-gradient flex h-9 w-9 items-center justify-center rounded-xl">
+          <Wallet className="h-4 w-4 text-background" />
+        </div>
+        <span className="font-display text-sm font-semibold">Finance OS</span>
+        <div className="ml-auto flex items-center gap-2">
+          {user ? (
+            <Button asChild size="sm" className="rounded-full">
+              <Link to="/dashboard">Ir al dashboard</Link>
+            </Button>
+          ) : (
+            <>
+              <Button asChild variant="ghost" size="sm" className="rounded-full">
+                <Link to="/auth" search={{ mode: "login" }}>
+                  Iniciar sesión
+                </Link>
+              </Button>
+              <Button asChild size="sm" className="rounded-full">
+                <Link to="/auth" search={{ mode: "signup" }}>
+                  Crear cuenta
+                </Link>
+              </Button>
+            </>
+          )}
+        </div>
+      </header>
 
-        <KpiCard label="Tasa de ahorro" value={`${savingsRate.toFixed(0)}%`} delta={savingsRate - prevRate} icon={ArrowUpRight} index={5} />
-      </div>
+      <main className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-24">
+        <motion.section
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="pt-16 text-center md:pt-24"
+        >
+          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground backdrop-blur">
+            <Sparkles className="h-3.5 w-3.5 text-primary" />
+            Tu family office personal, potenciado con IA
+          </span>
+          <h1 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-semibold leading-[1.08] tracking-tight md:text-6xl">
+            Todo tu dinero,
+            <span className="block bg-gradient-to-r from-primary to-foreground bg-clip-text text-transparent">
+              entendido en 30 segundos
+            </span>
+          </h1>
+          <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground">
+            Patrimonio, gastos, cash flow, inversiones y retiro en una sola plataforma. Sube tus estados de cuenta y la
+            IA hace el resto.
+          </p>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title="Evolución del patrimonio" description="Últimos 12 meses" className="lg:col-span-2">
-          <ResponsiveContainer width="100%" height={280}>
-            <AreaChart data={months} margin={{ left: -12, right: 8, top: 8 }}>
-              <defs>
-                <linearGradient id="nw" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--color-chart-1)" stopOpacity={0.45} />
-                  <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
-              <XAxis dataKey="label" {...axisProps} />
-              <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={56} />
-              <Tooltip content={<ChartTooltip />} />
-              <Area
-                type="monotone"
-                dataKey="netWorth"
-                name="Patrimonio"
-                stroke="var(--color-chart-1)"
-                strokeWidth={2.5}
-                fill="url(#nw)"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </Panel>
-
-        <Panel title="Próximos pagos" description="Septiembre 2026">
-          <ul className="space-y-2">
-            {upcomingPayments.map((p) => (
-              <li key={p.name} className="flex items-center gap-3 rounded-xl bg-elevated/60 px-3 py-2.5">
-                <span className="text-lg">{p.emoji}</span>
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium">{p.name}</p>
-                  <p className="text-xs text-muted-foreground">{p.date}</p>
-                </div>
-                <span className="numeric ml-auto text-sm font-semibold">{fmt(p.amount)}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-4 flex items-center justify-between rounded-xl border border-dashed border-border px-3 py-2.5 text-sm">
-            <span className="text-muted-foreground">Total comprometido</span>
-            <span className="numeric font-semibold">{fmt(upcomingPayments.reduce((s, p) => s + p.amount, 0))}</span>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Button asChild size="lg" className="gap-2 rounded-full px-6">
+              <Link to="/auth" search={{ mode: "signup" }}>
+                Empieza gratis <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="rounded-full px-6">
+              <Link to="/auth" search={{ mode: "login" }}>
+                Ya tengo cuenta
+              </Link>
+            </Button>
           </div>
-        </Panel>
-      </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title="Ingresos vs gastos" className="lg:col-span-2">
-          <ResponsiveContainer width="100%" height={240}>
-            <BarChart data={months} margin={{ left: -12, right: 8 }} barGap={2}>
-              <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
-              <XAxis dataKey="label" {...axisProps} />
-              <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={56} />
-              <Tooltip content={<ChartTooltip />} cursor={{ fill: "var(--color-muted)", opacity: 0.35 }} />
-              <Bar dataKey="income" name="Ingresos" fill="var(--color-chart-1)" radius={[6, 6, 0, 0]} />
-              <Bar dataKey="expenses" name="Gastos" fill="var(--color-chart-5)" radius={[6, 6, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </Panel>
-
-        <Panel title="Evolución del ahorro">
-          <ResponsiveContainer width="100%" height={240}>
-            <LineChart data={months} margin={{ left: -12, right: 8 }}>
-              <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
-              <XAxis dataKey="label" {...axisProps} />
-              <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={56} />
-              <Tooltip content={<ChartTooltip />} />
-              <Line type="monotone" dataKey="savings" name="Ahorro" stroke="var(--color-chart-3)" strokeWidth={2.5} dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
-        </Panel>
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title="Metas activas" className="lg:col-span-2">
-          <div className="grid gap-3 sm:grid-cols-2">
-            {goals.slice(0, 4).map((g) => {
-              const p = Math.min(100, (g.current / g.target) * 100);
-              return (
-                <div key={g.name} className="rounded-xl bg-elevated/60 p-4">
-                  <div className="flex items-center gap-2">
-                    <span>{g.emoji}</span>
-                    <p className="text-sm font-medium">{g.name}</p>
-                    <span className="numeric ml-auto text-xs text-muted-foreground">{p.toFixed(0)}%</span>
-                  </div>
-                  <Progress value={p} className="mt-3 h-1.5" />
-                  <p className="numeric mt-2 text-xs text-muted-foreground">
-                    {fmtCompact(g.current)} de {fmtCompact(g.target)}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </Panel>
-
-        <Panel title="Insights del mes" description="Generados con IA">
-          <ul className="space-y-2.5">
-            {insights.slice(0, 4).map((i) => (
-              <li key={i.title} className="rounded-xl bg-elevated/60 p-3">
-                <p
-                  className={
-                    i.type === "positive"
-                      ? "text-sm font-medium text-positive"
-                      : i.type === "warning"
-                        ? "text-sm font-medium text-warning"
-                        : "text-sm font-medium"
-                  }
-                >
-                  {i.title}
-                </p>
-                <p className="mt-1 text-xs text-muted-foreground">{i.detail}</p>
-              </li>
+          <div className="mt-12 grid gap-3 sm:grid-cols-3">
+            {metrics.map((m) => (
+              <div key={m.label} className="surface px-5 py-4 text-left">
+                <p className="numeric text-xl font-semibold">{m.value}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">{m.label}</p>
+              </div>
             ))}
-          </ul>
-        </Panel>
-      </div>
-    </PageShell>
+          </div>
+        </motion.section>
+
+        <section className="mt-20 grid gap-4 md:grid-cols-2">
+          {features.map((f, i) => (
+            <motion.div
+              key={f.title}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.35, delay: i * 0.05 }}
+              className="surface p-6"
+            >
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-elevated">
+                <f.icon className="h-4.5 w-4.5 text-primary" />
+              </div>
+              <h2 className="mt-4 text-sm font-semibold">{f.title}</h2>
+              <p className="mt-1.5 text-sm text-muted-foreground">{f.desc}</p>
+            </motion.div>
+          ))}
+        </section>
+
+        <section className="surface mt-16 flex flex-wrap items-center gap-6 p-8">
+          <div className="flex items-center gap-3">
+            <ShieldCheck className="h-5 w-5 text-primary" />
+            <p className="text-sm text-muted-foreground">
+              Tus archivos se guardan cifrados y privados: solo tú puedes verlos.
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Lock className="h-5 w-5 text-primary" />
+            <p className="text-sm text-muted-foreground">Autenticación con email o Google.</p>
+          </div>
+          <Button asChild className="ml-auto rounded-full">
+            <Link to="/auth" search={{ mode: "signup" }}>
+              Crear mi cuenta
+            </Link>
+          </Button>
+        </section>
+      </main>
+    </div>
   );
 }

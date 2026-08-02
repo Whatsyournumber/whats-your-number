@@ -29,7 +29,7 @@ import {
 import { fmtCompact, netWorth } from "@/lib/data";
 
 const primary = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Análisis de Gastos", url: "/gastos", icon: PieChart },
   { title: "Patrimonio", url: "/patrimonio", icon: Landmark },
   { title: "Portafolio", url: "/portafolio", icon: LineChart },
