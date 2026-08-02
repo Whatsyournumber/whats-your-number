@@ -24,7 +24,7 @@ export function SiteHeader() {
           <Link
             key={tab.label}
             to={tab.to}
-            hash={"hash" in tab ? tab.hash : undefined}
+            {...("hash" in tab ? { hash: tab.hash } : {})}
             className="rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground"
             activeOptions={{ exact: true, includeHash: false }}
             activeProps={{ className: "bg-elevated text-foreground" }}
