@@ -98,6 +98,7 @@ export async function processStatementForUser(
       });
       parsed = output;
     } catch (error) {
+      console.error("[statements] AI extraction failed", error);
       if (NoObjectGeneratedError.isInstance(error)) {
         throw new Error("La IA no pudo interpretar el archivo. Prueba con un PDF o CSV más limpio.");
       }
