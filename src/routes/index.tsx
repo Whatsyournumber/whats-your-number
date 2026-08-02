@@ -11,13 +11,14 @@ import {
   PieChart,
   ShieldCheck,
   Sparkles,
+  Star,
   Target,
   TrendingUp,
-  Wallet,
 } from "lucide-react";
 
+import { ProductPreview } from "@/components/product-preview";
+import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
