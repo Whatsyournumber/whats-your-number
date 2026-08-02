@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdvisorRouteImport } from './routes/advisor'
 import { Route as CashFlowRouteImport } from './routes/cash-flow'
 import { Route as ConfiguracionRouteImport } from './routes/configuracion'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as GastosRouteImport } from './routes/gastos'
 import { Route as LifestyleRouteImport } from './routes/lifestyle'
 import { Route as ObjetivosRouteImport } from './routes/objetivos'
@@ -38,6 +39,11 @@ const CashFlowRoute = CashFlowRouteImport.update({
 const ConfiguracionRoute = ConfiguracionRouteImport.update({
   id: '/configuracion',
   path: '/configuracion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GastosRoute = GastosRouteImport.update({
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/advisor': typeof AdvisorRoute
   '/cash-flow': typeof CashFlowRoute
   '/configuracion': typeof ConfiguracionRoute
+  '/dashboard': typeof DashboardRoute
   '/gastos': typeof GastosRoute
   '/lifestyle': typeof LifestyleRoute
   '/objetivos': typeof ObjetivosRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/advisor': typeof AdvisorRoute
   '/cash-flow': typeof CashFlowRoute
   '/configuracion': typeof ConfiguracionRoute
+  '/dashboard': typeof DashboardRoute
   '/gastos': typeof GastosRoute
   '/lifestyle': typeof LifestyleRoute
   '/objetivos': typeof ObjetivosRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/advisor': typeof AdvisorRoute
   '/cash-flow': typeof CashFlowRoute
   '/configuracion': typeof ConfiguracionRoute
+  '/dashboard': typeof DashboardRoute
   '/gastos': typeof GastosRoute
   '/lifestyle': typeof LifestyleRoute
   '/objetivos': typeof ObjetivosRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/advisor'
     | '/cash-flow'
     | '/configuracion'
+    | '/dashboard'
     | '/gastos'
     | '/lifestyle'
     | '/objetivos'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/advisor'
     | '/cash-flow'
     | '/configuracion'
+    | '/dashboard'
     | '/gastos'
     | '/lifestyle'
     | '/objetivos'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/advisor'
     | '/cash-flow'
     | '/configuracion'
+    | '/dashboard'
     | '/gastos'
     | '/lifestyle'
     | '/objetivos'
@@ -152,6 +164,7 @@ export interface RootRouteChildren {
   AdvisorRoute: typeof AdvisorRoute
   CashFlowRoute: typeof CashFlowRoute
   ConfiguracionRoute: typeof ConfiguracionRoute
+  DashboardRoute: typeof DashboardRoute
   GastosRoute: typeof GastosRoute
   LifestyleRoute: typeof LifestyleRoute
   ObjetivosRoute: typeof ObjetivosRoute
@@ -188,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/configuracion'
       fullPath: '/configuracion'
       preLoaderRoute: typeof ConfiguracionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gastos': {
@@ -240,6 +260,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdvisorRoute: AdvisorRoute,
   CashFlowRoute: CashFlowRoute,
   ConfiguracionRoute: ConfiguracionRoute,
+  DashboardRoute: DashboardRoute,
   GastosRoute: GastosRoute,
   LifestyleRoute: LifestyleRoute,
   ObjetivosRoute: ObjetivosRoute,
@@ -250,13 +271,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
