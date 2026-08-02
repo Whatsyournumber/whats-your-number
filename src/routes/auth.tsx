@@ -71,11 +71,11 @@ function AuthPage() {
     }
   };
 
-  const onGoogle = async () => {
+  const onOAuth = async () => {
     setBusy(true);
     const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
     if (result.error) {
-      toast.error("No pudimos conectar con Google");
+      toast.error("No pudimos conectar con tu proveedor de identidad");
       setBusy(false);
       return;
     }
@@ -169,8 +169,8 @@ function AuthPage() {
             <span className="h-px flex-1 bg-border" />
           </div>
 
-          <Button variant="outline" className="w-full rounded-full" onClick={onGoogle} disabled={busy}>
-            Continuar con Google
+          <Button variant="outline" className="w-full rounded-full" onClick={onOAuth} disabled={busy}>
+            Continuar con otra cuenta
           </Button>
 
           <p className="mt-5 text-center text-xs text-muted-foreground">
