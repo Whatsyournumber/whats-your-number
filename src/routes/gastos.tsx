@@ -83,23 +83,58 @@ function Gastos() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title="Heatmap diario" description="Intensidad de gasto por día" className="lg:col-span-2">
-          <div className="grid grid-cols-7 gap-1.5">
-            {["L", "M", "M", "J", "V", "S", "D"].map((d, i) => (
-              <span key={i} className="text-center text-[10px] text-muted-foreground">
-                {d}
+        <Panel
+          title="Heatmap diario"
+          description="Pasa el cursor por un día para ver el monto exacto"
+          className="lg:col-span-2"
+        >
+          <TooltipProvider delayDuration={80}>
+            <div className="grid grid-cols-7 gap-1.5">
+              {["L", "M", "M", "J", "V", "S", "D"].map((d, i) => (
+                <span key={i} className="text-center text-[10px] text-muted-foreground">
+                  {d}
+                </span>
+              ))}
+              {heatmap.map((h) => {
+                const vsAvg = ((h.amount - avgHeat) / avgHeat) * 100;
+                const isWorst = worstDays.some((w) => w.day === h.day);
+                return (
+                  <UITooltip key={h.day}>
+                    <TooltipTrigger asChild>
+                      <div
+                        className={cn(
+                          "aspect-square cursor-pointer rounded-md border border-border/50 transition-transform hover:scale-110",
+                          isWorst && "ring-2 ring-negative/70 ring-offset-1 ring-offset-background",
+                        )}
+                        style={{
+                          background: `color-mix(in oklab, var(--color-chart-5) ${(h.amount / maxHeat) * 85 + 6}%, transparent)`,
+                        }}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent className="px-3 py-2">
+                      <p className="text-xs font-medium">Día {h.day}</p>
+                      <p className="numeric text-sm font-semibold">{fmt(h.amount)}</p>
+                      <p className={cn("text-[11px]", vsAvg > 0 ? "text-negative" : "text-positive")}>
+                        {vsAvg > 0 ? "+" : ""}
+                        {vsAvg.toFixed(0)}% vs. promedio diario ({fmt(Math.round(avgHeat))})
+                      </p>
+                      {isWorst && <p className="text-[11px] text-warning">Uno de los 3 peores días del mes</p>}
+                    </TooltipContent>
+                  </UITooltip>
+                );
+              })}
+            </div>
+          </TooltipProvider>
+          <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+            <span>Peores días:</span>
+            {worstDays.map((w) => (
+              <span key={w.day} className="rounded-full bg-negative/12 px-2 py-0.5 text-negative">
+                Día {w.day} · <span className="numeric">{fmt(w.amount)}</span>
               </span>
-            ))}
-            {heatmap.map((h) => (
-              <div
-                key={h.day}
-                title={`Día ${h.day}: ${fmt(h.amount)}`}
-                className="aspect-square rounded-md border border-border/50 transition-transform hover:scale-110"
-                style={{ background: `color-mix(in oklab, var(--color-chart-5) ${(h.amount / maxHeat) * 85 + 6}%, transparent)` }}
-              />
             ))}
           </div>
         </Panel>
+
 
         <Panel title="Top comercios">
           <ul className="space-y-2">
