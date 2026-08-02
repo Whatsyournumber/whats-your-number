@@ -144,7 +144,7 @@ function RootComponent() {
   );
 }
 
-const PUBLIC_PATHS = ["/", "/auth"];
+const PUBLIC_PATHS = ["/", "/auth", "/precios", "/blog"];
 
 function RootLayout() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
