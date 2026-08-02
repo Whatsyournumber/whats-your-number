@@ -99,32 +99,7 @@ function Landing() {
     <div className="relative min-h-screen overflow-hidden bg-background">
       <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[900px] -translate-x-1/2 rounded-full opacity-[0.12] blur-3xl" />
 
-      <header className="relative z-10 mx-auto flex w-full max-w-6xl items-center gap-3 px-6 py-6">
-        <div className="wealth-gradient flex h-9 w-9 items-center justify-center rounded-xl">
-          <Compass className="h-4 w-4 text-background" />
-        </div>
-        <span className="font-display text-sm font-semibold">Your north</span>
-        <div className="ml-auto flex items-center gap-2">
-          {user ? (
-            <Button asChild size="sm" className="rounded-full">
-              <Link to="/dashboard">Ir al dashboard</Link>
-            </Button>
-          ) : (
-            <>
-              <Button asChild variant="ghost" size="sm" className="rounded-full">
-                <Link to="/auth" search={{ mode: "login" }}>
-                  Iniciar sesión
-                </Link>
-              </Button>
-              <Button asChild size="sm" className="rounded-full">
-                <Link to="/auth" search={{ mode: "signup" }}>
-                  Crear cuenta
-                </Link>
-              </Button>
-            </>
-          )}
-        </div>
-      </header>
+      <SiteHeader />
 
       <main className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-24">
         <motion.section
