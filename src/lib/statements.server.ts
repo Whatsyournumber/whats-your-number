@@ -1,0 +1,137 @@
+import { NoObjectGeneratedError, Output, generateText } from "ai";
+import { z } from "zod";
+
+import { createLovableAiGatewayProvider } from "./ai-gateway.server";
+
+type AnySupabase = {
+  from: (table: string) => any;
+  storage: { from: (bucket: string) => any };
+};
+
+const txSchema = z.object({
+  transactions: z.array(
+    z.object({
+      date: z.string().nullable(),
+      merchant: z.string(),
+      description: z.string().nullable(),
+      amount: z.number(),
+      currency: z.string().nullable(),
+      category: z.string().nullable(),
+      subcategory: z.string().nullable(),
+      excluded: z.boolean(),
+    }),
+  ),
+  summary: z.string(),
+});
+
+const SYSTEM = `Eres un analista financiero que extrae movimientos de estados de cuenta bancarios o de tarjeta.
+Devuelve cada movimiento con: fecha (YYYY-MM-DD), comercio, descripción, monto (negativo = gasto, positivo = ingreso/abono),
+moneda ISO, categoría y subcategoría en español (ej. Vivienda, Alimentación, Transporte, Lifestyle, Salud, Suscripciones,
+Inversiones, Ingresos), y excluded=true cuando el movimiento NO es un gasto real: traspasos entre cuentas, pagos de tarjeta,
+compra de activos o inversiones. Máximo 200 movimientos. Escribe un resumen de 1-2 frases en español.`;
+
+function toBase64(bytes: Uint8Array): string {
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i]!);
+  return btoa(binary);
+}
+
+export async function processStatementForUser(
+  supabase: AnySupabase,
+  userId: string,
+  statementId: string,
+): Promise<{ inserted: number; summary: string }> {
+  const apiKey = process.env["LOVABLE_API_KEY"];
+  if (!apiKey) throw new Error("Falta la configuración de IA (LOVABLE_API_KEY).");
+
+  const { data: statement, error: stErr } = await supabase
+    .from("statements")
+    .select("*")
+    .eq("id", statementId)
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (stErr) throw new Error(stErr.message);
+  if (!statement) throw new Error("Archivo no encontrado.");
+
+  await supabase.from("statements").update({ status: "processing", error_message: null }).eq("id", statementId);
+
+  try {
+    const { data: blob, error: dlErr } = await supabase.storage
+      .from("statements")
+      .download(statement.storage_path as string);
+    if (dlErr || !blob) throw new Error(dlErr?.message ?? "No pudimos leer el archivo.");
+
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    const isPdf =
+      (statement.file_type as string).includes("pdf") ||
+      (statement.file_name as string).toLowerCase().endsWith(".pdf");
+
+    const content = isPdf
+      ? [
+          { type: "text" as const, text: "Extrae todos los movimientos de este estado de cuenta." },
+          {
+            type: "file" as const,
+            data: toBase64(bytes),
+            mediaType: "application/pdf",
+            filename: statement.file_name as string,
+          },
+        ]
+      : [
+          {
+            type: "text" as const,
+            text: `Extrae todos los movimientos de este archivo (${statement.file_name}):\n\n${new TextDecoder().decode(
+              bytes,
+            ).slice(0, 120_000)}`,
+          },
+        ];
+
+    const gateway = createLovableAiGatewayProvider(apiKey);
+    const model = gateway("google/gemini-3.5-flash");
+
+    let parsed: z.infer<typeof txSchema>;
+    try {
+      const { output } = await generateText({
+        model,
+        system: SYSTEM,
+        messages: [{ role: "user", content }],
+        output: Output.object({ schema: txSchema }),
+      });
+      parsed = output;
+    } catch (error) {
+      if (NoObjectGeneratedError.isInstance(error)) {
+        throw new Error("La IA no pudo interpretar el archivo. Prueba con un PDF o CSV más limpio.");
+      }
+      throw error;
+    }
+
+    const rows = parsed.transactions.slice(0, 200).map((t) => ({
+      user_id: userId,
+      statement_id: statementId,
+      tx_date: t.date && /^\d{4}-\d{2}-\d{2}$/.test(t.date) ? t.date : null,
+      merchant: t.merchant || "Sin comercio",
+      description: t.description,
+      amount: Number.isFinite(t.amount) ? t.amount : 0,
+      currency: (t.currency || "USD").toUpperCase().slice(0, 3),
+      category: t.category,
+      subcategory: t.subcategory,
+      excluded: Boolean(t.excluded),
+    }));
+
+    await supabase.from("imported_transactions").delete().eq("statement_id", statementId);
+    if (rows.length > 0) {
+      const { error: insErr } = await supabase.from("imported_transactions").insert(rows);
+      if (insErr) throw new Error(insErr.message);
+    }
+
+    await supabase
+      .from("statements")
+      .update({ status: "processed", summary: parsed.summary, transactions_count: rows.length })
+      .eq("id", statementId);
+
+    return { inserted: rows.length, summary: parsed.summary };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Error desconocido";
+    await supabase.from("statements").update({ status: "error", error_message: message }).eq("id", statementId);
+    throw new Error(message);
+  }
+}
