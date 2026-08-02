@@ -14,7 +14,128 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      imported_transactions: {
+        Row: {
+          amount: number
+          category: string | null
+          created_at: string
+          currency: string
+          description: string | null
+          excluded: boolean
+          id: string
+          merchant: string
+          statement_id: string
+          subcategory: string | null
+          tx_date: string | null
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          category?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          excluded?: boolean
+          id?: string
+          merchant?: string
+          statement_id: string
+          subcategory?: string | null
+          tx_date?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          category?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          excluded?: boolean
+          id?: string
+          merchant?: string
+          statement_id?: string
+          subcategory?: string | null
+          tx_date?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "imported_transactions_statement_id_fkey"
+            columns: ["statement_id"]
+            isOneToOne: false
+            referencedRelation: "statements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      statements: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          file_name: string
+          file_size: number
+          file_type: string
+          id: string
+          status: string
+          storage_path: string
+          summary: string | null
+          transactions_count: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          file_name: string
+          file_size?: number
+          file_type: string
+          id?: string
+          status?: string
+          storage_path: string
+          summary?: string | null
+          transactions_count?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          file_name?: string
+          file_size?: number
+          file_type?: string
+          id?: string
+          status?: string
+          storage_path?: string
+          summary?: string | null
+          transactions_count?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
