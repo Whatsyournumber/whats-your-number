@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GastosRouteImport } from './routes/gastos'
 import { Route as PatrimonioRouteImport } from './routes/patrimonio'
+import { Route as PortafolioRouteImport } from './routes/portafolio'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,35 +29,44 @@ const PatrimonioRoute = PatrimonioRouteImport.update({
   path: '/patrimonio',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PortafolioRoute = PortafolioRouteImport.update({
+  id: '/portafolio',
+  path: '/portafolio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/gastos': typeof GastosRoute
   '/patrimonio': typeof PatrimonioRoute
+  '/portafolio': typeof PortafolioRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/gastos': typeof GastosRoute
   '/patrimonio': typeof PatrimonioRoute
+  '/portafolio': typeof PortafolioRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/gastos': typeof GastosRoute
   '/patrimonio': typeof PatrimonioRoute
+  '/portafolio': typeof PortafolioRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/gastos' | '/patrimonio'
+  fullPaths: '/' | '/gastos' | '/patrimonio' | '/portafolio'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/gastos' | '/patrimonio'
-  id: '__root__' | '/' | '/gastos' | '/patrimonio'
+  to: '/' | '/gastos' | '/patrimonio' | '/portafolio'
+  id: '__root__' | '/' | '/gastos' | '/patrimonio' | '/portafolio'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GastosRoute: typeof GastosRoute
   PatrimonioRoute: typeof PatrimonioRoute
+  PortafolioRoute: typeof PortafolioRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +92,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PatrimonioRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/portafolio': {
+      id: '/portafolio'
+      path: '/portafolio'
+      fullPath: '/portafolio'
+      preLoaderRoute: typeof PortafolioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GastosRoute: GastosRoute,
   PatrimonioRoute: PatrimonioRoute,
+  PortafolioRoute: PortafolioRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
