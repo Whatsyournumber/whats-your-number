@@ -3,12 +3,16 @@ import { motion } from "motion/react";
 import {
   ArrowRight,
   Bot,
+  Brain,
+  Compass,
   FileText,
   LineChart,
   Lock,
   PieChart,
   ShieldCheck,
   Sparkles,
+  Target,
+  TrendingUp,
   Wallet,
 } from "lucide-react";
 
@@ -18,13 +22,13 @@ import { useAuth } from "@/hooks/use-auth";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Finance OS — Tu CFO personal con IA" },
+      { title: "Your north — Tu CFO personal con IA" },
       {
         name: "description",
         content:
           "Consolida patrimonio, gastos, inversiones y cash flow en una sola plataforma. Sube tus estados de cuenta en PDF o CSV y deja que la IA clasifique todo.",
       },
-      { property: "og:title", content: "Finance OS — Tu CFO personal con IA" },
+      { property: "og:title", content: "Your north — Tu CFO personal con IA" },
       {
         property: "og:description",
         content: "Patrimonio, gastos, portafolio e insights con IA. Importa PDF y CSV en segundos.",
@@ -59,6 +63,29 @@ const features = [
   },
 ];
 
+const whyCards = [
+  {
+    icon: Compass,
+    title: "Claridad total",
+    desc: "Deja de perder el rastro entre apps, hojas de cálculo y PDFs. Tu panorama financiero completo en un solo lugar.",
+  },
+  {
+    icon: Brain,
+    title: "IA que trabaja por ti",
+    desc: "Clasificación automática, detección de anomalías y respuestas a tus preguntas en lenguaje natural.",
+  },
+  {
+    icon: Target,
+    title: "Decisiones con propósito",
+    desc: "Conecta tus gastos de hoy con tus metas de mañana: ahorro, inversión, retiro y estilo de vida.",
+  },
+  {
+    icon: TrendingUp,
+    title: "Crecimiento constante",
+    desc: "Proyecciones de patrimonio, simuladores de retiro y seguimiento de tu portafolio contra el mercado.",
+  },
+];
+
 const metrics = [
   { label: "Módulos", value: "10" },
   { label: "Clasificación IA", value: "PDF · CSV" },
@@ -74,9 +101,9 @@ function Landing() {
 
       <header className="relative z-10 mx-auto flex w-full max-w-6xl items-center gap-3 px-6 py-6">
         <div className="wealth-gradient flex h-9 w-9 items-center justify-center rounded-xl">
-          <Wallet className="h-4 w-4 text-background" />
+          <Compass className="h-4 w-4 text-background" />
         </div>
-        <span className="font-display text-sm font-semibold">Finance OS</span>
+        <span className="font-display text-sm font-semibold">Your north</span>
         <div className="ml-auto flex items-center gap-2">
           {user ? (
             <Button asChild size="sm" className="rounded-full">
@@ -111,9 +138,9 @@ function Landing() {
             Tu family office personal, potenciado con IA
           </span>
           <h1 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-semibold leading-[1.08] tracking-tight md:text-6xl">
-            Todo tu dinero,
+            Encuentra tu rumbo con
             <span className="block bg-gradient-to-r from-primary to-foreground bg-clip-text text-transparent">
-              entendido en 30 segundos
+              toda tu economía clara
             </span>
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground">
@@ -143,6 +170,39 @@ function Landing() {
             ))}
           </div>
         </motion.section>
+
+        <section className="mt-24 md:mt-32">
+          <div className="mb-10 text-center">
+            <span className="text-xs font-medium uppercase tracking-wider text-primary">¿Por qué Your north?</span>
+            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
+              Tu dinero, con dirección
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
+              Deja de navegar a ciegas. Conecta cuentas, tarjetas e inversiones para ver por dónde entra, por dónde
+              sale y hacia dónde crece.
+            </p>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {whyCards.map((card, i) => (
+              <motion.div
+                key={card.title}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.08 }}
+                className="surface group relative overflow-hidden p-6"
+              >
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-elevated ring-1 ring-border">
+                  <card.icon className="h-5 w-5 text-primary" />
+                </div>
+                <h3 className="mt-5 text-sm font-semibold">{card.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{card.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </section>
 
         <section className="mt-20 grid gap-4 md:grid-cols-2">
           {features.map((f, i) => (
