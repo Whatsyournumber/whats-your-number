@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GastosRouteImport } from './routes/gastos'
+import { Route as PatrimonioRouteImport } from './routes/patrimonio'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const GastosRoute = GastosRouteImport.update({
   path: '/gastos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PatrimonioRoute = PatrimonioRouteImport.update({
+  id: '/patrimonio',
+  path: '/patrimonio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/gastos': typeof GastosRoute
+  '/patrimonio': typeof PatrimonioRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/gastos': typeof GastosRoute
+  '/patrimonio': typeof PatrimonioRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/gastos': typeof GastosRoute
+  '/patrimonio': typeof PatrimonioRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/gastos'
+  fullPaths: '/' | '/gastos' | '/patrimonio'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/gastos'
-  id: '__root__' | '/' | '/gastos'
+  to: '/' | '/gastos' | '/patrimonio'
+  id: '__root__' | '/' | '/gastos' | '/patrimonio'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GastosRoute: typeof GastosRoute
+  PatrimonioRoute: typeof PatrimonioRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GastosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/patrimonio': {
+      id: '/patrimonio'
+      path: '/patrimonio'
+      fullPath: '/patrimonio'
+      preLoaderRoute: typeof PatrimonioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GastosRoute: GastosRoute,
+  PatrimonioRoute: PatrimonioRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
