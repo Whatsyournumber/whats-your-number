@@ -145,11 +145,13 @@ function RootComponent() {
 }
 
 const PUBLIC_PATHS = ["/", "/auth", "/precios", "/blog"];
+// El onboarding tiene su propio gate de sesión y layout a pantalla completa.
+const BARE_PATHS = ["/onboarding"];
 
 function RootLayout() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
 
-  if (PUBLIC_PATHS.includes(pathname)) {
+  if (PUBLIC_PATHS.includes(pathname) || BARE_PATHS.includes(pathname)) {
     return <Outlet />;
   }
 

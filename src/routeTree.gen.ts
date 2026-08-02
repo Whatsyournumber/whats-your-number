@@ -19,6 +19,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as GastosRouteImport } from './routes/gastos'
 import { Route as LifestyleRouteImport } from './routes/lifestyle'
 import { Route as ObjetivosRouteImport } from './routes/objetivos'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PatrimonioRouteImport } from './routes/patrimonio'
 import { Route as PortafolioRouteImport } from './routes/portafolio'
 import { Route as PreciosRouteImport } from './routes/precios'
@@ -74,6 +75,11 @@ const ObjetivosRoute = ObjetivosRouteImport.update({
   path: '/objetivos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PatrimonioRoute = PatrimonioRouteImport.update({
   id: '/patrimonio',
   path: '/patrimonio',
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/gastos': typeof GastosRoute
   '/lifestyle': typeof LifestyleRoute
   '/objetivos': typeof ObjetivosRoute
+  '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
   '/precios': typeof PreciosRoute
@@ -122,6 +129,7 @@ export interface FileRoutesByTo {
   '/gastos': typeof GastosRoute
   '/lifestyle': typeof LifestyleRoute
   '/objetivos': typeof ObjetivosRoute
+  '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
   '/precios': typeof PreciosRoute
@@ -139,6 +147,7 @@ export interface FileRoutesById {
   '/gastos': typeof GastosRoute
   '/lifestyle': typeof LifestyleRoute
   '/objetivos': typeof ObjetivosRoute
+  '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
   '/precios': typeof PreciosRoute
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/gastos'
     | '/lifestyle'
     | '/objetivos'
+    | '/onboarding'
     | '/patrimonio'
     | '/portafolio'
     | '/precios'
@@ -173,6 +183,7 @@ export interface FileRouteTypes {
     | '/gastos'
     | '/lifestyle'
     | '/objetivos'
+    | '/onboarding'
     | '/patrimonio'
     | '/portafolio'
     | '/precios'
@@ -189,6 +200,7 @@ export interface FileRouteTypes {
     | '/gastos'
     | '/lifestyle'
     | '/objetivos'
+    | '/onboarding'
     | '/patrimonio'
     | '/portafolio'
     | '/precios'
@@ -206,6 +218,7 @@ export interface RootRouteChildren {
   GastosRoute: typeof GastosRoute
   LifestyleRoute: typeof LifestyleRoute
   ObjetivosRoute: typeof ObjetivosRoute
+  OnboardingRoute: typeof OnboardingRoute
   PatrimonioRoute: typeof PatrimonioRoute
   PortafolioRoute: typeof PortafolioRoute
   PreciosRoute: typeof PreciosRoute
@@ -284,6 +297,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ObjetivosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/patrimonio': {
       id: '/patrimonio'
       path: '/patrimonio'
@@ -326,6 +346,7 @@ const rootRouteChildren: RootRouteChildren = {
   GastosRoute: GastosRoute,
   LifestyleRoute: LifestyleRoute,
   ObjetivosRoute: ObjetivosRoute,
+  OnboardingRoute: OnboardingRoute,
   PatrimonioRoute: PatrimonioRoute,
   PortafolioRoute: PortafolioRoute,
   PreciosRoute: PreciosRoute,
