@@ -20,6 +20,7 @@ import { Route as LifestyleRouteImport } from './routes/lifestyle'
 import { Route as ObjetivosRouteImport } from './routes/objetivos'
 import { Route as PatrimonioRouteImport } from './routes/patrimonio'
 import { Route as PortafolioRouteImport } from './routes/portafolio'
+import { Route as PreciosRouteImport } from './routes/precios'
 import { Route as RetiroRouteImport } from './routes/retiro'
 
 const IndexRoute = IndexRouteImport.update({
@@ -77,6 +78,11 @@ const PortafolioRoute = PortafolioRouteImport.update({
   path: '/portafolio',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PreciosRoute = PreciosRouteImport.update({
+  id: '/precios',
+  path: '/precios',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RetiroRoute = RetiroRouteImport.update({
   id: '/retiro',
   path: '/retiro',
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/objetivos': typeof ObjetivosRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
+  '/precios': typeof PreciosRoute
   '/retiro': typeof RetiroRoute
 }
 export interface FileRoutesByTo {
@@ -109,6 +116,7 @@ export interface FileRoutesByTo {
   '/objetivos': typeof ObjetivosRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
+  '/precios': typeof PreciosRoute
   '/retiro': typeof RetiroRoute
 }
 export interface FileRoutesById {
@@ -124,6 +132,7 @@ export interface FileRoutesById {
   '/objetivos': typeof ObjetivosRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
+  '/precios': typeof PreciosRoute
   '/retiro': typeof RetiroRoute
 }
 export interface FileRouteTypes {
@@ -140,6 +149,7 @@ export interface FileRouteTypes {
     | '/objetivos'
     | '/patrimonio'
     | '/portafolio'
+    | '/precios'
     | '/retiro'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
     | '/objetivos'
     | '/patrimonio'
     | '/portafolio'
+    | '/precios'
     | '/retiro'
   id:
     | '__root__'
@@ -168,6 +179,7 @@ export interface FileRouteTypes {
     | '/objetivos'
     | '/patrimonio'
     | '/portafolio'
+    | '/precios'
     | '/retiro'
   fileRoutesById: FileRoutesById
 }
@@ -183,6 +195,7 @@ export interface RootRouteChildren {
   ObjetivosRoute: typeof ObjetivosRoute
   PatrimonioRoute: typeof PatrimonioRoute
   PortafolioRoute: typeof PortafolioRoute
+  PreciosRoute: typeof PreciosRoute
   RetiroRoute: typeof RetiroRoute
 }
 
@@ -265,6 +278,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortafolioRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/precios': {
+      id: '/precios'
+      path: '/precios'
+      fullPath: '/precios'
+      preLoaderRoute: typeof PreciosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/retiro': {
       id: '/retiro'
       path: '/retiro'
@@ -287,6 +307,7 @@ const rootRouteChildren: RootRouteChildren = {
   ObjetivosRoute: ObjetivosRoute,
   PatrimonioRoute: PatrimonioRoute,
   PortafolioRoute: PortafolioRoute,
+  PreciosRoute: PreciosRoute,
   RetiroRoute: RetiroRoute,
 }
 export const routeTree = rootRouteImport
