@@ -30,6 +30,16 @@ export const Route = createFileRoute("/gastos")({
 
 function Gastos() {
   const maxHeat = Math.max(...heatmap.map((h) => h.amount));
+  const avgHeat = heatmap.reduce((s, h) => s + h.amount, 0) / heatmap.length;
+  const worstDays = [...heatmap].sort((a, b) => b.amount - a.amount).slice(0, 3);
+
+  const comparableMonths = months.slice(0, -1);
+  const [compareMonth, setCompareMonth] = useState(comparableMonths[comparableMonths.length - 1]!.month);
+  const compare = comparableMonths.find((m) => m.month === compareMonth)!;
+  const diff = totalExpenses - compare.expenses;
+  const diffPct = (diff / compare.expenses) * 100;
+  const avgMonths = comparableMonths.reduce((s, m) => s + m.expenses, 0) / comparableMonths.length;
+  const vsAvgMonths = ((totalExpenses - avgMonths) / avgMonths) * 100;
 
   return (
     <PageShell>
