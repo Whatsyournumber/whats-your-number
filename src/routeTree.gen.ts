@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as GastosRouteImport } from './routes/gastos'
 import { Route as PatrimonioRouteImport } from './routes/patrimonio'
 import { Route as PortafolioRouteImport } from './routes/portafolio'
+import { Route as RetiroRouteImport } from './routes/retiro'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,18 +35,25 @@ const PortafolioRoute = PortafolioRouteImport.update({
   path: '/portafolio',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RetiroRoute = RetiroRouteImport.update({
+  id: '/retiro',
+  path: '/retiro',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/gastos': typeof GastosRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
+  '/retiro': typeof RetiroRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/gastos': typeof GastosRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
+  '/retiro': typeof RetiroRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,14 @@ export interface FileRoutesById {
   '/gastos': typeof GastosRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
+  '/retiro': typeof RetiroRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/gastos' | '/patrimonio' | '/portafolio'
+  fullPaths: '/' | '/gastos' | '/patrimonio' | '/portafolio' | '/retiro'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/gastos' | '/patrimonio' | '/portafolio'
-  id: '__root__' | '/' | '/gastos' | '/patrimonio' | '/portafolio'
+  to: '/' | '/gastos' | '/patrimonio' | '/portafolio' | '/retiro'
+  id: '__root__' | '/' | '/gastos' | '/patrimonio' | '/portafolio' | '/retiro'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +76,7 @@ export interface RootRouteChildren {
   GastosRoute: typeof GastosRoute
   PatrimonioRoute: typeof PatrimonioRoute
   PortafolioRoute: typeof PortafolioRoute
+  RetiroRoute: typeof RetiroRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -99,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortafolioRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/retiro': {
+      id: '/retiro'
+      path: '/retiro'
+      fullPath: '/retiro'
+      preLoaderRoute: typeof RetiroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,6 +124,7 @@ const rootRouteChildren: RootRouteChildren = {
   GastosRoute: GastosRoute,
   PatrimonioRoute: PatrimonioRoute,
   PortafolioRoute: PortafolioRoute,
+  RetiroRoute: RetiroRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
