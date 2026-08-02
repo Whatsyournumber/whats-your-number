@@ -61,7 +61,15 @@ function Dashboard() {
         <KpiCard label="Ingresos" value={fmt(current.income)} delta={delta(current.income, previous.income)} icon={Banknote} index={1} />
         <KpiCard label="Gastos" value={fmt(current.expenses)} delta={delta(current.expenses, previous.expenses)} inverse icon={TrendingUp} index={2} />
         <KpiCard label="Ahorro" value={fmt(current.savings)} delta={delta(current.savings, previous.savings)} icon={PiggyBank} index={3} />
-        <KpiCard label="Flujo libre" value={fmt(freeCash)} delta={delta(freeCash, prevFree)} hint="tras inversiones" icon={Waves} index={4} />
+        <KpiCard
+          label="Flujo libre"
+          value={fmt(freeCash)}
+          {...(prevFree > 0 ? { delta: delta(freeCash, prevFree) } : {})}
+          hint="tras inversiones"
+          icon={Waves}
+          index={4}
+        />
+
         <KpiCard label="Tasa de ahorro" value={`${savingsRate.toFixed(0)}%`} delta={savingsRate - prevRate} icon={ArrowUpRight} index={5} />
       </div>
 
