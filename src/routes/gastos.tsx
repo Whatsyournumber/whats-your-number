@@ -65,8 +65,51 @@ function Gastos() {
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
               <p className="numeric text-2xl font-semibold">{fmtCompact(totalExpenses)}</p>
               <p className="text-xs text-muted-foreground">gasto total</p>
+              <p className={cn("numeric mt-0.5 text-[11px]", diff > 0 ? "text-negative" : "text-positive")}>
+                {diff > 0 ? "+" : ""}
+                {diffPct.toFixed(1)}% vs. {compare.label}
+              </p>
             </div>
           </div>
+
+          <div className="mt-3 rounded-xl bg-elevated/60 p-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">Comparar con</span>
+              <Select value={compareMonth} onValueChange={setCompareMonth}>
+                <SelectTrigger className="ml-auto h-8 w-[130px] text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {[...comparableMonths].reverse().map((m) => (
+                    <SelectItem key={m.month} value={m.month} className="text-xs">
+                      {m.label} {m.month.slice(0, 4)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
+              <div>
+                <p className="text-muted-foreground">{compare.label}</p>
+                <p className="numeric text-sm font-semibold">{fmt(compare.expenses)}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Diferencia</p>
+                <p className={cn("numeric text-sm font-semibold", diff > 0 ? "text-negative" : "text-positive")}>
+                  {diff > 0 ? "+" : "−"}
+                  {fmt(Math.abs(diff))}
+                </p>
+              </div>
+            </div>
+            <p className="mt-2 text-[11px] text-muted-foreground">
+              Promedio 12 meses {fmt(Math.round(avgMonths))} ·{" "}
+              <span className={vsAvgMonths > 0 ? "text-negative" : "text-positive"}>
+                {vsAvgMonths > 0 ? "+" : ""}
+                {vsAvgMonths.toFixed(1)}% este mes
+              </span>
+            </p>
+          </div>
+
           <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5">
             {categories.map((c) => (
               <li key={c.key} className="flex items-center gap-2 text-xs">
@@ -76,6 +119,7 @@ function Gastos() {
               </li>
             ))}
           </ul>
+
         </Panel>
 
 
