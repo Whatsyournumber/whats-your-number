@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdvisorRouteImport } from './routes/advisor'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as CashFlowRouteImport } from './routes/cash-flow'
 import { Route as ConfiguracionRouteImport } from './routes/configuracion'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -20,6 +21,7 @@ import { Route as LifestyleRouteImport } from './routes/lifestyle'
 import { Route as ObjetivosRouteImport } from './routes/objetivos'
 import { Route as PatrimonioRouteImport } from './routes/patrimonio'
 import { Route as PortafolioRouteImport } from './routes/portafolio'
+import { Route as PreciosRouteImport } from './routes/precios'
 import { Route as RetiroRouteImport } from './routes/retiro'
 
 const IndexRoute = IndexRouteImport.update({
@@ -35,6 +37,11 @@ const AdvisorRoute = AdvisorRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CashFlowRoute = CashFlowRouteImport.update({
@@ -77,6 +84,11 @@ const PortafolioRoute = PortafolioRouteImport.update({
   path: '/portafolio',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PreciosRoute = PreciosRouteImport.update({
+  id: '/precios',
+  path: '/precios',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RetiroRoute = RetiroRouteImport.update({
   id: '/retiro',
   path: '/retiro',
@@ -87,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/advisor': typeof AdvisorRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRoute
   '/cash-flow': typeof CashFlowRoute
   '/configuracion': typeof ConfiguracionRoute
   '/dashboard': typeof DashboardRoute
@@ -95,12 +108,14 @@ export interface FileRoutesByFullPath {
   '/objetivos': typeof ObjetivosRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
+  '/precios': typeof PreciosRoute
   '/retiro': typeof RetiroRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/advisor': typeof AdvisorRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRoute
   '/cash-flow': typeof CashFlowRoute
   '/configuracion': typeof ConfiguracionRoute
   '/dashboard': typeof DashboardRoute
@@ -109,6 +124,7 @@ export interface FileRoutesByTo {
   '/objetivos': typeof ObjetivosRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
+  '/precios': typeof PreciosRoute
   '/retiro': typeof RetiroRoute
 }
 export interface FileRoutesById {
@@ -116,6 +132,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/advisor': typeof AdvisorRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRoute
   '/cash-flow': typeof CashFlowRoute
   '/configuracion': typeof ConfiguracionRoute
   '/dashboard': typeof DashboardRoute
@@ -124,6 +141,7 @@ export interface FileRoutesById {
   '/objetivos': typeof ObjetivosRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
+  '/precios': typeof PreciosRoute
   '/retiro': typeof RetiroRoute
 }
 export interface FileRouteTypes {
@@ -132,6 +150,7 @@ export interface FileRouteTypes {
     | '/'
     | '/advisor'
     | '/auth'
+    | '/blog'
     | '/cash-flow'
     | '/configuracion'
     | '/dashboard'
@@ -140,12 +159,14 @@ export interface FileRouteTypes {
     | '/objetivos'
     | '/patrimonio'
     | '/portafolio'
+    | '/precios'
     | '/retiro'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/advisor'
     | '/auth'
+    | '/blog'
     | '/cash-flow'
     | '/configuracion'
     | '/dashboard'
@@ -154,12 +175,14 @@ export interface FileRouteTypes {
     | '/objetivos'
     | '/patrimonio'
     | '/portafolio'
+    | '/precios'
     | '/retiro'
   id:
     | '__root__'
     | '/'
     | '/advisor'
     | '/auth'
+    | '/blog'
     | '/cash-flow'
     | '/configuracion'
     | '/dashboard'
@@ -168,6 +191,7 @@ export interface FileRouteTypes {
     | '/objetivos'
     | '/patrimonio'
     | '/portafolio'
+    | '/precios'
     | '/retiro'
   fileRoutesById: FileRoutesById
 }
@@ -175,6 +199,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdvisorRoute: typeof AdvisorRoute
   AuthRoute: typeof AuthRoute
+  BlogRoute: typeof BlogRoute
   CashFlowRoute: typeof CashFlowRoute
   ConfiguracionRoute: typeof ConfiguracionRoute
   DashboardRoute: typeof DashboardRoute
@@ -183,6 +208,7 @@ export interface RootRouteChildren {
   ObjetivosRoute: typeof ObjetivosRoute
   PatrimonioRoute: typeof PatrimonioRoute
   PortafolioRoute: typeof PortafolioRoute
+  PreciosRoute: typeof PreciosRoute
   RetiroRoute: typeof RetiroRoute
 }
 
@@ -207,6 +233,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cash-flow': {
@@ -265,6 +298,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortafolioRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/precios': {
+      id: '/precios'
+      path: '/precios'
+      fullPath: '/precios'
+      preLoaderRoute: typeof PreciosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/retiro': {
       id: '/retiro'
       path: '/retiro'
@@ -279,6 +319,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdvisorRoute: AdvisorRoute,
   AuthRoute: AuthRoute,
+  BlogRoute: BlogRoute,
   CashFlowRoute: CashFlowRoute,
   ConfiguracionRoute: ConfiguracionRoute,
   DashboardRoute: DashboardRoute,
@@ -287,6 +328,7 @@ const rootRouteChildren: RootRouteChildren = {
   ObjetivosRoute: ObjetivosRoute,
   PatrimonioRoute: PatrimonioRoute,
   PortafolioRoute: PortafolioRoute,
+  PreciosRoute: PreciosRoute,
   RetiroRoute: RetiroRoute,
 }
 export const routeTree = rootRouteImport
