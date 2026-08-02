@@ -38,19 +38,33 @@ function Gastos() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel title="Distribución por categoría">
-          <ResponsiveContainer width="100%" height={260}>
-            <PieChart>
-              <Pie data={categories} dataKey="amount" nameKey="name" innerRadius={68} outerRadius={104} paddingAngle={3} stroke="none">
-                {categories.map((c) => (
-                  <Cell key={c.key} fill={c.color} />
-                ))}
-              </Pie>
-              <Tooltip content={<ChartTooltip />} />
-            </PieChart>
-          </ResponsiveContainer>
-          <p className="numeric -mt-[168px] text-center text-2xl font-semibold">{fmtCompact(totalExpenses)}</p>
-          <p className="mb-[124px] text-center text-xs text-muted-foreground">gasto total</p>
+          <div className="relative">
+            <ResponsiveContainer width="100%" height={260}>
+              <PieChart>
+                <Pie data={categories} dataKey="amount" nameKey="name" innerRadius={68} outerRadius={104} paddingAngle={3} stroke="none">
+                  {categories.map((c) => (
+                    <Cell key={c.key} fill={c.color} />
+                  ))}
+                </Pie>
+                <Tooltip content={<ChartTooltip />} />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+              <p className="numeric text-2xl font-semibold">{fmtCompact(totalExpenses)}</p>
+              <p className="text-xs text-muted-foreground">gasto total</p>
+            </div>
+          </div>
+          <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5">
+            {categories.map((c) => (
+              <li key={c.key} className="flex items-center gap-2 text-xs">
+                <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: c.color }} />
+                <span className="truncate text-muted-foreground">{c.name}</span>
+                <span className="numeric ml-auto font-medium">{((c.amount / totalExpenses) * 100).toFixed(0)}%</span>
+              </li>
+            ))}
+          </ul>
         </Panel>
+
 
         <Panel title="Comparación mensual" description="Gasto total últimos 12 meses" className="lg:col-span-2">
           <ResponsiveContainer width="100%" height={280}>
