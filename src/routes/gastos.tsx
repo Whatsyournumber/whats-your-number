@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip, Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
@@ -10,6 +11,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Progress } from "@/components/ui/progress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tooltip as UITooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { categories, fmt, fmtCompact, heatmap, insights, months, topMerchants, totalExpenses } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
@@ -27,6 +30,16 @@ export const Route = createFileRoute("/gastos")({
 
 function Gastos() {
   const maxHeat = Math.max(...heatmap.map((h) => h.amount));
+  const avgHeat = heatmap.reduce((s, h) => s + h.amount, 0) / heatmap.length;
+  const worstDays = [...heatmap].sort((a, b) => b.amount - a.amount).slice(0, 3);
+
+  const comparableMonths = months.slice(0, -1);
+  const [compareMonth, setCompareMonth] = useState(comparableMonths[comparableMonths.length - 1]!.month);
+  const compare = comparableMonths.find((m) => m.month === compareMonth)!;
+  const diff = totalExpenses - compare.expenses;
+  const diffPct = (diff / compare.expenses) * 100;
+  const avgMonths = comparableMonths.reduce((s, m) => s + m.expenses, 0) / comparableMonths.length;
+  const vsAvgMonths = ((totalExpenses - avgMonths) / avgMonths) * 100;
 
   return (
     <PageShell>
@@ -52,8 +65,51 @@ function Gastos() {
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
               <p className="numeric text-2xl font-semibold">{fmtCompact(totalExpenses)}</p>
               <p className="text-xs text-muted-foreground">gasto total</p>
+              <p className={cn("numeric mt-0.5 text-[11px]", diff > 0 ? "text-negative" : "text-positive")}>
+                {diff > 0 ? "+" : ""}
+                {diffPct.toFixed(1)}% vs. {compare.label}
+              </p>
             </div>
           </div>
+
+          <div className="mt-3 rounded-xl bg-elevated/60 p-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">Comparar con</span>
+              <Select value={compareMonth} onValueChange={setCompareMonth}>
+                <SelectTrigger className="ml-auto h-8 w-[130px] text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {[...comparableMonths].reverse().map((m) => (
+                    <SelectItem key={m.month} value={m.month} className="text-xs">
+                      {m.label} {m.month.slice(0, 4)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
+              <div>
+                <p className="text-muted-foreground">{compare.label}</p>
+                <p className="numeric text-sm font-semibold">{fmt(compare.expenses)}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Diferencia</p>
+                <p className={cn("numeric text-sm font-semibold", diff > 0 ? "text-negative" : "text-positive")}>
+                  {diff > 0 ? "+" : "−"}
+                  {fmt(Math.abs(diff))}
+                </p>
+              </div>
+            </div>
+            <p className="mt-2 text-[11px] text-muted-foreground">
+              Promedio 12 meses {fmt(Math.round(avgMonths))} ·{" "}
+              <span className={vsAvgMonths > 0 ? "text-negative" : "text-positive"}>
+                {vsAvgMonths > 0 ? "+" : ""}
+                {vsAvgMonths.toFixed(1)}% este mes
+              </span>
+            </p>
+          </div>
+
           <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5">
             {categories.map((c) => (
               <li key={c.key} className="flex items-center gap-2 text-xs">
@@ -63,6 +119,7 @@ function Gastos() {
               </li>
             ))}
           </ul>
+
         </Panel>
 
 
@@ -80,23 +137,58 @@ function Gastos() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title="Heatmap diario" description="Intensidad de gasto por día" className="lg:col-span-2">
-          <div className="grid grid-cols-7 gap-1.5">
-            {["L", "M", "M", "J", "V", "S", "D"].map((d, i) => (
-              <span key={i} className="text-center text-[10px] text-muted-foreground">
-                {d}
+        <Panel
+          title="Heatmap diario"
+          description="Pasa el cursor por un día para ver el monto exacto"
+          className="lg:col-span-2"
+        >
+          <TooltipProvider delayDuration={80}>
+            <div className="grid grid-cols-7 gap-1.5">
+              {["L", "M", "M", "J", "V", "S", "D"].map((d, i) => (
+                <span key={i} className="text-center text-[10px] text-muted-foreground">
+                  {d}
+                </span>
+              ))}
+              {heatmap.map((h) => {
+                const vsAvg = ((h.amount - avgHeat) / avgHeat) * 100;
+                const isWorst = worstDays.some((w) => w.day === h.day);
+                return (
+                  <UITooltip key={h.day}>
+                    <TooltipTrigger asChild>
+                      <div
+                        className={cn(
+                          "aspect-square cursor-pointer rounded-md border border-border/50 transition-transform hover:scale-110",
+                          isWorst && "ring-2 ring-negative/70 ring-offset-1 ring-offset-background",
+                        )}
+                        style={{
+                          background: `color-mix(in oklab, var(--color-chart-5) ${(h.amount / maxHeat) * 85 + 6}%, transparent)`,
+                        }}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent className="px-3 py-2">
+                      <p className="text-xs font-medium">Día {h.day}</p>
+                      <p className="numeric text-sm font-semibold">{fmt(h.amount)}</p>
+                      <p className={cn("text-[11px]", vsAvg > 0 ? "text-negative" : "text-positive")}>
+                        {vsAvg > 0 ? "+" : ""}
+                        {vsAvg.toFixed(0)}% vs. promedio diario ({fmt(Math.round(avgHeat))})
+                      </p>
+                      {isWorst && <p className="text-[11px] text-warning">Uno de los 3 peores días del mes</p>}
+                    </TooltipContent>
+                  </UITooltip>
+                );
+              })}
+            </div>
+          </TooltipProvider>
+          <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+            <span>Peores días:</span>
+            {worstDays.map((w) => (
+              <span key={w.day} className="rounded-full bg-negative/12 px-2 py-0.5 text-negative">
+                Día {w.day} · <span className="numeric">{fmt(w.amount)}</span>
               </span>
-            ))}
-            {heatmap.map((h) => (
-              <div
-                key={h.day}
-                title={`Día ${h.day}: ${fmt(h.amount)}`}
-                className="aspect-square rounded-md border border-border/50 transition-transform hover:scale-110"
-                style={{ background: `color-mix(in oklab, var(--color-chart-5) ${(h.amount / maxHeat) * 85 + 6}%, transparent)` }}
-              />
             ))}
           </div>
         </Panel>
+
 
         <Panel title="Top comercios">
           <ul className="space-y-2">
