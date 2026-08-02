@@ -10,7 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CashFlowRouteImport } from './routes/cash-flow'
 import { Route as GastosRouteImport } from './routes/gastos'
+import { Route as LifestyleRouteImport } from './routes/lifestyle'
+import { Route as ObjetivosRouteImport } from './routes/objetivos'
 import { Route as PatrimonioRouteImport } from './routes/patrimonio'
 import { Route as PortafolioRouteImport } from './routes/portafolio'
 import { Route as RetiroRouteImport } from './routes/retiro'
@@ -20,9 +23,24 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CashFlowRoute = CashFlowRouteImport.update({
+  id: '/cash-flow',
+  path: '/cash-flow',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GastosRoute = GastosRouteImport.update({
   id: '/gastos',
   path: '/gastos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LifestyleRoute = LifestyleRouteImport.update({
+  id: '/lifestyle',
+  path: '/lifestyle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ObjetivosRoute = ObjetivosRouteImport.update({
+  id: '/objetivos',
+  path: '/objetivos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PatrimonioRoute = PatrimonioRouteImport.update({
@@ -43,14 +61,20 @@ const RetiroRoute = RetiroRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cash-flow': typeof CashFlowRoute
   '/gastos': typeof GastosRoute
+  '/lifestyle': typeof LifestyleRoute
+  '/objetivos': typeof ObjetivosRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
   '/retiro': typeof RetiroRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cash-flow': typeof CashFlowRoute
   '/gastos': typeof GastosRoute
+  '/lifestyle': typeof LifestyleRoute
+  '/objetivos': typeof ObjetivosRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
   '/retiro': typeof RetiroRoute
@@ -58,22 +82,53 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cash-flow': typeof CashFlowRoute
   '/gastos': typeof GastosRoute
+  '/lifestyle': typeof LifestyleRoute
+  '/objetivos': typeof ObjetivosRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
   '/retiro': typeof RetiroRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/gastos' | '/patrimonio' | '/portafolio' | '/retiro'
+  fullPaths:
+    | '/'
+    | '/cash-flow'
+    | '/gastos'
+    | '/lifestyle'
+    | '/objetivos'
+    | '/patrimonio'
+    | '/portafolio'
+    | '/retiro'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/gastos' | '/patrimonio' | '/portafolio' | '/retiro'
-  id: '__root__' | '/' | '/gastos' | '/patrimonio' | '/portafolio' | '/retiro'
+  to:
+    | '/'
+    | '/cash-flow'
+    | '/gastos'
+    | '/lifestyle'
+    | '/objetivos'
+    | '/patrimonio'
+    | '/portafolio'
+    | '/retiro'
+  id:
+    | '__root__'
+    | '/'
+    | '/cash-flow'
+    | '/gastos'
+    | '/lifestyle'
+    | '/objetivos'
+    | '/patrimonio'
+    | '/portafolio'
+    | '/retiro'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CashFlowRoute: typeof CashFlowRoute
   GastosRoute: typeof GastosRoute
+  LifestyleRoute: typeof LifestyleRoute
+  ObjetivosRoute: typeof ObjetivosRoute
   PatrimonioRoute: typeof PatrimonioRoute
   PortafolioRoute: typeof PortafolioRoute
   RetiroRoute: typeof RetiroRoute
@@ -88,11 +143,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cash-flow': {
+      id: '/cash-flow'
+      path: '/cash-flow'
+      fullPath: '/cash-flow'
+      preLoaderRoute: typeof CashFlowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/gastos': {
       id: '/gastos'
       path: '/gastos'
       fullPath: '/gastos'
       preLoaderRoute: typeof GastosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lifestyle': {
+      id: '/lifestyle'
+      path: '/lifestyle'
+      fullPath: '/lifestyle'
+      preLoaderRoute: typeof LifestyleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/objetivos': {
+      id: '/objetivos'
+      path: '/objetivos'
+      fullPath: '/objetivos'
+      preLoaderRoute: typeof ObjetivosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/patrimonio': {
@@ -121,7 +197,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CashFlowRoute: CashFlowRoute,
   GastosRoute: GastosRoute,
+  LifestyleRoute: LifestyleRoute,
+  ObjetivosRoute: ObjetivosRoute,
   PatrimonioRoute: PatrimonioRoute,
   PortafolioRoute: PortafolioRoute,
   RetiroRoute: RetiroRoute,
