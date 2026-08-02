@@ -1,0 +1,56 @@
+import { motion } from "motion/react";
+import type { LucideIcon } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+
+export function KpiCard({
+  label,
+  value,
+  delta,
+  hint,
+  icon: Icon,
+  accent = false,
+  inverse = false,
+  index = 0,
+}: {
+  label: string;
+  value: string;
+  delta?: number;
+  hint?: string;
+  icon?: LucideIcon;
+  accent?: boolean;
+  inverse?: boolean;
+  index?: number;
+}) {
+  const good = delta === undefined ? true : inverse ? delta < 0 : delta > 0;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: index * 0.05, ease: "easeOut" }}
+      className={cn("surface relative overflow-hidden p-5", accent && "glow")}
+    >
+      {accent && <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.08]" />}
+      <div className="relative flex items-start justify-between gap-3">
+        <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{label}</p>
+        {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
+      </div>
+      <p className={cn("numeric relative mt-3 text-2xl font-semibold md:text-3xl")}>{value}</p>
+      <div className="relative mt-2 flex items-center gap-2">
+        {delta !== undefined && (
+          <span
+            className={cn(
+              "rounded-full px-2 py-0.5 text-xs font-medium",
+              good ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative",
+            )}
+          >
+            {delta > 0 ? "+" : ""}
+            {delta.toFixed(1)}%
+          </span>
+        )}
+        {hint && <span className="text-xs text-muted-foreground">{hint}</span>}
+      </div>
+    </motion.div>
+  );
+}
