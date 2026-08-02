@@ -67,6 +67,111 @@ export type Database = {
           },
         ]
       }
+      onboarding_profiles: {
+        Row: {
+          age: number | null
+          assets_bank: number | null
+          assets_cash: number | null
+          assets_crypto: number | null
+          assets_etf: number | null
+          assets_property: number | null
+          assets_retirement: number | null
+          assets_stocks: number | null
+          completed: boolean
+          completed_at: string | null
+          country: string | null
+          country_code: string | null
+          created_at: string
+          currency: string | null
+          current_step: number
+          desired_retirement_income: number | null
+          expected_return: number | null
+          full_name: string | null
+          id: string
+          income_bonus: number | null
+          income_other: number | null
+          income_rent: number | null
+          income_salary: number | null
+          liabilities: number | null
+          monthly_expenses: number | null
+          monthly_savings: number | null
+          priority: string | null
+          retire_age: number | null
+          risk_profile: string | null
+          timezone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          age?: number | null
+          assets_bank?: number | null
+          assets_cash?: number | null
+          assets_crypto?: number | null
+          assets_etf?: number | null
+          assets_property?: number | null
+          assets_retirement?: number | null
+          assets_stocks?: number | null
+          completed?: boolean
+          completed_at?: string | null
+          country?: string | null
+          country_code?: string | null
+          created_at?: string
+          currency?: string | null
+          current_step?: number
+          desired_retirement_income?: number | null
+          expected_return?: number | null
+          full_name?: string | null
+          id?: string
+          income_bonus?: number | null
+          income_other?: number | null
+          income_rent?: number | null
+          income_salary?: number | null
+          liabilities?: number | null
+          monthly_expenses?: number | null
+          monthly_savings?: number | null
+          priority?: string | null
+          retire_age?: number | null
+          risk_profile?: string | null
+          timezone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          age?: number | null
+          assets_bank?: number | null
+          assets_cash?: number | null
+          assets_crypto?: number | null
+          assets_etf?: number | null
+          assets_property?: number | null
+          assets_retirement?: number | null
+          assets_stocks?: number | null
+          completed?: boolean
+          completed_at?: string | null
+          country?: string | null
+          country_code?: string | null
+          created_at?: string
+          currency?: string | null
+          current_step?: number
+          desired_retirement_income?: number | null
+          expected_return?: number | null
+          full_name?: string | null
+          id?: string
+          income_bonus?: number | null
+          income_other?: number | null
+          income_rent?: number | null
+          income_salary?: number | null
+          liabilities?: number | null
+          monthly_expenses?: number | null
+          monthly_savings?: number | null
+          priority?: string | null
+          retire_age?: number | null
+          risk_profile?: string | null
+          timezone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
