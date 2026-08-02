@@ -179,7 +179,28 @@ function Landing() {
           </div>
         </section>
 
-        <section className="mt-20 grid gap-4 md:grid-cols-2">
+        <section className="mt-24 md:mt-32">
+          <div className="mb-8 text-center">
+            <span className="text-xs font-medium uppercase tracking-wider text-primary">Así se ve por dentro</span>
+            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
+              Un panel vivo, no una hoja de cálculo
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
+              Cambia entre patrimonio, gastos y portafolio. Todo se actualiza en tiempo real conforme importas tus
+              estados de cuenta.
+            </p>
+          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5 }}
+          >
+            <ProductPreview />
+          </motion.div>
+        </section>
+
+        <section id="funciones" className="mt-24 scroll-mt-24 grid gap-4 md:grid-cols-2">
           {features.map((f, i) => (
             <motion.div
               key={f.title}
@@ -197,6 +218,44 @@ function Landing() {
             </motion.div>
           ))}
         </section>
+
+        <section className="mt-24 md:mt-32">
+          <div className="mb-10 text-center">
+            <span className="text-xs font-medium uppercase tracking-wider text-primary">Lo que dicen</span>
+            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
+              Personas que ya encontraron su norte
+            </h2>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            {reviews.map((r, i) => (
+              <motion.figure
+                key={r.name}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.07 }}
+                className="surface flex flex-col p-6"
+              >
+                <div className="flex gap-0.5">
+                  {Array.from({ length: 5 }).map((_, s) => (
+                    <Star key={s} className="h-3.5 w-3.5 fill-primary text-primary" />
+                  ))}
+                </div>
+                <blockquote className="mt-4 text-sm leading-relaxed text-muted-foreground">“{r.quote}”</blockquote>
+                <figcaption className="mt-5 flex items-center gap-3">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-elevated text-xs font-semibold text-primary ring-1 ring-border">
+                    {r.initials}
+                  </span>
+                  <span className="text-xs">
+                    <span className="block font-medium text-foreground">{r.name}</span>
+                    <span className="text-muted-foreground">{r.role}</span>
+                  </span>
+                </figcaption>
+              </motion.figure>
+            ))}
+          </div>
+        </section>
+
 
         <section className="surface mt-16 flex flex-wrap items-center gap-6 p-8">
           <div className="flex items-center gap-3">
