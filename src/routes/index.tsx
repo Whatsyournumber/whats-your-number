@@ -93,8 +93,32 @@ const metrics = [
   { label: "Datos cifrados", value: "100%" },
 ];
 
+const reviews = [
+  {
+    name: "Mariana Robles",
+    role: "Fundadora de agencia · CDMX",
+    initials: "MR",
+    quote:
+      "Antes tenía tres hojas de cálculo y cero claridad. Subí seis meses de estados de cuenta y en minutos vi a dónde se iba realmente mi dinero.",
+  },
+  {
+    name: "Diego Fernández",
+    role: "Ingeniero de software · Madrid",
+    initials: "DF",
+    quote:
+      "El módulo de portafolio comparado con el S&P 500 me hizo cambiar dos posiciones. Es la primera app de finanzas que se siente hecha para pensar, no solo para registrar.",
+  },
+  {
+    name: "Camila Ortiz",
+    role: "Médica · Bogotá",
+    initials: "CO",
+    quote:
+      "La IA detectó suscripciones que llevaba dos años pagando sin usar. Se pagó sola el primer mes y ahora reviso mi patrimonio en cinco minutos.",
+  },
+];
+
 function Landing() {
-  const { user } = useAuth();
+
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
