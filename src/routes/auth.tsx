@@ -39,8 +39,8 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (!loading && user) navigate({ to: "/dashboard" });
-  }, [loading, user, navigate]);
+    if (!loading && user) navigate({ to: mode === "signup" ? "/onboarding" : "/dashboard" });
+  }, [loading, user, navigate, mode]);
 
   const setMode = (next: string) => navigate({ to: "/auth", search: { mode: next === "signup" ? "signup" : "login" } });
 
@@ -53,7 +53,7 @@ function AuthPage() {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/dashboard`,
+            emailRedirectTo: `${window.location.origin}/onboarding`,
             data: { full_name: fullName },
           },
         });
