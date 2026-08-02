@@ -137,10 +137,10 @@ function Landing() {
             <Sparkles className="h-3.5 w-3.5 text-primary" />
             Tu family office personal, potenciado con IA
           </span>
-          <h1 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-semibold leading-[1.08] tracking-tight md:text-6xl">
-            Encuentra tu rumbo con
+          <h1 className="mx-auto mt-6 max-w-4xl font-display text-4xl font-semibold leading-[1.08] tracking-tight md:text-6xl">
+            Todo tu dinero
             <span className="block bg-gradient-to-r from-primary to-foreground bg-clip-text text-transparent">
-              toda tu economía clara
+              entendido en 30 segundos
             </span>
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground">
