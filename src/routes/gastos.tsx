@@ -165,10 +165,17 @@ function Gastos() {
                         }}
                       />
                     </TooltipTrigger>
-                    <TooltipContent className="px-3 py-2">
-                      <p className="text-xs font-medium">Día {h.day}</p>
-                      <p className="numeric text-sm font-semibold">{fmt(h.amount)}</p>
-                      <p className={cn("text-[11px]", vsAvg > 0 ? "text-negative" : "text-positive")}>
+                    <TooltipContent
+                      className="rounded-2xl border border-border bg-popover/95 px-4 py-3 text-popover-foreground shadow-xl backdrop-blur [&>span]:hidden"
+                      sideOffset={8}
+                    >
+                      <p className="text-sm font-medium">Día {h.day}</p>
+                      <div className="mt-1.5 flex items-center gap-2">
+                        <span className="h-2.5 w-2.5 rounded-full bg-chart-5" />
+                        <span className="text-sm text-muted-foreground">Gasto</span>
+                        <span className="numeric ml-3 text-base font-semibold">{fmt(h.amount)}</span>
+                      </div>
+                      <p className={cn("mt-1.5 text-[11px]", vsAvg > 0 ? "text-negative" : "text-positive")}>
                         {vsAvg > 0 ? "+" : ""}
                         {vsAvg.toFixed(0)}% vs. promedio diario ({fmt(Math.round(avgHeat))})
                       </p>
