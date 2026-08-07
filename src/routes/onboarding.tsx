@@ -42,6 +42,7 @@ import {
   travelOptions,
   type LifeData,
   type OnboardingData,
+  currencies,
 } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
 
