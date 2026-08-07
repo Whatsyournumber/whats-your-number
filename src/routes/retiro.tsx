@@ -26,6 +26,17 @@ function Retiro() {
   const d = buildDataset(profile);
   const { retirement, fmt, fmtCompact, plan } = d;
 
+  // Solo activos que generan retorno (excluye propiedades).
+  const investable =
+    profile.assets_cash +
+    profile.assets_bank +
+    profile.assets_retirement +
+    profile.assets_etf +
+    profile.assets_stocks +
+    profile.assets_crypto;
+  const progressPct = plan.targetCapital > 0 ? Math.max(0, (investable / plan.targetCapital) * 100) : 0;
+
+
   const [monthly, setMonthly] = useState(retirement.monthlyContribution);
   const [rate, setRate] = useState(retirement.returnAnnualized);
   const [retireAge, setRetireAge] = useState(retirement.retireAge);
