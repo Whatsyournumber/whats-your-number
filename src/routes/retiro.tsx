@@ -58,10 +58,10 @@ function Retiro() {
   const rates = [4, 6, 8, 10, 12];
 
   const cityMatches = (capital: number) => {
-    const monthlyIncome = capital * (retirement.returnAnnualized / 100) / 12;
+    const monthlyIncome = (capital * (retirement.returnAnnualized / 100)) / 12;
     return cities
-      .filter((c) => c.cost * 1.25 <= monthlyIncome)
-      .sort((a, b) => a.cost - b.cost)
+      .filter((c: City) => c.cost * 1.25 <= monthlyIncome)
+      .sort((a: City, b: City) => a.cost - b.cost)
       .slice(0, 4);
   };
 
