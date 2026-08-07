@@ -7,6 +7,7 @@ import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Slider } from "@/components/ui/slider";
 import { useProfile } from "@/hooks/use-profile";
+import { type City, cities } from "@/lib/onboarding";
 import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
 
 export const Route = createFileRoute("/retiro")({
@@ -53,9 +54,16 @@ function Retiro() {
   const final = data[data.length - 1]!;
 
   // Escenarios de renta mensual: capital acumulado x rentabilidad anual.
-  const capitals = [1_000_000, 1_200_000, 1_500_000, 2_000_000, 3_000_000, 5_000_000];
+  const capitals = [500_000, 750_000, 1_000_000, 1_200_000, 1_500_000, 2_000_000, 3_000_000, 5_000_000];
   const rates = [4, 6, 8, 10, 12];
 
+  const cityMatches = (capital: number, annualRate: number) => {
+    const monthlyIncome = (capital * (annualRate / 100)) / 12;
+    return cities
+      .filter((c: City) => c.cost * 1.25 <= monthlyIncome)
+      .sort((a: City, b: City) => b.cost - a.cost)
+      .slice(0, 4);
+  };
 
   return (
     <PageShell>
@@ -199,6 +207,47 @@ function Retiro() {
           </table>
         </div>
         <p className="mt-3 text-xs text-muted-foreground">Renta mensual = capital × rentabilidad anual ÷ 12.</p>
+
+        <div className="mt-8 border-t border-border pt-6">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h4 className="text-sm font-medium">Simulador de ciudades</h4>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Ciudades donde podrías vivir bien con la renta mensual generada por cada capital. Ajusta la rentabilidad para ver distintos escenarios.
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">Rentabilidad</span>
+              <span className="numeric rounded-lg bg-elevated px-2 py-1 text-sm font-semibold">{rate}%</span>
+            </div>
+          </div>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {capitals.map((cap) => {
+              const matches = cityMatches(cap, rate);
+              const income = (cap * (rate / 100)) / 12;
+              return (
+                <div key={cap} className="surface p-4">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>Con {fmt(cap)}</span>
+                    <span className="numeric">{fmt(Math.round(income))}/mes</span>
+                  </div>
+                  {matches.length > 0 ? (
+                    <ul className="mt-3 space-y-1.5">
+                      {matches.map((c: City) => (
+                        <li key={c.name} className="flex items-center justify-between text-sm">
+                          <span>{c.name}</span>
+                          <span className="numeric text-xs text-muted-foreground">{fmt(c.cost)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="mt-3 text-xs text-muted-foreground">Aumenta el capital o la rentabilidad para cubrir costos de vida en las ciudades disponibles.</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </Panel>
     </PageShell>
 
