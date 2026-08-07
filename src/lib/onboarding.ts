@@ -334,3 +334,29 @@ export function freedomAgeEstimate(d: OnboardingData, target: number) {
   }
   return months >= 12 * 60 ? null : Math.round(age + months / 12);
 }
+
+export type CurrencyOption = { code: string; label: string; symbol: string };
+
+/** Monedas soportadas para mostrar importes en la app. */
+export const currencies: CurrencyOption[] = [
+  { code: "EUR", label: "Euro", symbol: "€" },
+  { code: "USD", label: "Dólar estadounidense", symbol: "$" },
+  { code: "GBP", label: "Libra esterlina", symbol: "£" },
+  { code: "CHF", label: "Franco suizo", symbol: "CHF" },
+  { code: "MXN", label: "Peso mexicano", symbol: "$" },
+  { code: "COP", label: "Peso colombiano", symbol: "$" },
+  { code: "CLP", label: "Peso chileno", symbol: "$" },
+  { code: "ARS", label: "Peso argentino", symbol: "$" },
+  { code: "UYU", label: "Peso uruguayo", symbol: "$" },
+  { code: "PEN", label: "Sol peruano", symbol: "S/" },
+  { code: "BRL", label: "Real brasileño", symbol: "R$" },
+  { code: "CAD", label: "Dólar canadiense", symbol: "$" },
+  { code: "DOP", label: "Peso dominicano", symbol: "$" },
+  { code: "GTQ", label: "Quetzal", symbol: "Q" },
+  { code: "CRC", label: "Colón costarricense", symbol: "₡" },
+  { code: "PYG", label: "Guaraní", symbol: "₲" },
+  { code: "BOB", label: "Boliviano", symbol: "Bs" },
+  { code: "HNL", label: "Lempira", symbol: "L" },
+  { code: "NIO", label: "Córdoba", symbol: "C$" },
+  { code: "VES", label: "Bolívar", symbol: "Bs" },
+];
