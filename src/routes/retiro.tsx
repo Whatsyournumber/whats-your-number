@@ -173,36 +173,31 @@ function Retiro() {
       </div>
 
       <Panel
-        title="Escenarios: cuánto tendrías según lo que aportes"
-        description={`En ${years} años (a los ${retireAge}). Cada celda muestra el capital final y, debajo, la renta mensual que te daría (regla del 4%). En verde, la que cubre tus gastos de ${fmt(d.expenses)}.`}
+        title="Escenarios: renta mensual según tu capital"
+        description={`Cuánto podrías retirar cada mes según el capital acumulado y la rentabilidad anual. En verde, lo que cubre tus gastos de ${fmt(d.expenses)}.`}
       >
         <div className="overflow-x-auto">
           <table className="w-full min-w-[640px] border-collapse text-sm">
             <thead>
               <tr className="border-b border-border text-xs uppercase tracking-[0.12em] text-muted-foreground">
-                <th className="px-3 py-2 text-left font-medium">Aporte mensual</th>
+                <th className="px-3 py-2 text-left font-medium">Capital</th>
                 {rates.map((rr) => (
                   <th key={rr} className="px-3 py-2 text-right font-medium">
-                    {rr}% anual
+                    {rr}%
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {contributions.map((c) => (
-                <tr key={c} className="border-b border-border/60 last:border-0 hover:bg-elevated/40">
-                  <td className="numeric px-3 py-3 text-left font-semibold">
-                    {fmt(c)}
-                    {c === base && <span className="ml-2 rounded-full bg-primary/12 px-2 py-0.5 text-[10px] text-primary">actual</span>}
-                  </td>
+              {capitals.map((cap) => (
+                <tr key={cap} className="border-b border-border/60 last:border-0 hover:bg-elevated/40">
+                  <td className="numeric px-3 py-3 text-left font-semibold">{fmt(cap)}</td>
                   {rates.map((rr) => {
-                    const cap = futureValue(c, rr);
-                    const inc = monthlyIncomeFrom(cap);
+                    const inc = (cap * (rr / 100)) / 12;
                     const covers = inc >= d.expenses && d.expenses > 0;
                     return (
-                      <td key={rr} className="px-3 py-3 text-right">
-                        <span className={`numeric block font-medium ${covers ? "text-positive" : ""}`}>{fmtCompact(cap)}</span>
-                        <span className="numeric block text-xs text-muted-foreground">{fmt(Math.round(inc))}/mes</span>
+                      <td key={rr} className={`numeric px-3 py-3 text-right ${covers ? "font-medium text-positive" : ""}`}>
+                        {fmt(Math.round(inc))}
                       </td>
                     );
                   })}
@@ -211,6 +206,7 @@ function Retiro() {
             </tbody>
           </table>
         </div>
+        <p className="mt-3 text-xs text-muted-foreground">Renta mensual = capital × rentabilidad anual ÷ 12.</p>
       </Panel>
     </PageShell>
 
