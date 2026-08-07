@@ -77,6 +77,8 @@ export type Database = {
           assets_property: number | null
           assets_retirement: number | null
           assets_stocks: number | null
+          children: string | null
+          city: string | null
           completed: boolean
           completed_at: string | null
           country: string | null
@@ -87,18 +89,24 @@ export type Database = {
           desired_retirement_income: number | null
           expected_return: number | null
           full_name: string | null
+          goal: string | null
+          housing: string | null
           id: string
           income_bonus: number | null
           income_other: number | null
           income_rent: number | null
           income_salary: number | null
           liabilities: number | null
+          lifestyle: string | null
+          marital_status: string | null
           monthly_expenses: number | null
           monthly_savings: number | null
+          plans_children: string | null
           priority: string | null
           retire_age: number | null
           risk_profile: string | null
           timezone: string | null
+          travel_frequency: string | null
           updated_at: string
           user_id: string
         }
@@ -111,6 +119,8 @@ export type Database = {
           assets_property?: number | null
           assets_retirement?: number | null
           assets_stocks?: number | null
+          children?: string | null
+          city?: string | null
           completed?: boolean
           completed_at?: string | null
           country?: string | null
@@ -121,18 +131,24 @@ export type Database = {
           desired_retirement_income?: number | null
           expected_return?: number | null
           full_name?: string | null
+          goal?: string | null
+          housing?: string | null
           id?: string
           income_bonus?: number | null
           income_other?: number | null
           income_rent?: number | null
           income_salary?: number | null
           liabilities?: number | null
+          lifestyle?: string | null
+          marital_status?: string | null
           monthly_expenses?: number | null
           monthly_savings?: number | null
+          plans_children?: string | null
           priority?: string | null
           retire_age?: number | null
           risk_profile?: string | null
           timezone?: string | null
+          travel_frequency?: string | null
           updated_at?: string
           user_id: string
         }
@@ -145,6 +161,8 @@ export type Database = {
           assets_property?: number | null
           assets_retirement?: number | null
           assets_stocks?: number | null
+          children?: string | null
+          city?: string | null
           completed?: boolean
           completed_at?: string | null
           country?: string | null
@@ -155,18 +173,24 @@ export type Database = {
           desired_retirement_income?: number | null
           expected_return?: number | null
           full_name?: string | null
+          goal?: string | null
+          housing?: string | null
           id?: string
           income_bonus?: number | null
           income_other?: number | null
           income_rent?: number | null
           income_salary?: number | null
           liabilities?: number | null
+          lifestyle?: string | null
+          marital_status?: string | null
           monthly_expenses?: number | null
           monthly_savings?: number | null
+          plans_children?: string | null
           priority?: string | null
           retire_age?: number | null
           risk_profile?: string | null
           timezone?: string | null
+          travel_frequency?: string | null
           updated_at?: string
           user_id?: string
         }
