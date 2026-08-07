@@ -165,6 +165,8 @@ export function buildPlan(d: OnboardingData): NorthPlan {
     targetCapital,
     projected,
     probability,
+    freedomAge: freedomAgeEstimate(d, targetCapital) ?? d.retire_age,
+    progress: targetCapital > 0 ? Math.min(100, Math.max(0, (Math.max(0, netWorth(d)) / targetCapital) * 100)) : 0,
   };
 }
 
