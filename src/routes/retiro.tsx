@@ -26,6 +26,17 @@ function Retiro() {
   const d = buildDataset(profile);
   const { retirement, fmt, fmtCompact, plan } = d;
 
+  // Solo activos que generan retorno (excluye propiedades).
+  const investable =
+    profile.assets_cash +
+    profile.assets_bank +
+    profile.assets_retirement +
+    profile.assets_etf +
+    profile.assets_stocks +
+    profile.assets_crypto;
+  const progressPct = plan.targetCapital > 0 ? Math.max(0, (investable / plan.targetCapital) * 100) : 0;
+
+
   const [monthly, setMonthly] = useState(retirement.monthlyContribution);
   const [rate, setRate] = useState(retirement.returnAnnualized);
   const [retireAge, setRetireAge] = useState(retirement.retireAge);
@@ -58,23 +69,51 @@ function Retiro() {
     <PageShell>
       <PageHeader eyebrow="Largo plazo" title="Fondo de Retiro" subtitle="Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar." />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <KpiCard
-          label="Cuánto tengo"
-          value={fmt(d.netWorth)}
-          hint={`${plan.progress.toFixed(1)}% de la meta · ${fmt(retirement.balance)} en fondo de retiro`}
+          label="Cuánto tengo invertido"
+          value={fmt(investable)}
+          hint="Sin contar propiedades — solo activos que generan retorno"
           accent
           index={0}
         />
-        <KpiCard label="Gastos mensuales" value={fmt(d.expenses)} hint={`${fmt(d.expenses * 12)} al año`} index={1} />
-        <KpiCard label="Aportes estimados al año" value={fmt(retirement.contributionsYTD)} index={2} />
-        <KpiCard label="Rentabilidad esperada" value={`${retirement.returnAnnualized}%`} hint="anual" index={3} />
+        <KpiCard
+          label="Cuánto falta"
+          value={fmt(Math.max(0, plan.targetCapital - investable))}
+          hint={`para llegar a ${fmtCompact(plan.targetCapital)}`}
+          index={1}
+        />
+        <KpiCard label="Cómo voy" value={`${progressPct.toFixed(1)}%`} hint="del capital objetivo" index={2} />
+        <KpiCard label="Gastos mensuales" value={fmt(d.expenses)} hint={`${fmt(d.expenses * 12)} al año`} index={3} />
+        <KpiCard label="Aportes estimados al año" value={fmt(retirement.contributionsYTD)} index={4} />
+        <KpiCard label="Rentabilidad esperada" value={`${retirement.returnAnnualized}%`} hint="anual" index={5} />
         <KpiCard
           label="Capital objetivo"
           value={fmt(plan.targetCapital)}
           hint={`${fmt(Math.round((plan.targetCapital * (retirement.returnAnnualized / 100)) / 12))} al mes con ${retirement.returnAnnualized}%`}
-          index={4}
+          index={6}
         />
+        <KpiCard
+          label="Propiedades (no cuentan)"
+          value={fmt(profile.assets_property)}
+          hint="No generan renta líquida para tu retiro"
+          index={7}
+        />
+      </div>
+
+      <div className="surface p-5">
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-muted-foreground">Progreso hacia tu capital objetivo</span>
+          <span className="numeric font-semibold">
+            {fmt(investable)} / {fmt(plan.targetCapital)}
+          </span>
+        </div>
+        <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-elevated">
+          <div className="wealth-gradient h-full rounded-full" style={{ width: `${Math.min(100, progressPct)}%` }} />
+        </div>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Vas al {progressPct.toFixed(1)}% · te faltan {fmt(Math.max(0, plan.targetCapital - investable))} en inversiones que generen retorno.
+        </p>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
