@@ -7,7 +7,6 @@ import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Slider } from "@/components/ui/slider";
 import { useProfile } from "@/hooks/use-profile";
-import { type City, cities } from "@/lib/onboarding";
 import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
 
 export const Route = createFileRoute("/retiro")({
