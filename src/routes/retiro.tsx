@@ -53,16 +53,9 @@ function Retiro() {
   const final = data[data.length - 1]!;
 
   // Escenarios de renta mensual: capital acumulado x rentabilidad anual.
-  const capitals = [500_000, 750_000, 1_000_000, 1_200_000, 1_500_000, 2_000_000, 3_000_000, 5_000_000];
+  const capitals = [1_000_000, 1_200_000, 1_500_000, 2_000_000, 3_000_000, 5_000_000];
   const rates = [4, 6, 8, 10, 12];
 
-  const cityMatches = (capital: number) => {
-    const monthlyIncome = (capital * (retirement.returnAnnualized / 100)) / 12;
-    return cities
-      .filter((c: City) => c.cost * 1.25 <= monthlyIncome)
-      .sort((a: City, b: City) => b.cost - a.cost)
-      .slice(0, 4);
-  };
 
   return (
     <PageShell>
