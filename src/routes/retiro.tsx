@@ -59,14 +59,6 @@ function Retiro() {
   const capitals = [500_000, 750_000, 1_000_000, 1_200_000, 1_500_000, 2_000_000, 3_000_000, 5_000_000];
   const rates = [4, 6, 8, 10, 12];
 
-  const cityMatches = (capital: number, annualRate: number) => {
-    const monthlyIncome = (capital * (annualRate / 100)) / 12;
-    return cities
-      .filter((c: City) => c.cost * 1.25 <= monthlyIncome)
-      .sort((a: City, b: City) => b.cost - a.cost)
-      .slice(0, 4);
-  };
-
   return (
     <PageShell>
       <PageHeader eyebrow="Largo plazo" title="Fondo de Retiro" subtitle="Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar." />
