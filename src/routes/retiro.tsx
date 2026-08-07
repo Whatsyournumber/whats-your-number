@@ -1,19 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Slider } from "@/components/ui/slider";
-import { fmt, fmtCompact, projectRetirement, retirement } from "@/lib/data";
+import { useProfile } from "@/hooks/use-profile";
+import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
 
 export const Route = createFileRoute("/retiro")({
   head: () => ({
     meta: [
-      { title: "Fondo de Retiro — Finance OS" },
+      { title: "Fondo de Retiro — Your north" },
       { name: "description", content: "Saldo, aportes, rentabilidad anual y simulador de proyección de tu fondo de retiro." },
-      { property: "og:title", content: "Fondo de Retiro — Finance OS" },
+      { property: "og:title", content: "Fondo de Retiro — Your north" },
       { property: "og:description", content: "Proyecta tu retiro ajustando aporte mensual, rentabilidad y edad objetivo." },
     ],
   }),
@@ -21,12 +22,23 @@ export const Route = createFileRoute("/retiro")({
 });
 
 function Retiro() {
+  const { profile } = useProfile();
+  const d = buildDataset(profile);
+  const { retirement, fmt, fmtCompact, plan } = d;
+
   const [monthly, setMonthly] = useState(retirement.monthlyContribution);
   const [rate, setRate] = useState(retirement.returnAnnualized);
   const [retireAge, setRetireAge] = useState(retirement.retireAge);
 
-  const years = retireAge - retirement.currentAge;
-  const data = projectRetirement(monthly, rate, years, retirement.balance);
+  // Sincroniza el simulador cuando el perfil termina de cargar o el usuario edita sus datos.
+  useEffect(() => {
+    setMonthly(retirement.monthlyContribution);
+    setRate(retirement.returnAnnualized);
+    setRetireAge(retirement.retireAge);
+  }, [retirement.monthlyContribution, retirement.returnAnnualized, retirement.retireAge]);
+
+  const years = Math.max(0, retireAge - retirement.currentAge);
+  const data = projectRetirementFrom(monthly, rate, years, retirement.balance, retirement.currentAge);
   const final = data[data.length - 1]!;
 
   return (
@@ -34,10 +46,10 @@ function Retiro() {
       <PageHeader eyebrow="Largo plazo" title="Fondo de Retiro" subtitle="Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar." />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard label="Saldo actual" value={fmt(retirement.balance)} delta={2.4} accent index={0} />
-        <KpiCard label="Aportes del año" value={fmt(retirement.contributionsYTD + retirement.employerYTD)} hint="incl. empleador" index={1} />
-        <KpiCard label="Rentabilidad YTD" value={`${retirement.returnYTD}%`} delta={1.8} index={2} />
-        <KpiCard label="Rentabilidad anualizada" value={`${retirement.returnAnnualized}%`} hint="últimos 5 años" index={3} />
+        <KpiCard label="Saldo actual" value={fmt(retirement.balance)} accent index={0} />
+        <KpiCard label="Aportes estimados al año" value={fmt(retirement.contributionsYTD)} index={1} />
+        <KpiCard label="Rentabilidad esperada" value={`${retirement.returnAnnualized}%`} hint="anual" index={2} />
+        <KpiCard label="Capital objetivo" value={fmt(plan.targetCapital)} hint="Your Number" index={3} />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
@@ -67,31 +79,41 @@ function Retiro() {
                 <span className="text-muted-foreground">Aporte mensual</span>
                 <span className="numeric font-semibold">{fmt(monthly)}</span>
               </div>
-              <Slider className="mt-3" min={200} max={5000} step={100} value={[monthly]} onValueChange={(v) => setMonthly(v[0]!)} />
+              <Slider
+                className="mt-3"
+                min={0}
+                max={Math.max(500, Math.round(d.savings * 2) || 3000)}
+                step={50}
+                value={[monthly]}
+                onValueChange={([v]) => setMonthly(v ?? 0)}
+              />
             </div>
             <div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Rentabilidad anual</span>
-                <span className="numeric font-semibold">{rate.toFixed(1)}%</span>
+                <span className="numeric font-semibold">{rate}%</span>
               </div>
-              <Slider className="mt-3" min={1} max={12} step={0.5} value={[rate]} onValueChange={(v) => setRate(v[0]!)} />
+              <Slider className="mt-3" min={1} max={15} step={0.5} value={[rate]} onValueChange={([v]) => setRate(v ?? 7)} />
             </div>
             <div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Edad de retiro</span>
                 <span className="numeric font-semibold">{retireAge} años</span>
               </div>
-              <Slider className="mt-3" min={45} max={75} step={1} value={[retireAge]} onValueChange={(v) => setRetireAge(v[0]!)} />
+              <Slider
+                className="mt-3"
+                min={Math.min(retirement.currentAge + 1, 80)}
+                max={85}
+                step={1}
+                value={[retireAge]}
+                onValueChange={([v]) => setRetireAge(v ?? retirement.retireAge)}
+              />
             </div>
-
-            <div className="rounded-xl bg-elevated/70 p-4">
+            <div className="rounded-xl bg-elevated/60 p-4">
               <p className="text-xs text-muted-foreground">Saldo proyectado</p>
-              <p className="numeric mt-1 text-2xl font-semibold text-primary">{fmt(final.value)}</p>
-              <p className="mt-2 text-xs text-muted-foreground">
-                Aportado {fmtCompact(final.contributed)} · Rentabilidad {fmtCompact(final.value - final.contributed)}
-              </p>
-              <p className="mt-2 text-xs text-muted-foreground">
-                Retiro mensual estimado (regla 4%): <span className="numeric text-foreground">{fmt((final.value * 0.04) / 12)}</span>
+              <p className="numeric mt-1 text-2xl font-semibold">{fmt(final.value)}</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {final.value >= plan.targetCapital ? "Superas tu capital objetivo 🎯" : `Te faltarían ${fmt(plan.targetCapital - final.value)}`}
               </p>
             </div>
           </div>
