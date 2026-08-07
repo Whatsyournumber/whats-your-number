@@ -470,6 +470,25 @@ function OnboardingPage() {
                   </p>
                 </div>
 
+                <div className="mt-5 flex items-center justify-between gap-3 rounded-2xl border border-border/60 bg-elevated/40 px-5 py-3">
+                  <div>
+                    <p className="text-sm">Moneda</p>
+                    <p className="text-xs text-muted-foreground">En la que verás todos tus importes</p>
+                  </div>
+                  <select
+                    className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+                    value={cur}
+                    onChange={(e) => set("currency", e.target.value)}
+                  >
+                    {currencies.map((c) => (
+                      <option key={c.code} value={c.code}>
+                        {c.code} · {c.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+
                 <div className="mt-5 space-y-2.5">
                   <MoneyField
                     emoji="💰"
