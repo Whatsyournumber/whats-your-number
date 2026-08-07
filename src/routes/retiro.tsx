@@ -61,7 +61,7 @@ function Retiro() {
     const monthlyIncome = (capital * (retirement.returnAnnualized / 100)) / 12;
     return cities
       .filter((c: City) => c.cost * 1.25 <= monthlyIncome)
-      .sort((a: City, b: City) => a.cost - b.cost)
+      .sort((a: City, b: City) => b.cost - a.cost)
       .slice(0, 4);
   };
 
@@ -191,12 +191,19 @@ function Retiro() {
             <tbody>
               {capitals.map((cap) => (
                 <tr key={cap} className="border-b border-border/60 last:border-0 hover:bg-elevated/40">
-                  <td className="numeric px-3 py-3 text-left font-semibold">{fmt(cap)}</td>
+                  <td className="px-3 py-3 text-left align-top">
+                    <span className="numeric block font-semibold">{fmt(cap)}</span>
+                    <span className="mt-1 block text-[10px] leading-tight text-muted-foreground">
+                      {cityMatches(cap).length > 0
+                        ? cityMatches(cap).map((c: City) => `${c.name} ${fmt(c.cost)}`).join(" · ")
+                        : "Sin ciudades compatibles"}
+                    </span>
+                  </td>
                   {rates.map((rr) => {
                     const inc = (cap * (rr / 100)) / 12;
                     const covers = inc >= d.expenses && d.expenses > 0;
                     return (
-                      <td key={rr} className={`numeric px-3 py-3 text-right ${covers ? "font-medium text-positive" : ""}`}>
+                      <td key={rr} className={`numeric px-3 py-3 text-right align-top ${covers ? "font-medium text-positive" : ""}`}>
                         {fmt(Math.round(inc))}
                       </td>
                     );
@@ -206,40 +213,7 @@ function Retiro() {
             </tbody>
           </table>
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">Renta mensual = capital × rentabilidad anual ÷ 12.</p>
-
-        <div className="mt-6">
-          <h4 className="text-sm font-medium">Ciudades donde vivirías bien con esos montos</h4>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Selecciona una capital para ver dónde podrías vivir gastando máximo un 25% de su renta mensual en costo de vida.
-          </p>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {capitals.slice(0, 6).map((cap) => {
-              const matches = cityMatches(cap);
-              const income = cap * (retirement.returnAnnualized / 100) / 12;
-              return (
-                <div key={cap} className="surface p-4">
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>Con {fmt(cap)}</span>
-                    <span className="numeric">{fmt(Math.round(income))}/mes</span>
-                  </div>
-                  {matches.length > 0 ? (
-                    <ul className="mt-3 space-y-1.5">
-                    {matches.map((c: City) => (
-                        <li key={c.name} className="flex items-center justify-between text-sm">
-                          <span>{c.name}</span>
-                          <span className="numeric text-xs text-muted-foreground">{fmt(c.cost)}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="mt-3 text-xs text-muted-foreground">Aumenta el capital para cubrir costos de vida en las ciudades disponibles.</p>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        <p className="mt-3 text-xs text-muted-foreground">Renta mensual = capital × rentabilidad anual ÷ 12. Las ciudades se ordenan de más cara a más barata, permitiendo gastar hasta un 25% de la renta mensual en costo de vida.</p>
       </Panel>
     </PageShell>
 
