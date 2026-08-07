@@ -61,7 +61,7 @@ function Retiro() {
     const monthlyIncome = (capital * (retirement.returnAnnualized / 100)) / 12;
     return cities
       .filter((c: City) => c.cost * 1.25 <= monthlyIncome)
-      .sort((a: City, b: City) => a.cost - b.cost)
+      .sort((a: City, b: City) => b.cost - a.cost)
       .slice(0, 4);
   };
 
