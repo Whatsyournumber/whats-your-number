@@ -53,9 +53,16 @@ function Retiro() {
   const final = data[data.length - 1]!;
 
   // Escenarios de renta mensual: capital acumulado x rentabilidad anual.
-  const capitals = [1_000_000, 1_200_000, 1_500_000, 2_000_000, 3_000_000, 5_000_000];
+  const capitals = [500_000, 750_000, 1_000_000, 1_200_000, 1_500_000, 2_000_000, 3_000_000, 5_000_000];
   const rates = [4, 6, 8, 10, 12];
 
+  const cityMatches = (capital: number) => {
+    const monthlyIncome = capital * (retirement.returnAnnualized / 100) / 12;
+    return cities
+      .filter((c) => c.cost * 1.25 <= monthlyIncome)
+      .sort((a, b) => a.cost - b.cost)
+      .slice(0, 4);
+  };
 
   return (
     <PageShell>
@@ -199,6 +206,39 @@ function Retiro() {
           </table>
         </div>
         <p className="mt-3 text-xs text-muted-foreground">Renta mensual = capital × rentabilidad anual ÷ 12.</p>
+
+        <div className="mt-6">
+          <h4 className="text-sm font-medium">Ciudades donde vivirías bien con esos montos</h4>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Selecciona una capital para ver dónde podrías vivir gastando máximo un 25% de su renta mensual en costo de vida.
+          </p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {capitals.slice(0, 6).map((cap) => {
+              const matches = cityMatches(cap);
+              const income = cap * (retirement.returnAnnualized / 100) / 12;
+              return (
+                <div key={cap} className="surface p-4">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>Con {fmt(cap)}</span>
+                    <span className="numeric">{fmt(Math.round(income))}/mes</span>
+                  </div>
+                  {matches.length > 0 ? (
+                    <ul className="mt-3 space-y-1.5">
+                      {matches.map((c) => (
+                        <li key={c.name} className="flex items-center justify-between text-sm">
+                          <span>{c.name}</span>
+                          <span className="numeric text-xs text-muted-foreground">{fmt(c.cost)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="mt-3 text-xs text-muted-foreground">Aumenta el capital para cubrir costos de vida en las ciudades disponibles.</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </Panel>
     </PageShell>
 
