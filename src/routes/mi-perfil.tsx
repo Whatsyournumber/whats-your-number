@@ -12,6 +12,7 @@ import {
   childrenOptions,
   cities,
   countries,
+  currencies,
   goals,
   housingOptions,
   lifestyles,
