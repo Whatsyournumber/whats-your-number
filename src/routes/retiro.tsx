@@ -201,6 +201,7 @@ function Retiro() {
           </table>
         </div>
         <p className="mt-3 text-xs text-muted-foreground">Renta mensual = capital × rentabilidad anual ÷ 12.</p>
+      </Panel>
 
       <Panel
         title="Simulador de ciudades"
