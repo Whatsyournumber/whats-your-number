@@ -163,7 +163,17 @@ function MiPerfil() {
               </select>
             </Field>
             <Field label="Moneda">
-              <Input value={form.currency} onChange={(e) => set("currency", e.target.value.toUpperCase())} />
+              <select
+                className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
+                value={form.currency || "EUR"}
+                onChange={(e) => set("currency", e.target.value)}
+              >
+                {currencies.map((c) => (
+                  <option key={c.code} value={c.code}>
+                    {c.code} · {c.label}
+                  </option>
+                ))}
+              </select>
             </Field>
             <Field label="Ciudad objetivo">
               <select
