@@ -52,53 +52,33 @@ function Retiro() {
   const data = projectRetirementFrom(monthly, rate, years, retirement.balance, retirement.currentAge);
   const final = data[data.length - 1]!;
 
-  // Matriz de escenarios: aporte mensual x rentabilidad anual.
-  const base = Math.max(100, Math.round((monthly || 200) / 50) * 50);
-  const contributions = [base * 0.5, base, base * 1.5, base * 2, base * 3].map((v) => Math.round(v / 50) * 50);
+  // Escenarios de renta mensual: capital acumulado x rentabilidad anual.
+  const capitals = [1_000_000, 1_200_000, 1_500_000, 2_000_000, 3_000_000, 5_000_000];
   const rates = [4, 6, 8, 10, 12];
-  const futureValue = (m: number, annual: number) => {
-    const r = annual / 100 / 12;
-    const n = years * 12;
-    return retirement.balance * Math.pow(1 + r, n) + (r === 0 ? m * n : m * ((Math.pow(1 + r, n) - 1) / r));
-  };
-  // Renta mensual sostenible con la regla del 4%.
-  const monthlyIncomeFrom = (capital: number) => (capital * 0.04) / 12;
 
 
   return (
     <PageShell>
       <PageHeader eyebrow="Largo plazo" title="Fondo de Retiro" subtitle="Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar." />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <KpiCard
-          label="Cuánto tengo invertido"
+          label="Cuánto tengo"
           value={fmt(investable)}
           hint="Sin contar propiedades — solo activos que generan retorno"
           accent
           index={0}
         />
         <KpiCard
-          label="Cuánto falta"
-          value={fmt(Math.max(0, plan.targetCapital - investable))}
-          hint={`para llegar a ${fmtCompact(plan.targetCapital)}`}
+          label="Capital objetivo"
+          value={fmt(plan.targetCapital)}
+          hint={`${fmt(Math.round((plan.targetCapital * (retirement.returnAnnualized / 100)) / 12))} al mes con ${retirement.returnAnnualized}%`}
           index={1}
         />
         <KpiCard label="Cómo voy" value={`${progressPct.toFixed(1)}%`} hint="del capital objetivo" index={2} />
         <KpiCard label="Gastos mensuales" value={fmt(d.expenses)} hint={`${fmt(d.expenses * 12)} al año`} index={3} />
         <KpiCard label="Aportes estimados al año" value={fmt(retirement.contributionsYTD)} index={4} />
         <KpiCard label="Rentabilidad esperada" value={`${retirement.returnAnnualized}%`} hint="anual" index={5} />
-        <KpiCard
-          label="Capital objetivo"
-          value={fmt(plan.targetCapital)}
-          hint={`${fmt(Math.round((plan.targetCapital * (retirement.returnAnnualized / 100)) / 12))} al mes con ${retirement.returnAnnualized}%`}
-          index={6}
-        />
-        <KpiCard
-          label="Propiedades (no cuentan)"
-          value={fmt(profile.assets_property)}
-          hint="No generan renta líquida para tu retiro"
-          index={7}
-        />
       </div>
 
       <div className="surface p-5">
@@ -185,36 +165,31 @@ function Retiro() {
       </div>
 
       <Panel
-        title="Escenarios: cuánto tendrías según lo que aportes"
-        description={`En ${years} años (a los ${retireAge}). Cada celda muestra el capital final y, debajo, la renta mensual que te daría (regla del 4%). En verde, la que cubre tus gastos de ${fmt(d.expenses)}.`}
+        title="Escenarios: renta mensual según tu capital"
+        description={`Cuánto podrías retirar cada mes según el capital acumulado y la rentabilidad anual. En verde, lo que cubre tus gastos de ${fmt(d.expenses)}.`}
       >
         <div className="overflow-x-auto">
           <table className="w-full min-w-[640px] border-collapse text-sm">
             <thead>
               <tr className="border-b border-border text-xs uppercase tracking-[0.12em] text-muted-foreground">
-                <th className="px-3 py-2 text-left font-medium">Aporte mensual</th>
+                <th className="px-3 py-2 text-left font-medium">Capital</th>
                 {rates.map((rr) => (
                   <th key={rr} className="px-3 py-2 text-right font-medium">
-                    {rr}% anual
+                    {rr}%
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {contributions.map((c) => (
-                <tr key={c} className="border-b border-border/60 last:border-0 hover:bg-elevated/40">
-                  <td className="numeric px-3 py-3 text-left font-semibold">
-                    {fmt(c)}
-                    {c === base && <span className="ml-2 rounded-full bg-primary/12 px-2 py-0.5 text-[10px] text-primary">actual</span>}
-                  </td>
+              {capitals.map((cap) => (
+                <tr key={cap} className="border-b border-border/60 last:border-0 hover:bg-elevated/40">
+                  <td className="numeric px-3 py-3 text-left font-semibold">{fmt(cap)}</td>
                   {rates.map((rr) => {
-                    const cap = futureValue(c, rr);
-                    const inc = monthlyIncomeFrom(cap);
+                    const inc = (cap * (rr / 100)) / 12;
                     const covers = inc >= d.expenses && d.expenses > 0;
                     return (
-                      <td key={rr} className="px-3 py-3 text-right">
-                        <span className={`numeric block font-medium ${covers ? "text-positive" : ""}`}>{fmtCompact(cap)}</span>
-                        <span className="numeric block text-xs text-muted-foreground">{fmt(Math.round(inc))}/mes</span>
+                      <td key={rr} className={`numeric px-3 py-3 text-right ${covers ? "font-medium text-positive" : ""}`}>
+                        {fmt(Math.round(inc))}
                       </td>
                     );
                   })}
@@ -223,6 +198,7 @@ function Retiro() {
             </tbody>
           </table>
         </div>
+        <p className="mt-3 text-xs text-muted-foreground">Renta mensual = capital × rentabilidad anual ÷ 12.</p>
       </Panel>
     </PageShell>
 
