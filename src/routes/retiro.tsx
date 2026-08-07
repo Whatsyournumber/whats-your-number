@@ -45,11 +45,12 @@ function Retiro() {
     <PageShell>
       <PageHeader eyebrow="Largo plazo" title="Fondo de Retiro" subtitle="Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar." />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <KpiCard label="Saldo actual" value={fmt(retirement.balance)} accent index={0} />
-        <KpiCard label="Aportes estimados al año" value={fmt(retirement.contributionsYTD)} index={1} />
-        <KpiCard label="Rentabilidad esperada" value={`${retirement.returnAnnualized}%`} hint="anual" index={2} />
-        <KpiCard label="Capital objetivo" value={fmt(plan.targetCapital)} hint="Your Number" index={3} />
+        <KpiCard label="Gastos mensuales" value={fmt(d.expenses)} hint={`${fmt(d.expenses * 12)} al año`} index={1} />
+        <KpiCard label="Aportes estimados al año" value={fmt(retirement.contributionsYTD)} index={2} />
+        <KpiCard label="Rentabilidad esperada" value={`${retirement.returnAnnualized}%`} hint="anual" index={3} />
+        <KpiCard label="Capital objetivo" value={fmt(plan.targetCapital)} hint="Your Number" index={4} />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
