@@ -33,11 +33,11 @@ import { buildDataset } from "@/lib/profile-data";
 const primary = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Análisis de Gastos", url: "/gastos", icon: PieChart },
+  { title: "Lifestyle", url: "/lifestyle", icon: Sparkles },
   { title: "Patrimonio", url: "/patrimonio", icon: Landmark },
   { title: "Portafolio", url: "/portafolio", icon: LineChart },
   { title: "Fondo de Retiro", url: "/retiro", icon: PiggyBank },
   { title: "Cash Flow", url: "/cash-flow", icon: Waves },
-  { title: "Lifestyle", url: "/lifestyle", icon: Sparkles },
   { title: "Objetivos", url: "/objetivos", icon: Target },
 ] as const;
 
