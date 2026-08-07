@@ -41,7 +41,7 @@ const primary = [
 
 const secondary = [
   { title: "AI Advisor", url: "/advisor", icon: Bot },
-  { title: "Configuración", url: "/configuracion", icon: Settings },
+  { title: "Cargar EEFF", url: "/configuracion", icon: Settings },
 ] as const;
 
 export function AppSidebar() {

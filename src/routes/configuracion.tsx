@@ -12,10 +12,10 @@ import { accounts, categories, excludedTypes, fmt, rules, topMerchants } from "@
 export const Route = createFileRoute("/configuracion")({
   head: () => ({
     meta: [
-      { title: "Configuración — Finance OS" },
-      { name: "description", content: "Cuentas, categorías, reglas automáticas, presupuestos, importación de PDF/CSV y preferencias." },
-      { property: "og:title", content: "Configuración — Finance OS" },
-      { property: "og:description", content: "Gestiona cuentas, reglas de clasificación e importación con IA." },
+      { title: "Cargar EEFF — Finance OS" },
+      { name: "description", content: "Carga estados de cuenta PDF/CSV, gestiona cuentas, categorías y reglas automáticas." },
+      { property: "og:title", content: "Cargar EEFF — Finance OS" },
+      { property: "og:description", content: "Importa tus estados de cuenta y deja que la IA los clasifique." },
     ],
   }),
   component: Configuracion,
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/configuracion")({
 function Configuracion() {
   return (
     <PageShell>
-      <PageHeader eyebrow="Sistema" title="Configuración" subtitle="El motor detrás de tu Finance OS: reglas, cuentas e importación." />
+      <PageHeader eyebrow="Sistema" title="Cargar EEFF" subtitle="Carga tus estados de cuenta, cuentas y reglas de clasificación." />
 
       <Tabs defaultValue="importacion">
         <TabsList className="mb-4 flex-wrap">
