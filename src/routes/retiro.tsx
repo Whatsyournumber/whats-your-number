@@ -225,7 +225,7 @@ function Retiro() {
                   </div>
                   {matches.length > 0 ? (
                     <ul className="mt-3 space-y-1.5">
-                      {matches.map((c) => (
+                    {matches.map((c: City) => (
                         <li key={c.name} className="flex items-center justify-between text-sm">
                           <span>{c.name}</span>
                           <span className="numeric text-xs text-muted-foreground">{fmt(c.cost)}</span>
