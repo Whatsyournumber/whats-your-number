@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, Banknote, PiggyBank, TrendingUp, Wallet, Waves } from "lucide-react";
 import {
   Area,
@@ -17,43 +17,70 @@ import {
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { current, fmt, fmtCompact, goals, insights, months, previous, upcomingPayments } from "@/lib/data";
+import { useProfile } from "@/hooks/use-profile";
+import { buildInsights } from "@/lib/onboarding";
+import { buildDataset } from "@/lib/profile-data";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
     meta: [
-      { title: "Dashboard — Finance OS" },
+      { title: "Dashboard — Your north" },
       { name: "description", content: "Tu situación financiera completa en menos de 30 segundos: patrimonio, ingresos, gastos y ahorro." },
-      { property: "og:title", content: "Dashboard — Finance OS" },
+      { property: "og:title", content: "Dashboard — Your north" },
       { property: "og:description", content: "Patrimonio neto, flujo libre, tasa de ahorro y metas en un solo panel." },
     ],
   }),
   component: Dashboard,
 });
 
-const delta = (a: number, b: number) => ((a - b) / b) * 100;
+const delta = (a: number, b: number) => (b > 0 ? ((a - b) / b) * 100 : 0);
+
+function greeting() {
+  const h = new Date().getHours();
+  if (h < 12) return "Buenos días";
+  if (h < 20) return "Buenas tardes";
+  return "Buenas noches";
+}
 
 function Dashboard() {
-  const savingsRate = (current.savings / current.income) * 100;
-  const prevRate = (previous.savings / previous.income) * 100;
-  const freeCash = current.savings - current.investments;
-  const prevFree = previous.savings - previous.investments;
+  const { profile, isLoading } = useProfile();
+  const d = buildDataset(profile);
+  const { current, previous, months, fmt, fmtCompact, plan } = d;
+
+  const freeCash = Math.max(0, current.savings - current.investments);
+  const prevFree = Math.max(0, previous.savings - previous.investments);
+  const savingsRate = current.income > 0 ? (current.savings / current.income) * 100 : 0;
+  const prevRate = previous.income > 0 ? (previous.savings / previous.income) * 100 : 0;
+  const insights = buildInsights(plan, profile, profile, d.currency);
+  const firstName = (profile.full_name || "").trim().split(" ")[0];
 
   return (
     <PageShell>
       <PageHeader
-        eyebrow="Agosto 2026"
-        title="Buenas tardes Oscar"
-        subtitle="Aquí está tu panorama financiero en tiempo real."
+        eyebrow={new Date().toLocaleDateString("es", { month: "long", year: "numeric" })}
+        title={firstName ? `${greeting()} ${firstName}` : greeting()}
+        subtitle="Tus números reales, calculados desde tu perfil financiero."
       />
+
+      {!isLoading && !d.hasData && (
+        <div className="surface flex flex-wrap items-center gap-3 p-4">
+          <p className="text-sm text-muted-foreground">
+            Aún no tenemos tus cifras. Completa o edita tu perfil para que toda la app se recalcule.
+          </p>
+          <Button asChild size="sm" className="ml-auto rounded-full">
+            <Link to="/mi-perfil">Editar mis datos</Link>
+          </Button>
+        </div>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <KpiCard
           label="Patrimonio neto"
           value={fmt(current.netWorth)}
           delta={delta(current.netWorth, previous.netWorth)}
-          hint="vs julio"
+          hint="vs mes anterior"
           icon={Wallet}
           accent
           index={0}
@@ -69,7 +96,6 @@ function Dashboard() {
           icon={Waves}
           index={4}
         />
-
         <KpiCard label="Tasa de ahorro" value={`${savingsRate.toFixed(0)}%`} delta={savingsRate - prevRate} icon={ArrowUpRight} index={5} />
       </div>
 
@@ -87,34 +113,40 @@ function Dashboard() {
               <XAxis dataKey="label" {...axisProps} />
               <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={56} />
               <Tooltip content={<ChartTooltip />} />
-              <Area
-                type="monotone"
-                dataKey="netWorth"
-                name="Patrimonio"
-                stroke="var(--color-chart-1)"
-                strokeWidth={2.5}
-                fill="url(#nw)"
-              />
+              <Area type="monotone" dataKey="netWorth" name="Patrimonio" stroke="var(--color-chart-1)" strokeWidth={2.5} fill="url(#nw)" />
             </AreaChart>
           </ResponsiveContainer>
         </Panel>
 
-        <Panel title="Próximos pagos" description="Septiembre 2026">
-          <ul className="space-y-2">
-            {upcomingPayments.map((p) => (
-              <li key={p.name} className="flex items-center gap-3 rounded-xl bg-elevated/60 px-3 py-2.5">
-                <span className="text-lg">{p.emoji}</span>
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium">{p.name}</p>
-                  <p className="text-xs text-muted-foreground">{p.date}</p>
-                </div>
-                <span className="numeric ml-auto text-sm font-semibold">{fmt(p.amount)}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-4 flex items-center justify-between rounded-xl border border-dashed border-border px-3 py-2.5 text-sm">
-            <span className="text-muted-foreground">Total comprometido</span>
-            <span className="numeric font-semibold">{fmt(upcomingPayments.reduce((s, p) => s + p.amount, 0))}</span>
+        <Panel title="Tu Norte" description={`Libertad estimada a los ${plan.freedomAge} años`}>
+          <div className="space-y-4">
+            <div>
+              <p className="text-xs text-muted-foreground">Your Number</p>
+              <p className="numeric mt-1 text-2xl font-semibold">{fmt(plan.targetCapital)}</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Para vivir con {fmt(plan.desiredIncome)} al mes
+              </p>
+            </div>
+            <div>
+              <div className="mb-1.5 flex items-center justify-between text-xs">
+                <span className="text-muted-foreground">Progreso</span>
+                <span className="numeric font-medium">{plan.progress.toFixed(1)}%</span>
+              </div>
+              <Progress value={plan.progress} className="h-2" />
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="rounded-xl bg-elevated/60 p-3">
+                <p className="text-xs text-muted-foreground">Años restantes</p>
+                <p className="numeric mt-1 text-lg font-semibold">{plan.yearsLeft}</p>
+              </div>
+              <div className="rounded-xl bg-elevated/60 p-3">
+                <p className="text-xs text-muted-foreground">Probabilidad</p>
+                <p className="numeric mt-1 text-lg font-semibold">{plan.probability}%</p>
+              </div>
+            </div>
+            <Button asChild variant="outline" size="sm" className="w-full rounded-full">
+              <Link to="/mi-perfil">Editar mis datos</Link>
+            </Button>
           </div>
         </Panel>
       </div>
@@ -140,50 +172,38 @@ function Dashboard() {
               <XAxis dataKey="label" {...axisProps} />
               <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={56} />
               <Tooltip content={<ChartTooltip />} />
-              <Line type="monotone" dataKey="savings" name="Ahorro" stroke="var(--color-chart-3)" strokeWidth={2.5} dot={false} />
+              <Line type="monotone" dataKey="savings" name="Ahorro" stroke="var(--color-chart-4)" strokeWidth={2.5} dot={false} />
             </LineChart>
           </ResponsiveContainer>
         </Panel>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title="Metas activas" className="lg:col-span-2">
-          <div className="grid gap-3 sm:grid-cols-2">
-            {goals.slice(0, 4).map((g) => {
-              const p = Math.min(100, (g.current / g.target) * 100);
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Panel title="Tus objetivos" description="Calculados con tus cifras">
+          <ul className="space-y-3">
+            {d.goals.map((g) => {
+              const pct = g.target > 0 ? Math.min(100, (g.current / g.target) * 100) : 0;
               return (
-                <div key={g.name} className="rounded-xl bg-elevated/60 p-4">
-                  <div className="flex items-center gap-2">
+                <li key={g.name}>
+                  <div className="flex items-center gap-2 text-sm">
                     <span>{g.emoji}</span>
-                    <p className="text-sm font-medium">{g.name}</p>
-                    <span className="numeric ml-auto text-xs text-muted-foreground">{p.toFixed(0)}%</span>
+                    <span className="font-medium">{g.name}</span>
+                    <span className="numeric ml-auto text-xs text-muted-foreground">
+                      {fmtCompact(g.current)} / {fmtCompact(g.target)}
+                    </span>
                   </div>
-                  <Progress value={p} className="mt-3 h-1.5" />
-                  <p className="numeric mt-2 text-xs text-muted-foreground">
-                    {fmtCompact(g.current)} de {fmtCompact(g.target)}
-                  </p>
-                </div>
+                  <Progress value={pct} className="mt-2 h-1.5" />
+                </li>
               );
             })}
-          </div>
+          </ul>
         </Panel>
 
-        <Panel title="Insights del mes" description="Generados con IA">
-          <ul className="space-y-2.5">
-            {insights.slice(0, 4).map((i) => (
-              <li key={i.title} className="rounded-xl bg-elevated/60 p-3">
-                <p
-                  className={
-                    i.type === "positive"
-                      ? "text-sm font-medium text-positive"
-                      : i.type === "warning"
-                        ? "text-sm font-medium text-warning"
-                        : "text-sm font-medium"
-                  }
-                >
-                  {i.title}
-                </p>
-                <p className="mt-1 text-xs text-muted-foreground">{i.detail}</p>
+        <Panel title="Insights" description="Generados con tu plan">
+          <ul className="space-y-2">
+            {insights.map((text) => (
+              <li key={text} className="rounded-xl bg-elevated/60 p-3 text-sm text-muted-foreground">
+                {text}
               </li>
             ))}
           </ul>
