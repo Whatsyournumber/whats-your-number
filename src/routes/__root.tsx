@@ -161,18 +161,42 @@ function RootLayout() {
 function AppShell() {
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
+  const [onboardingChecked, setOnboardingChecked] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth", search: { mode: "login" } });
   }, [loading, user, navigate]);
 
-  if (loading || !user) {
+  // Primera vez: si no completó el onboarding, lo enviamos allí.
+  useEffect(() => {
+    if (loading || !user) return;
+    let active = true;
+    void (async () => {
+      const { data } = await supabase
+        .from("onboarding_profiles")
+        .select("completed")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!active) return;
+      if (!data?.completed) {
+        navigate({ to: "/onboarding", replace: true });
+        return;
+      }
+      setOnboardingChecked(true);
+    })();
+    return () => {
+      active = false;
+    };
+  }, [loading, user, navigate]);
+
+  if (loading || !user || !onboardingChecked) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
       </div>
     );
   }
+
 
   return (
     <SidebarProvider>
