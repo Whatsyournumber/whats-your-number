@@ -178,14 +178,27 @@ export function money(v: number, currency = "USD") {
   }).format(Number.isFinite(v) ? v : 0);
 }
 
-export function compact(v: number, currency = "USD") {
-  return new Intl.NumberFormat("es", {
+export function currencySymbol(currency = "USD") {
+  const parts = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: currency || "USD",
-    notation: "compact",
-    maximumFractionDigits: 1,
-  }).format(Number.isFinite(v) ? v : 0);
+    maximumFractionDigits: 0,
+  }).formatToParts(1);
+  return parts.find((p) => p.type === "currency")?.value ?? "$";
 }
+
+export function compact(v: number, currency = "USD") {
+  const n = Number.isFinite(v) ? v : 0;
+  const s = currencySymbol(currency);
+  const abs = Math.abs(n);
+  const sign = n < 0 ? "-" : "";
+  const round = (x: number) => (x >= 100 ? Math.round(x).toString() : x.toFixed(1).replace(/\.0$/, ""));
+  if (abs >= 1_000_000_000) return `${sign}${s}${round(abs / 1_000_000_000)}B`;
+  if (abs >= 1_000_000) return `${sign}${s}${round(abs / 1_000_000)}M`;
+  if (abs >= 1_000) return `${sign}${s}${round(abs / 1_000)}K`;
+  return `${sign}${s}${Math.round(abs)}`;
+}
+
 
 /* ─────────── Onboarding premium: objetivos, ciudades y estilo de vida ─────────── */
 
