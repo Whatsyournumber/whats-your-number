@@ -69,36 +69,24 @@ function Retiro() {
     <PageShell>
       <PageHeader eyebrow="Largo plazo" title="Fondo de Retiro" subtitle="Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar." />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <KpiCard
-          label="Cuánto tengo invertido"
+          label="Cuánto tengo"
           value={fmt(investable)}
           hint="Sin contar propiedades — solo activos que generan retorno"
           accent
           index={0}
         />
         <KpiCard
-          label="Cuánto falta"
-          value={fmt(Math.max(0, plan.targetCapital - investable))}
-          hint={`para llegar a ${fmtCompact(plan.targetCapital)}`}
+          label="Capital objetivo"
+          value={fmt(plan.targetCapital)}
+          hint={`${fmt(Math.round((plan.targetCapital * (retirement.returnAnnualized / 100)) / 12))} al mes con ${retirement.returnAnnualized}%`}
           index={1}
         />
         <KpiCard label="Cómo voy" value={`${progressPct.toFixed(1)}%`} hint="del capital objetivo" index={2} />
         <KpiCard label="Gastos mensuales" value={fmt(d.expenses)} hint={`${fmt(d.expenses * 12)} al año`} index={3} />
         <KpiCard label="Aportes estimados al año" value={fmt(retirement.contributionsYTD)} index={4} />
         <KpiCard label="Rentabilidad esperada" value={`${retirement.returnAnnualized}%`} hint="anual" index={5} />
-        <KpiCard
-          label="Capital objetivo"
-          value={fmt(plan.targetCapital)}
-          hint={`${fmt(Math.round((plan.targetCapital * (retirement.returnAnnualized / 100)) / 12))} al mes con ${retirement.returnAnnualized}%`}
-          index={6}
-        />
-        <KpiCard
-          label="Propiedades (no cuentan)"
-          value={fmt(profile.assets_property)}
-          hint="No generan renta líquida para tu retiro"
-          index={7}
-        />
       </div>
 
       <div className="surface p-5">
