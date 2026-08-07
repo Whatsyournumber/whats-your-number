@@ -210,6 +210,8 @@ function Retiro() {
         <CitySearch defaultBudget={d.expenses} fmt={fmt} />
       </Panel>
     </PageShell>
+  );
+}
 
 function CitySearch({ defaultBudget, fmt }: { defaultBudget: number; fmt: (v: number) => string }) {
   const [budget, setBudget] = useState(defaultBudget || 2000);
