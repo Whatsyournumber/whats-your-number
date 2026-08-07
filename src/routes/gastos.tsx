@@ -1,285 +1,416 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip, Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+  addDays,
+  differenceInCalendarDays,
+  endOfMonth,
+  format,
+  parseISO,
+  startOfMonth,
+  startOfYear,
+  subDays,
+  subMonths,
+} from "date-fns";
+import { es } from "date-fns/locale";
+import { CalendarIcon, Plus, Trash2, Upload } from "lucide-react";
+import { useMemo, useState } from "react";
+import type { DateRange } from "react-day-picker";
+import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
+import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Progress } from "@/components/ui/progress";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tooltip as UITooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { categories, fmt, fmtCompact, heatmap, insights, months, topMerchants, totalExpenses } from "@/lib/data";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
+import { useProfile } from "@/hooks/use-profile";
+import { useTransactions, type Tx } from "@/hooks/use-transactions";
+import { compact, money } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/gastos")({
   head: () => ({
     meta: [
-      { title: "Análisis de Gastos — Finance OS" },
-      { name: "description", content: "Entiende en qué se fue tu dinero: categorías, comercios, heatmap y comparación de 12 meses." },
-      { property: "og:title", content: "Análisis de Gastos — Finance OS" },
-      { property: "og:description", content: "Donut por categoría, top comercios, heatmap diario e insights automáticos." },
+      { title: "Análisis de Gastos — Your north" },
+      {
+        name: "description",
+        content: "Gastos fijos editables y detalle real por categoría desde tus estados de cuenta, con rango de fechas comparable.",
+      },
+      { property: "og:title", content: "Análisis de Gastos — Your north" },
+      {
+        property: "og:description",
+        content: "Controla tus gastos fijos, explora cada categoría y compara periodos con datos reales de tus EEFF.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Gastos,
 });
 
-function Gastos() {
-  const maxHeat = Math.max(...heatmap.map((h) => h.amount));
-  const avgHeat = heatmap.reduce((s, h) => s + h.amount, 0) / heatmap.length;
-  const worstDays = [...heatmap].sort((a, b) => b.amount - a.amount).slice(0, 3);
+const palette = [
+  "var(--color-chart-1)",
+  "var(--color-chart-2)",
+  "var(--color-chart-3)",
+  "var(--color-chart-4)",
+  "var(--color-chart-5)",
+  "var(--color-chart-6)",
+  "var(--color-chart-7)",
+];
 
-  const comparableMonths = months.slice(0, -1);
-  const [compareMonth, setCompareMonth] = useState(comparableMonths[comparableMonths.length - 1]!.month);
-  const compare = comparableMonths.find((m) => m.month === compareMonth)!;
-  const diff = totalExpenses - compare.expenses;
-  const diffPct = (diff / compare.expenses) * 100;
-  const avgMonths = comparableMonths.reduce((s, m) => s + m.expenses, 0) / comparableMonths.length;
-  const vsAvgMonths = ((totalExpenses - avgMonths) / avgMonths) * 100;
+const presets = [
+  { id: "30d", label: "Últimos 30 días", range: () => ({ from: subDays(new Date(), 29), to: new Date() }) },
+  { id: "month", label: "Este mes", range: () => ({ from: startOfMonth(new Date()), to: new Date() }) },
+  {
+    id: "prev-month",
+    label: "Mes pasado",
+    range: () => ({ from: startOfMonth(subMonths(new Date(), 1)), to: endOfMonth(subMonths(new Date(), 1)) }),
+  },
+  { id: "90d", label: "Últimos 90 días", range: () => ({ from: subDays(new Date(), 89), to: new Date() }) },
+  { id: "ytd", label: "Este año", range: () => ({ from: startOfYear(new Date()), to: new Date() }) },
+];
+
+const isExpense = (t: Tx) => t.amount < 0;
+
+function inRange(t: Tx, from: Date, to: Date) {
+  const d = parseISO(t.tx_date!);
+  return d >= from && d <= to;
+}
+
+function sum(list: Tx[]) {
+  return list.reduce((s, t) => s + Math.abs(t.amount), 0);
+}
+
+function Gastos() {
+  const { profile } = useProfile();
+  const currency = profile.currency || "EUR";
+  const fmt = (n: number) => money(Math.round(n), currency);
+  const fmtCompact = (n: number) => compact(n, currency);
+
+  const { transactions, isLoading } = useTransactions();
+  const fixed = useFixedExpenses();
+  const [range, setRange] = useState<DateRange | undefined>(() => presets[0]!.range());
+
+  const from = range?.from ?? subDays(new Date(), 29);
+  const to = range?.to ?? from;
+  const days = Math.max(1, differenceInCalendarDays(to, from) + 1);
+  const prevTo = subDays(from, 1);
+  const prevFrom = subDays(prevTo, days - 1);
+
+  const expenses = useMemo(() => transactions.filter(isExpense), [transactions]);
+  const current = useMemo(() => expenses.filter((t) => inRange(t, from, to)), [expenses, from, to]);
+  const previous = useMemo(() => expenses.filter((t) => inRange(t, prevFrom, prevTo)), [expenses, prevFrom, prevTo]);
+
+  const total = sum(current);
+  const prevTotal = sum(previous);
+  const delta = prevTotal > 0 ? ((total - prevTotal) / prevTotal) * 100 : 0;
+
+  const byCategory = useMemo(() => {
+    const map = new Map<string, { name: string; amount: number; items: Tx[] }>();
+    for (const t of current) {
+      const k = t.category ?? "Sin categoría";
+      const prev = map.get(k) ?? { name: k, amount: 0, items: [] };
+      prev.amount += Math.abs(t.amount);
+      prev.items.push(t);
+      map.set(k, prev);
+    }
+    return [...map.values()].sort((a, b) => b.amount - a.amount);
+  }, [current]);
+
+  const prevByCategory = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const t of previous) {
+      const k = t.category ?? "Sin categoría";
+      map.set(k, (map.get(k) ?? 0) + Math.abs(t.amount));
+    }
+    return map;
+  }, [previous]);
+
+  const series = useMemo(() => {
+    const byMonth = days > 62;
+    const keyOf = (d: Date) => (byMonth ? format(d, "yyyy-MM") : format(d, "yyyy-MM-dd"));
+    const labelOf = (d: Date) => (byMonth ? format(d, "MMM yy", { locale: es }) : format(d, "d MMM", { locale: es }));
+    const buckets = new Map<string, { label: string; gasto: number }>();
+    for (let i = 0; i < days; i++) {
+      const d = addDays(from, i);
+      const k = keyOf(d);
+      if (!buckets.has(k)) buckets.set(k, { label: labelOf(d), gasto: 0 });
+    }
+    for (const t of current) {
+      const b = buckets.get(keyOf(parseISO(t.tx_date!)));
+      if (b) b.gasto += Math.abs(t.amount);
+    }
+    return [...buckets.values()];
+  }, [current, from, days]);
+
+  const merchants = useMemo(() => {
+    const map = new Map<string, { name: string; amount: number; count: number }>();
+    for (const t of current) {
+      const prev = map.get(t.merchant) ?? { name: t.merchant, amount: 0, count: 0 };
+      prev.amount += Math.abs(t.amount);
+      prev.count += 1;
+      map.set(t.merchant, prev);
+    }
+    return [...map.values()].sort((a, b) => b.amount - a.amount);
+  }, [current]);
+
+  const variable = Math.max(0, total - 0);
+  const hasData = transactions.length > 0;
+  const rangeLabel =
+    range?.from && range?.to
+      ? `${format(range.from, "d MMM yyyy", { locale: es })} — ${format(range.to, "d MMM yyyy", { locale: es })}`
+      : "Selecciona un rango";
 
   return (
     <PageShell>
       <PageHeader
-        eyebrow="Agosto 2026"
+        eyebrow="Análisis de gastos"
         title="¿En qué se fue mi dinero?"
-        subtitle={`Gastaste ${fmt(totalExpenses)} distribuidos en ${categories.length} categorías.`}
+        subtitle="Tus gastos fijos y todo el detalle real de tus estados de cuenta."
+        actions={
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="justify-start gap-2 text-left font-normal">
+                <CalendarIcon className="h-4 w-4" />
+                <span className="text-xs md:text-sm">{rangeLabel}</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="end">
+              <div className="flex flex-wrap gap-1.5 border-b border-border p-3">
+                {presets.map((p) => (
+                  <Button
+                    key={p.id}
+                    size="sm"
+                    variant="secondary"
+                    className="h-7 rounded-full text-[11px]"
+                    onClick={() => setRange(p.range())}
+                  >
+                    {p.label}
+                  </Button>
+                ))}
+              </div>
+              <Calendar
+                mode="range"
+                selected={range}
+                onSelect={setRange}
+                numberOfMonths={2}
+                locale={es}
+                className={cn("p-3 pointer-events-auto")}
+              />
+            </PopoverContent>
+          </Popover>
+        }
       />
+
+      {!hasData && !isLoading && (
+        <Panel>
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-elevated">
+              <Upload className="h-5 w-5 text-muted-foreground" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-medium">Aún no hay estados de cuenta procesados</p>
+              <p className="text-xs text-muted-foreground">Sube tus EEFF en PDF o CSV para ver el detalle real.</p>
+            </div>
+            <Button asChild className="ml-auto">
+              <Link to="/configuracion">Cargar EEFF</Link>
+            </Button>
+          </div>
+        </Panel>
+      )}
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <KpiCard label="Gasto del periodo" value={fmt(total)} delta={Number(delta.toFixed(1))} inverse accent index={0} />
+        <KpiCard label="Gastos fijos" value={fmt(fixed.total)} hint="mensual, editable" index={1} />
+        <KpiCard label="Gasto variable (EEFF)" value={fmt(variable)} hint={`${current.length} transacciones`} index={2} />
+        <KpiCard label="Promedio diario" value={fmt(total / days)} hint={`${days} días`} index={3} />
+      </div>
+
+      <Panel title="Gastos fijos mensuales" description="Edita nombre y monto; se guardan en este navegador">
+        <div className="space-y-2">
+          {fixed.items.map((item) => (
+            <div key={item.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-elevated/60 px-3 py-2">
+              <Input
+                value={item.name}
+                onChange={(e) => fixed.update(item.id, { name: e.target.value })}
+                className="h-9 w-full max-w-[260px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
+              />
+              <div className="ml-auto flex items-center gap-2">
+                <Input
+                  type="number"
+                  value={String(item.amount)}
+                  onChange={(e) => fixed.update(item.id, { amount: Number(e.target.value) || 0 })}
+                  className="numeric h-9 w-32 text-right text-sm"
+                />
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-8 w-8 text-muted-foreground hover:text-negative"
+                  onClick={() => fixed.remove(item.id)}
+                  aria-label={`Eliminar ${item.name}`}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="w-full">
+                <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                  <div
+                    className="h-full rounded-full bg-chart-3"
+                    style={{ width: `${fixed.total > 0 ? (item.amount / fixed.total) * 100 : 0}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-3 flex items-center gap-3">
+          <Button size="sm" variant="outline" className="gap-2" onClick={fixed.add}>
+            <Plus className="h-4 w-4" /> Añadir gasto fijo
+          </Button>
+          <span className="numeric ml-auto text-sm font-semibold">Total {fmt(fixed.total)}/mes</span>
+        </div>
+      </Panel>
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel title="Distribución por categoría">
-          <div className="relative">
-            <ResponsiveContainer width="100%" height={260}>
-              <PieChart>
-                <Pie data={categories} dataKey="amount" nameKey="name" innerRadius={68} outerRadius={104} paddingAngle={3} stroke="none">
-                  {categories.map((c) => (
-                    <Cell key={c.key} fill={c.color} />
-                  ))}
-                </Pie>
-                <Tooltip content={<ChartTooltip />} />
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-              <p className="numeric text-2xl font-semibold">{fmtCompact(totalExpenses)}</p>
-              <p className="text-xs text-muted-foreground">gasto total</p>
-              <p className={cn("numeric mt-0.5 text-[11px]", diff > 0 ? "text-negative" : "text-positive")}>
-                {diff > 0 ? "+" : ""}
-                {diffPct.toFixed(1)}% vs. {compare.label}
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-3 rounded-xl bg-elevated/60 p-3">
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">Comparar con</span>
-              <Select value={compareMonth} onValueChange={setCompareMonth}>
-                <SelectTrigger className="ml-auto h-8 w-[130px] text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {[...comparableMonths].reverse().map((m) => (
-                    <SelectItem key={m.month} value={m.month} className="text-xs">
-                      {m.label} {m.month.slice(0, 4)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
-              <div>
-                <p className="text-muted-foreground">{compare.label}</p>
-                <p className="numeric text-sm font-semibold">{fmt(compare.expenses)}</p>
+          {byCategory.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Sin movimientos en este rango.</p>
+          ) : (
+            <>
+              <div className="relative">
+                <ResponsiveContainer width="100%" height={260}>
+                  <PieChart>
+                    <Pie
+                      data={byCategory}
+                      dataKey="amount"
+                      nameKey="name"
+                      innerRadius={68}
+                      outerRadius={104}
+                      paddingAngle={3}
+                      stroke="none"
+                    >
+                      {byCategory.map((c, i) => (
+                        <Cell key={c.name} fill={palette[i % palette.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip content={<ChartTooltip formatter={fmt} />} />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                  <p className="numeric text-2xl font-semibold">{fmtCompact(total)}</p>
+                  <p className="text-xs text-muted-foreground">gasto total</p>
+                  <p className={cn("numeric mt-0.5 text-[11px]", delta > 0 ? "text-negative" : "text-positive")}>
+                    {delta > 0 ? "+" : ""}
+                    {delta.toFixed(1)}% vs. periodo anterior
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-muted-foreground">Diferencia</p>
-                <p className={cn("numeric text-sm font-semibold", diff > 0 ? "text-negative" : "text-positive")}>
-                  {diff > 0 ? "+" : "−"}
-                  {fmt(Math.abs(diff))}
-                </p>
-              </div>
-            </div>
-            <p className="mt-2 text-[11px] text-muted-foreground">
-              Promedio 12 meses {fmt(Math.round(avgMonths))} ·{" "}
-              <span className={vsAvgMonths > 0 ? "text-negative" : "text-positive"}>
-                {vsAvgMonths > 0 ? "+" : ""}
-                {vsAvgMonths.toFixed(1)}% este mes
-              </span>
-            </p>
-          </div>
-
-          <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5">
-            {categories.map((c) => (
-              <li key={c.key} className="flex items-center gap-2 text-xs">
-                <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: c.color }} />
-                <span className="truncate text-muted-foreground">{c.name}</span>
-                <span className="numeric ml-auto font-medium">{((c.amount / totalExpenses) * 100).toFixed(0)}%</span>
-              </li>
-            ))}
-          </ul>
-
+              <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5">
+                {byCategory.slice(0, 10).map((c, i) => (
+                  <li key={c.name} className="flex items-center gap-2 text-xs">
+                    <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
+                    <span className="truncate text-muted-foreground">{c.name}</span>
+                    <span className="numeric ml-auto font-medium">{((c.amount / total) * 100).toFixed(0)}%</span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
         </Panel>
 
-
-        <Panel title="Comparación mensual" description="Gasto total últimos 12 meses" className="lg:col-span-2">
+        <Panel title="Evolución del gasto" description={`Comparando con ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="lg:col-span-2">
           <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={months} margin={{ left: -12, right: 8 }}>
+            <BarChart data={series} margin={{ left: -8, right: 8 }}>
               <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
-              <XAxis dataKey="label" {...axisProps} />
-              <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={56} />
-              <Tooltip content={<ChartTooltip />} cursor={{ fill: "var(--color-muted)", opacity: 0.35 }} />
-              <Bar dataKey="expenses" name="Gastos" fill="var(--color-chart-5)" radius={[8, 8, 0, 0]} />
+              <XAxis dataKey="label" {...axisProps} interval="preserveStartEnd" minTickGap={18} />
+              <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={64} />
+              <Tooltip content={<ChartTooltip formatter={fmt} />} cursor={{ fill: "var(--color-muted)", opacity: 0.3 }} />
+              <Bar dataKey="gasto" name="Gasto" fill="var(--color-chart-5)" radius={[8, 8, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Periodo anterior: <span className="numeric font-medium">{fmt(prevTotal)}</span>
+          </p>
         </Panel>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Panel
-          title="Heatmap diario"
-          description="Pasa el cursor por un día para ver el monto exacto"
-          className="lg:col-span-2"
-        >
-          <TooltipProvider delayDuration={80}>
-            <div className="grid grid-cols-7 gap-1.5">
-              {["L", "M", "M", "J", "V", "S", "D"].map((d, i) => (
-                <span key={i} className="text-center text-[10px] text-muted-foreground">
-                  {d}
-                </span>
-              ))}
-              {heatmap.map((h) => {
-                const vsAvg = ((h.amount - avgHeat) / avgHeat) * 100;
-                const isWorst = worstDays.some((w) => w.day === h.day);
-                return (
-                  <UITooltip key={h.day}>
-                    <TooltipTrigger asChild>
-                      <div
-                        className={cn(
-                          "aspect-square cursor-pointer rounded-md border border-border/50 transition-transform hover:scale-110",
-                          isWorst && "ring-2 ring-negative/70 ring-offset-1 ring-offset-background",
-                        )}
-                        style={{
-                          background: `color-mix(in oklab, var(--color-chart-5) ${(h.amount / maxHeat) * 85 + 6}%, transparent)`,
-                        }}
-                      />
-                    </TooltipTrigger>
-                    <TooltipContent
-                      className="rounded-2xl border border-border bg-popover/95 px-4 py-3 text-popover-foreground shadow-xl backdrop-blur [&>span]:hidden"
-                      sideOffset={8}
-                    >
-                      <p className="text-sm font-medium">Día {h.day}</p>
-                      <div className="mt-1.5 flex items-center gap-2">
-                        <span className="h-2.5 w-2.5 rounded-full bg-chart-5" />
-                        <span className="text-sm text-muted-foreground">Gasto</span>
-                        <span className="numeric ml-3 text-base font-semibold">{fmt(h.amount)}</span>
-                      </div>
-                      <p className={cn("mt-1.5 text-[11px]", vsAvg > 0 ? "text-negative" : "text-positive")}>
-                        {vsAvg > 0 ? "+" : ""}
-                        {vsAvg.toFixed(0)}% vs. promedio diario ({fmt(Math.round(avgHeat))})
-                      </p>
-                      {isWorst && <p className="text-[11px] text-warning">Uno de los 3 peores días del mes</p>}
-                    </TooltipContent>
-                  </UITooltip>
-                );
-              })}
-            </div>
-          </TooltipProvider>
-          <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-            <span>Peores días:</span>
-            {worstDays.map((w) => (
-              <span key={w.day} className="rounded-full bg-negative/12 px-2 py-0.5 text-negative">
-                Día {w.day} · <span className="numeric">{fmt(w.amount)}</span>
-              </span>
-            ))}
-          </div>
-        </Panel>
+      <Panel title="Detalle por categoría" description="Expande para ver cada gasto del periodo">
+        {byCategory.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Sin movimientos en este rango de fechas.</p>
+        ) : (
+          <Accordion type="single" collapsible className="w-full">
+            {byCategory.map((c, i) => {
+              const prev = prevByCategory.get(c.name) ?? 0;
+              const variation = prev > 0 ? ((c.amount - prev) / prev) * 100 : null;
+              const share = total > 0 ? (c.amount / total) * 100 : 0;
+              return (
+                <AccordionItem key={c.name} value={c.name} className="border-border">
+                  <AccordionTrigger className="hover:no-underline">
+                    <div className="flex w-full items-center gap-3 pr-3">
+                      <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
+                      <span className="truncate text-sm font-medium">{c.name}</span>
+                      {variation !== null && (
+                        <span
+                          className={cn(
+                            "rounded-full px-2 py-0.5 text-[11px]",
+                            variation > 0 ? "bg-negative/12 text-negative" : "bg-positive/12 text-positive",
+                          )}
+                        >
+                          {variation > 0 ? "+" : ""}
+                          {variation.toFixed(0)}%
+                        </span>
+                      )}
+                      <span className="text-[11px] text-muted-foreground">{share.toFixed(0)}%</span>
+                      <span className="numeric ml-auto text-sm font-semibold">{fmt(c.amount)}</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <ul className="max-h-[320px] space-y-1 overflow-auto pl-6">
+                      {c.items
+                        .slice()
+                        .sort((a, b) => (a.tx_date! < b.tx_date! ? 1 : -1))
+                        .map((t) => (
+                          <li key={t.id} className="flex items-center gap-3 rounded-lg px-2 py-1.5 hover:bg-elevated/60">
+                            <span className="w-16 shrink-0 text-xs text-muted-foreground">
+                              {format(parseISO(t.tx_date!), "d MMM", { locale: es })}
+                            </span>
+                            <div className="min-w-0">
+                              <p className="truncate text-sm">{t.merchant}</p>
+                              <p className="truncate text-xs text-muted-foreground">{t.subcategory ?? "Sin subcategoría"}</p>
+                            </div>
+                            <span className="numeric ml-auto text-sm font-medium">{fmt(Math.abs(t.amount))}</span>
+                          </li>
+                        ))}
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+              );
+            })}
+          </Accordion>
+        )}
+      </Panel>
 
-
-        <Panel title="Top comercios">
-          <ul className="space-y-2">
-            {topMerchants.slice(0, 7).map((m) => (
+      <Panel title="Top comercios" description={`${merchants.length} comercios en el periodo`}>
+        {merchants.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Sin comercios en este rango.</p>
+        ) : (
+          <ul className="grid gap-2 md:grid-cols-2">
+            {merchants.slice(0, 10).map((m) => (
               <li key={m.name} className="flex items-center gap-3 rounded-xl bg-elevated/60 px-3 py-2">
                 <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted text-xs font-semibold">
                   {m.name.slice(0, 2).toUpperCase()}
                 </span>
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium">{m.name}</p>
-                  <p className="text-xs text-muted-foreground">{m.transactions} transacciones</p>
+                  <p className="text-xs text-muted-foreground">{m.count} transacciones</p>
                 </div>
                 <span className="numeric ml-auto text-sm font-semibold">{fmt(m.amount)}</span>
               </li>
             ))}
           </ul>
-        </Panel>
-      </div>
-
-      <Panel title="Detalle por categoría" description="Presupuesto, variación y subcategorías">
-        <Accordion type="single" collapsible className="w-full">
-          {categories.map((c) => {
-            const variation = ((c.amount - c.previous) / c.previous) * 100;
-            const budgetUse = (c.amount / c.budget) * 100;
-            return (
-              <AccordionItem key={c.key} value={c.key} className="border-border">
-                <AccordionTrigger className="hover:no-underline">
-                  <div className="flex w-full items-center gap-3 pr-3">
-                    <span className="text-lg">{c.emoji}</span>
-                    <span className="text-sm font-medium">{c.name}</span>
-                    <span
-                      className={cn(
-                        "rounded-full px-2 py-0.5 text-[11px]",
-                        variation > 0 ? "bg-negative/12 text-negative" : "bg-positive/12 text-positive",
-                      )}
-                    >
-                      {variation > 0 ? "+" : ""}
-                      {variation.toFixed(0)}%
-                    </span>
-                    <span className="numeric ml-auto text-sm font-semibold">{fmt(c.amount)}</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="space-y-3 pl-9">
-                    <div>
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span>Presupuesto {fmt(c.budget)}</span>
-                        <span className={budgetUse > 100 ? "text-negative" : "text-positive"}>{budgetUse.toFixed(0)}% usado</span>
-                      </div>
-                      <Progress value={Math.min(budgetUse, 100)} className="mt-1.5 h-1.5" />
-                    </div>
-                    <div className="grid gap-2 sm:grid-cols-3">
-                      {c.subcategories.map((s) => (
-                        <div key={s.name} className="rounded-lg bg-elevated/60 px-3 py-2">
-                          <p className="text-xs text-muted-foreground">{s.name}</p>
-                          <p className="numeric text-sm font-medium">{fmt(s.amount)}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            );
-          })}
-        </Accordion>
-      </Panel>
-
-      <Panel title="Insights automáticos">
-        <div className="grid gap-3 md:grid-cols-2">
-          {insights.slice(2, 8).map((i) => (
-            <div key={i.title} className="rounded-xl bg-elevated/60 p-4">
-              <p
-                className={cn(
-                  "text-sm font-medium",
-                  i.type === "positive" && "text-positive",
-                  i.type === "warning" && "text-warning",
-                )}
-              >
-                {i.title}
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">{i.detail}</p>
-            </div>
-          ))}
-        </div>
+        )}
       </Panel>
     </PageShell>
   );
