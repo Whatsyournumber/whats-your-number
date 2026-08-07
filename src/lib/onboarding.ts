@@ -127,6 +127,8 @@ export type NorthPlan = {
   targetCapital: number;
   projected: number;
   probability: number;
+  freedomAge: number;
+  progress: number;
 };
 
 /** Capital needed using a 4% safe withdrawal rate on the desired annual income. */
