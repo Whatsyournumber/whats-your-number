@@ -210,46 +210,11 @@ function Retiro() {
         </div>
         <p className="mt-3 text-xs text-muted-foreground">Renta mensual = capital × rentabilidad anual ÷ 12.</p>
 
-        <div className="mt-8 border-t border-border pt-6">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <h4 className="text-sm font-medium">Simulador de ciudades</h4>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Ciudades donde podrías vivir bien con la renta mensual generada por cada capital. Ajusta la rentabilidad para ver distintos escenarios.
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">Rentabilidad</span>
-              <span className="numeric rounded-lg bg-elevated px-2 py-1 text-sm font-semibold">{rate}%</span>
-            </div>
-          </div>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {capitals.map((cap) => {
-              const matches = cityMatches(cap, rate);
-              const income = (cap * (rate / 100)) / 12;
-              return (
-                <div key={cap} className="surface p-4">
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>Con {fmt(cap)}</span>
-                    <span className="numeric">{fmt(Math.round(income))}/mes</span>
-                  </div>
-                  {matches.length > 0 ? (
-                    <ul className="mt-3 space-y-1.5">
-                      {matches.map((c: City) => (
-                        <li key={c.name} className="flex items-center justify-between text-sm">
-                          <span>{c.name}</span>
-                          <span className="numeric text-xs text-muted-foreground">{fmt(c.cost)}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="mt-3 text-xs text-muted-foreground">Aumenta el capital o la rentabilidad para cubrir costos de vida en las ciudades disponibles.</p>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
+      <Panel
+        title="Simulador de ciudades"
+        description="Ingresa tu presupuesto mensual y descubre dónde podrías vivir mejor."
+      >
+        <CitySearch defaultBudget={d.expenses} fmt={fmt} />
       </Panel>
     </PageShell>
 
