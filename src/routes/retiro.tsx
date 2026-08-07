@@ -7,7 +7,6 @@ import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Slider } from "@/components/ui/slider";
 import { useProfile } from "@/hooks/use-profile";
-import { type City, cities } from "@/lib/onboarding";
 import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
 
 export const Route = createFileRoute("/retiro")({
@@ -54,16 +53,9 @@ function Retiro() {
   const final = data[data.length - 1]!;
 
   // Escenarios de renta mensual: capital acumulado x rentabilidad anual.
-  const capitals = [500_000, 750_000, 1_000_000, 1_200_000, 1_500_000, 2_000_000, 3_000_000, 5_000_000];
+  const capitals = [1_000_000, 1_200_000, 1_500_000, 2_000_000, 3_000_000, 5_000_000];
   const rates = [4, 6, 8, 10, 12];
 
-  const cityMatches = (capital: number) => {
-    const monthlyIncome = (capital * (retirement.returnAnnualized / 100)) / 12;
-    return cities
-      .filter((c: City) => c.cost * 1.25 <= monthlyIncome)
-      .sort((a: City, b: City) => b.cost - a.cost)
-      .slice(0, 4);
-  };
 
   return (
     <PageShell>
@@ -191,19 +183,12 @@ function Retiro() {
             <tbody>
               {capitals.map((cap) => (
                 <tr key={cap} className="border-b border-border/60 last:border-0 hover:bg-elevated/40">
-                  <td className="px-3 py-3 text-left align-top">
-                    <span className="numeric block font-semibold">{fmt(cap)}</span>
-                    <span className="mt-1 block text-[10px] leading-tight text-muted-foreground">
-                      {cityMatches(cap).length > 0
-                        ? cityMatches(cap).map((c: City) => `${c.name} ${fmt(c.cost)}`).join(" · ")
-                        : "Sin ciudades compatibles"}
-                    </span>
-                  </td>
+                  <td className="numeric px-3 py-3 text-left font-semibold">{fmt(cap)}</td>
                   {rates.map((rr) => {
                     const inc = (cap * (rr / 100)) / 12;
                     const covers = inc >= d.expenses && d.expenses > 0;
                     return (
-                      <td key={rr} className={`numeric px-3 py-3 text-right align-top ${covers ? "font-medium text-positive" : ""}`}>
+                      <td key={rr} className={`numeric px-3 py-3 text-right ${covers ? "font-medium text-positive" : ""}`}>
                         {fmt(Math.round(inc))}
                       </td>
                     );
@@ -213,7 +198,7 @@ function Retiro() {
             </tbody>
           </table>
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">Renta mensual = capital × rentabilidad anual ÷ 12. Las ciudades se ordenan de más cara a más barata, permitiendo gastar hasta un 25% de la renta mensual en costo de vida.</p>
+        <p className="mt-3 text-xs text-muted-foreground">Renta mensual = capital × rentabilidad anual ÷ 12.</p>
       </Panel>
     </PageShell>
 
