@@ -61,8 +61,8 @@ function Retiro() {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <KpiCard
           label="Cuánto tengo"
-          value={fmt(retirement.balance)}
-          hint={`${(plan.targetCapital > 0 ? Math.min(100, (retirement.balance / plan.targetCapital) * 100) : 0).toFixed(1)}% de la meta`}
+          value={fmt(d.netWorth)}
+          hint={`${plan.progress.toFixed(1)}% de la meta · ${fmt(retirement.balance)} en fondo de retiro`}
           accent
           index={0}
         />
