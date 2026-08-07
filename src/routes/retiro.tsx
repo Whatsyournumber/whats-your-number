@@ -52,17 +52,9 @@ function Retiro() {
   const data = projectRetirementFrom(monthly, rate, years, retirement.balance, retirement.currentAge);
   const final = data[data.length - 1]!;
 
-  // Matriz de escenarios: aporte mensual x rentabilidad anual.
-  const base = Math.max(100, Math.round((monthly || 200) / 50) * 50);
-  const contributions = [base * 0.5, base, base * 1.5, base * 2, base * 3].map((v) => Math.round(v / 50) * 50);
+  // Escenarios de renta mensual: capital acumulado x rentabilidad anual.
+  const capitals = [1_000_000, 1_200_000, 1_500_000, 2_000_000, 3_000_000, 5_000_000];
   const rates = [4, 6, 8, 10, 12];
-  const futureValue = (m: number, annual: number) => {
-    const r = annual / 100 / 12;
-    const n = years * 12;
-    return retirement.balance * Math.pow(1 + r, n) + (r === 0 ? m * n : m * ((Math.pow(1 + r, n) - 1) / r));
-  };
-  // Renta mensual sostenible con la regla del 4%.
-  const monthlyIncomeFrom = (capital: number) => (capital * 0.04) / 12;
 
 
   return (
