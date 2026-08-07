@@ -47,9 +47,14 @@ export function useProfile() {
   const mutation = useMutation({
     mutationFn: async (patch: Partial<Profile>) => {
       if (!userId) throw new Error("Sin sesión");
-      const { error } = await supabase
+      const { data: existing } = await supabase
         .from("onboarding_profiles")
-        .upsert({ user_id: userId, ...patch }, { onConflict: "user_id" });
+        .select("id")
+        .eq("user_id", userId)
+        .maybeSingle();
+      const { error } = existing
+        ? await supabase.from("onboarding_profiles").update(patch).eq("id", existing.id)
+        : await supabase.from("onboarding_profiles").insert({ user_id: userId, ...patch });
       if (error) throw error;
       return patch;
     },
