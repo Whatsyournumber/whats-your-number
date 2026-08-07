@@ -11,6 +11,7 @@ import {
   Bot,
   Settings,
   Wallet,
+  UserCog,
 } from "lucide-react";
 
 import {
@@ -26,7 +27,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { fmtCompact, netWorth } from "@/lib/data";
+import { useProfile } from "@/hooks/use-profile";
+import { buildDataset } from "@/lib/profile-data";
 
 const primary = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -41,6 +43,7 @@ const primary = [
 
 const secondary = [
   { title: "AI Advisor", url: "/advisor", icon: Bot },
+  { title: "Mis datos", url: "/mi-perfil", icon: UserCog },
   { title: "Cargar EEFF", url: "/configuracion", icon: Settings },
 ] as const;
 
@@ -48,6 +51,8 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const { profile } = useProfile();
+  const data = buildDataset(profile);
 
   const renderItem = (item: { title: string; url: string; icon: typeof Wallet }) => {
     const active = pathname === item.url;
@@ -72,8 +77,8 @@ export function AppSidebar() {
           </div>
           {!collapsed && (
             <div className="min-w-0">
-              <p className="truncate font-display text-sm font-semibold">Finance OS</p>
-              <p className="truncate text-xs text-muted-foreground">Family Office</p>
+              <p className="truncate font-display text-sm font-semibold">Your north</p>
+              <p className="truncate text-xs text-muted-foreground">Tu CFO personal</p>
             </div>
           )}
         </div>
@@ -99,8 +104,8 @@ export function AppSidebar() {
         <SidebarFooter className="p-3">
           <div className="surface p-3">
             <p className="text-xs text-muted-foreground">Patrimonio neto</p>
-            <p className="numeric mt-1 text-lg font-semibold">{fmtCompact(netWorth)}</p>
-            <p className="mt-1 text-xs text-positive">+3.5% este mes</p>
+            <p className="numeric mt-1 text-lg font-semibold">{data.fmtCompact(data.netWorth)}</p>
+            <p className="mt-1 text-xs text-muted-foreground">Ahorro {data.fmtCompact(data.savings)}/mes</p>
           </div>
         </SidebarFooter>
       )}
