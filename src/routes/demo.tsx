@@ -53,14 +53,14 @@ function DemoPage() {
   const t = useT();
   const { start } = useSearch({ from: "/demo" });
   const [currency, setCurrency] = useState<"EUR" | "USD">("EUR");
-  const [step, setStep] = useState(0); // 0 = intro, 1..3 = preguntas, 4 = resultado
+  const [step, setStep] = useState(start === "1" ? 1 : 0); // 0 = intro, 1..3 = preguntas, 4 = resultado
   const [monthlyLife, setMonthlyLife] = useState("");
   const [netWorth, setNetWorth] = useState("");
   const [monthlyInvest, setMonthlyInvest] = useState("");
 
   useEffect(() => {
-    if (start === "1") setStep(1);
-  }, [start]);
+    if (start === "1" && step === 0) setStep(1);
+  }, [start, step]);
 
   const symbol = currency === "EUR" ? "€" : "$";
   const money = (n: number) =>
