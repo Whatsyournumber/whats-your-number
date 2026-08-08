@@ -337,14 +337,13 @@ function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.08 }}
-                className="surface group relative overflow-hidden p-6"
+                className="group relative overflow-hidden rounded-3xl border border-white/[0.06] bg-card/40 p-8 backdrop-blur-sm transition-colors hover:bg-card/60"
               >
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-elevated ring-1 ring-border">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border/60 bg-elevated/40">
                   <card.icon className="h-5 w-5 text-primary" />
                 </div>
-                <h3 className="mt-5 text-sm font-semibold">{card.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{card.desc}</p>
+                <h3 className="mt-6 text-lg font-semibold tracking-tight">{card.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground/80">{card.desc}</p>
               </motion.div>
             ))}
           </div>
