@@ -285,6 +285,31 @@ function Landing() {
         <DemoCard />
 
         <section className="mt-24 md:mt-32">
+          <div className="mb-8 text-center">
+            <span className="text-xs font-medium uppercase tracking-wider text-primary">
+              {t("Así se ve por dentro", "This is what it looks like inside")}
+            </span>
+            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
+              {t("Un panel vivo, no una hoja de cálculo", "A living dashboard, not a spreadsheet")}
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
+              {t(
+                "Cambia entre patrimonio, gastos y portafolio. Todo se actualiza en tiempo real conforme importas tus estados de cuenta.",
+                "Switch between net worth, spending and portfolio. Everything updates in real time as you import your statements.",
+              )}
+            </p>
+          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5 }}
+          >
+            <ProductPreview />
+          </motion.div>
+        </section>
+
+        <section className="mt-24 md:mt-32">
           <div className="mb-10 text-center">
             <span className="text-xs font-medium uppercase tracking-wider text-primary">
               {t("¿Por qué WhatsYournumber?", "Why WhatsYournumber?")}
@@ -321,30 +346,6 @@ function Landing() {
           </div>
         </section>
 
-        <section className="mt-24 md:mt-32">
-          <div className="mb-8 text-center">
-            <span className="text-xs font-medium uppercase tracking-wider text-primary">
-              {t("Así se ve por dentro", "This is what it looks like inside")}
-            </span>
-            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
-              {t("Un panel vivo, no una hoja de cálculo", "A living dashboard, not a spreadsheet")}
-            </h2>
-            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
-              {t(
-                "Cambia entre patrimonio, gastos y portafolio. Todo se actualiza en tiempo real conforme importas tus estados de cuenta.",
-                "Switch between net worth, spending and portfolio. Everything updates in real time as you import your statements.",
-              )}
-            </p>
-          </div>
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.5 }}
-          >
-            <ProductPreview />
-          </motion.div>
-        </section>
 
         <section id="funciones" className="mt-24 scroll-mt-24 grid gap-4 md:grid-cols-2">
           {features.map((f, i) => (
@@ -427,6 +428,34 @@ function Landing() {
             </Link>
           </Button>
         </section>
+
+        <section className="surface glow relative mt-16 overflow-hidden p-10 text-center md:p-14">
+          <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.08]" />
+          <div className="relative">
+            <h2 className="mx-auto max-w-2xl font-display text-3xl font-semibold tracking-tight md:text-4xl">
+              {t("¿Cuál es tu número?", "What's your number?")}
+            </h2>
+            <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
+              {t(
+                "Responde 3 preguntas y descúbrelo gratis en 30 segundos.",
+                "Answer 3 questions and find out free in 30 seconds.",
+              )}
+            </p>
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+              <Button asChild size="lg" className="gap-2 rounded-full px-6">
+                <Link to="/demo" search={{ start: 1 }}>
+                  {t("Probar demo gratis", "Try free demo")} <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="rounded-full px-6">
+                <Link to="/auth" search={{ mode: "signup" }}>
+                  {t("Crear mi cuenta", "Create my account")}
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </section>
+
       </main>
     </div>
   );
