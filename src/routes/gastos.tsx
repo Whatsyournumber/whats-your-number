@@ -13,7 +13,7 @@ import {
 import { es } from "date-fns/locale";
 import { CalendarIcon, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { BASE_CATEGORIES, categorizeTx } from "@/lib/categorize";
+import { categorizeTx } from "@/lib/categorize";
 import type { DateRange } from "react-day-picker";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, ComposedChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
@@ -137,6 +137,18 @@ function Gastos() {
     }
     return map;
   }, [previous, categories.rules]);
+
+  // Todas las categorías (base + propias) siempre visibles en el detalle
+  const detailRows = useMemo(() => {
+    const map = new Map(byCategory.map((c) => [c.name, c]));
+    const ordered: { name: string; amount: number; items: Tx[] }[] = [];
+    for (const name of categories.names) {
+      ordered.push(map.get(name) ?? { name, amount: 0, items: [] });
+      map.delete(name);
+    }
+    return [...ordered, ...map.values()].sort((a, b) => b.amount - a.amount);
+  }, [byCategory, categories.names]);
+
 
   // ---- Comparación mes vs mes ----
   const monthKeys = useMemo(() => {
@@ -538,55 +550,8 @@ function Gastos() {
         </div>
       </Panel>
 
-      <Panel
-        title="Categorías"
-        description="Mercado, Restaurantes, Salidas, Compras, Viajes, Transporte, Lifestyle, Apps y Marketing digital. Añade las tuyas con palabras clave."
-      >
-        <div className="flex flex-wrap gap-2">
-          {BASE_CATEGORIES.map((name) => (
-            <span
-              key={name}
-              className="rounded-full bg-elevated/70 px-3 py-1 text-xs font-medium text-muted-foreground"
-            >
-              {name}
-            </span>
-          ))}
-        </div>
 
-        <div className="mt-4 space-y-2">
-          {categories.items.map((c) => (
-            <div key={c.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-elevated/60 px-3 py-2">
-              <Input
-                value={c.name}
-                onChange={(e) => categories.update(c.id, { name: e.target.value })}
-                placeholder="Nombre de la categoría"
-                className="h-9 w-full max-w-[220px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
-              />
-              <Input
-                value={c.keywords}
-                onChange={(e) => categories.update(c.id, { keywords: e.target.value })}
-                placeholder="palabras clave separadas por coma (ej. netflix, gym)"
-                className="h-9 min-w-[200px] flex-1 text-sm"
-              />
-              <Button
-                size="icon"
-                variant="ghost"
-                className="h-8 w-8 text-muted-foreground hover:text-negative"
-                onClick={() => categories.remove(c.id)}
-                aria-label={`Eliminar ${c.name}`}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
-          ))}
-        </div>
 
-        <div className="mt-3">
-          <Button size="sm" variant="outline" className="gap-2" onClick={() => categories.add()}>
-            <Plus className="h-4 w-4" /> Añadir categoría
-          </Button>
-        </div>
-      </Panel>
 
 
 
@@ -652,38 +617,40 @@ function Gastos() {
         )}
       </Panel>
 
-      <Panel title="Detalle por categoría" description="Expande para ver cada gasto del periodo">
-
-        {byCategory.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Sin movimientos en este rango de fechas.</p>
-        ) : (
-          <Accordion type="single" collapsible className="w-full">
-            {byCategory.map((c, i) => {
-              const prev = prevByCategory.get(c.name) ?? 0;
-              const variation = prev > 0 ? ((c.amount - prev) / prev) * 100 : null;
-              const share = variableTotal > 0 ? (c.amount / variableTotal) * 100 : 0;
-              return (
-                <AccordionItem key={c.name} value={c.name} className="border-border">
-                  <AccordionTrigger className="hover:no-underline">
-                    <div className="flex w-full items-center gap-3 pr-3">
-                      <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
-                      <span className="truncate text-sm font-medium">{c.name}</span>
-                      {variation !== null && (
-                        <span
-                          className={cn(
-                            "rounded-full px-2 py-0.5 text-[11px]",
-                            variation > 0 ? "bg-negative/12 text-negative" : "bg-positive/12 text-positive",
-                          )}
-                        >
-                          {variation > 0 ? "+" : ""}
-                          {variation.toFixed(0)}%
-                        </span>
-                      )}
-                      <span className="text-[11px] text-muted-foreground">{share.toFixed(0)}%</span>
-                      <span className="numeric ml-auto text-sm font-semibold">{fmt(c.amount)}</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
+      <Panel
+        title="Detalle por categoría"
+        description="Mercado, Restaurantes, Salidas, Compras, Viajes, Transporte, Lifestyle, Apps y Marketing digital. Añade las tuyas con palabras clave."
+      >
+        <Accordion type="single" collapsible className="w-full">
+          {detailRows.map((c, i) => {
+            const prev = prevByCategory.get(c.name) ?? 0;
+            const variation = prev > 0 ? ((c.amount - prev) / prev) * 100 : null;
+            const share = variableTotal > 0 ? (c.amount / variableTotal) * 100 : 0;
+            return (
+              <AccordionItem key={c.name} value={c.name} className="border-border">
+                <AccordionTrigger className="hover:no-underline">
+                  <div className="flex w-full items-center gap-3 pr-3">
+                    <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
+                    <span className="truncate text-sm font-medium">{c.name}</span>
+                    {variation !== null && (
+                      <span
+                        className={cn(
+                          "rounded-full px-2 py-0.5 text-[11px]",
+                          variation > 0 ? "bg-negative/12 text-negative" : "bg-positive/12 text-positive",
+                        )}
+                      >
+                        {variation > 0 ? "+" : ""}
+                        {variation.toFixed(0)}%
+                      </span>
+                    )}
+                    <span className="text-[11px] text-muted-foreground">{share.toFixed(0)}%</span>
+                    <span className="numeric ml-auto text-sm font-semibold">{fmt(c.amount)}</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  {c.items.length === 0 ? (
+                    <p className="pl-6 text-sm text-muted-foreground">Sin gastos de esta categoría en el periodo.</p>
+                  ) : (
                     <ul className="max-h-[320px] space-y-1 overflow-auto pl-6">
                       {c.items
                         .slice()
@@ -701,13 +668,46 @@ function Gastos() {
                           </li>
                         ))}
                     </ul>
-                  </AccordionContent>
-                </AccordionItem>
-              );
-            })}
-          </Accordion>
-        )}
+                  )}
+                </AccordionContent>
+              </AccordionItem>
+            );
+          })}
+        </Accordion>
+
+        <div className="mt-4 space-y-2 border-t border-border pt-4">
+          <p className="text-xs font-medium text-muted-foreground">Categorías propias</p>
+          {categories.items.map((c) => (
+            <div key={c.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-elevated/60 px-3 py-2">
+              <Input
+                value={c.name}
+                onChange={(e) => categories.update(c.id, { name: e.target.value })}
+                placeholder="Nombre de la categoría"
+                className="h-9 w-full max-w-[220px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
+              />
+              <Input
+                value={c.keywords}
+                onChange={(e) => categories.update(c.id, { keywords: e.target.value })}
+                placeholder="palabras clave separadas por coma (ej. netflix, gym)"
+                className="h-9 min-w-[200px] flex-1 text-sm"
+              />
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-8 w-8 text-muted-foreground hover:text-negative"
+                onClick={() => categories.remove(c.id)}
+                aria-label={`Eliminar ${c.name}`}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          ))}
+          <Button size="sm" variant="outline" className="gap-2" onClick={() => categories.add()}>
+            <Plus className="h-4 w-4" /> Añadir categoría
+          </Button>
+        </div>
       </Panel>
+
 
       <Panel title="Top comercios" description={`${merchants.length} comercios en el periodo`}>
         {merchants.length === 0 ? (
