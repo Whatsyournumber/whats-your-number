@@ -500,31 +500,65 @@ function Gastos() {
                 </BarChart>
               </ResponsiveContainer>
             </div>
-
-            <ul className="mt-3 space-y-1">
-              {monthCompare.rows.slice(0, 8).map((r) => {
-                const diff = r.a - r.b;
-                return (
-                  <li key={r.name} className="flex items-center gap-3 rounded-lg px-2 py-1.5 text-sm hover:bg-elevated/60">
-                    <span className="truncate">{r.name}</span>
-                    <span className="numeric ml-auto text-muted-foreground">{fmt(r.b)}</span>
-                    <span className="numeric w-24 text-right font-medium">{fmt(r.a)}</span>
-                    <span
-                      className={cn(
-                        "numeric w-24 text-right text-xs",
-                        diff > 0 ? "text-negative" : "text-positive",
-                      )}
-                    >
-                      {diff > 0 ? "+" : ""}
-                      {fmt(diff)}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
           </>
         )}
       </Panel>
+
+      <Panel
+        title="Recomendaciones de la IA"
+        description="Dónde te excediste y cómo ahorrar más este mes"
+        actions={
+          <Button size="sm" onClick={runAdvice} disabled={adviceLoading || !hasData}>
+            {adviceLoading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" /> Analizando
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-4 w-4" /> {advice ? "Actualizar" : "Generar"}
+              </>
+            )}
+          </Button>
+        }
+      >
+        {adviceError && <p className="text-sm text-negative">{adviceError}</p>}
+        {!advice && !adviceError && (
+          <p className="text-sm text-muted-foreground">
+            {hasData
+              ? "Genera un análisis con tus categorías, comercios y tu objetivo de gasto."
+              : "Carga tus EEFF para recibir recomendaciones."}
+          </p>
+        )}
+        {advice && (
+          <div className="space-y-1.5 text-sm leading-relaxed">
+            {advice
+              .split("\n")
+              .filter((l) => l.trim())
+              .map((line, i) => {
+                const clean = line.replace(/^#{1,6}\s*/, "").replace(/^[-*]\s*/, "").replace(/\*\*/g, "");
+                if (line.startsWith("#"))
+                  return (
+                    <p key={i} className="pt-2 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                      {clean}
+                    </p>
+                  );
+                if (/^[-*]\s/.test(line))
+                  return (
+                    <p key={i} className="flex gap-2 text-foreground/90">
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      <span>{clean}</span>
+                    </p>
+                  );
+                return (
+                  <p key={i} className="text-foreground/90">
+                    {clean}
+                  </p>
+                );
+              })}
+          </div>
+        )}
+      </Panel>
+
 
       <Panel title="Detalle por categoría" description="Expande para ver cada gasto del periodo">
 
