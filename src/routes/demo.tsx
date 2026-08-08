@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
+import { z } from "zod";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, ArrowRight, RotateCcw, Sparkles, Target } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -8,7 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LanguageToggle, useT } from "@/hooks/use-language";
 
+const demoSearchSchema = z.object({
+  start: z.coerce.string().optional().default("0"),
+});
+
 export const Route = createFileRoute("/demo")({
+  validateSearch: demoSearchSchema,
   head: () => ({
     meta: [
       { title: "Descubre tu número — WhatsYournumber" },
