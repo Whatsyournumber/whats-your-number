@@ -26,8 +26,10 @@ export const Route = createFileRoute("/patrimonio")({
 function Patrimonio() {
   const t = useT();
   const { profile } = useProfile();
+  const { transactions } = useTransactions();
   const d = buildDataset(profile);
-  const { fmt, fmtCompact, months, assets, liabilities } = d;
+  const { fmt, fmtCompact, assets, liabilities } = d;
+  const months = buildRealMonths(transactions, d.netWorth) ?? d.months;
   const growth =
     months[0]!.netWorth > 0 ? ((d.netWorth - months[0]!.netWorth) / Math.abs(months[0]!.netWorth)) * 100 : 0;
 
