@@ -155,5 +155,6 @@ export function categorizeTx(t: CategorizableTx, custom: CategoryRule[] = []): s
   // "Alimentación" sin comercio reconocible: por defecto es mercado.
   if (FOOD_CATEGORIES.some((c) => original.toLowerCase().includes(c))) return "Mercado";
 
-  return original;
+  // Lo que no reconoce ninguna regla se agrupa como Otros.
+  return "Otros";
 }
