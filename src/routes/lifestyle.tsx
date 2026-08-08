@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { addDays, differenceInCalendarDays, endOfMonth, format, parseISO, startOfMonth, startOfYear, subDays, subMonths } from "date-fns";
 import { es } from "date-fns/locale";
 import { CalendarIcon, Upload } from "lucide-react";
+import { categorizeTx } from "@/lib/categorize";
 import { useMemo, useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -125,8 +126,8 @@ function Lifestyle() {
   const perDay = total / days;
   const ticket = current.length ? total / current.length : 0;
 
-  const byCategory = useMemo(() => group(current, (t) => t.category ?? "Sin categoría"), [current]);
-  const prevByCategory = useMemo(() => group(previous, (t) => t.category ?? "Sin categoría"), [previous]);
+  const byCategory = useMemo(() => group(current, (t) => categorizeTx(t)), [current]);
+  const prevByCategory = useMemo(() => group(previous, (t) => categorizeTx(t)), [previous]);
   const byMerchant = useMemo(() => group(current, (t) => t.merchant), [current]);
 
   // Serie temporal: por día si el rango es corto, por mes si es largo.
@@ -345,7 +346,7 @@ function Lifestyle() {
                     </span>
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium">{t.merchant}</p>
-                      <p className="truncate text-xs text-muted-foreground">{t.category ?? "Sin categoría"}</p>
+                      <p className="truncate text-xs text-muted-foreground">{categorizeTx(t)}</p>
                     </div>
                     <span className="numeric ml-auto text-sm font-semibold">{fmt(Math.abs(t.amount))}</span>
                   </li>

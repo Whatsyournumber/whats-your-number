@@ -13,6 +13,7 @@ import {
 import { es } from "date-fns/locale";
 import { CalendarIcon, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { categorizeTx } from "@/lib/categorize";
 import type { DateRange } from "react-day-picker";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, ComposedChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
@@ -76,19 +77,7 @@ const presets = [
 
 const isExpense = (t: Tx) => t.amount < 0;
 
-const TRAVEL_HINTS = [
-  "viaj", "vuelo", "aeroli", "airline", "airlines", "hotel", "airbnb", "booking", "expedia", "crucero",
-  "hostal", "despegar", "latam", "avianca", "iberia", "ryanair", "vueling", "turismo", "travel", "flight",
-  "aeropuerto", "airport", "kayak", "trip",
-];
-
-/** Separa Viajes de Transporte usando comercio, descripción y subcategoría. */
-function categoryOf(t: Tx) {
-  const cat = t.category ?? "Sin categoría";
-  const hay = `${t.merchant} ${t.description ?? ""} ${t.subcategory ?? ""} ${cat}`.toLowerCase();
-  if (TRAVEL_HINTS.some((h) => hay.includes(h))) return "Viajes";
-  return cat;
-}
+const categoryOf = (t: Tx) => categorizeTx(t);
 
 function inRange(t: Tx, from: Date, to: Date) {
   const d = parseISO(t.tx_date!);
