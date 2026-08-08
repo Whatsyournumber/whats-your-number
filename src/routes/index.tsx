@@ -209,6 +209,8 @@ function Landing() {
           </div>
         </motion.section>
 
+        <DemoCard />
+
         <section className="mt-24 md:mt-32">
           <div className="mb-10 text-center">
             <span className="text-xs font-medium uppercase tracking-wider text-primary">
