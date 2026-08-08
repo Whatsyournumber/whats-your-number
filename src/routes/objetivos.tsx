@@ -4,7 +4,8 @@ import { motion } from "motion/react";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Progress } from "@/components/ui/progress";
 import { useT } from "@/hooks/use-language";
-import { fmt, fmtCompact, goals } from "@/lib/data";
+import { useProfile } from "@/hooks/use-profile";
+import { buildDataset } from "@/lib/profile-data";
 
 export const Route = createFileRoute("/objetivos")({
   head: () => ({
