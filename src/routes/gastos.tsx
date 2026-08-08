@@ -124,7 +124,7 @@ function Gastos() {
   const byCategory = useMemo(() => {
     const map = new Map<string, { name: string; amount: number; items: Tx[] }>();
     for (const t of current) {
-      const k = t.category ?? "Sin categoría";
+      const k = categoryOf(t);
       const prev = map.get(k) ?? { name: k, amount: 0, items: [] };
       prev.amount += Math.abs(t.amount);
       prev.items.push(t);
@@ -136,11 +136,56 @@ function Gastos() {
   const prevByCategory = useMemo(() => {
     const map = new Map<string, number>();
     for (const t of previous) {
-      const k = t.category ?? "Sin categoría";
+      const k = categoryOf(t);
       map.set(k, (map.get(k) ?? 0) + Math.abs(t.amount));
     }
     return map;
   }, [previous]);
+
+  // ---- Comparación mes vs mes ----
+  const monthKeys = useMemo(() => {
+    const set = new Set<string>();
+    for (const t of expenses) set.add(format(parseISO(t.tx_date!), "yyyy-MM"));
+    return [...set].sort().reverse();
+  }, [expenses]);
+
+  const [monthA, setMonthA] = useState<string | null>(null);
+  const [monthB, setMonthB] = useState<string | null>(null);
+  const mA = monthA ?? monthKeys[0] ?? null;
+  const mB = monthB ?? monthKeys[1] ?? monthKeys[0] ?? null;
+
+  const monthCompare = useMemo(() => {
+    const totalsOf = (key: string | null) => {
+      const map = new Map<string, number>();
+      let total = 0;
+      if (!key) return { map, total };
+      for (const t of expenses) {
+        if (format(parseISO(t.tx_date!), "yyyy-MM") !== key) continue;
+        const k = categoryOf(t);
+        const v = Math.abs(t.amount);
+        map.set(k, (map.get(k) ?? 0) + v);
+        total += v;
+      }
+      return { map, total };
+    };
+    const a = totalsOf(mA);
+    const b = totalsOf(mB);
+    const names = [...new Set([...a.map.keys(), ...b.map.keys()])];
+    const rows = names
+      .map((name) => ({ name, a: a.map.get(name) ?? 0, b: b.map.get(name) ?? 0 }))
+      .sort((x, y) => y.a + y.b - (x.a + x.b));
+    return { aTotal: a.total, bTotal: b.total, rows };
+  }, [expenses, mA, mB]);
+
+  const monthLabel = (k: string | null) => (k ? format(parseISO(`${k}-01`), "MMMM yyyy", { locale: es }) : "—");
+  const monthDelta =
+    monthCompare.bTotal > 0 ? ((monthCompare.aTotal - monthCompare.bTotal) / monthCompare.bTotal) * 100 : 0;
+
+  // ---- Gasto objetivo ----
+  const { target, setTarget } = useSpendTarget(5000);
+  const monthlyRun = fixed.total + (total / days) * 30;
+  const targetPct = target > 0 ? (monthlyRun / target) * 100 : 0;
+
 
   const series = useMemo(() => {
     const byMonth = days > 62;
