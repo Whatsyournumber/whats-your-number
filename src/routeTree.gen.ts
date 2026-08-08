@@ -16,6 +16,7 @@ import { Route as BlogRouteImport } from './routes/blog'
 import { Route as CashFlowRouteImport } from './routes/cash-flow'
 import { Route as ConfiguracionRouteImport } from './routes/configuracion'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as DemoRouteImport } from './routes/demo'
 import { Route as GastosRouteImport } from './routes/gastos'
 import { Route as MiPerfilRouteImport } from './routes/mi-perfil'
 import { Route as ObjetivosRouteImport } from './routes/objetivos'
@@ -58,6 +59,11 @@ const ConfiguracionRoute = ConfiguracionRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoRoute = DemoRouteImport.update({
+  id: '/demo',
+  path: '/demo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GastosRoute = GastosRouteImport.update({
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/cash-flow': typeof CashFlowRoute
   '/configuracion': typeof ConfiguracionRoute
   '/dashboard': typeof DashboardRoute
+  '/demo': typeof DemoRoute
   '/gastos': typeof GastosRoute
   '/mi-perfil': typeof MiPerfilRoute
   '/objetivos': typeof ObjetivosRoute
@@ -126,6 +133,7 @@ export interface FileRoutesByTo {
   '/cash-flow': typeof CashFlowRoute
   '/configuracion': typeof ConfiguracionRoute
   '/dashboard': typeof DashboardRoute
+  '/demo': typeof DemoRoute
   '/gastos': typeof GastosRoute
   '/mi-perfil': typeof MiPerfilRoute
   '/objetivos': typeof ObjetivosRoute
@@ -144,6 +152,7 @@ export interface FileRoutesById {
   '/cash-flow': typeof CashFlowRoute
   '/configuracion': typeof ConfiguracionRoute
   '/dashboard': typeof DashboardRoute
+  '/demo': typeof DemoRoute
   '/gastos': typeof GastosRoute
   '/mi-perfil': typeof MiPerfilRoute
   '/objetivos': typeof ObjetivosRoute
@@ -163,6 +172,7 @@ export interface FileRouteTypes {
     | '/cash-flow'
     | '/configuracion'
     | '/dashboard'
+    | '/demo'
     | '/gastos'
     | '/mi-perfil'
     | '/objetivos'
@@ -180,6 +190,7 @@ export interface FileRouteTypes {
     | '/cash-flow'
     | '/configuracion'
     | '/dashboard'
+    | '/demo'
     | '/gastos'
     | '/mi-perfil'
     | '/objetivos'
@@ -197,6 +208,7 @@ export interface FileRouteTypes {
     | '/cash-flow'
     | '/configuracion'
     | '/dashboard'
+    | '/demo'
     | '/gastos'
     | '/mi-perfil'
     | '/objetivos'
@@ -215,6 +227,7 @@ export interface RootRouteChildren {
   CashFlowRoute: typeof CashFlowRoute
   ConfiguracionRoute: typeof ConfiguracionRoute
   DashboardRoute: typeof DashboardRoute
+  DemoRoute: typeof DemoRoute
   GastosRoute: typeof GastosRoute
   MiPerfilRoute: typeof MiPerfilRoute
   ObjetivosRoute: typeof ObjetivosRoute
@@ -274,6 +287,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo': {
+      id: '/demo'
+      path: '/demo'
+      fullPath: '/demo'
+      preLoaderRoute: typeof DemoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gastos': {
@@ -343,6 +363,7 @@ const rootRouteChildren: RootRouteChildren = {
   CashFlowRoute: CashFlowRoute,
   ConfiguracionRoute: ConfiguracionRoute,
   DashboardRoute: DashboardRoute,
+  DemoRoute: DemoRoute,
   GastosRoute: GastosRoute,
   MiPerfilRoute: MiPerfilRoute,
   ObjetivosRoute: ObjetivosRoute,
@@ -355,3 +376,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
