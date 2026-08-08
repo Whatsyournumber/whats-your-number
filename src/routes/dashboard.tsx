@@ -50,8 +50,13 @@ function greeting(t: (es: string, en: string) => string) {
 function Dashboard() {
   const t = useT();
   const { profile, isLoading } = useProfile();
+  const { transactions } = useTransactions();
   const d = buildDataset(profile);
-  const { current, previous, months, fmt, fmtCompact, plan } = d;
+  const realMonths = buildRealMonths(transactions, d.netWorth);
+  const months = realMonths ?? d.months;
+  const current = months[months.length - 1] ?? d.current;
+  const previous = months[months.length - 2] ?? current;
+  const { fmt, fmtCompact, plan } = d;
 
   const freeCash = Math.max(0, current.savings - current.investments);
   const prevFree = Math.max(0, previous.savings - previous.investments);
