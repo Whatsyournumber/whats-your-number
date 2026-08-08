@@ -17,7 +17,6 @@ import { Route as CashFlowRouteImport } from './routes/cash-flow'
 import { Route as ConfiguracionRouteImport } from './routes/configuracion'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as GastosRouteImport } from './routes/gastos'
-import { Route as LifestyleRouteImport } from './routes/lifestyle'
 import { Route as MiPerfilRouteImport } from './routes/mi-perfil'
 import { Route as ObjetivosRouteImport } from './routes/objetivos'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
@@ -66,11 +65,6 @@ const GastosRoute = GastosRouteImport.update({
   path: '/gastos',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LifestyleRoute = LifestyleRouteImport.update({
-  id: '/lifestyle',
-  path: '/lifestyle',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const MiPerfilRoute = MiPerfilRouteImport.update({
   id: '/mi-perfil',
   path: '/mi-perfil',
@@ -116,7 +110,6 @@ export interface FileRoutesByFullPath {
   '/configuracion': typeof ConfiguracionRoute
   '/dashboard': typeof DashboardRoute
   '/gastos': typeof GastosRoute
-  '/lifestyle': typeof LifestyleRoute
   '/mi-perfil': typeof MiPerfilRoute
   '/objetivos': typeof ObjetivosRoute
   '/onboarding': typeof OnboardingRoute
@@ -134,7 +127,6 @@ export interface FileRoutesByTo {
   '/configuracion': typeof ConfiguracionRoute
   '/dashboard': typeof DashboardRoute
   '/gastos': typeof GastosRoute
-  '/lifestyle': typeof LifestyleRoute
   '/mi-perfil': typeof MiPerfilRoute
   '/objetivos': typeof ObjetivosRoute
   '/onboarding': typeof OnboardingRoute
@@ -153,7 +145,6 @@ export interface FileRoutesById {
   '/configuracion': typeof ConfiguracionRoute
   '/dashboard': typeof DashboardRoute
   '/gastos': typeof GastosRoute
-  '/lifestyle': typeof LifestyleRoute
   '/mi-perfil': typeof MiPerfilRoute
   '/objetivos': typeof ObjetivosRoute
   '/onboarding': typeof OnboardingRoute
@@ -173,7 +164,6 @@ export interface FileRouteTypes {
     | '/configuracion'
     | '/dashboard'
     | '/gastos'
-    | '/lifestyle'
     | '/mi-perfil'
     | '/objetivos'
     | '/onboarding'
@@ -191,7 +181,6 @@ export interface FileRouteTypes {
     | '/configuracion'
     | '/dashboard'
     | '/gastos'
-    | '/lifestyle'
     | '/mi-perfil'
     | '/objetivos'
     | '/onboarding'
@@ -209,7 +198,6 @@ export interface FileRouteTypes {
     | '/configuracion'
     | '/dashboard'
     | '/gastos'
-    | '/lifestyle'
     | '/mi-perfil'
     | '/objetivos'
     | '/onboarding'
@@ -228,7 +216,6 @@ export interface RootRouteChildren {
   ConfiguracionRoute: typeof ConfiguracionRoute
   DashboardRoute: typeof DashboardRoute
   GastosRoute: typeof GastosRoute
-  LifestyleRoute: typeof LifestyleRoute
   MiPerfilRoute: typeof MiPerfilRoute
   ObjetivosRoute: typeof ObjetivosRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -296,13 +283,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GastosRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/lifestyle': {
-      id: '/lifestyle'
-      path: '/lifestyle'
-      fullPath: '/lifestyle'
-      preLoaderRoute: typeof LifestyleRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/mi-perfil': {
       id: '/mi-perfil'
       path: '/mi-perfil'
@@ -364,7 +344,6 @@ const rootRouteChildren: RootRouteChildren = {
   ConfiguracionRoute: ConfiguracionRoute,
   DashboardRoute: DashboardRoute,
   GastosRoute: GastosRoute,
-  LifestyleRoute: LifestyleRoute,
   MiPerfilRoute: MiPerfilRoute,
   ObjetivosRoute: ObjetivosRoute,
   OnboardingRoute: OnboardingRoute,
@@ -376,3 +355,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
