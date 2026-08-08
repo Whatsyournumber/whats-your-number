@@ -83,7 +83,8 @@ export const RULES: CategoryRule[] = [
   {
     name: "Lifestyle",
     hints: [
-      "gym", "gimnasio", "fitness", "crossfit", "yoga", "pilates", "spa", "masaje", "peluqueria",
+      "gym", "gimnasio", "fitness", "crossfit", "yoga", "pilates", "spa", "masaje", "hammam", "hammam",
+      "balneario", "sauna", "jacuzzi", "termal", "termas", "talaso", "thalasso", "peluqueria",
       "peluquería", "barberia", "barbería", "salon", "salón", "estetica", "estética", "manicur", "nails",
       "wellness", "terapia", "psicolog", "coach", "farmacia", "pharmacy", "dentista", "clinica", "clínica",
       "medic", "doctor", "vitamina", "supplement", "curso", "academia", "udemy", "coursera", "libreria",
