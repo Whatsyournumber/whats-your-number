@@ -8,6 +8,7 @@ const defaults: FixedExpense[] = [
   { id: "ahorro", name: "Fondo de ahorro", amount: 2500 },
   { id: "hipoteca", name: "Hipoteca", amount: 1100 },
   { id: "condominio", name: "Condominio", amount: 230 },
+  { id: "seguro-salud", name: "Seguro de salud", amount: 130 },
 ];
 
 /** Gastos fijos mensuales editables, guardados localmente en el navegador. */
