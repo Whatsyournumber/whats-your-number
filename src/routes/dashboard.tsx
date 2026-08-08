@@ -21,8 +21,10 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
+import { useTransactions } from "@/hooks/use-transactions";
 import { buildInsights } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
+import { buildRealMonths } from "@/lib/real-months";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
