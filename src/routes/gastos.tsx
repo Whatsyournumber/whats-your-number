@@ -11,7 +11,7 @@ import {
   subMonths,
 } from "date-fns";
 import { es } from "date-fns/locale";
-import { CalendarIcon, Plus, Trash2, Upload } from "lucide-react";
+import { CalendarIcon, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
 import { useMemo, useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -29,6 +29,7 @@ import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions, type Tx } from "@/hooks/use-transactions";
 import { compact, money } from "@/lib/onboarding";
+import { getSpendAdvice } from "@/lib/spend-advice.functions";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/gastos")({
@@ -187,6 +188,13 @@ function Gastos() {
   const monthlyRun = fixed.total + (total / days) * 30;
   const targetPct = target > 0 ? (monthlyRun / target) * 100 : 0;
 
+  // ---- Recomendaciones IA ----
+  const [advice, setAdvice] = useState<string | null>(null);
+  const [adviceLoading, setAdviceLoading] = useState(false);
+  const [adviceError, setAdviceError] = useState<string | null>(null);
+
+
+
 
   const series = useMemo(() => {
     const byMonth = days > 62;
@@ -222,6 +230,37 @@ function Gastos() {
     range?.from && range?.to
       ? `${format(range.from, "d MMM yyyy", { locale: es })} — ${format(range.to, "d MMM yyyy", { locale: es })}`
       : "Selecciona un rango";
+
+  const runAdvice = async () => {
+    setAdviceLoading(true);
+    setAdviceError(null);
+    try {
+      const res = await getSpendAdvice({
+        data: {
+          currency,
+          periodLabel: rangeLabel,
+          total,
+          prevTotal,
+          fixedTotal: fixed.total,
+          target,
+          monthlyRun,
+          categories: byCategory.slice(0, 12).map((c) => ({
+            name: c.name,
+            amount: c.amount,
+            prevAmount: prevByCategory.get(c.name) ?? 0,
+          })),
+          merchants: merchants.slice(0, 10).map((m) => ({ name: m.name, amount: m.amount, count: m.count })),
+        },
+      });
+      setAdvice(res.advice);
+    } catch (e) {
+      setAdviceError(e instanceof Error ? e.message : "No pudimos generar las recomendaciones.");
+    } finally {
+      setAdviceLoading(false);
+    }
+  };
+
+
 
   return (
     <PageShell>
@@ -335,51 +374,6 @@ function Gastos() {
 
 
 
-      <Panel title="Gastos fijos mensuales" description="Edita nombre y monto; se guardan en este navegador">
-        <div className="space-y-2">
-          {fixed.items.map((item) => (
-            <div key={item.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-elevated/60 px-3 py-2">
-              <Input
-                value={item.name}
-                onChange={(e) => fixed.update(item.id, { name: e.target.value })}
-                className="h-9 w-full max-w-[260px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
-              />
-              <div className="ml-auto flex items-center gap-2">
-                <Input
-                  type="number"
-                  value={String(item.amount)}
-                  onChange={(e) => fixed.update(item.id, { amount: Number(e.target.value) || 0 })}
-                  className="numeric h-9 w-32 text-right text-sm"
-                />
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-8 w-8 text-muted-foreground hover:text-negative"
-                  onClick={() => fixed.remove(item.id)}
-                  aria-label={`Eliminar ${item.name}`}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-              <div className="w-full">
-                <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-                  <div
-                    className="h-full rounded-full bg-chart-3"
-                    style={{ width: `${fixed.total > 0 ? (item.amount / fixed.total) * 100 : 0}%` }}
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="mt-3 flex items-center gap-3">
-          <Button size="sm" variant="outline" className="gap-2" onClick={fixed.add}>
-            <Plus className="h-4 w-4" /> Añadir gasto fijo
-          </Button>
-          <span className="numeric ml-auto text-sm font-semibold">Total {fmt(fixed.total)}/mes</span>
-        </div>
-      </Panel>
-
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel title="Distribución por categoría">
           {byCategory.length === 0 ? (
@@ -443,6 +437,52 @@ function Gastos() {
         </Panel>
       </div>
 
+      <Panel title="Gastos fijos mensuales" description="Edita nombre y monto; se guardan en este navegador">
+        <div className="space-y-2">
+          {fixed.items.map((item) => (
+            <div key={item.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-elevated/60 px-3 py-2">
+              <Input
+                value={item.name}
+                onChange={(e) => fixed.update(item.id, { name: e.target.value })}
+                className="h-9 w-full max-w-[260px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
+              />
+              <div className="ml-auto flex items-center gap-2">
+                <Input
+                  type="number"
+                  value={String(item.amount)}
+                  onChange={(e) => fixed.update(item.id, { amount: Number(e.target.value) || 0 })}
+                  className="numeric h-9 w-32 text-right text-sm"
+                />
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-8 w-8 text-muted-foreground hover:text-negative"
+                  onClick={() => fixed.remove(item.id)}
+                  aria-label={`Eliminar ${item.name}`}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="w-full">
+                <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                  <div
+                    className="h-full rounded-full bg-chart-3"
+                    style={{ width: `${fixed.total > 0 ? (item.amount / fixed.total) * 100 : 0}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-3 flex items-center gap-3">
+          <Button size="sm" variant="outline" className="gap-2" onClick={fixed.add}>
+            <Plus className="h-4 w-4" /> Añadir gasto fijo
+          </Button>
+          <span className="numeric ml-auto text-sm font-semibold">Total {fmt(fixed.total)}/mes</span>
+        </div>
+      </Panel>
+
+
       <Panel
         title="Comparar mes vs mes"
         description="Elige dos meses de tus EEFF y mira dónde cambió el gasto"
@@ -500,31 +540,65 @@ function Gastos() {
                 </BarChart>
               </ResponsiveContainer>
             </div>
-
-            <ul className="mt-3 space-y-1">
-              {monthCompare.rows.slice(0, 8).map((r) => {
-                const diff = r.a - r.b;
-                return (
-                  <li key={r.name} className="flex items-center gap-3 rounded-lg px-2 py-1.5 text-sm hover:bg-elevated/60">
-                    <span className="truncate">{r.name}</span>
-                    <span className="numeric ml-auto text-muted-foreground">{fmt(r.b)}</span>
-                    <span className="numeric w-24 text-right font-medium">{fmt(r.a)}</span>
-                    <span
-                      className={cn(
-                        "numeric w-24 text-right text-xs",
-                        diff > 0 ? "text-negative" : "text-positive",
-                      )}
-                    >
-                      {diff > 0 ? "+" : ""}
-                      {fmt(diff)}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
           </>
         )}
       </Panel>
+
+      <Panel
+        title="Recomendaciones de la IA"
+        description="Dónde te excediste y cómo ahorrar más este mes"
+        actions={
+          <Button size="sm" onClick={runAdvice} disabled={adviceLoading || !hasData}>
+            {adviceLoading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" /> Analizando
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-4 w-4" /> {advice ? "Actualizar" : "Generar"}
+              </>
+            )}
+          </Button>
+        }
+      >
+        {adviceError && <p className="text-sm text-negative">{adviceError}</p>}
+        {!advice && !adviceError && (
+          <p className="text-sm text-muted-foreground">
+            {hasData
+              ? "Genera un análisis con tus categorías, comercios y tu objetivo de gasto."
+              : "Carga tus EEFF para recibir recomendaciones."}
+          </p>
+        )}
+        {advice && (
+          <div className="space-y-1.5 text-sm leading-relaxed">
+            {advice
+              .split("\n")
+              .filter((l) => l.trim())
+              .map((line, i) => {
+                const clean = line.replace(/^#{1,6}\s*/, "").replace(/^[-*]\s*/, "").replace(/\*\*/g, "");
+                if (line.startsWith("#"))
+                  return (
+                    <p key={i} className="pt-2 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                      {clean}
+                    </p>
+                  );
+                if (/^[-*]\s/.test(line))
+                  return (
+                    <p key={i} className="flex gap-2 text-foreground/90">
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      <span>{clean}</span>
+                    </p>
+                  );
+                return (
+                  <p key={i} className="text-foreground/90">
+                    {clean}
+                  </p>
+                );
+              })}
+          </div>
+        )}
+      </Panel>
+
 
       <Panel title="Detalle por categoría" description="Expande para ver cada gasto del periodo">
 
