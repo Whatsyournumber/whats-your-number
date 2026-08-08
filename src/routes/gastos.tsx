@@ -630,7 +630,7 @@ function Gastos() {
           {detailRows.map((c, i) => {
             const prev = prevByCategory.get(c.name) ?? 0;
             const variation = prev > 0 ? ((c.amount - prev) / prev) * 100 : null;
-            const share = variableTotal > 0 ? (c.amount / variableTotal) * 100 : 0;
+            
             return (
               <AccordionItem key={c.name} value={c.name} className="border-border">
                 <AccordionTrigger className="hover:no-underline">
