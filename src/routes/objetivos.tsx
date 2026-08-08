@@ -60,7 +60,7 @@ function Objetivos() {
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {goals.map((g, idx) => {
-          const p = Math.min(100, (g.current / g.target) * 100);
+          const p = g.target > 0 ? Math.min(100, (g.current / g.target) * 100) : 0;
           const remaining = Math.max(0, g.target - g.current);
           const monthsLeft = g.monthly ? Math.ceil(remaining / g.monthly) : 0;
           return (
