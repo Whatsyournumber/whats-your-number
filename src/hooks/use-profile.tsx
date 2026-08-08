@@ -63,6 +63,8 @@ export function useProfile() {
         ...(prev ?? empty),
         ...patch,
       }));
+      // Recalcula todas las pestañas con los datos nuevos
+      void qc.invalidateQueries();
     },
   });
 
