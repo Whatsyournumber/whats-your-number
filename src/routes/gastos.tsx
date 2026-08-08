@@ -12,9 +12,9 @@ import {
 } from "date-fns";
 import { es } from "date-fns/locale";
 import { CalendarIcon, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { DateRange } from "react-day-picker";
-import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, ComposedChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
@@ -453,14 +453,38 @@ function Gastos() {
 
         <Panel title="Evolución del gasto" description={`Comparando con ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="lg:col-span-2">
           <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={series} margin={{ left: -8, right: 8 }}>
+            <ComposedChart data={series} margin={{ left: -8, right: 8 }}>
               <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
               <XAxis dataKey="label" {...axisProps} interval="preserveStartEnd" minTickGap={18} />
               <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={64} />
               <Tooltip content={<ChartTooltip formatter={fmt} />} cursor={{ fill: "var(--color-muted)", opacity: 0.3 }} />
-              <Bar dataKey="gasto" name="Gasto" fill="var(--color-chart-5)" radius={[8, 8, 0, 0]} />
-            </BarChart>
+              <Legend
+                verticalAlign="top"
+                align="right"
+                iconType="circle"
+                wrapperStyle={{ fontSize: 11, paddingBottom: 8 }}
+              />
+              <Bar dataKey="anterior" name="Periodo anterior" fill="var(--color-muted-foreground)" fillOpacity={0.35} radius={[8, 8, 0, 0]} />
+              <Bar dataKey="gasto" name="Este periodo" fill="var(--color-chart-5)" radius={[8, 8, 0, 0]} />
+              <Line dataKey="fijo" name="Fijos (prorrateado)" stroke="var(--color-chart-3)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
+            </ComposedChart>
           </ResponsiveContainer>
+          <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {[
+              { l: "Este periodo", v: fmt(variableTotal) },
+              { l: "Periodo anterior", v: fmt(prevVariable) },
+              {
+                l: "Variación",
+                v: `${variableTotal - prevVariable > 0 ? "+" : ""}${fmt(variableTotal - prevVariable)}`,
+              },
+              { l: "Día más caro", v: series.length ? fmt(Math.max(...series.map((s) => s.gasto))) : "—" },
+            ].map((k) => (
+              <div key={k.l} className="rounded-xl bg-elevated/60 px-3 py-2">
+                <p className="text-[11px] text-muted-foreground">{k.l}</p>
+                <p className="numeric text-sm font-semibold">{k.v}</p>
+              </div>
+            ))}
+          </div>
           <p className="mt-2 text-xs text-muted-foreground">
             Periodo anterior: <span className="numeric font-medium">{fmt(prevTotal)}</span>
           </p>
