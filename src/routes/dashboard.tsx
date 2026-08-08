@@ -53,7 +53,17 @@ function Dashboard() {
   const { transactions } = useTransactions();
   const d = buildDataset(profile);
   const realMonths = buildRealMonths(transactions, d.netWorth);
-  const months = realMonths ?? d.months;
+  const months = realMonths
+    ? realMonths.map((month, index) =>
+        index === realMonths.length - 1
+          ? {
+              ...month,
+              income: d.income,
+              savings: d.income - month.expenses,
+            }
+          : month,
+      )
+    : d.months;
   const current = months[months.length - 1] ?? d.current;
   const previous = months[months.length - 2] ?? current;
   const { fmt, fmtCompact, plan } = d;
