@@ -5,16 +5,20 @@ import {
   Bot,
   Brain,
   Compass,
+  Crosshair,
+  Eye,
   FileText,
   LineChart,
   Lock,
   PieChart,
+  ScanEye,
   ShieldCheck,
   Sparkles,
   Star,
   Target,
   TrendingUp,
 } from "lucide-react";
+
 
 import ctaLifestyle from "@/assets/cta-lifestyle.jpg";
 import { BrandLogo } from "@/components/brand-logo";
