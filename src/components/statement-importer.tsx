@@ -76,12 +76,20 @@ export function StatementImporter() {
     },
   });
 
+  // Refresca TODO lo que depende de los EEFF (dashboard, gastos, cash flow, patrimonio…)
+  const refreshAll = () => {
+    void qc.invalidateQueries({ queryKey: ["statements"] });
+    void qc.invalidateQueries({ queryKey: ["imported_transactions"] });
+    void qc.invalidateQueries({ queryKey: ["imported-transactions"] });
+    void qc.invalidateQueries({ queryKey: ["onboarding-profile"] });
+    void qc.invalidateQueries({ queryKey: ["profile"] });
+  };
+
   const processMutation = useMutation({
     mutationFn: (statementId: string) => runProcess({ data: { statementId } }),
     onSuccess: (result) => {
-      toast.success(`${result.inserted} movimientos clasificados por IA`);
-      void qc.invalidateQueries({ queryKey: ["statements"] });
-      void qc.invalidateQueries({ queryKey: ["imported_transactions"] });
+      toast.success(`${result.inserted} movimientos clasificados por IA · actualizando tus módulos`);
+      refreshAll();
     },
     onError: (error: Error) => {
       toast.error(error.message || "No pudimos procesar el archivo");
