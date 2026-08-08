@@ -3,10 +3,7 @@ import { motion } from "motion/react";
 import {
   ArrowRight,
   Bot,
-  Brain,
-  Compass,
   Crosshair,
-  Eye,
   FileText,
   LineChart,
   Lock,
@@ -18,6 +15,7 @@ import {
   Target,
   TrendingUp,
 } from "lucide-react";
+
 
 
 import ctaLifestyle from "@/assets/cta-lifestyle.jpg";
