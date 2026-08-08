@@ -8,16 +8,47 @@ export function BrandMark({ className }: { className?: string }) {
         className,
       )}
     >
-      <span className="wealth-gradient absolute inset-0 opacity-25" />
-      <svg viewBox="0 0 32 32" fill="none" className="relative h-[70%] w-[70%]" aria-hidden="true">
-        <circle cx="16" cy="16" r="13" className="stroke-primary" strokeWidth="1.4" opacity="0.35" />
+      <span className="absolute inset-0 bg-primary/5" />
+      <span className="absolute inset-0 wealth-gradient opacity-20" />
+      <svg
+        viewBox="0 0 32 32"
+        fill="none"
+        className="relative h-[72%] w-[72%]"
+        aria-hidden="true"
+      >
+        {/* Target ring — precision / "your number" */}
+        <circle
+          cx="16"
+          cy="16"
+          r="11.5"
+          className="stroke-primary/20"
+          strokeWidth="1"
+        />
+        <circle
+          cx="16"
+          cy="16"
+          r="8.5"
+          className="stroke-primary/10"
+          strokeWidth="1"
+          strokeDasharray="2 2"
+        />
+        {/* Crosshair ticks */}
         <path
-          d="M11.8 12.2c0-2.4 1.9-4.1 4.4-4.1 2.5 0 4.3 1.5 4.3 3.7 0 1.9-1 2.9-2.7 3.9-1.4.8-2 1.6-2 3v.6"
-          className="stroke-primary"
-          strokeWidth="2.4"
+          d="M16 4.5V7.5M16 24.5V27.5M4.5 16H7.5M24.5 16H27.5"
+          className="stroke-primary/15"
+          strokeWidth="1"
           strokeLinecap="round"
         />
-        <circle cx="15.8" cy="23.4" r="1.7" className="fill-primary" />
+        {/* Stylized question mark / growth curve */}
+        <path
+          d="M11.8 12.2c0-2.6 2.1-4.3 4.7-4.3s4.5 1.5 4.5 3.9c0 2.1-1.1 3.1-2.9 4.1-1.5.8-2.2 1.7-2.2 3.1v.7"
+          className="stroke-primary"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        {/* The answer dot — the "number" */}
+        <circle cx="15.9" cy="23.3" r="2.2" className="fill-primary" />
       </svg>
     </span>
   );
@@ -33,3 +64,4 @@ export function BrandLogo({ className }: { className?: string }) {
     </span>
   );
 }
+
