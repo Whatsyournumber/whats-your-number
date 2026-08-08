@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export type Tx = {
   id: string;
+  statement_id?: string;
   tx_date: string | null;
   merchant: string;
   description: string | null;
