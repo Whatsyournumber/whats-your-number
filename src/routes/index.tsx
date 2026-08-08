@@ -16,6 +16,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 
+import ctaLifestyle from "@/assets/cta-lifestyle.jpg";
 import { BrandLogo } from "@/components/brand-logo";
 import { ProductPreview } from "@/components/product-preview";
 import { SiteHeader } from "@/components/site-header";
@@ -85,14 +86,33 @@ function DemoCard() {
               </div>
             </div>
 
-            <div className="relative flex h-48 w-48 shrink-0 items-center justify-center">
-              <div className="absolute inset-0 animate-pulse rounded-full bg-primary/10 blur-2xl" />
-              <div className="relative flex h-44 w-44 items-center justify-center rounded-full bg-elevated ring-1 ring-border transition-transform duration-300 group-hover:scale-105">
+            <div className="relative flex h-52 w-52 shrink-0 items-center justify-center">
+              <div className="absolute inset-0 animate-pulse rounded-full bg-primary/15 blur-3xl" />
+              {[0, 1, 2].map((i) => (
+                <motion.span
+                  key={i}
+                  className="absolute rounded-full border border-primary/30"
+                  initial={{ width: 120, height: 120, opacity: 0.6 }}
+                  animate={{ width: 208, height: 208, opacity: 0 }}
+                  transition={{ duration: 3, repeat: Infinity, delay: i, ease: "easeOut" }}
+                />
+              ))}
+              <motion.span
+                className="absolute h-44 w-44 rounded-full border border-dashed border-primary/25"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
+              />
+              <motion.div
+                animate={{ scale: [1, 1.04, 1] }}
+                transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+                className="relative flex h-40 w-40 items-center justify-center rounded-full bg-elevated ring-1 ring-border transition-transform duration-300 group-hover:scale-105"
+              >
                 <span className="absolute inset-3 rounded-full ring-1 ring-primary/40" />
-                <Target className="absolute h-24 w-24 text-primary/25" strokeWidth={1} />
-                <BrandLogo className="relative h-10 w-10" />
-              </div>
+                <Target className="absolute h-24 w-24 text-primary/20" strokeWidth={1} />
+                <BrandLogo className="relative h-12 w-12" />
+              </motion.div>
             </div>
+
           </div>
 
           <div className="relative mt-8 grid gap-3 sm:grid-cols-3">
@@ -157,37 +177,30 @@ function Landing() {
   const whyCards = [
     {
       icon: Compass,
-      title: t("Claridad total", "Total clarity"),
+      title: t("Claridad total en minutos", "Total clarity in minutes"),
       desc: t(
-        "Deja de perder el rastro entre apps, hojas de cálculo y PDFs. Tu panorama financiero completo en un solo lugar.",
-        "Stop losing track across apps, spreadsheets and PDFs. Your complete financial picture in one place.",
+        "Sube tus estados de cuenta y ve todo tu dinero —cuentas, tarjetas, inversiones y deudas— en un solo panel.",
+        "Upload your statements and see all your money —accounts, cards, investments and debt— in a single view.",
       ),
     },
     {
       icon: Brain,
       title: t("IA que trabaja por ti", "AI that works for you"),
       desc: t(
-        "Clasificación automática, detección de anomalías y respuestas a tus preguntas en lenguaje natural.",
-        "Automatic classification, anomaly detection and answers to your questions in plain language.",
+        "Clasifica cada movimiento, detecta fugas y suscripciones olvidadas y te dice exactamente dónde ahorrar.",
+        "It classifies every transaction, spots leaks and forgotten subscriptions and tells you exactly where to save.",
       ),
     },
     {
       icon: Target,
-      title: t("Decisiones con propósito", "Purposeful decisions"),
+      title: t("Tu número, siempre a la vista", "Your number, always in sight"),
       desc: t(
-        "Conecta tus gastos de hoy con tus metas de mañana: ahorro, inversión, retiro y estilo de vida.",
-        "Connect today's spending with tomorrow's goals: savings, investing, retirement and lifestyle.",
-      ),
-    },
-    {
-      icon: TrendingUp,
-      title: t("Crecimiento constante", "Steady growth"),
-      desc: t(
-        "Proyecciones de patrimonio, simuladores de retiro y seguimiento de tu portafolio contra el mercado.",
-        "Net worth projections, retirement simulators and portfolio tracking against the market.",
+        "Sabes cuánto necesitas para ser libre y qué tan cerca estás. Cada decisión de hoy se traduce en años de libertad.",
+        "Know how much you need to be free and how close you are. Every decision today turns into years of freedom.",
       ),
     },
   ];
+
 
   const metrics = [
     { label: t("Módulos", "Modules"), value: "10" },
@@ -314,18 +327,9 @@ function Landing() {
             <span className="text-xs font-medium uppercase tracking-wider text-primary">
               {t("¿Por qué WhatsYournumber?", "Why WhatsYournumber?")}
             </span>
-            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
-              {t("Tu dinero, con dirección", "Your money, with direction")}
-            </h2>
-            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
-              {t(
-                "Deja de navegar a ciegas. Conecta cuentas, tarjetas e inversiones para ver por dónde entra, por dónde sale y hacia dónde crece.",
-                "Stop navigating blind. Connect accounts, cards and investments to see where it comes in, where it goes out and where it's growing.",
-              )}
-            </p>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-3">
             {whyCards.map((card, i) => (
               <motion.div
                 key={card.title}
@@ -344,7 +348,26 @@ function Landing() {
               </motion.div>
             ))}
           </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.45 }}
+            className="mt-10 text-center"
+          >
+            <h2 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
+              {t("Tu dinero, con dirección", "Your money, with direction")}
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
+              {t(
+                "Deja de navegar a ciegas. Conecta cuentas, tarjetas e inversiones para ver por dónde entra, por dónde sale y hacia dónde crece.",
+                "Stop navigating blind. Connect accounts, cards and investments to see where it comes in, where it goes out and where it's growing.",
+              )}
+            </p>
+          </motion.div>
         </section>
+
 
 
         <section id="funciones" className="mt-24 scroll-mt-24 grid gap-4 md:grid-cols-2">
@@ -429,32 +452,51 @@ function Landing() {
           </Button>
         </section>
 
-        <section className="surface glow relative mt-16 overflow-hidden p-10 text-center md:p-14">
-          <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.08]" />
-          <div className="relative">
-            <h2 className="mx-auto max-w-2xl font-display text-3xl font-semibold tracking-tight md:text-4xl">
-              {t("¿Cuál es tu número?", "What's your number?")}
-            </h2>
-            <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
-              {t(
-                "Responde 3 preguntas y descúbrelo gratis en 30 segundos.",
-                "Answer 3 questions and find out free in 30 seconds.",
-              )}
-            </p>
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-              <Button asChild size="lg" className="gap-2 rounded-full px-6">
-                <Link to="/demo" search={{ start: 1 }}>
-                  {t("Probar demo gratis", "Try free demo")} <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="rounded-full px-6">
-                <Link to="/auth" search={{ mode: "signup" }}>
-                  {t("Crear mi cuenta", "Create my account")}
-                </Link>
-              </Button>
+        <section className="surface glow relative mt-16 overflow-hidden">
+          <div className="grid items-stretch gap-0 md:grid-cols-2">
+            <div className="relative min-h-[280px] overflow-hidden">
+              <img
+                src={ctaLifestyle}
+                alt={t(
+                  "Pareja revisando sus finanzas en casa con WhatsYournumber",
+                  "Couple reviewing their finances at home with WhatsYournumber",
+                )}
+                loading="lazy"
+                width={1280}
+                height={960}
+                className="h-full w-full object-cover"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/30 to-background/80 md:to-background" />
+            </div>
+            <div className="relative p-10 md:p-14">
+              <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.08]" />
+              <div className="relative">
+                <h2 className="max-w-md font-display text-3xl font-semibold tracking-tight md:text-4xl">
+                  {t("¿Cuál es tu número?", "What's your number?")}
+                </h2>
+                <p className="mt-3 max-w-md text-sm text-muted-foreground">
+                  {t(
+                    "Miles de personas ya duermen tranquilas sabiendo hacia dónde va su dinero. Responde 3 preguntas y descúbrelo gratis en 30 segundos.",
+                    "Thousands already sleep well knowing where their money is going. Answer 3 questions and find out free in 30 seconds.",
+                  )}
+                </p>
+                <div className="mt-7 flex flex-wrap items-center gap-3">
+                  <Button asChild size="lg" className="gap-2 rounded-full px-6">
+                    <Link to="/demo" search={{ start: 1 }}>
+                      {t("Probar demo gratis", "Try free demo")} <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <Button asChild size="lg" variant="outline" className="rounded-full px-6">
+                    <Link to="/auth" search={{ mode: "signup" }}>
+                      {t("Crear mi cuenta", "Create my account")}
+                    </Link>
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </section>
+
 
       </main>
     </div>
