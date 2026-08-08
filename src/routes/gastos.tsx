@@ -74,6 +74,20 @@ const presets = [
 
 const isExpense = (t: Tx) => t.amount < 0;
 
+const TRAVEL_HINTS = [
+  "viaj", "vuelo", "aeroli", "airline", "airlines", "hotel", "airbnb", "booking", "expedia", "crucero",
+  "hostal", "despegar", "latam", "avianca", "iberia", "ryanair", "vueling", "turismo", "travel", "flight",
+  "aeropuerto", "airport", "kayak", "trip",
+];
+
+/** Separa Viajes de Transporte usando comercio, descripción y subcategoría. */
+function categoryOf(t: Tx) {
+  const cat = t.category ?? "Sin categoría";
+  const hay = `${t.merchant} ${t.description ?? ""} ${t.subcategory ?? ""} ${cat}`.toLowerCase();
+  if (TRAVEL_HINTS.some((h) => hay.includes(h))) return "Viajes";
+  return cat;
+}
+
 function inRange(t: Tx, from: Date, to: Date) {
   const d = parseISO(t.tx_date!);
   return d >= from && d <= to;
