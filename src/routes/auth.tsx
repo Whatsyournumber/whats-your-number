@@ -140,8 +140,8 @@ function AuthPage() {
 
         <div className="surface p-7">
           <div className="flex flex-col items-center text-center">
-            <BrandLogo className="h-9 w-9" />
-            <p className="mt-3 font-display text-lg font-semibold tracking-tight">
+            <BrandLogo vertical />
+            <p className="mt-4 font-display text-lg font-semibold tracking-tight">
               {mode === "signup" ? t("auth.title.signup") : t("auth.title.login")}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
