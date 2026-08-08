@@ -7,7 +7,8 @@ import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useT } from "@/hooks/use-language";
-import { fmt, insights, lifestyle, topMerchants, totalExpenses } from "@/lib/data";
+import { useProfile } from "@/hooks/use-profile";
+import { buildDataset, type Dataset } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/advisor")({
@@ -82,16 +83,14 @@ function answer(q: string, t: (es: string, en: string) => string, d: Dataset): s
 
 function Advisor() {
   const t = useT();
+  const { profile } = useProfile();
+  const d = buildDataset(profile);
   const suggestions = useSuggestions(t);
-  const [messages, setMessages] = useState<Msg[]>([
-    {
-      role: "assistant",
-      content: t(
-        "Soy tu CFO personal. Analicé tus 12 últimos meses: tu patrimonio creció 3.5% y tu tasa de ahorro llegó a 45%. Pregúntame lo que quieras sobre tus finanzas.",
-        "I'm your personal CFO. I analyzed your last 12 months: your net worth grew 3.5% and your savings rate reached 45%. Ask me anything about your finances.",
-      ),
-    },
-  ]);
+  const [messages, setMessages] = useState<Msg[]>([]);
+  const intro = t(
+    `Soy tu CFO personal. Con tus datos: patrimonio ${d.fmt(d.netWorth)}, ingresos ${d.fmt(d.income)}/mes y ahorro ${d.fmt(d.savings)} (${d.savingsRate.toFixed(0)}%). Tu número es ${d.fmtCompact(d.plan.targetCapital)}. Pregúntame lo que quieras.`,
+    `I'm your personal CFO. From your data: net worth ${d.fmt(d.netWorth)}, income ${d.fmt(d.income)}/month and savings ${d.fmt(d.savings)} (${d.savingsRate.toFixed(0)}%). Your number is ${d.fmtCompact(d.plan.targetCapital)}. Ask me anything.`,
+  );
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
@@ -107,7 +106,7 @@ function Advisor() {
   const send = (text: string) => {
     const q = text.trim();
     if (!q) return;
-    setMessages((m) => [...m, { role: "user", content: q }, { role: "assistant", content: answer(q, t) }]);
+    setMessages((m) => [...m, { role: "user", content: q }, { role: "assistant", content: answer(q, t, d) }]);
     setInput("");
     inputRef.current?.focus();
   };
@@ -126,7 +125,7 @@ function Advisor() {
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel title={t("Conversación", "Conversation")} className="flex flex-col lg:col-span-2">
           <div className="flex-1 space-y-3 overflow-y-auto pr-1" style={{ maxHeight: 420 }}>
-            {messages.map((m, i) => (
+            {[{ role: "assistant" as const, content: intro }, ...messages].map((m, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 6 }}
