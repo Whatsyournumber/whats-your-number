@@ -233,9 +233,6 @@ function AuthPage() {
             <GoogleMark />
             {t("auth.google")}
           </Button>
-          <p className="mt-2 text-center text-[11px] leading-relaxed text-muted-foreground">
-            {t("auth.google.note")}
-          </p>
 
           <p className="mt-5 text-center text-[11px] text-muted-foreground">{t("auth.legal")}</p>
         </div>
