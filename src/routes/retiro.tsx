@@ -9,6 +9,7 @@ import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { useProfile } from "@/hooks/use-profile";
+import { useT } from "@/hooks/use-language";
 import { type City, cities } from "@/lib/onboarding";
 import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
 
@@ -25,6 +26,7 @@ export const Route = createFileRoute("/retiro")({
 });
 
 function Retiro() {
+  const t = useT();
   const { profile } = useProfile();
   const d = buildDataset(profile);
   const { retirement, fmt, fmtCompact, plan } = d;
@@ -61,26 +63,26 @@ function Retiro() {
 
   return (
     <PageShell>
-      <PageHeader eyebrow="Largo plazo" title="Fondo de Retiro" subtitle="Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar." />
+      <PageHeader eyebrow={t("Largo plazo", "Long term")} title={t("Fondo de Retiro", "Retirement Fund")} subtitle={t("Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar.", "How much you have today and how much you will have when you stop working.")} />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <KpiCard
-          label="Cuánto tengo"
+          label={t("Cuánto tengo", "How much I have")}
           value={fmt(investable)}
-          hint="Sin contar propiedades — solo activos que generan retorno"
+          hint={t("Sin contar propiedades — solo activos que generan retorno", "Excluding properties — only assets that generate returns")}
           accent
           index={0}
         />
         <KpiCard
-          label="Capital objetivo"
+          label={t("Capital objetivo", "Target capital")}
           value={fmt(plan.targetCapital)}
-          hint={`${fmt(Math.round((plan.targetCapital * (retirement.returnAnnualized / 100)) / 12))} al mes con ${retirement.returnAnnualized}%`}
+          hint={`${fmt(Math.round((plan.targetCapital * (retirement.returnAnnualized / 100)) / 12))} ${t("al mes con", "per month at")} ${retirement.returnAnnualized}%`}
           index={1}
         />
-        <KpiCard label="Cómo voy" value={`${progressPct.toFixed(1)}%`} hint="del capital objetivo" index={2} />
-        <KpiCard label="Gastos mensuales" value={fmt(d.expenses)} hint={`${fmt(d.expenses * 12)} al año`} index={3} />
-        <KpiCard label="Aportes estimados al año" value={fmt(retirement.contributionsYTD)} index={4} />
-        <KpiCard label="Rentabilidad esperada" value={`${retirement.returnAnnualized}%`} hint="anual" index={5} />
+        <KpiCard label={t("Cómo voy", "How I'm doing")} value={`${progressPct.toFixed(1)}%`} hint={t("del capital objetivo", "of target capital")} index={2} />
+        <KpiCard label={t("Gastos mensuales", "Monthly expenses")} value={fmt(d.expenses)} hint={`${fmt(d.expenses * 12)} ${t("al año", "per year")}`} index={3} />
+        <KpiCard label={t("Aportes estimados al año", "Estimated contributions per year")} value={fmt(retirement.contributionsYTD)} index={4} />
+        <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${retirement.returnAnnualized}%`} hint={t("anual", "annual")} index={5} />
       </div>
 
       <div className="surface p-5">

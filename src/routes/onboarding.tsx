@@ -866,6 +866,7 @@ function MoneyField({
 }
 
 function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof cities)[number]) => void }) {
+  const t = useT();
   const [q, setQ] = useState("");
   const term = q.toLowerCase().trim();
   const list = cities.filter((c) => c.name.toLowerCase().includes(term) || c.country.toLowerCase().includes(term));
@@ -877,7 +878,7 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
           autoFocus
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Busca una ciudad…"
+          placeholder={t("Busca una ciudad…", "Search a city…")}
           className="h-14 flex-1 bg-transparent text-base outline-none"
         />
       </div>
@@ -898,7 +899,7 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
             </span>
           </button>
         ))}
-        {list.length === 0 && <p className="px-2 py-4 text-sm text-muted-foreground">Sin resultados.</p>}
+        {list.length === 0 && <p className="px-2 py-4 text-sm text-muted-foreground">{t("Sin resultados.", "No results.")}</p>}
       </div>
     </div>
   );
@@ -907,15 +908,33 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
 /* ───────────────────────── Pantalla 10: IA trabajando ───────────────────────── */
 
 function BuildingScreen({ onDone }: { onDone: () => void }) {
+  const t = useT();
   const [done, setDone] = useState(0);
+
+  const BUILD_TASKS = useMemo(
+    () => [
+      t("Detectando ingresos", "Detecting income"),
+      t("Clasificando transacciones", "Classifying transactions"),
+      t("Calculando gastos mensuales", "Calculating monthly expenses"),
+      t("Detectando inversiones", "Detecting investments"),
+      t("Analizando criptomonedas", "Analyzing cryptocurrencies"),
+      t("Calculando patrimonio", "Calculating net worth"),
+      t("Detectando suscripciones", "Detecting subscriptions"),
+      t("Calculando tu patrimonio objetivo", "Calculating your target net worth"),
+      t("Estimando tu edad de libertad financiera", "Estimating your financial freedom age"),
+      t("Construyendo recomendaciones personalizadas", "Building personalized recommendations"),
+    ],
+    [t],
+  );
 
   useEffect(() => {
     if (done >= BUILD_TASKS.length) {
-      const t = setTimeout(onDone, 700);
-      return () => clearTimeout(t);
+      const timeout = setTimeout(onDone, 700);
+      return () => clearTimeout(timeout);
     }
-    const t = setTimeout(() => setDone((d) => d + 1), done === 0 ? 500 : 620);
-    return () => clearTimeout(t);
+    const timeout = setTimeout(() => setDone((d) => d + 1), done === 0 ? 500 : 620);
+    return () => clearTimeout(timeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [done, onDone]);
 
   return (
@@ -938,9 +957,9 @@ function BuildingScreen({ onDone }: { onDone: () => void }) {
         </div>
       </div>
 
-      <h2 className="mt-10 text-center font-display text-3xl font-semibold sm:text-4xl">Estamos construyendo tu North…</h2>
+      <h2 className="mt-10 text-center font-display text-3xl font-semibold sm:text-4xl">{t("Estamos construyendo tu North…", "We're building your North…")}</h2>
       <p className="mx-auto mt-4 max-w-md text-center text-sm leading-relaxed text-muted-foreground">
-        Nuestra IA está analizando toda tu información financiera.
+        {t("Nuestra IA está analizando toda tu información financiera.", "Our AI is analyzing all your financial information.")}
       </p>
 
       <div className="mx-auto mt-12 max-w-md space-y-2.5">
