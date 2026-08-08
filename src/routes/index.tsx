@@ -359,26 +359,95 @@ function Landing() {
 
 
 
-        <section id="funciones" className="mt-24 scroll-mt-24 grid gap-4 md:grid-cols-2">
-          {features.map((f, i) => (
-            <motion.div
-              key={f.title}
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.35, delay: i * 0.05 }}
-              className="surface p-6"
-            >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-elevated">
-                <f.icon className="h-4.5 w-4.5 text-primary" />
+        <DemoCard />
+
+        <section id="funciones" className="mt-24 scroll-mt-24 md:mt-32">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.45 }}
+            className="text-center"
+          >
+            <span className="text-xs font-medium uppercase tracking-wider text-primary">
+              {t("Cómo funciona", "How it works")}
+            </span>
+            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
+              {t("Tu dinero, con dirección", "Your money, with direction")}
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
+              {t(
+                "Deja de navegar a ciegas. Conecta cuentas, tarjetas e inversiones para ver por dónde entra, por dónde sale y hacia dónde crece.",
+                "Stop navigating blind. Connect accounts, cards and investments to see where it comes in, where it goes out and where it's growing.",
+              )}
+            </p>
+          </motion.div>
+
+          <div className="mt-10 grid gap-4 md:grid-cols-2">
+            {features.map((f, i) => (
+              <motion.div
+                key={f.title}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.35, delay: i * 0.05 }}
+                className="surface p-6"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-elevated">
+                  <f.icon className="h-4.5 w-4.5 text-primary" />
+                </div>
+                <h3 className="mt-4 text-sm font-semibold">{f.title}</h3>
+                <p className="mt-1.5 text-sm text-muted-foreground">{f.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="surface glow relative mt-6 overflow-hidden">
+            <div className="grid items-stretch gap-0 md:grid-cols-2">
+              <div className="relative min-h-[280px] overflow-hidden">
+                <img
+                  src={ctaLifestyle}
+                  alt={t(
+                    "Pareja revisando sus finanzas en casa con WhatsYournumber",
+                    "Couple reviewing their finances at home with WhatsYournumber",
+                  )}
+                  loading="lazy"
+                  width={1280}
+                  height={960}
+                  className="h-full w-full object-cover"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/30 to-background/80 md:to-background" />
               </div>
-              <h2 className="mt-4 text-sm font-semibold">{f.title}</h2>
-              <p className="mt-1.5 text-sm text-muted-foreground">{f.desc}</p>
-            </motion.div>
-          ))}
+              <div className="relative p-10 md:p-14">
+                <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.08]" />
+                <div className="relative">
+                  <h3 className="max-w-md font-display text-3xl font-semibold tracking-tight md:text-4xl">
+                    {t("¿Cuál es tu número?", "What's your number?")}
+                  </h3>
+                  <p className="mt-3 max-w-md text-sm text-muted-foreground">
+                    {t(
+                      "Miles de personas ya duermen tranquilas sabiendo hacia dónde va su dinero. Responde 3 preguntas y descúbrelo gratis en 30 segundos.",
+                      "Thousands already sleep well knowing where their money is going. Answer 3 questions and find out free in 30 seconds.",
+                    )}
+                  </p>
+                  <div className="mt-7 flex flex-wrap items-center gap-3">
+                    <Button asChild size="lg" className="gap-2 rounded-full px-6">
+                      <Link to="/demo" search={{ start: 1 }}>
+                        {t("Probar demo gratis", "Try free demo")} <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                    <Button asChild size="lg" variant="outline" className="rounded-full px-6">
+                      <Link to="/auth" search={{ mode: "signup" }}>
+                        {t("Crear mi cuenta", "Create my account")}
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
-        <DemoCard />
 
         <section className="mt-24 md:mt-32">
 
