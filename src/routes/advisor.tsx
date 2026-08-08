@@ -91,6 +91,43 @@ function Advisor() {
     `Soy tu CFO personal. Con tus datos: patrimonio ${d.fmt(d.netWorth)}, ingresos ${d.fmt(d.income)}/mes y ahorro ${d.fmt(d.savings)} (${d.savingsRate.toFixed(0)}%). Tu número es ${d.fmtCompact(d.plan.targetCapital)}. Pregúntame lo que quieras.`,
     `I'm your personal CFO. From your data: net worth ${d.fmt(d.netWorth)}, income ${d.fmt(d.income)}/month and savings ${d.fmt(d.savings)} (${d.savingsRate.toFixed(0)}%). Your number is ${d.fmtCompact(d.plan.targetCapital)}. Ask me anything.`,
   );
+  const emergency = d.goals[1];
+  const emergencyPct = emergency && emergency.target > 0 ? (emergency.current / emergency.target) * 100 : 0;
+  const heaviest = [...d.cashFlow.buckets].sort((a, b) => b.amount - a.amount)[0];
+  const liveInsights: { type: "positive" | "warning" | "neutral"; title: string; detail: string }[] = [
+    {
+      type: d.savingsRate >= 20 ? "positive" : "warning",
+      title: t(`Tasa de ahorro ${d.savingsRate.toFixed(0)}%`, `Savings rate ${d.savingsRate.toFixed(0)}%`),
+      detail: t(
+        `Ahorras ${d.fmt(d.savings)} de ${d.fmt(d.income)} de ingresos mensuales.`,
+        `You save ${d.fmt(d.savings)} out of ${d.fmt(d.income)} in monthly income.`,
+      ),
+    },
+    {
+      type: emergencyPct >= 100 ? "positive" : "warning",
+      title: t(`Fondo de emergencia ${emergencyPct.toFixed(0)}%`, `Emergency fund ${emergencyPct.toFixed(0)}%`),
+      detail: t(
+        `Tienes ${d.fmt(emergency?.current ?? 0)} de los ${d.fmt(emergency?.target ?? 0)} necesarios (6 meses de gastos).`,
+        `You hold ${d.fmt(emergency?.current ?? 0)} of the ${d.fmt(emergency?.target ?? 0)} needed (6 months of expenses).`,
+      ),
+    },
+    {
+      type: "neutral",
+      title: t(`Mayor bloque: ${heaviest?.name ?? "Gastos fijos"}`, `Biggest block: ${heaviest?.name ?? "Fixed costs"}`),
+      detail: t(
+        `Representa ${d.fmt(heaviest?.amount ?? 0)} al mes. Recortarlo 10% suma ${d.fmt(Math.round((heaviest?.amount ?? 0) * 0.1))} de ahorro.`,
+        `It's ${d.fmt(heaviest?.amount ?? 0)} per month. Cutting 10% adds ${d.fmt(Math.round((heaviest?.amount ?? 0) * 0.1))} in savings.`,
+      ),
+    },
+    {
+      type: "neutral",
+      title: t(`Libertad a los ${d.plan.freedomAge}`, `Freedom at ${d.plan.freedomAge}`),
+      detail: t(
+        `Necesitas ${d.fmtCompact(d.plan.targetCapital)} y llevas ${d.fmt(d.netWorth)}.`,
+        `You need ${d.fmtCompact(d.plan.targetCapital)} and you're at ${d.fmt(d.netWorth)}.`,
+      ),
+    },
+  ];
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
