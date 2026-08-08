@@ -7,6 +7,7 @@ import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useT } from "@/hooks/use-language";
 import { useProfile, type Profile } from "@/hooks/use-profile";
 import {
   childrenOptions,
@@ -35,29 +36,30 @@ export const Route = createFileRoute("/mi-perfil")({
   component: MiPerfil,
 });
 
-const moneyFields: { key: keyof Profile; label: string; group: "income" | "assets" | "flow" }[] = [
-  { key: "income_salary", label: "Salario mensual", group: "income" },
-  { key: "income_bonus", label: "Bonos / variables", group: "income" },
-  { key: "income_rent", label: "Alquileres", group: "income" },
-  { key: "income_other", label: "Otros ingresos", group: "income" },
-  { key: "monthly_expenses", label: "Gastos mensuales", group: "flow" },
-  { key: "monthly_savings", label: "Ahorro mensual", group: "flow" },
-  { key: "desired_retirement_income", label: "Ingreso mensual deseado al retirarte", group: "flow" },
-  { key: "assets_cash", label: "Efectivo", group: "assets" },
-  { key: "assets_bank", label: "Cuentas bancarias", group: "assets" },
-  { key: "assets_retirement", label: "Fondo de retiro", group: "assets" },
-  { key: "assets_etf", label: "ETFs / fondos", group: "assets" },
-  { key: "assets_stocks", label: "Acciones", group: "assets" },
-  { key: "assets_crypto", label: "Cripto", group: "assets" },
-  { key: "assets_property", label: "Propiedades", group: "assets" },
-  { key: "liabilities", label: "Deudas totales", group: "assets" },
-];
-
 function MiPerfil() {
+  const t = useT();
   const { profile, isLoading, save, saving } = useProfile();
   const navigate = useNavigate();
   const [form, setForm] = useState<Profile>(profile);
   const [dirty, setDirty] = useState(false);
+
+  const moneyFields: { key: keyof Profile; label: string; group: "income" | "assets" | "flow" }[] = [
+    { key: "income_salary", label: t("Salario mensual", "Monthly salary"), group: "income" },
+    { key: "income_bonus", label: t("Bonos / variables", "Bonuses / variable pay"), group: "income" },
+    { key: "income_rent", label: t("Alquileres", "Rental income"), group: "income" },
+    { key: "income_other", label: t("Otros ingresos", "Other income"), group: "income" },
+    { key: "monthly_expenses", label: t("Gastos mensuales", "Monthly expenses"), group: "flow" },
+    { key: "monthly_savings", label: t("Ahorro mensual", "Monthly savings"), group: "flow" },
+    { key: "desired_retirement_income", label: t("Ingreso mensual deseado al retirarte", "Desired monthly income at retirement"), group: "flow" },
+    { key: "assets_cash", label: t("Efectivo", "Cash"), group: "assets" },
+    { key: "assets_bank", label: t("Cuentas bancarias", "Bank accounts"), group: "assets" },
+    { key: "assets_retirement", label: t("Fondo de retiro", "Retirement fund"), group: "assets" },
+    { key: "assets_etf", label: t("ETFs / fondos", "ETFs / funds"), group: "assets" },
+    { key: "assets_stocks", label: t("Acciones", "Stocks"), group: "assets" },
+    { key: "assets_crypto", label: t("Cripto", "Crypto"), group: "assets" },
+    { key: "assets_property", label: t("Propiedades", "Properties"), group: "assets" },
+    { key: "liabilities", label: t("Deudas totales", "Total liabilities"), group: "assets" },
+  ];
 
   useEffect(() => {
     if (!dirty) setForm(profile);
@@ -75,9 +77,9 @@ function MiPerfil() {
     try {
       await save({ ...rest, completed: true });
       setDirty(false);
-      toast.success("Datos actualizados — recalculamos toda tu app");
+      toast.success(t("Datos actualizados — recalculamos toda tu app", "Data updated — we're recalculating your whole app"));
     } catch {
-      toast.error("No pudimos guardar tus datos");
+      toast.error(t("No pudimos guardar tus datos", "We couldn't save your data"));
     }
   };
 
@@ -94,47 +96,50 @@ function MiPerfil() {
   return (
     <PageShell>
       <PageHeader
-        eyebrow="Perfil financiero"
-        title="Mis datos"
-        subtitle="Edita cualquier campo: patrimonio, dashboard, retiro y objetivos se recalculan con tus números."
+        eyebrow={t("Perfil financiero", "Financial profile")}
+        title={t("Mis datos", "My data")}
+        subtitle={t(
+          "Edita cualquier campo: patrimonio, dashboard, retiro y objetivos se recalculan con tus números.",
+          "Edit any field: net worth, dashboard, retirement and goals recalculate with your numbers.",
+        )}
       />
 
       <div className="surface flex flex-wrap items-center gap-3 p-4">
         <div className="grid flex-1 grid-cols-2 gap-4 sm:grid-cols-4">
-          <Stat label="Patrimonio neto" value={preview.fmt(preview.netWorth)} />
-          <Stat label="Ahorro mensual" value={preview.fmt(preview.savings)} />
-          <Stat label="Your Number" value={preview.fmtCompact(preview.plan.targetCapital)} />
-          <Stat label="Libertad" value={`${preview.plan.freedomAge} años`} />
+          <Stat label={t("Patrimonio neto", "Net worth")} value={preview.fmt(preview.netWorth)} />
+          <Stat label={t("Ahorro mensual", "Monthly savings")} value={preview.fmt(preview.savings)} />
+          <Stat label={t("Your Number", "Your Number")} value={preview.fmtCompact(preview.plan.targetCapital)} />
+          <Stat label={t("Libertad", "Freedom")} value={`${preview.plan.freedomAge} ${t("años", "years")}`} />
         </div>
         <div className="flex gap-2">
           <Button variant="outline" className="gap-2 rounded-full" onClick={() => navigate({ to: "/onboarding" })}>
             <RefreshCw className="h-4 w-4" />
-            Rehacer onboarding
+            {t("Rehacer onboarding", "Redo onboarding")}
           </Button>
           <Button className="gap-2 rounded-full" onClick={() => void onSave()} disabled={saving || !dirty}>
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-            Guardar cambios
+            {t("Guardar cambios", "Save changes")}
           </Button>
         </div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title="Sobre ti">
+        <Panel title={t("Sobre ti", "About you")}>
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Nombre">
-              <Input value={form.full_name} onChange={(e) => set("full_name", e.target.value)} placeholder="Tu nombre" />
+            <Field label={t("Nombre", "Name")}>
+              <Input value={form.full_name} onChange={(e) => set("full_name", e.target.value)} placeholder={t("Tu nombre", "Your name")} />
             </Field>
-            <Field label="Edad">
+            <Field label={t("Edad", "Age")}>
               <Input
                 type="number"
                 value={form.age ?? ""}
                 onChange={(e) => set("age", e.target.value === "" ? null : Number(e.target.value))}
               />
             </Field>
-            <Field label="Edad de retiro">
+            <Field label={t("Edad de retiro", "Retirement age")}>
               <Input type="number" value={form.retire_age} onChange={(e) => set("retire_age", Number(e.target.value || 0))} />
             </Field>
-            <Field label="Rentabilidad esperada (% anual)">
+            <Field label={t("Rentabilidad esperada (% anual)", "Expected return (% annual)")}>
               <Input
                 type="number"
                 step="0.5"
@@ -142,7 +147,7 @@ function MiPerfil() {
                 onChange={(e) => set("expected_return", Number(e.target.value || 0))}
               />
             </Field>
-            <Field label="País">
+            <Field label={t("País", "Country")}>
               <select
                 className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
                 value={form.country}
@@ -155,7 +160,7 @@ function MiPerfil() {
                   }
                 }}
               >
-                <option value="">Selecciona…</option>
+                <option value="">{t("Selecciona…", "Select…")}</option>
                 {countries.map((c) => (
                   <option key={c.code} value={c.name}>
                     {c.name}
@@ -163,7 +168,7 @@ function MiPerfil() {
                 ))}
               </select>
             </Field>
-            <Field label="Moneda">
+            <Field label={t("Moneda", "Currency")}>
               <select
                 className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
                 value={form.currency || "EUR"}
@@ -176,13 +181,13 @@ function MiPerfil() {
                 ))}
               </select>
             </Field>
-            <Field label="Ciudad objetivo">
+            <Field label={t("Ciudad objetivo", "Target city")}>
               <select
                 className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
                 value={form.city}
                 onChange={(e) => set("city", e.target.value)}
               >
-                <option value="">Selecciona…</option>
+                <option value="">{t("Selecciona…", "Select…")}</option>
                 {cities.map((c) => (
                   <option key={c.name} value={c.name}>
                     {c.name} · {c.country}
@@ -193,7 +198,7 @@ function MiPerfil() {
           </div>
         </Panel>
 
-        <Panel title="Ingresos y flujo" description="Importes mensuales">
+        <Panel title={t("Ingresos y flujo", "Income & flow")} description={t("Importes mensuales", "Monthly amounts")}>
           <div className="grid gap-4 sm:grid-cols-2">
             {moneyFields
               .filter((f) => f.group === "income" || f.group === "flow")
@@ -210,7 +215,7 @@ function MiPerfil() {
           </div>
         </Panel>
 
-        <Panel title="Patrimonio" description="Activos y deudas actuales">
+        <Panel title={t("Patrimonio", "Net worth")} description={t("Activos y deudas actuales", "Current assets and debts")}>
           <div className="grid gap-4 sm:grid-cols-2">
             {moneyFields
               .filter((f) => f.group === "assets")
@@ -227,15 +232,15 @@ function MiPerfil() {
           </div>
         </Panel>
 
-        <Panel title="Estilo de vida y objetivos">
+        <Panel title={t("Estilo de vida y objetivos", "Lifestyle & goals")}>
           <div className="space-y-5">
-            <Chips label="Objetivo principal" options={goals.map((g) => ({ value: g.value, label: `${g.emoji} ${g.label}` }))} value={form.goal} onSelect={(v) => set("goal", v)} />
-            <Chips label="Estado civil" options={maritalOptions.map((m) => ({ value: m, label: m }))} value={form.marital_status} onSelect={(v) => set("marital_status", v)} />
-            <Chips label="Hijos" options={childrenOptions.map((c) => ({ value: c, label: c }))} value={form.children} onSelect={(v) => set("children", v)} />
-            <Chips label="¿Planeas tener hijos?" options={plansChildrenOptions.map((c) => ({ value: c, label: c }))} value={form.plans_children} onSelect={(v) => set("plans_children", v)} />
-            <Chips label="Estilo de vida" options={lifestyles.map((l) => ({ value: l.value, label: `${l.emoji} ${l.label}` }))} value={form.lifestyle} onSelect={(v) => set("lifestyle", v)} />
-            <Chips label="Viajes al año" options={travelOptions.map((t) => ({ value: t.value, label: t.label }))} value={form.travel_frequency} onSelect={(v) => set("travel_frequency", v)} />
-            <Chips label="Vivienda" options={housingOptions.map((h) => ({ value: h.value, label: `${h.emoji} ${h.label}` }))} value={form.housing} onSelect={(v) => set("housing", v)} />
+            <Chips label={t("Objetivo principal", "Main goal")} options={goals.map((g) => ({ value: g.value, label: `${g.emoji} ${g.label}` }))} value={form.goal} onSelect={(v) => set("goal", v)} />
+            <Chips label={t("Estado civil", "Marital status")} options={maritalOptions.map((m) => ({ value: m, label: m }))} value={form.marital_status} onSelect={(v) => set("marital_status", v)} />
+            <Chips label={t("Hijos", "Children")} options={childrenOptions.map((c) => ({ value: c, label: c }))} value={form.children} onSelect={(v) => set("children", v)} />
+            <Chips label={t("¿Planeas tener hijos?", "Planning to have children?")} options={plansChildrenOptions.map((c) => ({ value: c, label: c }))} value={form.plans_children} onSelect={(v) => set("plans_children", v)} />
+            <Chips label={t("Estilo de vida", "Lifestyle")} options={lifestyles.map((l) => ({ value: l.value, label: `${l.emoji} ${l.label}` }))} value={form.lifestyle} onSelect={(v) => set("lifestyle", v)} />
+            <Chips label={t("Viajes al año", "Trips per year")} options={travelOptions.map((tr) => ({ value: tr.value, label: tr.label }))} value={form.travel_frequency} onSelect={(v) => set("travel_frequency", v)} />
+            <Chips label={t("Vivienda", "Housing")} options={housingOptions.map((h) => ({ value: h.value, label: `${h.emoji} ${h.label}` }))} value={form.housing} onSelect={(v) => set("housing", v)} />
           </div>
         </Panel>
       </div>
@@ -243,7 +248,7 @@ function MiPerfil() {
       <div className="flex justify-end">
         <Button className="gap-2 rounded-full" onClick={() => void onSave()} disabled={saving || !dirty}>
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-          Guardar cambios
+          {t("Guardar cambios", "Save changes")}
         </Button>
       </div>
     </PageShell>

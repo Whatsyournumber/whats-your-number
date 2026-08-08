@@ -8,6 +8,7 @@ import { Panel } from "@/components/page";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import { useT } from "@/hooks/use-language";
 import { supabase } from "@/integrations/supabase/client";
 import { processStatement } from "@/lib/statements.functions";
 import { cn } from "@/lib/utils";
@@ -41,6 +42,7 @@ const money = (v: number, currency: string) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: currency || "USD", maximumFractionDigits: 2 }).format(v);
 
 export function StatementImporter() {
+  const t = useT();
   const { user } = useAuth();
   const qc = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -88,11 +90,16 @@ export function StatementImporter() {
   const processMutation = useMutation({
     mutationFn: (statementId: string) => runProcess({ data: { statementId } }),
     onSuccess: (result) => {
-      toast.success(`${result.inserted} movimientos clasificados por IA · actualizando tus módulos`);
+      toast.success(
+        t(
+          `${result.inserted} movimientos clasificados por IA · actualizando tus módulos`,
+          `${result.inserted} transactions classified by AI · updating your modules`,
+        ),
+      );
       refreshAll();
     },
     onError: (error: Error) => {
-      toast.error(error.message || "No pudimos procesar el archivo");
+      toast.error(error.message || t("No pudimos procesar el archivo", "We couldn't process the file"));
       void qc.invalidateQueries({ queryKey: ["statements"] });
     },
   });
@@ -115,11 +122,11 @@ export function StatementImporter() {
         const lower = file.name.toLowerCase();
         const ok = lower.endsWith(".pdf") || lower.endsWith(".csv") || lower.endsWith(".txt");
         if (!ok) {
-          toast.error(`${file.name}: solo aceptamos PDF o CSV`);
+          toast.error(t(`${file.name}: solo aceptamos PDF o CSV`, `${file.name}: we only accept PDF or CSV`));
           continue;
         }
         if (file.size > MAX_BYTES) {
-          toast.error(`${file.name}: máximo 15 MB`);
+          toast.error(t(`${file.name}: máximo 15 MB`, `${file.name}: maximum 15 MB`));
           continue;
         }
 
@@ -144,12 +151,12 @@ export function StatementImporter() {
           .single();
         if (insErr) throw new Error(insErr.message);
 
-        toast.success(`${file.name} subido · analizando con IA…`);
+        toast.success(t(`${file.name} subido · analizando con IA…`, `${file.name} uploaded · analyzing with AI…`));
         void qc.invalidateQueries({ queryKey: ["statements"] });
         processMutation.mutate(inserted.id as string);
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Error al subir el archivo");
+      toast.error(error instanceof Error ? error.message : t("Error al subir el archivo", "Error uploading the file"));
     } finally {
       setUploading(false);
       if (inputRef.current) inputRef.current.value = "";
@@ -162,8 +169,11 @@ export function StatementImporter() {
   return (
     <div className="space-y-4">
       <Panel
-        title="Subir estados de cuenta"
-        description="PDF de tarjetas o CSV bancarios — la IA extrae y clasifica cada movimiento"
+        title={t("Cargar EEFF", "Upload statements")}
+        description={t(
+          "PDF de tarjetas o CSV bancarios — la IA extrae y clasifica cada movimiento",
+          "Card PDFs or bank CSVs — AI extracts and classifies each transaction",
+        )}
       >
         <div
           onDragOver={(e) => {
@@ -194,13 +204,16 @@ export function StatementImporter() {
           ) : (
             <Upload className="h-6 w-6 text-muted-foreground" />
           )}
-          <p className="mt-3 text-sm font-medium">Arrastra tus archivos aquí</p>
+          <p className="mt-3 text-sm font-medium">{t("Arrastra tus archivos aquí", "Drag your files here")}</p>
           <p className="mt-1 text-xs text-muted-foreground">
-            Extraemos fecha, comercio, descripción, monto y moneda · PDF o CSV · máx. 15 MB
+            {t(
+              "Extraemos fecha, comercio, descripción, monto y moneda · PDF o CSV · máx. 15 MB",
+              "We extract date, merchant, description, amount and currency · PDF or CSV · max. 15 MB",
+            )}
           </p>
           <div className="mt-4 flex gap-2">
             <Button size="sm" className="gap-2 rounded-full" onClick={() => inputRef.current?.click()} disabled={uploading}>
-              <FileText className="h-3.5 w-3.5" /> Subir PDF
+              <FileText className="h-3.5 w-3.5" /> {t("Subir PDF", "Upload PDF")}
             </Button>
             <Button
               size="sm"
@@ -209,18 +222,18 @@ export function StatementImporter() {
               onClick={() => inputRef.current?.click()}
               disabled={uploading}
             >
-              <FileSpreadsheet className="h-3.5 w-3.5" /> Subir CSV
+              <FileSpreadsheet className="h-3.5 w-3.5" /> {t("Subir CSV", "Upload CSV")}
             </Button>
           </div>
         </div>
       </Panel>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title="Archivos importados" description="Historial de estados de cuenta procesados">
+        <Panel title={t("Archivos importados", "Imported files")} description={t("Historial de estados de cuenta procesados", "History of processed statements")}>
           {statementsQuery.isLoading ? (
-            <p className="text-sm text-muted-foreground">Cargando…</p>
+            <p className="text-sm text-muted-foreground">{t("Cargando…", "Loading…")}</p>
           ) : statements.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Aún no has subido ningún estado de cuenta.</p>
+            <p className="text-sm text-muted-foreground">{t("Aún no has subido ningún estado de cuenta.", "You haven't uploaded any statements yet.")}</p>
           ) : (
             <div className="space-y-2">
               {statements.map((s) => (
@@ -232,10 +245,10 @@ export function StatementImporter() {
                       <p className="truncate text-xs text-muted-foreground">
                         {new Date(s.created_at).toLocaleDateString("es")} ·{" "}
                         {s.status === "processed"
-                          ? `${s.transactions_count ?? 0} movimientos`
+                          ? t(`${s.transactions_count ?? 0} movimientos`, `${s.transactions_count ?? 0} transactions`)
                           : s.status === "error"
-                            ? "Error"
-                            : "Procesando…"}
+                            ? t("Error", "Error")
+                            : t("Procesando…", "Processing…")}
                       </p>
                     </div>
                     <div className="ml-auto flex items-center gap-1">
@@ -268,30 +281,30 @@ export function StatementImporter() {
           )}
         </Panel>
 
-        <Panel title="Movimientos extraídos" description="Clasificados automáticamente por la IA">
+        <Panel title={t("Movimientos extraídos", "Extracted transactions")} description={t("Clasificados automáticamente por la IA", "Automatically classified by AI")}>
           {transactions.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Sube un archivo para ver tus movimientos aquí.</p>
+            <p className="text-sm text-muted-foreground">{t("Sube un archivo para ver tus movimientos aquí.", "Upload a file to see your transactions here.")}</p>
           ) : (
             <div className="max-h-[420px] space-y-2 overflow-y-auto pr-1">
-              {transactions.map((t) => (
-                <div key={t.id} className="flex items-center gap-3 rounded-xl bg-elevated/60 px-3 py-2">
+              {transactions.map((tx) => (
+                <div key={tx.id} className="flex items-center gap-3 rounded-xl bg-elevated/60 px-3 py-2">
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-medium">{t.merchant}</p>
+                    <p className="truncate text-sm font-medium">{tx.merchant}</p>
                     <p className="truncate text-xs text-muted-foreground">
-                      {t.tx_date ?? "—"}
-                      {t.subcategory ? ` · ${t.subcategory}` : t.category ? ` · ${t.category}` : ""}
+                      {tx.tx_date ?? "—"}
+                      {tx.subcategory ? ` · ${tx.subcategory}` : tx.category ? ` · ${tx.category}` : ""}
                     </p>
                   </div>
                   <div className="ml-auto text-right">
                     <p
                       className={cn(
                         "numeric text-sm font-semibold",
-                        t.excluded && "text-muted-foreground line-through",
+                        tx.excluded && "text-muted-foreground line-through",
                       )}
                     >
-                      {money(t.amount, t.currency)}
+                      {money(tx.amount, tx.currency)}
                     </p>
-                    {t.excluded && <span className="text-[10px] text-primary">→ Patrimonio</span>}
+                    {tx.excluded && <span className="text-[10px] text-primary">→ {t("Patrimonio", "Net worth")}</span>}
                   </div>
                 </div>
               ))}
@@ -304,8 +317,9 @@ export function StatementImporter() {
 }
 
 function StatusIcon({ status }: { status: string }) {
+  const t = useT();
   if (status === "processed") return <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />;
   if (status === "error") return <TriangleAlert className="h-4 w-4 shrink-0 text-destructive" />;
   if (status === "processing") return <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" />;
-  return <Badge variant="secondary" className="rounded-full text-[10px]">Nuevo</Badge>;
+  return <Badge variant="secondary" className="rounded-full text-[10px]">{t("Nuevo", "New")}</Badge>;
 }
