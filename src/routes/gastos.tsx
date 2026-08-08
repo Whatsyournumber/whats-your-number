@@ -11,7 +11,7 @@ import {
   subMonths,
 } from "date-fns";
 import { es } from "date-fns/locale";
-import { CalendarIcon, Plus, Trash2, Upload } from "lucide-react";
+import { CalendarIcon, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
 import { useMemo, useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -29,6 +29,7 @@ import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions, type Tx } from "@/hooks/use-transactions";
 import { compact, money } from "@/lib/onboarding";
+import { getSpendAdvice } from "@/lib/spend-advice.functions";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/gastos")({
@@ -229,6 +230,37 @@ function Gastos() {
     range?.from && range?.to
       ? `${format(range.from, "d MMM yyyy", { locale: es })} — ${format(range.to, "d MMM yyyy", { locale: es })}`
       : "Selecciona un rango";
+
+  const runAdvice = async () => {
+    setAdviceLoading(true);
+    setAdviceError(null);
+    try {
+      const res = await getSpendAdvice({
+        data: {
+          currency,
+          periodLabel: rangeLabel,
+          total,
+          prevTotal,
+          fixedTotal: fixed.total,
+          target,
+          monthlyRun,
+          categories: byCategory.slice(0, 12).map((c) => ({
+            name: c.name,
+            amount: c.amount,
+            prevAmount: prevByCategory.get(c.name) ?? 0,
+          })),
+          merchants: merchants.slice(0, 10).map((m) => ({ name: m.name, amount: m.amount, count: m.count })),
+        },
+      });
+      setAdvice(res.advice);
+    } catch (e) {
+      setAdviceError(e instanceof Error ? e.message : "No pudimos generar las recomendaciones.");
+    } finally {
+      setAdviceLoading(false);
+    }
+  };
+
+
 
   return (
     <PageShell>
