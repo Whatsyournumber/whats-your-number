@@ -83,19 +83,22 @@ export function buildDataset(p: Profile): Dataset {
     .reverse()
     .map((value, i) => {
       const d = new Date(now.getFullYear(), now.getMonth() - (11 - i), 1);
+      const isCurrent = i === 11;
       const w = WOBBLE[i]!;
-      const mIncome = Math.round(income * (0.97 + (w - 1) * 0.6));
-      const mExpenses = Math.round(expenses * w);
+      // El mes actual refleja exactamente los datos del perfil (salario + alquileres + bonos + otros).
+      const mIncome = isCurrent ? Math.round(income) : Math.round(income * (0.97 + (w - 1) * 0.6));
+      const mExpenses = isCurrent ? Math.round(expenses) : Math.round(expenses * w);
       return {
         month: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`,
         label: MONTH_LABELS[d.getMonth()]!,
         income: mIncome,
         expenses: mExpenses,
-        savings: Math.max(0, mIncome - mExpenses),
+        savings: isCurrent ? Math.round(savings) : Math.max(0, mIncome - mExpenses),
         netWorth: Math.round(value),
-        investments: Math.round(monthlyInvest * w),
+        investments: Math.round(monthlyInvest * (isCurrent ? 1 : w)),
       };
     });
+
 
   const current = months[months.length - 1]!;
   const previous = months[months.length - 2] ?? current;
