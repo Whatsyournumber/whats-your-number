@@ -51,7 +51,7 @@ function yearsToTarget(target: number, current: number, monthly: number) {
 
 function DemoPage() {
   const t = useT();
-  const { start } = useSearch({ from: "/demo" }) as { start?: string };
+  const { start } = useSearch({ from: "/demo" });
   const [currency, setCurrency] = useState<"EUR" | "USD">("EUR");
   const [step, setStep] = useState(0); // 0 = intro, 1..3 = preguntas, 4 = resultado
   const [monthlyLife, setMonthlyLife] = useState("");
