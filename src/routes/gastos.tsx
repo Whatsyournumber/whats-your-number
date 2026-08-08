@@ -288,6 +288,53 @@ function Gastos() {
         <KpiCard label="Promedio diario" value={fmt(total / days)} hint={`${days} días`} index={3} />
       </div>
 
+      <Panel
+        title="Gasto objetivo mensual"
+        description="Tu techo de gasto según tu número; comparado con tu ritmo actual (fijos + variable proyectado a 30 días)"
+      >
+        <div className="grid gap-5 md:grid-cols-[240px_1fr] md:items-center">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">Objetivo</p>
+            <div className="mt-2 flex items-center gap-2">
+              <Input
+                type="number"
+                value={String(target)}
+                onChange={(e) => setTarget(Number(e.target.value) || 0)}
+                className="numeric h-11 w-40 text-lg font-semibold"
+              />
+              <span className="text-xs text-muted-foreground">/mes</span>
+            </div>
+          </div>
+          <div>
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <span className="numeric text-2xl font-semibold">{fmt(monthlyRun)}</span>
+              <span className="text-xs text-muted-foreground">ritmo mensual estimado</span>
+              <span
+                className={cn(
+                  "ml-auto rounded-full px-2 py-0.5 text-xs font-medium",
+                  monthlyRun <= target ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative",
+                )}
+              >
+                {monthlyRun <= target
+                  ? `${fmt(target - monthlyRun)} por debajo`
+                  : `${fmt(monthlyRun - target)} por encima`}
+              </span>
+            </div>
+            <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-muted">
+              <div
+                className={cn("h-full rounded-full", monthlyRun <= target ? "bg-positive" : "bg-negative")}
+                style={{ width: `${Math.min(100, targetPct)}%` }}
+              />
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">
+              {targetPct.toFixed(0)}% del objetivo · fijos {fmt(fixed.total)} + variable {fmt((total / days) * 30)}
+            </p>
+          </div>
+        </div>
+      </Panel>
+
+
+
       <Panel title="Gastos fijos mensuales" description="Edita nombre y monto; se guardan en este navegador">
         <div className="space-y-2">
           {fixed.items.map((item) => (
