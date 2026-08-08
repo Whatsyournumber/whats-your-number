@@ -90,7 +90,7 @@ export function SiteHeader() {
 
           <div className="flex flex-none items-center justify-center">
             <Link to="/" className="shrink-0">
-              <BrandLogo />
+              <BrandMark className="h-9 w-9" />
             </Link>
           </div>
 
