@@ -22,7 +22,19 @@ export function SiteHeader() {
         <BrandLogo />
       </Link>
 
-      <nav className="ml-6 hidden items-center gap-1 md:flex">
+      <Button
+        asChild
+        variant="outline"
+        size="sm"
+        className="hidden rounded-full border-primary/30 bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary sm:inline-flex"
+      >
+        <Link to="/demo" search={{ start: 1 }}>
+          <Sparkles className="h-3.5 w-3.5" />
+          {t("Demo gratis", "Free demo")}
+        </Link>
+      </Button>
+
+      <nav className="hidden items-center gap-1 md:flex">
         {tabs.map((tab) => (
           <Link
             key={tab.label}
@@ -38,18 +50,6 @@ export function SiteHeader() {
       </nav>
 
       <div className="ml-auto flex items-center gap-2">
-        <Button
-          asChild
-          variant="outline"
-          size="sm"
-          className="hidden rounded-full border-primary/30 bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary sm:inline-flex"
-        >
-          <Link to="/demo" search={{ start: 1 }}>
-            <Sparkles className="h-3.5 w-3.5" />
-            {t("Demo gratis", "Free demo")}
-          </Link>
-        </Button>
-        <LanguageToggle />
         {user ? (
           <Button asChild size="sm" className="rounded-full">
             <Link to="/dashboard">{t("Ir al dashboard", "Go to dashboard")}</Link>
@@ -68,6 +68,7 @@ export function SiteHeader() {
             </Button>
           </>
         )}
+        <LanguageToggle />
       </div>
     </header>
   );
