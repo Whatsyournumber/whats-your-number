@@ -342,8 +342,6 @@ function Landing() {
 
 
 
-        <DemoCard />
-
         <section id="funciones" className="mt-24 scroll-mt-24 md:mt-32">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -431,6 +429,7 @@ function Landing() {
           </div>
         </section>
 
+        <DemoCard />
 
         <section className="mt-24 md:mt-32">
 
