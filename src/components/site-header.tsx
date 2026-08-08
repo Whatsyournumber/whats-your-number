@@ -11,9 +11,10 @@ export function SiteHeader() {
   const t = useT();
 
   const tabs = [
-    { label: t("Funciones", "Features"), to: "/", hash: "funciones" },
+    { label: t("Cómo funciona", "How it works"), to: "/", hash: "funciones" },
     { label: t("Precios", "Pricing"), to: "/precios" },
     { label: "Blog", to: "/blog" },
+    { label: "demo", to: "/demo", search: { start: 1 }, icon: true },
   ] as const;
 
   return (
@@ -22,29 +23,25 @@ export function SiteHeader() {
         <BrandLogo />
       </Link>
 
-      <Button
-        asChild
-        variant="outline"
-        size="sm"
-        className="hidden rounded-full border-primary/30 bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary sm:inline-flex"
-      >
-        <Link to="/demo" search={{ start: 1 }}>
-          <Sparkles className="h-3.5 w-3.5" />
-          {t("Demo gratis", "Free demo")}
-        </Link>
-      </Button>
-
       <nav className="hidden items-center gap-1 md:flex">
         {tabs.map((tab) => (
           <Link
             key={tab.label}
             to={tab.to}
             {...("hash" in tab ? { hash: tab.hash } : {})}
+            {...("search" in tab ? { search: tab.search } : {})}
             className="rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground"
             activeOptions={{ exact: true, includeHash: false }}
             activeProps={{ className: "bg-elevated text-foreground" }}
           >
-            {tab.label}
+            {tab.label === "demo" ? (
+              <span className="inline-flex items-center gap-1.5 text-primary">
+                <Sparkles className="h-3.5 w-3.5" />
+                {t("Demo gratis", "Free demo")}
+              </span>
+            ) : (
+              tab.label
+            )}
           </Link>
         ))}
       </nav>
