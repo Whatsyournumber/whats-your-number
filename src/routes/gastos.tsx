@@ -204,18 +204,44 @@ function Gastos() {
     const byMonth = days > 62;
     const keyOf = (d: Date) => (byMonth ? format(d, "yyyy-MM") : format(d, "yyyy-MM-dd"));
     const labelOf = (d: Date) => (byMonth ? format(d, "MMM yy", { locale: es }) : format(d, "d MMM", { locale: es }));
-    const buckets = new Map<string, { label: string; gasto: number }>();
+    const keys: string[] = [];
+    const buckets = new Map<string, { label: string; gasto: number; anterior: number; fijo: number }>();
     for (let i = 0; i < days; i++) {
       const d = addDays(from, i);
       const k = keyOf(d);
-      if (!buckets.has(k)) buckets.set(k, { label: labelOf(d), gasto: 0 });
+      if (!buckets.has(k)) {
+        keys.push(k);
+        buckets.set(k, { label: labelOf(d), gasto: 0, anterior: 0, fijo: 0 });
+      }
     }
     for (const t of current) {
       const b = buckets.get(keyOf(parseISO(t.tx_date!)));
       if (b) b.gasto += Math.abs(t.amount);
     }
-    return [...buckets.values()];
-  }, [current, from, days]);
+    // periodo anterior alineado posición a posición
+    const prevKeys: string[] = [];
+    const prevBuckets = new Map<string, number>();
+    for (let i = 0; i < days; i++) {
+      const d = addDays(prevFrom, i);
+      const k = keyOf(d);
+      if (!prevBuckets.has(k)) {
+        prevKeys.push(k);
+        prevBuckets.set(k, 0);
+      }
+    }
+    for (const t of previous) {
+      const k = keyOf(parseISO(t.tx_date!));
+      if (prevBuckets.has(k)) prevBuckets.set(k, (prevBuckets.get(k) ?? 0) + Math.abs(t.amount));
+    }
+    keys.forEach((k, i) => {
+      const pk = prevKeys[i];
+      const b = buckets.get(k)!;
+      b.anterior = pk ? (prevBuckets.get(pk) ?? 0) : 0;
+      b.fijo = byMonth ? fixed.total : fixed.total / 30;
+    });
+    return keys.map((k) => buckets.get(k)!);
+  }, [current, previous, from, prevFrom, days, fixed.total]);
+
 
   const merchants = useMemo(() => {
     const map = new Map<string, { name: string; amount: number; count: number }>();
