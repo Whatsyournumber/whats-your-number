@@ -7,7 +7,9 @@ import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
+import { useTransactions } from "@/hooks/use-transactions";
 import { buildDataset } from "@/lib/profile-data";
+import { buildRealMonths } from "@/lib/real-months";
 
 export const Route = createFileRoute("/patrimonio")({
   head: () => ({
@@ -24,8 +26,10 @@ export const Route = createFileRoute("/patrimonio")({
 function Patrimonio() {
   const t = useT();
   const { profile } = useProfile();
+  const { transactions } = useTransactions();
   const d = buildDataset(profile);
-  const { fmt, fmtCompact, months, assets, liabilities } = d;
+  const { fmt, fmtCompact, assets, liabilities } = d;
+  const months = buildRealMonths(transactions, d.netWorth) ?? d.months;
   const growth =
     months[0]!.netWorth > 0 ? ((d.netWorth - months[0]!.netWorth) / Math.abs(months[0]!.netWorth)) * 100 : 0;
 

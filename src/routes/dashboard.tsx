@@ -21,8 +21,10 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
+import { useTransactions } from "@/hooks/use-transactions";
 import { buildInsights } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
+import { buildRealMonths } from "@/lib/real-months";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -48,8 +50,13 @@ function greeting(t: (es: string, en: string) => string) {
 function Dashboard() {
   const t = useT();
   const { profile, isLoading } = useProfile();
+  const { transactions } = useTransactions();
   const d = buildDataset(profile);
-  const { current, previous, months, fmt, fmtCompact, plan } = d;
+  const realMonths = buildRealMonths(transactions, d.netWorth);
+  const months = realMonths ?? d.months;
+  const current = months[months.length - 1] ?? d.current;
+  const previous = months[months.length - 2] ?? current;
+  const { fmt, fmtCompact, plan } = d;
 
   const freeCash = Math.max(0, current.savings - current.investments);
   const prevFree = Math.max(0, previous.savings - previous.investments);
