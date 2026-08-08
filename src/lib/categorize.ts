@@ -113,6 +113,7 @@ export const BASE_CATEGORIES = [
   "Lifestyle",
   "Apps",
   "Marketing digital",
+  "Otros",
 ];
 
 const FOOD_CATEGORIES = ["aliment", "comida", "food", "groceries", "supermerc", "restaurant"];
