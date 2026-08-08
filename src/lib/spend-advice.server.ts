@@ -15,14 +15,14 @@ export type AdviceInput = {
 };
 
 const SYSTEM = `Eres un asesor financiero personal, directo y práctico. Respondes SIEMPRE en español, en markdown breve.
-Estructura exacta:
-### Dónde te excediste
-- lista de rubros con exceso vs. el periodo anterior o vs. el objetivo, con montos y % 
-### Cómo ahorrar
-- 3 a 5 acciones concretas, cada una con un ahorro mensual estimado en la moneda dada
-### Meta del mes
-- una frase con el ahorro total alcanzable y si con eso cumples el objetivo de gasto
-No inventes datos que no estén en el contexto. Sé específico con comercios y categorías reales.`;
+Devuelve EXACTAMENTE las 4 recomendaciones más importantes, ordenadas por impacto de ahorro (mayor primero).
+Formato exacto, sin introducción ni cierre:
+### Las 4 acciones de mayor impacto
+- **<Rubro o comercio>** — qué está pasando (monto y % vs. periodo anterior o vs. objetivo) → acción concreta. Ahorro estimado: <monto> <moneda>/mes
+(repite hasta tener 4 bullets, ni uno más ni uno menos)
+### Total alcanzable
+- una sola frase: ahorro mensual sumado y si con eso cumples el objetivo de gasto
+No inventes datos que no estén en el contexto. Usa categorías y comercios reales del contexto.`;
 
 export async function generateSpendAdvice(input: AdviceInput): Promise<string> {
   const apiKey = process.env["LOVABLE_API_KEY"];
