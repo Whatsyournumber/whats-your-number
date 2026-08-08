@@ -6,7 +6,9 @@ import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useT } from "@/hooks/use-language";
-import { benchmark, fmt, holdings } from "@/lib/data";
+import { useProfile } from "@/hooks/use-profile";
+import { benchmark } from "@/lib/data";
+import { buildDataset } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/portafolio")({
@@ -36,10 +38,28 @@ function Portafolio() {
     Cripto: t("Cripto", "Crypto"),
     Cash: t("Cash", "Cash"),
   };
-  const enriched = holdings.map((h) => {
-    const value = h.units * h.price;
-    const cost = h.units * h.avgCost;
-    return { ...h, value, cost, gain: value - cost, ret: cost ? ((value - cost) / cost) * 100 : 0 };
+  const { profile } = useProfile();
+  const d = buildDataset(profile);
+  const fmt = (n: number, _dec?: number) => d.fmt(n);
+  const r = Math.max(0, profile.expected_return || 7) / 100;
+  const positions = [
+    { ticker: t("ETFs / fondos", "ETFs / funds"), name: t("Fondos indexados y ETFs", "Index funds and ETFs"), type: "ETF" as const, value: profile.assets_etf, growth: r },
+    { ticker: t("Fondo de retiro", "Retirement fund"), name: t("Plan de pensiones / retiro", "Pension / retirement plan"), type: "ETF" as const, value: profile.assets_retirement, growth: r * 0.8 },
+    { ticker: t("Acciones", "Stocks"), name: t("Posiciones individuales", "Individual positions"), type: "Acción" as const, value: profile.assets_stocks, growth: r * 1.3 },
+    { ticker: t("Cripto", "Crypto"), name: t("Activos digitales", "Digital assets"), type: "Cripto" as const, value: profile.assets_crypto, growth: r * 2 },
+    { ticker: t("Efectivo", "Cash"), name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"), type: "Cash" as const, value: profile.assets_cash + profile.assets_bank, growth: 0 },
+  ].filter((h) => h.value > 0);
+
+  const enriched = positions.map((h) => {
+    const cost = Math.round(h.value / (1 + h.growth));
+    return {
+      ...h,
+      avgCost: cost,
+      dividends: Math.round(h.type === "ETF" ? h.value * 0.018 : h.type === "Acción" ? h.value * 0.012 : 0),
+      cost,
+      gain: h.value - cost,
+      ret: cost ? ((h.value - cost) / cost) * 100 : 0,
+    };
   });
 
   const totalValue = enriched.reduce((s, h) => s + h.value, 0);
@@ -68,7 +88,7 @@ function Portafolio() {
           </div>
           <div>
             <p className="text-[11px] text-muted-foreground">{t("Costo prom.", "Avg. cost")}</p>
-            <p className="numeric text-sm">{fmt(h.avgCost, 2)}</p>
+            <p className="numeric text-sm">{fmt(h.avgCost)}</p>
           </div>
           <div>
             <p className="text-[11px] text-muted-foreground">{t("Ganancia", "Gain")}</p>
@@ -91,10 +111,10 @@ function Portafolio() {
       <PageHeader eyebrow={t("Inversiones", "Investments")} title={t("Portafolio", "Portfolio")} subtitle={t("Rendimiento consolidado de tus posiciones frente al mercado.", "Consolidated performance of your positions against the market.")} />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard label={t("Valor actual", "Current value")} value={fmt(totalValue)} delta={5.8} accent index={0} />
+        <KpiCard label={t("Valor actual", "Current value")} value={fmt(totalValue)} accent index={0} />
         <KpiCard label={t("Costo invertido", "Invested cost")} value={fmt(totalCost)} index={1} />
-        <KpiCard label={t("Ganancia total", "Total gain")} value={fmt(totalGain)} delta={(totalGain / totalCost) * 100} index={2} />
-        <KpiCard label={t("Dividendos 12m", "Dividends 12m")} value={fmt(dividends)} delta={12.4} index={3} />
+        <KpiCard label={t("Ganancia total", "Total gain")} value={fmt(totalGain)} delta={totalCost > 0 ? (totalGain / totalCost) * 100 : 0} index={2} />
+        <KpiCard label={t("Dividendos 12m", "Dividends 12m")} value={fmt(dividends)} index={3} />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
@@ -127,7 +147,7 @@ function Portafolio() {
               <li key={a.name} className="flex items-center gap-2 text-xs">
                 <span className="h-2 w-2 rounded-full" style={{ background: a.color }} />
                 <span className="text-muted-foreground">{typeLabels[a.name]}</span>
-                <span className="numeric ml-auto font-medium">{((a.value / totalValue) * 100).toFixed(0)}%</span>
+                <span className="numeric ml-auto font-medium">{totalValue > 0 ? ((a.value / totalValue) * 100).toFixed(0) : 0}%</span>
               </li>
             ))}
           </ul>
