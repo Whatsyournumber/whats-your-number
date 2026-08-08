@@ -257,7 +257,7 @@ function Landing() {
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Button asChild size="lg" className="gap-2 rounded-full px-6">
-              <Link to="/demo">
+              <Link to="/demo" search={{ start: 1 }}>
                 {t("Descubre tu número", "Discover your number")} <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
