@@ -13,7 +13,7 @@ import {
 import { es } from "date-fns/locale";
 import { CalendarIcon, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { categorizeTx } from "@/lib/categorize";
+import { BASE_CATEGORIES, categorizeTx } from "@/lib/categorize";
 import type { DateRange } from "react-day-picker";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, ComposedChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
