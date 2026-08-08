@@ -4,7 +4,8 @@ import { motion } from "motion/react";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Progress } from "@/components/ui/progress";
 import { useT } from "@/hooks/use-language";
-import { fmt, fmtCompact, goals } from "@/lib/data";
+import { useProfile } from "@/hooks/use-profile";
+import { buildDataset } from "@/lib/profile-data";
 
 export const Route = createFileRoute("/objetivos")({
   head: () => ({
@@ -20,9 +21,12 @@ export const Route = createFileRoute("/objetivos")({
 
 function Objetivos() {
   const t = useT();
+  const { profile } = useProfile();
+  const { goals, fmt, fmtCompact } = buildDataset(profile);
   const totalTarget = goals.reduce((s, g) => s + g.target, 0);
   const totalCurrent = goals.reduce((s, g) => s + g.current, 0);
-  const overall = (totalCurrent / totalTarget) * 100;
+  const overall = totalTarget > 0 ? (totalCurrent / totalTarget) * 100 : 0;
+
 
   return (
     <PageShell>
@@ -56,7 +60,7 @@ function Objetivos() {
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {goals.map((g, idx) => {
-          const p = Math.min(100, (g.current / g.target) * 100);
+          const p = g.target > 0 ? Math.min(100, (g.current / g.target) * 100) : 0;
           const remaining = Math.max(0, g.target - g.current);
           const monthsLeft = g.monthly ? Math.ceil(remaining / g.monthly) : 0;
           return (
