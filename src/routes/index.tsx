@@ -16,6 +16,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 
+import { BrandLogo } from "@/components/brand-logo";
 import { ProductPreview } from "@/components/product-preview";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
