@@ -3,15 +3,17 @@ import { Link } from "@tanstack/react-router";
 import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
-
-const tabs = [
-  { label: "Funciones", to: "/", hash: "funciones" },
-  { label: "Precios", to: "/precios" },
-  { label: "Blog", to: "/blog" },
-] as const;
+import { useT, LanguageToggle } from "@/hooks/use-language";
 
 export function SiteHeader() {
   const { user } = useAuth();
+  const t = useT();
+
+  const tabs = [
+    { label: t("Funciones", "Features"), to: "/", hash: "funciones" },
+    { label: t("Precios", "Pricing"), to: "/precios" },
+    { label: "Blog", to: "/blog" },
+  ] as const;
 
   return (
     <header className="relative z-20 mx-auto flex w-full max-w-6xl items-center gap-3 px-6 py-6">
@@ -35,20 +37,21 @@ export function SiteHeader() {
       </nav>
 
       <div className="ml-auto flex items-center gap-2">
+        <LanguageToggle />
         {user ? (
           <Button asChild size="sm" className="rounded-full">
-            <Link to="/dashboard">Ir al dashboard</Link>
+            <Link to="/dashboard">{t("Ir al dashboard", "Go to dashboard")}</Link>
           </Button>
         ) : (
           <>
             <Button asChild variant="ghost" size="sm" className="rounded-full">
               <Link to="/auth" search={{ mode: "login" }}>
-                Iniciar sesión
+                {t("Iniciar sesión", "Sign in")}
               </Link>
             </Button>
             <Button asChild size="sm" className="rounded-full">
               <Link to="/auth" search={{ mode: "signup" }}>
-                Crear cuenta
+                {t("Crear cuenta", "Sign up")}
               </Link>
             </Button>
           </>

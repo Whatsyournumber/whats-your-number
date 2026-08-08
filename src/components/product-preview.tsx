@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Area, AreaChart, Bar, BarChart, Cell, Pie, PieChart, ResponsiveContainer, XAxis } from "recharts";
 
 import { cn } from "@/lib/utils";
+import { useT } from "@/hooks/use-language";
 
 const netWorth = [
   { m: "Ene", v: 182 },
@@ -23,32 +24,35 @@ const spend = [
   { m: "Jun", v: 2.9 },
 ];
 
-const allocation = [
-  { name: "ETFs", v: 46 },
-  { name: "Acciones", v: 24 },
-  { name: "Cripto", v: 12 },
-  { name: "Efectivo", v: 18 },
-];
-
 const pieColors = ["var(--color-primary)", "var(--color-chart-2)", "var(--color-chart-3)", "var(--color-chart-4)"];
 
-const views = [
-  { id: "patrimonio", label: "Patrimonio", kpi: "$248,300", delta: "+6.4% este mes" },
-  { id: "gastos", label: "Gastos", kpi: "$2,940", delta: "−11% vs. mes previo" },
-  { id: "portafolio", label: "Portafolio", kpi: "+18.2%", delta: "vs. S&P 500 +12.1%" },
-] as const;
-
 export function ProductPreview() {
+  const t = useT();
+
+  const allocation = [
+    { name: t("ETFs", "ETFs"), v: 46 },
+    { name: t("Acciones", "Stocks"), v: 24 },
+    { name: t("Cripto", "Crypto"), v: 12 },
+    { name: t("Efectivo", "Cash"), v: 18 },
+  ];
+
+  const views = [
+    { id: "patrimonio", label: t("Patrimonio", "Net Worth"), kpi: "$248,300", delta: t("+6.4% este mes", "+6.4% this month") },
+    { id: "gastos", label: t("Gastos", "Spending"), kpi: "$2,940", delta: t("−11% vs. mes previo", "−11% vs. last month") },
+    { id: "portafolio", label: t("Portafolio", "Portfolio"), kpi: "+18.2%", delta: t("vs. S&P 500 +12.1%", "vs. S&P 500 +12.1%") },
+  ] as const;
+
   const [active, setActive] = useState<(typeof views)[number]["id"]>("patrimonio");
 
   useEffect(() => {
-    const t = setInterval(() => {
+    const timer = setInterval(() => {
       setActive((cur) => {
         const i = views.findIndex((v) => v.id === cur);
         return views[(i + 1) % views.length]!.id;
       });
     }, 5000);
-    return () => clearInterval(t);
+    return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const view = views.find((v) => v.id === active)!;
@@ -124,7 +128,7 @@ export function ProductPreview() {
         </div>
 
         <div className="rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
-          <p className="text-xs text-muted-foreground">Asignación de activos</p>
+          <p className="text-xs text-muted-foreground">{t("Asignación de activos", "Asset allocation")}</p>
           <div className="mt-2 h-[150px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>

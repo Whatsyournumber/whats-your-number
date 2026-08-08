@@ -45,6 +45,73 @@ import {
   currencies,
 } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
+import { useT } from "@/hooks/use-language";
+
+const GOALS_EN: Record<string, string> = {
+  libertad: "Achieve financial freedom",
+  patrimonio: "Grow my net worth",
+  gastos: "Understand and control my expenses",
+  vivienda: "Save for a home",
+  viajar: "Travel more",
+  organizar: "Better organize my money",
+};
+
+const MARITAL_EN: Record<string, string> = {
+  "Soltero": "Single",
+  "En pareja": "In a relationship",
+  "Casado": "Married",
+  "Divorciado": "Divorced",
+};
+
+const PLANS_CHILDREN_EN: Record<string, string> = {
+  "Sí": "Yes",
+  "No": "No",
+  "No estoy seguro": "Not sure",
+};
+
+const LIFESTYLE_EN: Record<string, { label: string; desc: string }> = {
+  minimalista: { label: "Minimalist", desc: "The essentials, no excess." },
+  comodo: { label: "Comfortable", desc: "A calm life, without rush." },
+  premium: { label: "Premium", desc: "Good restaurants, good trips." },
+  lujo: { label: "Luxury", desc: "No relevant spending limits." },
+};
+
+const TRAVEL_EN: Record<string, string> = {
+  "nunca": "Never",
+  "1-2": "1-2",
+  "3-5": "3-5",
+  "5+": "More than 5",
+};
+
+const HOUSING_EN: Record<string, string> = {
+  pagada: "Yes, fully paid off",
+  hipoteca: "Yes, with a mortgage",
+  alquiler: "I rent",
+  ns: "Prefer not to answer",
+};
+
+const CURRENCY_EN: Record<string, string> = {
+  EUR: "Euro",
+  USD: "US Dollar",
+  GBP: "British Pound",
+  CHF: "Swiss Franc",
+  MXN: "Mexican Peso",
+  COP: "Colombian Peso",
+  CLP: "Chilean Peso",
+  ARS: "Argentine Peso",
+  UYU: "Uruguayan Peso",
+  PEN: "Peruvian Sol",
+  BRL: "Brazilian Real",
+  CAD: "Canadian Dollar",
+  DOP: "Dominican Peso",
+  GTQ: "Quetzal",
+  CRC: "Costa Rican Colón",
+  PYG: "Guarani",
+  BOB: "Boliviano",
+  HNL: "Lempira",
+  NIO: "Córdoba",
+  VES: "Bolívar",
+};
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
@@ -68,22 +135,10 @@ const QUESTIONS = 9; // pantallas 1..9
 const BUILD_STEP = 10;
 const SUMMARY_STEP = 11;
 
-const BUILD_TASKS = [
-  "Detectando ingresos",
-  "Clasificando transacciones",
-  "Calculando gastos mensuales",
-  "Detectando inversiones",
-  "Analizando criptomonedas",
-  "Calculando patrimonio",
-  "Detectando suscripciones",
-  "Calculando tu patrimonio objetivo",
-  "Estimando tu edad de libertad financiera",
-  "Construyendo recomendaciones personalizadas",
-];
-
 function OnboardingPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const t = useT();
   const [step, setStep] = useState(0);
   const [data, setData] = useState<OnboardingData>({ ...emptyOnboarding, currency: "EUR", monthly_expenses: 0 });
   const [life, setLife] = useState<LifeData>(emptyLife);
