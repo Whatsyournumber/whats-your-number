@@ -202,11 +202,6 @@ function Landing() {
   ];
 
 
-  const metrics = [
-    { label: t("Módulos", "Modules"), value: "10" },
-    { label: t("Clasificación IA", "AI classification"), value: "PDF · CSV" },
-    { label: t("Datos cifrados", "Encrypted data"), value: "100%" },
-  ];
 
   const reviews = [
     {
@@ -283,16 +278,6 @@ function Landing() {
           <p className="mt-3 text-xs text-muted-foreground">
             {t("Gratis y sin registro · 3 preguntas · 30 segundos", "Free, no sign-up · 3 questions · 30 seconds")}
           </p>
-
-
-          <div className="mt-12 grid gap-3 sm:grid-cols-3">
-            {metrics.map((m) => (
-              <div key={m.label} className="surface px-5 py-4 text-left">
-                <p className="numeric text-xl font-semibold">{m.value}</p>
-                <p className="mt-0.5 text-xs text-muted-foreground">{m.label}</p>
-              </div>
-            ))}
-          </div>
         </motion.section>
 
         <section className="mt-24 md:mt-32">
