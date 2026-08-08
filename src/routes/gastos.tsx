@@ -689,7 +689,7 @@ function Gastos() {
       </Panel>
       <Panel
         title="Recomendaciones de la IA"
-        description="Dónde te excediste y cómo ahorrar más este mes"
+        description="Las 4 acciones de mayor impacto, generadas automáticamente con tus datos"
         actions={
           <Button size="sm" onClick={runAdvice} disabled={adviceLoading || !hasData}>
             {adviceLoading ? (
