@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { useMemo, useState } from "react";
+import { useLanguage, useT } from "@/hooks/use-language";
 
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
@@ -29,18 +30,24 @@ export const Route = createFileRoute("/cash-flow")({
   component: CashFlow,
 });
 
-const MONTH_LABELS = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+const MONTH_LABELS_ES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+const MONTH_LABELS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 function monthKey(d: string) {
   return d.slice(0, 7);
 }
 
-function monthLabel(key: string) {
-  const [y, m] = key.split("-");
-  return `${MONTH_LABELS[Number(m) - 1] ?? m} ${y}`;
+function buildMonthLabel(labels: string[]) {
+  return (key: string) => {
+    const [y, m] = key.split("-");
+    return `${labels[Number(m) - 1] ?? m} ${y}`;
+  };
 }
 
 function CashFlow() {
+  const t = useT();
+  const { lang } = useLanguage();
+  const monthLabel = useMemo(() => buildMonthLabel(lang === "en" ? MONTH_LABELS_EN : MONTH_LABELS_ES), [lang]);
   const { profile } = useProfile();
   const d = buildDataset(profile);
   const { transactions, hasData } = useTransactions();
@@ -66,10 +73,10 @@ function CashFlow() {
   // Ingresos reales: abonos de los EEFF del mes; si no hay, se usa el perfil.
   const incomeFromStatements = useMemo(() => {
     const map = new Map<string, number>();
-    for (const t of monthTx) {
-      if (t.amount <= 0) continue;
-      const key = t.merchant?.trim() || "Otros ingresos";
-      map.set(key, (map.get(key) ?? 0) + t.amount);
+    for (const tx of monthTx) {
+      if (tx.amount <= 0) continue;
+      const key = tx.merchant?.trim() || t("Otros ingresos", "Other income");
+      map.set(key, (map.get(key) ?? 0) + tx.amount);
     }
     return [...map.entries()]
       .map(([name, amount]) => ({ name, amount }))
@@ -82,13 +89,13 @@ function CashFlow() {
 
   // Gasto variable real del mes, separado en lifestyle vs resto.
   const spend = useMemo(() => {
-    const lifestyleCats = new Set(["Restaurantes", "Salidas", "Compras", "Viajes", "Lifestyle", "Apps"]);
+    const lifestyleCats = new Set(["Restaurantes", "Salidas", "Compras", "Viajes", "Lifestyle", "Apps"]); // category keys, not translated
     let lifestyle = 0;
     let other = 0;
-    for (const t of monthTx) {
-      if (t.amount >= 0) continue;
-      const cat = categorizeTx(t as Tx, rules);
-      const v = Math.abs(t.amount);
+    for (const tx of monthTx) {
+      if (tx.amount >= 0) continue;
+      const cat = categorizeTx(tx as Tx, rules);
+      const v = Math.abs(tx.amount);
       if (lifestyleCats.has(cat)) lifestyle += v;
       else other += v;
     }
@@ -105,10 +112,10 @@ function CashFlow() {
   const freeAmount = Math.max(0, totalIncome - fixedAmount - lifestyleAmount);
 
   const buckets = [
-    { name: "Gastos fijos", amount: fixedAmount, color: "var(--color-chart-2)" },
-    { name: "Lifestyle", amount: lifestyleAmount, color: "var(--color-chart-3)" },
-    { name: "Inversiones / ahorro", amount: investAmount, color: "var(--color-chart-1)" },
-    { name: "Flujo libre", amount: freeAmount, color: "var(--color-chart-4)" },
+    { name: t("Gastos fijos", "Fixed expenses"), amount: fixedAmount, color: "var(--color-chart-2)" },
+    { name: t("Lifestyle", "Lifestyle"), amount: lifestyleAmount, color: "var(--color-chart-3)" },
+    { name: t("Inversiones / ahorro", "Investments / savings"), amount: investAmount, color: "var(--color-chart-1)" },
+    { name: t("Flujo libre", "Free flow"), amount: freeAmount, color: "var(--color-chart-4)" },
   ];
 
   const cash = profile.assets_cash + profile.assets_bank;
@@ -118,18 +125,18 @@ function CashFlow() {
   return (
     <PageShell>
       <PageHeader
-        eyebrow={activeMonth ? monthLabel(activeMonth) : "Sin EEFF cargados"}
+        eyebrow={activeMonth ? monthLabel(activeMonth) : t("Sin EEFF cargados", "No statements uploaded")}
         title="Cash Flow"
         subtitle={
           hasReal
-            ? "Cómo se reparte cada dólar que entra, según tus estados de cuenta cargados."
-            : "Carga tus estados de cuenta en «Cargar EEFF» para ver tu flujo real. Mientras tanto, usamos tu perfil."
+            ? t("Cómo se reparte cada dólar que entra, según tus estados de cuenta cargados.", "How every dollar you receive is allocated, based on your uploaded statements.")
+            : t("Carga tus estados de cuenta en «Cargar EEFF» para ver tu flujo real. Mientras tanto, usamos tu perfil.", "Upload your statements in \u00abUpload statements\u00bb to see your real flow. Meanwhile, we use your profile.")
         }
       />
 
       {months.length > 0 && (
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-muted-foreground">Mes:</span>
+          <span className="text-xs text-muted-foreground">{t("Mes:", "Month:")}</span>
           {months.slice(0, 12).map((m) => (
             <button
               key={m}
@@ -147,18 +154,18 @@ function CashFlow() {
       )}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard label="Ingresos" value={fmt(totalIncome)} hint={usingStatements ? "Abonos de tus EEFF" : "Según tu perfil"} accent index={0} />
+        <KpiCard label={t("Ingresos", "Income")} value={fmt(totalIncome)} hint={usingStatements ? t("Abonos de tus EEFF", "Credits from your statements") : t("Según tu perfil", "Based on your profile")} accent index={0} />
         <KpiCard
-          label="Gastos fijos"
+          label={t("Gastos fijos", "Fixed expenses")}
           value={fmt(buckets[0]!.amount)}
-          hint={`${((buckets[0]!.amount / totalIncome) * 100).toFixed(0)}% del ingreso`}
+          hint={`${((buckets[0]!.amount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
           index={1}
         />
-        <KpiCard label="Lifestyle" value={fmt(buckets[1]!.amount)} hint={hasReal ? `${monthTx.length} movimientos` : "Según tu perfil"} index={2} />
-        <KpiCard label="Flujo libre" value={fmt(buckets[3]!.amount)} index={3} />
+        <KpiCard label={t("Lifestyle", "Lifestyle")} value={fmt(buckets[1]!.amount)} hint={hasReal ? `${monthTx.length} ${t("movimientos", "transactions")}` : t("Según tu perfil", "Based on your profile")} index={2} />
+        <KpiCard label={t("Flujo libre", "Free flow")} value={fmt(buckets[3]!.amount)} index={3} />
       </div>
 
-      <Panel title="Flujo de dinero" description="Ingresos → destino final">
+      <Panel title={t("Flujo de dinero", "Money flow")} description={t("Ingresos → destino final", "Income → final destination")}>
         <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_120px_minmax(0,1.3fr)]">
           <div className="space-y-3">
             {incomeLines.slice(0, 8).map((i, idx) => (
@@ -184,7 +191,7 @@ function CashFlow() {
               </motion.div>
             ))}
             {incomeLines.length === 0 && (
-              <p className="text-sm text-muted-foreground">No encontramos abonos en este periodo.</p>
+              <p className="text-sm text-muted-foreground">{t("No encontramos abonos en este periodo.", "We did not find credits for this period.")}</p>
             )}
           </div>
 
@@ -235,7 +242,7 @@ function CashFlow() {
                   />
                 </div>
                 <p className="mt-1.5 text-xs text-muted-foreground">
-                  {((b.amount / totalIncome) * 100).toFixed(0)}% de tus ingresos
+                  {((b.amount / totalIncome) * 100).toFixed(0)}% {t("de tus ingresos", "of your income")}
                 </p>
               </motion.div>
             ))}
@@ -244,25 +251,25 @@ function CashFlow() {
       </Panel>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <Panel title="Regla 50 / 30 / 20">
+        <Panel title={t("Regla 50 / 30 / 20", "50 / 30 / 20 rule")}>
           <div className="space-y-3 text-sm">
-            <Row label="Necesidades" value={buckets[0]!.amount} total={totalIncome} target={50} />
-            <Row label="Deseos" value={buckets[1]!.amount} total={totalIncome} target={30} />
-            <Row label="Ahorro e inversión" value={buckets[2]!.amount + buckets[3]!.amount} total={totalIncome} target={20} />
+            <Row label={t("Necesidades", "Needs")} value={buckets[0]!.amount} total={totalIncome} target={50} />
+            <Row label={t("Deseos", "Wants")} value={buckets[1]!.amount} total={totalIncome} target={30} />
+            <Row label={t("Ahorro e inversión", "Savings & investing")} value={buckets[2]!.amount + buckets[3]!.amount} total={totalIncome} target={20} />
           </div>
         </Panel>
-        <Panel title="Runway" description="Meses cubiertos con tu efectivo">
+        <Panel title={t("Runway", "Runway")} description={t("Meses cubiertos con tu efectivo", "Months covered with your cash")}>
           <p className="numeric text-4xl font-semibold text-primary">{runway.toFixed(1)}</p>
           <p className="mt-2 text-xs text-muted-foreground">
-            Con {money(cash, d.currency)} en efectivo y un gasto de {fmt(monthlySpend)} al mes.
+            {t("Con", "With")} {money(cash, d.currency)} {t("en efectivo y un gasto de", "in cash and a spend of")} {fmt(monthlySpend)} {t("al mes.", "per month.")}
           </p>
         </Panel>
-        <Panel title="Eficiencia del flujo">
+        <Panel title={t("Eficiencia del flujo", "Flow efficiency")}>
           <p className="numeric text-4xl font-semibold">
             {(((buckets[2]!.amount + buckets[3]!.amount) / totalIncome) * 100).toFixed(0)}%
           </p>
           <p className="mt-2 text-xs text-muted-foreground">
-            De cada dólar que ganas, esa porción termina construyendo patrimonio.
+            {t("De cada dólar que ganas, esa porción termina construyendo patrimonio.", "Of every dollar you earn, that share ends up building net worth.")}
           </p>
         </Panel>
       </div>

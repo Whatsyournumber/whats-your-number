@@ -5,6 +5,7 @@ import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useT } from "@/hooks/use-language";
 import { benchmark, fmt, holdings } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
@@ -28,6 +29,13 @@ const chartColors = [
 ];
 
 function Portafolio() {
+  const t = useT();
+  const typeLabels: Record<(typeof types)[number], string> = {
+    ETF: t("ETF", "ETF"),
+    "Acción": t("Acción", "Stock"),
+    Cripto: t("Cripto", "Crypto"),
+    Cash: t("Cash", "Cash"),
+  };
   const enriched = holdings.map((h) => {
     const value = h.units * h.price;
     const cost = h.units * h.avgCost;
@@ -40,9 +48,9 @@ function Portafolio() {
   const dividends = enriched.reduce((s, h) => s + h.dividends, 0);
 
   const types = ["ETF", "Acción", "Cripto", "Cash"] as const;
-  const allocation = types.map((t, i) => ({
-    name: t,
-    value: enriched.filter((h) => h.type === t).reduce((s, h) => s + h.value, 0),
+  const allocation = types.map((ty, i) => ({
+    name: ty,
+    value: enriched.filter((h) => h.type === ty).reduce((s, h) => s + h.value, 0),
     color: chartColors[i]!,
   }));
 
@@ -55,19 +63,19 @@ function Portafolio() {
             <p className="truncate text-xs text-muted-foreground">{h.name}</p>
           </div>
           <div>
-            <p className="text-[11px] text-muted-foreground">Valor</p>
+            <p className="text-[11px] text-muted-foreground">{t("Valor", "Value")}</p>
             <p className="numeric text-sm">{fmt(h.value)}</p>
           </div>
           <div>
-            <p className="text-[11px] text-muted-foreground">Costo prom.</p>
+            <p className="text-[11px] text-muted-foreground">{t("Costo prom.", "Avg. cost")}</p>
             <p className="numeric text-sm">{fmt(h.avgCost, 2)}</p>
           </div>
           <div>
-            <p className="text-[11px] text-muted-foreground">Ganancia</p>
+            <p className="text-[11px] text-muted-foreground">{t("Ganancia", "Gain")}</p>
             <p className={cn("numeric text-sm", h.gain >= 0 ? "text-positive" : "text-negative")}>{fmt(h.gain)}</p>
           </div>
           <div>
-            <p className="text-[11px] text-muted-foreground">Rentabilidad</p>
+            <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
             <p className={cn("numeric text-sm font-semibold", h.ret >= 0 ? "text-positive" : "text-negative")}>
               {h.ret > 0 ? "+" : ""}
               {h.ret.toFixed(1)}%
@@ -80,30 +88,30 @@ function Portafolio() {
 
   return (
     <PageShell>
-      <PageHeader eyebrow="Inversiones" title="Portafolio" subtitle="Rendimiento consolidado de tus posiciones frente al mercado." />
+      <PageHeader eyebrow={t("Inversiones", "Investments")} title={t("Portafolio", "Portfolio")} subtitle={t("Rendimiento consolidado de tus posiciones frente al mercado.", "Consolidated performance of your positions against the market.")} />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard label="Valor actual" value={fmt(totalValue)} delta={5.8} accent index={0} />
-        <KpiCard label="Costo invertido" value={fmt(totalCost)} index={1} />
-        <KpiCard label="Ganancia total" value={fmt(totalGain)} delta={(totalGain / totalCost) * 100} index={2} />
-        <KpiCard label="Dividendos 12m" value={fmt(dividends)} delta={12.4} index={3} />
+        <KpiCard label={t("Valor actual", "Current value")} value={fmt(totalValue)} delta={5.8} accent index={0} />
+        <KpiCard label={t("Costo invertido", "Invested cost")} value={fmt(totalCost)} index={1} />
+        <KpiCard label={t("Ganancia total", "Total gain")} value={fmt(totalGain)} delta={(totalGain / totalCost) * 100} index={2} />
+        <KpiCard label={t("Dividendos 12m", "Dividends 12m")} value={fmt(dividends)} delta={12.4} index={3} />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title="Portafolio vs S&P 500" description="Rentabilidad acumulada 12 meses" className="lg:col-span-2">
+        <Panel title={t("Portafolio vs S&P 500", "Portfolio vs S&P 500")} description={t("Rentabilidad acumulada 12 meses", "Cumulative return, 12 months")} className="lg:col-span-2">
           <ResponsiveContainer width="100%" height={290}>
             <LineChart data={benchmark} margin={{ left: -18, right: 8 }}>
               <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
               <XAxis dataKey="label" {...axisProps} />
               <YAxis {...axisProps} tickFormatter={(v) => `${v}%`} width={46} />
               <Tooltip content={<ChartTooltip formatter={(v) => `${v.toFixed(1)}%`} />} />
-              <Line type="monotone" dataKey="portfolio" name="Portafolio" stroke="var(--color-chart-1)" strokeWidth={2.5} dot={false} />
+              <Line type="monotone" dataKey="portfolio" name={t("Portafolio", "Portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.5} dot={false} />
               <Line type="monotone" dataKey="sp500" name="S&P 500" stroke="var(--color-chart-8)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
             </LineChart>
           </ResponsiveContainer>
         </Panel>
 
-        <Panel title="Composición">
+        <Panel title={t("Composición", "Composition")}>
           <ResponsiveContainer width="100%" height={210}>
             <PieChart>
               <Pie data={allocation} dataKey="value" nameKey="name" innerRadius={58} outerRadius={96} paddingAngle={3} stroke="none">
@@ -118,7 +126,7 @@ function Portafolio() {
             {allocation.map((a) => (
               <li key={a.name} className="flex items-center gap-2 text-xs">
                 <span className="h-2 w-2 rounded-full" style={{ background: a.color }} />
-                <span className="text-muted-foreground">{a.name}</span>
+                <span className="text-muted-foreground">{typeLabels[a.name]}</span>
                 <span className="numeric ml-auto font-medium">{((a.value / totalValue) * 100).toFixed(0)}%</span>
               </li>
             ))}
@@ -126,20 +134,20 @@ function Portafolio() {
         </Panel>
       </div>
 
-      <Panel title="Posiciones">
+      <Panel title={t("Posiciones", "Positions")}>
         <Tabs defaultValue="Todos">
           <TabsList className="mb-4">
-            <TabsTrigger value="Todos">Todos</TabsTrigger>
-            {types.map((t) => (
-              <TabsTrigger key={t} value={t}>
-                {t}
+            <TabsTrigger value="Todos">{t("Todos", "All")}</TabsTrigger>
+            {types.map((ty) => (
+              <TabsTrigger key={ty} value={ty}>
+                {typeLabels[ty]}
               </TabsTrigger>
             ))}
           </TabsList>
           <TabsContent value="Todos">{rows(enriched)}</TabsContent>
-          {types.map((t) => (
-            <TabsContent key={t} value={t}>
-              {rows(enriched.filter((h) => h.type === t))}
+          {types.map((ty) => (
+            <TabsContent key={ty} value={ty}>
+              {rows(enriched.filter((h) => h.type === ty))}
             </TabsContent>
           ))}
         </Tabs>

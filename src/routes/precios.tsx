@@ -3,6 +3,7 @@ import { Check, Sparkles } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
+import { useT } from "@/hooks/use-language";
 
 export const Route = createFileRoute("/precios")({
   head: () => ({
@@ -21,49 +22,56 @@ export const Route = createFileRoute("/precios")({
   component: Pricing,
 });
 
-const plans = [
-  {
-    name: "Free",
-    price: "$0",
-    period: "/mes",
-    desc: "Para empezar a ordenar tus finanzas.",
-    features: ["1 cuenta conectada", "5 importaciones al mes", "Análisis de gastos", "Presupuestos básicos"],
-    cta: "Empezar gratis",
-    highlight: false,
-  },
-  {
-    name: "Pro",
-    price: "$12",
-    period: "/mes",
-    desc: "Todo el sistema, con IA sin límites.",
-    features: [
-      "Cuentas ilimitadas",
-      "Importación PDF y CSV ilimitada",
-      "AI Advisor y detección de anomalías",
-      "Portafolio y benchmark de mercado",
-      "Simulador de retiro",
-    ],
-    cta: "Probar Pro",
-    highlight: true,
-  },
-  {
-    name: "Patrimonio",
-    price: "$29",
-    period: "/mes",
-    desc: "Para patrimonios complejos y familias.",
-    features: [
-      "Todo lo de Pro",
-      "Multi-moneda y activos alternativos",
-      "Reportes trimestrales exportables",
-      "Perfiles familiares compartidos",
-      "Soporte prioritario",
-    ],
-    cta: "Hablar con nosotros",
-    highlight: false,
-  },
-];
-
 function Pricing() {
+  const t = useT();
+
+  const plans = [
+    {
+      name: "Free",
+      price: "$0",
+      period: t("/mes", "/mo"),
+      desc: t("Para empezar a ordenar tus finanzas.", "To start getting your finances in order."),
+      features: [
+        t("1 cuenta conectada", "1 connected account"),
+        t("5 importaciones al mes", "5 imports per month"),
+        t("Análisis de gastos", "Expense analysis"),
+        t("Presupuestos básicos", "Basic budgets"),
+      ],
+      cta: t("Empezar gratis", "Start for free"),
+      highlight: false,
+    },
+    {
+      name: "Pro",
+      price: "$12",
+      period: t("/mes", "/mo"),
+      desc: t("Todo el sistema, con IA sin límites.", "The whole system, with unlimited AI."),
+      features: [
+        t("Cuentas ilimitadas", "Unlimited accounts"),
+        t("Importación PDF y CSV ilimitada", "Unlimited PDF and CSV import"),
+        t("AI Advisor y detección de anomalías", "AI Advisor and anomaly detection"),
+        t("Portafolio y benchmark de mercado", "Portfolio and market benchmark"),
+        t("Simulador de retiro", "Retirement simulator"),
+      ],
+      cta: t("Probar Pro", "Try Pro"),
+      highlight: true,
+    },
+    {
+      name: "Patrimonio",
+      price: "$29",
+      period: t("/mes", "/mo"),
+      desc: t("Para patrimonios complejos y familias.", "For complex net worths and families."),
+      features: [
+        t("Todo lo de Pro", "Everything in Pro"),
+        t("Multi-moneda y activos alternativos", "Multi-currency and alternative assets"),
+        t("Reportes trimestrales exportables", "Exportable quarterly reports"),
+        t("Perfiles familiares compartidos", "Shared family profiles"),
+        t("Soporte prioritario", "Priority support"),
+      ],
+      cta: t("Hablar con nosotros", "Talk to us"),
+      highlight: false,
+    },
+  ];
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
       <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[900px] -translate-x-1/2 rounded-full opacity-[0.12] blur-3xl" />
@@ -73,13 +81,13 @@ function Pricing() {
         <section className="pt-10 text-center md:pt-16">
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground backdrop-blur">
             <Sparkles className="h-3.5 w-3.5 text-primary" />
-            Sin permanencia, cancela cuando quieras
+            {t("Sin permanencia, cancela cuando quieras", "No lock-in, cancel anytime")}
           </span>
           <h1 className="mx-auto mt-6 max-w-2xl font-display text-4xl font-semibold tracking-tight md:text-5xl">
-            Precios claros, como tus finanzas
+            {t("Precios claros, como tus finanzas", "Clear pricing, just like your finances")}
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-sm text-muted-foreground">
-            Empieza gratis y sube de plan cuando tu patrimonio lo pida.
+            {t("Empieza gratis y sube de plan cuando tu patrimonio lo pida.", "Start for free and upgrade whenever your net worth needs it.")}
           </p>
         </section>
 
@@ -91,7 +99,7 @@ function Pricing() {
             >
               {plan.highlight && (
                 <span className="absolute right-5 top-5 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground">
-                  Popular
+                  {t("Popular", "Popular")}
                 </span>
               )}
               <h2 className="text-sm font-semibold">{plan.name}</h2>

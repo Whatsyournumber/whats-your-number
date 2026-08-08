@@ -19,6 +19,7 @@ import {
 import { ProductPreview } from "@/components/product-preview";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
+import { useT } from "@/hooks/use-language";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -41,84 +42,114 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
-const features = [
-  {
-    icon: FileText,
-    title: "Importación inteligente",
-    desc: "Sube el PDF de tu tarjeta o un CSV bancario. La IA extrae fecha, comercio, monto y categoría.",
-  },
-  {
-    icon: PieChart,
-    title: "Análisis de gastos",
-    desc: "Categorías, subcategorías, comercios recurrentes y presupuestos vivos mes a mes.",
-  },
-  {
-    icon: LineChart,
-    title: "Patrimonio y portafolio",
-    desc: "Activos, pasivos, asignación y rendimiento contra el mercado en un solo panel.",
-  },
-  {
-    icon: Bot,
-    title: "AI Advisor",
-    desc: "Pregunta en lenguaje natural y recibe insights, anomalías y proyecciones de retiro.",
-  },
-];
-
-const whyCards = [
-  {
-    icon: Compass,
-    title: "Claridad total",
-    desc: "Deja de perder el rastro entre apps, hojas de cálculo y PDFs. Tu panorama financiero completo en un solo lugar.",
-  },
-  {
-    icon: Brain,
-    title: "IA que trabaja por ti",
-    desc: "Clasificación automática, detección de anomalías y respuestas a tus preguntas en lenguaje natural.",
-  },
-  {
-    icon: Target,
-    title: "Decisiones con propósito",
-    desc: "Conecta tus gastos de hoy con tus metas de mañana: ahorro, inversión, retiro y estilo de vida.",
-  },
-  {
-    icon: TrendingUp,
-    title: "Crecimiento constante",
-    desc: "Proyecciones de patrimonio, simuladores de retiro y seguimiento de tu portafolio contra el mercado.",
-  },
-];
-
-const metrics = [
-  { label: "Módulos", value: "10" },
-  { label: "Clasificación IA", value: "PDF · CSV" },
-  { label: "Datos cifrados", value: "100%" },
-];
-
-const reviews = [
-  {
-    name: "Mariana Robles",
-    role: "Fundadora de agencia · CDMX",
-    initials: "MR",
-    quote:
-      "Antes tenía tres hojas de cálculo y cero claridad. Subí seis meses de estados de cuenta y en minutos vi a dónde se iba realmente mi dinero.",
-  },
-  {
-    name: "Diego Fernández",
-    role: "Ingeniero de software · Madrid",
-    initials: "DF",
-    quote:
-      "El módulo de portafolio comparado con el S&P 500 me hizo cambiar dos posiciones. Es la primera app de finanzas que se siente hecha para pensar, no solo para registrar.",
-  },
-  {
-    name: "Camila Ortiz",
-    role: "Médica · Bogotá",
-    initials: "CO",
-    quote:
-      "La IA detectó suscripciones que llevaba dos años pagando sin usar. Se pagó sola el primer mes y ahora reviso mi patrimonio en cinco minutos.",
-  },
-];
-
 function Landing() {
+  const t = useT();
 
+  const features = [
+    {
+      icon: FileText,
+      title: t("Importación inteligente", "Smart import"),
+      desc: t(
+        "Sube el PDF de tu tarjeta o un CSV bancario. La IA extrae fecha, comercio, monto y categoría.",
+        "Upload your card's PDF or a bank CSV. The AI extracts date, merchant, amount and category.",
+      ),
+    },
+    {
+      icon: PieChart,
+      title: t("Análisis de gastos", "Spending analysis"),
+      desc: t(
+        "Categorías, subcategorías, comercios recurrentes y presupuestos vivos mes a mes.",
+        "Categories, subcategories, recurring merchants and live budgets month after month.",
+      ),
+    },
+    {
+      icon: LineChart,
+      title: t("Patrimonio y portafolio", "Net worth and portfolio"),
+      desc: t(
+        "Activos, pasivos, asignación y rendimiento contra el mercado en un solo panel.",
+        "Assets, liabilities, allocation and performance against the market in a single view.",
+      ),
+    },
+    {
+      icon: Bot,
+      title: "AI Advisor",
+      desc: t(
+        "Pregunta en lenguaje natural y recibe insights, anomalías y proyecciones de retiro.",
+        "Ask in plain language and get insights, anomalies and retirement projections.",
+      ),
+    },
+  ];
+
+  const whyCards = [
+    {
+      icon: Compass,
+      title: t("Claridad total", "Total clarity"),
+      desc: t(
+        "Deja de perder el rastro entre apps, hojas de cálculo y PDFs. Tu panorama financiero completo en un solo lugar.",
+        "Stop losing track across apps, spreadsheets and PDFs. Your complete financial picture in one place.",
+      ),
+    },
+    {
+      icon: Brain,
+      title: t("IA que trabaja por ti", "AI that works for you"),
+      desc: t(
+        "Clasificación automática, detección de anomalías y respuestas a tus preguntas en lenguaje natural.",
+        "Automatic classification, anomaly detection and answers to your questions in plain language.",
+      ),
+    },
+    {
+      icon: Target,
+      title: t("Decisiones con propósito", "Purposeful decisions"),
+      desc: t(
+        "Conecta tus gastos de hoy con tus metas de mañana: ahorro, inversión, retiro y estilo de vida.",
+        "Connect today's spending with tomorrow's goals: savings, investing, retirement and lifestyle.",
+      ),
+    },
+    {
+      icon: TrendingUp,
+      title: t("Crecimiento constante", "Steady growth"),
+      desc: t(
+        "Proyecciones de patrimonio, simuladores de retiro y seguimiento de tu portafolio contra el mercado.",
+        "Net worth projections, retirement simulators and portfolio tracking against the market.",
+      ),
+    },
+  ];
+
+  const metrics = [
+    { label: t("Módulos", "Modules"), value: "10" },
+    { label: t("Clasificación IA", "AI classification"), value: "PDF · CSV" },
+    { label: t("Datos cifrados", "Encrypted data"), value: "100%" },
+  ];
+
+  const reviews = [
+    {
+      name: "Mariana Robles",
+      role: t("Fundadora de agencia · CDMX", "Agency founder · Mexico City"),
+      initials: "MR",
+      quote: t(
+        "Antes tenía tres hojas de cálculo y cero claridad. Subí seis meses de estados de cuenta y en minutos vi a dónde se iba realmente mi dinero.",
+        "I used to have three spreadsheets and zero clarity. I uploaded six months of statements and in minutes saw where my money was really going.",
+      ),
+    },
+    {
+      name: "Diego Fernández",
+      role: t("Ingeniero de software · Madrid", "Software engineer · Madrid"),
+      initials: "DF",
+      quote: t(
+        "El módulo de portafolio comparado con el S&P 500 me hizo cambiar dos posiciones. Es la primera app de finanzas que se siente hecha para pensar, no solo para registrar.",
+        "The portfolio module compared to the S&P 500 made me change two positions. It's the first finance app that feels built for thinking, not just recording.",
+      ),
+    },
+    {
+      name: "Camila Ortiz",
+      role: t("Médica · Bogotá", "Doctor · Bogotá"),
+      initials: "CO",
+      quote: t(
+        "La IA detectó suscripciones que llevaba dos años pagando sin usar. Se pagó sola el primer mes y ahora reviso mi patrimonio en cinco minutos.",
+        "The AI detected subscriptions I'd been paying for two years without using. It paid for itself the first month and now I review my net worth in five minutes.",
+      ),
+    },
+  ];
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
@@ -135,28 +166,30 @@ function Landing() {
         >
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground backdrop-blur">
             <Sparkles className="h-3.5 w-3.5 text-primary" />
-            Tu family office personal, potenciado con IA
+            {t("Tu family office personal, potenciado con IA", "Your personal family office, powered by AI")}
           </span>
           <h1 className="mx-auto mt-6 max-w-4xl font-display text-4xl font-semibold leading-[1.08] tracking-tight md:text-6xl">
-            Todo tu dinero
+            {t("Todo tu dinero", "All your money")}
             <span className="block bg-gradient-to-r from-primary to-foreground bg-clip-text text-transparent">
-              entendido en 30 segundos
+              {t("entendido en 30 segundos", "understood in 30 seconds")}
             </span>
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground">
-            Patrimonio, gastos, cash flow, inversiones y retiro en una sola plataforma. Sube tus estados de cuenta y la
-            IA hace el resto.
+            {t(
+              "Patrimonio, gastos, cash flow, inversiones y retiro en una sola plataforma. Sube tus estados de cuenta y la IA hace el resto.",
+              "Net worth, spending, cash flow, investments and retirement in a single platform. Upload your statements and let the AI do the rest.",
+            )}
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Button asChild size="lg" className="gap-2 rounded-full px-6">
               <Link to="/auth" search={{ mode: "signup" }}>
-                Empieza gratis <ArrowRight className="h-4 w-4" />
+                {t("Empieza gratis", "Start for free")} <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="rounded-full px-6">
               <Link to="/auth" search={{ mode: "login" }}>
-                Ya tengo cuenta
+                {t("Ya tengo cuenta", "I already have an account")}
               </Link>
             </Button>
           </div>
@@ -173,13 +206,17 @@ function Landing() {
 
         <section className="mt-24 md:mt-32">
           <div className="mb-10 text-center">
-            <span className="text-xs font-medium uppercase tracking-wider text-primary">¿Por qué Your north?</span>
+            <span className="text-xs font-medium uppercase tracking-wider text-primary">
+              {t("¿Por qué Your north?", "Why Your north?")}
+            </span>
             <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
-              Tu dinero, con dirección
+              {t("Tu dinero, con dirección", "Your money, with direction")}
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
-              Deja de navegar a ciegas. Conecta cuentas, tarjetas e inversiones para ver por dónde entra, por dónde
-              sale y hacia dónde crece.
+              {t(
+                "Deja de navegar a ciegas. Conecta cuentas, tarjetas e inversiones para ver por dónde entra, por dónde sale y hacia dónde crece.",
+                "Stop navigating blind. Connect accounts, cards and investments to see where it comes in, where it goes out and where it's growing.",
+              )}
             </p>
           </div>
 
@@ -206,13 +243,17 @@ function Landing() {
 
         <section className="mt-24 md:mt-32">
           <div className="mb-8 text-center">
-            <span className="text-xs font-medium uppercase tracking-wider text-primary">Así se ve por dentro</span>
+            <span className="text-xs font-medium uppercase tracking-wider text-primary">
+              {t("Así se ve por dentro", "This is what it looks like inside")}
+            </span>
             <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
-              Un panel vivo, no una hoja de cálculo
+              {t("Un panel vivo, no una hoja de cálculo", "A living dashboard, not a spreadsheet")}
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
-              Cambia entre patrimonio, gastos y portafolio. Todo se actualiza en tiempo real conforme importas tus
-              estados de cuenta.
+              {t(
+                "Cambia entre patrimonio, gastos y portafolio. Todo se actualiza en tiempo real conforme importas tus estados de cuenta.",
+                "Switch between net worth, spending and portfolio. Everything updates in real time as you import your statements.",
+              )}
             </p>
           </div>
           <motion.div
@@ -246,9 +287,11 @@ function Landing() {
 
         <section className="mt-24 md:mt-32">
           <div className="mb-10 text-center">
-            <span className="text-xs font-medium uppercase tracking-wider text-primary">Lo que dicen</span>
+            <span className="text-xs font-medium uppercase tracking-wider text-primary">
+              {t("Lo que dicen", "What people say")}
+            </span>
             <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
-              Personas que ya encontraron su norte
+              {t("Personas que ya encontraron su norte", "People who already found their north")}
             </h2>
           </div>
           <div className="grid gap-4 md:grid-cols-3">
@@ -286,16 +329,21 @@ function Landing() {
           <div className="flex items-center gap-3">
             <ShieldCheck className="h-5 w-5 text-primary" />
             <p className="text-sm text-muted-foreground">
-              Tus archivos se guardan cifrados y privados: solo tú puedes verlos.
+              {t(
+                "Tus archivos se guardan cifrados y privados: solo tú puedes verlos.",
+                "Your files are stored encrypted and private: only you can see them.",
+              )}
             </p>
           </div>
           <div className="flex items-center gap-3">
             <Lock className="h-5 w-5 text-primary" />
-            <p className="text-sm text-muted-foreground">Autenticación con email o proveedor seguro.</p>
+            <p className="text-sm text-muted-foreground">
+              {t("Autenticación con email o proveedor seguro.", "Authentication via email or a secure provider.")}
+            </p>
           </div>
           <Button asChild className="ml-auto rounded-full">
             <Link to="/auth" search={{ mode: "signup" }}>
-              Crear mi cuenta
+              {t("Crear mi cuenta", "Create my account")}
             </Link>
           </Button>
         </section>

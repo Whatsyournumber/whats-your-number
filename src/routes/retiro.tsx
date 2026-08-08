@@ -9,6 +9,7 @@ import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { useProfile } from "@/hooks/use-profile";
+import { useT } from "@/hooks/use-language";
 import { type City, cities } from "@/lib/onboarding";
 import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
 
@@ -25,6 +26,7 @@ export const Route = createFileRoute("/retiro")({
 });
 
 function Retiro() {
+  const t = useT();
   const { profile } = useProfile();
   const d = buildDataset(profile);
   const { retirement, fmt, fmtCompact, plan } = d;
@@ -61,31 +63,31 @@ function Retiro() {
 
   return (
     <PageShell>
-      <PageHeader eyebrow="Largo plazo" title="Fondo de Retiro" subtitle="Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar." />
+      <PageHeader eyebrow={t("Largo plazo", "Long term")} title={t("Fondo de Retiro", "Retirement Fund")} subtitle={t("Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar.", "How much you have today and how much you will have when you stop working.")} />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <KpiCard
-          label="Cuánto tengo"
+          label={t("Cuánto tengo", "How much I have")}
           value={fmt(investable)}
-          hint="Sin contar propiedades — solo activos que generan retorno"
+          hint={t("Sin contar propiedades — solo activos que generan retorno", "Excluding properties — only assets that generate returns")}
           accent
           index={0}
         />
         <KpiCard
-          label="Capital objetivo"
+          label={t("Capital objetivo", "Target capital")}
           value={fmt(plan.targetCapital)}
-          hint={`${fmt(Math.round((plan.targetCapital * (retirement.returnAnnualized / 100)) / 12))} al mes con ${retirement.returnAnnualized}%`}
+          hint={`${fmt(Math.round((plan.targetCapital * (retirement.returnAnnualized / 100)) / 12))} ${t("al mes con", "per month at")} ${retirement.returnAnnualized}%`}
           index={1}
         />
-        <KpiCard label="Cómo voy" value={`${progressPct.toFixed(1)}%`} hint="del capital objetivo" index={2} />
-        <KpiCard label="Gastos mensuales" value={fmt(d.expenses)} hint={`${fmt(d.expenses * 12)} al año`} index={3} />
-        <KpiCard label="Aportes estimados al año" value={fmt(retirement.contributionsYTD)} index={4} />
-        <KpiCard label="Rentabilidad esperada" value={`${retirement.returnAnnualized}%`} hint="anual" index={5} />
+        <KpiCard label={t("Cómo voy", "How I'm doing")} value={`${progressPct.toFixed(1)}%`} hint={t("del capital objetivo", "of target capital")} index={2} />
+        <KpiCard label={t("Gastos mensuales", "Monthly expenses")} value={fmt(d.expenses)} hint={`${fmt(d.expenses * 12)} ${t("al año", "per year")}`} index={3} />
+        <KpiCard label={t("Aportes estimados al año", "Estimated contributions per year")} value={fmt(retirement.contributionsYTD)} index={4} />
+        <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${retirement.returnAnnualized}%`} hint={t("anual", "annual")} index={5} />
       </div>
 
       <div className="surface p-5">
         <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">Progreso hacia tu capital objetivo</span>
+          <span className="text-muted-foreground">{t("Progreso hacia tu capital objetivo", "Progress toward your target capital")}</span>
           <span className="numeric font-semibold">
             {fmt(investable)} / {fmt(plan.targetCapital)}
           </span>
@@ -94,12 +96,12 @@ function Retiro() {
           <div className="wealth-gradient h-full rounded-full" style={{ width: `${Math.min(100, progressPct)}%` }} />
         </div>
         <p className="mt-2 text-xs text-muted-foreground">
-          Vas al {progressPct.toFixed(1)}% · te faltan {fmt(Math.max(0, plan.targetCapital - investable))} en inversiones que generen retorno.
+          {t("Vas al", "You're at")} {progressPct.toFixed(1)}% · {t("te faltan", "you still need")} {fmt(Math.max(0, plan.targetCapital - investable))} {t("en inversiones que generen retorno.", "in return-generating investments.")}
         </p>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title="Proyección hasta el retiro" description={`Saldo estimado a los ${retireAge} años`} className="lg:col-span-2">
+        <Panel title={t("Proyección hasta el retiro", "Projection to retirement")} description={`${t("Saldo estimado a los", "Estimated balance at")} ${retireAge} ${t("años", "years old")}`} className="lg:col-span-2">
           <ResponsiveContainer width="100%" height={320}>
             <AreaChart data={data} margin={{ left: -8, right: 8, top: 8 }}>
               <defs>
@@ -112,17 +114,17 @@ function Retiro() {
               <XAxis dataKey="year" {...axisProps} tickFormatter={(v) => `${v}a`} />
               <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={62} />
               <Tooltip content={<ChartTooltip />} />
-              <Area type="monotone" dataKey="value" name="Proyección" stroke="var(--color-chart-4)" strokeWidth={2.5} fill="url(#ret)" />
-              <Area type="monotone" dataKey="contributed" name="Aportado" stroke="var(--color-chart-8)" strokeWidth={2} strokeDasharray="4 4" fill="transparent" />
+              <Area type="monotone" dataKey="value" name={t("Proyección", "Projection")} stroke="var(--color-chart-4)" strokeWidth={2.5} fill="url(#ret)" />
+              <Area type="monotone" dataKey="contributed" name={t("Aportado", "Contributed")} stroke="var(--color-chart-8)" strokeWidth={2} strokeDasharray="4 4" fill="transparent" />
             </AreaChart>
           </ResponsiveContainer>
         </Panel>
 
-        <Panel title="Simulador" description="Ajusta y mira el impacto">
+        <Panel title={t("Simulador", "Simulator")} description={t("Ajusta y mira el impacto", "Adjust and see the impact")}>
           <div className="space-y-6">
             <div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Aporte mensual</span>
+                <span className="text-muted-foreground">{t("Aporte mensual", "Monthly contribution")}</span>
                 <span className="numeric font-semibold">{fmt(monthly)}</span>
               </div>
               <Slider
@@ -136,15 +138,15 @@ function Retiro() {
             </div>
             <div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Rentabilidad anual</span>
+                <span className="text-muted-foreground">{t("Rentabilidad anual", "Annual return")}</span>
                 <span className="numeric font-semibold">{rate}%</span>
               </div>
               <Slider className="mt-3" min={1} max={15} step={0.5} value={[rate]} onValueChange={([v]) => setRate(v ?? 7)} />
             </div>
             <div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Edad de retiro</span>
-                <span className="numeric font-semibold">{retireAge} años</span>
+                <span className="text-muted-foreground">{t("Edad de retiro", "Retirement age")}</span>
+                <span className="numeric font-semibold">{retireAge} {t("años", "years old")}</span>
               </div>
               <Slider
                 className="mt-3"
@@ -156,10 +158,10 @@ function Retiro() {
               />
             </div>
             <div className="rounded-xl bg-elevated/60 p-4">
-              <p className="text-xs text-muted-foreground">Saldo proyectado</p>
+              <p className="text-xs text-muted-foreground">{t("Saldo proyectado", "Projected balance")}</p>
               <p className="numeric mt-1 text-2xl font-semibold">{fmt(final.value)}</p>
               <p className="mt-1 text-xs text-muted-foreground">
-                {final.value >= plan.targetCapital ? "Superas tu capital objetivo 🎯" : `Te faltarían ${fmt(plan.targetCapital - final.value)}`}
+                {final.value >= plan.targetCapital ? t("Superas tu capital objetivo 🎯", "You exceed your target capital 🎯") : `${t("Te faltarían", "You'd still need")} ${fmt(plan.targetCapital - final.value)}`}
               </p>
             </div>
           </div>
@@ -167,14 +169,14 @@ function Retiro() {
       </div>
 
       <Panel
-        title="Escenarios: renta mensual según tu capital"
-        description={`Cuánto podrías retirar cada mes según el capital acumulado y la rentabilidad anual. En verde, lo que cubre tus gastos de ${fmt(d.expenses)}.`}
+        title={t("Escenarios: renta mensual según tu capital", "Scenarios: monthly income based on your capital")}
+        description={`${t("Cuánto podrías retirar cada mes según el capital acumulado y la rentabilidad anual. En verde, lo que cubre tus gastos de", "How much you could withdraw monthly based on accumulated capital and annual return. In green, what covers your expenses of")} ${fmt(d.expenses)}.`}
       >
         <div className="overflow-x-auto">
           <table className="w-full min-w-[640px] border-collapse text-sm">
             <thead>
               <tr className="border-b border-border text-xs uppercase tracking-[0.12em] text-muted-foreground">
-                <th className="px-3 py-2 text-left font-medium">Capital</th>
+                <th className="px-3 py-2 text-left font-medium">{t("Capital", "Capital")}</th>
                 {rates.map((rr) => (
                   <th key={rr} className="px-3 py-2 text-right font-medium">
                     {rr}%
@@ -200,20 +202,20 @@ function Retiro() {
             </tbody>
           </table>
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">Renta mensual = capital × rentabilidad anual ÷ 12.</p>
+        <p className="mt-3 text-xs text-muted-foreground">{t("Renta mensual = capital × rentabilidad anual ÷ 12.", "Monthly income = capital × annual return ÷ 12.")}</p>
       </Panel>
 
       <Panel
-        title="Simulador de ciudades"
-        description="Ingresa tu presupuesto mensual y descubre dónde podrías vivir mejor."
+        title={t("Simulador de ciudades", "City simulator")}
+        description={t("Ingresa tu presupuesto mensual y descubre dónde podrías vivir mejor.", "Enter your monthly budget and discover where you could live better.")}
       >
-        <CitySearch defaultBudget={d.expenses} fmt={fmt} />
+        <CitySearch defaultBudget={d.expenses} fmt={fmt} t={t} />
       </Panel>
     </PageShell>
   );
 }
 
-function CitySearch({ defaultBudget, fmt }: { defaultBudget: number; fmt: (v: number) => string }) {
+function CitySearch({ defaultBudget, fmt, t }: { defaultBudget: number; fmt: (v: number) => string; t: (es: string, en: string) => string }) {
   const [budget, setBudget] = useState(defaultBudget || 2000);
   const [query, setQuery] = useState(fmt(defaultBudget || 2000));
 
@@ -225,12 +227,12 @@ function CitySearch({ defaultBudget, fmt }: { defaultBudget: number; fmt: (v: nu
   const presets = useMemo(() => {
     const b = defaultBudget || 2000;
     return [
-      { label: "Tus gastos", value: b },
+      { label: t("Tus gastos", "Your expenses"), value: b },
       { label: "1.5x", value: Math.round(b * 1.5) },
       { label: "2x", value: Math.round(b * 2) },
       { label: "3x", value: Math.round(b * 3) },
     ];
-  }, [defaultBudget]);
+  }, [defaultBudget, t]);
 
   const ranked = useMemo(() => {
     if (!budget || budget <= 0) return [];
@@ -264,9 +266,9 @@ function CitySearch({ defaultBudget, fmt }: { defaultBudget: number; fmt: (v: nu
   };
 
   const badge = (cost: number) => {
-    if (cost <= budget * 0.75) return { text: "Cómodo", tone: "bg-positive/15 text-positive" };
-    if (cost <= budget) return { text: "Ajustado", tone: "bg-chart-4/15 text-chart-4" };
-    return { text: "Excede", tone: "bg-destructive/15 text-destructive" };
+    if (cost <= budget * 0.75) return { text: t("Cómodo", "Comfortable"), tone: "bg-positive/15 text-positive" };
+    if (cost <= budget) return { text: t("Ajustado", "Tight"), tone: "bg-chart-4/15 text-chart-4" };
+    return { text: t("Excede", "Exceeds"), tone: "bg-destructive/15 text-destructive" };
   };
 
   return (
@@ -274,7 +276,7 @@ function CitySearch({ defaultBudget, fmt }: { defaultBudget: number; fmt: (v: nu
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="flex-1">
           <label htmlFor="city-budget" className="text-xs font-medium text-muted-foreground">
-            Presupuesto mensual
+            {t("Presupuesto mensual", "Monthly budget")}
           </label>
           <div className="relative mt-1.5">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -285,7 +287,7 @@ function CitySearch({ defaultBudget, fmt }: { defaultBudget: number; fmt: (v: nu
               value={query}
               onChange={handleChange}
               onBlur={handleBlur}
-              placeholder="Ej: 3.000"
+              placeholder={t("Ej: 3.000", "E.g: 3,000")}
               className="pl-9 text-base"
             />
           </div>
@@ -322,7 +324,7 @@ function CitySearch({ defaultBudget, fmt }: { defaultBudget: number; fmt: (v: nu
               </div>
               <div className="mt-3">
                 <p className="numeric text-lg font-semibold">{fmt(c.cost)}</p>
-                <p className="text-xs text-muted-foreground">{ratio}% de tu presupuesto</p>
+                <p className="text-xs text-muted-foreground">{ratio}% {t("de tu presupuesto", "of your budget")}</p>
               </div>
               <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-elevated">
                 <div
@@ -336,7 +338,7 @@ function CitySearch({ defaultBudget, fmt }: { defaultBudget: number; fmt: (v: nu
       </div>
 
       {ranked.length === 0 && (
-        <p className="text-sm text-muted-foreground">Escribe un presupuesto mensual para ver sugerencias de ciudades.</p>
+        <p className="text-sm text-muted-foreground">{t("Escribe un presupuesto mensual para ver sugerencias de ciudades.", "Enter a monthly budget to see city suggestions.")}</p>
       )}
     </div>
   );

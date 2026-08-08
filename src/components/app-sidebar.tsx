@@ -29,22 +29,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useProfile } from "@/hooks/use-profile";
 import { buildDataset } from "@/lib/profile-data";
-
-const primary = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Análisis de Gastos", url: "/gastos", icon: PieChart },
-  { title: "Patrimonio", url: "/patrimonio", icon: Landmark },
-  { title: "Portafolio", url: "/portafolio", icon: LineChart },
-  { title: "Fondo de Retiro", url: "/retiro", icon: PiggyBank },
-  { title: "Cash Flow", url: "/cash-flow", icon: Waves },
-  { title: "Objetivos", url: "/objetivos", icon: Target },
-] as const;
-
-const secondary = [
-  { title: "AI Advisor", url: "/advisor", icon: Bot },
-  { title: "Mis datos", url: "/mi-perfil", icon: UserCog },
-  { title: "Cargar EEFF", url: "/configuracion", icon: Settings },
-] as const;
+import { useT } from "@/hooks/use-language";
 
 export function AppSidebar() {
   const { state } = useSidebar();
@@ -52,6 +37,23 @@ export function AppSidebar() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const { profile } = useProfile();
   const data = buildDataset(profile);
+  const t = useT();
+
+  const primary = [
+    { title: t("Dashboard", "Dashboard"), url: "/dashboard", icon: LayoutDashboard },
+    { title: t("Análisis de Gastos", "Spending Analysis"), url: "/gastos", icon: PieChart },
+    { title: t("Patrimonio", "Net Worth"), url: "/patrimonio", icon: Landmark },
+    { title: t("Portafolio", "Portfolio"), url: "/portafolio", icon: LineChart },
+    { title: t("Fondo de Retiro", "Retirement Fund"), url: "/retiro", icon: PiggyBank },
+    { title: "Cash Flow", url: "/cash-flow", icon: Waves },
+    { title: t("Objetivos", "Goals"), url: "/objetivos", icon: Target },
+  ] as const;
+
+  const secondary = [
+    { title: "AI Advisor", url: "/advisor", icon: Bot },
+    { title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserCog },
+    { title: t("Cargar EEFF", "Upload statements"), url: "/configuracion", icon: Settings },
+  ] as const;
 
   const renderItem = (item: { title: string; url: string; icon: typeof Wallet }) => {
     const active = pathname === item.url;
@@ -77,7 +79,7 @@ export function AppSidebar() {
           {!collapsed && (
             <div className="min-w-0">
               <p className="truncate font-display text-sm font-semibold">Your north</p>
-              <p className="truncate text-xs text-muted-foreground">Tu CFO personal</p>
+              <p className="truncate text-xs text-muted-foreground">{t("Tu CFO personal", "Your personal CFO")}</p>
             </div>
           )}
         </div>
@@ -85,14 +87,14 @@ export function AppSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Patrimonio</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("Patrimonio", "Net Worth")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>{primary.map(renderItem)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Inteligencia</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("Inteligencia", "Intelligence")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>{secondary.map(renderItem)}</SidebarMenu>
           </SidebarGroupContent>
@@ -102,9 +104,12 @@ export function AppSidebar() {
       {!collapsed && (
         <SidebarFooter className="p-3">
           <div className="surface p-3">
-            <p className="text-xs text-muted-foreground">Patrimonio neto</p>
+            <p className="text-xs text-muted-foreground">{t("Patrimonio neto", "Net worth")}</p>
             <p className="numeric mt-1 text-lg font-semibold">{data.fmtCompact(data.netWorth)}</p>
-            <p className="mt-1 text-xs text-muted-foreground">Ahorro {data.fmtCompact(data.savings)}/mes</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {t("Ahorro", "Savings")} {data.fmtCompact(data.savings)}
+              {t("/mes", "/mo")}
+            </p>
           </div>
         </SidebarFooter>
       )}

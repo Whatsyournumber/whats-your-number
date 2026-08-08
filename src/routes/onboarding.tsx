@@ -45,6 +45,73 @@ import {
   currencies,
 } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
+import { useT } from "@/hooks/use-language";
+
+const GOALS_EN: Record<string, string> = {
+  libertad: "Achieve financial freedom",
+  patrimonio: "Grow my net worth",
+  gastos: "Understand and control my expenses",
+  vivienda: "Save for a home",
+  viajar: "Travel more",
+  organizar: "Better organize my money",
+};
+
+const MARITAL_EN: Record<string, string> = {
+  "Soltero": "Single",
+  "En pareja": "In a relationship",
+  "Casado": "Married",
+  "Divorciado": "Divorced",
+};
+
+const PLANS_CHILDREN_EN: Record<string, string> = {
+  "Sí": "Yes",
+  "No": "No",
+  "No estoy seguro": "Not sure",
+};
+
+const LIFESTYLE_EN: Record<string, { label: string; desc: string }> = {
+  minimalista: { label: "Minimalist", desc: "The essentials, no excess." },
+  comodo: { label: "Comfortable", desc: "A calm life, without rush." },
+  premium: { label: "Premium", desc: "Good restaurants, good trips." },
+  lujo: { label: "Luxury", desc: "No relevant spending limits." },
+};
+
+const TRAVEL_EN: Record<string, string> = {
+  "nunca": "Never",
+  "1-2": "1-2",
+  "3-5": "3-5",
+  "5+": "More than 5",
+};
+
+const HOUSING_EN: Record<string, string> = {
+  pagada: "Yes, fully paid off",
+  hipoteca: "Yes, with a mortgage",
+  alquiler: "I rent",
+  ns: "Prefer not to answer",
+};
+
+const CURRENCY_EN: Record<string, string> = {
+  EUR: "Euro",
+  USD: "US Dollar",
+  GBP: "British Pound",
+  CHF: "Swiss Franc",
+  MXN: "Mexican Peso",
+  COP: "Colombian Peso",
+  CLP: "Chilean Peso",
+  ARS: "Argentine Peso",
+  UYU: "Uruguayan Peso",
+  PEN: "Peruvian Sol",
+  BRL: "Brazilian Real",
+  CAD: "Canadian Dollar",
+  DOP: "Dominican Peso",
+  GTQ: "Quetzal",
+  CRC: "Costa Rican Colón",
+  PYG: "Guarani",
+  BOB: "Boliviano",
+  HNL: "Lempira",
+  NIO: "Córdoba",
+  VES: "Bolívar",
+};
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
@@ -68,22 +135,10 @@ const QUESTIONS = 9; // pantallas 1..9
 const BUILD_STEP = 10;
 const SUMMARY_STEP = 11;
 
-const BUILD_TASKS = [
-  "Detectando ingresos",
-  "Clasificando transacciones",
-  "Calculando gastos mensuales",
-  "Detectando inversiones",
-  "Analizando criptomonedas",
-  "Calculando patrimonio",
-  "Detectando suscripciones",
-  "Calculando tu patrimonio objetivo",
-  "Estimando tu edad de libertad financiera",
-  "Construyendo recomendaciones personalizadas",
-];
-
 function OnboardingPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const t = useT();
   const [step, setStep] = useState(0);
   const [data, setData] = useState<OnboardingData>({ ...emptyOnboarding, currency: "EUR", monthly_expenses: 0 });
   const [life, setLife] = useState<LifeData>(emptyLife);
@@ -219,7 +274,7 @@ function OnboardingPage() {
               />
             </div>
             <span className="numeric w-16 text-right text-[11px] text-muted-foreground">
-              {saving ? "Guardando…" : step === 0 || isSummary ? "" : `${step} / ${QUESTIONS}`}
+              {saving ? t("Guardando…", "Saving…") : step === 0 || isSummary ? "" : `${step} / ${QUESTIONS}`}
             </span>
           </div>
         </div>
@@ -240,26 +295,28 @@ function OnboardingPage() {
                   <Compass className="h-7 w-7 text-background" />
                 </div>
                 <h1 className="mt-8 text-center font-display text-4xl font-semibold leading-[1.1] sm:text-5xl">
-                  Vamos a construir tu North.
+                  {t("Vamos a construir tu North.", "Let's build your North.")}
                 </h1>
                 <p className="mx-auto mt-5 max-w-md text-center text-base leading-relaxed text-muted-foreground">
-                  Unas preguntas, dos minutos, y nuestra IA construye un plan financiero hecho para tu vida. Podrás editar
-                  cualquier respuesta después.
+                  {t(
+                    "Unas preguntas, dos minutos, y nuestra IA construye un plan financiero hecho para tu vida. Podrás editar cualquier respuesta después.",
+                    "A few questions, two minutes, and our AI builds a financial plan made for your life. You can edit any answer later.",
+                  )}
                 </p>
               </Screen>
             )}
 
             {step === 1 && (
               <Screen
-                title="¿Cuál es tu principal objetivo financiero?"
-                hint="Queremos construir un plan financiero adaptado a ti."
+                title={t("¿Cuál es tu principal objetivo financiero?", "What's your main financial goal?")}
+                hint={t("Queremos construir un plan financiero adaptado a ti.", "We want to build a financial plan tailored to you.")}
               >
                 <div className="space-y-2.5">
                   {goals.map((g) => (
                     <OptionRow
                       key={g.value}
                       emoji={g.emoji}
-                      title={g.label}
+                      title={t(g.label, GOALS_EN[g.value] ?? g.label)}
                       selected={life.goal === g.value}
                       onClick={() => {
                         setL("goal", g.value);
@@ -272,8 +329,8 @@ function OnboardingPage() {
             )}
 
             {step === 2 && (
-              <Screen title="¿Qué edad tienes?">
-                <BigNumber value={data.age ?? 32} suffix="años" />
+              <Screen title={t("¿Qué edad tienes?", "How old are you?")}>
+                <BigNumber value={data.age ?? 32} suffix={t("años", "years")} />
                 <Slider
                   className="mt-10"
                   min={18}
@@ -288,10 +345,16 @@ function OnboardingPage() {
 
             {step === 3 && (
               <Screen
-                title="¿A qué edad te gustaría alcanzar tu libertad financiera?"
-                hint="La libertad financiera es cuando trabajar deja de ser una obligación y se convierte en una elección."
+                title={t(
+                  "¿A qué edad te gustaría alcanzar tu libertad financiera?",
+                  "At what age would you like to reach financial freedom?",
+                )}
+                hint={t(
+                  "La libertad financiera es cuando trabajar deja de ser una obligación y se convierte en una elección.",
+                  "Financial freedom is when working stops being an obligation and becomes a choice.",
+                )}
               >
-                <BigNumber value={data.retire_age} suffix="años" />
+                <BigNumber value={data.retire_age} suffix={t("años", "years")} />
                 <Slider
                   className="mt-10"
                   min={Math.min(75, (data.age ?? 30) + 1)}
@@ -303,8 +366,9 @@ function OnboardingPage() {
                 <ScaleLabels left={`${Math.min(75, (data.age ?? 30) + 1)}`} right="80" />
                 {data.age ? (
                   <p className="mt-8 text-center text-sm text-muted-foreground">
-                    Te quedan <span className="numeric text-foreground">{Math.max(0, data.retire_age - data.age)}</span>{" "}
-                    años para construirlo.
+                    {t("Te quedan", "You have")}{" "}
+                    <span className="numeric text-foreground">{Math.max(0, data.retire_age - data.age)}</span>{" "}
+                    {t("años para construirlo.", "years left to build it.")}
                   </p>
                 ) : null}
               </Screen>
@@ -312,8 +376,14 @@ function OnboardingPage() {
 
             {step === 4 && (
               <Screen
-                title="¿Dónde te gustaría vivir cuando alcances tu libertad financiera?"
-                hint="Analizaremos automáticamente el coste de vida de esa ciudad para personalizar tu objetivo financiero."
+                title={t(
+                  "¿Dónde te gustaría vivir cuando alcances tu libertad financiera?",
+                  "Where would you like to live once you reach financial freedom?",
+                )}
+                hint={t(
+                  "Analizaremos automáticamente el coste de vida de esa ciudad para personalizar tu objetivo financiero.",
+                  "We'll automatically analyze that city's cost of living to personalize your financial goal.",
+                )}
               >
                 <CityPicker
                   value={life.city}
@@ -326,19 +396,27 @@ function OnboardingPage() {
             )}
 
             {step === 5 && (
-              <Screen title="¿Cuál es tu situación familiar?">
-                <ChipGroup options={maritalOptions.map((m) => ({ value: m, label: m }))} value={life.marital_status} onSelect={(v) => setL("marital_status", v)} />
+              <Screen title={t("¿Cuál es tu situación familiar?", "What's your family situation?")}>
+                <ChipGroup
+                  options={maritalOptions.map((m) => ({ value: m, label: t(m, MARITAL_EN[m] ?? m) }))}
+                  value={life.marital_status}
+                  onSelect={(v) => setL("marital_status", v)}
+                />
                 <AnimatePresence>
                   {life.marital_status && (
                     <Reveal>
-                      <SubQuestion title="¿Tienes hijos?" />
+                      <SubQuestion title={t("¿Tienes hijos?", "Do you have children?")} />
                       <ChipGroup options={childrenOptions.map((c) => ({ value: c, label: c }))} value={life.children} onSelect={(v) => setL("children", v)} />
                     </Reveal>
                   )}
                   {life.children && (
                     <Reveal>
-                      <SubQuestion title="¿Planeas tener hijos?" />
-                      <ChipGroup options={plansChildrenOptions.map((c) => ({ value: c, label: c }))} value={life.plans_children} onSelect={(v) => setL("plans_children", v)} />
+                      <SubQuestion title={t("¿Planeas tener hijos?", "Are you planning to have children?")} />
+                      <ChipGroup
+                        options={plansChildrenOptions.map((c) => ({ value: c, label: t(c, PLANS_CHILDREN_EN[c] ?? c) }))}
+                        value={life.plans_children}
+                        onSelect={(v) => setL("plans_children", v)}
+                      />
                     </Reveal>
                   )}
                 </AnimatePresence>
@@ -347,8 +425,11 @@ function OnboardingPage() {
 
             {step === 6 && (
               <Screen
-                title="¿Cómo te gustaría vivir?"
-                hint="Selecciona el estilo de vida que quieres mantener cuando alcances tu libertad financiera."
+                title={t("¿Cómo te gustaría vivir?", "How would you like to live?")}
+                hint={t(
+                  "Selecciona el estilo de vida que quieres mantener cuando alcances tu libertad financiera.",
+                  "Select the lifestyle you want to maintain once you reach financial freedom.",
+                )}
               >
                 <div className="grid gap-2.5 sm:grid-cols-2">
                   {lifestyles.map((l) => (
@@ -363,17 +444,17 @@ function OnboardingPage() {
                       )}
                     >
                       <span className="text-2xl">{l.emoji}</span>
-                      <p className="mt-3 text-sm font-medium">{l.label}</p>
-                      <p className="mt-1 text-xs text-muted-foreground">{l.desc}</p>
+                      <p className="mt-3 text-sm font-medium">{t(l.label, LIFESTYLE_EN[l.value]?.label ?? l.label)}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">{t(l.desc, LIFESTYLE_EN[l.value]?.desc ?? l.desc)}</p>
                     </button>
                   ))}
                 </div>
                 <AnimatePresence>
                   {life.lifestyle && (
                     <Reveal>
-                      <SubQuestion title="¿Cuántas veces te gustaría viajar al año?" />
+                      <SubQuestion title={t("¿Cuántas veces te gustaría viajar al año?", "How many times a year would you like to travel?")} />
                       <ChipGroup
-                        options={travelOptions.map((t) => ({ value: t.value, label: t.label }))}
+                        options={travelOptions.map((o) => ({ value: o.value, label: t(o.label, TRAVEL_EN[o.value] ?? o.label) }))}
                         value={life.travel_frequency}
                         onSelect={(v) => setL("travel_frequency", v)}
                       />
@@ -382,21 +463,21 @@ function OnboardingPage() {
                 </AnimatePresence>
                 {life.lifestyle && life.travel_frequency && (
                   <p className="mt-8 text-center text-sm text-muted-foreground">
-                    Objetivo estimado de vida:{" "}
-                    <span className="numeric text-foreground">{money(desiredIncome, cur)}</span> al mes.
+                    {t("Objetivo estimado de vida:", "Estimated lifestyle target:")}{" "}
+                    <span className="numeric text-foreground">{money(desiredIncome, cur)}</span> {t("al mes.", "per month.")}
                   </p>
                 )}
               </Screen>
             )}
 
             {step === 7 && (
-              <Screen title="¿Tienes vivienda propia?">
+              <Screen title={t("¿Tienes vivienda propia?", "Do you own your home?")}>
                 <div className="space-y-2.5">
                   {housingOptions.map((h) => (
                     <OptionRow
                       key={h.value}
                       emoji={h.emoji}
-                      title={h.label}
+                      title={t(h.label, HOUSING_EN[h.value] ?? h.label)}
                       selected={life.housing === h.value}
                       onClick={() => setL("housing", h.value)}
                     />
@@ -407,8 +488,14 @@ function OnboardingPage() {
 
             {step === 8 && (
               <Screen
-                title="¿Qué rendimiento anual quieres utilizar para planificar tu patrimonio?"
-                hint="Solo utilizaremos este porcentaje para realizar simulaciones financieras. No representa una rentabilidad garantizada."
+                title={t(
+                  "¿Qué rendimiento anual quieres utilizar para planificar tu patrimonio?",
+                  "What annual return do you want to use to plan your net worth?",
+                )}
+                hint={t(
+                  "Solo utilizaremos este porcentaje para realizar simulaciones financieras. No representa una rentabilidad garantizada.",
+                  "We only use this percentage for financial simulations. It does not represent a guaranteed return.",
+                )}
               >
                 <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-5">
                   {[4, 5, 6, 7, 8].map((r) => (
@@ -426,7 +513,7 @@ function OnboardingPage() {
                       )}
                     >
                       <p className="numeric text-xl font-semibold">{r}%</p>
-                      {r === 7 && <p className="mt-1 text-[10px] uppercase tracking-widest text-primary">⭐ Recom.</p>}
+                      {r === 7 && <p className="mt-1 text-[10px] uppercase tracking-widest text-primary">⭐ {t("Recom.", "Recom.")}</p>}
                     </button>
                   ))}
                 </div>
@@ -437,12 +524,12 @@ function OnboardingPage() {
                     customReturn ? "border-primary bg-primary/10" : "border-border bg-elevated/50 hover:border-muted-foreground/40",
                   )}
                 >
-                  Personalizado
+                  {t("Personalizado", "Custom")}
                 </button>
                 <AnimatePresence>
                   {customReturn && (
                     <Reveal>
-                      <BigNumber value={data.expected_return} suffix="% anual" />
+                            <BigNumber value={data.expected_return} suffix={t("% anual", "% annual")} />
                       <Slider
                         className="mt-8"
                         min={1}
@@ -459,22 +546,27 @@ function OnboardingPage() {
 
             {step === 9 && (
               <Screen
-                title="Hablemos de tu patrimonio"
-                hint="Antes de analizar tus movimientos, queremos conocer una estimación de tu patrimonio actual. Si no conoces alguna cifra, puedes dejarla en 0 o editarla más adelante."
+                title={t("Hablemos de tu patrimonio", "Let's talk about your net worth")}
+                hint={t(
+                  "Antes de analizar tus movimientos, queremos conocer una estimación de tu patrimonio actual. Si no conoces alguna cifra, puedes dejarla en 0 o editarla más adelante.",
+                  "Before analyzing your transactions, we want an estimate of your current net worth. If you don't know a figure, leave it at 0 or edit it later.",
+                )}
               >
                 <div className="flex gap-3 rounded-2xl border border-primary/25 bg-primary/5 px-5 py-4">
                   <span className="text-lg">🤖</span>
                   <p className="text-xs leading-relaxed text-muted-foreground">
-                    No te preocupes si no conoces estos números. Nuestra IA puede calcularlos automáticamente analizando
-                    tus extractos financieros. Solo completa lo que conozcas —{" "}
-                    <span className="text-foreground">podrás modificarlo cuando quieras</span>.
+                    {t(
+                      "No te preocupes si no conoces estos números. Nuestra IA puede calcularlos automáticamente analizando tus extractos financieros. Solo completa lo que conozcas —",
+                      "Don't worry if you don't know these numbers. Our AI can calculate them automatically by analyzing your financial statements. Just fill in what you know —",
+                    )}{" "}
+                    <span className="text-foreground">{t("podrás modificarlo cuando quieras", "you can edit it anytime")}</span>.
                   </p>
                 </div>
 
                 <div className="mt-5 flex items-center justify-between gap-3 rounded-2xl border border-border/60 bg-elevated/40 px-5 py-3">
                   <div>
-                    <p className="text-sm">Moneda</p>
-                    <p className="text-xs text-muted-foreground">En la que verás todos tus importes</p>
+                    <p className="text-sm">{t("Moneda", "Currency")}</p>
+                    <p className="text-xs text-muted-foreground">{t("En la que verás todos tus importes", "The one you'll see all your amounts in")}</p>
                   </div>
                   <select
                     className="h-9 rounded-md border border-input bg-background px-3 text-sm"
@@ -483,7 +575,7 @@ function OnboardingPage() {
                   >
                     {currencies.map((c) => (
                       <option key={c.code} value={c.code}>
-                        {c.code} · {c.label}
+                        {c.code} · {t(c.label, CURRENCY_EN[c.code] ?? c.label)}
                       </option>
                     ))}
                   </select>
@@ -493,56 +585,56 @@ function OnboardingPage() {
                 <div className="mt-5 space-y-2.5">
                   <MoneyField
                     emoji="💰"
-                    label="Ahorros"
-                    desc="Cuentas bancarias y efectivo"
+                    label={t("Ahorros", "Savings")}
+                    desc={t("Cuentas bancarias y efectivo", "Bank accounts and cash")}
                     currency={cur}
                     value={data.assets_bank}
                     onChange={(v) => set("assets_bank", v)}
                   />
                   <MoneyField
                     emoji="📈"
-                    label="Inversiones"
-                    desc="Acciones, ETFs y fondos"
+                    label={t("Inversiones", "Investments")}
+                    desc={t("Acciones, ETFs y fondos", "Stocks, ETFs and funds")}
                     currency={cur}
                     value={data.assets_etf}
                     onChange={(v) => set("assets_etf", v)}
                   />
                   <MoneyField
                     emoji="₿"
-                    label="Criptomonedas"
-                    desc="Valor aproximado actual"
+                    label={t("Criptomonedas", "Cryptocurrencies")}
+                    desc={t("Valor aproximado actual", "Current approximate value")}
                     currency={cur}
                     value={data.assets_crypto}
                     onChange={(v) => set("assets_crypto", v)}
                   />
                   <MoneyField
                     emoji="🏠"
-                    label="Bienes inmuebles"
-                    desc="Valor de tus propiedades"
+                    label={t("Bienes inmuebles", "Real estate")}
+                    desc={t("Valor de tus propiedades", "Value of your properties")}
                     currency={cur}
                     value={data.assets_property}
                     onChange={(v) => set("assets_property", v)}
                   />
                   <MoneyField
                     emoji="💳"
-                    label="Deudas"
-                    desc="Hipotecas, préstamos y otras deudas"
+                    label={t("Deudas", "Debts")}
+                    desc={t("Hipotecas, préstamos y otras deudas", "Mortgages, loans and other debts")}
                     currency={cur}
                     value={data.liabilities}
                     onChange={(v) => set("liabilities", v)}
                   />
                   <MoneyField
                     emoji="🪙"
-                    label="Ingreso mensual"
-                    desc="Neto, después de impuestos"
+                    label={t("Ingreso mensual", "Monthly income")}
+                    desc={t("Neto, después de impuestos", "Net, after taxes")}
                     currency={cur}
                     value={data.income_salary}
                     onChange={(v) => set("income_salary", v)}
                   />
                   <MoneyField
                     emoji="🧾"
-                    label="Gasto mensual"
-                    desc="Aproximado, todo incluido"
+                    label={t("Gasto mensual", "Monthly expenses")}
+                    desc={t("Aproximado, todo incluido", "Approximate, all included")}
                     currency={cur}
                     value={data.monthly_expenses}
                     onChange={(v) => set("monthly_expenses", v)}
@@ -550,15 +642,17 @@ function OnboardingPage() {
                 </div>
 
                 <div className="mt-6 flex items-center justify-between rounded-2xl border border-primary/25 bg-primary/5 px-5 py-4">
-                  <span className="text-sm text-muted-foreground">Patrimonio neto estimado</span>
+                  <span className="text-sm text-muted-foreground">{t("Patrimonio neto estimado", "Estimated net worth")}</span>
                   <span className="numeric text-xl font-semibold text-primary">{money(netWorth(data), cur)}</span>
                 </div>
 
                 <div className="mt-10">
-                  <h3 className="font-display text-xl font-semibold">📄 Sube tus extractos financieros</h3>
+                  <h3 className="font-display text-xl font-semibold">📄 {t("Sube tus extractos financieros", "Upload your financial statements")}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    Nuestra IA analizará automáticamente tus ingresos, gastos, inversiones y patrimonio. Aceptamos PDF y
-                    CSV de bancos, brokers y exchanges.
+                    {t(
+                      "Nuestra IA analizará automáticamente tus ingresos, gastos, inversiones y patrimonio. Aceptamos PDF y CSV de bancos, brokers y exchanges.",
+                      "Our AI will automatically analyze your income, expenses, investments and net worth. We accept PDF and CSV from banks, brokers and exchanges.",
+                    )}
                   </p>
                   <div className="mt-5 rounded-3xl border border-dashed border-border bg-elevated/30 p-4">
                     <StatementImporter />
@@ -566,7 +660,7 @@ function OnboardingPage() {
                 </div>
 
                 <Button size="lg" className="mt-8 h-14 w-full rounded-full text-base" onClick={build}>
-                  <Sparkles className="mr-2 h-4 w-4" /> Construir mi North
+                  <Sparkles className="mr-2 h-4 w-4" /> {t("Construir mi North", "Build my North")}
                 </Button>
               </Screen>
             )}
@@ -590,11 +684,11 @@ function OnboardingPage() {
           <div className="mt-12 flex items-center gap-3">
             {step > 0 && (
               <Button variant="ghost" size="lg" className="rounded-full" onClick={() => go(-1)}>
-                <ArrowLeft className="mr-2 h-4 w-4" /> Atrás
+                <ArrowLeft className="mr-2 h-4 w-4" /> {t("Atrás", "Back")}
               </Button>
             )}
             <Button size="lg" className="ml-auto min-w-[160px] rounded-full" disabled={!canContinue()} onClick={() => go(1)}>
-              {step === 0 ? "Comenzar" : "Continuar"}
+              {step === 0 ? t("Comenzar", "Start") : t("Continuar", "Continue")}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
@@ -603,7 +697,7 @@ function OnboardingPage() {
         {step === 9 && (
           <div className="mt-8">
             <Button variant="ghost" size="lg" className="rounded-full" onClick={() => go(-1)}>
-              <ArrowLeft className="mr-2 h-4 w-4" /> Atrás
+              <ArrowLeft className="mr-2 h-4 w-4" /> {t("Atrás", "Back")}
             </Button>
           </div>
         )}
@@ -772,6 +866,7 @@ function MoneyField({
 }
 
 function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof cities)[number]) => void }) {
+  const t = useT();
   const [q, setQ] = useState("");
   const term = q.toLowerCase().trim();
   const list = cities.filter((c) => c.name.toLowerCase().includes(term) || c.country.toLowerCase().includes(term));
@@ -783,7 +878,7 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
           autoFocus
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Busca una ciudad…"
+          placeholder={t("Busca una ciudad…", "Search a city…")}
           className="h-14 flex-1 bg-transparent text-base outline-none"
         />
       </div>
@@ -804,7 +899,7 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
             </span>
           </button>
         ))}
-        {list.length === 0 && <p className="px-2 py-4 text-sm text-muted-foreground">Sin resultados.</p>}
+        {list.length === 0 && <p className="px-2 py-4 text-sm text-muted-foreground">{t("Sin resultados.", "No results.")}</p>}
       </div>
     </div>
   );
@@ -813,15 +908,33 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
 /* ───────────────────────── Pantalla 10: IA trabajando ───────────────────────── */
 
 function BuildingScreen({ onDone }: { onDone: () => void }) {
+  const t = useT();
   const [done, setDone] = useState(0);
+
+  const BUILD_TASKS = useMemo(
+    () => [
+      t("Detectando ingresos", "Detecting income"),
+      t("Clasificando transacciones", "Classifying transactions"),
+      t("Calculando gastos mensuales", "Calculating monthly expenses"),
+      t("Detectando inversiones", "Detecting investments"),
+      t("Analizando criptomonedas", "Analyzing cryptocurrencies"),
+      t("Calculando patrimonio", "Calculating net worth"),
+      t("Detectando suscripciones", "Detecting subscriptions"),
+      t("Calculando tu patrimonio objetivo", "Calculating your target net worth"),
+      t("Estimando tu edad de libertad financiera", "Estimating your financial freedom age"),
+      t("Construyendo recomendaciones personalizadas", "Building personalized recommendations"),
+    ],
+    [t],
+  );
 
   useEffect(() => {
     if (done >= BUILD_TASKS.length) {
-      const t = setTimeout(onDone, 700);
-      return () => clearTimeout(t);
+      const timeout = setTimeout(onDone, 700);
+      return () => clearTimeout(timeout);
     }
-    const t = setTimeout(() => setDone((d) => d + 1), done === 0 ? 500 : 620);
-    return () => clearTimeout(t);
+    const timeout = setTimeout(() => setDone((d) => d + 1), done === 0 ? 500 : 620);
+    return () => clearTimeout(timeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [done, onDone]);
 
   return (
@@ -844,9 +957,9 @@ function BuildingScreen({ onDone }: { onDone: () => void }) {
         </div>
       </div>
 
-      <h2 className="mt-10 text-center font-display text-3xl font-semibold sm:text-4xl">Estamos construyendo tu North…</h2>
+      <h2 className="mt-10 text-center font-display text-3xl font-semibold sm:text-4xl">{t("Estamos construyendo tu North…", "We're building your North…")}</h2>
       <p className="mx-auto mt-4 max-w-md text-center text-sm leading-relaxed text-muted-foreground">
-        Nuestra IA está analizando toda tu información financiera.
+        {t("Nuestra IA está analizando toda tu información financiera.", "Our AI is analyzing all your financial information.")}
       </p>
 
       <div className="mx-auto mt-12 max-w-md space-y-2.5">
@@ -908,20 +1021,21 @@ function SummaryScreen({
   onEnter: () => void;
   onEdit: () => void;
 }) {
+  const t = useT();
   const insights = buildInsights(plan, data, life, currency);
   const assets = totalAssets(data);
   const dist = [
-    { label: "Ahorros", value: data.assets_cash + data.assets_bank, icon: <Banknote className="h-3.5 w-3.5" /> },
-    { label: "Inversiones", value: data.assets_etf + data.assets_stocks + data.assets_retirement, icon: <TrendingUp className="h-3.5 w-3.5" /> },
-    { label: "Cripto", value: data.assets_crypto, icon: <Bitcoin className="h-3.5 w-3.5" /> },
-    { label: "Inmuebles", value: data.assets_property, icon: <Building2 className="h-3.5 w-3.5" /> },
+    { label: t("Ahorros", "Savings"), value: data.assets_cash + data.assets_bank, icon: <Banknote className="h-3.5 w-3.5" /> },
+    { label: t("Inversiones", "Investments"), value: data.assets_etf + data.assets_stocks + data.assets_retirement, icon: <TrendingUp className="h-3.5 w-3.5" /> },
+    { label: t("Cripto", "Crypto"), value: data.assets_crypto, icon: <Bitcoin className="h-3.5 w-3.5" /> },
+    { label: t("Inmuebles", "Real estate"), value: data.assets_property, icon: <Building2 className="h-3.5 w-3.5" /> },
   ].filter((d) => d.value > 0);
 
   const metrics = [
-    { emoji: "💰", label: "Patrimonio actual", value: money(plan.netWorth, currency) },
-    { emoji: "📈", label: "Ingreso mensual", value: money(plan.income, currency) },
-    { emoji: "💳", label: "Gasto mensual", value: money(plan.expenses, currency) },
-    { emoji: "💵", label: "Tasa de ahorro", value: `${plan.savingsRate.toFixed(0)}%` },
+    { emoji: "💰", label: t("Patrimonio actual", "Current net worth"), value: money(plan.netWorth, currency) },
+    { emoji: "📈", label: t("Ingreso mensual", "Monthly income"), value: money(plan.income, currency) },
+    { emoji: "💳", label: t("Gasto mensual", "Monthly expenses"), value: money(plan.expenses, currency) },
+    { emoji: "💵", label: t("Tasa de ahorro", "Savings rate"), value: `${plan.savingsRate.toFixed(0)}%` },
   ];
 
   return (
@@ -929,9 +1043,11 @@ function SummaryScreen({
       <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center text-4xl">
         🎉
       </motion.div>
-      <h2 className="mt-5 text-center font-display text-4xl font-semibold sm:text-5xl">Tu North está listo.</h2>
+      <h2 className="mt-5 text-center font-display text-4xl font-semibold sm:text-5xl">{t("Tu North está listo.", "Your North is ready.")}</h2>
       <p className="mx-auto mt-4 max-w-md text-center text-sm leading-relaxed text-muted-foreground">
-        {data.full_name ? `${data.full_name}, esto` : "Esto"} es lo que la IA ha entendido de tus finanzas.
+        {data.full_name
+          ? t(`${data.full_name}, esto es lo que la IA ha entendido de tus finanzas.`, `${data.full_name}, this is what our AI has understood about your finances.`)
+          : t("Esto es lo que la IA ha entendido de tus finanzas.", "This is what our AI has understood about your finances.")}
       </p>
 
       <div className="mt-10 grid grid-cols-2 gap-3">
@@ -952,7 +1068,7 @@ function SummaryScreen({
 
       {dist.length > 0 && (
         <div className="surface mt-3 p-6">
-          <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">📊 Distribución del patrimonio</p>
+          <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">📊 {t("Distribución del patrimonio", "Net worth distribution")}</p>
           <div className="mt-4 flex h-2.5 overflow-hidden rounded-full bg-muted">
             {dist.map((d, i) => (
               <motion.div
@@ -984,20 +1100,20 @@ function SummaryScreen({
             <p className="text-[11px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
             <p className="numeric mt-2 text-4xl font-semibold">{compact(plan.targetCapital, currency)}</p>
             <p className="mt-2 text-xs text-muted-foreground">
-              El capital que te permite vivir con {money(plan.desiredIncome, currency)} al mes
-              {life.city ? ` en ${life.city}` : ""}.
+              {t("El capital que te permite vivir con", "The capital that lets you live on")} {money(plan.desiredIncome, currency)} {t("al mes", "per month")}
+              {life.city ? ` ${t("en", "in")} ${life.city}` : ""}.
             </p>
           </div>
           <div className="text-right">
-            <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">📅 Libertad financiera</p>
-            <p className="numeric mt-2 text-4xl font-semibold text-primary">{plan.freedomAge} años</p>
-            <p className="mt-2 text-xs text-muted-foreground">Tu meta eran los {plan.retireAge} años.</p>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">📅 {t("Libertad financiera", "Financial freedom")}</p>
+            <p className="numeric mt-2 text-4xl font-semibold text-primary">{plan.freedomAge} {t("años", "years")}</p>
+            <p className="mt-2 text-xs text-muted-foreground">{t("Tu meta eran los", "Your goal was")} {plan.retireAge} {t("años.", "years old.")}</p>
           </div>
         </div>
 
         <div className="mt-6">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>📈 Progreso hacia tu North</span>
+            <span>📈 {t("Progreso hacia tu North", "Progress towards your North")}</span>
             <span className="numeric text-foreground">{plan.progress.toFixed(1)}%</span>
           </div>
           <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-muted">
@@ -1012,7 +1128,7 @@ function SummaryScreen({
       </div>
 
       <div className="mt-8">
-        <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">✨ AI Insights</p>
+        <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">✨ {t("AI Insights", "AI Insights")}</p>
         <div className="mt-4 space-y-2.5">
           {insights.map((text, i) => (
             <motion.div
@@ -1030,14 +1146,14 @@ function SummaryScreen({
       </div>
 
       <p className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground">
-        <CreditCard className="h-3.5 w-3.5" /> Todas tus respuestas quedan guardadas y las puedes editar cuando quieras.
+        <CreditCard className="h-3.5 w-3.5" /> {t("Todas tus respuestas quedan guardadas y las puedes editar cuando quieras.", "All your answers are saved and you can edit them anytime.")}
       </p>
 
       <Button size="lg" className="mt-5 h-14 w-full rounded-full text-base" onClick={onEnter}>
-        Entrar a mi dashboard <ArrowRight className="ml-2 h-4 w-4" />
+        {t("Entrar a mi dashboard", "Enter my dashboard")} <ArrowRight className="ml-2 h-4 w-4" />
       </Button>
       <Button variant="ghost" size="lg" className="mt-2 w-full rounded-full" onClick={onEdit}>
-        <Pencil className="mr-2 h-3.5 w-3.5" /> Editar mis respuestas
+        <Pencil className="mr-2 h-3.5 w-3.5" /> {t("Editar mis respuestas", "Edit my answers")}
       </Button>
     </div>
   );

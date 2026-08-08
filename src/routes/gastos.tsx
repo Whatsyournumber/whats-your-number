@@ -14,6 +14,7 @@ import { es } from "date-fns/locale";
 import { CalendarIcon, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { categorizeTx } from "@/lib/categorize";
+import { useT } from "@/hooks/use-language";
 import type { DateRange } from "react-day-picker";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, ComposedChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
@@ -64,17 +65,19 @@ const palette = [
   "var(--color-chart-7)",
 ];
 
-const presets = [
-  { id: "30d", label: "Últimos 30 días", range: () => ({ from: subDays(new Date(), 29), to: new Date() }) },
-  { id: "month", label: "Este mes", range: () => ({ from: startOfMonth(new Date()), to: new Date() }) },
-  {
-    id: "prev-month",
-    label: "Mes pasado",
-    range: () => ({ from: startOfMonth(subMonths(new Date(), 1)), to: endOfMonth(subMonths(new Date(), 1)) }),
-  },
-  { id: "90d", label: "Últimos 90 días", range: () => ({ from: subDays(new Date(), 89), to: new Date() }) },
-  { id: "ytd", label: "Este año", range: () => ({ from: startOfYear(new Date()), to: new Date() }) },
-];
+function buildPresets(t: (es: string, en: string) => string) {
+  return [
+    { id: "30d", label: t("Últimos 30 días", "Last 30 days"), range: () => ({ from: subDays(new Date(), 29), to: new Date() }) },
+    { id: "month", label: t("Este mes", "This month"), range: () => ({ from: startOfMonth(new Date()), to: new Date() }) },
+    {
+      id: "prev-month",
+      label: t("Mes pasado", "Last month"),
+      range: () => ({ from: startOfMonth(subMonths(new Date(), 1)), to: endOfMonth(subMonths(new Date(), 1)) }),
+    },
+    { id: "90d", label: t("Últimos 90 días", "Last 90 days"), range: () => ({ from: subDays(new Date(), 89), to: new Date() }) },
+    { id: "ytd", label: t("Este año", "This year"), range: () => ({ from: startOfYear(new Date()), to: new Date() }) },
+  ];
+}
 
 const isExpense = (t: Tx) => t.amount < 0;
 
@@ -88,6 +91,8 @@ function sum(list: Tx[]) {
 }
 
 function Gastos() {
+  const t = useT();
+  const presets = useMemo(() => buildPresets(t), [t]);
   const { profile } = useProfile();
   const currency = profile.currency || "EUR";
   const fmt = (n: number) => money(Math.round(n), currency);
@@ -97,7 +102,7 @@ function Gastos() {
   const fixed = useFixedExpenses();
   const categories = useCategories();
   const categoryOf = (t: Tx) => categorizeTx(t, categories.rules);
-  const [range, setRange] = useState<DateRange | undefined>(() => presets[0]!.range());
+  const [range, setRange] = useState<DateRange | undefined>(() => buildPresets(t)[0]!.range());
 
   const from = range?.from ?? subDays(new Date(), 29);
   const to = range?.to ?? from;
@@ -261,7 +266,7 @@ function Gastos() {
   const rangeLabel =
     range?.from && range?.to
       ? `${format(range.from, "d MMM yyyy", { locale: es })} — ${format(range.to, "d MMM yyyy", { locale: es })}`
-      : "Selecciona un rango";
+      : t("Selecciona un rango", "Select a range");
 
   const adviceKey = `${rangeLabel}|${variableTotal.toFixed(0)}|${fixed.total}|${target}`;
   const lastAdviceKey = useRef<string | null>(null);
@@ -289,7 +294,7 @@ function Gastos() {
       });
       setAdvice(res.advice);
     } catch (e) {
-      setAdviceError(e instanceof Error ? e.message : "No pudimos generar las recomendaciones.");
+      setAdviceError(e instanceof Error ? e.message : t("No pudimos generar las recomendaciones.", "We couldn't generate recommendations."));
     } finally {
       setAdviceLoading(false);
     }
@@ -309,9 +314,9 @@ function Gastos() {
   return (
     <PageShell>
       <PageHeader
-        eyebrow="Análisis de gastos"
-        title="¿En qué se fue mi dinero?"
-        subtitle="Tus gastos fijos y todo el detalle real de tus estados de cuenta."
+        eyebrow={t("Análisis de gastos", "Spending analysis")}
+        title={t("¿En qué se fue mi dinero?", "Where did my money go?")}
+        subtitle={t("Tus gastos fijos y todo el detalle real de tus estados de cuenta.", "Your fixed expenses and the full real detail from your statements.")}
         actions={
           <Popover>
             <PopoverTrigger asChild>
@@ -354,30 +359,30 @@ function Gastos() {
               <Upload className="h-5 w-5 text-muted-foreground" />
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium">Aún no hay estados de cuenta procesados</p>
-              <p className="text-xs text-muted-foreground">Sube tus EEFF en PDF o CSV para ver el detalle real.</p>
+              <p className="text-sm font-medium">{t("Aún no hay estados de cuenta procesados", "No statements processed yet")}</p>
+              <p className="text-xs text-muted-foreground">{t("Sube tus EEFF en PDF o CSV para ver el detalle real.", "Upload your statements as PDF or CSV to see the real detail.")}</p>
             </div>
             <Button asChild className="ml-auto">
-              <Link to="/configuracion">Cargar EEFF</Link>
+              <Link to="/configuracion">{t("Cargar EEFF", "Upload statements")}</Link>
             </Button>
           </div>
         </Panel>
       )}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard label="Gasto del periodo" value={fmt(total)} delta={Number(delta.toFixed(1))} hint={`fijos ${fmt(fixedInPeriod)} + variable ${fmt(variableTotal)}`} inverse accent index={0} />
-        <KpiCard label="Gastos fijos" value={fmt(fixed.total)} hint="mensual, editable" index={1} />
-        <KpiCard label="Gasto variable (EEFF)" value={fmt(variable)} hint={`${current.length} transacciones`} index={2} />
-        <KpiCard label="Promedio diario" value={fmt(total / days)} hint={`${days} días`} index={3} />
+        <KpiCard label={t("Gasto del periodo", "Period spend")} value={fmt(total)} delta={Number(delta.toFixed(1))} hint={`${t("fijos", "fixed")} ${fmt(fixedInPeriod)} + ${t("variable", "variable")} ${fmt(variableTotal)}`} inverse accent index={0} />
+        <KpiCard label={t("Gastos fijos", "Fixed expenses")} value={fmt(fixed.total)} hint={t("mensual, editable", "monthly, editable")} index={1} />
+        <KpiCard label={t("Gasto variable (EEFF)", "Variable spend (statements)")} value={fmt(variable)} hint={`${current.length} ${t("transacciones", "transactions")}`} index={2} />
+        <KpiCard label={t("Promedio diario", "Daily average")} value={fmt(total / days)} hint={`${days} ${t("días", "days")}`} index={3} />
       </div>
 
       <Panel
-        title="Gasto objetivo mensual"
-        description="Tu techo de gasto según tu número; comparado con tu ritmo actual (fijos + variable proyectado a 30 días)"
+        title={t("Gasto objetivo mensual", "Monthly spend target")}
+        description={t("Tu techo de gasto según tu número; comparado con tu ritmo actual (fijos + variable proyectado a 30 días)", "Your spending ceiling based on your number, compared to your current pace (fixed + variable projected over 30 days)")}
       >
         <div className="grid gap-5 md:grid-cols-[240px_1fr] md:items-center">
           <div>
-            <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">Objetivo</p>
+            <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{t("Objetivo", "Target")}</p>
             <div className="mt-2 flex items-center gap-2">
               <Input
                 type="number"
@@ -385,13 +390,13 @@ function Gastos() {
                 onChange={(e) => setTarget(Number(e.target.value) || 0)}
                 className="numeric h-11 w-40 text-lg font-semibold"
               />
-              <span className="text-xs text-muted-foreground">/mes</span>
+              <span className="text-xs text-muted-foreground">{t("/mes", "/mo")}</span>
             </div>
           </div>
           <div>
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <span className="numeric text-2xl font-semibold">{fmt(monthlyRun)}</span>
-              <span className="text-xs text-muted-foreground">ritmo mensual estimado</span>
+              <span className="text-xs text-muted-foreground">{t("ritmo mensual estimado", "estimated monthly pace")}</span>
               <span
                 className={cn(
                   "ml-auto rounded-full px-2 py-0.5 text-xs font-medium",
@@ -399,8 +404,8 @@ function Gastos() {
                 )}
               >
                 {monthlyRun <= target
-                  ? `${fmt(target - monthlyRun)} por debajo`
-                  : `${fmt(monthlyRun - target)} por encima`}
+                  ? `${fmt(target - monthlyRun)} ${t("por debajo", "under")}`
+                  : `${fmt(monthlyRun - target)} ${t("por encima", "over")}`}
               </span>
             </div>
             <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-muted">
@@ -410,7 +415,7 @@ function Gastos() {
               />
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              {targetPct.toFixed(0)}% del objetivo · fijos {fmt(fixed.total)} + variable {fmt((variableTotal / days) * 30)}
+              {targetPct.toFixed(0)}% {t("del objetivo", "of target")} · {t("fijos", "fixed")} {fmt(fixed.total)} + {t("variable", "variable")} {fmt((variableTotal / days) * 30)}
             </p>
           </div>
         </div>
@@ -419,9 +424,9 @@ function Gastos() {
 
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title="Distribución por categoría">
+        <Panel title={t("Distribución por categoría", "Spend by category")}>
           {byCategory.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Sin movimientos en este rango.</p>
+            <p className="text-sm text-muted-foreground">{t("Sin movimientos en este rango.", "No transactions in this range.")}</p>
           ) : (
             <>
               <div className="relative">
@@ -445,10 +450,10 @@ function Gastos() {
                 </ResponsiveContainer>
                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
                   <p className="numeric text-2xl font-semibold">{fmtCompact(variableTotal)}</p>
-                  <p className="text-xs text-muted-foreground">gasto variable</p>
+                  <p className="text-xs text-muted-foreground">{t("gasto variable", "variable spend")}</p>
                   <p className={cn("numeric mt-0.5 text-[11px]", delta > 0 ? "text-negative" : "text-positive")}>
                     {delta > 0 ? "+" : ""}
-                    {delta.toFixed(1)}% vs. periodo anterior
+                    {delta.toFixed(1)}% {t("vs. periodo anterior", "vs. previous period")}
                   </p>
                 </div>
               </div>
@@ -465,7 +470,7 @@ function Gastos() {
           )}
         </Panel>
 
-        <Panel title="Evolución del gasto" description={`Comparando con ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="lg:col-span-2">
+        <Panel title={t("Evolución del gasto", "Spend evolution")} description={`${t("Comparando con", "Comparing with")} ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="lg:col-span-2">
           <ResponsiveContainer width="100%" height={280}>
             <ComposedChart data={series} margin={{ left: -8, right: 8 }}>
               <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
@@ -478,20 +483,20 @@ function Gastos() {
                 iconType="circle"
                 wrapperStyle={{ fontSize: 11, paddingBottom: 8 }}
               />
-              <Bar dataKey="anterior" name="Periodo anterior" fill="var(--color-muted-foreground)" fillOpacity={0.35} radius={[8, 8, 0, 0]} />
-              <Bar dataKey="gasto" name="Este periodo" fill="var(--color-chart-5)" radius={[8, 8, 0, 0]} />
-              <Line dataKey="fijo" name="Fijos (prorrateado)" stroke="var(--color-chart-3)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
+              <Bar dataKey="anterior" name={t("Periodo anterior", "Previous period")} fill="var(--color-muted-foreground)" fillOpacity={0.35} radius={[8, 8, 0, 0]} />
+              <Bar dataKey="gasto" name={t("Este periodo", "This period")} fill="var(--color-chart-5)" radius={[8, 8, 0, 0]} />
+              <Line dataKey="fijo" name={t("Fijos (prorrateado)", "Fixed (prorated)")} stroke="var(--color-chart-3)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
             </ComposedChart>
           </ResponsiveContainer>
           <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
-              { l: "Este periodo", v: fmt(variableTotal) },
-              { l: "Periodo anterior", v: fmt(prevVariable) },
+              { l: t("Este periodo", "This period"), v: fmt(variableTotal) },
+              { l: t("Periodo anterior", "Previous period"), v: fmt(prevVariable) },
               {
-                l: "Variación",
+                l: t("Variación", "Change"),
                 v: `${variableTotal - prevVariable > 0 ? "+" : ""}${fmt(variableTotal - prevVariable)}`,
               },
-              { l: "Día más caro", v: series.length ? fmt(Math.max(...series.map((s) => s.gasto))) : "—" },
+              { l: t("Día más caro", "Most expensive day"), v: series.length ? fmt(Math.max(...series.map((s) => s.gasto))) : "—" },
             ].map((k) => (
               <div key={k.l} className="rounded-xl bg-elevated/60 px-3 py-2">
                 <p className="text-[11px] text-muted-foreground">{k.l}</p>
@@ -500,12 +505,12 @@ function Gastos() {
             ))}
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
-            Periodo anterior: <span className="numeric font-medium">{fmt(prevTotal)}</span>
+            {t("Periodo anterior", "Previous period")}: <span className="numeric font-medium">{fmt(prevTotal)}</span>
           </p>
         </Panel>
       </div>
 
-      <Panel title="Gastos fijos mensuales" description="Edita nombre y monto; se guardan en este navegador">
+      <Panel title={t("Gastos fijos mensuales", "Monthly fixed expenses")} description={t("Edita nombre y monto; se guardan en este navegador", "Edit name and amount; saved in this browser")}>
         <div className="space-y-2">
           {fixed.items.map((item) => (
             <div key={item.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-elevated/60 px-3 py-2">
@@ -526,7 +531,7 @@ function Gastos() {
                   variant="ghost"
                   className="h-8 w-8 text-muted-foreground hover:text-negative"
                   onClick={() => fixed.remove(item.id)}
-                  aria-label={`Eliminar ${item.name}`}
+                  aria-label={`${t("Eliminar", "Delete")} ${item.name}`}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -544,9 +549,9 @@ function Gastos() {
         </div>
         <div className="mt-3 flex items-center gap-3">
           <Button size="sm" variant="outline" className="gap-2" onClick={fixed.add}>
-            <Plus className="h-4 w-4" /> Añadir gasto fijo
+            <Plus className="h-4 w-4" /> {t("Añadir gasto fijo", "Add fixed expense")}
           </Button>
-          <span className="numeric ml-auto text-sm font-semibold">Total {fmt(fixed.total)}/mes</span>
+          <span className="numeric ml-auto text-sm font-semibold">{t("Total", "Total")} {fmt(fixed.total)}{t("/mes", "/mo")}</span>
         </div>
       </Panel>
 
@@ -557,17 +562,17 @@ function Gastos() {
 
 
       <Panel
-        title="Comparar mes vs mes"
-        description="Elige dos meses de tus EEFF y mira dónde cambió el gasto"
+        title={t("Comparar mes vs mes", "Compare month vs month")}
+        description={t("Elige dos meses de tus EEFF y mira dónde cambió el gasto", "Pick two months from your statements and see where spend changed")}
       >
         {monthKeys.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Carga tus EEFF para comparar meses.</p>
+          <p className="text-sm text-muted-foreground">{t("Carga tus EEFF para comparar meses.", "Upload your statements to compare months.")}</p>
         ) : (
           <>
             <div className="flex flex-wrap items-center gap-3">
               <Select value={mA ?? ""} onValueChange={(v) => setMonthA(v)}>
                 <SelectTrigger className="h-9 w-[190px] capitalize">
-                  <SelectValue placeholder="Mes A" />
+                  <SelectValue placeholder={t("Mes A", "Month A")} />
                 </SelectTrigger>
                 <SelectContent>
                   {monthKeys.map((k) => (
@@ -577,10 +582,10 @@ function Gastos() {
                   ))}
                 </SelectContent>
               </Select>
-              <span className="text-xs text-muted-foreground">vs.</span>
+              <span className="text-xs text-muted-foreground">{t("vs.", "vs.")}</span>
               <Select value={mB ?? ""} onValueChange={(v) => setMonthB(v)}>
                 <SelectTrigger className="h-9 w-[190px] capitalize">
-                  <SelectValue placeholder="Mes B" />
+                  <SelectValue placeholder={t("Mes B", "Month B")} />
                 </SelectTrigger>
                 <SelectContent>
                   {monthKeys.map((k) => (
@@ -618,8 +623,8 @@ function Gastos() {
       </Panel>
 
       <Panel
-        title="Detalle por categoría"
-        description="Mercado, Restaurantes, Salidas, Compras, Viajes, Transporte, Lifestyle, Apps y Marketing digital. Añade las tuyas con palabras clave."
+        title={t("Detalle por categoría", "Detail by category")}
+        description={t("Mercado, Restaurantes, Salidas, Compras, Viajes, Transporte, Lifestyle, Apps y Marketing digital. Añade las tuyas con palabras clave.", "Groceries, Restaurants, Nightlife, Shopping, Travel, Transport, Lifestyle, Apps and Digital marketing. Add your own with keywords.")}
       >
         <Accordion type="single" collapsible className="w-full">
           {detailRows.map((c, i) => {
@@ -649,22 +654,22 @@ function Gastos() {
                 </AccordionTrigger>
                 <AccordionContent>
                   {c.items.length === 0 ? (
-                    <p className="pl-6 text-sm text-muted-foreground">Sin gastos de esta categoría en el periodo.</p>
+                    <p className="pl-6 text-sm text-muted-foreground">{t("Sin gastos de esta categoría en el periodo.", "No expenses in this category for the period.")}</p>
                   ) : (
                     <ul className="max-h-[320px] space-y-1 overflow-auto pl-6">
                       {c.items
                         .slice()
                         .sort((a, b) => (a.tx_date! < b.tx_date! ? 1 : -1))
-                        .map((t) => (
-                          <li key={t.id} className="flex items-center gap-3 rounded-lg px-2 py-1.5 hover:bg-elevated/60">
+                        .map((tx) => (
+                          <li key={tx.id} className="flex items-center gap-3 rounded-lg px-2 py-1.5 hover:bg-elevated/60">
                             <span className="w-16 shrink-0 text-xs text-muted-foreground">
-                              {format(parseISO(t.tx_date!), "d MMM", { locale: es })}
+                              {format(parseISO(tx.tx_date!), "d MMM", { locale: es })}
                             </span>
                             <div className="min-w-0">
-                              <p className="truncate text-sm">{t.merchant}</p>
-                              <p className="truncate text-xs text-muted-foreground">{t.subcategory ?? "Sin subcategoría"}</p>
+                              <p className="truncate text-sm">{tx.merchant}</p>
+                              <p className="truncate text-xs text-muted-foreground">{tx.subcategory ?? t("Sin subcategoría", "No subcategory")}</p>
                             </div>
-                            <span className="numeric ml-auto text-sm font-medium">{fmt(Math.abs(t.amount))}</span>
+                            <span className="numeric ml-auto text-sm font-medium">{fmt(Math.abs(tx.amount))}</span>
                           </li>
                         ))}
                     </ul>
@@ -676,19 +681,19 @@ function Gastos() {
         </Accordion>
 
         <div className="mt-4 space-y-2 border-t border-border pt-4">
-          <p className="text-xs font-medium text-muted-foreground">Categorías propias</p>
+          <p className="text-xs font-medium text-muted-foreground">{t("Categorías propias", "Your own categories")}</p>
           {categories.items.map((c) => (
             <div key={c.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-elevated/60 px-3 py-2">
               <Input
                 value={c.name}
                 onChange={(e) => categories.update(c.id, { name: e.target.value })}
-                placeholder="Nombre de la categoría"
+                placeholder={t("Nombre de la categoría", "Category name")}
                 className="h-9 w-full max-w-[220px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
               />
               <Input
                 value={c.keywords}
                 onChange={(e) => categories.update(c.id, { keywords: e.target.value })}
-                placeholder="palabras clave separadas por coma (ej. netflix, gym)"
+                placeholder={t("palabras clave separadas por coma (ej. netflix, gym)", "keywords separated by comma (e.g. netflix, gym)")}
                 className="h-9 min-w-[200px] flex-1 text-sm"
               />
               <Button
@@ -696,22 +701,22 @@ function Gastos() {
                 variant="ghost"
                 className="h-8 w-8 text-muted-foreground hover:text-negative"
                 onClick={() => categories.remove(c.id)}
-                aria-label={`Eliminar ${c.name}`}
+                aria-label={`${t("Eliminar", "Delete")} ${c.name}`}
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>
           ))}
           <Button size="sm" variant="outline" className="gap-2" onClick={() => categories.add()}>
-            <Plus className="h-4 w-4" /> Añadir categoría
+            <Plus className="h-4 w-4" /> {t("Añadir categoría", "Add category")}
           </Button>
         </div>
       </Panel>
 
 
-      <Panel title="Top comercios" description={`${merchants.length} comercios en el periodo`}>
+      <Panel title={t("Top comercios", "Top merchants")} description={`${merchants.length} ${t("comercios en el periodo", "merchants in the period")}`}>
         {merchants.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Sin comercios en este rango.</p>
+          <p className="text-sm text-muted-foreground">{t("Sin comercios en este rango.", "No merchants in this range.")}</p>
         ) : (
           <ul className="grid gap-2 md:grid-cols-2">
             {merchants.slice(0, 10).map((m) => (
@@ -721,7 +726,7 @@ function Gastos() {
                 </span>
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium">{m.name}</p>
-                  <p className="text-xs text-muted-foreground">{m.count} transacciones</p>
+                  <p className="text-xs text-muted-foreground">{m.count} {t("transacciones", "transactions")}</p>
                 </div>
                 <span className="numeric ml-auto text-sm font-semibold">{fmt(m.amount)}</span>
               </li>
@@ -730,17 +735,17 @@ function Gastos() {
         )}
       </Panel>
       <Panel
-        title="Recomendaciones de la IA"
-        description="Las 4 acciones de mayor impacto, generadas automáticamente con tus datos"
+        title={t("Recomendaciones de la IA", "AI recommendations")}
+        description={t("Las 4 acciones de mayor impacto, generadas automáticamente con tus datos", "The 4 highest-impact actions, generated automatically from your data")}
         actions={
           <Button size="sm" onClick={runAdvice} disabled={adviceLoading || !hasData}>
             {adviceLoading ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Analizando
+                <Loader2 className="h-4 w-4 animate-spin" /> {t("Analizando", "Analyzing")}
               </>
             ) : (
               <>
-                <Sparkles className="h-4 w-4" /> Actualizar
+                <Sparkles className="h-4 w-4" /> {t("Actualizar", "Refresh")}
               </>
             )}
           </Button>
@@ -750,8 +755,8 @@ function Gastos() {
         {!advice && !adviceError && (
           <p className="text-sm text-muted-foreground">
             {hasData
-              ? "Analizando tus categorías, comercios y tu objetivo de gasto…"
-              : "Carga tus EEFF para recibir recomendaciones."}
+              ? t("Analizando tus categorías, comercios y tu objetivo de gasto…", "Analyzing your categories, merchants and spend target…")
+              : t("Carga tus EEFF para recibir recomendaciones.", "Upload your statements to get recommendations.")}
           </p>
         )}
         {advice && (

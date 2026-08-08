@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { accounts, categories, excludedTypes, fmt, rules, topMerchants } from "@/lib/data";
+import { useT } from "@/hooks/use-language";
 
 export const Route = createFileRoute("/configuracion")({
   head: () => ({
@@ -22,23 +23,24 @@ export const Route = createFileRoute("/configuracion")({
 });
 
 function Configuracion() {
+  const t = useT();
   return (
     <PageShell>
-      <PageHeader eyebrow="Sistema" title="Cargar EEFF" subtitle="Carga tus estados de cuenta, cuentas y reglas de clasificación." />
+      <PageHeader eyebrow={t("Sistema", "System")} title={t("Cargar EEFF", "Upload statements")} subtitle={t("Carga tus estados de cuenta, cuentas y reglas de clasificación.", "Upload your statements, accounts and classification rules.")} />
 
       <Tabs defaultValue="importacion">
         <TabsList className="mb-4 flex-wrap">
-          <TabsTrigger value="importacion">Importación</TabsTrigger>
-          <TabsTrigger value="cuentas">Cuentas</TabsTrigger>
-          <TabsTrigger value="categorias">Categorías</TabsTrigger>
-          <TabsTrigger value="reglas">Reglas</TabsTrigger>
-          <TabsTrigger value="preferencias">Preferencias</TabsTrigger>
+          <TabsTrigger value="importacion">{t("Importación", "Import")}</TabsTrigger>
+          <TabsTrigger value="cuentas">{t("Cuentas", "Accounts")}</TabsTrigger>
+          <TabsTrigger value="categorias">{t("Categorías", "Categories")}</TabsTrigger>
+          <TabsTrigger value="reglas">{t("Reglas", "Rules")}</TabsTrigger>
+          <TabsTrigger value="preferencias">{t("Preferencias", "Preferences")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="importacion" className="space-y-4">
           <StatementImporter />
 
-          <Panel title="No se consideran gasto" description="Estos movimientos van únicamente al módulo Patrimonio">
+          <Panel title={t("No se consideran gasto", "Not considered expenses")} description={t("Estos movimientos van únicamente al módulo Patrimonio", "These transactions go only to the Net Worth module")}>
             <div className="flex flex-wrap gap-2">
               {excludedTypes.map((e) => (
                 <Badge key={e} variant="secondary" className="rounded-full">
@@ -47,13 +49,16 @@ function Configuracion() {
               ))}
             </div>
             <p className="mt-4 text-xs text-muted-foreground">
-              Compras de activos, traspasos y pagos de tarjeta afectan tu balance, no tu gasto. Así tu tasa de ahorro nunca queda distorsionada.
+              {t(
+                "Compras de activos, traspasos y pagos de tarjeta afectan tu balance, no tu gasto. Así tu tasa de ahorro nunca queda distorsionada.",
+                "Asset purchases, transfers and card payments affect your balance, not your expenses. That way your savings rate is never distorted.",
+              )}
             </p>
           </Panel>
         </TabsContent>
 
         <TabsContent value="cuentas" className="space-y-4">
-          <Panel title="Cuentas y tarjetas">
+          <Panel title={t("Cuentas y tarjetas", "Accounts and cards")}>
             <div className="grid gap-3 md:grid-cols-2">
               {accounts.map((a) => (
                 <div key={a.last4} className="surface relative overflow-hidden p-4">
@@ -70,17 +75,17 @@ function Configuracion() {
               ))}
             </div>
           </Panel>
-          <Panel title="Ingresos recurrentes">
+          <Panel title={t("Ingresos recurrentes", "Recurring income")}>
             <div className="grid gap-3 sm:grid-cols-3">
               {[
-                { name: "Salario", amount: 12400 },
-                { name: "Consultoría", amount: 2800 },
-                { name: "Dividendos", amount: 1200 },
+                { name: t("Salario", "Salary"), amount: 12400 },
+                { name: t("Consultoría", "Consulting"), amount: 2800 },
+                { name: t("Dividendos", "Dividends"), amount: 1200 },
               ].map((i) => (
                 <div key={i.name} className="rounded-xl bg-elevated/60 p-4">
                   <p className="text-sm font-medium">{i.name}</p>
                   <p className="numeric mt-1 text-lg font-semibold">{fmt(i.amount)}</p>
-                  <p className="text-xs text-muted-foreground">mensual</p>
+                  <p className="text-xs text-muted-foreground">{t("mensual", "monthly")}</p>
                 </div>
               ))}
             </div>
@@ -88,14 +93,14 @@ function Configuracion() {
         </TabsContent>
 
         <TabsContent value="categorias" className="space-y-4">
-          <Panel title="Categorías, subcategorías y presupuestos">
+          <Panel title={t("Categorías, subcategorías y presupuestos", "Categories, subcategories and budgets")}>
             <div className="grid gap-3 md:grid-cols-2">
               {categories.map((c) => (
                 <div key={c.key} className="rounded-xl bg-elevated/60 p-4">
                   <div className="flex items-center gap-2">
                     <span>{c.emoji}</span>
                     <p className="text-sm font-medium">{c.name}</p>
-                    <span className="numeric ml-auto text-xs text-muted-foreground">Presupuesto {fmt(c.budget)}</span>
+                    <span className="numeric ml-auto text-xs text-muted-foreground">{t("Presupuesto", "Budget")} {fmt(c.budget)}</span>
                   </div>
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {c.subcategories.map((s) => (
@@ -108,7 +113,7 @@ function Configuracion() {
               ))}
             </div>
           </Panel>
-          <Panel title="Comercios conocidos">
+          <Panel title={t("Comercios conocidos", "Known merchants")}>
             <div className="flex flex-wrap gap-2">
               {topMerchants.map((m) => (
                 <Badge key={m.name} variant="outline" className="rounded-full">
@@ -120,7 +125,7 @@ function Configuracion() {
         </TabsContent>
 
         <TabsContent value="reglas">
-          <Panel title="Reglas automáticas" description="Cuando corriges una categoría, la IA aprende y la aplica la próxima vez">
+          <Panel title={t("Reglas automáticas", "Automatic rules")} description={t("Cuando corriges una categoría, la IA aprende y la aplica la próxima vez", "When you correct a category, the AI learns and applies it next time")}>
             <div className="space-y-2">
               {rules.map((r) => (
                 <div key={r.match} className="flex flex-wrap items-center gap-3 rounded-xl bg-elevated/60 px-3 py-2.5">
@@ -130,7 +135,7 @@ function Configuracion() {
                   <span className="text-xs text-muted-foreground">/ {r.sub}</span>
                   {r.learned && (
                     <Badge className="ml-auto rounded-full text-[10px]" variant="secondary">
-                      Aprendida por IA
+                      {t("Aprendida por IA", "Learned by AI")}
                     </Badge>
                   )}
                 </div>
@@ -140,23 +145,23 @@ function Configuracion() {
         </TabsContent>
 
         <TabsContent value="preferencias" className="space-y-4">
-          <Panel title="Preferencias generales">
+          <Panel title={t("Preferencias generales", "General preferences")}>
             <div className="space-y-4">
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
-                  <Label htmlFor="currency">Moneda principal</Label>
-                  <Input id="currency" defaultValue="USD — Dólar estadounidense" className="mt-1.5" readOnly />
+                  <Label htmlFor="currency">{t("Moneda principal", "Main currency")}</Label>
+                  <Input id="currency" defaultValue={t("USD — Dólar estadounidense", "USD — US Dollar")} className="mt-1.5" readOnly />
                 </div>
                 <div>
-                  <Label htmlFor="locale">Formato regional</Label>
-                  <Input id="locale" defaultValue="Español (es) · en-US números" className="mt-1.5" readOnly />
+                  <Label htmlFor="locale">{t("Formato regional", "Regional format")}</Label>
+                  <Input id="locale" defaultValue={t("Español (es) · en-US números", "Spanish (es) · en-US numbers")} className="mt-1.5" readOnly />
                 </div>
               </div>
               {[
-                { label: "Modo oscuro", desc: "Interfaz optimizada para lectura nocturna", on: true },
-                { label: "Notificaciones de gasto inusual", desc: "Alerta cuando un cargo supera 3× tu ticket habitual", on: true },
-                { label: "Resumen semanal por email", desc: "Cada lunes con KPIs e insights", on: false },
-                { label: "Exportación automática", desc: "CSV mensual a tu almacenamiento", on: false },
+                { label: t("Modo oscuro", "Dark mode"), desc: t("Interfaz optimizada para lectura nocturna", "Interface optimized for night reading"), on: true },
+                { label: t("Notificaciones de gasto inusual", "Unusual spending alerts"), desc: t("Alerta cuando un cargo supera 3× tu ticket habitual", "Alert when a charge exceeds 3× your usual ticket"), on: true },
+                { label: t("Resumen semanal por email", "Weekly email summary"), desc: t("Cada lunes con KPIs e insights", "Every Monday with KPIs and insights"), on: false },
+                { label: t("Exportación automática", "Automatic export"), desc: t("CSV mensual a tu almacenamiento", "Monthly CSV to your storage"), on: false },
               ].map((s) => (
                 <div key={s.label} className="flex items-center gap-4 rounded-xl bg-elevated/60 px-4 py-3">
                   <div>
@@ -168,9 +173,9 @@ function Configuracion() {
               ))}
             </div>
           </Panel>
-          <Panel title="Usuarios del hogar">
+          <Panel title={t("Usuarios del hogar", "Household users")}>
             <div className="flex flex-wrap gap-3">
-              {["Tú (Owner)", "Pareja (Editor)", "Contador (Lectura)"].map((u) => (
+              {[t("Tú (Owner)", "You (Owner)"), t("Pareja (Editor)", "Partner (Editor)"), t("Contador (Lectura)", "Accountant (Read)")].map((u) => (
                 <div key={u} className="rounded-xl bg-elevated/60 px-4 py-3 text-sm">
                   {u}
                 </div>

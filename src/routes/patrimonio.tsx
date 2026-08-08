@@ -5,6 +5,7 @@ import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
+import { useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { buildDataset } from "@/lib/profile-data";
 
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/patrimonio")({
 });
 
 function Patrimonio() {
+  const t = useT();
   const { profile } = useProfile();
   const d = buildDataset(profile);
   const { fmt, fmtCompact, months, assets, liabilities } = d;
@@ -29,16 +31,16 @@ function Patrimonio() {
 
   return (
     <PageShell>
-      <PageHeader eyebrow="Balance" title="Patrimonio" subtitle="Todo lo que tienes y lo que debes, en una sola vista." />
+      <PageHeader eyebrow={t("Balance", "Balance")} title={t("Patrimonio", "Net worth")} subtitle={t("Todo lo que tienes y lo que debes, en una sola vista.", "Everything you own and owe, in one view.")} />
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <KpiCard label="Patrimonio neto" value={fmt(d.netWorth)} delta={growth} hint="últimos 12 meses" accent index={0} />
-        <KpiCard label="Activos" value={fmt(d.totalAssets)} index={1} />
-        <KpiCard label="Pasivos" value={fmt(d.totalLiabilities)} inverse index={2} />
+        <KpiCard label={t("Patrimonio neto", "Net worth")} value={fmt(d.netWorth)} delta={growth} hint={t("últimos 12 meses", "last 12 months")} accent index={0} />
+        <KpiCard label={t("Activos", "Assets")} value={fmt(d.totalAssets)} index={1} />
+        <KpiCard label={t("Pasivos", "Liabilities")} value={fmt(d.totalLiabilities)} inverse index={2} />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title="Crecimiento del patrimonio" className="lg:col-span-2">
+        <Panel title={t("Crecimiento del patrimonio", "Net worth growth")} className="lg:col-span-2">
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={months} margin={{ left: -12, right: 8, top: 8 }}>
               <defs>
@@ -51,17 +53,17 @@ function Patrimonio() {
               <XAxis dataKey="label" {...axisProps} />
               <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={56} />
               <Tooltip content={<ChartTooltip />} />
-              <Area type="monotone" dataKey="netWorth" name="Patrimonio" stroke="var(--color-chart-2)" strokeWidth={2.5} fill="url(#pw)" />
+              <Area type="monotone" dataKey="netWorth" name={t("Patrimonio", "Net worth")} stroke="var(--color-chart-2)" strokeWidth={2.5} fill="url(#pw)" />
             </AreaChart>
           </ResponsiveContainer>
         </Panel>
 
-        <Panel title="Asset allocation">
+        <Panel title={t("Asset allocation", "Asset allocation")}>
           {assets.length === 0 ? (
             <div className="space-y-3 py-8 text-center">
-              <p className="text-sm text-muted-foreground">Aún no registras activos.</p>
+              <p className="text-sm text-muted-foreground">{t("Aún no registras activos.", "You haven't recorded any assets yet.")}</p>
               <Button asChild size="sm" className="rounded-full">
-                <Link to="/mi-perfil">Añadir mis activos</Link>
+                <Link to="/mi-perfil">{t("Añadir mis activos", "Add my assets")}</Link>
               </Button>
             </div>
           ) : (
@@ -91,7 +93,7 @@ function Patrimonio() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title="Activos" description={fmt(d.totalAssets)}>
+        <Panel title={t("Activos", "Assets")} description={fmt(d.totalAssets)}>
           <div className="space-y-2">
             {assets.map((a) => (
               <div key={a.name} className="flex items-center gap-2 rounded-xl bg-elevated/60 p-3">
@@ -100,14 +102,14 @@ function Patrimonio() {
                 <span className="numeric ml-auto text-sm font-semibold">{fmt(a.value)}</span>
               </div>
             ))}
-            {assets.length === 0 && <p className="text-sm text-muted-foreground">Sin activos registrados.</p>}
+            {assets.length === 0 && <p className="text-sm text-muted-foreground">{t("Sin activos registrados.", "No assets recorded.")}</p>}
           </div>
           <Button asChild variant="outline" size="sm" className="mt-4 w-full rounded-full">
-            <Link to="/mi-perfil">Editar activos</Link>
+            <Link to="/mi-perfil">{t("Editar activos", "Edit assets")}</Link>
           </Button>
         </Panel>
 
-        <Panel title="Pasivos" description={fmt(d.totalLiabilities)}>
+        <Panel title={t("Pasivos", "Liabilities")} description={fmt(d.totalLiabilities)}>
           <div className="space-y-2">
             {liabilities.map((l) => (
               <div key={l.name} className="flex items-center gap-2 rounded-xl bg-elevated/60 p-3">
@@ -116,14 +118,14 @@ function Patrimonio() {
                 <span className="numeric ml-auto text-sm font-semibold">{fmt(l.value)}</span>
               </div>
             ))}
-            {liabilities.length === 0 && <p className="text-sm text-muted-foreground">No registras deudas. 🎉</p>}
+            {liabilities.length === 0 && <p className="text-sm text-muted-foreground">{t("No registras deudas. 🎉", "You have no debts. 🎉")}</p>}
           </div>
           <div className="mt-4 rounded-xl border border-dashed border-border p-4">
-            <p className="text-xs text-muted-foreground">Ratio deuda / activos</p>
+            <p className="text-xs text-muted-foreground">{t("Ratio deuda / activos", "Debt / asset ratio")}</p>
             <p className="numeric mt-1 text-2xl font-semibold">
               {d.totalAssets > 0 ? ((d.totalLiabilities / d.totalAssets) * 100).toFixed(1) : "0.0"}%
             </p>
-            <p className="mt-1 text-xs text-muted-foreground">Bajo el 40% se considera saludable</p>
+            <p className="mt-1 text-xs text-muted-foreground">{t("Bajo el 40% se considera saludable", "Below 40% is considered healthy")}</p>
           </div>
         </Panel>
       </div>

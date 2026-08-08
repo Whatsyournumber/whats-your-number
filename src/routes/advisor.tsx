@@ -6,6 +6,7 @@ import { AlertTriangle, ArrowUp, Sparkles, TrendingUp } from "lucide-react";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { useT } from "@/hooks/use-language";
 import { fmt, insights, lifestyle, topMerchants, totalExpenses } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
@@ -23,36 +24,57 @@ export const Route = createFileRoute("/advisor")({
 
 type Msg = { role: "user" | "assistant"; content: string };
 
-const suggestions = [
-  "¿En qué gasté más este año?",
-  "¿Cuánto gasté en restaurantes en Barcelona?",
-  "¿Cuánto he invertido en IA?",
-  "¿Puedo permitirme un viaje de $4.000?",
-];
+function useSuggestions(t: (es: string, en: string) => string) {
+  return [
+    t("¿En qué gasté más este año?", "What did I spend the most on this year?"),
+    t("¿Cuánto gasté en restaurantes en Barcelona?", "How much did I spend on restaurants in Barcelona?"),
+    t("¿Cuánto he invertido en IA?", "How much have I invested in AI?"),
+    t("¿Puedo permitirme un viaje de $4.000?", "Can I afford a $4,000 trip?"),
+  ];
+}
 
-function answer(q: string): string {
-  const t = q.toLowerCase();
-  if (t.includes("restaurante")) {
-    return `En restaurantes llevas ${fmt(1180)} este mes, un 37% sobre tu presupuesto de ${fmt(900)}. En Barcelona (etiqueta "España 2026") gastaste ${fmt(374)} en 3 salidas, con Sushi Kaito como principal comercio.`;
+function answer(q: string, t: (es: string, en: string) => string): string {
+  const lower = q.toLowerCase();
+  if (lower.includes("restaurante") || lower.includes("restaurant")) {
+    return t(
+      `En restaurantes llevas ${fmt(1180)} este mes, un 37% sobre tu presupuesto de ${fmt(900)}. En Barcelona (etiqueta "España 2026") gastaste ${fmt(374)} en 3 salidas, con Sushi Kaito como principal comercio.`,
+      `You've spent ${fmt(1180)} on restaurants this month, 37% over your ${fmt(900)} budget. In Barcelona (tag "Spain 2026") you spent ${fmt(374)} across 3 outings, with Sushi Kaito as the top merchant.`,
+    );
   }
-  if (t.includes("ia") || t.includes("ai")) {
-    return `Tienes ${fmt(48)}/mes en suscripciones de IA (OpenAI). En el año suman ${fmt(576)}. En inversión temática ligada a IA (NVDA, MSFT) tienes ${fmt(51400)} a valor de mercado, con una ganancia de ${fmt(21230)}.`;
+  if (lower.includes("ia") || lower.includes("ai")) {
+    return t(
+      `Tienes ${fmt(48)}/mes en suscripciones de IA (OpenAI). En el año suman ${fmt(576)}. En inversión temática ligada a IA (NVDA, MSFT) tienes ${fmt(51400)} a valor de mercado, con una ganancia de ${fmt(21230)}.`,
+      `You have ${fmt(48)}/month in AI subscriptions (OpenAI). That's ${fmt(576)} for the year. In AI-themed investments (NVDA, MSFT) you have ${fmt(51400)} at market value, with a gain of ${fmt(21230)}.`,
+    );
   }
-  if (t.includes("viaje") || t.includes("4.000") || t.includes("4000")) {
-    return `Sí, con matices. Tu flujo libre mensual es ${fmt(2760)} y tienes ${fmt(42600)} en efectivo. Un viaje de ${fmt(4000)} equivale a 1.4 meses de flujo libre y no afecta tu fondo de emergencia (85% completo). Recomiendo financiarlo en 2 meses sin tocar inversiones.`;
+  if (lower.includes("viaje") || lower.includes("trip") || lower.includes("4.000") || lower.includes("4000")) {
+    return t(
+      `Sí, con matices. Tu flujo libre mensual es ${fmt(2760)} y tienes ${fmt(42600)} en efectivo. Un viaje de ${fmt(4000)} equivale a 1.4 meses de flujo libre y no afecta tu fondo de emergencia (85% completo). Recomiendo financiarlo en 2 meses sin tocar inversiones.`,
+      `Yes, with some nuance. Your monthly free cash flow is ${fmt(2760)} and you have ${fmt(42600)} in cash. A ${fmt(4000)} trip equals 1.4 months of free cash flow and doesn't affect your emergency fund (85% complete). I recommend financing it over 2 months without touching investments.`,
+    );
   }
-  if (t.includes("más") || t.includes("mas") || t.includes("año")) {
-    return `Tu mayor gasto del año es Vivienda (${fmt(2480)}/mes, 28% del total). Le siguen Viajes (${fmt(2050)}) y Restaurantes (${fmt(1180)}). El gasto total de agosto fue ${fmt(totalExpenses)}.`;
+  if (lower.includes("más") || lower.includes("mas") || lower.includes("año") || lower.includes("year") || lower.includes("most")) {
+    return t(
+      `Tu mayor gasto del año es Vivienda (${fmt(2480)}/mes, 28% del total). Le siguen Viajes (${fmt(2050)}) y Restaurantes (${fmt(1180)}). El gasto total de agosto fue ${fmt(totalExpenses)}.`,
+      `Your biggest expense this year is Housing (${fmt(2480)}/month, 28% of total). Followed by Travel (${fmt(2050)}) and Restaurants (${fmt(1180)}). Total spending in August was ${fmt(totalExpenses)}.`,
+    );
   }
-  return `Este mes gastaste ${fmt(totalExpenses)} y ahorraste el 45% de tus ingresos — tu mejor tasa del año. Tu principal comercio fue ${topMerchants[0]!.name} con ${fmt(topMerchants[0]!.amount)}. Si quieres, puedo profundizar por categoría, comercio o etiqueta de viaje.`;
+  return t(
+    `Este mes gastaste ${fmt(totalExpenses)} y ahorraste el 45% de tus ingresos — tu mejor tasa del año. Tu principal comercio fue ${topMerchants[0]!.name} con ${fmt(topMerchants[0]!.amount)}. Si quieres, puedo profundizar por categoría, comercio o etiqueta de viaje.`,
+    `This month you spent ${fmt(totalExpenses)} and saved 45% of your income — your best rate of the year. Your top merchant was ${topMerchants[0]!.name} with ${fmt(topMerchants[0]!.amount)}. If you want, I can dig deeper by category, merchant, or travel tag.`,
+  );
 }
 
 function Advisor() {
+  const t = useT();
+  const suggestions = useSuggestions(t);
   const [messages, setMessages] = useState<Msg[]>([
     {
       role: "assistant",
-      content:
+      content: t(
         "Soy tu CFO personal. Analicé tus 12 últimos meses: tu patrimonio creció 3.5% y tu tasa de ahorro llegó a 45%. Pregúntame lo que quieras sobre tus finanzas.",
+        "I'm your personal CFO. I analyzed your last 12 months: your net worth grew 3.5% and your savings rate reached 45%. Ask me anything about your finances.",
+      ),
     },
   ]);
   const [input, setInput] = useState("");
@@ -70,7 +92,7 @@ function Advisor() {
   const send = (text: string) => {
     const q = text.trim();
     if (!q) return;
-    setMessages((m) => [...m, { role: "user", content: q }, { role: "assistant", content: answer(q) }]);
+    setMessages((m) => [...m, { role: "user", content: q }, { role: "assistant", content: answer(q, t) }]);
     setInput("");
     inputRef.current?.focus();
   };
@@ -78,13 +100,16 @@ function Advisor() {
   return (
     <PageShell>
       <PageHeader
-        eyebrow="Inteligencia"
+        eyebrow={t("Inteligencia", "Intelligence")}
         title="AI Advisor"
-        subtitle="Insights automáticos y respuestas en lenguaje natural sobre tu vida financiera."
+        subtitle={t(
+          "Insights automáticos y respuestas en lenguaje natural sobre tu vida financiera.",
+          "Automatic insights and natural language answers about your financial life.",
+        )}
       />
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title="Conversación" className="flex flex-col lg:col-span-2">
+        <Panel title={t("Conversación", "Conversation")} className="flex flex-col lg:col-span-2">
           <div className="flex-1 space-y-3 overflow-y-auto pr-1" style={{ maxHeight: 420 }}>
             {messages.map((m, i) => (
               <motion.div
@@ -135,7 +160,7 @@ function Advisor() {
                   send(input);
                 }
               }}
-              placeholder="Pregunta sobre tus gastos, inversiones o metas…"
+              placeholder={t("Pregunta sobre tus gastos, inversiones o metas…", "Ask about your spending, investments or goals…")}
               className="min-h-[52px] resize-none rounded-2xl"
             />
             <Button type="submit" size="icon" className="h-[52px] w-[52px] rounded-2xl">
@@ -145,7 +170,7 @@ function Advisor() {
         </Panel>
 
         <div className="space-y-4">
-          <Panel title="Insights generados">
+          <Panel title={t("Insights generados", "Generated insights")}>
             <ul className="space-y-2.5">
               {insights.slice(0, 5).map((i) => (
                 <li key={i.title} className="rounded-xl bg-elevated/60 p-3">
@@ -165,21 +190,24 @@ function Advisor() {
             </ul>
           </Panel>
 
-          <Panel title="Anomalías detectadas">
+          <Panel title={t("Anomalías detectadas", "Detected anomalies")}>
             <div className="space-y-2 text-xs">
               <div className="rounded-xl border border-warning/30 bg-warning/8 p-3">
-                <p className="font-medium text-warning">Cobro duplicado</p>
-                <p className="mt-1 text-muted-foreground">Uber {fmt(38)} × 2 el 22 de agosto.</p>
+                <p className="font-medium text-warning">{t("Cobro duplicado", "Duplicate charge")}</p>
+                <p className="mt-1 text-muted-foreground">{t(`Uber ${fmt(38)} × 2 el 22 de agosto.`, `Uber ${fmt(38)} × 2 on August 22.`)}</p>
               </div>
               <div className="rounded-xl border border-warning/30 bg-warning/8 p-3">
-                <p className="font-medium text-warning">Suscripción nueva</p>
+                <p className="font-medium text-warning">{t("Suscripción nueva", "New subscription")}</p>
                 <p className="mt-1 text-muted-foreground">
-                  {lifestyle.subscriptions[0]!.name} {fmt(lifestyle.subscriptions[0]!.amount)}/mes.
+                  {t(
+                    `${lifestyle.subscriptions[0]!.name} ${fmt(lifestyle.subscriptions[0]!.amount)}/mes.`,
+                    `${lifestyle.subscriptions[0]!.name} ${fmt(lifestyle.subscriptions[0]!.amount)}/month.`,
+                  )}
                 </p>
               </div>
               <div className="rounded-xl border border-border p-3">
-                <p className="font-medium">Gasto inusual</p>
-                <p className="mt-1 text-muted-foreground">Hotel Casa Bonay {fmt(760)}: 4.2× tu ticket habitual.</p>
+                <p className="font-medium">{t("Gasto inusual", "Unusual expense")}</p>
+                <p className="mt-1 text-muted-foreground">{t(`Hotel Casa Bonay ${fmt(760)}: 4.2× tu ticket habitual.`, `Hotel Casa Bonay ${fmt(760)}: 4.2× your usual ticket.`)}</p>
               </div>
             </div>
           </Panel>
