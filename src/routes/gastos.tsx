@@ -187,6 +187,13 @@ function Gastos() {
   const monthlyRun = fixed.total + (total / days) * 30;
   const targetPct = target > 0 ? (monthlyRun / target) * 100 : 0;
 
+  // ---- Recomendaciones IA ----
+  const [advice, setAdvice] = useState<string | null>(null);
+  const [adviceLoading, setAdviceLoading] = useState(false);
+  const [adviceError, setAdviceError] = useState<string | null>(null);
+
+
+
 
   const series = useMemo(() => {
     const byMonth = days > 62;
