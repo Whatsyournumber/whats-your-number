@@ -119,8 +119,12 @@ function Gastos() {
   const current = useMemo(() => expenses.filter((t) => inRange(t, from, to)), [expenses, from, to]);
   const previous = useMemo(() => expenses.filter((t) => inRange(t, prevFrom, prevTo)), [expenses, prevFrom, prevTo]);
 
-  const total = sum(current);
-  const prevTotal = sum(previous);
+  const variableTotal = sum(current);
+  const prevVariable = sum(previous);
+  // gastos fijos prorrateados a los días del periodo
+  const fixedInPeriod = (fixed.total / 30) * days;
+  const total = variableTotal + fixedInPeriod;
+  const prevTotal = prevVariable + fixedInPeriod;
   const delta = prevTotal > 0 ? ((total - prevTotal) / prevTotal) * 100 : 0;
 
   const byCategory = useMemo(() => {
@@ -185,7 +189,7 @@ function Gastos() {
 
   // ---- Gasto objetivo ----
   const { target, setTarget } = useSpendTarget(5000);
-  const monthlyRun = fixed.total + (total / days) * 30;
+  const monthlyRun = fixed.total + (variableTotal / days) * 30;
   const targetPct = target > 0 ? (monthlyRun / target) * 100 : 0;
 
   // ---- Recomendaciones IA ----
@@ -224,7 +228,7 @@ function Gastos() {
     return [...map.values()].sort((a, b) => b.amount - a.amount);
   }, [current]);
 
-  const variable = Math.max(0, total - 0);
+  const variable = variableTotal;
   const hasData = transactions.length > 0;
   const rangeLabel =
     range?.from && range?.to
@@ -321,7 +325,7 @@ function Gastos() {
       )}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard label="Gasto del periodo" value={fmt(total)} delta={Number(delta.toFixed(1))} inverse accent index={0} />
+        <KpiCard label="Gasto del periodo" value={fmt(total)} delta={Number(delta.toFixed(1))} hint={`fijos ${fmt(fixedInPeriod)} + variable ${fmt(variableTotal)}`} inverse accent index={0} />
         <KpiCard label="Gastos fijos" value={fmt(fixed.total)} hint="mensual, editable" index={1} />
         <KpiCard label="Gasto variable (EEFF)" value={fmt(variable)} hint={`${current.length} transacciones`} index={2} />
         <KpiCard label="Promedio diario" value={fmt(total / days)} hint={`${days} días`} index={3} />
@@ -366,7 +370,7 @@ function Gastos() {
               />
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              {targetPct.toFixed(0)}% del objetivo · fijos {fmt(fixed.total)} + variable {fmt((total / days) * 30)}
+              {targetPct.toFixed(0)}% del objetivo · fijos {fmt(fixed.total)} + variable {fmt((variableTotal / days) * 30)}
             </p>
           </div>
         </div>
@@ -400,8 +404,8 @@ function Gastos() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                  <p className="numeric text-2xl font-semibold">{fmtCompact(total)}</p>
-                  <p className="text-xs text-muted-foreground">gasto total</p>
+                  <p className="numeric text-2xl font-semibold">{fmtCompact(variableTotal)}</p>
+                  <p className="text-xs text-muted-foreground">gasto variable</p>
                   <p className={cn("numeric mt-0.5 text-[11px]", delta > 0 ? "text-negative" : "text-positive")}>
                     {delta > 0 ? "+" : ""}
                     {delta.toFixed(1)}% vs. periodo anterior
@@ -413,7 +417,7 @@ function Gastos() {
                   <li key={c.name} className="flex items-center gap-2 text-xs">
                     <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
                     <span className="truncate text-muted-foreground">{c.name}</span>
-                    <span className="numeric ml-auto font-medium">{((c.amount / total) * 100).toFixed(0)}%</span>
+                    <span className="numeric ml-auto font-medium">{((c.amount / variableTotal) * 100).toFixed(0)}%</span>
                   </li>
                 ))}
               </ul>
@@ -609,7 +613,7 @@ function Gastos() {
             {byCategory.map((c, i) => {
               const prev = prevByCategory.get(c.name) ?? 0;
               const variation = prev > 0 ? ((c.amount - prev) / prev) * 100 : null;
-              const share = total > 0 ? (c.amount / total) * 100 : 0;
+              const share = variableTotal > 0 ? (c.amount / variableTotal) * 100 : 0;
               return (
                 <AccordionItem key={c.name} value={c.name} className="border-border">
                   <AccordionTrigger className="hover:no-underline">
