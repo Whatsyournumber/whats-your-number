@@ -7,7 +7,7 @@ const STORAGE_KEY = "yn.lang";
 const DICT = {
   es: {
     "auth.back": "Volver al inicio",
-    "auth.tagline": "Tu norte financiero",
+    "auth.tagline": "Tu número financiero",
     "auth.login": "Iniciar sesión",
     "auth.signup": "Crear cuenta",
     "auth.title.login": "Bienvenido de vuelta",
