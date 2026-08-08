@@ -24,13 +24,13 @@ import { useT } from "@/hooks/use-language";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your north — Tu CFO personal con IA" },
+      { title: "WhatsYournumber — Tu CFO personal con IA" },
       {
         name: "description",
         content:
           "Consolida patrimonio, gastos, inversiones y cash flow en una sola plataforma. Sube tus estados de cuenta en PDF o CSV y deja que la IA clasifique todo.",
       },
-      { property: "og:title", content: "Your north — Tu CFO personal con IA" },
+      { property: "og:title", content: "WhatsYournumber — Tu CFO personal con IA" },
       {
         property: "og:description",
         content: "Patrimonio, gastos, portafolio e insights con IA. Importa PDF y CSV en segundos.",
@@ -207,7 +207,7 @@ function Landing() {
         <section className="mt-24 md:mt-32">
           <div className="mb-10 text-center">
             <span className="text-xs font-medium uppercase tracking-wider text-primary">
-              {t("¿Por qué Your north?", "Why Your north?")}
+              {t("¿Por qué WhatsYournumber?", "Why WhatsYournumber?")}
             </span>
             <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
               {t("Tu dinero, con dirección", "Your money, with direction")}
@@ -291,7 +291,7 @@ function Landing() {
               {t("Lo que dicen", "What people say")}
             </span>
             <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
-              {t("Personas que ya encontraron su norte", "People who already found their north")}
+              {t("Personas que ya encontraron su número", "People who already found their number")}
             </h2>
           </div>
           <div className="grid gap-4 md:grid-cols-3">

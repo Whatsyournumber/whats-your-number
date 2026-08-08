@@ -8,12 +8,12 @@ import { useT } from "@/hooks/use-language";
 export const Route = createFileRoute("/precios")({
   head: () => ({
     meta: [
-      { title: "Precios — Your north" },
+      { title: "Precios — WhatsYournumber" },
       {
         name: "description",
-        content: "Planes de Your north: empieza gratis y escala a Pro o Patrimonio con IA, importación ilimitada y proyecciones.",
+        content: "Planes de WhatsYournumber: empieza gratis y escala a Pro o Patrimonio con IA, importación ilimitada y proyecciones.",
       },
-      { property: "og:title", content: "Precios — Your north" },
+      { property: "og:title", content: "Precios — WhatsYournumber" },
       { property: "og:description", content: "Planes simples para ordenar tu patrimonio con IA." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

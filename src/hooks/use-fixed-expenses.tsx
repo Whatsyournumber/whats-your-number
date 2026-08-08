@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 export type FixedExpense = { id: string; name: string; amount: number };
 
-const KEY = "yournorth:fixed-expenses";
+const KEY = "whatsyournumber:fixed-expenses";
 
 const defaults: FixedExpense[] = [
   { id: "ahorro", name: "Fondo de ahorro", amount: 2500 },
@@ -60,7 +60,7 @@ export function useFixedExpenses() {
   return { items, update, add, remove, total };
 }
 
-const TARGET_KEY = "yournorth:spend-target";
+const TARGET_KEY = "whatsyournumber:spend-target";
 
 /** Gasto mensual objetivo (target) según tu número, guardado localmente. */
 export function useSpendTarget(initial = 5000) {

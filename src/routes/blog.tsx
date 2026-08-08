@@ -7,12 +7,12 @@ import { useT } from "@/hooks/use-language";
 export const Route = createFileRoute("/blog")({
   head: () => ({
     meta: [
-      { title: "Blog — Your north" },
+      { title: "Blog — WhatsYournumber" },
       {
         name: "description",
         content: "Ideas prácticas sobre patrimonio, cash flow, inversión y automatización financiera con IA.",
       },
-      { property: "og:title", content: "Blog — Your north" },
+      { property: "og:title", content: "Blog — WhatsYournumber" },
       { property: "og:description", content: "Artículos sobre finanzas personales, inversión y IA." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -94,7 +94,7 @@ function Blog() {
       ),
       excerpt: t(
         "El ritual mínimo viable para mantener tu norte sin convertirte en contador de tiempo completo.",
-        "The minimum viable ritual to keep your north without becoming a full-time accountant.",
+        "The minimum viable ritual to keep your number without becoming a full-time accountant.",
       ),
     },
   ];

@@ -29,12 +29,12 @@ export const Route = createFileRoute("/auth")({
   }),
   head: () => ({
     meta: [
-      { title: "Sign in — Your north" },
+      { title: "Sign in — WhatsYournumber" },
       {
         name: "description",
-        content: "Inicia sesión o crea tu cuenta de Your north / Sign in or create your Your north account.",
+        content: "Inicia sesión o crea tu cuenta de WhatsYournumber / Sign in or create your WhatsYournumber account.",
       },
-      { property: "og:title", content: "Sign in — Your north" },
+      { property: "og:title", content: "Sign in — WhatsYournumber" },
       { property: "og:description", content: "Patrimonio, gastos e inversiones con IA en un solo lugar." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

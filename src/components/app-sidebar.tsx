@@ -27,6 +27,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { BrandMark } from "@/components/brand-logo";
 import { useProfile } from "@/hooks/use-profile";
 import { buildDataset } from "@/lib/profile-data";
 import { useT } from "@/hooks/use-language";
@@ -73,12 +74,10 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r">
       <SidebarHeader className="px-3 py-4">
         <div className="flex items-center gap-3">
-          <div className="wealth-gradient flex h-9 w-9 shrink-0 items-center justify-center rounded-xl">
-            <Wallet className="h-4 w-4 text-background" />
-          </div>
+          <BrandMark className="h-9 w-9 shrink-0" />
           {!collapsed && (
             <div className="min-w-0">
-              <p className="truncate font-display text-sm font-semibold">Your north</p>
+              <p className="truncate font-display text-sm font-semibold">WhatsYournumber</p>
               <p className="truncate text-xs text-muted-foreground">{t("Tu CFO personal", "Your personal CFO")}</p>
             </div>
           )}

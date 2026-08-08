@@ -7,11 +7,11 @@ const STORAGE_KEY = "yn.lang";
 const DICT = {
   es: {
     "auth.back": "Volver al inicio",
-    "auth.tagline": "Tu norte financiero",
+    "auth.tagline": "Tu número financiero",
     "auth.login": "Iniciar sesión",
     "auth.signup": "Crear cuenta",
     "auth.title.login": "Bienvenido de vuelta",
-    "auth.title.signup": "Empieza tu Your North",
+    "auth.title.signup": "Empieza con WhatsYournumber",
     "auth.subtitle.login": "Entra para ver tu patrimonio en tiempo real.",
     "auth.subtitle.signup": "Crea tu cuenta en menos de un minuto.",
     "auth.name": "Nombre completo",
@@ -31,11 +31,11 @@ const DICT = {
   },
   en: {
     "auth.back": "Back to home",
-    "auth.tagline": "Your financial north",
+    "auth.tagline": "Your financial number",
     "auth.login": "Sign in",
     "auth.signup": "Sign up",
     "auth.title.login": "Welcome back",
-    "auth.title.signup": "Start your Your North",
+    "auth.title.signup": "Start with WhatsYournumber",
     "auth.subtitle.login": "Sign in to see your net worth in real time.",
     "auth.subtitle.signup": "Create your account in under a minute.",
     "auth.name": "Full name",

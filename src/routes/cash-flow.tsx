@@ -16,12 +16,12 @@ import { buildDataset } from "@/lib/profile-data";
 export const Route = createFileRoute("/cash-flow")({
   head: () => ({
     meta: [
-      { title: "Cash Flow — Your north" },
+      { title: "Cash Flow — WhatsYournumber" },
       {
         name: "description",
         content: "Tu flujo real mes a mes: ingresos de los EEFF cargados hacia gastos fijos, lifestyle, inversiones y flujo libre.",
       },
-      { property: "og:title", content: "Cash Flow — Your north" },
+      { property: "og:title", content: "Cash Flow — WhatsYournumber" },
       { property: "og:description", content: "Visualiza a dónde fluye cada dólar de tus ingresos cada mes, con datos reales." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

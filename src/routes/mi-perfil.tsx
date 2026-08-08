@@ -27,10 +27,10 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/mi-perfil")({
   head: () => ({
     meta: [
-      { title: "Mis datos — Your north" },
+      { title: "Mis datos — WhatsYournumber" },
       { name: "description", content: "Edita tus ingresos, gastos, activos, deudas y objetivos: toda la app se recalcula al instante." },
-      { property: "og:title", content: "Mis datos — Your north" },
-      { property: "og:description", content: "Tu perfil financiero editable en Your north." },
+      { property: "og:title", content: "Mis datos — WhatsYournumber" },
+      { property: "og:description", content: "Tu perfil financiero editable en WhatsYournumber." },
     ],
   }),
   component: MiPerfil,

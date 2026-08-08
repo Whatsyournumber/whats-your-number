@@ -27,9 +27,9 @@ import { buildDataset } from "@/lib/profile-data";
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
     meta: [
-      { title: "Dashboard — Your north" },
+      { title: "Dashboard — WhatsYournumber" },
       { name: "description", content: "Tu situación financiera completa en menos de 30 segundos: patrimonio, ingresos, gastos y ahorro." },
-      { property: "og:title", content: "Dashboard — Your north" },
+      { property: "og:title", content: "Dashboard — WhatsYournumber" },
       { property: "og:description", content: "Patrimonio neto, flujo libre, tasa de ahorro y metas en un solo panel." },
     ],
   }),
@@ -123,7 +123,7 @@ function Dashboard() {
           </ResponsiveContainer>
         </Panel>
 
-        <Panel title={t("Tu Norte", "Your North")} description={t(`Libertad estimada a los ${plan.freedomAge} años`, `Freedom estimated at age ${plan.freedomAge}`)}>
+        <Panel title={t("Tu Número", "Your Number")} description={t(`Libertad estimada a los ${plan.freedomAge} años`, `Freedom estimated at age ${plan.freedomAge}`)}>
           <div className="space-y-4">
             <div>
               <p className="text-xs text-muted-foreground">Your Number</p>
