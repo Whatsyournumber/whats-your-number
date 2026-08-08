@@ -374,51 +374,6 @@ function Gastos() {
 
 
 
-      <Panel title="Gastos fijos mensuales" description="Edita nombre y monto; se guardan en este navegador">
-        <div className="space-y-2">
-          {fixed.items.map((item) => (
-            <div key={item.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-elevated/60 px-3 py-2">
-              <Input
-                value={item.name}
-                onChange={(e) => fixed.update(item.id, { name: e.target.value })}
-                className="h-9 w-full max-w-[260px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
-              />
-              <div className="ml-auto flex items-center gap-2">
-                <Input
-                  type="number"
-                  value={String(item.amount)}
-                  onChange={(e) => fixed.update(item.id, { amount: Number(e.target.value) || 0 })}
-                  className="numeric h-9 w-32 text-right text-sm"
-                />
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-8 w-8 text-muted-foreground hover:text-negative"
-                  onClick={() => fixed.remove(item.id)}
-                  aria-label={`Eliminar ${item.name}`}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-              <div className="w-full">
-                <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-                  <div
-                    className="h-full rounded-full bg-chart-3"
-                    style={{ width: `${fixed.total > 0 ? (item.amount / fixed.total) * 100 : 0}%` }}
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="mt-3 flex items-center gap-3">
-          <Button size="sm" variant="outline" className="gap-2" onClick={fixed.add}>
-            <Plus className="h-4 w-4" /> Añadir gasto fijo
-          </Button>
-          <span className="numeric ml-auto text-sm font-semibold">Total {fmt(fixed.total)}/mes</span>
-        </div>
-      </Panel>
-
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel title="Distribución por categoría">
           {byCategory.length === 0 ? (
@@ -481,6 +436,52 @@ function Gastos() {
           </p>
         </Panel>
       </div>
+
+      <Panel title="Gastos fijos mensuales" description="Edita nombre y monto; se guardan en este navegador">
+        <div className="space-y-2">
+          {fixed.items.map((item) => (
+            <div key={item.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-elevated/60 px-3 py-2">
+              <Input
+                value={item.name}
+                onChange={(e) => fixed.update(item.id, { name: e.target.value })}
+                className="h-9 w-full max-w-[260px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
+              />
+              <div className="ml-auto flex items-center gap-2">
+                <Input
+                  type="number"
+                  value={String(item.amount)}
+                  onChange={(e) => fixed.update(item.id, { amount: Number(e.target.value) || 0 })}
+                  className="numeric h-9 w-32 text-right text-sm"
+                />
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-8 w-8 text-muted-foreground hover:text-negative"
+                  onClick={() => fixed.remove(item.id)}
+                  aria-label={`Eliminar ${item.name}`}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="w-full">
+                <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                  <div
+                    className="h-full rounded-full bg-chart-3"
+                    style={{ width: `${fixed.total > 0 ? (item.amount / fixed.total) * 100 : 0}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-3 flex items-center gap-3">
+          <Button size="sm" variant="outline" className="gap-2" onClick={fixed.add}>
+            <Plus className="h-4 w-4" /> Añadir gasto fijo
+          </Button>
+          <span className="numeric ml-auto text-sm font-semibold">Total {fmt(fixed.total)}/mes</span>
+        </div>
+      </Panel>
+
 
       <Panel
         title="Comparar mes vs mes"
