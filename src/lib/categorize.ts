@@ -83,7 +83,8 @@ export const RULES: CategoryRule[] = [
   {
     name: "Lifestyle",
     hints: [
-      "gym", "gimnasio", "fitness", "crossfit", "yoga", "pilates", "spa", "masaje", "peluqueria",
+      "gym", "gimnasio", "fitness", "crossfit", "yoga", "pilates", "spa", "masaje", "hammam", "hammam",
+      "balneario", "sauna", "jacuzzi", "termal", "termas", "talaso", "thalasso", "peluqueria",
       "peluquería", "barberia", "barbería", "salon", "salón", "estetica", "estética", "manicur", "nails",
       "wellness", "terapia", "psicolog", "coach", "farmacia", "pharmacy", "dentista", "clinica", "clínica",
       "medic", "doctor", "vitamina", "supplement", "curso", "academia", "udemy", "coursera", "libreria",
@@ -112,6 +113,7 @@ export const BASE_CATEGORIES = [
   "Lifestyle",
   "Apps",
   "Marketing digital",
+  "Otros",
 ];
 
 const FOOD_CATEGORIES = ["aliment", "comida", "food", "groceries", "supermerc", "restaurant"];
@@ -153,5 +155,6 @@ export function categorizeTx(t: CategorizableTx, custom: CategoryRule[] = []): s
   // "Alimentación" sin comercio reconocible: por defecto es mercado.
   if (FOOD_CATEGORIES.some((c) => original.toLowerCase().includes(c))) return "Mercado";
 
-  return original;
+  // Lo que no reconoce ninguna regla se agrupa como Otros.
+  return "Otros";
 }

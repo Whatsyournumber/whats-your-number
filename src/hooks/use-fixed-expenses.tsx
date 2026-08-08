@@ -21,8 +21,10 @@ export function useFixedExpenses() {
       if (raw) {
         const parsed = JSON.parse(raw) as FixedExpense[];
         if (Array.isArray(parsed)) {
-          const missing = defaults.filter((d) => !parsed.some((p) => p.id === d.id));
-          setItems([...parsed, ...missing]);
+          // Limpiar entradas obsoletas (p. ej. seguro mercantil).
+          const cleaned = parsed.filter((p) => !/mercantil/i.test(p.name));
+          const missing = defaults.filter((d) => !cleaned.some((p) => p.id === d.id));
+          setItems([...cleaned, ...missing]);
         }
       }
     } catch {
