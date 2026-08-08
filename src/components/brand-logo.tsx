@@ -54,10 +54,21 @@ export function BrandMark({ className }: { className?: string }) {
   );
 }
 
-export function BrandLogo({ className }: { className?: string }) {
+export function BrandLogo({
+  className,
+  vertical,
+}: {
+  className?: string;
+  vertical?: boolean;
+}) {
   return (
-    <span className={cn("flex items-center gap-2.5", className)}>
-      <BrandMark className="h-9 w-9" />
+    <span
+      className={cn(
+        vertical ? "flex flex-col items-center gap-2" : "flex items-center gap-2.5",
+        className,
+      )}
+    >
+      <BrandMark className={vertical ? "h-12 w-12" : "h-9 w-9"} />
       <span className="font-display text-sm font-semibold leading-none tracking-tight">
         Whats<span className="text-primary">Yournumber</span>
       </span>
