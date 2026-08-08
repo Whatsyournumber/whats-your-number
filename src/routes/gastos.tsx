@@ -13,7 +13,7 @@ import {
 import { es } from "date-fns/locale";
 import { CalendarIcon, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { categorizeTx } from "@/lib/categorize";
+import { BASE_CATEGORIES, categorizeTx } from "@/lib/categorize";
 import type { DateRange } from "react-day-picker";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, ComposedChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
@@ -26,6 +26,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useCategories } from "@/hooks/use-categories";
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions, type Tx } from "@/hooks/use-transactions";
@@ -77,8 +78,6 @@ const presets = [
 
 const isExpense = (t: Tx) => t.amount < 0;
 
-const categoryOf = (t: Tx) => categorizeTx(t);
-
 function inRange(t: Tx, from: Date, to: Date) {
   const d = parseISO(t.tx_date!);
   return d >= from && d <= to;
@@ -96,6 +95,8 @@ function Gastos() {
 
   const { transactions, isLoading } = useTransactions();
   const fixed = useFixedExpenses();
+  const categories = useCategories();
+  const categoryOf = (t: Tx) => categorizeTx(t, categories.rules);
   const [range, setRange] = useState<DateRange | undefined>(() => presets[0]!.range());
 
   const from = range?.from ?? subDays(new Date(), 29);
@@ -126,7 +127,7 @@ function Gastos() {
       map.set(k, prev);
     }
     return [...map.values()].sort((a, b) => b.amount - a.amount);
-  }, [current]);
+  }, [current, categories.rules]);
 
   const prevByCategory = useMemo(() => {
     const map = new Map<string, number>();
@@ -135,7 +136,7 @@ function Gastos() {
       map.set(k, (map.get(k) ?? 0) + Math.abs(t.amount));
     }
     return map;
-  }, [previous]);
+  }, [previous, categories.rules]);
 
   // ---- Comparación mes vs mes ----
   const monthKeys = useMemo(() => {
@@ -170,7 +171,7 @@ function Gastos() {
       .map((name) => ({ name, a: a.map.get(name) ?? 0, b: b.map.get(name) ?? 0 }))
       .sort((x, y) => y.a + y.b - (x.a + x.b));
     return { aTotal: a.total, bTotal: b.total, rows };
-  }, [expenses, mA, mB]);
+  }, [expenses, mA, mB, categories.rules]);
 
   const monthLabel = (k: string | null) => (k ? format(parseISO(`${k}-01`), "MMMM yyyy", { locale: es }) : "—");
   const monthDelta =
@@ -536,6 +537,58 @@ function Gastos() {
           <span className="numeric ml-auto text-sm font-semibold">Total {fmt(fixed.total)}/mes</span>
         </div>
       </Panel>
+
+      <Panel
+        title="Categorías"
+        description="Mercado, Restaurantes, Salidas, Compras, Viajes, Transporte, Lifestyle, Apps y Marketing digital. Añade las tuyas con palabras clave."
+      >
+        <div className="flex flex-wrap gap-2">
+          {BASE_CATEGORIES.map((name) => (
+            <span
+              key={name}
+              className="rounded-full bg-elevated/70 px-3 py-1 text-xs font-medium text-muted-foreground"
+            >
+              {name}
+            </span>
+          ))}
+        </div>
+
+        <div className="mt-4 space-y-2">
+          {categories.items.map((c) => (
+            <div key={c.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-elevated/60 px-3 py-2">
+              <Input
+                value={c.name}
+                onChange={(e) => categories.update(c.id, { name: e.target.value })}
+                placeholder="Nombre de la categoría"
+                className="h-9 w-full max-w-[220px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
+              />
+              <Input
+                value={c.keywords}
+                onChange={(e) => categories.update(c.id, { keywords: e.target.value })}
+                placeholder="palabras clave separadas por coma (ej. netflix, gym)"
+                className="h-9 min-w-[200px] flex-1 text-sm"
+              />
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-8 w-8 text-muted-foreground hover:text-negative"
+                onClick={() => categories.remove(c.id)}
+                aria-label={`Eliminar ${c.name}`}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-3">
+          <Button size="sm" variant="outline" className="gap-2" onClick={() => categories.add()}>
+            <Plus className="h-4 w-4" /> Añadir categoría
+          </Button>
+        </div>
+      </Panel>
+
+
 
 
       <Panel
