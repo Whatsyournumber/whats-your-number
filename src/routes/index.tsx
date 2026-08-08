@@ -202,11 +202,6 @@ function Landing() {
   ];
 
 
-  const metrics = [
-    { label: t("Módulos", "Modules"), value: "10" },
-    { label: t("Clasificación IA", "AI classification"), value: "PDF · CSV" },
-    { label: t("Datos cifrados", "Encrypted data"), value: "100%" },
-  ];
 
   const reviews = [
     {
