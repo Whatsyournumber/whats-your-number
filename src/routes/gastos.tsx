@@ -452,7 +452,7 @@ function Gastos() {
         ) : (
           <>
             <div className="flex flex-wrap items-center gap-3">
-              <Select value={mA ?? undefined} onValueChange={setMonthA}>
+              <Select value={mA ?? ""} onValueChange={(v) => setMonthA(v)}>
                 <SelectTrigger className="h-9 w-[190px] capitalize">
                   <SelectValue placeholder="Mes A" />
                 </SelectTrigger>
@@ -465,7 +465,7 @@ function Gastos() {
                 </SelectContent>
               </Select>
               <span className="text-xs text-muted-foreground">vs.</span>
-              <Select value={mB ?? undefined} onValueChange={setMonthB}>
+              <Select value={mB ?? ""} onValueChange={(v) => setMonthB(v)}>
                 <SelectTrigger className="h-9 w-[190px] capitalize">
                   <SelectValue placeholder="Mes B" />
                 </SelectTrigger>
