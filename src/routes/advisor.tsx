@@ -26,12 +26,13 @@ type Msg = { role: "user" | "assistant"; content: string };
 
 function useSuggestions(t: (es: string, en: string) => string) {
   return [
-    t("¿En qué gasté más este año?", "What did I spend the most on this year?"),
-    t("¿Cuánto gasté en restaurantes en Barcelona?", "How much did I spend on restaurants in Barcelona?"),
-    t("¿Cuánto he invertido en IA?", "How much have I invested in AI?"),
-    t("¿Puedo permitirme un viaje de $4.000?", "Can I afford a $4,000 trip?"),
+    t("¿Cuánto ahorro al mes?", "How much do I save per month?"),
+    t("¿Cómo va mi patrimonio?", "How is my net worth doing?"),
+    t("¿Está completo mi fondo de emergencia?", "Is my emergency fund complete?"),
+    t("¿Puedo permitirme un viaje de 4000?", "Can I afford a 4000 trip?"),
   ];
 }
+
 
 function answer(q: string, t: (es: string, en: string) => string, d: Dataset): string {
   const lower = q.toLowerCase();
