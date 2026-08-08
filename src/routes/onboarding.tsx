@@ -1021,20 +1021,21 @@ function SummaryScreen({
   onEnter: () => void;
   onEdit: () => void;
 }) {
+  const t = useT();
   const insights = buildInsights(plan, data, life, currency);
   const assets = totalAssets(data);
   const dist = [
-    { label: "Ahorros", value: data.assets_cash + data.assets_bank, icon: <Banknote className="h-3.5 w-3.5" /> },
-    { label: "Inversiones", value: data.assets_etf + data.assets_stocks + data.assets_retirement, icon: <TrendingUp className="h-3.5 w-3.5" /> },
-    { label: "Cripto", value: data.assets_crypto, icon: <Bitcoin className="h-3.5 w-3.5" /> },
-    { label: "Inmuebles", value: data.assets_property, icon: <Building2 className="h-3.5 w-3.5" /> },
+    { label: t("Ahorros", "Savings"), value: data.assets_cash + data.assets_bank, icon: <Banknote className="h-3.5 w-3.5" /> },
+    { label: t("Inversiones", "Investments"), value: data.assets_etf + data.assets_stocks + data.assets_retirement, icon: <TrendingUp className="h-3.5 w-3.5" /> },
+    { label: t("Cripto", "Crypto"), value: data.assets_crypto, icon: <Bitcoin className="h-3.5 w-3.5" /> },
+    { label: t("Inmuebles", "Real estate"), value: data.assets_property, icon: <Building2 className="h-3.5 w-3.5" /> },
   ].filter((d) => d.value > 0);
 
   const metrics = [
-    { emoji: "💰", label: "Patrimonio actual", value: money(plan.netWorth, currency) },
-    { emoji: "📈", label: "Ingreso mensual", value: money(plan.income, currency) },
-    { emoji: "💳", label: "Gasto mensual", value: money(plan.expenses, currency) },
-    { emoji: "💵", label: "Tasa de ahorro", value: `${plan.savingsRate.toFixed(0)}%` },
+    { emoji: "💰", label: t("Patrimonio actual", "Current net worth"), value: money(plan.netWorth, currency) },
+    { emoji: "📈", label: t("Ingreso mensual", "Monthly income"), value: money(plan.income, currency) },
+    { emoji: "💳", label: t("Gasto mensual", "Monthly expenses"), value: money(plan.expenses, currency) },
+    { emoji: "💵", label: t("Tasa de ahorro", "Savings rate"), value: `${plan.savingsRate.toFixed(0)}%` },
   ];
 
   return (
@@ -1042,9 +1043,11 @@ function SummaryScreen({
       <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center text-4xl">
         🎉
       </motion.div>
-      <h2 className="mt-5 text-center font-display text-4xl font-semibold sm:text-5xl">Tu North está listo.</h2>
+      <h2 className="mt-5 text-center font-display text-4xl font-semibold sm:text-5xl">{t("Tu North está listo.", "Your North is ready.")}</h2>
       <p className="mx-auto mt-4 max-w-md text-center text-sm leading-relaxed text-muted-foreground">
-        {data.full_name ? `${data.full_name}, esto` : "Esto"} es lo que la IA ha entendido de tus finanzas.
+        {data.full_name
+          ? t(`${data.full_name}, esto es lo que la IA ha entendido de tus finanzas.`, `${data.full_name}, this is what our AI has understood about your finances.`)
+          : t("Esto es lo que la IA ha entendido de tus finanzas.", "This is what our AI has understood about your finances.")}
       </p>
 
       <div className="mt-10 grid grid-cols-2 gap-3">
@@ -1065,7 +1068,7 @@ function SummaryScreen({
 
       {dist.length > 0 && (
         <div className="surface mt-3 p-6">
-          <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">📊 Distribución del patrimonio</p>
+          <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">📊 {t("Distribución del patrimonio", "Net worth distribution")}</p>
           <div className="mt-4 flex h-2.5 overflow-hidden rounded-full bg-muted">
             {dist.map((d, i) => (
               <motion.div
@@ -1097,20 +1100,20 @@ function SummaryScreen({
             <p className="text-[11px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
             <p className="numeric mt-2 text-4xl font-semibold">{compact(plan.targetCapital, currency)}</p>
             <p className="mt-2 text-xs text-muted-foreground">
-              El capital que te permite vivir con {money(plan.desiredIncome, currency)} al mes
-              {life.city ? ` en ${life.city}` : ""}.
+              {t("El capital que te permite vivir con", "The capital that lets you live on")} {money(plan.desiredIncome, currency)} {t("al mes", "per month")}
+              {life.city ? ` ${t("en", "in")} ${life.city}` : ""}.
             </p>
           </div>
           <div className="text-right">
-            <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">📅 Libertad financiera</p>
-            <p className="numeric mt-2 text-4xl font-semibold text-primary">{plan.freedomAge} años</p>
-            <p className="mt-2 text-xs text-muted-foreground">Tu meta eran los {plan.retireAge} años.</p>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">📅 {t("Libertad financiera", "Financial freedom")}</p>
+            <p className="numeric mt-2 text-4xl font-semibold text-primary">{plan.freedomAge} {t("años", "years")}</p>
+            <p className="mt-2 text-xs text-muted-foreground">{t("Tu meta eran los", "Your goal was")} {plan.retireAge} {t("años.", "years old.")}</p>
           </div>
         </div>
 
         <div className="mt-6">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>📈 Progreso hacia tu North</span>
+            <span>📈 {t("Progreso hacia tu North", "Progress towards your North")}</span>
             <span className="numeric text-foreground">{plan.progress.toFixed(1)}%</span>
           </div>
           <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-muted">
@@ -1125,7 +1128,7 @@ function SummaryScreen({
       </div>
 
       <div className="mt-8">
-        <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">✨ AI Insights</p>
+        <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">✨ {t("AI Insights", "AI Insights")}</p>
         <div className="mt-4 space-y-2.5">
           {insights.map((text, i) => (
             <motion.div
@@ -1143,14 +1146,14 @@ function SummaryScreen({
       </div>
 
       <p className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground">
-        <CreditCard className="h-3.5 w-3.5" /> Todas tus respuestas quedan guardadas y las puedes editar cuando quieras.
+        <CreditCard className="h-3.5 w-3.5" /> {t("Todas tus respuestas quedan guardadas y las puedes editar cuando quieras.", "All your answers are saved and you can edit them anytime.")}
       </p>
 
       <Button size="lg" className="mt-5 h-14 w-full rounded-full text-base" onClick={onEnter}>
-        Entrar a mi dashboard <ArrowRight className="ml-2 h-4 w-4" />
+        {t("Entrar a mi dashboard", "Enter my dashboard")} <ArrowRight className="ml-2 h-4 w-4" />
       </Button>
       <Button variant="ghost" size="lg" className="mt-2 w-full rounded-full" onClick={onEdit}>
-        <Pencil className="mr-2 h-3.5 w-3.5" /> Editar mis respuestas
+        <Pencil className="mr-2 h-3.5 w-3.5" /> {t("Editar mis respuestas", "Edit my answers")}
       </Button>
     </div>
   );
