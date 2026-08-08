@@ -85,6 +85,17 @@ export function useLanguage() {
   return useContext(LanguageContext);
 }
 
+/**
+ * Traducción inline: tr("Texto en español", "English text").
+ * Pensado para textos de UI que no viven en el diccionario.
+ */
+export function useT() {
+  const { lang } = useLanguage();
+  return (es: string, en: string) => (lang === "en" ? en : es);
+}
+
+
+
 /** Selector minimalista ES / EN. */
 export function LanguageToggle({ className = "" }: { className?: string }) {
   const { lang, setLang } = useLanguage();
