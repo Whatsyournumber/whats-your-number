@@ -24,7 +24,8 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions, type Tx } from "@/hooks/use-transactions";
 import { compact, money } from "@/lib/onboarding";
@@ -74,6 +75,20 @@ const presets = [
 
 const isExpense = (t: Tx) => t.amount < 0;
 
+const TRAVEL_HINTS = [
+  "viaj", "vuelo", "aeroli", "airline", "airlines", "hotel", "airbnb", "booking", "expedia", "crucero",
+  "hostal", "despegar", "latam", "avianca", "iberia", "ryanair", "vueling", "turismo", "travel", "flight",
+  "aeropuerto", "airport", "kayak", "trip",
+];
+
+/** Separa Viajes de Transporte usando comercio, descripción y subcategoría. */
+function categoryOf(t: Tx) {
+  const cat = t.category ?? "Sin categoría";
+  const hay = `${t.merchant} ${t.description ?? ""} ${t.subcategory ?? ""} ${cat}`.toLowerCase();
+  if (TRAVEL_HINTS.some((h) => hay.includes(h))) return "Viajes";
+  return cat;
+}
+
 function inRange(t: Tx, from: Date, to: Date) {
   const d = parseISO(t.tx_date!);
   return d >= from && d <= to;
@@ -110,7 +125,7 @@ function Gastos() {
   const byCategory = useMemo(() => {
     const map = new Map<string, { name: string; amount: number; items: Tx[] }>();
     for (const t of current) {
-      const k = t.category ?? "Sin categoría";
+      const k = categoryOf(t);
       const prev = map.get(k) ?? { name: k, amount: 0, items: [] };
       prev.amount += Math.abs(t.amount);
       prev.items.push(t);
@@ -122,11 +137,56 @@ function Gastos() {
   const prevByCategory = useMemo(() => {
     const map = new Map<string, number>();
     for (const t of previous) {
-      const k = t.category ?? "Sin categoría";
+      const k = categoryOf(t);
       map.set(k, (map.get(k) ?? 0) + Math.abs(t.amount));
     }
     return map;
   }, [previous]);
+
+  // ---- Comparación mes vs mes ----
+  const monthKeys = useMemo(() => {
+    const set = new Set<string>();
+    for (const t of expenses) set.add(format(parseISO(t.tx_date!), "yyyy-MM"));
+    return [...set].sort().reverse();
+  }, [expenses]);
+
+  const [monthA, setMonthA] = useState<string | null>(null);
+  const [monthB, setMonthB] = useState<string | null>(null);
+  const mA = monthA ?? monthKeys[0] ?? null;
+  const mB = monthB ?? monthKeys[1] ?? monthKeys[0] ?? null;
+
+  const monthCompare = useMemo(() => {
+    const totalsOf = (key: string | null) => {
+      const map = new Map<string, number>();
+      let total = 0;
+      if (!key) return { map, total };
+      for (const t of expenses) {
+        if (format(parseISO(t.tx_date!), "yyyy-MM") !== key) continue;
+        const k = categoryOf(t);
+        const v = Math.abs(t.amount);
+        map.set(k, (map.get(k) ?? 0) + v);
+        total += v;
+      }
+      return { map, total };
+    };
+    const a = totalsOf(mA);
+    const b = totalsOf(mB);
+    const names = [...new Set([...a.map.keys(), ...b.map.keys()])];
+    const rows = names
+      .map((name) => ({ name, a: a.map.get(name) ?? 0, b: b.map.get(name) ?? 0 }))
+      .sort((x, y) => y.a + y.b - (x.a + x.b));
+    return { aTotal: a.total, bTotal: b.total, rows };
+  }, [expenses, mA, mB]);
+
+  const monthLabel = (k: string | null) => (k ? format(parseISO(`${k}-01`), "MMMM yyyy", { locale: es }) : "—");
+  const monthDelta =
+    monthCompare.bTotal > 0 ? ((monthCompare.aTotal - monthCompare.bTotal) / monthCompare.bTotal) * 100 : 0;
+
+  // ---- Gasto objetivo ----
+  const { target, setTarget } = useSpendTarget(5000);
+  const monthlyRun = fixed.total + (total / days) * 30;
+  const targetPct = target > 0 ? (monthlyRun / target) * 100 : 0;
+
 
   const series = useMemo(() => {
     const byMonth = days > 62;
@@ -227,6 +287,53 @@ function Gastos() {
         <KpiCard label="Gasto variable (EEFF)" value={fmt(variable)} hint={`${current.length} transacciones`} index={2} />
         <KpiCard label="Promedio diario" value={fmt(total / days)} hint={`${days} días`} index={3} />
       </div>
+
+      <Panel
+        title="Gasto objetivo mensual"
+        description="Tu techo de gasto según tu número; comparado con tu ritmo actual (fijos + variable proyectado a 30 días)"
+      >
+        <div className="grid gap-5 md:grid-cols-[240px_1fr] md:items-center">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">Objetivo</p>
+            <div className="mt-2 flex items-center gap-2">
+              <Input
+                type="number"
+                value={String(target)}
+                onChange={(e) => setTarget(Number(e.target.value) || 0)}
+                className="numeric h-11 w-40 text-lg font-semibold"
+              />
+              <span className="text-xs text-muted-foreground">/mes</span>
+            </div>
+          </div>
+          <div>
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <span className="numeric text-2xl font-semibold">{fmt(monthlyRun)}</span>
+              <span className="text-xs text-muted-foreground">ritmo mensual estimado</span>
+              <span
+                className={cn(
+                  "ml-auto rounded-full px-2 py-0.5 text-xs font-medium",
+                  monthlyRun <= target ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative",
+                )}
+              >
+                {monthlyRun <= target
+                  ? `${fmt(target - monthlyRun)} por debajo`
+                  : `${fmt(monthlyRun - target)} por encima`}
+              </span>
+            </div>
+            <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-muted">
+              <div
+                className={cn("h-full rounded-full", monthlyRun <= target ? "bg-positive" : "bg-negative")}
+                style={{ width: `${Math.min(100, targetPct)}%` }}
+              />
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">
+              {targetPct.toFixed(0)}% del objetivo · fijos {fmt(fixed.total)} + variable {fmt((total / days) * 30)}
+            </p>
+          </div>
+        </div>
+      </Panel>
+
+
 
       <Panel title="Gastos fijos mensuales" description="Edita nombre y monto; se guardan en este navegador">
         <div className="space-y-2">
@@ -336,7 +443,91 @@ function Gastos() {
         </Panel>
       </div>
 
+      <Panel
+        title="Comparar mes vs mes"
+        description="Elige dos meses de tus EEFF y mira dónde cambió el gasto"
+      >
+        {monthKeys.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Carga tus EEFF para comparar meses.</p>
+        ) : (
+          <>
+            <div className="flex flex-wrap items-center gap-3">
+              <Select value={mA ?? ""} onValueChange={(v) => setMonthA(v)}>
+                <SelectTrigger className="h-9 w-[190px] capitalize">
+                  <SelectValue placeholder="Mes A" />
+                </SelectTrigger>
+                <SelectContent>
+                  {monthKeys.map((k) => (
+                    <SelectItem key={k} value={k} className="capitalize">
+                      {monthLabel(k)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <span className="text-xs text-muted-foreground">vs.</span>
+              <Select value={mB ?? ""} onValueChange={(v) => setMonthB(v)}>
+                <SelectTrigger className="h-9 w-[190px] capitalize">
+                  <SelectValue placeholder="Mes B" />
+                </SelectTrigger>
+                <SelectContent>
+                  {monthKeys.map((k) => (
+                    <SelectItem key={k} value={k} className="capitalize">
+                      {monthLabel(k)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <span
+                className={cn(
+                  "ml-auto rounded-full px-2.5 py-1 text-xs font-medium",
+                  monthDelta > 0 ? "bg-negative/12 text-negative" : "bg-positive/12 text-positive",
+                )}
+              >
+                {monthDelta > 0 ? "+" : ""}
+                {monthDelta.toFixed(1)}% · {fmt(monthCompare.aTotal)} vs {fmt(monthCompare.bTotal)}
+              </span>
+            </div>
+
+            <div className="mt-4">
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={monthCompare.rows.slice(0, 10)} margin={{ left: -8, right: 8 }}>
+                  <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
+                  <XAxis dataKey="name" {...axisProps} interval={0} minTickGap={4} />
+                  <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={64} />
+                  <Tooltip content={<ChartTooltip formatter={fmt} />} cursor={{ fill: "var(--color-muted)", opacity: 0.3 }} />
+                  <Bar dataKey="a" name={monthLabel(mA)} fill="var(--color-chart-1)" radius={[8, 8, 0, 0]} />
+                  <Bar dataKey="b" name={monthLabel(mB)} fill="var(--color-chart-4)" radius={[8, 8, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            <ul className="mt-3 space-y-1">
+              {monthCompare.rows.slice(0, 8).map((r) => {
+                const diff = r.a - r.b;
+                return (
+                  <li key={r.name} className="flex items-center gap-3 rounded-lg px-2 py-1.5 text-sm hover:bg-elevated/60">
+                    <span className="truncate">{r.name}</span>
+                    <span className="numeric ml-auto text-muted-foreground">{fmt(r.b)}</span>
+                    <span className="numeric w-24 text-right font-medium">{fmt(r.a)}</span>
+                    <span
+                      className={cn(
+                        "numeric w-24 text-right text-xs",
+                        diff > 0 ? "text-negative" : "text-positive",
+                      )}
+                    >
+                      {diff > 0 ? "+" : ""}
+                      {fmt(diff)}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        )}
+      </Panel>
+
       <Panel title="Detalle por categoría" description="Expande para ver cada gasto del periodo">
+
         {byCategory.length === 0 ? (
           <p className="text-sm text-muted-foreground">Sin movimientos en este rango de fechas.</p>
         ) : (

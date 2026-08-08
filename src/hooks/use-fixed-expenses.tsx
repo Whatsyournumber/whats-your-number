@@ -8,6 +8,7 @@ const defaults: FixedExpense[] = [
   { id: "ahorro", name: "Fondo de ahorro", amount: 2500 },
   { id: "hipoteca", name: "Hipoteca", amount: 1100 },
   { id: "condominio", name: "Condominio", amount: 230 },
+  { id: "seguro-salud", name: "Seguro de salud", amount: 130 },
 ];
 
 /** Gastos fijos mensuales editables, guardados localmente en el navegador. */
@@ -19,12 +20,16 @@ export function useFixedExpenses() {
       const raw = window.localStorage.getItem(KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as FixedExpense[];
-        if (Array.isArray(parsed)) setItems(parsed);
+        if (Array.isArray(parsed)) {
+          const missing = defaults.filter((d) => !parsed.some((p) => p.id === d.id));
+          setItems([...parsed, ...missing]);
+        }
       }
     } catch {
       /* ignore */
     }
   }, []);
+
 
   const persist = useCallback((next: FixedExpense[]) => {
     setItems(next);
@@ -51,4 +56,31 @@ export function useFixedExpenses() {
   const total = items.reduce((s, i) => s + (Number.isFinite(i.amount) ? i.amount : 0), 0);
 
   return { items, update, add, remove, total };
+}
+
+const TARGET_KEY = "yournorth:spend-target";
+
+/** Gasto mensual objetivo (target) según tu número, guardado localmente. */
+export function useSpendTarget(initial = 5000) {
+  const [target, setTarget] = useState(initial);
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(TARGET_KEY);
+      if (raw !== null && Number.isFinite(Number(raw))) setTarget(Number(raw));
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const update = useCallback((v: number) => {
+    setTarget(v);
+    try {
+      window.localStorage.setItem(TARGET_KEY, String(v));
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  return { target, setTarget: update };
 }
