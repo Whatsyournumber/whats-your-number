@@ -43,6 +43,79 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
+function DemoCard() {
+  const t = useT();
+
+  const steps = [
+    { label: t("Gasto mensual ideal", "Ideal monthly spending"), value: "€5,000" },
+    { label: t("Patrimonio hoy", "Net worth today"), value: "€350,000" },
+    { label: t("Inversión mensual", "Monthly investment"), value: "€2,000" },
+  ];
+
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.25 }}
+      transition={{ duration: 0.5 }}
+      className="mt-16"
+    >
+      <Link to="/demo" search={{ start: "1" }} className="group block">
+        <div className="surface glow relative overflow-hidden p-8 transition-transform duration-300 hover:scale-[1.01] md:p-12">
+          <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.08]" />
+          <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+
+          <div className="relative flex flex-col items-center gap-8 md:flex-row md:justify-between">
+            <div className="max-w-md text-center md:text-left">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                <Sparkles className="h-3.5 w-3.5" />
+                {t("Demo gratis", "Free demo")}
+              </span>
+              <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight md:text-3xl">
+                {t("Descubre tu número en 30 segundos", "Discover your number in 30 seconds")}
+              </h2>
+              <p className="mt-3 text-sm text-muted-foreground">
+                {t(
+                  "3 preguntas. Sin registro. Sin conectar bancos. Solo tu ritmo, tu patrimonio y tu meta.",
+                  "3 questions. No sign-up. No bank connections. Just your pace, your net worth and your goal.",
+                )}
+              </p>
+              <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-lg transition-all group-hover:gap-3">
+                {t("Probar ahora", "Try now")} <ArrowRight className="h-4 w-4" />
+              </div>
+            </div>
+
+            <div className="relative flex h-48 w-48 shrink-0 items-center justify-center">
+              <div className="absolute inset-0 animate-pulse rounded-full bg-primary/10 blur-2xl" />
+              <div className="relative flex h-44 w-44 items-center justify-center rounded-full bg-elevated ring-1 ring-border transition-transform duration-300 group-hover:scale-105">
+                <span className="absolute inset-3 rounded-full ring-1 ring-primary/40" />
+                <Target className="absolute h-24 w-24 text-primary/25" strokeWidth={1} />
+                <BrandLogo className="relative h-10 w-10" />
+              </div>
+            </div>
+          </div>
+
+          <div className="relative mt-8 grid gap-3 sm:grid-cols-3">
+            {steps.map((item, i) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="surface px-4 py-3 text-center"
+              >
+                <p className="text-[11px] uppercase tracking-wider text-muted-foreground">{item.label}</p>
+                <p className="numeric mt-1 text-lg font-semibold">{item.value}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </Link>
+    </motion.section>
+  );
+}
+
 function Landing() {
   const t = useT();
 
