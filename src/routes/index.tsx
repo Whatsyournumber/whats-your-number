@@ -283,8 +283,8 @@ function Landing() {
           </p>
         </motion.section>
 
-        <section className="mt-24 md:mt-32">
-          <div className="mb-10 text-center">
+        <section className="mt-16 md:mt-20">
+          <div className="mb-8 text-center">
             <span className="text-xs font-medium uppercase tracking-wider text-primary">
               {t("¿Por qué WhatsYournumber?", "Why WhatsYournumber?")}
             </span>
@@ -298,13 +298,14 @@ function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.08 }}
-                className="group relative overflow-hidden rounded-3xl border border-white/[0.06] bg-card/40 p-8 backdrop-blur-sm transition-colors hover:bg-card/60"
+                className="group relative overflow-hidden rounded-3xl border border-white/[0.06] bg-card/40 p-6 backdrop-blur-sm transition-colors hover:bg-card/60"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border/60 bg-elevated/40">
-                  <card.icon className="h-5 w-5 text-primary" />
+                <div className="relative flex h-11 w-11 items-center justify-center rounded-full border border-border/60 bg-elevated/40 ring-1 ring-primary/10 transition-all group-hover:ring-primary/30">
+                  <div className="absolute inset-0 rounded-full bg-primary/5 opacity-0 transition-opacity group-hover:opacity-100" />
+                  <card.icon className="relative h-5 w-5 text-primary" strokeWidth={1.8} />
                 </div>
-                <h3 className="mt-6 text-lg font-semibold tracking-tight">{card.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground/80">{card.desc}</p>
+                <h3 className="mt-4 text-base font-semibold tracking-tight">{card.title}</h3>
+                <p className="mt-1.5 text-sm text-muted-foreground/80">{card.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -314,12 +315,12 @@ function Landing() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.45 }}
-            className="mt-10 text-center"
+            className="mt-8 text-center"
           >
-            <h2 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
+            <h2 className="font-display text-2xl font-semibold tracking-tight md:text-3xl">
               {t("Tu dinero, con dirección", "Your money, with direction")}
             </h2>
-            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
+            <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
               {t(
                 "Deja de navegar a ciegas. Conecta cuentas, tarjetas e inversiones para ver por dónde entra, por dónde sale y hacia dónde crece.",
                 "Stop navigating blind. Connect accounts, cards and investments to see where it comes in, where it goes out and where it's growing.",
@@ -327,6 +328,7 @@ function Landing() {
             </p>
           </motion.div>
         </section>
+
 
         <DemoCard />
 
