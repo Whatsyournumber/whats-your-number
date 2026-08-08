@@ -26,9 +26,10 @@ export const RULES: CategoryRule[] = [
     name: "Marketing digital",
     hints: [
       "google ads", "googleads", "meta ads", "facebook ads", "facebk ads", "fb ads", "instagram ads",
-      "tiktok ads", "linkedin ads", "twitter ads", "x ads", "adwords", "ads manager", "publicidad",
+      "tiktok ads", "tik tok ads", "linkedin ads", "twitter ads", "x ads", "adwords", "ads manager", "publicidad",
       "marketing", "mailchimp", "hubspot", "klaviyo", "semrush", "ahrefs", "hootsuite", "buffer",
       "shopify", "wix", "squarespace", "godaddy", "namecheap", "webflow", "campaign",
+      "facebook", "facebk", "fb", "meta", "tiktok", "tik tok", "google", "youtube ads",
     ],
   },
   {
