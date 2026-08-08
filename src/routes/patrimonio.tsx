@@ -7,7 +7,9 @@ import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
+import { useTransactions } from "@/hooks/use-transactions";
 import { buildDataset } from "@/lib/profile-data";
+import { buildRealMonths } from "@/lib/real-months";
 
 export const Route = createFileRoute("/patrimonio")({
   head: () => ({
