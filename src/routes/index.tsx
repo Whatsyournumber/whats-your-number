@@ -85,14 +85,33 @@ function DemoCard() {
               </div>
             </div>
 
-            <div className="relative flex h-48 w-48 shrink-0 items-center justify-center">
-              <div className="absolute inset-0 animate-pulse rounded-full bg-primary/10 blur-2xl" />
-              <div className="relative flex h-44 w-44 items-center justify-center rounded-full bg-elevated ring-1 ring-border transition-transform duration-300 group-hover:scale-105">
+            <div className="relative flex h-52 w-52 shrink-0 items-center justify-center">
+              <div className="absolute inset-0 animate-pulse rounded-full bg-primary/15 blur-3xl" />
+              {[0, 1, 2].map((i) => (
+                <motion.span
+                  key={i}
+                  className="absolute rounded-full border border-primary/30"
+                  initial={{ width: 120, height: 120, opacity: 0.6 }}
+                  animate={{ width: 208, height: 208, opacity: 0 }}
+                  transition={{ duration: 3, repeat: Infinity, delay: i, ease: "easeOut" }}
+                />
+              ))}
+              <motion.span
+                className="absolute h-44 w-44 rounded-full border border-dashed border-primary/25"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
+              />
+              <motion.div
+                animate={{ scale: [1, 1.04, 1] }}
+                transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+                className="relative flex h-40 w-40 items-center justify-center rounded-full bg-elevated ring-1 ring-border transition-transform duration-300 group-hover:scale-105"
+              >
                 <span className="absolute inset-3 rounded-full ring-1 ring-primary/40" />
-                <Target className="absolute h-24 w-24 text-primary/25" strokeWidth={1} />
-                <BrandLogo className="relative h-10 w-10" />
-              </div>
+                <Target className="absolute h-24 w-24 text-primary/20" strokeWidth={1} />
+                <BrandLogo className="relative h-12 w-12" />
+              </motion.div>
             </div>
+
           </div>
 
           <div className="relative mt-8 grid gap-3 sm:grid-cols-3">
