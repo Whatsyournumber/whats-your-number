@@ -77,7 +77,9 @@ function MiPerfil() {
     try {
       await save({ ...rest, completed: true });
       setDirty(false);
-      toast.success(t("Datos actualizados — recalculamos toda tu app", "Data updated — we're recalculating your whole app"));
+      toast.success(t("Cambios guardados", "Changes saved"), {
+        description: t("Recalculamos todos los números de tus pestañas.", "We recalculated every number across your tabs."),
+      });
     } catch {
       toast.error(t("No pudimos guardar tus datos", "We couldn't save your data"));
     }
