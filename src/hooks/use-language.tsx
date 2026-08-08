@@ -1,0 +1,107 @@
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+
+export type Lang = "es" | "en";
+
+const STORAGE_KEY = "yn.lang";
+
+const DICT = {
+  es: {
+    "auth.back": "Volver al inicio",
+    "auth.tagline": "Tu norte financiero",
+    "auth.login": "Iniciar sesión",
+    "auth.signup": "Crear cuenta",
+    "auth.title.login": "Bienvenido de vuelta",
+    "auth.title.signup": "Empieza tu Your North",
+    "auth.subtitle.login": "Entra para ver tu patrimonio en tiempo real.",
+    "auth.subtitle.signup": "Crea tu cuenta en menos de un minuto.",
+    "auth.name": "Nombre completo",
+    "auth.email": "Email",
+    "auth.password": "Contraseña",
+    "auth.submit.login": "Entrar",
+    "auth.submit.signup": "Crear cuenta",
+    "auth.or": "o",
+    "auth.google": "Continuar con otras cuentas",
+    "auth.google.note":
+      "Al registrarte con Google pedimos tu nombre, email, teléfono y foto para crear tu perfil.",
+    "auth.legal": "Tus datos financieros se guardan de forma privada y cifrada.",
+    "auth.toast.signup": "Cuenta creada. ¡Bienvenido!",
+    "auth.toast.login": "Sesión iniciada",
+    "auth.toast.error": "No pudimos completar la operación",
+    "auth.toast.oauth": "No pudimos conectar con tu proveedor de identidad",
+  },
+  en: {
+    "auth.back": "Back to home",
+    "auth.tagline": "Your financial north",
+    "auth.login": "Sign in",
+    "auth.signup": "Sign up",
+    "auth.title.login": "Welcome back",
+    "auth.title.signup": "Start your Your North",
+    "auth.subtitle.login": "Sign in to see your net worth in real time.",
+    "auth.subtitle.signup": "Create your account in under a minute.",
+    "auth.name": "Full name",
+    "auth.email": "Email",
+    "auth.password": "Password",
+    "auth.submit.login": "Sign in",
+    "auth.submit.signup": "Create account",
+    "auth.or": "or",
+    "auth.google": "Continue with other accounts",
+    "auth.google.note":
+      "Signing up with Google requests your name, email, phone and photo to build your profile.",
+    "auth.legal": "Your financial data is stored privately and encrypted.",
+    "auth.toast.signup": "Account created. Welcome!",
+    "auth.toast.login": "Signed in",
+    "auth.toast.error": "We couldn't complete the request",
+    "auth.toast.oauth": "We couldn't connect with your identity provider",
+  },
+} satisfies Record<Lang, Record<string, string>>;
+
+export type TranslationKey = keyof (typeof DICT)["es"];
+
+type Ctx = { lang: Lang; setLang: (l: Lang) => void; t: (key: TranslationKey) => string };
+
+const LanguageContext = createContext<Ctx>({ lang: "es", setLang: () => {}, t: (k) => DICT.es[k] });
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [lang, setLangState] = useState<Lang>("es");
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    if (stored === "en" || stored === "es") setLangState(stored);
+  }, []);
+
+  const setLang = (next: Lang) => {
+    setLangState(next);
+    window.localStorage.setItem(STORAGE_KEY, next);
+  };
+
+  return (
+    <LanguageContext.Provider value={{ lang, setLang, t: (key) => DICT[lang][key] ?? DICT.es[key] }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+}
+
+export function useLanguage() {
+  return useContext(LanguageContext);
+}
+
+/** Selector minimalista ES / EN. */
+export function LanguageToggle({ className = "" }: { className?: string }) {
+  const { lang, setLang } = useLanguage();
+  return (
+    <div className={`inline-flex items-center rounded-full border border-border p-0.5 text-[11px] ${className}`}>
+      {(["es", "en"] as const).map((code) => (
+        <button
+          key={code}
+          type="button"
+          onClick={() => setLang(code)}
+          className={`rounded-full px-2.5 py-1 uppercase tracking-wide transition-colors ${
+            lang === code ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          {code}
+        </button>
+      ))}
+    </div>
+  );
+}
