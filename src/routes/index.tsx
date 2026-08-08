@@ -429,6 +429,7 @@ function Landing() {
           </div>
         </section>
 
+        <DemoCard />
 
         <section className="mt-24 md:mt-32">
 
