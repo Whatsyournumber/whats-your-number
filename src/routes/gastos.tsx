@@ -119,8 +119,12 @@ function Gastos() {
   const current = useMemo(() => expenses.filter((t) => inRange(t, from, to)), [expenses, from, to]);
   const previous = useMemo(() => expenses.filter((t) => inRange(t, prevFrom, prevTo)), [expenses, prevFrom, prevTo]);
 
-  const total = sum(current);
-  const prevTotal = sum(previous);
+  const variableTotal = sum(current);
+  const prevVariable = sum(previous);
+  // gastos fijos prorrateados a los días del periodo
+  const fixedInPeriod = (fixed.total / 30) * days;
+  const total = variableTotal + fixedInPeriod;
+  const prevTotal = prevVariable + fixedInPeriod;
   const delta = prevTotal > 0 ? ((total - prevTotal) / prevTotal) * 100 : 0;
 
   const byCategory = useMemo(() => {
