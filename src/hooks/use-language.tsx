@@ -31,7 +31,7 @@ const DICT = {
   },
   en: {
     "auth.back": "Back to home",
-    "auth.tagline": "Your financial north",
+    "auth.tagline": "Your financial number",
     "auth.login": "Sign in",
     "auth.signup": "Sign up",
     "auth.title.login": "Welcome back",

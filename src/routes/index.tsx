@@ -291,7 +291,7 @@ function Landing() {
               {t("Lo que dicen", "What people say")}
             </span>
             <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
-              {t("Personas que ya encontraron su norte", "People who already found their north")}
+              {t("Personas que ya encontraron su número", "People who already found their number")}
             </h2>
           </div>
           <div className="grid gap-4 md:grid-cols-3">

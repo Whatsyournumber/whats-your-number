@@ -116,7 +116,7 @@ const CURRENCY_EN: Record<string, string> = {
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
     meta: [
-      { title: "Construye tu North — plan financiero personalizado" },
+      { title: "Construye tu Número — plan financiero personalizado" },
       {
         name: "description",
         content:
@@ -295,7 +295,7 @@ function OnboardingPage() {
                   <Compass className="h-7 w-7 text-background" />
                 </div>
                 <h1 className="mt-8 text-center font-display text-4xl font-semibold leading-[1.1] sm:text-5xl">
-                  {t("Vamos a construir tu Número.", "Let's build your North.")}
+                  {t("Vamos a construir tu Número.", "Let's build your Number.")}
                 </h1>
                 <p className="mx-auto mt-5 max-w-md text-center text-base leading-relaxed text-muted-foreground">
                   {t(
@@ -660,7 +660,7 @@ function OnboardingPage() {
                 </div>
 
                 <Button size="lg" className="mt-8 h-14 w-full rounded-full text-base" onClick={build}>
-                  <Sparkles className="mr-2 h-4 w-4" /> {t("Construir mi North", "Build my North")}
+                  <Sparkles className="mr-2 h-4 w-4" /> {t("Construir mi Número", "Build my Number")}
                 </Button>
               </Screen>
             )}
@@ -957,7 +957,7 @@ function BuildingScreen({ onDone }: { onDone: () => void }) {
         </div>
       </div>
 
-      <h2 className="mt-10 text-center font-display text-3xl font-semibold sm:text-4xl">{t("Estamos construyendo tu Número…", "We're building your North…")}</h2>
+      <h2 className="mt-10 text-center font-display text-3xl font-semibold sm:text-4xl">{t("Estamos construyendo tu Número…", "We're building your Number…")}</h2>
       <p className="mx-auto mt-4 max-w-md text-center text-sm leading-relaxed text-muted-foreground">
         {t("Nuestra IA está analizando toda tu información financiera.", "Our AI is analyzing all your financial information.")}
       </p>
@@ -1113,7 +1113,7 @@ function SummaryScreen({
 
         <div className="mt-6">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>📈 {t("Progreso hacia tu Número", "Progress towards your North")}</span>
+            <span>📈 {t("Progreso hacia tu Número", "Progress towards your Number")}</span>
             <span className="numeric text-foreground">{plan.progress.toFixed(1)}%</span>
           </div>
           <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-muted">
