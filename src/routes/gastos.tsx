@@ -138,6 +138,18 @@ function Gastos() {
     return map;
   }, [previous, categories.rules]);
 
+  // Todas las categorías (base + propias) siempre visibles en el detalle
+  const detailRows = useMemo(() => {
+    const map = new Map(byCategory.map((c) => [c.name, c]));
+    const ordered: { name: string; amount: number; items: Tx[] }[] = [];
+    for (const name of categories.names) {
+      ordered.push(map.get(name) ?? { name, amount: 0, items: [] });
+      map.delete(name);
+    }
+    return [...ordered, ...map.values()].sort((a, b) => b.amount - a.amount);
+  }, [byCategory, categories.names]);
+
+
   // ---- Comparación mes vs mes ----
   const monthKeys = useMemo(() => {
     const set = new Set<string>();
