@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { LanguageToggle, useT } from "@/hooks/use-language";
 
 const demoSearchSchema = z.object({
-  start: z.coerce.string().optional().default("0"),
+  start: z.coerce.number().optional().default(0),
 });
 
 export const Route = createFileRoute("/demo")({
