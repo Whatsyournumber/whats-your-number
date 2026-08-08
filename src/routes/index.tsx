@@ -183,16 +183,20 @@ function Landing() {
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Button asChild size="lg" className="gap-2 rounded-full px-6">
-              <Link to="/auth" search={{ mode: "signup" }}>
-                {t("Empieza gratis", "Start for free")} <ArrowRight className="h-4 w-4" />
+              <Link to="/demo">
+                {t("Descubre tu número", "Discover your number")} <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="rounded-full px-6">
-              <Link to="/auth" search={{ mode: "login" }}>
-                {t("Ya tengo cuenta", "I already have an account")}
+              <Link to="/auth" search={{ mode: "signup" }}>
+                {t("Empieza gratis", "Start for free")}
               </Link>
             </Button>
           </div>
+          <p className="mt-3 text-xs text-muted-foreground">
+            {t("Gratis y sin registro · 3 preguntas · 30 segundos", "Free, no sign-up · 3 questions · 30 seconds")}
+          </p>
+
 
           <div className="mt-12 grid gap-3 sm:grid-cols-3">
             {metrics.map((m) => (
