@@ -154,7 +154,7 @@ function CashFlow() {
           hint={`${((buckets[0]!.amount / totalIncome) * 100).toFixed(0)}% del ingreso`}
           index={1}
         />
-        <KpiCard label="Lifestyle" value={fmt(buckets[1]!.amount)} hint={hasReal ? `${monthTx.length} movimientos` : undefined} index={2} />
+        <KpiCard label="Lifestyle" value={fmt(buckets[1]!.amount)} hint={hasReal ? `${monthTx.length} movimientos` : "Según tu perfil"} index={2} />
         <KpiCard label="Flujo libre" value={fmt(buckets[3]!.amount)} index={3} />
       </div>
 
