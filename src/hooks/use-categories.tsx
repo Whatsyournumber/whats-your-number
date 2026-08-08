@@ -3,7 +3,7 @@ import { BASE_CATEGORIES, type CategoryRule } from "@/lib/categorize";
 
 export type CustomCategory = { id: string; name: string; keywords: string };
 
-const KEY = "yournorth:custom-categories";
+const KEY = "whatsyournumber:custom-categories";
 
 /** Categorías personalizadas del usuario (nombre + palabras clave), guardadas en el navegador. */
 export function useCategories() {

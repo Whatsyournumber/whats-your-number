@@ -12,9 +12,9 @@ import { buildDataset } from "@/lib/profile-data";
 export const Route = createFileRoute("/patrimonio")({
   head: () => ({
     meta: [
-      { title: "Patrimonio — Your north" },
+      { title: "Patrimonio — WhatsYournumber" },
       { name: "description", content: "Activos, pasivos, asset allocation y crecimiento de tu patrimonio neto." },
-      { property: "og:title", content: "Patrimonio — Your north" },
+      { property: "og:title", content: "Patrimonio — WhatsYournumber" },
       { property: "og:description", content: "Efectivo, bancos, fondos, ETFs, cripto, propiedades y deudas consolidados." },
     ],
   }),

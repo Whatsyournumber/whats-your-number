@@ -38,12 +38,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/gastos")({
   head: () => ({
     meta: [
-      { title: "Análisis de Gastos — Your north" },
+      { title: "Análisis de Gastos — WhatsYournumber" },
       {
         name: "description",
         content: "Gastos fijos editables y detalle real por categoría desde tus estados de cuenta, con rango de fechas comparable.",
       },
-      { property: "og:title", content: "Análisis de Gastos — Your north" },
+      { property: "og:title", content: "Análisis de Gastos — WhatsYournumber" },
       {
         property: "og:description",
         content: "Controla tus gastos fijos, explora cada categoría y compara periodos con datos reales de tus EEFF.",

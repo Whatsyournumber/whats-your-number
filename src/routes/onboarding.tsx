@@ -122,8 +122,8 @@ export const Route = createFileRoute("/onboarding")({
         content:
           "Responde unas preguntas y nuestra IA construye tu plan: patrimonio, gastos, Your Number y tu edad de libertad financiera.",
       },
-      { property: "og:title", content: "Construye tu North — Your north" },
-      { property: "og:description", content: "Un plan financiero personalizado en 3 minutos con Your north." },
+      { property: "og:title", content: "Construye tu Número — WhatsYournumber" },
+      { property: "og:description", content: "Un plan financiero personalizado en 3 minutos con WhatsYournumber." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -265,7 +265,7 @@ function OnboardingPage() {
         <div className="sticky top-0 z-30 bg-background/70 backdrop-blur-xl">
           <div className="mx-auto flex max-w-2xl items-center gap-3 px-5 py-4">
             <Compass className="h-4 w-4 text-primary" />
-            <span className="font-display text-sm font-semibold">Your north</span>
+            <span className="font-display text-sm font-semibold">WhatsYournumber</span>
             <div className="ml-2 h-1 flex-1 overflow-hidden rounded-full bg-muted">
               <motion.div
                 className="h-full rounded-full bg-primary"
@@ -295,7 +295,7 @@ function OnboardingPage() {
                   <Compass className="h-7 w-7 text-background" />
                 </div>
                 <h1 className="mt-8 text-center font-display text-4xl font-semibold leading-[1.1] sm:text-5xl">
-                  {t("Vamos a construir tu North.", "Let's build your North.")}
+                  {t("Vamos a construir tu Número.", "Let's build your North.")}
                 </h1>
                 <p className="mx-auto mt-5 max-w-md text-center text-base leading-relaxed text-muted-foreground">
                   {t(
@@ -957,7 +957,7 @@ function BuildingScreen({ onDone }: { onDone: () => void }) {
         </div>
       </div>
 
-      <h2 className="mt-10 text-center font-display text-3xl font-semibold sm:text-4xl">{t("Estamos construyendo tu North…", "We're building your North…")}</h2>
+      <h2 className="mt-10 text-center font-display text-3xl font-semibold sm:text-4xl">{t("Estamos construyendo tu Número…", "We're building your North…")}</h2>
       <p className="mx-auto mt-4 max-w-md text-center text-sm leading-relaxed text-muted-foreground">
         {t("Nuestra IA está analizando toda tu información financiera.", "Our AI is analyzing all your financial information.")}
       </p>
@@ -1043,7 +1043,7 @@ function SummaryScreen({
       <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center text-4xl">
         🎉
       </motion.div>
-      <h2 className="mt-5 text-center font-display text-4xl font-semibold sm:text-5xl">{t("Tu North está listo.", "Your North is ready.")}</h2>
+      <h2 className="mt-5 text-center font-display text-4xl font-semibold sm:text-5xl">{t("Tu Número está listo.", "Your Number is ready.")}</h2>
       <p className="mx-auto mt-4 max-w-md text-center text-sm leading-relaxed text-muted-foreground">
         {data.full_name
           ? t(`${data.full_name}, esto es lo que la IA ha entendido de tus finanzas.`, `${data.full_name}, this is what our AI has understood about your finances.`)
@@ -1113,7 +1113,7 @@ function SummaryScreen({
 
         <div className="mt-6">
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>📈 {t("Progreso hacia tu North", "Progress towards your North")}</span>
+            <span>📈 {t("Progreso hacia tu Número", "Progress towards your North")}</span>
             <span className="numeric text-foreground">{plan.progress.toFixed(1)}%</span>
           </div>
           <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-muted">

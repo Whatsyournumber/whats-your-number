@@ -16,9 +16,9 @@ import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
 export const Route = createFileRoute("/retiro")({
   head: () => ({
     meta: [
-      { title: "Fondo de Retiro — Your north" },
+      { title: "Fondo de Retiro — WhatsYournumber" },
       { name: "description", content: "Saldo, aportes, rentabilidad anual y simulador de proyección de tu fondo de retiro." },
-      { property: "og:title", content: "Fondo de Retiro — Your north" },
+      { property: "og:title", content: "Fondo de Retiro — WhatsYournumber" },
       { property: "og:description", content: "Proyecta tu retiro ajustando aporte mensual, rentabilidad y edad objetivo." },
     ],
   }),
