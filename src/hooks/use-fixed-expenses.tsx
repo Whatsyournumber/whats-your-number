@@ -57,3 +57,30 @@ export function useFixedExpenses() {
 
   return { items, update, add, remove, total };
 }
+
+const TARGET_KEY = "yournorth:spend-target";
+
+/** Gasto mensual objetivo (target) según tu número, guardado localmente. */
+export function useSpendTarget(initial = 5000) {
+  const [target, setTarget] = useState(initial);
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(TARGET_KEY);
+      if (raw !== null && Number.isFinite(Number(raw))) setTarget(Number(raw));
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const update = useCallback((v: number) => {
+    setTarget(v);
+    try {
+      window.localStorage.setItem(TARGET_KEY, String(v));
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  return { target, setTarget: update };
+}
