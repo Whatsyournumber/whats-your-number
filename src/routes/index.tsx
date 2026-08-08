@@ -330,9 +330,8 @@ function Landing() {
         </section>
 
 
-        <DemoCard />
-
         <section className="mt-24 md:mt-32">
+
           <div className="mb-8 text-center">
             <span className="text-xs font-medium uppercase tracking-wider text-primary">
               {t("Así se ve por dentro", "This is what it looks like inside")}
@@ -379,7 +378,10 @@ function Landing() {
           ))}
         </section>
 
+        <DemoCard />
+
         <section className="mt-24 md:mt-32">
+
           <div className="mb-10 text-center">
             <span className="text-xs font-medium uppercase tracking-wider text-primary">
               {t("Lo que dicen", "What people say")}
