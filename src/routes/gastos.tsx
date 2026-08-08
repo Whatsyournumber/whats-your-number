@@ -26,6 +26,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useCategories } from "@/hooks/use-categories";
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions, type Tx } from "@/hooks/use-transactions";
@@ -77,8 +78,6 @@ const presets = [
 
 const isExpense = (t: Tx) => t.amount < 0;
 
-const categoryOf = (t: Tx) => categorizeTx(t);
-
 function inRange(t: Tx, from: Date, to: Date) {
   const d = parseISO(t.tx_date!);
   return d >= from && d <= to;
@@ -96,6 +95,8 @@ function Gastos() {
 
   const { transactions, isLoading } = useTransactions();
   const fixed = useFixedExpenses();
+  const categories = useCategories();
+  const categoryOf = (t: Tx) => categorizeTx(t, categories.rules);
   const [range, setRange] = useState<DateRange | undefined>(() => presets[0]!.range());
 
   const from = range?.from ?? subDays(new Date(), 29);
@@ -126,7 +127,7 @@ function Gastos() {
       map.set(k, prev);
     }
     return [...map.values()].sort((a, b) => b.amount - a.amount);
-  }, [current]);
+  }, [current, categories.rules]);
 
   const prevByCategory = useMemo(() => {
     const map = new Map<string, number>();
@@ -135,7 +136,7 @@ function Gastos() {
       map.set(k, (map.get(k) ?? 0) + Math.abs(t.amount));
     }
     return map;
-  }, [previous]);
+  }, [previous, categories.rules]);
 
   // ---- Comparación mes vs mes ----
   const monthKeys = useMemo(() => {
@@ -170,7 +171,7 @@ function Gastos() {
       .map((name) => ({ name, a: a.map.get(name) ?? 0, b: b.map.get(name) ?? 0 }))
       .sort((x, y) => y.a + y.b - (x.a + x.b));
     return { aTotal: a.total, bTotal: b.total, rows };
-  }, [expenses, mA, mB]);
+  }, [expenses, mA, mB, categories.rules]);
 
   const monthLabel = (k: string | null) => (k ? format(parseISO(`${k}-01`), "MMMM yyyy", { locale: es }) : "—");
   const monthDelta =

@@ -3,6 +3,7 @@ import { addDays, differenceInCalendarDays, endOfMonth, format, parseISO, startO
 import { es } from "date-fns/locale";
 import { CalendarIcon, Upload } from "lucide-react";
 import { categorizeTx } from "@/lib/categorize";
+import { useCategories } from "@/hooks/use-categories";
 import { useMemo, useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -126,8 +127,9 @@ function Lifestyle() {
   const perDay = total / days;
   const ticket = current.length ? total / current.length : 0;
 
-  const byCategory = useMemo(() => group(current, (t) => categorizeTx(t)), [current]);
-  const prevByCategory = useMemo(() => group(previous, (t) => categorizeTx(t)), [previous]);
+  const categories = useCategories();
+  const byCategory = useMemo(() => group(current, (t) => categorizeTx(t, categories.rules)), [current, categories.rules]);
+  const prevByCategory = useMemo(() => group(previous, (t) => categorizeTx(t, categories.rules)), [previous, categories.rules]);
   const byMerchant = useMemo(() => group(current, (t) => t.merchant), [current]);
 
   // Serie temporal: por día si el rango es corto, por mes si es largo.
@@ -346,7 +348,7 @@ function Lifestyle() {
                     </span>
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium">{t.merchant}</p>
-                      <p className="truncate text-xs text-muted-foreground">{categorizeTx(t)}</p>
+                      <p className="truncate text-xs text-muted-foreground">{categorizeTx(t, categories.rules)}</p>
                     </div>
                     <span className="numeric ml-auto text-sm font-semibold">{fmt(Math.abs(t.amount))}</span>
                   </li>
