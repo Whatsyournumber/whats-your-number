@@ -295,33 +295,6 @@ function Landing() {
           </div>
         </motion.section>
 
-        <DemoCard />
-
-        <section className="mt-24 md:mt-32">
-          <div className="mb-8 text-center">
-            <span className="text-xs font-medium uppercase tracking-wider text-primary">
-              {t("Así se ve por dentro", "This is what it looks like inside")}
-            </span>
-            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
-              {t("Un panel vivo, no una hoja de cálculo", "A living dashboard, not a spreadsheet")}
-            </h2>
-            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
-              {t(
-                "Cambia entre patrimonio, gastos y portafolio. Todo se actualiza en tiempo real conforme importas tus estados de cuenta.",
-                "Switch between net worth, spending and portfolio. Everything updates in real time as you import your statements.",
-              )}
-            </p>
-          </div>
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.5 }}
-          >
-            <ProductPreview />
-          </motion.div>
-        </section>
-
         <section className="mt-24 md:mt-32">
           <div className="mb-10 text-center">
             <span className="text-xs font-medium uppercase tracking-wider text-primary">
@@ -366,6 +339,34 @@ function Landing() {
             </p>
           </motion.div>
         </section>
+
+        <DemoCard />
+
+        <section className="mt-24 md:mt-32">
+          <div className="mb-8 text-center">
+            <span className="text-xs font-medium uppercase tracking-wider text-primary">
+              {t("Así se ve por dentro", "This is what it looks like inside")}
+            </span>
+            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
+              {t("Un panel vivo, no una hoja de cálculo", "A living dashboard, not a spreadsheet")}
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
+              {t(
+                "Cambia entre patrimonio, gastos y portafolio. Todo se actualiza en tiempo real conforme importas tus estados de cuenta.",
+                "Switch between net worth, spending and portfolio. Everything updates in real time as you import your statements.",
+              )}
+            </p>
+          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5 }}
+          >
+            <ProductPreview />
+          </motion.div>
+        </section>
+
 
 
 
