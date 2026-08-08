@@ -538,55 +538,8 @@ function Gastos() {
         </div>
       </Panel>
 
-      <Panel
-        title="Categorías"
-        description="Mercado, Restaurantes, Salidas, Compras, Viajes, Transporte, Lifestyle, Apps y Marketing digital. Añade las tuyas con palabras clave."
-      >
-        <div className="flex flex-wrap gap-2">
-          {BASE_CATEGORIES.map((name) => (
-            <span
-              key={name}
-              className="rounded-full bg-elevated/70 px-3 py-1 text-xs font-medium text-muted-foreground"
-            >
-              {name}
-            </span>
-          ))}
-        </div>
 
-        <div className="mt-4 space-y-2">
-          {categories.items.map((c) => (
-            <div key={c.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-elevated/60 px-3 py-2">
-              <Input
-                value={c.name}
-                onChange={(e) => categories.update(c.id, { name: e.target.value })}
-                placeholder="Nombre de la categoría"
-                className="h-9 w-full max-w-[220px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
-              />
-              <Input
-                value={c.keywords}
-                onChange={(e) => categories.update(c.id, { keywords: e.target.value })}
-                placeholder="palabras clave separadas por coma (ej. netflix, gym)"
-                className="h-9 min-w-[200px] flex-1 text-sm"
-              />
-              <Button
-                size="icon"
-                variant="ghost"
-                className="h-8 w-8 text-muted-foreground hover:text-negative"
-                onClick={() => categories.remove(c.id)}
-                aria-label={`Eliminar ${c.name}`}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
-          ))}
-        </div>
 
-        <div className="mt-3">
-          <Button size="sm" variant="outline" className="gap-2" onClick={() => categories.add()}>
-            <Plus className="h-4 w-4" /> Añadir categoría
-          </Button>
-        </div>
-      </Panel>
 
 
 
