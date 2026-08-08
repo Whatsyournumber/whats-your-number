@@ -443,7 +443,91 @@ function Gastos() {
         </Panel>
       </div>
 
+      <Panel
+        title="Comparar mes vs mes"
+        description="Elige dos meses de tus EEFF y mira dónde cambió el gasto"
+      >
+        {monthKeys.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Carga tus EEFF para comparar meses.</p>
+        ) : (
+          <>
+            <div className="flex flex-wrap items-center gap-3">
+              <Select value={mA ?? undefined} onValueChange={setMonthA}>
+                <SelectTrigger className="h-9 w-[190px] capitalize">
+                  <SelectValue placeholder="Mes A" />
+                </SelectTrigger>
+                <SelectContent>
+                  {monthKeys.map((k) => (
+                    <SelectItem key={k} value={k} className="capitalize">
+                      {monthLabel(k)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <span className="text-xs text-muted-foreground">vs.</span>
+              <Select value={mB ?? undefined} onValueChange={setMonthB}>
+                <SelectTrigger className="h-9 w-[190px] capitalize">
+                  <SelectValue placeholder="Mes B" />
+                </SelectTrigger>
+                <SelectContent>
+                  {monthKeys.map((k) => (
+                    <SelectItem key={k} value={k} className="capitalize">
+                      {monthLabel(k)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <span
+                className={cn(
+                  "ml-auto rounded-full px-2.5 py-1 text-xs font-medium",
+                  monthDelta > 0 ? "bg-negative/12 text-negative" : "bg-positive/12 text-positive",
+                )}
+              >
+                {monthDelta > 0 ? "+" : ""}
+                {monthDelta.toFixed(1)}% · {fmt(monthCompare.aTotal)} vs {fmt(monthCompare.bTotal)}
+              </span>
+            </div>
+
+            <div className="mt-4">
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={monthCompare.rows.slice(0, 10)} margin={{ left: -8, right: 8 }}>
+                  <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
+                  <XAxis dataKey="name" {...axisProps} interval={0} minTickGap={4} />
+                  <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={64} />
+                  <Tooltip content={<ChartTooltip formatter={fmt} />} cursor={{ fill: "var(--color-muted)", opacity: 0.3 }} />
+                  <Bar dataKey="a" name={monthLabel(mA)} fill="var(--color-chart-1)" radius={[8, 8, 0, 0]} />
+                  <Bar dataKey="b" name={monthLabel(mB)} fill="var(--color-chart-4)" radius={[8, 8, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            <ul className="mt-3 space-y-1">
+              {monthCompare.rows.slice(0, 8).map((r) => {
+                const diff = r.a - r.b;
+                return (
+                  <li key={r.name} className="flex items-center gap-3 rounded-lg px-2 py-1.5 text-sm hover:bg-elevated/60">
+                    <span className="truncate">{r.name}</span>
+                    <span className="numeric ml-auto text-muted-foreground">{fmt(r.b)}</span>
+                    <span className="numeric w-24 text-right font-medium">{fmt(r.a)}</span>
+                    <span
+                      className={cn(
+                        "numeric w-24 text-right text-xs",
+                        diff > 0 ? "text-negative" : "text-positive",
+                      )}
+                    >
+                      {diff > 0 ? "+" : ""}
+                      {fmt(diff)}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        )}
+      </Panel>
+
       <Panel title="Detalle por categoría" description="Expande para ver cada gasto del periodo">
+
         {byCategory.length === 0 ? (
           <p className="text-sm text-muted-foreground">Sin movimientos en este rango de fechas.</p>
         ) : (
