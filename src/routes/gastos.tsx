@@ -12,9 +12,9 @@ import {
 } from "date-fns";
 import { es } from "date-fns/locale";
 import { CalendarIcon, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { DateRange } from "react-day-picker";
-import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, ComposedChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
@@ -204,18 +204,44 @@ function Gastos() {
     const byMonth = days > 62;
     const keyOf = (d: Date) => (byMonth ? format(d, "yyyy-MM") : format(d, "yyyy-MM-dd"));
     const labelOf = (d: Date) => (byMonth ? format(d, "MMM yy", { locale: es }) : format(d, "d MMM", { locale: es }));
-    const buckets = new Map<string, { label: string; gasto: number }>();
+    const keys: string[] = [];
+    const buckets = new Map<string, { label: string; gasto: number; anterior: number; fijo: number }>();
     for (let i = 0; i < days; i++) {
       const d = addDays(from, i);
       const k = keyOf(d);
-      if (!buckets.has(k)) buckets.set(k, { label: labelOf(d), gasto: 0 });
+      if (!buckets.has(k)) {
+        keys.push(k);
+        buckets.set(k, { label: labelOf(d), gasto: 0, anterior: 0, fijo: 0 });
+      }
     }
     for (const t of current) {
       const b = buckets.get(keyOf(parseISO(t.tx_date!)));
       if (b) b.gasto += Math.abs(t.amount);
     }
-    return [...buckets.values()];
-  }, [current, from, days]);
+    // periodo anterior alineado posición a posición
+    const prevKeys: string[] = [];
+    const prevBuckets = new Map<string, number>();
+    for (let i = 0; i < days; i++) {
+      const d = addDays(prevFrom, i);
+      const k = keyOf(d);
+      if (!prevBuckets.has(k)) {
+        prevKeys.push(k);
+        prevBuckets.set(k, 0);
+      }
+    }
+    for (const t of previous) {
+      const k = keyOf(parseISO(t.tx_date!));
+      if (prevBuckets.has(k)) prevBuckets.set(k, (prevBuckets.get(k) ?? 0) + Math.abs(t.amount));
+    }
+    keys.forEach((k, i) => {
+      const pk = prevKeys[i];
+      const b = buckets.get(k)!;
+      b.anterior = pk ? (prevBuckets.get(pk) ?? 0) : 0;
+      b.fijo = byMonth ? fixed.total : fixed.total / 30;
+    });
+    return keys.map((k) => buckets.get(k)!);
+  }, [current, previous, from, prevFrom, days, fixed.total]);
+
 
   const merchants = useMemo(() => {
     const map = new Map<string, { name: string; amount: number; count: number }>();
@@ -234,6 +260,9 @@ function Gastos() {
     range?.from && range?.to
       ? `${format(range.from, "d MMM yyyy", { locale: es })} — ${format(range.to, "d MMM yyyy", { locale: es })}`
       : "Selecciona un rango";
+
+  const adviceKey = `${rangeLabel}|${variableTotal.toFixed(0)}|${fixed.total}|${target}`;
+  const lastAdviceKey = useRef<string | null>(null);
 
   const runAdvice = async () => {
     setAdviceLoading(true);
@@ -265,6 +294,15 @@ function Gastos() {
   };
 
 
+
+  useEffect(() => {
+    if (!hasData || adviceLoading) return;
+    if (lastAdviceKey.current === adviceKey) return;
+    lastAdviceKey.current = adviceKey;
+    const id = setTimeout(() => void runAdvice(), 600);
+    return () => clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [adviceKey, hasData]);
 
   return (
     <PageShell>
@@ -427,14 +465,38 @@ function Gastos() {
 
         <Panel title="Evolución del gasto" description={`Comparando con ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="lg:col-span-2">
           <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={series} margin={{ left: -8, right: 8 }}>
+            <ComposedChart data={series} margin={{ left: -8, right: 8 }}>
               <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
               <XAxis dataKey="label" {...axisProps} interval="preserveStartEnd" minTickGap={18} />
               <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={64} />
               <Tooltip content={<ChartTooltip formatter={fmt} />} cursor={{ fill: "var(--color-muted)", opacity: 0.3 }} />
-              <Bar dataKey="gasto" name="Gasto" fill="var(--color-chart-5)" radius={[8, 8, 0, 0]} />
-            </BarChart>
+              <Legend
+                verticalAlign="top"
+                align="right"
+                iconType="circle"
+                wrapperStyle={{ fontSize: 11, paddingBottom: 8 }}
+              />
+              <Bar dataKey="anterior" name="Periodo anterior" fill="var(--color-muted-foreground)" fillOpacity={0.35} radius={[8, 8, 0, 0]} />
+              <Bar dataKey="gasto" name="Este periodo" fill="var(--color-chart-5)" radius={[8, 8, 0, 0]} />
+              <Line dataKey="fijo" name="Fijos (prorrateado)" stroke="var(--color-chart-3)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
+            </ComposedChart>
           </ResponsiveContainer>
+          <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {[
+              { l: "Este periodo", v: fmt(variableTotal) },
+              { l: "Periodo anterior", v: fmt(prevVariable) },
+              {
+                l: "Variación",
+                v: `${variableTotal - prevVariable > 0 ? "+" : ""}${fmt(variableTotal - prevVariable)}`,
+              },
+              { l: "Día más caro", v: series.length ? fmt(Math.max(...series.map((s) => s.gasto))) : "—" },
+            ].map((k) => (
+              <div key={k.l} className="rounded-xl bg-elevated/60 px-3 py-2">
+                <p className="text-[11px] text-muted-foreground">{k.l}</p>
+                <p className="numeric text-sm font-semibold">{k.v}</p>
+              </div>
+            ))}
+          </div>
           <p className="mt-2 text-xs text-muted-foreground">
             Periodo anterior: <span className="numeric font-medium">{fmt(prevTotal)}</span>
           </p>
@@ -548,62 +610,6 @@ function Gastos() {
         )}
       </Panel>
 
-      <Panel
-        title="Recomendaciones de la IA"
-        description="Dónde te excediste y cómo ahorrar más este mes"
-        actions={
-          <Button size="sm" onClick={runAdvice} disabled={adviceLoading || !hasData}>
-            {adviceLoading ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Analizando
-              </>
-            ) : (
-              <>
-                <Sparkles className="h-4 w-4" /> {advice ? "Actualizar" : "Generar"}
-              </>
-            )}
-          </Button>
-        }
-      >
-        {adviceError && <p className="text-sm text-negative">{adviceError}</p>}
-        {!advice && !adviceError && (
-          <p className="text-sm text-muted-foreground">
-            {hasData
-              ? "Genera un análisis con tus categorías, comercios y tu objetivo de gasto."
-              : "Carga tus EEFF para recibir recomendaciones."}
-          </p>
-        )}
-        {advice && (
-          <div className="space-y-1.5 text-sm leading-relaxed">
-            {advice
-              .split("\n")
-              .filter((l) => l.trim())
-              .map((line, i) => {
-                const clean = line.replace(/^#{1,6}\s*/, "").replace(/^[-*]\s*/, "").replace(/\*\*/g, "");
-                if (line.startsWith("#"))
-                  return (
-                    <p key={i} className="pt-2 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                      {clean}
-                    </p>
-                  );
-                if (/^[-*]\s/.test(line))
-                  return (
-                    <p key={i} className="flex gap-2 text-foreground/90">
-                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                      <span>{clean}</span>
-                    </p>
-                  );
-                return (
-                  <p key={i} className="text-foreground/90">
-                    {clean}
-                  </p>
-                );
-              })}
-          </div>
-        )}
-      </Panel>
-
-
       <Panel title="Detalle por categoría" description="Expande para ver cada gasto del periodo">
 
         {byCategory.length === 0 ? (
@@ -679,6 +685,60 @@ function Gastos() {
               </li>
             ))}
           </ul>
+        )}
+      </Panel>
+      <Panel
+        title="Recomendaciones de la IA"
+        description="Las 4 acciones de mayor impacto, generadas automáticamente con tus datos"
+        actions={
+          <Button size="sm" onClick={runAdvice} disabled={adviceLoading || !hasData}>
+            {adviceLoading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" /> Analizando
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-4 w-4" /> Actualizar
+              </>
+            )}
+          </Button>
+        }
+      >
+        {adviceError && <p className="text-sm text-negative">{adviceError}</p>}
+        {!advice && !adviceError && (
+          <p className="text-sm text-muted-foreground">
+            {hasData
+              ? "Analizando tus categorías, comercios y tu objetivo de gasto…"
+              : "Carga tus EEFF para recibir recomendaciones."}
+          </p>
+        )}
+        {advice && (
+          <div className="space-y-1.5 text-sm leading-relaxed">
+            {advice
+              .split("\n")
+              .filter((l) => l.trim())
+              .map((line, i) => {
+                const clean = line.replace(/^#{1,6}\s*/, "").replace(/^[-*]\s*/, "").replace(/\*\*/g, "");
+                if (line.startsWith("#"))
+                  return (
+                    <p key={i} className="pt-2 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                      {clean}
+                    </p>
+                  );
+                if (/^[-*]\s/.test(line))
+                  return (
+                    <p key={i} className="flex gap-2 text-foreground/90">
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      <span>{clean}</span>
+                    </p>
+                  );
+                return (
+                  <p key={i} className="text-foreground/90">
+                    {clean}
+                  </p>
+                );
+              })}
+          </div>
         )}
       </Panel>
     </PageShell>
