@@ -10,7 +10,10 @@ export type CategorizableTx = {
   category?: string | null;
 };
 
-const RULES: { name: string; hints: string[] }[] = [
+export type CategoryRule = { name: string; hints: string[] };
+
+/** Categorías base del sistema (en orden de prioridad de match). */
+export const RULES: CategoryRule[] = [
   {
     name: "Viajes",
     hints: [
@@ -24,8 +27,28 @@ const RULES: { name: string; hints: string[] }[] = [
     hints: [
       "google ads", "googleads", "meta ads", "facebook ads", "facebk ads", "fb ads", "instagram ads",
       "tiktok ads", "linkedin ads", "twitter ads", "x ads", "adwords", "ads manager", "publicidad",
-      "marketing", "mailchimp", "hubspot", "klaviyo", "semrush", "ahrefs", "canva", "hootsuite", "buffer",
+      "marketing", "mailchimp", "hubspot", "klaviyo", "semrush", "ahrefs", "hootsuite", "buffer",
       "shopify", "wix", "squarespace", "godaddy", "namecheap", "webflow", "campaign",
+    ],
+  },
+  {
+    name: "Apps",
+    hints: [
+      "app store", "appstore", "google play", "play store", "itunes", "spotify", "netflix", "hbo", "max ",
+      "disney", "prime video", "youtube premium", "apple music", "apple tv", "icloud", "dropbox", "notion",
+      "figma", "canva", "adobe", "microsoft 365", "office 365", "openai", "chatgpt", "claude", "midjourney",
+      "github", "slack", "zoom", "linear", "vercel", "netlify", "aws", "google cloud", "digitalocean",
+      "suscripcion", "suscripción", "subscription", "saas", "software",
+    ],
+  },
+  {
+    name: "Transporte",
+    hints: [
+      "uber", "cabify", "didi", "bolt", "taxi", "lyft", "metro ", "subway station", "bus ", "autobus",
+      "autobús", "renfe", "cercanias", "cercanías", "tren", "train", "peaje", "toll", "parking",
+      "estacionamiento", "gasolin", "combustible", "fuel", "shell", "repsol", "texaco", "chevron", "petro",
+      "esso", "bp ", "delta ", "carwash", "lavado de auto", "taller", "mecanic", "mecánic", "neumatic",
+      "neumátic", "llanta", "seguro auto", "revision tecnica", "scooter", "bicicleta", "bike",
     ],
   },
   {
@@ -42,7 +65,7 @@ const RULES: { name: string; hints: string[] }[] = [
     hints: [
       "supermercado", "supermarket", "mercado", "market", "grocer", "abarrote", "mercadona", "carrefour",
       "lidl", "aldi", "dia %", "alcampo", "eroski", "consum", "walmart", "costco", "kroger", "whole foods",
-      "trader joe", "wong", "metro", "jumbo", "exito", "éxito", "olimpica", "olímpica", "d1", "ara ",
+      "trader joe", "wong", "jumbo", "exito", "éxito", "olimpica", "olímpica", "d1", "ara ",
       "riba smith", "super 99", "el rey", "pricesmart", "fruteria", "frutería", "carniceria", "carnicería",
       "verduler",
     ],
@@ -57,6 +80,16 @@ const RULES: { name: string; hints: string[] }[] = [
     ],
   },
   {
+    name: "Lifestyle",
+    hints: [
+      "gym", "gimnasio", "fitness", "crossfit", "yoga", "pilates", "spa", "masaje", "peluqueria",
+      "peluquería", "barberia", "barbería", "salon", "salón", "estetica", "estética", "manicur", "nails",
+      "wellness", "terapia", "psicolog", "coach", "farmacia", "pharmacy", "dentista", "clinica", "clínica",
+      "medic", "doctor", "vitamina", "supplement", "curso", "academia", "udemy", "coursera", "libreria",
+      "librería", "book", "hobby", "mascota", "veterinar", "pet ",
+    ],
+  },
+  {
     name: "Compras",
     hints: [
       "amazon", "zara", "h&m", "hm ", "uniqlo", "mango", "primark", "shein", "temu", "aliexpress", "ebay",
@@ -67,16 +100,40 @@ const RULES: { name: string; hints: string[] }[] = [
   },
 ];
 
+/** Nombres de las categorías base, en el orden que se muestran. */
+export const BASE_CATEGORIES = [
+  "Mercado",
+  "Restaurantes",
+  "Salidas",
+  "Compras",
+  "Viajes",
+  "Transporte",
+  "Lifestyle",
+  "Apps",
+  "Marketing digital",
+];
+
 const FOOD_CATEGORIES = ["aliment", "comida", "food", "groceries", "supermerc", "restaurant"];
 
-export function categorizeTx(t: CategorizableTx): string {
-  const original = t.category ?? "Sin categoría";
-  const hay = `${t.merchant} ${t.description ?? ""} ${t.subcategory ?? ""} ${original}`.toLowerCase();
+const hay = (t: CategorizableTx) =>
+  `${t.merchant} ${t.description ?? ""} ${t.subcategory ?? ""} ${t.category ?? ""}`.toLowerCase();
 
-  for (const rule of RULES) {
-    if (rule.hints.some((h) => hay.includes(h))) return rule.name;
+/**
+ * Clasifica una transacción. Las reglas personalizadas (custom) tienen prioridad
+ * sobre las base para que el usuario pueda crear sus propias categorías.
+ */
+export function categorizeTx(t: CategorizableTx, custom: CategoryRule[] = []): string {
+  const text = hay(t);
+
+  for (const rule of custom) {
+    if (rule.hints.some((h) => h && text.includes(h.toLowerCase()))) return rule.name;
   }
 
+  for (const rule of RULES) {
+    if (rule.hints.some((h) => text.includes(h))) return rule.name;
+  }
+
+  const original = t.category ?? "Sin categoría";
   // "Alimentación" sin comercio reconocible: por defecto es mercado.
   if (FOOD_CATEGORIES.some((c) => original.toLowerCase().includes(c))) return "Mercado";
 
