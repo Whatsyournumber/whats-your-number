@@ -103,8 +103,7 @@ export function StatementImporter() {
       if (error) throw error;
     },
     onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: ["statements"] });
-      void qc.invalidateQueries({ queryKey: ["imported_transactions"] });
+      refreshAll();
     },
   });
 
