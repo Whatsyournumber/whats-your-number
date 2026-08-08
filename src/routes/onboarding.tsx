@@ -546,22 +546,27 @@ function OnboardingPage() {
 
             {step === 9 && (
               <Screen
-                title="Hablemos de tu patrimonio"
-                hint="Antes de analizar tus movimientos, queremos conocer una estimación de tu patrimonio actual. Si no conoces alguna cifra, puedes dejarla en 0 o editarla más adelante."
+                title={t("Hablemos de tu patrimonio", "Let's talk about your net worth")}
+                hint={t(
+                  "Antes de analizar tus movimientos, queremos conocer una estimación de tu patrimonio actual. Si no conoces alguna cifra, puedes dejarla en 0 o editarla más adelante.",
+                  "Before analyzing your transactions, we want an estimate of your current net worth. If you don't know a figure, leave it at 0 or edit it later.",
+                )}
               >
                 <div className="flex gap-3 rounded-2xl border border-primary/25 bg-primary/5 px-5 py-4">
                   <span className="text-lg">🤖</span>
                   <p className="text-xs leading-relaxed text-muted-foreground">
-                    No te preocupes si no conoces estos números. Nuestra IA puede calcularlos automáticamente analizando
-                    tus extractos financieros. Solo completa lo que conozcas —{" "}
-                    <span className="text-foreground">podrás modificarlo cuando quieras</span>.
+                    {t(
+                      "No te preocupes si no conoces estos números. Nuestra IA puede calcularlos automáticamente analizando tus extractos financieros. Solo completa lo que conozcas —",
+                      "Don't worry if you don't know these numbers. Our AI can calculate them automatically by analyzing your financial statements. Just fill in what you know —",
+                    )}{" "}
+                    <span className="text-foreground">{t("podrás modificarlo cuando quieras", "you can edit it anytime")}</span>.
                   </p>
                 </div>
 
                 <div className="mt-5 flex items-center justify-between gap-3 rounded-2xl border border-border/60 bg-elevated/40 px-5 py-3">
                   <div>
-                    <p className="text-sm">Moneda</p>
-                    <p className="text-xs text-muted-foreground">En la que verás todos tus importes</p>
+                    <p className="text-sm">{t("Moneda", "Currency")}</p>
+                    <p className="text-xs text-muted-foreground">{t("En la que verás todos tus importes", "The one you'll see all your amounts in")}</p>
                   </div>
                   <select
                     className="h-9 rounded-md border border-input bg-background px-3 text-sm"
@@ -570,7 +575,7 @@ function OnboardingPage() {
                   >
                     {currencies.map((c) => (
                       <option key={c.code} value={c.code}>
-                        {c.code} · {c.label}
+                        {c.code} · {t(c.label, CURRENCY_EN[c.code] ?? c.label)}
                       </option>
                     ))}
                   </select>
@@ -580,56 +585,56 @@ function OnboardingPage() {
                 <div className="mt-5 space-y-2.5">
                   <MoneyField
                     emoji="💰"
-                    label="Ahorros"
-                    desc="Cuentas bancarias y efectivo"
+                    label={t("Ahorros", "Savings")}
+                    desc={t("Cuentas bancarias y efectivo", "Bank accounts and cash")}
                     currency={cur}
                     value={data.assets_bank}
                     onChange={(v) => set("assets_bank", v)}
                   />
                   <MoneyField
                     emoji="📈"
-                    label="Inversiones"
-                    desc="Acciones, ETFs y fondos"
+                    label={t("Inversiones", "Investments")}
+                    desc={t("Acciones, ETFs y fondos", "Stocks, ETFs and funds")}
                     currency={cur}
                     value={data.assets_etf}
                     onChange={(v) => set("assets_etf", v)}
                   />
                   <MoneyField
                     emoji="₿"
-                    label="Criptomonedas"
-                    desc="Valor aproximado actual"
+                    label={t("Criptomonedas", "Cryptocurrencies")}
+                    desc={t("Valor aproximado actual", "Current approximate value")}
                     currency={cur}
                     value={data.assets_crypto}
                     onChange={(v) => set("assets_crypto", v)}
                   />
                   <MoneyField
                     emoji="🏠"
-                    label="Bienes inmuebles"
-                    desc="Valor de tus propiedades"
+                    label={t("Bienes inmuebles", "Real estate")}
+                    desc={t("Valor de tus propiedades", "Value of your properties")}
                     currency={cur}
                     value={data.assets_property}
                     onChange={(v) => set("assets_property", v)}
                   />
                   <MoneyField
                     emoji="💳"
-                    label="Deudas"
-                    desc="Hipotecas, préstamos y otras deudas"
+                    label={t("Deudas", "Debts")}
+                    desc={t("Hipotecas, préstamos y otras deudas", "Mortgages, loans and other debts")}
                     currency={cur}
                     value={data.liabilities}
                     onChange={(v) => set("liabilities", v)}
                   />
                   <MoneyField
                     emoji="🪙"
-                    label="Ingreso mensual"
-                    desc="Neto, después de impuestos"
+                    label={t("Ingreso mensual", "Monthly income")}
+                    desc={t("Neto, después de impuestos", "Net, after taxes")}
                     currency={cur}
                     value={data.income_salary}
                     onChange={(v) => set("income_salary", v)}
                   />
                   <MoneyField
                     emoji="🧾"
-                    label="Gasto mensual"
-                    desc="Aproximado, todo incluido"
+                    label={t("Gasto mensual", "Monthly expenses")}
+                    desc={t("Aproximado, todo incluido", "Approximate, all included")}
                     currency={cur}
                     value={data.monthly_expenses}
                     onChange={(v) => set("monthly_expenses", v)}
@@ -637,15 +642,17 @@ function OnboardingPage() {
                 </div>
 
                 <div className="mt-6 flex items-center justify-between rounded-2xl border border-primary/25 bg-primary/5 px-5 py-4">
-                  <span className="text-sm text-muted-foreground">Patrimonio neto estimado</span>
+                  <span className="text-sm text-muted-foreground">{t("Patrimonio neto estimado", "Estimated net worth")}</span>
                   <span className="numeric text-xl font-semibold text-primary">{money(netWorth(data), cur)}</span>
                 </div>
 
                 <div className="mt-10">
-                  <h3 className="font-display text-xl font-semibold">📄 Sube tus extractos financieros</h3>
+                  <h3 className="font-display text-xl font-semibold">📄 {t("Sube tus extractos financieros", "Upload your financial statements")}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    Nuestra IA analizará automáticamente tus ingresos, gastos, inversiones y patrimonio. Aceptamos PDF y
-                    CSV de bancos, brokers y exchanges.
+                    {t(
+                      "Nuestra IA analizará automáticamente tus ingresos, gastos, inversiones y patrimonio. Aceptamos PDF y CSV de bancos, brokers y exchanges.",
+                      "Our AI will automatically analyze your income, expenses, investments and net worth. We accept PDF and CSV from banks, brokers and exchanges.",
+                    )}
                   </p>
                   <div className="mt-5 rounded-3xl border border-dashed border-border bg-elevated/30 p-4">
                     <StatementImporter />
@@ -653,7 +660,7 @@ function OnboardingPage() {
                 </div>
 
                 <Button size="lg" className="mt-8 h-14 w-full rounded-full text-base" onClick={build}>
-                  <Sparkles className="mr-2 h-4 w-4" /> Construir mi North
+                  <Sparkles className="mr-2 h-4 w-4" /> {t("Construir mi North", "Build my North")}
                 </Button>
               </Screen>
             )}
@@ -677,11 +684,11 @@ function OnboardingPage() {
           <div className="mt-12 flex items-center gap-3">
             {step > 0 && (
               <Button variant="ghost" size="lg" className="rounded-full" onClick={() => go(-1)}>
-                <ArrowLeft className="mr-2 h-4 w-4" /> Atrás
+                <ArrowLeft className="mr-2 h-4 w-4" /> {t("Atrás", "Back")}
               </Button>
             )}
             <Button size="lg" className="ml-auto min-w-[160px] rounded-full" disabled={!canContinue()} onClick={() => go(1)}>
-              {step === 0 ? "Comenzar" : "Continuar"}
+              {step === 0 ? t("Comenzar", "Start") : t("Continuar", "Continue")}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
@@ -690,7 +697,7 @@ function OnboardingPage() {
         {step === 9 && (
           <div className="mt-8">
             <Button variant="ghost" size="lg" className="rounded-full" onClick={() => go(-1)}>
-              <ArrowLeft className="mr-2 h-4 w-4" /> Atrás
+              <ArrowLeft className="mr-2 h-4 w-4" /> {t("Atrás", "Back")}
             </Button>
           </div>
         )}
