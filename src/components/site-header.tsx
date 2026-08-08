@@ -104,7 +104,8 @@ export function SiteHeader() {
 
       {/* Center: logo */}
       <Link to="/" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        <BrandLogo />
+        <BrandMark className="h-9 w-9 sm:hidden" />
+        <BrandLogo className="hidden sm:flex" />
       </Link>
 
       {/* Right: auth + language */}
@@ -120,9 +121,10 @@ export function SiteHeader() {
                 {t("Iniciar sesión", "Sign in")}
               </Link>
             </Button>
-            <Button asChild size="sm" className="rounded-full">
+            <Button asChild size="sm" className="rounded-full px-3 text-xs sm:px-4 sm:text-sm">
               <Link to="/auth" search={{ mode: "signup" }}>
-                {t("Crear cuenta", "Sign up")}
+                <span className="sm:hidden">{t("Crear", "Join")}</span>
+                <span className="hidden sm:inline">{t("Crear cuenta", "Sign up")}</span>
               </Link>
             </Button>
           </>
