@@ -21,9 +21,12 @@ export const Route = createFileRoute("/objetivos")({
 
 function Objetivos() {
   const t = useT();
+  const { profile } = useProfile();
+  const { goals, fmt, fmtCompact } = buildDataset(profile);
   const totalTarget = goals.reduce((s, g) => s + g.target, 0);
   const totalCurrent = goals.reduce((s, g) => s + g.current, 0);
-  const overall = (totalCurrent / totalTarget) * 100;
+  const overall = totalTarget > 0 ? (totalCurrent / totalTarget) * 100 : 0;
+
 
   return (
     <PageShell>
