@@ -53,17 +53,12 @@ function Dashboard() {
   const { transactions } = useTransactions();
   const d = buildDataset(profile);
   const realMonths = buildRealMonths(transactions, d.netWorth);
-  const months = realMonths
-    ? realMonths.map((month, index) =>
-        index === realMonths.length - 1
-          ? {
-              ...month,
-              income: d.income,
-              savings: d.income - month.expenses,
-            }
-          : month,
-      )
-    : d.months;
+  const months = (realMonths ?? d.months).map((month) => ({
+    ...month,
+    income: d.income,
+    savings: d.income - month.expenses,
+  }));
+
   const current = months[months.length - 1] ?? d.current;
   const previous = months[months.length - 2] ?? current;
   const { fmt, fmtCompact, plan } = d;
@@ -121,45 +116,8 @@ function Dashboard() {
         <KpiCard label={t("Tasa de ahorro", "Savings rate")} value={`${savingsRate.toFixed(0)}%`} delta={savingsRate - prevRate} icon={ArrowUpRight} index={5} />
       </div>
 
-      <Panel
-        title={t("Ingresos mensuales", "Monthly income")}
-        description={t("Suma de todas tus fuentes de ingreso", "Sum of all your income sources")}
-      >
-        <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
-          <div className="space-y-2">
-            {d.cashFlow.income.map((line) => {
-              const label =
-                line.name === "Salario"
-                  ? t("Salario", "Salary")
-                  : line.name === "Bonos"
-                    ? t("Bonos", "Bonuses")
-                    : line.name === "Alquileres"
-                      ? t("Alquileres", "Rental income")
-                      : t("Otros ingresos", "Other income");
-              const pct = d.income > 0 ? (line.amount / d.income) * 100 : 0;
-              return (
-                <div key={line.name} className="space-y-1">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">{label}</span>
-                    <span className="numeric font-medium">{fmt(line.amount)}</span>
-                  </div>
-                  <Progress value={pct} className="h-1.5" />
-                </div>
-              );
-            })}
-            {d.cashFlow.income.length === 0 && (
-              <p className="text-sm text-muted-foreground">
-                {t("Añade tus ingresos en Mi perfil.", "Add your income in My profile.")}
-              </p>
-            )}
-          </div>
-          <div className="rounded-2xl border border-border bg-card/40 p-4 text-right">
-            <p className="text-xs text-muted-foreground">{t("Total mensual", "Monthly total")}</p>
-            <p className="numeric mt-1 text-3xl font-semibold">{fmt(d.income)}</p>
-            <p className="mt-1 text-xs text-muted-foreground">{fmt(d.income * 12)} {t("al año", "per year")}</p>
-          </div>
-        </div>
-      </Panel>
+
+
 
 
 
