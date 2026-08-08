@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { Sparkles } from "lucide-react";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,17 @@ export function SiteHeader() {
       </nav>
 
       <div className="ml-auto flex items-center gap-2">
+        <Button
+          asChild
+          variant="outline"
+          size="sm"
+          className="hidden rounded-full border-primary/30 bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary sm:inline-flex"
+        >
+          <Link to="/demo" search={{ start: 1 }}>
+            <Sparkles className="h-3.5 w-3.5" />
+            {t("Demo gratis", "Free demo")}
+          </Link>
+        </Button>
         <LanguageToggle />
         {user ? (
           <Button asChild size="sm" className="rounded-full">
