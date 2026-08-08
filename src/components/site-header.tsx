@@ -34,7 +34,7 @@ export function SiteHeader() {
             activeOptions={{ exact: true, includeHash: false }}
             activeProps={{ className: "bg-elevated text-foreground" }}
           >
-            {tab.icon ? (
+            {tab.label === "demo" ? (
               <span className="inline-flex items-center gap-1.5 text-primary">
                 <Sparkles className="h-3.5 w-3.5" />
                 {t("Demo gratis", "Free demo")}
