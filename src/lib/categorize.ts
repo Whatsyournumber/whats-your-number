@@ -129,6 +129,9 @@ export function categorizeTx(t: CategorizableTx, custom: CategoryRule[] = []): s
     if (rule.hints.some((h) => h && text.includes(h.toLowerCase()))) return rule.name;
   }
 
+  // Uber Eats y Uber Food deben ir a Restaurantes, no a Transporte.
+  if (text.includes("uber") && (text.includes("eats") || text.includes("food"))) return "Restaurantes";
+
   for (const rule of RULES) {
     if (rule.hints.some((h) => text.includes(h))) return rule.name;
   }
