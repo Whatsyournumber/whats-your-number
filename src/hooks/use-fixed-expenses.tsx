@@ -20,12 +20,16 @@ export function useFixedExpenses() {
       const raw = window.localStorage.getItem(KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as FixedExpense[];
-        if (Array.isArray(parsed)) setItems(parsed);
+        if (Array.isArray(parsed)) {
+          const missing = defaults.filter((d) => !parsed.some((p) => p.id === d.id));
+          setItems([...parsed, ...missing]);
+        }
       }
     } catch {
       /* ignore */
     }
   }, []);
+
 
   const persist = useCallback((next: FixedExpense[]) => {
     setItems(next);
