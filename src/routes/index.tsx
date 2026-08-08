@@ -60,7 +60,7 @@ function DemoCard() {
       transition={{ duration: 0.5 }}
       className="mt-16"
     >
-      <Link to="/demo" search={{ start: "1" }} className="group block">
+      <Link to="/demo" search={{ start: 1 }} className="group block">
         <div className="surface glow relative overflow-hidden p-8 transition-transform duration-300 hover:scale-[1.01] md:p-12">
           <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.08]" />
           <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
