@@ -4,15 +4,20 @@ export function BrandMark({ className }: { className?: string }) {
   return (
     <span
       className={cn(
-        "relative inline-flex items-center justify-center rounded-xl bg-elevated ring-1 ring-border",
+        "relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-elevated ring-1 ring-border",
         className,
       )}
     >
-      <span className="wealth-gradient absolute inset-0 rounded-xl opacity-20" />
-      <svg viewBox="0 0 32 32" fill="none" className="relative h-[62%] w-[62%]" aria-hidden="true">
-        <path d="M16 1.5 20.2 11.8 30.5 16 20.2 20.2 16 30.5 11.8 20.2 1.5 16 11.8 11.8Z" className="fill-primary" />
-        <path d="M16 6.5 18.3 13.7 25.5 16 18.3 18.3 16 25.5 13.7 18.3 6.5 16 13.7 13.7Z" className="fill-background/70" />
-        <circle cx="16" cy="16" r="2" className="fill-primary" />
+      <span className="wealth-gradient absolute inset-0 opacity-25" />
+      <svg viewBox="0 0 32 32" fill="none" className="relative h-[70%] w-[70%]" aria-hidden="true">
+        <circle cx="16" cy="16" r="13" className="stroke-primary" strokeWidth="1.4" opacity="0.35" />
+        <path
+          d="M11.8 12.2c0-2.4 1.9-4.1 4.4-4.1 2.5 0 4.3 1.5 4.3 3.7 0 1.9-1 2.9-2.7 3.9-1.4.8-2 1.6-2 3v.6"
+          className="stroke-primary"
+          strokeWidth="2.4"
+          strokeLinecap="round"
+        />
+        <circle cx="15.8" cy="23.4" r="1.7" className="fill-primary" />
       </svg>
     </span>
   );
@@ -23,7 +28,7 @@ export function BrandLogo({ className }: { className?: string }) {
     <span className={cn("flex items-center gap-2.5", className)}>
       <BrandMark className="h-9 w-9" />
       <span className="font-display text-sm font-semibold leading-none tracking-tight">
-        Your <span className="text-primary">north</span>
+        Whats<span className="text-primary">Yournumber</span>
       </span>
     </span>
   );

@@ -73,9 +73,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r">
       <SidebarHeader className="px-3 py-4">
         <div className="flex items-center gap-3">
-          <div className="wealth-gradient flex h-9 w-9 shrink-0 items-center justify-center rounded-xl">
-            <Wallet className="h-4 w-4 text-background" />
-          </div>
+          <BrandMark className="h-9 w-9 shrink-0" />
           {!collapsed && (
             <div className="min-w-0">
               <p className="truncate font-display text-sm font-semibold">WhatsYournumber</p>
