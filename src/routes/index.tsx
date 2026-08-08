@@ -178,30 +178,31 @@ function Landing() {
 
   const whyCards = [
     {
-      icon: Compass,
-      title: t("Claridad total en minutos", "Total clarity in minutes"),
+      icon: ScanEye,
+      title: t("Claridad total", "Total clarity"),
       desc: t(
-        "Sube tus estados de cuenta y ve todo tu dinero —cuentas, tarjetas, inversiones y deudas— en un solo panel.",
-        "Upload your statements and see all your money —accounts, cards, investments and debt— in a single view.",
+        "Toda tu información financiera en un solo panel.",
+        "All your financial information in one place.",
       ),
     },
     {
-      icon: Brain,
-      title: t("IA que trabaja por ti", "AI that works for you"),
+      icon: Sparkles,
+      title: "AI Advisor",
       desc: t(
-        "Clasifica cada movimiento, detecta fugas y suscripciones olvidadas y te dice exactamente dónde ahorrar.",
-        "It classifies every transaction, spots leaks and forgotten subscriptions and tells you exactly where to save.",
+        "Clasifica automáticamente y detecta dónde ahorrar.",
+        "Automatically classifies and spots where to save.",
       ),
     },
     {
-      icon: Target,
-      title: t("Tu número, siempre a la vista", "Your number, always in sight"),
+      icon: Crosshair,
+      title: t("Tu número, siempre", "Your number, always"),
       desc: t(
-        "Sabes cuánto necesitas para ser libre y qué tan cerca estás. Cada decisión de hoy se traduce en años de libertad.",
-        "Know how much you need to be free and how close you are. Every decision today turns into years of freedom.",
+        "Sabe cuánto necesitas para ser libre y qué tan cerca estás.",
+        "Know how much you need to be free and how close you are.",
       ),
     },
   ];
+
 
 
 
