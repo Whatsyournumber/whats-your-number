@@ -133,6 +133,18 @@ export function categorizeTx(t: CategorizableTx, custom: CategoryRule[] = []): s
   // Uber Eats y Uber Food deben ir a Restaurantes, no a Transporte.
   if (text.includes("uber") && (text.includes("eats") || text.includes("food"))) return "Restaurantes";
 
+  // Google Play, Google Cloud, YouTube y Google One son suscripciones/apps, no marketing.
+  if (text.includes("google") && (
+    text.includes("play") ||
+    text.includes("cloud") ||
+    text.includes("youtube") ||
+    text.includes("google one") ||
+    text.includes("googleone") ||
+    text.includes("workspace") ||
+    text.includes("gmail") ||
+    text.includes("photos")
+  )) return "Apps";
+
   for (const rule of RULES) {
     if (rule.hints.some((h) => text.includes(h))) return rule.name;
   }
