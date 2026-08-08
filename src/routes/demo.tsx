@@ -1,14 +1,20 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
+import { z } from "zod";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, ArrowRight, RotateCcw, Sparkles, Target } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LanguageToggle, useT } from "@/hooks/use-language";
 
+const demoSearchSchema = z.object({
+  start: z.coerce.number().optional().default(0),
+});
+
 export const Route = createFileRoute("/demo")({
+  validateSearch: demoSearchSchema,
   head: () => ({
     meta: [
       { title: "Descubre tu número — WhatsYournumber" },
@@ -45,11 +51,16 @@ function yearsToTarget(target: number, current: number, monthly: number) {
 
 function DemoPage() {
   const t = useT();
+  const { start } = useSearch({ from: "/demo" });
   const [currency, setCurrency] = useState<"EUR" | "USD">("EUR");
-  const [step, setStep] = useState(0); // 0 = intro, 1..3 = preguntas, 4 = resultado
+  const [step, setStep] = useState(start === 1 ? 1 : 0); // 0 = intro, 1..3 = preguntas, 4 = resultado
   const [monthlyLife, setMonthlyLife] = useState("");
   const [netWorth, setNetWorth] = useState("");
   const [monthlyInvest, setMonthlyInvest] = useState("");
+
+  useEffect(() => {
+    if (start === 1 && step === 0) setStep(1);
+  }, [start, step]);
 
   const symbol = currency === "EUR" ? "€" : "$";
   const money = (n: number) =>
