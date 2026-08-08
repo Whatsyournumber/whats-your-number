@@ -637,18 +637,22 @@ function Gastos() {
                   <div className="flex w-full items-center gap-3 pr-3">
                     <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
                     <span className="truncate text-sm font-medium">{c.name}</span>
+                    <span className="shrink-0 rounded-full bg-elevated px-2 py-0.5 text-[11px] text-muted-foreground">
+                      {c.items.length} {c.items.length === 1 ? t("mov.", "tx") : t("movs.", "txs")}
+                    </span>
                     {variation !== null && (
                       <span
                         className={cn(
-                          "rounded-full px-2 py-0.5 text-[11px]",
+                          "shrink-0 rounded-full px-2 py-0.5 text-[11px]",
                           variation > 0 ? "bg-negative/12 text-negative" : "bg-positive/12 text-positive",
                         )}
+                        title={t("vs mes anterior", "vs last month")}
                       >
                         {variation > 0 ? "+" : ""}
                         {variation.toFixed(0)}%
                       </span>
                     )}
-                    <span className="text-[11px] text-muted-foreground">{share.toFixed(0)}%</span>
+
                     <span className="numeric ml-auto text-sm font-semibold">{fmt(c.amount)}</span>
                   </div>
                 </AccordionTrigger>
