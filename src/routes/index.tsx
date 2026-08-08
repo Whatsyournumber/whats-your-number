@@ -309,25 +309,8 @@ function Landing() {
               </motion.div>
             ))}
           </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45 }}
-            className="mt-8 text-center"
-          >
-            <h2 className="font-display text-2xl font-semibold tracking-tight md:text-3xl">
-              {t("Tu dinero, con dirección", "Your money, with direction")}
-            </h2>
-            <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
-              {t(
-                "Deja de navegar a ciegas. Conecta cuentas, tarjetas e inversiones para ver por dónde entra, por dónde sale y hacia dónde crece.",
-                "Stop navigating blind. Connect accounts, cards and investments to see where it comes in, where it goes out and where it's growing.",
-              )}
-            </p>
-          </motion.div>
         </section>
+
 
 
         <section className="mt-24 md:mt-32">
