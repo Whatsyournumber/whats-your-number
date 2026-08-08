@@ -16,6 +16,14 @@ export type Tx = {
   excluded: boolean;
 };
 
+const normalizeTransactionText = (value: string | null | undefined) =>
+  (value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLowerCase();
+
 /** Transacciones importadas desde los estados de cuenta (EEFF) del usuario. */
 export function useTransactions() {
   const { user } = useAuth();
@@ -25,21 +33,24 @@ export function useTransactions() {
     queryKey: ["imported-transactions", userId],
     enabled: Boolean(userId),
     queryFn: async () => {
+      if (!userId) return [];
       const { data, error } = await supabase
         .from("imported_transactions")
         .select("id,statement_id,tx_date,merchant,description,amount,currency,category,subcategory,excluded")
-        .eq("user_id", userId!)
+        .eq("user_id", userId)
         .order("tx_date", { ascending: false })
         .limit(5000);
       if (error) throw error;
       const rows = (data ?? []).map((t) => ({ ...t, amount: Number(t.amount) }));
-      // Dedupe: un mismo movimiento cargado en varios EEFF se cuenta una sola vez.
-      const seen = new Map<string, string>();
+      // El mismo movimiento puede llegar con mayúsculas o acentos distintos
+      // desde varios EEFF. Su identidad financiera es fecha + comercio + monto
+      // + descripción normalizados, independientemente del statement de origen.
+      const seen = new Set<string>();
       const unique = rows.filter((t) => {
-        const key = `${t.tx_date}|${t.merchant.trim().toLowerCase()}|${t.amount}|${(t.description ?? "").trim().toLowerCase()}`;
-        const owner = seen.get(key);
-        if (owner && owner !== t.statement_id) return false;
-        seen.set(key, t.statement_id as string);
+        const amount = Math.abs(Number(t.amount)).toFixed(2);
+        const key = `${t.tx_date}|${normalizeTransactionText(t.merchant)}|${amount}|${normalizeTransactionText(t.description)}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
         return true;
       });
       return unique as Tx[];

@@ -121,6 +121,9 @@ const FOOD_CATEGORIES = ["aliment", "comida", "food", "groceries", "supermerc", 
 const hay = (t: CategorizableTx) =>
   `${t.merchant} ${t.description ?? ""} ${t.subcategory ?? ""} ${t.category ?? ""}`.toLowerCase();
 
+const isCoreTransport = (text: string) =>
+  /(^|\W)(cabify|taxi|uber|bolt|metro)(\W|$)/i.test(text);
+
 /**
  * Clasifica una transacción. Las reglas personalizadas (custom) tienen prioridad
  * sobre las base para que el usuario pueda crear sus propias categorías.
@@ -128,12 +131,16 @@ const hay = (t: CategorizableTx) =>
 export function categorizeTx(t: CategorizableTx, custom: CategoryRule[] = []): string {
   const text = hay(t);
 
+  // Uber Eats y Uber Food deben ir a Restaurantes, no a Transporte.
+  if (/\buber\b/i.test(text) && (/\beats\b/i.test(text) || /\bfood\b/i.test(text))) return "Restaurantes";
+
+  // Los servicios de movilidad principales siempre son Transporte, aunque
+  // el EEFF o una regla personalizada traigan otra categoría.
+  if (isCoreTransport(text)) return "Transporte";
+
   for (const rule of custom) {
     if (rule.hints.some((h) => h && text.includes(h.toLowerCase()))) return rule.name;
   }
-
-  // Uber Eats y Uber Food deben ir a Restaurantes, no a Transporte.
-  if (text.includes("uber") && (text.includes("eats") || text.includes("food"))) return "Restaurantes";
 
   // Google Play, Google Cloud, YouTube y Google One son suscripciones/apps, no marketing.
   if (text.includes("google") && (
