@@ -140,7 +140,7 @@ function AuthPage() {
 
         <div className="surface p-7">
           <div className="flex flex-col items-center text-center">
-            <BrandLogo vertical />
+            <BrandLogo />
             <p className="mt-4 font-display text-lg font-semibold tracking-tight">
               {mode === "signup" ? t("auth.title.signup") : t("auth.title.login")}
             </p>
@@ -233,9 +233,6 @@ function AuthPage() {
             <GoogleMark />
             {t("auth.google")}
           </Button>
-          <p className="mt-2 text-center text-[11px] leading-relaxed text-muted-foreground">
-            {t("auth.google.note")}
-          </p>
 
           <p className="mt-5 text-center text-[11px] text-muted-foreground">{t("auth.legal")}</p>
         </div>
