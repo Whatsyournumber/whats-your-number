@@ -42,47 +42,26 @@ export function SiteHeader() {
   );
 
   return (
-    <header className="relative z-20 mx-auto flex w-full max-w-6xl items-center gap-3 px-6 py-6">
-      <Link to="/" className="shrink-0">
-        <BrandLogo />
-      </Link>
-
-      <nav className="hidden items-center gap-1 md:flex">
-        {tabs.map(renderTab)}
-      </nav>
-
-      <div className="ml-auto hidden items-center gap-2 md:flex">
-        {user ? (
-          <Button asChild size="sm" className="rounded-full">
-            <Link to="/dashboard">{t("Ir al dashboard", "Go to dashboard")}</Link>
-          </Button>
-        ) : (
-          <>
-            <Button asChild variant="ghost" size="sm" className="rounded-full">
-              <Link to="/auth" search={{ mode: "login" }}>
-                {t("Iniciar sesión", "Sign in")}
-              </Link>
-            </Button>
-            <Button asChild size="sm" className="rounded-full">
-              <Link to="/auth" search={{ mode: "signup" }}>
-                {t("Crear cuenta", "Sign up")}
-              </Link>
-            </Button>
-          </>
-        )}
-        <LanguageToggle />
-      </div>
-
+    <header className="relative z-20 mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-5 md:px-6 md:py-6">
+      {/* Left: hamburger */}
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
-          <Button variant="ghost" size="icon" className="ml-auto rounded-full md:hidden">
+          <Button variant="ghost" size="icon" className="shrink-0 rounded-full">
             <Menu className="h-5 w-5" />
             <span className="sr-only">{t("Abrir menú", "Open menu")}</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="right" className="w-full sm:max-w-xs">
+        <SheetContent side="left" className="w-full sm:max-w-xs">
           <div className="flex flex-col gap-6 pt-8">
             <nav className="flex flex-col gap-2">
+              <SheetClose asChild>
+                <Link
+                  to="/"
+                  className="rounded-full px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground"
+                >
+                  {t("Inicio", "Home")}
+                </Link>
+              </SheetClose>
               {tabs.map((tab) => (
                 <SheetClose asChild key={tab.label}>
                   {renderTab(tab)}
@@ -122,6 +101,36 @@ export function SiteHeader() {
           </div>
         </SheetContent>
       </Sheet>
+
+      {/* Center: logo */}
+      <Link to="/" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <BrandLogo />
+      </Link>
+
+      {/* Right: auth + language */}
+      <div className="flex items-center gap-1.5">
+        {user ? (
+          <Button asChild size="sm" className="rounded-full">
+            <Link to="/dashboard">{t("Dashboard", "Dashboard")}</Link>
+          </Button>
+        ) : (
+          <>
+            <Button asChild variant="ghost" size="sm" className="hidden rounded-full sm:inline-flex">
+              <Link to="/auth" search={{ mode: "login" }}>
+                {t("Iniciar sesión", "Sign in")}
+              </Link>
+            </Button>
+            <Button asChild size="sm" className="rounded-full">
+              <Link to="/auth" search={{ mode: "signup" }}>
+                {t("Crear cuenta", "Sign up")}
+              </Link>
+            </Button>
+          </>
+        )}
+        <div className="hidden md:block">
+          <LanguageToggle />
+        </div>
+      </div>
     </header>
   );
 }
