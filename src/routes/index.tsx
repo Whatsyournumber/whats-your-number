@@ -157,37 +157,30 @@ function Landing() {
   const whyCards = [
     {
       icon: Compass,
-      title: t("Claridad total", "Total clarity"),
+      title: t("Claridad total en minutos", "Total clarity in minutes"),
       desc: t(
-        "Deja de perder el rastro entre apps, hojas de cálculo y PDFs. Tu panorama financiero completo en un solo lugar.",
-        "Stop losing track across apps, spreadsheets and PDFs. Your complete financial picture in one place.",
+        "Sube tus estados de cuenta y ve todo tu dinero —cuentas, tarjetas, inversiones y deudas— en un solo panel.",
+        "Upload your statements and see all your money —accounts, cards, investments and debt— in a single view.",
       ),
     },
     {
       icon: Brain,
       title: t("IA que trabaja por ti", "AI that works for you"),
       desc: t(
-        "Clasificación automática, detección de anomalías y respuestas a tus preguntas en lenguaje natural.",
-        "Automatic classification, anomaly detection and answers to your questions in plain language.",
+        "Clasifica cada movimiento, detecta fugas y suscripciones olvidadas y te dice exactamente dónde ahorrar.",
+        "It classifies every transaction, spots leaks and forgotten subscriptions and tells you exactly where to save.",
       ),
     },
     {
       icon: Target,
-      title: t("Decisiones con propósito", "Purposeful decisions"),
+      title: t("Tu número, siempre a la vista", "Your number, always in sight"),
       desc: t(
-        "Conecta tus gastos de hoy con tus metas de mañana: ahorro, inversión, retiro y estilo de vida.",
-        "Connect today's spending with tomorrow's goals: savings, investing, retirement and lifestyle.",
-      ),
-    },
-    {
-      icon: TrendingUp,
-      title: t("Crecimiento constante", "Steady growth"),
-      desc: t(
-        "Proyecciones de patrimonio, simuladores de retiro y seguimiento de tu portafolio contra el mercado.",
-        "Net worth projections, retirement simulators and portfolio tracking against the market.",
+        "Sabes cuánto necesitas para ser libre y qué tan cerca estás. Cada decisión de hoy se traduce en años de libertad.",
+        "Know how much you need to be free and how close you are. Every decision today turns into years of freedom.",
       ),
     },
   ];
+
 
   const metrics = [
     { label: t("Módulos", "Modules"), value: "10" },
