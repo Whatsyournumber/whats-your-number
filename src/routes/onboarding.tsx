@@ -274,7 +274,7 @@ function OnboardingPage() {
               />
             </div>
             <span className="numeric w-16 text-right text-[11px] text-muted-foreground">
-              {saving ? "Guardando…" : step === 0 || isSummary ? "" : `${step} / ${QUESTIONS}`}
+              {saving ? t("Guardando…", "Saving…") : step === 0 || isSummary ? "" : `${step} / ${QUESTIONS}`}
             </span>
           </div>
         </div>
@@ -295,26 +295,28 @@ function OnboardingPage() {
                   <Compass className="h-7 w-7 text-background" />
                 </div>
                 <h1 className="mt-8 text-center font-display text-4xl font-semibold leading-[1.1] sm:text-5xl">
-                  Vamos a construir tu North.
+                  {t("Vamos a construir tu North.", "Let's build your North.")}
                 </h1>
                 <p className="mx-auto mt-5 max-w-md text-center text-base leading-relaxed text-muted-foreground">
-                  Unas preguntas, dos minutos, y nuestra IA construye un plan financiero hecho para tu vida. Podrás editar
-                  cualquier respuesta después.
+                  {t(
+                    "Unas preguntas, dos minutos, y nuestra IA construye un plan financiero hecho para tu vida. Podrás editar cualquier respuesta después.",
+                    "A few questions, two minutes, and our AI builds a financial plan made for your life. You can edit any answer later.",
+                  )}
                 </p>
               </Screen>
             )}
 
             {step === 1 && (
               <Screen
-                title="¿Cuál es tu principal objetivo financiero?"
-                hint="Queremos construir un plan financiero adaptado a ti."
+                title={t("¿Cuál es tu principal objetivo financiero?", "What's your main financial goal?")}
+                hint={t("Queremos construir un plan financiero adaptado a ti.", "We want to build a financial plan tailored to you.")}
               >
                 <div className="space-y-2.5">
                   {goals.map((g) => (
                     <OptionRow
                       key={g.value}
                       emoji={g.emoji}
-                      title={g.label}
+                      title={t(g.label, GOALS_EN[g.value] ?? g.label)}
                       selected={life.goal === g.value}
                       onClick={() => {
                         setL("goal", g.value);
@@ -327,8 +329,8 @@ function OnboardingPage() {
             )}
 
             {step === 2 && (
-              <Screen title="¿Qué edad tienes?">
-                <BigNumber value={data.age ?? 32} suffix="años" />
+              <Screen title={t("¿Qué edad tienes?", "How old are you?")}>
+                <BigNumber value={data.age ?? 32} suffix={t("años", "years")} />
                 <Slider
                   className="mt-10"
                   min={18}
@@ -343,10 +345,16 @@ function OnboardingPage() {
 
             {step === 3 && (
               <Screen
-                title="¿A qué edad te gustaría alcanzar tu libertad financiera?"
-                hint="La libertad financiera es cuando trabajar deja de ser una obligación y se convierte en una elección."
+                title={t(
+                  "¿A qué edad te gustaría alcanzar tu libertad financiera?",
+                  "At what age would you like to reach financial freedom?",
+                )}
+                hint={t(
+                  "La libertad financiera es cuando trabajar deja de ser una obligación y se convierte en una elección.",
+                  "Financial freedom is when working stops being an obligation and becomes a choice.",
+                )}
               >
-                <BigNumber value={data.retire_age} suffix="años" />
+                <BigNumber value={data.retire_age} suffix={t("años", "years")} />
                 <Slider
                   className="mt-10"
                   min={Math.min(75, (data.age ?? 30) + 1)}
@@ -358,8 +366,9 @@ function OnboardingPage() {
                 <ScaleLabels left={`${Math.min(75, (data.age ?? 30) + 1)}`} right="80" />
                 {data.age ? (
                   <p className="mt-8 text-center text-sm text-muted-foreground">
-                    Te quedan <span className="numeric text-foreground">{Math.max(0, data.retire_age - data.age)}</span>{" "}
-                    años para construirlo.
+                    {t("Te quedan", "You have")}{" "}
+                    <span className="numeric text-foreground">{Math.max(0, data.retire_age - data.age)}</span>{" "}
+                    {t("años para construirlo.", "years left to build it.")}
                   </p>
                 ) : null}
               </Screen>
@@ -367,8 +376,14 @@ function OnboardingPage() {
 
             {step === 4 && (
               <Screen
-                title="¿Dónde te gustaría vivir cuando alcances tu libertad financiera?"
-                hint="Analizaremos automáticamente el coste de vida de esa ciudad para personalizar tu objetivo financiero."
+                title={t(
+                  "¿Dónde te gustaría vivir cuando alcances tu libertad financiera?",
+                  "Where would you like to live once you reach financial freedom?",
+                )}
+                hint={t(
+                  "Analizaremos automáticamente el coste de vida de esa ciudad para personalizar tu objetivo financiero.",
+                  "We'll automatically analyze that city's cost of living to personalize your financial goal.",
+                )}
               >
                 <CityPicker
                   value={life.city}
@@ -381,19 +396,27 @@ function OnboardingPage() {
             )}
 
             {step === 5 && (
-              <Screen title="¿Cuál es tu situación familiar?">
-                <ChipGroup options={maritalOptions.map((m) => ({ value: m, label: m }))} value={life.marital_status} onSelect={(v) => setL("marital_status", v)} />
+              <Screen title={t("¿Cuál es tu situación familiar?", "What's your family situation?")}>
+                <ChipGroup
+                  options={maritalOptions.map((m) => ({ value: m, label: t(m, MARITAL_EN[m] ?? m) }))}
+                  value={life.marital_status}
+                  onSelect={(v) => setL("marital_status", v)}
+                />
                 <AnimatePresence>
                   {life.marital_status && (
                     <Reveal>
-                      <SubQuestion title="¿Tienes hijos?" />
+                      <SubQuestion title={t("¿Tienes hijos?", "Do you have children?")} />
                       <ChipGroup options={childrenOptions.map((c) => ({ value: c, label: c }))} value={life.children} onSelect={(v) => setL("children", v)} />
                     </Reveal>
                   )}
                   {life.children && (
                     <Reveal>
-                      <SubQuestion title="¿Planeas tener hijos?" />
-                      <ChipGroup options={plansChildrenOptions.map((c) => ({ value: c, label: c }))} value={life.plans_children} onSelect={(v) => setL("plans_children", v)} />
+                      <SubQuestion title={t("¿Planeas tener hijos?", "Are you planning to have children?")} />
+                      <ChipGroup
+                        options={plansChildrenOptions.map((c) => ({ value: c, label: t(c, PLANS_CHILDREN_EN[c] ?? c) }))}
+                        value={life.plans_children}
+                        onSelect={(v) => setL("plans_children", v)}
+                      />
                     </Reveal>
                   )}
                 </AnimatePresence>
@@ -402,8 +425,11 @@ function OnboardingPage() {
 
             {step === 6 && (
               <Screen
-                title="¿Cómo te gustaría vivir?"
-                hint="Selecciona el estilo de vida que quieres mantener cuando alcances tu libertad financiera."
+                title={t("¿Cómo te gustaría vivir?", "How would you like to live?")}
+                hint={t(
+                  "Selecciona el estilo de vida que quieres mantener cuando alcances tu libertad financiera.",
+                  "Select the lifestyle you want to maintain once you reach financial freedom.",
+                )}
               >
                 <div className="grid gap-2.5 sm:grid-cols-2">
                   {lifestyles.map((l) => (
@@ -418,17 +444,17 @@ function OnboardingPage() {
                       )}
                     >
                       <span className="text-2xl">{l.emoji}</span>
-                      <p className="mt-3 text-sm font-medium">{l.label}</p>
-                      <p className="mt-1 text-xs text-muted-foreground">{l.desc}</p>
+                      <p className="mt-3 text-sm font-medium">{t(l.label, LIFESTYLE_EN[l.value]?.label ?? l.label)}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">{t(l.desc, LIFESTYLE_EN[l.value]?.desc ?? l.desc)}</p>
                     </button>
                   ))}
                 </div>
                 <AnimatePresence>
                   {life.lifestyle && (
                     <Reveal>
-                      <SubQuestion title="¿Cuántas veces te gustaría viajar al año?" />
+                      <SubQuestion title={t("¿Cuántas veces te gustaría viajar al año?", "How many times a year would you like to travel?")} />
                       <ChipGroup
-                        options={travelOptions.map((t) => ({ value: t.value, label: t.label }))}
+                        options={travelOptions.map((o) => ({ value: o.value, label: t(o.label, TRAVEL_EN[o.value] ?? o.label) }))}
                         value={life.travel_frequency}
                         onSelect={(v) => setL("travel_frequency", v)}
                       />
@@ -437,21 +463,21 @@ function OnboardingPage() {
                 </AnimatePresence>
                 {life.lifestyle && life.travel_frequency && (
                   <p className="mt-8 text-center text-sm text-muted-foreground">
-                    Objetivo estimado de vida:{" "}
-                    <span className="numeric text-foreground">{money(desiredIncome, cur)}</span> al mes.
+                    {t("Objetivo estimado de vida:", "Estimated lifestyle target:")}{" "}
+                    <span className="numeric text-foreground">{money(desiredIncome, cur)}</span> {t("al mes.", "per month.")}
                   </p>
                 )}
               </Screen>
             )}
 
             {step === 7 && (
-              <Screen title="¿Tienes vivienda propia?">
+              <Screen title={t("¿Tienes vivienda propia?", "Do you own your home?")}>
                 <div className="space-y-2.5">
                   {housingOptions.map((h) => (
                     <OptionRow
                       key={h.value}
                       emoji={h.emoji}
-                      title={h.label}
+                      title={t(h.label, HOUSING_EN[h.value] ?? h.label)}
                       selected={life.housing === h.value}
                       onClick={() => setL("housing", h.value)}
                     />
@@ -462,8 +488,14 @@ function OnboardingPage() {
 
             {step === 8 && (
               <Screen
-                title="¿Qué rendimiento anual quieres utilizar para planificar tu patrimonio?"
-                hint="Solo utilizaremos este porcentaje para realizar simulaciones financieras. No representa una rentabilidad garantizada."
+                title={t(
+                  "¿Qué rendimiento anual quieres utilizar para planificar tu patrimonio?",
+                  "What annual return do you want to use to plan your net worth?",
+                )}
+                hint={t(
+                  "Solo utilizaremos este porcentaje para realizar simulaciones financieras. No representa una rentabilidad garantizada.",
+                  "We only use this percentage for financial simulations. It does not represent a guaranteed return.",
+                )}
               >
                 <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-5">
                   {[4, 5, 6, 7, 8].map((r) => (
@@ -481,7 +513,7 @@ function OnboardingPage() {
                       )}
                     >
                       <p className="numeric text-xl font-semibold">{r}%</p>
-                      {r === 7 && <p className="mt-1 text-[10px] uppercase tracking-widest text-primary">⭐ Recom.</p>}
+                      {r === 7 && <p className="mt-1 text-[10px] uppercase tracking-widest text-primary">⭐ {t("Recom.", "Recom.")}</p>}
                     </button>
                   ))}
                 </div>
@@ -492,12 +524,12 @@ function OnboardingPage() {
                     customReturn ? "border-primary bg-primary/10" : "border-border bg-elevated/50 hover:border-muted-foreground/40",
                   )}
                 >
-                  Personalizado
+                  {t("Personalizado", "Custom")}
                 </button>
                 <AnimatePresence>
                   {customReturn && (
                     <Reveal>
-                      <BigNumber value={data.expected_return} suffix="% anual" />
+                            <BigNumber value={data.expected_return} suffix={t("% anual", "% annual")} />
                       <Slider
                         className="mt-8"
                         min={1}

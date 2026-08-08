@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { useMemo, useState } from "react";
+import { useLanguage, useT } from "@/hooks/use-language";
 
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
@@ -29,18 +30,24 @@ export const Route = createFileRoute("/cash-flow")({
   component: CashFlow,
 });
 
-const MONTH_LABELS = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+const MONTH_LABELS_ES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+const MONTH_LABELS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 function monthKey(d: string) {
   return d.slice(0, 7);
 }
 
-function monthLabel(key: string) {
-  const [y, m] = key.split("-");
-  return `${MONTH_LABELS[Number(m) - 1] ?? m} ${y}`;
+function buildMonthLabel(labels: string[]) {
+  return (key: string) => {
+    const [y, m] = key.split("-");
+    return `${labels[Number(m) - 1] ?? m} ${y}`;
+  };
 }
 
 function CashFlow() {
+  const t = useT();
+  const { lang } = useLanguage();
+  const monthLabel = useMemo(() => buildMonthLabel(lang === "en" ? MONTH_LABELS_EN : MONTH_LABELS_ES), [lang]);
   const { profile } = useProfile();
   const d = buildDataset(profile);
   const { transactions, hasData } = useTransactions();
@@ -66,10 +73,10 @@ function CashFlow() {
   // Ingresos reales: abonos de los EEFF del mes; si no hay, se usa el perfil.
   const incomeFromStatements = useMemo(() => {
     const map = new Map<string, number>();
-    for (const t of monthTx) {
-      if (t.amount <= 0) continue;
-      const key = t.merchant?.trim() || "Otros ingresos";
-      map.set(key, (map.get(key) ?? 0) + t.amount);
+    for (const tx of monthTx) {
+      if (tx.amount <= 0) continue;
+      const key = tx.merchant?.trim() || t("Otros ingresos", "Other income");
+      map.set(key, (map.get(key) ?? 0) + tx.amount);
     }
     return [...map.entries()]
       .map(([name, amount]) => ({ name, amount }))
@@ -82,13 +89,13 @@ function CashFlow() {
 
   // Gasto variable real del mes, separado en lifestyle vs resto.
   const spend = useMemo(() => {
-    const lifestyleCats = new Set(["Restaurantes", "Salidas", "Compras", "Viajes", "Lifestyle", "Apps"]);
+    const lifestyleCats = new Set(["Restaurantes", "Salidas", "Compras", "Viajes", "Lifestyle", "Apps"]); // category keys, not translated
     let lifestyle = 0;
     let other = 0;
-    for (const t of monthTx) {
-      if (t.amount >= 0) continue;
-      const cat = categorizeTx(t as Tx, rules);
-      const v = Math.abs(t.amount);
+    for (const tx of monthTx) {
+      if (tx.amount >= 0) continue;
+      const cat = categorizeTx(tx as Tx, rules);
+      const v = Math.abs(tx.amount);
       if (lifestyleCats.has(cat)) lifestyle += v;
       else other += v;
     }
@@ -105,10 +112,10 @@ function CashFlow() {
   const freeAmount = Math.max(0, totalIncome - fixedAmount - lifestyleAmount);
 
   const buckets = [
-    { name: "Gastos fijos", amount: fixedAmount, color: "var(--color-chart-2)" },
-    { name: "Lifestyle", amount: lifestyleAmount, color: "var(--color-chart-3)" },
-    { name: "Inversiones / ahorro", amount: investAmount, color: "var(--color-chart-1)" },
-    { name: "Flujo libre", amount: freeAmount, color: "var(--color-chart-4)" },
+    { name: t("Gastos fijos", "Fixed expenses"), amount: fixedAmount, color: "var(--color-chart-2)" },
+    { name: t("Lifestyle", "Lifestyle"), amount: lifestyleAmount, color: "var(--color-chart-3)" },
+    { name: t("Inversiones / ahorro", "Investments / savings"), amount: investAmount, color: "var(--color-chart-1)" },
+    { name: t("Flujo libre", "Free flow"), amount: freeAmount, color: "var(--color-chart-4)" },
   ];
 
   const cash = profile.assets_cash + profile.assets_bank;
@@ -118,18 +125,18 @@ function CashFlow() {
   return (
     <PageShell>
       <PageHeader
-        eyebrow={activeMonth ? monthLabel(activeMonth) : "Sin EEFF cargados"}
+        eyebrow={activeMonth ? monthLabel(activeMonth) : t("Sin EEFF cargados", "No statements uploaded")}
         title="Cash Flow"
         subtitle={
           hasReal
-            ? "Cómo se reparte cada dólar que entra, según tus estados de cuenta cargados."
-            : "Carga tus estados de cuenta en «Cargar EEFF» para ver tu flujo real. Mientras tanto, usamos tu perfil."
+            ? t("Cómo se reparte cada dólar que entra, según tus estados de cuenta cargados.", "How every dollar you receive is allocated, based on your uploaded statements.")
+            : t("Carga tus estados de cuenta en «Cargar EEFF» para ver tu flujo real. Mientras tanto, usamos tu perfil.", "Upload your statements in \u00abUpload statements\u00bb to see your real flow. Meanwhile, we use your profile.")
         }
       />
 
       {months.length > 0 && (
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-muted-foreground">Mes:</span>
+          <span className="text-xs text-muted-foreground">{t("Mes:", "Month:")}</span>
           {months.slice(0, 12).map((m) => (
             <button
               key={m}
