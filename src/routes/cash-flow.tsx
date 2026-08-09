@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "motion/react";
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { useMemo, useState } from "react";
 import { useLanguage, useT } from "@/hooks/use-language";
 
@@ -132,6 +133,34 @@ function CashFlow() {
   const monthlySpend = hasReal ? fixedNeeds + spend.total : d.expenses;
   const runway = monthlySpend > 0 ? cash / monthlySpend : 0;
 
+  // Distribución del gasto del mes: categorías variables + gastos fijos.
+  const PALETTE = [
+    "var(--color-chart-1)",
+    "var(--color-chart-2)",
+    "var(--color-chart-3)",
+    "var(--color-chart-4)",
+    "var(--color-chart-5)",
+    "var(--color-primary)",
+  ];
+  const distribution = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const tx of monthTx) {
+      if (tx.amount >= 0) continue;
+      const cat = categorizeTx(tx as Tx, rules);
+      map.set(cat, (map.get(cat) ?? 0) + Math.abs(tx.amount));
+    }
+    if (fixedNeeds > 0) map.set(t("Gastos fijos", "Fixed expenses"), (map.get(t("Gastos fijos", "Fixed expenses")) ?? 0) + fixedNeeds);
+    if (fixedSavings > 0) map.set(t("Ahorro / inversión", "Savings / investing"), fixedSavings);
+    return [...map.entries()]
+      .map(([name, value]) => ({ name, value }))
+      .filter((s) => s.value > 0)
+      .sort((a, b) => b.value - a.value)
+      .map((s, i) => ({ ...s, color: PALETTE[i % PALETTE.length]! }));
+  }, [monthTx, rules, fixedNeeds, fixedSavings, lang]);
+
+  const distTotal = distribution.reduce((s, i) => s + i.value, 0);
+
+
 
   return (
     <PageShell>
@@ -259,6 +288,71 @@ function CashFlow() {
             ))}
           </div>
         </div>
+      </Panel>
+
+      <Panel
+        title={t("Distribución del gasto", "Spending distribution")}
+        description={
+          activeMonth
+            ? `${monthLabel(activeMonth)} · ${fmt(distTotal)} ${t("gastado", "spent")}`
+            : t("Según tu perfil", "Based on your profile")
+        }
+      >
+        {distribution.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            {t("Carga tus estados de cuenta para ver la distribución real.", "Upload your statements to see the real distribution.")}
+          </p>
+        ) : (
+          <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)]">
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={distribution}
+                    dataKey="value"
+                    nameKey="name"
+                    innerRadius={62}
+                    outerRadius={98}
+                    paddingAngle={2}
+                    stroke="none"
+                  >
+                    {distribution.map((entry) => (
+                      <Cell key={entry.name} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      background: "var(--color-elevated)",
+                      border: "1px solid var(--color-border)",
+                      borderRadius: 12,
+                      fontSize: 12,
+                    }}
+                    formatter={(v: number, n: string) => [`${fmt(v)} · ${((v / (distTotal || 1)) * 100).toFixed(0)}%`, n]}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="grid gap-2 sm:grid-cols-2">
+              {distribution.map((s, idx) => (
+                <motion.div
+                  key={s.name}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.04 }}
+                  className="flex items-center gap-2 rounded-xl border border-border bg-elevated/60 px-3 py-2"
+                >
+                  <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: s.color }} />
+                  <span className="truncate text-sm">{s.name}</span>
+                  <span className="numeric ml-auto text-sm font-medium">{fmt(s.value)}</span>
+                  <span className="numeric w-10 text-right text-xs text-muted-foreground">
+                    {((s.value / (distTotal || 1)) * 100).toFixed(0)}%
+                  </span>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        )}
       </Panel>
 
       <div className="grid gap-4 md:grid-cols-3">
