@@ -416,14 +416,22 @@ function CityCard({
         selected && "ring-2 ring-primary",
       )}
     >
-      <button type="button" onClick={onOpen} className="relative block h-44 w-full overflow-hidden text-left">
+      <button type="button" onClick={onOpen} className="relative block aspect-[16/10] w-full overflow-hidden text-left">
+        <img
+          src={c.photo}
+          alt=""
+          aria-hidden
+          loading="lazy"
+          className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-2xl"
+        />
         <img
           src={c.photo}
           alt={`${c.name}, ${c.country}`}
           loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.07]"
+          className="relative h-full w-full object-contain transition-transform duration-700 group-hover:scale-[1.04]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/25 to-background/10" />
+
         {rank === 0 && (
           <span className="absolute left-3 top-3 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary-foreground shadow-lg">
             ★ {t("Mejor match", "Best match")}
@@ -634,7 +642,16 @@ function ComparePanel({
         <div />
         {[a, b].map((x) => (
           <div key={x.city.id} className="text-center">
-            <img src={x.city.photo} alt={x.city.name} className="mx-auto h-20 w-full rounded-xl object-cover" />
+            <div className="relative mx-auto aspect-[16/10] w-full overflow-hidden rounded-xl border border-border/60">
+              <img
+                src={x.city.photo}
+                alt=""
+                aria-hidden
+                className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-xl"
+              />
+              <img src={x.city.photo} alt={x.city.name} className="relative h-full w-full object-contain" />
+            </div>
+
             <p className="mt-2 font-semibold">{x.city.name}</p>
             <p className="numeric text-xs text-muted-foreground">Score {x.score}</p>
           </div>
@@ -699,9 +716,16 @@ function CityDetail({
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto p-0">
-        <div className="relative h-52">
-          <img src={c.photo} alt={c.name} className="h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        <div className="relative aspect-[16/7] w-full overflow-hidden">
+          <img
+            src={c.photo}
+            alt=""
+            aria-hidden
+            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-2xl"
+          />
+          <img src={c.photo} alt={c.name} className="relative h-full w-full object-contain" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+
           <div className="absolute bottom-4 left-5">
             <DialogHeader>
               <DialogTitle className="text-2xl">{c.name}</DialogTitle>
