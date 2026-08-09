@@ -662,7 +662,18 @@ function ComparePanel({
 
 /* ---------------- Detail ---------------- */
 
+function regionLabel(region: CityData["region"], t: (es: string, en: string) => string) {
+  switch (region) {
+    case "northamerica": return t("Norteamérica", "North America");
+    case "latam": return "Latam";
+    case "europe": return t("Europa", "Europe");
+    case "asia": return t("Asia / Oceanía", "Asia / Oceania");
+    default: return t("África", "Africa");
+  }
+}
+
 function Stat({ icon, label, value }: { icon: string; label: string; value: string }) {
+
   return (
     <div className="rounded-xl border border-border/60 bg-elevated/40 p-3">
       <p className="text-[11px] text-muted-foreground">
@@ -719,11 +730,27 @@ function CityDetail({
         </div>
 
         <div className="space-y-5 p-5">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            <Stat icon="💵" label={t("Costo total / mes", "Total cost / month")} value={fmt(r.cost)} />
+            <Stat
+              icon="🐖"
+              label={t("Ahorro potencial", "Potential savings")}
+              value={`${fmt(Math.max(0, r.savings))} · ${Math.round(r.savingsRate * 100)}%`}
+            />
+            <Stat
+              icon="🕰"
+              label={t("Años a la libertad", "Years to freedom")}
+              value={r.yearsToRetire !== null ? `${r.yearsToRetire} ${t("años", "yrs")}` : "—"}
+            />
+          </div>
+
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             <Stat icon="🏠" label={t("Vivienda", "Housing")} value={fmt(b.housing)} />
             <Stat icon="🍽" label={t("Alimentación", "Food")} value={fmt(b.food)} />
             <Stat icon="🚗" label={t("Transporte", "Transport")} value={fmt(b.transport)} />
-            <Stat icon="🏥" label={t("Salud", "Healthcare")} value={fmt(b.healthcare)} />
+            <Stat icon="🏥" label={t("Salud", "Healthcare")} value={`${fmt(b.healthcare)} · ${c.healthcareScore}/100`} />
+            <Stat icon="🎭" label={t("Ocio", "Entertainment")} value={fmt(b.entertainment)} />
+            <Stat icon="🧾" label={t("Impuestos / mes", "Taxes / month")} value={fmt(taxes)} />
             <Stat
               icon="🎓"
               label={t("Educación", "Education")}
@@ -736,24 +763,29 @@ function CityDetail({
 
             <Stat icon="💻" label="Internet" value={`${fmt(c.internet)} · ${c.internetSpeed} Mbps`} />
             <Stat icon="🌤" label={t("Clima", "Climate")} value={t(c.climateLabelEs, c.climateLabelEn)} />
+            <Stat icon="🗺" label={t("Región", "Region")} value={regionLabel(c.region, t)} />
             <Stat icon="🛡" label={t("Seguridad", "Safety")} value={`${c.safety}/100`} />
-            <Stat icon="💰" label={t("Impuestos", "Taxes")} value={`${c.taxRate}%`} />
+            <Stat icon="💰" label={t("Tasa de impuestos", "Tax rate")} value={`${c.taxRate}%`} />
             <Stat icon="💼" label={t("Salario medio", "Average salary")} value={fmt(c.avgSalary)} />
             <Stat icon="📈" label={t("Poder adquisitivo", "Purchasing power")} value={`${c.purchasingPower}/100`} />
+            <Stat icon="🏗" label={t("Mercado laboral", "Job market")} value={`${c.jobMarket}/100`} />
             <Stat icon="🌎" label={t("Calidad de vida", "Quality of life")} value={`${c.qualityOfLife}/100`} />
             <Stat icon="🚶" label="Walkability" value={`${c.walkability}/100`} />
+            <Stat icon="🚈" label={t("Transporte público", "Public transport")} value={`${c.publicTransport}/100`} />
             <Stat icon="🌳" label={t("Espacios verdes", "Green spaces")} value={`${c.greenSpaces}/100`} />
-            <Stat icon="🏖" label={t("Distancia al mar", "Distance to sea")} value={c.beachKm === 0 ? t("En la costa", "On the coast") : `${c.beachKm} km`} />
-            <Stat icon="✈" label={t("Aeropuerto intl.", "Intl. airport")} value={c.intlAirport ? t("Sí", "Yes") : "—"} />
+            <Stat icon="🌫" label={t("Calidad del aire", "Air quality")} value={`${c.airQuality}/100`} />
+            <Stat icon="🍸" label={t("Vida nocturna", "Nightlife")} value={`${c.nightlife}/100`} />
             <Stat icon="🌍" label="Digital nomad" value={`${c.remoteWork}/100`} />
             <Stat icon="🗣" label={t("Inglés", "English friendly")} value={`${c.englishFriendly}/100`} />
-            <Stat icon="🌫" label={t("Calidad del aire", "Air quality")} value={`${c.airQuality}/100`} />
+            <Stat icon="🏖" label={t("Distancia al mar", "Distance to sea")} value={c.beachKm === 0 ? t("En la costa", "On the coast") : `${c.beachKm} km`} />
+            <Stat icon="✈" label={t("Aeropuerto intl.", "Intl. airport")} value={c.intlAirport ? t("Sí", "Yes") : "—"} />
             <Stat
               icon="🎯"
               label={t("Retiro estimado", "Estimated retirement")}
               value={r.retireAge ? `${r.retireAge} ${t("años", "yrs")}` : "—"}
             />
           </div>
+
 
           <div>
             <p className="mb-2 text-sm font-semibold">
