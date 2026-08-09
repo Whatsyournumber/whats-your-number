@@ -578,7 +578,7 @@ function CityDetail({
 }) {
   if (!r) return null;
   const c: CityData = r.city;
-  const b = costBreakdown(c, filters.stage);
+  const b = costBreakdown(c, filters.stage, filters.comfort);
   const taxes = Math.round((c.avgSalary * c.taxRate) / 100);
 
   const chart = [
