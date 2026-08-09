@@ -56,87 +56,57 @@ export type CityData = {
 };
 
 const PHOTO = {
-  barcelona:
-    "https://upload.wikimedia.org/wikipedia/commons/e/ef/SF_maig_2_cropped.jpg",
-  madrid:
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Madrid_Plaza_Mayor_%2848733706273%29.jpg/1920px-Madrid_Plaza_Mayor_%2848733706273%29.jpg",
-  valencia:
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Hemispheric_Twilight_-_Valencia%2C_Spain_-_Jan_2007.jpg/1920px-Hemispheric_Twilight_-_Valencia%2C_Spain_-_Jan_2007.jpg",
-  lisbon:
-    "https://upload.wikimedia.org/wikipedia/commons/f/fa/Bel%C3%A9m_Tower_in_Lisbon%2C_Portugal.jpg",
-  london:
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Tower_Bridge_at_Dawn.jpg/1920px-Tower_Bridge_at_Dawn.jpg",
-  dubai:
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Burj_Khalifa_%28worlds_tallest_building%29_and_the_Dubai_skyline_%2825781049892%29.jpg/1920px-Burj_Khalifa_%28worlds_tallest_building%29_and_the_Dubai_skyline_%2825781049892%29.jpg",
-  singapore:
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Marina_Bay_Sands_%28I%29.jpg/1920px-Marina_Bay_Sands_%28I%29.jpg",
-  tokyo:
-    "https://upload.wikimedia.org/wikipedia/commons/4/43/Sensoji_2023.jpg",
-  bangkok:
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/%E0%B9%80%E0%B8%88%E0%B8%94%E0%B8%B5%E0%B8%A2%E0%B9%8C%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%98%E0%B8%B2%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B8%87%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%87%E0%B8%84%E0%B9%8C%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AD%E0%B8%A3%E0%B8%B8%E0%B8%932.jpg/1920px-%E0%B9%80%E0%B8%88%E0%B8%94%E0%B8%B5%E0%B8%A2%E0%B9%8C%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%98%E0%B8%B2%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B8%87%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%87%E0%B8%84%E0%B9%8C%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AD%E0%B8%A3%E0%B8%B8%E0%B8%932.jpg",
-  miami:
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Ocean_drive_day_2009j.JPG/1920px-Ocean_drive_day_2009j.JPG",
-  newyork:
-    "https://upload.wikimedia.org/wikipedia/commons/1/10/Empire_State_Building_%28aerial_view%29.jpg",
-  sydney:
-    "https://upload.wikimedia.org/wikipedia/commons/a/a0/Sydney_Australia._%2821339175489%29.jpg",
-  vancouver:
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Vancouver_skyline_stanley_park.jpg/1920px-Vancouver_skyline_stanley_park.jpg",
-  zurich:
-    "https://upload.wikimedia.org/wikipedia/commons/1/11/Grossm%C3%BCnster_-_M%C3%BCnsterhof_2014-05-23_12-08-43.JPG",
-  amsterdam:
-    "https://upload.wikimedia.org/wikipedia/commons/5/57/Imagen_de_los_canales_conc%C3%A9ntricos_en_%C3%81msterdam.png",
-  copenhagen:
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/The_Nyhavn_Canal_3.jpg/1920px-The_Nyhavn_Canal_3.jpg",
-  bali:
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Pura_Ulun_Danu_Bratan%2C_2022.jpg/1920px-Pura_Ulun_Danu_Bratan%2C_2022.jpg",
-  medellin:
-    "https://upload.wikimedia.org/wikipedia/commons/a/a5/Metrocablemed.jpg",
-  mexico:
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Angel_de_la_independencia170409.jpg/1920px-Angel_de_la_independencia170409.jpg",
-  buenosaires:
-    "https://upload.wikimedia.org/wikipedia/commons/3/39/Obelisco_de_Buenos_Aires%2C_with_traffic_lights.jpg",
-  panama:
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Cinta_Costera_de_Panam%C3%A1.jpg/1920px-Cinta_Costera_de_Panam%C3%A1.jpg",
-  capetown:
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Cape_Town_%28ZA%29%2C_Table_Mountain_--_2024_--_2825.jpg/1920px-Cape_Town_%28ZA%29%2C_Table_Mountain_--_2024_--_2825.jpg",
-  marrakech:
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Marrakesh_Koutoubia_Minaret_seen_from_the_western_end_of_Jemaa_el-Fnaa.jpg/1920px-Marrakesh_Koutoubia_Minaret_seen_from_the_western_end_of_Jemaa_el-Fnaa.jpg",
-  berlin: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Brandenburger_Tor_abends.jpg",
-  paris: "https://upload.wikimedia.org/wikipedia/commons/8/85/Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg",
-  milan: "https://upload.wikimedia.org/wikipedia/commons/7/70/Milan_Cathedral_from_Piazza_del_Duomo.jpg",
-  warsaw: "https://upload.wikimedia.org/wikipedia/commons/b/b0/Pa%C5%82ac_Kultury_i_Nauki_2019.jpg",
-  athens: "https://upload.wikimedia.org/wikipedia/commons/d/da/The_Parthenon_in_Athens.jpg",
-  porto: "https://upload.wikimedia.org/wikipedia/commons/f/f8/Dom_Lu%C3%ADs_I_Bridge_%2836961760686%29.jpg",
-  prague:
-    "https://upload.wikimedia.org/wikipedia/commons/2/22/Prague_07-2016_view_from_Lesser_Town_Tower_of_Charles_Bridge_img3.jpg",
-  rome: "https://upload.wikimedia.org/wikipedia/commons/d/de/Colosseo_2020.jpg",
-  toronto:
-    "https://upload.wikimedia.org/wikipedia/commons/0/0f/Toronto_Skyline_from_Olympic_Island%2C_June_20_2026_%285-3_cropped%29.jpg",
-  austin: "https://upload.wikimedia.org/wikipedia/commons/f/f4/Skyline_of_Austin%2C_Texas_%28cropped%29.jpg",
-  chicago: "https://upload.wikimedia.org/wikipedia/commons/a/a5/Chicago_River_ferry_b.jpg",
-  sanfrancisco:
-    "https://upload.wikimedia.org/wikipedia/commons/b/bf/Golden_Gate_Bridge_as_seen_from_Battery_East.jpg",
-  santiago:
-    "https://upload.wikimedia.org/wikipedia/commons/8/85/Costanera_Center_at_evening_%28cropped%29.jpg",
-  lima: "https://upload.wikimedia.org/wikipedia/commons/6/69/Bas%C3%ADlica_Catedral_Metropolitana_de_Lima_%28cropped%29.jpg",
-  saopaulo: "https://upload.wikimedia.org/wikipedia/commons/4/4a/Novo_MASP.jpg",
-  montevideo: "https://upload.wikimedia.org/wikipedia/commons/5/59/PALACIO_LEGISLATIVO_01.JPG",
-  bogota:
-    "https://upload.wikimedia.org/wikipedia/commons/8/8f/2017_Bogot%C3%A1_Bas%C3%ADlica_del_Se%C3%B1or_Ca%C3%ADdo_de_Monserrate.jpg",
-  rio: "https://upload.wikimedia.org/wikipedia/commons/4/4f/Christ_the_Redeemer_-_Cristo_Redentor.jpg",
-  seoul: "https://upload.wikimedia.org/wikipedia/commons/6/63/%EA%B4%91%ED%99%94%EB%AC%B8_%EC%9B%94%EB%8C%80.jpg",
-  kualalumpur: "https://upload.wikimedia.org/wikipedia/commons/1/1a/Bukit_Bintang_junction_in_2024_2.jpg",
-  hochiminh:
-    "https://upload.wikimedia.org/wikipedia/commons/8/86/Ho_Chi_Minh_City%2C_City_Hall%2C_2020-01_CN-03.jpg",
-  taipei: "https://upload.wikimedia.org/wikipedia/commons/e/ea/Taipei_Skyline_2022.06.29.jpg",
-  auckland: "https://upload.wikimedia.org/wikipedia/commons/f/f8/01_Auckland_New_Zealand-1000137.jpg",
-  melbourne: "https://upload.wikimedia.org/wikipedia/commons/9/99/Flinders_Station_and_trams.jpg",
-  nairobi: "https://upload.wikimedia.org/wikipedia/commons/b/be/Nairobi_skyline_from_Gem_Hotel.jpg",
-  cairo: "https://upload.wikimedia.org/wikipedia/commons/4/42/Sphinx_with_the_third_pyramid.jpg",
-  mauritius:
-    "https://upload.wikimedia.org/wikipedia/commons/1/18/Le_Morne_Peninsula_in_Mauritius_%2853697779236%29.jpg",
-  tunis: "https://upload.wikimedia.org/wikipedia/commons/0/05/Sidi_Chebaan.jpg",
+  barcelona: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/14-08-05-barcelona-RalfR-001.jpg/1920px-14-08-05-barcelona-RalfR-001.jpg",
+  madrid: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Edificios_Skyline_Madrid_01.jpg/1920px-Edificios_Skyline_Madrid_01.jpg",
+  valencia: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Skyline_de_Valencia%2C_Venezuela.jpg/1920px-Skyline_de_Valencia%2C_Venezuela.jpg",
+  lisbon: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Lisboa_Skyline_from_the_Roof_of_the_Santa_Justa_Lift_%2842789303172%29.jpg/1920px-Lisboa_Skyline_from_the_Roof_of_the_Santa_Justa_Lift_%2842789303172%29.jpg",
+  london: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Londres%2C_panor%C3%A1micas_%282007%29_02.jpg/1920px-Londres%2C_panor%C3%A1micas_%282007%29_02.jpg",
+  dubai: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Burj_Dubai_skyline_%284220501733%29.jpg/1920px-Burj_Dubai_skyline_%284220501733%29.jpg",
+  singapore: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/2016_Singapur%2C_Downtown_Core%2C_Wieczorny_widok_na_Central_Business_District_od_strony_promenady_Esplanade_%2801%29.jpg/1920px-2016_Singapur%2C_Downtown_Core%2C_Wieczorny_widok_na_Central_Business_District_od_strony_promenady_Esplanade_%2801%29.jpg",
+  tokyo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Tokio_skyline_from_Tokyo_Metropolitan_Government_Building.jpg/1920px-Tokio_skyline_from_Tokyo_Metropolitan_Government_Building.jpg",
+  bangkok: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Bangkok_Skyline_2_%28explore%29_-_Flickr_-_Swami_Stream.jpg/1920px-Bangkok_Skyline_2_%28explore%29_-_Flickr_-_Swami_Stream.jpg",
+  miami: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Downtown_Miami_Skyline_%28Southern_View%29.jpg/1920px-Downtown_Miami_Skyline_%28Southern_View%29.jpg",
+  newyork: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Atardecer_En_Nueva_York_%28141669093%29.jpeg/1920px-Atardecer_En_Nueva_York_%28141669093%29.jpeg",
+  sydney: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Aeropuerto_de_S%C3%ADdney_1.jpg/1920px-Aeropuerto_de_S%C3%ADdney_1.jpg",
+  vancouver: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Skyline_of_Vancouver%2C_BC.jpg/1920px-Skyline_of_Vancouver%2C_BC.jpg",
+  zurich: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/ETH_Z%C3%BCrich_im_Abendlicht.jpg/1920px-ETH_Z%C3%BCrich_im_Abendlicht.jpg",
+  amsterdam: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/AmsterdamSkyline.jpg/1920px-AmsterdamSkyline.jpg",
+  copenhagen: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Copenhague_dende_a_Torre_Redonda.jpg/1920px-Copenhague_dende_a_Torre_Redonda.jpg",
+  bali: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Bali%2C_New_Taipei_Skyline_20220426.jpg/1920px-Bali%2C_New_Taipei_Skyline_20220426.jpg",
+  medellin: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Valleta_071_20160727_DSC_3730_%2834645021414%29.jpg/1920px-Valleta_071_20160727_DSC_3730_%2834645021414%29.jpg",
+  mexico: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Ciudad.de.Mexico.City.-_Paseo.Reforma.Skyline_CDMX_2018.jpg/1920px-Ciudad.de.Mexico.City.-_Paseo.Reforma.Skyline_CDMX_2018.jpg",
+  buenosaires: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Buenos_Aires%2C_Argentina_Skyline_-_panoramio_%281%29.jpg/1920px-Buenos_Aires%2C_Argentina_Skyline_-_panoramio_%281%29.jpg",
+  panama: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Ciudad_de_Panam%C3%A1.jpg/1920px-Ciudad_de_Panam%C3%A1.jpg",
+  capetown: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/CT_-_Table_Mountain_and_Cape_Town_cityscape%2C_South_Africa%2C_2017.jpg/1920px-CT_-_Table_Mountain_and_Cape_Town_cityscape%2C_South_Africa%2C_2017.jpg",
+  marrakech: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Marrakech_Medina_Skyline_%2852188876996%29.jpg/1920px-Marrakech_Medina_Skyline_%2852188876996%29.jpg",
+  berlin: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Berl%C3%ADn%2C_catedral_3.jpg/1920px-Berl%C3%ADn%2C_catedral_3.jpg",
+  paris: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Arc_de_Triomphe_%2817%29.JPG/1920px-Arc_de_Triomphe_%2817%29.JPG",
+  milan: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Full_Milan_skyline_from_Duomo_roof.jpg/1920px-Full_Milan_skyline_from_Duomo_roof.jpg",
+  warsaw: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Skyline_de_Varsovia.jpg/1920px-Skyline_de_Varsovia.jpg",
+  athens: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Atenas%2C_colina_de_Filopapos.jpg/1920px-Atenas%2C_colina_de_Filopapos.jpg",
+  porto: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Terminal_de_cruceros_de_Oporto_%2852156092183%29.jpg/1920px-Terminal_de_cruceros_de_Oporto_%2852156092183%29.jpg",
+  prague: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Skyline_Warsaw_Praga_DSC_2392.JPG/1920px-Skyline_Warsaw_Praga_DSC_2392.JPG",
+  rome: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Brisbane_CBD_Skyline_from_Roma_St_100_1103.jpg/1920px-Brisbane_CBD_Skyline_from_Roma_St_100_1103.jpg",
+  toronto: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/126_-_Toronto_-_Panorama_-_Septembre_2009.JPG/1920px-126_-_Toronto_-_Panorama_-_Septembre_2009.JPG",
+  austin: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Austin%2C_TX_skyline_2026.jpg/1920px-Austin%2C_TX_skyline_2026.jpg",
+  chicago: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Chicago_Loop_Skyline_at_Sunset.jpg/1920px-Chicago_Loop_Skyline_at_Sunset.jpg",
+  sanfrancisco: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/A_view_of_the_San_Francisco_Skyline_from_Mission_Bay_at_Sunset.jpg/1920px-A_view_of_the_San_Francisco_Skyline_from_Mission_Bay_at_Sunset.jpg",
+  santiago: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Santiago-edit.jpg/1920px-Santiago-edit.jpg",
+  lima: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Lima%2C_Urban_Skyline--Ciudad_de_Lima%2C_Skyline_urbano.jpg/1920px-Lima%2C_Urban_Skyline--Ciudad_de_Lima%2C_Skyline_urbano.jpg",
+  saopaulo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Panoramic_view_of_Sa%C3%BAde%2C_S%C3%A3o_Paulo_city%2C_Brazil.jpg/1920px-Panoramic_view_of_Sa%C3%BAde%2C_S%C3%A3o_Paulo_city%2C_Brazil.jpg",
+  montevideo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Montevideo_Golf_Club.jpg/1920px-Montevideo_Golf_Club.jpg",
+  bogota: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Panor%C3%A1mica_de_Usaquen%2C_Bogot%C3%A1_D.C.jpg/1920px-Panor%C3%A1mica_de_Usaquen%2C_Bogot%C3%A1_D.C.jpg",
+  rio: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/2016agostocomunidaderioDSC_0596.jpg/1920px-2016agostocomunidaderioDSC_0596.jpg",
+  seoul: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Chicago_%28ILL%29_Willis_Tower_%28_Ex._SEARS_Tower_%29_1974%2C_N-E_side_%22_the_loop_%22_%284800994606%29.jpg/1920px-Chicago_%28ILL%29_Willis_Tower_%28_Ex._SEARS_Tower_%29_1974%2C_N-E_side_%22_the_loop_%22_%284800994606%29.jpg",
+  kualalumpur: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Istana_Negara_with_Kuala_Lumpur_skyline_in_the_background.jpg/1920px-Istana_Negara_with_Kuala_Lumpur_skyline_in_the_background.jpg",
+  hochiminh: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Ho_Chi_Minh_City%2C_Saigon%2C_Vietnam_%2849579585976%29.jpg/1920px-Ho_Chi_Minh_City%2C_Saigon%2C_Vietnam_%2849579585976%29.jpg",
+  taipei: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Linkou%2C_New_Taipei_Skyline_20240816.jpg/1920px-Linkou%2C_New_Taipei_Skyline_20240816.jpg",
+  auckland: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Auckland_Skyline_383495.jpg/1920px-Auckland_Skyline_383495.jpg",
+  melbourne: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Albert_Park_Lake_%26_Melbourne_City_Skyline%2C_2016.png/1920px-Albert_Park_Lake_%26_Melbourne_City_Skyline%2C_2016.png",
+  nairobi: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/A_clash_of_worlds_-_Nairobi_skyline_from_the_Nairobi_National_park.jpg/1920px-A_clash_of_worlds_-_Nairobi_skyline_from_the_Nairobi_National_park.jpg",
+  cairo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/View_of_Cairo_from_Azhar_Park.jpg/1920px-View_of_Cairo_from_Azhar_Park.jpg",
+  mauritius: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Skyline_Sampa.jpg/1920px-Skyline_Sampa.jpg",
+  tunis: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Anfiteatro%2C_El_Jem%2C_T%C3%BAnez%2C_2016-09-04%2C_DD_55-66_HDR_PAN.jpg/1920px-Anfiteatro%2C_El_Jem%2C_T%C3%BAnez%2C_2016-09-04%2C_DD_55-66_HDR_PAN.jpg",
 };
 
 export const lifestyleCities: CityData[] = [
