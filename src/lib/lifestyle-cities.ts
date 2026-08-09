@@ -100,6 +100,41 @@ const PHOTO = {
     "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Cape_Town_%28ZA%29%2C_Table_Mountain_--_2024_--_2825.jpg/1920px-Cape_Town_%28ZA%29%2C_Table_Mountain_--_2024_--_2825.jpg",
   marrakech:
     "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Marrakesh_Koutoubia_Minaret_seen_from_the_western_end_of_Jemaa_el-Fnaa.jpg/1920px-Marrakesh_Koutoubia_Minaret_seen_from_the_western_end_of_Jemaa_el-Fnaa.jpg",
+  berlin: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Brandenburger_Tor_abends.jpg",
+  paris: "https://upload.wikimedia.org/wikipedia/commons/8/85/Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg",
+  milan: "https://upload.wikimedia.org/wikipedia/commons/7/70/Milan_Cathedral_from_Piazza_del_Duomo.jpg",
+  warsaw: "https://upload.wikimedia.org/wikipedia/commons/b/b0/Pa%C5%82ac_Kultury_i_Nauki_2019.jpg",
+  athens: "https://upload.wikimedia.org/wikipedia/commons/d/da/The_Parthenon_in_Athens.jpg",
+  porto: "https://upload.wikimedia.org/wikipedia/commons/f/f8/Dom_Lu%C3%ADs_I_Bridge_%2836961760686%29.jpg",
+  prague:
+    "https://upload.wikimedia.org/wikipedia/commons/2/22/Prague_07-2016_view_from_Lesser_Town_Tower_of_Charles_Bridge_img3.jpg",
+  rome: "https://upload.wikimedia.org/wikipedia/commons/d/de/Colosseo_2020.jpg",
+  toronto:
+    "https://upload.wikimedia.org/wikipedia/commons/0/0f/Toronto_Skyline_from_Olympic_Island%2C_June_20_2026_%285-3_cropped%29.jpg",
+  austin: "https://upload.wikimedia.org/wikipedia/commons/f/f4/Skyline_of_Austin%2C_Texas_%28cropped%29.jpg",
+  chicago: "https://upload.wikimedia.org/wikipedia/commons/a/a5/Chicago_River_ferry_b.jpg",
+  sanfrancisco:
+    "https://upload.wikimedia.org/wikipedia/commons/b/bf/Golden_Gate_Bridge_as_seen_from_Battery_East.jpg",
+  santiago:
+    "https://upload.wikimedia.org/wikipedia/commons/8/85/Costanera_Center_at_evening_%28cropped%29.jpg",
+  lima: "https://upload.wikimedia.org/wikipedia/commons/6/69/Bas%C3%ADlica_Catedral_Metropolitana_de_Lima_%28cropped%29.jpg",
+  saopaulo: "https://upload.wikimedia.org/wikipedia/commons/4/4a/Novo_MASP.jpg",
+  montevideo: "https://upload.wikimedia.org/wikipedia/commons/5/59/PALACIO_LEGISLATIVO_01.JPG",
+  bogota:
+    "https://upload.wikimedia.org/wikipedia/commons/8/8f/2017_Bogot%C3%A1_Bas%C3%ADlica_del_Se%C3%B1or_Ca%C3%ADdo_de_Monserrate.jpg",
+  rio: "https://upload.wikimedia.org/wikipedia/commons/4/4f/Christ_the_Redeemer_-_Cristo_Redentor.jpg",
+  seoul: "https://upload.wikimedia.org/wikipedia/commons/6/63/%EA%B4%91%ED%99%94%EB%AC%B8_%EC%9B%94%EB%8C%80.jpg",
+  kualalumpur: "https://upload.wikimedia.org/wikipedia/commons/1/1a/Bukit_Bintang_junction_in_2024_2.jpg",
+  hochiminh:
+    "https://upload.wikimedia.org/wikipedia/commons/8/86/Ho_Chi_Minh_City%2C_City_Hall%2C_2020-01_CN-03.jpg",
+  taipei: "https://upload.wikimedia.org/wikipedia/commons/e/ea/Taipei_Skyline_2022.06.29.jpg",
+  auckland: "https://upload.wikimedia.org/wikipedia/commons/f/f8/01_Auckland_New_Zealand-1000137.jpg",
+  melbourne: "https://upload.wikimedia.org/wikipedia/commons/9/99/Flinders_Station_and_trams.jpg",
+  nairobi: "https://upload.wikimedia.org/wikipedia/commons/b/be/Nairobi_skyline_from_Gem_Hotel.jpg",
+  cairo: "https://upload.wikimedia.org/wikipedia/commons/4/42/Sphinx_with_the_third_pyramid.jpg",
+  mauritius:
+    "https://upload.wikimedia.org/wikipedia/commons/1/18/Le_Morne_Peninsula_in_Mauritius_%2853697779236%29.jpg",
+  tunis: "https://upload.wikimedia.org/wikipedia/commons/0/05/Sidi_Chebaan.jpg",
 };
 
 export const lifestyleCities: CityData[] = [
