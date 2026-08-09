@@ -296,16 +296,33 @@ function CashFlow() {
   );
 }
 
-function Row({ label, value, total, target }: { label: string; value: number; total: number; target: number }) {
+function Row({
+  label,
+  value,
+  total,
+  target,
+  fmt,
+}: {
+  label: string;
+  value: number;
+  total: number;
+  target: number;
+  fmt: (n: number) => string;
+}) {
   const p = total > 0 ? (value / total) * 100 : 0;
+  const off = p - target;
   return (
     <div>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <span className="text-muted-foreground">{label}</span>
-        <span className="numeric">
-          {p.toFixed(0)}% <span className="text-xs text-muted-foreground">/ {target}%</span>
+        <span className="numeric flex items-baseline gap-2">
+          <span className="font-medium">{fmt(value)}</span>
+          <span>
+            {p.toFixed(0)}% <span className="text-xs text-muted-foreground">/ {target}%</span>
+          </span>
         </span>
       </div>
+
       <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted">
         <div className="h-full rounded-full bg-primary" style={{ width: `${Math.min(p, 100)}%` }} />
       </div>
