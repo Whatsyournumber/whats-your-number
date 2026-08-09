@@ -384,7 +384,7 @@ export function scoreCity(
   f: Filters,
   ctx: { netWorth: number; age: number; expectedReturn: number },
 ): CityScore {
-  const cost = monthlyCost(c, f.stage);
+  const cost = monthlyCost(c, f.stage, f.comfort);
   const savings = Math.round(f.budget - cost);
   const savingsRate = f.budget > 0 ? savings / f.budget : 0;
 
