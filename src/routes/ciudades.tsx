@@ -16,6 +16,7 @@ import { PageHeader, PageShell, Panel } from "@/components/page";
 import { axisProps, ChartTooltip } from "@/components/chart-kit";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { useProfile } from "@/hooks/use-profile";
 import { useT } from "@/hooks/use-language";
@@ -54,7 +55,8 @@ export const Route = createFileRoute("/ciudades")({
 
 type Opt<T> = { value: T; label: string; icon: string };
 
-function ChipGroup<T extends string>({
+/** Filtro compacto tipo dropdown, en línea con el resto del panel. */
+function SelectFilter<T extends string>({
   label,
   options,
   value,
@@ -66,29 +68,25 @@ function ChipGroup<T extends string>({
   onChange: (v: T) => void;
 }) {
   return (
-    <div>
-      <p className="text-xs font-medium text-muted-foreground">{label}</p>
-      <div className="mt-2 flex flex-wrap gap-2">
-        {options.map((o) => (
-          <button
-            key={o.value}
-            type="button"
-            onClick={() => onChange(o.value)}
-            className={cn(
-              "rounded-full border px-3 py-1.5 text-xs font-medium transition-all",
-              value === o.value
-                ? "border-primary/60 bg-primary/15 text-primary shadow-[0_0_0_1px_var(--color-primary)]/10"
-                : "border-border bg-elevated/40 text-muted-foreground hover:bg-elevated hover:text-foreground",
-            )}
-          >
-            <span className="mr-1">{o.icon}</span>
-            {o.label}
-          </button>
-        ))}
-      </div>
+    <div className="min-w-0">
+      <p className="truncate text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{label}</p>
+      <Select value={value} onValueChange={(v) => onChange(v as T)}>
+        <SelectTrigger className="mt-1 h-8 w-full border-border bg-elevated/40 px-2.5 text-xs">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((o) => (
+            <SelectItem key={o.value} value={o.value} className="text-xs">
+              <span className="mr-1.5">{o.icon}</span>
+              {o.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 }
+
 
 function LifestyleSimulator() {
   const t = useT();
@@ -138,20 +136,14 @@ function LifestyleSimulator() {
         )}
       />
 
-      <Panel
-        title={t("Tus preferencias", "Your preferences")}
-        description={t(
-          "Cada filtro cambia el peso de las variables del Lifestyle Score.",
-          "Each filter changes how the Lifestyle Score is weighted.",
-        )}
-      >
-        <div className="space-y-5">
-          <div>
-            <div className="flex items-end justify-between">
-              <p className="text-xs font-medium text-muted-foreground">
-                💰 {t("Presupuesto mensual", "Monthly budget")}
+      <div className="surface rounded-xl border border-border p-4">
+        <div className="grid items-end gap-3 md:grid-cols-3 xl:grid-cols-7">
+          <div className="md:col-span-3 xl:col-span-1">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                {t("Presupuesto", "Budget")}
               </p>
-              <p className="numeric text-lg font-semibold">
+              <p className="numeric text-xs font-semibold">
                 {fmt(filters.budget)}
                 {filters.budget >= 15000 && "+"}
               </p>
@@ -164,87 +156,82 @@ function LifestyleSimulator() {
               value={[filters.budget]}
               onValueChange={([v]) => set("budget", v ?? 2000)}
             />
-            <div className="mt-1 flex justify-between text-[10px] text-muted-foreground">
-              <span>{fmt(2000)}</span>
-              <span>{fmt(15000)}+</span>
-            </div>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-2">
-            <ChipGroup
-              label={`🌤 ${t("Clima preferido", "Climate preference")}`}
-              value={filters.climate}
-              onChange={(v) => set("climate", v)}
-              options={[
-                { value: "warm", label: t("Cálido", "Warm"), icon: "☀️" },
-                { value: "beach", label: t("Playa", "Beach"), icon: "🏖️" },
-                { value: "temperate", label: t("Templado", "Temperate"), icon: "🌤️" },
-                { value: "cold", label: t("Frío", "Cold"), icon: "❄️" },
-                { value: "any", label: t("Sin preferencia", "No preference"), icon: "🌍" },
-              ]}
-            />
-            <ChipGroup
-              label={`💵 ${t("Rango salarial", "Salary range")}`}
-              value={filters.salary}
-              onChange={(v) => set("salary", v)}
-              options={[
-                { value: "low_cost", label: t("Costo de vida bajo", "Lower cost of living"), icon: "💸" },
-                { value: "balanced", label: t("Equilibrado", "Balanced"), icon: "⚖️" },
-                { value: "high_income", label: t("Alto potencial", "High income potential"), icon: "📈" },
-                { value: "highest_paying", label: t("Mejor pagadas", "Highest paying"), icon: "💎" },
-                { value: "any", label: t("Sin preferencia", "No preference"), icon: "🌍" },
-              ]}
-            />
-            <ChipGroup
-              label={`💸 ${t("Impuestos", "Tax preference")}`}
-              value={filters.tax}
-              onChange={(v) => set("tax", v)}
-              options={[
-                { value: "low", label: t("Bajos", "Low taxes"), icon: "🟢" },
-                { value: "medium", label: t("Medios", "Medium taxes"), icon: "🟡" },
-                { value: "high", label: t("Altos", "High taxes"), icon: "🔴" },
-                { value: "any", label: t("Indiferente", "Doesn't matter"), icon: "🌍" },
-              ]}
-            />
-            <ChipGroup
-              label={`🛡 ${t("Seguridad", "Safety")}`}
-              value={filters.safety}
-              onChange={(v) => set("safety", v)}
-              options={[
-                { value: "essential", label: t("Esencial", "Essential"), icon: "★★★★★" },
-                { value: "important", label: t("Importante", "Important"), icon: "★★★★" },
-                { value: "neutral", label: t("Neutral", "Neutral"), icon: "★★★" },
-              ]}
-            />
-            <ChipGroup
-              label={`👨‍👩‍👧 ${t("Etapa de vida", "Life stage")}`}
-              value={filters.stage}
-              onChange={(v) => set("stage", v)}
-              options={[
-                { value: "single", label: t("Soltero/a", "Single"), icon: "👤" },
-                { value: "relationship", label: t("En pareja", "In a relationship"), icon: "❤️" },
-                { value: "married", label: t("Casado/a", "Married"), icon: "💍" },
-                { value: "family", label: t("Con hijos", "With children"), icon: "👨‍👩‍👧" },
-                { value: "single_parent", label: t("Monoparental", "Single parent"), icon: "👨‍👦" },
-                { value: "any", label: t("Sin preferencia", "No preference"), icon: "🌍" },
-              ]}
-            />
-            <ChipGroup
-              label={`🎯 ${t("Objetivo", "Goal")}`}
-              value={filters.goal}
-              onChange={(v) => set("goal", v)}
-              options={[
-                { value: "save", label: t("Ahorrar más", "Save more"), icon: "💰" },
-                { value: "lifestyle", label: t("Mejor estilo de vida", "Better lifestyle"), icon: "🌴" },
-                { value: "retire", label: t("Retirarme antes", "Retire earlier"), icon: "🚀" },
-                { value: "family", label: t("Familia", "Family"), icon: "👨‍👩‍👧" },
-                { value: "career", label: t("Carrera", "Career growth"), icon: "💼" },
-                { value: "nomad", label: t("Nómada digital", "Digital nomad"), icon: "🌍" },
-              ]}
-            />
-          </div>
+          <SelectFilter
+            label={t("Clima", "Climate")}
+            value={filters.climate}
+            onChange={(v) => set("climate", v)}
+            options={[
+              { value: "warm", label: t("Cálido", "Warm"), icon: "☀️" },
+              { value: "beach", label: t("Playa", "Beach"), icon: "🏖️" },
+              { value: "temperate", label: t("Templado", "Temperate"), icon: "🌤️" },
+              { value: "cold", label: t("Frío", "Cold"), icon: "❄️" },
+              { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
+            ]}
+          />
+          <SelectFilter
+            label={t("Salario", "Salary")}
+            value={filters.salary}
+            onChange={(v) => set("salary", v)}
+            options={[
+              { value: "low_cost", label: t("Costo bajo", "Lower cost"), icon: "💸" },
+              { value: "balanced", label: t("Equilibrado", "Balanced"), icon: "⚖️" },
+              { value: "high_income", label: t("Alto potencial", "High income"), icon: "📈" },
+              { value: "highest_paying", label: t("Mejor pagadas", "Highest paying"), icon: "💎" },
+              { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
+            ]}
+          />
+          <SelectFilter
+            label={t("Impuestos", "Taxes")}
+            value={filters.tax}
+            onChange={(v) => set("tax", v)}
+            options={[
+              { value: "low", label: t("Bajos", "Low"), icon: "🟢" },
+              { value: "medium", label: t("Medios", "Medium"), icon: "🟡" },
+              { value: "high", label: t("Altos", "High"), icon: "🔴" },
+              { value: "any", label: t("Indiferente", "Any"), icon: "🌍" },
+            ]}
+          />
+          <SelectFilter
+            label={t("Seguridad", "Safety")}
+            value={filters.safety}
+            onChange={(v) => set("safety", v)}
+            options={[
+              { value: "essential", label: t("Esencial", "Essential"), icon: "★★★★★" },
+              { value: "important", label: t("Importante", "Important"), icon: "★★★★" },
+              { value: "neutral", label: t("Neutral", "Neutral"), icon: "★★★" },
+            ]}
+          />
+          <SelectFilter
+            label={t("Etapa", "Life stage")}
+            value={filters.stage}
+            onChange={(v) => set("stage", v)}
+            options={[
+              { value: "single", label: t("Soltero/a", "Single"), icon: "👤" },
+              { value: "relationship", label: t("En pareja", "Couple"), icon: "❤️" },
+              { value: "married", label: t("Casado/a", "Married"), icon: "💍" },
+              { value: "family", label: t("Con hijos", "With children"), icon: "👨‍👩‍👧" },
+              { value: "single_parent", label: t("Monoparental", "Single parent"), icon: "👨‍👦" },
+              { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
+            ]}
+          />
+          <SelectFilter
+            label={t("Objetivo", "Goal")}
+            value={filters.goal}
+            onChange={(v) => set("goal", v)}
+            options={[
+              { value: "save", label: t("Ahorrar más", "Save more"), icon: "💰" },
+              { value: "lifestyle", label: t("Estilo de vida", "Lifestyle"), icon: "🌴" },
+              { value: "retire", label: t("Retirarme antes", "Retire earlier"), icon: "🚀" },
+              { value: "family", label: t("Familia", "Family"), icon: "👨‍👩‍👧" },
+              { value: "career", label: t("Carrera", "Career"), icon: "💼" },
+              { value: "nomad", label: t("Nómada digital", "Digital nomad"), icon: "🌍" },
+            ]}
+          />
         </div>
-      </Panel>
+      </div>
+
 
       {best && <AiRecommendation r={best} filters={filters} fmt={fmt} t={t} />}
 
