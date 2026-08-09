@@ -214,10 +214,8 @@ function AppShell() {
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border bg-background/80 px-4 backdrop-blur-xl">
             <SidebarTrigger />
-            <div className="ml-2 hidden items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground md:flex">
-              <Search className="h-3.5 w-3.5" />
-              <span>{t("Pregúntale al AI Advisor…", "Ask the AI Advisor…")}</span>
-            </div>
+            <AskAiSearch />
+
             <div className="ml-auto flex items-center gap-2">
               <Button asChild variant="outline" size="sm" className="gap-2 rounded-full">
                 <Link to="/configuracion">
