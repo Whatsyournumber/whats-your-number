@@ -1,29 +1,29 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
-import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { useProfile } from "@/hooks/use-profile";
 import { useT } from "@/hooks/use-language";
-import { type City, cities } from "@/lib/onboarding";
 import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
 
 export const Route = createFileRoute("/retiro")({
   head: () => ({
     meta: [
-      { title: "Fondo de Retiro — WhatsYournumber" },
-      { name: "description", content: "Saldo, aportes, rentabilidad anual y simulador de proyección de tu fondo de retiro." },
-      { property: "og:title", content: "Fondo de Retiro — WhatsYournumber" },
-      { property: "og:description", content: "Proyecta tu retiro ajustando aporte mensual, rentabilidad y edad objetivo." },
+      { title: "WhatsYournumber — Tu número de retiro" },
+      { name: "description", content: "Tu número: capital objetivo, aportes, rentabilidad anual y simulador de proyección." },
+      { property: "og:title", content: "WhatsYournumber — Tu número de retiro" },
+      { property: "og:description", content: "Proyecta tu número ajustando aporte mensual, rentabilidad y edad objetivo." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Retiro,
 });
+
 
 function Retiro() {
   const t = useT();
