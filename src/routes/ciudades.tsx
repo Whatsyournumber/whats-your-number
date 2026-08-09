@@ -137,147 +137,173 @@ function LifestyleSimulator() {
         )}
       />
 
-      <div className="surface rounded-xl border border-border p-4">
-        <div className="mb-3 flex items-center justify-between gap-2">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-            {t("Filtros", "Filters")}
-          </p>
-          <TooltipProvider delayDuration={100}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  className="flex items-center gap-1 text-[10px] text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  <Info className="h-3.5 w-3.5" />
-                  {t("Fuentes", "Sources")}
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="left" className="max-w-[280px] text-xs leading-relaxed">
-                {t(
-                  "Costos de vida y calidad de vida estimados con datos públicos tipo Numbeo, OCDE y Mercer, ajustados por tu etapa de vida y nivel de vida. El retiro usa tu patrimonio, ahorro y la regla del 4%. Los resultados se recalculan al instante con cada filtro.",
-                  "Cost of living and quality-of-life estimates based on public data (Numbeo, OECD, Mercer), adjusted for your life stage and comfort level. Retirement uses your net worth, savings and the 4% rule. Results recalculate instantly with every filter.",
-                )}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-        <div className="grid items-end gap-3 md:grid-cols-4 xl:grid-cols-8">
-          <div className="md:col-span-3 xl:col-span-1">
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                {t("Presupuesto", "Budget")}
-              </p>
-              <p className="numeric text-xs font-semibold">
-                {fmt(filters.budget)}
-                {filters.budget >= 15000 && "+"}
-              </p>
-            </div>
-            <Slider
-              className="mt-3"
-              min={2000}
-              max={15000}
-              step={250}
-              value={[filters.budget]}
-              onValueChange={([v]) => set("budget", v ?? 2000)}
-            />
+      <div className="surface overflow-hidden rounded-2xl border border-border">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/70 bg-elevated/30 px-4 py-2.5">
+          <div className="flex items-center gap-2">
+            <SlidersHorizontal className="h-3.5 w-3.5 text-primary" />
+            <p className="text-[11px] font-semibold uppercase tracking-wider">{t("Filtros", "Filters")}</p>
+            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+              {ranked.length} {t("ciudades", "cities")}
+            </span>
           </div>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setFilters((f) => ({ ...defaultFilters, budget: f.budget }))}
+              className="flex items-center gap-1 text-[10px] text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <RotateCcw className="h-3 w-3" />
+              {t("Reiniciar", "Reset")}
+            </button>
+            <TooltipProvider delayDuration={100}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    className="flex items-center gap-1 text-[10px] text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    <Info className="h-3.5 w-3.5" />
+                    {t("Fuentes", "Sources")}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="left" className="max-w-[280px] text-xs leading-relaxed">
+                  {t(
+                    "Costos de vida y calidad de vida estimados con datos públicos tipo Numbeo, OCDE y Mercer, ajustados por tu etapa de vida y nivel de vida. El retiro usa tu patrimonio, ahorro y la regla del 4%. Los resultados se recalculan al instante con cada filtro.",
+                    "Cost of living and quality-of-life estimates based on public data (Numbeo, OECD, Mercer), adjusted for your life stage and comfort level. Retirement uses your net worth, savings and the 4% rule. Results recalculate instantly with every filter.",
+                  )}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        </div>
 
-          <SelectFilter
-            label={t("Región", "Region")}
-            value={filters.region}
-            onChange={(v) => set("region", v)}
-            options={[
-              { value: "any", label: t("Todas", "All"), icon: "🌍" },
-              { value: "northamerica", label: t("Norteamérica", "North America"), icon: "🇺🇸" },
-              { value: "latam", label: t("Latam", "Latam"), icon: "🌎" },
-              { value: "europe", label: t("Europa", "Europe"), icon: "🇪🇺" },
-              { value: "asia", label: t("Asia / Oceanía", "Asia / Oceania"), icon: "🌏" },
-              { value: "africa", label: t("África", "Africa"), icon: "🌍" },
-            ]}
-          />
-          <SelectFilter
+        <div className="grid divide-y divide-border/60 lg:grid-cols-[1.15fr_1.35fr_1fr] lg:divide-x lg:divide-y-0">
+          {/* Dónde */}
+          <FilterGroup title={t("Dónde", "Where")}>
+            <SelectFilter
+              label={t("Región", "Region")}
+              value={filters.region}
+              onChange={(v) => set("region", v)}
+              options={[
+                { value: "any", label: t("Todas", "All"), icon: "🌍" },
+                { value: "northamerica", label: t("Norteamérica", "North America"), icon: "🇺🇸" },
+                { value: "latam", label: t("Latam", "Latam"), icon: "🌎" },
+                { value: "europe", label: t("Europa", "Europe"), icon: "🇪🇺" },
+                { value: "asia", label: t("Asia / Oceanía", "Asia / Oceania"), icon: "🌏" },
+                { value: "africa", label: t("África", "Africa"), icon: "🦁" },
+              ]}
+            />
+            <SelectFilter
+              label={t("Clima", "Climate")}
+              value={filters.climate}
+              onChange={(v) => set("climate", v)}
+              options={[
+                { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
+                { value: "warm", label: t("Cálido", "Warm"), icon: "☀️" },
+                { value: "beach", label: t("Playa", "Beach"), icon: "🏖️" },
+                { value: "temperate", label: t("Templado", "Temperate"), icon: "🌤️" },
+                { value: "cold", label: t("Frío", "Cold"), icon: "❄️" },
+              ]}
+            />
+          </FilterGroup>
 
-            label={t("Clima", "Climate")}
-            value={filters.climate}
-            onChange={(v) => set("climate", v)}
-            options={[
-              { value: "warm", label: t("Cálido", "Warm"), icon: "☀️" },
-              { value: "beach", label: t("Playa", "Beach"), icon: "🏖️" },
-              { value: "temperate", label: t("Templado", "Temperate"), icon: "🌤️" },
-              { value: "cold", label: t("Frío", "Cold"), icon: "❄️" },
-              { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
-            ]}
-          />
-          <SelectFilter
-            label={t("Salario", "Salary")}
-            value={filters.salary}
-            onChange={(v) => set("salary", v)}
-            options={[
-              { value: "low_cost", label: t("Costo bajo", "Lower cost"), icon: "💸" },
-              { value: "balanced", label: t("Equilibrado", "Balanced"), icon: "⚖️" },
-              { value: "high_income", label: t("Alto potencial", "High income"), icon: "📈" },
-              { value: "highest_paying", label: t("Mejor pagadas", "Highest paying"), icon: "💎" },
-              { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
-            ]}
-          />
-          <SelectFilter
-            label={t("Impuestos", "Taxes")}
-            value={filters.tax}
-            onChange={(v) => set("tax", v)}
-            options={[
-              { value: "low", label: t("Bajos", "Low"), icon: "🟢" },
-              { value: "medium", label: t("Medios", "Medium"), icon: "🟡" },
-              { value: "high", label: t("Altos", "High"), icon: "🔴" },
-              { value: "any", label: t("Indiferente", "Any"), icon: "🌍" },
-            ]}
-          />
-          <SelectFilter
-            label={t("Seguridad", "Safety")}
-            value={filters.safety}
-            onChange={(v) => set("safety", v)}
-            options={[
-              { value: "essential", label: t("Esencial", "Essential"), icon: "★★★★★" },
-              { value: "important", label: t("Importante", "Important"), icon: "★★★★" },
-              { value: "neutral", label: t("Neutral", "Neutral"), icon: "★★★" },
-            ]}
-          />
-          <SelectFilter
-            label={t("Etapa", "Life stage")}
-            value={filters.stage}
-            onChange={(v) => set("stage", v)}
-            options={[
-              { value: "single", label: t("Soltero/a", "Single"), icon: "👤" },
-              { value: "relationship", label: t("En pareja", "Couple"), icon: "❤️" },
-              { value: "married", label: t("Casado/a", "Married"), icon: "💍" },
-              { value: "family", label: t("Con hijos", "With children"), icon: "👨‍👩‍👧" },
-              { value: "single_parent", label: t("Monoparental", "Single parent"), icon: "👨‍👦" },
-              { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
-            ]}
-          />
-          <SelectFilter
-            label={t("Objetivo", "Goal")}
-            value={filters.goal}
-            onChange={(v) => set("goal", v)}
-            options={[
-              { value: "save", label: t("Ahorrar más", "Save more"), icon: "💰" },
-              { value: "lifestyle", label: t("Estilo de vida", "Lifestyle"), icon: "🌴" },
-              { value: "retire", label: t("Retirarme antes", "Retire earlier"), icon: "🚀" },
-              { value: "family", label: t("Familia", "Family"), icon: "👨‍👩‍👧" },
-              { value: "career", label: t("Carrera", "Career"), icon: "💼" },
-              { value: "nomad", label: t("Nómada digital", "Digital nomad"), icon: "🌍" },
-            ]}
-          />
-          <SelectFilter
-            label={t("Cómo vivir", "Comfort level")}
-            value={filters.comfort}
-            onChange={(v) => set("comfort", v)}
-            options={[
-              { value: "tight", label: t("Ajustado", "Tight"), icon: "🪙" },
-              { value: "comfortable", label: t("Cómodo", "Comfortable"), icon: "🛋️" },
-              { value: "luxury", label: t("Lujo", "Luxury"), icon: "🥂" },
-            ]}
-          />
+          {/* Dinero */}
+          <FilterGroup title={t("Dinero", "Money")}>
+            <div className="col-span-2">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                  {t("Presupuesto mensual", "Monthly budget")}
+                </p>
+                <p className="numeric text-xs font-semibold text-primary">
+                  {fmt(filters.budget)}
+                  {filters.budget >= 15000 && "+"}
+                </p>
+              </div>
+              <Slider
+                className="mt-3"
+                min={2000}
+                max={15000}
+                step={250}
+                value={[filters.budget]}
+                onValueChange={([v]) => set("budget", v ?? 2000)}
+              />
+            </div>
+            <SelectFilter
+              label={t("Cómo vivir", "Comfort level")}
+              value={filters.comfort}
+              onChange={(v) => set("comfort", v)}
+              options={[
+                { value: "tight", label: t("Ajustado", "Tight"), icon: "🪙" },
+                { value: "comfortable", label: t("Cómodo", "Comfortable"), icon: "🛋️" },
+                { value: "luxury", label: t("Lujo", "Luxury"), icon: "🥂" },
+              ]}
+            />
+            <SelectFilter
+              label={t("Impuestos", "Taxes")}
+              value={filters.tax}
+              onChange={(v) => set("tax", v)}
+              options={[
+                { value: "any", label: t("Indiferente", "Any"), icon: "🌍" },
+                { value: "low", label: t("Bajos", "Low"), icon: "🟢" },
+                { value: "medium", label: t("Medios", "Medium"), icon: "🟡" },
+                { value: "high", label: t("Altos", "High"), icon: "🔴" },
+              ]}
+            />
+            <SelectFilter
+              label={t("Salario", "Salary")}
+              value={filters.salary}
+              onChange={(v) => set("salary", v)}
+              options={[
+                { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
+                { value: "low_cost", label: t("Costo bajo", "Lower cost"), icon: "💸" },
+                { value: "balanced", label: t("Equilibrado", "Balanced"), icon: "⚖️" },
+                { value: "high_income", label: t("Alto potencial", "High income"), icon: "📈" },
+                { value: "highest_paying", label: t("Mejor pagadas", "Highest paying"), icon: "💎" },
+              ]}
+            />
+          </FilterGroup>
+
+          {/* Tú */}
+          <FilterGroup title={t("Tú", "You")}>
+            <SelectFilter
+              label={t("Etapa", "Life stage")}
+              value={filters.stage}
+              onChange={(v) => set("stage", v)}
+              options={[
+                { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
+                { value: "single", label: t("Soltero/a", "Single"), icon: "👤" },
+                { value: "relationship", label: t("En pareja", "Couple"), icon: "❤️" },
+                { value: "married", label: t("Casado/a", "Married"), icon: "💍" },
+                { value: "family", label: t("Con hijos", "With children"), icon: "👨‍👩‍👧" },
+                { value: "single_parent", label: t("Monoparental", "Single parent"), icon: "👨‍👦" },
+              ]}
+            />
+            <SelectFilter
+              label={t("Seguridad", "Safety")}
+              value={filters.safety}
+              onChange={(v) => set("safety", v)}
+              options={[
+                { value: "essential", label: t("Esencial", "Essential"), icon: "★★★★★" },
+                { value: "important", label: t("Importante", "Important"), icon: "★★★★" },
+                { value: "neutral", label: t("Neutral", "Neutral"), icon: "★★★" },
+              ]}
+            />
+            <div className="col-span-2">
+              <SelectFilter
+                label={t("Objetivo", "Goal")}
+                value={filters.goal}
+                onChange={(v) => set("goal", v)}
+                options={[
+                  { value: "save", label: t("Ahorrar más", "Save more"), icon: "💰" },
+                  { value: "lifestyle", label: t("Estilo de vida", "Lifestyle"), icon: "🌴" },
+                  { value: "retire", label: t("Retirarme antes", "Retire earlier"), icon: "🚀" },
+                  { value: "family", label: t("Familia", "Family"), icon: "👨‍👩‍👧" },
+                  { value: "career", label: t("Carrera", "Career"), icon: "💼" },
+                  { value: "nomad", label: t("Nómada digital", "Digital nomad"), icon: "🌍" },
+                ]}
+              />
+            </div>
+          </FilterGroup>
         </div>
       </div>
 
@@ -302,6 +328,7 @@ function LifestyleSimulator() {
           />
         ))}
       </div>
+
 
       <CityDetail r={detail} filters={filters} fmt={fmt} t={t} onClose={() => setDetail(null)} />
     </PageShell>
