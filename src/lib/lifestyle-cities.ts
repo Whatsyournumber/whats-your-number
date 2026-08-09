@@ -250,6 +250,8 @@ export type SafetyPref = "essential" | "important" | "neutral";
 export type LifeStage = "single" | "relationship" | "married" | "family" | "single_parent" | "any";
 export type GoalPref = "save" | "lifestyle" | "retire" | "family" | "career" | "nomad";
 
+export type ComfortPref = "tight" | "comfortable" | "luxury";
+
 export type Filters = {
   budget: number;
   climate: ClimatePref;
@@ -258,6 +260,7 @@ export type Filters = {
   safety: SafetyPref;
   stage: LifeStage;
   goal: GoalPref;
+  comfort: ComfortPref;
 };
 
 export const defaultFilters: Filters = {
@@ -268,7 +271,16 @@ export const defaultFilters: Filters = {
   safety: "important",
   stage: "any",
   goal: "save",
+  comfort: "comfortable",
 };
+
+/** Cuánto encarece el costo de vida según cómo quieres vivir. */
+export const COMFORT_FACTOR: Record<ComfortPref, number> = {
+  tight: 0.82,
+  comfortable: 1,
+  luxury: 1.55,
+};
+
 
 export type Metric =
   | "cost" | "housing" | "salary" | "purchasingPower" | "taxes" | "safety" | "healthcare"
