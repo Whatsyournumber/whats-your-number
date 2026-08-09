@@ -8,6 +8,9 @@
  * Son estimaciones de referencia, no cifras oficiales en tiempo real.
  */
 
+export type Region = "northamerica" | "latam" | "europe" | "asia" | "africa";
+export type RegionPref = Region | "any";
+
 export type Climate = "warm" | "beach" | "temperate" | "cold";
 
 export type CityData = {
@@ -15,6 +18,7 @@ export type CityData = {
   name: string;
   country: string;
   photo: string;
+  region: Region;
   climate: Climate;
   climateLabelEs: string;
   climateLabelEn: string;
@@ -50,35 +54,57 @@ export type CityData = {
 };
 
 const PHOTO = {
-  barcelona: "https://commons.wikimedia.org/wiki/Special:FilePath/Evening_light_over_Barcelona.jpg?width=1200",
+  barcelona:
+    "https://upload.wikimedia.org/wikipedia/commons/e/ef/SF_maig_2_cropped.jpg",
   madrid:
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Plaza_Mayor_De_Madrid_%28215862629%29_edited.jpeg?width=1200",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Madrid_Plaza_Mayor_%2848733706273%29.jpg/1920px-Madrid_Plaza_Mayor_%2848733706273%29.jpg",
   valencia:
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Malvarrosa_Beach%2C_Valencia%2C_Spain_%2829812271043%29.jpg?width=1200",
-  lisbon: "https://commons.wikimedia.org/wiki/Special:FilePath/Lisboa_-_Portugal_%2852597836992%29.jpg?width=1200",
-  london: "https://commons.wikimedia.org/wiki/Special:FilePath/London_Skyline_%28125508655%29.jpeg?width=1200",
-  dubai: "https://en.wikipedia.org/wiki/Special:FilePath/Burj_Khalifa_2021.jpg?width=1200",
-  singapore: "https://commons.wikimedia.org/wiki/Special:FilePath/Marina_Bay_Sands_%28I%29.jpg?width=1200",
-  tokyo: "https://commons.wikimedia.org/wiki/Special:FilePath/Shibuya_Crossing%2C_Aerial.jpg?width=1200",
-  bangkok: "https://commons.wikimedia.org/wiki/Special:FilePath/4Y1A1159_Bangkok_%2833536795515%29.jpg?width=1200",
-  miami: "https://commons.wikimedia.org/wiki/Special:FilePath/Ocean_drive_day_2009j.JPG?width=1200",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Hemispheric_Twilight_-_Valencia%2C_Spain_-_Jan_2007.jpg/1920px-Hemispheric_Twilight_-_Valencia%2C_Spain_-_Jan_2007.jpg",
+  lisbon:
+    "https://upload.wikimedia.org/wikipedia/commons/f/fa/Bel%C3%A9m_Tower_in_Lisbon%2C_Portugal.jpg",
+  london:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Tower_Bridge_at_Dawn.jpg/1920px-Tower_Bridge_at_Dawn.jpg",
+  dubai:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Burj_Khalifa_%28worlds_tallest_building%29_and_the_Dubai_skyline_%2825781049892%29.jpg/1920px-Burj_Khalifa_%28worlds_tallest_building%29_and_the_Dubai_skyline_%2825781049892%29.jpg",
+  singapore:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Marina_Bay_Sands_%28I%29.jpg/1920px-Marina_Bay_Sands_%28I%29.jpg",
+  tokyo:
+    "https://upload.wikimedia.org/wikipedia/commons/4/43/Sensoji_2023.jpg",
+  bangkok:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/%E0%B9%80%E0%B8%88%E0%B8%94%E0%B8%B5%E0%B8%A2%E0%B9%8C%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%98%E0%B8%B2%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B8%87%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%87%E0%B8%84%E0%B9%8C%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AD%E0%B8%A3%E0%B8%B8%E0%B8%932.jpg/1920px-%E0%B9%80%E0%B8%88%E0%B8%94%E0%B8%B5%E0%B8%A2%E0%B9%8C%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%98%E0%B8%B2%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B8%87%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%87%E0%B8%84%E0%B9%8C%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AD%E0%B8%A3%E0%B8%B8%E0%B8%932.jpg",
+  miami:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Ocean_drive_day_2009j.JPG/1920px-Ocean_drive_day_2009j.JPG",
   newyork:
-    "https://commons.wikimedia.org/wiki/Special:FilePath/View_of_Empire_State_Building_from_Rockefeller_Center_New_York_City_dllu_%28cropped%29.jpg?width=1200",
+    "https://upload.wikimedia.org/wikipedia/commons/1/10/Empire_State_Building_%28aerial_view%29.jpg",
   sydney:
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Sydney_Opera_House_and_Harbour_Bridge_Dusk_%282%29_2019-06-21.jpg?width=1200",
-  vancouver: "https://commons.wikimedia.org/wiki/Special:FilePath/Skyline_of_Vancouver%2C_Canada.jpg?width=1200",
-  zurich: "https://commons.wikimedia.org/wiki/Special:FilePath/Altstadt_Z%C3%BCrich_2015.jpg?width=1200",
+    "https://upload.wikimedia.org/wikipedia/commons/a/a0/Sydney_Australia._%2821339175489%29.jpg",
+  vancouver:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Vancouver_skyline_stanley_park.jpg/1920px-Vancouver_skyline_stanley_park.jpg",
+  zurich:
+    "https://upload.wikimedia.org/wikipedia/commons/1/11/Grossm%C3%BCnster_-_M%C3%BCnsterhof_2014-05-23_12-08-43.JPG",
   amsterdam:
-    "https://commons.wikimedia.org/wiki/Special:FilePath/Imagen_de_los_canales_conc%C3%A9ntricos_en_%C3%81msterdam.png?width=1200",
+    "https://upload.wikimedia.org/wikipedia/commons/5/57/Imagen_de_los_canales_conc%C3%A9ntricos_en_%C3%81msterdam.png",
   copenhagen:
-    "https://commons.wikimedia.org/wiki/Special:FilePath/2018_-_Christiansborg_from_the_Marble_Bridge.jpg?width=1200",
-  bali: "https://commons.wikimedia.org/wiki/Special:FilePath/Ubud_%2849818456887%29.jpg?width=1200",
-  medellin: "https://commons.wikimedia.org/wiki/Special:FilePath/El_Poblado_Medell%C3%ADn.jpg?width=1200",
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/The_Nyhavn_Canal_3.jpg/1920px-The_Nyhavn_Canal_3.jpg",
+  bali:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Pura_Ulun_Danu_Bratan%2C_2022.jpg/1920px-Pura_Ulun_Danu_Bratan%2C_2022.jpg",
+  medellin:
+    "https://upload.wikimedia.org/wikipedia/commons/a/a5/Metrocablemed.jpg",
+  mexico:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Angel_de_la_independencia170409.jpg/1920px-Angel_de_la_independencia170409.jpg",
+  buenosaires:
+    "https://upload.wikimedia.org/wikipedia/commons/3/39/Obelisco_de_Buenos_Aires%2C_with_traffic_lights.jpg",
+  panama:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Cinta_Costera_de_Panam%C3%A1.jpg/1920px-Cinta_Costera_de_Panam%C3%A1.jpg",
+  capetown:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Cape_Town_%28ZA%29%2C_Table_Mountain_--_2024_--_2825.jpg/1920px-Cape_Town_%28ZA%29%2C_Table_Mountain_--_2024_--_2825.jpg",
+  marrakech:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Marrakesh_Koutoubia_Minaret_seen_from_the_western_end_of_Jemaa_el-Fnaa.jpg/1920px-Marrakesh_Koutoubia_Minaret_seen_from_the_western_end_of_Jemaa_el-Fnaa.jpg",
 };
 
 export const lifestyleCities: CityData[] = [
   {
-    id: "barcelona", name: "Barcelona", country: "España", photo: PHOTO.barcelona,
+    id: "barcelona", name: "Barcelona", country: "España", photo: PHOTO.barcelona, region: "europe",
     climate: "beach", climateLabelEs: "Mediterráneo", climateLabelEn: "Mediterranean",
     housing: 1450, food: 520, transport: 60, healthcare: 90, education: 260, internet: 35, entertainment: 380,
     avgSalary: 2450, taxRate: 32,
@@ -87,7 +113,7 @@ export const lifestyleCities: CityData[] = [
     schools: 78, jobMarket: 68, beachKm: 0, intlAirport: true,
   },
   {
-    id: "madrid", name: "Madrid", country: "España", photo: PHOTO.madrid,
+    id: "madrid", name: "Madrid", country: "España", photo: PHOTO.madrid, region: "europe",
     climate: "temperate", climateLabelEs: "Continental seco", climateLabelEn: "Dry continental",
     housing: 1400, food: 500, transport: 55, healthcare: 85, education: 250, internet: 33, entertainment: 360,
     avgSalary: 2550, taxRate: 32,
@@ -96,7 +122,7 @@ export const lifestyleCities: CityData[] = [
     schools: 80, jobMarket: 76, beachKm: 350, intlAirport: true,
   },
   {
-    id: "valencia", name: "Valencia", country: "España", photo: PHOTO.valencia,
+    id: "valencia", name: "Valencia", country: "España", photo: PHOTO.valencia, region: "europe",
     climate: "beach", climateLabelEs: "Mediterráneo cálido", climateLabelEn: "Warm Mediterranean",
     housing: 1000, food: 430, transport: 45, healthcare: 80, education: 210, internet: 30, entertainment: 290,
     avgSalary: 2050, taxRate: 30,
@@ -105,7 +131,7 @@ export const lifestyleCities: CityData[] = [
     schools: 76, jobMarket: 58, beachKm: 0, intlAirport: true,
   },
   {
-    id: "lisbon", name: "Lisboa", country: "Portugal", photo: PHOTO.lisbon,
+    id: "lisbon", name: "Lisboa", country: "Portugal", photo: PHOTO.lisbon, region: "europe",
     climate: "beach", climateLabelEs: "Atlántico templado", climateLabelEn: "Mild Atlantic",
     housing: 1350, food: 470, transport: 45, healthcare: 85, education: 300, internet: 33, entertainment: 320,
     avgSalary: 1750, taxRate: 34,
@@ -114,7 +140,7 @@ export const lifestyleCities: CityData[] = [
     schools: 72, jobMarket: 58, beachKm: 8, intlAirport: true,
   },
   {
-    id: "london", name: "Londres", country: "Reino Unido", photo: PHOTO.london,
+    id: "london", name: "Londres", country: "Reino Unido", photo: PHOTO.london, region: "europe",
     climate: "cold", climateLabelEs: "Oceánico fresco", climateLabelEn: "Cool oceanic",
     housing: 2650, food: 620, transport: 200, healthcare: 90, education: 620, internet: 35, entertainment: 520,
     avgSalary: 4100, taxRate: 33,
@@ -123,7 +149,7 @@ export const lifestyleCities: CityData[] = [
     schools: 88, jobMarket: 94, beachKm: 90, intlAirport: true,
   },
   {
-    id: "dubai", name: "Dubái", country: "Emiratos Árabes", photo: PHOTO.dubai,
+    id: "dubai", name: "Dubái", country: "Emiratos Árabes", photo: PHOTO.dubai, region: "asia",
     climate: "warm", climateLabelEs: "Desértico cálido", climateLabelEn: "Hot desert",
     housing: 2300, food: 560, transport: 150, healthcare: 220, education: 750, internet: 90, entertainment: 480,
     avgSalary: 4600, taxRate: 0,
@@ -132,7 +158,7 @@ export const lifestyleCities: CityData[] = [
     schools: 82, jobMarket: 88, beachKm: 0, intlAirport: true,
   },
   {
-    id: "singapore", name: "Singapur", country: "Singapur", photo: PHOTO.singapore,
+    id: "singapore", name: "Singapur", country: "Singapur", photo: PHOTO.singapore, region: "asia",
     climate: "warm", climateLabelEs: "Tropical húmedo", climateLabelEn: "Humid tropical",
     housing: 2900, food: 600, transport: 90, healthcare: 200, education: 800, internet: 40, entertainment: 500,
     avgSalary: 4900, taxRate: 15,
@@ -141,7 +167,7 @@ export const lifestyleCities: CityData[] = [
     schools: 94, jobMarket: 92, beachKm: 5, intlAirport: true,
   },
   {
-    id: "tokyo", name: "Tokio", country: "Japón", photo: PHOTO.tokyo,
+    id: "tokyo", name: "Tokio", country: "Japón", photo: PHOTO.tokyo, region: "asia",
     climate: "temperate", climateLabelEs: "Templado húmedo", climateLabelEn: "Humid temperate",
     housing: 1550, food: 470, transport: 110, healthcare: 120, education: 420, internet: 40, entertainment: 380,
     avgSalary: 2700, taxRate: 30,
@@ -150,7 +176,7 @@ export const lifestyleCities: CityData[] = [
     schools: 90, jobMarket: 80, beachKm: 60, intlAirport: true,
   },
   {
-    id: "bangkok", name: "Bangkok", country: "Tailandia", photo: PHOTO.bangkok,
+    id: "bangkok", name: "Bangkok", country: "Tailandia", photo: PHOTO.bangkok, region: "asia",
     climate: "warm", climateLabelEs: "Tropical", climateLabelEn: "Tropical",
     housing: 750, food: 320, transport: 60, healthcare: 90, education: 500, internet: 20, entertainment: 250,
     avgSalary: 1150, taxRate: 18,
@@ -159,7 +185,7 @@ export const lifestyleCities: CityData[] = [
     schools: 66, jobMarket: 54, beachKm: 130, intlAirport: true,
   },
   {
-    id: "miami", name: "Miami", country: "Estados Unidos", photo: PHOTO.miami,
+    id: "miami", name: "Miami", country: "Estados Unidos", photo: PHOTO.miami, region: "northamerica",
     climate: "beach", climateLabelEs: "Subtropical cálido", climateLabelEn: "Warm subtropical",
     housing: 2450, food: 620, transport: 220, healthcare: 420, education: 900, internet: 70, entertainment: 520,
     avgSalary: 4300, taxRate: 24,
@@ -168,7 +194,7 @@ export const lifestyleCities: CityData[] = [
     schools: 72, jobMarket: 84, beachKm: 0, intlAirport: true,
   },
   {
-    id: "newyork", name: "Nueva York", country: "Estados Unidos", photo: PHOTO.newyork,
+    id: "newyork", name: "Nueva York", country: "Estados Unidos", photo: PHOTO.newyork, region: "northamerica",
     climate: "cold", climateLabelEs: "Continental", climateLabelEn: "Continental",
     housing: 3400, food: 750, transport: 135, healthcare: 480, education: 1100, internet: 65, entertainment: 640,
     avgSalary: 5600, taxRate: 34,
@@ -177,7 +203,7 @@ export const lifestyleCities: CityData[] = [
     schools: 84, jobMarket: 96, beachKm: 25, intlAirport: true,
   },
   {
-    id: "sydney", name: "Sídney", country: "Australia", photo: PHOTO.sydney,
+    id: "sydney", name: "Sídney", country: "Australia", photo: PHOTO.sydney, region: "asia",
     climate: "beach", climateLabelEs: "Oceánico cálido", climateLabelEn: "Warm oceanic",
     housing: 2400, food: 620, transport: 150, healthcare: 180, education: 700, internet: 60, entertainment: 480,
     avgSalary: 4200, taxRate: 30,
@@ -186,7 +212,7 @@ export const lifestyleCities: CityData[] = [
     schools: 88, jobMarket: 82, beachKm: 0, intlAirport: true,
   },
   {
-    id: "vancouver", name: "Vancouver", country: "Canadá", photo: PHOTO.vancouver,
+    id: "vancouver", name: "Vancouver", country: "Canadá", photo: PHOTO.vancouver, region: "northamerica",
     climate: "cold", climateLabelEs: "Oceánico lluvioso", climateLabelEn: "Rainy oceanic",
     housing: 2150, food: 560, transport: 100, healthcare: 90, education: 500, internet: 60, entertainment: 400,
     avgSalary: 3500, taxRate: 31,
@@ -195,7 +221,7 @@ export const lifestyleCities: CityData[] = [
     schools: 88, jobMarket: 76, beachKm: 2, intlAirport: true,
   },
   {
-    id: "zurich", name: "Zúrich", country: "Suiza", photo: PHOTO.zurich,
+    id: "zurich", name: "Zúrich", country: "Suiza", photo: PHOTO.zurich, region: "europe",
     climate: "cold", climateLabelEs: "Alpino templado", climateLabelEn: "Temperate alpine",
     housing: 2500, food: 780, transport: 90, healthcare: 420, education: 400, internet: 55, entertainment: 520,
     avgSalary: 7200, taxRate: 22,
@@ -204,7 +230,7 @@ export const lifestyleCities: CityData[] = [
     schools: 94, jobMarket: 86, beachKm: 300, intlAirport: true,
   },
   {
-    id: "amsterdam", name: "Ámsterdam", country: "Países Bajos", photo: PHOTO.amsterdam,
+    id: "amsterdam", name: "Ámsterdam", country: "Países Bajos", photo: PHOTO.amsterdam, region: "europe",
     climate: "cold", climateLabelEs: "Oceánico fresco", climateLabelEn: "Cool oceanic",
     housing: 2100, food: 560, transport: 100, healthcare: 160, education: 450, internet: 45, entertainment: 430,
     avgSalary: 3600, taxRate: 37,
@@ -213,7 +239,7 @@ export const lifestyleCities: CityData[] = [
     schools: 90, jobMarket: 84, beachKm: 25, intlAirport: true,
   },
   {
-    id: "copenhagen", name: "Copenhague", country: "Dinamarca", photo: PHOTO.copenhagen,
+    id: "copenhagen", name: "Copenhague", country: "Dinamarca", photo: PHOTO.copenhagen, region: "europe",
     climate: "cold", climateLabelEs: "Nórdico templado", climateLabelEn: "Mild Nordic",
     housing: 2000, food: 600, transport: 90, healthcare: 80, education: 350, internet: 40, entertainment: 430,
     avgSalary: 4200, taxRate: 45,
@@ -222,7 +248,7 @@ export const lifestyleCities: CityData[] = [
     schools: 94, jobMarket: 80, beachKm: 5, intlAirport: true,
   },
   {
-    id: "bali", name: "Bali", country: "Indonesia", photo: PHOTO.bali,
+    id: "bali", name: "Bali", country: "Indonesia", photo: PHOTO.bali, region: "asia",
     climate: "beach", climateLabelEs: "Tropical de playa", climateLabelEn: "Tropical beach",
     housing: 700, food: 300, transport: 70, healthcare: 90, education: 600, internet: 35, entertainment: 260,
     avgSalary: 850, taxRate: 15,
@@ -231,13 +257,58 @@ export const lifestyleCities: CityData[] = [
     schools: 58, jobMarket: 36, beachKm: 0, intlAirport: true,
   },
   {
-    id: "medellin", name: "Medellín", country: "Colombia", photo: PHOTO.medellin,
+    id: "medellin", name: "Medellín", country: "Colombia", photo: PHOTO.medellin, region: "latam",
     climate: "warm", climateLabelEs: "Primavera eterna", climateLabelEn: "Eternal spring",
     housing: 700, food: 320, transport: 55, healthcare: 70, education: 350, internet: 25, entertainment: 240,
     avgSalary: 900, taxRate: 19,
     safety: 52, healthcareScore: 74, qualityOfLife: 72, purchasingPower: 34, walkability: 66, publicTransport: 80,
     airQuality: 54, greenSpaces: 72, internetSpeed: 130, englishFriendly: 42, remoteWork: 88, nightlife: 88,
     schools: 62, jobMarket: 46, beachKm: 300, intlAirport: true,
+  },
+  {
+    id: "mexico", name: "Ciudad de México", country: "México", photo: PHOTO.mexico, region: "latam",
+    climate: "temperate", climateLabelEs: "Templado de altura", climateLabelEn: "Highland temperate",
+    housing: 900, food: 380, transport: 60, healthcare: 90, education: 400, internet: 30, entertainment: 300,
+    avgSalary: 1100, taxRate: 20,
+    safety: 48, healthcareScore: 70, qualityOfLife: 70, purchasingPower: 38, walkability: 72, publicTransport: 74,
+    airQuality: 44, greenSpaces: 62, internetSpeed: 120, englishFriendly: 46, remoteWork: 86, nightlife: 92,
+    schools: 66, jobMarket: 62, beachKm: 300, intlAirport: true,
+  },
+  {
+    id: "buenosaires", name: "Buenos Aires", country: "Argentina", photo: PHOTO.buenosaires, region: "latam",
+    climate: "temperate", climateLabelEs: "Templado húmedo", climateLabelEn: "Humid temperate",
+    housing: 650, food: 330, transport: 35, healthcare: 80, education: 320, internet: 25, entertainment: 250,
+    avgSalary: 800, taxRate: 22,
+    safety: 54, healthcareScore: 74, qualityOfLife: 72, purchasingPower: 32, walkability: 88, publicTransport: 82,
+    airQuality: 62, greenSpaces: 68, internetSpeed: 110, englishFriendly: 52, remoteWork: 84, nightlife: 96,
+    schools: 70, jobMarket: 48, beachKm: 350, intlAirport: true,
+  },
+  {
+    id: "panama", name: "Ciudad de Panamá", country: "Panamá", photo: PHOTO.panama, region: "latam",
+    climate: "warm", climateLabelEs: "Tropical húmedo", climateLabelEn: "Humid tropical",
+    housing: 1150, food: 450, transport: 70, healthcare: 130, education: 600, internet: 45, entertainment: 320,
+    avgSalary: 1500, taxRate: 15,
+    safety: 62, healthcareScore: 76, qualityOfLife: 74, purchasingPower: 48, walkability: 60, publicTransport: 62,
+    airQuality: 64, greenSpaces: 70, internetSpeed: 140, englishFriendly: 66, remoteWork: 84, nightlife: 78,
+    schools: 70, jobMarket: 66, beachKm: 5, intlAirport: true,
+  },
+  {
+    id: "capetown", name: "Ciudad del Cabo", country: "Sudáfrica", photo: PHOTO.capetown, region: "africa",
+    climate: "beach", climateLabelEs: "Mediterráneo costero", climateLabelEn: "Coastal Mediterranean",
+    housing: 850, food: 350, transport: 90, healthcare: 110, education: 400, internet: 40, entertainment: 280,
+    avgSalary: 1350, taxRate: 26,
+    safety: 38, healthcareScore: 68, qualityOfLife: 74, purchasingPower: 42, walkability: 52, publicTransport: 40,
+    airQuality: 76, greenSpaces: 90, internetSpeed: 90, englishFriendly: 96, remoteWork: 80, nightlife: 80,
+    schools: 66, jobMarket: 50, beachKm: 0, intlAirport: true,
+  },
+  {
+    id: "marrakech", name: "Marrakech", country: "Marruecos", photo: PHOTO.marrakech, region: "africa",
+    climate: "warm", climateLabelEs: "Semiárido cálido", climateLabelEn: "Hot semi-arid",
+    housing: 520, food: 260, transport: 40, healthcare: 70, education: 350, internet: 25, entertainment: 200,
+    avgSalary: 650, taxRate: 20,
+    safety: 62, healthcareScore: 58, qualityOfLife: 66, purchasingPower: 28, walkability: 74, publicTransport: 46,
+    airQuality: 58, greenSpaces: 50, internetSpeed: 70, englishFriendly: 40, remoteWork: 76, nightlife: 60,
+    schools: 54, jobMarket: 38, beachKm: 180, intlAirport: true,
   },
 ];
 
@@ -261,6 +332,7 @@ export type Filters = {
   stage: LifeStage;
   goal: GoalPref;
   comfort: ComfortPref;
+  region: RegionPref;
 };
 
 export const defaultFilters: Filters = {
@@ -272,6 +344,7 @@ export const defaultFilters: Filters = {
   stage: "any",
   goal: "save",
   comfort: "comfortable",
+  region: "any",
 };
 
 /** Cuánto encarece el costo de vida según cómo quieres vivir. */
@@ -471,5 +544,6 @@ export function scoreCity(
 }
 
 export function rankCities(f: Filters, ctx: { netWorth: number; age: number; expectedReturn: number }) {
-  return lifestyleCities.map((c) => scoreCity(c, f, ctx)).sort((a, b) => b.score - a.score);
+  const pool = f.region === "any" ? lifestyleCities : lifestyleCities.filter((c) => c.region === f.region);
+  return pool.map((c) => scoreCity(c, f, ctx)).sort((a, b) => b.score - a.score);
 }
