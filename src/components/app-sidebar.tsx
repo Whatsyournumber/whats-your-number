@@ -48,7 +48,7 @@ export function AppSidebar() {
     { title: t("Patrimonio", "Net Worth"), url: "/patrimonio", icon: Landmark },
     { title: t("Portafolio", "Portfolio"), url: "/portafolio", icon: LineChart },
     { title: "WhatsYournumber", url: "/retiro", icon: PiggyBank },
-    { title: t("Ciudades para vivir", "Cities to live in"), url: "/ciudades", icon: Globe },
+    { title: "Lifestyle Simulator", url: "/ciudades", icon: Globe },
 
     { title: t("Distribución del dinero", "Money Distribution"), url: "/cash-flow", icon: Waves },
     { title: t("Objetivos", "Goals"), url: "/objetivos", icon: Target },
