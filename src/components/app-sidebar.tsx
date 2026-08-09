@@ -5,6 +5,8 @@ import {
   Landmark,
   LineChart,
   PiggyBank,
+  Globe,
+
   Waves,
   Sparkles,
   Target,
@@ -45,7 +47,9 @@ export function AppSidebar() {
     { title: t("Análisis de Gastos", "Spending Analysis"), url: "/gastos", icon: PieChart },
     { title: t("Patrimonio", "Net Worth"), url: "/patrimonio", icon: Landmark },
     { title: t("Portafolio", "Portfolio"), url: "/portafolio", icon: LineChart },
-    { title: t("Fondo de Retiro", "Retirement Fund"), url: "/retiro", icon: PiggyBank },
+    { title: "WhatsYournumber", url: "/retiro", icon: PiggyBank },
+    { title: t("Ciudades para vivir", "Cities to live in"), url: "/ciudades", icon: Globe },
+
     { title: "Cash Flow", url: "/cash-flow", icon: Waves },
     { title: t("Objetivos", "Goals"), url: "/objetivos", icon: Target },
   ] as const;

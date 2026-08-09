@@ -14,6 +14,7 @@ import { Route as AdvisorRouteImport } from './routes/advisor'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as CashFlowRouteImport } from './routes/cash-flow'
+import { Route as CiudadesRouteImport } from './routes/ciudades'
 import { Route as ConfiguracionRouteImport } from './routes/configuracion'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DemoRouteImport } from './routes/demo'
@@ -49,6 +50,11 @@ const BlogRoute = BlogRouteImport.update({
 const CashFlowRoute = CashFlowRouteImport.update({
   id: '/cash-flow',
   path: '/cash-flow',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CiudadesRoute = CiudadesRouteImport.update({
+  id: '/ciudades',
+  path: '/ciudades',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConfiguracionRoute = ConfiguracionRouteImport.update({
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
   '/cash-flow': typeof CashFlowRoute
+  '/ciudades': typeof CiudadesRoute
   '/configuracion': typeof ConfiguracionRoute
   '/dashboard': typeof DashboardRoute
   '/demo': typeof DemoRoute
@@ -131,6 +138,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
   '/cash-flow': typeof CashFlowRoute
+  '/ciudades': typeof CiudadesRoute
   '/configuracion': typeof ConfiguracionRoute
   '/dashboard': typeof DashboardRoute
   '/demo': typeof DemoRoute
@@ -150,6 +158,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
   '/cash-flow': typeof CashFlowRoute
+  '/ciudades': typeof CiudadesRoute
   '/configuracion': typeof ConfiguracionRoute
   '/dashboard': typeof DashboardRoute
   '/demo': typeof DemoRoute
@@ -170,6 +179,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/blog'
     | '/cash-flow'
+    | '/ciudades'
     | '/configuracion'
     | '/dashboard'
     | '/demo'
@@ -188,6 +198,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/blog'
     | '/cash-flow'
+    | '/ciudades'
     | '/configuracion'
     | '/dashboard'
     | '/demo'
@@ -206,6 +217,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/blog'
     | '/cash-flow'
+    | '/ciudades'
     | '/configuracion'
     | '/dashboard'
     | '/demo'
@@ -225,6 +237,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BlogRoute: typeof BlogRoute
   CashFlowRoute: typeof CashFlowRoute
+  CiudadesRoute: typeof CiudadesRoute
   ConfiguracionRoute: typeof ConfiguracionRoute
   DashboardRoute: typeof DashboardRoute
   DemoRoute: typeof DemoRoute
@@ -273,6 +286,13 @@ declare module '@tanstack/react-router' {
       path: '/cash-flow'
       fullPath: '/cash-flow'
       preLoaderRoute: typeof CashFlowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ciudades': {
+      id: '/ciudades'
+      path: '/ciudades'
+      fullPath: '/ciudades'
+      preLoaderRoute: typeof CiudadesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/configuracion': {
@@ -361,6 +381,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BlogRoute: BlogRoute,
   CashFlowRoute: CashFlowRoute,
+  CiudadesRoute: CiudadesRoute,
   ConfiguracionRoute: ConfiguracionRoute,
   DashboardRoute: DashboardRoute,
   DemoRoute: DemoRoute,
