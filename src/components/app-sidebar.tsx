@@ -50,7 +50,7 @@ export function AppSidebar() {
     { title: "WhatsYournumber", url: "/retiro", icon: PiggyBank },
     { title: t("Ciudades para vivir", "Cities to live in"), url: "/ciudades", icon: Globe },
 
-    { title: "Cash Flow", url: "/cash-flow", icon: Waves },
+    { title: t("Distribución del flujo", "Cash Flow Distribution"), url: "/cash-flow", icon: Waves },
     { title: t("Objetivos", "Goals"), url: "/objetivos", icon: Target },
   ] as const;
 

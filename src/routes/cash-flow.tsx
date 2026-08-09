@@ -16,12 +16,12 @@ import { buildDataset } from "@/lib/profile-data";
 export const Route = createFileRoute("/cash-flow")({
   head: () => ({
     meta: [
-      { title: "Cash Flow — WhatsYournumber" },
+      { title: "Cash Flow Distribution — WhatsYournumber" },
       {
         name: "description",
         content: "Tu flujo real mes a mes: ingresos de los EEFF cargados hacia gastos fijos, lifestyle, inversiones y flujo libre.",
       },
-      { property: "og:title", content: "Cash Flow — WhatsYournumber" },
+      { property: "og:title", content: "Cash Flow Distribution — WhatsYournumber" },
       { property: "og:description", content: "Visualiza a dónde fluye cada dólar de tus ingresos cada mes, con datos reales." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -137,7 +137,7 @@ function CashFlow() {
     <PageShell>
       <PageHeader
         eyebrow={activeMonth ? monthLabel(activeMonth) : t("Sin EEFF cargados", "No statements uploaded")}
-        title="Cash Flow"
+        title={t("Distribución del flujo", "Cash Flow Distribution")}
         subtitle={
           hasReal
             ? t("Cómo se reparte cada dólar que entra, según tus estados de cuenta cargados.", "How every dollar you receive is allocated, based on your uploaded statements.")
