@@ -54,7 +54,8 @@ export const Route = createFileRoute("/ciudades")({
 
 type Opt<T> = { value: T; label: string; icon: string };
 
-function ChipGroup<T extends string>({
+/** Filtro compacto tipo dropdown, en línea con el resto del panel. */
+function SelectFilter<T extends string>({
   label,
   options,
   value,
@@ -66,29 +67,25 @@ function ChipGroup<T extends string>({
   onChange: (v: T) => void;
 }) {
   return (
-    <div>
-      <p className="text-xs font-medium text-muted-foreground">{label}</p>
-      <div className="mt-2 flex flex-wrap gap-2">
-        {options.map((o) => (
-          <button
-            key={o.value}
-            type="button"
-            onClick={() => onChange(o.value)}
-            className={cn(
-              "rounded-full border px-3 py-1.5 text-xs font-medium transition-all",
-              value === o.value
-                ? "border-primary/60 bg-primary/15 text-primary shadow-[0_0_0_1px_var(--color-primary)]/10"
-                : "border-border bg-elevated/40 text-muted-foreground hover:bg-elevated hover:text-foreground",
-            )}
-          >
-            <span className="mr-1">{o.icon}</span>
-            {o.label}
-          </button>
-        ))}
-      </div>
+    <div className="min-w-0">
+      <p className="truncate text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{label}</p>
+      <Select value={value} onValueChange={(v) => onChange(v as T)}>
+        <SelectTrigger className="mt-1 h-8 w-full border-border bg-elevated/40 px-2.5 text-xs">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((o) => (
+            <SelectItem key={o.value} value={o.value} className="text-xs">
+              <span className="mr-1.5">{o.icon}</span>
+              {o.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 }
+
 
 function LifestyleSimulator() {
   const t = useT();
