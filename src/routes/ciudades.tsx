@@ -419,17 +419,11 @@ function CityCard({
       <button type="button" onClick={onOpen} className="relative block aspect-[16/10] w-full overflow-hidden text-left">
         <img
           src={c.photo}
-          alt=""
-          aria-hidden
-          loading="lazy"
-          className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-2xl"
-        />
-        <img
-          src={c.photo}
           alt={`${c.name}, ${c.country}`}
           loading="lazy"
-          className="relative h-full w-full object-contain transition-transform duration-700 group-hover:scale-[1.04]"
+          className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.06]"
         />
+
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/25 to-background/10" />
 
         {rank === 0 && (
