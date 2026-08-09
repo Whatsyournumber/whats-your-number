@@ -133,6 +133,34 @@ function CashFlow() {
   const monthlySpend = hasReal ? fixedNeeds + spend.total : d.expenses;
   const runway = monthlySpend > 0 ? cash / monthlySpend : 0;
 
+  // Distribución del gasto del mes: categorías variables + gastos fijos.
+  const PALETTE = [
+    "var(--color-chart-1)",
+    "var(--color-chart-2)",
+    "var(--color-chart-3)",
+    "var(--color-chart-4)",
+    "var(--color-chart-5)",
+    "var(--color-primary)",
+  ];
+  const distribution = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const tx of monthTx) {
+      if (tx.amount >= 0) continue;
+      const cat = categorizeTx(tx as Tx, rules);
+      map.set(cat, (map.get(cat) ?? 0) + Math.abs(tx.amount));
+    }
+    if (fixedNeeds > 0) map.set(t("Gastos fijos", "Fixed expenses"), (map.get(t("Gastos fijos", "Fixed expenses")) ?? 0) + fixedNeeds);
+    if (fixedSavings > 0) map.set(t("Ahorro / inversión", "Savings / investing"), fixedSavings);
+    return [...map.entries()]
+      .map(([name, value]) => ({ name, value }))
+      .filter((s) => s.value > 0)
+      .sort((a, b) => b.value - a.value)
+      .map((s, i) => ({ ...s, color: PALETTE[i % PALETTE.length]! }));
+  }, [monthTx, rules, fixedNeeds, fixedSavings, lang]);
+
+  const distTotal = distribution.reduce((s, i) => s + i.value, 0);
+
+
 
   return (
     <PageShell>
