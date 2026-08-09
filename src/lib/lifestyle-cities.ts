@@ -250,6 +250,8 @@ export type SafetyPref = "essential" | "important" | "neutral";
 export type LifeStage = "single" | "relationship" | "married" | "family" | "single_parent" | "any";
 export type GoalPref = "save" | "lifestyle" | "retire" | "family" | "career" | "nomad";
 
+export type ComfortPref = "tight" | "comfortable" | "luxury";
+
 export type Filters = {
   budget: number;
   climate: ClimatePref;
@@ -258,6 +260,7 @@ export type Filters = {
   safety: SafetyPref;
   stage: LifeStage;
   goal: GoalPref;
+  comfort: ComfortPref;
 };
 
 export const defaultFilters: Filters = {
@@ -268,7 +271,16 @@ export const defaultFilters: Filters = {
   safety: "important",
   stage: "any",
   goal: "save",
+  comfort: "comfortable",
 };
+
+/** Cuánto encarece el costo de vida según cómo quieres vivir. */
+export const COMFORT_FACTOR: Record<ComfortPref, number> = {
+  tight: 0.82,
+  comfortable: 1,
+  luxury: 1.55,
+};
+
 
 export type Metric =
   | "cost" | "housing" | "salary" | "purchasingPower" | "taxes" | "safety" | "healthcare"
@@ -307,23 +319,26 @@ const CLIMATE_SCORE: Record<ClimatePref, Record<Climate, number>> = {
   any: { warm: 70, beach: 70, temperate: 70, cold: 70 },
 };
 
-export function monthlyCost(c: CityData, stage: LifeStage) {
+export function monthlyCost(c: CityData, stage: LifeStage, comfort: ComfortPref = "comfortable") {
   const base = c.housing + c.food + c.transport + c.healthcare + c.internet + c.entertainment;
-  if (stage === "family") return Math.round(base * 1.55 + c.education);
-  if (stage === "single_parent") return Math.round(base * 1.3 + c.education * 0.8);
-  if (stage === "married" || stage === "relationship") return Math.round(base * 1.4);
-  return Math.round(base);
+  const k = COMFORT_FACTOR[comfort];
+  if (stage === "family") return Math.round((base * 1.55 + c.education) * k);
+  if (stage === "single_parent") return Math.round((base * 1.3 + c.education * 0.8) * k);
+  if (stage === "married" || stage === "relationship") return Math.round(base * 1.4 * k);
+  return Math.round(base * k);
 }
 
-export function costBreakdown(c: CityData, stage: LifeStage) {
-  const m = stage === "family" ? 1.55 : stage === "single_parent" ? 1.3 : stage === "any" || stage === "single" ? 1 : 1.4;
+export function costBreakdown(c: CityData, stage: LifeStage, comfort: ComfortPref = "comfortable") {
+  const stageM =
+    stage === "family" ? 1.55 : stage === "single_parent" ? 1.3 : stage === "any" || stage === "single" ? 1 : 1.4;
+  const m = stageM * COMFORT_FACTOR[comfort];
   const edu = stage === "family" ? c.education : stage === "single_parent" ? Math.round(c.education * 0.8) : 0;
   return {
     housing: Math.round(c.housing * m),
     food: Math.round(c.food * m),
     transport: Math.round(c.transport * m),
     healthcare: Math.round(c.healthcare * m),
-    education: edu,
+    education: Math.round(edu * COMFORT_FACTOR[comfort]),
     internet: c.internet,
     entertainment: Math.round(c.entertainment * m),
   };
@@ -369,7 +384,7 @@ export function scoreCity(
   f: Filters,
   ctx: { netWorth: number; age: number; expectedReturn: number },
 ): CityScore {
-  const cost = monthlyCost(c, f.stage);
+  const cost = monthlyCost(c, f.stage, f.comfort);
   const savings = Math.round(f.budget - cost);
   const savingsRate = f.budget > 0 ? savings / f.budget : 0;
 
