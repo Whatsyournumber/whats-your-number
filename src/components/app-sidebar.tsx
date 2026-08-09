@@ -5,6 +5,8 @@ import {
   Landmark,
   LineChart,
   PiggyBank,
+  Globe,
+
   Waves,
   Sparkles,
   Target,
