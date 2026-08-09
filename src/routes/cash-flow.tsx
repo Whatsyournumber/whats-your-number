@@ -262,11 +262,18 @@ function CashFlow() {
       </Panel>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <Panel title={t("Regla 50 / 30 / 20", "50 / 30 / 20 rule")}>
+        <Panel
+          title={t("Regla 50 / 30 / 20", "50 / 30 / 20 rule")}
+          description={
+            activeMonth
+              ? `${monthLabel(activeMonth)} · ${fmt(totalIncome)} ${t("de ingreso", "of income")}`
+              : t("Según tu perfil", "Based on your profile")
+          }
+        >
           <div className="space-y-3 text-sm">
-            <Row label={t("Necesidades", "Needs")} value={buckets[0]!.amount} total={totalIncome} target={50} />
-            <Row label={t("Deseos", "Wants")} value={buckets[1]!.amount} total={totalIncome} target={30} />
-            <Row label={t("Ahorro e inversión", "Savings & investing")} value={buckets[2]!.amount + buckets[3]!.amount} total={totalIncome} target={20} />
+            <Row label={t("Necesidades", "Needs")} value={needsAmount} total={totalIncome} target={50} fmt={fmt} />
+            <Row label={t("Deseos", "Wants")} value={wantsAmount} total={totalIncome} target={30} fmt={fmt} />
+            <Row label={t("Ahorro e inversión", "Savings & investing")} value={saveAmount} total={totalIncome} target={20} fmt={fmt} />
           </div>
         </Panel>
         <Panel title={t("Runway", "Runway")} description={t("Meses cubiertos con tu efectivo", "Months covered with your cash")}>
@@ -277,11 +284,12 @@ function CashFlow() {
         </Panel>
         <Panel title={t("Eficiencia del flujo", "Flow efficiency")}>
           <p className="numeric text-4xl font-semibold">
-            {(((buckets[2]!.amount + buckets[3]!.amount) / totalIncome) * 100).toFixed(0)}%
+            {totalIncome > 0 ? ((saveAmount / totalIncome) * 100).toFixed(0) : "0"}%
           </p>
           <p className="mt-2 text-xs text-muted-foreground">
-            {t("De cada dólar que ganas, esa porción termina construyendo patrimonio.", "Of every dollar you earn, that share ends up building net worth.")}
+            {fmt(saveAmount)} {t("de cada mes termina construyendo patrimonio.", "each month ends up building net worth.")}
           </p>
+
         </Panel>
       </div>
     </PageShell>
