@@ -90,6 +90,16 @@ const PHOTO = {
     "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Pura_Ulun_Danu_Bratan%2C_2022.jpg/1920px-Pura_Ulun_Danu_Bratan%2C_2022.jpg",
   medellin:
     "https://upload.wikimedia.org/wikipedia/commons/a/a5/Metrocablemed.jpg",
+  mexico:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Angel_de_la_independencia170409.jpg/1920px-Angel_de_la_independencia170409.jpg",
+  buenosaires:
+    "https://upload.wikimedia.org/wikipedia/commons/3/39/Obelisco_de_Buenos_Aires%2C_with_traffic_lights.jpg",
+  panama:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Cinta_Costera_de_Panam%C3%A1.jpg/1920px-Cinta_Costera_de_Panam%C3%A1.jpg",
+  capetown:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Cape_Town_%28ZA%29%2C_Table_Mountain_--_2024_--_2825.jpg/1920px-Cape_Town_%28ZA%29%2C_Table_Mountain_--_2024_--_2825.jpg",
+  marrakech:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Marrakesh_Koutoubia_Minaret_seen_from_the_western_end_of_Jemaa_el-Fnaa.jpg/1920px-Marrakesh_Koutoubia_Minaret_seen_from_the_western_end_of_Jemaa_el-Fnaa.jpg",
 };
 
 export const lifestyleCities: CityData[] = [
@@ -254,6 +264,51 @@ export const lifestyleCities: CityData[] = [
     safety: 52, healthcareScore: 74, qualityOfLife: 72, purchasingPower: 34, walkability: 66, publicTransport: 80,
     airQuality: 54, greenSpaces: 72, internetSpeed: 130, englishFriendly: 42, remoteWork: 88, nightlife: 88,
     schools: 62, jobMarket: 46, beachKm: 300, intlAirport: true,
+  },
+  {
+    id: "mexico", name: "Ciudad de México", country: "México", photo: PHOTO.mexico, region: "latam",
+    climate: "temperate", climateLabelEs: "Templado de altura", climateLabelEn: "Highland temperate",
+    housing: 900, food: 380, transport: 60, healthcare: 90, education: 400, internet: 30, entertainment: 300,
+    avgSalary: 1100, taxRate: 20,
+    safety: 48, healthcareScore: 70, qualityOfLife: 70, purchasingPower: 38, walkability: 72, publicTransport: 74,
+    airQuality: 44, greenSpaces: 62, internetSpeed: 120, englishFriendly: 46, remoteWork: 86, nightlife: 92,
+    schools: 66, jobMarket: 62, beachKm: 300, intlAirport: true,
+  },
+  {
+    id: "buenosaires", name: "Buenos Aires", country: "Argentina", photo: PHOTO.buenosaires, region: "latam",
+    climate: "temperate", climateLabelEs: "Templado húmedo", climateLabelEn: "Humid temperate",
+    housing: 650, food: 330, transport: 35, healthcare: 80, education: 320, internet: 25, entertainment: 250,
+    avgSalary: 800, taxRate: 22,
+    safety: 54, healthcareScore: 74, qualityOfLife: 72, purchasingPower: 32, walkability: 88, publicTransport: 82,
+    airQuality: 62, greenSpaces: 68, internetSpeed: 110, englishFriendly: 52, remoteWork: 84, nightlife: 96,
+    schools: 70, jobMarket: 48, beachKm: 350, intlAirport: true,
+  },
+  {
+    id: "panama", name: "Ciudad de Panamá", country: "Panamá", photo: PHOTO.panama, region: "latam",
+    climate: "warm", climateLabelEs: "Tropical húmedo", climateLabelEn: "Humid tropical",
+    housing: 1150, food: 450, transport: 70, healthcare: 130, education: 600, internet: 45, entertainment: 320,
+    avgSalary: 1500, taxRate: 15,
+    safety: 62, healthcareScore: 76, qualityOfLife: 74, purchasingPower: 48, walkability: 60, publicTransport: 62,
+    airQuality: 64, greenSpaces: 70, internetSpeed: 140, englishFriendly: 66, remoteWork: 84, nightlife: 78,
+    schools: 70, jobMarket: 66, beachKm: 5, intlAirport: true,
+  },
+  {
+    id: "capetown", name: "Ciudad del Cabo", country: "Sudáfrica", photo: PHOTO.capetown, region: "africa",
+    climate: "beach", climateLabelEs: "Mediterráneo costero", climateLabelEn: "Coastal Mediterranean",
+    housing: 850, food: 350, transport: 90, healthcare: 110, education: 400, internet: 40, entertainment: 280,
+    avgSalary: 1350, taxRate: 26,
+    safety: 38, healthcareScore: 68, qualityOfLife: 74, purchasingPower: 42, walkability: 52, publicTransport: 40,
+    airQuality: 76, greenSpaces: 90, internetSpeed: 90, englishFriendly: 96, remoteWork: 80, nightlife: 80,
+    schools: 66, jobMarket: 50, beachKm: 0, intlAirport: true,
+  },
+  {
+    id: "marrakech", name: "Marrakech", country: "Marruecos", photo: PHOTO.marrakech, region: "africa",
+    climate: "warm", climateLabelEs: "Semiárido cálido", climateLabelEn: "Hot semi-arid",
+    housing: 520, food: 260, transport: 40, healthcare: 70, education: 350, internet: 25, entertainment: 200,
+    avgSalary: 650, taxRate: 20,
+    safety: 62, healthcareScore: 58, qualityOfLife: 66, purchasingPower: 28, walkability: 74, publicTransport: 46,
+    airQuality: 58, greenSpaces: 50, internetSpeed: 70, englishFriendly: 40, remoteWork: 76, nightlife: 60,
+    schools: 54, jobMarket: 38, beachKm: 180, intlAirport: true,
   },
 ];
 
@@ -489,5 +544,6 @@ export function scoreCity(
 }
 
 export function rankCities(f: Filters, ctx: { netWorth: number; age: number; expectedReturn: number }) {
-  return lifestyleCities.map((c) => scoreCity(c, f, ctx)).sort((a, b) => b.score - a.score);
+  const pool = f.region === "any" ? lifestyleCities : lifestyleCities.filter((c) => c.region === f.region);
+  return pool.map((c) => scoreCity(c, f, ctx)).sort((a, b) => b.score - a.score);
 }
