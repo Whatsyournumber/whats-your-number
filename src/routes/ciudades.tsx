@@ -10,7 +10,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { ArrowLeftRight, MapPin, Sparkles, X } from "lucide-react";
+import { ArrowLeftRight, Info, MapPin, Sparkles, X } from "lucide-react";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { axisProps, ChartTooltip } from "@/components/chart-kit";
