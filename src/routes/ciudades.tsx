@@ -254,6 +254,16 @@ function LifestyleSimulator() {
               { value: "nomad", label: t("Nómada digital", "Digital nomad"), icon: "🌍" },
             ]}
           />
+          <SelectFilter
+            label={t("Cómo vivir", "Comfort level")}
+            value={filters.comfort}
+            onChange={(v) => set("comfort", v)}
+            options={[
+              { value: "tight", label: t("Ajustado", "Tight"), icon: "🪙" },
+              { value: "comfortable", label: t("Cómodo", "Comfortable"), icon: "🛋️" },
+              { value: "luxury", label: t("Lujo", "Luxury"), icon: "🥂" },
+            ]}
+          />
         </div>
       </div>
 
