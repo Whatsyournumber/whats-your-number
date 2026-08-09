@@ -324,8 +324,12 @@ function Row({
       </div>
 
       <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted">
-        <div className="h-full rounded-full bg-primary" style={{ width: `${Math.min(p, 100)}%` }} />
+        <div
+          className={`h-full rounded-full ${off > 5 ? "bg-negative" : "bg-primary"}`}
+          style={{ width: `${Math.min(p, 100)}%` }}
+        />
       </div>
+
     </div>
   );
 }
