@@ -9,7 +9,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { Loader2, LogOut, Search, Upload } from "lucide-react";
+import { Loader2, LogOut, Upload } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -18,6 +18,8 @@ import { supabase } from "@/integrations/supabase/client";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppSidebar } from "@/components/app-sidebar";
+import { AskAiSearch } from "@/components/ask-ai-search";
+
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import { LanguageProvider, useT, LanguageToggle } from "@/hooks/use-language";
@@ -214,10 +216,8 @@ function AppShell() {
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border bg-background/80 px-4 backdrop-blur-xl">
             <SidebarTrigger />
-            <div className="ml-2 hidden items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground md:flex">
-              <Search className="h-3.5 w-3.5" />
-              <span>{t("Pregúntale al AI Advisor…", "Ask the AI Advisor…")}</span>
-            </div>
+            <AskAiSearch />
+
             <div className="ml-auto flex items-center gap-2">
               <Button asChild variant="outline" size="sm" className="gap-2 rounded-full">
                 <Link to="/configuracion">
