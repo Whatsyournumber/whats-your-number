@@ -184,6 +184,20 @@ function LifestyleSimulator() {
           </div>
 
           <SelectFilter
+            label={t("Región", "Region")}
+            value={filters.region}
+            onChange={(v) => set("region", v)}
+            options={[
+              { value: "any", label: t("Todas", "All"), icon: "🌍" },
+              { value: "northamerica", label: t("Norteamérica", "North America"), icon: "🇺🇸" },
+              { value: "latam", label: t("Latam", "Latam"), icon: "🌎" },
+              { value: "europe", label: t("Europa", "Europe"), icon: "🇪🇺" },
+              { value: "asia", label: t("Asia / Oceanía", "Asia / Oceania"), icon: "🌏" },
+              { value: "africa", label: t("África", "Africa"), icon: "🌍" },
+            ]}
+          />
+          <SelectFilter
+
             label={t("Clima", "Climate")}
             value={filters.climate}
             onChange={(v) => set("climate", v)}
