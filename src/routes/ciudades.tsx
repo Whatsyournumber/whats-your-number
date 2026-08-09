@@ -137,7 +137,31 @@ function LifestyleSimulator() {
       />
 
       <div className="surface rounded-xl border border-border p-4">
-        <div className="grid items-end gap-3 md:grid-cols-3 xl:grid-cols-7">
+        <div className="mb-3 flex items-center justify-between gap-2">
+          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+            {t("Filtros", "Filters")}
+          </p>
+          <TooltipProvider delayDuration={100}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  className="flex items-center gap-1 text-[10px] text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <Info className="h-3.5 w-3.5" />
+                  {t("Fuentes", "Sources")}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="left" className="max-w-[280px] text-xs leading-relaxed">
+                {t(
+                  "Costos de vida y calidad de vida estimados con datos públicos tipo Numbeo, OCDE y Mercer, ajustados por tu etapa de vida y nivel de vida. El retiro usa tu patrimonio, ahorro y la regla del 4%. Los resultados se recalculan al instante con cada filtro.",
+                  "Cost of living and quality-of-life estimates based on public data (Numbeo, OECD, Mercer), adjusted for your life stage and comfort level. Retirement uses your net worth, savings and the 4% rule. Results recalculate instantly with every filter.",
+                )}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+        <div className="grid items-end gap-3 md:grid-cols-4 xl:grid-cols-8">
           <div className="md:col-span-3 xl:col-span-1">
             <div className="flex items-center justify-between gap-2">
               <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
