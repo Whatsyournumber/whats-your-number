@@ -3,7 +3,7 @@
  * Mismas fuentes y criterios que `lifestyle-cities.ts`.
  */
 import type { CityData } from "./lifestyle-cities";
-const PHOTO: Record<string, string> = {
+const PHOTO = {
   vienna: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Wien_-_Schloss_Sch%C3%B6nbrunn.JPG/1920px-Wien_-_Schloss_Sch%C3%B6nbrunn.JPG",
   munich: "https://upload.wikimedia.org/wikipedia/commons/7/73/Rathaus_and_Marienplatz_from_Peterskirche_-_August_2006.jpg",
   stockholm: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Gamla_stan_September_2014_01.jpg/1920px-Gamla_stan_September_2014_01.jpg",
