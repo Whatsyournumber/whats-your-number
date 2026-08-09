@@ -350,10 +350,24 @@ function LifestyleSimulator() {
 
 function ScoreRing({ score }: { score: number }) {
   const tone = score >= 75 ? "text-positive" : score >= 55 ? "text-chart-4" : "text-muted-foreground";
+  const R = 20;
+  const C = 2 * Math.PI * R;
   return (
-    <div className="flex h-14 w-14 flex-col items-center justify-center rounded-2xl border border-border/60 bg-background/70 backdrop-blur">
-      <span className={cn("numeric text-lg font-semibold leading-none", tone)}>{score}</span>
-      <span className="mt-0.5 text-[9px] uppercase tracking-wider text-muted-foreground">score</span>
+    <div className="relative flex h-14 w-14 items-center justify-center rounded-full border border-border/50 bg-background/70 backdrop-blur-md">
+      <svg viewBox="0 0 48 48" className="absolute inset-0 h-full w-full -rotate-90">
+        <circle cx="24" cy="24" r={R} className="fill-none stroke-border/50" strokeWidth="3" />
+        <circle
+          cx="24"
+          cy="24"
+          r={R}
+          className={cn("fill-none stroke-current transition-all duration-700", tone)}
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeDasharray={C}
+          strokeDashoffset={C - (C * Math.min(100, score)) / 100}
+        />
+      </svg>
+      <span className={cn("numeric text-base font-semibold leading-none", tone)}>{score}</span>
     </div>
   );
 }
@@ -362,6 +376,14 @@ function taxBadge(level: "low" | "medium" | "high", t: (es: string, en: string) 
   if (level === "low") return { dot: "🟢", text: t("Impuestos bajos", "Low taxes") };
   if (level === "medium") return { dot: "🟡", text: t("Impuestos medios", "Medium taxes") };
   return { dot: "🔴", text: t("Impuestos altos", "High taxes") };
+}
+
+function Chip({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="rounded-full border border-border/60 bg-elevated/60 px-2 py-0.5 text-[10px] text-muted-foreground">
+      {children}
+    </span>
+  );
 }
 
 function CityCard({
@@ -383,55 +405,69 @@ function CityCard({
 }) {
   const c = r.city;
   const tax = taxBadge(r.taxLevel, t);
+  const affordable = r.savings >= 0;
   return (
     <motion.article
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: Math.min(rank * 0.03, 0.3) }}
       className={cn(
-        "group surface overflow-hidden p-0 transition-all hover:-translate-y-1 hover:shadow-2xl",
+        "group surface relative flex flex-col overflow-hidden rounded-2xl border border-border/70 p-0 transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-2xl",
         selected && "ring-2 ring-primary",
       )}
     >
-      <div className="relative h-44 overflow-hidden">
+      <button type="button" onClick={onOpen} className="relative block h-44 w-full overflow-hidden text-left">
         <img
           src={c.photo}
           alt={`${c.name}, ${c.country}`}
           loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.07]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-transparent" />
+        {rank === 0 && (
+          <span className="absolute left-3 top-3 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary-foreground shadow-lg">
+            ★ {t("Mejor match", "Best match")}
+          </span>
+        )}
         <div className="absolute right-3 top-3">
           <ScoreRing score={r.score} />
         </div>
-        <div className="absolute bottom-3 left-4">
-          <p className="flex items-center gap-1 text-lg font-semibold">
+        <div className="absolute bottom-3 left-4 right-4">
+          <p className="flex items-center gap-1.5 text-lg font-semibold leading-tight">
             <MapPin className="h-4 w-4 text-primary" />
             {c.name}
           </p>
           <p className="text-xs text-muted-foreground">{c.country}</p>
         </div>
-      </div>
+      </button>
 
-      <div className="space-y-3 p-4">
-        <div className="grid grid-cols-2 gap-3 text-sm">
-          <div>
-            <p className="text-[11px] text-muted-foreground">{t("Costo mensual", "Monthly cost")}</p>
-            <p className="numeric font-semibold">{fmt(r.cost)}</p>
+      <div className="flex flex-1 flex-col gap-3 p-4">
+        <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border/60 bg-border/60">
+          <div className="bg-elevated/40 p-2.5">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+              {t("Costo mensual", "Monthly cost")}
+            </p>
+            <p className="numeric mt-0.5 text-sm font-semibold">{fmt(r.cost)}</p>
           </div>
-          <div>
-            <p className="text-[11px] text-muted-foreground">{t("Ahorro potencial", "Potential savings")}</p>
-            <p className={cn("numeric font-semibold", r.savings >= 0 ? "text-positive" : "text-negative")}>
+          <div className="bg-elevated/40 p-2.5">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+              {t("Ahorro potencial", "Potential savings")}
+            </p>
+            <p className={cn("numeric mt-0.5 text-sm font-semibold", affordable ? "text-positive" : "text-negative")}>
               {fmt(r.savings)}
             </p>
           </div>
-          <div>
-            <p className="text-[11px] text-muted-foreground">{t("Salario medio", "Average salary")}</p>
-            <p className="numeric font-medium">{fmt(c.avgSalary)}</p>
+          <div className="bg-elevated/40 p-2.5">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+              {t("Salario medio", "Average salary")}
+            </p>
+            <p className="numeric mt-0.5 text-sm font-medium">{fmt(c.avgSalary)}</p>
           </div>
-          <div>
-            <p className="text-[11px] text-muted-foreground">{t("Retiro estimado", "Estimated retirement")}</p>
-            <p className="numeric font-medium">
+          <div className="bg-elevated/40 p-2.5">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+              {t("Retiro estimado", "Est. retirement")}
+            </p>
+            <p className="numeric mt-0.5 text-sm font-medium">
               {r.yearsToRetire === 0
                 ? t("Ya libre", "Already free")
                 : r.retireAge
@@ -441,21 +477,37 @@ function CityCard({
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-1.5 text-[10px]">
-          <span className="rounded-full bg-elevated px-2 py-0.5">
-            {tax.dot} {tax.text}
-          </span>
-          <span className="rounded-full bg-elevated px-2 py-0.5">🛡 {c.safety}/100</span>
-          <span className="rounded-full bg-elevated px-2 py-0.5">
-            🌤 {t(c.climateLabelEs, c.climateLabelEn)}
-          </span>
+        <div>
+          <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+            <span>{t("Tasa de ahorro", "Savings rate")}</span>
+            <span className="numeric">{Math.round(Math.max(0, r.savingsRate) * 100)}%</span>
+          </div>
+          <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-elevated">
+            <div
+              className={cn("h-full rounded-full transition-all", affordable ? "bg-positive" : "bg-negative")}
+              style={{ width: `${Math.min(100, Math.max(3, Math.max(0, r.savingsRate) * 100))}%` }}
+            />
+          </div>
         </div>
 
-        <div className="flex gap-2 pt-1">
+        <div className="flex flex-wrap gap-1.5">
+          <Chip>
+            {tax.dot} {tax.text}
+          </Chip>
+          <Chip>🛡 {c.safety}/100</Chip>
+          <Chip>🌤 {t(c.climateLabelEs, c.climateLabelEn)}</Chip>
+        </div>
+
+        <div className="mt-auto flex gap-2 pt-1">
           <Button size="sm" className="flex-1" onClick={onOpen}>
             {t("Ver detalles", "View details")}
           </Button>
-          <Button size="sm" variant={selected ? "default" : "outline"} onClick={onCompare}>
+          <Button
+            size="sm"
+            variant={selected ? "default" : "outline"}
+            onClick={onCompare}
+            aria-label={t("Comparar", "Compare")}
+          >
             <ArrowLeftRight className="h-4 w-4" />
           </Button>
         </div>
@@ -463,6 +515,7 @@ function CityCard({
     </motion.article>
   );
 }
+
 
 /* ---------------- AI recommendation ---------------- */
 
