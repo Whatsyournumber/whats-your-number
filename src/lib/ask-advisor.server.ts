@@ -29,18 +29,46 @@ export async function generateAdvisorAnswer(input: AskAdvisorInput): Promise<str
 
   const gateway = createLovableAiGatewayProvider(apiKey);
 
+  let streamError: unknown = null;
+
   const result = streamText({
     model: gateway("google/gemini-3.6-flash"),
-    system: input.lang === "en" ? SYSTEM_EN : SYSTEM_ES,
-    messages: [
-      {
-        role: "system" as const,
-        content: `Datos financieros del usuario (contexto):\n${input.context}`,
-      },
-      ...input.history.slice(-8),
-      { role: "user" as const, content: input.question },
-    ],
+    system: `${input.lang === "en" ? SYSTEM_EN : SYSTEM_ES}\n\nDatos financieros del usuario (contexto):\n${input.context}`,
+    messages: [...input.history.slice(-8), { role: "user" as const, content: input.question }],
+    onError: ({ error }) => {
+      streamError = error;
+      console.error("[ask-advisor] stream error", error);
+    },
   });
 
-  return await result.text;
+  let text = "";
+  try {
+    for await (const chunk of result.textStream) text += chunk;
+  } catch (error) {
+    streamError = streamError ?? error;
+  }
+
+  if (!text.trim()) {
+    const message = streamError instanceof Error ? streamError.message : String(streamError ?? "");
+    if (/429|rate limit/i.test(message)) {
+      throw new Error(
+        input.lang === "en"
+          ? "Too many requests right now. Please try again in a moment."
+          : "Demasiadas solicitudes ahora mismo. Inténtalo en un momento.",
+      );
+    }
+    if (/402|credit/i.test(message)) {
+      throw new Error(
+        input.lang === "en"
+          ? "AI credits are exhausted. Please add credits to continue."
+          : "Se agotaron los créditos de IA. Añade créditos para continuar.",
+      );
+    }
+    throw new Error(
+      message ||
+        (input.lang === "en" ? "The AI returned no answer." : "La IA no devolvió respuesta."),
+    );
+  }
+
+  return text;
 }
