@@ -7,6 +7,8 @@
  * Global Peace Index, Speedtest Global Index y Nomad List).
  * Son estimaciones de referencia, no cifras oficiales en tiempo real.
  */
+import { extraCities } from "./lifestyle-cities-extra";
+
 
 export type Region = "northamerica" | "latam" | "europe" | "asia" | "africa";
 export type RegionPref = Region | "any";
@@ -597,6 +599,7 @@ export const lifestyleCities: CityData[] = [
     airQuality: 62, greenSpaces: 52, internetSpeed: 60, englishFriendly: 44, remoteWork: 74, nightlife: 62,
     schools: 58, jobMarket: 38, beachKm: 0, intlAirport: true,
   },
+  ...extraCities,
 ];
 
 /* ---------------- Filtros y scoring ---------------- */
