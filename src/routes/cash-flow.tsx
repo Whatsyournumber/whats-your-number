@@ -87,29 +87,34 @@ function CashFlow() {
   const incomeLines = usingStatements ? incomeFromStatements : d.cashFlow.income;
   const totalIncome = incomeLines.reduce((s, i) => s + i.amount, 0) || d.income || 1;
 
-  // Gasto variable real del mes, separado en lifestyle vs resto.
+  // Gasto variable real del mes, separado en necesidades vs deseos.
+  const WANT_CATS = new Set(["Restaurantes", "Salidas", "Compras", "Viajes", "Lifestyle", "Apps"]);
   const spend = useMemo(() => {
-    const lifestyleCats = new Set(["Restaurantes", "Salidas", "Compras", "Viajes", "Lifestyle", "Apps"]); // category keys, not translated
-    let lifestyle = 0;
-    let other = 0;
+    let wants = 0;
+    let needs = 0;
     for (const tx of monthTx) {
       if (tx.amount >= 0) continue;
       const cat = categorizeTx(tx as Tx, rules);
       const v = Math.abs(tx.amount);
-      if (lifestyleCats.has(cat)) lifestyle += v;
-      else other += v;
+      if (WANT_CATS.has(cat)) wants += v;
+      else needs += v;
     }
-    return { lifestyle, other, total: lifestyle + other };
+    return { wants, needs, total: wants + needs };
   }, [monthTx, rules]);
 
   const hasReal = hasData && monthTx.length > 0;
 
-  const fixedAmount = hasReal ? fixed.total + spend.other : d.cashFlow.buckets[0]!.amount;
-  const lifestyleAmount = hasReal ? spend.lifestyle : d.cashFlow.buckets[1]!.amount;
-  const investAmount = hasReal
-    ? Math.max(0, Math.round((fixed.items.find((i) => /ahorro|inver/i.test(i.name))?.amount ?? 0)))
-    : d.cashFlow.buckets[2]!.amount;
-  const freeAmount = Math.max(0, totalIncome - fixedAmount - lifestyleAmount);
+  // Ahorro explícito dentro de los gastos fijos (p. ej. «Fondo de ahorro»).
+  const fixedSavings = useMemo(
+    () => fixed.items.filter((i) => /ahorro|inver|saving|invest/i.test(i.name)).reduce((s, i) => s + (i.amount || 0), 0),
+    [fixed.items],
+  );
+  const fixedNeeds = Math.max(0, fixed.total - fixedSavings);
+
+  const fixedAmount = hasReal ? fixedNeeds + spend.needs : d.cashFlow.buckets[0]!.amount;
+  const lifestyleAmount = hasReal ? spend.wants : d.cashFlow.buckets[1]!.amount;
+  const investAmount = hasReal ? fixedSavings : d.cashFlow.buckets[2]!.amount;
+  const freeAmount = Math.max(0, totalIncome - fixedAmount - lifestyleAmount - investAmount);
 
   const buckets = [
     { name: t("Gastos fijos", "Fixed expenses"), amount: fixedAmount, color: "var(--color-chart-2)" },
@@ -118,9 +123,15 @@ function CashFlow() {
     { name: t("Flujo libre", "Free flow"), amount: freeAmount, color: "var(--color-chart-4)" },
   ];
 
+  // Regla 50/30/20 con los números reales del mes.
+  const needsAmount = fixedAmount;
+  const wantsAmount = lifestyleAmount;
+  const saveAmount = Math.max(0, totalIncome - needsAmount - wantsAmount);
+
   const cash = profile.assets_cash + profile.assets_bank;
-  const monthlySpend = hasReal ? fixed.total + spend.total : d.expenses;
+  const monthlySpend = hasReal ? fixedNeeds + spend.total : d.expenses;
   const runway = monthlySpend > 0 ? cash / monthlySpend : 0;
+
 
   return (
     <PageShell>
@@ -251,11 +262,18 @@ function CashFlow() {
       </Panel>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <Panel title={t("Regla 50 / 30 / 20", "50 / 30 / 20 rule")}>
+        <Panel
+          title={t("Regla 50 / 30 / 20", "50 / 30 / 20 rule")}
+          description={
+            activeMonth
+              ? `${monthLabel(activeMonth)} · ${fmt(totalIncome)} ${t("de ingreso", "of income")}`
+              : t("Según tu perfil", "Based on your profile")
+          }
+        >
           <div className="space-y-3 text-sm">
-            <Row label={t("Necesidades", "Needs")} value={buckets[0]!.amount} total={totalIncome} target={50} />
-            <Row label={t("Deseos", "Wants")} value={buckets[1]!.amount} total={totalIncome} target={30} />
-            <Row label={t("Ahorro e inversión", "Savings & investing")} value={buckets[2]!.amount + buckets[3]!.amount} total={totalIncome} target={20} />
+            <Row label={t("Necesidades", "Needs")} value={needsAmount} total={totalIncome} target={50} fmt={fmt} />
+            <Row label={t("Deseos", "Wants")} value={wantsAmount} total={totalIncome} target={30} fmt={fmt} />
+            <Row label={t("Ahorro e inversión", "Savings & investing")} value={saveAmount} total={totalIncome} target={20} fmt={fmt} />
           </div>
         </Panel>
         <Panel title={t("Runway", "Runway")} description={t("Meses cubiertos con tu efectivo", "Months covered with your cash")}>
@@ -266,30 +284,52 @@ function CashFlow() {
         </Panel>
         <Panel title={t("Eficiencia del flujo", "Flow efficiency")}>
           <p className="numeric text-4xl font-semibold">
-            {(((buckets[2]!.amount + buckets[3]!.amount) / totalIncome) * 100).toFixed(0)}%
+            {totalIncome > 0 ? ((saveAmount / totalIncome) * 100).toFixed(0) : "0"}%
           </p>
           <p className="mt-2 text-xs text-muted-foreground">
-            {t("De cada dólar que ganas, esa porción termina construyendo patrimonio.", "Of every dollar you earn, that share ends up building net worth.")}
+            {fmt(saveAmount)} {t("de cada mes termina construyendo patrimonio.", "each month ends up building net worth.")}
           </p>
+
         </Panel>
       </div>
     </PageShell>
   );
 }
 
-function Row({ label, value, total, target }: { label: string; value: number; total: number; target: number }) {
+function Row({
+  label,
+  value,
+  total,
+  target,
+  fmt,
+}: {
+  label: string;
+  value: number;
+  total: number;
+  target: number;
+  fmt: (n: number) => string;
+}) {
   const p = total > 0 ? (value / total) * 100 : 0;
+  const off = p - target;
   return (
     <div>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <span className="text-muted-foreground">{label}</span>
-        <span className="numeric">
-          {p.toFixed(0)}% <span className="text-xs text-muted-foreground">/ {target}%</span>
+        <span className="numeric flex items-baseline gap-2">
+          <span className="font-medium">{fmt(value)}</span>
+          <span>
+            {p.toFixed(0)}% <span className="text-xs text-muted-foreground">/ {target}%</span>
+          </span>
         </span>
       </div>
+
       <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted">
-        <div className="h-full rounded-full bg-primary" style={{ width: `${Math.min(p, 100)}%` }} />
+        <div
+          className={`h-full rounded-full ${off > 5 ? "bg-negative" : "bg-primary"}`}
+          style={{ width: `${Math.min(p, 100)}%` }}
+        />
       </div>
+
     </div>
   );
 }
