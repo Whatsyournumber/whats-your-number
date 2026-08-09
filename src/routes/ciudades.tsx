@@ -358,7 +358,11 @@ function CityCard({
           <div>
             <p className="text-[11px] text-muted-foreground">{t("Retiro estimado", "Estimated retirement")}</p>
             <p className="numeric font-medium">
-              {r.retireAge ? `${r.retireAge} ${t("años", "yrs")}` : "—"}
+              {r.yearsToRetire === 0
+                ? t("Ya libre", "Already free")
+                : r.retireAge
+                  ? `${r.retireAge} ${t("años", "yrs")}`
+                  : "—"}
             </p>
           </div>
         </div>
