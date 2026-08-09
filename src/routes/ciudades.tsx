@@ -642,7 +642,16 @@ function ComparePanel({
         <div />
         {[a, b].map((x) => (
           <div key={x.city.id} className="text-center">
-            <img src={x.city.photo} alt={x.city.name} className="mx-auto h-20 w-full rounded-xl object-cover" />
+            <div className="relative mx-auto aspect-[16/10] w-full overflow-hidden rounded-xl border border-border/60">
+              <img
+                src={x.city.photo}
+                alt=""
+                aria-hidden
+                className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-xl"
+              />
+              <img src={x.city.photo} alt={x.city.name} className="relative h-full w-full object-contain" />
+            </div>
+
             <p className="mt-2 font-semibold">{x.city.name}</p>
             <p className="numeric text-xs text-muted-foreground">Score {x.score}</p>
           </div>
