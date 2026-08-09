@@ -419,17 +419,11 @@ function CityCard({
       <button type="button" onClick={onOpen} className="relative block aspect-[16/10] w-full overflow-hidden text-left">
         <img
           src={c.photo}
-          alt=""
-          aria-hidden
-          loading="lazy"
-          className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-2xl"
-        />
-        <img
-          src={c.photo}
           alt={`${c.name}, ${c.country}`}
           loading="lazy"
-          className="relative h-full w-full object-contain transition-transform duration-700 group-hover:scale-[1.04]"
+          className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.06]"
         />
+
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/25 to-background/10" />
 
         {rank === 0 && (
@@ -643,13 +637,7 @@ function ComparePanel({
         {[a, b].map((x) => (
           <div key={x.city.id} className="text-center">
             <div className="relative mx-auto aspect-[16/10] w-full overflow-hidden rounded-xl border border-border/60">
-              <img
-                src={x.city.photo}
-                alt=""
-                aria-hidden
-                className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-xl"
-              />
-              <img src={x.city.photo} alt={x.city.name} className="relative h-full w-full object-contain" />
+              <img src={x.city.photo} alt={x.city.name} className="absolute inset-0 h-full w-full object-cover object-center" />
             </div>
 
             <p className="mt-2 font-semibold">{x.city.name}</p>
@@ -717,13 +705,7 @@ function CityDetail({
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto p-0">
         <div className="relative aspect-[16/7] w-full overflow-hidden">
-          <img
-            src={c.photo}
-            alt=""
-            aria-hidden
-            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-2xl"
-          />
-          <img src={c.photo} alt={c.name} className="relative h-full w-full object-contain" />
+          <img src={c.photo} alt={c.name} className="absolute inset-0 h-full w-full object-cover object-center" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
 
           <div className="absolute bottom-4 left-5">
