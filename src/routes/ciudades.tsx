@@ -718,7 +718,16 @@ function CityDetail({
             <Stat icon="🍽" label={t("Alimentación", "Food")} value={fmt(b.food)} />
             <Stat icon="🚗" label={t("Transporte", "Transport")} value={fmt(b.transport)} />
             <Stat icon="🏥" label={t("Salud", "Healthcare")} value={fmt(b.healthcare)} />
-            <Stat icon="🎓" label={t("Educación", "Education")} value={b.education ? fmt(b.education) : "—"} />
+            <Stat
+              icon="🎓"
+              label={t("Educación", "Education")}
+              value={
+                b.education
+                  ? `${fmt(b.education)} · ${c.schools}/100`
+                  : `${c.schools}/100 · ${fmt(c.education)}/${t("hijo", "child")}`
+              }
+            />
+
             <Stat icon="💻" label="Internet" value={`${fmt(c.internet)} · ${c.internetSpeed} Mbps`} />
             <Stat icon="🌤" label={t("Clima", "Climate")} value={t(c.climateLabelEs, c.climateLabelEn)} />
             <Stat icon="🛡" label={t("Seguridad", "Safety")} value={`${c.safety}/100`} />
