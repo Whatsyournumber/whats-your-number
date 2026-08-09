@@ -87,29 +87,34 @@ function CashFlow() {
   const incomeLines = usingStatements ? incomeFromStatements : d.cashFlow.income;
   const totalIncome = incomeLines.reduce((s, i) => s + i.amount, 0) || d.income || 1;
 
-  // Gasto variable real del mes, separado en lifestyle vs resto.
+  // Gasto variable real del mes, separado en necesidades vs deseos.
+  const WANT_CATS = new Set(["Restaurantes", "Salidas", "Compras", "Viajes", "Lifestyle", "Apps"]);
   const spend = useMemo(() => {
-    const lifestyleCats = new Set(["Restaurantes", "Salidas", "Compras", "Viajes", "Lifestyle", "Apps"]); // category keys, not translated
-    let lifestyle = 0;
-    let other = 0;
+    let wants = 0;
+    let needs = 0;
     for (const tx of monthTx) {
       if (tx.amount >= 0) continue;
       const cat = categorizeTx(tx as Tx, rules);
       const v = Math.abs(tx.amount);
-      if (lifestyleCats.has(cat)) lifestyle += v;
-      else other += v;
+      if (WANT_CATS.has(cat)) wants += v;
+      else needs += v;
     }
-    return { lifestyle, other, total: lifestyle + other };
+    return { wants, needs, total: wants + needs };
   }, [monthTx, rules]);
 
   const hasReal = hasData && monthTx.length > 0;
 
-  const fixedAmount = hasReal ? fixed.total + spend.other : d.cashFlow.buckets[0]!.amount;
-  const lifestyleAmount = hasReal ? spend.lifestyle : d.cashFlow.buckets[1]!.amount;
-  const investAmount = hasReal
-    ? Math.max(0, Math.round((fixed.items.find((i) => /ahorro|inver/i.test(i.name))?.amount ?? 0)))
-    : d.cashFlow.buckets[2]!.amount;
-  const freeAmount = Math.max(0, totalIncome - fixedAmount - lifestyleAmount);
+  // Ahorro explícito dentro de los gastos fijos (p. ej. «Fondo de ahorro»).
+  const fixedSavings = useMemo(
+    () => fixed.items.filter((i) => /ahorro|inver|saving|invest/i.test(i.name)).reduce((s, i) => s + (i.amount || 0), 0),
+    [fixed.items],
+  );
+  const fixedNeeds = Math.max(0, fixed.total - fixedSavings);
+
+  const fixedAmount = hasReal ? fixedNeeds + spend.needs : d.cashFlow.buckets[0]!.amount;
+  const lifestyleAmount = hasReal ? spend.wants : d.cashFlow.buckets[1]!.amount;
+  const investAmount = hasReal ? fixedSavings : d.cashFlow.buckets[2]!.amount;
+  const freeAmount = Math.max(0, totalIncome - fixedAmount - lifestyleAmount - investAmount);
 
   const buckets = [
     { name: t("Gastos fijos", "Fixed expenses"), amount: fixedAmount, color: "var(--color-chart-2)" },
@@ -118,9 +123,15 @@ function CashFlow() {
     { name: t("Flujo libre", "Free flow"), amount: freeAmount, color: "var(--color-chart-4)" },
   ];
 
+  // Regla 50/30/20 con los números reales del mes.
+  const needsAmount = fixedAmount;
+  const wantsAmount = lifestyleAmount;
+  const saveAmount = Math.max(0, totalIncome - needsAmount - wantsAmount);
+
   const cash = profile.assets_cash + profile.assets_bank;
-  const monthlySpend = hasReal ? fixed.total + spend.total : d.expenses;
+  const monthlySpend = hasReal ? fixedNeeds + spend.total : d.expenses;
   const runway = monthlySpend > 0 ? cash / monthlySpend : 0;
+
 
   return (
     <PageShell>
