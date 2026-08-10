@@ -330,6 +330,7 @@ function LifePlanner() {
                   g={g}
                   idx={idx}
                   data={data}
+                  profile={profile}
                   baseMonths={baseMonths}
                   onEdit={() => setDraft(draftFromGoal(g))}
                   onRemove={() => void remove(g.id)}
