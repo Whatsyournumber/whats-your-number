@@ -3,6 +3,10 @@ export type SimGoal = {
   cost: number;
   monthly: number;
   saved: number;
+  /** Entrada de capital puntual (p.ej. venta del proyecto). */
+  payout?: number;
+  /** Años desde hoy hasta ese cobro puntual. */
+  payoutYears?: number;
 };
 
 const MAX_MONTHS = 12 * 60;
