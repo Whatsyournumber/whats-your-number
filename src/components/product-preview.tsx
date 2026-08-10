@@ -16,24 +16,15 @@ import {
   YAxis,
 } from "recharts";
 import {
-  Baby,
   BarChart3,
   Bot,
-  Briefcase,
-  Building,
-  Car,
-  Coffee,
   FileText,
   Globe,
   LineChart,
   MapPin,
-  PieChart,
-  Plane,
-  Route,
   Sparkles,
   Target,
   TrendingUp,
-  Wallet,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
