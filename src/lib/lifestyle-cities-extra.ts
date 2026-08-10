@@ -105,7 +105,7 @@ const PHOTO = {
   goldcoast: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Clouds_over_the_Gold_Coast_skyline.jpg/1920px-Clouds_over_the_Gold_Coast_skyline.jpg",
   adelaide: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Adelaide_2022_Skyline.jpg/1920px-Adelaide_2022_Skyline.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   windhoek: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Windhoek_Panorama_Three_Circles_20190518.jpg/1920px-Windhoek_Panorama_Three_Circles_20190518.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  gaborone: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Gaborone_skyline.JPG/1920px-Gaborone_skyline.JPG",
+  gaborone: gaboronePhoto.url,
   addis: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Addis_Ababa_%2816314616596%29.jpg/1920px-Addis_Ababa_%2816314616596%29.jpg",
   alexandria: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Egypt%E2%80%99s_Mediterranean_Coast_%28154431%29.jpg/1920px-Egypt%E2%80%99s_Mediterranean_Coast_%28154431%29.jpg",
 };
