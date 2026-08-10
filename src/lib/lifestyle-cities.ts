@@ -581,19 +581,29 @@ export const lifestyleCities: CityData[] = [
 /* ---------------- Filtros y scoring ---------------- */
 
 export type ClimatePref = Climate | "any";
-/** Rango salarial neto mensual (USD) que podrías ganar trabajando en esa ciudad */
-export type SalaryPref = "any" | "under_1500" | "1500_3000" | "3000_5000" | "5000_plus";
+/** Ingreso por hora esperado (USD/h) trabajando en esa ciudad */
+export type SalaryPref = "any" | "under_25" | "25_50" | "50_75" | "75_100" | "100_plus";
 
 /** Salario neto mensual estimado (USD) que podrías ganar trabajando ahí */
 export function netSalary(c: CityData): number {
   return Math.round(c.avgSalary);
 }
 
+/** Horas trabajadas al mes de referencia (40 h/semana). */
+export const MONTHLY_HOURS = 160;
+
+/** Ingreso por hora promedio estimado (USD/h). */
+export function hourlyRate(c: CityData): number {
+  return Math.round((c.avgSalary / MONTHLY_HOURS) * 10) / 10;
+}
+
+/** Bandas en USD/hora. */
 export const SALARY_BANDS: Record<Exclude<SalaryPref, "any">, { min: number; max: number }> = {
-  under_1500: { min: 0, max: 1500 },
-  "1500_3000": { min: 1500, max: 3000 },
-  "3000_5000": { min: 3000, max: 5000 },
-  "5000_plus": { min: 5000, max: Infinity },
+  under_25: { min: 0, max: 25 },
+  "25_50": { min: 25, max: 50 },
+  "50_75": { min: 50, max: 75 },
+  "75_100": { min: 75, max: 100 },
+  "100_plus": { min: 100, max: Infinity },
 };
 export type TaxPref = "low" | "medium" | "high" | "any";
 export type SafetyPref = "essential" | "important" | "neutral";
@@ -755,14 +765,15 @@ export function scoreCity(
     const net = netSalary(c);
     const raw = inv(net, 7500, 800);
     if (f.salary === "any") return raw * 0.5 + c.purchasingPower * 0.5;
+    const hourly = hourlyRate(c);
     const band = SALARY_BANDS[f.salary];
-    if (net >= band.min) {
+    if (hourly >= band.min) {
       // cumple el rango: premia poder adquisitivo real y superar el mínimo
-      const over = band.max === Infinity ? 100 : clamp(((net - band.min) / (band.max - band.min)) * 100);
+      const over = band.max === Infinity ? 100 : clamp(((hourly - band.min) / (band.max - band.min)) * 100);
       return clamp(78 + over * 0.22) * 0.7 + c.purchasingPower * 0.3;
     }
     // por debajo del rango: penaliza proporcionalmente a la brecha
-    const gap = band.min > 0 ? net / band.min : 0;
+    const gap = band.min > 0 ? hourly / band.min : 0;
     return clamp(gap * 70) * 0.75 + c.purchasingPower * 0.25;
   })();
 

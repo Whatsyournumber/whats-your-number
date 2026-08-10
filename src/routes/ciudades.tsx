@@ -25,6 +25,7 @@ import { money } from "@/lib/onboarding";
 import {
   costBreakdown,
   defaultFilters,
+  hourlyRate,
   rankCities,
   type CityData,
   type CityScore,
@@ -404,17 +405,18 @@ function LifestyleSimulator() {
             />
             <SelectFilter
               label={t(
-                "Rango salarial (si trabajas ahí)",
-                "Salary range (if you work there)",
+                "💼 Ingreso por hora (si trabajas ahí)",
+                "💼 Expected hourly income (if you work there)",
               )}
               value={filters.salary}
               onChange={(v) => set("salary", v)}
               options={[
-                { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
-                { value: "under_1500", label: t("< $1.500/mes", "< $1,500/mo"), icon: "💸" },
-                { value: "1500_3000", label: t("$1.500 – $3.000", "$1,500 – $3,000"), icon: "🪙" },
-                { value: "3000_5000", label: t("$3.000 – $5.000", "$3,000 – $5,000"), icon: "📈" },
-                { value: "5000_plus", label: t("$5.000+", "$5,000+"), icon: "💎" },
+                { value: "any", label: t("Indiferente", "Doesn't matter"), icon: "🌍" },
+                { value: "under_25", label: t("< $25/h", "Under $25/hr"), icon: "💵" },
+                { value: "25_50", label: "$25 – $50/h", icon: "💰" },
+                { value: "50_75", label: "$50 – $75/h", icon: "💎" },
+                { value: "75_100", label: "$75 – $100/h", icon: "🚀" },
+                { value: "100_plus", label: t("$100+/h", "$100+/hr"), icon: "👑" },
               ]}
             />
 
@@ -700,9 +702,12 @@ function CityCard({
           </div>
           <div className="bg-elevated/40 p-2.5">
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              {t("Salario neto est.", "Est. net salary")}
+              {t("Ingreso/hora prom.", "Avg. hourly income")}
             </p>
-            <p className="numeric mt-0.5 text-sm font-medium">{fmt(c.avgSalary)}</p>
+            <p className="numeric mt-0.5 text-sm font-medium">
+              ${hourlyRate(c)}/h
+              <span className="ml-1 text-[10px] text-muted-foreground">({fmt(c.avgSalary)}/m)</span>
+            </p>
           </div>
           <div className="bg-elevated/40 p-2.5">
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
@@ -1074,7 +1079,7 @@ function CityDetail({
             <span className="text-border">·</span>
             <span className="inline-flex items-center gap-1">
               <span>💼</span>
-              {t("Salario neto est.", "Est. net salary")}: {fmt(c.avgSalary)}
+              {t("Ingreso/hora", "Hourly income")}: ${hourlyRate(c)}/h · {fmt(c.avgSalary)}/m
             </span>
             <span className="text-border">·</span>
             <span className="inline-flex items-center gap-1">
