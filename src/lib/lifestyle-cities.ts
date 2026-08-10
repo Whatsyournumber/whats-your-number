@@ -73,7 +73,7 @@ const PHOTO = {
   amsterdam: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Colorful_windows_and_canal_houses_at_blue_hour_with_water_reflection_in_Damrak_Amsterdam_Netherlands.jpg/1920px-Colorful_windows_and_canal_houses_at_blue_hour_with_water_reflection_in_Damrak_Amsterdam_Netherlands.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   copenhagen: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Copenhagen_skyline.jpg/1920px-Copenhagen_skyline.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   bali: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Kuta_Bali_Indonesia_Pura-Luhur-Uluwatu-05.jpg/1920px-Kuta_Bali_Indonesia_Pura-Luhur-Uluwatu-05.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  medellin: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Medell%C3%ADn%2C_Robledo%2C_2023-07_CN-05.jpg/1920px-Medell%C3%ADn%2C_Robledo%2C_2023-07_CN-05.jpg",
+  medellin: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Medell%C3%ADn_night.jpg/1920px-Medell%C3%ADn_night.jpg",
   mexico: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Monumento_a_la_Independencia%2C_Ciudad_de_M%C3%A9xico.jpg/1920px-Monumento_a_la_Independencia%2C_Ciudad_de_M%C3%A9xico.jpg",
   buenosaires: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Obelisco_de_Buenos_Aires_at_sunset.jpg/1920px-Obelisco_de_Buenos_Aires_at_sunset.jpg",
   panama: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Panor%C3%A1mica_nocturna_de_la_ciudad_de_Panam%C3%A1.jpg/1920px-Panor%C3%A1mica_nocturna_de_la_ciudad_de_Panam%C3%A1.jpg",
