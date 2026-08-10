@@ -239,6 +239,8 @@ function LifePlanner() {
             const pct = g.cost > 0 ? Math.min(100, (g.saved / g.cost) * 100) : 0;
             const good = impact !== null && impact < -0.08;
             const bad = impact !== null && impact > 0.08;
+            const cardMeta = parseMeta(g.note);
+            const cardTpl = cardMeta ? templateById(cardMeta.template) : null;
             return (
               <motion.div
                 key={g.id}
@@ -251,9 +253,16 @@ function LifePlanner() {
                   <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-elevated text-lg">{g.emoji}</span>
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold">{g.name}</p>
-                    <span className="mt-1 inline-block rounded-md bg-elevated px-2 py-0.5 text-[11px] text-muted-foreground">
-                      {t(`Meta ${g.target_year}`, `Goal ${g.target_year}`)}
-                    </span>
+                    <div className="mt-1 flex flex-wrap items-center gap-1">
+                      <span className="inline-block rounded-md bg-elevated px-2 py-0.5 text-[11px] text-muted-foreground">
+                        {t(`Meta ${g.target_year}`, `Goal ${g.target_year}`)}
+                      </span>
+                      {cardTpl && (
+                        <span className="inline-block rounded-md bg-primary/10 px-2 py-0.5 text-[11px] text-primary">
+                          {t(cardTpl.es, cardTpl.en)}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <div className="ml-auto flex gap-1">
                     <button
@@ -273,14 +282,32 @@ function LifePlanner() {
                   </div>
                 </div>
 
-                <dl className="mt-4 space-y-2 text-xs">
-                  <Line label={g.kind === "boost" ? t("Coste del cambio", "Change cost") : t("Coste total", "Total cost")} value={data.fmt(g.cost)} />
-                  <Line
-                    label={g.kind === "boost" ? t("Ahorro mensual estimado", "Estimated monthly savings") : t("Ahorro mensual", "Monthly saving")}
-                    value={`${g.kind === "boost" ? "+" : ""}${data.fmt(g.monthly)}`}
-                  />
-                  <Line label={t("Fondo acumulado", "Accumulated fund")} value={`${data.fmt(g.saved)} (${pct.toFixed(0)}%)`} />
+                <dl className="mt-4 space-y-1.5 text-xs">
+                  {cardTpl && cardMeta
+                    ? cardTpl.fields.map((f) => {
+                        const raw = cardMeta.values[f.key] ?? 0;
+                        return (
+                          <Line
+                            key={f.key}
+                            label={t(f.es, f.en)}
+                            value={f.kind === "money" ? data.fmt(raw) : String(raw)}
+                          />
+                        );
+                      })
+                    : (
+                      <>
+                        <Line label={t("Coste total", "Total cost")} value={data.fmt(g.cost)} />
+                        <Line label={t("Fondo acumulado", "Accumulated fund")} value={`${data.fmt(g.saved)} (${pct.toFixed(0)}%)`} />
+                      </>
+                    )}
+                  <div className="mt-2 border-t border-border/60 pt-2">
+                    <Line
+                      label={t("Flujo neto / mes", "Net flow / month")}
+                      value={`${g.monthly >= 0 ? "+" : ""}${data.fmt(g.monthly)}`}
+                    />
+                  </div>
                 </dl>
+
 
                 <div
                   className={cn(
