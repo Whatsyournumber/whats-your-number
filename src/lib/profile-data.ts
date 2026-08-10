@@ -1,4 +1,7 @@
 import type { Profile } from "@/hooks/use-profile";
+import { suggestedFilters } from "@/lib/city-suggestions";
+import { lifestyleCities, monthlyCost, yearsToFreedom } from "@/lib/lifestyle-cities";
+
 import {
   buildPlan,
   cities,
@@ -50,7 +53,7 @@ export type Dataset = {
     retireAge: number;
     contributionsYTD: number;
   };
-  goals: { name: string; emoji: string; current: number; target: number; deadline: string; monthly: number }[];
+  goals: { name: string; emoji: string; current: number; target: number; deadline: string; monthly: number; note?: string | undefined }[];
   cashFlow: { income: { name: string; amount: number }[]; buckets: { name: string; amount: number; color: string }[] };
   cityCost: number | null;
   hasData: boolean;
@@ -122,6 +125,19 @@ export function buildDataset(p: Profile): Dataset {
   const yearsToGoal = Math.max(1, plan.freedomAge - (p.age ?? 30));
   const year = now.getFullYear();
 
+  // Presupuesto real de la ciudad donde quieres vivir y camino hasta tu número allí.
+  const cityFilters = suggestedFilters(p);
+  const liveCity = p.city ? lifestyleCities.find((c) => c.name.toLowerCase() === p.city.toLowerCase()) ?? null : null;
+  const cityMonthly = liveCity
+    ? monthlyCost(liveCity, cityFilters.stage, cityFilters.comfort)
+    : city
+      ? Math.round(city.cost * lifestyleFactor)
+      : null;
+  const cityTarget = Math.round((cityMonthly ?? 2600) * 12 * 25);
+  const cityYears = yearsToFreedom(Math.max(0, nw), savings, (cityMonthly ?? 2600) * 12, p.expected_return || 7);
+
+
+
   const goals = [
     {
       name: "Your Number",
@@ -150,12 +166,23 @@ export function buildDataset(p: Profile): Dataset {
     {
       name: p.city ? `Vivir en ${p.city}` : "Retiro anticipado",
       emoji: p.city ? "🌍" : "🌅",
-      current: p.assets_retirement,
-      target: Math.round((city?.cost ?? 2600) * lifestyleFactor * 12 * 25),
-      deadline: String(year + yearsToGoal),
-      monthly: Math.round(savings * 0.3),
+      current: Math.max(0, nw),
+      target: cityTarget,
+      deadline: String(year + (cityYears ?? yearsToGoal)),
+      monthly: savings,
+      note: cityMonthly
+        ? `Presupuesto ${fmt(cityMonthly)}/mes · necesitas ${fmt(cityTarget)} · ${
+            cityYears === 0
+              ? "ya puedes mudarte"
+              : cityYears
+                ? `${cityYears} años ahorrando ${fmt(savings)}/mes`
+                : "sube tu ahorro mensual para llegar"
+          }`
+        : undefined,
     },
   ];
+
+
 
   const incomeLines = [
     { name: "Salario", amount: p.income_salary },

@@ -569,14 +569,29 @@ function SuggestedForYou({
                   <p className="text-[11px] text-muted-foreground">{r.city.country}</p>
                 </div>
               </div>
-              <div className="flex items-center justify-between gap-2 px-3 py-2 text-[11px]">
-                <span className="text-muted-foreground">
-                  {t("Costo", "Cost")} <span className="numeric text-foreground">{fmt(r.cost)}</span>
-                </span>
-                <span className="text-muted-foreground">
-                  {st.dot} {st.score}
-                </span>
+              <div className="space-y-1.5 px-3 py-2 text-[11px]">
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">{t("Presupuesto mensual", "Monthly budget")}</span>
+                  <span className="numeric text-foreground">{fmt(r.cost)}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">{t("Tu número allí", "Your number there")}</span>
+                  <span className="numeric text-foreground">{fmt(r.cost * 12 * 25)}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">
+                    {r.yearsToRetire === 0
+                      ? t("Ya puedes mudarte", "You can move now")
+                      : r.yearsToRetire
+                        ? t(`${r.yearsToRetire} años para llegar`, `${r.yearsToRetire} yrs to get there`)
+                        : t("Sube tu ahorro", "Increase savings")}
+                  </span>
+                  <span className="text-muted-foreground">
+                    {st.dot} {st.score}
+                  </span>
+                </div>
               </div>
+
             </button>
           );
         })}
