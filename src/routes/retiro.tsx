@@ -175,10 +175,6 @@ function Retiro() {
         <KpiCard label={t("Aportes estimados al año", "Estimated contributions per year")} value={fmt(retirement.contributionsYTD)} index={4} />
         <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${retirement.returnAnnualized}%`} hint={t("anual", "annual")} index={5} />
       </div>
-
-
-
-
       <div className="surface p-5">
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">{t("Progreso hacia tu capital objetivo", "Progress toward your target capital")}</span>
