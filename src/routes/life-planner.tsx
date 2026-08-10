@@ -248,7 +248,7 @@ function LifePlanner() {
             />
             <HeroStat icon={Wallet} label={t("Patrimonio líquido actual", "Current liquid net worth")} value={data.fmtCompact(start)} />
             <HeroStat
-              icon={Wallet}
+              icon={Compass}
               label={t("Con nuevas decisiones", "With new decisions")}
               value={data.fmtCompact(Math.max(0, adjustedStart))}
               {...(progressDelta > 0.05 ? { tone: "up" as const } : progressDelta < -0.05 ? { tone: "down" as const } : {})}
