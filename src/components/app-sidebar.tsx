@@ -107,10 +107,10 @@ export function AppSidebar() {
       {!collapsed && (
         <SidebarFooter className="p-3">
           <div className="surface p-3">
-            <p className="text-xs text-muted-foreground">{t("Patrimonio neto", "Net worth")}</p>
-            <p className="numeric mt-1 text-lg font-semibold">{data.fmtCompact(data.netWorth)}</p>
+            <p className="text-xs text-muted-foreground">WhatsYournumber</p>
+            <p className="numeric mt-1 text-lg font-semibold">{data.fmtCompact(data.plan.targetCapital)}</p>
             <p className="mt-1 text-xs text-muted-foreground">
-              {t("Ahorro", "Savings")} {data.fmtCompact(data.savings)}
+              {t("Quieres", "You want")} {data.fmtCompact(data.plan.desiredIncome)}
               {t("/mes", "/mo")}
             </p>
           </div>
