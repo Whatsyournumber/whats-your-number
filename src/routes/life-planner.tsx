@@ -112,11 +112,11 @@ function LifePlanner() {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
-    const oldIndex = goals.findIndex((g) => g.id === active.id);
-    const newIndex = goals.findIndex((g) => g.id === over.id);
+    const oldIndex = sortedGoals.findIndex((s) => s.g.id === active.id);
+    const newIndex = sortedGoals.findIndex((s) => s.g.id === over.id);
     if (oldIndex === -1 || newIndex === -1) return;
-    const next = arrayMove(goals, oldIndex, newIndex);
-    void reorder(next.map((g) => g.id));
+    const next = arrayMove(sortedGoals, oldIndex, newIndex);
+    void reorder(next.map((s) => s.g.id));
   };
 
   const target = data.plan.targetCapital;
