@@ -102,7 +102,7 @@ const PHOTO = {
   bogota: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Bogot%C3%A1_desde_Monserrate.jpg/1920px-Bogot%C3%A1_desde_Monserrate.jpg",
   rio: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Christ_the_Redeemer_-_Cristo_Redentor_-_2022.jpg/1920px-Christ_the_Redeemer_-_Cristo_Redentor_-_2022.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   seoul: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Lotte_World_night_view_2.jpg/1920px-Lotte_World_night_view_2.jpg",
-  kualalumpur: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Kuala_Lumpur_railway_station_%28Photomerged_panorama%29_%2818951635646%29.jpg/1920px-Kuala_Lumpur_railway_station_%28Photomerged_panorama%29_%2818951635646%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  kualalumpur: "https://commons.wikimedia.org/wiki/Special:FilePath/57%20Kuala%20Lumpur%20skyline%20with%20Mont%20Kiara%20and%20Petronas%20Towers%20by%20night.jpg?width=1920",
   hochiminh: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Ho_Chi_Minh_City_Skyline.jpg/1920px-Ho_Chi_Minh_City_Skyline.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   taipei: taipeiPhoto.url,
   auckland: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Auckland_Skyline_383495.jpg/1920px-Auckland_Skyline_383495.jpg",
