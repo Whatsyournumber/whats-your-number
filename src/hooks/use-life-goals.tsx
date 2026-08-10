@@ -135,6 +135,7 @@ export function useLifeGoals() {
     create: create.mutateAsync,
     update: update.mutateAsync,
     remove: remove.mutateAsync,
-    busy: create.isPending || update.isPending || remove.isPending,
+    reorder: reorder.mutateAsync,
+    busy: create.isPending || update.isPending || remove.isPending || reorder.isPending,
   };
 }
