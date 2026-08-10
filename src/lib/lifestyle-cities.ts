@@ -808,9 +808,14 @@ export function scoreCity(
     expectedReturn: ctx.expectedReturn,
   });
 
-  // El ranking lo manda Your North Score (pilares 30/25/15/15/10/5);
-  // tus preferencias sólo ajustan la posición dentro de ese marco.
-  let score = north.total * 0.75 + fit * 0.25;
+  // El ranking lo manda Your North Score (calidad de vida es el pilar con más
+  // peso), más un factor de presencia en rankings globales para que el orden se
+  // parezca a los rankings de expatriados/liveability reales.
+  const global = globalRankingScore(c.id, c.country);
+  let score = north.total * 0.62 + fit * 0.2 + global * 0.18;
+
+  // Bonus adicional por calidad de vida objetiva de la ciudad.
+  score += (c.qualityOfLife - 70) * 0.06;
 
   // Penalización proporcional cuando la ciudad se sale del presupuesto
   // (antes era un castigo plano que hundía ciudades por muy poco).
@@ -821,7 +826,7 @@ export function scoreCity(
 
   // Curva de contraste: separa el top del montón en vez de amontonar
   // casi todo entre 60 y 80.
-  score = 50 + (score - 50) * 1.25;
+  score = 50 + (score - 50) * 1.3;
 
   const reasons = (Object.keys(weights) as Metric[])
     .map((k) => ({ label: k, value: values[k] * weights[k] }))
