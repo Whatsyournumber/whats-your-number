@@ -164,6 +164,8 @@ export function buildDataset(p: Profile): Dataset {
           }`
         : undefined,
     },
+  ];
+
 
 
   const incomeLines = [
