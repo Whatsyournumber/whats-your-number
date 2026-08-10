@@ -567,13 +567,13 @@ export function ProductPreview() {
                 <p className="text-xs text-muted-foreground">{t("Asignación de activos", "Asset allocation")}</p>
                 <div className="mt-2 h-[130px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
+                    <RePieChart>
                       <Pie data={allocation} dataKey="v" innerRadius={36} outerRadius={56} paddingAngle={3} stroke="none">
                         {allocation.map((entry, i) => (
                           <Cell key={entry.name} fill={pieColors[i % pieColors.length]} />
                         ))}
                       </Pie>
-                    </PieChart>
+                    </RePieChart>
                   </ResponsiveContainer>
                 </div>
                 <ul className="mt-2 space-y-1.5">
