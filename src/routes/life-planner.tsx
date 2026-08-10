@@ -104,6 +104,21 @@ function LifePlanner() {
   const data = buildDataset(profile);
   const [draft, setDraft] = useState<Draft | null>(null);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = goals.findIndex((g) => g.id === active.id);
+    const newIndex = goals.findIndex((g) => g.id === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
+    const next = arrayMove(goals, oldIndex, newIndex);
+    void reorder(next.map((g) => g.id));
+  };
+
   const target = data.plan.targetCapital;
   // Solo patrimonio líquido/invertible: las propiedades no cuentan para llegar al número.
   const liquid =
