@@ -80,69 +80,6 @@ function Retiro() {
     <PageShell>
       <PageHeader eyebrow={t("Largo plazo", "Long term")} title="WhatsYournumber" subtitle={t("Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar.", "How much you have today and how much you will have when you stop working.")} />
 
-      <Panel
-        title={t("Edita tu número", "Edit your number")}
-        description={t(
-          "Elige cuánto quieres recibir al mes y a qué tasa anual quieres retirarlo: ese es tu número.",
-          "Choose how much you want per month and the annual withdrawal rate: that's your number.",
-        )}
-      >
-        <div className="grid gap-5 lg:grid-cols-[1fr_1fr_auto] lg:items-end">
-          <div>
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>{t("Ingreso mensual deseado", "Desired monthly income")}</span>
-              <span className="numeric font-medium text-foreground">{fmt(wantMonthly)}</span>
-            </div>
-            <Input
-              type="number"
-              className="mt-2"
-              value={wantMonthly || ""}
-              onChange={(e) => setWantMonthly(Number(e.target.value || 0))}
-              placeholder="7000"
-            />
-          </div>
-          <div>
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>{t("Tasa de retiro anual", "Annual withdrawal rate")}</span>
-              <span className="numeric font-medium text-foreground">{swr.toFixed(1)}%</span>
-            </div>
-            <Slider className="mt-4" value={[swr]} min={2} max={12} step={0.5} onValueChange={(v) => setSwr(v[0] ?? 4)} />
-            <div className="mt-2 flex gap-1.5">
-              {[3, 3.5, 4, 5, 6, 8].map((r) => (
-                <button
-                  key={r}
-                  type="button"
-                  onClick={() => setSwr(r)}
-                  className={`rounded-full border px-2 py-0.5 text-[11px] ${swr === r ? "border-primary bg-primary/10 text-foreground" : "border-border text-muted-foreground"}`}
-                >
-                  {r}%
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="rounded-xl border border-border/70 bg-elevated/50 p-4">
-            <p className="text-xs text-muted-foreground">{t("Tu número", "Your number")}</p>
-            <p className="numeric mt-1 text-3xl font-semibold">{fmtCompact(liveNumber)}</p>
-            <p className="mt-1 text-[11px] text-muted-foreground">
-              {fmt(wantMonthly)}/{t("mes", "mo")} · {swr.toFixed(1)}%
-            </p>
-            <Button
-              size="sm"
-              className="mt-3 w-full rounded-full"
-              disabled={!numberDirty || saving}
-              onClick={() => {
-                void save({ desired_retirement_income: wantMonthly, withdrawal_rate: swr }).then(() =>
-                  toast.success(t("Tu número se actualizó", "Your number was updated")),
-                );
-              }}
-            >
-              {saving ? t("Guardando…", "Saving…") : t("Guardar mi número", "Save my number")}
-            </Button>
-          </div>
-        </div>
-      </Panel>
-
-
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <KpiCard
           label={t("Cuánto tengo", "How much I have")}
@@ -162,6 +99,72 @@ function Retiro() {
         <KpiCard label={t("Aportes estimados al año", "Estimated contributions per year")} value={fmt(retirement.contributionsYTD)} index={4} />
         <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${retirement.returnAnnualized}%`} hint={t("anual", "annual")} index={5} />
       </div>
+
+      <div className="surface p-6">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-sm font-medium">{t("Edita tu número", "Edit your number")}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {t("Ingreso mensual deseado y tasa de retiro anual.", "Desired monthly income and annual withdrawal rate.")}
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="numeric text-3xl font-semibold tracking-tight">{fmtCompact(liveNumber)}</p>
+            <p className="text-[11px] text-muted-foreground">
+              {fmt(wantMonthly)}/{t("mes", "mo")} · {swr.toFixed(1)}%
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-6 grid gap-6 md:grid-cols-[220px_1fr_auto] md:items-end">
+          <div>
+            <label className="text-[11px] uppercase tracking-wide text-muted-foreground">
+              {t("Ingreso mensual", "Monthly income")}
+            </label>
+            <Input
+              type="number"
+              className="mt-2 h-10 border-0 border-b border-border bg-transparent px-0 text-lg font-medium shadow-none focus-visible:ring-0"
+              value={wantMonthly || ""}
+              onChange={(e) => setWantMonthly(Number(e.target.value || 0))}
+              placeholder="7000"
+            />
+          </div>
+          <div>
+            <div className="flex items-center justify-between text-[11px] uppercase tracking-wide text-muted-foreground">
+              <span>{t("Tasa de retiro", "Withdrawal rate")}</span>
+              <span className="numeric text-sm font-medium text-foreground">{swr.toFixed(1)}%</span>
+            </div>
+            <Slider className="mt-4" value={[swr]} min={2} max={15} step={0.5} onValueChange={(v) => setSwr(v[0] ?? 4)} />
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {[3, 4, 5, 6, 8, 10, 12, 15].map((r) => (
+                <button
+                  key={r}
+                  type="button"
+                  onClick={() => setSwr(r)}
+                  className={`rounded-full px-2.5 py-1 text-[11px] transition-colors ${swr === r ? "bg-primary/15 text-foreground" : "text-muted-foreground hover:bg-elevated"}`}
+                >
+                  {r}%
+                </button>
+              ))}
+            </div>
+          </div>
+          <Button
+            size="sm"
+            variant={numberDirty ? "default" : "outline"}
+            className="rounded-full px-5"
+            disabled={!numberDirty || saving}
+            onClick={() => {
+              void save({ desired_retirement_income: wantMonthly, withdrawal_rate: swr }).then(() =>
+                toast.success(t("Tu número se actualizó", "Your number was updated")),
+              );
+            }}
+          >
+            {saving ? t("Guardando…", "Saving…") : t("Guardar", "Save")}
+          </Button>
+        </div>
+      </div>
+
+
 
       <div className="surface p-5">
         <div className="flex items-center justify-between text-sm">
