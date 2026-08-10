@@ -68,10 +68,25 @@ function DemoCard() {
       transition={{ duration: 0.5 }}
       className="mt-16"
     >
+      <div className="mb-10 text-center">
+        <h2 className="font-display text-3xl font-semibold tracking-tight md:text-5xl">
+          {t("Financial freedom has a number. What’s yours?", "Financial freedom has a number. What’s yours?")}
+        </h2>
+        <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground">
+          {t("Know your number. Live freely.", "Know your number. Live freely.")}
+        </p>
+        <Button asChild size="lg" className="mt-6 gap-2 rounded-full px-8">
+          <Link to="/demo" search={{ start: 1 }}>
+            {t("FIND OUT FOR FREE", "FIND OUT FOR FREE")} <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Button>
+      </div>
+
       <Link to="/demo" search={{ start: 1 }} className="group block">
         <div className="surface glow relative overflow-hidden p-8 transition-transform duration-300 hover:scale-[1.01] md:p-12">
           <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.08]" />
           <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+
 
           <div className="relative flex flex-col items-center gap-8 md:flex-row md:justify-between">
             <div className="max-w-md text-center md:text-left">
