@@ -66,6 +66,23 @@ function Dashboard() {
   const previous = months[months.length - 2] ?? current;
   const { fmt, fmtCompact, plan } = d;
 
+  // Snapshot del demo gratuito: se usa solo si el perfil aún no tiene cifras.
+  const [demo, setDemo] = useState<DemoSnapshot | null>(null);
+  useEffect(() => setDemo(readDemoSnapshot()), []);
+
+  const swr = Math.min(15, Math.max(1, profile.withdrawal_rate || 7)) / 100;
+  const desiredIncome =
+    plan.desiredIncome > 0 ? plan.desiredIncome : current.expenses > 0 ? current.expenses : demo?.monthlySpend ?? 0;
+  const targetNumber = plan.targetCapital > 0 ? plan.targetCapital : (desiredIncome * 12) / swr;
+  const numberNetWorth = d.netWorth > 0 ? d.netWorth : demo?.netWorth ?? 0;
+  const numberProgress = targetNumber > 0 ? Math.min(100, Math.max(0, (numberNetWorth / targetNumber) * 100)) : 0;
+  const monthlyContribution = current.savings > 0 ? current.savings : demo?.monthlyInvest ?? 0;
+  const numberYearsLeft =
+    plan.targetCapital > 0
+      ? plan.yearsLeft
+      : yearsToTarget(targetNumber, numberNetWorth, monthlyContribution, profile.expected_return || 7);
+  const usingDemo = plan.targetCapital <= 0 && targetNumber > 0;
+
   const freeCash = Math.max(0, current.savings - current.investments);
   const prevFree = Math.max(0, previous.savings - previous.investments);
   const savingsRate = current.income > 0 ? (current.savings / current.income) * 100 : 0;
