@@ -112,7 +112,7 @@ function LifestyleSimulator() {
 
   const [filters, setFilters] = useState<Filters>({
     ...defaultFilters,
-    budget: Math.max(2000, Math.min(15000, Math.round((d.income || 5000) / 500) * 500)),
+    budget: Math.max(1000, Math.min(15000, Math.round((d.income || 5000) / 100) * 100)),
     stage:
       profile.marital_status === "married"
         ? profile.children && profile.children !== "0"
