@@ -8,6 +8,7 @@
  * Son estimaciones de referencia, no cifras oficiales en tiempo real.
  */
 import { extraCities } from "./lifestyle-cities-extra";
+import { passesStability, stabilityScore, type StabilityPref } from "./political-stability";
 import barcelonaPhoto from "@/assets/city-barcelona-hd.jpg.asset.json";
 
 
@@ -584,6 +585,8 @@ export type GoalPref = "save" | "lifestyle" | "retire" | "family" | "career" | "
 
 export type ComfortPref = "tight" | "comfortable" | "luxury";
 
+export type { StabilityPref };
+
 export type Filters = {
   budget: number;
   climate: ClimatePref;
@@ -622,12 +625,12 @@ export const COMFORT_FACTOR: Record<ComfortPref, number> = {
 export type Metric =
   | "cost" | "housing" | "salary" | "purchasingPower" | "taxes" | "safety" | "healthcare"
   | "climate" | "internet" | "quality" | "walkability" | "transport" | "air" | "green"
-  | "remote" | "english" | "savings" | "retirement" | "schools" | "nightlife" | "jobs";
+  | "remote" | "english" | "savings" | "retirement" | "schools" | "nightlife" | "jobs" | "stability";
 
 const BASE_WEIGHTS: Record<Metric, number> = {
   cost: 10, housing: 6, salary: 6, purchasingPower: 6, taxes: 6, safety: 8, healthcare: 6,
   climate: 5, internet: 4, quality: 8, walkability: 4, transport: 4, air: 4, green: 3,
-  remote: 3, english: 3, savings: 10, retirement: 6, schools: 3, nightlife: 3, jobs: 4,
+  remote: 3, english: 3, savings: 10, retirement: 6, schools: 3, nightlife: 3, jobs: 4, stability: 6,
 };
 
 const STAGE_WEIGHTS: Record<LifeStage, Partial<Record<Metric, number>>> = {
@@ -770,6 +773,7 @@ export function scoreCity(
     schools: c.schools,
     nightlife: c.nightlife,
     jobs: c.jobMarket,
+    stability: stabilityScore(c.country),
   };
 
   const weights: Record<Metric, number> = { ...BASE_WEIGHTS };
@@ -777,6 +781,7 @@ export function scoreCity(
   for (const [k, v] of Object.entries(GOAL_WEIGHTS[f.goal])) weights[k as Metric] = v!;
   if (f.safety === "essential") weights.safety = Math.max(weights.safety, 16);
   if (f.safety === "neutral") weights.safety = 3;
+  if (f.stability !== "any") weights.stability = Math.max(weights.stability, 14);
   if (f.climate !== "any") weights.climate = Math.max(weights.climate, 10);
   if (f.tax !== "any") weights.taxes = Math.max(weights.taxes, 10);
 
@@ -808,6 +813,8 @@ export function scoreCity(
 }
 
 export function rankCities(f: Filters, ctx: { netWorth: number; age: number; expectedReturn: number }) {
-  const pool = f.region === "any" ? lifestyleCities : lifestyleCities.filter((c) => c.region === f.region);
+  const pool = lifestyleCities
+    .filter((c) => f.region === "any" || c.region === f.region)
+    .filter((c) => passesStability(c.country, f.stability));
   return pool.map((c) => scoreCity(c, f, ctx)).sort((a, b) => b.score - a.score);
 }
