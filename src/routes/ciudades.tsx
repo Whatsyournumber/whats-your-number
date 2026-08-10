@@ -277,31 +277,21 @@ function LifestyleSimulator() {
               ]}
             />
             <SelectFilter
-              label={
-                filters.goal === "career"
-                  ? t("Rango salarial", "Salary range")
-                  : t("Prioridad de ingresos", "Income priority")
-              }
+              label={t(
+                "Rango salarial (si trabajas ahí)",
+                "Salary range (if you work there)",
+              )}
               value={filters.salary}
               onChange={(v) => set("salary", v)}
-              options={
-                filters.goal === "career"
-                  ? [
-                      { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
-                      { value: "balanced", label: t("Medio", "Mid range"), icon: "⚖️" },
-                      { value: "high_income", label: t("Alto", "High"), icon: "📈" },
-                      { value: "highest_paying", label: t("Top mundial", "Top paying"), icon: "💎" },
-                      { value: "low_cost", label: t("Bajo pero barato", "Lower but cheap"), icon: "💸" },
-                    ]
-                  : [
-                      { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
-                      { value: "low_cost", label: t("Costo bajo", "Lower cost"), icon: "💸" },
-                      { value: "balanced", label: t("Equilibrado", "Balanced"), icon: "⚖️" },
-                      { value: "high_income", label: t("Alto potencial", "High income"), icon: "📈" },
-                      { value: "highest_paying", label: t("Mejor pagadas", "Highest paying"), icon: "💎" },
-                    ]
-              }
+              options={[
+                { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
+                { value: "under_1500", label: t("< $1.500/mes", "< $1,500/mo"), icon: "💸" },
+                { value: "1500_3000", label: t("$1.500 – $3.000", "$1,500 – $3,000"), icon: "🪙" },
+                { value: "3000_5000", label: t("$3.000 – $5.000", "$3,000 – $5,000"), icon: "📈" },
+                { value: "5000_plus", label: t("$5.000+", "$5,000+"), icon: "💎" },
+              ]}
             />
+
           </FilterGroup>
 
           {/* Tú */}
@@ -584,7 +574,7 @@ function CityCard({
           </div>
           <div className="bg-elevated/40 p-2.5">
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              {t("Salario medio", "Average salary")}
+              {t("Salario neto est.", "Est. net salary")}
             </p>
             <p className="numeric mt-0.5 text-sm font-medium">{fmt(c.avgSalary)}</p>
           </div>
@@ -715,7 +705,7 @@ function ComparePanel({
       a: fmt(a.cost), b: fmt(b.cost), aWin: a.cost < b.cost,
     },
     {
-      label: t("Salario medio", "Average salary"),
+      label: t("Salario neto est.", "Est. net salary"),
       a: fmt(a.city.avgSalary), b: fmt(b.city.avgSalary), aWin: a.city.avgSalary > b.city.avgSalary,
     },
     {
@@ -958,7 +948,7 @@ function CityDetail({
             <span className="text-border">·</span>
             <span className="inline-flex items-center gap-1">
               <span>💼</span>
-              {t("Salario medio", "Average salary")}: {fmt(c.avgSalary)}
+              {t("Salario neto est.", "Est. net salary")}: {fmt(c.avgSalary)}
             </span>
             <span className="text-border">·</span>
             <span className="inline-flex items-center gap-1">
