@@ -266,7 +266,7 @@ export function ProductPreview() {
                       <Bar dataKey="c" radius={[6, 6, 0, 0]} fill="var(--color-muted-foreground)" opacity={0.25} />
                     </BarChart>
                   ) : active === "portafolio" ? (
-                    <LineChart data={portfolio}>
+                    <ReLineChart data={portfolio}>
                       <XAxis dataKey="m" tickLine={false} axisLine={false} fontSize={11} stroke="var(--color-muted-foreground)" />
                       <Tooltip
                         contentStyle={{
@@ -279,7 +279,7 @@ export function ProductPreview() {
                       />
                       <Line type="monotone" dataKey="you" stroke="var(--color-primary)" strokeWidth={2.5} dot={false} name={t("Tú", "You")} />
                       <Line type="monotone" dataKey="spy" stroke="var(--color-muted-foreground)" strokeWidth={2} strokeDasharray="4 4" dot={false} name="S&P 500" />
-                    </LineChart>
+                    </ReLineChart>
                   ) : active === "cashflow" ? (
                     <BarChart data={cashFlowData} layout="vertical">
                       <XAxis type="number" hide domain={[0, 40]} />
