@@ -179,22 +179,27 @@ function Dashboard() {
           <div className="space-y-4">
             <div>
               <p className="text-xs text-muted-foreground">Your Number</p>
-              <p className="numeric mt-1 text-2xl font-semibold">{fmt(plan.targetCapital)}</p>
+              <p className="numeric mt-1 text-2xl font-semibold">{fmt(targetNumber)}</p>
               <p className="mt-1 text-xs text-muted-foreground">
-                {t(`Para vivir con ${fmt(plan.desiredIncome)} al mes`, `To live on ${fmt(plan.desiredIncome)} a month`)}
+                {t(`Para vivir con ${fmt(desiredIncome)} al mes`, `To live on ${fmt(desiredIncome)} a month`)}
               </p>
+              {usingDemo && (
+                <p className="mt-1 text-[11px] text-muted-foreground/80">
+                  {t("Calculado con tu demo. Edita tus datos para afinarlo.", "Based on your demo. Edit your data to refine it.")}
+                </p>
+              )}
             </div>
             <div>
               <div className="mb-1.5 flex items-center justify-between text-xs">
                 <span className="text-muted-foreground">{t("Progreso", "Progress")}</span>
-                <span className="numeric font-medium">{plan.progress.toFixed(1)}%</span>
+                <span className="numeric font-medium">{numberProgress.toFixed(1)}%</span>
               </div>
-              <Progress value={plan.progress} className="h-2" />
+              <Progress value={numberProgress} className="h-2" />
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div className="rounded-xl bg-elevated/60 p-3">
                 <p className="text-xs text-muted-foreground">{t("Años restantes", "Years left")}</p>
-                <p className="numeric mt-1 text-lg font-semibold">{plan.yearsLeft}</p>
+                <p className="numeric mt-1 text-lg font-semibold">{numberYearsLeft}</p>
               </div>
               <div className="rounded-xl bg-elevated/60 p-3">
                 <p className="text-xs text-muted-foreground">{t("Probabilidad", "Probability")}</p>
