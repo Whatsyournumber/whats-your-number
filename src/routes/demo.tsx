@@ -255,13 +255,14 @@ function DemoPage() {
             >
               <div className="surface glow relative overflow-hidden p-6 text-center">
                 <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.08]" />
-                <p className="relative text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                <p className="relative text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
                   {t("Tu número", "Your number")}
                 </p>
-                <p className="numeric relative mt-2 text-4xl font-semibold tracking-tight text-primary md:text-5xl">
+                <p className="numeric relative mt-2 text-5xl font-semibold tracking-tight text-positive md:text-6xl">
                   {money(target)}
                 </p>
-                <div className="relative mt-6 space-y-2 text-sm">
+
+                <div className="relative mx-auto mt-6 max-w-xs space-y-2 text-sm">
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">{t("Tienes", "You have")}</span>
                     <span className="numeric font-medium">{money(have)}</span>
@@ -271,15 +272,16 @@ function DemoPage() {
                     <span className="numeric font-medium">{money(missing)}</span>
                   </div>
                 </div>
-                <div className="relative mt-4 h-2 overflow-hidden rounded-full bg-elevated">
+
+                <div className="relative mx-auto mt-5 h-2.5 max-w-xs overflow-hidden rounded-full bg-elevated">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${progress}%` }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="h-full rounded-full bg-primary"
+                    className="h-full rounded-full bg-positive"
                   />
                 </div>
-                <p className="relative mt-2 text-xs text-muted-foreground">
+                <p className="relative mx-auto mt-2 max-w-xs text-xs text-muted-foreground">
                   {progress.toFixed(0)}% {t("completado", "completed")}
                 </p>
               </div>
@@ -287,7 +289,7 @@ function DemoPage() {
               <div className="surface p-6">
                 <p className="text-sm">
                   {t("Al ritmo actual llegas en", "At your current pace you get there in")}{" "}
-                  <span className="font-semibold text-primary">
+                  <span className="font-semibold text-positive">
                     {baseYears === null
                       ? t("más de 80 años", "over 80 years")
                       : baseYears === 0
@@ -301,7 +303,7 @@ function DemoPage() {
                       <p className="numeric text-xs text-muted-foreground">
                         {money(s.monthly)}/{t("mes", "mo")}
                       </p>
-                      <p className="numeric mt-1 text-lg font-semibold">
+                      <p className="numeric mt-1 text-xl font-semibold">
                         {s.years === null ? "80+" : `${s.years} ${t("años", "yrs")}`}
                       </p>
                     </div>
