@@ -94,7 +94,7 @@ const PHOTO = {
   santiago: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Blue_hour_in_Santiago_de_Chile.jpg/1920px-Blue_hour_in_Santiago_de_Chile.jpg",
   lima: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Miraflores_Costa_Verde_Skyline_%28Lima%2C_Peru%29.jpg/1920px-Miraflores_Costa_Verde_Skyline_%28Lima%2C_Peru%29.jpg",
   saopaulo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/PaulistaPanorama.jpg/1920px-PaulistaPanorama.jpg",
-  montevideo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/2016_Montevideo_Playa_de_los_Pocitos_-_Punta_Carretas_-_Montevideo%2C_Uruguay.jpg/1920px-2016_Montevideo_Playa_de_los_Pocitos_-_Punta_Carretas_-_Montevideo%2C_Uruguay.jpg",
+  montevideo: "https://commons.wikimedia.org/wiki/Special:FilePath/Playa%20Pocitos%20Vista%20desde%20Trouville.jpg?width=1920",
   bogota: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Bogot%C3%A1_desde_Monserrate.jpg/1920px-Bogot%C3%A1_desde_Monserrate.jpg",
   rio: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Christ_the_Redeemer_-_Cristo_Redentor_-_2022.jpg/1920px-Christ_the_Redeemer_-_Cristo_Redentor_-_2022.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   seoul: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Panoramic_View_from_63_Building_in_Seoul_-_panoramio.jpg/1920px-Panoramic_View_from_63_Building_in_Seoul_-_panoramio.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
