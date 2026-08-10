@@ -281,44 +281,6 @@ export function ProductPreview() {
                       <Line type="monotone" dataKey="you" stroke="var(--color-primary)" strokeWidth={2.5} dot={false} name={t("Tú", "You")} />
                       <Line type="monotone" dataKey="spy" stroke="var(--color-muted-foreground)" strokeWidth={2} strokeDasharray="4 4" dot={false} name="S&P 500" />
                     </ReLineChart>
-                  ) : active === "cashflow" ? (
-                    <BarChart data={cashFlowData} layout="vertical" margin={{ left: 24, right: 12 }}>
-                      <XAxis type="number" hide domain={[0, 40]} />
-                      <YAxis dataKey="label" type="category" tickLine={false} axisLine={false} fontSize={9} stroke="var(--color-muted-foreground)" width={90} />
-                      <Bar dataKey="value" radius={[0, 6, 6, 0]} barSize={28}>
-                        {cashFlowData.map((d, i) => (
-                          <Cell key={i} fill={d.color} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  ) : active === "lifeplanner" ? (
-                    <div className="grid h-full grid-cols-2 gap-3">
-                      {lifeGoals.map((goal, i) => (
-                        <motion.div
-                          key={goal.title}
-                          initial={{ opacity: 0, scale: 0.95 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: i * 0.08 }}
-                          className={cn(
-                            "flex flex-col justify-between rounded-xl p-3 ring-1",
-                            goal.color === "positive"
-                              ? "bg-positive/10 ring-positive/20"
-                              : "bg-negative/10 ring-negative/20",
-                          )}
-                        >
-                          <div className="flex items-center gap-2">
-                            {goal.title.includes("empresa") || goal.titleEn.includes("company") ? <Building className="h-3.5 w-3.5" /> : goal.title.includes("Aleph") ? <Briefcase className="h-3.5 w-3.5" /> : goal.title.includes("Viajes") || goal.titleEn.includes("trips") ? <Plane className="h-3.5 w-3.5" /> : <Baby className="h-3.5 w-3.5" />}
-                            <span className="text-xs font-medium">{t(goal.title, goal.titleEn)}</span>
-                          </div>
-                          <div className="mt-2">
-                            <p className={cn("numeric text-lg font-semibold", goal.color === "positive" ? "text-positive" : "text-negative")}>
-                              {goal.value}
-                            </p>
-                            <p className="text-[10px] text-muted-foreground">{t(goal.impact, goal.impactEn)}</p>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
                   ) : active === "nextcity" ? (
                     <div className="flex h-full flex-col gap-2.5">
                       <motion.div
