@@ -16,7 +16,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { categorizeTx } from "@/lib/categorize";
 import { useT } from "@/hooks/use-language";
 import type { DateRange } from "react-day-picker";
-import { Bar, BarChart, CartesianGrid, Cell, ComposedChart, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, ComposedChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
@@ -208,33 +208,47 @@ function Gastos() {
 
 
 
-  const incomeSeries = useMemo(() => {
+  const series = useMemo(() => {
     const byMonth = days > 62;
     const keyOf = (d: Date) => (byMonth ? format(d, "yyyy-MM") : format(d, "yyyy-MM-dd"));
     const labelOf = (d: Date) => (byMonth ? format(d, "MMM yy", { locale: es }) : format(d, "d MMM", { locale: es }));
     const keys: string[] = [];
-    const buckets = new Map<string, { label: string; ingresos: number; gastos: number }>();
+    const buckets = new Map<string, { label: string; gasto: number; anterior: number; fijo: number }>();
     for (let i = 0; i < days; i++) {
       const d = addDays(from, i);
       const k = keyOf(d);
       if (!buckets.has(k)) {
         keys.push(k);
-        buckets.set(k, { label: labelOf(d), ingresos: 0, gastos: 0 });
+        buckets.set(k, { label: labelOf(d), gasto: 0, anterior: 0, fijo: 0 });
       }
     }
-    for (const t of transactions) {
-      if (!inRange(t, from, to)) continue;
+    for (const t of current) {
       const b = buckets.get(keyOf(parseISO(t.tx_date!)));
-      if (!b) continue;
-      if (t.amount > 0) b.ingresos += t.amount;
-      else b.gastos += Math.abs(t.amount);
+      if (b) b.gasto += Math.abs(t.amount);
     }
+    // periodo anterior alineado posición a posición
+    const prevKeys: string[] = [];
+    const prevBuckets = new Map<string, number>();
+    for (let i = 0; i < days; i++) {
+      const d = addDays(prevFrom, i);
+      const k = keyOf(d);
+      if (!prevBuckets.has(k)) {
+        prevKeys.push(k);
+        prevBuckets.set(k, 0);
+      }
+    }
+    for (const t of previous) {
+      const k = keyOf(parseISO(t.tx_date!));
+      if (prevBuckets.has(k)) prevBuckets.set(k, (prevBuckets.get(k) ?? 0) + Math.abs(t.amount));
+    }
+    keys.forEach((k, i) => {
+      const pk = prevKeys[i];
+      const b = buckets.get(k)!;
+      b.anterior = pk ? (prevBuckets.get(pk) ?? 0) : 0;
+      b.fijo = byMonth ? fixed.total : fixed.total / 30;
+    });
     return keys.map((k) => buckets.get(k)!);
-  }, [transactions, from, days, to]);
-
-  const totalIncome = incomeSeries.reduce((s, b) => s + b.ingresos, 0);
-  const totalExpense = incomeSeries.reduce((s, b) => s + b.gastos, 0);
-  const net = totalIncome - totalExpense;
+  }, [current, previous, from, prevFrom, days, fixed.total]);
 
 
   const merchants = useMemo(() => {
@@ -456,71 +470,42 @@ function Gastos() {
           )}
         </Panel>
 
-        <Panel title={t("Ingresos vs Gastos", "Income vs Expenses")} description={t("Flujo de caja real del periodo: lo que entra frente a lo que sale.", "Real cash flow for the period: what comes in vs what goes out.")} className="lg:col-span-2">
+        <Panel title={t("Evolución del gasto", "Spend evolution")} description={`${t("Comparando con", "Comparing with")} ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="lg:col-span-2">
           <ResponsiveContainer width="100%" height={280}>
-            <ComposedChart data={incomeSeries} margin={{ left: -8, right: 8 }}>
+            <ComposedChart data={series} margin={{ left: -8, right: 8 }}>
               <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
               <XAxis dataKey="label" {...axisProps} interval="preserveStartEnd" minTickGap={18} />
               <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={64} />
-              <Tooltip
-                content={({ active, payload, label }) => {
-                  if (!active || !payload?.length) return null;
-                  const income = payload.find((p) => p.dataKey === "ingresos")?.value as number | undefined;
-                  const expense = payload.find((p) => p.dataKey === "gastos")?.value as number | undefined;
-                  return (
-                    <div className="rounded-xl border border-border bg-popover/95 px-3 py-2 text-xs shadow-xl backdrop-blur-md">
-                      <p className="mb-1.5 font-medium text-popover-foreground">{label}</p>
-                      <div className="space-y-1">
-                        {income !== undefined && (
-                          <div className="flex items-center gap-2">
-                            <span className="h-2 w-2 rounded-full" style={{ background: "var(--color-chart-1)" }} />
-                            <span className="text-muted-foreground">{t("Ingresos", "Income")}</span>
-                            <span className="numeric ml-auto font-medium text-popover-foreground">{fmt(income)}</span>
-                          </div>
-                        )}
-                        {expense !== undefined && (
-                          <div className="flex items-center gap-2">
-                            <span className="h-2 w-2 rounded-full" style={{ background: "var(--color-chart-5)" }} />
-                            <span className="text-muted-foreground">{t("Gastos", "Expenses")}</span>
-                            <span className="numeric ml-auto font-medium text-popover-foreground">{fmt(expense)}</span>
-                          </div>
-                        )}
-                        {income !== undefined && expense !== undefined && (
-                          <div className="mt-1.5 border-t border-border pt-1.5">
-                            <div className="flex items-center gap-2">
-                              <span className="text-muted-foreground">{t("Neto", "Net")}</span>
-                              <span className={cn("numeric ml-auto font-semibold", income - expense >= 0 ? "text-positive" : "text-negative")}>
-                                {fmt(income - expense)}
-                              </span>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                }}
-                cursor={{ fill: "var(--color-muted)", opacity: 0.3 }}
+              <Tooltip content={<ChartTooltip formatter={fmt} />} cursor={{ fill: "var(--color-muted)", opacity: 0.3 }} />
+              <Legend
+                verticalAlign="top"
+                align="right"
+                iconType="circle"
+                wrapperStyle={{ fontSize: 11, paddingBottom: 8 }}
               />
-              <Legend verticalAlign="top" align="right" iconType="circle" wrapperStyle={{ fontSize: 11, paddingBottom: 8 }} />
-              <Bar dataKey="ingresos" name={t("Ingresos", "Income")} fill="var(--color-chart-1)" radius={[8, 8, 0, 0]} />
-              <Bar dataKey="gastos" name={t("Gastos", "Expenses")} fill="var(--color-chart-5)" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="anterior" name={t("Periodo anterior", "Previous period")} fill="var(--color-muted-foreground)" fillOpacity={0.35} radius={[8, 8, 0, 0]} />
+              <Bar dataKey="gasto" name={t("Este periodo", "This period")} fill="var(--color-chart-5)" radius={[8, 8, 0, 0]} />
+              <Line dataKey="fijo" name={t("Fijos (prorrateado)", "Fixed (prorated)")} stroke="var(--color-chart-3)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
             </ComposedChart>
           </ResponsiveContainer>
           <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
-              { l: t("Ingresos", "Income"), v: fmt(totalIncome) },
-              { l: t("Gastos", "Expenses"), v: fmt(totalExpense) },
-              { l: t("Neto", "Net"), v: `${net >= 0 ? "+" : ""}${fmt(net)}` },
-              { l: t("Día más caro", "Most expensive day"), v: incomeSeries.length ? fmt(Math.max(...incomeSeries.map((s) => s.gastos))) : "—" },
+              { l: t("Este periodo", "This period"), v: fmt(variableTotal) },
+              { l: t("Periodo anterior", "Previous period"), v: fmt(prevVariable) },
+              {
+                l: t("Variación", "Change"),
+                v: `${variableTotal - prevVariable > 0 ? "+" : ""}${fmt(variableTotal - prevVariable)}`,
+              },
+              { l: t("Día más caro", "Most expensive day"), v: series.length ? fmt(Math.max(...series.map((s) => s.gasto))) : "—" },
             ].map((k) => (
               <div key={k.l} className="rounded-xl bg-elevated/60 px-3 py-2">
                 <p className="text-[11px] text-muted-foreground">{k.l}</p>
-                <p className={cn("numeric text-sm font-semibold", k.l === t("Neto", "Net") ? (net >= 0 ? "text-positive" : "text-negative") : "text-popover-foreground")}>{k.v}</p>
+                <p className="numeric text-sm font-semibold">{k.v}</p>
               </div>
             ))}
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
-            {t("Saldo del periodo", "Period balance")}: <span className={cn("numeric font-medium", net >= 0 ? "text-positive" : "text-negative")}>{fmt(net)}</span>
+            {t("Periodo anterior", "Previous period")}: <span className="numeric font-medium">{fmt(prevTotal)}</span>
           </p>
         </Panel>
       </div>
