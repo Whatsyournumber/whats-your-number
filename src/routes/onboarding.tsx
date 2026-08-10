@@ -212,6 +212,13 @@ function OnboardingPage() {
 
   const set = <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) =>
     setData((d) => ({ ...d, [key]: value }));
+  const setFixed = (key: (typeof FIXED_FIELDS)[number]["key"], value: number) =>
+    setData((d) => {
+      const next = { ...d, [key]: value };
+      const fixedTotal = totalFixedExpenses(next);
+      if (next.monthly_expenses < fixedTotal) next.monthly_expenses = fixedTotal;
+      return next;
+    });
   const setL = <K extends keyof LifeData>(key: K, value: LifeData[K]) => setLife((l) => ({ ...l, [key]: value }));
 
   const desiredIncome = useMemo(() => estimateDesiredIncome(life), [life]);
