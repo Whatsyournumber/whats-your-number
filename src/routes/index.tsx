@@ -5,9 +5,11 @@ import {
   Bot,
   Crosshair,
   FileText,
+  Globe,
   LineChart,
   Lock,
   PieChart,
+  Route as RouteIcon,
   ScanEye,
   ShieldCheck,
   Sparkles,
@@ -15,6 +17,7 @@ import {
   Target,
   TrendingUp,
 } from "lucide-react";
+
 
 
 
@@ -154,16 +157,32 @@ function Landing() {
       icon: PieChart,
       title: t("Análisis de gastos", "Spending analysis"),
       desc: t(
-        "Categorías, subcategorías, comercios recurrentes y presupuestos vivos mes a mes.",
-        "Categories, subcategories, recurring merchants and live budgets month after month.",
+        "Categorías propias, gastos fijos, mapa de calor diario y tu gasto target mes a mes.",
+        "Custom categories, fixed expenses, a daily heatmap and your target spend month after month.",
       ),
     },
     {
       icon: LineChart,
       title: t("Patrimonio y portafolio", "Net worth and portfolio"),
       desc: t(
-        "Activos, pasivos, asignación y rendimiento contra el mercado en un solo panel.",
-        "Assets, liabilities, allocation and performance against the market in a single view.",
+        "Activos, pasivos, asignación y rendimiento con precios de mercado en vivo.",
+        "Assets, liabilities, allocation and performance with live market prices.",
+      ),
+    },
+    {
+      icon: RouteIcon,
+      title: "Life Planner",
+      desc: t(
+        "Simula casa, hijos, negocio o venta de empresa y mira cuántos años te acerca o aleja del retiro.",
+        "Simulate a home, kids, a business or an exit and see how many years it moves your retirement.",
+      ),
+    },
+    {
+      icon: Globe,
+      title: t("Your next city", "Your next city"),
+      desc: t(
+        "152 ciudades puntuadas con el Your North Score: costo, calidad de vida, seguridad y visados.",
+        "152 cities scored with the Your North Score: cost, quality of life, safety and visas.",
       ),
     },
     {
@@ -176,32 +195,45 @@ function Landing() {
     },
   ];
 
+  const panelChips = [
+    t("Patrimonio", "Net worth"),
+    t("Gastos", "Spending"),
+    t("Portafolio en vivo", "Live portfolio"),
+    t("Cash flow 40/40/20", "40/40/20 cash flow"),
+    "Life Planner",
+    t("Your next city", "Your next city"),
+  ];
+
   const whyCards = [
     {
-      icon: ScanEye,
-      title: t("Claridad total", "Total clarity"),
-      desc: t(
-        "Toda tu información financiera en un solo panel.",
-        "All your financial information in one place.",
-      ),
-    },
-    {
-      icon: Sparkles,
-      title: "AI Advisor",
-      desc: t(
-        "Clasifica automáticamente y detecta dónde ahorrar.",
-        "Automatically classifies and spots where to save.",
-      ),
-    },
-    {
       icon: Crosshair,
-      title: t("Tu número, siempre", "Your number, always"),
+      title: t("Tu número, siempre claro", "Your number, always clear"),
       desc: t(
-        "Sabe cuánto necesitas para ser libre y qué tan cerca estás.",
-        "Know how much you need to be free and how close you are.",
+        "Cuánto capital necesitas para vivir de tus rendimientos y en qué año llegas, según la tasa que elijas.",
+        "How much capital you need to live off returns, and the year you get there at the rate you choose.",
       ),
+      stat: t("30 segundos · sin registro", "30 seconds · no sign-up"),
+    },
+    {
+      icon: ScanEye,
+      title: t("La IA lee tus estados de cuenta", "AI reads your statements"),
+      desc: t(
+        "PDF o CSV: clasifica cada movimiento, detecta suscripciones muertas y te dice dónde recortar.",
+        "PDF or CSV: it classifies every transaction, spots dead subscriptions and tells you where to cut.",
+      ),
+      stat: t("142 movimientos en 9 segundos", "142 transactions in 9 seconds"),
+    },
+    {
+      icon: RouteIcon,
+      title: t("Decide tu vida, no solo tu mes", "Plan your life, not just your month"),
+      desc: t(
+        "Casa, hijos, negocio o mudarte a Madrid: cada decisión mueve tu fecha de libertad en tiempo real.",
+        "A home, kids, a business or moving to Madrid: each decision shifts your freedom date in real time.",
+      ),
+      stat: t("Life Planner + Your next city", "Life Planner + Your next city"),
     },
   ];
+
 
 
 
@@ -281,16 +313,8 @@ function Landing() {
           <p className="mt-3 text-xs text-muted-foreground">
             {t("Gratis y sin registro · 3 preguntas · 30 segundos", "Free, no sign-up · 3 questions · 30 seconds")}
           </p>
-        </motion.section>
 
-        <section className="mt-16 md:mt-20">
-          <div className="mb-8 text-center">
-            <span className="text-xs font-medium uppercase tracking-wider text-primary">
-              {t("¿Por qué WhatsYournumber?", "Why WhatsYournumber?")}
-            </span>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="mt-12 grid gap-4 text-left md:grid-cols-3">
             {whyCards.map((card, i) => (
               <motion.div
                 key={card.title}
@@ -300,22 +324,25 @@ function Landing() {
                 transition={{ duration: 0.4, delay: i * 0.08 }}
                 className="group relative overflow-hidden rounded-3xl border border-white/[0.06] bg-card/40 p-6 backdrop-blur-sm transition-colors hover:bg-card/60"
               >
+                <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-[0.07]" />
                 <div className="relative flex h-11 w-11 items-center justify-center rounded-full border border-border/60 bg-elevated/40 ring-1 ring-primary/10 transition-all group-hover:ring-primary/30">
-                  <div className="absolute inset-0 rounded-full bg-primary/5 opacity-0 transition-opacity group-hover:opacity-100" />
                   <card.icon className="relative h-5 w-5 text-primary" strokeWidth={1.8} />
                 </div>
-                <h3 className="mt-4 text-base font-semibold tracking-tight">{card.title}</h3>
-                <p className="mt-1.5 text-sm text-muted-foreground/80">{card.desc}</p>
+                <h3 className="relative mt-4 text-base font-semibold tracking-tight">{card.title}</h3>
+                <p className="relative mt-1.5 text-sm text-muted-foreground/80">{card.desc}</p>
+                <p className="numeric relative mt-4 text-xs font-medium text-primary">{card.stat}</p>
               </motion.div>
             ))}
           </div>
-        </section>
+        </motion.section>
 
 
 
-        <section className="mt-24 md:mt-32">
 
-          <div className="mb-8 text-center">
+        <section className="relative mt-24 md:mt-32">
+          <div className="wealth-gradient pointer-events-none absolute left-1/2 top-10 h-[420px] w-[820px] -translate-x-1/2 rounded-full opacity-[0.10] blur-3xl" />
+
+          <div className="relative mb-8 text-center">
             <span className="text-xs font-medium uppercase tracking-wider text-primary">
               {t("Así se ve por dentro", "This is what it looks like inside")}
             </span>
@@ -324,20 +351,41 @@ function Landing() {
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
               {t(
-                "Cambia entre patrimonio, gastos y portafolio. Todo se actualiza en tiempo real conforme importas tus estados de cuenta.",
-                "Switch between net worth, spending and portfolio. Everything updates in real time as you import your statements.",
+                "Patrimonio, gastos, portafolio, retiro y tus próximas decisiones de vida. Todo se recalcula en tiempo real conforme importas tus estados de cuenta.",
+                "Net worth, spending, portfolio, retirement and your next life decisions. Everything recalculates in real time as you import your statements.",
               )}
             </p>
+            <div className="mt-5 flex flex-wrap justify-center gap-2">
+              {panelChips.map((chip) => (
+                <span
+                  key={chip}
+                  className="rounded-full border border-border/60 bg-card/50 px-3 py-1 text-[11px] text-muted-foreground backdrop-blur"
+                >
+                  {chip}
+                </span>
+              ))}
+            </div>
           </div>
+
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.5 }}
+            className="relative rounded-[28px] border border-white/[0.07] bg-card/40 p-2 shadow-2xl backdrop-blur md:p-3"
           >
+            <div className="flex items-center gap-2 px-3 pb-2 pt-1">
+              <span className="h-2.5 w-2.5 rounded-full bg-negative/50" />
+              <span className="h-2.5 w-2.5 rounded-full bg-primary/30" />
+              <span className="h-2.5 w-2.5 rounded-full bg-positive/40" />
+              <span className="mx-auto rounded-full bg-elevated/70 px-3 py-1 text-[10px] text-muted-foreground">
+                app.whatsyournumber.com/dashboard
+              </span>
+            </div>
             <ProductPreview />
           </motion.div>
         </section>
+
 
 
 
