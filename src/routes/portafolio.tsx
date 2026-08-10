@@ -1,15 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { RefreshCw, X } from "lucide-react";
+import { useState } from "react";
 import { CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useT } from "@/hooks/use-language";
+import { useMarketSeries, useQuotes, useWatchlist } from "@/hooks/use-market";
 import { useProfile } from "@/hooks/use-profile";
-import { benchmark } from "@/lib/data";
 import { buildDataset } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
+
 
 export const Route = createFileRoute("/portafolio")({
   head: () => ({
@@ -42,6 +47,12 @@ function Portafolio() {
   const d = buildDataset(profile);
   const fmt = (n: number, _dec?: number) => d.fmt(n);
   const r = Math.max(0, profile.expected_return || 7) / 100;
+
+  const watchlist = useWatchlist();
+  const quotesQuery = useQuotes(watchlist.symbols);
+  const seriesQuery = useMarketSeries(["^GSPC", "SPY", "BTC-USD"]);
+  const [newSymbol, setNewSymbol] = useState("");
+
   const positions = [
     { ticker: t("ETFs / fondos", "ETFs / funds"), name: t("Fondos indexados y ETFs", "Index funds and ETFs"), type: "ETF" as const, value: profile.assets_etf, growth: r },
     { ticker: t("Fondo de retiro", "Retirement fund"), name: t("Plan de pensiones / retiro", "Pension / retirement plan"), type: "ETF" as const, value: profile.assets_retirement, growth: r * 0.8 },
@@ -66,6 +77,25 @@ function Portafolio() {
   const totalCost = enriched.reduce((s, h) => s + h.cost, 0);
   const totalGain = totalValue - totalCost;
   const dividends = enriched.reduce((s, h) => s + h.dividends, 0);
+
+  // Real market series: S&P 500 vs a blend that mirrors your allocation (equities → SPY, crypto → BTC, cash → 0%).
+  const series = seriesQuery.data?.series ?? {};
+  const spx = series["^GSPC"] ?? [];
+  const spy = series["SPY"] ?? [];
+  const btc = series["BTC-USD"] ?? [];
+  const equityValue = profile.assets_etf + profile.assets_retirement + profile.assets_stocks;
+  const cryptoValue = profile.assets_crypto;
+  const cashValue = profile.assets_cash + profile.assets_bank;
+  const base = equityValue + cryptoValue + cashValue;
+  const wEq = base ? equityValue / base : 1;
+  const wCr = base ? cryptoValue / base : 0;
+  const benchmarkData = spx.map((p, i) => ({
+    label: p.label,
+    sp500: p.value,
+    portfolio: (spy[i]?.value ?? p.value) * wEq + (btc[i]?.value ?? 0) * wCr,
+  }));
+
+
 
   const types = ["ETF", "Acción", "Cripto", "Cash"] as const;
   const allocation = types.map((ty, i) => ({
@@ -118,18 +148,29 @@ function Portafolio() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title={t("Portafolio vs S&P 500", "Portfolio vs S&P 500")} description={t("Rentabilidad acumulada 12 meses", "Cumulative return, 12 months")} className="lg:col-span-2">
-          <ResponsiveContainer width="100%" height={290}>
-            <LineChart data={benchmark} margin={{ left: -18, right: 8 }}>
-              <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
-              <XAxis dataKey="label" {...axisProps} />
-              <YAxis {...axisProps} tickFormatter={(v) => `${v}%`} width={46} />
-              <Tooltip content={<ChartTooltip formatter={(v) => `${v.toFixed(1)}%`} />} />
-              <Line type="monotone" dataKey="portfolio" name={t("Portafolio", "Portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.5} dot={false} />
-              <Line type="monotone" dataKey="sp500" name="S&P 500" stroke="var(--color-chart-8)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
+        <Panel
+          title={t("Portafolio vs S&P 500", "Portfolio vs S&P 500")}
+          description={t("Datos reales de mercado · últimos 12 meses", "Real market data · last 12 months")}
+          className="lg:col-span-2"
+        >
+          {benchmarkData.length === 0 ? (
+            <div className="flex h-[290px] items-center justify-center text-sm text-muted-foreground">
+              {seriesQuery.isLoading ? t("Cargando mercado…", "Loading market…") : t("Mercado no disponible", "Market unavailable")}
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height={290}>
+              <LineChart data={benchmarkData} margin={{ left: -18, right: 8 }}>
+                <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
+                <XAxis dataKey="label" {...axisProps} />
+                <YAxis {...axisProps} tickFormatter={(v) => `${v}%`} width={46} />
+                <Tooltip content={<ChartTooltip formatter={(v) => `${v.toFixed(1)}%`} />} />
+                <Line type="monotone" dataKey="portfolio" name={t("Portafolio", "Portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.5} dot={false} />
+                <Line type="monotone" dataKey="sp500" name="S&P 500" stroke="var(--color-chart-8)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
         </Panel>
+
 
         <Panel title={t("Composición", "Composition")}>
           <ResponsiveContainer width="100%" height={210}>
@@ -153,6 +194,77 @@ function Portafolio() {
           </ul>
         </Panel>
       </div>
+
+      <Panel
+        title={t("Mercado en vivo", "Live market")}
+        description={t("ETFs, acciones y cripto · precios reales, actualizados cada minuto", "ETFs, stocks and crypto · real prices, refreshed every minute")}
+        actions={
+          <button
+            type="button"
+            onClick={() => quotesQuery.refetch()}
+            className="rounded-lg border border-border/60 p-1.5 text-muted-foreground transition hover:text-foreground"
+            aria-label={t("Actualizar", "Refresh")}
+          >
+            <RefreshCw className={cn("h-3.5 w-3.5", quotesQuery.isFetching && "animate-spin")} />
+          </button>
+        }
+      >
+        <form
+          className="mb-4 flex gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (watchlist.add(newSymbol)) setNewSymbol("");
+          }}
+        >
+          <Input
+            value={newSymbol}
+            onChange={(e) => setNewSymbol(e.target.value)}
+            placeholder={t("Agregar ticker (VOO, TSLA, SOL-USD…)", "Add ticker (VOO, TSLA, SOL-USD…)")}
+            className="h-9 max-w-xs"
+          />
+          <Button type="submit" size="sm" variant="secondary">
+            {t("Agregar", "Add")}
+          </Button>
+        </form>
+
+        <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+          {(quotesQuery.data?.quotes ?? []).map((q) => (
+            <div key={q.symbol} className="group flex items-center gap-3 rounded-xl bg-elevated/60 p-3">
+              <div className="min-w-0">
+                <p className="text-sm font-semibold">{q.symbol}</p>
+                <p className="truncate text-xs text-muted-foreground">{q.name}</p>
+              </div>
+              <div className="ml-auto text-right">
+                <p className="numeric text-sm">
+                  {q.price.toLocaleString("en-US", { style: "currency", currency: q.currency || "USD", maximumFractionDigits: q.price < 10 ? 4 : 2 })}
+                </p>
+                <p className={cn("numeric text-xs font-medium", q.changePct >= 0 ? "text-positive" : "text-negative")}>
+                  {q.changePct > 0 ? "+" : ""}
+                  {q.changePct.toFixed(2)}%
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => watchlist.remove(q.symbol)}
+                className="text-muted-foreground opacity-0 transition group-hover:opacity-100"
+                aria-label={t("Quitar", "Remove")}
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ))}
+          {quotesQuery.isLoading && (
+            <p className="text-sm text-muted-foreground">{t("Cargando precios…", "Loading prices…")}</p>
+          )}
+        </div>
+        {quotesQuery.data?.updatedAt && (
+          <p className="mt-3 text-[11px] text-muted-foreground">
+            {t("Actualizado", "Updated")} {new Date(quotesQuery.data.updatedAt).toLocaleTimeString()}
+          </p>
+        )}
+      </Panel>
+
+
 
       <Panel title={t("Posiciones", "Positions")}>
         <Tabs defaultValue="Todos">
