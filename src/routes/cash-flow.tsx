@@ -368,6 +368,7 @@ function CashFlow() {
         </Panel>
       </div>
     </PageShell>
+    </TooltipProvider>
   );
 }
 
