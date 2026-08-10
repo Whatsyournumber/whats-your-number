@@ -581,19 +581,29 @@ export const lifestyleCities: CityData[] = [
 /* ---------------- Filtros y scoring ---------------- */
 
 export type ClimatePref = Climate | "any";
-/** Rango salarial neto mensual (USD) que podrías ganar trabajando en esa ciudad */
-export type SalaryPref = "any" | "under_1500" | "1500_3000" | "3000_5000" | "5000_plus";
+/** Ingreso por hora esperado (USD/h) trabajando en esa ciudad */
+export type SalaryPref = "any" | "under_25" | "25_50" | "50_75" | "75_100" | "100_plus";
 
 /** Salario neto mensual estimado (USD) que podrías ganar trabajando ahí */
 export function netSalary(c: CityData): number {
   return Math.round(c.avgSalary);
 }
 
+/** Horas trabajadas al mes de referencia (40 h/semana). */
+export const MONTHLY_HOURS = 160;
+
+/** Ingreso por hora promedio estimado (USD/h). */
+export function hourlyRate(c: CityData): number {
+  return Math.round((c.avgSalary / MONTHLY_HOURS) * 10) / 10;
+}
+
+/** Bandas en USD/hora. */
 export const SALARY_BANDS: Record<Exclude<SalaryPref, "any">, { min: number; max: number }> = {
-  under_1500: { min: 0, max: 1500 },
-  "1500_3000": { min: 1500, max: 3000 },
-  "3000_5000": { min: 3000, max: 5000 },
-  "5000_plus": { min: 5000, max: Infinity },
+  under_25: { min: 0, max: 25 },
+  "25_50": { min: 25, max: 50 },
+  "50_75": { min: 50, max: 75 },
+  "75_100": { min: 75, max: 100 },
+  "100_plus": { min: 100, max: Infinity },
 };
 export type TaxPref = "low" | "medium" | "high" | "any";
 export type SafetyPref = "essential" | "important" | "neutral";
