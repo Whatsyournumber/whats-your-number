@@ -765,14 +765,15 @@ export function scoreCity(
     const net = netSalary(c);
     const raw = inv(net, 7500, 800);
     if (f.salary === "any") return raw * 0.5 + c.purchasingPower * 0.5;
+    const hourly = hourlyRate(c);
     const band = SALARY_BANDS[f.salary];
-    if (net >= band.min) {
+    if (hourly >= band.min) {
       // cumple el rango: premia poder adquisitivo real y superar el mínimo
-      const over = band.max === Infinity ? 100 : clamp(((net - band.min) / (band.max - band.min)) * 100);
+      const over = band.max === Infinity ? 100 : clamp(((hourly - band.min) / (band.max - band.min)) * 100);
       return clamp(78 + over * 0.22) * 0.7 + c.purchasingPower * 0.3;
     }
     // por debajo del rango: penaliza proporcionalmente a la brecha
-    const gap = band.min > 0 ? net / band.min : 0;
+    const gap = band.min > 0 ? hourly / band.min : 0;
     return clamp(gap * 70) * 0.75 + c.purchasingPower * 0.25;
   })();
 
