@@ -208,7 +208,7 @@ function Dashboard() {
         <Panel title={t("Tus objetivos", "Your goals")} description={t("Calculados con tus cifras", "Calculated from your numbers")}>
           <ul className="space-y-3">
             {d.goals.map((g) => {
-              const pct = g.target > 0 ? Math.min(100, (g.current / g.target) * 100) : 0;
+              const pct = g.progressPct ?? (g.target > 0 ? Math.min(100, (g.current / g.target) * 100) : 0);
               const left = g.displayCurrent ?? g.current;
               const right = g.displayTarget ?? g.target;
               return (
@@ -220,7 +220,7 @@ function Dashboard() {
                       {fmtCompact(left)} / {fmtCompact(right)}
                     </span>
                   </div>
-                  <Progress value={pct} className="mt-2 h-1.5" />
+                  <Progress value={pct} className="mt-2 h-1" />
                   {g.note && <p className="mt-1.5 text-[11px] text-muted-foreground">{g.note}</p>}
                 </li>
               );
