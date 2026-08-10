@@ -101,6 +101,130 @@ function FilterGroup({ title, children }: { title: string; children: React.React
   );
 }
 
+/** Tooltip informativo con caja card-style. */
+function InfoTooltip({
+  icon: Icon,
+  label,
+  title,
+  children,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          type="button"
+          className="flex items-center gap-1 text-[10px] text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <Icon className="h-3.5 w-3.5" />
+          {label}
+        </button>
+      </TooltipTrigger>
+      <TooltipContent
+        side="bottom"
+        align="end"
+        sideOffset={6}
+        className="max-w-[340px] border border-border/80 bg-card p-0 text-card-foreground shadow-2xl"
+      >
+        <div className="space-y-3 p-4">
+          <p className="text-xs font-semibold uppercase tracking-wider text-foreground">{title}</p>
+          {children}
+        </div>
+      </TooltipContent>
+    </Tooltip>
+  );
+}
+
+function MethodologyTooltip({ t }: { t: (es: string, en: string) => string }) {
+  const pillars = Object.entries(PILLAR_WEIGHTS).map(([key, weight]) => {
+    const meta = PILLAR_META[key as PillarKey];
+    return { key, weight, emoji: meta.emoji, label: t(meta.es, meta.en) };
+  });
+  return (
+    <InfoTooltip
+      icon={Info}
+      label={t("Metodología", "Methodology")}
+      title={t("Metodología", "Methodology")}
+    >
+      <div className="space-y-3">
+        <div className="rounded-lg border border-border/60 bg-elevated/40 p-3">
+          <p className="text-[11px] leading-relaxed text-muted-foreground">
+            {t(
+              "El ranking combina tu perfil (etapa, objetivo, presupuesto, clima, impuestos, seguridad y estabilidad) con una puntuación objetiva de la ciudad. Cuanto más específicos son tus filtros, más peso tiene tu perfil.",
+              "The ranking combines your profile (life stage, goal, budget, climate, taxes, safety and stability) with an objective city score. The more specific your filters, the more weight your profile has.",
+            )}
+          </p>
+        </div>
+        <div className="space-y-2">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            {t("Your Next City Score", "Your Next City Score")}
+          </p>
+          {pillars.map((p) => (
+            <div key={p.key} className="flex items-center gap-2 rounded-lg border border-border/60 bg-elevated/40 p-2">
+              <span className="text-sm">{p.emoji}</span>
+              <span className="flex-1 text-[11px] text-foreground">{p.label}</span>
+              <span className="numeric rounded-md bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary">
+                {p.weight}%
+              </span>
+            </div>
+          ))}
+        </div>
+        <div className="rounded-lg border border-border/60 bg-elevated/40 p-3">
+          <p className="text-[11px] leading-relaxed text-muted-foreground">
+            {t(
+              "Se aplica una penalización proporcional si el costo mensual supera tu presupuesto. Los desempates usan: score final, Your Next City Score, calidad de vida, seguridad y menor costo.",
+              "A proportional penalty is applied if the monthly cost exceeds your budget. Tie-breakers use: final score, Your Next City Score, quality of life, safety and lower cost.",
+            )}
+          </p>
+        </div>
+      </div>
+    </InfoTooltip>
+  );
+}
+
+function SourcesTooltip({ t }: { t: (es: string, en: string) => string }) {
+  const sources = [
+    { name: "Numbeo", desc: t("costo de vida, crimen, calidad", "cost of living, crime, quality") },
+    { name: "OECD", desc: t("ingresos, impuestos, educación", "income, taxes, education") },
+    { name: "World Bank", desc: t("gobernanza, salud, esperanza", "governance, health, life expectancy") },
+    { name: "WHO / IQAir", desc: t("salud y calidad del aire", "healthcare and air quality") },
+    { name: "Global Peace Index", desc: t("paz y seguridad", "peace and safety") },
+    { name: "World Happiness Report", desc: t("bienestar subjetivo", "subjective well-being") },
+    { name: "Ookla Speedtest", desc: t("velocidad de internet", "internet speed") },
+    { name: "InterNations 2026", desc: t("satisfacción expatriados", "expat satisfaction") },
+    { name: "Nomad List / EF EPI", desc: t("nómadas e inglés", "nomads and English") },
+    { name: "OpenWeather / OSM", desc: t("clima, sol, naturaleza", "climate, sun, nature") },
+    { name: "Mercer / EIU", desc: t("liveability global", "global liveability") },
+  ];
+  return (
+    <InfoTooltip
+      icon={BookOpen}
+      label={t("Fuentes", "Sources")}
+      title={t("Fuentes", "Sources")}
+    >
+      <div className="space-y-3">
+        <p className="text-[11px] leading-relaxed text-muted-foreground">
+          {t(
+            "Datos públicos y estimaciones de referencia. No son cifras oficiales en tiempo real. Se recalculan con cada filtro.",
+            "Public data and reference estimates. Not official real-time figures. Recalculated with every filter.",
+          )}
+        </p>
+        <div className="grid grid-cols-2 gap-2">
+          {sources.map((s) => (
+            <div key={s.name} className="rounded-lg border border-border/60 bg-elevated/40 p-2">
+              <p className="text-[11px] font-medium text-foreground">{s.name}</p>
+              <p className="text-[10px] leading-tight text-muted-foreground">{s.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </InfoTooltip>
+  );
+}
 
 
 function LifestyleSimulator() {
