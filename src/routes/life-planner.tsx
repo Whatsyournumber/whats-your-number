@@ -317,122 +317,27 @@ function LifePlanner() {
           </Button>
         </Panel>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {goals.map((g, idx) => {
-            const impact = yearsDiff(baseMonths, sim([g]));
-            const pct = g.cost > 0 ? Math.min(100, (g.saved / g.cost) * 100) : 0;
-            const good = impact !== null && impact < -0.08;
-            const bad = impact !== null && impact > 0.08;
-            const cardMeta = parseMeta(g.note);
-            const cardTpl = cardMeta ? templateById(cardMeta.template) : null;
-            return (
-              <motion.div
-                key={g.id}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.05 }}
-                className="surface flex flex-col p-5"
-              >
-                <div className="flex items-start gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-elevated text-lg">{g.emoji}</span>
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold">{g.name}</p>
-                    <div className="mt-1 flex flex-wrap items-center gap-1">
-                      <span className="inline-block rounded-md bg-elevated px-2 py-0.5 text-[11px] text-muted-foreground">
-                        {t(`Meta ${g.target_year}`, `Goal ${g.target_year}`)}
-                      </span>
-                      {cardTpl && (
-                        <span className="inline-block rounded-md bg-primary/10 px-2 py-0.5 text-[11px] text-primary">
-                          {t(cardTpl.es, cardTpl.en)}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <div className="ml-auto flex gap-1">
-                    <button
-                      className="rounded-md p-1.5 text-muted-foreground transition hover:bg-elevated hover:text-foreground"
-                      onClick={() => setDraft(draftFromGoal(g))}
-                      aria-label={t("Editar meta", "Edit goal")}
-                    >
-                      <Pencil className="h-3.5 w-3.5" />
-                    </button>
-                    <button
-                      className="rounded-md p-1.5 text-muted-foreground transition hover:bg-elevated hover:text-negative"
-                      onClick={() => void remove(g.id)}
-                      aria-label={t("Eliminar meta", "Delete goal")}
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                </div>
-
-                <dl className="mt-4 space-y-1.5 text-xs">
-                  {cardTpl && cardMeta ? (
-                    <>
-                      {cardTpl.fields.map((f) => {
-                        const raw = cardMeta.values[f.key] ?? 0;
-                        return (
-                          <Line
-                            key={f.key}
-                            label={t(f.es, f.en)}
-                            value={
-                              f.kind === "money"
-                                ? data.fmt(raw)
-                                : f.kind === "percent"
-                                  ? `${raw}%`
-                                  : String(raw)
-                            }
-                          />
-                        );
-                      })}
-                      {(cardTpl.derive(cardMeta.values).extras ?? []).map((x) => (
-                        <Line
-                          key={x.es}
-                          label={t(x.es, x.en)}
-                          value={x.money ? data.fmt(Math.round(x.value)) : String(Math.round(x.value))}
-                        />
-                      ))}
-                    </>
-                  ) : (
-                    <>
-                      <Line label={t("Coste total", "Total cost")} value={data.fmt(g.cost)} />
-                      <Line label={t("Fondo acumulado", "Accumulated fund")} value={`${data.fmt(g.saved)} (${pct.toFixed(0)}%)`} />
-                    </>
-                  )}
-                  <div className="mt-2 border-t border-border/60 pt-2">
-                    <Line
-                      label={t("Flujo neto / mes", "Net flow / month")}
-                      value={`${g.monthly >= 0 ? "+" : ""}${data.fmt(g.monthly)}`}
-                    />
-                  </div>
-                </dl>
-
-
-                <div
-                  className={cn(
-                    "mt-4 flex items-center justify-between gap-3 rounded-xl border px-3 py-3",
-                    good && "border-positive/30 bg-positive/10",
-                    bad && "border-negative/30 bg-negative/10",
-                    !good && !bad && "border-border bg-elevated/50",
-                  )}
-                >
-                  <div className="text-[11px] leading-tight">
-                    <p className="text-muted-foreground">{t("Impacto en tu retiro", "Impact on your retirement")}</p>
-                    <p className={cn("font-medium", good ? "text-positive" : bad ? "text-negative" : "text-muted-foreground")}>
-                      {good ? t("Acelera tu retiro", "Speeds up retirement") : bad ? t("Retrasa tu retiro", "Delays retirement") : t("Neutral", "Neutral")}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className={cn("numeric text-lg font-semibold", good ? "text-positive" : bad ? "text-negative" : "text-muted-foreground")}>
-                      {formatImpact(impact)}
-                    </span>
-                    {good ? <TrendingUp className="h-4 w-4 text-positive" /> : bad ? <TrendingDown className="h-4 w-4 text-negative" /> : null}
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext items={goals.map((g) => g.id)}>
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {goals.map((g, idx) => (
+                <SortableGoalCard
+                  key={g.id}
+                  g={g}
+                  idx={idx}
+                  data={data}
+                  baseMonths={baseMonths}
+                  onEdit={() => setDraft(draftFromGoal(g))}
+                  onRemove={() => void remove(g.id)}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
       )}
 
       {goals.length > 1 && best.worst && best.accel && (
