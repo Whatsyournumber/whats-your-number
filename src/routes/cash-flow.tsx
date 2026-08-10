@@ -322,9 +322,31 @@ function CashFlow() {
       <div className="grid gap-4 md:grid-cols-3">
         <Panel title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")} description={t("Distribución ideal de tu ingreso", "Ideal income distribution")}>
           <div className="space-y-3 text-sm">
-            <Row label={t("Necesidades", "Needs")} value={needsAmount} total={totalIncome} target={40} fmt={fmt} />
-            <Row label={t("Inversiones", "Investing")} value={saveAmount} total={totalIncome} target={40} fmt={fmt} goodWhenHigher />
-            <Row label={t("Deseos", "Wants")} value={wantsAmount} total={totalIncome} target={20} fmt={fmt} />
+            <Row
+              label={t("Necesidades", "Needs")}
+              value={needsAmount}
+              total={totalIncome}
+              target={40}
+              fmt={fmt}
+              legend={t("Vivienda, hipoteca, alquiler, mercado, transporte, servicios, salud y educación.", "Housing, mortgage, rent, groceries, transport, utilities, health and education.")}
+            />
+            <Row
+              label={t("Ahorro & inversiones", "Savings & investing")}
+              value={saveAmount}
+              total={totalIncome}
+              target={40}
+              fmt={fmt}
+              goodWhenHigher
+              legend={t("Ahorro programado, fondos de inversión, ETF, bolsa, cripto y flujo libre ahorrado.", "Scheduled savings, investment funds, ETFs, stocks, crypto and free cash saved.")}
+            />
+            <Row
+              label={t("Deseos", "Wants")}
+              value={wantsAmount}
+              total={totalIncome}
+              target={20}
+              fmt={fmt}
+              legend={t("Viajes, restaurantes, salidas, compras, tecnología, apps, hobbies y lifestyle.", "Travel, dining out, entertainment, shopping, technology, apps, hobbies and lifestyle.")}
+            />
           </div>
         </Panel>
         <Panel title={t("Runway", "Runway")} description={t("Meses cubiertos con tu efectivo", "Months covered with your cash")}>
@@ -353,6 +375,7 @@ function Row({
   target,
   fmt,
   goodWhenHigher = false,
+  legend,
 }: {
   label: string;
   value: number;
@@ -360,6 +383,7 @@ function Row({
   target: number;
   fmt: (n: number) => string;
   goodWhenHigher?: boolean;
+  legend?: string;
 }) {
   const p = total > 0 ? (value / total) * 100 : 0;
   const off = p - target;
@@ -385,6 +409,12 @@ function Row({
       <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted">
         <div className={`h-full rounded-full ${colorClass}`} style={{ width: `${Math.min(p, 100)}%` }} />
       </div>
+
+      {legend && (
+        <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+          {legend}
+        </p>
+      )}
     </div>
   );
 }
