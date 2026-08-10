@@ -25,6 +25,7 @@ import { money } from "@/lib/onboarding";
 import {
   costBreakdown,
   defaultFilters,
+  hourlyRate,
   rankCities,
   type CityData,
   type CityScore,
