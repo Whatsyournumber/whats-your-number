@@ -59,7 +59,8 @@ function Pricing() {
     {
       name: "Pro",
       monthlyPrice: 12,
-      yearlyPrice: yearlyTotal(12),
+      yearlyPrice: yearlyTotal(12, 0.2),
+      yearlyDiscount: 0.2,
       desc: t(
         "Todo el sistema financiero con IA ilimitada para acelerar tu libertad.",
         "The full financial OS with unlimited AI to speed up your freedom.",
