@@ -406,25 +406,25 @@ function CashFlow() {
                   <div className="relative hidden h-64 lg:block">
                     <svg viewBox="0 0 120 260" className="h-full w-full" preserveAspectRatio="none">
                       {withIn.map((n, i) => {
-                        const y = 40 + i * 90;
-                        const w = Math.max(6, (Math.max(0, n.amount) / (totalIncome || 1)) * 90);
+                        const rTop = n.y;
+                        const rBot = n.y + n.h;
+                        const lTop = n.y0;
+                        const lBot = n.y0 + n.h;
                         return (
                           <motion.path
                             key={n.key}
-                            d={`M0,130 C60,130 60,${y} 120,${y}`}
-                            fill="none"
-                            stroke={n.color}
-                            strokeWidth={w}
-                            strokeOpacity={0.35}
-                            strokeLinecap="round"
-                            initial={{ pathLength: 0 }}
-                            animate={{ pathLength: 1 }}
-                            transition={{ duration: 1, delay: 0.2 + i * 0.1 }}
+                            d={`M0,${lTop} C60,${lTop} 60,${rTop} 120,${rTop} L120,${rBot} C60,${rBot} 60,${lBot} 0,${lBot} Z`}
+                            fill={n.color}
+                            fillOpacity={0.35}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.7, delay: 0.2 + i * 0.1 }}
                           />
                         );
                       })}
                     </svg>
                   </div>
+
 
                   <div className="space-y-3">
                     {withIn.map((n, idx) => {
@@ -471,37 +471,7 @@ function CashFlow() {
 
             })()}
 
-            <div className="mt-5 grid gap-4 text-sm md:grid-cols-3">
 
-              <Row
-                label={t("Necesidades", "Needs")}
-                value={needsAmount}
-                total={totalIncome}
-                target={40}
-                fmt={fmt}
-                tooltip={t("Vivienda, hipoteca, condominio, alimentos, transporte, servicios y seguros del mes.", "Housing, mortgage, HOA, food, transportation, utilities and insurance for the month.")}
-                breakdown={needsBreakdown}
-              />
-              <Row
-                label={t("Ahorro e inversión", "Savings & investing")}
-                value={saveAmount}
-                total={totalIncome}
-                target={40}
-                fmt={fmt}
-                goodWhenHigher
-                tooltip={t("Ahorro fijo + lo que sobra del mes tras cubrir necesidades y deseos.", "Fixed savings + what is left after covering needs and wants.")}
-                breakdown={saveBreakdown}
-              />
-              <Row
-                label={t("Deseos", "Wants")}
-                value={wantsAmount}
-                total={totalIncome}
-                target={20}
-                fmt={fmt}
-                tooltip={t("Viajes, restaurantes, salidas, compras, tecnología y hobbies.", "Travel, dining out, entertainment, shopping, tech and hobbies.")}
-                breakdown={wantsBreakdown}
-              />
-            </div>
           </Panel>
           <Panel title={t("Runway", "Runway")} description={t("Meses cubiertos con tu efectivo", "Months covered with your cash")}>
             <p className="numeric text-4xl font-semibold text-primary">{runway.toFixed(1)}</p>
