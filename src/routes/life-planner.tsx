@@ -161,12 +161,21 @@ function LifePlanner() {
   const monthsDelta = baseMonths !== null && allMonths !== null ? allMonths - baseMonths : null;
 
 
+  const scoredGoals = useMemo(
+    () => goals.map((g) => ({ g, impact: yearsDiff(baseMonths, sim([g])) ?? 0 })),
+    [goals, baseMonths, sim],
+  );
+
+  const sortedGoals = useMemo(
+    () => [...scoredGoals].sort((a, b) => b.impact - a.impact),
+    [scoredGoals],
+  );
+
   const best = useMemo(() => {
-    const scored = goals.map((g) => ({ g, impact: yearsDiff(baseMonths, sim([g])) ?? 0 }));
-    const worst = [...scored].sort((a, b) => b.impact - a.impact)[0];
-    const accel = [...scored].sort((a, b) => a.impact - b.impact)[0];
+    const worst = [...scoredGoals].sort((a, b) => b.impact - a.impact)[0];
+    const accel = [...scoredGoals].sort((a, b) => a.impact - b.impact)[0];
     return { worst, accel };
-  }, [goals, baseMonths, start, target, annualReturn, savings]);
+  }, [scoredGoals]);
 
   const tpl = draft?.template ? templateById(draft.template) : null;
   const derived = tpl && draft ? tpl.derive(draft.values) : null;
