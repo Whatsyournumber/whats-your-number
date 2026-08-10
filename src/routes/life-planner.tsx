@@ -100,7 +100,7 @@ function toSim(g: LifeGoal): SimGoal {
 function LifePlanner() {
   const t = useT();
   const { profile } = useProfile();
-  const { goals, create, update, remove, busy } = useLifeGoals();
+  const { goals, create, update, remove, reorder, busy } = useLifeGoals();
   const data = buildDataset(profile);
   const [draft, setDraft] = useState<Draft | null>(null);
 
