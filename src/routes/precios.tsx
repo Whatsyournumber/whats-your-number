@@ -39,6 +39,7 @@ function Pricing() {
       name: "Free",
       monthlyPrice: 0,
       yearlyPrice: 0,
+      yearlyDiscount: 0,
       desc: t(
         "Descubre tu número en 30 segundos y ordena tus finanzas básicas.",
         "Discover your number in 30 seconds and organize your basic finances.",
