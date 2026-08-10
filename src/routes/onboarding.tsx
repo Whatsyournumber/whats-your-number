@@ -140,6 +140,9 @@ function OnboardingPage() {
   const navigate = useNavigate();
   const t = useT();
   const [step, setStep] = useState(0);
+  // Segunda pantalla de bienvenida: explica qué datos se usan y cómo se configura todo.
+  const [introPage, setIntroPage] = useState(0);
+
   const [data, setData] = useState<OnboardingData>({ ...emptyOnboarding, currency: "EUR", monthly_expenses: 0 });
   const [life, setLife] = useState<LifeData>(emptyLife);
   const [ready, setReady] = useState(false);
@@ -220,9 +223,14 @@ function OnboardingPage() {
   const cur = data.currency || "EUR";
 
   const go = (dir: 1 | -1) => {
+    // Bienvenida (paso 0) tiene dos pantallas: saludo y explicación de los datos.
+    if (step === 0 && dir === 1 && introPage === 0) return setIntroPage(1);
+    if (step === 0 && dir === -1 && introPage === 1) return setIntroPage(0);
+    if (step === 1 && dir === -1) setIntroPage(1);
     const next = Math.min(SUMMARY_STEP, Math.max(0, step + dir));
     setStep(next);
     void persist({ current_step: Math.min(QUESTIONS, next) });
+
   };
 
   const build = () => {
@@ -283,13 +291,13 @@ function OnboardingPage() {
       <div className="relative mx-auto flex min-h-[calc(100vh-57px)] max-w-2xl flex-col justify-center px-5 py-10 sm:py-16">
         <AnimatePresence mode="wait">
           <motion.div
-            key={step}
+            key={step === 0 ? `intro-${introPage}` : step}
             initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: -14, filter: "blur(6px)" }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           >
-            {step === 0 && (
+            {step === 0 && introPage === 0 && (
               <Screen>
                 <div className="wealth-gradient mx-auto flex h-16 w-16 items-center justify-center rounded-3xl">
                   <Compass className="h-7 w-7 text-background" />
@@ -305,6 +313,50 @@ function OnboardingPage() {
                 </p>
               </Screen>
             )}
+
+            {step === 0 && introPage === 1 && (
+              <Screen
+                title={t("Qué datos usamos y para qué", "What data we use and why")}
+                hint={t(
+                  "Todo se configura solo con tus respuestas. Nada viene precargado ni inventado.",
+                  "Everything is set up from your answers alone. Nothing is preloaded or made up.",
+                )}
+              >
+                <div className="space-y-3">
+                  <ExplainRow
+                    icon={<Building2 className="h-4 w-4 text-primary" />}
+                    title={t("Ciudad estándar", "Standard city")}
+                    text={t(
+                      "Con la ciudad donde quieres vivir, tu estilo de vida, familia, viajes y vivienda calculamos el coste de vida mensual estándar que usaremos como referencia.",
+                      "From the city where you want to live, plus your lifestyle, family, travel and housing, we compute the standard monthly cost of living used as your reference.",
+                    )}
+                  />
+                  <ExplainRow
+                    icon={<Sparkles className="h-4 w-4 text-primary" />}
+                    title={t("Gasto objetivo", "Spending target")}
+                    text={t(
+                      "Tu gasto objetivo mensual sale de ese coste de vida y de los gastos que declares. No fijamos ningún importe por defecto: si no lo indicas, queda en cero hasta que lo edites o cargues tus estados de cuenta.",
+                      "Your monthly spending target comes from that cost of living and the expenses you declare. We set no default amount: if you don't enter it, it stays at zero until you edit it or import your statements.",
+                    )}
+                  />
+                  <ExplainRow
+                    icon={<Banknote className="h-4 w-4 text-primary" />}
+                    title={t("Valores base en cero", "Base values start at zero")}
+                    text={t(
+                      "Gastos fijos, gráficas y patrimonio arrancan vacíos. Se llenan únicamente con lo que respondas aquí y con los estados de cuenta que subas después.",
+                      "Fixed expenses, charts and net worth start empty. They fill in only with what you answer here and the statements you upload later.",
+                    )}
+                  />
+                </div>
+                <p className="mt-6 text-center text-xs text-muted-foreground">
+                  {t(
+                    "Tus datos son privados y puedes cambiar cualquier respuesta cuando quieras.",
+                    "Your data is private and you can change any answer at any time.",
+                  )}
+                </p>
+              </Screen>
+            )}
+
 
             {step === 1 && (
               <Screen
@@ -682,13 +734,18 @@ function OnboardingPage() {
 
         {step < 9 && (
           <div className="mt-12 flex items-center gap-3">
-            {step > 0 && (
+            {(step > 0 || introPage === 1) && (
               <Button variant="ghost" size="lg" className="rounded-full" onClick={() => go(-1)}>
                 <ArrowLeft className="mr-2 h-4 w-4" /> {t("Atrás", "Back")}
               </Button>
             )}
             <Button size="lg" className="ml-auto min-w-[160px] rounded-full" disabled={!canContinue()} onClick={() => go(1)}>
-              {step === 0 ? t("Comenzar", "Start") : t("Continuar", "Continue")}
+              {step === 0 && introPage === 0
+                ? t("Comenzar", "Start")
+                : step === 0
+                  ? t("Entendido, empecemos", "Got it, let's start")
+                  : t("Continuar", "Continue")}
+
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
@@ -708,7 +765,21 @@ function OnboardingPage() {
 
 /* ───────────────────────── UI primitives ───────────────────────── */
 
+/** Fila explicativa del onboarding: icono, título y detalle. */
+function ExplainRow({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
+  return (
+    <div className="flex gap-3 rounded-2xl border border-border/60 bg-card/40 p-4">
+      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/10">{icon}</div>
+      <div>
+        <p className="text-sm font-medium">{title}</p>
+        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{text}</p>
+      </div>
+    </div>
+  );
+}
+
 function Screen({ title, hint, children }: { title?: string; hint?: string; children: React.ReactNode }) {
+
   return (
     <div>
       {title && (
