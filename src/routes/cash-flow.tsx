@@ -426,46 +426,46 @@ function CashFlow() {
                   </div>
 
 
-                  <div className="space-y-5 rounded-2xl border border-border bg-elevated/60 p-5">
-                    <Row
-                      label={t("Necesidades", "Needs")}
-                      value={needsAmount}
-                      total={totalIncome}
-                      target={40}
-                      fmt={fmt}
-                      tooltip={t(
-                        "Vivienda, hipoteca, mercado, transporte, servicios, salud y educación.",
-                        "Housing, mortgage, groceries, transport, utilities, health and education.",
-                      )}
-                      breakdown={needsBreakdown}
-                    />
-                    <Row
-                      label={t("Inversiones / ahorro", "Investing / saving")}
-                      value={saveAmount}
-                      total={totalIncome}
-                      target={40}
-                      fmt={fmt}
-                      goodWhenHigher
-                      tooltip={t(
-                        "Aportes a ahorro e inversión más el flujo libre del mes.",
-                        "Savings and investment contributions plus this month's free flow.",
-                      )}
-                      breakdown={saveBreakdown}
-                    />
-                    <Row
-                      label={t("Deseos", "Wants")}
-                      value={wantsAmount}
-                      total={totalIncome}
-                      target={20}
-                      fmt={fmt}
-                      tooltip={t(
-                        "Viajes, restaurantes, salidas, compras, apps y hobbies.",
-                        "Travel, restaurants, going out, shopping, apps and hobbies.",
-                      )}
-                      breakdown={wantsBreakdown}
-                    />
+                  <div className="space-y-3">
+                    {withIn.map((n, idx) => {
+                      const diff = n.pct - n.target;
+                      const good = n.goodWhenHigher ? diff >= 0 : diff <= 0;
+                      return (
+                        <motion.div
+                          key={n.key}
+                          initial={{ opacity: 0, x: 12 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.2 + idx * 0.08 }}
+                          className="rounded-2xl border border-border bg-elevated/60 p-4"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="h-2.5 w-2.5 rounded-full" style={{ background: n.color }} />
+                            <p className="text-sm font-medium">{n.label}</p>
+                            <p className="numeric ml-auto text-sm font-semibold">{fmt(n.amount)}</p>
+                          </div>
+                          <div className="relative mt-2.5 h-2 overflow-hidden rounded-full bg-muted">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${Math.min(100, n.pct)}%` }}
+                              transition={{ duration: 0.8, delay: 0.3 }}
+                              className="h-full rounded-full"
+                              style={{ background: n.color }}
+                            />
+                            <span className="absolute top-0 h-full w-px bg-foreground/60" style={{ left: `${n.target}%` }} />
+                          </div>
+                          <div className="mt-1.5 flex items-center justify-between text-[11px]">
+                            <span className="text-muted-foreground">
+                              {n.pct.toFixed(0)}% {t("de tus ingresos", "of your income")} · {t("meta", "target")} {n.target}%
+                            </span>
+                            <span className={good ? "font-medium text-positive" : "font-medium text-negative"}>
+                              {diff > 0 ? "+" : ""}
+                              {diff.toFixed(0)} pts
+                            </span>
+                          </div>
+                        </motion.div>
+                      );
+                    })}
                   </div>
-
                 </div>
               );
 
