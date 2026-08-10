@@ -404,13 +404,13 @@ export function ProductPreview() {
                 <p className="text-xs text-muted-foreground">{t("Distribución del mes", "This month's breakdown")}</p>
                 <div className="mt-2 h-[130px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
+                    <RePieChart>
                       <Pie data={spendCategories} dataKey="value" innerRadius={38} outerRadius={58} paddingAngle={2} stroke="none">
                         {spendCategories.map((entry, i) => (
                           <Cell key={entry.name} fill={entry.color} />
                         ))}
                       </Pie>
-                    </PieChart>
+                    </RePieChart>
                   </ResponsiveContainer>
                 </div>
                 <ul className="mt-2 space-y-1.5">
