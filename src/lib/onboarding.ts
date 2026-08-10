@@ -51,7 +51,8 @@ export const emptyOnboarding: OnboardingData = {
   retire_age: 60,
   desired_retirement_income: 0,
   expected_return: 7,
-  withdrawal_rate: 4,
+  withdrawal_rate: 7,
+
   priority: "",
   risk_profile: "",
 };
@@ -141,8 +142,9 @@ export function buildPlan(d: OnboardingData): NorthPlan {
   const savingsRate = income > 0 ? (savings / income) * 100 : 0;
   const age = d.age ?? 30;
   const yearsLeft = Math.max(0, d.retire_age - age);
-  const swr = Math.min(15, Math.max(1, d.withdrawal_rate || 4)) / 100;
+  const swr = Math.min(15, Math.max(1, d.withdrawal_rate || 7)) / 100;
   const targetCapital = (d.desired_retirement_income * 12) / swr;
+
 
   const r = d.expected_return / 100;
   const monthlyR = r / 12;
