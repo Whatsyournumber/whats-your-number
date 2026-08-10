@@ -1084,10 +1084,10 @@ function CityDetail({
                 <PillarRow key={p.key} pillar={p} t={t} />
               ))}
             </div>
-            <p className="mt-2 text-[11px] text-muted-foreground">
+            <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
               {t(
-                "Fuentes: Numbeo, OECD, World Bank, WHO, Global Peace Index, IQAir, Ookla, World Happiness Report y Nomad List. Estimaciones de referencia.",
-                "Sources: Numbeo, OECD, World Bank, WHO, Global Peace Index, IQAir, Ookla, World Happiness Report and Nomad List. Reference estimates.",
+                "Fuentes: Numbeo (costo de vida y calidad), OECD (ingresos, impuestos, educación), World Bank (gobernanza, salud, esperanza de vida), WHO / IQAir (salud y aire), Global Peace Index (seguridad), World Happiness Report (bienestar), Ookla Speedtest (internet), InterNations Expat Insider 2026 (expatriados), Nomad List / EF EPI (nómadas e inglés), OpenWeather / Meteostat / OpenStreetMap (clima y naturaleza), Mercer / EIU Liveability (liveability global). Estimaciones de referencia.",
+                "Sources: Numbeo (cost of living and quality), OECD (income, taxes, education), World Bank (governance, health, life expectancy), WHO / IQAir (healthcare and air quality), Global Peace Index (safety), World Happiness Report (well-being), Ookla Speedtest (internet), InterNations Expat Insider 2026 (expats), Nomad List / EF EPI (nomads and English), OpenWeather / Meteostat / OpenStreetMap (climate and nature), Mercer / EIU Liveability (global liveability). Reference estimates.",
               )}
             </p>
           </div>
