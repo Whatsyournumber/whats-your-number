@@ -82,6 +82,43 @@ function buildPresets(t: (es: string, en: string) => string) {
 
 const isExpense = (t: Tx) => t.amount < 0;
 
+const RANGE_KEY = "wyn.gastos.range";
+
+/** Mantiene el filtro del calendario aunque cambies de pestaña. */
+function usePersistedRange(fallback: () => DateRange) {
+  const [range, setRange] = useState<DateRange | undefined>(fallback);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(RANGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as { from?: string; to?: string };
+      if (!parsed.from) return;
+      setRange({ from: new Date(parsed.from), ...(parsed.to ? { to: new Date(parsed.to) } : {}) });
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const update = (next: DateRange | undefined) => {
+    setRange(next);
+    try {
+      if (next?.from) {
+        localStorage.setItem(
+          RANGE_KEY,
+          JSON.stringify({ from: next.from.toISOString(), to: next.to?.toISOString() ?? null }),
+        );
+      } else {
+        localStorage.removeItem(RANGE_KEY);
+      }
+    } catch {
+      /* ignore */
+    }
+  };
+
+  return [range, update] as const;
+}
+
 function inRange(t: Tx, from: Date, to: Date) {
   const d = parseISO(t.tx_date!);
   return d >= from && d <= to;
@@ -90,6 +127,7 @@ function inRange(t: Tx, from: Date, to: Date) {
 function sum(list: Tx[]) {
   return list.reduce((s, t) => s + Math.abs(t.amount), 0);
 }
+
 
 function Gastos() {
   const t = useT();
@@ -103,7 +141,7 @@ function Gastos() {
   const fixed = useFixedExpenses();
   const categories = useCategories();
   const categoryOf = (t: Tx) => categorizeTx(t, categories.rules);
-  const [range, setRange] = useState<DateRange | undefined>(() => buildPresets(t)[0]!.range());
+  const [range, setRange] = usePersistedRange(() => buildPresets(t)[0]!.range());
 
   const from = range?.from ?? subDays(new Date(), 29);
   const to = range?.to ?? from;
