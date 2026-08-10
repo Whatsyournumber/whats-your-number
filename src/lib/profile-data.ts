@@ -170,16 +170,13 @@ export function buildDataset(p: Profile): Dataset {
       target: cityTarget,
       deadline: String(year + (cityYears ?? yearsToGoal)),
       monthly: savings,
-      displayCurrent: cityMonthly ?? undefined,
-      displayTarget: cityMonthly ? Math.max(0, income - cityMonthly) : undefined,
+      displayCurrent: cityMonthly ? income : undefined,
+      displayTarget: cityMonthly ?? undefined,
+      progressPct: cityMonthly ? Math.min(100, Math.round((cityMonthly / Math.max(1, income)) * 100)) : undefined,
       note: cityMonthly
-        ? `${p.city ? `Vivir en ${p.city}` : "Ciudad objetivo"}: ${fmt(cityMonthly)}/mes · capacidad de ahorro ${fmt(Math.max(0, income - cityMonthly))}/mes · necesitas ${fmt(cityTarget)} · ${
-            cityYears === 0
-              ? "ya puedes mudarte"
-              : cityYears
-                ? `${cityYears} años ahorrando ${fmt(savings)}/mes`
-                : "sube tu ahorro mensual para llegar"
-          }`
+        ? `${p.city ? `Vivir en ${p.city}` : "Ciudad objetivo"} + capacidad de ahorro ${fmt(Math.max(0, income - cityMonthly))}/mes`
+        : undefined,
+    },
         : undefined,
     },
   ];
