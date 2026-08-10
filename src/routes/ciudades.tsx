@@ -35,6 +35,7 @@ import { stabilityBadge } from "@/lib/political-stability";
 import { PILLAR_META, pillarWeights, type PillarBreakdown, type PillarKey } from "@/lib/north-score";
 import { suggestedFilters, suggestionReasons } from "@/lib/city-suggestions";
 import { buildDataset } from "@/lib/profile-data";
+import { nomadVisa, nomadFriendly } from "@/lib/nomad-visas";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/ciudades")({
@@ -404,10 +405,7 @@ function LifestyleSimulator() {
               ]}
             />
             <SelectFilter
-              label={t(
-                "💼 Ingreso por hora (si trabajas ahí)",
-                "💼 Expected hourly income (if you work there)",
-              )}
+              label={t("Ingreso por hora", "Hourly income")}
               value={filters.salary}
               onChange={(v) => set("salary", v)}
               options={[
@@ -491,6 +489,7 @@ function LifestyleSimulator() {
             fmt={fmt}
             t={t}
             selected={compare.includes(r.city.id)}
+            nomadMode={filters.goal === "nomad"}
             onCompare={() => toggleCompare(r.city.id)}
             onOpen={() => setDetail(r)}
           />
@@ -632,6 +631,7 @@ function CityCard({
   fmt,
   t,
   selected,
+  nomadMode,
   onCompare,
   onOpen,
 }: {
@@ -640,10 +640,12 @@ function CityCard({
   fmt: (n: number) => string;
   t: (es: string, en: string) => string;
   selected: boolean;
+  nomadMode?: boolean;
   onCompare: () => void;
   onOpen: () => void;
 }) {
   const c = r.city;
+  const visa = nomadVisa(c.country);
   const tax = taxBadge(r.taxLevel, t);
   const stability = stabilityBadge(c.country, t);
   const affordable = r.savings >= 0;
@@ -702,12 +704,27 @@ function CityCard({
           </div>
           <div className="bg-elevated/40 p-2.5">
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              {t("Ingreso/hora prom.", "Avg. hourly income")}
+              {nomadMode ? t("Visa nómada", "Nomad visa") : t("Ingreso/hora prom.", "Avg. hourly income")}
             </p>
-            <p className="numeric mt-0.5 text-sm font-medium">
-              ${hourlyRate(c)}/h
-              <span className="ml-1 text-[10px] text-muted-foreground">({fmt(c.avgSalary)}/m)</span>
-            </p>
+            {nomadMode ? (
+              <p className="mt-0.5 text-sm font-medium">
+                {visa.exists ? (
+                  <>
+                    <span className="text-positive">✓ {visa.months}m</span>
+                    <span className="ml-1 text-[10px] text-muted-foreground">
+                      {visa.incomeUsd > 0 ? `${fmt(visa.incomeUsd)}/m` : t("sin mínimo", "no minimum")}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-negative">{t("No disponible", "Not available")}</span>
+                )}
+              </p>
+            ) : (
+              <p className="numeric mt-0.5 text-sm font-medium">
+                ${hourlyRate(c)}/h
+                <span className="ml-1 text-[10px] text-muted-foreground">({fmt(c.avgSalary)}/m)</span>
+              </p>
+            )}
           </div>
           <div className="bg-elevated/40 p-2.5">
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
@@ -1092,6 +1109,46 @@ function CityDetail({
               {c.beachKm === 0 ? t("En la costa", "On the coast") : `${c.beachKm} km ${t("al mar", "to sea")}`}
             </span>
           </div>
+
+          {filters.goal === "nomad" && (
+            <div className="rounded-xl border border-primary/30 bg-primary/5 p-4">
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <p className="text-sm font-semibold">
+                  🌍 {t("Trabajo remoto y visa nómada", "Remote work & nomad visa")}
+                </p>
+                <p className="numeric text-sm">
+                  <span className="text-lg font-semibold text-primary">{nomadFriendly(c)}</span>
+                  <span className="text-muted-foreground">/100</span>
+                </p>
+              </div>
+              <p className="text-[13px] font-medium">{nomadVisa(c.country).name}</p>
+              <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                <Stat
+                  icon="🛂"
+                  label={t("Estado", "Status")}
+                  value={nomadVisa(c.country).exists ? t("Disponible", "Available") : t("No existe", "None")}
+                />
+                <Stat
+                  icon="💵"
+                  label={t("Ingreso mínimo", "Min. income")}
+                  value={nomadVisa(c.country).incomeUsd > 0 ? `${fmt(nomadVisa(c.country).incomeUsd)}/m` : "—"}
+                />
+                <Stat
+                  icon="⏳"
+                  label={t("Duración", "Duration")}
+                  value={
+                    nomadVisa(c.country).months > 0
+                      ? `${nomadVisa(c.country).months} ${t("meses", "months")}${nomadVisa(c.country).renewable ? " ↻" : ""}`
+                      : "—"
+                  }
+                />
+                <Stat icon="💻" label={t("Internet", "Internet")} value={`${c.internetSpeed} Mbps`} />
+              </div>
+              <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
+                {t(nomadVisa(c.country).taxEs, nomadVisa(c.country).taxEn)}
+              </p>
+            </div>
+          )}
 
           <div>
             <div className="mb-3 flex items-baseline justify-between gap-3">
