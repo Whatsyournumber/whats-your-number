@@ -71,7 +71,7 @@ const PHOTO = {
   chiangmai: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Doi_Suthep_Temple_Chiang_Mai_Thailand.jpg/1920px-Doi_Suthep_Temple_Chiang_Mai_Thailand.jpg",
   brisbane: brisbanePhoto.url,
   accra: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Accra_Skyline.jpg/1920px-Accra_Skyline.jpg",
-  lagos: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Lagos_Island_City_Scape.jpg/1920px-Lagos_Island_City_Scape.jpg",
+  lagos: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Lekki_Ikoyi_Link_Bridge.jpg/1920px-Lekki_Ikoyi_Link_Bridge.jpg",
   kigali: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/An_aerial_view_of_new_look_of_Rwanda_Parliament_Building_in_Kimihurura%2C_Kigali_on_May_16%2C_2019._Emmanuel_Kwizera.jpg/1920px-An_aerial_view_of_new_look_of_Rwanda_Parliament_Building_in_Kimihurura%2C_Kigali_on_May_16%2C_2019._Emmanuel_Kwizera.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   casablanca: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Au_centre_de_Casablanca_%288177200639%29.jpg/1920px-Au_centre_de_Casablanca_%288177200639%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   rotterdam: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/0_8546_Rotterdam_-_Ausblick.jpg/1920px-0_8546_Rotterdam_-_Ausblick.jpg",
@@ -106,8 +106,8 @@ const PHOTO = {
   adelaide: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Adelaide_2022_Skyline.jpg/1920px-Adelaide_2022_Skyline.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   windhoek: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Windhoek_Panorama_Three_Circles_20190518.jpg/1920px-Windhoek_Panorama_Three_Circles_20190518.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   gaborone: gaboronePhoto.url,
-  addis: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Addis_Ababa_%2816314616596%29.jpg/1920px-Addis_Ababa_%2816314616596%29.jpg",
-  alexandria: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Egypt%E2%80%99s_Mediterranean_Coast_%28154431%29.jpg/1920px-Egypt%E2%80%99s_Mediterranean_Coast_%28154431%29.jpg",
+  addis: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Addis_Ababa_skyline.jpg/1920px-Addis_Ababa_skyline.jpg",
+  alexandria: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/%D8%A7%D9%84%D9%82%D9%84%D8%B9%D8%A9_%D8%A7%D8%B3%D9%83%D9%86%D8%AF%D8%B1%D9%8A%D8%A9.jpg/1920px-%D8%A7%D9%84%D9%82%D9%84%D8%B9%D8%A9_%D8%A7%D8%B3%D9%83%D9%86%D8%AF%D8%B1%D9%8A%D8%A9.jpg",
 };
 export const extraCities: CityData[] = [
   {
