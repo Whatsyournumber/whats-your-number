@@ -56,7 +56,7 @@ export type CityData = {
 };
 
 const PHOTO = {
-  barcelona: "https://commons.wikimedia.org/wiki/Special:FilePath/Park%20G%C3%BCell%205%20-%20panoramio.jpg?width=1920",
+  barcelona: "https://commons.wikimedia.org/wiki/Special:FilePath/Barcelona%20desde%20El%20Carmelo.JPG?width=1920",
   madrid: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Madrid_Gran_Via_Metropolis_%2828895530633%29.jpg/1920px-Madrid_Gran_Via_Metropolis_%2828895530633%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   valencia: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Museo_Pr%C3%ADncipe_Felipe%2C_Ciudad_de_las_Artes_y_las_Ciencias%2C_Valencia%2C_Espa%C3%B1a%2C_2014-06-29%2C_DD_59.JPG/1920px-Museo_Pr%C3%ADncipe_Felipe%2C_Ciudad_de_las_Artes_y_las_Ciencias%2C_Valencia%2C_Espa%C3%B1a%2C_2014-06-29%2C_DD_59.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   lisbon: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/LisbonSkyline.jpg/1920px-LisbonSkyline.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -79,7 +79,7 @@ const PHOTO = {
   panama: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Panor%C3%A1mica_nocturna_de_la_ciudad_de_Panam%C3%A1.jpg/1920px-Panor%C3%A1mica_nocturna_de_la_ciudad_de_Panam%C3%A1.jpg",
   capetown: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/CT_-_Table_Mountain_and_Cape_Town_cityscape%2C_South_Africa%2C_2017.jpg/1920px-CT_-_Table_Mountain_and_Cape_Town_cityscape%2C_South_Africa%2C_2017.jpg",
   marrakech: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Marrakech_Medina_Skyline_%2852188876996%29.jpg/1920px-Marrakech_Medina_Skyline_%2852188876996%29.jpg",
-  berlin: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Berlin_Panorama_2010_Bundestag.JPG/1920px-Berlin_Panorama_2010_Bundestag.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  berlin: "https://commons.wikimedia.org/wiki/Special:FilePath/Skyline%20Berlin.jpg?width=1920",
   paris: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Panorama_of_the_Paris_Skyline_3.jpg/1920px-Panorama_of_the_Paris_Skyline_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   milan: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Milan_skyline_skyscrapers_of_Porta_Nuova_business_district_%28cropped2%29.jpg/1920px-Milan_skyline_skyscrapers_of_Porta_Nuova_business_district_%28cropped2%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   warsaw: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Warsaw_Castle_Square_Panorama_2010.jpg/1920px-Warsaw_Castle_Square_Panorama_2010.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
