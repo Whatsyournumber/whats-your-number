@@ -366,61 +366,78 @@ function CashFlow() {
               });
 
               return (
-                <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr]">
-                  <div className="rounded-2xl border border-border bg-elevated/40 p-4">
-                    <svg viewBox="0 0 640 260" className="h-[260px] w-full">
-                      <defs>
-                        {withIn.map((n) => (
-                          <linearGradient key={n.key} id={`flow-${n.key}`} x1="0" y1="0" x2="1" y2="0">
-                            <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.35" />
-                            <stop offset="100%" stopColor={n.color} stopOpacity="0.6" />
-                          </linearGradient>
-                        ))}
-                      </defs>
+                <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_120px_minmax(0,1.3fr)]">
+                  <div className="space-y-3">
+                    {incomeLines.slice(0, 6).map((i, idx) => (
+                      <motion.div
+                        key={i.name}
+                        initial={{ opacity: 0, x: -12 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.08 }}
+                        className="rounded-2xl border border-border bg-elevated/60 p-4"
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="truncate text-sm font-medium">{i.name}</p>
+                          <p className="numeric text-sm font-semibold">{fmt(i.amount)}</p>
+                        </div>
+                        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${Math.min(100, (i.amount / totalIncome) * 100)}%` }}
+                            transition={{ duration: 0.8, delay: 0.2 }}
+                            className="h-full rounded-full bg-primary"
+                          />
+                        </div>
+                      </motion.div>
+                    ))}
+                    {incomeLines.length === 0 && (
+                      <div className="rounded-2xl border border-border bg-elevated/60 p-4">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="truncate text-sm font-medium">{t("Ingresos", "Income")}</p>
+                          <p className="numeric text-sm font-semibold">{fmt(totalIncome)}</p>
+                        </div>
+                        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
+                          <div className="h-full w-full rounded-full bg-primary" />
+                        </div>
+                      </div>
+                    )}
+                  </div>
 
-                      {/* nodo de ingreso */}
-                      <rect x={26} y={TOP + (H - inH) / 2} width={12} height={inH} rx={6} fill="var(--color-primary)" />
-                      <text x={26} y={TOP + (H - inH) / 2 - 10} fontSize={11} fill="var(--color-muted-foreground)">
-                        {t("Ingresos", "Income")}
-                      </text>
-                      <text x={26} y={TOP + (H - inH) / 2 + inH + 18} fontSize={12} fontWeight={600} fill="var(--color-foreground)">
-                        {fmt(totalIncome)}
-                      </text>
-
+                  <div className="relative hidden h-64 lg:block">
+                    <svg viewBox="0 0 120 260" className="h-full w-full" preserveAspectRatio="none">
                       {withIn.map((n, i) => {
-                        const x0 = 38;
-                        const x1 = 430;
-                        const cy0 = n.y0 + n.h / 2;
-                        const cy1 = n.y + n.h / 2;
+                        const y = 40 + i * 90;
+                        const w = Math.max(6, (Math.max(0, n.amount) / (totalIncome || 1)) * 90);
                         return (
-                          <g key={n.key}>
-                            <motion.path
-                              d={`M${x0},${n.y0} C${(x0 + x1) / 2},${n.y0} ${(x0 + x1) / 2},${n.y} ${x1},${n.y} L${x1},${n.y + n.h} C${(x0 + x1) / 2},${n.y + n.h} ${(x0 + x1) / 2},${n.y0 + n.h} ${x0},${n.y0 + n.h} Z`}
-                              fill={`url(#flow-${n.key})`}
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              transition={{ duration: 0.6, delay: 0.1 * i }}
-                            />
-                            <rect x={x1} y={n.y} width={12} height={n.h} rx={6} fill={n.color} />
-                            <text x={x1 + 22} y={cy1 - 2} fontSize={12} fontWeight={600} fill="var(--color-foreground)">
-                              {n.label}
-                            </text>
-                            <text x={x1 + 22} y={cy1 + 14} fontSize={11} fill="var(--color-muted-foreground)">
-                              {fmt(n.amount)} · {n.pct.toFixed(0)}% ({t("meta", "target")} {n.target}%)
-                            </text>
-                            <line x1={x0} y1={cy0} x2={x0} y2={cy0} stroke="none" />
-                          </g>
+                          <motion.path
+                            key={n.key}
+                            d={`M0,130 C60,130 60,${y} 120,${y}`}
+                            fill="none"
+                            stroke={n.color}
+                            strokeWidth={w}
+                            strokeOpacity={0.35}
+                            strokeLinecap="round"
+                            initial={{ pathLength: 0 }}
+                            animate={{ pathLength: 1 }}
+                            transition={{ duration: 1, delay: 0.2 + i * 0.1 }}
+                          />
                         );
                       })}
                     </svg>
                   </div>
 
                   <div className="space-y-3">
-                    {withIn.map((n) => {
+                    {withIn.map((n, idx) => {
                       const diff = n.pct - n.target;
                       const good = n.goodWhenHigher ? diff >= 0 : diff <= 0;
                       return (
-                        <div key={n.key} className="rounded-2xl border border-border bg-elevated/60 p-4">
+                        <motion.div
+                          key={n.key}
+                          initial={{ opacity: 0, x: 12 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.2 + idx * 0.08 }}
+                          className="rounded-2xl border border-border bg-elevated/60 p-4"
+                        >
                           <div className="flex items-center gap-2">
                             <span className="h-2.5 w-2.5 rounded-full" style={{ background: n.color }} />
                             <p className="text-sm font-medium">{n.label}</p>
@@ -430,14 +447,11 @@ function CashFlow() {
                             <motion.div
                               initial={{ width: 0 }}
                               animate={{ width: `${Math.min(100, n.pct)}%` }}
-                              transition={{ duration: 0.8 }}
+                              transition={{ duration: 0.8, delay: 0.3 }}
                               className="h-full rounded-full"
                               style={{ background: n.color }}
                             />
-                            <span
-                              className="absolute top-0 h-full w-px bg-foreground/60"
-                              style={{ left: `${n.target}%` }}
-                            />
+                            <span className="absolute top-0 h-full w-px bg-foreground/60" style={{ left: `${n.target}%` }} />
                           </div>
                           <div className="mt-1.5 flex items-center justify-between text-[11px]">
                             <span className="text-muted-foreground">
@@ -448,12 +462,13 @@ function CashFlow() {
                               {diff.toFixed(0)} pts
                             </span>
                           </div>
-                        </div>
+                        </motion.div>
                       );
                     })}
                   </div>
                 </div>
               );
+
             })()}
 
             <div className="mt-5 grid gap-4 text-sm md:grid-cols-3">
