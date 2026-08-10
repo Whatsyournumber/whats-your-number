@@ -306,7 +306,32 @@ function Landing() {
             {t("Gratis y sin registro · 3 preguntas · 30 segundos", "Free, no sign-up · 3 questions · 30 seconds")}
           </p>
 
-          <div className="mt-12 grid gap-5 text-left md:grid-cols-3">
+          <div className="mt-6 flex items-center justify-center gap-3">
+            <div className="flex -space-x-2">
+              {[
+                "https://i.pravatar.cc/80?img=12",
+                "https://i.pravatar.cc/80?img=32",
+                "https://i.pravatar.cc/80?img=45",
+              ].map((src) => (
+                <img
+                  key={src}
+                  src={src}
+                  alt={t("Usuario de WhatsYourNumber", "WhatsYourNumber user")}
+                  loading="lazy"
+                  className="h-8 w-8 rounded-full border-2 border-background object-cover"
+                />
+              ))}
+            </div>
+            <span className="text-sm text-muted-foreground">
+              {t("+8,231 personas ya descubrieron su número", "+8,231 people already found their number")}
+            </span>
+          </div>
+
+          <p className="mt-14 text-xs font-medium uppercase tracking-wider text-primary">
+            {t("¿Por qué WhatsYourNumber?", "Why WhatsYourNumber?")}
+          </p>
+
+          <div className="mt-6 grid gap-5 text-left md:grid-cols-3">
             {whyCards.map((card, i) => (
               <motion.div
                 key={card.title}
@@ -321,10 +346,10 @@ function Landing() {
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-primary/10 ring-1 ring-primary/20">
                     <card.icon className="h-6 w-6 text-primary" strokeWidth={1.8} />
                   </div>
-                  <h3 className="mt-5 text-xl font-semibold tracking-tight">{card.title}</h3>
+                  <h3 className="mt-5 text-lg font-semibold tracking-tight">{card.title}</h3>
                   <p className="relative mt-3 text-sm leading-relaxed text-muted-foreground/80">{card.desc}</p>
-                  <p className="numeric relative mt-5 text-xs font-medium text-primary">{card.stat}</p>
                 </div>
+
               </motion.div>
             ))}
           </div>
