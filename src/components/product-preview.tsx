@@ -426,61 +426,6 @@ export function ProductPreview() {
                   ))}
                 </ul>
               </motion.div>
-            ) : active === "cashflow" ? (
-              <motion.div
-                key="cashflow-summary"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.25 }}
-                className="rounded-2xl bg-elevated/60 p-5 ring-1 ring-border"
-              >
-                <p className="text-xs text-muted-foreground">{t("Flujo del mes", "Monthly flow")}</p>
-                <div className="mt-3 space-y-3">
-                  {[
-                    { label: t("Necesidades", "Needs"), value: "€2,000", pct: "40%", color: "bg-primary" },
-                    { label: t("Ahorro + Inversión", "Save + Invest"), value: "€2,000", pct: "40%", color: "bg-positive" },
-                    { label: t("Deseos", "Wants"), value: "€1,000", pct: "20%", color: "bg-chart-3" },
-                  ].map((row) => (
-                    <div key={row.label} className="flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground">{row.label}</span>
-                      <div className="flex items-center gap-3">
-                        <span className="numeric text-foreground">{row.value}</span>
-                        <span className={cn("rounded-full px-2 py-0.5 text-[10px] font-medium text-primary-foreground", row.color)}>{row.pct}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-4 rounded-xl bg-background/50 p-3 text-center">
-                  <p className="text-[11px] text-muted-foreground">{t("Ingreso mensual", "Monthly income")}</p>
-                  <p className="numeric mt-1 text-xl font-semibold">€5,000</p>
-                </div>
-              </motion.div>
-            ) : active === "lifeplanner" ? (
-              <motion.div
-                key="life-progress"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.25 }}
-                className="rounded-2xl bg-elevated/60 p-5 ring-1 ring-border"
-              >
-                <p className="text-xs text-muted-foreground">{t("Impacto en tu retiro", "Impact on your retirement")}</p>
-                <div className="mt-3 space-y-2">
-                  <div className="flex items-center justify-between rounded-lg bg-background/50 p-2.5 text-xs">
-                    <span className="text-muted-foreground">{t("Sin decisiones", "Without decisions")}</span>
-                    <span className="numeric font-medium">10.1 {t("años", "years")}</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg bg-background/50 p-2.5 text-xs">
-                    <span className="text-muted-foreground">{t("Con decisiones", "With decisions")}</span>
-                    <span className="numeric font-medium text-negative">12.4 {t("años", "years")}</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg bg-positive/10 p-2.5 text-xs ring-1 ring-positive/20">
-                    <span className="text-positive">{t("Ahorro si vendes tu empresa", "Savings if you sell your company")}</span>
-                    <span className="numeric font-medium text-positive">−3.4 {t("años", "years")}</span>
-                  </div>
-                </div>
-              </motion.div>
             ) : active === "nextcity" ? (
               <motion.div
                 key="city-score"
