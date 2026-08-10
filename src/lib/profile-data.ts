@@ -53,7 +53,7 @@ export type Dataset = {
     retireAge: number;
     contributionsYTD: number;
   };
-  goals: { name: string; emoji: string; current: number; target: number; deadline: string; monthly: number; note?: string | undefined; displayCurrent?: number; displayTarget?: number }[];
+  goals: { name: string; emoji: string; current: number; target: number; deadline: string; monthly: number; note?: string | undefined; displayCurrent?: number | undefined; displayTarget?: number | undefined }[];
   cashFlow: { income: { name: string; amount: number }[]; buckets: { name: string; amount: number; color: string }[] };
   cityCost: number | null;
   hasData: boolean;
