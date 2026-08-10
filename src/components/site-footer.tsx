@@ -180,7 +180,7 @@ export function SiteFooter() {
           )}
         </AnimatePresence>
 
-        <div className="relative h-16 bg-elevated/80 backdrop-blur-md">
+        <div className="relative h-16 border-t border-border/60 bg-elevated/90 backdrop-blur-md">
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
@@ -188,12 +188,12 @@ export function SiteFooter() {
             className="group absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2"
           >
             <div className="relative flex h-16 w-28 items-center justify-center overflow-hidden">
-              {/* Semi-circle bump */}
-              <div className="absolute bottom-0 h-14 w-14 rounded-full bg-foreground/90 transition-transform duration-300 group-hover:scale-105 group-active:scale-95" />
+              {/* Semi-circle bump matching the bar */}
+              <div className="absolute bottom-0 h-14 w-14 rounded-full bg-elevated/90 ring-1 ring-border/60 transition-transform duration-300 group-hover:scale-105 group-active:scale-95" />
               <motion.div
                 animate={{ rotate: open ? 135 : 0 }}
                 transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
-                className="relative z-10 text-background"
+                className="relative z-10 text-foreground"
               >
                 <Plus className="h-6 w-6" />
               </motion.div>
