@@ -360,6 +360,7 @@ function CashFlow() {
                 target={20}
                 fmt={fmt}
                 tooltip={t("Viajes, restaurantes, salidas, compras, tecnología y hobbies.", "Travel, dining out, entertainment, shopping, tech and hobbies.")}
+                breakdown={wantsBreakdown}
               />
             </div>
           </Panel>
@@ -391,6 +392,7 @@ function Row({
   fmt,
   goodWhenHigher = false,
   tooltip,
+  breakdown,
 }: {
   label: string;
   value: number;
@@ -399,6 +401,7 @@ function Row({
   fmt: (n: number) => string;
   goodWhenHigher?: boolean;
   tooltip?: string;
+  breakdown?: { label: string; amount: number }[];
 }) {
   const p = total > 0 ? (value / total) * 100 : 0;
   const off = p - target;
@@ -423,6 +426,20 @@ function Row({
               </TooltipTrigger>
               <TooltipContent side="top" className="max-w-xs">
                 <p>{tooltip}</p>
+                {breakdown && breakdown.length > 0 && (
+                  <div className="mt-2 space-y-1 border-t border-border/60 pt-2">
+                    {breakdown.map((b) => (
+                      <div key={b.label} className="flex items-center justify-between gap-4 text-xs">
+                        <span className="text-muted-foreground">{b.label}</span>
+                        <span className="numeric">{fmt(b.amount)}</span>
+                      </div>
+                    ))}
+                    <div className="flex items-center justify-between gap-4 border-t border-border/60 pt-1 text-xs font-medium">
+                      <span>Total</span>
+                      <span className="numeric">{fmt(value)}</span>
+                    </div>
+                  </div>
+                )}
               </TooltipContent>
             </Tooltip>
           )}
