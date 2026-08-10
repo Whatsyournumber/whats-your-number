@@ -316,9 +316,10 @@ function Landing() {
 
 
 
-        <section className="mt-24 md:mt-32">
+        <section className="relative mt-24 md:mt-32">
+          <div className="wealth-gradient pointer-events-none absolute left-1/2 top-10 h-[420px] w-[820px] -translate-x-1/2 rounded-full opacity-[0.10] blur-3xl" />
 
-          <div className="mb-8 text-center">
+          <div className="relative mb-8 text-center">
             <span className="text-xs font-medium uppercase tracking-wider text-primary">
               {t("Así se ve por dentro", "This is what it looks like inside")}
             </span>
@@ -327,20 +328,41 @@ function Landing() {
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
               {t(
-                "Cambia entre patrimonio, gastos y portafolio. Todo se actualiza en tiempo real conforme importas tus estados de cuenta.",
-                "Switch between net worth, spending and portfolio. Everything updates in real time as you import your statements.",
+                "Patrimonio, gastos, portafolio, retiro y tus próximas decisiones de vida. Todo se recalcula en tiempo real conforme importas tus estados de cuenta.",
+                "Net worth, spending, portfolio, retirement and your next life decisions. Everything recalculates in real time as you import your statements.",
               )}
             </p>
+            <div className="mt-5 flex flex-wrap justify-center gap-2">
+              {panelChips.map((chip) => (
+                <span
+                  key={chip}
+                  className="rounded-full border border-border/60 bg-card/50 px-3 py-1 text-[11px] text-muted-foreground backdrop-blur"
+                >
+                  {chip}
+                </span>
+              ))}
+            </div>
           </div>
+
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.5 }}
+            className="relative rounded-[28px] border border-white/[0.07] bg-card/40 p-2 shadow-2xl backdrop-blur md:p-3"
           >
+            <div className="flex items-center gap-2 px-3 pb-2 pt-1">
+              <span className="h-2.5 w-2.5 rounded-full bg-negative/50" />
+              <span className="h-2.5 w-2.5 rounded-full bg-primary/30" />
+              <span className="h-2.5 w-2.5 rounded-full bg-positive/40" />
+              <span className="mx-auto rounded-full bg-elevated/70 px-3 py-1 text-[10px] text-muted-foreground">
+                app.whatsyournumber.com/dashboard
+              </span>
+            </div>
             <ProductPreview />
           </motion.div>
         </section>
+
 
 
 
