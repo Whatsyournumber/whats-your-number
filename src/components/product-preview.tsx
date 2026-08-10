@@ -185,18 +185,26 @@ export function ProductPreview() {
 
   const [active, setActive] = useState<(typeof views)[number]["id"]>("patrimonio");
   const [insight, setInsight] = useState(0);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
+      if (paused) return;
       setActive((cur) => {
         const i = views.findIndex((v) => v.id === cur);
         return views[(i + 1) % views.length]!.id;
       });
       setInsight((i) => (i + 1) % insights.length);
-    }, 5000);
+    }, 7000);
     return () => clearInterval(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [paused]);
+
+  useEffect(() => {
+    if (!paused) return;
+    const resume = setTimeout(() => setPaused(false), 12000);
+    return () => clearTimeout(resume);
+  }, [paused]);
 
   const view = views.find((v) => v.id === active)!;
   const kpi = kpis[active];
@@ -221,7 +229,10 @@ export function ProductPreview() {
             <button
               key={v.id}
               type="button"
-              onClick={() => setActive(v.id)}
+              onClick={() => {
+                setActive(v.id);
+                setPaused(true);
+              }}
               className={cn(
                 "flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all",
                 active === v.id
