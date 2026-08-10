@@ -139,9 +139,7 @@ function OnboardingPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const t = useT();
-  const [step, setStep] = useState(0);
-  // Segunda pantalla de bienvenida: explica qué datos se usan y cómo se configura todo.
-  const [introPage, setIntroPage] = useState(0);
+  const [step, setStep] = useState(1);
 
   const [data, setData] = useState<OnboardingData>({ ...emptyOnboarding, currency: "EUR", monthly_expenses: 0 });
   const [life, setLife] = useState<LifeData>(emptyLife);
@@ -179,7 +177,7 @@ function OnboardingPage() {
         }
         setData(next);
         setLife(nextLife);
-        setStep(Math.min(QUESTIONS, Number(r["current_step"] ?? 0)));
+        setStep(Math.min(QUESTIONS, Math.max(1, Number(r["current_step"] ?? 1))));
       } else {
         const meta = user.user_metadata as Record<string, unknown> | undefined;
         const name = typeof meta?.["full_name"] === "string" ? meta["full_name"] : "";
@@ -278,7 +276,7 @@ function OnboardingPage() {
               />
             </div>
             <span className="numeric w-16 text-right text-[11px] text-muted-foreground">
-              {saving ? t("Guardando…", "Saving…") : step === 0 || isSummary ? "" : `${step} / ${QUESTIONS}`}
+              {saving ? t("Guardando…", "Saving…") : isSummary ? "" : `${step} / ${QUESTIONS}`}
             </span>
           </div>
         </div>
