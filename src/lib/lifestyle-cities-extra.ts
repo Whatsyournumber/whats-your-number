@@ -4,6 +4,8 @@
  */
 import type { CityData } from "./lifestyle-cities";
 import osloPhoto from "@/assets/city-oslo-hd.jpg.asset.json";
+import istanbulPhoto from "@/assets/city-istanbul.png.asset.json";
+import brisbanePhoto from "@/assets/city-brisbane.png.asset.json";
 const PHOTO = {
   hamburg: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/HH_Alsterarkaden_pano1.jpg/1920px-HH_Alsterarkaden_pano1.jpg",
   zagreb: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg/1920px-Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -31,7 +33,7 @@ const PHOTO = {
   phuket: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Phuket_Aerial.jpg/1920px-Phuket_Aerial.jpg",
   danang: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Da_Nang_Dragon_Bridge_%28II%29.jpg/1920px-Da_Nang_Dragon_Bridge_%28II%29.jpg",
   tbilisi: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Vista_de_Tiflis%2C_Georgia%2C_2016-09-29%2C_DD_52-55_PAN.jpg/1920px-Vista_de_Tiflis%2C_Georgia%2C_2016-09-29%2C_DD_52-55_PAN.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  istanbul: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Istanbul_Skyline_Be%C5%9Fikta%C5%9F_%C5%9Ei%C5%9Fli.JPG/1920px-Istanbul_Skyline_Be%C5%9Fikta%C5%9F_%C5%9Ei%C5%9Fli.JPG?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  istanbul: istanbulPhoto.url,
   doha: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Doha_Panorama.jpg/1920px-Doha_Panorama.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   perth: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Perth_City_Skyline_Across_Lake.jpg/1920px-Perth_City_Skyline_Across_Lake.jpg",
   dakar: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Dakar%2C_Senegal_-_Left_Half_%285662420768%29.jpg/1920px-Dakar%2C_Senegal_-_Left_Half_%285662420768%29.jpg",
@@ -67,7 +69,7 @@ const PHOTO = {
   abudhabi: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Abu_Dhabi_skyline_night_%28Nepenthes%29.jpg/1920px-Abu_Dhabi_skyline_night_%28Nepenthes%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   bengaluru: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Vidhana_Soudha_LE.jpg/1920px-Vidhana_Soudha_LE.jpg",
   chiangmai: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Doi_Suthep_Temple_Chiang_Mai_Thailand.jpg/1920px-Doi_Suthep_Temple_Chiang_Mai_Thailand.jpg",
-  brisbane: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Brisbane_skyline_from_Story_Bridge_Panorama_01.jpg/1920px-Brisbane_skyline_from_Story_Bridge_Panorama_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  brisbane: brisbanePhoto.url,
   accra: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Accra_Skyline.jpg/1920px-Accra_Skyline.jpg",
   lagos: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Lagos_Island_City_Scape.jpg/1920px-Lagos_Island_City_Scape.jpg",
   kigali: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/An_aerial_view_of_new_look_of_Rwanda_Parliament_Building_in_Kimihurura%2C_Kigali_on_May_16%2C_2019._Emmanuel_Kwizera.jpg/1920px-An_aerial_view_of_new_look_of_Rwanda_Parliament_Building_in_Kimihurura%2C_Kigali_on_May_16%2C_2019._Emmanuel_Kwizera.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
