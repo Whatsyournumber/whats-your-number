@@ -263,7 +263,7 @@ function CashFlow() {
 
       <div className="grid gap-4 md:grid-cols-3">
         <Panel
-          title={t("Regla 50 / 30 / 20", "50 / 30 / 20 rule")}
+          title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")}
           description={
             activeMonth
               ? `${monthLabel(activeMonth)} · ${fmt(totalIncome)} ${t("de ingreso", "of income")}`
@@ -271,9 +271,9 @@ function CashFlow() {
           }
         >
           <div className="space-y-3 text-sm">
-            <Row label={t("Necesidades", "Needs")} value={needsAmount} total={totalIncome} target={50} fmt={fmt} />
-            <Row label={t("Deseos", "Wants")} value={wantsAmount} total={totalIncome} target={30} fmt={fmt} />
-            <Row label={t("Ahorro e inversión", "Savings & investing")} value={saveAmount} total={totalIncome} target={20} fmt={fmt} />
+            <Row label={t("Necesidades", "Needs")} value={needsAmount} total={totalIncome} target={40} fmt={fmt} />
+            <Row label={t("Deseos", "Wants")} value={wantsAmount} total={totalIncome} target={20} fmt={fmt} />
+            <Row label={t("Ahorro e inversión", "Savings & investing")} value={saveAmount} total={totalIncome} target={40} fmt={fmt} goodWhenHigher />
           </div>
         </Panel>
         <Panel title={t("Runway", "Runway")} description={t("Meses cubiertos con tu efectivo", "Months covered with your cash")}>
