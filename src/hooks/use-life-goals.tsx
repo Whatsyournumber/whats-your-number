@@ -107,12 +107,11 @@ export function useLifeGoals() {
 
   const reorder = useMutation({
     mutationFn: async (orderedIds: string[]) => {
-      const updates = orderedIds.map((id, index) => ({
-        id,
-        position: index,
-      }));
-      const { error } = await supabase.from("life_goals").upsert(updates, { onConflict: "id" });
-      if (error) throw error;
+      await Promise.all(
+        orderedIds.map((id, index) =>
+          supabase.from("life_goals").update({ position: index }).eq("id", id),
+        ),
+      );
     },
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: key });
