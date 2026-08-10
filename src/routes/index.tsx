@@ -22,9 +22,9 @@ import {
 
 
 import ctaLifestyle from "@/assets/cta-lifestyle.jpg";
-import featureAi from "@/assets/feature-ai.png.asset.json";
-import featureLife from "@/assets/feature-life.png.asset.json";
-import featureNumber from "@/assets/feature-number.png.asset.json";
+import featureAi from "@/assets/feature-ai-real.jpg.asset.json";
+import featureLife from "@/assets/feature-life-real.jpg.asset.json";
+import featureNumber from "@/assets/feature-number-real.jpg.asset.json";
 import { BrandLogo } from "@/components/brand-logo";
 import { ProductPreview } from "@/components/product-preview";
 import { SiteHeader } from "@/components/site-header";
@@ -343,7 +343,7 @@ function Landing() {
                     height={768}
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-card/20 to-card/80" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-card/10 to-card/70" />
                   <div className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/30 backdrop-blur-md ring-1 ring-primary/20">
                     <card.icon className="relative h-5 w-5 text-primary" strokeWidth={1.8} />
                   </div>
