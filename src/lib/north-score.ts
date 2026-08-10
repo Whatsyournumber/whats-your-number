@@ -44,7 +44,7 @@ export type PillarBreakdown = {
   key: PillarKey;
   score: number;
   weight: number;
-  factors: { es: string; en: string; value: number; source: string }[];
+  factors: { es: string; en: string; value: number; source: string; weight?: number }[];
 };
 
 export type NorthScore = {
@@ -58,6 +58,12 @@ const inv = (value: number, best: number, worst: number) =>
   Math.max(0, Math.min(100, ((worst - value) / (worst - best)) * 100));
 
 const avg = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / (xs.length || 1);
+
+/** Promedio ponderado (weight por defecto 1). */
+const wavg = (fs: { value: number; weight?: number }[]) => {
+  const w = fs.reduce((a, f) => a + (f.weight ?? 1), 0);
+  return w > 0 ? fs.reduce((a, f) => a + f.value * (f.weight ?? 1), 0) / w : 0;
+};
 
 /** Horas de sol estimadas a partir del tipo de clima (Meteostat / OpenWeather). */
 const SUN_SCORE: Record<CityData["climate"], number> = { warm: 92, beach: 88, temperate: 68, cold: 45 };
@@ -73,6 +79,8 @@ export function northScore(
     /** Años estimados hasta la libertad financiera */
     yearsToRetire: number | null;
     expectedReturn: number;
+    /** Etapa de vida: si es soltero/a, el nightlife pesa alto en estilo de vida */
+    stage?: "single" | "relationship" | "married" | "family" | "single_parent" | "any";
   },
 ): NorthScore {
   const stability = stabilityScore(c.country);
@@ -127,6 +135,21 @@ export function northScore(
       source: "OpenStreetMap",
     },
     { es: "Walkability", en: "Walkability", value: clamp(c.walkability * 0.7 + c.publicTransport * 0.3), source: "Walk Score / OSM" },
+    {
+      es: "Vida nocturna y ocio",
+      en: "Nightlife & going out",
+      value: c.nightlife,
+      source: "Numbeo / Nomad List",
+      // Soltero/a → prioridad alta; en pareja/casado → peso medio; con hijos → bajo
+      weight:
+        ctx.stage === "single"
+          ? 3
+          : ctx.stage === "relationship"
+            ? 1.5
+            : ctx.stage === "family" || ctx.stage === "single_parent"
+              ? 0.5
+              : 1,
+    },
   ];
 
   const work = [
@@ -155,7 +178,7 @@ export function northScore(
   const pillars: PillarBreakdown[] = (Object.keys(PILLAR_WEIGHTS) as PillarKey[]).map((key) => ({
     key,
     weight: PILLAR_WEIGHTS[key],
-    score: clamp(avg(groups[key].map((f) => f.value))),
+    score: clamp(wavg(groups[key])),
     factors: groups[key].map((f) => ({ ...f, value: clamp(f.value) })),
   }));
 
