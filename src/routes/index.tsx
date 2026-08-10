@@ -55,7 +55,7 @@ function DemoCard() {
   const steps = [
     { label: t("Gasto mensual ideal", "Ideal monthly spending"), value: "€5,000" },
     { label: t("Patrimonio hoy", "Net worth today"), value: "€350,000" },
-    { label: t("Inversión mensual", "Monthly investment"), value: "€2,000" },
+    { label: t("Tu número", "Your number"), value: "€1.5M" },
   ];
 
   return (
