@@ -661,7 +661,7 @@ function Gastos() {
 
       <Panel
         title={t("Detalle por categoría", "Detail by category")}
-        description={t("Mercado, Restaurantes, Salidas, Compras, Viajes, Transporte, Lifestyle, Apps y Marketing digital. Añade las tuyas con palabras clave.", "Groceries, Restaurants, Nightlife, Shopping, Travel, Transport, Lifestyle, Apps and Digital marketing. Add your own with keywords.")}
+        description={t("Mercado, Restaurantes, Salidas, Compras, Viajes, Transporte, Lifestyle, Apps, Marketing digital y Bancos & Seguros. Añade las tuyas con palabras clave.", "Groceries, Restaurants, Nightlife, Shopping, Travel, Transport, Lifestyle, Apps, Digital marketing and Banks & Insurance. Add your own with keywords.")}
       >
         <Accordion type="single" collapsible className="w-full">
           {detailRows.map((c, i) => {

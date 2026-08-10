@@ -53,6 +53,27 @@ export const RULES: CategoryRule[] = [
     ],
   },
   {
+    name: "Bancos & Seguros",
+    hints: [
+      "banco", "bank", "banca", "bbva", "santander", "caixa", "caixabank", "sabadell", "bankinter",
+      "ing direct", "openbank", "unicaja", "abanca", "kutxabank", "ibercaja", "cajamar", "revolut",
+      "n26", "wise", "monzo", "bnext", "paypal", "stripe", "payoneer", "western union", "moneygram",
+      "remesa", "bancolombia", "davivienda", "bancomer", "banamex", "banorte", "itau", "itaú",
+      "bradesco", "banesco", "banistmo", "bac ", "scotiabank", "citibank", "chase", "wells fargo",
+      "hsbc", "deutsche bank", "credit agricole", "société générale", "societe generale",
+      "comision", "comisión", "commission", "fee", "cuota mantenimiento", "mantenimiento cuenta",
+      "cuota tarjeta", "tarjeta credito", "tarjeta crédito", "credit card fee", "interes", "interés",
+      "intereses", "interest", "overdraft", "descubierto", "transferencia", "transfer fee",
+      "cambio divisa", "fx fee", "atm", "cajero", "retiro efectivo", "prestamo", "préstamo", "loan",
+      "hipoteca", "mortgage", "financiacion", "financiación", "leasing",
+      "seguro", "seguros", "insurance", "aseguradora", "poliza", "póliza", "policy", "mapfre",
+      "axa", "allianz", "generali", "zurich", "adeslas", "sanitas", "asisa", "dkv", "cigna",
+      "mutua", "mutual", "caser", "linea directa", "línea directa", "pelayo", "reale", "verti",
+      "occident", "catalana occidente", "sura", "colsanitas", "seguro de vida", "life insurance",
+      "seguro hogar", "home insurance", "seguro salud", "health insurance", "seguro viaje",
+    ],
+  },
+  {
     name: "Restaurantes",
     hints: [
       "restaurant", "restaurante", "resto", "cafe", "café", "cafeteria", "starbucks", "mcdonald", "burger",
@@ -127,6 +148,7 @@ export const BASE_CATEGORIES = [
   "Lifestyle",
   "Apps",
   "Marketing digital",
+  "Bancos & Seguros",
   "Otros",
 ];
 
