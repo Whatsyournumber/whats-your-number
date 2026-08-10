@@ -66,7 +66,7 @@ function DemoCard() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.25 }}
       transition={{ duration: 0.5 }}
-      className="mt-16"
+      className="mt-24 md:mt-32"
     >
       <div className="mb-10 text-center">
         <span className="text-xs font-medium uppercase tracking-wider text-primary">
@@ -319,9 +319,6 @@ function Landing() {
               </Link>
             </Button>
           </div>
-          <p className="mt-3 text-xs text-muted-foreground">
-            {t("Gratis y sin registro · 3 preguntas · 30 segundos", "Free, no sign-up · 3 questions · 30 seconds")}
-          </p>
 
           <div className="mt-6 flex items-center justify-center gap-3">
             <div className="flex -space-x-2">
@@ -581,7 +578,7 @@ function Landing() {
         </section>
 
 
-        <section className="surface mt-16 flex flex-wrap items-center gap-6 p-8">
+        <section className="surface mt-24 md:mt-32 flex flex-wrap items-center gap-6 p-8">
           <div className="flex items-center gap-3">
             <ShieldCheck className="h-5 w-5 text-primary" />
             <p className="text-sm text-muted-foreground">
