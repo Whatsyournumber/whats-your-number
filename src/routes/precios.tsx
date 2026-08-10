@@ -152,7 +152,7 @@ function Pricing() {
           </p>
 
           {/* Toggle mensual / anual */}
-          <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-card/60 p-1 backdrop-blur">
+          <div className="mt-8 inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-border bg-card/60 p-1 backdrop-blur">
             <button
               type="button"
               onClick={() => setBilling("monthly")}
@@ -167,21 +167,17 @@ function Pricing() {
             <button
               type="button"
               onClick={() => setBilling("yearly")}
-              className={`relative rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+              className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
                 billing === "yearly"
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {t("Anual", "Yearly")}
-              <span
-                className={`absolute -right-2 -top-2 rounded-full bg-positive px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-positive-foreground ${
-                  billing === "yearly" ? "opacity-100" : "opacity-80"
-                }`}
-              >
-                -20%
-              </span>
             </button>
+            <span className="rounded-full bg-positive px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-positive-foreground">
+              -20%
+            </span>
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
             {t(
