@@ -323,155 +323,12 @@ function CashFlow() {
         </Panel>
 
         <div className="grid gap-4 md:grid-cols-3">
-          <Panel
-            className="md:col-span-3"
-            title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")}
-            description={
-              activeMonth
-                ? `${monthLabel(activeMonth)} · ${fmt(totalIncome)} ${t("de ingreso", "of income")}`
-                : t("Según tu perfil", "Based on your profile")
-            }
-          >
-            {(() => {
-              const flows = [
-                { key: "needs", label: t("Necesidades", "Needs"), amount: needsAmount, color: "var(--color-chart-2)", target: 40, goodWhenHigher: false },
-                { key: "invest", label: t("Inversiones", "Investing"), amount: saveAmount, color: "var(--color-chart-1)", target: 40, goodWhenHigher: true },
-                { key: "wants", label: t("Deseos", "Wants"), amount: wantsAmount, color: "var(--color-chart-3)", target: 20, goodWhenHigher: false },
-              ];
-              const sum = flows.reduce((a, b) => a + Math.max(0, b.amount), 0) || 1;
-              const H = 210;
-              const TOP = 25;
-              const GAP = 14;
-              const usable = H - GAP * (flows.length - 1);
-              let cursor = TOP;
-              const nodes = flows.map((f) => {
-                const h = Math.max(6, (Math.max(0, f.amount) / sum) * usable);
-                const srcTop = cursor;
-                cursor += h + GAP;
-                return { ...f, h, srcTop, pct: totalIncome > 0 ? (f.amount / totalIncome) * 100 : 0 };
-              });
-              const totalH = nodes.reduce((a, n) => a + n.h, 0) + GAP * (nodes.length - 1);
-              let stack = TOP + (H - totalH) / 2;
-              const laid = nodes.map((n) => {
-                const y = stack;
-                stack += n.h + GAP;
-                return { ...n, y };
-              });
-              const inH = laid.reduce((a, n) => a + n.h, 0);
-              let inY = TOP + (H - inH) / 2;
-              const withIn = laid.map((n) => {
-                const y0 = inY;
-                inY += n.h;
-                return { ...n, y0 };
-              });
-
-              return (
-                <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_120px_minmax(0,1.3fr)]">
-                  <div className="space-y-3">
-                    {incomeLines.slice(0, 6).map((i, idx) => (
-                      <motion.div
-                        key={i.name}
-                        initial={{ opacity: 0, x: -12 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: idx * 0.08 }}
-                        className="rounded-2xl border border-border bg-elevated/60 p-4"
-                      >
-                        <div className="flex items-center justify-between gap-3">
-                          <p className="truncate text-sm font-medium">{i.name}</p>
-                          <p className="numeric text-sm font-semibold">{fmt(i.amount)}</p>
-                        </div>
-                        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
-                          <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ width: `${Math.min(100, (i.amount / totalIncome) * 100)}%` }}
-                            transition={{ duration: 0.8, delay: 0.2 }}
-                            className="h-full rounded-full bg-primary"
-                          />
-                        </div>
-                      </motion.div>
-                    ))}
-                    {incomeLines.length === 0 && (
-                      <div className="rounded-2xl border border-border bg-elevated/60 p-4">
-                        <div className="flex items-center justify-between gap-3">
-                          <p className="truncate text-sm font-medium">{t("Ingresos", "Income")}</p>
-                          <p className="numeric text-sm font-semibold">{fmt(totalIncome)}</p>
-                        </div>
-                        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
-                          <div className="h-full w-full rounded-full bg-primary" />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="relative hidden h-64 lg:block">
-                    <svg viewBox="0 0 120 260" className="h-full w-full" preserveAspectRatio="none">
-                      {withIn.map((n, i) => {
-                        const rTop = n.y;
-                        const rBot = n.y + n.h;
-                        const lTop = n.y0;
-                        const lBot = n.y0 + n.h;
-                        return (
-                          <motion.path
-                            key={n.key}
-                            d={`M0,${lTop} C60,${lTop} 60,${rTop} 120,${rTop} L120,${rBot} C60,${rBot} 60,${lBot} 0,${lBot} Z`}
-                            fill={n.color}
-                            fillOpacity={0.35}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.7, delay: 0.2 + i * 0.1 }}
-                          />
-                        );
-                      })}
-                    </svg>
-                  </div>
-
-
-                  <div className="space-y-3">
-                    {withIn.map((n, idx) => {
-                      const diff = n.pct - n.target;
-                      const good = n.goodWhenHigher ? diff >= 0 : diff <= 0;
-                      return (
-                        <motion.div
-                          key={n.key}
-                          initial={{ opacity: 0, x: 12 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.2 + idx * 0.08 }}
-                          className="rounded-2xl border border-border bg-elevated/60 p-4"
-                        >
-                          <div className="flex items-center gap-2">
-                            <span className="h-2.5 w-2.5 rounded-full" style={{ background: n.color }} />
-                            <p className="text-sm font-medium">{n.label}</p>
-                            <p className="numeric ml-auto text-sm font-semibold">{fmt(n.amount)}</p>
-                          </div>
-                          <div className="relative mt-2.5 h-2 overflow-hidden rounded-full bg-muted">
-                            <motion.div
-                              initial={{ width: 0 }}
-                              animate={{ width: `${Math.min(100, n.pct)}%` }}
-                              transition={{ duration: 0.8, delay: 0.3 }}
-                              className="h-full rounded-full"
-                              style={{ background: n.color }}
-                            />
-                            <span className="absolute top-0 h-full w-px bg-foreground/60" style={{ left: `${n.target}%` }} />
-                          </div>
-                          <div className="mt-1.5 flex items-center justify-between text-[11px]">
-                            <span className="text-muted-foreground">
-                              {n.pct.toFixed(0)}% {t("de tus ingresos", "of your income")} · {t("meta", "target")} {n.target}%
-                            </span>
-                            <span className={good ? "font-medium text-positive" : "font-medium text-negative"}>
-                              {diff > 0 ? "+" : ""}
-                              {diff.toFixed(0)} pts
-                            </span>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-
-            })()}
-
-
+          <Panel title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")} description={t("Distribución ideal de tu ingreso", "Ideal income distribution")}>
+            <div className="space-y-3 text-sm">
+              <Row label={t("Necesidades", "Needs")} value={needsAmount} total={totalIncome} target={40} fmt={fmt} />
+              <Row label={t("Inversiones", "Investing")} value={saveAmount} total={totalIncome} target={40} fmt={fmt} goodWhenHigher />
+              <Row label={t("Deseos", "Wants")} value={wantsAmount} total={totalIncome} target={20} fmt={fmt} />
+            </div>
           </Panel>
           <Panel title={t("Runway", "Runway")} description={t("Meses cubiertos con tu efectivo", "Months covered with your cash")}>
             <p className="numeric text-4xl font-semibold text-primary">{runway.toFixed(1)}</p>
@@ -479,7 +336,7 @@ function CashFlow() {
               {t("Con", "With")} {money(cash, d.currency)} {t("en efectivo y un gasto de", "in cash and a spend of")} {fmt(monthlySpend)} {t("al mes.", "per month.")}
             </p>
           </Panel>
-          <Panel title={t("Eficiencia del flujo", "Flow efficiency")}>
+          <Panel title={t("Eficiencia del flujo", "Flow efficiency")} description={t("Patrimonio construido cada mes", "Net worth built each month")}>
             <p className="numeric text-4xl font-semibold">
               {totalIncome > 0 ? ((saveAmount / totalIncome) * 100).toFixed(0) : "0"}%
             </p>
