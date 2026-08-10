@@ -23,15 +23,20 @@ export function TopCitiesPanel({
 }) {
   const t = useT();
   const filters = useMemo(() => suggestedFilters(profile), [profile]);
-  const top = useMemo(
-    () =>
-      rankCities(filters, {
-        netWorth,
-        age: profile.age ?? 30,
-        expectedReturn: profile.expected_return || 7,
-      }).slice(0, 3),
-    [filters, netWorth, profile.age, profile.expected_return],
-  );
+  const top = useMemo(() => {
+    const ranked = rankCities(filters, {
+      netWorth,
+      age: profile.age ?? 30,
+      expectedReturn: profile.expected_return || 7,
+    });
+    // Tus dos ciudades elegidas van fijas; la tercera la decide tu perfil.
+    const pinned = ["madrid", "panama"]
+      .map((id) => ranked.find((r) => r.city.id === id))
+      .filter((r): r is (typeof ranked)[number] => Boolean(r));
+    const rest = ranked.filter((r) => !pinned.some((p) => p.city.id === r.city.id));
+    return [...pinned, ...rest].slice(0, 3);
+  }, [filters, netWorth, profile.age, profile.expected_return]);
+
 
   if (top.length === 0) return null;
 
