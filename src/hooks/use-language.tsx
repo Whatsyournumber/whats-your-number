@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
+import { detectLang } from "@/lib/geo";
+
 export type Lang = "es" | "en";
 
 const STORAGE_KEY = "yn.lang";
@@ -66,7 +68,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const stored = window.localStorage.getItem(STORAGE_KEY);
-    if (stored === "en" || stored === "es") setLangState(stored);
+    if (stored === "en" || stored === "es") {
+      setLangState(stored);
+      return;
+    }
+    setLangState(detectLang());
   }, []);
 
   const setLang = (next: Lang) => {

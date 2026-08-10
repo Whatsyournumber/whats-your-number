@@ -46,6 +46,7 @@ import {
   currencies,
 } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
+import { detectCurrency } from "@/lib/geo";
 import { useT } from "@/hooks/use-language";
 
 const GOALS_EN: Record<string, string> = {
@@ -142,7 +143,7 @@ function OnboardingPage() {
   const t = useT();
   const [step, setStep] = useState(1);
 
-  const [data, setData] = useState<OnboardingData>({ ...emptyOnboarding, currency: "EUR", monthly_expenses: 0 });
+  const [data, setData] = useState<OnboardingData>({ ...emptyOnboarding, currency: detectCurrency(), monthly_expenses: 0 });
   const [life, setLife] = useState<LifeData>(emptyLife);
   const [ready, setReady] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -165,7 +166,7 @@ function OnboardingPage() {
       if (!alive) return;
       if (row) {
         const r = row as Record<string, unknown>;
-        const next = { ...emptyOnboarding, currency: "EUR" };
+        const next = { ...emptyOnboarding, currency: detectCurrency() };
         for (const key of Object.keys(emptyOnboarding) as (keyof OnboardingData)[]) {
           const v = r[key];
           if (v !== null && v !== undefined) (next as Record<string, unknown>)[key] = typeof v === "string" ? v : Number(v);
@@ -226,7 +227,7 @@ function OnboardingPage() {
     () => buildPlan({ ...data, desired_retirement_income: desiredIncome }),
     [data, desiredIncome],
   );
-  const cur = data.currency || "EUR";
+  const cur = data.currency || detectCurrency();
 
   const go = (dir: 1 | -1) => {
     const next = Math.min(SUMMARY_STEP, Math.max(1, step + dir));

@@ -3,13 +3,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { emptyLife, emptyOnboarding, type LifeData, type OnboardingData } from "@/lib/onboarding";
+import { detectCurrency } from "@/lib/geo";
 
 export type Profile = OnboardingData & LifeData & { completed: boolean };
 
 const empty: Profile = { ...emptyOnboarding, ...emptyLife, completed: false };
 
 function rowToProfile(row: Record<string, unknown> | null): Profile {
-  const next: Profile = { ...empty, currency: "EUR" };
+  const next: Profile = { ...empty, currency: detectCurrency() };
   if (!row) return next;
   for (const key of Object.keys(emptyOnboarding) as (keyof OnboardingData)[]) {
     const v = row[key];
