@@ -863,7 +863,7 @@ function CityDetail({
               <DialogTitle className="text-2xl">{c.name}</DialogTitle>
             </DialogHeader>
             <p className="text-sm text-muted-foreground">
-              {c.country} · Your North Score {r.north.total}/100
+              {c.country} · Your next city {r.north.total}/100
             </p>
           </div>
         </div>
@@ -928,7 +928,7 @@ function CityDetail({
 
           <div>
             <div className="mb-3 flex items-baseline justify-between gap-3">
-              <p className="text-sm font-semibold">Your North Score</p>
+              <p className="text-sm font-semibold">Your next city</p>
               <p className="numeric text-sm">
                 <span className="text-lg font-semibold text-primary">{r.north.total}</span>
                 <span className="text-muted-foreground">/100</span>
