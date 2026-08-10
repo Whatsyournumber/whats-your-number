@@ -223,7 +223,7 @@ export function ProductPreview() {
               transition={{ duration: 0.28 }}
             >
               <p className="numeric mt-1 text-3xl font-semibold tracking-tight">{kpi.kpi}</p>
-              <p className={cn("mt-1 text-xs", active === "gastos" || active === "lifeplanner" ? "text-primary" : "text-positive")}>
+              <p className={cn("mt-1 text-xs", active === "gastos" ? "text-primary" : "text-positive")}>
                 {kpi.delta}
               </p>
 
