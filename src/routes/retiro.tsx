@@ -85,13 +85,16 @@ function Retiro() {
       <PageHeader eyebrow={t("Largo plazo", "Long term")} title="WhatsYournumber" subtitle={t("Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar.", "How much you have today and how much you will have when you stop working.")} />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <KpiCard
-          label={t("Cuánto tengo", "How much I have")}
-          value={fmt(investable)}
-          hint={t("Sin contar propiedades — solo activos que generan retorno", "Excluding properties — only assets that generate returns")}
-          accent
-          index={0}
-        />
+        <Link to="/portafolio" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
+          <KpiCard
+            label={t("Cuánto tengo", "How much I have")}
+            value={fmt(investable)}
+            hint={t("Sin contar propiedades — solo activos que generan retorno", "Excluding properties — only assets that generate returns")}
+            accent
+            index={0}
+          />
+        </Link>
+
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
