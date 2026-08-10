@@ -177,7 +177,7 @@ function Pricing() {
               {t("Anual", "Yearly")}
             </button>
             <span className="rounded-full bg-positive px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-positive-foreground">
-              -20%
+              {t("Ahorra", "Save")}
             </span>
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
