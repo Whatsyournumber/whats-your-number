@@ -210,9 +210,9 @@ function Pricing() {
                 )}
                 <div className="flex items-start justify-between gap-2">
                   <h2 className="text-sm font-semibold">{plan.name}</h2>
-                  {isYearly && plan.monthlyPrice > 0 && (
+                  {isYearly && plan.yearlyDiscount > 0 && (
                     <span className="rounded-full border border-positive/30 bg-positive/10 px-2 py-0.5 text-[10px] font-semibold text-positive">
-                      {t("Ahorras 20%", "Save 20%")}
+                      {t(`Ahorras ${Math.round(plan.yearlyDiscount * 100)}%`, `Save ${Math.round(plan.yearlyDiscount * 100)}%`)}
                     </span>
                   )}
                 </div>
