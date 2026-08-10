@@ -118,7 +118,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "barcelona", name: "Barcelona", country: "España", photo: PHOTO.barcelona, region: "europe",
     climate: "beach", climateLabelEs: "Mediterráneo", climateLabelEn: "Mediterranean",
-    housing: 1450, food: 520, transport: 60, healthcare: 90, education: 260, internet: 35, entertainment: 380,
+    housing: 1350, food: 520, transport: 60, healthcare: 90, education: 260, internet: 35, entertainment: 380,
     avgSalary: 2450, taxRate: 32,
     safety: 72, healthcareScore: 86, qualityOfLife: 85, purchasingPower: 63, walkability: 93, publicTransport: 88,
     airQuality: 66, greenSpaces: 70, internetSpeed: 190, englishFriendly: 66, remoteWork: 88, nightlife: 92,
@@ -127,7 +127,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "madrid", name: "Madrid", country: "España", photo: PHOTO.madrid, region: "europe",
     climate: "temperate", climateLabelEs: "Continental seco", climateLabelEn: "Dry continental",
-    housing: 1400, food: 500, transport: 55, healthcare: 85, education: 250, internet: 33, entertainment: 360,
+    housing: 1300, food: 500, transport: 55, healthcare: 85, education: 250, internet: 33, entertainment: 360,
     avgSalary: 2550, taxRate: 32,
     safety: 76, healthcareScore: 87, qualityOfLife: 84, purchasingPower: 66, walkability: 90, publicTransport: 93,
     airQuality: 68, greenSpaces: 74, internetSpeed: 210, englishFriendly: 60, remoteWork: 84, nightlife: 94,
@@ -136,7 +136,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "valencia", name: "Valencia", country: "España", photo: PHOTO.valencia, region: "europe",
     climate: "beach", climateLabelEs: "Mediterráneo cálido", climateLabelEn: "Warm Mediterranean",
-    housing: 1000, food: 430, transport: 45, healthcare: 80, education: 210, internet: 30, entertainment: 290,
+    housing: 950, food: 430, transport: 45, healthcare: 80, education: 210, internet: 30, entertainment: 290,
     avgSalary: 2050, taxRate: 30,
     safety: 82, healthcareScore: 85, qualityOfLife: 88, purchasingPower: 64, walkability: 92, publicTransport: 82,
     airQuality: 74, greenSpaces: 84, internetSpeed: 200, englishFriendly: 55, remoteWork: 86, nightlife: 78,
@@ -145,7 +145,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "lisbon", name: "Lisboa", country: "Portugal", photo: PHOTO.lisbon, region: "europe",
     climate: "beach", climateLabelEs: "Atlántico templado", climateLabelEn: "Mild Atlantic",
-    housing: 1350, food: 470, transport: 45, healthcare: 85, education: 300, internet: 33, entertainment: 320,
+    housing: 1400, food: 470, transport: 45, healthcare: 85, education: 300, internet: 33, entertainment: 320,
     avgSalary: 1750, taxRate: 34,
     safety: 80, healthcareScore: 78, qualityOfLife: 82, purchasingPower: 52, walkability: 85, publicTransport: 78,
     airQuality: 72, greenSpaces: 66, internetSpeed: 180, englishFriendly: 82, remoteWork: 92, nightlife: 86,
@@ -154,7 +154,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "london", name: "Londres", country: "Reino Unido", photo: PHOTO.london, region: "europe",
     climate: "cold", climateLabelEs: "Oceánico fresco", climateLabelEn: "Cool oceanic",
-    housing: 2650, food: 620, transport: 200, healthcare: 90, education: 620, internet: 35, entertainment: 520,
+    housing: 2600, food: 620, transport: 200, healthcare: 90, education: 620, internet: 35, entertainment: 520,
     avgSalary: 4100, taxRate: 33,
     safety: 62, healthcareScore: 80, qualityOfLife: 78, purchasingPower: 72, walkability: 88, publicTransport: 95,
     airQuality: 60, greenSpaces: 80, internetSpeed: 150, englishFriendly: 100, remoteWork: 84, nightlife: 95,
@@ -163,7 +163,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "dubai", name: "Dubái", country: "Emiratos Árabes", photo: PHOTO.dubai, region: "asia",
     climate: "warm", climateLabelEs: "Desértico cálido", climateLabelEn: "Hot desert",
-    housing: 2300, food: 560, transport: 150, healthcare: 220, education: 750, internet: 90, entertainment: 480,
+    housing: 2250, food: 560, transport: 150, healthcare: 220, education: 750, internet: 90, entertainment: 480,
     avgSalary: 4600, taxRate: 0,
     safety: 92, healthcareScore: 82, qualityOfLife: 76, purchasingPower: 86, walkability: 45, publicTransport: 70,
     airQuality: 45, greenSpaces: 40, internetSpeed: 240, englishFriendly: 92, remoteWork: 82, nightlife: 78,
@@ -172,7 +172,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "singapore", name: "Singapur", country: "Singapur", photo: PHOTO.singapore, region: "asia",
     climate: "warm", climateLabelEs: "Tropical húmedo", climateLabelEn: "Humid tropical",
-    housing: 2900, food: 600, transport: 90, healthcare: 200, education: 800, internet: 40, entertainment: 500,
+    housing: 3100, food: 600, transport: 90, healthcare: 200, education: 800, internet: 40, entertainment: 500,
     avgSalary: 4900, taxRate: 15,
     safety: 97, healthcareScore: 95, qualityOfLife: 86, purchasingPower: 82, walkability: 82, publicTransport: 96,
     airQuality: 62, greenSpaces: 88, internetSpeed: 300, englishFriendly: 96, remoteWork: 80, nightlife: 74,
@@ -181,7 +181,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "tokyo", name: "Tokio", country: "Japón", photo: PHOTO.tokyo, region: "asia",
     climate: "temperate", climateLabelEs: "Templado húmedo", climateLabelEn: "Humid temperate",
-    housing: 1550, food: 470, transport: 110, healthcare: 120, education: 420, internet: 40, entertainment: 380,
+    housing: 1150, food: 470, transport: 110, healthcare: 120, education: 420, internet: 40, entertainment: 380,
     avgSalary: 2700, taxRate: 30,
     safety: 95, healthcareScore: 92, qualityOfLife: 85, purchasingPower: 62, walkability: 90, publicTransport: 99,
     airQuality: 76, greenSpaces: 62, internetSpeed: 230, englishFriendly: 38, remoteWork: 66, nightlife: 90,
@@ -190,7 +190,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "bangkok", name: "Bangkok", country: "Tailandia", photo: PHOTO.bangkok, region: "asia",
     climate: "warm", climateLabelEs: "Tropical", climateLabelEn: "Tropical",
-    housing: 750, food: 320, transport: 60, healthcare: 90, education: 500, internet: 20, entertainment: 250,
+    housing: 700, food: 320, transport: 60, healthcare: 90, education: 500, internet: 20, entertainment: 250,
     avgSalary: 1150, taxRate: 18,
     safety: 66, healthcareScore: 80, qualityOfLife: 70, purchasingPower: 44, walkability: 58, publicTransport: 74,
     airQuality: 38, greenSpaces: 46, internetSpeed: 230, englishFriendly: 52, remoteWork: 90, nightlife: 92,
@@ -199,7 +199,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "miami", name: "Miami", country: "Estados Unidos", photo: PHOTO.miami, region: "northamerica",
     climate: "beach", climateLabelEs: "Subtropical cálido", climateLabelEn: "Warm subtropical",
-    housing: 2450, food: 620, transport: 220, healthcare: 420, education: 900, internet: 70, entertainment: 520,
+    housing: 2600, food: 620, transport: 220, healthcare: 420, education: 900, internet: 70, entertainment: 520,
     avgSalary: 4300, taxRate: 24,
     safety: 55, healthcareScore: 76, qualityOfLife: 74, purchasingPower: 78, walkability: 60, publicTransport: 48,
     airQuality: 70, greenSpaces: 58, internetSpeed: 220, englishFriendly: 96, remoteWork: 86, nightlife: 90,
@@ -208,7 +208,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "newyork", name: "Nueva York", country: "Estados Unidos", photo: PHOTO.newyork, region: "northamerica",
     climate: "cold", climateLabelEs: "Continental", climateLabelEn: "Continental",
-    housing: 3400, food: 750, transport: 135, healthcare: 480, education: 1100, internet: 65, entertainment: 640,
+    housing: 3900, food: 750, transport: 135, healthcare: 480, education: 1100, internet: 65, entertainment: 640,
     avgSalary: 5600, taxRate: 34,
     safety: 58, healthcareScore: 80, qualityOfLife: 74, purchasingPower: 80, walkability: 96, publicTransport: 92,
     airQuality: 62, greenSpaces: 64, internetSpeed: 220, englishFriendly: 100, remoteWork: 82, nightlife: 98,
@@ -217,7 +217,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "sydney", name: "Sídney", country: "Australia", photo: PHOTO.sydney, region: "asia",
     climate: "beach", climateLabelEs: "Oceánico cálido", climateLabelEn: "Warm oceanic",
-    housing: 2400, food: 620, transport: 150, healthcare: 180, education: 700, internet: 60, entertainment: 480,
+    housing: 2500, food: 620, transport: 150, healthcare: 180, education: 700, internet: 60, entertainment: 480,
     avgSalary: 4200, taxRate: 30,
     safety: 80, healthcareScore: 88, qualityOfLife: 88, purchasingPower: 78, walkability: 74, publicTransport: 78,
     airQuality: 84, greenSpaces: 86, internetSpeed: 110, englishFriendly: 100, remoteWork: 78, nightlife: 80,
@@ -226,7 +226,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "vancouver", name: "Vancouver", country: "Canadá", photo: PHOTO.vancouver, region: "northamerica",
     climate: "cold", climateLabelEs: "Oceánico lluvioso", climateLabelEn: "Rainy oceanic",
-    housing: 2150, food: 560, transport: 100, healthcare: 90, education: 500, internet: 60, entertainment: 400,
+    housing: 2100, food: 560, transport: 100, healthcare: 90, education: 500, internet: 60, entertainment: 400,
     avgSalary: 3500, taxRate: 31,
     safety: 78, healthcareScore: 86, qualityOfLife: 87, purchasingPower: 68, walkability: 80, publicTransport: 82,
     airQuality: 88, greenSpaces: 94, internetSpeed: 180, englishFriendly: 100, remoteWork: 82, nightlife: 68,
@@ -235,7 +235,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "zurich", name: "Zúrich", country: "Suiza", photo: PHOTO.zurich, region: "europe",
     climate: "cold", climateLabelEs: "Alpino templado", climateLabelEn: "Temperate alpine",
-    housing: 2500, food: 780, transport: 90, healthcare: 420, education: 400, internet: 55, entertainment: 520,
+    housing: 2450, food: 780, transport: 90, healthcare: 420, education: 400, internet: 55, entertainment: 520,
     avgSalary: 7200, taxRate: 22,
     safety: 94, healthcareScore: 96, qualityOfLife: 94, purchasingPower: 100, walkability: 86, publicTransport: 97,
     airQuality: 88, greenSpaces: 86, internetSpeed: 240, englishFriendly: 84, remoteWork: 74, nightlife: 62,
@@ -244,7 +244,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "amsterdam", name: "Ámsterdam", country: "Países Bajos", photo: PHOTO.amsterdam, region: "europe",
     climate: "cold", climateLabelEs: "Oceánico fresco", climateLabelEn: "Cool oceanic",
-    housing: 2100, food: 560, transport: 100, healthcare: 160, education: 450, internet: 45, entertainment: 430,
+    housing: 2050, food: 560, transport: 100, healthcare: 160, education: 450, internet: 45, entertainment: 430,
     avgSalary: 3600, taxRate: 37,
     safety: 84, healthcareScore: 90, qualityOfLife: 89, purchasingPower: 72, walkability: 97, publicTransport: 92,
     airQuality: 78, greenSpaces: 76, internetSpeed: 200, englishFriendly: 96, remoteWork: 88, nightlife: 88,
@@ -253,7 +253,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "copenhagen", name: "Copenhague", country: "Dinamarca", photo: PHOTO.copenhagen, region: "europe",
     climate: "cold", climateLabelEs: "Nórdico templado", climateLabelEn: "Mild Nordic",
-    housing: 2000, food: 600, transport: 90, healthcare: 80, education: 350, internet: 40, entertainment: 430,
+    housing: 1550, food: 600, transport: 90, healthcare: 80, education: 350, internet: 40, entertainment: 430,
     avgSalary: 4200, taxRate: 45,
     safety: 92, healthcareScore: 92, qualityOfLife: 95, purchasingPower: 76, walkability: 96, publicTransport: 92,
     airQuality: 90, greenSpaces: 88, internetSpeed: 230, englishFriendly: 96, remoteWork: 82, nightlife: 76,
@@ -262,7 +262,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "bali", name: "Bali", country: "Indonesia", photo: PHOTO.bali, region: "asia",
     climate: "beach", climateLabelEs: "Tropical de playa", climateLabelEn: "Tropical beach",
-    housing: 700, food: 300, transport: 70, healthcare: 90, education: 600, internet: 35, entertainment: 260,
+    housing: 650, food: 300, transport: 70, healthcare: 90, education: 600, internet: 35, entertainment: 260,
     avgSalary: 850, taxRate: 15,
     safety: 72, healthcareScore: 58, qualityOfLife: 74, purchasingPower: 36, walkability: 40, publicTransport: 28,
     airQuality: 66, greenSpaces: 92, internetSpeed: 90, englishFriendly: 74, remoteWork: 94, nightlife: 78,
@@ -271,7 +271,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "medellin", name: "Medellín", country: "Colombia", photo: PHOTO.medellin, region: "latam",
     climate: "warm", climateLabelEs: "Primavera eterna", climateLabelEn: "Eternal spring",
-    housing: 700, food: 320, transport: 55, healthcare: 70, education: 350, internet: 25, entertainment: 240,
+    housing: 550, food: 320, transport: 55, healthcare: 70, education: 350, internet: 25, entertainment: 240,
     avgSalary: 900, taxRate: 19,
     safety: 52, healthcareScore: 74, qualityOfLife: 72, purchasingPower: 34, walkability: 66, publicTransport: 80,
     airQuality: 54, greenSpaces: 72, internetSpeed: 130, englishFriendly: 42, remoteWork: 88, nightlife: 88,
@@ -280,7 +280,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "mexico", name: "Ciudad de México", country: "México", photo: PHOTO.mexico, region: "latam",
     climate: "temperate", climateLabelEs: "Templado de altura", climateLabelEn: "Highland temperate",
-    housing: 900, food: 380, transport: 60, healthcare: 90, education: 400, internet: 30, entertainment: 300,
+    housing: 850, food: 380, transport: 60, healthcare: 90, education: 400, internet: 30, entertainment: 300,
     avgSalary: 1100, taxRate: 20,
     safety: 48, healthcareScore: 70, qualityOfLife: 70, purchasingPower: 38, walkability: 72, publicTransport: 74,
     airQuality: 44, greenSpaces: 62, internetSpeed: 120, englishFriendly: 46, remoteWork: 86, nightlife: 92,
@@ -289,7 +289,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "buenosaires", name: "Buenos Aires", country: "Argentina", photo: PHOTO.buenosaires, region: "latam",
     climate: "temperate", climateLabelEs: "Templado húmedo", climateLabelEn: "Humid temperate",
-    housing: 650, food: 330, transport: 35, healthcare: 80, education: 320, internet: 25, entertainment: 250,
+    housing: 600, food: 330, transport: 35, healthcare: 80, education: 320, internet: 25, entertainment: 250,
     avgSalary: 800, taxRate: 22,
     safety: 54, healthcareScore: 74, qualityOfLife: 72, purchasingPower: 32, walkability: 88, publicTransport: 82,
     airQuality: 62, greenSpaces: 68, internetSpeed: 110, englishFriendly: 52, remoteWork: 84, nightlife: 96,
@@ -298,7 +298,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "panama", name: "Ciudad de Panamá", country: "Panamá", photo: PHOTO.panama, region: "latam",
     climate: "warm", climateLabelEs: "Tropical húmedo", climateLabelEn: "Humid tropical",
-    housing: 1150, food: 450, transport: 70, healthcare: 130, education: 600, internet: 45, entertainment: 320,
+    housing: 1000, food: 450, transport: 70, healthcare: 130, education: 600, internet: 45, entertainment: 320,
     avgSalary: 1500, taxRate: 15,
     safety: 62, healthcareScore: 76, qualityOfLife: 74, purchasingPower: 48, walkability: 60, publicTransport: 62,
     airQuality: 64, greenSpaces: 70, internetSpeed: 140, englishFriendly: 66, remoteWork: 84, nightlife: 78,
@@ -307,7 +307,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "capetown", name: "Ciudad del Cabo", country: "Sudáfrica", photo: PHOTO.capetown, region: "africa",
     climate: "beach", climateLabelEs: "Mediterráneo costero", climateLabelEn: "Coastal Mediterranean",
-    housing: 850, food: 350, transport: 90, healthcare: 110, education: 400, internet: 40, entertainment: 280,
+    housing: 800, food: 350, transport: 90, healthcare: 110, education: 400, internet: 40, entertainment: 280,
     avgSalary: 1350, taxRate: 26,
     safety: 38, healthcareScore: 68, qualityOfLife: 74, purchasingPower: 42, walkability: 52, publicTransport: 40,
     airQuality: 76, greenSpaces: 90, internetSpeed: 90, englishFriendly: 96, remoteWork: 80, nightlife: 80,
@@ -316,7 +316,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "marrakech", name: "Marrakech", country: "Marruecos", photo: PHOTO.marrakech, region: "africa",
     climate: "warm", climateLabelEs: "Semiárido cálido", climateLabelEn: "Hot semi-arid",
-    housing: 520, food: 260, transport: 40, healthcare: 70, education: 350, internet: 25, entertainment: 200,
+    housing: 450, food: 260, transport: 40, healthcare: 70, education: 350, internet: 25, entertainment: 200,
     avgSalary: 650, taxRate: 20,
     safety: 62, healthcareScore: 58, qualityOfLife: 66, purchasingPower: 28, walkability: 74, publicTransport: 46,
     airQuality: 58, greenSpaces: 50, internetSpeed: 70, englishFriendly: 40, remoteWork: 76, nightlife: 60,
@@ -325,7 +325,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "berlin", name: "Berlín", country: "Alemania", photo: PHOTO.berlin, region: "europe",
     climate: "cold", climateLabelEs: "Continental fresco", climateLabelEn: "Cool continental",
-    housing: 1500, food: 500, transport: 60, healthcare: 250, education: 300, internet: 40, entertainment: 380,
+    housing: 1300, food: 500, transport: 60, healthcare: 250, education: 300, internet: 40, entertainment: 380,
     avgSalary: 3200, taxRate: 39,
     safety: 74, healthcareScore: 90, qualityOfLife: 84, purchasingPower: 70, walkability: 90, publicTransport: 94,
     airQuality: 74, greenSpaces: 84, internetSpeed: 130, englishFriendly: 80, remoteWork: 88, nightlife: 96,
@@ -334,7 +334,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "paris", name: "París", country: "Francia", photo: PHOTO.paris, region: "europe",
     climate: "temperate", climateLabelEs: "Oceánico templado", climateLabelEn: "Mild oceanic",
-    housing: 2100, food: 600, transport: 90, healthcare: 120, education: 400, internet: 35, entertainment: 480,
+    housing: 1450, food: 600, transport: 90, healthcare: 120, education: 400, internet: 35, entertainment: 480,
     avgSalary: 3100, taxRate: 38,
     safety: 60, healthcareScore: 92, qualityOfLife: 80, purchasingPower: 64, walkability: 96, publicTransport: 94,
     airQuality: 62, greenSpaces: 66, internetSpeed: 220, englishFriendly: 62, remoteWork: 78, nightlife: 92,
@@ -343,7 +343,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "milan", name: "Milán", country: "Italia", photo: PHOTO.milan, region: "europe",
     climate: "temperate", climateLabelEs: "Continental húmedo", climateLabelEn: "Humid continental",
-    housing: 1550, food: 520, transport: 60, healthcare: 110, education: 350, internet: 30, entertainment: 400,
+    housing: 1300, food: 520, transport: 60, healthcare: 110, education: 350, internet: 30, entertainment: 400,
     avgSalary: 2400, taxRate: 36,
     safety: 62, healthcareScore: 84, qualityOfLife: 78, purchasingPower: 58, walkability: 90, publicTransport: 88,
     airQuality: 48, greenSpaces: 62, internetSpeed: 150, englishFriendly: 60, remoteWork: 76, nightlife: 88,
@@ -352,7 +352,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "rome", name: "Roma", country: "Italia", photo: PHOTO.rome, region: "europe",
     climate: "beach", climateLabelEs: "Mediterráneo", climateLabelEn: "Mediterranean",
-    housing: 1250, food: 470, transport: 45, healthcare: 100, education: 320, internet: 30, entertainment: 350,
+    housing: 1050, food: 470, transport: 45, healthcare: 100, education: 320, internet: 30, entertainment: 350,
     avgSalary: 2050, taxRate: 35,
     safety: 62, healthcareScore: 82, qualityOfLife: 76, purchasingPower: 54, walkability: 88, publicTransport: 66,
     airQuality: 58, greenSpaces: 74, internetSpeed: 140, englishFriendly: 56, remoteWork: 76, nightlife: 86,
@@ -370,7 +370,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "prague", name: "Praga", country: "Chequia", photo: PHOTO.prague, region: "europe",
     climate: "cold", climateLabelEs: "Continental fresco", climateLabelEn: "Cool continental",
-    housing: 1050, food: 400, transport: 30, healthcare: 90, education: 280, internet: 28, entertainment: 280,
+    housing: 1200, food: 400, transport: 30, healthcare: 90, education: 280, internet: 28, entertainment: 280,
     avgSalary: 1700, taxRate: 28,
     safety: 84, healthcareScore: 84, qualityOfLife: 84, purchasingPower: 56, walkability: 92, publicTransport: 94,
     airQuality: 68, greenSpaces: 78, internetSpeed: 160, englishFriendly: 68, remoteWork: 84, nightlife: 88,
@@ -379,7 +379,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "warsaw", name: "Varsovia", country: "Polonia", photo: PHOTO.warsaw, region: "europe",
     climate: "cold", climateLabelEs: "Continental frío", climateLabelEn: "Cold continental",
-    housing: 950, food: 380, transport: 30, healthcare: 80, education: 250, internet: 20, entertainment: 250,
+    housing: 1000, food: 380, transport: 30, healthcare: 80, education: 250, internet: 20, entertainment: 250,
     avgSalary: 1650, taxRate: 27,
     safety: 82, healthcareScore: 78, qualityOfLife: 80, purchasingPower: 56, walkability: 84, publicTransport: 90,
     airQuality: 60, greenSpaces: 78, internetSpeed: 200, englishFriendly: 70, remoteWork: 86, nightlife: 80,
@@ -388,7 +388,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "athens", name: "Atenas", country: "Grecia", photo: PHOTO.athens, region: "europe",
     climate: "beach", climateLabelEs: "Mediterráneo seco", climateLabelEn: "Dry Mediterranean",
-    housing: 800, food: 380, transport: 35, healthcare: 80, education: 250, internet: 30, entertainment: 260,
+    housing: 650, food: 380, transport: 35, healthcare: 80, education: 250, internet: 30, entertainment: 260,
     avgSalary: 1150, taxRate: 33,
     safety: 66, healthcareScore: 74, qualityOfLife: 74, purchasingPower: 42, walkability: 86, publicTransport: 74,
     airQuality: 60, greenSpaces: 54, internetSpeed: 110, englishFriendly: 74, remoteWork: 84, nightlife: 88,
@@ -397,7 +397,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "toronto", name: "Toronto", country: "Canadá", photo: PHOTO.toronto, region: "northamerica",
     climate: "cold", climateLabelEs: "Continental frío", climateLabelEn: "Cold continental",
-    housing: 2050, food: 560, transport: 110, healthcare: 90, education: 520, internet: 60, entertainment: 400,
+    housing: 1900, food: 560, transport: 110, healthcare: 90, education: 520, internet: 60, entertainment: 400,
     avgSalary: 3400, taxRate: 32,
     safety: 74, healthcareScore: 84, qualityOfLife: 84, purchasingPower: 66, walkability: 84, publicTransport: 84,
     airQuality: 80, greenSpaces: 76, internetSpeed: 180, englishFriendly: 100, remoteWork: 84, nightlife: 82,
@@ -406,7 +406,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "austin", name: "Austin", country: "Estados Unidos", photo: PHOTO.austin, region: "northamerica",
     climate: "warm", climateLabelEs: "Subtropical seco", climateLabelEn: "Dry subtropical",
-    housing: 1850, food: 560, transport: 200, healthcare: 400, education: 800, internet: 70, entertainment: 430,
+    housing: 1600, food: 560, transport: 200, healthcare: 400, education: 800, internet: 70, entertainment: 430,
     avgSalary: 4700, taxRate: 22,
     safety: 68, healthcareScore: 78, qualityOfLife: 80, purchasingPower: 86, walkability: 52, publicTransport: 42,
     airQuality: 76, greenSpaces: 74, internetSpeed: 260, englishFriendly: 100, remoteWork: 90, nightlife: 88,
@@ -415,7 +415,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "chicago", name: "Chicago", country: "Estados Unidos", photo: PHOTO.chicago, region: "northamerica",
     climate: "cold", climateLabelEs: "Continental ventoso", climateLabelEn: "Windy continental",
-    housing: 1900, food: 580, transport: 110, healthcare: 420, education: 850, internet: 65, entertainment: 450,
+    housing: 2000, food: 580, transport: 110, healthcare: 420, education: 850, internet: 65, entertainment: 450,
     avgSalary: 4500, taxRate: 30,
     safety: 54, healthcareScore: 82, qualityOfLife: 76, purchasingPower: 80, walkability: 88, publicTransport: 84,
     airQuality: 68, greenSpaces: 72, internetSpeed: 230, englishFriendly: 100, remoteWork: 84, nightlife: 92,
@@ -424,7 +424,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "sanfrancisco", name: "San Francisco", country: "Estados Unidos", photo: PHOTO.sanfrancisco, region: "northamerica",
     climate: "temperate", climateLabelEs: "Mediterráneo fresco", climateLabelEn: "Cool Mediterranean",
-    housing: 3300, food: 780, transport: 130, healthcare: 500, education: 1200, internet: 75, entertainment: 620,
+    housing: 3100, food: 780, transport: 130, healthcare: 500, education: 1200, internet: 75, entertainment: 620,
     avgSalary: 7000, taxRate: 36,
     safety: 50, healthcareScore: 84, qualityOfLife: 76, purchasingPower: 92, walkability: 90, publicTransport: 80,
     airQuality: 76, greenSpaces: 74, internetSpeed: 280, englishFriendly: 100, remoteWork: 94, nightlife: 84,
@@ -433,7 +433,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "santiago", name: "Santiago", country: "Chile", photo: PHOTO.santiago, region: "latam",
     climate: "temperate", climateLabelEs: "Mediterráneo andino", climateLabelEn: "Andean Mediterranean",
-    housing: 850, food: 380, transport: 50, healthcare: 110, education: 420, internet: 30, entertainment: 280,
+    housing: 650, food: 380, transport: 50, healthcare: 110, education: 420, internet: 30, entertainment: 280,
     avgSalary: 1250, taxRate: 22,
     safety: 54, healthcareScore: 78, qualityOfLife: 74, purchasingPower: 42, walkability: 76, publicTransport: 84,
     airQuality: 46, greenSpaces: 62, internetSpeed: 250, englishFriendly: 46, remoteWork: 84, nightlife: 80,
@@ -442,7 +442,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "lima", name: "Lima", country: "Perú", photo: PHOTO.lima, region: "latam",
     climate: "temperate", climateLabelEs: "Costero desértico", climateLabelEn: "Coastal desert",
-    housing: 700, food: 320, transport: 45, healthcare: 90, education: 350, internet: 25, entertainment: 240,
+    housing: 550, food: 320, transport: 45, healthcare: 90, education: 350, internet: 25, entertainment: 240,
     avgSalary: 850, taxRate: 18,
     safety: 44, healthcareScore: 66, qualityOfLife: 66, purchasingPower: 32, walkability: 70, publicTransport: 56,
     airQuality: 50, greenSpaces: 54, internetSpeed: 130, englishFriendly: 42, remoteWork: 80, nightlife: 82,
@@ -451,7 +451,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "saopaulo", name: "São Paulo", country: "Brasil", photo: PHOTO.saopaulo, region: "latam",
     climate: "temperate", climateLabelEs: "Subtropical húmedo", climateLabelEn: "Humid subtropical",
-    housing: 850, food: 400, transport: 60, healthcare: 130, education: 450, internet: 30, entertainment: 300,
+    housing: 700, food: 400, transport: 60, healthcare: 130, education: 450, internet: 30, entertainment: 300,
     avgSalary: 1200, taxRate: 25,
     safety: 46, healthcareScore: 74, qualityOfLife: 70, purchasingPower: 38, walkability: 78, publicTransport: 78,
     airQuality: 54, greenSpaces: 58, internetSpeed: 230, englishFriendly: 44, remoteWork: 86, nightlife: 94,
@@ -460,7 +460,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "rio", name: "Río de Janeiro", country: "Brasil", photo: PHOTO.rio, region: "latam",
     climate: "beach", climateLabelEs: "Tropical de playa", climateLabelEn: "Tropical beach",
-    housing: 700, food: 370, transport: 55, healthcare: 120, education: 420, internet: 30, entertainment: 290,
+    housing: 650, food: 370, transport: 55, healthcare: 120, education: 420, internet: 30, entertainment: 290,
     avgSalary: 1000, taxRate: 25,
     safety: 36, healthcareScore: 70, qualityOfLife: 70, purchasingPower: 34, walkability: 76, publicTransport: 62,
     airQuality: 64, greenSpaces: 84, internetSpeed: 200, englishFriendly: 44, remoteWork: 84, nightlife: 94,
@@ -469,7 +469,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "bogota", name: "Bogotá", country: "Colombia", photo: PHOTO.bogota, region: "latam",
     climate: "temperate", climateLabelEs: "Andino fresco", climateLabelEn: "Cool Andean",
-    housing: 650, food: 300, transport: 45, healthcare: 70, education: 350, internet: 25, entertainment: 230,
+    housing: 550, food: 300, transport: 45, healthcare: 70, education: 350, internet: 25, entertainment: 230,
     avgSalary: 900, taxRate: 19,
     safety: 42, healthcareScore: 74, qualityOfLife: 66, purchasingPower: 32, walkability: 72, publicTransport: 66,
     airQuality: 50, greenSpaces: 66, internetSpeed: 140, englishFriendly: 44, remoteWork: 84, nightlife: 86,
@@ -478,7 +478,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "montevideo", name: "Montevideo", country: "Uruguay", photo: PHOTO.montevideo, region: "latam",
     climate: "beach", climateLabelEs: "Templado costero", climateLabelEn: "Coastal temperate",
-    housing: 800, food: 400, transport: 45, healthcare: 90, education: 380, internet: 30, entertainment: 250,
+    housing: 700, food: 400, transport: 45, healthcare: 90, education: 380, internet: 30, entertainment: 250,
     avgSalary: 1250, taxRate: 24,
     safety: 60, healthcareScore: 78, qualityOfLife: 78, purchasingPower: 42, walkability: 84, publicTransport: 68,
     airQuality: 78, greenSpaces: 76, internetSpeed: 220, englishFriendly: 46, remoteWork: 82, nightlife: 72,
@@ -487,7 +487,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "seoul", name: "Seúl", country: "Corea del Sur", photo: PHOTO.seoul, region: "asia",
     climate: "temperate", climateLabelEs: "Continental húmedo", climateLabelEn: "Humid continental",
-    housing: 1250, food: 480, transport: 60, healthcare: 110, education: 500, internet: 25, entertainment: 350,
+    housing: 950, food: 480, transport: 60, healthcare: 110, education: 500, internet: 25, entertainment: 350,
     avgSalary: 2600, taxRate: 22,
     safety: 88, healthcareScore: 92, qualityOfLife: 82, purchasingPower: 66, walkability: 88, publicTransport: 98,
     airQuality: 48, greenSpaces: 70, internetSpeed: 280, englishFriendly: 44, remoteWork: 72, nightlife: 94,
@@ -496,7 +496,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "taipei", name: "Taipéi", country: "Taiwán", photo: PHOTO.taipei, region: "asia",
     climate: "warm", climateLabelEs: "Subtropical húmedo", climateLabelEn: "Humid subtropical",
-    housing: 950, food: 380, transport: 45, healthcare: 80, education: 420, internet: 25, entertainment: 280,
+    housing: 850, food: 380, transport: 45, healthcare: 80, education: 420, internet: 25, entertainment: 280,
     avgSalary: 1800, taxRate: 18,
     safety: 90, healthcareScore: 92, qualityOfLife: 84, purchasingPower: 62, walkability: 86, publicTransport: 94,
     airQuality: 60, greenSpaces: 74, internetSpeed: 250, englishFriendly: 56, remoteWork: 84, nightlife: 82,
@@ -505,7 +505,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "kualalumpur", name: "Kuala Lumpur", country: "Malasia", photo: PHOTO.kualalumpur, region: "asia",
     climate: "warm", climateLabelEs: "Tropical húmedo", climateLabelEn: "Humid tropical",
-    housing: 700, food: 300, transport: 55, healthcare: 80, education: 450, internet: 25, entertainment: 250,
+    housing: 550, food: 300, transport: 55, healthcare: 80, education: 450, internet: 25, entertainment: 250,
     avgSalary: 1250, taxRate: 16,
     safety: 66, healthcareScore: 82, qualityOfLife: 74, purchasingPower: 48, walkability: 56, publicTransport: 72,
     airQuality: 56, greenSpaces: 68, internetSpeed: 210, englishFriendly: 86, remoteWork: 88, nightlife: 74,
@@ -514,7 +514,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "hochiminh", name: "Ho Chi Minh", country: "Vietnam", photo: PHOTO.hochiminh, region: "asia",
     climate: "warm", climateLabelEs: "Tropical", climateLabelEn: "Tropical",
-    housing: 600, food: 260, transport: 40, healthcare: 70, education: 450, internet: 18, entertainment: 210,
+    housing: 550, food: 260, transport: 40, healthcare: 70, education: 450, internet: 18, entertainment: 210,
     avgSalary: 750, taxRate: 15,
     safety: 62, healthcareScore: 66, qualityOfLife: 68, purchasingPower: 34, walkability: 60, publicTransport: 46,
     airQuality: 40, greenSpaces: 48, internetSpeed: 180, englishFriendly: 46, remoteWork: 88, nightlife: 86,
@@ -523,7 +523,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "melbourne", name: "Melbourne", country: "Australia", photo: PHOTO.melbourne, region: "asia",
     climate: "temperate", climateLabelEs: "Oceánico variable", climateLabelEn: "Variable oceanic",
-    housing: 1900, food: 580, transport: 130, healthcare: 170, education: 650, internet: 55, entertainment: 440,
+    housing: 2000, food: 580, transport: 130, healthcare: 170, education: 650, internet: 55, entertainment: 440,
     avgSalary: 3900, taxRate: 29,
     safety: 80, healthcareScore: 88, qualityOfLife: 90, purchasingPower: 78, walkability: 84, publicTransport: 84,
     airQuality: 86, greenSpaces: 88, internetSpeed: 110, englishFriendly: 100, remoteWork: 80, nightlife: 88,
@@ -532,7 +532,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "auckland", name: "Auckland", country: "Nueva Zelanda", photo: PHOTO.auckland, region: "asia",
     climate: "temperate", climateLabelEs: "Oceánico suave", climateLabelEn: "Mild oceanic",
-    housing: 1750, food: 560, transport: 120, healthcare: 150, education: 600, internet: 55, entertainment: 400,
+    housing: 1500, food: 560, transport: 120, healthcare: 150, education: 600, internet: 55, entertainment: 400,
     avgSalary: 3300, taxRate: 27,
     safety: 82, healthcareScore: 84, qualityOfLife: 88, purchasingPower: 70, walkability: 70, publicTransport: 62,
     airQuality: 92, greenSpaces: 92, internetSpeed: 200, englishFriendly: 100, remoteWork: 80, nightlife: 66,
@@ -541,7 +541,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "nairobi", name: "Nairobi", country: "Kenia", photo: PHOTO.nairobi, region: "africa",
     climate: "temperate", climateLabelEs: "Tropical de altura", climateLabelEn: "Highland tropical",
-    housing: 600, food: 280, transport: 60, healthcare: 90, education: 450, internet: 40, entertainment: 220,
+    housing: 650, food: 280, transport: 60, healthcare: 90, education: 450, internet: 40, entertainment: 220,
     avgSalary: 700, taxRate: 24,
     safety: 40, healthcareScore: 58, qualityOfLife: 62, purchasingPower: 26, walkability: 54, publicTransport: 44,
     airQuality: 54, greenSpaces: 74, internetSpeed: 90, englishFriendly: 90, remoteWork: 78, nightlife: 74,
@@ -550,7 +550,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "cairo", name: "El Cairo", country: "Egipto", photo: PHOTO.cairo, region: "africa",
     climate: "warm", climateLabelEs: "Desértico cálido", climateLabelEn: "Hot desert",
-    housing: 400, food: 220, transport: 30, healthcare: 60, education: 350, internet: 20, entertainment: 170,
+    housing: 300, food: 220, transport: 30, healthcare: 60, education: 350, internet: 20, entertainment: 170,
     avgSalary: 450, taxRate: 20,
     safety: 52, healthcareScore: 56, qualityOfLife: 58, purchasingPower: 22, walkability: 66, publicTransport: 54,
     airQuality: 30, greenSpaces: 34, internetSpeed: 70, englishFriendly: 52, remoteWork: 72, nightlife: 70,
@@ -559,7 +559,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "mauritius", name: "Mauricio", country: "Mauricio", photo: PHOTO.mauritius, region: "africa",
     climate: "beach", climateLabelEs: "Tropical de playa", climateLabelEn: "Tropical beach",
-    housing: 750, food: 320, transport: 60, healthcare: 90, education: 400, internet: 30, entertainment: 240,
+    housing: 650, food: 320, transport: 60, healthcare: 90, education: 400, internet: 30, entertainment: 240,
     avgSalary: 900, taxRate: 15,
     safety: 70, healthcareScore: 68, qualityOfLife: 78, purchasingPower: 34, walkability: 48, publicTransport: 44,
     airQuality: 88, greenSpaces: 92, internetSpeed: 100, englishFriendly: 82, remoteWork: 82, nightlife: 58,
@@ -568,7 +568,7 @@ export const lifestyleCities: CityData[] = [
   {
     id: "tunis", name: "Túnez", country: "Túnez", photo: PHOTO.tunis, region: "africa",
     climate: "beach", climateLabelEs: "Mediterráneo cálido", climateLabelEn: "Warm Mediterranean",
-    housing: 420, food: 230, transport: 30, healthcare: 60, education: 320, internet: 20, entertainment: 180,
+    housing: 300, food: 230, transport: 30, healthcare: 60, education: 320, internet: 20, entertainment: 180,
     avgSalary: 500, taxRate: 22,
     safety: 58, healthcareScore: 60, qualityOfLife: 64, purchasingPower: 24, walkability: 72, publicTransport: 50,
     airQuality: 62, greenSpaces: 52, internetSpeed: 60, englishFriendly: 44, remoteWork: 74, nightlife: 62,
