@@ -194,16 +194,17 @@ function CashFlow() {
   const runway = monthlySpend > 0 ? cash / monthlySpend : 0;
 
   return (
-    <PageShell>
-      <PageHeader
-        eyebrow={activeMonth ? monthLabel(activeMonth) : t("Sin EEFF cargados", "No statements uploaded")}
-        title={t("Distribución del dinero", "Money Distribution")}
-        subtitle={
-          hasReal
-            ? t("Cómo se reparte cada dólar que entra, según tus estados de cuenta cargados.", "How every dollar you receive is allocated, based on your uploaded statements.")
-            : t("Carga tus estados de cuenta en «Cargar EEFF» para ver tu flujo real. Mientras tanto, usamos tu perfil.", "Upload your statements in \u00abUpload statements\u00bb to see your real flow. Meanwhile, we use your profile.")
-        }
-      />
+    <TooltipProvider delayDuration={150}>
+      <PageShell>
+        <PageHeader
+          eyebrow={activeMonth ? monthLabel(activeMonth) : t("Sin EEFF cargados", "No statements uploaded")}
+          title={t("Distribución del dinero", "Money Distribution")}
+          subtitle={
+            hasReal
+              ? t("Cómo se reparte cada dólar que entra, según tus estados de cuenta cargados.", "How every dollar you receive is allocated, based on your uploaded statements.")
+              : t("Carga tus estados de cuenta en «Cargar EEFF» para ver tu flujo real. Mientras tanto, usamos tu perfil.", "Upload your statements in \u00abUpload statements\u00bb to see your real flow. Meanwhile, we use your profile.")
+          }
+        />
 
       {months.length > 0 && (
         <div className="flex flex-wrap items-center gap-2">
