@@ -717,21 +717,26 @@ function Gastos() {
       </Panel>
 
       <Panel
+        variant="minimal"
         title={t("Detalle por categoría", "Detail by category")}
-        description={t("Mercado, Restaurantes, Salidas, Compras, Viajes, Transporte, Lifestyle, Apps, Marketing digital y Bancos & Seguros. Añade las tuyas con palabras clave.", "Groceries, Restaurants, Nightlife, Shopping, Travel, Transport, Lifestyle, Apps, Digital marketing and Banks & Insurance. Add your own with keywords.")}
+        description={t("Solo categorías con gastos; activa las vacías para ver las demás.", "Only categories with spending; enable empty ones to see the rest.")}
+        actions={
+          <Button size="sm" variant="ghost" onClick={() => setShowEmptyCategories((v) => !v)}>
+            {showEmptyCategories ? t("Ocultar vacías", "Hide empty") : t("Ver vacías", "Show empty")}
+          </Button>
+        }
       >
         <Accordion type="single" collapsible className="w-full">
           {detailRows.map((c, i) => {
             const prev = prevByCategory.get(c.name) ?? 0;
             const variation = prev > 0 ? ((c.amount - prev) / prev) * 100 : null;
-            
             return (
               <AccordionItem key={c.name} value={c.name} className="border-border">
-                <AccordionTrigger className="hover:no-underline">
+                <AccordionTrigger className="py-2 hover:no-underline">
                   <div className="flex w-full items-center gap-3 pr-3">
-                    <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
+                    <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
                     <span className="truncate text-sm font-medium">{c.name}</span>
-                    <span className="shrink-0 rounded-full bg-elevated px-2 py-0.5 text-[11px] text-muted-foreground">
+                    <span className="shrink-0 rounded-full bg-elevated/50 px-2 py-0.5 text-[11px] text-muted-foreground">
                       {c.items.length} {c.items.length === 1 ? t("mov.", "tx") : t("movs.", "txs")}
                     </span>
                     {variation !== null && (
@@ -746,7 +751,6 @@ function Gastos() {
                         {variation.toFixed(0)}%
                       </span>
                     )}
-
                     <span className="numeric ml-auto text-sm font-semibold">{fmt(c.amount)}</span>
                   </div>
                 </AccordionTrigger>
@@ -754,12 +758,12 @@ function Gastos() {
                   {c.items.length === 0 ? (
                     <p className="pl-6 text-sm text-muted-foreground">{t("Sin gastos de esta categoría en el periodo.", "No expenses in this category for the period.")}</p>
                   ) : (
-                    <ul className="max-h-[320px] space-y-1 overflow-auto pl-6">
+                    <ul className="max-h-[320px] space-y-0.5 overflow-auto pl-6">
                       {c.items
                         .slice()
-                        .sort((a, b) => (a.tx_date! < b.tx_date! ? 1 : -1))
-                        .map((tx) => (
-                          <li key={tx.id} className="flex items-center gap-3 rounded-lg px-2 py-1.5 hover:bg-elevated/60">
+                        .sort((a: Tx, b: Tx) => (a.tx_date! < b.tx_date! ? 1 : -1))
+                        .map((tx: Tx) => (
+                          <li key={tx.id} className="flex items-center gap-3 rounded-lg px-2 py-1 hover:bg-elevated/50">
                             <span className="w-16 shrink-0 text-xs text-muted-foreground">
                               {format(parseISO(tx.tx_date!), "d MMM", { locale: es })}
                             </span>
@@ -778,21 +782,21 @@ function Gastos() {
           })}
         </Accordion>
 
-        <div className="mt-4 space-y-2 border-t border-border pt-4">
+        <div className="mt-3 space-y-2 border-t border-border pt-3">
           <p className="text-xs font-medium text-muted-foreground">{t("Categorías propias", "Your own categories")}</p>
           {categories.items.map((c) => (
-            <div key={c.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-elevated/60 px-3 py-2">
+            <div key={c.id} className="flex flex-wrap items-center gap-2 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
               <Input
                 value={c.name}
                 onChange={(e) => categories.update(c.id, { name: e.target.value })}
                 placeholder={t("Nombre de la categoría", "Category name")}
-                className="h-9 w-full max-w-[220px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
+                className="h-8 w-full max-w-[220px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
               />
               <Input
                 value={c.keywords}
                 onChange={(e) => categories.update(c.id, { keywords: e.target.value })}
                 placeholder={t("palabras clave separadas por coma (ej. netflix, gym)", "keywords separated by comma (e.g. netflix, gym)")}
-                className="h-9 min-w-[200px] flex-1 text-sm"
+                className="h-8 min-w-[200px] flex-1 text-sm"
               />
               <Button
                 size="icon"
