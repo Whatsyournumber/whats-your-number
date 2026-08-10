@@ -827,6 +827,7 @@ export function scoreCity(
     savingsRate,
     yearsToRetire: years,
     expectedReturn: ctx.expectedReturn,
+    stage: f.stage,
   });
 
   // Mezcla: base objetiva (Your North Score) + presencia en rankings globales
