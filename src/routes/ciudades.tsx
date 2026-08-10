@@ -248,11 +248,11 @@ function LifestyleSimulator() {
               </div>
               <Slider
                 className="mt-3"
-                min={2000}
+                min={1000}
                 max={15000}
-                step={250}
+                step={100}
                 value={[filters.budget]}
-                onValueChange={([v]) => set("budget", v ?? 2000)}
+                onValueChange={([v]) => set("budget", v ?? 1000)}
               />
             </div>
             <SelectFilter
