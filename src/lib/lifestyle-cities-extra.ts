@@ -10,6 +10,7 @@ import lagosPhoto from "@/assets/city-lagos.jpg.asset.json";
 import windhoekPhoto from "@/assets/city-windhoek.jpg.asset.json";
 import addisPhoto from "@/assets/city-addis.jpg.asset.json";
 import fukuokaPhoto from "@/assets/fukuoka-tower-sunset.png.asset.json";
+import viennaPhoto from "@/assets/vienna-premium.png.asset.json";
 const PHOTO = {
   hamburg: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/HH_Alsterarkaden_pano1.jpg/1920px-HH_Alsterarkaden_pano1.jpg",
   zagreb: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg/1920px-Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -45,7 +46,7 @@ const PHOTO = {
   hongkong: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Hong_Kong_Harbour_Night_2019-06-11.jpg/1920px-Hong_Kong_Harbour_Night_2019-06-11.jpg",
   wellington: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Mystic_River_panorama_from_Wellington_garage.jpg/1920px-Mystic_River_panorama_from_Wellington_garage.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   durban: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Haugesund_R%C3%A5dhus_City_Hall_Knut_Knutsen_OAS_gate_Tinghuset_Festiviteten_R%C3%A5dhusplassen_R%C3%A5dhusparken_Arne_Durban_etc_Haugesund_Norway_2020-06-02_Distorted_panoramic_photo_IMG_8471.jpg/1920px-thumbnail.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  vienna: "https://commons.wikimedia.org/wiki/Special:FilePath/Wien%20schloss%20belvedere%20panorama.jpg?width=1920",
+  vienna: viennaPhoto.url,
   munich: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Alter_Peter-03-Panorama.jpg/1920px-Alter_Peter-03-Panorama.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   stockholm: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Riksdagen_September_2014_02.jpg/1920px-Riksdagen_September_2014_02.jpg",
   oslo: osloPhoto.url,
