@@ -294,23 +294,8 @@ function LifestyleSimulator() {
               {t("Reiniciar", "Reset")}
             </button>
             <TooltipProvider delayDuration={100}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    className="flex items-center gap-1 text-[10px] text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    <Info className="h-3.5 w-3.5" />
-                    {t("Fuentes", "Sources")}
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="left" className="max-w-[280px] text-xs leading-relaxed">
-                  {t(
-                    "Costos de vida y calidad de vida estimados con datos públicos tipo Numbeo, OCDE y Mercer, ajustados por tu etapa de vida y nivel de vida. El retiro usa tu patrimonio, ahorro y la regla del 4%. Los resultados se recalculan al instante con cada filtro.",
-                    "Cost of living and quality-of-life estimates based on public data (Numbeo, OECD, Mercer), adjusted for your life stage and comfort level. Retirement uses your net worth, savings and the 4% rule. Results recalculate instantly with every filter.",
-                  )}
-                </TooltipContent>
-              </Tooltip>
+              <MethodologyTooltip t={t} />
+              <SourcesTooltip t={t} />
             </TooltipProvider>
           </div>
         </div>
