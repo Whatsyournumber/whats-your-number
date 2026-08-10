@@ -33,6 +33,7 @@ export function monthsToTarget(opts: {
   for (let m = 0; m < MAX_MONTHS; m++) {
     let flow = opts.savings;
     opts.goals.forEach((g, i) => {
+      if (g.payout && Math.round((g.payoutYears ?? 0) * 12) === m) flow += g.payout;
       if (g.kind === "boost") {
         if (!paid[i]) {
           capital -= Math.max(0, g.cost - g.saved);
