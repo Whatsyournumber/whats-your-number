@@ -698,18 +698,6 @@ function OnboardingPage() {
 
 /* ───────────────────────── UI primitives ───────────────────────── */
 
-/** Fila explicativa del onboarding: icono, título y detalle. */
-function ExplainRow({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
-  return (
-    <div className="flex gap-3 rounded-2xl border border-border/60 bg-card/40 p-4">
-      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/10">{icon}</div>
-      <div>
-        <p className="text-sm font-medium">{title}</p>
-        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{text}</p>
-      </div>
-    </div>
-  );
-}
 
 function Screen({ title, hint, children }: { title?: string; hint?: string; children: React.ReactNode }) {
 
