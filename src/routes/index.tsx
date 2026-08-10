@@ -225,7 +225,9 @@ function Landing() {
   const whyCards = [
     {
       icon: PieChart,
-      title: t("01 — Entiende dónde va tu dinero.", "01 — Understand where your money goes."),
+      number: "01",
+      titleLight: t("Entiende dónde va", "Understand where"),
+      titleAccent: t("tu dinero.", "your money goes."),
       desc: t(
         "Carga tus estados financieros y obtén claridad sobre tus gastos en menos de 30 segundos.",
         "Upload your financial statements and get clarity on your spending in under 30 seconds.",
@@ -233,7 +235,9 @@ function Landing() {
     },
     {
       icon: Target,
-      title: t("02 — Descubre cuándo puedes dejar de trabajar.", "02 — Discover when you can stop working."),
+      number: "02",
+      titleLight: t("Descubre cuándo", "Discover when"),
+      titleAccent: t("puedes dejar de trabajar.", "you can stop working."),
       desc: t(
         "Conoce el capital que necesitas para vivir de tus rendimientos y cuánto te falta para llegar.",
         "Know the capital you need to live off your returns and how far you are from getting there.",
@@ -241,7 +245,9 @@ function Landing() {
     },
     {
       icon: Bot,
-      title: t("03 — Pregúntale a tu IA Financial Advisor.", "03 — Ask your AI Financial Advisor."),
+      number: "03",
+      titleLight: t("Pregúntale a tu", "Ask your"),
+      titleAccent: t("IA Financial Advisor.", "AI Financial Advisor."),
       desc: t(
         "Tu asesor conoce tus números, analiza escenarios y te ayuda a tomar mejores decisiones financieras.",
         "Your advisor knows your numbers, analyzes scenarios and helps you make better financial decisions.",
@@ -369,23 +375,29 @@ function Landing() {
           <div className="grid gap-5 text-left md:grid-cols-3">
             {whyCards.map((card, i) => (
               <motion.div
-                key={card.title}
+                key={card.number}
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.08 }}
-                className="surface group relative overflow-hidden rounded-3xl p-6 transition-all hover:bg-card/60"
+                className="group relative overflow-hidden rounded-3xl border border-white/[0.07] bg-card/50 p-7 transition-all hover:-translate-y-1 hover:border-primary/20 hover:bg-card/70"
               >
-
-                <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-[0.07]" />
-                <div className="relative">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-primary/10 ring-1 ring-primary/20">
-                    <card.icon className="h-6 w-6 text-primary" strokeWidth={1.8} />
-                  </div>
-                  <h3 className="mt-5 text-lg font-semibold tracking-tight">{card.title}</h3>
-                  <p className="relative mt-3 text-sm leading-relaxed text-muted-foreground/80">{card.desc}</p>
+                <div className="relative flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-background ring-1 ring-primary/20 shadow-sm">
+                  <card.icon className="h-6 w-6 text-primary" strokeWidth={1.7} />
                 </div>
 
+                <div className="relative mt-5">
+                  <span className="inline-flex items-center justify-center rounded-lg bg-elevated px-3 py-1 text-xs font-semibold text-primary">
+                    {card.number}
+                  </span>
+                  <h3 className="mt-4 text-[22px] font-semibold leading-tight tracking-tight">
+                    <span className="text-foreground">{card.titleLight}</span>{" "}
+                    <span className="text-primary">{card.titleAccent}</span>
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground/80">{card.desc}</p>
+                </div>
+
+                <div className="mt-6 h-0.5 w-10 rounded-full bg-primary/80 transition-all duration-300 group-hover:w-16" />
               </motion.div>
             ))}
           </div>
