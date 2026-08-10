@@ -42,12 +42,12 @@ const netWorth = [
 ];
 
 const spend = [
-  { m: "Ene", v: 3.2, c: 2.9 },
-  { m: "Feb", v: 2.8, c: 2.9 },
-  { m: "Mar", v: 3.6, c: 2.9 },
-  { m: "Abr", v: 3.1, c: 2.9 },
-  { m: "May", v: 2.6, c: 2.9 },
-  { m: "Jun", v: 2.9, c: 2.9 },
+  { m: "Ene", v: 3.2, i: 5.4 },
+  { m: "Feb", v: 2.8, i: 5.4 },
+  { m: "Mar", v: 3.6, i: 5.9 },
+  { m: "Abr", v: 3.1, i: 5.4 },
+  { m: "May", v: 2.6, i: 5.4 },
+  { m: "Jun", v: 2.9, i: 6.2 },
 ];
 
 const portfolio = [
