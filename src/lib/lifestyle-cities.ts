@@ -9,7 +9,7 @@
  */
 import { extraCities } from "./lifestyle-cities-extra";
 import { passesStability, stabilityScore, type StabilityPref } from "./political-stability";
-import { northScore, type NorthScore } from "./north-score";
+import { northScore, pillarWeights, type NorthScore } from "./north-score";
 import { globalRankingScore } from "./global-rankings";
 import barcelonaPhoto from "@/assets/city-barcelona-hd.jpg.asset.json";
 import cairoPhoto from "@/assets/city-cairo-nile.png.asset.json";
@@ -828,6 +828,16 @@ export function scoreCity(
     yearsToRetire: years,
     expectedReturn: ctx.expectedReturn,
     stage: f.stage,
+    weights: pillarWeights({
+      stage: f.stage,
+      goal: f.goal,
+      climate: f.climate,
+      tax: f.tax,
+      salary: f.salary,
+      safety: f.safety,
+      stability: f.stability,
+      region: f.region,
+    }),
   });
 
   // Mezcla: base objetiva (Your North Score) + presencia en rankings globales
