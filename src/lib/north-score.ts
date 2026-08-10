@@ -1,5 +1,5 @@
 /**
- * Your North Score (0-100).
+ * Your Next City Score (0-100).
  *
  * Puntuación compuesta por 6 pilares con los pesos definidos por producto.
  * Cada subfactor se normaliza a 0-100 a partir del dataset de ciudades, que
