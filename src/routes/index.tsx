@@ -347,9 +347,21 @@ function Landing() {
             </span>
           </div>
 
-          <p className="mt-14 text-xs font-medium uppercase tracking-wider text-primary">
-            {t("¿Por qué WhatsYourNumber?", "Why WhatsYourNumber?")}
-          </p>
+          <div className="mb-10 mt-14 text-center">
+            <span className="text-xs font-medium uppercase tracking-wider text-primary">
+              {t("¿Por qué WhatsYourNumber?", "Why WhatsYourNumber?")}
+            </span>
+            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
+              {t("Todo en un solo lugar", "Everything in one place")}
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
+              {t(
+                "Claridad total, IA integrada y tu número de libertad financiera siempre a la vista.",
+                "Total clarity, integrated AI and your financial freedom number always in sight.",
+              )}
+            </p>
+          </div>
+
 
           <div className="mt-6 grid gap-5 text-left md:grid-cols-3">
             {whyCards.map((card, i) => (
