@@ -752,14 +752,18 @@ export function scoreCity(
   const savingsRate = f.budget > 0 ? savings / f.budget : 0;
 
   const salaryScore = (() => {
-    const raw = inv(c.avgSalary, 7500, 800);
-    switch (f.salary) {
-      case "low_cost": return inv(cost, 900, 6000);
-      case "high_income": return raw * 0.6 + c.purchasingPower * 0.4;
-      case "highest_paying": return raw;
-      case "balanced": return c.purchasingPower;
-      default: return raw * 0.5 + c.purchasingPower * 0.5;
+    const net = netSalary(c);
+    const raw = inv(net, 7500, 800);
+    if (f.salary === "any") return raw * 0.5 + c.purchasingPower * 0.5;
+    const band = SALARY_BANDS[f.salary];
+    if (net >= band.min) {
+      // cumple el rango: premia poder adquisitivo real y superar el mínimo
+      const over = band.max === Infinity ? 100 : clamp(((net - band.min) / (band.max - band.min)) * 100);
+      return clamp(78 + over * 0.22) * 0.7 + c.purchasingPower * 0.3;
     }
+    // por debajo del rango: penaliza proporcionalmente a la brecha
+    const gap = band.min > 0 ? net / band.min : 0;
+    return clamp(gap * 70) * 0.75 + c.purchasingPower * 0.25;
   })();
 
   const taxScore = (() => {
