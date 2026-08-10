@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, Banknote, PiggyBank, TrendingUp, Wallet, Waves } from "lucide-react";
 import {
@@ -27,6 +28,7 @@ import { useTransactions } from "@/hooks/use-transactions";
 import { buildInsights } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
+import { readDemoSnapshot, type DemoSnapshot } from "@/lib/demo-snapshot";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -39,6 +41,20 @@ export const Route = createFileRoute("/dashboard")({
   }),
   component: Dashboard,
 });
+
+/** Años hasta alcanzar el objetivo con aportes mensuales y rendimiento anual. */
+function yearsToTarget(target: number, current: number, monthly: number, annualReturn: number) {
+  if (target <= 0) return 0;
+  if (current >= target) return 0;
+  if (monthly <= 0) return 99;
+  const r = annualReturn / 100 / 12;
+  let balance = current;
+  for (let m = 1; m <= 12 * 80; m++) {
+    balance = balance * (1 + r) + monthly;
+    if (balance >= target) return Math.max(1, Math.round(m / 12));
+  }
+  return 99;
+}
 
 const delta = (a: number, b: number) => (b > 0 ? ((a - b) / b) * 100 : 0);
 
