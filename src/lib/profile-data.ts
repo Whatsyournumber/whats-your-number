@@ -1,4 +1,7 @@
 import type { Profile } from "@/hooks/use-profile";
+import { suggestedFilters } from "@/lib/city-suggestions";
+import { lifestyleCities, monthlyCost, yearsToFreedom } from "@/lib/lifestyle-cities";
+
 import {
   buildPlan,
   cities,
