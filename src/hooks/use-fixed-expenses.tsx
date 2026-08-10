@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 
+import { useProfile } from "@/hooks/use-profile";
+import { FIXED_FIELDS } from "@/lib/onboarding";
+
 export type FixedExpense = { id: string; name: string; amount: number };
 
 const KEY = "whatsyournumber:fixed-expenses";
@@ -10,6 +13,8 @@ const defaults: FixedExpense[] = [];
 /** Gastos fijos mensuales editables, guardados localmente en el navegador. */
 export function useFixedExpenses() {
   const [items, setItems] = useState<FixedExpense[]>(defaults);
+  const [hydrated, setHydrated] = useState(false);
+  const { profile } = useProfile();
 
   useEffect(() => {
     try {
@@ -21,7 +26,32 @@ export function useFixedExpenses() {
     } catch {
       /* ignore */
     }
+    setHydrated(true);
   }, []);
+
+  // Si aún no hay gastos fijos guardados, se rellenan con los del onboarding.
+  useEffect(() => {
+    if (!hydrated) return;
+    let stored = false;
+    try {
+      stored = window.localStorage.getItem(KEY) !== null;
+    } catch {
+      /* ignore */
+    }
+    if (stored) return;
+    const seeded = FIXED_FIELDS.map((f) => ({
+      id: f.key as string,
+      name: f.es,
+      amount: Number(profile[f.key]) || 0,
+    })).filter((i) => i.amount > 0);
+    if (seeded.length === 0) return;
+    setItems(seeded);
+    try {
+      window.localStorage.setItem(KEY, JSON.stringify(seeded));
+    } catch {
+      /* ignore */
+    }
+  }, [hydrated, profile]);
 
 
 
