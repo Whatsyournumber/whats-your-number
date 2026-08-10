@@ -830,7 +830,7 @@ function PrimaryStat({
   icon: string;
   label: string;
   value: string;
-  sub?: string;
+  sub?: string | undefined;
   highlight?: "positive" | "negative" | "neutral";
 }) {
   const valueColor =
