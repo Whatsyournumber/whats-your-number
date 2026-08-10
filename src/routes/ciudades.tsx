@@ -30,6 +30,8 @@ import {
   type CityScore,
   type Filters,
 } from "@/lib/lifestyle-cities";
+import { stabilityBadge } from "@/lib/political-stability";
+import { suggestedFilters, suggestionReasons } from "@/lib/city-suggestions";
 import { buildDataset } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
 
@@ -216,6 +218,19 @@ function LifestyleSimulator() {
                 { value: "cold", label: t("Frío", "Cold"), icon: "❄️" },
               ]}
             />
+            <div className="col-span-2">
+              <SelectFilter
+                label={t("Estabilidad política", "Political stability")}
+                value={filters.stability}
+                onChange={(v) => set("stability", v)}
+                options={[
+                  { value: "any", label: t("Indiferente", "Any"), icon: "🌍" },
+                  { value: "medium", label: t("Media o superior", "Medium or higher"), icon: "🟡" },
+                  { value: "high", label: t("Alta", "High"), icon: "🟢" },
+                  { value: "veryhigh", label: t("Muy alta", "Very high"), icon: "🛡️" },
+                ]}
+              />
+            </div>
           </FilterGroup>
 
           {/* Dinero */}
@@ -319,6 +334,15 @@ function LifestyleSimulator() {
       </div>
 
 
+      <SuggestedForYou
+        profile={profile}
+        ctx={ctx}
+        fmt={fmt}
+        t={t}
+        onApply={(f) => setFilters(f)}
+        onOpen={(r) => setDetail(r)}
+      />
+
       {best && <AiRecommendation r={best} filters={filters} fmt={fmt} t={t} />}
 
       {compared.length === 2 && (
@@ -343,6 +367,89 @@ function LifestyleSimulator() {
 
       <CityDetail r={detail} filters={filters} fmt={fmt} t={t} onClose={() => setDetail(null)} />
     </PageShell>
+  );
+}
+
+/* ---------------- Sugerencias según tu onboarding ---------------- */
+
+function SuggestedForYou({
+  profile,
+  ctx,
+  fmt,
+  t,
+  onApply,
+  onOpen,
+}: {
+  profile: ReturnType<typeof useProfile>["profile"];
+  ctx: { netWorth: number; age: number; expectedReturn: number };
+  fmt: (n: number) => string;
+  t: (es: string, en: string) => string;
+  onApply: (f: Filters) => void;
+  onOpen: (r: CityScore) => void;
+}) {
+  const f = useMemo(() => suggestedFilters(profile), [profile]);
+  const top = useMemo(() => rankCities(f, ctx).slice(0, 3), [f, ctx]);
+  if (!profile.completed || top.length === 0) return null;
+  const reasons = suggestionReasons(profile, f, t);
+
+  return (
+    <Panel
+      title={t("Sugeridas para ti", "Suggested for you")}
+      subtitle={t(
+        "Según tus respuestas del onboarding: presupuesto, etapa de vida, estilo y estabilidad política.",
+        "Based on your onboarding answers: budget, life stage, lifestyle and political stability.",
+      )}
+      action={
+        <Button size="sm" variant="outline" onClick={() => onApply(f)}>
+          <Sparkles className="mr-1.5 h-3.5 w-3.5" />
+          {t("Aplicar a los filtros", "Apply to filters")}
+        </Button>
+      }
+    >
+      <div className="mb-4 flex flex-wrap gap-1.5">
+        {reasons.map((r) => (
+          <Chip key={r}>{r}</Chip>
+        ))}
+      </div>
+      <div className="grid gap-3 sm:grid-cols-3">
+        {top.map((r, i) => {
+          const st = stabilityBadge(r.city.country, t);
+          return (
+            <button
+              key={r.city.id}
+              type="button"
+              onClick={() => onOpen(r)}
+              className="group relative overflow-hidden rounded-xl border border-border/70 text-left transition-all hover:-translate-y-0.5 hover:border-primary/50"
+            >
+              <div className="relative aspect-[16/9] w-full overflow-hidden">
+                <img
+                  src={r.city.photo}
+                  alt={`${r.city.name}, ${r.city.country}`}
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
+                <span className="absolute left-2.5 top-2.5 rounded-full bg-primary/90 px-2 py-0.5 text-[10px] font-semibold text-primary-foreground">
+                  #{i + 1}
+                </span>
+                <div className="absolute bottom-2 left-3 right-3">
+                  <p className="text-sm font-semibold leading-tight">{r.city.name}</p>
+                  <p className="text-[11px] text-muted-foreground">{r.city.country}</p>
+                </div>
+              </div>
+              <div className="flex items-center justify-between gap-2 px-3 py-2 text-[11px]">
+                <span className="text-muted-foreground">
+                  {t("Costo", "Cost")} <span className="numeric text-foreground">{fmt(r.cost)}</span>
+                </span>
+                <span className="text-muted-foreground">
+                  {st.dot} {st.score}
+                </span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </Panel>
   );
 }
 
@@ -405,6 +512,7 @@ function CityCard({
 }) {
   const c = r.city;
   const tax = taxBadge(r.taxLevel, t);
+  const stability = stabilityBadge(c.country, t);
   const affordable = r.savings >= 0;
   return (
     <motion.article
@@ -497,6 +605,9 @@ function CityCard({
             {tax.dot} {tax.text}
           </Chip>
           <Chip>🛡 {c.safety}/100</Chip>
+          <Chip>
+            {stability.dot} {stability.text}
+          </Chip>
           <Chip>🌤 {t(c.climateLabelEs, c.climateLabelEn)}</Chip>
         </div>
 
