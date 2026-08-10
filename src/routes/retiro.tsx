@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { motion } from "motion/react";
+import { Pencil, X } from "lucide-react";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
@@ -12,6 +14,7 @@ import { toast } from "sonner";
 import { useProfile } from "@/hooks/use-profile";
 import { useT } from "@/hooks/use-language";
 import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/retiro")({
   head: () => ({
@@ -43,8 +46,9 @@ function Retiro() {
   const d = buildDataset(profile);
   const { retirement, fmt, fmtCompact, plan } = d;
 
-  const liveNumber = Math.round((Math.max(0, wantMonthly) * 12) / (Math.min(15, Math.max(1, swr)) / 100));
+  const liveNumber = Math.round((Math.max(0, wantMonthly) * 12) / (Math.min(15, Math.max(3, swr)) / 100));
   const numberDirty = wantMonthly !== profile.desired_retirement_income || swr !== (profile.withdrawal_rate || 4);
+  const [editing, setEditing] = useState(false);
 
   // Solo activos que generan retorno (excluye propiedades).
   const investable =
@@ -88,84 +92,89 @@ function Retiro() {
           accent
           index={0}
         />
-        <KpiCard
-          label={t("Capital objetivo", "Target capital")}
-          value={fmt(plan.targetCapital)}
-          hint={`${fmt(Math.round((plan.targetCapital * (retirement.returnAnnualized / 100)) / 12))} ${t("al mes con", "per month at")} ${retirement.returnAnnualized}%`}
-          index={1}
-        />
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.05, ease: "easeOut" }}
+          className={cn("surface relative overflow-hidden p-5", editing ? "ring-1 ring-primary/20" : "cursor-pointer hover:bg-elevated/40")}
+          onClick={() => !editing && setEditing(true)}
+        >
+          {!editing ? (
+            <>
+              <div className="relative flex items-start justify-between gap-3">
+                <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{t("Capital objetivo", "Target capital")}</p>
+                <Pencil className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <p className="numeric relative mt-3 text-2xl font-semibold md:text-3xl">{fmt(plan.targetCapital)}</p>
+              <div className="relative mt-2 flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">{`${fmt(Math.round((plan.targetCapital * (retirement.returnAnnualized / 100)) / 12))} ${t("al mes con", "per month at")} ${retirement.returnAnnualized}%`}</span>
+              </div>
+            </>
+          ) : (
+            <div className="space-y-4" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{t("Edita tu número", "Edit your number")}</p>
+                <button type="button" onClick={() => setEditing(false)} className="rounded-full p-1 text-muted-foreground hover:bg-elevated hover:text-foreground">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              <div>
+                <label className="text-[11px] uppercase tracking-wide text-muted-foreground">{t("Ingreso mensual", "Monthly income")}</label>
+                <Input
+                  type="number"
+                  className="mt-1 h-9 border-0 border-b border-border bg-transparent px-0 text-lg font-medium shadow-none focus-visible:ring-0"
+                  value={wantMonthly || ""}
+                  onChange={(e) => setWantMonthly(Number(e.target.value || 0))}
+                  placeholder="7000"
+                />
+              </div>
+              <div>
+                <div className="flex items-center justify-between text-[11px] uppercase tracking-wide text-muted-foreground">
+                  <span>{t("Tasa de retiro", "Withdrawal rate")}</span>
+                  <span className="numeric text-sm font-medium text-foreground">{swr.toFixed(1)}%</span>
+                </div>
+                <Slider className="mt-3" value={[swr]} min={3} max={15} step={0.5} onValueChange={(v) => setSwr(v[0] ?? 4)} />
+                <div className="mt-3 flex flex-wrap gap-1">
+                  {[3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((r) => (
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() => setSwr(r)}
+                      className={`rounded-full px-2 py-0.5 text-[10px] transition-colors ${swr === r ? "bg-primary/15 text-foreground" : "text-muted-foreground hover:bg-elevated"}`}
+                    >
+                      {r}%
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex items-center justify-between pt-1">
+                <div>
+                  <p className="numeric text-lg font-semibold leading-tight">{fmtCompact(liveNumber)}</p>
+                  <p className="text-[10px] text-muted-foreground">{fmt(wantMonthly)}/{t("mes", "mo")} · {swr.toFixed(1)}%</p>
+                </div>
+                <Button
+                  size="sm"
+                  variant={numberDirty ? "default" : "outline"}
+                  className="rounded-full px-4"
+                  disabled={!numberDirty || saving}
+                  onClick={() => {
+                    void save({ desired_retirement_income: wantMonthly, withdrawal_rate: swr }).then(() => {
+                      toast.success(t("Tu número se actualizó", "Your number was updated"));
+                      setEditing(false);
+                    });
+                  }}
+                >
+                  {saving ? t("Guardando…", "Saving…") : t("Guardar", "Save")}
+                </Button>
+              </div>
+            </div>
+          )}
+        </motion.div>
         <KpiCard label={t("Cómo voy", "How I'm doing")} value={`${progressPct.toFixed(1)}%`} hint={t("del capital objetivo", "of target capital")} index={2} />
         <KpiCard label={t("Gastos mensuales", "Monthly expenses")} value={fmt(d.expenses)} hint={`${fmt(d.expenses * 12)} ${t("al año", "per year")}`} index={3} />
         <KpiCard label={t("Aportes estimados al año", "Estimated contributions per year")} value={fmt(retirement.contributionsYTD)} index={4} />
         <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${retirement.returnAnnualized}%`} hint={t("anual", "annual")} index={5} />
       </div>
-
-      <div className="surface p-6">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-sm font-medium">{t("Edita tu número", "Edit your number")}</p>
-            <p className="mt-0.5 text-xs text-muted-foreground">
-              {t("Ingreso mensual deseado y tasa de retiro anual.", "Desired monthly income and annual withdrawal rate.")}
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="numeric text-3xl font-semibold tracking-tight">{fmtCompact(liveNumber)}</p>
-            <p className="text-[11px] text-muted-foreground">
-              {fmt(wantMonthly)}/{t("mes", "mo")} · {swr.toFixed(1)}%
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-6 grid gap-6 md:grid-cols-[220px_1fr_auto] md:items-end">
-          <div>
-            <label className="text-[11px] uppercase tracking-wide text-muted-foreground">
-              {t("Ingreso mensual", "Monthly income")}
-            </label>
-            <Input
-              type="number"
-              className="mt-2 h-10 border-0 border-b border-border bg-transparent px-0 text-lg font-medium shadow-none focus-visible:ring-0"
-              value={wantMonthly || ""}
-              onChange={(e) => setWantMonthly(Number(e.target.value || 0))}
-              placeholder="7000"
-            />
-          </div>
-          <div>
-            <div className="flex items-center justify-between text-[11px] uppercase tracking-wide text-muted-foreground">
-              <span>{t("Tasa de retiro", "Withdrawal rate")}</span>
-              <span className="numeric text-sm font-medium text-foreground">{swr.toFixed(1)}%</span>
-            </div>
-            <Slider className="mt-4" value={[swr]} min={2} max={15} step={0.5} onValueChange={(v) => setSwr(v[0] ?? 4)} />
-            <div className="mt-3 flex flex-wrap gap-1.5">
-              {[3, 4, 5, 6, 8, 10, 12, 15].map((r) => (
-                <button
-                  key={r}
-                  type="button"
-                  onClick={() => setSwr(r)}
-                  className={`rounded-full px-2.5 py-1 text-[11px] transition-colors ${swr === r ? "bg-primary/15 text-foreground" : "text-muted-foreground hover:bg-elevated"}`}
-                >
-                  {r}%
-                </button>
-              ))}
-            </div>
-          </div>
-          <Button
-            size="sm"
-            variant={numberDirty ? "default" : "outline"}
-            className="rounded-full px-5"
-            disabled={!numberDirty || saving}
-            onClick={() => {
-              void save({ desired_retirement_income: wantMonthly, withdrawal_rate: swr }).then(() =>
-                toast.success(t("Tu número se actualizó", "Your number was updated")),
-              );
-            }}
-          >
-            {saving ? t("Guardando…", "Saving…") : t("Guardar", "Save")}
-          </Button>
-        </div>
-      </div>
-
-
-
       <div className="surface p-5">
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">{t("Progreso hacia tu capital objetivo", "Progress toward your target capital")}</span>
