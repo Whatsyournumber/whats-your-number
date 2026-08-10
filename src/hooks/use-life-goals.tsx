@@ -105,6 +105,20 @@ export function useLifeGoals() {
     },
   });
 
+  const reorder = useMutation({
+    mutationFn: async (orderedIds: string[]) => {
+      const updates = orderedIds.map((id, index) => ({
+        id,
+        position: index,
+      }));
+      const { error } = await supabase.from("life_goals").upsert(updates, { onConflict: "id" });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: key });
+    },
+  });
+
   const remove = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("life_goals").delete().eq("id", id);
