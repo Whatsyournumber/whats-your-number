@@ -660,6 +660,7 @@ function simGoal(g: LifeGoal, baseMonths: number | null, data: ReturnType<typeof
   }));
 }
 
+function HeroStat({
   icon: Icon,
   label,
   value,
