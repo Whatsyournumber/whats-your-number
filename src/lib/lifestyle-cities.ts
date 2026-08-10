@@ -56,7 +56,7 @@ export type CityData = {
 };
 
 const PHOTO = {
-  barcelona: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Catalunya-Barcelona-PlatjaBarcelonetaTorresBessones.jpg/1920px-Catalunya-Barcelona-PlatjaBarcelonetaTorresBessones.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  barcelona: "https://commons.wikimedia.org/wiki/Special:FilePath/Vistashotelvela.jpg?width=1920",
   madrid: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Madrid_Gran_Via_Metropolis_%2828895530633%29.jpg/1920px-Madrid_Gran_Via_Metropolis_%2828895530633%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   valencia: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Museo_Pr%C3%ADncipe_Felipe%2C_Ciudad_de_las_Artes_y_las_Ciencias%2C_Valencia%2C_Espa%C3%B1a%2C_2014-06-29%2C_DD_59.JPG/1920px-Museo_Pr%C3%ADncipe_Felipe%2C_Ciudad_de_las_Artes_y_las_Ciencias%2C_Valencia%2C_Espa%C3%B1a%2C_2014-06-29%2C_DD_59.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   lisbon: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/LisbonSkyline.jpg/1920px-LisbonSkyline.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -85,7 +85,7 @@ const PHOTO = {
   warsaw: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Warsaw_Castle_Square_Panorama_2010.jpg/1920px-Warsaw_Castle_Square_Panorama_2010.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   athens: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/20101024_Acropolis_panoramic_view_from_Areopagus_hill_Athens_Greece.jpg/1920px-20101024_Acropolis_panoramic_view_from_Areopagus_hill_Athens_Greece.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   porto: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Terminal_de_cruceros_de_Oporto_%2852156092183%29.jpg/1920px-Terminal_de_cruceros_de_Oporto_%2852156092183%29.jpg",
-  prague: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Prague_skyline_panorama_2_%287155167583%29.jpg/1920px-Prague_skyline_panorama_2_%287155167583%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  prague: "https://commons.wikimedia.org/wiki/Special:FilePath/Tancici%20d%C5%AFm.jpg?width=1920",
   rome: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Rome_skyline_panorama.jpg/1920px-Rome_skyline_panorama.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   toronto: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Panorama_of_Toronto_skyline%2C_2024_05_08_%2853708885618%29.jpg/1920px-Panorama_of_Toronto_skyline%2C_2024_05_08_%2853708885618%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   austin: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/View_from_Town_lake_02.jpg/1920px-View_from_Town_lake_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
