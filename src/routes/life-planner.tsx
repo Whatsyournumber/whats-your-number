@@ -219,12 +219,13 @@ function LifePlanner() {
                 }`}
               />
             </div>
-            {Math.abs(progressDelta) >= 0.05 && (
+            {Math.abs(monthsDelta ?? 0) > 0 && (
               <p className="mt-2 text-xs text-muted-foreground">
                 {t("Con tus decisiones de vida", "With your life decisions")}:{" "}
-                <span className={`numeric font-semibold ${progressDelta < 0 ? "text-amber-400" : "text-emerald-300"}`}>
-                  {progressDelta > 0 ? "+" : ""}
-                  {progressDelta.toFixed(1)} pts
+                <span className={`numeric font-semibold ${monthsDelta! < 0 ? "text-emerald-300" : "text-amber-400"}`}>
+                  {monthsDelta! < 0
+                    ? t(`Acelera ${Math.abs(monthsDelta!)} meses`, `Accelerates ${Math.abs(monthsDelta!)} months`)
+                    : t(`Retrasa ${monthsDelta!} meses`, `Delays ${monthsDelta!} months`)}
                 </span>{" "}
                 <span className="text-muted-foreground/70">
                   ({t("base", "base")} {baseProgress.toFixed(0)}%)
