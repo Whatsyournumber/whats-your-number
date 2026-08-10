@@ -31,6 +31,7 @@ import {
   type Filters,
 } from "@/lib/lifestyle-cities";
 import { stabilityBadge } from "@/lib/political-stability";
+import { PILLAR_META, type PillarBreakdown } from "@/lib/north-score";
 import { suggestedFilters, suggestionReasons } from "@/lib/city-suggestions";
 import { buildDataset } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
@@ -795,6 +796,33 @@ function Stat({ icon, label, value }: { icon: string; label: string; value: stri
   );
 }
 
+function PillarRow({ pillar, t }: { pillar: PillarBreakdown; t: (es: string, en: string) => string }) {
+  const meta = PILLAR_META[pillar.key];
+  return (
+    <details className="rounded-xl border border-border/60 bg-elevated/40 p-3">
+      <summary className="flex cursor-pointer list-none items-center gap-2 text-xs">
+        <span>{meta.emoji}</span>
+        <span className="font-medium">{t(meta.es, meta.en)}</span>
+        <span className="text-[10px] text-muted-foreground">{pillar.weight}%</span>
+        <span className="numeric ml-auto text-sm font-semibold">{pillar.score}</span>
+      </summary>
+      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-elevated">
+        <div className="h-full rounded-full bg-primary" style={{ width: `${pillar.score}%` }} />
+      </div>
+      <ul className="mt-2 space-y-1">
+        {pillar.factors.map((f) => (
+          <li key={f.es} className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
+            <span>
+              {t(f.es, f.en)} <span className="opacity-60">· {f.source}</span>
+            </span>
+            <span className="numeric text-foreground">{f.value}</span>
+          </li>
+        ))}
+      </ul>
+    </details>
+  );
+}
+
 function CityDetail({
   r,
   filters,
@@ -835,7 +863,7 @@ function CityDetail({
               <DialogTitle className="text-2xl">{c.name}</DialogTitle>
             </DialogHeader>
             <p className="text-sm text-muted-foreground">
-              {c.country} · Lifestyle Score {r.score}/100
+              {c.country} · Your North Score {r.north.total}/100
             </p>
           </div>
         </div>
@@ -897,6 +925,27 @@ function CityDetail({
             />
           </div>
 
+
+          <div>
+            <div className="mb-3 flex items-baseline justify-between gap-3">
+              <p className="text-sm font-semibold">Your North Score</p>
+              <p className="numeric text-sm">
+                <span className="text-lg font-semibold text-primary">{r.north.total}</span>
+                <span className="text-muted-foreground">/100</span>
+              </p>
+            </div>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {r.north.pillars.map((p) => (
+                <PillarRow key={p.key} pillar={p} t={t} />
+              ))}
+            </div>
+            <p className="mt-2 text-[11px] text-muted-foreground">
+              {t(
+                "Fuentes: Numbeo, OECD, World Bank, WHO, Global Peace Index, IQAir, Ookla, World Happiness Report y Nomad List. Estimaciones de referencia.",
+                "Sources: Numbeo, OECD, World Bank, WHO, Global Peace Index, IQAir, Ookla, World Happiness Report and Nomad List. Reference estimates.",
+              )}
+            </p>
+          </div>
 
           <div>
             <p className="mb-2 text-sm font-semibold">
