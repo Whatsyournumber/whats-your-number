@@ -112,11 +112,11 @@ function LifePlanner() {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
-    const oldIndex = goals.findIndex((g) => g.id === active.id);
-    const newIndex = goals.findIndex((g) => g.id === over.id);
+    const oldIndex = sortedGoals.findIndex((s) => s.g.id === active.id);
+    const newIndex = sortedGoals.findIndex((s) => s.g.id === over.id);
     if (oldIndex === -1 || newIndex === -1) return;
-    const next = arrayMove(goals, oldIndex, newIndex);
-    void reorder(next.map((g) => g.id));
+    const next = arrayMove(sortedGoals, oldIndex, newIndex);
+    void reorder(next.map((s) => s.g.id));
   };
 
   const target = data.plan.targetCapital;
@@ -161,12 +161,21 @@ function LifePlanner() {
   const monthsDelta = baseMonths !== null && allMonths !== null ? allMonths - baseMonths : null;
 
 
+  const scoredGoals = useMemo(
+    () => goals.map((g) => ({ g, impact: yearsDiff(baseMonths, sim([g])) ?? 0 })),
+    [goals, baseMonths, sim],
+  );
+
+  const sortedGoals = useMemo(
+    () => [...scoredGoals].sort((a, b) => b.impact - a.impact),
+    [scoredGoals],
+  );
+
   const best = useMemo(() => {
-    const scored = goals.map((g) => ({ g, impact: yearsDiff(baseMonths, sim([g])) ?? 0 }));
-    const worst = [...scored].sort((a, b) => b.impact - a.impact)[0];
-    const accel = [...scored].sort((a, b) => a.impact - b.impact)[0];
+    const worst = [...scoredGoals].sort((a, b) => b.impact - a.impact)[0];
+    const accel = [...scoredGoals].sort((a, b) => a.impact - b.impact)[0];
     return { worst, accel };
-  }, [goals, baseMonths, start, target, annualReturn, savings]);
+  }, [scoredGoals]);
 
   const tpl = draft?.template ? templateById(draft.template) : null;
   const derived = tpl && draft ? tpl.derive(draft.values) : null;
@@ -322,18 +331,18 @@ function LifePlanner() {
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
         >
-          <SortableContext items={goals.map((g) => g.id)}>
+          <SortableContext items={sortedGoals.map((s) => s.g.id)}>
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {goals.map((g, idx) => (
+              {sortedGoals.map((s, idx) => (
                 <SortableGoalCard
-                  key={g.id}
-                  g={g}
+                  key={s.g.id}
+                  g={s.g}
                   idx={idx}
                   data={data}
                   profile={profile}
                   baseMonths={baseMonths}
-                  onEdit={() => setDraft(draftFromGoal(g))}
-                  onRemove={() => void remove(g.id)}
+                  onEdit={() => setDraft(draftFromGoal(s.g))}
+                  onRemove={() => void remove(s.g.id)}
                 />
               ))}
             </div>
