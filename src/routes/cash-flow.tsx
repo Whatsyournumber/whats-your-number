@@ -338,7 +338,9 @@ function CashFlow() {
                 total={totalIncome}
                 target={40}
                 fmt={fmt}
-                tooltip={t("Vivienda, alimentos, transporte, servicios y seguros del mes.", "Housing, food, transportation, utilities and insurance for the month.")}
+                tooltip={t("Vivienda, hipoteca, condominio, alimentos, transporte, servicios y seguros del mes.", "Housing, mortgage, HOA, food, transportation, utilities and insurance for the month.")}
+                breakdown={needsBreakdown}
+
               />
               <Row
                 label={t("Ahorro e inversión", "Savings & investing")}
