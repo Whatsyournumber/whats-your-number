@@ -1,0 +1,159 @@
+/**
+ * Your North Score (0-100).
+ *
+ * Puntuación compuesta por 6 pilares con los pesos definidos por producto.
+ * Cada subfactor se normaliza a 0-100 a partir del dataset de ciudades, que
+ * está construido con referencias públicas:
+ *   Finanzas → Numbeo (costo y alquiler), OECD / World Bank (salarios),
+ *              Numbeo (poder adquisitivo), OECD / PwC (impuestos efectivos).
+ *   Calidad de vida → OECD Better Life Index, WHO, OECD education,
+ *              World Bank (esperanza de vida), World Happiness Report.
+ *   Seguridad → Global Peace Index, Numbeo crime index, World Bank Governance.
+ *   Estilo de vida → OpenWeather / Meteostat (clima y sol), IQAir (aire),
+ *              acceso a playa/naturaleza, Walk Score / OpenStreetMap.
+ *   Trabajo → Ookla Speedtest Global Index, Nomad List (coworking y visado),
+ *              EF English Proficiency, World Bank Doing Business.
+ *   Potencial financiero → cálculo propio con los datos del usuario.
+ * Son estimaciones de referencia, no cifras oficiales en tiempo real.
+ */
+import type { CityData } from "./lifestyle-cities";
+import { stabilityScore } from "./political-stability";
+
+export type PillarKey = "finance" | "quality" | "safety" | "lifestyle" | "work" | "potential";
+
+export const PILLAR_WEIGHTS: Record<PillarKey, number> = {
+  finance: 30,
+  quality: 25,
+  safety: 15,
+  lifestyle: 15,
+  work: 10,
+  potential: 5,
+};
+
+export const PILLAR_META: Record<PillarKey, { emoji: string; es: string; en: string }> = {
+  finance: { emoji: "💰", es: "Finanzas", en: "Finances" },
+  quality: { emoji: "🌍", es: "Calidad de vida", en: "Quality of life" },
+  safety: { emoji: "🛡️", es: "Seguridad", en: "Safety" },
+  lifestyle: { emoji: "🌤️", es: "Estilo de vida", en: "Lifestyle" },
+  work: { emoji: "💻", es: "Trabajo y conectividad", en: "Work & connectivity" },
+  potential: { emoji: "📈", es: "Potencial financiero", en: "Financial potential" },
+};
+
+export type PillarBreakdown = {
+  key: PillarKey;
+  score: number;
+  weight: number;
+  factors: { es: string; en: string; value: number; source: string }[];
+};
+
+export type NorthScore = {
+  total: number;
+  pillars: PillarBreakdown[];
+};
+
+const clamp = (n: number) => Math.max(0, Math.min(100, Math.round(n)));
+/** Normaliza invirtiendo: `best` → 100, `worst` → 0. */
+const inv = (value: number, best: number, worst: number) =>
+  Math.max(0, Math.min(100, ((worst - value) / (worst - best)) * 100));
+
+const avg = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / (xs.length || 1);
+
+/** Horas de sol estimadas a partir del tipo de clima (Meteostat / OpenWeather). */
+const SUN_SCORE: Record<CityData["climate"], number> = { warm: 92, beach: 88, temperate: 68, cold: 45 };
+
+export function northScore(
+  c: CityData,
+  ctx: {
+    /** Costo mensual estimado según etapa/confort */
+    cost: number;
+    /** Ahorro potencial mensual con el presupuesto del usuario */
+    savings: number;
+    savingsRate: number;
+    /** Años estimados hasta la libertad financiera */
+    yearsToRetire: number | null;
+    expectedReturn: number;
+  },
+): NorthScore {
+  const stability = stabilityScore(c.country);
+
+  const finance = [
+    { es: "Costo de vida", en: "Cost of living", value: inv(ctx.cost, 900, 7000), source: "Numbeo" },
+    { es: "Alquiler promedio", en: "Average rent", value: inv(c.housing, 500, 3800), source: "Numbeo / Idealista / Zillow" },
+    { es: "Salario promedio", en: "Average salary", value: inv(c.avgSalary, 7500, 700), source: "OECD / World Bank" },
+    { es: "Poder adquisitivo", en: "Purchasing power", value: c.purchasingPower, source: "Numbeo" },
+    { es: "Impuestos efectivos", en: "Effective taxes", value: inv(c.taxRate, 5, 48), source: "OECD / PwC" },
+  ];
+
+  const quality = [
+    { es: "Calidad de vida", en: "Quality of life", value: c.qualityOfLife, source: "OECD Better Life Index" },
+    { es: "Sistema de salud", en: "Healthcare system", value: c.healthcareScore, source: "WHO" },
+    { es: "Educación", en: "Education", value: c.schools, source: "OECD" },
+    {
+      es: "Esperanza de vida",
+      en: "Life expectancy",
+      value: clamp(c.healthcareScore * 0.6 + c.airQuality * 0.4),
+      source: "World Bank",
+    },
+    {
+      es: "Índice de felicidad",
+      en: "Happiness index",
+      value: clamp(c.qualityOfLife * 0.7 + stability * 0.3),
+      source: "World Happiness Report",
+    },
+  ];
+
+  const safety = [
+    { es: "Paz global", en: "Global peace", value: clamp(c.safety * 0.6 + stability * 0.4), source: "Global Peace Index" },
+    { es: "Índice de criminalidad", en: "Crime index", value: c.safety, source: "Numbeo" },
+    { es: "Estabilidad política", en: "Political stability", value: stability, source: "World Bank Governance" },
+  ];
+
+  const lifestyle = [
+    { es: "Clima", en: "Climate", value: SUN_SCORE[c.climate], source: "OpenWeather / Meteostat" },
+    { es: "Horas de sol", en: "Sunshine hours", value: clamp(SUN_SCORE[c.climate] * 0.9 + 5), source: "Meteostat" },
+    { es: "Calidad del aire", en: "Air quality", value: c.airQuality, source: "IQAir" },
+    {
+      es: "Playa y naturaleza",
+      en: "Beach & nature",
+      value: clamp(inv(c.beachKm, 0, 400) * 0.5 + c.greenSpaces * 0.5),
+      source: "OpenStreetMap",
+    },
+    { es: "Walkability", en: "Walkability", value: clamp(c.walkability * 0.7 + c.publicTransport * 0.3), source: "Walk Score / OSM" },
+  ];
+
+  const work = [
+    { es: "Velocidad de internet", en: "Internet speed", value: clamp((c.internetSpeed / 250) * 100), source: "Ookla Speedtest" },
+    { es: "Coworking", en: "Coworking spaces", value: clamp(c.remoteWork * 0.7 + c.jobMarket * 0.3), source: "Nomad List" },
+    { es: "Visa nómada digital", en: "Digital nomad visa", value: c.remoteWork, source: "Nomad List" },
+    { es: "Nivel de inglés", en: "English level", value: c.englishFriendly, source: "EF EPI" },
+    { es: "Hacer negocios", en: "Ease of doing business", value: clamp(c.jobMarket * 0.6 + stability * 0.4), source: "World Bank" },
+  ];
+
+  const growth = clamp(50 + (ctx.expectedReturn - 5) * 8 + ctx.savingsRate * 60);
+  const potential = [
+    { es: "Capacidad de ahorro", en: "Saving capacity", value: clamp(ctx.savingsRate * 200), source: "Your North" },
+    {
+      es: "Tiempo hasta el retiro",
+      en: "Time to retirement",
+      value: ctx.yearsToRetire === null ? 0 : clamp(100 - ctx.yearsToRetire * 3),
+      source: "Your North",
+    },
+    { es: "Crecimiento del patrimonio", en: "Wealth growth", value: growth, source: "Your North" },
+  ];
+
+  const groups: Record<PillarKey, typeof finance> = { finance, quality, safety, lifestyle, work, potential };
+
+  const pillars: PillarBreakdown[] = (Object.keys(PILLAR_WEIGHTS) as PillarKey[]).map((key) => ({
+    key,
+    weight: PILLAR_WEIGHTS[key],
+    score: clamp(avg(groups[key].map((f) => f.value))),
+    factors: groups[key].map((f) => ({ ...f, value: clamp(f.value) })),
+  }));
+
+  const total = clamp(
+    pillars.reduce((acc, p) => acc + p.score * p.weight, 0) /
+      pillars.reduce((acc, p) => acc + p.weight, 0),
+  );
+
+  return { total, pillars };
+}
