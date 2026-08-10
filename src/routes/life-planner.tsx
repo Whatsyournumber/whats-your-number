@@ -501,6 +501,7 @@ function SortableGoalCard({
   g,
   idx,
   data,
+  profile,
   baseMonths,
   onEdit,
   onRemove,
@@ -508,6 +509,7 @@ function SortableGoalCard({
   g: LifeGoal;
   idx: number;
   data: ReturnType<typeof buildDataset>;
+  profile: ReturnType<typeof useProfile>["profile"];
   baseMonths: number | null;
   onEdit: () => void;
   onRemove: () => void;
@@ -519,7 +521,7 @@ function SortableGoalCard({
     transition,
   };
 
-  const impact = yearsDiff(baseMonths, simGoal(g, baseMonths, data, t));
+  const impact = yearsDiff(baseMonths, simGoal(g, profile, baseMonths, data));
   const pct = g.cost > 0 ? Math.min(100, (g.saved / g.cost) * 100) : 0;
   const good = impact !== null && impact < -0.08;
   const bad = impact !== null && impact > 0.08;
