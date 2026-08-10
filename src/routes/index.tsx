@@ -69,10 +69,13 @@ function DemoCard() {
       className="mt-16"
     >
       <div className="mb-10 text-center">
-        <h2 className="font-display text-3xl font-semibold tracking-tight md:text-5xl">
+        <span className="text-xs font-medium uppercase tracking-wider text-primary">
+          {t("Descubre tu número", "Discover your number")}
+        </span>
+        <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-5xl">
           {t("Financial freedom has a number. What’s yours?", "Financial freedom has a number. What’s yours?")}
         </h2>
-        <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground">
+        <p className="mx-auto mt-3 max-w-xl text-base text-muted-foreground">
           {t("Know your number. Live freely.", "Know your number. Live freely.")}
         </p>
         <Button asChild size="lg" className="mt-6 gap-2 rounded-full px-8">
@@ -81,6 +84,7 @@ function DemoCard() {
           </Link>
         </Button>
       </div>
+
 
       <Link to="/demo" search={{ start: 1 }} className="group block">
         <div className="surface glow relative overflow-hidden p-8 transition-transform duration-300 hover:scale-[1.01] md:p-12">
