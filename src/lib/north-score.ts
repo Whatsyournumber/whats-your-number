@@ -18,6 +18,7 @@
  */
 import type { CityData } from "./lifestyle-cities";
 import { stabilityScore } from "./political-stability";
+import { expatScore } from "./expat-index";
 
 export type PillarKey = "finance" | "quality" | "safety" | "lifestyle" | "work" | "potential";
 
@@ -75,6 +76,7 @@ export function northScore(
   },
 ): NorthScore {
   const stability = stabilityScore(c.country);
+  const expat = expatScore(c.country);
 
   const finance = [
     { es: "Costo de vida", en: "Cost of living", value: inv(ctx.cost, 900, 7000), source: "Numbeo" },
@@ -99,6 +101,12 @@ export function northScore(
       en: "Happiness index",
       value: clamp(c.qualityOfLife * 0.7 + stability * 0.3),
       source: "World Happiness Report",
+    },
+    {
+      es: "Satisfacción de expatriados",
+      en: "Expat satisfaction",
+      value: expat,
+      source: "InterNations Expat Insider 2026",
     },
   ];
 
@@ -126,6 +134,7 @@ export function northScore(
     { es: "Coworking", en: "Coworking spaces", value: clamp(c.remoteWork * 0.7 + c.jobMarket * 0.3), source: "Nomad List" },
     { es: "Visa nómada digital", en: "Digital nomad visa", value: c.remoteWork, source: "Nomad List" },
     { es: "Nivel de inglés", en: "English level", value: c.englishFriendly, source: "EF EPI" },
+    { es: "Facilidad de instalarse", en: "Ease of settling in", value: clamp(expat * 0.7 + c.englishFriendly * 0.3), source: "InterNations Expat Insider 2026" },
     { es: "Hacer negocios", en: "Ease of doing business", value: clamp(c.jobMarket * 0.6 + stability * 0.4), source: "World Bank" },
   ];
 
