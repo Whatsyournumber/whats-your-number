@@ -36,7 +36,8 @@ export const Route = createFileRoute("/demo")({
 });
 
 const RETURN_RATE = 0.07;
-const WITHDRAW_RATE = 0.04;
+const WITHDRAW_RATE = 0.07;
+
 
 function yearsToTarget(target: number, current: number, monthly: number) {
   if (current >= target) return 0;
@@ -311,9 +312,10 @@ function DemoPage() {
                 </div>
                 <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
                   {t(
-                    "Estimación con regla del 4% de retiro y 7% de rentabilidad anual.",
-                    "Estimate based on the 4% withdrawal rule and 7% annual return.",
+                    "Estimación con regla del 7% de retiro y 7% de rentabilidad anual.",
+                    "Estimate based on the 7% withdrawal rule and 7% annual return.",
                   )}
+
                 </p>
               </div>
 

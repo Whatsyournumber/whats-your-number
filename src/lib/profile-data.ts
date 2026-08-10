@@ -136,10 +136,11 @@ export function buildDataset(p: Profile): Dataset {
   // Sin ciudad elegida usamos los gastos reales de la persona, nunca un valor fijo.
   const cityMonthlySafe = cityMonthly ?? Math.round(expenses);
 
-  const cityTarget = Math.round(cityMonthlySafe * 12 * 25);
+  const cityTarget = Math.round((cityMonthlySafe * 12) / 0.07);
   const cityYears = yearsToFreedom(Math.max(0, nw), savings, cityMonthlySafe * 12, p.expected_return || 7);
   const cityCapacitySafe = Math.max(0, income - cityMonthlySafe);
-  const yearsToNumberSafe = yearsToFreedom(Math.max(0, nw), cityCapacitySafe, plan.targetCapital * ((p.withdrawal_rate || 4) / 100), p.expected_return || 7);
+  const yearsToNumberSafe = yearsToFreedom(Math.max(0, nw), cityCapacitySafe, plan.targetCapital * ((p.withdrawal_rate || 7) / 100), p.expected_return || 7);
+
 
 
 
