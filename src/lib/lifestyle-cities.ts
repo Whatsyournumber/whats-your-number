@@ -11,6 +11,7 @@ import { extraCities } from "./lifestyle-cities-extra";
 import { passesStability, stabilityScore, type StabilityPref } from "./political-stability";
 import { northScore, pillarWeights, type NorthScore } from "./north-score";
 import { globalRankingScore } from "./global-rankings";
+import { nomadFriendly } from "./nomad-visas";
 import barcelonaPhoto from "@/assets/city-barcelona-hd.jpg.asset.json";
 import cairoPhoto from "@/assets/city-cairo-nile.png.asset.json";
 import nairobiPhoto from "@/assets/city-nairobi.jpg.asset.json";
@@ -652,12 +653,14 @@ export const COMFORT_FACTOR: Record<ComfortPref, number> = {
 export type Metric =
   | "cost" | "housing" | "salary" | "purchasingPower" | "taxes" | "safety" | "healthcare"
   | "climate" | "internet" | "quality" | "walkability" | "transport" | "air" | "green"
-  | "remote" | "english" | "savings" | "retirement" | "schools" | "nightlife" | "jobs" | "stability";
+  | "remote" | "english" | "savings" | "retirement" | "schools" | "nightlife" | "jobs" | "stability"
+  | "nomadvisa";
 
 const BASE_WEIGHTS: Record<Metric, number> = {
   cost: 10, housing: 6, salary: 6, purchasingPower: 6, taxes: 6, safety: 8, healthcare: 6,
   climate: 5, internet: 4, quality: 8, walkability: 4, transport: 4, air: 4, green: 3,
   remote: 3, english: 3, savings: 10, retirement: 6, schools: 3, nightlife: 3, jobs: 4, stability: 6,
+  nomadvisa: 0,
 };
 
 const STAGE_WEIGHTS: Record<LifeStage, Partial<Record<Metric, number>>> = {
@@ -678,7 +681,8 @@ const GOAL_WEIGHTS: Record<GoalPref, Partial<Record<Metric, number>>> = {
   retire: { savings: 20, retirement: 16, taxes: 11, healthcare: 10 },
   family: { safety: 14, schools: 12, healthcare: 10, air: 8, green: 8 },
   career: { jobs: 16, salary: 14, purchasingPower: 10, english: 7, internet: 6 },
-  nomad: { remote: 16, internet: 12, english: 9, cost: 11, climate: 9 },
+  // Nómada digital: manda la regulación (visa + fiscalidad) y la infraestructura remota.
+  nomad: { nomadvisa: 26, remote: 16, internet: 13, english: 9, cost: 11, climate: 8, savings: 6 },
 };
 
 const CLIMATE_SCORE: Record<ClimatePref, Record<Climate, number>> = {
@@ -812,6 +816,7 @@ export function scoreCity(
     nightlife: c.nightlife,
     jobs: c.jobMarket,
     stability: stabilityScore(c.country),
+    nomadvisa: nomadFriendly(c),
   };
 
   const weights: Record<Metric, number> = { ...BASE_WEIGHTS };
