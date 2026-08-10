@@ -133,7 +133,9 @@ export function buildDataset(p: Profile): Dataset {
     : city
       ? Math.round(city.cost * lifestyleFactor)
       : null;
-  const cityMonthlySafe = cityMonthly ?? 2600;
+  // Sin ciudad elegida usamos los gastos reales de la persona, nunca un valor fijo.
+  const cityMonthlySafe = cityMonthly ?? Math.round(expenses);
+
   const cityTarget = Math.round(cityMonthlySafe * 12 * 25);
   const cityYears = yearsToFreedom(Math.max(0, nw), savings, cityMonthlySafe * 12, p.expected_return || 7);
   const cityCapacitySafe = Math.max(0, income - cityMonthlySafe);
