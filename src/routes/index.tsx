@@ -181,8 +181,8 @@ function Landing() {
       icon: Globe,
       title: t("Your next city", "Your next city"),
       desc: t(
-        "152 ciudades puntuadas con el Your North Score: costo, calidad de vida, seguridad y visados.",
-        "152 cities scored with the Your North Score: cost, quality of life, safety and visas.",
+        "152 ciudades puntuadas con el Your next city score: costo, calidad de vida, seguridad y visados.",
+        "152 cities scored with the Your next city score: cost, quality of life, safety and visas.",
       ),
     },
     {

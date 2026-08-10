@@ -150,7 +150,7 @@ export function ProductPreview() {
     nextcity: {
       kpi: "Madrid",
       delta: "87/100",
-      sub: t("Tu top ciudad ahora", "Your top city now"),
+      sub: t("Your next city", "Your next city"),
     },
     whatsyournumber: {
       kpi: "€1.50M",
@@ -403,7 +403,7 @@ export function ProductPreview() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-transparent" />
                         <span className="absolute left-3 top-3 rounded-full bg-primary/90 px-2 py-0.5 text-[10px] font-semibold text-primary-foreground">
-                          #1 · Your North Score
+                          #1 · Your next city
                         </span>
                         <div className="absolute inset-x-3 bottom-3 flex items-end justify-between gap-3">
                           <div>
@@ -566,8 +566,8 @@ export function ProductPreview() {
                 transition={{ duration: 0.25 }}
                 className="rounded-2xl bg-elevated/60 p-5 ring-1 ring-border"
               >
-                <p className="text-xs text-muted-foreground">
-                  {t("Your North Score", "Your North Score")}
+              <p className="text-xs text-muted-foreground">
+                  {t("Your next city", "Your next city")}
                 </p>
                 <div className="mt-3 flex items-center justify-center">
                   <div className="relative flex h-28 w-28 items-center justify-center rounded-full bg-background/50 ring-1 ring-border">
