@@ -282,8 +282,9 @@ export function ProductPreview() {
                       <Line type="monotone" dataKey="spy" stroke="var(--color-muted-foreground)" strokeWidth={2} strokeDasharray="4 4" dot={false} name="S&P 500" />
                     </ReLineChart>
                   ) : active === "cashflow" ? (
-                    <BarChart data={cashFlowData} layout="vertical">
+                    <BarChart data={cashFlowData} layout="vertical" margin={{ left: 24, right: 12 }}>
                       <XAxis type="number" hide domain={[0, 40]} />
+                      <YAxis dataKey="label" type="category" tickLine={false} axisLine={false} fontSize={9} stroke="var(--color-muted-foreground)" width={90} />
                       <Bar dataKey="value" radius={[0, 6, 6, 0]} barSize={28}>
                         {cashFlowData.map((d, i) => (
                           <Cell key={i} fill={d.color} />
