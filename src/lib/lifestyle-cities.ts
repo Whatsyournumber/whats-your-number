@@ -828,7 +828,7 @@ export function scoreCity(
     taxes: clamp(taxScore),
     safety: c.safety,
     healthcare: c.healthcareScore,
-    climate: CLIMATE_SCORE[f.climate][c.climate],
+    climate: climateScore(c, f.climate),
     internet: clamp((c.internetSpeed / 300) * 100),
     quality: c.qualityOfLife,
     walkability: c.walkability,
@@ -935,7 +935,8 @@ export function scoreCity(
 export function rankCities(f: Filters, ctx: { netWorth: number; age: number; expectedReturn: number }) {
   const pool = lifestyleCities
     .filter((c) => f.region === "any" || c.region === f.region)
-    .filter((c) => passesStability(c.country, f.stability));
+    .filter((c) => passesStability(c.country, f.stability))
+    .filter((c) => passesClimate(c, f.climate));
   return pool
     .map((c) => scoreCity(c, f, ctx))
     .sort((a, b) => {
