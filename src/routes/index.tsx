@@ -25,6 +25,7 @@ import ctaLifestyle from "@/assets/cta-lifestyle.jpg";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { ProductPreview } from "@/components/product-preview";
+import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
 import { useT } from "@/hooks/use-language";
@@ -571,6 +572,8 @@ function Landing() {
 
 
       </main>
+
+      <SiteFooter />
     </div>
   );
 }
