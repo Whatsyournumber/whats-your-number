@@ -837,10 +837,11 @@ function Gastos() {
         )}
       </Panel>
       <Panel
+        variant="minimal"
         title={t("Recomendaciones de la IA", "AI recommendations")}
         description={t("Acciones concretas ordenadas por impacto, y cuánto te acercan a tu número", "Concrete actions ranked by impact, and how much closer they get you to your number")}
         actions={
-          <Button size="sm" onClick={runAdvice} disabled={adviceLoading || !hasData}>
+          <Button size="sm" variant="outline" onClick={runAdvice} disabled={adviceLoading || !hasData}>
             {adviceLoading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" /> {t("Analizando", "Analyzing")}
