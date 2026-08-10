@@ -71,7 +71,7 @@ const PHOTO = {
   chiangmai: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Doi_Suthep_Temple_Chiang_Mai_Thailand.jpg/1920px-Doi_Suthep_Temple_Chiang_Mai_Thailand.jpg",
   brisbane: brisbanePhoto.url,
   accra: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Accra_Skyline.jpg/1920px-Accra_Skyline.jpg",
-  lagos: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Lagos_Island_City_Scape.jpg/1920px-Lagos_Island_City_Scape.jpg",
+  lagos: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Lekki_Ikoyi_Link_Bridge.jpg/1920px-Lekki_Ikoyi_Link_Bridge.jpg",
   kigali: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/An_aerial_view_of_new_look_of_Rwanda_Parliament_Building_in_Kimihurura%2C_Kigali_on_May_16%2C_2019._Emmanuel_Kwizera.jpg/1920px-An_aerial_view_of_new_look_of_Rwanda_Parliament_Building_in_Kimihurura%2C_Kigali_on_May_16%2C_2019._Emmanuel_Kwizera.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   casablanca: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Au_centre_de_Casablanca_%288177200639%29.jpg/1920px-Au_centre_de_Casablanca_%288177200639%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   rotterdam: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/0_8546_Rotterdam_-_Ausblick.jpg/1920px-0_8546_Rotterdam_-_Ausblick.jpg",
