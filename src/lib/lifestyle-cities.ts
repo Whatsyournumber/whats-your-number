@@ -8,7 +8,7 @@
  * Son estimaciones de referencia, no cifras oficiales en tiempo real.
  */
 import { extraCities } from "./lifestyle-cities-extra";
-import barcelonaPhoto from "@/assets/city-barcelona-w.png.asset.json";
+import barcelonaPhoto from "@/assets/city-barcelona-hd.jpg.asset.json";
 
 
 export type Region = "northamerica" | "latam" | "europe" | "asia" | "africa";
