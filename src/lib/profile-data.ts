@@ -171,7 +171,7 @@ export function buildDataset(p: Profile): Dataset {
       deadline: String(year + (cityYears ?? yearsToGoal)),
       monthly: savings,
       note: cityMonthly
-        ? `Presupuesto ${fmt(cityMonthly)}/mes · necesitas ${fmt(cityTarget)} · ${
+        ? `${p.city ? `Vivir en ${p.city}` : "Ciudad objetivo"}: ${fmt(cityMonthly)}/mes · capacidad de ahorro ${fmt(Math.max(0, income - cityMonthly))}/mes · necesitas ${fmt(cityTarget)} · ${
             cityYears === 0
               ? "ya puedes mudarte"
               : cityYears
