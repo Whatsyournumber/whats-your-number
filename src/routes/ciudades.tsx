@@ -936,31 +936,6 @@ function CityDetail({
         </div>
 
         <div className="space-y-6 p-5">
-          {/* Primary KPIs */}
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <PrimaryStat
-              icon="💵"
-              label={t("Costo total / mes", "Total cost / month")}
-              value={fmt(r.cost)}
-              sub={t("Presupuesto: ", "Budget: ") + fmt(filters.budget)}
-              highlight="neutral"
-            />
-            <PrimaryStat
-              icon="🐖"
-              label={t("Ahorro potencial", "Potential savings")}
-              value={fmt(Math.max(0, r.savings))}
-              sub={Math.round(r.savingsRate * 100) + "% " + t("del presupuesto", "of budget")}
-              highlight={affordable ? "positive" : "negative"}
-            />
-            <PrimaryStat
-              icon="🕰"
-              label={t("Libertad financiera", "Financial freedom")}
-              value={r.yearsToRetire !== null ? `${r.yearsToRetire} ${t("años", "yrs")}` : "—"}
-              sub={r.retireAge ? t("A los ", "At age ") + r.retireAge + t(" años", " years") : undefined}
-              highlight="neutral"
-            />
-          </div>
-
           {/* Key monthly costs */}
           <div>
             <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
