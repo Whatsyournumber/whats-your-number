@@ -200,7 +200,7 @@ function LifePlanner() {
               {t("Tu objetivo principal y no negociable.", "Your main, non-negotiable goal.")}
             </p>
             <div className="mt-5 flex items-center justify-between text-xs text-muted-foreground">
-              <span>{t("Avance actual", "Current progress")}</span>
+              <span>{t("Avance actual con nuevas decisiones", "Current progress with new decisions")}</span>
               <span className="numeric text-sm font-semibold text-foreground">{progress.toFixed(0)}%</span>
             </div>
             <div className="relative mt-2 h-2.5 overflow-hidden rounded-full bg-muted">
@@ -233,7 +233,7 @@ function LifePlanner() {
 
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
             <HeroStat icon={Target} label={t("Patrimonio objetivo", "Target capital")} value={data.fmtCompact(target)} />
             <HeroStat
               icon={CalendarDays}
@@ -574,13 +574,13 @@ function HeroStat({
         ? "bg-amber-400/15 text-amber-400"
         : "bg-primary/15 text-primary";
   return (
-    <div className="flex items-center gap-3 rounded-xl bg-elevated/60 px-4 py-3">
-      <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${badge}`}>
+    <div className="flex flex-col gap-3 rounded-xl bg-elevated/60 px-4 py-4">
+      <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${badge}`}>
         <Icon className="h-4 w-4" />
       </span>
       <div className="min-w-0">
-        <p className="text-[11px] text-muted-foreground">{label}</p>
-        <p className={`numeric truncate text-base font-semibold ${tone === "up" ? "text-emerald-300" : tone === "down" ? "text-amber-400" : ""}`}>
+        <p className="text-[11px] leading-relaxed text-muted-foreground">{label}</p>
+        <p className={`numeric break-words text-base font-semibold leading-tight ${tone === "up" ? "text-emerald-300" : tone === "down" ? "text-amber-400" : ""}`}>
           {value}
         </p>
       </div>
