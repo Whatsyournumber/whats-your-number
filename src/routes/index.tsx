@@ -157,16 +157,32 @@ function Landing() {
       icon: PieChart,
       title: t("Análisis de gastos", "Spending analysis"),
       desc: t(
-        "Categorías, subcategorías, comercios recurrentes y presupuestos vivos mes a mes.",
-        "Categories, subcategories, recurring merchants and live budgets month after month.",
+        "Categorías propias, gastos fijos, mapa de calor diario y tu gasto target mes a mes.",
+        "Custom categories, fixed expenses, a daily heatmap and your target spend month after month.",
       ),
     },
     {
       icon: LineChart,
       title: t("Patrimonio y portafolio", "Net worth and portfolio"),
       desc: t(
-        "Activos, pasivos, asignación y rendimiento contra el mercado en un solo panel.",
-        "Assets, liabilities, allocation and performance against the market in a single view.",
+        "Activos, pasivos, asignación y rendimiento con precios de mercado en vivo.",
+        "Assets, liabilities, allocation and performance with live market prices.",
+      ),
+    },
+    {
+      icon: RouteIcon,
+      title: "Life Planner",
+      desc: t(
+        "Simula casa, hijos, negocio o venta de empresa y mira cuántos años te acerca o aleja del retiro.",
+        "Simulate a home, kids, a business or an exit and see how many years it moves your retirement.",
+      ),
+    },
+    {
+      icon: Globe,
+      title: t("Your next city", "Your next city"),
+      desc: t(
+        "152 ciudades puntuadas con el Your North Score: costo, calidad de vida, seguridad y visados.",
+        "152 cities scored with the Your North Score: cost, quality of life, safety and visas.",
       ),
     },
     {
@@ -179,32 +195,45 @@ function Landing() {
     },
   ];
 
+  const panelChips = [
+    t("Patrimonio", "Net worth"),
+    t("Gastos", "Spending"),
+    t("Portafolio en vivo", "Live portfolio"),
+    t("Cash flow 40/40/20", "40/40/20 cash flow"),
+    "Life Planner",
+    t("Your next city", "Your next city"),
+  ];
+
   const whyCards = [
     {
-      icon: ScanEye,
-      title: t("Claridad total", "Total clarity"),
-      desc: t(
-        "Toda tu información financiera en un solo panel.",
-        "All your financial information in one place.",
-      ),
-    },
-    {
-      icon: Sparkles,
-      title: "AI Advisor",
-      desc: t(
-        "Clasifica automáticamente y detecta dónde ahorrar.",
-        "Automatically classifies and spots where to save.",
-      ),
-    },
-    {
       icon: Crosshair,
-      title: t("Tu número, siempre", "Your number, always"),
+      title: t("Tu número, siempre claro", "Your number, always clear"),
       desc: t(
-        "Sabe cuánto necesitas para ser libre y qué tan cerca estás.",
-        "Know how much you need to be free and how close you are.",
+        "Cuánto capital necesitas para vivir de tus rendimientos y en qué año llegas, según la tasa que elijas.",
+        "How much capital you need to live off returns, and the year you get there at the rate you choose.",
       ),
+      stat: t("30 segundos · sin registro", "30 seconds · no sign-up"),
+    },
+    {
+      icon: ScanEye,
+      title: t("La IA lee tus estados de cuenta", "AI reads your statements"),
+      desc: t(
+        "PDF o CSV: clasifica cada movimiento, detecta suscripciones muertas y te dice dónde recortar.",
+        "PDF or CSV: it classifies every transaction, spots dead subscriptions and tells you where to cut.",
+      ),
+      stat: t("142 movimientos en 9 segundos", "142 transactions in 9 seconds"),
+    },
+    {
+      icon: RouteIcon,
+      title: t("Decide tu vida, no solo tu mes", "Plan your life, not just your month"),
+      desc: t(
+        "Casa, hijos, negocio o mudarte a Madrid: cada decisión mueve tu fecha de libertad en tiempo real.",
+        "A home, kids, a business or moving to Madrid: each decision shifts your freedom date in real time.",
+      ),
+      stat: t("Life Planner + Your next city", "Life Planner + Your next city"),
     },
   ];
+
 
 
 
