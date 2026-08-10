@@ -291,7 +291,7 @@ function OnboardingPage() {
       <div className="relative mx-auto flex min-h-[calc(100vh-57px)] max-w-2xl flex-col justify-center px-5 py-10 sm:py-16">
         <AnimatePresence mode="wait">
           <motion.div
-            key={step === 0 ? `intro-${introPage}` : step}
+            key={step}
             initial={{ opacity: 0, y: 18, filter: "blur(6px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: -14, filter: "blur(6px)" }}
