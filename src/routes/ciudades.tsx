@@ -1079,7 +1079,7 @@ function CityDetail({
             <span className="text-border">·</span>
             <span className="inline-flex items-center gap-1">
               <span>💼</span>
-              {t("Salario neto est.", "Est. net salary")}: {fmt(c.avgSalary)}
+              {t("Ingreso/hora", "Hourly income")}: ${hourlyRate(c)}/h · {fmt(c.avgSalary)}/m
             </span>
             <span className="text-border">·</span>
             <span className="inline-flex items-center gap-1">
