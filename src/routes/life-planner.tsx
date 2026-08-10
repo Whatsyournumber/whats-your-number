@@ -87,35 +87,47 @@ function LifePlanner() {
   const data = buildDataset(profile);
   const [draft, setDraft] = useState<Draft | null>(null);
 
-  const target = data.plan.targetCapital;
-  const start = Math.max(0, data.netWorth);
   const annualReturn = profile.expected_return || 7;
   const savings = data.savings;
+  const swr = (profile.withdrawal_rate || 4) / 100;
 
-  const sim = (list: LifeGoal[]) =>
-    monthsToTarget({ start, target, annualReturn, savings, goals: list.map(toSim) });
+  const baseTarget = data.plan.targetCapital;
+  // Solo patrimonio líquido/invertible: la propiedad no financia el retiro.
+  const start = Math.max(0, data.netWorth - (profile.assets_property || 0));
+
+  // Flujo mensual recurrente de las metas: cambia el número que necesitas.
+  const netMonthly = useMemo(() => goals.reduce((a, g) => a + (g.kind === "boost" ? g.monthly : 0), 0), [goals]);
+  const target = swr > 0 ? Math.max(0, baseTarget - (netMonthly * 12) / swr) : baseTarget;
+
+  const sim = (list: LifeGoal[], tgt = target) =>
+    monthsToTarget({ start, target: tgt, annualReturn, savings, goals: list.map(toSim) });
 
   const simRaw = (g: SimGoal) => monthsToTarget({ start, target, annualReturn, savings, goals: [g] });
 
-  const baseMonths = useMemo(() => sim([]), [start, target, annualReturn, savings]);
+  const baseMonths = useMemo(() => sim([], baseTarget), [start, baseTarget, annualReturn, savings]);
   const allMonths = useMemo(() => sim(goals), [goals, start, target, annualReturn, savings]);
 
   const retireDate = allMonths !== null ? addMonths(new Date(), allMonths) : null;
-  const baseProgress = target > 0 ? Math.min(100, (start / target) * 100) : 0;
-  // Las decisiones de vida consumen (o liberan) capital: la base se mueve con ellas.
+  const baseProgress = baseTarget > 0 ? Math.min(100, (start / baseTarget) * 100) : 0;
+  // Las decisiones de vida consumen (o liberan) capital: el dinero que entra compone al rendimiento esperado.
+  const horizonYears = (allMonths ?? baseMonths ?? 0) / 12;
   const goalsCapital = useMemo(
     () =>
       goals.reduce((acc, g) => {
         const upfront = Math.max(0, g.cost - g.saved);
-        const payout = parseMeta(g.note)?.payout ?? 0;
-        return acc + payout - upfront;
+        const meta = parseMeta(g.note);
+        const payout = meta?.payout ?? 0;
+        const years = Math.max(0, horizonYears - (meta?.payoutYears ?? 0));
+        const grown = payout * Math.pow(1 + annualReturn / 100, years);
+        return acc + grown - upfront;
       }, 0),
-    [goals],
+    [goals, horizonYears, annualReturn],
   );
   const adjustedStart = start + goalsCapital;
   const progress = target > 0 ? Math.max(0, Math.min(100, (adjustedStart / target) * 100)) : 0;
   const progressDelta = progress - baseProgress;
   const combined = yearsDiff(baseMonths, allMonths);
+
 
 
   const best = useMemo(() => {
