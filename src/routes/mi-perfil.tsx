@@ -153,8 +153,9 @@ function MiPerfil() {
               <Input
                 type="number"
                 step="0.5"
-                value={form.withdrawal_rate || 4}
+                value={form.withdrawal_rate || 7}
                 onChange={(e) => set("withdrawal_rate", Number(e.target.value || 0))}
+
               />
             </Field>
             <Field label={t("País", "Country")}>
