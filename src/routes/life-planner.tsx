@@ -162,12 +162,26 @@ function LifePlanner() {
 
 
   const scoredGoals = useMemo(
-    () => goals.map((g) => ({ g, impact: yearsDiff(baseMonths, sim([g])) ?? 0 })),
+    () => goals.map((g) => {
+      const meta = parseMeta(g.note);
+      return {
+        g,
+        impact: yearsDiff(baseMonths, sim([g])) ?? 0,
+        payout: meta?.payout ?? 0,
+      };
+    }),
     [goals, baseMonths, sim],
   );
 
   const sortedGoals = useMemo(
-    () => [...scoredGoals].sort((a, b) => b.impact - a.impact),
+    () => [...scoredGoals].sort((a, b) => {
+      // Las ventas de capital (payout) tienen prioridad: se ordenan por monto descendente.
+      if (b.payout !== a.payout && (a.payout > 0 || b.payout > 0)) {
+        return b.payout - a.payout;
+      }
+      // El resto se ordena por impacto absoluto (años) de mayor a menor.
+      return Math.abs(b.impact) - Math.abs(a.impact);
+    }),
     [scoredGoals],
   );
 
