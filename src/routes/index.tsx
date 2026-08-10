@@ -282,15 +282,13 @@ function Landing() {
               {t("entendido en 30 segundos", "understood in 30 seconds")}
             </span>
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl font-display text-lg font-medium tracking-tight text-foreground/90 md:text-xl">
-            {t("La libertad financiera tiene un número. ¿Cuál es el tuyo?", "Know your number. Live freely.")}
-          </p>
-          <p className="mx-auto mt-3 max-w-xl text-base text-muted-foreground">
+          <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground">
             {t(
               "Patrimonio, gastos, cash flow, inversiones y retiro en una sola plataforma. Sube tus estados de cuenta y la IA hace el resto.",
               "Net worth, spending, cash flow, investments and retirement in a single platform. Upload your statements and let the AI do the rest.",
             )}
           </p>
+
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Button asChild size="lg" className="gap-2 rounded-full px-6">
