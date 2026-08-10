@@ -395,11 +395,11 @@ function SuggestedForYou({
   return (
     <Panel
       title={t("Sugeridas para ti", "Suggested for you")}
-      subtitle={t(
+      description={t(
         "Según tus respuestas del onboarding: presupuesto, etapa de vida, estilo y estabilidad política.",
         "Based on your onboarding answers: budget, life stage, lifestyle and political stability.",
       )}
-      action={
+      actions={
         <Button size="sm" variant="outline" onClick={() => onApply(f)}>
           <Sparkles className="mr-1.5 h-3.5 w-3.5" />
           {t("Aplicar a los filtros", "Apply to filters")}
