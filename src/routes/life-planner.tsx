@@ -167,7 +167,7 @@ function LifePlanner() {
   );
 
   const sortedGoals = useMemo(
-    () => [...scoredGoals].sort((a, b) => b.impact - a.impact),
+    () => [...scoredGoals].sort((a, b) => Math.abs(b.impact) - Math.abs(a.impact)),
     [scoredGoals],
   );
 
