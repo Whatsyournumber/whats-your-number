@@ -31,7 +31,7 @@ import {
   type Filters,
 } from "@/lib/lifestyle-cities";
 import { stabilityBadge } from "@/lib/political-stability";
-import { PILLAR_META, type PillarBreakdown } from "@/lib/north-score";
+import { PILLAR_META, PILLAR_WEIGHTS, type PillarBreakdown, type PillarKey } from "@/lib/north-score";
 import { suggestedFilters, suggestionReasons } from "@/lib/city-suggestions";
 import { buildDataset } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
