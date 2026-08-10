@@ -100,11 +100,14 @@ const lifeGoals = [
   { title: "Tener hijos", titleEn: "Have children", impact: "+11 meses", impactEn: "+11 months", value: "+€1.2k/mes", color: "negative" },
 ];
 
+const cityPhoto = (id: string) => lifestyleCities.find((c) => c.id === id)?.photo ?? "";
+
 const cities = [
-  { name: "Madrid", score: 87, cost: "€2.8k", tag: "Base actual", tagEn: "Current base" },
-  { name: "Barcelona", score: 84, cost: "€2.9k", tag: "Costa y cultura", tagEn: "Coast and culture" },
-  { name: "Lisboa", score: 82, cost: "€2.4k", tag: "Visa nómada", tagEn: "Nomad visa" },
+  { id: "madrid", name: "Madrid", score: 87, cost: "€2.8k", tag: "Base actual", tagEn: "Current base" },
+  { id: "barcelona", name: "Barcelona", score: 84, cost: "€2.9k", tag: "Costa y cultura", tagEn: "Coast and culture" },
+  { id: "lisbon", name: "Lisboa", score: 82, cost: "€2.4k", tag: "Visa nómada", tagEn: "Nomad visa" },
 ];
+
 
 const retirementTable = [
   { year: "2026", age: "38", capital: "€248k", monthly: "—" },
