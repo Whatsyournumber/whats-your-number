@@ -222,7 +222,7 @@ function Pricing() {
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="rounded-full px-6">
-              <Link to="/auth?mode=signup">
+              <Link to="/auth" search={{ mode: "signup" }}>
                 {t("Probar Pro 14 días gratis", "Try Pro 14 days free")}
               </Link>
             </Button>
