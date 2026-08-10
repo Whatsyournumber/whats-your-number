@@ -456,8 +456,8 @@ function CashFlow() {
               );
             })()}
 
+            <div className="mt-5 grid gap-4 text-sm md:grid-cols-3">
 
-            <div className="space-y-4 text-sm">
               <Row
                 label={t("Necesidades", "Needs")}
                 value={needsAmount}
