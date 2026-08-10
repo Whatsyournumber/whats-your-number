@@ -645,19 +645,24 @@ function SortableGoalCard({
   );
 }
 
-function simGoal(g: LifeGoal, baseMonths: number | null, data: ReturnType<typeof buildDataset>, t: ReturnType<typeof useT>) {
+function simGoal(
+  g: LifeGoal,
+  profile: ReturnType<typeof useProfile>["profile"],
+  baseMonths: number | null,
+  data: ReturnType<typeof buildDataset>,
+) {
   return yearsDiff(baseMonths, monthsToTarget({
     start: Math.max(0,
-      (data.profile.assets_cash ?? 0) +
-      (data.profile.assets_bank ?? 0) +
-      (data.profile.assets_retirement ?? 0) +
-      (data.profile.assets_etf ?? 0) +
-      (data.profile.assets_stocks ?? 0) +
-      (data.profile.assets_crypto ?? 0) -
-      (data.profile.liabilities ?? 0)
+      (profile.assets_cash ?? 0) +
+      (profile.assets_bank ?? 0) +
+      (profile.assets_retirement ?? 0) +
+      (profile.assets_etf ?? 0) +
+      (profile.assets_stocks ?? 0) +
+      (profile.assets_crypto ?? 0) -
+      (profile.liabilities ?? 0)
     ),
     target: data.plan.targetCapital,
-    annualReturn: Math.max(7, data.profile.expected_return || 7),
+    annualReturn: Math.max(7, profile.expected_return || 7),
     savings: data.savings,
     goals: [toSim(g)],
   }));
