@@ -820,38 +820,6 @@ function Stat({
   );
 }
 
-function PrimaryStat({
-  icon,
-  label,
-  value,
-  sub,
-  highlight,
-}: {
-  icon: string;
-  label: string;
-  value: string;
-  sub?: string | undefined;
-  highlight?: "positive" | "negative" | "neutral";
-}) {
-  const valueColor =
-    highlight === "positive"
-      ? "text-positive"
-      : highlight === "negative"
-        ? "text-negative"
-        : "text-foreground";
-
-  return (
-    <div className="relative overflow-hidden rounded-xl border border-border/60 bg-gradient-to-br from-elevated/80 to-elevated/40 p-4">
-      <div className="absolute -right-2 -top-2 text-4xl opacity-[0.08]">{icon}</div>
-      <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{label}</p>
-      <p className={cn("numeric mt-1.5 text-xl font-semibold tracking-tight", valueColor)}>
-        {value}
-      </p>
-      {sub && <p className="numeric mt-1 text-xs text-muted-foreground">{sub}</p>}
-    </div>
-  );
-}
-
 function PillarRow({ pillar, t }: { pillar: PillarBreakdown; t: (es: string, en: string) => string }) {
   const meta = PILLAR_META[pillar.key];
   return (
