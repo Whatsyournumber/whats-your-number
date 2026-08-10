@@ -391,6 +391,17 @@ function Gastos() {
         )
       : null;
 
+  // Valor futuro de recortar y reinvertir al 7% anual (capitalización mensual).
+  const RATE = 7;
+  const horizonYears = Math.min(30, Math.max(5, baseYears ?? 15));
+  const futureValue = (monthly: number, years = horizonYears) => {
+    const r = RATE / 100 / 12;
+    const n = Math.round(years * 12);
+    if (monthly <= 0) return 0;
+    return monthly * ((Math.pow(1 + r, n) - 1) / r);
+  };
+
+
   return (
     <PageShell>
       <PageHeader
@@ -842,32 +853,57 @@ function Gastos() {
           </p>
         )}
         {advice && (
-          <div className="space-y-3">
-            {baseYears !== null && (
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-1 rounded-xl bg-elevated/60 px-4 py-3 text-sm">
-                <span className="text-muted-foreground">
-                  {t("Con tu ritmo actual llegas a tu número en", "At your current pace you reach your number in")}{" "}
-                  <span className="numeric font-semibold text-foreground">{baseYears} {t("años", "years")}</span>
-                </span>
-                {totalSaving > 0 && yearsWithAll !== null && (
-                  <span className="text-muted-foreground">
-                    {t("Aplicando las 4 acciones", "Applying all 4 actions")}:{" "}
-                    <span className="numeric font-semibold text-positive">{yearsWithAll} {t("años", "years")}</span>
-                    {baseYears - yearsWithAll > 0 && (
-                      <span className="text-positive"> · −{(baseYears - yearsWithAll).toFixed(1)} {t("años", "yrs")}</span>
-                    )}
-                  </span>
-                )}
+          <div className="space-y-4">
+            <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-elevated/60 to-transparent p-5">
+              <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-primary/10 blur-3xl" />
+              <p className="relative text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                {t("Si recortas y lo inviertes al 7%", "If you cut back and invest it at 7%")}
+              </p>
+              <div className="relative mt-3 grid gap-4 sm:grid-cols-3">
+                <div>
+                  <p className="numeric text-2xl font-semibold md:text-3xl">{fmt(totalSaving)}<span className="text-sm font-normal text-muted-foreground">{t("/mes", "/mo")}</span></p>
+                  <p className="text-xs text-muted-foreground">{t("ahorro potencial total", "total potential savings")}</p>
+                </div>
+                <div>
+                  <p className="numeric text-2xl font-semibold text-positive md:text-3xl">{fmtCompact(futureValue(totalSaving))}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("en", "in")} {horizonYears.toFixed(0)} {t("años al 7% anual", "years at 7% a year")}
+                  </p>
+                </div>
+                <div>
+                  {baseYears !== null && (
+                    <>
+                      <p className="numeric text-2xl font-semibold md:text-3xl">
+                        {yearsWithAll !== null ? yearsWithAll : baseYears} <span className="text-sm font-normal text-muted-foreground">{t("años", "yrs")}</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {yearsWithAll !== null && baseYears - yearsWithAll > 0 ? (
+                          <>
+                            {t("a tu número", "to your number")} · <span className="text-positive">−{(baseYears - yearsWithAll).toFixed(1)} {t("años", "yrs")}</span> {t("vs. hoy", "vs. today")} ({baseYears})
+                          </>
+                        ) : (
+                          t("a tu número con tu ritmo actual", "to your number at your current pace")
+                        )}
+                      </p>
+                    </>
+                  )}
+                </div>
               </div>
-            )}
+            </div>
+
             <ul className="grid gap-3 md:grid-cols-2">
               {advice.map((a, i) => {
                 const gain = yearsGain(a.monthlySaving);
+                const fv = futureValue(a.monthlySaving);
                 return (
-                  <li key={i} className="flex flex-col gap-2 rounded-2xl border border-border/60 bg-elevated/40 p-4">
+                  <li
+                    key={i}
+                    className="group relative flex flex-col gap-2 overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-b from-elevated/70 to-elevated/25 p-4 transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
+                  >
+                    <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-2">
-                        <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-muted text-[11px] font-semibold">
+                        <span className="numeric flex h-6 w-6 items-center justify-center rounded-lg bg-primary/15 text-[11px] font-semibold text-primary">
                           {i + 1}
                         </span>
                         <p className="text-sm font-semibold">{a.label}</p>
@@ -882,25 +918,37 @@ function Gastos() {
                         {a.overspent ? t("Te excediste", "Overspent") : t("Oportunidad", "Opportunity")}
                       </span>
                     </div>
-                    <p className="text-xs text-muted-foreground">{a.diagnosis}</p>
+                    <p className="text-xs leading-relaxed text-muted-foreground">{a.diagnosis}</p>
                     <p className="text-sm font-medium text-foreground/90">→ {a.action}</p>
-                    <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 pt-1 text-xs">
-                      <span className="numeric font-semibold text-positive">
-                        +{fmt(a.monthlySaving)}{t("/mes", "/mo")}
-                      </span>
-                      {gain !== null && gain > 0 && (
-                        <span className="inline-flex items-center gap-1 text-muted-foreground">
-                          <TrendingUp className="h-3 w-3 text-positive" />
-                          {t("te acerca", "gets you")} <span className="numeric font-semibold text-foreground">{gain.toFixed(1)} {t("años", "yrs")}</span> {t("a tu número", "closer to your number")}
-                        </span>
-                      )}
+                    <div className="mt-auto grid grid-cols-2 gap-2 pt-2">
+                      <div className="rounded-xl bg-background/40 px-3 py-2">
+                        <p className="numeric text-sm font-semibold text-positive">
+                          +{fmt(a.monthlySaving)}<span className="text-[10px] font-normal text-muted-foreground">{t("/mes", "/mo")}</span>
+                        </p>
+                        <p className="text-[10px] text-muted-foreground">{t("recorte estimado", "estimated cut")}</p>
+                      </div>
+                      <div className="rounded-xl bg-background/40 px-3 py-2">
+                        <p className="numeric text-sm font-semibold">{fmtCompact(fv)}</p>
+                        <p className="text-[10px] text-muted-foreground">
+                          {t("invertido al 7% en", "invested at 7% in")} {horizonYears.toFixed(0)}a
+                        </p>
+                      </div>
                     </div>
+                    {gain !== null && gain > 0 && (
+                      <div className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+                        <TrendingUp className="h-3 w-3 text-positive" />
+                        {t("te acerca", "gets you")}{" "}
+                        <span className="numeric font-semibold text-foreground">{gain.toFixed(1)} {t("años", "yrs")}</span>{" "}
+                        {t("a tu número", "closer to your number")}
+                      </div>
+                    )}
                   </li>
                 );
               })}
             </ul>
           </div>
         )}
+
       </Panel>
     </PageShell>
   );
