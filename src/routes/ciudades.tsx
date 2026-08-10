@@ -277,16 +277,30 @@ function LifestyleSimulator() {
               ]}
             />
             <SelectFilter
-              label={t("Salario", "Salary")}
+              label={
+                filters.goal === "career"
+                  ? t("Rango salarial", "Salary range")
+                  : t("Prioridad de ingresos", "Income priority")
+              }
               value={filters.salary}
               onChange={(v) => set("salary", v)}
-              options={[
-                { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
-                { value: "low_cost", label: t("Costo bajo", "Lower cost"), icon: "💸" },
-                { value: "balanced", label: t("Equilibrado", "Balanced"), icon: "⚖️" },
-                { value: "high_income", label: t("Alto potencial", "High income"), icon: "📈" },
-                { value: "highest_paying", label: t("Mejor pagadas", "Highest paying"), icon: "💎" },
-              ]}
+              options={
+                filters.goal === "career"
+                  ? [
+                      { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
+                      { value: "balanced", label: t("Medio", "Mid range"), icon: "⚖️" },
+                      { value: "high_income", label: t("Alto", "High"), icon: "📈" },
+                      { value: "highest_paying", label: t("Top mundial", "Top paying"), icon: "💎" },
+                      { value: "low_cost", label: t("Bajo pero barato", "Lower but cheap"), icon: "💸" },
+                    ]
+                  : [
+                      { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
+                      { value: "low_cost", label: t("Costo bajo", "Lower cost"), icon: "💸" },
+                      { value: "balanced", label: t("Equilibrado", "Balanced"), icon: "⚖️" },
+                      { value: "high_income", label: t("Alto potencial", "High income"), icon: "📈" },
+                      { value: "highest_paying", label: t("Mejor pagadas", "Highest paying"), icon: "💎" },
+                    ]
+              }
             />
           </FilterGroup>
 
