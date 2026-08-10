@@ -10,6 +10,7 @@
 import { extraCities } from "./lifestyle-cities-extra";
 import { passesStability, stabilityScore, type StabilityPref } from "./political-stability";
 import { northScore, type NorthScore } from "./north-score";
+import { globalRankingScore } from "./global-rankings";
 import barcelonaPhoto from "@/assets/city-barcelona-hd.jpg.asset.json";
 import cairoPhoto from "@/assets/city-cairo-nile.png.asset.json";
 import nairobiPhoto from "@/assets/city-nairobi.jpg.asset.json";
