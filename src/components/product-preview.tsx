@@ -89,12 +89,6 @@ const spendCategories = [
 
 const pieColors = ["var(--color-primary)", "var(--color-chart-2)", "var(--color-chart-3)", "var(--color-chart-4)"];
 
-const lifeGoals = [
-  { title: "Vender mi empresa", titleEn: "Sell my company", impact: "-3.4 años", impactEn: "-3.4 years", value: "+€500k", color: "positive" },
-  { title: "Venta de Aleph", titleEn: "Aleph exit", impact: "-1.4 años", impactEn: "-1.4 years", value: "+€200k", color: "positive" },
-  { title: "Viajes al año", titleEn: "Yearly trips", impact: "+2.3 años", impactEn: "+2.3 years", value: "+€18k/año", color: "negative" },
-  { title: "Tener hijos", titleEn: "Have children", impact: "+11 meses", impactEn: "+11 months", value: "+€1.2k/mes", color: "negative" },
-];
 
 const cityPhoto = (id: string) => lifestyleCities.find((c) => c.id === id)?.photo ?? "";
 
