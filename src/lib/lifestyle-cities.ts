@@ -823,10 +823,14 @@ export function scoreCity(
   // casi todo entre 60 y 80.
   score = 50 + (score - 50) * 1.25;
 
+  const reasons = (Object.keys(weights) as Metric[])
+    .map((k) => ({ label: k, value: values[k] * weights[k] }))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 3);
+
   return {
     city: c,
     score: Math.round(clamp(score)),
-
     north,
     cost,
     savings,
@@ -842,5 +846,16 @@ export function rankCities(f: Filters, ctx: { netWorth: number; age: number; exp
   const pool = lifestyleCities
     .filter((c) => f.region === "any" || c.region === f.region)
     .filter((c) => passesStability(c.country, f.stability));
-  return pool.map((c) => scoreCity(c, f, ctx)).sort((a, b) => b.score - a.score);
+  return pool
+    .map((c) => scoreCity(c, f, ctx))
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      // Desempates: primero el Your North Score puro, luego calidad de vida,
+      // seguridad y por último menor costo.
+      if (b.north.total !== a.north.total) return b.north.total - a.north.total;
+      if (b.city.qualityOfLife !== a.city.qualityOfLife) return b.city.qualityOfLife - a.city.qualityOfLife;
+      if (b.city.safety !== a.city.safety) return b.city.safety - a.city.safety;
+      return a.cost - b.cost;
+    });
 }
+
