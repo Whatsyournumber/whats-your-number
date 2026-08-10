@@ -6,6 +6,9 @@ import type { CityData } from "./lifestyle-cities";
 import osloPhoto from "@/assets/city-oslo-hd.jpg.asset.json";
 import brisbanePhoto from "@/assets/city-brisbane.png.asset.json";
 import gaboronePhoto from "@/assets/gaborone.png.asset.json";
+import lagosPhoto from "@/assets/city-lagos.jpg.asset.json";
+import windhoekPhoto from "@/assets/city-windhoek.jpg.asset.json";
+import addisPhoto from "@/assets/city-addis.jpg.asset.json";
 const PHOTO = {
   hamburg: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/HH_Alsterarkaden_pano1.jpg/1920px-HH_Alsterarkaden_pano1.jpg",
   zagreb: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg/1920px-Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -71,7 +74,7 @@ const PHOTO = {
   chiangmai: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Doi_Suthep_Temple_Chiang_Mai_Thailand.jpg/1920px-Doi_Suthep_Temple_Chiang_Mai_Thailand.jpg",
   brisbane: brisbanePhoto.url,
   accra: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Accra_Skyline.jpg/1920px-Accra_Skyline.jpg",
-  lagos: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Lekki_Ikoyi_Link_Bridge.jpg/1920px-Lekki_Ikoyi_Link_Bridge.jpg",
+  lagos: lagosPhoto.url,
   kigali: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/An_aerial_view_of_new_look_of_Rwanda_Parliament_Building_in_Kimihurura%2C_Kigali_on_May_16%2C_2019._Emmanuel_Kwizera.jpg/1920px-An_aerial_view_of_new_look_of_Rwanda_Parliament_Building_in_Kimihurura%2C_Kigali_on_May_16%2C_2019._Emmanuel_Kwizera.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   casablanca: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Au_centre_de_Casablanca_%288177200639%29.jpg/1920px-Au_centre_de_Casablanca_%288177200639%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   rotterdam: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/0_8546_Rotterdam_-_Ausblick.jpg/1920px-0_8546_Rotterdam_-_Ausblick.jpg",
@@ -104,9 +107,9 @@ const PHOTO = {
   almaty: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Almaty_Skyline_from_the_K%C3%B6k_T%C3%B6be_hill.jpg/1920px-Almaty_Skyline_from_the_K%C3%B6k_T%C3%B6be_hill.jpg",
   goldcoast: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Clouds_over_the_Gold_Coast_skyline.jpg/1920px-Clouds_over_the_Gold_Coast_skyline.jpg",
   adelaide: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Adelaide_2022_Skyline.jpg/1920px-Adelaide_2022_Skyline.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  windhoek: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Windhoek_Panorama_Three_Circles_20190518.jpg/1920px-Windhoek_Panorama_Three_Circles_20190518.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  windhoek: windhoekPhoto.url,
   gaborone: gaboronePhoto.url,
-  addis: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Addis_Ababa_skyline.jpg/1920px-Addis_Ababa_skyline.jpg",
+  addis: addisPhoto.url,
   alexandria: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/%D8%A7%D9%84%D9%82%D9%84%D8%B9%D8%A9_%D8%A7%D8%B3%D9%83%D9%86%D8%AF%D8%B1%D9%8A%D8%A9.jpg/1920px-%D8%A7%D9%84%D9%82%D9%84%D8%B9%D8%A9_%D8%A7%D8%B3%D9%83%D9%86%D8%AF%D8%B1%D9%8A%D8%A9.jpg",
 };
 export const extraCities: CityData[] = [

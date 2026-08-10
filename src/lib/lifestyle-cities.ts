@@ -12,6 +12,7 @@ import { passesStability, stabilityScore, type StabilityPref } from "./political
 import { northScore, type NorthScore } from "./north-score";
 import barcelonaPhoto from "@/assets/city-barcelona-hd.jpg.asset.json";
 import cairoPhoto from "@/assets/city-cairo-nile.png.asset.json";
+import nairobiPhoto from "@/assets/city-nairobi.jpg.asset.json";
 
 
 export type Region = "northamerica" | "latam" | "europe" | "asia" | "africa";
@@ -107,7 +108,7 @@ const PHOTO = {
   taipei: "https://commons.wikimedia.org/wiki/Special:FilePath/Taipei%20skyline%20at%20sunset%2020190922.jpg?width=1920",
   auckland: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Auckland_Skyline_383495.jpg/1920px-Auckland_Skyline_383495.jpg",
   melbourne: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Aerial_panorama_of_Preston_facing_west_towards_the_Melbourne_skyline._July_2023.jpg/1920px-Aerial_panorama_of_Preston_facing_west_towards_the_Melbourne_skyline._July_2023.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  nairobi: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Nairobi_panorama_from_westlands.jpg/1920px-Nairobi_panorama_from_westlands.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  nairobi: nairobiPhoto.url,
   cairo: cairoPhoto.url,
   mauritius: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Skyline_Sampa.jpg/1920px-Skyline_Sampa.jpg",
   tunis: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Anfiteatro%2C_El_Jem%2C_T%C3%BAnez%2C_2016-09-04%2C_DD_55-66_HDR_PAN.jpg/1920px-Anfiteatro%2C_El_Jem%2C_T%C3%BAnez%2C_2016-09-04%2C_DD_55-66_HDR_PAN.jpg",
