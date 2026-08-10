@@ -141,7 +141,7 @@ function Gastos() {
   const fixed = useFixedExpenses();
   const categories = useCategories();
   const categoryOf = (t: Tx) => categorizeTx(t, categories.rules);
-  const [range, setRange] = useState<DateRange | undefined>(() => buildPresets(t)[0]!.range());
+  const [range, setRange] = usePersistedRange(() => buildPresets(t)[0]!.range());
 
   const from = range?.from ?? subDays(new Date(), 29);
   const to = range?.to ?? from;
