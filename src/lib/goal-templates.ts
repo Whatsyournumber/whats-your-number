@@ -1,13 +1,17 @@
 import type { SimGoal } from "@/lib/life-planner";
 
 export type TemplateId =
-  | "startup"
-  | "house_invest"
   | "house_live"
+  | "house_invest"
+  | "startup"
+  | "sell_company"
   | "car"
-  | "travel"
-  | "clothing"
+  | "education"
+  | "wedding"
   | "kids"
+  | "travel"
+  | "invest"
+  | "clothing"
   | "custom";
 
 export type GoalField = {
