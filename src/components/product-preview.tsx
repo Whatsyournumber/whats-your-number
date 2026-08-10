@@ -132,8 +132,6 @@ export function ProductPreview() {
     patrimonio: { kpi: "€248,300", delta: t("+6.4% este mes", "+6.4% this month"), sub: t("Patrimonio neto", "Net worth") },
     gastos: { kpi: "€2,940", delta: t("−11% vs. mes previo", "−11% vs. last month"), sub: t("Gasto variable + fijos", "Variable + fixed spending") },
     portafolio: { kpi: "+18.2%", delta: t("vs. S&P 500 +12.1%", "vs. S&P 500 +12.1%"), sub: t("Rentabilidad anualizada", "Annualized return") },
-    cashflow: { kpi: "€2,000", delta: t("40% ahorro/inversión", "40% save/invest"), sub: t("Cash flow mensual", "Monthly cash flow") },
-    lifeplanner: { kpi: "12.4", delta: t("años hasta el retiro", "years to retirement"), sub: t("Con todas tus decisiones", "With all your decisions") },
     nextcity: { kpi: "Madrid", delta: "87/100", sub: t("Tu top ciudad ahora", "Your top city now") },
     whatsyournumber: { kpi: "€1.50M", delta: t("al 8% anual", "at 8% yearly"), sub: t("Tu número de libertad", "Your freedom number") },
   };
