@@ -1,15 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { RefreshCw, X } from "lucide-react";
+import { useState } from "react";
 import { CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useT } from "@/hooks/use-language";
+import { useMarketSeries, useQuotes, useWatchlist } from "@/hooks/use-market";
 import { useProfile } from "@/hooks/use-profile";
-import { benchmark } from "@/lib/data";
 import { buildDataset } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
+
 
 export const Route = createFileRoute("/portafolio")({
   head: () => ({
