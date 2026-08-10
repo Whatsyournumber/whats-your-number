@@ -85,7 +85,7 @@ function Retiro() {
       <PageHeader eyebrow={t("Largo plazo", "Long term")} title="WhatsYournumber" subtitle={t("Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar.", "How much you have today and how much you will have when you stop working.")} />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <Link to="/portafolio" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
+        <Link to="/patrimonio" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
           <KpiCard
             label={t("Cuánto tengo", "How much I have")}
             value={fmt(investable)}
