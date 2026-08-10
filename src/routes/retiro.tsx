@@ -100,6 +100,72 @@ function Retiro() {
         <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${retirement.returnAnnualized}%`} hint={t("anual", "annual")} index={5} />
       </div>
 
+      <div className="surface p-6">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-sm font-medium">{t("Edita tu número", "Edit your number")}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {t("Ingreso mensual deseado y tasa de retiro anual.", "Desired monthly income and annual withdrawal rate.")}
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="numeric text-3xl font-semibold tracking-tight">{fmtCompact(liveNumber)}</p>
+            <p className="text-[11px] text-muted-foreground">
+              {fmt(wantMonthly)}/{t("mes", "mo")} · {swr.toFixed(1)}%
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-6 grid gap-6 md:grid-cols-[220px_1fr_auto] md:items-end">
+          <div>
+            <label className="text-[11px] uppercase tracking-wide text-muted-foreground">
+              {t("Ingreso mensual", "Monthly income")}
+            </label>
+            <Input
+              type="number"
+              className="mt-2 h-10 border-0 border-b border-border bg-transparent px-0 text-lg font-medium shadow-none focus-visible:ring-0"
+              value={wantMonthly || ""}
+              onChange={(e) => setWantMonthly(Number(e.target.value || 0))}
+              placeholder="7000"
+            />
+          </div>
+          <div>
+            <div className="flex items-center justify-between text-[11px] uppercase tracking-wide text-muted-foreground">
+              <span>{t("Tasa de retiro", "Withdrawal rate")}</span>
+              <span className="numeric text-sm font-medium text-foreground">{swr.toFixed(1)}%</span>
+            </div>
+            <Slider className="mt-4" value={[swr]} min={2} max={15} step={0.5} onValueChange={(v) => setSwr(v[0] ?? 4)} />
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {[3, 4, 5, 6, 8, 10, 12, 15].map((r) => (
+                <button
+                  key={r}
+                  type="button"
+                  onClick={() => setSwr(r)}
+                  className={`rounded-full px-2.5 py-1 text-[11px] transition-colors ${swr === r ? "bg-primary/15 text-foreground" : "text-muted-foreground hover:bg-elevated"}`}
+                >
+                  {r}%
+                </button>
+              ))}
+            </div>
+          </div>
+          <Button
+            size="sm"
+            variant={numberDirty ? "default" : "outline"}
+            className="rounded-full px-5"
+            disabled={!numberDirty || saving}
+            onClick={() => {
+              void save({ desired_retirement_income: wantMonthly, withdrawal_rate: swr }).then(() =>
+                toast.success(t("Tu número se actualizó", "Your number was updated")),
+              );
+            }}
+          >
+            {saving ? t("Guardando…", "Saving…") : t("Guardar", "Save")}
+          </Button>
+        </div>
+      </div>
+
+
+
       <div className="surface p-5">
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">{t("Progreso hacia tu capital objetivo", "Progress toward your target capital")}</span>
