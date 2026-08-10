@@ -124,8 +124,6 @@ export function ProductPreview() {
     { id: "patrimonio", label: t("Patrimonio", "Net Worth"), icon: LineChart },
     { id: "gastos", label: t("Gastos", "Spending"), icon: BarChart3 },
     { id: "portafolio", label: t("Portafolio", "Portfolio"), icon: TrendingUp },
-    { id: "cashflow", label: "40/40/20", icon: Wallet },
-    { id: "lifeplanner", label: "Life Planner", icon: Route },
     { id: "nextcity", label: t("Your next city", "Your next city"), icon: Globe },
     { id: "whatsyournumber", label: "WhatsYournumber", icon: Target },
   ] as const;
