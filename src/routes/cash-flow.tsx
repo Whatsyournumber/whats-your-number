@@ -302,15 +302,24 @@ function Row({
   total,
   target,
   fmt,
+  goodWhenHigher = false,
 }: {
   label: string;
   value: number;
   total: number;
   target: number;
   fmt: (n: number) => string;
+  goodWhenHigher?: boolean;
 }) {
   const p = total > 0 ? (value / total) * 100 : 0;
   const off = p - target;
+  const colorClass = goodWhenHigher
+    ? p >= target
+      ? "bg-positive"
+      : "bg-negative"
+    : off > 5
+      ? "bg-negative"
+      : "bg-primary";
   return (
     <div>
       <div className="flex items-center justify-between gap-2">
@@ -325,7 +334,7 @@ function Row({
 
       <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted">
         <div
-          className={`h-full rounded-full ${off > 5 ? "bg-negative" : "bg-primary"}`}
+          className={`h-full rounded-full ${colorClass}`}
           style={{ width: `${Math.min(p, 100)}%` }}
         />
       </div>
