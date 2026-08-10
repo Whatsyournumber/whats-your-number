@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Check, CreditCard, ShieldCheck, Sparkles, Zap } from "lucide-react";
 
@@ -12,7 +13,7 @@ export const Route = createFileRoute("/precios")({
       { title: "Precios — WhatsYournumber" },
       {
         name: "description",
-        content: "Planes de WhatsYournumber: empieza gratis, prueba Pro 14 días y escala a Patrimonio para familias y activos complejos.",
+        content: "Planes de WhatsYournumber: empieza gratis, paga mensual o anual con descuento, y escala a Patrimonio para familias y activos complejos.",
       },
       { property: "og:title", content: "Precios — WhatsYournumber" },
       { property: "og:description", content: "Planes simples para ordenar tu patrimonio con IA." },
@@ -23,14 +24,23 @@ export const Route = createFileRoute("/precios")({
   component: Pricing,
 });
 
+const DISCOUNT = 0.2; // 20% de descuento anual
+
+function yearlyTotal(monthly: number) {
+  return Math.round(monthly * 12 * (1 - DISCOUNT));
+}
+
 function Pricing() {
   const t = useT();
+  const [billing, setBilling] = useState<"monthly" | "yearly">("yearly");
+
+  const isYearly = billing === "yearly";
 
   const plans = [
     {
       name: "Free",
-      price: "$0",
-      period: t("/mes", "/mo"),
+      monthlyPrice: 0,
+      yearlyPrice: 0,
       desc: t(
         "Descubre tu número en 30 segundos y ordena tus finanzas básicas.",
         "Discover your number in 30 seconds and organize your basic finances.",
@@ -49,8 +59,8 @@ function Pricing() {
     },
     {
       name: "Pro",
-      price: "$12",
-      period: t("/mes", "/mo"),
+      monthlyPrice: 12,
+      yearlyPrice: yearlyTotal(12),
       desc: t(
         "Todo el sistema financiero con IA ilimitada para acelerar tu libertad.",
         "The full financial OS with unlimited AI to speed up your freedom.",
@@ -72,8 +82,8 @@ function Pricing() {
     },
     {
       name: "Patrimonio",
-      price: "$29",
-      period: t("/mes", "/mo"),
+      monthlyPrice: 29,
+      yearlyPrice: yearlyTotal(29),
       desc: t(
         "Para patrimonios complejos, familias y quienes toman decisiones con datos.",
         "For complex net worths, families and data-driven decision makers.",
@@ -140,46 +150,106 @@ function Pricing() {
               "Start free with your number and scale when you want to master your net worth with AI.",
             )}
           </p>
-        </section>
 
-        <section className="mt-12 grid gap-4 md:grid-cols-3">
-          {plans.map((plan) => (
-            <div
-              key={plan.name}
-              className={`surface relative flex flex-col p-6 transition-colors ${
-                plan.highlight ? "bg-gradient-to-b from-primary/5 to-transparent ring-1 ring-primary/40" : ""
+          {/* Toggle mensual / anual */}
+          <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-card/60 p-1 backdrop-blur">
+            <button
+              type="button"
+              onClick={() => setBilling("monthly")}
+              className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+                billing === "monthly"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              {plan.highlight && (
-                <span className="absolute right-5 top-5 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground">
-                  {t("Más popular", "Most popular")}
-                </span>
-              )}
-              <h2 className="text-sm font-semibold">{plan.name}</h2>
-              <div className="mt-3 flex items-end gap-1">
-                <span className="numeric text-4xl font-semibold tracking-tight">{plan.price}</span>
-                <span className="pb-1 text-xs text-muted-foreground">{plan.period}</span>
-              </div>
-              <p className="mt-2 text-sm text-muted-foreground">{plan.desc}</p>
-              <ul className="mt-6 flex-1 space-y-2.5">
-                {plan.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
-                    <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <Button
-                asChild
-                variant={plan.highlight ? "default" : "outline"}
-                className="mt-8 w-full rounded-full"
+              {t("Mensual", "Monthly")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setBilling("yearly")}
+              className={`relative rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+                billing === "yearly"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {t("Anual", "Yearly")}
+              <span
+                className={`absolute -right-2 -top-2 rounded-full bg-positive px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-positive-foreground ${
+                  billing === "yearly" ? "opacity-100" : "opacity-80"
+                }`}
               >
-                <Link to={plan.href} search={plan.search}>
-                  {plan.cta}
-                </Link>
-              </Button>
-            </div>
-          ))}
+                -20%
+              </span>
+            </button>
+          </div>
+          <p className="mt-2 text-xs text-muted-foreground">
+            {t(
+              "El plan anual se factura en un solo pago y ahorra 2 meses al año.",
+              "The yearly plan is billed in one payment and saves 2 months per year.",
+            )}
+          </p>
+        </section>
+
+        <section className="mt-10 grid gap-4 md:grid-cols-3">
+          {plans.map((plan) => {
+            const price = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
+            const period = isYearly ? t("/año", "/year") : t("/mes", "/mo");
+            const equivalentMonthly = isYearly && plan.monthlyPrice > 0
+              ? Math.round(plan.yearlyPrice / 12)
+              : null;
+
+            return (
+              <div
+                key={plan.name}
+                className={`surface relative flex flex-col p-6 transition-colors ${
+                  plan.highlight ? "bg-gradient-to-b from-primary/5 to-transparent ring-1 ring-primary/40" : ""
+                }`}
+              >
+                {plan.highlight && (
+                  <span className="absolute right-5 top-5 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground">
+                    {t("Más popular", "Most popular")}
+                  </span>
+                )}
+                {isYearly && plan.monthlyPrice > 0 && (
+                  <span className="absolute left-5 top-5 rounded-full border border-positive/30 bg-positive/10 px-2 py-0.5 text-[10px] font-semibold text-positive">
+                    {t("Ahorras 20%", "Save 20%")}
+                  </span>
+                )}
+                <h2 className="text-sm font-semibold">{plan.name}</h2>
+                <div className="mt-3 flex items-end gap-1">
+                  <span className="numeric text-4xl font-semibold tracking-tight">${price}</span>
+                  <span className="pb-1 text-xs text-muted-foreground">{period}</span>
+                </div>
+                {equivalentMonthly && (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {t(
+                      "Equivale a ${{month}}/mes",
+                      "Equals ${{month}}/month",
+                    ).replace("{{month}}", String(equivalentMonthly))}
+                  </p>
+                )}
+                <p className="mt-2 text-sm text-muted-foreground">{plan.desc}</p>
+                <ul className="mt-6 flex-1 space-y-2.5">
+                  {plan.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Button
+                  asChild
+                  variant={plan.highlight ? "default" : "outline"}
+                  className="mt-8 w-full rounded-full"
+                >
+                  <Link to={plan.href} search={plan.search}>
+                    {plan.cta}
+                  </Link>
+                </Button>
+              </div>
+            );
+          })}
         </section>
 
         {/* Incentivos de conversión */}
