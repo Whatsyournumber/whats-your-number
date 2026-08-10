@@ -263,7 +263,7 @@ function CashFlow() {
 
       <div className="grid gap-4 md:grid-cols-3">
         <Panel
-          title={t("Regla 50 / 30 / 20", "50 / 30 / 20 rule")}
+          title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")}
           description={
             activeMonth
               ? `${monthLabel(activeMonth)} · ${fmt(totalIncome)} ${t("de ingreso", "of income")}`
@@ -271,9 +271,9 @@ function CashFlow() {
           }
         >
           <div className="space-y-3 text-sm">
-            <Row label={t("Necesidades", "Needs")} value={needsAmount} total={totalIncome} target={50} fmt={fmt} />
-            <Row label={t("Deseos", "Wants")} value={wantsAmount} total={totalIncome} target={30} fmt={fmt} />
-            <Row label={t("Ahorro e inversión", "Savings & investing")} value={saveAmount} total={totalIncome} target={20} fmt={fmt} />
+            <Row label={t("Necesidades", "Needs")} value={needsAmount} total={totalIncome} target={40} fmt={fmt} />
+            <Row label={t("Deseos", "Wants")} value={wantsAmount} total={totalIncome} target={20} fmt={fmt} />
+            <Row label={t("Ahorro e inversión", "Savings & investing")} value={saveAmount} total={totalIncome} target={40} fmt={fmt} goodWhenHigher />
           </div>
         </Panel>
         <Panel title={t("Runway", "Runway")} description={t("Meses cubiertos con tu efectivo", "Months covered with your cash")}>
@@ -302,15 +302,24 @@ function Row({
   total,
   target,
   fmt,
+  goodWhenHigher = false,
 }: {
   label: string;
   value: number;
   total: number;
   target: number;
   fmt: (n: number) => string;
+  goodWhenHigher?: boolean;
 }) {
   const p = total > 0 ? (value / total) * 100 : 0;
   const off = p - target;
+  const colorClass = goodWhenHigher
+    ? p >= target
+      ? "bg-positive"
+      : "bg-negative"
+    : off > 5
+      ? "bg-negative"
+      : "bg-primary";
   return (
     <div>
       <div className="flex items-center justify-between gap-2">
@@ -325,7 +334,7 @@ function Row({
 
       <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted">
         <div
-          className={`h-full rounded-full ${off > 5 ? "bg-negative" : "bg-primary"}`}
+          className={`h-full rounded-full ${colorClass}`}
           style={{ width: `${Math.min(p, 100)}%` }}
         />
       </div>
