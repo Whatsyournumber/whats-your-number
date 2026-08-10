@@ -261,9 +261,15 @@ function Retiro() {
               <p className="text-xs text-muted-foreground">{t("Saldo proyectado", "Projected balance")}</p>
               <p className="numeric mt-1 text-2xl font-semibold">{fmt(final.value)}</p>
               <p className="mt-1 text-xs text-muted-foreground">
-                {final.value >= plan.targetCapital ? t("Superas tu capital objetivo 🎯", "You exceed your target capital 🎯") : `${t("Te faltarían", "You'd still need")} ${fmt(plan.targetCapital - final.value)}`}
+                {gap <= 0
+                  ? `${t("Superas tu número por", "You exceed your number by")} ${fmt(-gap)} 🎯`
+                  : `${t("Te faltarían", "You'd still need")} ${fmt(gap)}`}
+              </p>
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                {t("Partes de", "Starting from")} {fmt(investable)} {t("que ya tienes · objetivo", "you already have · target")} {fmt(targetNow)}
               </p>
             </div>
+
           </div>
         </Panel>
       </div>
