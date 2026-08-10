@@ -37,6 +37,7 @@ import {
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { lifestyleCities } from "@/lib/lifestyle-cities";
 import { useT } from "@/hooks/use-language";
 
 const netWorth = [
@@ -100,11 +101,14 @@ const lifeGoals = [
   { title: "Tener hijos", titleEn: "Have children", impact: "+11 meses", impactEn: "+11 months", value: "+€1.2k/mes", color: "negative" },
 ];
 
+const cityPhoto = (id: string) => lifestyleCities.find((c) => c.id === id)?.photo ?? "";
+
 const cities = [
-  { name: "Madrid", score: 87, cost: "€2.8k", tag: "Base actual", tagEn: "Current base" },
-  { name: "Barcelona", score: 84, cost: "€2.9k", tag: "Costa y cultura", tagEn: "Coast and culture" },
-  { name: "Lisboa", score: 82, cost: "€2.4k", tag: "Visa nómada", tagEn: "Nomad visa" },
+  { id: "madrid", name: "Madrid", score: 87, cost: "€2.8k", tag: "Base actual", tagEn: "Current base" },
+  { id: "barcelona", name: "Barcelona", score: 84, cost: "€2.9k", tag: "Costa y cultura", tagEn: "Coast and culture" },
+  { id: "lisbon", name: "Lisboa", score: 82, cost: "€2.4k", tag: "Visa nómada", tagEn: "Nomad visa" },
 ];
+
 
 const retirementTable = [
   { year: "2026", age: "38", capital: "€248k", monthly: "—" },
@@ -320,30 +324,69 @@ export function ProductPreview() {
                       ))}
                     </div>
                   ) : active === "nextcity" ? (
-                    <div className="flex h-full flex-col justify-between gap-3">
-                      {cities.map((city, i) => (
-                        <motion.div
-                          key={city.name}
-                          initial={{ opacity: 0, x: -12 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: i * 0.08 }}
-                          className="flex items-center gap-3 rounded-xl bg-background/50 p-3 ring-1 ring-border"
-                        >
-                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-                            <MapPin className="h-4 w-4 text-primary" />
-                          </div>
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between">
-                              <span className="text-sm font-semibold">{city.name}</span>
-                              <span className="numeric rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">{city.score}</span>
-                            </div>
+                    <div className="flex h-full flex-col gap-2.5">
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.98 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5 }}
+                        className="relative flex-1 overflow-hidden rounded-2xl ring-1 ring-border"
+                      >
+                        <img
+                          src={cityPhoto(cities[0]!.id)}
+                          alt={cities[0]!.name}
+                          loading="lazy"
+                          className="absolute inset-0 h-full w-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-transparent" />
+                        <span className="absolute left-3 top-3 rounded-full bg-primary/90 px-2 py-0.5 text-[10px] font-semibold text-primary-foreground">
+                          #1 · Your North Score
+                        </span>
+                        <div className="absolute inset-x-3 bottom-3 flex items-end justify-between gap-3">
+                          <div>
+                            <p className="flex items-center gap-1.5 text-base font-semibold">
+                              <MapPin className="h-4 w-4 text-primary" />
+                              {cities[0]!.name}
+                            </p>
                             <p className="text-[11px] text-muted-foreground">
-                              {t(city.tag, city.tagEn)} · {city.cost}/mes
+                              {t(cities[0]!.tag, cities[0]!.tagEn)} · {cities[0]!.cost}/mes
                             </p>
                           </div>
-                        </motion.div>
-                      ))}
+                          <span className="numeric rounded-full bg-primary/15 px-2.5 py-1 text-sm font-semibold text-primary ring-1 ring-primary/30">
+                            {cities[0]!.score}
+                          </span>
+                        </div>
+                      </motion.div>
+
+                      <div className="grid grid-cols-2 gap-2.5">
+                        {cities.slice(1).map((city, i) => (
+                          <motion.div
+                            key={city.id}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.1 + i * 0.08 }}
+                            className="relative h-20 overflow-hidden rounded-xl ring-1 ring-border"
+                          >
+                            <img
+                              src={cityPhoto(city.id)}
+                              alt={city.name}
+                              loading="lazy"
+                              className="absolute inset-0 h-full w-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                            <div className="absolute inset-x-2.5 bottom-2 flex items-center justify-between gap-2">
+                              <div className="min-w-0">
+                                <p className="truncate text-xs font-semibold">{city.name}</p>
+                                <p className="truncate text-[10px] text-muted-foreground">{city.cost}/mes</p>
+                              </div>
+                              <span className="numeric rounded-full bg-primary/15 px-1.5 py-0.5 text-[10px] font-medium text-primary">
+                                {city.score}
+                              </span>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
                     </div>
+
                   ) : (
                     <AreaChart data={retirement}>
                       <defs>
