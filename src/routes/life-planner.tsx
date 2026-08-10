@@ -39,32 +39,46 @@ export const Route = createFileRoute("/life-planner")({
   component: LifePlanner,
 });
 
-const KIND_LABEL: Record<LifeGoalKind, { es: string; en: string }> = {
-  purchase: { es: "Compra / gasto", en: "Purchase" },
-  invest: { es: "Inversión / proyecto", en: "Investment" },
-  boost: { es: "Cambio de vida (ahorra más)", en: "Life change (saves more)" },
-};
-
 type Draft = {
   id?: string;
   name: string;
   emoji: string;
-  kind: LifeGoalKind;
+  template: TemplateId | null;
   target_year: number;
-  cost: number;
-  monthly: number;
-  saved: number;
+  values: Record<string, number>;
 };
 
-const emptyDraft = (): Draft => ({
+const newDraft = (): Draft => ({
   name: "",
   emoji: "🎯",
-  kind: "purchase",
+  template: null,
   target_year: new Date().getFullYear() + 2,
-  cost: 0,
-  monthly: 0,
-  saved: 0,
+  values: {},
 });
+
+function draftFromGoal(g: LifeGoal): Draft {
+  const meta = parseMeta(g.note);
+  const tpl = templateById(meta?.template);
+  return {
+    id: g.id,
+    name: g.name,
+    emoji: g.emoji,
+    template: tpl.id,
+    target_year: g.target_year,
+    values: meta?.values ?? { ...defaultValues(tpl), cost: g.cost, monthly: g.monthly, saved: g.saved },
+  };
+}
+
+function toSim(g: LifeGoal): SimGoal {
+  const meta = parseMeta(g.note);
+  return {
+    kind: g.kind,
+    cost: g.cost,
+    monthly: g.monthly,
+    saved: g.saved,
+    ...(meta?.payout ? { payout: meta.payout, payoutYears: meta.payoutYears ?? 0 } : {}),
+  };
+}
 
 function LifePlanner() {
   const t = useT();
@@ -79,13 +93,9 @@ function LifePlanner() {
   const savings = data.savings;
 
   const sim = (list: LifeGoal[]) =>
-    monthsToTarget({
-      start,
-      target,
-      annualReturn,
-      savings,
-      goals: list.map<SimGoal>((g) => ({ kind: g.kind, cost: g.cost, monthly: g.monthly, saved: g.saved })),
-    });
+    monthsToTarget({ start, target, annualReturn, savings, goals: list.map(toSim) });
+
+  const simRaw = (g: SimGoal) => monthsToTarget({ start, target, annualReturn, savings, goals: [g] });
 
   const baseMonths = useMemo(() => sim([]), [start, target, annualReturn, savings]);
   const allMonths = useMemo(() => sim(goals), [goals, start, target, annualReturn, savings]);
@@ -101,10 +111,40 @@ function LifePlanner() {
     return { worst, accel };
   }, [goals, baseMonths, start, target, annualReturn, savings]);
 
+  const tpl = draft?.template ? templateById(draft.template) : null;
+  const derived = tpl && draft ? tpl.derive(draft.values) : null;
+  const draftImpact =
+    derived
+      ? yearsDiff(
+          baseMonths,
+          simRaw({
+            kind: derived.kind,
+            cost: derived.cost,
+            monthly: derived.monthly,
+            saved: draft?.values['saved'] ?? 0,
+            ...(derived.payout ? { payout: derived.payout, payoutYears: derived.payoutYears ?? 0 } : {}),
+          }),
+        )
+      : null;
+
   const submit = async () => {
-    if (!draft) return;
-    const { id, ...patch } = draft;
-    if (id) await update({ id, patch });
+    if (!draft || !tpl || !derived) return;
+    const patch = {
+      name: draft.name,
+      emoji: draft.emoji,
+      kind: derived.kind,
+      target_year: draft.target_year,
+      cost: derived.cost,
+      monthly: derived.monthly,
+      saved: draft.values['saved'] ?? 0,
+      note: JSON.stringify({
+        template: tpl.id,
+        values: draft.values,
+        payout: derived.payout ?? 0,
+        payoutYears: derived.payoutYears ?? 0,
+      }),
+    };
+    if (draft.id) await update({ id: draft.id, patch });
     else await create(patch);
     setDraft(null);
   };
