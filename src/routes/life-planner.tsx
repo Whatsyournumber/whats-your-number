@@ -556,15 +556,33 @@ function LifePlanner() {
   );
 }
 
-function HeroStat({ icon: Icon, label, value }: { icon: typeof Target; label: string; value: string }) {
+function HeroStat({
+  icon: Icon,
+  label,
+  value,
+  tone,
+}: {
+  icon: typeof Target;
+  label: string;
+  value: string;
+  tone?: "up" | "down";
+}) {
+  const badge =
+    tone === "up"
+      ? "bg-emerald-300/15 text-emerald-300"
+      : tone === "down"
+        ? "bg-amber-400/15 text-amber-400"
+        : "bg-primary/15 text-primary";
   return (
     <div className="flex items-center gap-3 rounded-xl bg-elevated/60 px-4 py-3">
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
+      <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${badge}`}>
         <Icon className="h-4 w-4" />
       </span>
       <div className="min-w-0">
         <p className="text-[11px] text-muted-foreground">{label}</p>
-        <p className="numeric truncate text-base font-semibold">{value}</p>
+        <p className={`numeric truncate text-base font-semibold ${tone === "up" ? "text-emerald-300" : tone === "down" ? "text-amber-400" : ""}`}>
+          {value}
+        </p>
       </div>
     </div>
   );
