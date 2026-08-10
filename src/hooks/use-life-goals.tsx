@@ -105,6 +105,19 @@ export function useLifeGoals() {
     },
   });
 
+  const reorder = useMutation({
+    mutationFn: async (orderedIds: string[]) => {
+      await Promise.all(
+        orderedIds.map((id, index) =>
+          supabase.from("life_goals").update({ position: index }).eq("id", id),
+        ),
+      );
+    },
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: key });
+    },
+  });
+
   const remove = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("life_goals").delete().eq("id", id);
@@ -122,6 +135,7 @@ export function useLifeGoals() {
     create: create.mutateAsync,
     update: update.mutateAsync,
     remove: remove.mutateAsync,
-    busy: create.isPending || update.isPending || remove.isPending,
+    reorder: reorder.mutateAsync,
+    busy: create.isPending || update.isPending || remove.isPending || reorder.isPending,
   };
 }
