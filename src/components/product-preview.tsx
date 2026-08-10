@@ -67,7 +67,6 @@ const retirement = [
   { m: "2038", v: 1270 },
 ];
 
-
 const spendCategories = [
   { name: "Mercado", value: 32, color: "var(--color-primary)" },
   { name: "Restaurantes", value: 18, color: "var(--color-chart-2)" },
@@ -78,17 +77,41 @@ const spendCategories = [
   { name: "App Marketing", value: 5, color: "var(--color-destructive)" },
 ];
 
-const pieColors = ["var(--color-primary)", "var(--color-chart-2)", "var(--color-chart-3)", "var(--color-chart-4)"];
-
+const pieColors = [
+  "var(--color-primary)",
+  "var(--color-chart-2)",
+  "var(--color-chart-3)",
+  "var(--color-chart-4)",
+];
 
 const cityPhoto = (id: string) => lifestyleCities.find((c) => c.id === id)?.photo ?? "";
 
 const cities = [
-  { id: "madrid", name: "Madrid", score: 87, cost: "€2.8k", tag: "Base actual", tagEn: "Current base" },
-  { id: "barcelona", name: "Barcelona", score: 84, cost: "€2.9k", tag: "Costa y cultura", tagEn: "Coast and culture" },
-  { id: "lisbon", name: "Lisboa", score: 82, cost: "€2.4k", tag: "Visa nómada", tagEn: "Nomad visa" },
+  {
+    id: "madrid",
+    name: "Madrid",
+    score: 87,
+    cost: "€2.8k",
+    tag: "Base actual",
+    tagEn: "Current base",
+  },
+  {
+    id: "barcelona",
+    name: "Barcelona",
+    score: 84,
+    cost: "€2.9k",
+    tag: "Costa y cultura",
+    tagEn: "Coast and culture",
+  },
+  {
+    id: "lisbon",
+    name: "Lisboa",
+    score: 82,
+    cost: "€2.4k",
+    tag: "Visa nómada",
+    tagEn: "Nomad visa",
+  },
 ];
-
 
 const retirementTable = [
   { year: "2026", age: "38", capital: "€248k", monthly: "—" },
@@ -109,25 +132,54 @@ export function ProductPreview() {
   ] as const;
 
   const kpis: Record<(typeof views)[number]["id"], { kpi: string; delta: string; sub: string }> = {
-    patrimonio: { kpi: "€248,300", delta: t("+6.4% este mes", "+6.4% this month"), sub: t("Patrimonio neto", "Net worth") },
-    gastos: { kpi: "€2,940", delta: t("−11% vs. mes previo", "−11% vs. last month"), sub: t("Gasto variable + fijos", "Variable + fixed spending") },
-    portafolio: { kpi: "+18.2%", delta: t("vs. S&P 500 +12.1%", "vs. S&P 500 +12.1%"), sub: t("Rentabilidad anualizada", "Annualized return") },
-    nextcity: { kpi: "Madrid", delta: "87/100", sub: t("Tu top ciudad ahora", "Your top city now") },
-    whatsyournumber: { kpi: "€1.50M", delta: t("al 8% anual", "at 8% yearly"), sub: t("Tu número de libertad", "Your freedom number") },
+    patrimonio: {
+      kpi: "€248,300",
+      delta: t("+6.4% este mes", "+6.4% this month"),
+      sub: t("Patrimonio neto", "Net worth"),
+    },
+    gastos: {
+      kpi: "€2,940",
+      delta: t("−11% vs. mes previo", "−11% vs. last month"),
+      sub: t("Gasto variable + fijos", "Variable + fixed spending"),
+    },
+    portafolio: {
+      kpi: "+18.2%",
+      delta: t("vs. S&P 500 +12.1%", "vs. S&P 500 +12.1%"),
+      sub: t("Rentabilidad anualizada", "Annualized return"),
+    },
+    nextcity: {
+      kpi: "Madrid",
+      delta: "87/100",
+      sub: t("Tu top ciudad ahora", "Your top city now"),
+    },
+    whatsyournumber: {
+      kpi: "€1.50M",
+      delta: t("al 8% anual", "at 8% yearly"),
+      sub: t("Tu número de libertad", "Your freedom number"),
+    },
   };
 
   const insights = [
     {
       icon: Sparkles,
-      text: t("Detecté 3 suscripciones sin uso: ahorras $84/mes.", "I found 3 unused subscriptions: you save $84/mo."),
+      text: t(
+        "Detecté 3 suscripciones sin uso: ahorras $84/mes.",
+        "I found 3 unused subscriptions: you save $84/mo.",
+      ),
     },
     {
       icon: FileText,
-      text: t("142 movimientos clasificados desde tu PDF en 9 segundos.", "142 transactions classified from your PDF in 9 seconds."),
+      text: t(
+        "142 movimientos clasificados desde tu PDF en 9 segundos.",
+        "142 transactions classified from your PDF in 9 seconds.",
+      ),
     },
     {
       icon: TrendingUp,
-      text: t("Si mantienes este ritmo, llegas a tu número 2 años antes.", "At this pace, you reach your number 2 years earlier."),
+      text: t(
+        "Si mantienes este ritmo, llegas a tu número 2 años antes.",
+        "At this pace, you reach your number 2 years earlier.",
+      ),
     },
   ];
 
@@ -203,7 +255,12 @@ export function ProductPreview() {
               transition={{ duration: 0.28 }}
             >
               <p className="numeric mt-1 text-3xl font-semibold tracking-tight">{kpi.kpi}</p>
-              <p className={cn("mt-1 text-xs", active === "gastos" ? "text-primary" : "text-positive")}>
+              <p
+                className={cn(
+                  "mt-1 text-xs",
+                  active === "gastos" ? "text-primary" : "text-positive",
+                )}
+              >
                 {kpi.delta}
               </p>
 
@@ -217,7 +274,13 @@ export function ProductPreview() {
                           <stop offset="100%" stopColor="var(--color-primary)" stopOpacity={0} />
                         </linearGradient>
                       </defs>
-                      <XAxis dataKey="m" tickLine={false} axisLine={false} fontSize={11} stroke="var(--color-muted-foreground)" />
+                      <XAxis
+                        dataKey="m"
+                        tickLine={false}
+                        axisLine={false}
+                        fontSize={11}
+                        stroke="var(--color-muted-foreground)"
+                      />
                       <Tooltip
                         contentStyle={{
                           background: "var(--color-card)",
@@ -228,11 +291,23 @@ export function ProductPreview() {
                         itemStyle={{ color: "var(--color-foreground)" }}
                         formatter={(v) => [`€${v}k`, t("Patrimonio", "Net worth")]}
                       />
-                      <Area type="monotone" dataKey="v" stroke="var(--color-primary)" strokeWidth={2.5} fill="url(#pp-net)" />
+                      <Area
+                        type="monotone"
+                        dataKey="v"
+                        stroke="var(--color-primary)"
+                        strokeWidth={2.5}
+                        fill="url(#pp-net)"
+                      />
                     </AreaChart>
                   ) : active === "gastos" ? (
                     <BarChart data={spend}>
-                      <XAxis dataKey="m" tickLine={false} axisLine={false} fontSize={11} stroke="var(--color-muted-foreground)" />
+                      <XAxis
+                        dataKey="m"
+                        tickLine={false}
+                        axisLine={false}
+                        fontSize={11}
+                        stroke="var(--color-muted-foreground)"
+                      />
                       <Tooltip
                         contentStyle={{
                           background: "var(--color-card)",
@@ -244,11 +319,22 @@ export function ProductPreview() {
                         formatter={(v) => [`€${v}k`, t("Gasto", "Spending")]}
                       />
                       <Bar dataKey="v" radius={[6, 6, 0, 0]} fill="var(--color-primary)" />
-                      <Bar dataKey="c" radius={[6, 6, 0, 0]} fill="var(--color-muted-foreground)" opacity={0.25} />
+                      <Bar
+                        dataKey="c"
+                        radius={[6, 6, 0, 0]}
+                        fill="var(--color-muted-foreground)"
+                        opacity={0.25}
+                      />
                     </BarChart>
                   ) : active === "portafolio" ? (
                     <ReLineChart data={portfolio}>
-                      <XAxis dataKey="m" tickLine={false} axisLine={false} fontSize={11} stroke="var(--color-muted-foreground)" />
+                      <XAxis
+                        dataKey="m"
+                        tickLine={false}
+                        axisLine={false}
+                        fontSize={11}
+                        stroke="var(--color-muted-foreground)"
+                      />
                       <Tooltip
                         contentStyle={{
                           background: "var(--color-card)",
@@ -258,8 +344,23 @@ export function ProductPreview() {
                         }}
                         itemStyle={{ color: "var(--color-foreground)" }}
                       />
-                      <Line type="monotone" dataKey="you" stroke="var(--color-primary)" strokeWidth={2.5} dot={false} name={t("Tú", "You")} />
-                      <Line type="monotone" dataKey="spy" stroke="var(--color-muted-foreground)" strokeWidth={2} strokeDasharray="4 4" dot={false} name="S&P 500" />
+                      <Line
+                        type="monotone"
+                        dataKey="you"
+                        stroke="var(--color-primary)"
+                        strokeWidth={2.5}
+                        dot={false}
+                        name={t("Tú", "You")}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="spy"
+                        stroke="var(--color-muted-foreground)"
+                        strokeWidth={2}
+                        strokeDasharray="4 4"
+                        dot={false}
+                        name="S&P 500"
+                      />
                     </ReLineChart>
                   ) : active === "nextcity" ? (
                     <div className="flex h-full flex-col gap-2.5">
@@ -314,7 +415,9 @@ export function ProductPreview() {
                             <div className="absolute inset-x-2.5 bottom-2 flex items-center justify-between gap-2">
                               <div className="min-w-0">
                                 <p className="truncate text-xs font-semibold">{city.name}</p>
-                                <p className="truncate text-[10px] text-muted-foreground">{city.cost}/mes</p>
+                                <p className="truncate text-[10px] text-muted-foreground">
+                                  {city.cost}/mes
+                                </p>
                               </div>
                               <span className="numeric rounded-full bg-primary/15 px-1.5 py-0.5 text-[10px] font-medium text-primary">
                                 {city.score}
@@ -324,7 +427,6 @@ export function ProductPreview() {
                         ))}
                       </div>
                     </div>
-
                   ) : (
                     <AreaChart data={retirement}>
                       <defs>
@@ -333,7 +435,13 @@ export function ProductPreview() {
                           <stop offset="100%" stopColor="var(--color-positive)" stopOpacity={0} />
                         </linearGradient>
                       </defs>
-                      <XAxis dataKey="m" tickLine={false} axisLine={false} fontSize={11} stroke="var(--color-muted-foreground)" />
+                      <XAxis
+                        dataKey="m"
+                        tickLine={false}
+                        axisLine={false}
+                        fontSize={11}
+                        stroke="var(--color-muted-foreground)"
+                      />
                       <Tooltip
                         contentStyle={{
                           background: "var(--color-card)",
@@ -344,7 +452,13 @@ export function ProductPreview() {
                         itemStyle={{ color: "var(--color-foreground)" }}
                         formatter={(v) => [`€${v}k`, t("Capital", "Capital")]}
                       />
-                      <Area type="monotone" dataKey="v" stroke="var(--color-positive)" strokeWidth={2.5} fill="url(#pp-ret)" />
+                      <Area
+                        type="monotone"
+                        dataKey="v"
+                        stroke="var(--color-positive)"
+                        strokeWidth={2.5}
+                        fill="url(#pp-ret)"
+                      />
                     </AreaChart>
                   )}
                 </ResponsiveContainer>
@@ -384,11 +498,20 @@ export function ProductPreview() {
                 transition={{ duration: 0.25 }}
                 className="rounded-2xl bg-elevated/60 p-5 ring-1 ring-border"
               >
-                <p className="text-xs text-muted-foreground">{t("Distribución del mes", "This month's breakdown")}</p>
+                <p className="text-xs text-muted-foreground">
+                  {t("Distribución del mes", "This month's breakdown")}
+                </p>
                 <div className="mt-2 h-[130px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <RePieChart>
-                      <Pie data={spendCategories} dataKey="value" innerRadius={38} outerRadius={58} paddingAngle={2} stroke="none">
+                      <Pie
+                        data={spendCategories}
+                        dataKey="value"
+                        innerRadius={38}
+                        outerRadius={58}
+                        paddingAngle={2}
+                        stroke="none"
+                      >
                         {spendCategories.map((entry, i) => (
                           <Cell key={entry.name} fill={entry.color} />
                         ))}
@@ -398,7 +521,10 @@ export function ProductPreview() {
                 </div>
                 <ul className="mt-2 space-y-1.5">
                   {spendCategories.map((a) => (
-                    <li key={a.name} className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <li
+                      key={a.name}
+                      className="flex items-center gap-2 text-xs text-muted-foreground"
+                    >
                       <span className="h-2 w-2 rounded-full" style={{ background: a.color }} />
                       {a.name}
                       <span className="numeric ml-auto text-foreground">{a.value}%</span>
@@ -415,11 +541,23 @@ export function ProductPreview() {
                 transition={{ duration: 0.25 }}
                 className="rounded-2xl bg-elevated/60 p-5 ring-1 ring-border"
               >
-                <p className="text-xs text-muted-foreground">{t("Your North Score", "Your North Score")}</p>
+                <p className="text-xs text-muted-foreground">
+                  {t("Your North Score", "Your North Score")}
+                </p>
                 <div className="mt-3 flex items-center justify-center">
                   <div className="relative flex h-28 w-28 items-center justify-center rounded-full bg-background/50 ring-1 ring-border">
-                    <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 100 100">
-                      <circle cx="50" cy="50" r="42" fill="none" stroke="var(--color-border)" strokeWidth="8" />
+                    <svg
+                      className="absolute inset-0 h-full w-full -rotate-90"
+                      viewBox="0 0 100 100"
+                    >
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="42"
+                        fill="none"
+                        stroke="var(--color-border)"
+                        strokeWidth="8"
+                      />
                       <circle
                         cx="50"
                         cy="50"
@@ -461,22 +599,32 @@ export function ProductPreview() {
                 transition={{ duration: 0.25 }}
                 className="rounded-2xl bg-elevated/60 p-5 ring-1 ring-border"
               >
-                <p className="text-xs text-muted-foreground">{t("Proyección de retiro", "Retirement projection")}</p>
+                <p className="text-xs text-muted-foreground">
+                  {t("Proyección de retiro", "Retirement projection")}
+                </p>
                 <div className="mt-3 overflow-hidden rounded-xl ring-1 ring-border">
                   <table className="w-full text-[11px]">
                     <thead>
                       <tr className="bg-background/50 text-muted-foreground">
                         <th className="px-2 py-1.5 text-left font-medium">{t("Año", "Year")}</th>
-                        <th className="px-2 py-1.5 text-right font-medium">{t("Capital", "Capital")}</th>
-                        <th className="px-2 py-1.5 text-right font-medium">{t("Mes", "Monthly")}</th>
+                        <th className="px-2 py-1.5 text-right font-medium">
+                          {t("Capital", "Capital")}
+                        </th>
+                        <th className="px-2 py-1.5 text-right font-medium">
+                          {t("Mes", "Monthly")}
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
                       {retirementTable.map((row) => (
                         <tr key={row.year} className="border-t border-border/50">
                           <td className="px-2 py-1.5 text-foreground">{row.year}</td>
-                          <td className="numeric px-2 py-1.5 text-right text-foreground">{row.capital}</td>
-                          <td className="numeric px-2 py-1.5 text-right text-positive">{row.monthly}</td>
+                          <td className="numeric px-2 py-1.5 text-right text-foreground">
+                            {row.capital}
+                          </td>
+                          <td className="numeric px-2 py-1.5 text-right text-positive">
+                            {row.monthly}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -492,11 +640,20 @@ export function ProductPreview() {
                 transition={{ duration: 0.25 }}
                 className="rounded-2xl bg-elevated/60 p-5 ring-1 ring-border"
               >
-                <p className="text-xs text-muted-foreground">{t("Asignación de activos", "Asset allocation")}</p>
+                <p className="text-xs text-muted-foreground">
+                  {t("Asignación de activos", "Asset allocation")}
+                </p>
                 <div className="mt-2 h-[130px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <RePieChart>
-                      <Pie data={allocation} dataKey="v" innerRadius={36} outerRadius={56} paddingAngle={3} stroke="none">
+                      <Pie
+                        data={allocation}
+                        dataKey="v"
+                        innerRadius={36}
+                        outerRadius={56}
+                        paddingAngle={3}
+                        stroke="none"
+                      >
                         {allocation.map((entry, i) => (
                           <Cell key={entry.name} fill={pieColors[i % pieColors.length]} />
                         ))}
@@ -506,8 +663,14 @@ export function ProductPreview() {
                 </div>
                 <ul className="mt-2 space-y-1.5">
                   {allocation.map((a, i) => (
-                    <li key={a.name} className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <span className="h-2 w-2 rounded-full" style={{ background: pieColors[i % pieColors.length] }} />
+                    <li
+                      key={a.name}
+                      className="flex items-center gap-2 text-xs text-muted-foreground"
+                    >
+                      <span
+                        className="h-2 w-2 rounded-full"
+                        style={{ background: pieColors[i % pieColors.length] }}
+                      />
                       {a.name}
                       <span className="numeric ml-auto text-foreground">{a.v}%</span>
                     </li>
