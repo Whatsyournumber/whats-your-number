@@ -191,7 +191,12 @@ export const templateById = (id: string | undefined | null) =>
 export const defaultValues = (t: GoalTemplate) =>
   Object.fromEntries(t.fields.map((f) => [f.key, f.default])) as Record<string, number>;
 
-export type GoalMeta = { template: TemplateId; values: Record<string, number>; payout?: number; payoutYears?: number };
+export type GoalMeta = {
+  template: TemplateId;
+  values: Record<string, number>;
+  payout?: number | undefined;
+  payoutYears?: number | undefined;
+};
 
 export function parseMeta(note: string | null): GoalMeta | null {
   if (!note) return null;
