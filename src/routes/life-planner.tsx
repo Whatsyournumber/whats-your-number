@@ -101,8 +101,22 @@ function LifePlanner() {
   const allMonths = useMemo(() => sim(goals), [goals, start, target, annualReturn, savings]);
 
   const retireDate = allMonths !== null ? addMonths(new Date(), allMonths) : null;
-  const progress = target > 0 ? Math.min(100, (start / target) * 100) : 0;
+  const baseProgress = target > 0 ? Math.min(100, (start / target) * 100) : 0;
+  // Las decisiones de vida consumen (o liberan) capital: la base se mueve con ellas.
+  const goalsCapital = useMemo(
+    () =>
+      goals.reduce((acc, g) => {
+        const upfront = Math.max(0, g.cost - g.saved);
+        const payout = parseMeta(g.note)?.payout ?? 0;
+        return acc + payout - upfront;
+      }, 0),
+    [goals],
+  );
+  const adjustedStart = start + goalsCapital;
+  const progress = target > 0 ? Math.max(0, Math.min(100, (adjustedStart / target) * 100)) : 0;
+  const progressDelta = progress - baseProgress;
   const combined = yearsDiff(baseMonths, allMonths);
+
 
   const best = useMemo(() => {
     const scored = goals.map((g) => ({ g, impact: yearsDiff(baseMonths, sim([g])) ?? 0 }));
@@ -179,14 +193,32 @@ function LifePlanner() {
               <span>{t("Avance actual", "Current progress")}</span>
               <span className="numeric text-sm font-semibold text-foreground">{progress.toFixed(0)}%</span>
             </div>
-            <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-muted">
+            <div className="relative mt-2 h-2.5 overflow-hidden rounded-full bg-muted">
+              {/* Referencia sin metas de vida */}
+              <div
+                className="absolute inset-y-0 left-0 rounded-full bg-primary/25"
+                style={{ width: `${baseProgress}%` }}
+              />
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.9, ease: "easeOut" }}
-                className="h-full rounded-full bg-primary"
+                className={`relative h-full rounded-full ${progressDelta < -0.05 ? "bg-amber-400" : "bg-primary"}`}
               />
             </div>
+            {Math.abs(progressDelta) >= 0.05 && (
+              <p className="mt-2 text-xs text-muted-foreground">
+                {t("Con tus decisiones de vida", "With your life decisions")}:{" "}
+                <span className={`numeric font-semibold ${progressDelta < 0 ? "text-amber-400" : "text-emerald-400"}`}>
+                  {progressDelta > 0 ? "+" : ""}
+                  {progressDelta.toFixed(1)} pts
+                </span>{" "}
+                <span className="text-muted-foreground/70">
+                  ({t("base", "base")} {baseProgress.toFixed(0)}%)
+                </span>
+              </p>
+            )}
+
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
