@@ -212,7 +212,14 @@ function Pricing() {
                     {t("Ahorras 20%", "Save 20%")}
                   </span>
                 )}
-                <h2 className="text-sm font-semibold">{plan.name}</h2>
+                <div className="flex items-start justify-between gap-2">
+                  <h2 className="text-sm font-semibold">{plan.name}</h2>
+                  {isYearly && plan.monthlyPrice > 0 && (
+                    <span className="rounded-full border border-positive/30 bg-positive/10 px-2 py-0.5 text-[10px] font-semibold text-positive">
+                      {t("Ahorras 20%", "Save 20%")}
+                    </span>
+                  )}
+                </div>
                 <div className="mt-3 flex items-end gap-1">
                   <span className="numeric text-4xl font-semibold tracking-tight">${price}</span>
                   <span className="pb-1 text-xs text-muted-foreground">{period}</span>
