@@ -126,6 +126,7 @@ function LifePlanner() {
   const progress = target > 0 ? Math.max(0, Math.min(100, (adjustedStart / target) * 100)) : 0;
   const progressDelta = progress - baseProgress;
   const combined = yearsDiff(baseMonths, allMonths);
+  const monthsDelta = baseMonths !== null && allMonths !== null ? allMonths - baseMonths : null;
 
 
   const best = useMemo(() => {
