@@ -14,9 +14,11 @@ export type GoalField = {
   key: string;
   es: string;
   en: string;
-  kind?: "money" | "number" | "year";
+  kind?: "money" | "number" | "year" | "percent";
   default: number;
 };
+
+export type GoalExtra = { es: string; en: string; value: number; money?: boolean };
 
 export type GoalTemplate = {
   id: TemplateId;
@@ -33,11 +35,23 @@ export type GoalTemplate = {
     monthly: number;
     payout?: number;
     payoutYears?: number;
+    /** Valores calculados (p.ej. cuota de hipoteca) para mostrar en la UI. */
+    extras?: GoalExtra[];
   };
 };
 
 const y = new Date().getFullYear();
 const money = (key: string, es: string, en: string, def = 0): GoalField => ({ key, es, en, kind: "money", default: def });
+
+/** Cuota mensual de un préstamo francés. */
+export function pmt(principal: number, annualRatePct: number, years: number) {
+  const p = Math.max(0, principal);
+  const n = Math.max(0, Math.round(years * 12));
+  if (!p || !n) return 0;
+  const i = annualRatePct / 100 / 12;
+  if (i <= 0) return p / n;
+  return (p * i) / (1 - Math.pow(1 + i, -n));
+}
 
 export const GOAL_TEMPLATES: GoalTemplate[] = [
   {
@@ -71,15 +85,20 @@ export const GOAL_TEMPLATES: GoalTemplate[] = [
     fields: [
       money("price", "Precio de la casa", "House price", 250000),
       money("down", "Entrada / inicial", "Down payment", 50000),
-      money("mortgage", "Cuota hipoteca / mes", "Mortgage / month", 1100),
+      { key: "rate", es: "Interés anual", en: "Annual interest", kind: "percent", default: 3.5 },
+      { key: "years", es: "Años de hipoteca", en: "Mortgage term (years)", kind: "number", default: 25 },
       money("rent", "Renta que cobras / mes", "Rent income / month", 1400),
       money("costs", "Gastos y mantenimiento / mes", "Costs & upkeep / month", 150),
     ],
-    derive: (v) => ({
-      kind: "boost",
-      cost: v['down'] ?? 0,
-      monthly: (v['rent'] ?? 0) - (v['mortgage'] ?? 0) - (v['costs'] ?? 0),
-    }),
+    derive: (v) => {
+      const mortgage = pmt((v['price'] ?? 0) - (v['down'] ?? 0), v['rate'] ?? 0, v['years'] ?? 0);
+      return {
+        kind: "boost",
+        cost: v['down'] ?? 0,
+        monthly: (v['rent'] ?? 0) - mortgage - (v['costs'] ?? 0),
+        extras: [{ es: "Cuota hipoteca / mes", en: "Mortgage / month", value: mortgage, money: true }],
+      };
+    },
   },
   {
     id: "house_live",
@@ -91,15 +110,20 @@ export const GOAL_TEMPLATES: GoalTemplate[] = [
     fields: [
       money("price", "Precio de la casa", "House price", 300000),
       money("down", "Entrada / inicial", "Down payment", 60000),
-      money("mortgage", "Cuota hipoteca / mes", "Mortgage / month", 1300),
+      { key: "rate", es: "Interés anual", en: "Annual interest", kind: "percent", default: 3.5 },
+      { key: "years", es: "Años de hipoteca", en: "Mortgage term (years)", kind: "number", default: 30 },
       money("currentRent", "Alquiler que pagas hoy / mes", "Rent you pay today / month", 1100),
       money("costs", "Comunidad, IBI, mantenimiento / mes", "Fees & upkeep / month", 200),
     ],
-    derive: (v) => ({
-      kind: "boost",
-      cost: v['down'] ?? 0,
-      monthly: (v['currentRent'] ?? 0) - (v['mortgage'] ?? 0) - (v['costs'] ?? 0),
-    }),
+    derive: (v) => {
+      const mortgage = pmt((v['price'] ?? 0) - (v['down'] ?? 0), v['rate'] ?? 0, v['years'] ?? 0);
+      return {
+        kind: "boost",
+        cost: v['down'] ?? 0,
+        monthly: (v['currentRent'] ?? 0) - mortgage - (v['costs'] ?? 0),
+        extras: [{ es: "Cuota hipoteca / mes", en: "Mortgage / month", value: mortgage, money: true }],
+      };
+    },
   },
   {
     id: "car",
