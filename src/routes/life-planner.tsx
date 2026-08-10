@@ -88,8 +88,18 @@ function LifePlanner() {
   const [draft, setDraft] = useState<Draft | null>(null);
 
   const target = data.plan.targetCapital;
-  const start = Math.max(0, data.netWorth);
-  const annualReturn = profile.expected_return || 7;
+  // Solo patrimonio líquido/invertible: las propiedades no cuentan para llegar al número.
+  const liquid =
+    (profile.assets_cash ?? 0) +
+    (profile.assets_bank ?? 0) +
+    (profile.assets_retirement ?? 0) +
+    (profile.assets_etf ?? 0) +
+    (profile.assets_stocks ?? 0) +
+    (profile.assets_crypto ?? 0) -
+    (profile.liabilities ?? 0);
+  const start = Math.max(0, liquid);
+  // Todo el dinero que entra (ahorro y ventas tipo exit) capitaliza al menos al 7% anual.
+  const annualReturn = Math.max(7, profile.expected_return || 7);
   const savings = data.savings;
 
   const sim = (list: LifeGoal[]) =>
