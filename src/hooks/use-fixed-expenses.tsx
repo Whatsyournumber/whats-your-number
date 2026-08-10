@@ -4,12 +4,8 @@ export type FixedExpense = { id: string; name: string; amount: number };
 
 const KEY = "whatsyournumber:fixed-expenses";
 
-const defaults: FixedExpense[] = [
-  { id: "ahorro", name: "Fondo de ahorro", amount: 2500 },
-  { id: "hipoteca", name: "Hipoteca", amount: 1100 },
-  { id: "condominio", name: "Condominio", amount: 230 },
-  { id: "seguro-salud", name: "Seguro de salud", amount: 130 },
-];
+/** Sin gastos fijos precargados: cada persona añade los suyos. */
+const defaults: FixedExpense[] = [];
 
 /** Gastos fijos mensuales editables, guardados localmente en el navegador. */
 export function useFixedExpenses() {
@@ -20,17 +16,13 @@ export function useFixedExpenses() {
       const raw = window.localStorage.getItem(KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as FixedExpense[];
-        if (Array.isArray(parsed)) {
-          // Limpiar entradas obsoletas (p. ej. seguro mercantil).
-          const cleaned = parsed.filter((p) => !/mercantil/i.test(p.name));
-          const missing = defaults.filter((d) => !cleaned.some((p) => p.id === d.id));
-          setItems([...cleaned, ...missing]);
-        }
+        if (Array.isArray(parsed)) setItems(parsed);
       }
     } catch {
       /* ignore */
     }
   }, []);
+
 
 
   const persist = useCallback((next: FixedExpense[]) => {
