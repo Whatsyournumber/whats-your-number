@@ -224,19 +224,28 @@ function Landing() {
 
   const whyCards = [
     {
-      icon: ScanEye,
-      title: t("Claridad total", "Total clarity"),
-      desc: t("Toda tu información financiera en un solo panel.", "All your financial information in a single dashboard."),
+      icon: PieChart,
+      title: t("01 — Entiende dónde va tu dinero.", "01 — Understand where your money goes."),
+      desc: t(
+        "Carga tus estados financieros y obtén claridad sobre tus gastos en menos de 30 segundos.",
+        "Upload your financial statements and get clarity on your spending in under 30 seconds.",
+      ),
     },
     {
-      icon: Sparkles,
-      title: "AI Advisor",
-      desc: t("Clasifica automáticamente y detecta dónde ahorrar.", "Auto-categorizes and finds where to save."),
+      icon: Target,
+      title: t("02 — Descubre cuándo puedes dejar de trabajar.", "02 — Discover when you can stop working."),
+      desc: t(
+        "Conoce el capital que necesitas para vivir de tus rendimientos y cuánto te falta para llegar.",
+        "Know the capital you need to live off your returns and how far you are from getting there.",
+      ),
     },
     {
-      icon: Crosshair,
-      title: t("Tu número, siempre", "Your number, always"),
-      desc: t("Sabe cuánto necesitas para ser libre y qué tan cerca estás.", "Know how much you need to be free and how close you are."),
+      icon: Bot,
+      title: t("03 — Pregúntale a tu IA Financial Advisor.", "03 — Ask your AI Financial Advisor."),
+      desc: t(
+        "Tu asesor conoce tus números, analiza escenarios y te ayuda a tomar mejores decisiones financieras.",
+        "Your advisor knows your numbers, analyzes scenarios and helps you make better financial decisions.",
+      ),
     },
   ];
 
