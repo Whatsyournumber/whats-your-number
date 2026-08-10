@@ -331,18 +331,18 @@ function LifePlanner() {
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
         >
-          <SortableContext items={goals.map((g) => g.id)}>
+          <SortableContext items={sortedGoals.map((s) => s.g.id)}>
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {goals.map((g, idx) => (
+              {sortedGoals.map((s, idx) => (
                 <SortableGoalCard
-                  key={g.id}
-                  g={g}
+                  key={s.g.id}
+                  g={s.g}
                   idx={idx}
                   data={data}
                   profile={profile}
                   baseMonths={baseMonths}
-                  onEdit={() => setDraft(draftFromGoal(g))}
-                  onRemove={() => void remove(g.id)}
+                  onEdit={() => setDraft(draftFromGoal(s.g))}
+                  onRemove={() => void remove(s.g.id)}
                 />
               ))}
             </div>
