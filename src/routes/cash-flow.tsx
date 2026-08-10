@@ -331,6 +331,71 @@ function CashFlow() {
                 : t("Según tu perfil", "Based on your profile")
             }
           >
+            <div className="mb-5 overflow-hidden rounded-2xl border border-border bg-elevated/40 p-4">
+              <div className="grid items-center gap-4 lg:grid-cols-[1fr_90px_1fr]">
+                <div className="rounded-2xl border border-border bg-elevated/60 p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-medium">{t("Ingresos", "Income")}</p>
+                    <p className="numeric text-sm font-semibold">{fmt(totalIncome)}</p>
+                  </div>
+                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
+                    <div className="h-full rounded-full bg-primary" style={{ width: "100%" }} />
+                  </div>
+                </div>
+
+                <div className="relative hidden h-44 lg:block">
+                  <svg viewBox="0 0 90 180" className="h-full w-full" preserveAspectRatio="none">
+                    {[
+                      { label: t("Necesidades", "Needs"), amount: needsAmount, color: "var(--color-chart-2)", y: 30 },
+                      { label: t("Inversiones", "Investing"), amount: saveAmount, color: "var(--color-chart-1)", y: 90 },
+                      { label: t("Deseos", "Wants"), amount: wantsAmount, color: "var(--color-chart-3)", y: 150 },
+                    ].map((b) => {
+                      const w = Math.max(4, Math.min(36, (b.amount / totalIncome) * 60));
+                      return (
+                        <motion.path
+                          key={b.label}
+                          d={`M0,90 C45,90 45,${b.y} 90,${b.y}`}
+                          fill="none"
+                          stroke={b.color}
+                          strokeWidth={w}
+                          strokeOpacity={0.35}
+                          strokeLinecap="round"
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 1, delay: 0.1 }}
+                        />
+                      );
+                    })}
+                  </svg>
+                </div>
+
+                <div className="space-y-2">
+                  {[
+                    { label: t("Necesidades", "Needs"), amount: needsAmount, color: "var(--color-chart-2)", target: 40 },
+                    { label: t("Inversiones", "Investing"), amount: saveAmount, color: "var(--color-chart-1)", target: 40 },
+                    { label: t("Deseos", "Wants"), amount: wantsAmount, color: "var(--color-chart-3)", target: 20 },
+                  ].map((b) => (
+                    <div key={b.label} className="rounded-xl border border-border bg-elevated/60 px-3 py-2">
+                      <div className="flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full" style={{ background: b.color }} />
+                        <p className="text-xs font-medium">{b.label}</p>
+                        <p className="numeric ml-auto text-xs font-semibold">{fmt(b.amount)}</p>
+                      </div>
+                      <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-muted">
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${Math.min(100, (b.amount / totalIncome) * 100)}%`, background: b.color }}
+                        />
+                      </div>
+                      <p className="mt-1 text-[10px] text-muted-foreground">
+                        {((b.amount / totalIncome) * 100).toFixed(0)}% {t("objetivo", "target")} {b.target}%
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
             <div className="space-y-4 text-sm">
               <Row
                 label={t("Necesidades", "Needs")}
@@ -340,7 +405,6 @@ function CashFlow() {
                 fmt={fmt}
                 tooltip={t("Vivienda, hipoteca, condominio, alimentos, transporte, servicios y seguros del mes.", "Housing, mortgage, HOA, food, transportation, utilities and insurance for the month.")}
                 breakdown={needsBreakdown}
-
               />
               <Row
                 label={t("Ahorro e inversión", "Savings & investing")}
@@ -351,7 +415,6 @@ function CashFlow() {
                 goodWhenHigher
                 tooltip={t("Ahorro fijo + lo que sobra del mes tras cubrir necesidades y deseos.", "Fixed savings + what is left after covering needs and wants.")}
                 breakdown={saveBreakdown}
-
               />
               <Row
                 label={t("Deseos", "Wants")}
