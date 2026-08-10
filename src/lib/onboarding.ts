@@ -51,6 +51,7 @@ export const emptyOnboarding: OnboardingData = {
   retire_age: 60,
   desired_retirement_income: 5000,
   expected_return: 7,
+  withdrawal_rate: 4,
   priority: "",
   risk_profile: "",
 };
