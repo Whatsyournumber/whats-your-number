@@ -193,16 +193,19 @@ function Gastos() {
     return map;
   }, [previous, categories.rules]);
 
-  // Todas las categorías (base + propias) siempre visibles en el detalle
+  // Categorías con gastos visibles por defecto; toggle para ver vacías
+  const [showEmptyCategories, setShowEmptyCategories] = useState(false);
   const detailRows = useMemo(() => {
     const map = new Map(byCategory.map((c) => [c.name, c]));
     const ordered: { name: string; amount: number; items: Tx[] }[] = [];
     for (const name of categories.names) {
-      ordered.push(map.get(name) ?? { name, amount: 0, items: [] });
+      const row = map.get(name) ?? { name, amount: 0, items: [] };
+      if (row.amount > 0 || showEmptyCategories) ordered.push(row);
       map.delete(name);
     }
-    return [...ordered, ...map.values()].sort((a, b) => b.amount - a.amount);
-  }, [byCategory, categories.names]);
+    const rest = Array.from(map.values()).filter((c) => c.amount > 0 || showEmptyCategories);
+    return [...ordered, ...rest].sort((a, b) => b.amount - a.amount);
+  }, [byCategory, categories.names, showEmptyCategories]);
 
 
   // ---- Comparación mes vs mes ----
@@ -407,7 +410,7 @@ function Gastos() {
       <PageHeader
         eyebrow={t("Análisis de gastos", "Spending analysis")}
         title={t("¿En qué se fue mi dinero?", "Where did my money go?")}
-        subtitle={t("Tus gastos fijos y todo el detalle real de tus estados de cuenta.", "Your fixed expenses and the full real detail from your statements.")}
+        subtitle={t("Gastos fijos + variable de tus estados de cuenta, comparado periodo a periodo.", "Fixed + variable spend from your statements, compared period over period.")}
         actions={
           <Popover>
             <PopoverTrigger asChild>
@@ -444,7 +447,7 @@ function Gastos() {
       />
 
       {!hasData && !isLoading && (
-        <Panel>
+        <Panel variant="minimal">
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-elevated">
               <Upload className="h-5 w-5 text-muted-foreground" />
@@ -460,32 +463,33 @@ function Gastos() {
         </Panel>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard label={t("Gasto del periodo", "Period spend")} value={fmt(total)} delta={Number(delta.toFixed(1))} hint={`${t("fijos", "fixed")} ${fmt(fixedInPeriod)} + ${t("variable", "variable")} ${fmt(variableTotal)}`} inverse accent index={0} />
-        <KpiCard label={t("Gastos fijos", "Fixed expenses")} value={fmt(fixed.total)} hint={t("mensual, editable", "monthly, editable")} index={1} />
-        <KpiCard label={t("Gasto variable (EEFF)", "Variable spend (statements)")} value={fmt(variable)} hint={`${current.length} ${t("transacciones", "transactions")}`} index={2} />
-        <KpiCard label={t("Promedio diario", "Daily average")} value={fmt(total / days)} hint={`${days} ${t("días", "days")}`} index={3} />
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <KpiCard variant="flat" label={t("Gasto del periodo", "Period spend")} value={fmt(total)} delta={Number(delta.toFixed(1))} hint={`${t("fijos", "fixed")} ${fmt(fixedInPeriod)} + ${t("variable", "variable")} ${fmt(variableTotal)}`} inverse accent index={0} />
+        <KpiCard variant="flat" label={t("Gastos fijos", "Fixed expenses")} value={fmt(fixed.total)} hint={t("mensual, editable", "monthly, editable")} index={1} />
+        <KpiCard variant="flat" label={t("Gasto variable (EEFF)", "Variable spend (statements)")} value={fmt(variable)} hint={`${current.length} ${t("transacciones", "transactions")}`} index={2} />
+        <KpiCard variant="flat" label={t("Promedio diario", "Daily average")} value={fmt(total / days)} hint={`${days} ${t("días", "days")}`} index={3} />
       </div>
 
       <Panel
+        variant="minimal"
         title={t("Gasto objetivo mensual", "Monthly spend target")}
-        description={t("Tu techo de gasto según tu número; comparado con tu ritmo actual (fijos + variable proyectado a 30 días)", "Your spending ceiling based on your number, compared to your current pace (fixed + variable projected over 30 days)")}
+        description={t("Ritmo actual vs. tu techo de gasto según tu número.", "Current pace vs. your spending ceiling based on your number.")}
       >
-        <div className="grid gap-5 md:grid-cols-[240px_1fr] md:items-center">
+        <div className="grid gap-5 md:grid-cols-[200px_1fr] md:items-center">
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{t("Objetivo", "Target")}</p>
             <div className="mt-2 flex items-center gap-2">
               <NumberInput
                 value={target}
                 onChange={setTarget}
-                className="h-11 w-40 text-lg font-semibold"
+                className="h-10 w-36 text-base font-semibold"
               />
               <span className="text-xs text-muted-foreground">{t("/mes", "/mo")}</span>
             </div>
           </div>
           <div>
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span className="numeric text-2xl font-semibold">{fmt(monthlyRun)}</span>
+              <span className="numeric text-xl font-semibold">{fmt(monthlyRun)}</span>
               <span className="text-xs text-muted-foreground">{t("ritmo mensual estimado", "estimated monthly pace")}</span>
               <span
                 className={cn(
@@ -498,7 +502,7 @@ function Gastos() {
                   : `${fmt(monthlyRun - target)} ${t("por encima", "over")}`}
               </span>
             </div>
-            <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-muted">
+            <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
               <div
                 className={cn("h-full rounded-full", monthlyRun <= target ? "bg-positive" : "bg-negative")}
                 style={{ width: `${Math.min(100, targetPct)}%` }}
@@ -513,22 +517,22 @@ function Gastos() {
 
 
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title={t("Distribución por categoría", "Spend by category")}>
+      <div className="grid gap-3 lg:grid-cols-3">
+        <Panel variant="minimal" title={t("Distribución por categoría", "Spend by category")}>
           {byCategory.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t("Sin movimientos en este rango.", "No transactions in this range.")}</p>
           ) : (
             <>
               <div className="relative">
-                <ResponsiveContainer width="100%" height={260}>
+                <ResponsiveContainer width="100%" height={240}>
                   <PieChart>
                     <Pie
                       data={byCategory}
                       dataKey="amount"
                       nameKey="name"
-                      innerRadius={78}
-                      outerRadius={104}
-                      paddingAngle={3}
+                      innerRadius={70}
+                      outerRadius={96}
+                      paddingAngle={2}
                       stroke="none"
                     >
                       {byCategory.map((c, i) => (
@@ -547,8 +551,8 @@ function Gastos() {
                   </p>
                 </div>
               </div>
-              <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5">
-                {byCategory.slice(0, 10).map((c, i) => (
+              <ul className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1">
+                {byCategory.slice(0, 8).map((c, i) => (
                   <li key={c.name} className="flex items-center gap-2 text-xs">
                     <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
                     <span className="truncate text-muted-foreground">{c.name}</span>
@@ -560,8 +564,8 @@ function Gastos() {
           )}
         </Panel>
 
-        <Panel title={t("Evolución del gasto", "Spend evolution")} description={`${t("Comparando con", "Comparing with")} ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="lg:col-span-2">
-          <ResponsiveContainer width="100%" height={280}>
+        <Panel variant="minimal" title={t("Evolución del gasto", "Spend evolution")} description={`${t("Comparando con", "Comparing with")} ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="lg:col-span-2">
+          <ResponsiveContainer width="100%" height={260}>
             <ComposedChart data={series} margin={{ left: -8, right: 8 }}>
               <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
               <XAxis dataKey="label" {...axisProps} interval="preserveStartEnd" minTickGap={18} />
@@ -573,12 +577,12 @@ function Gastos() {
                 iconType="circle"
                 wrapperStyle={{ fontSize: 11, paddingBottom: 8 }}
               />
-              <Bar dataKey="anterior" name={t("Periodo anterior", "Previous period")} fill="var(--color-muted-foreground)" fillOpacity={0.35} radius={[8, 8, 0, 0]} />
-              <Bar dataKey="gasto" name={t("Este periodo", "This period")} fill="var(--color-chart-5)" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="anterior" name={t("Periodo anterior", "Previous period")} fill="var(--color-muted-foreground)" fillOpacity={0.35} radius={[6, 6, 0, 0]} />
+              <Bar dataKey="gasto" name={t("Este periodo", "This period")} fill="var(--color-chart-5)" radius={[6, 6, 0, 0]} />
               <Line dataKey="fijo" name={t("Fijos (prorrateado)", "Fixed (prorated)")} stroke="var(--color-chart-3)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
             </ComposedChart>
           </ResponsiveContainer>
-          <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
             {[
               { l: t("Este periodo", "This period"), v: fmt(variableTotal) },
               { l: t("Periodo anterior", "Previous period"), v: fmt(prevVariable) },
@@ -588,7 +592,7 @@ function Gastos() {
               },
               { l: t("Día más caro", "Most expensive day"), v: series.length ? fmt(Math.max(...series.map((s) => s.gasto))) : "—" },
             ].map((k) => (
-              <div key={k.l} className="rounded-xl bg-elevated/60 px-3 py-2">
+              <div key={k.l} className="rounded-lg border border-border/60 bg-elevated/40 px-3 py-2">
                 <p className="text-[11px] text-muted-foreground">{k.l}</p>
                 <p className="numeric text-sm font-semibold">{k.v}</p>
               </div>
@@ -600,20 +604,20 @@ function Gastos() {
         </Panel>
       </div>
 
-      <Panel title={t("Gastos fijos mensuales", "Monthly fixed expenses")} description={t("Edita nombre y monto; se guardan en este navegador", "Edit name and amount; saved in this browser")}>
+      <Panel variant="minimal" title={t("Gastos fijos mensuales", "Monthly fixed expenses")} description={t("Edita nombre y monto; se guardan en este navegador", "Edit name and amount; saved in this browser")}>
         <div className="space-y-2">
           {fixed.items.map((item) => (
-            <div key={item.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-elevated/60 px-3 py-2">
+            <div key={item.id} className="flex flex-wrap items-center gap-2 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
               <Input
                 value={item.name}
                 onChange={(e) => fixed.update(item.id, { name: e.target.value })}
-                className="h-9 w-full max-w-[260px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
+                className="h-8 w-full max-w-[260px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
               />
               <div className="ml-auto flex items-center gap-2">
                 <NumberInput
                   value={item.amount}
                   onChange={(v) => fixed.update(item.id, { amount: v })}
-                  className="h-9 w-32 text-right text-sm"
+                  className="h-8 w-28 text-right text-sm"
                 />
                 <Button
                   size="icon"
@@ -626,7 +630,7 @@ function Gastos() {
                 </Button>
               </div>
               <div className="w-full">
-                <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                <div className="h-1 overflow-hidden rounded-full bg-muted">
                   <div
                     className="h-full rounded-full bg-chart-3"
                     style={{ width: `${fixed.total > 0 ? (item.amount / fixed.total) * 100 : 0}%` }}
@@ -651,6 +655,7 @@ function Gastos() {
 
 
       <Panel
+        variant="minimal"
         title={t("Comparar mes vs mes", "Compare month vs month")}
         description={t("Elige dos meses de tus EEFF y mira dónde cambió el gasto", "Pick two months from your statements and see where spend changed")}
       >
@@ -660,7 +665,7 @@ function Gastos() {
           <>
             <div className="flex flex-wrap items-center gap-3">
               <Select value={mA ?? ""} onValueChange={(v) => setMonthA(v)}>
-                <SelectTrigger className="h-9 w-[190px] capitalize">
+                <SelectTrigger className="h-8 w-[180px] text-sm capitalize">
                   <SelectValue placeholder={t("Mes A", "Month A")} />
                 </SelectTrigger>
                 <SelectContent>
@@ -673,7 +678,7 @@ function Gastos() {
               </Select>
               <span className="text-xs text-muted-foreground">{t("vs.", "vs.")}</span>
               <Select value={mB ?? ""} onValueChange={(v) => setMonthB(v)}>
-                <SelectTrigger className="h-9 w-[190px] capitalize">
+                <SelectTrigger className="h-8 w-[180px] text-sm capitalize">
                   <SelectValue placeholder={t("Mes B", "Month B")} />
                 </SelectTrigger>
                 <SelectContent>
@@ -695,15 +700,15 @@ function Gastos() {
               </span>
             </div>
 
-            <div className="mt-4">
-              <ResponsiveContainer width="100%" height={300}>
+            <div className="mt-3">
+              <ResponsiveContainer width="100%" height={260}>
                 <BarChart data={monthCompare.rows.slice(0, 10)} margin={{ left: -8, right: 8 }}>
                   <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
                   <XAxis dataKey="name" {...axisProps} interval={0} minTickGap={4} />
                   <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={64} />
                   <Tooltip content={<ChartTooltip formatter={fmt} />} cursor={{ fill: "var(--color-muted)", opacity: 0.3 }} />
-                  <Bar dataKey="a" name={monthLabel(mA)} fill="var(--color-chart-1)" radius={[8, 8, 0, 0]} />
-                  <Bar dataKey="b" name={monthLabel(mB)} fill="var(--color-chart-4)" radius={[8, 8, 0, 0]} />
+                  <Bar dataKey="a" name={monthLabel(mA)} fill="var(--color-chart-1)" radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="b" name={monthLabel(mB)} fill="var(--color-chart-4)" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -712,21 +717,26 @@ function Gastos() {
       </Panel>
 
       <Panel
+        variant="minimal"
         title={t("Detalle por categoría", "Detail by category")}
-        description={t("Mercado, Restaurantes, Salidas, Compras, Viajes, Transporte, Lifestyle, Apps, Marketing digital y Bancos & Seguros. Añade las tuyas con palabras clave.", "Groceries, Restaurants, Nightlife, Shopping, Travel, Transport, Lifestyle, Apps, Digital marketing and Banks & Insurance. Add your own with keywords.")}
+        description={t("Solo categorías con gastos; activa las vacías para ver las demás.", "Only categories with spending; enable empty ones to see the rest.")}
+        actions={
+          <Button size="sm" variant="ghost" onClick={() => setShowEmptyCategories((v) => !v)}>
+            {showEmptyCategories ? t("Ocultar vacías", "Hide empty") : t("Ver vacías", "Show empty")}
+          </Button>
+        }
       >
         <Accordion type="single" collapsible className="w-full">
           {detailRows.map((c, i) => {
             const prev = prevByCategory.get(c.name) ?? 0;
             const variation = prev > 0 ? ((c.amount - prev) / prev) * 100 : null;
-            
             return (
               <AccordionItem key={c.name} value={c.name} className="border-border">
-                <AccordionTrigger className="hover:no-underline">
+                <AccordionTrigger className="py-2 hover:no-underline">
                   <div className="flex w-full items-center gap-3 pr-3">
-                    <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
+                    <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
                     <span className="truncate text-sm font-medium">{c.name}</span>
-                    <span className="shrink-0 rounded-full bg-elevated px-2 py-0.5 text-[11px] text-muted-foreground">
+                    <span className="shrink-0 rounded-full bg-elevated/50 px-2 py-0.5 text-[11px] text-muted-foreground">
                       {c.items.length} {c.items.length === 1 ? t("mov.", "tx") : t("movs.", "txs")}
                     </span>
                     {variation !== null && (
@@ -741,7 +751,6 @@ function Gastos() {
                         {variation.toFixed(0)}%
                       </span>
                     )}
-
                     <span className="numeric ml-auto text-sm font-semibold">{fmt(c.amount)}</span>
                   </div>
                 </AccordionTrigger>
@@ -749,12 +758,12 @@ function Gastos() {
                   {c.items.length === 0 ? (
                     <p className="pl-6 text-sm text-muted-foreground">{t("Sin gastos de esta categoría en el periodo.", "No expenses in this category for the period.")}</p>
                   ) : (
-                    <ul className="max-h-[320px] space-y-1 overflow-auto pl-6">
+                    <ul className="max-h-[320px] space-y-0.5 overflow-auto pl-6">
                       {c.items
                         .slice()
-                        .sort((a, b) => (a.tx_date! < b.tx_date! ? 1 : -1))
-                        .map((tx) => (
-                          <li key={tx.id} className="flex items-center gap-3 rounded-lg px-2 py-1.5 hover:bg-elevated/60">
+                        .sort((a: Tx, b: Tx) => (a.tx_date! < b.tx_date! ? 1 : -1))
+                        .map((tx: Tx) => (
+                          <li key={tx.id} className="flex items-center gap-3 rounded-lg px-2 py-1 hover:bg-elevated/50">
                             <span className="w-16 shrink-0 text-xs text-muted-foreground">
                               {format(parseISO(tx.tx_date!), "d MMM", { locale: es })}
                             </span>
@@ -773,21 +782,21 @@ function Gastos() {
           })}
         </Accordion>
 
-        <div className="mt-4 space-y-2 border-t border-border pt-4">
+        <div className="mt-3 space-y-2 border-t border-border pt-3">
           <p className="text-xs font-medium text-muted-foreground">{t("Categorías propias", "Your own categories")}</p>
           {categories.items.map((c) => (
-            <div key={c.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-elevated/60 px-3 py-2">
+            <div key={c.id} className="flex flex-wrap items-center gap-2 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
               <Input
                 value={c.name}
                 onChange={(e) => categories.update(c.id, { name: e.target.value })}
                 placeholder={t("Nombre de la categoría", "Category name")}
-                className="h-9 w-full max-w-[220px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
+                className="h-8 w-full max-w-[220px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
               />
               <Input
                 value={c.keywords}
                 onChange={(e) => categories.update(c.id, { keywords: e.target.value })}
                 placeholder={t("palabras clave separadas por coma (ej. netflix, gym)", "keywords separated by comma (e.g. netflix, gym)")}
-                className="h-9 min-w-[200px] flex-1 text-sm"
+                className="h-8 min-w-[200px] flex-1 text-sm"
               />
               <Button
                 size="icon"
@@ -807,14 +816,14 @@ function Gastos() {
       </Panel>
 
 
-      <Panel title={t("Top comercios", "Top merchants")} description={`${merchants.length} ${t("comercios en el periodo", "merchants in the period")}`}>
+      <Panel variant="minimal" title={t("Top comercios", "Top merchants")} description={`${merchants.length} ${t("comercios en el periodo", "merchants in the period")}`}>
         {merchants.length === 0 ? (
           <p className="text-sm text-muted-foreground">{t("Sin comercios en este rango.", "No merchants in this range.")}</p>
         ) : (
           <ul className="grid gap-2 md:grid-cols-2">
             {merchants.slice(0, 10).map((m) => (
-              <li key={m.name} className="flex items-center gap-3 rounded-xl bg-elevated/60 px-3 py-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted text-xs font-semibold">
+              <li key={m.name} className="flex items-center gap-3 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-muted text-[10px] font-semibold">
                   {m.name.slice(0, 2).toUpperCase()}
                 </span>
                 <div className="min-w-0">
@@ -828,10 +837,11 @@ function Gastos() {
         )}
       </Panel>
       <Panel
+        variant="minimal"
         title={t("Recomendaciones de la IA", "AI recommendations")}
         description={t("Acciones concretas ordenadas por impacto, y cuánto te acercan a tu número", "Concrete actions ranked by impact, and how much closer they get you to your number")}
         actions={
-          <Button size="sm" onClick={runAdvice} disabled={adviceLoading || !hasData}>
+          <Button size="sm" variant="outline" onClick={runAdvice} disabled={adviceLoading || !hasData}>
             {adviceLoading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" /> {t("Analizando", "Analyzing")}
@@ -853,19 +863,18 @@ function Gastos() {
           </p>
         )}
         {advice && (
-          <div className="space-y-4">
-            <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-elevated/60 to-transparent p-5">
-              <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-primary/10 blur-3xl" />
-              <p className="relative text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+          <div className="space-y-3">
+            <div className="rounded-2xl border border-border/60 bg-elevated/40 p-4">
+              <p className="text-xs font-medium text-muted-foreground">
                 {t("Si recortas y lo inviertes al 7%", "If you cut back and invest it at 7%")}
               </p>
-              <div className="relative mt-3 grid gap-4 sm:grid-cols-3">
+              <div className="mt-2 grid gap-3 sm:grid-cols-3">
                 <div>
-                  <p className="numeric text-2xl font-semibold md:text-3xl">{fmt(totalSaving)}<span className="text-sm font-normal text-muted-foreground">{t("/mes", "/mo")}</span></p>
+                  <p className="numeric text-xl font-semibold">{fmt(totalSaving)}<span className="text-xs font-normal text-muted-foreground">{t("/mes", "/mo")}</span></p>
                   <p className="text-xs text-muted-foreground">{t("ahorro potencial total", "total potential savings")}</p>
                 </div>
                 <div>
-                  <p className="numeric text-2xl font-semibold text-positive md:text-3xl">{fmtCompact(futureValue(totalSaving))}</p>
+                  <p className="numeric text-xl font-semibold text-positive">{fmtCompact(futureValue(totalSaving))}</p>
                   <p className="text-xs text-muted-foreground">
                     {t("en", "in")} {horizonYears.toFixed(0)} {t("años al 7% anual", "years at 7% a year")}
                   </p>
@@ -873,13 +882,13 @@ function Gastos() {
                 <div>
                   {baseYears !== null && (
                     <>
-                      <p className="numeric text-2xl font-semibold md:text-3xl">
-                        {yearsWithAll !== null ? yearsWithAll : baseYears} <span className="text-sm font-normal text-muted-foreground">{t("años", "yrs")}</span>
+                      <p className="numeric text-xl font-semibold">
+                        {yearsWithAll !== null ? yearsWithAll : baseYears} <span className="text-xs font-normal text-muted-foreground">{t("años", "yrs")}</span>
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {yearsWithAll !== null && baseYears - yearsWithAll > 0 ? (
                           <>
-                            {t("a tu número", "to your number")} · <span className="text-positive">−{(baseYears - yearsWithAll).toFixed(1)} {t("años", "yrs")}</span> {t("vs. hoy", "vs. today")} ({baseYears})
+                            {t("a tu número", "to your number")} · <span className="text-positive">−{(baseYears - yearsWithAll).toFixed(1)} {t("años", "yrs")}</span>
                           </>
                         ) : (
                           t("a tu número con tu ritmo actual", "to your number at your current pace")
@@ -891,27 +900,26 @@ function Gastos() {
               </div>
             </div>
 
-            <ul className="grid gap-3 md:grid-cols-2">
+            <ul className="grid gap-2 md:grid-cols-2">
               {advice.map((a, i) => {
                 const gain = yearsGain(a.monthlySaving);
                 const fv = futureValue(a.monthlySaving);
                 return (
                   <li
                     key={i}
-                    className="group relative flex flex-col gap-2 overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-b from-elevated/70 to-elevated/25 p-4 transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
+                    className="flex flex-col gap-1.5 rounded-2xl border border-border/60 bg-elevated/40 p-4 transition-colors hover:border-primary/30"
                   >
-                    <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-2">
-                        <span className="numeric flex h-6 w-6 items-center justify-center rounded-lg bg-primary/15 text-[11px] font-semibold text-primary">
+                        <span className="numeric flex h-5 w-5 items-center justify-center rounded-md bg-primary/15 text-[10px] font-semibold text-primary">
                           {i + 1}
                         </span>
                         <p className="text-sm font-semibold">{a.label}</p>
                       </div>
                       <span
                         className={cn(
-                          "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium",
-                          a.overspent ? "bg-negative/15 text-negative" : "bg-positive/15 text-positive",
+                          "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium",
+                          a.overspent ? "bg-negative/12 text-negative" : "bg-positive/12 text-positive",
                         )}
                       >
                         {a.overspent ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
@@ -920,28 +928,16 @@ function Gastos() {
                     </div>
                     <p className="text-xs leading-relaxed text-muted-foreground">{a.diagnosis}</p>
                     <p className="text-sm font-medium text-foreground/90">→ {a.action}</p>
-                    <div className="mt-auto grid grid-cols-2 gap-2 pt-2">
-                      <div className="rounded-xl bg-background/40 px-3 py-2">
-                        <p className="numeric text-sm font-semibold text-positive">
-                          +{fmt(a.monthlySaving)}<span className="text-[10px] font-normal text-muted-foreground">{t("/mes", "/mo")}</span>
-                        </p>
-                        <p className="text-[10px] text-muted-foreground">{t("recorte estimado", "estimated cut")}</p>
-                      </div>
-                      <div className="rounded-xl bg-background/40 px-3 py-2">
-                        <p className="numeric text-sm font-semibold">{fmtCompact(fv)}</p>
-                        <p className="text-[10px] text-muted-foreground">
-                          {t("invertido al 7% en", "invested at 7% in")} {horizonYears.toFixed(0)}a
-                        </p>
-                      </div>
+                    <div className="mt-1 flex flex-wrap items-center gap-3 pt-1 text-xs">
+                      <span className="text-positive">+{fmt(a.monthlySaving)}{t("/mes", "/mo")} {t("recorte", "cut")}</span>
+                      <span className="text-muted-foreground">{fmtCompact(fv)} {t("al 7% en", "at 7% in")} {horizonYears.toFixed(0)}a</span>
+                      {gain !== null && gain > 0 && (
+                        <span className="inline-flex items-center gap-1 text-positive">
+                          <TrendingUp className="h-3 w-3" />
+                          −{gain.toFixed(1)} {t("años", "yrs")} {t("a tu número", "to your number")}
+                        </span>
+                      )}
                     </div>
-                    {gain !== null && gain > 0 && (
-                      <div className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-                        <TrendingUp className="h-3 w-3 text-positive" />
-                        {t("te acerca", "gets you")}{" "}
-                        <span className="numeric font-semibold text-foreground">{gain.toFixed(1)} {t("años", "yrs")}</span>{" "}
-                        {t("a tu número", "closer to your number")}
-                      </div>
-                    )}
                   </li>
                 );
               })}
