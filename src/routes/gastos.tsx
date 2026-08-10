@@ -385,11 +385,10 @@ function Gastos() {
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{t("Objetivo", "Target")}</p>
             <div className="mt-2 flex items-center gap-2">
-              <Input
-                type="number"
-                value={String(target)}
-                onChange={(e) => setTarget(Number(e.target.value) || 0)}
-                className="numeric h-11 w-40 text-lg font-semibold"
+              <NumberInput
+                value={target}
+                onChange={setTarget}
+                className="h-11 w-40 text-lg font-semibold"
               />
               <span className="text-xs text-muted-foreground">{t("/mes", "/mo")}</span>
             </div>
