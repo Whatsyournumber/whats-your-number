@@ -655,6 +655,7 @@ function Gastos() {
 
 
       <Panel
+        variant="minimal"
         title={t("Comparar mes vs mes", "Compare month vs month")}
         description={t("Elige dos meses de tus EEFF y mira dónde cambió el gasto", "Pick two months from your statements and see where spend changed")}
       >
@@ -664,7 +665,7 @@ function Gastos() {
           <>
             <div className="flex flex-wrap items-center gap-3">
               <Select value={mA ?? ""} onValueChange={(v) => setMonthA(v)}>
-                <SelectTrigger className="h-9 w-[190px] capitalize">
+                <SelectTrigger className="h-8 w-[180px] text-sm capitalize">
                   <SelectValue placeholder={t("Mes A", "Month A")} />
                 </SelectTrigger>
                 <SelectContent>
@@ -677,7 +678,7 @@ function Gastos() {
               </Select>
               <span className="text-xs text-muted-foreground">{t("vs.", "vs.")}</span>
               <Select value={mB ?? ""} onValueChange={(v) => setMonthB(v)}>
-                <SelectTrigger className="h-9 w-[190px] capitalize">
+                <SelectTrigger className="h-8 w-[180px] text-sm capitalize">
                   <SelectValue placeholder={t("Mes B", "Month B")} />
                 </SelectTrigger>
                 <SelectContent>
@@ -699,15 +700,15 @@ function Gastos() {
               </span>
             </div>
 
-            <div className="mt-4">
-              <ResponsiveContainer width="100%" height={300}>
+            <div className="mt-3">
+              <ResponsiveContainer width="100%" height={260}>
                 <BarChart data={monthCompare.rows.slice(0, 10)} margin={{ left: -8, right: 8 }}>
                   <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
                   <XAxis dataKey="name" {...axisProps} interval={0} minTickGap={4} />
                   <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={64} />
                   <Tooltip content={<ChartTooltip formatter={fmt} />} cursor={{ fill: "var(--color-muted)", opacity: 0.3 }} />
-                  <Bar dataKey="a" name={monthLabel(mA)} fill="var(--color-chart-1)" radius={[8, 8, 0, 0]} />
-                  <Bar dataKey="b" name={monthLabel(mB)} fill="var(--color-chart-4)" radius={[8, 8, 0, 0]} />
+                  <Bar dataKey="a" name={monthLabel(mA)} fill="var(--color-chart-1)" radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="b" name={monthLabel(mB)} fill="var(--color-chart-4)" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
