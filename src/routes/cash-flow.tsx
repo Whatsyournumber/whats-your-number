@@ -399,7 +399,19 @@ function Row({
   return (
     <div>
       <div className="flex items-center justify-between gap-2">
-        <span className="text-muted-foreground">{label}</span>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="inline-flex cursor-help items-center gap-1 text-muted-foreground underline decoration-dotted underline-offset-4">
+              {label}
+              {legend && <HelpCircle className="h-3.5 w-3.5 text-muted-foreground/70" />}
+            </span>
+          </TooltipTrigger>
+          {legend && (
+            <TooltipContent side="top" className="max-w-[260px] leading-relaxed">
+              {legend}
+            </TooltipContent>
+          )}
+        </Tooltip>
         <span className="numeric flex items-baseline gap-2">
           <span className="font-medium">{fmt(value)}</span>
           <span>
@@ -411,12 +423,6 @@ function Row({
       <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted">
         <div className={`h-full rounded-full ${colorClass}`} style={{ width: `${Math.min(p, 100)}%` }} />
       </div>
-
-      {legend && (
-        <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
-          {legend}
-        </p>
-      )}
     </div>
   );
 }
