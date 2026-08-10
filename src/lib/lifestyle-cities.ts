@@ -742,9 +742,10 @@ function taxLevel(rate: number): "low" | "medium" | "high" {
   return "high";
 }
 
-/** Años hasta la independencia financiera con la regla del 4%. */
-export function yearsToFreedom(currentCapital: number, monthlySavings: number, annualSpend: number, returnRate = 6) {
-  const target = annualSpend * 25;
+/** Años hasta la independencia financiera con la regla del 7%. */
+export function yearsToFreedom(currentCapital: number, monthlySavings: number, annualSpend: number, returnRate = 7) {
+  const target = annualSpend / 0.07;
+
   if (target <= currentCapital) return 0;
   if (monthlySavings <= 0) return null;
   const r = returnRate / 100 / 12;
