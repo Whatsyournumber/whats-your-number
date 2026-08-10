@@ -702,9 +702,12 @@ function CityCard({
           </div>
           <div className="bg-elevated/40 p-2.5">
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              {t("Salario neto est.", "Est. net salary")}
+              {t("Ingreso/hora prom.", "Avg. hourly income")}
             </p>
-            <p className="numeric mt-0.5 text-sm font-medium">{fmt(c.avgSalary)}</p>
+            <p className="numeric mt-0.5 text-sm font-medium">
+              ${hourlyRate(c)}/h
+              <span className="ml-1 text-[10px] text-muted-foreground">({fmt(c.avgSalary)}/m)</span>
+            </p>
           </div>
           <div className="bg-elevated/40 p-2.5">
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
