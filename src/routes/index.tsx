@@ -22,6 +22,9 @@ import {
 
 
 import ctaLifestyle from "@/assets/cta-lifestyle.jpg";
+import featureAi from "@/assets/feature-ai.png.asset.json";
+import featureLife from "@/assets/feature-life.png.asset.json";
+import featureNumber from "@/assets/feature-number.png.asset.json";
 import { BrandLogo } from "@/components/brand-logo";
 import { ProductPreview } from "@/components/product-preview";
 import { SiteHeader } from "@/components/site-header";
@@ -207,28 +210,31 @@ function Landing() {
   const whyCards = [
     {
       icon: Crosshair,
-      title: t("Tu número, siempre claro", "Your number, always clear"),
+      image: featureNumber.url,
+      title: t("Sabe exactamente cuándo serás libre", "Know exactly when you'll be free"),
       desc: t(
-        "Cuánto capital necesitas para vivir de tus rendimientos y en qué año llegas, según la tasa que elijas.",
-        "How much capital you need to live off returns, and the year you get there at the rate you choose.",
+        "Calcula tu número de libertad financiera: el capital que necesitas para vivir de tus rendimientos y el año en que lo alcanzarás.",
+        "Calculate your financial freedom number: the capital you need to live off returns and the year you'll reach it.",
       ),
       stat: t("30 segundos · sin registro", "30 seconds · no sign-up"),
     },
     {
       icon: ScanEye,
-      title: t("La IA lee tus estados de cuenta", "AI reads your statements"),
+      image: featureAi.url,
+      title: t("La IA lee y clasifica tus estados de cuenta", "AI reads and classifies your statements"),
       desc: t(
-        "PDF o CSV: clasifica cada movimiento, detecta suscripciones muertas y te dice dónde recortar.",
-        "PDF or CSV: it classifies every transaction, spots dead subscriptions and tells you where to cut.",
+        "Sube PDFs o CSVs de cualquier banco. La IA extrae cada movimiento, detecta suscripciones duplicadas y sugiere dónde recortar.",
+        "Upload PDFs or CSVs from any bank. The AI extracts every transaction, spots duplicate subscriptions and suggests where to cut.",
       ),
       stat: t("142 movimientos en 9 segundos", "142 transactions in 9 seconds"),
     },
     {
       icon: RouteIcon,
-      title: t("Decide tu vida, no solo tu mes", "Plan your life, not just your month"),
+      image: featureLife.url,
+      title: t("Mide el impacto real de cada decisión", "Measure the real impact of every decision"),
       desc: t(
-        "Casa, hijos, negocio o mudarte a Madrid: cada decisión mueve tu fecha de libertad en tiempo real.",
-        "A home, kids, a business or moving to Madrid: each decision shifts your freedom date in real time.",
+        "Casa, hijos, negocio o mudarte a Madrid: simula cada escenario y descubre cuánto acelera o retrasa tu fecha de libertad.",
+        "A home, kids, a business or moving to Madrid: simulate every scenario and discover how much it speeds up or delays your freedom date.",
       ),
       stat: t("Life Planner + Your next city", "Life Planner + Your next city"),
     },
@@ -317,7 +323,7 @@ function Landing() {
             {t("Gratis y sin registro · 3 preguntas · 30 segundos", "Free, no sign-up · 3 questions · 30 seconds")}
           </p>
 
-          <div className="mt-12 grid gap-4 text-left md:grid-cols-3">
+          <div className="mt-12 grid gap-5 text-left md:grid-cols-3">
             {whyCards.map((card, i) => (
               <motion.div
                 key={card.title}
@@ -325,15 +331,28 @@ function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.08 }}
-                className="group relative overflow-hidden rounded-3xl border border-white/[0.06] bg-card/40 p-6 backdrop-blur-sm transition-colors hover:bg-card/60"
+                className="group relative overflow-hidden rounded-3xl border border-white/[0.06] bg-card/40 backdrop-blur-sm transition-all hover:bg-card/60"
               >
                 <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-[0.07]" />
-                <div className="relative flex h-11 w-11 items-center justify-center rounded-full border border-border/60 bg-elevated/40 ring-1 ring-primary/10 transition-all group-hover:ring-primary/30">
-                  <card.icon className="relative h-5 w-5 text-primary" strokeWidth={1.8} />
+                <div className="relative aspect-[4/3] w-full overflow-hidden">
+                  <img
+                    src={card.image}
+                    alt={card.title}
+                    loading="lazy"
+                    width={1024}
+                    height={768}
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-card/20 to-card/80" />
+                  <div className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/30 backdrop-blur-md ring-1 ring-primary/20">
+                    <card.icon className="relative h-5 w-5 text-primary" strokeWidth={1.8} />
+                  </div>
                 </div>
-                <h3 className="relative mt-4 text-base font-semibold tracking-tight">{card.title}</h3>
-                <p className="relative mt-1.5 text-sm text-muted-foreground/80">{card.desc}</p>
-                <p className="numeric relative mt-4 text-xs font-medium text-primary">{card.stat}</p>
+                <div className="relative p-5">
+                  <h3 className="text-base font-semibold tracking-tight">{card.title}</h3>
+                  <p className="relative mt-2 text-sm text-muted-foreground/80">{card.desc}</p>
+                  <p className="numeric relative mt-4 text-xs font-medium text-primary">{card.stat}</p>
+                </div>
               </motion.div>
             ))}
           </div>
