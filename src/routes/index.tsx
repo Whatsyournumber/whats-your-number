@@ -545,7 +545,14 @@ function Landing() {
             <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
               {t("Personas que ya encontraron su número", "People who already found their number")}
             </h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
+              {t(
+                "Historias reales de usuarios que pasaron de la confusión a la claridad financiera.",
+                "Real stories from users who moved from confusion to financial clarity.",
+              )}
+            </p>
           </div>
+
           <div className="grid gap-4 md:grid-cols-3">
             {reviews.map((r, i) => (
               <motion.figure
