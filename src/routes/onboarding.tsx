@@ -734,13 +734,18 @@ function OnboardingPage() {
 
         {step < 9 && (
           <div className="mt-12 flex items-center gap-3">
-            {step > 0 && (
+            {(step > 0 || introPage === 1) && (
               <Button variant="ghost" size="lg" className="rounded-full" onClick={() => go(-1)}>
                 <ArrowLeft className="mr-2 h-4 w-4" /> {t("Atrás", "Back")}
               </Button>
             )}
             <Button size="lg" className="ml-auto min-w-[160px] rounded-full" disabled={!canContinue()} onClick={() => go(1)}>
-              {step === 0 ? t("Comenzar", "Start") : t("Continuar", "Continue")}
+              {step === 0 && introPage === 0
+                ? t("Comenzar", "Start")
+                : step === 0
+                  ? t("Entendido, empecemos", "Got it, let's start")
+                  : t("Continuar", "Continue")}
+
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
