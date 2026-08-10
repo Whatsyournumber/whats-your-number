@@ -253,9 +253,16 @@ function LifePlanner() {
                   <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-elevated text-lg">{g.emoji}</span>
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold">{g.name}</p>
-                    <span className="mt-1 inline-block rounded-md bg-elevated px-2 py-0.5 text-[11px] text-muted-foreground">
-                      {t(`Meta ${g.target_year}`, `Goal ${g.target_year}`)}
-                    </span>
+                    <div className="mt-1 flex flex-wrap items-center gap-1">
+                      <span className="inline-block rounded-md bg-elevated px-2 py-0.5 text-[11px] text-muted-foreground">
+                        {t(`Meta ${g.target_year}`, `Goal ${g.target_year}`)}
+                      </span>
+                      {cardTpl && (
+                        <span className="inline-block rounded-md bg-primary/10 px-2 py-0.5 text-[11px] text-primary">
+                          {t(cardTpl.es, cardTpl.en)}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <div className="ml-auto flex gap-1">
                     <button
