@@ -693,6 +693,32 @@ const CLIMATE_SCORE: Record<ClimatePref, Record<Climate, number>> = {
   any: { warm: 70, beach: 70, temperate: 70, cold: 70 },
 };
 
+/** Distancia máxima al mar (km) para considerar que una ciudad "tiene playa". */
+export const BEACH_MAX_KM = 30;
+
+/** ¿La ciudad está realmente en la costa? */
+export function isCoastal(c: CityData) {
+  return c.beachKm <= BEACH_MAX_KM;
+}
+
+/** Puntuación de clima: con preferencia "playa" manda la cercanía real al mar. */
+function climateScore(c: CityData, pref: ClimatePref) {
+  const base = CLIMATE_SCORE[pref][c.climate];
+  if (pref !== "beach") return base;
+  const coast = clamp(100 - (c.beachKm / BEACH_MAX_KM) * 55);
+  return clamp(coast * 0.6 + base * 0.4);
+}
+
+/** Coherencia clima ↔ ciudad: descarta lo que no encaja con la preferencia. */
+function passesClimate(c: CityData, pref: ClimatePref) {
+  if (pref === "any") return true;
+  if (pref === "beach") return isCoastal(c) && c.climate !== "cold";
+  if (pref === "warm") return c.climate === "warm" || c.climate === "beach";
+  if (pref === "cold") return c.climate === "cold" || c.climate === "temperate";
+  return c.climate !== "cold";
+}
+
+
 export function monthlyCost(c: CityData, stage: LifeStage, comfort: ComfortPref = "comfortable") {
   const base = c.housing + c.food + c.transport + c.healthcare + c.internet + c.entertainment;
   const k = COMFORT_FACTOR[comfort];
