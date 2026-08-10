@@ -196,7 +196,7 @@ function Gastos() {
     monthCompare.bTotal > 0 ? ((monthCompare.aTotal - monthCompare.bTotal) / monthCompare.bTotal) * 100 : 0;
 
   // ---- Gasto objetivo ----
-  const { target, setTarget } = useSpendTarget(5000);
+  const { target, setTarget } = useSpendTarget(Math.round(profile.monthly_expenses || 0));
   const monthlyRun = fixed.total + (variableTotal / days) * 30;
   const targetPct = target > 0 ? (monthlyRun / target) * 100 : 0;
 
