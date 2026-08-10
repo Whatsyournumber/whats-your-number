@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { CalendarDays, Compass, Pencil, Plus, Sparkles, Target, TrendingDown, TrendingUp, Trash2, Wallet } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { NumberInput } from "@/components/ui/number-input";
 import { Label } from "@/components/ui/label";
 import { useT } from "@/hooks/use-language";
 import { useLifeGoals, type LifeGoal } from "@/hooks/use-life-goals";
@@ -482,17 +483,19 @@ function LifePlanner() {
                     onChange={(e) => setDraft({ ...draft, target_year: Number(e.target.value) })}
                   />
                 </Field>
-                {tpl.fields.map((f) => (
-                  <Field key={f.key} label={t(f.es, f.en)}>
-                    <Input
-                      type="number"
-                      value={draft.values[f.key] ?? 0}
-                      onChange={(e) =>
-                        setDraft({ ...draft, values: { ...draft.values, [f.key]: Number(e.target.value) } })
-                      }
-                    />
-                  </Field>
-                ))}
+                {tpl.fields.map((f) => {
+                  const num = draft.values[f.key] ?? 0;
+                  return (
+                    <Field key={f.key} label={t(f.es, f.en)}>
+                      <NumberInput
+                        value={num}
+                        onChange={(v) =>
+                          setDraft({ ...draft, values: { ...draft.values, [f.key]: v } })
+                        }
+                      />
+                    </Field>
+                  );
+                })}
               </div>
 
               {derived && (
