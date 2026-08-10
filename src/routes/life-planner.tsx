@@ -466,6 +466,7 @@ function LifePlanner() {
                       {derived.monthly >= 0 ? "+" : ""}
                       {data.fmt(derived.monthly)}/{t("mes", "mo")}
                       {derived.payout ? ` · ${t("Venta", "Exit")}: ${data.fmt(derived.payout)}` : ""}
+                      {(derived.extras ?? []).map((x) => ` · ${t(x.es, x.en)}: ${data.fmt(Math.round(x.value))}`).join("")}
                     </p>
                   </div>
                   <span
