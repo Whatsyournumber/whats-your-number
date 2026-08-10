@@ -73,8 +73,13 @@ function Retiro() {
   }, [retirement.monthlyContribution, retirement.returnAnnualized, retirement.retireAge]);
 
   const years = Math.max(0, retireAge - retirement.currentAge);
-  const data = projectRetirementFrom(monthly, rate, years, retirement.balance, retirement.currentAge);
+  // Parte de TODO lo que ya tengo invertido (no solo la cuenta de retiro).
+  const data = projectRetirementFrom(monthly, rate, years, investable, retirement.currentAge);
   const final = data[data.length - 1]!;
+  // El objetivo se compara contra el número que estás editando en vivo.
+  const targetNow = liveNumber > 0 ? liveNumber : plan.targetCapital;
+  const gap = targetNow - final.value;
+
 
   // Escenarios de renta mensual: capital acumulado x rentabilidad anual.
   const capitals = [500_000, 750_000, 1_000_000, 1_200_000, 1_500_000, 2_000_000, 3_000_000, 5_000_000];
@@ -256,9 +261,15 @@ function Retiro() {
               <p className="text-xs text-muted-foreground">{t("Saldo proyectado", "Projected balance")}</p>
               <p className="numeric mt-1 text-2xl font-semibold">{fmt(final.value)}</p>
               <p className="mt-1 text-xs text-muted-foreground">
-                {final.value >= plan.targetCapital ? t("Superas tu capital objetivo 🎯", "You exceed your target capital 🎯") : `${t("Te faltarían", "You'd still need")} ${fmt(plan.targetCapital - final.value)}`}
+                {gap <= 0
+                  ? `${t("Superas tu número por", "You exceed your number by")} ${fmt(-gap)} 🎯`
+                  : `${t("Te faltarían", "You'd still need")} ${fmt(gap)}`}
+              </p>
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                {t("Partes de", "Starting from")} {fmt(investable)} {t("que ya tienes · objetivo", "you already have · target")} {fmt(targetNow)}
               </p>
             </div>
+
           </div>
         </Panel>
       </div>
