@@ -9,8 +9,6 @@
  */
 import { extraCities } from "./lifestyle-cities-extra";
 import barcelonaPhoto from "@/assets/city-barcelona-hd.jpg.asset.json";
-import taipeiPhoto from "@/assets/city-taipei.png.asset.json";
-import dubaiPhoto from "@/assets/city-dubai.png.asset.json";
 import sydneyPhoto from "@/assets/city-sydney.png.asset.json";
 
 
@@ -65,7 +63,7 @@ const PHOTO = {
   valencia: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Museo_Pr%C3%ADncipe_Felipe%2C_Ciudad_de_las_Artes_y_las_Ciencias%2C_Valencia%2C_Espa%C3%B1a%2C_2014-06-29%2C_DD_59.JPG/1920px-Museo_Pr%C3%ADncipe_Felipe%2C_Ciudad_de_las_Artes_y_las_Ciencias%2C_Valencia%2C_Espa%C3%B1a%2C_2014-06-29%2C_DD_59.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   lisbon: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/LisbonSkyline.jpg/1920px-LisbonSkyline.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   london: "https://commons.wikimedia.org/wiki/Special:FilePath/Tower%20Bridge%20and%20the%20Shard%20at%20sunset%202013.JPG?width=1920",
-  dubai: dubaiPhoto.url,
+  dubai: "https://commons.wikimedia.org/wiki/Special:FilePath/Dubai%20skyline%20unsplash.jpg?width=1920",
   singapore: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/2016_Singapur%2C_Downtown_Core%2C_Wieczorny_widok_na_Central_Business_District_od_strony_promenady_Esplanade_%2801%29.jpg/1920px-2016_Singapur%2C_Downtown_Core%2C_Wieczorny_widok_na_Central_Business_District_od_strony_promenady_Esplanade_%2801%29.jpg",
   tokyo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Shibuya_crossing_at_night%2C_Tokyo%2C_Japan.jpg/1920px-Shibuya_crossing_at_night%2C_Tokyo%2C_Japan.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   bangkok: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Wat_Arun_Ratchawararam_and_the_Royal_Barge_Procession.jpg/1920px-Wat_Arun_Ratchawararam_and_the_Royal_Barge_Procession.jpg",
@@ -104,7 +102,7 @@ const PHOTO = {
   seoul: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Lotte_World_night_view_2.jpg/1920px-Lotte_World_night_view_2.jpg",
   kualalumpur: "https://commons.wikimedia.org/wiki/Special:FilePath/57%20Kuala%20Lumpur%20skyline%20with%20Mont%20Kiara%20and%20Petronas%20Towers%20by%20night.jpg?width=1920",
   hochiminh: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Ho_Chi_Minh_City_Skyline.jpg/1920px-Ho_Chi_Minh_City_Skyline.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  taipei: taipeiPhoto.url,
+  taipei: "https://commons.wikimedia.org/wiki/Special:FilePath/Taipei%20skyline%20at%20sunset%2020190922.jpg?width=1920",
   auckland: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Auckland_Skyline_383495.jpg/1920px-Auckland_Skyline_383495.jpg",
   melbourne: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Aerial_panorama_of_Preston_facing_west_towards_the_Melbourne_skyline._July_2023.jpg/1920px-Aerial_panorama_of_Preston_facing_west_towards_the_Melbourne_skyline._July_2023.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   nairobi: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Nairobi_panorama_from_westlands.jpg/1920px-Nairobi_panorama_from_westlands.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
