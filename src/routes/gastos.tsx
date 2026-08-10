@@ -468,24 +468,25 @@ function Gastos() {
       </div>
 
       <Panel
+        variant="minimal"
         title={t("Gasto objetivo mensual", "Monthly spend target")}
-        description={t("Tu techo de gasto según tu número; comparado con tu ritmo actual (fijos + variable proyectado a 30 días)", "Your spending ceiling based on your number, compared to your current pace (fixed + variable projected over 30 days)")}
+        description={t("Ritmo actual vs. tu techo de gasto según tu número.", "Current pace vs. your spending ceiling based on your number.")}
       >
-        <div className="grid gap-5 md:grid-cols-[240px_1fr] md:items-center">
+        <div className="grid gap-5 md:grid-cols-[200px_1fr] md:items-center">
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{t("Objetivo", "Target")}</p>
             <div className="mt-2 flex items-center gap-2">
               <NumberInput
                 value={target}
                 onChange={setTarget}
-                className="h-11 w-40 text-lg font-semibold"
+                className="h-10 w-36 text-base font-semibold"
               />
               <span className="text-xs text-muted-foreground">{t("/mes", "/mo")}</span>
             </div>
           </div>
           <div>
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span className="numeric text-2xl font-semibold">{fmt(monthlyRun)}</span>
+              <span className="numeric text-xl font-semibold">{fmt(monthlyRun)}</span>
               <span className="text-xs text-muted-foreground">{t("ritmo mensual estimado", "estimated monthly pace")}</span>
               <span
                 className={cn(
@@ -498,7 +499,7 @@ function Gastos() {
                   : `${fmt(monthlyRun - target)} ${t("por encima", "over")}`}
               </span>
             </div>
-            <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-muted">
+            <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
               <div
                 className={cn("h-full rounded-full", monthlyRun <= target ? "bg-positive" : "bg-negative")}
                 style={{ width: `${Math.min(100, targetPct)}%` }}
