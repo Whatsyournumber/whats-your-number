@@ -404,17 +404,18 @@ function LifestyleSimulator() {
             />
             <SelectFilter
               label={t(
-                "Rango salarial (si trabajas ahí)",
-                "Salary range (if you work there)",
+                "💼 Ingreso por hora (si trabajas ahí)",
+                "💼 Expected hourly income (if you work there)",
               )}
               value={filters.salary}
               onChange={(v) => set("salary", v)}
               options={[
-                { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
-                { value: "under_1500", label: t("< $1.500/mes", "< $1,500/mo"), icon: "💸" },
-                { value: "1500_3000", label: t("$1.500 – $3.000", "$1,500 – $3,000"), icon: "🪙" },
-                { value: "3000_5000", label: t("$3.000 – $5.000", "$3,000 – $5,000"), icon: "📈" },
-                { value: "5000_plus", label: t("$5.000+", "$5,000+"), icon: "💎" },
+                { value: "any", label: t("Indiferente", "Doesn't matter"), icon: "🌍" },
+                { value: "under_25", label: t("< $25/h", "Under $25/hr"), icon: "💵" },
+                { value: "25_50", label: "$25 – $50/h", icon: "💰" },
+                { value: "50_75", label: "$50 – $75/h", icon: "💎" },
+                { value: "75_100", label: "$75 – $100/h", icon: "🚀" },
+                { value: "100_plus", label: t("$100+/h", "$100+/hr"), icon: "👑" },
               ]}
             />
 
