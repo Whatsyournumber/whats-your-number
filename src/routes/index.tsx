@@ -323,7 +323,7 @@ function Landing() {
             {t("Gratis y sin registro · 3 preguntas · 30 segundos", "Free, no sign-up · 3 questions · 30 seconds")}
           </p>
 
-          <div className="mt-12 grid gap-4 text-left md:grid-cols-3">
+          <div className="mt-12 grid gap-5 text-left md:grid-cols-3">
             {whyCards.map((card, i) => (
               <motion.div
                 key={card.title}
@@ -331,15 +331,28 @@ function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.08 }}
-                className="group relative overflow-hidden rounded-3xl border border-white/[0.06] bg-card/40 p-6 backdrop-blur-sm transition-colors hover:bg-card/60"
+                className="group relative overflow-hidden rounded-3xl border border-white/[0.06] bg-card/40 backdrop-blur-sm transition-all hover:bg-card/60"
               >
                 <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-[0.07]" />
-                <div className="relative flex h-11 w-11 items-center justify-center rounded-full border border-border/60 bg-elevated/40 ring-1 ring-primary/10 transition-all group-hover:ring-primary/30">
-                  <card.icon className="relative h-5 w-5 text-primary" strokeWidth={1.8} />
+                <div className="relative aspect-[4/3] w-full overflow-hidden">
+                  <img
+                    src={card.image}
+                    alt={card.title}
+                    loading="lazy"
+                    width={1024}
+                    height={768}
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-card/20 to-card/80" />
+                  <div className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/30 backdrop-blur-md ring-1 ring-primary/20">
+                    <card.icon className="relative h-5 w-5 text-primary" strokeWidth={1.8} />
+                  </div>
                 </div>
-                <h3 className="relative mt-4 text-base font-semibold tracking-tight">{card.title}</h3>
-                <p className="relative mt-1.5 text-sm text-muted-foreground/80">{card.desc}</p>
-                <p className="numeric relative mt-4 text-xs font-medium text-primary">{card.stat}</p>
+                <div className="relative p-5">
+                  <h3 className="text-base font-semibold tracking-tight">{card.title}</h3>
+                  <p className="relative mt-2 text-sm text-muted-foreground/80">{card.desc}</p>
+                  <p className="numeric relative mt-4 text-xs font-medium text-primary">{card.stat}</p>
+                </div>
               </motion.div>
             ))}
           </div>
