@@ -200,7 +200,7 @@ function LifePlanner() {
               {t("Tu objetivo principal y no negociable.", "Your main, non-negotiable goal.")}
             </p>
             <div className="mt-5 flex items-center justify-between text-xs text-muted-foreground">
-              <span>{t("Avance actual", "Current progress")}</span>
+              <span>{t("Avance actual con nuevas decisiones", "Current progress with new decisions")}</span>
               <span className="numeric text-sm font-semibold text-foreground">{progress.toFixed(0)}%</span>
             </div>
             <div className="relative mt-2 h-2.5 overflow-hidden rounded-full bg-muted">
