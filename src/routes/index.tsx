@@ -225,7 +225,9 @@ function Landing() {
   const whyCards = [
     {
       icon: PieChart,
-      title: t("01 — Entiende dónde va tu dinero.", "01 — Understand where your money goes."),
+      number: "01",
+      titleLight: t("Entiende dónde va", "Understand where"),
+      titleAccent: t("tu dinero.", "your money goes."),
       desc: t(
         "Carga tus estados financieros y obtén claridad sobre tus gastos en menos de 30 segundos.",
         "Upload your financial statements and get clarity on your spending in under 30 seconds.",
@@ -233,7 +235,9 @@ function Landing() {
     },
     {
       icon: Target,
-      title: t("02 — Descubre cuándo puedes dejar de trabajar.", "02 — Discover when you can stop working."),
+      number: "02",
+      titleLight: t("Descubre cuándo", "Discover when"),
+      titleAccent: t("puedes dejar de trabajar.", "you can stop working."),
       desc: t(
         "Conoce el capital que necesitas para vivir de tus rendimientos y cuánto te falta para llegar.",
         "Know the capital you need to live off your returns and how far you are from getting there.",
@@ -241,7 +245,9 @@ function Landing() {
     },
     {
       icon: Bot,
-      title: t("03 — Pregúntale a tu IA Financial Advisor.", "03 — Ask your AI Financial Advisor."),
+      number: "03",
+      titleLight: t("Pregúntale a tu", "Ask your"),
+      titleAccent: t("IA Financial Advisor.", "AI Financial Advisor."),
       desc: t(
         "Tu asesor conoce tus números, analiza escenarios y te ayuda a tomar mejores decisiones financieras.",
         "Your advisor knows your numbers, analyzes scenarios and helps you make better financial decisions.",
