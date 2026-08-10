@@ -207,33 +207,22 @@ function Landing() {
 
   const whyCards = [
     {
-      icon: Crosshair,
-      title: t("Sé cuándo podrás dejar de trabajar", "Know when you can stop working"),
-      desc: t(
-        "Calcula tu número de libertad financiera: el capital que necesitas para vivir de tus rendimientos y el año en que lo alcanzarás.",
-        "Calculate your financial freedom number: the capital you need to live off returns and the year you'll reach it.",
-      ),
-      stat: t("30 segundos · sin registro", "30 seconds · no sign-up"),
-    },
-    {
       icon: ScanEye,
-      title: t("La IA organiza tus gastos automáticamente", "AI organizes your expenses automatically"),
-      desc: t(
-        "Sube PDFs o CSVs de cualquier banco. La IA extrae cada movimiento, detecta suscripciones duplicadas y sugiere dónde recortar.",
-        "Upload PDFs or CSVs from any bank. The AI extracts every transaction, spots duplicate subscriptions and suggests where to cut.",
-      ),
-      stat: t("142 movimientos en 9 segundos", "142 transactions in 9 seconds"),
+      title: t("Claridad total", "Total clarity"),
+      desc: t("Toda tu información financiera en un solo panel.", "All your financial information in a single dashboard."),
     },
     {
-      icon: RouteIcon,
-      title: t("Mira cómo cada decisión cambia tu futuro", "See how every decision changes your future"),
-      desc: t(
-        "Casa, hijos, negocio o mudarte a Madrid: simula cada escenario y descubre cuánto acelera o retrasa tu fecha de libertad.",
-        "A home, kids, a business or moving to Madrid: simulate every scenario and discover how much it speeds up or delays your freedom date.",
-      ),
-      stat: t("Life Planner + Your next city", "Life Planner + Your next city"),
+      icon: Sparkles,
+      title: "AI Advisor",
+      desc: t("Clasifica automáticamente y detecta dónde ahorrar.", "Auto-categorizes and finds where to save."),
+    },
+    {
+      icon: Crosshair,
+      title: t("Tu número, siempre", "Your number, always"),
+      desc: t("Sabe cuánto necesitas para ser libre y qué tan cerca estás.", "Know how much you need to be free and how close you are."),
     },
   ];
+
 
 
 
@@ -293,15 +282,13 @@ function Landing() {
               {t("entendido en 30 segundos", "understood in 30 seconds")}
             </span>
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl font-display text-lg font-medium tracking-tight text-foreground/90 md:text-xl">
-            {t("La libertad financiera tiene un número. ¿Cuál es el tuyo?", "Know your number. Live freely.")}
-          </p>
-          <p className="mx-auto mt-3 max-w-xl text-base text-muted-foreground">
+          <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground">
             {t(
               "Patrimonio, gastos, cash flow, inversiones y retiro en una sola plataforma. Sube tus estados de cuenta y la IA hace el resto.",
               "Net worth, spending, cash flow, investments and retirement in a single platform. Upload your statements and let the AI do the rest.",
             )}
           </p>
+
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Button asChild size="lg" className="gap-2 rounded-full px-6">
@@ -319,7 +306,32 @@ function Landing() {
             {t("Gratis y sin registro · 3 preguntas · 30 segundos", "Free, no sign-up · 3 questions · 30 seconds")}
           </p>
 
-          <div className="mt-12 grid gap-5 text-left md:grid-cols-3">
+          <div className="mt-6 flex items-center justify-center gap-3">
+            <div className="flex -space-x-2">
+              {[
+                "https://i.pravatar.cc/80?img=12",
+                "https://i.pravatar.cc/80?img=32",
+                "https://i.pravatar.cc/80?img=45",
+              ].map((src) => (
+                <img
+                  key={src}
+                  src={src}
+                  alt={t("Usuario de WhatsYourNumber", "WhatsYourNumber user")}
+                  loading="lazy"
+                  className="h-8 w-8 rounded-full border-2 border-background object-cover"
+                />
+              ))}
+            </div>
+            <span className="text-sm text-muted-foreground">
+              {t("+8,231 personas ya descubrieron su número", "+8,231 people already found their number")}
+            </span>
+          </div>
+
+          <p className="mt-14 text-xs font-medium uppercase tracking-wider text-primary">
+            {t("¿Por qué WhatsYourNumber?", "Why WhatsYourNumber?")}
+          </p>
+
+          <div className="mt-6 grid gap-5 text-left md:grid-cols-3">
             {whyCards.map((card, i) => (
               <motion.div
                 key={card.title}
@@ -334,10 +346,10 @@ function Landing() {
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-primary/10 ring-1 ring-primary/20">
                     <card.icon className="h-6 w-6 text-primary" strokeWidth={1.8} />
                   </div>
-                  <h3 className="mt-5 text-xl font-semibold tracking-tight">{card.title}</h3>
+                  <h3 className="mt-5 text-lg font-semibold tracking-tight">{card.title}</h3>
                   <p className="relative mt-3 text-sm leading-relaxed text-muted-foreground/80">{card.desc}</p>
-                  <p className="numeric relative mt-5 text-xs font-medium text-primary">{card.stat}</p>
                 </div>
+
               </motion.div>
             ))}
           </div>
