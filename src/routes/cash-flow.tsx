@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "motion/react";
+import { HelpCircle } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useLanguage, useT } from "@/hooks/use-language";
 
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useCategories } from "@/hooks/use-categories";
 import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useProfile } from "@/hooks/use-profile";
