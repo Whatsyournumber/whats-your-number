@@ -584,9 +584,9 @@ export type ClimatePref = Climate | "any";
 /** Rango salarial neto mensual (USD) que podrías ganar trabajando en esa ciudad */
 export type SalaryPref = "any" | "under_1500" | "1500_3000" | "3000_5000" | "5000_plus";
 
-/** Salario neto mensual estimado (USD) tras impuestos y contribuciones */
-export function netSalary(c: LifestyleCity): number {
-  return Math.round(c.avgSalary * (1 - c.taxRate / 100));
+/** Salario neto mensual estimado (USD) que podrías ganar trabajando ahí */
+export function netSalary(c: CityData): number {
+  return Math.round(c.avgSalary);
 }
 
 export const SALARY_BANDS: Record<Exclude<SalaryPref, "any">, { min: number; max: number }> = {
