@@ -16,7 +16,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { categorizeTx } from "@/lib/categorize";
 import { useT } from "@/hooks/use-language";
 import type { DateRange } from "react-day-picker";
-import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, ComposedChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
