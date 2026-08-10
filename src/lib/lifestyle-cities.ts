@@ -9,7 +9,6 @@
  */
 import { extraCities } from "./lifestyle-cities-extra";
 import barcelonaPhoto from "@/assets/city-barcelona-hd.jpg.asset.json";
-import sydneyPhoto from "@/assets/city-sydney.png.asset.json";
 
 
 export type Region = "northamerica" | "latam" | "europe" | "asia" | "africa";
@@ -69,7 +68,7 @@ const PHOTO = {
   bangkok: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Wat_Arun_Ratchawararam_and_the_Royal_Barge_Procession.jpg/1920px-Wat_Arun_Ratchawararam_and_the_Royal_Barge_Procession.jpg",
   miami: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Ocean_Drive_South_Beach_Miami.jpg/1920px-Ocean_Drive_South_Beach_Miami.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   newyork: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Panorama_with_Empire_State_Building_at_night1.jpg/1920px-Panorama_with_Empire_State_Building_at_night1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  sydney: sydneyPhoto.url,
+  sydney: "https://commons.wikimedia.org/wiki/Special:FilePath/Sydney%20Opera%20House%20and%20Harbour%20Bridge%20Dusk%202019-06-21.jpg?width=1920",
   vancouver: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Vancouver_%28BC%2C_Canada%29%2C_English_Bay_Beach_--_2022_--_1947.jpg/1920px-Vancouver_%28BC%2C_Canada%29%2C_English_Bay_Beach_--_2022_--_1947.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   zurich: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Z%C3%BCrich_Kreis_11_Panorama_2024.jpg/1920px-Z%C3%BCrich_Kreis_11_Panorama_2024.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   amsterdam: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Colorful_windows_and_canal_houses_at_blue_hour_with_water_reflection_in_Damrak_Amsterdam_Netherlands.jpg/1920px-Colorful_windows_and_canal_houses_at_blue_hour_with_water_reflection_in_Damrak_Amsterdam_Netherlands.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",

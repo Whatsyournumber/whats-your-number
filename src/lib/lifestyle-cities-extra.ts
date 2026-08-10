@@ -64,7 +64,7 @@ const PHOTO = {
   osaka: "https://commons.wikimedia.org/wiki/Special:FilePath/Night%20view%20from%20Umeda%20Sky%20Building%20%28south%20side%29%2020250830.jpg?width=1920",
   hanoi: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Hanoi_Skyline_-_NKS.jpg/1920px-Hanoi_Skyline_-_NKS.jpg",
   manila: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Manila_skyline_day.jpg/1920px-Manila_skyline_day.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  telaviv: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Skylines_of_Tel_Aviv-Yafo_20180707-1.jpg/1920px-Skylines_of_Tel_Aviv-Yafo_20180707-1.jpg",
+  telaviv: "https://commons.wikimedia.org/wiki/Special:FilePath/Tel%20Aviv%20Skyline%2002.jpg?width=1920",
   abudhabi: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Abu_Dhabi_skyline_night_%28Nepenthes%29.jpg/1920px-Abu_Dhabi_skyline_night_%28Nepenthes%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   bengaluru: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Vidhana_Soudha_LE.jpg/1920px-Vidhana_Soudha_LE.jpg",
   chiangmai: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Doi_Suthep_Temple_Chiang_Mai_Thailand.jpg/1920px-Doi_Suthep_Temple_Chiang_Mai_Thailand.jpg",
