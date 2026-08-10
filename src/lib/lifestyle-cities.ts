@@ -808,18 +808,25 @@ export function scoreCity(
     expectedReturn: ctx.expectedReturn,
   });
 
-  // El ranking mezcla la base objetiva con el ajuste a tus preferencias.
-  let score = north.total * 0.6 + fit * 0.4;
-  if (cost > f.budget) score *= 0.72; // no alcanza el presupuesto
+  // El ranking lo manda Your North Score (pilares 30/25/15/15/10/5);
+  // tus preferencias sólo ajustan la posición dentro de ese marco.
+  let score = north.total * 0.75 + fit * 0.25;
 
-  const reasons = (Object.keys(weights) as Metric[])
-    .map((k) => ({ label: k, value: values[k] * weights[k] }))
-    .sort((a, b) => b.value - a.value)
-    .slice(0, 3);
+  // Penalización proporcional cuando la ciudad se sale del presupuesto
+  // (antes era un castigo plano que hundía ciudades por muy poco).
+  if (cost > f.budget && f.budget > 0) {
+    const over = (cost - f.budget) / f.budget; // 0.1 = 10% por encima
+    score *= clamp(100 - Math.min(35, over * 70)) / 100;
+  }
+
+  // Curva de contraste: separa el top del montón en vez de amontonar
+  // casi todo entre 60 y 80.
+  score = 50 + (score - 50) * 1.25;
 
   return {
     city: c,
     score: Math.round(clamp(score)),
+
     north,
     cost,
     savings,
