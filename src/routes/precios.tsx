@@ -243,7 +243,7 @@ function Pricing() {
                   variant={plan.highlight ? "default" : "outline"}
                   className="mt-8 w-full rounded-full"
                 >
-                  <Link to={plan.href} search={plan.search}>
+                  <Link to={plan.href} {...(plan.search ? { search: plan.search } : {})}>
                     {plan.cta}
                   </Link>
                 </Button>
