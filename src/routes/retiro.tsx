@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { motion } from "motion/react";
+import { Pencil, X } from "lucide-react";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
@@ -12,6 +14,7 @@ import { toast } from "sonner";
 import { useProfile } from "@/hooks/use-profile";
 import { useT } from "@/hooks/use-language";
 import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/retiro")({
   head: () => ({
