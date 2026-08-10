@@ -150,12 +150,21 @@ export function buildDataset(p: Profile): Dataset {
     {
       name: p.city ? `Vivir en ${p.city}` : "Retiro anticipado",
       emoji: p.city ? "🌍" : "🌅",
-      current: p.assets_retirement,
-      target: Math.round((city?.cost ?? 2600) * lifestyleFactor * 12 * 25),
-      deadline: String(year + yearsToGoal),
-      monthly: Math.round(savings * 0.3),
+      current: Math.max(0, nw),
+      target: cityTarget,
+      deadline: String(year + (cityYears ?? yearsToGoal)),
+      monthly: savings,
+      note: cityMonthly
+        ? `Presupuesto ${fmt(cityMonthly)}/mes · necesitas ${fmt(cityTarget)} · ${
+            cityYears === 0
+              ? "ya puedes mudarte"
+              : cityYears
+                ? `${cityYears} años ahorrando ${fmt(savings)}/mes`
+                : "sube tu ahorro mensual para llegar"
+          }`
+        : undefined,
     },
-  ];
+
 
   const incomeLines = [
     { name: "Salario", amount: p.income_salary },
