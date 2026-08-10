@@ -136,6 +136,14 @@ export type Database = {
           current_step: number
           desired_retirement_income: number | null
           expected_return: number | null
+          fixed_education: number
+          fixed_housing: number
+          fixed_insurance: number
+          fixed_other: number
+          fixed_savings: number
+          fixed_subscriptions: number
+          fixed_transport: number
+          fixed_utilities: number
           full_name: string | null
           goal: string | null
           housing: string | null
@@ -179,6 +187,14 @@ export type Database = {
           current_step?: number
           desired_retirement_income?: number | null
           expected_return?: number | null
+          fixed_education?: number
+          fixed_housing?: number
+          fixed_insurance?: number
+          fixed_other?: number
+          fixed_savings?: number
+          fixed_subscriptions?: number
+          fixed_transport?: number
+          fixed_utilities?: number
           full_name?: string | null
           goal?: string | null
           housing?: string | null
@@ -222,6 +238,14 @@ export type Database = {
           current_step?: number
           desired_retirement_income?: number | null
           expected_return?: number | null
+          fixed_education?: number
+          fixed_housing?: number
+          fixed_insurance?: number
+          fixed_other?: number
+          fixed_savings?: number
+          fixed_subscriptions?: number
+          fixed_transport?: number
+          fixed_utilities?: number
           full_name?: string | null
           goal?: string | null
           housing?: string | null

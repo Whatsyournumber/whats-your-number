@@ -19,6 +19,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { FIXED_FIELDS, totalFixedExpenses } from "@/lib/onboarding";
 import { StatementImporter } from "@/components/statement-importer";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -211,6 +212,13 @@ function OnboardingPage() {
 
   const set = <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) =>
     setData((d) => ({ ...d, [key]: value }));
+  const setFixed = (key: (typeof FIXED_FIELDS)[number]["key"], value: number) =>
+    setData((d) => {
+      const next = { ...d, [key]: value };
+      const fixedTotal = totalFixedExpenses(next);
+      if (next.monthly_expenses < fixedTotal) next.monthly_expenses = fixedTotal;
+      return next;
+    });
   const setL = <K extends keyof LifeData>(key: K, value: LifeData[K]) => setLife((l) => ({ ...l, [key]: value }));
 
   const desiredIncome = useMemo(() => estimateDesiredIncome(life), [life]);
@@ -628,6 +636,33 @@ function OnboardingPage() {
                     value={data.monthly_expenses}
                     onChange={(v) => set("monthly_expenses", v)}
                   />
+                </div>
+
+                <div className="mt-8">
+                  <SubQuestion title={t("Tus gastos fijos mensuales", "Your monthly fixed expenses")} />
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                    {t(
+                      "La letra de la hipoteca, servicios, seguros… Con esto rellenamos automáticamente tu pestaña de Gastos.",
+                      "Your mortgage payment, utilities, insurance… We use this to auto-fill your Expenses tab.",
+                    )}
+                  </p>
+                  <div className="mt-4 space-y-2.5">
+                    {FIXED_FIELDS.map((f) => (
+                      <MoneyField
+                        key={f.key}
+                        emoji={f.emoji}
+                        label={t(f.es, f.en)}
+                        desc={t("Monto mensual", "Monthly amount")}
+                        currency={cur}
+                        value={data[f.key] as number}
+                        onChange={(v) => setFixed(f.key, v)}
+                      />
+                    ))}
+                  </div>
+                  <div className="mt-4 flex items-center justify-between rounded-2xl border border-border/60 bg-elevated/40 px-5 py-3">
+                    <span className="text-sm text-muted-foreground">{t("Total gastos fijos", "Total fixed expenses")}</span>
+                    <span className="numeric text-lg font-semibold">{money(totalFixedExpenses(data), cur)}{t("/mes", "/mo")}</span>
+                  </div>
                 </div>
 
                 <div className="mt-6 flex items-center justify-between rounded-2xl border border-primary/25 bg-primary/5 px-5 py-4">
