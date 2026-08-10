@@ -46,8 +46,9 @@ function Retiro() {
   const d = buildDataset(profile);
   const { retirement, fmt, fmtCompact, plan } = d;
 
-  const liveNumber = Math.round((Math.max(0, wantMonthly) * 12) / (Math.min(15, Math.max(1, swr)) / 100));
+  const liveNumber = Math.round((Math.max(0, wantMonthly) * 12) / (Math.min(15, Math.max(3, swr)) / 100));
   const numberDirty = wantMonthly !== profile.desired_retirement_income || swr !== (profile.withdrawal_rate || 4);
+  const [editing, setEditing] = useState(false);
 
   // Solo activos que generan retorno (excluye propiedades).
   const investable =
