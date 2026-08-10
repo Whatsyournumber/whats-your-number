@@ -863,7 +863,7 @@ function CityDetail({
               <DialogTitle className="text-2xl">{c.name}</DialogTitle>
             </DialogHeader>
             <p className="text-sm text-muted-foreground">
-              {c.country} · Your North Score {r.north.total}/100
+              {c.country} · Your next city {r.north.total}/100
             </p>
           </div>
         </div>
