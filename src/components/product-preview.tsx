@@ -37,6 +37,7 @@ import {
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { lifestyleCities } from "@/lib/lifestyle-cities";
 import { useT } from "@/hooks/use-language";
 
 const netWorth = [
