@@ -358,7 +358,7 @@ export function ProductPreview() {
                           borderRadius: 12,
                           fontSize: 12,
                         }}
-                        itemStyle={{ color: "var(--color-foreground)" }
+                        itemStyle={{ color: "var(--color-foreground)" }}
                         formatter={(v) => [`€${v}k`, t("Capital", "Capital")]}
                       />
                       <Area type="monotone" dataKey="v" stroke="var(--color-positive)" strokeWidth={2.5} fill="url(#pp-ret)" />
