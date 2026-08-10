@@ -47,6 +47,12 @@ function Portafolio() {
   const d = buildDataset(profile);
   const fmt = (n: number, _dec?: number) => d.fmt(n);
   const r = Math.max(0, profile.expected_return || 7) / 100;
+
+  const watchlist = useWatchlist();
+  const quotesQuery = useQuotes(watchlist.symbols);
+  const seriesQuery = useMarketSeries(["^GSPC", "SPY", "BTC-USD"]);
+  const [newSymbol, setNewSymbol] = useState("");
+
   const positions = [
     { ticker: t("ETFs / fondos", "ETFs / funds"), name: t("Fondos indexados y ETFs", "Index funds and ETFs"), type: "ETF" as const, value: profile.assets_etf, growth: r },
     { ticker: t("Fondo de retiro", "Retirement fund"), name: t("Plan de pensiones / retiro", "Pension / retirement plan"), type: "ETF" as const, value: profile.assets_retirement, growth: r * 0.8 },
