@@ -12,6 +12,7 @@ export function KpiCard({
   accent = false,
   inverse = false,
   index = 0,
+  variant = "default",
 }: {
   label: string;
   value: string;
@@ -21,6 +22,7 @@ export function KpiCard({
   accent?: boolean;
   inverse?: boolean;
   index?: number;
+  variant?: "default" | "flat";
 }) {
   const good = delta === undefined ? true : inverse ? delta < 0 : delta > 0;
 
@@ -29,9 +31,16 @@ export function KpiCard({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.05, ease: "easeOut" }}
-      className={cn("surface relative overflow-hidden p-5", accent && "glow")}
+      className={cn(
+        "relative overflow-hidden p-5",
+        variant === "default" && "surface",
+        variant === "flat" && "rounded-2xl border border-border/60 bg-card/40",
+        accent && variant === "default" && "glow",
+      )}
     >
-      {accent && <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.08]" />}
+      {accent && variant === "default" && (
+        <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.08]" />
+      )}
       <div className="relative flex items-start justify-between gap-3">
         <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{label}</p>
         {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
