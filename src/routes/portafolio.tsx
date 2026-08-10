@@ -195,6 +195,77 @@ function Portafolio() {
         </Panel>
       </div>
 
+      <Panel
+        title={t("Mercado en vivo", "Live market")}
+        description={t("ETFs, acciones y cripto · precios reales, actualizados cada minuto", "ETFs, stocks and crypto · real prices, refreshed every minute")}
+        actions={
+          <button
+            type="button"
+            onClick={() => quotesQuery.refetch()}
+            className="rounded-lg border border-border/60 p-1.5 text-muted-foreground transition hover:text-foreground"
+            aria-label={t("Actualizar", "Refresh")}
+          >
+            <RefreshCw className={cn("h-3.5 w-3.5", quotesQuery.isFetching && "animate-spin")} />
+          </button>
+        }
+      >
+        <form
+          className="mb-4 flex gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (watchlist.add(newSymbol)) setNewSymbol("");
+          }}
+        >
+          <Input
+            value={newSymbol}
+            onChange={(e) => setNewSymbol(e.target.value)}
+            placeholder={t("Agregar ticker (VOO, TSLA, SOL-USD…)", "Add ticker (VOO, TSLA, SOL-USD…)")}
+            className="h-9 max-w-xs"
+          />
+          <Button type="submit" size="sm" variant="secondary">
+            {t("Agregar", "Add")}
+          </Button>
+        </form>
+
+        <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+          {(quotesQuery.data?.quotes ?? []).map((q) => (
+            <div key={q.symbol} className="group flex items-center gap-3 rounded-xl bg-elevated/60 p-3">
+              <div className="min-w-0">
+                <p className="text-sm font-semibold">{q.symbol}</p>
+                <p className="truncate text-xs text-muted-foreground">{q.name}</p>
+              </div>
+              <div className="ml-auto text-right">
+                <p className="numeric text-sm">
+                  {q.price.toLocaleString("en-US", { style: "currency", currency: q.currency || "USD", maximumFractionDigits: q.price < 10 ? 4 : 2 })}
+                </p>
+                <p className={cn("numeric text-xs font-medium", q.changePct >= 0 ? "text-positive" : "text-negative")}>
+                  {q.changePct > 0 ? "+" : ""}
+                  {q.changePct.toFixed(2)}%
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => watchlist.remove(q.symbol)}
+                className="text-muted-foreground opacity-0 transition group-hover:opacity-100"
+                aria-label={t("Quitar", "Remove")}
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ))}
+          {quotesQuery.isLoading && (
+            <p className="text-sm text-muted-foreground">{t("Cargando precios…", "Loading prices…")}</p>
+          )}
+        </div>
+        {quotesQuery.data?.updatedAt && (
+          <p className="mt-3 text-[11px] text-muted-foreground">
+            {t("Actualizado", "Updated")} {new Date(quotesQuery.data.updatedAt).toLocaleTimeString()}
+          </p>
+        )}
+      </Panel>
+
+
+
       <Panel title={t("Posiciones", "Positions")}>
         <Tabs defaultValue="Todos">
           <TabsList className="mb-4">
