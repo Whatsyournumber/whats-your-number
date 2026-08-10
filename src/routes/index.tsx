@@ -76,7 +76,7 @@ function DemoCard() {
           {t("La libertad financiera tiene un número. ¿Cuál es el tuyo?", "La libertad financiera tiene un número. ¿Cuál es el tuyo?")}
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
-          {t("Conoce tu número. Vive libre.", "Conoce tu número. Vive libre.")}
+          {t("Conoce tu número. Comienza a vivir libremente.", "Conoce tu número. Comienza a vivir libremente.")}
         </p>
       </div>
 
