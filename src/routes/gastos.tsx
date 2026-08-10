@@ -407,7 +407,7 @@ function Gastos() {
       <PageHeader
         eyebrow={t("Análisis de gastos", "Spending analysis")}
         title={t("¿En qué se fue mi dinero?", "Where did my money go?")}
-        subtitle={t("Tus gastos fijos y todo el detalle real de tus estados de cuenta.", "Your fixed expenses and the full real detail from your statements.")}
+        subtitle={t("Gastos fijos + variable de tus estados de cuenta, comparado periodo a periodo.", "Fixed + variable spend from your statements, compared period over period.")}
         actions={
           <Popover>
             <PopoverTrigger asChild>
@@ -444,7 +444,7 @@ function Gastos() {
       />
 
       {!hasData && !isLoading && (
-        <Panel>
+        <Panel variant="minimal">
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-elevated">
               <Upload className="h-5 w-5 text-muted-foreground" />
@@ -460,11 +460,11 @@ function Gastos() {
         </Panel>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard label={t("Gasto del periodo", "Period spend")} value={fmt(total)} delta={Number(delta.toFixed(1))} hint={`${t("fijos", "fixed")} ${fmt(fixedInPeriod)} + ${t("variable", "variable")} ${fmt(variableTotal)}`} inverse accent index={0} />
-        <KpiCard label={t("Gastos fijos", "Fixed expenses")} value={fmt(fixed.total)} hint={t("mensual, editable", "monthly, editable")} index={1} />
-        <KpiCard label={t("Gasto variable (EEFF)", "Variable spend (statements)")} value={fmt(variable)} hint={`${current.length} ${t("transacciones", "transactions")}`} index={2} />
-        <KpiCard label={t("Promedio diario", "Daily average")} value={fmt(total / days)} hint={`${days} ${t("días", "days")}`} index={3} />
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <KpiCard variant="flat" label={t("Gasto del periodo", "Period spend")} value={fmt(total)} delta={Number(delta.toFixed(1))} hint={`${t("fijos", "fixed")} ${fmt(fixedInPeriod)} + ${t("variable", "variable")} ${fmt(variableTotal)}`} inverse accent index={0} />
+        <KpiCard variant="flat" label={t("Gastos fijos", "Fixed expenses")} value={fmt(fixed.total)} hint={t("mensual, editable", "monthly, editable")} index={1} />
+        <KpiCard variant="flat" label={t("Gasto variable (EEFF)", "Variable spend (statements)")} value={fmt(variable)} hint={`${current.length} ${t("transacciones", "transactions")}`} index={2} />
+        <KpiCard variant="flat" label={t("Promedio diario", "Daily average")} value={fmt(total / days)} hint={`${days} ${t("días", "days")}`} index={3} />
       </div>
 
       <Panel
