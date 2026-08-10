@@ -56,11 +56,11 @@ export type CityData = {
 };
 
 const PHOTO = {
-  barcelona: "https://commons.wikimedia.org/wiki/Special:FilePath/Vistashotelvela.jpg?width=1920",
+  barcelona: "https://commons.wikimedia.org/wiki/Special:FilePath/Park%20G%C3%BCell%205%20-%20panoramio.jpg?width=1920",
   madrid: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Madrid_Gran_Via_Metropolis_%2828895530633%29.jpg/1920px-Madrid_Gran_Via_Metropolis_%2828895530633%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   valencia: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Museo_Pr%C3%ADncipe_Felipe%2C_Ciudad_de_las_Artes_y_las_Ciencias%2C_Valencia%2C_Espa%C3%B1a%2C_2014-06-29%2C_DD_59.JPG/1920px-Museo_Pr%C3%ADncipe_Felipe%2C_Ciudad_de_las_Artes_y_las_Ciencias%2C_Valencia%2C_Espa%C3%B1a%2C_2014-06-29%2C_DD_59.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   lisbon: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/LisbonSkyline.jpg/1920px-LisbonSkyline.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  london: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/London_-_Westminster_Bridge_Road_-_South_Bank_-_Jubilee_Walkway_-_Panorama_View_on_Palace_of_Westminster_1840-70%2C_Big_Ben_1858%2C_Portcullis_House_1993-2001_by_Michael_Hopkins_and_Partners_%26_Westminster_Bridge_1862_01.jpg/1920px-thumbnail.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  london: "https://commons.wikimedia.org/wiki/Special:FilePath/Tower%20Bridge%20and%20the%20Shard%20at%20sunset%202013.JPG?width=1920",
   dubai: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Panorama_of_Dubai_from_Jumeriah_1.jpg/1920px-Panorama_of_Dubai_from_Jumeriah_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   singapore: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/2016_Singapur%2C_Downtown_Core%2C_Wieczorny_widok_na_Central_Business_District_od_strony_promenady_Esplanade_%2801%29.jpg/1920px-2016_Singapur%2C_Downtown_Core%2C_Wieczorny_widok_na_Central_Business_District_od_strony_promenady_Esplanade_%2801%29.jpg",
   tokyo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Shibuya_crossing_at_night%2C_Tokyo%2C_Japan.jpg/1920px-Shibuya_crossing_at_night%2C_Tokyo%2C_Japan.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
