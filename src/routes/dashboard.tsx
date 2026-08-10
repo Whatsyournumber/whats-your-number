@@ -200,6 +200,8 @@ function Dashboard() {
         </Panel>
       </div>
 
+      <TopCitiesPanel profile={profile} netWorth={d.netWorth} monthlySavings={d.savings} fmt={fmt} />
+
       <div className="grid gap-4 lg:grid-cols-2">
         <Panel title={t("Tus objetivos", "Your goals")} description={t("Calculados con tus cifras", "Calculated from your numbers")}>
           <ul className="space-y-3">
@@ -215,11 +217,13 @@ function Dashboard() {
                     </span>
                   </div>
                   <Progress value={pct} className="mt-2 h-1.5" />
+                  {g.note && <p className="mt-1.5 text-[11px] text-muted-foreground">{g.note}</p>}
                 </li>
               );
             })}
           </ul>
         </Panel>
+
 
         <Panel title={t("Insights", "Insights")} description={t("Generados con tu plan", "Generated from your plan")}>
           <ul className="space-y-2">
