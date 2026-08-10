@@ -135,6 +135,10 @@ export function buildDataset(p: Profile): Dataset {
       : null;
   const cityTarget = Math.round((cityMonthly ?? 2600) * 12 * 25);
   const cityYears = yearsToFreedom(Math.max(0, nw), savings, (cityMonthly ?? 2600) * 12, p.expected_return || 7);
+  const cityCapacity = cityMonthly ? Math.max(0, income - cityMonthly) : 0;
+  const yearsToNumber = cityMonthly
+    ? yearsToFreedom(Math.max(0, nw), cityCapacity, plan.targetCapital * 0.04, p.expected_return || 7)
+    : null;
 
 
 
@@ -174,7 +178,9 @@ export function buildDataset(p: Profile): Dataset {
       displayTarget: cityMonthly ?? undefined,
       progressPct: cityMonthly ? Math.min(100, Math.round((cityMonthly / Math.max(1, income)) * 100)) : undefined,
       note: cityMonthly
-        ? `${p.city ? `Vivir en ${p.city}` : "Ciudad objetivo"} + capacidad de ahorro ${fmt(Math.max(0, income - cityMonthly))}/mes`
+        ? `${p.city ? `Vivir en ${p.city}` : "Ciudad objetivo"}: ${fmt(cityMonthly)}/mes + ahorro ${fmt(cityCapacity)}/mes · si lo inviertes todo, te retiras en ${
+            yearsToNumber === 0 ? "menos de 1 año" : yearsToNumber ? `${yearsToNumber} años` : "más de 60 años"
+          } con tu número`
         : undefined,
     },
   ];
