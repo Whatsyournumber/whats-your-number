@@ -46,16 +46,25 @@ export function Panel({
   description,
   actions,
   className,
+  variant = "default",
   children,
 }: {
   title?: string;
   description?: string;
   actions?: ReactNode;
   className?: string;
+  variant?: "default" | "minimal";
   children: ReactNode;
 }) {
   return (
-    <section className={cn("surface p-5", className)}>
+    <section
+      className={cn(
+        "p-5",
+        variant === "default" && "surface",
+        variant === "minimal" && "rounded-2xl border border-border/60 bg-card/40",
+        className,
+      )}
+    >
       {(title || actions) && (
         <div className="mb-4 flex items-start justify-between gap-3">
           <div>
