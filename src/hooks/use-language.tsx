@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
+import { detectLang } from "@/lib/geo";
+
 export type Lang = "es" | "en";
 
 const STORAGE_KEY = "yn.lang";
