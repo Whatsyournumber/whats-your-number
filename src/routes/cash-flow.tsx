@@ -89,15 +89,22 @@ function CashFlow() {
   const incomeLines = usingStatements ? incomeFromStatements : d.cashFlow.income;
   const totalIncome = incomeLines.reduce((s, i) => s + i.amount, 0) || d.income || 1;
 
-  // Necesidades: Vivienda, Hipoteca, Alimentos/Mercado, Transporte, Servicios, Seguro médico.
+  // Necesidades: Vivienda/Renta, Hipoteca, Condominio, Alimentos/Mercado, Transporte, Servicios, Salud, Educación.
   // Deseos: Viajes, Restaurantes, Entretenimiento/Salidas, Compras, Tecnología/Apps, Hobbies/Lifestyle.
   const NEED_CATS = new Set([
     "Vivienda",
     "Hipoteca",
+    "Renta",
+    "Alquiler",
+    "Condominio",
     "Alimentos",
+    "Alimentación",
     "Mercado",
     "Transporte",
     "Servicios",
+    "Hogar",
+    "Salud",
+    "Educación",
     "Seguro médico",
     "Seguro de salud",
   ]);
@@ -115,25 +122,38 @@ function CashFlow() {
   const spend = useMemo(() => {
     let wants = 0;
     let needs = 0;
+    const needsBy = new Map<string, number>();
+    const wantsBy = new Map<string, number>();
     for (const tx of monthTx) {
       if (tx.amount >= 0) continue;
       const cat = categorizeTx(tx as Tx, rules);
       const v = Math.abs(tx.amount);
-      if (WANT_CATS.has(cat)) wants += v;
-      else if (NEED_CATS.has(cat)) needs += v;
-      else needs += v; // lo no clasificado se considera necesidad por defecto
+      if (WANT_CATS.has(cat)) {
+        wants += v;
+        wantsBy.set(cat, (wantsBy.get(cat) ?? 0) + v);
+      } else {
+        // necesidades + lo no clasificado (se considera necesidad por defecto)
+        needs += v;
+        const key = NEED_CATS.has(cat) ? cat : t("Otros", "Other");
+        needsBy.set(key, (needsBy.get(key) ?? 0) + v);
+      }
     }
-    return { wants, needs, total: wants + needs };
+    return { wants, needs, total: wants + needs, needsBy, wantsBy };
   }, [monthTx, rules]);
 
   const hasReal = hasData && monthTx.length > 0;
 
   // Ahorro explícito dentro de los gastos fijos (p. ej. «Fondo de ahorro»).
-  const fixedSavings = useMemo(
-    () => fixed.items.filter((i) => /ahorro|inver|saving|invest/i.test(i.name)).reduce((s, i) => s + (i.amount || 0), 0),
+  const savingItems = useMemo(
+    () => fixed.items.filter((i) => /ahorro|inver|saving|invest/i.test(i.name)),
     [fixed.items],
   );
-  const fixedNeeds = Math.max(0, fixed.total - fixedSavings);
+  const needFixedItems = useMemo(
+    () => fixed.items.filter((i) => !/ahorro|inver|saving|invest/i.test(i.name) && (i.amount || 0) > 0),
+    [fixed.items],
+  );
+  const fixedSavings = savingItems.reduce((s, i) => s + (i.amount || 0), 0);
+  const fixedNeeds = needFixedItems.reduce((s, i) => s + (i.amount || 0), 0);
 
   const fixedAmount = hasReal ? fixedNeeds + spend.needs : d.cashFlow.buckets[0]!.amount;
   const lifestyleAmount = hasReal ? spend.wants : d.cashFlow.buckets[1]!.amount;
@@ -151,6 +171,23 @@ function CashFlow() {
   const needsAmount = fixedAmount;
   const wantsAmount = lifestyleAmount;
   const saveAmount = investAmount + freeAmount;
+
+  const needsBreakdown = hasReal
+    ? [
+        ...needFixedItems.map((i) => ({ label: `${i.name} (${t("fijo", "fixed")})`, amount: i.amount })),
+        ...[...spend.needsBy.entries()].map(([label, amount]) => ({ label, amount })),
+      ].sort((a, b) => b.amount - a.amount)
+    : [];
+  const wantsBreakdown = hasReal
+    ? [...spend.wantsBy.entries()].map(([label, amount]) => ({ label, amount })).sort((a, b) => b.amount - a.amount)
+    : [];
+  const saveBreakdown = hasReal
+    ? [
+        ...savingItems.map((i) => ({ label: `${i.name} (${t("fijo", "fixed")})`, amount: i.amount })),
+        { label: t("Flujo libre del mes", "Free flow this month"), amount: freeAmount },
+      ].sort((a, b) => b.amount - a.amount)
+    : [];
+
 
   const cash = profile.assets_cash + profile.assets_bank;
   const monthlySpend = hasReal ? fixedNeeds + spend.total : d.expenses;
@@ -301,7 +338,9 @@ function CashFlow() {
                 total={totalIncome}
                 target={40}
                 fmt={fmt}
-                tooltip={t("Vivienda, alimentos, transporte, servicios y seguros del mes.", "Housing, food, transportation, utilities and insurance for the month.")}
+                tooltip={t("Vivienda, hipoteca, condominio, alimentos, transporte, servicios y seguros del mes.", "Housing, mortgage, HOA, food, transportation, utilities and insurance for the month.")}
+                breakdown={needsBreakdown}
+
               />
               <Row
                 label={t("Ahorro e inversión", "Savings & investing")}
@@ -311,6 +350,8 @@ function CashFlow() {
                 fmt={fmt}
                 goodWhenHigher
                 tooltip={t("Ahorro fijo + lo que sobra del mes tras cubrir necesidades y deseos.", "Fixed savings + what is left after covering needs and wants.")}
+                breakdown={saveBreakdown}
+
               />
               <Row
                 label={t("Deseos", "Wants")}
@@ -319,6 +360,7 @@ function CashFlow() {
                 target={20}
                 fmt={fmt}
                 tooltip={t("Viajes, restaurantes, salidas, compras, tecnología y hobbies.", "Travel, dining out, entertainment, shopping, tech and hobbies.")}
+                breakdown={wantsBreakdown}
               />
             </div>
           </Panel>
@@ -350,6 +392,7 @@ function Row({
   fmt,
   goodWhenHigher = false,
   tooltip,
+  breakdown,
 }: {
   label: string;
   value: number;
@@ -358,6 +401,7 @@ function Row({
   fmt: (n: number) => string;
   goodWhenHigher?: boolean;
   tooltip?: string;
+  breakdown?: { label: string; amount: number }[];
 }) {
   const p = total > 0 ? (value / total) * 100 : 0;
   const off = p - target;
@@ -382,6 +426,20 @@ function Row({
               </TooltipTrigger>
               <TooltipContent side="top" className="max-w-xs">
                 <p>{tooltip}</p>
+                {breakdown && breakdown.length > 0 && (
+                  <div className="mt-2 space-y-1 border-t border-border/60 pt-2">
+                    {breakdown.map((b) => (
+                      <div key={b.label} className="flex items-center justify-between gap-4 text-xs">
+                        <span className="text-muted-foreground">{b.label}</span>
+                        <span className="numeric">{fmt(b.amount)}</span>
+                      </div>
+                    ))}
+                    <div className="flex items-center justify-between gap-4 border-t border-border/60 pt-1 text-xs font-medium">
+                      <span>Total</span>
+                      <span className="numeric">{fmt(value)}</span>
+                    </div>
+                  </div>
+                )}
               </TooltipContent>
             </Tooltip>
           )}
