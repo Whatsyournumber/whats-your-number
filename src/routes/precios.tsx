@@ -24,10 +24,8 @@ export const Route = createFileRoute("/precios")({
   component: Pricing,
 });
 
-const DISCOUNT = 0.2; // 20% de descuento anual
-
-function yearlyTotal(monthly: number) {
-  return Math.round(monthly * 12 * (1 - DISCOUNT));
+function yearlyTotal(monthly: number, discount: number) {
+  return Math.round(monthly * 12 * (1 - discount));
 }
 
 function Pricing() {
@@ -41,6 +39,7 @@ function Pricing() {
       name: "Free",
       monthlyPrice: 0,
       yearlyPrice: 0,
+      yearlyDiscount: 0,
       desc: t(
         "Descubre tu número en 30 segundos y ordena tus finanzas básicas.",
         "Discover your number in 30 seconds and organize your basic finances.",
@@ -60,7 +59,8 @@ function Pricing() {
     {
       name: "Pro",
       monthlyPrice: 12,
-      yearlyPrice: yearlyTotal(12),
+      yearlyPrice: yearlyTotal(12, 0.2),
+      yearlyDiscount: 0.2,
       desc: t(
         "Todo el sistema financiero con IA ilimitada para acelerar tu libertad.",
         "The full financial OS with unlimited AI to speed up your freedom.",
@@ -83,7 +83,8 @@ function Pricing() {
     {
       name: "Patrimonio",
       monthlyPrice: 29,
-      yearlyPrice: yearlyTotal(29),
+      yearlyPrice: yearlyTotal(29, 0.3),
+      yearlyDiscount: 0.3,
       desc: t(
         "Para patrimonios complejos, familias y quienes toman decisiones con datos.",
         "For complex net worths, families and data-driven decision makers.",
@@ -176,7 +177,7 @@ function Pricing() {
               {t("Anual", "Yearly")}
             </button>
             <span className="rounded-full bg-positive px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-positive-foreground">
-              -20%
+              {t("Ahorra", "Save")}
             </span>
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
@@ -209,9 +210,9 @@ function Pricing() {
                 )}
                 <div className="flex items-start justify-between gap-2">
                   <h2 className="text-sm font-semibold">{plan.name}</h2>
-                  {isYearly && plan.monthlyPrice > 0 && (
+                  {isYearly && plan.yearlyDiscount > 0 && (
                     <span className="rounded-full border border-positive/30 bg-positive/10 px-2 py-0.5 text-[10px] font-semibold text-positive">
-                      {t("Ahorras 20%", "Save 20%")}
+                      {t(`Ahorras ${Math.round(plan.yearlyDiscount * 100)}%`, `Save ${Math.round(plan.yearlyDiscount * 100)}%`)}
                     </span>
                   )}
                 </div>
