@@ -112,7 +112,7 @@ function LifestyleSimulator() {
 
   const [filters, setFilters] = useState<Filters>({
     ...defaultFilters,
-    budget: Math.max(2000, Math.min(15000, Math.round((d.income || 5000) / 500) * 500)),
+    budget: Math.max(1000, Math.min(15000, Math.round((d.income || 5000) / 100) * 100)),
     stage:
       profile.marital_status === "married"
         ? profile.children && profile.children !== "0"
@@ -248,11 +248,11 @@ function LifestyleSimulator() {
               </div>
               <Slider
                 className="mt-3"
-                min={2000}
+                min={1000}
                 max={15000}
-                step={250}
+                step={100}
                 value={[filters.budget]}
-                onValueChange={([v]) => set("budget", v ?? 2000)}
+                onValueChange={([v]) => set("budget", v ?? 1000)}
               />
             </div>
             <SelectFilter
@@ -277,16 +277,30 @@ function LifestyleSimulator() {
               ]}
             />
             <SelectFilter
-              label={t("Salario", "Salary")}
+              label={
+                filters.goal === "career"
+                  ? t("Rango salarial", "Salary range")
+                  : t("Prioridad de ingresos", "Income priority")
+              }
               value={filters.salary}
               onChange={(v) => set("salary", v)}
-              options={[
-                { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
-                { value: "low_cost", label: t("Costo bajo", "Lower cost"), icon: "💸" },
-                { value: "balanced", label: t("Equilibrado", "Balanced"), icon: "⚖️" },
-                { value: "high_income", label: t("Alto potencial", "High income"), icon: "📈" },
-                { value: "highest_paying", label: t("Mejor pagadas", "Highest paying"), icon: "💎" },
-              ]}
+              options={
+                filters.goal === "career"
+                  ? [
+                      { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
+                      { value: "balanced", label: t("Medio", "Mid range"), icon: "⚖️" },
+                      { value: "high_income", label: t("Alto", "High"), icon: "📈" },
+                      { value: "highest_paying", label: t("Top mundial", "Top paying"), icon: "💎" },
+                      { value: "low_cost", label: t("Bajo pero barato", "Lower but cheap"), icon: "💸" },
+                    ]
+                  : [
+                      { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
+                      { value: "low_cost", label: t("Costo bajo", "Lower cost"), icon: "💸" },
+                      { value: "balanced", label: t("Equilibrado", "Balanced"), icon: "⚖️" },
+                      { value: "high_income", label: t("Alto potencial", "High income"), icon: "📈" },
+                      { value: "highest_paying", label: t("Mejor pagadas", "Highest paying"), icon: "💎" },
+                    ]
+              }
             />
           </FilterGroup>
 

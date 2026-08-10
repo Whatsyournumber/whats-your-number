@@ -638,21 +638,24 @@ const BASE_WEIGHTS: Record<Metric, number> = {
 };
 
 const STAGE_WEIGHTS: Record<LifeStage, Partial<Record<Metric, number>>> = {
-  single: { nightlife: 9, remote: 7, jobs: 8, walkability: 7, english: 5, schools: 0 },
-  relationship: { nightlife: 6, quality: 10, walkability: 6, healthcare: 7 },
-  married: { quality: 10, safety: 10, housing: 8, healthcare: 8, schools: 5 },
-  family: { safety: 14, schools: 10, healthcare: 10, air: 8, green: 8, transport: 7, nightlife: 0 },
-  single_parent: { safety: 13, schools: 9, healthcare: 9, cost: 13, transport: 7, nightlife: 0 },
+  // Soltero/a: vida social, salir de noche, caminar la ciudad y trabajo.
+  single: { nightlife: 15, walkability: 9, jobs: 9, remote: 8, english: 6, quality: 7, schools: 0, green: 2 },
+  // En pareja: ocio de pareja (gastronomía, cultura, parques) más que fiesta.
+  relationship: { nightlife: 6, quality: 12, walkability: 9, green: 8, climate: 8, healthcare: 8, schools: 0 },
+  // Casado/a: entretenimiento tranquilo, casa, salud y entorno.
+  married: { nightlife: 2, quality: 13, safety: 11, housing: 10, healthcare: 9, green: 9, air: 7, transport: 6, schools: 4 },
+  family: { safety: 15, schools: 12, healthcare: 11, air: 9, green: 9, transport: 8, quality: 10, nightlife: 0 },
+  single_parent: { safety: 14, schools: 10, healthcare: 10, cost: 14, transport: 8, quality: 8, nightlife: 0 },
   any: {},
 };
 
 const GOAL_WEIGHTS: Record<GoalPref, Partial<Record<Metric, number>>> = {
-  save: { savings: 18, cost: 14, taxes: 9, housing: 9 },
-  lifestyle: { quality: 14, climate: 10, green: 7, nightlife: 7, walkability: 7 },
-  retire: { savings: 18, retirement: 14, taxes: 10, healthcare: 9 },
-  family: { safety: 13, schools: 10, healthcare: 9, air: 7, green: 7 },
-  career: { jobs: 14, salary: 12, purchasingPower: 9, english: 6 },
-  nomad: { remote: 14, internet: 10, english: 8, cost: 10, climate: 8 },
+  save: { savings: 20, cost: 16, taxes: 10, housing: 10 },
+  lifestyle: { quality: 16, climate: 12, green: 8, nightlife: 8, walkability: 8 },
+  retire: { savings: 20, retirement: 16, taxes: 11, healthcare: 10 },
+  family: { safety: 14, schools: 12, healthcare: 10, air: 8, green: 8 },
+  career: { jobs: 16, salary: 14, purchasingPower: 10, english: 7, internet: 6 },
+  nomad: { remote: 16, internet: 12, english: 9, cost: 11, climate: 9 },
 };
 
 const CLIMATE_SCORE: Record<ClimatePref, Record<Climate, number>> = {
@@ -809,11 +812,21 @@ export function scoreCity(
     expectedReturn: ctx.expectedReturn,
   });
 
-  // El ranking lo manda Your North Score (calidad de vida es el pilar con más
-  // peso), más un factor de presencia en rankings globales para que el orden se
-  // parezca a los rankings de expatriados/liveability reales.
+  // Mezcla: base objetiva (Your North Score) + presencia en rankings globales
+  // + tus prioridades de vida (etapa, objetivo, clima, impuestos, seguridad).
+  // Cuanto más específicos son tus filtros, más manda tu perfil en el ranking.
   const global = globalRankingScore(c.id, c.country);
-  let score = north.total * 0.62 + fit * 0.2 + global * 0.18;
+  const specificity =
+    (f.stage !== "any" ? 1 : 0) +
+    (f.goal !== "save" ? 1 : 0) +
+    (f.climate !== "any" ? 1 : 0) +
+    (f.tax !== "any" ? 1 : 0) +
+    (f.salary !== "any" ? 1 : 0) +
+    (f.safety !== "important" ? 1 : 0) +
+    (f.region !== "any" ? 1 : 0);
+  const fitWeight = 0.28 + Math.min(0.27, specificity * 0.045); // 0.28 → 0.55
+  const rest = 1 - fitWeight;
+  let score = fit * fitWeight + north.total * (rest * 0.75) + global * (rest * 0.25);
 
   // Bonus adicional por calidad de vida objetiva de la ciudad.
   score += (c.qualityOfLife - 70) * 0.06;
