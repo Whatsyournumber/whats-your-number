@@ -9,6 +9,7 @@ import gaboronePhoto from "@/assets/gaborone.png.asset.json";
 import lagosPhoto from "@/assets/city-lagos.jpg.asset.json";
 import windhoekPhoto from "@/assets/city-windhoek.jpg.asset.json";
 import addisPhoto from "@/assets/city-addis.jpg.asset.json";
+import fukuokaPhoto from "@/assets/fukuoka-tower-sunset.png.asset.json";
 const PHOTO = {
   hamburg: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/HH_Alsterarkaden_pano1.jpg/1920px-HH_Alsterarkaden_pano1.jpg",
   zagreb: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg/1920px-Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -100,7 +101,7 @@ const PHOTO = {
   rosario: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Rosario_skyline_1.jpg/1920px-Rosario_skyline_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   merida: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Paseo_de_Montejo%2C_Merida%2C_Yucatan%2C_Mexico_de_Noche_Abril_2021_-_La_Luna_Sul_Mare.jpg/1920px-Paseo_de_Montejo%2C_Merida%2C_Yucatan%2C_Mexico_de_Noche_Abril_2021_-_La_Luna_Sul_Mare.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   santodomingo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Aerial_view_Ciudad_Colonial_Santo_Domingo_09_2019_0067.jpg/1920px-Aerial_view_Ciudad_Colonial_Santo_Domingo_09_2019_0067.jpg",
-  fukuoka: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/20100718_Fukuoka_2870.jpg/1920px-20100718_Fukuoka_2870.jpg",
+  fukuoka: fukuokaPhoto.url,
   busan: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Gwangan_Bridge_seen_Marine_City_at_Night_01.jpg/1920px-Gwangan_Bridge_seen_Marine_City_at_Night_01.jpg",
   jakarta: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/City_activity_Jakarta_%28Unsplash%29.jpg/1920px-City_activity_Jakarta_%28Unsplash%29.jpg",
   colombo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Colombo_skyline_from_Hilton.jpg/1920px-Colombo_skyline_from_Hilton.jpg",
