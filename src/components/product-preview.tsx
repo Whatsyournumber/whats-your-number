@@ -76,11 +76,6 @@ const retirement = [
   { m: "2038", v: 1270 },
 ];
 
-const cashFlowData = [
-  { label: "Necesidades / Needs", value: 40, color: "var(--color-primary)" },
-  { label: "Ahorro + Inversión / Save + Invest", value: 40, color: "var(--color-positive)" },
-  { label: "Deseos / Wants", value: 20, color: "var(--color-chart-3)" },
-];
 
 const spendCategories = [
   { name: "Mercado", value: 32, color: "var(--color-primary)" },
