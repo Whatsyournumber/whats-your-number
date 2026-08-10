@@ -19,23 +19,22 @@ export function SiteFooter() {
   const [open, setOpen] = useState(false);
 
   const columns = [
-    {
-      title: t("Producto", "Product"),
-      links: [
-        { label: t("Funciones", "Features"), to: "/#funciones" },
-        { label: t("Precios", "Pricing"), to: "/#precios" },
-        { label: t("Demo gratis", "Free demo"), to: "/demo" },
-        { label: t("Panel vivo", "Live panel"), to: "/#panel" },
-      ],
-    },
-    {
-      title: t("Recursos", "Resources"),
-      links: [
-        { label: "Blog", to: "/#blog" },
-        { label: t("Tu número", "Your number"), to: "/demo" },
-        { label: t("Your next city", "Your next city"), to: "/demo" },
-      ],
-    },
+      {
+        title: t("Producto", "Product"),
+        links: [
+          { label: t("Funciones", "Features"), to: "/#funciones" },
+          { label: t("Precios", "Pricing"), to: "/#precios" },
+          { label: t("Demo gratis", "Free demo"), to: "/demo" },
+        ],
+      },
+      {
+        title: t("Recursos", "Resources"),
+        links: [
+          { label: "Blog", to: "/blog" },
+          { label: t("Tu número", "Your number"), to: "/demo" },
+          { label: t("Your next city", "Your next city"), to: "/demo" },
+        ],
+      },
     {
       title: t("Cuenta", "Account"),
       links: [
