@@ -203,7 +203,8 @@ function Gastos() {
       if (row.amount > 0 || showEmptyCategories) ordered.push(row);
       map.delete(name);
     }
-    return [...ordered, ...map.values().filter((c) => c.amount > 0 || showEmptyCategories)].sort((a, b) => b.amount - a.amount);
+    const rest = Array.from(map.values()).filter((c) => c.amount > 0 || showEmptyCategories);
+    return [...ordered, ...rest].sort((a, b) => b.amount - a.amount);
   }, [byCategory, categories.names, showEmptyCategories]);
 
 
