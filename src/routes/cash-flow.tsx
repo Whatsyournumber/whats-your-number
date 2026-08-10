@@ -324,6 +324,7 @@ function CashFlow() {
 
         <div className="grid gap-4 md:grid-cols-3">
           <Panel
+            className="md:col-span-3"
             title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")}
             description={
               activeMonth
@@ -331,70 +332,130 @@ function CashFlow() {
                 : t("Según tu perfil", "Based on your profile")
             }
           >
-            <div className="mb-5 overflow-hidden rounded-2xl border border-border bg-elevated/40 p-4">
-              <div className="grid items-center gap-4 lg:grid-cols-[1fr_90px_1fr]">
-                <div className="rounded-2xl border border-border bg-elevated/60 p-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-sm font-medium">{t("Ingresos", "Income")}</p>
-                    <p className="numeric text-sm font-semibold">{fmt(totalIncome)}</p>
-                  </div>
-                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
-                    <div className="h-full rounded-full bg-primary" style={{ width: "100%" }} />
-                  </div>
-                </div>
+            {(() => {
+              const flows = [
+                { key: "needs", label: t("Necesidades", "Needs"), amount: needsAmount, color: "var(--color-chart-2)", target: 40, goodWhenHigher: false },
+                { key: "invest", label: t("Inversiones", "Investing"), amount: saveAmount, color: "var(--color-chart-1)", target: 40, goodWhenHigher: true },
+                { key: "wants", label: t("Deseos", "Wants"), amount: wantsAmount, color: "var(--color-chart-3)", target: 20, goodWhenHigher: false },
+              ];
+              const sum = flows.reduce((a, b) => a + Math.max(0, b.amount), 0) || 1;
+              const H = 210;
+              const TOP = 25;
+              const GAP = 14;
+              const usable = H - GAP * (flows.length - 1);
+              let cursor = TOP;
+              const nodes = flows.map((f) => {
+                const h = Math.max(6, (Math.max(0, f.amount) / sum) * usable);
+                const srcTop = cursor;
+                cursor += h + GAP;
+                return { ...f, h, srcTop, pct: totalIncome > 0 ? (f.amount / totalIncome) * 100 : 0 };
+              });
+              const totalH = nodes.reduce((a, n) => a + n.h, 0) + GAP * (nodes.length - 1);
+              let stack = TOP + (H - totalH) / 2;
+              const laid = nodes.map((n) => {
+                const y = stack;
+                stack += n.h + GAP;
+                return { ...n, y };
+              });
+              const inH = laid.reduce((a, n) => a + n.h, 0);
+              let inY = TOP + (H - inH) / 2;
+              const withIn = laid.map((n) => {
+                const y0 = inY;
+                inY += n.h;
+                return { ...n, y0 };
+              });
 
-                <div className="relative hidden h-44 lg:block">
-                  <svg viewBox="0 0 90 180" className="h-full w-full" preserveAspectRatio="none">
-                    {[
-                      { label: t("Necesidades", "Needs"), amount: needsAmount, color: "var(--color-chart-2)", y: 30 },
-                      { label: t("Inversiones", "Investing"), amount: saveAmount, color: "var(--color-chart-1)", y: 90 },
-                      { label: t("Deseos", "Wants"), amount: wantsAmount, color: "var(--color-chart-3)", y: 150 },
-                    ].map((b) => {
-                      const w = Math.max(4, Math.min(36, (b.amount / totalIncome) * 60));
+              return (
+                <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr]">
+                  <div className="rounded-2xl border border-border bg-elevated/40 p-4">
+                    <svg viewBox="0 0 640 260" className="h-[260px] w-full">
+                      <defs>
+                        {withIn.map((n) => (
+                          <linearGradient key={n.key} id={`flow-${n.key}`} x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.35" />
+                            <stop offset="100%" stopColor={n.color} stopOpacity="0.6" />
+                          </linearGradient>
+                        ))}
+                      </defs>
+
+                      {/* nodo de ingreso */}
+                      <rect x={26} y={TOP + (H - inH) / 2} width={12} height={inH} rx={6} fill="var(--color-primary)" />
+                      <text x={26} y={TOP + (H - inH) / 2 - 10} fontSize={11} fill="var(--color-muted-foreground)">
+                        {t("Ingresos", "Income")}
+                      </text>
+                      <text x={26} y={TOP + (H - inH) / 2 + inH + 18} fontSize={12} fontWeight={600} fill="var(--color-foreground)">
+                        {fmt(totalIncome)}
+                      </text>
+
+                      {withIn.map((n, i) => {
+                        const x0 = 38;
+                        const x1 = 430;
+                        const cy0 = n.y0 + n.h / 2;
+                        const cy1 = n.y + n.h / 2;
+                        return (
+                          <g key={n.key}>
+                            <motion.path
+                              d={`M${x0},${n.y0} C${(x0 + x1) / 2},${n.y0} ${(x0 + x1) / 2},${n.y} ${x1},${n.y} L${x1},${n.y + n.h} C${(x0 + x1) / 2},${n.y + n.h} ${(x0 + x1) / 2},${n.y0 + n.h} ${x0},${n.y0 + n.h} Z`}
+                              fill={`url(#flow-${n.key})`}
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ duration: 0.6, delay: 0.1 * i }}
+                            />
+                            <rect x={x1} y={n.y} width={12} height={n.h} rx={6} fill={n.color} />
+                            <text x={x1 + 22} y={cy1 - 2} fontSize={12} fontWeight={600} fill="var(--color-foreground)">
+                              {n.label}
+                            </text>
+                            <text x={x1 + 22} y={cy1 + 14} fontSize={11} fill="var(--color-muted-foreground)">
+                              {fmt(n.amount)} · {n.pct.toFixed(0)}% ({t("meta", "target")} {n.target}%)
+                            </text>
+                            <line x1={x0} y1={cy0} x2={x0} y2={cy0} stroke="none" />
+                          </g>
+                        );
+                      })}
+                    </svg>
+                  </div>
+
+                  <div className="space-y-3">
+                    {withIn.map((n) => {
+                      const diff = n.pct - n.target;
+                      const good = n.goodWhenHigher ? diff >= 0 : diff <= 0;
                       return (
-                        <motion.path
-                          key={b.label}
-                          d={`M0,90 C45,90 45,${b.y} 90,${b.y}`}
-                          fill="none"
-                          stroke={b.color}
-                          strokeWidth={w}
-                          strokeOpacity={0.35}
-                          strokeLinecap="round"
-                          initial={{ pathLength: 0 }}
-                          animate={{ pathLength: 1 }}
-                          transition={{ duration: 1, delay: 0.1 }}
-                        />
+                        <div key={n.key} className="rounded-2xl border border-border bg-elevated/60 p-4">
+                          <div className="flex items-center gap-2">
+                            <span className="h-2.5 w-2.5 rounded-full" style={{ background: n.color }} />
+                            <p className="text-sm font-medium">{n.label}</p>
+                            <p className="numeric ml-auto text-sm font-semibold">{fmt(n.amount)}</p>
+                          </div>
+                          <div className="relative mt-2.5 h-2 overflow-hidden rounded-full bg-muted">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${Math.min(100, n.pct)}%` }}
+                              transition={{ duration: 0.8 }}
+                              className="h-full rounded-full"
+                              style={{ background: n.color }}
+                            />
+                            <span
+                              className="absolute top-0 h-full w-px bg-foreground/60"
+                              style={{ left: `${n.target}%` }}
+                            />
+                          </div>
+                          <div className="mt-1.5 flex items-center justify-between text-[11px]">
+                            <span className="text-muted-foreground">
+                              {n.pct.toFixed(0)}% {t("de tus ingresos", "of your income")} · {t("meta", "target")} {n.target}%
+                            </span>
+                            <span className={good ? "font-medium text-positive" : "font-medium text-negative"}>
+                              {diff > 0 ? "+" : ""}
+                              {diff.toFixed(0)} pts
+                            </span>
+                          </div>
+                        </div>
                       );
                     })}
-                  </svg>
+                  </div>
                 </div>
+              );
+            })()}
 
-                <div className="space-y-2">
-                  {[
-                    { label: t("Necesidades", "Needs"), amount: needsAmount, color: "var(--color-chart-2)", target: 40 },
-                    { label: t("Inversiones", "Investing"), amount: saveAmount, color: "var(--color-chart-1)", target: 40 },
-                    { label: t("Deseos", "Wants"), amount: wantsAmount, color: "var(--color-chart-3)", target: 20 },
-                  ].map((b) => (
-                    <div key={b.label} className="rounded-xl border border-border bg-elevated/60 px-3 py-2">
-                      <div className="flex items-center gap-2">
-                        <span className="h-2 w-2 rounded-full" style={{ background: b.color }} />
-                        <p className="text-xs font-medium">{b.label}</p>
-                        <p className="numeric ml-auto text-xs font-semibold">{fmt(b.amount)}</p>
-                      </div>
-                      <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-muted">
-                        <div
-                          className="h-full rounded-full"
-                          style={{ width: `${Math.min(100, (b.amount / totalIncome) * 100)}%`, background: b.color }}
-                        />
-                      </div>
-                      <p className="mt-1 text-[10px] text-muted-foreground">
-                        {((b.amount / totalIncome) * 100).toFixed(0)}% {t("objetivo", "target")} {b.target}%
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
 
             <div className="space-y-4 text-sm">
               <Row
