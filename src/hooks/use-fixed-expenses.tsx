@@ -55,8 +55,18 @@ export function useFixedExpenses() {
 const TARGET_KEY = "whatsyournumber:spend-target";
 
 /** Gasto mensual objetivo (target) según tu número, guardado localmente. */
-export function useSpendTarget(initial = 5000) {
+export function useSpendTarget(initial = 0) {
   const [target, setTarget] = useState(initial);
+
+  // Si el perfil cambia y aún no hay un objetivo guardado, sigue al perfil.
+  useEffect(() => {
+    try {
+      if (window.localStorage.getItem(TARGET_KEY) === null) setTarget(initial);
+    } catch {
+      /* ignore */
+    }
+  }, [initial]);
+
 
   useEffect(() => {
     try {
