@@ -78,6 +78,25 @@ function Portafolio() {
   const totalGain = totalValue - totalCost;
   const dividends = enriched.reduce((s, h) => s + h.dividends, 0);
 
+  // Real market series: S&P 500 vs a blend that mirrors your allocation (equities → SPY, crypto → BTC, cash → 0%).
+  const series = seriesQuery.data?.series ?? {};
+  const spx = series["^GSPC"] ?? [];
+  const spy = series["SPY"] ?? [];
+  const btc = series["BTC-USD"] ?? [];
+  const equityValue = profile.assets_etf + profile.assets_retirement + profile.assets_stocks;
+  const cryptoValue = profile.assets_crypto;
+  const cashValue = profile.assets_cash + profile.assets_bank;
+  const base = equityValue + cryptoValue + cashValue;
+  const wEq = base ? equityValue / base : 1;
+  const wCr = base ? cryptoValue / base : 0;
+  const benchmarkData = spx.map((p, i) => ({
+    label: p.label,
+    sp500: p.value,
+    portfolio: (spy[i]?.value ?? p.value) * wEq + (btc[i]?.value ?? 0) * wCr,
+  }));
+
+
+
   const types = ["ETF", "Acción", "Cripto", "Cash"] as const;
   const allocation = types.map((ty, i) => ({
     name: ty,
