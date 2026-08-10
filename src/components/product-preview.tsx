@@ -229,7 +229,10 @@ export function ProductPreview() {
             <button
               key={v.id}
               type="button"
-              onClick={() => setActive(v.id)}
+              onClick={() => {
+                setActive(v.id);
+                setPaused(true);
+              }}
               className={cn(
                 "flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all",
                 active === v.id
