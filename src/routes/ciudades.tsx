@@ -574,7 +574,7 @@ function CityCard({
           </div>
           <div className="bg-elevated/40 p-2.5">
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              {t("Salario medio", "Average salary")}
+              {t("Salario neto est.", "Est. net salary")}
             </p>
             <p className="numeric mt-0.5 text-sm font-medium">{fmt(c.avgSalary)}</p>
           </div>
@@ -705,7 +705,7 @@ function ComparePanel({
       a: fmt(a.cost), b: fmt(b.cost), aWin: a.cost < b.cost,
     },
     {
-      label: t("Salario medio", "Average salary"),
+      label: t("Salario neto est.", "Est. net salary"),
       a: fmt(a.city.avgSalary), b: fmt(b.city.avgSalary), aWin: a.city.avgSalary > b.city.avgSalary,
     },
     {
@@ -948,7 +948,7 @@ function CityDetail({
             <span className="text-border">·</span>
             <span className="inline-flex items-center gap-1">
               <span>💼</span>
-              {t("Salario medio", "Average salary")}: {fmt(c.avgSalary)}
+              {t("Salario neto est.", "Est. net salary")}: {fmt(c.avgSalary)}
             </span>
             <span className="text-border">·</span>
             <span className="inline-flex items-center gap-1">
