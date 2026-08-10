@@ -297,65 +297,8 @@ function OnboardingPage() {
             exit={{ opacity: 0, y: -14, filter: "blur(6px)" }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           >
-            {step === 0 && introPage === 0 && (
-              <Screen>
-                <div className="wealth-gradient mx-auto flex h-16 w-16 items-center justify-center rounded-3xl">
-                  <Compass className="h-7 w-7 text-background" />
-                </div>
-                <h1 className="mt-8 text-center font-display text-4xl font-semibold leading-[1.1] sm:text-5xl">
-                  {t("Vamos a construir tu Número.", "Let's build your Number.")}
-                </h1>
-                <p className="mx-auto mt-5 max-w-md text-center text-base leading-relaxed text-muted-foreground">
-                  {t(
-                    "Unas preguntas, dos minutos, y nuestra IA construye un plan financiero hecho para tu vida. Podrás editar cualquier respuesta después.",
-                    "A few questions, two minutes, and our AI builds a financial plan made for your life. You can edit any answer later.",
-                  )}
-                </p>
-              </Screen>
-            )}
 
-            {step === 0 && introPage === 1 && (
-              <Screen
-                title={t("Qué datos usamos y para qué", "What data we use and why")}
-                hint={t(
-                  "Todo se configura solo con tus respuestas. Nada viene precargado ni inventado.",
-                  "Everything is set up from your answers alone. Nothing is preloaded or made up.",
-                )}
-              >
-                <div className="space-y-3">
-                  <ExplainRow
-                    icon={<Building2 className="h-4 w-4 text-primary" />}
-                    title={t("Ciudad estándar", "Standard city")}
-                    text={t(
-                      "Con la ciudad donde quieres vivir, tu estilo de vida, familia, viajes y vivienda calculamos el coste de vida mensual estándar que usaremos como referencia.",
-                      "From the city where you want to live, plus your lifestyle, family, travel and housing, we compute the standard monthly cost of living used as your reference.",
-                    )}
-                  />
-                  <ExplainRow
-                    icon={<Sparkles className="h-4 w-4 text-primary" />}
-                    title={t("Gasto objetivo", "Spending target")}
-                    text={t(
-                      "Tu gasto objetivo mensual sale de ese coste de vida y de los gastos que declares. No fijamos ningún importe por defecto: si no lo indicas, queda en cero hasta que lo edites o cargues tus estados de cuenta.",
-                      "Your monthly spending target comes from that cost of living and the expenses you declare. We set no default amount: if you don't enter it, it stays at zero until you edit it or import your statements.",
-                    )}
-                  />
-                  <ExplainRow
-                    icon={<Banknote className="h-4 w-4 text-primary" />}
-                    title={t("Valores base en cero", "Base values start at zero")}
-                    text={t(
-                      "Gastos fijos, gráficas y patrimonio arrancan vacíos. Se llenan únicamente con lo que respondas aquí y con los estados de cuenta que subas después.",
-                      "Fixed expenses, charts and net worth start empty. They fill in only with what you answer here and the statements you upload later.",
-                    )}
-                  />
-                </div>
-                <p className="mt-6 text-center text-xs text-muted-foreground">
-                  {t(
-                    "Tus datos son privados y puedes cambiar cualquier respuesta cuando quieras.",
-                    "Your data is private and you can change any answer at any time.",
-                  )}
-                </p>
-              </Screen>
-            )}
+
 
 
             {step === 1 && (
