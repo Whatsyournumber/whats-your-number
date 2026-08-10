@@ -812,11 +812,21 @@ export function scoreCity(
     expectedReturn: ctx.expectedReturn,
   });
 
-  // El ranking lo manda Your North Score (calidad de vida es el pilar con más
-  // peso), más un factor de presencia en rankings globales para que el orden se
-  // parezca a los rankings de expatriados/liveability reales.
+  // Mezcla: base objetiva (Your North Score) + presencia en rankings globales
+  // + tus prioridades de vida (etapa, objetivo, clima, impuestos, seguridad).
+  // Cuanto más específicos son tus filtros, más manda tu perfil en el ranking.
   const global = globalRankingScore(c.id, c.country);
-  let score = north.total * 0.62 + fit * 0.2 + global * 0.18;
+  const specificity =
+    (f.stage !== "any" ? 1 : 0) +
+    (f.goal !== "save" ? 1 : 0) +
+    (f.climate !== "any" ? 1 : 0) +
+    (f.tax !== "any" ? 1 : 0) +
+    (f.salary !== "any" ? 1 : 0) +
+    (f.safety !== "important" ? 1 : 0) +
+    (f.region !== "any" ? 1 : 0);
+  const fitWeight = 0.28 + Math.min(0.27, specificity * 0.045); // 0.28 → 0.55
+  const rest = 1 - fitWeight;
+  let score = fit * fitWeight + north.total * (rest * 0.75) + global * (rest * 0.25);
 
   // Bonus adicional por calidad de vida objetiva de la ciudad.
   score += (c.qualityOfLife - 70) * 0.06;
