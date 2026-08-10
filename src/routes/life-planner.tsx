@@ -103,8 +103,9 @@ function LifePlanner() {
 
   const submit = async () => {
     if (!draft) return;
-    if (draft.id) await update({ id: draft.id, patch: { ...draft, id: undefined } as Partial<LifeGoal> });
-    else await create(draft);
+    const { id, ...patch } = draft;
+    if (id) await update({ id, patch });
+    else await create(patch);
     setDraft(null);
   };
 

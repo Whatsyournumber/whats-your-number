@@ -19,6 +19,7 @@ import { Route as ConfiguracionRouteImport } from './routes/configuracion'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as GastosRouteImport } from './routes/gastos'
+import { Route as LifePlannerRouteImport } from './routes/life-planner'
 import { Route as MiPerfilRouteImport } from './routes/mi-perfil'
 import { Route as ObjetivosRouteImport } from './routes/objetivos'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
@@ -77,6 +78,11 @@ const GastosRoute = GastosRouteImport.update({
   path: '/gastos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LifePlannerRoute = LifePlannerRouteImport.update({
+  id: '/life-planner',
+  path: '/life-planner',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MiPerfilRoute = MiPerfilRouteImport.update({
   id: '/mi-perfil',
   path: '/mi-perfil',
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/demo': typeof DemoRoute
   '/gastos': typeof GastosRoute
+  '/life-planner': typeof LifePlannerRoute
   '/mi-perfil': typeof MiPerfilRoute
   '/objetivos': typeof ObjetivosRoute
   '/onboarding': typeof OnboardingRoute
@@ -143,6 +150,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/demo': typeof DemoRoute
   '/gastos': typeof GastosRoute
+  '/life-planner': typeof LifePlannerRoute
   '/mi-perfil': typeof MiPerfilRoute
   '/objetivos': typeof ObjetivosRoute
   '/onboarding': typeof OnboardingRoute
@@ -163,6 +171,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/demo': typeof DemoRoute
   '/gastos': typeof GastosRoute
+  '/life-planner': typeof LifePlannerRoute
   '/mi-perfil': typeof MiPerfilRoute
   '/objetivos': typeof ObjetivosRoute
   '/onboarding': typeof OnboardingRoute
@@ -184,6 +193,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/demo'
     | '/gastos'
+    | '/life-planner'
     | '/mi-perfil'
     | '/objetivos'
     | '/onboarding'
@@ -203,6 +213,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/demo'
     | '/gastos'
+    | '/life-planner'
     | '/mi-perfil'
     | '/objetivos'
     | '/onboarding'
@@ -222,6 +233,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/demo'
     | '/gastos'
+    | '/life-planner'
     | '/mi-perfil'
     | '/objetivos'
     | '/onboarding'
@@ -242,6 +254,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   DemoRoute: typeof DemoRoute
   GastosRoute: typeof GastosRoute
+  LifePlannerRoute: typeof LifePlannerRoute
   MiPerfilRoute: typeof MiPerfilRoute
   ObjetivosRoute: typeof ObjetivosRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -323,6 +336,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GastosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/life-planner': {
+      id: '/life-planner'
+      path: '/life-planner'
+      fullPath: '/life-planner'
+      preLoaderRoute: typeof LifePlannerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mi-perfil': {
       id: '/mi-perfil'
       path: '/mi-perfil'
@@ -386,6 +406,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   DemoRoute: DemoRoute,
   GastosRoute: GastosRoute,
+  LifePlannerRoute: LifePlannerRoute,
   MiPerfilRoute: MiPerfilRoute,
   ObjetivosRoute: ObjetivosRoute,
   OnboardingRoute: OnboardingRoute,
