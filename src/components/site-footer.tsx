@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Facebook, Instagram, Linkedin, Twitter, Youtube, Heart } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Twitter, Youtube, Heart, Plus, X } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { useT } from "@/hooks/use-language";
