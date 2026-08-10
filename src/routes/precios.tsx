@@ -87,7 +87,8 @@ function Pricing() {
         t("Soporte prioritario en 24h", "Priority support within 24h"),
       ],
       cta: t("Hablar con nosotros", "Talk to us"),
-      href: "/auth?mode=signup",
+      href: "/auth",
+      search: { mode: "signup" },
       highlight: false,
     },
   ];
