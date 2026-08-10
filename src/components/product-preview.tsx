@@ -300,7 +300,7 @@ export function ProductPreview() {
                       />
                     </AreaChart>
                   ) : active === "gastos" ? (
-                    <BarChart data={spend}>
+                    <BarChart data={spend} barGap={4}>
                       <XAxis
                         dataKey="m"
                         tickLine={false}
@@ -309,22 +309,47 @@ export function ProductPreview() {
                         stroke="var(--color-muted-foreground)"
                       />
                       <Tooltip
-                        contentStyle={{
-                          background: "var(--color-card)",
-                          border: "1px solid var(--color-border)",
-                          borderRadius: 12,
-                          fontSize: 12,
+                        cursor={{ fill: "var(--color-primary)", fillOpacity: 0.06, radius: 8 }}
+                        content={({ active: on, payload, label }) => {
+                          if (!on || !payload?.length) return null;
+                          const row = payload[0]?.payload as { v: number; i: number } | undefined;
+                          if (!row) return null;
+                          return (
+                            <div className="rounded-xl border border-border/70 bg-background/80 px-3 py-2 shadow-xl backdrop-blur-md">
+                              <p className="mb-1.5 text-[11px] font-medium tracking-wide text-muted-foreground uppercase">
+                                {label}
+                              </p>
+                              <div className="space-y-1 text-xs">
+                                <div className="flex items-center gap-3">
+                                  <span className="h-2 w-2 rounded-full bg-positive" />
+                                  <span className="text-muted-foreground">
+                                    {t("Ingreso", "Income")}
+                                  </span>
+                                  <span className="ml-auto font-semibold text-foreground">
+                                    €{row.i.toFixed(1)}k
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                  <span className="h-2 w-2 rounded-full bg-primary" />
+                                  <span className="text-muted-foreground">
+                                    {t("Gasto", "Spending")}
+                                  </span>
+                                  <span className="ml-auto font-semibold text-foreground">
+                                    €{row.v.toFixed(1)}k
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          );
                         }}
-                        itemStyle={{ color: "var(--color-foreground)" }}
-                        formatter={(v) => [`€${v}k`, t("Gasto", "Spending")]}
+                      />
+                      <Bar
+                        dataKey="i"
+                        radius={[6, 6, 0, 0]}
+                        fill="var(--color-positive)"
+                        opacity={0.35}
                       />
                       <Bar dataKey="v" radius={[6, 6, 0, 0]} fill="var(--color-primary)" />
-                      <Bar
-                        dataKey="c"
-                        radius={[6, 6, 0, 0]}
-                        fill="var(--color-muted-foreground)"
-                        opacity={0.25}
-                      />
                     </BarChart>
                   ) : active === "portafolio" ? (
                     <ReLineChart data={portfolio}>
