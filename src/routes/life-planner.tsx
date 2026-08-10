@@ -234,18 +234,29 @@ function LifePlanner() {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
-            <HeroStat icon={Target} label={t("Patrimonio objetivo", "Target capital")} value={data.fmtCompact(target)} />
+            <HeroStat
+              icon={Target}
+              label={t("Tu nuevo número", "Your new number")}
+              value={data.fmtCompact(target)}
+              {...(Math.abs(target - baseTarget) > 1
+                ? { hint: `${t("antes", "before")} ${data.fmtCompact(baseTarget)}` }
+                : {})}
+            />
             <HeroStat
               icon={CalendarDays}
-              label={t("Fecha estimada de retiro", "Estimated freedom date")}
+              label={t("Nueva fecha de retiro", "New freedom date")}
               value={
                 retireDate
                   ? retireDate.toLocaleDateString("es", { month: "long", year: "numeric" }).replace(/^./, (c) => c.toUpperCase())
                   : t("+60 años", "+60 years")
               }
+              {...(combined !== null && Math.abs(combined) >= 0.08
+                ? { hint: formatImpact(combined) }
+                : {})}
             />
-            <HeroStat icon={Wallet} label={t("Patrimonio actual", "Current net worth")} value={data.fmtCompact(start)} />
+            <HeroStat icon={Wallet} label={t("Patrimonio líquido", "Liquid net worth")} value={data.fmtCompact(start)} />
           </div>
+
         </div>
       </Panel>
 
