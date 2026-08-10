@@ -23,11 +23,11 @@ import { expatScore } from "./expat-index";
 export type PillarKey = "finance" | "quality" | "safety" | "lifestyle" | "work" | "potential";
 
 export const PILLAR_WEIGHTS: Record<PillarKey, number> = {
-  finance: 30,
-  quality: 25,
+  quality: 32,
+  finance: 25,
   safety: 15,
   lifestyle: 15,
-  work: 10,
+  work: 8,
   potential: 5,
 };
 
