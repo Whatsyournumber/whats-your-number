@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Facebook, Instagram, Linkedin, Twitter, Youtube, Heart, Plus, X } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Twitter, Youtube, Heart, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
 import { BrandLogo } from "@/components/brand-logo";
@@ -17,7 +17,6 @@ const socials = [
 export function SiteFooter() {
   const t = useT();
   const [open, setOpen] = useState(false);
-  const Icon = open ? X : Plus;
 
   const columns = [
     {
