@@ -101,8 +101,22 @@ function LifePlanner() {
   const allMonths = useMemo(() => sim(goals), [goals, start, target, annualReturn, savings]);
 
   const retireDate = allMonths !== null ? addMonths(new Date(), allMonths) : null;
-  const progress = target > 0 ? Math.min(100, (start / target) * 100) : 0;
+  const baseProgress = target > 0 ? Math.min(100, (start / target) * 100) : 0;
+  // Las decisiones de vida consumen (o liberan) capital: la base se mueve con ellas.
+  const goalsCapital = useMemo(
+    () =>
+      goals.reduce((acc, g) => {
+        const upfront = Math.max(0, g.cost - g.saved);
+        const payout = parseMeta(g.note)?.payout ?? 0;
+        return acc + payout - upfront;
+      }, 0),
+    [goals],
+  );
+  const adjustedStart = start + goalsCapital;
+  const progress = target > 0 ? Math.max(0, Math.min(100, (adjustedStart / target) * 100)) : 0;
+  const progressDelta = progress - baseProgress;
   const combined = yearsDiff(baseMonths, allMonths);
+
 
   const best = useMemo(() => {
     const scored = goals.map((g) => ({ g, impact: yearsDiff(baseMonths, sim([g])) ?? 0 }));
