@@ -87,8 +87,29 @@ function CashFlow() {
   const incomeLines = usingStatements ? incomeFromStatements : d.cashFlow.income;
   const totalIncome = incomeLines.reduce((s, i) => s + i.amount, 0) || d.income || 1;
 
-  // Gasto variable real del mes, separado en necesidades vs deseos.
-  const WANT_CATS = new Set(["Restaurantes", "Salidas", "Compras", "Viajes", "Lifestyle", "Apps"]);
+  // Necesidades: Vivienda, Hipoteca, Alimentos/Mercado, Transporte, Servicios, Seguro médico.
+  // Deseos: Viajes, Restaurantes, Entretenimiento/Salidas, Compras, Tecnología/Apps, Hobbies/Lifestyle.
+  const NEED_CATS = new Set([
+    "Vivienda",
+    "Hipoteca",
+    "Alimentos",
+    "Mercado",
+    "Transporte",
+    "Servicios",
+    "Seguro médico",
+    "Seguro de salud",
+  ]);
+  const WANT_CATS = new Set([
+    "Viajes",
+    "Restaurantes",
+    "Entretenimiento",
+    "Salidas",
+    "Compras",
+    "Tecnología",
+    "Apps",
+    "Hobbies",
+    "Lifestyle",
+  ]);
   const spend = useMemo(() => {
     let wants = 0;
     let needs = 0;
@@ -97,7 +118,8 @@ function CashFlow() {
       const cat = categorizeTx(tx as Tx, rules);
       const v = Math.abs(tx.amount);
       if (WANT_CATS.has(cat)) wants += v;
-      else needs += v;
+      else if (NEED_CATS.has(cat)) needs += v;
+      else needs += v; // lo no clasificado se considera necesidad por defecto
     }
     return { wants, needs, total: wants + needs };
   }, [monthTx, rules]);
