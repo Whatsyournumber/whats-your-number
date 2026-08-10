@@ -22,6 +22,7 @@ export type OnboardingData = {
   retire_age: number;
   desired_retirement_income: number;
   expected_return: number;
+  withdrawal_rate: number;
   priority: string;
   risk_profile: string;
 };
