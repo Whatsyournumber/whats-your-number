@@ -22,14 +22,79 @@ import { expatScore } from "./expat-index";
 
 export type PillarKey = "finance" | "quality" | "safety" | "lifestyle" | "work" | "potential";
 
+/** Pesos base (sin filtros activos). */
 export const PILLAR_WEIGHTS: Record<PillarKey, number> = {
-  quality: 32,
-  finance: 25,
+  finance: 30,
+  quality: 25,
   safety: 15,
   lifestyle: 15,
-  work: 8,
+  work: 10,
   potential: 5,
 };
+
+export type WeightPrefs = {
+  stage?: "single" | "relationship" | "married" | "family" | "single_parent" | "any";
+  goal?: "save" | "lifestyle" | "retire" | "family" | "career" | "nomad";
+  climate?: string;
+  tax?: string;
+  salary?: string;
+  safety?: string;
+  stability?: string;
+  region?: string;
+};
+
+const GOAL_SHIFT: Record<string, Partial<Record<PillarKey, number>>> = {
+  save: { finance: 10, potential: 4, quality: -6, lifestyle: -4, work: -4 },
+  retire: { finance: 8, potential: 8, quality: -4, lifestyle: -6, work: -6 },
+  lifestyle: { lifestyle: 12, quality: 4, finance: -10, work: -4, potential: -2 },
+  family: { safety: 9, quality: 7, lifestyle: -6, work: -6, potential: -4 },
+  career: { work: 12, finance: 4, lifestyle: -6, safety: -6, potential: -4 },
+  nomad: { work: 14, lifestyle: 5, safety: -6, quality: -6, potential: -7 },
+};
+
+const STAGE_SHIFT: Record<string, Partial<Record<PillarKey, number>>> = {
+  single: { lifestyle: 8, work: 5, quality: -5, safety: -6, potential: -2 },
+  relationship: { lifestyle: 4, quality: 4, safety: -2, work: -4, potential: -2 },
+  married: { quality: 6, safety: 5, lifestyle: -4, work: -5, potential: -2 },
+  family: { safety: 9, quality: 6, lifestyle: -6, work: -7, potential: -2 },
+  single_parent: { safety: 8, finance: 6, quality: 3, lifestyle: -8, work: -7, potential: -2 },
+  any: {},
+};
+
+/**
+ * Pesos de los pilares según lo que buscas en tu vida.
+ * Sin filtros activos devuelve la base 30/25/15/15/10/5.
+ */
+export function pillarWeights(prefs?: WeightPrefs): Record<PillarKey, number> {
+  const w = { ...PILLAR_WEIGHTS };
+  if (!prefs) return w;
+  const add = (shift: Partial<Record<PillarKey, number>>) => {
+    for (const [k, v] of Object.entries(shift)) w[k as PillarKey] += v!;
+  };
+  // "save" es el valor por defecto del filtro: no altera la base.
+  if (prefs.goal && prefs.goal !== "save") add(GOAL_SHIFT[prefs.goal] ?? {});
+  if (prefs.stage && prefs.stage !== "any") add(STAGE_SHIFT[prefs.stage] ?? {});
+  if (prefs.climate && prefs.climate !== "any") add({ lifestyle: 5, finance: -3, work: -2 });
+  if (prefs.tax && prefs.tax !== "any") add({ finance: 5, quality: -3, lifestyle: -2 });
+  if (prefs.salary && prefs.salary !== "any") add({ work: 4, finance: 3, lifestyle: -4, quality: -3 });
+  if (prefs.safety === "essential") add({ safety: 9, lifestyle: -5, work: -4 });
+  if (prefs.safety === "neutral") add({ safety: -7, lifestyle: 4, finance: 3 });
+  if (prefs.stability && prefs.stability !== "any") add({ safety: 5, quality: -2, work: -3 });
+
+  // Piso mínimo y normalización a 100
+  for (const k of Object.keys(w) as PillarKey[]) w[k] = Math.max(3, w[k]);
+  const sum = (Object.keys(w) as PillarKey[]).reduce((a, k) => a + w[k], 0);
+  let acc = 0;
+  const keys = Object.keys(w) as PillarKey[];
+  keys.forEach((k, i) => {
+    if (i === keys.length - 1) w[k] = 100 - acc;
+    else {
+      w[k] = Math.round((w[k] / sum) * 100);
+      acc += w[k];
+    }
+  });
+  return w;
+}
 
 export const PILLAR_META: Record<PillarKey, { emoji: string; es: string; en: string }> = {
   finance: { emoji: "💰", es: "Finanzas", en: "Finances" },
@@ -81,6 +146,8 @@ export function northScore(
     expectedReturn: number;
     /** Etapa de vida: si es soltero/a, el nightlife pesa alto en estilo de vida */
     stage?: "single" | "relationship" | "married" | "family" | "single_parent" | "any";
+    /** Pesos dinámicos por pilar según los filtros del usuario */
+    weights?: Record<PillarKey, number>;
   },
 ): NorthScore {
   const stability = stabilityScore(c.country);
@@ -175,9 +242,10 @@ export function northScore(
 
   const groups: Record<PillarKey, typeof finance> = { finance, quality, safety, lifestyle, work, potential };
 
-  const pillars: PillarBreakdown[] = (Object.keys(PILLAR_WEIGHTS) as PillarKey[]).map((key) => ({
+  const weights = ctx.weights ?? PILLAR_WEIGHTS;
+  const pillars: PillarBreakdown[] = (Object.keys(weights) as PillarKey[]).map((key) => ({
     key,
-    weight: PILLAR_WEIGHTS[key],
+    weight: weights[key],
     score: clamp(wavg(groups[key])),
     factors: groups[key].map((f) => ({ ...f, value: clamp(f.value) })),
   }));

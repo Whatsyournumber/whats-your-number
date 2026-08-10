@@ -31,7 +31,7 @@ import {
   type Filters,
 } from "@/lib/lifestyle-cities";
 import { stabilityBadge } from "@/lib/political-stability";
-import { PILLAR_META, PILLAR_WEIGHTS, type PillarBreakdown, type PillarKey } from "@/lib/north-score";
+import { PILLAR_META, pillarWeights, type PillarBreakdown, type PillarKey } from "@/lib/north-score";
 import { suggestedFilters, suggestionReasons } from "@/lib/city-suggestions";
 import { buildDataset } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
@@ -139,8 +139,17 @@ function InfoTooltip({
   );
 }
 
-function MethodologyTooltip({ t }: { t: (es: string, en: string) => string }) {
-  const pillars = Object.entries(PILLAR_WEIGHTS).map(([key, weight]) => {
+function MethodologyTooltip({ t, filters }: { t: (es: string, en: string) => string; filters: Filters }) {
+  const weights = pillarWeights(filters);
+  const active =
+    filters.stage !== "any" ||
+    filters.goal !== "save" ||
+    filters.climate !== "any" ||
+    filters.tax !== "any" ||
+    filters.salary !== "any" ||
+    filters.safety !== "important" ||
+    filters.stability !== "any";
+  const pillars = Object.entries(weights).map(([key, weight]) => {
     const meta = PILLAR_META[key as PillarKey];
     return { key, weight, emoji: meta.emoji, label: t(meta.es, meta.en) };
   });
@@ -162,6 +171,14 @@ function MethodologyTooltip({ t }: { t: (es: string, en: string) => string }) {
         <div className="space-y-2">
           <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
             {t("Your Next City Score", "Your Next City Score")}
+          </p>
+          <p className="text-[10px] leading-relaxed text-muted-foreground">
+            {active
+              ? t(
+                  "Pesos ajustados a tus filtros (base 30/25/15/15/10/5).",
+                  "Weights adjusted to your filters (base 30/25/15/15/10/5).",
+                )
+              : t("Pesos base, sin filtros activos.", "Base weights, no active filters.")}
           </p>
           {pillars.map((p) => (
             <div key={p.key} className="flex items-center gap-2 rounded-lg border border-border/60 bg-elevated/40 p-2">
@@ -294,7 +311,7 @@ function LifestyleSimulator() {
               {t("Reiniciar", "Reset")}
             </button>
             <TooltipProvider delayDuration={100}>
-              <MethodologyTooltip t={t} />
+              <MethodologyTooltip t={t} filters={filters} />
               <SourcesTooltip t={t} />
             </TooltipProvider>
           </div>
