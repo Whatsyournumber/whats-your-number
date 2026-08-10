@@ -135,22 +135,22 @@ function CashFlow() {
   );
   const fixedNeeds = Math.max(0, fixed.total - fixedSavings);
 
-  // Distribución real del mes con la suma correcta:
-  // Necesidades = gastos fijos no-ahorro + gastos variables de necesidad
-  // Deseos = gastos variables de deseo
-  // Ahorro e inversión = ahorro fijo + lo que sobra del mes después de necesidades y deseos
-  const needsAmount = hasReal ? fixedNeeds + spend.needs : d.cashFlow.buckets[0]!.amount;
-  const wantsAmount = hasReal ? spend.wants : d.cashFlow.buckets[1]!.amount;
-  const saveAmount = hasReal
-    ? fixedSavings + Math.max(0, totalIncome - fixed.total - spend.needs - spend.wants)
-    : d.cashFlow.buckets[2]!.amount;
+  const fixedAmount = hasReal ? fixedNeeds + spend.needs : d.cashFlow.buckets[0]!.amount;
+  const lifestyleAmount = hasReal ? spend.wants : d.cashFlow.buckets[1]!.amount;
+  const investAmount = hasReal ? fixedSavings : d.cashFlow.buckets[2]!.amount;
+  const freeAmount = Math.max(0, totalIncome - fixedAmount - lifestyleAmount - investAmount);
 
-  // Orden visual: Necesidades → Inversión → Deseos
   const buckets = [
-    { name: t("Necesidades", "Needs"), amount: needsAmount, color: "var(--color-chart-2)" },
-    { name: t("Ahorro e inversión", "Savings & investing"), amount: saveAmount, color: "var(--color-chart-1)" },
-    { name: t("Deseos", "Wants"), amount: wantsAmount, color: "var(--color-chart-3)" },
+    { name: t("Gastos fijos", "Fixed expenses"), amount: fixedAmount, color: "var(--color-chart-2)" },
+    { name: t("Lifestyle", "Lifestyle"), amount: lifestyleAmount, color: "var(--color-chart-3)" },
+    { name: t("Inversiones / ahorro", "Investments / savings"), amount: investAmount, color: "var(--color-chart-1)" },
+    { name: t("Flujo libre", "Free flow"), amount: freeAmount, color: "var(--color-chart-4)" },
   ];
+
+  // Regla 40/40/20 con la misma data del mes, presentada como Necesidades → Inversión → Deseos.
+  const needsAmount = fixedAmount;
+  const wantsAmount = lifestyleAmount;
+  const saveAmount = investAmount + freeAmount;
 
   const cash = profile.assets_cash + profile.assets_bank;
   const monthlySpend = hasReal ? fixedNeeds + spend.total : d.expenses;
@@ -191,23 +191,13 @@ function CashFlow() {
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <KpiCard label={t("Ingresos", "Income")} value={fmt(totalIncome)} hint={usingStatements ? t("Abonos de tus EEFF", "Credits from your statements") : t("Según tu perfil", "Based on your profile")} accent index={0} />
           <KpiCard
-            label={t("Necesidades", "Needs")}
-            value={fmt(needsAmount)}
-            hint={`${((needsAmount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
+            label={t("Gastos fijos", "Fixed expenses")}
+            value={fmt(buckets[0]!.amount)}
+            hint={`${((buckets[0]!.amount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
             index={1}
           />
-          <KpiCard
-            label={t("Ahorro e inversión", "Savings & investing")}
-            value={fmt(saveAmount)}
-            hint={`${((saveAmount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
-            index={2}
-          />
-          <KpiCard
-            label={t("Deseos", "Wants")}
-            value={fmt(wantsAmount)}
-            hint={`${((wantsAmount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
-            index={3}
-          />
+          <KpiCard label={t("Lifestyle", "Lifestyle")} value={fmt(buckets[1]!.amount)} hint={hasReal ? `${monthTx.length} ${t("movimientos", "transactions")}` : t("Según tu perfil", "Based on your profile")} index={2} />
+          <KpiCard label={t("Flujo libre", "Free flow")} value={fmt(buckets[3]!.amount)} index={3} />
         </div>
 
         <Panel title={t("Flujo de dinero", "Money flow")} description={t("Ingresos → destino final", "Income → final destination")}>
@@ -243,7 +233,7 @@ function CashFlow() {
             <div className="relative hidden h-64 lg:block">
               <svg viewBox="0 0 120 260" className="h-full w-full" preserveAspectRatio="none">
                 {buckets.map((b, i) => {
-                  const y = 40 + i * 90;
+                  const y = 30 + i * 66;
                   const w = Math.max(6, (b.amount / totalIncome) * 60);
                   return (
                     <motion.path
