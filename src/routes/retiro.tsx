@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { motion } from "motion/react";
@@ -85,13 +85,16 @@ function Retiro() {
       <PageHeader eyebrow={t("Largo plazo", "Long term")} title="WhatsYournumber" subtitle={t("Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar.", "How much you have today and how much you will have when you stop working.")} />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <KpiCard
-          label={t("Cuánto tengo", "How much I have")}
-          value={fmt(investable)}
-          hint={t("Sin contar propiedades — solo activos que generan retorno", "Excluding properties — only assets that generate returns")}
-          accent
-          index={0}
-        />
+        <Link to="/portafolio" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
+          <KpiCard
+            label={t("Cuánto tengo", "How much I have")}
+            value={fmt(investable)}
+            hint={t("Sin contar propiedades — solo activos que generan retorno", "Excluding properties — only assets that generate returns")}
+            accent
+            index={0}
+          />
+        </Link>
+
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -102,12 +105,12 @@ function Retiro() {
           {!editing ? (
             <>
               <div className="relative flex items-start justify-between gap-3">
-                <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{t("Capital objetivo", "Target capital")}</p>
+                <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">WhatsYournumber</p>
                 <Pencil className="h-4 w-4 text-muted-foreground" />
               </div>
               <p className="numeric relative mt-3 text-2xl font-semibold md:text-3xl">{fmt(plan.targetCapital)}</p>
               <div className="relative mt-2 flex items-center gap-2">
-                <span className="text-xs text-muted-foreground">{`${fmt(Math.round((plan.targetCapital * (retirement.returnAnnualized / 100)) / 12))} ${t("al mes con", "per month at")} ${retirement.returnAnnualized}%`}</span>
+                <span className="text-xs text-muted-foreground">{`${fmt(Math.round((plan.targetCapital * (swr / 100)) / 12))} ${t("al mes con", "per month at")} ${swr}%`}</span>
               </div>
             </>
           ) : (
@@ -171,9 +174,11 @@ function Retiro() {
           )}
         </motion.div>
         <KpiCard label={t("Cómo voy", "How I'm doing")} value={`${progressPct.toFixed(1)}%`} hint={t("del capital objetivo", "of target capital")} index={2} />
-        <KpiCard label={t("Gastos mensuales", "Monthly expenses")} value={fmt(d.expenses)} hint={`${fmt(d.expenses * 12)} ${t("al año", "per year")}`} index={3} />
+        <Link to="/gastos" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
+          <KpiCard label={t("Gastos mensuales", "Monthly expenses")} value={fmt(d.expenses)} hint={`${fmt(d.expenses * 12)} ${t("al año", "per year")}`} index={3} />
+        </Link>
         <KpiCard label={t("Aportes estimados al año", "Estimated contributions per year")} value={fmt(retirement.contributionsYTD)} index={4} />
-        <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${retirement.returnAnnualized}%`} hint={t("anual", "annual")} index={5} />
+        <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${swr}%`} hint={t("anual · tu tasa de retiro", "annual · your withdrawal rate")} index={5} />
       </div>
       <div className="surface p-5">
         <div className="flex items-center justify-between text-sm">
