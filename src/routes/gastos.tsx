@@ -34,6 +34,17 @@ import { useProfile } from "@/hooks/use-profile";
 import { useTransactions, type Tx } from "@/hooks/use-transactions";
 import { compact, money } from "@/lib/onboarding";
 import { getSpendAdvice } from "@/lib/spend-advice.functions";
+import { buildDataset } from "@/lib/profile-data";
+import { yearsToFreedom } from "@/lib/lifestyle-cities";
+import { ArrowDownRight, ArrowUpRight, TrendingUp } from "lucide-react";
+
+type AdviceAction = {
+  label: string;
+  diagnosis: string;
+  action: string;
+  monthlySaving: number;
+  overspent: boolean;
+};
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/gastos")({
@@ -239,7 +250,7 @@ function Gastos() {
   const targetPct = target > 0 ? (monthlyRun / target) * 100 : 0;
 
   // ---- Recomendaciones IA ----
-  const [advice, setAdvice] = useState<string | null>(null);
+  const [advice, setAdvice] = useState<AdviceAction[] | null>(null);
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState<string | null>(null);
 
@@ -331,7 +342,7 @@ function Gastos() {
           merchants: merchants.slice(0, 10).map((m) => ({ name: m.name, amount: m.amount, count: m.count })),
         },
       });
-      setAdvice(res.advice);
+      setAdvice(res.actions);
     } catch (e) {
       setAdviceError(e instanceof Error ? e.message : t("No pudimos generar las recomendaciones.", "We couldn't generate recommendations."));
     } finally {
@@ -349,6 +360,36 @@ function Gastos() {
     return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [adviceKey, hasData]);
+
+  // ---- Impacto de cada acción sobre tu número ----
+  const ds = useMemo(() => buildDataset(profile), [profile]);
+  const annualTarget = Math.max(1, ds.plan.desiredIncome * 12);
+  const baseYears = yearsToFreedom(
+    Math.max(0, ds.netWorth),
+    Math.max(0, ds.savings),
+    annualTarget,
+    profile.expected_return || 7,
+  );
+  const yearsGain = (extra: number) => {
+    if (baseYears === null || extra <= 0) return null;
+    const y = yearsToFreedom(
+      Math.max(0, ds.netWorth),
+      Math.max(0, ds.savings) + extra,
+      annualTarget,
+      profile.expected_return || 7,
+    );
+    return y === null ? null : Math.max(0, baseYears - y);
+  };
+  const totalSaving = (advice ?? []).reduce((s, a) => s + Math.max(0, a.monthlySaving), 0);
+  const yearsWithAll =
+    totalSaving > 0
+      ? yearsToFreedom(
+          Math.max(0, ds.netWorth),
+          Math.max(0, ds.savings) + totalSaving,
+          annualTarget,
+          profile.expected_return || 7,
+        )
+      : null;
 
   return (
     <PageShell>
@@ -777,7 +818,7 @@ function Gastos() {
       </Panel>
       <Panel
         title={t("Recomendaciones de la IA", "AI recommendations")}
-        description={t("Las 4 acciones de mayor impacto, generadas automáticamente con tus datos", "The 4 highest-impact actions, generated automatically from your data")}
+        description={t("Acciones concretas ordenadas por impacto, y cuánto te acercan a tu número", "Concrete actions ranked by impact, and how much closer they get you to your number")}
         actions={
           <Button size="sm" onClick={runAdvice} disabled={adviceLoading || !hasData}>
             {adviceLoading ? (
@@ -801,31 +842,63 @@ function Gastos() {
           </p>
         )}
         {advice && (
-          <div className="space-y-1.5 text-sm leading-relaxed">
-            {advice
-              .split("\n")
-              .filter((l) => l.trim())
-              .map((line, i) => {
-                const clean = line.replace(/^#{1,6}\s*/, "").replace(/^[-*]\s*/, "").replace(/\*\*/g, "");
-                if (line.startsWith("#"))
-                  return (
-                    <p key={i} className="pt-2 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                      {clean}
-                    </p>
-                  );
-                if (/^[-*]\s/.test(line))
-                  return (
-                    <p key={i} className="flex gap-2 text-foreground/90">
-                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                      <span>{clean}</span>
-                    </p>
-                  );
+          <div className="space-y-3">
+            {baseYears !== null && (
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-1 rounded-xl bg-elevated/60 px-4 py-3 text-sm">
+                <span className="text-muted-foreground">
+                  {t("Con tu ritmo actual llegas a tu número en", "At your current pace you reach your number in")}{" "}
+                  <span className="numeric font-semibold text-foreground">{baseYears} {t("años", "years")}</span>
+                </span>
+                {totalSaving > 0 && yearsWithAll !== null && (
+                  <span className="text-muted-foreground">
+                    {t("Aplicando las 4 acciones", "Applying all 4 actions")}:{" "}
+                    <span className="numeric font-semibold text-positive">{yearsWithAll} {t("años", "years")}</span>
+                    {baseYears - yearsWithAll > 0 && (
+                      <span className="text-positive"> · −{(baseYears - yearsWithAll).toFixed(1)} {t("años", "yrs")}</span>
+                    )}
+                  </span>
+                )}
+              </div>
+            )}
+            <ul className="grid gap-3 md:grid-cols-2">
+              {advice.map((a, i) => {
+                const gain = yearsGain(a.monthlySaving);
                 return (
-                  <p key={i} className="text-foreground/90">
-                    {clean}
-                  </p>
+                  <li key={i} className="flex flex-col gap-2 rounded-2xl border border-border/60 bg-elevated/40 p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-2">
+                        <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-muted text-[11px] font-semibold">
+                          {i + 1}
+                        </span>
+                        <p className="text-sm font-semibold">{a.label}</p>
+                      </div>
+                      <span
+                        className={cn(
+                          "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium",
+                          a.overspent ? "bg-negative/15 text-negative" : "bg-positive/15 text-positive",
+                        )}
+                      >
+                        {a.overspent ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+                        {a.overspent ? t("Te excediste", "Overspent") : t("Oportunidad", "Opportunity")}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{a.diagnosis}</p>
+                    <p className="text-sm font-medium text-foreground/90">→ {a.action}</p>
+                    <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 pt-1 text-xs">
+                      <span className="numeric font-semibold text-positive">
+                        +{fmt(a.monthlySaving)}{t("/mes", "/mo")}
+                      </span>
+                      {gain !== null && gain > 0 && (
+                        <span className="inline-flex items-center gap-1 text-muted-foreground">
+                          <TrendingUp className="h-3 w-3 text-positive" />
+                          {t("te acerca", "gets you")} <span className="numeric font-semibold text-foreground">{gain.toFixed(1)} {t("años", "yrs")}</span> {t("a tu número", "closer to your number")}
+                        </span>
+                      )}
+                    </div>
+                  </li>
                 );
               })}
+            </ul>
           </div>
         )}
       </Panel>
