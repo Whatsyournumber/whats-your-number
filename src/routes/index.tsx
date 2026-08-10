@@ -210,28 +210,31 @@ function Landing() {
   const whyCards = [
     {
       icon: Crosshair,
-      title: t("Tu número, siempre claro", "Your number, always clear"),
+      image: featureNumber.url,
+      title: t("Sabe exactamente cuándo serás libre", "Know exactly when you'll be free"),
       desc: t(
-        "Cuánto capital necesitas para vivir de tus rendimientos y en qué año llegas, según la tasa que elijas.",
-        "How much capital you need to live off returns, and the year you get there at the rate you choose.",
+        "Calcula tu número de libertad financiera: el capital que necesitas para vivir de tus rendimientos y el año en que lo alcanzarás.",
+        "Calculate your financial freedom number: the capital you need to live off returns and the year you'll reach it.",
       ),
       stat: t("30 segundos · sin registro", "30 seconds · no sign-up"),
     },
     {
       icon: ScanEye,
-      title: t("La IA lee tus estados de cuenta", "AI reads your statements"),
+      image: featureAi.url,
+      title: t("La IA lee y clasifica tus estados de cuenta", "AI reads and classifies your statements"),
       desc: t(
-        "PDF o CSV: clasifica cada movimiento, detecta suscripciones muertas y te dice dónde recortar.",
-        "PDF or CSV: it classifies every transaction, spots dead subscriptions and tells you where to cut.",
+        "Sube PDFs o CSVs de cualquier banco. La IA extrae cada movimiento, detecta suscripciones duplicadas y sugiere dónde recortar.",
+        "Upload PDFs or CSVs from any bank. The AI extracts every transaction, spots duplicate subscriptions and suggests where to cut.",
       ),
       stat: t("142 movimientos en 9 segundos", "142 transactions in 9 seconds"),
     },
     {
       icon: RouteIcon,
-      title: t("Decide tu vida, no solo tu mes", "Plan your life, not just your month"),
+      image: featureLife.url,
+      title: t("Mide el impacto real de cada decisión", "Measure the real impact of every decision"),
       desc: t(
-        "Casa, hijos, negocio o mudarte a Madrid: cada decisión mueve tu fecha de libertad en tiempo real.",
-        "A home, kids, a business or moving to Madrid: each decision shifts your freedom date in real time.",
+        "Casa, hijos, negocio o mudarte a Madrid: simula cada escenario y descubre cuánto acelera o retrasa tu fecha de libertad.",
+        "A home, kids, a business or moving to Madrid: simulate every scenario and discover how much it speeds up or delays your freedom date.",
       ),
       stat: t("Life Planner + Your next city", "Life Planner + Your next city"),
     },
