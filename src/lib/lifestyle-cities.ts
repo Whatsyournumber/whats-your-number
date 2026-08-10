@@ -690,9 +690,9 @@ const inv = (value: number, best: number, worst: number) => clamp(((worst - valu
 
 export type CityScore = {
   city: CityData;
-  /** Score final del ranking: Your Next City Score ajustado a tus preferencias */
+  /** Score final del ranking: Your North Score ajustado a tus preferencias */
   score: number;
-  /** Your Next City Score (0-100) y su desglose por pilares */
+  /** Your North Score (0-100) y su desglose por pilares */
   north: NorthScore;
   cost: number;
   savings: number;
@@ -797,7 +797,7 @@ export function scoreCity(
   }
   const fit = weightSum > 0 ? total / weightSum : 0;
 
-  // Your Next City Score: base objetiva por pilares (30/25/15/15/10/5)
+  // Your North Score: base objetiva por pilares (30/25/15/15/10/5)
   const north = northScore(c, {
     cost,
     savings,
