@@ -72,18 +72,14 @@ function DemoCard() {
         <span className="text-xs font-medium uppercase tracking-wider text-primary">
           {t("Descubre tu número", "Discover your number")}
         </span>
-        <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-5xl">
-          {t("Financial freedom has a number. What’s yours?", "Financial freedom has a number. What’s yours?")}
+        <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
+          {t("La libertad financiera tiene un número. ¿Cuál es el tuyo?", "La libertad financiera tiene un número. ¿Cuál es el tuyo?")}
         </h2>
-        <p className="mx-auto mt-3 max-w-xl text-base text-muted-foreground">
-          {t("Know your number. Live freely.", "Know your number. Live freely.")}
+        <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
+          {t("Conoce tu número. Vive libre.", "Conoce tu número. Vive libre.")}
         </p>
-        <Button asChild size="lg" className="mt-6 gap-2 rounded-full px-8">
-          <Link to="/demo" search={{ start: 1 }}>
-            {t("FIND OUT FOR FREE", "FIND OUT FOR FREE")} <ArrowRight className="h-4 w-4" />
-          </Link>
-        </Button>
       </div>
+
 
 
       <Link to="/demo" search={{ start: 1 }} className="group block">
@@ -108,8 +104,9 @@ function DemoCard() {
                 )}
               </p>
               <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-lg transition-all group-hover:gap-3">
-                {t("Probar ahora", "Try now")} <ArrowRight className="h-4 w-4" />
+                {t("Probar ahora gratis", "Try now for free")} <ArrowRight className="h-4 w-4" />
               </div>
+
             </div>
 
             <div className="relative flex h-52 w-52 shrink-0 items-center justify-center">
