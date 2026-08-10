@@ -436,7 +436,7 @@ function Gastos() {
                       data={byCategory}
                       dataKey="amount"
                       nameKey="name"
-                      innerRadius={68}
+                      innerRadius={78}
                       outerRadius={104}
                       paddingAngle={3}
                       stroke="none"
