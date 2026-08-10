@@ -581,7 +581,20 @@ export const lifestyleCities: CityData[] = [
 /* ---------------- Filtros y scoring ---------------- */
 
 export type ClimatePref = Climate | "any";
-export type SalaryPref = "low_cost" | "balanced" | "high_income" | "highest_paying" | "any";
+/** Rango salarial neto mensual (USD) que podrías ganar trabajando en esa ciudad */
+export type SalaryPref = "any" | "under_1500" | "1500_3000" | "3000_5000" | "5000_plus";
+
+/** Salario neto mensual estimado (USD) tras impuestos y contribuciones */
+export function netSalary(c: LifestyleCity): number {
+  return Math.round(c.avgSalary * (1 - c.taxRate / 100));
+}
+
+export const SALARY_BANDS: Record<Exclude<SalaryPref, "any">, { min: number; max: number }> = {
+  under_1500: { min: 0, max: 1500 },
+  "1500_3000": { min: 1500, max: 3000 },
+  "3000_5000": { min: 3000, max: 5000 },
+  "5000_plus": { min: 5000, max: Infinity },
+};
 export type TaxPref = "low" | "medium" | "high" | "any";
 export type SafetyPref = "essential" | "important" | "neutral";
 export type LifeStage = "single" | "relationship" | "married" | "family" | "single_parent" | "any";
