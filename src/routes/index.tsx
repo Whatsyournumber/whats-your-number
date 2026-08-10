@@ -69,10 +69,13 @@ function DemoCard() {
       className="mt-16"
     >
       <div className="mb-10 text-center">
-        <h2 className="font-display text-3xl font-semibold tracking-tight md:text-5xl">
+        <span className="text-xs font-medium uppercase tracking-wider text-primary">
+          {t("Descubre tu número", "Discover your number")}
+        </span>
+        <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-5xl">
           {t("Financial freedom has a number. What’s yours?", "Financial freedom has a number. What’s yours?")}
         </h2>
-        <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground">
+        <p className="mx-auto mt-3 max-w-xl text-base text-muted-foreground">
           {t("Know your number. Live freely.", "Know your number. Live freely.")}
         </p>
         <Button asChild size="lg" className="mt-6 gap-2 rounded-full px-8">
@@ -81,6 +84,7 @@ function DemoCard() {
           </Link>
         </Button>
       </div>
+
 
       <Link to="/demo" search={{ start: 1 }} className="group block">
         <div className="surface glow relative overflow-hidden p-8 transition-transform duration-300 hover:scale-[1.01] md:p-12">
@@ -343,11 +347,23 @@ function Landing() {
             </span>
           </div>
 
-          <p className="mt-14 text-xs font-medium uppercase tracking-wider text-primary">
-            {t("¿Por qué WhatsYourNumber?", "Why WhatsYourNumber?")}
-          </p>
+          <div className="mb-10 mt-14 text-center">
+            <span className="text-xs font-medium uppercase tracking-wider text-primary">
+              {t("¿Por qué WhatsYourNumber?", "Why WhatsYourNumber?")}
+            </span>
+            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
+              {t("Todo en un solo lugar", "Everything in one place")}
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
+              {t(
+                "Claridad total, IA integrada y tu número de libertad financiera siempre a la vista.",
+                "Total clarity, integrated AI and your financial freedom number always in sight.",
+              )}
+            </p>
+          </div>
 
-          <div className="mt-6 grid gap-5 text-left md:grid-cols-3">
+
+          <div className="grid gap-5 text-left md:grid-cols-3">
             {whyCards.map((card, i) => (
               <motion.div
                 key={card.title}
@@ -357,6 +373,7 @@ function Landing() {
                 transition={{ duration: 0.4, delay: i * 0.08 }}
                 className="surface group relative overflow-hidden rounded-3xl p-6 transition-all hover:bg-card/60"
               >
+
                 <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-[0.07]" />
                 <div className="relative">
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-primary/10 ring-1 ring-primary/20">
@@ -528,7 +545,14 @@ function Landing() {
             <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
               {t("Personas que ya encontraron su número", "People who already found their number")}
             </h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
+              {t(
+                "Historias reales de usuarios que pasaron de la confusión a la claridad financiera.",
+                "Real stories from users who moved from confusion to financial clarity.",
+              )}
+            </p>
           </div>
+
           <div className="grid gap-4 md:grid-cols-3">
             {reviews.map((r, i) => (
               <motion.figure
