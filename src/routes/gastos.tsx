@@ -601,20 +601,20 @@ function Gastos() {
         </Panel>
       </div>
 
-      <Panel title={t("Gastos fijos mensuales", "Monthly fixed expenses")} description={t("Edita nombre y monto; se guardan en este navegador", "Edit name and amount; saved in this browser")}>
+      <Panel variant="minimal" title={t("Gastos fijos mensuales", "Monthly fixed expenses")} description={t("Edita nombre y monto; se guardan en este navegador", "Edit name and amount; saved in this browser")}>
         <div className="space-y-2">
           {fixed.items.map((item) => (
-            <div key={item.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-elevated/60 px-3 py-2">
+            <div key={item.id} className="flex flex-wrap items-center gap-2 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
               <Input
                 value={item.name}
                 onChange={(e) => fixed.update(item.id, { name: e.target.value })}
-                className="h-9 w-full max-w-[260px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
+                className="h-8 w-full max-w-[260px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
               />
               <div className="ml-auto flex items-center gap-2">
                 <NumberInput
                   value={item.amount}
                   onChange={(v) => fixed.update(item.id, { amount: v })}
-                  className="h-9 w-32 text-right text-sm"
+                  className="h-8 w-28 text-right text-sm"
                 />
                 <Button
                   size="icon"
@@ -627,7 +627,7 @@ function Gastos() {
                 </Button>
               </div>
               <div className="w-full">
-                <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                <div className="h-1 overflow-hidden rounded-full bg-muted">
                   <div
                     className="h-full rounded-full bg-chart-3"
                     style={{ width: `${fixed.total > 0 ? (item.amount / fixed.total) * 100 : 0}%` }}
