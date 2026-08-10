@@ -11,6 +11,14 @@ export type OnboardingData = {
   income_other: number;
   monthly_expenses: number;
   monthly_savings: number;
+  fixed_housing: number;
+  fixed_utilities: number;
+  fixed_insurance: number;
+  fixed_transport: number;
+  fixed_education: number;
+  fixed_subscriptions: number;
+  fixed_savings: number;
+  fixed_other: number;
   assets_cash: number;
   assets_bank: number;
   assets_retirement: number;
@@ -40,6 +48,14 @@ export const emptyOnboarding: OnboardingData = {
   income_other: 0,
   monthly_expenses: 0,
   monthly_savings: 0,
+  fixed_housing: 0,
+  fixed_utilities: 0,
+  fixed_insurance: 0,
+  fixed_transport: 0,
+  fixed_education: 0,
+  fixed_subscriptions: 0,
+  fixed_savings: 0,
+  fixed_other: 0,
   assets_cash: 0,
   assets_bank: 0,
   assets_retirement: 0,
@@ -378,3 +394,19 @@ export const currencies: CurrencyOption[] = [
   { code: "NIO", label: "Córdoba", symbol: "C$" },
   { code: "VES", label: "Bolívar", symbol: "Bs" },
 ];
+
+/** Gastos fijos declarados en el onboarding, listos para la pestaña de Gastos. */
+export const FIXED_FIELDS = [
+  { key: "fixed_housing", es: "Hipoteca / Alquiler", en: "Mortgage / Rent", emoji: "\u{1F3E0}" },
+  { key: "fixed_savings", es: "Fondo de ahorro", en: "Savings fund", emoji: "\u{1F4B0}" },
+  { key: "fixed_utilities", es: "Servicios (luz, agua, internet)", en: "Utilities (power, water, internet)", emoji: "\u{1F4A1}" },
+  { key: "fixed_insurance", es: "Seguros (salud, hogar, auto)", en: "Insurance (health, home, car)", emoji: "\u{1F6E1}\uFE0F" },
+  { key: "fixed_transport", es: "Transporte", en: "Transport", emoji: "\u{1F697}" },
+  { key: "fixed_education", es: "Educaci\u00f3n / Colegios", en: "Education / School", emoji: "\u{1F393}" },
+  { key: "fixed_subscriptions", es: "Suscripciones", en: "Subscriptions", emoji: "\u{1F4F1}" },
+  { key: "fixed_other", es: "Otros gastos fijos", en: "Other fixed expenses", emoji: "\u{1F9FE}" },
+] as const satisfies readonly { key: keyof OnboardingData; es: string; en: string; emoji: string }[];
+
+export function totalFixedExpenses(d: Pick<OnboardingData, (typeof FIXED_FIELDS)[number]["key"]>) {
+  return FIXED_FIELDS.reduce((s, f) => s + (Number(d[f.key]) || 0), 0);
+}
