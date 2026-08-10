@@ -361,18 +361,18 @@ function Landing() {
               {t("¿Por qué WhatsYourNumber?", "Why WhatsYourNumber?")}
             </span>
             <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
-              {t("Todo en un solo lugar", "Everything in one place")}
+              {t("Tu dinero. Tu número. Tu plan.", "Your money. Your number. Your plan.")}
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
               {t(
-                "Claridad total, IA integrada y tu número de libertad financiera siempre a la vista.",
-                "Total clarity, integrated AI and your financial freedom number always in sight.",
+                "Entiende dónde estás, descubre cuánto necesitas y toma mejores decisiones para llegar.",
+                "Understand where you are, discover how much you need and make better decisions to get there.",
               )}
             </p>
           </div>
 
 
-          <div className="mx-auto grid max-w-5xl gap-4 text-left md:grid-cols-3">
+          <div className="grid gap-4 text-left md:grid-cols-3">
             {whyCards.map((card, i) => (
               <motion.div
                 key={card.number}
@@ -392,7 +392,7 @@ function Landing() {
                     <br />
                     <span className="text-primary">{card.titleAccent}</span>
                   </h3>
-                  <p className="mt-2 line-clamp-3 min-h-[4.5rem] text-sm leading-relaxed text-muted-foreground/80">
+                  <p className="mt-2 line-clamp-2 min-h-[3rem] text-sm leading-relaxed text-muted-foreground/80">
                     {card.desc}
                   </p>
                 </div>
