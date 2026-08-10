@@ -209,13 +209,15 @@ function Dashboard() {
           <ul className="space-y-3">
             {d.goals.map((g) => {
               const pct = g.target > 0 ? Math.min(100, (g.current / g.target) * 100) : 0;
+              const left = g.displayCurrent ?? g.current;
+              const right = g.displayTarget ?? g.target;
               return (
                 <li key={g.name}>
                   <div className="flex items-center gap-2 text-sm">
                     <span>{g.emoji}</span>
                     <span className="font-medium">{g.name}</span>
                     <span className="numeric ml-auto text-xs text-muted-foreground">
-                      {fmtCompact(g.current)} / {fmtCompact(g.target)}
+                      {fmtCompact(left)} / {fmtCompact(right)}
                     </span>
                   </div>
                   <Progress value={pct} className="mt-2 h-1.5" />

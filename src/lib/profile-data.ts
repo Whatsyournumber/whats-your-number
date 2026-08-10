@@ -53,7 +53,7 @@ export type Dataset = {
     retireAge: number;
     contributionsYTD: number;
   };
-  goals: { name: string; emoji: string; current: number; target: number; deadline: string; monthly: number; note?: string | undefined }[];
+  goals: { name: string; emoji: string; current: number; target: number; deadline: string; monthly: number; note?: string | undefined; displayCurrent?: number | undefined; displayTarget?: number | undefined }[];
   cashFlow: { income: { name: string; amount: number }[]; buckets: { name: string; amount: number; color: string }[] };
   cityCost: number | null;
   hasData: boolean;
@@ -170,6 +170,8 @@ export function buildDataset(p: Profile): Dataset {
       target: cityTarget,
       deadline: String(year + (cityYears ?? yearsToGoal)),
       monthly: savings,
+      displayCurrent: cityMonthly ?? undefined,
+      displayTarget: cityMonthly ? Math.max(0, income - cityMonthly) : undefined,
       note: cityMonthly
         ? `${p.city ? `Vivir en ${p.city}` : "Ciudad objetivo"}: ${fmt(cityMonthly)}/mes · capacidad de ahorro ${fmt(Math.max(0, income - cityMonthly))}/mes · necesitas ${fmt(cityTarget)} · ${
             cityYears === 0
