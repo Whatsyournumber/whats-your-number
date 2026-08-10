@@ -149,6 +149,14 @@ function MiPerfil() {
                 onChange={(e) => set("expected_return", Number(e.target.value || 0))}
               />
             </Field>
+            <Field label={t("Tasa de retiro para tu número (% anual)", "Withdrawal rate for your number (% annual)")}>
+              <Input
+                type="number"
+                step="0.5"
+                value={form.withdrawal_rate || 4}
+                onChange={(e) => set("withdrawal_rate", Number(e.target.value || 0))}
+              />
+            </Field>
             <Field label={t("País", "Country")}>
               <select
                 className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
