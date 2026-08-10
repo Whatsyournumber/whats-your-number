@@ -1,6 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
+import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  type DragEndEvent,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { motion } from "motion/react";
-import { CalendarDays, Compass, Pencil, Plus, Sparkles, Target, TrendingDown, TrendingUp, Trash2, Wallet } from "lucide-react";
+import { CalendarDays, Compass, GripVertical, Pencil, Plus, Sparkles, Target, Trash2, TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
