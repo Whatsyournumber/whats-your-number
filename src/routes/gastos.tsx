@@ -391,6 +391,17 @@ function Gastos() {
         )
       : null;
 
+  // Valor futuro de recortar y reinvertir al 7% anual (capitalización mensual).
+  const RATE = 7;
+  const horizonYears = Math.min(30, Math.max(5, baseYears ?? 15));
+  const futureValue = (monthly: number, years = horizonYears) => {
+    const r = RATE / 100 / 12;
+    const n = Math.round(years * 12);
+    if (monthly <= 0) return 0;
+    return monthly * ((Math.pow(1 + r, n) - 1) / r);
+  };
+
+
   return (
     <PageShell>
       <PageHeader
