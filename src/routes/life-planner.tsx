@@ -283,23 +283,38 @@ function LifePlanner() {
                 </div>
 
                 <dl className="mt-4 space-y-1.5 text-xs">
-                  {cardTpl && cardMeta
-                    ? cardTpl.fields.map((f) => {
+                  {cardTpl && cardMeta ? (
+                    <>
+                      {cardTpl.fields.map((f) => {
                         const raw = cardMeta.values[f.key] ?? 0;
                         return (
                           <Line
                             key={f.key}
                             label={t(f.es, f.en)}
-                            value={f.kind === "money" ? data.fmt(raw) : String(raw)}
+                            value={
+                              f.kind === "money"
+                                ? data.fmt(raw)
+                                : f.kind === "percent"
+                                  ? `${raw}%`
+                                  : String(raw)
+                            }
                           />
                         );
-                      })
-                    : (
-                      <>
-                        <Line label={t("Coste total", "Total cost")} value={data.fmt(g.cost)} />
-                        <Line label={t("Fondo acumulado", "Accumulated fund")} value={`${data.fmt(g.saved)} (${pct.toFixed(0)}%)`} />
-                      </>
-                    )}
+                      })}
+                      {(cardTpl.derive(cardMeta.values).extras ?? []).map((x) => (
+                        <Line
+                          key={x.es}
+                          label={t(x.es, x.en)}
+                          value={x.money ? data.fmt(Math.round(x.value)) : String(Math.round(x.value))}
+                        />
+                      ))}
+                    </>
+                  ) : (
+                    <>
+                      <Line label={t("Coste total", "Total cost")} value={data.fmt(g.cost)} />
+                      <Line label={t("Fondo acumulado", "Accumulated fund")} value={`${data.fmt(g.saved)} (${pct.toFixed(0)}%)`} />
+                    </>
+                  )}
                   <div className="mt-2 border-t border-border/60 pt-2">
                     <Line
                       label={t("Flujo neto / mes", "Net flow / month")}
@@ -451,6 +466,7 @@ function LifePlanner() {
                       {derived.monthly >= 0 ? "+" : ""}
                       {data.fmt(derived.monthly)}/{t("mes", "mo")}
                       {derived.payout ? ` · ${t("Venta", "Exit")}: ${data.fmt(derived.payout)}` : ""}
+                      {(derived.extras ?? []).map((x) => ` · ${t(x.es, x.en)}: ${data.fmt(Math.round(x.value))}`).join("")}
                     </p>
                   </div>
                   <span
