@@ -520,11 +520,10 @@ function Gastos() {
                 className="h-9 w-full max-w-[260px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
               />
               <div className="ml-auto flex items-center gap-2">
-                <Input
-                  type="number"
-                  value={String(item.amount)}
-                  onChange={(e) => fixed.update(item.id, { amount: Number(e.target.value) || 0 })}
-                  className="numeric h-9 w-32 text-right text-sm"
+                <NumberInput
+                  value={item.amount}
+                  onChange={(v) => fixed.update(item.id, { amount: v })}
+                  className="h-9 w-32 text-right text-sm"
                 />
                 <Button
                   size="icon"
