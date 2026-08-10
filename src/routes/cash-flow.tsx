@@ -135,22 +135,22 @@ function CashFlow() {
   );
   const fixedNeeds = Math.max(0, fixed.total - fixedSavings);
 
-  // Distribución real del mes con la suma correcta:
-  // Necesidades = gastos fijos no-ahorro + gastos variables de necesidad
-  // Deseos = gastos variables de deseo
-  // Ahorro e inversión = ahorro fijo + lo que sobra del mes después de necesidades y deseos
-  const needsAmount = hasReal ? fixedNeeds + spend.needs : d.cashFlow.buckets[0]!.amount;
-  const wantsAmount = hasReal ? spend.wants : d.cashFlow.buckets[1]!.amount;
-  const saveAmount = hasReal
-    ? fixedSavings + Math.max(0, totalIncome - fixed.total - spend.needs - spend.wants)
-    : d.cashFlow.buckets[2]!.amount;
+  const fixedAmount = hasReal ? fixedNeeds + spend.needs : d.cashFlow.buckets[0]!.amount;
+  const lifestyleAmount = hasReal ? spend.wants : d.cashFlow.buckets[1]!.amount;
+  const investAmount = hasReal ? fixedSavings : d.cashFlow.buckets[2]!.amount;
+  const freeAmount = Math.max(0, totalIncome - fixedAmount - lifestyleAmount - investAmount);
 
-  // Orden visual: Necesidades → Inversión → Deseos
   const buckets = [
-    { name: t("Necesidades", "Needs"), amount: needsAmount, color: "var(--color-chart-2)" },
-    { name: t("Ahorro e inversión", "Savings & investing"), amount: saveAmount, color: "var(--color-chart-1)" },
-    { name: t("Deseos", "Wants"), amount: wantsAmount, color: "var(--color-chart-3)" },
+    { name: t("Gastos fijos", "Fixed expenses"), amount: fixedAmount, color: "var(--color-chart-2)" },
+    { name: t("Lifestyle", "Lifestyle"), amount: lifestyleAmount, color: "var(--color-chart-3)" },
+    { name: t("Inversiones / ahorro", "Investments / savings"), amount: investAmount, color: "var(--color-chart-1)" },
+    { name: t("Flujo libre", "Free flow"), amount: freeAmount, color: "var(--color-chart-4)" },
   ];
+
+  // Regla 40/40/20 con la misma data del mes, presentada como Necesidades → Inversión → Deseos.
+  const needsAmount = fixedAmount;
+  const wantsAmount = lifestyleAmount;
+  const saveAmount = investAmount + freeAmount;
 
   const cash = profile.assets_cash + profile.assets_bank;
   const monthlySpend = hasReal ? fixedNeeds + spend.total : d.expenses;
