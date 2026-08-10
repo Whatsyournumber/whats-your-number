@@ -25,6 +25,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
+import { NumberInput } from "@/components/ui/number-input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCategories } from "@/hooks/use-categories";
@@ -384,11 +385,10 @@ function Gastos() {
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{t("Objetivo", "Target")}</p>
             <div className="mt-2 flex items-center gap-2">
-              <Input
-                type="number"
-                value={String(target)}
-                onChange={(e) => setTarget(Number(e.target.value) || 0)}
-                className="numeric h-11 w-40 text-lg font-semibold"
+              <NumberInput
+                value={target}
+                onChange={setTarget}
+                className="h-11 w-40 text-lg font-semibold"
               />
               <span className="text-xs text-muted-foreground">{t("/mes", "/mo")}</span>
             </div>
@@ -520,11 +520,10 @@ function Gastos() {
                 className="h-9 w-full max-w-[260px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
               />
               <div className="ml-auto flex items-center gap-2">
-                <Input
-                  type="number"
-                  value={String(item.amount)}
-                  onChange={(e) => fixed.update(item.id, { amount: Number(e.target.value) || 0 })}
-                  className="numeric h-9 w-32 text-right text-sm"
+                <NumberInput
+                  value={item.amount}
+                  onChange={(v) => fixed.update(item.id, { amount: v })}
+                  className="h-9 w-32 text-right text-sm"
                 />
                 <Button
                   size="icon"
