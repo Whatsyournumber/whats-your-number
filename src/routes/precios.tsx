@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Check, Sparkles } from "lucide-react";
+import { ArrowRight, Check, CreditCard, ShieldCheck, Sparkles, Zap } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 import { Button } from "@/components/ui/button";
 import { useT } from "@/hooks/use-language";
 
@@ -11,7 +12,7 @@ export const Route = createFileRoute("/precios")({
       { title: "Precios — WhatsYournumber" },
       {
         name: "description",
-        content: "Planes de WhatsYournumber: empieza gratis y escala a Pro o Patrimonio con IA, importación ilimitada y proyecciones.",
+        content: "Planes de WhatsYournumber: empieza gratis, prueba Pro 14 días y escala a Patrimonio para familias y activos complejos.",
       },
       { property: "og:title", content: "Precios — WhatsYournumber" },
       { property: "og:description", content: "Planes simples para ordenar tu patrimonio con IA." },
@@ -30,45 +31,92 @@ function Pricing() {
       name: "Free",
       price: "$0",
       period: t("/mes", "/mo"),
-      desc: t("Para empezar a ordenar tus finanzas.", "To start getting your finances in order."),
+      desc: t(
+        "Descubre tu número en 30 segundos y ordena tus finanzas básicas.",
+        "Discover your number in 30 seconds and organize your basic finances.",
+      ),
       features: [
-        t("1 cuenta conectada", "1 connected account"),
-        t("5 importaciones al mes", "5 imports per month"),
-        t("Análisis de gastos", "Expense analysis"),
-        t("Presupuestos básicos", "Basic budgets"),
+        t("Demo gratuito: tu número en 3 preguntas", "Free demo: your number in 3 questions"),
+        t("1 cuenta conectada o manual", "1 connected or manual account"),
+        t("5 importaciones de EEFF al mes", "5 statement imports per month"),
+        t("Dashboard con tu número y cash flow", "Dashboard with your number and cash flow"),
+        t("Análisis de gastos del mes", "Monthly expense analysis"),
+        t("Presupuesto 40/40/20", "40/40/20 budget"),
       ],
       cta: t("Empezar gratis", "Start for free"),
+      href: "/demo",
       highlight: false,
     },
     {
       name: "Pro",
       price: "$12",
       period: t("/mes", "/mo"),
-      desc: t("Todo el sistema, con IA sin límites.", "The whole system, with unlimited AI."),
+      desc: t(
+        "Todo el sistema financiero con IA ilimitada para acelerar tu libertad.",
+        "The full financial OS with unlimited AI to speed up your freedom.",
+      ),
       features: [
-        t("Cuentas ilimitadas", "Unlimited accounts"),
-        t("Importación PDF y CSV ilimitada", "Unlimited PDF and CSV import"),
-        t("AI Advisor y detección de anomalías", "AI Advisor and anomaly detection"),
+        t("Cuentas y bancos ilimitados", "Unlimited accounts and banks"),
+        t("Importación PDF y CSV ilimitada", "Unlimited PDF and CSV imports"),
+        t("AI Advisor: pregúntale lo que sea", "AI Advisor: ask anything"),
+        t("Recomendaciones de ahorro inteligentes", "Smart savings recommendations"),
         t("Portafolio y benchmark de mercado", "Portfolio and market benchmark"),
-        t("Simulador de retiro", "Retirement simulator"),
+        t("WhatsYournumber y simulador de retiro", "WhatsYournumber and retirement simulator"),
+        t("Life Planner y Your next city", "Life Planner and Your next city"),
+        t("Reportes mensuales automáticos", "Automatic monthly reports"),
       ],
-      cta: t("Probar Pro", "Try Pro"),
+      cta: t("Probar Pro 14 días gratis", "Try Pro 14 days free"),
+      href: "/auth",
+      search: { mode: "signup" },
       highlight: true,
     },
     {
       name: "Patrimonio",
       price: "$29",
       period: t("/mes", "/mo"),
-      desc: t("Para patrimonios complejos y familias.", "For complex net worths and families."),
+      desc: t(
+        "Para patrimonios complejos, familias y quienes toman decisiones con datos.",
+        "For complex net worths, families and data-driven decision makers.",
+      ),
       features: [
         t("Todo lo de Pro", "Everything in Pro"),
-        t("Multi-moneda y activos alternativos", "Multi-currency and alternative assets"),
+        t("Multi-moneda avanzada EUR/USD/GBP", "Advanced multi-currency EUR/USD/GBP"),
+        t("Activos alternativos: cripto, real estate, etc.", "Alternative assets: crypto, real estate, etc."),
         t("Reportes trimestrales exportables", "Exportable quarterly reports"),
         t("Perfiles familiares compartidos", "Shared family profiles"),
-        t("Soporte prioritario", "Priority support"),
+        t("Soporte prioritario en 24h", "Priority support within 24h"),
       ],
       cta: t("Hablar con nosotros", "Talk to us"),
+      href: "/auth",
+      search: { mode: "signup" },
       highlight: false,
+    },
+  ];
+
+  const incentives = [
+    {
+      icon: Sparkles,
+      title: t("Prueba Pro gratis 14 días", "Try Pro free for 14 days"),
+      description: t(
+        "Accede a todo el sistema con IA ilimitada. Cancela antes de que termine y no pagas nada.",
+        "Get full access with unlimited AI. Cancel before it ends and pay nothing.",
+      ),
+    },
+    {
+      icon: ShieldCheck,
+      title: t("Garantía de devolución de 30 días", "30-day money-back guarantee"),
+      description: t(
+        "Si WhatsYournumber no te ayuda a ver tu dinero más claro, te devolvemos el 100%.",
+        "If WhatsYournumber doesn't help you see your money clearly, we refund 100%.",
+      ),
+    },
+    {
+      icon: Zap,
+      title: t("Se paga solo si ahorras", "It pays for itself if you save"),
+      description: t(
+        "Si Pro te ayuda a ahorrar solo $25 al mes, ya cubre más del doble de su costo anual.",
+        "If Pro helps you save just $25/month, it already covers more than double its annual cost.",
+      ),
     },
   ];
 
@@ -83,11 +131,14 @@ function Pricing() {
             <Sparkles className="h-3.5 w-3.5 text-primary" />
             {t("Sin permanencia, cancela cuando quieras", "No lock-in, cancel anytime")}
           </span>
-          <h1 className="mx-auto mt-6 max-w-2xl font-display text-4xl font-semibold tracking-tight md:text-5xl">
-            {t("Precios claros, como tus finanzas", "Clear pricing, just like your finances")}
+          <h1 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-semibold tracking-tight md:text-5xl">
+            {t("Un plan para cada etapa de tu libertad financiera", "A plan for every stage of your financial freedom")}
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-sm text-muted-foreground">
-            {t("Empieza gratis y sube de plan cuando tu patrimonio lo pida.", "Start for free and upgrade whenever your net worth needs it.")}
+            {t(
+              "Empieza gratis con tu número y escala cuando quieras dominar tu patrimonio con IA.",
+              "Start free with your number and scale when you want to master your net worth with AI.",
+            )}
           </p>
         </section>
 
@@ -95,11 +146,13 @@ function Pricing() {
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`surface relative flex flex-col p-6 ${plan.highlight ? "ring-1 ring-primary/50" : ""}`}
+              className={`surface relative flex flex-col p-6 transition-colors ${
+                plan.highlight ? "bg-gradient-to-b from-primary/5 to-transparent ring-1 ring-primary/40" : ""
+              }`}
             >
               {plan.highlight && (
                 <span className="absolute right-5 top-5 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground">
-                  {t("Popular", "Popular")}
+                  {t("Más popular", "Most popular")}
                 </span>
               )}
               <h2 className="text-sm font-semibold">{plan.name}</h2>
@@ -108,7 +161,7 @@ function Pricing() {
                 <span className="pb-1 text-xs text-muted-foreground">{plan.period}</span>
               </div>
               <p className="mt-2 text-sm text-muted-foreground">{plan.desc}</p>
-              <ul className="mt-6 space-y-2.5">
+              <ul className="mt-6 flex-1 space-y-2.5">
                 {plan.features.map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
                     <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
@@ -121,14 +174,66 @@ function Pricing() {
                 variant={plan.highlight ? "default" : "outline"}
                 className="mt-8 w-full rounded-full"
               >
-                <Link to="/auth" search={{ mode: "signup" }}>
+                <Link to={plan.href} search={plan.search}>
                   {plan.cta}
                 </Link>
               </Button>
             </div>
           ))}
         </section>
+
+        {/* Incentivos de conversión */}
+        <section className="mt-16 grid gap-4 md:grid-cols-3">
+          {incentives.map((item) => (
+            <div
+              key={item.title}
+              className="surface flex flex-col items-start gap-3 p-5 transition-colors hover:bg-elevated/50"
+            >
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <item.icon className="h-4.5 w-4.5" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold">{item.title}</h3>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{item.description}</p>
+              </div>
+            </div>
+          ))}
+        </section>
+
+        {/* CTA final */}
+        <section className="mt-16 rounded-2xl border border-border bg-gradient-to-br from-elevated/80 to-background p-8 text-center md:p-12">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <CreditCard className="h-5 w-5" />
+          </div>
+          <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight md:text-3xl">
+            {t("¿Listo para conocer tu número?", "Ready to know your number?")}
+          </h2>
+          <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
+            {t(
+              "Empieza gratis en 30 segundos. Sin tarjeta, sin compromiso, solo claridad financiera.",
+              "Start free in 30 seconds. No card, no commitment, just financial clarity.",
+            )}
+          </p>
+          <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Button asChild size="lg" className="rounded-full px-6">
+              <Link to="/demo">
+                {t("Descubrir mi número gratis", "Discover my number free")}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="rounded-full px-6">
+              <Link to="/auth" search={{ mode: "signup" }}>
+                {t("Probar Pro 14 días gratis", "Try Pro 14 days free")}
+              </Link>
+            </Button>
+          </div>
+          <p className="mt-4 text-[11px] text-muted-foreground">
+            {t("Sin tarjeta de crédito · Cancela cuando quieras", "No credit card · Cancel anytime")}
+          </p>
+        </section>
       </main>
+
+      <SiteFooter />
     </div>
   );
 }
