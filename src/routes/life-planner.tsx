@@ -651,7 +651,7 @@ function simGoal(
   baseMonths: number | null,
   data: ReturnType<typeof buildDataset>,
 ) {
-  return yearsDiff(baseMonths, monthsToTarget({
+  const sim = monthsToTarget({
     start: Math.max(0,
       (profile.assets_cash ?? 0) +
       (profile.assets_bank ?? 0) +
@@ -665,7 +665,9 @@ function simGoal(
     annualReturn: Math.max(7, profile.expected_return || 7),
     savings: data.savings,
     goals: [toSim(g)],
-  }));
+  });
+  console.log("simGoal", g.name, { baseMonths, sim, goal: toSim(g), target: data.plan.targetCapital, savings: data.savings });
+  return yearsDiff(baseMonths, sim);
 }
 
 function HeroStat({
