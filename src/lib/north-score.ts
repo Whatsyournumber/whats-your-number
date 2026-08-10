@@ -71,8 +71,8 @@ export function pillarWeights(prefs?: WeightPrefs): Record<PillarKey, number> {
   const add = (shift: Partial<Record<PillarKey, number>>) => {
     for (const [k, v] of Object.entries(shift)) w[k as PillarKey] += v!;
   };
+  // "save" es el valor por defecto del filtro: no altera la base.
   if (prefs.goal && prefs.goal !== "save") add(GOAL_SHIFT[prefs.goal] ?? {});
-  else if (prefs.goal === "save") add(GOAL_SHIFT.save);
   if (prefs.stage && prefs.stage !== "any") add(STAGE_SHIFT[prefs.stage] ?? {});
   if (prefs.climate && prefs.climate !== "any") add({ lifestyle: 5, finance: -3, work: -2 });
   if (prefs.tax && prefs.tax !== "any") add({ finance: 5, quality: -3, lifestyle: -2 });
