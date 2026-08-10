@@ -284,16 +284,8 @@ function Landing() {
           <p className="mt-3 text-xs text-muted-foreground">
             {t("Gratis y sin registro · 3 preguntas · 30 segundos", "Free, no sign-up · 3 questions · 30 seconds")}
           </p>
-        </motion.section>
 
-        <section className="mt-16 md:mt-20">
-          <div className="mb-8 text-center">
-            <span className="text-xs font-medium uppercase tracking-wider text-primary">
-              {t("¿Por qué WhatsYournumber?", "Why WhatsYournumber?")}
-            </span>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="mt-12 grid gap-4 text-left md:grid-cols-3">
             {whyCards.map((card, i) => (
               <motion.div
                 key={card.title}
@@ -303,16 +295,18 @@ function Landing() {
                 transition={{ duration: 0.4, delay: i * 0.08 }}
                 className="group relative overflow-hidden rounded-3xl border border-white/[0.06] bg-card/40 p-6 backdrop-blur-sm transition-colors hover:bg-card/60"
               >
+                <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-[0.07]" />
                 <div className="relative flex h-11 w-11 items-center justify-center rounded-full border border-border/60 bg-elevated/40 ring-1 ring-primary/10 transition-all group-hover:ring-primary/30">
-                  <div className="absolute inset-0 rounded-full bg-primary/5 opacity-0 transition-opacity group-hover:opacity-100" />
                   <card.icon className="relative h-5 w-5 text-primary" strokeWidth={1.8} />
                 </div>
-                <h3 className="mt-4 text-base font-semibold tracking-tight">{card.title}</h3>
-                <p className="mt-1.5 text-sm text-muted-foreground/80">{card.desc}</p>
+                <h3 className="relative mt-4 text-base font-semibold tracking-tight">{card.title}</h3>
+                <p className="relative mt-1.5 text-sm text-muted-foreground/80">{card.desc}</p>
+                <p className="numeric relative mt-4 text-xs font-medium text-primary">{card.stat}</p>
               </motion.div>
             ))}
           </div>
-        </section>
+        </motion.section>
+
 
 
 
