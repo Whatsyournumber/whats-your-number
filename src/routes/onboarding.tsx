@@ -140,6 +140,9 @@ function OnboardingPage() {
   const navigate = useNavigate();
   const t = useT();
   const [step, setStep] = useState(0);
+  // Segunda pantalla de bienvenida: explica qué datos se usan y cómo se configura todo.
+  const [introPage, setIntroPage] = useState(0);
+
   const [data, setData] = useState<OnboardingData>({ ...emptyOnboarding, currency: "EUR", monthly_expenses: 0 });
   const [life, setLife] = useState<LifeData>(emptyLife);
   const [ready, setReady] = useState(false);
