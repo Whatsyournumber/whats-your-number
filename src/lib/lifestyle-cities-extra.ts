@@ -65,7 +65,7 @@ const PHOTO = {
   manila: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Manila_skyline_day.jpg/1920px-Manila_skyline_day.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   telaviv: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Skylines_of_Tel_Aviv-Yafo_20180707-1.jpg/1920px-Skylines_of_Tel_Aviv-Yafo_20180707-1.jpg",
   abudhabi: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Abu_Dhabi_skyline_night_%28Nepenthes%29.jpg/1920px-Abu_Dhabi_skyline_night_%28Nepenthes%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  bengaluru: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/UB_City_in_the_distance_%28aerial_view%29.jpg/1920px-UB_City_in_the_distance_%28aerial_view%29.jpg",
+  bengaluru: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Vidhana_Soudha_LE.jpg/1920px-Vidhana_Soudha_LE.jpg",
   chiangmai: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Doi_Suthep_Temple_Chiang_Mai_Thailand.jpg/1920px-Doi_Suthep_Temple_Chiang_Mai_Thailand.jpg",
   brisbane: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Brisbane_skyline_from_Story_Bridge_Panorama_01.jpg/1920px-Brisbane_skyline_from_Story_Bridge_Panorama_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   accra: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Accra_Skyline.jpg/1920px-Accra_Skyline.jpg",
