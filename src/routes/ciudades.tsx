@@ -928,7 +928,7 @@ function CityDetail({
 
           <div>
             <div className="mb-3 flex items-baseline justify-between gap-3">
-              <p className="text-sm font-semibold">Your North Score</p>
+              <p className="text-sm font-semibold">Your next city</p>
               <p className="numeric text-sm">
                 <span className="text-lg font-semibold text-primary">{r.north.total}</span>
                 <span className="text-muted-foreground">/100</span>
