@@ -223,15 +223,11 @@ function OnboardingPage() {
   const cur = data.currency || "EUR";
 
   const go = (dir: 1 | -1) => {
-    // Bienvenida (paso 0) tiene dos pantallas: saludo y explicación de los datos.
-    if (step === 0 && dir === 1 && introPage === 0) return setIntroPage(1);
-    if (step === 0 && dir === -1 && introPage === 1) return setIntroPage(0);
-    if (step === 1 && dir === -1) setIntroPage(1);
-    const next = Math.min(SUMMARY_STEP, Math.max(0, step + dir));
+    const next = Math.min(SUMMARY_STEP, Math.max(1, step + dir));
     setStep(next);
     void persist({ current_step: Math.min(QUESTIONS, next) });
-
   };
+
 
   const build = () => {
     setStep(BUILD_STEP);
