@@ -177,8 +177,6 @@ export function buildDataset(p: Profile): Dataset {
         ? `${p.city ? `Vivir en ${p.city}` : "Ciudad objetivo"} + capacidad de ahorro ${fmt(Math.max(0, income - cityMonthly))}/mes`
         : undefined,
     },
-        : undefined,
-    },
   ];
 
 
