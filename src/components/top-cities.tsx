@@ -42,7 +42,7 @@ export function TopCitiesPanel({
 
   return (
     <Panel
-      title={t("Tu top 3 de ciudades", "Your top 3 cities")}
+      title={t("Top city acorde con tu presupuesto", "Top city matching your budget")}
       description={t(
         "Calculado con tus ingresos, gastos y patrimonio: cuánto necesitas al mes y cuánto tardas en llegar a tu número.",
         "Calculated from your income, expenses and net worth: monthly budget and time to reach your number.",
@@ -69,7 +69,7 @@ export function TopCitiesPanel({
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/25 to-transparent" />
                 <span className="absolute left-2.5 top-2.5 rounded-full bg-primary/90 px-2 py-0.5 text-[10px] font-semibold text-primary-foreground">
-                  #{i + 1}
+                  #{i + 1} · Your next city
                 </span>
                 <div className="absolute bottom-2 left-3 right-3">
                   <p className="text-sm font-semibold leading-tight">{r.city.name}</p>
