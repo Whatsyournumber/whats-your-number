@@ -552,35 +552,53 @@ function CityCard({
         </div>
       </button>
 
-      <div className="flex flex-1 flex-col gap-3 p-4">
-        <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border/60 bg-border/60">
-          <div className="bg-elevated/40 p-2.5">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              {t("Costo mensual", "Monthly cost")}
-            </p>
-            <p className="numeric mt-0.5 text-sm font-semibold">{fmt(r.cost)}</p>
+      <div className="flex flex-1 flex-col gap-3.5 p-4">
+        {/* Lo esencial: cuánto cuesta y cuánto te queda */}
+        <div>
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                {t("Costo mensual", "Monthly cost")}
+              </p>
+              <p className="numeric text-xl font-semibold leading-tight">{fmt(r.cost)}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                {affordable ? t("Te sobra", "You keep") : t("Te falta", "Short by")}
+              </p>
+              <p className={cn("numeric text-base font-semibold leading-tight", affordable ? "text-positive" : "text-negative")}>
+                {fmt(Math.abs(r.savings))}
+                <span className="ml-1 text-[11px] font-normal text-muted-foreground">
+                  {Math.round(Math.abs(r.savingsRate) * 100)}%
+                </span>
+              </p>
+            </div>
           </div>
-          <div className="bg-elevated/40 p-2.5">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              {t("Ahorro potencial", "Potential savings")}
-            </p>
-            <p className={cn("numeric mt-0.5 text-sm font-semibold", affordable ? "text-positive" : "text-negative")}>
-              {fmt(r.savings)}
+          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-elevated">
+            <div
+              className={cn("h-full rounded-full transition-all", affordable ? "bg-positive" : "bg-negative")}
+              style={{ width: `${Math.min(100, Math.max(3, Math.abs(r.savingsRate) * 100))}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Tres datos duros */}
+        <div className="grid grid-cols-3 gap-px overflow-hidden rounded-xl border border-border/60 bg-border/60">
+          <div className="bg-elevated/40 px-2.5 py-2">
+            <p className="text-[9px] uppercase tracking-wider text-muted-foreground">{t("Salario", "Salary")}</p>
+            <p className="numeric mt-0.5 text-xs font-medium">{fmt(c.avgSalary)}</p>
+          </div>
+          <div className="bg-elevated/40 px-2.5 py-2">
+            <p className="text-[9px] uppercase tracking-wider text-muted-foreground">{t("Impuestos", "Taxes")}</p>
+            <p className="numeric mt-0.5 text-xs font-medium">
+              {tax.dot} {c.taxRate}%
             </p>
           </div>
-          <div className="bg-elevated/40 p-2.5">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              {t("Salario medio", "Average salary")}
-            </p>
-            <p className="numeric mt-0.5 text-sm font-medium">{fmt(c.avgSalary)}</p>
-          </div>
-          <div className="bg-elevated/40 p-2.5">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-              {t("Retiro estimado", "Est. retirement")}
-            </p>
-            <p className="numeric mt-0.5 text-sm font-medium">
+          <div className="bg-elevated/40 px-2.5 py-2">
+            <p className="text-[9px] uppercase tracking-wider text-muted-foreground">{t("Libertad", "Freedom")}</p>
+            <p className="numeric mt-0.5 text-xs font-medium">
               {r.yearsToRetire === 0
-                ? t("Ya libre", "Already free")
+                ? t("Ya", "Now")
                 : r.retireAge
                   ? `${r.retireAge} ${t("años", "yrs")}`
                   : "—"}
@@ -588,29 +606,35 @@ function CityCard({
           </div>
         </div>
 
-        <div>
-          <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-            <span>{t("Tasa de ahorro", "Savings rate")}</span>
-            <span className="numeric">{Math.round(Math.max(0, r.savingsRate) * 100)}%</span>
-          </div>
-          <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-elevated">
-            <div
-              className={cn("h-full rounded-full transition-all", affordable ? "bg-positive" : "bg-negative")}
-              style={{ width: `${Math.min(100, Math.max(3, Math.max(0, r.savingsRate) * 100))}%` }}
-            />
-          </div>
+        {/* Pilares del Your Next City Score */}
+        <div className="grid grid-cols-6 gap-1.5">
+          {r.north.pillars.map((p) => {
+            const meta = PILLAR_META[p.key];
+            return (
+              <div key={p.key} className="text-center" title={`${t(meta.es, meta.en)}: ${p.score}/100 · ${p.weight}%`}>
+                <span className="text-[11px] leading-none">{meta.emoji}</span>
+                <div className="mt-1 h-1 overflow-hidden rounded-full bg-elevated">
+                  <div
+                    className={cn(
+                      "h-full rounded-full",
+                      p.score >= 75 ? "bg-positive" : p.score >= 55 ? "bg-chart-4" : "bg-muted-foreground/50",
+                    )}
+                    style={{ width: `${p.score}%` }}
+                  />
+                </div>
+                <p className="numeric mt-1 text-[9px] text-muted-foreground">{p.score}</p>
+              </div>
+            );
+          })}
         </div>
 
         <div className="flex flex-wrap gap-1.5">
-          <Chip>
-            {tax.dot} {tax.text}
-          </Chip>
-          <Chip>🛡 {c.safety}/100</Chip>
+          <Chip>🌤 {t(c.climateLabelEs, c.climateLabelEn)}</Chip>
           <Chip>
             {stability.dot} {stability.text}
           </Chip>
-          <Chip>🌤 {t(c.climateLabelEs, c.climateLabelEn)}</Chip>
         </div>
+
 
         <div className="mt-auto flex gap-2 pt-1">
           <Button size="sm" className="flex-1" onClick={onOpen}>
