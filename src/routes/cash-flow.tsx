@@ -375,6 +375,7 @@ function Row({
   target,
   fmt,
   goodWhenHigher = false,
+  legend,
 }: {
   label: string;
   value: number;
@@ -382,6 +383,7 @@ function Row({
   target: number;
   fmt: (n: number) => string;
   goodWhenHigher?: boolean;
+  legend?: string;
 }) {
   const p = total > 0 ? (value / total) * 100 : 0;
   const off = p - target;
@@ -407,6 +409,12 @@ function Row({
       <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted">
         <div className={`h-full rounded-full ${colorClass}`} style={{ width: `${Math.min(p, 100)}%` }} />
       </div>
+
+      {legend && (
+        <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+          {legend}
+        </p>
+      )}
     </div>
   );
 }
