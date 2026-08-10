@@ -11,6 +11,7 @@ import { extraCities } from "./lifestyle-cities-extra";
 import { passesStability, stabilityScore, type StabilityPref } from "./political-stability";
 import { northScore, type NorthScore } from "./north-score";
 import barcelonaPhoto from "@/assets/city-barcelona-hd.jpg.asset.json";
+import cairoPhoto from "@/assets/city-cairo-nile.png.asset.json";
 
 
 export type Region = "northamerica" | "latam" | "europe" | "asia" | "africa";
