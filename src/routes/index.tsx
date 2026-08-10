@@ -104,8 +104,9 @@ function DemoCard() {
                 )}
               </p>
               <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-lg transition-all group-hover:gap-3">
-                {t("Probar ahora", "Try now")} <ArrowRight className="h-4 w-4" />
+                {t("Probar ahora gratis", "Try now for free")} <ArrowRight className="h-4 w-4" />
               </div>
+
             </div>
 
             <div className="relative flex h-52 w-52 shrink-0 items-center justify-center">
