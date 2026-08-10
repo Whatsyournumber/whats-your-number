@@ -66,7 +66,8 @@ function Pricing() {
         t("Reportes mensuales automáticos", "Automatic monthly reports"),
       ],
       cta: t("Probar Pro 14 días gratis", "Try Pro 14 days free"),
-      href: "/auth?mode=signup",
+      href: "/auth",
+      search: { mode: "signup" },
       highlight: true,
     },
     {
