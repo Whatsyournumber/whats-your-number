@@ -213,13 +213,15 @@ function LifePlanner() {
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.9, ease: "easeOut" }}
-                className={`relative h-full rounded-full ${progressDelta < -0.05 ? "bg-amber-400" : "bg-primary"}`}
+                className={`relative h-full rounded-full ${
+                  progressDelta < -0.05 ? "bg-amber-400" : progressDelta > 0.05 ? "bg-emerald-300" : "bg-primary"
+                }`}
               />
             </div>
             {Math.abs(progressDelta) >= 0.05 && (
               <p className="mt-2 text-xs text-muted-foreground">
                 {t("Con tus decisiones de vida", "With your life decisions")}:{" "}
-                <span className={`numeric font-semibold ${progressDelta < 0 ? "text-amber-400" : "text-emerald-400"}`}>
+                <span className={`numeric font-semibold ${progressDelta < 0 ? "text-amber-400" : "text-emerald-300"}`}>
                   {progressDelta > 0 ? "+" : ""}
                   {progressDelta.toFixed(1)} pts
                 </span>{" "}
@@ -231,7 +233,7 @@ function LifePlanner() {
 
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <HeroStat icon={Target} label={t("Patrimonio objetivo", "Target capital")} value={data.fmtCompact(target)} />
             <HeroStat
               icon={CalendarDays}
@@ -242,7 +244,13 @@ function LifePlanner() {
                   : t("+60 años", "+60 years")
               }
             />
-            <HeroStat icon={Wallet} label={t("Patrimonio actual", "Current net worth")} value={data.fmtCompact(start)} />
+            <HeroStat icon={Wallet} label={t("Patrimonio líquido actual", "Current liquid net worth")} value={data.fmtCompact(start)} />
+            <HeroStat
+              icon={Wallet}
+              label={t("Con nuevas decisiones", "With new decisions")}
+              value={data.fmtCompact(Math.max(0, adjustedStart))}
+              {...(progressDelta > 0.05 ? { tone: "up" as const } : progressDelta < -0.05 ? { tone: "down" as const } : {})}
+            />
           </div>
         </div>
       </Panel>
