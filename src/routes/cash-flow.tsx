@@ -403,14 +403,15 @@ function Row({
       <div className="flex items-center justify-between gap-2">
         <Tooltip>
           <TooltipTrigger asChild>
-            <span className="inline-flex cursor-help items-center gap-1 text-muted-foreground underline decoration-dotted underline-offset-4">
+            <span className="inline-flex cursor-help items-center gap-1.5 text-muted-foreground">
               {label}
-              {legend && <HelpCircle className="h-3.5 w-3.5 text-muted-foreground/70" />}
+              {legend && <HelpCircle className="h-3.5 w-3.5 text-muted-foreground/60" />}
             </span>
           </TooltipTrigger>
           {legend && (
-            <TooltipContent side="top" className="max-w-[260px] leading-relaxed">
-              {legend}
+            <TooltipContent side="top" className="max-w-[280px] space-y-1.5 p-3">
+              <p className="text-xs font-semibold text-foreground">{label}</p>
+              <p className="text-xs leading-relaxed text-muted-foreground">{legend}</p>
             </TooltipContent>
           )}
         </Tooltip>
