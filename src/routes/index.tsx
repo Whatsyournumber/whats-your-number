@@ -363,7 +363,7 @@ function Landing() {
           </div>
 
 
-          <div className="mt-6 grid gap-5 text-left md:grid-cols-3">
+          <div className="grid gap-5 text-left md:grid-cols-3">
             {whyCards.map((card, i) => (
               <motion.div
                 key={card.title}
@@ -373,6 +373,7 @@ function Landing() {
                 transition={{ duration: 0.4, delay: i * 0.08 }}
                 className="surface group relative overflow-hidden rounded-3xl p-6 transition-all hover:bg-card/60"
               >
+
                 <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-[0.07]" />
                 <div className="relative">
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-primary/10 ring-1 ring-primary/20">
