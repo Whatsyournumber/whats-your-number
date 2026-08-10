@@ -540,8 +540,14 @@ function CityCard({
             ★ {t("Mejor match", "Best match")}
           </span>
         )}
-        <div className="absolute right-3 top-3">
+        <div
+          className="absolute right-3 top-3 flex flex-col items-center gap-1"
+          title={t("Your Next City Score", "Your Next City Score")}
+        >
           <ScoreRing score={r.score} />
+          <span className="rounded-full bg-background/70 px-1.5 py-0.5 text-[8px] uppercase tracking-wider text-muted-foreground backdrop-blur-md">
+            {t("Next City", "Next City")}
+          </span>
         </div>
         <div className="absolute bottom-3 left-4 right-4">
           <p className="flex items-center gap-1.5 text-lg font-semibold leading-tight">
@@ -887,7 +893,7 @@ function CityDetail({
               <DialogTitle className="text-2xl">{c.name}</DialogTitle>
             </DialogHeader>
             <p className="text-sm text-muted-foreground">
-              {c.country} · Your North Score {r.north.total}/100
+              {c.country} · Your Next City Score {r.north.total}/100
             </p>
           </div>
         </div>
@@ -952,7 +958,7 @@ function CityDetail({
 
           <div>
             <div className="mb-3 flex items-baseline justify-between gap-3">
-              <p className="text-sm font-semibold">Your North Score</p>
+              <p className="text-sm font-semibold">Your Next City Score</p>
               <p className="numeric text-sm">
                 <span className="text-lg font-semibold text-primary">{r.north.total}</span>
                 <span className="text-muted-foreground">/100</span>
