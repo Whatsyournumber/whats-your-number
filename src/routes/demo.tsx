@@ -8,6 +8,7 @@ import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LanguageToggle, useT } from "@/hooks/use-language";
+import { saveDemoSnapshot } from "@/lib/demo-snapshot";
 
 const demoSearchSchema = z.object({
   start: z.coerce.number().optional().default(0),
@@ -62,6 +63,18 @@ function DemoPage() {
   useEffect(() => {
     if (start === 1 && step === 0) setStep(1);
   }, [start, step]);
+
+  // Guardamos el resultado del demo para poder alimentar el dashboard.
+  useEffect(() => {
+    if (step < 4) return;
+    const parse = (v: string) => Number(v.replace(/[^\d.]/g, "")) || 0;
+    saveDemoSnapshot({
+      monthlySpend: parse(monthlyLife),
+      netWorth: parse(netWorth),
+      monthlyInvest: parse(monthlyInvest),
+      currency,
+    });
+  }, [step, monthlyLife, netWorth, monthlyInvest, currency]);
 
   const symbol = currency === "EUR" ? "€" : "$";
   const money = (n: number) =>

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, Banknote, PiggyBank, TrendingUp, Wallet, Waves } from "lucide-react";
 import {
@@ -27,6 +28,7 @@ import { useTransactions } from "@/hooks/use-transactions";
 import { buildInsights } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
+import { readDemoSnapshot, type DemoSnapshot } from "@/lib/demo-snapshot";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -39,6 +41,20 @@ export const Route = createFileRoute("/dashboard")({
   }),
   component: Dashboard,
 });
+
+/** Años hasta alcanzar el objetivo con aportes mensuales y rendimiento anual. */
+function yearsToTarget(target: number, current: number, monthly: number, annualReturn: number) {
+  if (target <= 0) return 0;
+  if (current >= target) return 0;
+  if (monthly <= 0) return 99;
+  const r = annualReturn / 100 / 12;
+  let balance = current;
+  for (let m = 1; m <= 12 * 80; m++) {
+    balance = balance * (1 + r) + monthly;
+    if (balance >= target) return Math.max(1, Math.round(m / 12));
+  }
+  return 99;
+}
 
 const delta = (a: number, b: number) => (b > 0 ? ((a - b) / b) * 100 : 0);
 
@@ -65,6 +81,23 @@ function Dashboard() {
   const current = months[months.length - 1] ?? d.current;
   const previous = months[months.length - 2] ?? current;
   const { fmt, fmtCompact, plan } = d;
+
+  // Snapshot del demo gratuito: se usa solo si el perfil aún no tiene cifras.
+  const [demo, setDemo] = useState<DemoSnapshot | null>(null);
+  useEffect(() => setDemo(readDemoSnapshot()), []);
+
+  const swr = Math.min(15, Math.max(1, profile.withdrawal_rate || 7)) / 100;
+  const desiredIncome =
+    plan.desiredIncome > 0 ? plan.desiredIncome : current.expenses > 0 ? current.expenses : demo?.monthlySpend ?? 0;
+  const targetNumber = plan.targetCapital > 0 ? plan.targetCapital : (desiredIncome * 12) / swr;
+  const numberNetWorth = d.netWorth > 0 ? d.netWorth : demo?.netWorth ?? 0;
+  const numberProgress = targetNumber > 0 ? Math.min(100, Math.max(0, (numberNetWorth / targetNumber) * 100)) : 0;
+  const monthlyContribution = current.savings > 0 ? current.savings : demo?.monthlyInvest ?? 0;
+  const numberYearsLeft =
+    plan.targetCapital > 0
+      ? plan.yearsLeft
+      : yearsToTarget(targetNumber, numberNetWorth, monthlyContribution, profile.expected_return || 7);
+  const usingDemo = plan.targetCapital <= 0 && targetNumber > 0;
 
   const freeCash = Math.max(0, current.savings - current.investments);
   const prevFree = Math.max(0, previous.savings - previous.investments);
@@ -146,22 +179,27 @@ function Dashboard() {
           <div className="space-y-4">
             <div>
               <p className="text-xs text-muted-foreground">Your Number</p>
-              <p className="numeric mt-1 text-2xl font-semibold">{fmt(plan.targetCapital)}</p>
+              <p className="numeric mt-1 text-2xl font-semibold">{fmt(targetNumber)}</p>
               <p className="mt-1 text-xs text-muted-foreground">
-                {t(`Para vivir con ${fmt(plan.desiredIncome)} al mes`, `To live on ${fmt(plan.desiredIncome)} a month`)}
+                {t(`Para vivir con ${fmt(desiredIncome)} al mes`, `To live on ${fmt(desiredIncome)} a month`)}
               </p>
+              {usingDemo && (
+                <p className="mt-1 text-[11px] text-muted-foreground/80">
+                  {t("Calculado con tu demo. Edita tus datos para afinarlo.", "Based on your demo. Edit your data to refine it.")}
+                </p>
+              )}
             </div>
             <div>
               <div className="mb-1.5 flex items-center justify-between text-xs">
                 <span className="text-muted-foreground">{t("Progreso", "Progress")}</span>
-                <span className="numeric font-medium">{plan.progress.toFixed(1)}%</span>
+                <span className="numeric font-medium">{numberProgress.toFixed(1)}%</span>
               </div>
-              <Progress value={plan.progress} className="h-2" />
+              <Progress value={numberProgress} className="h-2" />
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div className="rounded-xl bg-elevated/60 p-3">
                 <p className="text-xs text-muted-foreground">{t("Años restantes", "Years left")}</p>
-                <p className="numeric mt-1 text-lg font-semibold">{plan.yearsLeft}</p>
+                <p className="numeric mt-1 text-lg font-semibold">{numberYearsLeft}</p>
               </div>
               <div className="rounded-xl bg-elevated/60 p-3">
                 <p className="text-xs text-muted-foreground">{t("Probabilidad", "Probability")}</p>
