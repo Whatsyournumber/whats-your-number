@@ -22,6 +22,9 @@ import {
 
 
 import ctaLifestyle from "@/assets/cta-lifestyle.jpg";
+import featureAi from "@/assets/feature-ai.png.asset.json";
+import featureLife from "@/assets/feature-life.png.asset.json";
+import featureNumber from "@/assets/feature-number.png.asset.json";
 import { BrandLogo } from "@/components/brand-logo";
 import { ProductPreview } from "@/components/product-preview";
 import { SiteHeader } from "@/components/site-header";
