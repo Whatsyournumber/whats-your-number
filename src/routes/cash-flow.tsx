@@ -353,8 +353,6 @@ function Row({
   target,
   fmt,
   goodWhenHigher = false,
-  tooltip,
-  breakdown,
 }: {
   label: string;
   value: number;
@@ -362,8 +360,6 @@ function Row({
   target: number;
   fmt: (n: number) => string;
   goodWhenHigher?: boolean;
-  tooltip?: string;
-  breakdown?: { label: string; amount: number }[];
 }) {
   const p = total > 0 ? (value / total) * 100 : 0;
   const off = p - target;
@@ -377,35 +373,7 @@ function Row({
   return (
     <div>
       <div className="flex items-center justify-between gap-2">
-        <span className="flex items-center gap-1.5 text-muted-foreground">
-          {label}
-          {tooltip && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button className="rounded-full p-0.5 hover:bg-muted" aria-label={tooltip}>
-                  <Info className="h-3.5 w-3.5 text-muted-foreground" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="top" className="max-w-xs">
-                <p>{tooltip}</p>
-                {breakdown && breakdown.length > 0 && (
-                  <div className="mt-2 space-y-1 border-t border-border/60 pt-2">
-                    {breakdown.map((b) => (
-                      <div key={b.label} className="flex items-center justify-between gap-4 text-xs">
-                        <span className="text-muted-foreground">{b.label}</span>
-                        <span className="numeric">{fmt(b.amount)}</span>
-                      </div>
-                    ))}
-                    <div className="flex items-center justify-between gap-4 border-t border-border/60 pt-1 text-xs font-medium">
-                      <span>Total</span>
-                      <span className="numeric">{fmt(value)}</span>
-                    </div>
-                  </div>
-                )}
-              </TooltipContent>
-            </Tooltip>
-          )}
-        </span>
+        <span className="text-muted-foreground">{label}</span>
         <span className="numeric flex items-baseline gap-2">
           <span className="font-medium">{fmt(value)}</span>
           <span>
@@ -415,10 +383,7 @@ function Row({
       </div>
 
       <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted">
-        <div
-          className={`h-full rounded-full ${colorClass}`}
-          style={{ width: `${Math.min(p, 100)}%` }}
-        />
+        <div className={`h-full rounded-full ${colorClass}`} style={{ width: `${Math.min(p, 100)}%` }} />
       </div>
     </div>
   );
