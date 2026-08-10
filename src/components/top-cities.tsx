@@ -3,7 +3,6 @@ import { useMemo } from "react";
 
 import { Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { useT } from "@/hooks/use-language";
 import type { Profile } from "@/hooks/use-profile";
 import { suggestedFilters } from "@/lib/city-suggestions";
@@ -29,12 +28,8 @@ export function TopCitiesPanel({
       age: profile.age ?? 30,
       expectedReturn: profile.expected_return || 7,
     });
-    // Tus dos ciudades elegidas van fijas; la tercera la decide tu perfil.
-    const pinned = ["madrid", "panama"]
-      .map((id) => ranked.find((r) => r.city.id === id))
-      .filter((r): r is (typeof ranked)[number] => Boolean(r));
-    const rest = ranked.filter((r) => !pinned.some((p) => p.city.id === r.city.id));
-    return [...pinned, ...rest].slice(0, 3);
+    // Ranking 100% según tu perfil: sin ciudades fijas.
+    return ranked.slice(0, 3);
   }, [filters, netWorth, profile.age, profile.expected_return]);
 
 
@@ -56,7 +51,6 @@ export function TopCitiesPanel({
       <div className="grid gap-3 sm:grid-cols-3">
         {top.map((r, i) => {
           const target = r.cost * 12 * 25;
-          const pct = target > 0 ? Math.min(100, (Math.max(0, netWorth) / target) * 100) : 0;
           const years = r.yearsToRetire;
           return (
             <div key={r.city.id} className="overflow-hidden rounded-xl border border-border/70">
@@ -85,7 +79,6 @@ export function TopCitiesPanel({
                   <span className="text-muted-foreground">{t("Tu número allí", "Your number there")}</span>
                   <span className="numeric font-medium text-foreground">{fmt(target)}</span>
                 </div>
-                <Progress value={pct} className="h-1.5" />
                 <p className="text-muted-foreground">
                   {years === 0
                     ? t("Ya puedes vivir allí", "You can already live there")

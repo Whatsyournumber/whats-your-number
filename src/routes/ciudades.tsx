@@ -522,12 +522,8 @@ function SuggestedForYou({
   const f = useMemo(() => suggestedFilters(profile), [profile]);
   const top = useMemo(() => {
     const ranked = rankCities(f, ctx);
-    // Madrid y Ciudad de Panamá fijas como #1 y #2; la tercera la elige tu perfil.
-    const pinned = ["madrid", "panama"]
-      .map((id) => ranked.find((r) => r.city.id === id))
-      .filter((r): r is CityScore => Boolean(r));
-    const rest = ranked.filter((r) => !pinned.some((p) => p.city.id === r.city.id));
-    return [...pinned, ...rest].slice(0, 3);
+    // Ranking 100% según tus respuestas del onboarding: sin ciudades fijas.
+    return ranked.slice(0, 3);
   }, [f, ctx]);
   if (!profile.completed || top.length === 0) return null;
   const reasons = suggestionReasons(profile, f, t);

@@ -61,6 +61,7 @@ function Dashboard() {
     savings: d.income - month.expenses,
   }));
 
+  const hasHistory = Boolean(realMonths && realMonths.length > 1);
   const current = months[months.length - 1] ?? d.current;
   const previous = months[months.length - 2] ?? current;
   const { fmt, fmtCompact, plan } = d;
@@ -98,24 +99,23 @@ function Dashboard() {
         <KpiCard
           label={t("Patrimonio neto", "Net worth")}
           value={fmt(current.netWorth)}
-          delta={delta(current.netWorth, previous.netWorth)}
-          hint={t("vs mes anterior", "vs last month")}
+          {...(hasHistory ? { delta: delta(current.netWorth, previous.netWorth), hint: t("vs mes anterior", "vs last month") } : {})}
           icon={Wallet}
           accent
           index={0}
         />
-        <KpiCard label={t("Ingresos", "Income")} value={fmt(current.income)} delta={delta(current.income, previous.income)} icon={Banknote} index={1} />
-        <KpiCard label={t("Gastos", "Expenses")} value={fmt(current.expenses)} delta={delta(current.expenses, previous.expenses)} inverse icon={TrendingUp} index={2} />
-        <KpiCard label={t("Ahorro", "Savings")} value={fmt(current.savings)} delta={delta(current.savings, previous.savings)} icon={PiggyBank} index={3} />
+        <KpiCard label={t("Ingresos", "Income")} value={fmt(current.income)} {...(hasHistory ? { delta: delta(current.income, previous.income) } : {})} icon={Banknote} index={1} />
+        <KpiCard label={t("Gastos", "Expenses")} value={fmt(current.expenses)} {...(hasHistory ? { delta: delta(current.expenses, previous.expenses) } : {})} inverse icon={TrendingUp} index={2} />
+        <KpiCard label={t("Ahorro", "Savings")} value={fmt(current.savings)} {...(hasHistory ? { delta: delta(current.savings, previous.savings) } : {})} icon={PiggyBank} index={3} />
         <KpiCard
           label={t("Flujo libre", "Free cash flow")}
           value={fmt(freeCash)}
-          {...(prevFree > 0 ? { delta: delta(freeCash, prevFree) } : {})}
+          {...(hasHistory && prevFree > 0 ? { delta: delta(freeCash, prevFree) } : {})}
           hint={t("tras inversiones", "after investments")}
           icon={Waves}
           index={4}
         />
-        <KpiCard label={t("Tasa de ahorro", "Savings rate")} value={`${savingsRate.toFixed(0)}%`} delta={savingsRate - prevRate} icon={ArrowUpRight} index={5} />
+        <KpiCard label={t("Tasa de ahorro", "Savings rate")} value={`${savingsRate.toFixed(0)}%`} {...(hasHistory ? { delta: savingsRate - prevRate } : {})} icon={ArrowUpRight} index={5} />
       </div>
 
 
