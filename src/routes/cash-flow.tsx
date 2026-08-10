@@ -192,159 +192,157 @@ function CashFlow() {
   const runway = monthlySpend > 0 ? cash / monthlySpend : 0;
 
   return (
-    <TooltipProvider delayDuration={100}>
-      <PageShell>
-        <PageHeader
-          eyebrow={activeMonth ? monthLabel(activeMonth) : t("Sin EEFF cargados", "No statements uploaded")}
-          title={t("Distribución del dinero", "Money Distribution")}
-          subtitle={
-            hasReal
-              ? t("Cómo se reparte cada dólar que entra, según tus estados de cuenta cargados.", "How every dollar you receive is allocated, based on your uploaded statements.")
-              : t("Carga tus estados de cuenta en «Cargar EEFF» para ver tu flujo real. Mientras tanto, usamos tu perfil.", "Upload your statements in \u00abUpload statements\u00bb to see your real flow. Meanwhile, we use your profile.")
-          }
-        />
+    <PageShell>
+      <PageHeader
+        eyebrow={activeMonth ? monthLabel(activeMonth) : t("Sin EEFF cargados", "No statements uploaded")}
+        title={t("Distribución del dinero", "Money Distribution")}
+        subtitle={
+          hasReal
+            ? t("Cómo se reparte cada dólar que entra, según tus estados de cuenta cargados.", "How every dollar you receive is allocated, based on your uploaded statements.")
+            : t("Carga tus estados de cuenta en «Cargar EEFF» para ver tu flujo real. Mientras tanto, usamos tu perfil.", "Upload your statements in \u00abUpload statements\u00bb to see your real flow. Meanwhile, we use your profile.")
+        }
+      />
 
-        {months.length > 0 && (
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs text-muted-foreground">{t("Mes:", "Month:")}</span>
-            {months.slice(0, 12).map((m) => (
-              <button
-                key={m}
-                onClick={() => setMonth(m)}
-                className={`rounded-full border px-3 py-1 text-xs transition ${
-                  m === activeMonth
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "border-border text-muted-foreground hover:text-foreground"
-                }`}
+      {months.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs text-muted-foreground">{t("Mes:", "Month:")}</span>
+          {months.slice(0, 12).map((m) => (
+            <button
+              key={m}
+              onClick={() => setMonth(m)}
+              className={`rounded-full border px-3 py-1 text-xs transition ${
+                m === activeMonth
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {monthLabel(m)}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <KpiCard label={t("Ingresos", "Income")} value={fmt(totalIncome)} hint={usingStatements ? t("Abonos de tus EEFF", "Credits from your statements") : t("Según tu perfil", "Based on your profile")} accent index={0} />
+        <KpiCard
+          label={t("Gastos fijos", "Fixed expenses")}
+          value={fmt(buckets[0]!.amount)}
+          hint={`${((buckets[0]!.amount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
+          index={1}
+        />
+        <KpiCard label={t("Lifestyle", "Lifestyle")} value={fmt(buckets[1]!.amount)} hint={hasReal ? `${monthTx.length} ${t("movimientos", "transactions")}` : t("Según tu perfil", "Based on your profile")} index={2} />
+        <KpiCard label={t("Flujo libre", "Free flow")} value={fmt(buckets[3]!.amount)} index={3} />
+      </div>
+
+      <Panel title={t("Flujo de dinero", "Money flow")} description={t("Ingresos → destino final", "Income → final destination")}>
+        <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_120px_minmax(0,1.3fr)]">
+          <div className="space-y-3">
+            {incomeLines.slice(0, 8).map((i, idx) => (
+              <motion.div
+                key={i.name}
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: idx * 0.08 }}
+                className="rounded-2xl border border-border bg-elevated/60 p-4"
               >
-                {monthLabel(m)}
-              </button>
+                <div className="flex items-center justify-between gap-3">
+                  <p className="truncate text-sm font-medium">{i.name}</p>
+                  <p className="numeric text-sm font-semibold">{fmt(i.amount)}</p>
+                </div>
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${Math.min(100, (i.amount / totalIncome) * 100)}%` }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                    className="h-full rounded-full bg-primary"
+                  />
+                </div>
+              </motion.div>
+            ))}
+            {incomeLines.length === 0 && (
+              <p className="text-sm text-muted-foreground">{t("No encontramos abonos en este periodo.", "We did not find credits for this period.")}</p>
+            )}
+          </div>
+
+          <div className="relative hidden h-64 lg:block">
+            <svg viewBox="0 0 120 260" className="h-full w-full" preserveAspectRatio="none">
+              {buckets.map((b, i) => {
+                const y = 30 + i * 66;
+                const w = Math.max(6, (b.amount / totalIncome) * 60);
+                return (
+                  <motion.path
+                    key={b.name}
+                    d={`M0,130 C60,130 60,${y} 120,${y}`}
+                    fill="none"
+                    stroke={b.color}
+                    strokeWidth={w}
+                    strokeOpacity={0.35}
+                    strokeLinecap="round"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 1, delay: 0.2 + i * 0.1 }}
+                  />
+                );
+              })}
+            </svg>
+          </div>
+
+          <div className="space-y-3">
+            {buckets.map((b, idx) => (
+              <motion.div
+                key={b.name}
+                initial={{ opacity: 0, x: 12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 + idx * 0.08 }}
+                className="rounded-2xl border border-border bg-elevated/60 p-4"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: b.color }} />
+                  <p className="text-sm font-medium">{b.name}</p>
+                  <p className="numeric ml-auto text-sm font-semibold">{fmt(b.amount)}</p>
+                </div>
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${Math.min(100, (b.amount / totalIncome) * 100)}%` }}
+                    transition={{ duration: 0.8, delay: 0.3 }}
+                    className="h-full rounded-full"
+                    style={{ background: b.color }}
+                  />
+                </div>
+                <p className="mt-1.5 text-xs text-muted-foreground">
+                  {((b.amount / totalIncome) * 100).toFixed(0)}% {t("de tus ingresos", "of your income")}
+                </p>
+              </motion.div>
             ))}
           </div>
-        )}
-
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <KpiCard label={t("Ingresos", "Income")} value={fmt(totalIncome)} hint={usingStatements ? t("Abonos de tus EEFF", "Credits from your statements") : t("Según tu perfil", "Based on your profile")} accent index={0} />
-          <KpiCard
-            label={t("Gastos fijos", "Fixed expenses")}
-            value={fmt(buckets[0]!.amount)}
-            hint={`${((buckets[0]!.amount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
-            index={1}
-          />
-          <KpiCard label={t("Lifestyle", "Lifestyle")} value={fmt(buckets[1]!.amount)} hint={hasReal ? `${monthTx.length} ${t("movimientos", "transactions")}` : t("Según tu perfil", "Based on your profile")} index={2} />
-          <KpiCard label={t("Flujo libre", "Free flow")} value={fmt(buckets[3]!.amount)} index={3} />
         </div>
+      </Panel>
 
-        <Panel title={t("Flujo de dinero", "Money flow")} description={t("Ingresos → destino final", "Income → final destination")}>
-          <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_120px_minmax(0,1.3fr)]">
-            <div className="space-y-3">
-              {incomeLines.slice(0, 8).map((i, idx) => (
-                <motion.div
-                  key={i.name}
-                  initial={{ opacity: 0, x: -12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.08 }}
-                  className="rounded-2xl border border-border bg-elevated/60 p-4"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="truncate text-sm font-medium">{i.name}</p>
-                    <p className="numeric text-sm font-semibold">{fmt(i.amount)}</p>
-                  </div>
-                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${Math.min(100, (i.amount / totalIncome) * 100)}%` }}
-                      transition={{ duration: 0.8, delay: 0.2 }}
-                      className="h-full rounded-full bg-primary"
-                    />
-                  </div>
-                </motion.div>
-              ))}
-              {incomeLines.length === 0 && (
-                <p className="text-sm text-muted-foreground">{t("No encontramos abonos en este periodo.", "We did not find credits for this period.")}</p>
-              )}
-            </div>
-
-            <div className="relative hidden h-64 lg:block">
-              <svg viewBox="0 0 120 260" className="h-full w-full" preserveAspectRatio="none">
-                {buckets.map((b, i) => {
-                  const y = 30 + i * 66;
-                  const w = Math.max(6, (b.amount / totalIncome) * 60);
-                  return (
-                    <motion.path
-                      key={b.name}
-                      d={`M0,130 C60,130 60,${y} 120,${y}`}
-                      fill="none"
-                      stroke={b.color}
-                      strokeWidth={w}
-                      strokeOpacity={0.35}
-                      strokeLinecap="round"
-                      initial={{ pathLength: 0 }}
-                      animate={{ pathLength: 1 }}
-                      transition={{ duration: 1, delay: 0.2 + i * 0.1 }}
-                    />
-                  );
-                })}
-              </svg>
-            </div>
-
-            <div className="space-y-3">
-              {buckets.map((b, idx) => (
-                <motion.div
-                  key={b.name}
-                  initial={{ opacity: 0, x: 12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.2 + idx * 0.08 }}
-                  className="rounded-2xl border border-border bg-elevated/60 p-4"
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: b.color }} />
-                    <p className="text-sm font-medium">{b.name}</p>
-                    <p className="numeric ml-auto text-sm font-semibold">{fmt(b.amount)}</p>
-                  </div>
-                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${Math.min(100, (b.amount / totalIncome) * 100)}%` }}
-                      transition={{ duration: 0.8, delay: 0.3 }}
-                      className="h-full rounded-full"
-                      style={{ background: b.color }}
-                    />
-                  </div>
-                  <p className="mt-1.5 text-xs text-muted-foreground">
-                    {((b.amount / totalIncome) * 100).toFixed(0)}% {t("de tus ingresos", "of your income")}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
+      <div className="grid gap-4 md:grid-cols-3">
+        <Panel title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")} description={t("Distribución ideal de tu ingreso", "Ideal income distribution")}>
+          <div className="space-y-3 text-sm">
+            <Row label={t("Necesidades", "Needs")} value={needsAmount} total={totalIncome} target={40} fmt={fmt} />
+            <Row label={t("Inversiones", "Investing")} value={saveAmount} total={totalIncome} target={40} fmt={fmt} goodWhenHigher />
+            <Row label={t("Deseos", "Wants")} value={wantsAmount} total={totalIncome} target={20} fmt={fmt} />
           </div>
         </Panel>
-
-        <div className="grid gap-4 md:grid-cols-3">
-          <Panel title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")} description={t("Distribución ideal de tu ingreso", "Ideal income distribution")}>
-            <div className="space-y-3 text-sm">
-              <Row label={t("Necesidades", "Needs")} value={needsAmount} total={totalIncome} target={40} fmt={fmt} />
-              <Row label={t("Inversiones", "Investing")} value={saveAmount} total={totalIncome} target={40} fmt={fmt} goodWhenHigher />
-              <Row label={t("Deseos", "Wants")} value={wantsAmount} total={totalIncome} target={20} fmt={fmt} />
-            </div>
-          </Panel>
-          <Panel title={t("Runway", "Runway")} description={t("Meses cubiertos con tu efectivo", "Months covered with your cash")}>
-            <p className="numeric text-4xl font-semibold text-primary">{runway.toFixed(1)}</p>
-            <p className="mt-2 text-xs text-muted-foreground">
-              {t("Con", "With")} {money(cash, d.currency)} {t("en efectivo y un gasto de", "in cash and a spend of")} {fmt(monthlySpend)} {t("al mes.", "per month.")}
-            </p>
-          </Panel>
-          <Panel title={t("Eficiencia del flujo", "Flow efficiency")} description={t("Patrimonio construido cada mes", "Net worth built each month")}>
-            <p className="numeric text-4xl font-semibold">
-              {totalIncome > 0 ? ((saveAmount / totalIncome) * 100).toFixed(0) : "0"}%
-            </p>
-            <p className="mt-2 text-xs text-muted-foreground">
-              {fmt(saveAmount)} {t("de cada mes termina construyendo patrimonio.", "each month ends up building net worth.")}
-            </p>
-          </Panel>
-        </div>
-      </PageShell>
-    </TooltipProvider>
+        <Panel title={t("Runway", "Runway")} description={t("Meses cubiertos con tu efectivo", "Months covered with your cash")}>
+          <p className="numeric text-4xl font-semibold text-primary">{runway.toFixed(1)}</p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            {t("Con", "With")} {money(cash, d.currency)} {t("en efectivo y un gasto de", "in cash and a spend of")} {fmt(monthlySpend)} {t("al mes.", "per month.")}
+          </p>
+        </Panel>
+        <Panel title={t("Eficiencia del flujo", "Flow efficiency")} description={t("Patrimonio construido cada mes", "Net worth built each month")}>
+          <p className="numeric text-4xl font-semibold">
+            {totalIncome > 0 ? ((saveAmount / totalIncome) * 100).toFixed(0) : "0"}%
+          </p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            {fmt(saveAmount)} {t("de cada mes termina construyendo patrimonio.", "each month ends up building net worth.")}
+          </p>
+        </Panel>
+      </div>
+    </PageShell>
   );
 }
 
