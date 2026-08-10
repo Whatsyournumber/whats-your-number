@@ -389,6 +389,11 @@ export function ProductPreview() {
                     </ReLineChart>
                   ) : active === "nextcity" ? (
                     <div className="flex h-full flex-col gap-2.5">
+                      <div className="space-y-0.5">
+                        <p className="text-xs text-muted-foreground">
+                          {t("Top city acorde con tu presupuesto", "Top city matching your budget")}
+                        </p>
+                      </div>
                       <motion.div
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
