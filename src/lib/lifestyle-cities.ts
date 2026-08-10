@@ -9,6 +9,7 @@
  */
 import { extraCities } from "./lifestyle-cities-extra";
 import { passesStability, stabilityScore, type StabilityPref } from "./political-stability";
+import { northScore, type NorthScore } from "./north-score";
 import barcelonaPhoto from "@/assets/city-barcelona-hd.jpg.asset.json";
 
 
@@ -689,7 +690,10 @@ const inv = (value: number, best: number, worst: number) => clamp(((worst - valu
 
 export type CityScore = {
   city: CityData;
+  /** Score final del ranking: Your North Score ajustado a tus preferencias */
   score: number;
+  /** Your North Score (0-100) y su desglose por pilares */
+  north: NorthScore;
   cost: number;
   savings: number;
   savingsRate: number;
@@ -791,7 +795,19 @@ export function scoreCity(
     total += values[key] * weights[key];
     weightSum += weights[key];
   }
-  let score = weightSum > 0 ? total / weightSum : 0;
+  const fit = weightSum > 0 ? total / weightSum : 0;
+
+  // Your North Score: base objetiva por pilares (30/25/15/15/10/5)
+  const north = northScore(c, {
+    cost,
+    savings,
+    savingsRate,
+    yearsToRetire: years,
+    expectedReturn: ctx.expectedReturn,
+  });
+
+  // El ranking mezcla la base objetiva con el ajuste a tus preferencias.
+  let score = north.total * 0.6 + fit * 0.4;
   if (cost > f.budget) score *= 0.72; // no alcanza el presupuesto
 
   const reasons = (Object.keys(weights) as Metric[])
@@ -802,6 +818,7 @@ export function scoreCity(
   return {
     city: c,
     score: Math.round(clamp(score)),
+    north,
     cost,
     savings,
     savingsRate,
