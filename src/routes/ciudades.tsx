@@ -277,31 +277,21 @@ function LifestyleSimulator() {
               ]}
             />
             <SelectFilter
-              label={
-                filters.goal === "career"
-                  ? t("Rango salarial", "Salary range")
-                  : t("Prioridad de ingresos", "Income priority")
-              }
+              label={t(
+                "Rango salarial (si trabajas ahí)",
+                "Salary range (if you work there)",
+              )}
               value={filters.salary}
               onChange={(v) => set("salary", v)}
-              options={
-                filters.goal === "career"
-                  ? [
-                      { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
-                      { value: "balanced", label: t("Medio", "Mid range"), icon: "⚖️" },
-                      { value: "high_income", label: t("Alto", "High"), icon: "📈" },
-                      { value: "highest_paying", label: t("Top mundial", "Top paying"), icon: "💎" },
-                      { value: "low_cost", label: t("Bajo pero barato", "Lower but cheap"), icon: "💸" },
-                    ]
-                  : [
-                      { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
-                      { value: "low_cost", label: t("Costo bajo", "Lower cost"), icon: "💸" },
-                      { value: "balanced", label: t("Equilibrado", "Balanced"), icon: "⚖️" },
-                      { value: "high_income", label: t("Alto potencial", "High income"), icon: "📈" },
-                      { value: "highest_paying", label: t("Mejor pagadas", "Highest paying"), icon: "💎" },
-                    ]
-              }
+              options={[
+                { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
+                { value: "under_1500", label: t("< $1.500/mes", "< $1,500/mo"), icon: "💸" },
+                { value: "1500_3000", label: t("$1.500 – $3.000", "$1,500 – $3,000"), icon: "🪙" },
+                { value: "3000_5000", label: t("$3.000 – $5.000", "$3,000 – $5,000"), icon: "📈" },
+                { value: "5000_plus", label: t("$5.000+", "$5,000+"), icon: "💎" },
+              ]}
             />
+
           </FilterGroup>
 
           {/* Tú */}
