@@ -1,0 +1,389 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { motion } from "motion/react";
+import { CalendarDays, Pencil, Plus, Sparkles, Target, TrendingDown, TrendingUp, Trash2, Wallet } from "lucide-react";
+import { useMemo, useState } from "react";
+
+import { PageHeader, PageShell, Panel } from "@/components/page";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useT } from "@/hooks/use-language";
+import { useLifeGoals, type LifeGoal, type LifeGoalKind } from "@/hooks/use-life-goals";
+import { useProfile } from "@/hooks/use-profile";
+import { addMonths, formatImpact, monthsToTarget, yearsDiff, type SimGoal } from "@/lib/life-planner";
+import { buildDataset } from "@/lib/profile-data";
+import { cn } from "@/lib/utils";
+
+export const Route = createFileRoute("/life-planner")({
+  head: () => ({
+    meta: [
+      { title: "Life Planner — WhatsYournumber" },
+      {
+        name: "description",
+        content: "Simula tus metas de vida y descubre cómo cada decisión adelanta o retrasa tu libertad financiera.",
+      },
+      { property: "og:title", content: "Life Planner — WhatsYournumber" },
+      { property: "og:description", content: "Cada meta de vida, con su impacto real en tu fecha de retiro." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: LifePlanner,
+});
+
+const KIND_LABEL: Record<LifeGoalKind, { es: string; en: string }> = {
+  purchase: { es: "Compra / gasto", en: "Purchase" },
+  invest: { es: "Inversión / proyecto", en: "Investment" },
+  boost: { es: "Cambio de vida (ahorra más)", en: "Life change (saves more)" },
+};
+
+type Draft = {
+  id?: string;
+  name: string;
+  emoji: string;
+  kind: LifeGoalKind;
+  target_year: number;
+  cost: number;
+  monthly: number;
+  saved: number;
+};
+
+const emptyDraft = (): Draft => ({
+  name: "",
+  emoji: "🎯",
+  kind: "purchase",
+  target_year: new Date().getFullYear() + 2,
+  cost: 0,
+  monthly: 0,
+  saved: 0,
+});
+
+function LifePlanner() {
+  const t = useT();
+  const { profile } = useProfile();
+  const { goals, create, update, remove, busy } = useLifeGoals();
+  const data = buildDataset(profile);
+  const [draft, setDraft] = useState<Draft | null>(null);
+
+  const target = data.plan.targetCapital;
+  const start = Math.max(0, data.netWorth);
+  const annualReturn = profile.expected_return || 7;
+  const savings = data.savings;
+
+  const sim = (list: LifeGoal[]) =>
+    monthsToTarget({
+      start,
+      target,
+      annualReturn,
+      savings,
+      goals: list.map<SimGoal>((g) => ({ kind: g.kind, cost: g.cost, monthly: g.monthly, saved: g.saved })),
+    });
+
+  const baseMonths = useMemo(() => sim([]), [start, target, annualReturn, savings]);
+  const allMonths = useMemo(() => sim(goals), [goals, start, target, annualReturn, savings]);
+
+  const retireDate = allMonths !== null ? addMonths(new Date(), allMonths) : null;
+  const progress = target > 0 ? Math.min(100, (start / target) * 100) : 0;
+  const combined = yearsDiff(baseMonths, allMonths);
+
+  const best = useMemo(() => {
+    const scored = goals.map((g) => ({ g, impact: yearsDiff(baseMonths, sim([g])) ?? 0 }));
+    const worst = [...scored].sort((a, b) => b.impact - a.impact)[0];
+    const accel = [...scored].sort((a, b) => a.impact - b.impact)[0];
+    return { worst, accel };
+  }, [goals, baseMonths, start, target, annualReturn, savings]);
+
+  const submit = async () => {
+    if (!draft) return;
+    const { id, ...patch } = draft;
+    if (id) await update({ id, patch });
+    else await create(patch);
+    setDraft(null);
+  };
+
+  return (
+    <PageShell>
+      <PageHeader
+        eyebrow={t("Planificación", "Planning")}
+        title="Life Planner"
+        subtitle={t(
+          "Simula tus metas de vida y descubre cómo impactan tu libertad financiera.",
+          "Simulate your life goals and see how they impact your financial freedom.",
+        )}
+        actions={
+          <Button onClick={() => setDraft(emptyDraft())} className="gap-2">
+            <Plus className="h-4 w-4" />
+            {t("Nueva meta", "New goal")}
+          </Button>
+        }
+      />
+
+      <Panel className="relative overflow-hidden">
+        <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.12]" />
+        <div className="relative grid gap-6 lg:grid-cols-[1.2fr_2fr]">
+          <div className="lg:border-r lg:border-border/60 lg:pr-6">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">{t("Tu norte", "Your north")}</p>
+            <h2 className="mt-1 text-2xl font-semibold">{t("Independencia financiera", "Financial independence")}</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {t("Tu objetivo principal y no negociable.", "Your main, non-negotiable goal.")}
+            </p>
+            <div className="mt-5 flex items-center justify-between text-xs text-muted-foreground">
+              <span>{t("Avance actual", "Current progress")}</span>
+              <span className="numeric text-sm font-semibold text-foreground">{progress.toFixed(0)}%</span>
+            </div>
+            <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-muted">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${progress}%` }}
+                transition={{ duration: 0.9, ease: "easeOut" }}
+                className="h-full rounded-full bg-primary"
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-3">
+            <HeroStat icon={Target} label={t("Patrimonio objetivo", "Target capital")} value={data.fmtCompact(target)} />
+            <HeroStat
+              icon={CalendarDays}
+              label={t("Fecha estimada de retiro", "Estimated freedom date")}
+              value={
+                retireDate
+                  ? retireDate.toLocaleDateString("es", { month: "long", year: "numeric" }).replace(/^./, (c) => c.toUpperCase())
+                  : t("+60 años", "+60 years")
+              }
+            />
+            <HeroStat icon={Wallet} label={t("Patrimonio actual", "Current net worth")} value={data.fmtCompact(start)} />
+          </div>
+        </div>
+      </Panel>
+
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-semibold">{t("Tus metas de vida", "Your life goals")}</h2>
+          <p className="text-xs text-muted-foreground">
+            {t("Cada decisión que tomas impacta tu fecha de retiro.", "Every decision you make moves your retirement date.")}
+          </p>
+        </div>
+        {combined !== null && goals.length > 0 && (
+          <p className="text-xs text-muted-foreground">
+            {t("Impacto combinado", "Combined impact")}:{" "}
+            <span className={cn("numeric font-semibold", combined > 0 ? "text-negative" : "text-positive")}>
+              {formatImpact(combined)}
+            </span>
+          </p>
+        )}
+      </div>
+
+      {goals.length === 0 ? (
+        <Panel className="flex flex-col items-center gap-3 py-12 text-center">
+          <Target className="h-8 w-8 text-muted-foreground" />
+          <p className="text-sm text-muted-foreground">
+            {t("Aún no tienes metas. Añade la primera y simula su impacto.", "No goals yet. Add your first one and simulate its impact.")}
+          </p>
+          <Button variant="outline" onClick={() => setDraft(emptyDraft())} className="gap-2">
+            <Plus className="h-4 w-4" /> {t("Nueva meta", "New goal")}
+          </Button>
+        </Panel>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {goals.map((g, idx) => {
+            const impact = yearsDiff(baseMonths, sim([g]));
+            const pct = g.cost > 0 ? Math.min(100, (g.saved / g.cost) * 100) : 0;
+            const good = impact !== null && impact < -0.08;
+            const bad = impact !== null && impact > 0.08;
+            return (
+              <motion.div
+                key={g.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.05 }}
+                className="surface flex flex-col p-5"
+              >
+                <div className="flex items-start gap-3">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-elevated text-lg">{g.emoji}</span>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold">{g.name}</p>
+                    <span className="mt-1 inline-block rounded-md bg-elevated px-2 py-0.5 text-[11px] text-muted-foreground">
+                      {t(`Meta ${g.target_year}`, `Goal ${g.target_year}`)}
+                    </span>
+                  </div>
+                  <div className="ml-auto flex gap-1">
+                    <button
+                      className="rounded-md p-1.5 text-muted-foreground transition hover:bg-elevated hover:text-foreground"
+                      onClick={() => setDraft({ ...g, note: undefined } as unknown as Draft)}
+                      aria-label={t("Editar meta", "Edit goal")}
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      className="rounded-md p-1.5 text-muted-foreground transition hover:bg-elevated hover:text-negative"
+                      onClick={() => void remove(g.id)}
+                      aria-label={t("Eliminar meta", "Delete goal")}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+
+                <dl className="mt-4 space-y-2 text-xs">
+                  <Line label={g.kind === "boost" ? t("Coste del cambio", "Change cost") : t("Coste total", "Total cost")} value={data.fmt(g.cost)} />
+                  <Line
+                    label={g.kind === "boost" ? t("Ahorro mensual estimado", "Estimated monthly savings") : t("Ahorro mensual", "Monthly saving")}
+                    value={`${g.kind === "boost" ? "+" : ""}${data.fmt(g.monthly)}`}
+                  />
+                  <Line label={t("Fondo acumulado", "Accumulated fund")} value={`${data.fmt(g.saved)} (${pct.toFixed(0)}%)`} />
+                </dl>
+
+                <div
+                  className={cn(
+                    "mt-4 flex items-center justify-between gap-3 rounded-xl border px-3 py-3",
+                    good && "border-positive/30 bg-positive/10",
+                    bad && "border-negative/30 bg-negative/10",
+                    !good && !bad && "border-border bg-elevated/50",
+                  )}
+                >
+                  <div className="text-[11px] leading-tight">
+                    <p className="text-muted-foreground">{t("Impacto en tu retiro", "Impact on your retirement")}</p>
+                    <p className={cn("font-medium", good ? "text-positive" : bad ? "text-negative" : "text-muted-foreground")}>
+                      {good ? t("Acelera tu retiro", "Speeds up retirement") : bad ? t("Retrasa tu retiro", "Delays retirement") : t("Neutral", "Neutral")}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={cn("numeric text-lg font-semibold", good ? "text-positive" : bad ? "text-negative" : "text-muted-foreground")}>
+                      {formatImpact(impact)}
+                    </span>
+                    {good ? <TrendingUp className="h-4 w-4 text-positive" /> : bad ? <TrendingDown className="h-4 w-4 text-negative" /> : null}
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      )}
+
+      {goals.length > 1 && best.worst && best.accel && (
+        <Panel className="flex flex-wrap items-center gap-3">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-elevated">
+            <Sparkles className="h-4 w-4 text-primary" />
+          </span>
+          <p className="flex-1 text-sm text-muted-foreground">
+            {t(
+              `Si eliminas «${best.worst.g.name}» y mantienes «${best.accel.g.name}», podrías retirarte ${formatImpact(
+                -(best.worst.impact - Math.min(0, best.accel.impact)),
+              ).replace("-", "")} antes.`,
+              `If you drop “${best.worst.g.name}” and keep “${best.accel.g.name}”, you could retire ${formatImpact(
+                -(best.worst.impact - Math.min(0, best.accel.impact)),
+              ).replace("-", "")} earlier.`,
+            )}
+          </p>
+        </Panel>
+      )}
+
+      <Dialog open={draft !== null} onOpenChange={(o) => !o && setDraft(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{draft?.id ? t("Editar meta", "Edit goal") : t("Nueva meta de vida", "New life goal")}</DialogTitle>
+          </DialogHeader>
+          {draft && (
+            <div className="grid gap-3">
+              <div className="grid grid-cols-[70px_1fr] gap-3">
+                <Field label={t("Emoji", "Emoji")}>
+                  <Input value={draft.emoji} onChange={(e) => setDraft({ ...draft, emoji: e.target.value.slice(0, 2) })} />
+                </Field>
+                <Field label={t("Nombre", "Name")}>
+                  <Input
+                    value={draft.name}
+                    placeholder={t("Comprar casa en Madrid", "Buy a house in Madrid")}
+                    onChange={(e) => setDraft({ ...draft, name: e.target.value })}
+                  />
+                </Field>
+              </div>
+              <Field label={t("Tipo de meta", "Goal type")}>
+                <Select value={draft.kind} onValueChange={(v) => setDraft({ ...draft, kind: v as LifeGoalKind })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(Object.keys(KIND_LABEL) as LifeGoalKind[]).map((k) => (
+                      <SelectItem key={k} value={k}>
+                        {t(KIND_LABEL[k].es, KIND_LABEL[k].en)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label={t("Año objetivo", "Target year")}>
+                  <Input
+                    type="number"
+                    value={draft.target_year}
+                    onChange={(e) => setDraft({ ...draft, target_year: Number(e.target.value) })}
+                  />
+                </Field>
+                <Field label={draft.kind === "boost" ? t("Coste del cambio", "Change cost") : t("Coste total", "Total cost")}>
+                  <Input type="number" value={draft.cost} onChange={(e) => setDraft({ ...draft, cost: Number(e.target.value) })} />
+                </Field>
+                <Field
+                  label={draft.kind === "boost" ? t("Ahorro extra / mes", "Extra saving / month") : t("Ahorro mensual", "Monthly saving")}
+                >
+                  <Input type="number" value={draft.monthly} onChange={(e) => setDraft({ ...draft, monthly: Number(e.target.value) })} />
+                </Field>
+                <Field label={t("Fondo acumulado", "Accumulated fund")}>
+                  <Input type="number" value={draft.saved} onChange={(e) => setDraft({ ...draft, saved: Number(e.target.value) })} />
+                </Field>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setDraft(null)}>
+              {t("Cancelar", "Cancel")}
+            </Button>
+            <Button onClick={() => void submit()} disabled={busy || !draft?.name}>
+              {t("Guardar", "Save")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </PageShell>
+  );
+}
+
+function HeroStat({ icon: Icon, label, value }: { icon: typeof Target; label: string; value: string }) {
+  return (
+    <div className="flex items-center gap-3 rounded-xl bg-elevated/60 px-4 py-3">
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
+        <Icon className="h-4 w-4" />
+      </span>
+      <div className="min-w-0">
+        <p className="text-[11px] text-muted-foreground">{label}</p>
+        <p className="numeric truncate text-base font-semibold">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function Line({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <dt className="text-muted-foreground">{label}</dt>
+      <dd className="numeric font-medium">{value}</dd>
+    </div>
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-1.5">
+      <Label className="text-xs text-muted-foreground">{label}</Label>
+      {children}
+    </div>
+  );
+}

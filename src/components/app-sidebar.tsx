@@ -51,7 +51,7 @@ export function AppSidebar() {
     { title: "Lifestyle Simulator", url: "/ciudades", icon: Globe },
 
     { title: t("Distribución del dinero", "Money Distribution"), url: "/cash-flow", icon: Waves },
-    { title: t("Objetivos", "Goals"), url: "/objetivos", icon: Target },
+    { title: "Life Planner", url: "/life-planner", icon: Target },
   ] as const;
 
   const secondary = [

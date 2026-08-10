@@ -67,6 +67,54 @@ export type Database = {
           },
         ]
       }
+      life_goals: {
+        Row: {
+          cost: number
+          created_at: string
+          emoji: string
+          id: string
+          kind: string
+          monthly: number
+          name: string
+          note: string | null
+          position: number
+          saved: number
+          target_year: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cost?: number
+          created_at?: string
+          emoji?: string
+          id?: string
+          kind?: string
+          monthly?: number
+          name: string
+          note?: string | null
+          position?: number
+          saved?: number
+          target_year?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cost?: number
+          created_at?: string
+          emoji?: string
+          id?: string
+          kind?: string
+          monthly?: number
+          name?: string
+          note?: string | null
+          position?: number
+          saved?: number
+          target_year?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       onboarding_profiles: {
         Row: {
           age: number | null
