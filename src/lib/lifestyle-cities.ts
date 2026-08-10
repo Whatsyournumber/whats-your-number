@@ -8,7 +8,7 @@
  * Son estimaciones de referencia, no cifras oficiales en tiempo real.
  */
 import { extraCities } from "./lifestyle-cities-extra";
-import barcelonaPhoto from "@/assets/city-barcelona.jpg";
+import barcelonaPhoto from "@/assets/city-barcelona-w.png.asset.json";
 
 
 export type Region = "northamerica" | "latam" | "europe" | "asia" | "africa";
@@ -57,7 +57,7 @@ export type CityData = {
 };
 
 const PHOTO = {
-  barcelona: barcelonaPhoto,
+  barcelona: barcelonaPhoto.url,
   madrid: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Madrid_Gran_Via_Metropolis_%2828895530633%29.jpg/1920px-Madrid_Gran_Via_Metropolis_%2828895530633%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   valencia: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Museo_Pr%C3%ADncipe_Felipe%2C_Ciudad_de_las_Artes_y_las_Ciencias%2C_Valencia%2C_Espa%C3%B1a%2C_2014-06-29%2C_DD_59.JPG/1920px-Museo_Pr%C3%ADncipe_Felipe%2C_Ciudad_de_las_Artes_y_las_Ciencias%2C_Valencia%2C_Espa%C3%B1a%2C_2014-06-29%2C_DD_59.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   lisbon: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/LisbonSkyline.jpg/1920px-LisbonSkyline.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",

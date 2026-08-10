@@ -3,6 +3,7 @@
  * Mismas fuentes y criterios que `lifestyle-cities.ts`.
  */
 import type { CityData } from "./lifestyle-cities";
+import osloPhoto from "@/assets/city-oslo.png.asset.json";
 const PHOTO = {
   hamburg: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/HH_Alsterarkaden_pano1.jpg/1920px-HH_Alsterarkaden_pano1.jpg",
   zagreb: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg/1920px-Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -41,7 +42,7 @@ const PHOTO = {
   vienna: "https://commons.wikimedia.org/wiki/Special:FilePath/Wien%20schloss%20belvedere%20panorama.jpg?width=1920",
   munich: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Alter_Peter-03-Panorama.jpg/1920px-Alter_Peter-03-Panorama.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   stockholm: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Riksdagen_September_2014_02.jpg/1920px-Riksdagen_September_2014_02.jpg",
-  oslo: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/OSLO_Norway_2026-06-10_Rooftop_cityscape_view_from_Odd_Fellow_%28Stortingsg_28%29_Konserth._Munkedamsv._Medicus_Torstedg%C3%A5rden_Slottsparken_Henrik_Ibsens_g_roundabout_Frederiks_g_Nationalth._J_Dybwad_University_bus_Distorted_panorama.jpg/1920px-thumbnail.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  oslo: osloPhoto.url,
   dublin: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Aviva_Stadium_skyline%29.jpg/1920px-Aviva_Stadium_skyline%29.jpg",
   budapest: "https://commons.wikimedia.org/wiki/Special:FilePath/Sz%C3%A9chenyi%20Chain%20Bridge%20in%20Budapest%20at%20night.jpg?width=1920",
   brussels: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Bruselas%2C_Bot%C3%A1nico_01.jpg/1920px-Bruselas%2C_Bot%C3%A1nico_01.jpg",
