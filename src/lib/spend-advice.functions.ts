@@ -17,5 +17,5 @@ export const getSpendAdvice = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => schema.parse(data))
   .handler(async ({ data }) => {
     const { generateSpendAdvice } = await import("./spend-advice.server");
-    return { advice: await generateSpendAdvice(data) };
+    return await generateSpendAdvice(data);
   });

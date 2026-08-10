@@ -1,4 +1,5 @@
-import { streamText } from "ai";
+import { generateText, Output } from "ai";
+import { z } from "zod";
 
 import { createLovableAiGatewayProvider } from "./ai-gateway.server";
 
@@ -14,17 +15,39 @@ export type AdviceInput = {
   merchants: { name: string; amount: number; count: number }[];
 };
 
-const SYSTEM = `Eres un asesor financiero personal, directo y práctico. Respondes SIEMPRE en español, en markdown breve.
-Devuelve EXACTAMENTE las 4 recomendaciones más importantes, ordenadas por impacto de ahorro (mayor primero).
-Formato exacto, sin introducción ni cierre:
-### Las 4 acciones de mayor impacto
-- **<Rubro o comercio>** — qué está pasando (monto y % vs. periodo anterior o vs. objetivo) → acción concreta. Ahorro estimado: <monto> <moneda>/mes
-(repite hasta tener 4 bullets, ni uno más ni uno menos)
-### Total alcanzable
-- una sola frase: ahorro mensual sumado y si con eso cumples el objetivo de gasto
-No inventes datos que no estén en el contexto. Usa categorías y comercios reales del contexto.`;
+export const adviceSchema = z.object({
+  actions: z
+    .array(
+      z.object({
+        /** Rubro o comercio concreto */
+        label: z.string(),
+        /** Qué está pasando, una sola frase corta con el dato */
+        diagnosis: z.string(),
+        /** Acción concreta, empieza con verbo, máximo 12 palabras */
+        action: z.string(),
+        /** Ahorro mensual estimado en la moneda del usuario */
+        monthlySaving: z.number(),
+        /** true si es un rubro donde te excediste vs. el periodo anterior o vs. el objetivo */
+        overspent: z.boolean(),
+      }),
+    )
+    .min(3)
+    .max(4),
+});
 
-export async function generateSpendAdvice(input: AdviceInput): Promise<string> {
+export type SpendAdvice = z.infer<typeof adviceSchema>;
+
+const SYSTEM = `Eres un asesor financiero personal directo y práctico. Respondes SIEMPRE en español.
+Devuelve 4 acciones (3 si no hay datos suficientes), ordenadas por ahorro mensual estimado de mayor a menor.
+Reglas:
+- "label": el rubro o comercio real del contexto (máx. 3 palabras).
+- "diagnosis": UNA frase de máximo 14 palabras con el monto y el % vs. periodo anterior o vs. objetivo.
+- "action": empieza con un verbo en imperativo, máximo 12 palabras, concreta y medible.
+- "monthlySaving": número realista en la moneda dada, sin símbolos ni texto.
+- "overspent": true si ese rubro subió vs. el periodo anterior o rompe el objetivo.
+No inventes datos: usa solo categorías y comercios del contexto.`;
+
+export async function generateSpendAdvice(input: AdviceInput): Promise<SpendAdvice> {
   const apiKey = process.env["LOVABLE_API_KEY"];
   if (!apiKey) throw new Error("Falta la configuración de IA (LOVABLE_API_KEY).");
 
@@ -53,6 +76,12 @@ ${cats || "- sin datos"}
 Top comercios:
 ${merch || "- sin datos"}`;
 
-  const result = streamText({ model: gateway("google/gemini-3.6-flash"), system: SYSTEM, prompt });
-  return await result.text;
+  const result = await generateText({
+    model: gateway("google/gemini-3.6-flash"),
+    system: SYSTEM,
+    prompt,
+    output: Output.object({ schema: adviceSchema }),
+  });
+
+  return result.output;
 }
