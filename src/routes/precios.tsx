@@ -24,10 +24,8 @@ export const Route = createFileRoute("/precios")({
   component: Pricing,
 });
 
-const DISCOUNT = 0.2; // 20% de descuento anual
-
-function yearlyTotal(monthly: number) {
-  return Math.round(monthly * 12 * (1 - DISCOUNT));
+function yearlyTotal(monthly: number, discount: number) {
+  return Math.round(monthly * 12 * (1 - discount));
 }
 
 function Pricing() {
