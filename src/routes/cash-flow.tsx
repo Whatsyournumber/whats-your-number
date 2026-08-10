@@ -350,6 +350,8 @@ function CashFlow() {
                 fmt={fmt}
                 goodWhenHigher
                 tooltip={t("Ahorro fijo + lo que sobra del mes tras cubrir necesidades y deseos.", "Fixed savings + what is left after covering needs and wants.")}
+                breakdown={saveBreakdown}
+
               />
               <Row
                 label={t("Deseos", "Wants")}
