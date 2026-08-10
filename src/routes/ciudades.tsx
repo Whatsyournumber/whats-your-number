@@ -784,14 +784,70 @@ function regionLabel(region: CityData["region"], t: (es: string, en: string) => 
   }
 }
 
-function Stat({ icon, label, value }: { icon: string; label: string; value: string }) {
+function Stat({
+  icon,
+  label,
+  value,
+  sub,
+  highlight,
+}: {
+  icon: string;
+  label: string;
+  value: string;
+  sub?: string;
+  highlight?: "positive" | "negative" | "neutral";
+}) {
+  const valueColor =
+    highlight === "positive"
+      ? "text-positive"
+      : highlight === "negative"
+        ? "text-negative"
+        : "text-foreground";
 
   return (
     <div className="rounded-xl border border-border/60 bg-elevated/40 p-3">
-      <p className="text-[11px] text-muted-foreground">
-        {icon} {label}
+      <div className="flex items-start justify-between gap-2">
+        <p className="text-[11px] leading-tight text-muted-foreground">
+          {label}
+        </p>
+        <span className="text-base">{icon}</span>
+      </div>
+      <p className={cn("numeric mt-1 text-sm font-semibold leading-tight", valueColor)}>
+        {value}
       </p>
-      <p className="numeric mt-0.5 text-sm font-medium">{value}</p>
+      {sub && <p className="numeric mt-0.5 text-[10px] text-muted-foreground">{sub}</p>}
+    </div>
+  );
+}
+
+function PrimaryStat({
+  icon,
+  label,
+  value,
+  sub,
+  highlight,
+}: {
+  icon: string;
+  label: string;
+  value: string;
+  sub?: string;
+  highlight?: "positive" | "negative" | "neutral";
+}) {
+  const valueColor =
+    highlight === "positive"
+      ? "text-positive"
+      : highlight === "negative"
+        ? "text-negative"
+        : "text-foreground";
+
+  return (
+    <div className="relative overflow-hidden rounded-xl border border-border/60 bg-gradient-to-br from-elevated/80 to-elevated/40 p-4">
+      <div className="absolute -right-2 -top-2 text-4xl opacity-[0.08]">{icon}</div>
+      <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className={cn("numeric mt-1.5 text-xl font-semibold tracking-tight", valueColor)}>
+        {value}
+      </p>
+      {sub && <p className="numeric mt-1 text-xs text-muted-foreground">{sub}</p>}
     </div>
   );
 }
@@ -840,6 +896,8 @@ function CityDetail({
   const c: CityData = r.city;
   const b = costBreakdown(c, filters.stage, filters.comfort);
   const taxes = Math.round((c.avgSalary * c.taxRate) / 100);
+  const stability = stabilityBadge(c.country, t);
+  const affordable = r.savings >= 0;
 
   const chart = [
     { name: t("Vivienda", "Housing"), value: b.housing, color: "var(--color-chart-1)" },
@@ -858,73 +916,104 @@ function CityDetail({
           <img src={c.photo} alt={c.name} className="absolute inset-0 h-full w-full object-cover object-center" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
 
-          <div className="absolute bottom-4 left-5">
+          <div className="absolute bottom-4 left-5 right-5">
             <DialogHeader>
               <DialogTitle className="text-2xl">{c.name}</DialogTitle>
             </DialogHeader>
-            <p className="text-sm text-muted-foreground">
-              {c.country} · Your next city {r.north.total}/100
-            </p>
+            <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+              <span>{c.country}</span>
+              <span className="text-border">·</span>
+              <span className="inline-flex items-center gap-1">
+                <span className="text-primary">{r.north.total}</span>
+                <span>/100</span>
+              </span>
+              <span className="text-border">·</span>
+              <span className="rounded-full border border-border/60 px-2 py-0.5 text-[10px]">
+                {stability.dot} {stability.text}
+              </span>
+            </div>
           </div>
         </div>
 
-        <div className="space-y-5 p-5">
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-            <Stat icon="💵" label={t("Costo total / mes", "Total cost / month")} value={fmt(r.cost)} />
-            <Stat
+        <div className="space-y-6 p-5">
+          {/* Primary KPIs */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <PrimaryStat
+              icon="💵"
+              label={t("Costo total / mes", "Total cost / month")}
+              value={fmt(r.cost)}
+              sub={t("Presupuesto: ", "Budget: ") + fmt(filters.budget)}
+              highlight="neutral"
+            />
+            <PrimaryStat
               icon="🐖"
               label={t("Ahorro potencial", "Potential savings")}
-              value={`${fmt(Math.max(0, r.savings))} · ${Math.round(r.savingsRate * 100)}%`}
+              value={fmt(Math.max(0, r.savings))}
+              sub={Math.round(r.savingsRate * 100) + "% " + t("del presupuesto", "of budget")}
+              highlight={affordable ? "positive" : "negative"}
             />
-            <Stat
+            <PrimaryStat
               icon="🕰"
-              label={t("Años a la libertad", "Years to freedom")}
+              label={t("Libertad financiera", "Financial freedom")}
               value={r.yearsToRetire !== null ? `${r.yearsToRetire} ${t("años", "yrs")}` : "—"}
+              sub={r.retireAge ? t("A los ", "At age ") + r.retireAge + t(" años", " years") : undefined}
+              highlight="neutral"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            <Stat icon="🏠" label={t("Vivienda", "Housing")} value={fmt(b.housing)} />
-            <Stat icon="🍽" label={t("Alimentación", "Food")} value={fmt(b.food)} />
-            <Stat icon="🚗" label={t("Transporte", "Transport")} value={fmt(b.transport)} />
-            <Stat icon="🏥" label={t("Salud", "Healthcare")} value={`${fmt(b.healthcare)} · ${c.healthcareScore}/100`} />
-            <Stat icon="🎭" label={t("Ocio", "Entertainment")} value={fmt(b.entertainment)} />
-            <Stat icon="🧾" label={t("Impuestos / mes", "Taxes / month")} value={fmt(taxes)} />
-            <Stat
-              icon="🎓"
-              label={t("Educación", "Education")}
-              value={
-                b.education
-                  ? `${fmt(b.education)} · ${c.schools}/100`
-                  : `${c.schools}/100 · ${fmt(c.education)}/${t("hijo", "child")}`
-              }
-            />
-
-            <Stat icon="💻" label="Internet" value={`${fmt(c.internet)} · ${c.internetSpeed} Mbps`} />
-            <Stat icon="🌤" label={t("Clima", "Climate")} value={t(c.climateLabelEs, c.climateLabelEn)} />
-            <Stat icon="🗺" label={t("Región", "Region")} value={regionLabel(c.region, t)} />
-            <Stat icon="🛡" label={t("Seguridad", "Safety")} value={`${c.safety}/100`} />
-            <Stat icon="💰" label={t("Tasa de impuestos", "Tax rate")} value={`${c.taxRate}%`} />
-            <Stat icon="💼" label={t("Salario medio", "Average salary")} value={fmt(c.avgSalary)} />
-            <Stat icon="📈" label={t("Poder adquisitivo", "Purchasing power")} value={`${c.purchasingPower}/100`} />
-            <Stat icon="🏗" label={t("Mercado laboral", "Job market")} value={`${c.jobMarket}/100`} />
-            <Stat icon="🌎" label={t("Calidad de vida", "Quality of life")} value={`${c.qualityOfLife}/100`} />
-            <Stat icon="🚶" label="Walkability" value={`${c.walkability}/100`} />
-            <Stat icon="🚈" label={t("Transporte público", "Public transport")} value={`${c.publicTransport}/100`} />
-            <Stat icon="🌳" label={t("Espacios verdes", "Green spaces")} value={`${c.greenSpaces}/100`} />
-            <Stat icon="🌫" label={t("Calidad del aire", "Air quality")} value={`${c.airQuality}/100`} />
-            <Stat icon="🍸" label={t("Vida nocturna", "Nightlife")} value={`${c.nightlife}/100`} />
-            <Stat icon="🌍" label="Digital nomad" value={`${c.remoteWork}/100`} />
-            <Stat icon="🗣" label={t("Inglés", "English friendly")} value={`${c.englishFriendly}/100`} />
-            <Stat icon="🏖" label={t("Distancia al mar", "Distance to sea")} value={c.beachKm === 0 ? t("En la costa", "On the coast") : `${c.beachKm} km`} />
-            <Stat icon="✈" label={t("Aeropuerto intl.", "Intl. airport")} value={c.intlAirport ? t("Sí", "Yes") : "—"} />
-            <Stat
-              icon="🎯"
-              label={t("Retiro estimado", "Estimated retirement")}
-              value={r.retireAge ? `${r.retireAge} ${t("años", "yrs")}` : "—"}
-            />
+          {/* Key monthly costs */}
+          <div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
+              {t("Costos mensuales clave", "Key monthly costs")}
+            </p>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <Stat icon="🏠" label={t("Vivienda", "Housing")} value={fmt(b.housing)} />
+              <Stat icon="🍽" label={t("Alimentación", "Food")} value={fmt(b.food)} />
+              <Stat icon="🚗" label={t("Transporte", "Transport")} value={fmt(b.transport)} />
+              <Stat icon="🏥" label={t("Salud", "Healthcare")} value={fmt(b.healthcare)} sub={`${c.healthcareScore}/100`} />
+            </div>
           </div>
 
+          {/* Lifestyle & stability */}
+          <div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
+              {t("Vida y estabilidad", "Life & stability")}
+            </p>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <Stat icon="🛡" label={t("Seguridad", "Safety")} value={`${c.safety}/100`} />
+              <Stat icon="🌤" label={t("Clima", "Climate")} value={t(c.climateLabelEs, c.climateLabelEn)} />
+              <Stat icon="💻" label={t("Internet", "Internet")} value={`${c.internetSpeed} Mbps`} sub={fmt(c.internet)} />
+              <Stat icon="🗣" label={t("Inglés", "English friendly")} value={`${c.englishFriendly}/100`} />
+            </div>
+          </div>
+
+          {/* Quick context row */}
+          <div className="flex flex-wrap items-center gap-2 rounded-xl border border-border/60 bg-elevated/30 p-3 text-[11px] text-muted-foreground">
+            <span className="inline-flex items-center gap-1">
+              <span>🌍</span>
+              {regionLabel(c.region, t)}
+            </span>
+            <span className="text-border">·</span>
+            <span className="inline-flex items-center gap-1">
+              <span>💰</span>
+              {t("Impuestos", "Taxes")}: {c.taxRate}%
+            </span>
+            <span className="text-border">·</span>
+            <span className="inline-flex items-center gap-1">
+              <span>💼</span>
+              {t("Salario medio", "Average salary")}: {fmt(c.avgSalary)}
+            </span>
+            <span className="text-border">·</span>
+            <span className="inline-flex items-center gap-1">
+              <span>✈</span>
+              {c.intlAirport ? t("Aeropuerto intl.", "Intl. airport") : "—"}
+            </span>
+            <span className="text-border">·</span>
+            <span className="inline-flex items-center gap-1">
+              <span>🏖</span>
+              {c.beachKm === 0 ? t("En la costa", "On the coast") : `${c.beachKm} km ${t("al mar", "to sea")}`}
+            </span>
+          </div>
 
           <div>
             <div className="mb-3 flex items-baseline justify-between gap-3">
