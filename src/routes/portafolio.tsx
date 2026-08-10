@@ -148,18 +148,29 @@ function Portafolio() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title={t("Portafolio vs S&P 500", "Portfolio vs S&P 500")} description={t("Rentabilidad acumulada 12 meses", "Cumulative return, 12 months")} className="lg:col-span-2">
-          <ResponsiveContainer width="100%" height={290}>
-            <LineChart data={benchmark} margin={{ left: -18, right: 8 }}>
-              <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
-              <XAxis dataKey="label" {...axisProps} />
-              <YAxis {...axisProps} tickFormatter={(v) => `${v}%`} width={46} />
-              <Tooltip content={<ChartTooltip formatter={(v) => `${v.toFixed(1)}%`} />} />
-              <Line type="monotone" dataKey="portfolio" name={t("Portafolio", "Portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.5} dot={false} />
-              <Line type="monotone" dataKey="sp500" name="S&P 500" stroke="var(--color-chart-8)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
+        <Panel
+          title={t("Portafolio vs S&P 500", "Portfolio vs S&P 500")}
+          description={t("Datos reales de mercado · últimos 12 meses", "Real market data · last 12 months")}
+          className="lg:col-span-2"
+        >
+          {benchmarkData.length === 0 ? (
+            <div className="flex h-[290px] items-center justify-center text-sm text-muted-foreground">
+              {seriesQuery.isLoading ? t("Cargando mercado…", "Loading market…") : t("Mercado no disponible", "Market unavailable")}
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height={290}>
+              <LineChart data={benchmarkData} margin={{ left: -18, right: 8 }}>
+                <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
+                <XAxis dataKey="label" {...axisProps} />
+                <YAxis {...axisProps} tickFormatter={(v) => `${v}%`} width={46} />
+                <Tooltip content={<ChartTooltip formatter={(v) => `${v.toFixed(1)}%`} />} />
+                <Line type="monotone" dataKey="portfolio" name={t("Portafolio", "Portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.5} dot={false} />
+                <Line type="monotone" dataKey="sp500" name="S&P 500" stroke="var(--color-chart-8)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
         </Panel>
+
 
         <Panel title={t("Composición", "Composition")}>
           <ResponsiveContainer width="100%" height={210}>
