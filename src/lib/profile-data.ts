@@ -137,7 +137,7 @@ export function buildDataset(p: Profile): Dataset {
   const cityTarget = Math.round(cityMonthlySafe * 12 * 25);
   const cityYears = yearsToFreedom(Math.max(0, nw), savings, cityMonthlySafe * 12, p.expected_return || 7);
   const cityCapacitySafe = Math.max(0, income - cityMonthlySafe);
-  const yearsToNumberSafe = yearsToFreedom(Math.max(0, nw), cityCapacitySafe, plan.targetCapital * 0.04, p.expected_return || 7);
+  const yearsToNumberSafe = yearsToFreedom(Math.max(0, nw), cityCapacitySafe, plan.targetCapital * ((p.withdrawal_rate || 4) / 100), p.expected_return || 7);
 
 
 

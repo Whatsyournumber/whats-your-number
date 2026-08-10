@@ -5,7 +5,10 @@ import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YA
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
+import { toast } from "sonner";
 import { useProfile } from "@/hooks/use-profile";
 import { useT } from "@/hooks/use-language";
 import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
@@ -27,9 +30,21 @@ export const Route = createFileRoute("/retiro")({
 
 function Retiro() {
   const t = useT();
-  const { profile } = useProfile();
+  const { profile, save, saving } = useProfile();
+
+  // Editor de "tu número": ingreso mensual deseado y tasa de retiro elegida.
+  const [wantMonthly, setWantMonthly] = useState(profile.desired_retirement_income);
+  const [swr, setSwr] = useState(profile.withdrawal_rate || 4);
+  useEffect(() => {
+    setWantMonthly(profile.desired_retirement_income);
+    setSwr(profile.withdrawal_rate || 4);
+  }, [profile.desired_retirement_income, profile.withdrawal_rate]);
+
   const d = buildDataset(profile);
   const { retirement, fmt, fmtCompact, plan } = d;
+
+  const liveNumber = Math.round((Math.max(0, wantMonthly) * 12) / (Math.min(15, Math.max(1, swr)) / 100));
+  const numberDirty = wantMonthly !== profile.desired_retirement_income || swr !== (profile.withdrawal_rate || 4);
 
   // Solo activos que generan retorno (excluye propiedades).
   const investable =
@@ -64,6 +79,69 @@ function Retiro() {
   return (
     <PageShell>
       <PageHeader eyebrow={t("Largo plazo", "Long term")} title="WhatsYournumber" subtitle={t("Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar.", "How much you have today and how much you will have when you stop working.")} />
+
+      <Panel
+        title={t("Edita tu número", "Edit your number")}
+        description={t(
+          "Elige cuánto quieres recibir al mes y a qué tasa anual quieres retirarlo: ese es tu número.",
+          "Choose how much you want per month and the annual withdrawal rate: that's your number.",
+        )}
+      >
+        <div className="grid gap-5 lg:grid-cols-[1fr_1fr_auto] lg:items-end">
+          <div>
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>{t("Ingreso mensual deseado", "Desired monthly income")}</span>
+              <span className="numeric font-medium text-foreground">{fmt(wantMonthly)}</span>
+            </div>
+            <Input
+              type="number"
+              className="mt-2"
+              value={wantMonthly || ""}
+              onChange={(e) => setWantMonthly(Number(e.target.value || 0))}
+              placeholder="7000"
+            />
+          </div>
+          <div>
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>{t("Tasa de retiro anual", "Annual withdrawal rate")}</span>
+              <span className="numeric font-medium text-foreground">{swr.toFixed(1)}%</span>
+            </div>
+            <Slider className="mt-4" value={[swr]} min={2} max={12} step={0.5} onValueChange={(v) => setSwr(v[0] ?? 4)} />
+            <div className="mt-2 flex gap-1.5">
+              {[3, 3.5, 4, 5, 6, 8].map((r) => (
+                <button
+                  key={r}
+                  type="button"
+                  onClick={() => setSwr(r)}
+                  className={`rounded-full border px-2 py-0.5 text-[11px] ${swr === r ? "border-primary bg-primary/10 text-foreground" : "border-border text-muted-foreground"}`}
+                >
+                  {r}%
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-xl border border-border/70 bg-elevated/50 p-4">
+            <p className="text-xs text-muted-foreground">{t("Tu número", "Your number")}</p>
+            <p className="numeric mt-1 text-3xl font-semibold">{fmtCompact(liveNumber)}</p>
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              {fmt(wantMonthly)}/{t("mes", "mo")} · {swr.toFixed(1)}%
+            </p>
+            <Button
+              size="sm"
+              className="mt-3 w-full rounded-full"
+              disabled={!numberDirty || saving}
+              onClick={() => {
+                void save({ desired_retirement_income: wantMonthly, withdrawal_rate: swr }).then(() =>
+                  toast.success(t("Tu número se actualizó", "Your number was updated")),
+                );
+              }}
+            >
+              {saving ? t("Guardando…", "Saving…") : t("Guardar mi número", "Save my number")}
+            </Button>
+          </div>
+        </div>
+      </Panel>
+
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <KpiCard

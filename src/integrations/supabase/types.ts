@@ -109,6 +109,7 @@ export type Database = {
           travel_frequency: string | null
           updated_at: string
           user_id: string
+          withdrawal_rate: number
         }
         Insert: {
           age?: number | null
@@ -151,6 +152,7 @@ export type Database = {
           travel_frequency?: string | null
           updated_at?: string
           user_id: string
+          withdrawal_rate?: number
         }
         Update: {
           age?: number | null
@@ -193,6 +195,7 @@ export type Database = {
           travel_frequency?: string | null
           updated_at?: string
           user_id?: string
+          withdrawal_rate?: number
         }
         Relationships: []
       }

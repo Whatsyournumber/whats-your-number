@@ -1,0 +1,1 @@
+ALTER TABLE public.onboarding_profiles ADD COLUMN IF NOT EXISTS withdrawal_rate numeric NOT NULL DEFAULT 4;

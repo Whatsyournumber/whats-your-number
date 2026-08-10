@@ -22,6 +22,7 @@ export type OnboardingData = {
   retire_age: number;
   desired_retirement_income: number;
   expected_return: number;
+  withdrawal_rate: number;
   priority: string;
   risk_profile: string;
 };
@@ -50,6 +51,7 @@ export const emptyOnboarding: OnboardingData = {
   retire_age: 60,
   desired_retirement_income: 5000,
   expected_return: 7,
+  withdrawal_rate: 4,
   priority: "",
   risk_profile: "",
 };
@@ -131,7 +133,7 @@ export type NorthPlan = {
   progress: number;
 };
 
-/** Capital needed using a 4% safe withdrawal rate on the desired annual income. */
+/** Capital needed using the user's safe withdrawal rate (default 4%) on the desired annual income. */
 export function buildPlan(d: OnboardingData): NorthPlan {
   const income = totalIncome(d);
   const expenses = d.monthly_expenses;
@@ -139,7 +141,8 @@ export function buildPlan(d: OnboardingData): NorthPlan {
   const savingsRate = income > 0 ? (savings / income) * 100 : 0;
   const age = d.age ?? 30;
   const yearsLeft = Math.max(0, d.retire_age - age);
-  const targetCapital = (d.desired_retirement_income * 12) / 0.04;
+  const swr = Math.min(15, Math.max(1, d.withdrawal_rate || 4)) / 100;
+  const targetCapital = (d.desired_retirement_income * 12) / swr;
 
   const r = d.expected_return / 100;
   const monthlyR = r / 12;
