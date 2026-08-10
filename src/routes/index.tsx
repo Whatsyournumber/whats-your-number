@@ -22,9 +22,7 @@ import {
 
 
 import ctaLifestyle from "@/assets/cta-lifestyle.jpg";
-import featureAi from "@/assets/feature-ai.png.asset.json";
-import featureLife from "@/assets/feature-life.png.asset.json";
-import featureNumber from "@/assets/feature-number.png.asset.json";
+
 import { BrandLogo } from "@/components/brand-logo";
 import { ProductPreview } from "@/components/product-preview";
 import { SiteHeader } from "@/components/site-header";
@@ -210,8 +208,7 @@ function Landing() {
   const whyCards = [
     {
       icon: Crosshair,
-      image: featureNumber.url,
-      title: t("Sabe exactamente cuándo serás libre", "Know exactly when you'll be free"),
+      title: t("Sé cuándo podrás dejar de trabajar", "Know when you can stop working"),
       desc: t(
         "Calcula tu número de libertad financiera: el capital que necesitas para vivir de tus rendimientos y el año en que lo alcanzarás.",
         "Calculate your financial freedom number: the capital you need to live off returns and the year you'll reach it.",
@@ -220,8 +217,7 @@ function Landing() {
     },
     {
       icon: ScanEye,
-      image: featureAi.url,
-      title: t("La IA lee y clasifica tus estados de cuenta", "AI reads and classifies your statements"),
+      title: t("La IA organiza tus gastos automáticamente", "AI organizes your expenses automatically"),
       desc: t(
         "Sube PDFs o CSVs de cualquier banco. La IA extrae cada movimiento, detecta suscripciones duplicadas y sugiere dónde recortar.",
         "Upload PDFs or CSVs from any bank. The AI extracts every transaction, spots duplicate subscriptions and suggests where to cut.",
@@ -230,8 +226,7 @@ function Landing() {
     },
     {
       icon: RouteIcon,
-      image: featureLife.url,
-      title: t("Mide el impacto real de cada decisión", "Measure the real impact of every decision"),
+      title: t("Mira cómo cada decisión cambia tu futuro", "See how every decision changes your future"),
       desc: t(
         "Casa, hijos, negocio o mudarte a Madrid: simula cada escenario y descubre cuánto acelera o retrasa tu fecha de libertad.",
         "A home, kids, a business or moving to Madrid: simulate every scenario and discover how much it speeds up or delays your freedom date.",
@@ -239,6 +234,7 @@ function Landing() {
       stat: t("Life Planner + Your next city", "Life Planner + Your next city"),
     },
   ];
+
 
 
 
@@ -331,31 +327,21 @@ function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.08 }}
-                className="group relative overflow-hidden rounded-3xl border border-white/[0.06] bg-card/40 backdrop-blur-sm transition-all hover:bg-card/60"
+                className="surface group relative overflow-hidden rounded-3xl p-6 transition-all hover:bg-card/60"
               >
                 <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-[0.07]" />
-                <div className="relative aspect-[4/3] w-full overflow-hidden">
-                  <img
-                    src={card.image}
-                    alt={card.title}
-                    loading="lazy"
-                    width={1024}
-                    height={768}
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-card/20 to-card/80" />
-                  <div className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/30 backdrop-blur-md ring-1 ring-primary/20">
-                    <card.icon className="relative h-5 w-5 text-primary" strokeWidth={1.8} />
+                <div className="relative">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-primary/10 ring-1 ring-primary/20">
+                    <card.icon className="h-6 w-6 text-primary" strokeWidth={1.8} />
                   </div>
-                </div>
-                <div className="relative p-5">
-                  <h3 className="text-base font-semibold tracking-tight">{card.title}</h3>
-                  <p className="relative mt-2 text-sm text-muted-foreground/80">{card.desc}</p>
-                  <p className="numeric relative mt-4 text-xs font-medium text-primary">{card.stat}</p>
+                  <h3 className="mt-5 text-xl font-semibold tracking-tight">{card.title}</h3>
+                  <p className="relative mt-3 text-sm leading-relaxed text-muted-foreground/80">{card.desc}</p>
+                  <p className="numeric relative mt-5 text-xs font-medium text-primary">{card.stat}</p>
                 </div>
               </motion.div>
             ))}
           </div>
+
         </motion.section>
 
 
