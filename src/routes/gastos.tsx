@@ -208,47 +208,33 @@ function Gastos() {
 
 
 
-  const series = useMemo(() => {
+  const incomeSeries = useMemo(() => {
     const byMonth = days > 62;
     const keyOf = (d: Date) => (byMonth ? format(d, "yyyy-MM") : format(d, "yyyy-MM-dd"));
     const labelOf = (d: Date) => (byMonth ? format(d, "MMM yy", { locale: es }) : format(d, "d MMM", { locale: es }));
     const keys: string[] = [];
-    const buckets = new Map<string, { label: string; gasto: number; anterior: number; fijo: number }>();
+    const buckets = new Map<string, { label: string; ingresos: number; gastos: number }>();
     for (let i = 0; i < days; i++) {
       const d = addDays(from, i);
       const k = keyOf(d);
       if (!buckets.has(k)) {
         keys.push(k);
-        buckets.set(k, { label: labelOf(d), gasto: 0, anterior: 0, fijo: 0 });
+        buckets.set(k, { label: labelOf(d), ingresos: 0, gastos: 0 });
       }
     }
-    for (const t of current) {
+    for (const t of transactions) {
+      if (!inRange(t, from, to)) continue;
       const b = buckets.get(keyOf(parseISO(t.tx_date!)));
-      if (b) b.gasto += Math.abs(t.amount);
+      if (!b) continue;
+      if (t.amount > 0) b.ingresos += t.amount;
+      else b.gastos += Math.abs(t.amount);
     }
-    // periodo anterior alineado posición a posición
-    const prevKeys: string[] = [];
-    const prevBuckets = new Map<string, number>();
-    for (let i = 0; i < days; i++) {
-      const d = addDays(prevFrom, i);
-      const k = keyOf(d);
-      if (!prevBuckets.has(k)) {
-        prevKeys.push(k);
-        prevBuckets.set(k, 0);
-      }
-    }
-    for (const t of previous) {
-      const k = keyOf(parseISO(t.tx_date!));
-      if (prevBuckets.has(k)) prevBuckets.set(k, (prevBuckets.get(k) ?? 0) + Math.abs(t.amount));
-    }
-    keys.forEach((k, i) => {
-      const pk = prevKeys[i];
-      const b = buckets.get(k)!;
-      b.anterior = pk ? (prevBuckets.get(pk) ?? 0) : 0;
-      b.fijo = byMonth ? fixed.total : fixed.total / 30;
-    });
     return keys.map((k) => buckets.get(k)!);
-  }, [current, previous, from, prevFrom, days, fixed.total]);
+  }, [transactions, from, days, to]);
+
+  const totalIncome = incomeSeries.reduce((s, b) => s + b.ingresos, 0);
+  const totalExpense = incomeSeries.reduce((s, b) => s + b.gastos, 0);
+  const net = totalIncome - totalExpense;
 
 
   const merchants = useMemo(() => {
