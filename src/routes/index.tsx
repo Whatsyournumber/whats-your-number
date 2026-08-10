@@ -372,7 +372,7 @@ function Landing() {
           </div>
 
 
-          <div className="grid gap-5 text-left md:grid-cols-3">
+          <div className="mx-auto grid max-w-5xl gap-4 text-left md:grid-cols-3">
             {whyCards.map((card, i) => (
               <motion.div
                 key={card.number}
@@ -380,24 +380,24 @@ function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.08 }}
-                className="group relative overflow-hidden rounded-3xl border border-white/[0.07] bg-card/50 p-7 transition-all hover:-translate-y-1 hover:border-primary/20 hover:bg-card/70"
+                className="group relative overflow-hidden rounded-2xl border border-white/[0.07] bg-card/50 p-5 transition-all hover:-translate-y-1 hover:border-primary/20 hover:bg-card/70"
               >
-                <div className="relative flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-background ring-1 ring-primary/20 shadow-sm">
-                  <card.icon className="h-6 w-6 text-primary" strokeWidth={1.7} />
+                <div className="relative flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-background ring-1 ring-primary/20 shadow-sm">
+                  <card.icon className="h-5 w-5 text-primary" strokeWidth={1.7} />
                 </div>
 
-                <div className="relative mt-5">
-                  <span className="inline-flex items-center justify-center rounded-lg bg-elevated px-3 py-1 text-xs font-semibold text-primary">
-                    {card.number}
-                  </span>
-                  <h3 className="mt-4 text-[22px] font-semibold leading-tight tracking-tight">
-                    <span className="text-foreground">{card.titleLight}</span>{" "}
+                <div className="relative mt-4">
+                  <h3 className="min-h-[3.5rem] text-lg font-semibold leading-snug tracking-tight">
+                    <span className="text-foreground">{card.titleLight}</span>
+                    <br />
                     <span className="text-primary">{card.titleAccent}</span>
                   </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground/80">{card.desc}</p>
+                  <p className="mt-2 line-clamp-3 min-h-[4.5rem] text-sm leading-relaxed text-muted-foreground/80">
+                    {card.desc}
+                  </p>
                 </div>
 
-                <div className="mt-6 h-0.5 w-10 rounded-full bg-primary/80 transition-all duration-300 group-hover:w-16" />
+                <div className="mt-4 h-0.5 w-8 rounded-full bg-primary/80 transition-all duration-300 group-hover:w-12" />
               </motion.div>
             ))}
           </div>
