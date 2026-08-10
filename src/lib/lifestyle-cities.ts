@@ -590,6 +590,7 @@ export type Filters = {
   salary: SalaryPref;
   tax: TaxPref;
   safety: SafetyPref;
+  stability: StabilityPref;
   stage: LifeStage;
   goal: GoalPref;
   comfort: ComfortPref;
@@ -602,11 +603,13 @@ export const defaultFilters: Filters = {
   salary: "any",
   tax: "any",
   safety: "important",
+  stability: "any",
   stage: "any",
   goal: "save",
   comfort: "comfortable",
   region: "any",
 };
+
 
 /** Cuánto encarece el costo de vida según cómo quieres vivir. */
 export const COMFORT_FACTOR: Record<ComfortPref, number> = {
