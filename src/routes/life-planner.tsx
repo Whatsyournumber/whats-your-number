@@ -14,10 +14,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useT } from "@/hooks/use-language";
-import { useLifeGoals, type LifeGoal, type LifeGoalKind } from "@/hooks/use-life-goals";
+import { useLifeGoals, type LifeGoal } from "@/hooks/use-life-goals";
 import { useProfile } from "@/hooks/use-profile";
+import { GOAL_TEMPLATES, defaultValues, parseMeta, templateById, type TemplateId } from "@/lib/goal-templates";
 import { addMonths, formatImpact, monthsToTarget, yearsDiff, type SimGoal } from "@/lib/life-planner";
 import { buildDataset } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
@@ -159,7 +159,7 @@ function LifePlanner() {
           "Simulate your life goals and see how they impact your financial freedom.",
         )}
         actions={
-          <Button onClick={() => setDraft(emptyDraft())} className="gap-2">
+          <Button onClick={() => setDraft(newDraft())} className="gap-2">
             <Plus className="h-4 w-4" />
             {t("Nueva meta", "New goal")}
           </Button>
@@ -228,7 +228,7 @@ function LifePlanner() {
           <p className="text-sm text-muted-foreground">
             {t("Aún no tienes metas. Añade la primera y simula su impacto.", "No goals yet. Add your first one and simulate its impact.")}
           </p>
-          <Button variant="outline" onClick={() => setDraft(emptyDraft())} className="gap-2">
+          <Button variant="outline" onClick={() => setDraft(newDraft())} className="gap-2">
             <Plus className="h-4 w-4" /> {t("Nueva meta", "New goal")}
           </Button>
         </Panel>
@@ -258,7 +258,7 @@ function LifePlanner() {
                   <div className="ml-auto flex gap-1">
                     <button
                       className="rounded-md p-1.5 text-muted-foreground transition hover:bg-elevated hover:text-foreground"
-                      onClick={() => setDraft({ ...g, note: undefined } as unknown as Draft)}
+                      onClick={() => setDraft(draftFromGoal(g))}
                       aria-label={t("Editar meta", "Edit goal")}
                     >
                       <Pencil className="h-3.5 w-3.5" />
@@ -328,11 +328,44 @@ function LifePlanner() {
       )}
 
       <Dialog open={draft !== null} onOpenChange={(o) => !o && setDraft(null)}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="max-h-[88vh] overflow-y-auto sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>{draft?.id ? t("Editar meta", "Edit goal") : t("Nueva meta de vida", "New life goal")}</DialogTitle>
+            <DialogTitle>
+              {draft?.id
+                ? t("Editar meta", "Edit goal")
+                : tpl
+                  ? `${tpl.emoji} ${t(tpl.es, tpl.en)}`
+                  : t("Nueva meta de vida", "New life goal")}
+            </DialogTitle>
           </DialogHeader>
-          {draft && (
+
+          {draft && !tpl && (
+            <div className="grid gap-2 sm:grid-cols-2">
+              {GOAL_TEMPLATES.map((tp) => (
+                <button
+                  key={tp.id}
+                  onClick={() =>
+                    setDraft({
+                      ...draft,
+                      template: tp.id,
+                      emoji: tp.emoji,
+                      name: draft.name || t(tp.es, tp.en),
+                      values: defaultValues(tp),
+                    })
+                  }
+                  className="flex items-start gap-3 rounded-xl border border-border bg-elevated/40 p-3 text-left transition hover:border-primary/40 hover:bg-elevated"
+                >
+                  <span className="text-lg">{tp.emoji}</span>
+                  <span className="min-w-0">
+                    <span className="block text-sm font-medium">{t(tp.es, tp.en)}</span>
+                    <span className="block text-[11px] leading-tight text-muted-foreground">{t(tp.hintEs, tp.hintEn)}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {draft && tpl && (
             <div className="grid gap-3">
               <div className="grid grid-cols-[70px_1fr] gap-3">
                 <Field label={t("Emoji", "Emoji")}>
@@ -346,20 +379,7 @@ function LifePlanner() {
                   />
                 </Field>
               </div>
-              <Field label={t("Tipo de meta", "Goal type")}>
-                <Select value={draft.kind} onValueChange={(v) => setDraft({ ...draft, kind: v as LifeGoalKind })}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {(Object.keys(KIND_LABEL) as LifeGoalKind[]).map((k) => (
-                      <SelectItem key={k} value={k}>
-                        {t(KIND_LABEL[k].es, KIND_LABEL[k].en)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
+
               <div className="grid grid-cols-2 gap-3">
                 <Field label={t("Año objetivo", "Target year")}>
                   <Input
@@ -368,30 +388,77 @@ function LifePlanner() {
                     onChange={(e) => setDraft({ ...draft, target_year: Number(e.target.value) })}
                   />
                 </Field>
-                <Field label={draft.kind === "boost" ? t("Coste del cambio", "Change cost") : t("Coste total", "Total cost")}>
-                  <Input type="number" value={draft.cost} onChange={(e) => setDraft({ ...draft, cost: Number(e.target.value) })} />
-                </Field>
-                <Field
-                  label={draft.kind === "boost" ? t("Ahorro extra / mes", "Extra saving / month") : t("Ahorro mensual", "Monthly saving")}
-                >
-                  <Input type="number" value={draft.monthly} onChange={(e) => setDraft({ ...draft, monthly: Number(e.target.value) })} />
-                </Field>
-                <Field label={t("Fondo acumulado", "Accumulated fund")}>
-                  <Input type="number" value={draft.saved} onChange={(e) => setDraft({ ...draft, saved: Number(e.target.value) })} />
-                </Field>
+                {tpl.fields.map((f) => (
+                  <Field key={f.key} label={t(f.es, f.en)}>
+                    <Input
+                      type="number"
+                      value={draft.values[f.key] ?? 0}
+                      onChange={(e) =>
+                        setDraft({ ...draft, values: { ...draft.values, [f.key]: Number(e.target.value) } })
+                      }
+                    />
+                  </Field>
+                ))}
               </div>
+
+              {derived && (
+                <div
+                  className={cn(
+                    "flex items-center justify-between gap-3 rounded-xl border px-3 py-3",
+                    draftImpact !== null && draftImpact < -0.08 && "border-positive/30 bg-positive/10",
+                    draftImpact !== null && draftImpact > 0.08 && "border-negative/30 bg-negative/10",
+                    (draftImpact === null || Math.abs(draftImpact) <= 0.08) && "border-border bg-elevated/50",
+                  )}
+                >
+                  <div className="text-[11px] leading-tight">
+                    <p className="text-muted-foreground">{t("Impacto en tu retiro", "Impact on your retirement")}</p>
+                    <p className="font-medium">
+                      {draftImpact !== null && draftImpact < -0.08
+                        ? t("Te acerca a tu meta", "Brings your goal closer")
+                        : draftImpact !== null && draftImpact > 0.08
+                          ? t("Te aleja de tu meta", "Pushes your goal away")
+                          : t("Neutral", "Neutral")}
+                    </p>
+                    <p className="mt-1 text-muted-foreground">
+                      {t("Coste", "Cost")}: {data.fmt(derived.cost)} · {t("Flujo", "Flow")}:{" "}
+                      {derived.monthly >= 0 ? "+" : ""}
+                      {data.fmt(derived.monthly)}/{t("mes", "mo")}
+                      {derived.payout ? ` · ${t("Venta", "Exit")}: ${data.fmt(derived.payout)}` : ""}
+                    </p>
+                  </div>
+                  <span
+                    className={cn(
+                      "numeric text-lg font-semibold",
+                      draftImpact !== null && draftImpact < -0.08
+                        ? "text-positive"
+                        : draftImpact !== null && draftImpact > 0.08
+                          ? "text-negative"
+                          : "text-muted-foreground",
+                    )}
+                  >
+                    {formatImpact(draftImpact)}
+                  </span>
+                </div>
+              )}
             </div>
           )}
+
           <DialogFooter>
+            {tpl && !draft?.id && (
+              <Button variant="ghost" onClick={() => draft && setDraft({ ...draft, template: null })}>
+                {t("Volver", "Back")}
+              </Button>
+            )}
             <Button variant="ghost" onClick={() => setDraft(null)}>
               {t("Cancelar", "Cancel")}
             </Button>
-            <Button onClick={() => void submit()} disabled={busy || !draft?.name}>
+            <Button onClick={() => void submit()} disabled={busy || !draft?.name || !tpl}>
               {t("Guardar", "Save")}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
     </PageShell>
   );
 }
