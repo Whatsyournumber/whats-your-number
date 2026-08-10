@@ -389,6 +389,7 @@ function Row({
   goodWhenHigher?: boolean;
   legend?: string;
 }) {
+  const t = useT();
   const p = total > 0 ? (value / total) * 100 : 0;
   const off = p - target;
   const colorClass = goodWhenHigher
