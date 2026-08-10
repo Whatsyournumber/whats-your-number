@@ -22,7 +22,7 @@ const PHOTO = {
   raleigh: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Raleigh%2C_NC.jpg/1920px-Raleigh%2C_NC.jpg",
   monterrey: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Monterrey_Rascacielos.jpg/1920px-Monterrey_Rascacielos.jpg",
   cancun: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Cancun_Strand_Luftbild_%2822143397586%29.jpg/1920px-Cancun_Strand_Luftbild_%2822143397586%29.jpg",
-  florianopolis: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Florian%C3%B3polis_.jpg/1920px-Florian%C3%B3polis_.jpg",
+  florianopolis: "https://commons.wikimedia.org/wiki/Special:FilePath/Avenida%20Beira%20Mar%20Norte%20Florianopolis.jpg?width=1920",
   cordoba_ar: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/PanoramicaCORDOBA-ARG.JPG/1920px-PanoramicaCORDOBA-ARG.JPG",
   laspaz: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Centro_de_La_Paz_sobre_la_Avenida_Arce.jpg/1920px-Centro_de_La_Paz_sobre_la_Avenida_Arce.jpg",
   punta: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Punta_del_Este_Skyline_-_200120-0171-jikatu-Pano.jpg/1920px-Punta_del_Este_Skyline_-_200120-0171-jikatu-Pano.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
