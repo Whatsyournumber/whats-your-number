@@ -13,7 +13,7 @@ const socials = [
 ];
 
 export function SiteFooter() {
-  const { t } = useT();
+  const t = useT();
 
   const columns = [
     {
