@@ -233,7 +233,7 @@ function CashFlow() {
             <div className="relative hidden h-64 lg:block">
               <svg viewBox="0 0 120 260" className="h-full w-full" preserveAspectRatio="none">
                 {buckets.map((b, i) => {
-                  const y = 40 + i * 90;
+                  const y = 30 + i * 66;
                   const w = Math.max(6, (b.amount / totalIncome) * 60);
                   return (
                     <motion.path
