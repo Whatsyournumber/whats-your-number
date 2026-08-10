@@ -122,6 +122,19 @@ export function buildDataset(p: Profile): Dataset {
   const yearsToGoal = Math.max(1, plan.freedomAge - (p.age ?? 30));
   const year = now.getFullYear();
 
+  // Presupuesto real de la ciudad donde quieres vivir y camino hasta tu número allí.
+  const cityFilters = suggestedFilters(p);
+  const liveCity = p.city ? lifestyleCities.find((c) => c.name.toLowerCase() === p.city.toLowerCase()) ?? null : null;
+  const cityMonthly = liveCity
+    ? monthlyCost(liveCity, cityFilters.stage, cityFilters.comfort)
+    : city
+      ? Math.round(city.cost * lifestyleFactor)
+      : null;
+  const cityTarget = Math.round((cityMonthly ?? 2600) * 12 * 25);
+  const cityYears = yearsToFreedom(Math.max(0, nw), savings, (cityMonthly ?? 2600) * 12, p.expected_return || 7);
+
+
+
   const goals = [
     {
       name: "Your Number",
