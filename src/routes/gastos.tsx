@@ -514,22 +514,22 @@ function Gastos() {
 
 
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title={t("Distribución por categoría", "Spend by category")}>
+      <div className="grid gap-3 lg:grid-cols-3">
+        <Panel variant="minimal" title={t("Distribución por categoría", "Spend by category")}>
           {byCategory.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t("Sin movimientos en este rango.", "No transactions in this range.")}</p>
           ) : (
             <>
               <div className="relative">
-                <ResponsiveContainer width="100%" height={260}>
+                <ResponsiveContainer width="100%" height={240}>
                   <PieChart>
                     <Pie
                       data={byCategory}
                       dataKey="amount"
                       nameKey="name"
-                      innerRadius={78}
-                      outerRadius={104}
-                      paddingAngle={3}
+                      innerRadius={70}
+                      outerRadius={96}
+                      paddingAngle={2}
                       stroke="none"
                     >
                       {byCategory.map((c, i) => (
@@ -548,8 +548,8 @@ function Gastos() {
                   </p>
                 </div>
               </div>
-              <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5">
-                {byCategory.slice(0, 10).map((c, i) => (
+              <ul className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1">
+                {byCategory.slice(0, 8).map((c, i) => (
                   <li key={c.name} className="flex items-center gap-2 text-xs">
                     <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
                     <span className="truncate text-muted-foreground">{c.name}</span>
@@ -561,8 +561,8 @@ function Gastos() {
           )}
         </Panel>
 
-        <Panel title={t("Evolución del gasto", "Spend evolution")} description={`${t("Comparando con", "Comparing with")} ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="lg:col-span-2">
-          <ResponsiveContainer width="100%" height={280}>
+        <Panel variant="minimal" title={t("Evolución del gasto", "Spend evolution")} description={`${t("Comparando con", "Comparing with")} ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="lg:col-span-2">
+          <ResponsiveContainer width="100%" height={260}>
             <ComposedChart data={series} margin={{ left: -8, right: 8 }}>
               <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
               <XAxis dataKey="label" {...axisProps} interval="preserveStartEnd" minTickGap={18} />
@@ -574,12 +574,12 @@ function Gastos() {
                 iconType="circle"
                 wrapperStyle={{ fontSize: 11, paddingBottom: 8 }}
               />
-              <Bar dataKey="anterior" name={t("Periodo anterior", "Previous period")} fill="var(--color-muted-foreground)" fillOpacity={0.35} radius={[8, 8, 0, 0]} />
-              <Bar dataKey="gasto" name={t("Este periodo", "This period")} fill="var(--color-chart-5)" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="anterior" name={t("Periodo anterior", "Previous period")} fill="var(--color-muted-foreground)" fillOpacity={0.35} radius={[6, 6, 0, 0]} />
+              <Bar dataKey="gasto" name={t("Este periodo", "This period")} fill="var(--color-chart-5)" radius={[6, 6, 0, 0]} />
               <Line dataKey="fijo" name={t("Fijos (prorrateado)", "Fixed (prorated)")} stroke="var(--color-chart-3)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
             </ComposedChart>
           </ResponsiveContainer>
-          <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
             {[
               { l: t("Este periodo", "This period"), v: fmt(variableTotal) },
               { l: t("Periodo anterior", "Previous period"), v: fmt(prevVariable) },
@@ -589,7 +589,7 @@ function Gastos() {
               },
               { l: t("Día más caro", "Most expensive day"), v: series.length ? fmt(Math.max(...series.map((s) => s.gasto))) : "—" },
             ].map((k) => (
-              <div key={k.l} className="rounded-xl bg-elevated/60 px-3 py-2">
+              <div key={k.l} className="rounded-lg border border-border/60 bg-elevated/40 px-3 py-2">
                 <p className="text-[11px] text-muted-foreground">{k.l}</p>
                 <p className="numeric text-sm font-semibold">{k.v}</p>
               </div>
