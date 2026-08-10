@@ -561,7 +561,17 @@ function LifePlanner() {
   );
 }
 
-function HeroStat({ icon: Icon, label, value }: { icon: typeof Target; label: string; value: string }) {
+function HeroStat({
+  icon: Icon,
+  label,
+  value,
+  hint,
+}: {
+  icon: typeof Target;
+  label: string;
+  value: string;
+  hint?: string;
+}) {
   return (
     <div className="flex items-center gap-3 rounded-xl bg-elevated/60 px-4 py-3">
       <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
@@ -570,10 +580,12 @@ function HeroStat({ icon: Icon, label, value }: { icon: typeof Target; label: st
       <div className="min-w-0">
         <p className="text-[11px] text-muted-foreground">{label}</p>
         <p className="numeric truncate text-base font-semibold">{value}</p>
+        {hint ? <p className="numeric truncate text-[11px] text-muted-foreground">{hint}</p> : null}
       </div>
     </div>
   );
 }
+
 
 function Line({ label, value }: { label: string; value: string }) {
   return (
