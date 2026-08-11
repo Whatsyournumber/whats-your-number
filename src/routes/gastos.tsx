@@ -678,7 +678,9 @@ function Gastos() {
                     className="h-8 w-28 text-right text-sm"
                   />
                   <span className="numeric mt-0.5 text-[11px] text-muted-foreground">
-                    {fmt(item.amount * periodFactor)} {t("en este periodo", "in this period")}
+                    {isLongRange
+                      ? `${fmt(item.amount * monthsInRange)} · ${t(`${monthsInRange} meses`, `${monthsInRange} months`)}`
+                      : `${fmt(item.amount)} ${t("en este periodo", "in this period")}`}
                   </span>
                 </div>
                 <Button
