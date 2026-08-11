@@ -46,6 +46,7 @@ const money = (v: number, currency: string) =>
 export function StatementImporter() {
   const t = useT();
   const { user } = useAuth();
+  const { isFree } = useSubscription();
   const qc = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
