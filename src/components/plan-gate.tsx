@@ -43,13 +43,13 @@ export function PlanGate({
   return (
     <div className={cn("relative overflow-hidden", GATE_HEIGHT, className)}>
       {blur && (
-        <div className={cn("pointer-events-none select-none overflow-hidden opacity-[0.15] blur-[2px] saturate-50", GATE_HEIGHT)}>
+        <div className={cn("pointer-events-none select-none overflow-hidden opacity-[0.28] blur-[1px] saturate-50", GATE_HEIGHT)}>
           {children}
         </div>
       )}
       <div
         className={cn(
-          "absolute inset-0 z-10 flex flex-col items-center justify-start pt-8 bg-background/60 p-6 backdrop-blur-sm",
+          "absolute inset-0 z-10 flex flex-col items-center justify-center bg-background/45 p-6 backdrop-blur-sm",
           !blur && "relative",
         )}
       >
