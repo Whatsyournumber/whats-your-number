@@ -97,6 +97,10 @@ const MERCHANT_OVERRIDES: { hints: string[]; category: string }[] = [
       "muebles jamar", "colineal", "nordik small living", "do it center", "el machetazo", "mirgor",
       "marcoled", "silbon", "el ganso", "zara", "defacto", "wh smith", "whsmith", "air side store",
       "bazar", "multitienda", "wondermarket",
+      // Ropa y calzado que antes caía en "Otros"
+      "doppelganger", "doppelgänger", "beso shop", "sin-pies", "sinpies", "longplay industries",
+      "fourbrothers", "four brothers", "campo simbolico", "campo simbólico", "alta group",
+      "the matbath", "dolly bel",
     ],
   },
 ];
@@ -240,6 +244,13 @@ export const RULES: CategoryRule[] = [
       "aliexpress", "ebay", "zalando", "el corte ingles", "el corte inglés", "ikea", "leroy",
       "mediamarkt", "fnac", "apple store", "tienda", "boutique", "mall", "outlet", "ropa", "calzado",
       "sephora", "perfum", "muebles", "hogar", "bazar",
+      // Moda / ropa genérico
+      "moda", "fashion", "clothing", "clothes", "apparel", "wear", "textil", "sastre", "camiser",
+      "zapater", "zapatos", "sneaker", "footwear", "denim", "jeans", "lenceria", "lencería",
+      "bershka", "pull&bear", "pull and bear", "stradivarius", "massimo dutti", "oysho", "springfield",
+      "cortefiel", "scalpers", "levis", "levi s", "tommy hilfiger", "calvin klein", "lacoste",
+      "ralph lauren", "guess", "desigual", "bimba y lola", "sfera", "asos", "vinted", "snipes",
+      "foot locker", "jd sports", "courir", "punto roma", "women s secret", "womens secret",
     ],
   },
 ];
