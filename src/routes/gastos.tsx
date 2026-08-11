@@ -590,9 +590,7 @@ function Gastos() {
           )}
         </Panel>
 
-            </>
-          )}
-        </Panel>
+
 
         <Panel variant="minimal" title={t("Evolución del gasto", "Spend evolution")} description={`${t("Comparando con", "Comparing with")} ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="flex h-full flex-col lg:col-span-2">
           <ResponsiveContainer width="100%" height={340}>
