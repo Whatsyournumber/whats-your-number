@@ -142,6 +142,7 @@ function Dashboard() {
           `${mortgage.rate.toFixed(1)}% • ${mortgage.term} ${mortgage.term === 1 ? "year" : "years"} • ${fmt(mortgagePayment)}/mo`,
         )
       : t("Ver simulador", "Open simulator");
+  const savingsRate = current.income > 0 ? (current.savings / current.income) * 100 : 0;
   const prevRate = previous.income > 0 ? (previous.savings / previous.income) * 100 : 0;
   const insights = buildInsights(plan, profile, profile, d.currency);
   const firstName = (profile.full_name || "").trim().split(" ")[0];
