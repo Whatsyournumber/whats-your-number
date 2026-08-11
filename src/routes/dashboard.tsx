@@ -131,14 +131,16 @@ function Dashboard() {
       )}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <KpiCard
-          label={t("Patrimonio neto", "Net worth")}
-          value={fmt(current.netWorth)}
-          {...(hasHistory ? { delta: delta(current.netWorth, previous.netWorth), hint: t("vs mes anterior", "vs last month") } : {})}
-          icon={Wallet}
-          accent
-          index={0}
-        />
+        <Link to="/patrimonio" className="block transition-transform hover:-translate-y-0.5">
+          <KpiCard
+            label={t("Patrimonio neto", "Net worth")}
+            value={fmt(current.netWorth)}
+            {...(hasHistory ? { delta: delta(current.netWorth, previous.netWorth), hint: t("vs mes anterior", "vs last month") } : {})}
+            icon={Wallet}
+            accent
+            index={0}
+          />
+        </Link>
         <KpiCard label={t("Ingresos", "Income")} value={fmt(current.income)} {...(hasHistory ? { delta: delta(current.income, previous.income) } : {})} icon={Banknote} index={1} />
         <KpiCard label={t("Gastos", "Expenses")} value={fmt(current.expenses)} {...(hasHistory ? { delta: delta(current.expenses, previous.expenses) } : {})} inverse icon={TrendingUp} index={2} />
         <KpiCard label={t("Ahorro", "Savings")} value={fmt(current.savings)} {...(hasHistory ? { delta: delta(current.savings, previous.savings) } : {})} icon={PiggyBank} index={3} />
@@ -208,9 +210,14 @@ function Dashboard() {
                 <p className="numeric mt-1 text-lg font-semibold">{plan.probability}%</p>
               </div>
             </div>
-            <Button asChild variant="outline" size="sm" className="w-full rounded-full">
-              <Link to="/mi-perfil">{t("Editar mis datos", "Edit my data")}</Link>
-            </Button>
+            <div className="grid grid-cols-2 gap-2">
+              <Button asChild size="sm" className="w-full rounded-full">
+                <Link to="/retiro">{t("Ver mi número", "See my number")}</Link>
+              </Button>
+              <Button asChild variant="outline" size="sm" className="w-full rounded-full">
+                <Link to="/mi-perfil">{t("Editar mis datos", "Edit my data")}</Link>
+              </Button>
+            </div>
           </div>
         </Panel>
       </div>
