@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { PageHeader, PageShell } from "@/components/page";
+import { PromoCodeRedeem } from "@/components/promo-code-redeem";
 import { SubscriptionManager } from "@/components/subscription-manager";
 import { useT } from "@/hooks/use-language";
 
