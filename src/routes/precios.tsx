@@ -144,12 +144,18 @@ function Pricing() {
       navigate({ to: "/auth", search: { mode: "signup" } });
       return;
     }
-    void openCheckout({
+    const checkoutOptions: {
+      priceId: string;
+      quantity: number;
+      customerEmail?: string;
+      successUrl?: string;
+    } = {
       priceId: plan.priceId,
       quantity: 1,
-      customerEmail: user.email || undefined,
       successUrl: `${window.location.origin}/dashboard?checkout=success`,
-    });
+    };
+    if (user.email) checkoutOptions.customerEmail = user.email;
+    void openCheckout(checkoutOptions);
   };
 
   return (
