@@ -137,19 +137,19 @@ export function MortgageModule() {
   const base = useMemo(() => simulate(s.balance, s.rate, payment), [s.balance, s.rate, s.term, payment]);
 
   const strategies = useMemo(() => {
-    if (!s.balance || !s.payment) return [];
-    const withExtra = simulate(s.balance, s.rate, s.payment, s.extra);
-    const withLump = simulate(s.balance, s.rate, s.payment, 0, s.lump);
-    const months = Number.isFinite(base.months) ? base.months : 300;
-    const renegotiated = paymentFor(s.balance, s.newRate, months);
-    const reneg = simulate(s.balance, s.newRate, renegotiated);
+    if (!s.balance || !payment) return [];
+    const withExtra = simulate(s.balance, s.rate, payment, s.extra);
+    const withLump = simulate(s.balance, s.rate, payment, 0, s.lump);
+    const newRate = Math.max(0.1, s.rate - 1);
+    const renegotiated = paymentFor(s.balance, newRate, s.term * 12);
+    const reneg = simulate(s.balance, newRate, renegotiated);
     return [
       {
         id: "keep",
         icon: Home,
         name: t("Seguir igual", "Keep as is"),
         note: t("Plan actual", "Current plan"),
-        payment: s.payment,
+        payment,
         interest: base.interest,
         months: base.months,
         saving: 0,
@@ -160,7 +160,7 @@ export function MortgageModule() {
         icon: PiggyBank,
         name: t(`Abonar ${fmt(s.extra)}/mes`, `Pay ${fmt(s.extra)}/mo extra`),
         note: t("Pago adicional", "Extra payment"),
-        payment: s.payment + s.extra,
+        payment: payment + s.extra,
         interest: withExtra.interest,
         months: withExtra.months,
         saving: base.interest - withExtra.interest,
@@ -171,7 +171,7 @@ export function MortgageModule() {
         icon: Banknote,
         name: t(`Abonar ${fmt(s.lump)} ahora`, `Pay ${fmt(s.lump)} now`),
         note: t("Pago único", "One-off payment"),
-        payment: s.payment,
+        payment,
         interest: withLump.interest,
         months: withLump.months,
         saving: base.interest - withLump.interest,
@@ -180,7 +180,7 @@ export function MortgageModule() {
       {
         id: "reneg",
         icon: Star,
-        name: t(`Negociar tasa a ${s.newRate.toFixed(2)}%`, `Negotiate rate to ${s.newRate.toFixed(2)}%`),
+        name: t(`Negociar tasa a ${newRate.toFixed(2)}%`, `Negotiate rate to ${newRate.toFixed(2)}%`),
         note: t("Misma duración, menos cuota", "Same term, lower payment"),
         payment: renegotiated,
         interest: reneg.interest,
@@ -189,7 +189,7 @@ export function MortgageModule() {
         best: false,
       },
     ].map((x, _i, arr) => ({ ...x, best: x.saving > 0 && x.saving === Math.max(...arr.map((y) => y.saving)) }));
-  }, [s, base, t]);
+  }, [s, payment, base, t]);
 
   const bestStrategy = strategies.find((x) => x.best);
   const recommended = bestStrategy ?? strategies[0];
