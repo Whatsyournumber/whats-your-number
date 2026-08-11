@@ -20,6 +20,7 @@ import { Route as ConfiguracionRouteImport } from './routes/configuracion'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as GastosRouteImport } from './routes/gastos'
+import { Route as HipotecaRouteImport } from './routes/hipoteca'
 import { Route as LifePlannerRouteImport } from './routes/life-planner'
 import { Route as MiPerfilRouteImport } from './routes/mi-perfil'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
@@ -85,6 +86,11 @@ const GastosRoute = GastosRouteImport.update({
   path: '/gastos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HipotecaRoute = HipotecaRouteImport.update({
+  id: '/hipoteca',
+  path: '/hipoteca',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LifePlannerRoute = LifePlannerRouteImport.update({
   id: '/life-planner',
   path: '/life-planner',
@@ -144,6 +150,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/demo': typeof DemoRoute
   '/gastos': typeof GastosRoute
+  '/hipoteca': typeof HipotecaRoute
   '/life-planner': typeof LifePlannerRoute
   '/mi-perfil': typeof MiPerfilRoute
   '/onboarding': typeof OnboardingRoute
@@ -166,6 +173,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/demo': typeof DemoRoute
   '/gastos': typeof GastosRoute
+  '/hipoteca': typeof HipotecaRoute
   '/life-planner': typeof LifePlannerRoute
   '/mi-perfil': typeof MiPerfilRoute
   '/onboarding': typeof OnboardingRoute
@@ -189,6 +197,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/demo': typeof DemoRoute
   '/gastos': typeof GastosRoute
+  '/hipoteca': typeof HipotecaRoute
   '/life-planner': typeof LifePlannerRoute
   '/mi-perfil': typeof MiPerfilRoute
   '/onboarding': typeof OnboardingRoute
@@ -213,6 +222,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/demo'
     | '/gastos'
+    | '/hipoteca'
     | '/life-planner'
     | '/mi-perfil'
     | '/onboarding'
@@ -235,6 +245,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/demo'
     | '/gastos'
+    | '/hipoteca'
     | '/life-planner'
     | '/mi-perfil'
     | '/onboarding'
@@ -257,6 +268,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/demo'
     | '/gastos'
+    | '/hipoteca'
     | '/life-planner'
     | '/mi-perfil'
     | '/onboarding'
@@ -280,6 +292,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   DemoRoute: typeof DemoRoute
   GastosRoute: typeof GastosRoute
+  HipotecaRoute: typeof HipotecaRoute
   LifePlannerRoute: typeof LifePlannerRoute
   MiPerfilRoute: typeof MiPerfilRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -370,6 +383,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GastosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/hipoteca': {
+      id: '/hipoteca'
+      path: '/hipoteca'
+      fullPath: '/hipoteca'
+      preLoaderRoute: typeof HipotecaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/life-planner': {
       id: '/life-planner'
       path: '/life-planner'
@@ -448,6 +468,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   DemoRoute: DemoRoute,
   GastosRoute: GastosRoute,
+  HipotecaRoute: HipotecaRoute,
   LifePlannerRoute: LifePlannerRoute,
   MiPerfilRoute: MiPerfilRoute,
   OnboardingRoute: OnboardingRoute,
