@@ -566,7 +566,7 @@ function Gastos() {
 
 
       <div className="grid items-stretch gap-3 lg:grid-cols-3">
-        <Panel variant="minimal" title={t("Distribución por categoría", "Spend by category")} description={t("Fijos prorrateados al rango + variable", "Fixed prorated to the range + variable")} className="flex h-full flex-col">
+        <Panel variant="minimal" title={t("Distribución por categoría", "Spend by category")} description={t("Solo gastos variables del periodo seleccionado.", "Variable spend only for the selected period.")} className="flex h-full flex-col">
 
           {donutData.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t("Sin movimientos en este rango.", "No transactions in this range.")}</p>
@@ -592,11 +592,11 @@ function Gastos() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                  <p className="numeric text-3xl font-semibold">{fmtCompact(total)}</p>
-                  <p className="text-sm text-muted-foreground">{t("gasto total del periodo", "total period spend")}</p>
-                  <p className={cn("numeric mt-0.5 text-xs", delta > 0 ? "text-negative" : "text-positive")}>
-                    {delta > 0 ? "+" : ""}
-                    {delta.toFixed(1)}% {t("vs. periodo anterior", "vs. previous period")}
+                  <p className="numeric text-3xl font-semibold">{fmtCompact(variableTotal)}</p>
+                  <p className="text-sm text-muted-foreground">{t("gasto variable del periodo", "variable period spend")}</p>
+                  <p className={cn("numeric mt-0.5 text-xs", variableDelta > 0 ? "text-negative" : "text-positive")}>
+                    {variableDelta > 0 ? "+" : ""}
+                    {variableDelta.toFixed(1)}% {t("vs. periodo anterior", "vs. previous period")}
                   </p>
                 </div>
               </div>
