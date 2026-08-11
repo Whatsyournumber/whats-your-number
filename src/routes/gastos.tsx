@@ -158,7 +158,7 @@ function Gastos() {
   const from = range?.from ?? subDays(new Date(), 29);
   const to = range?.to ?? from;
   const days = Math.max(1, differenceInCalendarDays(to, from) + 1);
-  const monthsInRange = Math.max(1, differenceInCalendarMonths(to, from) + 1);
+  const monthsInRange = Math.max(1, Math.round(days / 30));
   const prevTo = subDays(from, 1);
   const prevFrom = subDays(prevTo, days - 1);
 
