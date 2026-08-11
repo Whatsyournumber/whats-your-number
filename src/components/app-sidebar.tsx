@@ -14,6 +14,7 @@ import {
   Settings,
   Wallet,
   UserCog,
+  CreditCard,
 } from "lucide-react";
 
 import {
@@ -57,6 +58,7 @@ export function AppSidebar() {
   const secondary = [
     { title: "AI Advisor", url: "/advisor", icon: Bot },
     { title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserCog },
+    { title: t("Suscripción", "Subscription"), url: "/suscripcion", icon: CreditCard },
     { title: t("Cargar EEFF", "Upload statements"), url: "/configuracion", icon: Settings },
   ] as const;
 

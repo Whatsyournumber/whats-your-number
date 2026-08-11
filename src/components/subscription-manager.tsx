@@ -97,14 +97,13 @@ export function SubscriptionManager() {
         )}
       </div>
 
-      {tier !== "free" && (
-        <div className="mt-5 grid gap-2 sm:grid-cols-3">
+      <div className="mt-5 grid gap-2 sm:grid-cols-3">
           <PortalAction
             icon={CreditCard}
             label={t("Método de pago", "Payment method")}
             hint={t("Actualiza tu tarjeta", "Update your card")}
             loading={spin("portal:payment_method")}
-            disabled={busy !== null || loading}
+            disabled={busy !== null || loading || tier === "free"}
             onClick={() => void portal("payment_method")}
           />
           <PortalAction
@@ -112,7 +111,7 @@ export function SubscriptionManager() {
             label={t("Facturas", "Invoices")}
             hint={t("Descarga tu historial", "Download your history")}
             loading={spin("portal:overview")}
-            disabled={busy !== null || loading}
+            disabled={busy !== null || loading || tier === "free"}
             onClick={() => void portal("overview")}
           />
           <PortalAction
@@ -120,11 +119,10 @@ export function SubscriptionManager() {
             label={t("Cancelar plan", "Cancel plan")}
             hint={t("Sigues con acceso hasta el final", "Access until period ends")}
             loading={spin("portal:cancel")}
-            disabled={busy !== null || loading}
+            disabled={busy !== null || loading || tier === "free"}
             onClick={() => void portal("cancel")}
           />
-        </div>
-      )}
+      </div>
 
       <p className="mt-4 text-xs text-muted-foreground">
         {t(
