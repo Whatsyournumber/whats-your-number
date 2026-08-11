@@ -155,6 +155,14 @@ export async function processStatementForUser(
       excluded: Boolean(t.excluded),
     }));
 
+    if (rows.length === 0) {
+      throw new Error(
+        isImage
+          ? "No pudimos leer movimientos en la captura. Asegúrate de que se vean el comercio y el importe, y sube la imagen completa y nítida."
+          : "No encontramos movimientos en el archivo.",
+      );
+    }
+
     await supabase.from("imported_transactions").delete().eq("statement_id", statementId);
     if (rows.length > 0) {
       const { error: insErr } = await supabase.from("imported_transactions").insert(rows);
