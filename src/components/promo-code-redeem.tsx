@@ -90,7 +90,6 @@ export function PromoCodeRedeem({ className }: { className?: string }) {
           onKeyDown={(e) => {
             if (e.key === "Enter") void redeem();
           }}
-          placeholder="PRUEBAGRATIS"
           className="rounded-xl uppercase tracking-wide"
           aria-label={t("Código de invitación", "Invite code")}
         />
