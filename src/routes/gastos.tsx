@@ -678,7 +678,9 @@ function Gastos() {
                     className="h-8 w-28 text-right text-sm"
                   />
                   <span className="numeric mt-0.5 text-[11px] text-muted-foreground">
-                    {fmt(item.amount * periodFactor)} {t("en este periodo", "in this period")}
+                    {isLongRange
+                      ? `${fmt(item.amount * monthsInRange)} · ${t(`${monthsInRange} meses`, `${monthsInRange} months`)}`
+                      : `${fmt(item.amount)} ${t("en este periodo", "in this period")}`}
                   </span>
                 </div>
                 <Button
@@ -708,7 +710,11 @@ function Gastos() {
           </Button>
           <div className="ml-auto flex flex-col items-end">
             <span className="numeric text-sm font-semibold">{t("Total", "Total")} {fmt(fixed.total)}{t("/mes", "/mo")}</span>
-            <span className="numeric text-[11px] text-muted-foreground">{fmt(fixedInPeriod)} {t("en este periodo", "in this period")}</span>
+            <span className="numeric text-[11px] text-muted-foreground">
+              {isLongRange
+                ? `${fmt(fixed.total * monthsInRange)} · ${t(`${monthsInRange} meses en el periodo`, `${monthsInRange} months in the period`)}`
+                : `${fmt(fixed.total)} ${t("en este periodo", "in this period")}`}
+            </span>
           </div>
         </div>
       </Panel>
