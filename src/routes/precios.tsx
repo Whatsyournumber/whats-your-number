@@ -82,9 +82,10 @@ function Pricing() {
     },
     {
       name: "Patrimonio",
-      monthlyPrice: 29,
-      yearlyPrice: yearlyTotal(29, 0.3),
+      monthlyPrice: 19,
+      yearlyPrice: yearlyTotal(19, 0.3),
       yearlyDiscount: 0.3,
+
       desc: t(
         "Para patrimonios complejos, familias y quienes toman decisiones con datos.",
         "For complex net worths, families and data-driven decision makers.",
