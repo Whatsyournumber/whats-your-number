@@ -1,13 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { CheckCircle2, FileSpreadsheet, FileText, Loader2, Sparkles, Trash2, TriangleAlert, Upload } from "lucide-react";
+import { CheckCircle2, FileSpreadsheet, FileText, Loader2, Lock, Sparkles, Trash2, TriangleAlert, Upload } from "lucide-react";
 import { useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 
 import { Panel } from "@/components/page";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import { useSubscription } from "@/hooks/use-subscription";
 import { useT } from "@/hooks/use-language";
 import { supabase } from "@/integrations/supabase/client";
 import { processStatement } from "@/lib/statements.functions";
