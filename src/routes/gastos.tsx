@@ -238,8 +238,9 @@ function Gastos() {
 
   const [monthA, setMonthA] = useState<string | null>(null);
   const [monthB, setMonthB] = useState<string | null>(null);
-  const mA = monthA ?? monthKeys[0] ?? null;
-  const mB = monthB ?? monthKeys[1] ?? monthKeys[0] ?? null;
+  const mA = (monthA && monthKeys.includes(monthA) ? monthA : monthKeys[0]) ?? null;
+  const mB = (monthB && monthKeys.includes(monthB) ? monthB : monthKeys[1] ?? monthKeys[0]) ?? null;
+
 
   const monthCompare = useMemo(() => {
     const totalsOf = (key: string | null) => {
