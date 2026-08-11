@@ -157,6 +157,7 @@ function Gastos() {
   const from = range?.from ?? subDays(new Date(), 29);
   const to = range?.to ?? from;
   const days = Math.max(1, differenceInCalendarDays(to, from) + 1);
+  const monthsInRange = Math.max(1, Math.round(days / 30));
   const prevTo = subDays(from, 1);
   const prevFrom = subDays(prevTo, days - 1);
 
@@ -501,7 +502,7 @@ function Gastos() {
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard variant="flat" label={t("Gasto del periodo", "Period spend")} value={fmt(total)} delta={Number(delta.toFixed(1))} hint={t("fijos + variables", "fixed + variable")} inverse accent index={0} />
-        <KpiCard variant="flat" label={t("Gastos fijos", "Fixed expenses")} value={fmt(fixed.total)} hint={t("mensual, editable", "monthly, editable")} index={1} />
+        <KpiCard variant="flat" label={t("Gastos fijos", "Fixed expenses")} value={fmt(isLongRange ? fixed.total * monthsInRange : fixed.total)} hint={isLongRange ? t(`${monthsInRange} meses en el periodo`, `${monthsInRange} months in the period`) : t("mensual, editable", "monthly, editable")} index={1} />
         <KpiCard variant="flat" label={t("Gasto variable (EEFF)", "Variable spend (statements)")} value={fmt(variable)} hint={`${current.length} ${t("transacciones", "transactions")}`} index={2} />
         <KpiCard variant="flat" label={t("Promedio diario", "Daily average")} value={fmt(total / days)} hint={`${days} ${t("días", "days")}`} index={3} />
       </div>
