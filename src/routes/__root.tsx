@@ -158,7 +158,7 @@ function RootComponent() {
   );
 }
 
-const PUBLIC_PATHS = ["/", "/auth", "/precios", "/blog", "/demo"];
+const PUBLIC_PATHS = ["/", "/auth", "/precios", "/blog", "/demo", "/privacidad", "/terminos", "/reembolsos"];
 // El onboarding tiene su propio gate de sesión y layout a pantalla completa.
 const BARE_PATHS = ["/onboarding"];
 

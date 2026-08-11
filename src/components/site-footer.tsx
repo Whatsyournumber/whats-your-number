@@ -4,6 +4,7 @@ import { Facebook, Instagram, Linkedin, Twitter, Youtube, Heart, Plus } from "lu
 import { motion, AnimatePresence } from "motion/react";
 
 import { BrandLogo } from "@/components/brand-logo";
+import { PoliciesDialog } from "@/components/policies-dialog";
 import { useT } from "@/hooks/use-language";
 
 const socials = [
@@ -14,9 +15,25 @@ const socials = [
   { icon: Youtube, label: "YouTube", href: "#" },
 ];
 
+type FooterLink = { label: string; to: string; policy?: boolean };
+
 export function SiteFooter() {
   const t = useT();
   const [open, setOpen] = useState(false);
+  const [policiesOpen, setPoliciesOpen] = useState(false);
+
+  const linkClass = "text-left text-sm text-muted-foreground transition-colors hover:text-primary";
+  const renderLink = (l: FooterLink) =>
+    l.policy ? (
+      <button type="button" onClick={() => setPoliciesOpen(true)} className={linkClass}>
+        {l.label}
+      </button>
+    ) : (
+      <Link to={l.to} className={linkClass}>
+        {l.label}
+      </Link>
+    );
+
 
   const columns = [
       {
@@ -38,9 +55,9 @@ export function SiteFooter() {
     {
       title: "Legal",
       links: [
-        { label: t("Términos y condiciones", "Terms and conditions"), to: "/terminos" },
-        { label: t("Política de reembolsos", "Refund policy"), to: "/reembolsos" },
-        { label: t("Aviso de privacidad", "Privacy notice"), to: "/privacidad" },
+        { label: t("Términos y condiciones", "Terms and conditions"), to: "/terminos", policy: true },
+        { label: t("Política de reembolsos", "Refund policy"), to: "/reembolsos", policy: true },
+        { label: t("Aviso de privacidad", "Privacy notice"), to: "/privacidad", policy: true },
       ],
     },
   ];
@@ -74,14 +91,7 @@ export function SiteFooter() {
                     <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground">{col.title}</h3>
                     <ul className="mt-4 space-y-2.5">
                       {col.links.map((l) => (
-                        <li key={l.label + l.to}>
-                          <Link
-                            to={l.to}
-                            className="text-sm text-muted-foreground transition-colors hover:text-primary"
-                          >
-                            {l.label}
-                          </Link>
-                        </li>
+                        <li key={l.label + l.to}>{renderLink(l)}</li>
                       ))}
                     </ul>
                   </div>
@@ -106,14 +116,7 @@ export function SiteFooter() {
                       <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground">{col.title}</h3>
                       <ul className="mt-3 space-y-2">
                         {col.links.map((l) => (
-                          <li key={l.label + l.to}>
-                            <Link
-                              to={l.to}
-                              className="text-sm text-muted-foreground transition-colors hover:text-primary"
-                            >
-                              {l.label}
-                            </Link>
-                          </li>
+                          <li key={l.label + l.to}>{renderLink(l)}</li>
                         ))}
                       </ul>
                     </div>
@@ -170,6 +173,7 @@ export function SiteFooter() {
           </div>
         </div>
       </div>
+      <PoliciesDialog open={policiesOpen} onOpenChange={setPoliciesOpen} title="Legal" />
     </footer>
   );
 }
