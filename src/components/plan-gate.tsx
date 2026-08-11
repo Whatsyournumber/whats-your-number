@@ -47,7 +47,7 @@ export function PlanGate({
       )}
       <div
         className={cn(
-          "sticky top-14 z-10 flex h-[calc(100vh-3.5rem)] flex-col items-center justify-start pt-20 bg-background/60 p-6 backdrop-blur-sm",
+          "sticky top-14 z-10 flex h-[calc(100vh-3.5rem)] flex-col items-center justify-start pt-6 bg-background/60 p-6 backdrop-blur-sm",
           !blur && "relative",
         )}
       >
