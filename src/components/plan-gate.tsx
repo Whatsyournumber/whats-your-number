@@ -30,41 +30,42 @@ export function PlanGate({
     : t("Desbloquea Patrimonio", "Unlock Patrimonio");
   const description = isPro
     ? t(
-        "Esta función está incluida en Pro. Prueba 14 días gratis y cancela cuando quieras.",
-        "This feature is included in Pro. Try 14 days free and cancel anytime.",
+        "Accede a tu portafolio, portafolio, retiro y análisis avanzado. Prueba 14 días gratis y cancela cuando quieras.",
+        "Access portfolio, retirement, and advanced analysis. Try 14 days free and cancel anytime.",
       )
     : t(
-        "Esta función está incluida en Patrimonio. Para patrimonios complejos y familias.",
-        "This feature is included in Patrimonio. For complex net worths and families.",
+        "Gestión completa de patrimonio para familias y activos complejos. Cancela cuando quieras.",
+        "Full net-worth management for families and complex assets. Cancel anytime.",
       );
 
   return (
     <div className={cn("relative", className)}>
       {blur && (
-        <div className="pointer-events-none select-none opacity-30 blur-[1.5px] saturate-50">
+        <div className="pointer-events-none select-none opacity-[0.18] blur-[2px] saturate-50">
           {children}
         </div>
       )}
       <div
         className={cn(
-          "absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-2xl border border-border bg-background/95 p-6 text-center shadow-sm backdrop-blur-xl",
+          "absolute inset-0 z-10 flex flex-col items-center justify-center gap-5 rounded-2xl border border-border bg-background/97 p-8 text-center shadow-2xl backdrop-blur-2xl",
           !blur && "relative",
         )}
       >
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-          <Lock className="h-4 w-4" />
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+          <Lock className="h-7 w-7" />
         </div>
-        <div>
-          <p className="text-sm font-semibold">{title}</p>
-          <p className="mt-1 max-w-xs text-xs text-muted-foreground">{description}</p>
+        <div className="max-w-sm">
+          <p className="text-lg font-semibold tracking-tight">{title}</p>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
         </div>
-        <Button asChild size="sm" className="rounded-full px-4">
+        <Button asChild size="lg" className="rounded-full px-8">
           <Link to="/precios">
-            <Sparkles className="mr-2 h-3.5 w-3.5" />
-            {t("Ver planes", "See plans")}
+            <Sparkles className="mr-2 h-4 w-4" />
+            {t("Comienza ya", "Start now")}
           </Link>
         </Button>
       </div>
     </div>
   );
 }
+
