@@ -184,17 +184,17 @@ function Dashboard() {
         <KpiCard label={t("Ingresos", "Income")} value={fmt(current.income)} {...(hasHistory ? { delta: delta(current.income, previous.income) } : {})} icon={Banknote} index={1} />
         <KpiCard label={t("Gastos", "Expenses")} value={fmt(current.expenses)} {...(hasHistory ? { delta: delta(current.expenses, previous.expenses) } : {})} inverse icon={TrendingUp} index={2} />
         <KpiCard label={t("Ahorro", "Savings")} value={fmt(current.savings)} {...(hasHistory ? { delta: delta(current.savings, previous.savings) } : {})} icon={PiggyBank} index={3} />
+        <KpiCard label={t("Tasa de ahorro", "Savings rate")} value={`${savingsRate.toFixed(0)}%`} {...(hasHistory ? { delta: savingsRate - prevRate } : {})} icon={ArrowUpRight} index={4} />
         <Link to="/hipoteca" className="block transition-transform hover:-translate-y-0.5">
           <KpiCard
             label={t("Hipoteca", "Mortgage")}
             value={fmt(mortgageBalance)}
-            hint={t("Ver simulador", "Open simulator")}
+            hint={mortgageHint}
             inverse
             icon={Home}
-            index={4}
+            index={5}
           />
         </Link>
-        <KpiCard label={t("Tasa de ahorro", "Savings rate")} value={`${savingsRate.toFixed(0)}%`} {...(hasHistory ? { delta: savingsRate - prevRate } : {})} icon={ArrowUpRight} index={5} />
       </div>
 
 
