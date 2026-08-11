@@ -204,7 +204,7 @@ export function MortgageModule() {
     : 0;
   const towardNumber = d.plan.targetCapital > 0 ? (Math.max(invested, interestSaved) / d.plan.targetCapital) * 100 : 0;
 
-  const term = (m: number) => {
+  const formatTerm = (m: number) => {
     if (!Number.isFinite(m)) return "—";
     const y = Math.floor(m / 12);
     const mm = Math.round(m % 12);
