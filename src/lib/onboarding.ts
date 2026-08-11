@@ -27,6 +27,9 @@ export type OnboardingData = {
   assets_crypto: number;
   assets_property: number;
   liabilities: number;
+  mortgage_balance: number;
+  mortgage_rate: number;
+  mortgage_term: number;
   retire_age: number;
   desired_retirement_income: number;
   expected_return: number;
