@@ -32,7 +32,7 @@ export const Route = createFileRoute("/retiro")({
 });
 
 
-function Retiro() {
+function RetiroContent() {
   const t = useT();
   const { profile, save, saving } = useProfile();
 
