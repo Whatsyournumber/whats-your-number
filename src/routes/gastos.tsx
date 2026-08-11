@@ -204,11 +204,8 @@ function Gastos() {
     [fixed.items, periodFactor],
   );
 
-  // Donut: variable + fijos prorrateados del mismo periodo
-  const donutData = useMemo(
-    () => [...byCategory.map((c) => ({ ...c, fixed: false })), ...fixedRows].sort((a, b) => b.amount - a.amount),
-    [byCategory, fixedRows],
-  );
+  // Donut y detalle: solo gastos variables; los fijos tienen su propia sección.
+  const donutData = useMemo(() => byCategory.map((c) => ({ ...c, fixed: false })).sort((a, b) => b.amount - a.amount), [byCategory]);
 
   // Categorías con gastos visibles por defecto; toggle para ver vacías
   const [showEmptyCategories, setShowEmptyCategories] = useState(false);
@@ -221,11 +218,8 @@ function Gastos() {
       map.delete(name);
     }
     const rest = Array.from(map.values()).filter((c) => c.amount > 0 || showEmptyCategories);
-    return ([...ordered, ...rest, ...fixedRows] as { name: string; amount: number; items: Tx[]; fixed?: boolean }[]).sort(
-      (a, b) => b.amount - a.amount,
-    );
-
-  }, [byCategory, categories.names, showEmptyCategories, fixedRows]);
+    return [...ordered, ...rest].sort((a, b) => b.amount - a.amount);
+  }, [byCategory, categories.names, showEmptyCategories]);
 
 
   // ---- Comparación mes vs mes ----
