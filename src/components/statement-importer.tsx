@@ -184,8 +184,8 @@ export function StatementImporter() {
       <Panel
         title={t("Cargar EEFF", "Upload statements")}
         description={t(
-          "PDF de tarjetas o CSV bancarios — la IA extrae y clasifica cada movimiento",
-          "Card PDFs or bank CSVs — AI extracts and classifies each transaction",
+          "PDF de tarjetas, CSV bancarios o capturas de pantalla — la IA extrae y clasifica cada movimiento",
+          "Card PDFs, bank CSVs or screenshots — AI extracts and classifies each transaction",
         )}
       >
         <div className="relative">
