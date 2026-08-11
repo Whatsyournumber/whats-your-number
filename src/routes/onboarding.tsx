@@ -167,6 +167,11 @@ function OnboardingPage() {
         .eq("user_id", user.id)
         .maybeSingle();
       if (!alive) return;
+      // Si ya completó el onboarding, no lo repetimos.
+      if (row && (row as Record<string, unknown>)["completed"]) {
+        navigate({ to: "/dashboard", replace: true });
+        return;
+      }
       if (row) {
         const r = row as Record<string, unknown>;
         const next = { ...emptyOnboarding, currency: detectCurrency() };
