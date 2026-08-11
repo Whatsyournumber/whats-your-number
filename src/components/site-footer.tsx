@@ -14,9 +14,25 @@ const socials = [
   { icon: Youtube, label: "YouTube", href: "#" },
 ];
 
+type FooterLink = { label: string; to: string; policy?: boolean };
+
 export function SiteFooter() {
   const t = useT();
   const [open, setOpen] = useState(false);
+  const [policiesOpen, setPoliciesOpen] = useState(false);
+
+  const linkClass = "text-left text-sm text-muted-foreground transition-colors hover:text-primary";
+  const renderLink = (l: FooterLink) =>
+    l.policy ? (
+      <button type="button" onClick={() => setPoliciesOpen(true)} className={linkClass}>
+        {l.label}
+      </button>
+    ) : (
+      <Link to={l.to} className={linkClass}>
+        {l.label}
+      </Link>
+    );
+
 
   const columns = [
       {
