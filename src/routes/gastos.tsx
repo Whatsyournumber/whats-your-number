@@ -867,7 +867,17 @@ function Gastos() {
         </Accordion>
 
         <div className="mt-3 space-y-2 border-t border-border pt-3">
-          <p className="text-xs font-medium text-muted-foreground">{t("Categorías propias", "Your own categories")}</p>
+          <CategoryChat
+            categories={categories.names}
+            items={categories.items}
+            customRules={categories.rules.map((r) => ({ name: r.name, keywords: r.hints }))}
+            merchants={merchantsForAi}
+            onCreate={(name, keywords) => categories.add(name, keywords)}
+            onUpdate={categories.update}
+            onRemove={categories.remove}
+          />
+          <p className="pt-1 text-xs font-medium text-muted-foreground">{t("Categorías propias", "Your own categories")}</p>
+
           {categories.items.map((c) => (
             <div key={c.id} className="flex flex-wrap items-center gap-2 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
               <Input
