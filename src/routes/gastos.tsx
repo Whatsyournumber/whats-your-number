@@ -674,6 +674,10 @@ function Gastos() {
         </Panel>
       </div>
 
+      <MortgageModule />
+
+
+
       <Panel variant="minimal" title={t("Gastos fijos mensuales", "Monthly fixed expenses")} description={t("Edita el monto mensual; abajo se muestra lo que representa en el periodo seleccionado.", "Edit the monthly amount; below you see what it represents for the selected period.")}>
         <div className="space-y-2">
           {fixed.items.map((item) => (
