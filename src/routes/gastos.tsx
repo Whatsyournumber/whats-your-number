@@ -274,6 +274,8 @@ function Gastos() {
 
   // ---- Gasto objetivo ----
   const { target, setTarget } = useSpendTarget(Math.round(profile.monthly_expenses || 0));
+  const isLongRange = days > 31;
+  const monthsInRange = days / 30;
   const monthlyRun = fixed.total + (variableTotal / days) * 30;
   const targetPct = target > 0 ? (monthlyRun / target) * 100 : 0;
 
