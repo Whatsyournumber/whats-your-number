@@ -58,6 +58,14 @@ function yearsToTarget(target: number, current: number, monthly: number, annualR
   return 99;
 }
 
+/** Cuota mensual estándar para un saldo, tasa y plazo en meses. */
+function paymentFor(balance: number, annualRate: number, months: number) {
+  const r = annualRate / 100 / 12;
+  if (months <= 0) return 0;
+  if (r === 0) return balance / months;
+  return (balance * r) / (1 - Math.pow(1 + r, -months));
+}
+
 const delta = (a: number, b: number) => (b > 0 ? ((a - b) / b) * 100 : 0);
 
 function greeting(t: (es: string, en: string) => string) {
