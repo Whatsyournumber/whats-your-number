@@ -332,7 +332,14 @@ export function estimateDesiredIncome(life: LifeData, extra: { children?: string
   return Math.round((base * factor * partner * housing + travel + kids * 450) / 50) * 50;
 }
 
-export function buildInsights(plan: NorthPlan, d: OnboardingData, life: LifeData, currency: string) {
+export function buildInsights(
+  plan: NorthPlan,
+  d: OnboardingData,
+  life: LifeData,
+  currency: string,
+  lang: "es" | "en" = "es",
+) {
+  const en = lang === "en";
   const out: string[] = [];
   const liquid = d.assets_cash + d.assets_bank;
   const assets = totalAssets(d);
@@ -340,27 +347,39 @@ export function buildInsights(plan: NorthPlan, d: OnboardingData, life: LifeData
   const yearsSaved = Math.max(1, Math.round(plan.yearsLeft * 0.12));
 
   out.push(
-    `Reduciendo tus gastos mensuales un 8%, alcanzarías tu objetivo aproximadamente ${yearsSaved} ${yearsSaved === 1 ? "año" : "años"} antes.`,
+    en
+      ? `By cutting your monthly spending by 8%, you'd reach your goal about ${yearsSaved} ${yearsSaved === 1 ? "year" : "years"} earlier.`
+      : `Reduciendo tus gastos mensuales un 8%, alcanzarías tu objetivo aproximadamente ${yearsSaved} ${yearsSaved === 1 ? "año" : "años"} antes.`,
   );
   if (cashPct >= 25) {
     out.push(
-      `Actualmente el ${cashPct}% de tu patrimonio está en efectivo. Considera si esa distribución encaja con tus objetivos y tu tolerancia al riesgo.`,
+      en
+        ? `Right now ${cashPct}% of your net worth sits in cash. Consider whether that mix fits your goals and risk tolerance.`
+        : `Actualmente el ${cashPct}% de tu patrimonio está en efectivo. Considera si esa distribución encaja con tus objetivos y tu tolerancia al riesgo.`,
     );
   } else {
     out.push(
-      `Tu patrimonio está bien diversificado: solo el ${cashPct}% permanece en efectivo, el resto trabaja para ti.`,
+      en
+        ? `Your net worth is well diversified: only ${cashPct}% stays in cash, the rest works for you.`
+        : `Tu patrimonio está bien diversificado: solo el ${cashPct}% permanece en efectivo, el resto trabaja para ti.`,
     );
   }
   out.push(
-    `Con el ritmo actual de ahorro e inversión, estás proyectado para alcanzar tu objetivo a los ${plan.freedomAge} años (${money(plan.projected, currency)} estimados).`,
+    en
+      ? `At your current saving and investing pace, you're projected to hit your goal at age ${plan.freedomAge} (${money(plan.projected, currency)} estimated).`
+      : `Con el ritmo actual de ahorro e inversión, estás proyectado para alcanzar tu objetivo a los ${plan.freedomAge} años (${money(plan.projected, currency)} estimados).`,
   );
   if (life.city) {
+    const style = lifestyles.find((l) => l.value === life.lifestyle)?.label.toLowerCase() ?? (en ? "comfortable" : "cómodo");
     out.push(
-      `Vivir en ${life.city} con un estilo ${lifestyles.find((l) => l.value === life.lifestyle)?.label.toLowerCase() ?? "cómodo"} implica un objetivo de ${money(plan.desiredIncome, currency)} al mes.`,
+      en
+        ? `Living in ${life.city} with a ${style} lifestyle implies a target of ${money(plan.desiredIncome, currency)} per month.`
+        : `Vivir en ${life.city} con un estilo ${style} implica un objetivo de ${money(plan.desiredIncome, currency)} al mes.`,
     );
   }
   return out.slice(0, 3);
 }
+
 
 /** Edad estimada en la que el capital alcanza el objetivo, con el ritmo actual. */
 export function freedomAgeEstimate(d: OnboardingData, target: number) {
