@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight, Banknote, PiggyBank, TrendingUp, Wallet, Waves } from "lucide-react";
+import { ArrowUpRight, Banknote, Home, PiggyBank, TrendingUp, Wallet } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -26,6 +26,7 @@ import { Progress } from "@/components/ui/progress";
 import { useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
+import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { buildInsights } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
@@ -72,11 +73,11 @@ function Dashboard() {
   const { transactions } = useTransactions();
   const d = buildDataset(profile);
   const realMonths = buildRealMonths(transactions, d.netWorth);
-  const months = (realMonths ?? d.months).map((month) => ({
-    ...month,
-    income: d.income,
-    savings: d.income - month.expenses,
-  }));
+  const fixed = useFixedExpenses();
+  const months = (realMonths ?? d.months).map((month) => {
+    const expenses = month.expenses + (realMonths ? fixed.total : 0);
+    return { ...month, expenses, income: d.income, savings: d.income - expenses };
+  });
 
   const hasHistory = Boolean(realMonths && realMonths.length > 1);
   const current = months[months.length - 1] ?? d.current;
@@ -100,8 +101,17 @@ function Dashboard() {
       : yearsToTarget(targetNumber, numberNetWorth, monthlyContribution, profile.expected_return || 7);
   const usingDemo = plan.targetCapital <= 0 && targetNumber > 0;
 
-  const freeCash = Math.max(0, current.savings - current.investments);
-  const prevFree = Math.max(0, previous.savings - previous.investments);
+  const [mortgageBalance, setMortgageBalance] = useState(0);
+  useEffect(() => {
+    let stored = 0;
+    try {
+      const raw = window.localStorage.getItem("whatsyournumber:mortgage");
+      if (raw) stored = Number(JSON.parse(raw)?.balance) || 0;
+    } catch {
+      /* ignore */
+    }
+    setMortgageBalance(stored || Number(profile.liabilities) || 0);
+  }, [profile.liabilities]);
   const savingsRate = current.income > 0 ? (current.savings / current.income) * 100 : 0;
   const prevRate = previous.income > 0 ? (previous.savings / previous.income) * 100 : 0;
   const insights = buildInsights(plan, profile, profile, d.currency);
@@ -144,14 +154,16 @@ function Dashboard() {
         <KpiCard label={t("Ingresos", "Income")} value={fmt(current.income)} {...(hasHistory ? { delta: delta(current.income, previous.income) } : {})} icon={Banknote} index={1} />
         <KpiCard label={t("Gastos", "Expenses")} value={fmt(current.expenses)} {...(hasHistory ? { delta: delta(current.expenses, previous.expenses) } : {})} inverse icon={TrendingUp} index={2} />
         <KpiCard label={t("Ahorro", "Savings")} value={fmt(current.savings)} {...(hasHistory ? { delta: delta(current.savings, previous.savings) } : {})} icon={PiggyBank} index={3} />
-        <KpiCard
-          label={t("Flujo libre", "Free cash flow")}
-          value={fmt(freeCash)}
-          {...(hasHistory && prevFree > 0 ? { delta: delta(freeCash, prevFree) } : {})}
-          hint={t("tras inversiones", "after investments")}
-          icon={Waves}
-          index={4}
-        />
+        <Link to="/hipoteca" className="block transition-transform hover:-translate-y-0.5">
+          <KpiCard
+            label={t("Hipoteca", "Mortgage")}
+            value={fmt(mortgageBalance)}
+            hint={t("Ver simulador", "Open simulator")}
+            inverse
+            icon={Home}
+            index={4}
+          />
+        </Link>
         <KpiCard label={t("Tasa de ahorro", "Savings rate")} value={`${savingsRate.toFixed(0)}%`} {...(hasHistory ? { delta: savingsRate - prevRate } : {})} icon={ArrowUpRight} index={5} />
       </div>
 
