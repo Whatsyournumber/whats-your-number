@@ -169,6 +169,13 @@ export function StatementImporter() {
   const statements = statementsQuery.data ?? [];
   const transactions = txQuery.data ?? [];
 
+  const now = new Date();
+  const statementsThisMonth = statements.filter((s) => {
+    const d = new Date(s.created_at);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }).length;
+  const freeLimitReached = isFree && statementsThisMonth >= 5;
+
   return (
     <div className="space-y-4">
       <Panel
