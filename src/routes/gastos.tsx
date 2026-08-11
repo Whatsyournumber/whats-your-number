@@ -275,8 +275,22 @@ function Gastos() {
   // ---- Gasto objetivo ----
   const { target, setTarget } = useSpendTarget(Math.round(profile.monthly_expenses || 0));
   const isLongRange = days > 31;
-  const monthsInRange = days / 30;
-  const monthlyRun = fixed.total + (variableTotal / days) * 30;
+
+  // Para rangos largos, el promedio mensual es el promedio de los totales mensuales
+  // reales (variable del mes + fijos del mes). Así cada mes analizado pesa igual.
+  const monthlyAverage = useMemo(() => {
+    if (monthKeys.length === 0) return fixed.total;
+    const map = new Map<string, number>();
+    for (const t of current) {
+      const key = format(parseISO(t.tx_date!), "yyyy-MM");
+      map.set(key, (map.get(key) ?? 0) + Math.abs(t.amount));
+    }
+    const monthlyTotals = Array.from(map.values()).map((v) => v + fixed.total);
+    return monthlyTotals.reduce((s, v) => s + v, 0) / monthlyTotals.length;
+  }, [current, fixed.total, monthKeys.length]);
+
+  const monthlyRun = isLongRange ? monthlyAverage : fixed.total + (variableTotal / days) * 30;
+  const avgMonthlyVariable = monthlyAverage - fixed.total;
   const targetPct = target > 0 ? (monthlyRun / target) * 100 : 0;
 
   // ---- Recomendaciones IA ----
