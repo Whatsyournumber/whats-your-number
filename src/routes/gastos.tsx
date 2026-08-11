@@ -659,7 +659,7 @@ function Gastos() {
         </Panel>
       </div>
 
-      <Panel variant="minimal" title={t("Gastos fijos mensuales", "Monthly fixed expenses")} description={t("Edita nombre y monto; se guardan en este navegador", "Edit name and amount; saved in this browser")}>
+      <Panel variant="minimal" title={t("Gastos fijos mensuales", "Monthly fixed expenses")} description={t("Edita el monto mensual; abajo se muestra lo que representa en el periodo seleccionado.", "Edit the monthly amount; below you see what it represents for the selected period.")}>
         <div className="space-y-2">
           {fixed.items.map((item) => (
             <div key={item.id} className="flex flex-wrap items-center gap-2 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
@@ -669,11 +669,16 @@ function Gastos() {
                 className="h-8 w-full max-w-[260px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
               />
               <div className="ml-auto flex items-center gap-2">
-                <NumberInput
-                  value={item.amount}
-                  onChange={(v) => fixed.update(item.id, { amount: v })}
-                  className="h-8 w-28 text-right text-sm"
-                />
+                <div className="flex flex-col items-end">
+                  <NumberInput
+                    value={item.amount}
+                    onChange={(v) => fixed.update(item.id, { amount: v })}
+                    className="h-8 w-28 text-right text-sm"
+                  />
+                  <span className="numeric mt-0.5 text-[11px] text-muted-foreground">
+                    {fmt(item.amount * periodFactor)} {t("en este periodo", "in this period")}
+                  </span>
+                </div>
                 <Button
                   size="icon"
                   variant="ghost"
@@ -695,11 +700,14 @@ function Gastos() {
             </div>
           ))}
         </div>
-        <div className="mt-3 flex items-center gap-3">
+        <div className="mt-3 flex flex-wrap items-center gap-3">
           <Button size="sm" variant="outline" className="gap-2" onClick={fixed.add}>
             <Plus className="h-4 w-4" /> {t("Añadir gasto fijo", "Add fixed expense")}
           </Button>
-          <span className="numeric ml-auto text-sm font-semibold">{t("Total", "Total")} {fmt(fixed.total)}{t("/mes", "/mo")}</span>
+          <div className="ml-auto flex flex-col items-end">
+            <span className="numeric text-sm font-semibold">{t("Total", "Total")} {fmt(fixed.total)}{t("/mes", "/mo")}</span>
+            <span className="numeric text-[11px] text-muted-foreground">{fmt(fixedInPeriod)} {t("en este periodo", "in this period")}</span>
+          </div>
         </div>
       </Panel>
 
