@@ -517,8 +517,9 @@ function Gastos() {
 
 
 
-      <div className="grid gap-3 lg:grid-cols-3">
-        <Panel variant="minimal" title={t("Distribución por categoría", "Spend by category")}>
+      <div className="grid items-stretch gap-3 lg:grid-cols-3">
+        <Panel variant="minimal" title={t("Distribución por categoría", "Spend by category")} className="flex h-full flex-col">
+
           {byCategory.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t("Sin movimientos en este rango.", "No transactions in this range.")}</p>
           ) : (
@@ -551,7 +552,7 @@ function Gastos() {
                   </p>
                 </div>
               </div>
-              <ul className="mt-2 grid grid-cols-1 gap-x-4 gap-y-1.5">
+              <ul className="mt-auto grid grid-cols-1 gap-x-4 gap-y-1.5 pt-4">
                 {byCategory.slice(0, 8).map((c, i) => (
                   <li key={c.name} className="flex items-center gap-2 text-sm">
                     <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
@@ -564,8 +565,9 @@ function Gastos() {
           )}
         </Panel>
 
-        <Panel variant="minimal" title={t("Evolución del gasto", "Spend evolution")} description={`${t("Comparando con", "Comparing with")} ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="lg:col-span-2">
-          <ResponsiveContainer width="100%" height={280}>
+        <Panel variant="minimal" title={t("Evolución del gasto", "Spend evolution")} description={`${t("Comparando con", "Comparing with")} ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="flex h-full flex-col lg:col-span-2">
+          <ResponsiveContainer width="100%" height={340}>
+
             <ComposedChart data={series} margin={{ left: -8, right: 8, top: 12 }}>
               <CartesianGrid strokeDasharray="4 6" stroke="var(--color-border)" vertical={false} />
               <XAxis dataKey="label" {...axisProps} interval="preserveStartEnd" minTickGap={18} />
@@ -582,7 +584,7 @@ function Gastos() {
               <Line dataKey="fijo" name={t("Fijos (prorrateado)", "Fixed (prorated)")} stroke="#E6C86C" strokeWidth={2.5} strokeDasharray="6 6" dot={false} activeDot={false} />
             </ComposedChart>
           </ResponsiveContainer>
-          <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <div className="mt-auto grid grid-cols-2 gap-2 pt-4 sm:grid-cols-4">
             {[
               { l: t("Este periodo", "This period"), v: fmt(variableTotal) },
               { l: t("Periodo anterior", "Previous period"), v: fmt(prevVariable) },
