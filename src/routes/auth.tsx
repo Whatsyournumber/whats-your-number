@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { LanguageToggle, useLanguage } from "@/hooks/use-language";
 import { lovable } from "@/integrations/lovable/index";
 import { supabase } from "@/integrations/supabase/client";
+import { setPendingPromoCode } from "@/lib/pending-promo";
 
 type AuthSearch = { mode: "login" | "signup" };
 
@@ -72,6 +73,7 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [busy, setBusy] = useState(false);
+  const [promo, setPromo] = useState("");
 
   useEffect(() => {
     if (!loading && user) navigate({ to: mode === "signup" ? "/onboarding" : "/dashboard" });
@@ -84,6 +86,7 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "signup") {
+        if (promo.trim()) setPendingPromoCode(promo);
         const { error } = await supabase.auth.signUp({
           email,
           password,
@@ -107,6 +110,7 @@ function AuthPage() {
   };
 
   const onOAuth = async () => {
+    if (promo.trim()) setPendingPromoCode(promo);
     setBusy(true);
     const result = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin,
@@ -211,6 +215,22 @@ function AuthPage() {
                 autoComplete={mode === "signup" ? "new-password" : "current-password"}
               />
             </div>
+
+            {mode === "signup" && (
+              <div>
+                <Label htmlFor="promo" className="text-xs text-muted-foreground">
+                  {t("auth.promo.label")}
+                </Label>
+                <Input
+                  id="promo"
+                  value={promo}
+                  onChange={(e) => setPromo(e.target.value.toUpperCase())}
+                  placeholder="PRUEBAGRATIS"
+                  className="mt-1.5 rounded-xl uppercase tracking-wide"
+                />
+                <p className="mt-1.5 text-[11px] text-muted-foreground">{t("auth.promo.hint")}</p>
+              </div>
+            )}
 
             <Button type="submit" className="w-full rounded-full" disabled={busy}>
               {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

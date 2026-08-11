@@ -19,6 +19,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppSidebar } from "@/components/app-sidebar";
 import { AskAiSearch } from "@/components/ask-ai-search";
+import { PromoAutoRedeem } from "@/components/promo-auto-redeem";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
@@ -146,6 +147,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
         <AuthProvider>
+          <PromoAutoRedeem />
           <RootLayout />
           <Toaster />
         </AuthProvider>
