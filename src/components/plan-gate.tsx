@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Lock, Sparkles } from "lucide-react";
 import { useT } from "@/hooks/use-language";
 import { type PlanTier, planMeetsTier, useSubscription } from "@/hooks/use-subscription";
+import { useRoles } from "@/hooks/use-role";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
