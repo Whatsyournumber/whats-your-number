@@ -741,3 +741,11 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     </div>
   );
 }
+
+function LifePlanner() {
+  return (
+    <PlanGate required="pro">
+      <LifePlannerContent />
+    </PlanGate>
+  );
+}
