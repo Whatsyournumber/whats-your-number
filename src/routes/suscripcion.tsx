@@ -31,6 +31,8 @@ function SuscripcionPage() {
         )}
       />
       <SubscriptionManager />
+      <PromoCodeRedeem className="mt-6" />
+
     </PageShell>
   );
 }
