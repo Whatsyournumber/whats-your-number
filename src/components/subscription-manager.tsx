@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, ExternalLink, Loader2 } from "lucide-react";
+import { ArrowUpRight, CreditCard, ExternalLink, Loader2, Receipt, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { useT } from "@/hooks/use-language";
 import { useSubscription } from "@/hooks/use-subscription";
-import { changePlan, openCustomerPortal } from "@/utils/subscriptions.functions";
+import { getPaddleEnvironment } from "@/lib/paddle";
+import { changePlan, openCustomerPortal, type PortalTarget } from "@/utils/subscriptions.functions";
 
 const fmtDate = (iso: string | null) =>
   iso ? new Date(iso).toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric" }) : "—";
@@ -19,11 +20,11 @@ export function SubscriptionManager() {
 
   const planLabel = tier === "patrimonio" ? "Patrimonio" : tier === "pro" ? "Pro" : "Free";
 
-  const portal = async () => {
-    setBusy("portal");
+  const portal = async (target: PortalTarget) => {
+    setBusy(`portal:${target}`);
     try {
-      const res = await openCustomerPortal();
-      if (res.url) window.open(res.url, "_blank");
+      const res = await openCustomerPortal({ data: { environment: getPaddleEnvironment(), target } });
+      if (res.url) window.open(res.url, "_blank", "noopener,noreferrer");
       else toast.error(t("Aún no tienes una suscripción activa.", "You don't have an active subscription yet."));
     } catch {
       toast.error(t("No pudimos abrir el portal.", "We couldn't open the portal."));
@@ -51,6 +52,8 @@ export function SubscriptionManager() {
       setBusy(null);
     }
   };
+
+  const spin = (key: string) => busy === key;
 
   return (
     <Panel
@@ -82,30 +85,89 @@ export function SubscriptionManager() {
         )}
         {tier === "pro" && (
           <Button size="sm" disabled={busy !== null} onClick={() => void switchPlan("patrimonio_monthly")}>
-            {busy === "patrimonio_monthly" ? <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> : null}
+            {spin("patrimonio_monthly") ? <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> : null}
             {t("Mejorar a Patrimonio", "Upgrade to Patrimonio")}
           </Button>
         )}
         {tier === "patrimonio" && (
           <Button size="sm" variant="outline" disabled={busy !== null} onClick={() => void switchPlan("pro_monthly")}>
-            {busy === "pro_monthly" ? <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> : null}
+            {spin("pro_monthly") ? <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> : null}
             {t("Bajar a Pro", "Downgrade to Pro")}
-          </Button>
-        )}
-        {tier !== "free" && (
-          <Button size="sm" variant="ghost" disabled={busy !== null || loading} onClick={() => void portal()}>
-            {busy === "portal" ? <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> : <ExternalLink className="mr-1 h-3.5 w-3.5" />}
-            {t("Facturas y cancelar", "Invoices and cancel")}
           </Button>
         )}
       </div>
 
+      {tier !== "free" && (
+        <div className="mt-5 grid gap-2 sm:grid-cols-3">
+          <PortalAction
+            icon={CreditCard}
+            label={t("Método de pago", "Payment method")}
+            hint={t("Actualiza tu tarjeta", "Update your card")}
+            loading={spin("portal:payment_method")}
+            disabled={busy !== null || loading}
+            onClick={() => void portal("payment_method")}
+          />
+          <PortalAction
+            icon={Receipt}
+            label={t("Facturas", "Invoices")}
+            hint={t("Descarga tu historial", "Download your history")}
+            loading={spin("portal:overview")}
+            disabled={busy !== null || loading}
+            onClick={() => void portal("overview")}
+          />
+          <PortalAction
+            icon={XCircle}
+            label={t("Cancelar plan", "Cancel plan")}
+            hint={t("Sigues con acceso hasta el final", "Access until period ends")}
+            loading={spin("portal:cancel")}
+            disabled={busy !== null || loading}
+            onClick={() => void portal("cancel")}
+          />
+        </div>
+      )}
+
       <p className="mt-4 text-xs text-muted-foreground">
         {t(
-          "Si cancelas, conservas todas las funciones hasta el final del periodo que ya pagaste.",
-          "If you cancel, you keep every feature until the end of the period you already paid for.",
+          "El portal seguro se abre en una pestaña nueva. Si cancelas, conservas todas las funciones hasta el final del periodo que ya pagaste.",
+          "The secure portal opens in a new tab. If you cancel, you keep every feature until the end of the period you already paid for.",
         )}
       </p>
     </Panel>
+  );
+}
+
+function PortalAction({
+  icon: Icon,
+  label,
+  hint,
+  loading,
+  disabled,
+  onClick,
+}: {
+  icon: typeof CreditCard;
+  label: string;
+  hint: string;
+  loading: boolean;
+  disabled: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className="group flex items-start gap-3 rounded-xl border border-border bg-elevated/40 p-3 text-left transition-colors hover:border-primary/40 hover:bg-elevated disabled:opacity-60"
+    >
+      <span className="mt-0.5 rounded-lg border border-border bg-background p-1.5 text-muted-foreground group-hover:text-primary">
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Icon className="h-4 w-4" />}
+      </span>
+      <span className="min-w-0">
+        <span className="flex items-center gap-1 text-sm font-medium">
+          {label}
+          <ExternalLink className="h-3 w-3 text-muted-foreground" />
+        </span>
+        <span className="mt-0.5 block text-xs text-muted-foreground">{hint}</span>
+      </span>
+    </button>
   );
 }
