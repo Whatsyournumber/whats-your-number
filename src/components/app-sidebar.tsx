@@ -15,6 +15,7 @@ import {
   Wallet,
   UserCog,
   CreditCard,
+  ShieldCheck,
 } from "lucide-react";
 
 import {
@@ -34,6 +35,7 @@ import { BrandMark } from "@/components/brand-logo";
 import { useProfile } from "@/hooks/use-profile";
 import { buildDataset } from "@/lib/profile-data";
 import { useT } from "@/hooks/use-language";
+import { useRoles } from "@/hooks/use-role";
 
 export function AppSidebar() {
   const { state } = useSidebar();
@@ -42,6 +44,7 @@ export function AppSidebar() {
   const { profile } = useProfile();
   const data = buildDataset(profile);
   const t = useT();
+  const { isSuperAdmin } = useRoles();
 
   const primary = [
     { title: t("Dashboard", "Dashboard"), url: "/dashboard", icon: LayoutDashboard },
@@ -61,6 +64,10 @@ export function AppSidebar() {
     { title: t("Suscripción", "Subscription"), url: "/suscripcion", icon: CreditCard },
     { title: t("Cargar EEFF", "Upload statements"), url: "/configuracion", icon: Settings },
   ] as const;
+
+  const adminItems = isSuperAdmin
+    ? ([{ title: t("Panel admin", "Admin panel"), url: "/admin", icon: ShieldCheck }] as const)
+    : ([] as const);
 
   const renderItem = (item: { title: string; url: string; icon: typeof Wallet }) => {
     const active = pathname === item.url;
@@ -104,6 +111,15 @@ export function AppSidebar() {
             <SidebarMenu>{secondary.map(renderItem)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {adminItems.length > 0 && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Admin</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>{adminItems.map(renderItem)}</SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
 
       {!collapsed && (
