@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
+import { SubscriptionManager } from "@/components/subscription-manager";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -255,6 +256,8 @@ function MiPerfil() {
           </div>
         </Panel>
       </div>
+
+      <SubscriptionManager />
 
       <div className="flex justify-end">
         <Button className="gap-2 rounded-full" onClick={() => void onSave()} disabled={saving || !dirty}>

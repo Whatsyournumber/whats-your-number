@@ -109,6 +109,7 @@ function Dashboard() {
 
   return (
     <PageShell>
+      <CheckoutWelcome />
       <PageHeader
         eyebrow={new Date().toLocaleDateString("es", { month: "long", year: "numeric" })}
         title={firstName ? `${greeting(t)} ${firstName}` : greeting(t)}
