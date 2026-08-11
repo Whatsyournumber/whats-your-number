@@ -516,10 +516,12 @@ function Gastos() {
         title={isLongRange ? t("Promedio mensual vs objetivo", "Monthly average vs target") : t("Gasto objetivo mensual", "Monthly spend target")}
         description={
           isLongRange
-            ? t(
-                `Promedio mensual de los últimos ${days} días (${monthsInRange.toFixed(1)} meses) vs. tu techo de gasto.`,
-                `Monthly average over the last ${days} days (${monthsInRange.toFixed(1)} months) vs. your spending ceiling.`,
-              )
+            ? monthKeys.length > 0
+              ? t(
+                  `Promedio mensual de los ${monthKeys.length} meses analizados vs. tu techo de gasto.`,
+                  `Monthly average of the ${monthKeys.length} months analyzed vs. your spending ceiling.`,
+                )
+              : t("Promedio mensual vs. tu techo de gasto.", "Monthly average vs. your spending ceiling.")
             : t("Ritmo actual vs. tu techo de gasto según tu número.", "Current pace vs. your spending ceiling based on your number.")
         }
       >
@@ -538,7 +540,11 @@ function Gastos() {
           <div>
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <span className="numeric text-xl font-semibold">{fmt(monthlyRun)}</span>
-              <span className="text-xs text-muted-foreground">{isLongRange ? t("promedio mensual del periodo", "monthly average for the period") : t("ritmo mensual estimado", "estimated monthly pace")}</span>
+              <span className="text-xs text-muted-foreground">
+                {isLongRange
+                  ? t(`promedio mensual de ${monthKeys.length} meses`, `monthly average of ${monthKeys.length} months`)
+                  : t("ritmo mensual estimado", "estimated monthly pace")}
+              </span>
               <span
                 className={cn(
                   "ml-auto rounded-full px-2 py-0.5 text-xs font-medium",
@@ -557,7 +563,7 @@ function Gastos() {
               />
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              {targetPct.toFixed(0)}% {t("del objetivo", "of target")} · {t("fijos", "fixed")} {fmt(fixed.total)} + {t("variable", "variable")} {fmt((variableTotal / days) * 30)}
+              {targetPct.toFixed(0)}% {t("del objetivo", "of target")} · {t("fijos", "fixed")} {fmt(fixed.total)} + {t("variable", "variable")} {fmt(isLongRange ? avgMonthlyVariable : (variableTotal / days) * 30)}
             </p>
           </div>
         </div>
