@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { ArrowLeftRight, BookOpen, Info, MapPin, RotateCcw, SlidersHorizontal, Sparkles, X } from "lucide-react";
 
+import { PlanGate } from "@/components/plan-gate";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { axisProps, ChartTooltip } from "@/components/chart-kit";
 import { Button } from "@/components/ui/button";
