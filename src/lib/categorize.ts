@@ -27,6 +27,7 @@ export const EXCLUDED_HINTS = [
   "abono a su cuenta",
   "transferencia propia",
   "traspaso",
+  "mercantil seguros",
 ];
 
 /** Comercios concretos con categoría forzada (tienen prioridad sobre las reglas). */
