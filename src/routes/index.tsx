@@ -75,10 +75,10 @@ function DemoCard() {
           {t("Descubre tu número", "Discover your number")}
         </span>
         <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
-          {t("La libertad financiera tiene un número. ¿Cuál es el tuyo?", "La libertad financiera tiene un número. ¿Cuál es el tuyo?")}
+          {t("La libertad financiera tiene un número. ¿Cuál es el tuyo?", "Financial freedom has a number. What's yours?")}
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
-          {t("Conoce tu número. Comienza a vivir libremente.", "Conoce tu número. Comienza a vivir libremente.")}
+          {t("Conoce tu número. Comienza a vivir libremente.", "Know your number. Live freely.")}
         </p>
       </div>
 
