@@ -517,8 +517,9 @@ function Gastos() {
 
 
 
-      <div className="grid gap-3 lg:grid-cols-3">
-        <Panel variant="minimal" title={t("Distribución por categoría", "Spend by category")}>
+      <div className="grid items-stretch gap-3 lg:grid-cols-3">
+        <Panel variant="minimal" title={t("Distribución por categoría", "Spend by category")} className="flex h-full flex-col">
+
           {byCategory.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t("Sin movimientos en este rango.", "No transactions in this range.")}</p>
           ) : (
