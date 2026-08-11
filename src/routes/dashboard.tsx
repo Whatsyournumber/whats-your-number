@@ -72,11 +72,11 @@ function Dashboard() {
   const { transactions } = useTransactions();
   const d = buildDataset(profile);
   const realMonths = buildRealMonths(transactions, d.netWorth);
-  const months = (realMonths ?? d.months).map((month) => ({
-    ...month,
-    income: d.income,
-    savings: d.income - month.expenses,
-  }));
+  const fixed = useFixedExpenses();
+  const months = (realMonths ?? d.months).map((month) => {
+    const expenses = month.expenses + (realMonths ? fixed.total : 0);
+    return { ...month, expenses, income: d.income, savings: d.income - expenses };
+  });
 
   const hasHistory = Boolean(realMonths && realMonths.length > 1);
   const current = months[months.length - 1] ?? d.current;
