@@ -84,13 +84,14 @@ const MERCHANT_OVERRIDES: { hints: string[]; category: string }[] = [
     ],
   },
   {
-    category: "Lifestyle",
+    category: "Salud",
     hints: [
-      "hammam", "loyly", "rituals", "tintoreria", "tintorería", "marco aldany", "barber", "barberia",
-      "barbería", "coronado beauty", "ixora florista", "myglobalflowers", "cl.dental", "dental care",
-      "clinica odont", "clínica odont", "herbolario", "apoteka", "vapesale",
+      "hammam", "loyly", "rituals", "marco aldany", "barber", "barberia",
+      "barbería", "coronado beauty", "cl.dental", "dental care",
+      "clinica odont", "clínica odont", "herbolario", "apoteka",
     ],
   },
+
   {
     category: "Compras",
     hints: [
