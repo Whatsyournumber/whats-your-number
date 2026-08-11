@@ -193,32 +193,57 @@ function Gastos() {
     return map;
   }, [previous, categories.rules]);
 
+  // Gastos fijos prorrateados al rango elegido (30 días -> 90 días, etc.)
+  const periodFactor = days / 30;
+  const fixedRows = useMemo(
+    () =>
+      fixed.items
+        .filter((i) => Number(i.amount) > 0)
+        .map((i) => ({ name: i.name, amount: i.amount * periodFactor, items: [] as Tx[], fixed: true }))
+        .sort((a, b) => b.amount - a.amount),
+    [fixed.items, periodFactor],
+  );
+
+  // Donut: variable + fijos prorrateados del mismo periodo
+  const donutData = useMemo(
+    () => [...byCategory.map((c) => ({ ...c, fixed: false })), ...fixedRows].sort((a, b) => b.amount - a.amount),
+    [byCategory, fixedRows],
+  );
+
   // Categorías con gastos visibles por defecto; toggle para ver vacías
   const [showEmptyCategories, setShowEmptyCategories] = useState(false);
   const detailRows = useMemo(() => {
     const map = new Map(byCategory.map((c) => [c.name, c]));
-    const ordered: { name: string; amount: number; items: Tx[] }[] = [];
+    const ordered: { name: string; amount: number; items: Tx[]; fixed?: boolean }[] = [];
     for (const name of categories.names) {
       const row = map.get(name) ?? { name, amount: 0, items: [] };
       if (row.amount > 0 || showEmptyCategories) ordered.push(row);
       map.delete(name);
     }
     const rest = Array.from(map.values()).filter((c) => c.amount > 0 || showEmptyCategories);
-    return [...ordered, ...rest].sort((a, b) => b.amount - a.amount);
-  }, [byCategory, categories.names, showEmptyCategories]);
+    return ([...ordered, ...rest, ...fixedRows] as { name: string; amount: number; items: Tx[]; fixed?: boolean }[]).sort(
+      (a, b) => b.amount - a.amount,
+    );
+
+  }, [byCategory, categories.names, showEmptyCategories, fixedRows]);
 
 
   // ---- Comparación mes vs mes ----
   const monthKeys = useMemo(() => {
     const set = new Set<string>();
-    for (const t of expenses) set.add(format(parseISO(t.tx_date!), "yyyy-MM"));
+    for (const t of expenses) {
+      if (!inRange(t, from, to)) continue;
+      set.add(format(parseISO(t.tx_date!), "yyyy-MM"));
+    }
     return [...set].sort().reverse();
-  }, [expenses]);
+  }, [expenses, from, to]);
+
 
   const [monthA, setMonthA] = useState<string | null>(null);
   const [monthB, setMonthB] = useState<string | null>(null);
-  const mA = monthA ?? monthKeys[0] ?? null;
-  const mB = monthB ?? monthKeys[1] ?? monthKeys[0] ?? null;
+  const mA = (monthA && monthKeys.includes(monthA) ? monthA : monthKeys[0]) ?? null;
+  const mB = (monthB && monthKeys.includes(monthB) ? monthB : monthKeys[1] ?? monthKeys[0]) ?? null;
+
 
   const monthCompare = useMemo(() => {
     const totalsOf = (key: string | null) => {
@@ -518,9 +543,9 @@ function Gastos() {
 
 
       <div className="grid items-stretch gap-3 lg:grid-cols-3">
-        <Panel variant="minimal" title={t("Distribución por categoría", "Spend by category")} className="flex h-full flex-col">
+        <Panel variant="minimal" title={t("Distribución por categoría", "Spend by category")} description={t("Fijos prorrateados al rango + variable", "Fixed prorated to the range + variable")} className="flex h-full flex-col">
 
-          {byCategory.length === 0 ? (
+          {donutData.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t("Sin movimientos en este rango.", "No transactions in this range.")}</p>
           ) : (
             <>
@@ -528,7 +553,7 @@ function Gastos() {
                 <ResponsiveContainer width="100%" height={320}>
                   <PieChart>
                     <Pie
-                      data={byCategory}
+                      data={donutData}
                       dataKey="amount"
                       nameKey="name"
                       innerRadius={90}
@@ -536,7 +561,7 @@ function Gastos() {
                       paddingAngle={2}
                       stroke="none"
                     >
-                      {byCategory.map((c, i) => (
+                      {donutData.map((c, i) => (
                         <Cell key={c.name} fill={palette[i % palette.length]} />
                       ))}
                     </Pie>
@@ -544,8 +569,8 @@ function Gastos() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                  <p className="numeric text-3xl font-semibold">{fmtCompact(variableTotal)}</p>
-                  <p className="text-sm text-muted-foreground">{t("gasto variable", "variable spend")}</p>
+                  <p className="numeric text-3xl font-semibold">{fmtCompact(total)}</p>
+                  <p className="text-sm text-muted-foreground">{t("gasto total del periodo", "total period spend")}</p>
                   <p className={cn("numeric mt-0.5 text-xs", delta > 0 ? "text-negative" : "text-positive")}>
                     {delta > 0 ? "+" : ""}
                     {delta.toFixed(1)}% {t("vs. periodo anterior", "vs. previous period")}
@@ -553,17 +578,22 @@ function Gastos() {
                 </div>
               </div>
               <ul className="mt-auto grid grid-cols-1 gap-x-4 gap-y-1.5 pt-4">
-                {byCategory.slice(0, 8).map((c, i) => (
+                {donutData.slice(0, 8).map((c, i) => (
                   <li key={c.name} className="flex items-center gap-2 text-sm">
                     <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
-                    <span className="text-muted-foreground">{c.name}</span>
-                    <span className="numeric ml-auto font-medium">{((c.amount / variableTotal) * 100).toFixed(0)}%</span>
+                    <span className="text-muted-foreground">
+                      {c.name}
+                      {c.fixed ? ` · ${t("fijo", "fixed")}` : ""}
+                    </span>
+                    <span className="numeric ml-auto font-medium">{((c.amount / Math.max(1, total)) * 100).toFixed(0)}%</span>
                   </li>
                 ))}
               </ul>
             </>
           )}
         </Panel>
+
+
 
         <Panel variant="minimal" title={t("Evolución del gasto", "Spend evolution")} description={`${t("Comparando con", "Comparing with")} ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="flex h-full flex-col lg:col-span-2">
           <ResponsiveContainer width="100%" height={340}>
@@ -739,8 +769,11 @@ function Gastos() {
                     <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
                     <span className="truncate text-sm font-medium">{c.name}</span>
                     <span className="shrink-0 rounded-full bg-elevated/50 px-2 py-0.5 text-[11px] text-muted-foreground">
-                      {c.items.length} {c.items.length === 1 ? t("mov.", "tx") : t("movs.", "txs")}
+                      {c.fixed
+                        ? `${t("fijo", "fixed")} · ${days} ${t("días", "days")}`
+                        : `${c.items.length} ${c.items.length === 1 ? t("mov.", "tx") : t("movs.", "txs")}`}
                     </span>
+
                     {variation !== null && (
                       <span
                         className={cn(
