@@ -62,11 +62,36 @@ export async function processStatementForUser(
     if (dlErr || !blob) throw new Error(dlErr?.message ?? "No pudimos leer el archivo.");
 
     const bytes = new Uint8Array(await blob.arrayBuffer());
-    const isPdf =
-      (statement.file_type as string).includes("pdf") ||
-      (statement.file_name as string).toLowerCase().endsWith(".pdf");
+    const fileName = (statement.file_name as string).toLowerCase();
+    const fileType = (statement.file_type as string) || "";
+    const isPdf = fileType.includes("pdf") || fileName.endsWith(".pdf");
+    const isImage =
+      fileType.startsWith("image/") || /\.(png|jpe?g|webp|heic|heif)$/.test(fileName);
 
-    const content = isPdf
+    const imageMediaType = fileType.startsWith("image/")
+      ? fileType
+      : fileName.endsWith(".png")
+        ? "image/png"
+        : fileName.endsWith(".webp")
+          ? "image/webp"
+          : fileName.endsWith(".heic") || fileName.endsWith(".heif")
+            ? "image/heic"
+            : "image/jpeg";
+
+    const content = isImage
+      ? [
+          {
+            type: "text" as const,
+            text: "Esta es una captura de pantalla de movimientos o gastos. Extrae todos los movimientos visibles con la mayor precisión posible.",
+          },
+          {
+            type: "file" as const,
+            data: toBase64(bytes),
+            mediaType: imageMediaType,
+            filename: statement.file_name as string,
+          },
+        ]
+      : isPdf
       ? [
           { type: "text" as const, text: "Extrae todos los movimientos de este estado de cuenta." },
           {

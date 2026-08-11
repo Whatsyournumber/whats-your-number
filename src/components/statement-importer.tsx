@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { CheckCircle2, FileSpreadsheet, FileText, Loader2, Lock, Sparkles, Trash2, TriangleAlert, Upload } from "lucide-react";
+import { CheckCircle2, FileSpreadsheet, FileText, Image as ImageIcon, Loader2, Lock, Sparkles, Trash2, TriangleAlert, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
@@ -16,7 +16,7 @@ import { processStatement } from "@/lib/statements.functions";
 import { getPaddleEnvironment } from "@/lib/paddle";
 import { cn } from "@/lib/utils";
 
-const ACCEPT = ".pdf,.csv,.txt,application/pdf,text/csv";
+const ACCEPT = ".pdf,.csv,.txt,.png,.jpg,.jpeg,.webp,.heic,application/pdf,text/csv,image/*";
 const MAX_BYTES = 15 * 1024 * 1024;
 
 type StatementRow = {
@@ -124,9 +124,10 @@ export function StatementImporter() {
     try {
       for (const file of Array.from(files)) {
         const lower = file.name.toLowerCase();
-        const ok = lower.endsWith(".pdf") || lower.endsWith(".csv") || lower.endsWith(".txt");
+        const isImage = file.type.startsWith("image/") || /\.(png|jpe?g|webp|heic|heif)$/.test(lower);
+        const ok = lower.endsWith(".pdf") || lower.endsWith(".csv") || lower.endsWith(".txt") || isImage;
         if (!ok) {
-          toast.error(t(`${file.name}: solo aceptamos PDF o CSV`, `${file.name}: we only accept PDF or CSV`));
+          toast.error(t(`${file.name}: solo aceptamos PDF, CSV o imágenes`, `${file.name}: we only accept PDF, CSV or images`));
           continue;
         }
         if (file.size > MAX_BYTES) {
@@ -134,9 +135,10 @@ export function StatementImporter() {
           continue;
         }
 
+        const fallbackType = lower.endsWith(".pdf") ? "application/pdf" : isImage ? "image/jpeg" : "text/csv";
         const path = `${user.id}/${Date.now()}-${file.name.replace(/[^\w.\-]/g, "_")}`;
         const { error: upErr } = await supabase.storage.from("statements").upload(path, file, {
-          contentType: file.type || (lower.endsWith(".pdf") ? "application/pdf" : "text/csv"),
+          contentType: file.type || fallbackType,
           upsert: false,
         });
         if (upErr) throw new Error(upErr.message);
@@ -146,7 +148,7 @@ export function StatementImporter() {
           .insert({
             user_id: user.id,
             file_name: file.name,
-            file_type: file.type || (lower.endsWith(".pdf") ? "application/pdf" : "text/csv"),
+            file_type: file.type || fallbackType,
             file_size: file.size,
             storage_path: path,
             status: "uploaded",
@@ -182,8 +184,8 @@ export function StatementImporter() {
       <Panel
         title={t("Cargar EEFF", "Upload statements")}
         description={t(
-          "PDF de tarjetas o CSV bancarios — la IA extrae y clasifica cada movimiento",
-          "Card PDFs or bank CSVs — AI extracts and classifies each transaction",
+          "PDF de tarjetas, CSV bancarios o capturas de pantalla — la IA extrae y clasifica cada movimiento",
+          "Card PDFs, bank CSVs or screenshots — AI extracts and classifies each transaction",
         )}
       >
         <div className="relative">
@@ -223,11 +225,11 @@ export function StatementImporter() {
             <p className="mt-3 text-sm font-medium">{t("Arrastra tus archivos aquí", "Drag your files here")}</p>
             <p className="mt-1 text-xs text-muted-foreground">
               {t(
-                "Extraemos fecha, comercio, descripción, monto y moneda · PDF o CSV · máx. 15 MB",
-                "We extract date, merchant, description, amount and currency · PDF or CSV · max. 15 MB",
+                "Extraemos fecha, comercio, descripción, monto y moneda · PDF, CSV o captura (PNG/JPG) · máx. 15 MB",
+                "We extract date, merchant, description, amount and currency · PDF, CSV or screenshot (PNG/JPG) · max. 15 MB",
               )}
             </p>
-            <div className="mt-4 flex gap-2">
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
               <Button size="sm" className="gap-2 rounded-full" onClick={() => inputRef.current?.click()} disabled={uploading || freeLimitReached}>
                 <FileText className="h-3.5 w-3.5" /> {t("Subir PDF", "Upload PDF")}
               </Button>
@@ -239,6 +241,15 @@ export function StatementImporter() {
                 disabled={uploading || freeLimitReached}
               >
                 <FileSpreadsheet className="h-3.5 w-3.5" /> {t("Subir CSV", "Upload CSV")}
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-2 rounded-full"
+                onClick={() => inputRef.current?.click()}
+                disabled={uploading || freeLimitReached}
+              >
+                <ImageIcon className="h-3.5 w-3.5" /> {t("Subir captura", "Upload screenshot")}
               </Button>
             </div>
           </div>
