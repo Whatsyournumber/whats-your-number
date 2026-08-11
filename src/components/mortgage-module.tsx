@@ -133,16 +133,20 @@ export function MortgageModule() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Prefill con la data del onboarding: saldo = pasivos, plazo derivado de la cuota declarada.
+  // Prefill con la data del onboarding: hipoteca declarada o, en su defecto, pasivos + cuota.
   useEffect(() => {
     if (!ready) return;
+    const mBalance = Number(profile.mortgage_balance) || 0;
+    const mRate = Number(profile.mortgage_rate) || 0;
+    const mTerm = Number(profile.mortgage_term) || 0;
     const liabilities = Number(profile.liabilities) || 0;
     const housing = Number(profile.fixed_housing) || 0;
-    if (!liabilities || s.balance) return;
-    const rate = s.rate;
-    const term = housing > 0 ? termFor(liabilities, rate, housing) : s.term;
+    const balance = mBalance || liabilities;
+    if (!balance || s.balance) return;
+    const rate = mRate || s.rate;
+    const term = mTerm || (housing > 0 ? termFor(balance, rate, housing) : s.term);
     setS((prev) => {
-      const next = { ...prev, balance: liabilities, term };
+      const next = { ...prev, balance, rate, term };
       try {
         window.localStorage.setItem(KEY, JSON.stringify(next));
       } catch {
@@ -151,7 +155,7 @@ export function MortgageModule() {
       return next;
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, profile.liabilities, profile.fixed_housing]);
+  }, [ready, profile.mortgage_balance, profile.mortgage_rate, profile.mortgage_term, profile.liabilities, profile.fixed_housing]);
 
 
   const set = (patch: Partial<MortgageState>) => {
