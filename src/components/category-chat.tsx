@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Loader2, Send, Sparkles, Wand2 } from "lucide-react";
+import { Loader2, Send } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -38,8 +38,8 @@ export function CategoryChat({
 
   const examples = [
     t("Pon Fandango en Nightlife", "Move Fandango to Nightlife"),
-    t("Crea una categoría Mascotas con veterinario y petshop", "Create a Pets category with vet and petshop"),
-    t("Los de Otros que sean de ropa mándalos a Compras", "Send the clothing ones in Other to Shopping"),
+    t("Crea Mascotas", "Create Pets"),
+    t("Los de ropa a Compras", "Clothing to Shopping"),
   ];
 
   const apply = (ops: NonNullable<Awaited<ReturnType<typeof planCategories>>["ops"]>) => {
@@ -98,21 +98,16 @@ export function CategoryChat({
   };
 
   return (
-    <div className="rounded-2xl border border-border/60 bg-elevated/40 p-3">
-      <div className="mb-2 flex items-center gap-2">
-        <Sparkles className="h-4 w-4 text-primary" />
-        <p className="text-xs font-medium">{t("Ordena tus categorías hablando", "Organize your categories by chatting")}</p>
-      </div>
-
+    <div className="space-y-2">
       {msgs.length > 0 && (
-        <div className="mb-3 max-h-[260px] space-y-2 overflow-auto pr-1">
+        <div className="max-h-[200px] space-y-1.5 overflow-auto pr-1">
           {msgs.map((m, i) => (
             <div
               key={i}
               className={
                 m.role === "user"
-                  ? "ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-sm bg-primary/15 px-3 py-2 text-sm"
-                  : "w-fit max-w-[90%] rounded-2xl rounded-bl-sm bg-muted/60 px-3 py-2 text-sm"
+                  ? "ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-sm bg-primary/15 px-3 py-1.5 text-sm"
+                  : "w-fit max-w-[90%] rounded-2xl rounded-bl-sm bg-muted/60 px-3 py-1.5 text-sm"
               }
             >
               <p>{m.text}</p>
@@ -120,7 +115,7 @@ export function CategoryChat({
                 <ul className="mt-1.5 space-y-0.5 border-t border-border/60 pt-1.5 text-xs text-muted-foreground">
                   {m.ops.map((o, j) => (
                     <li key={j} className="flex gap-1.5">
-                      <Wand2 className="mt-0.5 h-3 w-3 shrink-0 text-primary" />
+                      <span className="text-primary">·</span>
                       <span>{o}</span>
                     </li>
                   ))}
@@ -132,7 +127,7 @@ export function CategoryChat({
       )}
 
       {msgs.length === 0 && (
-        <div className="mb-2 flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-1.5">
           {examples.map((e) => (
             <button
               key={e}
@@ -156,10 +151,10 @@ export function CategoryChat({
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder={t("Ej. pon todos los cafés en Restaurantes", "E.g. put all coffee shops in Restaurants")}
-          className="h-9 flex-1 text-sm"
+          placeholder={t("Ordena tus categorías hablando...", "Organize your categories by chatting...")}
+          className="h-8 flex-1 border-transparent bg-muted/50 text-sm focus-visible:bg-background"
         />
-        <Button type="submit" size="icon" className="h-9 w-9" disabled={busy || !input.trim()}>
+        <Button type="submit" size="icon" className="h-8 w-8" disabled={busy || !input.trim()}>
           {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
         </Button>
       </form>
