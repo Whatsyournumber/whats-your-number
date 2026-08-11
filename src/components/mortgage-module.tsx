@@ -29,10 +29,9 @@ type MortgageState = {
   balance: number;
   rate: number;
   rateType: "fixed" | "variable";
-  payment: number;
+  term: number;
   extra: number;
   lump: number;
-  newRate: number;
   nextReviewDate: string;
 };
 
@@ -42,10 +41,9 @@ const defaults: MortgageState = {
   balance: 0,
   rate: 3.5,
   rateType: "variable",
-  payment: 0,
+  term: 30,
   extra: 250,
   lump: 25000,
-  newRate: 2.75,
   nextReviewDate: "Oct 2026",
 };
 
