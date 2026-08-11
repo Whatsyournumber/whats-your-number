@@ -77,7 +77,7 @@ function Pricing() {
       ],
       cta: t("Probar Pro 14 días gratis", "Try Pro 14 days free"),
       href: "/auth",
-      search: { mode: "signup" },
+      search: { mode: "signup" } as const,
       highlight: true,
     },
     {
@@ -99,7 +99,7 @@ function Pricing() {
       ],
       cta: t("Hablar con nosotros", "Talk to us"),
       href: "/auth",
-      search: { mode: "signup" },
+      search: { mode: "signup" } as const,
       highlight: false,
     },
   ];
@@ -176,9 +176,6 @@ function Pricing() {
             >
               {t("Anual", "Yearly")}
             </button>
-            <span className="rounded-full bg-positive px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-positive-foreground">
-              {t("Ahorra", "Save")}
-            </span>
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
             {t(
