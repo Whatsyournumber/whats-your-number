@@ -715,6 +715,7 @@ function Gastos() {
                 ? `${fmt(fixed.total * monthsInRange)} · ${t(`${monthsInRange} meses en el periodo`, `${monthsInRange} months in the period`)}`
                 : `${fmt(fixed.total)} ${t("en este periodo", "in this period")}`}
             </span>
+          </div>
         </div>
       </Panel>
 
