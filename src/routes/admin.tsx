@@ -134,6 +134,20 @@ function AdminPage() {
     },
   });
 
+  const promos = useQuery({
+    queryKey: ["admin", "promos"],
+    enabled,
+    queryFn: async () => {
+      const [codes, reds] = await Promise.all([
+        supabase.from("promo_codes").select("id,code,product_id,duration_days,max_uses,used_count,active,expires_at,note").order("created_at", { ascending: false }),
+        supabase.from("promo_redemptions").select("id,code,user_id,granted_until,created_at").order("created_at", { ascending: false }).limit(200),
+      ]);
+      if (codes.error) throw codes.error;
+      if (reds.error) throw reds.error;
+      return { codes: codes.data ?? [], redemptions: reds.data ?? [] };
+    },
+  });
+
   const users = profiles.data ?? [];
   const onb = onboarding.data ?? [];
   const subs = subscriptions.data ?? [];
