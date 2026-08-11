@@ -86,15 +86,23 @@ export async function processStatementForUser(
       ? [
           {
             type: "text" as const,
-            text: "Esta es una captura de pantalla de movimientos o gastos. Extrae todos los movimientos visibles con la mayor precisión posible.",
+            text: [
+              "Esta imagen es una captura de pantalla de una app bancaria, de tarjeta o de una lista de gastos.",
+              "Léela como OCR: recorre la pantalla de arriba hacia abajo y extrae TODAS las filas de movimientos visibles, una por una, sin omitir ninguna.",
+              "Cada fila suele tener: comercio (texto principal), fecha o etiqueta de día ('Hoy', 'Ayer', 'Today', un nombre de mes), y un importe a la derecha.",
+              "Si el importe aparece en rojo, con '-', entre paréntesis o bajo un encabezado de gastos, es un GASTO (monto negativo). Si está en verde o con '+', es un ingreso (positivo).",
+              "Si una fila no muestra fecha explícita, usa la fecha del encabezado o separador de sección visible arriba de esa fila; si no hay ninguna, deja date en null pero NO descartes el movimiento.",
+              "Ignora saldos totales, encabezados y botones; solo devuelve movimientos.",
+              "Es obligatorio devolver al menos todos los movimientos legibles de la captura.",
+            ].join(" "),
           },
           {
-            type: "file" as const,
-            data: toBase64(bytes),
+            type: "image" as const,
+            image: toBase64(bytes),
             mediaType: imageMediaType,
-            filename: statement.file_name as string,
           },
         ]
+
       : isPdf
       ? [
           { type: "text" as const, text: "Extrae todos los movimientos de este estado de cuenta." },
@@ -146,6 +154,14 @@ export async function processStatementForUser(
       subcategory: t.subcategory,
       excluded: Boolean(t.excluded),
     }));
+
+    if (rows.length === 0) {
+      throw new Error(
+        isImage
+          ? "No pudimos leer movimientos en la captura. Asegúrate de que se vean el comercio y el importe, y sube la imagen completa y nítida."
+          : "No encontramos movimientos en el archivo.",
+      );
+    }
 
     await supabase.from("imported_transactions").delete().eq("statement_id", statementId);
     if (rows.length > 0) {
