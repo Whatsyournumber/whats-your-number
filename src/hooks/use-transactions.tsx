@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { useAuth } from "@/hooks/use-auth";
+import { useProfile } from "@/hooks/use-profile";
 import { isExcludedTx } from "@/lib/categorize";
+import { convertAmount } from "@/lib/fx";
 import { supabase } from "@/integrations/supabase/client";
 
 export type Tx = {
@@ -12,6 +14,9 @@ export type Tx = {
   description: string | null;
   amount: number;
   currency: string;
+  /** Moneda y monto originales del EEFF antes de convertir a la moneda del perfil. */
+  original_amount?: number;
+  original_currency?: string;
   category: string | null;
   subcategory: string | null;
   excluded: boolean;
@@ -28,7 +33,9 @@ const normalizeTransactionText = (value: string | null | undefined) =>
 /** Transacciones importadas desde los estados de cuenta (EEFF) del usuario. */
 export function useTransactions() {
   const { user } = useAuth();
+  const { profile } = useProfile();
   const userId = user?.id ?? null;
+  const baseCurrency = (profile?.currency as string) || "EUR";
 
   const query = useQuery({
     queryKey: ["imported-transactions", userId],
@@ -60,8 +67,16 @@ export function useTransactions() {
 
   const all = query.data ?? [];
   // Se descartan movimientos excluidos y los que duplican gastos fijos (p. ej. "Servicio en un 2x3").
-  const transactions = all.filter((t) => !t.excluded && t.tx_date && !isExcludedTx(t));
-
+  // Todo se convierte a la moneda del perfil para que EEFF en RUB, USD, GBP… sumen correctamente.
+  const transactions = all
+    .filter((t) => !t.excluded && t.tx_date && !isExcludedTx(t))
+    .map((t) => ({
+      ...t,
+      original_amount: t.amount,
+      original_currency: t.currency,
+      amount: convertAmount(t.amount, t.currency, baseCurrency),
+      currency: baseCurrency,
+    }));
 
   return {
     transactions,

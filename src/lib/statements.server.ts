@@ -142,10 +142,14 @@ export async function processStatementForUser(
       throw error;
     }
 
+    // Si la IA no encuentra fecha (típico en capturas de resúmenes por categoría),
+    // usamos la fecha de carga del archivo para que el movimiento SÍ entre en Gastos.
+    const fallbackDate = new Date((statement.created_at as string) || Date.now()).toISOString().slice(0, 10);
+
     const rows = parsed.transactions.slice(0, 200).map((t) => ({
       user_id: userId,
       statement_id: statementId,
-      tx_date: t.date && /^\d{4}-\d{2}-\d{2}$/.test(t.date) ? t.date : null,
+      tx_date: t.date && /^\d{4}-\d{2}-\d{2}$/.test(t.date) ? t.date : fallbackDate,
       merchant: t.merchant || "Sin comercio",
       description: t.description,
       amount: Number.isFinite(t.amount) ? t.amount : 0,
