@@ -19,6 +19,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppSidebar } from "@/components/app-sidebar";
 import { AskAiSearch } from "@/components/ask-ai-search";
+import { ConsentBanner } from "@/components/consent-banner";
 import { PromoAutoRedeem } from "@/components/promo-auto-redeem";
 
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -149,6 +150,7 @@ function RootComponent() {
         <AuthProvider>
           <PromoAutoRedeem />
           <RootLayout />
+          <ConsentBanner />
           <Toaster />
         </AuthProvider>
       </LanguageProvider>
