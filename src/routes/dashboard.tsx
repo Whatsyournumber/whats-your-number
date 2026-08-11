@@ -101,8 +101,17 @@ function Dashboard() {
       : yearsToTarget(targetNumber, numberNetWorth, monthlyContribution, profile.expected_return || 7);
   const usingDemo = plan.targetCapital <= 0 && targetNumber > 0;
 
-  const freeCash = Math.max(0, current.savings - current.investments);
-  const prevFree = Math.max(0, previous.savings - previous.investments);
+  const [mortgageBalance, setMortgageBalance] = useState(0);
+  useEffect(() => {
+    let stored = 0;
+    try {
+      const raw = window.localStorage.getItem("whatsyournumber:mortgage");
+      if (raw) stored = Number(JSON.parse(raw)?.balance) || 0;
+    } catch {
+      /* ignore */
+    }
+    setMortgageBalance(stored || Number(profile.liabilities) || 0);
+  }, [profile.liabilities]);
   const savingsRate = current.income > 0 ? (current.savings / current.income) * 100 : 0;
   const prevRate = previous.income > 0 ? (previous.savings / previous.income) * 100 : 0;
   const insights = buildInsights(plan, profile, profile, d.currency);
