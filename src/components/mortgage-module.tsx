@@ -525,7 +525,7 @@ export function MortgageModule() {
                   <p className="text-xs text-muted-foreground">{t("Nuevo pago mensual", "New monthly payment")}</p>
                 </div>
                 <div className="text-right">
-                  <p className="numeric text-sm font-semibold">{fmt(s.payment + s.extra)}</p>
+                  <p className="numeric text-sm font-semibold">{fmt(payment + s.extra)}</p>
                   <p className="text-xs text-muted-foreground">{t("Pago total", "Total payment")}</p>
                 </div>
               </div>
@@ -577,8 +577,8 @@ export function MortgageModule() {
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
             {t(
-              `Abonar ${fmt(s.extra)}/mes te ahorra ${fmt(interestSaved)} en intereses. Invertir ese mismo dinero al ${expected}% durante ${term(horizon)} genera ${fmtC(invested)}.`,
-              `Paying ${fmt(s.extra)}/mo extra saves ${fmt(interestSaved)} in interest. Investing the same amount at ${expected}% for ${term(horizon)} builds ${fmtC(invested)}.`,
+              `Abonar ${fmt(s.extra)}/mes te ahorra ${fmt(interestSaved)} en intereses. Invertir ese mismo dinero al ${expected}% durante ${formatTerm(horizon)} genera ${fmtC(invested)}.`,
+              `Paying ${fmt(s.extra)}/mo extra saves ${fmt(interestSaved)} in interest. Investing the same amount at ${expected}% for ${formatTerm(horizon)} builds ${fmtC(invested)}.`,
             )}
           </p>
           <p className={cn("mt-3 text-sm font-medium", investWins ? "text-positive" : "text-warning")}>
@@ -609,8 +609,8 @@ export function MortgageModule() {
           <p className="mt-3 text-xs text-muted-foreground">
             {monthsSaved > 0
               ? t(
-                  `Quedarías libre de hipoteca ${term(monthsSaved)} antes, liberando ${fmt(s.payment)}/mes para invertir.`,
-                  `You'd be mortgage-free ${term(monthsSaved)} earlier, freeing ${fmt(s.payment)}/mo to invest.`,
+                  `Quedarías libre de hipoteca ${formatTerm(monthsSaved)} antes, liberando ${fmt(payment)}/mes para invertir.`,
+                  `You'd be mortgage-free ${formatTerm(monthsSaved)} earlier, freeing ${fmt(payment)}/mo to invest.`,
                 )
               : t(
                   "Sigue aportando para acelerar el camino hacia tu número.",
