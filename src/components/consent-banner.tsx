@@ -109,8 +109,8 @@ export function ConsentBanner() {
           <div className="space-y-4 text-sm leading-relaxed text-muted-foreground">
             <p>
               {t(
-                "Responsable: Oscar Alvarez, operador de WhatsYournumber (alvarez.o@perform-ly.com). Tratamos tus datos para crear tu cuenta, prestarte el análisis financiero y dar soporte.",
-                "Controller: Oscar Alvarez, operator of WhatsYournumber (alvarez.o@perform-ly.com). We process your data to create your account, deliver the financial analysis and provide support.",
+                "El operador de WhatsYournumber trata tus datos para crear tu cuenta, prestarte el análisis financiero y dar soporte.",
+                "The operator of WhatsYournumber processes your data to create your account, deliver the financial analysis and provide support.",
               )}
             </p>
             <p>
@@ -121,8 +121,8 @@ export function ConsentBanner() {
             </p>
             <p>
               {t(
-                "No vendemos ni compartimos tus datos personales con fines publicitarios (incluido el sentido de las leyes de privacidad de California). Puedes pedir acceso, corrección, portabilidad o eliminación escribiendo a alvarez.o@perform-ly.com.",
-                "We do not sell or share your personal data for advertising purposes (including under California privacy laws). You can request access, correction, portability or deletion at alvarez.o@perform-ly.com.",
+                "No vendemos ni compartimos tus datos personales con fines publicitarios (incluido el sentido de las leyes de privacidad de California). Puedes pedir acceso, corrección, portabilidad o eliminación desde tu perfil.",
+                "We do not sell or share your personal data for advertising purposes (including under California privacy laws). You can request access, correction, portability or deletion from your profile.",
               )}
             </p>
 
