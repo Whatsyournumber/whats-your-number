@@ -17,6 +17,9 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { getPaddleEnvironment } from "@/lib/paddle";
+import { startProTrial } from "@/utils/subscriptions.functions";
+
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { FIXED_FIELDS, totalFixedExpenses } from "@/lib/onboarding";
