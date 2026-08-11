@@ -565,8 +565,9 @@ function Gastos() {
           )}
         </Panel>
 
-        <Panel variant="minimal" title={t("Evolución del gasto", "Spend evolution")} description={`${t("Comparando con", "Comparing with")} ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="lg:col-span-2">
-          <ResponsiveContainer width="100%" height={280}>
+        <Panel variant="minimal" title={t("Evolución del gasto", "Spend evolution")} description={`${t("Comparando con", "Comparing with")} ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="flex h-full flex-col lg:col-span-2">
+          <ResponsiveContainer width="100%" height={340}>
+
             <ComposedChart data={series} margin={{ left: -8, right: 8, top: 12 }}>
               <CartesianGrid strokeDasharray="4 6" stroke="var(--color-border)" vertical={false} />
               <XAxis dataKey="label" {...axisProps} interval="preserveStartEnd" minTickGap={18} />
