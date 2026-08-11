@@ -38,9 +38,9 @@ export function SiteFooter() {
     {
       title: "Legal",
       links: [
-        { label: t("Términos y condiciones", "Terms and conditions"), to: "/terminos" },
-        { label: t("Política de reembolsos", "Refund policy"), to: "/reembolsos" },
-        { label: t("Aviso de privacidad", "Privacy notice"), to: "/privacidad" },
+        { label: t("Términos y condiciones", "Terms and conditions"), to: "/terminos", policy: true },
+        { label: t("Política de reembolsos", "Refund policy"), to: "/reembolsos", policy: true },
+        { label: t("Aviso de privacidad", "Privacy notice"), to: "/privacidad", policy: true },
       ],
     },
   ];
