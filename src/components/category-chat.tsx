@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Loader2, Send } from "lucide-react";
+import { Loader2, Send, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -99,7 +99,10 @@ export function CategoryChat({
 
   return (
     <div className="space-y-2">
-      <p className="text-xs font-medium text-muted-foreground">{t("Ordena tus gastos con IA", "Organize your spending with AI")}</p>
+      <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+        <Sparkles className="h-3.5 w-3.5 text-primary" />
+        {t("Ordena tus gastos con IA", "Organize your spending with AI")}
+      </p>
 
       {msgs.length > 0 && (
         <div className="max-h-[200px] space-y-1.5 overflow-auto pr-1">
