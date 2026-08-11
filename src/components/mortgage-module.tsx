@@ -110,7 +110,6 @@ export function MortgageModule() {
   const expected = Number(profile.expected_return) || 7;
 
   const [s, setS] = useState<MortgageState>(defaults);
-  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     try {
@@ -119,7 +118,6 @@ export function MortgageModule() {
     } catch {
       /* ignore */
     }
-    setHydrated(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
