@@ -31,8 +31,8 @@ function PrivacidadPage() {
       <LegalSection title={t("1. Responsable del tratamiento", "1. Data controller")}>
         <p>
           {t(
-            "Oscar Alvarez, operador de WhatsYournumber, actúa como responsable del tratamiento de tus datos personales. Contacto: alvarez.o@perform-ly.com.",
-            "Oscar Alvarez, operator of WhatsYournumber, acts as the data controller for your personal data. Contact: alvarez.o@perform-ly.com.",
+            "El operador de WhatsYournumber actúa como responsable del tratamiento de tus datos personales. Puedes gestionar tus datos y ejercer tus derechos desde tu perfil.",
+            "The operator of WhatsYournumber acts as the data controller for your personal data. You can manage your data and exercise your rights from your profile.",
           )}
         </p>
       </LegalSection>
@@ -74,8 +74,8 @@ function PrivacidadPage() {
       <LegalSection title={t("5. Tus derechos", "5. Your rights")}>
         <p>
           {t(
-            "Puedes solicitar acceso, rectificación, supresión, limitación, portabilidad, oposición y retirar tu consentimiento escribiendo a alvarez.o@perform-ly.com. Responderemos en un plazo máximo de un mes. Si resides en el EEE o Reino Unido, también puedes reclamar ante tu autoridad de control.",
-            "You can request access, rectification, erasure, restriction, portability, objection and withdraw consent by writing to alvarez.o@perform-ly.com. We respond within one month. If you live in the EEA or UK you may also complain to your supervisory authority.",
+            "Puedes solicitar acceso, rectificación, supresión, limitación, portabilidad, oposición y retirar tu consentimiento desde tu perfil. Responderemos en un plazo máximo de un mes. Si resides en el EEE o Reino Unido, también puedes reclamar ante tu autoridad de control.",
+            "You can request access, rectification, erasure, restriction, portability, objection and withdraw consent from your profile. We respond within one month. If you live in the EEA or UK you may also complain to your supervisory authority.",
           )}
         </p>
       </LegalSection>
