@@ -27,6 +27,9 @@ export type OnboardingData = {
   assets_crypto: number;
   assets_property: number;
   liabilities: number;
+  mortgage_balance: number;
+  mortgage_rate: number;
+  mortgage_term: number;
   retire_age: number;
   desired_retirement_income: number;
   expected_return: number;
@@ -64,6 +67,9 @@ export const emptyOnboarding: OnboardingData = {
   assets_crypto: 0,
   assets_property: 0,
   liabilities: 0,
+  mortgage_balance: 0,
+  mortgage_rate: 3,
+  mortgage_term: 20,
   retire_age: 60,
   desired_retirement_income: 0,
   expected_return: 7,
@@ -159,7 +165,8 @@ export function buildPlan(d: OnboardingData): NorthPlan {
   const age = d.age ?? 30;
   const yearsLeft = Math.max(0, d.retire_age - age);
   const swr = Math.min(15, Math.max(1, d.withdrawal_rate || 7)) / 100;
-  const targetCapital = (d.desired_retirement_income * 12) / swr;
+  const desiredIncome = d.desired_retirement_income || expenses || 0;
+  const targetCapital = (desiredIncome * 12) / swr;
 
 
   const r = d.expected_return / 100;
@@ -182,7 +189,7 @@ export function buildPlan(d: OnboardingData): NorthPlan {
     savingsRate,
     retireAge: d.retire_age,
     yearsLeft,
-    desiredIncome: d.desired_retirement_income,
+    desiredIncome: desiredIncome,
     targetCapital,
     projected,
     probability,

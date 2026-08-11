@@ -157,6 +157,9 @@ export type Database = {
           marital_status: string | null
           monthly_expenses: number | null
           monthly_savings: number | null
+          mortgage_balance: number | null
+          mortgage_rate: number | null
+          mortgage_term: number | null
           plans_children: string | null
           priority: string | null
           retire_age: number | null
@@ -208,6 +211,9 @@ export type Database = {
           marital_status?: string | null
           monthly_expenses?: number | null
           monthly_savings?: number | null
+          mortgage_balance?: number | null
+          mortgage_rate?: number | null
+          mortgage_term?: number | null
           plans_children?: string | null
           priority?: string | null
           retire_age?: number | null
@@ -259,6 +265,9 @@ export type Database = {
           marital_status?: string | null
           monthly_expenses?: number | null
           monthly_savings?: number | null
+          mortgage_balance?: number | null
+          mortgage_rate?: number | null
+          mortgage_term?: number | null
           plans_children?: string | null
           priority?: string | null
           retire_age?: number | null

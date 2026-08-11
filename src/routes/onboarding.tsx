@@ -632,6 +632,30 @@ function OnboardingPage() {
                     onChange={(v) => set("liabilities", v)}
                   />
                   <MoneyField
+                    emoji="🏦"
+                    label={t("Hipoteca: saldo pendiente", "Mortgage: outstanding balance")}
+                    desc={t("Lo que aún debes al banco", "What you still owe the bank")}
+                    currency={cur}
+                    value={data.mortgage_balance}
+                    onChange={(v) => set("mortgage_balance", v)}
+                  />
+                  <MoneyField
+                    emoji="📊"
+                    label={t("Hipoteca: tasa de interés", "Mortgage: interest rate")}
+                    desc={t("Tasa anual actual", "Current annual rate")}
+                    currency="%"
+                    value={data.mortgage_rate}
+                    onChange={(v) => set("mortgage_rate", v)}
+                  />
+                  <MoneyField
+                    emoji="📅"
+                    label={t("Hipoteca: plazo restante", "Mortgage: remaining term")}
+                    desc={t("Años que te faltan por pagar", "Years left to pay")}
+                    currency={t("años", "years")}
+                    value={data.mortgage_term}
+                    onChange={(v) => set("mortgage_term", v)}
+                  />
+                  <MoneyField
                     emoji="🪙"
                     label={t("Ingreso mensual", "Monthly income")}
                     desc={t("Neto, después de impuestos", "Net, after taxes")}
