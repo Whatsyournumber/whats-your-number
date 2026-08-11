@@ -6,7 +6,7 @@ import { NumberInput } from "@/components/ui/number-input";
 import { Slider } from "@/components/ui/slider";
 import { useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
-import { compact, money } from "@/lib/data";
+import { compact, money } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
 
