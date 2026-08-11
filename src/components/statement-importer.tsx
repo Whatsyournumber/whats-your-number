@@ -124,9 +124,10 @@ export function StatementImporter() {
     try {
       for (const file of Array.from(files)) {
         const lower = file.name.toLowerCase();
-        const ok = lower.endsWith(".pdf") || lower.endsWith(".csv") || lower.endsWith(".txt");
+        const isImage = file.type.startsWith("image/") || /\.(png|jpe?g|webp|heic|heif)$/.test(lower);
+        const ok = lower.endsWith(".pdf") || lower.endsWith(".csv") || lower.endsWith(".txt") || isImage;
         if (!ok) {
-          toast.error(t(`${file.name}: solo aceptamos PDF o CSV`, `${file.name}: we only accept PDF or CSV`));
+          toast.error(t(`${file.name}: solo aceptamos PDF, CSV o imágenes`, `${file.name}: we only accept PDF, CSV or images`));
           continue;
         }
         if (file.size > MAX_BYTES) {
@@ -134,9 +135,10 @@ export function StatementImporter() {
           continue;
         }
 
+        const fallbackType = lower.endsWith(".pdf") ? "application/pdf" : isImage ? "image/jpeg" : "text/csv";
         const path = `${user.id}/${Date.now()}-${file.name.replace(/[^\w.\-]/g, "_")}`;
         const { error: upErr } = await supabase.storage.from("statements").upload(path, file, {
-          contentType: file.type || (lower.endsWith(".pdf") ? "application/pdf" : "text/csv"),
+          contentType: file.type || fallbackType,
           upsert: false,
         });
         if (upErr) throw new Error(upErr.message);
