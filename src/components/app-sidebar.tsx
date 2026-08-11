@@ -6,7 +6,7 @@ import {
   LineChart,
   PiggyBank,
   Globe,
-
+  Home,
   Waves,
   Sparkles,
   Target,
@@ -17,6 +17,7 @@ import {
   CreditCard,
   ShieldCheck,
 } from "lucide-react";
+
 
 import {
   Sidebar,
