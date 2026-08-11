@@ -75,7 +75,7 @@ export function useSubscription() {
 
   const subscription = query.data;
   const active = subscription ? isActive(subscription.status, subscription.current_period_end) : false;
-  const tier: PlanTier = active ? tierFromProduct(subscription.product_id) : "free";
+  const tier: PlanTier = active && subscription ? tierFromProduct(subscription.product_id) : "free";
 
   return {
     subscription,
