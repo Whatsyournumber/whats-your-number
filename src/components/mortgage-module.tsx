@@ -503,7 +503,7 @@ export function MortgageModule() {
                 <div className="text-right">
                   <p className="numeric text-sm font-semibold">{freeDate(strategies[1]?.months ?? base.months)}</p>
                   {monthsSaved > 0 && (
-                    <p className="text-xs text-positive">{term(monthsSaved)} {t("antes", "earlier")}</p>
+                    <p className="text-xs text-positive">{formatTerm(monthsSaved)} {t("antes", "earlier")}</p>
                   )}
                 </div>
               </div>
