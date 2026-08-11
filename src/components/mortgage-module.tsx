@@ -116,10 +116,6 @@ export function MortgageModule() {
     try {
       const raw = window.localStorage.getItem(KEY);
       if (raw) setS({ ...defaults, ...(JSON.parse(raw) as Partial<MortgageState>) });
-      else {
-        const housing = Number(profile.fixed_housing) || 0;
-        if (housing > 0) setS((p) => ({ ...p, payment: housing }));
-      }
     } catch {
       /* ignore */
     }
@@ -137,7 +133,8 @@ export function MortgageModule() {
     }
   };
 
-  const base = useMemo(() => simulate(s.balance, s.rate, s.payment), [s.balance, s.rate, s.payment]);
+  const payment = useMemo(() => paymentFor(s.balance, s.rate, s.term * 12), [s.balance, s.rate, s.term]);
+  const base = useMemo(() => simulate(s.balance, s.rate, payment), [s.balance, s.rate, s.term, payment]);
 
   const strategies = useMemo(() => {
     if (!s.balance || !s.payment) return [];
