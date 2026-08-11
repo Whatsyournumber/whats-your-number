@@ -878,6 +878,40 @@ function Gastos() {
             onRemove={categories.remove}
           />
         </div>
+
+        <div className="mt-4 space-y-2">
+          <p className="text-xs font-medium text-muted-foreground">{t("Categorías propias", "Custom categories")}</p>
+          <div className="grid gap-2">
+            {categories.items.map((cat) => (
+              <div key={cat.id} className="flex items-center gap-2 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
+                <Input
+                  value={cat.name}
+                  onChange={(e) => categories.update(cat.id, { name: e.target.value })}
+                  className="h-7 flex-1 border-transparent bg-transparent text-sm focus-visible:bg-background"
+                  placeholder={t("Nombre", "Name")}
+                />
+                <Input
+                  value={cat.keywords}
+                  onChange={(e) => categories.update(cat.id, { keywords: e.target.value })}
+                  className="h-7 flex-[1.5] border-transparent bg-transparent text-sm text-muted-foreground focus-visible:bg-background"
+                  placeholder={t("Palabras clave", "Keywords")}
+                />
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-7 w-7 text-muted-foreground hover:text-negative"
+                  onClick={() => categories.remove(cat.id)}
+                  aria-label={t("Eliminar categoría", "Delete category")}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+          <Button size="sm" variant="outline" className="gap-2" onClick={() => categories.add()}>
+            <Plus className="h-4 w-4" /> {t("Añadir categoría", "Add category")}
+          </Button>
+        </div>
       </Panel>
 
 
