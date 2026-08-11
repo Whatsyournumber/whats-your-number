@@ -36,7 +36,7 @@ const chartColors = [
   "var(--color-chart-4)",
 ];
 
-function Portafolio() {
+function PortafolioContent() {
   const t = useT();
   const typeLabels: Record<(typeof types)[number], string> = {
     ETF: t("ETF", "ETF"),
@@ -286,5 +286,13 @@ function Portafolio() {
         </Tabs>
       </Panel>
     </PageShell>
+  );
+}
+
+function Portafolio() {
+  return (
+    <PlanGate required="pro">
+      <PortafolioContent />
+    </PlanGate>
   );
 }
