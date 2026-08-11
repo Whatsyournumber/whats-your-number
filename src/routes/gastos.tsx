@@ -584,7 +584,7 @@ function Gastos() {
               <Line dataKey="fijo" name={t("Fijos (prorrateado)", "Fixed (prorated)")} stroke="#E6C86C" strokeWidth={2.5} strokeDasharray="6 6" dot={false} activeDot={false} />
             </ComposedChart>
           </ResponsiveContainer>
-          <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <div className="mt-auto grid grid-cols-2 gap-2 pt-4 sm:grid-cols-4">
             {[
               { l: t("Este periodo", "This period"), v: fmt(variableTotal) },
               { l: t("Periodo anterior", "Previous period"), v: fmt(prevVariable) },
