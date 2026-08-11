@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Area, AreaChart, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
 
+import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
@@ -23,7 +24,7 @@ export const Route = createFileRoute("/patrimonio")({
   component: Patrimonio,
 });
 
-function Patrimonio() {
+function PatrimonioContent() {
   const t = useT();
   const { profile } = useProfile();
   const { transactions } = useTransactions();
@@ -134,5 +135,13 @@ function Patrimonio() {
         </Panel>
       </div>
     </PageShell>
+  );
+}
+
+function Patrimonio() {
+  return (
+    <PlanGate required="pro">
+      <PatrimonioContent />
+    </PlanGate>
   );
 }
