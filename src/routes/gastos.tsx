@@ -193,27 +193,48 @@ function Gastos() {
     return map;
   }, [previous, categories.rules]);
 
+  // Gastos fijos prorrateados al rango elegido (30 días -> 90 días, etc.)
+  const periodFactor = days / 30;
+  const fixedRows = useMemo(
+    () =>
+      fixed.items
+        .filter((i) => Number(i.amount) > 0)
+        .map((i) => ({ name: i.name, amount: i.amount * periodFactor, items: [] as Tx[], fixed: true }))
+        .sort((a, b) => b.amount - a.amount),
+    [fixed.items, periodFactor],
+  );
+
+  // Donut: variable + fijos prorrateados del mismo periodo
+  const donutData = useMemo(
+    () => [...byCategory.map((c) => ({ ...c, fixed: false })), ...fixedRows].sort((a, b) => b.amount - a.amount),
+    [byCategory, fixedRows],
+  );
+
   // Categorías con gastos visibles por defecto; toggle para ver vacías
   const [showEmptyCategories, setShowEmptyCategories] = useState(false);
   const detailRows = useMemo(() => {
     const map = new Map(byCategory.map((c) => [c.name, c]));
-    const ordered: { name: string; amount: number; items: Tx[] }[] = [];
+    const ordered: { name: string; amount: number; items: Tx[]; fixed?: boolean }[] = [];
     for (const name of categories.names) {
       const row = map.get(name) ?? { name, amount: 0, items: [] };
       if (row.amount > 0 || showEmptyCategories) ordered.push(row);
       map.delete(name);
     }
     const rest = Array.from(map.values()).filter((c) => c.amount > 0 || showEmptyCategories);
-    return [...ordered, ...rest].sort((a, b) => b.amount - a.amount);
-  }, [byCategory, categories.names, showEmptyCategories]);
+    return [...ordered, ...rest, ...fixedRows].sort((a, b) => b.amount - a.amount);
+  }, [byCategory, categories.names, showEmptyCategories, fixedRows]);
 
 
   // ---- Comparación mes vs mes ----
   const monthKeys = useMemo(() => {
     const set = new Set<string>();
-    for (const t of expenses) set.add(format(parseISO(t.tx_date!), "yyyy-MM"));
+    for (const t of expenses) {
+      if (!inRange(t, from, to)) continue;
+      set.add(format(parseISO(t.tx_date!), "yyyy-MM"));
+    }
     return [...set].sort().reverse();
-  }, [expenses]);
+  }, [expenses, from, to]);
+
 
   const [monthA, setMonthA] = useState<string | null>(null);
   const [monthB, setMonthB] = useState<string | null>(null);
