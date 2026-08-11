@@ -218,7 +218,7 @@ export function MortgageModule() {
     return date.toLocaleDateString(t("es", "en"), { year: "numeric", month: "short" });
   };
 
-  const score = healthScore(s.balance, s.rate, s.payment, d.income);
+  const score = healthScore(s.balance, s.rate, payment, d.income);
   const hlabel = healthLabel(score);
   const scoreData = [
     { name: "score", value: score, color: "var(--color-positive)" },
