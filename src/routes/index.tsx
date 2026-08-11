@@ -28,7 +28,9 @@ import { ProductPreview } from "@/components/product-preview";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/use-auth";
 import { useT } from "@/hooks/use-language";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
