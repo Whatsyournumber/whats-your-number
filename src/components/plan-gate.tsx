@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Lock, Sparkles } from "lucide-react";
 import { useT } from "@/hooks/use-language";
 import { type PlanTier, planMeetsTier, useSubscription } from "@/hooks/use-subscription";
+import { useRoles } from "@/hooks/use-role";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -19,11 +20,12 @@ export function PlanGate({
   blur?: boolean;
 }) {
   const { tier, loading } = useSubscription();
+  const { isSuperAdmin, loading: rolesLoading } = useRoles();
   const t = useT();
 
-  if (loading) return null;
+  if (loading || rolesLoading) return null;
 
-  const hasAccess = planMeetsTier(required, tier);
+  const hasAccess = isSuperAdmin || planMeetsTier(required, tier);
   if (hasAccess) return <>{children}</>;
 
   const isPro = required === "pro";
