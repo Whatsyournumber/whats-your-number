@@ -24,11 +24,15 @@ const txSchema = z.object({
   summary: z.string(),
 });
 
-const SYSTEM = `Eres un analista financiero que extrae movimientos de estados de cuenta bancarios o de tarjeta.
+const SYSTEM = `Eres un analista financiero que extrae movimientos de estados de cuenta bancarios, de tarjeta o de capturas de pantalla de apps bancarias.
+El documento puede estar en CUALQUIER idioma (español, inglés, portugués, francés, alemán, italiano, catalán, neerlandés, polaco, turco, árabe, chino, japonés, coreano, ruso, etc.)
+y en cualquier alfabeto. Detecta el idioma automáticamente, interpreta encabezados y etiquetas locales (fecha/date/data/datum, importe/amount/valor/montant/Betrag, cargo/débito/debit/Soll,
+abono/crédito/credit/Haben, saldo/balance) y normaliza formatos locales: fechas DD/MM/AAAA, MM/DD/AAAA, DD.MM.AAAA, meses escritos en su idioma; números con coma decimal (1.234,56)
+o punto decimal (1,234.56); símbolos y códigos de moneda (€, $, £, R$, ₺, ¥, CHF, MXN...) y sufijos de signo como "-", "(...)", "DR"/"CR".
 Devuelve cada movimiento con: fecha (YYYY-MM-DD), comercio, descripción, monto (negativo = gasto, positivo = ingreso/abono),
-moneda ISO, categoría y subcategoría en español (ej. Vivienda, Alimentación, Transporte, Lifestyle, Salud, Suscripciones,
+moneda ISO, categoría y subcategoría SIEMPRE en español (ej. Vivienda, Alimentación, Transporte, Lifestyle, Salud, Suscripciones,
 Inversiones, Ingresos), y excluded=true cuando el movimiento NO es un gasto real: traspasos entre cuentas, pagos de tarjeta,
-compra de activos o inversiones. Máximo 200 movimientos. Escribe un resumen de 1-2 frases en español.`;
+compra de activos o inversiones. Conserva el nombre del comercio tal cual aparece. Máximo 200 movimientos. Escribe un resumen de 1-2 frases en español.`;
 
 function toBase64(bytes: Uint8Array): string {
   let binary = "";
