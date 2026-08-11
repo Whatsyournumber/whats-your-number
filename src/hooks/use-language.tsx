@@ -25,6 +25,8 @@ const DICT = {
     "auth.google": "Continuar con otras cuentas",
     "auth.google.note":
       "Al registrarte con Google pedimos tu nombre, email, teléfono y foto para crear tu perfil.",
+    "auth.promo.label": "Código de invitación (opcional)",
+    "auth.promo.hint": "Sin tarjeta de crédito. Se activa solo al crear tu cuenta.",
     "auth.legal": "Tus datos financieros se guardan de forma privada y cifrada.",
     "auth.toast.signup": "Cuenta creada. ¡Bienvenido!",
     "auth.toast.login": "Sesión iniciada",
@@ -49,6 +51,8 @@ const DICT = {
     "auth.google": "Continue with other accounts",
     "auth.google.note":
       "Signing up with Google requests your name, email, phone and photo to build your profile.",
+    "auth.promo.label": "Invite code (optional)",
+    "auth.promo.hint": "No credit card needed. It activates when your account is created.",
     "auth.legal": "Your financial data is stored privately and encrypted.",
     "auth.toast.signup": "Account created. Welcome!",
     "auth.toast.login": "Signed in",
