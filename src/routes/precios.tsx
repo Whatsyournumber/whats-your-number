@@ -77,7 +77,7 @@ function Pricing() {
       ],
       cta: t("Probar Pro 14 días gratis", "Try Pro 14 days free"),
       href: "/auth",
-      search: { mode: "signup" },
+      search: { mode: "signup" } as const,
       highlight: true,
     },
     {
