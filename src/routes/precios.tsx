@@ -99,7 +99,7 @@ function Pricing() {
       ],
       cta: t("Hablar con nosotros", "Talk to us"),
       href: "/auth",
-      search: { mode: "signup" },
+      search: { mode: "signup" } as const,
       highlight: false,
     },
   ];
