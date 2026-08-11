@@ -284,17 +284,19 @@ export function MortgageModule() {
               />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">{t("Pago mensual", "Monthly payment")}</p>
+              <p className="text-xs text-muted-foreground">{t("Plazo restante (años)", "Remaining term (years)")}</p>
               <NumberInput
-                value={s.payment}
-                step={50}
-                onChange={(v) => set({ payment: v })}
+                value={s.term}
+                step={1}
+                min={1}
+                max={40}
+                onChange={(v) => set({ term: v })}
                 className="mt-1 h-8 w-full text-right text-sm font-semibold"
               />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">{t("Plazo restante", "Remaining term")}</p>
-              <p className="numeric mt-1 text-sm font-semibold">{term(base.months)}</p>
+              <p className="text-xs text-muted-foreground">{t("Pago mensual", "Monthly payment")}</p>
+              <p className="numeric mt-1 text-sm font-semibold">{fmt(payment)}</p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{t("Tipo de tasa", "Rate type")}</p>
