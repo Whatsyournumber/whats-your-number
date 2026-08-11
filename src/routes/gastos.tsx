@@ -171,6 +171,7 @@ function Gastos() {
   const total = variableTotal + fixedInPeriod;
   const prevTotal = prevVariable + fixedInPeriod;
   const delta = prevTotal > 0 ? ((total - prevTotal) / prevTotal) * 100 : 0;
+  const variableDelta = prevVariable > 0 ? ((variableTotal - prevVariable) / prevVariable) * 100 : 0;
 
   const byCategory = useMemo(() => {
     const map = new Map<string, { name: string; amount: number; items: Tx[] }>();
