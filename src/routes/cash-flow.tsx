@@ -118,7 +118,7 @@ function CashFlow() {
     "Tecnología",
     "Apps",
     "Hobbies",
-    "Lifestyle",
+
   ]);
   const spend = useMemo(() => {
     let wants = 0;
