@@ -275,8 +275,22 @@ function Gastos() {
   // ---- Gasto objetivo ----
   const { target, setTarget } = useSpendTarget(Math.round(profile.monthly_expenses || 0));
   const isLongRange = days > 31;
-  const monthsInRange = days / 30;
-  const monthlyRun = fixed.total + (variableTotal / days) * 30;
+
+  // Para rangos largos, el promedio mensual es el promedio de los totales mensuales
+  // reales (variable del mes + fijos del mes). Así cada mes analizado pesa igual.
+  const monthlyAverage = useMemo(() => {
+    if (monthKeys.length === 0) return fixed.total;
+    const map = new Map<string, number>();
+    for (const t of current) {
+      const key = format(parseISO(t.tx_date!), "yyyy-MM");
+      map.set(key, (map.get(key) ?? 0) + Math.abs(t.amount));
+    }
+    const monthlyTotals = Array.from(map.values()).map((v) => v + fixed.total);
+    return monthlyTotals.reduce((s, v) => s + v, 0) / monthlyTotals.length;
+  }, [current, fixed.total, monthKeys.length]);
+
+  const monthlyRun = isLongRange ? monthlyAverage : fixed.total + (variableTotal / days) * 30;
+  const avgMonthlyVariable = monthlyAverage - fixed.total;
   const targetPct = target > 0 ? (monthlyRun / target) * 100 : 0;
 
   // ---- Recomendaciones IA ----
@@ -502,10 +516,12 @@ function Gastos() {
         title={isLongRange ? t("Promedio mensual vs objetivo", "Monthly average vs target") : t("Gasto objetivo mensual", "Monthly spend target")}
         description={
           isLongRange
-            ? t(
-                `Promedio mensual de los últimos ${days} días (${monthsInRange.toFixed(1)} meses) vs. tu techo de gasto.`,
-                `Monthly average over the last ${days} days (${monthsInRange.toFixed(1)} months) vs. your spending ceiling.`,
-              )
+            ? monthKeys.length > 0
+              ? t(
+                  `Promedio mensual de los ${monthKeys.length} meses analizados vs. tu techo de gasto.`,
+                  `Monthly average of the ${monthKeys.length} months analyzed vs. your spending ceiling.`,
+                )
+              : t("Promedio mensual vs. tu techo de gasto.", "Monthly average vs. your spending ceiling.")
             : t("Ritmo actual vs. tu techo de gasto según tu número.", "Current pace vs. your spending ceiling based on your number.")
         }
       >
@@ -524,7 +540,11 @@ function Gastos() {
           <div>
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <span className="numeric text-xl font-semibold">{fmt(monthlyRun)}</span>
-              <span className="text-xs text-muted-foreground">{isLongRange ? t("promedio mensual del periodo", "monthly average for the period") : t("ritmo mensual estimado", "estimated monthly pace")}</span>
+              <span className="text-xs text-muted-foreground">
+                {isLongRange
+                  ? t(`promedio mensual de ${monthKeys.length} meses`, `monthly average of ${monthKeys.length} months`)
+                  : t("ritmo mensual estimado", "estimated monthly pace")}
+              </span>
               <span
                 className={cn(
                   "ml-auto rounded-full px-2 py-0.5 text-xs font-medium",
@@ -543,7 +563,7 @@ function Gastos() {
               />
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              {targetPct.toFixed(0)}% {t("del objetivo", "of target")} · {t("fijos", "fixed")} {fmt(fixed.total)} + {t("variable", "variable")} {fmt((variableTotal / days) * 30)}
+              {targetPct.toFixed(0)}% {t("del objetivo", "of target")} · {t("fijos", "fixed")} {fmt(fixed.total)} + {t("variable", "variable")} {fmt(isLongRange ? avgMonthlyVariable : (variableTotal / days) * 30)}
             </p>
           </div>
         </div>
