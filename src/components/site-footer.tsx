@@ -99,14 +99,7 @@ export function SiteFooter() {
                       <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground">{col.title}</h3>
                       <ul className="mt-3 space-y-2">
                         {col.links.map((l) => (
-                          <li key={l.label + l.to}>
-                            <Link
-                              to={l.to}
-                              className="text-sm text-muted-foreground transition-colors hover:text-primary"
-                            >
-                              {l.label}
-                            </Link>
-                          </li>
+                          <li key={l.label + l.to}>{renderLink(l)}</li>
                         ))}
                       </ul>
                     </div>
