@@ -499,8 +499,15 @@ function Gastos() {
 
       <Panel
         variant="minimal"
-        title={t("Gasto objetivo mensual", "Monthly spend target")}
-        description={t("Ritmo actual vs. tu techo de gasto según tu número.", "Current pace vs. your spending ceiling based on your number.")}
+        title={isLongRange ? t("Promedio mensual vs objetivo", "Monthly average vs target") : t("Gasto objetivo mensual", "Monthly spend target")}
+        description={
+          isLongRange
+            ? t(
+                `Promedio mensual de los últimos ${days} días (${monthsInRange.toFixed(1)} meses) vs. tu techo de gasto.`,
+                `Monthly average over the last ${days} days (${monthsInRange.toFixed(1)} months) vs. your spending ceiling.`,
+              )
+            : t("Ritmo actual vs. tu techo de gasto según tu número.", "Current pace vs. your spending ceiling based on your number.")
+        }
       >
         <div className="grid gap-5 md:grid-cols-[200px_1fr] md:items-center">
           <div>
