@@ -16,7 +16,7 @@ import { processStatement } from "@/lib/statements.functions";
 import { getPaddleEnvironment } from "@/lib/paddle";
 import { cn } from "@/lib/utils";
 
-const ACCEPT = ".pdf,.csv,.txt,application/pdf,text/csv";
+const ACCEPT = ".pdf,.csv,.txt,.png,.jpg,.jpeg,.webp,.heic,application/pdf,text/csv,image/*";
 const MAX_BYTES = 15 * 1024 * 1024;
 
 type StatementRow = {
