@@ -210,9 +210,14 @@ function Dashboard() {
                 <p className="numeric mt-1 text-lg font-semibold">{plan.probability}%</p>
               </div>
             </div>
-            <Button asChild variant="outline" size="sm" className="w-full rounded-full">
-              <Link to="/mi-perfil">{t("Editar mis datos", "Edit my data")}</Link>
-            </Button>
+            <div className="grid grid-cols-2 gap-2">
+              <Button asChild size="sm" className="w-full rounded-full">
+                <Link to="/retiro">{t("Ver mi número", "See my number")}</Link>
+              </Button>
+              <Button asChild variant="outline" size="sm" className="w-full rounded-full">
+                <Link to="/mi-perfil">{t("Editar mis datos", "Edit my data")}</Link>
+              </Button>
+            </div>
           </div>
         </Panel>
       </div>
