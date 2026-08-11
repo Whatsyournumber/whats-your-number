@@ -126,11 +126,20 @@ function Dashboard() {
     } catch {
       /* ignore */
     }
-    if (!stored.balance && Number(profile.liabilities)) {
-      stored = { ...stored, balance: Number(profile.liabilities) };
-    }
+    // Datos del onboarding como base cuando aún no hay simulación guardada
+    const fromProfile = {
+      balance: Number(profile.mortgage_balance) || 0,
+      rate: Number(profile.mortgage_rate) || 0,
+      term: Number(profile.mortgage_term) || 0,
+    };
+    stored = {
+      balance: stored.balance || fromProfile.balance || Number(profile.liabilities) || 0,
+      rate: stored.rate || fromProfile.rate,
+      term: stored.term || fromProfile.term,
+    };
     setMortgage(stored);
-  }, [profile.liabilities]);
+  }, [profile.liabilities, profile.mortgage_balance, profile.mortgage_rate, profile.mortgage_term]);
+
   const mortgageBalance = mortgage.balance;
   const mortgagePayment =
     mortgage.balance > 0 && mortgage.rate > 0 && mortgage.term > 0
