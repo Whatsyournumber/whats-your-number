@@ -524,14 +524,14 @@ function Gastos() {
           ) : (
             <>
               <div className="relative">
-                <ResponsiveContainer width="100%" height={240}>
+                <ResponsiveContainer width="100%" height={320}>
                   <PieChart>
                     <Pie
                       data={byCategory}
                       dataKey="amount"
                       nameKey="name"
-                      innerRadius={70}
-                      outerRadius={96}
+                      innerRadius={90}
+                      outerRadius={130}
                       paddingAngle={2}
                       stroke="none"
                     >
@@ -543,19 +543,19 @@ function Gastos() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                  <p className="numeric text-2xl font-semibold">{fmtCompact(variableTotal)}</p>
-                  <p className="text-xs text-muted-foreground">{t("gasto variable", "variable spend")}</p>
-                  <p className={cn("numeric mt-0.5 text-[11px]", delta > 0 ? "text-negative" : "text-positive")}>
+                  <p className="numeric text-3xl font-semibold">{fmtCompact(variableTotal)}</p>
+                  <p className="text-sm text-muted-foreground">{t("gasto variable", "variable spend")}</p>
+                  <p className={cn("numeric mt-0.5 text-xs", delta > 0 ? "text-negative" : "text-positive")}>
                     {delta > 0 ? "+" : ""}
                     {delta.toFixed(1)}% {t("vs. periodo anterior", "vs. previous period")}
                   </p>
                 </div>
               </div>
-              <ul className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1">
+              <ul className="mt-2 grid grid-cols-1 gap-x-4 gap-y-1.5">
                 {byCategory.slice(0, 8).map((c, i) => (
-                  <li key={c.name} className="flex items-center gap-2 text-xs">
-                    <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
-                    <span className="truncate text-muted-foreground">{c.name}</span>
+                  <li key={c.name} className="flex items-center gap-2 text-sm">
+                    <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
+                    <span className="text-muted-foreground">{c.name}</span>
                     <span className="numeric ml-auto font-medium">{((c.amount / variableTotal) * 100).toFixed(0)}%</span>
                   </li>
                 ))}
