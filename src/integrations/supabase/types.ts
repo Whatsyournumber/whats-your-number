@@ -301,6 +301,86 @@ export type Database = {
         }
         Relationships: []
       }
+      promo_codes: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          duration_days: number
+          expires_at: string | null
+          id: string
+          max_uses: number
+          note: string | null
+          product_id: string
+          updated_at: string
+          used_count: number
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          duration_days?: number
+          expires_at?: string | null
+          id?: string
+          max_uses?: number
+          note?: string | null
+          product_id?: string
+          updated_at?: string
+          used_count?: number
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          duration_days?: number
+          expires_at?: string | null
+          id?: string
+          max_uses?: number
+          note?: string | null
+          product_id?: string
+          updated_at?: string
+          used_count?: number
+        }
+        Relationships: []
+      }
+      promo_redemptions: {
+        Row: {
+          code: string
+          created_at: string
+          environment: string
+          granted_until: string
+          id: string
+          promo_code_id: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          environment?: string
+          granted_until: string
+          id?: string
+          promo_code_id: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          environment?: string
+          granted_until?: string
+          id?: string
+          promo_code_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promo_redemptions_promo_code_id_fkey"
+            columns: ["promo_code_id"]
+            isOneToOne: false
+            referencedRelation: "promo_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       statements: {
         Row: {
           created_at: string
@@ -438,6 +518,10 @@ export type Database = {
         Returns: boolean
       }
       is_super_admin: { Args: { _user_id: string }; Returns: boolean }
+      redeem_promo_code: {
+        Args: { _code: string; _environment?: string }
+        Returns: Json
+      }
     }
     Enums: {
       app_role: "super_admin" | "admin" | "user"
