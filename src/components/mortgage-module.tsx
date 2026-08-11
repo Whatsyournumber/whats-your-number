@@ -73,6 +73,16 @@ function paymentFor(balance: number, annualRate: number, months: number) {
   return (balance * r) / (1 - Math.pow(1 + r, -months));
 }
 
+/** Años restantes implícitos en una cuota mensual declarada. */
+function termFor(balance: number, annualRate: number, payment: number) {
+  const r = annualRate / 100 / 12;
+  if (balance <= 0 || payment <= 0) return 30;
+  if (r === 0) return Math.min(40, Math.max(1, Math.round(balance / payment / 12)));
+  if (payment <= balance * r) return 40;
+  const months = -Math.log(1 - (r * balance) / payment) / Math.log(1 + r);
+  return Math.min(40, Math.max(1, Math.round(months / 12)));
+}
+
 function futureValue(monthly: number, annualReturn: number, months: number) {
   const r = annualReturn / 100 / 12;
   if (r === 0) return monthly * months;
@@ -110,6 +120,7 @@ export function MortgageModule() {
   const expected = Number(profile.expected_return) || 7;
 
   const [s, setS] = useState<MortgageState>(defaults);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     try {
@@ -118,8 +129,30 @@ export function MortgageModule() {
     } catch {
       /* ignore */
     }
+    setReady(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Prefill con la data del onboarding: saldo = pasivos, plazo derivado de la cuota declarada.
+  useEffect(() => {
+    if (!ready) return;
+    const liabilities = Number(profile.liabilities) || 0;
+    const housing = Number(profile.fixed_housing) || 0;
+    if (!liabilities || s.balance) return;
+    const rate = s.rate;
+    const term = housing > 0 ? termFor(liabilities, rate, housing) : s.term;
+    setS((prev) => {
+      const next = { ...prev, balance: liabilities, term };
+      try {
+        window.localStorage.setItem(KEY, JSON.stringify(next));
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, profile.liabilities, profile.fixed_housing]);
+
 
   const set = (patch: Partial<MortgageState>) => {
     const next = { ...s, ...patch };
