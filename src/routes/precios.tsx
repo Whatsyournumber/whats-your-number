@@ -147,7 +147,7 @@ function Pricing() {
     void openCheckout({
       priceId: plan.priceId,
       quantity: 1,
-      customerEmail: user.email,
+      customerEmail: user.email || undefined,
       successUrl: `${window.location.origin}/dashboard?checkout=success`,
     });
   };
