@@ -540,9 +540,9 @@ function Gastos() {
 
 
       <div className="grid items-stretch gap-3 lg:grid-cols-3">
-        <Panel variant="minimal" title={t("Distribución por categoría", "Spend by category")} className="flex h-full flex-col">
+        <Panel variant="minimal" title={t("Distribución por categoría", "Spend by category")} description={t("Fijos prorrateados al rango + variable", "Fixed prorated to the range + variable")} className="flex h-full flex-col">
 
-          {byCategory.length === 0 ? (
+          {donutData.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t("Sin movimientos en este rango.", "No transactions in this range.")}</p>
           ) : (
             <>
@@ -550,7 +550,7 @@ function Gastos() {
                 <ResponsiveContainer width="100%" height={320}>
                   <PieChart>
                     <Pie
-                      data={byCategory}
+                      data={donutData}
                       dataKey="amount"
                       nameKey="name"
                       innerRadius={90}
@@ -558,7 +558,7 @@ function Gastos() {
                       paddingAngle={2}
                       stroke="none"
                     >
-                      {byCategory.map((c, i) => (
+                      {donutData.map((c, i) => (
                         <Cell key={c.name} fill={palette[i % palette.length]} />
                       ))}
                     </Pie>
@@ -566,8 +566,8 @@ function Gastos() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                  <p className="numeric text-3xl font-semibold">{fmtCompact(variableTotal)}</p>
-                  <p className="text-sm text-muted-foreground">{t("gasto variable", "variable spend")}</p>
+                  <p className="numeric text-3xl font-semibold">{fmtCompact(total)}</p>
+                  <p className="text-sm text-muted-foreground">{t("gasto total del periodo", "total period spend")}</p>
                   <p className={cn("numeric mt-0.5 text-xs", delta > 0 ? "text-negative" : "text-positive")}>
                     {delta > 0 ? "+" : ""}
                     {delta.toFixed(1)}% {t("vs. periodo anterior", "vs. previous period")}
@@ -575,14 +575,21 @@ function Gastos() {
                 </div>
               </div>
               <ul className="mt-auto grid grid-cols-1 gap-x-4 gap-y-1.5 pt-4">
-                {byCategory.slice(0, 8).map((c, i) => (
+                {donutData.slice(0, 8).map((c, i) => (
                   <li key={c.name} className="flex items-center gap-2 text-sm">
                     <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
-                    <span className="text-muted-foreground">{c.name}</span>
-                    <span className="numeric ml-auto font-medium">{((c.amount / variableTotal) * 100).toFixed(0)}%</span>
+                    <span className="text-muted-foreground">
+                      {c.name}
+                      {c.fixed ? ` · ${t("fijo", "fixed")}` : ""}
+                    </span>
+                    <span className="numeric ml-auto font-medium">{((c.amount / Math.max(1, total)) * 100).toFixed(0)}%</span>
                   </li>
                 ))}
               </ul>
+            </>
+          )}
+        </Panel>
+
             </>
           )}
         </Panel>
