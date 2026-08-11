@@ -8,7 +8,7 @@ const daysLeft = (iso: string | null) =>
   iso ? Math.max(0, Math.ceil((new Date(iso).getTime() - Date.now()) / 86_400_000)) : null;
 
 /** Trial countdown and dunning notice. Renders nothing when everything is fine. */
-export function SubscriptionStatusBanner({ className }: { className?: string }) {
+export function SubscriptionStatusBanner({ className }: { className?: string | undefined }) {
   const t = useT();
   const { subscription, isTrial, loading } = useSubscription();
 
@@ -79,7 +79,7 @@ function Banner({
   text,
   actionLabel,
 }: {
-  className?: string;
+  className?: string | undefined;
   tone: "info" | "danger";
   icon: typeof Clock;
   title: string;
