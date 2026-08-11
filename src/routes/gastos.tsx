@@ -351,6 +351,18 @@ function Gastos() {
     return [...map.values()].sort((a, b) => b.amount - a.amount);
   }, [current]);
 
+  /** Comercios del periodo con su categoría actual, para el chat de categorías. */
+  const merchantsForAi = useMemo(
+    () =>
+      merchants.slice(0, 60).map((m) => ({
+        name: m.name,
+        category: categorizeTx({ merchant: m.name } as Tx, categories.rules),
+        amount: m.amount,
+      })),
+    [merchants, categories.rules],
+  );
+
+
   const variable = variableTotal;
   const hasData = transactions.length > 0;
   const rangeLabel =
