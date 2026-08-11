@@ -195,6 +195,7 @@ function AdminPage() {
           <TabsTrigger value="users">Usuarios</TabsTrigger>
           <TabsTrigger value="subs">Pagos y suscripciones</TabsTrigger>
           <TabsTrigger value="statements">Estados de cuenta</TabsTrigger>
+          <TabsTrigger value="promos">Invitaciones</TabsTrigger>
         </TabsList>
 
         <TabsContent value="users" className="mt-4">
