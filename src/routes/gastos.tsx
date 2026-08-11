@@ -524,7 +524,7 @@ function Gastos() {
           <div>
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <span className="numeric text-xl font-semibold">{fmt(monthlyRun)}</span>
-              <span className="text-xs text-muted-foreground">{t("ritmo mensual estimado", "estimated monthly pace")}</span>
+              <span className="text-xs text-muted-foreground">{isLongRange ? t("promedio mensual del periodo", "monthly average for the period") : t("ritmo mensual estimado", "estimated monthly pace")}</span>
               <span
                 className={cn(
                   "ml-auto rounded-full px-2 py-0.5 text-xs font-medium",
