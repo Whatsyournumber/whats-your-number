@@ -565,9 +565,9 @@ function Gastos() {
         </Panel>
 
         <Panel variant="minimal" title={t("Evolución del gasto", "Spend evolution")} description={`${t("Comparando con", "Comparing with")} ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="lg:col-span-2">
-          <ResponsiveContainer width="100%" height={260}>
-            <ComposedChart data={series} margin={{ left: -8, right: 8 }}>
-              <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
+          <ResponsiveContainer width="100%" height={280}>
+            <ComposedChart data={series} margin={{ left: -8, right: 8, top: 12 }}>
+              <CartesianGrid strokeDasharray="4 6" stroke="var(--color-border)" vertical={false} />
               <XAxis dataKey="label" {...axisProps} interval="preserveStartEnd" minTickGap={18} />
               <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={64} />
               <Tooltip content={<ChartTooltip formatter={fmt} />} cursor={{ fill: "var(--color-muted)", opacity: 0.3 }} />
@@ -575,14 +575,14 @@ function Gastos() {
                 verticalAlign="top"
                 align="right"
                 iconType="circle"
-                wrapperStyle={{ fontSize: 11, paddingBottom: 8 }}
+                wrapperStyle={{ fontSize: 12, paddingBottom: 12, color: "var(--color-muted-foreground)" }}
               />
-              <Bar dataKey="anterior" name={t("Periodo anterior", "Previous period")} fill="var(--color-muted-foreground)" fillOpacity={0.35} radius={[6, 6, 0, 0]} />
-              <Bar dataKey="gasto" name={t("Este periodo", "This period")} fill="var(--color-chart-5)" radius={[6, 6, 0, 0]} />
-              <Line dataKey="fijo" name={t("Fijos (prorrateado)", "Fixed (prorated)")} stroke="var(--color-chart-3)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
+              <Bar dataKey="anterior" name={t("Periodo anterior", "Previous period")} fill="#5B6370" fillOpacity={0.85} radius={[5, 5, 0, 0]} barSize={12} />
+              <Bar dataKey="gasto" name={t("Este periodo", "This period")} fill="#FF7B7B" radius={[5, 5, 0, 0]} barSize={12} />
+              <Line dataKey="fijo" name={t("Fijos (prorrateado)", "Fixed (prorated)")} stroke="#E6C86C" strokeWidth={2.5} strokeDasharray="6 6" dot={false} activeDot={false} />
             </ComposedChart>
           </ResponsiveContainer>
-          <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
             {[
               { l: t("Este periodo", "This period"), v: fmt(variableTotal) },
               { l: t("Periodo anterior", "Previous period"), v: fmt(prevVariable) },
@@ -592,13 +592,13 @@ function Gastos() {
               },
               { l: t("Día más caro", "Most expensive day"), v: series.length ? fmt(Math.max(...series.map((s) => s.gasto))) : "—" },
             ].map((k) => (
-              <div key={k.l} className="rounded-lg border border-border/60 bg-elevated/40 px-3 py-2">
-                <p className="text-[11px] text-muted-foreground">{k.l}</p>
+              <div key={k.l} className="rounded-xl border border-border/60 bg-elevated/40 px-3 py-2.5">
+                <p className="text-xs text-muted-foreground">{k.l}</p>
                 <p className="numeric text-sm font-semibold">{k.v}</p>
               </div>
             ))}
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">
+          <p className="mt-3 text-xs text-muted-foreground">
             {t("Periodo anterior", "Previous period")}: <span className="numeric font-medium">{fmt(prevTotal)}</span>
           </p>
         </Panel>
