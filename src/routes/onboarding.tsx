@@ -198,7 +198,7 @@ function OnboardingPage() {
     return () => {
       alive = false;
     };
-  }, [user]);
+  }, [user, navigate]);
 
   const persist = async (patch: Record<string, unknown>) => {
     if (!user) return;
