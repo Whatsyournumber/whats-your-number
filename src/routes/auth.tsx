@@ -225,10 +225,8 @@ function AuthPage() {
                   id="promo"
                   value={promo}
                   onChange={(e) => setPromo(e.target.value.toUpperCase())}
-                  placeholder="PRUEBAGRATIS"
                   className="mt-1.5 rounded-xl uppercase tracking-wide"
                 />
-                <p className="mt-1.5 text-[11px] text-muted-foreground">{t("auth.promo.hint")}</p>
               </div>
             )}
 
