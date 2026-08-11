@@ -148,7 +148,7 @@ export function StatementImporter() {
           .insert({
             user_id: user.id,
             file_name: file.name,
-            file_type: file.type || (lower.endsWith(".pdf") ? "application/pdf" : "text/csv"),
+            file_type: file.type || fallbackType,
             file_size: file.size,
             storage_path: path,
             status: "uploaded",
