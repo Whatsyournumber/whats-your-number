@@ -171,6 +171,7 @@ function Gastos() {
   const total = variableTotal + fixedInPeriod;
   const prevTotal = prevVariable + fixedInPeriod;
   const delta = prevTotal > 0 ? ((total - prevTotal) / prevTotal) * 100 : 0;
+  const variableDelta = prevVariable > 0 ? ((variableTotal - prevVariable) / prevVariable) * 100 : 0;
 
   const byCategory = useMemo(() => {
     const map = new Map<string, { name: string; amount: number; items: Tx[] }>();
@@ -204,11 +205,8 @@ function Gastos() {
     [fixed.items, periodFactor],
   );
 
-  // Donut: variable + fijos prorrateados del mismo periodo
-  const donutData = useMemo(
-    () => [...byCategory.map((c) => ({ ...c, fixed: false })), ...fixedRows].sort((a, b) => b.amount - a.amount),
-    [byCategory, fixedRows],
-  );
+  // Donut y detalle: solo gastos variables; los fijos tienen su propia sección.
+  const donutData = useMemo(() => byCategory.map((c) => ({ ...c, fixed: false })).sort((a, b) => b.amount - a.amount), [byCategory]);
 
   // Categorías con gastos visibles por defecto; toggle para ver vacías
   const [showEmptyCategories, setShowEmptyCategories] = useState(false);
@@ -221,11 +219,8 @@ function Gastos() {
       map.delete(name);
     }
     const rest = Array.from(map.values()).filter((c) => c.amount > 0 || showEmptyCategories);
-    return ([...ordered, ...rest, ...fixedRows] as { name: string; amount: number; items: Tx[]; fixed?: boolean }[]).sort(
-      (a, b) => b.amount - a.amount,
-    );
-
-  }, [byCategory, categories.names, showEmptyCategories, fixedRows]);
+    return [...ordered, ...rest].sort((a, b) => b.amount - a.amount);
+  }, [byCategory, categories.names, showEmptyCategories]);
 
 
   // ---- Comparación mes vs mes ----
@@ -572,7 +567,7 @@ function Gastos() {
 
 
       <div className="grid items-stretch gap-3 lg:grid-cols-3">
-        <Panel variant="minimal" title={t("Distribución por categoría", "Spend by category")} description={t("Fijos prorrateados al rango + variable", "Fixed prorated to the range + variable")} className="flex h-full flex-col">
+        <Panel variant="minimal" title={t("Distribución por categoría", "Spend by category")} description={t("Solo gastos variables del periodo seleccionado.", "Variable spend only for the selected period.")} className="flex h-full flex-col">
 
           {donutData.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t("Sin movimientos en este rango.", "No transactions in this range.")}</p>
@@ -598,11 +593,11 @@ function Gastos() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                  <p className="numeric text-3xl font-semibold">{fmtCompact(total)}</p>
-                  <p className="text-sm text-muted-foreground">{t("gasto total del periodo", "total period spend")}</p>
-                  <p className={cn("numeric mt-0.5 text-xs", delta > 0 ? "text-negative" : "text-positive")}>
-                    {delta > 0 ? "+" : ""}
-                    {delta.toFixed(1)}% {t("vs. periodo anterior", "vs. previous period")}
+                  <p className="numeric text-3xl font-semibold">{fmtCompact(variableTotal)}</p>
+                  <p className="text-sm text-muted-foreground">{t("gasto variable del periodo", "variable period spend")}</p>
+                  <p className={cn("numeric mt-0.5 text-xs", variableDelta > 0 ? "text-negative" : "text-positive")}>
+                    {variableDelta > 0 ? "+" : ""}
+                    {variableDelta.toFixed(1)}% {t("vs. periodo anterior", "vs. previous period")}
                   </p>
                 </div>
               </div>
@@ -665,7 +660,7 @@ function Gastos() {
         </Panel>
       </div>
 
-      <Panel variant="minimal" title={t("Gastos fijos mensuales", "Monthly fixed expenses")} description={t("Edita nombre y monto; se guardan en este navegador", "Edit name and amount; saved in this browser")}>
+      <Panel variant="minimal" title={t("Gastos fijos mensuales", "Monthly fixed expenses")} description={t("Edita el monto mensual; abajo se muestra lo que representa en el periodo seleccionado.", "Edit the monthly amount; below you see what it represents for the selected period.")}>
         <div className="space-y-2">
           {fixed.items.map((item) => (
             <div key={item.id} className="flex flex-wrap items-center gap-2 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
@@ -675,11 +670,16 @@ function Gastos() {
                 className="h-8 w-full max-w-[260px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
               />
               <div className="ml-auto flex items-center gap-2">
-                <NumberInput
-                  value={item.amount}
-                  onChange={(v) => fixed.update(item.id, { amount: v })}
-                  className="h-8 w-28 text-right text-sm"
-                />
+                <div className="flex flex-col items-end">
+                  <NumberInput
+                    value={item.amount}
+                    onChange={(v) => fixed.update(item.id, { amount: v })}
+                    className="h-8 w-28 text-right text-sm"
+                  />
+                  <span className="numeric mt-0.5 text-[11px] text-muted-foreground">
+                    {fmt(item.amount * periodFactor)} {t("en este periodo", "in this period")}
+                  </span>
+                </div>
                 <Button
                   size="icon"
                   variant="ghost"
@@ -701,11 +701,14 @@ function Gastos() {
             </div>
           ))}
         </div>
-        <div className="mt-3 flex items-center gap-3">
+        <div className="mt-3 flex flex-wrap items-center gap-3">
           <Button size="sm" variant="outline" className="gap-2" onClick={fixed.add}>
             <Plus className="h-4 w-4" /> {t("Añadir gasto fijo", "Add fixed expense")}
           </Button>
-          <span className="numeric ml-auto text-sm font-semibold">{t("Total", "Total")} {fmt(fixed.total)}{t("/mes", "/mo")}</span>
+          <div className="ml-auto flex flex-col items-end">
+            <span className="numeric text-sm font-semibold">{t("Total", "Total")} {fmt(fixed.total)}{t("/mes", "/mo")}</span>
+            <span className="numeric text-[11px] text-muted-foreground">{fmt(fixedInPeriod)} {t("en este periodo", "in this period")}</span>
+          </div>
         </div>
       </Panel>
 
@@ -798,9 +801,7 @@ function Gastos() {
                     <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
                     <span className="truncate text-sm font-medium">{c.name}</span>
                     <span className="shrink-0 rounded-full bg-elevated/50 px-2 py-0.5 text-[11px] text-muted-foreground">
-                      {c.fixed
-                        ? `${t("fijo", "fixed")} · ${days} ${t("días", "days")}`
-                        : `${c.items.length} ${c.items.length === 1 ? t("mov.", "tx") : t("movs.", "txs")}`}
+                      {`${c.items.length} ${c.items.length === 1 ? t("mov.", "tx") : t("movs.", "txs")}`}
                     </span>
 
                     {variation !== null && (
