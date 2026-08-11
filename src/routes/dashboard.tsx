@@ -26,6 +26,7 @@ import { Progress } from "@/components/ui/progress";
 import { useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
+import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { buildInsights } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
