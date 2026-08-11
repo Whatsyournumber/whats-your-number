@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Check, CreditCard, ShieldCheck, Sparkles, Zap } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/use-auth";
+import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { useT } from "@/hooks/use-language";
 
 export const Route = createFileRoute("/precios")({
@@ -30,7 +32,10 @@ function yearlyTotal(monthly: number, discount: number) {
 
 function Pricing() {
   const t = useT();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [billing, setBilling] = useState<"monthly" | "yearly">("yearly");
+  const { openCheckout, loading } = usePaddleCheckout();
 
   const isYearly = billing === "yearly";
 
@@ -40,6 +45,7 @@ function Pricing() {
       monthlyPrice: 0,
       yearlyPrice: 0,
       yearlyDiscount: 0,
+      priceId: null,
       desc: t(
         "Descubre tu número en 30 segundos y ordena tus finanzas básicas.",
         "Discover your number in 30 seconds and organize your basic finances.",
@@ -61,6 +67,7 @@ function Pricing() {
       monthlyPrice: 7,
       yearlyPrice: 60,
       yearlyDiscount: 1 - 60 / (7 * 12),
+      priceId: isYearly ? "pro_yearly" : "pro_monthly",
       desc: t(
         "Todo el sistema financiero con IA ilimitada para acelerar tu libertad.",
         "The full financial OS with unlimited AI to speed up your freedom.",
@@ -76,8 +83,6 @@ function Pricing() {
         t("Reportes mensuales automáticos", "Automatic monthly reports"),
       ],
       cta: t("Probar Pro 14 días gratis", "Try Pro 14 days free"),
-      href: "/auth",
-      search: { mode: "signup" } as const,
       highlight: true,
     },
     {
@@ -85,7 +90,7 @@ function Pricing() {
       monthlyPrice: 19,
       yearlyPrice: yearlyTotal(19, 0.3),
       yearlyDiscount: 0.3,
-
+      priceId: isYearly ? "patrimonio_yearly" : "patrimonio_monthly",
       desc: t(
         "Para patrimonios complejos, familias y quienes toman decisiones con datos.",
         "For complex net worths, families and data-driven decision makers.",
@@ -102,8 +107,6 @@ function Pricing() {
         t("Acceso anticipado a nuevas funciones", "Early access to new features"),
       ],
       cta: t("Hablar con nosotros", "Talk to us"),
-      href: "/auth",
-      search: { mode: "signup" } as const,
       highlight: false,
     },
   ];
@@ -135,6 +138,20 @@ function Pricing() {
     },
   ];
 
+  const handleCta = (plan: (typeof plans)[number]) => {
+    if (!plan.priceId) return;
+    if (!user) {
+      navigate({ to: "/auth", search: { mode: "signup" } });
+      return;
+    }
+    void openCheckout({
+      priceId: plan.priceId,
+      quantity: 1,
+      customerEmail: user.email,
+      successUrl: `${window.location.origin}/dashboard?checkout=success`,
+    });
+  };
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
       <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[900px] -translate-x-1/2 rounded-full opacity-[0.12] blur-3xl" />
@@ -162,9 +179,7 @@ function Pricing() {
               type="button"
               onClick={() => setBilling("monthly")}
               className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
-                billing === "monthly"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
+                billing === "monthly" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {t("Mensual", "Monthly")}
@@ -173,9 +188,7 @@ function Pricing() {
               type="button"
               onClick={() => setBilling("yearly")}
               className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
-                billing === "yearly"
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
+                billing === "yearly" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {t("Anual", "Yearly")}
@@ -193,9 +206,7 @@ function Pricing() {
           {plans.map((plan) => {
             const price = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
             const period = isYearly ? t("/año", "/year") : t("/mes", "/mo");
-            const equivalentMonthly = isYearly && plan.monthlyPrice > 0
-              ? Math.round(plan.yearlyPrice / 12)
-              : null;
+            const equivalentMonthly = isYearly && plan.monthlyPrice > 0 ? Math.round(plan.yearlyPrice / 12) : null;
 
             return (
               <div
@@ -223,10 +234,7 @@ function Pricing() {
                 </div>
                 {equivalentMonthly && (
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {t(
-                      "Equivale a ${{month}}/mes",
-                      "Equals ${{month}}/month",
-                    ).replace("{{month}}", String(equivalentMonthly))}
+                    {t("Equivale a ${{month}}/mes", "Equals ${{month}}/month").replace("{{month}}", String(equivalentMonthly))}
                   </p>
                 )}
                 <p className="mt-2 text-sm text-muted-foreground">{plan.desc}</p>
@@ -238,15 +246,20 @@ function Pricing() {
                     </li>
                   ))}
                 </ul>
-                <Button
-                  asChild
-                  variant={plan.highlight ? "default" : "outline"}
-                  className="mt-8 w-full rounded-full"
-                >
-                  <Link to={plan.href} {...(plan.search ? { search: plan.search } : {})}>
+                {plan.priceId ? (
+                  <Button
+                    variant={plan.highlight ? "default" : "outline"}
+                    className="mt-8 w-full rounded-full"
+                    onClick={() => handleCta(plan)}
+                    disabled={loading}
+                  >
                     {plan.cta}
-                  </Link>
-                </Button>
+                  </Button>
+                ) : (
+                  <Button asChild variant={plan.highlight ? "default" : "outline"} className="mt-8 w-full rounded-full">
+                    <Link to={plan.href}>{plan.cta}</Link>
+                  </Button>
+                )}
               </div>
             );
           })}
