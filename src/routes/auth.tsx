@@ -178,7 +178,7 @@ function AuthPage() {
                   id="fullName"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Oscar Martínez"
+                  placeholder="Tu nombre"
                   className="mt-1.5 rounded-xl"
                   autoComplete="name"
                 />
