@@ -225,11 +225,11 @@ export function StatementImporter() {
             <p className="mt-3 text-sm font-medium">{t("Arrastra tus archivos aquí", "Drag your files here")}</p>
             <p className="mt-1 text-xs text-muted-foreground">
               {t(
-                "Extraemos fecha, comercio, descripción, monto y moneda · PDF o CSV · máx. 15 MB",
-                "We extract date, merchant, description, amount and currency · PDF or CSV · max. 15 MB",
+                "Extraemos fecha, comercio, descripción, monto y moneda · PDF, CSV o captura (PNG/JPG) · máx. 15 MB",
+                "We extract date, merchant, description, amount and currency · PDF, CSV or screenshot (PNG/JPG) · max. 15 MB",
               )}
             </p>
-            <div className="mt-4 flex gap-2">
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
               <Button size="sm" className="gap-2 rounded-full" onClick={() => inputRef.current?.click()} disabled={uploading || freeLimitReached}>
                 <FileText className="h-3.5 w-3.5" /> {t("Subir PDF", "Upload PDF")}
               </Button>
@@ -241,6 +241,15 @@ export function StatementImporter() {
                 disabled={uploading || freeLimitReached}
               >
                 <FileSpreadsheet className="h-3.5 w-3.5" /> {t("Subir CSV", "Upload CSV")}
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-2 rounded-full"
+                onClick={() => inputRef.current?.click()}
+                disabled={uploading || freeLimitReached}
+              >
+                <ImageIcon className="h-3.5 w-3.5" /> {t("Subir captura", "Upload screenshot")}
               </Button>
             </div>
           </div>
