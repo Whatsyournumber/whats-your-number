@@ -5,6 +5,8 @@ import { type PlanTier, planMeetsTier, useSubscription } from "@/hooks/use-subsc
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+const GATE_HEIGHT = "h-[calc(100vh-3.5rem)]";
+
 export function PlanGate({
   required,
   children,
@@ -39,15 +41,15 @@ export function PlanGate({
       );
 
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn("relative overflow-hidden", GATE_HEIGHT, className)}>
       {blur && (
-        <div className="pointer-events-none select-none opacity-[0.15] blur-[2px] saturate-50">
+        <div className={cn("pointer-events-none select-none overflow-hidden opacity-[0.15] blur-[2px] saturate-50", GATE_HEIGHT)}>
           {children}
         </div>
       )}
       <div
         className={cn(
-          "sticky top-14 z-10 flex h-[calc(100vh-3.5rem)] flex-col items-center justify-start pt-6 bg-background/60 p-6 backdrop-blur-sm",
+          "absolute inset-0 z-10 flex flex-col items-center justify-start pt-8 bg-background/60 p-6 backdrop-blur-sm",
           !blur && "relative",
         )}
       >
