@@ -1,5 +1,4 @@
-import {
-  CreditCard, Link, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   PieChart,
@@ -15,6 +14,7 @@ import {
   Settings,
   Wallet,
   UserCog,
+  CreditCard,
 } from "lucide-react";
 
 import {
