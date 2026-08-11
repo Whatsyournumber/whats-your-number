@@ -36,13 +36,6 @@ export function SiteFooter() {
         ],
       },
     {
-      title: t("Cuenta", "Account"),
-      links: [
-        { label: t("Iniciar sesión", "Sign in"), to: "/auth" },
-        { label: t("Crear cuenta", "Create account"), to: "/auth" },
-      ],
-    },
-    {
       title: "Legal",
       links: [
         { label: t("Términos y condiciones", "Terms and conditions"), to: "/terminos" },
@@ -65,7 +58,7 @@ export function SiteFooter() {
           >
             <div className="mx-auto w-full max-w-6xl px-6 pt-14 pb-6">
               {/* Desktop layout */}
-              <div className="hidden md:grid md:grid-cols-[1.4fr_repeat(4,1fr)] md:gap-10">
+              <div className="hidden md:grid md:grid-cols-[1.6fr_repeat(3,1fr)] md:gap-12">
                 <div>
                   <BrandLogo />
                   <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
