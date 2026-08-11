@@ -4,7 +4,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useLanguage } from "@/hooks/use-language";
+import { useLanguage, useT } from "@/hooks/use-language";
 import { planCategories } from "@/lib/category-ai.functions";
 import type { CustomCategory } from "@/hooks/use-categories";
 
@@ -30,7 +30,8 @@ export function CategoryChat({
   onUpdate,
   onRemove,
 }: Props) {
-  const { t, lang } = useLanguage();
+  const t = useT();
+  const { lang } = useLanguage();
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [msgs, setMsgs] = useState<Msg[]>([]);
