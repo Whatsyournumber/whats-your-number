@@ -28,6 +28,7 @@ import { Input } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CategoryChat } from "@/components/category-chat";
 import { useCategories } from "@/hooks/use-categories";
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useProfile } from "@/hooks/use-profile";
@@ -350,6 +351,18 @@ function Gastos() {
     }
     return [...map.values()].sort((a, b) => b.amount - a.amount);
   }, [current]);
+
+  /** Comercios del periodo con su categoría actual, para el chat de categorías. */
+  const merchantsForAi = useMemo(
+    () =>
+      merchants.slice(0, 60).map((m) => ({
+        name: m.name,
+        category: categorizeTx({ merchant: m.name } as Tx, categories.rules),
+        amount: m.amount,
+      })),
+    [merchants, categories.rules],
+  );
+
 
   const variable = variableTotal;
   const hasData = transactions.length > 0;
@@ -855,7 +868,17 @@ function Gastos() {
         </Accordion>
 
         <div className="mt-3 space-y-2 border-t border-border pt-3">
-          <p className="text-xs font-medium text-muted-foreground">{t("Categorías propias", "Your own categories")}</p>
+          <CategoryChat
+            categories={categories.names}
+            items={categories.items}
+            customRules={categories.rules.map((r) => ({ name: r.name, keywords: r.hints }))}
+            merchants={merchantsForAi}
+            onCreate={(name, keywords) => categories.add(name, keywords)}
+            onUpdate={categories.update}
+            onRemove={categories.remove}
+          />
+          <p className="pt-1 text-xs font-medium text-muted-foreground">{t("Categorías propias", "Your own categories")}</p>
+
           {categories.items.map((c) => (
             <div key={c.id} className="flex flex-wrap items-center gap-2 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
               <Input

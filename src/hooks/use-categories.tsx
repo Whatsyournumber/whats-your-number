@@ -54,7 +54,7 @@ export function useCategories() {
         .filter(Boolean),
     }));
 
-  const names = [...BASE_CATEGORIES, ...rules.map((r) => r.name)];
+  const names = Array.from(new Set([...BASE_CATEGORIES, ...rules.map((r) => r.name)]));
 
   return { items, add, update, remove, rules, names };
 }
