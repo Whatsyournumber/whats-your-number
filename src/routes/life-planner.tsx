@@ -19,6 +19,7 @@ import { motion } from "motion/react";
 import { CalendarDays, Compass, GripVertical, Pencil, Plus, Sparkles, Target, Trash2, TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import { useMemo, useState } from "react";
 
+import { PlanGate } from "@/components/plan-gate";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import {
