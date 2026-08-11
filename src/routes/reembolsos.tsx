@@ -37,8 +37,8 @@ function ReembolsosPage() {
       <LegalSection title={t("Cómo solicitarlo", "How to request it")}>
         <p>
           {t(
-            "Los reembolsos son procesados por nuestro proveedor de pagos y Merchant of Record, Paddle. Para pedir uno, visita paddle.net con el correo que usaste al comprar, o escríbenos a alvarez.o@perform-ly.com y lo gestionamos contigo.",
-            "Refunds are processed by our payment provider and Merchant of Record, Paddle. To request one, visit paddle.net with the email you used at purchase, or write to alvarez.o@perform-ly.com and we'll handle it with you.",
+            "Los reembolsos son procesados por nuestro proveedor de pagos y Merchant of Record, Paddle. Para pedir uno, visita paddle.net con el correo que usaste al comprar.",
+            "Refunds are processed by our payment provider and Merchant of Record, Paddle. To request one, visit paddle.net with the email you used at purchase.",
           )}
         </p>
       </LegalSection>
