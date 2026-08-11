@@ -81,9 +81,6 @@ export function PromoCodeRedeem({ className }: { className?: string }) {
         </span>
         <div>
           <p className="text-sm font-medium">{t("¿Tienes un código de invitación?", "Have an invite code?")}</p>
-          <p className="text-xs text-muted-foreground">
-            {t("Canjéalo y desbloquea Pro gratis por tiempo limitado.", "Redeem it and unlock Pro free for a limited time.")}
-          </p>
         </div>
       </div>
       <div className="mt-4 flex flex-col gap-2 sm:flex-row">
