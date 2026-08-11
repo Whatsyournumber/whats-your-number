@@ -98,7 +98,7 @@ function toSim(g: LifeGoal): SimGoal {
   };
 }
 
-function LifePlanner() {
+function LifePlannerContent() {
   const t = useT();
   const { profile } = useProfile();
   const { goals, create, update, remove, reorder, busy } = useLifeGoals();
