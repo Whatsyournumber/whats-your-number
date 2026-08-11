@@ -110,6 +110,7 @@ export function MortgageModule() {
   const expected = Number(profile.expected_return) || 7;
 
   const [s, setS] = useState<MortgageState>(defaults);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     try {
@@ -118,8 +119,30 @@ export function MortgageModule() {
     } catch {
       /* ignore */
     }
+    setReady(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Prefill con la data del onboarding: saldo = pasivos, plazo derivado de la cuota declarada.
+  useEffect(() => {
+    if (!ready) return;
+    const liabilities = Number(profile.liabilities) || 0;
+    const housing = Number(profile.fixed_housing) || 0;
+    if (!liabilities || s.balance) return;
+    const rate = s.rate;
+    const term = housing > 0 ? termFor(liabilities, rate, housing) : s.term;
+    setS((prev) => {
+      const next = { ...prev, balance: liabilities, term };
+      try {
+        window.localStorage.setItem(KEY, JSON.stringify(next));
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, profile.liabilities, profile.fixed_housing]);
+
 
   const set = (patch: Partial<MortgageState>) => {
     const next = { ...s, ...patch };
