@@ -318,3 +318,11 @@ function RetiroContent() {
   );
 }
 
+function Retiro() {
+  return (
+    <PlanGate required="pro">
+      <RetiroContent />
+    </PlanGate>
+  );
+}
+
