@@ -114,8 +114,22 @@ export function StatementImporter() {
       if (error) throw error;
     },
     onSuccess: () => {
+      toast.success(t("Archivo y sus movimientos eliminados", "File and its transactions deleted"));
       refreshAll();
     },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const removeTxMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("imported_transactions").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success(t("Movimiento eliminado", "Transaction deleted"));
+      refreshAll();
+    },
+    onError: (error: Error) => toast.error(error.message),
   });
 
   const handleFiles = async (files: FileList | null) => {
@@ -351,6 +365,16 @@ export function StatementImporter() {
                     </p>
                     {tx.excluded && <span className="text-[10px] text-primary">→ {t("Patrimonio", "Net worth")}</span>}
                   </div>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    aria-label={t("Eliminar movimiento", "Delete transaction")}
+                    className="rounded-full text-muted-foreground hover:text-destructive"
+                    onClick={() => removeTxMutation.mutate(tx.id)}
+                    disabled={removeTxMutation.isPending}
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
                 </div>
               ))}
             </div>
