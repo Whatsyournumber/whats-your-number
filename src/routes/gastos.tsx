@@ -274,6 +274,8 @@ function Gastos() {
 
   // ---- Gasto objetivo ----
   const { target, setTarget } = useSpendTarget(Math.round(profile.monthly_expenses || 0));
+  const isLongRange = days > 31;
+  const monthsInRange = days / 30;
   const monthlyRun = fixed.total + (variableTotal / days) * 30;
   const targetPct = target > 0 ? (monthlyRun / target) * 100 : 0;
 
@@ -497,8 +499,15 @@ function Gastos() {
 
       <Panel
         variant="minimal"
-        title={t("Gasto objetivo mensual", "Monthly spend target")}
-        description={t("Ritmo actual vs. tu techo de gasto según tu número.", "Current pace vs. your spending ceiling based on your number.")}
+        title={isLongRange ? t("Promedio mensual vs objetivo", "Monthly average vs target") : t("Gasto objetivo mensual", "Monthly spend target")}
+        description={
+          isLongRange
+            ? t(
+                `Promedio mensual de los últimos ${days} días (${monthsInRange.toFixed(1)} meses) vs. tu techo de gasto.`,
+                `Monthly average over the last ${days} days (${monthsInRange.toFixed(1)} months) vs. your spending ceiling.`,
+              )
+            : t("Ritmo actual vs. tu techo de gasto según tu número.", "Current pace vs. your spending ceiling based on your number.")
+        }
       >
         <div className="grid gap-5 md:grid-cols-[200px_1fr] md:items-center">
           <div>
@@ -515,7 +524,7 @@ function Gastos() {
           <div>
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <span className="numeric text-xl font-semibold">{fmt(monthlyRun)}</span>
-              <span className="text-xs text-muted-foreground">{t("ritmo mensual estimado", "estimated monthly pace")}</span>
+              <span className="text-xs text-muted-foreground">{isLongRange ? t("promedio mensual del periodo", "monthly average for the period") : t("ritmo mensual estimado", "estimated monthly pace")}</span>
               <span
                 className={cn(
                   "ml-auto rounded-full px-2 py-0.5 text-xs font-medium",
