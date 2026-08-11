@@ -221,7 +221,10 @@ function Gastos() {
       map.delete(name);
     }
     const rest = Array.from(map.values()).filter((c) => c.amount > 0 || showEmptyCategories);
-    return [...ordered, ...rest, ...fixedRows].sort((a, b) => b.amount - a.amount);
+    return ([...ordered, ...rest, ...fixedRows] as { name: string; amount: number; items: Tx[]; fixed?: boolean }[]).sort(
+      (a, b) => b.amount - a.amount,
+    );
+
   }, [byCategory, categories.names, showEmptyCategories, fixedRows]);
 
 
