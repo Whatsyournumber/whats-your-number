@@ -27,3 +27,52 @@ export function translateGoalNote(note: string, lang: Lang) {
     .replace(/te retiras en (\d+) años/, "you retire in $1 years")
     .replace("te retiras en +60 años", "you retire in 60+ years");
 }
+
+const CATEGORY_NAMES: Record<string, string> = {
+  "Mercado": "Groceries",
+  "Restaurantes": "Restaurants",
+  "Delivery": "Delivery",
+  "Nightlife": "Nightlife",
+  "Deportes": "Sports",
+  "Compras": "Shopping",
+  "Viajes": "Travel",
+  "Transporte": "Transport",
+  "Salud": "Health",
+  "Apps": "Apps",
+  "Marketing digital": "Digital marketing",
+  "Bancos & Seguros": "Banks & Insurance",
+  "Otros": "Other",
+  "Lifestyle": "Lifestyle",
+  "Vivienda": "Housing",
+  "Necesidades": "Needs",
+  "Deseos": "Wants",
+  "Ahorro e inversión": "Savings & investing",
+};
+
+/** Traduce nombres de categorías de gasto (deja intactas las personalizadas). */
+export function translateCategory(name: string, lang: Lang) {
+  if (lang !== "en") return name;
+  return CATEGORY_NAMES[name] ?? name;
+}
+
+const FIXED_NAMES: Record<string, string> = {
+  "Hipoteca / Alquiler": "Mortgage / Rent",
+  "Hipoteca": "Mortgage",
+  "Alquiler": "Rent",
+  "Fondo de ahorro": "Savings fund",
+  "Servicios (luz, agua, internet)": "Utilities (power, water, internet)",
+  "Servicios": "Utilities",
+  "Seguro de salud": "Health insurance",
+  "Seguros": "Insurance",
+  "Colegio": "School",
+  "Coche": "Car",
+  "Transporte": "Transport",
+  "Suscripciones": "Subscriptions",
+  "Nuevo gasto fijo": "New fixed expense",
+};
+
+/** Traduce nombres de gastos fijos por defecto. */
+export function translateFixedName(name: string, lang: Lang) {
+  if (lang !== "en") return name;
+  return FIXED_NAMES[name] ?? name;
+}

@@ -14,7 +14,8 @@ import { es } from "date-fns/locale";
 import { CalendarIcon, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { categorizeTx } from "@/lib/categorize";
-import { useT } from "@/hooks/use-language";
+import { useLanguage, useT } from "@/hooks/use-language";
+import { translateCategory, translateFixedName } from "@/lib/i18n-data";
 import type { DateRange } from "react-day-picker";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, ComposedChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
@@ -151,6 +152,8 @@ function Gastos() {
   const fmt = (n: number) => money(Math.round(n), currency);
   const fmtCompact = (n: number) => compact(n, currency);
 
+  const { lang } = useLanguage();
+  const tc = (n: string) => translateCategory(n, lang);
   const { transactions, isLoading } = useTransactions();
   const fixed = useFixedExpenses();
   const categories = useCategories();
@@ -262,7 +265,7 @@ function Gastos() {
     const b = totalsOf(mB);
     const names = [...new Set([...a.map.keys(), ...b.map.keys()])];
     const rows = names
-      .map((name) => ({ name, a: a.map.get(name) ?? 0, b: b.map.get(name) ?? 0 }))
+      .map((name) => ({ name: tc(name), a: a.map.get(name) ?? 0, b: b.map.get(name) ?? 0 }))
       .sort((x, y) => y.a + y.b - (x.a + x.b));
     return { aTotal: a.total, bTotal: b.total, rows };
   }, [expenses, mA, mB, categories.rules]);
@@ -623,7 +626,7 @@ function Gastos() {
                   <li key={c.name} className="flex items-center gap-2 text-sm">
                     <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
                     <span className="text-muted-foreground">
-                      {c.name}
+                      {tc(c.name)}
                       {c.fixed ? ` · ${t("fijo", "fixed")}` : ""}
                     </span>
                     <span className="numeric ml-auto font-medium">{((c.amount / Math.max(1, total)) * 100).toFixed(0)}%</span>
@@ -683,7 +686,7 @@ function Gastos() {
           {fixed.items.map((item) => (
             <div key={item.id} className="flex flex-wrap items-center gap-2 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
               <Input
-                value={item.name}
+                value={translateFixedName(item.name, lang)}
                 onChange={(e) => fixed.update(item.id, { name: e.target.value })}
                 className="h-8 w-full max-w-[260px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
               />
@@ -823,7 +826,7 @@ function Gastos() {
                 <AccordionTrigger className="py-2 hover:no-underline">
                   <div className="flex w-full items-center gap-3 pr-3">
                     <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
-                    <span className="truncate text-sm font-medium">{c.name}</span>
+                    <span className="truncate text-sm font-medium">{tc(c.name)}</span>
                     <span className="shrink-0 rounded-full bg-elevated/50 px-2 py-0.5 text-[11px] text-muted-foreground">
                       {`${c.items.length} ${c.items.length === 1 ? t("mov.", "tx") : t("movs.", "txs")}`}
                     </span>

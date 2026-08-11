@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { HelpCircle } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useLanguage, useT } from "@/hooks/use-language";
+import { translateCategory, translateFixedName } from "@/lib/i18n-data";
 
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
@@ -177,16 +178,16 @@ function CashFlow() {
 
   const needsBreakdown = hasReal
     ? [
-        ...needFixedItems.map((i) => ({ label: `${i.name} (${t("fijo", "fixed")})`, amount: i.amount })),
-        ...[...spend.needsBy.entries()].map(([label, amount]) => ({ label, amount })),
+        ...needFixedItems.map((i) => ({ label: `${translateFixedName(i.name, lang)} (${t("fijo", "fixed")})`, amount: i.amount })),
+        ...[...spend.needsBy.entries()].map(([label, amount]) => ({ label: translateCategory(label, lang), amount })),
       ].sort((a, b) => b.amount - a.amount)
     : [];
   const wantsBreakdown = hasReal
-    ? [...spend.wantsBy.entries()].map(([label, amount]) => ({ label, amount })).sort((a, b) => b.amount - a.amount)
+    ? [...spend.wantsBy.entries()].map(([label, amount]) => ({ label: translateCategory(label, lang), amount })).sort((a, b) => b.amount - a.amount)
     : [];
   const saveBreakdown = hasReal
     ? [
-        ...savingItems.map((i) => ({ label: `${i.name} (${t("fijo", "fixed")})`, amount: i.amount })),
+        ...savingItems.map((i) => ({ label: `${translateFixedName(i.name, lang)} (${t("fijo", "fixed")})`, amount: i.amount })),
         { label: t("Flujo libre del mes", "Free flow this month"), amount: freeAmount },
       ].sort((a, b) => b.amount - a.amount)
     : [];
