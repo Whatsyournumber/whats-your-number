@@ -29,8 +29,8 @@ import { NumberInput } from "@/components/ui/number-input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CategoryChat } from "@/components/category-chat";
-import { MortgageModule } from "@/components/mortgage-module";
 import { useCategories } from "@/hooks/use-categories";
+
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions, type Tx } from "@/hooks/use-transactions";
@@ -675,11 +675,8 @@ function Gastos() {
         </Panel>
       </div>
 
-      <MortgageModule />
-
-
-
       <Panel variant="minimal" title={t("Gastos fijos mensuales", "Monthly fixed expenses")} description={t("Edita el monto mensual; abajo se muestra lo que representa en el periodo seleccionado.", "Edit the monthly amount; below you see what it represents for the selected period.")}>
+
         <div className="space-y-2">
           {fixed.items.map((item) => (
             <div key={item.id} className="flex flex-wrap items-center gap-2 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">

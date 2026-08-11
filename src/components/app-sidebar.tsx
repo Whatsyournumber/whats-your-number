@@ -6,7 +6,7 @@ import {
   LineChart,
   PiggyBank,
   Globe,
-
+  Home,
   Waves,
   Sparkles,
   Target,
@@ -17,6 +17,7 @@ import {
   CreditCard,
   ShieldCheck,
 } from "lucide-react";
+
 
 import {
   Sidebar,
@@ -55,8 +56,9 @@ export function AppSidebar() {
     { title: "WhatsYournumber", url: "/retiro", icon: PiggyBank },
     { title: "Lifestyle Simulator", url: "/ciudades", icon: Globe },
     { title: "Life Planner", url: "/life-planner", icon: Target },
-
+    { title: t("Tu hipoteca", "Your mortgage"), url: "/hipoteca", icon: Home },
   ] as const;
+
 
   const secondary = [
     { title: "AI Advisor", url: "/advisor", icon: Bot },
