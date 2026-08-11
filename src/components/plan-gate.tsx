@@ -47,23 +47,25 @@ export function PlanGate({
       )}
       <div
         className={cn(
-          "absolute inset-0 z-10 flex flex-col items-center justify-center gap-6 rounded-2xl border border-border bg-background/98 p-10 text-center shadow-2xl backdrop-blur-3xl",
+          "sticky top-14 z-10 flex h-[calc(100vh-3.5rem)] flex-col items-center justify-center bg-background/60 p-6 backdrop-blur-sm",
           !blur && "relative",
         )}
       >
-        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-primary/10 text-primary ring-1 ring-primary/20">
-          <Lock className="h-8 w-8" />
+        <div className="flex max-w-md flex-col items-center gap-6 rounded-2xl border border-border bg-background/98 p-10 text-center shadow-2xl backdrop-blur-3xl">
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-primary/10 text-primary ring-1 ring-primary/20">
+            <Lock className="h-8 w-8" />
+          </div>
+          <div>
+            <p className="text-2xl font-semibold tracking-tight">{title}</p>
+            <p className="mt-3 text-base leading-relaxed text-muted-foreground">{description}</p>
+          </div>
+          <Button asChild size="lg" className="h-14 rounded-full px-10 text-base">
+            <Link to="/precios">
+              <Sparkles className="mr-2 h-4 w-4" />
+              {t("Comienza ya", "Start now")}
+            </Link>
+          </Button>
         </div>
-        <div className="max-w-md">
-          <p className="text-2xl font-semibold tracking-tight">{title}</p>
-          <p className="mt-3 text-base leading-relaxed text-muted-foreground">{description}</p>
-        </div>
-        <Button asChild size="lg" className="h-14 rounded-full px-10 text-base">
-          <Link to="/precios">
-            <Sparkles className="mr-2 h-4 w-4" />
-            {t("Comienza ya", "Start now")}
-          </Link>
-        </Button>
       </div>
     </div>
   );
