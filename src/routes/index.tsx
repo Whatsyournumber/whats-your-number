@@ -322,17 +322,20 @@ function Landing() {
           </p>
 
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Button asChild size="lg" className="gap-2 rounded-full px-6">
-              <Link to="/demo" search={{ start: 1 }}>
-                {t("Descubre tu número", "Discover your number")} <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="rounded-full px-6">
+          <div className="mt-8 flex flex-col items-center justify-center gap-4">
+            <Button
+              asChild
+              size="lg"
+              className="group h-14 gap-3 rounded-full px-10 text-base font-semibold shadow-xl shadow-primary/20"
+            >
               <Link to="/auth" search={{ mode: "signup" }}>
-                {t("Empieza gratis", "Start for free")}
+                {t("Comienza ya", "Start now")}
+                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-0.5" />
               </Link>
             </Button>
+            <p className="text-xs text-muted-foreground">
+              {t("Prueba 14 días gratis · sin tarjeta", "14-day free trial · no card required")}
+            </p>
           </div>
 
           <div className="mt-6 flex items-center justify-center gap-3">
