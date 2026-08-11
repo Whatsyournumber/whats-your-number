@@ -3,6 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Check, CreditCard, ShieldCheck, Sparkles, Zap } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
+import { PromoCodeRedeem } from "@/components/promo-code-redeem";
 import { SiteFooter } from "@/components/site-footer";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
@@ -321,7 +322,11 @@ function Pricing() {
           <p className="mt-4 text-[11px] text-muted-foreground">
             {t("Sin tarjeta de crédito · Cancela cuando quieras", "No credit card · Cancel anytime")}
           </p>
+          <div className="mx-auto mt-8 max-w-md text-left">
+            <PromoCodeRedeem />
+          </div>
         </section>
+
       </main>
 
       <SiteFooter />

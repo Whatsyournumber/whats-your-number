@@ -134,6 +134,20 @@ function AdminPage() {
     },
   });
 
+  const promos = useQuery({
+    queryKey: ["admin", "promos"],
+    enabled,
+    queryFn: async () => {
+      const [codes, reds] = await Promise.all([
+        supabase.from("promo_codes").select("id,code,product_id,duration_days,max_uses,used_count,active,expires_at,note").order("created_at", { ascending: false }),
+        supabase.from("promo_redemptions").select("id,code,user_id,granted_until,created_at").order("created_at", { ascending: false }).limit(200),
+      ]);
+      if (codes.error) throw codes.error;
+      if (reds.error) throw reds.error;
+      return { codes: codes.data ?? [], redemptions: reds.data ?? [] };
+    },
+  });
+
   const users = profiles.data ?? [];
   const onb = onboarding.data ?? [];
   const subs = subscriptions.data ?? [];
@@ -181,6 +195,7 @@ function AdminPage() {
           <TabsTrigger value="users">Usuarios</TabsTrigger>
           <TabsTrigger value="subs">Pagos y suscripciones</TabsTrigger>
           <TabsTrigger value="statements">Estados de cuenta</TabsTrigger>
+          <TabsTrigger value="promos">Invitaciones</TabsTrigger>
         </TabsList>
 
         <TabsContent value="users" className="mt-4">
@@ -315,6 +330,75 @@ function AdminPage() {
                       <TableCell colSpan={5} className="text-center text-muted-foreground">
                         Sin archivos
                       </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </Panel>
+        </TabsContent>
+
+        <TabsContent value="promos" className="mt-4 space-y-4">
+          <Panel title="Códigos de invitación" description="Comparte el código para dar acceso Pro gratis">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Código</TableHead>
+                    <TableHead>Plan</TableHead>
+                    <TableHead>Días</TableHead>
+                    <TableHead>Usos</TableHead>
+                    <TableHead>Estado</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(promos.data?.codes ?? []).map((c) => (
+                    <TableRow key={c.id}>
+                      <TableCell className="font-medium tracking-wide">{c.code}</TableCell>
+                      <TableCell className="text-muted-foreground">{c.product_id}</TableCell>
+                      <TableCell className="numeric">{c.duration_days}</TableCell>
+                      <TableCell className="numeric">{c.used_count} / {c.max_uses}</TableCell>
+                      <TableCell>
+                        <Badge variant={c.active ? "default" : "secondary"}>{c.active ? "activo" : "inactivo"}</Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {(promos.data?.codes ?? []).length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center text-muted-foreground">Sin códigos</TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </Panel>
+
+          <Panel title="Canjes" description={`${promos.data?.redemptions.length ?? 0} canjes`}>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Usuario</TableHead>
+                    <TableHead>Código</TableHead>
+                    <TableHead>Acceso hasta</TableHead>
+                    <TableHead>Fecha</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(promos.data?.redemptions ?? []).map((r) => {
+                    const u = users.find((x) => x.id === r.user_id);
+                    return (
+                      <TableRow key={r.id}>
+                        <TableCell className="font-medium">{u?.email ?? r.user_id.slice(0, 8)}</TableCell>
+                        <TableCell className="text-muted-foreground">{r.code}</TableCell>
+                        <TableCell className="numeric text-muted-foreground">{fmtDate(r.granted_until)}</TableCell>
+                        <TableCell className="numeric text-muted-foreground">{fmtDate(r.created_at)}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                  {(promos.data?.redemptions ?? []).length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={4} className="text-center text-muted-foreground">Sin canjes</TableCell>
                     </TableRow>
                   )}
                 </TableBody>
