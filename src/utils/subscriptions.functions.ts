@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { getPaddleClient, type PaddleEnv } from "@/lib/paddle.server";
+import { getPaddleClient, gatewayFetch, type PaddleEnv } from "@/lib/paddle.server";
 
 const TIER_RANK: Record<string, number> = { pro_plan: 1, patrimonio_plan: 2 };
 
@@ -104,18 +104,10 @@ export const changePlan = createServerFn({ method: "POST" })
     const isUpgrade = (TIER_RANK[targetProduct] ?? 0) > (TIER_RANK[sub.product_id] ?? 0);
 
     const paddle = getPaddleClient(env);
-    const { data: priceLookup } = await (
-      await fetch(`https://connector-gateway.lovable.dev/paddle/prices?external_id=${encodeURIComponent(data.priceId)}`, {
-        headers: {
-          "Content-Type": "application/json",
-          "X-Connection-Api-Key":
-            env === "sandbox" ? process.env["PADDLE_SANDBOX_API_KEY"]! : process.env["PADDLE_LIVE_API_KEY"]!,
-          "Lovable-API-Key": process.env["LOVABLE_API_KEY"]!,
-        },
-      })
-    ).json();
+    const priceRes = await gatewayFetch(env, `/prices?external_id=${encodeURIComponent(data.priceId)}`);
+    const priceJson = (await priceRes.json()) as { data?: Array<{ id: string }> };
 
-    const paddlePriceId = priceLookup?.[0]?.id;
+    const paddlePriceId = priceJson.data?.[0]?.id;
     if (!paddlePriceId) throw new Error("Price not found");
 
     await paddle.subscriptions.update(sub.paddle_subscription_id, {
