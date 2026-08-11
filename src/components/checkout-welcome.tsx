@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { Sparkles, X } from "lucide-react";
@@ -11,6 +12,7 @@ import { useSubscription } from "@/hooks/use-subscription";
 export function CheckoutWelcome() {
   const t = useT();
   const [open, setOpen] = useState(false);
+  const qc = useQueryClient();
   const { tier } = useSubscription();
 
   useEffect(() => {
@@ -21,7 +23,17 @@ export function CheckoutWelcome() {
     params.delete("checkout");
     const qs = params.toString();
     window.history.replaceState({}, "", `${window.location.pathname}${qs ? `?${qs}` : ""}`);
-  }, []);
+
+    // The Paddle webhook can land a few seconds after the redirect, so keep
+    // refreshing the subscription until the new plan shows up.
+    let tries = 0;
+    const timer = window.setInterval(() => {
+      tries += 1;
+      void qc.invalidateQueries({ queryKey: ["subscription"] });
+      if (tries >= 10) window.clearInterval(timer);
+    }, 3000);
+    return () => window.clearInterval(timer);
+  }, [qc]);
 
   const planName = tier === "patrimonio" ? "Patrimonio" : "Pro";
 
