@@ -4,6 +4,7 @@ import { Facebook, Instagram, Linkedin, Twitter, Youtube, Heart, Plus } from "lu
 import { motion, AnimatePresence } from "motion/react";
 
 import { BrandLogo } from "@/components/brand-logo";
+import { PoliciesDialog } from "@/components/policies-dialog";
 import { useT } from "@/hooks/use-language";
 
 const socials = [
@@ -172,6 +173,7 @@ export function SiteFooter() {
           </div>
         </div>
       </div>
+      <PoliciesDialog open={policiesOpen} onOpenChange={setPoliciesOpen} title="Legal" />
     </footer>
   );
 }
