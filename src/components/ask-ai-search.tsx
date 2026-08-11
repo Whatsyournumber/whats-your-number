@@ -9,6 +9,7 @@ import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
 import { askAdvisor } from "@/lib/ask-advisor.functions";
+import { getPaddleEnvironment } from "@/lib/paddle";
 import { buildDataset } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
 
@@ -94,7 +95,7 @@ ${cats || "- sin datos"}`;
     mutationFn: async (question: string) => {
       const history = messages.slice(-8).map((m) => ({ role: m.role, content: m.content }));
       const res = await askAdvisor({
-        data: { question, lang: lang === "en" ? "en" : "es", context: buildContext(), history },
+        data: { question, lang: lang === "en" ? "en" : "es", context: buildContext(), environment: getPaddleEnvironment(), history },
       });
       return res.answer;
     },

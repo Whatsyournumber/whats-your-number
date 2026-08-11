@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { planCategories } from "@/lib/category-ai.functions";
+import { getPaddleEnvironment } from "@/lib/paddle";
 import type { CustomCategory } from "@/hooks/use-categories";
 
 type Msg = { role: "user" | "ai"; text: string; ops?: string[] };
@@ -82,7 +83,7 @@ export function CategoryChat({
     setBusy(true);
     try {
       const plan = await planCategories({
-        data: { message, lang, categories, customRules, merchants },
+        data: { message, lang, environment: getPaddleEnvironment(), categories, customRules, merchants },
       });
       const notes = apply(plan.ops);
       setMsgs((m) => [...m, { role: "ai", text: plan.reply, ops: notes }]);
