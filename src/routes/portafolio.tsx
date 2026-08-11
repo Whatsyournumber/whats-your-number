@@ -3,6 +3,7 @@ import { RefreshCw, X } from "lucide-react";
 import { useState } from "react";
 import { CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
+import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
@@ -35,7 +36,7 @@ const chartColors = [
   "var(--color-chart-4)",
 ];
 
-function Portafolio() {
+function PortafolioContent() {
   const t = useT();
   const typeLabels: Record<(typeof types)[number], string> = {
     ETF: t("ETF", "ETF"),
@@ -285,5 +286,13 @@ function Portafolio() {
         </Tabs>
       </Panel>
     </PageShell>
+  );
+}
+
+function Portafolio() {
+  return (
+    <PlanGate required="pro">
+      <PortafolioContent />
+    </PlanGate>
   );
 }

@@ -19,6 +19,7 @@ import { motion } from "motion/react";
 import { CalendarDays, Compass, GripVertical, Pencil, Plus, Sparkles, Target, Trash2, TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import { useMemo, useState } from "react";
 
+import { PlanGate } from "@/components/plan-gate";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import {
@@ -97,7 +98,7 @@ function toSim(g: LifeGoal): SimGoal {
   };
 }
 
-function LifePlanner() {
+function LifePlannerContent() {
   const t = useT();
   const { profile } = useProfile();
   const { goals, create, update, remove, reorder, busy } = useLifeGoals();
@@ -738,5 +739,13 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
       <Label className="text-xs text-muted-foreground">{label}</Label>
       {children}
     </div>
+  );
+}
+
+function LifePlanner() {
+  return (
+    <PlanGate required="pro">
+      <LifePlannerContent />
+    </PlanGate>
   );
 }

@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { ArrowLeftRight, BookOpen, Info, MapPin, RotateCcw, SlidersHorizontal, Sparkles, X } from "lucide-react";
 
+import { PlanGate } from "@/components/plan-gate";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { axisProps, ChartTooltip } from "@/components/chart-kit";
 import { Button } from "@/components/ui/button";
@@ -246,7 +247,7 @@ function SourcesTooltip({ t }: { t: (es: string, en: string) => string }) {
 }
 
 
-function LifestyleSimulator() {
+function LifestyleSimulatorContent() {
   const t = useT();
   const { profile } = useProfile();
   const d = buildDataset(profile);
@@ -1212,5 +1213,13 @@ function CityDetail({
         </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function LifestyleSimulator() {
+  return (
+    <PlanGate required="pro">
+      <LifestyleSimulatorContent />
+    </PlanGate>
   );
 }

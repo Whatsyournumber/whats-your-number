@@ -4,6 +4,7 @@ import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YA
 import { motion } from "motion/react";
 import { Pencil, X } from "lucide-react";
 
+import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
@@ -31,7 +32,7 @@ export const Route = createFileRoute("/retiro")({
 });
 
 
-function Retiro() {
+function RetiroContent() {
   const t = useT();
   const { profile, save, saving } = useProfile();
 
@@ -314,6 +315,14 @@ function Retiro() {
       </Panel>
 
     </PageShell>
+  );
+}
+
+function Retiro() {
+  return (
+    <PlanGate required="pro">
+      <RetiroContent />
+    </PlanGate>
   );
 }
 

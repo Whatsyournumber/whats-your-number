@@ -1,13 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { CheckCircle2, FileSpreadsheet, FileText, Loader2, Sparkles, Trash2, TriangleAlert, Upload } from "lucide-react";
+import { CheckCircle2, FileSpreadsheet, FileText, Loader2, Lock, Sparkles, Trash2, TriangleAlert, Upload } from "lucide-react";
 import { useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 
 import { Panel } from "@/components/page";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import { useSubscription } from "@/hooks/use-subscription";
 import { useT } from "@/hooks/use-language";
 import { supabase } from "@/integrations/supabase/client";
 import { processStatement } from "@/lib/statements.functions";
@@ -44,6 +46,7 @@ const money = (v: number, currency: string) =>
 export function StatementImporter() {
   const t = useT();
   const { user } = useAuth();
+  const { isFree } = useSubscription();
   const qc = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -166,6 +169,13 @@ export function StatementImporter() {
   const statements = statementsQuery.data ?? [];
   const transactions = txQuery.data ?? [];
 
+  const now = new Date();
+  const statementsThisMonth = statements.filter((s) => {
+    const d = new Date(s.created_at);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }).length;
+  const freeLimitReached = isFree && statementsThisMonth >= 5;
+
   return (
     <div className="space-y-4">
       <Panel
@@ -175,56 +185,79 @@ export function StatementImporter() {
           "Card PDFs or bank CSVs — AI extracts and classifies each transaction",
         )}
       >
-        <div
-          onDragOver={(e) => {
-            e.preventDefault();
-            setDragging(true);
-          }}
-          onDragLeave={() => setDragging(false)}
-          onDrop={(e) => {
-            e.preventDefault();
-            setDragging(false);
-            void handleFiles(e.dataTransfer.files);
-          }}
-          className={cn(
-            "flex flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-12 text-center transition-colors",
-            dragging ? "border-primary bg-primary/5" : "border-border bg-elevated/40",
-          )}
-        >
-          <input
-            ref={inputRef}
-            type="file"
-            accept={ACCEPT}
-            multiple
-            className="hidden"
-            onChange={(e) => void handleFiles(e.target.files)}
-          />
-          {uploading ? (
-            <Loader2 className="h-6 w-6 animate-spin text-primary" />
-          ) : (
-            <Upload className="h-6 w-6 text-muted-foreground" />
-          )}
-          <p className="mt-3 text-sm font-medium">{t("Arrastra tus archivos aquí", "Drag your files here")}</p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {t(
-              "Extraemos fecha, comercio, descripción, monto y moneda · PDF o CSV · máx. 15 MB",
-              "We extract date, merchant, description, amount and currency · PDF or CSV · max. 15 MB",
+        <div className="relative">
+          <div
+            onDragOver={(e) => {
+              if (freeLimitReached) return;
+              e.preventDefault();
+              setDragging(true);
+            }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={(e) => {
+              if (freeLimitReached) return;
+              e.preventDefault();
+              setDragging(false);
+              void handleFiles(e.dataTransfer.files);
+            }}
+            className={cn(
+              "flex flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-12 text-center transition-colors",
+              dragging ? "border-primary bg-primary/5" : "border-border bg-elevated/40",
+              freeLimitReached && "opacity-30 blur-[1px]",
             )}
-          </p>
-          <div className="mt-4 flex gap-2">
-            <Button size="sm" className="gap-2 rounded-full" onClick={() => inputRef.current?.click()} disabled={uploading}>
-              <FileText className="h-3.5 w-3.5" /> {t("Subir PDF", "Upload PDF")}
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              className="gap-2 rounded-full"
-              onClick={() => inputRef.current?.click()}
-              disabled={uploading}
-            >
-              <FileSpreadsheet className="h-3.5 w-3.5" /> {t("Subir CSV", "Upload CSV")}
-            </Button>
+          >
+            <input
+              ref={inputRef}
+              type="file"
+              accept={ACCEPT}
+              multiple
+              className="hidden"
+              onChange={(e) => void handleFiles(e.target.files)}
+              disabled={freeLimitReached}
+            />
+            {uploading ? (
+              <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            ) : (
+              <Upload className="h-6 w-6 text-muted-foreground" />
+            )}
+            <p className="mt-3 text-sm font-medium">{t("Arrastra tus archivos aquí", "Drag your files here")}</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {t(
+                "Extraemos fecha, comercio, descripción, monto y moneda · PDF o CSV · máx. 15 MB",
+                "We extract date, merchant, description, amount and currency · PDF or CSV · max. 15 MB",
+              )}
+            </p>
+            <div className="mt-4 flex gap-2">
+              <Button size="sm" className="gap-2 rounded-full" onClick={() => inputRef.current?.click()} disabled={uploading || freeLimitReached}>
+                <FileText className="h-3.5 w-3.5" /> {t("Subir PDF", "Upload PDF")}
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-2 rounded-full"
+                onClick={() => inputRef.current?.click()}
+                disabled={uploading || freeLimitReached}
+              >
+                <FileSpreadsheet className="h-3.5 w-3.5" /> {t("Subir CSV", "Upload CSV")}
+              </Button>
+            </div>
           </div>
+          {freeLimitReached && (
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 rounded-2xl border border-border bg-background/95 p-6 text-center backdrop-blur-xl">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <Lock className="h-4 w-4" />
+              </div>
+              <p className="text-sm font-semibold">{t("Límite alcanzado", "Limit reached")}</p>
+              <p className="max-w-xs text-xs text-muted-foreground">
+                {t(
+                  "Has usado 5 importaciones este mes. Subir a Pro para importar sin límite.",
+                  "You've used 5 imports this month. Upgrade to Pro for unlimited imports.",
+                )}
+              </p>
+              <Button asChild size="sm" className="mt-1 rounded-full">
+                <Link to="/precios">{t("Ver planes", "See plans")}</Link>
+              </Button>
+            </div>
+          )}
         </div>
       </Panel>
 
