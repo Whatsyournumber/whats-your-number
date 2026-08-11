@@ -51,28 +51,41 @@ export const startProTrial = createServerFn({ method: "POST" })
     return { ok: true, skipped: false, periodEnd: periodEnd.toISOString() };
   });
 
+export type PortalTarget = "overview" | "payment_method" | "cancel";
+
 /** Hosted Paddle portal: cancel, update payment method, invoices. */
 export const openCustomerPortal = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
+  .inputValidator((data?: { environment?: PaddleEnv; target?: PortalTarget }) => data ?? {})
+  .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const { data: sub } = await supabase
+    let query = supabase
       .from("subscriptions")
       .select("paddle_subscription_id,paddle_customer_id,environment")
-      .eq("user_id", userId)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
+      .eq("user_id", userId);
+    if (data.environment) query = query.eq("environment", data.environment);
 
-    if (!sub || sub.paddle_customer_id === "trial") {
-      return { url: null as string | null, reason: "no_subscription" };
+    const { data: sub } = await query.order("created_at", { ascending: false }).limit(1).maybeSingle();
+
+    if (!sub || sub.paddle_customer_id === "trial" || sub.paddle_subscription_id.startsWith("trial_")) {
+      return { url: null as string | null, reason: "no_subscription" as const };
     }
 
     const paddle = getPaddleClient(sub.environment as PaddleEnv);
     const session = await paddle.customerPortalSessions.create(sub.paddle_customer_id, [
       sub.paddle_subscription_id,
     ]);
-    return { url: session.urls.general.overview as string, reason: null };
+
+    const target = data.target ?? "overview";
+    const forSub = session.urls.subscriptions?.find((s) => s.id === sub.paddle_subscription_id);
+    const url =
+      target === "cancel"
+        ? forSub?.cancelSubscription
+        : target === "payment_method"
+          ? forSub?.updateSubscriptionPaymentMethod
+          : undefined;
+
+    return { url: (url ?? session.urls.general.overview) as string, reason: null };
   });
 
 /**
