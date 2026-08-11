@@ -263,7 +263,9 @@ function Pricing() {
                   </Button>
                 ) : (
                   <Button asChild variant={plan.highlight ? "default" : "outline"} className="mt-8 w-full rounded-full">
-                    <Link to={plan.href}>{plan.cta}</Link>
+                    <Link to={plan.name === "Free" ? "/demo" : "/auth"} search={plan.name === "Free" ? {} : { mode: "signup" }}>
+                      {plan.cta}
+                    </Link>
                   </Button>
                 )}
               </div>
