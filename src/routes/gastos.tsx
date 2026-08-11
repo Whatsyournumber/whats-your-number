@@ -552,7 +552,7 @@ function Gastos() {
                   </p>
                 </div>
               </div>
-              <ul className="mt-2 grid grid-cols-1 gap-x-4 gap-y-1.5">
+              <ul className="mt-auto grid grid-cols-1 gap-x-4 gap-y-1.5 pt-4">
                 {byCategory.slice(0, 8).map((c, i) => (
                   <li key={c.name} className="flex items-center gap-2 text-sm">
                     <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
