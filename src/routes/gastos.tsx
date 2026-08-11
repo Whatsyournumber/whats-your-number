@@ -265,7 +265,7 @@ function Gastos() {
     const b = totalsOf(mB);
     const names = [...new Set([...a.map.keys(), ...b.map.keys()])];
     const rows = names
-      .map((name) => ({ name, a: a.map.get(name) ?? 0, b: b.map.get(name) ?? 0 }))
+      .map((name) => ({ name: tc(name), a: a.map.get(name) ?? 0, b: b.map.get(name) ?? 0 }))
       .sort((x, y) => y.a + y.b - (x.a + x.b));
     return { aTotal: a.total, bTotal: b.total, rows };
   }, [expenses, mA, mB, categories.rules]);
