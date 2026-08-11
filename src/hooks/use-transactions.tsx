@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { useAuth } from "@/hooks/use-auth";
+import { isExcludedTx } from "@/lib/categorize";
 import { supabase } from "@/integrations/supabase/client";
 
 export type Tx = {
