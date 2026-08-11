@@ -500,7 +500,7 @@ function Gastos() {
       )}
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard variant="flat" label={t("Gasto del periodo", "Period spend")} value={fmt(total)} delta={Number(delta.toFixed(1))} hint={`${t("fijos", "fixed")} ${fmt(fixedInPeriod)} + ${t("variable", "variable")} ${fmt(variableTotal)}`} inverse accent index={0} />
+        <KpiCard variant="flat" label={t("Gasto del periodo", "Period spend")} value={fmt(total)} delta={Number(delta.toFixed(1))} hint={t("fijos + variables", "fixed + variable")} inverse accent index={0} />
         <KpiCard variant="flat" label={t("Gastos fijos", "Fixed expenses")} value={fmt(fixed.total)} hint={t("mensual, editable", "monthly, editable")} index={1} />
         <KpiCard variant="flat" label={t("Gasto variable (EEFF)", "Variable spend (statements)")} value={fmt(variable)} hint={`${current.length} ${t("transacciones", "transactions")}`} index={2} />
         <KpiCard variant="flat" label={t("Promedio diario", "Daily average")} value={fmt(total / days)} hint={`${days} ${t("días", "days")}`} index={3} />
