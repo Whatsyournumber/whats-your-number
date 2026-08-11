@@ -19,6 +19,7 @@ import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { TopCitiesPanel } from "@/components/top-cities";
+import { CheckoutWelcome } from "@/components/checkout-welcome";
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -108,6 +109,7 @@ function Dashboard() {
 
   return (
     <PageShell>
+      <CheckoutWelcome />
       <PageHeader
         eyebrow={new Date().toLocaleDateString("es", { month: "long", year: "numeric" })}
         title={firstName ? `${greeting(t)} ${firstName}` : greeting(t)}

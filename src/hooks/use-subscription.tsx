@@ -13,6 +13,9 @@ export interface Subscription {
   price_id: string;
   status: string;
   current_period_end: string | null;
+  cancel_at_period_end: boolean | null;
+  access_product_id: string | null;
+  access_until: string | null;
   environment: "sandbox" | "live";
   created_at: string;
 }
@@ -24,9 +27,11 @@ function tierFromProduct(productId: string): PlanTier {
 }
 
 function isActive(status: string, currentPeriodEnd: string | null) {
+  const future = currentPeriodEnd ? new Date(currentPeriodEnd) > new Date() : true;
+  // Canceled subscriptions keep full access until the paid period ends.
+  if (status === "canceled") return Boolean(currentPeriodEnd) && future;
   if (!["active", "trialing", "past_due"].includes(status)) return false;
-  if (!currentPeriodEnd) return true;
-  return new Date(currentPeriodEnd) > new Date();
+  return future;
 }
 
 export function useSubscription() {
@@ -40,7 +45,7 @@ export function useSubscription() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("subscriptions")
-        .select("id,user_id,product_id,price_id,status,current_period_end,environment,created_at")
+        .select("id,user_id,product_id,price_id,status,current_period_end,cancel_at_period_end,access_product_id,access_until,environment,created_at")
         .eq("user_id", user!.id)
         .eq("environment", environment)
         .order("created_at", { ascending: false })
@@ -75,7 +80,12 @@ export function useSubscription() {
 
   const subscription = query.data;
   const active = subscription ? isActive(subscription.status, subscription.current_period_end) : false;
-  const tier: PlanTier = active && subscription ? tierFromProduct(subscription.product_id) : "free";
+  // On a downgrade we hold the previous (higher) plan until access_until.
+  const heldProduct =
+    subscription?.access_product_id && subscription.access_until && new Date(subscription.access_until) > new Date()
+      ? subscription.access_product_id
+      : null;
+  const tier: PlanTier = active && subscription ? tierFromProduct(heldProduct ?? subscription.product_id) : "free";
 
   return {
     subscription,

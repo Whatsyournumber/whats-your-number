@@ -348,6 +348,8 @@ export type Database = {
       }
       subscriptions: {
         Row: {
+          access_product_id: string | null
+          access_until: string | null
           cancel_at_period_end: boolean | null
           created_at: string
           current_period_end: string | null
@@ -363,6 +365,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          access_product_id?: string | null
+          access_until?: string | null
           cancel_at_period_end?: boolean | null
           created_at?: string
           current_period_end?: string | null
@@ -378,6 +382,8 @@ export type Database = {
           user_id: string
         }
         Update: {
+          access_product_id?: string | null
+          access_until?: string | null
           cancel_at_period_end?: boolean | null
           created_at?: string
           current_period_end?: string | null
