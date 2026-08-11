@@ -29,10 +29,9 @@ type MortgageState = {
   balance: number;
   rate: number;
   rateType: "fixed" | "variable";
-  payment: number;
+  term: number;
   extra: number;
   lump: number;
-  newRate: number;
   nextReviewDate: string;
 };
 
@@ -42,10 +41,9 @@ const defaults: MortgageState = {
   balance: 0,
   rate: 3.5,
   rateType: "variable",
-  payment: 0,
+  term: 30,
   extra: 250,
   lump: 25000,
-  newRate: 2.75,
   nextReviewDate: "Oct 2026",
 };
 
@@ -112,20 +110,14 @@ export function MortgageModule() {
   const expected = Number(profile.expected_return) || 7;
 
   const [s, setS] = useState<MortgageState>(defaults);
-  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     try {
       const raw = window.localStorage.getItem(KEY);
       if (raw) setS({ ...defaults, ...(JSON.parse(raw) as Partial<MortgageState>) });
-      else {
-        const housing = Number(profile.fixed_housing) || 0;
-        if (housing > 0) setS((p) => ({ ...p, payment: housing }));
-      }
     } catch {
       /* ignore */
     }
-    setHydrated(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -139,22 +131,23 @@ export function MortgageModule() {
     }
   };
 
-  const base = useMemo(() => simulate(s.balance, s.rate, s.payment), [s.balance, s.rate, s.payment]);
+  const payment = useMemo(() => paymentFor(s.balance, s.rate, s.term * 12), [s.balance, s.rate, s.term]);
+  const base = useMemo(() => simulate(s.balance, s.rate, payment), [s.balance, s.rate, s.term, payment]);
 
   const strategies = useMemo(() => {
-    if (!s.balance || !s.payment) return [];
-    const withExtra = simulate(s.balance, s.rate, s.payment, s.extra);
-    const withLump = simulate(s.balance, s.rate, s.payment, 0, s.lump);
-    const months = Number.isFinite(base.months) ? base.months : 300;
-    const renegotiated = paymentFor(s.balance, s.newRate, months);
-    const reneg = simulate(s.balance, s.newRate, renegotiated);
+    if (!s.balance || !payment) return [];
+    const withExtra = simulate(s.balance, s.rate, payment, s.extra);
+    const withLump = simulate(s.balance, s.rate, payment, 0, s.lump);
+    const newRate = Math.max(0.1, s.rate - 1);
+    const renegotiated = paymentFor(s.balance, newRate, s.term * 12);
+    const reneg = simulate(s.balance, newRate, renegotiated);
     return [
       {
         id: "keep",
         icon: Home,
         name: t("Seguir igual", "Keep as is"),
         note: t("Plan actual", "Current plan"),
-        payment: s.payment,
+        payment,
         interest: base.interest,
         months: base.months,
         saving: 0,
@@ -165,7 +158,7 @@ export function MortgageModule() {
         icon: PiggyBank,
         name: t(`Abonar ${fmt(s.extra)}/mes`, `Pay ${fmt(s.extra)}/mo extra`),
         note: t("Pago adicional", "Extra payment"),
-        payment: s.payment + s.extra,
+        payment: payment + s.extra,
         interest: withExtra.interest,
         months: withExtra.months,
         saving: base.interest - withExtra.interest,
@@ -176,7 +169,7 @@ export function MortgageModule() {
         icon: Banknote,
         name: t(`Abonar ${fmt(s.lump)} ahora`, `Pay ${fmt(s.lump)} now`),
         note: t("Pago único", "One-off payment"),
-        payment: s.payment,
+        payment,
         interest: withLump.interest,
         months: withLump.months,
         saving: base.interest - withLump.interest,
@@ -185,7 +178,7 @@ export function MortgageModule() {
       {
         id: "reneg",
         icon: Star,
-        name: t(`Negociar tasa a ${s.newRate.toFixed(2)}%`, `Negotiate rate to ${s.newRate.toFixed(2)}%`),
+        name: t(`Negociar tasa a ${newRate.toFixed(2)}%`, `Negotiate rate to ${newRate.toFixed(2)}%`),
         note: t("Misma duración, menos cuota", "Same term, lower payment"),
         payment: renegotiated,
         interest: reneg.interest,
@@ -194,7 +187,7 @@ export function MortgageModule() {
         best: false,
       },
     ].map((x, _i, arr) => ({ ...x, best: x.saving > 0 && x.saving === Math.max(...arr.map((y) => y.saving)) }));
-  }, [s, base, t]);
+  }, [s, payment, base, t]);
 
   const bestStrategy = strategies.find((x) => x.best);
   const recommended = bestStrategy ?? strategies[0];
@@ -209,7 +202,7 @@ export function MortgageModule() {
     : 0;
   const towardNumber = d.plan.targetCapital > 0 ? (Math.max(invested, interestSaved) / d.plan.targetCapital) * 100 : 0;
 
-  const term = (m: number) => {
+  const formatTerm = (m: number) => {
     if (!Number.isFinite(m)) return "—";
     const y = Math.floor(m / 12);
     const mm = Math.round(m % 12);
@@ -223,7 +216,7 @@ export function MortgageModule() {
     return date.toLocaleDateString(t("es", "en"), { year: "numeric", month: "short" });
   };
 
-  const score = healthScore(s.balance, s.rate, s.payment, d.income);
+  const score = healthScore(s.balance, s.rate, payment, d.income);
   const hlabel = healthLabel(score);
   const scoreData = [
     { name: "score", value: score, color: "var(--color-positive)" },
@@ -234,8 +227,6 @@ export function MortgageModule() {
   const totalPaid = s.balance + totalInterest;
   const interestPct = totalPaid > 0 ? totalInterest / totalPaid : 0;
   const principalPct = totalPaid > 0 ? s.balance / totalPaid : 0;
-
-  if (!hydrated) return null;
 
   return (
     <div className="space-y-6">
@@ -289,17 +280,19 @@ export function MortgageModule() {
               />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">{t("Pago mensual", "Monthly payment")}</p>
+              <p className="text-xs text-muted-foreground">{t("Plazo restante (años)", "Remaining term (years)")}</p>
               <NumberInput
-                value={s.payment}
-                step={50}
-                onChange={(v) => set({ payment: v })}
+                value={s.term}
+                step={1}
+                min={1}
+                max={40}
+                onChange={(v) => set({ term: v })}
                 className="mt-1 h-8 w-full text-right text-sm font-semibold"
               />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">{t("Plazo restante", "Remaining term")}</p>
-              <p className="numeric mt-1 text-sm font-semibold">{term(base.months)}</p>
+              <p className="text-xs text-muted-foreground">{t("Pago mensual", "Monthly payment")}</p>
+              <p className="numeric mt-1 text-sm font-semibold">{fmt(payment)}</p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{t("Tipo de tasa", "Rate type")}</p>
@@ -405,8 +398,8 @@ export function MortgageModule() {
           {strategies.length === 0 ? (
             <div className="flex h-64 items-center justify-center rounded-xl border border-dashed border-border/60 p-8 text-center text-sm text-muted-foreground">
               {t(
-                "Añade el saldo pendiente y la cuota mensual para comparar estrategias.",
-                "Add your outstanding balance and monthly payment to compare strategies.",
+              "Añade el saldo pendiente y el plazo restante para comparar estrategias.",
+              "Add your outstanding balance and remaining term to compare strategies.",
               )}
             </div>
           ) : (
@@ -506,7 +499,7 @@ export function MortgageModule() {
                 <div className="text-right">
                   <p className="numeric text-sm font-semibold">{freeDate(strategies[1]?.months ?? base.months)}</p>
                   {monthsSaved > 0 && (
-                    <p className="text-xs text-positive">{term(monthsSaved)} {t("antes", "earlier")}</p>
+                    <p className="text-xs text-positive">{formatTerm(monthsSaved)} {t("antes", "earlier")}</p>
                   )}
                 </div>
               </div>
@@ -528,7 +521,7 @@ export function MortgageModule() {
                   <p className="text-xs text-muted-foreground">{t("Nuevo pago mensual", "New monthly payment")}</p>
                 </div>
                 <div className="text-right">
-                  <p className="numeric text-sm font-semibold">{fmt(s.payment + s.extra)}</p>
+                  <p className="numeric text-sm font-semibold">{fmt(payment + s.extra)}</p>
                   <p className="text-xs text-muted-foreground">{t("Pago total", "Total payment")}</p>
                 </div>
               </div>
@@ -580,8 +573,8 @@ export function MortgageModule() {
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
             {t(
-              `Abonar ${fmt(s.extra)}/mes te ahorra ${fmt(interestSaved)} en intereses. Invertir ese mismo dinero al ${expected}% durante ${term(horizon)} genera ${fmtC(invested)}.`,
-              `Paying ${fmt(s.extra)}/mo extra saves ${fmt(interestSaved)} in interest. Investing the same amount at ${expected}% for ${term(horizon)} builds ${fmtC(invested)}.`,
+              `Abonar ${fmt(s.extra)}/mes te ahorra ${fmt(interestSaved)} en intereses. Invertir ese mismo dinero al ${expected}% durante ${formatTerm(horizon)} genera ${fmtC(invested)}.`,
+              `Paying ${fmt(s.extra)}/mo extra saves ${fmt(interestSaved)} in interest. Investing the same amount at ${expected}% for ${formatTerm(horizon)} builds ${fmtC(invested)}.`,
             )}
           </p>
           <p className={cn("mt-3 text-sm font-medium", investWins ? "text-positive" : "text-warning")}>
@@ -612,8 +605,8 @@ export function MortgageModule() {
           <p className="mt-3 text-xs text-muted-foreground">
             {monthsSaved > 0
               ? t(
-                  `Quedarías libre de hipoteca ${term(monthsSaved)} antes, liberando ${fmt(s.payment)}/mes para invertir.`,
-                  `You'd be mortgage-free ${term(monthsSaved)} earlier, freeing ${fmt(s.payment)}/mo to invest.`,
+                  `Quedarías libre de hipoteca ${formatTerm(monthsSaved)} antes, liberando ${fmt(payment)}/mes para invertir.`,
+                  `You'd be mortgage-free ${formatTerm(monthsSaved)} earlier, freeing ${fmt(payment)}/mo to invest.`,
                 )
               : t(
                   "Sigue aportando para acelerar el camino hacia tu número.",
