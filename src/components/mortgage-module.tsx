@@ -228,8 +228,6 @@ export function MortgageModule() {
   const interestPct = totalPaid > 0 ? totalInterest / totalPaid : 0;
   const principalPct = totalPaid > 0 ? s.balance / totalPaid : 0;
 
-  if (!hydrated) return null;
-
   return (
     <div className="space-y-6">
       {/* Header */}
