@@ -12,127 +12,233 @@ export type CategorizableTx = {
 
 export type CategoryRule = { name: string; hints: string[] };
 
+/**
+ * Movimientos que NO son gasto variable: duplican gastos fijos ya declarados,
+ * son traspasos entre cuentas o pagos de tarjeta.
+ */
+export const EXCLUDED_HINTS = [
+  "servicio en un 2x3",
+  "servicio 2x3",
+  "servicio en un 2*3",
+  "2x3",
+  "pago de tarjeta",
+  "pago tarjeta",
+  "pago a tu tarjeta",
+  "abono a su cuenta",
+  "transferencia propia",
+  "traspaso",
+];
+
+/** Comercios concretos con categoría forzada (tienen prioridad sobre las reglas). */
+const MERCHANT_OVERRIDES: { hints: string[]; category: string }[] = [
+  {
+    category: "Nightlife",
+    hints: [
+      "blondie", "gabana", "saint club", "urban club", "insomnio", "secrets chueca", "florida park",
+      "o clock", "terraza abc", "trastevere rooftop", "zamira lounge", "cabaret", "fourvenues",
+      "le boulevard", "panthera", "blue tap house", "la rumba", "carpe diem terrace", "tantalo roofbar",
+      "sole beach club", "vento beach club", "college events", "fabrica de suenos", "fábrica de sueños",
+      "la rana dorada", "gota wine", "vinology", "castellana 8", "el templo", "papaya hosteleria",
+      "golden wave", "bamvolea", "umusic",
+    ],
+  },
+  {
+    category: "Deportes",
+    hints: [
+      "cr7", "crunch fit", "fairplay padel", "padel world", "world padel", "padel nuestro", "playtomic",
+      "decathlon", "baqueira forfaits", "toti ski", "totiaran", "park and padel", "sport center",
+      "fitvending", "nyx*fit",
+    ],
+  },
+  {
+    category: "Restaurantes",
+    hints: [
+      "myka", "vasuak", "marabu", "marabú", "la esquinita gourmet", "dionisos", "la flaca", "honest greens",
+      "walk a mole", "bienmesabe", "celicioso", "la mamona", "la sirena madrid", "lateral ponzano",
+      "nolita", "el patio madrid", "gracias padre", "sibuya", "tartufo", "vicio", "kausa", "makan",
+      "ombra", "mandarosso", "peppe fusco", "tracatra", "mazal", "chiton", "torcuato", "fanatica",
+      "lalala molina", "la que faltaba", "poca solta", "galipan", "galipán", "castizo", "casa suecia",
+      "casa longinos", "el gran jamonal", "muchas gracias", "la huerta", "la taska", "la destileria",
+      "la destilería", "la cantina", "brief atocha", "kuikku", "domo murisca", "mon parnasse",
+      "montsec", "artisa", "obeid", "metl", "karau", "mira mira", "asian garden", "aangan", "zetor",
+      "jatkil", "w-restaurants", "sala despiece", "sala de despiece", "doble y gilda", "canas y tapas",
+      "cañas y tapas", "elcano tavern", "beths", "beth's", "la esquina de recoleto", "la chocita",
+      "la agujafina", "la aguja fina", "forn la torna", "maison kayser", "charlie s cream", "umi house",
+      "wimpys", "habbobs", "gamboa baking", "la arepería", "la areperia", "nacion sushi", "esa flaca rica",
+      "fitness food", "bo specialty", "clima cafecito", "rebel cafe", "sax caffe", "caffe armonia",
+      "eunoia", "big mamma", "dadycon", "frankie burger", "anti burger", "vino e focaccia",
+      "vinoefocaccia", "reginella", "istawood", "le caffetterie", "hostel", "kiki riki", "olimpia - r",
+      "tobacco s press", "quisco", "mo mo coffee", "singular restaurant", "lucca tratoria", "pastisser",
+      "pasteleria", "pastelería", "sonder", "mini super daniel", "riva milica", "sp oasis", "tr nita",
+      "basca doo", "dekaderon", "matesevo", "prijepolje", "algetarik", "host auy", "la imprenta",
+      "capon mejia", "capón mejía", "hostelería", "hosteleria", "restauracion", "restauración",
+    ],
+  },
+  {
+    category: "Apps",
+    hints: [
+      "tinder", "bumble", "inner circle", "faceapp", "unfold", "nebula", "wingman", "spliiit",
+      "coursiv", "invideo", "vidiq", "zadarma", "workana", "gamma.app", "elevenlabs", "helium10",
+      "nightwatch", "ubersuggest", "zoho", "twilio", "sendgrid", "paddle.net", "linkedin",
+    ],
+  },
+  {
+    category: "Lifestyle",
+    hints: [
+      "hammam", "loyly", "rituals", "tintoreria", "tintorería", "marco aldany", "barber", "barberia",
+      "barbería", "coronado beauty", "ixora florista", "myglobalflowers", "cl.dental", "dental care",
+      "clinica odont", "clínica odont", "herbolario", "apoteka", "vapesale",
+    ],
+  },
+  {
+    category: "Compras",
+    hints: [
+      "muebles jamar", "colineal", "nordik small living", "do it center", "el machetazo", "mirgor",
+      "marcoled", "silbon", "el ganso", "zara", "defacto", "wh smith", "whsmith", "air side store",
+      "bazar", "multitienda", "wondermarket",
+    ],
+  },
+];
+
 /** Categorías base del sistema (en orden de prioridad de match). */
 export const RULES: CategoryRule[] = [
   {
     name: "Viajes",
     hints: [
-      "viaj", "vuelo", "aeroli", "airline", "airlines", "hotel", "airbnb", "booking", "expedia", "crucero",
-      "hostal", "despegar", "latam", "avianca", "iberia", "ryanair", "vueling", "turismo", "travel", "flight",
-      "aeropuerto", "airport", "kayak", "trip", "hostel", "resort",
-    ],
-  },
-  {
-    name: "Marketing digital",
-    hints: [
-      "google ads", "googleads", "meta ads", "facebook ads", "facebk ads", "fb ads", "instagram ads",
-      "tiktok ads", "tik tok ads", "linkedin ads", "twitter ads", "x ads", "adwords", "ads manager", "publicidad",
-      "marketing", "mailchimp", "hubspot", "klaviyo", "semrush", "ahrefs", "hootsuite", "buffer",
-      "shopify", "wix", "squarespace", "godaddy", "namecheap", "webflow", "campaign",
-      "facebook", "facebk", "fb", "meta", "tiktok", "tik tok", "google", "youtube ads",
+      "viaj", "vuelo", "aeroli", "airline", "airlines", "hotel", "airbnb", "booking", "bkg*", "expedia",
+      "crucero", "hostal", "despegar", "latam", "avianca", "iberia", "ryanair", "vueling", "turismo",
+      "travel", "flight", "aeropuerto", "airport", "kayak", "trip", "resort", "air europa", "air serbia",
+      "aeroitalia", "pegasus", "copa air", "ajet hava", "apartmani", "lodging", "sixt", "airalo",
+      "travibly", "omio", "flixbus",
     ],
   },
   {
     name: "Apps",
     hints: [
       "app store", "appstore", "google play", "play store", "itunes", "spotify", "netflix", "hbo", "max ",
-      "disney", "prime video", "youtube premium", "apple music", "apple tv", "icloud", "dropbox", "notion",
-      "figma", "canva", "adobe", "microsoft 365", "office 365", "openai", "chatgpt", "claude", "midjourney",
-      "github", "slack", "zoom", "linear", "vercel", "netlify", "aws", "google cloud", "digitalocean",
-      "suscripcion", "suscripción", "subscription", "saas", "software",
+      "disney", "prime video", "amazon prime", "youtube premium", "apple music", "apple tv", "icloud",
+      "dropbox", "notion", "figma", "canva", "adobe", "microsoft 365", "office 365", "openai", "chatgpt",
+      "claude", "midjourney", "github", "slack", "zoom", "linear", "vercel", "netlify", "aws",
+      "amazon web services", "google cloud", "google one", "workspace", "digitalocean", "instagram",
+      "suscripcion", "suscripción", "subscription", "saas", "software", "dating",
+    ],
+  },
+  {
+    name: "Marketing digital",
+    hints: [
+      "google ads", "googleads", "meta ads", "facebook ads", "facebk ads", "fb ads", "instagram ads",
+      "tiktok ads", "tik tok ads", "linkedin ads", "twitter ads", "x ads", "adwords", "ads manager",
+      "publicidad", "marketing", "mailchimp", "hubspot", "klaviyo", "semrush", "ahrefs", "hootsuite",
+      "buffer", "shopify", "wix", "squarespace", "godaddy", "namecheap", "webflow", "campaign",
+      "facebook", "facebk", "meta", "tiktok", "tik tok", "youtube ads",
     ],
   },
   {
     name: "Transporte",
     hints: [
-      "uber", "cabify", "didi", "bolt", "taxi", "lyft", "metro ", "subway station", "bus ", "autobus",
-      "autobús", "renfe", "cercanias", "cercanías", "tren", "train", "peaje", "toll", "parking",
-      "estacionamiento", "gasolin", "combustible", "fuel", "shell", "repsol", "texaco", "chevron", "petro",
-      "esso", "bp ", "delta ", "carwash", "lavado de auto", "taller", "mecanic", "mecánic", "neumatic",
-      "neumátic", "llanta", "seguro auto", "revision tecnica", "scooter", "bicicleta", "bike",
+      "uber", "cabify", "didi", "bolt", "taxi", "taksi", "lyft", "licencia", "lic ", "llic", "metro ",
+      "metro de", "subway station", "bus ", "autobus", "autobús", "renfe", "cercanias", "cercanías",
+      "tren", "train", "peaje", "toll", "parking", "naplatna", "autoceste", "putevi",
+      "estacionamiento", "gasolin", "combustible", "fuel", "shell", "repsol", "texaco", "chevron",
+      "petro", "terpel", "eds ", "esso", "bp ", "carwash", "lavado de auto", "taller", "mecanic",
+      "mecánic", "neumatic", "neumátic", "llanta", "seguro auto", "revision tecnica", "scooter",
+      "bicicleta", "panapass", "cuota carro",
     ],
   },
   {
     name: "Bancos & Seguros",
     hints: [
-      "banco", "bank", "banca", "bbva", "santander", "caixa", "caixabank", "sabadell", "bankinter",
-      "ing direct", "openbank", "unicaja", "abanca", "kutxabank", "ibercaja", "cajamar", "revolut",
-      "n26", "wise", "monzo", "bnext", "paypal", "stripe", "payoneer", "western union", "moneygram",
-      "remesa", "bancolombia", "davivienda", "bancomer", "banamex", "banorte", "itau", "itaú",
-      "bradesco", "banesco", "banistmo", "bac ", "scotiabank", "citibank", "chase", "wells fargo",
-      "hsbc", "deutsche bank", "credit agricole", "société générale", "societe generale",
+      "banco", "bank", "banca", "banesco", "bbva", "santander", "caixa", "caixabank", "sabadell",
+      "bankinter", "ing direct", "openbank", "unicaja", "abanca", "kutxabank", "ibercaja", "cajamar",
+      "revolut", "n26", "wise", "monzo", "bnext", "paypal", "stripe", "payoneer", "western union",
+      "moneygram", "remesa", "bancolombia", "davivienda", "bancomer", "banamex", "banorte", "itau",
+      "itaú", "bradesco", "banistmo", "bac ", "credomatic", "scotiabank", "citibank", "chase",
+      "wells fargo", "hsbc", "deutsche bank", "credit agricole", "societe generale",
       "comision", "comisión", "commission", "fee", "cuota mantenimiento", "mantenimiento cuenta",
       "cuota tarjeta", "tarjeta credito", "tarjeta crédito", "credit card fee", "interes", "interés",
-      "intereses", "interest", "overdraft", "descubierto", "transferencia", "transfer fee",
-      "cambio divisa", "fx fee", "atm", "cajero", "retiro efectivo", "prestamo", "préstamo", "loan",
-      "hipoteca", "mortgage", "financiacion", "financiación", "leasing",
-      "seguro", "seguros", "insurance", "aseguradora", "poliza", "póliza", "policy", "mapfre",
+      "intereses", "interest", "overdraft", "descubierto", "transfer fee", "feci", "itbms", "impuesto",
+      "dgi", "tesoro nacional", "cambio divisa", "fx fee", "atm", "cajero", "retiro efectivo",
+      "prestamo", "préstamo", "loan", "hipoteca", "mortgage", "financiacion", "financiación",
+      "extrafinanciamiento", "plan saldos", "leasing", "quasicash", "onramper", "paybis", "paymonade",
+      "seguro", "seguros", "insurance", "aseguradora", "poliza", "póliza", "policy", "mapfre", "assa",
       "axa", "allianz", "generali", "zurich", "adeslas", "sanitas", "asisa", "dkv", "cigna",
       "mutua", "mutual", "caser", "linea directa", "línea directa", "pelayo", "reale", "verti",
-      "occident", "catalana occidente", "sura", "colsanitas", "seguro de vida", "life insurance",
-      "seguro hogar", "home insurance", "seguro salud", "health insurance", "seguro viaje",
+      "occident", "catalana occidente", "sura", "colsanitas", "proteccion robo", "mercantil seguros",
+    ],
+  },
+  {
+    name: "Deportes",
+    hints: [
+      "deporte", "deportiv", "sport", "sports", "athletic", "atletic", "atlétic", "padel", "pádel",
+      "tenis", "tennis", "golf", "futbol", "fútbol", "football", "soccer", "basket", "baloncesto",
+      "voley", "vóley", "volleyball", "rugby", "beisbol", "béisbol", "baseball", "hockey", "boxeo",
+      "boxing", "muay thai", "kickboxing", "jiu jitsu", "jiujitsu", "bjj", "judo", "karate", "taekwondo",
+      "mma", "escalada", "climbing", "boulder", "surf", "kitesurf", "vela", "buceo", "diving",
+      "esqui", "esquí", "ski", "snowboard", "forfait", "patinaje", "skate", "ciclismo", "cycling",
+      "spinning", "triatlon", "triatlón", "maraton", "maratón", "running", "natacion", "natación",
+      "piscina", "polideportivo", "club deportivo", "estadio", "stadium", "cancha", "gimnasio",
+      "gimnasi", "gym", "fitness", "crossfit", "yoga", "pilates", "federacion deportiva",
+      "personal trainer", "training", "workout", "strava", "garmin", "whoop", "nike", "adidas",
+      "puma ", "under armour", "sportium", "forum sport", "sprinter", "jd sports", "intersport",
+      "basic fit", "basic-fit", "anytime fitness", "smartfit", "smart fit", "virgin active", "mcfit",
+      "vivagym", "altafit", "synergym", "metropolitan club",
+    ],
+  },
+  {
+    name: "Nightlife",
+    hints: [
+      "bar ", " bar", "bar,", "pub", "cervec", "brewery", "cocktail", "coctel", "cóctel", "disco",
+      "discoteca", "club nocturno", "nightclub", "night club", "beach club", "lounge", "rooftop",
+      "roofbar", "terrace", "terraza", "cine", "cinema", "cinepolis", "cinépolis", "yelmo", "teatro",
+      "theater", "concierto", "concert", "festival", "ticketmaster", "eventbrite", "entradas eventos",
+      "taquillas", "boliche", "bowling", "karaoke", "casino", "entretenimiento", "nightlife", "copas",
+      "wine bar", "vinoteca",
     ],
   },
   {
     name: "Restaurantes",
     hints: [
-      "restaurant", "restaurante", "resto", "cafe", "café", "cafeteria", "starbucks", "mcdonald", "burger",
-      "kfc", "subway", "pizza", "sushi", "taco", "grill", "bistro", "brunch", "panaderia", "panadería",
-      "heladeria", "heladería", "food", "comida", "deli", "kitchen", "asador", "parrilla", "ramen", "wok",
-      "glovo", "ubereats", "uber eats", "rappi", "just eat", "justeat", "deliveroo", "doordash", "pedidosya",
+      "restaurant", "restaurante", "restoran", "resto", "rte.", "ristorante", "trattoria", "tratoria",
+      "cafe", "café", "caffe", "cafeteria", "cafetería", "coffee", "starbucks", "mcdonald", "burger",
+      "burguer", "kfc", "popeyes", "subway", "pizza", "sushi", "taco", "kebab", "suvlak", "grill",
+      "gastro", "gastrobar", "bistro", "brunch", "tapas", "pintxos", "taberna", "tavern", "konoba",
+      "panaderia", "panadería", "bakery", "baking", "heladeria", "heladería", "food", "comida",
+      "gourmet", "deli", "kitchen", "cocina", "asador", "parrilla", "marisqu", "ramen", "wok", "poke",
+      "arepe", "empanad", "aperitiv", "gelat", "creper", "pastel", "vinos",
+      "glovo", "ubereats", "uber eats", "rappi", "just eat", "justeat", "deliveroo", "doordash",
+      "pedidosya",
     ],
   },
   {
     name: "Mercado",
     hints: [
-      "supermercado", "supermarket", "mercado", "market", "grocer", "abarrote", "mercadona", "carrefour",
-      "lidl", "aldi", "dia %", "alcampo", "eroski", "consum", "walmart", "costco", "kroger", "whole foods",
-      "trader joe", "wong", "jumbo", "exito", "éxito", "olimpica", "olímpica", "d1", "ara ",
-      "riba smith", "super 99", "el rey", "pricesmart", "fruteria", "frutería", "carniceria", "carnicería",
-      "verduler",
-    ],
-  },
-  {
-    name: "Salidas",
-    hints: [
-      "bar ", " bar", "pub", "cervec", "brewery", "cocktail", "coctel", "cóctel", "disco", "club nocturno",
-      "nightclub", "lounge", "cantina", "taberna", "cine", "cinema", "cinepolis", "cinépolis", "teatro",
-      "theater", "concierto", "concert", "festival", "ticketmaster", "eventbrite", "boliche", "bowling",
-      "karaoke", "casino", "entretenimiento", "nightlife", "copas",
+      "supermercado", "supermarket", "sup.ex", "super ex", "supercor", "mercado", "market", "grocer",
+      "abarrote", "mercadona", "carrefour", "lidl", "aldi", "dia 1", "mp**dia", "alcampo", "eroski",
+      "consum", "walmart", "costco", "kroger", "whole foods", "trader joe", "wong", "jumbo", "exito",
+      "éxito", "olimpica", "olímpica", "k-market", "k-citymarket", "riba smith", "super 99", "el rey",
+      "pricesmart", "fruteria", "frutería", "frutas", "carniceria", "carnicería", "charcuteria",
+      "charcutería", "verduler", "alimentacion", "alimentación", "simplemente aliment",
+      "el corte ingles-superm", "el corte inglés-superm",
     ],
   },
   {
     name: "Lifestyle",
     hints: [
-      "gym", "gimnasio", "fitness", "crossfit", "yoga", "pilates", "spa", "masaje", "hammam", "hammam",
-      "balneario", "sauna", "jacuzzi", "termal", "termas", "talaso", "thalasso", "peluqueria",
-      "peluquería", "barberia", "barbería", "salon", "salón", "estetica", "estética", "manicur", "nails",
-      "wellness", "terapia", "psicolog", "coach", "farmacia", "pharmacy", "dentista", "clinica", "clínica",
-      "medic", "doctor", "vitamina", "supplement", "curso", "academia", "udemy", "coursera", "libreria",
-      "librería", "book", "hobby", "mascota", "veterinar", "pet ",
-      // Deportes: todo lo deportivo entra en Lifestyle
-      "deporte", "deportiv", "sport", "sports", "athletic", "atletic", "atlétic", "padel", "pádel",
-      "tenis", "tennis", "golf", "futbol", "fútbol", "football", "soccer", "basket", "baloncesto",
-      "voley", "vóley", "volleyball", "rugby", "beisbol", "béisbol", "baseball", "hockey", "boxeo",
-      "boxing", "muay thai", "kickboxing", "jiu jitsu", "jiujitsu", "bjj", "judo", "karate", "taekwondo",
-      "mma", "escalada", "climbing", "boulder", "surf", "kitesurf", "paddle", "kayak club", "vela",
-      "buceo", "diving", "esqui", "esquí", "ski", "snowboard", "patinaje", "skate", "ciclismo",
-      "cycling", "spinning", "triatlon", "triatlón", "maraton", "maratón", "running", "carrera 10k",
-      "natacion", "natación", "piscina", "pool club", "polideportivo", "club deportivo", "estadio",
-      "stadium", "cancha", "pista de", "federacion deportiva", "federación deportiva", "entrenador",
-      "personal trainer", "training", "workout", "strava", "garmin", "whoop", "decathlon", "nike",
-      "adidas", "puma ", "under armour", "sportium", "forum sport", "sprinter", "jd sports",
-      "intersport", "basic fit", "basic-fit", "anytime fitness", "smartfit", "smart fit", "virgin active",
-      "mcfit", "vivagym", "altafit", "synergym", "dir ", "metropolitan club", "gimnasi",
+      "spa", "masaje", "hammam", "balneario", "sauna", "jacuzzi", "termal", "termas", "talaso",
+      "thalasso", "peluqueria", "peluquería", "barberia", "barbería", "barber", "salon", "salón",
+      "estetica", "estética", "manicur", "nails", "beauty", "wellness", "terapia", "psicolog", "coach",
+      "farmacia", "pharmacy", "dentista", "dental", "clinica", "clínica", "medic", "doctor", "vitamina",
+      "supplement", "curso", "academia", "udemy", "coursera", "libreria", "librería", "book", "hobby",
+      "mascota", "veterinar", "pet ", "florista", "flowers", "tintorer", "lavanderia", "lavandería",
     ],
   },
   {
     name: "Compras",
     hints: [
-      "amazon", "zara", "h&m", "hm ", "uniqlo", "mango", "primark", "shein", "temu", "aliexpress", "ebay",
-      "zalando", "el corte ingles", "el corte inglés", "ikea", "leroy",
-      "mediamarkt", "fnac", "apple store", "tienda", "boutique", "shop", "store", "retail", "mall",
-      "outlet", "ropa", "calzado", "sephora", "perfum",
+      "amazon", "amzn", "zara", "h&m", "hm ", "uniqlo", "mango", "primark", "shein", "temu",
+      "aliexpress", "ebay", "zalando", "el corte ingles", "el corte inglés", "ikea", "leroy",
+      "mediamarkt", "fnac", "apple store", "tienda", "boutique", "mall", "outlet", "ropa", "calzado",
+      "sephora", "perfum", "muebles", "hogar", "bazar",
     ],
   },
 ];
@@ -141,7 +247,8 @@ export const RULES: CategoryRule[] = [
 export const BASE_CATEGORIES = [
   "Mercado",
   "Restaurantes",
-  "Salidas",
+  "Nightlife",
+  "Deportes",
   "Compras",
   "Viajes",
   "Transporte",
@@ -160,6 +267,12 @@ const hay = (t: CategorizableTx) =>
 const isCoreTransport = (text: string) =>
   /(^|\W)(cabify|taxi|uber|bolt|metro)(\W|$)/i.test(text);
 
+/** True cuando el movimiento no debe contarse como gasto variable. */
+export function isExcludedTx(t: CategorizableTx): boolean {
+  const text = hay(t);
+  return EXCLUDED_HINTS.some((h) => text.includes(h));
+}
+
 /**
  * Clasifica una transacción. Las reglas personalizadas (custom) tienen prioridad
  * sobre las base para que el usuario pueda crear sus propias categorías.
@@ -176,6 +289,11 @@ export function categorizeTx(t: CategorizableTx, custom: CategoryRule[] = []): s
 
   for (const rule of custom) {
     if (rule.hints.some((h) => h && text.includes(h.toLowerCase()))) return rule.name;
+  }
+
+  // Comercios conocidos con categoría forzada.
+  for (const o of MERCHANT_OVERRIDES) {
+    if (o.hints.some((h) => text.includes(h))) return o.category;
   }
 
   // Google Play, Google Cloud, YouTube y Google One son suscripciones/apps, no marketing.

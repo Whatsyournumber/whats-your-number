@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { useAuth } from "@/hooks/use-auth";
+import { isExcludedTx } from "@/lib/categorize";
 import { supabase } from "@/integrations/supabase/client";
 
 export type Tx = {
@@ -58,7 +59,8 @@ export function useTransactions() {
   });
 
   const all = query.data ?? [];
-  const transactions = all.filter((t) => !t.excluded && t.tx_date);
+  // Se descartan movimientos excluidos y los que duplican gastos fijos (p. ej. "Servicio en un 2x3").
+  const transactions = all.filter((t) => !t.excluded && t.tx_date && !isExcludedTx(t));
 
 
   return {
