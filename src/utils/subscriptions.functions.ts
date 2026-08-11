@@ -67,9 +67,15 @@ export const openCustomerPortal = createServerFn({ method: "POST" })
 
     const { data: sub } = await query.order("created_at", { ascending: false }).limit(1).maybeSingle();
 
-    if (!sub || sub.paddle_customer_id === "trial" || sub.paddle_subscription_id.startsWith("trial_")) {
+    if (
+      !sub ||
+      sub.paddle_customer_id === "trial" ||
+      sub.paddle_subscription_id.startsWith("trial_") ||
+      sub.paddle_subscription_id.startsWith("promo_")
+    ) {
       return { url: null as string | null, reason: "no_subscription" as const };
     }
+
 
     const paddle = getPaddleClient(sub.environment as PaddleEnv);
     const session = await paddle.customerPortalSessions.create(sub.paddle_customer_id, [
@@ -95,21 +101,25 @@ export const openCustomerPortal = createServerFn({ method: "POST" })
  */
 export const changePlan = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { priceId: string }) => data)
+  .inputValidator((data: { priceId: string; environment?: PaddleEnv }) => data)
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     const targetProduct = PRICE_TO_PRODUCT[data.priceId];
     if (!targetProduct) throw new Error("Unknown price");
 
-    const { data: sub } = await supabase
+    let query = supabase
       .from("subscriptions")
       .select("paddle_subscription_id,product_id,status,current_period_end,environment")
-      .eq("user_id", userId)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
+      .eq("user_id", userId);
+    if (data.environment) query = query.eq("environment", data.environment);
 
-    if (!sub || sub.paddle_subscription_id.startsWith("trial_")) {
+    const { data: sub } = await query.order("created_at", { ascending: false }).limit(1).maybeSingle();
+
+    if (
+      !sub ||
+      sub.paddle_subscription_id.startsWith("trial_") ||
+      sub.paddle_subscription_id.startsWith("promo_")
+    ) {
       return { ok: false, reason: "no_subscription" as const };
     }
 
@@ -133,10 +143,18 @@ export const changePlan = createServerFn({ method: "POST" })
       ? { access_product_id: sub.product_id, access_until: sub.current_period_end }
       : { access_product_id: null, access_until: null };
 
+    // The new plan must be persisted here too: the subscription.updated webhook
+    // only carries status/period, so without this the user keeps the old tier.
     await supabase
       .from("subscriptions")
-      .update({ ...hold, updated_at: new Date().toISOString() })
+      .update({
+        ...hold,
+        product_id: targetProduct,
+        price_id: data.priceId,
+        updated_at: new Date().toISOString(),
+      })
       .eq("paddle_subscription_id", sub.paddle_subscription_id);
 
     return { ok: true, upgraded: isUpgrade } as const;
   });
+

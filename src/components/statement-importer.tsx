@@ -13,6 +13,7 @@ import { useSubscription } from "@/hooks/use-subscription";
 import { useT } from "@/hooks/use-language";
 import { supabase } from "@/integrations/supabase/client";
 import { processStatement } from "@/lib/statements.functions";
+import { getPaddleEnvironment } from "@/lib/paddle";
 import { cn } from "@/lib/utils";
 
 const ACCEPT = ".pdf,.csv,.txt,application/pdf,text/csv";
@@ -91,7 +92,7 @@ export function StatementImporter() {
   };
 
   const processMutation = useMutation({
-    mutationFn: (statementId: string) => runProcess({ data: { statementId } }),
+    mutationFn: (statementId: string) => runProcess({ data: { statementId, environment: getPaddleEnvironment() } }),
     onSuccess: (result) => {
       toast.success(
         t(

@@ -42,6 +42,14 @@ export function SiteFooter() {
         { label: t("Crear cuenta", "Create account"), to: "/auth" },
       ],
     },
+    {
+      title: "Legal",
+      links: [
+        { label: t("Términos y condiciones", "Terms and conditions"), to: "/terminos" },
+        { label: t("Política de reembolsos", "Refund policy"), to: "/reembolsos" },
+        { label: t("Aviso de privacidad", "Privacy notice"), to: "/privacidad" },
+      ],
+    },
   ];
 
   return (
@@ -57,7 +65,7 @@ export function SiteFooter() {
           >
             <div className="mx-auto w-full max-w-6xl px-6 pt-14 pb-6">
               {/* Desktop layout */}
-              <div className="hidden md:grid md:grid-cols-[1.4fr_repeat(3,1fr)] md:gap-10">
+              <div className="hidden md:grid md:grid-cols-[1.4fr_repeat(4,1fr)] md:gap-10">
                 <div>
                   <BrandLogo />
                   <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">

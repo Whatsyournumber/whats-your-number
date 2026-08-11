@@ -36,6 +36,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { useTransactions, type Tx } from "@/hooks/use-transactions";
 import { compact, money } from "@/lib/onboarding";
 import { getSpendAdvice } from "@/lib/spend-advice.functions";
+import { getPaddleEnvironment } from "@/lib/paddle";
 import { buildDataset } from "@/lib/profile-data";
 import { yearsToFreedom } from "@/lib/lifestyle-cities";
 import { ArrowDownRight, ArrowUpRight, TrendingUp } from "lucide-react";
@@ -388,6 +389,7 @@ function Gastos() {
           fixedTotal: fixed.total,
           target,
           monthlyRun,
+          environment: getPaddleEnvironment(),
           categories: byCategory.slice(0, 12).map((c) => ({
             name: c.name,
             amount: c.amount,

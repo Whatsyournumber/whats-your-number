@@ -27,8 +27,11 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PatrimonioRouteImport } from './routes/patrimonio'
 import { Route as PortafolioRouteImport } from './routes/portafolio'
 import { Route as PreciosRouteImport } from './routes/precios'
+import { Route as PrivacidadRouteImport } from './routes/privacidad'
+import { Route as ReembolsosRouteImport } from './routes/reembolsos'
 import { Route as RetiroRouteImport } from './routes/retiro'
 import { Route as SuscripcionRouteImport } from './routes/suscripcion'
+import { Route as TerminosRouteImport } from './routes/terminos'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const IndexRoute = IndexRouteImport.update({
@@ -121,6 +124,16 @@ const PreciosRoute = PreciosRouteImport.update({
   path: '/precios',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacidadRoute = PrivacidadRouteImport.update({
+  id: '/privacidad',
+  path: '/privacidad',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReembolsosRoute = ReembolsosRouteImport.update({
+  id: '/reembolsos',
+  path: '/reembolsos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RetiroRoute = RetiroRouteImport.update({
   id: '/retiro',
   path: '/retiro',
@@ -129,6 +142,11 @@ const RetiroRoute = RetiroRouteImport.update({
 const SuscripcionRoute = SuscripcionRouteImport.update({
   id: '/suscripcion',
   path: '/suscripcion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TerminosRoute = TerminosRouteImport.update({
+  id: '/terminos',
+  path: '/terminos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicPaymentsWebhookRoute =
@@ -157,8 +175,11 @@ export interface FileRoutesByFullPath {
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
   '/precios': typeof PreciosRoute
+  '/privacidad': typeof PrivacidadRoute
+  '/reembolsos': typeof ReembolsosRoute
   '/retiro': typeof RetiroRoute
   '/suscripcion': typeof SuscripcionRoute
+  '/terminos': typeof TerminosRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -180,8 +201,11 @@ export interface FileRoutesByTo {
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
   '/precios': typeof PreciosRoute
+  '/privacidad': typeof PrivacidadRoute
+  '/reembolsos': typeof ReembolsosRoute
   '/retiro': typeof RetiroRoute
   '/suscripcion': typeof SuscripcionRoute
+  '/terminos': typeof TerminosRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
@@ -204,8 +228,11 @@ export interface FileRoutesById {
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
   '/precios': typeof PreciosRoute
+  '/privacidad': typeof PrivacidadRoute
+  '/reembolsos': typeof ReembolsosRoute
   '/retiro': typeof RetiroRoute
   '/suscripcion': typeof SuscripcionRoute
+  '/terminos': typeof TerminosRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
@@ -229,8 +256,11 @@ export interface FileRouteTypes {
     | '/patrimonio'
     | '/portafolio'
     | '/precios'
+    | '/privacidad'
+    | '/reembolsos'
     | '/retiro'
     | '/suscripcion'
+    | '/terminos'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -252,8 +282,11 @@ export interface FileRouteTypes {
     | '/patrimonio'
     | '/portafolio'
     | '/precios'
+    | '/privacidad'
+    | '/reembolsos'
     | '/retiro'
     | '/suscripcion'
+    | '/terminos'
     | '/api/public/payments/webhook'
   id:
     | '__root__'
@@ -275,8 +308,11 @@ export interface FileRouteTypes {
     | '/patrimonio'
     | '/portafolio'
     | '/precios'
+    | '/privacidad'
+    | '/reembolsos'
     | '/retiro'
     | '/suscripcion'
+    | '/terminos'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -299,8 +335,11 @@ export interface RootRouteChildren {
   PatrimonioRoute: typeof PatrimonioRoute
   PortafolioRoute: typeof PortafolioRoute
   PreciosRoute: typeof PreciosRoute
+  PrivacidadRoute: typeof PrivacidadRoute
+  ReembolsosRoute: typeof ReembolsosRoute
   RetiroRoute: typeof RetiroRoute
   SuscripcionRoute: typeof SuscripcionRoute
+  TerminosRoute: typeof TerminosRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
@@ -432,6 +471,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PreciosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacidad': {
+      id: '/privacidad'
+      path: '/privacidad'
+      fullPath: '/privacidad'
+      preLoaderRoute: typeof PrivacidadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reembolsos': {
+      id: '/reembolsos'
+      path: '/reembolsos'
+      fullPath: '/reembolsos'
+      preLoaderRoute: typeof ReembolsosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/retiro': {
       id: '/retiro'
       path: '/retiro'
@@ -444,6 +497,13 @@ declare module '@tanstack/react-router' {
       path: '/suscripcion'
       fullPath: '/suscripcion'
       preLoaderRoute: typeof SuscripcionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terminos': {
+      id: '/terminos'
+      path: '/terminos'
+      fullPath: '/terminos'
+      preLoaderRoute: typeof TerminosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/payments/webhook': {
@@ -475,8 +535,11 @@ const rootRouteChildren: RootRouteChildren = {
   PatrimonioRoute: PatrimonioRoute,
   PortafolioRoute: PortafolioRoute,
   PreciosRoute: PreciosRoute,
+  PrivacidadRoute: PrivacidadRoute,
+  ReembolsosRoute: ReembolsosRoute,
   RetiroRoute: RetiroRoute,
   SuscripcionRoute: SuscripcionRoute,
+  TerminosRoute: TerminosRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
