@@ -1,9 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Home } from "lucide-react";
 
 import { MortgageModule } from "@/components/mortgage-module";
-import { PageHeader, PageShell } from "@/components/page";
-import { useT } from "@/hooks/use-language";
+import { PageShell } from "@/components/page";
 
 export const Route = createFileRoute("/hipoteca")({
   head: () => ({
@@ -23,24 +21,10 @@ export const Route = createFileRoute("/hipoteca")({
 });
 
 function Hipoteca() {
-  const t = useT();
   return (
     <PageShell>
-      <PageHeader
-        title={t("Tu hipoteca", "Your mortgage")}
-        subtitle={t(
-          "¿Abonar, renegociar o invertir? Compara cada estrategia y su impacto en Your Number.",
-          "Pay down, renegotiate or invest? Compare each strategy and its impact on Your Number.",
-        )}
-        actions={
-          <div className="flex items-center gap-2 rounded-xl border border-border/60 bg-card/40 px-3 py-2">
-            <Home className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">{t("Simulador de estrategias", "Strategy simulator")}</span>
-          </div>
-        }
-      />
-
       <MortgageModule />
     </PageShell>
   );
 }
+
