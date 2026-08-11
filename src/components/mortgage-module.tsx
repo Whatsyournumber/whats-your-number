@@ -398,8 +398,8 @@ export function MortgageModule() {
           {strategies.length === 0 ? (
             <div className="flex h-64 items-center justify-center rounded-xl border border-dashed border-border/60 p-8 text-center text-sm text-muted-foreground">
               {t(
-                "Añade el saldo pendiente y la cuota mensual para comparar estrategias.",
-                "Add your outstanding balance and monthly payment to compare strategies.",
+              "Añade el saldo pendiente y el plazo restante para comparar estrategias.",
+              "Add your outstanding balance and remaining term to compare strategies.",
               )}
             </div>
           ) : (
