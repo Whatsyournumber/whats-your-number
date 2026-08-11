@@ -276,7 +276,7 @@ export const BASE_CATEGORIES = [
   "Compras",
   "Viajes",
   "Transporte",
-  "Lifestyle",
+  "Salud",
   "Apps",
   "Marketing digital",
   "Bancos & Seguros",
