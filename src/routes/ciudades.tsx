@@ -247,7 +247,7 @@ function SourcesTooltip({ t }: { t: (es: string, en: string) => string }) {
 }
 
 
-function LifestyleSimulator() {
+function LifestyleSimulatorContent() {
   const t = useT();
   const { profile } = useProfile();
   const d = buildDataset(profile);
