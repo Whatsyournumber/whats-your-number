@@ -278,6 +278,8 @@ export const RULES: CategoryRule[] = [
 export const BASE_CATEGORIES = [
   "Mercado",
   "Restaurantes",
+  "Delivery",
+
   "Nightlife",
   "Deportes",
   "Compras",
@@ -312,7 +314,7 @@ export function categorizeTx(t: CategorizableTx, custom: CategoryRule[] = []): s
   const text = hay(t);
 
   // Uber Eats y Uber Food deben ir a Restaurantes, no a Transporte.
-  if (/\buber\b/i.test(text) && (/\beats\b/i.test(text) || /\bfood\b/i.test(text))) return "Restaurantes";
+  if (/\buber\b/i.test(text) && (/\beats\b/i.test(text) || /\bfood\b/i.test(text))) return "Delivery";
 
   // Los servicios de movilidad principales siempre son Transporte, aunque
   // el EEFF o una regla personalizada traigan otra categoría.
