@@ -24,7 +24,7 @@ import { SubscriptionStatusBanner } from "@/components/subscription-status-banne
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { useT } from "@/hooks/use-language";
+import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
 import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
@@ -32,6 +32,7 @@ import { buildInsights } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
 import { readDemoSnapshot, type DemoSnapshot } from "@/lib/demo-snapshot";
+import { translateGoalName, translateGoalNote } from "@/lib/i18n-data";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -78,6 +79,7 @@ function greeting(t: (es: string, en: string) => string) {
 
 function Dashboard() {
   const t = useT();
+  const { lang } = useLanguage();
   const { profile, isLoading } = useProfile();
   const { transactions } = useTransactions();
   const d = buildDataset(profile);
@@ -154,7 +156,7 @@ function Dashboard() {
       : t("Ver simulador", "Open simulator");
   const savingsRate = current.income > 0 ? (current.savings / current.income) * 100 : 0;
   const prevRate = previous.income > 0 ? (previous.savings / previous.income) * 100 : 0;
-  const insights = buildInsights(plan, profile, profile, d.currency);
+  const insights = buildInsights(plan, profile, profile, d.currency, lang);
   const firstName = (profile.full_name || "").trim().split(" ")[0];
 
   return (
@@ -162,7 +164,7 @@ function Dashboard() {
       <CheckoutWelcome />
       <SubscriptionStatusBanner className="mb-4" />
       <PageHeader
-        eyebrow={new Date().toLocaleDateString("es", { month: "long", year: "numeric" })}
+        eyebrow={new Date().toLocaleDateString(lang, { month: "long", year: "numeric" })}
         title={firstName ? `${greeting(t)} ${firstName}` : greeting(t)}
         subtitle={t("Tus números reales, calculados desde tu perfil financiero.", "Your real numbers, calculated from your financial profile.")}
       />
@@ -315,13 +317,13 @@ function Dashboard() {
                 <li key={g.name}>
                   <div className="flex items-center gap-2 text-sm">
                     <span>{g.emoji}</span>
-                    <span className="font-medium">{g.name}</span>
+                    <span className="font-medium">{translateGoalName(g.name, lang)}</span>
                     <span className="numeric ml-auto text-xs text-muted-foreground">
                       {fmtCompact(left)} / {fmtCompact(right)}
                     </span>
                   </div>
                   <Progress value={pct} className="mt-2 h-1" />
-                  {g.note && <p className="mt-1.5 text-[11px] text-muted-foreground">{g.note}</p>}
+                  {g.note && <p className="mt-1.5 text-[11px] text-muted-foreground">{translateGoalNote(g.note, lang)}</p>}
                 </li>
               );
             })}
