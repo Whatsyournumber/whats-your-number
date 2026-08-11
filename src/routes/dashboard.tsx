@@ -58,6 +58,14 @@ function yearsToTarget(target: number, current: number, monthly: number, annualR
   return 99;
 }
 
+/** Cuota mensual estándar para un saldo, tasa y plazo en meses. */
+function paymentFor(balance: number, annualRate: number, months: number) {
+  const r = annualRate / 100 / 12;
+  if (months <= 0) return 0;
+  if (r === 0) return balance / months;
+  return (balance * r) / (1 - Math.pow(1 + r, -months));
+}
+
 const delta = (a: number, b: number) => (b > 0 ? ((a - b) / b) * 100 : 0);
 
 function greeting(t: (es: string, en: string) => string) {
@@ -101,17 +109,39 @@ function Dashboard() {
       : yearsToTarget(targetNumber, numberNetWorth, monthlyContribution, profile.expected_return || 7);
   const usingDemo = plan.targetCapital <= 0 && targetNumber > 0;
 
-  const [mortgageBalance, setMortgageBalance] = useState(0);
+  const [mortgage, setMortgage] = useState({ balance: 0, rate: 0, term: 0 });
   useEffect(() => {
-    let stored = 0;
+    let stored = { balance: 0, rate: 0, term: 0 };
     try {
       const raw = window.localStorage.getItem("whatsyournumber:mortgage");
-      if (raw) stored = Number(JSON.parse(raw)?.balance) || 0;
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        stored = {
+          balance: Number(parsed?.balance) || 0,
+          rate: Number(parsed?.rate) || 0,
+          term: Number(parsed?.term) || 0,
+        };
+      }
     } catch {
       /* ignore */
     }
-    setMortgageBalance(stored || Number(profile.liabilities) || 0);
+    if (!stored.balance && Number(profile.liabilities)) {
+      stored = { ...stored, balance: Number(profile.liabilities) };
+    }
+    setMortgage(stored);
   }, [profile.liabilities]);
+  const mortgageBalance = mortgage.balance;
+  const mortgagePayment =
+    mortgage.balance > 0 && mortgage.rate > 0 && mortgage.term > 0
+      ? paymentFor(mortgage.balance, mortgage.rate, mortgage.term * 12)
+      : 0;
+  const mortgageHint =
+    mortgage.rate > 0 && mortgage.term > 0
+      ? t(
+          `${mortgage.rate.toFixed(1)}% • ${mortgage.term} ${mortgage.term === 1 ? "año" : "años"} • ${fmt(mortgagePayment)}/mes`,
+          `${mortgage.rate.toFixed(1)}% • ${mortgage.term} ${mortgage.term === 1 ? "year" : "years"} • ${fmt(mortgagePayment)}/mo`,
+        )
+      : t("Ver simulador", "Open simulator");
   const savingsRate = current.income > 0 ? (current.savings / current.income) * 100 : 0;
   const prevRate = previous.income > 0 ? (previous.savings / previous.income) * 100 : 0;
   const insights = buildInsights(plan, profile, profile, d.currency);
@@ -154,17 +184,17 @@ function Dashboard() {
         <KpiCard label={t("Ingresos", "Income")} value={fmt(current.income)} {...(hasHistory ? { delta: delta(current.income, previous.income) } : {})} icon={Banknote} index={1} />
         <KpiCard label={t("Gastos", "Expenses")} value={fmt(current.expenses)} {...(hasHistory ? { delta: delta(current.expenses, previous.expenses) } : {})} inverse icon={TrendingUp} index={2} />
         <KpiCard label={t("Ahorro", "Savings")} value={fmt(current.savings)} {...(hasHistory ? { delta: delta(current.savings, previous.savings) } : {})} icon={PiggyBank} index={3} />
+        <KpiCard label={t("Tasa de ahorro", "Savings rate")} value={`${savingsRate.toFixed(0)}%`} {...(hasHistory ? { delta: savingsRate - prevRate } : {})} icon={ArrowUpRight} index={4} />
         <Link to="/hipoteca" className="block transition-transform hover:-translate-y-0.5">
           <KpiCard
             label={t("Hipoteca", "Mortgage")}
             value={fmt(mortgageBalance)}
-            hint={t("Ver simulador", "Open simulator")}
+            hint={mortgageHint}
             inverse
             icon={Home}
-            index={4}
+            index={5}
           />
         </Link>
-        <KpiCard label={t("Tasa de ahorro", "Savings rate")} value={`${savingsRate.toFixed(0)}%`} {...(hasHistory ? { delta: savingsRate - prevRate } : {})} icon={ArrowUpRight} index={5} />
       </div>
 
 
