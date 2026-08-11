@@ -30,13 +30,14 @@ export function PlanGate({
     : t("Desbloquea Patrimonio", "Unlock Patrimonio");
   const description = isPro
     ? t(
-        "Accede a tu portafolio, portafolio, retiro y análisis avanzado. Prueba 14 días gratis y cancela cuando quieras.",
-        "Access portfolio, retirement, and advanced analysis. Try 14 days free and cancel anytime.",
+        "Esta función está incluida en Pro. Prueba 14 días gratis y cancela cuando quieras.",
+        "This feature is included in Pro. Try 14 days free and cancel anytime.",
       )
     : t(
-        "Gestión completa de patrimonio para familias y activos complejos. Cancela cuando quieras.",
-        "Full net-worth management for families and complex assets. Cancel anytime.",
+        "Esta función está incluida en Patrimonio. Para patrimonios complejos y familias.",
+        "This feature is included in Patrimonio. For complex net worths and families.",
       );
+
 
   return (
     <div className={cn("relative", className)}>
