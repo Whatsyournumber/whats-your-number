@@ -99,6 +99,8 @@ export function CategoryChat({
 
   return (
     <div className="space-y-2">
+      <p className="text-xs font-medium text-muted-foreground">{t("Ordena tus gastos con IA", "Organize your spending with AI")}</p>
+
       {msgs.length > 0 && (
         <div className="max-h-[200px] space-y-1.5 overflow-auto pr-1">
           {msgs.map((m, i) => (
