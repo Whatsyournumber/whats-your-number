@@ -792,9 +792,7 @@ function Gastos() {
                     <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
                     <span className="truncate text-sm font-medium">{c.name}</span>
                     <span className="shrink-0 rounded-full bg-elevated/50 px-2 py-0.5 text-[11px] text-muted-foreground">
-                      {c.fixed
-                        ? `${t("fijo", "fixed")} · ${days} ${t("días", "days")}`
-                        : `${c.items.length} ${c.items.length === 1 ? t("mov.", "tx") : t("movs.", "txs")}`}
+                      {`${c.items.length} ${c.items.length === 1 ? t("mov.", "tx") : t("movs.", "txs")}`}
                     </span>
 
                     {variation !== null && (
