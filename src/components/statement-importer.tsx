@@ -365,6 +365,16 @@ export function StatementImporter() {
                     </p>
                     {tx.excluded && <span className="text-[10px] text-primary">→ {t("Patrimonio", "Net worth")}</span>}
                   </div>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    aria-label={t("Eliminar movimiento", "Delete transaction")}
+                    className="rounded-full text-muted-foreground hover:text-destructive"
+                    onClick={() => removeTxMutation.mutate(tx.id)}
+                    disabled={removeTxMutation.isPending}
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
                 </div>
               ))}
             </div>
