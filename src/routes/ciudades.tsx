@@ -1215,3 +1215,11 @@ function CityDetail({
     </Dialog>
   );
 }
+
+function LifestyleSimulator() {
+  return (
+    <PlanGate required="pro">
+      <LifestyleSimulatorContent />
+    </PlanGate>
+  );
+}
