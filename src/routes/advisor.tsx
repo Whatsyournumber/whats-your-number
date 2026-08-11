@@ -150,118 +150,120 @@ function Advisor() {
   };
 
   return (
-    <PageShell>
-      <PageHeader
-        eyebrow={t("Inteligencia", "Intelligence")}
-        title="AI Advisor"
-        subtitle={t(
-          "Insights automáticos y respuestas en lenguaje natural sobre tu vida financiera.",
-          "Automatic insights and natural language answers about your financial life.",
-        )}
-      />
+    <PlanGate required="pro">
+      <PageShell>
+        <PageHeader
+          eyebrow={t("Inteligencia", "Intelligence")}
+          title="AI Advisor"
+          subtitle={t(
+            "Insights automáticos y respuestas en lenguaje natural sobre tu vida financiera.",
+            "Automatic insights and natural language answers about your financial life.",
+          )}
+        />
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title={t("Conversación", "Conversation")} className="flex flex-col lg:col-span-2">
-          <div className="flex-1 space-y-3 overflow-y-auto pr-1" style={{ maxHeight: 420 }}>
-            {[{ role: "assistant" as const, content: intro }, ...messages].map((m, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={cn("flex", m.role === "user" ? "justify-end" : "justify-start")}
-              >
-                <div
-                  className={cn(
-                    "max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed",
-                    m.role === "user" ? "bg-primary text-primary-foreground" : "bg-elevated/80",
-                  )}
+        <div className="grid gap-4 lg:grid-cols-3">
+          <Panel title={t("Conversación", "Conversation")} className="flex flex-col lg:col-span-2">
+            <div className="flex-1 space-y-3 overflow-y-auto pr-1" style={{ maxHeight: 420 }}>
+              {[{ role: "assistant" as const, content: intro }, ...messages].map((m, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={cn("flex", m.role === "user" ? "justify-end" : "justify-start")}
                 >
-                  {m.content}
-                </div>
-              </motion.div>
-            ))}
-            <div ref={endRef} />
-          </div>
-
-          <div className="mt-4 flex flex-wrap gap-2">
-            {suggestions.map((s) => (
-              <button
-                key={s}
-                onClick={() => send(s)}
-                className="rounded-full border border-border px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground"
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-
-          <form
-            className="mt-3 flex items-end gap-2"
-            onSubmit={(e) => {
-              e.preventDefault();
-              send(input);
-            }}
-          >
-            <Textarea
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  send(input);
-                }
-              }}
-              placeholder={t("Pregunta sobre tus gastos, inversiones o metas…", "Ask about your spending, investments or goals…")}
-              className="min-h-[52px] resize-none rounded-2xl"
-            />
-            <Button type="submit" size="icon" className="h-[52px] w-[52px] rounded-2xl">
-              <ArrowUp className="h-4 w-4" />
-            </Button>
-          </form>
-        </Panel>
-
-        <div className="space-y-4">
-          <Panel title={t("Insights de tus datos", "Insights from your data")}>
-            <ul className="space-y-2.5">
-              {liveInsights.map((i) => (
-                <li key={i.title} className="rounded-xl bg-elevated/60 p-3">
-                  <div className="flex items-center gap-2">
-                    {i.type === "warning" ? (
-                      <AlertTriangle className="h-3.5 w-3.5 text-warning" />
-                    ) : i.type === "positive" ? (
-                      <TrendingUp className="h-3.5 w-3.5 text-positive" />
-                    ) : (
-                      <Sparkles className="h-3.5 w-3.5 text-muted-foreground" />
+                  <div
+                    className={cn(
+                      "max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed",
+                      m.role === "user" ? "bg-primary text-primary-foreground" : "bg-elevated/80",
                     )}
-                    <p className="text-sm font-medium">{i.title}</p>
+                  >
+                    {m.content}
                   </div>
-                  <p className="mt-1 text-xs text-muted-foreground">{i.detail}</p>
-                </li>
+                </motion.div>
               ))}
-            </ul>
-          </Panel>
+              <div ref={endRef} />
+            </div>
 
-          <Panel title={t("Tus números", "Your numbers")}>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              {[
-                { label: t("Ingresos", "Income"), value: d.fmt(d.income) },
-                { label: t("Gastos", "Expenses"), value: d.fmt(d.expenses) },
-                { label: t("Ahorro", "Savings"), value: d.fmt(d.savings) },
-                { label: t("Tasa de ahorro", "Savings rate"), value: `${d.savingsRate.toFixed(0)}%` },
-                { label: t("Patrimonio", "Net worth"), value: d.fmt(d.netWorth) },
-                { label: t("Your Number", "Your Number"), value: d.fmtCompact(d.plan.targetCapital) },
-              ].map((k) => (
-                <div key={k.label} className="rounded-xl bg-elevated/60 p-3">
-                  <p className="text-muted-foreground">{k.label}</p>
-                  <p className="numeric mt-1 text-sm font-semibold">{k.value}</p>
-                </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {suggestions.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => send(s)}
+                  className="rounded-full border border-border px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground"
+                >
+                  {s}
+                </button>
               ))}
             </div>
-          </Panel>
-        </div>
 
-      </div>
-    </PageShell>
+            <form
+              className="mt-3 flex items-end gap-2"
+              onSubmit={(e) => {
+                e.preventDefault();
+                send(input);
+              }}
+            >
+              <Textarea
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    send(input);
+                  }
+                }}
+                placeholder={t("Pregunta sobre tus gastos, inversiones o metas…", "Ask about your spending, investments or goals…")}
+                className="min-h-[52px] resize-none rounded-2xl"
+              />
+              <Button type="submit" size="icon" className="h-[52px] w-[52px] rounded-2xl">
+                <ArrowUp className="h-4 w-4" />
+              </Button>
+            </form>
+          </Panel>
+
+          <div className="space-y-4">
+            <Panel title={t("Insights de tus datos", "Insights from your data")}>
+              <ul className="space-y-2.5">
+                {liveInsights.map((i) => (
+                  <li key={i.title} className="rounded-xl bg-elevated/60 p-3">
+                    <div className="flex items-center gap-2">
+                      {i.type === "warning" ? (
+                        <AlertTriangle className="h-3.5 w-3.5 text-warning" />
+                      ) : i.type === "positive" ? (
+                        <TrendingUp className="h-3.5 w-3.5 text-positive" />
+                      ) : (
+                        <Sparkles className="h-3.5 w-3.5 text-muted-foreground" />
+                      )}
+                      <p className="text-sm font-medium">{i.title}</p>
+                    </div>
+                    <p className="mt-1 text-xs text-muted-foreground">{i.detail}</p>
+                  </li>
+                ))}
+              </ul>
+            </Panel>
+
+            <Panel title={t("Tus números", "Your numbers")}>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                {[
+                  { label: t("Ingresos", "Income"), value: d.fmt(d.income) },
+                  { label: t("Gastos", "Expenses"), value: d.fmt(d.expenses) },
+                  { label: t("Ahorro", "Savings"), value: d.fmt(d.savings) },
+                  { label: t("Tasa de ahorro", "Savings rate"), value: `${d.savingsRate.toFixed(0)}%` },
+                  { label: t("Patrimonio", "Net worth"), value: d.fmt(d.netWorth) },
+                  { label: t("Your Number", "Your Number"), value: d.fmtCompact(d.plan.targetCapital) },
+                ].map((k) => (
+                  <div key={k.label} className="rounded-xl bg-elevated/60 p-3">
+                    <p className="text-muted-foreground">{k.label}</p>
+                    <p className="numeric mt-1 text-sm font-semibold">{k.value}</p>
+                  </div>
+                ))}
+              </div>
+            </Panel>
+          </div>
+
+        </div>
+      </PageShell>
+    </PlanGate>
   );
 }
