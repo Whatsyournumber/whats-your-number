@@ -191,6 +191,14 @@ export const RULES: CategoryRule[] = [
     ],
   },
   {
+    name: "Delivery",
+    hints: [
+      "glovo", "ubereats", "uber eats", "rappi", "just eat", "justeat", "deliveroo", "doordash",
+      "pedidosya", "delivery", "domicilio", "a domicilio", "getir", "gorillas", "wolt", "grubhub",
+      "didi food", "didifood", "ifood",
+    ],
+  },
+  {
     name: "Nightlife",
     hints: [
       "bar ", " bar", "bar,", "pub", "cervec", "brewery", "cocktail", "coctel", "cóctel", "disco",
@@ -198,7 +206,7 @@ export const RULES: CategoryRule[] = [
       "roofbar", "terrace", "terraza", "cine", "cinema", "cinepolis", "cinépolis", "yelmo", "teatro",
       "theater", "concierto", "concert", "festival", "ticketmaster", "eventbrite", "entradas eventos",
       "taquillas", "boliche", "bowling", "karaoke", "casino", "entretenimiento", "nightlife", "copas",
-      "wine bar", "vinoteca",
+      "wine bar", "vinoteca", "fandango", "ocio",
     ],
   },
   {
@@ -211,10 +219,9 @@ export const RULES: CategoryRule[] = [
       "panaderia", "panadería", "bakery", "baking", "heladeria", "heladería", "food", "comida",
       "gourmet", "deli", "kitchen", "cocina", "asador", "parrilla", "marisqu", "ramen", "wok", "poke",
       "arepe", "empanad", "aperitiv", "gelat", "creper", "pastel", "vinos",
-      "glovo", "ubereats", "uber eats", "rappi", "just eat", "justeat", "deliveroo", "doordash",
-      "pedidosya",
     ],
   },
+
   {
     name: "Mercado",
     hints: [
@@ -271,6 +278,8 @@ export const RULES: CategoryRule[] = [
 export const BASE_CATEGORIES = [
   "Mercado",
   "Restaurantes",
+  "Delivery",
+
   "Nightlife",
   "Deportes",
   "Compras",
@@ -305,7 +314,7 @@ export function categorizeTx(t: CategorizableTx, custom: CategoryRule[] = []): s
   const text = hay(t);
 
   // Uber Eats y Uber Food deben ir a Restaurantes, no a Transporte.
-  if (/\buber\b/i.test(text) && (/\beats\b/i.test(text) || /\bfood\b/i.test(text))) return "Restaurantes";
+  if (/\buber\b/i.test(text) && (/\beats\b/i.test(text) || /\bfood\b/i.test(text))) return "Delivery";
 
   // Los servicios de movilidad principales siempre son Transporte, aunque
   // el EEFF o una regla personalizada traigan otra categoría.

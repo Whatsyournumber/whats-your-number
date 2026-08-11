@@ -111,6 +111,8 @@ function CashFlow() {
   const WANT_CATS = new Set([
     "Viajes",
     "Restaurantes",
+    "Delivery",
+
     "Entretenimiento",
     "Nightlife",
     "Deportes",
