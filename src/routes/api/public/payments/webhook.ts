@@ -57,7 +57,15 @@ async function handleSubscriptionUpdated(data: any, env: PaddleEnv) {
   const priceId = item?.price?.importMeta?.externalId as string | undefined;
   const productId = item?.product?.importMeta?.externalId as string | undefined;
 
-  const patch: Record<string, unknown> = {
+  const patch: {
+    status: string;
+    current_period_start?: string;
+    current_period_end?: string;
+    cancel_at_period_end: boolean;
+    updated_at: string;
+    price_id?: string;
+    product_id?: string;
+  } = {
     status: status,
     current_period_start: currentBillingPeriod?.startsAt,
     current_period_end: currentBillingPeriod?.endsAt,
@@ -66,8 +74,8 @@ async function handleSubscriptionUpdated(data: any, env: PaddleEnv) {
   };
   // Plan changes arrive here: persist the new product/price so entitlements move.
   if (priceId && productId) {
-    patch["price_id"] = priceId;
-    patch["product_id"] = productId;
+    patch.price_id = priceId;
+    patch.product_id = productId;
   }
 
   await getSupabase()
