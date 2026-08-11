@@ -83,7 +83,7 @@ function Pricing() {
         t("Life Planner y Your next city", "Life Planner and Your next city"),
         t("Reportes mensuales automáticos", "Automatic monthly reports"),
       ],
-      cta: t("Probar Pro 14 días gratis", "Try Pro 14 days free"),
+      cta: t("Empezar con Pro", "Get started with Pro"),
       highlight: true,
     },
     {
@@ -107,7 +107,7 @@ function Pricing() {
         t("Soporte prioritario en 24h", "Priority support within 24h"),
         t("Acceso anticipado a nuevas funciones", "Early access to new features"),
       ],
-      cta: t("Hablar con nosotros", "Talk to us"),
+      cta: t("Empezar con Patrimonio", "Get started with Patrimonio"),
       highlight: false,
     },
   ];

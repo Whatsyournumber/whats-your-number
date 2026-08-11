@@ -36,7 +36,7 @@ export function SubscriptionManager() {
   const switchPlan = async (priceId: string) => {
     setBusy(priceId);
     try {
-      const res = await changePlan({ data: { priceId } });
+      const res = await changePlan({ data: { priceId, environment: getPaddleEnvironment() } });
       if (!res.ok) {
         toast.error(t("Necesitas una suscripción activa para cambiar de plan.", "You need an active subscription to switch plans."));
         return;
