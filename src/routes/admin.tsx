@@ -450,6 +450,7 @@ function AdminPage() {
                     <TableHead>Días</TableHead>
                     <TableHead>Usos</TableHead>
                     <TableHead>Estado</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -462,11 +463,20 @@ function AdminPage() {
                       <TableCell>
                         <Badge variant={c.active ? "default" : "secondary"}>{c.active ? "activo" : "inactivo"}</Badge>
                       </TableCell>
+                      <TableCell className="text-right">
+                        <DeleteAction
+                          title="Borrar código"
+                          description={`Se eliminará el código ${c.code} y sus canjes registrados.`}
+                          onConfirm={() =>
+                            runDelete(() => adminDeletePromoCode({ data: { id: c.id } }), "Código eliminado")
+                          }
+                        />
+                      </TableCell>
                     </TableRow>
                   ))}
                   {(promos.data?.codes ?? []).length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center text-muted-foreground">Sin códigos</TableCell>
+                      <TableCell colSpan={6} className="text-center text-muted-foreground">Sin códigos</TableCell>
                     </TableRow>
                   )}
                 </TableBody>
@@ -483,6 +493,7 @@ function AdminPage() {
                     <TableHead>Código</TableHead>
                     <TableHead>Acceso hasta</TableHead>
                     <TableHead>Fecha</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -494,14 +505,24 @@ function AdminPage() {
                         <TableCell className="text-muted-foreground">{r.code}</TableCell>
                         <TableCell className="numeric text-muted-foreground">{fmtDate(r.granted_until)}</TableCell>
                         <TableCell className="numeric text-muted-foreground">{fmtDate(r.created_at)}</TableCell>
+                        <TableCell className="text-right">
+                          <DeleteAction
+                            title="Borrar canje"
+                            description="Se eliminará este canje. El usuario podrá volver a usar el código si sigue activo."
+                            onConfirm={() =>
+                              runDelete(() => adminDeletePromoRedemption({ data: { id: r.id } }), "Canje eliminado")
+                            }
+                          />
+                        </TableCell>
                       </TableRow>
                     );
                   })}
                   {(promos.data?.redemptions ?? []).length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={4} className="text-center text-muted-foreground">Sin canjes</TableCell>
+                      <TableCell colSpan={5} className="text-center text-muted-foreground">Sin canjes</TableCell>
                     </TableRow>
                   )}
+
                 </TableBody>
               </Table>
             </div>
