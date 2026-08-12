@@ -593,7 +593,7 @@ function LifestyleSimulatorContent() {
       </div>
 
 
-      <CityDetail r={detail} filters={filters} fmt={fmt} t={t} onClose={() => setDetail(null)} />
+      <CityDetailDialog r={detail} filters={filters} fmt={fmt} onClose={() => setDetail(null)} />
     </PageShell>
   );
 }
