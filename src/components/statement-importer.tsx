@@ -187,7 +187,14 @@ export function StatementImporter() {
         processMutation.mutate(inserted.id as string);
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : t("Error al subir el archivo", "Error uploading the file"));
+      const message = error instanceof Error ? error.message : "";
+      if (message.includes("statements_user_id_fkey") || message.includes("foreign key")) {
+        await signOut();
+        toast.error(t("Tu sesión ya no es válida. Vuelve a iniciar sesión.", "Your session is no longer valid. Please sign in again."));
+      } else {
+        toast.error(message || t("Error al subir el archivo", "Error uploading the file"));
+      }
+
     } finally {
       setUploading(false);
       if (inputRef.current) inputRef.current.value = "";
