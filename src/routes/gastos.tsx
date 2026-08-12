@@ -737,11 +737,23 @@ function Gastos() {
           title={t("Gastos fijos mensuales", "Monthly fixed expenses")}
           description={t("Edita el monto mensual; abajo se muestra lo que representa en el periodo seleccionado.", "Edit the monthly amount; below you see what it represents for the selected period.")}
           actions={
-            <CollapsibleTrigger asChild>
-              <Button size="sm" variant="ghost" className="h-8 w-8 p-0" aria-label={fixedOpen ? t("Colapsar gastos fijos", "Collapse fixed expenses") : t("Expandir gastos fijos", "Expand fixed expenses")}>
-                <ChevronDown className={cn("h-4 w-4 transition-transform duration-200", !fixedOpen && "-rotate-90")} />
-              </Button>
-            </CollapsibleTrigger>
+            <div className="flex items-center gap-3">
+              {!fixedOpen && (
+                <div className="flex flex-col items-end">
+                  <span className="numeric text-sm font-semibold">{fmt(fixed.total)}{t("/mes", "/mo")}</span>
+                  <span className="numeric text-[11px] text-muted-foreground">
+                    {isLongRange
+                      ? `${fmt(fixed.total * monthsInRange)} · ${t(`${monthsInRange} meses`, `${monthsInRange} months`)}`
+                      : `${fmt(fixed.total)} ${t("en este periodo", "in this period")}`}
+                  </span>
+                </div>
+              )}
+              <CollapsibleTrigger asChild>
+                <Button size="sm" variant="ghost" className="h-8 w-8 p-0" aria-label={fixedOpen ? t("Colapsar gastos fijos", "Collapse fixed expenses") : t("Expandir gastos fijos", "Expand fixed expenses")}>
+                  <ChevronDown className={cn("h-4 w-4 transition-transform duration-200", !fixedOpen && "-rotate-90")} />
+                </Button>
+              </CollapsibleTrigger>
+            </div>
           }
         >
           <CollapsibleContent>
@@ -793,16 +805,18 @@ function Gastos() {
               </Button>
             </div>
           </CollapsibleContent>
-          <div className="mt-3 flex flex-wrap items-center gap-3 border-t border-border/60 pt-3">
-            <div className="ml-auto flex flex-col items-end">
-              <span className="numeric text-sm font-semibold">{t("Total", "Total")} {fmt(fixed.total)}{t("/mes", "/mo")}</span>
-              <span className="numeric text-[11px] text-muted-foreground">
-                {isLongRange
-                  ? `${fmt(fixed.total * monthsInRange)} · ${t(`${monthsInRange} meses en el periodo`, `${monthsInRange} months in the period`)}`
-                  : `${fmt(fixed.total)} ${t("en este periodo", "in this period")}`}
-              </span>
+          {fixedOpen && (
+            <div className="mt-3 flex flex-wrap items-center gap-3 border-t border-border/60 pt-3">
+              <div className="ml-auto flex flex-col items-end">
+                <span className="numeric text-sm font-semibold">{t("Total", "Total")} {fmt(fixed.total)}{t("/mes", "/mo")}</span>
+                <span className="numeric text-[11px] text-muted-foreground">
+                  {isLongRange
+                    ? `${fmt(fixed.total * monthsInRange)} · ${t(`${monthsInRange} meses en el periodo`, `${monthsInRange} months in the period`)}`
+                    : `${fmt(fixed.total)} ${t("en este periodo", "in this period")}`}
+                </span>
+              </div>
             </div>
-          </div>
+          )}
         </Panel>
       </Collapsible>
 
