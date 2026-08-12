@@ -180,11 +180,9 @@ export async function processStatementForUser(
       );
     }
 
-    await supabase.from("imported_transactions").delete().eq("statement_id", statementId);
-    if (rows.length > 0) {
-      const { error: insErr } = await supabase.from("imported_transactions").insert(rows);
-      if (insErr) throw new Error(insErr.message);
-    }
+    await cleanup;
+    const { error: insErr } = await supabase.from("imported_transactions").insert(rows);
+    if (insErr) throw new Error(insErr.message);
 
     await supabase
       .from("statements")
