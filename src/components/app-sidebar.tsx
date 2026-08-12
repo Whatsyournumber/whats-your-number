@@ -51,7 +51,7 @@ export function AppSidebar() {
     { title: t("Dashboard", "Dashboard"), url: "/dashboard", icon: LayoutDashboard },
     { title: t("Análisis de Gastos", "Spending Analysis"), url: "/gastos", icon: PieChart },
     { title: t("Distribución del dinero", "Money Distribution"), url: "/cash-flow", icon: Waves },
-    { title: t("Tu hipoteca", "Your mortgage"), url: "/hipoteca", icon: Home },
+    { title: t("Análisis de hipoteca", "Mortgage analysis"), url: "/hipoteca", icon: Home },
     { title: t("Patrimonio", "Net Worth"), url: "/patrimonio", icon: Landmark },
     { title: t("Portafolio", "Portfolio"), url: "/portafolio", icon: LineChart },
     { title: "WhatsYournumber", url: "/retiro", icon: PiggyBank },
