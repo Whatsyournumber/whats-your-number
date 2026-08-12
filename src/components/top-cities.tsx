@@ -154,16 +154,14 @@ function CityQuickDialog({
       <DialogContent className="max-h-[88vh] max-w-lg overflow-y-auto p-0">
         <div className="relative aspect-[16/7] w-full overflow-hidden">
           <img src={c.photo} alt={`${c.name}, ${c.country}`} className="absolute inset-0 h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-          <div className="absolute bottom-3 left-5 right-5">
-            <DialogHeader className="space-y-0 text-left">
-              <DialogTitle className="text-2xl">{c.name}</DialogTitle>
-              <DialogDescription>{c.country}</DialogDescription>
-            </DialogHeader>
-          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-background/10 to-transparent" />
         </div>
 
         <div className="space-y-4 p-5 pt-1">
+          <DialogHeader className="space-y-0 text-left">
+            <DialogTitle className="text-2xl">{c.name}</DialogTitle>
+            <DialogDescription>{c.country}</DialogDescription>
+          </DialogHeader>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             <QuickStat label={t("Presupuesto/mes", "Budget/mo")} value={fmt(r.cost)} />
             <QuickStat label={t("Tu número allí", "Your number")} value={fmt(r.cost * 12 * 25)} />
