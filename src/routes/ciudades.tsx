@@ -1256,7 +1256,11 @@ function CityDetail({
 
         <div className="flex-1 space-y-6 overflow-y-auto p-5">
           <DialogHeader>
-            <DialogTitle className="text-2xl">{c.name}</DialogTitle>
+            <div className="flex items-center gap-2">
+              <DialogTitle className="text-2xl">{c.name}</DialogTitle>
+              <SourcesTooltip t={t} />
+            </div>
+
             <DialogDescription>
               <span className="inline-flex items-center gap-2">
                 <span>{c.country}</span>
