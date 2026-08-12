@@ -31,17 +31,34 @@ const normalizeTransactionText = (value: string | null | undefined) =>
     .replace(/\s+/g, " ")
     .toLowerCase();
 
+/** Ruido de pasarelas y formas jurídicas que ensucian el nombre del comercio. */
+const MERCHANT_NOISE = new Set([
+  "sum", "sp", "sq", "tpv", "pos", "pay", "paypal", "mp", "mpo", "pmt", "compra", "card",
+  "srl", "sl", "sa", "sas", "sau", "slu", "ltd", "llc", "inc", "gmbh", "bv", "oy", "ab", "spa",
+  "the", "de", "del", "la", "el", "los", "las", "and", "y",
+]);
+
 /**
  * Huella del comercio: el mismo negocio llega con nombres distintos
- * ("Sixt" vs "SIXT RENT A CAR"), así que se compara por sus primeras palabras.
+ * ("Sixt" vs "SIXT RENT A CAR", "SUM*ISTAWOOD SRL" vs "Istawood").
+ * Se limpian prefijos de pasarela, formas jurídicas y se toma la palabra principal.
  */
-export const merchantKey = (value: string | null | undefined) =>
-  normalizeTransactionText(value)
-    .replace(/[^a-z0-9 ]/g, " ")
+export const merchantKey = (value: string | null | undefined) => {
+  const tokens = normalizeTransactionText(value)
+    .replace(/[^a-z0-9]+/g, " ")
     .split(" ")
-    .filter(Boolean)
-    .slice(0, 1)
-    .join(" ");
+    .filter((w) => w.length > 1 && !MERCHANT_NOISE.has(w) && !/^\d+$/.test(w));
+  return tokens[0] ?? normalizeTransactionText(value);
+};
+
+/** True si dos nombres apuntan al mismo comercio. */
+export const sameMerchant = (a: string | null | undefined, b: string | null | undefined) => {
+  const ka = merchantKey(a);
+  const kb = merchantKey(b);
+  if (!ka || !kb) return false;
+  return ka === kb || ka.includes(kb) || kb.includes(ka);
+};
+
 
 
 /** Transacciones importadas desde los estados de cuenta (EEFF) del usuario. */
@@ -67,14 +84,16 @@ export function useTransactions() {
       if (error) throw error;
       const rows = (data ?? []).map((t) => ({ ...t, amount: Number(t.amount) }));
       // El mismo movimiento puede llegar con nombres distintos desde varios EEFF
-      // ("Sixt" vs "SIXT RENT A CAR"). Su identidad financiera es
-      // fecha + comercio (primera palabra) + monto.
-      const seen = new Set<string>();
+      // ("SUM*ISTAWOOD SRL" vs "Istawood"). Con la misma fecha y el mismo monto
+      // se considera duplicado si los nombres apuntan al mismo comercio.
+      const kept = new Map<string, string[]>();
       const unique = rows.filter((t) => {
         const amount = Math.abs(Number(t.amount)).toFixed(2);
-        const key = `${t.tx_date}|${merchantKey(t.merchant) || normalizeTransactionText(t.merchant)}|${amount}`;
-        if (seen.has(key)) return false;
-        seen.add(key);
+        const bucket = `${t.tx_date}|${amount}`;
+        const names = kept.get(bucket) ?? [];
+        if (names.some((n) => sameMerchant(n, t.merchant))) return false;
+        names.push(t.merchant ?? "");
+        kept.set(bucket, names);
         return true;
       });
       return unique as Tx[];
