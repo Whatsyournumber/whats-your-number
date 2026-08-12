@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      holdings: {
+        Row: {
+          cost_basis: number
+          created_at: string
+          expected_return: number
+          id: string
+          kind: string
+          label: string
+          manual_value: number
+          monthly_contribution: number
+          note: string | null
+          position: number
+          quantity: number
+          ticker: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cost_basis?: number
+          created_at?: string
+          expected_return?: number
+          id?: string
+          kind?: string
+          label?: string
+          manual_value?: number
+          monthly_contribution?: number
+          note?: string | null
+          position?: number
+          quantity?: number
+          ticker?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cost_basis?: number
+          created_at?: string
+          expected_return?: number
+          id?: string
+          kind?: string
+          label?: string
+          manual_value?: number
+          monthly_contribution?: number
+          note?: string | null
+          position?: number
+          quantity?: number
+          ticker?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       imported_transactions: {
         Row: {
           amount: number
@@ -111,6 +162,42 @@ export type Database = {
           saved?: number
           target_year?: number
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      net_worth_snapshots: {
+        Row: {
+          assets: number
+          breakdown: Json
+          created_at: string
+          currency: string
+          id: string
+          liabilities: number
+          net_worth: number
+          taken_on: string
+          user_id: string
+        }
+        Insert: {
+          assets?: number
+          breakdown?: Json
+          created_at?: string
+          currency?: string
+          id?: string
+          liabilities?: number
+          net_worth?: number
+          taken_on?: string
+          user_id: string
+        }
+        Update: {
+          assets?: number
+          breakdown?: Json
+          created_at?: string
+          currency?: string
+          id?: string
+          liabilities?: number
+          net_worth?: number
+          taken_on?: string
           user_id?: string
         }
         Relationships: []
