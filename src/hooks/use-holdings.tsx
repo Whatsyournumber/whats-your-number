@@ -130,7 +130,7 @@ export function useHoldings() {
         const quote = h.ticker ? priceMap.get(h.ticker.toUpperCase()) : undefined;
         const live = quote && h.quantity > 0 ? convertAmount(quote.price * h.quantity, quote.currency, currency) : null;
         const value = Math.round(live ?? h.manual_value);
-        const cost = Math.round(h.cost_basis || (h.quantity && quote ? 0 : 0) || h.cost_basis);
+        const cost = Math.round(h.cost_basis);
         const gain = cost > 0 ? value - cost : 0;
         return {
           ...h,
