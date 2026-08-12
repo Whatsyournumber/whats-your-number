@@ -74,8 +74,32 @@ function PatrimonioContent() {
       </div>
 
 
+      <HoldingsManager
+        kinds={["cash", "bank", "etf", "stock", "crypto", "retirement", "property", "liability"]}
+        title={t("Mis posiciones", "My positions")}
+        description={t(
+          "Registra cada cuenta, inversión, propiedad o deuda. Los tickers se valoran con precio de mercado y todo se sincroniza con el resto de la app.",
+          "Track every account, investment, property or debt. Tickers are valued at live market prices and everything syncs across the app.",
+        )}
+      />
+
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title={t("Crecimiento del patrimonio", "Net worth growth")} className="lg:col-span-2">
+        <Panel
+          title={t("Crecimiento del patrimonio", "Net worth growth")}
+          description={
+            snapshotSeries.length >= 2
+              ? t("Basado en tus fotos guardadas", "Based on your saved snapshots")
+              : t("Estimado con tus movimientos", "Estimated from your transactions")
+          }
+          className="lg:col-span-2"
+          actions={
+            <Button size="sm" variant="secondary" className="rounded-full" onClick={takeSnapshot} disabled={saving}>
+              {saving ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : <Camera className="mr-1.5 h-3.5 w-3.5" />}
+              {t("Guardar foto de hoy", "Save today's snapshot")}
+            </Button>
+          }
+        >
+
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={months} margin={{ left: -12, right: 8, top: 8 }}>
               <defs>
