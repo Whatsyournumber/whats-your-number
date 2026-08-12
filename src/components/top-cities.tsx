@@ -139,15 +139,6 @@ function CityQuickDialog({
   const t = useT();
   if (!r) return null;
   const c = r.city;
-  const costs = [
-    { label: t("Vivienda", "Housing"), value: c.housing },
-    { label: t("Alimentación", "Food"), value: c.food },
-    { label: t("Transporte", "Transport"), value: c.transport },
-    { label: t("Salud", "Healthcare"), value: c.healthcare },
-    { label: t("Ocio", "Leisure"), value: c.entertainment },
-    { label: t("Internet", "Internet"), value: c.internet },
-  ].filter((x) => x.value > 0);
-  const maxCost = Math.max(...costs.map((x) => x.value), 1);
 
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>

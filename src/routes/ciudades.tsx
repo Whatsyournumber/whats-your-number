@@ -1150,41 +1150,6 @@ function regionLabel(region: CityData["region"], t: (es: string, en: string) => 
   }
 }
 
-function Stat({
-  icon,
-  label,
-  value,
-  sub,
-  highlight,
-}: {
-  icon: string;
-  label: string;
-  value: string;
-  sub?: string | undefined;
-  highlight?: "positive" | "negative" | "neutral";
-}) {
-  const valueColor =
-    highlight === "positive"
-      ? "text-positive"
-      : highlight === "negative"
-        ? "text-negative"
-        : "text-foreground";
-
-  return (
-    <div className="rounded-xl border border-border/60 bg-elevated/40 p-3">
-      <div className="flex items-start justify-between gap-2">
-        <p className="text-[11px] leading-tight text-muted-foreground">
-          {label}
-        </p>
-        <span className="text-base">{icon}</span>
-      </div>
-      <p className={cn("numeric mt-1 text-sm font-semibold leading-tight", valueColor)}>
-        {value}
-      </p>
-      {sub && <p className="numeric mt-0.5 text-[10px] text-muted-foreground">{sub}</p>}
-    </div>
-  );
-}
 
 function PillarRow({ pillar, t }: { pillar: PillarBreakdown; t: (es: string, en: string) => string }) {
   const meta = PILLAR_META[pillar.key];
