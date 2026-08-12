@@ -1,3 +1,4 @@
+import { convertAmount } from "./fx";
 import { SUPPORTED_CURRENCY_CODES } from "@/lib/fx";
 export type OnboardingData = {
   full_name: string;
@@ -322,7 +323,14 @@ export const cities: City[] = [
 ];
 
 /** Ingreso mensual objetivo al alcanzar la libertad financiera. */
-export function estimateDesiredIncome(life: LifeData, extra: { children?: string } = {}) {
+/**
+ * Estima el gasto/ingreso mensual objetivo. Los costes de ciudad están en EUR,
+ * así que el resultado se convierte a la moneda del perfil con la tasa del día.
+ */
+export function estimateDesiredIncome(
+  life: LifeData,
+  extra: { children?: string; currency?: string } = {},
+) {
   const city = cities.find((c) => c.name === life.city);
   const base = city?.cost ?? 2600;
   const factor = lifestyles.find((l) => l.value === life.lifestyle)?.factor ?? 1;
@@ -330,7 +338,12 @@ export function estimateDesiredIncome(life: LifeData, extra: { children?: string
   const kids = (extra.children ?? life.children) === "1" ? 1 : (extra.children ?? life.children) === "2" ? 2 : (extra.children ?? life.children) === "3+" ? 3 : 0;
   const partner = life.marital_status === "Casado" || life.marital_status === "En pareja" ? 1.35 : 1;
   const housing = life.housing === "pagada" ? 0.78 : 1;
-  return Math.round((base * factor * partner * housing + travel + kids * 450) / 50) * 50;
+  const eur = base * factor * partner * housing + travel + kids * 450;
+  const target = (extra.currency || "EUR").toUpperCase();
+  const value = convertAmount(eur, "EUR", target);
+  // Redondeo proporcional a la magnitud (50 en EUR/USD, 1.000 en MXN/JPY, etc.).
+  const step = value >= 1_000_000 ? 50_000 : value >= 100_000 ? 5_000 : value >= 20_000 ? 500 : 50;
+  return Math.round(value / step) * step;
 }
 
 export function buildInsights(

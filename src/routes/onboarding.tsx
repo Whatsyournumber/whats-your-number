@@ -48,6 +48,7 @@ import {
   type OnboardingData,
   currencies,
 } from "@/lib/onboarding";
+import { useFxRates } from "@/hooks/use-fx-rates";
 import { cn } from "@/lib/utils";
 import { detectCurrency } from "@/lib/geo";
 import { useT } from "@/hooks/use-language";
@@ -230,12 +231,17 @@ function OnboardingPage() {
     });
   const setL = <K extends keyof LifeData>(key: K, value: LifeData[K]) => setLife((l) => ({ ...l, [key]: value }));
 
-  const desiredIncome = useMemo(() => estimateDesiredIncome(life), [life]);
+  const cur = data.currency || detectCurrency();
+  // Las tasas del día alimentan la conversión del objetivo estimado.
+  const { updatedAt: fxUpdatedAt } = useFxRates();
+  const desiredIncome = useMemo(
+    () => estimateDesiredIncome(life, { currency: cur }),
+    [life, cur, fxUpdatedAt],
+  );
   const plan = useMemo(
     () => buildPlan({ ...data, desired_retirement_income: desiredIncome }),
     [data, desiredIncome],
   );
-  const cur = data.currency || detectCurrency();
 
   const go = (dir: 1 | -1) => {
     const next = Math.min(SUMMARY_STEP, Math.max(1, step + dir));
