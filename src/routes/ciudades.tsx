@@ -275,6 +275,28 @@ function LifestyleSimulatorContent() {
   const ranked = useMemo(() => rankCities(filters, ctx), [filters, ctx]);
   const [detail, setDetail] = useState<CityScore | null>(null);
   const [compare, setCompare] = useState<string[]>([]);
+  // Ciudades elegidas a mano (máx. 3), persistidas en este navegador.
+  const [picks, setPicks] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const raw = window.localStorage.getItem("wyn:my-cities");
+      return raw ? (JSON.parse(raw) as string[]).slice(0, 3) : [];
+    } catch {
+      return [];
+    }
+  });
+  useEffect(() => {
+    try {
+      window.localStorage.setItem("wyn:my-cities", JSON.stringify(picks));
+    } catch {
+      /* almacenamiento no disponible */
+    }
+  }, [picks]);
+  const allCities = useMemo(
+    () => rankCities({ ...filters, region: "any", climate: "any", stability: "any" }, ctx),
+    [filters, ctx],
+  );
+
 
   const toggleCompare = (id: string) =>
     setCompare((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id].slice(-2)));
