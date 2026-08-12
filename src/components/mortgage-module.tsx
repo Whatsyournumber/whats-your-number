@@ -422,19 +422,25 @@ export function MortgageModule() {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{t("Pago mensual", "Monthly payment")}</p>
-              <NumberInput
-                value={s.payment}
-                step={50}
-                min={0}
-                onChange={(v) => {
-                  const nextPayment = Math.max(0, v);
-                  set({
-                    payment: nextPayment,
-                    term: termFor(s.balance, s.rate, nextPayment),
-                  });
-                }}
-                className="mt-1.5 h-11 w-full text-sm font-semibold"
-              />
+              <div className="relative mt-1.5">
+                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                  {currencySymbol}
+                </span>
+                <NumberInput
+                  value={Math.round(s.payment)}
+                  step={50}
+                  min={0}
+                  format
+                  onChange={(v) => {
+                    const nextPayment = Math.max(0, Math.round(v));
+                    set({
+                      payment: nextPayment,
+                      term: termFor(s.balance, s.rate, nextPayment),
+                    });
+                  }}
+                  className="h-11 w-full pl-7 text-sm font-semibold"
+                />
+              </div>
             </div>
           </div>
           <div className="mt-5 flex items-center gap-3 border-t border-border/60 pt-4">
