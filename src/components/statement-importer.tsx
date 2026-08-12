@@ -186,7 +186,8 @@ export function StatementImporter() {
       }));
       setJobs(incoming.map(({ file, jobId }) => ({ id: jobId, name: file.name, stage: "reading" as JobStage })));
 
-      // Subimos y lanzamos el análisis de todos los archivos en paralelo.
+      // 1) Subimos todos los archivos en paralelo (rápido).
+      const queue: { jobId: string; statementId: string }[] = [];
       await Promise.all(
         incoming.map(async ({ file, jobId }) => {
           const lower = file.name.toLowerCase();
@@ -215,7 +216,6 @@ export function StatementImporter() {
             throw new Error(upErr.message);
           }
 
-          setJob(jobId, { stage: "extracting" });
           const { data: inserted, error: insErr } = await supabase
             .from("statements")
             .insert({
@@ -233,40 +233,49 @@ export function StatementImporter() {
             throw new Error(insErr.message);
           }
 
-          void qc.invalidateQueries({ queryKey: ["statements"] });
-          setJob(jobId, { stage: "analyzing" });
-          try {
-            const result = await runProcess({ data: { statementId: inserted.id as string, environment: getPaddleEnvironment() } });
-            if (result.upgradeRequired) {
-              const msg = t(
-                "Límite de 5 importaciones/mes del plan Free. Actualiza a Pro.",
-                "Free plan limit of 5 imports/month reached. Upgrade to Pro.",
-              );
-              setJob(jobId, { stage: "error", message: msg });
-              toast.error(msg);
-              void qc.invalidateQueries({ queryKey: ["statements"] });
-              return;
-            }
-            setJob(jobId, {
-              stage: "done",
-              message: t(`${result.inserted} movimientos`, `${result.inserted} transactions`),
-            });
-            toast.success(
-              t(
-                `${result.inserted} movimientos clasificados por IA · actualizando tus módulos`,
-                `${result.inserted} transactions classified by AI · updating your modules`,
-              ),
-            );
-            refreshAll();
-
-          } catch (err) {
-            const msg = err instanceof Error ? err.message : t("Error de análisis", "Analysis error");
-            setJob(jobId, { stage: "error", message: msg });
-            toast.error(msg);
-            void qc.invalidateQueries({ queryKey: ["statements"] });
-          }
+          setJob(jobId, { stage: "extracting", message: t("En cola…", "Queued…") });
+          queue.push({ jobId, statementId: inserted.id as string });
         }),
       );
+
+      void qc.invalidateQueries({ queryKey: ["statements"] });
+
+      // 2) Analizamos de uno en uno: la IA no aguanta 10 archivos a la vez.
+      let stopped = false;
+      for (let i = 0; i < queue.length; i++) {
+        const { jobId, statementId } = queue[i]!;
+        if (stopped) {
+          setJob(jobId, { stage: "error", message: t("Pendiente de procesar", "Pending processing") });
+          continue;
+        }
+        setJob(jobId, {
+          stage: "analyzing",
+          message: t(`Analizando ${i + 1} de ${queue.length}…`, `Analyzing ${i + 1} of ${queue.length}…`),
+        });
+        try {
+          const result = await runProcess({ data: { statementId, environment: getPaddleEnvironment() } });
+          if (result.upgradeRequired) {
+            const msg = t(
+              "Límite de 5 importaciones/mes del plan Free. Actualiza a Pro.",
+              "Free plan limit of 5 imports/month reached. Upgrade to Pro.",
+            );
+            setJob(jobId, { stage: "error", message: msg });
+            toast.error(msg);
+            stopped = true;
+            continue;
+          }
+          setJob(jobId, {
+            stage: "done",
+            message: t(`${result.inserted} movimientos`, `${result.inserted} transactions`),
+          });
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : t("Error de análisis", "Analysis error");
+          setJob(jobId, { stage: "error", message: msg });
+          toast.error(`${msg}`);
+        }
+        refreshAll();
+      }
+
 
     } catch (error) {
       const message = error instanceof Error ? error.message : "";
