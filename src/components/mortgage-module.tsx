@@ -298,6 +298,15 @@ export function MortgageModule() {
     return date.toLocaleDateString(t("es", "en"), { year: "numeric", month: "short" });
   };
 
+  const schedule = useMemo(() => amortizationByYear(s.balance, s.rate, payment), [s.balance, s.rate, payment]);
+  const penaltyYears = Math.min(5, schedule.length);
+  const penaltyInterest = schedule.slice(0, penaltyYears).reduce((a, r) => a + r.interest, 0);
+  const penaltyPrincipal = schedule.slice(0, penaltyYears).reduce((a, r) => a + r.principal, 0);
+  const firstYear = schedule[0];
+  const firstInterestShare = firstYear && firstYear.interest + firstYear.principal > 0
+    ? (firstYear.interest / (firstYear.interest + firstYear.principal)) * 100
+    : 0;
+
   const score = healthScore(s.balance, s.rate, payment, d.income);
   const hlabel = healthLabel(score);
   const scoreData = [
