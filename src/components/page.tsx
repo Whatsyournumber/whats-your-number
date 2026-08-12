@@ -49,7 +49,7 @@ export function Panel({
   variant = "default",
   children,
 }: {
-  title?: string;
+  title?: ReactNode;
   description?: string;
   actions?: ReactNode;
   className?: string;
