@@ -1251,28 +1251,27 @@ function CityDetail({
       <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto p-0">
         <div className="relative aspect-[16/7] w-full overflow-hidden">
           <img src={c.photo} alt={c.name} className="absolute inset-0 h-full w-full object-cover object-center" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
-
-          <div className="absolute bottom-4 left-5 right-5">
-            <DialogHeader>
-              <DialogTitle className="text-2xl">{c.name}</DialogTitle>
-            </DialogHeader>
-            <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-              <span>{c.country}</span>
-              <span className="text-border">·</span>
-              <span className="inline-flex items-center gap-1">
-                <span className="text-primary">{r.north.total}</span>
-                <span>/100</span>
-              </span>
-              <span className="text-border">·</span>
-              <span className="rounded-full border border-border/60 px-2 py-0.5 text-[10px]">
-                {stability.dot} {stability.text}
-              </span>
-            </div>
-          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-background/10 to-transparent" />
         </div>
 
         <div className="space-y-6 p-5">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">{c.name}</DialogTitle>
+            <DialogDescription>
+              <span className="inline-flex items-center gap-2">
+                <span>{c.country}</span>
+                <span className="text-border">·</span>
+                <span className="inline-flex items-center gap-1">
+                  <span className="text-primary">{r.north.total}</span>
+                  <span>/100</span>
+                </span>
+                <span className="text-border">·</span>
+                <span className="rounded-full border border-border/60 px-2 py-0.5 text-[10px]">
+                  {stability.dot} {stability.text}
+                </span>
+              </span>
+            </DialogDescription>
+          </DialogHeader>
           {/* Key monthly costs */}
           <div>
             <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
