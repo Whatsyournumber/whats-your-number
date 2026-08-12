@@ -569,11 +569,32 @@ function Gastos() {
         </Panel>
       )}
 
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard variant="flat" label={t("Gasto del periodo", "Period spend")} value={fmt(total)} delta={Number(delta.toFixed(1))} hint={t("fijos + variables", "fixed + variable")} inverse accent index={0} />
-        <KpiCard variant="flat" label={t("Gastos fijos", "Fixed expenses")} value={fmt(isLongRange ? fixed.total * monthsInRange : fixed.total)} hint={isLongRange ? t(`${monthsInRange} meses en el periodo`, `${monthsInRange} months in the period`) : t("mensual, editable", "monthly, editable")} index={1} />
-        <KpiCard variant="flat" label={t("Gasto variable (EEFF)", "Variable spend (statements)")} value={fmt(variable)} hint={`${current.length} ${t("transacciones", "transactions")}`} index={2} />
-        <KpiCard variant="flat" label={t("Promedio diario", "Daily average")} value={fmt(total / days)} hint={`${days} ${t("días", "days")}`} index={3} />
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+        <EditableKpiCard
+          variant="flat"
+          label={t("Ingresos", "Income")}
+          value={fmt(income)}
+          rawValue={Math.round(income)}
+          onChange={(v) => {
+            const other =
+              (Number(profile.income_bonus) || 0) +
+              (Number(profile.income_rent) || 0) +
+              (Number(profile.income_other) || 0);
+            void save({ income_salary: Math.max(0, v - other) }).then(() => {
+              toast.success(t("Ingresos actualizados", "Income updated"), {
+                description: t("El análisis se recalcula con tu nuevo ingreso.", "Analysis recalculates with your new income."),
+              });
+            });
+          }}
+          hint={t("mensual, editable", "monthly, editable")}
+          icon={Banknote}
+          index={0}
+          format={fmt}
+        />
+        <KpiCard variant="flat" label={t("Gasto del periodo", "Period spend")} value={fmt(total)} delta={Number(delta.toFixed(1))} hint={t("fijos + variables", "fixed + variable")} inverse accent index={1} />
+        <KpiCard variant="flat" label={t("Gastos fijos", "Fixed expenses")} value={fmt(isLongRange ? fixed.total * monthsInRange : fixed.total)} hint={isLongRange ? t(`${monthsInRange} meses en el periodo`, `${monthsInRange} months in the period`) : t("mensual, editable", "monthly, editable")} index={2} />
+        <KpiCard variant="flat" label={t("Gasto variable (EEFF)", "Variable spend (statements)")} value={fmt(variable)} hint={`${current.length} ${t("transacciones", "transactions")}`} index={3} />
+        <KpiCard variant="flat" label={t("Promedio diario", "Daily average")} value={fmt(total / days)} hint={`${days} ${t("días", "days")}`} index={4} />
       </div>
 
       <Panel
