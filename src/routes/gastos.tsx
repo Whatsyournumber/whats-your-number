@@ -159,6 +159,19 @@ function Gastos() {
   const categories = useCategories();
   const categoryOf = (t: Tx) => categorizeTx(t, categories.rules);
   const [range, setRange] = usePersistedRange(() => buildPresets(t)[0]!.range());
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const [detailCat, setDetailCat] = useState<string | null>(null);
+
+  // Selección explícita: 1er clic = inicio, 2º clic = fin, 3er clic = nuevo inicio.
+  const handleDayClick = (day: Date) => {
+    if (!range?.from || (range.from && range.to)) {
+      setRange({ from: day, to: undefined });
+      return;
+    }
+    if (day < range.from) setRange({ from: day, to: range.from });
+    else setRange({ from: range.from, to: day });
+  };
+
 
   const from = range?.from ?? subDays(new Date(), 29);
   const to = range?.to ?? from;
