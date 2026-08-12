@@ -43,9 +43,9 @@ type MortgageState = {
   rate: number;
   rateType: "fixed" | "variable";
   term: number;
+  payment: number;
   extra: number;
   lump: number;
-  nextReviewDate: string;
 };
 
 const KEY = "whatsyournumber:mortgage";
@@ -55,9 +55,9 @@ const defaults: MortgageState = {
   rate: 3.5,
   rateType: "variable",
   term: 30,
+  payment: 0,
   extra: 250,
   lump: 25000,
-  nextReviewDate: "Oct 2026",
 };
 
 /** Simula la amortización mes a mes y devuelve meses e intereses totales. */
@@ -190,8 +190,9 @@ export function MortgageModule() {
     if (!balance || s.balance) return;
     const rate = mRate || s.rate;
     const term = mTerm || (housing > 0 ? termFor(balance, rate, housing) : s.term);
+    const payment = paymentFor(balance, rate, term * 12);
     setS((prev) => {
-      const next = { ...prev, balance, rate, term };
+      const next = { ...prev, balance, rate, term, payment };
       try {
         window.localStorage.setItem(KEY, JSON.stringify(next));
       } catch {
@@ -201,6 +202,24 @@ export function MortgageModule() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, profile.mortgage_balance, profile.mortgage_rate, profile.mortgage_term, profile.liabilities, profile.fixed_housing]);
+
+  // Recalcula la cuota cuando cambian saldo, tasa o plazo (no cuando el usuario la editó directamente).
+  useEffect(() => {
+    if (!ready || !s.balance) return;
+    const nextPayment = paymentFor(s.balance, s.rate, s.term * 12);
+    if (Math.abs(nextPayment - s.payment) > 0.01) {
+      setS((prev) => {
+        const next = { ...prev, payment: nextPayment };
+        try {
+          window.localStorage.setItem(KEY, JSON.stringify(next));
+        } catch {
+          /* ignore */
+        }
+        return next;
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [s.balance, s.rate, s.term]);
 
 
   const set = (patch: Partial<MortgageState>) => {
@@ -213,8 +232,8 @@ export function MortgageModule() {
     }
   };
 
-  const payment = useMemo(() => paymentFor(s.balance, s.rate, s.term * 12), [s.balance, s.rate, s.term]);
-  const base = useMemo(() => simulate(s.balance, s.rate, payment), [s.balance, s.rate, s.term, payment]);
+  const payment = s.payment;
+  const base = useMemo(() => simulate(s.balance, s.rate, payment), [s.balance, s.rate, payment]);
 
   const strategies = useMemo(() => {
     if (!s.balance || !payment) return [];
@@ -383,7 +402,19 @@ export function MortgageModule() {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{t("Pago mensual", "Monthly payment")}</p>
-              <p className="numeric mt-1 text-sm font-semibold">{fmt(payment)}</p>
+              <NumberInput
+                value={s.payment}
+                step={50}
+                min={0}
+                onChange={(v) => {
+                  const nextPayment = Math.max(0, v);
+                  set({
+                    payment: nextPayment,
+                    term: termFor(s.balance, s.rate, nextPayment),
+                  });
+                }}
+                className="mt-1 h-8 w-full text-right text-sm font-semibold"
+              />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{t("Tipo de tasa", "Rate type")}</p>
@@ -396,15 +427,6 @@ export function MortgageModule() {
                   <SelectItem value="variable">{t("Variable", "Variable")}</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">{t("Próxima revisión", "Next review")}</p>
-              <input
-                type="text"
-                value={s.nextReviewDate}
-                onChange={(e) => set({ nextReviewDate: e.target.value })}
-                className="mt-1 h-8 w-full rounded-md border border-border/60 bg-elevated/40 px-2 text-right text-xs font-semibold text-foreground outline-none focus-visible:border-border"
-              />
             </div>
           </div>
         </Panel>
