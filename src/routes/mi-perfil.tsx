@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Block, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Loader2, RefreshCw, Save } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -6,6 +6,14 @@ import { toast } from "sonner";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { SubscriptionManager } from "@/components/subscription-manager";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { convertStoredFixedExpenses } from "@/hooks/use-fixed-expenses";
@@ -48,6 +56,17 @@ function MiPerfil() {
   const [dirty, setDirty] = useState(false);
   // Tasas del día: necesarias para reconvertir los importes al cambiar de moneda.
   useFxRates();
+
+  // Advertir al cerrar o recargar la pestaña con cambios sin guardar.
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (!dirty) return;
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [dirty]);
 
   const moneyFields: { key: keyof Profile; label: string; group: "income" | "assets" | "flow" }[] = [
     { key: "income_salary", label: t("Salario mensual", "Monthly salary"), group: "income" },
@@ -113,17 +132,57 @@ function MiPerfil() {
   }
 
   return (
-    <PageShell>
-      <PageHeader
-        eyebrow={t("Perfil financiero", "Financial profile")}
-        title={t("Mis datos", "My data")}
-        subtitle={t(
-          "Edita cualquier campo: patrimonio, dashboard, retiro y objetivos se recalculan con tus números.",
-          "Edit any field: net worth, dashboard, retirement and goals recalculate with your numbers.",
-        )}
-      />
+    <Block shouldBlockFn={() => dirty} withResolver>
+      {(blocker) => (
+        <>
+          <Dialog open={blocker.status === "blocked"} onOpenChange={(open) => !open && blocker.reset?.()}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>{t("¿Quieres guardar los cambios?", "Do you want to save your changes?")}</DialogTitle>
+                <DialogDescription>
+                  {t(
+                    "Tienes cambios sin guardar. Si sales ahora, perderás los ajustes que hiciste en tu perfil.",
+                    "You have unsaved changes. If you leave now, you'll lose the adjustments you made to your profile.",
+                  )}
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter className="gap-2">
+                <Button variant="outline" onClick={() => blocker.reset?.()}>
+                  {t("Seguir editando", "Keep editing")}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setDirty(false);
+                    blocker.proceed?.();
+                  }}
+                >
+                  {t("Descartar", "Discard")}
+                </Button>
+                <Button
+                  onClick={() => {
+                    void onSave().then(() => {
+                      blocker.proceed?.();
+                    });
+                  }}
+                >
+                  {t("Guardar y salir", "Save and leave")}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
-      <div className="surface flex flex-wrap items-center gap-3 p-4">
+          <PageShell>
+            <PageHeader
+              eyebrow={t("Perfil financiero", "Financial profile")}
+              title={t("Mis datos", "My data")}
+              subtitle={t(
+                "Edita cualquier campo: patrimonio, dashboard, retiro y objetivos se recalculan con tus números.",
+                "Edit any field: net worth, dashboard, retirement and goals recalculate with your numbers.",
+              )}
+            />
+
+            <div className="surface flex flex-wrap items-center gap-3 p-4">
         <div className="grid flex-1 grid-cols-2 gap-4 sm:grid-cols-4">
           <Stat label={t("Patrimonio neto", "Net worth")} value={preview.fmt(preview.netWorth)} />
           <Stat label={t("Ahorro mensual", "Monthly savings")} value={preview.fmt(preview.savings)} />
@@ -278,7 +337,10 @@ function MiPerfil() {
           {t("Guardar cambios", "Save changes")}
         </Button>
       </div>
-    </PageShell>
+          </PageShell>
+        </>
+      )}
+    </Block>
   );
 }
 
