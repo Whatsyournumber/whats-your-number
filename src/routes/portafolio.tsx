@@ -5,14 +5,17 @@ import { CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContaine
 
 import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
+import { HoldingsManager } from "@/components/holdings-manager";
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useHoldings } from "@/hooks/use-holdings";
 import { useT } from "@/hooks/use-language";
 import { useMarketSeries, useQuotes, useWatchlist } from "@/hooks/use-market";
 import { useProfile } from "@/hooks/use-profile";
+
 import { buildDataset } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
 
