@@ -520,7 +520,13 @@ function SuggestedForYou({
   onApply: (f: Filters) => void;
   onOpen: (r: CityScore) => void;
 }) {
-  const f = useMemo(() => suggestedFilters(profile), [profile]);
+  const suggested = useMemo(() => suggestedFilters(profile), [profile]);
+  const [f, setF] = useState<Filters>(suggested);
+  const [editing, setEditing] = useState(false);
+  // Si cambia tu perfil, vuelve a partir de la sugerencia ideal.
+  useEffect(() => setF(suggested), [suggested]);
+  const set = <K extends keyof Filters>(k: K, v: Filters[K]) => setF((prev) => ({ ...prev, [k]: v }));
+
   const top = useMemo(() => {
     const ranked = rankCities(f, ctx);
     // Ranking 100% según tus respuestas del onboarding: sin ciudades fijas.
@@ -533,14 +539,26 @@ function SuggestedForYou({
     <Panel
       title={t("Sugeridas para ti", "Suggested for you")}
       description={t(
-        "Según tus respuestas del onboarding: presupuesto, etapa de vida, estilo y estabilidad política.",
-        "Based on your onboarding answers: budget, life stage, lifestyle and political stability.",
+        "Partimos de nuestros valores ideales según tu perfil: presupuesto, etapa de vida, estilo, seguridad y estabilidad. Puedes ajustarlos.",
+        "We start from our ideal defaults for your profile: budget, life stage, lifestyle, safety and stability. You can tweak them.",
       )}
       actions={
-        <Button size="sm" variant="outline" onClick={() => onApply(f)}>
-          <Sparkles className="mr-1.5 h-3.5 w-3.5" />
-          {t("Aplicar a los filtros", "Apply to filters")}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button size="sm" variant="ghost" onClick={() => setEditing((v) => !v)}>
+            <SlidersHorizontal className="mr-1.5 h-3.5 w-3.5" />
+            {editing ? t("Ocultar", "Hide") : t("Ajustar", "Adjust")}
+          </Button>
+          {editing && (
+            <Button size="sm" variant="ghost" onClick={() => setF(suggested)}>
+              <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
+              {t("Ideales", "Ideal")}
+            </Button>
+          )}
+          <Button size="sm" variant="outline" onClick={() => onApply(f)}>
+            <Sparkles className="mr-1.5 h-3.5 w-3.5" />
+            {t("Aplicar a los filtros", "Apply to filters")}
+          </Button>
+        </div>
       }
     >
       <div className="mb-4 flex flex-wrap gap-1.5">
@@ -548,6 +566,99 @@ function SuggestedForYou({
           <Chip key={r}>{r}</Chip>
         ))}
       </div>
+      {editing && (
+        <div className="mb-4 grid gap-3 rounded-xl border border-border/60 bg-elevated/30 p-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="sm:col-span-2 lg:col-span-3">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                {t("Presupuesto mensual", "Monthly budget")}
+              </p>
+              <p className="numeric text-xs font-semibold text-primary">
+                {fmt(f.budget)}
+                {f.budget >= 15000 && "+"}
+              </p>
+            </div>
+            <Slider
+              className="mt-3"
+              min={1000}
+              max={15000}
+              step={100}
+              value={[f.budget]}
+              onValueChange={([v]) => set("budget", v ?? 1000)}
+            />
+          </div>
+          <SelectFilter
+            label={t("Cómo vivir", "Comfort level")}
+            value={f.comfort}
+            onChange={(v) => set("comfort", v)}
+            options={[
+              { value: "tight", label: t("Ajustado", "Tight"), icon: "🪙" },
+              { value: "comfortable", label: t("Cómodo", "Comfortable"), icon: "🛋️" },
+              { value: "luxury", label: t("Lujo", "Luxury"), icon: "🥂" },
+            ]}
+          />
+          <SelectFilter
+            label={t("Objetivo", "Goal")}
+            value={f.goal}
+            onChange={(v) => set("goal", v)}
+            options={[
+              { value: "save", label: t("Ahorrar", "Save"), icon: "🐖" },
+              { value: "retire", label: t("Libertad financiera", "Financial freedom"), icon: "🌅" },
+              { value: "lifestyle", label: t("Estilo de vida", "Lifestyle"), icon: "✨" },
+              { value: "nomad", label: t("Nómada", "Nomad"), icon: "🌐" },
+              { value: "family", label: t("Familia", "Family"), icon: "👨‍👩‍👧" },
+              { value: "career", label: t("Carrera", "Career"), icon: "📈" },
+            ]}
+          />
+          <SelectFilter
+            label={t("Clima", "Climate")}
+            value={f.climate}
+            onChange={(v) => set("climate", v)}
+            options={[
+              { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
+              { value: "warm", label: t("Cálido", "Warm"), icon: "☀️" },
+              { value: "beach", label: t("Playa", "Beach"), icon: "🏖️" },
+              { value: "temperate", label: t("Templado", "Temperate"), icon: "🌤️" },
+              { value: "cold", label: t("Frío", "Cold"), icon: "❄️" },
+            ]}
+          />
+          <SelectFilter
+            label={t("Estabilidad", "Stability")}
+            value={f.stability}
+            onChange={(v) => set("stability", v)}
+            options={[
+              { value: "any", label: t("Indiferente", "Any"), icon: "🌍" },
+              { value: "medium", label: t("Media o superior", "Medium or higher"), icon: "🟡" },
+              { value: "high", label: t("Alta", "High"), icon: "🟢" },
+              { value: "veryhigh", label: t("Muy alta", "Very high"), icon: "🛡️" },
+            ]}
+          />
+          <SelectFilter
+            label={t("Seguridad", "Safety")}
+            value={f.safety}
+            onChange={(v) => set("safety", v)}
+            options={[
+              { value: "essential", label: t("Imprescindible", "Essential"), icon: "🛡️" },
+              { value: "important", label: t("Importante", "Important"), icon: "👍" },
+              { value: "neutral", label: t("Indiferente", "Neutral"), icon: "🌍" },
+            ]}
+          />
+          <SelectFilter
+            label={t("Región", "Region")}
+            value={f.region}
+            onChange={(v) => set("region", v)}
+            options={[
+              { value: "any", label: t("Todas", "All"), icon: "🌍" },
+              { value: "northamerica", label: t("Norteamérica", "North America"), icon: "🇺🇸" },
+              { value: "latam", label: t("Latam", "Latam"), icon: "🌎" },
+              { value: "europe", label: t("Europa", "Europe"), icon: "🇪🇺" },
+              { value: "asia", label: t("Asia / Oceanía", "Asia / Oceania"), icon: "🌏" },
+              { value: "africa", label: t("África", "Africa"), icon: "🦁" },
+            ]}
+          />
+        </div>
+      )}
+
       <div className="grid gap-3 sm:grid-cols-3">
         {top.map((r, i) => {
           const st = stabilityBadge(r.city.country, t);
