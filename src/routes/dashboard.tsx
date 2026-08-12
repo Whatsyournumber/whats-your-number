@@ -238,7 +238,15 @@ function Dashboard() {
           <div className="space-y-4">
             <div>
               <p className="text-xs text-muted-foreground">Your Number</p>
-              <p className="numeric mt-1 text-2xl font-semibold">{fmt(targetNumber)}</p>
+              <p
+                className={cn(
+                  "numeric mt-1 truncate text-ellipsis whitespace-nowrap font-semibold leading-tight",
+                  fmt(targetNumber).length > 22 ? "text-base" : fmt(targetNumber).length > 16 ? "text-lg" : "text-2xl",
+                )}
+                title={fmt(targetNumber)}
+              >
+                {fmt(targetNumber)}
+              </p>
               <p className="mt-1 text-xs text-muted-foreground">
                 {t(`Para vivir con ${fmt(desiredIncome)} al mes`, `To live on ${fmt(desiredIncome)} a month`)}
               </p>
