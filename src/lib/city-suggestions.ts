@@ -5,8 +5,9 @@ import { totalIncome } from "./onboarding";
 /** Traduce las respuestas del onboarding en filtros sugeridos del simulador. */
 export function suggestedFilters(profile: Profile): Filters {
   const income = totalIncome(profile);
-  const monthlyTarget = profile.desired_retirement_income || Math.max(2000, income - profile.monthly_savings);
-  const budget = Math.max(2000, Math.min(15000, Math.round(monthlyTarget / 250) * 250));
+  // Presupuesto realista: lo que quieres vivir al mes, o tu gasto actual estimado.
+  const monthlyTarget = profile.desired_retirement_income || Math.max(1200, income - profile.monthly_savings);
+  const budget = Math.max(1200, Math.min(15000, Math.round(monthlyTarget / 250) * 250));
 
   const married = profile.marital_status === "Casado" || profile.marital_status === "En pareja";
   const kids = profile.children && profile.children !== "0";
@@ -41,16 +42,24 @@ export function suggestedFilters(profile: Profile): Filters {
 
   const climate: Filters["climate"] = profile.travel_frequency === "5+" ? "warm" : "any";
 
+  // Defaults ideales: con hijos o perfil conservador, prioriza estabilidad y seguridad.
   const stability: Filters["stability"] = kids
     ? "veryhigh"
-    : profile.risk_profile === "conservador"
+    : profile.risk_profile === "conservador" || goal === "retire"
       ? "high"
       : "medium";
 
-  const safety: Filters["safety"] = kids ? "essential" : profile.risk_profile === "agresivo" ? "neutral" : "important";
+  const safety: Filters["safety"] = kids || goal === "retire" ? "essential" : profile.risk_profile === "agresivo" ? "neutral" : "important";
 
-  return { ...defaultFilters, budget, stage, comfort, goal, climate, stability, safety };
+  // Impuestos: si el objetivo es vivir de rentas o ahorrar, mejor jurisdicción de baja carga fiscal.
+  const tax: Filters["tax"] = goal === "retire" || goal === "save" || goal === "nomad" ? "low" : "any";
+
+  // Salario: solo importa si sigues trabajando y buscas carrera o patrimonio.
+  const salary: Filters["salary"] = goal === "career" ? "50_75" : "any";
+
+  return { ...defaultFilters, budget, stage, comfort, goal, climate, stability, safety, tax, salary };
 }
+
 
 /** Frases cortas que explican por qué se sugieren esas ciudades. */
 export function suggestionReasons(profile: Profile, f: Filters, t: (es: string, en: string) => string) {
