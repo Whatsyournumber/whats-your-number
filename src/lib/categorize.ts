@@ -76,13 +76,18 @@ const MERCHANT_OVERRIDES: { hints: string[]; category: string }[] = [
     ],
   },
   {
+    category: "Marketing digital",
+    hints: ["linkedin"],
+  },
+  {
     category: "Apps",
     hints: [
       "tinder", "bumble", "inner circle", "faceapp", "unfold", "nebula", "wingman", "spliiit",
       "coursiv", "invideo", "vidiq", "zadarma", "workana", "gamma.app", "elevenlabs", "helium10",
-      "nightwatch", "ubersuggest", "zoho", "twilio", "sendgrid", "paddle.net", "linkedin",
+      "nightwatch", "ubersuggest", "zoho", "twilio", "sendgrid", "paddle.net",
     ],
   },
+
   {
     category: "Salud",
     hints: [
