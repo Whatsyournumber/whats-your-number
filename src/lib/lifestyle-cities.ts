@@ -11,7 +11,7 @@ import { extraCities } from "./lifestyle-cities-extra";
 import { passesStability, stabilityScore, type StabilityPref } from "./political-stability";
 import { northScore, pillarWeights, type NorthScore } from "./north-score";
 import { globalRankingScore } from "./global-rankings";
-import { nomadFriendly } from "./nomad-visas";
+import { nomadFriendly, nomadVisa } from "./nomad-visas";
 import barcelonaPhoto from "@/assets/city-barcelona-hd.jpg.asset.json";
 import cairoPhoto from "@/assets/city-cairo-nile.png.asset.json";
 import nairobiPhoto from "@/assets/city-nairobi.jpg.asset.json";
