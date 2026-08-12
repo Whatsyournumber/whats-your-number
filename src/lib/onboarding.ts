@@ -1,3 +1,4 @@
+import { SUPPORTED_CURRENCY_CODES } from "@/lib/fx";
 export type OnboardingData = {
   full_name: string;
   age: number | null;
@@ -397,29 +398,44 @@ export function freedomAgeEstimate(d: OnboardingData, target: number) {
 
 export type CurrencyOption = { code: string; label: string; symbol: string };
 
-/** Monedas soportadas para mostrar importes en la app. */
-export const currencies: CurrencyOption[] = [
-  { code: "EUR", label: "Euro", symbol: "€" },
-  { code: "USD", label: "Dólar estadounidense", symbol: "$" },
-  { code: "GBP", label: "Libra esterlina", symbol: "£" },
-  { code: "CHF", label: "Franco suizo", symbol: "CHF" },
-  { code: "MXN", label: "Peso mexicano", symbol: "$" },
-  { code: "COP", label: "Peso colombiano", symbol: "$" },
-  { code: "CLP", label: "Peso chileno", symbol: "$" },
-  { code: "ARS", label: "Peso argentino", symbol: "$" },
-  { code: "UYU", label: "Peso uruguayo", symbol: "$" },
-  { code: "PEN", label: "Sol peruano", symbol: "S/" },
-  { code: "BRL", label: "Real brasileño", symbol: "R$" },
-  { code: "CAD", label: "Dólar canadiense", symbol: "$" },
-  { code: "DOP", label: "Peso dominicano", symbol: "$" },
-  { code: "GTQ", label: "Quetzal", symbol: "Q" },
-  { code: "CRC", label: "Colón costarricense", symbol: "₡" },
-  { code: "PYG", label: "Guaraní", symbol: "₲" },
-  { code: "BOB", label: "Boliviano", symbol: "Bs" },
-  { code: "HNL", label: "Lempira", symbol: "L" },
-  { code: "NIO", label: "Córdoba", symbol: "C$" },
-  { code: "VES", label: "Bolívar", symbol: "Bs" },
+/** Símbolos comunes; el resto usa el propio código ISO. */
+const CURRENCY_SYMBOLS: Record<string, string> = {
+  USD: "$", EUR: "\u20AC", GBP: "\u00A3", JPY: "\u00A5", CNY: "\u00A5", KRW: "\u20A9",
+  INR: "\u20B9", RUB: "\u20BD", TRY: "\u20BA", BRL: "R$", MXN: "$", ARS: "$", CLP: "$",
+  COP: "$", UYU: "$", DOP: "$", PEN: "S/", PYG: "\u20B2", BOB: "Bs", HNL: "L", NIO: "C$",
+  CRC: "\u20A1", GTQ: "Q", VES: "Bs", CAD: "$", AUD: "$", NZD: "$", HKD: "$", SGD: "$",
+  TWD: "NT$", PHP: "\u20B1", THB: "\u0E3F", VND: "\u20AB", ILS: "\u20AA", NGN: "\u20A6",
+  ZAR: "R", PLN: "z\u0142", CZK: "K\u010D", HUF: "Ft", SEK: "kr", NOK: "kr", DKK: "kr",
+  UAH: "\u20B4", KZT: "\u20B8", CHF: "CHF",
+};
+
+/** Monedas mostradas primero por ser las más usadas por los usuarios. */
+const PRIORITY_CURRENCIES = [
+  "EUR", "USD", "GBP", "CHF", "MXN", "COP", "CLP", "ARS", "UYU", "PEN", "BRL", "CAD",
+  "DOP", "GTQ", "CRC", "PYG", "BOB", "HNL", "NIO", "VES",
 ];
+
+function currencyLabel(code: string): string {
+  try {
+    const dn = new Intl.DisplayNames(["es"], { type: "currency" });
+    const name = dn.of(code);
+    if (name && name !== code) return name.charAt(0).toUpperCase() + name.slice(1);
+  } catch {
+    /* Intl no disponible: se usa el código */
+  }
+  return code;
+}
+
+/** Todas las monedas soportadas por el motor de conversión, con las comunes arriba. */
+export const currencies: CurrencyOption[] = (() => {
+  const rest = SUPPORTED_CURRENCY_CODES.filter((c) => !PRIORITY_CURRENCIES.includes(c));
+  const ordered = [...PRIORITY_CURRENCIES.filter((c) => SUPPORTED_CURRENCY_CODES.includes(c)), ...rest];
+  return ordered.map((code) => ({
+    code,
+    label: currencyLabel(code),
+    symbol: CURRENCY_SYMBOLS[code] ?? code,
+  }));
+})();
 
 /** Gastos fijos declarados en el onboarding, listos para la pestaña de Gastos. */
 export const FIXED_FIELDS = [

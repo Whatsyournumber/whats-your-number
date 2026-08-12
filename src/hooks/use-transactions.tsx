@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { useAuth } from "@/hooks/use-auth";
+import { useFxRates } from "@/hooks/use-fx-rates";
 import { useProfile } from "@/hooks/use-profile";
 import { isExcludedTx } from "@/lib/categorize";
 import { convertAmount } from "@/lib/fx";
@@ -34,11 +35,13 @@ const normalizeTransactionText = (value: string | null | undefined) =>
 export function useTransactions() {
   const { user } = useAuth();
   const { profile } = useProfile();
+  // Tasas del día: al cargarse cambia `fxUpdatedAt` y se recalculan las conversiones.
+  const { updatedAt: fxUpdatedAt } = useFxRates();
   const userId = user?.id ?? null;
   const baseCurrency = (profile?.currency as string) || "EUR";
 
   const query = useQuery({
-    queryKey: ["imported-transactions", userId],
+    queryKey: ["imported-transactions", userId, fxUpdatedAt],
     enabled: Boolean(userId),
     queryFn: async () => {
       if (!userId) return [];
