@@ -31,8 +31,14 @@ export async function getUserTier(
   userId: string,
   environment: PaddleEnv,
 ): Promise<PlanTier> {
-  const { data: isSuperAdmin } = await supabase.rpc("is_super_admin", { _user_id: userId });
-  if (isSuperAdmin) return "patrimonio";
+  // Read own role rows directly (RLS: users can view their own roles).
+  const { data: roleRow } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .eq("role", "super_admin")
+    .maybeSingle();
+  if (roleRow) return "patrimonio";
 
   const { data } = await supabase
     .from("subscriptions")
