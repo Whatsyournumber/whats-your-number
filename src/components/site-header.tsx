@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Sparkles, Menu } from "lucide-react";
 
 import { BrandLogo, BrandMark } from "@/components/brand-logo";
+import { CurrencyToggle } from "@/components/currency-toggle";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/use-auth";
