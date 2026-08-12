@@ -11,7 +11,7 @@ import {
   subMonths,
 } from "date-fns";
 import { es } from "date-fns/locale";
-import { CalendarIcon, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
+import { BarChart3, CalendarIcon, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { categorizeTx } from "@/lib/categorize";
 import { useLanguage, useT } from "@/hooks/use-language";
@@ -30,6 +30,7 @@ import { NumberInput } from "@/components/ui/number-input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CategoryChat } from "@/components/category-chat";
+import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { useCategories } from "@/hooks/use-categories";
 
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
@@ -927,6 +928,21 @@ function Gastos() {
             );
           })}
         </Accordion>
+
+        {detailCat && (
+          <CategoryDetailDialog
+            open={Boolean(detailCat)}
+            onOpenChange={(v) => !v && setDetailCat(null)}
+            name={tc(detailCat)}
+            items={detailRows.find((r) => r.name === detailCat)?.items ?? []}
+            amount={detailRows.find((r) => r.name === detailCat)?.amount ?? 0}
+            prevAmount={prevByCategory.get(detailCat) ?? 0}
+            periodTotal={variableTotal}
+            days={days}
+            fmt={fmt}
+            fmtCompact={fmtCompact}
+          />
+        )}
 
         <div className="mt-3 space-y-2 border-t border-border pt-3">
           <CategoryChat
