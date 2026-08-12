@@ -61,12 +61,17 @@ export async function processStatementForUser(
   if (stErr) throw new Error(stErr.message);
   if (!statement) throw new Error("Archivo no encontrado.");
 
-  await supabase.from("statements").update({ status: "processing", error_message: null }).eq("id", statementId);
+  // No esperamos al update de estado: la descarga arranca en paralelo.
+  const statusUpdate = supabase
+    .from("statements")
+    .update({ status: "processing", error_message: null })
+    .eq("id", statementId);
 
   try {
-    const { data: blob, error: dlErr } = await supabase.storage
-      .from("statements")
-      .download(statement.storage_path as string);
+    const [{ data: blob, error: dlErr }] = await Promise.all([
+      supabase.storage.from("statements").download(statement.storage_path as string),
+      statusUpdate,
+    ]);
     if (dlErr || !blob) throw new Error(dlErr?.message ?? "No pudimos leer el archivo.");
 
     const bytes = new Uint8Array(await blob.arrayBuffer());
