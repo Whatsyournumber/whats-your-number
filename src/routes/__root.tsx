@@ -25,6 +25,7 @@ import { PromoAutoRedeem } from "@/components/promo-auto-redeem";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import { LanguageProvider, useT, LanguageToggle } from "@/hooks/use-language";
+import { CurrencyToggle } from "@/components/currency-toggle";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
@@ -230,6 +231,7 @@ function AppShell() {
                 </Link>
               </Button>
               <ThemeToggle />
+              <CurrencyToggle />
               <LanguageToggle />
               <Button variant="ghost" size="sm" className="gap-2 rounded-full" onClick={() => void signOut()}>
                 <LogOut className="h-3.5 w-3.5" />
