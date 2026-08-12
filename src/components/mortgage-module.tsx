@@ -362,31 +362,40 @@ export function MortgageModule() {
         </div>
       </div>
 
-      {/* Top cards */}
-      <div className="grid gap-4 md:grid-cols-3">
-        {/* Current mortgage */}
-        <Panel variant="minimal" className="flex h-full flex-col">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-semibold">{t("Tu hipoteca actual", "Your current mortgage")}</h2>
-            <span className="text-xs font-medium text-positive">{t("Editar", "Edit")}</span>
+      {/* Hero: current mortgage */}
+      <Panel variant="minimal" className="relative overflow-hidden">
+        <img
+          src={houseImg}
+          alt={t("Casa moderna", "Modern house")}
+          loading="lazy"
+          width={1024}
+          height={640}
+          className="pointer-events-none absolute right-0 top-0 hidden h-full w-[38%] object-cover opacity-90 [mask-image:linear-gradient(to_right,transparent,black_28%)] lg:block"
+        />
+        <div className="relative lg:pr-[40%]">
+          <div className="mb-5 flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-positive/10">
+              <Home className="h-5 w-5 text-positive" />
+            </span>
+            <h2 className="text-lg font-semibold">{t("Tu hipoteca", "Your mortgage")}</h2>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <div>
-              <p className="text-xs text-muted-foreground">{t("Saldo pendiente", "Outstanding balance")}</p>
+              <p className="text-xs text-muted-foreground">{t("Monto pendiente", "Outstanding balance")}</p>
               <NumberInput
                 value={s.balance}
                 step={1000}
                 onChange={(v) => set({ balance: v })}
-                className="mt-1 h-8 w-full text-right text-sm font-semibold"
+                className="mt-1.5 h-11 w-full text-sm font-semibold"
               />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">{t("Tasa de interés", "Interest rate")}</p>
+              <p className="text-xs text-muted-foreground">{t("Tasa de interés (%)", "Interest rate (%)")}</p>
               <NumberInput
                 value={s.rate}
                 step={0.1}
                 onChange={(v) => set({ rate: v })}
-                className="mt-1 h-8 w-full text-right text-sm font-semibold"
+                className="mt-1.5 h-11 w-full text-sm font-semibold"
               />
             </div>
             <div>
@@ -397,7 +406,7 @@ export function MortgageModule() {
                 min={1}
                 max={40}
                 onChange={(v) => set({ term: v })}
-                className="mt-1 h-8 w-full text-right text-sm font-semibold"
+                className="mt-1.5 h-11 w-full text-sm font-semibold"
               />
             </div>
             <div>
@@ -413,23 +422,28 @@ export function MortgageModule() {
                     term: termFor(s.balance, s.rate, nextPayment),
                   });
                 }}
-                className="mt-1 h-8 w-full text-right text-sm font-semibold"
+                className="mt-1.5 h-11 w-full text-sm font-semibold"
               />
             </div>
-            <div>
-              <p className="text-xs text-muted-foreground">{t("Tipo de tasa", "Rate type")}</p>
-              <Select value={s.rateType} onValueChange={(v) => set({ rateType: v as "fixed" | "variable" })}>
-                <SelectTrigger className="mt-1 h-8 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="fixed">{t("Fija", "Fixed")}</SelectItem>
-                  <SelectItem value="variable">{t("Variable", "Variable")}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
           </div>
-        </Panel>
+          <div className="mt-5 flex items-center gap-3 border-t border-border/60 pt-4">
+            <p className="text-xs text-muted-foreground">{t("Tipo de tasa:", "Rate type:")}</p>
+            <Select value={s.rateType} onValueChange={(v) => set({ rateType: v as "fixed" | "variable" })}>
+              <SelectTrigger className="h-8 w-32 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="fixed">{t("Fija", "Fixed")}</SelectItem>
+                <SelectItem value="variable">{t("Variable", "Variable")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </Panel>
+
+      {/* Health + interest */}
+      <div className="grid gap-4 md:grid-cols-2">
+
 
         {/* Health score */}
         <Panel variant="minimal" className="flex h-full flex-col">
