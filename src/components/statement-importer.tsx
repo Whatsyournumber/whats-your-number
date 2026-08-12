@@ -237,6 +237,16 @@ export function StatementImporter() {
           setJob(jobId, { stage: "analyzing" });
           try {
             const result = await runProcess({ data: { statementId: inserted.id as string, environment: getPaddleEnvironment() } });
+            if (result.upgradeRequired) {
+              const msg = t(
+                "Límite de 5 importaciones/mes del plan Free. Actualiza a Pro.",
+                "Free plan limit of 5 imports/month reached. Upgrade to Pro.",
+              );
+              setJob(jobId, { stage: "error", message: msg });
+              toast.error(msg);
+              void qc.invalidateQueries({ queryKey: ["statements"] });
+              return;
+            }
             setJob(jobId, {
               stage: "done",
               message: t(`${result.inserted} movimientos`, `${result.inserted} transactions`),
@@ -248,6 +258,7 @@ export function StatementImporter() {
               ),
             );
             refreshAll();
+
           } catch (err) {
             const msg = err instanceof Error ? err.message : t("Error de análisis", "Analysis error");
             setJob(jobId, { stage: "error", message: msg });
