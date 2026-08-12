@@ -232,15 +232,12 @@ function SourcesTooltip({ t }: { t: (es: string, en: string) => string }) {
     { name: "Mercer / EIU", desc: t("liveability global", "global liveability") },
   ];
   return (
-    <Tooltip>
+    <Tooltip delayDuration={200}>
       <TooltipTrigger asChild>
-        <button
-          type="button"
-          className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-elevated/40 px-2 py-0.5 text-[10px] text-muted-foreground transition-colors hover:text-foreground"
-        >
+        <span className="inline-flex cursor-help items-center gap-1 rounded-full border border-border/60 bg-elevated/40 px-2 py-0.5 text-[10px] text-muted-foreground transition-colors hover:text-foreground">
           <BookOpen className="h-3 w-3" />
           {t("Fuentes", "Sources")}
-        </button>
+        </span>
       </TooltipTrigger>
       <TooltipContent
         side="bottom"
