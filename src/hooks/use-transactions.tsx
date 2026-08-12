@@ -31,6 +31,19 @@ const normalizeTransactionText = (value: string | null | undefined) =>
     .replace(/\s+/g, " ")
     .toLowerCase();
 
+/**
+ * Huella del comercio: el mismo negocio llega con nombres distintos
+ * ("Sixt" vs "SIXT RENT A CAR"), así que se compara por sus primeras palabras.
+ */
+export const merchantKey = (value: string | null | undefined) =>
+  normalizeTransactionText(value)
+    .replace(/[^a-z0-9 ]/g, " ")
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 1)
+    .join(" ");
+
+
 /** Transacciones importadas desde los estados de cuenta (EEFF) del usuario. */
 export function useTransactions() {
   const { user } = useAuth();
