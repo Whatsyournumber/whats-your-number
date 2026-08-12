@@ -12,6 +12,7 @@ import {
 } from "date-fns";
 import { es } from "date-fns/locale";
 import { Banknote, BarChart3, CalendarIcon, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
+import { toast } from "sonner";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { buildTravelDays, categorizeTx, categorizeTxWithTravel } from "@/lib/categorize";
 import { useLanguage, useT } from "@/hooks/use-language";
