@@ -383,7 +383,19 @@ export function MortgageModule() {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{t("Pago mensual", "Monthly payment")}</p>
-              <p className="numeric mt-1 text-sm font-semibold">{fmt(payment)}</p>
+              <NumberInput
+                value={s.payment}
+                step={50}
+                min={0}
+                onChange={(v) => {
+                  const nextPayment = Math.max(0, v);
+                  set({
+                    payment: nextPayment,
+                    term: termFor(s.balance, s.rate, nextPayment),
+                  });
+                }}
+                className="mt-1 h-8 w-full text-right text-sm font-semibold"
+              />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{t("Tipo de tasa", "Rate type")}</p>
@@ -396,15 +408,6 @@ export function MortgageModule() {
                   <SelectItem value="variable">{t("Variable", "Variable")}</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">{t("Próxima revisión", "Next review")}</p>
-              <input
-                type="text"
-                value={s.nextReviewDate}
-                onChange={(e) => set({ nextReviewDate: e.target.value })}
-                className="mt-1 h-8 w-full rounded-md border border-border/60 bg-elevated/40 px-2 text-right text-xs font-semibold text-foreground outline-none focus-visible:border-border"
-              />
             </div>
           </div>
         </Panel>
