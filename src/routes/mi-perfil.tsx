@@ -337,7 +337,10 @@ function MiPerfil() {
           {t("Guardar cambios", "Save changes")}
         </Button>
       </div>
-    </PageShell>
+          </PageShell>
+        </>
+      )}
+    </Block>
   );
 }
 
