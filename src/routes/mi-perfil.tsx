@@ -16,8 +16,16 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { WealthEditor } from "@/components/wealth-editor";
 import { convertStoredFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useFxRates } from "@/hooks/use-fx-rates";
+import {
+  monthlyContributions,
+  newHolding,
+  useHoldings,
+  wealthTotals,
+  type Holding,
+} from "@/hooks/use-holdings";
 import { useT } from "@/hooks/use-language";
 import { useProfile, type Profile } from "@/hooks/use-profile";
 import {
@@ -32,7 +40,7 @@ import {
   plansChildrenOptions,
   travelOptions,
 } from "@/lib/onboarding";
-import { convertProfileCurrency } from "@/lib/fx";
+import { convertAmount, convertProfileCurrency } from "@/lib/fx";
 import { buildDataset } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
 
@@ -51,8 +59,10 @@ export const Route = createFileRoute("/mi-perfil")({
 function MiPerfil() {
   const t = useT();
   const { profile, isLoading, save, saving } = useProfile();
+  const { holdings, isLoading: loadingHoldings, saveAll, saving: savingHoldings } = useHoldings();
   const navigate = useNavigate();
   const [form, setForm] = useState<Profile>(profile);
+  const [rows, setRows] = useState<Holding[]>([]);
   const [dirty, setDirty] = useState(false);
   // Tasas del día: necesarias para reconvertir los importes al cambiar de moneda.
   useFxRates();
@@ -90,27 +100,77 @@ function MiPerfil() {
     if (!dirty) setForm(profile);
   }, [profile, dirty]);
 
+  // Semilla: si aún no hay detalle de patrimonio, lo creamos con los totales del onboarding.
+  useEffect(() => {
+    if (dirty || loadingHoldings) return;
+    if (holdings.length > 0) {
+      setRows(holdings);
+      return;
+    }
+    const seed: Holding[] = [];
+    const push = (kind: Parameters<typeof newHolding>[0], label: string, value: number, extra?: Partial<Holding>) => {
+      if (!value) return;
+      seed.push({ ...newHolding(kind, label, seed.length), manual_value: value, ...(extra ?? {}) });
+    };
+    push("cash", t("Efectivo", "Cash"), profile.assets_cash);
+    push("bank", t("Cuentas bancarias", "Bank accounts"), profile.assets_bank);
+    push("retirement", t("Fondo de retiro", "Retirement fund"), profile.assets_retirement);
+    push("etf", t("ETFs / fondos", "ETFs / funds"), profile.assets_etf);
+    push("stock", t("Acciones", "Stocks"), profile.assets_stocks);
+    push("crypto", t("Cripto", "Crypto"), profile.assets_crypto);
+    push("property", t("Propiedad", "Property"), profile.assets_property, {
+      linked_liability: profile.mortgage_balance || 0,
+      expected_return: 4,
+    });
+    const otherDebt = Math.max(0, profile.liabilities - (profile.mortgage_balance || 0));
+    push("debt", t("Otras deudas", "Other debts"), otherDebt);
+    setRows(seed);
+  }, [holdings, loadingHoldings, dirty, profile, t]);
+
   const set = <K extends keyof Profile>(key: K, value: Profile[K]) => {
     setDirty(true);
     setForm((f) => ({ ...f, [key]: value }));
   };
 
+  const setRowsDirty = (next: Holding[]) => {
+    setDirty(true);
+    setRows(next);
+  };
+
   /** Cambia la moneda y reconvierte todos los importes con la tasa del día. */
   const changeCurrency = (next: string, extra?: Partial<Profile>) => {
     setDirty(true);
+    const from = form.currency || "EUR";
+    if (next && next !== from) {
+      const conv = (n: number) => Math.round(convertAmount(n, from, next));
+      setRows((list) =>
+        list.map((h) => ({
+          ...h,
+          manual_value: conv(h.manual_value),
+          cost_basis: conv(h.cost_basis),
+          monthly_contribution: conv(h.monthly_contribution),
+          linked_liability: conv(h.linked_liability),
+          monthly_income: conv(h.monthly_income),
+        })),
+      );
+    }
     setForm((f) => {
-      const from = f.currency || "EUR";
       if (!next || next === from) return { ...f, ...(extra ?? {}) };
       convertStoredFixedExpenses(from, next);
       return { ...convertProfileCurrency(f, from, next), ...(extra ?? {}), currency: next };
     });
   };
 
-  const preview = buildDataset(form);
+  // El detalle de patrimonio manda: los totales alimentan dashboard, retiro, portafolio y tu número.
+  const totals = wealthTotals(rows);
+  const merged: Profile = { ...form, ...totals };
+  const preview = buildDataset(merged);
+  const monthlyInvest = monthlyContributions(rows);
 
   const onSave = async () => {
-    const { completed: _c, ...rest } = form;
+    const { completed: _c, ...rest } = merged;
     try {
+      await saveAll(rows);
       await save({ ...rest, completed: true });
       setDirty(false);
       toast.success(t("Cambios guardados", "Changes saved"), {
@@ -120,6 +180,7 @@ function MiPerfil() {
       toast.error(t("No pudimos guardar tus datos", "We couldn't save your data"));
     }
   };
+
 
   if (isLoading) {
     return (
@@ -194,7 +255,7 @@ function MiPerfil() {
             <RefreshCw className="h-4 w-4" />
             {t("Rehacer onboarding", "Redo onboarding")}
           </Button>
-          <Button className="gap-2 rounded-full" onClick={() => void onSave()} disabled={saving || !dirty}>
+          <Button className="gap-2 rounded-full" onClick={() => void onSave()} disabled={saving || savingHoldings || !dirty}>
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             {t("Guardar cambios", "Save changes")}
           </Button>
@@ -299,22 +360,21 @@ function MiPerfil() {
           </div>
         </Panel>
 
-        <Panel title={t("Patrimonio", "Net worth")} description={t("Activos y deudas actuales", "Current assets and debts")}>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {moneyFields
-              .filter((f) => f.group === "assets")
-              .map((f) => (
-                <Field key={String(f.key)} label={f.label}>
-                  <Input
-                    type="number"
-                    value={(form[f.key] as number) || ""}
-                    onChange={(e) => set(f.key, Number(e.target.value || 0) as Profile[typeof f.key])}
-                    placeholder="0"
-                  />
-                </Field>
-              ))}
+        <Panel title={t("Patrimonio", "Net worth")} description={t("Se calcula con el detalle de abajo", "Calculated from the detail below")}>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Stat label={t("Activos totales", "Total assets")} value={preview.fmt(preview.totalAssets)} />
+            <Stat label={t("Deudas totales", "Total liabilities")} value={preview.fmt(preview.totalLiabilities)} />
+            <Stat label={t("Patrimonio neto", "Net worth")} value={preview.fmt(preview.netWorth)} />
+            <Stat label={t("Aporte mensual a inversiones", "Monthly investing")} value={preview.fmt(monthlyInvest)} />
           </div>
+          <p className="mt-4 text-xs text-muted-foreground">
+            {t(
+              "Edita el detalle de liquidez, inversiones, propiedades y deudas en el bloque «Tu patrimonio». Todo se sincroniza con dashboard, retiro, portafolio y tu número.",
+              "Edit liquidity, investments, properties and debts in the “Your wealth” block below. Everything syncs with dashboard, retirement, portfolio and your number.",
+            )}
+          </p>
         </Panel>
+
 
         <Panel title={t("Estilo de vida y objetivos", "Lifestyle & goals")}>
           <div className="space-y-5">
@@ -329,10 +389,21 @@ function MiPerfil() {
         </Panel>
       </div>
 
+      <PageHeader
+        eyebrow={t("Detalle", "Detail")}
+        title={t("Tu patrimonio", "Your wealth")}
+        subtitle={t(
+          "Registra cada activo y deuda para llevar tracking real: los totales se sincronizan solos con el resto de la app.",
+          "Track every asset and debt: totals sync automatically with the rest of the app.",
+        )}
+      />
+      <WealthEditor value={rows} onChange={setRowsDirty} fmt={preview.fmt} />
+
       <SubscriptionManager />
 
+
       <div className="flex justify-end">
-        <Button className="gap-2 rounded-full" onClick={() => void onSave()} disabled={saving || !dirty}>
+        <Button className="gap-2 rounded-full" onClick={() => void onSave()} disabled={saving || savingHoldings || !dirty}>
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
           {t("Guardar cambios", "Save changes")}
         </Button>
