@@ -102,6 +102,38 @@ function futureValue(monthly: number, annualReturn: number, months: number) {
   return monthly * ((Math.pow(1 + r, months) - 1) / r);
 }
 
+/** Desglose anual de intereses vs capital de una hipoteca francesa. */
+function amortizationByYear(balance: number, annualRate: number, payment: number) {
+  const r = annualRate / 100 / 12;
+  const rows: { year: number; label: string; interest: number; principal: number; balance: number }[] = [];
+  if (balance <= 0 || payment <= 0 || payment <= balance * r) return rows;
+  let b = balance;
+  let year = 1;
+  const startYear = new Date().getFullYear();
+  while (b > 0 && year <= 40) {
+    let interest = 0;
+    let principal = 0;
+    for (let m = 0; m < 12 && b > 0; m++) {
+      const i = b * r;
+      const p = Math.min(b, payment - i);
+      interest += i;
+      principal += p;
+      b -= p;
+    }
+    rows.push({
+      year,
+      label: String(startYear + year - 1),
+      interest: Math.round(interest),
+      principal: Math.round(principal),
+      balance: Math.max(0, Math.round(b)),
+    });
+    year += 1;
+  }
+  return rows;
+}
+
+
+
 /** Puntaje de salud de la hipoteca (0-100). */
 function healthScore(balance: number, rate: number, payment: number, income: number) {
   if (!balance || !payment) return 0;
