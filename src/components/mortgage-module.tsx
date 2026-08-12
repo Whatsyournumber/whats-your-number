@@ -26,6 +26,7 @@ import {
   YAxis,
 } from "recharts";
 
+import houseImg from "@/assets/mortgage-house.jpg";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
