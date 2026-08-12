@@ -150,7 +150,7 @@ function sum(list: Tx[]) {
 function Gastos() {
   const t = useT();
   const presets = useMemo(() => buildPresets(t), [t]);
-  const { profile } = useProfile();
+  const { profile, save } = useProfile();
   const currency = profile.currency || "EUR";
   const fmt = (n: number) => money(Math.round(n), currency);
   const fmtCompact = (n: number) => compact(n, currency);
