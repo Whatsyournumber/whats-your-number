@@ -221,3 +221,34 @@ export function convertProfileCurrency<T extends Record<string, unknown>>(profil
 /** Reconvierte una lista de importes sueltos (p. ej. gastos fijos locales). */
 export const convertMoneyValue = (value: number, from: string, to: string) =>
   roundForCurrency(convertAmount(value, from, to));
+
+/**
+ * Descarga las tasas de mercado del día (base USD) y las aplica antes de
+ * convertir. Si ya se refrescaron hace menos de 1h, reutiliza las cargadas.
+ */
+let ratesPromise: Promise<void> | null = null;
+let lastFetch = 0;
+
+export async function ensureLiveRates(force = false): Promise<boolean> {
+  const fresh = Date.now() - lastFetch < 1000 * 60 * 60;
+  if (!force && fresh && liveUpdatedAt) return true;
+  if (!ratesPromise) {
+    ratesPromise = (async () => {
+      try {
+        const res = await fetch("https://open.er-api.com/v6/latest/USD");
+        if (!res.ok) return;
+        const json = (await res.json()) as { rates?: Record<string, number>; time_last_update_utc?: string };
+        if (json.rates) {
+          setLiveRates(json.rates, json.time_last_update_utc);
+          lastFetch = Date.now();
+        }
+      } catch {
+        /* sin red: se usan las tasas de respaldo */
+      } finally {
+        ratesPromise = null;
+      }
+    })();
+  }
+  await ratesPromise;
+  return Boolean(liveUpdatedAt);
+}
