@@ -1,16 +1,36 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Users, CreditCard, FileText, TrendingUp } from "lucide-react";
+import { Users, CreditCard, FileText, TrendingUp, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { KpiCard } from "@/components/kpi-card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useRoles } from "@/hooks/use-role";
+import {
+  adminDeletePromoCode,
+  adminDeletePromoRedemption,
+  adminDeleteSubscription,
+  adminDeleteUser,
+} from "@/lib/admin.functions";
+
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
