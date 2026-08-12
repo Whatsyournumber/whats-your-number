@@ -436,6 +436,23 @@ export function StatementImporter() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Panel title={t("Archivos importados", "Imported files")} description={t("Historial de estados de cuenta procesados", "History of processed statements")}>
+          {pending.length > 0 && (
+            <div className="mb-3 flex items-center gap-2 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
+              <p className="text-xs text-muted-foreground">
+                {pendingProgress ??
+                  t(`${pending.length} archivos sin analizar`, `${pending.length} files not analyzed yet`)}
+              </p>
+              <Button
+                size="sm"
+                className="ml-auto gap-2 rounded-full text-xs"
+                disabled={Boolean(pendingProgress)}
+                onClick={() => void processPending()}
+              >
+                {pendingProgress ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
+                {t("Analizar pendientes", "Analyze pending")}
+              </Button>
+            </div>
+          )}
           {statementsQuery.isLoading ? (
             <p className="text-sm text-muted-foreground">{t("Cargando…", "Loading…")}</p>
           ) : statements.length === 0 ? (
