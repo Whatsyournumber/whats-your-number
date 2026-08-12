@@ -1238,6 +1238,9 @@ function CityDetail({
     { name: t("Alimentación", "Food"), value: b.food, color: "var(--color-chart-2)" },
     { name: t("Transporte", "Transportation"), value: b.transport, color: "var(--color-chart-3)" },
     { name: t("Salud", "Healthcare"), value: b.healthcare, color: "var(--color-chart-4)" },
+    ...(b.education > 0
+      ? [{ name: t("Educación", "Education"), value: b.education, color: "var(--color-chart-6)" }]
+      : []),
     { name: t("Impuestos", "Taxes"), value: taxes, color: "var(--color-chart-5)" },
     { name: t("Ocio", "Entertainment"), value: b.entertainment, color: "var(--color-chart-2)" },
     { name: t("Ahorro potencial", "Potential savings"), value: Math.max(0, r.savings), color: "var(--color-positive)" },
@@ -1280,6 +1283,9 @@ function CityDetail({
               <Stat icon="🍽" label={t("Alimentación", "Food")} value={fmt(b.food)} />
               <Stat icon="🚗" label={t("Transporte", "Transport")} value={fmt(b.transport)} />
               <Stat icon="🏥" label={t("Salud", "Healthcare")} value={fmt(b.healthcare)} sub={`${c.healthcareScore}/100`} />
+              {b.education > 0 && (
+                <Stat icon="🎓" label={t("Educación", "Education")} value={fmt(b.education)} sub={`${c.schools}/100`} />
+              )}
             </div>
           </div>
 
