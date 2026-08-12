@@ -13,7 +13,7 @@ import {
 import { es } from "date-fns/locale";
 import { BarChart3, CalendarIcon, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { categorizeTx } from "@/lib/categorize";
+import { buildTravelDays, categorizeTx, categorizeTxWithTravel } from "@/lib/categorize";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { translateCategory, translateFixedName } from "@/lib/i18n-data";
 import type { DateRange } from "react-day-picker";
