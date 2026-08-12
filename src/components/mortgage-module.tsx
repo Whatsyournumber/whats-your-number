@@ -382,7 +382,7 @@ export function MortgageModule() {
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-positive/10">
               <Home className="h-5 w-5 text-positive" />
             </span>
-            <h2 className="text-lg font-semibold">{t("Tu hipoteca", "Your mortgage")}</h2>
+            <h2 className="text-lg font-semibold">{t("Análisis de hipoteca", "Mortgage analysis")}</h2>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <div>
