@@ -13,6 +13,7 @@ import {
   Tooltip,
   XAxis,
   YAxis,
+  ReferenceLine,
 } from "recharts";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
