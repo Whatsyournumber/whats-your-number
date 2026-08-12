@@ -189,22 +189,20 @@ function Dashboard() {
           <KpiCard
             label={t("Patrimonio neto", "Net worth")}
             value={fmt(current.netWorth)}
-            compactValue={fmtCompact(current.netWorth)}
             {...(hasHistory ? { delta: delta(current.netWorth, previous.netWorth), hint: t("vs mes anterior", "vs last month") } : {})}
             icon={Wallet}
             accent
             index={0}
           />
         </Link>
-        <KpiCard label={t("Ingresos", "Income")} value={fmt(current.income)} compactValue={fmtCompact(current.income)} {...(hasHistory ? { delta: delta(current.income, previous.income) } : {})} icon={Banknote} index={1} />
-        <KpiCard label={t("Gastos", "Expenses")} value={fmt(current.expenses)} compactValue={fmtCompact(current.expenses)} {...(hasHistory ? { delta: delta(current.expenses, previous.expenses) } : {})} inverse icon={TrendingUp} index={2} />
-        <KpiCard label={t("Ahorro", "Savings")} value={fmt(current.savings)} compactValue={fmtCompact(current.savings)} {...(hasHistory ? { delta: delta(current.savings, previous.savings) } : {})} icon={PiggyBank} index={3} />
+        <KpiCard label={t("Ingresos", "Income")} value={fmt(current.income)} {...(hasHistory ? { delta: delta(current.income, previous.income) } : {})} icon={Banknote} index={1} />
+        <KpiCard label={t("Gastos", "Expenses")} value={fmt(current.expenses)} {...(hasHistory ? { delta: delta(current.expenses, previous.expenses) } : {})} inverse icon={TrendingUp} index={2} />
+        <KpiCard label={t("Ahorro", "Savings")} value={fmt(current.savings)} {...(hasHistory ? { delta: delta(current.savings, previous.savings) } : {})} icon={PiggyBank} index={3} />
         <KpiCard label={t("Tasa de ahorro", "Savings rate")} value={`${savingsRate.toFixed(0)}%`} {...(hasHistory ? { delta: savingsRate - prevRate } : {})} icon={ArrowUpRight} index={4} />
         <Link to="/hipoteca" className="block transition-transform hover:-translate-y-0.5">
           <KpiCard
             label={t("Hipoteca", "Mortgage")}
             value={fmt(mortgageBalance)}
-            compactValue={fmtCompact(mortgageBalance)}
             hint={mortgageHint}
             inverse
             icon={Home}
@@ -244,15 +242,11 @@ function Dashboard() {
               <p
                 className={cn(
                   "numeric mt-1 truncate text-ellipsis whitespace-nowrap font-semibold leading-tight",
-                  (fmt(targetNumber).length > 22 ? fmtCompact(targetNumber) : fmt(targetNumber)).length > 22
-                    ? "text-base"
-                    : (fmt(targetNumber).length > 22 ? fmtCompact(targetNumber) : fmt(targetNumber)).length > 16
-                      ? "text-lg"
-                      : "text-2xl",
+                  fmt(targetNumber).length > 22 ? "text-base" : fmt(targetNumber).length > 16 ? "text-lg" : "text-2xl",
                 )}
                 title={fmt(targetNumber)}
               >
-                {fmt(targetNumber).length > 22 ? fmtCompact(targetNumber) : fmt(targetNumber)}
+                {fmt(targetNumber)}
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
                 {t(`Para vivir con ${fmt(desiredIncome)} al mes`, `To live on ${fmt(desiredIncome)} a month`)}
