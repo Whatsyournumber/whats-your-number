@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { useAuth } from "@/hooks/use-auth";
+import { useFxRates } from "@/hooks/use-fx-rates";
 import { useProfile } from "@/hooks/use-profile";
 import { isExcludedTx } from "@/lib/categorize";
 import { convertAmount } from "@/lib/fx";
