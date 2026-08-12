@@ -158,7 +158,11 @@ function Gastos() {
   const { transactions, isLoading } = useTransactions();
   const fixed = useFixedExpenses();
   const categories = useCategories();
-  const categoryOf = (t: Tx) => categorizeTx(t, categories.rules);
+  const travelDays = useMemo(
+    () => buildTravelDays(transactions, categories.rules),
+    [transactions, categories.rules],
+  );
+  const categoryOf = (t: Tx) => categorizeTxWithTravel(t, categories.rules, travelDays);
   const [range, setRange] = usePersistedRange(() => buildPresets(t)[0]!.range());
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [detailCat, setDetailCat] = useState<string | null>(null);
