@@ -93,15 +93,6 @@ function RetiroContent() {
       <PageHeader eyebrow={t("Largo plazo", "Long term")} title="WhatsYournumber" subtitle={t("Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar.", "How much you have today and how much you will have when you stop working.")} />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <Link to="/patrimonio" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
-          <KpiCard
-            label={t("Cuánto tengo", "How much I have")}
-            value={fmt(investable)}
-            hint={t("Sin contar propiedades — solo activos que generan retorno", "Excluding properties — only assets that generate returns")}
-            accent
-            index={0}
-          />
-        </Link>
 
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -181,6 +172,17 @@ function RetiroContent() {
             </div>
           )}
         </motion.div>
+
+        <Link to="/patrimonio" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
+          <KpiCard
+            label={t("Cuánto tengo", "How much I have")}
+            value={fmt(investable)}
+            hint={t("Sin contar propiedades — solo activos que generan retorno", "Excluding properties — only assets that generate returns")}
+            accent
+            index={1}
+          />
+        </Link>
+
         <KpiCard label={t("Cómo voy", "How I'm doing")} value={`${progressPct.toFixed(1)}%`} hint={t("del capital objetivo", "of target capital")} index={2} />
         <Link to="/gastos" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
           <KpiCard label={t("Gastos mensuales", "Monthly expenses")} value={fmt(d.expenses)} hint={`${fmt(d.expenses * 12)} ${t("al año", "per year")}`} index={3} />
