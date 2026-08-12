@@ -174,8 +174,8 @@ function Stat({
 }: {
   label: string;
   value: string;
-  hint?: string;
-  tone?: "positive" | "negative";
+  hint?: string | undefined;
+  tone?: "positive" | "negative" | undefined;
 }) {
   return (
     <div className="rounded-2xl border border-border bg-elevated/40 p-3">
