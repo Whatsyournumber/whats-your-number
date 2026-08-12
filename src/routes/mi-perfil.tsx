@@ -18,14 +18,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { convertStoredFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useFxRates } from "@/hooks/use-fx-rates";
-import {
-  monthlyContributions,
-  newHolding,
-  useHoldings,
-  wealthTotals,
-  type Holding,
-} from "@/hooks/use-holdings";
 import { useT } from "@/hooks/use-language";
+
 import { useProfile, type Profile } from "@/hooks/use-profile";
 import {
   childrenOptions,
