@@ -11,7 +11,7 @@ import { extraCities } from "./lifestyle-cities-extra";
 import { passesStability, stabilityScore, type StabilityPref } from "./political-stability";
 import { northScore, pillarWeights, type NorthScore } from "./north-score";
 import { globalRankingScore } from "./global-rankings";
-import { nomadFriendly } from "./nomad-visas";
+import { nomadFriendly, nomadVisa } from "./nomad-visas";
 import barcelonaPhoto from "@/assets/city-barcelona-hd.jpg.asset.json";
 import cairoPhoto from "@/assets/city-cairo-nile.png.asset.json";
 import nairobiPhoto from "@/assets/city-nairobi.jpg.asset.json";
@@ -902,6 +902,25 @@ export function scoreCity(
   // Bonus adicional por calidad de vida objetiva de la ciudad.
   score += (c.qualityOfLife - 70) * 0.06;
 
+  // Objetivo "nómada digital": manda la regulación de visa nómada y el
+  // ranking de países más nomad-friendly, por encima del resto de pilares.
+  if (f.goal === "nomad") {
+    const visa = nomadVisa(c.country);
+    score = score * 0.5 + values.nomadvisa * 0.5;
+    if (!visa.exists) {
+      score *= 0.75; // sin visa de nómada: baja fuerte en el ranking
+    } else {
+      if (visa.friendliness >= 85) score *= 1.06;
+      else if (visa.friendliness >= 70) score *= 1.02;
+      if (visa.months >= 12 && visa.renewable) score *= 1.03;
+      // requisito de ingresos por encima de tu presupuesto: penaliza
+      if (f.budget > 0 && visa.incomeUsd > f.budget) {
+        const gap = (visa.incomeUsd - f.budget) / f.budget;
+        score *= clamp(100 - Math.min(20, gap * 40)) / 100;
+      }
+    }
+  }
+
   // Penalización proporcional cuando la ciudad se sale del presupuesto
   // (antes era un castigo plano que hundía ciudades por muy poco).
   if (cost > f.budget && f.budget > 0) {
@@ -941,6 +960,11 @@ export function rankCities(f: Filters, ctx: { netWorth: number; age: number; exp
     .map((c) => scoreCity(c, f, ctx))
     .sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
+      if (f.goal === "nomad") {
+        const na = nomadFriendly(a.city);
+        const nb = nomadFriendly(b.city);
+        if (nb !== na) return nb - na;
+      }
       // Desempates: primero el Your North Score puro, luego calidad de vida,
       // seguridad y por último menor costo.
       if (b.north.total !== a.north.total) return b.north.total - a.north.total;
