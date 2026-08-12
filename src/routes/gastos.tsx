@@ -13,7 +13,7 @@ import {
 import { es } from "date-fns/locale";
 import { BarChart3, CalendarIcon, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { categorizeTx } from "@/lib/categorize";
+import { buildTravelDays, categorizeTx, categorizeTxWithTravel } from "@/lib/categorize";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { translateCategory, translateFixedName } from "@/lib/i18n-data";
 import type { DateRange } from "react-day-picker";
@@ -158,7 +158,11 @@ function Gastos() {
   const { transactions, isLoading } = useTransactions();
   const fixed = useFixedExpenses();
   const categories = useCategories();
-  const categoryOf = (t: Tx) => categorizeTx(t, categories.rules);
+  const travelDays = useMemo(
+    () => buildTravelDays(transactions, categories.rules),
+    [transactions, categories.rules],
+  );
+  const categoryOf = (t: Tx) => categorizeTxWithTravel(t, categories.rules, travelDays);
   const [range, setRange] = usePersistedRange(() => buildPresets(t)[0]!.range());
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [detailCat, setDetailCat] = useState<string | null>(null);

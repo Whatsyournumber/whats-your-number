@@ -76,13 +76,18 @@ const MERCHANT_OVERRIDES: { hints: string[]; category: string }[] = [
     ],
   },
   {
+    category: "Marketing digital",
+    hints: ["linkedin"],
+  },
+  {
     category: "Apps",
     hints: [
       "tinder", "bumble", "inner circle", "faceapp", "unfold", "nebula", "wingman", "spliiit",
       "coursiv", "invideo", "vidiq", "zadarma", "workana", "gamma.app", "elevenlabs", "helium10",
-      "nightwatch", "ubersuggest", "zoho", "twilio", "sendgrid", "paddle.net", "linkedin",
+      "nightwatch", "ubersuggest", "zoho", "twilio", "sendgrid", "paddle.net",
     ],
   },
+
   {
     category: "Salud",
     hints: [
@@ -351,4 +356,61 @@ export function categorizeTx(t: CategorizableTx, custom: CategoryRule[] = []): s
 
   // Lo que no reconoce ninguna regla se agrupa como Otros.
   return "Otros";
+}
+
+/** Categorías que, durante un viaje, se consideran gasto del viaje. */
+const TRAVEL_ABSORBED = new Set(["Restaurantes", "Transporte"]);
+
+const dayKey = (d: Date) => d.toISOString().slice(0, 10);
+
+/**
+ * Días que forman parte de un viaje: se agrupan las fechas con gastos de "Viajes"
+ * (vuelos, hoteles…) uniendo huecos de hasta 3 días y añadiendo un día de margen.
+ */
+export function buildTravelDays(
+  txs: (CategorizableTx & { tx_date: string | null })[],
+  custom: CategoryRule[] = [],
+): Set<string> {
+  const seeds = [
+    ...new Set(
+      txs
+        .filter((t) => t.tx_date && categorizeTx(t, custom) === "Viajes")
+        .map((t) => t.tx_date!.slice(0, 10)),
+    ),
+  ].sort();
+
+  const days = new Set<string>();
+  if (seeds.length === 0) return days;
+
+  const DAY = 86_400_000;
+  const add = (from: Date, to: Date) => {
+    for (let d = from.getTime(); d <= to.getTime(); d += DAY) days.add(dayKey(new Date(d)));
+  };
+
+  let start = new Date(`${seeds[0]}T00:00:00Z`);
+  let end = start;
+  for (const s of seeds.slice(1)) {
+    const cur = new Date(`${s}T00:00:00Z`);
+    if (cur.getTime() - end.getTime() <= 3 * DAY) end = cur;
+    else {
+      add(new Date(start.getTime() - DAY), new Date(end.getTime() + DAY));
+      start = cur;
+      end = cur;
+    }
+  }
+  add(new Date(start.getTime() - DAY), new Date(end.getTime() + DAY));
+  return days;
+}
+
+/** Igual que categorizeTx, pero durante un viaje restaurantes y transporte suman a "Viajes". */
+export function categorizeTxWithTravel(
+  t: CategorizableTx & { tx_date?: string | null },
+  custom: CategoryRule[] = [],
+  travelDays?: Set<string>,
+): string {
+  const cat = categorizeTx(t, custom);
+  if (travelDays && t.tx_date && travelDays.has(t.tx_date.slice(0, 10)) && TRAVEL_ABSORBED.has(cat)) {
+    return "Viajes";
+  }
+  return cat;
 }
