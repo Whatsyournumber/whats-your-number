@@ -921,6 +921,18 @@ export function scoreCity(
     }
   }
 
+  // Objetivo "carrera": mandan los países/ciudades que mejor pagan.
+  // Mezclamos salario neto y poder adquisitivo con el mercado laboral.
+  if (f.goal === "career") {
+    const pay = clamp(values.salary * 0.6 + values.purchasingPower * 0.25 + values.jobs * 0.15);
+    score = score * 0.45 + pay * 0.55;
+    const net = netSalary(c);
+    if (net >= 4500) score *= 1.08;
+    else if (net >= 3200) score *= 1.04;
+    else if (net < 1500) score *= 0.85;
+  }
+
+
   // Penalización proporcional cuando la ciudad se sale del presupuesto
   // (antes era un castigo plano que hundía ciudades por muy poco).
   if (cost > f.budget && f.budget > 0) {
