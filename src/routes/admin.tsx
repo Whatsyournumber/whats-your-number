@@ -296,6 +296,7 @@ function AdminPage() {
                     <TableHead>Onboarding</TableHead>
                     <TableHead>Plan</TableHead>
                     <TableHead>Alta</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -315,16 +316,26 @@ function AdminPage() {
                           <Badge variant={s ? "default" : "outline"}>{s ? s.product_id.replace("_plan", "") : "free"}</Badge>
                         </TableCell>
                         <TableCell className="numeric text-muted-foreground">{fmtDate(u.created_at)}</TableCell>
+                        <TableCell className="text-right">
+                          <DeleteAction
+                            title="Borrar usuario"
+                            description={`Se eliminará la cuenta de ${u.email ?? u.id} y todos sus datos (perfil, gastos, estados de cuenta, suscripciones). Esta acción no se puede deshacer.`}
+                            onConfirm={() =>
+                              runDelete(() => adminDeleteUser({ data: { userId: u.id } }), "Usuario eliminado")
+                            }
+                          />
+                        </TableCell>
                       </TableRow>
                     );
                   })}
                   {filteredUsers.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center text-muted-foreground">
+                      <TableCell colSpan={8} className="text-center text-muted-foreground">
                         Sin resultados
                       </TableCell>
                     </TableRow>
                   )}
+
                 </TableBody>
               </Table>
             </div>
