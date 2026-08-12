@@ -693,7 +693,69 @@ function SuggestedForYou({
         </div>
       )}
 
+      <div className="mb-4 rounded-xl border border-border/60 bg-elevated/30 p-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+            {t("Mis ciudades", "My cities")}
+          </p>
+          {picks.length === 0 && (
+            <span className="text-[11px] text-muted-foreground">
+              {t("Escribe hasta 3 (ej. Madrid, Panamá, Sídney)", "Type up to 3 (e.g. Madrid, Panama, Sydney)")}
+            </span>
+          )}
+          {picks.map((id) => {
+            const c = all.find((r) => r.city.id === id)?.city;
+            if (!c) return null;
+            return (
+              <span
+                key={id}
+                className="inline-flex items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-2.5 py-1 text-[11px]"
+              >
+                {c.name}
+                <button type="button" onClick={() => setPicks((p) => p.filter((x) => x !== id))} aria-label={`Quitar ${c.name}`}>
+                  <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                </button>
+              </span>
+            );
+          })}
+          {picks.length > 0 && (
+            <Button size="sm" variant="ghost" className="h-7 text-[11px]" onClick={() => setPicks([])}>
+              {t("Usar las sugeridas", "Use suggested")}
+            </Button>
+          )}
+        </div>
+        {picks.length < 3 && (
+          <div className="relative mt-2">
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={t("Buscar ciudad…", "Search city…")}
+              className="h-8 text-xs"
+            />
+            {matches.length > 0 && (
+              <div className="absolute z-20 mt-1 w-full overflow-hidden rounded-lg border border-border bg-popover shadow-lg">
+                {matches.map((r) => (
+                  <button
+                    key={r.city.id}
+                    type="button"
+                    className="flex w-full items-center justify-between px-3 py-2 text-left text-xs hover:bg-elevated"
+                    onClick={() => {
+                      setPicks((p) => [...p, r.city.id].slice(0, 3));
+                      setQuery("");
+                    }}
+                  >
+                    <span>{r.city.name}</span>
+                    <span className="text-muted-foreground">{r.city.country}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
       <div className="grid gap-3 sm:grid-cols-3">
+
         {top.map((r, i) => {
           const st = stabilityBadge(r.city.country, t);
           return (
