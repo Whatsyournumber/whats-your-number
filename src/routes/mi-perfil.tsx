@@ -59,10 +59,9 @@ export const Route = createFileRoute("/mi-perfil")({
 function MiPerfil() {
   const t = useT();
   const { profile, isLoading, save, saving } = useProfile();
-  const { holdings, isLoading: loadingHoldings, saveAll, saving: savingHoldings } = useHoldings();
   const navigate = useNavigate();
   const [form, setForm] = useState<Profile>(profile);
-  const [rows, setRows] = useState<Holding[]>([]);
+
   const [dirty, setDirty] = useState(false);
   // Tasas del día: necesarias para reconvertir los importes al cambiar de moneda.
   useFxRates();
