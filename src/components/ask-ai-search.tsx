@@ -91,8 +91,13 @@ Gasto por categoría (histórico importado):
 ${cats || "- sin datos"}`;
   };
 
+  const [lastMs, setLastMs] = useState<number | null>(null);
+  const startedAt = useRef(0);
+
   const ask = useMutation({
     mutationFn: async (question: string) => {
+      startedAt.current = Date.now();
+      setLastMs(null);
       const history = messages.slice(-8).map((m) => ({ role: m.role, content: m.content }));
       const res = await askAdvisor({
         data: { question, lang: lang === "en" ? "en" : "es", context: buildContext(), environment: getPaddleEnvironment(), history },
