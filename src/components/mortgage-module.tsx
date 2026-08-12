@@ -195,7 +195,7 @@ export function MortgageModule() {
     if (!balance || s.balance) return;
     const rate = mRate || s.rate;
     const term = mTerm || (housing > 0 ? termFor(balance, rate, housing) : s.term);
-    const payment = paymentFor(balance, rate, term * 12);
+    const payment = Math.round(paymentFor(balance, rate, term * 12));
     setS((prev) => {
       const next = { ...prev, balance, rate, term, payment };
       try {
@@ -211,8 +211,8 @@ export function MortgageModule() {
   // Recalcula la cuota cuando cambian saldo, tasa o plazo (no cuando el usuario la editó directamente).
   useEffect(() => {
     if (!ready || !s.balance) return;
-    const nextPayment = paymentFor(s.balance, s.rate, s.term * 12);
-    if (Math.abs(nextPayment - s.payment) > 0.01) {
+    const nextPayment = Math.round(paymentFor(s.balance, s.rate, s.term * 12));
+    if (Math.abs(nextPayment - s.payment) >= 1) {
       setS((prev) => {
         const next = { ...prev, payment: nextPayment };
         try {
