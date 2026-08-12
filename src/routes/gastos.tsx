@@ -243,7 +243,7 @@ function Gastos() {
   // Categorías con gastos visibles por defecto; toggle para ver vacías
   const [showEmptyCategories, setShowEmptyCategories] = useState(false);
   const detailRows = useMemo(() => {
-    // Las categorías creadas por el usuario siempre se ven y van arriba, aunque estén en 0.
+    // Las categorías base se muestran primero; las creadas por el usuario al final.
     const customNames = new Set(categories.items.map((i) => i.name.trim()).filter(Boolean));
     const map = new Map(byCategory.map((c) => [c.name, c]));
     const ordered: { name: string; amount: number; items: Tx[]; fixed?: boolean }[] = [];
@@ -256,7 +256,7 @@ function Gastos() {
     const all = [...ordered, ...rest].sort((a, b) => b.amount - a.amount);
     const custom = all.filter((r) => customNames.has(r.name));
     const others = all.filter((r) => !customNames.has(r.name));
-    return [...custom, ...others];
+    return [...others, ...custom];
   }, [byCategory, categories.names, categories.items, showEmptyCategories]);
 
 
