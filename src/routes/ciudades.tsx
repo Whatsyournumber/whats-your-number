@@ -429,24 +429,31 @@ function LifestyleSimulatorContent() {
         )}
       />
 
-      <div className="surface overflow-hidden rounded-2xl border border-border">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/70 bg-elevated/30 px-4 py-2.5">
-          <div className="flex items-center gap-2">
-            <SlidersHorizontal className="h-3.5 w-3.5 text-primary" />
-            <p className="text-[11px] font-semibold uppercase tracking-wider">{t("Filtros", "Filters")}</p>
-            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
-              {ranked.length} {t("ciudades", "cities")}
-            </span>
-          </div>
+      <div className="surface overflow-hidden rounded-3xl border border-border/80 shadow-sm">
+        {/* Header */}
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 bg-elevated/20 px-5 py-4">
           <div className="flex items-center gap-3">
-            <button
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <SlidersHorizontal className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold">{t("Filtros", "Filters")}</p>
+              <p className="text-[11px] text-muted-foreground">
+                {ranked.length} {t("ciudades coinciden", "matching cities")}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
               type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => setFilters((f) => ({ ...defaultFilters, budget: f.budget }))}
-              className="flex items-center gap-1 text-[10px] text-muted-foreground transition-colors hover:text-foreground"
+              className="h-8 gap-1.5 rounded-lg text-[11px] text-muted-foreground hover:text-foreground"
             >
-              <RotateCcw className="h-3 w-3" />
+              <RotateCcw className="h-3.5 w-3.5" />
               {t("Reiniciar", "Reset")}
-            </button>
+            </Button>
             <TooltipProvider delayDuration={100}>
               <MethodologyTooltip t={t} filters={filters} />
               <SourcesTooltip t={t} />
@@ -454,6 +461,7 @@ function LifestyleSimulatorContent() {
           </div>
         </div>
 
+        {/* Buscador de ciudades */}
         <CitySearchBar
           all={allCities}
           picks={picks}
@@ -463,12 +471,10 @@ function LifestyleSimulatorContent() {
           t={t}
         />
 
-
-
-
-        <div className="grid divide-y divide-border/60 lg:grid-cols-[1.15fr_1.35fr_1fr] lg:divide-x lg:divide-y-0">
+        {/* Grid de filtros */}
+        <div className="grid divide-y divide-border/50 lg:grid-cols-[1fr_1fr_1fr] lg:divide-x lg:divide-y-0">
           {/* Dónde */}
-          <FilterGroup title={t("Dónde", "Where")}>
+          <FilterGroup title={t("Dónde", "Where")} color="chart-4">
             <SelectFilter
               label={t("Región", "Region")}
               value={filters.region}
@@ -494,29 +500,28 @@ function LifestyleSimulatorContent() {
                 { value: "cold", label: t("Frío", "Cold"), icon: "❄️" },
               ]}
             />
-            <div className="col-span-2">
-              <SelectFilter
-                label={t("Estabilidad política", "Political stability")}
-                value={filters.stability}
-                onChange={(v) => set("stability", v)}
-                options={[
-                  { value: "any", label: t("Indiferente", "Any"), icon: "🌍" },
-                  { value: "medium", label: t("Media o superior", "Medium or higher"), icon: "🟡" },
-                  { value: "high", label: t("Alta", "High"), icon: "🟢" },
-                  { value: "veryhigh", label: t("Muy alta", "Very high"), icon: "🛡️" },
-                ]}
-              />
-            </div>
+            <SelectFilter
+              label={t("Estabilidad política", "Political stability")}
+              value={filters.stability}
+              onChange={(v) => set("stability", v)}
+              fullWidth
+              options={[
+                { value: "any", label: t("Indiferente", "Any"), icon: "🌍" },
+                { value: "medium", label: t("Media o superior", "Medium or higher"), icon: "🟡" },
+                { value: "high", label: t("Alta", "High"), icon: "🟢" },
+                { value: "veryhigh", label: t("Muy alta", "Very high"), icon: "🛡️" },
+              ]}
+            />
           </FilterGroup>
 
           {/* Dinero */}
-          <FilterGroup title={t("Dinero", "Money")}>
-            <div className="col-span-2">
+          <FilterGroup title={t("Dinero", "Money")} color="positive">
+            <div className="col-span-2 rounded-2xl border border-border/60 bg-elevated/20 p-3">
               <div className="flex items-center justify-between gap-2">
-                <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/80">
                   {t("Presupuesto mensual", "Monthly budget")}
                 </p>
-                <p className="numeric text-xs font-semibold text-primary">
+                <p className="numeric rounded-full bg-positive/10 px-2 py-0.5 text-xs font-semibold text-positive">
                   {fmt(filters.budget)}
                   {filters.budget >= 15000 && "+"}
                 </p>
@@ -529,6 +534,10 @@ function LifestyleSimulatorContent() {
                 value={[filters.budget]}
                 onValueChange={([v]) => set("budget", v ?? 1000)}
               />
+              <div className="mt-2 flex justify-between text-[10px] text-muted-foreground/70">
+                <span>{fmt(1000)}</span>
+                <span>{fmt(15000)}+</span>
+              </div>
             </div>
             <SelectFilter
               label={t("Cómo vivir", "Comfort level")}
@@ -555,6 +564,7 @@ function LifestyleSimulatorContent() {
               label={t("Ingreso por hora", "Hourly income")}
               value={filters.salary}
               onChange={(v) => set("salary", v)}
+              fullWidth
               options={[
                 { value: "any", label: t("Indiferente", "Doesn't matter"), icon: "🌍" },
                 { value: "under_25", label: t("< $25/h", "Under $25/hr"), icon: "💵" },
@@ -564,11 +574,10 @@ function LifestyleSimulatorContent() {
                 { value: "100_plus", label: t("$100+/h", "$100+/hr"), icon: "👑" },
               ]}
             />
-
           </FilterGroup>
 
           {/* Tú */}
-          <FilterGroup title={t("Tú", "You")}>
+          <FilterGroup title={t("Tú", "You")} color="primary">
             <SelectFilter
               label={t("Etapa", "Life stage")}
               value={filters.stage}
@@ -592,24 +601,55 @@ function LifestyleSimulatorContent() {
                 { value: "neutral", label: t("Neutral", "Neutral"), icon: "★★★" },
               ]}
             />
-            <div className="col-span-2">
-              <SelectFilter
-                label={t("Objetivo", "Goal")}
-                value={filters.goal}
-                onChange={(v) => set("goal", v)}
-                options={[
-                  { value: "save", label: t("Ahorrar más", "Save more"), icon: "💰" },
-                  { value: "lifestyle", label: t("Estilo de vida", "Lifestyle"), icon: "🌴" },
-                  { value: "retire", label: t("Retirarme antes", "Retire earlier"), icon: "🚀" },
-                  { value: "family", label: t("Familia", "Family"), icon: "👨‍👩‍👧" },
-                  { value: "career", label: t("Carrera", "Career"), icon: "💼" },
-                  { value: "nomad", label: t("Nómada digital", "Digital nomad"), icon: "🌍" },
-                ]}
-              />
-            </div>
+            <SelectFilter
+              label={t("Objetivo", "Goal")}
+              value={filters.goal}
+              onChange={(v) => set("goal", v)}
+              fullWidth
+              options={[
+                { value: "save", label: t("Ahorrar más", "Save more"), icon: "💰" },
+                { value: "lifestyle", label: t("Estilo de vida", "Lifestyle"), icon: "🌴" },
+                { value: "retire", label: t("Retirarme antes", "Retire earlier"), icon: "🚀" },
+                { value: "family", label: t("Familia", "Family"), icon: "👨‍👩‍👧" },
+                { value: "career", label: t("Carrera", "Career"), icon: "💼" },
+                { value: "nomad", label: t("Nómada digital", "Digital nomad"), icon: "🌍" },
+              ]}
+            />
           </FilterGroup>
         </div>
+
+        {/* Footer */}
+        <div className="flex flex-col gap-3 border-t border-border/60 bg-elevated/20 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3 sm:items-center">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <Sparkles className="h-3.5 w-3.5" />
+            </div>
+            <div>
+              <p className="text-sm font-medium">{t("Resultados en tiempo real", "Real-time results")}</p>
+              <p className="text-[11px] text-muted-foreground">
+                {t(
+                  "Ajusta tus preferencias para encontrar tu ciudad ideal.",
+                  "Adjust your preferences to find your ideal city.",
+                )}
+              </p>
+            </div>
+          </div>
+          <Button
+            size="sm"
+            className="h-9 gap-2 rounded-xl px-4 text-[11px] font-medium"
+            onClick={() => {
+              const el = document.getElementById("city-results");
+              el?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+          >
+            {t("Ver resultados", "View results")}
+            <ArrowLeftRight className="h-3.5 w-3.5 rotate-180" />
+          </Button>
+        </div>
       </div>
+
+      {/* Anchor para scroll a resultados */}
+      <div id="city-results" />
 
 
       <SuggestedForYou
