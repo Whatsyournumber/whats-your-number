@@ -731,64 +731,80 @@ function Gastos() {
         </Panel>
       </div>
 
-      <Panel variant="minimal" title={t("Gastos fijos mensuales", "Monthly fixed expenses")} description={t("Edita el monto mensual; abajo se muestra lo que representa en el periodo seleccionado.", "Edit the monthly amount; below you see what it represents for the selected period.")}>
-
-        <div className="space-y-2">
-          {fixed.items.map((item) => (
-            <div key={item.id} className="flex flex-wrap items-center gap-2 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
-              <Input
-                value={translateFixedName(item.name, lang)}
-                onChange={(e) => fixed.update(item.id, { name: e.target.value })}
-                className="h-8 w-full max-w-[260px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
-              />
-              <div className="ml-auto flex items-center gap-2">
-                <div className="flex flex-col items-end">
-                  <NumberInput
-                    value={item.amount}
-                    onChange={(v) => fixed.update(item.id, { amount: v })}
-                    className="h-8 w-28 text-right text-sm"
+      <Collapsible open={fixedOpen} onOpenChange={setFixedOpen}>
+        <Panel
+          variant="minimal"
+          title={t("Gastos fijos mensuales", "Monthly fixed expenses")}
+          description={t("Edita el monto mensual; abajo se muestra lo que representa en el periodo seleccionado.", "Edit the monthly amount; below you see what it represents for the selected period.")}
+          actions={
+            <CollapsibleTrigger asChild>
+              <Button size="sm" variant="ghost" className="h-8 w-8 p-0" aria-label={fixedOpen ? t("Colapsar gastos fijos", "Collapse fixed expenses") : t("Expandir gastos fijos", "Expand fixed expenses")}>
+                <ChevronDown className={cn("h-4 w-4 transition-transform duration-200", !fixedOpen && "-rotate-90")} />
+              </Button>
+            </CollapsibleTrigger>
+          }
+        >
+          <CollapsibleContent>
+            <div className="space-y-2">
+              {fixed.items.map((item) => (
+                <div key={item.id} className="flex flex-wrap items-center gap-2 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
+                  <Input
+                    value={translateFixedName(item.name, lang)}
+                    onChange={(e) => fixed.update(item.id, { name: e.target.value })}
+                    className="h-8 w-full max-w-[260px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
                   />
-                  <span className="numeric mt-0.5 text-[11px] text-muted-foreground">
-                    {isLongRange
-                      ? `${fmt(item.amount * monthsInRange)} · ${t(`${monthsInRange} meses`, `${monthsInRange} months`)}`
-                      : `${fmt(item.amount)} ${t("en este periodo", "in this period")}`}
-                  </span>
+                  <div className="ml-auto flex items-center gap-2">
+                    <div className="flex flex-col items-end">
+                      <NumberInput
+                        value={item.amount}
+                        onChange={(v) => fixed.update(item.id, { amount: v })}
+                        className="h-8 w-28 text-right text-sm"
+                      />
+                      <span className="numeric mt-0.5 text-[11px] text-muted-foreground">
+                        {isLongRange
+                          ? `${fmt(item.amount * monthsInRange)} · ${t(`${monthsInRange} meses`, `${monthsInRange} months`)}`
+                          : `${fmt(item.amount)} ${t("en este periodo", "in this period")}`}
+                      </span>
+                    </div>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-8 w-8 text-muted-foreground hover:text-negative"
+                      onClick={() => fixed.remove(item.id)}
+                      aria-label={`${t("Eliminar", "Delete")} ${item.name}`}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <div className="w-full">
+                    <div className="h-1 overflow-hidden rounded-full bg-muted">
+                      <div
+                        className="h-full rounded-full bg-chart-3"
+                        style={{ width: `${fixed.total > 0 ? (item.amount / fixed.total) * 100 : 0}%` }}
+                      />
+                    </div>
+                  </div>
                 </div>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-8 w-8 text-muted-foreground hover:text-negative"
-                  onClick={() => fixed.remove(item.id)}
-                  aria-label={`${t("Eliminar", "Delete")} ${item.name}`}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-              <div className="w-full">
-                <div className="h-1 overflow-hidden rounded-full bg-muted">
-                  <div
-                    className="h-full rounded-full bg-chart-3"
-                    style={{ width: `${fixed.total > 0 ? (item.amount / fixed.total) * 100 : 0}%` }}
-                  />
-                </div>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
-        <div className="mt-3 flex flex-wrap items-center gap-3">
-          <Button size="sm" variant="outline" className="gap-2" onClick={fixed.add}>
-            <Plus className="h-4 w-4" /> {t("Añadir gasto fijo", "Add fixed expense")}
-          </Button>
-          <div className="ml-auto flex flex-col items-end">
-            <span className="numeric text-sm font-semibold">{t("Total", "Total")} {fmt(fixed.total)}{t("/mes", "/mo")}</span>
-            <span className="numeric text-[11px] text-muted-foreground">
-              {isLongRange
-                ? `${fmt(fixed.total * monthsInRange)} · ${t(`${monthsInRange} meses en el periodo`, `${monthsInRange} months in the period`)}`
-                : `${fmt(fixed.total)} ${t("en este periodo", "in this period")}`}
-            </span>
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              <Button size="sm" variant="outline" className="gap-2" onClick={fixed.add}>
+                <Plus className="h-4 w-4" /> {t("Añadir gasto fijo", "Add fixed expense")}
+              </Button>
+            </div>
+          </CollapsibleContent>
+          <div className="mt-3 flex flex-wrap items-center gap-3 border-t border-border/60 pt-3">
+            <div className="ml-auto flex flex-col items-end">
+              <span className="numeric text-sm font-semibold">{t("Total", "Total")} {fmt(fixed.total)}{t("/mes", "/mo")}</span>
+              <span className="numeric text-[11px] text-muted-foreground">
+                {isLongRange
+                  ? `${fmt(fixed.total * monthsInRange)} · ${t(`${monthsInRange} meses en el periodo`, `${monthsInRange} months in the period`)}`
+                  : `${fmt(fixed.total)} ${t("en este periodo", "in this period")}`}
+              </span>
+            </div>
           </div>
-        </div>
-      </Panel>
+        </Panel>
+      </Collapsible>
 
 
 
