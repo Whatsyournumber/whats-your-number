@@ -161,17 +161,14 @@ function MiPerfil() {
     });
   };
 
-  // El detalle de patrimonio manda: los totales alimentan dashboard, retiro, portafolio y tu número.
-  const totals = wealthTotals(rows);
-  const merged: Profile = { ...form, ...totals };
+  const merged: Profile = { ...form };
   const preview = buildDataset(merged);
-  const monthlyInvest = monthlyContributions(rows);
 
   const onSave = async () => {
     const { completed: _c, ...rest } = merged;
     try {
-      await saveAll(rows);
       await save({ ...rest, completed: true });
+
       setDirty(false);
       toast.success(t("Cambios guardados", "Changes saved"), {
         description: t("Recalculamos todos los números de tus pestañas.", "We recalculated every number across your tabs."),
