@@ -116,6 +116,7 @@ ${cats || "- sin datos"}`;
               : t("No pude responder ahora mismo. Inténtalo de nuevo.", "I couldn't answer right now. Please try again."),
         },
       ]),
+    onSettled: () => setLastMs(Date.now() - startedAt.current),
   });
 
   const send = (text: string) => {
