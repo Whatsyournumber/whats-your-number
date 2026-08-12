@@ -84,14 +84,16 @@ export function useTransactions() {
       if (error) throw error;
       const rows = (data ?? []).map((t) => ({ ...t, amount: Number(t.amount) }));
       // El mismo movimiento puede llegar con nombres distintos desde varios EEFF
-      // ("Sixt" vs "SIXT RENT A CAR"). Su identidad financiera es
-      // fecha + comercio (primera palabra) + monto.
-      const seen = new Set<string>();
+      // ("SUM*ISTAWOOD SRL" vs "Istawood"). Con la misma fecha y el mismo monto
+      // se considera duplicado si los nombres apuntan al mismo comercio.
+      const kept = new Map<string, string[]>();
       const unique = rows.filter((t) => {
         const amount = Math.abs(Number(t.amount)).toFixed(2);
-        const key = `${t.tx_date}|${merchantKey(t.merchant) || normalizeTransactionText(t.merchant)}|${amount}`;
-        if (seen.has(key)) return false;
-        seen.add(key);
+        const bucket = `${t.tx_date}|${amount}`;
+        const names = kept.get(bucket) ?? [];
+        if (names.some((n) => sameMerchant(n, t.merchant))) return false;
+        names.push(t.merchant ?? "");
+        kept.set(bucket, names);
         return true;
       });
       return unique as Tx[];
