@@ -1248,13 +1248,13 @@ function CityDetail({
 
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto p-0">
-        <div className="relative aspect-[16/7] w-full overflow-hidden">
+      <DialogContent className="flex max-h-[90vh] max-w-3xl flex-col overflow-hidden p-0">
+        <div className="relative aspect-[16/7] w-full flex-shrink-0 overflow-hidden">
           <img src={c.photo} alt={c.name} className="absolute inset-0 h-full w-full object-cover object-center" />
           <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-background/10 to-transparent" />
         </div>
 
-        <div className="space-y-6 p-5">
+        <div className="flex-1 space-y-6 overflow-y-auto p-5">
           <DialogHeader>
             <DialogTitle className="text-2xl">{c.name}</DialogTitle>
             <DialogDescription>
