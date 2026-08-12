@@ -282,9 +282,17 @@ function PortafolioContent() {
         )}
       </Panel>
 
+      <HoldingsManager
+        kinds={["etf", "stock", "crypto", "retirement"]}
+        title={t("Mis inversiones", "My investments")}
+        description={t(
+          "Añade tus posiciones con ticker y cantidad: valoramos con precio real y actualizamos tu patrimonio automáticamente.",
+          "Add your positions with ticker and quantity: we value them at live prices and update your net worth automatically.",
+        )}
+      />
 
+      <Panel title={t("Resumen de posiciones", "Positions summary")}>
 
-      <Panel title={t("Posiciones", "Positions")}>
         <Tabs defaultValue="Todos">
           <TabsList className="mb-4">
             <TabsTrigger value="Todos">{t("Todos", "All")}</TabsTrigger>
