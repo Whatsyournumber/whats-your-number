@@ -902,6 +902,25 @@ export function scoreCity(
   // Bonus adicional por calidad de vida objetiva de la ciudad.
   score += (c.qualityOfLife - 70) * 0.06;
 
+  // Objetivo "nómada digital": manda la regulación de visa nómada y el
+  // ranking de países más nomad-friendly, por encima del resto de pilares.
+  if (f.goal === "nomad") {
+    const visa = nomadVisa(c.country);
+    score = score * 0.5 + values.nomadvisa * 0.5;
+    if (!visa.exists) {
+      score *= 0.75; // sin visa de nómada: baja fuerte en el ranking
+    } else {
+      if (visa.friendliness >= 85) score *= 1.06;
+      else if (visa.friendliness >= 70) score *= 1.02;
+      if (visa.months >= 12 && visa.renewable) score *= 1.03;
+      // requisito de ingresos por encima de tu presupuesto: penaliza
+      if (f.budget > 0 && visa.incomeUsd > f.budget) {
+        const gap = (visa.incomeUsd - f.budget) / f.budget;
+        score *= clamp(100 - Math.min(20, gap * 40)) / 100;
+      }
+    }
+  }
+
   // Penalización proporcional cuando la ciudad se sale del presupuesto
   // (antes era un castigo plano que hundía ciudades por muy poco).
   if (cost > f.budget && f.budget > 0) {
