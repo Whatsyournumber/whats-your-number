@@ -170,29 +170,42 @@ export function StatementImporter() {
         return;
       }
 
+      const incoming = Array.from(files).map((file) => ({
+        file,
+        jobId: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      }));
+      setJobs(incoming.map(({ file, jobId }) => ({ id: jobId, name: file.name, stage: "reading" as JobStage })));
+
       // Subimos y lanzamos el análisis de todos los archivos en paralelo.
       await Promise.all(
-        Array.from(files).map(async (file) => {
+        incoming.map(async ({ file, jobId }) => {
           const lower = file.name.toLowerCase();
           const isImage = file.type.startsWith("image/") || /\.(png|jpe?g|webp|heic|heif)$/.test(lower);
           const ok = lower.endsWith(".pdf") || lower.endsWith(".csv") || lower.endsWith(".txt") || isImage;
           if (!ok) {
+            setJob(jobId, { stage: "error", message: t("Formato no soportado", "Unsupported format") });
             toast.error(t(`${file.name}: solo aceptamos PDF, CSV o imágenes`, `${file.name}: we only accept PDF, CSV or images`));
             return;
           }
           if (file.size > MAX_BYTES) {
+            setJob(jobId, { stage: "error", message: t("Máximo 15 MB", "Maximum 15 MB") });
             toast.error(t(`${file.name}: máximo 15 MB`, `${file.name}: maximum 15 MB`));
             return;
           }
 
           const fallbackType = lower.endsWith(".pdf") ? "application/pdf" : isImage ? "image/jpeg" : "text/csv";
           const path = `${user.id}/${Date.now()}-${file.name.replace(/[^\w.\-]/g, "_")}`;
+          setJob(jobId, { stage: "uploading" });
           const { error: upErr } = await supabase.storage.from("statements").upload(path, file, {
             contentType: file.type || fallbackType,
             upsert: false,
           });
-          if (upErr) throw new Error(upErr.message);
+          if (upErr) {
+            setJob(jobId, { stage: "error", message: upErr.message });
+            throw new Error(upErr.message);
+          }
 
+          setJob(jobId, { stage: "extracting" });
           const { data: inserted, error: insErr } = await supabase
             .from("statements")
             .insert({
@@ -205,13 +218,35 @@ export function StatementImporter() {
             })
             .select("id")
             .single();
-          if (insErr) throw new Error(insErr.message);
+          if (insErr) {
+            setJob(jobId, { stage: "error", message: insErr.message });
+            throw new Error(insErr.message);
+          }
 
-          toast.success(t(`${file.name} subido · analizando con IA…`, `${file.name} uploaded · analyzing with AI…`));
           void qc.invalidateQueries({ queryKey: ["statements"] });
-          processMutation.mutate(inserted.id as string);
+          setJob(jobId, { stage: "analyzing" });
+          try {
+            const result = await runProcess({ data: { statementId: inserted.id as string, environment: getPaddleEnvironment() } });
+            setJob(jobId, {
+              stage: "done",
+              message: t(`${result.inserted} movimientos`, `${result.inserted} transactions`),
+            });
+            toast.success(
+              t(
+                `${result.inserted} movimientos clasificados por IA · actualizando tus módulos`,
+                `${result.inserted} transactions classified by AI · updating your modules`,
+              ),
+            );
+            refreshAll();
+          } catch (err) {
+            const msg = err instanceof Error ? err.message : t("Error de análisis", "Analysis error");
+            setJob(jobId, { stage: "error", message: msg });
+            toast.error(msg);
+            void qc.invalidateQueries({ queryKey: ["statements"] });
+          }
         }),
       );
+
     } catch (error) {
       const message = error instanceof Error ? error.message : "";
       if (message.includes("statements_user_id_fkey") || message.includes("foreign key")) {
