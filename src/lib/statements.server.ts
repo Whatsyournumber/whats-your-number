@@ -134,15 +134,19 @@ export async function processStatementForUser(
     const gateway = createLovableAiGatewayProvider(apiKey);
     const model = gateway("google/gemini-3.5-flash");
 
+    // Limpiamos los movimientos anteriores mientras la IA trabaja.
+    const cleanup = supabase.from("imported_transactions").delete().eq("statement_id", statementId);
+
     let parsed: z.infer<typeof txSchema>;
     try {
-      const { output } = await generateText({
+      // Streaming: evita cortes por timeout y devuelve antes en documentos largos.
+      const result = streamText({
         model,
         system: SYSTEM,
         messages: [{ role: "user", content }],
         output: Output.object({ schema: txSchema }),
       });
-      parsed = output;
+      parsed = (await result.output) as z.infer<typeof txSchema>;
     } catch (error) {
       console.error("[statements] AI extraction failed", error);
       if (NoObjectGeneratedError.isInstance(error)) {
