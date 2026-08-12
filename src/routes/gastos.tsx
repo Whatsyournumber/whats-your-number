@@ -1066,6 +1066,17 @@ function Gastos() {
                 <Button
                   size="icon"
                   variant="ghost"
+                  className="h-7 w-7 text-primary hover:bg-primary/10"
+                  disabled={autoCatId !== null || !cat.name.trim()}
+                  onClick={() => void autoAssign(cat)}
+                  aria-label={t("Añadir movimientos con IA", "Add movements with AI")}
+                  title={t("Añadir movimientos con IA", "Add movements with AI")}
+                >
+                  {autoCatId === cat.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                </Button>
+                <Button
+                  size="icon"
+                  variant="ghost"
                   className="h-7 w-7 text-muted-foreground hover:text-negative"
                   onClick={() => categories.remove(cat.id)}
                   aria-label={t("Eliminar categoría", "Delete category")}
