@@ -232,8 +232,8 @@ export function MortgageModule() {
     }
   };
 
-  const payment = useMemo(() => paymentFor(s.balance, s.rate, s.term * 12), [s.balance, s.rate, s.term]);
-  const base = useMemo(() => simulate(s.balance, s.rate, payment), [s.balance, s.rate, s.term, payment]);
+  const payment = s.payment;
+  const base = useMemo(() => simulate(s.balance, s.rate, payment), [s.balance, s.rate, payment]);
 
   const strategies = useMemo(() => {
     if (!s.balance || !payment) return [];
