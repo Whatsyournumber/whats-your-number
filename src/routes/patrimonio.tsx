@@ -1,11 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Camera, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Area, AreaChart, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
 
 import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
+import { HoldingsManager } from "@/components/holdings-manager";
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
+import { useHoldings, useNetWorthSnapshots } from "@/hooks/use-holdings";
 import { useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
@@ -24,15 +28,40 @@ export const Route = createFileRoute("/patrimonio")({
   component: Patrimonio,
 });
 
+const MONTH_LABELS = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+
 function PatrimonioContent() {
   const t = useT();
   const { profile } = useProfile();
   const { transactions } = useTransactions();
+  const { totals, holdings } = useHoldings();
+  const { snapshots, saveSnapshot, saving } = useNetWorthSnapshots();
   const d = buildDataset(profile);
   const { fmt, fmtCompact, assets, liabilities } = d;
-  const months = buildRealMonths(transactions, d.netWorth) ?? d.months;
-  const growth =
-    months[0]!.netWorth > 0 ? ((d.netWorth - months[0]!.netWorth) / Math.abs(months[0]!.netWorth)) * 100 : 0;
+
+  // Si hay fotos guardadas del patrimonio usamos la evolución real; si no, la serie derivada.
+  const snapshotSeries = snapshots.map((s) => ({
+    label: `${MONTH_LABELS[Number(s.taken_on.slice(5, 7)) - 1]} ${s.taken_on.slice(8, 10)}`,
+    netWorth: s.net_worth,
+  }));
+  const derived = buildRealMonths(transactions, d.netWorth) ?? d.months;
+  const months = snapshotSeries.length >= 2 ? snapshotSeries : derived;
+  const growth = months[0]!.netWorth > 0 ? ((d.netWorth - months[0]!.netWorth) / Math.abs(months[0]!.netWorth)) * 100 : 0;
+
+  const takeSnapshot = async () => {
+    try {
+      await saveSnapshot({
+        assets: holdings.length ? totals.assets : d.totalAssets,
+        liabilities: holdings.length ? totals.liabilities : d.totalLiabilities,
+        currency: d.currency,
+      });
+      toast.success(t("Foto de patrimonio guardada", "Net worth snapshot saved"), {
+        description: t("La evolución se actualizará con cada nueva foto.", "Your history updates with every new snapshot."),
+      });
+    } catch {
+      toast.error(t("No pudimos guardar la foto", "We couldn't save the snapshot"));
+    }
+  };
 
   return (
     <PageShell>
@@ -43,6 +72,7 @@ function PatrimonioContent() {
         <KpiCard label={t("Activos", "Assets")} value={fmt(d.totalAssets)} index={1} />
         <KpiCard label={t("Pasivos", "Liabilities")} value={fmt(d.totalLiabilities)} inverse index={2} />
       </div>
+
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel title={t("Crecimiento del patrimonio", "Net worth growth")} className="lg:col-span-2">
