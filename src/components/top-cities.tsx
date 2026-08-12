@@ -2,14 +2,13 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 
 import { Panel } from "@/components/page";
+import { CityDetailDialog } from "@/components/city-detail-dialog";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useT } from "@/hooks/use-language";
 import type { Profile } from "@/hooks/use-profile";
 import { suggestedFilters } from "@/lib/city-suggestions";
 import { readMyCities, subscribeMyCities } from "@/lib/my-cities";
 import { rankCities, type CityScore } from "@/lib/lifestyle-cities";
-
 
 /** Top 3 ciudades calculadas con tu perfil: presupuesto mensual y camino a tu meta. */
 export function TopCitiesPanel({
@@ -119,78 +118,7 @@ export function TopCitiesPanel({
         })}
       </div>
 
-      <CityQuickDialog r={detail} fmt={fmt} monthlySavings={monthlySavings} onClose={() => setDetail(null)} />
+      <CityDetailDialog r={detail} filters={filters} fmt={fmt} onClose={() => setDetail(null)} />
     </Panel>
-  );
-}
-
-/** Pop-up minimalista con la info clave de la ciudad. */
-function CityQuickDialog({
-  r,
-  fmt,
-  monthlySavings,
-  onClose,
-}: {
-  r: CityScore | null;
-  fmt: (n: number) => string;
-  monthlySavings: number;
-  onClose: () => void;
-}) {
-  const t = useT();
-  if (!r) return null;
-  const c = r.city;
-
-  return (
-    <Dialog open onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="flex max-h-[88vh] max-w-lg flex-col overflow-hidden p-0">
-        <div className="relative aspect-[16/7] w-full flex-shrink-0 overflow-hidden">
-          <img src={c.photo} alt={`${c.name}, ${c.country}`} className="absolute inset-0 h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-background/10 to-transparent" />
-        </div>
-
-        <div className="flex-1 space-y-4 overflow-y-auto p-5 pt-1">
-          <DialogHeader className="space-y-0 text-left">
-            <DialogTitle className="text-2xl">{c.name}</DialogTitle>
-            <DialogDescription>{c.country}</DialogDescription>
-          </DialogHeader>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <QuickStat label={t("Presupuesto/mes", "Budget/mo")} value={fmt(r.cost)} />
-            <QuickStat label={t("Tu número allí", "Your number")} value={fmt(r.cost * 12 * 25)} />
-            <QuickStat label={t("Score", "Score")} value={`${Math.round(r.north.total)}/100`} />
-            <QuickStat
-              label={t("Libertad", "Freedom")}
-              value={
-                r.yearsToRetire === 0
-                  ? t("Ya", "Now")
-                  : r.yearsToRetire
-                    ? t(`${r.yearsToRetire} años`, `${r.yearsToRetire} yrs`)
-                    : "—"
-              }
-            />
-          </div>
-
-
-          <p className="text-xs text-muted-foreground">
-            {t(
-              `Ahorrando ${fmt(monthlySavings)}/mes con tu ritmo actual.`,
-              `Saving ${fmt(monthlySavings)}/mo at your current pace.`,
-            )}
-          </p>
-
-          <Button asChild size="sm" className="w-full rounded-full">
-            <Link to="/ciudades">{t("Ver análisis completo", "See full analysis")}</Link>
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-function QuickStat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-xl border border-border bg-elevated/40 p-2.5">
-      <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{label}</p>
-      <p className="numeric mt-0.5 text-sm font-semibold">{value}</p>
-    </div>
   );
 }
