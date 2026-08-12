@@ -35,10 +35,10 @@ export function KpiCard({
         "relative overflow-hidden p-5",
         variant === "default" && "surface",
         variant === "flat" && "rounded-2xl border border-border/60 bg-card/40",
-        accent && variant === "default" && "glow",
+        accent && "glow",
       )}
     >
-      {accent && variant === "default" && (
+      {accent && (
         <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.08]" />
       )}
       <div className="relative flex items-start justify-between gap-3">
