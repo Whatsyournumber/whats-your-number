@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 export function KpiCard({
   label,
   value,
+  valueCompact,
   delta,
   hint,
   icon: Icon,
@@ -16,6 +17,7 @@ export function KpiCard({
 }: {
   label: string;
   value: string;
+  valueCompact?: string;
   delta?: number;
   hint?: string;
   icon?: LucideIcon;
@@ -25,6 +27,8 @@ export function KpiCard({
   variant?: "default" | "flat";
 }) {
   const good = delta === undefined ? true : inverse ? delta < 0 : delta > 0;
+  // Si el número es muy largo, usamos la versión compacta (1,2 M) para que siempre entre.
+  const shown = value.length > 12 && valueCompact ? valueCompact : value;
 
   return (
     <motion.div
@@ -48,18 +52,19 @@ export function KpiCard({
       <p
         className={cn(
           "numeric relative mt-3 truncate text-ellipsis whitespace-nowrap font-semibold leading-tight",
-          value.length > 22
+          shown.length > 18
             ? "text-base md:text-lg"
-            : value.length > 16
+            : shown.length > 14
               ? "text-lg md:text-xl"
-              : value.length > 11
+              : shown.length > 10
                 ? "text-xl md:text-2xl"
                 : "text-2xl md:text-3xl",
         )}
         title={value}
       >
-        {value}
+        {shown}
       </p>
+
       <div className="relative mt-2 flex items-center gap-2">
         {delta !== undefined && (
           <span
