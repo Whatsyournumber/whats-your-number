@@ -84,7 +84,7 @@ function greeting(t: (es: string, en: string) => string) {
 function Dashboard() {
   const t = useT();
   const { lang } = useLanguage();
-  const { profile, isLoading } = useProfile();
+  const { profile, isLoading, save } = useProfile();
   const { transactions } = useTransactions();
   const d = buildDataset(profile);
   const realMonths = buildRealMonths(transactions, d.netWorth);
