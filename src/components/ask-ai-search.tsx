@@ -51,6 +51,43 @@ function Rich({ text }: { text: string }) {
   );
 }
 
+/** Indicador de progreso con etapas y cronómetro. */
+function ThinkingIndicator({ txCount }: { txCount: number }) {
+  const t = useT();
+  const [ms, setMs] = useState(0);
+  useEffect(() => {
+    const start = Date.now();
+    const id = setInterval(() => setMs(Date.now() - start), 100);
+    return () => clearInterval(id);
+  }, []);
+  const s = ms / 1000;
+  const stage =
+    s < 1.5
+      ? t(`Leyendo tus datos (${txCount} movimientos)…`, `Reading your data (${txCount} transactions)…`)
+      : s < 6
+        ? t("Analizando tus finanzas…", "Analyzing your finances…")
+        : s < 15
+          ? t("Redactando la respuesta…", "Writing the answer…")
+          : t("Casi listo, la respuesta es larga…", "Almost there, this one is long…");
+  return (
+    <div className="space-y-2 rounded-xl border border-border/60 bg-elevated/50 px-3 py-2">
+      <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
+        <span className="flex items-center gap-2">
+          <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />
+          {stage}
+        </span>
+        <span className="tabular-nums">{s.toFixed(1)}s</span>
+      </div>
+      <div className="h-1 w-full overflow-hidden rounded-full bg-border/60">
+        <div
+          className="h-full rounded-full bg-primary transition-all duration-200"
+          style={{ width: `${Math.min(95, 8 + (ms / 20000) * 87).toFixed(1)}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
 export function AskAiSearch() {
   const t = useT();
   const { lang } = useLanguage();
