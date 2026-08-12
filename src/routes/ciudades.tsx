@@ -275,23 +275,27 @@ function LifestyleSimulatorContent() {
   const ranked = useMemo(() => rankCities(filters, ctx), [filters, ctx]);
   const [detail, setDetail] = useState<CityScore | null>(null);
   const [compare, setCompare] = useState<string[]>([]);
-  // Ciudades elegidas a mano (máx. 3), persistidas en este navegador.
-  const [picks, setPicks] = useState<string[]>(() => {
-    if (typeof window === "undefined") return [];
-    try {
-      const raw = window.localStorage.getItem("wyn:my-cities");
-      return raw ? (JSON.parse(raw) as string[]).slice(0, 3) : [];
-    } catch {
-      return [];
-    }
-  });
+  // Ciudades elegidas a mano (máx. 3). Se guardan sólo al confirmar.
+  const [saved, setSaved] = useState<string[]>(() => readMyCities());
+  const [picks, setPicks] = useState<string[]>(() => readMyCities());
+  const dirty = picks.join(",") !== saved.join(",");
+  const savePicks = () => {
+    saveMyCities(picks);
+    setSaved(picks);
+    toast.success(t("Ciudades guardadas", "Cities saved"), {
+      description: t("Las verás en tu dashboard.", "You'll see them on your dashboard."),
+    });
+  };
   useEffect(() => {
-    try {
-      window.localStorage.setItem("wyn:my-cities", JSON.stringify(picks));
-    } catch {
-      /* almacenamiento no disponible */
-    }
-  }, [picks]);
+    if (!dirty) return;
+    const onBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [dirty]);
+
   const allCities = useMemo(
     () => rankCities({ ...filters, region: "any", climate: "any", stability: "any" }, ctx),
     [filters, ctx],
