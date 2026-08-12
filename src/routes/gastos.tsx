@@ -32,6 +32,8 @@ import { Input } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
+import { planCategories } from "@/lib/category-ai.functions";
 import { CategoryChat } from "@/components/category-chat";
 import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { useCategories } from "@/hooks/use-categories";
