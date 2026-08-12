@@ -960,6 +960,11 @@ export function rankCities(f: Filters, ctx: { netWorth: number; age: number; exp
     .map((c) => scoreCity(c, f, ctx))
     .sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
+      if (f.goal === "nomad") {
+        const na = nomadFriendly(a.city);
+        const nb = nomadFriendly(b.city);
+        if (nb !== na) return nb - na;
+      }
       // Desempates: primero el Your North Score puro, luego calidad de vida,
       // seguridad y por último menor costo.
       if (b.north.total !== a.north.total) return b.north.total - a.north.total;
