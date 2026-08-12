@@ -38,6 +38,7 @@ const chartColors = [
 
 function PortafolioContent() {
   const t = useT();
+  const types = ["ETF", "Acción", "Cripto", "Cash"] as const;
   const typeLabels: Record<(typeof types)[number], string> = {
     ETF: t("ETF", "ETF"),
     "Acción": t("Acción", "Stock"),
@@ -54,16 +55,31 @@ function PortafolioContent() {
   const seriesQuery = useMarketSeries(["^GSPC", "SPY", "BTC-USD"]);
   const [newSymbol, setNewSymbol] = useState("");
 
-  const positions = [
-    { ticker: t("ETFs / fondos", "ETFs / funds"), name: t("Fondos indexados y ETFs", "Index funds and ETFs"), type: "ETF" as const, value: profile.assets_etf, growth: r },
-    { ticker: t("Fondo de retiro", "Retirement fund"), name: t("Plan de pensiones / retiro", "Pension / retirement plan"), type: "ETF" as const, value: profile.assets_retirement, growth: r * 0.8 },
-    { ticker: t("Acciones", "Stocks"), name: t("Posiciones individuales", "Individual positions"), type: "Acción" as const, value: profile.assets_stocks, growth: r * 1.3 },
-    { ticker: t("Cripto", "Crypto"), name: t("Activos digitales", "Digital assets"), type: "Cripto" as const, value: profile.assets_crypto, growth: r * 2 },
-    { ticker: t("Efectivo", "Cash"), name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"), type: "Cash" as const, value: profile.assets_cash + profile.assets_bank, growth: 0 },
-  ].filter((h) => h.value > 0);
+  // Posiciones reales del usuario; si aún no registró ninguna, derivamos del perfil.
+  const { holdings } = useHoldings();
+  const tracked = holdings.filter((h) => h.kind !== "liability" && h.value > 0);
+  const typeOf = (kind: string): (typeof types)[number] =>
+    kind === "stock" ? "Acción" : kind === "crypto" ? "Cripto" : kind === "cash" || kind === "bank" ? "Cash" : "ETF";
+
+  const positions = tracked.length
+    ? tracked.map((h) => ({
+        ticker: h.ticker || h.label,
+        name: h.label || h.ticker,
+        type: typeOf(h.kind),
+        value: h.value,
+        growth: r,
+        cost: h.cost,
+      }))
+    : [
+        { ticker: t("ETFs / fondos", "ETFs / funds"), name: t("Fondos indexados y ETFs", "Index funds and ETFs"), type: "ETF" as const, value: profile.assets_etf, growth: r, cost: 0 },
+        { ticker: t("Fondo de retiro", "Retirement fund"), name: t("Plan de pensiones / retiro", "Pension / retirement plan"), type: "ETF" as const, value: profile.assets_retirement, growth: r * 0.8, cost: 0 },
+        { ticker: t("Acciones", "Stocks"), name: t("Posiciones individuales", "Individual positions"), type: "Acción" as const, value: profile.assets_stocks, growth: r * 1.3, cost: 0 },
+        { ticker: t("Cripto", "Crypto"), name: t("Activos digitales", "Digital assets"), type: "Cripto" as const, value: profile.assets_crypto, growth: r * 2, cost: 0 },
+        { ticker: t("Efectivo", "Cash"), name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"), type: "Cash" as const, value: profile.assets_cash + profile.assets_bank, growth: 0, cost: 0 },
+      ].filter((h) => h.value > 0);
 
   const enriched = positions.map((h) => {
-    const cost = Math.round(h.value / (1 + h.growth));
+    const cost = h.cost > 0 ? h.cost : Math.round(h.value / (1 + h.growth));
     return {
       ...h,
       avgCost: cost,
@@ -84,9 +100,9 @@ function PortafolioContent() {
   const spx = series["^GSPC"] ?? [];
   const spy = series["SPY"] ?? [];
   const btc = series["BTC-USD"] ?? [];
-  const equityValue = profile.assets_etf + profile.assets_retirement + profile.assets_stocks;
-  const cryptoValue = profile.assets_crypto;
-  const cashValue = profile.assets_cash + profile.assets_bank;
+  const equityValue = enriched.filter((h) => h.type === "ETF" || h.type === "Acción").reduce((s, h) => s + h.value, 0);
+  const cryptoValue = enriched.filter((h) => h.type === "Cripto").reduce((s, h) => s + h.value, 0);
+  const cashValue = enriched.filter((h) => h.type === "Cash").reduce((s, h) => s + h.value, 0);
   const base = equityValue + cryptoValue + cashValue;
   const wEq = base ? equityValue / base : 1;
   const wCr = base ? cryptoValue / base : 0;
@@ -96,14 +112,12 @@ function PortafolioContent() {
     portfolio: (spy[i]?.value ?? p.value) * wEq + (btc[i]?.value ?? 0) * wCr,
   }));
 
-
-
-  const types = ["ETF", "Acción", "Cripto", "Cash"] as const;
   const allocation = types.map((ty, i) => ({
     name: ty,
     value: enriched.filter((h) => h.type === ty).reduce((s, h) => s + h.value, 0),
     color: chartColors[i]!,
   }));
+
 
   const rows = (list: typeof enriched) => (
     <div className="space-y-2">
