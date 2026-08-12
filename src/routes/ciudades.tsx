@@ -12,7 +12,28 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { ArrowLeftRight, BookOpen, Info, MapPin, RotateCcw, SlidersHorizontal, Sparkles, X } from "lucide-react";
+import {
+  ArrowLeftRight,
+  BookOpen,
+  Briefcase,
+  Building2,
+  DollarSign,
+  Globe,
+  Heart,
+  Info,
+  MapPin,
+  Plane,
+  RotateCcw,
+  Shield,
+  SlidersHorizontal,
+  Sparkles,
+  Sun,
+  Target,
+  Thermometer,
+  User,
+  Wallet,
+  X,
+} from "lucide-react";
 
 import { PlanGate } from "@/components/plan-gate";
 import { PageHeader, PageShell, Panel } from "@/components/page";
