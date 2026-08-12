@@ -6,7 +6,7 @@ import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "rec
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useT } from "@/hooks/use-language";
-import type { Tx } from "@/hooks/use-transactions";
+import { merchantKey, type Tx } from "@/hooks/use-transactions";
 import { cn } from "@/lib/utils";
 
 type Props = {
