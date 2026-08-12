@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useT } from "@/hooks/use-language";
 import { useMarketSeries, useQuotes, useWatchlist } from "@/hooks/use-market";
+import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
 import { buildDataset } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
@@ -45,6 +46,7 @@ function PortafolioContent() {
     Cash: t("Cash", "Cash"),
   };
   const { profile } = useProfile();
+  const { holdings } = useHoldings();
   const d = buildDataset(profile);
   const fmt = (n: number, _dec?: number) => d.fmt(n);
   const r = Math.max(0, profile.expected_return || 7) / 100;
