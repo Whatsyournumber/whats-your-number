@@ -1283,6 +1283,9 @@ function CityDetail({
               <Stat icon="🍽" label={t("Alimentación", "Food")} value={fmt(b.food)} />
               <Stat icon="🚗" label={t("Transporte", "Transport")} value={fmt(b.transport)} />
               <Stat icon="🏥" label={t("Salud", "Healthcare")} value={fmt(b.healthcare)} sub={`${c.healthcareScore}/100`} />
+              {b.education > 0 && (
+                <Stat icon="🎓" label={t("Educación", "Education")} value={fmt(b.education)} sub={`${c.schools}/100`} />
+              )}
             </div>
           </div>
 
