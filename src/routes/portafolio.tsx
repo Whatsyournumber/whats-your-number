@@ -54,25 +54,62 @@ function PortafolioContent() {
   const seriesQuery = useMarketSeries(["^GSPC", "SPY", "BTC-USD"]);
   const [newSymbol, setNewSymbol] = useState("");
 
-  const positions = [
-    { ticker: t("ETFs / fondos", "ETFs / funds"), name: t("Fondos indexados y ETFs", "Index funds and ETFs"), type: "ETF" as const, value: profile.assets_etf, growth: r },
-    { ticker: t("Fondo de retiro", "Retirement fund"), name: t("Plan de pensiones / retiro", "Pension / retirement plan"), type: "ETF" as const, value: profile.assets_retirement, growth: r * 0.8 },
-    { ticker: t("Acciones", "Stocks"), name: t("Posiciones individuales", "Individual positions"), type: "Acción" as const, value: profile.assets_stocks, growth: r * 1.3 },
-    { ticker: t("Cripto", "Crypto"), name: t("Activos digitales", "Digital assets"), type: "Cripto" as const, value: profile.assets_crypto, growth: r * 2 },
-    { ticker: t("Efectivo", "Cash"), name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"), type: "Cash" as const, value: profile.assets_cash + profile.assets_bank, growth: 0 },
+  // Precios reales para las posiciones con ticker + unidades.
+  const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
+  const holdingQuotes = useQuotes(holdingSymbols);
+  const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
+
+  const typeOf = (kind: string) =>
+    kind === "stock" ? ("Acción" as const) : kind === "crypto" ? ("Cripto" as const) : ("ETF" as const);
+
+  const detailed = holdings
+    .filter((h) => ["etf", "stock", "crypto", "other", "retirement"].includes(h.kind))
+    .map((h) => {
+      const value = holdingValue(h, prices);
+      const growth = Math.max(0, h.expected_return || 7) / 100;
+      return {
+        ticker: h.ticker || h.label || t("Activo", "Asset"),
+        name: h.label || h.ticker || "",
+        type: typeOf(h.kind),
+        value,
+        growth,
+        cost: h.cost_basis > 0 ? Math.round(h.cost_basis) : Math.round(value / (1 + growth)),
+      };
+    })
+    .filter((h) => h.value > 0);
+
+  const cashDetailed = holdings.filter((h) => ["cash", "bank", "money_market"].includes(h.kind));
+  if (cashDetailed.length) {
+    const cash = cashDetailed.reduce((s, h) => s + holdingValue(h, prices), 0);
+    if (cash > 0)
+      detailed.push({
+        ticker: t("Efectivo", "Cash"),
+        name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"),
+        type: "Cash" as never,
+        value: cash,
+        growth: 0,
+        cost: cash,
+      });
+  }
+
+  const fallback = [
+    { ticker: t("ETFs / fondos", "ETFs / funds"), name: t("Fondos indexados y ETFs", "Index funds and ETFs"), type: "ETF" as const, value: profile.assets_etf, growth: r, cost: Math.round(profile.assets_etf / (1 + r)) },
+    { ticker: t("Fondo de retiro", "Retirement fund"), name: t("Plan de pensiones / retiro", "Pension / retirement plan"), type: "ETF" as const, value: profile.assets_retirement, growth: r * 0.8, cost: Math.round(profile.assets_retirement / (1 + r * 0.8)) },
+    { ticker: t("Acciones", "Stocks"), name: t("Posiciones individuales", "Individual positions"), type: "Acción" as const, value: profile.assets_stocks, growth: r * 1.3, cost: Math.round(profile.assets_stocks / (1 + r * 1.3)) },
+    { ticker: t("Cripto", "Crypto"), name: t("Activos digitales", "Digital assets"), type: "Cripto" as const, value: profile.assets_crypto, growth: r * 2, cost: Math.round(profile.assets_crypto / (1 + r * 2)) },
+    { ticker: t("Efectivo", "Cash"), name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"), type: "Cash" as const, value: profile.assets_cash + profile.assets_bank, growth: 0, cost: profile.assets_cash + profile.assets_bank },
   ].filter((h) => h.value > 0);
 
-  const enriched = positions.map((h) => {
-    const cost = Math.round(h.value / (1 + h.growth));
-    return {
-      ...h,
-      avgCost: cost,
-      dividends: Math.round(h.type === "ETF" ? h.value * 0.018 : h.type === "Acción" ? h.value * 0.012 : 0),
-      cost,
-      gain: h.value - cost,
-      ret: cost ? ((h.value - cost) / cost) * 100 : 0,
-    };
-  });
+  const positions = detailed.length ? detailed : fallback;
+
+  const enriched = positions.map((h) => ({
+    ...h,
+    avgCost: h.cost,
+    dividends: Math.round(h.type === "ETF" ? h.value * 0.018 : h.type === "Acción" ? h.value * 0.012 : 0),
+    gain: h.value - h.cost,
+    ret: h.cost ? ((h.value - h.cost) / h.cost) * 100 : 0,
+  }));
+
 
   const totalValue = enriched.reduce((s, h) => s + h.value, 0);
   const totalCost = enriched.reduce((s, h) => s + h.cost, 0);
