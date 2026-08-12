@@ -104,14 +104,11 @@ function SelectFilter<T extends string>({
     <div className={cn("min-w-0", fullWidth && "col-span-2")}>
       <p className="truncate text-[10px] font-medium uppercase tracking-wider text-muted-foreground/80">{label}</p>
       <Select value={value} onValueChange={(v) => onChange(v as T)}>
-        <SelectTrigger className="mt-1.5 h-9 w-full gap-2 rounded-xl border-border/60 bg-elevated/30 px-3 text-xs transition-colors hover:bg-elevated/50 focus:ring-2 focus:ring-primary/20 [&>span]:flex [&>span]:items-center [&>span]:gap-2">
-          <SelectValue
-            placeholder={selected?.label}
-            className="flex items-center gap-2"
-          >
+        <SelectTrigger className="mt-1.5 h-9 w-full gap-2 rounded-xl border-border/60 bg-elevated/30 px-3 text-xs transition-colors hover:bg-elevated/50 focus:ring-2 focus:ring-primary/20">
+          <span className="flex items-center gap-2 truncate">
             <span className="shrink-0 text-sm leading-none">{selected?.icon}</span>
             <span className="truncate">{selected?.label}</span>
-          </SelectValue>
+          </span>
         </SelectTrigger>
         <SelectContent className="rounded-xl border-border/80">
           {options.map((o) => (
