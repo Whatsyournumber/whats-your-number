@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Sparkles, Menu } from "lucide-react";
 
 import { BrandLogo, BrandMark } from "@/components/brand-logo";
+import { CurrencyToggle } from "@/components/currency-toggle";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/use-auth";
@@ -72,6 +73,7 @@ export function SiteHeader() {
         </div>
         <div className="flex items-center gap-2">
           {authButtons}
+          <CurrencyToggle />
           <LanguageToggle />
         </div>
       </div>
@@ -109,7 +111,10 @@ export function SiteHeader() {
               </nav>
               <div className="flex items-center justify-between border-t border-border pt-4">
                 <span className="text-sm text-muted-foreground">{t("Idioma", "Language")}</span>
-                <LanguageToggle />
+                <div className="flex items-center gap-2">
+                  <CurrencyToggle />
+                  <LanguageToggle />
+                </div>
               </div>
             </div>
           </SheetContent>
