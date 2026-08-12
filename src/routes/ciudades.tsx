@@ -524,17 +524,50 @@ function SuggestedForYou({
   const suggested = useMemo(() => suggestedFilters(profile), [profile]);
   const [f, setF] = useState<Filters>(suggested);
   const [editing, setEditing] = useState(false);
+  // Ciudades escritas por ti (máx. 3). Se guardan en este navegador.
+  const [picks, setPicks] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const raw = window.localStorage.getItem("wyn:my-cities");
+      return raw ? (JSON.parse(raw) as string[]).slice(0, 3) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [query, setQuery] = useState("");
   // Si cambia tu perfil, vuelve a partir de la sugerencia ideal.
   useEffect(() => setF(suggested), [suggested]);
+  useEffect(() => {
+    try {
+      window.localStorage.setItem("wyn:my-cities", JSON.stringify(picks));
+    } catch {
+      /* almacenamiento no disponible */
+    }
+  }, [picks]);
   const set = <K extends keyof Filters>(k: K, v: Filters[K]) => setF((prev) => ({ ...prev, [k]: v }));
 
+  // Puntuamos todas las ciudades (sin filtros de región/clima) para poder elegir cualquiera.
+  const all = useMemo(
+    () => rankCities({ ...f, region: "any", climate: "any", stability: "any" }, ctx),
+    [f, ctx],
+  );
+  const auto = useMemo(() => rankCities(f, ctx).slice(0, 3), [f, ctx]);
   const top = useMemo(() => {
-    const ranked = rankCities(f, ctx);
-    // Ranking 100% según tus respuestas del onboarding: sin ciudades fijas.
-    return ranked.slice(0, 3);
-  }, [f, ctx]);
+    if (picks.length === 0) return auto;
+    return picks.map((id) => all.find((r) => r.city.id === id)).filter((r): r is CityScore => Boolean(r));
+  }, [picks, auto, all]);
+  const matches = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return all
+      .filter((r) => !picks.includes(r.city.id))
+      .filter((r) => `${r.city.name} ${r.city.country}`.toLowerCase().includes(q))
+      .slice(0, 6);
+  }, [query, all, picks]);
+
   if (!profile.completed || top.length === 0) return null;
   const reasons = suggestionReasons(profile, f, t);
+
 
   return (
     <Panel
