@@ -232,28 +232,43 @@ function SourcesTooltip({ t }: { t: (es: string, en: string) => string }) {
     { name: "Mercer / EIU", desc: t("liveability global", "global liveability") },
   ];
   return (
-    <InfoTooltip
-      icon={BookOpen}
-      label={t("Fuentes", "Sources")}
-      title={t("Fuentes", "Sources")}
-    >
-      <div className="space-y-3">
-        <p className="text-[11px] leading-relaxed text-muted-foreground">
-          {t(
-            "Datos públicos y estimaciones de referencia. No son cifras oficiales en tiempo real. Se recalculan con cada filtro.",
-            "Public data and reference estimates. Not official real-time figures. Recalculated with every filter.",
-          )}
-        </p>
-        <div className="grid grid-cols-2 gap-2">
-          {sources.map((s) => (
-            <div key={s.name} className="rounded-lg border border-border/60 bg-elevated/40 p-2">
-              <p className="text-[11px] font-medium text-foreground">{s.name}</p>
-              <p className="text-[10px] leading-tight text-muted-foreground">{s.desc}</p>
-            </div>
-          ))}
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          type="button"
+          className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-elevated/40 px-2 py-0.5 text-[10px] text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <BookOpen className="h-3 w-3" />
+          {t("Fuentes", "Sources")}
+        </button>
+      </TooltipTrigger>
+      <TooltipContent
+        side="bottom"
+        align="start"
+        sideOffset={6}
+        className="max-w-[260px] border border-border/80 bg-card p-3 text-card-foreground shadow-2xl"
+      >
+        <div className="space-y-2">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-foreground">
+            {t("Fuentes", "Sources")}
+          </p>
+          <p className="text-[10px] leading-relaxed text-muted-foreground">
+            {t(
+              "Datos públicos y estimaciones de referencia. No son cifras oficiales en tiempo real.",
+              "Public data and reference estimates. Not official real-time figures.",
+            )}
+          </p>
+          <div className="grid grid-cols-2 gap-1.5">
+            {sources.map((s) => (
+              <div key={s.name} className="rounded-md border border-border/60 bg-elevated/40 p-1.5">
+                <p className="text-[10px] font-medium leading-tight text-foreground">{s.name}</p>
+                <p className="text-[9px] leading-tight text-muted-foreground">{s.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </InfoTooltip>
+      </TooltipContent>
+    </Tooltip>
   );
 }
 
