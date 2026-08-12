@@ -343,6 +343,10 @@ function LifestyleSimulatorContent() {
           </div>
         </div>
 
+        <CitySearchBar all={allCities} picks={picks} setPicks={setPicks} t={t} />
+
+
+
         <div className="grid divide-y divide-border/60 lg:grid-cols-[1.15fr_1.35fr_1fr] lg:divide-x lg:divide-y-0">
           {/* Dónde */}
           <FilterGroup title={t("Dónde", "Where")}>
