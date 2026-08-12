@@ -12,19 +12,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import {
-  ArrowLeftRight,
-  BookOpen,
-  Globe,
-  Info,
-  MapPin,
-  RotateCcw,
-  SlidersHorizontal,
-  Sparkles,
-  User,
-  Wallet,
-  X,
-} from "lucide-react";
+import { ArrowLeftRight, BookOpen, Info, MapPin, RotateCcw, SlidersHorizontal, Sparkles, X } from "lucide-react";
 
 import { PlanGate } from "@/components/plan-gate";
 import { PageHeader, PageShell, Panel } from "@/components/page";
@@ -85,35 +73,29 @@ export const Route = createFileRoute("/ciudades")({
 
 type Opt<T> = { value: T; label: string; icon: string };
 
-/** Filtro compacto tipo dropdown con trigger enriquecido. */
+/** Filtro compacto tipo dropdown, en línea con el resto del panel. */
 function SelectFilter<T extends string>({
   label,
   options,
   value,
   onChange,
-  fullWidth = false,
 }: {
   label: string;
   options: Opt<T>[];
   value: T;
   onChange: (v: T) => void;
-  fullWidth?: boolean;
 }) {
-  const selected = options.find((o) => o.value === value);
   return (
-    <div className={cn("min-w-0", fullWidth && "col-span-2")}>
-      <p className="truncate text-[10px] font-medium uppercase tracking-wider text-muted-foreground/80">{label}</p>
+    <div className="min-w-0">
+      <p className="truncate text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{label}</p>
       <Select value={value} onValueChange={(v) => onChange(v as T)}>
-        <SelectTrigger className="mt-1.5 h-9 w-full gap-2 rounded-xl border-border/60 bg-elevated/30 px-3 text-xs transition-colors hover:bg-elevated/50 focus:ring-2 focus:ring-primary/20">
-          <span className="flex items-center gap-2 truncate">
-            <span className="shrink-0 text-sm leading-none">{selected?.icon}</span>
-            <span className="truncate">{selected?.label}</span>
-          </span>
+        <SelectTrigger className="mt-1 h-8 w-full border-border bg-elevated/40 px-2.5 text-xs">
+          <SelectValue />
         </SelectTrigger>
-        <SelectContent className="rounded-xl border-border/80">
+        <SelectContent>
           {options.map((o) => (
             <SelectItem key={o.value} value={o.value} className="text-xs">
-              <span className="mr-2 text-sm">{o.icon}</span>
+              <span className="mr-1.5">{o.icon}</span>
               {o.label}
             </SelectItem>
           ))}
@@ -123,36 +105,11 @@ function SelectFilter<T extends string>({
   );
 }
 
-const SECTION_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-  Dónde: Globe,
-  Where: Globe,
-  Dinero: Wallet,
-  Money: Wallet,
-  Tú: User,
-  You: User,
-};
-
-/** Grupo de filtros con título visual tipo tarjeta interna. */
-function FilterGroup({
-  title,
-  children,
-  color = "primary",
-}: {
-  title: string;
-  children: React.ReactNode;
-  color?: "primary" | "positive" | "chart-4";
-}) {
-  const Icon = SECTION_ICONS[title] ?? SlidersHorizontal;
-  const colorClass =
-    color === "positive" ? "text-positive bg-positive/10" : color === "chart-4" ? "text-chart-4 bg-chart-4/10" : "text-primary bg-primary/10";
+/** Grupo de filtros con título, para ordenar visualmente el panel. */
+function FilterGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-3 p-4 sm:p-5">
-      <div className="flex items-center gap-2">
-        <div className={cn("flex h-7 w-7 items-center justify-center rounded-lg", colorClass)}>
-          <Icon className="h-3.5 w-3.5" />
-        </div>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-foreground">{title}</p>
-      </div>
+    <div className="p-4">
+      <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">{title}</p>
       <div className="grid grid-cols-2 items-end gap-3">{children}</div>
     </div>
   );
@@ -417,31 +374,24 @@ function LifestyleSimulatorContent() {
         )}
       />
 
-      <div className="surface overflow-hidden rounded-3xl border border-border/80 shadow-sm">
-        {/* Header */}
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 bg-elevated/20 px-5 py-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <SlidersHorizontal className="h-4 w-4" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold">{t("Filtros", "Filters")}</p>
-              <p className="text-[11px] text-muted-foreground">
-                {ranked.length} {t("ciudades coinciden", "matching cities")}
-              </p>
-            </div>
-          </div>
+      <div className="surface overflow-hidden rounded-2xl border border-border">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/70 bg-elevated/30 px-4 py-2.5">
           <div className="flex items-center gap-2">
-            <Button
+            <SlidersHorizontal className="h-3.5 w-3.5 text-primary" />
+            <p className="text-[11px] font-semibold uppercase tracking-wider">{t("Filtros", "Filters")}</p>
+            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+              {ranked.length} {t("ciudades", "cities")}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
               type="button"
-              variant="ghost"
-              size="sm"
               onClick={() => setFilters((f) => ({ ...defaultFilters, budget: f.budget }))}
-              className="h-8 gap-1.5 rounded-lg text-[11px] text-muted-foreground hover:text-foreground"
+              className="flex items-center gap-1 text-[10px] text-muted-foreground transition-colors hover:text-foreground"
             >
-              <RotateCcw className="h-3.5 w-3.5" />
+              <RotateCcw className="h-3 w-3" />
               {t("Reiniciar", "Reset")}
-            </Button>
+            </button>
             <TooltipProvider delayDuration={100}>
               <MethodologyTooltip t={t} filters={filters} />
               <SourcesTooltip t={t} />
@@ -449,7 +399,6 @@ function LifestyleSimulatorContent() {
           </div>
         </div>
 
-        {/* Buscador de ciudades */}
         <CitySearchBar
           all={allCities}
           picks={picks}
@@ -459,10 +408,12 @@ function LifestyleSimulatorContent() {
           t={t}
         />
 
-        {/* Grid de filtros */}
-        <div className="grid divide-y divide-border/50 lg:grid-cols-[1fr_1fr_1fr] lg:divide-x lg:divide-y-0">
+
+
+
+        <div className="grid divide-y divide-border/60 lg:grid-cols-[1.15fr_1.35fr_1fr] lg:divide-x lg:divide-y-0">
           {/* Dónde */}
-          <FilterGroup title={t("Dónde", "Where")} color="chart-4">
+          <FilterGroup title={t("Dónde", "Where")}>
             <SelectFilter
               label={t("Región", "Region")}
               value={filters.region}
@@ -488,28 +439,29 @@ function LifestyleSimulatorContent() {
                 { value: "cold", label: t("Frío", "Cold"), icon: "❄️" },
               ]}
             />
-            <SelectFilter
-              label={t("Estabilidad política", "Political stability")}
-              value={filters.stability}
-              onChange={(v) => set("stability", v)}
-              fullWidth
-              options={[
-                { value: "any", label: t("Indiferente", "Any"), icon: "🌍" },
-                { value: "medium", label: t("Media o superior", "Medium or higher"), icon: "🟡" },
-                { value: "high", label: t("Alta", "High"), icon: "🟢" },
-                { value: "veryhigh", label: t("Muy alta", "Very high"), icon: "🛡️" },
-              ]}
-            />
+            <div className="col-span-2">
+              <SelectFilter
+                label={t("Estabilidad política", "Political stability")}
+                value={filters.stability}
+                onChange={(v) => set("stability", v)}
+                options={[
+                  { value: "any", label: t("Indiferente", "Any"), icon: "🌍" },
+                  { value: "medium", label: t("Media o superior", "Medium or higher"), icon: "🟡" },
+                  { value: "high", label: t("Alta", "High"), icon: "🟢" },
+                  { value: "veryhigh", label: t("Muy alta", "Very high"), icon: "🛡️" },
+                ]}
+              />
+            </div>
           </FilterGroup>
 
           {/* Dinero */}
-          <FilterGroup title={t("Dinero", "Money")} color="positive">
-            <div className="col-span-2 rounded-2xl border border-border/60 bg-elevated/20 p-3">
+          <FilterGroup title={t("Dinero", "Money")}>
+            <div className="col-span-2">
               <div className="flex items-center justify-between gap-2">
-                <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/80">
+                <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
                   {t("Presupuesto mensual", "Monthly budget")}
                 </p>
-                <p className="numeric rounded-full bg-positive/10 px-2 py-0.5 text-xs font-semibold text-positive">
+                <p className="numeric text-xs font-semibold text-primary">
                   {fmt(filters.budget)}
                   {filters.budget >= 15000 && "+"}
                 </p>
@@ -522,10 +474,6 @@ function LifestyleSimulatorContent() {
                 value={[filters.budget]}
                 onValueChange={([v]) => set("budget", v ?? 1000)}
               />
-              <div className="mt-2 flex justify-between text-[10px] text-muted-foreground/70">
-                <span>{fmt(1000)}</span>
-                <span>{fmt(15000)}+</span>
-              </div>
             </div>
             <SelectFilter
               label={t("Cómo vivir", "Comfort level")}
@@ -552,7 +500,6 @@ function LifestyleSimulatorContent() {
               label={t("Ingreso por hora", "Hourly income")}
               value={filters.salary}
               onChange={(v) => set("salary", v)}
-              fullWidth
               options={[
                 { value: "any", label: t("Indiferente", "Doesn't matter"), icon: "🌍" },
                 { value: "under_25", label: t("< $25/h", "Under $25/hr"), icon: "💵" },
@@ -562,10 +509,11 @@ function LifestyleSimulatorContent() {
                 { value: "100_plus", label: t("$100+/h", "$100+/hr"), icon: "👑" },
               ]}
             />
+
           </FilterGroup>
 
           {/* Tú */}
-          <FilterGroup title={t("Tú", "You")} color="primary">
+          <FilterGroup title={t("Tú", "You")}>
             <SelectFilter
               label={t("Etapa", "Life stage")}
               value={filters.stage}
@@ -589,55 +537,24 @@ function LifestyleSimulatorContent() {
                 { value: "neutral", label: t("Neutral", "Neutral"), icon: "★★★" },
               ]}
             />
-            <SelectFilter
-              label={t("Objetivo", "Goal")}
-              value={filters.goal}
-              onChange={(v) => set("goal", v)}
-              fullWidth
-              options={[
-                { value: "save", label: t("Ahorrar más", "Save more"), icon: "💰" },
-                { value: "lifestyle", label: t("Estilo de vida", "Lifestyle"), icon: "🌴" },
-                { value: "retire", label: t("Retirarme antes", "Retire earlier"), icon: "🚀" },
-                { value: "family", label: t("Familia", "Family"), icon: "👨‍👩‍👧" },
-                { value: "career", label: t("Carrera", "Career"), icon: "💼" },
-                { value: "nomad", label: t("Nómada digital", "Digital nomad"), icon: "🌍" },
-              ]}
-            />
+            <div className="col-span-2">
+              <SelectFilter
+                label={t("Objetivo", "Goal")}
+                value={filters.goal}
+                onChange={(v) => set("goal", v)}
+                options={[
+                  { value: "save", label: t("Ahorrar más", "Save more"), icon: "💰" },
+                  { value: "lifestyle", label: t("Estilo de vida", "Lifestyle"), icon: "🌴" },
+                  { value: "retire", label: t("Retirarme antes", "Retire earlier"), icon: "🚀" },
+                  { value: "family", label: t("Familia", "Family"), icon: "👨‍👩‍👧" },
+                  { value: "career", label: t("Carrera", "Career"), icon: "💼" },
+                  { value: "nomad", label: t("Nómada digital", "Digital nomad"), icon: "🌍" },
+                ]}
+              />
+            </div>
           </FilterGroup>
         </div>
-
-        {/* Footer */}
-        <div className="flex flex-col gap-3 border-t border-border/60 bg-elevated/20 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-start gap-3 sm:items-center">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-              <Sparkles className="h-3.5 w-3.5" />
-            </div>
-            <div>
-              <p className="text-sm font-medium">{t("Resultados en tiempo real", "Real-time results")}</p>
-              <p className="text-[11px] text-muted-foreground">
-                {t(
-                  "Ajusta tus preferencias para encontrar tu ciudad ideal.",
-                  "Adjust your preferences to find your ideal city.",
-                )}
-              </p>
-            </div>
-          </div>
-          <Button
-            size="sm"
-            className="h-9 gap-2 rounded-xl px-4 text-[11px] font-medium"
-            onClick={() => {
-              const el = document.getElementById("city-results");
-              el?.scrollIntoView({ behavior: "smooth", block: "start" });
-            }}
-          >
-            {t("Ver resultados", "View results")}
-            <ArrowLeftRight className="h-3.5 w-3.5 rotate-180" />
-          </Button>
-        </div>
       </div>
-
-      {/* Anchor para scroll a resultados */}
-      <div id="city-results" />
 
 
       <SuggestedForYou
@@ -696,6 +613,7 @@ function CitySearchBar({
   onSave: () => void;
   t: (es: string, en: string) => string;
 }) {
+
   const [query, setQuery] = useState("");
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -707,86 +625,69 @@ function CitySearchBar({
   }, [query, all, picks]);
 
   return (
-    <div className="border-b border-border/60 px-5 py-3">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
-            <MapPin className="h-3.5 w-3.5" />
-          </div>
-          <p className="text-[11px] font-medium text-muted-foreground">
-            {picks.length === 0
-              ? t("Elige hasta 3 ciudades", "Pick up to 3 cities")
-              : t(`Ya elegiste ${picks.length} ciudad${picks.length === 1 ? "" : "es"}`, `You picked ${picks.length} city${picks.length === 1 ? "" : "ies"}`)}
-          </p>
-        </div>
-
-        <div className="flex flex-1 flex-wrap items-center gap-2 sm:justify-end">
-          <div className="relative min-w-[180px] flex-1 sm:max-w-[280px]">
-            <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={
-                picks.length >= 3
-                  ? t("Ya elegiste 3 ciudades", "You already picked 3 cities")
-                  : t("Busca ciudad…", "Search city…")
-              }
-              disabled={picks.length >= 3}
-              className="h-9 rounded-xl border-border/60 bg-elevated/30 pl-9 text-xs placeholder:text-muted-foreground/60 focus-visible:ring-primary/20"
-            />
-            <MapPin className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/70" />
-            {matches.length > 0 && (
-              <div className="absolute z-30 mt-1.5 w-full overflow-hidden rounded-xl border border-border/80 bg-popover p-1 shadow-xl">
-                {matches.map((r) => (
-                  <button
-                    key={r.city.id}
-                    type="button"
-                    className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs transition-colors hover:bg-elevated"
-                    onClick={() => {
-                      setPicks((p) => [...p, r.city.id].slice(0, 3));
-                      setQuery("");
-                    }}
-                  >
-                    <span className="font-medium">{r.city.name}</span>
-                    <span className="text-muted-foreground">{r.city.country}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {picks.map((id) => {
-            const c = all.find((r) => r.city.id === id)?.city;
-            if (!c) return null;
-            return (
-              <span
-                key={id}
-                className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-[11px] font-medium text-primary-foreground shadow-sm"
+    <div className="flex flex-wrap items-center gap-2 border-b border-border/60 px-4 py-2.5">
+      <div className="relative min-w-[200px] flex-1">
+        <MapPin className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={
+            picks.length >= 3
+              ? t("Ya elegiste 3 ciudades", "You already picked 3 cities")
+              : t("Busca y elige hasta 3 ciudades…", "Search and pick up to 3 cities…")
+          }
+          disabled={picks.length >= 3}
+          className="h-8 border-0 bg-transparent pl-8 text-xs shadow-none focus-visible:ring-0"
+        />
+        {matches.length > 0 && (
+          <div className="absolute z-30 mt-1 w-full overflow-hidden rounded-lg border border-border bg-popover shadow-lg">
+            {matches.map((r) => (
+              <button
+                key={r.city.id}
+                type="button"
+                className="flex w-full items-center justify-between px-3 py-2 text-left text-xs hover:bg-elevated"
+                onClick={() => {
+                  setPicks((p) => [...p, r.city.id].slice(0, 3));
+                  setQuery("");
+                }}
               >
-                {c.name}
-                <button
-                  type="button"
-                  onClick={() => setPicks((p) => p.filter((x) => x !== id))}
-                  aria-label={`Quitar ${c.name}`}
-                  className="rounded-full p-0.5 transition-colors hover:bg-primary/20"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </span>
-            );
-          })}
-          {picks.length > 0 && (
-            <Button size="sm" variant="ghost" className="h-8 text-[11px] text-muted-foreground hover:text-foreground" onClick={() => setPicks([])}>
-              {t("Usar las sugeridas", "Use suggested")}
-            </Button>
-          )}
-          {dirty && (
-            <Button size="sm" className="h-8 gap-1.5 rounded-full text-[11px]" onClick={onSave}>
-              <Sparkles className="h-3 w-3" />
-              {t("Guardar", "Save")}
-            </Button>
-          )}
-        </div>
+                <span>{r.city.name}</span>
+                <span className="text-muted-foreground">{r.city.country}</span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
+      {picks.map((id) => {
+        const c = all.find((r) => r.city.id === id)?.city;
+        if (!c) return null;
+        return (
+          <span
+            key={id}
+            className="inline-flex items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-2.5 py-1 text-[11px]"
+          >
+            {c.name}
+            <button
+              type="button"
+              onClick={() => setPicks((p) => p.filter((x) => x !== id))}
+              aria-label={`Quitar ${c.name}`}
+            >
+              <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+            </button>
+          </span>
+        );
+      })}
+      {picks.length > 0 && (
+        <Button size="sm" variant="ghost" className="h-7 text-[11px]" onClick={() => setPicks([])}>
+          {t("Usar las sugeridas", "Use suggested")}
+        </Button>
+      )}
+      {dirty && (
+        <Button size="sm" className="h-7 rounded-full text-[11px]" onClick={onSave}>
+          {t("Guardar", "Save")}
+        </Button>
+      )}
+
     </div>
   );
 }
