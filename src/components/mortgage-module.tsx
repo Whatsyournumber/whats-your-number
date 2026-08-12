@@ -655,6 +655,83 @@ export function MortgageModule() {
         </div>
       </div>
 
+      {/* Interés vs capital por año */}
+      <Panel
+        title={t("Intereses vs capital por año", "Interest vs principal by year")}
+        description={t(
+          "Al principio casi toda tu cuota son intereses; el capital crece con los años.",
+          "At the start almost all of your payment is interest; principal grows over the years.",
+        )}
+      >
+        {schedule.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            {t("Añade el saldo, la tasa y el plazo para ver tu amortización.", "Add balance, rate and term to see your amortization.")}
+          </p>
+        ) : (
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-sm" style={{ background: "var(--color-chart-5)" }} />
+                {t("Intereses", "Interest")}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-sm" style={{ background: "var(--color-chart-1)" }} />
+                {t("Capital", "Principal")}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-sm bg-warning/40" />
+                {t("Años 1-5: penalización por cambio de banco", "Years 1-5: switching penalty window")}
+              </span>
+            </div>
+
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={schedule} margin={{ left: -8, right: 8, top: 8 }} barCategoryGap="20%">
+                <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
+                {penaltyYears > 0 && schedule[0] && (
+                  <ReferenceArea
+                    x1={schedule[0].label}
+                    x2={schedule[penaltyYears - 1]?.label}
+                    fill="var(--color-warning)"
+                    fillOpacity={0.08}
+                  />
+                )}
+                <XAxis dataKey="label" {...axisProps} />
+                <YAxis {...axisProps} tickFormatter={(v) => fmtC(Number(v))} width={64} />
+                <Tooltip content={<ChartTooltip />} cursor={{ fill: "var(--color-muted)", opacity: 0.25 }} />
+                <Bar dataKey="interest" stackId="a" name={t("Intereses", "Interest")} fill="var(--color-chart-5)" radius={[0, 0, 0, 0]} />
+                <Bar dataKey="principal" stackId="a" name={t("Capital", "Principal")} fill="var(--color-chart-1)" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="rounded-xl border border-border/60 bg-elevated/40 p-3">
+                <p className="text-xs text-muted-foreground">{t("Año 1: cuota que va a intereses", "Year 1: payment going to interest")}</p>
+                <p className="numeric mt-1 text-lg font-semibold text-warning">{firstInterestShare.toFixed(0)}%</p>
+              </div>
+              <div className="rounded-xl border border-border/60 bg-elevated/40 p-3">
+                <p className="text-xs text-muted-foreground">{t("Intereses en los 5 primeros años", "Interest in the first 5 years")}</p>
+                <p className="numeric mt-1 text-lg font-semibold">{fmt(penaltyInterest)}</p>
+              </div>
+              <div className="rounded-xl border border-border/60 bg-elevated/40 p-3">
+                <p className="text-xs text-muted-foreground">{t("Capital amortizado en 5 años", "Principal repaid in 5 years")}</p>
+                <p className="numeric mt-1 text-lg font-semibold text-positive">{fmt(penaltyPrincipal)}</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3 rounded-2xl border border-warning/30 bg-warning/5 p-4">
+              <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
+              <p className="text-xs text-muted-foreground">
+                {t(
+                  `La mayoría de bancos aplican comisión por subrogación o cancelación anticipada durante los primeros 5 años. En ese periodo pagarías ${fmt(penaltyInterest)} en intereses y solo amortizarías ${fmt(penaltyPrincipal)} de capital: normalmente conviene esperar a que venza la penalización y entonces cambiar de banco o renegociar la tasa.`,
+                  `Most banks charge an early repayment or switching fee during the first 5 years. In that window you'd pay ${fmt(penaltyInterest)} in interest and repay only ${fmt(penaltyPrincipal)} of principal: it usually pays to wait until the penalty expires and then switch bank or renegotiate your rate.`,
+                )}
+              </p>
+            </div>
+          </div>
+        )}
+      </Panel>
+
+
       {/* Invest vs pay down */}
       <div className="grid gap-4 sm:grid-cols-2">
         <Panel variant="minimal" className="flex flex-col justify-between">
