@@ -44,6 +44,25 @@ type TxRow = {
 const money = (v: number, currency: string) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: currency || "USD", maximumFractionDigits: 2 }).format(v);
 
+type JobStage = "reading" | "uploading" | "extracting" | "analyzing" | "done" | "error";
+
+type Job = {
+  id: string;
+  name: string;
+  stage: JobStage;
+  message?: string;
+};
+
+const STAGE_ORDER: JobStage[] = ["reading", "uploading", "extracting", "analyzing"];
+const STAGE_PROGRESS: Record<JobStage, number> = {
+  reading: 12,
+  uploading: 40,
+  extracting: 65,
+  analyzing: 88,
+  done: 100,
+  error: 100,
+};
+
 export function StatementImporter() {
   const t = useT();
   const { user, signOut } = useAuth();
@@ -52,7 +71,12 @@ export function StatementImporter() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [jobs, setJobs] = useState<Job[]>([]);
   const runProcess = useServerFn(processStatement);
+
+  const setJob = (id: string, patch: Partial<Job>) =>
+    setJobs((prev) => prev.map((j) => (j.id === id ? { ...j, ...patch } : j)));
+
 
   const statementsQuery = useQuery({
     queryKey: ["statements", user?.id],
@@ -146,29 +170,42 @@ export function StatementImporter() {
         return;
       }
 
+      const incoming = Array.from(files).map((file) => ({
+        file,
+        jobId: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      }));
+      setJobs(incoming.map(({ file, jobId }) => ({ id: jobId, name: file.name, stage: "reading" as JobStage })));
+
       // Subimos y lanzamos el análisis de todos los archivos en paralelo.
       await Promise.all(
-        Array.from(files).map(async (file) => {
+        incoming.map(async ({ file, jobId }) => {
           const lower = file.name.toLowerCase();
           const isImage = file.type.startsWith("image/") || /\.(png|jpe?g|webp|heic|heif)$/.test(lower);
           const ok = lower.endsWith(".pdf") || lower.endsWith(".csv") || lower.endsWith(".txt") || isImage;
           if (!ok) {
+            setJob(jobId, { stage: "error", message: t("Formato no soportado", "Unsupported format") });
             toast.error(t(`${file.name}: solo aceptamos PDF, CSV o imágenes`, `${file.name}: we only accept PDF, CSV or images`));
             return;
           }
           if (file.size > MAX_BYTES) {
+            setJob(jobId, { stage: "error", message: t("Máximo 15 MB", "Maximum 15 MB") });
             toast.error(t(`${file.name}: máximo 15 MB`, `${file.name}: maximum 15 MB`));
             return;
           }
 
           const fallbackType = lower.endsWith(".pdf") ? "application/pdf" : isImage ? "image/jpeg" : "text/csv";
           const path = `${user.id}/${Date.now()}-${file.name.replace(/[^\w.\-]/g, "_")}`;
+          setJob(jobId, { stage: "uploading" });
           const { error: upErr } = await supabase.storage.from("statements").upload(path, file, {
             contentType: file.type || fallbackType,
             upsert: false,
           });
-          if (upErr) throw new Error(upErr.message);
+          if (upErr) {
+            setJob(jobId, { stage: "error", message: upErr.message });
+            throw new Error(upErr.message);
+          }
 
+          setJob(jobId, { stage: "extracting" });
           const { data: inserted, error: insErr } = await supabase
             .from("statements")
             .insert({
@@ -181,13 +218,35 @@ export function StatementImporter() {
             })
             .select("id")
             .single();
-          if (insErr) throw new Error(insErr.message);
+          if (insErr) {
+            setJob(jobId, { stage: "error", message: insErr.message });
+            throw new Error(insErr.message);
+          }
 
-          toast.success(t(`${file.name} subido · analizando con IA…`, `${file.name} uploaded · analyzing with AI…`));
           void qc.invalidateQueries({ queryKey: ["statements"] });
-          processMutation.mutate(inserted.id as string);
+          setJob(jobId, { stage: "analyzing" });
+          try {
+            const result = await runProcess({ data: { statementId: inserted.id as string, environment: getPaddleEnvironment() } });
+            setJob(jobId, {
+              stage: "done",
+              message: t(`${result.inserted} movimientos`, `${result.inserted} transactions`),
+            });
+            toast.success(
+              t(
+                `${result.inserted} movimientos clasificados por IA · actualizando tus módulos`,
+                `${result.inserted} transactions classified by AI · updating your modules`,
+              ),
+            );
+            refreshAll();
+          } catch (err) {
+            const msg = err instanceof Error ? err.message : t("Error de análisis", "Analysis error");
+            setJob(jobId, { stage: "error", message: msg });
+            toast.error(msg);
+            void qc.invalidateQueries({ queryKey: ["statements"] });
+          }
         }),
       );
+
     } catch (error) {
       const message = error instanceof Error ? error.message : "";
       if (message.includes("statements_user_id_fkey") || message.includes("foreign key")) {
@@ -305,6 +364,15 @@ export function StatementImporter() {
             </div>
           )}
         </div>
+
+        {jobs.length > 0 && (
+          <div className="mt-4 space-y-3">
+            {jobs.map((job) => (
+              <JobProgress key={job.id} job={job} />
+            ))}
+          </div>
+        )}
+
       </Panel>
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -411,4 +479,70 @@ function StatusIcon({ status }: { status: string }) {
   if (status === "error") return <TriangleAlert className="h-4 w-4 shrink-0 text-destructive" />;
   if (status === "processing") return <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" />;
   return <Badge variant="secondary" className="rounded-full text-[10px]">{t("Nuevo", "New")}</Badge>;
+}
+
+function JobProgress({ job }: { job: Job }) {
+  const t = useT();
+  const labels: Record<JobStage, string> = {
+    reading: t("Leyendo archivo", "Reading file"),
+    uploading: t("Subiendo", "Uploading"),
+    extracting: t("Extrayendo datos", "Extracting data"),
+    analyzing: t("Analizando con IA", "Analyzing with AI"),
+    done: t("Listo", "Done"),
+    error: t("Error", "Error"),
+  };
+  const pct = STAGE_PROGRESS[job.stage];
+  const isError = job.stage === "error";
+  const isDone = job.stage === "done";
+  const activeIndex = STAGE_ORDER.indexOf(job.stage);
+
+  return (
+    <div className="rounded-xl border border-border bg-elevated/60 px-3 py-3">
+      <div className="flex items-center gap-2">
+        {isError ? (
+          <TriangleAlert className="h-4 w-4 shrink-0 text-destructive" />
+        ) : isDone ? (
+          <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
+        ) : (
+          <Loader2 className="h-4 w-4 shrink-0 animate-spin text-primary" />
+        )}
+        <p className="truncate text-sm font-medium">{job.name}</p>
+        <span className={cn("ml-auto numeric text-xs", isError ? "text-destructive" : "text-muted-foreground")}>
+          {labels[job.stage]}
+          {job.message ? ` · ${job.message}` : ""}
+        </span>
+      </div>
+
+      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-border">
+        <div
+          className={cn("h-full rounded-full transition-all duration-500", isError ? "bg-destructive" : "bg-primary")}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+
+      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+        {STAGE_ORDER.map((stage, i) => {
+          const completed = isDone || (activeIndex > -1 && i < activeIndex);
+          const active = stage === job.stage;
+          return (
+            <span
+              key={stage}
+              className={cn(
+                "flex items-center gap-1 text-[11px]",
+                completed ? "text-primary" : active ? "text-foreground" : "text-muted-foreground/60",
+              )}
+            >
+              <span
+                className={cn(
+                  "h-1.5 w-1.5 rounded-full",
+                  completed ? "bg-primary" : active ? (isError ? "bg-destructive" : "animate-pulse bg-primary") : "bg-border",
+                )}
+              />
+              {labels[stage]}
+            </span>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
