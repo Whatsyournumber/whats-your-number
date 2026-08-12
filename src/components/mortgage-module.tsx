@@ -163,6 +163,10 @@ export function MortgageModule() {
   const currency = profile.currency || "EUR";
   const fmt = (n: number) => (Number.isFinite(n) ? money(Math.round(n), currency) : "—");
   const fmtC = (n: number) => (Number.isFinite(n) ? compact(n, currency) : "—");
+  const currencySymbol =
+    new Intl.NumberFormat("es-ES", { style: "currency", currency, maximumFractionDigits: 0 })
+      .formatToParts(1)
+      .find((p) => p.type === "currency")?.value ?? currency;
   const expected = Number(profile.expected_return) || 7;
 
   const [s, setS] = useState<MortgageState>(defaults);
