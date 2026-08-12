@@ -14,8 +14,18 @@ export const processStatement = createServerFn({ method: "POST" })
       .parse(data),
   )
   .handler(async ({ data, context }) => {
-    const { assertStatementQuota } = await import("./entitlements.server");
-    await assertStatementQuota(context.supabase as never, context.userId, data.environment);
+    const { assertStatementQuota, EntitlementError } = await import("./entitlements.server");
+    try {
+      await assertStatementQuota(context.supabase as never, context.userId, data.environment);
+    } catch (err) {
+      if (err instanceof EntitlementError) {
+        // Cuota del plan Free agotada: no es un crash, se devuelve como upsell.
+        return { inserted: 0, summary: "", upgradeRequired: "pro" as const };
+      }
+      throw err;
+    }
     const { processStatementForUser } = await import("./statements.server");
-    return processStatementForUser(context.supabase as never, context.userId, data.statementId);
+    const result = await processStatementForUser(context.supabase as never, context.userId, data.statementId);
+    return { ...result, upgradeRequired: null };
   });
+

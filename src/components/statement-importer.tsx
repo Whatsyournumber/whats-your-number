@@ -118,6 +118,15 @@ export function StatementImporter() {
   const processMutation = useMutation({
     mutationFn: (statementId: string) => runProcess({ data: { statementId, environment: getPaddleEnvironment() } }),
     onSuccess: (result) => {
+      if (result.upgradeRequired) {
+        toast.error(
+          t(
+            "Alcanzaste el límite de 5 importaciones al mes del plan Free. Actualiza a Pro para importaciones ilimitadas.",
+            "You reached the Free plan limit of 5 imports per month. Upgrade to Pro for unlimited imports.",
+          ),
+        );
+        return;
+      }
       toast.success(
         t(
           `${result.inserted} movimientos clasificados por IA · actualizando tus módulos`,
@@ -126,6 +135,7 @@ export function StatementImporter() {
       );
       refreshAll();
     },
+
     onError: (error: Error) => {
       toast.error(error.message || t("No pudimos procesar el archivo", "We couldn't process the file"));
       void qc.invalidateQueries({ queryKey: ["statements"] });
@@ -227,6 +237,16 @@ export function StatementImporter() {
           setJob(jobId, { stage: "analyzing" });
           try {
             const result = await runProcess({ data: { statementId: inserted.id as string, environment: getPaddleEnvironment() } });
+            if (result.upgradeRequired) {
+              const msg = t(
+                "Límite de 5 importaciones/mes del plan Free. Actualiza a Pro.",
+                "Free plan limit of 5 imports/month reached. Upgrade to Pro.",
+              );
+              setJob(jobId, { stage: "error", message: msg });
+              toast.error(msg);
+              void qc.invalidateQueries({ queryKey: ["statements"] });
+              return;
+            }
             setJob(jobId, {
               stage: "done",
               message: t(`${result.inserted} movimientos`, `${result.inserted} transactions`),
@@ -238,6 +258,7 @@ export function StatementImporter() {
               ),
             );
             refreshAll();
+
           } catch (err) {
             const msg = err instanceof Error ? err.message : t("Error de análisis", "Analysis error");
             setJob(jobId, { stage: "error", message: msg });
