@@ -52,6 +52,8 @@ export const Route = createFileRoute("/mi-perfil")({
 
 function MiPerfil() {
   const t = useT();
+  const { lang } = useLanguage();
+  const tr = (label: string) => translateOption(label, lang);
   const { profile, isLoading, save, saving } = useProfile();
   const navigate = useNavigate();
   const [form, setForm] = useState<Profile>(profile);
