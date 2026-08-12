@@ -118,6 +118,15 @@ export function StatementImporter() {
   const processMutation = useMutation({
     mutationFn: (statementId: string) => runProcess({ data: { statementId, environment: getPaddleEnvironment() } }),
     onSuccess: (result) => {
+      if (result.upgradeRequired) {
+        toast.error(
+          t(
+            "Alcanzaste el límite de 5 importaciones al mes del plan Free. Actualiza a Pro para importaciones ilimitadas.",
+            "You reached the Free plan limit of 5 imports per month. Upgrade to Pro for unlimited imports.",
+          ),
+        );
+        return;
+      }
       toast.success(
         t(
           `${result.inserted} movimientos clasificados por IA · actualizando tus módulos`,
@@ -126,6 +135,7 @@ export function StatementImporter() {
       );
       refreshAll();
     },
+
     onError: (error: Error) => {
       toast.error(error.message || t("No pudimos procesar el archivo", "We couldn't process the file"));
       void qc.invalidateQueries({ queryKey: ["statements"] });
