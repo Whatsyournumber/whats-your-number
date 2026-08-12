@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { WealthEditor } from "@/components/wealth-editor";
 import { convertStoredFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useFxRates } from "@/hooks/use-fx-rates";
 import {
@@ -207,7 +206,7 @@ function MiPerfil() {
             <RefreshCw className="h-4 w-4" />
             {t("Rehacer onboarding", "Redo onboarding")}
           </Button>
-          <Button className="gap-2 rounded-full" onClick={() => void onSave()} disabled={saving || savingHoldings || !dirty}>
+          <Button className="gap-2 rounded-full" onClick={() => void onSave()} disabled={saving || !dirty}>
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             {t("Guardar cambios", "Save changes")}
           </Button>
@@ -356,7 +355,7 @@ function MiPerfil() {
 
 
       <div className="flex justify-end">
-        <Button className="gap-2 rounded-full" onClick={() => void onSave()} disabled={saving || savingHoldings || !dirty}>
+        <Button className="gap-2 rounded-full" onClick={() => void onSave()} disabled={saving || !dirty}>
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
           {t("Guardar cambios", "Save changes")}
         </Button>
