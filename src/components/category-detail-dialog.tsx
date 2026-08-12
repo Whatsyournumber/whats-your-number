@@ -55,8 +55,11 @@ export function CategoryDetailDialog({
   const merchants = useMemo(() => {
     const map = new Map<string, { name: string; amount: number; count: number }>();
     for (const tx of items) {
-      const key = tx.merchant?.trim() || t("Sin comercio", "Unknown");
-      const prev = map.get(key) ?? { name: key, amount: 0, count: 0 };
+      const label = tx.merchant?.trim() || t("Sin comercio", "Unknown");
+      const key = merchantKey(label) || label.toLowerCase();
+      const prev = map.get(key) ?? { name: label, amount: 0, count: 0 };
+      // Se conserva el nombre más corto y legible del mismo comercio.
+      if (label.length < prev.name.length) prev.name = label;
       prev.amount += Math.abs(tx.amount);
       prev.count += 1;
       map.set(key, prev);
