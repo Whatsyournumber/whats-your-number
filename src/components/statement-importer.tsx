@@ -480,3 +480,69 @@ function StatusIcon({ status }: { status: string }) {
   if (status === "processing") return <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" />;
   return <Badge variant="secondary" className="rounded-full text-[10px]">{t("Nuevo", "New")}</Badge>;
 }
+
+function JobProgress({ job }: { job: Job }) {
+  const t = useT();
+  const labels: Record<JobStage, string> = {
+    reading: t("Leyendo archivo", "Reading file"),
+    uploading: t("Subiendo", "Uploading"),
+    extracting: t("Extrayendo datos", "Extracting data"),
+    analyzing: t("Analizando con IA", "Analyzing with AI"),
+    done: t("Listo", "Done"),
+    error: t("Error", "Error"),
+  };
+  const pct = STAGE_PROGRESS[job.stage];
+  const isError = job.stage === "error";
+  const isDone = job.stage === "done";
+  const activeIndex = STAGE_ORDER.indexOf(job.stage);
+
+  return (
+    <div className="rounded-xl border border-border bg-elevated/60 px-3 py-3">
+      <div className="flex items-center gap-2">
+        {isError ? (
+          <TriangleAlert className="h-4 w-4 shrink-0 text-destructive" />
+        ) : isDone ? (
+          <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
+        ) : (
+          <Loader2 className="h-4 w-4 shrink-0 animate-spin text-primary" />
+        )}
+        <p className="truncate text-sm font-medium">{job.name}</p>
+        <span className={cn("ml-auto numeric text-xs", isError ? "text-destructive" : "text-muted-foreground")}>
+          {labels[job.stage]}
+          {job.message ? ` · ${job.message}` : ""}
+        </span>
+      </div>
+
+      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-border">
+        <div
+          className={cn("h-full rounded-full transition-all duration-500", isError ? "bg-destructive" : "bg-primary")}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+
+      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+        {STAGE_ORDER.map((stage, i) => {
+          const completed = isDone || (activeIndex > -1 && i < activeIndex);
+          const active = stage === job.stage;
+          return (
+            <span
+              key={stage}
+              className={cn(
+                "flex items-center gap-1 text-[11px]",
+                completed ? "text-primary" : active ? "text-foreground" : "text-muted-foreground/60",
+              )}
+            >
+              <span
+                className={cn(
+                  "h-1.5 w-1.5 rounded-full",
+                  completed ? "bg-primary" : active ? (isError ? "bg-destructive" : "animate-pulse bg-primary") : "bg-border",
+                )}
+              />
+              {labels[stage]}
+            </span>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
