@@ -360,20 +360,28 @@ function MiPerfil() {
           </div>
         </Panel>
 
-        <Panel title={t("Patrimonio", "Net worth")} description={t("Se calcula con el detalle de abajo", "Calculated from the detail below")}>
-          <div className="grid gap-3 sm:grid-cols-2">
+        <Panel title={t("Patrimonio", "Net worth")} description={t("Activos y deudas actuales", "Current assets and liabilities")}>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {moneyFields
+              .filter((f) => f.group === "assets")
+              .map((f) => (
+                <Field key={String(f.key)} label={f.label}>
+                  <Input
+                    type="number"
+                    value={(form[f.key] as number) || ""}
+                    onChange={(e) => set(f.key, Number(e.target.value || 0) as Profile[typeof f.key])}
+                    placeholder="0"
+                  />
+                </Field>
+              ))}
+          </div>
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
             <Stat label={t("Activos totales", "Total assets")} value={preview.fmt(preview.totalAssets)} />
             <Stat label={t("Deudas totales", "Total liabilities")} value={preview.fmt(preview.totalLiabilities)} />
             <Stat label={t("Patrimonio neto", "Net worth")} value={preview.fmt(preview.netWorth)} />
-            <Stat label={t("Aporte mensual a inversiones", "Monthly investing")} value={preview.fmt(monthlyInvest)} />
           </div>
-          <p className="mt-4 text-xs text-muted-foreground">
-            {t(
-              "Edita el detalle de liquidez, inversiones, propiedades y deudas en el bloque «Tu patrimonio». Todo se sincroniza con dashboard, retiro, portafolio y tu número.",
-              "Edit liquidity, investments, properties and debts in the “Your wealth” block below. Everything syncs with dashboard, retirement, portfolio and your number.",
-            )}
-          </p>
         </Panel>
+
 
 
         <Panel title={t("Estilo de vida y objetivos", "Lifestyle & goals")}>
