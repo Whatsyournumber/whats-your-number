@@ -397,6 +397,46 @@ function Gastos() {
     [merchants, categories.rules],
   );
 
+  /** Categoría a la que la IA está buscando movimientos ahora mismo. */
+  const [autoCatId, setAutoCatId] = useState<string | null>(null);
+
+  /** Pide a la IA que asigne los movimientos que correspondan a una categoría propia. */
+  const autoAssign = async (cat: { id: string; name: string; keywords: string }) => {
+    const name = cat.name.trim();
+    if (!name || autoCatId) return;
+    setAutoCatId(cat.id);
+    try {
+      const plan = await planCategories({
+        data: {
+          message:
+            lang === "es"
+              ? `Asigna a la categoría "${name}" todos los comercios del contexto que correspondan. Devuelve una sola operación assign con esa categoría.`
+              : `Assign to the "${name}" category every merchant from the context that belongs there. Return a single assign op for that category.`,
+          lang,
+          environment: getPaddleEnvironment(),
+          categories: categories.names,
+          customRules: categories.rules.map((r) => ({ name: r.name, keywords: r.hints })),
+          merchants: merchantsForAi,
+        },
+      });
+      const op = plan.ops.find((o) => o.category.trim().toLowerCase() === name.toLowerCase()) ?? plan.ops[0];
+      const found = (op?.keywords ?? []).map((k) => k.trim().toLowerCase()).filter(Boolean);
+      if (!found.length) {
+        toast.info(t("No encontré movimientos para esa categoría.", "I couldn't find movements for that category."));
+        return;
+      }
+      const merged = Array.from(
+        new Set([...cat.keywords.split(",").map((k) => k.trim().toLowerCase()).filter(Boolean), ...found]),
+      );
+      categories.update(cat.id, { keywords: merged.join(", ") });
+      toast.success(`${name}: ${found.length} ${t("coincidencias añadidas", "matches added")}`);
+    } catch {
+      toast.error(t("No pude analizar los movimientos.", "I couldn't analyze the movements."));
+    } finally {
+      setAutoCatId(null);
+    }
+  };
+
 
   const variable = variableTotal;
   const hasData = transactions.length > 0;
