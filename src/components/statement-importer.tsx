@@ -146,46 +146,48 @@ export function StatementImporter() {
         return;
       }
 
-      for (const file of Array.from(files)) {
+      // Subimos y lanzamos el análisis de todos los archivos en paralelo.
+      await Promise.all(
+        Array.from(files).map(async (file) => {
+          const lower = file.name.toLowerCase();
+          const isImage = file.type.startsWith("image/") || /\.(png|jpe?g|webp|heic|heif)$/.test(lower);
+          const ok = lower.endsWith(".pdf") || lower.endsWith(".csv") || lower.endsWith(".txt") || isImage;
+          if (!ok) {
+            toast.error(t(`${file.name}: solo aceptamos PDF, CSV o imágenes`, `${file.name}: we only accept PDF, CSV or images`));
+            return;
+          }
+          if (file.size > MAX_BYTES) {
+            toast.error(t(`${file.name}: máximo 15 MB`, `${file.name}: maximum 15 MB`));
+            return;
+          }
 
-        const lower = file.name.toLowerCase();
-        const isImage = file.type.startsWith("image/") || /\.(png|jpe?g|webp|heic|heif)$/.test(lower);
-        const ok = lower.endsWith(".pdf") || lower.endsWith(".csv") || lower.endsWith(".txt") || isImage;
-        if (!ok) {
-          toast.error(t(`${file.name}: solo aceptamos PDF, CSV o imágenes`, `${file.name}: we only accept PDF, CSV or images`));
-          continue;
-        }
-        if (file.size > MAX_BYTES) {
-          toast.error(t(`${file.name}: máximo 15 MB`, `${file.name}: maximum 15 MB`));
-          continue;
-        }
+          const fallbackType = lower.endsWith(".pdf") ? "application/pdf" : isImage ? "image/jpeg" : "text/csv";
+          const path = `${user.id}/${Date.now()}-${file.name.replace(/[^\w.\-]/g, "_")}`;
+          const { error: upErr } = await supabase.storage.from("statements").upload(path, file, {
+            contentType: file.type || fallbackType,
+            upsert: false,
+          });
+          if (upErr) throw new Error(upErr.message);
 
-        const fallbackType = lower.endsWith(".pdf") ? "application/pdf" : isImage ? "image/jpeg" : "text/csv";
-        const path = `${user.id}/${Date.now()}-${file.name.replace(/[^\w.\-]/g, "_")}`;
-        const { error: upErr } = await supabase.storage.from("statements").upload(path, file, {
-          contentType: file.type || fallbackType,
-          upsert: false,
-        });
-        if (upErr) throw new Error(upErr.message);
+          const { data: inserted, error: insErr } = await supabase
+            .from("statements")
+            .insert({
+              user_id: user.id,
+              file_name: file.name,
+              file_type: file.type || fallbackType,
+              file_size: file.size,
+              storage_path: path,
+              status: "uploaded",
+            })
+            .select("id")
+            .single();
+          if (insErr) throw new Error(insErr.message);
 
-        const { data: inserted, error: insErr } = await supabase
-          .from("statements")
-          .insert({
-            user_id: user.id,
-            file_name: file.name,
-            file_type: file.type || fallbackType,
-            file_size: file.size,
-            storage_path: path,
-            status: "uploaded",
-          })
-          .select("id")
-          .single();
-        if (insErr) throw new Error(insErr.message);
-
-        toast.success(t(`${file.name} subido · analizando con IA…`, `${file.name} uploaded · analyzing with AI…`));
-        void qc.invalidateQueries({ queryKey: ["statements"] });
-        processMutation.mutate(inserted.id as string);
-      }
+          toast.success(t(`${file.name} subido · analizando con IA…`, `${file.name} uploaded · analyzing with AI…`));
+          void qc.invalidateQueries({ queryKey: ["statements"] });
+          processMutation.mutate(inserted.id as string);
+        }),
+      );
     } catch (error) {
       const message = error instanceof Error ? error.message : "";
       if (message.includes("statements_user_id_fkey") || message.includes("foreign key")) {
