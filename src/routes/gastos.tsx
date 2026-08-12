@@ -21,6 +21,7 @@ import type { DateRange } from "react-day-picker";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, ComposedChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
+import { EditableKpiCard } from "@/components/editable-kpi-card";
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
