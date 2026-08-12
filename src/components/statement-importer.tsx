@@ -136,7 +136,18 @@ export function StatementImporter() {
     if (!files || files.length === 0 || !user) return;
     setUploading(true);
     try {
+      // La sesión puede seguir en el navegador aunque la cuenta ya no exista
+      // (p. ej. borrada desde el panel de administración). En ese caso el insert
+      // rompe la clave foránea de statements, así que lo validamos antes.
+      const { data: current, error: authErr } = await supabase.auth.getUser();
+      if (authErr || !current?.user) {
+        await signOut();
+        toast.error(t("Tu sesión ya no es válida. Vuelve a iniciar sesión.", "Your session is no longer valid. Please sign in again."));
+        return;
+      }
+
       for (const file of Array.from(files)) {
+
         const lower = file.name.toLowerCase();
         const isImage = file.type.startsWith("image/") || /\.(png|jpe?g|webp|heic|heif)$/.test(lower);
         const ok = lower.endsWith(".pdf") || lower.endsWith(".csv") || lower.endsWith(".txt") || isImage;
