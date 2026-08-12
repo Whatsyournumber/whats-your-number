@@ -100,66 +100,22 @@ function MiPerfil() {
     if (!dirty) setForm(profile);
   }, [profile, dirty]);
 
-  // Semilla: si aún no hay detalle de patrimonio, lo creamos con los totales del onboarding.
-  useEffect(() => {
-    if (dirty || loadingHoldings) return;
-    if (holdings.length > 0) {
-      setRows(holdings);
-      return;
-    }
-    const seed: Holding[] = [];
-    const push = (kind: Parameters<typeof newHolding>[0], label: string, value: number, extra?: Partial<Holding>) => {
-      if (!value) return;
-      seed.push({ ...newHolding(kind, label, seed.length), manual_value: value, ...(extra ?? {}) });
-    };
-    push("cash", t("Efectivo", "Cash"), profile.assets_cash);
-    push("bank", t("Cuentas bancarias", "Bank accounts"), profile.assets_bank);
-    push("retirement", t("Fondo de retiro", "Retirement fund"), profile.assets_retirement);
-    push("etf", t("ETFs / fondos", "ETFs / funds"), profile.assets_etf);
-    push("stock", t("Acciones", "Stocks"), profile.assets_stocks);
-    push("crypto", t("Cripto", "Crypto"), profile.assets_crypto);
-    push("property", t("Propiedad", "Property"), profile.assets_property, {
-      linked_liability: profile.mortgage_balance || 0,
-      expected_return: 4,
-    });
-    const otherDebt = Math.max(0, profile.liabilities - (profile.mortgage_balance || 0));
-    push("debt", t("Otras deudas", "Other debts"), otherDebt);
-    setRows(seed);
-  }, [holdings, loadingHoldings, dirty, profile, t]);
-
   const set = <K extends keyof Profile>(key: K, value: Profile[K]) => {
     setDirty(true);
     setForm((f) => ({ ...f, [key]: value }));
-  };
-
-  const setRowsDirty = (next: Holding[]) => {
-    setDirty(true);
-    setRows(next);
   };
 
   /** Cambia la moneda y reconvierte todos los importes con la tasa del día. */
   const changeCurrency = (next: string, extra?: Partial<Profile>) => {
     setDirty(true);
     const from = form.currency || "EUR";
-    if (next && next !== from) {
-      const conv = (n: number) => Math.round(convertAmount(n, from, next));
-      setRows((list) =>
-        list.map((h) => ({
-          ...h,
-          manual_value: conv(h.manual_value),
-          cost_basis: conv(h.cost_basis),
-          monthly_contribution: conv(h.monthly_contribution),
-          linked_liability: conv(h.linked_liability),
-          monthly_income: conv(h.monthly_income),
-        })),
-      );
-    }
     setForm((f) => {
       if (!next || next === from) return { ...f, ...(extra ?? {}) };
       convertStoredFixedExpenses(from, next);
       return { ...convertProfileCurrency(f, from, next), ...(extra ?? {}), currency: next };
     });
   };
+
 
   const merged: Profile = { ...form };
   const preview = buildDataset(merged);
