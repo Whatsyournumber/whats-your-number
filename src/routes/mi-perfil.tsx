@@ -8,6 +8,8 @@ import { SubscriptionManager } from "@/components/subscription-manager";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { convertStoredFixedExpenses } from "@/hooks/use-fixed-expenses";
+import { useFxRates } from "@/hooks/use-fx-rates";
 import { useT } from "@/hooks/use-language";
 import { useProfile, type Profile } from "@/hooks/use-profile";
 import {
@@ -22,6 +24,7 @@ import {
   plansChildrenOptions,
   travelOptions,
 } from "@/lib/onboarding";
+import { convertProfileCurrency } from "@/lib/fx";
 import { buildDataset } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
 
@@ -43,6 +46,8 @@ function MiPerfil() {
   const navigate = useNavigate();
   const [form, setForm] = useState<Profile>(profile);
   const [dirty, setDirty] = useState(false);
+  // Tasas del día: necesarias para reconvertir los importes al cambiar de moneda.
+  useFxRates();
 
   const moneyFields: { key: keyof Profile; label: string; group: "income" | "assets" | "flow" }[] = [
     { key: "income_salary", label: t("Salario mensual", "Monthly salary"), group: "income" },
@@ -69,6 +74,17 @@ function MiPerfil() {
   const set = <K extends keyof Profile>(key: K, value: Profile[K]) => {
     setDirty(true);
     setForm((f) => ({ ...f, [key]: value }));
+  };
+
+  /** Cambia la moneda y reconvierte todos los importes con la tasa del día. */
+  const changeCurrency = (next: string, extra?: Partial<Profile>) => {
+    setDirty(true);
+    setForm((f) => {
+      const from = f.currency || "EUR";
+      if (!next || next === from) return { ...f, ...(extra ?? {}) };
+      convertStoredFixedExpenses(from, next);
+      return { ...convertProfileCurrency(f, from, next), ...(extra ?? {}), currency: next };
+    });
   };
 
   const preview = buildDataset(form);
@@ -165,11 +181,8 @@ function MiPerfil() {
                 value={form.country}
                 onChange={(e) => {
                   const c = countries.find((x) => x.name === e.target.value);
-                  set("country", e.target.value);
-                  if (c) {
-                    set("country_code", c.code);
-                    set("currency", c.currency);
-                  }
+                  if (c) changeCurrency(c.currency, { country: e.target.value, country_code: c.code });
+                  else set("country", e.target.value);
                 }}
               >
                 <option value="">{t("Selecciona…", "Select…")}</option>
@@ -184,7 +197,7 @@ function MiPerfil() {
               <select
                 className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
                 value={form.currency || "EUR"}
-                onChange={(e) => set("currency", e.target.value)}
+                onChange={(e) => changeCurrency(e.target.value)}
               >
                 {currencies.map((c) => (
                   <option key={c.code} value={c.code}>

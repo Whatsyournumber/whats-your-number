@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { useProfile } from "@/hooks/use-profile";
+import { convertMoneyValue } from "@/lib/fx";
 import { FIXED_FIELDS } from "@/lib/onboarding";
 
 export type FixedExpense = { id: string; name: string; amount: number };
@@ -80,6 +81,27 @@ export function useFixedExpenses() {
   const total = items.reduce((s, i) => s + (Number.isFinite(i.amount) ? i.amount : 0), 0);
 
   return { items, update, add, remove, total };
+}
+
+/** Reconvierte los gastos fijos guardados al cambiar la moneda del perfil. */
+export function convertStoredFixedExpenses(from: string, to: string) {
+  if (!from || !to || from.toUpperCase() === to.toUpperCase()) return;
+  try {
+    const raw = window.localStorage.getItem(KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as FixedExpense[];
+      if (Array.isArray(parsed)) {
+        const next = parsed.map((i) => ({ ...i, amount: convertMoneyValue(Number(i.amount) || 0, from, to) }));
+        window.localStorage.setItem(KEY, JSON.stringify(next));
+      }
+    }
+    const target = window.localStorage.getItem(TARGET_KEY);
+    if (target !== null && Number.isFinite(Number(target))) {
+      window.localStorage.setItem(TARGET_KEY, String(convertMoneyValue(Number(target), from, to)));
+    }
+  } catch {
+    /* ignore */
+  }
 }
 
 const TARGET_KEY = "whatsyournumber:spend-target";

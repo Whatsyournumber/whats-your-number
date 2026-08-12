@@ -165,3 +165,59 @@ export function convertAmount(amount: number, from: string | null | undefined, t
 
 /** Todos los códigos ISO soportados, ordenados alfabéticamente. */
 export const SUPPORTED_CURRENCY_CODES = Object.keys(FALLBACK_PER_USD).sort();
+
+/** Campos monetarios del perfil que deben reconvertirse al cambiar de moneda. */
+export const PROFILE_MONEY_FIELDS = [
+  "income_salary",
+  "income_bonus",
+  "income_rent",
+  "income_other",
+  "monthly_expenses",
+  "monthly_savings",
+  "fixed_housing",
+  "fixed_utilities",
+  "fixed_insurance",
+  "fixed_transport",
+  "fixed_education",
+  "fixed_subscriptions",
+  "fixed_savings",
+  "fixed_other",
+  "assets_cash",
+  "assets_bank",
+  "assets_retirement",
+  "assets_etf",
+  "assets_stocks",
+  "assets_crypto",
+  "assets_property",
+  "liabilities",
+  "mortgage_balance",
+  "desired_retirement_income",
+] as const;
+
+/** Redondeo amable según la magnitud de la moneda destino. */
+function roundForCurrency(value: number): number {
+  const abs = Math.abs(value);
+  if (abs >= 100000) return Math.round(value / 100) * 100;
+  if (abs >= 10000) return Math.round(value / 10) * 10;
+  if (abs >= 100) return Math.round(value);
+  return Math.round(value * 100) / 100;
+}
+
+/**
+ * Reconvierte todos los importes del perfil de una moneda a otra usando las
+ * tasas del día ya cargadas en FX_PER_USD.
+ */
+export function convertProfileCurrency<T extends Record<string, unknown>>(profile: T, from: string, to: string): T {
+  if (!from || !to || from.toUpperCase() === to.toUpperCase()) return profile;
+  const next = { ...profile } as Record<string, unknown>;
+  for (const key of PROFILE_MONEY_FIELDS) {
+    const raw = Number(next[key]);
+    if (!Number.isFinite(raw) || raw === 0) continue;
+    next[key] = roundForCurrency(convertAmount(raw, from, to));
+  }
+  return next as T;
+}
+
+/** Reconvierte una lista de importes sueltos (p. ej. gastos fijos locales). */
+export const convertMoneyValue = (value: number, from: string, to: string) =>
+  roundForCurrency(convertAmount(value, from, to));
