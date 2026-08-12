@@ -389,7 +389,18 @@ function MiPerfil() {
         </Panel>
       </div>
 
+      <PageHeader
+        eyebrow={t("Detalle", "Detail")}
+        title={t("Tu patrimonio", "Your wealth")}
+        subtitle={t(
+          "Registra cada activo y deuda para llevar tracking real: los totales se sincronizan solos con el resto de la app.",
+          "Track every asset and debt: totals sync automatically with the rest of the app.",
+        )}
+      />
+      <WealthEditor value={rows} onChange={setRowsDirty} fmt={preview.fmt} />
+
       <SubscriptionManager />
+
 
       <div className="flex justify-end">
         <Button className="gap-2 rounded-full" onClick={() => void onSave()} disabled={saving || !dirty}>
