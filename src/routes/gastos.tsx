@@ -859,9 +859,31 @@ function Gastos() {
                   <div className="flex w-full items-center gap-3 pr-3">
                     <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
                     <span className="truncate text-sm font-medium">{tc(c.name)}</span>
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      aria-label={t("Ver análisis", "View analysis")}
+                      title={t("Ver análisis", "View analysis")}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setDetailCat(c.name);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setDetailCat(c.name);
+                        }
+                      }}
+                      className="shrink-0 rounded-full p-1 text-muted-foreground transition hover:bg-elevated hover:text-foreground"
+                    >
+                      <BarChart3 className="h-3.5 w-3.5" />
+                    </span>
                     <span className="shrink-0 rounded-full bg-elevated/50 px-2 py-0.5 text-[11px] text-muted-foreground">
                       {`${c.items.length} ${c.items.length === 1 ? t("mov.", "tx") : t("movs.", "txs")}`}
                     </span>
+
 
                     {variation !== null && (
                       <span
