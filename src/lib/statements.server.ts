@@ -1,4 +1,4 @@
-import { NoObjectGeneratedError, Output, generateText } from "ai";
+import { NoObjectGeneratedError, Output, streamText } from "ai";
 import { z } from "zod";
 
 import { createLovableAiGatewayProvider } from "./ai-gateway.server";
