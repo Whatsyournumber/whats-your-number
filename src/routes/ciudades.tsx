@@ -532,58 +532,20 @@ function LifestyleSimulatorContent() {
   );
 }
 
-/* ---------------- Sugerencias según tu onboarding ---------------- */
+/* ---------------- Buscador minimalista de ciudades ---------------- */
 
-function SuggestedForYou({
-  profile,
-  ctx,
-  fmt,
+function CitySearchBar({
+  all,
+  picks,
+  setPicks,
   t,
-  onApply,
-  onOpen,
 }: {
-  profile: ReturnType<typeof useProfile>["profile"];
-  ctx: { netWorth: number; age: number; expectedReturn: number };
-  fmt: (n: number) => string;
+  all: CityScore[];
+  picks: string[];
+  setPicks: React.Dispatch<React.SetStateAction<string[]>>;
   t: (es: string, en: string) => string;
-  onApply: (f: Filters) => void;
-  onOpen: (r: CityScore) => void;
 }) {
-  const suggested = useMemo(() => suggestedFilters(profile), [profile]);
-  const [f, setF] = useState<Filters>(suggested);
-  const [editing, setEditing] = useState(false);
-  // Ciudades escritas por ti (máx. 3). Se guardan en este navegador.
-  const [picks, setPicks] = useState<string[]>(() => {
-    if (typeof window === "undefined") return [];
-    try {
-      const raw = window.localStorage.getItem("wyn:my-cities");
-      return raw ? (JSON.parse(raw) as string[]).slice(0, 3) : [];
-    } catch {
-      return [];
-    }
-  });
   const [query, setQuery] = useState("");
-  // Si cambia tu perfil, vuelve a partir de la sugerencia ideal.
-  useEffect(() => setF(suggested), [suggested]);
-  useEffect(() => {
-    try {
-      window.localStorage.setItem("wyn:my-cities", JSON.stringify(picks));
-    } catch {
-      /* almacenamiento no disponible */
-    }
-  }, [picks]);
-  const set = <K extends keyof Filters>(k: K, v: Filters[K]) => setF((prev) => ({ ...prev, [k]: v }));
-
-  // Puntuamos todas las ciudades (sin filtros de región/clima) para poder elegir cualquiera.
-  const all = useMemo(
-    () => rankCities({ ...f, region: "any", climate: "any", stability: "any" }, ctx),
-    [f, ctx],
-  );
-  const auto = useMemo(() => rankCities(f, ctx).slice(0, 3), [f, ctx]);
-  const top = useMemo(() => {
-    if (picks.length === 0) return auto;
-    return picks.map((id) => all.find((r) => r.city.id === id)).filter((r): r is CityScore => Boolean(r));
-  }, [picks, auto, all]);
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return [];
@@ -593,34 +555,107 @@ function SuggestedForYou({
       .slice(0, 6);
   }, [query, all, picks]);
 
+  return (
+    <div className="flex flex-wrap items-center gap-2 border-b border-border/60 px-4 py-2.5">
+      <div className="relative min-w-[200px] flex-1">
+        <MapPin className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={
+            picks.length >= 3
+              ? t("Ya elegiste 3 ciudades", "You already picked 3 cities")
+              : t("Busca y elige hasta 3 ciudades…", "Search and pick up to 3 cities…")
+          }
+          disabled={picks.length >= 3}
+          className="h-8 border-0 bg-transparent pl-8 text-xs shadow-none focus-visible:ring-0"
+        />
+        {matches.length > 0 && (
+          <div className="absolute z-30 mt-1 w-full overflow-hidden rounded-lg border border-border bg-popover shadow-lg">
+            {matches.map((r) => (
+              <button
+                key={r.city.id}
+                type="button"
+                className="flex w-full items-center justify-between px-3 py-2 text-left text-xs hover:bg-elevated"
+                onClick={() => {
+                  setPicks((p) => [...p, r.city.id].slice(0, 3));
+                  setQuery("");
+                }}
+              >
+                <span>{r.city.name}</span>
+                <span className="text-muted-foreground">{r.city.country}</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+      {picks.map((id) => {
+        const c = all.find((r) => r.city.id === id)?.city;
+        if (!c) return null;
+        return (
+          <span
+            key={id}
+            className="inline-flex items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-2.5 py-1 text-[11px]"
+          >
+            {c.name}
+            <button
+              type="button"
+              onClick={() => setPicks((p) => p.filter((x) => x !== id))}
+              aria-label={`Quitar ${c.name}`}
+            >
+              <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+            </button>
+          </span>
+        );
+      })}
+      {picks.length > 0 && (
+        <Button size="sm" variant="ghost" className="h-7 text-[11px]" onClick={() => setPicks([])}>
+          {t("Usar las sugeridas", "Use suggested")}
+        </Button>
+      )}
+    </div>
+  );
+}
+
+/* ---------------- Sugerencias según tu onboarding ---------------- */
+
+function SuggestedForYou({
+  profile,
+  ctx,
+  fmt,
+  t,
+  picks,
+  all,
+  onOpen,
+}: {
+  profile: ReturnType<typeof useProfile>["profile"];
+  ctx: { netWorth: number; age: number; expectedReturn: number };
+  fmt: (n: number) => string;
+  t: (es: string, en: string) => string;
+  picks: string[];
+  all: CityScore[];
+  onOpen: (r: CityScore) => void;
+}) {
+  const f = useMemo(() => suggestedFilters(profile), [profile]);
+  const auto = useMemo(() => rankCities(f, ctx).slice(0, 3), [f, ctx]);
+  const top = useMemo(() => {
+    if (picks.length === 0) return auto;
+    return picks.map((id) => all.find((r) => r.city.id === id)).filter((r): r is CityScore => Boolean(r));
+  }, [picks, auto, all]);
+
   if (!profile.completed || top.length === 0) return null;
   const reasons = suggestionReasons(profile, f, t);
 
-
   return (
     <Panel
-      title={t("Sugeridas para ti", "Suggested for you")}
-      description={t(
-        "Partimos de nuestros valores ideales según tu perfil: presupuesto, etapa de vida, estilo, seguridad y estabilidad. Puedes ajustarlos.",
-        "We start from our ideal defaults for your profile: budget, life stage, lifestyle, safety and stability. You can tweak them.",
-      )}
-      actions={
-        <div className="flex items-center gap-2">
-          <Button size="sm" variant="ghost" onClick={() => setEditing((v) => !v)}>
-            <SlidersHorizontal className="mr-1.5 h-3.5 w-3.5" />
-            {editing ? t("Ocultar", "Hide") : t("Ajustar", "Adjust")}
-          </Button>
-          {editing && (
-            <Button size="sm" variant="ghost" onClick={() => setF(suggested)}>
-              <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
-              {t("Ideales", "Ideal")}
-            </Button>
-          )}
-          <Button size="sm" variant="outline" onClick={() => onApply(f)}>
-            <Sparkles className="mr-1.5 h-3.5 w-3.5" />
-            {t("Aplicar a los filtros", "Apply to filters")}
-          </Button>
-        </div>
+      title={picks.length > 0 ? t("Mis ciudades", "My cities") : t("Sugeridas para ti", "Suggested for you")}
+      description={
+        picks.length > 0
+          ? t("Las ciudades que elegiste arriba, con tus números.", "The cities you picked above, with your numbers.")
+          : t(
+              "Según tu perfil: presupuesto, etapa de vida, estilo, seguridad y estabilidad.",
+              "Based on your profile: budget, life stage, lifestyle, safety and stability.",
+            )
       }
     >
       <div className="mb-4 flex flex-wrap gap-1.5">
@@ -628,159 +663,8 @@ function SuggestedForYou({
           <Chip key={r}>{r}</Chip>
         ))}
       </div>
-      {editing && (
-        <div className="mb-4 grid gap-3 rounded-xl border border-border/60 bg-elevated/30 p-3 sm:grid-cols-2 lg:grid-cols-3">
-          <div className="sm:col-span-2 lg:col-span-3">
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                {t("Presupuesto mensual", "Monthly budget")}
-              </p>
-              <p className="numeric text-xs font-semibold text-primary">
-                {fmt(f.budget)}
-                {f.budget >= 15000 && "+"}
-              </p>
-            </div>
-            <Slider
-              className="mt-3"
-              min={1000}
-              max={15000}
-              step={100}
-              value={[f.budget]}
-              onValueChange={([v]) => set("budget", v ?? 1000)}
-            />
-          </div>
-          <SelectFilter
-            label={t("Cómo vivir", "Comfort level")}
-            value={f.comfort}
-            onChange={(v) => set("comfort", v)}
-            options={[
-              { value: "tight", label: t("Ajustado", "Tight"), icon: "🪙" },
-              { value: "comfortable", label: t("Cómodo", "Comfortable"), icon: "🛋️" },
-              { value: "luxury", label: t("Lujo", "Luxury"), icon: "🥂" },
-            ]}
-          />
-          <SelectFilter
-            label={t("Objetivo", "Goal")}
-            value={f.goal}
-            onChange={(v) => set("goal", v)}
-            options={[
-              { value: "save", label: t("Ahorrar", "Save"), icon: "🐖" },
-              { value: "retire", label: t("Libertad financiera", "Financial freedom"), icon: "🌅" },
-              { value: "lifestyle", label: t("Estilo de vida", "Lifestyle"), icon: "✨" },
-              { value: "nomad", label: t("Nómada", "Nomad"), icon: "🌐" },
-              { value: "family", label: t("Familia", "Family"), icon: "👨‍👩‍👧" },
-              { value: "career", label: t("Carrera", "Career"), icon: "📈" },
-            ]}
-          />
-          <SelectFilter
-            label={t("Clima", "Climate")}
-            value={f.climate}
-            onChange={(v) => set("climate", v)}
-            options={[
-              { value: "any", label: t("Cualquiera", "Any"), icon: "🌍" },
-              { value: "warm", label: t("Cálido", "Warm"), icon: "☀️" },
-              { value: "beach", label: t("Playa", "Beach"), icon: "🏖️" },
-              { value: "temperate", label: t("Templado", "Temperate"), icon: "🌤️" },
-              { value: "cold", label: t("Frío", "Cold"), icon: "❄️" },
-            ]}
-          />
-          <SelectFilter
-            label={t("Estabilidad", "Stability")}
-            value={f.stability}
-            onChange={(v) => set("stability", v)}
-            options={[
-              { value: "any", label: t("Indiferente", "Any"), icon: "🌍" },
-              { value: "medium", label: t("Media o superior", "Medium or higher"), icon: "🟡" },
-              { value: "high", label: t("Alta", "High"), icon: "🟢" },
-              { value: "veryhigh", label: t("Muy alta", "Very high"), icon: "🛡️" },
-            ]}
-          />
-          <SelectFilter
-            label={t("Seguridad", "Safety")}
-            value={f.safety}
-            onChange={(v) => set("safety", v)}
-            options={[
-              { value: "essential", label: t("Imprescindible", "Essential"), icon: "🛡️" },
-              { value: "important", label: t("Importante", "Important"), icon: "👍" },
-              { value: "neutral", label: t("Indiferente", "Neutral"), icon: "🌍" },
-            ]}
-          />
-          <SelectFilter
-            label={t("Región", "Region")}
-            value={f.region}
-            onChange={(v) => set("region", v)}
-            options={[
-              { value: "any", label: t("Todas", "All"), icon: "🌍" },
-              { value: "northamerica", label: t("Norteamérica", "North America"), icon: "🇺🇸" },
-              { value: "latam", label: t("Latam", "Latam"), icon: "🌎" },
-              { value: "europe", label: t("Europa", "Europe"), icon: "🇪🇺" },
-              { value: "asia", label: t("Asia / Oceanía", "Asia / Oceania"), icon: "🌏" },
-              { value: "africa", label: t("África", "Africa"), icon: "🦁" },
-            ]}
-          />
-        </div>
-      )}
 
-      <div className="mb-4 rounded-xl border border-border/60 bg-elevated/30 p-3">
-        <div className="flex flex-wrap items-center gap-2">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-            {t("Mis ciudades", "My cities")}
-          </p>
-          {picks.length === 0 && (
-            <span className="text-[11px] text-muted-foreground">
-              {t("Escribe hasta 3 (ej. Madrid, Panamá, Sídney)", "Type up to 3 (e.g. Madrid, Panama, Sydney)")}
-            </span>
-          )}
-          {picks.map((id) => {
-            const c = all.find((r) => r.city.id === id)?.city;
-            if (!c) return null;
-            return (
-              <span
-                key={id}
-                className="inline-flex items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-2.5 py-1 text-[11px]"
-              >
-                {c.name}
-                <button type="button" onClick={() => setPicks((p) => p.filter((x) => x !== id))} aria-label={`Quitar ${c.name}`}>
-                  <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                </button>
-              </span>
-            );
-          })}
-          {picks.length > 0 && (
-            <Button size="sm" variant="ghost" className="h-7 text-[11px]" onClick={() => setPicks([])}>
-              {t("Usar las sugeridas", "Use suggested")}
-            </Button>
-          )}
-        </div>
-        {picks.length < 3 && (
-          <div className="relative mt-2">
-            <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={t("Buscar ciudad…", "Search city…")}
-              className="h-8 text-xs"
-            />
-            {matches.length > 0 && (
-              <div className="absolute z-20 mt-1 w-full overflow-hidden rounded-lg border border-border bg-popover shadow-lg">
-                {matches.map((r) => (
-                  <button
-                    key={r.city.id}
-                    type="button"
-                    className="flex w-full items-center justify-between px-3 py-2 text-left text-xs hover:bg-elevated"
-                    onClick={() => {
-                      setPicks((p) => [...p, r.city.id].slice(0, 3));
-                      setQuery("");
-                    }}
-                  >
-                    <span>{r.city.name}</span>
-                    <span className="text-muted-foreground">{r.city.country}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+
 
       <div className="grid gap-3 sm:grid-cols-3">
 
