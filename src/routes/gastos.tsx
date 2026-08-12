@@ -584,6 +584,7 @@ function Gastos() {
               <NumberInput
                 value={target}
                 onChange={setTarget}
+                format
                 className="h-10 w-36 text-base font-semibold"
               />
               <span className="text-xs text-muted-foreground">{t("/mes", "/mo")}</span>
@@ -596,6 +597,8 @@ function Gastos() {
                 {isLongRange
                   ? t(`promedio mensual de ${monthKeys.length} meses`, `monthly average of ${monthKeys.length} months`)
                   : t("ritmo mensual estimado", "estimated monthly pace")}
+                {" · "}
+                {t("objetivo", "target")} {fmt(target)}/{t("mes", "mo")}
               </span>
               <span
                 className={cn(

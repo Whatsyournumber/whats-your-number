@@ -11,6 +11,7 @@ export function NumberInput({
   max,
   step,
   placeholder,
+  format,
 }: {
   value: number;
   onChange: (v: number) => void;
@@ -19,20 +20,24 @@ export function NumberInput({
   max?: number;
   step?: number | string;
   placeholder?: string;
+  /** Muestra separadores de miles mientras no se está editando. */
+  format?: boolean;
 }) {
-  const [text, setText] = useState(value === 0 ? "" : String(value));
+  const pretty = (v: number) => (v === 0 ? "" : format ? v.toLocaleString("es-ES") : String(v));
+  const [text, setText] = useState(pretty(value));
   const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!ref.current || document.activeElement !== ref.current) {
-      setText(value === 0 ? "" : String(value));
+      setText(pretty(value));
     }
   }, [value]);
 
   return (
     <Input
       ref={ref}
-      type="number"
+      type={format ? "text" : "number"}
+      inputMode="numeric"
       min={min}
       max={max}
       step={step}
@@ -43,7 +48,8 @@ export function NumberInput({
         if (text === "0") setText("");
       }}
       onChange={(e) => {
-        const next = e.target.value;
+        const raw = e.target.value;
+        const next = format ? raw.replace(/[^0-9.,-]/g, "").replace(/\./g, "").replace(/,/g, "") : raw;
         setText(next);
         onChange(next === "" ? 0 : Number(next));
       }}
@@ -52,7 +58,7 @@ export function NumberInput({
           setText("0");
           onChange(0);
         } else {
-          setText(String(Number(text)));
+          setText(pretty(Number(text)));
         }
       }}
     />
