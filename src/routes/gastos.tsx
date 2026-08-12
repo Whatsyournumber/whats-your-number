@@ -876,7 +876,7 @@ function Gastos() {
 
       <Panel
         variant="minimal"
-        title={t("Detalle por categoría", "Detail by category")}
+        title={t("Gastos variables", "Variable expenses")}
         description={t("Solo categorías con gastos; activa las vacías para ver las demás.", "Only categories with spending; enable empty ones to see the rest.")}
         actions={
           <Button size="sm" variant="ghost" onClick={() => setShowEmptyCategories((v) => !v)}>
