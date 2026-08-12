@@ -35,7 +35,7 @@ function Pricing() {
   const t = useT();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [billing, setBilling] = useState<"monthly" | "yearly">("yearly");
+  const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
   const { openCheckout, loading } = usePaddleCheckout();
 
   const isYearly = billing === "yearly";
