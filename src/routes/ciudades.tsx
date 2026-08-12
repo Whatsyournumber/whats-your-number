@@ -313,7 +313,49 @@ function LifestyleSimulatorContent() {
 
   return (
     <PageShell>
+      <Block shouldBlockFn={() => dirty} withResolver>
+        {(blocker) => (
+          <Dialog open={blocker.status === "blocked"} onOpenChange={(open) => !open && blocker.reset?.()}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>
+                  {t("¿Quieres guardar tus ciudades?", "Do you want to save your cities?")}
+                </DialogTitle>
+                <DialogDescription>
+                  {t(
+                    "Si las guardas, aparecerán en tu dashboard inicial como tus ciudades sugeridas.",
+                    "If you save them, they'll show on your dashboard as your suggested cities.",
+                  )}
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter className="gap-2">
+                <Button variant="outline" onClick={() => blocker.reset?.()}>
+                  {t("Seguir eligiendo", "Keep choosing")}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setPicks(saved);
+                    blocker.proceed?.();
+                  }}
+                >
+                  {t("Descartar", "Discard")}
+                </Button>
+                <Button
+                  onClick={() => {
+                    savePicks();
+                    blocker.proceed?.();
+                  }}
+                >
+                  {t("Guardar y salir", "Save and leave")}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
+      </Block>
       <PageHeader
+
         eyebrow="Lifestyle Simulator"
         title={t("🌍 Encuentra tu próxima ciudad", "🌍 Find Your Next City")}
         subtitle={t(
