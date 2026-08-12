@@ -388,7 +388,7 @@ export function MortgageModule() {
             <div>
               <p className="text-xs text-muted-foreground">{t("Monto pendiente", "Outstanding balance")}</p>
               <div className="relative mt-1.5">
-                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground">
                   {currencySymbol}
                 </span>
                 <NumberInput
@@ -396,7 +396,8 @@ export function MortgageModule() {
                   step={1000}
                   format
                   onChange={(v) => set({ balance: Math.round(v) })}
-                  className="h-11 w-full pl-7 text-sm font-semibold"
+                  className="h-11 w-full text-sm font-semibold"
+                  style={{ paddingLeft: `${1.25 + currencySymbol.length * 0.55}rem` }}
                 />
               </div>
             </div>
@@ -423,7 +424,7 @@ export function MortgageModule() {
             <div>
               <p className="text-xs text-muted-foreground">{t("Pago mensual", "Monthly payment")}</p>
               <div className="relative mt-1.5">
-                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground">
                   {currencySymbol}
                 </span>
                 <NumberInput
@@ -438,7 +439,8 @@ export function MortgageModule() {
                       term: termFor(s.balance, s.rate, nextPayment),
                     });
                   }}
-                  className="h-11 w-full pl-7 text-sm font-semibold"
+                  className="h-11 w-full text-sm font-semibold"
+                  style={{ paddingLeft: `${1.25 + currencySymbol.length * 0.55}rem` }}
                 />
               </div>
             </div>
