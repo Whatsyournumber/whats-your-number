@@ -150,15 +150,11 @@ function sum(list: Tx[]) {
 function Gastos() {
   const t = useT();
   const presets = useMemo(() => buildPresets(t), [t]);
-  const { profile, save } = useProfile();
+  const { profile } = useProfile();
   const currency = profile.currency || "EUR";
   const fmt = (n: number) => money(Math.round(n), currency);
   const fmtCompact = (n: number) => compact(n, currency);
-  const income =
-    (Number(profile.income_salary) || 0) +
-    (Number(profile.income_bonus) || 0) +
-    (Number(profile.income_rent) || 0) +
-    (Number(profile.income_other) || 0);
+
 
   const { lang } = useLanguage();
   const tc = (n: string) => translateCategory(n, lang);
