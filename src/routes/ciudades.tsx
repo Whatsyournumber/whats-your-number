@@ -594,13 +594,18 @@ function CitySearchBar({
   all,
   picks,
   setPicks,
+  dirty,
+  onSave,
   t,
 }: {
   all: CityScore[];
   picks: string[];
   setPicks: React.Dispatch<React.SetStateAction<string[]>>;
+  dirty: boolean;
+  onSave: () => void;
   t: (es: string, en: string) => string;
 }) {
+
   const [query, setQuery] = useState("");
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
