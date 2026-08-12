@@ -46,7 +46,7 @@ const money = (v: number, currency: string) =>
 
 export function StatementImporter() {
   const t = useT();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { isFree } = useSubscription();
   const qc = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -136,7 +136,18 @@ export function StatementImporter() {
     if (!files || files.length === 0 || !user) return;
     setUploading(true);
     try {
+      // La sesión puede seguir en el navegador aunque la cuenta ya no exista
+      // (p. ej. borrada desde el panel de administración). En ese caso el insert
+      // rompe la clave foránea de statements, así que lo validamos antes.
+      const { data: current, error: authErr } = await supabase.auth.getUser();
+      if (authErr || !current?.user) {
+        await signOut();
+        toast.error(t("Tu sesión ya no es válida. Vuelve a iniciar sesión.", "Your session is no longer valid. Please sign in again."));
+        return;
+      }
+
       for (const file of Array.from(files)) {
+
         const lower = file.name.toLowerCase();
         const isImage = file.type.startsWith("image/") || /\.(png|jpe?g|webp|heic|heif)$/.test(lower);
         const ok = lower.endsWith(".pdf") || lower.endsWith(".csv") || lower.endsWith(".txt") || isImage;
@@ -176,7 +187,14 @@ export function StatementImporter() {
         processMutation.mutate(inserted.id as string);
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : t("Error al subir el archivo", "Error uploading the file"));
+      const message = error instanceof Error ? error.message : "";
+      if (message.includes("statements_user_id_fkey") || message.includes("foreign key")) {
+        await signOut();
+        toast.error(t("Tu sesión ya no es válida. Vuelve a iniciar sesión.", "Your session is no longer valid. Please sign in again."));
+      } else {
+        toast.error(message || t("Error al subir el archivo", "Error uploading the file"));
+      }
+
     } finally {
       setUploading(false);
       if (inputRef.current) inputRef.current.value = "";
