@@ -1,16 +1,36 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Users, CreditCard, FileText, TrendingUp } from "lucide-react";
+import { Users, CreditCard, FileText, TrendingUp, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { KpiCard } from "@/components/kpi-card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useRoles } from "@/hooks/use-role";
+import {
+  adminDeletePromoCode,
+  adminDeletePromoRedemption,
+  adminDeleteSubscription,
+  adminDeleteUser,
+} from "@/lib/admin.functions";
+
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
@@ -75,9 +95,68 @@ function fmtDate(value: string | null) {
   return new Date(value).toLocaleDateString("es-ES", { day: "2-digit", month: "short", year: "numeric" });
 }
 
+function DeleteAction({
+  title,
+  description,
+  onConfirm,
+}: {
+  title: string;
+  description: string;
+  onConfirm: () => Promise<void>;
+}) {
+  const [busy, setBusy] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>
+        <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" aria-label={title}>
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+          <AlertDialogAction
+            disabled={busy}
+            onClick={async (e) => {
+              e.preventDefault();
+              setBusy(true);
+              try {
+                await onConfirm();
+                setOpen(false);
+              } finally {
+                setBusy(false);
+              }
+            }}
+          >
+            {busy ? "Borrando…" : "Borrar"}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
 function AdminPage() {
   const { isSuperAdmin, loading: rolesLoading } = useRoles();
   const [search, setSearch] = useState("");
+  const queryClient = useQueryClient();
+
+  const runDelete = async (fn: () => Promise<unknown>, okMsg: string) => {
+    try {
+      await fn();
+      toast.success(okMsg);
+      await queryClient.invalidateQueries({ queryKey: ["admin"] });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "No se pudo borrar");
+    }
+  };
+
 
   const enabled = isSuperAdmin;
 
@@ -217,6 +296,7 @@ function AdminPage() {
                     <TableHead>Onboarding</TableHead>
                     <TableHead>Plan</TableHead>
                     <TableHead>Alta</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -236,16 +316,26 @@ function AdminPage() {
                           <Badge variant={s ? "default" : "outline"}>{s ? s.product_id.replace("_plan", "") : "free"}</Badge>
                         </TableCell>
                         <TableCell className="numeric text-muted-foreground">{fmtDate(u.created_at)}</TableCell>
+                        <TableCell className="text-right">
+                          <DeleteAction
+                            title="Borrar usuario"
+                            description={`Se eliminará la cuenta de ${u.email ?? u.id} y todos sus datos (perfil, gastos, estados de cuenta, suscripciones). Esta acción no se puede deshacer.`}
+                            onConfirm={() =>
+                              runDelete(() => adminDeleteUser({ data: { userId: u.id } }), "Usuario eliminado")
+                            }
+                          />
+                        </TableCell>
                       </TableRow>
                     );
                   })}
                   {filteredUsers.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center text-muted-foreground">
+                      <TableCell colSpan={8} className="text-center text-muted-foreground">
                         Sin resultados
                       </TableCell>
                     </TableRow>
                   )}
+
                 </TableBody>
               </Table>
             </div>
@@ -265,6 +355,7 @@ function AdminPage() {
                     <TableHead>Renueva</TableHead>
                     <TableHead>Cancela al final</TableHead>
                     <TableHead>Creada</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -281,16 +372,26 @@ function AdminPage() {
                         <TableCell className="numeric text-muted-foreground">{fmtDate(s.current_period_end)}</TableCell>
                         <TableCell className="text-muted-foreground">{s.cancel_at_period_end ? "Sí" : "No"}</TableCell>
                         <TableCell className="numeric text-muted-foreground">{fmtDate(s.created_at)}</TableCell>
+                        <TableCell className="text-right">
+                          <DeleteAction
+                            title="Borrar suscripción"
+                            description="Se eliminará este registro de suscripción y el usuario perderá el acceso asociado. No cancela el cobro en la pasarela de pago."
+                            onConfirm={() =>
+                              runDelete(() => adminDeleteSubscription({ data: { id: s.id } }), "Suscripción eliminada")
+                            }
+                          />
+                        </TableCell>
                       </TableRow>
                     );
                   })}
                   {subs.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center text-muted-foreground">
+                      <TableCell colSpan={8} className="text-center text-muted-foreground">
                         Sin suscripciones todavía
                       </TableCell>
                     </TableRow>
                   )}
+
                 </TableBody>
               </Table>
             </div>
@@ -349,6 +450,7 @@ function AdminPage() {
                     <TableHead>Días</TableHead>
                     <TableHead>Usos</TableHead>
                     <TableHead>Estado</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -361,11 +463,20 @@ function AdminPage() {
                       <TableCell>
                         <Badge variant={c.active ? "default" : "secondary"}>{c.active ? "activo" : "inactivo"}</Badge>
                       </TableCell>
+                      <TableCell className="text-right">
+                        <DeleteAction
+                          title="Borrar código"
+                          description={`Se eliminará el código ${c.code} y sus canjes registrados.`}
+                          onConfirm={() =>
+                            runDelete(() => adminDeletePromoCode({ data: { id: c.id } }), "Código eliminado")
+                          }
+                        />
+                      </TableCell>
                     </TableRow>
                   ))}
                   {(promos.data?.codes ?? []).length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center text-muted-foreground">Sin códigos</TableCell>
+                      <TableCell colSpan={6} className="text-center text-muted-foreground">Sin códigos</TableCell>
                     </TableRow>
                   )}
                 </TableBody>
@@ -382,6 +493,7 @@ function AdminPage() {
                     <TableHead>Código</TableHead>
                     <TableHead>Acceso hasta</TableHead>
                     <TableHead>Fecha</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -393,14 +505,24 @@ function AdminPage() {
                         <TableCell className="text-muted-foreground">{r.code}</TableCell>
                         <TableCell className="numeric text-muted-foreground">{fmtDate(r.granted_until)}</TableCell>
                         <TableCell className="numeric text-muted-foreground">{fmtDate(r.created_at)}</TableCell>
+                        <TableCell className="text-right">
+                          <DeleteAction
+                            title="Borrar canje"
+                            description="Se eliminará este canje. El usuario podrá volver a usar el código si sigue activo."
+                            onConfirm={() =>
+                              runDelete(() => adminDeletePromoRedemption({ data: { id: r.id } }), "Canje eliminado")
+                            }
+                          />
+                        </TableCell>
                       </TableRow>
                     );
                   })}
                   {(promos.data?.redemptions ?? []).length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={4} className="text-center text-muted-foreground">Sin canjes</TableCell>
+                      <TableCell colSpan={5} className="text-center text-muted-foreground">Sin canjes</TableCell>
                     </TableRow>
                   )}
+
                 </TableBody>
               </Table>
             </div>
