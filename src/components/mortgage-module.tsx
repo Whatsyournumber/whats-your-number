@@ -163,6 +163,10 @@ export function MortgageModule() {
   const currency = profile.currency || "EUR";
   const fmt = (n: number) => (Number.isFinite(n) ? money(Math.round(n), currency) : "—");
   const fmtC = (n: number) => (Number.isFinite(n) ? compact(n, currency) : "—");
+  const currencySymbol =
+    new Intl.NumberFormat("es-ES", { style: "currency", currency, maximumFractionDigits: 0 })
+      .formatToParts(1)
+      .find((p) => p.type === "currency")?.value ?? currency;
   const expected = Number(profile.expected_return) || 7;
 
   const [s, setS] = useState<MortgageState>(defaults);
@@ -191,7 +195,7 @@ export function MortgageModule() {
     if (!balance || s.balance) return;
     const rate = mRate || s.rate;
     const term = mTerm || (housing > 0 ? termFor(balance, rate, housing) : s.term);
-    const payment = paymentFor(balance, rate, term * 12);
+    const payment = Math.round(paymentFor(balance, rate, term * 12));
     setS((prev) => {
       const next = { ...prev, balance, rate, term, payment };
       try {
@@ -207,8 +211,8 @@ export function MortgageModule() {
   // Recalcula la cuota cuando cambian saldo, tasa o plazo (no cuando el usuario la editó directamente).
   useEffect(() => {
     if (!ready || !s.balance) return;
-    const nextPayment = paymentFor(s.balance, s.rate, s.term * 12);
-    if (Math.abs(nextPayment - s.payment) > 0.01) {
+    const nextPayment = Math.round(paymentFor(s.balance, s.rate, s.term * 12));
+    if (Math.abs(nextPayment - s.payment) >= 1) {
       setS((prev) => {
         const next = { ...prev, payment: nextPayment };
         try {
@@ -383,12 +387,18 @@ export function MortgageModule() {
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <div>
               <p className="text-xs text-muted-foreground">{t("Monto pendiente", "Outstanding balance")}</p>
-              <NumberInput
-                value={s.balance}
-                step={1000}
-                onChange={(v) => set({ balance: v })}
-                className="mt-1.5 h-11 w-full text-sm font-semibold"
-              />
+              <div className="relative mt-1.5">
+                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                  {currencySymbol}
+                </span>
+                <NumberInput
+                  value={Math.round(s.balance)}
+                  step={1000}
+                  format
+                  onChange={(v) => set({ balance: Math.round(v) })}
+                  className="h-11 w-full pl-7 text-sm font-semibold"
+                />
+              </div>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{t("Tasa de interés (%)", "Interest rate (%)")}</p>
@@ -412,19 +422,25 @@ export function MortgageModule() {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{t("Pago mensual", "Monthly payment")}</p>
-              <NumberInput
-                value={s.payment}
-                step={50}
-                min={0}
-                onChange={(v) => {
-                  const nextPayment = Math.max(0, v);
-                  set({
-                    payment: nextPayment,
-                    term: termFor(s.balance, s.rate, nextPayment),
-                  });
-                }}
-                className="mt-1.5 h-11 w-full text-sm font-semibold"
-              />
+              <div className="relative mt-1.5">
+                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                  {currencySymbol}
+                </span>
+                <NumberInput
+                  value={Math.round(s.payment)}
+                  step={50}
+                  min={0}
+                  format
+                  onChange={(v) => {
+                    const nextPayment = Math.max(0, Math.round(v));
+                    set({
+                      payment: nextPayment,
+                      term: termFor(s.balance, s.rate, nextPayment),
+                    });
+                  }}
+                  className="h-11 w-full pl-7 text-sm font-semibold"
+                />
+              </div>
             </div>
           </div>
           <div className="mt-5 flex items-center gap-3 border-t border-border/60 pt-4">
