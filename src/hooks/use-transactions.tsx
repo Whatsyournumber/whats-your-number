@@ -31,6 +31,19 @@ const normalizeTransactionText = (value: string | null | undefined) =>
     .replace(/\s+/g, " ")
     .toLowerCase();
 
+/**
+ * Huella del comercio: el mismo negocio llega con nombres distintos
+ * ("Sixt" vs "SIXT RENT A CAR"), así que se compara por sus primeras palabras.
+ */
+export const merchantKey = (value: string | null | undefined) =>
+  normalizeTransactionText(value)
+    .replace(/[^a-z0-9 ]/g, " ")
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 1)
+    .join(" ");
+
+
 /** Transacciones importadas desde los estados de cuenta (EEFF) del usuario. */
 export function useTransactions() {
   const { user } = useAuth();
@@ -53,13 +66,13 @@ export function useTransactions() {
         .limit(5000);
       if (error) throw error;
       const rows = (data ?? []).map((t) => ({ ...t, amount: Number(t.amount) }));
-      // El mismo movimiento puede llegar con mayúsculas o acentos distintos
-      // desde varios EEFF. Su identidad financiera es fecha + comercio + monto
-      // + descripción normalizados, independientemente del statement de origen.
+      // El mismo movimiento puede llegar con nombres distintos desde varios EEFF
+      // ("Sixt" vs "SIXT RENT A CAR"). Su identidad financiera es
+      // fecha + comercio (primera palabra) + monto.
       const seen = new Set<string>();
       const unique = rows.filter((t) => {
         const amount = Math.abs(Number(t.amount)).toFixed(2);
-        const key = `${t.tx_date}|${normalizeTransactionText(t.merchant)}|${amount}|${normalizeTransactionText(t.description)}`;
+        const key = `${t.tx_date}|${merchantKey(t.merchant) || normalizeTransactionText(t.merchant)}|${amount}`;
         if (seen.has(key)) return false;
         seen.add(key);
         return true;
