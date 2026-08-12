@@ -583,7 +583,7 @@ function Gastos() {
             : t("Ritmo actual vs. tu techo de gasto según tu número.", "Current pace vs. your spending ceiling based on your number.")
         }
       >
-        <div className="grid gap-5 md:grid-cols-[200px_1fr] md:items-center">
+        <div className="grid gap-5 md:grid-cols-[200px_200px_1fr] md:items-center">
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{t("Objetivo", "Target")}</p>
             <div className="mt-2 flex items-center gap-2">
@@ -595,6 +595,10 @@ function Gastos() {
               />
               <span className="text-xs text-muted-foreground">{t("/mes", "/mo")}</span>
             </div>
+          </div>
+          <div>
+            <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{t("Ingreso mensual", "Monthly income")}</p>
+            <IncomeInline className="mt-2" />
           </div>
           <div>
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
