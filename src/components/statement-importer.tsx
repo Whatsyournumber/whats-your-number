@@ -364,6 +364,15 @@ export function StatementImporter() {
             </div>
           )}
         </div>
+
+        {jobs.length > 0 && (
+          <div className="mt-4 space-y-3">
+            {jobs.map((job) => (
+              <JobProgress key={job.id} job={job} />
+            ))}
+          </div>
+        )}
+
       </Panel>
 
       <div className="grid gap-4 lg:grid-cols-2">
