@@ -76,3 +76,41 @@ export function translateFixedName(name: string, lang: Lang) {
   if (lang !== "en") return name;
   return FIXED_NAMES[name] ?? name;
 }
+
+const PROFILE_OPTIONS: Record<string, string> = {
+  // Objetivo principal
+  "Alcanzar la libertad financiera": "Reach financial freedom",
+  "Hacer crecer mi patrimonio": "Grow my net worth",
+  "Entender y controlar mis gastos": "Understand and control my spending",
+  "Ahorrar para una vivienda": "Save for a home",
+  "Viajar más": "Travel more",
+  "Organizar mejor mi dinero": "Organize my money better",
+  // Estado civil
+  "Soltero": "Single",
+  "En pareja": "In a relationship",
+  "Casado": "Married",
+  "Divorciado": "Divorced",
+  // Planes de hijos
+  "Sí": "Yes",
+  "No": "No",
+  "No estoy seguro": "Not sure",
+  // Estilo de vida
+  "Minimalista": "Minimalist",
+  "Cómodo": "Comfortable",
+  "Premium": "Premium",
+  "Lujo": "Luxury",
+  // Viajes
+  "Nunca": "Never",
+  "Más de 5": "More than 5",
+  // Vivienda
+  "Sí, totalmente pagada": "Yes, fully paid off",
+  "Sí, con hipoteca": "Yes, with a mortgage",
+  "Vivo de alquiler": "I rent",
+  "Prefiero no responder": "Prefer not to say",
+};
+
+/** Traduce las etiquetas de opciones del perfil/onboarding. */
+export function translateOption(label: string, lang: Lang) {
+  if (lang !== "en") return label;
+  return PROFILE_OPTIONS[label] ?? label;
+}

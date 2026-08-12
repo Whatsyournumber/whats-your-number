@@ -18,7 +18,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { convertStoredFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useFxRates } from "@/hooks/use-fx-rates";
-import { useT } from "@/hooks/use-language";
+import { useLanguage, useT } from "@/hooks/use-language";
+import { translateOption } from "@/lib/i18n-data";
 
 import { useProfile, type Profile } from "@/hooks/use-profile";
 import {
@@ -51,6 +52,8 @@ export const Route = createFileRoute("/mi-perfil")({
 
 function MiPerfil() {
   const t = useT();
+  const { lang } = useLanguage();
+  const tr = (label: string) => translateOption(label, lang);
   const { profile, isLoading, save, saving } = useProfile();
   const navigate = useNavigate();
   const [form, setForm] = useState<Profile>(profile);
@@ -331,13 +334,13 @@ function MiPerfil() {
 
         <Panel title={t("Estilo de vida y objetivos", "Lifestyle & goals")}>
           <div className="space-y-5">
-            <Chips label={t("Objetivo principal", "Main goal")} options={goals.map((g) => ({ value: g.value, label: `${g.emoji} ${g.label}` }))} value={form.goal} onSelect={(v) => set("goal", v)} />
-            <Chips label={t("Estado civil", "Marital status")} options={maritalOptions.map((m) => ({ value: m, label: m }))} value={form.marital_status} onSelect={(v) => set("marital_status", v)} />
+            <Chips label={t("Objetivo principal", "Main goal")} options={goals.map((g) => ({ value: g.value, label: `${g.emoji} ${tr(g.label)}` }))} value={form.goal} onSelect={(v) => set("goal", v)} />
+            <Chips label={t("Estado civil", "Marital status")} options={maritalOptions.map((m) => ({ value: m, label: tr(m) }))} value={form.marital_status} onSelect={(v) => set("marital_status", v)} />
             <Chips label={t("Hijos", "Children")} options={childrenOptions.map((c) => ({ value: c, label: c }))} value={form.children} onSelect={(v) => set("children", v)} />
-            <Chips label={t("¿Planeas tener hijos?", "Planning to have children?")} options={plansChildrenOptions.map((c) => ({ value: c, label: c }))} value={form.plans_children} onSelect={(v) => set("plans_children", v)} />
-            <Chips label={t("Estilo de vida", "Lifestyle")} options={lifestyles.map((l) => ({ value: l.value, label: `${l.emoji} ${l.label}` }))} value={form.lifestyle} onSelect={(v) => set("lifestyle", v)} />
-            <Chips label={t("Viajes al año", "Trips per year")} options={travelOptions.map((tr) => ({ value: tr.value, label: tr.label }))} value={form.travel_frequency} onSelect={(v) => set("travel_frequency", v)} />
-            <Chips label={t("Vivienda", "Housing")} options={housingOptions.map((h) => ({ value: h.value, label: `${h.emoji} ${h.label}` }))} value={form.housing} onSelect={(v) => set("housing", v)} />
+            <Chips label={t("¿Planeas tener hijos?", "Planning to have children?")} options={plansChildrenOptions.map((c) => ({ value: c, label: tr(c) }))} value={form.plans_children} onSelect={(v) => set("plans_children", v)} />
+            <Chips label={t("Estilo de vida", "Lifestyle")} options={lifestyles.map((l) => ({ value: l.value, label: `${l.emoji} ${tr(l.label)}` }))} value={form.lifestyle} onSelect={(v) => set("lifestyle", v)} />
+            <Chips label={t("Viajes al año", "Trips per year")} options={travelOptions.map((o) => ({ value: o.value, label: tr(o.label) }))} value={form.travel_frequency} onSelect={(v) => set("travel_frequency", v)} />
+            <Chips label={t("Vivienda", "Housing")} options={housingOptions.map((h) => ({ value: h.value, label: `${h.emoji} ${tr(h.label)}` }))} value={form.housing} onSelect={(v) => set("housing", v)} />
           </div>
         </Panel>
       </div>
