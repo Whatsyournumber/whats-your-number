@@ -938,6 +938,12 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
   const [q, setQ] = useState("");
   const term = q.toLowerCase().trim();
   const list = cities.filter((c) => c.name.toLowerCase().includes(term) || c.country.toLowerCase().includes(term));
+  const selected = cities.find((c) => c.name === value);
+  const cityCost = (c: (typeof cities)[number]) => {
+    const v = convertAmount(c.cost, "EUR", c.currency);
+    const step = v >= 100000 ? 5000 : v >= 10000 ? 500 : v >= 1000 ? 50 : 10;
+    return Math.round(v / step) * step;
+  };
   return (
     <div>
       <div className="flex items-center gap-2 rounded-2xl border border-border bg-elevated/50 px-4">
@@ -963,15 +969,23 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
             <span className="font-medium">{c.name}</span>
             <span className="text-xs text-muted-foreground">{c.country}</span>
             <span className="numeric ml-auto text-xs text-muted-foreground">
-              ~{new Intl.NumberFormat("es").format(c.cost)} {c.currency}/mes
+              ~{new Intl.NumberFormat("es").format(cityCost(c))} {c.currency}/mes
             </span>
           </button>
         ))}
         {list.length === 0 && <p className="px-2 py-4 text-sm text-muted-foreground">{t("Sin resultados.", "No results.")}</p>}
       </div>
+      {selected && (
+        <p className="mt-3 text-center text-xs text-muted-foreground">
+          {t("Moneda del análisis:", "Analysis currency:")}{" "}
+          <span className="font-medium text-foreground">{selected.currency}</span>{" "}
+          {t("· podrás cambiarla más adelante.", "· you can change it later.")}
+        </p>
+      )}
     </div>
   );
 }
+
 
 /* ───────────────────────── Pantalla 10: IA trabajando ───────────────────────── */
 
