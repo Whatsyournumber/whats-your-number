@@ -136,18 +136,26 @@ function RetiroContent() {
                   <span>{t("Tasa de retiro", "Withdrawal rate")}</span>
                   <span className="numeric text-sm font-medium text-foreground">{swr.toFixed(1)}%</span>
                 </div>
-                <Slider className="mt-3" value={[swr]} min={3} max={15} step={0.5} onValueChange={(v) => setSwr(v[0] ?? 4)} />
-                <div className="mt-3 flex flex-wrap gap-1">
-                  {[3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((r) => (
-                    <button
-                      key={r}
-                      type="button"
-                      onClick={() => setSwr(r)}
-                      className={`rounded-full px-2 py-0.5 text-[10px] transition-colors ${swr === r ? "bg-primary/15 text-foreground" : "text-muted-foreground hover:bg-elevated"}`}
-                    >
-                      {r}%
-                    </button>
-                  ))}
+                <div className="relative mt-3">
+                  <Slider value={[swr]} min={3} max={15} step={0.5} onValueChange={(v) => setSwr(v[0] ?? 4)} />
+                  <div className="relative mt-3 h-5 w-full">
+                    {[3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((r) => {
+                      const pct = ((r - 3) / (15 - 3)) * 100;
+                      return (
+                        <button
+                          key={r}
+                          type="button"
+                          onClick={() => setSwr(r)}
+                          className="absolute top-0 -translate-x-1/2 rounded-full px-1.5 py-0.5 text-[10px] transition-colors"
+                          style={{ left: `${pct}%` }}
+                        >
+                          <span className={swr === r ? "rounded-full bg-primary/15 px-1.5 py-0.5 text-foreground" : "text-muted-foreground hover:text-foreground"}>
+                            {r}%
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
               <div className="flex items-center justify-between pt-1">
