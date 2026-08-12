@@ -13,6 +13,7 @@ import {
   Tooltip,
   XAxis,
   YAxis,
+  ReferenceLine,
 } from "recharts";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
@@ -217,7 +218,8 @@ function Dashboard() {
 
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title={t("Evolución del patrimonio", "Net worth evolution")} description={t("Últimos 12 meses", "Last 12 months")} className="lg:col-span-2">
+        
+        <Panel title={t("Evolución de WhatsYournumber", "WhatsYournumber evolution")} description={t("Progreso hacia tu número para el retiro · últimos 12 meses", "Progress toward your retirement number · last 12 months")} className="lg:col-span-2">
           <ResponsiveContainer width="100%" height={280}>
             <AreaChart data={months} margin={{ left: -12, right: 8, top: 8 }}>
               <defs>
@@ -228,10 +230,19 @@ function Dashboard() {
               </defs>
               <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
               <XAxis dataKey="label" {...axisProps} />
-              <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={64} />
+              <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={64} domain={[0, (dataMax: number) => Math.max(dataMax, targetNumber) * 1.08]} />
               <Tooltip content={<ChartTooltip />} />
-              <Area type="monotone" dataKey="netWorth" name={t("Patrimonio", "Net worth")} stroke="var(--color-chart-1)" strokeWidth={2.5} fill="url(#nw)" />
+              {targetNumber > 0 && (
+                <ReferenceLine
+                  y={targetNumber}
+                  stroke="var(--color-chart-2)"
+                  strokeDasharray="4 4"
+                  label={{ value: `WhatsYournumber · ${fmtCompact(targetNumber)}`, position: "insideTopRight", fill: "var(--color-muted-foreground)", fontSize: 11 }}
+                />
+              )}
+              <Area type="monotone" dataKey="netWorth" name={t("Acumulado", "Accumulated")} stroke="var(--color-chart-1)" strokeWidth={2.5} fill="url(#nw)" />
             </AreaChart>
+
           </ResponsiveContainer>
         </Panel>
 
