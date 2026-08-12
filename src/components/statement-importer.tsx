@@ -44,6 +44,25 @@ type TxRow = {
 const money = (v: number, currency: string) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: currency || "USD", maximumFractionDigits: 2 }).format(v);
 
+type JobStage = "reading" | "uploading" | "extracting" | "analyzing" | "done" | "error";
+
+type Job = {
+  id: string;
+  name: string;
+  stage: JobStage;
+  message?: string;
+};
+
+const STAGE_ORDER: JobStage[] = ["reading", "uploading", "extracting", "analyzing"];
+const STAGE_PROGRESS: Record<JobStage, number> = {
+  reading: 12,
+  uploading: 40,
+  extracting: 65,
+  analyzing: 88,
+  done: 100,
+  error: 100,
+};
+
 export function StatementImporter() {
   const t = useT();
   const { user, signOut } = useAuth();
@@ -52,7 +71,12 @@ export function StatementImporter() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [jobs, setJobs] = useState<Job[]>([]);
   const runProcess = useServerFn(processStatement);
+
+  const setJob = (id: string, patch: Partial<Job>) =>
+    setJobs((prev) => prev.map((j) => (j.id === id ? { ...j, ...patch } : j)));
+
 
   const statementsQuery = useQuery({
     queryKey: ["statements", user?.id],
