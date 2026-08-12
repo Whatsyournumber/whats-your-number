@@ -690,7 +690,7 @@ export function MortgageModule() {
                 {penaltyYears > 0 && schedule[0] && (
                   <ReferenceArea
                     x1={schedule[0].label}
-                    x2={schedule[penaltyYears - 1]?.label}
+                    x2={schedule[penaltyYears - 1]?.label ?? schedule[0].label}
                     fill="var(--color-warning)"
                     fillOpacity={0.08}
                   />
