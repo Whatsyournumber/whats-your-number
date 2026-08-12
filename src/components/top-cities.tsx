@@ -53,7 +53,12 @@ export function TopCitiesPanel({
 
   return (
     <Panel
-      title={t("Top city acorde con tu presupuesto", "Top city matching your budget")}
+      title={
+        mine.length > 0
+          ? t("Mis ciudades guardadas", "My saved cities")
+          : t("Top city acorde con tu presupuesto", "Top city matching your budget")
+      }
+
       description={t(
         "Calculado con tus ingresos, gastos y patrimonio: cuánto necesitas al mes y cuánto tardas en llegar a tu número.",
         "Calculated from your income, expenses and net worth: monthly budget and time to reach your number.",
