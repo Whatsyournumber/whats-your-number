@@ -399,7 +399,15 @@ function LifestyleSimulatorContent() {
           </div>
         </div>
 
-        <CitySearchBar all={allCities} picks={picks} setPicks={setPicks} t={t} />
+        <CitySearchBar
+          all={allCities}
+          picks={picks}
+          setPicks={setPicks}
+          dirty={dirty}
+          onSave={savePicks}
+          t={t}
+        />
+
 
 
 
