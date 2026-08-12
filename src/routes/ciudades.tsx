@@ -682,6 +682,12 @@ function CitySearchBar({
           {t("Usar las sugeridas", "Use suggested")}
         </Button>
       )}
+      {dirty && (
+        <Button size="sm" className="h-7 rounded-full text-[11px]" onClick={onSave}>
+          {t("Guardar", "Save")}
+        </Button>
+      )}
+
     </div>
   );
 }
