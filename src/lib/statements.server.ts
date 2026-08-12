@@ -1,4 +1,4 @@
-import { NoObjectGeneratedError, Output, generateText } from "ai";
+import { NoObjectGeneratedError, Output, streamText } from "ai";
 import { z } from "zod";
 
 import { createLovableAiGatewayProvider } from "./ai-gateway.server";
@@ -35,8 +35,12 @@ Inversiones, Ingresos), y excluded=true cuando el movimiento NO es un gasto real
 compra de activos o inversiones. Conserva el nombre del comercio tal cual aparece. Máximo 200 movimientos. Escribe un resumen de 1-2 frases en español.`;
 
 function toBase64(bytes: Uint8Array): string {
+  // Conversión por bloques: mucho más rápida que carácter a carácter en archivos grandes.
+  const CHUNK = 0x8000;
   let binary = "";
-  for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i]!);
+  for (let i = 0; i < bytes.length; i += CHUNK) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
+  }
   return btoa(binary);
 }
 
@@ -57,12 +61,17 @@ export async function processStatementForUser(
   if (stErr) throw new Error(stErr.message);
   if (!statement) throw new Error("Archivo no encontrado.");
 
-  await supabase.from("statements").update({ status: "processing", error_message: null }).eq("id", statementId);
+  // No esperamos al update de estado: la descarga arranca en paralelo.
+  const statusUpdate = supabase
+    .from("statements")
+    .update({ status: "processing", error_message: null })
+    .eq("id", statementId);
 
   try {
-    const { data: blob, error: dlErr } = await supabase.storage
-      .from("statements")
-      .download(statement.storage_path as string);
+    const [{ data: blob, error: dlErr }] = await Promise.all([
+      supabase.storage.from("statements").download(statement.storage_path as string),
+      statusUpdate,
+    ]);
     if (dlErr || !blob) throw new Error(dlErr?.message ?? "No pudimos leer el archivo.");
 
     const bytes = new Uint8Array(await blob.arrayBuffer());
@@ -125,15 +134,19 @@ export async function processStatementForUser(
     const gateway = createLovableAiGatewayProvider(apiKey);
     const model = gateway("google/gemini-3.5-flash");
 
+    // Limpiamos los movimientos anteriores mientras la IA trabaja.
+    const cleanup = supabase.from("imported_transactions").delete().eq("statement_id", statementId);
+
     let parsed: z.infer<typeof txSchema>;
     try {
-      const { output } = await generateText({
+      // Streaming: evita cortes por timeout y devuelve antes en documentos largos.
+      const result = streamText({
         model,
         system: SYSTEM,
         messages: [{ role: "user", content }],
         output: Output.object({ schema: txSchema }),
       });
-      parsed = output;
+      parsed = (await result.output) as z.infer<typeof txSchema>;
     } catch (error) {
       console.error("[statements] AI extraction failed", error);
       if (NoObjectGeneratedError.isInstance(error)) {
@@ -167,11 +180,9 @@ export async function processStatementForUser(
       );
     }
 
-    await supabase.from("imported_transactions").delete().eq("statement_id", statementId);
-    if (rows.length > 0) {
-      const { error: insErr } = await supabase.from("imported_transactions").insert(rows);
-      if (insErr) throw new Error(insErr.message);
-    }
+    await cleanup;
+    const { error: insErr } = await supabase.from("imported_transactions").insert(rows);
+    if (insErr) throw new Error(insErr.message);
 
     await supabase
       .from("statements")
