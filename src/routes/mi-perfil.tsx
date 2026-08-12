@@ -57,6 +57,17 @@ function MiPerfil() {
   // Tasas del día: necesarias para reconvertir los importes al cambiar de moneda.
   useFxRates();
 
+  // Advertir al cerrar o recargar la pestaña con cambios sin guardar.
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (!dirty) return;
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [dirty]);
+
   const moneyFields: { key: keyof Profile; label: string; group: "income" | "assets" | "flow" }[] = [
     { key: "income_salary", label: t("Salario mensual", "Monthly salary"), group: "income" },
     { key: "income_bonus", label: t("Bonos / variables", "Bonuses / variable pay"), group: "income" },
