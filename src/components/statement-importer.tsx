@@ -46,7 +46,7 @@ const money = (v: number, currency: string) =>
 
 export function StatementImporter() {
   const t = useT();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { isFree } = useSubscription();
   const qc = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
