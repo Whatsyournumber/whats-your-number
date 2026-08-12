@@ -3,20 +3,11 @@ import { toast } from "sonner";
 
 import { motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
-import {
-  Bar,
-  BarChart,
-  Cell,
-  ResponsiveContainer,
-  Tooltip as RTooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
 import { ArrowLeftRight, BookOpen, Info, MapPin, RotateCcw, SlidersHorizontal, Sparkles, X } from "lucide-react";
 
 import { PlanGate } from "@/components/plan-gate";
 import { PageHeader, PageShell, Panel } from "@/components/page";
-import { axisProps, ChartTooltip } from "@/components/chart-kit";
+import { CityDetailDialog } from "@/components/city-detail-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -34,7 +25,6 @@ import { useProfile } from "@/hooks/use-profile";
 import { useT } from "@/hooks/use-language";
 import { money } from "@/lib/onboarding";
 import {
-  costBreakdown,
   defaultFilters,
   hourlyRate,
   rankCities,
@@ -43,7 +33,7 @@ import {
   type Filters,
 } from "@/lib/lifestyle-cities";
 import { stabilityBadge } from "@/lib/political-stability";
-import { PILLAR_META, pillarWeights, type PillarBreakdown, type PillarKey } from "@/lib/north-score";
+import { PILLAR_META, pillarWeights, type PillarKey } from "@/lib/north-score";
 import { suggestedFilters, suggestionReasons } from "@/lib/city-suggestions";
 import { buildDataset } from "@/lib/profile-data";
 import { nomadVisa, nomadFriendly } from "@/lib/nomad-visas";
