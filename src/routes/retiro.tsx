@@ -172,6 +172,17 @@ function RetiroContent() {
             </div>
           )}
         </motion.div>
+
+        <Link to="/patrimonio" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
+          <KpiCard
+            label={t("Cuánto tengo", "How much I have")}
+            value={fmt(investable)}
+            hint={t("Sin contar propiedades — solo activos que generan retorno", "Excluding properties — only assets that generate returns")}
+            accent
+            index={1}
+          />
+        </Link>
+
         <KpiCard label={t("Cómo voy", "How I'm doing")} value={`${progressPct.toFixed(1)}%`} hint={t("del capital objetivo", "of target capital")} index={2} />
         <Link to="/gastos" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
           <KpiCard label={t("Gastos mensuales", "Monthly expenses")} value={fmt(d.expenses)} hint={`${fmt(d.expenses * 12)} ${t("al año", "per year")}`} index={3} />
