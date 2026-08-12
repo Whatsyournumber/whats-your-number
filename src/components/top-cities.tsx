@@ -3,11 +3,13 @@ import { useEffect, useMemo, useState } from "react";
 
 import { Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useT } from "@/hooks/use-language";
 import type { Profile } from "@/hooks/use-profile";
 import { suggestedFilters } from "@/lib/city-suggestions";
 import { readMyCities, subscribeMyCities } from "@/lib/my-cities";
-import { rankCities } from "@/lib/lifestyle-cities";
+import { rankCities, type CityScore } from "@/lib/lifestyle-cities";
+
 
 /** Top 3 ciudades calculadas con tu perfil: presupuesto mensual y camino a tu meta. */
 export function TopCitiesPanel({
