@@ -301,6 +301,35 @@ export function StatementImporter() {
     return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
   }).length;
   const freeLimitReached = isFree && statementsThisMonth >= 5;
+  const pending = statements.filter((s) => s.status !== "processed" && s.status !== "error" && s.status !== "processing");
+
+  const [pendingProgress, setPendingProgress] = useState<string | null>(null);
+  const processPending = async () => {
+    setPendingProgress(t("Iniciando…", "Starting…"));
+    let done = 0;
+    for (let i = 0; i < pending.length; i++) {
+      const s = pending[i]!;
+      setPendingProgress(t(`Analizando ${i + 1} de ${pending.length}…`, `Analyzing ${i + 1} of ${pending.length}…`));
+      try {
+        const result = await runProcess({ data: { statementId: s.id, environment: getPaddleEnvironment() } });
+        if (result.upgradeRequired) {
+          toast.error(
+            t(
+              "Límite de 5 importaciones/mes del plan Free. Actualiza a Pro.",
+              "Free plan limit of 5 imports/month reached. Upgrade to Pro.",
+            ),
+          );
+          break;
+        }
+        done += result.inserted;
+      } catch (err) {
+        toast.error(`${s.file_name}: ${err instanceof Error ? err.message : t("error de análisis", "analysis error")}`);
+      }
+      refreshAll();
+    }
+    setPendingProgress(null);
+    if (done > 0) toast.success(t(`${done} movimientos importados`, `${done} transactions imported`));
+  };
 
   return (
     <div className="space-y-4">
