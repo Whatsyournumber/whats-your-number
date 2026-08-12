@@ -18,6 +18,7 @@ import {
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
+import { IncomeKpiCard } from "@/components/income-editor";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { TopCitiesPanel } from "@/components/top-cities";
 import { CheckoutWelcome } from "@/components/checkout-welcome";
