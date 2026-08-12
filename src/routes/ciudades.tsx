@@ -1256,7 +1256,11 @@ function CityDetail({
 
         <div className="flex-1 space-y-6 overflow-y-auto p-5">
           <DialogHeader>
-            <DialogTitle className="text-2xl">{c.name}</DialogTitle>
+            <div className="flex items-center gap-2">
+              <DialogTitle className="text-2xl">{c.name}</DialogTitle>
+              <SourcesTooltip t={t} />
+            </div>
+
             <DialogDescription>
               <span className="inline-flex items-center gap-2">
                 <span>{c.country}</span>
@@ -1354,12 +1358,6 @@ function CityDetail({
                 <PillarRow key={p.key} pillar={p} t={t} />
               ))}
             </div>
-            <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
-              {t(
-                "Fuentes: Numbeo (costo de vida y calidad), OECD (ingresos, impuestos, educación), World Bank (gobernanza, salud, esperanza de vida), WHO / IQAir (salud y aire), Global Peace Index (seguridad), World Happiness Report (bienestar), Ookla Speedtest (internet), InterNations Expat Insider 2026 (expatriados), Nomad List / EF EPI (nómadas e inglés), OpenWeather / Meteostat / OpenStreetMap (clima y naturaleza), Mercer / EIU Liveability (liveability global). Estimaciones de referencia.",
-                "Sources: Numbeo (cost of living and quality), OECD (income, taxes, education), World Bank (governance, health, life expectancy), WHO / IQAir (healthcare and air quality), Global Peace Index (safety), World Happiness Report (well-being), Ookla Speedtest (internet), InterNations Expat Insider 2026 (expats), Nomad List / EF EPI (nomads and English), OpenWeather / Meteostat / OpenStreetMap (climate and nature), Mercer / EIU Liveability (global liveability). Reference estimates.",
-              )}
-            </p>
           </div>
 
           <div>
