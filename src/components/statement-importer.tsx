@@ -186,7 +186,8 @@ export function StatementImporter() {
       }));
       setJobs(incoming.map(({ file, jobId }) => ({ id: jobId, name: file.name, stage: "reading" as JobStage })));
 
-      // Subimos y lanzamos el análisis de todos los archivos en paralelo.
+      // 1) Subimos todos los archivos en paralelo (rápido).
+      const queue: { jobId: string; statementId: string }[] = [];
       await Promise.all(
         incoming.map(async ({ file, jobId }) => {
           const lower = file.name.toLowerCase();
@@ -215,7 +216,6 @@ export function StatementImporter() {
             throw new Error(upErr.message);
           }
 
-          setJob(jobId, { stage: "extracting" });
           const { data: inserted, error: insErr } = await supabase
             .from("statements")
             .insert({
@@ -233,40 +233,49 @@ export function StatementImporter() {
             throw new Error(insErr.message);
           }
 
-          void qc.invalidateQueries({ queryKey: ["statements"] });
-          setJob(jobId, { stage: "analyzing" });
-          try {
-            const result = await runProcess({ data: { statementId: inserted.id as string, environment: getPaddleEnvironment() } });
-            if (result.upgradeRequired) {
-              const msg = t(
-                "Límite de 5 importaciones/mes del plan Free. Actualiza a Pro.",
-                "Free plan limit of 5 imports/month reached. Upgrade to Pro.",
-              );
-              setJob(jobId, { stage: "error", message: msg });
-              toast.error(msg);
-              void qc.invalidateQueries({ queryKey: ["statements"] });
-              return;
-            }
-            setJob(jobId, {
-              stage: "done",
-              message: t(`${result.inserted} movimientos`, `${result.inserted} transactions`),
-            });
-            toast.success(
-              t(
-                `${result.inserted} movimientos clasificados por IA · actualizando tus módulos`,
-                `${result.inserted} transactions classified by AI · updating your modules`,
-              ),
-            );
-            refreshAll();
-
-          } catch (err) {
-            const msg = err instanceof Error ? err.message : t("Error de análisis", "Analysis error");
-            setJob(jobId, { stage: "error", message: msg });
-            toast.error(msg);
-            void qc.invalidateQueries({ queryKey: ["statements"] });
-          }
+          setJob(jobId, { stage: "extracting", message: t("En cola…", "Queued…") });
+          queue.push({ jobId, statementId: inserted.id as string });
         }),
       );
+
+      void qc.invalidateQueries({ queryKey: ["statements"] });
+
+      // 2) Analizamos de uno en uno: la IA no aguanta 10 archivos a la vez.
+      let stopped = false;
+      for (let i = 0; i < queue.length; i++) {
+        const { jobId, statementId } = queue[i]!;
+        if (stopped) {
+          setJob(jobId, { stage: "error", message: t("Pendiente de procesar", "Pending processing") });
+          continue;
+        }
+        setJob(jobId, {
+          stage: "analyzing",
+          message: t(`Analizando ${i + 1} de ${queue.length}…`, `Analyzing ${i + 1} of ${queue.length}…`),
+        });
+        try {
+          const result = await runProcess({ data: { statementId, environment: getPaddleEnvironment() } });
+          if (result.upgradeRequired) {
+            const msg = t(
+              "Límite de 5 importaciones/mes del plan Free. Actualiza a Pro.",
+              "Free plan limit of 5 imports/month reached. Upgrade to Pro.",
+            );
+            setJob(jobId, { stage: "error", message: msg });
+            toast.error(msg);
+            stopped = true;
+            continue;
+          }
+          setJob(jobId, {
+            stage: "done",
+            message: t(`${result.inserted} movimientos`, `${result.inserted} transactions`),
+          });
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : t("Error de análisis", "Analysis error");
+          setJob(jobId, { stage: "error", message: msg });
+          toast.error(`${msg}`);
+        }
+        refreshAll();
+      }
+
 
     } catch (error) {
       const message = error instanceof Error ? error.message : "";
@@ -292,6 +301,35 @@ export function StatementImporter() {
     return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
   }).length;
   const freeLimitReached = isFree && statementsThisMonth >= 5;
+  const pending = statements.filter((s) => s.status !== "processed" && s.status !== "error" && s.status !== "processing");
+
+  const [pendingProgress, setPendingProgress] = useState<string | null>(null);
+  const processPending = async () => {
+    setPendingProgress(t("Iniciando…", "Starting…"));
+    let done = 0;
+    for (let i = 0; i < pending.length; i++) {
+      const s = pending[i]!;
+      setPendingProgress(t(`Analizando ${i + 1} de ${pending.length}…`, `Analyzing ${i + 1} of ${pending.length}…`));
+      try {
+        const result = await runProcess({ data: { statementId: s.id, environment: getPaddleEnvironment() } });
+        if (result.upgradeRequired) {
+          toast.error(
+            t(
+              "Límite de 5 importaciones/mes del plan Free. Actualiza a Pro.",
+              "Free plan limit of 5 imports/month reached. Upgrade to Pro.",
+            ),
+          );
+          break;
+        }
+        done += result.inserted;
+      } catch (err) {
+        toast.error(`${s.file_name}: ${err instanceof Error ? err.message : t("error de análisis", "analysis error")}`);
+      }
+      refreshAll();
+    }
+    setPendingProgress(null);
+    if (done > 0) toast.success(t(`${done} movimientos importados`, `${done} transactions imported`));
+  };
 
   return (
     <div className="space-y-4">
@@ -398,6 +436,23 @@ export function StatementImporter() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Panel title={t("Archivos importados", "Imported files")} description={t("Historial de estados de cuenta procesados", "History of processed statements")}>
+          {pending.length > 0 && (
+            <div className="mb-3 flex items-center gap-2 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
+              <p className="text-xs text-muted-foreground">
+                {pendingProgress ??
+                  t(`${pending.length} archivos sin analizar`, `${pending.length} files not analyzed yet`)}
+              </p>
+              <Button
+                size="sm"
+                className="ml-auto gap-2 rounded-full text-xs"
+                disabled={Boolean(pendingProgress)}
+                onClick={() => void processPending()}
+              >
+                {pendingProgress ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
+                {t("Analizar pendientes", "Analyze pending")}
+              </Button>
+            </div>
+          )}
           {statementsQuery.isLoading ? (
             <p className="text-sm text-muted-foreground">{t("Cargando…", "Loading…")}</p>
           ) : statements.length === 0 ? (
@@ -416,7 +471,9 @@ export function StatementImporter() {
                           ? t(`${s.transactions_count ?? 0} movimientos`, `${s.transactions_count ?? 0} transactions`)
                           : s.status === "error"
                             ? t("Error", "Error")
-                            : t("Procesando…", "Processing…")}
+                            : s.status === "processing"
+                              ? t("Procesando…", "Processing…")
+                              : t("Pendiente · pulsa ✨ para analizar", "Pending · tap ✨ to analyze")}
                       </p>
                     </div>
                     <div className="ml-auto flex items-center gap-1">
