@@ -18,7 +18,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { convertStoredFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useFxRates } from "@/hooks/use-fx-rates";
-import { useT } from "@/hooks/use-language";
+import { useLanguage, useT } from "@/hooks/use-language";
+import { translateOption } from "@/lib/i18n-data";
 
 import { useProfile, type Profile } from "@/hooks/use-profile";
 import {
