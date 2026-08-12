@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, Banknote, Home, PiggyBank, TrendingUp, Wallet } from "lucide-react";
+import { toast } from "sonner";
 import {
   Area,
   AreaChart,
@@ -17,6 +18,7 @@ import {
 } from "recharts";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
+import { EditableKpiCard } from "@/components/editable-kpi-card";
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { TopCitiesPanel } from "@/components/top-cities";
@@ -82,7 +84,7 @@ function greeting(t: (es: string, en: string) => string) {
 function Dashboard() {
   const t = useT();
   const { lang } = useLanguage();
-  const { profile, isLoading } = useProfile();
+  const { profile, isLoading, save } = useProfile();
   const { transactions } = useTransactions();
   const d = buildDataset(profile);
   const realMonths = buildRealMonths(transactions, d.netWorth);
@@ -196,7 +198,26 @@ function Dashboard() {
             index={0}
           />
         </Link>
-        <KpiCard label={t("Ingresos", "Income")} value={fmt(current.income)} {...(hasHistory ? { delta: delta(current.income, previous.income) } : {})} icon={Banknote} index={1} />
+        <EditableKpiCard
+          label={t("Ingresos", "Income")}
+          value={fmt(current.income)}
+          rawValue={Math.round(current.income)}
+          onChange={(v) => {
+            const other =
+              (Number(profile.income_bonus) || 0) +
+              (Number(profile.income_rent) || 0) +
+              (Number(profile.income_other) || 0);
+            void save({ income_salary: Math.max(0, v - other) }).then(() => {
+              toast.success(t("Ingresos actualizados", "Income updated"), {
+                description: t("Dashboard y análisis se recalculan con tu nuevo ingreso.", "Dashboard and analysis recalculate with your new income."),
+              });
+            });
+          }}
+          {...(hasHistory ? { delta: delta(current.income, previous.income) } : {})}
+          icon={Banknote}
+          index={1}
+          format={fmt}
+        />
         <KpiCard label={t("Gastos", "Expenses")} value={fmt(current.expenses)} {...(hasHistory ? { delta: delta(current.expenses, previous.expenses) } : {})} inverse icon={TrendingUp} index={2} />
         <KpiCard label={t("Ahorro", "Savings")} value={fmt(current.savings)} {...(hasHistory ? { delta: delta(current.savings, previous.savings) } : {})} icon={PiggyBank} index={3} />
         <KpiCard label={t("Tasa de ahorro", "Savings rate")} value={`${savingsRate.toFixed(0)}%`} {...(hasHistory ? { delta: savingsRate - prevRate } : {})} icon={ArrowUpRight} index={4} />

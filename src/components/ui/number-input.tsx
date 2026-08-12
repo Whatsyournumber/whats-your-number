@@ -12,6 +12,8 @@ export function NumberInput({
   step,
   placeholder,
   format,
+  autoFocus,
+  onKeyDown,
 }: {
   value: number;
   onChange: (v: number) => void;
@@ -22,6 +24,8 @@ export function NumberInput({
   placeholder?: string;
   /** Muestra separadores de miles mientras no se está editando. */
   format?: boolean;
+  autoFocus?: boolean;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }) {
   const pretty = (v: number) => (v === 0 ? "" : format ? v.toLocaleString("es-ES") : String(v));
   const [text, setText] = useState(pretty(value));
@@ -42,6 +46,8 @@ export function NumberInput({
       max={max}
       step={step}
       placeholder={placeholder}
+      autoFocus={autoFocus}
+      onKeyDown={onKeyDown}
       className={cn("numeric", className)}
       value={text}
       onFocus={() => {
