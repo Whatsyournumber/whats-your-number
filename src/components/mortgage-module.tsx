@@ -43,9 +43,9 @@ type MortgageState = {
   rate: number;
   rateType: "fixed" | "variable";
   term: number;
+  payment: number;
   extra: number;
   lump: number;
-  nextReviewDate: string;
 };
 
 const KEY = "whatsyournumber:mortgage";
@@ -55,9 +55,9 @@ const defaults: MortgageState = {
   rate: 3.5,
   rateType: "variable",
   term: 30,
+  payment: 0,
   extra: 250,
   lump: 25000,
-  nextReviewDate: "Oct 2026",
 };
 
 /** Simula la amortización mes a mes y devuelve meses e intereses totales. */
