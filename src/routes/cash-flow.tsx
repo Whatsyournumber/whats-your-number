@@ -12,7 +12,7 @@ import { useCategories } from "@/hooks/use-categories";
 import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions, type Tx } from "@/hooks/use-transactions";
-import { categorizeTx } from "@/lib/categorize";
+import { buildTravelDays, categorizeTxWithTravel } from "@/lib/categorize";
 import { money } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
 
@@ -123,6 +123,7 @@ function CashFlow() {
     "Hobbies",
 
   ]);
+  const travelDays = useMemo(() => buildTravelDays(monthTx as Tx[], rules), [monthTx, rules]);
   const spend = useMemo(() => {
     let wants = 0;
     let needs = 0;
@@ -130,7 +131,7 @@ function CashFlow() {
     const wantsBy = new Map<string, number>();
     for (const tx of monthTx) {
       if (tx.amount >= 0) continue;
-      const cat = categorizeTx(tx as Tx, rules);
+      const cat = categorizeTxWithTravel(tx as Tx, rules, travelDays);
       const v = Math.abs(tx.amount);
       if (WANT_CATS.has(cat)) {
         wants += v;
@@ -143,7 +144,7 @@ function CashFlow() {
       }
     }
     return { wants, needs, total: wants + needs, needsBy, wantsBy };
-  }, [monthTx, rules]);
+  }, [monthTx, rules, travelDays]);
 
   const hasReal = hasData && monthTx.length > 0;
 
