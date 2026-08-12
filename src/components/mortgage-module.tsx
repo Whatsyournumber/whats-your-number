@@ -383,12 +383,18 @@ export function MortgageModule() {
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <div>
               <p className="text-xs text-muted-foreground">{t("Monto pendiente", "Outstanding balance")}</p>
-              <NumberInput
-                value={s.balance}
-                step={1000}
-                onChange={(v) => set({ balance: v })}
-                className="mt-1.5 h-11 w-full text-sm font-semibold"
-              />
+              <div className="relative mt-1.5">
+                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+                  {currencySymbol}
+                </span>
+                <NumberInput
+                  value={Math.round(s.balance)}
+                  step={1000}
+                  format
+                  onChange={(v) => set({ balance: Math.round(v) })}
+                  className="h-11 w-full pl-7 text-sm font-semibold"
+                />
+              </div>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{t("Tasa de interés (%)", "Interest rate (%)")}</p>
