@@ -95,9 +95,68 @@ function fmtDate(value: string | null) {
   return new Date(value).toLocaleDateString("es-ES", { day: "2-digit", month: "short", year: "numeric" });
 }
 
+function DeleteAction({
+  title,
+  description,
+  onConfirm,
+}: {
+  title: string;
+  description: string;
+  onConfirm: () => Promise<void>;
+}) {
+  const [busy, setBusy] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>
+        <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" aria-label={title}>
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+          <AlertDialogAction
+            disabled={busy}
+            onClick={async (e) => {
+              e.preventDefault();
+              setBusy(true);
+              try {
+                await onConfirm();
+                setOpen(false);
+              } finally {
+                setBusy(false);
+              }
+            }}
+          >
+            {busy ? "Borrando…" : "Borrar"}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
 function AdminPage() {
   const { isSuperAdmin, loading: rolesLoading } = useRoles();
   const [search, setSearch] = useState("");
+  const queryClient = useQueryClient();
+
+  const runDelete = async (fn: () => Promise<unknown>, okMsg: string) => {
+    try {
+      await fn();
+      toast.success(okMsg);
+      await queryClient.invalidateQueries({ queryKey: ["admin"] });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "No se pudo borrar");
+    }
+  };
+
 
   const enabled = isSuperAdmin;
 
