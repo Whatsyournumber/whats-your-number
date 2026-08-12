@@ -132,17 +132,57 @@ function MiPerfil() {
   }
 
   return (
-    <PageShell>
-      <PageHeader
-        eyebrow={t("Perfil financiero", "Financial profile")}
-        title={t("Mis datos", "My data")}
-        subtitle={t(
-          "Edita cualquier campo: patrimonio, dashboard, retiro y objetivos se recalculan con tus números.",
-          "Edit any field: net worth, dashboard, retirement and goals recalculate with your numbers.",
-        )}
-      />
+    <Block shouldBlockFn={() => dirty} withResolver>
+      {(blocker) => (
+        <>
+          <Dialog open={blocker.status === "blocked"} onOpenChange={(open) => !open && blocker.reset?.()}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>{t("¿Quieres guardar los cambios?", "Do you want to save your changes?")}</DialogTitle>
+                <DialogDescription>
+                  {t(
+                    "Tienes cambios sin guardar. Si sales ahora, perderás los ajustes que hiciste en tu perfil.",
+                    "You have unsaved changes. If you leave now, you'll lose the adjustments you made to your profile.",
+                  )}
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter className="gap-2">
+                <Button variant="outline" onClick={() => blocker.reset?.()}>
+                  {t("Seguir editando", "Keep editing")}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setDirty(false);
+                    blocker.proceed?.();
+                  }}
+                >
+                  {t("Descartar", "Discard")}
+                </Button>
+                <Button
+                  onClick={() => {
+                    void onSave().then(() => {
+                      blocker.proceed?.();
+                    });
+                  }}
+                >
+                  {t("Guardar y salir", "Save and leave")}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
-      <div className="surface flex flex-wrap items-center gap-3 p-4">
+          <PageShell>
+            <PageHeader
+              eyebrow={t("Perfil financiero", "Financial profile")}
+              title={t("Mis datos", "My data")}
+              subtitle={t(
+                "Edita cualquier campo: patrimonio, dashboard, retiro y objetivos se recalculan con tus números.",
+                "Edit any field: net worth, dashboard, retirement and goals recalculate with your numbers.",
+              )}
+            />
+
+            <div className="surface flex flex-wrap items-center gap-3 p-4">
         <div className="grid flex-1 grid-cols-2 gap-4 sm:grid-cols-4">
           <Stat label={t("Patrimonio neto", "Net worth")} value={preview.fmt(preview.netWorth)} />
           <Stat label={t("Ahorro mensual", "Monthly savings")} value={preview.fmt(preview.savings)} />
