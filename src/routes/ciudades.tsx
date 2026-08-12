@@ -708,7 +708,6 @@ function CitySearchBar({
   onSave: () => void;
   t: (es: string, en: string) => string;
 }) {
-
   const [query, setQuery] = useState("");
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -720,69 +719,86 @@ function CitySearchBar({
   }, [query, all, picks]);
 
   return (
-    <div className="flex flex-wrap items-center gap-2 border-b border-border/60 px-4 py-2.5">
-      <div className="relative min-w-[200px] flex-1">
-        <MapPin className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={
-            picks.length >= 3
-              ? t("Ya elegiste 3 ciudades", "You already picked 3 cities")
-              : t("Busca y elige hasta 3 ciudades…", "Search and pick up to 3 cities…")
-          }
-          disabled={picks.length >= 3}
-          className="h-8 border-0 bg-transparent pl-8 text-xs shadow-none focus-visible:ring-0"
-        />
-        {matches.length > 0 && (
-          <div className="absolute z-30 mt-1 w-full overflow-hidden rounded-lg border border-border bg-popover shadow-lg">
-            {matches.map((r) => (
-              <button
-                key={r.city.id}
-                type="button"
-                className="flex w-full items-center justify-between px-3 py-2 text-left text-xs hover:bg-elevated"
-                onClick={() => {
-                  setPicks((p) => [...p, r.city.id].slice(0, 3));
-                  setQuery("");
-                }}
-              >
-                <span>{r.city.name}</span>
-                <span className="text-muted-foreground">{r.city.country}</span>
-              </button>
-            ))}
+    <div className="border-b border-border/60 px-5 py-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <MapPin className="h-3.5 w-3.5" />
           </div>
-        )}
-      </div>
-      {picks.map((id) => {
-        const c = all.find((r) => r.city.id === id)?.city;
-        if (!c) return null;
-        return (
-          <span
-            key={id}
-            className="inline-flex items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-2.5 py-1 text-[11px]"
-          >
-            {c.name}
-            <button
-              type="button"
-              onClick={() => setPicks((p) => p.filter((x) => x !== id))}
-              aria-label={`Quitar ${c.name}`}
-            >
-              <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-            </button>
-          </span>
-        );
-      })}
-      {picks.length > 0 && (
-        <Button size="sm" variant="ghost" className="h-7 text-[11px]" onClick={() => setPicks([])}>
-          {t("Usar las sugeridas", "Use suggested")}
-        </Button>
-      )}
-      {dirty && (
-        <Button size="sm" className="h-7 rounded-full text-[11px]" onClick={onSave}>
-          {t("Guardar", "Save")}
-        </Button>
-      )}
+          <p className="text-[11px] font-medium text-muted-foreground">
+            {picks.length === 0
+              ? t("Elige hasta 3 ciudades", "Pick up to 3 cities")
+              : t(`Ya elegiste ${picks.length} ciudad${picks.length === 1 ? "" : "es"}`, `You picked ${picks.length} city${picks.length === 1 ? "" : "ies"}`)}
+          </p>
+        </div>
 
+        <div className="flex flex-1 flex-wrap items-center gap-2 sm:justify-end">
+          <div className="relative min-w-[180px] flex-1 sm:max-w-[280px]">
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={
+                picks.length >= 3
+                  ? t("Ya elegiste 3 ciudades", "You already picked 3 cities")
+                  : t("Busca ciudad…", "Search city…")
+              }
+              disabled={picks.length >= 3}
+              className="h-9 rounded-xl border-border/60 bg-elevated/30 pl-9 text-xs placeholder:text-muted-foreground/60 focus-visible:ring-primary/20"
+            />
+            <MapPin className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/70" />
+            {matches.length > 0 && (
+              <div className="absolute z-30 mt-1.5 w-full overflow-hidden rounded-xl border border-border/80 bg-popover p-1 shadow-xl">
+                {matches.map((r) => (
+                  <button
+                    key={r.city.id}
+                    type="button"
+                    className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs transition-colors hover:bg-elevated"
+                    onClick={() => {
+                      setPicks((p) => [...p, r.city.id].slice(0, 3));
+                      setQuery("");
+                    }}
+                  >
+                    <span className="font-medium">{r.city.name}</span>
+                    <span className="text-muted-foreground">{r.city.country}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {picks.map((id) => {
+            const c = all.find((r) => r.city.id === id)?.city;
+            if (!c) return null;
+            return (
+              <span
+                key={id}
+                className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-[11px] font-medium text-primary-foreground shadow-sm"
+              >
+                {c.name}
+                <button
+                  type="button"
+                  onClick={() => setPicks((p) => p.filter((x) => x !== id))}
+                  aria-label={`Quitar ${c.name}`}
+                  className="rounded-full p-0.5 transition-colors hover:bg-primary/20"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            );
+          })}
+          {picks.length > 0 && (
+            <Button size="sm" variant="ghost" className="h-8 text-[11px] text-muted-foreground hover:text-foreground" onClick={() => setPicks([])}>
+              {t("Usar las sugeridas", "Use suggested")}
+            </Button>
+          )}
+          {dirty && (
+            <Button size="sm" className="h-8 gap-1.5 rounded-full text-[11px]" onClick={onSave}>
+              <Sparkles className="h-3 w-3" />
+              {t("Guardar", "Save")}
+            </Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
