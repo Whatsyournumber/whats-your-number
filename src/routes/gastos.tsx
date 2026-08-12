@@ -11,8 +11,8 @@ import {
   subMonths,
 } from "date-fns";
 import { es } from "date-fns/locale";
-import { Banknote, BarChart3, CalendarIcon, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
-import { toast } from "sonner";
+import { BarChart3, CalendarIcon, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { buildTravelDays, categorizeTx, categorizeTxWithTravel } from "@/lib/categorize";
 import { useLanguage, useT } from "@/hooks/use-language";
@@ -21,7 +21,7 @@ import type { DateRange } from "react-day-picker";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, ComposedChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
-import { EditableKpiCard } from "@/components/editable-kpi-card";
+
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
