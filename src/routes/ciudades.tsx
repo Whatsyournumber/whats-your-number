@@ -1272,34 +1272,6 @@ function CityDetail({
               </span>
             </DialogDescription>
           </DialogHeader>
-          {/* Key monthly costs */}
-          <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
-              {t("Costos mensuales clave", "Key monthly costs")}
-            </p>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-              <Stat icon="🏠" label={t("Vivienda", "Housing")} value={fmt(b.housing)} />
-              <Stat icon="🍽" label={t("Alimentación", "Food")} value={fmt(b.food)} />
-              <Stat icon="🚗" label={t("Transporte", "Transport")} value={fmt(b.transport)} />
-              <Stat icon="🏥" label={t("Salud", "Healthcare")} value={fmt(b.healthcare)} sub={`${c.healthcareScore}/100`} />
-              {b.education > 0 && (
-                <Stat icon="🎓" label={t("Educación", "Education")} value={fmt(b.education)} sub={`${c.schools}/100`} />
-              )}
-            </div>
-          </div>
-
-          {/* Lifestyle & stability */}
-          <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
-              {t("Vida y estabilidad", "Life & stability")}
-            </p>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-              <Stat icon="🛡" label={t("Seguridad", "Safety")} value={`${c.safety}/100`} />
-              <Stat icon="🌤" label={t("Clima", "Climate")} value={t(c.climateLabelEs, c.climateLabelEn)} />
-              <Stat icon="💻" label={t("Internet", "Internet")} value={`${c.internetSpeed} Mbps`} sub={fmt(c.internet)} />
-              <Stat icon="🗣" label={t("Inglés", "English friendly")} value={`${c.englishFriendly}/100`} />
-            </div>
-          </div>
 
           {/* Quick context row */}
           <div className="flex flex-wrap items-center gap-2 rounded-xl border border-border/60 bg-elevated/30 p-3 text-[11px] text-muted-foreground">

@@ -139,15 +139,6 @@ function CityQuickDialog({
   const t = useT();
   if (!r) return null;
   const c = r.city;
-  const costs = [
-    { label: t("Vivienda", "Housing"), value: c.housing },
-    { label: t("Alimentación", "Food"), value: c.food },
-    { label: t("Transporte", "Transport"), value: c.transport },
-    { label: t("Salud", "Healthcare"), value: c.healthcare },
-    { label: t("Ocio", "Leisure"), value: c.entertainment },
-    { label: t("Internet", "Internet"), value: c.internet },
-  ].filter((x) => x.value > 0);
-  const maxCost = Math.max(...costs.map((x) => x.value), 1);
 
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
@@ -178,31 +169,6 @@ function CityQuickDialog({
             />
           </div>
 
-          <div>
-            <p className="mb-2 text-xs font-medium text-muted-foreground">
-              {t("Costos mensuales estimados", "Estimated monthly costs")}
-            </p>
-            <div className="space-y-2">
-              {costs.map((x) => (
-                <div key={x.label}>
-                  <div className="flex items-baseline justify-between gap-3 text-sm">
-                    <span>{x.label}</span>
-                    <span className="numeric text-xs text-muted-foreground">{fmt(x.value)}</span>
-                  </div>
-                  <div className="mt-1 h-1 overflow-hidden rounded-full bg-muted">
-                    <div className="h-full rounded-full bg-primary" style={{ width: `${(x.value / maxCost) * 100}%` }} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 text-[11px] sm:grid-cols-4">
-            <QuickStat label={t("Seguridad", "Safety")} value={`${c.safety}/100`} />
-            <QuickStat label={t("Salud", "Healthcare")} value={`${c.healthcareScore}/100`} />
-            <QuickStat label={t("Calidad de vida", "Quality of life")} value={`${c.qualityOfLife}/100`} />
-            <QuickStat label={t("Clima", "Climate")} value={t(c.climateLabelEs, c.climateLabelEn)} />
-          </div>
 
           <p className="text-xs text-muted-foreground">
             {t(
