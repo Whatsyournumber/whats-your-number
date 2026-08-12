@@ -236,16 +236,22 @@ function Gastos() {
   // Categorías con gastos visibles por defecto; toggle para ver vacías
   const [showEmptyCategories, setShowEmptyCategories] = useState(false);
   const detailRows = useMemo(() => {
+    // Las categorías creadas por el usuario siempre se ven y van arriba, aunque estén en 0.
+    const customNames = new Set(categories.items.map((i) => i.name.trim()).filter(Boolean));
     const map = new Map(byCategory.map((c) => [c.name, c]));
     const ordered: { name: string; amount: number; items: Tx[]; fixed?: boolean }[] = [];
     for (const name of categories.names) {
       const row = map.get(name) ?? { name, amount: 0, items: [] };
-      if (row.amount > 0 || showEmptyCategories) ordered.push(row);
+      if (row.amount > 0 || showEmptyCategories || customNames.has(name)) ordered.push(row);
       map.delete(name);
     }
     const rest = Array.from(map.values()).filter((c) => c.amount > 0 || showEmptyCategories);
-    return [...ordered, ...rest].sort((a, b) => b.amount - a.amount);
-  }, [byCategory, categories.names, showEmptyCategories]);
+    const all = [...ordered, ...rest].sort((a, b) => b.amount - a.amount);
+    const custom = all.filter((r) => customNames.has(r.name));
+    const others = all.filter((r) => !customNames.has(r.name));
+    return [...custom, ...others];
+  }, [byCategory, categories.names, categories.items, showEmptyCategories]);
+
 
 
   // ---- Comparación mes vs mes ----
