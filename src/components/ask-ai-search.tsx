@@ -177,11 +177,11 @@ ${cats || "- sin datos"}`;
               </div>
             ))
           )}
-          {ask.isPending ? (
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              {t("Pensando…", "Thinking…")}
-            </div>
+          {ask.isPending ? <ThinkingIndicator txCount={transactions?.length ?? 0} /> : null}
+          {!ask.isPending && lastMs !== null && messages.length > 0 ? (
+            <p className="text-[11px] text-muted-foreground">
+              {t("Respondido en", "Answered in")} {(lastMs / 1000).toFixed(1)}s
+            </p>
           ) : null}
           <div ref={endRef} />
         </div>
