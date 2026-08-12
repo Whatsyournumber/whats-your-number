@@ -425,7 +425,9 @@ export function StatementImporter() {
                           ? t(`${s.transactions_count ?? 0} movimientos`, `${s.transactions_count ?? 0} transactions`)
                           : s.status === "error"
                             ? t("Error", "Error")
-                            : t("Procesando…", "Processing…")}
+                            : s.status === "processing"
+                              ? t("Procesando…", "Processing…")
+                              : t("Pendiente · pulsa ✨ para analizar", "Pending · tap ✨ to analyze")}
                       </p>
                     </div>
                     <div className="ml-auto flex items-center gap-1">
