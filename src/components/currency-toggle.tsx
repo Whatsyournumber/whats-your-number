@@ -5,7 +5,7 @@ import { convertStoredFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useAuth } from "@/hooks/use-auth";
 import { useProfile } from "@/hooks/use-profile";
 import { useT } from "@/hooks/use-language";
-import { convertProfileCurrency } from "@/lib/fx";
+import { convertProfileCurrency, ensureLiveRates, getRatesUpdatedAt } from "@/lib/fx";
 import { currencies } from "@/lib/onboarding";
 
 /** Selector de moneda: reconvierte todos los importes del perfil a la divisa elegida. */
@@ -23,11 +23,17 @@ export function CurrencyToggle({ className = "" }: { className?: string }) {
     if (!next || next === current) return;
     setBusy(true);
     try {
+      const live = await ensureLiveRates();
       convertStoredFixedExpenses(current, next);
       const { completed: _c, ...rest } = convertProfileCurrency(profile, current, next);
       await save({ ...rest, currency: next });
       toast.success(t(`Moneda cambiada a ${next}`, `Currency switched to ${next}`), {
-        description: t("Convertimos todos tus importes con la tasa del día.", "We converted every amount using today's rate."),
+        description: live
+          ? t(
+              `Convertido con la tasa de mercado del día (${new Date(getRatesUpdatedAt() ?? Date.now()).toLocaleDateString()}).`,
+              `Converted using today's market rate (${new Date(getRatesUpdatedAt() ?? Date.now()).toLocaleDateString()}).`,
+            )
+          : t("Sin conexión a tasas: usamos las de respaldo.", "Rates unavailable: fallback rates used."),
       });
     } catch {
       toast.error(t("No pudimos cambiar la moneda", "We couldn't change the currency"));
