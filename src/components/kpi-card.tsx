@@ -45,7 +45,21 @@ export function KpiCard({
         <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{label}</p>
         {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
       </div>
-      <p className={cn("numeric relative mt-3 text-2xl font-semibold md:text-3xl")}>{value}</p>
+      <p
+        className={cn(
+          "numeric relative mt-3 truncate text-ellipsis whitespace-nowrap font-semibold leading-tight",
+          value.length > 22
+            ? "text-base md:text-lg"
+            : value.length > 16
+              ? "text-lg md:text-xl"
+              : value.length > 11
+                ? "text-xl md:text-2xl"
+                : "text-2xl md:text-3xl",
+        )}
+        title={value}
+      >
+        {value}
+      </p>
       <div className="relative mt-2 flex items-center gap-2">
         {delta !== undefined && (
           <span
