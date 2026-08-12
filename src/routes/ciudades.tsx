@@ -19,7 +19,14 @@ import { PageHeader, PageShell, Panel } from "@/components/page";
 import { axisProps, ChartTooltip } from "@/components/chart-kit";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -40,6 +47,7 @@ import { PILLAR_META, pillarWeights, type PillarBreakdown, type PillarKey } from
 import { suggestedFilters, suggestionReasons } from "@/lib/city-suggestions";
 import { buildDataset } from "@/lib/profile-data";
 import { nomadVisa, nomadFriendly } from "@/lib/nomad-visas";
+import { readMyCities, saveMyCities } from "@/lib/my-cities";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/ciudades")({
