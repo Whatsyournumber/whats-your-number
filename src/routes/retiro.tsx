@@ -98,9 +98,10 @@ function RetiroContent() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.05, ease: "easeOut" }}
-          className={cn("surface relative overflow-hidden p-5", editing ? "ring-1 ring-primary/20" : "cursor-pointer hover:bg-elevated/40")}
+          className={cn("surface relative overflow-hidden p-5 glow", editing ? "ring-1 ring-primary/20" : "cursor-pointer hover:bg-elevated/40")}
           onClick={() => !editing && setEditing(true)}
         >
+          <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.08]" />
           {!editing ? (
             <>
               <div className="relative flex items-start justify-between gap-3">
@@ -178,7 +179,6 @@ function RetiroContent() {
             label={t("Cuánto tengo", "How much I have")}
             value={fmt(investable)}
             hint={t("Sin contar propiedades — solo activos que generan retorno", "Excluding properties — only assets that generate returns")}
-            accent
             index={1}
           />
         </Link>
