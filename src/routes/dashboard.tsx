@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, Banknote, Home, PiggyBank, TrendingUp, Wallet } from "lucide-react";
+import { toast } from "sonner";
 import {
   Area,
   AreaChart,
@@ -17,6 +18,7 @@ import {
 } from "recharts";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
+import { EditableKpiCard } from "@/components/editable-kpi-card";
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { TopCitiesPanel } from "@/components/top-cities";
