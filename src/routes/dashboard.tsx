@@ -219,7 +219,7 @@ function Dashboard() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         
-        <Panel title={t("Evolución de WhatsYournumber", "WhatsYournumber evolution")} description={t("Progreso hacia tu número para el retiro · últimos 12 meses", "Progress toward your retirement number · last 12 months")} className="lg:col-span-2">
+        <Panel title={t("Evolución de cuál tu número", "Evolution of your number")} description={t("Progreso hacia tu número para el retiro · últimos 12 meses", "Progress toward your retirement number · last 12 months")} className="lg:col-span-2">
           <ResponsiveContainer width="100%" height={280}>
             <AreaChart data={months} margin={{ left: -12, right: 8, top: 8 }}>
               <defs>
