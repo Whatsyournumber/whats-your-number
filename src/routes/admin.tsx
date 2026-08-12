@@ -355,6 +355,7 @@ function AdminPage() {
                     <TableHead>Renueva</TableHead>
                     <TableHead>Cancela al final</TableHead>
                     <TableHead>Creada</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -371,16 +372,26 @@ function AdminPage() {
                         <TableCell className="numeric text-muted-foreground">{fmtDate(s.current_period_end)}</TableCell>
                         <TableCell className="text-muted-foreground">{s.cancel_at_period_end ? "Sí" : "No"}</TableCell>
                         <TableCell className="numeric text-muted-foreground">{fmtDate(s.created_at)}</TableCell>
+                        <TableCell className="text-right">
+                          <DeleteAction
+                            title="Borrar suscripción"
+                            description="Se eliminará este registro de suscripción y el usuario perderá el acceso asociado. No cancela el cobro en la pasarela de pago."
+                            onConfirm={() =>
+                              runDelete(() => adminDeleteSubscription({ data: { id: s.id } }), "Suscripción eliminada")
+                            }
+                          />
+                        </TableCell>
                       </TableRow>
                     );
                   })}
                   {subs.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center text-muted-foreground">
+                      <TableCell colSpan={8} className="text-center text-muted-foreground">
                         Sin suscripciones todavía
                       </TableCell>
                     </TableRow>
                   )}
+
                 </TableBody>
               </Table>
             </div>
