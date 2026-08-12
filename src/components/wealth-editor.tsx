@@ -337,8 +337,8 @@ function Section({
   n: number;
   icon: typeof Wallet;
   title: string;
-  total?: string;
-  hint?: string;
+  total?: string | undefined;
+  hint?: string | undefined;
   children: React.ReactNode;
 }) {
   return (
@@ -382,7 +382,7 @@ function ItemCard({
   children,
 }: {
   title: string;
-  badge?: string;
+  badge?: string | undefined;
   onRemove: () => void;
   children: React.ReactNode;
 }) {
