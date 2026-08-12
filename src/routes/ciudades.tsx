@@ -1,4 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Block, createFileRoute } from "@tanstack/react-router";
+import { toast } from "sonner";
+
 import { motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -17,7 +19,14 @@ import { PageHeader, PageShell, Panel } from "@/components/page";
 import { axisProps, ChartTooltip } from "@/components/chart-kit";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -38,6 +47,7 @@ import { PILLAR_META, pillarWeights, type PillarBreakdown, type PillarKey } from
 import { suggestedFilters, suggestionReasons } from "@/lib/city-suggestions";
 import { buildDataset } from "@/lib/profile-data";
 import { nomadVisa, nomadFriendly } from "@/lib/nomad-visas";
+import { readMyCities, saveMyCities } from "@/lib/my-cities";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/ciudades")({
@@ -275,23 +285,27 @@ function LifestyleSimulatorContent() {
   const ranked = useMemo(() => rankCities(filters, ctx), [filters, ctx]);
   const [detail, setDetail] = useState<CityScore | null>(null);
   const [compare, setCompare] = useState<string[]>([]);
-  // Ciudades elegidas a mano (máx. 3), persistidas en este navegador.
-  const [picks, setPicks] = useState<string[]>(() => {
-    if (typeof window === "undefined") return [];
-    try {
-      const raw = window.localStorage.getItem("wyn:my-cities");
-      return raw ? (JSON.parse(raw) as string[]).slice(0, 3) : [];
-    } catch {
-      return [];
-    }
-  });
+  // Ciudades elegidas a mano (máx. 3). Se guardan sólo al confirmar.
+  const [saved, setSaved] = useState<string[]>(() => readMyCities());
+  const [picks, setPicks] = useState<string[]>(() => readMyCities());
+  const dirty = picks.join(",") !== saved.join(",");
+  const savePicks = () => {
+    saveMyCities(picks);
+    setSaved(picks);
+    toast.success(t("Ciudades guardadas", "Cities saved"), {
+      description: t("Las verás en tu dashboard.", "You'll see them on your dashboard."),
+    });
+  };
   useEffect(() => {
-    try {
-      window.localStorage.setItem("wyn:my-cities", JSON.stringify(picks));
-    } catch {
-      /* almacenamiento no disponible */
-    }
-  }, [picks]);
+    if (!dirty) return;
+    const onBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [dirty]);
+
   const allCities = useMemo(
     () => rankCities({ ...filters, region: "any", climate: "any", stability: "any" }, ctx),
     [filters, ctx],
@@ -309,7 +323,49 @@ function LifestyleSimulatorContent() {
 
   return (
     <PageShell>
+      <Block shouldBlockFn={() => dirty} withResolver>
+        {(blocker) => (
+          <Dialog open={blocker.status === "blocked"} onOpenChange={(open) => !open && blocker.reset?.()}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>
+                  {t("¿Quieres guardar tus ciudades?", "Do you want to save your cities?")}
+                </DialogTitle>
+                <DialogDescription>
+                  {t(
+                    "Si las guardas, aparecerán en tu dashboard inicial como tus ciudades sugeridas.",
+                    "If you save them, they'll show on your dashboard as your suggested cities.",
+                  )}
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter className="gap-2">
+                <Button variant="outline" onClick={() => blocker.reset?.()}>
+                  {t("Seguir eligiendo", "Keep choosing")}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setPicks(saved);
+                    blocker.proceed?.();
+                  }}
+                >
+                  {t("Descartar", "Discard")}
+                </Button>
+                <Button
+                  onClick={() => {
+                    savePicks();
+                    blocker.proceed?.();
+                  }}
+                >
+                  {t("Guardar y salir", "Save and leave")}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
+      </Block>
       <PageHeader
+
         eyebrow="Lifestyle Simulator"
         title={t("🌍 Encuentra tu próxima ciudad", "🌍 Find Your Next City")}
         subtitle={t(
@@ -343,7 +399,15 @@ function LifestyleSimulatorContent() {
           </div>
         </div>
 
-        <CitySearchBar all={allCities} picks={picks} setPicks={setPicks} t={t} />
+        <CitySearchBar
+          all={allCities}
+          picks={picks}
+          setPicks={setPicks}
+          dirty={dirty}
+          onSave={savePicks}
+          t={t}
+        />
+
 
 
 
@@ -538,13 +602,18 @@ function CitySearchBar({
   all,
   picks,
   setPicks,
+  dirty,
+  onSave,
   t,
 }: {
   all: CityScore[];
   picks: string[];
   setPicks: React.Dispatch<React.SetStateAction<string[]>>;
+  dirty: boolean;
+  onSave: () => void;
   t: (es: string, en: string) => string;
 }) {
+
   const [query, setQuery] = useState("");
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -613,6 +682,12 @@ function CitySearchBar({
           {t("Usar las sugeridas", "Use suggested")}
         </Button>
       )}
+      {dirty && (
+        <Button size="sm" className="h-7 rounded-full text-[11px]" onClick={onSave}>
+          {t("Guardar", "Save")}
+        </Button>
+      )}
+
     </div>
   );
 }

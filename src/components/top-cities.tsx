@@ -1,11 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { useT } from "@/hooks/use-language";
 import type { Profile } from "@/hooks/use-profile";
 import { suggestedFilters } from "@/lib/city-suggestions";
+import { readMyCities, subscribeMyCities } from "@/lib/my-cities";
 import { rankCities } from "@/lib/lifestyle-cities";
 
 /** Top 3 ciudades calculadas con tu perfil: presupuesto mensual y camino a tu meta. */
@@ -22,22 +23,42 @@ export function TopCitiesPanel({
 }) {
   const t = useT();
   const filters = useMemo(() => suggestedFilters(profile), [profile]);
+  // Ciudades guardadas por ti en el simulador (si las hay, mandan).
+  const [mine, setMine] = useState<string[]>([]);
+  useEffect(() => {
+    setMine(readMyCities());
+    return subscribeMyCities(() => setMine(readMyCities()));
+  }, []);
   const top = useMemo(() => {
-    const ranked = rankCities(filters, {
+    const ctx = {
       netWorth,
       age: profile.age ?? 30,
       expectedReturn: profile.expected_return || 7,
-    });
+    };
+    if (mine.length > 0) {
+      const all = rankCities({ ...filters, region: "any", climate: "any", stability: "any" }, ctx);
+      const picked = mine.map((id) => all.find((r) => r.city.id === id)).filter(Boolean) as ReturnType<
+        typeof rankCities
+      >;
+      if (picked.length > 0) return picked;
+    }
     // Ranking 100% según tu perfil: sin ciudades fijas.
-    return ranked.slice(0, 3);
-  }, [filters, netWorth, profile.age, profile.expected_return]);
+    return rankCities(filters, ctx).slice(0, 3);
+  }, [filters, mine, netWorth, profile.age, profile.expected_return]);
+
+
 
 
   if (top.length === 0) return null;
 
   return (
     <Panel
-      title={t("Top city acorde con tu presupuesto", "Top city matching your budget")}
+      title={
+        mine.length > 0
+          ? t("Mis ciudades guardadas", "My saved cities")
+          : t("Top city acorde con tu presupuesto", "Top city matching your budget")
+      }
+
       description={t(
         "Calculado con tus ingresos, gastos y patrimonio: cuánto necesitas al mes y cuánto tardas en llegar a tu número.",
         "Calculated from your income, expenses and net worth: monthly budget and time to reach your number.",
