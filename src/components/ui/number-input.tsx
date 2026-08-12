@@ -14,6 +14,7 @@ export function NumberInput({
   format,
   autoFocus,
   onKeyDown,
+  style,
 }: {
   value: number;
   onChange: (v: number) => void;
@@ -26,6 +27,7 @@ export function NumberInput({
   format?: boolean;
   autoFocus?: boolean;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  style?: React.CSSProperties;
 }) {
   const pretty = (v: number) => (v === 0 ? "" : format ? v.toLocaleString("es-ES") : String(v));
   const [text, setText] = useState(pretty(value));
@@ -48,6 +50,7 @@ export function NumberInput({
       placeholder={placeholder}
       autoFocus={autoFocus}
       onKeyDown={onKeyDown}
+      style={style}
       className={cn("numeric", className)}
       value={text}
       onFocus={() => {
