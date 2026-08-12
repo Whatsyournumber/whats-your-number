@@ -255,7 +255,7 @@ function MiPerfil() {
             <RefreshCw className="h-4 w-4" />
             {t("Rehacer onboarding", "Redo onboarding")}
           </Button>
-          <Button className="gap-2 rounded-full" onClick={() => void onSave()} disabled={saving || !dirty}>
+          <Button className="gap-2 rounded-full" onClick={() => void onSave()} disabled={saving || savingHoldings || !dirty}>
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             {t("Guardar cambios", "Save changes")}
           </Button>
@@ -403,7 +403,7 @@ function MiPerfil() {
 
 
       <div className="flex justify-end">
-        <Button className="gap-2 rounded-full" onClick={() => void onSave()} disabled={saving || !dirty}>
+        <Button className="gap-2 rounded-full" onClick={() => void onSave()} disabled={saving || savingHoldings || !dirty}>
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
           {t("Guardar cambios", "Save changes")}
         </Button>
