@@ -35,8 +35,12 @@ Inversiones, Ingresos), y excluded=true cuando el movimiento NO es un gasto real
 compra de activos o inversiones. Conserva el nombre del comercio tal cual aparece. Máximo 200 movimientos. Escribe un resumen de 1-2 frases en español.`;
 
 function toBase64(bytes: Uint8Array): string {
+  // Conversión por bloques: mucho más rápida que carácter a carácter en archivos grandes.
+  const CHUNK = 0x8000;
   let binary = "";
-  for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i]!);
+  for (let i = 0; i < bytes.length; i += CHUNK) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
+  }
   return btoa(binary);
 }
 
