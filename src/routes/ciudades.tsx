@@ -94,29 +94,38 @@ export const Route = createFileRoute("/ciudades")({
 
 type Opt<T> = { value: T; label: string; icon: string };
 
-/** Filtro compacto tipo dropdown, en línea con el resto del panel. */
+/** Filtro compacto tipo dropdown con trigger enriquecido. */
 function SelectFilter<T extends string>({
   label,
   options,
   value,
   onChange,
+  fullWidth = false,
 }: {
   label: string;
   options: Opt<T>[];
   value: T;
   onChange: (v: T) => void;
+  fullWidth?: boolean;
 }) {
+  const selected = options.find((o) => o.value === value);
   return (
-    <div className="min-w-0">
-      <p className="truncate text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{label}</p>
+    <div className={cn("min-w-0", fullWidth && "col-span-2")}>
+      <p className="truncate text-[10px] font-medium uppercase tracking-wider text-muted-foreground/80">{label}</p>
       <Select value={value} onValueChange={(v) => onChange(v as T)}>
-        <SelectTrigger className="mt-1 h-8 w-full border-border bg-elevated/40 px-2.5 text-xs">
-          <SelectValue />
+        <SelectTrigger className="mt-1.5 h-9 w-full gap-2 rounded-xl border-border/60 bg-elevated/30 px-3 text-xs transition-colors hover:bg-elevated/50 focus:ring-2 focus:ring-primary/20 [&>span]:flex [&>span]:items-center [&>span]:gap-2">
+          <SelectValue
+            placeholder={selected?.label}
+            className="flex items-center gap-2"
+          >
+            <span className="shrink-0 text-sm leading-none">{selected?.icon}</span>
+            <span className="truncate">{selected?.label}</span>
+          </SelectValue>
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="rounded-xl border-border/80">
           {options.map((o) => (
             <SelectItem key={o.value} value={o.value} className="text-xs">
-              <span className="mr-1.5">{o.icon}</span>
+              <span className="mr-2 text-sm">{o.icon}</span>
               {o.label}
             </SelectItem>
           ))}
@@ -126,11 +135,36 @@ function SelectFilter<T extends string>({
   );
 }
 
-/** Grupo de filtros con título, para ordenar visualmente el panel. */
-function FilterGroup({ title, children }: { title: string; children: React.ReactNode }) {
+const SECTION_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  Dónde: Globe,
+  Where: Globe,
+  Dinero: Wallet,
+  Money: Wallet,
+  Tú: User,
+  You: User,
+};
+
+/** Grupo de filtros con título visual tipo tarjeta interna. */
+function FilterGroup({
+  title,
+  children,
+  color = "primary",
+}: {
+  title: string;
+  children: React.ReactNode;
+  color?: "primary" | "positive" | "chart-4";
+}) {
+  const Icon = SECTION_ICONS[title] ?? SlidersHorizontal;
+  const colorClass =
+    color === "positive" ? "text-positive bg-positive/10" : color === "chart-4" ? "text-chart-4 bg-chart-4/10" : "text-primary bg-primary/10";
   return (
-    <div className="p-4">
-      <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">{title}</p>
+    <div className="flex flex-col gap-3 p-4 sm:p-5">
+      <div className="flex items-center gap-2">
+        <div className={cn("flex h-7 w-7 items-center justify-center rounded-lg", colorClass)}>
+          <Icon className="h-3.5 w-3.5" />
+        </div>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-foreground">{title}</p>
+      </div>
       <div className="grid grid-cols-2 items-end gap-3">{children}</div>
     </div>
   );
