@@ -498,9 +498,11 @@ function LifestyleSimulatorContent() {
         ctx={ctx}
         fmt={fmt}
         t={t}
-        onApply={(f) => setFilters(f)}
+        picks={picks}
+        all={allCities}
         onOpen={(r) => setDetail(r)}
       />
+
 
       {best && <AiRecommendation r={best} filters={filters} fmt={fmt} t={t} />}
 
