@@ -12,8 +12,21 @@ import {
   TrendingUp,
   Upload,
 } from "lucide-react";
-import { Pie, PieChart, ResponsiveContainer, Cell } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Pie,
+  PieChart,
+  ReferenceArea,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
+import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { NumberInput } from "@/components/ui/number-input";
