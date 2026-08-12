@@ -71,7 +71,7 @@ function rowToHolding(r: Record<string, unknown>): Holding {
     id: String(r["id"]),
     kind: (String(r["kind"] ?? "etf") as HoldingKind),
     label: String(r["label"] ?? ""),
-    ticker: String(r["ticker"] ?? "" ?? ""),
+    ticker: String(r["ticker"] ?? ""),
     quantity: Number(r["quantity"] ?? 0),
     cost_basis: Number(r["cost_basis"] ?? 0),
     manual_value: Number(r["manual_value"] ?? 0),
