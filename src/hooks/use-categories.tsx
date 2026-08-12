@@ -31,8 +31,11 @@ export function useCategories() {
   }, []);
 
   const add = useCallback(
-    (name = "Nueva categoría", keywords = "") =>
-      persist([...items, { id: crypto.randomUUID(), name, keywords }]),
+    (name = "Nueva categoría", keywords = "") => {
+      const id = crypto.randomUUID();
+      persist([{ id, name, keywords }, ...items]);
+      return id;
+    },
     [items, persist],
   );
 
