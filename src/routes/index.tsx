@@ -167,9 +167,12 @@ function Landing() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && user) {
-      navigate({ to: "/elegir", replace: true });
-    }
+    if (loading || !user) return;
+    // Solo redirige la primera vez tras iniciar sesión; si el usuario vuelve
+    // al home a propósito (logo), se queda aquí.
+    if (sessionStorage.getItem("wyn_chooser_seen") === "1") return;
+    sessionStorage.setItem("wyn_chooser_seen", "1");
+    navigate({ to: "/elegir", replace: true });
   }, [loading, user, navigate]);
 
   const features = [
