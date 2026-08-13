@@ -743,7 +743,7 @@ function ThreePillars() {
         "They learn to save, spend and invest with their own money.",
       ),
       metric: "40 / 40 / 20",
-      metricLabel: t("gastar · ahorrar · invertir", "spend · save · invest"),
+      metricLabel: t("ahorrar · invertir · gastar", "save · invest · spend"),
     },
     {
       id: "grow",
@@ -757,12 +757,24 @@ function ThreePillars() {
       metric: "7,2%",
       metricLabel: t("rendimiento anual medio", "average annual return"),
     },
+    {
+      id: "fun",
+      icon: Trophy,
+      color: "var(--kid-sun)",
+      title: t("Aprende finanzas divertido", "Learning money is fun"),
+      desc: t(
+        "Cada meta cumplida se convierte en un premio real: su bici nueva.",
+        "Every goal they hit turns into a real reward: their new bike.",
+      ),
+      metric: "€250",
+      metricLabel: t("bici desbloqueada como premio", "bike unlocked as a reward"),
+    },
   ];
 
   return (
     <section className="mt-16">
       <h2 className="text-center font-display text-lg font-semibold tracking-tight md:text-xl">
-        {t("Tres pilares para un futuro increíble", "Three pillars for an incredible future")}
+        {t("Cuatro pilares para un futuro increíble", "Four pillars for an incredible future")}
       </h2>
       <p className="mx-auto mt-2 max-w-lg text-center text-xs text-muted-foreground">
         {t(
@@ -770,7 +782,8 @@ function ThreePillars() {
           "A plan for parents, habits for kids and time working in their favour.",
         )}
       </p>
-      <div className="mt-7 grid gap-4 sm:grid-cols-3">
+      <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
 
         {pillars.map(({ id, icon: Icon, color, title, desc, metric, metricLabel }) => (
           <motion.div
