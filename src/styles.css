@@ -235,6 +235,8 @@ input[type="number"] {
   --kid-grape: oklch(0.68 0.17 305);
   --kid-sun: oklch(0.82 0.16 85);
   --kid-coral: oklch(0.72 0.17 25);
+  --kid-pink: oklch(0.74 0.16 350);
+
   --grad-kid: linear-gradient(135deg, var(--kid-sky), var(--kid-grape) 45%, var(--kid-coral) 78%, var(--kid-sun));
   --grad-kid-soft: linear-gradient(140deg, oklch(0.72 0.15 235 / 0.16), oklch(0.68 0.17 305 / 0.12) 55%, oklch(0.82 0.16 85 / 0.14));
 }
@@ -245,6 +247,7 @@ input[type="number"] {
   --kid-grape: oklch(0.75 0.16 305);
   --kid-sun: oklch(0.86 0.15 88);
   --kid-coral: oklch(0.76 0.16 25);
+  --kid-pink: oklch(0.8 0.15 350);
 }
 
 @theme inline {
@@ -253,6 +256,7 @@ input[type="number"] {
   --color-kid-grape: var(--kid-grape);
   --color-kid-sun: var(--kid-sun);
   --color-kid-coral: var(--kid-coral);
+  --color-kid-pink: var(--kid-pink);
 }
 
 @utility kid-gradient {
