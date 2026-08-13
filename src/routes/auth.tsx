@@ -76,7 +76,7 @@ function AuthPage() {
   const [promo, setPromo] = useState("");
 
   useEffect(() => {
-    if (!loading && user) navigate({ to: mode === "signup" ? "/onboarding" : "/elegir" });
+    if (!loading && user) navigate({ to: "/elegir" });
   }, [loading, user, navigate, mode]);
 
   const setMode = (next: "login" | "signup") => navigate({ to: "/auth", search: { mode: next } });
