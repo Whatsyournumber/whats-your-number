@@ -677,7 +677,7 @@ function KidsFinanceLanding() {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-3xl border border-border/60 bg-card/40"
+          className="relative overflow-hidden"
         >
           <img
             src={heroFamily}
@@ -689,10 +689,11 @@ function KidsFinanceLanding() {
             height={1200}
             className="absolute inset-y-0 right-0 hidden h-full w-[58%] object-cover object-center lg:block"
           />
-          <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,var(--card)_0%,var(--card)_38%,color-mix(in_oklab,var(--card)_78%,transparent)_52%,transparent_72%)] lg:block" />
-          <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(0deg,var(--card)_0%,transparent_35%)] lg:block" />
+          <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,var(--background)_0%,var(--background)_38%,color-mix(in_oklab,var(--background)_78%,transparent)_52%,transparent_74%)] lg:block" />
+          <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(0deg,var(--background)_0%,transparent_35%)] lg:block" />
 
-          <div className="relative px-8 py-14 md:px-14 md:py-20 lg:max-w-[54%]">
+          <div className="relative py-14 md:py-20 lg:max-w-[54%]">
+
             <span className="inline-flex items-center gap-1.5 rounded-full border border-kid-mint/25 bg-kid-mint/10 px-3 py-1 text-xs font-medium text-kid-mint">
               <Sparkles className="h-3.5 w-3.5" />
               {t(
@@ -730,12 +731,38 @@ function KidsFinanceLanding() {
                 {t("Ver demo", "See demo")}
               </Link>
             </div>
-            <p className="mt-8 max-w-sm text-xs leading-relaxed text-muted-foreground">
-              {t(
-                "+3.200 familias ya están construyendo el futuro financiero de sus hijos.",
-                "+3,200 families are already building their kids' financial future.",
-              )}
-            </p>
+            <div className="mt-10 flex items-center gap-4">
+              <div className="flex -space-x-3">
+                {[
+                  { i: "M", c: "bg-kid-mint/25 text-kid-mint ring-kid-mint/30" },
+                  { i: "A", c: "bg-kid-sky/25 text-kid-sky ring-kid-sky/30" },
+                  { i: "L", c: "bg-kid-grape/25 text-kid-grape ring-kid-grape/30" },
+                  { i: "J", c: "bg-kid-sun/25 text-kid-sun ring-kid-sun/30" },
+                  { i: "P", c: "bg-kid-coral/25 text-kid-coral ring-kid-coral/30" },
+                ].map((a) => (
+                  <span
+                    key={a.i}
+                    className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-semibold ring-2 ${a.c}`}
+                  >
+                    {a.i}
+                  </span>
+                ))}
+              </div>
+              <div>
+                <div className="flex items-center gap-0.5">
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <Star key={i} className="h-3.5 w-3.5 fill-kid-sun text-kid-sun" />
+                  ))}
+                </div>
+                <p className="mt-1 max-w-xs text-xs leading-relaxed text-muted-foreground">
+                  {t(
+                    "+3.200 familias ya están construyendo el futuro financiero de sus hijos.",
+                    "+3,200 families are already building their kids' financial future.",
+                  )}
+                </p>
+              </div>
+            </div>
+
           </div>
 
           <img
