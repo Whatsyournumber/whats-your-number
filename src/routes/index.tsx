@@ -164,8 +164,11 @@ function DemoCard() {
 
 function Landing() {
   const t = useT();
-  const { user, loading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  const { isPatrimonio, loading: subscriptionLoading } = useSubscription();
   const navigate = useNavigate();
+
+  const loading = authLoading || subscriptionLoading;
 
   useEffect(() => {
     if (loading || !user) return;
@@ -173,8 +176,9 @@ function Landing() {
     // al home a propósito (logo), se queda aquí.
     if (sessionStorage.getItem("wyn_chooser_seen") === "1") return;
     sessionStorage.setItem("wyn_chooser_seen", "1");
-    navigate({ to: "/elegir", replace: true });
-  }, [loading, user, navigate]);
+    // El selector de perfiles solo aplica al plan Familiar.
+    navigate({ to: isPatrimonio ? "/elegir" : "/dashboard", replace: true });
+  }, [loading, user, isPatrimonio, navigate]);
 
   const features = [
     {
