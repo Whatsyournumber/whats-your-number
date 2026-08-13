@@ -34,7 +34,7 @@ import {
 } from "recharts";
 
 
-import heroReal from "@/assets/kids-hero-real.jpg";
+import heroLearn from "@/assets/kids-hero-learn.jpg.asset.json";
 import ctaFamily from "@/assets/kids-cta-family.jpg";
 import faceDad from "@/assets/kid-face-dad.jpg";
 import faceMom from "@/assets/kid-face-mom.jpg";
