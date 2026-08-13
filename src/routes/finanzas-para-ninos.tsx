@@ -38,6 +38,7 @@ import {
 } from "recharts";
 
 import heroFamily from "@/assets/kids-hero-family.jpg";
+import heroBg from "@/assets/kids-hero-bg.png.asset.json";
 import ctaFamily from "@/assets/kids-cta-family.jpg";
 import faceDad from "@/assets/kid-face-dad.jpg";
 import faceMom from "@/assets/kid-face-mom.jpg";
