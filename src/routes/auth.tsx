@@ -128,7 +128,7 @@ function AuthPage() {
       return;
     }
     if (result.redirected) return;
-    navigate({ to: "/elegir" });
+    navigate({ to: isPatrimonio ? "/elegir" : "/dashboard" });
   };
 
   return (
