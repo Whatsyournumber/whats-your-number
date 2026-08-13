@@ -472,7 +472,7 @@ function LifestyleSimulatorContent() {
           <FilterGroup title={t("Dinero", "Money")}>
             <div className="col-span-2">
               <div className="flex items-center justify-between gap-2">
-                <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
                   {t("Presupuesto mensual", "Monthly budget")}
                 </p>
                 <p className="numeric text-xs font-semibold text-primary">
@@ -481,7 +481,7 @@ function LifestyleSimulatorContent() {
                 </p>
               </div>
               <Slider
-                className="mt-3"
+                className="mt-2.5"
                 min={1000}
                 max={15000}
                 step={100}
