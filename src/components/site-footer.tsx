@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Facebook, Instagram, Linkedin, Twitter, Youtube, Heart, Plus } from "lucide-react";
+import { Instagram, Linkedin, Heart, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
 import { BrandLogo } from "@/components/brand-logo";
@@ -8,11 +8,8 @@ import { PoliciesDialog } from "@/components/policies-dialog";
 import { useT } from "@/hooks/use-language";
 
 const socials = [
-  { icon: Facebook, label: "Facebook", href: "#" },
-  { icon: Instagram, label: "Instagram", href: "#" },
-  { icon: Linkedin, label: "LinkedIn", href: "#" },
-  { icon: Twitter, label: "Twitter", href: "#" },
-  { icon: Youtube, label: "YouTube", href: "#" },
+  { icon: Instagram, label: "Instagram", href: "https://instagram.com" },
+  { icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com" },
 ];
 
 type FooterLink = { label: string; to: string; policy?: boolean; external?: boolean };

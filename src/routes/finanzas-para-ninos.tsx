@@ -1,22 +1,16 @@
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import {
   ArrowRight,
   BadgeCheck,
   Banknote,
-  BellRing,
-  BookOpen,
   CalendarCheck,
   Coins,
-  Gamepad2,
   Gift,
   GraduationCap,
-  HeartHandshake,
-  LineChart as LineChartIcon,
-  Lock,
   PiggyBank,
   Rocket,
-  ShieldCheck,
   Sparkles,
   Star,
   Target,
@@ -24,6 +18,8 @@ import {
   TrendingUp,
   Users,
   Wallet,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import {
   Area,
@@ -40,7 +36,6 @@ import {
   YAxis,
 } from "recharts";
 
-import heroFamily from "@/assets/kids-hero-family.jpg";
 import heroReal from "@/assets/kids-hero-real.jpg";
 import ctaFamily from "@/assets/kids-cta-family.jpg";
 import faceDad from "@/assets/kid-face-dad.jpg";
@@ -75,89 +70,305 @@ export const Route = createFileRoute("/finanzas-para-ninos")({
   component: KidsFinanceLanding,
 });
 
-function KidPreview() {
-  const t = useT();
-
-  const pockets = [
-    { label: t("Gastar", "Spend"), value: "€24", pct: 20, tone: "bg-kid-sky" },
-    { label: t("Ahorrar", "Save"), value: "€60", pct: 50, tone: "bg-kid-mint" },
-    { label: t("Invertir", "Invest"), value: "€24", pct: 20, tone: "bg-kid-grape" },
-    { label: t("Compartir", "Share"), value: "€12", pct: 10, tone: "bg-kid-coral" },
-  ];
-
+function SectionHeader({
+  eyebrow,
+  title,
+  subtitle,
+}: {
+  eyebrow: string;
+  title: React.ReactNode;
+  subtitle: string;
+}) {
   return (
-    <div className="surface glow relative overflow-hidden p-6 md:p-8">
-      <div className="kid-gradient-soft pointer-events-none absolute inset-0" />
-      <div className="relative grid gap-4 md:grid-cols-2">
-        <div className="surface p-5">
-          <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
-            {t("Número de hoy", "Today's number")}
-          </p>
-          <p className="numeric kid-text-gradient mt-2 text-5xl font-semibold">€120</p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            {t("Ahorrando €10 por semana", "Saving €10 every week")}
-          </p>
-          <div className="mt-5 rounded-xl p-4 ring-1 ring-kid-grape/25 kid-gradient-soft">
-            <p className="text-[11px] uppercase tracking-wider text-kid-grape">
-              {t("Número del futuro", "Future number")}
-            </p>
-            <p className="numeric mt-1 text-2xl font-semibold">€1,480</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {t("En 2 años si sigue así", "In 2 years if they keep going")}
-            </p>
+    <div className="mx-auto max-w-2xl text-center">
+      <span className="text-xs font-medium uppercase tracking-wider text-kid-mint">{eyebrow}</span>
+      <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">{title}</h2>
+      <p className="mx-auto mt-3 text-sm leading-relaxed text-muted-foreground">{subtitle}</p>
+    </div>
+  );
+}
+
+function Bars({ items }: { items: Array<{ label: string; value: string; pct: number; color: string }> }) {
+  return (
+    <div className="space-y-3">
+      {items.map((b) => (
+        <div key={b.label}>
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-muted-foreground">{b.label}</span>
+            <span className="numeric font-medium">{b.value}</span>
           </div>
-          <div className="mt-4 flex items-center gap-2">
-            {[Trophy, Star, BadgeCheck].map((Icon, i) => (
-              <span
-                key={i}
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-kid-sun/15 text-kid-sun ring-1 ring-kid-sun/30"
-              >
-                <Icon className="h-4 w-4" />
-              </span>
-            ))}
-            <span className="text-xs text-muted-foreground">
-              {t("3 insignias ganadas", "3 badges earned")}
-            </span>
+          <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-elevated">
+            <div className="h-full rounded-full" style={{ width: `${b.pct}%`, backgroundColor: b.color }} />
           </div>
         </div>
+      ))}
+    </div>
+  );
+}
 
-        <div className="surface p-5">
-          <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
-            {t("Bolsillos", "Pockets")}
-          </p>
-          <ul className="mt-4 space-y-3">
-            {pockets.map((p) => (
-              <li key={p.label}>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">{p.label}</span>
-                  <span className="numeric font-medium">{p.value}</span>
-                </div>
-                <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-elevated">
-                  <div className={`h-full rounded-full ${p.tone}`} style={{ width: `${p.pct}%` }} />
-                </div>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-5 rounded-xl bg-elevated px-4 py-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">
-                {t("Sueño: bici nueva", "Dream: new bike")}
-              </span>
-              <span className="numeric text-xs font-medium text-kid-mint">62%</span>
+function MiniArea({ color }: { color: string }) {
+  return (
+    <div className="h-36">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={growCurve} margin={{ top: 6, right: 4, bottom: 0, left: 0 }}>
+          <defs>
+            <linearGradient id="slide-area" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={color} stopOpacity={0.35} />
+              <stop offset="100%" stopColor={color} stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <Area
+            type="monotone"
+            dataKey="y"
+            stroke={color}
+            strokeWidth={2.5}
+            strokeLinecap="round"
+            fill="url(#slide-area)"
+            dot={false}
+            isAnimationActive={false}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+function HowItWorksSlider() {
+  const t = useT();
+  const [i, setI] = useState(0);
+
+  const slides = [
+    {
+      id: "numbers",
+      icon: Wallet,
+      color: "var(--kid-sky)",
+      title: t("Su número de hoy y el del futuro", "Their number today and tomorrow"),
+      desc: t(
+        "Ve su dinero disponible en grande y hacia dónde puede llegar si sigue ahorrando cada semana.",
+        "They see their money right now, and where it can go if they keep saving every week.",
+      ),
+      visual: (
+        <div className="space-y-4">
+          <div>
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+              {t("Número de hoy", "Today's number")}
+            </p>
+            <p className="numeric mt-1 text-4xl font-semibold text-kid-sky">€120</p>
+          </div>
+          <div className="rounded-2xl border border-kid-grape/25 bg-kid-grape/10 p-4">
+            <p className="text-[10px] uppercase tracking-wider text-kid-grape">
+              {t("Número del futuro", "Future number")}
+            </p>
+            <p className="numeric mt-1 text-2xl font-semibold">€1.480</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {t("En 2 años si sigue así", "In 2 years at this pace")}
+            </p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: "pockets",
+      icon: PiggyBank,
+      color: "var(--kid-mint)",
+      title: t("Bolsillos: gastar, ahorrar, invertir y compartir", "Pockets: spend, save, invest, share"),
+      desc: t(
+        "El método de los 4 sobres, digital. Cada euro que entra ya sabe a dónde va.",
+        "The 4-envelope method, gone digital. Every euro that arrives knows where it goes.",
+      ),
+      visual: (
+        <Bars
+          items={[
+            { label: t("Gastar", "Spend"), value: "€24", pct: 20, color: "var(--kid-sky)" },
+            { label: t("Ahorrar", "Save"), value: "€60", pct: 50, color: "var(--kid-mint)" },
+            { label: t("Invertir", "Invest"), value: "€24", pct: 20, color: "var(--kid-grape)" },
+            { label: t("Compartir", "Share"), value: "€12", pct: 10, color: "var(--kid-coral)" },
+          ]}
+        />
+      ),
+    },
+    {
+      id: "dreams",
+      icon: Target,
+      color: "var(--kid-coral)",
+      title: t("Sueños con barra de progreso", "Dreams with a progress bar"),
+      desc: t(
+        "La bici, el viaje o el videojuego: ven cuánto les falta y ahorran para conseguirlo.",
+        "The bike, the trip or the game: they see what's left and save to get there.",
+      ),
+      visual: (
+        <div className="space-y-4">
+          <div className="surface p-4">
+            <div className="flex items-center justify-between text-xs">
+              <span>{t("Sueño: bici nueva", "Dream: new bike")}</span>
+              <span className="numeric font-medium text-kid-mint">62%</span>
             </div>
-            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-background">
+            <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-elevated">
               <div className="kid-gradient h-full rounded-full" style={{ width: "62%" }} />
             </div>
           </div>
-          <div className="mt-4 flex items-center justify-between rounded-xl bg-elevated px-4 py-3">
-            <span className="text-xs text-muted-foreground">
-              {t("Tarea: ordenar el cuarto", "Chore: tidy the room")}
+          <div className="surface p-4">
+            <div className="flex items-center justify-between text-xs">
+              <span>{t("Sueño: viaje con papá", "Dream: trip with dad")}</span>
+              <span className="numeric font-medium text-kid-sun">18%</span>
+            </div>
+            <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-elevated">
+              <div className="kid-gradient h-full rounded-full" style={{ width: "18%" }} />
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: "chores",
+      icon: CalendarCheck,
+      color: "var(--kid-sun)",
+      title: t("Mesada automática y tareas", "Automatic allowance and chores"),
+      desc: t(
+        "Programa la mesada, aprueba tareas y su dinero se reparte solo entre sus bolsillos.",
+        "Schedule the allowance, approve chores and their money splits itself across pockets.",
+      ),
+      visual: (
+        <div className="space-y-2.5">
+          {[
+            { k: t("Mesada semanal", "Weekly allowance"), v: "+€10", ok: true },
+            { k: t("Ordenar el cuarto", "Tidy the room"), v: "+€3", ok: true },
+            { k: t("Sacar la basura", "Take out the trash"), v: "+€2", ok: false },
+            { k: t("Leer 20 minutos", "Read 20 minutes"), v: "+€1", ok: false },
+          ].map((r) => (
+            <div key={r.k} className="flex items-center justify-between rounded-xl bg-elevated px-4 py-3 text-xs">
+              <span className="flex items-center gap-2">
+                <BadgeCheck className={`h-4 w-4 ${r.ok ? "text-kid-mint" : "text-muted-foreground/40"}`} />
+                {r.k}
+              </span>
+              <span className="numeric font-medium text-kid-sun">{r.v}</span>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      id: "grow",
+      icon: TrendingUp,
+      color: "var(--kid-mint)",
+      title: t("Interés compuesto explicado para niños", "Compound interest explained for kids"),
+      desc: t(
+        "Ven cómo cada euro ahorrado se multiplica con el tiempo, con gráficas que entienden solos.",
+        "They watch every saved euro multiply over time, with charts they get on their own.",
+      ),
+      visual: <MiniArea color="var(--kid-mint)" />,
+    },
+    {
+      id: "badges",
+      icon: Trophy,
+      color: "var(--kid-grape)",
+      title: t("Insignias, rachas y retos", "Badges, streaks and quests"),
+      desc: t(
+        "Cada semana que ahorra suma racha e insignias. Aprenden decidiendo, no memorizando.",
+        "Every week they save adds streaks and badges. They learn by deciding, not memorizing.",
+      ),
+      visual: (
+        <div className="space-y-4">
+          <div className="flex gap-3">
+            {[Trophy, Star, BadgeCheck, Sparkles].map((Ic, k) => (
+              <span
+                key={k}
+                className="flex h-12 w-12 items-center justify-center rounded-full text-kid-sun ring-1 ring-kid-sun/25 kid-gradient-soft"
+              >
+                <Ic className="h-5 w-5" />
+              </span>
+            ))}
+          </div>
+          <div className="surface p-4">
+            <p className="text-xs text-muted-foreground">{t("Racha actual", "Current streak")}</p>
+            <p className="numeric mt-1 text-2xl font-semibold text-kid-grape">
+              7 {t("semanas", "weeks")}
+            </p>
+          </div>
+        </div>
+      ),
+    },
+  ];
+
+  const active = slides[i]!;
+  const Icon = active.icon;
+
+  return (
+    <section className="mt-24">
+      <SectionHeader
+        eyebrow={t("Cómo funciona", "How it works")}
+        title={t("Todo lo que hay dentro, en una pantalla", "Everything inside, on one screen")}
+        subtitle={t(
+          "Desliza para ver las funciones que hacen que tus hijos quieran volver mañana.",
+          "Slide through the features that make your kids want to come back tomorrow.",
+        )}
+      />
+
+      <div className="surface relative mt-10 overflow-hidden p-6 md:p-10">
+        <div className="kid-gradient absolute inset-x-0 top-0 h-1" />
+        <motion.div
+          key={active.id}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35 }}
+          className="grid items-center gap-8 md:grid-cols-2"
+        >
+          <div>
+            <span
+              className="flex h-12 w-12 items-center justify-center rounded-2xl"
+              style={{
+                color: active.color,
+                backgroundColor: `color-mix(in oklab, ${active.color} 12%, transparent)`,
+                boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${active.color} 25%, transparent)`,
+              }}
+            >
+              <Icon className="h-5 w-5" />
             </span>
-            <span className="numeric text-xs font-medium text-kid-sun">+€3</span>
+            <h3 className="mt-5 font-display text-xl font-semibold tracking-tight md:text-2xl">
+              {active.title}
+            </h3>
+            <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">{active.desc}</p>
+          </div>
+          <div className="rounded-2xl border border-border bg-card p-5 md:p-6">{active.visual}</div>
+        </motion.div>
+
+        <div className="mt-8 flex items-center justify-between">
+          <div className="flex gap-2">
+            {slides.map((s, k) => (
+              <button
+                key={s.id}
+                type="button"
+                aria-label={s.title}
+                onClick={() => setI(k)}
+                className="h-1.5 rounded-full transition-all"
+                style={{
+                  width: k === i ? 28 : 10,
+                  backgroundColor: k === i ? active.color : "var(--border)",
+                }}
+              />
+            ))}
+          </div>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              aria-label={t("Anterior", "Previous")}
+              onClick={() => setI((v) => (v - 1 + slides.length) % slides.length)}
+              className="flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-border transition-colors hover:bg-elevated"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              aria-label={t("Siguiente", "Next")}
+              onClick={() => setI((v) => (v + 1) % slides.length)}
+              className="flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-border transition-colors hover:bg-elevated"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -589,7 +800,7 @@ function DualDashboards() {
 }
 
 
-function GrowthChart() {
+function GrowthChart({ compact = false }: { compact?: boolean }) {
   const t = useT();
   const data = Array.from({ length: 19 }, (_, i) => {
     const year = i;
@@ -603,85 +814,73 @@ function GrowthChart() {
   });
 
   return (
-    <section className="surface relative mt-24 overflow-hidden p-6 md:p-10">
+    <div className="surface relative overflow-hidden p-5 md:p-6">
       <div className="kid-gradient absolute inset-x-0 top-0 h-1" />
-      <h2 className="text-center font-display text-2xl font-semibold tracking-tight md:text-3xl">
-        {t(
-          "El patrimonio de un niño también puede crecer.",
-          "A child's wealth can compound too.",
-        )}
-      </h2>
-      <div className="mt-8 grid gap-6 lg:grid-cols-[0.8fr_2fr]">
-        <div className="surface p-5">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
           <h3 className="font-display text-base font-semibold tracking-tight">
-            {t("Invertir hoy cambia su mañana", "Investing today changes their tomorrow")}
+            {t("El progreso de Sofía a los 18", "Sofía's progress by 18")}
           </h3>
-          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-1 max-w-md text-xs leading-relaxed text-muted-foreground">
             {t(
-              "€50 al mes desde los 8 años, invertidos al 7%, valen mucho más que guardarlos en la alcancía.",
-              "€50 a month from age 8, invested at 7%, is worth far more than a piggy bank.",
+              "€50 al mes desde los 8 años, invertidos al 7%: así se ve la diferencia entre guardar e invertir.",
+              "€50 a month from age 8, invested at 7%: this is the gap between saving and investing.",
             )}
           </p>
-          <div className="mt-5 space-y-2 text-xs">
-            <p className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-kid-mint" />
-              {t("Invertido (7%)", "Invested (7%)")}
-            </p>
-            <p className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-muted-foreground" />
-              {t("Guardado sin invertir", "Saved, not invested")}
-            </p>
-          </div>
         </div>
-        <div className="h-72">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data} margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>
-              <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
-              <XAxis
-                dataKey="year"
-                tickLine={false}
-                axisLine={false}
-                stroke="var(--muted-foreground)"
-                fontSize={11}
-              />
-              <YAxis
-                tickLine={false}
-                axisLine={false}
-                stroke="var(--muted-foreground)"
-                fontSize={11}
-                width={56}
-                tickFormatter={(v: number) => `€${Math.round(v / 1000)}k`}
-              />
-              <Tooltip
-                contentStyle={{
-                  background: "var(--card)",
-                  border: "1px solid var(--border)",
-                  borderRadius: 12,
-                  fontSize: 12,
-                }}
-                formatter={(v: number) => `€${v.toLocaleString("es-ES")}`}
-                labelFormatter={(l) => t(`Año ${l}`, `Year ${l}`)}
-              />
-              <Line
-                type="monotone"
-                dataKey="compuesto"
-                stroke="var(--kid-mint)"
-                strokeWidth={2.5}
-                dot={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="invertido"
-                stroke="var(--muted-foreground)"
-                strokeWidth={1.5}
-                strokeDasharray="4 4"
-                dot={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+        <div className="flex gap-4 text-[11px]">
+          <span className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-kid-mint" />
+            {t("Invertido (7%)", "Invested (7%)")}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-muted-foreground" />
+            {t("Guardado sin invertir", "Saved, not invested")}
+          </span>
         </div>
       </div>
-    </section>
+      <div className={compact ? "mt-4 h-44" : "mt-6 h-72"}>
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data} margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>
+            <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
+            <XAxis
+              dataKey="year"
+              tickLine={false}
+              axisLine={false}
+              stroke="var(--muted-foreground)"
+              fontSize={10}
+            />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              stroke="var(--muted-foreground)"
+              fontSize={10}
+              width={48}
+              tickFormatter={(v: number) => `€${Math.round(v / 1000)}k`}
+            />
+            <Tooltip
+              contentStyle={{
+                background: "var(--card)",
+                border: "1px solid var(--border)",
+                borderRadius: 12,
+                fontSize: 12,
+              }}
+              formatter={(v: number) => `€${v.toLocaleString("es-ES")}`}
+              labelFormatter={(l) => t(`Año ${l}`, `Year ${l}`)}
+            />
+            <Line type="monotone" dataKey="compuesto" stroke="var(--kid-mint)" strokeWidth={2.5} dot={false} />
+            <Line
+              type="monotone"
+              dataKey="invertido"
+              stroke="var(--muted-foreground)"
+              strokeWidth={1.5}
+              strokeDasharray="4 4"
+              dot={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
   );
 }
 
@@ -696,9 +895,14 @@ function Milestones() {
   ];
   return (
     <section className="mt-24">
-      <h2 className="text-center font-display text-3xl font-semibold tracking-tight">
-        {t("Un camino que los prepara para la vida", "A path that prepares them for life")}
-      </h2>
+      <SectionHeader
+        eyebrow={t("El camino", "The path")}
+        title={t("Un camino que los prepara para la vida", "A path that prepares them for life")}
+        subtitle={t(
+          "De la primera mesada a su primera inversión: cada edad tiene su hito.",
+          "From their first allowance to their first investment: every age has its milestone.",
+        )}
+      />
       <div className="relative mt-12">
         <div className="kid-gradient absolute inset-x-6 top-[52px] hidden h-px opacity-40 md:block" />
         <div className="grid gap-4 sm:grid-cols-3 md:grid-cols-5">
@@ -727,10 +931,19 @@ function FamilyProfiles() {
   ];
   return (
     <section className="mt-24">
-      <h2 className="text-center font-display text-3xl font-semibold tracking-tight">
-        {t("Para toda la ", "For the whole ")}
-        <span className="kid-text-gradient">{t("familia", "family")}</span>
-      </h2>
+      <SectionHeader
+        eyebrow={t("Perfiles", "Profiles")}
+        title={
+          <>
+            {t("Para toda la ", "For the whole ")}
+            <span className="kid-text-gradient">{t("familia", "family")}</span>
+          </>
+        }
+        subtitle={t(
+          "Papá y mamá gestionan el plan; cada hijo tiene su propio perfil y su propio número.",
+          "Parents manage the plan; each child gets their own profile and their own number.",
+        )}
+      />
       <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {members.map((m) => (
           <div
@@ -766,6 +979,10 @@ function FamilyProfiles() {
           <p className="mt-4 text-xs text-muted-foreground">{t("Añadir hijo", "Add a child")}</p>
         </Link>
       </div>
+
+      <div className="mt-8">
+        <GrowthChart compact />
+      </div>
     </section>
   );
 }
@@ -773,172 +990,6 @@ function FamilyProfiles() {
 
 function KidsFinanceLanding() {
   const t = useT();
-
-  const features = [
-    {
-      icon: Wallet,
-      tone: "text-kid-sky bg-kid-sky/12 ring-kid-sky/25",
-      title: t("Número de hoy", "Today's number"),
-      desc: t(
-        "Su dinero disponible ahora mismo, en grande y explicado con palabras que entienden.",
-        "Their money right now, big and explained in words they understand.",
-      ),
-    },
-    {
-      icon: Rocket,
-      tone: "text-kid-grape bg-kid-grape/12 ring-kid-grape/25",
-      title: t("Número del futuro", "Future number"),
-      desc: t(
-        "Proyecta hasta dónde puede llegar su dinero si sigue ahorrando cada semana.",
-        "Projects how far their money can go if they keep saving every week.",
-      ),
-    },
-    {
-      icon: PiggyBank,
-      tone: "text-kid-mint bg-kid-mint/12 ring-kid-mint/25",
-      title: t("Bolsillos", "Pockets"),
-      desc: t(
-        "Gastar, ahorrar, invertir y compartir: el método de los 4 sobres, digital.",
-        "Spend, save, invest and share: the 4-envelope method, gone digital.",
-      ),
-    },
-    {
-      icon: Target,
-      tone: "text-kid-coral bg-kid-coral/12 ring-kid-coral/25",
-      title: t("Sueños", "Dreams"),
-      desc: t(
-        "Metas visuales con barra de progreso: la bici, el viaje o el videojuego.",
-        "Visual goals with progress bars: the bike, the trip or the video game.",
-      ),
-    },
-    {
-      icon: CalendarCheck,
-      tone: "text-kid-sun bg-kid-sun/12 ring-kid-sun/25",
-      title: t("Tareas", "Chores"),
-      desc: t(
-        "Tareas de casa que se convierten en ingreso propio y en hábitos que duran.",
-        "Household chores that turn into their own income and lasting habits.",
-      ),
-    },
-    {
-      icon: TrendingUp,
-      tone: "text-kid-mint bg-kid-mint/12 ring-kid-mint/25",
-      title: t("Cómo crece tu dinero", "How money grows"),
-      desc: t(
-        "Interés compuesto explicado para niños, con gráficas que se entienden solas.",
-        "Compound interest explained for kids, with charts that speak for themselves.",
-      ),
-    },
-    {
-      icon: Coins,
-      tone: "text-kid-sun bg-kid-sun/12 ring-kid-sun/25",
-      title: t("Mesada automática", "Automatic allowance"),
-      desc: t(
-        "Programa la mesada semanal o mensual y se reparte sola entre sus bolsillos.",
-        "Schedule weekly or monthly allowance; it splits itself across their pockets.",
-      ),
-    },
-    {
-      icon: Trophy,
-      tone: "text-kid-coral bg-kid-coral/12 ring-kid-coral/25",
-      title: t("Insignias y rachas", "Badges and streaks"),
-      desc: t(
-        "Cada semana que ahorra suma racha, nivel e insignias que quieren coleccionar.",
-        "Every week they save adds a streak, a level and badges they want to collect.",
-      ),
-    },
-    {
-      icon: Gamepad2,
-      tone: "text-kid-grape bg-kid-grape/12 ring-kid-grape/25",
-      title: t("Retos de dinero", "Money quests"),
-      desc: t(
-        "Mini retos jugables: ¿ahorrar o gastar? Aprenden decidiendo, no memorizando.",
-        "Playable mini-quests: save or spend? They learn by deciding, not memorizing.",
-      ),
-    },
-    {
-      icon: BookOpen,
-      tone: "text-kid-sky bg-kid-sky/12 ring-kid-sky/25",
-      title: t("Lecciones de 2 minutos", "2-minute lessons"),
-      desc: t(
-        "Cápsulas por edad: qué es un banco, un precio justo, un interés y un impuesto.",
-        "Age-based capsules: what a bank, a fair price, interest and taxes really are.",
-      ),
-    },
-    {
-      icon: HeartHandshake,
-      tone: "text-kid-coral bg-kid-coral/12 ring-kid-coral/25",
-      title: t("Bolsillo de compartir", "Share pocket"),
-      desc: t(
-        "Aprenden generosidad: apartan una parte para donar o ayudar a alguien.",
-        "They learn generosity: a slice set aside to donate or help someone.",
-      ),
-    },
-    {
-      icon: Users,
-      tone: "text-kid-mint bg-kid-mint/12 ring-kid-mint/25",
-      title: t("Vista de los papás", "Parents' view"),
-      desc: t(
-        "Aprueba tareas, ajusta mesadas y mira el progreso de cada hijo desde tu cuenta.",
-        "Approve chores, tweak allowances and see each child's progress from your account.",
-      ),
-    },
-    {
-      icon: BellRing,
-      tone: "text-kid-sun bg-kid-sun/12 ring-kid-sun/25",
-      title: t("Avisos amables", "Kind nudges"),
-      desc: t(
-        "Recordatorios positivos cuando toca ahorrar o cuando alcanzan un sueño.",
-        "Positive reminders when it's time to save or when they hit a dream.",
-      ),
-    },
-    {
-      icon: LineChartIcon,
-      tone: "text-kid-sky bg-kid-sky/12 ring-kid-sky/25",
-      title: t("Su historia de ahorro", "Their savings story"),
-      desc: t(
-        "Una línea de tiempo con todo lo que ahorró, ganó y logró desde el día uno.",
-        "A timeline of everything they saved, earned and achieved from day one.",
-      ),
-    },
-    {
-      icon: ShieldCheck,
-      tone: "text-kid-grape bg-kid-grape/12 ring-kid-grape/25",
-      title: t("Seguro y sin anuncios", "Safe and ad-free"),
-      desc: t(
-        "Cero publicidad, cero compras dentro de la app, datos privados y bajo tu control.",
-        "Zero ads, zero in-app purchases, private data fully under your control.",
-      ),
-    },
-  ];
-
-
-  const steps = [
-    {
-      icon: Lock,
-      title: t("1. Activa el plan Familiar", "1. Activate the Family plan"),
-      desc: t(
-        "Desde WhatsYournumber creas el perfil de cada hijo en segundos, con su propio acceso.",
-        "From WhatsYournumber you create each child's profile in seconds, with their own login.",
-      ),
-    },
-    {
-      icon: Sparkles,
-      title: t("2. El niño entra a su pantalla", "2. The kid opens their screen"),
-      desc: t(
-        "Una interfaz simple, colorida y sin ruido: solo sus números y sus sueños.",
-        "A simple, colorful, noise-free interface: just their numbers and their dreams.",
-      ),
-    },
-    {
-      icon: GraduationCap,
-      title: t("3. Aprende ahorrando de verdad", "3. They learn by really saving"),
-      desc: t(
-        "Cada tarea, sueño y bolsillo le enseña a decidir con su propio dinero.",
-        "Every chore, dream and pocket teaches them to decide with their own money.",
-      ),
-    },
-  ];
 
   const ages = [
     {
@@ -973,21 +1024,27 @@ function KidsFinanceLanding() {
         "Mi hija de 9 años ahora pregunta cuánto le falta para su bici, no cuánto le doy.",
         "My 9-year-old now asks how much is left for her bike, not how much I'll give her.",
       ),
-      author: t("Marta, mamá de 2", "Marta, mom of 2"),
+      author: "Marta Salas",
+      initials: "MS",
+      role: t("Mamá de 2 · Valencia", "Mom of 2 · Valencia"),
     },
     {
       quote: t(
         "Las tareas dejaron de ser pelea: ahora las hace porque ve subir su número.",
         "Chores stopped being a fight: he does them because he sees his number go up.",
       ),
-      author: t("Andrés, papá de 3", "Andrés, dad of 3"),
+      author: "Andrés Duarte",
+      initials: "AD",
+      role: t("Papá de 3 · Bogotá", "Dad of 3 · Bogotá"),
     },
     {
       quote: t(
         "En un mes entendió el interés compuesto mejor que yo a los 25.",
         "In a month she understood compound interest better than I did at 25.",
       ),
-      author: t("Lucía, mamá de 1", "Lucía, mom of 1"),
+      author: "Lucía Pérez",
+      initials: "LP",
+      role: t("Mamá de 1 · Madrid", "Mom of 1 · Madrid"),
     },
   ];
 
@@ -1076,64 +1133,23 @@ function KidsFinanceLanding() {
 
         <ThreePillars />
 
-
-
-
         <DualDashboards />
 
-        <Milestones />
-
-        <GrowthChart />
-
-        <section className="mt-24">
-          <h2 className="mb-8 text-center font-display text-3xl font-semibold tracking-tight">
-            {t("La pantalla de tu hijo", "Your child's screen")}
-          </h2>
-          <KidPreview />
-        </section>
+        <HowItWorksSlider />
 
         <FamilyProfiles />
 
+        <Milestones />
 
         <section className="mt-24">
-          <h2 className="text-center font-display text-3xl font-semibold tracking-tight md:text-4xl">
-            {t("Todo lo que hay dentro", "Everything inside")}
-          </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-center text-sm text-muted-foreground">
-            {t(
-              "Cada función existe por una razón: que entiendan su dinero y quieran volver mañana.",
-              "Every feature exists for one reason: so they understand their money and want to come back tomorrow.",
+          <SectionHeader
+            eyebrow={t("Por edades", "By age")}
+            title={t("Crece con ellos", "It grows with them")}
+            subtitle={t(
+              "La app cambia según su edad: de las monedas al interés compuesto.",
+              "The app changes with their age: from coins to compound interest.",
             )}
-          </p>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map(({ icon: Icon, title, desc, tone }, i) => (
-              <motion.article
-                key={title}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.4, delay: (i % 3) * 0.05 }}
-                className="surface group relative overflow-hidden p-6 transition-transform hover:-translate-y-1"
-              >
-                <div className="kid-gradient-soft pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100" />
-                <div
-                  className={`relative flex h-11 w-11 items-center justify-center rounded-xl ring-1 ${tone}`}
-                >
-                  <Icon className="h-5 w-5" />
-                </div>
-                <h3 className="relative mt-4 font-display text-lg font-semibold tracking-tight">
-                  {title}
-                </h3>
-                <p className="relative mt-2 text-sm leading-relaxed text-muted-foreground">{desc}</p>
-              </motion.article>
-            ))}
-          </div>
-        </section>
-
-        <section className="mt-24">
-          <h2 className="text-center font-display text-3xl font-semibold tracking-tight">
-            {t("Crece con ellos", "It grows with them")}
-          </h2>
+          />
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             {ages.map(({ icon: Icon, range, desc }) => (
               <div key={range} className="surface relative overflow-hidden p-6">
@@ -1147,45 +1163,49 @@ function KidsFinanceLanding() {
         </section>
 
         <section className="mt-24">
-          <h2 className="text-center font-display text-3xl font-semibold tracking-tight">
-            {t("Cómo funciona", "How it works")}
-          </h2>
+          <SectionHeader
+            eyebrow={t("Lo que dicen", "What people say")}
+            title={t("Familias que ya empezaron", "Families who already started")}
+            subtitle={t(
+              "Historias reales de padres que vieron a sus hijos cambiar la forma de ver el dinero.",
+              "Real stories from parents who watched their kids change how they see money.",
+            )}
+          />
           <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {steps.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="surface p-6">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl text-kid-sky ring-1 ring-kid-sky/25 kid-gradient-soft">
-                  <Icon className="h-5 w-5" />
-                </span>
-                <h3 className="mt-4 font-display text-base font-semibold tracking-tight">{title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="mt-24">
-          <h2 className="text-center font-display text-3xl font-semibold tracking-tight">
-            {t("Lo que dicen los papás", "What parents say")}
-          </h2>
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {quotes.map((q) => (
-              <figure key={q.author} className="surface p-6">
-                <div className="flex gap-0.5 text-kid-sun">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="h-3.5 w-3.5 fill-current" />
+            {quotes.map((q, i) => (
+              <motion.figure
+                key={q.author}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.07 }}
+                className="surface flex flex-col p-6"
+              >
+                <div className="flex gap-0.5">
+                  {Array.from({ length: 5 }).map((_, k) => (
+                    <Star key={k} className="h-3.5 w-3.5 fill-kid-sun text-kid-sun" />
                   ))}
                 </div>
-                <blockquote className="mt-4 text-sm leading-relaxed">“{q.quote}”</blockquote>
-                <figcaption className="mt-4 text-xs text-muted-foreground">{q.author}</figcaption>
-              </figure>
+                <blockquote className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                  “{q.quote}”
+                </blockquote>
+                <figcaption className="mt-5 flex items-center gap-3">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-elevated text-xs font-semibold text-kid-mint ring-1 ring-border">
+                    {q.initials}
+                  </span>
+                  <span className="text-xs">
+                    <span className="block font-medium text-foreground">{q.author}</span>
+                    <span className="text-muted-foreground">{q.role}</span>
+                  </span>
+                </figcaption>
+              </motion.figure>
             ))}
           </div>
         </section>
 
-        <section className="surface glow relative mt-24 overflow-hidden">
-          <div className="grid items-center gap-0 md:grid-cols-2">
-            <div className="relative p-10 md:p-14">
-              <div className="kid-gradient-soft pointer-events-none absolute inset-0" />
+        <section className="relative mt-24 overflow-hidden">
+          <div className="relative grid items-center gap-0 md:grid-cols-2">
+            <div className="relative z-10 py-10 md:py-16 md:pr-10">
               <div className="relative">
                 <Gift className="h-8 w-8 text-kid-coral" />
                 <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight md:text-4xl">
@@ -1209,17 +1229,22 @@ function KidsFinanceLanding() {
                 </Link>
               </div>
             </div>
-            <img
-              src={ctaFamily}
-              alt={t(
-                "Familia revisando sus finanzas juntos",
-                "Family reviewing their finances together",
-              )}
-              loading="lazy"
-              width={1408}
-              height={912}
-              className="h-full w-full object-cover"
-            />
+            <div className="relative h-72 md:absolute md:inset-y-0 md:right-0 md:h-full md:w-[58%]">
+              <img
+                src={ctaFamily}
+                alt={t(
+                  "Familia revisando sus finanzas juntos",
+                  "Family reviewing their finances together",
+                )}
+                loading="lazy"
+                width={1408}
+                height={912}
+                className="h-full w-full object-cover [mask-image:linear-gradient(90deg,transparent_0%,#000_38%,#000_100%)]"
+              />
+              <div className="absolute inset-y-0 left-0 w-1/2 bg-[linear-gradient(90deg,var(--background)_0%,transparent_100%)]" />
+              <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,var(--background)_0%,transparent_100%)]" />
+              <div className="absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(0deg,var(--background)_0%,transparent_100%)]" />
+            </div>
           </div>
         </section>
 
