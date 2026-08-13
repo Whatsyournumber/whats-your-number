@@ -3,6 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Check, CreditCard, ShieldCheck, Sparkles, Zap } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
+import { PricingComparison, PricingFaq } from "@/components/pricing-comparison";
 import { PromoCodeRedeem } from "@/components/promo-code-redeem";
 import { SiteFooter } from "@/components/site-footer";
 import { PaymentTestModeBanner } from "@/components/payment-test-mode-banner";
@@ -317,6 +318,10 @@ function Pricing() {
             </div>
           ))}
         </section>
+
+        <PricingComparison />
+
+        <PricingFaq />
 
         {/* CTA final */}
         <section className="mt-16 rounded-2xl border border-border bg-gradient-to-br from-elevated/80 to-background p-8 text-center md:p-12">
