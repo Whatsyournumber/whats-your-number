@@ -372,25 +372,39 @@ function HowItWorksSlider() {
   );
 }
 
-const planBars = [4, 7, 10, 13, 17, 21, 26, 32, 39, 47, 56, 66].map((v, i) => ({ x: i, v }));
-const growCurve = Array.from({ length: 14 }, (_, i) => ({ x: i, y: Math.pow(1.32, i) }));
+const planBars = [4, 7, 10, 13, 17, 21, 26, 32, 39, 47, 56, 66, 78, 92].map((v, i) => ({
+  x: i,
+  v,
+}));
+const growCurve = Array.from({ length: 19 }, (_, i) => ({
+  x: i,
+  y: Math.round(50 * 12 * ((Math.pow(1.072, i) - 1) / 0.072)),
+  flat: 50 * 12 * i,
+}));
 const teachSplit = [
   { key: "spend", pct: 40 },
   { key: "save", pct: 40 },
   { key: "invest", pct: 20 },
 ];
 
-function PillarVisual({ id, color }: { id: string; color: string }) {
+function PillarVisual({ id, color, labels }: { id: string; color: string; labels: string[] }) {
   if (id === "plan") {
     return (
-      <div className="mt-4 h-16">
+      <div className="mt-5 h-40">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={planBars} margin={{ top: 4, right: 2, bottom: 0, left: 0 }} barCategoryGap={3}>
-            <Bar dataKey="v" radius={[3, 3, 2, 2]} isAnimationActive={false}>
+          <BarChart data={planBars} margin={{ top: 8, right: 2, bottom: 0, left: 0 }} barCategoryGap={3}>
+            <defs>
+              <linearGradient id="plan-bar" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={color} stopOpacity={0.95} />
+                <stop offset="100%" stopColor={color} stopOpacity={0.18} />
+              </linearGradient>
+            </defs>
+            <Bar dataKey="v" radius={[4, 4, 2, 2]} isAnimationActive={false}>
               {planBars.map((_, i) => (
                 <Cell
                   key={i}
-                  fill={`color-mix(in oklab, ${color} ${28 + i * 6}%, transparent)`}
+                  fill="url(#plan-bar)"
+                  fillOpacity={0.35 + (i / planBars.length) * 0.65}
                 />
               ))}
             </Bar>
@@ -401,10 +415,27 @@ function PillarVisual({ id, color }: { id: string; color: string }) {
   }
 
   if (id === "teach") {
-    const shades = [70, 45, 25];
+    const shades = [80, 52, 30];
+    const amounts = ["€20", "€20", "€10"];
     return (
-      <div className="mt-4 flex h-16 flex-col justify-center gap-2.5">
-        <div className="flex h-3 w-full overflow-hidden rounded-full bg-elevated">
+      <div className="mt-5 flex h-40 flex-col justify-center gap-4">
+        <div className="flex h-24 w-full items-end gap-2">
+          {teachSplit.map((s, i) => (
+            <div key={s.key} className="flex flex-1 flex-col items-center gap-2">
+              <span className="numeric text-[11px] font-medium" style={{ color }}>
+                {amounts[i]}
+              </span>
+              <span
+                className="w-full rounded-t-lg"
+                style={{
+                  height: `${(s.pct / 40) * 56}px`,
+                  background: `linear-gradient(180deg, color-mix(in oklab, ${color} ${shades[i]}%, transparent), color-mix(in oklab, ${color} 8%, transparent))`,
+                }}
+              />
+            </div>
+          ))}
+        </div>
+        <div className="flex h-2.5 w-full overflow-hidden rounded-full bg-elevated">
           {teachSplit.map((s, i) => (
             <span
               key={s.key}
@@ -423,7 +454,7 @@ function PillarVisual({ id, color }: { id: string; color: string }) {
                 className="h-1.5 w-1.5 rounded-full"
                 style={{ backgroundColor: `color-mix(in oklab, ${color} ${shades[i]}%, transparent)` }}
               />
-              {s.pct}%
+              {labels[i]} {s.pct}%
             </span>
           ))}
         </div>
@@ -432,20 +463,32 @@ function PillarVisual({ id, color }: { id: string; color: string }) {
   }
 
   return (
-    <div className="mt-4 h-16">
+    <div className="mt-5 h-40">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={growCurve} margin={{ top: 4, right: 6, bottom: 0, left: 0 }}>
+        <AreaChart data={growCurve} margin={{ top: 8, right: 6, bottom: 0, left: 0 }}>
           <defs>
             <linearGradient id={`pillar-${id}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={color} stopOpacity={0.28} />
+              <stop offset="0%" stopColor={color} stopOpacity={0.4} />
               <stop offset="100%" stopColor={color} stopOpacity={0} />
             </linearGradient>
           </defs>
           <Area
             type="monotone"
+            dataKey="flat"
+            stroke="var(--color-muted-foreground)"
+            strokeWidth={1.25}
+            strokeDasharray="4 4"
+            fill="transparent"
+            dot={false}
+            activeDot={false}
+            isAnimationActive={false}
+          />
+          <Area
+            type="monotone"
             dataKey="y"
             stroke={color}
-            strokeWidth={1.75}
+            strokeWidth={2.25}
+            strokeLinecap="round"
             fill={`url(#pillar-${id})`}
             dot={false}
             activeDot={false}
@@ -456,6 +499,7 @@ function PillarVisual({ id, color }: { id: string; color: string }) {
     </div>
   );
 }
+
 
 function ThreePillars() {
   const t = useT();
