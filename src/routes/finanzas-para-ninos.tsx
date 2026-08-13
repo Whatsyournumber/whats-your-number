@@ -261,31 +261,10 @@ function ThreePillars() {
               </div>
               <p className="mt-1 text-[11px] text-muted-foreground">{metricLabel}</p>
 
-              <div className="mt-4 h-16">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={curve} margin={{ top: 4, right: 6, bottom: 0, left: 0 }}>
-                    <defs>
-                      <linearGradient id={`pillar-${id}`} x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor={color} stopOpacity={0.22} />
-                        <stop offset="100%" stopColor={color} stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <Area
-                      type="monotone"
-                      dataKey="y"
-                      stroke={color}
-                      strokeWidth={1.75}
-                      fill={`url(#pillar-${id})`}
-                      dot={false}
-                      activeDot={false}
-                      isAnimationActive={false}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
+              <PillarVisual id={id} color={color} />
               <div className="mt-2 flex justify-between border-t border-border/60 pt-2 text-[10px] uppercase tracking-wider text-muted-foreground/70">
-                <span>{t("Hoy", "Today")}</span>
-                <span>{t("18 años", "Age 18")}</span>
+                <span>{pillarAxis[id][0]}</span>
+                <span>{pillarAxis[id][1]}</span>
               </div>
             </div>
           </motion.div>
