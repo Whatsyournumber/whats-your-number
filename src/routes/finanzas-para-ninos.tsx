@@ -688,10 +688,10 @@ function KidsFinanceLanding() {
             )}
             width={1600}
             height={1200}
-            className="absolute inset-y-0 right-0 hidden h-full w-[58%] object-cover object-center lg:block"
+            className="absolute inset-y-0 right-0 hidden h-full w-[62%] object-cover object-center lg:block"
           />
-          <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,var(--background)_0%,var(--background)_38%,color-mix(in_oklab,var(--background)_78%,transparent)_52%,transparent_74%)] lg:block" />
-          <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(0deg,var(--background)_0%,transparent_35%)] lg:block" />
+          <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,var(--background)_0%,var(--background)_32%,color-mix(in_oklab,var(--background)_72%,transparent)_48%,color-mix(in_oklab,var(--background)_36%,transparent)_62%,transparent_80%)] lg:block" />
+          <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(0deg,var(--background)_0%,transparent_40%)] lg:block" />
 
           <div className="relative py-14 md:py-20 lg:max-w-[54%]">
 
