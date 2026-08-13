@@ -20,11 +20,11 @@ import { Route as ConfiguracionRouteImport } from './routes/configuracion'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as ElegirRouteImport } from './routes/elegir'
+import { Route as FinanzasParaNinosRouteImport } from './routes/finanzas-para-ninos'
 import { Route as GastosRouteImport } from './routes/gastos'
 import { Route as HipotecaRouteImport } from './routes/hipoteca'
 import { Route as LifePlannerRouteImport } from './routes/life-planner'
 import { Route as MiPerfilRouteImport } from './routes/mi-perfil'
-import { Route as MyFirstNumberRouteImport } from './routes/my-first-number'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PatrimonioRouteImport } from './routes/patrimonio'
 import { Route as PortafolioRouteImport } from './routes/portafolio'
@@ -92,6 +92,11 @@ const ElegirRoute = ElegirRouteImport.update({
   path: '/elegir',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FinanzasParaNinosRoute = FinanzasParaNinosRouteImport.update({
+  id: '/finanzas-para-ninos',
+  path: '/finanzas-para-ninos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GastosRoute = GastosRouteImport.update({
   id: '/gastos',
   path: '/gastos',
@@ -110,11 +115,6 @@ const LifePlannerRoute = LifePlannerRouteImport.update({
 const MiPerfilRoute = MiPerfilRouteImport.update({
   id: '/mi-perfil',
   path: '/mi-perfil',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyFirstNumberRoute = MyFirstNumberRouteImport.update({
-  id: '/my-first-number',
-  path: '/my-first-number',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -186,11 +186,11 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/demo': typeof DemoRoute
   '/elegir': typeof ElegirRoute
+  '/finanzas-para-ninos': typeof FinanzasParaNinosRoute
   '/gastos': typeof GastosRoute
   '/hipoteca': typeof HipotecaRoute
   '/life-planner': typeof LifePlannerRoute
   '/mi-perfil': typeof MiPerfilRoute
-  '/my-first-number': typeof MyFirstNumberRoute
   '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
@@ -215,11 +215,11 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/demo': typeof DemoRoute
   '/elegir': typeof ElegirRoute
+  '/finanzas-para-ninos': typeof FinanzasParaNinosRoute
   '/gastos': typeof GastosRoute
   '/hipoteca': typeof HipotecaRoute
   '/life-planner': typeof LifePlannerRoute
   '/mi-perfil': typeof MiPerfilRoute
-  '/my-first-number': typeof MyFirstNumberRoute
   '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
@@ -245,11 +245,11 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/demo': typeof DemoRoute
   '/elegir': typeof ElegirRoute
+  '/finanzas-para-ninos': typeof FinanzasParaNinosRoute
   '/gastos': typeof GastosRoute
   '/hipoteca': typeof HipotecaRoute
   '/life-planner': typeof LifePlannerRoute
   '/mi-perfil': typeof MiPerfilRoute
-  '/my-first-number': typeof MyFirstNumberRoute
   '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
@@ -276,11 +276,11 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/demo'
     | '/elegir'
+    | '/finanzas-para-ninos'
     | '/gastos'
     | '/hipoteca'
     | '/life-planner'
     | '/mi-perfil'
-    | '/my-first-number'
     | '/onboarding'
     | '/patrimonio'
     | '/portafolio'
@@ -305,11 +305,11 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/demo'
     | '/elegir'
+    | '/finanzas-para-ninos'
     | '/gastos'
     | '/hipoteca'
     | '/life-planner'
     | '/mi-perfil'
-    | '/my-first-number'
     | '/onboarding'
     | '/patrimonio'
     | '/portafolio'
@@ -334,11 +334,11 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/demo'
     | '/elegir'
+    | '/finanzas-para-ninos'
     | '/gastos'
     | '/hipoteca'
     | '/life-planner'
     | '/mi-perfil'
-    | '/my-first-number'
     | '/onboarding'
     | '/patrimonio'
     | '/portafolio'
@@ -364,11 +364,11 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   DemoRoute: typeof DemoRoute
   ElegirRoute: typeof ElegirRoute
+  FinanzasParaNinosRoute: typeof FinanzasParaNinosRoute
   GastosRoute: typeof GastosRoute
   HipotecaRoute: typeof HipotecaRoute
   LifePlannerRoute: typeof LifePlannerRoute
   MiPerfilRoute: typeof MiPerfilRoute
-  MyFirstNumberRoute: typeof MyFirstNumberRoute
   OnboardingRoute: typeof OnboardingRoute
   PatrimonioRoute: typeof PatrimonioRoute
   PortafolioRoute: typeof PortafolioRoute
@@ -461,6 +461,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ElegirRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/finanzas-para-ninos': {
+      id: '/finanzas-para-ninos'
+      path: '/finanzas-para-ninos'
+      fullPath: '/finanzas-para-ninos'
+      preLoaderRoute: typeof FinanzasParaNinosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/gastos': {
       id: '/gastos'
       path: '/gastos'
@@ -487,13 +494,6 @@ declare module '@tanstack/react-router' {
       path: '/mi-perfil'
       fullPath: '/mi-perfil'
       preLoaderRoute: typeof MiPerfilRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/my-first-number': {
-      id: '/my-first-number'
-      path: '/my-first-number'
-      fullPath: '/my-first-number'
-      preLoaderRoute: typeof MyFirstNumberRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -588,11 +588,11 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   DemoRoute: DemoRoute,
   ElegirRoute: ElegirRoute,
+  FinanzasParaNinosRoute: FinanzasParaNinosRoute,
   GastosRoute: GastosRoute,
   HipotecaRoute: HipotecaRoute,
   LifePlannerRoute: LifePlannerRoute,
   MiPerfilRoute: MiPerfilRoute,
-  MyFirstNumberRoute: MyFirstNumberRoute,
   OnboardingRoute: OnboardingRoute,
   PatrimonioRoute: PatrimonioRoute,
   PortafolioRoute: PortafolioRoute,
