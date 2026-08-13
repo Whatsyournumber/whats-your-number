@@ -87,7 +87,7 @@ function SelectFilter<T extends string>({
           <span className="inline-flex min-w-0 items-center gap-2">
             {selected ? (
               isStar ? (
-                <span className="inline-flex text-[10px] text-primary">{selected.icon}</span>
+                <span className="inline-flex shrink-0 text-[10px] text-primary">{selected.icon}</span>
               ) : (
                 <span className="shrink-0 text-xs">{selected.icon}</span>
               )
@@ -98,10 +98,14 @@ function SelectFilter<T extends string>({
         <SelectContent>
           {options.map((o) => (
             <SelectItem key={o.value} value={o.value} className="text-xs">
-              <span className="mr-2 inline-flex w-4 shrink-0 items-center justify-center text-xs">
-                {o.icon.startsWith("★") ? <span className="text-[10px] text-primary">{o.icon}</span> : o.icon}
+              <span className="inline-flex items-center gap-2">
+                {o.icon.startsWith("★") ? (
+                  <span className="inline-flex shrink-0 text-[10px] text-primary">{o.icon}</span>
+                ) : (
+                  <span className="inline-flex w-4 shrink-0 items-center justify-center text-xs">{o.icon}</span>
+                )}
+                <span>{o.label}</span>
               </span>
-              {o.label}
             </SelectItem>
           ))}
         </SelectContent>
