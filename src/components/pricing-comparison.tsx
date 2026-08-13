@@ -78,20 +78,20 @@ export function PricingComparison() {
 
   return (
     <section className="mt-16">
-      <header className="text-center md:text-left">
+      <header className="text-center">
         <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-primary">
           {t("Comparativa", "Comparison")}
         </p>
         <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight md:text-3xl">
           {t("WhatsYournumber vs. la competencia", "WhatsYournumber vs. the competition")}
         </h2>
-        <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground md:mx-0">
+        <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
           {t(
             "Otras apps te dicen en qué gastaste. Nosotros te decimos cuánto necesitas para ser libre, y dónde. Miles de personas ya toman decisiones con su número encima de la mesa.",
             "Other apps tell you what you spent. We tell you how much you need to be free, and where. Thousands already make decisions with their number on the table.",
           )}
         </p>
-        <div className="mt-5 flex flex-wrap justify-center gap-2 md:justify-start">
+        <div className="mt-5 flex flex-wrap justify-center gap-2">
           {[
             t("Tu número, no solo tus gastos", "Your number, not just your spending"),
             t("IA que entiende tu vida", "AI that gets your life"),
