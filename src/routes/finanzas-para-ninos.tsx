@@ -1264,7 +1264,7 @@ function KidsFinanceLanding() {
               >
                 <div className="flex gap-0.5">
                   {Array.from({ length: 5 }).map((_, k) => (
-                    <Star key={k} className="h-3.5 w-3.5 fill-kid-sun text-kid-sun" />
+                    <Star key={k} className="h-3.5 w-3.5 fill-kid-mint text-kid-mint" />
                   ))}
                 </div>
                 <blockquote className="mt-4 text-sm leading-relaxed text-muted-foreground">
