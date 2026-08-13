@@ -16,6 +16,7 @@ import {
   UserCog,
   CreditCard,
   ShieldCheck,
+  Users,
 } from "lucide-react";
 
 
@@ -37,6 +38,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { buildDataset } from "@/lib/profile-data";
 import { useT } from "@/hooks/use-language";
 import { useRoles } from "@/hooks/use-role";
+import { useSubscription } from "@/hooks/use-subscription";
 
 export function AppSidebar() {
   const { state } = useSidebar();
@@ -46,6 +48,7 @@ export function AppSidebar() {
   const data = buildDataset(profile);
   const t = useT();
   const { isSuperAdmin } = useRoles();
+  const { isPatrimonio } = useSubscription();
 
   const primary = [
     { title: t("Dashboard", "Dashboard"), url: "/dashboard", icon: LayoutDashboard },
@@ -61,7 +64,13 @@ export function AppSidebar() {
 
 
 
+  const familyItems =
+    isPatrimonio || isSuperAdmin
+      ? ([{ title: t("Perfiles familiares", "Family profiles"), url: "/elegir", icon: Users }] as const)
+      : ([] as const);
+
   const secondary = [
+    ...familyItems,
     { title: "AI Advisor", url: "/advisor", icon: Bot },
     { title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserCog },
     { title: t("Suscripción", "Subscription"), url: "/suscripcion", icon: CreditCard },
@@ -71,6 +80,7 @@ export function AppSidebar() {
   const adminItems = isSuperAdmin
     ? ([{ title: t("Panel admin", "Admin panel"), url: "/admin", icon: ShieldCheck }] as const)
     : ([] as const);
+
 
   const renderItem = (item: { title: string; url: string; icon: typeof Wallet }) => {
     const active = pathname === item.url;
