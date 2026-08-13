@@ -699,7 +699,7 @@ function KidsFinanceLanding() {
           transition={{ duration: 0.5 }}
           className="relative overflow-hidden"
         >
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-full lg:w-[54%]">
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-full lg:w-[58%]">
             <img
               src={heroReal}
               alt={t(
@@ -708,10 +708,11 @@ function KidsFinanceLanding() {
               )}
               width={1280}
               height={1024}
-              className="h-full w-full object-cover object-[62%_center] [mask-image:linear-gradient(90deg,transparent_0%,#000_38%,#000_100%)]"
+              className="h-full w-full object-cover object-[70%_45%] brightness-[1.15] contrast-[1.05] [mask-image:linear-gradient(90deg,transparent_0%,#000_30%,#000_100%)]"
             />
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,var(--background)_0%,color-mix(in_oklab,var(--background)_55%,transparent)_30%,transparent_58%)]" />
-            <div className="absolute inset-0 bg-[linear-gradient(0deg,var(--background)_0%,transparent_28%)]" />
+            <div className="absolute inset-y-0 left-0 w-1/3 bg-[linear-gradient(90deg,var(--background)_0%,transparent_100%)]" />
+            <div className="absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(0deg,var(--background)_0%,transparent_100%)]" />
+
 
           </div>
 
