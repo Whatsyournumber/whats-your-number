@@ -247,6 +247,7 @@ input[type="number"] {
   --kid-grape: oklch(0.75 0.16 305);
   --kid-sun: oklch(0.86 0.15 88);
   --kid-coral: oklch(0.76 0.16 25);
+  --kid-pink: oklch(0.8 0.15 350);
 }
 
 @theme inline {
@@ -255,6 +256,7 @@ input[type="number"] {
   --color-kid-grape: var(--kid-grape);
   --color-kid-sun: var(--kid-sun);
   --color-kid-coral: var(--kid-coral);
+  --color-kid-pink: var(--kid-pink);
 }
 
 @utility kid-gradient {
