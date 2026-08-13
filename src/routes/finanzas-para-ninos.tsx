@@ -78,14 +78,14 @@ function SectionHeader({
 
 function Bars({ items }: { items: Array<{ label: string; value: string; pct: number; color: string }> }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-5">
       {items.map((b) => (
         <div key={b.label}>
-          <div className="flex items-center justify-between text-xs">
+          <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">{b.label}</span>
-            <span className="numeric font-medium">{b.value}</span>
+            <span className="numeric text-base font-semibold">{b.value}</span>
           </div>
-          <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-elevated">
+          <div className="mt-2 h-3 w-full overflow-hidden rounded-full bg-elevated">
             <div className="h-full rounded-full" style={{ width: `${b.pct}%`, backgroundColor: b.color }} />
           </div>
         </div>
@@ -96,7 +96,8 @@ function Bars({ items }: { items: Array<{ label: string; value: string; pct: num
 
 function MiniArea({ color }: { color: string }) {
   return (
-    <div className="h-36">
+    <div className="h-64 md:h-72">
+
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={growCurve} margin={{ top: 6, right: 4, bottom: 0, left: 0 }}>
           <defs>
@@ -136,19 +137,19 @@ function HowItWorksSlider() {
         "They see their money right now, and where it can go if they keep saving every week.",
       ),
       visual: (
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">
               {t("Número de hoy", "Today's number")}
             </p>
-            <p className="numeric mt-1 text-4xl font-semibold text-kid-sky">€120</p>
+            <p className="numeric mt-1 text-6xl font-semibold text-kid-sky">€120</p>
           </div>
-          <div className="rounded-2xl border border-kid-grape/25 bg-kid-grape/10 p-4">
-            <p className="text-[10px] uppercase tracking-wider text-kid-grape">
+          <div className="rounded-2xl border border-kid-grape/25 bg-kid-grape/10 p-6">
+            <p className="text-xs uppercase tracking-wider text-kid-grape">
               {t("Número del futuro", "Future number")}
             </p>
-            <p className="numeric mt-1 text-2xl font-semibold">€1.480</p>
-            <p className="mt-1 text-xs text-muted-foreground">
+            <p className="numeric mt-1 text-4xl font-semibold">€1.480</p>
+            <p className="mt-1 text-sm text-muted-foreground">
               {t("En 2 años si sigue así", "In 2 years at this pace")}
             </p>
           </div>
@@ -186,21 +187,21 @@ function HowItWorksSlider() {
       ),
       visual: (
         <div className="space-y-4">
-          <div className="surface p-4">
-            <div className="flex items-center justify-between text-xs">
+          <div className="surface p-6">
+            <div className="flex items-center justify-between text-sm">
               <span>{t("Sueño: bici nueva", "Dream: new bike")}</span>
-              <span className="numeric font-medium text-kid-mint">62%</span>
+              <span className="numeric text-lg font-semibold text-kid-mint">62%</span>
             </div>
-            <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-elevated">
+            <div className="mt-3 h-3.5 w-full overflow-hidden rounded-full bg-elevated">
               <div className="kid-gradient h-full rounded-full" style={{ width: "62%" }} />
             </div>
           </div>
-          <div className="surface p-4">
-            <div className="flex items-center justify-between text-xs">
+          <div className="surface p-6">
+            <div className="flex items-center justify-between text-sm">
               <span>{t("Sueño: viaje con papá", "Dream: trip with dad")}</span>
-              <span className="numeric font-medium text-kid-sun">18%</span>
+              <span className="numeric text-lg font-semibold text-kid-sun">18%</span>
             </div>
-            <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-elevated">
+            <div className="mt-3 h-3.5 w-full overflow-hidden rounded-full bg-elevated">
               <div className="kid-gradient h-full rounded-full" style={{ width: "18%" }} />
             </div>
           </div>
@@ -217,19 +218,19 @@ function HowItWorksSlider() {
         "Schedule the allowance, approve chores and their money splits itself across pockets.",
       ),
       visual: (
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           {[
             { k: t("Mesada semanal", "Weekly allowance"), v: "+€10", ok: true },
             { k: t("Ordenar el cuarto", "Tidy the room"), v: "+€3", ok: true },
             { k: t("Sacar la basura", "Take out the trash"), v: "+€2", ok: false },
             { k: t("Leer 20 minutos", "Read 20 minutes"), v: "+€1", ok: false },
           ].map((r) => (
-            <div key={r.k} className="flex items-center justify-between rounded-xl bg-elevated px-4 py-3 text-xs">
-              <span className="flex items-center gap-2">
-                <BadgeCheck className={`h-4 w-4 ${r.ok ? "text-kid-mint" : "text-muted-foreground/40"}`} />
+            <div key={r.k} className="flex items-center justify-between rounded-xl bg-elevated px-5 py-4 text-sm">
+              <span className="flex items-center gap-2.5">
+                <BadgeCheck className={`h-5 w-5 ${r.ok ? "text-kid-mint" : "text-muted-foreground/40"}`} />
                 {r.k}
               </span>
-              <span className="numeric font-medium text-kid-sun">{r.v}</span>
+              <span className="numeric text-base font-semibold text-kid-sun">{r.v}</span>
             </div>
           ))}
         </div>
@@ -261,15 +262,15 @@ function HowItWorksSlider() {
             {[Trophy, Star, BadgeCheck, Sparkles].map((Ic, k) => (
               <span
                 key={k}
-                className="flex h-12 w-12 items-center justify-center rounded-full text-kid-sun ring-1 ring-kid-sun/25 kid-gradient-soft"
+                className="flex h-14 w-14 items-center justify-center rounded-full text-kid-sun ring-1 ring-kid-sun/25 kid-gradient-soft"
               >
-                <Ic className="h-5 w-5" />
+                <Ic className="h-6 w-6" />
               </span>
             ))}
           </div>
-          <div className="surface p-4">
-            <p className="text-xs text-muted-foreground">{t("Racha actual", "Current streak")}</p>
-            <p className="numeric mt-1 text-2xl font-semibold text-kid-grape">
+          <div className="surface p-6">
+            <p className="text-sm text-muted-foreground">{t("Racha actual", "Current streak")}</p>
+            <p className="numeric mt-1 text-4xl font-semibold text-kid-grape">
               7 {t("semanas", "weeks")}
             </p>
           </div>
@@ -292,32 +293,34 @@ function HowItWorksSlider() {
         )}
       />
 
-      <div className="surface relative mt-10 overflow-hidden p-6 md:p-10">
+      <div className="surface relative mt-12 overflow-hidden p-6 md:p-12">
         <div className="kid-gradient absolute inset-x-0 top-0 h-1" />
         <motion.div
           key={active.id}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35 }}
-          className="grid items-center gap-8 md:grid-cols-2"
+          className="grid items-center gap-10 md:grid-cols-2"
         >
           <div>
             <span
-              className="flex h-12 w-12 items-center justify-center rounded-2xl"
+              className="flex h-14 w-14 items-center justify-center rounded-2xl"
               style={{
                 color: active.color,
                 backgroundColor: `color-mix(in oklab, ${active.color} 12%, transparent)`,
                 boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${active.color} 25%, transparent)`,
               }}
             >
-              <Icon className="h-5 w-5" />
+              <Icon className="h-6 w-6" />
             </span>
-            <h3 className="mt-5 font-display text-xl font-semibold tracking-tight md:text-2xl">
+            <h3 className="mt-6 font-display text-2xl font-semibold tracking-tight md:text-4xl">
               {active.title}
             </h3>
-            <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">{active.desc}</p>
+            <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground">{active.desc}</p>
           </div>
-          <div className="rounded-2xl border border-border bg-card p-5 md:p-6">{active.visual}</div>
+          <div className="flex min-h-[320px] items-center rounded-2xl border border-border bg-card p-6 md:min-h-[360px] md:p-8">
+            <div className="w-full">{active.visual}</div>
+          </div>
         </motion.div>
 
         <div className="mt-8 flex items-center justify-between">
@@ -378,7 +381,7 @@ const teachSplit = [
 function PillarVisual({ id, color, labels }: { id: string; color: string; labels: string[] }) {
   if (id === "plan") {
     return (
-      <div className="mt-5 h-40">
+      <div className="mt-4 h-24">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={planBars} margin={{ top: 8, right: 2, bottom: 0, left: 0 }} barCategoryGap={3}>
             <defs>
@@ -406,8 +409,8 @@ function PillarVisual({ id, color, labels }: { id: string; color: string; labels
     const shades = [80, 52, 30];
     const amounts = ["€20", "€20", "€10"];
     return (
-      <div className="mt-5 flex h-40 flex-col justify-center gap-4">
-        <div className="flex h-24 w-full items-end gap-2">
+      <div className="mt-4 flex h-24 flex-col justify-center gap-2.5">
+        <div className="flex h-12 w-full items-end gap-2">
           {teachSplit.map((s, i) => (
             <div key={s.key} className="flex flex-1 flex-col items-center gap-2">
               <span className="numeric text-[11px] font-medium" style={{ color }}>
@@ -416,14 +419,14 @@ function PillarVisual({ id, color, labels }: { id: string; color: string; labels
               <span
                 className="w-full rounded-t-lg"
                 style={{
-                  height: `${(s.pct / 40) * 72}px`,
+                  height: `${(s.pct / 40) * 40}px`,
                   background: `linear-gradient(180deg, color-mix(in oklab, ${color} ${shades[i]}%, transparent), color-mix(in oklab, ${color} 8%, transparent))`,
                 }}
               />
             </div>
           ))}
         </div>
-        <div className="flex h-2.5 w-full overflow-hidden rounded-full bg-elevated">
+        <div className="flex h-2 w-full overflow-hidden rounded-full bg-elevated">
           {teachSplit.map((s, i) => (
             <span
               key={s.key}
@@ -451,7 +454,7 @@ function PillarVisual({ id, color, labels }: { id: string; color: string; labels
   }
 
   return (
-    <div className="mt-5 h-40">
+    <div className="mt-4 h-24">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={growCurve} margin={{ top: 8, right: 6, bottom: 0, left: 0 }}>
           <defs>
@@ -539,17 +542,18 @@ function ThreePillars() {
   ];
 
   return (
-    <section className="mt-20">
-      <h2 className="text-center font-display text-2xl font-semibold tracking-tight md:text-3xl">
+    <section className="mt-16">
+      <h2 className="text-center font-display text-lg font-semibold tracking-tight md:text-xl">
         {t("Tres pilares para un futuro increíble", "Three pillars for an incredible future")}
       </h2>
-      <p className="mx-auto mt-3 max-w-xl text-center text-sm text-muted-foreground">
+      <p className="mx-auto mt-2 max-w-lg text-center text-xs text-muted-foreground">
         {t(
           "Un plan para los padres, hábitos para los hijos y tiempo trabajando a su favor.",
           "A plan for parents, habits for kids and time working in their favour.",
         )}
       </p>
-      <div className="mt-10 grid gap-5 sm:grid-cols-3">
+      <div className="mt-7 grid gap-4 sm:grid-cols-3">
+
         {pillars.map(({ id, icon: Icon, color, title, desc, metric, metricLabel }) => (
           <motion.div
             key={id}
@@ -557,7 +561,7 @@ function ThreePillars() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.45 }}
-            className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1 md:p-7"
+            className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all duration-300 hover:-translate-y-1 md:p-5"
             style={{ boxShadow: "0 1px 0 0 color-mix(in oklab, var(--foreground) 5%, transparent) inset" }}
           >
             <span
@@ -571,39 +575,40 @@ function ThreePillars() {
               style={{ backgroundColor: `color-mix(in oklab, ${color} 22%, transparent)` }}
             />
 
-            <div className="relative flex items-center gap-3">
+            <div className="relative flex items-center gap-2.5">
               <span
-                className="flex h-9 w-9 items-center justify-center rounded-xl"
+                className="flex h-7 w-7 items-center justify-center rounded-lg"
                 style={{
                   color,
                   backgroundColor: `color-mix(in oklab, ${color} 12%, transparent)`,
                   boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${color} 25%, transparent)`,
                 }}
               >
-                <Icon className="h-4 w-4" />
+                <Icon className="h-3.5 w-3.5" />
               </span>
-              <h3 className="font-display text-base font-medium tracking-tight">{title}</h3>
+              <h3 className="font-display text-sm font-medium tracking-tight">{title}</h3>
             </div>
-            <p className="relative mt-4 text-sm leading-relaxed text-muted-foreground">{desc}</p>
+            <p className="relative mt-2.5 text-xs leading-relaxed text-muted-foreground">{desc}</p>
 
-            <div className="relative mt-auto pt-7">
+            <div className="relative mt-auto pt-4">
               <div className="flex items-baseline gap-2">
-                <span className="numeric text-3xl font-semibold" style={{ color }}>
+                <span className="numeric text-xl font-semibold" style={{ color }}>
                   {metric}
                 </span>
               </div>
-              <p className="mt-1 text-xs text-muted-foreground">{metricLabel}</p>
+              <p className="mt-0.5 text-[11px] text-muted-foreground">{metricLabel}</p>
 
               <PillarVisual
                 id={id}
                 color={color}
                 labels={[t("Gastar", "Spend"), t("Ahorrar", "Save"), t("Invertir", "Invest")]}
               />
-              <div className="mt-3 flex justify-between border-t border-border/60 pt-2.5 text-[10px] uppercase tracking-wider text-muted-foreground/70">
+              <div className="mt-2.5 flex justify-between border-t border-border/60 pt-2 text-[9px] uppercase tracking-wider text-muted-foreground/70">
                 <span>{pillarAxis[id]?.[0]}</span>
                 <span>{pillarAxis[id]?.[1]}</span>
               </div>
             </div>
+
 
           </motion.div>
         ))}
