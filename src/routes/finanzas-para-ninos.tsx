@@ -695,7 +695,7 @@ function ThreePillars() {
 
   const pillarAxis: Record<string, [string, string]> = {
     plan: [t("Aporte mensual", "Monthly deposit"), t("18 años", "Age 18")],
-    teach: [t("Gastar · ahorrar", "Spend · save"), t("Invertir", "Invest")],
+    teach: [t("Ahorrar · invertir", "Save · invest"), t("Gastar", "Spend")],
     grow: [t("Hoy", "Today"), t("Interés compuesto", "Compounding")],
   };
 
