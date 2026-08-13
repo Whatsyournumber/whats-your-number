@@ -113,7 +113,7 @@ function AuthPage() {
     if (promo.trim()) setPendingPromoCode(promo);
     setBusy(true);
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+      redirect_uri: `${window.location.origin}/elegir`,
       extraParams: { scope: GOOGLE_SCOPES, prompt: "consent select_account" },
     });
     if (result.error) {
