@@ -95,7 +95,7 @@ function SelectFilter<T extends string>({
                 {selected.icon}
               </span>
             ) : null}
-            <span className="truncate">{selected?.label}</span>
+            <span className={cn("truncate", isStar && "hidden xl:inline")}>{selected?.label}</span>
           </span>
         </SelectTrigger>
         <SelectContent>
