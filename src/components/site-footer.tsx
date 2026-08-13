@@ -55,7 +55,8 @@ export function SiteFooter() {
           { label: t("Tu número", "Your number"), to: "/demo" },
           { label: t("Your next city", "Your next city"), to: "/demo" },
           { label: "My First Number", to: "/my-first-number", external: true },
-          { label: t("Abrir app para niños", "Open kids app"), to: "https://myfirstnumber.lovable.app/kid/numero", external: true },
+          { label: t("Finanzas para niños", "Kids finance"), to: "/my-first-number", external: true },
+
         ],
       },
     {
