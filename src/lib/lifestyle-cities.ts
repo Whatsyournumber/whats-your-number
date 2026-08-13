@@ -15,6 +15,7 @@ import { nomadFriendly, nomadVisa } from "./nomad-visas";
 import barcelonaPhoto from "@/assets/city-barcelona-hd.jpg.asset.json";
 import cairoPhoto from "@/assets/city-cairo-nile.png.asset.json";
 import nairobiPhoto from "@/assets/city-nairobi.jpg.asset.json";
+import warsawPhoto from "@/assets/cities/warsaw-premium.jpg.asset.json";
 
 
 export type Region = "northamerica" | "latam" | "europe" | "asia" | "africa";
@@ -89,7 +90,7 @@ const PHOTO = {
   berlin: "https://commons.wikimedia.org/wiki/Special:FilePath/Skyline%20Berlin.jpg?width=1920",
   paris: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Panorama_of_the_Paris_Skyline_3.jpg/1920px-Panorama_of_the_Paris_Skyline_3.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   milan: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Milan_skyline_skyscrapers_of_Porta_Nuova_business_district_%28cropped2%29.jpg/1920px-Milan_skyline_skyscrapers_of_Porta_Nuova_business_district_%28cropped2%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  warsaw: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Warsaw_Castle_Square_Panorama_2010.jpg/1920px-Warsaw_Castle_Square_Panorama_2010.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  warsaw: warsawPhoto.url,
   athens: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/20101024_Acropolis_panoramic_view_from_Areopagus_hill_Athens_Greece.jpg/1920px-20101024_Acropolis_panoramic_view_from_Areopagus_hill_Athens_Greece.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   porto: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Terminal_de_cruceros_de_Oporto_%2852156092183%29.jpg/1920px-Terminal_de_cruceros_de_Oporto_%2852156092183%29.jpg",
   prague: "https://commons.wikimedia.org/wiki/Special:FilePath/Tancici%20d%C5%AFm.jpg?width=1920",
