@@ -855,27 +855,47 @@ function KidsFinanceLanding() {
           </div>
         </section>
 
-        <section className="surface glow relative mt-24 overflow-hidden p-10 text-center md:p-14">
-          <div className="kid-gradient-soft pointer-events-none absolute inset-0" />
-          <div className="relative">
-            <Gift className="mx-auto h-8 w-8 text-kid-coral" />
-            <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight md:text-4xl">
-              {t("Su primer número empieza hoy", "Their first number starts today")}
-            </h2>
-            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
-              {t(
-                "Incluido en el plan Familiar de WhatsYournumber: tú gestionas tu patrimonio, ellos aprenden con el suyo.",
-                "Included in the WhatsYournumber Family plan: you manage your wealth, they learn with theirs.",
+        <section className="surface glow relative mt-24 overflow-hidden">
+          <div className="grid items-center gap-0 md:grid-cols-2">
+            <div className="relative p-10 md:p-14">
+              <div className="kid-gradient-soft pointer-events-none absolute inset-0" />
+              <div className="relative">
+                <Gift className="h-8 w-8 text-kid-coral" />
+                <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight md:text-4xl">
+                  {t("El mejor regalo para un hijo no es dinero. ", "The best gift isn't money. ")}
+                  <span className="kid-text-gradient">
+                    {t("Es enseñarle qué hacer con él.", "It's teaching them what to do with it.")}
+                  </span>
+                </h2>
+                <p className="mt-3 max-w-md text-sm text-muted-foreground">
+                  {t(
+                    "Incluido en el plan Familiar de WhatsYournumber: tú gestionas tu patrimonio, ellos aprenden con el suyo.",
+                    "Included in the WhatsYournumber Family plan: you manage your wealth, they learn with theirs.",
+                  )}
+                </p>
+                <Link
+                  to="/precios"
+                  className="kid-gradient mt-7 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-background shadow-lg transition-all hover:gap-3"
+                >
+                  {t("Crear mi plan Familiar", "Create my Family plan")}{" "}
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+            <img
+              src={ctaFamily}
+              alt={t(
+                "Familia revisando sus finanzas juntos",
+                "Family reviewing their finances together",
               )}
-            </p>
-            <Link
-              to="/precios"
-              className="kid-gradient mt-7 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-background shadow-lg transition-all hover:gap-3"
-            >
-              {t("Ver plan Familiar", "See Family plan")} <ArrowRight className="h-4 w-4" />
-            </Link>
+              loading="lazy"
+              width={1408}
+              height={912}
+              className="h-full w-full object-cover"
+            />
           </div>
         </section>
+
       </main>
 
       <SiteFooter />
