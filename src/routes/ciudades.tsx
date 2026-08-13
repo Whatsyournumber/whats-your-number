@@ -1034,14 +1034,24 @@ function CityCard({
           <Button size="sm" className="flex-1" onClick={onOpen}>
             {t("Ver detalles", "View details")}
           </Button>
-          <Button
-            size="sm"
-            variant={selected ? "default" : "outline"}
-            onClick={onCompare}
-            aria-label={t("Comparar", "Compare")}
-          >
-            <ArrowLeftRight className="h-4 w-4" />
-          </Button>
+          <Tooltip delayDuration={200}>
+            <TooltipTrigger asChild>
+              <Button
+                size="sm"
+                variant={selected ? "default" : "outline"}
+                onClick={onCompare}
+                aria-label={t("Comparar", "Compare")}
+              >
+                <ArrowLeftRight className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top" sideOffset={6} className="px-2 py-1 text-[11px]">
+              {selected
+                ? t("Quitar de comparar", "Remove from compare")
+                : t("Comparar (hasta 3)", "Compare (up to 3)")}
+            </TooltipContent>
+          </Tooltip>
+
         </div>
       </div>
     </motion.article>
