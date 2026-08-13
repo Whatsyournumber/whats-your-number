@@ -161,10 +161,100 @@ function KidPreview() {
   );
 }
 
+const planBars = [4, 7, 10, 13, 17, 21, 26, 32, 39, 47, 56, 66].map((v, i) => ({ x: i, v }));
+const growCurve = Array.from({ length: 14 }, (_, i) => ({ x: i, y: Math.pow(1.32, i) }));
+const teachSplit = [
+  { key: "spend", pct: 40 },
+  { key: "save", pct: 40 },
+  { key: "invest", pct: 20 },
+];
+
+function PillarVisual({ id, color }: { id: string; color: string }) {
+  if (id === "plan") {
+    return (
+      <div className="mt-4 h-16">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={planBars} margin={{ top: 4, right: 2, bottom: 0, left: 0 }} barCategoryGap={3}>
+            <Bar dataKey="v" radius={[3, 3, 2, 2]} isAnimationActive={false}>
+              {planBars.map((_, i) => (
+                <Cell
+                  key={i}
+                  fill={`color-mix(in oklab, ${color} ${28 + i * 6}%, transparent)`}
+                />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    );
+  }
+
+  if (id === "teach") {
+    const shades = [70, 45, 25];
+    return (
+      <div className="mt-4 flex h-16 flex-col justify-center gap-2.5">
+        <div className="flex h-3 w-full overflow-hidden rounded-full bg-elevated">
+          {teachSplit.map((s, i) => (
+            <span
+              key={s.key}
+              style={{
+                width: `${s.pct}%`,
+                backgroundColor: `color-mix(in oklab, ${color} ${shades[i]}%, transparent)`,
+              }}
+              className="h-full border-r border-card last:border-0"
+            />
+          ))}
+        </div>
+        <div className="flex justify-between text-[10px] text-muted-foreground">
+          {teachSplit.map((s, i) => (
+            <span key={s.key} className="flex items-center gap-1">
+              <span
+                className="h-1.5 w-1.5 rounded-full"
+                style={{ backgroundColor: `color-mix(in oklab, ${color} ${shades[i]}%, transparent)` }}
+              />
+              {s.pct}%
+            </span>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-4 h-16">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={growCurve} margin={{ top: 4, right: 6, bottom: 0, left: 0 }}>
+          <defs>
+            <linearGradient id={`pillar-${id}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={color} stopOpacity={0.28} />
+              <stop offset="100%" stopColor={color} stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <Area
+            type="monotone"
+            dataKey="y"
+            stroke={color}
+            strokeWidth={1.75}
+            fill={`url(#pillar-${id})`}
+            dot={false}
+            activeDot={false}
+            isAnimationActive={false}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
 function ThreePillars() {
   const t = useT();
 
-  const curve = Array.from({ length: 12 }, (_, i) => ({ x: i, y: Math.pow(i, 2.1) }));
+  const pillarAxis: Record<string, [string, string]> = {
+    plan: [t("Aporte mensual", "Monthly deposit"), t("18 años", "Age 18")],
+    teach: [t("Gastar · ahorrar", "Spend · save"), t("Invertir", "Invest")],
+    grow: [t("Hoy", "Today"), t("Interés compuesto", "Compounding")],
+  };
+
 
   const pillars = [
     {
