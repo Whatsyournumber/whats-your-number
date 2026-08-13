@@ -152,21 +152,8 @@ function nightlifeText(score: number, t: (es: string, en: string) => string) {
   );
 }
 
-function PillarRow({
-  pillar,
-  t,
-  stage,
-  cityName,
-  nightlife,
-}: {
-  pillar: PillarBreakdown;
-  t: (es: string, en: string) => string;
-  stage?: string;
-  cityName?: string;
-  nightlife?: number;
-}) {
+function PillarRow({ pillar, t }: { pillar: PillarBreakdown; t: (es: string, en: string) => string }) {
   const meta = PILLAR_META[pillar.key];
-  const nightlifeFactor = pillar.factors.find((f) => f.es === "Vida nocturna y ocio");
   return (
     <details className="rounded-xl border border-border/60 bg-elevated/40 p-3">
       <summary className="flex cursor-pointer list-none items-center gap-2 text-xs">
@@ -178,11 +165,6 @@ function PillarRow({
       <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-elevated">
         <div className="h-full rounded-full bg-primary" style={{ width: `${pillar.score}%` }} />
       </div>
-      {pillar.key === "lifestyle" && stage === "single" && nightlifeFactor && nightlife !== undefined && (
-        <p className="mt-2 text-[11px] leading-relaxed text-primary">
-          🌙 {cityName}: {nightlifeText(nightlife, t)}
-        </p>
-      )}
       <ul className="mt-2 space-y-1">
         {pillar.factors.map((f) => (
           <li key={f.es} className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
@@ -339,6 +321,64 @@ export function CityDetailDialog({
             </div>
           )}
 
+          {filters.stage === "single" && (
+            <div className="rounded-xl border border-primary/30 bg-primary/5 p-4">
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <p className="text-sm font-semibold">
+                  🌙 {t("Vida nocturna en", "Nightlife in")} {c.name}
+                </p>
+                <p className="numeric text-sm">
+                  <span className="text-lg font-semibold text-primary">{c.nightlife}</span>
+                  <span className="text-muted-foreground">/100</span>
+                </p>
+              </div>
+              <p className="text-[13px] font-medium leading-snug">{nightlifeText(c.nightlife, t)}</p>
+              <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                <Stat
+                  icon="🍸"
+                  label={t("Bares y clubs", "Bars & clubs")}
+                  value={c.nightlife >= 75 ? t("Muy alto", "Very high") : c.nightlife >= 55 ? t("Alto", "High") : t("Moderado", "Moderate")}
+                />
+                <Stat
+                  icon="🎶"
+                  label={t("Música en vivo", "Live music")}
+                  value={c.nightlife >= 70 ? t("Sí", "Yes") : t("Ocasional", "Occasional")}
+                />
+                <Stat
+                  icon="🌃"
+                  label={t("Zonas 24/7", "24/7 zones")}
+                  value={c.nightlife >= 80 ? t("Sí", "Yes") : t("Limitado", "Limited")}
+                />
+                <Stat
+                  icon="🚕"
+                  label={t("Transporte nocturno", "Night transport")}
+                  value={c.publicTransport >= 65 ? t("Bueno", "Good") : t("Regular", "Fair")}
+                />
+              </div>
+              <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
+                {c.nightlife >= 80
+                  ? t(
+                      "Escena vibrante con opciones para todos los gustos: rooftops, clubs, bares de copas y eventos hasta tarde.",
+                      "Vibrant scene with options for every taste: rooftops, clubs, cocktail bars and late events.",
+                    )
+                  : c.nightlife >= 65
+                    ? t(
+                        "Buena oferta de bares y restaurantes; ideal para cenas largas, after-work y planes entre semana.",
+                        "Good bar and restaurant offer; ideal for long dinners, after-work and midweek plans.",
+                      )
+                    : c.nightlife >= 45
+                      ? t(
+                          "Vida nocturna tranquila centrada en restaurantes y cafés; perfecto si prefieres planes relajados.",
+                          "Quiet nightlife focused on restaurants and cafés; perfect if you prefer relaxed plans.",
+                        )
+                      : t(
+                          "Opciones limitadas; planea salidas con anticipación y prioriza zonas céntricas.",
+                          "Limited options; plan outings in advance and prioritize central areas.",
+                        )}
+              </p>
+            </div>
+          )}
+
           <div>
             <div className="mb-3 flex items-baseline justify-between gap-3">
               <p className="text-sm font-semibold">Your next city</p>
@@ -351,14 +391,7 @@ export function CityDetailDialog({
               {[...r.north.pillars]
                 .sort((a, b) => b.weight - a.weight)
                 .map((p) => (
-                  <PillarRow
-                    key={p.key}
-                    pillar={p}
-                    t={t}
-                    stage={filters.stage}
-                    cityName={c.name}
-                    nightlife={c.nightlife}
-                  />
+                  <PillarRow key={p.key} pillar={p} t={t} />
                 ))}
             </div>
           </div>
