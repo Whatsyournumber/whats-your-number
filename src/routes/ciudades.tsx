@@ -497,7 +497,7 @@ function LifestyleSimulatorContent() {
                 </p>
               </div>
               <Slider
-                className="mt-2.5"
+                className="mt-1.5"
                 min={1000}
                 max={15000}
                 step={100}
