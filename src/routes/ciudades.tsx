@@ -486,7 +486,7 @@ function LifestyleSimulatorContent() {
 
           {/* Dinero */}
           <FilterGroup title={t("Dinero", "Money")}>
-            <div className="col-span-2">
+            <div className="col-span-1 sm:col-span-2">
               <div className="flex items-center justify-between gap-2">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
                   {t("Presupuesto mensual", "Monthly budget")}
