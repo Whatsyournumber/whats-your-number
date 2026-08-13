@@ -142,9 +142,9 @@ function HowItWorksSlider() {
   const touchX = useRef<number | null>(null);
 
   const pockets = [
-    { label: t("Gastar", "Spend"), value: 40, amount: "€24", color: "var(--kid-sky)" },
     { label: t("Ahorrar", "Save"), value: 40, amount: "€24", color: "var(--kid-mint)" },
-    { label: t("Invertir", "Invest"), value: 20, amount: "€12", color: "var(--kid-grape)" },
+    { label: t("Invertir", "Invest"), value: 40, amount: "€24", color: "var(--kid-grape)" },
+    { label: t("Gastar", "Spend"), value: 20, amount: "€12", color: "var(--kid-sky)" },
   ];
 
   const slides = [
@@ -187,7 +187,7 @@ function HowItWorksSlider() {
       tab: t("Mi dinero", "My money"),
       icon: PiggyBank,
       color: "var(--kid-mint)",
-      title: t("Bolsillos: gastar, ahorrar e invertir", "Pockets: spend, save and invest"),
+      title: t("Bolsillos: ahorrar, invertir y gastar", "Pockets: save, invest and spend"),
       desc: t(
         "La regla 40/40/20, digital. Cada euro que entra ya sabe a dónde va.",
         "The 40/40/20 rule, gone digital. Every euro that arrives knows where it goes.",
@@ -571,9 +571,9 @@ const growCurve = Array.from({ length: 19 }, (_, i) => ({
   flat: 50 * 12 * i,
 }));
 const teachSplit = [
-  { key: "spend", pct: 40 },
   { key: "save", pct: 40 },
-  { key: "invest", pct: 20 },
+  { key: "invest", pct: 40 },
+  { key: "spend", pct: 20 },
 ];
 
 function PillarVisual({ id, color, labels }: { id: string; color: string; labels: string[] }) {
@@ -651,6 +651,25 @@ function PillarVisual({ id, color, labels }: { id: string; color: string; labels
     );
   }
 
+  if (id === "fun") {
+    return (
+      <div className="relative mt-4 flex h-24 items-center justify-center overflow-hidden rounded-xl bg-elevated">
+        <span
+          className="pointer-events-none absolute inset-0"
+          style={{ background: `radial-gradient(60% 80% at 50% 60%, color-mix(in oklab, ${color} 22%, transparent), transparent)` }}
+        />
+        <img
+          src={bikeAsset.url}
+          alt=""
+          loading="lazy"
+          className="relative h-[86px] w-auto object-contain drop-shadow-[0_10px_22px_rgba(0,0,0,0.5)]"
+        />
+      </div>
+    );
+  }
+
+
+
   return (
     <div className="mt-4 h-24">
       <ResponsiveContainer width="100%" height="100%">
@@ -695,8 +714,9 @@ function ThreePillars() {
 
   const pillarAxis: Record<string, [string, string]> = {
     plan: [t("Aporte mensual", "Monthly deposit"), t("18 años", "Age 18")],
-    teach: [t("Gastar · ahorrar", "Spend · save"), t("Invertir", "Invest")],
+    teach: [t("Ahorrar · invertir", "Save · invest"), t("Gastar", "Spend")],
     grow: [t("Hoy", "Today"), t("Interés compuesto", "Compounding")],
+    fun: [t("Ahorra cada semana", "Saves every week"), t("Premio", "Reward")],
   };
 
 
@@ -723,7 +743,7 @@ function ThreePillars() {
         "They learn to save, spend and invest with their own money.",
       ),
       metric: "40 / 40 / 20",
-      metricLabel: t("gastar · ahorrar · invertir", "spend · save · invest"),
+      metricLabel: t("ahorrar · invertir · gastar", "save · invest · spend"),
     },
     {
       id: "grow",
@@ -737,12 +757,24 @@ function ThreePillars() {
       metric: "7,2%",
       metricLabel: t("rendimiento anual medio", "average annual return"),
     },
+    {
+      id: "fun",
+      icon: Trophy,
+      color: "var(--kid-sun)",
+      title: t("Aprende finanzas divertido", "Learning money is fun"),
+      desc: t(
+        "Cada meta cumplida se convierte en un premio real: su bici nueva.",
+        "Every goal they hit turns into a real reward: their new bike.",
+      ),
+      metric: "€250",
+      metricLabel: t("bici desbloqueada como premio", "bike unlocked as a reward"),
+    },
   ];
 
   return (
     <section className="mt-16">
       <h2 className="text-center font-display text-lg font-semibold tracking-tight md:text-xl">
-        {t("Tres pilares para un futuro increíble", "Three pillars for an incredible future")}
+        {t("Cuatro pilares para un futuro increíble", "Four pillars for an incredible future")}
       </h2>
       <p className="mx-auto mt-2 max-w-lg text-center text-xs text-muted-foreground">
         {t(
@@ -750,7 +782,8 @@ function ThreePillars() {
           "A plan for parents, habits for kids and time working in their favour.",
         )}
       </p>
-      <div className="mt-7 grid gap-4 sm:grid-cols-3">
+      <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
 
         {pillars.map(({ id, icon: Icon, color, title, desc, metric, metricLabel }) => (
           <motion.div
@@ -799,7 +832,7 @@ function ThreePillars() {
               <PillarVisual
                 id={id}
                 color={color}
-                labels={[t("Gastar", "Spend"), t("Ahorrar", "Save"), t("Invertir", "Invest")]}
+                labels={[t("Ahorrar", "Save"), t("Invertir", "Invest"), t("Gastar", "Spend")]}
               />
               <div className="mt-2.5 flex justify-between border-t border-border/60 pt-2 text-[9px] uppercase tracking-wider text-muted-foreground/70">
                 <span>{pillarAxis[id]?.[0]}</span>
