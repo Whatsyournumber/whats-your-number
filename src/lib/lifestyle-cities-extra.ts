@@ -20,6 +20,7 @@ import margaritaPhoto from "@/assets/city-margarita-premium.jpg.asset.json";
 import sanjuanPhoto from "@/assets/city-sanjuan-premium.jpg.asset.json";
 import rosarioPhoto from "@/assets/city-rosario-premium.jpg.asset.json";
 import cordobaPhoto from "@/assets/city-cordoba-premium.jpg.asset.json";
+import andorraPhoto from "@/assets/andorra-premium.jpg.asset.json";
 const PHOTO = {
   hamburg: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/HH_Alsterarkaden_pano1.jpg/1920px-HH_Alsterarkaden_pano1.jpg",
   zagreb: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg/1920px-Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
