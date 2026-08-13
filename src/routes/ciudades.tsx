@@ -87,7 +87,7 @@ function SelectFilter<T extends string>({
           <span className="inline-flex min-w-0 items-center gap-2">
             {selected ? (
               isStar ? (
-                <span className="inline-flex text-[10px] text-primary">{selected.icon}</span>
+                <span className="inline-flex shrink-0 text-[10px] text-primary">{selected.icon}</span>
               ) : (
                 <span className="shrink-0 text-xs">{selected.icon}</span>
               )
@@ -98,10 +98,14 @@ function SelectFilter<T extends string>({
         <SelectContent>
           {options.map((o) => (
             <SelectItem key={o.value} value={o.value} className="text-xs">
-              <span className="mr-2 inline-flex w-4 shrink-0 items-center justify-center text-xs">
-                {o.icon.startsWith("★") ? <span className="text-[10px] text-primary">{o.icon}</span> : o.icon}
+              <span className="inline-flex items-center gap-2">
+                {o.icon.startsWith("★") ? (
+                  <span className="inline-flex shrink-0 text-[10px] text-primary">{o.icon}</span>
+                ) : (
+                  <span className="inline-flex w-4 shrink-0 items-center justify-center text-xs">{o.icon}</span>
+                )}
+                <span>{o.label}</span>
               </span>
-              {o.label}
             </SelectItem>
           ))}
         </SelectContent>
@@ -453,19 +457,27 @@ function LifestyleSimulatorContent() {
                 { value: "cold", label: t("Frío", "Cold"), icon: "❄️" },
               ]}
             />
-            <div className="col-span-2">
-              <SelectFilter
-                label={t("Estabilidad política", "Political stability")}
-                value={filters.stability}
-                onChange={(v) => set("stability", v)}
-                options={[
-                  { value: "any", label: t("Indiferente", "Any"), icon: "🌍" },
-                  { value: "medium", label: t("Media o superior", "Medium or higher"), icon: "🟡" },
-                  { value: "high", label: t("Alta", "High"), icon: "🟢" },
-                  { value: "veryhigh", label: t("Muy alta", "Very high"), icon: "🛡️" },
-                ]}
-              />
-            </div>
+            <SelectFilter
+              label={t("Política", "Politics")}
+              value={filters.stability}
+              onChange={(v) => set("stability", v)}
+              options={[
+                { value: "any", label: t("Indiferente", "Any"), icon: "🌍" },
+                { value: "medium", label: t("Media o superior", "Medium or higher"), icon: "🟡" },
+                { value: "high", label: t("Alta", "High"), icon: "🟢" },
+                { value: "veryhigh", label: t("Muy alta", "Very high"), icon: "🛡️" },
+              ]}
+            />
+            <SelectFilter
+              label={t("Cómo vivir", "Comfort level")}
+              value={filters.comfort}
+              onChange={(v) => set("comfort", v)}
+              options={[
+                { value: "tight", label: t("Ajustado", "Tight"), icon: "🪙" },
+                { value: "comfortable", label: t("Cómodo", "Comfortable"), icon: "🛋️" },
+                { value: "luxury", label: t("Lujo", "Luxury"), icon: "🥂" },
+              ]}
+            />
           </FilterGroup>
 
           {/* Dinero */}
@@ -489,16 +501,6 @@ function LifestyleSimulatorContent() {
                 onValueChange={([v]) => set("budget", v ?? 1000)}
               />
             </div>
-            <SelectFilter
-              label={t("Cómo vivir", "Comfort level")}
-              value={filters.comfort}
-              onChange={(v) => set("comfort", v)}
-              options={[
-                { value: "tight", label: t("Ajustado", "Tight"), icon: "🪙" },
-                { value: "comfortable", label: t("Cómodo", "Comfortable"), icon: "🛋️" },
-                { value: "luxury", label: t("Lujo", "Luxury"), icon: "🥂" },
-              ]}
-            />
             <SelectFilter
               label={t("Impuestos", "Taxes")}
               value={filters.tax}
