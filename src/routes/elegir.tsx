@@ -128,7 +128,7 @@ function ChooserPage() {
             <span className="inline-flex items-center gap-1 text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
               {t("Continuar", "Continue")} <ArrowRight className="h-3.5 w-3.5" />
             </span>
-          </a>
+          </button>
         </div>
       </motion.div>
     </div>
