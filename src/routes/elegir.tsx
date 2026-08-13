@@ -53,14 +53,24 @@ export const Route = createFileRoute("/elegir")({
 });
 
 function ChooserPage() {
-  const { user, loading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  const { isPatrimonio, loading: subscriptionLoading } = useSubscription();
   const navigate = useNavigate();
   const t = useT();
 
+  const loading = authLoading || subscriptionLoading;
+
   useEffect(() => {
     if (loading) return;
-    if (!user) navigate({ to: "/auth", search: { mode: "login" } });
-  }, [loading, user, navigate]);
+    if (!user) {
+      navigate({ to: "/auth", search: { mode: "login" } });
+      return;
+    }
+    // Esta pantalla de selección de perfiles solo está disponible en el plan Familiar.
+    if (!isPatrimonio) {
+      navigate({ to: "/dashboard" });
+    }
+  }, [loading, user, isPatrimonio, navigate]);
 
   if (loading || !user) {
     return (
