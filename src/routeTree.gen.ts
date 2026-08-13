@@ -33,6 +33,7 @@ import { Route as ReembolsosRouteImport } from './routes/reembolsos'
 import { Route as RetiroRouteImport } from './routes/retiro'
 import { Route as SuscripcionRouteImport } from './routes/suscripcion'
 import { Route as TerminosRouteImport } from './routes/terminos'
+import { Route as CheckoutSuccessRouteImport } from './routes/checkout/success'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const IndexRoute = IndexRouteImport.update({
@@ -155,6 +156,11 @@ const TerminosRoute = TerminosRouteImport.update({
   path: '/terminos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
+  id: '/checkout/success',
+  path: '/checkout/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -187,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/retiro': typeof RetiroRoute
   '/suscripcion': typeof SuscripcionRoute
   '/terminos': typeof TerminosRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -214,6 +221,7 @@ export interface FileRoutesByTo {
   '/retiro': typeof RetiroRoute
   '/suscripcion': typeof SuscripcionRoute
   '/terminos': typeof TerminosRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
@@ -242,6 +250,7 @@ export interface FileRoutesById {
   '/retiro': typeof RetiroRoute
   '/suscripcion': typeof SuscripcionRoute
   '/terminos': typeof TerminosRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
@@ -271,6 +280,7 @@ export interface FileRouteTypes {
     | '/retiro'
     | '/suscripcion'
     | '/terminos'
+    | '/checkout/success'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -298,6 +308,7 @@ export interface FileRouteTypes {
     | '/retiro'
     | '/suscripcion'
     | '/terminos'
+    | '/checkout/success'
     | '/api/public/payments/webhook'
   id:
     | '__root__'
@@ -325,6 +336,7 @@ export interface FileRouteTypes {
     | '/retiro'
     | '/suscripcion'
     | '/terminos'
+    | '/checkout/success'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -353,6 +365,7 @@ export interface RootRouteChildren {
   RetiroRoute: typeof RetiroRoute
   SuscripcionRoute: typeof SuscripcionRoute
   TerminosRoute: typeof TerminosRoute
+  CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
@@ -526,6 +539,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TerminosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout/success': {
+      id: '/checkout/success'
+      path: '/checkout/success'
+      fullPath: '/checkout/success'
+      preLoaderRoute: typeof CheckoutSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -561,6 +581,7 @@ const rootRouteChildren: RootRouteChildren = {
   RetiroRoute: RetiroRoute,
   SuscripcionRoute: SuscripcionRoute,
   TerminosRoute: TerminosRoute,
+  CheckoutSuccessRoute: CheckoutSuccessRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
