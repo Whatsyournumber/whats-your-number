@@ -39,6 +39,10 @@ import {
 
 import heroFamily from "@/assets/kids-hero-family.jpg";
 import ctaFamily from "@/assets/kids-cta-family.jpg";
+import faceDad from "@/assets/kid-face-dad.jpg";
+import faceMom from "@/assets/kid-face-mom.jpg";
+import faceGirl from "@/assets/kid-face-girl.jpg";
+import faceBoy from "@/assets/kid-face-boy.jpg";
 import avatarFaces from "@/assets/kids-avatars-three.png";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -406,10 +410,10 @@ function Milestones() {
 function FamilyProfiles() {
   const t = useT();
   const members = [
-    { name: "Carlos", role: t("Padre", "Dad"), tone: "bg-kid-sky/15 text-kid-sky" },
-    { name: "Laura", role: t("Madre", "Mom"), tone: "bg-kid-coral/15 text-kid-coral" },
-    { name: "Sofía", role: t("10 años", "Age 10"), tone: "bg-kid-grape/15 text-kid-grape" },
-    { name: "Lucas", role: t("7 años", "Age 7"), tone: "bg-kid-sun/15 text-kid-sun" },
+    { name: "Carlos", role: t("Padre", "Dad"), photo: faceDad, active: false },
+    { name: "Laura", role: t("Madre", "Mom"), photo: faceMom, active: false },
+    { name: "Sofía", role: t("10 años", "Age 10"), photo: faceGirl, active: true },
+    { name: "Lucas", role: t("7 años", "Age 7"), photo: faceBoy, active: false },
   ];
   return (
     <section className="mt-24">
@@ -419,12 +423,25 @@ function FamilyProfiles() {
       </h2>
       <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {members.map((m) => (
-          <div key={m.name} className="surface p-6 text-center">
-            <span
-              className={`mx-auto flex h-14 w-14 items-center justify-center rounded-full text-lg font-semibold ${m.tone}`}
-            >
-              {m.name[0]}
-            </span>
+          <div
+            key={m.name}
+            className={`surface relative p-6 text-center transition-colors ${
+              m.active ? "border-kid-mint/50 shadow-[0_0_30px_-12px_var(--kid-mint)]" : ""
+            }`}
+          >
+            {m.active && (
+              <Star className="absolute right-3 top-3 h-4 w-4 fill-kid-mint text-kid-mint" />
+            )}
+            <img
+              src={m.photo}
+              alt={m.name}
+              loading="lazy"
+              width={512}
+              height={512}
+              className={`mx-auto h-16 w-16 rounded-full object-cover ring-2 ${
+                m.active ? "ring-kid-mint" : "ring-border"
+              }`}
+            />
             <p className="mt-4 text-sm font-semibold">{m.name}</p>
             <p className="mt-1 text-xs text-muted-foreground">{m.role}</p>
           </div>
@@ -433,7 +450,7 @@ function FamilyProfiles() {
           to="/precios"
           className="surface flex flex-col items-center justify-center p-6 text-center transition-colors hover:border-kid-grape/40"
         >
-          <span className="flex h-14 w-14 items-center justify-center rounded-full text-2xl text-muted-foreground ring-1 ring-border">
+          <span className="flex h-16 w-16 items-center justify-center rounded-full text-2xl text-muted-foreground ring-1 ring-border">
             +
           </span>
           <p className="mt-4 text-xs text-muted-foreground">{t("Añadir hijo", "Add a child")}</p>
@@ -442,6 +459,7 @@ function FamilyProfiles() {
     </section>
   );
 }
+
 
 function KidsFinanceLanding() {
   const t = useT();
