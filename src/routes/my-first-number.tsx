@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import {
   ArrowRight,
@@ -15,8 +15,6 @@ import {
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useT } from "@/hooks/use-language";
-
-const KID_APP_URL = "https://myfirstnumber.lovable.app/kid/numero";
 
 export const Route = createFileRoute("/my-first-number")({
   head: () => ({
@@ -38,6 +36,64 @@ export const Route = createFileRoute("/my-first-number")({
   }),
   component: MyFirstNumberLanding,
 });
+
+function KidPreview() {
+  const t = useT();
+
+  const pockets = [
+    { label: t("Gastar", "Spend"), value: "€24", pct: 20 },
+    { label: t("Ahorrar", "Save"), value: "€60", pct: 50 },
+    { label: t("Invertir", "Invest"), value: "€24", pct: 20 },
+    { label: t("Compartir", "Share"), value: "€12", pct: 10 },
+  ];
+
+  return (
+    <div className="surface glow relative overflow-hidden p-6 md:p-8">
+      <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.08]" />
+      <div className="relative grid gap-4 md:grid-cols-2">
+        <div className="surface p-5">
+          <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
+            {t("Número de hoy", "Today's number")}
+          </p>
+          <p className="numeric mt-2 text-4xl font-semibold">€120</p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {t("Ahorrando €10 por semana", "Saving €10 every week")}
+          </p>
+          <div className="mt-5 rounded-xl bg-primary/10 p-4">
+            <p className="text-[11px] uppercase tracking-wider text-primary">
+              {t("Número del futuro", "Future number")}
+            </p>
+            <p className="numeric mt-1 text-2xl font-semibold">€1,480</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {t("En 2 años si sigue así", "In 2 years if they keep going")}
+            </p>
+          </div>
+        </div>
+
+        <div className="surface p-5">
+          <p className="text-[11px] uppercase tracking-wider text-muted-foreground">{t("Bolsillos", "Pockets")}</p>
+          <ul className="mt-4 space-y-3">
+            {pockets.map((p) => (
+              <li key={p.label}>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">{p.label}</span>
+                  <span className="numeric font-medium">{p.value}</span>
+                </div>
+                <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-elevated">
+                  <div className="h-full rounded-full bg-primary" style={{ width: `${p.pct}%` }} />
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-5 flex items-center justify-between rounded-xl bg-elevated px-4 py-3">
+            <span className="text-xs text-muted-foreground">{t("Sueño: bici nueva", "Dream: new bike")}</span>
+            <span className="numeric text-xs font-medium text-primary">62%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function MyFirstNumberLanding() {
   const t = useT();
@@ -132,8 +188,11 @@ function MyFirstNumberLanding() {
             <Sparkles className="h-3.5 w-3.5" />
             {t("Para los más pequeños de la casa", "For the youngest in the house")}
           </span>
-          <h1 className="mx-auto mt-5 max-w-3xl font-display text-4xl font-semibold tracking-tight md:text-5xl">
+          <h1 className="mx-auto mt-5 max-w-3xl font-display text-4xl font-semibold tracking-tight md:text-6xl">
             My First Number
+            <span className="block text-primary">
+              {t("su primer número, hoy", "their first number, today")}
+            </span>
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground">
             {t(
@@ -143,24 +202,27 @@ function MyFirstNumberLanding() {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <a
-              href={KID_APP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/precios"
               className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-lg transition-all hover:gap-3"
             >
-              {t("Abrir My First Number", "Open My First Number")} <ArrowRight className="h-4 w-4" />
-            </a>
-            <a
-              href="/precios"
+              {t("Activar plan Familiar", "Activate Family plan")} <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              to="/auth"
+              search={{ mode: "signup" }}
               className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
             >
-              {t("Ver plan Familiar", "See Family plan")}
-            </a>
+              {t("Crear cuenta gratis", "Create free account")}
+            </Link>
           </div>
         </motion.section>
 
-        <section className="mt-20 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <section className="mt-16">
+          <KidPreview />
+        </section>
+
+        <section className="mt-24 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {features.map(({ icon: Icon, title, desc }, i) => (
             <motion.article
               key={title}
@@ -206,14 +268,12 @@ function MyFirstNumberLanding() {
                 "Included in the WhatsYournumber Family plan: you manage your wealth, they learn with theirs.",
               )}
             </p>
-            <a
-              href={KID_APP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/precios"
               className="mt-7 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-lg transition-all hover:gap-3"
             >
-              {t("Entrar a My First Number", "Go to My First Number")} <ArrowRight className="h-4 w-4" />
-            </a>
+              {t("Ver plan Familiar", "See Family plan")} <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </section>
       </main>
