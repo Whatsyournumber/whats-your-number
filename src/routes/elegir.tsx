@@ -6,6 +6,7 @@ import { ArrowRight, Baby, Compass, Loader2 } from "lucide-react";
 import { BrandMark } from "@/components/brand-logo";
 import { useAuth } from "@/hooks/use-auth";
 import { useT } from "@/hooks/use-language";
+import { useSubscription } from "@/hooks/use-subscription";
 
 const KIDS_APP_URL = "https://myfirstnumber.lovable.app";
 
@@ -32,20 +33,28 @@ export const Route = createFileRoute("/elegir")({
 
 function ChooserPage() {
   const { user, loading } = useAuth();
+  const { isPatrimonio, loading: subLoading } = useSubscription();
   const navigate = useNavigate();
   const t = useT();
 
   useEffect(() => {
-    if (!loading && !user) navigate({ to: "/auth", search: { mode: "login" } });
-  }, [loading, user, navigate]);
+    if (loading) return;
+    if (!user) {
+      navigate({ to: "/auth", search: { mode: "login" } });
+      return;
+    }
+    // Profile chooser is exclusive to the Familiar plan.
+    if (!subLoading && !isPatrimonio) navigate({ to: "/dashboard", replace: true });
+  }, [loading, user, subLoading, isPatrimonio, navigate]);
 
-  if (loading || !user) {
+  if (loading || !user || subLoading || !isPatrimonio) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
       </div>
     );
   }
+
 
   const fullName =
     (user.user_metadata?.['full_name'] as string | undefined) ??
