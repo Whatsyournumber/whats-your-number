@@ -699,7 +699,7 @@ function KidsFinanceLanding() {
           transition={{ duration: 0.5 }}
           className="relative overflow-hidden"
         >
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-full lg:w-[54%]">
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-full lg:w-[58%]">
             <img
               src={heroReal}
               alt={t(
@@ -707,11 +707,13 @@ function KidsFinanceLanding() {
                 "Father and daughter reviewing their savings plan together on a tablet",
               )}
               width={1280}
-              height={1280}
-              className="h-full w-full scale-[0.94] object-cover object-[55%_38%] opacity-85 [mask-image:radial-gradient(ellipse_46%_50%_at_52%_48%,#000_20%,transparent_72%)]"
+              height={1024}
+              className="h-full w-full object-cover object-[58%_42%] brightness-[1.35] contrast-[1.08] saturate-[1.05] [mask-image:linear-gradient(90deg,transparent_0%,#000_28%,#000_100%)]"
             />
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,var(--background)_0%,transparent_45%)]" />
-            <div className="absolute inset-0 bg-[linear-gradient(0deg,var(--background)_0%,transparent_40%)]" />
+            <div className="absolute inset-y-0 left-0 w-1/3 bg-[linear-gradient(90deg,var(--background)_0%,transparent_100%)]" />
+            <div className="absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(0deg,var(--background)_0%,transparent_100%)]" />
+
+
           </div>
 
           <div className="relative mx-auto w-full max-w-7xl px-6 py-16 md:py-20 lg:py-24">
