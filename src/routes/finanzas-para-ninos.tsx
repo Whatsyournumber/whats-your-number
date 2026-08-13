@@ -840,14 +840,9 @@ function KidsFinanceLanding() {
 
         <div className="mx-auto w-full max-w-6xl px-6">
 
-        <dl className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {stats.map((s) => (
-            <div key={s.label} className="surface px-4 py-5">
-              <dt className="numeric kid-text-gradient text-2xl font-semibold">{s.value}</dt>
-              <dd className="mt-1 text-xs text-muted-foreground">{s.label}</dd>
-            </div>
-          ))}
-        </dl>
+        <ThreePillars />
+
+
 
 
         <DualDashboards />
