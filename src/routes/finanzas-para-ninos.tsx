@@ -416,7 +416,7 @@ function PillarVisual({ id, color, labels }: { id: string; color: string; labels
               <span
                 className="w-full rounded-t-lg"
                 style={{
-                  height: `${(s.pct / 40) * 56}px`,
+                  height: `${(s.pct / 40) * 72}px`,
                   background: `linear-gradient(180deg, color-mix(in oklab, ${color} ${shades[i]}%, transparent), color-mix(in oklab, ${color} 8%, transparent))`,
                 }}
               />
