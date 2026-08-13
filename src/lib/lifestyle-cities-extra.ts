@@ -18,7 +18,6 @@ import sansalvadorPhoto from "@/assets/city-sansalvador-premium.jpg.asset.json";
 import guayaquilPhoto from "@/assets/city-guayaquil-premium.jpg.asset.json";
 import margaritaPhoto from "@/assets/city-margarita-premium.jpg.asset.json";
 import sanjuanPhoto from "@/assets/city-sanjuan-premium.jpg.asset.json";
-import caracasPhoto from "@/assets/city-caracas-premium.jpg.asset.json";
 import rosarioPhoto from "@/assets/city-rosario-premium.jpg.asset.json";
 import cordobaPhoto from "@/assets/city-cordoba-premium.jpg.asset.json";
 const PHOTO = {
@@ -125,7 +124,7 @@ const PHOTO = {
   alexandria: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/%D8%A7%D9%84%D9%82%D9%84%D8%B9%D8%A9_%D8%A7%D8%B3%D9%83%D9%86%D8%AF%D8%B1%D9%8A%D8%A9.jpg/1920px-%D8%A7%D9%84%D9%82%D9%84%D8%B9%D8%A9_%D8%A7%D8%B3%D9%83%D9%86%D8%AF%D8%B1%D9%8A%D8%A9.jpg",
   sansalvador: sansalvadorPhoto.url,
   guayaquil: guayaquilPhoto.url,
-  caracas: caracasPhoto.url,
+  caracas: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Panoramic_view_of_Caracas_night.jpg/1920px-Panoramic_view_of_Caracas_night.jpg",
   margarita: margaritaPhoto.url,
   sanjuan: sanjuanPhoto.url,
   andorra: "https://commons.wikimedia.org/wiki/Special:FilePath/City_of_Andorra_la_Vella%2CAndorra_in_2021.05.jpg?width=1920",
