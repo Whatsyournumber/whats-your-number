@@ -496,8 +496,9 @@ function LifestyleSimulatorContent() {
                   {filters.budget >= 15000 && "+"}
                 </p>
               </div>
+              <div className="mt-1.5 flex h-9 items-center">
               <Slider
-                className="mt-1.5"
+                className="w-full"
                 min={1000}
                 max={15000}
                 step={100}
