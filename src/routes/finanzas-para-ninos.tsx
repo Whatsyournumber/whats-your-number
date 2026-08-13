@@ -388,41 +388,77 @@ function PhoneMock({
   rows: Array<{ k: string; v: string }>;
   chip: string;
   id: string;
+  cute?: boolean;
 }) {
   return (
     <div
-      className="relative mx-auto w-full max-w-[300px] rounded-[2.5rem] border border-border bg-elevated p-2.5 shadow-2xl"
-      style={{ boxShadow: `0 30px 80px -40px color-mix(in oklab, ${accent} 45%, transparent)` }}
+      className="relative mx-auto w-full max-w-[310px] rounded-[2.75rem] bg-elevated p-[10px]"
+      style={{
+        boxShadow: `0 40px 90px -45px color-mix(in oklab, ${accent} 55%, transparent), inset 0 0 0 1px color-mix(in oklab, ${accent} 22%, transparent)`,
+      }}
     >
-      <span
-        className="pointer-events-none absolute inset-0 rounded-[2.5rem]"
-        style={{ boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${accent} 25%, transparent)` }}
-      />
-      <div className="relative overflow-hidden rounded-[2rem] bg-card">
-        <div className="flex justify-center pt-3">
-          <span className="h-1.5 w-16 rounded-full bg-border" />
+      {/* side buttons */}
+      <span className="absolute -left-[3px] top-[110px] h-10 w-[3px] rounded-l-full bg-border" />
+      <span className="absolute -left-[3px] top-[160px] h-10 w-[3px] rounded-l-full bg-border" />
+      <span className="absolute -right-[3px] top-[130px] h-14 w-[3px] rounded-r-full bg-border" />
+
+      <div className="relative overflow-hidden rounded-[2.25rem] bg-card">
+        {cute && (
+          <span
+            className="pointer-events-none absolute -top-16 left-1/2 h-40 w-56 -translate-x-1/2 rounded-full blur-3xl"
+            style={{ backgroundColor: `color-mix(in oklab, ${accent} 18%, transparent)` }}
+          />
+        )}
+
+        {/* status bar + dynamic island */}
+        <div className="relative flex items-center justify-between px-6 pt-3 text-[10px] text-muted-foreground/70">
+          <span className="numeric">9:41</span>
+          <span className="absolute left-1/2 top-2.5 h-6 w-[86px] -translate-x-1/2 rounded-full bg-background" />
+          <span className="flex items-center gap-1">
+            <span className="h-2 w-2 rounded-full bg-border" />
+            <span className="h-2.5 w-4 rounded-[3px] border border-border" />
+          </span>
         </div>
 
-        <div className="p-5">
-          <div className="flex items-center gap-2.5">
-            <img src={face} alt="" width={32} height={32} className="h-8 w-8 rounded-full object-cover" />
+        <div className="relative px-5 pb-2 pt-6">
+          <div className="flex items-center gap-3">
+            <span
+              className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full p-[2px]"
+              style={{ background: `color-mix(in oklab, ${accent} 35%, transparent)` }}
+            >
+              <img
+                src={face}
+                alt=""
+                width={48}
+                height={48}
+                className="h-full w-full rounded-full object-cover"
+              />
+            </span>
             <div>
-              <p className="text-sm font-medium leading-tight">{name}</p>
+              <p className="flex items-center gap-1.5 text-sm font-medium leading-tight">
+                {name}
+                {cute && <Sparkles className="h-3.5 w-3.5" style={{ color: accent }} />}
+              </p>
               <p className="text-[11px] text-muted-foreground">{chip}</p>
             </div>
           </div>
 
           <p className="mt-6 text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
-          <p className="numeric mt-1 text-3xl font-semibold" style={{ color: accent }}>
+          <p
+            className={`numeric mt-1 font-semibold ${cute ? "text-[2rem]" : "text-3xl"}`}
+            style={{ color: accent }}
+          >
             {value}
           </p>
 
-          <div className="mt-5 h-28">
+          <div className={`mt-5 ${cute ? "h-28 rounded-2xl p-2" : "h-28"}`}
+            style={cute ? { backgroundColor: `color-mix(in oklab, ${accent} 7%, transparent)` } : undefined}
+          >
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data} margin={{ top: 4, right: 0, bottom: 0, left: 0 }}>
                 <defs>
                   <linearGradient id={`phone-${id}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={accent} stopOpacity={0.3} />
+                    <stop offset="0%" stopColor={accent} stopOpacity={cute ? 0.45 : 0.3} />
                     <stop offset="100%" stopColor={accent} stopOpacity={0} />
                   </linearGradient>
                 </defs>
@@ -430,7 +466,8 @@ function PhoneMock({
                   type="monotone"
                   dataKey={dataKey}
                   stroke={accent}
-                  strokeWidth={2}
+                  strokeWidth={cute ? 2.5 : 2}
+                  strokeLinecap="round"
                   fill={`url(#phone-${id})`}
                   dot={false}
                   activeDot={false}
@@ -442,7 +479,11 @@ function PhoneMock({
 
           <dl className="mt-4 space-y-2.5 border-t border-border pt-4 text-xs">
             {rows.map((r) => (
-              <div key={r.k} className="flex items-center justify-between">
+              <div
+                key={r.k}
+                className={cute ? "flex items-center justify-between rounded-lg px-2 py-1" : "flex items-center justify-between"}
+                style={cute ? { backgroundColor: `color-mix(in oklab, ${accent} 6%, transparent)` } : undefined}
+              >
                 <dt className="text-muted-foreground">{r.k}</dt>
                 <dd className="numeric font-medium">{r.v}</dd>
               </div>
@@ -450,8 +491,8 @@ function PhoneMock({
           </dl>
         </div>
 
-        <div className="flex justify-center pb-3">
-          <span className="h-1 w-24 rounded-full bg-border" />
+        <div className="flex justify-center pb-2.5 pt-1">
+          <span className="h-1 w-28 rounded-full bg-border" />
         </div>
       </div>
     </div>
