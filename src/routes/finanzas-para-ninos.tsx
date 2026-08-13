@@ -719,11 +719,11 @@ function ThreePillars() {
       color: "var(--kid-sky)",
       title: t("Enseña", "Teach"),
       desc: t(
-        "Aprenden a ahorrar, gastar e invertir con su propio dinero.",
-        "They learn to save, spend and invest with their own money.",
+        "Aprenden a ahorrar, invertir y gastar con su propio dinero.",
+        "They learn to save, invest and spend with their own money.",
       ),
-      metric: "40 / 40 / 20",
-      metricLabel: t("gastar · ahorrar · invertir", "spend · save · invest"),
+      metric: "40 / 20 / 40",
+      metricLabel: t("ahorrar · invertir · gastar", "save · invest · spend"),
     },
     {
       id: "grow",
