@@ -18,6 +18,9 @@ import sansalvadorPhoto from "@/assets/city-sansalvador-premium.jpg.asset.json";
 import guayaquilPhoto from "@/assets/city-guayaquil-premium.jpg.asset.json";
 import margaritaPhoto from "@/assets/city-margarita-premium.jpg.asset.json";
 import sanjuanPhoto from "@/assets/city-sanjuan-premium.jpg.asset.json";
+import caracasPhoto from "@/assets/city-caracas-premium.jpg.asset.json";
+import rosarioPhoto from "@/assets/city-rosario-premium.jpg.asset.json";
+import cordobaPhoto from "@/assets/city-cordoba-premium.jpg.asset.json";
 const PHOTO = {
   hamburg: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/HH_Alsterarkaden_pano1.jpg/1920px-HH_Alsterarkaden_pano1.jpg",
   zagreb: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg/1920px-Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -38,7 +41,7 @@ const PHOTO = {
   monterrey: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Monterrey_Rascacielos.jpg/1920px-Monterrey_Rascacielos.jpg",
   cancun: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Cancun_Strand_Luftbild_%2822143397586%29.jpg/1920px-Cancun_Strand_Luftbild_%2822143397586%29.jpg",
   florianopolis: "https://commons.wikimedia.org/wiki/Special:FilePath/Avenida%20Beira%20Mar%20Norte%20Florianopolis.jpg?width=1920",
-  cordoba_ar: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/PanoramicaCORDOBA-ARG.JPG/1920px-PanoramicaCORDOBA-ARG.JPG",
+  cordoba_ar: cordobaPhoto.url,
   laspaz: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Centro_de_La_Paz_sobre_la_Avenida_Arce.jpg/1920px-Centro_de_La_Paz_sobre_la_Avenida_Arce.jpg",
   punta: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Punta_del_Este_Skyline_-_200120-0171-jikatu-Pano.jpg/1920px-Punta_del_Este_Skyline_-_200120-0171-jikatu-Pano.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   shanghai: "https://commons.wikimedia.org/wiki/Special:FilePath/The%20skyline%20of%20Pudong%20at%20night.jpg?width=1920",
@@ -106,7 +109,7 @@ const PHOTO = {
   charlotte: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Charlotte_Amalie_Panorama_Wade.jpg/1920px-Charlotte_Amalie_Panorama_Wade.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   curitiba: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Curitiba_Skyline%2C_Parana.jpg/1920px-Curitiba_Skyline%2C_Parana.jpg",
   belohorizonte: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Oblique_side_view_of_S%C3%A3o_Jos%C3%A9_Sanctuary_and_Acaiaca%2C_Belo_Horizonte_Minas_Gerais_Brasil_-_Igreja_S%C3%A3o_Jose_Saint_Joseph_Church_Belo_Horizonte_Minas_Gerais_Brasil_-_Daniel_Guimaraes_Rego_Dan_Rego_Daniel_G.Rego_Daniel_Rego.jpg/1920px-thumbnail.jpg",
-  rosario: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Rosario_skyline_1.jpg/1920px-Rosario_skyline_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  rosario: rosarioPhoto.url,
   merida: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Paseo_de_Montejo%2C_Merida%2C_Yucatan%2C_Mexico_de_Noche_Abril_2021_-_La_Luna_Sul_Mare.jpg/1920px-Paseo_de_Montejo%2C_Merida%2C_Yucatan%2C_Mexico_de_Noche_Abril_2021_-_La_Luna_Sul_Mare.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   santodomingo: santodomingoPhoto.url,
   fukuoka: fukuokaPhoto.url,
@@ -122,7 +125,7 @@ const PHOTO = {
   alexandria: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/%D8%A7%D9%84%D9%82%D9%84%D8%B9%D8%A9_%D8%A7%D8%B3%D9%83%D9%86%D8%AF%D8%B1%D9%8A%D8%A9.jpg/1920px-%D8%A7%D9%84%D9%82%D9%84%D8%B9%D8%A9_%D8%A7%D8%B3%D9%83%D9%86%D8%AF%D8%B1%D9%8A%D8%A9.jpg",
   sansalvador: sansalvadorPhoto.url,
   guayaquil: guayaquilPhoto.url,
-  caracas: "https://commons.wikimedia.org/wiki/Special:FilePath/Panoramic_view_of_Caracas_night.jpg?width=1920",
+  caracas: caracasPhoto.url,
   margarita: margaritaPhoto.url,
   sanjuan: sanjuanPhoto.url,
   andorra: "https://commons.wikimedia.org/wiki/Special:FilePath/City_of_Andorra_la_Vella%2CAndorra_in_2021.05.jpg?width=1920",
