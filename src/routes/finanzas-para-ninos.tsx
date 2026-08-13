@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import {
@@ -139,6 +139,7 @@ function MiniArea({ color }: { color: string }) {
 function HowItWorksSlider() {
   const t = useT();
   const [i, setI] = useState(0);
+  const touchX = useRef<number | null>(null);
 
   const pockets = [
     { label: t("Gastar", "Spend"), value: 40, amount: "€24", color: "var(--kid-sky)" },
@@ -419,7 +420,7 @@ function HowItWorksSlider() {
   const Icon = active.icon;
 
   return (
-    <section className="mt-24">
+    <section className="mt-16 md:mt-24">
       <SectionHeader
         eyebrow={t("Cómo funciona", "How it works")}
         title={t("Todo lo que hay dentro, en una pantalla", "Everything inside, on one screen")}
@@ -429,34 +430,51 @@ function HowItWorksSlider() {
         )}
       />
 
-      <div className="surface relative mt-12 overflow-hidden p-6 md:p-12">
+      <div
+        className="surface relative mt-8 overflow-hidden p-4 sm:p-6 md:mt-12 md:p-12"
+        onTouchStart={(e) => {
+          touchX.current = e.touches[0]?.clientX ?? null;
+        }}
+        onTouchEnd={(e) => {
+          const start = touchX.current;
+          const end = e.changedTouches[0]?.clientX ?? null;
+          touchX.current = null;
+          if (start == null || end == null) return;
+          const dx = end - start;
+          if (Math.abs(dx) < 40) return;
+          setI((v) => (dx < 0 ? (v + 1) % slides.length : (v - 1 + slides.length) % slides.length));
+        }}
+      >
         <div className="kid-gradient absolute inset-x-0 top-0 h-1" />
         <motion.div
           key={active.id}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35 }}
-          className="grid items-center gap-10 md:grid-cols-2"
+          className="grid items-center gap-6 md:grid-cols-2 md:gap-10"
         >
           <div>
             <span
-              className="flex h-14 w-14 items-center justify-center rounded-2xl"
+              className="flex h-11 w-11 items-center justify-center rounded-2xl sm:h-14 sm:w-14"
               style={{
                 color: active.color,
                 backgroundColor: `color-mix(in oklab, ${active.color} 12%, transparent)`,
                 boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${active.color} 25%, transparent)`,
               }}
             >
-              <Icon className="h-6 w-6" />
+              <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
             </span>
-            <h3 className="mt-6 font-display text-2xl font-semibold tracking-tight md:text-4xl">
+            <h3 className="mt-4 font-display text-xl font-semibold tracking-tight sm:text-2xl md:mt-6 md:text-4xl">
               {active.title}
             </h3>
-            <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground">{active.desc}</p>
+            <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base md:mt-4">
+              {active.desc}
+            </p>
           </div>
-          <div className="flex min-h-[320px] items-center md:min-h-[420px]">
+          <div className="flex items-center md:min-h-[420px]">
             <div className="w-full">{active.visual}</div>
           </div>
+
         </motion.div>
 
         <div className="mt-8 flex items-center justify-between">
@@ -574,7 +592,7 @@ function PillarVisual({ id, color, labels }: { id: string; color: string; labels
             />
           ))}
         </div>
-        <div className="flex justify-between text-[10px] text-muted-foreground">
+        <div className="flex justify-between gap-1 text-[9px] text-muted-foreground sm:text-[10px]">
           {teachSplit.map((s, i) => (
             <span key={s.key} className="flex items-center gap-1">
               <span
@@ -901,7 +919,7 @@ function DualDashboards() {
   ];
 
   return (
-    <section className="mt-24">
+    <section className="mt-16 md:mt-24">
       <h2 className="text-center font-display text-2xl font-semibold tracking-tight md:text-3xl">
         {t("Dos paneles. Un mismo objetivo.", "Two dashboards. One shared goal.")}
       </h2>
@@ -1027,7 +1045,7 @@ function GrowsWithThem() {
     },
   ];
   return (
-    <section className="mt-24">
+    <section className="mt-16 md:mt-24">
       <SectionHeader
         eyebrow={t("Crece con ellos", "It grows with them")}
         title={t("De los 0 a los 18 años", "From age 0 to 18")}
@@ -1037,9 +1055,9 @@ function GrowsWithThem() {
         )}
       />
 
-      <div className="relative mt-12">
+      <div className="relative mt-8 md:mt-12">
         <div className="kid-gradient absolute inset-x-6 top-[52px] hidden h-px opacity-40 md:block" />
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+        <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:grid-cols-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-7">
           {items.map(({ age, label, icon: Icon }) => (
             <motion.div
               key={age}
@@ -1047,7 +1065,7 @@ function GrowsWithThem() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.4 }}
-              className="surface relative p-4 text-center"
+              className="surface relative w-[124px] shrink-0 snap-start p-4 text-center sm:w-auto"
             >
               <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl text-kid-mint ring-1 ring-kid-mint/25 kid-gradient-soft">
                 <Icon className="h-4.5 w-4.5" />
@@ -1059,6 +1077,7 @@ function GrowsWithThem() {
         </div>
       </div>
 
+
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stages.map(({ icon: Icon, range, desc, color }) => (
           <motion.div
@@ -1067,7 +1086,7 @@ function GrowsWithThem() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.4 }}
-            className="surface relative overflow-hidden p-6"
+            className="surface relative overflow-hidden p-5 md:p-6"
           >
             <span
               className="pointer-events-none absolute inset-x-0 top-0 h-px"
@@ -1104,7 +1123,7 @@ function FamilyProfiles() {
     { name: "Lucas", role: t("7 años", "Age 7"), photo: faceBoy, active: false },
   ];
   return (
-    <section className="mt-24">
+    <section className="mt-16 md:mt-24">
       <SectionHeader
         eyebrow={t("Perfiles", "Profiles")}
         title={
@@ -1287,7 +1306,7 @@ function KidsFinanceLanding() {
         <FamilyProfiles />
 
 
-        <section className="mt-24">
+        <section className="mt-16 md:mt-24">
           <SectionHeader
             eyebrow={t("Lo que dicen", "What people say")}
             title={t("Familias que ya empezaron", "Families who already started")}
