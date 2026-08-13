@@ -738,7 +738,7 @@ function KidsFinanceLanding() {
                 alt={t("Familias usando WhatsYournumber", "Families using WhatsYournumber")}
                 width={256}
                 height={128}
-                className="h-14 w-auto shrink-0"
+                className="h-14 w-auto shrink-0 mix-blend-lighten"
               />
               <p className="max-w-[16rem] text-xs leading-relaxed text-muted-foreground">
                 {t(
