@@ -15,7 +15,7 @@ const socials = [
   { icon: Youtube, label: "YouTube", href: "#" },
 ];
 
-type FooterLink = { label: string; to: string; policy?: boolean };
+type FooterLink = { label: string; to: string; policy?: boolean; external?: boolean };
 
 export function SiteFooter() {
   const t = useT();

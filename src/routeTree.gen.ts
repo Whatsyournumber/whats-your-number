@@ -24,6 +24,7 @@ import { Route as GastosRouteImport } from './routes/gastos'
 import { Route as HipotecaRouteImport } from './routes/hipoteca'
 import { Route as LifePlannerRouteImport } from './routes/life-planner'
 import { Route as MiPerfilRouteImport } from './routes/mi-perfil'
+import { Route as MyFirstNumberRouteImport } from './routes/my-first-number'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PatrimonioRouteImport } from './routes/patrimonio'
 import { Route as PortafolioRouteImport } from './routes/portafolio'
@@ -111,6 +112,11 @@ const MiPerfilRoute = MiPerfilRouteImport.update({
   path: '/mi-perfil',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MyFirstNumberRoute = MyFirstNumberRouteImport.update({
+  id: '/my-first-number',
+  path: '/my-first-number',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
@@ -184,6 +190,7 @@ export interface FileRoutesByFullPath {
   '/hipoteca': typeof HipotecaRoute
   '/life-planner': typeof LifePlannerRoute
   '/mi-perfil': typeof MiPerfilRoute
+  '/my-first-number': typeof MyFirstNumberRoute
   '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
@@ -212,6 +219,7 @@ export interface FileRoutesByTo {
   '/hipoteca': typeof HipotecaRoute
   '/life-planner': typeof LifePlannerRoute
   '/mi-perfil': typeof MiPerfilRoute
+  '/my-first-number': typeof MyFirstNumberRoute
   '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
@@ -241,6 +249,7 @@ export interface FileRoutesById {
   '/hipoteca': typeof HipotecaRoute
   '/life-planner': typeof LifePlannerRoute
   '/mi-perfil': typeof MiPerfilRoute
+  '/my-first-number': typeof MyFirstNumberRoute
   '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
   '/portafolio': typeof PortafolioRoute
@@ -271,6 +280,7 @@ export interface FileRouteTypes {
     | '/hipoteca'
     | '/life-planner'
     | '/mi-perfil'
+    | '/my-first-number'
     | '/onboarding'
     | '/patrimonio'
     | '/portafolio'
@@ -299,6 +309,7 @@ export interface FileRouteTypes {
     | '/hipoteca'
     | '/life-planner'
     | '/mi-perfil'
+    | '/my-first-number'
     | '/onboarding'
     | '/patrimonio'
     | '/portafolio'
@@ -327,6 +338,7 @@ export interface FileRouteTypes {
     | '/hipoteca'
     | '/life-planner'
     | '/mi-perfil'
+    | '/my-first-number'
     | '/onboarding'
     | '/patrimonio'
     | '/portafolio'
@@ -356,6 +368,7 @@ export interface RootRouteChildren {
   HipotecaRoute: typeof HipotecaRoute
   LifePlannerRoute: typeof LifePlannerRoute
   MiPerfilRoute: typeof MiPerfilRoute
+  MyFirstNumberRoute: typeof MyFirstNumberRoute
   OnboardingRoute: typeof OnboardingRoute
   PatrimonioRoute: typeof PatrimonioRoute
   PortafolioRoute: typeof PortafolioRoute
@@ -476,6 +489,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MiPerfilRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/my-first-number': {
+      id: '/my-first-number'
+      path: '/my-first-number'
+      fullPath: '/my-first-number'
+      preLoaderRoute: typeof MyFirstNumberRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding': {
       id: '/onboarding'
       path: '/onboarding'
@@ -572,6 +592,7 @@ const rootRouteChildren: RootRouteChildren = {
   HipotecaRoute: HipotecaRoute,
   LifePlannerRoute: LifePlannerRoute,
   MiPerfilRoute: MiPerfilRoute,
+  MyFirstNumberRoute: MyFirstNumberRoute,
   OnboardingRoute: OnboardingRoute,
   PatrimonioRoute: PatrimonioRoute,
   PortafolioRoute: PortafolioRoute,
