@@ -609,7 +609,7 @@ function LifestyleSimulatorContent() {
         <ComparePanel a={compared[0]!} b={compared[1]!} fmt={fmt} t={t} onClear={() => setCompare([])} />
       )}
 
-      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+      <div id="city-results" className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
         {ranked.map((r, i) => (
           <CityCard
             key={r.city.id}
