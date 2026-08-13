@@ -14,6 +14,7 @@ import { useSubscription } from "@/hooks/use-subscription";
 import { lovable } from "@/integrations/lovable/index";
 import { supabase } from "@/integrations/supabase/client";
 import { setPendingPromoCode } from "@/lib/pending-promo";
+import { getPendingCheckoutPlan } from "@/lib/pending-checkout";
 
 type AuthSearch = { mode: "login" | "signup" };
 
@@ -81,6 +82,10 @@ function AuthPage() {
 
   useEffect(() => {
     if (loading || !user) return;
+    if (getPendingCheckoutPlan()) {
+      navigate({ to: "/precios" });
+      return;
+    }
     // La pantalla de perfiles solo existe para el plan Familiar.
     navigate({ to: isPatrimonio ? "/elegir" : "/dashboard" });
   }, [loading, user, isPatrimonio, navigate]);

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { useT } from "@/hooks/use-language";
+import { setPendingCheckoutPlan } from "@/lib/pending-checkout";
 
 export const Route = createFileRoute("/precios")({
   head: () => ({
@@ -146,22 +147,23 @@ function Pricing() {
 
   const handleCta = (plan: (typeof plans)[number]) => {
     if (!plan.priceId) return;
+    const selectedPlan = plan.name === "Familiar" ? "familiar" : "pro";
+    setPendingCheckoutPlan(selectedPlan);
     if (!user) {
       navigate({ to: "/auth", search: { mode: "signup" } });
       return;
     }
-    // El plan Familiar vuelve al selector de perfiles (padre / hijos);
-    // Pro entra directo al dashboard.
-    const successPath = plan.name === "Familiar" ? "/elegir" : "/dashboard";
     const checkoutOptions: {
       priceId: string;
       quantity: number;
       customerEmail?: string;
+      customData?: Record<string, string>;
       successUrl?: string;
     } = {
       priceId: plan.priceId,
       quantity: 1,
-      successUrl: `${window.location.origin}${successPath}?checkout=success`,
+      customData: { selectedPlan },
+      successUrl: `${window.location.origin}/checkout/success?plan=${selectedPlan}`,
     };
     if (user.email) checkoutOptions.customerEmail = user.email;
     void openCheckout(checkoutOptions);
