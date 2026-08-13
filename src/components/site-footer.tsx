@@ -15,7 +15,7 @@ const socials = [
   { icon: Youtube, label: "YouTube", href: "#" },
 ];
 
-type FooterLink = { label: string; to: string; policy?: boolean };
+type FooterLink = { label: string; to: string; policy?: boolean; external?: boolean };
 
 export function SiteFooter() {
   const t = useT();
@@ -28,6 +28,10 @@ export function SiteFooter() {
       <button type="button" onClick={() => setPoliciesOpen(true)} className={linkClass}>
         {l.label}
       </button>
+    ) : l.external ? (
+      <a href={l.to} target="_blank" rel="noopener noreferrer" className={linkClass}>
+        {l.label}
+      </a>
     ) : (
       <Link to={l.to} className={linkClass}>
         {l.label}
@@ -50,6 +54,8 @@ export function SiteFooter() {
           { label: "Blog", to: "/blog" },
           { label: t("Tu número", "Your number"), to: "/demo" },
           { label: t("Your next city", "Your next city"), to: "/demo" },
+          { label: "My First Number", to: "/my-first-number", external: true },
+          { label: t("Abrir app para niños", "Open kids app"), to: "https://myfirstnumber.lovable.app/kid/numero", external: true },
         ],
       },
     {
