@@ -38,7 +38,7 @@ import {
 } from "recharts";
 
 import heroFamily from "@/assets/kids-hero-family.jpg";
-import heroBg from "@/assets/kids-hero-bg.png.asset.json";
+import heroBg from "@/assets/kids-hero-dad-daughter.png.asset.json";
 import ctaFamily from "@/assets/kids-cta-family.jpg";
 import faceDad from "@/assets/kid-face-dad.jpg";
 import faceMom from "@/assets/kid-face-mom.jpg";
@@ -702,14 +702,14 @@ function KidsFinanceLanding() {
           <img
             src={heroBg.url}
             alt={t(
-              "Padre e hijo revisando juntos su plan de ahorro",
-              "Father and son reviewing their savings plan together",
+              "Padre e hija revisando juntos su plan de ahorro en una tablet",
+              "Father and daughter reviewing their savings plan together on a tablet",
             )}
-            width={1600}
-            height={1200}
-            className="absolute inset-0 h-full w-full object-cover object-center"
+            width={1920}
+            height={1088}
+            className="absolute inset-0 h-full w-full object-cover object-[70%_center]"
           />
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,var(--background)_0%,var(--background)_26%,color-mix(in_oklab,var(--background)_78%,transparent)_42%,color-mix(in_oklab,var(--background)_55%,transparent)_58%,transparent_75%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,var(--background)_0%,color-mix(in_oklab,var(--background)_92%,transparent)_30%,color-mix(in_oklab,var(--background)_60%,transparent)_48%,transparent_70%)]" />
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,var(--background)_0%,transparent_35%)]" />
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,transparent_0%,var(--background)_75%)]" />
 
