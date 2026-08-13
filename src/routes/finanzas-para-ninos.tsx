@@ -39,6 +39,10 @@ import {
 
 import heroFamily from "@/assets/kids-hero-family.jpg";
 import ctaFamily from "@/assets/kids-cta-family.jpg";
+import faceDad from "@/assets/kid-face-dad.jpg";
+import faceMom from "@/assets/kid-face-mom.jpg";
+import faceGirl from "@/assets/kid-face-girl.jpg";
+import faceBoy from "@/assets/kid-face-boy.jpg";
 import avatarFaces from "@/assets/kids-avatars-three.png";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
