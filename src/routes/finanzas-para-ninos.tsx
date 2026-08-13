@@ -34,7 +34,7 @@ import {
 } from "recharts";
 
 
-import heroLearn from "@/assets/kids-hero-learn.jpg.asset.json";
+import heroReal from "@/assets/kids-hero-real.jpg";
 import ctaFamily from "@/assets/kids-cta-family.jpg";
 import faceDad from "@/assets/kid-face-dad.jpg";
 import faceMom from "@/assets/kid-face-mom.jpg";
@@ -142,9 +142,9 @@ function HowItWorksSlider() {
   const touchX = useRef<number | null>(null);
 
   const pockets = [
+    { label: t("Gastar", "Spend"), value: 40, amount: "€24", color: "var(--kid-sky)" },
     { label: t("Ahorrar", "Save"), value: 40, amount: "€24", color: "var(--kid-mint)" },
     { label: t("Invertir", "Invest"), value: 20, amount: "€12", color: "var(--kid-grape)" },
-    { label: t("Gastar", "Spend"), value: 40, amount: "€24", color: "var(--kid-sky)" },
   ];
 
   const slides = [
@@ -187,7 +187,7 @@ function HowItWorksSlider() {
       tab: t("Mi dinero", "My money"),
       icon: PiggyBank,
       color: "var(--kid-mint)",
-      title: t("Bolsillos: ahorrar, invertir y gastar", "Pockets: save, invest and spend"),
+      title: t("Bolsillos: gastar, ahorrar e invertir", "Pockets: spend, save and invest"),
       desc: t(
         "La regla 40/40/20, digital. Cada euro que entra ya sabe a dónde va.",
         "The 40/40/20 rule, gone digital. Every euro that arrives knows where it goes.",
@@ -571,9 +571,9 @@ const growCurve = Array.from({ length: 19 }, (_, i) => ({
   flat: 50 * 12 * i,
 }));
 const teachSplit = [
+  { key: "spend", pct: 40 },
   { key: "save", pct: 40 },
   { key: "invest", pct: 20 },
-  { key: "spend", pct: 40 },
 ];
 
 function PillarVisual({ id, color, labels }: { id: string; color: string; labels: string[] }) {
@@ -695,7 +695,7 @@ function ThreePillars() {
 
   const pillarAxis: Record<string, [string, string]> = {
     plan: [t("Aporte mensual", "Monthly deposit"), t("18 años", "Age 18")],
-    teach: [t("Ahorrar · invertir", "Save · invest"), t("Gastar", "Spend")],
+    teach: [t("Gastar · ahorrar", "Spend · save"), t("Invertir", "Invest")],
     grow: [t("Hoy", "Today"), t("Interés compuesto", "Compounding")],
   };
 
@@ -719,11 +719,11 @@ function ThreePillars() {
       color: "var(--kid-sky)",
       title: t("Enseña", "Teach"),
       desc: t(
-        "Aprenden a ahorrar, invertir y gastar con su propio dinero.",
-        "They learn to save, invest and spend with their own money.",
+        "Aprenden a ahorrar, gastar e invertir con su propio dinero.",
+        "They learn to save, spend and invest with their own money.",
       ),
-      metric: "40 / 20 / 40",
-      metricLabel: t("ahorrar · invertir · gastar", "save · invest · spend"),
+      metric: "40 / 40 / 20",
+      metricLabel: t("gastar · ahorrar · invertir", "spend · save · invest"),
     },
     {
       id: "grow",
@@ -799,7 +799,7 @@ function ThreePillars() {
               <PillarVisual
                 id={id}
                 color={color}
-                labels={[t("Ahorrar", "Save"), t("Invertir", "Invest"), t("Gastar", "Spend")]}
+                labels={[t("Gastar", "Spend"), t("Ahorrar", "Save"), t("Invertir", "Invest")]}
               />
               <div className="mt-2.5 flex justify-between border-t border-border/60 pt-2 text-[9px] uppercase tracking-wider text-muted-foreground/70">
                 <span>{pillarAxis[id]?.[0]}</span>
@@ -1269,10 +1269,10 @@ function KidsFinanceLanding() {
         >
           <div className="pointer-events-none absolute inset-y-0 right-0 w-full lg:w-[58%]">
             <img
-              src={heroLearn.url}
+              src={heroReal}
               alt={t(
-                "Padre e hija aprendiendo finanzas juntos en una tablet",
-                "Father and daughter learning finance together on a tablet",
+                "Padre e hija revisando juntos su plan de ahorro en una tablet",
+                "Father and daughter reviewing their savings plan together on a tablet",
               )}
               width={1280}
               height={1024}
@@ -1295,11 +1295,13 @@ function KidsFinanceLanding() {
                 )}
               </span>
               <h1 className="mt-5 font-display text-3xl font-semibold leading-[1.08] tracking-tight md:text-4xl lg:text-5xl">
-                {t("Aprende finanzas ", "Learn finance ")}
-                <span className="text-kid-mint">{t("de forma divertida.", "the fun way.")}</span>
+                {t("Construye ", "Build ")}
+                <span className="text-kid-mint">{t("su patrimonio.", "their wealth.")}</span>
                 <br />
-                {t("El primer número ", "Their first number ")}
-                <span className="text-kid-mint">{t("para toda la vida.", "for life.")}</span>
+                {t("Enséñale ", "Teach them ")}
+                <span className="text-kid-mint">{t("a manejarlo.", "to manage it.")}</span>
+                <br />
+                {t("En una sola plataforma.", "In one single platform.")}
               </h1>
 
               <p className="mt-6 max-w-lg text-sm leading-relaxed text-muted-foreground md:text-base">
