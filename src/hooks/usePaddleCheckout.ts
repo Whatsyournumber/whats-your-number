@@ -10,6 +10,7 @@ export function usePaddleCheckout() {
     priceId: string;
     quantity?: number;
     customerEmail?: string;
+    customData?: Record<string, string>;
     successUrl?: string;
   }) => {
     setLoading(true);
@@ -20,9 +21,10 @@ export function usePaddleCheckout() {
       window.Paddle.Checkout.open({
         items: [{ priceId: paddlePriceId, quantity: options.quantity ?? 1 }],
         customer: options.customerEmail ? { email: options.customerEmail } : undefined,
-        customData: { userId: user?.id || "" },
+        customData: { userId: user?.id || "", ...options.customData },
         settings: {
           displayMode: "overlay",
+          locale: document.documentElement.lang.toLowerCase().startsWith("en") ? "en" : "es",
           successUrl: options.successUrl || `${window.location.origin}/dashboard?checkout=success`,
           allowLogout: false,
           variant: "one-page",

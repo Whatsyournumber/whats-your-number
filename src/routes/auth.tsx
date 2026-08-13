@@ -14,6 +14,7 @@ import { useSubscription } from "@/hooks/use-subscription";
 import { lovable } from "@/integrations/lovable/index";
 import { supabase } from "@/integrations/supabase/client";
 import { setPendingPromoCode } from "@/lib/pending-promo";
+import { getPendingCheckoutPlan } from "@/lib/pending-checkout";
 
 type AuthSearch = { mode: "login" | "signup" };
 
@@ -81,6 +82,10 @@ function AuthPage() {
 
   useEffect(() => {
     if (loading || !user) return;
+    if (getPendingCheckoutPlan()) {
+      navigate({ to: "/precios" });
+      return;
+    }
     // La pantalla de perfiles solo existe para el plan Familiar.
     navigate({ to: isPatrimonio ? "/elegir" : "/dashboard" });
   }, [loading, user, isPatrimonio, navigate]);
@@ -93,11 +98,12 @@ function AuthPage() {
     try {
       if (mode === "signup") {
         if (promo.trim()) setPendingPromoCode(promo);
+        const pendingCheckout = getPendingCheckoutPlan();
         const { error } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/onboarding`,
+            emailRedirectTo: `${window.location.origin}${pendingCheckout ? "/precios" : "/onboarding"}`,
             data: { full_name: fullName },
           },
         });
@@ -118,8 +124,9 @@ function AuthPage() {
   const onOAuth = async () => {
     if (promo.trim()) setPendingPromoCode(promo);
     setBusy(true);
+    const pendingCheckout = getPendingCheckoutPlan();
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}/elegir`,
+      redirect_uri: `${window.location.origin}${pendingCheckout ? "/precios" : "/dashboard"}`,
       extraParams: { scope: GOOGLE_SCOPES, prompt: "consent select_account" },
     });
     if (result.error) {
