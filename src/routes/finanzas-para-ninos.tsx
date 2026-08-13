@@ -598,20 +598,25 @@ function ThreePillars() {
             </div>
             <p className="relative mt-4 text-sm leading-relaxed text-muted-foreground">{desc}</p>
 
-            <div className="relative mt-auto pt-6">
+            <div className="relative mt-auto pt-7">
               <div className="flex items-baseline gap-2">
-                <span className="numeric text-xl font-semibold" style={{ color }}>
+                <span className="numeric text-3xl font-semibold" style={{ color }}>
                   {metric}
                 </span>
               </div>
-              <p className="mt-1 text-[11px] text-muted-foreground">{metricLabel}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{metricLabel}</p>
 
-              <PillarVisual id={id} color={color} />
-              <div className="mt-2 flex justify-between border-t border-border/60 pt-2 text-[10px] uppercase tracking-wider text-muted-foreground/70">
+              <PillarVisual
+                id={id}
+                color={color}
+                labels={[t("Gastar", "Spend"), t("Ahorrar", "Save"), t("Invertir", "Invest")]}
+              />
+              <div className="mt-3 flex justify-between border-t border-border/60 pt-2.5 text-[10px] uppercase tracking-wider text-muted-foreground/70">
                 <span>{pillarAxis[id]?.[0]}</span>
                 <span>{pillarAxis[id]?.[1]}</span>
               </div>
             </div>
+
           </motion.div>
         ))}
       </div>
