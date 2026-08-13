@@ -697,7 +697,7 @@ function KidsFinanceLanding() {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative overflow-hidden"
+          className="relative -mt-16 overflow-hidden pt-16"
         >
           <div className="pointer-events-none absolute inset-y-0 right-0 w-full lg:w-[58%]">
             <img
