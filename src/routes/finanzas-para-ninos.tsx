@@ -160,24 +160,25 @@ function HowItWorksSlider() {
       ),
       visual: (
         <ScreenCard title={t("Mi primer número", "My first number")} accent="var(--kid-sky)">
-          <div className="flex items-center gap-3">
-            <img src={faceGirl} alt="" className="h-10 w-10 rounded-full object-cover" />
+          <div className="flex items-center gap-2.5">
+            <img src={faceGirl} alt="" className="h-8 w-8 rounded-full object-cover" />
             <div>
-              <p className="text-sm font-medium">{t("Hola, Sofía", "Hi, Sofía")}</p>
-              <p className="text-xs text-muted-foreground">{t("Tu dinero de hoy", "Your money today")}</p>
+              <p className="text-xs font-medium">{t("Hola, Sofía", "Hi, Sofía")}</p>
+              <p className="text-[11px] text-muted-foreground">{t("Tu dinero de hoy", "Your money today")}</p>
             </div>
           </div>
-          <p className="numeric mt-5 text-5xl font-semibold text-kid-sky md:text-6xl">€120</p>
-          <div className="mt-5 rounded-2xl border border-kid-grape/25 bg-kid-grape/10 p-5">
-            <p className="text-xs uppercase tracking-wider text-kid-grape">
+          <p className="numeric mt-3 text-3xl font-semibold text-kid-sky md:text-4xl">€120</p>
+          <div className="mt-3 rounded-xl border border-kid-grape/25 bg-kid-grape/10 p-3">
+            <p className="text-[10px] uppercase tracking-wider text-kid-grape">
               {t("Mi futuro (18 años)", "My future (age 18)")}
             </p>
-            <p className="numeric mt-1 text-3xl font-semibold">€10.668</p>
-            <p className="mt-1 text-xs text-muted-foreground">
+            <p className="numeric mt-0.5 text-xl font-semibold">€10.668</p>
+            <p className="mt-0.5 text-[11px] text-muted-foreground">
               {t("Si ahorra 11,3 € al mes", "If they save €11.3 a month")}
             </p>
           </div>
           <MiniArea color="var(--kid-sky)" />
+
         </ScreenCard>
       ),
     },
