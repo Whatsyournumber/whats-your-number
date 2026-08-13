@@ -560,10 +560,12 @@ function LifestyleSimulatorContent() {
               ]}
             />
             <div className="col-span-2">
-              <div className="flex items-end gap-2">
+              <p className="truncate text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
+                {t("Objetivo", "Goal")}
+              </p>
+              <div className="mt-1.5 flex items-center gap-2">
                 <div className="min-w-0 flex-1">
                   <SelectFilter
-                    label={t("Objetivo", "Goal")}
                     value={filters.goal}
                     onChange={(v) => set("goal", v)}
                     options={[
