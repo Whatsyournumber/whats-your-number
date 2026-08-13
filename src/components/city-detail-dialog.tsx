@@ -348,9 +348,18 @@ export function CityDetailDialog({
               </p>
             </div>
             <div className="grid gap-2 sm:grid-cols-2">
-              {r.north.pillars.map((p) => (
-                <PillarRow key={p.key} pillar={p} t={t} />
-              ))}
+              {[...r.north.pillars]
+                .sort((a, b) => b.weight - a.weight)
+                .map((p) => (
+                  <PillarRow
+                    key={p.key}
+                    pillar={p}
+                    t={t}
+                    stage={filters.stage}
+                    cityName={c.name}
+                    nightlife={c.nightlife}
+                  />
+                ))}
             </div>
           </div>
 
