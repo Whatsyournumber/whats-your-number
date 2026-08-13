@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/use-auth";
 import { LanguageToggle, useLanguage } from "@/hooks/use-language";
+import { useSubscription } from "@/hooks/use-subscription";
 import { lovable } from "@/integrations/lovable/index";
 import { supabase } from "@/integrations/supabase/client";
 import { setPendingPromoCode } from "@/lib/pending-promo";
@@ -67,7 +68,8 @@ function GoogleMark() {
 function AuthPage() {
   const { mode } = Route.useSearch();
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  const { isPatrimonio, loading: subscriptionLoading } = useSubscription();
   const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -75,9 +77,13 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
   const [promo, setPromo] = useState("");
 
+  const loading = authLoading || subscriptionLoading;
+
   useEffect(() => {
-    if (!loading && user) navigate({ to: "/elegir" });
-  }, [loading, user, navigate, mode]);
+    if (loading || !user) return;
+    // La pantalla de perfiles solo existe para el plan Familiar.
+    navigate({ to: isPatrimonio ? "/elegir" : "/dashboard" });
+  }, [loading, user, isPatrimonio, navigate]);
 
   const setMode = (next: "login" | "signup") => navigate({ to: "/auth", search: { mode: next } });
 
@@ -122,7 +128,7 @@ function AuthPage() {
       return;
     }
     if (result.redirected) return;
-    navigate({ to: "/elegir" });
+    navigate({ to: isPatrimonio ? "/elegir" : "/dashboard" });
   };
 
   return (

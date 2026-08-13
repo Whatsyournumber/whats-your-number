@@ -5,6 +5,7 @@ import { ArrowRight, Baby, Compass, Loader2 } from "lucide-react";
 
 import { BrandMark } from "@/components/brand-logo";
 import { useAuth } from "@/hooks/use-auth";
+import { useSubscription } from "@/hooks/use-subscription";
 import { useT } from "@/hooks/use-language";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -52,14 +53,24 @@ export const Route = createFileRoute("/elegir")({
 });
 
 function ChooserPage() {
-  const { user, loading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  const { isPatrimonio, loading: subscriptionLoading } = useSubscription();
   const navigate = useNavigate();
   const t = useT();
 
+  const loading = authLoading || subscriptionLoading;
+
   useEffect(() => {
     if (loading) return;
-    if (!user) navigate({ to: "/auth", search: { mode: "login" } });
-  }, [loading, user, navigate]);
+    if (!user) {
+      navigate({ to: "/auth", search: { mode: "login" } });
+      return;
+    }
+    // Esta pantalla de selección de perfiles solo está disponible en el plan Familiar.
+    if (!isPatrimonio) {
+      navigate({ to: "/dashboard" });
+    }
+  }, [loading, user, isPatrimonio, navigate]);
 
   if (loading || !user) {
     return (

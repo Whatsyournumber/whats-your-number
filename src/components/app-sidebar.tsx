@@ -64,10 +64,9 @@ export function AppSidebar() {
 
 
 
-  const familyItems = [
-    { title: t("Perfiles familiares", "Family profiles"), url: "/elegir", icon: Users },
-  ] as const;
-
+  const familyItems = isPatrimonio
+    ? [{ title: t("Perfiles familiares", "Family profiles"), url: "/elegir", icon: Users }]
+    : [];
 
   const secondary = [
     ...familyItems,
