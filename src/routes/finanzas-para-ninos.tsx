@@ -420,7 +420,7 @@ function HowItWorksSlider() {
   const Icon = active.icon;
 
   return (
-    <section className="mt-24">
+    <section className="mt-16 md:mt-24">
       <SectionHeader
         eyebrow={t("Cómo funciona", "How it works")}
         title={t("Todo lo que hay dentro, en una pantalla", "Everything inside, on one screen")}
@@ -592,7 +592,7 @@ function PillarVisual({ id, color, labels }: { id: string; color: string; labels
             />
           ))}
         </div>
-        <div className="flex justify-between text-[10px] text-muted-foreground">
+        <div className="flex justify-between gap-1 text-[9px] text-muted-foreground sm:text-[10px]">
           {teachSplit.map((s, i) => (
             <span key={s.key} className="flex items-center gap-1">
               <span
@@ -919,7 +919,7 @@ function DualDashboards() {
   ];
 
   return (
-    <section className="mt-24">
+    <section className="mt-16 md:mt-24">
       <h2 className="text-center font-display text-2xl font-semibold tracking-tight md:text-3xl">
         {t("Dos paneles. Un mismo objetivo.", "Two dashboards. One shared goal.")}
       </h2>
@@ -1045,7 +1045,7 @@ function GrowsWithThem() {
     },
   ];
   return (
-    <section className="mt-24">
+    <section className="mt-16 md:mt-24">
       <SectionHeader
         eyebrow={t("Crece con ellos", "It grows with them")}
         title={t("De los 0 a los 18 años", "From age 0 to 18")}
@@ -1086,7 +1086,7 @@ function GrowsWithThem() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.4 }}
-            className="surface relative overflow-hidden p-6"
+            className="surface relative overflow-hidden p-5 md:p-6"
           >
             <span
               className="pointer-events-none absolute inset-x-0 top-0 h-px"
@@ -1123,7 +1123,7 @@ function FamilyProfiles() {
     { name: "Lucas", role: t("7 años", "Age 7"), photo: faceBoy, active: false },
   ];
   return (
-    <section className="mt-24">
+    <section className="mt-16 md:mt-24">
       <SectionHeader
         eyebrow={t("Perfiles", "Profiles")}
         title={
@@ -1306,7 +1306,7 @@ function KidsFinanceLanding() {
         <FamilyProfiles />
 
 
-        <section className="mt-24">
+        <section className="mt-16 md:mt-24">
           <SectionHeader
             eyebrow={t("Lo que dicen", "What people say")}
             title={t("Familias que ya empezaron", "Families who already started")}
