@@ -21,7 +21,17 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { Area, AreaChart, Bar, BarChart, Cell, ResponsiveContainer } from "recharts";
+import {
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  XAxis,
+} from "recharts";
 
 
 import heroReal from "@/assets/kids-hero-real.jpg";
