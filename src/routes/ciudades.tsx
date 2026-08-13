@@ -626,21 +626,24 @@ function LifestyleSimulatorContent() {
 
 
 
-      <div id="city-results" className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-        {ranked.map((r, i) => (
-          <CityCard
-            key={r.city.id}
-            r={r}
-            rank={i}
-            fmt={fmt}
-            t={t}
-            selected={compare.includes(r.city.id)}
-            nomadMode={filters.goal === "nomad"}
-            onCompare={() => toggleCompare(r.city.id)}
-            onOpen={() => setDetail(r)}
-          />
-        ))}
-      </div>
+      <TooltipProvider delayDuration={200}>
+        <div id="city-results" className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          {ranked.map((r, i) => (
+            <CityCard
+              key={r.city.id}
+              r={r}
+              rank={i}
+              fmt={fmt}
+              t={t}
+              selected={compare.includes(r.city.id)}
+              nomadMode={filters.goal === "nomad"}
+              onCompare={() => toggleCompare(r.city.id)}
+              onOpen={() => setDetail(r)}
+            />
+          ))}
+        </div>
+      </TooltipProvider>
+
 
 
       <CityDetailDialog r={detail} filters={filters} fmt={fmt} onClose={() => setDetail(null)} />
