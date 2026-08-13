@@ -895,7 +895,7 @@ function DualDashboards() {
 }
 
 
-function GrowthChart() {
+function GrowthChart({ compact = false }: { compact?: boolean }) {
   const t = useT();
   const data = Array.from({ length: 19 }, (_, i) => {
     const year = i;
@@ -909,85 +909,73 @@ function GrowthChart() {
   });
 
   return (
-    <section className="surface relative mt-24 overflow-hidden p-6 md:p-10">
+    <div className="surface relative overflow-hidden p-5 md:p-6">
       <div className="kid-gradient absolute inset-x-0 top-0 h-1" />
-      <h2 className="text-center font-display text-2xl font-semibold tracking-tight md:text-3xl">
-        {t(
-          "El patrimonio de un niño también puede crecer.",
-          "A child's wealth can compound too.",
-        )}
-      </h2>
-      <div className="mt-8 grid gap-6 lg:grid-cols-[0.8fr_2fr]">
-        <div className="surface p-5">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
           <h3 className="font-display text-base font-semibold tracking-tight">
-            {t("Invertir hoy cambia su mañana", "Investing today changes their tomorrow")}
+            {t("El progreso de Sofía a los 18", "Sofía's progress by 18")}
           </h3>
-          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-1 max-w-md text-xs leading-relaxed text-muted-foreground">
             {t(
-              "€50 al mes desde los 8 años, invertidos al 7%, valen mucho más que guardarlos en la alcancía.",
-              "€50 a month from age 8, invested at 7%, is worth far more than a piggy bank.",
+              "€50 al mes desde los 8 años, invertidos al 7%: así se ve la diferencia entre guardar e invertir.",
+              "€50 a month from age 8, invested at 7%: this is the gap between saving and investing.",
             )}
           </p>
-          <div className="mt-5 space-y-2 text-xs">
-            <p className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-kid-mint" />
-              {t("Invertido (7%)", "Invested (7%)")}
-            </p>
-            <p className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-muted-foreground" />
-              {t("Guardado sin invertir", "Saved, not invested")}
-            </p>
-          </div>
         </div>
-        <div className="h-72">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data} margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>
-              <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
-              <XAxis
-                dataKey="year"
-                tickLine={false}
-                axisLine={false}
-                stroke="var(--muted-foreground)"
-                fontSize={11}
-              />
-              <YAxis
-                tickLine={false}
-                axisLine={false}
-                stroke="var(--muted-foreground)"
-                fontSize={11}
-                width={56}
-                tickFormatter={(v: number) => `€${Math.round(v / 1000)}k`}
-              />
-              <Tooltip
-                contentStyle={{
-                  background: "var(--card)",
-                  border: "1px solid var(--border)",
-                  borderRadius: 12,
-                  fontSize: 12,
-                }}
-                formatter={(v: number) => `€${v.toLocaleString("es-ES")}`}
-                labelFormatter={(l) => t(`Año ${l}`, `Year ${l}`)}
-              />
-              <Line
-                type="monotone"
-                dataKey="compuesto"
-                stroke="var(--kid-mint)"
-                strokeWidth={2.5}
-                dot={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="invertido"
-                stroke="var(--muted-foreground)"
-                strokeWidth={1.5}
-                strokeDasharray="4 4"
-                dot={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+        <div className="flex gap-4 text-[11px]">
+          <span className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-kid-mint" />
+            {t("Invertido (7%)", "Invested (7%)")}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-muted-foreground" />
+            {t("Guardado sin invertir", "Saved, not invested")}
+          </span>
         </div>
       </div>
-    </section>
+      <div className={compact ? "mt-4 h-44" : "mt-6 h-72"}>
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data} margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>
+            <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
+            <XAxis
+              dataKey="year"
+              tickLine={false}
+              axisLine={false}
+              stroke="var(--muted-foreground)"
+              fontSize={10}
+            />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              stroke="var(--muted-foreground)"
+              fontSize={10}
+              width={48}
+              tickFormatter={(v: number) => `€${Math.round(v / 1000)}k`}
+            />
+            <Tooltip
+              contentStyle={{
+                background: "var(--card)",
+                border: "1px solid var(--border)",
+                borderRadius: 12,
+                fontSize: 12,
+              }}
+              formatter={(v: number) => `€${v.toLocaleString("es-ES")}`}
+              labelFormatter={(l) => t(`Año ${l}`, `Year ${l}`)}
+            />
+            <Line type="monotone" dataKey="compuesto" stroke="var(--kid-mint)" strokeWidth={2.5} dot={false} />
+            <Line
+              type="monotone"
+              dataKey="invertido"
+              stroke="var(--muted-foreground)"
+              strokeWidth={1.5}
+              strokeDasharray="4 4"
+              dot={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
   );
 }
 
@@ -1002,9 +990,14 @@ function Milestones() {
   ];
   return (
     <section className="mt-24">
-      <h2 className="text-center font-display text-3xl font-semibold tracking-tight">
-        {t("Un camino que los prepara para la vida", "A path that prepares them for life")}
-      </h2>
+      <SectionHeader
+        eyebrow={t("El camino", "The path")}
+        title={t("Un camino que los prepara para la vida", "A path that prepares them for life")}
+        subtitle={t(
+          "De la primera mesada a su primera inversión: cada edad tiene su hito.",
+          "From their first allowance to their first investment: every age has its milestone.",
+        )}
+      />
       <div className="relative mt-12">
         <div className="kid-gradient absolute inset-x-6 top-[52px] hidden h-px opacity-40 md:block" />
         <div className="grid gap-4 sm:grid-cols-3 md:grid-cols-5">
@@ -1033,10 +1026,19 @@ function FamilyProfiles() {
   ];
   return (
     <section className="mt-24">
-      <h2 className="text-center font-display text-3xl font-semibold tracking-tight">
-        {t("Para toda la ", "For the whole ")}
-        <span className="kid-text-gradient">{t("familia", "family")}</span>
-      </h2>
+      <SectionHeader
+        eyebrow={t("Perfiles", "Profiles")}
+        title={
+          <>
+            {t("Para toda la ", "For the whole ")}
+            <span className="kid-text-gradient">{t("familia", "family")}</span>
+          </>
+        }
+        subtitle={t(
+          "Papá y mamá gestionan el plan; cada hijo tiene su propio perfil y su propio número.",
+          "Parents manage the plan; each child gets their own profile and their own number.",
+        )}
+      />
       <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {members.map((m) => (
           <div
@@ -1071,6 +1073,10 @@ function FamilyProfiles() {
           </span>
           <p className="mt-4 text-xs text-muted-foreground">{t("Añadir hijo", "Add a child")}</p>
         </Link>
+      </div>
+
+      <div className="mt-8">
+        <GrowthChart compact />
       </div>
     </section>
   );
