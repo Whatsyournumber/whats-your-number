@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useT } from "@/hooks/use-language";
 import { clearPendingCheckoutPlan, type PendingCheckoutPlan } from "@/lib/pending-checkout";
+import { getPaddleEnvironment } from "@/lib/paddle";
+import { syncMySubscription } from "@/utils/subscriptions.functions";
 
 type SuccessSearch = { plan: PendingCheckoutPlan };
 
@@ -49,8 +51,13 @@ function CheckoutSuccess() {
 
   useEffect(() => {
     if (activated || checks >= 20) return;
-    const timer = window.setTimeout(() => {
+    const timer = window.setTimeout(async () => {
       setChecks((value) => value + 1);
+      try {
+        await syncMySubscription({ data: { environment: getPaddleEnvironment() } });
+      } catch {
+        // ignore: the webhook may still land on its own
+      }
       void queryClient.invalidateQueries({ queryKey: ["subscription"] });
     }, 1500);
     return () => window.clearTimeout(timer);
