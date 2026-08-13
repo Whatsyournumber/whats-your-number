@@ -63,7 +63,7 @@ export const Route = createFileRoute("/ciudades")({
 
 type Opt<T> = { value: T; label: string; icon: string };
 
-/** Filtro compacto tipo dropdown, en línea con el resto del panel. */
+/** Filtro premium tipo dropdown con icono y label alineados. */
 function SelectFilter<T extends string>({
   label,
   options,
@@ -75,17 +75,32 @@ function SelectFilter<T extends string>({
   value: T;
   onChange: (v: T) => void;
 }) {
+  const selected = options.find((o) => o.value === value) ?? options[0];
+  const isStar = selected?.icon?.startsWith("★") ?? false;
   return (
     <div className="min-w-0">
-      <p className="truncate text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className="truncate text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
+        {label}
+      </p>
       <Select value={value} onValueChange={(v) => onChange(v as T)}>
-        <SelectTrigger className="mt-1 h-8 w-full border-border bg-elevated/40 px-2.5 text-xs">
-          <SelectValue />
+        <SelectTrigger className="mt-1.5 h-9 w-full rounded-xl border-border/60 bg-elevated/40 px-3 text-xs transition-colors hover:border-primary/40 hover:bg-elevated/60">
+          <span className="inline-flex min-w-0 items-center gap-2">
+            {selected ? (
+              isStar ? (
+                <span className="inline-flex text-[10px] text-primary">{selected.icon}</span>
+              ) : (
+                <span className="shrink-0 text-xs">{selected.icon}</span>
+              )
+            ) : null}
+            <span className="truncate">{selected?.label}</span>
+          </span>
         </SelectTrigger>
         <SelectContent>
           {options.map((o) => (
             <SelectItem key={o.value} value={o.value} className="text-xs">
-              <span className="mr-1.5">{o.icon}</span>
+              <span className="mr-2 inline-flex w-4 shrink-0 items-center justify-center text-xs">
+                {o.icon.startsWith("★") ? <span className="text-[10px] text-primary">{o.icon}</span> : o.icon}
+              </span>
               {o.label}
             </SelectItem>
           ))}
@@ -95,12 +110,12 @@ function SelectFilter<T extends string>({
   );
 }
 
-/** Grupo de filtros con título, para ordenar visualmente el panel. */
+/** Grupo de filtros con título y grid consistente. */
 function FilterGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="p-4">
       <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">{title}</p>
-      <div className="grid grid-cols-2 items-end gap-3">{children}</div>
+      <div className="grid grid-cols-2 gap-3">{children}</div>
     </div>
   );
 }
@@ -377,15 +392,15 @@ function LifestyleSimulatorContent() {
       />
 
       <div className="surface overflow-hidden rounded-2xl border border-border">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/70 bg-elevated/30 px-4 py-2.5">
-          <div className="flex items-center gap-2">
-            <SlidersHorizontal className="h-3.5 w-3.5 text-primary" />
-            <p className="text-[11px] font-semibold uppercase tracking-wider">{t("Filtros", "Filters")}</p>
-            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border/70 bg-elevated/30 px-4 py-2.5 sm:flex sm:flex-wrap sm:justify-between">
+          <div className="flex min-w-0 items-center gap-2">
+            <SlidersHorizontal className="h-3.5 w-3.5 shrink-0 text-primary" />
+            <p className="truncate text-[11px] font-semibold uppercase tracking-wider">{t("Filtros", "Filters")}</p>
+            <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
               {ranked.length} {t("ciudades", "cities")}
             </span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-3">
             <button
               type="button"
               onClick={() => setFilters((f) => ({ ...defaultFilters, budget: f.budget }))}
@@ -410,10 +425,7 @@ function LifestyleSimulatorContent() {
           t={t}
         />
 
-
-
-
-        <div className="grid divide-y divide-border/60 lg:grid-cols-[1.15fr_1.35fr_1fr] lg:divide-x lg:divide-y-0">
+        <div className="grid divide-y divide-border/60 lg:grid-cols-3 lg:divide-x lg:divide-y-0">
           {/* Dónde */}
           <FilterGroup title={t("Dónde", "Where")}>
             <SelectFilter
@@ -460,7 +472,7 @@ function LifestyleSimulatorContent() {
           <FilterGroup title={t("Dinero", "Money")}>
             <div className="col-span-2">
               <div className="flex items-center justify-between gap-2">
-                <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
                   {t("Presupuesto mensual", "Monthly budget")}
                 </p>
                 <p className="numeric text-xs font-semibold text-primary">
@@ -469,7 +481,7 @@ function LifestyleSimulatorContent() {
                 </p>
               </div>
               <Slider
-                className="mt-3"
+                className="mt-2.5"
                 min={1000}
                 max={15000}
                 step={100}
@@ -627,9 +639,9 @@ function CitySearchBar({
   }, [query, all, picks]);
 
   return (
-    <div className="flex flex-wrap items-center gap-2 border-b border-border/60 px-4 py-2.5">
-      <div className="relative min-w-[200px] flex-1">
-        <MapPin className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 border-b border-border/60 px-4 py-2.5 sm:flex sm:flex-wrap">
+      <div className="relative min-w-0 flex-1">
+        <MapPin className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -639,7 +651,7 @@ function CitySearchBar({
               : t("Busca y elige hasta 3 ciudades…", "Search and pick up to 3 cities…")
           }
           disabled={picks.length >= 3}
-          className="h-8 border-0 bg-transparent pl-8 text-xs shadow-none focus-visible:ring-0"
+          className="h-9 rounded-xl border-border/60 bg-elevated/40 pl-9 text-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:border-primary/40 focus-visible:bg-elevated/60 focus-visible:ring-0"
         />
         {matches.length > 0 && (
           <div className="absolute z-30 mt-1 w-full overflow-hidden rounded-lg border border-border bg-popover shadow-lg">
