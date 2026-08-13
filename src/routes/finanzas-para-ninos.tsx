@@ -16,7 +16,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useT } from "@/hooks/use-language";
 
-export const Route = createFileRoute("/my-first-number")({
+export const Route = createFileRoute("/finanzas-para-ninos")({
   head: () => ({
     meta: [
       { title: "My First Number — Educación financiera para niños" },
@@ -34,7 +34,7 @@ export const Route = createFileRoute("/my-first-number")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: MyFirstNumberLanding,
+  component: KidsFinanceLanding,
 });
 
 function KidPreview() {
@@ -95,7 +95,7 @@ function KidPreview() {
   );
 }
 
-function MyFirstNumberLanding() {
+function KidsFinanceLanding() {
   const t = useT();
 
   const features = [
