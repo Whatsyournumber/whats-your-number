@@ -152,21 +152,8 @@ function nightlifeText(score: number, t: (es: string, en: string) => string) {
   );
 }
 
-function PillarRow({
-  pillar,
-  t,
-  stage,
-  cityName,
-  nightlife,
-}: {
-  pillar: PillarBreakdown;
-  t: (es: string, en: string) => string;
-  stage?: string;
-  cityName?: string;
-  nightlife?: number;
-}) {
+function PillarRow({ pillar, t }: { pillar: PillarBreakdown; t: (es: string, en: string) => string }) {
   const meta = PILLAR_META[pillar.key];
-  const nightlifeFactor = pillar.factors.find((f) => f.es === "Vida nocturna y ocio");
   return (
     <details className="rounded-xl border border-border/60 bg-elevated/40 p-3">
       <summary className="flex cursor-pointer list-none items-center gap-2 text-xs">
@@ -178,11 +165,6 @@ function PillarRow({
       <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-elevated">
         <div className="h-full rounded-full bg-primary" style={{ width: `${pillar.score}%` }} />
       </div>
-      {pillar.key === "lifestyle" && stage === "single" && nightlifeFactor && nightlife !== undefined && (
-        <p className="mt-2 text-[11px] leading-relaxed text-primary">
-          🌙 {cityName}: {nightlifeText(nightlife, t)}
-        </p>
-      )}
       <ul className="mt-2 space-y-1">
         {pillar.factors.map((f) => (
           <li key={f.es} className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
