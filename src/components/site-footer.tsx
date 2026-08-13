@@ -150,18 +150,18 @@ export function SiteFooter() {
           </div>
         </button>
 
-        <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-6">
-          <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+        <div className="mx-auto flex h-full max-w-6xl flex-col items-center gap-3 px-4 pb-5 pt-10 text-center md:flex-row md:justify-between md:gap-4 md:px-6 md:py-0 md:text-left">
+          <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs text-muted-foreground md:justify-start md:text-sm">
             <span>© {new Date().getFullYear()}</span>
-            <span className="text-border">|</span>
+            <span className="hidden text-border md:inline">|</span>
             <span className="flex items-center gap-1.5 text-foreground">
               {t("Hecho con", "Made with")}
-              <Heart className="h-3.5 w-3.5 fill-primary text-primary" />
+              <Heart className="h-3.5 w-3.5 shrink-0 fill-primary text-primary" />
               {t("desde un mundo borderless", "from a borderless world")}
             </span>
           </p>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex shrink-0 items-center gap-2.5">
             {socials.map(({ icon: Icon, label, href }) => (
               <a
                 key={label}
