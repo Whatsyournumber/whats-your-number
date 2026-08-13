@@ -158,6 +158,75 @@ function KidPreview() {
   );
 }
 
+function ThreePillars() {
+  const t = useT();
+
+  const curve = Array.from({ length: 10 }, (_, i) => ({ x: i, y: Math.pow(i, 2.1) }));
+
+  const pillars = [
+    {
+      icon: CalendarCheck,
+      color: "var(--kid-grape)",
+      title: t("Planifica", "Plan"),
+      desc: t(
+        "Calcula cuánto invertir hoy para su universidad o su primer hogar.",
+        "Work out how much to invest today for university or their first home.",
+      ),
+    },
+    {
+      icon: GraduationCap,
+      color: "var(--kid-sky)",
+      title: t("Enseña", "Teach"),
+      desc: t(
+        "Aprenden a ahorrar, gastar e invertir con su propio dinero.",
+        "They learn to save, spend and invest with their own money.",
+      ),
+    },
+    {
+      icon: Rocket,
+      color: "var(--kid-mint)",
+      title: t("Crece", "Grow"),
+      desc: t(
+        "Cada euro ahorrado crece con el tiempo gracias al interés compuesto.",
+        "Every euro saved compounds over time.",
+      ),
+    },
+  ];
+
+  return (
+    <section className="mt-20">
+      <h2 className="text-center font-display text-2xl font-semibold tracking-tight md:text-3xl">
+        {t("Tres pilares para un futuro increíble", "Three pillars for an incredible future")}
+      </h2>
+      <div className="mt-8 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-3">
+        {pillars.map(({ icon: Icon, color, title, desc }) => (
+          <div key={title} className="bg-card p-6">
+            <div className="flex items-center gap-2.5">
+              <Icon className="h-4 w-4" style={{ color }} />
+              <h3 className="font-display text-base font-medium tracking-tight">{title}</h3>
+            </div>
+            <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">{desc}</p>
+            <div className="mt-6 h-14">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={curve} margin={{ top: 2, right: 2, bottom: 2, left: 2 }}>
+                  <Line
+                    type="monotone"
+                    dataKey="y"
+                    stroke={color}
+                    strokeWidth={1.75}
+                    dot={false}
+                    isAnimationActive={false}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function DualDashboards() {
   const t = useT();
   const data = [
@@ -170,115 +239,115 @@ function DualDashboards() {
   ];
 
   return (
-    <section className="mt-24 grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
-      <div>
-        <h2 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
-          {t("Dos paneles.", "Two dashboards.")}
-          <span className="kid-text-gradient block">
-            {t("Un mismo objetivo.", "One shared goal.")}
-          </span>
-        </h2>
-        <ul className="mt-6 space-y-4 text-sm text-muted-foreground">
-          <li className="flex gap-3">
-            <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-kid-mint" />
-            {t("Los padres planifican el largo plazo.", "Parents plan the long term.")}
-          </li>
-          <li className="flex gap-3">
-            <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-kid-sky" />
-            {t("Los hijos aprenden con dinero real.", "Kids learn with real money.")}
-          </li>
-          <li className="flex gap-3">
-            <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-kid-grape" />
-            {t("Todo sincronizado en una sola cuenta.", "All synced in one single account.")}
-          </li>
-        </ul>
-      </div>
+    <section className="mt-24">
+      <h2 className="text-center font-display text-2xl font-semibold tracking-tight md:text-3xl">
+        {t("Dos paneles. Un mismo objetivo.", "Two dashboards. One shared goal.")}
+      </h2>
+      <p className="mt-3 text-center text-sm text-muted-foreground">
+        {t(
+          "Papá planifica el futuro. Ellos aprenden a construirlo.",
+          "Parents plan the future. Kids learn to build it.",
+        )}
+      </p>
 
-      <div className="surface glow relative overflow-hidden p-5 md:p-7">
-        <div className="kid-gradient-soft pointer-events-none absolute inset-0" />
-        <div className="relative grid gap-4 md:grid-cols-2">
-          <div className="surface p-5">
-            <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
-              {t("Panel de padres", "Parents panel")}
-            </p>
-            <p className="numeric mt-2 text-3xl font-semibold">€196.000</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {t("Fondo del futuro en 10 años", "Future fund in 10 years")}
-            </p>
-            <div className="mt-4 h-28">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={data} margin={{ top: 4, right: 0, bottom: 0, left: 0 }}>
-                  <defs>
-                    <linearGradient id="kidP" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="var(--kid-mint)" stopOpacity={0.5} />
-                      <stop offset="100%" stopColor="var(--kid-mint)" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <Area
-                    type="monotone"
-                    dataKey="p"
-                    stroke="var(--kid-mint)"
-                    strokeWidth={2}
-                    fill="url(#kidP)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-            <dl className="mt-3 space-y-1.5 text-xs">
-              <div className="flex justify-between">
-                <dt className="text-muted-foreground">{t("Aporte mensual", "Monthly deposit")}</dt>
-                <dd className="numeric">€300</dd>
-              </div>
-              <div className="flex justify-between">
-                <dt className="text-muted-foreground">{t("Rendimiento", "Return")}</dt>
-                <dd className="numeric">7,2%</dd>
-              </div>
-            </dl>
+      <div className="mt-10 grid items-center gap-6 lg:grid-cols-[1fr_auto_1fr]">
+        <div className="rounded-2xl border border-border bg-card p-6">
+          <div className="flex items-center gap-2.5">
+            <img src={faceDad} alt="" width={28} height={28} className="h-7 w-7 rounded-full object-cover" />
+            <p className="text-sm font-medium">{t("Panel de papá", "Parent dashboard")}</p>
           </div>
+          <p className="mt-5 text-[11px] uppercase tracking-wider text-muted-foreground">
+            {t("Fondo del futuro", "Future fund")}
+          </p>
+          <p className="numeric mt-1 text-3xl font-semibold">€196.000</p>
+          <div className="mt-5 h-24">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={data} margin={{ top: 4, right: 0, bottom: 0, left: 0 }}>
+                <defs>
+                  <linearGradient id="kidP" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--kid-mint)" stopOpacity={0.28} />
+                    <stop offset="100%" stopColor="var(--kid-mint)" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <Area
+                  type="monotone"
+                  dataKey="p"
+                  stroke="var(--kid-mint)"
+                  strokeWidth={1.75}
+                  fill="url(#kidP)"
+                  isAnimationActive={false}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+          <dl className="mt-5 grid grid-cols-2 gap-4 border-t border-border pt-4 text-xs">
+            <div>
+              <dt className="text-muted-foreground">{t("Aporte mensual", "Monthly deposit")}</dt>
+              <dd className="numeric mt-1 text-sm font-medium">€300</dd>
+            </div>
+            <div>
+              <dt className="text-muted-foreground">{t("Rendimiento", "Return")}</dt>
+              <dd className="numeric mt-1 text-sm font-medium">7,2%</dd>
+            </div>
+          </dl>
+        </div>
 
-          <div className="surface p-5">
-            <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
-              {t("Panel de Sofía", "Sofía's panel")}
-            </p>
-            <p className="numeric kid-text-gradient mt-2 text-3xl font-semibold">€1.250</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {t("Su patrimonio hoy", "Their net worth today")}
-            </p>
-            <div className="mt-4 h-28">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={data} margin={{ top: 4, right: 0, bottom: 0, left: 0 }}>
-                  <defs>
-                    <linearGradient id="kidK" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="var(--kid-grape)" stopOpacity={0.5} />
-                      <stop offset="100%" stopColor="var(--kid-grape)" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <Area
-                    type="monotone"
-                    dataKey="k"
-                    stroke="var(--kid-grape)"
-                    strokeWidth={2}
-                    fill="url(#kidK)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-            <dl className="mt-3 space-y-1.5 text-xs">
-              <div className="flex justify-between">
-                <dt className="text-muted-foreground">{t("Ahorros", "Savings")}</dt>
-                <dd className="numeric">€850</dd>
-              </div>
-              <div className="flex justify-between">
-                <dt className="text-muted-foreground">{t("Inversiones", "Investments")}</dt>
-                <dd className="numeric">€400</dd>
-              </div>
-            </dl>
+        <div className="flex items-center justify-center gap-3 lg:flex-col">
+          <span className="hidden h-px w-10 bg-border lg:block lg:h-10 lg:w-px" />
+          <div className="flex flex-col items-center gap-1.5">
+            <span className="flex h-11 w-11 items-center justify-center rounded-full border border-kid-mint/30 text-kid-mint">
+              <Users className="h-4 w-4" />
+            </span>
+            <span className="text-xs font-medium text-kid-mint">Family Planner</span>
           </div>
+          <span className="hidden h-px w-10 bg-border lg:block lg:h-10 lg:w-px" />
+        </div>
+
+        <div className="rounded-2xl border border-border bg-card p-6">
+          <div className="flex items-center gap-2.5">
+            <img src={faceGirl} alt="" width={28} height={28} className="h-7 w-7 rounded-full object-cover" />
+            <p className="text-sm font-medium">{t("Panel de Sofía", "Sofía's dashboard")}</p>
+          </div>
+          <p className="mt-5 text-[11px] uppercase tracking-wider text-muted-foreground">
+            {t("Su patrimonio hoy", "Their net worth today")}
+          </p>
+          <p className="numeric mt-1 text-3xl font-semibold">€1.250</p>
+          <div className="mt-5 h-24">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={data} margin={{ top: 4, right: 0, bottom: 0, left: 0 }}>
+                <defs>
+                  <linearGradient id="kidK" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--kid-grape)" stopOpacity={0.28} />
+                    <stop offset="100%" stopColor="var(--kid-grape)" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <Area
+                  type="monotone"
+                  dataKey="k"
+                  stroke="var(--kid-grape)"
+                  strokeWidth={1.75}
+                  fill="url(#kidK)"
+                  isAnimationActive={false}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+          <dl className="mt-5 grid grid-cols-2 gap-4 border-t border-border pt-4 text-xs">
+            <div>
+              <dt className="text-muted-foreground">{t("Ahorros", "Savings")}</dt>
+              <dd className="numeric mt-1 text-sm font-medium">€850</dd>
+            </div>
+            <div>
+              <dt className="text-muted-foreground">{t("Inversiones", "Investments")}</dt>
+              <dd className="numeric mt-1 text-sm font-medium">€400</dd>
+            </div>
+          </dl>
         </div>
       </div>
     </section>
   );
 }
+
 
 function GrowthChart() {
   const t = useT();
