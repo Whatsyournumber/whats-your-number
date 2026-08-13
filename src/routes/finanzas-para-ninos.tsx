@@ -697,24 +697,25 @@ function KidsFinanceLanding() {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative min-h-[680px] overflow-hidden lg:min-h-[760px]"
+          className="relative overflow-hidden"
         >
-          <img
-            src={heroBg.url}
-            alt={t(
-              "Padre e hija revisando juntos su plan de ahorro en una tablet",
-              "Father and daughter reviewing their savings plan together on a tablet",
-            )}
-            width={1920}
-            height={1088}
-            className="absolute inset-0 h-full w-full object-cover object-[70%_center]"
-          />
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,var(--background)_0%,color-mix(in_oklab,var(--background)_92%,transparent)_30%,color-mix(in_oklab,var(--background)_60%,transparent)_48%,transparent_70%)]" />
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,var(--background)_0%,transparent_35%)]" />
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,transparent_0%,var(--background)_75%)]" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-full lg:w-[54%]">
+            <img
+              src={heroReal}
+              alt={t(
+                "Padre e hija revisando juntos su plan de ahorro en una tablet",
+                "Father and daughter reviewing their savings plan together on a tablet",
+              )}
+              width={1280}
+              height={1280}
+              className="h-full w-full object-cover object-[60%_35%] opacity-90 [mask-image:radial-gradient(ellipse_60%_65%_at_60%_45%,#000_35%,transparent_78%)]"
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,var(--background)_0%,transparent_45%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(0deg,var(--background)_0%,transparent_40%)]" />
+          </div>
 
-          <div className="relative mx-auto w-full max-w-7xl px-6 py-20 md:py-28 lg:py-32">
-            <div className="lg:max-w-[52%]">
+          <div className="relative mx-auto w-full max-w-7xl px-6 py-16 md:py-20 lg:py-24">
+            <div className="lg:max-w-[50%]">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-kid-mint/25 bg-kid-mint/10 px-3 py-1 text-xs font-medium text-kid-mint backdrop-blur-sm">
                 <Sparkles className="h-3.5 w-3.5" />
                 {t(
@@ -722,7 +723,7 @@ function KidsFinanceLanding() {
                   "Your kids' financial future, powered by AI",
                 )}
               </span>
-              <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.06] tracking-tight md:text-5xl lg:text-6xl">
+              <h1 className="mt-5 font-display text-3xl font-semibold leading-[1.08] tracking-tight md:text-4xl lg:text-5xl">
                 {t("Construye ", "Build ")}
                 <span className="text-kid-mint">{t("su patrimonio.", "their wealth.")}</span>
                 <br />
@@ -731,6 +732,7 @@ function KidsFinanceLanding() {
                 <br />
                 {t("En una sola plataforma.", "In one single platform.")}
               </h1>
+
               <p className="mt-6 max-w-lg text-sm leading-relaxed text-muted-foreground md:text-base">
                 {t(
                   "Planifica cuánto tendrá tu hijo a los 18 años, crea su primera cartera de inversión, administra su mesada y ayúdalo a desarrollar hábitos financieros que lo acompañarán toda la vida.",
