@@ -131,7 +131,7 @@ export function SiteFooter() {
       </AnimatePresence>
 
       {/* Fixed bottom bar */}
-      <div className="relative h-16 border-t border-border/60 bg-elevated/90 backdrop-blur-md">
+      <div className="relative border-t border-border/60 bg-elevated/90 backdrop-blur-md md:h-16">
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
