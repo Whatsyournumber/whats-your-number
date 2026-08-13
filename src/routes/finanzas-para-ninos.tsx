@@ -539,17 +539,18 @@ function ThreePillars() {
   ];
 
   return (
-    <section className="mt-20">
-      <h2 className="text-center font-display text-2xl font-semibold tracking-tight md:text-3xl">
+    <section className="mt-16">
+      <h2 className="text-center font-display text-lg font-semibold tracking-tight md:text-xl">
         {t("Tres pilares para un futuro increíble", "Three pillars for an incredible future")}
       </h2>
-      <p className="mx-auto mt-3 max-w-xl text-center text-sm text-muted-foreground">
+      <p className="mx-auto mt-2 max-w-lg text-center text-xs text-muted-foreground">
         {t(
           "Un plan para los padres, hábitos para los hijos y tiempo trabajando a su favor.",
           "A plan for parents, habits for kids and time working in their favour.",
         )}
       </p>
-      <div className="mt-10 grid gap-5 sm:grid-cols-3">
+      <div className="mt-7 grid gap-4 sm:grid-cols-3">
+
         {pillars.map(({ id, icon: Icon, color, title, desc, metric, metricLabel }) => (
           <motion.div
             key={id}
