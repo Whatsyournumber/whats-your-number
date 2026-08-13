@@ -142,9 +142,9 @@ function HowItWorksSlider() {
   const touchX = useRef<number | null>(null);
 
   const pockets = [
-    { label: t("Gastar", "Spend"), value: 40, amount: "€24", color: "var(--kid-sky)" },
     { label: t("Ahorrar", "Save"), value: 40, amount: "€24", color: "var(--kid-mint)" },
     { label: t("Invertir", "Invest"), value: 20, amount: "€12", color: "var(--kid-grape)" },
+    { label: t("Gastar", "Spend"), value: 40, amount: "€24", color: "var(--kid-sky)" },
   ];
 
   const slides = [
