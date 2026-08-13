@@ -15,6 +15,7 @@ import { nomadFriendly, nomadVisa } from "./nomad-visas";
 import barcelonaPhoto from "@/assets/city-barcelona-hd.jpg.asset.json";
 import cairoPhoto from "@/assets/city-cairo-nile.png.asset.json";
 import nairobiPhoto from "@/assets/city-nairobi.jpg.asset.json";
+import bogotaPhoto from "@/assets/city-bogota-premium.jpg.asset.json";
 
 
 export type Region = "northamerica" | "latam" | "europe" | "asia" | "africa";
@@ -102,7 +103,7 @@ const PHOTO = {
   lima: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Miraflores_Costa_Verde_Skyline_%28Lima%2C_Peru%29.jpg/1920px-Miraflores_Costa_Verde_Skyline_%28Lima%2C_Peru%29.jpg",
   saopaulo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/PaulistaPanorama.jpg/1920px-PaulistaPanorama.jpg",
   montevideo: "https://commons.wikimedia.org/wiki/Special:FilePath/Playa%20Pocitos%20Vista%20desde%20Trouville.jpg?width=1920",
-  bogota: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Bogot%C3%A1_desde_Monserrate.jpg/1920px-Bogot%C3%A1_desde_Monserrate.jpg",
+  bogota: bogotaPhoto.url,
   rio: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Christ_the_Redeemer_-_Cristo_Redentor_-_2022.jpg/1920px-Christ_the_Redeemer_-_Cristo_Redentor_-_2022.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   seoul: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Lotte_World_night_view_2.jpg/1920px-Lotte_World_night_view_2.jpg",
   kualalumpur: "https://commons.wikimedia.org/wiki/Special:FilePath/57%20Kuala%20Lumpur%20skyline%20with%20Mont%20Kiara%20and%20Petronas%20Towers%20by%20night.jpg?width=1920",
