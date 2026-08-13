@@ -128,7 +128,7 @@ const PHOTO = {
   caracas: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Panoramic_view_of_Caracas_night.jpg/1920px-Panoramic_view_of_Caracas_night.jpg",
   margarita: margaritaPhoto.url,
   sanjuan: sanjuanPhoto.url,
-  andorra: "https://commons.wikimedia.org/wiki/Special:FilePath/City_of_Andorra_la_Vella%2CAndorra_in_2021.05.jpg?width=1920",
+  andorra: andorraPhoto.url,
   kotor: "https://commons.wikimedia.org/wiki/Special:FilePath/Kotor_and_Boka_kotorska_-_view_from_city_wall.jpg?width=1920",
   sarajevo: "https://commons.wikimedia.org/wiki/Special:FilePath/Sarajevo_Panorama_2022.jpg?width=1920",
   belgrade: "https://commons.wikimedia.org/wiki/Special:FilePath/Belgrade%2C_MT_2000s_skyline.jpg?width=1920",
