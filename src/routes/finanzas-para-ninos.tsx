@@ -927,6 +927,7 @@ function KidsFinanceLanding() {
           </div>
         </section>
 
+        </div>
       </main>
 
       <SiteFooter />
