@@ -1109,10 +1109,6 @@ function FamilyProfiles() {
           <p className="mt-4 text-xs text-muted-foreground">{t("Añadir hijo", "Add a child")}</p>
         </Link>
       </div>
-
-      <div className="mt-8">
-        <GrowthChart compact />
-      </div>
     </section>
   );
 }
@@ -1121,32 +1117,7 @@ function FamilyProfiles() {
 function KidsFinanceLanding() {
   const t = useT();
 
-  const ages = [
-    {
-      range: t("7 a 9 años", "Ages 7 to 9"),
-      desc: t(
-        "Monedas, bolsillos y su primer sueño. Aprenden que el dinero se guarda antes de gastarse.",
-        "Coins, pockets and their first dream. They learn money is saved before it's spent.",
-      ),
-      icon: Banknote,
-    },
-    {
-      range: t("10 a 13 años", "Ages 10 to 13"),
-      desc: t(
-        "Mesada, tareas y metas más grandes. Empiezan a planificar semanas y meses.",
-        "Allowance, chores and bigger goals. They start planning weeks and months.",
-      ),
-      icon: CalendarCheck,
-    },
-    {
-      range: t("14 a 17 años", "Ages 14 to 17"),
-      desc: t(
-        "Interés compuesto, inversión y su número del futuro. Salen de casa sabiendo su número.",
-        "Compound interest, investing and their future number. They leave home knowing their number.",
-      ),
-      icon: TrendingUp,
-    },
-  ];
+
 
   const quotes = [
     {
