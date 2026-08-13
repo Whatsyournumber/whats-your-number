@@ -20,8 +20,10 @@ export function SiteHeader() {
     { label: t("Cómo funciona", "How it works"), to: "/", hash: "funciones" },
     { label: t("Precios", "Pricing"), to: "/precios" },
     { label: "Blog", to: "/blog" },
-    ...(!isKidsLanding ? [{ label: "demo", to: "/demo", search: { start: 1 }, icon: true }] : []),
+    { label: "demo", to: "/demo", search: { start: 1 }, icon: true },
   ] as const;
+
+  const visibleTabs = isKidsLanding ? tabs.filter((tab) => tab.label !== "demo") : tabs;
 
   const renderTab = (tab: (typeof tabs)[number]) => (
     <Link
