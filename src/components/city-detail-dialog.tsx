@@ -178,10 +178,12 @@ export function CityDetailDialog({
     ...(b.education > 0
       ? [{ name: t("Educación", "Education"), value: b.education, color: "var(--color-chart-6)" }]
       : []),
+    ...(b.travel > 0 ? [{ name: t("Viajes", "Travel"), value: b.travel, color: "var(--color-chart-7)" }] : []),
     { name: t("Impuestos", "Taxes"), value: taxes, color: "var(--color-chart-5)" },
     { name: t("Ocio", "Entertainment"), value: b.entertainment, color: "var(--color-chart-2)" },
     { name: t("Ahorro potencial", "Potential savings"), value: Math.max(0, r.savings), color: "var(--color-positive)" },
   ];
+
 
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
