@@ -12,24 +12,31 @@ import { supabase } from "@/integrations/supabase/client";
 const KIDS_APP_URL = "https://myfirstnumber.lovable.app";
 
 /**
- * Abre la entrada SSO de My First Number llevando la sesión en el fragmento.
- * Esa ruta restaura la sesión antes de ejecutar sus redirecciones protegidas.
+ * Lleva la sesión activa en el fragmento con el formato estándar de Supabase
+ * (detectSessionInUrl) para entrar directo al onboarding, sin pedir login otra vez.
  */
 async function goToKids() {
   try {
     const { data } = await supabase.auth.getSession();
     const session = data.session;
-    if (!session) return;
+    if (!session) {
+      window.location.assign(`${KIDS_APP_URL}/auth`);
+      return;
+    }
 
     const params = new URLSearchParams({
       access_token: session.access_token,
       refresh_token: session.refresh_token,
+      token_type: session.token_type ?? "bearer",
+      expires_in: String(session.expires_in ?? 3600),
+      type: "magiclink",
     });
-    window.location.assign(`${KIDS_APP_URL}/kids#${params.toString()}`);
+    window.location.assign(`${KIDS_APP_URL}/onboarding#${params.toString()}`);
   } catch {
     window.location.assign(`${KIDS_APP_URL}/auth`);
   }
 }
+
 
 export const Route = createFileRoute("/elegir")({
   head: () => ({
