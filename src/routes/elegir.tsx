@@ -91,7 +91,9 @@ function ChooserPage() {
         className="relative w-full max-w-3xl text-center"
       >
         <div className="mb-10 flex flex-col items-center gap-4">
-          <BrandMark className="h-12 w-12" />
+          <Link to="/" aria-label="WhatsYourNumber" className="transition-opacity hover:opacity-80">
+            <BrandMark className="h-12 w-12" />
+          </Link>
           <h1 className="font-display text-3xl font-semibold sm:text-4xl">
             {t("¿Quién está usando la app?", "Who's using the app?")}
           </h1>
