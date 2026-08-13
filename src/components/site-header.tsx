@@ -78,7 +78,7 @@ export function SiteHeader() {
   );
 
   return (
-    <header className="relative z-20 mx-auto w-full max-w-6xl px-6 py-6">
+    <header className="relative z-20 mx-auto w-full max-w-6xl px-4 py-4 md:px-6 md:py-6">
       {/* Desktop */}
       <div className="hidden items-center justify-between md:flex">
         <div className="flex items-center gap-3">
