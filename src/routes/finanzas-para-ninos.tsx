@@ -150,6 +150,7 @@ function HowItWorksSlider() {
   const slides = [
     {
       id: "numbers",
+      tab: t("Mi número", "My number"),
       icon: Wallet,
       color: "var(--kid-sky)",
       title: t("Su número de hoy y el del futuro", "Their number today and tomorrow"),
@@ -183,6 +184,7 @@ function HowItWorksSlider() {
     },
     {
       id: "pockets",
+      tab: t("Mi dinero", "My money"),
       icon: PiggyBank,
       color: "var(--kid-mint)",
       title: t("Bolsillos: gastar, ahorrar e invertir", "Pockets: spend, save and invest"),
@@ -230,6 +232,7 @@ function HowItWorksSlider() {
     },
     {
       id: "dreams",
+      tab: t("Mis sueños", "My dreams"),
       icon: Target,
       color: "var(--kid-coral)",
       title: t("Sueños con barra de progreso", "Dreams with a progress bar"),
@@ -271,6 +274,7 @@ function HowItWorksSlider() {
     },
     {
       id: "chores",
+      tab: t("Mis tareas", "My chores"),
       icon: CalendarCheck,
       color: "var(--kid-sun)",
       title: t("Mesada automática y tareas", "Automatic allowance and chores"),
@@ -307,6 +311,7 @@ function HowItWorksSlider() {
     },
     {
       id: "grow",
+      tab: t("Mi futuro", "My future"),
       icon: TrendingUp,
       color: "var(--kid-mint)",
       title: t("Interés compuesto explicado para niños", "Compound interest explained for kids"),
@@ -357,6 +362,7 @@ function HowItWorksSlider() {
     },
     {
       id: "badges",
+      tab: t("Mis logros", "My badges"),
       icon: Trophy,
       color: "var(--kid-grape)",
       title: t("Premios, rachas y retos", "Rewards, streaks and quests"),
