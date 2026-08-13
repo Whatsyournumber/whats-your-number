@@ -21,20 +21,8 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Area, AreaChart, Bar, BarChart, Cell, ResponsiveContainer } from "recharts";
+
 
 import heroReal from "@/assets/kids-hero-real.jpg";
 import ctaFamily from "@/assets/kids-cta-family.jpg";
@@ -372,25 +360,39 @@ function HowItWorksSlider() {
   );
 }
 
-const planBars = [4, 7, 10, 13, 17, 21, 26, 32, 39, 47, 56, 66].map((v, i) => ({ x: i, v }));
-const growCurve = Array.from({ length: 14 }, (_, i) => ({ x: i, y: Math.pow(1.32, i) }));
+const planBars = [4, 7, 10, 13, 17, 21, 26, 32, 39, 47, 56, 66, 78, 92].map((v, i) => ({
+  x: i,
+  v,
+}));
+const growCurve = Array.from({ length: 19 }, (_, i) => ({
+  x: i,
+  y: Math.round(50 * 12 * ((Math.pow(1.072, i) - 1) / 0.072)),
+  flat: 50 * 12 * i,
+}));
 const teachSplit = [
   { key: "spend", pct: 40 },
   { key: "save", pct: 40 },
   { key: "invest", pct: 20 },
 ];
 
-function PillarVisual({ id, color }: { id: string; color: string }) {
+function PillarVisual({ id, color, labels }: { id: string; color: string; labels: string[] }) {
   if (id === "plan") {
     return (
-      <div className="mt-4 h-16">
+      <div className="mt-5 h-40">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={planBars} margin={{ top: 4, right: 2, bottom: 0, left: 0 }} barCategoryGap={3}>
-            <Bar dataKey="v" radius={[3, 3, 2, 2]} isAnimationActive={false}>
+          <BarChart data={planBars} margin={{ top: 8, right: 2, bottom: 0, left: 0 }} barCategoryGap={3}>
+            <defs>
+              <linearGradient id="plan-bar" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={color} stopOpacity={0.95} />
+                <stop offset="100%" stopColor={color} stopOpacity={0.18} />
+              </linearGradient>
+            </defs>
+            <Bar dataKey="v" radius={[4, 4, 2, 2]} isAnimationActive={false}>
               {planBars.map((_, i) => (
                 <Cell
                   key={i}
-                  fill={`color-mix(in oklab, ${color} ${28 + i * 6}%, transparent)`}
+                  fill="url(#plan-bar)"
+                  fillOpacity={0.35 + (i / planBars.length) * 0.65}
                 />
               ))}
             </Bar>
@@ -401,10 +403,27 @@ function PillarVisual({ id, color }: { id: string; color: string }) {
   }
 
   if (id === "teach") {
-    const shades = [70, 45, 25];
+    const shades = [80, 52, 30];
+    const amounts = ["€20", "€20", "€10"];
     return (
-      <div className="mt-4 flex h-16 flex-col justify-center gap-2.5">
-        <div className="flex h-3 w-full overflow-hidden rounded-full bg-elevated">
+      <div className="mt-5 flex h-40 flex-col justify-center gap-4">
+        <div className="flex h-24 w-full items-end gap-2">
+          {teachSplit.map((s, i) => (
+            <div key={s.key} className="flex flex-1 flex-col items-center gap-2">
+              <span className="numeric text-[11px] font-medium" style={{ color }}>
+                {amounts[i]}
+              </span>
+              <span
+                className="w-full rounded-t-lg"
+                style={{
+                  height: `${(s.pct / 40) * 72}px`,
+                  background: `linear-gradient(180deg, color-mix(in oklab, ${color} ${shades[i]}%, transparent), color-mix(in oklab, ${color} 8%, transparent))`,
+                }}
+              />
+            </div>
+          ))}
+        </div>
+        <div className="flex h-2.5 w-full overflow-hidden rounded-full bg-elevated">
           {teachSplit.map((s, i) => (
             <span
               key={s.key}
@@ -423,7 +442,7 @@ function PillarVisual({ id, color }: { id: string; color: string }) {
                 className="h-1.5 w-1.5 rounded-full"
                 style={{ backgroundColor: `color-mix(in oklab, ${color} ${shades[i]}%, transparent)` }}
               />
-              {s.pct}%
+              {labels[i]} {s.pct}%
             </span>
           ))}
         </div>
@@ -432,20 +451,32 @@ function PillarVisual({ id, color }: { id: string; color: string }) {
   }
 
   return (
-    <div className="mt-4 h-16">
+    <div className="mt-5 h-40">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={growCurve} margin={{ top: 4, right: 6, bottom: 0, left: 0 }}>
+        <AreaChart data={growCurve} margin={{ top: 8, right: 6, bottom: 0, left: 0 }}>
           <defs>
             <linearGradient id={`pillar-${id}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={color} stopOpacity={0.28} />
+              <stop offset="0%" stopColor={color} stopOpacity={0.4} />
               <stop offset="100%" stopColor={color} stopOpacity={0} />
             </linearGradient>
           </defs>
           <Area
             type="monotone"
+            dataKey="flat"
+            stroke="var(--color-muted-foreground)"
+            strokeWidth={1.25}
+            strokeDasharray="4 4"
+            fill="transparent"
+            dot={false}
+            activeDot={false}
+            isAnimationActive={false}
+          />
+          <Area
+            type="monotone"
             dataKey="y"
             stroke={color}
-            strokeWidth={1.75}
+            strokeWidth={2.25}
+            strokeLinecap="round"
             fill={`url(#pillar-${id})`}
             dot={false}
             activeDot={false}
@@ -456,6 +487,7 @@ function PillarVisual({ id, color }: { id: string; color: string }) {
     </div>
   );
 }
+
 
 function ThreePillars() {
   const t = useT();
@@ -554,20 +586,25 @@ function ThreePillars() {
             </div>
             <p className="relative mt-4 text-sm leading-relaxed text-muted-foreground">{desc}</p>
 
-            <div className="relative mt-auto pt-6">
+            <div className="relative mt-auto pt-7">
               <div className="flex items-baseline gap-2">
-                <span className="numeric text-xl font-semibold" style={{ color }}>
+                <span className="numeric text-3xl font-semibold" style={{ color }}>
                   {metric}
                 </span>
               </div>
-              <p className="mt-1 text-[11px] text-muted-foreground">{metricLabel}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{metricLabel}</p>
 
-              <PillarVisual id={id} color={color} />
-              <div className="mt-2 flex justify-between border-t border-border/60 pt-2 text-[10px] uppercase tracking-wider text-muted-foreground/70">
+              <PillarVisual
+                id={id}
+                color={color}
+                labels={[t("Gastar", "Spend"), t("Ahorrar", "Save"), t("Invertir", "Invest")]}
+              />
+              <div className="mt-3 flex justify-between border-t border-border/60 pt-2.5 text-[10px] uppercase tracking-wider text-muted-foreground/70">
                 <span>{pillarAxis[id]?.[0]}</span>
                 <span>{pillarAxis[id]?.[1]}</span>
               </div>
             </div>
+
           </motion.div>
         ))}
       </div>
@@ -799,127 +836,123 @@ function DualDashboards() {
   );
 }
 
-
-function GrowthChart({ compact = false }: { compact?: boolean }) {
-  const t = useT();
-  const data = Array.from({ length: 19 }, (_, i) => {
-    const year = i;
-    const monthly = 50;
-    const invested = monthly * 12 * year * Math.pow(1.07, year * 0.32);
-    return {
-      year: `${year}`,
-      invertido: Math.round(monthly * 12 * year * 1.0),
-      compuesto: Math.round(invested * 1.35),
-    };
-  });
-
-  return (
-    <div className="surface relative overflow-hidden p-5 md:p-6">
-      <div className="kid-gradient absolute inset-x-0 top-0 h-1" />
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h3 className="font-display text-base font-semibold tracking-tight">
-            {t("El progreso de Sofía a los 18", "Sofía's progress by 18")}
-          </h3>
-          <p className="mt-1 max-w-md text-xs leading-relaxed text-muted-foreground">
-            {t(
-              "€50 al mes desde los 8 años, invertidos al 7%: así se ve la diferencia entre guardar e invertir.",
-              "€50 a month from age 8, invested at 7%: this is the gap between saving and investing.",
-            )}
-          </p>
-        </div>
-        <div className="flex gap-4 text-[11px]">
-          <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-kid-mint" />
-            {t("Invertido (7%)", "Invested (7%)")}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-muted-foreground" />
-            {t("Guardado sin invertir", "Saved, not invested")}
-          </span>
-        </div>
-      </div>
-      <div className={compact ? "mt-4 h-44" : "mt-6 h-72"}>
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>
-            <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
-            <XAxis
-              dataKey="year"
-              tickLine={false}
-              axisLine={false}
-              stroke="var(--muted-foreground)"
-              fontSize={10}
-            />
-            <YAxis
-              tickLine={false}
-              axisLine={false}
-              stroke="var(--muted-foreground)"
-              fontSize={10}
-              width={48}
-              tickFormatter={(v: number) => `€${Math.round(v / 1000)}k`}
-            />
-            <Tooltip
-              contentStyle={{
-                background: "var(--card)",
-                border: "1px solid var(--border)",
-                borderRadius: 12,
-                fontSize: 12,
-              }}
-              formatter={(v: number) => `€${v.toLocaleString("es-ES")}`}
-              labelFormatter={(l) => t(`Año ${l}`, `Year ${l}`)}
-            />
-            <Line type="monotone" dataKey="compuesto" stroke="var(--kid-mint)" strokeWidth={2.5} dot={false} />
-            <Line
-              type="monotone"
-              dataKey="invertido"
-              stroke="var(--muted-foreground)"
-              strokeWidth={1.5}
-              strokeDasharray="4 4"
-              dot={false}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-  );
-}
-
-function Milestones() {
+function GrowsWithThem() {
   const t = useT();
   const items = [
-    { age: t("8 años", "Age 8"), label: t("Mesada", "Allowance"), icon: Coins },
+    { age: t("0 años", "Age 0"), label: t("Primer aporte", "First deposit"), icon: Gift },
+    { age: t("4 años", "Age 4"), label: t("Primeras monedas", "First coins"), icon: Coins },
+    { age: t("8 años", "Age 8"), label: t("Mesada", "Allowance"), icon: Banknote },
     { age: t("10 años", "Age 10"), label: t("Primer ahorro", "First savings"), icon: PiggyBank },
     { age: t("12 años", "Age 12"), label: t("Primer ETF", "First ETF"), icon: TrendingUp },
     { age: t("16 años", "Age 16"), label: t("Primer negocio", "First business"), icon: Rocket },
     { age: t("18 años", "Age 18"), label: t("Universidad", "University"), icon: GraduationCap },
   ];
+  const stages = [
+    {
+      range: t("0 a 6 años", "Ages 0 to 6"),
+      desc: t(
+        "Los padres abren su cartera y aportan desde el día uno. El tiempo hace el trabajo pesado.",
+        "Parents open their portfolio and contribute from day one. Time does the heavy lifting.",
+      ),
+      icon: Gift,
+      color: "var(--kid-grape)",
+    },
+    {
+      range: t("7 a 9 años", "Ages 7 to 9"),
+      desc: t(
+        "Monedas, bolsillos y su primer sueño. Aprenden que el dinero se guarda antes de gastarse.",
+        "Coins, pockets and their first dream. They learn money is saved before it's spent.",
+      ),
+      icon: Banknote,
+      color: "var(--kid-sky)",
+    },
+    {
+      range: t("10 a 13 años", "Ages 10 to 13"),
+      desc: t(
+        "Mesada, tareas y metas más grandes. Empiezan a planificar semanas y meses.",
+        "Allowance, chores and bigger goals. They start planning weeks and months.",
+      ),
+      icon: CalendarCheck,
+      color: "var(--kid-mint)",
+    },
+    {
+      range: t("14 a 17 años", "Ages 14 to 17"),
+      desc: t(
+        "Interés compuesto, inversión y su número del futuro. Salen de casa sabiendo su número.",
+        "Compound interest, investing and their future number. They leave home knowing their number.",
+      ),
+      icon: TrendingUp,
+      color: "var(--kid-coral)",
+    },
+  ];
   return (
     <section className="mt-24">
       <SectionHeader
-        eyebrow={t("El camino", "The path")}
-        title={t("Un camino que los prepara para la vida", "A path that prepares them for life")}
+        eyebrow={t("Crece con ellos", "It grows with them")}
+        title={t("De los 0 a los 18 años", "From age 0 to 18")}
         subtitle={t(
-          "De la primera mesada a su primera inversión: cada edad tiene su hito.",
-          "From their first allowance to their first investment: every age has its milestone.",
+          "Un solo camino: los padres empiezan desde el día uno y la app cambia con cada edad, de las primeras monedas al interés compuesto.",
+          "One single path: parents start on day one and the app evolves with every age, from first coins to compound interest.",
         )}
       />
+
       <div className="relative mt-12">
         <div className="kid-gradient absolute inset-x-6 top-[52px] hidden h-px opacity-40 md:block" />
-        <div className="grid gap-4 sm:grid-cols-3 md:grid-cols-5">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
           {items.map(({ age, label, icon: Icon }) => (
-            <div key={age} className="surface relative p-5 text-center">
-              <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl text-kid-mint ring-1 ring-kid-mint/25 kid-gradient-soft">
-                <Icon className="h-5 w-5" />
+            <motion.div
+              key={age}
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.4 }}
+              className="surface relative p-4 text-center"
+            >
+              <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl text-kid-mint ring-1 ring-kid-mint/25 kid-gradient-soft">
+                <Icon className="h-4.5 w-4.5" />
               </span>
-              <p className="mt-4 text-sm font-semibold">{age}</p>
-              <p className="mt-1 text-xs text-muted-foreground">{label}</p>
-            </div>
+              <p className="mt-3 text-sm font-semibold">{age}</p>
+              <p className="mt-1 text-[11px] text-muted-foreground">{label}</p>
+            </motion.div>
           ))}
         </div>
+      </div>
+
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {stages.map(({ icon: Icon, range, desc, color }) => (
+          <motion.div
+            key={range}
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.4 }}
+            className="surface relative overflow-hidden p-6"
+          >
+            <span
+              className="pointer-events-none absolute inset-x-0 top-0 h-px"
+              style={{
+                background: `linear-gradient(90deg, transparent, color-mix(in oklab, ${color} 75%, transparent), transparent)`,
+              }}
+            />
+            <span
+              className="flex h-9 w-9 items-center justify-center rounded-xl"
+              style={{
+                color,
+                backgroundColor: `color-mix(in oklab, ${color} 12%, transparent)`,
+                boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${color} 25%, transparent)`,
+              }}
+            >
+              <Icon className="h-4 w-4" />
+            </span>
+            <h3 className="mt-4 font-display text-base font-semibold tracking-tight">{range}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{desc}</p>
+          </motion.div>
+        ))}
       </div>
     </section>
   );
 }
+
 
 function FamilyProfiles() {
   const t = useT();
@@ -979,10 +1012,6 @@ function FamilyProfiles() {
           <p className="mt-4 text-xs text-muted-foreground">{t("Añadir hijo", "Add a child")}</p>
         </Link>
       </div>
-
-      <div className="mt-8">
-        <GrowthChart compact />
-      </div>
     </section>
   );
 }
@@ -991,32 +1020,7 @@ function FamilyProfiles() {
 function KidsFinanceLanding() {
   const t = useT();
 
-  const ages = [
-    {
-      range: t("7 a 9 años", "Ages 7 to 9"),
-      desc: t(
-        "Monedas, bolsillos y su primer sueño. Aprenden que el dinero se guarda antes de gastarse.",
-        "Coins, pockets and their first dream. They learn money is saved before it's spent.",
-      ),
-      icon: Banknote,
-    },
-    {
-      range: t("10 a 13 años", "Ages 10 to 13"),
-      desc: t(
-        "Mesada, tareas y metas más grandes. Empiezan a planificar semanas y meses.",
-        "Allowance, chores and bigger goals. They start planning weeks and months.",
-      ),
-      icon: CalendarCheck,
-    },
-    {
-      range: t("14 a 17 años", "Ages 14 to 17"),
-      desc: t(
-        "Interés compuesto, inversión y su número del futuro. Salen de casa sabiendo su número.",
-        "Compound interest, investing and their future number. They leave home knowing their number.",
-      ),
-      icon: TrendingUp,
-    },
-  ];
+
 
   const quotes = [
     {
@@ -1139,28 +1143,8 @@ function KidsFinanceLanding() {
 
         <FamilyProfiles />
 
-        <Milestones />
+        <GrowsWithThem />
 
-        <section className="mt-24">
-          <SectionHeader
-            eyebrow={t("Por edades", "By age")}
-            title={t("Crece con ellos", "It grows with them")}
-            subtitle={t(
-              "La app cambia según su edad: de las monedas al interés compuesto.",
-              "The app changes with their age: from coins to compound interest.",
-            )}
-          />
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {ages.map(({ icon: Icon, range, desc }) => (
-              <div key={range} className="surface relative overflow-hidden p-6">
-                <div className="kid-gradient absolute inset-x-0 top-0 h-1" />
-                <Icon className="h-5 w-5 text-kid-grape" />
-                <h3 className="mt-4 font-display text-base font-semibold tracking-tight">{range}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </section>
 
         <section className="mt-24">
           <SectionHeader
@@ -1183,7 +1167,7 @@ function KidsFinanceLanding() {
               >
                 <div className="flex gap-0.5">
                   {Array.from({ length: 5 }).map((_, k) => (
-                    <Star key={k} className="h-3.5 w-3.5 fill-kid-sun text-kid-sun" />
+                    <Star key={k} className="h-3.5 w-3.5 fill-kid-mint text-kid-mint" />
                   ))}
                 </div>
                 <blockquote className="mt-4 text-sm leading-relaxed text-muted-foreground">
