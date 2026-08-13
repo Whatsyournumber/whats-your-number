@@ -1055,9 +1055,9 @@ function GrowsWithThem() {
         )}
       />
 
-      <div className="relative mt-12">
+      <div className="relative mt-8 md:mt-12">
         <div className="kid-gradient absolute inset-x-6 top-[52px] hidden h-px opacity-40 md:block" />
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+        <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:grid-cols-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-7">
           {items.map(({ age, label, icon: Icon }) => (
             <motion.div
               key={age}
@@ -1065,7 +1065,7 @@ function GrowsWithThem() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.4 }}
-              className="surface relative p-4 text-center"
+              className="surface relative w-[124px] shrink-0 snap-start p-4 text-center sm:w-auto"
             >
               <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl text-kid-mint ring-1 ring-kid-mint/25 kid-gradient-soft">
                 <Icon className="h-4.5 w-4.5" />
@@ -1076,6 +1076,7 @@ function GrowsWithThem() {
           ))}
         </div>
       </div>
+
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stages.map(({ icon: Icon, range, desc, color }) => (
