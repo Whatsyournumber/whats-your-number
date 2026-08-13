@@ -247,8 +247,8 @@ export function CityDetailDialog({
             <div className="rounded-xl border border-border/60 bg-elevated/30 p-3 text-[11px] leading-relaxed text-muted-foreground">
               🥂{" "}
               {t(
-                "Escenario de lujo: alquiler de 2 habitaciones en barrio prime (tipo Salamanca en Madrid), coche de marca con seguro y parking, restaurantes de gama alta, seguro médico privado, colegio internacional si hay hijos y viajes frecuentes.",
-                "Luxury scenario: 2-bedroom rental in a prime neighborhood (think Salamanca in Madrid), premium branded car with insurance and parking, high-end restaurants, private health insurance, international school if you have kids, and frequent travel.",
+                "Escenario de lujo: alquiler de 2 habitaciones en barrio de alto nivel, coche de marca con seguro y parking, restaurantes de gama alta, seguro médico privado, colegio internacional si hay hijos y viajes frecuentes.",
+                "Luxury scenario: 2-bedroom rental in a high-end neighborhood, premium branded car with insurance and parking, high-end restaurants, private health insurance, international school if you have kids, and frequent travel.",
               )}
             </div>
           )}
