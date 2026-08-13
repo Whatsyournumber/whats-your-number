@@ -568,6 +568,7 @@ function DualDashboards() {
           <PhoneMock
             id="kid"
             accent="var(--kid-pink)"
+            cute
             face={faceGirl}
             name={t("Sofía", "Sofía")}
             chip={t("Su primer número", "Her first number")}
