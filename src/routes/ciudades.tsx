@@ -338,11 +338,20 @@ function LifestyleSimulatorContent() {
 
 
   const toggleCompare = (id: string) =>
-    setCompare((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id].slice(-2)));
+    setCompare((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id].slice(-3)));
 
   const compared = compare
     .map((id) => ranked.find((r) => r.city.id === id))
     .filter((x): x is CityScore => Boolean(x));
+
+  // Al tener 2 o más ciudades marcadas, baja automáticamente a la comparativa.
+  useEffect(() => {
+    if (compared.length < 2) return;
+    const el = document.getElementById("city-compare");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    // solo cuando cambia la cantidad/selección
+  }, [compare.join(","), compared.length]);
+
 
   const best = ranked[0];
 
