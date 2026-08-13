@@ -202,7 +202,12 @@ export const syncMySubscription = createServerFn({ method: "POST" })
       },
       { onConflict: "paddle_subscription_id" },
     );
-    if (error) throw error;
+    if (error) {
+      // The signed-in token can outlive its auth user (account deleted while the
+      // session is still cached): the FK fails and there is nothing to sync.
+      if (error.code === "23503") return { ok: false, reason: "stale_session" as const };
+      throw error;
+    }
 
     return { ok: true, productId } as const;
   });
