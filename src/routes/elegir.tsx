@@ -11,32 +11,23 @@ import { supabase } from "@/integrations/supabase/client";
 const KIDS_APP_URL = "https://myfirstnumber.lovable.app";
 
 /**
- * Abre My First Number llevando la sesión actual en el fragmento (#wyn=...),
- * para que el niño no tenga que volver a iniciar sesión y caiga en su onboarding.
+ * Abre la entrada SSO de My First Number llevando la sesión en el fragmento.
+ * Esa ruta restaura la sesión antes de ejecutar sus redirecciones protegidas.
  */
 async function goToKids() {
-  let payload = "";
   try {
     const { data } = await supabase.auth.getSession();
-    const s = data.session;
-    if (s) {
-      payload = btoa(
-        JSON.stringify({
-          access_token: s.access_token,
-          refresh_token: s.refresh_token,
-          email: s.user.email,
-          name:
-            (s.user.user_metadata?.['full_name'] as string | undefined) ??
-            (s.user.user_metadata?.['name'] as string | undefined) ??
-            null,
-        }),
-      );
-    }
+    const session = data.session;
+    if (!session) return;
+
+    const params = new URLSearchParams({
+      access_token: session.access_token,
+      refresh_token: session.refresh_token,
+    });
+    window.location.assign(`${KIDS_APP_URL}/kids#${params.toString()}`);
   } catch {
-    payload = "";
+    window.location.assign(`${KIDS_APP_URL}/auth`);
   }
-  const url = `${KIDS_APP_URL}/onboarding${payload ? `#wyn=${encodeURIComponent(payload)}` : ""}`;
-  window.location.href = url;
 }
 
 export const Route = createFileRoute("/elegir")({
