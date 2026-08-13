@@ -28,6 +28,10 @@ export function SiteFooter() {
       <button type="button" onClick={() => setPoliciesOpen(true)} className={linkClass}>
         {l.label}
       </button>
+    ) : l.external ? (
+      <a href={l.to} target="_blank" rel="noopener noreferrer" className={linkClass}>
+        {l.label}
+      </a>
     ) : (
       <Link to={l.to} className={linkClass}>
         {l.label}
