@@ -22,7 +22,6 @@ import rosarioPhoto from "@/assets/city-rosario-premium.jpg.asset.json";
 import cordobaPhoto from "@/assets/city-cordoba-premium.jpg.asset.json";
 import andorraPhoto from "@/assets/andorra-premium.jpg.asset.json";
 import belgradePhoto from "@/assets/cities/belgrade-premium.jpg.asset.json";
-import sarajevoPhoto from "@/assets/cities/sarajevo-premium.jpg.asset.json";
 import palermoPhoto from "@/assets/cities/palermo-premium.jpg.asset.json";
 import antwerpPhoto from "@/assets/cities/antwerp-premium.jpg.asset.json";
 import lyonPhoto from "@/assets/cities/lyon-premium.jpg.asset.json";
@@ -135,7 +134,7 @@ const PHOTO = {
   sanjuan: sanjuanPhoto.url,
   andorra: andorraPhoto.url,
   kotor: "https://commons.wikimedia.org/wiki/Special:FilePath/Kotor_and_Boka_kotorska_-_view_from_city_wall.jpg?width=1920",
-  sarajevo: sarajevoPhoto.url,
+  sarajevo: "https://commons.wikimedia.org/wiki/Special:FilePath/Sarajevo%20City%20Panorama.JPG?width=1920",
   belgrade: belgradePhoto.url,
   tirana: "https://commons.wikimedia.org/wiki/Special:FilePath/Tirana_skyline_at_night.jpg?width=1920",
   palermo: palermoPhoto.url,
