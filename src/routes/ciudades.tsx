@@ -123,7 +123,7 @@ function FilterGroup({ title, children }: { title: string; children: React.React
   return (
     <div className="p-4">
       <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">{title}</p>
-      <div className="grid grid-cols-2 grid-rows-2 gap-3 *:min-h-[60px] *:self-start">{children}</div>
+      <div className="grid grid-cols-1 gap-3 *:min-h-[60px] *:self-start sm:grid-cols-2 sm:grid-rows-2">{children}</div>
     </div>
   );
 }
@@ -486,7 +486,7 @@ function LifestyleSimulatorContent() {
 
           {/* Dinero */}
           <FilterGroup title={t("Dinero", "Money")}>
-            <div className="col-span-2">
+            <div className="col-span-1 sm:col-span-2">
               <div className="flex items-center justify-between gap-2">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
                   {t("Presupuesto mensual", "Monthly budget")}
@@ -559,7 +559,7 @@ function LifestyleSimulatorContent() {
                 { value: "neutral", label: t("Neutral", "Neutral"), icon: "★★★" },
               ]}
             />
-            <div className="col-span-2">
+            <div className="col-span-1 sm:col-span-2">
               <p className="truncate text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
                 {t("Objetivo", "Goal")}
               </p>
