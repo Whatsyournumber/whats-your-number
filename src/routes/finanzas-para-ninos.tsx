@@ -1269,10 +1269,10 @@ function KidsFinanceLanding() {
         >
           <div className="pointer-events-none absolute inset-y-0 right-0 w-full lg:w-[58%]">
             <img
-              src={heroReal}
+              src={heroLearn.url}
               alt={t(
-                "Padre e hija revisando juntos su plan de ahorro en una tablet",
-                "Father and daughter reviewing their savings plan together on a tablet",
+                "Padre e hija aprendiendo finanzas juntos en una tablet",
+                "Father and daughter learning finance together on a tablet",
               )}
               width={1280}
               height={1024}
