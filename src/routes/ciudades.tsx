@@ -618,9 +618,10 @@ function LifestyleSimulatorContent() {
 
       {best && <AiRecommendation r={best} filters={filters} fmt={fmt} t={t} />}
 
-      {compared.length === 2 && (
-        <ComparePanel a={compared[0]!} b={compared[1]!} fmt={fmt} t={t} onClear={() => setCompare([])} />
+      {compared.length >= 2 && (
+        <ComparePanel items={compared} fmt={fmt} t={t} onClear={() => setCompare([])} />
       )}
+
 
       <div id="city-results" className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
         {ranked.map((r, i) => (
