@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/use-auth";
 import { LanguageToggle, useLanguage } from "@/hooks/use-language";
+import { useSubscription } from "@/hooks/use-subscription";
 import { lovable } from "@/integrations/lovable/index";
 import { supabase } from "@/integrations/supabase/client";
 import { setPendingPromoCode } from "@/lib/pending-promo";
