@@ -76,7 +76,7 @@ function AuthPage() {
   const [promo, setPromo] = useState("");
 
   useEffect(() => {
-    if (!loading && user) navigate({ to: mode === "signup" ? "/onboarding" : "/dashboard" });
+    if (!loading && user) navigate({ to: mode === "signup" ? "/onboarding" : "/elegir" });
   }, [loading, user, navigate, mode]);
 
   const setMode = (next: "login" | "signup") => navigate({ to: "/auth", search: { mode: next } });
@@ -122,7 +122,7 @@ function AuthPage() {
       return;
     }
     if (result.redirected) return;
-    navigate({ to: "/dashboard" });
+    navigate({ to: "/elegir" });
   };
 
   return (
