@@ -12,7 +12,7 @@ import {
   Gift,
   GraduationCap,
   HeartHandshake,
-  LineChart,
+  LineChart as LineChartIcon,
   Lock,
   PiggyBank,
   Rocket,
