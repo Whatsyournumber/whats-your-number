@@ -642,12 +642,28 @@ export const defaultFilters: Filters = {
 };
 
 
-/** Cuánto encarece el costo de vida según cómo quieres vivir. */
+/** Cuánto encarece el costo de vida según cómo quieres vivir (factor global de referencia). */
 export const COMFORT_FACTOR: Record<ComfortPref, number> = {
   tight: 0.82,
   comfortable: 1,
   luxury: 1.55,
 };
+
+/**
+ * Lujo no es "todo x1.55": es un estilo de vida concreto.
+ * Vivienda = alquiler de 2 habitaciones en barrio prime (tipo Salamanca en Madrid),
+ * transporte = coche de marca (cuota + seguro + parking), ocio = restaurantes top,
+ * salud = seguro privado premium, educación = colegio internacional y viajes frecuentes.
+ */
+export const COMFORT_CATEGORY: Record<
+  ComfortPref,
+  { housing: number; food: number; transport: number; healthcare: number; entertainment: number; education: number; travelOfHousing: number }
+> = {
+  tight: { housing: 0.75, food: 0.8, transport: 0.7, healthcare: 0.95, entertainment: 0.6, education: 0.9, travelOfHousing: 0 },
+  comfortable: { housing: 1, food: 1, transport: 1, healthcare: 1, entertainment: 1, education: 1, travelOfHousing: 0 },
+  luxury: { housing: 2.2, food: 1.6, transport: 2.4, healthcare: 1.5, entertainment: 2.4, education: 1.7, travelOfHousing: 0.35 },
+};
+
 
 
 export type Metric =
