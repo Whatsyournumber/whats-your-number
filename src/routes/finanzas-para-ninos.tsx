@@ -1269,28 +1269,8 @@ function KidsFinanceLanding() {
 
         <FamilyProfiles />
 
-        <Milestones />
+        <GrowsWithThem />
 
-        <section className="mt-24">
-          <SectionHeader
-            eyebrow={t("Por edades", "By age")}
-            title={t("Crece con ellos", "It grows with them")}
-            subtitle={t(
-              "La app cambia según su edad: de las monedas al interés compuesto.",
-              "The app changes with their age: from coins to compound interest.",
-            )}
-          />
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {ages.map(({ icon: Icon, range, desc }) => (
-              <div key={range} className="surface relative overflow-hidden p-6">
-                <div className="kid-gradient absolute inset-x-0 top-0 h-1" />
-                <Icon className="h-5 w-5 text-kid-grape" />
-                <h3 className="mt-4 font-display text-base font-semibold tracking-tight">{range}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </section>
 
         <section className="mt-24">
           <SectionHeader
