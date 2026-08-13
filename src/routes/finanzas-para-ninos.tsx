@@ -78,14 +78,14 @@ function SectionHeader({
 
 function Bars({ items }: { items: Array<{ label: string; value: string; pct: number; color: string }> }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-5">
       {items.map((b) => (
         <div key={b.label}>
-          <div className="flex items-center justify-between text-xs">
+          <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">{b.label}</span>
-            <span className="numeric font-medium">{b.value}</span>
+            <span className="numeric text-base font-semibold">{b.value}</span>
           </div>
-          <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-elevated">
+          <div className="mt-2 h-3 w-full overflow-hidden rounded-full bg-elevated">
             <div className="h-full rounded-full" style={{ width: `${b.pct}%`, backgroundColor: b.color }} />
           </div>
         </div>
@@ -137,19 +137,19 @@ function HowItWorksSlider() {
         "They see their money right now, and where it can go if they keep saving every week.",
       ),
       visual: (
-        <div className="space-y-4">
+        <div className="space-y-6">
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">
               {t("Número de hoy", "Today's number")}
             </p>
-            <p className="numeric mt-1 text-4xl font-semibold text-kid-sky">€120</p>
+            <p className="numeric mt-1 text-6xl font-semibold text-kid-sky">€120</p>
           </div>
-          <div className="rounded-2xl border border-kid-grape/25 bg-kid-grape/10 p-4">
-            <p className="text-[10px] uppercase tracking-wider text-kid-grape">
+          <div className="rounded-2xl border border-kid-grape/25 bg-kid-grape/10 p-6">
+            <p className="text-xs uppercase tracking-wider text-kid-grape">
               {t("Número del futuro", "Future number")}
             </p>
-            <p className="numeric mt-1 text-2xl font-semibold">€1.480</p>
-            <p className="mt-1 text-xs text-muted-foreground">
+            <p className="numeric mt-1 text-4xl font-semibold">€1.480</p>
+            <p className="mt-1 text-sm text-muted-foreground">
               {t("En 2 años si sigue así", "In 2 years at this pace")}
             </p>
           </div>
@@ -187,21 +187,21 @@ function HowItWorksSlider() {
       ),
       visual: (
         <div className="space-y-4">
-          <div className="surface p-4">
-            <div className="flex items-center justify-between text-xs">
+          <div className="surface p-6">
+            <div className="flex items-center justify-between text-sm">
               <span>{t("Sueño: bici nueva", "Dream: new bike")}</span>
-              <span className="numeric font-medium text-kid-mint">62%</span>
+              <span className="numeric text-lg font-semibold text-kid-mint">62%</span>
             </div>
-            <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-elevated">
+            <div className="mt-3 h-3.5 w-full overflow-hidden rounded-full bg-elevated">
               <div className="kid-gradient h-full rounded-full" style={{ width: "62%" }} />
             </div>
           </div>
-          <div className="surface p-4">
-            <div className="flex items-center justify-between text-xs">
+          <div className="surface p-6">
+            <div className="flex items-center justify-between text-sm">
               <span>{t("Sueño: viaje con papá", "Dream: trip with dad")}</span>
-              <span className="numeric font-medium text-kid-sun">18%</span>
+              <span className="numeric text-lg font-semibold text-kid-sun">18%</span>
             </div>
-            <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-elevated">
+            <div className="mt-3 h-3.5 w-full overflow-hidden rounded-full bg-elevated">
               <div className="kid-gradient h-full rounded-full" style={{ width: "18%" }} />
             </div>
           </div>
@@ -218,19 +218,19 @@ function HowItWorksSlider() {
         "Schedule the allowance, approve chores and their money splits itself across pockets.",
       ),
       visual: (
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           {[
             { k: t("Mesada semanal", "Weekly allowance"), v: "+€10", ok: true },
             { k: t("Ordenar el cuarto", "Tidy the room"), v: "+€3", ok: true },
             { k: t("Sacar la basura", "Take out the trash"), v: "+€2", ok: false },
             { k: t("Leer 20 minutos", "Read 20 minutes"), v: "+€1", ok: false },
           ].map((r) => (
-            <div key={r.k} className="flex items-center justify-between rounded-xl bg-elevated px-4 py-3 text-xs">
-              <span className="flex items-center gap-2">
-                <BadgeCheck className={`h-4 w-4 ${r.ok ? "text-kid-mint" : "text-muted-foreground/40"}`} />
+            <div key={r.k} className="flex items-center justify-between rounded-xl bg-elevated px-5 py-4 text-sm">
+              <span className="flex items-center gap-2.5">
+                <BadgeCheck className={`h-5 w-5 ${r.ok ? "text-kid-mint" : "text-muted-foreground/40"}`} />
                 {r.k}
               </span>
-              <span className="numeric font-medium text-kid-sun">{r.v}</span>
+              <span className="numeric text-base font-semibold text-kid-sun">{r.v}</span>
             </div>
           ))}
         </div>
@@ -262,15 +262,15 @@ function HowItWorksSlider() {
             {[Trophy, Star, BadgeCheck, Sparkles].map((Ic, k) => (
               <span
                 key={k}
-                className="flex h-12 w-12 items-center justify-center rounded-full text-kid-sun ring-1 ring-kid-sun/25 kid-gradient-soft"
+                className="flex h-14 w-14 items-center justify-center rounded-full text-kid-sun ring-1 ring-kid-sun/25 kid-gradient-soft"
               >
-                <Ic className="h-5 w-5" />
+                <Ic className="h-6 w-6" />
               </span>
             ))}
           </div>
-          <div className="surface p-4">
-            <p className="text-xs text-muted-foreground">{t("Racha actual", "Current streak")}</p>
-            <p className="numeric mt-1 text-2xl font-semibold text-kid-grape">
+          <div className="surface p-6">
+            <p className="text-sm text-muted-foreground">{t("Racha actual", "Current streak")}</p>
+            <p className="numeric mt-1 text-4xl font-semibold text-kid-grape">
               7 {t("semanas", "weeks")}
             </p>
           </div>
@@ -293,32 +293,34 @@ function HowItWorksSlider() {
         )}
       />
 
-      <div className="surface relative mt-10 overflow-hidden p-6 md:p-10">
+      <div className="surface relative mt-12 overflow-hidden p-6 md:p-12">
         <div className="kid-gradient absolute inset-x-0 top-0 h-1" />
         <motion.div
           key={active.id}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35 }}
-          className="grid items-center gap-8 md:grid-cols-2"
+          className="grid items-center gap-10 md:grid-cols-2"
         >
           <div>
             <span
-              className="flex h-12 w-12 items-center justify-center rounded-2xl"
+              className="flex h-14 w-14 items-center justify-center rounded-2xl"
               style={{
                 color: active.color,
                 backgroundColor: `color-mix(in oklab, ${active.color} 12%, transparent)`,
                 boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${active.color} 25%, transparent)`,
               }}
             >
-              <Icon className="h-5 w-5" />
+              <Icon className="h-6 w-6" />
             </span>
-            <h3 className="mt-5 font-display text-xl font-semibold tracking-tight md:text-2xl">
+            <h3 className="mt-6 font-display text-2xl font-semibold tracking-tight md:text-4xl">
               {active.title}
             </h3>
-            <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">{active.desc}</p>
+            <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground">{active.desc}</p>
           </div>
-          <div className="rounded-2xl border border-border bg-card p-5 md:p-6">{active.visual}</div>
+          <div className="flex min-h-[320px] items-center rounded-2xl border border-border bg-card p-6 md:min-h-[360px] md:p-8">
+            <div className="w-full">{active.visual}</div>
+          </div>
         </motion.div>
 
         <div className="mt-8 flex items-center justify-between">
