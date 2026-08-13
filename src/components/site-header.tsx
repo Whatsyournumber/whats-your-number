@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import { Sparkles, Menu } from "lucide-react";
 
 import { BrandLogo, BrandMark } from "@/components/brand-logo";
@@ -13,12 +13,14 @@ export function SiteHeader() {
   const { user } = useAuth();
   const t = useT();
   const [open, setOpen] = useState(false);
+  const { pathname } = useLocation();
+  const isKidsLanding = pathname === "/finanzas-para-ninos";
 
   const tabs = [
     { label: t("Cómo funciona", "How it works"), to: "/", hash: "funciones" },
     { label: t("Precios", "Pricing"), to: "/precios" },
     { label: "Blog", to: "/blog" },
-    { label: "demo", to: "/demo", search: { start: 1 }, icon: true },
+    ...(!isKidsLanding ? [{ label: "demo", to: "/demo", search: { start: 1 }, icon: true }] : []),
   ] as const;
 
   const renderTab = (tab: (typeof tabs)[number]) => (
