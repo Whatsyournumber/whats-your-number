@@ -150,6 +150,9 @@ function Pricing() {
       navigate({ to: "/auth", search: { mode: "signup" } });
       return;
     }
+    // El plan Familiar vuelve al selector de perfiles (padre / hijos);
+    // Pro entra directo al dashboard.
+    const successPath = plan.name === "Familiar" ? "/elegir" : "/dashboard";
     const checkoutOptions: {
       priceId: string;
       quantity: number;
@@ -158,11 +161,12 @@ function Pricing() {
     } = {
       priceId: plan.priceId,
       quantity: 1,
-      successUrl: `${window.location.origin}/dashboard?checkout=success`,
+      successUrl: `${window.location.origin}${successPath}?checkout=success`,
     };
     if (user.email) checkoutOptions.customerEmail = user.email;
     void openCheckout(checkoutOptions);
   };
+
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
