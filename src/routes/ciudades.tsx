@@ -88,12 +88,11 @@ function SelectFilter<T extends string>({
         <SelectTrigger className={label ? "mt-1.5 h-9 w-full rounded-xl border-border/60 bg-elevated/40 px-3 text-xs transition-colors hover:border-primary/40 hover:bg-elevated/60" : "h-9 w-full rounded-xl border-border/60 bg-elevated/40 px-3 text-xs transition-colors hover:border-primary/40 hover:bg-elevated/60"}>
           <span className="inline-flex min-w-0 items-center gap-2.5">
             {selected ? (
-              <span className="inline-flex w-5 shrink-0 items-center justify-start">
-                {isStar ? (
-                  <span className="text-[10px] text-primary">{selected.icon}</span>
-                ) : (
-                  <span className="text-xs">{selected.icon}</span>
-                )}
+              <span className={cn(
+                "inline-flex shrink-0 items-center justify-start",
+                isStar ? "w-12 text-[9px] text-primary" : "w-5 text-xs"
+              )}>
+                {selected.icon}
               </span>
             ) : null}
             <span className="truncate">{selected?.label}</span>
@@ -103,12 +102,11 @@ function SelectFilter<T extends string>({
           {options.map((o) => (
             <SelectItem key={o.value} value={o.value} className="text-xs">
               <span className="inline-flex items-center gap-2.5">
-                <span className="inline-flex w-5 shrink-0 items-center justify-start">
-                  {o.icon.startsWith("★") ? (
-                    <span className="text-[10px] text-primary">{o.icon}</span>
-                  ) : (
-                    <span className="text-xs">{o.icon}</span>
-                  )}
+                <span className={cn(
+                  "inline-flex shrink-0 items-center justify-start",
+                  o.icon.startsWith("★") ? "w-12 text-[9px] text-primary" : "w-5 text-xs"
+                )}>
+                  {o.icon}
                 </span>
                 <span>{o.label}</span>
               </span>
@@ -125,7 +123,7 @@ function FilterGroup({ title, children }: { title: string; children: React.React
   return (
     <div className="p-4">
       <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">{title}</p>
-      <div className="grid grid-cols-2 gap-3">{children}</div>
+      <div className="grid grid-cols-2 grid-rows-2 gap-3 *:min-h-[60px] *:self-start">{children}</div>
     </div>
   );
 }
@@ -499,7 +497,7 @@ function LifestyleSimulatorContent() {
                 </p>
               </div>
               <Slider
-                className="mt-2.5"
+                className="mt-1.5"
                 min={1000}
                 max={15000}
                 step={100}
