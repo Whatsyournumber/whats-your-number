@@ -651,6 +651,25 @@ function PillarVisual({ id, color, labels }: { id: string; color: string; labels
     );
   }
 
+  if (id === "fun") {
+    return (
+      <div className="relative mt-4 flex h-24 items-center justify-center overflow-hidden rounded-xl bg-elevated">
+        <span
+          className="pointer-events-none absolute inset-0"
+          style={{ background: `radial-gradient(60% 80% at 50% 60%, color-mix(in oklab, ${color} 22%, transparent), transparent)` }}
+        />
+        <img
+          src={bikeAsset.url}
+          alt=""
+          loading="lazy"
+          className="relative h-[86px] w-auto object-contain drop-shadow-[0_10px_22px_rgba(0,0,0,0.5)]"
+        />
+      </div>
+    );
+  }
+
+
+
   return (
     <div className="mt-4 h-24">
       <ResponsiveContainer width="100%" height="100%">
