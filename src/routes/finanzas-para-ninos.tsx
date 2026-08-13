@@ -21,20 +21,8 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Area, AreaChart, Bar, BarChart, Cell, ResponsiveContainer } from "recharts";
+
 
 import heroReal from "@/assets/kids-hero-real.jpg";
 import ctaFamily from "@/assets/kids-cta-family.jpg";
