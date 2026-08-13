@@ -639,9 +639,9 @@ function CitySearchBar({
   }, [query, all, picks]);
 
   return (
-    <div className="flex flex-wrap items-center gap-2 border-b border-border/60 px-4 py-2.5">
-      <div className="relative min-w-[200px] flex-1">
-        <MapPin className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 border-b border-border/60 px-4 py-2.5 sm:flex sm:flex-wrap">
+      <div className="relative min-w-0 flex-1">
+        <MapPin className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -651,7 +651,7 @@ function CitySearchBar({
               : t("Busca y elige hasta 3 ciudades…", "Search and pick up to 3 cities…")
           }
           disabled={picks.length >= 3}
-          className="h-8 border-0 bg-transparent pl-8 text-xs shadow-none focus-visible:ring-0"
+          className="h-9 rounded-xl border-border/60 bg-elevated/40 pl-9 text-xs transition-colors placeholder:text-muted-foreground/60 focus-visible:border-primary/40 focus-visible:bg-elevated/60 focus-visible:ring-0"
         />
         {matches.length > 0 && (
           <div className="absolute z-30 mt-1 w-full overflow-hidden rounded-lg border border-border bg-popover shadow-lg">
