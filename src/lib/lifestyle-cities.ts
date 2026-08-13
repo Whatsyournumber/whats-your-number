@@ -736,29 +736,32 @@ function passesClimate(c: CityData, pref: ClimatePref) {
 
 
 export function monthlyCost(c: CityData, stage: LifeStage, comfort: ComfortPref = "comfortable") {
-  const base = c.housing + c.food + c.transport + c.healthcare + c.internet + c.entertainment;
-  const k = COMFORT_FACTOR[comfort];
-  if (stage === "family") return Math.round((base * 1.55 + c.education) * k);
-  if (stage === "single_parent") return Math.round((base * 1.3 + c.education * 0.8) * k);
-  if (stage === "married" || stage === "relationship") return Math.round(base * 1.4 * k);
-  return Math.round(base * k);
+  const b = costBreakdown(c, stage, comfort);
+  return Math.round(
+    b.housing + b.food + b.transport + b.healthcare + b.internet + b.entertainment + b.education + b.travel,
+  );
 }
 
 export function costBreakdown(c: CityData, stage: LifeStage, comfort: ComfortPref = "comfortable") {
   const stageM =
     stage === "family" ? 1.55 : stage === "single_parent" ? 1.3 : stage === "any" || stage === "single" ? 1 : 1.4;
-  const m = stageM * COMFORT_FACTOR[comfort];
+  const f = COMFORT_CATEGORY[comfort];
   const edu = stage === "family" ? c.education : stage === "single_parent" ? Math.round(c.education * 0.8) : 0;
+  // Vivienda: con lujo se asume alquiler de 2 habitaciones en barrio prime de la ciudad.
+  const housing = Math.round(c.housing * stageM * f.housing);
   return {
-    housing: Math.round(c.housing * m),
-    food: Math.round(c.food * m),
-    transport: Math.round(c.transport * m),
-    healthcare: Math.round(c.healthcare * m),
-    education: Math.round(edu * COMFORT_FACTOR[comfort]),
+    housing,
+    food: Math.round(c.food * stageM * f.food),
+    transport: Math.round(c.transport * stageM * f.transport),
+    healthcare: Math.round(c.healthcare * stageM * f.healthcare),
+    education: Math.round(edu * f.education),
     internet: c.internet,
-    entertainment: Math.round(c.entertainment * m),
+    entertainment: Math.round(c.entertainment * stageM * f.entertainment),
+    // Viajes: solo se modelan en el escenario de lujo (escapadas y vacaciones frecuentes).
+    travel: Math.round(housing * f.travelOfHousing),
   };
 }
+
 
 const clamp = (n: number) => Math.max(0, Math.min(100, n));
 const inv = (value: number, best: number, worst: number) => clamp(((worst - value) / (worst - best)) * 100);
