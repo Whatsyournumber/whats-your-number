@@ -672,12 +672,6 @@ function KidsFinanceLanding() {
     },
   ];
 
-  const stats = [
-    { value: "7-17", label: t("Edades", "Ages") },
-    { value: "4", label: t("Bolsillos", "Pockets") },
-    { value: "2 min", label: t("Para empezar", "To get started") },
-    { value: "0", label: t("Anuncios", "Ads") },
-  ];
 
   const steps = [
     {
