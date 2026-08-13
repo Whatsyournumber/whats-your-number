@@ -213,63 +213,82 @@ function ThreePillars() {
           "A plan for parents, habits for kids and time working in their favour.",
         )}
       </p>
-      <div className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-3">
+      <div className="mt-10 grid gap-5 sm:grid-cols-3">
         {pillars.map(({ id, icon: Icon, color, title, desc, metric, metricLabel }) => (
-          <div
+          <motion.div
             key={id}
-            className="group relative flex flex-col bg-card p-6 transition-colors duration-300 hover:bg-elevated md:p-7"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.45 }}
+            className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1 md:p-7"
+            style={{ boxShadow: "0 1px 0 0 color-mix(in oklab, var(--foreground) 5%, transparent) inset" }}
           >
-            <div className="flex items-center gap-2.5">
+            <span
+              className="pointer-events-none absolute inset-x-0 top-0 h-px opacity-70"
+              style={{
+                background: `linear-gradient(90deg, transparent, color-mix(in oklab, ${color} 70%, transparent), transparent)`,
+              }}
+            />
+            <span
+              className="pointer-events-none absolute -top-24 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
+              style={{ backgroundColor: `color-mix(in oklab, ${color} 22%, transparent)` }}
+            />
+
+            <div className="relative flex items-center gap-3">
               <span
-                className="flex h-8 w-8 items-center justify-center rounded-lg ring-1 transition-colors"
+                className="flex h-9 w-9 items-center justify-center rounded-xl"
                 style={{
                   color,
                   backgroundColor: `color-mix(in oklab, ${color} 12%, transparent)`,
-                  boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${color} 22%, transparent)`,
+                  boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${color} 25%, transparent)`,
                 }}
               >
                 <Icon className="h-4 w-4" />
               </span>
               <h3 className="font-display text-base font-medium tracking-tight">{title}</h3>
             </div>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{desc}</p>
+            <p className="relative mt-4 text-sm leading-relaxed text-muted-foreground">{desc}</p>
 
-            <div className="mt-6 flex items-baseline gap-2">
-              <span className="numeric text-lg font-semibold" style={{ color }}>
-                {metric}
-              </span>
-              <span className="text-[11px] text-muted-foreground">{metricLabel}</span>
-            </div>
+            <div className="relative mt-auto pt-6">
+              <div className="flex items-baseline gap-2">
+                <span className="numeric text-xl font-semibold" style={{ color }}>
+                  {metric}
+                </span>
+              </div>
+              <p className="mt-1 text-[11px] text-muted-foreground">{metricLabel}</p>
 
-            <div className="mt-4 h-16">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={curve} margin={{ top: 4, right: 6, bottom: 0, left: 0 }}>
-                  <defs>
-                    <linearGradient id={`pillar-${id}`} x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={color} stopOpacity={0.22} />
-                      <stop offset="100%" stopColor={color} stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <Area
-                    type="monotone"
-                    dataKey="y"
-                    stroke={color}
-                    strokeWidth={1.75}
-                    fill={`url(#pillar-${id})`}
-                    dot={false}
-                    activeDot={false}
-                    isAnimationActive={false}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
+              <div className="mt-4 h-16">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={curve} margin={{ top: 4, right: 6, bottom: 0, left: 0 }}>
+                    <defs>
+                      <linearGradient id={`pillar-${id}`} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor={color} stopOpacity={0.22} />
+                        <stop offset="100%" stopColor={color} stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <Area
+                      type="monotone"
+                      dataKey="y"
+                      stroke={color}
+                      strokeWidth={1.75}
+                      fill={`url(#pillar-${id})`}
+                      dot={false}
+                      activeDot={false}
+                      isAnimationActive={false}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="mt-2 flex justify-between border-t border-border/60 pt-2 text-[10px] uppercase tracking-wider text-muted-foreground/70">
+                <span>{t("Hoy", "Today")}</span>
+                <span>{t("18 años", "Age 18")}</span>
+              </div>
             </div>
-            <div className="mt-2 flex justify-between text-[10px] uppercase tracking-wider text-muted-foreground/70">
-              <span>{t("Hoy", "Today")}</span>
-              <span>{t("18 años", "Age 18")}</span>
-            </div>
-          </div>
+          </motion.div>
         ))}
       </div>
+
     </section>
 
   );
