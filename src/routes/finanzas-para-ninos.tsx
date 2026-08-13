@@ -571,9 +571,9 @@ const growCurve = Array.from({ length: 19 }, (_, i) => ({
   flat: 50 * 12 * i,
 }));
 const teachSplit = [
-  { key: "spend", pct: 40 },
   { key: "save", pct: 40 },
   { key: "invest", pct: 20 },
+  { key: "spend", pct: 40 },
 ];
 
 function PillarVisual({ id, color, labels }: { id: string; color: string; labels: string[] }) {
