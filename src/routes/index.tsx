@@ -168,7 +168,7 @@ function Landing() {
 
   useEffect(() => {
     if (!loading && user) {
-      navigate({ to: "/dashboard", replace: true });
+      navigate({ to: "/elegir", replace: true });
     }
   }, [loading, user, navigate]);
 
