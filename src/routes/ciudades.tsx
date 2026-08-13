@@ -76,7 +76,7 @@ function SelectFilter<T extends string>({
   onChange: (v: T) => void;
 }) {
   const selected = options.find((o) => o.value === value) ?? options[0];
-  const isStar = selected?.icon.startsWith("★");
+  const isStar = selected?.icon?.startsWith("★") ?? false;
   return (
     <div className="min-w-0">
       <p className="truncate text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
@@ -85,11 +85,13 @@ function SelectFilter<T extends string>({
       <Select value={value} onValueChange={(v) => onChange(v as T)}>
         <SelectTrigger className="mt-1.5 h-9 w-full rounded-xl border-border/60 bg-elevated/40 px-3 text-xs transition-colors hover:border-primary/40 hover:bg-elevated/60">
           <span className="inline-flex min-w-0 items-center gap-2">
-            {isStar ? (
-              <span className="inline-flex text-[10px] text-primary">{selected.icon}</span>
-            ) : (
-              <span className="shrink-0 text-xs">{selected?.icon}</span>
-            )}
+            {selected ? (
+              isStar ? (
+                <span className="inline-flex text-[10px] text-primary">{selected.icon}</span>
+              ) : (
+                <span className="shrink-0 text-xs">{selected.icon}</span>
+              )
+            ) : null}
             <span className="truncate">{selected?.label}</span>
           </span>
         </SelectTrigger>
