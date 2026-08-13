@@ -125,8 +125,48 @@ function Stat({
   );
 }
 
-function PillarRow({ pillar, t }: { pillar: PillarBreakdown; t: (es: string, en: string) => string }) {
+function nightlifeText(score: number, t: (es: string, en: string) => string) {
+  if (score >= 85)
+    return t(
+      "Escena nocturna vibrante: bares, clubs y vida 24/7.",
+      "Vibrant nightlife: bars, clubs and 24/7 energy.",
+    );
+  if (score >= 70)
+    return t(
+      "Buena oferta nocturna con bares, rooftops y zonas de copas.",
+      "Good nightlife with bars, rooftops and drinking districts.",
+    );
+  if (score >= 55)
+    return t(
+      "Vida nocturna moderada; más tranquila entre semana.",
+      "Moderate nightlife; quieter on weekdays.",
+    );
+  if (score >= 40)
+    return t(
+      "Opciones limitadas; ideal para cenas y planes tranquilos.",
+      "Limited options; better for dinners and low-key plans.",
+    );
+  return t(
+    "Vida nocturna muy reducida; planea salidas con anticipación.",
+    "Very limited nightlife; plan outings in advance.",
+  );
+}
+
+function PillarRow({
+  pillar,
+  t,
+  stage,
+  cityName,
+  nightlife,
+}: {
+  pillar: PillarBreakdown;
+  t: (es: string, en: string) => string;
+  stage?: string;
+  cityName?: string;
+  nightlife?: number;
+}) {
   const meta = PILLAR_META[pillar.key];
+  const nightlifeFactor = pillar.factors.find((f) => f.es === "Vida nocturna y ocio");
   return (
     <details className="rounded-xl border border-border/60 bg-elevated/40 p-3">
       <summary className="flex cursor-pointer list-none items-center gap-2 text-xs">
@@ -138,6 +178,11 @@ function PillarRow({ pillar, t }: { pillar: PillarBreakdown; t: (es: string, en:
       <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-elevated">
         <div className="h-full rounded-full bg-primary" style={{ width: `${pillar.score}%` }} />
       </div>
+      {pillar.key === "lifestyle" && stage === "single" && nightlifeFactor && nightlife !== undefined && (
+        <p className="mt-2 text-[11px] leading-relaxed text-primary">
+          🌙 {cityName}: {nightlifeText(nightlife, t)}
+        </p>
+      )}
       <ul className="mt-2 space-y-1">
         {pillar.factors.map((f) => (
           <li key={f.es} className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
