@@ -558,19 +558,34 @@ function LifestyleSimulatorContent() {
               ]}
             />
             <div className="col-span-2">
-              <SelectFilter
-                label={t("Objetivo", "Goal")}
-                value={filters.goal}
-                onChange={(v) => set("goal", v)}
-                options={[
-                  { value: "save", label: t("Ahorrar más", "Save more"), icon: "💰" },
-                  { value: "lifestyle", label: t("Estilo de vida", "Lifestyle"), icon: "🌴" },
-                  { value: "retire", label: t("Retirarme antes", "Retire earlier"), icon: "🚀" },
-                  { value: "family", label: t("Familia", "Family"), icon: "👨‍👩‍👧" },
-                  { value: "career", label: t("Carrera", "Career"), icon: "💼" },
-                  { value: "nomad", label: t("Nómada digital", "Digital nomad"), icon: "🌍" },
-                ]}
-              />
+              <div className="flex items-end gap-2">
+                <div className="min-w-0 flex-1">
+                  <SelectFilter
+                    label={t("Objetivo", "Goal")}
+                    value={filters.goal}
+                    onChange={(v) => set("goal", v)}
+                    options={[
+                      { value: "save", label: t("Ahorrar más", "Save more"), icon: "💰" },
+                      { value: "lifestyle", label: t("Estilo de vida", "Lifestyle"), icon: "🌴" },
+                      { value: "retire", label: t("Retirarme antes", "Retire earlier"), icon: "🚀" },
+                      { value: "family", label: t("Familia", "Family"), icon: "👨‍👩‍👧" },
+                      { value: "career", label: t("Carrera", "Career"), icon: "💼" },
+                      { value: "nomad", label: t("Nómada digital", "Digital nomad"), icon: "🌍" },
+                    ]}
+                  />
+                </div>
+                <Button
+                  type="button"
+                  size="icon"
+                  className="h-9 w-9 shrink-0 rounded-xl bg-primary text-primary-foreground shadow-glow transition-transform hover:scale-105 active:scale-95"
+                  onClick={() => {
+                    document.getElementById("city-results")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }}
+                  aria-label={t("Buscar ciudades", "Search cities")}
+                >
+                  <Search className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </FilterGroup>
         </div>
