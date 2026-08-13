@@ -5,7 +5,6 @@ import {
   ArrowRight,
   BadgeCheck,
   Banknote,
-  Bike,
   CalendarCheck,
   Coins,
   Gift,
@@ -40,6 +39,7 @@ import ctaFamily from "@/assets/kids-cta-family.jpg";
 import faceDad from "@/assets/kid-face-dad.jpg";
 import faceMom from "@/assets/kid-face-mom.jpg";
 import faceGirl from "@/assets/kid-face-girl.jpg";
+import bikeAsset from "@/assets/kid-bike.png.asset.json";
 import faceBoy from "@/assets/kid-face-boy.jpg";
 import avatarFaces from "@/assets/kids-avatars-three.png";
 import { SiteHeader } from "@/components/site-header";
@@ -111,7 +111,7 @@ function ScreenCard({
 
 function MiniArea({ color }: { color: string }) {
   return (
-    <div className="h-56 md:h-64">
+    <div className="h-28 md:h-32">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={growCurve} margin={{ top: 6, right: 4, bottom: 0, left: 0 }}>
           <defs>
@@ -159,24 +159,25 @@ function HowItWorksSlider() {
       ),
       visual: (
         <ScreenCard title={t("Mi primer número", "My first number")} accent="var(--kid-sky)">
-          <div className="flex items-center gap-3">
-            <img src={faceGirl} alt="" className="h-10 w-10 rounded-full object-cover" />
+          <div className="flex items-center gap-2.5">
+            <img src={faceGirl} alt="" className="h-8 w-8 rounded-full object-cover" />
             <div>
-              <p className="text-sm font-medium">{t("Hola, Sofía", "Hi, Sofía")}</p>
-              <p className="text-xs text-muted-foreground">{t("Tu dinero de hoy", "Your money today")}</p>
+              <p className="text-xs font-medium">{t("Hola, Sofía", "Hi, Sofía")}</p>
+              <p className="text-[11px] text-muted-foreground">{t("Tu dinero de hoy", "Your money today")}</p>
             </div>
           </div>
-          <p className="numeric mt-5 text-5xl font-semibold text-kid-sky md:text-6xl">€120</p>
-          <div className="mt-5 rounded-2xl border border-kid-grape/25 bg-kid-grape/10 p-5">
-            <p className="text-xs uppercase tracking-wider text-kid-grape">
+          <p className="numeric mt-3 text-3xl font-semibold text-kid-sky md:text-4xl">€120</p>
+          <div className="mt-3 rounded-xl border border-kid-grape/25 bg-kid-grape/10 p-3">
+            <p className="text-[10px] uppercase tracking-wider text-kid-grape">
               {t("Mi futuro (18 años)", "My future (age 18)")}
             </p>
-            <p className="numeric mt-1 text-3xl font-semibold">€10.668</p>
-            <p className="mt-1 text-xs text-muted-foreground">
+            <p className="numeric mt-0.5 text-xl font-semibold">€10.668</p>
+            <p className="mt-0.5 text-[11px] text-muted-foreground">
               {t("Si ahorra 11,3 € al mes", "If they save €11.3 a month")}
             </p>
           </div>
           <MiniArea color="var(--kid-sky)" />
+
         </ScreenCard>
       ),
     },
@@ -365,12 +366,21 @@ function HowItWorksSlider() {
       ),
       visual: (
         <ScreenCard title={t("Mis premios", "My rewards")} accent="var(--kid-grape)">
-          <div className="rounded-2xl bg-elevated p-4">
-            <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-kid-mint/12 text-kid-mint ring-1 ring-kid-mint/25">
-                <Bike className="h-6 w-6" />
-              </span>
-              <div>
+          <div className="relative overflow-hidden rounded-2xl bg-elevated p-4 ring-1 ring-kid-mint/15">
+            <div
+              className="pointer-events-none absolute -right-6 -top-8 h-32 w-32 rounded-full blur-2xl"
+              style={{ background: "color-mix(in oklab, var(--kid-mint) 25%, transparent)" }}
+            />
+            <div className="relative flex items-center gap-3">
+              <img
+                src={bikeAsset.url}
+                alt={t("Bici nueva", "New bike")}
+                loading="lazy"
+                width={816}
+                height={816}
+                className="h-20 w-20 shrink-0 object-contain drop-shadow-[0_8px_20px_rgba(0,0,0,0.45)]"
+              />
+              <div className="min-w-0">
                 <p className="text-sm font-medium">{t("Bici nueva", "New bike")}</p>
                 <p className="numeric text-xs text-muted-foreground">
                   {t("Desbloqueado a los", "Unlocked at")} €250
@@ -378,10 +388,11 @@ function HowItWorksSlider() {
               </div>
               <span className="numeric ml-auto text-lg font-semibold text-kid-mint">62%</span>
             </div>
-            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-card">
+            <div className="relative mt-3 h-2 w-full overflow-hidden rounded-full bg-card">
               <div className="h-full w-[62%] rounded-full bg-kid-mint" />
             </div>
           </div>
+
 
           <div className="mt-3 flex items-center justify-between rounded-2xl bg-elevated px-4 py-3">
             <div>
