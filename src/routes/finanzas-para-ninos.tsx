@@ -464,31 +464,48 @@ function HowItWorksSlider() {
       >
         <div className="kid-gradient absolute inset-x-0 top-0 h-1" />
 
-        <div className="-mx-1 mb-6 flex gap-2 overflow-x-auto px-1 pb-1 md:mb-10 md:flex-wrap md:justify-center md:overflow-visible">
-          {slides.map((s, k) => {
-            const TabIcon = s.icon;
-            const isActive = k === i;
-            return (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => setI(k)}
-                className="flex shrink-0 items-center gap-2 rounded-full px-3.5 py-2 text-xs font-medium transition-all sm:text-sm"
-                style={
-                  isActive
-                    ? {
-                        color: s.color,
-                        backgroundColor: `color-mix(in oklab, ${s.color} 14%, transparent)`,
-                        boxShadow: `inset 0 0 0 1.5px color-mix(in oklab, ${s.color} 55%, transparent), 0 0 24px color-mix(in oklab, ${s.color} 18%, transparent)`,
-                      }
-                    : { boxShadow: "inset 0 0 0 1px var(--border)" }
-                }
-              >
-                <TabIcon className="h-4 w-4 shrink-0" />
-                <span className="whitespace-nowrap">{s.tab}</span>
-              </button>
-            );
-          })}
+        <div className="mb-6 flex items-center gap-3 md:mb-10 md:justify-center">
+          <div
+            className="-mx-1 flex flex-1 gap-1.5 overflow-x-auto rounded-full p-1.5 px-1.5 md:flex-none md:overflow-visible"
+            style={{
+              backgroundColor: "color-mix(in oklab, var(--foreground) 4%, transparent)",
+              boxShadow: "inset 0 0 0 1px color-mix(in oklab, var(--foreground) 8%, transparent)",
+            }}
+          >
+            {slides.map((s, k) => {
+              const TabIcon = s.icon;
+              const isActive = k === i;
+              return (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setI(k)}
+                  className={`flex shrink-0 items-center gap-2 rounded-full px-3.5 py-2 text-xs font-medium transition-all duration-300 sm:text-sm ${
+                    isActive ? "" : "text-muted-foreground hover:text-foreground"
+                  }`}
+                  style={
+                    isActive
+                      ? {
+                          color: "var(--background)",
+                          backgroundColor: s.color,
+                          boxShadow: `0 0 0 1px color-mix(in oklab, ${s.color} 70%, transparent), 0 8px 26px color-mix(in oklab, ${s.color} 32%, transparent)`,
+                        }
+                      : { backgroundColor: "color-mix(in oklab, var(--foreground) 5%, transparent)" }
+                  }
+                >
+                  <TabIcon className="h-4 w-4 shrink-0" />
+                  <span className="whitespace-nowrap">{s.tab}</span>
+                </button>
+              );
+            })}
+          </div>
+          <span
+            className="hidden shrink-0 items-center gap-2 rounded-full px-3 py-2 text-xs text-muted-foreground md:inline-flex"
+            style={{ boxShadow: "inset 0 0 0 1px var(--border)" }}
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-kid-mint" />
+            {t("En vivo", "Live")}
+          </span>
         </div>
         <motion.div
           key={active.id}
