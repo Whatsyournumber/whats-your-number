@@ -98,6 +98,14 @@ const EXPAT_SCORE: Record<string, number> = {
   "Botsuana": 64,
   "Etiopía": 54,
   "Mauricio": 72,
+  "Andorra": 78,
+  "Montenegro": 68,
+  "Serbia": 64,
+  "Albania": 66,
+  "Bosnia y Herzegovina": 60,
+  "Puerto Rico": 68,
+  "El Salvador": 60,
+  "Venezuela": 42,
 };
 
 /** Satisfacción de expatriados del país (0-100). 60 = promedio global. */
