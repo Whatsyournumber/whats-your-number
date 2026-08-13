@@ -16,6 +16,7 @@ import {
   UserCog,
   CreditCard,
   ShieldCheck,
+  Users,
 } from "lucide-react";
 
 
@@ -37,6 +38,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { buildDataset } from "@/lib/profile-data";
 import { useT } from "@/hooks/use-language";
 import { useRoles } from "@/hooks/use-role";
+import { useSubscription } from "@/hooks/use-subscription";
 
 export function AppSidebar() {
   const { state } = useSidebar();
@@ -46,6 +48,7 @@ export function AppSidebar() {
   const data = buildDataset(profile);
   const t = useT();
   const { isSuperAdmin } = useRoles();
+  const { isPatrimonio } = useSubscription();
 
   const primary = [
     { title: t("Dashboard", "Dashboard"), url: "/dashboard", icon: LayoutDashboard },
