@@ -378,7 +378,7 @@ const teachSplit = [
 function PillarVisual({ id, color, labels }: { id: string; color: string; labels: string[] }) {
   if (id === "plan") {
     return (
-      <div className="mt-5 h-40">
+      <div className="mt-4 h-24">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={planBars} margin={{ top: 8, right: 2, bottom: 0, left: 0 }} barCategoryGap={3}>
             <defs>
@@ -406,8 +406,8 @@ function PillarVisual({ id, color, labels }: { id: string; color: string; labels
     const shades = [80, 52, 30];
     const amounts = ["€20", "€20", "€10"];
     return (
-      <div className="mt-5 flex h-40 flex-col justify-center gap-4">
-        <div className="flex h-24 w-full items-end gap-2">
+      <div className="mt-4 flex h-24 flex-col justify-center gap-2.5">
+        <div className="flex h-12 w-full items-end gap-2">
           {teachSplit.map((s, i) => (
             <div key={s.key} className="flex flex-1 flex-col items-center gap-2">
               <span className="numeric text-[11px] font-medium" style={{ color }}>
@@ -416,14 +416,14 @@ function PillarVisual({ id, color, labels }: { id: string; color: string; labels
               <span
                 className="w-full rounded-t-lg"
                 style={{
-                  height: `${(s.pct / 40) * 72}px`,
+                  height: `${(s.pct / 40) * 40}px`,
                   background: `linear-gradient(180deg, color-mix(in oklab, ${color} ${shades[i]}%, transparent), color-mix(in oklab, ${color} 8%, transparent))`,
                 }}
               />
             </div>
           ))}
         </div>
-        <div className="flex h-2.5 w-full overflow-hidden rounded-full bg-elevated">
+        <div className="flex h-2 w-full overflow-hidden rounded-full bg-elevated">
           {teachSplit.map((s, i) => (
             <span
               key={s.key}
@@ -451,7 +451,7 @@ function PillarVisual({ id, color, labels }: { id: string; color: string; labels
   }
 
   return (
-    <div className="mt-5 h-40">
+    <div className="mt-4 h-24">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={growCurve} margin={{ top: 8, right: 6, bottom: 0, left: 0 }}>
           <defs>
