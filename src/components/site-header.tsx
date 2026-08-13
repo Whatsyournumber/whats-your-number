@@ -65,6 +65,18 @@ export function SiteHeader() {
     </>
   );
 
+  const mobileAuthButton = user ? (
+    <Button asChild size="sm" className="h-8 rounded-full px-3 text-xs">
+      <Link to="/dashboard">{t("Dashboard", "Dashboard")}</Link>
+    </Button>
+  ) : (
+    <Button asChild size="sm" className="h-8 rounded-full px-3 text-xs">
+      <Link to="/auth" search={{ mode: "signup" }}>
+        {t("Crear cuenta", "Sign up")}
+      </Link>
+    </Button>
+  );
+
   return (
     <header className="relative z-20 mx-auto w-full max-w-6xl px-6 py-6">
       {/* Desktop */}
