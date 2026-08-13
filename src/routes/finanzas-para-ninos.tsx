@@ -677,80 +677,86 @@ function KidsFinanceLanding() {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="surface glow relative overflow-hidden p-8 md:p-12"
+          className="relative overflow-hidden rounded-3xl border border-border/60 bg-card/40"
         >
-          <div className="kid-gradient-soft pointer-events-none absolute inset-0" />
-          <div className="relative grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
-            <div>
-              <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium text-kid-grape ring-1 ring-kid-grape/25 kid-gradient-soft">
-                <Sparkles className="h-3.5 w-3.5" />
-                {t(
-                  "El futuro financiero de tus hijos, impulsado por IA",
-                  "Your kids' financial future, powered by AI",
-                )}
-              </span>
-              <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.05] tracking-tight md:text-5xl">
-                {t("Construye ", "Build ")}
-                <span className="kid-text-gradient">{t("su patrimonio.", "their wealth.")}</span>
-                <br />
-                {t("Enséñale ", "Teach them ")}
-                <span className="kid-text-gradient">{t("a manejarlo.", "to manage it.")}</span>
-                <br />
-                {t("En una sola plataforma.", "In one single platform.")}
-              </h1>
-              <p className="mt-5 max-w-xl text-base text-muted-foreground">
-                {t(
-                  "Planifica cuánto tendrá tu hijo a los 18 años, crea su primera cartera de inversión, administra su mesada y ayúdalo a desarrollar hábitos financieros que lo acompañarán toda la vida.",
-                  "Plan how much your child will have at 18, build their first investment portfolio, manage their allowance and help them build money habits for life.",
-                )}
-              </p>
-              <div className="mt-8 flex flex-wrap items-center gap-3">
-                <Link
-                  to="/precios"
-                  className="kid-gradient inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-background shadow-lg transition-all hover:gap-3"
-                >
-                  {t("Crear plan Familiar", "Create Family plan")}{" "}
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  to="/auth"
-                  search={{ mode: "signup" }}
-                  className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-kid-grape hover:text-kid-grape"
-                >
-                  {t("Ver demo", "See demo")}
-                </Link>
-              </div>
-              <p className="mt-6 text-xs text-muted-foreground">
-                {t(
-                  "+3.200 familias ya están construyendo el futuro financiero de sus hijos.",
-                  "+3,200 families are already building their kids' financial future.",
-                )}
-              </p>
-            </div>
+          <img
+            src={heroFamily}
+            alt={t(
+              "Padre e hijo revisando juntos su plan de ahorro",
+              "Father and son reviewing their savings plan together",
+            )}
+            width={1600}
+            height={1200}
+            className="absolute inset-y-0 right-0 hidden h-full w-[58%] object-cover object-center lg:block"
+          />
+          <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,var(--card)_0%,var(--card)_38%,color-mix(in_oklab,var(--card)_78%,transparent)_52%,transparent_72%)] lg:block" />
+          <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(0deg,var(--card)_0%,transparent_35%)] lg:block" />
 
-            <div className="relative overflow-hidden rounded-2xl">
-              <img
-                src={heroFamily}
-                alt={t(
-                  "Padre e hijo revisando juntos su plan de ahorro",
-                  "Father and son reviewing their savings plan together",
-                )}
-                width={1408}
-                height={1008}
-                className="h-full w-full object-cover"
-              />
+          <div className="relative px-8 py-14 md:px-14 md:py-20 lg:max-w-[54%]">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-kid-mint/25 bg-kid-mint/10 px-3 py-1 text-xs font-medium text-kid-mint">
+              <Sparkles className="h-3.5 w-3.5" />
+              {t(
+                "El futuro financiero de tus hijos, impulsado por IA",
+                "Your kids' financial future, powered by AI",
+              )}
+            </span>
+            <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.06] tracking-tight md:text-5xl">
+              {t("Construye ", "Build ")}
+              <span className="text-kid-mint">{t("su patrimonio.", "their wealth.")}</span>
+              <br />
+              {t("Enséñale ", "Teach them ")}
+              <span className="text-kid-mint">{t("a manejarlo.", "to manage it.")}</span>
+              <br />
+              {t("En una sola plataforma.", "In one single platform.")}
+            </h1>
+            <p className="mt-6 max-w-lg text-sm leading-relaxed text-muted-foreground md:text-base">
+              {t(
+                "Planifica cuánto tendrá tu hijo a los 18 años, crea su primera cartera de inversión, administra su mesada y ayúdalo a desarrollar hábitos financieros que lo acompañarán toda la vida.",
+                "Plan how much your child will have at 18, build their first investment portfolio, manage their allowance and help them build money habits for life.",
+              )}
+            </p>
+            <div className="mt-9 flex flex-wrap items-center gap-3">
+              <Link
+                to="/precios"
+                className="kid-gradient inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-background shadow-lg transition-all hover:gap-3"
+              >
+                {t("Crear plan Familiar", "Create Family plan")} <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                to="/auth"
+                search={{ mode: "signup" }}
+                className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-kid-mint hover:text-kid-mint"
+              >
+                {t("Ver demo", "See demo")}
+              </Link>
             </div>
+            <p className="mt-8 max-w-sm text-xs leading-relaxed text-muted-foreground">
+              {t(
+                "+3.200 familias ya están construyendo el futuro financiero de sus hijos.",
+                "+3,200 families are already building their kids' financial future.",
+              )}
+            </p>
           </div>
 
-          <dl className="relative mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {stats.map((s) => (
-              <div key={s.label} className="surface px-4 py-5">
-                <dt className="numeric kid-text-gradient text-2xl font-semibold">{s.value}</dt>
-                <dd className="mt-1 text-xs text-muted-foreground">{s.label}</dd>
-              </div>
-            ))}
-          </dl>
+          <img
+            src={heroFamily}
+            alt=""
+            aria-hidden
+            width={1600}
+            height={1200}
+            className="h-56 w-full object-cover object-center sm:h-72 lg:hidden"
+          />
         </motion.section>
+
+        <dl className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {stats.map((s) => (
+            <div key={s.label} className="surface px-4 py-5">
+              <dt className="numeric kid-text-gradient text-2xl font-semibold">{s.value}</dt>
+              <dd className="mt-1 text-xs text-muted-foreground">{s.label}</dd>
+            </div>
+          ))}
+        </dl>
+
 
         <DualDashboards />
 
