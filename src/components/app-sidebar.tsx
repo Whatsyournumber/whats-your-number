@@ -61,7 +61,13 @@ export function AppSidebar() {
 
 
 
+  const familyItems =
+    isPatrimonio || isSuperAdmin
+      ? ([{ title: t("Perfiles familiares", "Family profiles"), url: "/elegir", icon: Users }] as const)
+      : ([] as const);
+
   const secondary = [
+    ...familyItems,
     { title: "AI Advisor", url: "/advisor", icon: Bot },
     { title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserCog },
     { title: t("Suscripción", "Subscription"), url: "/suscripcion", icon: CreditCard },
@@ -71,6 +77,7 @@ export function AppSidebar() {
   const adminItems = isSuperAdmin
     ? ([{ title: t("Panel admin", "Admin panel"), url: "/admin", icon: ShieldCheck }] as const)
     : ([] as const);
+
 
   const renderItem = (item: { title: string; url: string; icon: typeof Wallet }) => {
     const active = pathname === item.url;
