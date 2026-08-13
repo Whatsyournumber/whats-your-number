@@ -505,6 +505,7 @@ function LifestyleSimulatorContent() {
                 value={[filters.budget]}
                 onValueChange={([v]) => set("budget", v ?? 1000)}
               />
+              </div>
             </div>
             <SelectFilter
               label={t("Impuestos", "Taxes")}
