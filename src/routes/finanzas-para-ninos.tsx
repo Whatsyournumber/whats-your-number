@@ -39,6 +39,7 @@ import {
 
 import heroFamily from "@/assets/kids-hero-family.jpg";
 import ctaFamily from "@/assets/kids-cta-family.jpg";
+import avatarFaces from "@/assets/kids-avatars-faces.png";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useT } from "@/hooks/use-language";
@@ -687,10 +688,10 @@ function KidsFinanceLanding() {
             )}
             width={1600}
             height={1200}
-            className="absolute inset-y-0 right-0 hidden h-full w-[58%] object-cover object-center lg:block"
+            className="absolute inset-y-0 right-0 hidden h-full w-[62%] object-cover object-center lg:block"
           />
-          <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,var(--background)_0%,var(--background)_38%,color-mix(in_oklab,var(--background)_78%,transparent)_52%,transparent_74%)] lg:block" />
-          <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(0deg,var(--background)_0%,transparent_35%)] lg:block" />
+          <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,var(--background)_0%,var(--background)_32%,color-mix(in_oklab,var(--background)_72%,transparent)_48%,color-mix(in_oklab,var(--background)_36%,transparent)_62%,transparent_80%)] lg:block" />
+          <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(0deg,var(--background)_0%,transparent_40%)] lg:block" />
 
           <div className="relative py-14 md:py-20 lg:max-w-[54%]">
 
@@ -732,35 +733,19 @@ function KidsFinanceLanding() {
               </Link>
             </div>
             <div className="mt-10 flex items-center gap-4">
-              <div className="flex -space-x-3">
-                {[
-                  { i: "M", c: "bg-kid-mint/25 text-kid-mint ring-kid-mint/30" },
-                  { i: "A", c: "bg-kid-sky/25 text-kid-sky ring-kid-sky/30" },
-                  { i: "L", c: "bg-kid-grape/25 text-kid-grape ring-kid-grape/30" },
-                  { i: "J", c: "bg-kid-sun/25 text-kid-sun ring-kid-sun/30" },
-                  { i: "P", c: "bg-kid-coral/25 text-kid-coral ring-kid-coral/30" },
-                ].map((a) => (
-                  <span
-                    key={a.i}
-                    className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-semibold ring-2 ${a.c}`}
-                  >
-                    {a.i}
-                  </span>
-                ))}
-              </div>
-              <div>
-                <div className="flex items-center gap-0.5">
-                  {[0, 1, 2, 3, 4].map((i) => (
-                    <Star key={i} className="h-3.5 w-3.5 fill-kid-sun text-kid-sun" />
-                  ))}
-                </div>
-                <p className="mt-1 max-w-xs text-xs leading-relaxed text-muted-foreground">
-                  {t(
-                    "+3.200 familias ya están construyendo el futuro financiero de sus hijos.",
-                    "+3,200 families are already building their kids' financial future.",
-                  )}
-                </p>
-              </div>
+              <img
+                src={avatarFaces}
+                alt={t("Familias usando WhatsYournumber", "Families using WhatsYournumber")}
+                width={256}
+                height={128}
+                className="h-16 w-auto shrink-0 mix-blend-lighten"
+              />
+              <p className="max-w-[16rem] text-xs leading-relaxed text-muted-foreground">
+                {t(
+                  "+3.200 familias ya están construyendo el futuro financiero de sus hijos.",
+                  "+3,200 families are already building their kids' financial future.",
+                )}
+              </p>
             </div>
 
           </div>
