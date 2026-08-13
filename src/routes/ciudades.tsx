@@ -63,7 +63,7 @@ export const Route = createFileRoute("/ciudades")({
 
 type Opt<T> = { value: T; label: string; icon: string };
 
-/** Filtro compacto tipo dropdown, en línea con el resto del panel. */
+/** Filtro premium tipo dropdown con icono y label alineados. */
 function SelectFilter<T extends string>({
   label,
   options,
@@ -75,17 +75,30 @@ function SelectFilter<T extends string>({
   value: T;
   onChange: (v: T) => void;
 }) {
+  const selected = options.find((o) => o.value === value) ?? options[0];
+  const isStar = selected?.icon.startsWith("★");
   return (
     <div className="min-w-0">
-      <p className="truncate text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className="truncate text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
+        {label}
+      </p>
       <Select value={value} onValueChange={(v) => onChange(v as T)}>
-        <SelectTrigger className="mt-1 h-8 w-full border-border bg-elevated/40 px-2.5 text-xs">
-          <SelectValue />
+        <SelectTrigger className="mt-1.5 h-9 w-full rounded-xl border-border/60 bg-elevated/40 px-3 text-xs transition-colors hover:border-primary/40 hover:bg-elevated/60">
+          <span className="inline-flex min-w-0 items-center gap-2">
+            {isStar ? (
+              <span className="inline-flex text-[10px] text-primary">{selected.icon}</span>
+            ) : (
+              <span className="shrink-0 text-xs">{selected?.icon}</span>
+            )}
+            <span className="truncate">{selected?.label}</span>
+          </span>
         </SelectTrigger>
         <SelectContent>
           {options.map((o) => (
             <SelectItem key={o.value} value={o.value} className="text-xs">
-              <span className="mr-1.5">{o.icon}</span>
+              <span className="mr-2 inline-flex w-4 shrink-0 items-center justify-center text-xs">
+                {o.icon.startsWith("★") ? <span className="text-[10px] text-primary">{o.icon}</span> : o.icon}
+              </span>
               {o.label}
             </SelectItem>
           ))}
@@ -95,12 +108,12 @@ function SelectFilter<T extends string>({
   );
 }
 
-/** Grupo de filtros con título, para ordenar visualmente el panel. */
+/** Grupo de filtros con título y grid consistente. */
 function FilterGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="p-4">
       <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">{title}</p>
-      <div className="grid grid-cols-2 items-end gap-3">{children}</div>
+      <div className="grid grid-cols-2 gap-3">{children}</div>
     </div>
   );
 }
