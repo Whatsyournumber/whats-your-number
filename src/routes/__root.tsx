@@ -194,7 +194,10 @@ function AppShell() {
         .eq("user_id", user.id)
         .maybeSingle();
       if (!active) return;
-      if (!data?.completed) {
+      const skipped =
+        typeof window !== "undefined" &&
+        window.localStorage.getItem("wyn_onboarding_skipped") === "1";
+      if (!data?.completed && !skipped) {
         navigate({ to: "/onboarding", replace: true });
         return;
       }
