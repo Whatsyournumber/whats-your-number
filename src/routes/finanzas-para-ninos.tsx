@@ -707,11 +707,12 @@ function KidsFinanceLanding() {
                 "Father and daughter reviewing their savings plan together on a tablet",
               )}
               width={1280}
-              height={1280}
-              className="h-full w-full scale-[0.94] object-cover object-[55%_38%] opacity-85 [mask-image:radial-gradient(ellipse_46%_50%_at_52%_48%,#000_20%,transparent_72%)]"
+              height={1024}
+              className="h-full w-full object-cover object-[62%_center] [mask-image:linear-gradient(90deg,transparent_0%,#000_38%,#000_100%)]"
             />
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,var(--background)_0%,transparent_45%)]" />
-            <div className="absolute inset-0 bg-[linear-gradient(0deg,var(--background)_0%,transparent_40%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,var(--background)_0%,color-mix(in_oklab,var(--background)_55%,transparent)_30%,transparent_58%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(0deg,var(--background)_0%,transparent_28%)]" />
+
           </div>
 
           <div className="relative mx-auto w-full max-w-7xl px-6 py-16 md:py-20 lg:py-24">
