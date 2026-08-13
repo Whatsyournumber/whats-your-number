@@ -73,7 +73,7 @@ export function SiteHeader() {
           <Link to="/" className="shrink-0">
             <BrandLogo />
           </Link>
-          <nav className="flex items-center gap-1">{tabs.map(renderTab)}</nav>
+          <nav className="flex items-center gap-1">{visibleTabs.map(renderTab)}</nav>
         </div>
         <div className="flex items-center gap-2">
           {authButtons}
@@ -107,7 +107,7 @@ export function SiteHeader() {
           <SheetContent side="left" className="w-full sm:max-w-xs">
             <div className="flex flex-col gap-6 pt-8">
               <nav className="flex flex-col gap-2">
-                {tabs.map((tab) => (
+                {visibleTabs.map((tab) => (
                   <SheetClose asChild key={tab.label}>
                     {renderTab(tab)}
                   </SheetClose>
