@@ -748,13 +748,6 @@ function KidsFinanceLanding() {
                 >
                   {t("Crear plan Familiar", "Create Family plan")} <ArrowRight className="h-4 w-4" />
                 </Link>
-                <Link
-                  to="/auth"
-                  search={{ mode: "signup" }}
-                  className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-background/40 px-6 py-3 text-sm font-medium text-foreground backdrop-blur-sm transition-colors hover:border-kid-mint hover:text-kid-mint"
-                >
-                  {t("Ver demo", "See demo")}
-                </Link>
               </div>
               <div className="mt-10 flex items-center gap-3">
                 <img
