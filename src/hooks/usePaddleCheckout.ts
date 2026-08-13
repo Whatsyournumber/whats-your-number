@@ -24,6 +24,7 @@ export function usePaddleCheckout() {
         customData: { userId: user?.id || "", ...options.customData },
         settings: {
           displayMode: "overlay",
+          locale: document.documentElement.lang.toLowerCase().startsWith("en") ? "en" : "es",
           successUrl: options.successUrl || `${window.location.origin}/dashboard?checkout=success`,
           allowLogout: false,
           variant: "one-page",
