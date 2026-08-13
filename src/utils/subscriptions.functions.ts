@@ -158,3 +158,51 @@ export const changePlan = createServerFn({ method: "POST" })
     return { ok: true, upgraded: isUpgrade } as const;
   });
 
+
+/**
+ * Fallback for the webhook: reads the user's latest subscription straight from
+ * Paddle and persists it. The success screen calls this while polling so the
+ * plan activates even if the webhook is delayed or was never applied.
+ */
+export const syncMySubscription = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { environment: PaddleEnv }) => data)
+  .handler(async ({ data, context }) => {
+    const { userId } = context;
+    const env = data.environment;
+
+    const res = await gatewayFetch(env, "/subscriptions?per_page=100&status=active");
+    const json = (await res.json()) as { data?: any[] };
+    const list = json.data ?? [];
+
+    const mine = list
+      .filter((s) => s?.custom_data?.userId === userId)
+      .sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)))[0];
+
+    if (!mine) return { ok: false, reason: "not_found" as const };
+
+    const item = mine.items?.[0];
+    const priceId = item?.price?.import_meta?.external_id as string | undefined;
+    const productId = item?.product?.import_meta?.external_id as string | undefined;
+    if (!priceId || !productId) return { ok: false, reason: "missing_external_id" as const };
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.from("subscriptions").upsert(
+      {
+        user_id: userId,
+        paddle_subscription_id: mine.id,
+        paddle_customer_id: mine.customer_id,
+        product_id: productId,
+        price_id: priceId,
+        status: mine.status,
+        current_period_start: mine.current_billing_period?.starts_at,
+        current_period_end: mine.current_billing_period?.ends_at,
+        environment: env,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "paddle_subscription_id" },
+    );
+    if (error) throw error;
+
+    return { ok: true, productId } as const;
+  });
