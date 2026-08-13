@@ -78,93 +78,6 @@ export const Route = createFileRoute("/finanzas-para-ninos")({
   component: KidsFinanceLanding,
 });
 
-function KidPreview() {
-  const t = useT();
-
-  const pockets = [
-    { label: t("Gastar", "Spend"), value: "€24", pct: 20, tone: "bg-kid-sky" },
-    { label: t("Ahorrar", "Save"), value: "€60", pct: 50, tone: "bg-kid-mint" },
-    { label: t("Invertir", "Invest"), value: "€24", pct: 20, tone: "bg-kid-grape" },
-    { label: t("Compartir", "Share"), value: "€12", pct: 10, tone: "bg-kid-coral" },
-  ];
-
-  return (
-    <div className="surface glow relative overflow-hidden p-6 md:p-8">
-      <div className="kid-gradient-soft pointer-events-none absolute inset-0" />
-      <div className="relative grid gap-4 md:grid-cols-2">
-        <div className="surface p-5">
-          <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
-            {t("Número de hoy", "Today's number")}
-          </p>
-          <p className="numeric kid-text-gradient mt-2 text-5xl font-semibold">€120</p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            {t("Ahorrando €10 por semana", "Saving €10 every week")}
-          </p>
-          <div className="mt-5 rounded-xl p-4 ring-1 ring-kid-grape/25 kid-gradient-soft">
-            <p className="text-[11px] uppercase tracking-wider text-kid-grape">
-              {t("Número del futuro", "Future number")}
-            </p>
-            <p className="numeric mt-1 text-2xl font-semibold">€1,480</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {t("En 2 años si sigue así", "In 2 years if they keep going")}
-            </p>
-          </div>
-          <div className="mt-4 flex items-center gap-2">
-            {[Trophy, Star, BadgeCheck].map((Icon, i) => (
-              <span
-                key={i}
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-kid-sun/15 text-kid-sun ring-1 ring-kid-sun/30"
-              >
-                <Icon className="h-4 w-4" />
-              </span>
-            ))}
-            <span className="text-xs text-muted-foreground">
-              {t("3 insignias ganadas", "3 badges earned")}
-            </span>
-          </div>
-        </div>
-
-        <div className="surface p-5">
-          <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
-            {t("Bolsillos", "Pockets")}
-          </p>
-          <ul className="mt-4 space-y-3">
-            {pockets.map((p) => (
-              <li key={p.label}>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">{p.label}</span>
-                  <span className="numeric font-medium">{p.value}</span>
-                </div>
-                <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-elevated">
-                  <div className={`h-full rounded-full ${p.tone}`} style={{ width: `${p.pct}%` }} />
-                </div>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-5 rounded-xl bg-elevated px-4 py-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">
-                {t("Sueño: bici nueva", "Dream: new bike")}
-              </span>
-              <span className="numeric text-xs font-medium text-kid-mint">62%</span>
-            </div>
-            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-background">
-              <div className="kid-gradient h-full rounded-full" style={{ width: "62%" }} />
-            </div>
-          </div>
-          <div className="mt-4 flex items-center justify-between rounded-xl bg-elevated px-4 py-3">
-            <span className="text-xs text-muted-foreground">
-              {t("Tarea: ordenar el cuarto", "Chore: tidy the room")}
-            </span>
-            <span className="numeric text-xs font-medium text-kid-sun">+€3</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-
 function SectionHeader({
   eyebrow,
   title,
@@ -1086,172 +999,6 @@ function FamilyProfiles() {
 function KidsFinanceLanding() {
   const t = useT();
 
-  const features = [
-    {
-      icon: Wallet,
-      tone: "text-kid-sky bg-kid-sky/12 ring-kid-sky/25",
-      title: t("Número de hoy", "Today's number"),
-      desc: t(
-        "Su dinero disponible ahora mismo, en grande y explicado con palabras que entienden.",
-        "Their money right now, big and explained in words they understand.",
-      ),
-    },
-    {
-      icon: Rocket,
-      tone: "text-kid-grape bg-kid-grape/12 ring-kid-grape/25",
-      title: t("Número del futuro", "Future number"),
-      desc: t(
-        "Proyecta hasta dónde puede llegar su dinero si sigue ahorrando cada semana.",
-        "Projects how far their money can go if they keep saving every week.",
-      ),
-    },
-    {
-      icon: PiggyBank,
-      tone: "text-kid-mint bg-kid-mint/12 ring-kid-mint/25",
-      title: t("Bolsillos", "Pockets"),
-      desc: t(
-        "Gastar, ahorrar, invertir y compartir: el método de los 4 sobres, digital.",
-        "Spend, save, invest and share: the 4-envelope method, gone digital.",
-      ),
-    },
-    {
-      icon: Target,
-      tone: "text-kid-coral bg-kid-coral/12 ring-kid-coral/25",
-      title: t("Sueños", "Dreams"),
-      desc: t(
-        "Metas visuales con barra de progreso: la bici, el viaje o el videojuego.",
-        "Visual goals with progress bars: the bike, the trip or the video game.",
-      ),
-    },
-    {
-      icon: CalendarCheck,
-      tone: "text-kid-sun bg-kid-sun/12 ring-kid-sun/25",
-      title: t("Tareas", "Chores"),
-      desc: t(
-        "Tareas de casa que se convierten en ingreso propio y en hábitos que duran.",
-        "Household chores that turn into their own income and lasting habits.",
-      ),
-    },
-    {
-      icon: TrendingUp,
-      tone: "text-kid-mint bg-kid-mint/12 ring-kid-mint/25",
-      title: t("Cómo crece tu dinero", "How money grows"),
-      desc: t(
-        "Interés compuesto explicado para niños, con gráficas que se entienden solas.",
-        "Compound interest explained for kids, with charts that speak for themselves.",
-      ),
-    },
-    {
-      icon: Coins,
-      tone: "text-kid-sun bg-kid-sun/12 ring-kid-sun/25",
-      title: t("Mesada automática", "Automatic allowance"),
-      desc: t(
-        "Programa la mesada semanal o mensual y se reparte sola entre sus bolsillos.",
-        "Schedule weekly or monthly allowance; it splits itself across their pockets.",
-      ),
-    },
-    {
-      icon: Trophy,
-      tone: "text-kid-coral bg-kid-coral/12 ring-kid-coral/25",
-      title: t("Insignias y rachas", "Badges and streaks"),
-      desc: t(
-        "Cada semana que ahorra suma racha, nivel e insignias que quieren coleccionar.",
-        "Every week they save adds a streak, a level and badges they want to collect.",
-      ),
-    },
-    {
-      icon: Gamepad2,
-      tone: "text-kid-grape bg-kid-grape/12 ring-kid-grape/25",
-      title: t("Retos de dinero", "Money quests"),
-      desc: t(
-        "Mini retos jugables: ¿ahorrar o gastar? Aprenden decidiendo, no memorizando.",
-        "Playable mini-quests: save or spend? They learn by deciding, not memorizing.",
-      ),
-    },
-    {
-      icon: BookOpen,
-      tone: "text-kid-sky bg-kid-sky/12 ring-kid-sky/25",
-      title: t("Lecciones de 2 minutos", "2-minute lessons"),
-      desc: t(
-        "Cápsulas por edad: qué es un banco, un precio justo, un interés y un impuesto.",
-        "Age-based capsules: what a bank, a fair price, interest and taxes really are.",
-      ),
-    },
-    {
-      icon: HeartHandshake,
-      tone: "text-kid-coral bg-kid-coral/12 ring-kid-coral/25",
-      title: t("Bolsillo de compartir", "Share pocket"),
-      desc: t(
-        "Aprenden generosidad: apartan una parte para donar o ayudar a alguien.",
-        "They learn generosity: a slice set aside to donate or help someone.",
-      ),
-    },
-    {
-      icon: Users,
-      tone: "text-kid-mint bg-kid-mint/12 ring-kid-mint/25",
-      title: t("Vista de los papás", "Parents' view"),
-      desc: t(
-        "Aprueba tareas, ajusta mesadas y mira el progreso de cada hijo desde tu cuenta.",
-        "Approve chores, tweak allowances and see each child's progress from your account.",
-      ),
-    },
-    {
-      icon: BellRing,
-      tone: "text-kid-sun bg-kid-sun/12 ring-kid-sun/25",
-      title: t("Avisos amables", "Kind nudges"),
-      desc: t(
-        "Recordatorios positivos cuando toca ahorrar o cuando alcanzan un sueño.",
-        "Positive reminders when it's time to save or when they hit a dream.",
-      ),
-    },
-    {
-      icon: LineChartIcon,
-      tone: "text-kid-sky bg-kid-sky/12 ring-kid-sky/25",
-      title: t("Su historia de ahorro", "Their savings story"),
-      desc: t(
-        "Una línea de tiempo con todo lo que ahorró, ganó y logró desde el día uno.",
-        "A timeline of everything they saved, earned and achieved from day one.",
-      ),
-    },
-    {
-      icon: ShieldCheck,
-      tone: "text-kid-grape bg-kid-grape/12 ring-kid-grape/25",
-      title: t("Seguro y sin anuncios", "Safe and ad-free"),
-      desc: t(
-        "Cero publicidad, cero compras dentro de la app, datos privados y bajo tu control.",
-        "Zero ads, zero in-app purchases, private data fully under your control.",
-      ),
-    },
-  ];
-
-
-  const steps = [
-    {
-      icon: Lock,
-      title: t("1. Activa el plan Familiar", "1. Activate the Family plan"),
-      desc: t(
-        "Desde WhatsYournumber creas el perfil de cada hijo en segundos, con su propio acceso.",
-        "From WhatsYournumber you create each child's profile in seconds, with their own login.",
-      ),
-    },
-    {
-      icon: Sparkles,
-      title: t("2. El niño entra a su pantalla", "2. The kid opens their screen"),
-      desc: t(
-        "Una interfaz simple, colorida y sin ruido: solo sus números y sus sueños.",
-        "A simple, colorful, noise-free interface: just their numbers and their dreams.",
-      ),
-    },
-    {
-      icon: GraduationCap,
-      title: t("3. Aprende ahorrando de verdad", "3. They learn by really saving"),
-      desc: t(
-        "Cada tarea, sueño y bolsillo le enseña a decidir con su propio dinero.",
-        "Every chore, dream and pocket teaches them to decide with their own money.",
-      ),
-    },
-  ];
-
   const ages = [
     {
       range: t("7 a 9 años", "Ages 7 to 9"),
@@ -1285,21 +1032,27 @@ function KidsFinanceLanding() {
         "Mi hija de 9 años ahora pregunta cuánto le falta para su bici, no cuánto le doy.",
         "My 9-year-old now asks how much is left for her bike, not how much I'll give her.",
       ),
-      author: t("Marta, mamá de 2", "Marta, mom of 2"),
+      author: "Marta Salas",
+      initials: "MS",
+      role: t("Mamá de 2 · Valencia", "Mom of 2 · Valencia"),
     },
     {
       quote: t(
         "Las tareas dejaron de ser pelea: ahora las hace porque ve subir su número.",
         "Chores stopped being a fight: he does them because he sees his number go up.",
       ),
-      author: t("Andrés, papá de 3", "Andrés, dad of 3"),
+      author: "Andrés Duarte",
+      initials: "AD",
+      role: t("Papá de 3 · Bogotá", "Dad of 3 · Bogotá"),
     },
     {
       quote: t(
         "En un mes entendió el interés compuesto mejor que yo a los 25.",
         "In a month she understood compound interest better than I did at 25.",
       ),
-      author: t("Lucía, mamá de 1", "Lucía, mom of 1"),
+      author: "Lucía Pérez",
+      initials: "LP",
+      role: t("Mamá de 1 · Madrid", "Mom of 1 · Madrid"),
     },
   ];
 
@@ -1458,10 +1211,9 @@ function KidsFinanceLanding() {
           </div>
         </section>
 
-        <section className="surface glow relative mt-24 overflow-hidden">
-          <div className="grid items-center gap-0 md:grid-cols-2">
-            <div className="relative p-10 md:p-14">
-              <div className="kid-gradient-soft pointer-events-none absolute inset-0" />
+        <section className="relative mt-24 overflow-hidden">
+          <div className="relative grid items-center gap-0 md:grid-cols-2">
+            <div className="relative z-10 py-10 md:py-16 md:pr-10">
               <div className="relative">
                 <Gift className="h-8 w-8 text-kid-coral" />
                 <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight md:text-4xl">
@@ -1485,17 +1237,22 @@ function KidsFinanceLanding() {
                 </Link>
               </div>
             </div>
-            <img
-              src={ctaFamily}
-              alt={t(
-                "Familia revisando sus finanzas juntos",
-                "Family reviewing their finances together",
-              )}
-              loading="lazy"
-              width={1408}
-              height={912}
-              className="h-full w-full object-cover"
-            />
+            <div className="relative h-72 md:absolute md:inset-y-0 md:right-0 md:h-full md:w-[58%]">
+              <img
+                src={ctaFamily}
+                alt={t(
+                  "Familia revisando sus finanzas juntos",
+                  "Family reviewing their finances together",
+                )}
+                loading="lazy"
+                width={1408}
+                height={912}
+                className="h-full w-full object-cover [mask-image:linear-gradient(90deg,transparent_0%,#000_38%,#000_100%)]"
+              />
+              <div className="absolute inset-y-0 left-0 w-1/2 bg-[linear-gradient(90deg,var(--background)_0%,transparent_100%)]" />
+              <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,var(--background)_0%,transparent_100%)]" />
+              <div className="absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(0deg,var(--background)_0%,transparent_100%)]" />
+            </div>
           </div>
         </section>
 
