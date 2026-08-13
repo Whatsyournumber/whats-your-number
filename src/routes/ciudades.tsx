@@ -70,7 +70,7 @@ function SelectFilter<T extends string>({
   value,
   onChange,
 }: {
-  label: string;
+  label?: string;
   options: Opt<T>[];
   value: T;
   onChange: (v: T) => void;
@@ -79,11 +79,13 @@ function SelectFilter<T extends string>({
   const isStar = selected?.icon?.startsWith("★") ?? false;
   return (
     <div className="min-w-0">
-      <p className="truncate text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
-        {label}
-      </p>
+      {label ? (
+        <p className="truncate text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
+          {label}
+        </p>
+      ) : null}
       <Select value={value} onValueChange={(v) => onChange(v as T)}>
-        <SelectTrigger className="mt-1.5 h-9 w-full rounded-xl border-border/60 bg-elevated/40 px-3 text-xs transition-colors hover:border-primary/40 hover:bg-elevated/60">
+        <SelectTrigger className={label ? "mt-1.5 h-9 w-full rounded-xl border-border/60 bg-elevated/40 px-3 text-xs transition-colors hover:border-primary/40 hover:bg-elevated/60" : "h-9 w-full rounded-xl border-border/60 bg-elevated/40 px-3 text-xs transition-colors hover:border-primary/40 hover:bg-elevated/60"}>
           <span className="inline-flex min-w-0 items-center gap-2.5">
             {selected ? (
               <span className="inline-flex w-5 shrink-0 items-center justify-start">
@@ -558,10 +560,12 @@ function LifestyleSimulatorContent() {
               ]}
             />
             <div className="col-span-2">
-              <div className="flex items-end gap-2">
+              <p className="truncate text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
+                {t("Objetivo", "Goal")}
+              </p>
+              <div className="mt-1.5 flex items-center gap-2">
                 <div className="min-w-0 flex-1">
                   <SelectFilter
-                    label={t("Objetivo", "Goal")}
                     value={filters.goal}
                     onChange={(v) => set("goal", v)}
                     options={[
