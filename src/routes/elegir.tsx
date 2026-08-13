@@ -7,7 +7,37 @@ import { BrandMark } from "@/components/brand-logo";
 import { useAuth } from "@/hooks/use-auth";
 import { useT } from "@/hooks/use-language";
 
+import { supabase } from "@/integrations/supabase/client";
 const KIDS_APP_URL = "https://myfirstnumber.lovable.app";
+
+/**
+ * Abre My First Number llevando la sesión actual en el fragmento (#wyn=...),
+ * para que el niño no tenga que volver a iniciar sesión y caiga en su onboarding.
+ */
+async function goToKids() {
+  let payload = "";
+  try {
+    const { data } = await supabase.auth.getSession();
+    const s = data.session;
+    if (s) {
+      payload = btoa(
+        JSON.stringify({
+          access_token: s.access_token,
+          refresh_token: s.refresh_token,
+          email: s.user.email,
+          name:
+            (s.user.user_metadata?.['full_name'] as string | undefined) ??
+            (s.user.user_metadata?.['name'] as string | undefined) ??
+            null,
+        }),
+      );
+    }
+  } catch {
+    payload = "";
+  }
+  const url = `${KIDS_APP_URL}/onboarding${payload ? `#wyn=${encodeURIComponent(payload)}` : ""}`;
+  window.location.href = url;
+}
 
 export const Route = createFileRoute("/elegir")({
   head: () => ({
@@ -110,10 +140,12 @@ function ChooserPage() {
             </span>
           </button>
 
-          <a
-            href={KIDS_APP_URL}
+          <button
+            type="button"
+            onClick={() => void goToKids()}
             className="group flex flex-col items-center gap-4 rounded-3xl border border-border bg-elevated/60 p-8 text-center transition-all hover:-translate-y-1 hover:border-primary/40 hover:bg-elevated"
           >
+
             <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 ring-2 ring-primary/30">
               <Baby className="h-7 w-7 text-primary" />
             </span>
@@ -126,7 +158,7 @@ function ChooserPage() {
             <span className="inline-flex items-center gap-1 text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
               {t("Continuar", "Continue")} <ArrowRight className="h-3.5 w-3.5" />
             </span>
-          </a>
+          </button>
         </div>
       </motion.div>
     </div>
