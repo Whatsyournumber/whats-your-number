@@ -92,6 +92,17 @@ const CITY_PRESENCE: Record<string, number> = {
   austin: 76,
   sanfrancisco: 72,
   chicago: 70,
+  palermo: 68,
+  belgrade: 70,
+  tirana: 66,
+  sarajevo: 62,
+  kotor: 70,
+  andorra: 66,
+  sanjuan: 66,
+  guayaquil: 58,
+  sansalvador: 55,
+  caracas: 45,
+  margarita: 55,
 };
 
 /** Refuerzo por país cuando la ciudad no está listada arriba. */
@@ -121,6 +132,14 @@ const COUNTRY_PRESENCE: Record<string, number> = {
   "Taiwán": 70,
   "Canadá": 78,
   "Estados Unidos": 66,
+  "Andorra": 66,
+  "Montenegro": 66,
+  "Serbia": 64,
+  "Albania": 62,
+  "Bosnia y Herzegovina": 58,
+  "Puerto Rico": 64,
+  "El Salvador": 54,
+  "Venezuela": 45,
 };
 
 /** 0-100. 50 = sin presencia relevante en rankings globales. */

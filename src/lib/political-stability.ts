@@ -89,6 +89,14 @@ const SCORES: Record<string, number> = {
   Israel: 45,
   Etiopía: 35,
   Nigeria: 33,
+  Andorra: 93,
+  Montenegro: 68,
+  Serbia: 62,
+  Albania: 62,
+  "Bosnia y Herzegovina": 55,
+  "Puerto Rico": 68,
+  "El Salvador": 55,
+  Venezuela: 22,
 };
 
 /** Puntaje de estabilidad política del país (0-100). */
