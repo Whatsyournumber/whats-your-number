@@ -274,7 +274,7 @@ function KidsFinanceLanding() {
       ),
     },
     {
-      icon: LineChart,
+      icon: LineChartIcon,
       tone: "text-kid-sky bg-kid-sky/12 ring-kid-sky/25",
       title: t("Su historia de ahorro", "Their savings story"),
       desc: t(
