@@ -294,6 +294,98 @@ function ThreePillars() {
   );
 }
 
+function PhoneMock({
+  accent,
+  face,
+  name,
+  label,
+  value,
+  data,
+  dataKey,
+  rows,
+  chip,
+  id,
+}: {
+  accent: string;
+  face: string;
+  name: string;
+  label: string;
+  value: string;
+  data: Array<Record<string, number | string>>;
+  dataKey: string;
+  rows: Array<{ k: string; v: string }>;
+  chip: string;
+  id: string;
+}) {
+  return (
+    <div
+      className="relative mx-auto w-full max-w-[300px] rounded-[2.5rem] border border-border bg-elevated p-2.5 shadow-2xl"
+      style={{ boxShadow: `0 30px 80px -40px color-mix(in oklab, ${accent} 45%, transparent)` }}
+    >
+      <span
+        className="pointer-events-none absolute inset-0 rounded-[2.5rem]"
+        style={{ boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${accent} 25%, transparent)` }}
+      />
+      <div className="relative overflow-hidden rounded-[2rem] bg-card">
+        <div className="flex justify-center pt-3">
+          <span className="h-1.5 w-16 rounded-full bg-border" />
+        </div>
+
+        <div className="p-5">
+          <div className="flex items-center gap-2.5">
+            <img src={face} alt="" width={32} height={32} className="h-8 w-8 rounded-full object-cover" />
+            <div>
+              <p className="text-sm font-medium leading-tight">{name}</p>
+              <p className="text-[11px] text-muted-foreground">{chip}</p>
+            </div>
+          </div>
+
+          <p className="mt-6 text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
+          <p className="numeric mt-1 text-3xl font-semibold" style={{ color: accent }}>
+            {value}
+          </p>
+
+          <div className="mt-5 h-28">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={data} margin={{ top: 4, right: 0, bottom: 0, left: 0 }}>
+                <defs>
+                  <linearGradient id={`phone-${id}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={accent} stopOpacity={0.3} />
+                    <stop offset="100%" stopColor={accent} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <Area
+                  type="monotone"
+                  dataKey={dataKey}
+                  stroke={accent}
+                  strokeWidth={2}
+                  fill={`url(#phone-${id})`}
+                  dot={false}
+                  activeDot={false}
+                  isAnimationActive={false}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+
+          <dl className="mt-4 space-y-2.5 border-t border-border pt-4 text-xs">
+            {rows.map((r) => (
+              <div key={r.k} className="flex items-center justify-between">
+                <dt className="text-muted-foreground">{r.k}</dt>
+                <dd className="numeric font-medium">{r.v}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+
+        <div className="flex justify-center pb-3">
+          <span className="h-1 w-24 rounded-full bg-border" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function DualDashboards() {
   const t = useT();
   const data = [
@@ -310,106 +402,72 @@ function DualDashboards() {
       <h2 className="text-center font-display text-2xl font-semibold tracking-tight md:text-3xl">
         {t("Dos paneles. Un mismo objetivo.", "Two dashboards. One shared goal.")}
       </h2>
-      <p className="mt-3 text-center text-sm text-muted-foreground">
+      <p className="mx-auto mt-3 max-w-xl text-center text-sm text-muted-foreground">
         {t(
-          "Papá planifica el futuro. Ellos aprenden a construirlo.",
-          "Parents plan the future. Kids learn to build it.",
+          "Papá planifica el futuro desde su móvil. Ella construye el suyo desde el propio.",
+          "Parents plan the future from their phone. Kids build theirs from their own.",
         )}
       </p>
 
-      <div className="mt-10 grid items-center gap-6 lg:grid-cols-[1fr_auto_1fr]">
-        <div className="rounded-2xl border border-border bg-card p-6">
-          <div className="flex items-center gap-2.5">
-            <img src={faceDad} alt="" width={28} height={28} className="h-7 w-7 rounded-full object-cover" />
-            <p className="text-sm font-medium">{t("Panel de papá", "Parent dashboard")}</p>
-          </div>
-          <p className="mt-5 text-[11px] uppercase tracking-wider text-muted-foreground">
-            {t("Fondo del futuro", "Future fund")}
-          </p>
-          <p className="numeric mt-1 text-3xl font-semibold">€196.000</p>
-          <div className="mt-5 h-24">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={data} margin={{ top: 4, right: 0, bottom: 0, left: 0 }}>
-                <defs>
-                  <linearGradient id="kidP" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--kid-mint)" stopOpacity={0.28} />
-                    <stop offset="100%" stopColor="var(--kid-mint)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <Area
-                  type="monotone"
-                  dataKey="p"
-                  stroke="var(--kid-mint)"
-                  strokeWidth={1.75}
-                  fill="url(#kidP)"
-                  isAnimationActive={false}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-          <dl className="mt-5 grid grid-cols-2 gap-4 border-t border-border pt-4 text-xs">
-            <div>
-              <dt className="text-muted-foreground">{t("Aporte mensual", "Monthly deposit")}</dt>
-              <dd className="numeric mt-1 text-sm font-medium">€300</dd>
-            </div>
-            <div>
-              <dt className="text-muted-foreground">{t("Rendimiento", "Return")}</dt>
-              <dd className="numeric mt-1 text-sm font-medium">7,2%</dd>
-            </div>
-          </dl>
-        </div>
+      <div className="mt-12 grid items-center gap-10 lg:grid-cols-[1fr_auto_1fr]">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{ duration: 0.5 }}
+        >
+          <PhoneMock
+            id="dad"
+            accent="var(--kid-mint)"
+            face={faceDad}
+            name={t("Papá", "Dad")}
+            chip={t("Plan familiar", "Family plan")}
+            label={t("Fondo del futuro", "Future fund")}
+            value="€196.000"
+            data={data}
+            dataKey="p"
+            rows={[
+              { k: t("Aporte mensual", "Monthly deposit"), v: "€300" },
+              { k: t("Rendimiento", "Return"), v: "7,2%" },
+              { k: t("Meta a los 18", "Goal at 18"), v: "€200.000" },
+            ]}
+          />
+        </motion.div>
 
         <div className="flex items-center justify-center gap-3 lg:flex-col">
-          <span className="hidden h-px w-10 bg-border lg:block lg:h-10 lg:w-px" />
+          <span className="hidden h-px w-10 bg-border lg:block lg:h-14 lg:w-px" />
           <div className="flex flex-col items-center gap-1.5">
-            <span className="flex h-11 w-11 items-center justify-center rounded-full border border-kid-mint/30 text-kid-mint">
+            <span className="flex h-12 w-12 items-center justify-center rounded-full border border-kid-mint/30 bg-kid-mint/10 text-kid-mint">
               <Users className="h-4 w-4" />
             </span>
             <span className="text-xs font-medium text-kid-mint">Family Planner</span>
           </div>
-          <span className="hidden h-px w-10 bg-border lg:block lg:h-10 lg:w-px" />
+          <span className="hidden h-px w-10 bg-border lg:block lg:h-14 lg:w-px" />
         </div>
 
-        <div className="rounded-2xl border border-border bg-card p-6">
-          <div className="flex items-center gap-2.5">
-            <img src={faceGirl} alt="" width={28} height={28} className="h-7 w-7 rounded-full object-cover" />
-            <p className="text-sm font-medium">{t("Panel de Sofía", "Sofía's dashboard")}</p>
-          </div>
-          <p className="mt-5 text-[11px] uppercase tracking-wider text-muted-foreground">
-            {t("Su patrimonio hoy", "Their net worth today")}
-          </p>
-          <p className="numeric mt-1 text-3xl font-semibold">€1.250</p>
-          <div className="mt-5 h-24">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={data} margin={{ top: 4, right: 0, bottom: 0, left: 0 }}>
-                <defs>
-                  <linearGradient id="kidK" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--kid-grape)" stopOpacity={0.28} />
-                    <stop offset="100%" stopColor="var(--kid-grape)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <Area
-                  type="monotone"
-                  dataKey="k"
-                  stroke="var(--kid-grape)"
-                  strokeWidth={1.75}
-                  fill="url(#kidK)"
-                  isAnimationActive={false}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-          <dl className="mt-5 grid grid-cols-2 gap-4 border-t border-border pt-4 text-xs">
-            <div>
-              <dt className="text-muted-foreground">{t("Ahorros", "Savings")}</dt>
-              <dd className="numeric mt-1 text-sm font-medium">€850</dd>
-            </div>
-            <div>
-              <dt className="text-muted-foreground">{t("Inversiones", "Investments")}</dt>
-              <dd className="numeric mt-1 text-sm font-medium">€400</dd>
-            </div>
-          </dl>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <PhoneMock
+            id="kid"
+            accent="var(--kid-pink)"
+            face={faceGirl}
+            name={t("Sofía", "Sofía")}
+            chip={t("Su primer número", "Her first number")}
+            label={t("Su dinero hoy", "Her money today")}
+            value="€1.250"
+            data={data}
+            dataKey="k"
+            rows={[
+              { k: t("Ahorros", "Savings"), v: "€850" },
+              { k: t("Inversiones", "Investments"), v: "€400" },
+              { k: t("Sueño: bici nueva", "Dream: new bike"), v: "62%" },
+            ]}
+          />
+        </motion.div>
       </div>
     </section>
   );
