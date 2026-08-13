@@ -1,15 +1,16 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Check, CreditCard, ShieldCheck, Sparkles, Zap } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { PromoCodeRedeem } from "@/components/promo-code-redeem";
 import { SiteFooter } from "@/components/site-footer";
+import { PaymentTestModeBanner } from "@/components/payment-test-mode-banner";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { useT } from "@/hooks/use-language";
-import { setPendingCheckoutPlan } from "@/lib/pending-checkout";
+import { getPendingCheckoutPlan, setPendingCheckoutPlan } from "@/lib/pending-checkout";
 
 export const Route = createFileRoute("/precios")({
   head: () => ({
@@ -38,6 +39,7 @@ function Pricing() {
   const navigate = useNavigate();
   const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
   const { openCheckout, loading } = usePaddleCheckout();
+  const resumedCheckout = useRef(false);
 
   const isYearly = billing === "yearly";
 
@@ -169,9 +171,22 @@ function Pricing() {
     void openCheckout(checkoutOptions);
   };
 
+  useEffect(() => {
+    if (!user || resumedCheckout.current) return;
+    const pendingPlan = getPendingCheckoutPlan();
+    if (!pendingPlan) return;
+    const selected = plans.find((plan) =>
+      pendingPlan === "familiar" ? plan.name === "Familiar" : plan.name === "Pro",
+    );
+    if (!selected) return;
+    resumedCheckout.current = true;
+    handleCta(selected);
+  }, [user]);
+
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
+      <PaymentTestModeBanner />
       <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[900px] -translate-x-1/2 rounded-full opacity-[0.12] blur-3xl" />
       <SiteHeader />
 
