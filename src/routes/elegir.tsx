@@ -5,6 +5,7 @@ import { ArrowRight, Baby, Compass, Loader2 } from "lucide-react";
 
 import { BrandMark } from "@/components/brand-logo";
 import { useAuth } from "@/hooks/use-auth";
+import { useSubscription } from "@/hooks/use-subscription";
 import { useT } from "@/hooks/use-language";
 
 import { supabase } from "@/integrations/supabase/client";
