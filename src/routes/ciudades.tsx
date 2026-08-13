@@ -457,19 +457,27 @@ function LifestyleSimulatorContent() {
                 { value: "cold", label: t("Frío", "Cold"), icon: "❄️" },
               ]}
             />
-            <div className="col-span-2">
-              <SelectFilter
-                label={t("Estabilidad política", "Political stability")}
-                value={filters.stability}
-                onChange={(v) => set("stability", v)}
-                options={[
-                  { value: "any", label: t("Indiferente", "Any"), icon: "🌍" },
-                  { value: "medium", label: t("Media o superior", "Medium or higher"), icon: "🟡" },
-                  { value: "high", label: t("Alta", "High"), icon: "🟢" },
-                  { value: "veryhigh", label: t("Muy alta", "Very high"), icon: "🛡️" },
-                ]}
-              />
-            </div>
+            <SelectFilter
+              label={t("Política", "Politics")}
+              value={filters.stability}
+              onChange={(v) => set("stability", v)}
+              options={[
+                { value: "any", label: t("Indiferente", "Any"), icon: "🌍" },
+                { value: "medium", label: t("Media o superior", "Medium or higher"), icon: "🟡" },
+                { value: "high", label: t("Alta", "High"), icon: "🟢" },
+                { value: "veryhigh", label: t("Muy alta", "Very high"), icon: "🛡️" },
+              ]}
+            />
+            <SelectFilter
+              label={t("Cómo vivir", "Comfort level")}
+              value={filters.comfort}
+              onChange={(v) => set("comfort", v)}
+              options={[
+                { value: "tight", label: t("Ajustado", "Tight"), icon: "🪙" },
+                { value: "comfortable", label: t("Cómodo", "Comfortable"), icon: "🛋️" },
+                { value: "luxury", label: t("Lujo", "Luxury"), icon: "🥂" },
+              ]}
+            />
           </FilterGroup>
 
           {/* Dinero */}
