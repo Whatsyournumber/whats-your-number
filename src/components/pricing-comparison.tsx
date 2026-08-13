@@ -78,53 +78,34 @@ export function PricingComparison() {
 
   return (
     <section className="mt-16">
-      <div className="grid items-center gap-8 md:grid-cols-[1fr_0.85fr]">
-        <header>
-          <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-primary">
-            {t("Comparativa", "Comparison")}
-          </p>
-          <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight md:text-3xl">
-            {t("WhatsYournumber vs. la competencia", "WhatsYournumber vs. the competition")}
-          </h2>
-          <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
-            {t(
-              "Otras apps te dicen en qué gastaste. Nosotros te decimos cuánto necesitas para ser libre, y dónde. Miles de personas ya toman decisiones con su número encima de la mesa.",
-              "Other apps tell you what you spent. We tell you how much you need to be free, and where. Thousands already make decisions with their number on the table.",
-            )}
-          </p>
-          <div className="mt-5 flex flex-wrap gap-2">
-            {[
-              t("Tu número, no solo tus gastos", "Your number, not just your spending"),
-              t("IA que entiende tu vida", "AI that gets your life"),
-              t("Español e inglés", "Spanish and English"),
-            ].map((chip) => (
-              <span
-                key={chip}
-                className="rounded-full border border-border bg-elevated/50 px-3 py-1 text-[11px] text-muted-foreground"
-              >
-                {chip}
-              </span>
-            ))}
-          </div>
-        </header>
-        <div className="relative overflow-hidden rounded-2xl border border-border">
-          <img
-            src={comparePhoto}
-            alt={t("Pareja revisando sus finanzas en casa", "Couple reviewing their finances at home")}
-            loading="lazy"
-            width={1024}
-            height={1280}
-            className="h-full max-h-[320px] w-full object-cover"
-          />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
-          <div className="absolute bottom-4 left-4 right-4">
-            <p className="text-xs font-medium">
-              {t("\u201cPor fin sé cuándo puedo parar.\u201d", "\u201cI finally know when I can stop.\u201d")}
-            </p>
-            <p className="mt-0.5 text-[11px] text-muted-foreground">Laura & Diego · Madrid</p>
-          </div>
+      <header className="text-center md:text-left">
+        <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-primary">
+          {t("Comparativa", "Comparison")}
+        </p>
+        <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight md:text-3xl">
+          {t("WhatsYournumber vs. la competencia", "WhatsYournumber vs. the competition")}
+        </h2>
+        <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground md:mx-0">
+          {t(
+            "Otras apps te dicen en qué gastaste. Nosotros te decimos cuánto necesitas para ser libre, y dónde. Miles de personas ya toman decisiones con su número encima de la mesa.",
+            "Other apps tell you what you spent. We tell you how much you need to be free, and where. Thousands already make decisions with their number on the table.",
+          )}
+        </p>
+        <div className="mt-5 flex flex-wrap justify-center gap-2 md:justify-start">
+          {[
+            t("Tu número, no solo tus gastos", "Your number, not just your spending"),
+            t("IA que entiende tu vida", "AI that gets your life"),
+            t("Español e inglés", "Spanish and English"),
+          ].map((chip) => (
+            <span
+              key={chip}
+              className="rounded-full border border-border bg-elevated/50 px-3 py-1 text-[11px] text-muted-foreground"
+            >
+              {chip}
+            </span>
+          ))}
         </div>
-      </div>
+      </header>
 
       <div className="surface mt-8 overflow-x-auto p-0">
         <table className="w-full min-w-[640px] border-collapse text-sm">
@@ -255,35 +236,63 @@ export function PricingFaq() {
 
   return (
     <section className="mt-16">
-      <header className="text-center">
-        <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-primary">FAQ</p>
-        <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight md:text-3xl">
-          {t("Preguntas frecuentes", "Frequently asked questions")}
-        </h2>
-      </header>
+      <div className="grid items-start gap-8 lg:grid-cols-[1fr_0.85fr]">
+        <div>
+          <header className="text-center md:text-left">
+            <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-primary">FAQ</p>
+            <h2 className="mt-2 font-display text-2xl font-semibold tracking-tight md:text-3xl">
+              {t("Preguntas frecuentes", "Frequently asked questions")}
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground md:mx-0">
+              {t(
+                "Todo lo que necesitas saber antes de empezar. Si tienes otra duda, escríbenos.",
+                "Everything you need to know before starting. If you have another question, write us.",
+              )}
+            </p>
+          </header>
 
-      <div className="mx-auto mt-8 max-w-2xl divide-y divide-border overflow-hidden rounded-2xl border border-border bg-elevated/30">
-        {faqs.map((faq, i) => {
-          const isOpen = open === i;
-          return (
-            <div key={faq.q}>
-              <button
-                type="button"
-                onClick={() => setOpen(isOpen ? null : i)}
-                className="flex w-full items-center justify-between gap-4 p-5 text-left transition-colors hover:bg-elevated/60"
-                aria-expanded={isOpen}
-              >
-                <span className="text-sm font-medium">{faq.q}</span>
-                <ChevronDown
-                  className={cn("h-4 w-4 shrink-0 text-muted-foreground transition-transform", isOpen && "rotate-180")}
-                />
-              </button>
-              {isOpen ? (
-                <p className="px-5 pb-5 text-sm leading-relaxed text-muted-foreground">{faq.a}</p>
-              ) : null}
-            </div>
-          );
-        })}
+          <div className="mt-8 divide-y divide-border overflow-hidden rounded-2xl border border-border bg-elevated/30">
+            {faqs.map((faq, i) => {
+              const isOpen = open === i;
+              return (
+                <div key={faq.q}>
+                  <button
+                    type="button"
+                    onClick={() => setOpen(isOpen ? null : i)}
+                    className="flex w-full items-center justify-between gap-4 p-5 text-left transition-colors hover:bg-elevated/60"
+                    aria-expanded={isOpen}
+                  >
+                    <span className="text-sm font-medium">{faq.q}</span>
+                    <ChevronDown
+                      className={cn("h-4 w-4 shrink-0 text-muted-foreground transition-transform", isOpen && "rotate-180")}
+                    />
+                  </button>
+                  {isOpen ? (
+                    <p className="px-5 pb-5 text-sm leading-relaxed text-muted-foreground">{faq.a}</p>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="relative overflow-hidden rounded-2xl border border-border lg:sticky lg:top-24">
+          <img
+            src={comparePhoto}
+            alt={t("Pareja revisando sus finanzas en casa", "Couple reviewing their finances at home")}
+            loading="lazy"
+            width={1024}
+            height={1280}
+            className="h-full max-h-[420px] w-full object-cover lg:max-h-none lg:min-h-[420px]"
+          />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+          <div className="absolute bottom-4 left-4 right-4">
+            <p className="text-xs font-medium">
+              {t("\u201cPor fin sé cuándo puedo parar.\u201d", "\u201cI finally know when I can stop.\u201d")}
+            </p>
+            <p className="mt-0.5 text-[11px] text-muted-foreground">Laura & Diego · Madrid</p>
+          </div>
+        </div>
       </div>
     </section>
   );
