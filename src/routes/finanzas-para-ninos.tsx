@@ -832,7 +832,7 @@ function ThreePillars() {
               <PillarVisual
                 id={id}
                 color={color}
-                labels={[t("Gastar", "Spend"), t("Ahorrar", "Save"), t("Invertir", "Invest")]}
+                labels={[t("Ahorrar", "Save"), t("Invertir", "Invest"), t("Gastar", "Spend")]}
               />
               <div className="mt-2.5 flex justify-between border-t border-border/60 pt-2 text-[9px] uppercase tracking-wider text-muted-foreground/70">
                 <span>{pillarAxis[id]?.[0]}</span>
