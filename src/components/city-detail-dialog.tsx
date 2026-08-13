@@ -178,10 +178,12 @@ export function CityDetailDialog({
     ...(b.education > 0
       ? [{ name: t("Educación", "Education"), value: b.education, color: "var(--color-chart-6)" }]
       : []),
+    ...(b.travel > 0 ? [{ name: t("Viajes", "Travel"), value: b.travel, color: "var(--color-chart-7)" }] : []),
     { name: t("Impuestos", "Taxes"), value: taxes, color: "var(--color-chart-5)" },
     { name: t("Ocio", "Entertainment"), value: b.entertainment, color: "var(--color-chart-2)" },
     { name: t("Ahorro potencial", "Potential savings"), value: Math.max(0, r.savings), color: "var(--color-positive)" },
   ];
+
 
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
@@ -241,6 +243,16 @@ export function CityDetailDialog({
               {c.beachKm === 0 ? t("En la costa", "On the coast") : `${c.beachKm} km ${t("al mar", "to sea")}`}
             </span>
           </div>
+          {filters.comfort === "luxury" && (
+            <div className="rounded-xl border border-border/60 bg-elevated/30 p-3 text-[11px] leading-relaxed text-muted-foreground">
+              🥂{" "}
+              {t(
+                "Escenario de lujo: alquiler de 2 habitaciones en barrio prime (tipo Salamanca en Madrid), coche de marca con seguro y parking, restaurantes de gama alta, seguro médico privado, colegio internacional si hay hijos y viajes frecuentes.",
+                "Luxury scenario: 2-bedroom rental in a prime neighborhood (think Salamanca in Madrid), premium branded car with insurance and parking, high-end restaurants, private health insurance, international school if you have kids, and frequent travel.",
+              )}
+            </div>
+          )}
+
 
           {filters.goal === "nomad" && (
             <div className="rounded-xl border border-primary/30 bg-primary/5 p-4">
