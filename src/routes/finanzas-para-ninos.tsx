@@ -39,6 +39,7 @@ import {
 
 import heroFamily from "@/assets/kids-hero-family.jpg";
 import ctaFamily from "@/assets/kids-cta-family.jpg";
+import avatarFaces from "@/assets/kids-avatars-faces.png";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useT } from "@/hooks/use-language";
