@@ -377,6 +377,7 @@ function PhoneMock({
   rows,
   chip,
   id,
+  cute,
 }: {
   accent: string;
   face: string;
