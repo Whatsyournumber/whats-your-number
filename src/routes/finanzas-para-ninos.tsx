@@ -732,18 +732,18 @@ function KidsFinanceLanding() {
                 {t("Ver demo", "See demo")}
               </Link>
             </div>
-            <div className="mt-10 flex items-center gap-4">
+            <div className="mt-10 flex items-center gap-3">
               <img
                 src={avatarFaces}
                 alt={t("Familias usando WhatsYournumber", "Families using WhatsYournumber")}
                 width={256}
                 height={128}
-                className="h-16 w-auto shrink-0 mix-blend-lighten"
+                className="h-12 w-auto shrink-0 mix-blend-lighten"
               />
-              <p className="max-w-[16rem] text-xs leading-relaxed text-muted-foreground">
+              <p className="text-sm font-medium text-foreground">
                 {t(
-                  "+3.200 familias ya están construyendo el futuro financiero de sus hijos.",
-                  "+3,200 families are already building their kids' financial future.",
+                  "+3.200 familias ya están construyendo su futuro.",
+                  "+3,200 families are already building their future.",
                 )}
               </p>
             </div>
