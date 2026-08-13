@@ -677,43 +677,72 @@ function KidsFinanceLanding() {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative text-center"
+          className="surface glow relative overflow-hidden p-8 md:p-12"
         >
-          <div className="grid-fade pointer-events-none absolute inset-x-0 -top-16 h-72 opacity-40" />
-          <span className="relative inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium text-kid-grape ring-1 ring-kid-grape/25 kid-gradient-soft">
-            <Sparkles className="h-3.5 w-3.5" />
-            {t("Para los más pequeños de la casa", "For the youngest in the house")}
-          </span>
-          <h1 className="relative mx-auto mt-5 max-w-4xl font-display text-4xl font-semibold tracking-tight md:text-6xl">
-            {t("El dinero se aprende jugando.", "Money is learned by playing.")}
-            <span className="kid-text-gradient block">
-              {t("Su primer número, hoy.", "Their first number, today.")}
-            </span>
-          </h1>
-          <p className="relative mx-auto mt-5 max-w-2xl text-base text-muted-foreground md:text-lg">
-            {t(
-              "Bolsillos, sueños, tareas e insignias en una sola pantalla. Tus hijos ven crecer su dinero de verdad — y aprenden a decidir antes de que importe de verdad.",
-              "Pockets, dreams, chores and badges on one screen. Your kids watch real money grow — and learn to decide before it really counts.",
-            )}
-          </p>
+          <div className="kid-gradient-soft pointer-events-none absolute inset-0" />
+          <div className="relative grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+            <div>
+              <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium text-kid-grape ring-1 ring-kid-grape/25 kid-gradient-soft">
+                <Sparkles className="h-3.5 w-3.5" />
+                {t(
+                  "El futuro financiero de tus hijos, impulsado por IA",
+                  "Your kids' financial future, powered by AI",
+                )}
+              </span>
+              <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.05] tracking-tight md:text-5xl">
+                {t("Construye ", "Build ")}
+                <span className="kid-text-gradient">{t("su patrimonio.", "their wealth.")}</span>
+                <br />
+                {t("Enséñale ", "Teach them ")}
+                <span className="kid-text-gradient">{t("a manejarlo.", "to manage it.")}</span>
+                <br />
+                {t("En una sola plataforma.", "In one single platform.")}
+              </h1>
+              <p className="mt-5 max-w-xl text-base text-muted-foreground">
+                {t(
+                  "Planifica cuánto tendrá tu hijo a los 18 años, crea su primera cartera de inversión, administra su mesada y ayúdalo a desarrollar hábitos financieros que lo acompañarán toda la vida.",
+                  "Plan how much your child will have at 18, build their first investment portfolio, manage their allowance and help them build money habits for life.",
+                )}
+              </p>
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Link
+                  to="/precios"
+                  className="kid-gradient inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-background shadow-lg transition-all hover:gap-3"
+                >
+                  {t("Crear plan Familiar", "Create Family plan")}{" "}
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  to="/auth"
+                  search={{ mode: "signup" }}
+                  className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-kid-grape hover:text-kid-grape"
+                >
+                  {t("Ver demo", "See demo")}
+                </Link>
+              </div>
+              <p className="mt-6 text-xs text-muted-foreground">
+                {t(
+                  "+3.200 familias ya están construyendo el futuro financiero de sus hijos.",
+                  "+3,200 families are already building their kids' financial future.",
+                )}
+              </p>
+            </div>
 
-          <div className="relative mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              to="/precios"
-              className="kid-gradient inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-background shadow-lg transition-all hover:gap-3"
-            >
-              {t("Activar plan Familiar", "Activate Family plan")} <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              to="/auth"
-              search={{ mode: "signup" }}
-              className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-kid-grape hover:text-kid-grape"
-            >
-              {t("Crear cuenta gratis", "Create free account")}
-            </Link>
+            <div className="relative overflow-hidden rounded-2xl">
+              <img
+                src={heroFamily}
+                alt={t(
+                  "Padre e hijo revisando juntos su plan de ahorro",
+                  "Father and son reviewing their savings plan together",
+                )}
+                width={1408}
+                height={1008}
+                className="h-full w-full object-cover"
+              />
+            </div>
           </div>
 
-          <dl className="relative mx-auto mt-12 grid max-w-3xl grid-cols-2 gap-3 sm:grid-cols-4">
+          <dl className="relative mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {stats.map((s) => (
               <div key={s.label} className="surface px-4 py-5">
                 <dt className="numeric kid-text-gradient text-2xl font-semibold">{s.value}</dt>
@@ -723,9 +752,21 @@ function KidsFinanceLanding() {
           </dl>
         </motion.section>
 
-        <section className="mt-16">
+        <DualDashboards />
+
+        <Milestones />
+
+        <GrowthChart />
+
+        <section className="mt-24">
+          <h2 className="mb-8 text-center font-display text-3xl font-semibold tracking-tight">
+            {t("La pantalla de tu hijo", "Your child's screen")}
+          </h2>
           <KidPreview />
         </section>
+
+        <FamilyProfiles />
+
 
         <section className="mt-24">
           <h2 className="text-center font-display text-3xl font-semibold tracking-tight md:text-4xl">
