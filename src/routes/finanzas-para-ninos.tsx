@@ -689,10 +689,11 @@ function KidsFinanceLanding() {
             height={1200}
             className="absolute inset-y-0 right-0 hidden h-full w-[58%] object-cover object-center lg:block"
           />
-          <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,var(--card)_0%,var(--card)_38%,color-mix(in_oklab,var(--card)_78%,transparent)_52%,transparent_72%)] lg:block" />
-          <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(0deg,var(--card)_0%,transparent_35%)] lg:block" />
+          <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,var(--background)_0%,var(--background)_38%,color-mix(in_oklab,var(--background)_78%,transparent)_52%,transparent_74%)] lg:block" />
+          <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(0deg,var(--background)_0%,transparent_35%)] lg:block" />
 
-          <div className="relative px-8 py-14 md:px-14 md:py-20 lg:max-w-[54%]">
+          <div className="relative py-14 md:py-20 lg:max-w-[54%]">
+
             <span className="inline-flex items-center gap-1.5 rounded-full border border-kid-mint/25 bg-kid-mint/10 px-3 py-1 text-xs font-medium text-kid-mint">
               <Sparkles className="h-3.5 w-3.5" />
               {t(
