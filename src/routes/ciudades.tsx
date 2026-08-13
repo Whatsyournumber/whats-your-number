@@ -3,7 +3,7 @@ import { toast } from "sonner";
 
 import { motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeftRight, BookOpen, Info, MapPin, RotateCcw, SlidersHorizontal, Sparkles, X } from "lucide-react";
+import { ArrowLeftRight, BookOpen, Info, MapPin, RotateCcw, Search, SlidersHorizontal, Sparkles, X } from "lucide-react";
 
 import { PlanGate } from "@/components/plan-gate";
 import { PageHeader, PageShell, Panel } from "@/components/page";
