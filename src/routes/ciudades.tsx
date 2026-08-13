@@ -502,16 +502,6 @@ function LifestyleSimulatorContent() {
               />
             </div>
             <SelectFilter
-              label={t("Cómo vivir", "Comfort level")}
-              value={filters.comfort}
-              onChange={(v) => set("comfort", v)}
-              options={[
-                { value: "tight", label: t("Ajustado", "Tight"), icon: "🪙" },
-                { value: "comfortable", label: t("Cómodo", "Comfortable"), icon: "🛋️" },
-                { value: "luxury", label: t("Lujo", "Luxury"), icon: "🥂" },
-              ]}
-            />
-            <SelectFilter
               label={t("Impuestos", "Taxes")}
               value={filters.tax}
               onChange={(v) => set("tax", v)}
