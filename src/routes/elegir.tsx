@@ -110,10 +110,12 @@ function ChooserPage() {
             </span>
           </button>
 
-          <a
-            href={KIDS_APP_URL}
+          <button
+            type="button"
+            onClick={() => void goToKids()}
             className="group flex flex-col items-center gap-4 rounded-3xl border border-border bg-elevated/60 p-8 text-center transition-all hover:-translate-y-1 hover:border-primary/40 hover:bg-elevated"
           >
+
             <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 ring-2 ring-primary/30">
               <Baby className="h-7 w-7 text-primary" />
             </span>
