@@ -21,6 +21,11 @@ import sanjuanPhoto from "@/assets/city-sanjuan-premium.jpg.asset.json";
 import rosarioPhoto from "@/assets/city-rosario-premium.jpg.asset.json";
 import cordobaPhoto from "@/assets/city-cordoba-premium.jpg.asset.json";
 import andorraPhoto from "@/assets/andorra-premium.jpg.asset.json";
+import belgradePhoto from "@/assets/cities/belgrade-premium.jpg.asset.json";
+import sarajevoPhoto from "@/assets/cities/sarajevo-premium.jpg.asset.json";
+import palermoPhoto from "@/assets/cities/palermo-premium.jpg.asset.json";
+import antwerpPhoto from "@/assets/cities/antwerp-premium.jpg.asset.json";
+import lyonPhoto from "@/assets/cities/lyon-premium.jpg.asset.json";
 const PHOTO = {
   hamburg: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/HH_Alsterarkaden_pano1.jpg/1920px-HH_Alsterarkaden_pano1.jpg",
   zagreb: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg/1920px-Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -90,7 +95,7 @@ const PHOTO = {
   kigali: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/An_aerial_view_of_new_look_of_Rwanda_Parliament_Building_in_Kimihurura%2C_Kigali_on_May_16%2C_2019._Emmanuel_Kwizera.jpg/1920px-An_aerial_view_of_new_look_of_Rwanda_Parliament_Building_in_Kimihurura%2C_Kigali_on_May_16%2C_2019._Emmanuel_Kwizera.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   casablanca: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Au_centre_de_Casablanca_%288177200639%29.jpg/1920px-Au_centre_de_Casablanca_%288177200639%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   rotterdam: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/0_8546_Rotterdam_-_Ausblick.jpg/1920px-0_8546_Rotterdam_-_Ausblick.jpg",
-  antwerp: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Amberes%3B_vistas_MAS_1.jpg/1920px-Amberes%3B_vistas_MAS_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  antwerp: antwerpPhoto.url,
   gothenburg: "https://commons.wikimedia.org/wiki/Special:FilePath/View%20over%20Gothenburg%20skyline%20from%20Skansen%20Kronan.jpg?width=1920",
   bratislava: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Vista_panor%C3%A1mica_del_Danubio_a_su_paso_por_Bratislava%2C_Eslovaquia%2C_2020-02-01%2C_DD_61-66_PAN.jpg/1920px-Vista_panor%C3%A1mica_del_Danubio_a_su_paso_por_Bratislava%2C_Eslovaquia%2C_2020-02-01%2C_DD_61-66_PAN.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   krakow: "https://commons.wikimedia.org/wiki/Special:FilePath/Krakow%20-%20Cloth%20Hall%20from%20Basilica%20-%201.jpg?width=1920",
@@ -100,7 +105,7 @@ const PHOTO = {
   bologna: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Bologna_Panorama.jpg/1920px-Bologna_Panorama.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   naples: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Naples_Skyline_at_Venetian_Village_%2837063813004%29.jpg/1920px-Naples_Skyline_at_Venetian_Village_%2837063813004%29.jpg",
   manchester: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Manchester_city_centre_-_geograph.org.uk_-_8059388_%28cropped%29.jpg/1920px-Manchester_city_centre_-_geograph.org.uk_-_8059388_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  lyon: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Lyon_Panorama.jpg/1920px-Lyon_Panorama.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  lyon: lyonPhoto.url,
   atlanta: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Panorama_of_the_Atlanta_skyline_viewed_from_the_Jackson_Street_Bridge%2C_June_2015.jpg/1920px-Panorama_of_the_Atlanta_skyline_viewed_from_the_Jackson_Street_Bridge%2C_June_2015.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   dallas: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Dallas_Skyline_with_Arts_District_at_night.jpg/1920px-Dallas_Skyline_with_Arts_District_at_night.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   portland: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Panorama_of_Willamette_River_Bridge_and_Downtown_-_Portland_-_Oregon_-_USA.jpg/1920px-Panorama_of_Willamette_River_Bridge_and_Downtown_-_Portland_-_Oregon_-_USA.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -130,10 +135,10 @@ const PHOTO = {
   sanjuan: sanjuanPhoto.url,
   andorra: andorraPhoto.url,
   kotor: "https://commons.wikimedia.org/wiki/Special:FilePath/Kotor_and_Boka_kotorska_-_view_from_city_wall.jpg?width=1920",
-  sarajevo: "https://commons.wikimedia.org/wiki/Special:FilePath/Sarajevo_Panorama_2022.jpg?width=1920",
-  belgrade: "https://commons.wikimedia.org/wiki/Special:FilePath/Belgrade%2C_MT_2000s_skyline.jpg?width=1920",
+  sarajevo: sarajevoPhoto.url,
+  belgrade: belgradePhoto.url,
   tirana: "https://commons.wikimedia.org/wiki/Special:FilePath/Tirana_skyline_at_night.jpg?width=1920",
-  palermo: "https://commons.wikimedia.org/wiki/Special:FilePath/Palermo_panorama_monte_pellegrino.JPG?width=1920",
+  palermo: palermoPhoto.url,
 };
 export const extraCities: CityData[] = [
   {
