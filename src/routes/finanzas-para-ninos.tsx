@@ -38,6 +38,7 @@ import {
 } from "recharts";
 
 import heroFamily from "@/assets/kids-hero-family.jpg";
+import heroBg from "@/assets/kids-hero-bg.png.asset.json";
 import ctaFamily from "@/assets/kids-cta-family.jpg";
 import faceDad from "@/assets/kid-face-dad.jpg";
 import faceMom from "@/assets/kid-face-mom.jpg";
@@ -691,92 +692,86 @@ function KidsFinanceLanding() {
     <div className="min-h-screen">
       <SiteHeader />
 
-      <main className="mx-auto w-full max-w-6xl px-6 pt-16">
+      <main className="pt-16">
         <motion.section
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative overflow-hidden"
+          className="relative min-h-[680px] overflow-hidden lg:min-h-[760px]"
         >
           <img
-            src={heroFamily}
+            src={heroBg.url}
             alt={t(
               "Padre e hijo revisando juntos su plan de ahorro",
               "Father and son reviewing their savings plan together",
             )}
             width={1600}
             height={1200}
-            className="absolute inset-y-0 right-0 hidden h-full w-[62%] object-cover object-center lg:block"
+            className="absolute inset-0 h-full w-full object-cover object-center"
           />
-          <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,var(--background)_0%,var(--background)_32%,color-mix(in_oklab,var(--background)_72%,transparent)_48%,color-mix(in_oklab,var(--background)_36%,transparent)_62%,transparent_80%)] lg:block" />
-          <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(0deg,var(--background)_0%,transparent_40%)] lg:block" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,var(--background)_0%,var(--background)_26%,color-mix(in_oklab,var(--background)_78%,transparent)_42%,color-mix(in_oklab,var(--background)_55%,transparent)_58%,transparent_75%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,var(--background)_0%,transparent_35%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,transparent_0%,var(--background)_75%)]" />
 
-          <div className="relative py-14 md:py-20 lg:max-w-[54%]">
-
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-kid-mint/25 bg-kid-mint/10 px-3 py-1 text-xs font-medium text-kid-mint">
-              <Sparkles className="h-3.5 w-3.5" />
-              {t(
-                "El futuro financiero de tus hijos, impulsado por IA",
-                "Your kids' financial future, powered by AI",
-              )}
-            </span>
-            <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.06] tracking-tight md:text-5xl">
-              {t("Construye ", "Build ")}
-              <span className="text-kid-mint">{t("su patrimonio.", "their wealth.")}</span>
-              <br />
-              {t("Enséñale ", "Teach them ")}
-              <span className="text-kid-mint">{t("a manejarlo.", "to manage it.")}</span>
-              <br />
-              {t("En una sola plataforma.", "In one single platform.")}
-            </h1>
-            <p className="mt-6 max-w-lg text-sm leading-relaxed text-muted-foreground md:text-base">
-              {t(
-                "Planifica cuánto tendrá tu hijo a los 18 años, crea su primera cartera de inversión, administra su mesada y ayúdalo a desarrollar hábitos financieros que lo acompañarán toda la vida.",
-                "Plan how much your child will have at 18, build their first investment portfolio, manage their allowance and help them build money habits for life.",
-              )}
-            </p>
-            <div className="mt-9 flex flex-wrap items-center gap-3">
-              <Link
-                to="/precios"
-                className="kid-gradient inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-background shadow-lg transition-all hover:gap-3"
-              >
-                {t("Crear plan Familiar", "Create Family plan")} <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                to="/auth"
-                search={{ mode: "signup" }}
-                className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-kid-mint hover:text-kid-mint"
-              >
-                {t("Ver demo", "See demo")}
-              </Link>
-            </div>
-            <div className="mt-10 flex items-center gap-3">
-              <img
-                src={avatarFaces}
-                alt={t("Familias usando WhatsYournumber", "Families using WhatsYournumber")}
-                width={256}
-                height={128}
-                className="h-12 w-auto shrink-0 mix-blend-lighten"
-              />
-              <p className="text-sm font-medium text-foreground">
+          <div className="relative mx-auto w-full max-w-7xl px-6 py-20 md:py-28 lg:py-32">
+            <div className="lg:max-w-[52%]">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-kid-mint/25 bg-kid-mint/10 px-3 py-1 text-xs font-medium text-kid-mint backdrop-blur-sm">
+                <Sparkles className="h-3.5 w-3.5" />
                 {t(
-                  "+3.200 familias ya están construyendo su futuro.",
-                  "+3,200 families are already building their future.",
+                  "El futuro financiero de tus hijos, impulsado por IA",
+                  "Your kids' financial future, powered by AI",
+                )}
+              </span>
+              <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.06] tracking-tight md:text-5xl lg:text-6xl">
+                {t("Construye ", "Build ")}
+                <span className="text-kid-mint">{t("su patrimonio.", "their wealth.")}</span>
+                <br />
+                {t("Enséñale ", "Teach them ")}
+                <span className="text-kid-mint">{t("a manejarlo.", "to manage it.")}</span>
+                <br />
+                {t("En una sola plataforma.", "In one single platform.")}
+              </h1>
+              <p className="mt-6 max-w-lg text-sm leading-relaxed text-muted-foreground md:text-base">
+                {t(
+                  "Planifica cuánto tendrá tu hijo a los 18 años, crea su primera cartera de inversión, administra su mesada y ayúdalo a desarrollar hábitos financieros que lo acompañarán toda la vida.",
+                  "Plan how much your child will have at 18, build their first investment portfolio, manage their allowance and help them build money habits for life.",
                 )}
               </p>
+              <div className="mt-9 flex flex-wrap items-center gap-3">
+                <Link
+                  to="/precios"
+                  className="kid-gradient inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-background shadow-lg transition-all hover:gap-3"
+                >
+                  {t("Crear plan Familiar", "Create Family plan")} <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  to="/auth"
+                  search={{ mode: "signup" }}
+                  className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-background/40 px-6 py-3 text-sm font-medium text-foreground backdrop-blur-sm transition-colors hover:border-kid-mint hover:text-kid-mint"
+                >
+                  {t("Ver demo", "See demo")}
+                </Link>
+              </div>
+              <div className="mt-10 flex items-center gap-3">
+                <img
+                  src={avatarFaces}
+                  alt={t("Familias usando WhatsYournumber", "Families using WhatsYournumber")}
+                  width={256}
+                  height={128}
+                  className="h-12 w-auto shrink-0 mix-blend-lighten"
+                />
+                <p className="text-sm font-medium text-foreground">
+                  {t(
+                    "+3.200 familias ya están construyendo su futuro.",
+                    "+3,200 families are already building their future.",
+                  )}
+                </p>
+              </div>
             </div>
-
           </div>
-
-          <img
-            src={heroFamily}
-            alt=""
-            aria-hidden
-            width={1600}
-            height={1200}
-            className="h-56 w-full object-cover object-center sm:h-72 lg:hidden"
-          />
         </motion.section>
+
+        <div className="mx-auto w-full max-w-6xl px-6">
 
         <dl className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {stats.map((s) => (
@@ -932,6 +927,7 @@ function KidsFinanceLanding() {
           </div>
         </section>
 
+        </div>
       </main>
 
       <SiteFooter />
