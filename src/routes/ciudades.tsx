@@ -3,7 +3,7 @@ import { toast } from "sonner";
 
 import { motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeftRight, BookOpen, Info, MapPin, RotateCcw, SlidersHorizontal, Sparkles, X } from "lucide-react";
+import { ArrowLeftRight, BookOpen, Info, MapPin, RotateCcw, Search, SlidersHorizontal, Sparkles, X } from "lucide-react";
 
 import { PlanGate } from "@/components/plan-gate";
 import { PageHeader, PageShell, Panel } from "@/components/page";
@@ -84,13 +84,15 @@ function SelectFilter<T extends string>({
       </p>
       <Select value={value} onValueChange={(v) => onChange(v as T)}>
         <SelectTrigger className="mt-1.5 h-9 w-full rounded-xl border-border/60 bg-elevated/40 px-3 text-xs transition-colors hover:border-primary/40 hover:bg-elevated/60">
-          <span className="inline-flex min-w-0 items-center gap-2">
+          <span className="inline-flex min-w-0 items-center gap-2.5">
             {selected ? (
-              isStar ? (
-                <span className="inline-flex shrink-0 text-[10px] text-primary">{selected.icon}</span>
-              ) : (
-                <span className="shrink-0 text-xs">{selected.icon}</span>
-              )
+              <span className="inline-flex w-5 shrink-0 items-center justify-start">
+                {isStar ? (
+                  <span className="text-[10px] text-primary">{selected.icon}</span>
+                ) : (
+                  <span className="text-xs">{selected.icon}</span>
+                )}
+              </span>
             ) : null}
             <span className="truncate">{selected?.label}</span>
           </span>
@@ -98,12 +100,14 @@ function SelectFilter<T extends string>({
         <SelectContent>
           {options.map((o) => (
             <SelectItem key={o.value} value={o.value} className="text-xs">
-              <span className="inline-flex items-center gap-2">
-                {o.icon.startsWith("★") ? (
-                  <span className="inline-flex shrink-0 text-[10px] text-primary">{o.icon}</span>
-                ) : (
-                  <span className="inline-flex w-4 shrink-0 items-center justify-center text-xs">{o.icon}</span>
-                )}
+              <span className="inline-flex items-center gap-2.5">
+                <span className="inline-flex w-5 shrink-0 items-center justify-start">
+                  {o.icon.startsWith("★") ? (
+                    <span className="text-[10px] text-primary">{o.icon}</span>
+                  ) : (
+                    <span className="text-xs">{o.icon}</span>
+                  )}
+                </span>
                 <span>{o.label}</span>
               </span>
             </SelectItem>
@@ -554,19 +558,34 @@ function LifestyleSimulatorContent() {
               ]}
             />
             <div className="col-span-2">
-              <SelectFilter
-                label={t("Objetivo", "Goal")}
-                value={filters.goal}
-                onChange={(v) => set("goal", v)}
-                options={[
-                  { value: "save", label: t("Ahorrar más", "Save more"), icon: "💰" },
-                  { value: "lifestyle", label: t("Estilo de vida", "Lifestyle"), icon: "🌴" },
-                  { value: "retire", label: t("Retirarme antes", "Retire earlier"), icon: "🚀" },
-                  { value: "family", label: t("Familia", "Family"), icon: "👨‍👩‍👧" },
-                  { value: "career", label: t("Carrera", "Career"), icon: "💼" },
-                  { value: "nomad", label: t("Nómada digital", "Digital nomad"), icon: "🌍" },
-                ]}
-              />
+              <div className="flex items-end gap-2">
+                <div className="min-w-0 flex-1">
+                  <SelectFilter
+                    label={t("Objetivo", "Goal")}
+                    value={filters.goal}
+                    onChange={(v) => set("goal", v)}
+                    options={[
+                      { value: "save", label: t("Ahorrar más", "Save more"), icon: "💰" },
+                      { value: "lifestyle", label: t("Estilo de vida", "Lifestyle"), icon: "🌴" },
+                      { value: "retire", label: t("Retirarme antes", "Retire earlier"), icon: "🚀" },
+                      { value: "family", label: t("Familia", "Family"), icon: "👨‍👩‍👧" },
+                      { value: "career", label: t("Carrera", "Career"), icon: "💼" },
+                      { value: "nomad", label: t("Nómada digital", "Digital nomad"), icon: "🌍" },
+                    ]}
+                  />
+                </div>
+                <Button
+                  type="button"
+                  size="icon"
+                  className="h-9 w-9 shrink-0 rounded-xl bg-primary text-primary-foreground shadow-glow transition-transform hover:scale-105 active:scale-95"
+                  onClick={() => {
+                    document.getElementById("city-results")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }}
+                  aria-label={t("Buscar ciudades", "Search cities")}
+                >
+                  <Search className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </FilterGroup>
         </div>
@@ -590,7 +609,7 @@ function LifestyleSimulatorContent() {
         <ComparePanel a={compared[0]!} b={compared[1]!} fmt={fmt} t={t} onClear={() => setCompare([])} />
       )}
 
-      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+      <div id="city-results" className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
         {ranked.map((r, i) => (
           <CityCard
             key={r.city.id}
