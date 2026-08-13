@@ -187,7 +187,7 @@ function HowItWorksSlider() {
       tab: t("Mi dinero", "My money"),
       icon: PiggyBank,
       color: "var(--kid-mint)",
-      title: t("Bolsillos: gastar, ahorrar e invertir", "Pockets: spend, save and invest"),
+      title: t("Bolsillos: ahorrar, invertir y gastar", "Pockets: save, invest and spend"),
       desc: t(
         "La regla 40/40/20, digital. Cada euro que entra ya sabe a dónde va.",
         "The 40/40/20 rule, gone digital. Every euro that arrives knows where it goes.",
