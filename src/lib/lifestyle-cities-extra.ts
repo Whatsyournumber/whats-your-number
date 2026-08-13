@@ -25,6 +25,9 @@ import belgradePhoto from "@/assets/cities/belgrade-premium.jpg.asset.json";
 import palermoPhoto from "@/assets/cities/palermo-premium.jpg.asset.json";
 import antwerpPhoto from "@/assets/cities/antwerp-premium.jpg.asset.json";
 import lyonPhoto from "@/assets/cities/lyon-premium.jpg.asset.json";
+import montrealPhoto from "@/assets/cities/montreal-premium.jpg.asset.json";
+import calgaryPhoto from "@/assets/cities/calgary-premium.jpg.asset.json";
+import nashvillePhoto from "@/assets/cities/nashville-premium.jpg.asset.json";
 const PHOTO = {
   hamburg: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/HH_Alsterarkaden_pano1.jpg/1920px-HH_Alsterarkaden_pano1.jpg",
   zagreb: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg/1920px-Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -38,8 +41,8 @@ const PHOTO = {
   seville: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/19060879124_a5eac59dea_o_feria_abril_sevilla_2013.jpg/1920px-19060879124_a5eac59dea_o_feria_abril_sevilla_2013.jpg",
   nice: "https://commons.wikimedia.org/wiki/Special:FilePath/Nice%2C%20France%20%2848828768581%29.jpg?width=1920",
   florence: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Panorama_of_the_Ponte_Vecchio_in_Florence%2C_Italy.jpg/1920px-Panorama_of_the_Ponte_Vecchio_in_Florence%2C_Italy.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  calgary: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/1978_Skyline_of_Calgary_01.jpg/1920px-1978_Skyline_of_Calgary_01.jpg",
-  nashville: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Nashville_panorama.jpg/1920px-Nashville_panorama.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  calgary: calgaryPhoto.url,
+  nashville: nashvillePhoto.url,
   phoenix: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Downtown_Phoenix_Skyline_at_Night.jpg/1920px-Downtown_Phoenix_Skyline_at_Night.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   raleigh: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Raleigh%2C_NC.jpg/1920px-Raleigh%2C_NC.jpg",
   monterrey: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Monterrey_Rascacielos.jpg/1920px-Monterrey_Rascacielos.jpg",
@@ -73,7 +76,7 @@ const PHOTO = {
   seattle: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Downtown_Seattle_skyline_from_Kerry_Park_-_October_2019_%28wide_panorama%29.jpg/1920px-Downtown_Seattle_skyline_from_Kerry_Park_-_October_2019_%28wide_panorama%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   boston: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Boston_Back_Bay_skyline_at_night_%2851526138311%29.jpg/1920px-Boston_Back_Bay_skyline_at_night_%2851526138311%29.jpg",
   sandiego: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/San_Diego_skyline_at_night_from_Point_Loma_2014.jpg/1920px-San_Diego_skyline_at_night_from_Point_Loma_2014.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  montreal: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/20181012_-_01_-_Montreal_panorama_%28downtown%29.jpg/1920px-20181012_-_01_-_Montreal_panorama_%28downtown%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  montreal: montrealPhoto.url,
   losangeles: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Los_angeles_at_night_ii_-_Flickr_-_hannes-flo.jpg/1920px-Los_angeles_at_night_ii_-_Flickr_-_hannes-flo.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   denver: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Denver_skyline.jpg/1920px-Denver_skyline.jpg",
   guadalajara: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Skyline_Guadalajara_Americas_IMG_20210910_185500.jpg/1920px-Skyline_Guadalajara_Americas_IMG_20210910_185500.jpg",

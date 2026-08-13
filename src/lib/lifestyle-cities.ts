@@ -16,6 +16,8 @@ import barcelonaPhoto from "@/assets/city-barcelona-hd.jpg.asset.json";
 import cairoPhoto from "@/assets/city-cairo-nile.png.asset.json";
 import nairobiPhoto from "@/assets/city-nairobi.jpg.asset.json";
 import warsawPhoto from "@/assets/cities/warsaw-premium.jpg.asset.json";
+import vancouverPhoto from "@/assets/cities/vancouver-premium.jpg.asset.json";
+import melbournePhoto from "@/assets/cities/melbourne-premium.jpg.asset.json";
 
 
 export type Region = "northamerica" | "latam" | "europe" | "asia" | "africa";
@@ -76,7 +78,7 @@ const PHOTO = {
   miami: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Ocean_Drive_South_Beach_Miami.jpg/1920px-Ocean_Drive_South_Beach_Miami.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   newyork: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Panorama_with_Empire_State_Building_at_night1.jpg/1920px-Panorama_with_Empire_State_Building_at_night1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   sydney: "https://commons.wikimedia.org/wiki/Special:FilePath/Sydney%20Opera%20House%20and%20Harbour%20Bridge%20Dusk%202019-06-21.jpg?width=1920",
-  vancouver: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Vancouver_%28BC%2C_Canada%29%2C_English_Bay_Beach_--_2022_--_1947.jpg/1920px-Vancouver_%28BC%2C_Canada%29%2C_English_Bay_Beach_--_2022_--_1947.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  vancouver: vancouverPhoto.url,
   zurich: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Z%C3%BCrich_Kreis_11_Panorama_2024.jpg/1920px-Z%C3%BCrich_Kreis_11_Panorama_2024.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   amsterdam: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Colorful_windows_and_canal_houses_at_blue_hour_with_water_reflection_in_Damrak_Amsterdam_Netherlands.jpg/1920px-Colorful_windows_and_canal_houses_at_blue_hour_with_water_reflection_in_Damrak_Amsterdam_Netherlands.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   copenhagen: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Copenhagen_skyline.jpg/1920px-Copenhagen_skyline.jpg?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -110,7 +112,7 @@ const PHOTO = {
   hochiminh: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Ho_Chi_Minh_City_Skyline.jpg/1920px-Ho_Chi_Minh_City_Skyline.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   taipei: "https://commons.wikimedia.org/wiki/Special:FilePath/Taipei%20skyline%20at%20sunset%2020190922.jpg?width=1920",
   auckland: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Auckland_Skyline_383495.jpg/1920px-Auckland_Skyline_383495.jpg",
-  melbourne: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Aerial_panorama_of_Preston_facing_west_towards_the_Melbourne_skyline._July_2023.jpg/1920px-Aerial_panorama_of_Preston_facing_west_towards_the_Melbourne_skyline._July_2023.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  melbourne: melbournePhoto.url,
   nairobi: nairobiPhoto.url,
   cairo: cairoPhoto.url,
   mauritius: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Skyline_Sampa.jpg/1920px-Skyline_Sampa.jpg",
