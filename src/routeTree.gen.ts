@@ -19,6 +19,7 @@ import { Route as CiudadesRouteImport } from './routes/ciudades'
 import { Route as ConfiguracionRouteImport } from './routes/configuracion'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DemoRouteImport } from './routes/demo'
+import { Route as ElegirRouteImport } from './routes/elegir'
 import { Route as GastosRouteImport } from './routes/gastos'
 import { Route as HipotecaRouteImport } from './routes/hipoteca'
 import { Route as LifePlannerRouteImport } from './routes/life-planner'
@@ -82,6 +83,11 @@ const DashboardRoute = DashboardRouteImport.update({
 const DemoRoute = DemoRouteImport.update({
   id: '/demo',
   path: '/demo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ElegirRoute = ElegirRouteImport.update({
+  id: '/elegir',
+  path: '/elegir',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GastosRoute = GastosRouteImport.update({
@@ -167,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/configuracion': typeof ConfiguracionRoute
   '/dashboard': typeof DashboardRoute
   '/demo': typeof DemoRoute
+  '/elegir': typeof ElegirRoute
   '/gastos': typeof GastosRoute
   '/hipoteca': typeof HipotecaRoute
   '/life-planner': typeof LifePlannerRoute
@@ -193,6 +200,7 @@ export interface FileRoutesByTo {
   '/configuracion': typeof ConfiguracionRoute
   '/dashboard': typeof DashboardRoute
   '/demo': typeof DemoRoute
+  '/elegir': typeof ElegirRoute
   '/gastos': typeof GastosRoute
   '/hipoteca': typeof HipotecaRoute
   '/life-planner': typeof LifePlannerRoute
@@ -220,6 +228,7 @@ export interface FileRoutesById {
   '/configuracion': typeof ConfiguracionRoute
   '/dashboard': typeof DashboardRoute
   '/demo': typeof DemoRoute
+  '/elegir': typeof ElegirRoute
   '/gastos': typeof GastosRoute
   '/hipoteca': typeof HipotecaRoute
   '/life-planner': typeof LifePlannerRoute
@@ -248,6 +257,7 @@ export interface FileRouteTypes {
     | '/configuracion'
     | '/dashboard'
     | '/demo'
+    | '/elegir'
     | '/gastos'
     | '/hipoteca'
     | '/life-planner'
@@ -274,6 +284,7 @@ export interface FileRouteTypes {
     | '/configuracion'
     | '/dashboard'
     | '/demo'
+    | '/elegir'
     | '/gastos'
     | '/hipoteca'
     | '/life-planner'
@@ -300,6 +311,7 @@ export interface FileRouteTypes {
     | '/configuracion'
     | '/dashboard'
     | '/demo'
+    | '/elegir'
     | '/gastos'
     | '/hipoteca'
     | '/life-planner'
@@ -327,6 +339,7 @@ export interface RootRouteChildren {
   ConfiguracionRoute: typeof ConfiguracionRoute
   DashboardRoute: typeof DashboardRoute
   DemoRoute: typeof DemoRoute
+  ElegirRoute: typeof ElegirRoute
   GastosRoute: typeof GastosRoute
   HipotecaRoute: typeof HipotecaRoute
   LifePlannerRoute: typeof LifePlannerRoute
@@ -413,6 +426,13 @@ declare module '@tanstack/react-router' {
       path: '/demo'
       fullPath: '/demo'
       preLoaderRoute: typeof DemoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/elegir': {
+      id: '/elegir'
+      path: '/elegir'
+      fullPath: '/elegir'
+      preLoaderRoute: typeof ElegirRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gastos': {
@@ -527,6 +547,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConfiguracionRoute: ConfiguracionRoute,
   DashboardRoute: DashboardRoute,
   DemoRoute: DemoRoute,
+  ElegirRoute: ElegirRoute,
   GastosRoute: GastosRoute,
   HipotecaRoute: HipotecaRoute,
   LifePlannerRoute: LifePlannerRoute,

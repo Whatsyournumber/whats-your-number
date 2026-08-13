@@ -48,12 +48,12 @@ function ChooserPage() {
   }
 
   const fullName =
-    (user.user_metadata?.full_name as string | undefined) ??
-    (user.user_metadata?.name as string | undefined) ??
+    (user.user_metadata?.['full_name'] as string | undefined) ??
+    (user.user_metadata?.['name'] as string | undefined) ??
     user.email?.split("@")[0] ??
     t("Tu cuenta", "Your account");
   const firstName = fullName.split(" ")[0];
-  const avatar = user.user_metadata?.avatar_url as string | undefined;
+  const avatar = user.user_metadata?.['avatar_url'] as string | undefined;
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background px-5 py-16">
