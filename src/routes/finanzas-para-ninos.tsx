@@ -19,13 +19,13 @@ import { useT } from "@/hooks/use-language";
 export const Route = createFileRoute("/finanzas-para-ninos")({
   head: () => ({
     meta: [
-      { title: "My First Number — Educación financiera para niños" },
+      { title: "Finanzas para niños — WhatsYournumber" },
       {
         name: "description",
         content:
           "El primer número de tus hijos: número de hoy, número del futuro, bolsillos de ahorro, sueños, tareas y cómo crece su dinero.",
       },
-      { property: "og:title", content: "My First Number — Educación financiera para niños" },
+      { property: "og:title", content: "Finanzas para niños — WhatsYournumber" },
       {
         property: "og:description",
         content: "Un hub de números para niños: hoy, futuro, ahorro, sueños y tareas en un solo lugar.",
@@ -189,7 +189,7 @@ function KidsFinanceLanding() {
             {t("Para los más pequeños de la casa", "For the youngest in the house")}
           </span>
           <h1 className="mx-auto mt-5 max-w-3xl font-display text-4xl font-semibold tracking-tight md:text-6xl">
-            My First Number
+            {t("Finanzas para niños", "Kids finance")}
             <span className="block text-primary">
               {t("su primer número, hoy", "their first number, today")}
             </span>
