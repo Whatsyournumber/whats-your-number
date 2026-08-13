@@ -1146,9 +1146,9 @@ function KidsFinanceLanding() {
 
         <HowItWorksSlider />
 
-        <FamilyProfiles />
-
         <GrowsWithThem />
+
+        <FamilyProfiles />
 
 
         <section className="mt-24">
