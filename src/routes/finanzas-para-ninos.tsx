@@ -450,7 +450,7 @@ function HowItWorksSlider() {
             </h3>
             <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground">{active.desc}</p>
           </div>
-          <div className="flex min-h-[320px] items-center rounded-2xl border border-border bg-card p-6 md:min-h-[360px] md:p-8">
+          <div className="flex min-h-[320px] items-center md:min-h-[420px]">
             <div className="w-full">{active.visual}</div>
           </div>
         </motion.div>
