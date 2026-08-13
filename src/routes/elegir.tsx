@@ -7,6 +7,7 @@ import { BrandMark } from "@/components/brand-logo";
 import { useAuth } from "@/hooks/use-auth";
 import { useT } from "@/hooks/use-language";
 import { useSubscription } from "@/hooks/use-subscription";
+import { useRoles } from "@/hooks/use-role";
 
 const KIDS_APP_URL = "https://myfirstnumber.lovable.app";
 
