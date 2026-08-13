@@ -558,7 +558,7 @@ function ThreePillars() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.45 }}
-            className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1 md:p-7"
+            className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all duration-300 hover:-translate-y-1 md:p-5"
             style={{ boxShadow: "0 1px 0 0 color-mix(in oklab, var(--foreground) 5%, transparent) inset" }}
           >
             <span
@@ -572,39 +572,40 @@ function ThreePillars() {
               style={{ backgroundColor: `color-mix(in oklab, ${color} 22%, transparent)` }}
             />
 
-            <div className="relative flex items-center gap-3">
+            <div className="relative flex items-center gap-2.5">
               <span
-                className="flex h-9 w-9 items-center justify-center rounded-xl"
+                className="flex h-7 w-7 items-center justify-center rounded-lg"
                 style={{
                   color,
                   backgroundColor: `color-mix(in oklab, ${color} 12%, transparent)`,
                   boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${color} 25%, transparent)`,
                 }}
               >
-                <Icon className="h-4 w-4" />
+                <Icon className="h-3.5 w-3.5" />
               </span>
-              <h3 className="font-display text-base font-medium tracking-tight">{title}</h3>
+              <h3 className="font-display text-sm font-medium tracking-tight">{title}</h3>
             </div>
-            <p className="relative mt-4 text-sm leading-relaxed text-muted-foreground">{desc}</p>
+            <p className="relative mt-2.5 text-xs leading-relaxed text-muted-foreground">{desc}</p>
 
-            <div className="relative mt-auto pt-7">
+            <div className="relative mt-auto pt-4">
               <div className="flex items-baseline gap-2">
-                <span className="numeric text-3xl font-semibold" style={{ color }}>
+                <span className="numeric text-xl font-semibold" style={{ color }}>
                   {metric}
                 </span>
               </div>
-              <p className="mt-1 text-xs text-muted-foreground">{metricLabel}</p>
+              <p className="mt-0.5 text-[11px] text-muted-foreground">{metricLabel}</p>
 
               <PillarVisual
                 id={id}
                 color={color}
                 labels={[t("Gastar", "Spend"), t("Ahorrar", "Save"), t("Invertir", "Invest")]}
               />
-              <div className="mt-3 flex justify-between border-t border-border/60 pt-2.5 text-[10px] uppercase tracking-wider text-muted-foreground/70">
+              <div className="mt-2.5 flex justify-between border-t border-border/60 pt-2 text-[9px] uppercase tracking-wider text-muted-foreground/70">
                 <span>{pillarAxis[id]?.[0]}</span>
                 <span>{pillarAxis[id]?.[1]}</span>
               </div>
             </div>
+
 
           </motion.div>
         ))}
