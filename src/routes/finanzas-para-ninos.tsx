@@ -96,7 +96,8 @@ function Bars({ items }: { items: Array<{ label: string; value: string; pct: num
 
 function MiniArea({ color }: { color: string }) {
   return (
-    <div className="h-36">
+    <div className="h-64 md:h-72">
+
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={growCurve} margin={{ top: 6, right: 4, bottom: 0, left: 0 }}>
           <defs>
