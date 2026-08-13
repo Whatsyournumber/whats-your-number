@@ -161,10 +161,11 @@ function KidPreview() {
 function ThreePillars() {
   const t = useT();
 
-  const curve = Array.from({ length: 10 }, (_, i) => ({ x: i, y: Math.pow(i, 2.1) }));
+  const curve = Array.from({ length: 12 }, (_, i) => ({ x: i, y: Math.pow(i, 2.1) }));
 
   const pillars = [
     {
+      id: "plan",
       icon: CalendarCheck,
       color: "var(--kid-grape)",
       title: t("Planifica", "Plan"),
@@ -172,8 +173,11 @@ function ThreePillars() {
         "Calcula cuánto invertir hoy para su universidad o su primer hogar.",
         "Work out how much to invest today for university or their first home.",
       ),
+      metric: "€196.000",
+      metricLabel: t("proyectado a los 18", "projected at 18"),
     },
     {
+      id: "teach",
       icon: GraduationCap,
       color: "var(--kid-sky)",
       title: t("Enseña", "Teach"),
@@ -181,8 +185,11 @@ function ThreePillars() {
         "Aprenden a ahorrar, gastar e invertir con su propio dinero.",
         "They learn to save, spend and invest with their own money.",
       ),
+      metric: "40 / 40 / 20",
+      metricLabel: t("gastar · ahorrar · invertir", "spend · save · invest"),
     },
     {
+      id: "grow",
       icon: Rocket,
       color: "var(--kid-mint)",
       title: t("Crece", "Grow"),
@@ -190,6 +197,8 @@ function ThreePillars() {
         "Cada euro ahorrado crece con el tiempo gracias al interés compuesto.",
         "Every euro saved compounds over time.",
       ),
+      metric: "7,2%",
+      metricLabel: t("rendimiento anual medio", "average annual return"),
     },
   ];
 
@@ -198,32 +207,71 @@ function ThreePillars() {
       <h2 className="text-center font-display text-2xl font-semibold tracking-tight md:text-3xl">
         {t("Tres pilares para un futuro increíble", "Three pillars for an incredible future")}
       </h2>
-      <div className="mt-8 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-3">
-        {pillars.map(({ icon: Icon, color, title, desc }) => (
-          <div key={title} className="bg-card p-6">
+      <p className="mx-auto mt-3 max-w-xl text-center text-sm text-muted-foreground">
+        {t(
+          "Un plan para los padres, hábitos para los hijos y tiempo trabajando a su favor.",
+          "A plan for parents, habits for kids and time working in their favour.",
+        )}
+      </p>
+      <div className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-3">
+        {pillars.map(({ id, icon: Icon, color, title, desc, metric, metricLabel }) => (
+          <div
+            key={id}
+            className="group relative flex flex-col bg-card p-6 transition-colors duration-300 hover:bg-elevated md:p-7"
+          >
             <div className="flex items-center gap-2.5">
-              <Icon className="h-4 w-4" style={{ color }} />
+              <span
+                className="flex h-8 w-8 items-center justify-center rounded-lg ring-1 transition-colors"
+                style={{
+                  color,
+                  backgroundColor: `color-mix(in oklab, ${color} 12%, transparent)`,
+                  boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${color} 22%, transparent)`,
+                }}
+              >
+                <Icon className="h-4 w-4" />
+              </span>
               <h3 className="font-display text-base font-medium tracking-tight">{title}</h3>
             </div>
-            <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">{desc}</p>
-            <div className="mt-6 h-14">
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{desc}</p>
+
+            <div className="mt-6 flex items-baseline gap-2">
+              <span className="numeric text-lg font-semibold" style={{ color }}>
+                {metric}
+              </span>
+              <span className="text-[11px] text-muted-foreground">{metricLabel}</span>
+            </div>
+
+            <div className="mt-4 h-16">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={curve} margin={{ top: 2, right: 2, bottom: 2, left: 2 }}>
-                  <Line
+                <AreaChart data={curve} margin={{ top: 4, right: 6, bottom: 0, left: 0 }}>
+                  <defs>
+                    <linearGradient id={`pillar-${id}`} x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={color} stopOpacity={0.22} />
+                      <stop offset="100%" stopColor={color} stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <Area
                     type="monotone"
                     dataKey="y"
                     stroke={color}
                     strokeWidth={1.75}
+                    fill={`url(#pillar-${id})`}
                     dot={false}
+                    activeDot={false}
                     isAnimationActive={false}
                   />
-                </LineChart>
+                </AreaChart>
               </ResponsiveContainer>
+            </div>
+            <div className="mt-2 flex justify-between text-[10px] uppercase tracking-wider text-muted-foreground/70">
+              <span>{t("Hoy", "Today")}</span>
+              <span>{t("18 años", "Age 18")}</span>
             </div>
           </div>
         ))}
       </div>
     </section>
+
   );
 }
 
