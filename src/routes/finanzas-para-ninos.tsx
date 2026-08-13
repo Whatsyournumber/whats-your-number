@@ -112,7 +112,7 @@ function ScreenCard({
 
 function MiniArea({ color }: { color: string }) {
   return (
-    <div className="h-56 md:h-64">
+    <div className="h-28 md:h-32">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={growCurve} margin={{ top: 6, right: 4, bottom: 0, left: 0 }}>
           <defs>
