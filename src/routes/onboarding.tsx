@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowLeft,
@@ -292,8 +292,10 @@ function OnboardingPage() {
       {!isBuilding && (
         <div className="sticky top-0 z-30 bg-background/70 backdrop-blur-xl">
           <div className="mx-auto flex max-w-2xl items-center gap-3 px-5 py-4">
-            <Compass className="h-4 w-4 text-primary" />
-            <span className="font-display text-sm font-semibold">WhatsYournumber</span>
+            <Link to="/" className="flex items-center gap-3 transition-opacity hover:opacity-80">
+              <Compass className="h-4 w-4 text-primary" />
+              <span className="font-display text-sm font-semibold">WhatsYournumber</span>
+            </Link>
             <div className="ml-2 h-1 flex-1 overflow-hidden rounded-full bg-muted">
               <motion.div
                 className="h-full rounded-full bg-primary"
