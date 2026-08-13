@@ -9,6 +9,35 @@ import { useT } from "@/hooks/use-language";
 
 const KIDS_APP_URL = "https://myfirstnumber.lovable.app";
 
+/**
+ * Abre My First Number llevando la sesión actual en el fragmento (#wyn=...),
+ * para que el niño no tenga que volver a iniciar sesión y caiga en su onboarding.
+ */
+async function goToKids() {
+  let payload = "";
+  try {
+    const { data } = await supabase.auth.getSession();
+    const s = data.session;
+    if (s) {
+      payload = btoa(
+        JSON.stringify({
+          access_token: s.access_token,
+          refresh_token: s.refresh_token,
+          email: s.user.email,
+          name:
+            (s.user.user_metadata?.['full_name'] as string | undefined) ??
+            (s.user.user_metadata?.['name'] as string | undefined) ??
+            null,
+        }),
+      );
+    }
+  } catch {
+    payload = "";
+  }
+  const url = `${KIDS_APP_URL}/onboarding${payload ? `#wyn=${encodeURIComponent(payload)}` : ""}`;
+  window.location.href = url;
+}
+
 export const Route = createFileRoute("/elegir")({
   head: () => ({
     meta: [
