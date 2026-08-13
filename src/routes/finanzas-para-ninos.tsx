@@ -708,7 +708,7 @@ function KidsFinanceLanding() {
               )}
               width={1280}
               height={1280}
-              className="h-full w-full object-cover object-[60%_35%] opacity-90 [mask-image:radial-gradient(ellipse_60%_65%_at_60%_45%,#000_35%,transparent_78%)]"
+              className="h-full w-full scale-[0.94] object-cover object-[55%_38%] opacity-85 [mask-image:radial-gradient(ellipse_46%_50%_at_52%_48%,#000_20%,transparent_72%)]"
             />
             <div className="absolute inset-0 bg-[linear-gradient(90deg,var(--background)_0%,transparent_45%)]" />
             <div className="absolute inset-0 bg-[linear-gradient(0deg,var(--background)_0%,transparent_40%)]" />
