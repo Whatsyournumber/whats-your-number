@@ -11,6 +11,13 @@ import windhoekPhoto from "@/assets/city-windhoek.jpg.asset.json";
 import addisPhoto from "@/assets/city-addis.jpg.asset.json";
 import fukuokaPhoto from "@/assets/fukuoka-tower-sunset.png.asset.json";
 import viennaPhoto from "@/assets/vienna-premium.png.asset.json";
+import cartagenaPhoto from "@/assets/city-cartagena-premium.jpg.asset.json";
+import asuncionPhoto from "@/assets/city-asuncion-premium.jpg.asset.json";
+import santodomingoPhoto from "@/assets/city-santodomingo-premium.jpg.asset.json";
+import sansalvadorPhoto from "@/assets/city-sansalvador-premium.jpg.asset.json";
+import guayaquilPhoto from "@/assets/city-guayaquil-premium.jpg.asset.json";
+import margaritaPhoto from "@/assets/city-margarita-premium.jpg.asset.json";
+import sanjuanPhoto from "@/assets/city-sanjuan-premium.jpg.asset.json";
 const PHOTO = {
   hamburg: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/HH_Alsterarkaden_pano1.jpg/1920px-HH_Alsterarkaden_pano1.jpg",
   zagreb: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg/1920px-Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -64,9 +71,9 @@ const PHOTO = {
   denver: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Denver_skyline.jpg/1920px-Denver_skyline.jpg",
   guadalajara: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Skyline_Guadalajara_Americas_IMG_20210910_185500.jpg/1920px-Skyline_Guadalajara_Americas_IMG_20210910_185500.jpg",
   sanjose_cr: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Panoramic_Downtown_San_Jose.jpg/1920px-Panoramic_Downtown_San_Jose.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  cartagena: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/La_Manga_cityscape_from_Mirador_de_Monte_Blanco%2C_Cartagena%2C_Murcia%2C_Spain%2C_2022_January.jpg/1920px-La_Manga_cityscape_from_Mirador_de_Monte_Blanco%2C_Cartagena%2C_Murcia%2C_Spain%2C_2022_January.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  cartagena: cartagenaPhoto.url,
   quito: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Vista_de_Quito_desde_El_Panecillo%2C_Ecuador%2C_2015-07-22%2C_DD_25-29_PAN.JPG/1920px-Vista_de_Quito_desde_El_Panecillo%2C_Ecuador%2C_2015-07-22%2C_DD_25-29_PAN.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  asuncion: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Business_district_skyline_152853.jpg/1920px-Business_district_skyline_152853.jpg",
+  asuncion: asuncionPhoto.url,
   osaka: "https://commons.wikimedia.org/wiki/Special:FilePath/Night%20view%20from%20Umeda%20Sky%20Building%20%28south%20side%29%2020250830.jpg?width=1920",
   hanoi: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Hanoi_Skyline_-_NKS.jpg/1920px-Hanoi_Skyline_-_NKS.jpg",
   manila: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Manila_skyline_day.jpg/1920px-Manila_skyline_day.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -101,7 +108,7 @@ const PHOTO = {
   belohorizonte: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Oblique_side_view_of_S%C3%A3o_Jos%C3%A9_Sanctuary_and_Acaiaca%2C_Belo_Horizonte_Minas_Gerais_Brasil_-_Igreja_S%C3%A3o_Jose_Saint_Joseph_Church_Belo_Horizonte_Minas_Gerais_Brasil_-_Daniel_Guimaraes_Rego_Dan_Rego_Daniel_G.Rego_Daniel_Rego.jpg/1920px-thumbnail.jpg",
   rosario: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Rosario_skyline_1.jpg/1920px-Rosario_skyline_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
   merida: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Paseo_de_Montejo%2C_Merida%2C_Yucatan%2C_Mexico_de_Noche_Abril_2021_-_La_Luna_Sul_Mare.jpg/1920px-Paseo_de_Montejo%2C_Merida%2C_Yucatan%2C_Mexico_de_Noche_Abril_2021_-_La_Luna_Sul_Mare.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  santodomingo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Aerial_view_Ciudad_Colonial_Santo_Domingo_09_2019_0067.jpg/1920px-Aerial_view_Ciudad_Colonial_Santo_Domingo_09_2019_0067.jpg",
+  santodomingo: santodomingoPhoto.url,
   fukuoka: fukuokaPhoto.url,
   busan: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Gwangan_Bridge_seen_Marine_City_at_Night_01.jpg/1920px-Gwangan_Bridge_seen_Marine_City_at_Night_01.jpg",
   jakarta: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/City_activity_Jakarta_%28Unsplash%29.jpg/1920px-City_activity_Jakarta_%28Unsplash%29.jpg",
@@ -113,11 +120,11 @@ const PHOTO = {
   gaborone: gaboronePhoto.url,
   addis: addisPhoto.url,
   alexandria: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/%D8%A7%D9%84%D9%82%D9%84%D8%B9%D8%A9_%D8%A7%D8%B3%D9%83%D9%86%D8%AF%D8%B1%D9%8A%D8%A9.jpg/1920px-%D8%A7%D9%84%D9%82%D9%84%D8%B9%D8%A9_%D8%A7%D8%B3%D9%83%D9%86%D8%AF%D8%B1%D9%8A%D8%A9.jpg",
-  sansalvador: "https://commons.wikimedia.org/wiki/Special:FilePath/Complete_Skyline_2011.jpg?width=1920",
-  guayaquil: "https://commons.wikimedia.org/wiki/Special:FilePath/Vista_del_Malec%C3%B3n_2000.jpg?width=1920",
+  sansalvador: sansalvadorPhoto.url,
+  guayaquil: guayaquilPhoto.url,
   caracas: "https://commons.wikimedia.org/wiki/Special:FilePath/Panoramic_view_of_Caracas_night.jpg?width=1920",
-  margarita: "https://commons.wikimedia.org/wiki/Special:FilePath/1_Playa_El_Agua._Isla_de_Margarita%2C_estado_Nueva_Esparta._Venezuela..JPG?width=1920",
-  sanjuan: "https://commons.wikimedia.org/wiki/Special:FilePath/Modern_Skyline_of_San_Juan%2C_Puerto_Rico.jpg?width=1920",
+  margarita: margaritaPhoto.url,
+  sanjuan: sanjuanPhoto.url,
   andorra: "https://commons.wikimedia.org/wiki/Special:FilePath/City_of_Andorra_la_Vella%2CAndorra_in_2021.05.jpg?width=1920",
   kotor: "https://commons.wikimedia.org/wiki/Special:FilePath/Kotor_and_Boka_kotorska_-_view_from_city_wall.jpg?width=1920",
   sarajevo: "https://commons.wikimedia.org/wiki/Special:FilePath/Sarajevo_Panorama_2022.jpg?width=1920",
