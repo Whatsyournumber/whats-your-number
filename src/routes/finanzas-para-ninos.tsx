@@ -5,6 +5,7 @@ import {
   ArrowRight,
   BadgeCheck,
   Banknote,
+  Bike,
   CalendarCheck,
   Coins,
   Gift,
@@ -356,35 +357,55 @@ function HowItWorksSlider() {
       id: "badges",
       icon: Trophy,
       color: "var(--kid-grape)",
-      title: t("Insignias, rachas y retos", "Badges, streaks and quests"),
+      title: t("Premios, rachas y retos", "Rewards, streaks and quests"),
       desc: t(
-        "Cada semana que ahorra suma racha e insignias. Aprenden decidiendo, no memorizando.",
-        "Every week they save adds streaks and badges. They learn by deciding, not memorizing.",
+        "Cada semana que ahorra desbloquea premios como una bici nueva, rachas e insignias.",
+        "Every week they save unlocks rewards like a new bike, streaks and badges.",
       ),
       visual: (
-        <ScreenCard title={t("Mis logros", "My achievements")} accent="var(--kid-grape)">
-          <div className="rounded-2xl bg-elevated p-5">
-            <p className="text-sm text-muted-foreground">{t("Racha actual", "Current streak")}</p>
-            <p className="numeric mt-1 text-4xl font-semibold text-kid-grape">
-              7 {t("semanas", "weeks")}
-            </p>
-            <div className="mt-4 flex gap-1.5">
-              {Array.from({ length: 10 }).map((_, k) => (
-                <span
+        <ScreenCard title={t("Mis premios", "My rewards")} accent="var(--kid-grape)">
+          <div className="rounded-2xl bg-elevated p-4">
+            <div className="flex items-center gap-3">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-kid-mint/12 text-kid-mint ring-1 ring-kid-mint/25">
+                <Bike className="h-6 w-6" />
+              </span>
+              <div>
+                <p className="text-sm font-medium">{t("Bici nueva", "New bike")}</p>
+                <p className="numeric text-xs text-muted-foreground">
+                  {t("Desbloqueado a los", "Unlocked at")} €250
+                </p>
+              </div>
+              <span className="numeric ml-auto text-lg font-semibold text-kid-mint">62%</span>
+            </div>
+            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-card">
+              <div className="h-full w-[62%] rounded-full bg-kid-mint" />
+            </div>
+          </div>
+
+          <div className="mt-3 flex items-center justify-between rounded-2xl bg-elevated px-4 py-3">
+            <div>
+              <p className="text-xs text-muted-foreground">{t("Racha", "Streak")}</p>
+              <p className="numeric mt-0.5 text-xl font-semibold text-kid-grape">
+                7 {t("sem.", "wks")}
+              </p>
+            </div>
+            <div className="flex gap-1">
+              {Array.from({ length: 7 }).map((_, k) => (
+                <Star
                   key={k}
-                  className="h-2.5 flex-1 rounded-full"
-                  style={{ backgroundColor: k < 7 ? "var(--kid-grape)" : "var(--border)" }}
+                  className="h-4 w-4 fill-kid-sun text-kid-sun"
                 />
               ))}
             </div>
           </div>
-          <div className="mt-4 grid grid-cols-4 gap-3">
+
+          <div className="mt-3 grid grid-cols-4 gap-2">
             {[Trophy, Star, BadgeCheck, Sparkles].map((Ic, k) => (
               <span
                 key={k}
-                className="flex aspect-square items-center justify-center rounded-2xl text-kid-sun ring-1 ring-kid-sun/25 kid-gradient-soft"
+                className="flex aspect-square items-center justify-center rounded-xl text-kid-grape ring-1 ring-kid-grape/20 kid-gradient-soft"
               >
-                <Ic className="h-6 w-6" />
+                <Ic className="h-4 w-4" />
               </span>
             ))}
           </div>
