@@ -86,23 +86,6 @@ function SectionHeader({
   );
 }
 
-function Bars({ items }: { items: Array<{ label: string; value: string; pct: number; color: string }> }) {
-  return (
-    <div className="space-y-5">
-      {items.map((b) => (
-        <div key={b.label}>
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">{b.label}</span>
-            <span className="numeric text-base font-semibold">{b.value}</span>
-          </div>
-          <div className="mt-2 h-3 w-full overflow-hidden rounded-full bg-elevated">
-            <div className="h-full rounded-full" style={{ width: `${b.pct}%`, backgroundColor: b.color }} />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 function ScreenCard({
   title,
