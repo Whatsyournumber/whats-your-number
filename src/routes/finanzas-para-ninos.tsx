@@ -21,7 +21,17 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { Area, AreaChart, Bar, BarChart, Cell, ResponsiveContainer } from "recharts";
+import {
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  XAxis,
+} from "recharts";
 
 
 import heroReal from "@/assets/kids-hero-real.jpg";
@@ -76,28 +86,31 @@ function SectionHeader({
   );
 }
 
-function Bars({ items }: { items: Array<{ label: string; value: string; pct: number; color: string }> }) {
+
+function ScreenCard({
+  title,
+  accent,
+  children,
+}: {
+  title: string;
+  accent: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="space-y-5">
-      {items.map((b) => (
-        <div key={b.label}>
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">{b.label}</span>
-            <span className="numeric text-base font-semibold">{b.value}</span>
-          </div>
-          <div className="mt-2 h-3 w-full overflow-hidden rounded-full bg-elevated">
-            <div className="h-full rounded-full" style={{ width: `${b.pct}%`, backgroundColor: b.color }} />
-          </div>
-        </div>
-      ))}
+    <div className="relative w-full overflow-hidden rounded-[26px] border border-border bg-card shadow-2xl">
+      <div className="h-1 w-full" style={{ backgroundColor: accent, opacity: 0.7 }} />
+      <div className="flex items-center gap-2 border-b border-border/60 px-5 py-3">
+        <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: accent }} />
+        <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{title}</span>
+      </div>
+      <div className="p-5 md:p-6">{children}</div>
     </div>
   );
 }
 
 function MiniArea({ color }: { color: string }) {
   return (
-    <div className="h-64 md:h-72">
-
+    <div className="h-56 md:h-64">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={growCurve} margin={{ top: 6, right: 4, bottom: 0, left: 0 }}>
           <defs>
@@ -126,6 +139,12 @@ function HowItWorksSlider() {
   const t = useT();
   const [i, setI] = useState(0);
 
+  const pockets = [
+    { label: t("Gastar", "Spend"), value: 40, amount: "€24", color: "var(--kid-sky)" },
+    { label: t("Ahorrar", "Save"), value: 40, amount: "€24", color: "var(--kid-mint)" },
+    { label: t("Invertir", "Invest"), value: 20, amount: "€12", color: "var(--kid-grape)" },
+  ];
+
   const slides = [
     {
       id: "numbers",
@@ -137,43 +156,73 @@ function HowItWorksSlider() {
         "They see their money right now, and where it can go if they keep saving every week.",
       ),
       visual: (
-        <div className="space-y-6">
-          <div>
-            <p className="text-xs uppercase tracking-wider text-muted-foreground">
-              {t("Número de hoy", "Today's number")}
-            </p>
-            <p className="numeric mt-1 text-6xl font-semibold text-kid-sky">€120</p>
+        <ScreenCard title={t("Mi primer número", "My first number")} accent="var(--kid-sky)">
+          <div className="flex items-center gap-3">
+            <img src={faceGirl} alt="" className="h-10 w-10 rounded-full object-cover" />
+            <div>
+              <p className="text-sm font-medium">{t("Hola, Sofía", "Hi, Sofía")}</p>
+              <p className="text-xs text-muted-foreground">{t("Tu dinero de hoy", "Your money today")}</p>
+            </div>
           </div>
-          <div className="rounded-2xl border border-kid-grape/25 bg-kid-grape/10 p-6">
+          <p className="numeric mt-5 text-5xl font-semibold text-kid-sky md:text-6xl">€120</p>
+          <div className="mt-5 rounded-2xl border border-kid-grape/25 bg-kid-grape/10 p-5">
             <p className="text-xs uppercase tracking-wider text-kid-grape">
-              {t("Número del futuro", "Future number")}
+              {t("Mi futuro (18 años)", "My future (age 18)")}
             </p>
-            <p className="numeric mt-1 text-4xl font-semibold">€1.480</p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {t("En 2 años si sigue así", "In 2 years at this pace")}
+            <p className="numeric mt-1 text-3xl font-semibold">€10.668</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {t("Si ahorra 11,3 € al mes", "If they save €11.3 a month")}
             </p>
           </div>
-        </div>
+          <MiniArea color="var(--kid-sky)" />
+        </ScreenCard>
       ),
     },
     {
       id: "pockets",
       icon: PiggyBank,
       color: "var(--kid-mint)",
-      title: t("Bolsillos: gastar, ahorrar, invertir y compartir", "Pockets: spend, save, invest, share"),
+      title: t("Bolsillos: gastar, ahorrar e invertir", "Pockets: spend, save and invest"),
       desc: t(
-        "El método de los 4 sobres, digital. Cada euro que entra ya sabe a dónde va.",
-        "The 4-envelope method, gone digital. Every euro that arrives knows where it goes.",
+        "La regla 40/40/20, digital. Cada euro que entra ya sabe a dónde va.",
+        "The 40/40/20 rule, gone digital. Every euro that arrives knows where it goes.",
       ),
       visual: (
-        <Bars
-          items={[
-            { label: t("Gastar", "Spend"), value: "€24", pct: 20, color: "var(--kid-sky)" },
-            { label: t("Ahorrar", "Save"), value: "€60", pct: 50, color: "var(--kid-mint)" },
-            { label: t("Invertir", "Invest"), value: "€24", pct: 20, color: "var(--kid-grape)" },
-            { label: t("Compartir", "Share"), value: "€12", pct: 10, color: "var(--kid-coral)" },
-          ]}
-        />
+        <ScreenCard title={t("Mi dinero", "My money")} accent="var(--kid-mint)">
+          <p className="text-sm text-muted-foreground">{t("Regla 40/40/20", "40/40/20 rule")}</p>
+          <div className="mt-2 grid items-center gap-4 sm:grid-cols-2">
+            <div className="h-44">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={pockets}
+                    dataKey="value"
+                    innerRadius="62%"
+                    outerRadius="95%"
+                    paddingAngle={3}
+                    stroke="none"
+                    isAnimationActive={false}
+                  >
+                    {pockets.map((p) => (
+                      <Cell key={p.label} fill={p.color} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="space-y-3">
+              {pockets.map((p) => (
+                <div key={p.label} className="flex items-center justify-between text-sm">
+                  <span className="flex items-center gap-2 text-muted-foreground">
+                    <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: p.color }} />
+                    {p.label} ({p.value}%)
+                  </span>
+                  <span className="numeric font-semibold">{p.amount}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </ScreenCard>
       ),
     },
     {
@@ -186,26 +235,35 @@ function HowItWorksSlider() {
         "The bike, the trip or the game: they see what's left and save to get there.",
       ),
       visual: (
-        <div className="space-y-4">
-          <div className="surface p-6">
-            <div className="flex items-center justify-between text-sm">
-              <span>{t("Sueño: bici nueva", "Dream: new bike")}</span>
-              <span className="numeric text-lg font-semibold text-kid-mint">62%</span>
-            </div>
-            <div className="mt-3 h-3.5 w-full overflow-hidden rounded-full bg-elevated">
-              <div className="kid-gradient h-full rounded-full" style={{ width: "62%" }} />
-            </div>
+        <ScreenCard title={t("Mis sueños", "My dreams")} accent="var(--kid-coral)">
+          <div className="space-y-5">
+            {[
+              { name: t("Bici nueva", "New bike"), have: "€186", goal: "€300", pct: 62, c: "var(--kid-mint)" },
+              { name: t("Viaje a Disney", "Disney trip"), have: "€120", goal: "€1.200", pct: 10, c: "var(--kid-sun)" },
+              { name: t("Nintendo Switch", "Nintendo Switch"), have: "€0", goal: "€300", pct: 3, c: "var(--kid-coral)" },
+            ].map((d) => (
+              <div key={d.name} className="rounded-2xl bg-elevated p-4">
+                <div className="flex items-end justify-between">
+                  <div>
+                    <p className="text-sm font-medium">{d.name}</p>
+                    <p className="numeric text-xs text-muted-foreground">
+                      {d.have} {t("de", "of")} {d.goal}
+                    </p>
+                  </div>
+                  <span className="numeric text-lg font-semibold" style={{ color: d.c }}>
+                    {d.pct}%
+                  </span>
+                </div>
+                <div className="mt-3 h-3 w-full overflow-hidden rounded-full bg-card">
+                  <div
+                    className="h-full rounded-full"
+                    style={{ width: `${Math.max(d.pct, 3)}%`, backgroundColor: d.c }}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="surface p-6">
-            <div className="flex items-center justify-between text-sm">
-              <span>{t("Sueño: viaje con papá", "Dream: trip with dad")}</span>
-              <span className="numeric text-lg font-semibold text-kid-sun">18%</span>
-            </div>
-            <div className="mt-3 h-3.5 w-full overflow-hidden rounded-full bg-elevated">
-              <div className="kid-gradient h-full rounded-full" style={{ width: "18%" }} />
-            </div>
-          </div>
-        </div>
+        </ScreenCard>
       ),
     },
     {
@@ -218,22 +276,30 @@ function HowItWorksSlider() {
         "Schedule the allowance, approve chores and their money splits itself across pockets.",
       ),
       visual: (
-        <div className="space-y-3">
-          {[
-            { k: t("Mesada semanal", "Weekly allowance"), v: "+€10", ok: true },
-            { k: t("Ordenar el cuarto", "Tidy the room"), v: "+€3", ok: true },
-            { k: t("Sacar la basura", "Take out the trash"), v: "+€2", ok: false },
-            { k: t("Leer 20 minutos", "Read 20 minutes"), v: "+€1", ok: false },
-          ].map((r) => (
-            <div key={r.k} className="flex items-center justify-between rounded-xl bg-elevated px-5 py-4 text-sm">
-              <span className="flex items-center gap-2.5">
-                <BadgeCheck className={`h-5 w-5 ${r.ok ? "text-kid-mint" : "text-muted-foreground/40"}`} />
-                {r.k}
-              </span>
-              <span className="numeric text-base font-semibold text-kid-sun">{r.v}</span>
-            </div>
-          ))}
-        </div>
+        <ScreenCard title={t("Mis tareas", "My chores")} accent="var(--kid-sun)">
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">{t("Tareas pendientes", "Pending chores")}</p>
+            <span className="numeric rounded-full bg-kid-sun/12 px-3 py-1 text-xs font-semibold text-kid-sun">
+              +€6,50 {t("esta semana", "this week")}
+            </span>
+          </div>
+          <div className="mt-4 space-y-3">
+            {[
+              { k: t("Mesada semanal", "Weekly allowance"), v: "+€10,00", ok: true },
+              { k: t("Hacer mi cama", "Make my bed"), v: "+€0,50", ok: true },
+              { k: t("Ordenar mi habitación", "Tidy my room"), v: "+€1,00", ok: false },
+              { k: t("Leer 20 minutos", "Read 20 minutes"), v: "+€0,50", ok: false },
+            ].map((r) => (
+              <div key={r.k} className="flex items-center justify-between rounded-xl bg-elevated px-4 py-3 text-sm">
+                <span className="flex items-center gap-2.5">
+                  <BadgeCheck className={`h-5 w-5 ${r.ok ? "text-kid-mint" : "text-muted-foreground/40"}`} />
+                  {r.k}
+                </span>
+                <span className="numeric text-base font-semibold text-kid-sun">{r.v}</span>
+              </div>
+            ))}
+          </div>
+        </ScreenCard>
       ),
     },
     {
@@ -245,7 +311,46 @@ function HowItWorksSlider() {
         "Ven cómo cada euro ahorrado se multiplica con el tiempo, con gráficas que entienden solos.",
         "They watch every saved euro multiply over time, with charts they get on their own.",
       ),
-      visual: <MiniArea color="var(--kid-mint)" />,
+      visual: (
+        <ScreenCard title={t("Mi futuro", "My future")} accent="var(--kid-mint)">
+          <p className="text-sm text-muted-foreground">{t("Proyección a 18 años", "Projection to age 18")}</p>
+          <p className="numeric mt-1 text-4xl font-semibold">10.668 €</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {t("Si ahorras", "If you save")} <span className="text-kid-mint">11,3 €</span> {t("al mes", "a month")}
+          </p>
+          <div className="mt-2 h-56">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={growCurve} margin={{ top: 8, right: 6, bottom: 0, left: 0 }}>
+                <defs>
+                  <linearGradient id="grow-area" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--kid-mint)" stopOpacity={0.4} />
+                    <stop offset="100%" stopColor="var(--kid-mint)" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <XAxis
+                  dataKey="x"
+                  ticks={[0, 10, 18]}
+                  tickFormatter={(v: number) =>
+                    v === 0 ? t("Hoy", "Today") : `${v} ${t("años", "yrs")}`
+                  }
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="y"
+                  stroke="var(--kid-mint)"
+                  strokeWidth={2.5}
+                  fill="url(#grow-area)"
+                  dot={false}
+                  isAnimationActive={false}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </ScreenCard>
+      ),
     },
     {
       id: "badges",
@@ -257,27 +362,37 @@ function HowItWorksSlider() {
         "Every week they save adds streaks and badges. They learn by deciding, not memorizing.",
       ),
       visual: (
-        <div className="space-y-4">
-          <div className="flex gap-3">
+        <ScreenCard title={t("Mis logros", "My achievements")} accent="var(--kid-grape)">
+          <div className="rounded-2xl bg-elevated p-5">
+            <p className="text-sm text-muted-foreground">{t("Racha actual", "Current streak")}</p>
+            <p className="numeric mt-1 text-4xl font-semibold text-kid-grape">
+              7 {t("semanas", "weeks")}
+            </p>
+            <div className="mt-4 flex gap-1.5">
+              {Array.from({ length: 10 }).map((_, k) => (
+                <span
+                  key={k}
+                  className="h-2.5 flex-1 rounded-full"
+                  style={{ backgroundColor: k < 7 ? "var(--kid-grape)" : "var(--border)" }}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="mt-4 grid grid-cols-4 gap-3">
             {[Trophy, Star, BadgeCheck, Sparkles].map((Ic, k) => (
               <span
                 key={k}
-                className="flex h-14 w-14 items-center justify-center rounded-full text-kid-sun ring-1 ring-kid-sun/25 kid-gradient-soft"
+                className="flex aspect-square items-center justify-center rounded-2xl text-kid-sun ring-1 ring-kid-sun/25 kid-gradient-soft"
               >
                 <Ic className="h-6 w-6" />
               </span>
             ))}
           </div>
-          <div className="surface p-6">
-            <p className="text-sm text-muted-foreground">{t("Racha actual", "Current streak")}</p>
-            <p className="numeric mt-1 text-4xl font-semibold text-kid-grape">
-              7 {t("semanas", "weeks")}
-            </p>
-          </div>
-        </div>
+        </ScreenCard>
       ),
     },
   ];
+
 
   const active = slides[i]!;
   const Icon = active.icon;
@@ -318,7 +433,7 @@ function HowItWorksSlider() {
             </h3>
             <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground">{active.desc}</p>
           </div>
-          <div className="flex min-h-[320px] items-center rounded-2xl border border-border bg-card p-6 md:min-h-[360px] md:p-8">
+          <div className="flex min-h-[320px] items-center md:min-h-[420px]">
             <div className="w-full">{active.visual}</div>
           </div>
         </motion.div>
