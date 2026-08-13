@@ -731,12 +731,38 @@ function KidsFinanceLanding() {
                 {t("Ver demo", "See demo")}
               </Link>
             </div>
-            <p className="mt-8 max-w-sm text-xs leading-relaxed text-muted-foreground">
-              {t(
-                "+3.200 familias ya están construyendo el futuro financiero de sus hijos.",
-                "+3,200 families are already building their kids' financial future.",
-              )}
-            </p>
+            <div className="mt-10 flex items-center gap-4">
+              <div className="flex -space-x-3">
+                {[
+                  { i: "M", c: "bg-kid-mint/25 text-kid-mint ring-kid-mint/30" },
+                  { i: "A", c: "bg-kid-sky/25 text-kid-sky ring-kid-sky/30" },
+                  { i: "L", c: "bg-kid-grape/25 text-kid-grape ring-kid-grape/30" },
+                  { i: "J", c: "bg-kid-sun/25 text-kid-sun ring-kid-sun/30" },
+                  { i: "P", c: "bg-kid-coral/25 text-kid-coral ring-kid-coral/30" },
+                ].map((a) => (
+                  <span
+                    key={a.i}
+                    className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-semibold ring-2 ${a.c}`}
+                  >
+                    {a.i}
+                  </span>
+                ))}
+              </div>
+              <div>
+                <div className="flex items-center gap-0.5">
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <Star key={i} className="h-3.5 w-3.5 fill-kid-sun text-kid-sun" />
+                  ))}
+                </div>
+                <p className="mt-1 max-w-xs text-xs leading-relaxed text-muted-foreground">
+                  {t(
+                    "+3.200 familias ya están construyendo el futuro financiero de sus hijos.",
+                    "+3,200 families are already building their kids' financial future.",
+                  )}
+                </p>
+              </div>
+            </div>
+
           </div>
 
           <img
