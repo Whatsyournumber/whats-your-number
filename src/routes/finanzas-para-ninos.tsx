@@ -5,7 +5,6 @@ import {
   ArrowRight,
   BadgeCheck,
   Banknote,
-  Bike,
   CalendarCheck,
   Coins,
   Gift,
