@@ -5,19 +5,12 @@ import {
   ArrowRight,
   BadgeCheck,
   Banknote,
-  BellRing,
-  BookOpen,
   CalendarCheck,
   Coins,
-  Gamepad2,
   Gift,
   GraduationCap,
-  HeartHandshake,
-  LineChart as LineChartIcon,
-  Lock,
   PiggyBank,
   Rocket,
-  ShieldCheck,
   Sparkles,
   Star,
   Target,
@@ -43,7 +36,6 @@ import {
   YAxis,
 } from "recharts";
 
-import heroFamily from "@/assets/kids-hero-family.jpg";
 import heroReal from "@/assets/kids-hero-real.jpg";
 import ctaFamily from "@/assets/kids-cta-family.jpg";
 import faceDad from "@/assets/kid-face-dad.jpg";
