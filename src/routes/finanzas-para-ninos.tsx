@@ -429,34 +429,51 @@ function HowItWorksSlider() {
         )}
       />
 
-      <div className="surface relative mt-12 overflow-hidden p-6 md:p-12">
+      <div
+        className="surface relative mt-8 overflow-hidden p-4 sm:p-6 md:mt-12 md:p-12"
+        onTouchStart={(e) => {
+          touchX.current = e.touches[0]?.clientX ?? null;
+        }}
+        onTouchEnd={(e) => {
+          const start = touchX.current;
+          const end = e.changedTouches[0]?.clientX ?? null;
+          touchX.current = null;
+          if (start == null || end == null) return;
+          const dx = end - start;
+          if (Math.abs(dx) < 40) return;
+          setI((v) => (dx < 0 ? (v + 1) % slides.length : (v - 1 + slides.length) % slides.length));
+        }}
+      >
         <div className="kid-gradient absolute inset-x-0 top-0 h-1" />
         <motion.div
           key={active.id}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35 }}
-          className="grid items-center gap-10 md:grid-cols-2"
+          className="grid items-center gap-6 md:grid-cols-2 md:gap-10"
         >
           <div>
             <span
-              className="flex h-14 w-14 items-center justify-center rounded-2xl"
+              className="flex h-11 w-11 items-center justify-center rounded-2xl sm:h-14 sm:w-14"
               style={{
                 color: active.color,
                 backgroundColor: `color-mix(in oklab, ${active.color} 12%, transparent)`,
                 boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${active.color} 25%, transparent)`,
               }}
             >
-              <Icon className="h-6 w-6" />
+              <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
             </span>
-            <h3 className="mt-6 font-display text-2xl font-semibold tracking-tight md:text-4xl">
+            <h3 className="mt-4 font-display text-xl font-semibold tracking-tight sm:text-2xl md:mt-6 md:text-4xl">
               {active.title}
             </h3>
-            <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground">{active.desc}</p>
+            <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base md:mt-4">
+              {active.desc}
+            </p>
           </div>
-          <div className="flex min-h-[320px] items-center md:min-h-[420px]">
+          <div className="flex items-center md:min-h-[420px]">
             <div className="w-full">{active.visual}</div>
           </div>
+
         </motion.div>
 
         <div className="mt-8 flex items-center justify-between">
