@@ -95,7 +95,7 @@ function SelectFilter<T extends string>({
                 {selected.icon}
               </span>
             ) : null}
-            <span className="truncate">{selected?.label}</span>
+            <span className={cn("truncate", isStar && "hidden xl:inline")}>{selected?.label}</span>
           </span>
         </SelectTrigger>
         <SelectContent>
@@ -496,14 +496,16 @@ function LifestyleSimulatorContent() {
                   {filters.budget >= 15000 && "+"}
                 </p>
               </div>
+              <div className="mt-1.5 flex h-9 items-center">
               <Slider
-                className="mt-1.5"
+                className="w-full"
                 min={1000}
                 max={15000}
                 step={100}
                 value={[filters.budget]}
                 onValueChange={([v]) => set("budget", v ?? 1000)}
               />
+              </div>
             </div>
             <SelectFilter
               label={t("Impuestos", "Taxes")}
