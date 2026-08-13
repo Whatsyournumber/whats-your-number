@@ -1388,64 +1388,23 @@ function KidsFinanceLanding() {
 
         <ThreePillars />
 
-
-
-
         <DualDashboards />
 
-        <Milestones />
-
-        <GrowthChart />
-
-        <section className="mt-24">
-          <h2 className="mb-8 text-center font-display text-3xl font-semibold tracking-tight">
-            {t("La pantalla de tu hijo", "Your child's screen")}
-          </h2>
-          <KidPreview />
-        </section>
+        <HowItWorksSlider />
 
         <FamilyProfiles />
 
+        <Milestones />
 
         <section className="mt-24">
-          <h2 className="text-center font-display text-3xl font-semibold tracking-tight md:text-4xl">
-            {t("Todo lo que hay dentro", "Everything inside")}
-          </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-center text-sm text-muted-foreground">
-            {t(
-              "Cada función existe por una razón: que entiendan su dinero y quieran volver mañana.",
-              "Every feature exists for one reason: so they understand their money and want to come back tomorrow.",
+          <SectionHeader
+            eyebrow={t("Por edades", "By age")}
+            title={t("Crece con ellos", "It grows with them")}
+            subtitle={t(
+              "La app cambia según su edad: de las monedas al interés compuesto.",
+              "The app changes with their age: from coins to compound interest.",
             )}
-          </p>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map(({ icon: Icon, title, desc, tone }, i) => (
-              <motion.article
-                key={title}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.4, delay: (i % 3) * 0.05 }}
-                className="surface group relative overflow-hidden p-6 transition-transform hover:-translate-y-1"
-              >
-                <div className="kid-gradient-soft pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100" />
-                <div
-                  className={`relative flex h-11 w-11 items-center justify-center rounded-xl ring-1 ${tone}`}
-                >
-                  <Icon className="h-5 w-5" />
-                </div>
-                <h3 className="relative mt-4 font-display text-lg font-semibold tracking-tight">
-                  {title}
-                </h3>
-                <p className="relative mt-2 text-sm leading-relaxed text-muted-foreground">{desc}</p>
-              </motion.article>
-            ))}
-          </div>
-        </section>
-
-        <section className="mt-24">
-          <h2 className="text-center font-display text-3xl font-semibold tracking-tight">
-            {t("Crece con ellos", "It grows with them")}
-          </h2>
+          />
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             {ages.map(({ icon: Icon, range, desc }) => (
               <div key={range} className="surface relative overflow-hidden p-6">
@@ -1459,37 +1418,42 @@ function KidsFinanceLanding() {
         </section>
 
         <section className="mt-24">
-          <h2 className="text-center font-display text-3xl font-semibold tracking-tight">
-            {t("Cómo funciona", "How it works")}
-          </h2>
+          <SectionHeader
+            eyebrow={t("Lo que dicen", "What people say")}
+            title={t("Familias que ya empezaron", "Families who already started")}
+            subtitle={t(
+              "Historias reales de padres que vieron a sus hijos cambiar la forma de ver el dinero.",
+              "Real stories from parents who watched their kids change how they see money.",
+            )}
+          />
           <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {steps.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="surface p-6">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl text-kid-sky ring-1 ring-kid-sky/25 kid-gradient-soft">
-                  <Icon className="h-5 w-5" />
-                </span>
-                <h3 className="mt-4 font-display text-base font-semibold tracking-tight">{title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="mt-24">
-          <h2 className="text-center font-display text-3xl font-semibold tracking-tight">
-            {t("Lo que dicen los papás", "What parents say")}
-          </h2>
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {quotes.map((q) => (
-              <figure key={q.author} className="surface p-6">
-                <div className="flex gap-0.5 text-kid-sun">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="h-3.5 w-3.5 fill-current" />
+            {quotes.map((q, i) => (
+              <motion.figure
+                key={q.author}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.07 }}
+                className="surface flex flex-col p-6"
+              >
+                <div className="flex gap-0.5">
+                  {Array.from({ length: 5 }).map((_, k) => (
+                    <Star key={k} className="h-3.5 w-3.5 fill-kid-sun text-kid-sun" />
                   ))}
                 </div>
-                <blockquote className="mt-4 text-sm leading-relaxed">“{q.quote}”</blockquote>
-                <figcaption className="mt-4 text-xs text-muted-foreground">{q.author}</figcaption>
-              </figure>
+                <blockquote className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                  “{q.quote}”
+                </blockquote>
+                <figcaption className="mt-5 flex items-center gap-3">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-elevated text-xs font-semibold text-kid-mint ring-1 ring-border">
+                    {q.initials}
+                  </span>
+                  <span className="text-xs">
+                    <span className="block font-medium text-foreground">{q.author}</span>
+                    <span className="text-muted-foreground">{q.role}</span>
+                  </span>
+                </figcaption>
+              </motion.figure>
             ))}
           </div>
         </section>
