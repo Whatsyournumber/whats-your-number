@@ -708,12 +708,13 @@ function KidsFinanceLanding() {
               )}
               width={1280}
               height={1024}
-              className="h-full w-full object-cover object-[58%_42%] brightness-[1.35] contrast-[1.08] saturate-[1.05] [mask-image:linear-gradient(90deg,transparent_0%,#000_28%,#000_100%)]"
+              className="h-full w-full object-cover object-[58%_42%] brightness-[1.35] contrast-[1.08] saturate-[1.05] [mask-image:linear-gradient(90deg,transparent_0%,transparent_22%,#000_62%,#000_100%)]"
             />
-            <div className="absolute inset-y-0 left-0 w-1/3 bg-[linear-gradient(90deg,var(--background)_0%,transparent_100%)]" />
-            <div className="absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(0deg,var(--background)_0%,transparent_100%)]" />
-
-
+            {/* Gradual fade into the dark background so the photo never shows a hard edge */}
+            <div className="absolute inset-y-0 left-0 w-[55%] bg-[linear-gradient(90deg,var(--background)_0%,transparent_100%)]" />
+            <div className="absolute inset-x-0 top-0 h-44 bg-[linear-gradient(180deg,var(--background)_0%,transparent_100%)]" />
+            <div className="absolute inset-x-0 bottom-0 h-44 bg-[linear-gradient(0deg,var(--background)_0%,transparent_100%)]" />
+            <div className="absolute inset-0 bg-background/15" />
           </div>
 
           <div className="relative mx-auto w-full max-w-7xl px-6 py-16 md:py-20 lg:py-24">

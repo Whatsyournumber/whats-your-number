@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import { Sparkles, Menu } from "lucide-react";
 
 import { BrandLogo, BrandMark } from "@/components/brand-logo";
@@ -13,6 +13,8 @@ export function SiteHeader() {
   const { user } = useAuth();
   const t = useT();
   const [open, setOpen] = useState(false);
+  const { pathname } = useLocation();
+  const isKidsLanding = pathname === "/finanzas-para-ninos";
 
   const tabs = [
     { label: t("Cómo funciona", "How it works"), to: "/", hash: "funciones" },
@@ -20,6 +22,8 @@ export function SiteHeader() {
     { label: "Blog", to: "/blog" },
     { label: "demo", to: "/demo", search: { start: 1 }, icon: true },
   ] as const;
+
+  const visibleTabs = isKidsLanding ? tabs.filter((tab) => tab.label !== "demo") : tabs;
 
   const renderTab = (tab: (typeof tabs)[number]) => (
     <Link
@@ -69,7 +73,7 @@ export function SiteHeader() {
           <Link to="/" className="shrink-0">
             <BrandLogo />
           </Link>
-          <nav className="flex items-center gap-1">{tabs.map(renderTab)}</nav>
+          <nav className="flex items-center gap-1">{visibleTabs.map(renderTab)}</nav>
         </div>
         <div className="flex items-center gap-2">
           {authButtons}
@@ -103,7 +107,7 @@ export function SiteHeader() {
           <SheetContent side="left" className="w-full sm:max-w-xs">
             <div className="flex flex-col gap-6 pt-8">
               <nav className="flex flex-col gap-2">
-                {tabs.map((tab) => (
+                {visibleTabs.map((tab) => (
                   <SheetClose asChild key={tab.label}>
                     {renderTab(tab)}
                   </SheetClose>
