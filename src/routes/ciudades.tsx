@@ -392,15 +392,15 @@ function LifestyleSimulatorContent() {
       />
 
       <div className="surface overflow-hidden rounded-2xl border border-border">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/70 bg-elevated/30 px-4 py-2.5">
-          <div className="flex items-center gap-2">
-            <SlidersHorizontal className="h-3.5 w-3.5 text-primary" />
-            <p className="text-[11px] font-semibold uppercase tracking-wider">{t("Filtros", "Filters")}</p>
-            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border/70 bg-elevated/30 px-4 py-2.5 sm:flex sm:flex-wrap sm:justify-between">
+          <div className="flex min-w-0 items-center gap-2">
+            <SlidersHorizontal className="h-3.5 w-3.5 shrink-0 text-primary" />
+            <p className="truncate text-[11px] font-semibold uppercase tracking-wider">{t("Filtros", "Filters")}</p>
+            <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
               {ranked.length} {t("ciudades", "cities")}
             </span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-3">
             <button
               type="button"
               onClick={() => setFilters((f) => ({ ...defaultFilters, budget: f.budget }))}
@@ -425,10 +425,7 @@ function LifestyleSimulatorContent() {
           t={t}
         />
 
-
-
-
-        <div className="grid divide-y divide-border/60 lg:grid-cols-[1.15fr_1.35fr_1fr] lg:divide-x lg:divide-y-0">
+        <div className="grid divide-y divide-border/60 lg:grid-cols-3 lg:divide-x lg:divide-y-0">
           {/* Dónde */}
           <FilterGroup title={t("Dónde", "Where")}>
             <SelectFilter
