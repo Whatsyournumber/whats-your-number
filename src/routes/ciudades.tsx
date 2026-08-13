@@ -123,7 +123,7 @@ function FilterGroup({ title, children }: { title: string; children: React.React
   return (
     <div className="p-4">
       <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">{title}</p>
-      <div className="grid grid-cols-2 gap-3">{children}</div>
+      <div className="grid grid-cols-2 grid-rows-2 gap-3 *:min-h-[60px] *:self-start">{children}</div>
     </div>
   );
 }
