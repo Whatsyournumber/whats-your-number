@@ -1098,55 +1098,66 @@ function AiRecommendation({
 /* ---------------- Compare ---------------- */
 
 function ComparePanel({
-  a,
-  b,
+  items,
   fmt,
   t,
   onClear,
 }: {
-  a: CityScore;
-  b: CityScore;
+  items: CityScore[];
   fmt: (n: number) => string;
   t: (es: string, en: string) => string;
   onClear: () => void;
 }) {
-  const rows: { label: string; a: string; b: string; aWin: boolean }[] = [
+  type Row = { label: string; values: string[]; best: number };
+  const bestBy = (nums: number[], higher: boolean) =>
+    nums.reduce((bi, v, i) => (higher ? (v > nums[bi]! ? i : bi) : v < nums[bi]! ? i : bi), 0);
+
+  const num = (get: (x: CityScore) => number) => items.map(get);
+  const rows: Row[] = [
     {
       label: t("Costo de vida", "Cost of living"),
-      a: fmt(a.cost), b: fmt(b.cost), aWin: a.cost < b.cost,
+      values: items.map((x) => fmt(x.cost)),
+      best: bestBy(num((x) => x.cost), false),
     },
     {
       label: t("Salario neto est.", "Est. net salary"),
-      a: fmt(a.city.avgSalary), b: fmt(b.city.avgSalary), aWin: a.city.avgSalary > b.city.avgSalary,
+      values: items.map((x) => fmt(x.city.avgSalary)),
+      best: bestBy(num((x) => x.city.avgSalary), true),
     },
     {
       label: t("Ahorro potencial", "Potential savings"),
-      a: fmt(a.savings), b: fmt(b.savings), aWin: a.savings > b.savings,
+      values: items.map((x) => fmt(x.savings)),
+      best: bestBy(num((x) => x.savings), true),
     },
     {
       label: t("Impuestos", "Taxes"),
-      a: `${a.city.taxRate}%`, b: `${b.city.taxRate}%`, aWin: a.city.taxRate < b.city.taxRate,
+      values: items.map((x) => `${x.city.taxRate}%`),
+      best: bestBy(num((x) => x.city.taxRate), false),
     },
-    { label: t("Seguridad", "Safety"), a: `${a.city.safety}/100`, b: `${b.city.safety}/100`, aWin: a.city.safety > b.city.safety },
+    {
+      label: t("Seguridad", "Safety"),
+      values: items.map((x) => `${x.city.safety}/100`),
+      best: bestBy(num((x) => x.city.safety), true),
+    },
     {
       label: t("Clima", "Climate"),
-      a: t(a.city.climateLabelEs, a.city.climateLabelEn),
-      b: t(b.city.climateLabelEs, b.city.climateLabelEn),
-      aWin: false,
+      values: items.map((x) => t(x.city.climateLabelEs, x.city.climateLabelEn)),
+      best: -1,
     },
     {
       label: t("Salud", "Healthcare"),
-      a: `${a.city.healthcareScore}/100`, b: `${b.city.healthcareScore}/100`, aWin: a.city.healthcareScore > b.city.healthcareScore,
+      values: items.map((x) => `${x.city.healthcareScore}/100`),
+      best: bestBy(num((x) => x.city.healthcareScore), true),
     },
     {
       label: t("Calidad de vida", "Quality of life"),
-      a: `${a.city.qualityOfLife}/100`, b: `${b.city.qualityOfLife}/100`, aWin: a.city.qualityOfLife > b.city.qualityOfLife,
+      values: items.map((x) => `${x.city.qualityOfLife}/100`),
+      best: bestBy(num((x) => x.city.qualityOfLife), true),
     },
     {
       label: t("Tiempo hasta retirarte", "Time to retire"),
-      a: a.yearsToRetire !== null ? `${a.yearsToRetire} ${t("años", "yrs")}` : "—",
-      b: b.yearsToRetire !== null ? `${b.yearsToRetire} ${t("años", "yrs")}` : "—",
-      aWin: (a.yearsToRetire ?? 999) < (b.yearsToRetire ?? 999),
+      values: items.map((x) => (x.yearsToRetire !== null ? `${x.yearsToRetire} ${t("años", "yrs")}` : "—")),
+      best: bestBy(num((x) => x.yearsToRetire ?? 999), false),
     },
   ];
 
@@ -1159,9 +1170,12 @@ function ComparePanel({
         </Button>
       }
     >
-      <div className="grid grid-cols-3 gap-2 text-sm">
+      <div
+        className="grid gap-2 text-sm"
+        style={{ gridTemplateColumns: `minmax(90px,1.2fr) repeat(${items.length}, minmax(0,1fr))` }}
+      >
         <div />
-        {[a, b].map((x) => (
+        {items.map((x) => (
           <div key={x.city.id} className="text-center">
             <div className="relative mx-auto aspect-[16/10] w-full overflow-hidden rounded-xl border border-border/60">
               <img src={x.city.photo} alt={x.city.name} className="absolute inset-0 h-full w-full object-cover object-center" />
@@ -1174,18 +1188,24 @@ function ComparePanel({
         {rows.map((row) => (
           <div key={row.label} className="contents">
             <div className="border-t border-border/60 py-2 text-xs text-muted-foreground">{row.label}</div>
-            <div className={cn("numeric border-t border-border/60 py-2 text-center", row.aWin && "font-semibold text-positive")}>
-              {row.a}
-            </div>
-            <div className={cn("numeric border-t border-border/60 py-2 text-center", !row.aWin && "font-semibold text-positive")}>
-              {row.b}
-            </div>
+            {row.values.map((v, i) => (
+              <div
+                key={`${row.label}-${i}`}
+                className={cn(
+                  "numeric border-t border-border/60 py-2 text-center",
+                  row.best === i && "font-semibold text-positive",
+                )}
+              >
+                {v}
+              </div>
+            ))}
           </div>
         ))}
       </div>
     </Panel>
   );
 }
+
 
 /* ---------------- Detail ---------------- */
 
