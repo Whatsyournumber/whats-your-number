@@ -20,6 +20,7 @@ import margaritaPhoto from "@/assets/city-margarita-premium.jpg.asset.json";
 import sanjuanPhoto from "@/assets/city-sanjuan-premium.jpg.asset.json";
 import rosarioPhoto from "@/assets/city-rosario-premium.jpg.asset.json";
 import cordobaPhoto from "@/assets/city-cordoba-premium.jpg.asset.json";
+import andorraPhoto from "@/assets/andorra-premium.jpg.asset.json";
 const PHOTO = {
   hamburg: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/HH_Alsterarkaden_pano1.jpg/1920px-HH_Alsterarkaden_pano1.jpg",
   zagreb: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg/1920px-Ban_Jela%C4%8Di%C4%87_Square_20121201_0221P.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -127,7 +128,7 @@ const PHOTO = {
   caracas: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Panoramic_view_of_Caracas_night.jpg/1920px-Panoramic_view_of_Caracas_night.jpg",
   margarita: margaritaPhoto.url,
   sanjuan: sanjuanPhoto.url,
-  andorra: "https://commons.wikimedia.org/wiki/Special:FilePath/City_of_Andorra_la_Vella%2CAndorra_in_2021.05.jpg?width=1920",
+  andorra: andorraPhoto.url,
   kotor: "https://commons.wikimedia.org/wiki/Special:FilePath/Kotor_and_Boka_kotorska_-_view_from_city_wall.jpg?width=1920",
   sarajevo: "https://commons.wikimedia.org/wiki/Special:FilePath/Sarajevo_Panorama_2022.jpg?width=1920",
   belgrade: "https://commons.wikimedia.org/wiki/Special:FilePath/Belgrade%2C_MT_2000s_skyline.jpg?width=1920",
