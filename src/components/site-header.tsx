@@ -95,25 +95,23 @@ export function SiteHeader() {
       </div>
 
       {/* Mobile */}
-      <div className="flex items-center md:hidden">
+      <div className="md:hidden">
         <Sheet open={open} onOpenChange={setOpen}>
-          <div className="flex flex-1 items-center justify-start">
+          <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2">
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-full">
+              <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0 rounded-full">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">{t("Abrir menú", "Open menu")}</span>
               </Button>
             </SheetTrigger>
-          </div>
 
-          <div className="flex flex-none items-center justify-center">
-            <Link to="/" className="shrink-0">
-              <BrandMark className="h-9 w-9" />
-            </Link>
-          </div>
+            <div className="flex min-w-0 items-center justify-center">
+              <Link to="/" className="shrink-0">
+                <BrandMark className="h-8 w-8" />
+              </Link>
+            </div>
 
-          <div className="flex flex-1 items-center justify-end gap-2">
-            {authButtons}
+            <div className="flex shrink-0 items-center justify-end">{mobileAuthButton}</div>
           </div>
 
           <SheetContent side="left" className="w-full sm:max-w-xs">
@@ -125,6 +123,15 @@ export function SiteHeader() {
                   </SheetClose>
                 ))}
               </nav>
+              {!user && (
+                <SheetClose asChild>
+                  <Button asChild variant="outline" size="sm" className="rounded-full">
+                    <Link to="/auth" search={{ mode: "login" }}>
+                      {t("Iniciar sesión", "Sign in")}
+                    </Link>
+                  </Button>
+                </SheetClose>
+              )}
               <div className="flex items-center justify-between border-t border-border pt-4">
                 <span className="text-sm text-muted-foreground">{t("Idioma", "Language")}</span>
                 <div className="flex items-center gap-2">
