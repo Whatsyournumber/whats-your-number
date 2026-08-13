@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import {
@@ -139,6 +139,7 @@ function MiniArea({ color }: { color: string }) {
 function HowItWorksSlider() {
   const t = useT();
   const [i, setI] = useState(0);
+  const touchX = useRef<number | null>(null);
 
   const pockets = [
     { label: t("Gastar", "Spend"), value: 40, amount: "€24", color: "var(--kid-sky)" },
