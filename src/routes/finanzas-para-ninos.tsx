@@ -1295,13 +1295,11 @@ function KidsFinanceLanding() {
                 )}
               </span>
               <h1 className="mt-5 font-display text-3xl font-semibold leading-[1.08] tracking-tight md:text-4xl lg:text-5xl">
-                {t("Construye ", "Build ")}
-                <span className="text-kid-mint">{t("su patrimonio.", "their wealth.")}</span>
+                {t("Aprende finanzas ", "Learn finance ")}
+                <span className="text-kid-mint">{t("de forma divertida.", "the fun way.")}</span>
                 <br />
-                {t("Enséñale ", "Teach them ")}
-                <span className="text-kid-mint">{t("a manejarlo.", "to manage it.")}</span>
-                <br />
-                {t("En una sola plataforma.", "In one single platform.")}
+                {t("El primer número ", "Their first number ")}
+                <span className="text-kid-mint">{t("para toda la vida.", "for life.")}</span>
               </h1>
 
               <p className="mt-6 max-w-lg text-sm leading-relaxed text-muted-foreground md:text-base">
