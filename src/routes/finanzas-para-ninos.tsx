@@ -25,10 +25,24 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
+import heroFamily from "@/assets/kids-hero-family.jpg";
+import ctaFamily from "@/assets/kids-cta-family.jpg";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useT } from "@/hooks/use-language";
+
 
 export const Route = createFileRoute("/finanzas-para-ninos")({
   head: () => ({
