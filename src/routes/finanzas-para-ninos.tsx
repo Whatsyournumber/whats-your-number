@@ -150,6 +150,7 @@ function HowItWorksSlider() {
   const slides = [
     {
       id: "numbers",
+      tab: t("Mi número", "My number"),
       icon: Wallet,
       color: "var(--kid-sky)",
       title: t("Su número de hoy y el del futuro", "Their number today and tomorrow"),
@@ -183,6 +184,7 @@ function HowItWorksSlider() {
     },
     {
       id: "pockets",
+      tab: t("Mi dinero", "My money"),
       icon: PiggyBank,
       color: "var(--kid-mint)",
       title: t("Bolsillos: gastar, ahorrar e invertir", "Pockets: spend, save and invest"),
@@ -230,6 +232,7 @@ function HowItWorksSlider() {
     },
     {
       id: "dreams",
+      tab: t("Mis sueños", "My dreams"),
       icon: Target,
       color: "var(--kid-coral)",
       title: t("Sueños con barra de progreso", "Dreams with a progress bar"),
@@ -271,6 +274,7 @@ function HowItWorksSlider() {
     },
     {
       id: "chores",
+      tab: t("Mis tareas", "My chores"),
       icon: CalendarCheck,
       color: "var(--kid-sun)",
       title: t("Mesada automática y tareas", "Automatic allowance and chores"),
@@ -307,6 +311,7 @@ function HowItWorksSlider() {
     },
     {
       id: "grow",
+      tab: t("Mi futuro", "My future"),
       icon: TrendingUp,
       color: "var(--kid-mint)",
       title: t("Interés compuesto explicado para niños", "Compound interest explained for kids"),
@@ -357,6 +362,7 @@ function HowItWorksSlider() {
     },
     {
       id: "badges",
+      tab: t("Mis logros", "My badges"),
       icon: Trophy,
       color: "var(--kid-grape)",
       title: t("Premios, rachas y retos", "Rewards, streaks and quests"),
@@ -457,6 +463,33 @@ function HowItWorksSlider() {
         }}
       >
         <div className="kid-gradient absolute inset-x-0 top-0 h-1" />
+
+        <div className="-mx-1 mb-6 flex gap-2 overflow-x-auto px-1 pb-1 md:mb-10 md:flex-wrap md:justify-center md:overflow-visible">
+          {slides.map((s, k) => {
+            const TabIcon = s.icon;
+            const isActive = k === i;
+            return (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => setI(k)}
+                className="flex shrink-0 items-center gap-2 rounded-full px-3.5 py-2 text-xs font-medium transition-all sm:text-sm"
+                style={
+                  isActive
+                    ? {
+                        color: s.color,
+                        backgroundColor: `color-mix(in oklab, ${s.color} 14%, transparent)`,
+                        boxShadow: `inset 0 0 0 1.5px color-mix(in oklab, ${s.color} 55%, transparent), 0 0 24px color-mix(in oklab, ${s.color} 18%, transparent)`,
+                      }
+                    : { boxShadow: "inset 0 0 0 1px var(--border)" }
+                }
+              >
+                <TabIcon className="h-4 w-4 shrink-0" />
+                <span className="whitespace-nowrap">{s.tab}</span>
+              </button>
+            );
+          })}
+        </div>
         <motion.div
           key={active.id}
           initial={{ opacity: 0, y: 12 }}
