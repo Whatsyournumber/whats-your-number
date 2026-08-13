@@ -141,6 +141,7 @@ export function PricingComparison() {
 }
 
 function CellValue({ value, highlight }: { value: Cell; highlight?: boolean }) {
+  const t = useT();
   if (value === true) {
     return (
       <span
@@ -161,7 +162,7 @@ function CellValue({ value, highlight }: { value: Cell; highlight?: boolean }) {
     );
   }
   if (value === "partial") {
-    return <span className="text-[11px] text-muted-foreground">Parcial</span>;
+    return <span className="text-[11px] text-muted-foreground">{t("Parcial", "Partial")}</span>;
   }
   return (
     <span className={cn("text-xs font-semibold", highlight ? "text-primary" : "text-muted-foreground")}>{value}</span>
