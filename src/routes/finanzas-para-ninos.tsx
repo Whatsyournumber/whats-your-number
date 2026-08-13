@@ -353,8 +353,8 @@ function ThreePillars() {
 
               <PillarVisual id={id} color={color} />
               <div className="mt-2 flex justify-between border-t border-border/60 pt-2 text-[10px] uppercase tracking-wider text-muted-foreground/70">
-                <span>{pillarAxis[id][0]}</span>
-                <span>{pillarAxis[id][1]}</span>
+                <span>{pillarAxis[id]?.[0]}</span>
+                <span>{pillarAxis[id]?.[1]}</span>
               </div>
             </div>
           </motion.div>
