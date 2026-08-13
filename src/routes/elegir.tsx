@@ -34,8 +34,12 @@ export const Route = createFileRoute("/elegir")({
 function ChooserPage() {
   const { user, loading } = useAuth();
   const { isPatrimonio, loading: subLoading } = useSubscription();
+  const { isSuperAdmin, loading: rolesLoading } = useRoles();
   const navigate = useNavigate();
   const t = useT();
+
+  const gateLoading = loading || subLoading || rolesLoading;
+  const canUseChooser = isPatrimonio || isSuperAdmin;
 
   useEffect(() => {
     if (loading) return;
@@ -44,16 +48,17 @@ function ChooserPage() {
       return;
     }
     // Profile chooser is exclusive to the Familiar plan.
-    if (!subLoading && !isPatrimonio) navigate({ to: "/dashboard", replace: true });
-  }, [loading, user, subLoading, isPatrimonio, navigate]);
+    if (!gateLoading && !canUseChooser) navigate({ to: "/dashboard", replace: true });
+  }, [loading, user, gateLoading, canUseChooser, navigate]);
 
-  if (loading || !user || subLoading || !isPatrimonio) {
+  if (gateLoading || !user || !canUseChooser) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
       </div>
     );
   }
+
 
 
   const fullName =
