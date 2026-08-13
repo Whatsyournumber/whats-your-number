@@ -559,7 +559,7 @@ function LifestyleSimulatorContent() {
                 { value: "neutral", label: t("Neutral", "Neutral"), icon: "★★★" },
               ]}
             />
-            <div className="col-span-2">
+            <div className="col-span-1 sm:col-span-2">
               <p className="truncate text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
                 {t("Objetivo", "Goal")}
               </p>
