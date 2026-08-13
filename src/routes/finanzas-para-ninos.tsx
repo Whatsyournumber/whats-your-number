@@ -933,42 +933,123 @@ function GrowthChart({ compact = false }: { compact?: boolean }) {
   );
 }
 
-function Milestones() {
+function GrowsWithThem() {
   const t = useT();
   const items = [
-    { age: t("8 años", "Age 8"), label: t("Mesada", "Allowance"), icon: Coins },
+    { age: t("0 años", "Age 0"), label: t("Primer aporte", "First deposit"), icon: Gift },
+    { age: t("4 años", "Age 4"), label: t("Primeras monedas", "First coins"), icon: Coins },
+    { age: t("8 años", "Age 8"), label: t("Mesada", "Allowance"), icon: Banknote },
     { age: t("10 años", "Age 10"), label: t("Primer ahorro", "First savings"), icon: PiggyBank },
     { age: t("12 años", "Age 12"), label: t("Primer ETF", "First ETF"), icon: TrendingUp },
     { age: t("16 años", "Age 16"), label: t("Primer negocio", "First business"), icon: Rocket },
     { age: t("18 años", "Age 18"), label: t("Universidad", "University"), icon: GraduationCap },
   ];
+  const stages = [
+    {
+      range: t("0 a 6 años", "Ages 0 to 6"),
+      desc: t(
+        "Los padres abren su cartera y aportan desde el día uno. El tiempo hace el trabajo pesado.",
+        "Parents open their portfolio and contribute from day one. Time does the heavy lifting.",
+      ),
+      icon: Gift,
+      color: "var(--kid-grape)",
+    },
+    {
+      range: t("7 a 9 años", "Ages 7 to 9"),
+      desc: t(
+        "Monedas, bolsillos y su primer sueño. Aprenden que el dinero se guarda antes de gastarse.",
+        "Coins, pockets and their first dream. They learn money is saved before it's spent.",
+      ),
+      icon: Banknote,
+      color: "var(--kid-sky)",
+    },
+    {
+      range: t("10 a 13 años", "Ages 10 to 13"),
+      desc: t(
+        "Mesada, tareas y metas más grandes. Empiezan a planificar semanas y meses.",
+        "Allowance, chores and bigger goals. They start planning weeks and months.",
+      ),
+      icon: CalendarCheck,
+      color: "var(--kid-mint)",
+    },
+    {
+      range: t("14 a 17 años", "Ages 14 to 17"),
+      desc: t(
+        "Interés compuesto, inversión y su número del futuro. Salen de casa sabiendo su número.",
+        "Compound interest, investing and their future number. They leave home knowing their number.",
+      ),
+      icon: TrendingUp,
+      color: "var(--kid-coral)",
+    },
+  ];
   return (
     <section className="mt-24">
       <SectionHeader
-        eyebrow={t("El camino", "The path")}
-        title={t("Un camino que los prepara para la vida", "A path that prepares them for life")}
+        eyebrow={t("Crece con ellos", "It grows with them")}
+        title={t("De los 0 a los 18 años", "From age 0 to 18")}
         subtitle={t(
-          "De la primera mesada a su primera inversión: cada edad tiene su hito.",
-          "From their first allowance to their first investment: every age has its milestone.",
+          "Un solo camino: los padres empiezan desde el día uno y la app cambia con cada edad, de las primeras monedas al interés compuesto.",
+          "One single path: parents start on day one and the app evolves with every age, from first coins to compound interest.",
         )}
       />
+
       <div className="relative mt-12">
         <div className="kid-gradient absolute inset-x-6 top-[52px] hidden h-px opacity-40 md:block" />
-        <div className="grid gap-4 sm:grid-cols-3 md:grid-cols-5">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
           {items.map(({ age, label, icon: Icon }) => (
-            <div key={age} className="surface relative p-5 text-center">
-              <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl text-kid-mint ring-1 ring-kid-mint/25 kid-gradient-soft">
-                <Icon className="h-5 w-5" />
+            <motion.div
+              key={age}
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.4 }}
+              className="surface relative p-4 text-center"
+            >
+              <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl text-kid-mint ring-1 ring-kid-mint/25 kid-gradient-soft">
+                <Icon className="h-4.5 w-4.5" />
               </span>
-              <p className="mt-4 text-sm font-semibold">{age}</p>
-              <p className="mt-1 text-xs text-muted-foreground">{label}</p>
-            </div>
+              <p className="mt-3 text-sm font-semibold">{age}</p>
+              <p className="mt-1 text-[11px] text-muted-foreground">{label}</p>
+            </motion.div>
           ))}
         </div>
+      </div>
+
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {stages.map(({ icon: Icon, range, desc, color }) => (
+          <motion.div
+            key={range}
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.4 }}
+            className="surface relative overflow-hidden p-6"
+          >
+            <span
+              className="pointer-events-none absolute inset-x-0 top-0 h-px"
+              style={{
+                background: `linear-gradient(90deg, transparent, color-mix(in oklab, ${color} 75%, transparent), transparent)`,
+              }}
+            />
+            <span
+              className="flex h-9 w-9 items-center justify-center rounded-xl"
+              style={{
+                color,
+                backgroundColor: `color-mix(in oklab, ${color} 12%, transparent)`,
+                boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${color} 25%, transparent)`,
+              }}
+            >
+              <Icon className="h-4 w-4" />
+            </span>
+            <h3 className="mt-4 font-display text-base font-semibold tracking-tight">{range}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{desc}</p>
+          </motion.div>
+        ))}
       </div>
     </section>
   );
 }
+
 
 function FamilyProfiles() {
   const t = useT();
