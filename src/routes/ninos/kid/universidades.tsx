@@ -97,6 +97,8 @@ function CollegeFinder({ member }: { member: Member }) {
   const [region, setRegion] = useState<string | null>(null);
   const [field, setField] = useState<UniField | null>(null);
   const [query, setQuery] = useState("");
+  const [compare, setCompare] = useState<string[]>([]);
+
 
   const cost = (u: University) => uniTotalUsd(u, includeLiving) * usdFx.factor;
 
