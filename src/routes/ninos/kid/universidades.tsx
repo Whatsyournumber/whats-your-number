@@ -853,7 +853,7 @@ function CountryCombobox({
       </div>
 
       {open ? (
-        <ul className="absolute right-0 z-30 mt-2 max-h-64 w-56 overflow-auto rounded-2xl border border-border/70 bg-popover p-1 shadow-xl">
+        <ul className="absolute right-0 z-30 mt-2 max-h-64 w-56 overflow-auto rounded-2xl border border-border/70 bg-card p-1 shadow-2xl">
           {filtered.map((c) => (
             <li key={c}>
               <button
