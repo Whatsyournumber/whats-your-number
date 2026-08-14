@@ -155,35 +155,22 @@ function CollegeFinder({ member }: { member: Member }) {
   }, [priced, simProjected, projected]);
 
   const buckets = useMemo(() => {
-    const groups: { key: Bucket; label: string; flag: string; items: typeof priced }[] = [];
-    const homeItems = priced.filter((r) => isHome(r.u));
-    if (homeItems.length)
-      groups.push({ key: "home", label: homeCountry, flag: homeItems[0]!.u.flag, items: homeItems });
-    groups.push({
-      key: "eu",
-      label: t("Europa", "Europe"),
-      flag: "🇪🇺",
-      items: priced.filter((r) => r.u.region === "eu" && !isHome(r.u)),
-    });
-    groups.push({
-      key: "na",
-      label: t("Estados Unidos", "United States"),
-      flag: "🇺🇸",
-      items: priced.filter((r) => r.u.region === "na" && !isHome(r.u)),
-    });
-    groups.push({
-      key: "rest",
-      label: t("Resto del mundo", "Rest of the world"),
-      flag: "🌍",
-      items: priced.filter((r) => !["eu", "na"].includes(r.u.region) && !isHome(r.u)),
-    });
-    return groups.map((g) => {
-      const ok = g.items.filter((r) => r.total <= projected);
-      const minGap = g.items.length ? Math.min(...g.items.map((r) => Math.max(0, r.total - projected))) : 0;
-      return { ...g, count: ok.length, minGap };
+    const defs: { key: Continent; label: string; flag: string }[] = [
+      { key: "latam", label: t("Latinoamérica", "Latin America"), flag: "🌎" },
+      { key: "nam", label: t("EE.UU. / Canadá", "US / Canada"), flag: "🇺🇸" },
+      { key: "eu", label: t("Europa", "Europe"), flag: "🇪🇺" },
+      { key: "asia", label: t("Asia", "Asia"), flag: "🌏" },
+      { key: "oceania", label: t("Oceanía", "Oceania"), flag: "🇦🇺" },
+      { key: "africa", label: t("África / M. Oriente", "Africa / Mid. East"), flag: "🌍" },
+    ];
+    return defs.map((d) => {
+      const items = priced.filter((r) => continentOf(r.u) === d.key);
+      const ok = items.filter((r) => r.total <= projected);
+      const minGap = items.length ? Math.min(...items.map((r) => Math.max(0, r.total - projected))) : 0;
+      return { ...d, count: ok.length, minGap };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [priced, projected, homeCountry, lang]);
+  }, [priced, projected, lang]);
 
   const countries = useMemo(
     () =>
