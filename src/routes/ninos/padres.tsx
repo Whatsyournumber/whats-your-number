@@ -134,7 +134,7 @@ function KidPanel({ kid }: { kid: Member }) {
   const fundTarget = targetAge ?? Number(fund?.target_age ?? 18);
   const fundReturn = expected ?? Number(fund?.expected_return ?? 10);
   const projection = projectFund(
-    Number(fund?.current_balance ?? 0) + totals.crecer,
+    Math.max(totals.crecer, Number(fund?.current_balance ?? 0)),
     fundMonthly,
     kid.age,
     fundTarget,

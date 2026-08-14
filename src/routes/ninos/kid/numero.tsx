@@ -106,7 +106,7 @@ function MyNumber({ member }: { member: Member }) {
   const today = totals.gastar + totals.ahorrar + totals.crecer;
   const targetAge = Number(fund?.target_age ?? 18);
   const projection = projectFund(
-    Number(fund?.current_balance ?? 0) + today,
+    Math.max(today, Number(fund?.current_balance ?? 0)),
     Number(fund?.monthly_contribution ?? 0),
     member.age,
     targetAge,
