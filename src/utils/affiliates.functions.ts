@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { assertSuperAdmin, randomCode, slugifyCode } from "@/lib/affiliates.server";
+import { assertSuperAdmin, grantAffiliateProPlan, randomCode, slugifyCode } from "@/lib/affiliates.server";
 
 /** Public: records a visit coming from an affiliate link. */
 export const trackAffiliateClick = createServerFn({ method: "POST" })
