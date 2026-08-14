@@ -3,23 +3,13 @@ import { useState } from "react";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Button, Buddy, Card, Field, GrowthChart, inputClass } from "@/components/mfn-ui";
+import { Button, Buddy, Card, Field, inputClass } from "@/components/mfn-ui";
 import { useKidTheme } from "@/components/kid-shell";
 import { useActiveProfile, useMembers, useSubscription } from "@/hooks/use-mfn";
 import { kidLimit } from "@/lib/mfn-plan";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
 import { CITIES, CURRENCIES, currencyForCity, currencyLabel } from "@/lib/mfn-currencies";
-import {
-  FUND_GOALS,
-  RETURN_OPTIONS,
-  TASK_IDEAS,
-  WISH_IDEAS,
-  disclaimer,
-  goalLabel,
-  money,
-  projectFund,
-  seedHoldings,
-} from "@/lib/mfn";
+import { FUND_GOALS, TASK_IDEAS, WISH_IDEAS, money, seedHoldings } from "@/lib/mfn";
 
 export const Route = createFileRoute("/ninos/onboarding")({
   head: () => ({
@@ -72,7 +62,7 @@ function Onboarding() {
 
   useKidTheme(theme);
 
-  const projection = projectFund(initial, monthly, age, targetAge, expected);
+  
   const canNext = [
     name.trim().length > 1,
     city.trim().length > 1,
