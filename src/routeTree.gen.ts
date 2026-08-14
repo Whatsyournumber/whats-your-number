@@ -38,7 +38,6 @@ import { Route as RetiroRouteImport } from './routes/retiro'
 import { Route as SuscripcionRouteImport } from './routes/suscripcion'
 import { Route as TerminosRouteImport } from './routes/terminos'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout/success'
-import { Route as NinoIdRouteImport } from './routes/nino.$id'
 import { Route as NinosIndexRouteImport } from './routes/ninos/index'
 import { Route as NinosOnboardingRouteImport } from './routes/ninos/onboarding'
 import { Route as NinosPadresRouteImport } from './routes/ninos/padres'
@@ -195,11 +194,6 @@ const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
   path: '/checkout/success',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NinoIdRoute = NinoIdRouteImport.update({
-  id: '/nino/$id',
-  path: '/nino/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const NinosIndexRoute = NinosIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -282,7 +276,6 @@ export interface FileRoutesByFullPath {
   '/suscripcion': typeof SuscripcionRoute
   '/terminos': typeof TerminosRoute
   '/checkout/success': typeof CheckoutSuccessRoute
-  '/nino/$id': typeof NinoIdRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/ninos/': typeof NinosIndexRoute
@@ -323,7 +316,6 @@ export interface FileRoutesByTo {
   '/suscripcion': typeof SuscripcionRoute
   '/terminos': typeof TerminosRoute
   '/checkout/success': typeof CheckoutSuccessRoute
-  '/nino/$id': typeof NinoIdRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/ninos': typeof NinosIndexRoute
@@ -366,7 +358,6 @@ export interface FileRoutesById {
   '/suscripcion': typeof SuscripcionRoute
   '/terminos': typeof TerminosRoute
   '/checkout/success': typeof CheckoutSuccessRoute
-  '/nino/$id': typeof NinoIdRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/ninos/': typeof NinosIndexRoute
@@ -410,7 +401,6 @@ export interface FileRouteTypes {
     | '/suscripcion'
     | '/terminos'
     | '/checkout/success'
-    | '/nino/$id'
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/ninos/'
@@ -451,7 +441,6 @@ export interface FileRouteTypes {
     | '/suscripcion'
     | '/terminos'
     | '/checkout/success'
-    | '/nino/$id'
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/ninos'
@@ -493,7 +482,6 @@ export interface FileRouteTypes {
     | '/suscripcion'
     | '/terminos'
     | '/checkout/success'
-    | '/nino/$id'
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/ninos/'
@@ -536,7 +524,6 @@ export interface RootRouteChildren {
   SuscripcionRoute: typeof SuscripcionRoute
   TerminosRoute: typeof TerminosRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
-  NinoIdRoute: typeof NinoIdRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
@@ -745,13 +732,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutSuccessRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/nino/$id': {
-      id: '/nino/$id'
-      path: '/nino/$id'
-      fullPath: '/nino/$id'
-      preLoaderRoute: typeof NinoIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/ninos/': {
       id: '/ninos/'
       path: '/'
@@ -883,7 +863,6 @@ const rootRouteChildren: RootRouteChildren = {
   SuscripcionRoute: SuscripcionRoute,
   TerminosRoute: TerminosRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,
-  NinoIdRoute: NinoIdRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
