@@ -1309,7 +1309,7 @@ function KidsFinanceLanding() {
               )}
               width={1280}
               height={1024}
-              className="h-full w-full object-cover object-[30%_10%] brightness-[1.05] contrast-[1.02] saturate-[1.04] md:object-[24%_16%] lg:object-[14%_40%] lg:[mask-image:linear-gradient(90deg,transparent_0%,transparent_30%,#000_66%,#000_100%)]"
+              className="h-full w-full object-cover object-[22%_10%] brightness-[1.05] contrast-[1.02] saturate-[1.04] md:object-[16%_16%] lg:object-[4%_40%] lg:[mask-image:linear-gradient(90deg,transparent_0%,transparent_34%,#000_70%,#000_100%)]"
             />
             {/* Gradual fade into the dark background so the photo never shows a hard edge */}
             <div className="absolute inset-y-0 left-0 hidden w-[34%] bg-[linear-gradient(90deg,var(--background)_0%,transparent_100%)] lg:block" />
