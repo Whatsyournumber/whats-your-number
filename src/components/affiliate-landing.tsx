@@ -52,7 +52,7 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
   const heroBadges = [
     { icon: BadgePercent, title: t("30% recurrente", "30% recurring"), sub: t("de por vida", "for life") },
     { icon: Crown, title: t("Plan Pro gratis", "Free Pro plan"), sub: t("con 3 amigos", "with 3 friends") },
-    { icon: Shield, title: t("Cookie 60 días", "60-day cookie"), sub: t("para atribución", "for attribution") },
+    
   ];
 
   const perks = [
@@ -188,10 +188,11 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
                   <span className="inline-flex rounded-full border border-border bg-background/70 p-2 text-primary">
                     <Icon className="h-3.5 w-3.5" />
                   </span>
-                  <span className="leading-tight">
-                    <span className="block text-xs font-semibold">{title}</span>
-                    <span className="block text-[11px] text-muted-foreground">{sub}</span>
+                  <span className="min-w-0 leading-tight">
+                    <span className="block truncate whitespace-nowrap text-xs font-semibold">{title}</span>
+                    <span className="line-clamp-2 block text-[11px] text-muted-foreground">{sub}</span>
                   </span>
+
                 </div>
               ))}
             </div>
