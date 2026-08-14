@@ -87,7 +87,7 @@ function AffiliatesPage() {
       await qc.invalidateQueries({ queryKey: ["affiliate"] });
       await qc.invalidateQueries({ queryKey: ["subscription"] });
       toast.success(
-        t("¡Ya eres afiliado! Tu enlace está listo y tu plan Pro activado.", "You're an affiliate! Your link is ready and your Pro plan is active."),
+        t("¡Ya eres afiliado! Comparte tu enlace con 3 amigos y tu plan Pro es gratis.", "You're an affiliate! Share your link with 3 friends and your Pro plan is free."),
       );
     } catch {
       toast.error(t("No pudimos crear tu cuenta de afiliado.", "We couldn't create your affiliate account."));
@@ -152,10 +152,10 @@ function AffiliatesPage() {
         <AffiliateExplainer />
         <Panel
           className="mt-4"
-          title={t("Activa tu enlace y tu Pro gratis", "Activate your link and free Pro")}
+          title={t("Activa tu enlace y consigue Pro gratis", "Activate your link and get free Pro")}
           description={t(
-            "Toma menos de un minuto, es gratis e incluye 12 meses del plan Pro.",
-            "It takes less than a minute, it's free and includes 12 months of the Pro plan.",
+            "Toma menos de un minuto. Cuando 3 amigos se registren con tu enlace, te regalamos 12 meses del plan Pro.",
+            "It takes less than a minute. When 3 friends sign up with your link, we gift you 12 months of the Pro plan.",
           )}
         >
           <div className="grid gap-3 sm:max-w-md">

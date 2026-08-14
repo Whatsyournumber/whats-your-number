@@ -56,11 +56,11 @@ export function AffiliateExplainer({ rate = RATE }: { rate?: number }) {
         title={
           <span className="inline-flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-primary" />
-            {t("Plan Pro gratis para afiliados", "Free Pro plan for affiliates")}
+            {t("Plan Pro gratis con 3 amigos", "Free Pro plan with 3 friends")}
           </span>
         }
         description={t(
-          "Al activar tu enlace te regalamos el plan Pro durante 12 meses, para que uses el producto de verdad y lo vendas mejor.",
+          "Cuando 3 personas se registren con tu enlace, te regalamos el plan Pro durante 12 meses.",
           "When you activate your link we gift you the Pro plan for 12 months, so you use the product for real and sell it better.",
         )}
       >

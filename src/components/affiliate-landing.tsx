@@ -50,7 +50,7 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
 
   const heroBadges = [
     { icon: BadgePercent, title: t("30% recurrente", "30% recurring"), sub: t("de por vida", "for life") },
-    { icon: Crown, title: t("Plan Pro gratis", "Free Pro plan"), sub: t("12 meses", "12 months") },
+    { icon: Crown, title: t("Plan Pro gratis", "Free Pro plan"), sub: t("con 3 amigos", "with 3 friends") },
     { icon: Shield, title: t("Cookie 60 días", "60-day cookie"), sub: t("para atribución", "for attribution") },
   ];
 
