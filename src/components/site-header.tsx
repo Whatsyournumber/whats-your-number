@@ -24,15 +24,16 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
     { label: t("Cómo funciona", "How it works"), to: "/", hash: "funciones" },
     { label: t("Precios", "Pricing"), to: "/precios" },
     { label: "Blog", to: "/blog" },
-    { label: "demo", to: "/demo", search: { start: 1 }, icon: true },
     { label: t("Finanzas para niños", "Kids finance"), to: "/finanzas-para-ninos" },
+    { label: "demo", to: "/demo", search: { start: 1 }, icon: true },
   ] as const;
 
   const kidsTabs = [
     { label: t("Finanzas para adultos", "Adult finance"), to: "/" },
     { label: t("Precios", "Pricing"), to: "/precios" },
-    { label: "demo", to: "/demo-ninos" },
+    { label: "demo", to: "/demo-ninos", search: { start: 1 } },
   ] as const;
+
 
   const visibleTabs = (isKidsLanding ? kidsTabs : tabs) as unknown as (typeof tabs)[number][];
 
