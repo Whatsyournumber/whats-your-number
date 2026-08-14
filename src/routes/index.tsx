@@ -335,9 +335,9 @@ function Landing() {
             className="pointer-events-none absolute inset-y-0 right-0 hidden w-[48%] md:block lg:w-[54%]"
             style={{
               WebkitMaskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 8%, rgba(0,0,0,0.40) 26%, #000 50%)",
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.08) 12%, rgba(0,0,0,0.35) 32%, rgba(0,0,0,0.75) 52%, #000 70%)",
               maskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 8%, rgba(0,0,0,0.40) 26%, #000 50%)",
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.08) 12%, rgba(0,0,0,0.35) 32%, rgba(0,0,0,0.75) 52%, #000 70%)",
             }}
 
           >
@@ -349,6 +349,16 @@ function Landing() {
               className="h-full w-full object-cover object-[18%_78%] md:object-[20%_82%] lg:object-[22%_86%]"
               loading="eager"
               fetchPriority="high"
+            />
+            {/* Soft edge blur for premium fusion */}
+            <div
+              className="pointer-events-none absolute inset-y-0 left-0 w-[22%]"
+              style={{
+                background:
+                  "linear-gradient(to right, var(--background) 0%, transparent 100%)",
+                filter: "blur(28px)",
+                WebkitFilter: "blur(28px)",
+              }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-background/30" />
           </motion.div>
