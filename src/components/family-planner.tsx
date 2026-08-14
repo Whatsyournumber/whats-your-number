@@ -510,7 +510,10 @@ export function FamilyPlanner({
             label={t("Capital inicial", "Initial capital")}
             value={base}
             hint={t("Hoy", "Today")}
-            onChange={setBase}
+            onChange={(v) => {
+              setBaseTouched(true);
+              setBase(v);
+            }}
           />
           <StatCard
             icon={<CalendarDays className="h-4 w-4" />}
