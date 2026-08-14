@@ -156,6 +156,13 @@ function CollegeFinder({ member }: { member: Member }) {
           budget: effectiveBudget,
           interests,
           monthlyExtraFor1,
+          initial,
+          monthly,
+          years: yearsLeft,
+          rate,
+          homeCountry: homeCountry || "",
+          homeCity: profile?.city ?? "",
+
           affordable: affordable.slice(0, 8).map((r) => ({
             name: r.u.name,
             city: r.u.city,
