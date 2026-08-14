@@ -12,7 +12,13 @@ import {
   type FutureFund,
   splitAmount,
 } from "@/lib/mfn";
-export { useSubscription } from "@/hooks/use-subscription";
+import { useSubscription as useWynSubscription } from "@/hooks/use-subscription";
+
+/** Suscripción de WhatsYourNumber adaptada a la forma { data } que usa la zona infantil. */
+export function useSubscription() {
+  const { subscription, loading } = useWynSubscription();
+  return { data: subscription ?? null, isLoading: loading };
+}
 
 async function requireUser() {
   const { data } = await supabase.auth.getUser();

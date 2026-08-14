@@ -27,7 +27,7 @@ export const Route = createFileRoute("/ninos/")({
   }),
   beforeLoad: async () => {
     const { data } = await supabase.auth.getUser();
-    if (!data.user) throw redirect({ to: "/auth", search: { redirect: "/ninos" } });
+    if (!data.user) throw redirect({ to: "/auth", search: { mode: "login" } });
   },
   component: ProfileSelector,
 });
@@ -173,7 +173,7 @@ function ProfileSelector() {
                 onClick={async () => {
                   select(null);
                   await supabase.auth.signOut();
-                  router.navigate({ to: "/auth", search: { redirect: "/ninos" } });
+                  router.navigate({ to: "/auth", search: { mode: "login" } });
                 }}
               >
                 {t("Salir", "Sign out")}

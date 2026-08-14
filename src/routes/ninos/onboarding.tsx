@@ -96,7 +96,7 @@ function Onboarding() {
           `Your plan allows ${maxKids} child ${maxKids === 1 ? "profile" : "profiles"}`,
         ),
       );
-      router.navigate({ to: "/ninos/kid/suscripcion" });
+      router.navigate({ to: "/precios" });
       return;
     }
     setSaving(true);
