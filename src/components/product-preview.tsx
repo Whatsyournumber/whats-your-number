@@ -221,7 +221,7 @@ export function ProductPreview() {
 
   const view = views.find((v) => v.id === active)!;
   const kpi = kpis[active];
-  const Insight = insights[insight]!;
+  const Insight = insights[active];
 
   const allocation = [
     { name: t("ETFs", "ETFs"), v: 46 },
