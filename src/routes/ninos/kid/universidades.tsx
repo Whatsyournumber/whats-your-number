@@ -390,6 +390,8 @@ function CollegeFinder({ member }: { member: Member }) {
                 const ok = total <= effectiveBudget;
                 const gap = total - effectiveBudget;
                 const coverage = Math.max(0, Math.min(100, Math.round((effectiveBudget / Math.max(1, total)) * 100)));
+                const picked = compare.includes(u.id);
+                const full = compare.length >= 3 && !picked;
                 return (
                   <article
                     key={u.id}
@@ -398,8 +400,10 @@ function CollegeFinder({ member }: { member: Member }) {
                       ok
                         ? "border-primary/30 bg-gradient-to-b from-primary/[0.09] to-card"
                         : "border-border/60 bg-card",
+                      picked && "ring-2 ring-primary",
                     )}
                   >
+
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex min-w-0 items-start gap-2.5">
                         <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-secondary/70 text-xl">
