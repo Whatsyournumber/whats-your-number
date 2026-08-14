@@ -98,7 +98,31 @@ export async function assertSuperAdmin(supabase: any, userId: string) {
   if (!data) throw new Error("Forbidden: super admin only");
 }
 
+/** Sign-ups needed through an affiliate link to unlock the complimentary Pro plan. */
+export const REFERRALS_FOR_FREE_PRO = 3;
+
+/** Grants the free Pro plan once an affiliate reaches REFERRALS_FOR_FREE_PRO sign-ups. */
+export async function maybeGrantReferralReward(
+  admin: any,
+  affiliateId: string,
+  environment: string,
+): Promise<{ unlocked: boolean; referrals: number }> {
+  const { count } = await admin
+    .from("affiliate_referrals")
+    .select("id", { count: "exact", head: true })
+    .eq("affiliate_id", affiliateId);
+  const referrals = count ?? 0;
+  if (referrals < REFERRALS_FOR_FREE_PRO) return { unlocked: false, referrals };
+
+  const { data: affiliate } = await admin.from("affiliates").select("user_id,status").eq("id", affiliateId).maybeSingle();
+  if (!affiliate || affiliate.status !== "active") return { unlocked: false, referrals };
+
+  await grantAffiliateProPlan(admin, affiliate.user_id, environment);
+  return { unlocked: true, referrals };
+}
+
 /** Grants a complimentary Pro plan to an affiliate so they can demo/sell the product. */
+
 export async function grantAffiliateProPlan(admin: any, userId: string, environment: string) {
   const { data: existing } = await admin
     .from("subscriptions")
