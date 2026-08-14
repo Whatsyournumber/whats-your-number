@@ -120,7 +120,7 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
         </div>
         <div className="flex items-center gap-2">
           {authButtons}
-          <CurrencyToggle />
+          {showCurrency && <CurrencyToggle />}
           <LanguageToggle />
         </div>
       </div>
@@ -204,10 +204,12 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
                   </SheetClose>
                 </div>
               )}
-              <div className="flex items-center justify-between border-t border-border pt-4">
-                <span className="text-sm text-muted-foreground">{t("Moneda", "Currency")}</span>
-                <CurrencyToggle />
-              </div>
+              {showCurrency && (
+                <div className="flex items-center justify-between border-t border-border pt-4">
+                  <span className="text-sm text-muted-foreground">{t("Moneda", "Currency")}</span>
+                  <CurrencyToggle />
+                </div>
+              )}
             </div>
           </SheetContent>
         </Sheet>
