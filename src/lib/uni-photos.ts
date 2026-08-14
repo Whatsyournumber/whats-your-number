@@ -186,6 +186,49 @@ import cur_us_lsu from "@/assets/uni/us-lsu.jpg";
 import cur_au_melbourne from "@/assets/uni/au-melbourne.jpg";
 import cur_us_uic from "@/assets/uni/us-uic.jpg";
 
+import cur_au_unsw from "@/assets/uni/au-unsw.jpg";
+import cur_us_utah from "@/assets/uni/us-utah.jpg";
+import cur_us_georgia from "@/assets/uni/us-georgia.jpg";
+import cur_us_tennessee from "@/assets/uni/us-tennessee.jpg";
+import cur_us_stonybrook from "@/assets/uni/us-stonybrook.jpg";
+import cur_au_sydney from "@/assets/uni/au-sydney.jpg";
+import cur_us_asu from "@/assets/uni/us-asu.jpg";
+import cur_us_ncstate from "@/assets/uni/us-ncstate.jpg";
+import cur_us_iowa from "@/assets/uni/us-iowa.jpg";
+import cur_us_csu from "@/assets/uni/us-csu.jpg";
+import cur_us_kentucky from "@/assets/uni/us-kentucky.jpg";
+import cur_us_auburn from "@/assets/uni/us-auburn.jpg";
+import cur_us_alabama from "@/assets/uni/us-alabama.jpg";
+import cur_us_gatech from "@/assets/uni/us-gatech.jpg";
+import cur_us_oregonstate from "@/assets/uni/us-oregonstate.jpg";
+import cur_us_howard from "@/assets/uni/us-howard.jpg";
+import cur_us_rutgers from "@/assets/uni/us-rutgers.jpg";
+import cur_ca_ubc from "@/assets/uni/ca-ubc.jpg";
+import cur_ca_western from "@/assets/uni/ca-western.jpg";
+import cur_ca_mcmaster from "@/assets/uni/ca-mcmaster.jpg";
+import cur_us_minnesota from "@/assets/uni/us-minnesota.jpg";
+import cur_us_vatech from "@/assets/uni/us-vatech.jpg";
+import cur_us_osu from "@/assets/uni/us-osu.jpg";
+import cur_us_pitt from "@/assets/uni/us-pitt.jpg";
+import cur_us_unc from "@/assets/uni/us-unc.jpg";
+import cur_us_pennstate from "@/assets/uni/us-pennstate.jpg";
+import cur_us_maryland from "@/assets/uni/us-maryland.jpg";
+import cur_us_arizona from "@/assets/uni/us-arizona.jpg";
+import cur_us_umass from "@/assets/uni/us-umass.jpg";
+import cur_us_uiuc from "@/assets/uni/us-uiuc.jpg";
+import cur_us_tamu from "@/assets/uni/us-tamu.jpg";
+import cur_us_cuboulder from "@/assets/uni/us-cuboulder.jpg";
+import cur_us_indiana from "@/assets/uni/us-indiana.jpg";
+import cur_us_clemson from "@/assets/uni/us-clemson.jpg";
+import cur_us_wisconsin from "@/assets/uni/us-wisconsin.jpg";
+import cur_us_uoregon from "@/assets/uni/us-uoregon.jpg";
+import cur_ca_toronto from "@/assets/uni/ca-toronto.jpg";
+import cur_ca_waterloo from "@/assets/uni/ca-waterloo.jpg";
+import cur_ca_queens from "@/assets/uni/ca-queens.jpg";
+import cur_us_ucdavis from "@/assets/uni/us-ucdavis.jpg";
+import cur_us_ucirvine from "@/assets/uni/us-ucirvine.jpg";
+import cur_us_ucsb from "@/assets/uni/us-ucsb.jpg";
+
 const CURATED: Record<string, string> = {
   "br-universidade-de-sao-paulo": curatedUsp,
   "br-unicamp": curatedUnicamp,
@@ -346,6 +389,48 @@ const CURATED: Record<string, string> = {
   "us-louisiana-state-university": cur_us_lsu,
   "ap-university-of-melbourne": cur_au_melbourne,
   "us-university-of-illinois-chica": cur_us_uic,
+  "ap-unsw-sydney": cur_au_unsw,
+  "us-university-of-utah": cur_us_utah,
+  "us-university-of-georgia": cur_us_georgia,
+  "us-university-of-tennessee": cur_us_tennessee,
+  "us-stony-brook-university": cur_us_stonybrook,
+  "ap-university-of-sydney": cur_au_sydney,
+  "us-arizona-state-university": cur_us_asu,
+  "us-north-carolina-state-univers": cur_us_ncstate,
+  "us-university-of-iowa": cur_us_iowa,
+  "us-colorado-state-university": cur_us_csu,
+  "us-university-of-kentucky": cur_us_kentucky,
+  "us-auburn-university": cur_us_auburn,
+  "us-university-of-alabama": cur_us_alabama,
+  "us-georgia-tech": cur_us_gatech,
+  "us-oregon-state-university": cur_us_oregonstate,
+  "us-howard-university": cur_us_howard,
+  "us-rutgers-university": cur_us_rutgers,
+  "ca-ubc": cur_ca_ubc,
+  "ca-western-university": cur_ca_western,
+  "ca-mcmaster-university": cur_ca_mcmaster,
+  "us-university-of-minnesota": cur_us_minnesota,
+  "us-virginia-tech": cur_us_vatech,
+  "us-ohio-state-university": cur_us_osu,
+  "us-university-of-pittsburgh": cur_us_pitt,
+  "us-university-of-north-carolina": cur_us_unc,
+  "us-penn-state-university": cur_us_pennstate,
+  "us-university-of-maryland": cur_us_maryland,
+  "us-university-of-arizona": cur_us_arizona,
+  "us-university-of-massachusetts-": cur_us_umass,
+  "us-university-of-illinois-urban": cur_us_uiuc,
+  "us-texas-a-m-university": cur_us_tamu,
+  "us-university-of-colorado-bould": cur_us_cuboulder,
+  "us-indiana-university-bloomingt": cur_us_indiana,
+  "us-clemson-university": cur_us_clemson,
+  "us-university-of-wisconsin-madi": cur_us_wisconsin,
+  "us-university-of-oregon": cur_us_uoregon,
+  "ca-university-of-toronto": cur_ca_toronto,
+  "ca-university-of-waterloo": cur_ca_waterloo,
+  "ca-queen-s-university": cur_ca_queens,
+  "us-uc-davis": cur_us_ucdavis,
+  "us-uc-irvine": cur_us_ucirvine,
+  "us-uc-santa-barbara": cur_us_ucsb,
 };
 
 /** Foto de campus premium asignada de forma estable a cada universidad. */
