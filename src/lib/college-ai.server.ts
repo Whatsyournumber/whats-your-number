@@ -10,7 +10,7 @@ export type CollegeAdviceInput = {
   budget: number;
   interests: string;
   affordable: { name: string; city: string; country: string; total: number; rank: number }[];
-  stretch: { name: string; city: string; country: string; total: number; rank: number; gap?: number }[];
+  stretch: { name: string; city: string; country: string; total: number; rank: number; gap?: number | undefined }[];
   monthlyExtraFor1: number;
 };
 
@@ -37,7 +37,7 @@ export async function generateCollegeAdvice(input: CollegeAdviceInput): Promise<
   const gateway = createLovableAiGatewayProvider(apiKey);
 
   const list = (
-    rows: { name: string; city: string; country: string; total: number; rank: number; gap?: number }[],
+    rows: { name: string; city: string; country: string; total: number; rank: number; gap?: number | undefined }[],
   ) =>
     rows
       .slice(0, 8)

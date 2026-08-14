@@ -4,6 +4,7 @@ import {
   CheckSquare,
   Home,
   Rocket,
+  GraduationCap,
   Star,
   Wallet,
   ChevronLeft,
@@ -19,6 +20,7 @@ import { CurrencySelect } from "@/components/mfn-currency-select";
 const TABS = [
   { to: "/ninos/kid/numero", label: "Mi Primer Número", labelEn: "My First Number", icon: Home },
   { to: "/ninos/kid/futuro", label: "Planificador familiar", labelEn: "Family Planner", icon: Rocket },
+  { to: "/ninos/kid/universidades", label: "Universidades", labelEn: "Universities", icon: GraduationCap },
   { to: "/ninos/kid/dinero", label: "Mi Dinero", labelEn: "My Money", icon: Wallet },
   { to: "/ninos/kid/tareas", label: "Mis Tareas", labelEn: "My Tasks", icon: CheckSquare },
   { to: "/ninos/kid/deseos", label: "Mis Sueños", labelEn: "My Dreams", icon: Star },
