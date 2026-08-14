@@ -391,6 +391,9 @@ import afTunis from "@/assets/uni/af-tunis.jpg";
 import afObafemi from "@/assets/uni/af-obafemi.jpg";
 import afMakerere from "@/assets/uni/af-makerere.jpg";
 import afDar from "@/assets/uni/af-dar.jpg";
+import afKigali from "@/assets/uni/af-kigali.jpg";
+import afAlexandria from "@/assets/uni/af-alexandria.jpg";
+import apNusReal from "@/assets/uni/ap-nus-real.jpg";
 
 const CURATED: Record<string, string> = {
   "me-usthb-alger": afUsthb,
@@ -401,6 +404,8 @@ const CURATED: Record<string, string> = {
   "me-obafemi-awolowo": afObafemi,
   "me-makerere": afMakerere,
   "me-dar-es-salaam": afDar,
+  "me-kigali": afKigali,
+  "me-alexandria-university": afAlexandria,
   "me-wits": zaWits,
   "me-stellenbosch": zaStellenbosch,
   "me-pretoria": zaPretoria,
@@ -607,7 +612,7 @@ const CURATED: Record<string, string> = {
   "ot-university-of-copenhagen": cur_dk_copenhagen,
   "ot-lund-university": cur_se_lund,
   "ot-kth-royal-institute": cur_se_kth,
-  "ap-nus": cur_sg_nus,
+  "ap-nus": apNusReal,
   "ca-university-of-calgary": cur_ca_calgary,
   "ap-university-of-auckland": cur_nz_auckland,
   "uk-university-of-oxford": cur_uk_oxford,
