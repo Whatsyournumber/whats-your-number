@@ -322,21 +322,47 @@ function Landing() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="pt-12 md:pt-20 lg:pt-24"
+          className="relative left-1/2 w-screen -translate-x-1/2"
         >
-          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-12">
-            <div className="text-center lg:text-left">
+          {/* Full-bleed editorial photo, fused with the background */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.9, delay: 0.1, ease: "easeOut" }}
+            className="pointer-events-none absolute inset-y-0 right-0 hidden w-[50%] lg:block"
+            style={{
+              WebkitMaskImage:
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 26%, rgba(0,0,0,0.6) 48%, #000 72%)",
+              maskImage:
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 26%, rgba(0,0,0,0.6) 48%, #000 72%)",
+            }}
+
+          >
+            <img
+              src={heroManLaptopAsset.url}
+              alt={t("Hombre feliz usando WhatsYourNumber en su laptop", "Happy man using WhatsYourNumber on his laptop")}
+              width={1536}
+              height={1024}
+              className="h-full w-full object-cover object-[60%_center]"
+              loading="eager"
+              fetchPriority="high"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
+          </motion.div>
+
+          <div className="relative z-10 mx-auto w-full max-w-6xl px-6">
+            <div className="max-w-2xl py-14 text-center md:py-24 lg:py-32 lg:text-left">
               <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground backdrop-blur">
                 <Sparkles className="h-3.5 w-3.5 text-primary" />
                 {t("Tu family office personal, potenciado con IA", "Your personal family office, powered by AI")}
               </span>
-              <h1 className="mx-auto mt-6 max-w-4xl font-display text-4xl font-semibold leading-[1.08] tracking-tight lg:mx-0 md:text-5xl lg:text-6xl">
+              <h1 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-semibold leading-[1.08] tracking-tight lg:mx-0 md:text-5xl lg:text-6xl">
                 {t("Todo tu dinero", "All your money")}
                 <span className="block bg-gradient-to-r from-primary to-foreground bg-clip-text text-transparent">
                   {t("entendido en 30 segundos", "understood in 30 seconds")}
                 </span>
               </h1>
-              <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground lg:mx-0">
+              <p className="mx-auto mt-5 max-w-lg text-base text-muted-foreground lg:mx-0">
                 {t(
                   "Patrimonio, gastos, cash flow, inversiones y retiro en una sola plataforma. Sube tus estados de cuenta y la IA hace el resto.",
                   "Net worth, spending, cash flow, investments and retirement in a single platform. Upload your statements and let the AI do the rest.",
@@ -378,32 +404,27 @@ function Landing() {
               </div>
             </div>
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
-              className="relative mx-auto w-full max-w-lg lg:max-w-none"
+            {/* Mobile: same photo, edge to edge, fading into the background */}
+            <div
+              className="relative -mx-6 -mt-4 h-[38vh] min-h-[240px] lg:hidden"
+              style={{
+                WebkitMaskImage: "linear-gradient(to bottom, #000 45%, transparent 100%)",
+                maskImage: "linear-gradient(to bottom, #000 45%, transparent 100%)",
+              }}
             >
-              <div className="absolute -inset-4 rounded-[2rem] bg-primary/10 blur-3xl" />
-              <div className="relative overflow-hidden rounded-2xl ring-1 ring-border/60 shadow-2xl">
-                <img
-                  src={heroManLaptopAsset.url}
-                  alt={t("Hombre feliz usando WhatsYourNumber en su laptop", "Happy man using WhatsYourNumber on his laptop")}
-                  width={1536}
-                  height={1024}
-                  className="h-auto w-full object-cover"
-                  loading="eager"
-                  fetchPriority="high"
-                />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-0 lg:opacity-25" />
-                <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-background via-transparent to-transparent lg:block lg:opacity-25" />
-
-
-
-
-              </div>
-            </motion.div>
+              <img
+                src={heroManLaptopAsset.url}
+                alt=""
+                aria-hidden
+                className="h-full w-full object-cover object-[60%_30%]"
+                loading="eager"
+              />
+            </div>
           </div>
+        </motion.section>
+
+        <section>
+
 
 
 
@@ -453,7 +474,8 @@ function Landing() {
             ))}
           </div>
 
-        </motion.section>
+        </section>
+
 
 
 
