@@ -65,7 +65,9 @@ export function AppSidebar() {
 
 
 
-  const familyItems: { title: string; url: string; icon: typeof Users }[] = [];
+  const familyItems: { title: string; url: string; icon: typeof Users }[] = isPatrimonio
+    ? [{ title: t("Perfil familiar", "Family profile"), url: "/elegir", icon: Users }]
+    : [];
 
   const secondary = [
     ...familyItems,
