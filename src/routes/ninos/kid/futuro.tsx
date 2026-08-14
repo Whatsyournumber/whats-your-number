@@ -30,7 +30,10 @@ function MyFuture({ member }: { member: Member }) {
   const { data: movements = [] } = useMovements(member.id);
 
   const totals = pocketTotals(movements);
-  const base = Number(fund?.current_balance ?? 0) + totals.crecer;
+  // Empieza con todo lo que el niño tiene hoy (bolsillos + fondo) y crece con el interés
+  const base =
+    Number(fund?.current_balance ?? 0) + totals.crecer + totals.ahorrar + totals.gastar;
+
   const monthly = Number(fund?.monthly_contribution ?? 0);
   const targetAge = Number(fund?.target_age ?? 18);
   const rate = Number(fund?.expected_return ?? 10);

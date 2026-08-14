@@ -286,6 +286,7 @@ export function FamilyPlanner({
 }) {
   const { t, lang } = useI18n();
   const [base, setBase] = useState(Math.round(defaultBase));
+  const [baseTouched, setBaseTouched] = useState(false);
   const [monthly, setMonthly] = useState(Math.round(defaultMonthly) || 200);
   const [target, setTarget] = useState(150000);
   const [targetAge, setTargetAge] = useState(18);
@@ -293,6 +294,15 @@ export function FamilyPlanner({
   const [pick, setPick] = useState(
     VEHICLES.find((v) => Math.abs(v.rate - defaultRate) <= 1)?.key ?? "sp500",
   );
+
+  // Sincroniza con el dinero real del niño mientras no lo edite a mano
+  useEffect(() => {
+    if (!baseTouched) setBase(Math.round(defaultBase));
+  }, [defaultBase, baseTouched]);
+  useEffect(() => {
+    if (defaultMonthly) setMonthly(Math.round(defaultMonthly));
+  }, [defaultMonthly]);
+
 
   const vehicle = VEHICLES.find((v) => v.key === pick) ?? VEHICLES[0]!;
   const rate = vehicle.rate;
@@ -500,7 +510,10 @@ export function FamilyPlanner({
             label={t("Capital inicial", "Initial capital")}
             value={base}
             hint={t("Hoy", "Today")}
-            onChange={setBase}
+            onChange={(v) => {
+              setBaseTouched(true);
+              setBase(v);
+            }}
           />
           <StatCard
             icon={<CalendarDays className="h-4 w-4" />}
