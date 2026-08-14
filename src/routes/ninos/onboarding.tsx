@@ -242,7 +242,7 @@ function Onboarding() {
                 {t("Avatar", "Avatar")}
               </p>
               <div className="mt-2 flex flex-wrap gap-2">
-                {AVATARS.map((a) => (
+                {(theme === "girl" ? AVATARS_GIRL : AVATARS_BOY).map((a) => (
                   <button
                     key={a}
                     onClick={() => setAvatar(a)}
