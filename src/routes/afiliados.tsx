@@ -112,12 +112,12 @@ function AffiliatesPage() {
         >
           <div className="flex flex-wrap gap-2">
             <Button asChild>
-              <Link to="/auth" search={{ mode: "signup" }}>
+              <Link to="/auth" search={{ mode: "signup", next: "/afiliados" }}>
                 {t("Registrarme como afiliado", "Sign up as an affiliate")}
               </Link>
             </Button>
             <Button asChild variant="outline">
-              <Link to="/auth" search={{ mode: "login" }}>
+              <Link to="/auth" search={{ mode: "login", next: "/afiliados" }}>
                 {t("Ya tengo cuenta", "I already have an account")}
               </Link>
             </Button>
