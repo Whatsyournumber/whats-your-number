@@ -115,6 +115,7 @@ function CollegeFinder({ member }: { member: Member }) {
   const [simMonthly, setSimMonthly] = useState<number>(Math.max(50, monthly || 50));
   const simProjected = Math.round(projectCapital(initial, simMonthly, yearsLeft, rate) / 1000) * 1000;
 
+  const resultsRef = useRef<HTMLDivElement | null>(null);
   const [bucket, setBucket] = useState<Bucket | null>(null);
   const [continent, setContinent] = useState<Continent | null>(null);
 
@@ -155,35 +156,22 @@ function CollegeFinder({ member }: { member: Member }) {
   }, [priced, simProjected, projected]);
 
   const buckets = useMemo(() => {
-    const groups: { key: Bucket; label: string; flag: string; items: typeof priced }[] = [];
-    const homeItems = priced.filter((r) => isHome(r.u));
-    if (homeItems.length)
-      groups.push({ key: "home", label: homeCountry, flag: homeItems[0]!.u.flag, items: homeItems });
-    groups.push({
-      key: "eu",
-      label: t("Europa", "Europe"),
-      flag: "🇪🇺",
-      items: priced.filter((r) => r.u.region === "eu" && !isHome(r.u)),
-    });
-    groups.push({
-      key: "na",
-      label: t("Estados Unidos", "United States"),
-      flag: "🇺🇸",
-      items: priced.filter((r) => r.u.region === "na" && !isHome(r.u)),
-    });
-    groups.push({
-      key: "rest",
-      label: t("Resto del mundo", "Rest of the world"),
-      flag: "🌍",
-      items: priced.filter((r) => !["eu", "na"].includes(r.u.region) && !isHome(r.u)),
-    });
-    return groups.map((g) => {
-      const ok = g.items.filter((r) => r.total <= projected);
-      const minGap = g.items.length ? Math.min(...g.items.map((r) => Math.max(0, r.total - projected))) : 0;
-      return { ...g, count: ok.length, minGap };
+    const defs: { key: Continent; label: string; flag: string }[] = [
+      { key: "latam", label: t("Latinoamérica", "Latin America"), flag: "🌎" },
+      { key: "nam", label: t("EE.UU. / Canadá", "US / Canada"), flag: "🇺🇸" },
+      { key: "eu", label: t("Europa", "Europe"), flag: "🇪🇺" },
+      { key: "asia", label: t("Asia", "Asia"), flag: "🌏" },
+      { key: "oceania", label: t("Oceanía", "Oceania"), flag: "🇦🇺" },
+      { key: "africa", label: t("África / M. Oriente", "Africa / Mid. East"), flag: "🌍" },
+    ];
+    return defs.map((d) => {
+      const items = priced.filter((r) => continentOf(r.u) === d.key);
+      const ok = items.filter((r) => r.total <= projected);
+      const minGap = items.length ? Math.min(...items.map((r) => Math.max(0, r.total - projected))) : 0;
+      return { ...d, count: ok.length, minGap };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [priced, projected, homeCountry, lang]);
+  }, [priced, projected, lang]);
 
   const countries = useMemo(
     () =>
@@ -367,19 +355,22 @@ function CollegeFinder({ member }: { member: Member }) {
           </button>
         </div>
 
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {buckets.map((b) => (
             <button
               key={b.key}
               type="button"
               onClick={() => {
-                setContinent(null);
+                setBucket(null);
                 setCountry("");
-                setBucket(bucket === b.key ? null : b.key);
+                setContinent(continent === b.key ? null : b.key);
+                requestAnimationFrame(() =>
+                  resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
+                );
               }}
               className={cn(
                 "rounded-2xl border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-md",
-                bucket === b.key ? "border-primary bg-primary/[0.07]" : "border-border/70 bg-background/50",
+                continent === b.key ? "border-primary bg-primary/[0.07]" : "border-border/70 bg-background/50",
               )}
             >
               <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
@@ -554,7 +545,7 @@ function CollegeFinder({ member }: { member: Member }) {
 
 
       {/* Resultados */}
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <div ref={resultsRef} className="scroll-mt-24 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {list.map(({ u, total }) => {
           const ok = total <= projected;
           const gap = total - projected;
