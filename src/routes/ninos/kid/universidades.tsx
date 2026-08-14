@@ -519,7 +519,7 @@ function CollegeFinder({ member }: { member: Member }) {
                   }}
                   className="absolute inset-0 h-full w-full object-cover object-center brightness-[1.06] contrast-[1.05] saturate-[1.1] transition duration-700 group-hover:scale-[1.08]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/25 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-background/10 to-transparent" />
                 <span className="absolute left-3 top-3 grid h-8 w-8 place-items-center rounded-xl bg-background/80 text-lg backdrop-blur">
                   {u.flag}
                 </span>
