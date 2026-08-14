@@ -1,0 +1,269 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useMemo } from "react";
+import { ArrowUpRight, CheckSquare, Rocket, Star, Wallet } from "lucide-react";
+import { Buddy, Card, Coins, GrowthChart, Progress, Tile, Tree } from "@/components/mfn-ui";
+import { KidPage, PageTitle } from "@/components/kid-page";
+import { useI18n } from "@/lib/mfn-i18n";
+import { useFund, useMovements, useTasks, useWishes } from "@/hooks/use-mfn";
+import {
+  buddyLines,
+  disclaimer,
+  monthlySavingPace,
+  pocketLabel,
+  POCKETS,
+  money,
+  pocketTotals,
+  projectFund,
+  type Member,
+} from "@/lib/mfn";
+
+export const Route = createFileRoute("/_authenticated/kid/numero")({
+  head: () => ({
+    meta: [
+      { title: "Mi Primer Número | My First Number" },
+      {
+        name: "description",
+        content:
+          "Todos tus números en una pantalla: número de hoy, número del futuro, bolsillos, sueños, tareas y cómo crece tu dinero.",
+      },
+      { property: "og:title", content: "Mi Primer Número | My First Number" },
+      {
+        property: "og:description",
+        content: "Tu hub de números: hoy, futuro, ahorro, sueños y tareas en un solo lugar.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: () => <KidPage>{(member) => <MyNumber member={member} />}</KidPage>,
+});
+
+function Ring({ value, size = 116 }: { value: number; size?: number }) {
+  const pct = Math.max(0, Math.min(100, value));
+  const stroke = 11;
+  const r = (size - stroke) / 2;
+  const c = 2 * Math.PI * r;
+  return (
+    <div className="relative shrink-0" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--color-surface-2)" strokeWidth={stroke} />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          fill="none"
+          stroke="var(--color-chart-2)"
+          strokeWidth={stroke}
+          strokeLinecap="round"
+          strokeDasharray={c}
+          strokeDashoffset={c - (c * pct) / 100}
+        />
+      </svg>
+      <span className="absolute inset-0 grid place-items-center font-display text-xl font-semibold text-foreground">
+        {Math.round(pct)}%
+      </span>
+    </div>
+  );
+}
+
+function MiniStat({
+  icon,
+  label,
+  value,
+  hint,
+  to,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  hint: string;
+  to: "/kid/dinero" | "/kid/deseos" | "/kid/tareas" | "/kid/futuro";
+}) {
+  return (
+    <Link
+      to={to}
+      className="card-soft group grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 p-4 transition hover:border-primary/40"
+    >
+      <span className="grid size-10 place-items-center rounded-2xl bg-surface-2">{icon}</span>
+      <span className="min-w-0">
+        <span className="block text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{label}</span>
+        <span className="block truncate font-display text-lg font-semibold text-foreground">{value}</span>
+        <span className="block truncate text-[11px] text-muted-foreground">{hint}</span>
+      </span>
+      <ArrowUpRight className="h-4 w-4 text-muted-foreground transition group-hover:text-primary" />
+    </Link>
+  );
+}
+
+function MyNumber({ member }: { member: Member }) {
+  const { t, lang } = useI18n();
+  const { data: movements = [] } = useMovements(member.id);
+  const { data: fund } = useFund(member.id);
+  const { data: wishes = [] } = useWishes(member.id);
+  const { data: tasks = [] } = useTasks(member.id);
+
+  const totals = pocketTotals(movements);
+  const today = totals.gastar + totals.ahorrar + totals.crecer;
+  const targetAge = Number(fund?.target_age ?? 18);
+  const projection = projectFund(
+    Number(fund?.current_balance ?? 0) + totals.crecer,
+    Number(fund?.monthly_contribution ?? 0),
+    member.age,
+    targetAge,
+    Number(fund?.expected_return ?? 7),
+  );
+
+  const dreams = useMemo(() => {
+    const active = wishes.filter((w) => !w.achieved);
+    const saved = wishes.reduce((s, w) => s + Number(w.saved), 0);
+    const price = wishes.reduce((s, w) => s + Number(w.price), 0);
+    return {
+      active,
+      achieved: wishes.filter((w) => w.achieved).length,
+      next: active[0] ?? null,
+      progress: price > 0 ? (saved / price) * 100 : 0,
+    };
+  }, [wishes]);
+
+  const pending = tasks.filter((x) => x.status === "pendiente").length;
+  const earned = tasks
+    .filter((x) => x.status === "aprobada")
+    .reduce((s, x) => s + Number(x.reward), 0);
+  const pace = monthlySavingPace(movements);
+  const lines = buddyLines(lang);
+  const line = lines[(member.xp / 10) % lines.length | 0] ?? lines[0];
+
+  return (
+    <>
+      <PageTitle
+        emoji={member.avatar}
+        title={`${t("Hola", "Hello")}, ${member.name}`}
+        subtitle={`${t("Nivel", "Level")} ${Math.floor(member.xp / 50) + 1} · ${member.xp} XP · 🔥 ${t("racha de", "streak of")} ${member.streak}`}
+      />
+
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+        <div className="card-soft animate-rise relative overflow-hidden p-6">
+          <Coins className="absolute right-6 top-5" />
+          <div className="grid gap-5 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-center">
+            <div className="min-w-0">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                {t("Mi número de hoy", "My number today")}
+              </p>
+              <p className="mt-1 font-display text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+                {money(today, member.currency)}
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {t("Ahorro medio", "Average saving")}: {money(pace, member.currency)}/{t("mes", "mo")}
+              </p>
+            </div>
+            <Tree level={Math.floor(member.xp / 50) + 1} />
+            <div className="min-w-0">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                {t("Mi número del futuro", "My future number")} · {targetAge} {t("años", "yrs")}
+              </p>
+              <p className="mt-1 font-display text-3xl font-semibold text-primary sm:text-4xl">
+                {money(projection.future, member.currency)}
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                +{money(projection.growth, member.currency)} {t("solo por esperar", "just by waiting")}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
+            {POCKETS.map((p) => (
+              <Tile
+                key={p.key}
+                emoji={p.emoji}
+                label={pocketLabel(p.key, lang)}
+                value={totals[p.key]}
+                currency={member.currency}
+                hint={lang === "en" ? p.hintEn : p.hint}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="grid content-start gap-4">
+          <Buddy>{line}</Buddy>
+          <Card title={t("Mis sueños", "My dreams")}>
+            <div className="flex items-center gap-4">
+              <Ring value={dreams.progress} />
+              <div className="min-w-0">
+                {dreams.next ? (
+                  <>
+                    <p className="truncate text-sm font-semibold text-foreground">
+                      {dreams.next.emoji} {dreams.next.title}
+                    </p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      {money(Number(dreams.next.saved), member.currency)} {t("de", "of")}{" "}
+                      {money(Number(dreams.next.price), member.currency)}
+                    </p>
+                    <Progress
+                      className="mt-2"
+                      value={(Number(dreams.next.saved) / Math.max(1, Number(dreams.next.price))) * 100}
+                    />
+                  </>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    {t("Añade tu primer sueño.", "Add your first dream.")}
+                  </p>
+                )}
+                <Link to="/kid/deseos" className="mt-3 inline-block text-xs font-semibold text-primary">
+                  {t("Ver mis sueños", "See my dreams")} →
+                </Link>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </div>
+
+      <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <MiniStat
+          to="/kid/dinero"
+          icon={<Wallet className="h-5 w-5 text-primary" />}
+          label={t("Mi dinero", "My money")}
+          value={money(today, member.currency)}
+          hint={t("ingresos y gastos", "income and expenses")}
+        />
+        <MiniStat
+          to="/kid/tareas"
+          icon={<CheckSquare className="h-5 w-5 text-chart-2" />}
+          label={t("Mis tareas", "My tasks")}
+          value={`${pending} ${t("pendientes", "pending")}`}
+          hint={`${money(earned, member.currency)} ${t("ganados", "earned")}`}
+        />
+        <MiniStat
+          to="/kid/deseos"
+          icon={<Star className="h-5 w-5 text-chart-3" />}
+          label={t("Mis sueños", "My dreams")}
+          value={`${dreams.active.length} ${t("activos", "active")}`}
+          hint={`${dreams.achieved} ${t("cumplidos", "achieved")}`}
+        />
+        <MiniStat
+          to="/kid/futuro"
+          icon={<Rocket className="h-5 w-5 text-chart-4" />}
+          label={t("Mi futuro", "My future")}
+          value={money(projection.future, member.currency)}
+          hint={`${t("a los", "at")} ${targetAge} ${t("años", "yrs")}`}
+        />
+      </div>
+
+      <Card
+        className="mt-4"
+        title={t("Cómo crece mi número", "How my number grows")}
+        hint={disclaimer(lang)}
+      >
+        <GrowthChart
+          data={projection.points}
+          currency={member.currency}
+          height={320}
+          areas={[
+            { key: "total", color: "var(--color-chart-1)" },
+            { key: "aportes", color: "var(--color-chart-4)" },
+          ]}
+        />
+      </Card>
+    </>
+  );
+}
