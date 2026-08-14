@@ -6,6 +6,15 @@ import campusLatam1 from "@/assets/uni/campus-latam-1.jpg";
 import campusApac1 from "@/assets/uni/campus-apac-1.jpg";
 import campusOther1 from "@/assets/uni/campus-other-1.jpg";
 import campusGeneric1 from "@/assets/uni/campus-generic-1.jpg";
+import curatedBuap from "@/assets/uni/mx-buap.jpg";
+import curatedUnal from "@/assets/uni/co-unal.jpg";
+import curatedAntioquia from "@/assets/uni/co-antioquia.jpg";
+import curatedUnivalle from "@/assets/uni/co-univalle.jpg";
+import curatedCuyo from "@/assets/uni/ar-cuyo.jpg";
+import curatedUnb from "@/assets/uni/br-unb.jpg";
+import curatedUfsc from "@/assets/uni/br-ufsc.jpg";
+import curatedUfpe from "@/assets/uni/br-ufpe.jpg";
+import curatedSanMarcos from "@/assets/uni/pe-sanmarcos.jpg";
 
 import type { University } from "@/lib/universities";
 import { REAL_UNI_PHOTOS } from "@/lib/uni-photos-real";
@@ -24,12 +33,28 @@ function hash(id: string) {
   return h;
 }
 
+/** Fotos curadas de alta calidad que sustituyen a las fuentes externas. */
+const CURATED: Record<string, string> = {
+  "mx-buap": curatedBuap,
+  "co-universidad-nacional-de-colo": curatedUnal,
+  "co-universidad-de-antioquia": curatedAntioquia,
+  "co-universidad-del-valle": curatedUnivalle,
+  "ar-universidad-nacional-de-cuyo": curatedCuyo,
+  "br-unb": curatedUnb,
+  "br-ufsc": curatedUfsc,
+  "br-ufpe": curatedUfpe,
+  "lat-universidad-nacional-mayor-d": curatedSanMarcos,
+};
+
 /** Foto de campus premium asignada de forma estable a cada universidad. */
 export function uniPhoto(u: University) {
+  const curated = CURATED[u.id];
+  if (curated) return curated;
   const real = REAL_UNI_PHOTOS[u.id];
   if (real) return real;
   return uniPhotoFallback(u);
 }
+
 
 /** Imagen genérica de respaldo (si la foto real falla al cargar). */
 export function uniPhotoFallback(u: University) {
