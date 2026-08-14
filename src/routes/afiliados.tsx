@@ -54,10 +54,17 @@ function AffiliatesPage() {
     setBusy(true);
     try {
       await joinAffiliateProgram({
-        data: { displayName: user?.user_metadata?.["full_name"] ?? "", payoutEmail: payoutEmail || user?.email || "" },
+        data: {
+          displayName: user?.user_metadata?.["full_name"] ?? "",
+          payoutEmail: payoutEmail || user?.email || "",
+          environment: getPaddleEnvironment(),
+        },
       });
       await qc.invalidateQueries({ queryKey: ["affiliate"] });
-      toast.success(t("¡Ya eres afiliado! Tu enlace está listo.", "You're an affiliate! Your link is ready."));
+      await qc.invalidateQueries({ queryKey: ["subscription"] });
+      toast.success(
+        t("¡Ya eres afiliado! Tu enlace está listo y tu plan Pro activado.", "You're an affiliate! Your link is ready and your Pro plan is active."),
+      );
     } catch {
       toast.error(t("No pudimos crear tu cuenta de afiliado.", "We couldn't create your affiliate account."));
     } finally {
