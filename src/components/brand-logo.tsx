@@ -102,23 +102,35 @@ export function KidsBrandMark({ className }: { className?: string }) {
         className,
       )}
     >
-      <svg viewBox="0 0 32 32" fill="none" className="relative h-[74%] w-[74%]" aria-hidden="true">
-        <circle cx="16" cy="16" r="12" className="stroke-kid-sky/30" strokeWidth="1.2" />
+      <svg viewBox="0 0 32 32" fill="none" className="relative h-[76%] w-[76%]" aria-hidden="true">
+        <circle cx="16" cy="16" r="13" className="stroke-kid-sky/25" strokeWidth="1.2" />
+        {/* arco de crecimiento */}
         <path
-          d="M9 20.5c0-4.4 3.1-7.6 7-7.6s7 2.6 7 6.2"
+          d="M5.5 22.5c2.6-8 8-12 15.5-12.6"
           className="stroke-kid-grape"
-          strokeWidth="2.2"
+          strokeWidth="2"
           strokeLinecap="round"
         />
+        {/* numeral 1 */}
         <path
-          d="M16 6.2l1.5 3.1 3.4.5-2.5 2.4.6 3.4-3-1.6-3 1.6.6-3.4-2.5-2.4 3.4-.5L16 6.2z"
-          className="fill-kid-mint"
+          d="M12.6 12.4l3-1.9v11.6"
+          className="stroke-kid-mint"
+          strokeWidth="2.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
-        <circle cx="16" cy="24.5" r="2.1" className="fill-kid-sky" />
+        {/* dólar */}
+        <path
+          d="M23.2 12.6c-1.6-.7-3.4-.4-3.4 1s1.2 1.5 2.2 1.8c1.1.3 2.3.6 2.3 2s-1.8 2-3.5 1.3M21.6 10.8v9.6"
+          className="stroke-kid-sky"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+        />
       </svg>
     </span>
   );
 }
+
 
 export function KidsBrandLogo({ className }: { className?: string }) {
   return (
