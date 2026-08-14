@@ -281,7 +281,7 @@ function AdminPage() {
         </TabsList>
 
         <TabsContent value="users" className="mt-4">
-          <Panel title={t("Registros", "Sign-ups")} description={`${filteredUsers.length} usuarios`}>
+          <Panel title={t("Registros", "Sign-ups")} description={`${filteredUsers.length} ${t("usuarios", "users")}`}>
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -313,7 +313,7 @@ function AdminPage() {
                         <TableCell className="text-muted-foreground">{u.phone ?? "—"}</TableCell>
                         <TableCell className="text-muted-foreground">{o?.country ?? "—"}</TableCell>
                         <TableCell>
-                          <Badge variant={o?.completed ? "default" : "secondary"}>{o?.completed ? "Completo" : "Pendiente"}</Badge>
+                          <Badge variant={o?.completed ? "default" : "secondary"}>{o?.completed ? t("Completo", "Complete") : t("Pendiente", "Pending")}</Badge>
                         </TableCell>
                         <TableCell>
                           <Badge variant={s ? "default" : "outline"}>{s ? s.product_id.replace("_plan", "") : "free"}</Badge>
@@ -322,7 +322,7 @@ function AdminPage() {
                         <TableCell className="text-right">
                           <DeleteAction
                             title={t("Borrar usuario", "Delete user")}
-                            description={`Se eliminará la cuenta de ${u.email ?? u.id} y todos sus datos (perfil, gastos, estados de cuenta, suscripciones). Esta acción no se puede deshacer.`}
+                            description={t("Se eliminará la cuenta de {x} y todos sus datos (perfil, gastos, estados de cuenta, suscripciones). Esta acción no se puede deshacer.", "The account {x} and all its data (profile, expenses, statements, subscriptions) will be deleted. This cannot be undone.").replace("{x}", u.email ?? u.id)}
                             onConfirm={() =>
                               runDelete(() => adminDeleteUser({ data: { userId: u.id } }), t("Usuario eliminado", "User deleted"))
                             }
@@ -346,7 +346,7 @@ function AdminPage() {
         </TabsContent>
 
         <TabsContent value="subs" className="mt-4">
-          <Panel title={t("Suscripciones", "Subscriptions")} description={`${subs.length} registros · MRR ${mrr} US$`}>
+          <Panel title={t("Suscripciones", "Subscriptions")} description={`${subs.length} ${t("registros", "records")} · MRR ${mrr} US$`}>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
@@ -373,7 +373,7 @@ function AdminPage() {
                         </TableCell>
                         <TableCell className="text-muted-foreground">{s.environment}</TableCell>
                         <TableCell className="numeric text-muted-foreground">{fmtDate(s.current_period_end)}</TableCell>
-                        <TableCell className="text-muted-foreground">{s.cancel_at_period_end ? "Sí" : "No"}</TableCell>
+                        <TableCell className="text-muted-foreground">{s.cancel_at_period_end ? t("Sí", "Yes") : t("No", "No")}</TableCell>
                         <TableCell className="numeric text-muted-foreground">{fmtDate(s.created_at)}</TableCell>
                         <TableCell className="text-right">
                           <DeleteAction
@@ -402,7 +402,7 @@ function AdminPage() {
         </TabsContent>
 
         <TabsContent value="statements" className="mt-4">
-          <Panel title={t("Estados de cuenta cargados", "Uploaded statements")} description={`${stmts.length} archivos`}>
+          <Panel title={t("Estados de cuenta cargados", "Uploaded statements")} description={`${stmts.length} ${t("archivos", "files")}`}>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
@@ -464,12 +464,12 @@ function AdminPage() {
                       <TableCell className="numeric">{c.duration_days}</TableCell>
                       <TableCell className="numeric">{c.used_count} / {c.max_uses}</TableCell>
                       <TableCell>
-                        <Badge variant={c.active ? "default" : "secondary"}>{c.active ? "activo" : "inactivo"}</Badge>
+                        <Badge variant={c.active ? "default" : "secondary"}>{c.active ? t("activo", "active") : t("inactivo", "inactive")}</Badge>
                       </TableCell>
                       <TableCell className="text-right">
                         <DeleteAction
                           title={t("Borrar código", "Delete code")}
-                          description={`Se eliminará el código ${c.code} y sus canjes registrados.`}
+                          description={t("Se eliminará el código {x} y sus canjes registrados.", "Code {x} and its recorded redemptions will be deleted.").replace("{x}", c.code)}
                           onConfirm={() =>
                             runDelete(() => adminDeletePromoCode({ data: { id: c.id } }), t("Código eliminado", "Code deleted"))
                           }
@@ -487,7 +487,7 @@ function AdminPage() {
             </div>
           </Panel>
 
-          <Panel title={t("Canjes", "Redemptions")} description={`${promos.data?.redemptions.length ?? 0} canjes`}>
+          <Panel title={t("Canjes", "Redemptions")} description={`${promos.data?.redemptions.length ?? 0} ${t("canjes", "redemptions")}`}>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
