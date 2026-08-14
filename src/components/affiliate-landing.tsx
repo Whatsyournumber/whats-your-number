@@ -203,20 +203,19 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
             </p>
           </div>
 
-          <div className="relative min-h-[240px] pb-4 lg:min-h-[460px]">
+          <div className="relative min-h-[260px] pb-4 lg:min-h-[520px]">
             <img
               src={affiliatesHero}
               alt=""
               aria-hidden="true"
-              className="h-full w-full object-cover lg:hidden"
+              className="h-full max-h-[280px] w-full object-cover object-[58%_28%] lg:hidden"
               style={{
-                WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%)",
-                maskImage: "linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%)",
+                WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, #000 26%, #000 74%, transparent 100%)",
+                maskImage: "linear-gradient(to bottom, transparent 0%, #000 26%, #000 74%, transparent 100%)",
               }}
             />
 
-
-            <div className="absolute bottom-5 left-4 right-4 rounded-2xl border border-border/60 bg-background/85 p-4 backdrop-blur sm:left-auto sm:right-6 sm:w-[300px]">
+            <div className="absolute bottom-5 left-4 right-4 rounded-2xl border border-white/10 bg-background/55 p-4 shadow-[0_18px_60px_-24px_rgba(0,0,0,0.9)] backdrop-blur-xl sm:left-auto sm:right-6 sm:w-[300px]">
               <p className="text-xs text-muted-foreground">
                 {t("Tus ganancias estimadas este mes", "Your estimated earnings this month")}
               </p>
@@ -228,6 +227,7 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
               </Badge>
               <Sparkline className="mt-3 h-10 w-full text-primary" />
             </div>
+
           </div>
         </div>
       </section>
