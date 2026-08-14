@@ -273,7 +273,7 @@ export function FamilyPlanner({
   goal,
   defaultBase = 0,
   defaultMonthly = 0,
-  defaultRate = 7,
+  defaultRate = 10,
 }: {
   childName: string;
   childAge: number;
