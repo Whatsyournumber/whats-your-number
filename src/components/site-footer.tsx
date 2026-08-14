@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Instagram, Linkedin, Heart, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
-import { BrandLogo } from "@/components/brand-logo";
+import { BrandLogo, KidsBrandLogo } from "@/components/brand-logo";
 import { PoliciesDialog } from "@/components/policies-dialog";
 import { useT } from "@/hooks/use-language";
 
@@ -41,7 +41,7 @@ export function SiteFooter({ kids = false }: { kids?: boolean } = {}) {
         ? {
             title: t("Producto", "Product"),
             links: [
-              { label: t("Funciones", "Features"), to: "/#funciones" },
+              { label: t("Funciones", "Features"), to: "/finanzas-para-ninos#funciones" },
               { label: t("Precios", "Pricing"), to: "/precios" },
               { label: t("Demo gratis", "Free demo"), to: "/demo-ninos" },
             ],
@@ -60,7 +60,7 @@ export function SiteFooter({ kids = false }: { kids?: boolean } = {}) {
             title: t("Recursos", "Resources"),
             links: [
               { label: "Blog", to: "/blog" },
-              { label: t("Su primer número", "Their first number"), to: "/ninos" },
+              { label: t("Su primer número", "Their first number"), to: "/demo-ninos" },
               { label: t("Finanzas para adultos", "Adult finance"), to: "/" },
             ],
           }
@@ -97,12 +97,17 @@ export function SiteFooter({ kids = false }: { kids?: boolean } = {}) {
               {/* Desktop layout */}
               <div className="hidden md:grid md:grid-cols-[1.6fr_repeat(3,1fr)] md:gap-12">
                 <div>
-                  <BrandLogo />
+                  {kids ? <KidsBrandLogo /> : <BrandLogo />}
                   <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
-                    {t(
-                      "La libertad financiera tiene un número. Nosotros te ayudamos a encontrarlo.",
-                      "Financial freedom has a number. We help you find yours.",
-                    )}
+                    {kids
+                      ? t(
+                          "Enseña a tus hijos a construir su primer número: ahorro, inversión y libertad desde los 8 años.",
+                          "Teach your kids to build their first number: saving, investing and freedom from age 8.",
+                        )
+                      : t(
+                          "La libertad financiera tiene un número. Nosotros te ayudamos a encontrarlo.",
+                          "Financial freedom has a number. We help you find yours.",
+                        )}
                   </p>
                 </div>
 
@@ -121,12 +126,17 @@ export function SiteFooter({ kids = false }: { kids?: boolean } = {}) {
               {/* Mobile layout */}
               <div className="md:hidden grid gap-8">
                 <div>
-                  <BrandLogo />
+                  {kids ? <KidsBrandLogo /> : <BrandLogo />}
                   <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
-                    {t(
-                      "La libertad financiera tiene un número. Nosotros te ayudamos a encontrarlo.",
-                      "Financial freedom has a number. We help you find yours.",
-                    )}
+                    {kids
+                      ? t(
+                          "Enseña a tus hijos a construir su primer número: ahorro, inversión y libertad desde los 8 años.",
+                          "Teach your kids to build their first number: saving, investing and freedom from age 8.",
+                        )
+                      : t(
+                          "La libertad financiera tiene un número. Nosotros te ayudamos a encontrarlo.",
+                          "Financial freedom has a number. We help you find yours.",
+                        )}
                   </p>
                 </div>
 
