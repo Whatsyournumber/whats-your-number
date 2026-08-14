@@ -123,8 +123,7 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
     <div className="space-y-4">
       {/* HERO */}
       <section className="relative -mx-4 overflow-hidden px-4 sm:-mx-6 sm:px-6">
-        {/* Imagen cinematográfica integrada (desktop) */}
-        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[55%] lg:block">
+        <div className="absolute inset-y-0 right-0 hidden w-[58%] lg:block">
           <img
             src={affiliatesHero}
             alt={t(
@@ -133,23 +132,18 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
             )}
             className="h-full w-full object-cover"
             style={{
-              objectPosition: "58% 32%",
               WebkitMaskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.18) 18%, rgba(0,0,0,0.6) 34%, #000 52%), linear-gradient(to bottom, transparent 0%, #000 12%, #000 84%, transparent 100%)",
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 22%, #000 55%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 78%, transparent 100%)",
               maskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.18) 18%, rgba(0,0,0,0.6) 34%, #000 52%), linear-gradient(to bottom, transparent 0%, #000 12%, #000 84%, transparent 100%)",
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 22%, #000 55%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 78%, transparent 100%)",
               WebkitMaskComposite: "source-in",
               maskComposite: "intersect",
             }}
           />
-          {/* Fusión horizontal con el fondo, sin línea divisoria */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--background)_0%,color-mix(in_oklab,var(--background)_78%,transparent)_28%,color-mix(in_oklab,var(--background)_28%,transparent)_58%,transparent_85%)]" />
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(to_top,var(--background),transparent)]" />
-          <div className="absolute inset-x-0 top-0 h-20 bg-[linear-gradient(to_bottom,var(--background),transparent)]" />
         </div>
 
-        <div className="relative grid gap-0 lg:grid-cols-2">
 
+        <div className="relative grid gap-0 lg:grid-cols-2">
           <div className="p-6 sm:p-10">
             <Badge variant="outline" className="rounded-full border-primary/40 uppercase tracking-[0.16em] text-primary">
               {t("Programa de afiliados", "Affiliate program")}
@@ -203,19 +197,20 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
             </p>
           </div>
 
-          <div className="relative min-h-[260px] pb-4 lg:min-h-[520px]">
+          <div className="relative min-h-[240px] pb-4 lg:min-h-[460px]">
             <img
               src={affiliatesHero}
               alt=""
               aria-hidden="true"
-              className="h-full max-h-[280px] w-full object-cover object-[58%_28%] lg:hidden"
+              className="h-full w-full object-cover lg:hidden"
               style={{
-                WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, #000 26%, #000 74%, transparent 100%)",
-                maskImage: "linear-gradient(to bottom, transparent 0%, #000 26%, #000 74%, transparent 100%)",
+                WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%)",
+                maskImage: "linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%)",
               }}
             />
 
-            <div className="absolute bottom-5 left-4 right-4 rounded-2xl border border-white/10 bg-background/55 p-4 shadow-[0_18px_60px_-24px_rgba(0,0,0,0.9)] backdrop-blur-xl sm:left-auto sm:right-6 sm:w-[300px]">
+
+            <div className="absolute bottom-5 left-4 right-4 rounded-2xl border border-border/60 bg-background/85 p-4 backdrop-blur sm:left-auto sm:right-6 sm:w-[300px]">
               <p className="text-xs text-muted-foreground">
                 {t("Tus ganancias estimadas este mes", "Your estimated earnings this month")}
               </p>
@@ -227,7 +222,6 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
               </Badge>
               <Sparkline className="mt-3 h-10 w-full text-primary" />
             </div>
-
           </div>
         </div>
       </section>
