@@ -138,46 +138,52 @@ function CollegeFinder({ member }: { member: Member }) {
 
   const heroImg = member.theme === "girl" ? heroGirl : heroBoy;
 
+  const toggleCompare = (id: string) =>
+    setCompare((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : prev.length >= 3 ? prev : [...prev, id],
+    );
+
+  const compared = compare
+    .map((id) => list.find((r) => r.u.id === id) ?? null)
+    .filter(Boolean) as { u: University; total: number }[];
+
   return (
     <>
-      {/* Hero difuminado, sin bordes — overlay reforzado para legibilidad */}
-      <section className="relative mb-8 -mt-2 overflow-hidden">
+      {/* Hero difuminado, sin bordes — imagen protagonista */}
+      <section className="relative mb-8 -mt-6 min-h-[380px] overflow-hidden sm:min-h-[460px]">
         <img
           src={heroImg}
           alt={t("Familia mirando universidades", "Family looking at universities")}
           width={1280}
           height={960}
-          className="pointer-events-none absolute inset-y-0 right-0 h-full w-full object-cover object-right opacity-100 sm:w-[72%]"
+          className="pointer-events-none absolute inset-y-0 right-0 h-full w-full object-cover object-right opacity-100 sm:w-[88%]"
           style={{
             maskImage:
-              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 12%, rgba(0,0,0,0.35) 35%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.70) 70%, rgba(0,0,0,0.90) 90%, rgba(0,0,0,0.90) 100%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 80%, transparent 100%)",
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.10) 10%, rgba(0,0,0,0.45) 30%, rgba(0,0,0,0.80) 50%, #000 68%, #000 100%), linear-gradient(to bottom, transparent 0%, #000 10%, #000 84%, transparent 100%)",
             maskComposite: "intersect",
             WebkitMaskImage:
-              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 12%, rgba(0,0,0,0.35) 35%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.70) 70%, rgba(0,0,0,0.90) 90%, rgba(0,0,0,0.90) 100%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 80%, transparent 100%)",
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.10) 10%, rgba(0,0,0,0.45) 30%, rgba(0,0,0,0.80) 50%, #000 68%, #000 100%), linear-gradient(to bottom, transparent 0%, #000 10%, #000 84%, transparent 100%)",
             WebkitMaskComposite: "source-in",
           }}
         />
-        {/* Scrim dinámico: opaco a la izquierda (zona de texto) y se disuelve a la derecha */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-transparent sm:via-background/70" />
-        {/* Velo vertical sutil para reforzar contraste arriba/abajo */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/30" />
-        {/* Glow de marca que integra la imagen con el fondo */}
-        <div className="absolute inset-y-0 right-0 w-1/2 bg-gradient-to-l from-primary/[0.04] to-transparent" />
-        <div className="relative max-w-md py-8 pr-6 sm:py-12">
-          <p className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-[11px] font-bold text-primary shadow-sm ring-1 ring-primary/10">
+        {/* Scrim solo en la columna del texto */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent sm:via-background/35 sm:to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background to-transparent" />
+        <div className="relative flex min-h-[380px] max-w-md flex-col justify-center py-10 pr-6 sm:min-h-[460px] sm:py-14">
+          <p className="inline-flex w-fit items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-[11px] font-bold text-primary shadow-sm ring-1 ring-primary/10 backdrop-blur-sm">
             🎓 {t("Buscador de universidades", "College finder")}
           </p>
-          <h1 className="mt-3 font-display text-3xl font-black leading-tight text-foreground drop-shadow-[0_1px_6px_rgba(0,0,0,0.55)] sm:text-4xl">
+          <h1 className="mt-3 font-display text-3xl font-black leading-tight text-foreground drop-shadow-[0_1px_10px_rgba(0,0,0,0.35)] sm:text-5xl">
             {t("¿Dónde podrá estudiar", "Where can they study")}{" "}
             <span className="text-primary">{t(`a los ${targetAge}?`, `at ${targetAge}?`)}</span>
           </h1>
-          <p className="mt-2 text-sm text-foreground/80 drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
+          <p className="mt-2 max-w-sm text-sm text-foreground/80 drop-shadow-[0_1px_6px_rgba(0,0,0,0.35)]">
             {t(
               `Con el capital que estás construyendo hoy para ${member.name}.`,
               `With the capital you're building today for ${member.name}.`,
             )}
           </p>
-          <div className="mt-4 rounded-3xl border border-primary/20 bg-background/80 p-4 shadow-lg backdrop-blur-md">
+          <div className="mt-5 w-fit rounded-3xl border border-primary/20 bg-background/80 p-4 shadow-lg backdrop-blur-md">
             <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
               {t(`A los ${targetAge} años tendrá`, `At age ${targetAge} they'll have`)}
             </p>
@@ -190,6 +196,7 @@ function CollegeFinder({ member }: { member: Member }) {
           </div>
         </div>
       </section>
+
 
       <div className="grid gap-5">
         <div className="space-y-5">
