@@ -393,7 +393,7 @@ function Onboarding() {
             </Buddy>
             <Card>
               <div className="space-y-4">
-                <Field label={`${t("Monto inicial", "Initial amount")} (${currency})`}>
+                <Field label={`${t("Monto inicial para abrir su fondo", "Initial amount to open their fund")} (${currency})`}>
                   <input
                     type="number"
                     min={0}
