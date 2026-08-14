@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { GraduationCap, Search, Sparkles, Check, TrendingUp, Loader2 } from "lucide-react";
+import { Search, Check, TrendingUp } from "lucide-react";
 
 import { KidPage } from "@/components/kid-page";
 import heroGirl from "@/assets/uni-hero-girl.jpg";
@@ -20,13 +20,11 @@ import {
   type UniField,
   type University,
 } from "@/lib/universities";
-import { getCollegeAdvice } from "@/lib/college-ai.functions";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { toast } from "sonner";
 
 export const Route = createFileRoute("/ninos/kid/universidades")({
   head: () => ({
@@ -188,7 +186,7 @@ function CollegeFinder({ member }: { member: Member }) {
         </div>
       </section>
 
-      <div className="grid gap-5 lg:grid-cols-[1.55fr_1fr]">
+      <div className="grid gap-5">
         <div className="space-y-5">
           {/* Presupuesto */}
           <section className="rounded-3xl border border-border/70 bg-card p-5 shadow-sm sm:p-6">
