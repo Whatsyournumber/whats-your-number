@@ -405,7 +405,24 @@ export const UNIVERSITIES: University[] = [
   { id: "ot-charles-university", name: "Charles University", city: "Praga", country: "Czechia", countryEs: "Chequia", flag: "🇨🇿", region: "eu", tuition: 6000, living: 14000, years: 4, rank: 248, fields: ["health", "law", "science"] },
   { id: "ot-nova-lisboa", name: "NOVA Lisboa", city: "Lisboa", country: "Portugal", countryEs: "Portugal", flag: "🇵🇹", region: "eu", tuition: 7000, living: 14000, years: 4, rank: 400, fields: ["business", "science"] },
   { id: "ot-universidade-do-porto", name: "Universidade do Porto", city: "Oporto", country: "Portugal", countryEs: "Portugal", flag: "🇵🇹", region: "eu", tuition: 7000, living: 14000, years: 4, rank: 275, fields: ["engineering", "health", "science"] },
+  // Europa (nuevas)
+  { id: "at-vienna", name: "University of Vienna", city: "Viena", country: "Austria", countryEs: "Austria", flag: "🇦🇹", region: "eu", tuition: 1800, living: 14000, years: 4, rank: 130, fields: ["law", "science", "psychology"] },
+  { id: "be-kuleuven", name: "KU Leuven", city: "Lovaina", country: "Belgium", countryEs: "Bélgica", flag: "🇧🇪", region: "eu", tuition: 6500, living: 14000, years: 4, rank: 61, fields: ["engineering", "health", "science"] },
+  { id: "se-uppsala", name: "Uppsala University", city: "Upsala", country: "Sweden", countryEs: "Suecia", flag: "🇸🇪", region: "eu", tuition: 15000, living: 14000, years: 4, rank: 105, fields: ["science", "health", "law"] },
+  { id: "pt-lisboa", name: "Universidade de Lisboa", city: "Lisboa", country: "Portugal", countryEs: "Portugal", flag: "🇵🇹", region: "eu", tuition: 7000, living: 13000, years: 4, rank: 240, fields: ["engineering", "science", "arts"] },
+  { id: "ie-trinity", name: "Trinity College Dublin", city: "Dublín", country: "Ireland", countryEs: "Irlanda", flag: "🇮🇪", region: "eu", tuition: 24000, living: 16000, years: 4, rank: 87, fields: ["business", "law", "science"] },
+  { id: "ie-ucd", name: "University College Dublin", city: "Dublín", country: "Ireland", countryEs: "Irlanda", flag: "🇮🇪", region: "eu", tuition: 22000, living: 16000, years: 4, rank: 126, fields: ["business", "engineering", "health"] },
+  { id: "uk-durham", name: "Durham University", city: "Durham", country: "United Kingdom", countryEs: "Reino Unido", flag: "🇬🇧", region: "eu", tuition: 30000, living: 15000, years: 3, rank: 78, fields: ["law", "business", "science"] },
+  { id: "uk-standrews", name: "University of St Andrews", city: "St Andrews", country: "United Kingdom", countryEs: "Reino Unido", flag: "🇬🇧", region: "eu", tuition: 32000, living: 15000, years: 4, rank: 95, fields: ["arts", "science", "business"] },
+  // Estados Unidos (nuevas)
+  { id: "us-boston-college", name: "Boston College", city: "Boston", country: "United States", countryEs: "Estados Unidos", flag: "🇺🇸", region: "na", tuition: 66000, living: 18000, years: 4, rank: 400, fields: ["business", "law", "education"], scholarship: true },
+  { id: "us-tulane", name: "Tulane University", city: "Nueva Orleans", country: "United States", countryEs: "Estados Unidos", flag: "🇺🇸", region: "na", tuition: 62000, living: 17000, years: 4, rank: 420, fields: ["health", "business", "arts"], scholarship: true },
+  { id: "us-wake-forest", name: "Wake Forest University", city: "Winston-Salem", country: "United States", countryEs: "Estados Unidos", flag: "🇺🇸", region: "na", tuition: 61000, living: 17000, years: 4, rank: 450, fields: ["business", "law", "science"], scholarship: true },
+  { id: "us-villanova", name: "Villanova University", city: "Filadelfia", country: "United States", countryEs: "Estados Unidos", flag: "🇺🇸", region: "na", tuition: 60000, living: 17000, years: 4, rank: 480, fields: ["business", "engineering", "law"], scholarship: true },
+  { id: "us-lehigh", name: "Lehigh University", city: "Bethlehem", country: "United States", countryEs: "Estados Unidos", flag: "🇺🇸", region: "na", tuition: 59000, living: 17000, years: 4, rank: 470, fields: ["engineering", "business", "science"], scholarship: true },
+  { id: "us-brandeis", name: "Brandeis University", city: "Waltham", country: "United States", countryEs: "Estados Unidos", flag: "🇺🇸", region: "na", tuition: 62000, living: 18000, years: 4, rank: 440, fields: ["science", "arts", "psychology"], scholarship: true },
 ];
+
 
 /** Coste total del grado en USD (matrícula + vida). */
 export function uniTotalUsd(u: University, includeLiving = true) {
