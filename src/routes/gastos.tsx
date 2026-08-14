@@ -918,7 +918,16 @@ function Gastos() {
               <ResponsiveContainer width="100%" height={260}>
                 <BarChart data={monthCompare.rows.slice(0, 10)} margin={{ left: -8, right: 8 }}>
                   <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
-                  <XAxis dataKey="name" {...axisProps} interval={0} minTickGap={4} />
+                  <XAxis
+                    dataKey="name"
+                    {...axisProps}
+                    interval={0}
+                    minTickGap={4}
+                    height={64}
+                    angle={-35}
+                    textAnchor="end"
+                    tickFormatter={(v: string) => (v.length > 12 ? `${v.slice(0, 11)}…` : v)}
+                  />
                   <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={64} />
                   <Tooltip content={<ChartTooltip formatter={fmt} />} cursor={{ fill: "var(--color-muted)", opacity: 0.3 }} />
                   <Bar dataKey="a" name={monthLabel(mA)} fill="var(--color-chart-1)" radius={[6, 6, 0, 0]} />
