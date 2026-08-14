@@ -317,6 +317,210 @@ export type Database = {
           },
         ]
       }
+      kid_future_funds: {
+        Row: {
+          created_at: string
+          current_balance: number
+          expected_return: number
+          goal: string
+          id: string
+          initial_balance: number
+          member_id: string
+          monthly_contribution: number
+          target_age: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_balance?: number
+          expected_return?: number
+          goal?: string
+          id?: string
+          initial_balance?: number
+          member_id: string
+          monthly_contribution?: number
+          target_age?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_balance?: number
+          expected_return?: number
+          goal?: string
+          id?: string
+          initial_balance?: number
+          member_id?: string
+          monthly_contribution?: number
+          target_age?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kid_future_funds_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "kid_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kid_holdings: {
+        Row: {
+          created_at: string
+          emoji: string
+          growth: number
+          id: string
+          member_id: string
+          name: string
+          updated_at: string
+          user_id: string
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          emoji?: string
+          growth?: number
+          id?: string
+          member_id: string
+          name: string
+          updated_at?: string
+          user_id: string
+          value?: number
+        }
+        Update: {
+          created_at?: string
+          emoji?: string
+          growth?: number
+          id?: string
+          member_id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kid_holdings_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "kid_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kid_members: {
+        Row: {
+          age: number
+          allowance_amount: number
+          allowance_frequency: string
+          avatar: string
+          base_currency: string
+          created_at: string
+          currency: string
+          id: string
+          name: string
+          onboarded: boolean
+          role: string
+          split_grow: number
+          split_save: number
+          split_spend: number
+          streak: number
+          theme: string
+          updated_at: string
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          age?: number
+          allowance_amount?: number
+          allowance_frequency?: string
+          avatar?: string
+          base_currency?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          name: string
+          onboarded?: boolean
+          role?: string
+          split_grow?: number
+          split_save?: number
+          split_spend?: number
+          streak?: number
+          theme?: string
+          updated_at?: string
+          user_id: string
+          xp?: number
+        }
+        Update: {
+          age?: number
+          allowance_amount?: number
+          allowance_frequency?: string
+          avatar?: string
+          base_currency?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          name?: string
+          onboarded?: boolean
+          role?: string
+          split_grow?: number
+          split_save?: number
+          split_spend?: number
+          streak?: number
+          theme?: string
+          updated_at?: string
+          user_id?: string
+          xp?: number
+        }
+        Relationships: []
+      }
+      kid_movements: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          label: string
+          member_id: string
+          occurred_at: string
+          pocket: string
+          source: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          id?: string
+          label: string
+          member_id: string
+          occurred_at?: string
+          pocket?: string
+          source?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          label?: string
+          member_id?: string
+          occurred_at?: string
+          pocket?: string
+          source?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kid_movements_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "kid_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       kid_profiles: {
         Row: {
           avatar: string
@@ -367,6 +571,106 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      kid_tasks: {
+        Row: {
+          approved_at: string | null
+          completed_at: string | null
+          created_at: string
+          emoji: string
+          frequency: string
+          id: string
+          member_id: string
+          reward: number
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approved_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          emoji?: string
+          frequency?: string
+          id?: string
+          member_id: string
+          reward?: number
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approved_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          emoji?: string
+          frequency?: string
+          id?: string
+          member_id?: string
+          reward?: number
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kid_tasks_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "kid_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kid_wishes: {
+        Row: {
+          achieved: boolean
+          created_at: string
+          emoji: string
+          id: string
+          member_id: string
+          price: number
+          saved: number
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          achieved?: boolean
+          created_at?: string
+          emoji?: string
+          id?: string
+          member_id: string
+          price?: number
+          saved?: number
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          achieved?: boolean
+          created_at?: string
+          emoji?: string
+          id?: string
+          member_id?: string
+          price?: number
+          saved?: number
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kid_wishes_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "kid_members"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       life_goals: {
         Row: {
