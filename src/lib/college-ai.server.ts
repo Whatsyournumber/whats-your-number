@@ -10,7 +10,7 @@ export type CollegeAdviceInput = {
   budget: number;
   interests: string;
   affordable: { name: string; city: string; country: string; total: number; rank: number }[];
-  stretch: { name: string; city: string; country: string; total: number; rank: number; gap: number }[];
+  stretch: { name: string; city: string; country: string; total: number; rank: number; gap?: number }[];
   monthlyExtraFor1: number;
 };
 
