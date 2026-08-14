@@ -133,7 +133,7 @@ function CollegeFinder({ member }: { member: Member }) {
   }, [region, field, query, includeLiving, effectiveBudget, usdFx.factor, nearHome, homeCountry, homeRegion]);
 
   const affordable = list.filter((r) => r.total <= effectiveBudget);
-  const stretch = list.filter((r) => r.total > effectiveBudget);
+
 
   const monthsLeft = Math.max(1, yearsLeft * 12);
   const maxBudget = Math.max(400000, Math.round(projected * 2));
