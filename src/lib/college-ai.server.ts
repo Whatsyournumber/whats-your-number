@@ -12,7 +12,14 @@ export type CollegeAdviceInput = {
   affordable: { name: string; city: string; country: string; total: number; rank: number }[];
   stretch: { name: string; city: string; country: string; total: number; rank: number; gap?: number | undefined }[];
   monthlyExtraFor1: number;
+  initial?: number;
+  monthly?: number;
+  years?: number;
+  rate?: number;
+  homeCountry?: string;
+  homeCity?: string;
 };
+
 
 const SYSTEM_ES = `Eres Buddy, el asesor educativo de My First Number. Hablas a un padre/madre sobre el futuro universitario de su hijo/a.
 Responde SIEMPRE en español, en markdown muy breve (máximo 130 palabras).
@@ -50,11 +57,16 @@ export async function generateCollegeAdvice(input: CollegeAdviceInput): Promise<
       .join("\n") || "- (ninguna)";
 
   const context = `Hijo/a: ${input.childName}, ${input.childAge} años.
-Capital disponible para estudiar: ${Math.round(input.budget)} ${input.currency}.
+Ubicación de la familia: ${input.homeCity || "sin ciudad"}, ${input.homeCountry || "sin país"} (prioriza opciones cercanas o del mismo país/región, y menciona si mudarse fuera encarece el plan).
+Aporte inicial: ${Math.round(input.initial ?? 0)} ${input.currency}. Aporte recurrente: ${Math.round(
+    input.monthly ?? 0,
+  )} ${input.currency}/mes durante ${Math.round(input.years ?? 0)} años a ${input.rate ?? 7}% anual.
+Capital proyectado disponible para estudiar: ${Math.round(input.budget)} ${input.currency}.
 Intereses: ${input.interests || "sin definir"}.
 Aporte mensual extra necesario para alcanzar la primera opción fuera de presupuesto: ${Math.round(
     input.monthlyExtraFor1,
   )} ${input.currency}/mes.
+
 
 Universidades DENTRO del presupuesto:
 ${list(input.affordable)}

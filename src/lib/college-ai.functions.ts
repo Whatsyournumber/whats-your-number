@@ -20,9 +20,16 @@ const schema = z.object({
   budget: z.number(),
   interests: z.string().max(300).default(""),
   monthlyExtraFor1: z.number().default(0),
+  initial: z.number().default(0),
+  monthly: z.number().default(0),
+  years: z.number().default(0),
+  rate: z.number().default(7),
+  homeCountry: z.string().max(80).default(""),
+  homeCity: z.string().max(80).default(""),
   affordable: z.array(uni).max(10).default([]),
   stretch: z.array(uni).max(10).default([]),
 });
+
 
 export const getCollegeAdvice = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
