@@ -265,7 +265,7 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="overflow-hidden rounded-3xl border border-border/60 bg-elevated/30">
+      <section className="relative">
         <div className="grid lg:grid-cols-2">
           {/* Photo */}
           <div className="relative min-h-[260px] lg:min-h-full">
@@ -281,9 +281,9 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
               className="h-full w-full object-cover"
               style={{
                 WebkitMaskImage:
-                  "linear-gradient(to right, #000 60%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%)",
+                  "linear-gradient(to right, #000 25%, rgba(0,0,0,0.75) 55%, rgba(0,0,0,0.25) 80%, transparent 100%), linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 12%, #000 35%, #000 65%, rgba(0,0,0,0.6) 88%, transparent 100%), linear-gradient(to left, #000 88%, transparent 100%)",
                 maskImage:
-                  "linear-gradient(to right, #000 60%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%)",
+                  "linear-gradient(to right, #000 25%, rgba(0,0,0,0.75) 55%, rgba(0,0,0,0.25) 80%, transparent 100%), linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 12%, #000 35%, #000 65%, rgba(0,0,0,0.6) 88%, transparent 100%), linear-gradient(to left, #000 88%, transparent 100%)",
                 WebkitMaskComposite: "source-in",
                 maskComposite: "intersect",
               }}
