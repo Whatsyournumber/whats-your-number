@@ -20,7 +20,7 @@ import {
   type UniField,
   type University,
 } from "@/lib/universities";
-import { uniPhoto } from "@/lib/uni-photos";
+import { uniPhoto, uniPhotoFallback } from "@/lib/uni-photos";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -511,6 +511,12 @@ function CollegeFinder({ member }: { member: Member }) {
                   loading="lazy"
                   width={1024}
                   height={576}
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    const img = e.currentTarget;
+                    const fb = uniPhotoFallback(u);
+                    if (img.src !== fb) img.src = fb;
+                  }}
                   className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/85 via-background/10 to-background/20" />

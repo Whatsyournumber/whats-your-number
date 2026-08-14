@@ -8,6 +8,7 @@ import campusOther1 from "@/assets/uni/campus-other-1.jpg";
 import campusGeneric1 from "@/assets/uni/campus-generic-1.jpg";
 
 import type { University } from "@/lib/universities";
+import { REAL_UNI_PHOTOS } from "@/lib/uni-photos-real";
 
 const POOLS: Record<University["region"], string[]> = {
   eu: [campusEu1, campusEu2, campusGeneric1],
@@ -25,6 +26,13 @@ function hash(id: string) {
 
 /** Foto de campus premium asignada de forma estable a cada universidad. */
 export function uniPhoto(u: University) {
+  const real = REAL_UNI_PHOTOS[u.id];
+  if (real) return real;
+  return uniPhotoFallback(u);
+}
+
+/** Imagen genérica de respaldo (si la foto real falla al cargar). */
+export function uniPhotoFallback(u: University) {
   const pool = POOLS[u.region] ?? POOLS.eu;
   return pool[hash(u.id) % pool.length]!;
 }
