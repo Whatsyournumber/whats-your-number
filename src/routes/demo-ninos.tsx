@@ -29,8 +29,6 @@ export const Route = createFileRoute("/demo-ninos")({
   component: KidsDemoPage,
 });
 
-const ANNUAL_RATE = 0.1; // S&P 500 histórico ~10% anual
-
 function KidsDemoPage() {
   const t = useT();
   const [step, setStep] = useState(0); // 0 intro, 1..3 preguntas, 4 muro de registro
