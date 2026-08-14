@@ -550,7 +550,7 @@ export function MortgageModule() {
             </div>
           ) : (
             <div className="no-scrollbar -mx-1 w-full max-w-full overflow-x-auto px-1">
-              <table className="w-full min-w-[680px] text-sm">
+              <table className="w-full min-w-[620px] text-xs sm:text-sm">
                 <thead>
                   <tr className="text-left text-xs text-muted-foreground">
                     <th className="whitespace-nowrap py-2 pr-4 font-normal">{t("Estrategia", "Strategy")}</th>
