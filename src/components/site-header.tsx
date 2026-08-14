@@ -33,9 +33,16 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
       to={tab.to}
       {...("hash" in tab ? { hash: tab.hash } : {})}
       {...("search" in tab ? { search: tab.search } : {})}
-      className="rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground"
+      className={cn(
+        "rounded-full px-3 py-1.5 text-sm transition-colors",
+        isLight
+          ? "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+          : "text-muted-foreground hover:bg-elevated hover:text-foreground",
+      )}
       activeOptions={{ exact: true, includeHash: false }}
-      activeProps={{ className: "bg-elevated text-foreground" }}
+      activeProps={{
+        className: isLight ? "bg-slate-100 text-slate-900" : "bg-elevated text-foreground",
+      }}
     >
       {tab.label === "demo" ? (
         <span className="inline-flex items-center gap-1.5 text-primary">
@@ -47,6 +54,7 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
       )}
     </Link>
   );
+
 
   const authButtons = user ? (
     <Button asChild size="sm" className="rounded-full">
