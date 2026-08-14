@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import affiliatesHero from "@/assets/affiliates-hero.jpg";
+import affiliatesHow from "@/assets/affiliates-howitworks.jpg";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useT } from "@/hooks/use-language";
