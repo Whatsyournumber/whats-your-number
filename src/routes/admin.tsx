@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Users, CreditCard, FileText, TrendingUp, Trash2 } from "lucide-react";
+import { Users, CreditCard, FileText, TrendingUp, Trash2, Handshake } from "lucide-react";
 import { toast } from "sonner";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
@@ -31,6 +31,7 @@ import {
   adminDeleteSubscription,
   adminDeleteUser,
 } from "@/lib/admin.functions";
+import { adminMarkCommissionsPaid, adminUpdateAffiliate } from "@/utils/affiliates.functions";
 
 
 export const Route = createFileRoute("/admin")({
@@ -230,6 +231,37 @@ function AdminPage() {
     },
   });
 
+  const affiliates = useQuery({
+    queryKey: ["admin", "affiliates"],
+    enabled,
+    queryFn: async () => {
+      const [accounts, clicks, referrals, commissions] = await Promise.all([
+        supabase.from("affiliates").select("id,user_id,code,display_name,payout_email,commission_rate,status,created_at").order("created_at", { ascending: false }),
+        supabase.from("affiliate_clicks").select("id,affiliate_id"),
+        supabase.from("affiliate_referrals").select("id,affiliate_id,user_id,status,created_at"),
+        supabase.from("affiliate_commissions").select("id,affiliate_id,commission_amount,base_amount,status,created_at"),
+      ]);
+      if (accounts.error) throw accounts.error;
+      return {
+        accounts: accounts.data ?? [],
+        clicks: clicks.data ?? [],
+        referrals: referrals.data ?? [],
+        commissions: commissions.data ?? [],
+      };
+    },
+  });
+
+  const aff = affiliates.data;
+  const affRows = (aff?.accounts ?? []).map((a) => {
+    const clicks = (aff?.clicks ?? []).filter((c) => c.affiliate_id === a.id).length;
+    const refs = (aff?.referrals ?? []).filter((r) => r.affiliate_id === a.id);
+    const comms = (aff?.commissions ?? []).filter((c) => c.affiliate_id === a.id);
+    const pending = comms.filter((c) => c.status === "pending").reduce((x, c) => x + Number(c.commission_amount), 0);
+    const paidOut = comms.filter((c) => c.status === "paid").reduce((x, c) => x + Number(c.commission_amount), 0);
+    const revenue = comms.reduce((x, c) => x + Number(c.base_amount), 0);
+    return { ...a, clicks, signups: refs.length, active: refs.filter((r) => r.status === "subscribed").length, pending, paidOut, revenue };
+  });
+
   const users = profiles.data ?? [];
   const onb = onboarding.data ?? [];
   const subs = subscriptions.data ?? [];
@@ -278,6 +310,7 @@ function AdminPage() {
           <TabsTrigger value="subs">{t("Pagos y suscripciones", "Payments & subscriptions")}</TabsTrigger>
           <TabsTrigger value="statements">{t("Estados de cuenta", "Statements")}</TabsTrigger>
           <TabsTrigger value="promos">{t("Invitaciones", "Invites")}</TabsTrigger>
+          <TabsTrigger value="affiliates">{t("Afiliados", "Affiliates")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="users" className="mt-4">
@@ -526,6 +559,86 @@ function AdminPage() {
                     </TableRow>
                   )}
 
+                </TableBody>
+              </Table>
+            </div>
+          </Panel>
+        </TabsContent>
+        <TabsContent value="affiliates" className="mt-4 space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <KpiCard label={t("Afiliados", "Affiliates")} value={String(affRows.length)} icon={Handshake} accent index={0} />
+            <KpiCard label={t("Clics totales", "Total clicks")} value={String(aff?.clicks.length ?? 0)} icon={TrendingUp} index={1} />
+            <KpiCard label={t("Cuentas referidas activas", "Active referred accounts")} value={String(affRows.reduce((a, r) => a + r.active, 0))} icon={Users} index={2} />
+            <KpiCard label={t("Comisión pendiente", "Pending commission")} value={`${affRows.reduce((a, r) => a + r.pending, 0).toFixed(2)} US$`} icon={CreditCard} index={3} />
+          </div>
+
+          <Panel title={t("Afiliados", "Affiliates")} description={t("Progreso por enlace: clics, registros, cuentas activas y comisiones.", "Progress per link: clicks, sign-ups, active accounts and commissions.")}>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t("Afiliado", "Affiliate")}</TableHead>
+                    <TableHead>{t("Código", "Code")}</TableHead>
+                    <TableHead>{t("Clics", "Clicks")}</TableHead>
+                    <TableHead>{t("Registros", "Sign-ups")}</TableHead>
+                    <TableHead>{t("Activas", "Active")}</TableHead>
+                    <TableHead>{t("Ingresos", "Revenue")}</TableHead>
+                    <TableHead>%</TableHead>
+                    <TableHead>{t("Pendiente", "Pending")}</TableHead>
+                    <TableHead>{t("Pagado", "Paid")}</TableHead>
+                    <TableHead className="text-right">{t("Acciones", "Actions")}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {affRows.map((a) => {
+                    const u = users.find((x) => x.id === a.user_id);
+                    return (
+                      <TableRow key={a.id}>
+                        <TableCell className="font-medium">{a.display_name || u?.email || a.user_id.slice(0, 8)}</TableCell>
+                        <TableCell className="font-mono text-xs">{a.code}</TableCell>
+                        <TableCell className="numeric">{a.clicks}</TableCell>
+                        <TableCell className="numeric">{a.signups}</TableCell>
+                        <TableCell className="numeric">{a.active}</TableCell>
+                        <TableCell className="numeric">{a.revenue.toFixed(2)} US$</TableCell>
+                        <TableCell>
+                          <Input
+                            type="number"
+                            defaultValue={Number(a.commission_rate)}
+                            className="h-8 w-20"
+                            onBlur={(e) => {
+                              const v = Number(e.target.value);
+                              if (v === Number(a.commission_rate)) return;
+                              void runDelete(() => adminUpdateAffiliate({ data: { id: a.id, commissionRate: v } }), t("Comisión actualizada", "Commission updated"));
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell className="numeric font-medium">{a.pending.toFixed(2)} US$</TableCell>
+                        <TableCell className="numeric text-muted-foreground">{a.paidOut.toFixed(2)} US$</TableCell>
+                        <TableCell className="space-x-2 text-right whitespace-nowrap">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={a.pending <= 0}
+                            onClick={() => void runDelete(() => adminMarkCommissionsPaid({ data: { affiliateId: a.id } }), t("Comisiones marcadas como pagadas", "Commissions marked as paid"))}
+                          >
+                            {t("Marcar pagado", "Mark paid")}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => void runDelete(() => adminUpdateAffiliate({ data: { id: a.id, status: a.status === "active" ? "paused" : "active" } }), t("Estado actualizado", "Status updated"))}
+                          >
+                            {a.status === "active" ? t("Pausar", "Pause") : t("Activar", "Activate")}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                  {affRows.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={10} className="text-center text-muted-foreground">{t("Sin afiliados todavía", "No affiliates yet")}</TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </div>
