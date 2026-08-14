@@ -265,59 +265,99 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
       </section>
 
       {/* HOW IT WORKS */}
-      <section>
-        <SectionTitle
-          title={t("Cómo funciona", "How it works")}
-          description={t(
-            "Recomienda y gana comisión recurrente. Nosotros cobramos, facturamos y damos soporte.",
-            "Recommend and earn recurring commission. We handle billing, invoicing and support.",
-          )}
-        />
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {steps.map(({ icon: Icon, title, body }, i) => (
-            <div
-              key={title}
-              className="relative rounded-2xl border border-border/60 bg-elevated/40 p-4 transition-colors hover:border-primary/40"
-            >
-              <div className="flex items-center gap-2">
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
-                  {i + 1}
-                </span>
-                <Icon className="h-4 w-4 text-primary" />
-              </div>
-              <h3 className="mt-3 text-sm font-semibold">{title}</h3>
-              <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{body}</p>
-              {i < steps.length - 1 && (
-                <ArrowRight className="absolute -right-2.5 top-1/2 hidden h-4 w-4 -translate-y-1/2 text-primary/60 lg:block" />
+      <section className="overflow-hidden rounded-3xl border border-border/60 bg-elevated/30">
+        <div className="grid lg:grid-cols-2">
+          {/* Photo */}
+          <div className="relative min-h-[260px] lg:min-h-full">
+            <img
+              src={affiliatesHow}
+              loading="lazy"
+              width={1024}
+              height={1024}
+              alt={t(
+                "Afiliada sonriendo mientras comparte su enlace desde su laptop",
+                "Affiliate smiling while sharing her link from her laptop",
               )}
+              className="h-full w-full object-cover"
+              style={{
+                WebkitMaskImage:
+                  "linear-gradient(to right, #000 60%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%)",
+                maskImage:
+                  "linear-gradient(to right, #000 60%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%)",
+                WebkitMaskComposite: "source-in",
+                maskComposite: "intersect",
+              }}
+            />
+            <div className="absolute bottom-5 left-5 hidden rounded-2xl border border-border/60 bg-background/85 p-3 backdrop-blur sm:block">
+              <p className="text-[11px] text-muted-foreground">{t("Comisión recurrente", "Recurring commission")}</p>
+              <p className="font-display text-xl font-semibold text-primary">
+                {RATE}%<span className="text-xs text-muted-foreground"> /mes</span>
+              </p>
             </div>
-          ))}
+          </div>
+
+          {/* Steps */}
+          <div className="p-5 sm:p-6">
+            <SectionTitle
+              title={t("Cómo funciona", "How it works")}
+              description={t(
+                "Recomienda y gana comisión recurrente. Nosotros cobramos, facturamos y damos soporte.",
+                "Recommend and earn recurring commission. We handle billing, invoicing and support.",
+              )}
+            />
+            <div className="space-y-3">
+              {steps.map(({ icon: Icon, title, body }, i) => (
+                <div
+                  key={title}
+                  className="flex gap-3 rounded-2xl border border-border/50 bg-background/40 p-3.5 transition-colors hover:border-primary/40"
+                >
+                  <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
+                    {i + 1}
+                  </span>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <Icon className="h-3.5 w-3.5 text-primary" />
+                      <h3 className="text-sm font-semibold">{title}</h3>
+                    </div>
+                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{body}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
       {/* EARNINGS */}
       <section>
         <SectionTitle
-          title={t("Cuánto ganas", "What you earn")}
+          title={t("Cuánto puedes ganar al mes", "What you can earn per month")}
           description={t(
-            `Comisión del ${RATE}% recurrente sobre el importe neto de cada suscripción que traigas.`,
-            `A recurring ${RATE}% commission on the net amount of every subscription you bring.`,
+            `Comisión del ${RATE}% recurrente. Mientras más suscripciones activas traigas, más crecen tus ingresos cada mes.`,
+            `A recurring ${RATE}% commission. The more active subscriptions you bring, the more your monthly income grows.`,
           )}
         />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {examples.map((e) => (
-            <div key={`${e.plan}-${e.label}`} className="rounded-2xl border border-border/60 bg-elevated/40 p-4">
-              <p className="text-xs text-muted-foreground">
-                {e.plan} · {e.label}
+          {tiers.map((e) => (
+            <div
+              key={e.tier}
+              className="relative overflow-hidden rounded-2xl border border-border/60 bg-elevated/40 p-4 transition-colors hover:border-primary/40"
+            >
+              <div className="flex items-center justify-between">
+                <Badge variant="outline" className="rounded-full border-primary/40 text-primary">
+                  {e.tier}
+                </Badge>
+                <Sparkline className="h-5 w-14 text-primary/60" />
+              </div>
+              <p className="mt-3 font-display text-2xl font-semibold tracking-tight text-primary sm:text-3xl">
+                {e.monthly.toLocaleString("en-US")}<span className="text-sm text-muted-foreground"> US$/mes</span>
               </p>
-              <p className="mt-2 flex items-baseline gap-2 text-sm">
-                <span className="font-semibold">{e.price} US$</span>
-                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
-                <span className="text-lg font-semibold text-primary">{((e.price * RATE) / 100).toFixed(2)} US$</span>
+              <p className="mt-2 text-xs text-muted-foreground">
+                {e.refs} {t("suscripciones activas", "active subscriptions")} · {e.plan}
               </p>
-              <div className="mt-3 flex items-end justify-between gap-2">
-                <p className="text-xs text-muted-foreground">{t("por cada pago", "per payment")}</p>
-                <Sparkline className="h-6 w-16 text-primary/70" />
+              <div className="mt-3 flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                <Sparkles className="h-3 w-3 text-primary" />
+                {t("Recurrente, mes tras mes", "Recurring, month after month")}
               </div>
             </div>
           ))}
@@ -328,8 +368,8 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
           <div>
             <p className="text-xs font-semibold">
               {t(
-                "Ejemplo real: con 20 clientes en Pro mensual ganas 42 US$ cada mes, mes tras mes.",
-                "Real example: with 20 Pro monthly customers you earn 42 US$ every month, month after month.",
+                "Ejemplo real: con 150 familias activas ganas 855 US$ cada mes, sin hacer nada extra.",
+                "Real example: with 150 active families you earn 855 US$ every month, with no extra effort.",
               )}
             </p>
             <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
