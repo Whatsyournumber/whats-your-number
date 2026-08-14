@@ -138,62 +138,6 @@ function CollegeFinder({ member }: { member: Member }) {
   const stretch = list.filter((r) => r.total > effectiveBudget);
 
   const monthsLeft = Math.max(1, yearsLeft * 12);
-  const monthlyExtraFor1 = stretch[0]
-    ? Math.max(0, (stretch[0].total - effectiveBudget) / monthsLeft)
-    : 0;
-
-  const interests = field ? FIELD_LABELS[field][lang === "en" ? "en" : "es"] : "";
-
-
-  const askBuddy = async () => {
-    setLoadingAdvice(true);
-    setAdvice(null);
-    try {
-      const res = await getCollegeAdvice({
-        data: {
-          lang: lang === "en" ? "en" : "es",
-          childName: member.name,
-          childAge: member.age,
-          currency,
-          budget: effectiveBudget,
-          interests,
-          monthlyExtraFor1,
-          initial,
-          monthly,
-          years: yearsLeft,
-          rate,
-          homeCountry: homeCountry || "",
-          homeCity: profile?.city ?? "",
-
-          affordable: affordable.slice(0, 8).map((r) => ({
-            name: r.u.name,
-            city: r.u.city,
-            country: lang === "en" ? r.u.country : r.u.countryEs,
-            total: r.total,
-            rank: r.u.rank,
-          })),
-          stretch: stretch.slice(0, 5).map((r) => ({
-            name: r.u.name,
-            city: r.u.city,
-            country: lang === "en" ? r.u.country : r.u.countryEs,
-            total: r.total,
-            rank: r.u.rank,
-            gap: r.total - effectiveBudget,
-          })),
-        },
-      });
-      setAdvice(res.answer);
-    } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : t("No se pudo generar la recomendación", "Could not generate the recommendation"),
-      );
-    } finally {
-      setLoadingAdvice(false);
-    }
-  };
-
   const maxBudget = Math.max(400000, Math.round(projected * 2));
 
   const heroImg = member.theme === "girl" ? heroGirl : heroBoy;
