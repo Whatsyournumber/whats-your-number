@@ -113,11 +113,31 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
     },
   ];
 
-  const examples = [
-    { plan: "Pro", price: 7, label: t("Mensual", "Monthly") },
-    { plan: "Pro", price: 60, label: t("Anual", "Yearly") },
-    { plan: "Familiar", price: 19, label: t("Mensual", "Monthly") },
-    { plan: "Familiar", price: 160, label: t("Anual", "Yearly") },
+  const tiers = [
+    {
+      tier: t("Empezando", "Getting started"),
+      refs: 50,
+      plan: t("Plan Familiar", "Family plan"),
+      monthly: 285,
+    },
+    {
+      tier: t("Creciendo", "Growing"),
+      refs: 150,
+      plan: t("Plan Familiar", "Family plan"),
+      monthly: 855,
+    },
+    {
+      tier: t("Consolidado", "Established"),
+      refs: 300,
+      plan: t("Plan mixto", "Mixed plans"),
+      monthly: 1425,
+    },
+    {
+      tier: t("Top afiliado", "Top affiliate"),
+      refs: 500,
+      plan: t("Plan mixto", "Mixed plans"),
+      monthly: 2850,
+    },
   ];
 
   return (
