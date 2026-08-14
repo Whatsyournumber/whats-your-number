@@ -590,12 +590,6 @@ const CURATED: Record<string, string> = {
   "us-uc-irvine": cur_us_ucirvine,
   "us-uc-santa-barbara": cur_us_ucsb,
   // Oceanía: fotos de campus premium curadas
-  "ap-university-of-melbourne": oc_melbourne,
-  "ap-university-of-sydney": oc_sydney,
-  "ap-unsw-sydney": oc_unsw,
-  "ap-university-of-queensland": oc_queensland,
-  "ap-monash-university": oc_monash,
-  "ap-university-of-auckland": oc_auckland,
   "oc-uwa": oc_uwa,
   "oc-adelaide": oc_adelaide,
   "oc-uts-sydney": oc_uts,
