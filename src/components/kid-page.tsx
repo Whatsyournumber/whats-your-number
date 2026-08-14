@@ -13,7 +13,7 @@ export function KidPage({ children }: { children: (member: Member) => ReactNode 
 
   useEffect(() => {
     if (ready && !isLoading && (!member || member.role !== "child")) {
-      router.navigate({ to: "/" });
+      router.navigate({ to: "/ninos" });
     }
   }, [ready, isLoading, member, router]);
 

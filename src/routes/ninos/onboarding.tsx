@@ -572,7 +572,7 @@ function Onboarding() {
         <div className="mt-8 flex items-center justify-between gap-3">
           <Button
             variant="ghost"
-            onClick={() => (step === 0 ? router.navigate({ to: "/" }) : setStep(step - 1))}
+            onClick={() => (step === 0 ? router.navigate({ to: "/ninos" }) : setStep(step - 1))}
           >
             <ArrowLeft className="h-4 w-4" /> {t("Atrás", "Back")}
           </Button>

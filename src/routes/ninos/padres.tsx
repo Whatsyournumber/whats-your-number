@@ -58,7 +58,7 @@ function ParentDashboard() {
   const kid = kids.find((k) => k.id === kidId) ?? kids[0] ?? null;
 
   useEffect(() => {
-    if (ready && active && active.role !== "parent") router.navigate({ to: "/" });
+    if (ready && active && active.role !== "parent") router.navigate({ to: "/ninos" });
   }, [ready, active, router]);
 
   return (

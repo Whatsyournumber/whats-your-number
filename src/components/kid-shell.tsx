@@ -68,7 +68,7 @@ export function KidShell({ member, children }: { member: Member; children: React
         <div className={cn("flex items-center", collapsed ? "justify-center" : "justify-between gap-2")}>
           {!collapsed ? (
             <button
-              onClick={() => router.navigate({ to: "/" })}
+              onClick={() => router.navigate({ to: "/ninos" })}
               className="flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground"
             >
               <ChevronLeft className="h-4 w-4" /> {t("Cambiar perfil", "Switch profile")}
@@ -148,7 +148,7 @@ export function KidShell({ member, children }: { member: Member; children: React
       <div className="min-w-0 flex-1 pb-36 lg:pb-0">
         <header className="flex items-center justify-between gap-3 px-5 pt-6 sm:px-6 lg:px-10">
           <button
-            onClick={() => router.navigate({ to: "/" })}
+            onClick={() => router.navigate({ to: "/ninos" })}
             className="flex items-center gap-2 text-xs font-semibold text-muted-foreground lg:hidden"
           >
             <ChevronLeft className="h-4 w-4" /> {t("Perfiles", "Profiles")}
@@ -220,7 +220,7 @@ export function ParentShell({ children, title, subtitle }: { children: ReactNode
       <header className="mx-auto w-full max-w-6xl px-5 pt-8 sm:px-8">
         <div className="flex items-center justify-between gap-3">
           <button
-            onClick={() => router.navigate({ to: "/" })}
+            onClick={() => router.navigate({ to: "/ninos" })}
             className="flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground"
           >
             <ChevronLeft className="h-4 w-4" /> {t("Cambiar perfil", "Switch profile")}

@@ -77,7 +77,7 @@ function MiniStat({
   label: string;
   value: string;
   hint: string;
-  to: "/ninos/kid/dinero" | "/kid/deseos" | "/kid/tareas" | "/kid/futuro";
+  to: "/ninos/kid/dinero" | "/ninos/kid/deseos" | "/ninos/kid/tareas" | "/ninos/kid/futuro";
 }) {
   return (
     <Link
