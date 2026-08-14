@@ -303,6 +303,70 @@ function MyData({ member }: { member: Member }) {
             </div>
             <SaveButton disabled={updateMember.isPending} />
           </form>
+
+          <div className="mt-5 border-t border-border pt-4">
+            <Label>{t("Dinero ahorrado hoy", "Money saved today")}</Label>
+            <p className="mb-2 text-xs text-muted-foreground">
+              {t(
+                "Este es tu número principal. Si lo cambias, ajustamos tus bolsillos según tu reparto.",
+                "This is your main number. If you change it, we adjust your pockets using your split.",
+              )}
+            </p>
+            <div className="flex items-end gap-2">
+              <input
+                type="number"
+                min={0}
+                step="1"
+                className={inputClass}
+                placeholder="0"
+                value={savedInput}
+                onChange={(e) => setSavedInput(e.target.value)}
+              />
+              <button
+                type="button"
+                disabled={addIncome.isPending || addExpense.isPending}
+                onClick={() => {
+                  const target = Number(savedInput);
+                  if (!Number.isFinite(target) || target < 0) return;
+                  const diff = Math.round((target - savedTotal) * 100) / 100;
+                  if (diff === 0) {
+                    toast.info(t("Ya tienes ese número", "You already have that number"));
+                    return;
+                  }
+                  const onSuccess = () =>
+                    toast.success(t("Número actualizado", "Number updated"));
+                  if (diff > 0) {
+                    addIncome.mutate(
+                      {
+                        member,
+                        label: t("Ajuste de ahorro", "Savings adjustment"),
+                        source: t("ajuste", "adjustment"),
+                        amount: diff,
+                      },
+                      { onSuccess },
+                    );
+                  } else {
+                    addExpense.mutate(
+                      {
+                        memberId: member.id,
+                        label: t("Ajuste de ahorro", "Savings adjustment"),
+                        category: t("ajuste", "adjustment"),
+                        amount: Math.abs(diff),
+                      },
+                      { onSuccess },
+                    );
+                  }
+                }}
+                className="shrink-0 rounded-2xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+              >
+                {t("Guardar", "Save")}
+              </button>
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">
+              {t("Ahora mismo tienes", "Right now you have")}{" "}
+              <strong className="text-foreground">{money(savedTotal, member.currency, lang)}</strong>
+            </p>
+          </div>
         </Card>
 
         <Card title={t("Mi Fondo del Futuro", "My Future Fund")}>
