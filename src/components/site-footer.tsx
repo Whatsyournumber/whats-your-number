@@ -14,7 +14,7 @@ const socials = [
 
 type FooterLink = { label: string; to: string; policy?: boolean; external?: boolean };
 
-export function SiteFooter() {
+export function SiteFooter({ kids = false }: { kids?: boolean } = {}) {
   const t = useT();
   const [open, setOpen] = useState(false);
   const [policiesOpen, setPoliciesOpen] = useState(false);
