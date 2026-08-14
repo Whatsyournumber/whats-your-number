@@ -93,3 +93,40 @@ export function BrandLogo({
 }
 
 
+
+export function KidsBrandMark({ className }: { className?: string }) {
+  return (
+    <span
+      className={cn(
+        "relative inline-flex items-center justify-center overflow-hidden rounded-2xl bg-kid-sky/15 ring-1 ring-kid-sky/30",
+        className,
+      )}
+    >
+      <svg viewBox="0 0 32 32" fill="none" className="relative h-[74%] w-[74%]" aria-hidden="true">
+        <circle cx="16" cy="16" r="12" className="stroke-kid-sky/30" strokeWidth="1.2" />
+        <path
+          d="M9 20.5c0-4.4 3.1-7.6 7-7.6s7 2.6 7 6.2"
+          className="stroke-kid-grape"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+        />
+        <path
+          d="M16 6.2l1.5 3.1 3.4.5-2.5 2.4.6 3.4-3-1.6-3 1.6.6-3.4-2.5-2.4 3.4-.5L16 6.2z"
+          className="fill-kid-mint"
+        />
+        <circle cx="16" cy="24.5" r="2.1" className="fill-kid-sky" />
+      </svg>
+    </span>
+  );
+}
+
+export function KidsBrandLogo({ className }: { className?: string }) {
+  return (
+    <span className={cn("flex items-center gap-2.5", className)}>
+      <KidsBrandMark className="h-9 w-9" />
+      <span className="font-display text-sm font-semibold leading-none tracking-tight">
+        My First <span className="text-kid-mint">Number</span>
+      </span>
+    </span>
+  );
+}
