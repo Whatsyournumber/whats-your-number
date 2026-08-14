@@ -41,7 +41,7 @@ export const Route = createFileRoute("/ninos/onboarding")({
 });
 
 const AVATARS = ["🦊", "🐼", "🦄", "🐯", "🐨", "🦁", "🐙", "🐧", "🐸", "🐷"];
-const STEPS = [0, 1, 2, 3, 4, 5];
+const STEPS = [0, 1, 2, 3, 4, 5, 6];
 
 function Onboarding() {
   const router = useRouter();
@@ -79,6 +79,7 @@ function Onboarding() {
     true,
     wishPrice > 0,
     monthly >= 0,
+    true,
   ][step];
 
   function pickCity(value: string) {
@@ -481,8 +482,8 @@ function Onboarding() {
           <div className="mt-8 space-y-5">
             <Buddy>
               {t(
-                `Y ahora lo importante: el Fondo del Futuro. Mira cómo puede crecer hasta sus ${targetAge} años.`,
-                `Now the important part: the Future Fund. See how it can grow by age ${targetAge}.`,
+                `¿Cuánto dinero le pones a su Fondo del Futuro? Puedes empezar con un aporte inicial y luego aportar cada mes.`,
+                `How much money do you put into their Future Fund? You can start with an initial deposit and then add money every month.`,
               )}
             </Buddy>
             <Card>
@@ -507,6 +508,27 @@ function Onboarding() {
                     onChange={(e) => setMonthly(Number(e.target.value))}
                   />
                 </Field>
+              </div>
+              <p className="mt-4 text-sm text-muted-foreground">
+                {t(
+                  `Con ${money(initial, currency)} hoy y ${money(monthly, currency)}/mes, en los próximos años iremos viendo cómo crece.`,
+                  `With ${money(initial, currency)} today and ${money(monthly, currency)}/month, over the next few years we'll watch it grow.`,
+                )}
+              </p>
+            </Card>
+          </div>
+        ) : null}
+
+        {step === 6 ? (
+          <div className="mt-8 space-y-5">
+            <Buddy>
+              {t(
+                `Ahora eligemos hasta qué edad va a crecer y con qué rentabilidad. Mira la proyección hasta sus ${targetAge} años.`,
+                `Now we choose until what age it grows and at what return. See the projection by age ${targetAge}.`,
+              )}
+            </Buddy>
+            <Card>
+              <div className="grid gap-4 sm:grid-cols-2">
                 <Field label={t("Edad objetivo", "Target age")}>
                   <select
                     className={inputClass}
@@ -576,7 +598,7 @@ function Onboarding() {
           >
             <ArrowLeft className="h-4 w-4" /> {t("Atrás", "Back")}
           </Button>
-          {step < 5 ? (
+          {step < 6 ? (
             <Button disabled={!canNext} onClick={() => setStep(step + 1)}>
               {t("Siguiente", "Next")} <ArrowRight className="h-4 w-4" />
             </Button>
