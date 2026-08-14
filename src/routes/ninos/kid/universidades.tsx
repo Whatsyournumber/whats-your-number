@@ -116,6 +116,8 @@ function CollegeFinder({ member }: { member: Member }) {
   const simProjected = Math.round(projectCapital(initial, simMonthly, yearsLeft, rate) / 1000) * 1000;
 
   const [bucket, setBucket] = useState<Bucket | null>(null);
+  const [continent, setContinent] = useState<Continent | null>(null);
+
   const [tab, setTab] = useState<"afford" | "close" | "all">("afford");
   const [country, setCountry] = useState<string>("");
   const [field, setField] = useState<UniField | "">("");
