@@ -232,7 +232,6 @@ import cur_us_ucsb from "@/assets/uni/us-ucsb.jpg";
 import np_ae_nyuad from "@/assets/uni/ae-nyuad.jpg";
 import np_de_heidelberg from "@/assets/uni/de-heidelberg.jpg";
 import np_de_rwth from "@/assets/uni/de-rwth.jpg";
-import np_nl_delft from "@/assets/uni/nl-delft.jpg";
 import np_us_americanu from "@/assets/uni/us-americanu.jpg";
 import np_us_baylor from "@/assets/uni/us-baylor.jpg";
 import np_us_berkeley from "@/assets/uni/us-berkeley.jpg";
@@ -298,7 +297,6 @@ const CURATED: Record<string, string> = {
   "ot-nyu-abu-dhabi": np_ae_nyuad,
   "de-universitat-heidelberg": np_de_heidelberg,
   "de-rwth-aachen": np_de_rwth,
-  "nl-tu-delft": np_nl_delft,
   "us-american-university": np_us_americanu,
   "us-baylor-university": np_us_baylor,
   "us-uc-berkeley": np_us_berkeley,
