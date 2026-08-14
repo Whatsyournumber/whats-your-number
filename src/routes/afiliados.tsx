@@ -54,6 +54,22 @@ function AffiliatesPage() {
 
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const link = affiliate ? `${origin}/?ref=${affiliate.code}` : "";
+  const referralsToGo = Math.max(0, REFERRAL_GOAL - referrals.length);
+
+  const claimReward = async () => {
+    setBusy(true);
+    try {
+      const res = await claimReferralReward({ data: { environment: getPaddleEnvironment() } });
+      await qc.invalidateQueries({ queryKey: ["subscription"] });
+      if (res.unlocked) toast.success(t("¡Plan Pro gratis activado!", "Free Pro plan activated!"));
+      else toast.info(t("Aún no llegas a 3 registros.", "You haven't reached 3 sign-ups yet."));
+    } catch {
+      toast.error(t("No pudimos activar tu plan.", "We couldn't activate your plan."));
+    } finally {
+      setBusy(false);
+    }
+  };
+
 
   const join = async () => {
     setBusy(true);
