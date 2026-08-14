@@ -131,26 +131,33 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
               </Link>
             </div>
 
-            <div className="flex shrink-0 items-center gap-1">
+            <div className="flex shrink-0 items-center gap-1.5">
               <LanguageToggle />
               {user ? (
                 <Button asChild size="sm" className="h-8 rounded-full px-3 text-xs">
                   <Link to="/dashboard">{t("Dashboard", "Dashboard")}</Link>
                 </Button>
               ) : (
-                <Button
-                  asChild
-                  variant="ghost"
-                  size="sm"
-                  className={cn(
-                    "h-8 rounded-full px-2.5 text-xs whitespace-nowrap",
-                    isLight && "text-slate-700 hover:bg-slate-100 hover:text-slate-900",
-                  )}
-                >
-                  <Link to="/auth" search={{ mode: "login" }}>
-                    {t("Iniciar sesión", "Sign in")}
-                  </Link>
-                </Button>
+                <>
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="sm"
+                    className={cn(
+                      "hidden h-8 rounded-full border-border/60 bg-background/40 px-3 text-xs whitespace-nowrap backdrop-blur-sm hover:bg-background/60 sm:inline-flex",
+                      isLight && "border-slate-200 bg-white/60 text-slate-700 hover:bg-white/80 hover:text-slate-900",
+                    )}
+                  >
+                    <Link to="/auth" search={{ mode: "login" }}>
+                      {t("Iniciar sesión", "Sign in")}
+                    </Link>
+                  </Button>
+                  <Button asChild size="sm" className="h-8 rounded-full px-3 text-xs whitespace-nowrap shadow-sm">
+                    <Link to="/auth" search={{ mode: "signup" }}>
+                      {t("Crear cuenta", "Sign up")}
+                    </Link>
+                  </Button>
+                </>
               )}
             </div>
           </div>
@@ -165,13 +172,27 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
                 ))}
               </nav>
               {!user && (
-                <SheetClose asChild>
-                  <Button asChild size="sm" className="rounded-full">
-                    <Link to="/auth" search={{ mode: "signup" }}>
-                      {t("Crear cuenta", "Sign up")}
-                    </Link>
-                  </Button>
-                </SheetClose>
+                <div className="flex flex-col gap-2">
+                  <SheetClose asChild>
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      className="rounded-full sm:hidden"
+                    >
+                      <Link to="/auth" search={{ mode: "login" }}>
+                        {t("Iniciar sesión", "Sign in")}
+                      </Link>
+                    </Button>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <Button asChild size="sm" className="rounded-full">
+                      <Link to="/auth" search={{ mode: "signup" }}>
+                        {t("Crear cuenta", "Sign up")}
+                      </Link>
+                    </Button>
+                  </SheetClose>
+                </div>
               )}
               <div className="flex items-center justify-between border-t border-border pt-4">
                 <span className="text-sm text-muted-foreground">{t("Moneda", "Currency")}</span>
