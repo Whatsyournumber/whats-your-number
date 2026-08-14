@@ -47,6 +47,7 @@ import { Route as NinosKidDineroRouteImport } from './routes/ninos/kid/dinero'
 import { Route as NinosKidFuturoRouteImport } from './routes/ninos/kid/futuro'
 import { Route as NinosKidNumeroRouteImport } from './routes/ninos/kid/numero'
 import { Route as NinosKidTareasRouteImport } from './routes/ninos/kid/tareas'
+import { Route as NinosKidUniversidadesRouteImport } from './routes/ninos/kid/universidades'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const IndexRoute = IndexRouteImport.update({
@@ -239,6 +240,11 @@ const NinosKidTareasRoute = NinosKidTareasRouteImport.update({
   path: '/kid/tareas',
   getParentRoute: () => NinosRouteRoute,
 } as any)
+const NinosKidUniversidadesRoute = NinosKidUniversidadesRouteImport.update({
+  id: '/kid/universidades',
+  path: '/kid/universidades',
+  getParentRoute: () => NinosRouteRoute,
+} as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -285,6 +291,7 @@ export interface FileRoutesByFullPath {
   '/ninos/kid/futuro': typeof NinosKidFuturoRoute
   '/ninos/kid/numero': typeof NinosKidNumeroRoute
   '/ninos/kid/tareas': typeof NinosKidTareasRoute
+  '/ninos/kid/universidades': typeof NinosKidUniversidadesRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -325,6 +332,7 @@ export interface FileRoutesByTo {
   '/ninos/kid/futuro': typeof NinosKidFuturoRoute
   '/ninos/kid/numero': typeof NinosKidNumeroRoute
   '/ninos/kid/tareas': typeof NinosKidTareasRoute
+  '/ninos/kid/universidades': typeof NinosKidUniversidadesRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
@@ -367,6 +375,7 @@ export interface FileRoutesById {
   '/ninos/kid/futuro': typeof NinosKidFuturoRoute
   '/ninos/kid/numero': typeof NinosKidNumeroRoute
   '/ninos/kid/tareas': typeof NinosKidTareasRoute
+  '/ninos/kid/universidades': typeof NinosKidUniversidadesRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
@@ -410,6 +419,7 @@ export interface FileRouteTypes {
     | '/ninos/kid/futuro'
     | '/ninos/kid/numero'
     | '/ninos/kid/tareas'
+    | '/ninos/kid/universidades'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -450,6 +460,7 @@ export interface FileRouteTypes {
     | '/ninos/kid/futuro'
     | '/ninos/kid/numero'
     | '/ninos/kid/tareas'
+    | '/ninos/kid/universidades'
     | '/api/public/payments/webhook'
   id:
     | '__root__'
@@ -491,6 +502,7 @@ export interface FileRouteTypes {
     | '/ninos/kid/futuro'
     | '/ninos/kid/numero'
     | '/ninos/kid/tareas'
+    | '/ninos/kid/universidades'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -795,6 +807,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NinosKidTareasRouteImport
       parentRoute: typeof NinosRouteRoute
     }
+    '/ninos/kid/universidades': {
+      id: '/ninos/kid/universidades'
+      path: '/kid/universidades'
+      fullPath: '/ninos/kid/universidades'
+      preLoaderRoute: typeof NinosKidUniversidadesRouteImport
+      parentRoute: typeof NinosRouteRoute
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -815,6 +834,7 @@ interface NinosRouteRouteChildren {
   NinosKidFuturoRoute: typeof NinosKidFuturoRoute
   NinosKidNumeroRoute: typeof NinosKidNumeroRoute
   NinosKidTareasRoute: typeof NinosKidTareasRoute
+  NinosKidUniversidadesRoute: typeof NinosKidUniversidadesRoute
 }
 
 const NinosRouteRouteChildren: NinosRouteRouteChildren = {
@@ -827,6 +847,7 @@ const NinosRouteRouteChildren: NinosRouteRouteChildren = {
   NinosKidFuturoRoute: NinosKidFuturoRoute,
   NinosKidNumeroRoute: NinosKidNumeroRoute,
   NinosKidTareasRoute: NinosKidTareasRoute,
+  NinosKidUniversidadesRoute: NinosKidUniversidadesRoute,
 }
 
 const NinosRouteRouteWithChildren = NinosRouteRoute._addFileChildren(
