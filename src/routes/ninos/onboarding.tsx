@@ -283,19 +283,29 @@ function Onboarding() {
             </Buddy>
             <Card>
               <Field label={t("Ciudad", "City")}>
-                <select
+                <input
                   className={inputClass}
                   value={city}
                   onChange={(e) => pickCity(e.target.value)}
-                >
-                  <option value="">{t("Elige tu ciudad…", "Choose your city…")}</option>
-                  {CITIES.map((c) => (
-                    <option key={c.city} value={c.city}>
-                      {c.flag} {c.city} · {c.country}
-                    </option>
-                  ))}
-                </select>
+                  placeholder={t(
+                    "Escribe tu ciudad (ej. Madrid, Lima, Miami…)",
+                    "Type your city (e.g. Madrid, Lima, Miami…)",
+                  )}
+                />
               </Field>
+              {city.trim().length > 0 && citySuggestions.length > 0 ? (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {citySuggestions.map((c) => (
+                    <button
+                      key={c.city}
+                      onClick={() => pickCity(c.city)}
+                      className="rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground"
+                    >
+                      {c.flag} {c.city} · {c.country}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
               <div className="mt-3 flex flex-wrap gap-2">
                 {CITIES.slice(0, 10).map((c) => (
                   <button
