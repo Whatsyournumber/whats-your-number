@@ -4,8 +4,11 @@ import { toast } from "sonner";
 import { Buddy, Card } from "@/components/mfn-ui";
 import { KidPage, PageTitle } from "@/components/kid-page";
 import {
+  useAddExpense,
+  useAddIncome,
   useDeleteWish,
   useFund,
+  useMovements,
   useHoldings,
   useSaveFund,
   useUpdateHolding,
@@ -13,7 +16,7 @@ import {
   useUpdateWish,
   useWishes,
 } from "@/hooks/use-mfn";
-import { money, type Member } from "@/lib/mfn";
+import { money, pocketTotals, type Member } from "@/lib/mfn";
 import { useI18n } from "@/lib/mfn-i18n";
 import { CURRENCIES, currencyLabel } from "@/lib/mfn-currencies";
 
