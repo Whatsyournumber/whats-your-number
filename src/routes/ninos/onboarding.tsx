@@ -485,7 +485,7 @@ function Onboarding() {
               )}
             </Buddy>
             <Card>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-4">
                 <Field label={`${t("Aporte inicial", "Initial deposit")} (${currency})`}>
                   <input
                     type="number"
