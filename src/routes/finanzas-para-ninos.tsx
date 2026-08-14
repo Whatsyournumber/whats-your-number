@@ -1343,8 +1343,6 @@ function KidsFinanceLanding() {
                 <br />
                 {t("Enséñale ", "Teach them ")}
                 <span className="text-kid-mint">{t("a manejarlo.", "to manage it.")}</span>
-                <br />
-                {t("En una sola plataforma.", "In one single platform.")}
               </h1>
 
               <p className="mt-4 max-w-lg text-sm leading-relaxed text-muted-foreground md:mt-6 md:text-base">
