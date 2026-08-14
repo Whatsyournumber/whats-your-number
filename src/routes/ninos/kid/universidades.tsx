@@ -115,6 +115,7 @@ function CollegeFinder({ member }: { member: Member }) {
   const [simMonthly, setSimMonthly] = useState<number>(Math.max(50, monthly || 50));
   const simProjected = Math.round(projectCapital(initial, simMonthly, yearsLeft, rate) / 1000) * 1000;
 
+  const resultsRef = useRef<HTMLDivElement | null>(null);
   const [bucket, setBucket] = useState<Bucket | null>(null);
   const [continent, setContinent] = useState<Continent | null>(null);
 
@@ -544,7 +545,7 @@ function CollegeFinder({ member }: { member: Member }) {
 
 
       {/* Resultados */}
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <div ref={resultsRef} className="scroll-mt-24 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {list.map(({ u, total }) => {
           const ok = total <= projected;
           const gap = total - projected;
