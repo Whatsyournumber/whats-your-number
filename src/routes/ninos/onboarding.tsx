@@ -416,13 +416,20 @@ function Onboarding() {
                   type K = "spend" | "save" | "grow";
                   const reorder = (key: K, next: number) => {
                     const rem = 100 - next;
-                    const [o1, o2] = (["spend", "save", "grow"] as K[]).filter(
-                      (k) => k !== key,
-                    );
+                    const all: K[] = ["spend", "save", "grow"];
+                    let o1: K = "spend";
+                    let o2: K = "save";
+                    const rest = all.filter((k) => k !== key);
+                    o1 = rest[0]!;
+                    o2 = rest[1]!;
                     const sum = split[o1] + split[o2];
                     const a = sum === 0 ? Math.round(rem / 2) : Math.round((split[o1] / sum) * rem);
                     const b = rem - a;
-                    setSplit({ [key]: next, [o1]: a, [o2]: b } as Record<K, number>);
+                    const upd: Record<K, number> = { spend: split.spend, save: split.save, grow: split.grow };
+                    upd[key] = next;
+                    upd[o1] = a;
+                    upd[o2] = b;
+                    setSplit(upd);
                   };
                   const items: { key: K; emoji: string; labelEs: string; labelEn: string }[] = [
                     { key: "grow", emoji: "📈", labelEs: "Invertir", labelEn: "Invest" },
