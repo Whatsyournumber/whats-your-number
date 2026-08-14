@@ -18,17 +18,17 @@ import { useI18n, LangToggle } from "@/lib/mfn-i18n";
 import { CurrencySelect } from "@/components/mfn-currency-select";
 
 const TABS = [
-  { to: "/kid/numero", label: "Mi Primer Número", labelEn: "My First Number", icon: Home },
-  { to: "/kid/futuro", label: "Planificador familiar", labelEn: "Family Planner", icon: Rocket },
-  { to: "/kid/dinero", label: "Mi Dinero", labelEn: "My Money", icon: Wallet },
-  { to: "/kid/tareas", label: "Mis Tareas", labelEn: "My Tasks", icon: CheckSquare },
-  { to: "/kid/deseos", label: "Mis Sueños", labelEn: "My Dreams", icon: Star },
+  { to: "/ninos/kid/numero", label: "Mi Primer Número", labelEn: "My First Number", icon: Home },
+  { to: "/ninos/kid/futuro", label: "Planificador familiar", labelEn: "Family Planner", icon: Rocket },
+  { to: "/ninos/kid/dinero", label: "Mi Dinero", labelEn: "My Money", icon: Wallet },
+  { to: "/ninos/kid/tareas", label: "Mis Tareas", labelEn: "My Tasks", icon: CheckSquare },
+  { to: "/ninos/kid/deseos", label: "Mis Sueños", labelEn: "My Dreams", icon: Star },
 ] as const;
 
 
 const BOTTOM_TABS = [
-  { to: "/kid/datos", label: "Mis Datos", labelEn: "My Data", icon: SlidersHorizontal },
-  { to: "/kid/suscripcion", label: "Suscripción", labelEn: "Subscription", icon: CreditCard },
+  { to: "/ninos/kid/datos", label: "Mis Datos", labelEn: "My Data", icon: SlidersHorizontal },
+  { to: "/ninos/kid/suscripcion", label: "Suscripción", labelEn: "Subscription", icon: CreditCard },
 ] as const;
 
 

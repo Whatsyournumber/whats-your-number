@@ -17,7 +17,7 @@ import {
 import { money, TASK_IDEAS, type Member, type Task } from "@/lib/mfn";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/_authenticated/kid/tareas")({
+export const Route = createFileRoute("/ninos/kid/tareas")({
   head: () => ({
     meta: [
       { title: "Mis Tareas | My First Number" },

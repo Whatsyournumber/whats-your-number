@@ -21,7 +21,7 @@ import {
   seedHoldings,
 } from "@/lib/mfn";
 
-export const Route = createFileRoute("/_authenticated/onboarding")({
+export const Route = createFileRoute("/ninos/onboarding")({
   head: () => ({
     meta: [
       { title: "Crear el perfil de tu hijo/a | My First Number" },
@@ -96,7 +96,7 @@ function Onboarding() {
           `Your plan allows ${maxKids} child ${maxKids === 1 ? "profile" : "profiles"}`,
         ),
       );
-      router.navigate({ to: "/kid/suscripcion" });
+      router.navigate({ to: "/ninos/kid/suscripcion" });
       return;
     }
     setSaving(true);
@@ -106,7 +106,7 @@ function Onboarding() {
       if (!user_id) throw new Error(t("Sesión no disponible", "Session not available"));
 
       const { data: member, error } = await supabase
-        .from("members")
+        .from("kid_members")
         .insert({
           user_id,
           name: name.trim(),
@@ -128,7 +128,7 @@ function Onboarding() {
         .single();
       if (error) throw error;
 
-      await supabase.from("future_funds").insert({
+      await supabase.from("kid_future_funds").insert({
         user_id,
         member_id: member.id,
         initial_balance: initial,
@@ -138,14 +138,14 @@ function Onboarding() {
         expected_return: expected,
         goal,
       });
-      await supabase.from("wishes").insert({
+      await supabase.from("kid_wishes").insert({
         user_id,
         member_id: member.id,
         title: wish.title,
         emoji: wish.emoji,
         price: wishPrice,
       });
-      await supabase.from("tasks").insert(
+      await supabase.from("kid_tasks").insert(
         TASK_IDEAS.slice(0, 4).map((task) => ({
           user_id,
           member_id: member.id,
@@ -155,7 +155,7 @@ function Onboarding() {
           frequency: "semanal",
         })),
       );
-      await supabase.from("holdings").insert(
+      await supabase.from("kid_holdings").insert(
         seedHoldings(initial).map((h) => ({ ...h, user_id, member_id: member.id })),
       );
 
@@ -163,7 +163,7 @@ function Onboarding() {
       toast.success(
         t(`¡${member.name} ya tiene su primer número!`, `${member.name} now has a first number!`),
       );
-      router.navigate({ to: "/kid/numero" });
+      router.navigate({ to: "/ninos/kid/numero" });
     } catch (e) {
       toast.error(
         e instanceof Error ? e.message : t("No se pudo crear el perfil", "Could not create profile"),

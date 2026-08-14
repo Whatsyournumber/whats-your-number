@@ -38,6 +38,16 @@ import { Route as SuscripcionRouteImport } from './routes/suscripcion'
 import { Route as TerminosRouteImport } from './routes/terminos'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout/success'
 import { Route as NinoIdRouteImport } from './routes/nino.$id'
+import { Route as NinosIndexRouteImport } from './routes/ninos/index'
+import { Route as NinosOnboardingRouteImport } from './routes/ninos/onboarding'
+import { Route as NinosPadresRouteImport } from './routes/ninos/padres'
+import { Route as NinosKidDatosRouteImport } from './routes/ninos/kid/datos'
+import { Route as NinosKidDeseosRouteImport } from './routes/ninos/kid/deseos'
+import { Route as NinosKidDineroRouteImport } from './routes/ninos/kid/dinero'
+import { Route as NinosKidFuturoRouteImport } from './routes/ninos/kid/futuro'
+import { Route as NinosKidNumeroRouteImport } from './routes/ninos/kid/numero'
+import { Route as NinosKidSuscripcionRouteImport } from './routes/ninos/kid/suscripcion'
+import { Route as NinosKidTareasRouteImport } from './routes/ninos/kid/tareas'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const IndexRoute = IndexRouteImport.update({
@@ -185,6 +195,56 @@ const NinoIdRoute = NinoIdRouteImport.update({
   path: '/nino/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NinosIndexRoute = NinosIndexRouteImport.update({
+  id: '/ninos/',
+  path: '/ninos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NinosOnboardingRoute = NinosOnboardingRouteImport.update({
+  id: '/ninos/onboarding',
+  path: '/ninos/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NinosPadresRoute = NinosPadresRouteImport.update({
+  id: '/ninos/padres',
+  path: '/ninos/padres',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NinosKidDatosRoute = NinosKidDatosRouteImport.update({
+  id: '/ninos/kid/datos',
+  path: '/ninos/kid/datos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NinosKidDeseosRoute = NinosKidDeseosRouteImport.update({
+  id: '/ninos/kid/deseos',
+  path: '/ninos/kid/deseos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NinosKidDineroRoute = NinosKidDineroRouteImport.update({
+  id: '/ninos/kid/dinero',
+  path: '/ninos/kid/dinero',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NinosKidFuturoRoute = NinosKidFuturoRouteImport.update({
+  id: '/ninos/kid/futuro',
+  path: '/ninos/kid/futuro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NinosKidNumeroRoute = NinosKidNumeroRouteImport.update({
+  id: '/ninos/kid/numero',
+  path: '/ninos/kid/numero',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NinosKidSuscripcionRoute = NinosKidSuscripcionRouteImport.update({
+  id: '/ninos/kid/suscripcion',
+  path: '/ninos/kid/suscripcion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NinosKidTareasRoute = NinosKidTareasRouteImport.update({
+  id: '/ninos/kid/tareas',
+  path: '/ninos/kid/tareas',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -222,6 +282,16 @@ export interface FileRoutesByFullPath {
   '/terminos': typeof TerminosRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/nino/$id': typeof NinoIdRoute
+  '/ninos/onboarding': typeof NinosOnboardingRoute
+  '/ninos/padres': typeof NinosPadresRoute
+  '/ninos/': typeof NinosIndexRoute
+  '/ninos/kid/datos': typeof NinosKidDatosRoute
+  '/ninos/kid/deseos': typeof NinosKidDeseosRoute
+  '/ninos/kid/dinero': typeof NinosKidDineroRoute
+  '/ninos/kid/futuro': typeof NinosKidFuturoRoute
+  '/ninos/kid/numero': typeof NinosKidNumeroRoute
+  '/ninos/kid/suscripcion': typeof NinosKidSuscripcionRoute
+  '/ninos/kid/tareas': typeof NinosKidTareasRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -254,6 +324,16 @@ export interface FileRoutesByTo {
   '/terminos': typeof TerminosRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/nino/$id': typeof NinoIdRoute
+  '/ninos/onboarding': typeof NinosOnboardingRoute
+  '/ninos/padres': typeof NinosPadresRoute
+  '/ninos': typeof NinosIndexRoute
+  '/ninos/kid/datos': typeof NinosKidDatosRoute
+  '/ninos/kid/deseos': typeof NinosKidDeseosRoute
+  '/ninos/kid/dinero': typeof NinosKidDineroRoute
+  '/ninos/kid/futuro': typeof NinosKidFuturoRoute
+  '/ninos/kid/numero': typeof NinosKidNumeroRoute
+  '/ninos/kid/suscripcion': typeof NinosKidSuscripcionRoute
+  '/ninos/kid/tareas': typeof NinosKidTareasRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
@@ -287,6 +367,16 @@ export interface FileRoutesById {
   '/terminos': typeof TerminosRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/nino/$id': typeof NinoIdRoute
+  '/ninos/onboarding': typeof NinosOnboardingRoute
+  '/ninos/padres': typeof NinosPadresRoute
+  '/ninos/': typeof NinosIndexRoute
+  '/ninos/kid/datos': typeof NinosKidDatosRoute
+  '/ninos/kid/deseos': typeof NinosKidDeseosRoute
+  '/ninos/kid/dinero': typeof NinosKidDineroRoute
+  '/ninos/kid/futuro': typeof NinosKidFuturoRoute
+  '/ninos/kid/numero': typeof NinosKidNumeroRoute
+  '/ninos/kid/suscripcion': typeof NinosKidSuscripcionRoute
+  '/ninos/kid/tareas': typeof NinosKidTareasRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
@@ -321,6 +411,16 @@ export interface FileRouteTypes {
     | '/terminos'
     | '/checkout/success'
     | '/nino/$id'
+    | '/ninos/onboarding'
+    | '/ninos/padres'
+    | '/ninos/'
+    | '/ninos/kid/datos'
+    | '/ninos/kid/deseos'
+    | '/ninos/kid/dinero'
+    | '/ninos/kid/futuro'
+    | '/ninos/kid/numero'
+    | '/ninos/kid/suscripcion'
+    | '/ninos/kid/tareas'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -353,6 +453,16 @@ export interface FileRouteTypes {
     | '/terminos'
     | '/checkout/success'
     | '/nino/$id'
+    | '/ninos/onboarding'
+    | '/ninos/padres'
+    | '/ninos'
+    | '/ninos/kid/datos'
+    | '/ninos/kid/deseos'
+    | '/ninos/kid/dinero'
+    | '/ninos/kid/futuro'
+    | '/ninos/kid/numero'
+    | '/ninos/kid/suscripcion'
+    | '/ninos/kid/tareas'
     | '/api/public/payments/webhook'
   id:
     | '__root__'
@@ -385,6 +495,16 @@ export interface FileRouteTypes {
     | '/terminos'
     | '/checkout/success'
     | '/nino/$id'
+    | '/ninos/onboarding'
+    | '/ninos/padres'
+    | '/ninos/'
+    | '/ninos/kid/datos'
+    | '/ninos/kid/deseos'
+    | '/ninos/kid/dinero'
+    | '/ninos/kid/futuro'
+    | '/ninos/kid/numero'
+    | '/ninos/kid/suscripcion'
+    | '/ninos/kid/tareas'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -418,6 +538,16 @@ export interface RootRouteChildren {
   TerminosRoute: typeof TerminosRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   NinoIdRoute: typeof NinoIdRoute
+  NinosOnboardingRoute: typeof NinosOnboardingRoute
+  NinosPadresRoute: typeof NinosPadresRoute
+  NinosIndexRoute: typeof NinosIndexRoute
+  NinosKidDatosRoute: typeof NinosKidDatosRoute
+  NinosKidDeseosRoute: typeof NinosKidDeseosRoute
+  NinosKidDineroRoute: typeof NinosKidDineroRoute
+  NinosKidFuturoRoute: typeof NinosKidFuturoRoute
+  NinosKidNumeroRoute: typeof NinosKidNumeroRoute
+  NinosKidSuscripcionRoute: typeof NinosKidSuscripcionRoute
+  NinosKidTareasRoute: typeof NinosKidTareasRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
@@ -626,6 +756,76 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NinoIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ninos/': {
+      id: '/ninos/'
+      path: '/ninos'
+      fullPath: '/ninos/'
+      preLoaderRoute: typeof NinosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ninos/onboarding': {
+      id: '/ninos/onboarding'
+      path: '/ninos/onboarding'
+      fullPath: '/ninos/onboarding'
+      preLoaderRoute: typeof NinosOnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ninos/padres': {
+      id: '/ninos/padres'
+      path: '/ninos/padres'
+      fullPath: '/ninos/padres'
+      preLoaderRoute: typeof NinosPadresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ninos/kid/datos': {
+      id: '/ninos/kid/datos'
+      path: '/ninos/kid/datos'
+      fullPath: '/ninos/kid/datos'
+      preLoaderRoute: typeof NinosKidDatosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ninos/kid/deseos': {
+      id: '/ninos/kid/deseos'
+      path: '/ninos/kid/deseos'
+      fullPath: '/ninos/kid/deseos'
+      preLoaderRoute: typeof NinosKidDeseosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ninos/kid/dinero': {
+      id: '/ninos/kid/dinero'
+      path: '/ninos/kid/dinero'
+      fullPath: '/ninos/kid/dinero'
+      preLoaderRoute: typeof NinosKidDineroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ninos/kid/futuro': {
+      id: '/ninos/kid/futuro'
+      path: '/ninos/kid/futuro'
+      fullPath: '/ninos/kid/futuro'
+      preLoaderRoute: typeof NinosKidFuturoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ninos/kid/numero': {
+      id: '/ninos/kid/numero'
+      path: '/ninos/kid/numero'
+      fullPath: '/ninos/kid/numero'
+      preLoaderRoute: typeof NinosKidNumeroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ninos/kid/suscripcion': {
+      id: '/ninos/kid/suscripcion'
+      path: '/ninos/kid/suscripcion'
+      fullPath: '/ninos/kid/suscripcion'
+      preLoaderRoute: typeof NinosKidSuscripcionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ninos/kid/tareas': {
+      id: '/ninos/kid/tareas'
+      path: '/ninos/kid/tareas'
+      fullPath: '/ninos/kid/tareas'
+      preLoaderRoute: typeof NinosKidTareasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -666,6 +866,16 @@ const rootRouteChildren: RootRouteChildren = {
   TerminosRoute: TerminosRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,
   NinoIdRoute: NinoIdRoute,
+  NinosOnboardingRoute: NinosOnboardingRoute,
+  NinosPadresRoute: NinosPadresRoute,
+  NinosIndexRoute: NinosIndexRoute,
+  NinosKidDatosRoute: NinosKidDatosRoute,
+  NinosKidDeseosRoute: NinosKidDeseosRoute,
+  NinosKidDineroRoute: NinosKidDineroRoute,
+  NinosKidFuturoRoute: NinosKidFuturoRoute,
+  NinosKidNumeroRoute: NinosKidNumeroRoute,
+  NinosKidSuscripcionRoute: NinosKidSuscripcionRoute,
+  NinosKidTareasRoute: NinosKidTareasRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport

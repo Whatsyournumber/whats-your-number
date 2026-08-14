@@ -13,7 +13,7 @@ import { enUS as enLocale, es as esLocale } from "date-fns/locale";
 import { Calendar as CalendarIcon } from "lucide-react";
 import type { DateRange } from "react-day-picker";
 
-export const Route = createFileRoute("/_authenticated/kid/dinero")({
+export const Route = createFileRoute("/ninos/kid/dinero")({
   head: () => ({
     meta: [
       { title: "Mi Dinero | My First Number" },

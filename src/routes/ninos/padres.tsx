@@ -29,7 +29,7 @@ import {
 import { useI18n } from "@/lib/mfn-i18n";
 import { CURRENCIES, currencyLabel } from "@/lib/mfn-currencies";
 
-export const Route = createFileRoute("/_authenticated/padres")({
+export const Route = createFileRoute("/ninos/padres")({
   head: () => ({
     meta: [
       { title: "Panel de padres | My First Number" },
@@ -74,7 +74,7 @@ function ParentDashboard() {
           <p className="text-sm text-muted-foreground">
             {t("Crea un perfil infantil para empezar a construir su patrimonio.", "Create a child profile to start building their wealth.")}
           </p>
-          <Button className="mt-4" onClick={() => router.navigate({ to: "/onboarding" })}>
+          <Button className="mt-4" onClick={() => router.navigate({ to: "/ninos/onboarding" })}>
             <Plus className="h-4 w-4" /> {t("Crear perfil", "Create profile")}
           </Button>
         </Card>
@@ -92,7 +92,7 @@ function ParentDashboard() {
                 {k.avatar} {k.name}
               </button>
             ))}
-            <Button variant="ghost" onClick={() => router.navigate({ to: "/onboarding" })}>
+            <Button variant="ghost" onClick={() => router.navigate({ to: "/ninos/onboarding" })}>
               <Plus className="h-4 w-4" /> {t("Añadir", "Add")}
             </Button>
           </div>

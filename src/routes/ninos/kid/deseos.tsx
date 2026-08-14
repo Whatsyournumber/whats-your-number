@@ -24,7 +24,7 @@ import {
   type Wish,
 } from "@/lib/mfn";
 
-export const Route = createFileRoute("/_authenticated/kid/deseos")({
+export const Route = createFileRoute("/ninos/kid/deseos")({
   head: () => ({
     meta: [
       { title: "Mis Sueños | My First Number" },
@@ -512,7 +512,7 @@ function DreamRow({
               ))}
             </ul>
             <Link
-              to="/kid/tareas"
+              to="/ninos/kid/tareas"
               className="mt-3 flex items-center justify-end gap-1 text-xs font-semibold text-primary"
             >
               {t("Ver detalle", "View detail")} <ChevronRight className="h-3.5 w-3.5" />

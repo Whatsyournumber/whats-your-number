@@ -9,7 +9,7 @@ import { THEME_ATTR, type Member } from "@/lib/mfn";
 import { activePlan, kidLimit, planLabel } from "@/lib/mfn-plan";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/ninos/")({
   ssr: false,
   head: () => ({
     meta: [
@@ -59,9 +59,9 @@ function ProfileSelector() {
 
   function open(member: Member) {
     select(member.id);
-    if (member.role === "parent") router.navigate({ to: "/padres" });
-    else if (!member.onboarded) router.navigate({ to: "/onboarding" });
-    else router.navigate({ to: "/kid/numero" });
+    if (member.role === "parent") router.navigate({ to: "/ninos/padres" });
+    else if (!member.onboarded) router.navigate({ to: "/ninos/onboarding" });
+    else router.navigate({ to: "/ninos/kid/numero" });
   }
 
   return (
@@ -120,7 +120,7 @@ function ProfileSelector() {
 
               {kids.length < maxKids ? (
                 <button
-                  onClick={() => router.navigate({ to: "/onboarding" })}
+                  onClick={() => router.navigate({ to: "/ninos/onboarding" })}
                   className="tap flex flex-col items-center justify-center gap-3 rounded-3xl border-2 border-dashed border-border p-5 text-muted-foreground hover:border-primary hover:text-primary"
                 >
                   <Plus className="h-8 w-8" />

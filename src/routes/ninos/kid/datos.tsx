@@ -17,7 +17,7 @@ import { money, type Member } from "@/lib/mfn";
 import { useI18n } from "@/lib/mfn-i18n";
 import { CURRENCIES, currencyLabel } from "@/lib/mfn-currencies";
 
-export const Route = createFileRoute("/_authenticated/kid/datos")({
+export const Route = createFileRoute("/ninos/kid/datos")({
   head: () => ({
     meta: [
       { title: "Mis Datos | My First Number" },

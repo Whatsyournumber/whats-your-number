@@ -17,7 +17,7 @@ import {
   type Member,
 } from "@/lib/mfn";
 
-export const Route = createFileRoute("/_authenticated/kid/numero")({
+export const Route = createFileRoute("/ninos/kid/numero")({
   head: () => ({
     meta: [
       { title: "Mi Primer Número | My First Number" },
@@ -77,7 +77,7 @@ function MiniStat({
   label: string;
   value: string;
   hint: string;
-  to: "/kid/dinero" | "/kid/deseos" | "/kid/tareas" | "/kid/futuro";
+  to: "/ninos/kid/dinero" | "/kid/deseos" | "/kid/tareas" | "/kid/futuro";
 }) {
   return (
     <Link
@@ -209,7 +209,7 @@ function MyNumber({ member }: { member: Member }) {
                     {t("Añade tu primer sueño.", "Add your first dream.")}
                   </p>
                 )}
-                <Link to="/kid/deseos" className="mt-3 inline-block text-xs font-semibold text-primary">
+                <Link to="/ninos/kid/deseos" className="mt-3 inline-block text-xs font-semibold text-primary">
                   {t("Ver mis sueños", "See my dreams")} →
                 </Link>
               </div>
@@ -220,28 +220,28 @@ function MyNumber({ member }: { member: Member }) {
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MiniStat
-          to="/kid/dinero"
+          to="/ninos/kid/dinero"
           icon={<Wallet className="h-5 w-5 text-primary" />}
           label={t("Mi dinero", "My money")}
           value={money(today, member.currency)}
           hint={t("ingresos y gastos", "income and expenses")}
         />
         <MiniStat
-          to="/kid/tareas"
+          to="/ninos/kid/tareas"
           icon={<CheckSquare className="h-5 w-5 text-chart-2" />}
           label={t("Mis tareas", "My tasks")}
           value={`${pending} ${t("pendientes", "pending")}`}
           hint={`${money(earned, member.currency)} ${t("ganados", "earned")}`}
         />
         <MiniStat
-          to="/kid/deseos"
+          to="/ninos/kid/deseos"
           icon={<Star className="h-5 w-5 text-chart-3" />}
           label={t("Mis sueños", "My dreams")}
           value={`${dreams.active.length} ${t("activos", "active")}`}
           hint={`${dreams.achieved} ${t("cumplidos", "achieved")}`}
         />
         <MiniStat
-          to="/kid/futuro"
+          to="/ninos/kid/futuro"
           icon={<Rocket className="h-5 w-5 text-chart-4" />}
           label={t("Mi futuro", "My future")}
           value={money(projection.future, member.currency)}

@@ -8,7 +8,7 @@ import { useSetPlan, useSubscription } from "@/hooks/use-mfn";
 import { activePlan, kidLimit, planLabel } from "@/lib/mfn-plan";
 import { useI18n } from "@/lib/mfn-i18n";
 
-export const Route = createFileRoute("/_authenticated/kid/suscripcion")({
+export const Route = createFileRoute("/ninos/kid/suscripcion")({
   head: () => ({
     meta: [
       { title: "Suscripción | My First Number" },

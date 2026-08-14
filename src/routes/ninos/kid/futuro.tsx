@@ -5,7 +5,7 @@ import { useFund, useMovements } from "@/hooks/use-mfn";
 import { goalLabel, pocketTotals, type Member } from "@/lib/mfn";
 import { useI18n } from "@/lib/mfn-i18n";
 
-export const Route = createFileRoute("/_authenticated/kid/futuro")({
+export const Route = createFileRoute("/ninos/kid/futuro")({
   head: () => ({
     meta: [
       { title: "Planificador familiar | My First Number" },

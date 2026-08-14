@@ -24,10 +24,10 @@ async function requireUser() {
 
 export function useMembers() {
   return useQuery({
-    queryKey: ["members"],
+    queryKey: ["kid_members"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("members")
+        .from("kid_members")
         .select("*")
         .order("created_at", { ascending: true });
       if (error) throw error;
@@ -64,11 +64,11 @@ export function useActiveMember() {
 
 export function useFund(memberId?: string | null) {
   return useQuery({
-    queryKey: ["fund", memberId],
+    queryKey: ["kid_fund", memberId],
     enabled: Boolean(memberId),
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("future_funds")
+        .from("kid_future_funds")
         .select("*")
         .eq("member_id", memberId!)
         .maybeSingle();
@@ -80,11 +80,11 @@ export function useFund(memberId?: string | null) {
 
 export function useTasks(memberId?: string | null) {
   return useQuery({
-    queryKey: ["tasks", memberId],
+    queryKey: ["kid_tasks", memberId],
     enabled: Boolean(memberId),
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("tasks")
+        .from("kid_tasks")
         .select("*")
         .eq("member_id", memberId!)
         .order("created_at", { ascending: false });
@@ -96,11 +96,11 @@ export function useTasks(memberId?: string | null) {
 
 export function useWishes(memberId?: string | null) {
   return useQuery({
-    queryKey: ["wishes", memberId],
+    queryKey: ["kid_wishes", memberId],
     enabled: Boolean(memberId),
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("wishes")
+        .from("kid_wishes")
         .select("*")
         .eq("member_id", memberId!)
         .order("created_at", { ascending: true });
@@ -112,11 +112,11 @@ export function useWishes(memberId?: string | null) {
 
 export function useMovements(memberId?: string | null) {
   return useQuery({
-    queryKey: ["movements", memberId],
+    queryKey: ["kid_movements", memberId],
     enabled: Boolean(memberId),
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("movements")
+        .from("kid_movements")
         .select("*")
         .eq("member_id", memberId!)
         .order("occurred_at", { ascending: false })
@@ -129,11 +129,11 @@ export function useMovements(memberId?: string | null) {
 
 export function useHoldings(memberId?: string | null) {
   return useQuery({
-    queryKey: ["holdings", memberId],
+    queryKey: ["kid_holdings", memberId],
     enabled: Boolean(memberId),
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("holdings")
+        .from("kid_holdings")
         .select("*")
         .eq("member_id", memberId!)
         .order("value", { ascending: false });
@@ -147,10 +147,10 @@ export function useUpdateMember() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, patch }: { id: string; patch: Partial<Member> }) => {
-      const { error } = await supabase.from("members").update(patch).eq("id", id);
+      const { error } = await supabase.from("kid_members").update(patch).eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["members"] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["kid_members"] }),
   });
 }
 
@@ -158,10 +158,10 @@ export function useDeleteMember() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("members").delete().eq("id", id);
+      const { error } = await supabase.from("kid_members").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["members"] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["kid_members"] }),
   });
 }
 
@@ -199,14 +199,14 @@ export function useCreateParent() {
     mutationFn: async ({ name, avatar }: { name: string; avatar: string }) => {
       const user_id = await requireUser();
       const { data, error } = await supabase
-        .from("members")
+        .from("kid_members")
         .insert({ user_id, name, avatar, role: "parent", theme: "parent", onboarded: true })
         .select("*")
         .single();
       if (error) throw error;
       return data as Member;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["members"] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["kid_members"] }),
   });
 }
 
@@ -222,21 +222,21 @@ export function useSaveFund() {
     }) => {
       const user_id = await requireUser();
       const { data: existing } = await supabase
-        .from("future_funds")
+        .from("kid_future_funds")
         .select("id")
         .eq("member_id", memberId)
         .maybeSingle();
       if (existing) {
-        const { error } = await supabase.from("future_funds").update(patch).eq("id", existing.id);
+        const { error } = await supabase.from("kid_future_funds").update(patch).eq("id", existing.id);
         if (error) throw error;
       } else {
         const { error } = await supabase
-          .from("future_funds")
+          .from("kid_future_funds")
           .insert({ ...patch, user_id, member_id: memberId });
         if (error) throw error;
       }
     },
-    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["fund", vars.memberId] }),
+    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["kid_fund", vars.memberId] }),
   });
 }
 
@@ -251,7 +251,7 @@ export function useCreateTask() {
       frequency: string;
     }) => {
       const user_id = await requireUser();
-      const { error } = await supabase.from("tasks").insert({
+      const { error } = await supabase.from("kid_tasks").insert({
         user_id,
         member_id: task.memberId,
         title: task.title,
@@ -261,7 +261,7 @@ export function useCreateTask() {
       });
       if (error) throw error;
     },
-    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["tasks", vars.memberId] }),
+    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["kid_tasks", vars.memberId] }),
   });
 }
 
@@ -269,10 +269,10 @@ export function useDeleteTask() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id }: { id: string; memberId: string }) => {
-      const { error } = await supabase.from("tasks").delete().eq("id", id);
+      const { error } = await supabase.from("kid_tasks").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["tasks", vars.memberId] }),
+    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["kid_tasks", vars.memberId] }),
   });
 }
 
@@ -281,12 +281,12 @@ export function useCompleteTask() {
   return useMutation({
     mutationFn: async ({ id }: { id: string; memberId: string }) => {
       const { error } = await supabase
-        .from("tasks")
+        .from("kid_tasks")
         .update({ status: "completada", completed_at: new Date().toISOString() })
         .eq("id", id);
       if (error) throw error;
     },
-    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["tasks", vars.memberId] }),
+    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["kid_tasks", vars.memberId] }),
   });
 }
 
@@ -320,14 +320,14 @@ export function useAddIncome() {
           occurred_at,
         }));
       if (rows.length > 0) {
-        const { error } = await supabase.from("movements").insert(rows);
+        const { error } = await supabase.from("kid_movements").insert(rows);
         if (error) throw error;
       }
 
       // El ahorro empuja el primer deseo activo.
       if (parts.ahorrar > 0) {
         const { data: wish } = await supabase
-          .from("wishes")
+          .from("kid_wishes")
           .select("*")
           .eq("member_id", member.id)
           .eq("achieved", false)
@@ -337,7 +337,7 @@ export function useAddIncome() {
         if (wish) {
           const saved = Number(wish.saved) + parts.ahorrar;
           await supabase
-            .from("wishes")
+            .from("kid_wishes")
             .update({ saved, achieved: saved >= Number(wish.price) })
             .eq("id", wish.id);
         }
@@ -346,7 +346,7 @@ export function useAddIncome() {
       // El bolsillo de crecer alimenta el portfolio.
       if (parts.crecer > 0) {
         const { data: holding } = await supabase
-          .from("holdings")
+          .from("kid_holdings")
           .select("*")
           .eq("member_id", member.id)
           .order("value", { ascending: false })
@@ -354,11 +354,11 @@ export function useAddIncome() {
           .maybeSingle();
         if (holding) {
           await supabase
-            .from("holdings")
+            .from("kid_holdings")
             .update({ value: Number(holding.value) + parts.crecer })
             .eq("id", holding.id);
         } else {
-          await supabase.from("holdings").insert({
+          await supabase.from("kid_holdings").insert({
             user_id,
             member_id: member.id,
             name: "S&P 500",
@@ -371,9 +371,9 @@ export function useAddIncome() {
       return parts;
     },
     onSuccess: (_d, vars) => {
-      qc.invalidateQueries({ queryKey: ["movements", vars.member.id] });
-      qc.invalidateQueries({ queryKey: ["wishes", vars.member.id] });
-      qc.invalidateQueries({ queryKey: ["holdings", vars.member.id] });
+      qc.invalidateQueries({ queryKey: ["kid_movements", vars.member.id] });
+      qc.invalidateQueries({ queryKey: ["kid_wishes", vars.member.id] });
+      qc.invalidateQueries({ queryKey: ["kid_holdings", vars.member.id] });
     },
   });
 }
@@ -385,7 +385,7 @@ export function useApproveTask() {
   return useMutation({
     mutationFn: async ({ task, member }: { task: Task; member: Member }) => {
       const { error } = await supabase
-        .from("tasks")
+        .from("kid_tasks")
         .update({ status: "aprobada", approved_at: new Date().toISOString() })
         .eq("id", task.id);
       if (error) throw error;
@@ -401,8 +401,8 @@ export function useApproveTask() {
       });
     },
     onSuccess: (_d, vars) => {
-      qc.invalidateQueries({ queryKey: ["tasks", vars.member.id] });
-      qc.invalidateQueries({ queryKey: ["members"] });
+      qc.invalidateQueries({ queryKey: ["kid_tasks", vars.member.id] });
+      qc.invalidateQueries({ queryKey: ["kid_members"] });
     },
   });
 }
@@ -411,10 +411,10 @@ export function useUpdateTask() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, patch }: { id: string; memberId: string; patch: Partial<Task> }) => {
-      const { error } = await supabase.from("tasks").update(patch).eq("id", id);
+      const { error } = await supabase.from("kid_tasks").update(patch).eq("id", id);
       if (error) throw error;
     },
-    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["tasks", vars.memberId] }),
+    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["kid_tasks", vars.memberId] }),
   });
 }
 
@@ -436,14 +436,14 @@ export function useCompleteTaskForWish() {
       const now = new Date().toISOString();
 
       const { error } = await supabase
-        .from("tasks")
+        .from("kid_tasks")
         .update({ status: "aprobada", completed_at: now, approved_at: now })
         .eq("id", task.id);
       if (error) throw error;
 
       let wish: Wish | null = null;
       if (amount > 0) {
-        const base = supabase.from("wishes").select("*").eq("member_id", member.id);
+        const base = supabase.from("kid_wishes").select("*").eq("member_id", member.id);
         const { data } = wishId
           ? await base.eq("id", wishId).maybeSingle()
           : await base
@@ -453,7 +453,7 @@ export function useCompleteTaskForWish() {
               .maybeSingle();
         wish = (data as Wish | null) ?? null;
 
-        await supabase.from("movements").insert({
+        await supabase.from("kid_movements").insert({
           user_id,
           member_id: member.id,
           label: task.title,
@@ -466,24 +466,24 @@ export function useCompleteTaskForWish() {
         if (wish) {
           const saved = Number(wish.saved) + amount;
           await supabase
-            .from("wishes")
+            .from("kid_wishes")
             .update({ saved, achieved: saved >= Number(wish.price) })
             .eq("id", wish.id);
         }
       }
 
       await supabase
-        .from("members")
+        .from("kid_members")
         .update({ xp: member.xp + 10, streak: member.streak + 1 })
         .eq("id", member.id);
 
       return { amount, wish };
     },
     onSuccess: (_d, vars) => {
-      qc.invalidateQueries({ queryKey: ["tasks", vars.member.id] });
-      qc.invalidateQueries({ queryKey: ["wishes", vars.member.id] });
-      qc.invalidateQueries({ queryKey: ["movements", vars.member.id] });
-      qc.invalidateQueries({ queryKey: ["members"] });
+      qc.invalidateQueries({ queryKey: ["kid_tasks", vars.member.id] });
+      qc.invalidateQueries({ queryKey: ["kid_wishes", vars.member.id] });
+      qc.invalidateQueries({ queryKey: ["kid_movements", vars.member.id] });
+      qc.invalidateQueries({ queryKey: ["kid_members"] });
     },
   });
 }
@@ -495,7 +495,7 @@ export function useCreateWish() {
   return useMutation({
     mutationFn: async (wish: { memberId: string; title: string; emoji: string; price: number }) => {
       const user_id = await requireUser();
-      const { error } = await supabase.from("wishes").insert({
+      const { error } = await supabase.from("kid_wishes").insert({
         user_id,
         member_id: wish.memberId,
         title: wish.title,
@@ -504,7 +504,7 @@ export function useCreateWish() {
       });
       if (error) throw error;
     },
-    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["wishes", vars.memberId] }),
+    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["kid_wishes", vars.memberId] }),
   });
 }
 
@@ -512,10 +512,10 @@ export function useUpdateWish() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, patch }: { id: string; memberId: string; patch: Partial<Wish> }) => {
-      const { error } = await supabase.from("wishes").update(patch).eq("id", id);
+      const { error } = await supabase.from("kid_wishes").update(patch).eq("id", id);
       if (error) throw error;
     },
-    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["wishes", vars.memberId] }),
+    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["kid_wishes", vars.memberId] }),
   });
 }
 
@@ -523,10 +523,10 @@ export function useUpdateHolding() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, patch }: { id: string; memberId: string; patch: Partial<Holding> }) => {
-      const { error } = await supabase.from("holdings").update(patch).eq("id", id);
+      const { error } = await supabase.from("kid_holdings").update(patch).eq("id", id);
       if (error) throw error;
     },
-    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["holdings", vars.memberId] }),
+    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["kid_holdings", vars.memberId] }),
   });
 }
 
@@ -534,10 +534,10 @@ export function useDeleteWish() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id }: { id: string; memberId: string }) => {
-      const { error } = await supabase.from("wishes").delete().eq("id", id);
+      const { error } = await supabase.from("kid_wishes").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["wishes", vars.memberId] }),
+    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["kid_wishes", vars.memberId] }),
   });
 }
 
@@ -558,7 +558,7 @@ export function useAddExpense() {
       amount: number;
     }) => {
       const user_id = await requireUser();
-      const { error } = await supabase.from("movements").insert({
+      const { error } = await supabase.from("kid_movements").insert({
         user_id,
         member_id: memberId,
         label,
@@ -569,6 +569,6 @@ export function useAddExpense() {
       });
       if (error) throw error;
     },
-    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["movements", vars.memberId] }),
+    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["kid_movements", vars.memberId] }),
   });
 }
