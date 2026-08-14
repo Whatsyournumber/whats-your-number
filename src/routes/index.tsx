@@ -346,7 +346,7 @@ function Landing() {
               alt={t("Hombre feliz usando WhatsYourNumber en su laptop", "Happy man using WhatsYourNumber on his laptop")}
               width={1536}
               height={1024}
-              className="h-full w-full object-cover object-[55%_60%] md:object-[55%_65%] lg:object-[55%_70%]"
+              className="h-full w-full object-cover object-[48%_78%] md:object-[48%_82%] lg:object-[50%_85%]"
               loading="eager"
               fetchPriority="high"
             />
