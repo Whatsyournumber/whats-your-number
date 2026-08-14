@@ -20,7 +20,7 @@ import {
   Bot,
   FileText,
   Globe,
-  LineChart,
+  Home,
   MapPin,
   Sparkles,
   Target,
@@ -124,23 +124,23 @@ export function ProductPreview() {
   const t = useT();
 
   const views = [
-    { id: "patrimonio", label: t("Patrimonio", "Net Worth"), icon: LineChart },
-    { id: "gastos", label: t("Gastos", "Spending"), icon: BarChart3 },
+    { id: "hipoteca", label: t("Tu hipoteca", "Your mortgage"), icon: Home },
+    { id: "gastos", label: t("Análisis de gasto", "Spending analysis"), icon: BarChart3 },
     { id: "portafolio", label: t("Portafolio", "Portfolio"), icon: TrendingUp },
     { id: "nextcity", label: t("Your next city", "Your next city"), icon: Globe },
     { id: "whatsyournumber", label: "WhatsYournumber", icon: Target },
   ] as const;
 
   const kpis: Record<(typeof views)[number]["id"], { kpi: string; delta: string; sub: string }> = {
-    patrimonio: {
-      kpi: "€248,300",
-      delta: t("+6.4% este mes", "+6.4% this month"),
-      sub: t("Patrimonio neto", "Net worth"),
+    hipoteca: {
+      kpi: "€104,074",
+      delta: t("Ahorras €49.606 abonando €500/mes", "Save €49,606 paying €500/mo extra"),
+      sub: t("Interés total que pagarás", "Total interest you'll pay"),
     },
     gastos: {
       kpi: "€2,940",
       delta: t("−11% vs. mes previo", "−11% vs. last month"),
-      sub: t("Gasto variable + fijos", "Variable + fixed spending"),
+      sub: t("Análisis de gasto del mes", "This month's spending analysis"),
     },
     portafolio: {
       kpi: "+18.2%",
@@ -183,7 +183,7 @@ export function ProductPreview() {
     },
   ];
 
-  const [active, setActive] = useState<(typeof views)[number]["id"]>("patrimonio");
+  const [active, setActive] = useState<(typeof views)[number]["id"]>("hipoteca");
   const [insight, setInsight] = useState(0);
   const [paused, setPaused] = useState(false);
 
@@ -277,14 +277,8 @@ export function ProductPreview() {
 
               <div className="mt-4 h-[210px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  {active === "patrimonio" ? (
-                    <AreaChart data={netWorth}>
-                      <defs>
-                        <linearGradient id="pp-net" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="var(--color-primary)" stopOpacity={0.45} />
-                          <stop offset="100%" stopColor="var(--color-primary)" stopOpacity={0} />
-                        </linearGradient>
-                      </defs>
+                  {active === "hipoteca" ? (
+                    <BarChart data={mortgage} barGap={2}>
                       <XAxis
                         dataKey="m"
                         tickLine={false}
@@ -293,6 +287,7 @@ export function ProductPreview() {
                         stroke="var(--color-muted-foreground)"
                       />
                       <Tooltip
+                        cursor={{ fill: "var(--color-primary)", fillOpacity: 0.06, radius: 8 }}
                         contentStyle={{
                           background: "var(--color-card)",
                           border: "1px solid var(--color-border)",
@@ -300,16 +295,24 @@ export function ProductPreview() {
                           fontSize: 12,
                         }}
                         itemStyle={{ color: "var(--color-foreground)" }}
-                        formatter={(v) => [`€${v}k`, t("Patrimonio", "Net worth")]}
+                        formatter={(v: number, n) => [
+                          `€${Number(v).toFixed(1)}k`,
+                          n === "interes" ? t("Intereses", "Interest") : t("Capital", "Principal"),
+                        ]}
                       />
-                      <Area
-                        type="monotone"
-                        dataKey="v"
-                        stroke="var(--color-primary)"
-                        strokeWidth={2.5}
-                        fill="url(#pp-net)"
+                      <Bar
+                        dataKey="interes"
+                        stackId="m"
+                        fill="var(--color-destructive)"
+                        opacity={0.85}
                       />
-                    </AreaChart>
+                      <Bar
+                        dataKey="capital"
+                        stackId="m"
+                        radius={[6, 6, 0, 0]}
+                        fill="var(--color-primary)"
+                      />
+                    </BarChart>
                   ) : active === "gastos" ? (
                     <BarChart data={spend} barGap={4}>
                       <XAxis
