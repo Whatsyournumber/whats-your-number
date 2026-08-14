@@ -124,9 +124,9 @@ export function ProductPreview() {
   const t = useT();
 
   const views = [
-    { id: "hipoteca", label: t("Tu hipoteca", "Your mortgage"), icon: Home },
-    { id: "gastos", label: t("Análisis de gasto", "Spending analysis"), icon: BarChart3 },
     { id: "portafolio", label: t("Portafolio", "Portfolio"), icon: TrendingUp },
+    { id: "gastos", label: t("Análisis de gasto", "Spending analysis"), icon: BarChart3 },
+    { id: "hipoteca", label: t("Tu hipoteca", "Your mortgage"), icon: Home },
     { id: "nextcity", label: t("Your next city", "Your next city"), icon: Globe },
     { id: "whatsyournumber", label: "WhatsYournumber", icon: Target },
   ] as const;
@@ -530,7 +530,7 @@ export function ProductPreview() {
             </div>
             <AnimatePresence mode="wait">
               <motion.p
-                key={insight}
+                key={active}
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
