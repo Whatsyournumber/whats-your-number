@@ -332,12 +332,12 @@ function Landing() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.9, delay: 0.1, ease: "easeOut" }}
-            className="pointer-events-none absolute inset-y-0 right-0 hidden w-[55%] lg:block"
+            className="pointer-events-none absolute inset-y-0 right-0 hidden w-[42%] items-center justify-end lg:flex"
             style={{
               WebkitMaskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 26%, rgba(0,0,0,0.6) 48%, #000 72%)",
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.08) 30%, rgba(0,0,0,0.55) 55%, #000 80%)",
               maskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 26%, rgba(0,0,0,0.6) 48%, #000 72%)",
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.08) 30%, rgba(0,0,0,0.55) 55%, #000 80%)",
             }}
 
           >
@@ -346,30 +346,31 @@ function Landing() {
               alt={t("Hombre feliz usando WhatsYourNumber en su laptop", "Happy man using WhatsYourNumber on his laptop")}
               width={1536}
               height={1024}
-              className="h-full w-full object-cover object-[60%_center]"
+              className="h-auto max-h-[78%] w-full object-contain object-right"
               loading="eager"
               fetchPriority="high"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
           </motion.div>
 
           {/* Mobile / tablet: the photo is the top of the background itself */}
           <div
-            className="pointer-events-none absolute inset-x-0 top-0 h-[46vh] min-h-[280px] lg:hidden"
+            className="pointer-events-none absolute inset-x-0 top-0 h-[38vh] min-h-[240px] lg:hidden"
             style={{
-              WebkitMaskImage: "linear-gradient(to bottom, #000 42%, transparent 100%)",
-              maskImage: "linear-gradient(to bottom, #000 42%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to bottom, #000 40%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, #000 40%, transparent 100%)",
             }}
           >
             <img
               src={heroManLaptopAsset.url}
               alt=""
               aria-hidden
-              className="h-full w-full object-cover object-[62%_28%]"
+              className="h-full w-full object-cover object-[66%_26%]"
               loading="eager"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-background/15" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/25 to-background/20" />
           </div>
+
 
 
 
