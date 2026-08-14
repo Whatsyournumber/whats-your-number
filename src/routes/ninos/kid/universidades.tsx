@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowRight, BarChart3, Check, Heart, Pencil, TrendingUp } from "lucide-react";
+import { ArrowRight, BarChart3, Check, Heart, Pencil, Search, TrendingUp, X } from "lucide-react";
 
 import { KidPage } from "@/components/kid-page";
 import heroGirl from "@/assets/uni-hero-girl.jpg";
@@ -15,15 +15,18 @@ import {
   FIELD_LABELS,
   UNIVERSITIES,
   projectCapital,
+  uniFields,
   uniTotalUsd,
   type UniField,
   type University,
 } from "@/lib/universities";
+import { uniPhoto } from "@/lib/uni-photos";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
+
 
 export const Route = createFileRoute("/ninos/kid/universidades")({
   head: () => ({
@@ -175,7 +178,7 @@ function CollegeFinder({ member }: { member: Member }) {
       .filter(({ u, total }) => {
         if (bucket && bucketOf(u) !== bucket) return false;
         if (country && (lang === "en" ? u.country : u.countryEs) !== country) return false;
-        if (field && !u.fields.includes(field)) return false;
+        if (field && !uniFields(u).includes(field)) return false;
         if (rankMax && u.rank > Number(rankMax)) return false;
         if (tab === "afford" && total > projected) return false;
         if (tab === "close" && !(total > projected && total <= projected * 1.35)) return false;
@@ -455,13 +458,13 @@ function CollegeFinder({ member }: { member: Member }) {
         ))}
 
         <div className="ml-auto flex flex-wrap items-center gap-2">
-          <Select value={country} onChange={setCountry} placeholder={t("País", "Country")}>
-            {countries.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </Select>
+          <CountryCombobox
+            value={country}
+            onChange={setCountry}
+            options={countries}
+            placeholder={t("Buscar país", "Search country")}
+          />
+
           <Select
             value={field}
             onChange={(v) => setField(v as UniField | "")}
@@ -501,7 +504,16 @@ function CollegeFinder({ member }: { member: Member }) {
               key={u.id}
               className="group overflow-hidden rounded-3xl border border-border/70 bg-card shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
-              <div className="relative h-32 bg-gradient-to-br from-primary/25 via-primary/10 to-secondary">
+              <div className="relative h-36 overflow-hidden bg-secondary">
+                <img
+                  src={uniPhoto(u)}
+                  alt={`${u.name} — ${u.city}`}
+                  loading="lazy"
+                  width={1024}
+                  height={576}
+                  className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/85 via-background/10 to-background/20" />
                 <span className="absolute left-3 top-3 grid h-8 w-8 place-items-center rounded-xl bg-background/80 text-lg backdrop-blur">
                   {u.flag}
                 </span>
@@ -566,7 +578,7 @@ function CollegeFinder({ member }: { member: Member }) {
 
                 {ok ? (
                   <div className="mt-3 flex flex-wrap gap-1.5">
-                    {u.fields.slice(0, 3).map((f) => (
+                    {uniFields(u).slice(0, 3).map((f) => (
                       <span
                         key={f}
                         className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold text-muted-foreground"
@@ -644,5 +656,97 @@ function Select({
       {clearable ? <option value="">{placeholder}</option> : null}
       {children}
     </select>
+  );
+}
+
+function CountryCombobox({
+  value,
+  onChange,
+  options,
+  placeholder,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  options: string[];
+  placeholder: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [q, setQ] = useState("");
+  const blurTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const filtered = options
+    .filter((c) => c.toLowerCase().includes(q.trim().toLowerCase()))
+    .slice(0, 40);
+
+  return (
+    <div
+      className="relative"
+      onBlur={() => {
+        blurTimer.current = setTimeout(() => setOpen(false), 120);
+      }}
+      onFocus={() => {
+        if (blurTimer.current) clearTimeout(blurTimer.current);
+      }}
+    >
+      <div
+        className={cn(
+          "flex h-9 items-center gap-1.5 rounded-full border bg-card px-3 transition",
+          open ? "border-primary" : "border-border/70",
+        )}
+      >
+        <Search className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+        <input
+          value={open ? q : value || q}
+          onChange={(e) => {
+            setQ(e.target.value);
+            setOpen(true);
+          }}
+          onFocus={() => setOpen(true)}
+          placeholder={placeholder}
+          className="w-28 bg-transparent text-xs font-semibold text-foreground outline-none placeholder:font-medium placeholder:text-muted-foreground sm:w-36"
+        />
+        {value || q ? (
+          <button
+            type="button"
+            aria-label="Clear"
+            onClick={() => {
+              setQ("");
+              onChange("");
+              setOpen(false);
+            }}
+            className="text-muted-foreground transition hover:text-foreground"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        ) : null}
+      </div>
+
+      {open ? (
+        <ul className="absolute right-0 z-30 mt-2 max-h-64 w-56 overflow-auto rounded-2xl border border-border/70 bg-popover p-1 shadow-xl">
+          {filtered.map((c) => (
+            <li key={c}>
+              <button
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => {
+                  onChange(c);
+                  setQ(c);
+                  setOpen(false);
+                }}
+                className={cn(
+                  "w-full truncate rounded-xl px-3 py-2 text-left text-xs font-semibold transition hover:bg-secondary",
+                  value === c ? "bg-primary/10 text-primary" : "text-foreground",
+                )}
+              >
+                {c}
+              </button>
+            </li>
+          ))}
+          {filtered.length === 0 ? (
+            <li className="px-3 py-2 text-xs text-muted-foreground">—</li>
+          ) : null}
+        </ul>
+      ) : null}
+    </div>
   );
 }
