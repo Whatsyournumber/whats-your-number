@@ -59,6 +59,21 @@ const CURATED: Record<string, string> = {
   "br-ufsc": curatedUfsc,
   "br-ufpe": curatedUfpe,
   "lat-universidad-nacional-mayor-d": curatedSanMarcos,
+  "de-tu-munchen": curatedTum,
+  "de-lmu-munchen": curatedLmu,
+  "de-humboldt-universitat": curatedHumboldt,
+  "de-freie-universitat-berlin": curatedFuBerlin,
+  "de-tu-berlin": curatedTuBerlin,
+  "de-universitat-hamburg": curatedHamburg,
+  "de-kit-karlsruhe": curatedKit,
+  "it-politecnico-di-milano": curatedPolimi,
+  "it-sapienza-universita-di-roma": curatedSapienza,
+  "it-universita-di-bologna": curatedBologna,
+  "it-universita-di-firenze": curatedFirenze,
+  "br-ufrgs": curatedUfrgs,
+  "mx-uanl": curatedUanl,
+  "lat-universidad-tecnologica-de-p": curatedUtp,
+  "lat-universidad-de-costa-rica": curatedUcr,
 };
 
 /** Foto de campus premium asignada de forma estable a cada universidad. */
