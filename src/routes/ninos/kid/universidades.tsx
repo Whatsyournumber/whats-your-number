@@ -194,16 +194,47 @@ function CollegeFinder({ member }: { member: Member }) {
 
   const maxBudget = Math.max(400000, Math.round(projected * 2));
 
+  const heroImg = member.theme === "girl" ? heroGirl : heroBoy;
+
   return (
     <>
-      <PageTitle
-        emoji="🎓"
-        title={t("¿Dónde puede estudiar?", "Where can they study?")}
-        subtitle={t(
-          `Con el dinero que ${member.name} tendrá a los ${targetAge}, estas son las universidades del mundo a su alcance.`,
-          `With the money ${member.name} will have at ${targetAge}, these are the universities within reach.`,
-        )}
-      />
+      {/* Hero cute */}
+      <section className="relative mb-6 overflow-hidden rounded-[2rem] border border-border/60 bg-card shadow-sm">
+        <img
+          src={heroImg}
+          alt={t("Familia mirando universidades", "Family looking at universities")}
+          width={1280}
+          height={960}
+          className="absolute inset-y-0 right-0 h-full w-full object-cover object-right sm:w-[62%]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-card via-card/95 to-card/10 sm:via-card/85" />
+        <div className="relative max-w-md p-6 sm:p-8">
+          <p className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-[11px] font-bold text-primary">
+            🎓 {t("Buscador de universidades", "College finder")}
+          </p>
+          <h1 className="mt-3 font-display text-3xl font-black leading-tight text-foreground sm:text-4xl">
+            {t("¿Dónde podrá estudiar", "Where can they study")}{" "}
+            <span className="text-primary">{t(`a los ${targetAge}?`, `at ${targetAge}?`)}</span>
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {t(
+              `Con el capital que estás construyendo hoy para ${member.name}.`,
+              `With the capital you're building today for ${member.name}.`,
+            )}
+          </p>
+          <div className="mt-4 rounded-3xl border border-primary/20 bg-background/70 p-4 backdrop-blur-md">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              {t(`A los ${targetAge} años tendrá`, `At age ${targetAge} they'll have`)}
+            </p>
+            <p className="font-display text-4xl font-black text-primary">
+              {money(effectiveBudget, currency, true)}
+            </p>
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              {touched ? t("Escenario manual", "Manual scenario") : t("Con tu plan actual", "With your current plan")}
+            </p>
+          </div>
+        </div>
+      </section>
 
       <div className="grid gap-5 lg:grid-cols-[1.55fr_1fr]">
         <div className="space-y-5">
@@ -322,14 +353,14 @@ function CollegeFinder({ member }: { member: Member }) {
           </section>
 
           {/* Filtros */}
-          <section className="space-y-3">
+          <section className="space-y-3 rounded-3xl border border-border/70 bg-card p-4 shadow-sm sm:p-5">
             <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-primary/70" />
               <Input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={t("Busca universidad, ciudad o país…", "Search university, city or country…")}
-                className="pl-9"
+                className="h-11 rounded-full border-border/60 bg-secondary/40 pl-10 text-sm"
               />
             </div>
             <div className="flex flex-wrap gap-2">
@@ -350,6 +381,7 @@ function CollegeFinder({ member }: { member: Member }) {
               ))}
             </div>
           </section>
+
 
           {/* Resultados */}
           <section>
