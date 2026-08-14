@@ -335,9 +335,9 @@ function Landing() {
             className="pointer-events-none absolute inset-y-0 right-0 hidden w-[48%] md:block lg:w-[54%]"
             style={{
               WebkitMaskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.08) 12%, rgba(0,0,0,0.35) 32%, rgba(0,0,0,0.75) 52%, #000 70%)",
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.08) 12%, rgba(0,0,0,0.35) 32%, rgba(0,0,0,0.75) 52%, #000 90%)",
               maskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.08) 12%, rgba(0,0,0,0.35) 32%, rgba(0,0,0,0.75) 52%, #000 70%)",
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.08) 12%, rgba(0,0,0,0.35) 32%, rgba(0,0,0,0.75) 52%, #000 90%)",
             }}
 
           >
