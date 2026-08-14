@@ -44,7 +44,7 @@ function CheckoutSuccess() {
     if (!activated) return;
     clearPendingCheckoutPlan();
     const timer = window.setTimeout(() => {
-      navigate({ to: "/dashboard", replace: true });
+      navigate({ to: plan === "familiar" ? "/ninos" : "/dashboard", replace: true });
     }, 900);
     return () => window.clearTimeout(timer);
   }, [activated, navigate, plan]);
