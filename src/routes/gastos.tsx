@@ -956,9 +956,9 @@ function Gastos() {
             return (
               <AccordionItem key={c.name} value={c.name} className="border-border">
                 <AccordionTrigger className="py-2 hover:no-underline">
-                  <div className="flex w-full items-center gap-3 pr-3">
+                  <div className="flex w-full min-w-0 items-center gap-2 pr-2 sm:gap-3 sm:pr-3">
                     <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
-                    <span className="truncate text-sm font-medium">{tc(c.name)}</span>
+                    <span className="min-w-0 flex-1 truncate text-left text-sm font-medium">{tc(c.name)}</span>
                     <span
                       role="button"
                       tabIndex={0}
@@ -980,7 +980,7 @@ function Gastos() {
                     >
                       <BarChart3 className="h-3.5 w-3.5" />
                     </span>
-                    <span className="shrink-0 rounded-full bg-elevated/50 px-2 py-0.5 text-[11px] text-muted-foreground">
+                    <span className="hidden shrink-0 rounded-full bg-elevated/50 px-2 py-0.5 text-[11px] text-muted-foreground sm:inline">
                       {`${c.items.length} ${c.items.length === 1 ? t("mov.", "tx") : t("movs.", "txs")}`}
                     </span>
 
