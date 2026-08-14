@@ -78,9 +78,12 @@ export const joinAffiliateProgram = createServerFn({ method: "POST" })
 /** Links the signed-in user to the affiliate whose link they arrived with. */
 export const attachAffiliateReferral = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { code: string }) => {
+  .inputValidator((data: { code: string; environment?: "sandbox" | "live" }) => {
     if (!data?.code) throw new Error("code required");
-    return { code: data.code.trim().toUpperCase().slice(0, 24) };
+    return {
+      code: data.code.trim().toUpperCase().slice(0, 24),
+      environment: data.environment === "live" ? ("live" as const) : ("sandbox" as const),
+    };
   })
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -106,8 +109,30 @@ export const attachAffiliateReferral = createServerFn({ method: "POST" })
       code: data.code,
     });
     if (error) throw new Error(error.message);
+
+    // 3 amigos registrados con tu enlace = plan Pro gratis para quien comparte.
+    await maybeGrantReferralReward(supabaseAdmin, affiliate.id as string, data.environment);
     return { ok: true };
   });
+
+/** Checks the signed-in affiliate's referral progress and unlocks free Pro at 3 sign-ups. */
+export const claimReferralReward = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data?: { environment?: "sandbox" | "live" }) => ({
+    environment: data?.environment === "live" ? ("live" as const) : ("sandbox" as const),
+  }))
+  .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: affiliate } = await supabaseAdmin
+      .from("affiliates")
+      .select("id")
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    if (!affiliate) return { ok: false, unlocked: false, referrals: 0, goal: REFERRALS_FOR_FREE_PRO };
+    const reward = await maybeGrantReferralReward(supabaseAdmin, affiliate.id as string, data.environment);
+    return { ok: true, ...reward, goal: REFERRALS_FOR_FREE_PRO };
+  });
+
 
 /** Updates the payout details of the signed-in affiliate. */
 export const updateMyAffiliate = createServerFn({ method: "POST" })
