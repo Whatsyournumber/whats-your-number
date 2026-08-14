@@ -110,7 +110,7 @@ export function useT() {
 export function LanguageToggle({ className = "" }: { className?: string }) {
   const { lang, setLang } = useLanguage();
   return (
-    <div className={`inline-flex items-center rounded-full border border-border/70 bg-background/60 p-0.5 text-[11px] shadow-sm backdrop-blur-md ${className}`}>
+    <div className={`inline-flex items-center rounded-full border border-white/10 bg-black/30 p-0.5 text-[11px] shadow-sm backdrop-blur-md ${className}`}>
       {(["es", "en"] as const).map((code) => (
         <button
           key={code}
