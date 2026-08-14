@@ -1,8 +1,10 @@
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { LineChart, Lock, Plus, Settings } from "lucide-react";
+import { LineChart, Lock, Plus, Settings, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/mfn-ui";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { useActiveProfile, useMembers, useSubscription } from "@/hooks/use-mfn";
 import { THEME_ATTR, type Member } from "@/lib/mfn";
 import { activePlan, kidLimit, planLabel } from "@/lib/mfn-plan";
@@ -39,6 +41,26 @@ function ProfileSelector() {
   const { select } = useActiveProfile();
   const { t, lang } = useI18n();
   const [manage, setManage] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<Member | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const queryClient = useQueryClient();
+
+  async function confirmDelete() {
+    if (!pendingDelete) return;
+    setDeleting(true);
+    try {
+      const { error } = await supabase.from("kid_members").delete().eq("id", pendingDelete.id);
+      if (error) throw error;
+      select(null);
+      await queryClient.refetchQueries({ queryKey: ["kid_members"] });
+      toast.success(t(`Perfil de ${pendingDelete.name} eliminado`, `${pendingDelete.name}\u2019s profile deleted`));
+      setPendingDelete(null);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : t("No se pudo borrar el perfil", "Could not delete profile"));
+    } finally {
+      setDeleting(false);
+    }
+  }
 
   const plan = activePlan(subscription);
   const maxKids = kidLimit(subscription);
@@ -121,11 +143,32 @@ function ProfileSelector() {
                 <button
                   key={m.id}
                   onClick={() => open(m)}
-                  className="group flex flex-col items-center gap-3 outline-none"
+                  className="group relative flex flex-col items-center gap-3 outline-none"
                 >
                   <span className="grid aspect-square w-full place-items-center rounded-2xl bg-secondary text-5xl ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4 sm:text-6xl">
                     {m.avatar}
                   </span>
+                  {manage && m.role === "child" ? (
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      aria-label={t("Borrar perfil", "Delete profile")}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPendingDelete(m);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setPendingDelete(m);
+                        }
+                      }}
+                      className="absolute right-2 top-2 grid h-9 w-9 place-items-center rounded-full bg-background/90 text-destructive shadow-lg ring-1 ring-destructive/40 transition hover:bg-destructive hover:text-destructive-foreground"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </span>
+                  ) : null}
                   <span className="min-w-0 text-center">
                     <span className="block truncate text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
                       {m.name}
@@ -188,10 +231,43 @@ function ProfileSelector() {
             {manage ? (
               <p className="mt-4 text-xs text-muted-foreground">
                 {t(
-                  "Entra como padre/madre para editar mesada, tareas y el Fondo del Futuro de cada hijo.",
-                  "Sign in as a parent to edit allowance, tasks and each child's Future Fund.",
+                  "Toca la papelera para borrar un perfil, o entra como padre/madre para editar mesada, tareas y el Fondo del Futuro.",
+                  "Tap the trash icon to delete a profile, or sign in as a parent to edit allowance, tasks and the Future Fund.",
                 )}
               </p>
+            ) : null}
+
+            {pendingDelete ? (
+              <div
+                className="fixed inset-0 z-50 grid place-items-center bg-background/80 p-5 backdrop-blur-sm"
+                role="dialog"
+                aria-modal="true"
+              >
+                <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-2xl">
+                  <h2 className="font-display text-xl font-semibold text-foreground">
+                    {t("¿Seguro que quieres borrarlo?", "Are you sure you want to delete it?")}
+                  </h2>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {t(
+                      `Se borrará el perfil de ${pendingDelete.name} con sus bolsillos, tareas, deseos y Fondo del Futuro. Esta acción no se puede deshacer.`,
+                      `${pendingDelete.name}'s profile will be deleted along with pockets, tasks, wishes and Future Fund. This can't be undone.`,
+                    )}
+                  </p>
+                  <div className="mt-6 flex justify-end gap-2">
+                    <Button variant="ghost" onClick={() => setPendingDelete(null)}>
+                      {t("Cancelar", "Cancel")}
+                    </Button>
+                    <button
+                      onClick={() => void confirmDelete()}
+                      disabled={deleting}
+                      className="inline-flex items-center gap-2 rounded-full bg-destructive px-5 py-2.5 text-sm font-semibold text-destructive-foreground transition hover:opacity-90 disabled:opacity-60"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      {deleting ? t("Borrando…", "Deleting…") : t("Sí, borrar", "Yes, delete")}
+                    </button>
+                  </div>
+                </div>
+              </div>
             ) : null}
           </>
         )}
