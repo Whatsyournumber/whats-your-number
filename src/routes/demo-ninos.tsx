@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft, ArrowRight, Gift, Sparkles, Star } from "lucide-react";
+import { ArrowLeft, ArrowRight, Gift, GraduationCap, Sparkles, Star } from "lucide-react";
 
 import { KidsBrandLogo, KidsBrandMark } from "@/components/brand-logo";
+import { UniversityCostExplorer } from "@/components/university-cost-explorer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LanguageToggle, useT } from "@/hooks/use-language";
