@@ -161,6 +161,31 @@ import cur_dk_copenhagen from "@/assets/uni/dk-copenhagen.jpg";
 import cur_se_lund from "@/assets/uni/se-lund.jpg";
 import cur_se_kth from "@/assets/uni/se-kth.jpg";
 
+import cur_sg_nus from "@/assets/uni/sg-nus.jpg";
+import cur_ca_calgary from "@/assets/uni/ca-calgary.jpg";
+import cur_nz_auckland from "@/assets/uni/nz-auckland.jpg";
+import cur_uk_oxford from "@/assets/uni/uk-oxford.jpg";
+import cur_uk_cambridge from "@/assets/uni/uk-cambridge.jpg";
+import cur_ca_mcgill from "@/assets/uni/ca-mcgill.jpg";
+import cur_ca_sfu from "@/assets/uni/ca-sfu.jpg";
+import cur_us_houston from "@/assets/uni/us-houston.jpg";
+import cur_ca_alberta from "@/assets/uni/ca-alberta.jpg";
+import cur_us_nebraska from "@/assets/uni/us-nebraska.jpg";
+import cur_ca_ottawa from "@/assets/uni/ca-ottawa.jpg";
+import cur_au_queensland from "@/assets/uni/au-queensland.jpg";
+import cur_us_florida from "@/assets/uni/us-florida.jpg";
+import cur_us_oklahoma from "@/assets/uni/us-oklahoma.jpg";
+import cur_au_anu from "@/assets/uni/au-anu.jpg";
+import cur_au_monash from "@/assets/uni/au-monash.jpg";
+import cur_us_purdue from "@/assets/uni/us-purdue.jpg";
+import cur_us_buffalo from "@/assets/uni/us-buffalo.jpg";
+import cur_us_wsu from "@/assets/uni/us-wsu.jpg";
+import cur_us_kansas from "@/assets/uni/us-kansas.jpg";
+import cur_us_missouri from "@/assets/uni/us-missouri.jpg";
+import cur_us_lsu from "@/assets/uni/us-lsu.jpg";
+import cur_au_melbourne from "@/assets/uni/au-melbourne.jpg";
+import cur_us_uic from "@/assets/uni/us-uic.jpg";
+
 const CURATED: Record<string, string> = {
   "br-universidade-de-sao-paulo": curatedUsp,
   "br-unicamp": curatedUnicamp,
@@ -297,6 +322,30 @@ const CURATED: Record<string, string> = {
   "ot-university-of-copenhagen": cur_dk_copenhagen,
   "ot-lund-university": cur_se_lund,
   "ot-kth-royal-institute": cur_se_kth,
+  "ap-nus": cur_sg_nus,
+  "ca-university-of-calgary": cur_ca_calgary,
+  "ap-university-of-auckland": cur_nz_auckland,
+  "uk-university-of-oxford": cur_uk_oxford,
+  "uk-university-of-cambridge": cur_uk_cambridge,
+  "ca-mcgill-university": cur_ca_mcgill,
+  "ca-simon-fraser-university": cur_ca_sfu,
+  "us-university-of-houston": cur_us_houston,
+  "ca-university-of-alberta": cur_ca_alberta,
+  "us-university-of-nebraska-linco": cur_us_nebraska,
+  "ca-university-of-ottawa": cur_ca_ottawa,
+  "ap-university-of-queensland": cur_au_queensland,
+  "us-university-of-florida": cur_us_florida,
+  "us-university-of-oklahoma": cur_us_oklahoma,
+  "ap-australian-national-universi": cur_au_anu,
+  "ap-monash-university": cur_au_monash,
+  "us-purdue-university": cur_us_purdue,
+  "us-university-at-buffalo": cur_us_buffalo,
+  "us-washington-state-university": cur_us_wsu,
+  "us-university-of-kansas": cur_us_kansas,
+  "us-university-of-missouri": cur_us_missouri,
+  "us-louisiana-state-university": cur_us_lsu,
+  "ap-university-of-melbourne": cur_au_melbourne,
+  "us-university-of-illinois-chica": cur_us_uic,
 };
 
 /** Foto de campus premium asignada de forma estable a cada universidad. */
