@@ -19,7 +19,7 @@ export const Route = createFileRoute("/precios")({
       { title: "Precios — WhatsYournumber" },
       {
         name: "description",
-        content: "Planes de WhatsYournumber: empieza gratis, paga mensual o anual con descuento, y escala a Patrimonio para familias y activos complejos.",
+        content: "Planes de WhatsYournumber: empieza gratis, paga mensual o anual con descuento, y escala al plan Familiar para familias y activos complejos.",
       },
       { property: "og:title", content: "Precios — WhatsYournumber" },
       { property: "og:description", content: "Planes simples para ordenar tu patrimonio con IA." },

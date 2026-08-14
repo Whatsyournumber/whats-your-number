@@ -18,7 +18,7 @@ export function SubscriptionManager() {
   const { subscription, tier, isTrial, loading } = useSubscription();
   const [busy, setBusy] = useState<string | null>(null);
 
-  const planLabel = tier === "patrimonio" ? "Patrimonio" : tier === "pro" ? "Pro" : "Free";
+  const planLabel = tier === "patrimonio" ? "Familiar" : tier === "pro" ? "Pro" : "Free";
 
   const portal = async (target: PortalTarget) => {
     setBusy(`portal:${target}`);
@@ -86,7 +86,7 @@ export function SubscriptionManager() {
         {tier === "pro" && (
           <Button size="sm" disabled={busy !== null} onClick={() => void switchPlan("patrimonio_monthly")}>
             {spin("patrimonio_monthly") ? <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> : null}
-            {t("Mejorar a Patrimonio", "Upgrade to Patrimonio")}
+            {t("Mejorar a Familiar", "Upgrade to Familiar")}
           </Button>
         )}
         {tier === "patrimonio" && (
