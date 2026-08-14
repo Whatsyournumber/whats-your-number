@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Copy, Check, Link2, MousePointerClick, Users, Wallet, Loader2 } from "lucide-react";
@@ -13,6 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useT } from "@/hooks/use-language";
 import { useAuth } from "@/hooks/use-auth";
 import { useMyAffiliate } from "@/hooks/use-affiliate";
+import { AffiliateExplainer } from "@/components/affiliate-explainer";
 import { joinAffiliateProgram, updateMyAffiliate } from "@/utils/affiliates.functions";
 
 export const Route = createFileRoute("/afiliados")({
@@ -92,6 +93,40 @@ function AffiliatesPage() {
     );
   }
 
+  if (!user) {
+    return (
+      <PageShell>
+        <PageHeader
+          eyebrow={t("Programa de afiliados", "Affiliate program")}
+          title={t("Gana 30% recurrente recomendando WhatsYournumber", "Earn a recurring 30% recommending WhatsYournumber")}
+          subtitle={t(
+            "Únete gratis, comparte tu enlace y cobra una comisión cada mes por cada suscripción activa que traigas.",
+            "Join for free, share your link and get paid every month for every active subscription you bring.",
+          )}
+        />
+        <AffiliateExplainer />
+        <Panel
+          className="mt-4"
+          title={t("Únete al programa", "Join the program")}
+          description={t("Crea tu cuenta gratis y activa tu enlace en un minuto.", "Create your free account and activate your link in a minute.")}
+        >
+          <div className="flex flex-wrap gap-2">
+            <Button asChild>
+              <Link to="/auth" search={{ mode: "signup" }}>
+                {t("Registrarme como afiliado", "Sign up as an affiliate")}
+              </Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link to="/auth" search={{ mode: "login" }}>
+                {t("Ya tengo cuenta", "I already have an account")}
+              </Link>
+            </Button>
+          </div>
+        </Panel>
+      </PageShell>
+    );
+  }
+
   if (!affiliate) {
     return (
       <PageShell>
@@ -103,7 +138,9 @@ function AffiliatesPage() {
             "Get a recurring commission on every subscription that comes through your link. We handle billing, invoicing and support.",
           )}
         />
+        <AffiliateExplainer />
         <Panel
+          className="mt-4"
           title={t("Activa tu enlace", "Activate your link")}
           description={t("Toma menos de un minuto y es gratis.", "It takes less than a minute and it's free.")}
         >
