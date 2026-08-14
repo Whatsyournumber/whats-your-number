@@ -1,10 +1,19 @@
 import { cn } from "@/lib/utils";
 
-export function BrandMark({ className }: { className?: string }) {
+export function BrandMark({
+  className,
+  variant = "dark",
+}: {
+  className?: string;
+  variant?: "dark" | "light";
+}) {
   return (
     <span
       className={cn(
-        "relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-elevated ring-1 ring-border",
+        "relative inline-flex items-center justify-center overflow-hidden rounded-xl",
+        variant === "light"
+          ? "bg-white/70 ring-1 ring-slate-200/70 shadow-sm"
+          : "bg-elevated ring-1 ring-border",
         className,
       )}
     >
@@ -57,9 +66,11 @@ export function BrandMark({ className }: { className?: string }) {
 export function BrandLogo({
   className,
   vertical,
+  variant = "dark",
 }: {
   className?: string;
   vertical?: boolean;
+  variant?: "dark" | "light";
 }) {
   return (
     <span
@@ -68,11 +79,17 @@ export function BrandLogo({
         className,
       )}
     >
-      <BrandMark className={vertical ? "h-12 w-12" : "h-9 w-9"} />
-      <span className="font-display text-sm font-semibold leading-none tracking-tight">
+      <BrandMark className={vertical ? "h-12 w-12" : "h-9 w-9"} variant={variant} />
+      <span
+        className={cn(
+          "font-display text-sm font-semibold leading-none tracking-tight",
+          variant === "light" && "text-slate-900",
+        )}
+      >
         Whats<span className="text-primary">Yournumber</span>
       </span>
     </span>
   );
 }
+
 

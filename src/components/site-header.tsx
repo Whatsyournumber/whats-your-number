@@ -3,18 +3,22 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { Sparkles, Menu } from "lucide-react";
 
 import { BrandLogo, BrandMark } from "@/components/brand-logo";
+import { cn } from "@/lib/utils";
+
 import { CurrencyToggle } from "@/components/currency-toggle";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/use-auth";
 import { useT, LanguageToggle } from "@/hooks/use-language";
 
-export function SiteHeader() {
+export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" }) {
   const { user } = useAuth();
   const t = useT();
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
   const isKidsLanding = pathname === "/finanzas-para-ninos";
+  const isLight = variant === "light";
+
 
   const tabs = [
     { label: t("Cómo funciona", "How it works"), to: "/", hash: "funciones" },
@@ -31,9 +35,16 @@ export function SiteHeader() {
       to={tab.to}
       {...("hash" in tab ? { hash: tab.hash } : {})}
       {...("search" in tab ? { search: tab.search } : {})}
-      className="rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground"
+      className={cn(
+        "rounded-full px-3 py-1.5 text-sm transition-colors",
+        isLight
+          ? "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+          : "text-muted-foreground hover:bg-elevated hover:text-foreground",
+      )}
       activeOptions={{ exact: true, includeHash: false }}
-      activeProps={{ className: "bg-elevated text-foreground" }}
+      activeProps={{
+        className: isLight ? "bg-slate-100 text-slate-900" : "bg-elevated text-foreground",
+      }}
     >
       {tab.label === "demo" ? (
         <span className="inline-flex items-center gap-1.5 text-primary">
@@ -46,13 +57,22 @@ export function SiteHeader() {
     </Link>
   );
 
+
   const authButtons = user ? (
     <Button asChild size="sm" className="rounded-full">
       <Link to="/dashboard">{t("Ir al dashboard", "Go to dashboard")}</Link>
     </Button>
   ) : (
     <>
-      <Button asChild variant="ghost" size="sm" className="rounded-full text-xs whitespace-nowrap">
+      <Button
+        asChild
+        variant="ghost"
+        size="sm"
+        className={cn(
+          "rounded-full text-xs whitespace-nowrap",
+          isLight && "text-slate-700 hover:bg-slate-100 hover:text-slate-900",
+        )}
+      >
         <Link to="/auth" search={{ mode: "login" }}>
           {t("Iniciar sesión", "Sign in")}
         </Link>
@@ -64,6 +84,7 @@ export function SiteHeader() {
       </Button>
     </>
   );
+
 
   const mobileAuthButton = user ? (
     <Button asChild size="sm" className="h-8 rounded-full px-3 text-xs">
