@@ -504,59 +504,6 @@ function CollegeFinder({ member }: { member: Member }) {
           </section>
         </div>
 
-        {/* Panel IA */}
-        <aside className="lg:sticky lg:top-6 lg:self-start">
-          <section className="rounded-3xl border border-border/70 bg-card p-5 shadow-sm">
-            <div className="flex items-center gap-2">
-              <span className="grid h-9 w-9 place-items-center rounded-2xl bg-primary/15 text-primary">
-                <GraduationCap className="h-4.5 w-4.5" />
-              </span>
-              <div>
-                <p className="font-display text-base font-bold text-foreground">
-                  {t("Buddy te aconseja", "Buddy advises you")}
-                </p>
-                <p className="text-[11px] text-muted-foreground">
-                  {t("IA sobre tu presupuesto real", "AI on your real budget")}
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-3 text-center">
-              <Stat label={t("A tu alcance", "Within reach")} value={String(affordable.length)} />
-              <Stat
-                label={t("Extra/mes para la 1ª soñada", "Extra/mo for dream #1")}
-                value={monthlyExtraFor1 > 0 ? money(monthlyExtraFor1, currency, true) : "—"}
-              />
-            </div>
-
-            <Button className="mt-4 w-full" onClick={askBuddy} disabled={loadingAdvice}>
-              {loadingAdvice ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {t("Pensando…", "Thinking…")}
-                </>
-              ) : (
-                <>
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  {t("Recomiéndame universidades", "Recommend universities")}
-                </>
-              )}
-            </Button>
-
-            {advice ? (
-              <div className="mt-4 whitespace-pre-wrap rounded-2xl bg-secondary/50 p-4 text-sm leading-relaxed text-foreground">
-                {advice}
-              </div>
-            ) : (
-              <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-                {t(
-                  "Ajusta el capital y los filtros, y Buddy te dirá dónde encaja mejor tu hijo/a y cuánto falta para la universidad soñada.",
-                  "Adjust the capital and filters, and Buddy will tell you where your child fits best and how far the dream school is.",
-                )}
-              </p>
-            )}
-          </section>
-        </aside>
       </div>
     </>
   );
