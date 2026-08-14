@@ -29,7 +29,7 @@ function Configuracion() {
       <PageHeader eyebrow={t("Sistema", "System")} title={t("Cargar EEFF", "Upload statements")} subtitle={t("Carga tus estados de cuenta, cuentas y reglas de clasificación.", "Upload your statements, accounts and classification rules.")} />
 
       <Tabs defaultValue="importacion">
-        <TabsList className="mb-4 flex-wrap">
+        <TabsList className="mb-4 w-full sm:w-auto">
           <TabsTrigger value="importacion">{t("Importación", "Import")}</TabsTrigger>
           <TabsTrigger value="cuentas">{t("Cuentas", "Accounts")}</TabsTrigger>
           <TabsTrigger value="categorias">{t("Categorías", "Categories")}</TabsTrigger>

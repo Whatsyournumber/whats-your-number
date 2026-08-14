@@ -549,15 +549,15 @@ export function MortgageModule() {
               )}
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+            <div className="-mx-1 overflow-x-auto px-1">
+              <table className="w-full min-w-[680px] text-sm">
                 <thead>
                   <tr className="text-left text-xs text-muted-foreground">
-                    <th className="py-2 font-normal">{t("Estrategia", "Strategy")}</th>
-                    <th className="py-2 text-right font-normal">{t("Pago mensual", "Monthly payment")}</th>
-                    <th className="py-2 text-right font-normal">{t("Interés total", "Total interest")}</th>
-                    <th className="py-2 text-right font-normal">{t("Quedarás libre en", "Mortgage free")}</th>
-                    <th className="py-2 text-right font-normal">{t("Ahorro total", "Total savings")}</th>
+                    <th className="whitespace-nowrap py-2 pr-4 font-normal">{t("Estrategia", "Strategy")}</th>
+                    <th className="whitespace-nowrap py-2 pl-4 text-right font-normal">{t("Pago mensual", "Monthly payment")}</th>
+                    <th className="whitespace-nowrap py-2 pl-4 text-right font-normal">{t("Interés total", "Total interest")}</th>
+                    <th className="whitespace-nowrap py-2 pl-4 text-right font-normal">{t("Quedarás libre en", "Mortgage free")}</th>
+                    <th className="whitespace-nowrap py-2 pl-4 text-right font-normal">{t("Ahorro total", "Total savings")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -569,15 +569,15 @@ export function MortgageModule() {
                         x.best && "bg-positive/8",
                       )}
                     >
-                      <td className="py-3">
+                      <td className="py-3 pr-4">
                         <div className="flex items-center gap-2.5">
                           <div className={cn(
-                            "flex h-8 w-8 items-center justify-center rounded-full",
+                            "flex h-8 w-8 shrink-0 items-center justify-center rounded-full",
                             x.best ? "bg-positive/15 text-positive" : "bg-muted text-muted-foreground",
                           )}>
                             <x.icon className="h-4 w-4" />
                           </div>
-                          <div>
+                          <div className="min-w-0">
                             <p className="font-medium">{x.name}</p>
                             <p className="text-xs text-muted-foreground">
                               {x.best ? (
@@ -591,10 +591,10 @@ export function MortgageModule() {
                           </div>
                         </div>
                       </td>
-                      <td className="numeric py-3 text-right font-medium">{fmt(x.payment)}</td>
-                      <td className="numeric py-3 text-right">{fmt(x.interest)}</td>
-                      <td className="numeric py-3 text-right">{freeDate(x.months)}</td>
-                      <td className={cn("numeric py-3 text-right font-medium", x.saving > 0 && "text-positive")}>
+                      <td className="numeric whitespace-nowrap py-3 pl-4 text-right font-medium">{fmt(x.payment)}</td>
+                      <td className="numeric whitespace-nowrap py-3 pl-4 text-right">{fmt(x.interest)}</td>
+                      <td className="numeric whitespace-nowrap py-3 pl-4 text-right">{freeDate(x.months)}</td>
+                      <td className={cn("numeric whitespace-nowrap py-3 pl-4 text-right font-medium", x.saving > 0 && "text-positive")}>
                         {x.saving > 0 ? fmt(x.saving) : "—"}
                       </td>
                     </tr>

@@ -417,7 +417,7 @@ function LifestyleSimulatorContent() {
               {ranked.length} {t("ciudades", "cities")}
             </span>
           </div>
-          <div className="flex shrink-0 items-center gap-3">
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-x-3 gap-y-1">
             <button
               type="button"
               onClick={() => setFilters((f) => ({ ...defaultFilters, budget: f.budget }))}
