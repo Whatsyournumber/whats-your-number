@@ -334,7 +334,10 @@ function MyData({ member }: { member: Member }) {
                 className={inputClass}
                 placeholder="0"
                 value={savedInput}
-                onChange={(e) => setSavedInput(e.target.value)}
+                onChange={(e) => {
+                  setSavedTouched(true);
+                  setSavedInput(e.target.value);
+                }}
               />
               <button
                 type="button"
