@@ -66,18 +66,18 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
     <>
       <Button
         asChild
-        variant="ghost"
+        variant="outline"
         size="sm"
         className={cn(
-          "rounded-full text-xs whitespace-nowrap",
-          isLight && "text-slate-700 hover:bg-slate-100 hover:text-slate-900",
+          "rounded-full border-border/60 bg-background/40 text-xs whitespace-nowrap backdrop-blur-sm hover:bg-background/60",
+          isLight && "border-slate-200 bg-white/60 text-slate-700 hover:bg-white/80 hover:text-slate-900",
         )}
       >
         <Link to="/auth" search={{ mode: "login" }}>
           {t("Iniciar sesión", "Sign in")}
         </Link>
       </Button>
-      <Button asChild size="sm" className="rounded-full text-xs whitespace-nowrap">
+      <Button asChild size="sm" className="rounded-full text-xs whitespace-nowrap shadow-sm">
         <Link to="/auth" search={{ mode: "signup" }}>
           {t("Crear cuenta", "Sign up")}
         </Link>
