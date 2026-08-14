@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft, ArrowRight, Lock, Sparkles, Star } from "lucide-react";
+import { ArrowLeft, ArrowRight, Gift, Sparkles, Star } from "lucide-react";
 
 import { KidsBrandLogo, KidsBrandMark } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LanguageToggle, useT } from "@/hooks/use-language";
+
+const CURRENCIES = { EUR: "€", USD: "$", GBP: "£", MXN: "$" } as const;
+type CurrencyCode = keyof typeof CURRENCIES;
 
 export const Route = createFileRoute("/demo-ninos")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -39,25 +42,29 @@ function KidsDemoPage() {
   const [monthly, setMonthly] = useState("");
   const [initial, setInitial] = useState("");
   const [age, setAge] = useState("");
+  const [currency, setCurrency] = useState<CurrencyCode>("EUR");
 
   const num = (v: string) => Number(v.replace(/[^\d.]/g, "")) || 0;
+  const symbol = CURRENCIES[currency];
 
   const questions = [
     {
-      prefix: "€",
-      q: t("¿Cuánto puedes aportarle a tu hijo cada mes?", "How much can you put aside for your child each month?"),
-      hint: t("Aunque sean 50 € al mes, cuentan.", "Even €50 a month counts."),
-      value: monthly,
-      set: setMonthly,
-      placeholder: "100",
-    },
-    {
-      prefix: "€",
-      q: t("¿Con cuánto empiezas hoy?", "How much are you starting with today?"),
+      prefix: symbol,
+      q: t("¿Con cuánto dinero puedes empezar hoy?", "How much can you start with today?"),
       hint: t("El dinero que ya tiene ahorrado (puede ser 0).", "Money already saved (can be 0)."),
       value: initial,
       set: setInitial,
       placeholder: "1,000",
+      optional: true,
+    },
+    {
+      prefix: symbol,
+      q: t("¿Cuánto dinero le pudieras poner cada mes?", "How much could you add every month?"),
+      hint: t("Aunque sean 50 al mes, cuentan.", "Even 50 a month counts."),
+      value: monthly,
+      set: setMonthly,
+      placeholder: "100",
+      optional: false,
     },
     {
       prefix: "🎂",
@@ -66,12 +73,23 @@ function KidsDemoPage() {
       value: age,
       set: setAge,
       placeholder: "6",
+      optional: false,
     },
   ];
 
   const current = questions[step - 1];
-  const canContinue = current ? num(current.value) > 0 || step === 2 : true;
+  const canContinue = current ? num(current.value) > 0 || current.optional : true;
   const years = Math.max(18 - Math.min(num(age), 17), 1);
+
+  const rate = 0.1;
+  const months = years * 12;
+  const monthlyRate = Math.pow(1 + rate, 1 / 12) - 1;
+  const futureValue =
+    num(initial) * Math.pow(1 + rate, years) +
+    (monthlyRate > 0 ? num(monthly) * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) : 0);
+  const contributed = num(initial) + num(monthly) * months;
+  const fmt = (v: number) =>
+    `${symbol}${Math.round(v).toLocaleString(currency === "EUR" ? "es-ES" : "en-US")}`;
 
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-background px-5 py-6">
@@ -84,7 +102,23 @@ function KidsDemoPage() {
         >
           <ArrowLeft className="h-3.5 w-3.5" /> {t("Volver", "Back")}
         </Link>
-        <LanguageToggle />
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-0.5 rounded-full border border-border bg-elevated p-0.5">
+            {(Object.keys(CURRENCIES) as CurrencyCode[]).map((c) => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => setCurrency(c)}
+                className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                  currency === c ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+          <LanguageToggle />
+        </div>
       </header>
 
       <main className="relative z-10 mx-auto flex w-full max-w-lg flex-1 flex-col justify-center py-10">
@@ -189,12 +223,12 @@ function KidsDemoPage() {
                 {t("Cálculo listo", "Calculation ready")}
               </span>
               <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight md:text-3xl">
-                {t("El número de tu hijo a los 18 está listo", "Your child's number at 18 is ready")}
+                {t("El número de tu hijo a los 18", "Your child's number at 18")}
               </h2>
               <p className="mx-auto mt-3 max-w-sm text-sm text-muted-foreground">
                 {t(
-                  `Calculado con ${years} años de interés compuesto al 10% anual (rentabilidad histórica del S&P 500). Crea tu cuenta gratis para verlo.`,
-                  `Calculated with ${years} years of compound interest at 10% a year (historical S&P 500 return). Create your free account to see it.`,
+                  `Con ${years} años de interés compuesto al 10% anual (rentabilidad histórica del S&P 500).`,
+                  `With ${years} years of compound interest at 10% a year (historical S&P 500 return).`,
                 )}
               </p>
 
@@ -202,20 +236,47 @@ function KidsDemoPage() {
                 <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
                   {t("Su número a los 18", "Their number at 18")}
                 </p>
-                <p className="numeric mt-3 select-none text-4xl font-semibold blur-md md:text-5xl" aria-hidden="true">
-                  €•••,•••
+                <p className="numeric mt-3 bg-gradient-to-r from-kid-sky to-kid-mint bg-clip-text text-4xl font-semibold text-transparent md:text-5xl">
+                  {fmt(futureValue)}
                 </p>
-                <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-elevated px-3 py-1.5 text-xs text-muted-foreground">
-                  <Lock className="h-3.5 w-3.5" />
-                  {t("Desbloquéalo con tu cuenta gratis", "Unlock it with your free account")}
+                <div className="mt-6 grid grid-cols-2 gap-3 text-left">
+                  <div className="rounded-xl bg-elevated px-3 py-2.5">
+                    <p className="text-[11px] text-muted-foreground">{t("Tú aportas", "You contribute")}</p>
+                    <p className="numeric mt-1 text-sm font-semibold">{fmt(contributed)}</p>
+                  </div>
+                  <div className="rounded-xl bg-elevated px-3 py-2.5">
+                    <p className="text-[11px] text-muted-foreground">{t("Lo genera el interés", "Compound interest adds")}</p>
+                    <p className="numeric mt-1 text-sm font-semibold text-kid-mint">
+                      {fmt(Math.max(futureValue - contributed, 0))}
+                    </p>
+                  </div>
                 </div>
+              </div>
+
+              <div className="mt-7 rounded-2xl border border-kid-mint/25 bg-kid-mint/10 px-5 py-6 text-left">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-kid-mint/20 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-kid-mint">
+                  <Gift className="h-3.5 w-3.5" />
+                  {t("10% de descuento", "10% off")}
+                </span>
+                <p className="mt-3 text-sm font-medium">
+                  {t(
+                    "Gracias por llegar hasta aquí: te damos un 10% de descuento por completar los pasos al crear tu cuenta.",
+                    "Thanks for making it this far: get 10% off when you complete signup.",
+                  )}
+                </p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {t(
+                    "Ahora entiende cómo mejorar ese número, organiza sus finanzas y deja que aprenda el valor del dinero mientras tú estás tranquilo.",
+                    "Now learn how to improve that number, organize their finances and let them learn the value of money while you stay relaxed.",
+                  )}
+                </p>
               </div>
 
               <div className="mt-7 flex flex-col items-center gap-3">
                 <Button asChild size="lg" className="w-full gap-2 rounded-full sm:w-auto sm:px-8">
                   <Link to="/auth" search={{ mode: "signup", next: "/finanzas-para-ninos" }}>
                     <Star className="h-4 w-4" />
-                    {t("Ver el número de mi hijo", "See my child's number")}
+                    {t("Crear cuenta y activar mi 10%", "Create account & claim my 10%")}
                   </Link>
                 </Button>
                 <Link
