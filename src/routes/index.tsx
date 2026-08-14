@@ -332,12 +332,12 @@ function Landing() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.9, delay: 0.1, ease: "easeOut" }}
-            className="pointer-events-none absolute inset-y-0 right-0 hidden w-[42%] items-center justify-end lg:flex"
+            className="pointer-events-none absolute inset-y-0 right-0 hidden w-[55%] lg:block"
             style={{
               WebkitMaskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.08) 30%, rgba(0,0,0,0.55) 55%, #000 80%)",
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 26%, rgba(0,0,0,0.6) 48%, #000 72%)",
               maskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.08) 30%, rgba(0,0,0,0.55) 55%, #000 80%)",
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 26%, rgba(0,0,0,0.6) 48%, #000 72%)",
             }}
 
           >
@@ -346,36 +346,35 @@ function Landing() {
               alt={t("Hombre feliz usando WhatsYourNumber en su laptop", "Happy man using WhatsYourNumber on his laptop")}
               width={1536}
               height={1024}
-              className="h-auto max-h-[78%] w-full object-contain object-right"
+              className="h-full w-full object-cover object-[60%_center]"
               loading="eager"
               fetchPriority="high"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
           </motion.div>
 
           {/* Mobile / tablet: the photo is the top of the background itself */}
           <div
-            className="pointer-events-none absolute inset-x-0 top-0 h-[38vh] min-h-[240px] lg:hidden"
+            className="pointer-events-none absolute inset-x-0 top-0 h-[46vh] min-h-[280px] lg:hidden"
             style={{
-              WebkitMaskImage: "linear-gradient(to bottom, #000 40%, transparent 100%)",
-              maskImage: "linear-gradient(to bottom, #000 40%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to bottom, #000 42%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, #000 42%, transparent 100%)",
             }}
           >
             <img
               src={heroManLaptopAsset.url}
               alt=""
               aria-hidden
-              className="h-full w-full object-cover object-[66%_26%]"
+              className="h-full w-full object-cover object-[62%_28%]"
               loading="eager"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/25 to-background/20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-background/15" />
           </div>
 
 
 
-
           <div className="relative z-10 mx-auto w-full max-w-6xl px-6">
-            <div className="max-w-xl pb-16 pt-[34vh] text-center md:pb-24 lg:max-w-[46%] lg:pb-40 lg:pt-52 lg:text-left">
+            <div className="max-w-2xl pb-16 pt-[40vh] text-center md:pb-24 lg:pb-36 lg:pt-44 lg:text-left">
               <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground backdrop-blur">
                 <Sparkles className="h-3.5 w-3.5 text-primary" />
                 {t("Tu family office personal, potenciado con IA", "Your personal family office, powered by AI")}
