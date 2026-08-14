@@ -316,36 +316,62 @@ function CollegeFinder({ member }: { member: Member }) {
 
           </section>
 
-          {/* Filtros */}
-          <section className="space-y-3 rounded-3xl border border-border/70 bg-card p-4 shadow-sm sm:p-5">
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-primary/70" />
-              <Input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder={t("Busca universidad, ciudad o país…", "Search university, city or country…")}
-                className="h-11 rounded-full border-border/60 bg-secondary/40 pl-10 text-sm"
-              />
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Chip active={!region} onClick={() => setRegion(null)}>
-                🌍 {t("Todo el mundo", "Worldwide")}
-              </Chip>
-              {REGIONS.map((r) => (
-                <Chip key={r} active={region === r} onClick={() => setRegion(region === r ? null : r)}>
-                  {UNI_REGION_LABELS[r][lang === "en" ? "en" : "es"]}
+          {/* Filtros premium */}
+          <section className="sticky top-2 z-20 overflow-hidden rounded-[28px] border border-primary/15 bg-card/80 p-1 shadow-[0_10px_30px_-18px_rgba(0,0,0,0.45)] backdrop-blur-xl">
+            <div className="rounded-[24px] bg-gradient-to-b from-primary/[0.06] to-transparent p-3 sm:p-4">
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-primary/70" />
+                <Input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder={t("Busca universidad, ciudad o país…", "Search university, city or country…")}
+                  className="h-12 rounded-full border-primary/15 bg-background/70 pl-11 pr-4 text-sm shadow-inner focus-visible:ring-primary/30"
+                />
+              </div>
+
+              <div className="mt-3 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <Chip active={!region} onClick={() => setRegion(null)}>
+                  🌍 <span className="hidden sm:inline">{t("Todo el mundo", "Worldwide")}</span>
                 </Chip>
-              ))}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {FIELDS.map((f) => (
-                <Chip key={f} active={field === f} onClick={() => setField(field === f ? null : f)}>
-                  {FIELD_LABELS[f].emoji} {FIELD_LABELS[f][lang === "en" ? "en" : "es"]}
-                </Chip>
-              ))}
+                {REGIONS.map((r) => (
+                  <Chip key={r} active={region === r} onClick={() => setRegion(region === r ? null : r)}>
+                    {UNI_REGION_LABELS[r][lang === "en" ? "en" : "es"]}
+                  </Chip>
+                ))}
+                <span className="mx-1 w-px shrink-0 self-stretch bg-border/70" />
+                {FIELDS.map((f) => (
+                  <Chip key={f} active={field === f} onClick={() => setField(field === f ? null : f)}>
+                    {FIELD_LABELS[f].emoji}{" "}
+                    <span className="hidden sm:inline">{FIELD_LABELS[f][lang === "en" ? "en" : "es"]}</span>
+                  </Chip>
+                ))}
+              </div>
+
+              {compare.length > 0 ? (
+                <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl bg-primary/10 px-3 py-2">
+                  <p className="truncate text-xs font-semibold text-primary">
+                    {compare.length}/3 {t("seleccionadas para comparar", "selected to compare")}
+                  </p>
+                  <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => setCompare([])}>
+                    {t("Limpiar", "Clear")}
+                  </Button>
+                </div>
+              ) : null}
             </div>
           </section>
 
+          {compared.length >= 2 ? (
+            <ComparePanel
+              items={compared}
+              currency={currency}
+              budget={effectiveBudget}
+              monthsLeft={monthsLeft}
+              lang={lang}
+              t={t}
+              onRemove={toggleCompare}
+              onClear={() => setCompare([])}
+            />
+          ) : null}
 
           {/* Resultados */}
           <section>
@@ -354,7 +380,11 @@ function CollegeFinder({ member }: { member: Member }) {
               <span className="font-normal text-muted-foreground">
                 {t("universidades que ya puedes pagar", "universities you can already afford")}
               </span>
+              <span className="ml-2 text-xs font-normal text-muted-foreground">
+                · {t("selecciona hasta 3 para comparar", "pick up to 3 to compare")}
+              </span>
             </p>
+
             <div className="grid gap-3 sm:grid-cols-2">
               {list.map(({ u, total }) => {
                 const ok = total <= effectiveBudget;
