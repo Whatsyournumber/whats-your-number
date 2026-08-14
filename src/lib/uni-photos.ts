@@ -15,6 +15,21 @@ import curatedUnb from "@/assets/uni/br-unb.jpg";
 import curatedUfsc from "@/assets/uni/br-ufsc.jpg";
 import curatedUfpe from "@/assets/uni/br-ufpe.jpg";
 import curatedSanMarcos from "@/assets/uni/pe-sanmarcos.jpg";
+import curatedTum from "@/assets/uni/de-tum.jpg";
+import curatedLmu from "@/assets/uni/de-lmu.jpg";
+import curatedHumboldt from "@/assets/uni/de-humboldt.jpg";
+import curatedFuBerlin from "@/assets/uni/de-fu-berlin.jpg";
+import curatedTuBerlin from "@/assets/uni/de-tu-berlin.jpg";
+import curatedHamburg from "@/assets/uni/de-hamburg.jpg";
+import curatedKit from "@/assets/uni/de-kit.jpg";
+import curatedPolimi from "@/assets/uni/it-polimi.jpg";
+import curatedSapienza from "@/assets/uni/it-sapienza.jpg";
+import curatedBologna from "@/assets/uni/it-bologna.jpg";
+import curatedFirenze from "@/assets/uni/it-firenze.jpg";
+import curatedUfrgs from "@/assets/uni/br-ufrgs.jpg";
+import curatedUanl from "@/assets/uni/mx-uanl.jpg";
+import curatedUtp from "@/assets/uni/pa-utp.jpg";
+import curatedUcr from "@/assets/uni/cr-ucr.jpg";
 
 import type { University } from "@/lib/universities";
 import { REAL_UNI_PHOTOS } from "@/lib/uni-photos-real";
@@ -44,6 +59,21 @@ const CURATED: Record<string, string> = {
   "br-ufsc": curatedUfsc,
   "br-ufpe": curatedUfpe,
   "lat-universidad-nacional-mayor-d": curatedSanMarcos,
+  "de-tu-munchen": curatedTum,
+  "de-lmu-munchen": curatedLmu,
+  "de-humboldt-universitat": curatedHumboldt,
+  "de-freie-universitat-berlin": curatedFuBerlin,
+  "de-tu-berlin": curatedTuBerlin,
+  "de-universitat-hamburg": curatedHamburg,
+  "de-kit-karlsruhe": curatedKit,
+  "it-politecnico-di-milano": curatedPolimi,
+  "it-sapienza-universita-di-roma": curatedSapienza,
+  "it-universita-di-bologna": curatedBologna,
+  "it-universita-di-firenze": curatedFirenze,
+  "br-ufrgs": curatedUfrgs,
+  "mx-uanl": curatedUanl,
+  "lat-universidad-tecnologica-de-p": curatedUtp,
+  "lat-universidad-de-costa-rica": curatedUcr,
 };
 
 /** Foto de campus premium asignada de forma estable a cada universidad. */
