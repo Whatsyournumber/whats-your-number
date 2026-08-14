@@ -182,13 +182,53 @@ function AffiliatesPage() {
             </Badge>
           )}
         </p>
-        <p className="mt-2 text-xs text-muted-foreground">
-          {t(
-            "Como afiliado tienes el plan Pro incluido durante 12 meses para usar y demostrar el producto.",
-            "As an affiliate you get the Pro plan included for 12 months to use and demo the product.",
-          )}
-        </p>
       </Panel>
+
+      <Panel
+        className="mt-4"
+        title={t("Comparte con 3 amigos = Pro gratis", "Share with 3 friends = free Pro")}
+        description={t(
+          "Cuando 3 personas se registren con tu enlace, activamos tu plan Pro gratis durante 12 meses.",
+          "Once 3 people sign up with your link, we activate your Pro plan free for 12 months.",
+        )}
+      >
+        <div className="flex flex-wrap items-center gap-3">
+          {[0, 1, 2].map((i) => (
+            <span
+              key={i}
+              className={`inline-flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold ${
+                referrals.length > i
+                  ? "border-primary/50 bg-primary/15 text-primary"
+                  : "border-border bg-elevated/40 text-muted-foreground"
+              }`}
+            >
+              {referrals.length > i ? <Check className="h-4 w-4" /> : i + 1}
+            </span>
+          ))}
+          <span className="text-sm text-muted-foreground">
+            {referralsToGo > 0
+              ? t(
+                  `Te faltan ${referralsToGo} amigo${referralsToGo === 1 ? "" : "s"} para tu Pro gratis.`,
+                  `${referralsToGo} more friend${referralsToGo === 1 ? "" : "s"} to unlock your free Pro.`,
+                )
+              : t("¡Desbloqueado! Tu plan Pro gratis está activo.", "Unlocked! Your free Pro plan is active.")}
+          </span>
+          {referralsToGo === 0 && (
+            <Button variant="outline" size="sm" disabled={busy} onClick={() => void claimReward()}>
+              {busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+              {t("Activar mi Pro gratis", "Activate my free Pro")}
+            </Button>
+          )}
+        </div>
+        <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-elevated">
+          <div
+            className="h-full rounded-full bg-primary transition-all"
+            style={{ width: `${Math.min(100, (referrals.length / REFERRAL_GOAL) * 100)}%` }}
+          />
+        </div>
+      </Panel>
+
+
 
 
 
