@@ -354,19 +354,22 @@ function CollegeFinder({ member }: { member: Member }) {
           </button>
         </div>
 
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {buckets.map((b) => (
             <button
               key={b.key}
               type="button"
               onClick={() => {
-                setContinent(null);
+                setBucket(null);
                 setCountry("");
-                setBucket(bucket === b.key ? null : b.key);
+                setContinent(continent === b.key ? null : b.key);
+                requestAnimationFrame(() =>
+                  resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
+                );
               }}
               className={cn(
                 "rounded-2xl border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-md",
-                bucket === b.key ? "border-primary bg-primary/[0.07]" : "border-border/70 bg-background/50",
+                continent === b.key ? "border-primary bg-primary/[0.07]" : "border-border/70 bg-background/50",
               )}
             >
               <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
