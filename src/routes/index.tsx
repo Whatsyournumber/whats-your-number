@@ -22,6 +22,8 @@ import {
 
 
 import ctaLifestyle from "@/assets/cta-lifestyle.jpg";
+import heroManLaptopAsset from "@/assets/hero-man-laptop.jpg.asset.json";
+
 
 import { BrandLogo } from "@/components/brand-logo";
 import { ProductPreview } from "@/components/product-preview";
