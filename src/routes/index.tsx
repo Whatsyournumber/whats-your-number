@@ -368,7 +368,7 @@ function Landing() {
               className="h-full w-full object-cover object-[62%_28%]"
               loading="eager"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-background/40" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-background/15" />
           </div>
 
 
