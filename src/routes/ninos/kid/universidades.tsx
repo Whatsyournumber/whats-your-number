@@ -317,48 +317,68 @@ function CollegeFinder({ member }: { member: Member }) {
           </section>
 
           {/* Filtros premium */}
-          <section className="sticky top-2 z-20 overflow-hidden rounded-[28px] border border-primary/15 bg-card/80 p-1 shadow-[0_10px_30px_-18px_rgba(0,0,0,0.45)] backdrop-blur-xl">
-            <div className="rounded-[24px] bg-gradient-to-b from-primary/[0.06] to-transparent p-3 sm:p-4">
-              <div className="relative">
-                <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-primary/70" />
-                <Input
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder={t("Busca universidad, ciudad o país…", "Search university, city or country…")}
-                  className="h-12 rounded-full border-primary/15 bg-background/70 pl-11 pr-4 text-sm shadow-inner focus-visible:ring-primary/30"
-                />
-              </div>
-
-              <div className="mt-3 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                <Chip active={!region} onClick={() => setRegion(null)}>
-                  🌍 <span className="hidden sm:inline">{t("Todo el mundo", "Worldwide")}</span>
-                </Chip>
-                {REGIONS.map((r) => (
-                  <Chip key={r} active={region === r} onClick={() => setRegion(region === r ? null : r)}>
-                    {UNI_REGION_LABELS[r][lang === "en" ? "en" : "es"]}
-                  </Chip>
-                ))}
-                <span className="mx-1 w-px shrink-0 self-stretch bg-border/70" />
-                {FIELDS.map((f) => (
-                  <Chip key={f} active={field === f} onClick={() => setField(field === f ? null : f)}>
-                    {FIELD_LABELS[f].emoji}{" "}
-                    <span className="hidden sm:inline">{FIELD_LABELS[f][lang === "en" ? "en" : "es"]}</span>
-                  </Chip>
-                ))}
-              </div>
-
-              {compare.length > 0 ? (
-                <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl bg-primary/10 px-3 py-2">
-                  <p className="truncate text-xs font-semibold text-primary">
-                    {compare.length}/3 {t("seleccionadas para comparar", "selected to compare")}
-                  </p>
-                  <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => setCompare([])}>
-                    {t("Limpiar", "Clear")}
-                  </Button>
+          <section className="sticky top-2 z-20 overflow-hidden rounded-[28px] border border-primary/15 bg-card/75 shadow-[0_18px_45px_-28px_rgba(0,0,0,0.6)] backdrop-blur-2xl">
+            <div className="bg-gradient-to-b from-primary/[0.08] via-transparent to-transparent p-3 sm:p-4">
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+                <div className="relative lg:w-[340px] lg:shrink-0">
+                  <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-primary/70" />
+                  <Input
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder={t("Busca universidad, ciudad o país…", "Search university, city or country…")}
+                    className="h-11 rounded-full border-primary/15 bg-background/70 pl-11 pr-4 text-sm shadow-inner focus-visible:ring-primary/30"
+                  />
                 </div>
-              ) : null}
+
+                <div className="flex min-w-0 flex-1 flex-col gap-2">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <span className="hidden w-16 shrink-0 text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:block">
+                      {t("Región", "Region")}
+                    </span>
+                    <div className="-mx-1 flex min-w-0 flex-1 gap-1.5 overflow-x-auto px-1 pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                      <Chip active={!region} onClick={() => setRegion(null)}>
+                        🌍 <span className="hidden sm:inline">{t("Todo", "All")}</span>
+                      </Chip>
+                      {REGIONS.map((r) => (
+                        <Chip key={r} active={region === r} onClick={() => setRegion(region === r ? null : r)}>
+                          {UNI_REGION_LABELS[r][lang === "en" ? "en" : "es"]}
+                        </Chip>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex min-w-0 items-center gap-2">
+                    <span className="hidden w-16 shrink-0 text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:block">
+                      {t("Área", "Field")}
+                    </span>
+                    <div className="-mx-1 flex min-w-0 flex-1 gap-1.5 overflow-x-auto px-1 pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                      <Chip active={!field} onClick={() => setField(null)}>
+                        ✨ <span className="hidden sm:inline">{t("Todas", "All")}</span>
+                      </Chip>
+                      {FIELDS.map((f) => (
+                        <Chip key={f} active={field === f} onClick={() => setField(field === f ? null : f)}>
+                          {FIELD_LABELS[f].emoji}{" "}
+                          <span className="hidden sm:inline">{FIELD_LABELS[f][lang === "en" ? "en" : "es"]}</span>
+                        </Chip>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {compare.length > 0 ? (
+                  <div className="flex shrink-0 items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5">
+                    <p className="whitespace-nowrap text-[11px] font-bold text-primary">
+                      {compare.length}/3 {t("para comparar", "to compare")}
+                    </p>
+                    <Button variant="ghost" size="sm" className="h-6 px-2 text-[11px]" onClick={() => setCompare([])}>
+                      {t("Limpiar", "Clear")}
+                    </Button>
+                  </div>
+                ) : null}
+              </div>
             </div>
           </section>
+
 
           {compared.length >= 2 ? (
             <ComparePanel
