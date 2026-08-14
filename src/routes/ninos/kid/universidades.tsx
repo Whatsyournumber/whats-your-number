@@ -61,7 +61,7 @@ function CollegeFinder({ member }: { member: Member }) {
   const { t, lang } = useI18n();
   const { data: fund } = useFund(member.id);
   const { data: movements = [] } = useMovements(member.id);
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
 
   const currency = member.currency || "EUR";
   const fx = useFx(member.base_currency, currency);
