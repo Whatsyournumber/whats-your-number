@@ -412,39 +412,57 @@ function Onboarding() {
               hint={`${t("Gastar", "Spend")} ${split.spend}% · ${t("Ahorrar", "Save")} ${split.save}% · ${t("Crecer", "Grow")} ${split.grow}%`}
             >
               <div className="space-y-5">
-                <Field label={`🛍 ${t("Gastar", "Spend")} — ${split.spend}%`}>
-                  <input
-                    type="range"
-                    min={0}
-                    max={100}
-                    step={5}
-                    value={split.spend}
-                    onChange={(e) => {
-                      const spend = Number(e.target.value);
-                      const save = Math.min(split.save, 100 - spend);
-                      setSplit({ spend, save, grow: 100 - spend - save });
-                    }}
-                    className="w-full accent-[var(--color-primary)]"
-                  />
-                </Field>
-                <Field label={`🌱 ${t("Ahorrar", "Save")} — ${split.save}%`}>
-                  <input
-                    type="range"
-                    min={0}
-                    max={100}
-                    step={5}
-                    value={split.save}
-                    onChange={(e) => {
-                      const save = Math.min(Number(e.target.value), 100 - split.spend);
-                      setSplit({ ...split, save, grow: 100 - split.spend - save });
-                    }}
-                    className="w-full accent-[var(--color-primary)]"
-                  />
-                </Field>
-                <p className="text-sm text-muted-foreground">
-                  📈 {t("Hacer crecer", "Grow")}:{" "}
-                  <span className="font-semibold text-foreground">{split.grow}%</span>
-                </p>
+                {(() => {
+                  const reorder = (
+                    key: "spend" | "save" | "grow",
+                    next: number,
+                  ) => {
+                    const others = (["spend", "save", "grow"] as const).filter(
+                      (k) => k !== key,
+                    ) as ("spend" | "save" | "grow")[];
+                    const remaining = 100 - next;
+                    const otherSum = split[others[0]] + split[others[1]];
+                    const [a, b] =
+                      otherSum === 0
+                        ? [remaining / 2, remaining / 2]
+                        : [
+                            Math.round((split[others[0]] / otherSum) * remaining),
+                            0,
+                          ];
+                    const oB = remaining - a;
+                    setSplit({
+                      spend: key === "spend" ? next : others[0] === "spend" ? a : oB,
+                      save: key === "save" ? next : others[0] === "save" ? a : oB,
+                      grow: key === "grow" ? next : others[0] === "grow" ? a : oB,
+                    } as Record<"spend" | "save" | "grow", number>);
+                  };
+                  const items: {
+                    key: "spend" | "save" | "grow";
+                    emoji: string;
+                    labelEs: string;
+                    labelEn: string;
+                  }[] = [
+                    { key: "grow", emoji: "📈", labelEs: "Invertir", labelEn: "Invest" },
+                    { key: "save", emoji: "🌱", labelEs: "Ahorrar", labelEn: "Save" },
+                    { key: "spend", emoji: "🛍", labelEs: "Gastar", labelEn: "Spend" },
+                  ];
+                  return items.map((item) => (
+                    <Field
+                      key={item.key}
+                      label={`${item.emoji} ${t(item.labelEs, item.labelEn)} — ${split[item.key]}%`}
+                    >
+                      <input
+                        type="range"
+                        min={0}
+                        max={100}
+                        step={5}
+                        value={split[item.key]}
+                        onChange={(e) => reorder(item.key, Number(e.target.value))}
+                        className="w-full accent-[var(--color-primary)]"
+                      />
+                    </Field>
+                  ));
+                })()}
               </div>
             </Card>
           </div>
