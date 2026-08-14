@@ -2,11 +2,11 @@ import { useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { useT } from "@/hooks/use-language";
 import { getPaddleEnvironment } from "@/lib/paddle";
 import { clearPendingPromoCode, getPendingPromoCode } from "@/lib/pending-promo";
+import { redeemPromoCode } from "@/lib/promo.functions";
 
 type RedeemResult = { ok: boolean; error?: string; until?: string };
 
@@ -25,12 +25,9 @@ export function PromoAutoRedeem() {
 
     void (async () => {
       try {
-        const { data, error } = await supabase.rpc("redeem_promo_code", {
-          _code: code,
-          _environment: getPaddleEnvironment(),
-        });
-        if (error) throw error;
-        const result = data as unknown as RedeemResult;
+        const result = (await redeemPromoCode({
+          data: { code, environment: getPaddleEnvironment() },
+        })) as RedeemResult;
         clearPendingPromoCode();
         if (result?.ok) {
           toast.success(t("¡Código activado! Ya tienes acceso Pro.", "Code activated! You now have Pro access."));
