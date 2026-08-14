@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { ArrowRight, Baby, Compass, Loader2 } from "lucide-react";
+import { ArrowRight, Compass, Loader2, Plus } from "lucide-react";
+import { toast } from "sonner";
 
 import { BrandMark } from "@/components/brand-logo";
 import { useAuth } from "@/hooks/use-auth";
@@ -9,34 +10,6 @@ import { useSubscription } from "@/hooks/use-subscription";
 import { useT } from "@/hooks/use-language";
 
 import { supabase } from "@/integrations/supabase/client";
-const KIDS_APP_URL = "https://myfirstnumber.lovable.app";
-
-/**
- * Lleva la sesión activa en el fragmento con el formato estándar de Supabase
- * (detectSessionInUrl) para entrar directo al onboarding, sin pedir login otra vez.
- */
-async function goToKids() {
-  try {
-    const { data } = await supabase.auth.getSession();
-    const session = data.session;
-    if (!session) {
-      window.location.assign(`${KIDS_APP_URL}/auth`);
-      return;
-    }
-
-    const params = new URLSearchParams({
-      access_token: session.access_token,
-      refresh_token: session.refresh_token,
-      token_type: session.token_type ?? "bearer",
-      expires_in: String(session.expires_in ?? 3600),
-      type: "magiclink",
-    });
-    window.location.assign(`${KIDS_APP_URL}/onboarding#${params.toString()}`);
-  } catch {
-    window.location.assign(`${KIDS_APP_URL}/auth`);
-  }
-}
-
 
 export const Route = createFileRoute("/elegir")({
   head: () => ({
@@ -66,6 +39,40 @@ function ChooserPage() {
   const t = useT();
 
   const loading = authLoading || subscriptionLoading;
+  const [kids, setKids] = useState<{ id: string; name: string; avatar: string; onboarding_completed: boolean }[]>([]);
+  const [creating, setCreating] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    let active = true;
+    void (async () => {
+      const { data } = await supabase
+        .from("kid_profiles")
+        .select("id, name, avatar, onboarding_completed")
+        .eq("parent_id", user.id)
+        .order("created_at", { ascending: true });
+      if (active && data) setKids(data);
+    })();
+    return () => {
+      active = false;
+    };
+  }, [user]);
+
+  async function addKid() {
+    if (!user || creating) return;
+    setCreating(true);
+    const { data, error } = await supabase
+      .from("kid_profiles")
+      .insert({ parent_id: user.id, name: t("Mi hijo/a", "My kid"), avatar: "🧒" })
+      .select("id")
+      .maybeSingle();
+    setCreating(false);
+    if (error || !data) {
+      toast.error(t("No pudimos crear el perfil", "Couldn't create the profile"));
+      return;
+    }
+    navigate({ to: "/nino/$id", params: { id: data.id } });
+  }
 
   useEffect(() => {
     if (loading) return;
@@ -151,24 +158,49 @@ function ChooserPage() {
             </span>
           </button>
 
+          {kids.map((kid) => (
+            <button
+              key={kid.id}
+              type="button"
+              onClick={() => navigate({ to: "/nino/$id", params: { id: kid.id } })}
+              className="group flex flex-col items-center gap-4 rounded-3xl border border-border bg-elevated/60 p-8 text-center transition-all hover:-translate-y-1 hover:border-primary/40 hover:bg-elevated"
+            >
+              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-3xl ring-2 ring-primary/30">
+                {kid.avatar}
+              </span>
+              <div>
+                <p className="font-display text-lg font-semibold">{kid.name}</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {kid.onboarding_completed
+                    ? t("Entrar a My First Number", "Enter My First Number")
+                    : t("Completar su perfil", "Finish their profile")}
+                </p>
+              </div>
+              <span className="inline-flex items-center gap-1 text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
+                {t("Continuar", "Continue")} <ArrowRight className="h-3.5 w-3.5" />
+              </span>
+            </button>
+          ))}
+
           <button
             type="button"
-            onClick={() => void goToKids()}
-            className="group flex flex-col items-center gap-4 rounded-3xl border border-border bg-elevated/60 p-8 text-center transition-all hover:-translate-y-1 hover:border-primary/40 hover:bg-elevated"
+            onClick={() => void addKid()}
+            disabled={creating}
+            className="group flex flex-col items-center gap-4 rounded-3xl border border-dashed border-border bg-transparent p-8 text-center transition-all hover:-translate-y-1 hover:border-primary/40 hover:bg-elevated/40"
           >
-
-            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 ring-2 ring-primary/30">
-              <Baby className="h-7 w-7 text-primary" />
+            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 ring-2 ring-primary/20">
+              {creating ? (
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+              ) : (
+                <Plus className="h-7 w-7 text-primary" />
+              )}
             </span>
             <div>
-              <p className="font-display text-lg font-semibold">{t("Hijos", "Kids")}</p>
+              <p className="font-display text-lg font-semibold">{t("Añadir hijo/a", "Add a kid")}</p>
               <p className="mt-1 text-xs text-muted-foreground">
-                {t("Entrar a My First Number", "Enter My First Number")}
+                {t("Crea su primer número en 3 pasos", "Create their first number in 3 steps")}
               </p>
             </div>
-            <span className="inline-flex items-center gap-1 text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
-              {t("Continuar", "Continue")} <ArrowRight className="h-3.5 w-3.5" />
-            </span>
           </button>
         </div>
       </motion.div>

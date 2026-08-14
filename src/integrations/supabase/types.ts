@@ -317,6 +317,57 @@ export type Database = {
           },
         ]
       }
+      kid_profiles: {
+        Row: {
+          avatar: string
+          birth_year: number | null
+          created_at: string
+          currency: string
+          expected_return: number
+          goal: string | null
+          goal_amount: number
+          id: string
+          monthly_contribution: number
+          name: string
+          onboarding_completed: boolean
+          parent_id: string
+          starting_capital: number
+          updated_at: string
+        }
+        Insert: {
+          avatar?: string
+          birth_year?: number | null
+          created_at?: string
+          currency?: string
+          expected_return?: number
+          goal?: string | null
+          goal_amount?: number
+          id?: string
+          monthly_contribution?: number
+          name: string
+          onboarding_completed?: boolean
+          parent_id: string
+          starting_capital?: number
+          updated_at?: string
+        }
+        Update: {
+          avatar?: string
+          birth_year?: number | null
+          created_at?: string
+          currency?: string
+          expected_return?: number
+          goal?: string | null
+          goal_amount?: number
+          id?: string
+          monthly_contribution?: number
+          name?: string
+          onboarding_completed?: boolean
+          parent_id?: string
+          starting_capital?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       life_goals: {
         Row: {
           cost: number
