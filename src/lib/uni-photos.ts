@@ -119,6 +119,48 @@ function hash(id: string) {
 }
 
 /** Fotos curadas de alta calidad que sustituyen a las fuentes externas. */
+import cur_uk_leeds from "@/assets/uni/uk-leeds.jpg";
+import cur_uk_manchester from "@/assets/uni/uk-manchester.jpg";
+import cur_uk_bristol from "@/assets/uni/uk-bristol.jpg";
+import cur_uk_edinburgh from "@/assets/uni/uk-edinburgh.jpg";
+import cur_uk_warwick from "@/assets/uni/uk-warwick.jpg";
+import cur_uk_lse from "@/assets/uni/uk-lse.jpg";
+import cur_uk_kcl from "@/assets/uni/uk-kcl.jpg";
+import cur_uk_ucl from "@/assets/uni/uk-ucl.jpg";
+import cur_uk_imperial from "@/assets/uni/uk-imperial.jpg";
+import cur_uk_glasgow from "@/assets/uni/uk-glasgow.jpg";
+import cur_il_telaviv from "@/assets/uni/il-telaviv.jpg";
+import cur_il_technion from "@/assets/uni/il-technion.jpg";
+import cur_us_usf from "@/assets/uni/us-usf.jpg";
+import cur_us_fsu from "@/assets/uni/us-fsu.jpg";
+import cur_us_ucf from "@/assets/uni/us-ucf.jpg";
+import cur_hk_hku from "@/assets/uni/hk-hku.jpg";
+import cur_ae_khalifa from "@/assets/uni/ae-khalifa.jpg";
+import cur_ae_aud from "@/assets/uni/ae-aud.jpg";
+import cur_ar_uba from "@/assets/uni/ar-uba.jpg";
+import cur_ar_cordoba from "@/assets/uni/ar-cordoba.jpg";
+import cur_ar_laplata from "@/assets/uni/ar-laplata.jpg";
+import cur_ar_utn from "@/assets/uni/ar-utn.jpg";
+import cur_ar_rosario from "@/assets/uni/ar-rosario.jpg";
+import cur_it_bocconi from "@/assets/uni/it-bocconi.jpg";
+import cur_cl_udd from "@/assets/uni/cl-udd.jpg";
+import cur_cl_uandes from "@/assets/uni/cl-uandes.jpg";
+import cur_kr_snu from "@/assets/uni/kr-snu.jpg";
+import cur_kr_kaist from "@/assets/uni/kr-kaist.jpg";
+import cur_za_uct from "@/assets/uni/za-uct.jpg";
+import cur_pt_nova from "@/assets/uni/pt-nova.jpg";
+import cur_fr_sciencespo from "@/assets/uni/fr-sciencespo.jpg";
+import cur_fr_polytechnique from "@/assets/uni/fr-polytechnique.jpg";
+import cur_fr_essec from "@/assets/uni/fr-essec.jpg";
+import cur_fr_hec from "@/assets/uni/fr-hec.jpg";
+import cur_cr_incae from "@/assets/uni/cr-incae.jpg";
+import cur_nl_tudelft from "@/assets/uni/nl-tudelft.jpg";
+import cur_mx_tec from "@/assets/uni/mx-tec.jpg";
+import cur_jp_waseda from "@/assets/uni/jp-waseda.jpg";
+import cur_dk_copenhagen from "@/assets/uni/dk-copenhagen.jpg";
+import cur_se_lund from "@/assets/uni/se-lund.jpg";
+import cur_se_kth from "@/assets/uni/se-kth.jpg";
+
 const CURATED: Record<string, string> = {
   "br-universidade-de-sao-paulo": curatedUsp,
   "br-unicamp": curatedUnicamp,
@@ -214,6 +256,47 @@ const CURATED: Record<string, string> = {
   "nl-university-of-groningen": curatedGroningen,
   "co-universidad-icesi": curatedIcesi,
   "it-universita-cattolica": curatedCattolica,
+  "uk-university-of-leeds": cur_uk_leeds,
+  "uk-university-of-manchester": cur_uk_manchester,
+  "uk-university-of-bristol": cur_uk_bristol,
+  "uk-university-of-edinburgh": cur_uk_edinburgh,
+  "uk-university-of-warwick": cur_uk_warwick,
+  "uk-london-school-of-economics": cur_uk_lse,
+  "uk-king-s-college-london": cur_uk_kcl,
+  "uk-ucl": cur_uk_ucl,
+  "uk-imperial-college-london": cur_uk_imperial,
+  "uk-university-of-glasgow": cur_uk_glasgow,
+  "ot-tel-aviv-university": cur_il_telaviv,
+  "ot-technion": cur_il_technion,
+  "us-university-of-south-florida": cur_us_usf,
+  "us-florida-state-university": cur_us_fsu,
+  "us-university-of-central-florid": cur_us_ucf,
+  "ap-university-of-hong-kong": cur_hk_hku,
+  "ot-khalifa-university": cur_ae_khalifa,
+  "ot-american-university-of-dubai": cur_ae_aud,
+  "ar-universidad-de-buenos-aires": cur_ar_uba,
+  "ar-universidad-nacional-de-cord": cur_ar_cordoba,
+  "ar-universidad-nacional-de-la-p": cur_ar_laplata,
+  "ar-utn-universidad-tecnologica-": cur_ar_utn,
+  "ar-universidad-nacional-de-rosa": cur_ar_rosario,
+  "it-bocconi": cur_it_bocconi,
+  "cl-universidad-del-desarrollo": cur_cl_udd,
+  "cl-universidad-de-los-andes-chi": cur_cl_uandes,
+  "ap-seoul-national-university": cur_kr_snu,
+  "ap-kaist": cur_kr_kaist,
+  "ot-university-of-cape-town": cur_za_uct,
+  "ot-nova-lisboa": cur_pt_nova,
+  "fr-sciences-po": cur_fr_sciencespo,
+  "fr-ecole-polytechnique": cur_fr_polytechnique,
+  "fr-essec-business-school": cur_fr_essec,
+  "fr-hec-paris": cur_fr_hec,
+  "cr-incae-business-school": cur_cr_incae,
+  "nl-tu-delft": cur_nl_tudelft,
+  "mx-tec-de-monterrey": cur_mx_tec,
+  "ap-waseda-university": cur_jp_waseda,
+  "ot-university-of-copenhagen": cur_dk_copenhagen,
+  "ot-lund-university": cur_se_lund,
+  "ot-kth-royal-institute": cur_se_kth,
 };
 
 /** Foto de campus premium asignada de forma estable a cada universidad. */
