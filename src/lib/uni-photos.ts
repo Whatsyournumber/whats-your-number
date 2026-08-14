@@ -399,6 +399,12 @@ import afAinShams from "@/assets/uni/af-ain-shams.jpg";
 import afJkuat from "@/assets/uni/af-jkuat.jpg";
 import afKenyatta from "@/assets/uni/af-kenyatta.jpg";
 import afMohammedV from "@/assets/uni/af-mohammed-v.jpg";
+import afLagos from "@/assets/uni/af-lagos.jpg";
+import afGhana from "@/assets/uni/af-ghana.jpg";
+import afNairobi from "@/assets/uni/af-nairobi.jpg";
+import afCairo from "@/assets/uni/af-cairo.jpg";
+import afNamibia from "@/assets/uni/af-namibia.jpg";
+import afBotswana from "@/assets/uni/af-botswana.jpg";
 import apNusReal from "@/assets/uni/ap-nus-real.jpg";
 
 const CURATED: Record<string, string> = {
@@ -418,6 +424,12 @@ const CURATED: Record<string, string> = {
   "me-jkuat": afJkuat,
   "me-kenyatta": afKenyatta,
   "me-mohammed-v": afMohammedV,
+  "me-lagos": afLagos,
+  "me-ghana-legon": afGhana,
+  "me-nairobi": afNairobi,
+  "me-cairo-university": afCairo,
+  "me-namibia": afNamibia,
+  "me-botswana": afBotswana,
   "me-wits": zaWits,
   "me-stellenbosch": zaStellenbosch,
   "me-pretoria": zaPretoria,
