@@ -1488,7 +1488,7 @@ function KidsFinanceLanding() {
         </div>
       </main>
 
-      <SiteFooter />
+      <SiteFooter kids />
     </div>
   );
 }
