@@ -598,7 +598,7 @@ function Onboarding() {
           >
             <ArrowLeft className="h-4 w-4" /> {t("Atrás", "Back")}
           </Button>
-          {step < 5 ? (
+          {step < 6 ? (
             <Button disabled={!canNext} onClick={() => setStep(step + 1)}>
               {t("Siguiente", "Next")} <ArrowRight className="h-4 w-4" />
             </Button>
