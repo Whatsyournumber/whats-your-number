@@ -332,12 +332,12 @@ function Landing() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.9, delay: 0.1, ease: "easeOut" }}
-            className="pointer-events-none absolute inset-y-0 right-0 hidden w-[36%] md:block lg:w-[38%]"
+            className="pointer-events-none absolute inset-y-0 right-0 hidden w-[40%] md:block lg:w-[44%]"
             style={{
               WebkitMaskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.18) 22%, rgba(0,0,0,0.65) 48%, #000 72%)",
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.22) 18%, rgba(0,0,0,0.65) 42%, #000 68%)",
               maskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.18) 22%, rgba(0,0,0,0.65) 48%, #000 72%)",
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.22) 18%, rgba(0,0,0,0.65) 42%, #000 68%)",
             }}
 
           >
@@ -346,7 +346,7 @@ function Landing() {
               alt={t("Hombre feliz usando WhatsYourNumber en su laptop", "Happy man using WhatsYourNumber on his laptop")}
               width={1536}
               height={1024}
-              className="h-full w-full object-cover object-[48%_78%] md:object-[48%_82%] lg:object-[50%_85%]"
+              className="h-full w-full object-cover object-[50%_82%] md:object-[52%_86%] lg:object-[54%_90%]"
               loading="eager"
               fetchPriority="high"
             />
@@ -365,7 +365,7 @@ function Landing() {
               src={heroManLaptopAsset.url}
               alt=""
               aria-hidden
-              className="h-full w-full object-cover object-[68%_45%]"
+              className="h-full w-full object-cover object-[70%_55%]"
               loading="eager"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-background/20" />
