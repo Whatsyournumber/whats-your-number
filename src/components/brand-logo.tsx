@@ -95,8 +95,9 @@ export function BrandLogo({
 
 
 export function KidsBrandMark({ className }: { className?: string }) {
-  return <BrandMark className={className} />;
+  return <BrandMark className={className ?? ""} />;
 }
+
 
 export function KidsBrandLogo({ className }: { className?: string }) {
   return (
