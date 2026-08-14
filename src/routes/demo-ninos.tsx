@@ -232,26 +232,64 @@ function KidsDemoPage() {
                 )}
               </p>
 
-              <div className="surface relative mt-8 overflow-hidden px-6 py-10">
-                <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-                  {t("Su número a los 18", "Their number at 18")}
-                </p>
-                <p className="numeric mt-3 bg-gradient-to-r from-kid-sky to-kid-mint bg-clip-text text-4xl font-semibold text-transparent md:text-5xl">
-                  {fmt(futureValue)}
-                </p>
-                <div className="mt-6 grid grid-cols-2 gap-3 text-left">
-                  <div className="rounded-xl bg-elevated px-3 py-2.5">
-                    <p className="text-[11px] text-muted-foreground">{t("Tú aportas", "You contribute")}</p>
-                    <p className="numeric mt-1 text-sm font-semibold">{fmt(contributed)}</p>
-                  </div>
-                  <div className="rounded-xl bg-elevated px-3 py-2.5">
-                    <p className="text-[11px] text-muted-foreground">{t("Lo genera el interés", "Compound interest adds")}</p>
-                    <p className="numeric mt-1 text-sm font-semibold text-kid-mint">
-                      {fmt(Math.max(futureValue - contributed, 0))}
-                    </p>
+              <div className="mx-auto mt-6 flex w-full max-w-sm items-center gap-0.5 rounded-full border border-border bg-elevated p-0.5">
+                {(
+                  [
+                    { id: "number" as const, label: t("Su número", "Their number"), icon: Sparkles },
+                    { id: "uni" as const, label: t("Universidades", "Universities"), icon: GraduationCap },
+                  ]
+                ).map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setResultTab(tab.id)}
+                    className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium transition-colors ${
+                      resultTab === tab.id
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <tab.icon className="h-3.5 w-3.5" />
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {resultTab === "number" ? (
+                <div className="surface relative mt-6 overflow-hidden px-6 py-10">
+                  <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                    {t("Su número a los 18", "Their number at 18")}
+                  </p>
+                  <p className="numeric mt-3 bg-gradient-to-r from-kid-sky to-kid-mint bg-clip-text text-4xl font-semibold text-transparent md:text-5xl">
+                    {fmt(futureValue)}
+                  </p>
+                  <div className="mt-6 grid grid-cols-2 gap-3 text-left">
+                    <div className="rounded-xl bg-elevated px-3 py-2.5">
+                      <p className="text-[11px] text-muted-foreground">{t("Tú aportas", "You contribute")}</p>
+                      <p className="numeric mt-1 text-sm font-semibold">{fmt(contributed)}</p>
+                    </div>
+                    <div className="rounded-xl bg-elevated px-3 py-2.5">
+                      <p className="text-[11px] text-muted-foreground">{t("Lo genera el interés", "Compound interest adds")}</p>
+                      <p className="numeric mt-1 text-sm font-semibold text-kid-mint">
+                        {fmt(Math.max(futureValue - contributed, 0))}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="mt-6">
+                  <p className="text-left text-sm text-muted-foreground">
+                    {t(
+                      "¿Alcanza para la universidad? Compara el coste medio de una carrera por país, pública vs privada.",
+                      "Is it enough for university? Compare the average cost of a degree by country, public vs private.",
+                    )}
+                  </p>
+                  <div className="mt-4">
+                    <UniversityCostExplorer amount={futureValue} currency={currency} />
+                  </div>
+                </div>
+              )}
+
 
               <div className="mt-7 rounded-2xl border border-kid-mint/25 bg-kid-mint/10 px-5 py-6 text-left">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-kid-mint/20 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-kid-mint">
