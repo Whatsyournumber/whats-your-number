@@ -64,7 +64,15 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
     </Button>
   ) : (
     <>
-      <Button asChild variant="ghost" size="sm" className="rounded-full text-xs whitespace-nowrap">
+      <Button
+        asChild
+        variant="ghost"
+        size="sm"
+        className={cn(
+          "rounded-full text-xs whitespace-nowrap",
+          isLight && "text-slate-700 hover:bg-slate-100 hover:text-slate-900",
+        )}
+      >
         <Link to="/auth" search={{ mode: "login" }}>
           {t("Iniciar sesión", "Sign in")}
         </Link>
@@ -76,6 +84,7 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
       </Button>
     </>
   );
+
 
   const mobileAuthButton = user ? (
     <Button asChild size="sm" className="h-8 rounded-full px-3 text-xs">
