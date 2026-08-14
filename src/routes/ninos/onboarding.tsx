@@ -79,6 +79,7 @@ function Onboarding() {
     true,
     wishPrice > 0,
     monthly >= 0,
+    true,
   ][step];
 
   function pickCity(value: string) {
