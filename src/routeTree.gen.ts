@@ -27,6 +27,7 @@ import { Route as GastosRouteImport } from './routes/gastos'
 import { Route as HipotecaRouteImport } from './routes/hipoteca'
 import { Route as LifePlannerRouteImport } from './routes/life-planner'
 import { Route as MiPerfilRouteImport } from './routes/mi-perfil'
+import { Route as NinosRouteRouteImport } from './routes/ninos/route'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PatrimonioRouteImport } from './routes/patrimonio'
 import { Route as PortafolioRouteImport } from './routes/portafolio'
@@ -139,6 +140,11 @@ const MiPerfilRoute = MiPerfilRouteImport.update({
   path: '/mi-perfil',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NinosRouteRoute = NinosRouteRouteImport.update({
+  id: '/ninos',
+  path: '/ninos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
@@ -195,49 +201,49 @@ const NinoIdRoute = NinoIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const NinosIndexRoute = NinosIndexRouteImport.update({
-  id: '/ninos/',
-  path: '/ninos/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => NinosRouteRoute,
 } as any)
 const NinosOnboardingRoute = NinosOnboardingRouteImport.update({
-  id: '/ninos/onboarding',
-  path: '/ninos/onboarding',
-  getParentRoute: () => rootRouteImport,
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => NinosRouteRoute,
 } as any)
 const NinosPadresRoute = NinosPadresRouteImport.update({
-  id: '/ninos/padres',
-  path: '/ninos/padres',
-  getParentRoute: () => rootRouteImport,
+  id: '/padres',
+  path: '/padres',
+  getParentRoute: () => NinosRouteRoute,
 } as any)
 const NinosKidDatosRoute = NinosKidDatosRouteImport.update({
-  id: '/ninos/kid/datos',
-  path: '/ninos/kid/datos',
-  getParentRoute: () => rootRouteImport,
+  id: '/kid/datos',
+  path: '/kid/datos',
+  getParentRoute: () => NinosRouteRoute,
 } as any)
 const NinosKidDeseosRoute = NinosKidDeseosRouteImport.update({
-  id: '/ninos/kid/deseos',
-  path: '/ninos/kid/deseos',
-  getParentRoute: () => rootRouteImport,
+  id: '/kid/deseos',
+  path: '/kid/deseos',
+  getParentRoute: () => NinosRouteRoute,
 } as any)
 const NinosKidDineroRoute = NinosKidDineroRouteImport.update({
-  id: '/ninos/kid/dinero',
-  path: '/ninos/kid/dinero',
-  getParentRoute: () => rootRouteImport,
+  id: '/kid/dinero',
+  path: '/kid/dinero',
+  getParentRoute: () => NinosRouteRoute,
 } as any)
 const NinosKidFuturoRoute = NinosKidFuturoRouteImport.update({
-  id: '/ninos/kid/futuro',
-  path: '/ninos/kid/futuro',
-  getParentRoute: () => rootRouteImport,
+  id: '/kid/futuro',
+  path: '/kid/futuro',
+  getParentRoute: () => NinosRouteRoute,
 } as any)
 const NinosKidNumeroRoute = NinosKidNumeroRouteImport.update({
-  id: '/ninos/kid/numero',
-  path: '/ninos/kid/numero',
-  getParentRoute: () => rootRouteImport,
+  id: '/kid/numero',
+  path: '/kid/numero',
+  getParentRoute: () => NinosRouteRoute,
 } as any)
 const NinosKidTareasRoute = NinosKidTareasRouteImport.update({
-  id: '/ninos/kid/tareas',
-  path: '/ninos/kid/tareas',
-  getParentRoute: () => rootRouteImport,
+  id: '/kid/tareas',
+  path: '/kid/tareas',
+  getParentRoute: () => NinosRouteRoute,
 } as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
@@ -248,6 +254,7 @@ const ApiPublicPaymentsWebhookRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ninos': typeof NinosRouteRouteWithChildren
   '/admin': typeof AdminRoute
   '/advisor': typeof AdvisorRoute
   '/afiliados': typeof AfiliadosRoute
@@ -331,6 +338,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ninos': typeof NinosRouteRouteWithChildren
   '/admin': typeof AdminRoute
   '/advisor': typeof AdvisorRoute
   '/afiliados': typeof AfiliadosRoute
@@ -374,6 +382,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/ninos'
     | '/admin'
     | '/advisor'
     | '/afiliados'
@@ -456,6 +465,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/ninos'
     | '/admin'
     | '/advisor'
     | '/afiliados'
@@ -498,6 +508,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  NinosRouteRoute: typeof NinosRouteRouteWithChildren
   AdminRoute: typeof AdminRoute
   AdvisorRoute: typeof AdvisorRoute
   AfiliadosRoute: typeof AfiliadosRoute
@@ -526,15 +537,6 @@ export interface RootRouteChildren {
   TerminosRoute: typeof TerminosRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   NinoIdRoute: typeof NinoIdRoute
-  NinosOnboardingRoute: typeof NinosOnboardingRoute
-  NinosPadresRoute: typeof NinosPadresRoute
-  NinosIndexRoute: typeof NinosIndexRoute
-  NinosKidDatosRoute: typeof NinosKidDatosRoute
-  NinosKidDeseosRoute: typeof NinosKidDeseosRoute
-  NinosKidDineroRoute: typeof NinosKidDineroRoute
-  NinosKidFuturoRoute: typeof NinosKidFuturoRoute
-  NinosKidNumeroRoute: typeof NinosKidNumeroRoute
-  NinosKidTareasRoute: typeof NinosKidTareasRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
@@ -666,6 +668,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MiPerfilRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ninos': {
+      id: '/ninos'
+      path: '/ninos'
+      fullPath: '/ninos'
+      preLoaderRoute: typeof NinosRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding': {
       id: '/onboarding'
       path: '/onboarding'
@@ -745,66 +754,66 @@ declare module '@tanstack/react-router' {
     }
     '/ninos/': {
       id: '/ninos/'
-      path: '/ninos'
+      path: '/'
       fullPath: '/ninos/'
       preLoaderRoute: typeof NinosIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof NinosRouteRoute
     }
     '/ninos/onboarding': {
       id: '/ninos/onboarding'
-      path: '/ninos/onboarding'
+      path: '/onboarding'
       fullPath: '/ninos/onboarding'
       preLoaderRoute: typeof NinosOnboardingRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof NinosRouteRoute
     }
     '/ninos/padres': {
       id: '/ninos/padres'
-      path: '/ninos/padres'
+      path: '/padres'
       fullPath: '/ninos/padres'
       preLoaderRoute: typeof NinosPadresRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof NinosRouteRoute
     }
     '/ninos/kid/datos': {
       id: '/ninos/kid/datos'
-      path: '/ninos/kid/datos'
+      path: '/kid/datos'
       fullPath: '/ninos/kid/datos'
       preLoaderRoute: typeof NinosKidDatosRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof NinosRouteRoute
     }
     '/ninos/kid/deseos': {
       id: '/ninos/kid/deseos'
-      path: '/ninos/kid/deseos'
+      path: '/kid/deseos'
       fullPath: '/ninos/kid/deseos'
       preLoaderRoute: typeof NinosKidDeseosRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof NinosRouteRoute
     }
     '/ninos/kid/dinero': {
       id: '/ninos/kid/dinero'
-      path: '/ninos/kid/dinero'
+      path: '/kid/dinero'
       fullPath: '/ninos/kid/dinero'
       preLoaderRoute: typeof NinosKidDineroRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof NinosRouteRoute
     }
     '/ninos/kid/futuro': {
       id: '/ninos/kid/futuro'
-      path: '/ninos/kid/futuro'
+      path: '/kid/futuro'
       fullPath: '/ninos/kid/futuro'
       preLoaderRoute: typeof NinosKidFuturoRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof NinosRouteRoute
     }
     '/ninos/kid/numero': {
       id: '/ninos/kid/numero'
-      path: '/ninos/kid/numero'
+      path: '/kid/numero'
       fullPath: '/ninos/kid/numero'
       preLoaderRoute: typeof NinosKidNumeroRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof NinosRouteRoute
     }
     '/ninos/kid/tareas': {
       id: '/ninos/kid/tareas'
-      path: '/ninos/kid/tareas'
+      path: '/kid/tareas'
       fullPath: '/ninos/kid/tareas'
       preLoaderRoute: typeof NinosKidTareasRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof NinosRouteRoute
     }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
@@ -816,8 +825,37 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface NinosRouteRouteChildren {
+  NinosOnboardingRoute: typeof NinosOnboardingRoute
+  NinosPadresRoute: typeof NinosPadresRoute
+  NinosIndexRoute: typeof NinosIndexRoute
+  NinosKidDatosRoute: typeof NinosKidDatosRoute
+  NinosKidDeseosRoute: typeof NinosKidDeseosRoute
+  NinosKidDineroRoute: typeof NinosKidDineroRoute
+  NinosKidFuturoRoute: typeof NinosKidFuturoRoute
+  NinosKidNumeroRoute: typeof NinosKidNumeroRoute
+  NinosKidTareasRoute: typeof NinosKidTareasRoute
+}
+
+const NinosRouteRouteChildren: NinosRouteRouteChildren = {
+  NinosOnboardingRoute: NinosOnboardingRoute,
+  NinosPadresRoute: NinosPadresRoute,
+  NinosIndexRoute: NinosIndexRoute,
+  NinosKidDatosRoute: NinosKidDatosRoute,
+  NinosKidDeseosRoute: NinosKidDeseosRoute,
+  NinosKidDineroRoute: NinosKidDineroRoute,
+  NinosKidFuturoRoute: NinosKidFuturoRoute,
+  NinosKidNumeroRoute: NinosKidNumeroRoute,
+  NinosKidTareasRoute: NinosKidTareasRoute,
+}
+
+const NinosRouteRouteWithChildren = NinosRouteRoute._addFileChildren(
+  NinosRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  NinosRouteRoute: NinosRouteRouteWithChildren,
   AdminRoute: AdminRoute,
   AdvisorRoute: AdvisorRoute,
   AfiliadosRoute: AfiliadosRoute,
@@ -846,15 +884,6 @@ const rootRouteChildren: RootRouteChildren = {
   TerminosRoute: TerminosRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,
   NinoIdRoute: NinoIdRoute,
-  NinosOnboardingRoute: NinosOnboardingRoute,
-  NinosPadresRoute: NinosPadresRoute,
-  NinosIndexRoute: NinosIndexRoute,
-  NinosKidDatosRoute: NinosKidDatosRoute,
-  NinosKidDeseosRoute: NinosKidDeseosRoute,
-  NinosKidDineroRoute: NinosKidDineroRoute,
-  NinosKidFuturoRoute: NinosKidFuturoRoute,
-  NinosKidNumeroRoute: NinosKidNumeroRoute,
-  NinosKidTareasRoute: NinosKidTareasRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
