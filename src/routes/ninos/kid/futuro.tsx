@@ -33,7 +33,7 @@ function MyFuture({ member }: { member: Member }) {
   const base = Number(fund?.current_balance ?? 0) + totals.crecer;
   const monthly = Number(fund?.monthly_contribution ?? 0);
   const targetAge = Number(fund?.target_age ?? 18);
-  const rate = Number(fund?.expected_return ?? 7);
+  const rate = Number(fund?.expected_return ?? 10);
 
   return (
     <FamilyPlanner

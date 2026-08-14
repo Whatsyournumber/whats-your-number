@@ -132,7 +132,7 @@ function KidPanel({ kid }: { kid: Member }) {
   const pendingApproval = tasks.filter((t) => t.status === "completada");
   const fundMonthly = monthly ?? Number(fund?.monthly_contribution ?? 0);
   const fundTarget = targetAge ?? Number(fund?.target_age ?? 18);
-  const fundReturn = expected ?? Number(fund?.expected_return ?? 7);
+  const fundReturn = expected ?? Number(fund?.expected_return ?? 10);
   const projection = projectFund(
     Number(fund?.current_balance ?? 0) + totals.crecer,
     fundMonthly,
