@@ -140,7 +140,7 @@ function CollegeFinder({ member }: { member: Member }) {
 
   return (
     <>
-      {/* Hero difuminado, sin bordes */}
+      {/* Hero difuminado, sin bordes — overlay reforzado para legibilidad */}
       <section className="relative mb-8 -mt-2 overflow-hidden">
         <img
           src={heroImg}
@@ -157,22 +157,27 @@ function CollegeFinder({ member }: { member: Member }) {
             WebkitMaskComposite: "source-in",
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/55 to-transparent" />
+        {/* Scrim dinámico: opaco a la izquierda (zona de texto) y se disuelve a la derecha */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-transparent sm:via-background/70" />
+        {/* Velo vertical sutil para reforzar contraste arriba/abajo */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/30" />
+        {/* Glow de marca que integra la imagen con el fondo */}
+        <div className="absolute inset-y-0 right-0 w-1/2 bg-gradient-to-l from-primary/[0.04] to-transparent" />
         <div className="relative max-w-md py-8 pr-6 sm:py-12">
-          <p className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-[11px] font-bold text-primary">
+          <p className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-[11px] font-bold text-primary shadow-sm ring-1 ring-primary/10">
             🎓 {t("Buscador de universidades", "College finder")}
           </p>
-          <h1 className="mt-3 font-display text-3xl font-black leading-tight text-foreground sm:text-4xl">
+          <h1 className="mt-3 font-display text-3xl font-black leading-tight text-foreground drop-shadow-[0_1px_6px_rgba(0,0,0,0.55)] sm:text-4xl">
             {t("¿Dónde podrá estudiar", "Where can they study")}{" "}
             <span className="text-primary">{t(`a los ${targetAge}?`, `at ${targetAge}?`)}</span>
           </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <p className="mt-2 text-sm text-foreground/80 drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
             {t(
               `Con el capital que estás construyendo hoy para ${member.name}.`,
               `With the capital you're building today for ${member.name}.`,
             )}
           </p>
-          <div className="mt-4 rounded-3xl border border-primary/20 bg-background/70 p-4 backdrop-blur-md">
+          <div className="mt-4 rounded-3xl border border-primary/20 bg-background/80 p-4 shadow-lg backdrop-blur-md">
             <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
               {t(`A los ${targetAge} años tendrá`, `At age ${targetAge} they'll have`)}
             </p>
