@@ -60,6 +60,24 @@ const HOME_REGION: Record<string, University["region"]> = {
 
 type Bucket = "home" | "eu" | "na" | "rest";
 
+type Continent = "latam" | "nam" | "eu" | "asia" | "oceania" | "africa";
+
+const OCEANIA = new Set(["Australia", "New Zealand", "Nueva Zelanda"]);
+const AFRICA_ME = new Set([
+  "Sudáfrica", "South Africa", "Israel", "Emiratos Árabes", "United Arab Emirates",
+]);
+
+function continentOf(u: University): Continent {
+  if (u.region === "latam") return "latam";
+  if (u.region === "na") return "nam";
+  if (u.region === "eu") return "eu";
+  if (OCEANIA.has(u.country) || OCEANIA.has(u.countryEs)) return "oceania";
+  if (AFRICA_ME.has(u.country) || AFRICA_ME.has(u.countryEs)) return "africa";
+  if (u.region === "apac") return "asia";
+  return "africa";
+}
+
+
 function CollegeFinder({ member }: { member: Member }) {
   const { t, lang } = useI18n();
   const { data: fund } = useFund(member.id);
