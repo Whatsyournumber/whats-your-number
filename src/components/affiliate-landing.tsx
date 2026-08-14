@@ -141,7 +141,7 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
   ];
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-12 sm:space-y-16">
       {/* HERO */}
       <section className="relative -mx-4 overflow-hidden px-4 sm:-mx-6 sm:px-6">
         <div className="pointer-events-none absolute inset-y-0 -right-[12vw] hidden w-[70%] lg:block">
