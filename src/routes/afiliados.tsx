@@ -1,10 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Copy, Check, Link2, MousePointerClick, Users, Wallet, Loader2, BadgePercent, Sparkles } from "lucide-react";
+import { Copy, Check, Link2, MousePointerClick, Users, Wallet, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-
-import affiliatesHero from "@/assets/affiliates-hero.jpg";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { KpiCard } from "@/components/kpi-card";
