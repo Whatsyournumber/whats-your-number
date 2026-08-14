@@ -1,6 +1,6 @@
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Lock, Plus, Settings } from "lucide-react";
+import { LineChart, Lock, Plus, Settings } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button, Card, Field, inputClass } from "@/components/mfn-ui";
 import { useActiveProfile, useCreateParent, useMembers, useSubscription } from "@/hooks/use-mfn";
