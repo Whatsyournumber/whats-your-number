@@ -5,10 +5,10 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { useT } from "@/hooks/use-language";
 import { getPaddleEnvironment } from "@/lib/paddle";
+import { redeemPromoCode } from "@/lib/promo.functions";
 
 type RedeemResult = {
   ok: boolean;
@@ -50,12 +50,9 @@ export function PromoCodeRedeem({ className }: { className?: string }) {
     }
     setLoading(true);
     try {
-      const { data, error } = await supabase.rpc("redeem_promo_code", {
-        _code: clean,
-        _environment: getPaddleEnvironment(),
-      });
-      if (error) throw error;
-      const result = data as unknown as RedeemResult;
+      const result = (await redeemPromoCode({
+        data: { code: clean, environment: getPaddleEnvironment() },
+      })) as RedeemResult;
       if (!result?.ok) {
         toast.error(errorText(result?.error ?? ""));
         return;

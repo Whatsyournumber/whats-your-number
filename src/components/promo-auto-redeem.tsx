@@ -2,11 +2,11 @@ import { useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { useT } from "@/hooks/use-language";
 import { getPaddleEnvironment } from "@/lib/paddle";
 import { clearPendingPromoCode, getPendingPromoCode } from "@/lib/pending-promo";
+import { redeemPromoCode } from "@/lib/promo.functions";
 
 type RedeemResult = { ok: boolean; error?: string; until?: string };
 
