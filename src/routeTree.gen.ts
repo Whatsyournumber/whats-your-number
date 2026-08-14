@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AdvisorRouteImport } from './routes/advisor'
+import { Route as AfiliadosRouteImport } from './routes/afiliados'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as CashFlowRouteImport } from './routes/cash-flow'
@@ -50,6 +51,11 @@ const AdminRoute = AdminRouteImport.update({
 const AdvisorRoute = AdvisorRouteImport.update({
   id: '/advisor',
   path: '/advisor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AfiliadosRoute = AfiliadosRouteImport.update({
+  id: '/afiliados',
+  path: '/afiliados',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -178,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/advisor': typeof AdvisorRoute
+  '/afiliados': typeof AfiliadosRoute
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
   '/cash-flow': typeof CashFlowRoute
@@ -207,6 +214,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/advisor': typeof AdvisorRoute
+  '/afiliados': typeof AfiliadosRoute
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
   '/cash-flow': typeof CashFlowRoute
@@ -237,6 +245,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/advisor': typeof AdvisorRoute
+  '/afiliados': typeof AfiliadosRoute
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRoute
   '/cash-flow': typeof CashFlowRoute
@@ -268,6 +277,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/advisor'
+    | '/afiliados'
     | '/auth'
     | '/blog'
     | '/cash-flow'
@@ -297,6 +307,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/advisor'
+    | '/afiliados'
     | '/auth'
     | '/blog'
     | '/cash-flow'
@@ -326,6 +337,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/advisor'
+    | '/afiliados'
     | '/auth'
     | '/blog'
     | '/cash-flow'
@@ -356,6 +368,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   AdvisorRoute: typeof AdvisorRoute
+  AfiliadosRoute: typeof AfiliadosRoute
   AuthRoute: typeof AuthRoute
   BlogRoute: typeof BlogRoute
   CashFlowRoute: typeof CashFlowRoute
@@ -403,6 +416,13 @@ declare module '@tanstack/react-router' {
       path: '/advisor'
       fullPath: '/advisor'
       preLoaderRoute: typeof AdvisorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/afiliados': {
+      id: '/afiliados'
+      path: '/afiliados'
+      fullPath: '/afiliados'
+      preLoaderRoute: typeof AfiliadosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -580,6 +600,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AdvisorRoute: AdvisorRoute,
+  AfiliadosRoute: AfiliadosRoute,
   AuthRoute: AuthRoute,
   BlogRoute: BlogRoute,
   CashFlowRoute: CashFlowRoute,

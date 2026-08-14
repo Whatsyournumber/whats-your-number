@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { createFileRoute } from "@tanstack/react-router";
 import { verifyWebhook, EventName, type PaddleEnv } from "@/lib/paddle.server";
+import { recordAffiliateCommission } from "@/lib/affiliates.server";
 import type { Database } from "@/integrations/supabase/types";
 
 let _supabase: ReturnType<typeof createClient<Database>> | null = null;
@@ -48,6 +49,17 @@ async function handleSubscriptionCreated(data: any, env: PaddleEnv) {
       },
       { onConflict: "paddle_subscription_id" },
     );
+
+  if (["active", "trialing", "past_due"].includes(status)) {
+    await recordAffiliateCommission(getSupabase(), {
+      userId,
+      productId,
+      priceId,
+      paddleSubscriptionId: id,
+      periodStart: currentBillingPeriod?.startsAt ?? null,
+      environment: env,
+    });
+  }
 }
 
 async function handleSubscriptionUpdated(data: any, env: PaddleEnv) {
@@ -83,6 +95,26 @@ async function handleSubscriptionUpdated(data: any, env: PaddleEnv) {
     .update(patch)
     .eq("paddle_subscription_id", id)
     .eq("environment", env);
+
+  // Renovaciones y cambios de plan generan una nueva comisión por periodo.
+  if (priceId && productId && ["active", "past_due"].includes(status)) {
+    const { data: sub } = await getSupabase()
+      .from("subscriptions")
+      .select("user_id")
+      .eq("paddle_subscription_id", id)
+      .eq("environment", env)
+      .maybeSingle();
+    if (sub?.user_id) {
+      await recordAffiliateCommission(getSupabase(), {
+        userId: sub.user_id,
+        productId,
+        priceId,
+        paddleSubscriptionId: id,
+        periodStart: currentBillingPeriod?.startsAt ?? null,
+        environment: env,
+      });
+    }
+  }
 }
 
 
