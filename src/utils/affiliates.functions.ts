@@ -71,8 +71,8 @@ export const joinAffiliateProgram = createServerFn({ method: "POST" })
       payout_email: data.payoutEmail ?? null,
     });
     if (error) throw new Error(error.message);
-    await grantAffiliateProPlan(supabaseAdmin, context.userId, environment);
-    return { ok: true, code, proGranted: true };
+    return { ok: true, code, unlocked: false, referrals: 0, goal: REFERRALS_FOR_FREE_PRO };
+
   });
 
 /** Links the signed-in user to the affiliate whose link they arrived with. */
