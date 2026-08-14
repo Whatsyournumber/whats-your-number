@@ -1309,7 +1309,7 @@ function KidsFinanceLanding() {
               )}
               width={1280}
               height={1024}
-              className="h-full w-full object-cover object-[60%_18%] brightness-[1.35] contrast-[1.08] saturate-[1.05] md:object-[60%_22%] lg:object-[58%_42%] lg:[mask-image:linear-gradient(90deg,transparent_0%,transparent_22%,#000_62%,#000_100%)]"
+              className="h-full w-full object-cover object-[45%_18%] brightness-[1.35] contrast-[1.08] saturate-[1.05] md:object-[45%_22%] lg:object-[42%_42%] lg:[mask-image:linear-gradient(90deg,transparent_0%,transparent_16%,#000_54%,#000_100%)]"
             />
             {/* Gradual fade into the dark background so the photo never shows a hard edge */}
             <div className="absolute inset-y-0 left-0 hidden w-[55%] bg-[linear-gradient(90deg,var(--background)_0%,transparent_100%)] lg:block" />
@@ -1343,8 +1343,6 @@ function KidsFinanceLanding() {
                 <br />
                 {t("Enséñale ", "Teach them ")}
                 <span className="text-kid-mint">{t("a manejarlo.", "to manage it.")}</span>
-                <br />
-                {t("En una sola plataforma.", "In one single platform.")}
               </h1>
 
               <p className="mt-4 max-w-lg text-sm leading-relaxed text-muted-foreground md:mt-6 md:text-base">
