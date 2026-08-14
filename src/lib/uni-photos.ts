@@ -6,6 +6,15 @@ import campusLatam1 from "@/assets/uni/campus-latam-1.jpg";
 import campusApac1 from "@/assets/uni/campus-apac-1.jpg";
 import campusOther1 from "@/assets/uni/campus-other-1.jpg";
 import campusGeneric1 from "@/assets/uni/campus-generic-1.jpg";
+import curatedBuap from "@/assets/uni/mx-buap.jpg";
+import curatedUnal from "@/assets/uni/co-unal.jpg";
+import curatedAntioquia from "@/assets/uni/co-antioquia.jpg";
+import curatedUnivalle from "@/assets/uni/co-univalle.jpg";
+import curatedCuyo from "@/assets/uni/ar-cuyo.jpg";
+import curatedUnb from "@/assets/uni/br-unb.jpg";
+import curatedUfsc from "@/assets/uni/br-ufsc.jpg";
+import curatedUfpe from "@/assets/uni/br-ufpe.jpg";
+import curatedSanMarcos from "@/assets/uni/pe-sanmarcos.jpg";
 
 import type { University } from "@/lib/universities";
 import { REAL_UNI_PHOTOS } from "@/lib/uni-photos-real";
