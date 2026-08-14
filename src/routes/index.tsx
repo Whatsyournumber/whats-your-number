@@ -350,7 +350,7 @@ function Landing() {
               loading="eager"
               fetchPriority="high"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-background/30" />
           </motion.div>
 
           {/* Mobile: the photo is the top of the background itself */}
