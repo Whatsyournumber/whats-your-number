@@ -391,6 +391,9 @@ import afTunis from "@/assets/uni/af-tunis.jpg";
 import afObafemi from "@/assets/uni/af-obafemi.jpg";
 import afMakerere from "@/assets/uni/af-makerere.jpg";
 import afDar from "@/assets/uni/af-dar.jpg";
+import afKigali from "@/assets/uni/af-kigali.jpg";
+import afAlexandria from "@/assets/uni/af-alexandria.jpg";
+import apNusReal from "@/assets/uni/ap-nus-real.jpg";
 
 const CURATED: Record<string, string> = {
   "me-usthb-alger": afUsthb,
