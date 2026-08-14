@@ -518,77 +518,6 @@ function Onboarding() {
           </div>
         ) : null}
 
-        {step === 6 ? (
-          <div className="mt-8 space-y-5">
-            <Buddy>
-              {t(
-                `Ahora eligemos hasta qué edad va a crecer y con qué rentabilidad. Mira la proyección hasta sus ${targetAge} años.`,
-                `Now we choose until what age it grows and at what return. See the projection by age ${targetAge}.`,
-              )}
-            </Buddy>
-            <Card>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Field label={t("Edad objetivo", "Target age")}>
-                  <select
-                    className={inputClass}
-                    value={targetAge}
-                    onChange={(e) => setTargetAge(Number(e.target.value))}
-                  >
-                    {[18, 21, 25, 30].map((a) => (
-                      <option key={a} value={a}>
-                        {a} {t("años", "years")}
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-                <Field label={t("Rentabilidad esperada", "Expected return")}>
-                  <select
-                    className={inputClass}
-                    value={expected}
-                    onChange={(e) => setExpected(Number(e.target.value))}
-                  >
-                    {RETURN_OPTIONS.map((r) => (
-                      <option key={r} value={r}>
-                        {r}% {t("anual", "per year")}
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-              </div>
-              <div className="mt-4">
-                <Field label={t("Objetivo del fondo", "Fund goal")}>
-                  <select
-                    className={inputClass}
-                    value={goal}
-                    onChange={(e) => setGoal(e.target.value)}
-                  >
-                    {FUND_GOALS.map((g) => (
-                      <option key={g} value={g}>
-                        {goalLabel(g, lang)}
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-              </div>
-
-              <p className="mt-6 font-display text-2xl font-semibold text-foreground">
-                {money(projection.future, currency)}{" "}
-                <span className="text-sm font-normal text-muted-foreground">
-                  {t(`a los ${targetAge} años`, `at age ${targetAge}`)}
-                </span>
-              </p>
-              <GrowthChart
-                data={projection.points}
-                height={200}
-                areas={[
-                  { key: "total", color: "var(--color-chart-1)" },
-                  { key: "aportes", color: "var(--color-chart-4)" },
-                ]}
-              />
-              <p className="mt-2 text-[11px] text-muted-foreground">{disclaimer(lang)}</p>
-            </Card>
-          </div>
-        ) : null}
 
         <div className="mt-8 flex items-center justify-between gap-3">
           <Button
@@ -597,7 +526,7 @@ function Onboarding() {
           >
             <ArrowLeft className="h-4 w-4" /> {t("Atrás", "Back")}
           </Button>
-          {step < 6 ? (
+          {step < 5 ? (
             <Button disabled={!canNext} onClick={() => setStep(step + 1)}>
               {t("Siguiente", "Next")} <ArrowRight className="h-4 w-4" />
             </Button>
