@@ -9,6 +9,9 @@ import { Input } from "@/components/ui/input";
 import { LanguageToggle, useT } from "@/hooks/use-language";
 
 export const Route = createFileRoute("/demo-ninos")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    start: Number(search['start']) === 1 ? 1 : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Demo gratis para padres — My First Number" },
@@ -31,7 +34,8 @@ export const Route = createFileRoute("/demo-ninos")({
 
 function KidsDemoPage() {
   const t = useT();
-  const [step, setStep] = useState(0); // 0 intro, 1..3 preguntas, 4 muro de registro
+  const { start } = Route.useSearch();
+  const [step, setStep] = useState(start === 1 ? 1 : 0); // 0 intro, 1..3 preguntas, 4 muro de registro
   const [monthly, setMonthly] = useState("");
   const [initial, setInitial] = useState("");
   const [age, setAge] = useState("");
