@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { Sparkles, Menu } from "lucide-react";
 
-import { BrandLogo, BrandMark } from "@/components/brand-logo";
+import { BrandLogo, BrandMark, KidsBrandLogo } from "@/components/brand-logo";
 import { cn } from "@/lib/utils";
 
 import { CurrencyToggle } from "@/components/currency-toggle";
@@ -25,9 +25,16 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
     { label: t("Precios", "Pricing"), to: "/precios" },
     { label: "Blog", to: "/blog" },
     { label: "demo", to: "/demo", search: { start: 1 }, icon: true },
+    { label: t("Finanzas para niños", "Kids finance"), to: "/finanzas-para-ninos" },
   ] as const;
 
-  const visibleTabs = isKidsLanding ? tabs.filter((tab) => tab.label !== "demo") : tabs;
+  const kidsTabs = [
+    { label: t("Finanzas para adultos", "Adult finance"), to: "/" },
+    { label: t("Precios", "Pricing"), to: "/precios" },
+    { label: "demo", to: "/demo-ninos" },
+  ] as const;
+
+  const visibleTabs = (isKidsLanding ? kidsTabs : tabs) as unknown as (typeof tabs)[number][];
 
   const renderTab = (tab: (typeof tabs)[number]) => (
     <Link
@@ -103,8 +110,8 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
       {/* Desktop */}
       <div className="hidden items-center justify-between lg:flex">
         <div className="flex items-center gap-3">
-          <Link to="/" className="shrink-0">
-            <BrandLogo />
+          <Link to={isKidsLanding ? "/finanzas-para-ninos" : "/"} className="shrink-0">
+            {isKidsLanding ? <KidsBrandLogo /> : <BrandLogo />}
           </Link>
           <nav className="flex items-center gap-1">{visibleTabs.map(renderTab)}</nav>
         </div>
@@ -126,8 +133,8 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
                   <span className="sr-only">{t("Abrir menú", "Open menu")}</span>
                 </Button>
               </SheetTrigger>
-              <Link to="/" className="shrink-0">
-                <BrandLogo className="h-7" />
+              <Link to={isKidsLanding ? "/finanzas-para-ninos" : "/"} className="shrink-0">
+                {isKidsLanding ? <KidsBrandLogo className="h-7" /> : <BrandLogo className="h-7" />}
               </Link>
             </div>
 
