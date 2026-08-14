@@ -29,7 +29,7 @@ export function AffiliateTracker() {
     const code = getPendingRef();
     if (!code) return;
     attached.current = true;
-    void attachAffiliateReferral({ data: { code } })
+    void attachAffiliateReferral({ data: { code, environment: getPaddleEnvironment() } })
       .catch(() => undefined)
       .finally(() => clearPendingRef());
   }, [user]);
