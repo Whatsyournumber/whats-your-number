@@ -165,10 +165,18 @@ const PUBLIC_PATHS = ["/", "/auth", "/precios", "/blog", "/demo", "/privacidad",
 // El onboarding tiene su propio gate de sesión y layout a pantalla completa.
 const BARE_PATHS = ["/onboarding", "/elegir"];
 
+// Rutas que funcionan con y sin sesión: públicas si no hay usuario, dentro del app si lo hay.
+const HYBRID_PATHS = ["/afiliados"];
+
 function RootLayout() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const { user, loading } = useAuth();
 
   if (PUBLIC_PATHS.includes(pathname) || BARE_PATHS.includes(pathname)) {
+    return <Outlet />;
+  }
+
+  if (HYBRID_PATHS.includes(pathname) && (loading || !user)) {
     return <Outlet />;
   }
 
