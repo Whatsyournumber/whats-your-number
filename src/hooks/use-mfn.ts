@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
-import { setPlan } from "@/lib/mfn-plan";
 
 import {
   ACTIVE_PROFILE_KEY,
@@ -14,7 +12,7 @@ import {
   type FutureFund,
   splitAmount,
 } from "@/lib/mfn";
-import type { Subscription } from "@/lib/mfn-plan";
+export { useSubscription } from "@/hooks/use-subscription";
 
 async function requireUser() {
   const { data } = await supabase.auth.getUser();
@@ -164,34 +162,6 @@ export function useDeleteMember() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["kid_members"] }),
   });
 }
-
-/** Suscripción compartida con WhatsYourNumber (solo lectura desde la app). */
-export function useSubscription() {
-  return useQuery({
-    queryKey: ["subscription"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("subscriptions")
-        .select("*")
-        .maybeSingle();
-      if (error) throw error;
-      return (data ?? null) as Subscription | null;
-    },
-  });
-}
-
-export function useSetPlan() {
-  const qc = useQueryClient();
-  const mutate = useServerFn(setPlan);
-  return useMutation({
-    mutationFn: (plan: "free" | "family" | "wealth") => mutate({ data: { plan } }),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["subscription"] });
-    },
-  });
-}
-
-
 
 export function useCreateParent() {
   const qc = useQueryClient();

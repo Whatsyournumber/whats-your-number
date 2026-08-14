@@ -28,7 +28,7 @@ import {
   monthsToTarget,
   monthsUntil,
 } from "@/lib/mfn";
-import { useI18n } from "@/lib/i18n";
+import { useI18n } from "@/lib/mfn-i18n";
 
 /* ---------------- small pieces ---------------- */
 

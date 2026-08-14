@@ -2,7 +2,6 @@ import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Lock, Plus, Settings } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { restoreSessionFromUrl } from "@/lib/session-from-url";
 import { Button, Card, Field, inputClass } from "@/components/mfn-ui";
 import { useActiveProfile, useCreateParent, useMembers, useSubscription } from "@/hooks/use-mfn";
 import { THEME_ATTR, type Member } from "@/lib/mfn";
@@ -27,9 +26,8 @@ export const Route = createFileRoute("/ninos/")({
     ],
   }),
   beforeLoad: async () => {
-    await restoreSessionFromUrl();
     const { data } = await supabase.auth.getUser();
-    if (!data.user) throw redirect({ to: "/auth" });
+    if (!data.user) throw redirect({ to: "/auth", search: { redirect: "/ninos" } });
   },
   component: ProfileSelector,
 });
@@ -175,7 +173,7 @@ function ProfileSelector() {
                 onClick={async () => {
                   select(null);
                   await supabase.auth.signOut();
-                  router.navigate({ to: "/auth" });
+                  router.navigate({ to: "/auth", search: { redirect: "/ninos" } });
                 }}
               >
                 {t("Salir", "Sign out")}
