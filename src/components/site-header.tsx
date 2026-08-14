@@ -18,6 +18,8 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
   const { pathname } = useLocation();
   const isKidsLanding = pathname === "/finanzas-para-ninos";
   const isLight = variant === "light";
+  const showCurrency = pathname !== "/" && !isKidsLanding;
+
 
 
   const tabs = [
