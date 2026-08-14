@@ -261,7 +261,10 @@ function Onboarding() {
                 {(["boy", "girl"] as const).map((option) => (
                   <button
                     key={option}
-                    onClick={() => setTheme(option)}
+                    onClick={() => {
+                      setTheme(option);
+                      setAvatar((option === "girl" ? AVATARS_GIRL : AVATARS_BOY)[0]!);
+                    }}
                     className={`rounded-2xl border p-4 text-left text-sm font-semibold ${
                       theme === option
                         ? "border-primary bg-primary/10 text-primary"
