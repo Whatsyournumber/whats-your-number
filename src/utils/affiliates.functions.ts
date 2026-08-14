@@ -47,9 +47,10 @@ export const joinAffiliateProgram = createServerFn({ method: "POST" })
       .eq("user_id", context.userId)
       .maybeSingle();
     if (existing) {
-      await grantAffiliateProPlan(supabaseAdmin, context.userId, environment);
-      return { ok: true, code: existing.code as string };
+      const reward = await maybeGrantReferralReward(supabaseAdmin, existing.id as string, environment);
+      return { ok: true, code: existing.code as string, ...reward };
     }
+
 
     const base = slugifyCode(data.displayName ?? "") || "WYN";
     let code = "";
