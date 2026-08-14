@@ -293,6 +293,37 @@ import np_us_villanova from "@/assets/uni/us-villanova.jpg";
 import np_us_lehigh from "@/assets/uni/us-lehigh.jpg";
 import np_us_brandeis from "@/assets/uni/us-brandeis.jpg";
 
+// Fotos premium de campus (Asia, Oceanía, África / Medio Oriente)
+import apJp1 from "@/assets/uni/asia-jp-1.jpg";
+import apJp2 from "@/assets/uni/asia-jp-2.jpg";
+import apCn1 from "@/assets/uni/asia-cn-1.jpg";
+import apCn2 from "@/assets/uni/asia-cn-2.jpg";
+import apKr1 from "@/assets/uni/asia-kr-1.jpg";
+import apIn1 from "@/assets/uni/asia-in-1.jpg";
+import apIn2 from "@/assets/uni/asia-in-2.jpg";
+import apSg1 from "@/assets/uni/asia-sg-1.jpg";
+import apHk1 from "@/assets/uni/asia-hk-1.jpg";
+import apSea1 from "@/assets/uni/asia-sea-1.jpg";
+import apSea2 from "@/assets/uni/asia-sea-2.jpg";
+import apTw1 from "@/assets/uni/asia-tw-1.jpg";
+import ocAu1 from "@/assets/uni/oce-au-1.jpg";
+import ocAu2 from "@/assets/uni/oce-au-2.jpg";
+import ocAu3 from "@/assets/uni/oce-au-3.jpg";
+import ocNz1 from "@/assets/uni/oce-nz-1.jpg";
+import ocNz2 from "@/assets/uni/oce-nz-2.jpg";
+import ocPac1 from "@/assets/uni/oce-pacific-1.jpg";
+import meGulf1 from "@/assets/uni/mea-gulf-1.jpg";
+import meGulf2 from "@/assets/uni/mea-gulf-2.jpg";
+import meIl1 from "@/assets/uni/mea-il-1.jpg";
+import meTr1 from "@/assets/uni/mea-tr-1.jpg";
+import meLev1 from "@/assets/uni/mea-levant-1.jpg";
+import meEg1 from "@/assets/uni/mea-eg-1.jpg";
+import meNa1 from "@/assets/uni/mea-na-1.jpg";
+import meZa1 from "@/assets/uni/mea-za-1.jpg";
+import meZa2 from "@/assets/uni/mea-za-2.jpg";
+import meEast1 from "@/assets/uni/mea-east-1.jpg";
+import meWest1 from "@/assets/uni/mea-west-1.jpg";
+
 const CURATED: Record<string, string> = {
   "ot-nyu-abu-dhabi": np_ae_nyuad,
   "de-universitat-heidelberg": np_de_heidelberg,
@@ -561,11 +592,67 @@ const CURATED: Record<string, string> = {
 };
 
 /** Foto de campus premium asignada de forma estable a cada universidad. */
+
+/** Fotos premium curadas por país para Asia, Oceanía y África / Medio Oriente. */
+const COUNTRY_POOLS: Record<string, string[]> = {
+  Japan: [apJp1, apJp2],
+  China: [apCn1, apCn2],
+  "South Korea": [apKr1, apCn1],
+  India: [apIn1, apIn2],
+  Pakistan: [apIn1],
+  Bangladesh: [apIn2],
+  Singapore: [apSg1],
+  "Hong Kong": [apHk1],
+  Macau: [apHk1],
+  Taiwan: [apTw1],
+  Thailand: [apSea1, apSea2],
+  Malaysia: [apSea2, apSea1],
+  Indonesia: [apSea2],
+  Philippines: [apSea1],
+  Vietnam: [apSea1],
+  Brunei: [apSea2],
+  Kazakhstan: [apCn2],
+  Australia: [ocAu1, ocAu2, ocAu3],
+  "New Zealand": [ocNz1, ocNz2],
+  Fiji: [ocPac1],
+  "Papua New Guinea": [ocPac1],
+  Samoa: [ocPac1],
+  UAE: [meGulf1, meGulf2],
+  "Saudi Arabia": [meGulf2, meGulf1],
+  Qatar: [meGulf2],
+  Kuwait: [meGulf1],
+  Bahrain: [meGulf1],
+  Oman: [meGulf1],
+  Israel: [meIl1],
+  Turkey: [meTr1],
+  Lebanon: [meLev1],
+  Jordan: [meLev1],
+  Egypt: [meEg1],
+  Morocco: [meNa1],
+  Tunisia: [meNa1],
+  Algeria: [meNa1],
+  "South Africa": [meZa1, meZa2],
+  Namibia: [meZa2],
+  Botswana: [meZa1],
+  Zimbabwe: [meEast1],
+  Kenya: [meEast1],
+  Uganda: [meEast1],
+  Tanzania: [meEast1],
+  Rwanda: [meEast1],
+  Ethiopia: [meEast1],
+  Mauritius: [meEast1],
+  Nigeria: [meWest1],
+  Ghana: [meWest1],
+  Senegal: [meWest1],
+};
+
 export function uniPhoto(u: University) {
   const curated = CURATED[u.id];
   if (curated) return curated;
   const real = REAL_UNI_PHOTOS[u.id];
   if (real) return real;
+  const pool = COUNTRY_POOLS[u.country];
+  if (pool && pool.length) return pool[hash(u.id) % pool.length]!;
   return uniPhotoFallback(u);
 }
 
