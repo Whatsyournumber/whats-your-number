@@ -25,12 +25,9 @@ export function PromoAutoRedeem() {
 
     void (async () => {
       try {
-        const { data, error } = await supabase.rpc("redeem_promo_code", {
-          _code: code,
-          _environment: getPaddleEnvironment(),
-        });
-        if (error) throw error;
-        const result = data as unknown as RedeemResult;
+        const result = (await redeemPromoCode({
+          data: { code, environment: getPaddleEnvironment() },
+        })) as RedeemResult;
         clearPendingPromoCode();
         if (result?.ok) {
           toast.success(t("¡Código activado! Ya tienes acceso Pro.", "Code activated! You now have Pro access."));
