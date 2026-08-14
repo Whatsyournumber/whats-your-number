@@ -12,7 +12,14 @@ export type CollegeAdviceInput = {
   affordable: { name: string; city: string; country: string; total: number; rank: number }[];
   stretch: { name: string; city: string; country: string; total: number; rank: number; gap?: number | undefined }[];
   monthlyExtraFor1: number;
+  initial?: number;
+  monthly?: number;
+  years?: number;
+  rate?: number;
+  homeCountry?: string;
+  homeCity?: string;
 };
+
 
 const SYSTEM_ES = `Eres Buddy, el asesor educativo de My First Number. Hablas a un padre/madre sobre el futuro universitario de su hijo/a.
 Responde SIEMPRE en español, en markdown muy breve (máximo 130 palabras).
