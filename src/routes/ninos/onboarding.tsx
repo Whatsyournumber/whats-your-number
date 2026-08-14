@@ -41,7 +41,7 @@ export const Route = createFileRoute("/ninos/onboarding")({
 });
 
 const AVATARS = ["🦊", "🐼", "🦄", "🐯", "🐨", "🦁", "🐙", "🐧", "🐸", "🐷"];
-const STEPS = [0, 1, 2, 3, 4, 5];
+const STEPS = [0, 1, 2, 3, 4, 5, 6];
 
 function Onboarding() {
   const router = useRouter();
