@@ -62,7 +62,12 @@ function Onboarding() {
 
   useKidTheme(theme);
 
-  
+  const citySuggestions = CITIES.filter(
+    (c) =>
+      c.city.toLowerCase().includes(city.trim().toLowerCase()) &&
+      c.city.toLowerCase() !== city.trim().toLowerCase(),
+  ).slice(0, 6);
+
   const canNext = [
     name.trim().length > 1,
     city.trim().length > 1,
