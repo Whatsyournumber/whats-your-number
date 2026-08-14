@@ -393,7 +393,7 @@ function Landing() {
               </p>
 
 
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3 md:justify-start">
                 <Button asChild size="lg" className="gap-2 rounded-full px-6">
                   <Link to="/demo" search={{ start: 1 }}>
                     {t("Descubre tu número", "Discover your number")} <ArrowRight className="h-4 w-4" />
@@ -406,7 +406,7 @@ function Landing() {
                 </Button>
               </div>
 
-              <div className="mt-6 flex items-center justify-center gap-3 lg:justify-start">
+              <div className="mt-6 flex items-center justify-center gap-3 md:justify-start">
                 <div className="flex -space-x-2">
                   {[
                     "https://i.pravatar.cc/80?img=12",
