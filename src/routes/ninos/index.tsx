@@ -106,20 +106,17 @@ function ProfileSelector() {
           <p className="mt-12 text-sm text-muted-foreground">{t("Cargando perfiles…", "Loading profiles…")}</p>
         ) : (
           <>
-            <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <div className="mt-12 grid grid-cols-2 gap-6 sm:grid-cols-4 sm:gap-8">
               <button
                 onClick={() => void openAdult()}
-                className="card-soft tap animate-rise flex flex-col items-center gap-3 p-5 hover:tap-active"
+                className="group flex flex-col items-center gap-3 outline-none"
               >
-                <span className="grid h-20 w-20 place-items-center rounded-3xl bg-primary/10 text-primary">
-                  <LineChart className="h-9 w-9" />
+                <span className="grid aspect-square w-full place-items-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4">
+                  <LineChart className="h-10 w-10 sm:h-12 sm:w-12" />
                 </span>
                 <span className="min-w-0 text-center">
-                  <span className="block truncate text-sm font-semibold text-foreground">
+                  <span className="block truncate text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
                     {t("Mis finanzas", "My finances")}
-                  </span>
-                  <span className="block text-[11px] text-muted-foreground">
-                    {t("Perfil adulto", "Adult profile")}
                   </span>
                 </span>
               </button>
@@ -128,16 +125,16 @@ function ProfileSelector() {
                 <button
                   key={m.id}
                   onClick={() => open(m)}
-                  className="card-soft tap animate-rise flex flex-col items-center gap-3 p-5 hover:tap-active"
+                  className="group flex flex-col items-center gap-3 outline-none"
                 >
-                  <span className="grid h-20 w-20 place-items-center rounded-3xl bg-secondary text-4xl">
+                  <span className="grid aspect-square w-full place-items-center rounded-2xl bg-secondary text-5xl ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4 sm:text-6xl">
                     {m.avatar}
                   </span>
                   <span className="min-w-0 text-center">
-                    <span className="block truncate text-sm font-semibold text-foreground">
+                    <span className="block truncate text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
                       {m.name}
                     </span>
-                    <span className="block text-[11px] text-muted-foreground">
+                    <span className="block text-[11px] text-muted-foreground/70">
                       {m.role === "parent"
                         ? t("Padre / Madre", "Parent")
                         : m.age < 1
@@ -151,15 +148,21 @@ function ProfileSelector() {
               {kids.length < maxKids ? (
                 <button
                   onClick={() => router.navigate({ to: "/ninos/onboarding" })}
-                  className="tap flex flex-col items-center justify-center gap-3 rounded-3xl border-2 border-dashed border-border p-5 text-muted-foreground hover:border-primary hover:text-primary"
+                  className="group flex flex-col items-center gap-3 outline-none"
                 >
-                  <Plus className="h-8 w-8" />
-                  <span className="text-xs font-semibold">{t("Añadir hijo/a", "Add a child")}</span>
+                  <span className="grid aspect-square w-full place-items-center rounded-2xl border-2 border-dashed border-border text-muted-foreground transition-all duration-200 group-hover:scale-105 group-hover:border-primary group-hover:text-primary">
+                    <Plus className="h-10 w-10" />
+                  </span>
+                  <span className="text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
+                    {t("Añadir hijo/a", "Add a child")}
+                  </span>
                 </button>
               ) : (
-                <div className="flex flex-col items-center justify-center gap-2 rounded-3xl border-2 border-dashed border-border p-5 text-center">
-                  <Lock className="h-7 w-7 text-muted-foreground" />
-                  <span className="text-[11px] text-muted-foreground">
+                <div className="flex flex-col items-center gap-3">
+                  <span className="grid aspect-square w-full place-items-center rounded-2xl border-2 border-dashed border-border text-muted-foreground">
+                    <Lock className="h-8 w-8" />
+                  </span>
+                  <span className="text-center text-[11px] text-muted-foreground">
                     {t(
                       `Tu plan incluye ${maxKids} ${maxKids === 1 ? "perfil" : "perfiles"} de niño`,
                       `Your plan includes ${maxKids} child ${maxKids === 1 ? "profile" : "profiles"}`,
@@ -169,34 +172,7 @@ function ProfileSelector() {
               )}
             </div>
 
-
-            {parents.length === 0 ? (
-              <Card className="mt-10" title={t("Crea tu perfil de padre/madre", "Create your parent profile")}>
-                <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
-                  <Field label={t("Tu nombre", "Your name")}>
-                    <input
-                      className={inputClass}
-                      value={parentName}
-                      onChange={(e) => setParentName(e.target.value)}
-                      placeholder={t("Ej. Ana", "e.g. Ana")}
-                    />
-                  </Field>
-                  <Button
-                    disabled={!parentName.trim() || createParent.isPending}
-                    onClick={() =>
-                      createParent.mutate({
-                        name: parentName.trim(),
-                        avatar: AVATARS[Math.floor(Math.random() * AVATARS.length)] ?? "🦊",
-                      })
-                    }
-                  >
-                    {t("Crear perfil", "Create profile")}
-                  </Button>
-                </div>
-              </Card>
-            ) : null}
-
-            <div className="mt-10 flex flex-wrap items-center gap-3">
+            <div className="mt-14 flex flex-wrap items-center gap-3">
               <Button variant="ghost" onClick={() => setManage((v) => !v)}>
                 <Settings className="h-4 w-4" /> {t("Gestionar perfiles", "Manage profiles")}
               </Button>
@@ -211,6 +187,7 @@ function ProfileSelector() {
                 {t("Salir", "Sign out")}
               </Button>
             </div>
+
 
             {manage ? (
               <p className="mt-4 text-xs text-muted-foreground">
