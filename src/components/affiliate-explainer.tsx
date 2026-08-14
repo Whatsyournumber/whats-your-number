@@ -1,4 +1,4 @@
-import { Link2, Users, Wallet, BadgePercent } from "lucide-react";
+import { Link2, Users, Wallet, BadgePercent, Sparkles } from "lucide-react";
 
 import { Panel } from "@/components/page";
 import { useT } from "@/hooks/use-language";
@@ -52,6 +52,26 @@ export function AffiliateExplainer({ rate = RATE }: { rate?: number }) {
 
   return (
     <div className="space-y-4">
+      <Panel
+        title={
+          <span className="inline-flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-primary" />
+            {t("Plan Pro gratis para afiliados", "Free Pro plan for affiliates")}
+          </span>
+        }
+        description={t(
+          "Al activar tu enlace te regalamos el plan Pro durante 12 meses, para que uses el producto de verdad y lo vendas mejor.",
+          "When you activate your link we gift you the Pro plan for 12 months, so you use the product for real and sell it better.",
+        )}
+      >
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          {t(
+            "Acceso completo a multimoneda, hipoteca, importación de estados de cuenta y el asesor de IA. Sin tarjeta y sin compromiso.",
+            "Full access to multi-currency, mortgage, statement imports and the AI advisor. No card, no commitment.",
+          )}
+        </p>
+      </Panel>
+
       <Panel
         title={t("Cómo funciona", "How it works")}
         description={t(

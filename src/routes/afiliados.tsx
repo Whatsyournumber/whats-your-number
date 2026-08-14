@@ -15,6 +15,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useMyAffiliate } from "@/hooks/use-affiliate";
 import { AffiliateExplainer } from "@/components/affiliate-explainer";
 import { joinAffiliateProgram, updateMyAffiliate } from "@/utils/affiliates.functions";
+import { getPaddleEnvironment } from "@/lib/paddle";
 
 export const Route = createFileRoute("/afiliados")({
   ssr: false,
@@ -54,10 +55,17 @@ function AffiliatesPage() {
     setBusy(true);
     try {
       await joinAffiliateProgram({
-        data: { displayName: user?.user_metadata?.["full_name"] ?? "", payoutEmail: payoutEmail || user?.email || "" },
+        data: {
+          displayName: user?.user_metadata?.["full_name"] ?? "",
+          payoutEmail: payoutEmail || user?.email || "",
+          environment: getPaddleEnvironment(),
+        },
       });
       await qc.invalidateQueries({ queryKey: ["affiliate"] });
-      toast.success(t("¡Ya eres afiliado! Tu enlace está listo.", "You're an affiliate! Your link is ready."));
+      await qc.invalidateQueries({ queryKey: ["subscription"] });
+      toast.success(
+        t("¡Ya eres afiliado! Tu enlace está listo y tu plan Pro activado.", "You're an affiliate! Your link is ready and your Pro plan is active."),
+      );
     } catch {
       toast.error(t("No pudimos crear tu cuenta de afiliado.", "We couldn't create your affiliate account."));
     } finally {
@@ -141,8 +149,11 @@ function AffiliatesPage() {
         <AffiliateExplainer />
         <Panel
           className="mt-4"
-          title={t("Activa tu enlace", "Activate your link")}
-          description={t("Toma menos de un minuto y es gratis.", "It takes less than a minute and it's free.")}
+          title={t("Activa tu enlace y tu Pro gratis", "Activate your link and free Pro")}
+          description={t(
+            "Toma menos de un minuto, es gratis e incluye 12 meses del plan Pro.",
+            "It takes less than a minute, it's free and includes 12 months of the Pro plan.",
+          )}
         >
           <div className="grid gap-3 sm:max-w-md">
             <Input
@@ -187,7 +198,15 @@ function AffiliatesPage() {
             </Badge>
           )}
         </p>
+        <p className="mt-2 text-xs text-muted-foreground">
+          {t(
+            "Como afiliado tienes el plan Pro incluido durante 12 meses para usar y demostrar el producto.",
+            "As an affiliate you get the Pro plan included for 12 months to use and demo the product.",
+          )}
+        </p>
       </Panel>
+
+
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard label={t("Clics en tu enlace", "Link clicks")} value={String(clicks)} icon={MousePointerClick} accent index={0} />
