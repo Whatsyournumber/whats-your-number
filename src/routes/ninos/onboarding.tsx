@@ -355,33 +355,45 @@ function Onboarding() {
           <div className="mt-8 space-y-5">
             <Buddy>
               {t(
-                `¿Cuánto dinero recibe ${name || "tu hijo/a"} y cada cuánto?`,
-                `How much money does ${name || "your child"} get, and how often?`,
+                `¿Cuánto dinero le quieres poner a ${name || "tu hijo/a"} y con qué frecuencia?`,
+                `How much money do you want to give ${name || "your child"}, and how often?`,
               )}
             </Buddy>
             <Card>
               <div className="space-y-4">
-                <Field label={`${t("Cantidad", "Amount")} (${currency})`}>
+                <Field label={`${t("Monto inicial", "Initial amount")} (${currency})`}>
                   <input
                     type="number"
                     min={0}
                     className={inputClass}
                     placeholder="0"
-                    value={allowance || ""}
-                    onChange={(e) => setAllowance(Number(e.target.value))}
+                    value={initial || ""}
+                    onChange={(e) => setInitial(Number(e.target.value))}
                   />
                 </Field>
-                <Field label={t("Frecuencia", "Frequency")}>
-                  <select
-                    className={inputClass}
-                    value={frequency}
-                    onChange={(e) => setFrequency(e.target.value)}
-                  >
-                    <option value="semanal">{t("Semanal", "Weekly")}</option>
-                    <option value="mensual">{t("Mensual", "Monthly")}</option>
-                    <option value="ocasional">{t("Ocasional", "Occasional")}</option>
-                  </select>
-                </Field>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field label={`${t("Monto mensual", "Monthly amount")} (${currency})`}>
+                    <input
+                      type="number"
+                      min={0}
+                      className={inputClass}
+                      placeholder="0"
+                      value={allowance || ""}
+                      onChange={(e) => setAllowance(Number(e.target.value))}
+                    />
+                  </Field>
+                  <Field label={t("Frecuencia", "Frequency")}>
+                    <select
+                      className={inputClass}
+                      value={frequency}
+                      onChange={(e) => setFrequency(e.target.value)}
+                    >
+                      <option value="semanal">{t("Semanal", "Weekly")}</option>
+                      <option value="mensual">{t("Mensual", "Monthly")}</option>
+                      <option value="ocasional">{t("Ocasional", "Occasional")}</option>
+                    </select>
+                  </Field>
+                </div>
               </div>
             </Card>
           </div>
