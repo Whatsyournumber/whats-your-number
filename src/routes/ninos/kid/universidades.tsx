@@ -405,7 +405,7 @@ function CollegeFinder({ member }: { member: Member }) {
               </span>
             </p>
 
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {list.map(({ u, total }) => {
                 const ok = total <= effectiveBudget;
                 const gap = total - effectiveBudget;
