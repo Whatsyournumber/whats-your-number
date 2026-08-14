@@ -355,7 +355,7 @@ function CollegeFinder({ member }: { member: Member }) {
           </button>
         </div>
 
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
           {buckets.map((b) => (
             <button
               key={b.key}
