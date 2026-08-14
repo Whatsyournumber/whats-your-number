@@ -207,6 +207,15 @@
   letter-spacing: -0.03em;
 }
 
+/* Scroll horizontal sin barra visible (tabs y filas de chips en móvil). */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 /* Sin flechas de incremento en los campos numéricos. */
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
