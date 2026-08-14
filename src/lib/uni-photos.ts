@@ -6,6 +6,31 @@ import campusLatam1 from "@/assets/uni/campus-latam-1.jpg";
 import campusApac1 from "@/assets/uni/campus-apac-1.jpg";
 import campusOther1 from "@/assets/uni/campus-other-1.jpg";
 import campusGeneric1 from "@/assets/uni/campus-generic-1.jpg";
+import curatedUsp from "@/assets/uni/br-usp.jpg";
+import curatedUnicamp from "@/assets/uni/br-unicamp.jpg";
+import curatedUfrj from "@/assets/uni/br-ufrj.jpg";
+import curatedUnesp from "@/assets/uni/br-unesp.jpg";
+import curatedInsper from "@/assets/uni/br-insper.jpg";
+import curatedUtfsm from "@/assets/uni/cl-utfsm.jpg";
+import curatedPortales from "@/assets/uni/cl-portales.jpg";
+import curatedPucChile from "@/assets/uni/cl-puc.jpg";
+import curatedIbero from "@/assets/uni/mx-ibero.jpg";
+import curatedAnahuac from "@/assets/uni/mx-anahuac.jpg";
+import curatedItam from "@/assets/uni/mx-itam.jpg";
+import curatedPanamericana from "@/assets/uni/mx-panamericana.jpg";
+import curatedCoAndes from "@/assets/uni/co-andes.jpg";
+import curatedSanAndres from "@/assets/uni/ar-sanandres.jpg";
+import curatedNlAmsterdam from "@/assets/uni/nl-amsterdam.jpg";
+import curatedUtrecht from "@/assets/uni/nl-utrecht.jpg";
+import curatedMaastricht from "@/assets/uni/nl-maastricht.jpg";
+import curatedVu from "@/assets/uni/nl-vu.jpg";
+import curatedErasmus from "@/assets/uni/nl-erasmus.jpg";
+import curatedLeiden from "@/assets/uni/nl-leiden.jpg";
+import curatedTwente from "@/assets/uni/nl-twente.jpg";
+import curatedTokyo from "@/assets/uni/jp-tokyo.jpg";
+import curatedKyoto from "@/assets/uni/jp-kyoto.jpg";
+import curatedCharles from "@/assets/uni/cz-charles.jpg";
+
 import curatedBuap from "@/assets/uni/mx-buap.jpg";
 import curatedUnal from "@/assets/uni/co-unal.jpg";
 import curatedAntioquia from "@/assets/uni/co-antioquia.jpg";
@@ -95,7 +120,32 @@ function hash(id: string) {
 
 /** Fotos curadas de alta calidad que sustituyen a las fuentes externas. */
 const CURATED: Record<string, string> = {
+  "br-universidade-de-sao-paulo": curatedUsp,
+  "br-unicamp": curatedUnicamp,
+  "br-ufrj": curatedUfrj,
+  "br-unesp": curatedUnesp,
+  "br-insper": curatedInsper,
+  "cl-universidad-tecnica-federico": curatedUtfsm,
+  "cl-universidad-diego-portales": curatedPortales,
+  "cl-puc-de-chile": curatedPucChile,
+  "mx-universidad-iberoamericana": curatedIbero,
+  "mx-universidad-anahuac": curatedAnahuac,
+  "mx-itam": curatedItam,
+  "mx-universidad-panamericana": curatedPanamericana,
+  "co-universidad-de-los-andes": curatedCoAndes,
+  "ar-universidad-de-san-andres": curatedSanAndres,
+  "nl-university-of-amsterdam": curatedNlAmsterdam,
+  "nl-utrecht-university": curatedUtrecht,
+  "nl-maastricht-university": curatedMaastricht,
+  "nl-vrije-universiteit-amsterdam": curatedVu,
+  "nl-erasmus-university-rotterdam": curatedErasmus,
+  "nl-leiden-university": curatedLeiden,
+  "nl-university-of-twente": curatedTwente,
+  "ap-university-of-tokyo": curatedTokyo,
+  "ap-kyoto-university": curatedKyoto,
+  "ot-charles-university": curatedCharles,
   "mx-buap": curatedBuap,
+
   "co-universidad-nacional-de-colo": curatedUnal,
   "co-universidad-de-antioquia": curatedAntioquia,
   "co-universidad-del-valle": curatedUnivalle,
