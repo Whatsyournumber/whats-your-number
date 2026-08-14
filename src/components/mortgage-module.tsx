@@ -569,15 +569,15 @@ export function MortgageModule() {
                         x.best && "bg-positive/8",
                       )}
                     >
-                      <td className="py-3">
+                      <td className="py-3 pr-4">
                         <div className="flex items-center gap-2.5">
                           <div className={cn(
-                            "flex h-8 w-8 items-center justify-center rounded-full",
+                            "flex h-8 w-8 shrink-0 items-center justify-center rounded-full",
                             x.best ? "bg-positive/15 text-positive" : "bg-muted text-muted-foreground",
                           )}>
                             <x.icon className="h-4 w-4" />
                           </div>
-                          <div>
+                          <div className="min-w-0">
                             <p className="font-medium">{x.name}</p>
                             <p className="text-xs text-muted-foreground">
                               {x.best ? (
@@ -591,10 +591,10 @@ export function MortgageModule() {
                           </div>
                         </div>
                       </td>
-                      <td className="numeric py-3 text-right font-medium">{fmt(x.payment)}</td>
-                      <td className="numeric py-3 text-right">{fmt(x.interest)}</td>
-                      <td className="numeric py-3 text-right">{freeDate(x.months)}</td>
-                      <td className={cn("numeric py-3 text-right font-medium", x.saving > 0 && "text-positive")}>
+                      <td className="numeric whitespace-nowrap py-3 pl-4 text-right font-medium">{fmt(x.payment)}</td>
+                      <td className="numeric whitespace-nowrap py-3 pl-4 text-right">{fmt(x.interest)}</td>
+                      <td className="numeric whitespace-nowrap py-3 pl-4 text-right">{freeDate(x.months)}</td>
+                      <td className={cn("numeric whitespace-nowrap py-3 pl-4 text-right font-medium", x.saving > 0 && "text-positive")}>
                         {x.saving > 0 ? fmt(x.saving) : "—"}
                       </td>
                     </tr>
