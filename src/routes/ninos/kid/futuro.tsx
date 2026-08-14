@@ -32,7 +32,7 @@ function MyFuture({ member }: { member: Member }) {
   const totals = pocketTotals(movements);
   // Empieza con todo lo que el niño tiene hoy (bolsillos + fondo) y crece con el interés
   const base =
-    Number(fund?.current_balance ?? 0) + totals.crecer + totals.ahorrar + totals.gastar;
+    Math.max(totals.crecer + totals.ahorrar + totals.gastar, Number(fund?.current_balance ?? 0));
 
   const monthly = Number(fund?.monthly_contribution ?? 0);
   const targetAge = Number(fund?.target_age ?? 18);
