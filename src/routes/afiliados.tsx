@@ -129,7 +129,7 @@ function AffiliatesPage() {
       <div className="relative min-h-screen overflow-hidden bg-background">
         <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[900px] -translate-x-1/2 rounded-full opacity-[0.12] blur-3xl" />
         <SiteHeader />
-        <main className="relative z-10 mx-auto w-full max-w-6xl px-4 pb-20 pt-6 md:px-6">
+        <main className="relative z-10 mx-auto w-full max-w-6xl px-4 pb-16 pt-6 md:px-6">
           <AffiliateLanding />
         </main>
         <SiteFooter />
