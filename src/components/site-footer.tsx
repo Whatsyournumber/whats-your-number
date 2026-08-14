@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Instagram, Linkedin, Heart, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
-import { BrandLogo } from "@/components/brand-logo";
+import { BrandLogo, KidsBrandLogo } from "@/components/brand-logo";
 import { PoliciesDialog } from "@/components/policies-dialog";
 import { useT } from "@/hooks/use-language";
 

@@ -996,7 +996,7 @@ function DualDashboards() {
   ];
 
   return (
-    <section className="mt-16 md:mt-24">
+    <section id="funciones" className="scroll-mt-24 mt-16 md:mt-24">
       <h2 className="text-center font-display text-2xl font-semibold tracking-tight md:text-3xl">
         {t("Dos paneles. Un mismo objetivo.", "Two dashboards. One shared goal.")}
       </h2>
