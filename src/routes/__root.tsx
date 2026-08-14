@@ -21,6 +21,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { AskAiSearch } from "@/components/ask-ai-search";
 import { ConsentBanner } from "@/components/consent-banner";
 import { PromoAutoRedeem } from "@/components/promo-auto-redeem";
+import { AffiliateTracker } from "@/components/affiliate-tracker";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
@@ -150,6 +151,7 @@ function RootComponent() {
       <LanguageProvider>
         <AuthProvider>
           <PromoAutoRedeem />
+          <AffiliateTracker />
           <RootLayout />
           <ConsentBanner />
           <Toaster />
