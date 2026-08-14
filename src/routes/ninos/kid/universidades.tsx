@@ -142,17 +142,25 @@ function CollegeFinder({ member }: { member: Member }) {
 
   return (
     <>
-      {/* Hero cute */}
-      <section className="relative mb-6 overflow-hidden rounded-[2rem] border border-border/60 bg-card shadow-sm">
+      {/* Hero difuminado, sin bordes */}
+      <section className="relative mb-8 -mt-2 overflow-hidden">
         <img
           src={heroImg}
           alt={t("Familia mirando universidades", "Family looking at universities")}
           width={1280}
           height={960}
-          className="absolute inset-y-0 right-0 h-full w-full object-cover object-right sm:w-[62%]"
+          className="pointer-events-none absolute inset-y-0 right-0 h-full w-full object-cover object-right opacity-80 sm:w-[64%]"
+          style={{
+            maskImage:
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 22%, #000 60%), linear-gradient(to bottom, transparent 0%, #000 18%, #000 72%, transparent 100%)",
+            maskComposite: "intersect",
+            WebkitMaskImage:
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 22%, #000 60%), linear-gradient(to bottom, transparent 0%, #000 18%, #000 72%, transparent 100%)",
+            WebkitMaskComposite: "source-in",
+          }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-card via-card/95 to-card/10 sm:via-card/85" />
-        <div className="relative max-w-md p-6 sm:p-8">
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-transparent" />
+        <div className="relative max-w-md py-8 pr-6 sm:py-12">
           <p className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-[11px] font-bold text-primary">
             🎓 {t("Buscador de universidades", "College finder")}
           </p>
