@@ -199,9 +199,9 @@ function RetiroContent() {
         <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${swr}%`} hint={t("anual · tu tasa de retiro", "annual · your withdrawal rate")} index={5} />
       </div>
       <div className="surface p-5">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">{t("Progreso hacia tu capital objetivo", "Progress toward your target capital")}</span>
-          <span className="numeric font-semibold">
+        <div className="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+          <span className="min-w-0 text-muted-foreground">{t("Progreso hacia tu capital objetivo", "Progress toward your target capital")}</span>
+          <span className="numeric whitespace-nowrap font-semibold sm:text-right">
             {fmt(investable)} / {fmt(plan.targetCapital)}
           </span>
         </div>
