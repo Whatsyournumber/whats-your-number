@@ -122,8 +122,8 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
   return (
     <div className="space-y-4">
       {/* HERO */}
-      <section className="relative overflow-hidden rounded-3xl border border-border/60 bg-elevated/30">
-        <div className="absolute inset-y-0 right-0 hidden w-[52%] lg:block">
+      <section className="relative -mx-4 overflow-hidden px-4 sm:-mx-6 sm:px-6">
+        <div className="absolute inset-y-0 right-0 hidden w-[58%] lg:block">
           <img
             src={affiliatesHero}
             alt={t(
@@ -131,10 +131,17 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
               "Two people smiling while reviewing their affiliate earnings",
             )}
             className="h-full w-full object-cover"
+            style={{
+              WebkitMaskImage:
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 22%, #000 55%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 78%, transparent 100%)",
+              maskImage:
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 22%, #000 55%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 78%, transparent 100%)",
+              WebkitMaskComposite: "source-in",
+              maskComposite: "intersect",
+            }}
           />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background via-background/50 to-transparent" />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/70 to-transparent" />
         </div>
+
 
         <div className="relative grid gap-0 lg:grid-cols-2">
           <div className="p-6 sm:p-10">
