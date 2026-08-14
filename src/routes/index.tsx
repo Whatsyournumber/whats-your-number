@@ -439,6 +439,18 @@ function Landing() {
             </div>
 
           </div>
+
+          {/* Soft bottom fade into next section */}
+          <div
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-40 md:h-52"
+            style={{
+              background:
+                "linear-gradient(to top, var(--background) 0%, rgba(var(--background), 0.72) 35%, transparent 100%)",
+              filter: "blur(20px)",
+              WebkitFilter: "blur(20px)",
+              transform: "translateY(40%)",
+            }}
+          />
         </motion.section>
 
         <section>
