@@ -31,15 +31,15 @@ import { cn } from "@/lib/utils";
 import { lifestyleCities } from "@/lib/lifestyle-cities";
 import { useT } from "@/hooks/use-language";
 
-const netWorth = [
-  { m: "Ene", v: 182 },
-  { m: "Feb", v: 191 },
-  { m: "Mar", v: 188 },
-  { m: "Abr", v: 205 },
-  { m: "May", v: 219 },
-  { m: "Jun", v: 233 },
-  { m: "Jul", v: 248 },
+const mortgage = [
+  { m: "2026", interes: 8.6, capital: 4.6 },
+  { m: "2029", interes: 7.6, capital: 5.6 },
+  { m: "2032", interes: 6.3, capital: 6.9 },
+  { m: "2035", interes: 4.8, capital: 8.4 },
+  { m: "2038", interes: 3.0, capital: 10.2 },
+  { m: "2041", interes: 1.2, capital: 12.0 },
 ];
+
 
 const spend = [
   { m: "Ene", v: 3.2, i: 5.4 },
