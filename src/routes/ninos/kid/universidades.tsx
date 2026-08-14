@@ -48,25 +48,42 @@ export const Route = createFileRoute("/ninos/kid/universidades")({
 const REGIONS = ["eu", "na", "latam", "apac", "other"] as const;
 const FIELDS = Object.keys(FIELD_LABELS) as UniField[];
 
+const HOME_REGION: Record<string, University["region"]> = {
+  ES: "eu", FR: "eu", IT: "eu", PT: "eu", DE: "eu", GB: "eu", CH: "eu", NL: "eu",
+  US: "na", CA: "na", MX: "latam", AR: "latam", CL: "latam", CO: "latam", PE: "latam",
+  UY: "latam", PY: "latam", BO: "latam", EC: "latam", VE: "latam", BR: "latam",
+  CR: "latam", PA: "latam", GT: "latam", HN: "latam", NI: "latam", SV: "latam", DO: "latam",
+};
+
 function CollegeFinder({ member }: { member: Member }) {
   const { t, lang } = useI18n();
   const { data: fund } = useFund(member.id);
   const { data: movements = [] } = useMovements(member.id);
+  const { data: profile } = useProfile();
 
   const currency = member.currency || "EUR";
   const fx = useFx(member.base_currency, currency);
   const usdFx = useFx("USD", currency);
 
+  const homeCountry = profile?.country ?? "";
+  const homeCode = (profile?.country_code ?? "").toUpperCase();
+  const homeRegion = HOME_REGION[homeCode] ?? null;
+
   const totals = pocketTotals(movements);
-  const base = (Number(fund?.current_balance ?? 0) + totals.crecer) * fx.factor;
-  const monthly = Number(fund?.monthly_contribution ?? 0) * fx.factor;
+  const fundInitial = Math.round((Number(fund?.current_balance ?? 0) + totals.crecer) * fx.factor);
+  const fundMonthly = Math.round(Number(fund?.monthly_contribution ?? 0) * fx.factor);
   const targetAge = Number(fund?.target_age ?? 18);
   const rate = Number(fund?.expected_return ?? 7);
   const yearsLeft = Math.max(0, targetAge - member.age);
 
+  const [initialInput, setInitialInput] = useState<number | null>(null);
+  const [monthlyInput, setMonthlyInput] = useState<number | null>(null);
+  const initial = initialInput ?? fundInitial;
+  const monthly = monthlyInput ?? fundMonthly;
+
   const projected = Math.max(
     5000,
-    Math.round(projectCapital(base, monthly, yearsLeft, rate) / 1000) * 1000,
+    Math.round(projectCapital(initial, monthly, yearsLeft, rate) / 1000) * 1000,
   );
 
   const [budget, setBudget] = useState<number>(projected);
@@ -74,6 +91,7 @@ function CollegeFinder({ member }: { member: Member }) {
   const effectiveBudget = touched ? budget : projected;
 
   const [includeLiving, setIncludeLiving] = useState(true);
+  const [nearHome, setNearHome] = useState(true);
   const [region, setRegion] = useState<string | null>(null);
   const [field, setField] = useState<UniField | null>(null);
   const [query, setQuery] = useState("");
@@ -81,6 +99,13 @@ function CollegeFinder({ member }: { member: Member }) {
   const [loadingAdvice, setLoadingAdvice] = useState(false);
 
   const cost = (u: University) => uniTotalUsd(u, includeLiving) * usdFx.factor;
+
+  const proximity = (u: University) => {
+    if (!nearHome) return 0;
+    if (homeCountry && (u.countryEs === homeCountry || u.country === homeCountry)) return 0;
+    if (homeRegion && u.region === homeRegion) return 1;
+    return 2;
+  };
 
   const list = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -98,10 +123,12 @@ function CollegeFinder({ member }: { member: Member }) {
         const aOk = a.total <= effectiveBudget ? 0 : 1;
         const bOk = b.total <= effectiveBudget ? 0 : 1;
         if (aOk !== bOk) return aOk - bOk;
+        const p = proximity(a.u) - proximity(b.u);
+        if (p !== 0) return p;
         return a.u.rank - b.u.rank;
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [region, field, query, includeLiving, effectiveBudget, usdFx.factor]);
+  }, [region, field, query, includeLiving, effectiveBudget, usdFx.factor, nearHome, homeCountry, homeRegion]);
 
   const affordable = list.filter((r) => r.total <= effectiveBudget);
   const stretch = list.filter((r) => r.total > effectiveBudget);
@@ -112,6 +139,7 @@ function CollegeFinder({ member }: { member: Member }) {
     : 0;
 
   const interests = field ? FIELD_LABELS[field][lang === "en" ? "en" : "es"] : "";
+
 
   const askBuddy = async () => {
     setLoadingAdvice(true);
