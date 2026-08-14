@@ -17,7 +17,7 @@ import {
   CreditCard,
   ShieldCheck,
   Users,
-  Handshake,
+  
 } from "lucide-react";
 
 
