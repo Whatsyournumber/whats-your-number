@@ -31,15 +31,15 @@ export function PlanGate({
   const isPro = required === "pro";
   const title = isPro
     ? t("Desbloquea funciones Pro", "Unlock Pro features")
-    : t("Desbloquea Patrimonio", "Unlock Patrimonio");
+    : t("Desbloquea Familiar", "Unlock Familiar");
   const description = isPro
     ? t(
         "Esta función está incluida en Pro. Prueba 14 días gratis y cancela cuando quieras.",
         "This feature is included in Pro. Try 14 days free and cancel anytime.",
       )
     : t(
-        "Esta función está incluida en Patrimonio. Para patrimonios complejos y familias.",
-        "This feature is included in Patrimonio. For complex net worths and families.",
+        "Esta función está incluida en el plan Familiar. Para familias y patrimonios complejos.",
+        "This feature is included in the Familiar plan. For families and complex net worths.",
       );
 
   return (
