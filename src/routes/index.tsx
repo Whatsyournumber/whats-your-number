@@ -355,17 +355,17 @@ function Landing() {
 
           {/* Mobile / tablet: the photo is the top of the background itself */}
           <div
-            className="pointer-events-none absolute inset-x-0 top-0 h-[30vh] min-h-[210px] lg:hidden"
+            className="pointer-events-none absolute inset-x-0 top-0 h-[28vh] min-h-[200px] lg:hidden"
             style={{
-              WebkitMaskImage: "linear-gradient(to bottom, #000 28%, transparent 100%)",
-              maskImage: "linear-gradient(to bottom, #000 28%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to bottom, #000 26%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, #000 26%, transparent 100%)",
             }}
           >
             <img
               src={heroManLaptopAsset.url}
               alt=""
               aria-hidden
-              className="h-full w-full object-cover object-[75%_30%]"
+              className="h-full w-full object-cover object-[70%_35%]"
               loading="eager"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-background/20" />
@@ -374,7 +374,7 @@ function Landing() {
 
 
           <div className="relative z-10 mx-auto w-full max-w-6xl px-6">
-            <div className="max-w-2xl pb-16 pt-[26vh] text-center md:pb-24 lg:pb-36 lg:pt-44 lg:text-left">
+            <div className="max-w-2xl pb-16 pt-[24vh] text-center md:pb-24 lg:pb-36 lg:pt-44 lg:text-left">
               <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground backdrop-blur">
                 <Sparkles className="h-3.5 w-3.5 text-primary" />
                 {t("Tu family office personal, potenciado con IA", "Your personal family office, powered by AI")}
