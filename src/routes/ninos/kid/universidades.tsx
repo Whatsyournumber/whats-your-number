@@ -147,17 +147,17 @@ function CollegeFinder({ member }: { member: Member }) {
           alt={t("Familia mirando universidades", "Family looking at universities")}
           width={1280}
           height={960}
-          className="pointer-events-none absolute inset-y-0 right-0 h-full w-full object-cover object-right opacity-80 sm:w-[64%]"
+          className="pointer-events-none absolute inset-y-0 right-0 h-full w-full object-cover object-right opacity-100 sm:w-[72%]"
           style={{
             maskImage:
-              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 22%, #000 60%), linear-gradient(to bottom, transparent 0%, #000 18%, #000 72%, transparent 100%)",
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 12%, rgba(0,0,0,0.35) 35%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.70) 70%, rgba(0,0,0,0.90) 90%, rgba(0,0,0,0.90) 100%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 80%, transparent 100%)",
             maskComposite: "intersect",
             WebkitMaskImage:
-              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 22%, #000 60%), linear-gradient(to bottom, transparent 0%, #000 18%, #000 72%, transparent 100%)",
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 12%, rgba(0,0,0,0.35) 35%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.70) 70%, rgba(0,0,0,0.90) 90%, rgba(0,0,0,0.90) 100%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 80%, transparent 100%)",
             WebkitMaskComposite: "source-in",
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/55 to-transparent" />
         <div className="relative max-w-md py-8 pr-6 sm:py-12">
           <p className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-[11px] font-bold text-primary">
             🎓 {t("Buscador de universidades", "College finder")}
