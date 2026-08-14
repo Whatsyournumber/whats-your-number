@@ -62,7 +62,10 @@ type Bucket = "home" | "eu" | "na" | "rest";
 
 type Continent = "latam" | "nam" | "eu" | "asia" | "oceania" | "africa";
 
-const OCEANIA = new Set(["Australia", "New Zealand", "Nueva Zelanda"]);
+const OCEANIA = new Set([
+  "Australia", "New Zealand", "Nueva Zelanda", "Fiji", "Fiyi",
+  "Papua New Guinea", "Papúa Nueva Guinea", "Samoa",
+]);
 const AFRICA_ME = new Set([
   "Sudáfrica", "South Africa", "Israel", "Emiratos Árabes", "United Arab Emirates",
 ]);
