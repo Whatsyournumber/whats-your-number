@@ -188,10 +188,11 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
                   <span className="inline-flex rounded-full border border-border bg-background/70 p-2 text-primary">
                     <Icon className="h-3.5 w-3.5" />
                   </span>
-                  <span className="leading-tight">
-                    <span className="block text-xs font-semibold">{title}</span>
-                    <span className="block text-[11px] text-muted-foreground">{sub}</span>
+                  <span className="min-w-0 leading-tight">
+                    <span className="block truncate whitespace-nowrap text-xs font-semibold">{title}</span>
+                    <span className="line-clamp-2 block text-[11px] text-muted-foreground">{sub}</span>
                   </span>
+
                 </div>
               ))}
             </div>
