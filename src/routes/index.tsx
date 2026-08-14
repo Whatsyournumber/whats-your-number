@@ -374,23 +374,24 @@ function Landing() {
 
 
           <div className="relative z-10 mx-auto w-full max-w-6xl px-6">
-            <div className="max-w-2xl pb-16 pt-[22vh] text-center md:pb-24 md:pt-32 md:text-left lg:pb-36 lg:pt-44">
-              <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground backdrop-blur">
+            <div className="max-w-2xl pb-16 pt-[22vh] text-center md:max-w-[56%] md:pb-24 md:pt-28 md:text-left lg:max-w-2xl lg:pb-36 lg:pt-44">
+              <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-[11px] text-muted-foreground backdrop-blur md:text-xs">
                 <Sparkles className="h-3.5 w-3.5 text-primary" />
                 {t("Tu family office personal, potenciado con IA", "Your personal family office, powered by AI")}
               </span>
-              <h1 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-semibold leading-[1.08] tracking-tight md:mx-0 md:text-5xl lg:text-6xl">
+              <h1 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-semibold leading-[1.08] tracking-tight md:mx-0 md:text-[2.15rem] lg:text-6xl">
                 {t("Todo tu dinero", "All your money")}
                 <span className="block bg-gradient-to-r from-primary to-foreground bg-clip-text text-transparent">
                   {t("entendido en 30 segundos", "understood in 30 seconds")}
                 </span>
               </h1>
-              <p className="mx-auto mt-5 max-w-lg text-base text-muted-foreground md:mx-0">
+              <p className="mx-auto mt-5 max-w-lg text-base text-muted-foreground md:mx-0 md:text-sm lg:text-base">
                 {t(
                   "Patrimonio, gastos, cash flow, inversiones y retiro en una sola plataforma. Sube tus estados de cuenta y la IA hace el resto.",
                   "Net worth, spending, cash flow, investments and retirement in a single platform. Upload your statements and let the AI do the rest.",
                 )}
               </p>
+
 
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
                 <Button asChild size="lg" className="gap-2 rounded-full px-6">
