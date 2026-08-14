@@ -240,9 +240,46 @@ function CollegeFinder({ member }: { member: Member }) {
               ) : null}
             </div>
 
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              <label className="rounded-2xl bg-secondary/50 px-4 py-3">
+                <span className="text-xs font-semibold text-muted-foreground">
+                  {t("¿Cuánto pones inicialmente?", "How much do you put in initially?")}
+                </span>
+                <Input
+                  className="mt-1 border-0 bg-transparent px-0 font-display text-xl font-bold shadow-none focus-visible:ring-0"
+                  inputMode="numeric"
+                  value={initial}
+                  onChange={(e) => {
+                    setInitialInput(Math.max(0, Number(e.target.value.replace(/\D/g, "")) || 0));
+                    setTouched(false);
+                  }}
+                />
+              </label>
+              <label className="rounded-2xl bg-secondary/50 px-4 py-3">
+                <span className="text-xs font-semibold text-muted-foreground">
+                  {t("¿Cuánto pones cada mes?", "How much do you add monthly?")}
+                </span>
+                <Input
+                  className="mt-1 border-0 bg-transparent px-0 font-display text-xl font-bold shadow-none focus-visible:ring-0"
+                  inputMode="numeric"
+                  value={monthly}
+                  onChange={(e) => {
+                    setMonthlyInput(Math.max(0, Number(e.target.value.replace(/\D/g, "")) || 0));
+                    setTouched(false);
+                  }}
+                />
+              </label>
+            </div>
+            <p className="mt-2 text-[11px] text-muted-foreground">
+              {t(
+                `Durante ${yearsLeft} años al ${rate}% anual → ${money(projected, currency, true)} a los ${targetAge}.`,
+                `Over ${yearsLeft} years at ${rate}% a year → ${money(projected, currency, true)} at age ${targetAge}.`,
+              )}
+            </p>
+
             <Slider
               className="mt-5"
-              value={[effectiveBudget]}
+              value={[Math.min(effectiveBudget, maxBudget)]}
               min={5000}
               max={maxBudget}
               step={1000}
@@ -267,6 +304,21 @@ function CollegeFinder({ member }: { member: Member }) {
               </div>
               <Switch checked={includeLiving} onCheckedChange={setIncludeLiving} />
             </div>
+
+            <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl bg-secondary/50 px-4 py-3">
+              <div>
+                <p className="text-sm font-semibold text-foreground">
+                  {t("Priorizar cerca de casa", "Prioritize close to home")}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {profile?.city || homeCountry
+                    ? `${profile?.city ? `${profile.city}, ` : ""}${homeCountry}`
+                    : t("Añade tu ciudad en tu perfil", "Add your city in your profile")}
+                </p>
+              </div>
+              <Switch checked={nearHome} onCheckedChange={setNearHome} />
+            </div>
+
           </section>
 
           {/* Filtros */}
