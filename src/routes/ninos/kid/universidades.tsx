@@ -197,6 +197,8 @@ function CollegeFinder({ member }: { member: Member }) {
     return priced
       .filter(({ u, total }) => {
         if (bucket && bucketOf(u) !== bucket) return false;
+        if (continent && continentOf(u) !== continent) return false;
+
         if (country && (lang === "en" ? u.country : u.countryEs) !== country) return false;
         if (field && !uniFields(u).includes(field)) return false;
         if (rankMax && u.rank > Number(rankMax)) return false;
