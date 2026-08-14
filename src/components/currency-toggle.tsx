@@ -48,7 +48,7 @@ export function CurrencyToggle({ className = "" }: { className?: string }) {
       disabled={busy}
       value={current}
       onChange={(e) => void onChange(e.target.value)}
-      className={`h-7 rounded-full border border-border/70 bg-background/60 px-2 text-[11px] uppercase tracking-wide text-foreground/80 shadow-sm backdrop-blur-md transition-colors hover:text-foreground focus:outline-none disabled:opacity-50 ${className}`}
+      className={`h-7 cursor-pointer border-none bg-transparent px-1 text-[11px] font-medium uppercase tracking-wide text-foreground/60 transition-colors hover:text-foreground focus:outline-none disabled:opacity-50 ${className}`}
     >
       {currencies.map((c) => (
         <option key={c.code} value={c.code}>
