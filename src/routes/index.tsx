@@ -22,6 +22,8 @@ import {
 
 
 import ctaLifestyle from "@/assets/cta-lifestyle.jpg";
+import heroManLaptopAsset from "@/assets/hero-man-laptop.jpg.asset.json";
+
 
 import { BrandLogo } from "@/components/brand-logo";
 import { ProductPreview } from "@/components/product-preview";
@@ -320,59 +322,90 @@ function Landing() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="pt-16 text-center md:pt-24"
+          className="pt-12 md:pt-20 lg:pt-24"
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground backdrop-blur">
-            <Sparkles className="h-3.5 w-3.5 text-primary" />
-            {t("Tu family office personal, potenciado con IA", "Your personal family office, powered by AI")}
-          </span>
-          <h1 className="mx-auto mt-6 max-w-4xl font-display text-4xl font-semibold leading-[1.08] tracking-tight md:text-6xl">
-            {t("Todo tu dinero", "All your money")}
-            <span className="block bg-gradient-to-r from-primary to-foreground bg-clip-text text-transparent">
-              {t("entendido en 30 segundos", "understood in 30 seconds")}
-            </span>
-          </h1>
-          <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground">
-            {t(
-              "Patrimonio, gastos, cash flow, inversiones y retiro en una sola plataforma. Sube tus estados de cuenta y la IA hace el resto.",
-              "Net worth, spending, cash flow, investments and retirement in a single platform. Upload your statements and let the AI do the rest.",
-            )}
-          </p>
+          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-12">
+            <div className="text-center lg:text-left">
+              <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground backdrop-blur">
+                <Sparkles className="h-3.5 w-3.5 text-primary" />
+                {t("Tu family office personal, potenciado con IA", "Your personal family office, powered by AI")}
+              </span>
+              <h1 className="mx-auto mt-6 max-w-4xl font-display text-4xl font-semibold leading-[1.08] tracking-tight lg:mx-0 md:text-5xl lg:text-6xl">
+                {t("Todo tu dinero", "All your money")}
+                <span className="block bg-gradient-to-r from-primary to-foreground bg-clip-text text-transparent">
+                  {t("entendido en 30 segundos", "understood in 30 seconds")}
+                </span>
+              </h1>
+              <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground lg:mx-0">
+                {t(
+                  "Patrimonio, gastos, cash flow, inversiones y retiro en una sola plataforma. Sube tus estados de cuenta y la IA hace el resto.",
+                  "Net worth, spending, cash flow, investments and retirement in a single platform. Upload your statements and let the AI do the rest.",
+                )}
+              </p>
 
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+                <Button asChild size="lg" className="gap-2 rounded-full px-6">
+                  <Link to="/demo" search={{ start: 1 }}>
+                    {t("Descubre tu número", "Discover your number")} <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="rounded-full px-6">
+                  <Link to="/auth" search={{ mode: "signup" }}>
+                    {t("Empieza gratis", "Start for free")}
+                  </Link>
+                </Button>
+              </div>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Button asChild size="lg" className="gap-2 rounded-full px-6">
-              <Link to="/demo" search={{ start: 1 }}>
-                {t("Descubre tu número", "Discover your number")} <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="rounded-full px-6">
-              <Link to="/auth" search={{ mode: "signup" }}>
-                {t("Empieza gratis", "Start for free")}
-              </Link>
-            </Button>
-          </div>
-
-          <div className="mt-6 flex items-center justify-center gap-3">
-            <div className="flex -space-x-2">
-              {[
-                "https://i.pravatar.cc/80?img=12",
-                "https://i.pravatar.cc/80?img=32",
-                "https://i.pravatar.cc/80?img=45",
-              ].map((src) => (
-                <img
-                  key={src}
-                  src={src}
-                  alt={t("Usuario de WhatsYourNumber", "WhatsYourNumber user")}
-                  loading="lazy"
-                  className="h-8 w-8 rounded-full border-2 border-background object-cover"
-                />
-              ))}
+              <div className="mt-6 flex items-center justify-center gap-3 lg:justify-start">
+                <div className="flex -space-x-2">
+                  {[
+                    "https://i.pravatar.cc/80?img=12",
+                    "https://i.pravatar.cc/80?img=32",
+                    "https://i.pravatar.cc/80?img=45",
+                  ].map((src) => (
+                    <img
+                      key={src}
+                      src={src}
+                      alt={t("Usuario de WhatsYourNumber", "WhatsYourNumber user")}
+                      loading="lazy"
+                      className="h-8 w-8 rounded-full border-2 border-background object-cover"
+                    />
+                  ))}
+                </div>
+                <span className="text-sm text-muted-foreground">
+                  {t("+8,231 personas ya descubrieron su número", "+8,231 people already found their number")}
+                </span>
+              </div>
             </div>
-            <span className="text-sm text-muted-foreground">
-              {t("+8,231 personas ya descubrieron su número", "+8,231 people already found their number")}
-            </span>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
+              className="relative mx-auto w-full max-w-lg lg:max-w-none"
+            >
+              <div className="absolute -inset-4 rounded-[2rem] bg-primary/10 blur-3xl" />
+              <div className="relative overflow-hidden rounded-2xl ring-1 ring-border/60 shadow-2xl">
+                <img
+                  src={heroManLaptopAsset.url}
+                  alt={t("Hombre feliz usando WhatsYourNumber en su laptop", "Happy man using WhatsYourNumber on his laptop")}
+                  width={1536}
+                  height={1024}
+                  className="h-auto w-full object-cover"
+                  loading="eager"
+                  fetchPriority="high"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-0 lg:opacity-25" />
+                <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-background via-transparent to-transparent lg:block lg:opacity-25" />
+
+
+
+
+              </div>
+            </motion.div>
           </div>
+
+
 
           <div className="mb-10 mt-14 text-center">
             <span className="text-xs font-medium uppercase tracking-wider text-primary">
