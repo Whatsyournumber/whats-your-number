@@ -51,7 +51,7 @@ function Onboarding() {
   const [currency, setCurrency] = useState("EUR");
   const [allowance, setAllowance] = useState(10);
   const [frequency, setFrequency] = useState("semanal");
-  const [split, setSplit] = useState({ spend: 40, save: 40, grow: 20 });
+  const [split, setSplit] = useState({ spend: 20, save: 40, grow: 40 });
   const [wish, setWish] = useState(WISH_IDEAS[0]!);
   const [wishPrice, setWishPrice] = useState(WISH_IDEAS[0]!.price);
   const [initial, setInitial] = useState(1000);
@@ -409,42 +409,50 @@ function Onboarding() {
             </Buddy>
             <Card
               title={t("Reparto automático", "Automatic split")}
-              hint={`${t("Gastar", "Spend")} ${split.spend}% · ${t("Ahorrar", "Save")} ${split.save}% · ${t("Crecer", "Grow")} ${split.grow}%`}
+              hint={`${t("Invertir", "Invest")} ${split.grow}% · ${t("Ahorrar", "Save")} ${split.save}% · ${t("Gastar", "Spend")} ${split.spend}%`}
             >
               <div className="space-y-5">
-                <Field label={`🛍 ${t("Gastar", "Spend")} — ${split.spend}%`}>
-                  <input
-                    type="range"
-                    min={0}
-                    max={100}
-                    step={5}
-                    value={split.spend}
-                    onChange={(e) => {
-                      const spend = Number(e.target.value);
-                      const save = Math.min(split.save, 100 - spend);
-                      setSplit({ spend, save, grow: 100 - spend - save });
-                    }}
-                    className="w-full accent-[var(--color-primary)]"
-                  />
-                </Field>
-                <Field label={`🌱 ${t("Ahorrar", "Save")} — ${split.save}%`}>
-                  <input
-                    type="range"
-                    min={0}
-                    max={100}
-                    step={5}
-                    value={split.save}
-                    onChange={(e) => {
-                      const save = Math.min(Number(e.target.value), 100 - split.spend);
-                      setSplit({ ...split, save, grow: 100 - split.spend - save });
-                    }}
-                    className="w-full accent-[var(--color-primary)]"
-                  />
-                </Field>
-                <p className="text-sm text-muted-foreground">
-                  📈 {t("Hacer crecer", "Grow")}:{" "}
-                  <span className="font-semibold text-foreground">{split.grow}%</span>
-                </p>
+                {(() => {
+                  type K = "spend" | "save" | "grow";
+                  const reorder = (key: K, next: number) => {
+                    const rem = 100 - next;
+                    const all: K[] = ["spend", "save", "grow"];
+                    let o1: K = "spend";
+                    let o2: K = "save";
+                    const rest = all.filter((k) => k !== key);
+                    o1 = rest[0]!;
+                    o2 = rest[1]!;
+                    const sum = split[o1] + split[o2];
+                    const a = sum === 0 ? Math.round(rem / 2) : Math.round((split[o1] / sum) * rem);
+                    const b = rem - a;
+                    const upd: Record<K, number> = { spend: split.spend, save: split.save, grow: split.grow };
+                    upd[key] = next;
+                    upd[o1] = a;
+                    upd[o2] = b;
+                    setSplit(upd);
+                  };
+                  const items: { key: K; emoji: string; labelEs: string; labelEn: string }[] = [
+                    { key: "grow", emoji: "📈", labelEs: "Invertir", labelEn: "Invest" },
+                    { key: "save", emoji: "🌱", labelEs: "Ahorrar", labelEn: "Save" },
+                    { key: "spend", emoji: "🛍", labelEs: "Gastar", labelEn: "Spend" },
+                  ];
+                  return items.map((item) => (
+                    <Field
+                      key={item.key}
+                      label={`${item.emoji} ${t(item.labelEs, item.labelEn)} — ${split[item.key]}%`}
+                    >
+                      <input
+                        type="range"
+                        min={0}
+                        max={100}
+                        step={5}
+                        value={split[item.key]}
+                        onChange={(e) => reorder(item.key, Number(e.target.value))}
+                        className="w-full accent-[var(--color-primary)]"
+                      />
+                    </Field>
+                  ));
+                })()}
               </div>
             </Card>
           </div>
