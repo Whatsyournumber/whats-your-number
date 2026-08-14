@@ -18,8 +18,11 @@ import { AffiliateLanding } from "@/components/affiliate-landing";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
-import { joinAffiliateProgram, updateMyAffiliate } from "@/utils/affiliates.functions";
+import { claimReferralReward, joinAffiliateProgram, updateMyAffiliate } from "@/utils/affiliates.functions";
 import { getPaddleEnvironment } from "@/lib/paddle";
+
+const REFERRAL_GOAL = 3;
+
 
 export const Route = createFileRoute("/afiliados")({
   ssr: false,
