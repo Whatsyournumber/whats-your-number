@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { GraduationCap, Search, Sparkles, Check, TrendingUp, Loader2 } from "lucide-react";
+import { Search, Check, TrendingUp } from "lucide-react";
 
 import { KidPage } from "@/components/kid-page";
 import heroGirl from "@/assets/uni-hero-girl.jpg";
@@ -20,13 +20,11 @@ import {
   type UniField,
   type University,
 } from "@/lib/universities";
-import { getCollegeAdvice } from "@/lib/college-ai.functions";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { toast } from "sonner";
 
 export const Route = createFileRoute("/ninos/kid/universidades")({
   head: () => ({
@@ -99,8 +97,6 @@ function CollegeFinder({ member }: { member: Member }) {
   const [region, setRegion] = useState<string | null>(null);
   const [field, setField] = useState<UniField | null>(null);
   const [query, setQuery] = useState("");
-  const [advice, setAdvice] = useState<string | null>(null);
-  const [loadingAdvice, setLoadingAdvice] = useState(false);
 
   const cost = (u: University) => uniTotalUsd(u, includeLiving) * usdFx.factor;
 
@@ -135,82 +131,34 @@ function CollegeFinder({ member }: { member: Member }) {
   }, [region, field, query, includeLiving, effectiveBudget, usdFx.factor, nearHome, homeCountry, homeRegion]);
 
   const affordable = list.filter((r) => r.total <= effectiveBudget);
-  const stretch = list.filter((r) => r.total > effectiveBudget);
+
 
   const monthsLeft = Math.max(1, yearsLeft * 12);
-  const monthlyExtraFor1 = stretch[0]
-    ? Math.max(0, (stretch[0].total - effectiveBudget) / monthsLeft)
-    : 0;
-
-  const interests = field ? FIELD_LABELS[field][lang === "en" ? "en" : "es"] : "";
-
-
-  const askBuddy = async () => {
-    setLoadingAdvice(true);
-    setAdvice(null);
-    try {
-      const res = await getCollegeAdvice({
-        data: {
-          lang: lang === "en" ? "en" : "es",
-          childName: member.name,
-          childAge: member.age,
-          currency,
-          budget: effectiveBudget,
-          interests,
-          monthlyExtraFor1,
-          initial,
-          monthly,
-          years: yearsLeft,
-          rate,
-          homeCountry: homeCountry || "",
-          homeCity: profile?.city ?? "",
-
-          affordable: affordable.slice(0, 8).map((r) => ({
-            name: r.u.name,
-            city: r.u.city,
-            country: lang === "en" ? r.u.country : r.u.countryEs,
-            total: r.total,
-            rank: r.u.rank,
-          })),
-          stretch: stretch.slice(0, 5).map((r) => ({
-            name: r.u.name,
-            city: r.u.city,
-            country: lang === "en" ? r.u.country : r.u.countryEs,
-            total: r.total,
-            rank: r.u.rank,
-            gap: r.total - effectiveBudget,
-          })),
-        },
-      });
-      setAdvice(res.answer);
-    } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : t("No se pudo generar la recomendación", "Could not generate the recommendation"),
-      );
-    } finally {
-      setLoadingAdvice(false);
-    }
-  };
-
   const maxBudget = Math.max(400000, Math.round(projected * 2));
 
   const heroImg = member.theme === "girl" ? heroGirl : heroBoy;
 
   return (
     <>
-      {/* Hero cute */}
-      <section className="relative mb-6 overflow-hidden rounded-[2rem] border border-border/60 bg-card shadow-sm">
+      {/* Hero difuminado, sin bordes */}
+      <section className="relative mb-8 -mt-2 overflow-hidden">
         <img
           src={heroImg}
           alt={t("Familia mirando universidades", "Family looking at universities")}
           width={1280}
           height={960}
-          className="absolute inset-y-0 right-0 h-full w-full object-cover object-right sm:w-[62%]"
+          className="pointer-events-none absolute inset-y-0 right-0 h-full w-full object-cover object-right opacity-80 sm:w-[64%]"
+          style={{
+            maskImage:
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 22%, #000 60%), linear-gradient(to bottom, transparent 0%, #000 18%, #000 72%, transparent 100%)",
+            maskComposite: "intersect",
+            WebkitMaskImage:
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 22%, #000 60%), linear-gradient(to bottom, transparent 0%, #000 18%, #000 72%, transparent 100%)",
+            WebkitMaskComposite: "source-in",
+          }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-card via-card/95 to-card/10 sm:via-card/85" />
-        <div className="relative max-w-md p-6 sm:p-8">
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-transparent" />
+        <div className="relative max-w-md py-8 pr-6 sm:py-12">
           <p className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-[11px] font-bold text-primary">
             🎓 {t("Buscador de universidades", "College finder")}
           </p>
@@ -238,7 +186,7 @@ function CollegeFinder({ member }: { member: Member }) {
         </div>
       </section>
 
-      <div className="grid gap-5 lg:grid-cols-[1.55fr_1fr]">
+      <div className="grid gap-5">
         <div className="space-y-5">
           {/* Presupuesto */}
           <section className="rounded-3xl border border-border/70 bg-card p-5 shadow-sm sm:p-6">
@@ -504,59 +452,6 @@ function CollegeFinder({ member }: { member: Member }) {
           </section>
         </div>
 
-        {/* Panel IA */}
-        <aside className="lg:sticky lg:top-6 lg:self-start">
-          <section className="rounded-3xl border border-border/70 bg-card p-5 shadow-sm">
-            <div className="flex items-center gap-2">
-              <span className="grid h-9 w-9 place-items-center rounded-2xl bg-primary/15 text-primary">
-                <GraduationCap className="h-4.5 w-4.5" />
-              </span>
-              <div>
-                <p className="font-display text-base font-bold text-foreground">
-                  {t("Buddy te aconseja", "Buddy advises you")}
-                </p>
-                <p className="text-[11px] text-muted-foreground">
-                  {t("IA sobre tu presupuesto real", "AI on your real budget")}
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-3 text-center">
-              <Stat label={t("A tu alcance", "Within reach")} value={String(affordable.length)} />
-              <Stat
-                label={t("Extra/mes para la 1ª soñada", "Extra/mo for dream #1")}
-                value={monthlyExtraFor1 > 0 ? money(monthlyExtraFor1, currency, true) : "—"}
-              />
-            </div>
-
-            <Button className="mt-4 w-full" onClick={askBuddy} disabled={loadingAdvice}>
-              {loadingAdvice ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {t("Pensando…", "Thinking…")}
-                </>
-              ) : (
-                <>
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  {t("Recomiéndame universidades", "Recommend universities")}
-                </>
-              )}
-            </Button>
-
-            {advice ? (
-              <div className="mt-4 whitespace-pre-wrap rounded-2xl bg-secondary/50 p-4 text-sm leading-relaxed text-foreground">
-                {advice}
-              </div>
-            ) : (
-              <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-                {t(
-                  "Ajusta el capital y los filtros, y Buddy te dirá dónde encaja mejor tu hijo/a y cuánto falta para la universidad soñada.",
-                  "Adjust the capital and filters, and Buddy will tell you where your child fits best and how far the dream school is.",
-                )}
-              </p>
-            )}
-          </section>
-        </aside>
       </div>
     </>
   );
@@ -587,11 +482,3 @@ function Chip({
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl bg-secondary/50 px-3 py-3">
-      <p className="font-display text-lg font-bold text-foreground">{value}</p>
-      <p className="text-[10px] leading-tight text-muted-foreground">{label}</p>
-    </div>
-  );
-}
