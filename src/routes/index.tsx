@@ -365,7 +365,7 @@ function Landing() {
               src={heroManLaptopAsset.url}
               alt=""
               aria-hidden
-              className="h-full w-full object-cover object-[70%_32%]"
+              className="h-full w-full object-cover object-[68%_45%]"
               loading="eager"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-background/20" />
