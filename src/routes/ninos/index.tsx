@@ -1,6 +1,6 @@
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { LineChart, Lock, Plus, Settings, Trash2 } from "lucide-react";
+import { LineChart, Lock, Plus, Settings, Trash2, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/mfn-ui";
 import { useQueryClient } from "@tanstack/react-query";
@@ -164,9 +164,9 @@ function ProfileSelector() {
                           setPendingDelete(m);
                         }
                       }}
-                      className="absolute right-2 top-2 grid h-9 w-9 place-items-center rounded-full bg-background/90 text-destructive shadow-lg ring-1 ring-destructive/40 transition hover:bg-destructive hover:text-destructive-foreground"
+                      className="absolute -right-2 -top-2 z-10 grid h-8 w-8 place-items-center rounded-full bg-destructive text-destructive-foreground shadow-lg ring-2 ring-background transition hover:scale-110"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <X className="h-4 w-4" strokeWidth={3} />
                     </span>
                   ) : null}
                   <span className="min-w-0 text-center">
