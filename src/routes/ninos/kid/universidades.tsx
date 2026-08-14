@@ -2,7 +2,9 @@ import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { GraduationCap, Search, Sparkles, Check, TrendingUp, Loader2 } from "lucide-react";
 
-import { KidPage, PageTitle } from "@/components/kid-page";
+import { KidPage } from "@/components/kid-page";
+import heroGirl from "@/assets/uni-hero-girl.jpg";
+import heroBoy from "@/assets/uni-hero-boy.jpg";
 import { useFund, useMovements } from "@/hooks/use-mfn";
 import { useProfile } from "@/hooks/use-profile";
 
