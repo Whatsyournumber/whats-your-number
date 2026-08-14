@@ -49,6 +49,16 @@ function ProfileSelector() {
     if (!pendingDelete) return;
     setDeleting(true);
     try {
+      const childTables = [
+        "kid_movements",
+        "kid_tasks",
+        "kid_wishes",
+        "kid_holdings",
+        "kid_future_funds",
+      ] as const;
+      for (const table of childTables) {
+        await supabase.from(table).delete().eq("member_id", pendingDelete.id);
+      }
       const { error } = await supabase.from("kid_members").delete().eq("id", pendingDelete.id);
       if (error) throw error;
       select(null);
@@ -148,7 +158,7 @@ function ProfileSelector() {
                   <span className="grid aspect-square w-full place-items-center rounded-2xl bg-secondary text-5xl ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4 sm:text-6xl">
                     {m.avatar}
                   </span>
-                  {manage && m.role === "child" ? (
+                  {m.role === "child" ? (
                     <span
                       role="button"
                       tabIndex={0}
