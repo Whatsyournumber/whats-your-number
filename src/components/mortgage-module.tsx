@@ -549,15 +549,15 @@ export function MortgageModule() {
               )}
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+            <div className="-mx-1 overflow-x-auto px-1">
+              <table className="w-full min-w-[680px] text-sm">
                 <thead>
                   <tr className="text-left text-xs text-muted-foreground">
-                    <th className="py-2 font-normal">{t("Estrategia", "Strategy")}</th>
-                    <th className="py-2 text-right font-normal">{t("Pago mensual", "Monthly payment")}</th>
-                    <th className="py-2 text-right font-normal">{t("Interés total", "Total interest")}</th>
-                    <th className="py-2 text-right font-normal">{t("Quedarás libre en", "Mortgage free")}</th>
-                    <th className="py-2 text-right font-normal">{t("Ahorro total", "Total savings")}</th>
+                    <th className="whitespace-nowrap py-2 pr-4 font-normal">{t("Estrategia", "Strategy")}</th>
+                    <th className="whitespace-nowrap py-2 pl-4 text-right font-normal">{t("Pago mensual", "Monthly payment")}</th>
+                    <th className="whitespace-nowrap py-2 pl-4 text-right font-normal">{t("Interés total", "Total interest")}</th>
+                    <th className="whitespace-nowrap py-2 pl-4 text-right font-normal">{t("Quedarás libre en", "Mortgage free")}</th>
+                    <th className="whitespace-nowrap py-2 pl-4 text-right font-normal">{t("Ahorro total", "Total savings")}</th>
                   </tr>
                 </thead>
                 <tbody>
