@@ -101,7 +101,7 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
   return (
     <header className="relative z-20 mx-auto w-full max-w-6xl px-4 py-4 md:px-6 md:py-6">
       {/* Desktop */}
-      <div className="hidden items-center justify-between md:flex">
+      <div className="hidden items-center justify-between lg:flex">
         <div className="flex items-center gap-3">
           <Link to="/" className="shrink-0">
             <BrandLogo />
@@ -115,8 +115,8 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
         </div>
       </div>
 
-      {/* Mobile */}
-      <div className="md:hidden">
+      {/* Mobile / Tablet */}
+      <div className="lg:hidden">
         <Sheet open={open} onOpenChange={setOpen}>
           <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2">
             <SheetTrigger asChild>
