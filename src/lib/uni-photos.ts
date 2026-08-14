@@ -24,12 +24,28 @@ function hash(id: string) {
   return h;
 }
 
+/** Fotos curadas de alta calidad que sustituyen a las fuentes externas. */
+const CURATED: Record<string, string> = {
+  "mx-buap": curatedBuap,
+  "co-universidad-nacional-de-colo": curatedUnal,
+  "co-universidad-de-antioquia": curatedAntioquia,
+  "co-universidad-del-valle": curatedUnivalle,
+  "ar-universidad-nacional-de-cuyo": curatedCuyo,
+  "br-unb": curatedUnb,
+  "br-ufsc": curatedUfsc,
+  "br-ufpe": curatedUfpe,
+  "lat-universidad-nacional-mayor-d": curatedSanMarcos,
+};
+
 /** Foto de campus premium asignada de forma estable a cada universidad. */
 export function uniPhoto(u: University) {
+  const curated = CURATED[u.id];
+  if (curated) return curated;
   const real = REAL_UNI_PHOTOS[u.id];
   if (real) return real;
   return uniPhotoFallback(u);
 }
+
 
 /** Imagen genérica de respaldo (si la foto real falla al cargar). */
 export function uniPhotoFallback(u: University) {
