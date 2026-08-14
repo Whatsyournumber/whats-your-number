@@ -214,7 +214,25 @@ function CollegeFinder({ member }: { member: Member }) {
         return a.total - b.total;
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [priced, bucket, country, field, rankMax, tab, sort, projected, homeCountry, homeRegion, lang]);
+  }, [priced, bucket, continent, country, field, rankMax, tab, sort, projected, homeCountry, homeRegion, lang]);
+
+  const continentTabs = useMemo(() => {
+    const defs: { key: Continent; label: string; flag: string }[] = [
+      { key: "latam", label: t("Latinoamérica", "Latin America"), flag: "🌎" },
+      { key: "nam", label: t("EE.UU. / Canadá", "US / Canada"), flag: "🇺🇸" },
+      { key: "eu", label: t("Europa", "Europe"), flag: "🇪🇺" },
+      { key: "asia", label: t("Asia", "Asia"), flag: "🌏" },
+      { key: "oceania", label: t("Oceanía", "Oceania"), flag: "🇦🇺" },
+      { key: "africa", label: t("África / M. Oriente", "Africa / Mid. East"), flag: "🌍" },
+    ];
+    return defs.map((d) => ({
+      ...d,
+      total: priced.filter((r) => continentOf(r.u) === d.key).length,
+      afford: priced.filter((r) => continentOf(r.u) === d.key && r.total <= projected).length,
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [priced, projected, lang]);
+
 
   const heroImg = member.theme === "girl" ? heroGirl : heroBoy;
 
