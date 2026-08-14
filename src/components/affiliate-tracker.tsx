@@ -20,7 +20,7 @@ export function AffiliateTracker() {
     clicked.current = true;
     setPendingRef(code);
     void trackAffiliateClick({
-      data: { code, path: location.pathname, referrer: document.referrer || undefined },
+      data: { code, path: location.pathname, referrer: document.referrer || "" },
     }).catch(() => undefined);
   }, [location.pathname]);
 
