@@ -90,6 +90,22 @@ const CURATED: Record<string, string> = {
   "mx-uanl": curatedUanl,
   "lat-universidad-tecnologica-de-p": curatedUtp,
   "lat-universidad-de-costa-rica": curatedUcr,
+  "mx-universidad-de-guadalajara": curatedGuadalajara,
+  "fr-aix-marseille-universite": curatedAixMarseille,
+  "fr-universite-grenoble-alpes": curatedGrenoble,
+  "es-universidad-de-salamanca": curatedSalamanca,
+  "es-universidad-complutense": curatedComplutense,
+  "es-universidad-autonoma-de-madr": curatedAutonomaMadrid,
+  "es-universitat-de-barcelona": curatedUb,
+  "es-universitat-autonoma-de-barc": curatedUab,
+  "es-universidad-carlos-iii": curatedUc3m,
+  "es-universitat-politecnica-de-v": curatedUpv,
+  "es-esade": curatedEsade,
+  "es-ie-university": curatedIe,
+  "es-universidad-de-granada": curatedGranada,
+  "ar-universidad-de-belgrano": curatedBelgrano,
+  "br-puc-rio": curatedPucRio,
+  "lat-universidad-catolica-del-uru": curatedUcu,
 };
 
 /** Foto de campus premium asignada de forma estable a cada universidad. */
