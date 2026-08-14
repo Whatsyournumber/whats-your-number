@@ -354,7 +354,7 @@ function Landing() {
           </motion.div>
 
           <div className="relative z-10 mx-auto w-full max-w-6xl px-6">
-            <div className="max-w-2xl py-14 text-center md:py-24 lg:py-32 lg:text-left">
+            <div className="max-w-2xl pb-16 pt-[40vh] text-center md:pb-24 lg:pb-36 lg:pt-44 lg:text-left">
               <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground backdrop-blur">
                 <Sparkles className="h-3.5 w-3.5 text-primary" />
                 {t("Tu family office personal, potenciado con IA", "Your personal family office, powered by AI")}
