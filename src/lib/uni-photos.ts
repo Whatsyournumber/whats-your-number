@@ -229,7 +229,136 @@ import cur_us_ucdavis from "@/assets/uni/us-ucdavis.jpg";
 import cur_us_ucirvine from "@/assets/uni/us-ucirvine.jpg";
 import cur_us_ucsb from "@/assets/uni/us-ucsb.jpg";
 
+import np_ae_nyuad from "@/assets/uni/ae-nyuad.jpg";
+import np_de_heidelberg from "@/assets/uni/de-heidelberg.jpg";
+import np_de_rwth from "@/assets/uni/de-rwth.jpg";
+import np_nl_delft from "@/assets/uni/nl-delft.jpg";
+import np_us_americanu from "@/assets/uni/us-americanu.jpg";
+import np_us_baylor from "@/assets/uni/us-baylor.jpg";
+import np_us_berkeley from "@/assets/uni/us-berkeley.jpg";
+import np_us_bu from "@/assets/uni/us-bu.jpg";
+import np_us_caltech from "@/assets/uni/us-caltech.jpg";
+import np_us_casewestern from "@/assets/uni/us-casewestern.jpg";
+import np_us_cmu from "@/assets/uni/us-cmu.jpg";
+import np_us_columbia from "@/assets/uni/us-columbia.jpg";
+import np_us_cornell from "@/assets/uni/us-cornell.jpg";
+import np_us_drexel from "@/assets/uni/us-drexel.jpg";
+import np_us_duke from "@/assets/uni/us-duke.jpg";
+import np_us_emory from "@/assets/uni/us-emory.jpg";
+import np_us_fordham from "@/assets/uni/us-fordham.jpg";
+import np_us_georgetown from "@/assets/uni/us-georgetown.jpg";
+import np_us_gwu from "@/assets/uni/us-gwu.jpg";
+import np_us_harvard from "@/assets/uni/us-harvard.jpg";
+import np_us_iit from "@/assets/uni/us-iit.jpg";
+import np_us_jhu from "@/assets/uni/us-jhu.jpg";
+import np_us_miami from "@/assets/uni/us-miami.jpg";
+import np_us_michigan from "@/assets/uni/us-michigan.jpg";
+import np_us_mit from "@/assets/uni/us-mit.jpg";
+import np_us_msu from "@/assets/uni/us-msu.jpg";
+import np_us_northeastern from "@/assets/uni/us-northeastern.jpg";
+import np_us_northwestern from "@/assets/uni/us-northwestern.jpg";
+import np_us_notredame from "@/assets/uni/us-notredame.jpg";
+import np_us_nyu from "@/assets/uni/us-nyu.jpg";
+import np_us_pepperdine from "@/assets/uni/us-pepperdine.jpg";
+import np_us_princeton from "@/assets/uni/us-princeton.jpg";
+import np_us_rice from "@/assets/uni/us-rice.jpg";
+import np_us_rit from "@/assets/uni/us-rit.jpg";
+import np_us_rochester from "@/assets/uni/us-rochester.jpg";
+import np_us_rpi from "@/assets/uni/us-rpi.jpg";
+import np_us_santaclara from "@/assets/uni/us-santaclara.jpg";
+import np_us_smu from "@/assets/uni/us-smu.jpg";
+import np_us_stanford from "@/assets/uni/us-stanford.jpg";
+import np_us_stevens from "@/assets/uni/us-stevens.jpg";
+import np_us_syracuse from "@/assets/uni/us-syracuse.jpg";
+import np_us_tufts from "@/assets/uni/us-tufts.jpg";
+import np_us_uchicago from "@/assets/uni/us-uchicago.jpg";
+import np_us_ucla from "@/assets/uni/us-ucla.jpg";
+import np_us_ucsd from "@/assets/uni/us-ucsd.jpg";
+import np_us_upenn from "@/assets/uni/us-upenn.jpg";
+import np_us_usc from "@/assets/uni/us-usc.jpg";
+import np_us_vanderbilt from "@/assets/uni/us-vanderbilt.jpg";
+import np_us_virginia from "@/assets/uni/us-virginia.jpg";
+import np_us_yale from "@/assets/uni/us-yale.jpg";
+import np_at_vienna from "@/assets/uni/at-vienna.jpg";
+import np_be_kuleuven from "@/assets/uni/be-kuleuven.jpg";
+import np_se_uppsala from "@/assets/uni/se-uppsala.jpg";
+import np_pt_lisboa from "@/assets/uni/pt-lisboa.jpg";
+import np_ie_trinity from "@/assets/uni/ie-trinity.jpg";
+import np_ie_ucd from "@/assets/uni/ie-ucd.jpg";
+import np_uk_durham from "@/assets/uni/uk-durham.jpg";
+import np_uk_standrews from "@/assets/uni/uk-standrews.jpg";
+import np_us_bc from "@/assets/uni/us-bc.jpg";
+import np_us_tulane from "@/assets/uni/us-tulane.jpg";
+import np_us_wakeforest from "@/assets/uni/us-wakeforest.jpg";
+import np_us_villanova from "@/assets/uni/us-villanova.jpg";
+import np_us_lehigh from "@/assets/uni/us-lehigh.jpg";
+import np_us_brandeis from "@/assets/uni/us-brandeis.jpg";
+
 const CURATED: Record<string, string> = {
+  "ot-nyu-abu-dhabi": np_ae_nyuad,
+  "de-universitat-heidelberg": np_de_heidelberg,
+  "de-rwth-aachen": np_de_rwth,
+  "nl-tu-delft": np_nl_delft,
+  "us-american-university": np_us_americanu,
+  "us-baylor-university": np_us_baylor,
+  "us-uc-berkeley": np_us_berkeley,
+  "us-boston-university": np_us_bu,
+  "us-caltech": np_us_caltech,
+  "us-case-western-reserve-univers": np_us_casewestern,
+  "us-carnegie-mellon-university": np_us_cmu,
+  "us-columbia-university": np_us_columbia,
+  "us-cornell-university": np_us_cornell,
+  "us-drexel-university": np_us_drexel,
+  "us-duke-university": np_us_duke,
+  "us-emory-university": np_us_emory,
+  "us-fordham-university": np_us_fordham,
+  "us-georgetown-university": np_us_georgetown,
+  "us-george-washington-university": np_us_gwu,
+  "us-harvard-university": np_us_harvard,
+  "us-illinois-institute-of-techno": np_us_iit,
+  "us-johns-hopkins-university": np_us_jhu,
+  "us-university-of-miami": np_us_miami,
+  "us-university-of-michigan": np_us_michigan,
+  "us-mit": np_us_mit,
+  "us-michigan-state-university": np_us_msu,
+  "us-northeastern-university": np_us_northeastern,
+  "us-northwestern-university": np_us_northwestern,
+  "us-university-of-notre-dame": np_us_notredame,
+  "us-new-york-university": np_us_nyu,
+  "us-pepperdine-university": np_us_pepperdine,
+  "us-princeton-university": np_us_princeton,
+  "us-rice-university": np_us_rice,
+  "us-rochester-institute-of-techn": np_us_rit,
+  "us-university-of-rochester": np_us_rochester,
+  "us-rensselaer-polytechnic-insti": np_us_rpi,
+  "us-santa-clara-university": np_us_santaclara,
+  "us-southern-methodist-universit": np_us_smu,
+  "us-stanford-university": np_us_stanford,
+  "us-stevens-institute-of-technol": np_us_stevens,
+  "us-syracuse-university": np_us_syracuse,
+  "us-tufts-university": np_us_tufts,
+  "us-university-of-chicago": np_us_uchicago,
+  "us-ucla": np_us_ucla,
+  "us-uc-san-diego": np_us_ucsd,
+  "us-university-of-pennsylvania": np_us_upenn,
+  "us-university-of-southern-calif": np_us_usc,
+  "us-vanderbilt-university": np_us_vanderbilt,
+  "us-university-of-virginia": np_us_virginia,
+  "us-yale-university": np_us_yale,
+  "at-vienna": np_at_vienna,
+  "be-kuleuven": np_be_kuleuven,
+  "se-uppsala": np_se_uppsala,
+  "pt-lisboa": np_pt_lisboa,
+  "ie-trinity": np_ie_trinity,
+  "ie-ucd": np_ie_ucd,
+  "uk-durham": np_uk_durham,
+  "uk-standrews": np_uk_standrews,
+  "us-boston-college": np_us_bc,
+  "us-tulane": np_us_tulane,
+  "us-wake-forest": np_us_wakeforest,
+  "us-villanova": np_us_villanova,
+  "us-lehigh": np_us_lehigh,
+  "us-brandeis": np_us_brandeis,
   "br-universidade-de-sao-paulo": curatedUsp,
   "br-unicamp": curatedUnicamp,
   "br-ufrj": curatedUfrj,
