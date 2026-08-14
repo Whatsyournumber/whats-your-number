@@ -234,8 +234,8 @@ function Landing() {
   ];
 
   const panelChips = [
-    t("Patrimonio", "Net worth"),
-    t("Gastos", "Spending"),
+    t("Tu hipoteca", "Your mortgage"),
+    t("Análisis de gasto", "Spending analysis"),
     t("Portafolio en vivo", "Live portfolio"),
     t("Cash flow 40/40/20", "40/40/20 cash flow"),
     "Life Planner",

@@ -20,7 +20,7 @@ import {
   Bot,
   FileText,
   Globe,
-  LineChart,
+  Home,
   MapPin,
   Sparkles,
   Target,
@@ -31,15 +31,15 @@ import { cn } from "@/lib/utils";
 import { lifestyleCities } from "@/lib/lifestyle-cities";
 import { useT } from "@/hooks/use-language";
 
-const netWorth = [
-  { m: "Ene", v: 182 },
-  { m: "Feb", v: 191 },
-  { m: "Mar", v: 188 },
-  { m: "Abr", v: 205 },
-  { m: "May", v: 219 },
-  { m: "Jun", v: 233 },
-  { m: "Jul", v: 248 },
+const mortgage = [
+  { m: "2026", interes: 8.6, capital: 4.6 },
+  { m: "2029", interes: 7.6, capital: 5.6 },
+  { m: "2032", interes: 6.3, capital: 6.9 },
+  { m: "2035", interes: 4.8, capital: 8.4 },
+  { m: "2038", interes: 3.0, capital: 10.2 },
+  { m: "2041", interes: 1.2, capital: 12.0 },
 ];
+
 
 const spend = [
   { m: "Ene", v: 3.2, i: 5.4 },
@@ -124,23 +124,23 @@ export function ProductPreview() {
   const t = useT();
 
   const views = [
-    { id: "patrimonio", label: t("Patrimonio", "Net Worth"), icon: LineChart },
-    { id: "gastos", label: t("Gastos", "Spending"), icon: BarChart3 },
+    { id: "hipoteca", label: t("Tu hipoteca", "Your mortgage"), icon: Home },
+    { id: "gastos", label: t("Análisis de gasto", "Spending analysis"), icon: BarChart3 },
     { id: "portafolio", label: t("Portafolio", "Portfolio"), icon: TrendingUp },
     { id: "nextcity", label: t("Your next city", "Your next city"), icon: Globe },
     { id: "whatsyournumber", label: "WhatsYournumber", icon: Target },
   ] as const;
 
   const kpis: Record<(typeof views)[number]["id"], { kpi: string; delta: string; sub: string }> = {
-    patrimonio: {
-      kpi: "€248,300",
-      delta: t("+6.4% este mes", "+6.4% this month"),
-      sub: t("Patrimonio neto", "Net worth"),
+    hipoteca: {
+      kpi: "€104,074",
+      delta: t("Ahorras €49.606 abonando €500/mes", "Save €49,606 paying €500/mo extra"),
+      sub: t("Interés total que pagarás", "Total interest you'll pay"),
     },
     gastos: {
       kpi: "€2,940",
       delta: t("−11% vs. mes previo", "−11% vs. last month"),
-      sub: t("Gasto variable + fijos", "Variable + fixed spending"),
+      sub: t("Análisis de gasto del mes", "This month's spending analysis"),
     },
     portafolio: {
       kpi: "+18.2%",
@@ -183,7 +183,7 @@ export function ProductPreview() {
     },
   ];
 
-  const [active, setActive] = useState<(typeof views)[number]["id"]>("patrimonio");
+  const [active, setActive] = useState<(typeof views)[number]["id"]>("hipoteca");
   const [insight, setInsight] = useState(0);
   const [paused, setPaused] = useState(false);
 
@@ -277,14 +277,8 @@ export function ProductPreview() {
 
               <div className="mt-4 h-[210px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  {active === "patrimonio" ? (
-                    <AreaChart data={netWorth}>
-                      <defs>
-                        <linearGradient id="pp-net" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="var(--color-primary)" stopOpacity={0.45} />
-                          <stop offset="100%" stopColor="var(--color-primary)" stopOpacity={0} />
-                        </linearGradient>
-                      </defs>
+                  {active === "hipoteca" ? (
+                    <BarChart data={mortgage} barGap={2}>
                       <XAxis
                         dataKey="m"
                         tickLine={false}
@@ -293,6 +287,7 @@ export function ProductPreview() {
                         stroke="var(--color-muted-foreground)"
                       />
                       <Tooltip
+                        cursor={{ fill: "var(--color-primary)", fillOpacity: 0.06, radius: 8 }}
                         contentStyle={{
                           background: "var(--color-card)",
                           border: "1px solid var(--color-border)",
@@ -300,16 +295,24 @@ export function ProductPreview() {
                           fontSize: 12,
                         }}
                         itemStyle={{ color: "var(--color-foreground)" }}
-                        formatter={(v) => [`€${v}k`, t("Patrimonio", "Net worth")]}
+                        formatter={(v: number, n) => [
+                          `€${Number(v).toFixed(1)}k`,
+                          n === "interes" ? t("Intereses", "Interest") : t("Capital", "Principal"),
+                        ]}
                       />
-                      <Area
-                        type="monotone"
-                        dataKey="v"
-                        stroke="var(--color-primary)"
-                        strokeWidth={2.5}
-                        fill="url(#pp-net)"
+                      <Bar
+                        dataKey="interes"
+                        stackId="m"
+                        fill="var(--color-destructive)"
+                        opacity={0.85}
                       />
-                    </AreaChart>
+                      <Bar
+                        dataKey="capital"
+                        stackId="m"
+                        radius={[6, 6, 0, 0]}
+                        fill="var(--color-primary)"
+                      />
+                    </BarChart>
                   ) : active === "gastos" ? (
                     <BarChart data={spend} barGap={4}>
                       <XAxis
@@ -630,6 +633,48 @@ export function ProductPreview() {
                     </div>
                   ))}
                 </div>
+              </motion.div>
+            ) : active === "hipoteca" ? (
+              <motion.div
+                key="mortgage-summary"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.25 }}
+                className="rounded-2xl bg-elevated/60 p-5 ring-1 ring-border"
+              >
+                <p className="text-xs text-muted-foreground">
+                  {t("Simulador de hipoteca", "Mortgage simulator")}
+                </p>
+                <div className="mt-3 space-y-2">
+                  {[
+                    { label: t("Monto pendiente", "Outstanding balance"), value: "€160,000" },
+                    { label: t("Tasa · plazo", "Rate · term"), value: "5.5% · 20a" },
+                    { label: t("Pago mensual", "Monthly payment"), value: "€1,101" },
+                    { label: t("Libre de hipoteca", "Mortgage-free"), value: "oct 2037", accent: true },
+                  ].map((row) => (
+                    <div
+                      key={row.label}
+                      className="flex items-center justify-between rounded-lg bg-background/50 px-3 py-2 text-xs"
+                    >
+                      <span className="text-muted-foreground">{row.label}</span>
+                      <span
+                        className={cn(
+                          "numeric font-medium",
+                          row.accent ? "text-primary" : "text-foreground",
+                        )}
+                      >
+                        {row.value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-3 text-[11px] text-muted-foreground">
+                  {t(
+                    "Abonar €500/mes te libera 8 años y 10 meses antes.",
+                    "Paying €500/mo extra frees you 8 years 10 months earlier.",
+                  )}
+                </p>
               </motion.div>
             ) : active === "whatsyournumber" ? (
               <motion.div
