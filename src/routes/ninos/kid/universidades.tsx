@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Search, Check, TrendingUp } from "lucide-react";
+import { ArrowRight, BarChart3, Check, Heart, Pencil, TrendingUp } from "lucide-react";
 
 import { KidPage } from "@/components/kid-page";
 import heroGirl from "@/assets/uni-hero-girl.jpg";
@@ -14,7 +14,6 @@ import { useFx } from "@/lib/mfn-fx";
 import {
   FIELD_LABELS,
   UNIVERSITIES,
-  UNI_REGION_LABELS,
   projectCapital,
   uniTotalUsd,
   type UniField,
@@ -47,7 +46,6 @@ export const Route = createFileRoute("/ninos/kid/universidades")({
   component: () => <KidPage>{(member) => <CollegeFinder member={member} />}</KidPage>,
 });
 
-const REGIONS = ["eu", "na", "latam", "apac", "other"] as const;
 const FIELDS = Object.keys(FIELD_LABELS) as UniField[];
 
 const HOME_REGION: Record<string, University["region"]> = {
@@ -56,6 +54,8 @@ const HOME_REGION: Record<string, University["region"]> = {
   UY: "latam", PY: "latam", BO: "latam", EC: "latam", VE: "latam", BR: "latam",
   CR: "latam", PA: "latam", GT: "latam", HN: "latam", NI: "latam", SV: "latam", DO: "latam",
 };
+
+type Bucket = "home" | "eu" | "na" | "rest";
 
 function CollegeFinder({ member }: { member: Member }) {
   const { t, lang } = useI18n();
@@ -75,9 +75,11 @@ function CollegeFinder({ member }: { member: Member }) {
   const fundInitial = Math.round(Math.max(totals.crecer, Number(fund?.current_balance ?? 0)) * fx.factor);
   const fundMonthly = Math.round(Number(fund?.monthly_contribution ?? 0) * fx.factor);
   const targetAge = Number(fund?.target_age ?? 18);
-  const rate = Number(fund?.expected_return ?? 7);
+  const rate = Number(fund?.expected_return ?? 10);
   const yearsLeft = Math.max(0, targetAge - member.age);
+  const monthsLeft = Math.max(1, yearsLeft * 12);
 
+  const [editOpen, setEditOpen] = useState(false);
   const [initialInput, setInitialInput] = useState<number | null>(null);
   const [monthlyInput, setMonthlyInput] = useState<number | null>(null);
   const initial = initialInput ?? fundInitial;
@@ -88,88 +90,116 @@ function CollegeFinder({ member }: { member: Member }) {
     Math.round(projectCapital(initial, monthly, yearsLeft, rate) / 1000) * 1000,
   );
 
-  const [budget, setBudget] = useState<number>(projected);
-  const [touched, setTouched] = useState(false);
-  const effectiveBudget = touched ? budget : projected;
-
   const [includeLiving, setIncludeLiving] = useState(true);
-  const [nearHome, setNearHome] = useState(true);
-  const [region, setRegion] = useState<string | null>(null);
-  const [field, setField] = useState<UniField | null>(null);
-  const [query, setQuery] = useState("");
-  const [compare, setCompare] = useState<string[]>([]);
+  const [simMonthly, setSimMonthly] = useState<number>(Math.max(50, monthly || 50));
+  const simProjected = Math.round(projectCapital(initial, simMonthly, yearsLeft, rate) / 1000) * 1000;
 
+  const [bucket, setBucket] = useState<Bucket | null>(null);
+  const [tab, setTab] = useState<"afford" | "close" | "all">("afford");
+  const [country, setCountry] = useState<string>("");
+  const [field, setField] = useState<UniField | "">("");
+  const [rankMax, setRankMax] = useState<string>("");
+  const [sort, setSort] = useState<"cost" | "rank">("cost");
+  const [saved, setSaved] = useState<string[]>([]);
 
   const cost = (u: University) => uniTotalUsd(u, includeLiving) * usdFx.factor;
+  const isHome = (u: University) => !!homeCountry && (u.countryEs === homeCountry || u.country === homeCountry);
 
-  const proximity = (u: University) => {
-    if (!nearHome) return 0;
-    if (homeCountry && (u.countryEs === homeCountry || u.country === homeCountry)) return 0;
-    if (homeRegion && u.region === homeRegion) return 1;
-    return 2;
+  const bucketOf = (u: University): Bucket => {
+    if (isHome(u)) return "home";
+    if (u.region === "eu") return "eu";
+    if (u.region === "na") return "na";
+    return "rest";
   };
 
+  const priced = useMemo(
+    () => UNIVERSITIES.map((u) => ({ u, total: cost(u) })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [includeLiving, usdFx.factor],
+  );
+
+  const counts = useMemo(() => {
+    const afford = priced.filter((r) => r.total <= projected).length;
+    const close = priced.filter((r) => r.total > projected && r.total <= projected * 1.35).length;
+    return { afford, close, all: priced.length };
+  }, [priced, projected]);
+
+  const simCounts = useMemo(() => {
+    const afford = priced.filter((r) => r.total <= simProjected).length;
+    const top100 = priced.filter((r) => r.total <= simProjected && r.u.rank <= 100).length;
+    const top100Now = priced.filter((r) => r.total <= projected && r.u.rank <= 100).length;
+    return { afford, top100, top100Now };
+  }, [priced, simProjected, projected]);
+
+  const buckets = useMemo(() => {
+    const groups: { key: Bucket; label: string; flag: string; items: typeof priced }[] = [];
+    const homeItems = priced.filter((r) => isHome(r.u));
+    if (homeItems.length)
+      groups.push({ key: "home", label: homeCountry, flag: homeItems[0]!.u.flag, items: homeItems });
+    groups.push({
+      key: "eu",
+      label: t("Europa", "Europe"),
+      flag: "🇪🇺",
+      items: priced.filter((r) => r.u.region === "eu" && !isHome(r.u)),
+    });
+    groups.push({
+      key: "na",
+      label: t("Estados Unidos", "United States"),
+      flag: "🇺🇸",
+      items: priced.filter((r) => r.u.region === "na" && !isHome(r.u)),
+    });
+    groups.push({
+      key: "rest",
+      label: t("Resto del mundo", "Rest of the world"),
+      flag: "🌍",
+      items: priced.filter((r) => !["eu", "na"].includes(r.u.region) && !isHome(r.u)),
+    });
+    return groups.map((g) => {
+      const ok = g.items.filter((r) => r.total <= projected);
+      const minGap = g.items.length ? Math.min(...g.items.map((r) => Math.max(0, r.total - projected))) : 0;
+      return { ...g, count: ok.length, minGap };
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [priced, projected, homeCountry, lang]);
+
+  const countries = useMemo(
+    () =>
+      Array.from(new Set(UNIVERSITIES.map((u) => (lang === "en" ? u.country : u.countryEs)))).sort((a, b) =>
+        a.localeCompare(b),
+      ),
+    [lang],
+  );
+
   const list = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return UNIVERSITIES.filter((u) => {
-      if (region && u.region !== region) return false;
-      if (field && !u.fields.includes(field)) return false;
-      if (q) {
-        const hay = `${u.name} ${u.city} ${u.country} ${u.countryEs}`.toLowerCase();
-        if (!hay.includes(q)) return false;
-      }
-      return true;
-    })
-      .map((u) => ({ u, total: cost(u) }))
+    return priced
+      .filter(({ u, total }) => {
+        if (bucket && bucketOf(u) !== bucket) return false;
+        if (country && (lang === "en" ? u.country : u.countryEs) !== country) return false;
+        if (field && !u.fields.includes(field)) return false;
+        if (rankMax && u.rank > Number(rankMax)) return false;
+        if (tab === "afford" && total > projected) return false;
+        if (tab === "close" && !(total > projected && total <= projected * 1.35)) return false;
+        return true;
+      })
       .sort((a, b) => {
-        const aOk = a.total <= effectiveBudget ? 0 : 1;
-        const bOk = b.total <= effectiveBudget ? 0 : 1;
-        if (aOk !== bOk) return aOk - bOk;
-        const p = proximity(a.u) - proximity(b.u);
-        if (p !== 0) return p;
-        return a.u.rank - b.u.rank;
+        if (sort === "rank") return a.u.rank - b.u.rank;
+        const aHome = isHome(a.u) ? 0 : homeRegion && a.u.region === homeRegion ? 1 : 2;
+        const bHome = isHome(b.u) ? 0 : homeRegion && b.u.region === homeRegion ? 1 : 2;
+        if (aHome !== bHome) return aHome - bHome;
+        return a.total - b.total;
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [region, field, query, includeLiving, effectiveBudget, usdFx.factor, nearHome, homeCountry, homeRegion]);
-
-  const affordable = list.filter((r) => r.total <= effectiveBudget);
-
-
-  const monthsLeft = Math.max(1, yearsLeft * 12);
-  const maxBudget = Math.max(400000, Math.round(projected * 2));
+  }, [priced, bucket, country, field, rankMax, tab, sort, projected, homeCountry, homeRegion, lang]);
 
   const heroImg = member.theme === "girl" ? heroGirl : heroBoy;
 
-  const toggleCompare = (id: string) =>
-    setCompare((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : prev.length >= 3 ? prev : [...prev, id],
-    );
-
-  const compared = compare
-    .map((id) => list.find((r) => r.u.id === id) ?? null)
-    .filter(Boolean) as { u: University; total: number }[];
-
-  // Resumen por región (recomendaciones arriba del hero)
-  const regionSummary = useMemo(
-    () =>
-      REGIONS.map((r) => {
-        const inRegion = UNIVERSITIES.filter((u) => u.region === r).map((u) => cost(u));
-        const ok = inRegion.filter((c) => c <= effectiveBudget).length;
-        const min = inRegion.length ? Math.min(...inRegion) : 0;
-        return { region: r, count: ok, total: inRegion.length, min };
-      }).sort((a, b) => b.count - a.count),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [effectiveBudget, includeLiving, usdFx.factor],
-  );
-
-  const topPicks = list.filter((r) => r.total <= effectiveBudget).slice(0, 3);
-
-  const REGION_EMOJI: Record<string, string> = { eu: "🇪🇺", na: "🇺🇸", latam: "🌎", apac: "🌏", other: "🌍" };
+  const toggleSaved = (id: string) =>
+    setSaved((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
 
   return (
     <>
-      {/* Hero a sangre — imagen protagonista fundida con el fondo */}
-      <section className="relative mb-6 -mt-6 min-h-[440px] overflow-hidden sm:min-h-[560px]">
+      {/* Hero a sangre */}
+      <section className="relative mb-6 -mt-6 min-h-[460px] overflow-hidden sm:min-h-[580px]">
         <img
           src={heroImg}
           alt={t("Familia mirando universidades", "Family looking at universities")}
@@ -178,46 +208,44 @@ function CollegeFinder({ member }: { member: Member }) {
           className="pointer-events-none absolute inset-y-0 right-0 h-full w-full object-cover object-right"
           style={{
             maskImage:
-              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 14%, rgba(0,0,0,0.55) 34%, rgba(0,0,0,0.88) 52%, #000 66%, #000 100%), linear-gradient(to bottom, transparent 0%, #000 8%, #000 78%, transparent 100%)",
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 14%, rgba(0,0,0,0.55) 34%, rgba(0,0,0,0.88) 52%, #000 66%, #000 100%), linear-gradient(to bottom, transparent 0%, #000 8%, #000 80%, transparent 100%)",
             maskComposite: "intersect",
             WebkitMaskImage:
-              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 14%, rgba(0,0,0,0.55) 34%, rgba(0,0,0,0.88) 52%, #000 66%, #000 100%), linear-gradient(to bottom, transparent 0%, #000 8%, #000 78%, transparent 100%)",
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 14%, rgba(0,0,0,0.55) 34%, rgba(0,0,0,0.88) 52%, #000 66%, #000 100%), linear-gradient(to bottom, transparent 0%, #000 8%, #000 80%, transparent 100%)",
             WebkitMaskComposite: "source-in",
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent sm:via-background/25" />
         <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-background to-transparent" />
-        <div className="relative flex min-h-[440px] max-w-lg flex-col justify-center py-10 pr-6 sm:min-h-[560px] sm:py-16">
-          <p className="inline-flex w-fit items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-[11px] font-bold text-primary shadow-sm ring-1 ring-primary/10 backdrop-blur-sm">
-            🎓 {t("Buscador de universidades", "College finder")}
-          </p>
-          <h1 className="mt-3 font-display text-4xl font-black leading-[1.05] text-foreground drop-shadow-[0_1px_12px_rgba(0,0,0,0.35)] sm:text-6xl">
-            {t("¿Dónde podrá estudiar", "Where can they study")}{" "}
+
+        <div className="relative flex min-h-[460px] max-w-lg flex-col justify-center py-10 pr-6 sm:min-h-[580px] sm:py-16">
+          <h1 className="font-display text-4xl font-black leading-[1.05] text-foreground drop-shadow-[0_1px_12px_rgba(0,0,0,0.35)] sm:text-6xl">
+            {t("¿Dónde podrá", "Where can they")}
+            <br />
+            {t("estudiar", "study")}{" "}
             <span className="text-primary">{t(`a los ${targetAge}?`, `at ${targetAge}?`)}</span>
           </h1>
           <p className="mt-3 max-w-sm text-sm text-foreground/80 drop-shadow-[0_1px_6px_rgba(0,0,0,0.35)]">
             {t(
-              `Con el capital que estás construyendo hoy para ${member.name}.`,
-              `With the capital you're building today for ${member.name}.`,
+              "Descubre qué universidades podrá alcanzar con el capital que estás construyendo hoy.",
+              "Discover which universities they can reach with the capital you're building today.",
             )}
           </p>
 
-          <div className="mt-6 w-full max-w-sm rounded-[28px] border border-primary/20 bg-background/80 p-5 shadow-[0_24px_60px_-30px_rgba(0,0,0,0.7)] backdrop-blur-xl">
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+          <div className="mt-6 w-full max-w-sm rounded-[28px] border border-border/60 bg-background/85 p-5 shadow-[0_24px_60px_-30px_rgba(0,0,0,0.7)] backdrop-blur-xl">
+            <p className="text-xs font-semibold text-muted-foreground">
               {t(`A los ${targetAge} años tendrá`, `At age ${targetAge} they'll have`)}
             </p>
             <p className="font-display text-4xl font-black text-primary sm:text-5xl">
-              {money(effectiveBudget, currency, true)}
+              {money(projected, currency, true)}
             </p>
-            <p className="mt-1 text-[11px] text-muted-foreground">
-              {touched ? t("Escenario manual", "Manual scenario") : t("Con tu plan actual", "With your current plan")}
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">{t("Con tu plan actual", "With your current plan")}</p>
 
-            <div className="mt-4 grid grid-cols-3 gap-2 border-t border-border/60 pt-3 text-left">
+            <div className="mt-4 grid grid-cols-3 gap-2 border-y border-border/60 py-3">
               {[
                 { v: money(initial, currency, true), l: t("Inicial", "Initial") },
-                { v: `${money(monthly, currency, true)}/${t("mes", "mo")}`, l: t("Aporte", "Monthly") },
-                { v: `${rate}%`, l: t("Rentabilidad", "Return") },
+                { v: `${money(monthly, currency, true)}/${t("mes", "mo")}`, l: t("Aporte mensual", "Monthly") },
+                { v: `${rate}%`, l: t("Rentabilidad estimada", "Estimated return") },
               ].map((s) => (
                 <div key={s.l} className="min-w-0">
                   <p className="truncate font-display text-sm font-bold text-foreground">{s.v}</p>
@@ -227,539 +255,394 @@ function CollegeFinder({ member }: { member: Member }) {
             </div>
 
             <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
-              <div
-                className="h-full rounded-full bg-primary"
-                style={{ width: `${Math.min(100, Math.round((effectiveBudget / Math.max(1, maxBudget)) * 100))}%` }}
-              />
+              <div className="h-full w-full rounded-full bg-primary" />
             </div>
             <div className="mt-1.5 flex justify-between text-[10px] text-muted-foreground">
-              <span>{t("Hoy", "Today")} · {money(initial, currency, true)}</span>
               <span>
-                {targetAge} {t("años", "yrs")} · {money(effectiveBudget, currency, true)}
+                {t("Hoy", "Today")}
+                <br />
+                <span className="font-semibold text-foreground">{money(initial, currency, true)}</span>
+              </span>
+              <span className="text-right">
+                {targetAge} {t("años", "yrs")}
+                <br />
+                <span className="font-semibold text-foreground">{money(projected, currency, true)}</span>
               </span>
             </div>
+
+            <Button
+              variant="outline"
+              className="mt-4 h-10 w-full rounded-full border-primary/30 text-primary hover:bg-primary/10"
+              onClick={() => setEditOpen((p) => !p)}
+            >
+              {t("Editar mi plan", "Edit my plan")} <Pencil className="ml-2 h-3.5 w-3.5" />
+            </Button>
+
+            {editOpen ? (
+              <div className="mt-3 space-y-2">
+                <label className="block rounded-2xl bg-secondary/50 px-3 py-2">
+                  <span className="text-[11px] font-semibold text-muted-foreground">
+                    {t("Monto inicial", "Initial amount")}
+                  </span>
+                  <Input
+                    className="h-7 border-0 bg-transparent px-0 font-display text-base font-bold shadow-none focus-visible:ring-0"
+                    inputMode="numeric"
+                    value={initial}
+                    onChange={(e) => setInitialInput(Math.max(0, Number(e.target.value.replace(/\D/g, "")) || 0))}
+                  />
+                </label>
+                <label className="block rounded-2xl bg-secondary/50 px-3 py-2">
+                  <span className="text-[11px] font-semibold text-muted-foreground">
+                    {t("Aporte mensual", "Monthly contribution")}
+                  </span>
+                  <Input
+                    className="h-7 border-0 bg-transparent px-0 font-display text-base font-bold shadow-none focus-visible:ring-0"
+                    inputMode="numeric"
+                    value={monthly}
+                    onChange={(e) => setMonthlyInput(Math.max(0, Number(e.target.value.replace(/\D/g, "")) || 0))}
+                  />
+                </label>
+                <div className="flex items-center justify-between rounded-2xl bg-secondary/50 px-3 py-2">
+                  <span className="text-[11px] font-semibold text-muted-foreground">
+                    {t("Incluir coste de vida", "Include living costs")}
+                  </span>
+                  <Switch checked={includeLiving} onCheckedChange={setIncludeLiving} />
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
       </section>
 
-      {/* Recomendaciones arriba: dónde puede estudiar */}
-      <section className="mb-5 rounded-[28px] border border-border/70 bg-card/80 p-5 shadow-sm backdrop-blur-sm">
-        <p className="font-display text-lg font-bold text-foreground">
-          {t(`Con ${money(effectiveBudget, currency, true)} podrá estudiar en`, `With ${money(effectiveBudget, currency, true)} they can study in`)}
-        </p>
-        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          {regionSummary.map((r) => (
+      {/* Con X podrá estudiar en */}
+      <section className="mb-5 rounded-[28px] border border-border/70 bg-card p-5 shadow-sm sm:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="font-display text-lg font-bold text-foreground">
+            {t(
+              `Con ${money(projected, currency, true)} podrá estudiar en`,
+              `With ${money(projected, currency, true)} they can study in`,
+            )}
+          </p>
+          <button
+            type="button"
+            onClick={() => setBucket(null)}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-primary"
+          >
+            {t("Ver todas las regiones", "See all regions")} <ArrowRight className="h-3.5 w-3.5" />
+          </button>
+        </div>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {buckets.map((b) => (
             <button
-              key={r.region}
+              key={b.key}
               type="button"
-              onClick={() => setRegion(region === r.region ? null : r.region)}
+              onClick={() => setBucket(bucket === b.key ? null : b.key)}
               className={cn(
-                "rounded-2xl border p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md",
-                region === r.region ? "border-primary bg-primary/10" : "border-border/70 bg-background/60",
+                "rounded-2xl border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-md",
+                bucket === b.key ? "border-primary bg-primary/[0.07]" : "border-border/70 bg-background/50",
               )}
             >
-              <p className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-                <span>{REGION_EMOJI[r.region]}</span>
-                {UNI_REGION_LABELS[r.region][lang === "en" ? "en" : "es"]}
+              <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                <span className="text-lg leading-none">{b.flag}</span>
+                {b.label}
               </p>
-              <p className="mt-1 font-display text-2xl font-black text-primary">{r.count}</p>
-              <p className="text-[10px] text-muted-foreground">
-                {t("universidades a tu alcance", "universities within reach")}
-              </p>
-              <p className="mt-1 text-[10px] text-muted-foreground">
-                {t("Desde", "From")} {money(r.min, currency, true)}
+              <p className="mt-2 font-display text-3xl font-black text-primary">{b.count}</p>
+              <p className="text-[11px] text-muted-foreground">{t("universidades", "universities")}</p>
+              <p className="mt-2 text-[11px] text-muted-foreground">
+                {t("Desde", "From")} {money(b.minGap, currency, true)} {t("de deuda", "of debt")}
               </p>
             </button>
           ))}
         </div>
-
-        {topPicks.length > 0 ? (
-          <>
-            <p className="mt-5 text-xs font-bold uppercase tracking-wide text-muted-foreground">
-              {t("Recomendadas para ti", "Recommended for you")}
-            </p>
-            <div className="mt-2 grid gap-2 sm:grid-cols-3">
-              {topPicks.map(({ u, total }) => (
-                <div
-                  key={u.id}
-                  className="flex items-center gap-2.5 rounded-2xl border border-primary/25 bg-gradient-to-b from-primary/[0.08] to-background/40 p-3"
-                >
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-secondary/70 text-lg">
-                    {u.flag}
-                  </span>
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-bold text-foreground">{u.name}</p>
-                    <p className="truncate text-[11px] text-muted-foreground">
-                      {u.city} · {money(total, currency, true)}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
-        ) : null}
       </section>
 
-
-
-      <div className="grid gap-5">
-        <div className="space-y-5">
-          {/* Presupuesto */}
-          <section className="rounded-3xl border border-border/70 bg-card p-5 shadow-sm sm:p-6">
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  {t("Capital para estudiar", "College capital")}
-                </p>
-                <p className="mt-1 font-display text-3xl font-bold text-foreground sm:text-4xl">
-                  {money(effectiveBudget, currency, true)}
-                </p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {touched
-                    ? t("Escenario manual", "Manual scenario")
-                    : t(
-                        `Proyección con tu plan actual a los ${targetAge} años`,
-                        `Projection with your current plan at age ${targetAge}`,
-                      )}
-                </p>
-              </div>
-              {touched ? (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setTouched(false);
-                    setBudget(projected);
-                  }}
-                >
-                  {t("Volver a mi plan", "Back to my plan")}
-                </Button>
-              ) : null}
-            </div>
-
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <label className="rounded-2xl bg-secondary/50 px-4 py-3">
-                <span className="text-xs font-semibold text-muted-foreground">
-                  {t("¿Cuánto pones inicialmente?", "How much do you put in initially?")}
-                </span>
-                <Input
-                  className="mt-1 border-0 bg-transparent px-0 font-display text-xl font-bold shadow-none focus-visible:ring-0"
-                  inputMode="numeric"
-                  value={initial}
-                  onChange={(e) => {
-                    setInitialInput(Math.max(0, Number(e.target.value.replace(/\D/g, "")) || 0));
-                    setTouched(false);
-                  }}
-                />
-              </label>
-              <label className="rounded-2xl bg-secondary/50 px-4 py-3">
-                <span className="text-xs font-semibold text-muted-foreground">
-                  {t("¿Cuánto pones cada mes?", "How much do you add monthly?")}
-                </span>
-                <Input
-                  className="mt-1 border-0 bg-transparent px-0 font-display text-xl font-bold shadow-none focus-visible:ring-0"
-                  inputMode="numeric"
-                  value={monthly}
-                  onChange={(e) => {
-                    setMonthlyInput(Math.max(0, Number(e.target.value.replace(/\D/g, "")) || 0));
-                    setTouched(false);
-                  }}
-                />
-              </label>
-            </div>
-            <p className="mt-2 text-[11px] text-muted-foreground">
-              {t(
-                `Durante ${yearsLeft} años al ${rate}% anual → ${money(projected, currency, true)} a los ${targetAge}.`,
-                `Over ${yearsLeft} years at ${rate}% a year → ${money(projected, currency, true)} at age ${targetAge}.`,
-              )}
+      {/* ¿Qué pasa si aportas más cada mes? */}
+      <section className="mb-5 rounded-[28px] border border-border/70 bg-card p-5 shadow-sm sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p className="font-display text-lg font-bold text-foreground">
+              {t("¿Qué pasa si aportas más cada mes?", "What if you contribute more each month?")}
             </p>
-
-            <Slider
-              className="mt-5"
-              value={[Math.min(effectiveBudget, maxBudget)]}
-              min={5000}
-              max={maxBudget}
-              step={1000}
-              onValueChange={(v) => {
-                setTouched(true);
-                setBudget(v[0] ?? projected);
-              }}
-            />
-            <div className="mt-2 flex justify-between text-[11px] text-muted-foreground">
-              <span>{money(5000, currency, true)}</span>
-              <span>{money(maxBudget, currency, true)}</span>
-            </div>
-
-            <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl bg-secondary/50 px-4 py-3">
-              <div>
-                <p className="text-sm font-semibold text-foreground">
-                  {t("Incluir coste de vida", "Include living costs")}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {t("Alojamiento, comida y transporte", "Housing, food and transport")}
-                </p>
-              </div>
-              <Switch checked={includeLiving} onCheckedChange={setIncludeLiving} />
-            </div>
-
-            <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl bg-secondary/50 px-4 py-3">
-              <div>
-                <p className="text-sm font-semibold text-foreground">
-                  {t("Priorizar cerca de casa", "Prioritize close to home")}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {profile?.city || homeCountry
-                    ? `${profile?.city ? `${profile.city}, ` : ""}${homeCountry}`
-                    : t("Añade tu ciudad en tu perfil", "Add your city in your profile")}
-                </p>
-              </div>
-              <Switch checked={nearHome} onCheckedChange={setNearHome} />
-            </div>
-
-          </section>
-
-          {/* Filtros premium */}
-          <section className="sticky top-2 z-20 overflow-hidden rounded-[28px] border border-primary/15 bg-card/75 shadow-[0_18px_45px_-28px_rgba(0,0,0,0.6)] backdrop-blur-2xl">
-            <div className="bg-gradient-to-b from-primary/[0.08] via-transparent to-transparent p-3 sm:p-4">
-              <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-                <div className="relative lg:w-[340px] lg:shrink-0">
-                  <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-primary/70" />
-                  <Input
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder={t("Busca universidad, ciudad o país…", "Search university, city or country…")}
-                    className="h-11 rounded-full border-primary/15 bg-background/70 pl-11 pr-4 text-sm shadow-inner focus-visible:ring-primary/30"
-                  />
-                </div>
-
-                <div className="flex min-w-0 flex-1 flex-col gap-2">
-                  <div className="flex min-w-0 items-center gap-2">
-                    <span className="hidden w-16 shrink-0 text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:block">
-                      {t("Región", "Region")}
-                    </span>
-                    <div className="-mx-1 flex min-w-0 flex-1 gap-1.5 overflow-x-auto px-1 pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                      <Chip active={!region} onClick={() => setRegion(null)}>
-                        🌍 <span className="hidden sm:inline">{t("Todo", "All")}</span>
-                      </Chip>
-                      {REGIONS.map((r) => (
-                        <Chip key={r} active={region === r} onClick={() => setRegion(region === r ? null : r)}>
-                          {UNI_REGION_LABELS[r][lang === "en" ? "en" : "es"]}
-                        </Chip>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex min-w-0 items-center gap-2">
-                    <span className="hidden w-16 shrink-0 text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:block">
-                      {t("Área", "Field")}
-                    </span>
-                    <div className="-mx-1 flex min-w-0 flex-1 gap-1.5 overflow-x-auto px-1 pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                      <Chip active={!field} onClick={() => setField(null)}>
-                        ✨ <span className="hidden sm:inline">{t("Todas", "All")}</span>
-                      </Chip>
-                      {FIELDS.map((f) => (
-                        <Chip key={f} active={field === f} onClick={() => setField(field === f ? null : f)}>
-                          {FIELD_LABELS[f].emoji}{" "}
-                          <span className="hidden sm:inline">{FIELD_LABELS[f][lang === "en" ? "en" : "es"]}</span>
-                        </Chip>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {compare.length > 0 ? (
-                  <div className="flex shrink-0 items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5">
-                    <p className="whitespace-nowrap text-[11px] font-bold text-primary">
-                      {compare.length}/3 {t("para comparar", "to compare")}
-                    </p>
-                    <Button variant="ghost" size="sm" className="h-6 px-2 text-[11px]" onClick={() => setCompare([])}>
-                      {t("Limpiar", "Clear")}
-                    </Button>
-                  </div>
-                ) : null}
-              </div>
-            </div>
-          </section>
-
-
-          {compared.length >= 2 ? (
-            <ComparePanel
-              items={compared}
-              currency={currency}
-              budget={effectiveBudget}
-              monthsLeft={monthsLeft}
-              lang={lang}
-              t={t}
-              onRemove={toggleCompare}
-              onClear={() => setCompare([])}
-            />
-          ) : null}
-
-          {/* Resultados */}
-          <section>
-            <p className="mb-3 text-sm font-semibold text-foreground">
-              {affordable.length}{" "}
-              <span className="font-normal text-muted-foreground">
-                {t("universidades que ya puedes pagar", "universities you can already afford")}
-              </span>
-              <span className="ml-2 text-xs font-normal text-muted-foreground">
-                · {t("selecciona hasta 3 para comparar", "pick up to 3 to compare")}
-              </span>
+            <p className="text-xs text-muted-foreground">
+              {t("Simula y ve cómo crecen sus oportunidades.", "Simulate and watch their options grow.")}
             </p>
-
-            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-              {list.map(({ u, total }) => {
-                const ok = total <= effectiveBudget;
-                const gap = total - effectiveBudget;
-                const coverage = Math.max(0, Math.min(100, Math.round((effectiveBudget / Math.max(1, total)) * 100)));
-                const picked = compare.includes(u.id);
-                const full = compare.length >= 3 && !picked;
-                return (
-                  <article
-                    key={u.id}
-                    className={cn(
-                      "group relative overflow-hidden rounded-3xl border p-4 transition hover:-translate-y-0.5 hover:shadow-md",
-                      ok
-                        ? "border-primary/30 bg-gradient-to-b from-primary/[0.09] to-card"
-                        : "border-border/60 bg-card",
-                      picked && "ring-2 ring-primary",
-                    )}
-                  >
-
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex min-w-0 items-start gap-2.5">
-                        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-secondary/70 text-xl">
-                          {u.flag}
-                        </span>
-                        <div className="min-w-0">
-                          <p className="truncate font-display text-base font-bold text-foreground">{u.name}</p>
-                          <p className="truncate text-xs text-muted-foreground">
-                            {u.city}, {lang === "en" ? u.country : u.countryEs} · #{u.rank}
-                          </p>
-                        </div>
-                      </div>
-                      <span
-                        className={cn(
-                          "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold",
-                          ok ? "bg-primary/15 text-primary" : "bg-amber-500/15 text-amber-600 dark:text-amber-400",
-                        )}
-                      >
-                        {coverage}% {t("cubierto", "covered")}
-                      </span>
-                    </div>
-
-                    <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
-                      <div
-                        className={cn("h-full rounded-full", ok ? "bg-primary" : "bg-amber-500")}
-                        style={{ width: `${coverage}%` }}
-                      />
-                    </div>
-
-                    <div className="mt-3 flex items-end justify-between gap-3">
-                      <div>
-                        <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
-                          {t("Coste total", "Total cost")}
-                        </p>
-                        <p className="font-display text-lg font-bold text-foreground">
-                          {money(total, currency, true)}
-                        </p>
-                      </div>
-                      <p className="text-right text-[11px] leading-tight">
-                        <span className="block text-muted-foreground">
-                          {ok ? t("Te quedarían", "You'd have left") : t("Te faltarían", "You'd be short")}
-                        </span>
-                        <span className={cn("font-bold", ok ? "text-primary" : "text-amber-600 dark:text-amber-400")}>
-                          {money(ok ? effectiveBudget - total : gap, currency, true)}
-                        </span>
-                      </p>
-                    </div>
-
-                    <div className="mt-3 flex flex-wrap items-center gap-1.5">
-                      {u.fields.slice(0, 3).map((f) => (
-                        <span
-                          key={f}
-                          className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold text-muted-foreground"
-                        >
-                          {FIELD_LABELS[f].emoji} {FIELD_LABELS[f][lang === "en" ? "en" : "es"]}
-                        </span>
-                      ))}
-                      {u.scholarship ? (
-                        <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-semibold text-amber-600 dark:text-amber-400">
-                          🎁 {t("Becas", "Scholarships")}
-                        </span>
-                      ) : null}
-                    </div>
-
-                    <p
-                      className={cn(
-                        "mt-3 flex items-center gap-1.5 text-[11px] font-semibold",
-                        ok ? "text-primary" : "text-muted-foreground",
-                      )}
-                    >
-                      {ok ? (
-                        <>
-                          <Check className="h-3.5 w-3.5" />
-                          {t("Puede pagarlo con su plan", "Affordable with the plan")}
-                        </>
-                      ) : (
-                        <>
-                          <TrendingUp className="h-3.5 w-3.5" />
-                          +{money(gap / monthsLeft, currency, true)}
-                          {t("/mes desde hoy lo consigue", "/mo from today closes the gap")}
-                        </>
-                      )}
-                    </p>
-
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant={picked ? "default" : "outline"}
-                      disabled={full}
-                      onClick={() => toggleCompare(u.id)}
-                      className="mt-3 h-8 w-full rounded-full text-[11px] font-bold"
-                    >
-                      {picked
-                        ? t("Quitar de comparar", "Remove from compare")
-                        : full
-                          ? t("Máximo 3", "Max 3")
-                          : t("Comparar", "Compare")}
-                    </Button>
-                  </article>
-
-                );
-              })}
-
-              {list.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  {t("No hay universidades con esos filtros.", "No universities match those filters.")}
-                </p>
-              ) : null}
-            </div>
-          </section>
+          </div>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-background/60 px-3 py-1.5 text-xs font-semibold text-foreground">
+            <BarChart3 className="h-3.5 w-3.5 text-primary" /> {t("Ver escenarios", "See scenarios")}
+          </span>
         </div>
 
+        <div className="mt-4 grid gap-5 lg:grid-cols-2">
+          <div>
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>
+                {money(50, currency, true)} / {t("mes", "mo")}
+              </span>
+              <span>
+                {money(1000, currency, true)} / {t("mes", "mo")}
+              </span>
+            </div>
+            <Slider
+              className="mt-3"
+              value={[Math.min(1000, Math.max(50, simMonthly))]}
+              min={50}
+              max={1000}
+              step={10}
+              onValueChange={(v) => setSimMonthly(v[0] ?? 50)}
+            />
+            <p className="mt-2 text-xs font-semibold text-foreground">
+              {money(simMonthly, currency, true)} / {t("mes", "mo")}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-3 gap-3 rounded-2xl bg-primary/[0.06] p-4">
+            {[
+              {
+                l: t(`A los ${targetAge} años tendría`, `At ${targetAge} they'd have`),
+                v: money(simProjected, currency, true),
+                d: simProjected - projected,
+                money: true,
+              },
+              {
+                l: t("Opciones que puedes pagar", "Options you can afford"),
+                v: String(simCounts.afford),
+                d: simCounts.afford - counts.afford,
+              },
+              {
+                l: t("Top 100 a tu alcance", "Top 100 within reach"),
+                v: String(simCounts.top100),
+                d: simCounts.top100 - simCounts.top100Now,
+              },
+            ].map((s) => (
+              <div key={s.l} className="min-w-0">
+                <p className="text-[10px] leading-tight text-muted-foreground">{s.l}</p>
+                <p className="mt-1 font-display text-xl font-black text-primary">{s.v}</p>
+                {s.d !== 0 ? (
+                  <p className="text-[10px] font-semibold text-primary/80">
+                    ({s.d > 0 ? "+" : ""}
+                    {s.money ? money(s.d, currency, true) : s.d})
+                  </p>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Filtros */}
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        {(
+          [
+            ["afford", t(`Puede pagar (${counts.afford})`, `Affordable (${counts.afford})`)],
+            ["close", t(`Casi llega (${counts.close})`, `Almost there (${counts.close})`)],
+            ["all", t(`Todas (${counts.all})`, `All (${counts.all})`)],
+          ] as const
+        ).map(([k, label]) => (
+          <button
+            key={k}
+            type="button"
+            onClick={() => setTab(k)}
+            className={cn(
+              "rounded-full border px-4 py-2 text-xs font-bold transition",
+              tab === k
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border/70 bg-card text-muted-foreground hover:text-foreground",
+            )}
+          >
+            {label}
+          </button>
+        ))}
+
+        <div className="ml-auto flex flex-wrap items-center gap-2">
+          <Select value={country} onChange={setCountry} placeholder={t("País", "Country")}>
+            {countries.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </Select>
+          <Select
+            value={field}
+            onChange={(v) => setField(v as UniField | "")}
+            placeholder={t("Carrera", "Field")}
+          >
+            {FIELDS.map((f) => (
+              <option key={f} value={f}>
+                {FIELD_LABELS[f][lang === "en" ? "en" : "es"]}
+              </option>
+            ))}
+          </Select>
+          <Select value={rankMax} onChange={setRankMax} placeholder={t("Ranking", "Ranking")}>
+            <option value="100">Top 100</option>
+            <option value="300">Top 300</option>
+            <option value="500">Top 500</option>
+          </Select>
+          <Select
+            value={sort}
+            onChange={(v) => setSort(v as "cost" | "rank")}
+            placeholder={t("Coste total", "Total cost")}
+            clearable={false}
+          >
+            <option value="cost">{t("Coste total", "Total cost")}</option>
+            <option value="rank">{t("Mejor ranking", "Best ranking")}</option>
+          </Select>
+        </div>
       </div>
+
+      {/* Resultados */}
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {list.map(({ u, total }) => {
+          const ok = total <= projected;
+          const gap = total - projected;
+          const coverage = Math.max(0, Math.min(100, Math.round((projected / Math.max(1, total)) * 100)));
+          return (
+            <article
+              key={u.id}
+              className="group overflow-hidden rounded-3xl border border-border/70 bg-card shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <div className="relative h-32 bg-gradient-to-br from-primary/25 via-primary/10 to-secondary">
+                <span className="absolute left-3 top-3 grid h-8 w-8 place-items-center rounded-xl bg-background/80 text-lg backdrop-blur">
+                  {u.flag}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => toggleSaved(u.id)}
+                  className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-background/80 backdrop-blur"
+                  aria-label={t("Guardar", "Save")}
+                >
+                  <Heart
+                    className={cn(
+                      "h-4 w-4",
+                      saved.includes(u.id) ? "fill-primary text-primary" : "text-muted-foreground",
+                    )}
+                  />
+                </button>
+                <span className="absolute bottom-3 right-3 rounded-full bg-background/80 px-2 py-0.5 text-[10px] font-bold text-muted-foreground backdrop-blur">
+                  #{u.rank}
+                </span>
+              </div>
+
+              <div className="p-4">
+                <p className="truncate font-display text-base font-bold text-foreground">{u.name}</p>
+                <p className="truncate text-xs text-muted-foreground">
+                  {u.city}, {lang === "en" ? u.country : u.countryEs}
+                </p>
+
+                <p className="mt-3 flex items-center gap-1.5 text-sm">
+                  <span
+                    className={cn(
+                      "font-display text-xl font-black",
+                      ok ? "text-primary" : "text-amber-600 dark:text-amber-400",
+                    )}
+                  >
+                    {coverage}%
+                  </span>
+                  <span className="text-xs text-muted-foreground">{t("cubierto", "covered")}</span>
+                  {ok ? <Check className="h-3.5 w-3.5 text-primary" /> : null}
+                </p>
+                {!ok ? (
+                  <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+                    <div className="h-full rounded-full bg-amber-500" style={{ width: `${coverage}%` }} />
+                  </div>
+                ) : null}
+
+                <div className="mt-3 flex items-end justify-between gap-3">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                      {t("Coste total", "Total cost")}
+                    </p>
+                    <p className="font-display text-lg font-bold text-foreground">{money(total, currency, true)}</p>
+                  </div>
+                  <p className="text-right text-[11px] leading-tight">
+                    <span className="block text-muted-foreground">
+                      {ok ? t("Te quedarían", "You'd have left") : t("Te faltarían", "You'd be short")}
+                    </span>
+                    <span className={cn("font-bold", ok ? "text-primary" : "text-amber-600 dark:text-amber-400")}>
+                      {money(ok ? projected - total : gap, currency, true)}
+                    </span>
+                  </p>
+                </div>
+
+                {ok ? (
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {u.fields.slice(0, 3).map((f) => (
+                      <span
+                        key={f}
+                        className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold text-muted-foreground"
+                      >
+                        {FIELD_LABELS[f][lang === "en" ? "en" : "es"]}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-3 flex items-center gap-1.5 text-[11px] font-semibold text-amber-600 dark:text-amber-400">
+                    <TrendingUp className="h-3.5 w-3.5" />+{money(gap / monthsLeft, currency, true)}
+                    {t(" / mes desde hoy podría cerrar la brecha", " / mo from today could close the gap")}
+                  </p>
+                )}
+
+                <p className="mt-3 flex items-center justify-between text-xs font-semibold text-primary">
+                  {ok ? t("Ver detalles", "See details") : t("Ver cómo conseguirlo", "See how to get there")}
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </p>
+              </div>
+            </article>
+          );
+        })}
+
+        {list.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            {t("No hay universidades con esos filtros.", "No universities match those filters.")}
+          </p>
+        ) : null}
+      </div>
+
+      {/* CTA final */}
+      <section className="mt-6 flex flex-wrap items-center gap-4 rounded-[28px] border border-primary/20 bg-primary/[0.07] p-5">
+        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-background/80">
+          <Heart className="h-5 w-5 fill-primary text-primary" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="font-display text-base font-bold text-foreground">
+            {t("Hoy construyes su futuro. Mañana elige su camino.", "Today you build their future. Tomorrow they choose their path.")}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {t("Cada aportación de hoy abre más puertas mañana.", "Every contribution today opens more doors tomorrow.")}
+          </p>
+        </div>
+        <Button className="rounded-full" onClick={() => setEditOpen(true)}>
+          {t("Comenzar ahora", "Start now")} <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
+      </section>
     </>
   );
 }
 
-function ComparePanel({
-  items,
-  currency,
-  budget,
-  monthsLeft,
-  lang,
-  t,
-  onRemove,
-  onClear,
-}: {
-  items: { u: University; total: number }[];
-  currency: string;
-  budget: number;
-  monthsLeft: number;
-  lang: string;
-  t: (es: string, en: string) => string;
-  onRemove: (id: string) => void;
-  onClear: () => void;
-}) {
-  const cheapest = Math.min(...items.map((i) => i.total));
-  const best = Math.min(...items.map((i) => i.u.rank));
-
-  return (
-    <section className="overflow-hidden rounded-[28px] border border-primary/20 bg-gradient-to-b from-primary/[0.07] to-card p-4 shadow-sm sm:p-5">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <p className="font-display text-lg font-black text-foreground">
-          {t("Comparar universidades", "Compare universities")}
-        </p>
-        <Button variant="ghost" size="sm" className="h-8 text-xs" onClick={onClear}>
-          {t("Limpiar", "Clear")}
-        </Button>
-      </div>
-
-      <div className="grid gap-3 sm:grid-cols-3">
-        {items.map(({ u, total }) => {
-          const ok = total <= budget;
-          const gap = total - budget;
-          return (
-            <div key={u.id} className="relative rounded-3xl border border-border/60 bg-background/70 p-4">
-              <button
-                type="button"
-                onClick={() => onRemove(u.id)}
-                aria-label={t("Quitar", "Remove")}
-                className="absolute right-3 top-3 grid h-6 w-6 place-items-center rounded-full bg-secondary text-xs text-muted-foreground transition hover:bg-destructive hover:text-destructive-foreground"
-              >
-                ×
-              </button>
-              <p className="text-xl">{u.flag}</p>
-              <p className="mt-1 pr-6 font-display text-sm font-bold leading-tight text-foreground">{u.name}</p>
-              <p className="truncate text-[11px] text-muted-foreground">
-                {u.city}, {lang === "en" ? u.country : u.countryEs}
-              </p>
-
-              <dl className="mt-3 space-y-2 text-xs">
-                <Row label={t("Coste total", "Total cost")}>
-                  <span className={cn("font-bold", total === cheapest && "text-primary")}>
-                    {money(total, currency, true)}
-                    {total === cheapest ? " 🏆" : ""}
-                  </span>
-                </Row>
-                <Row label={t("Ranking", "Ranking")}>
-                  <span className={cn("font-bold", u.rank === best && "text-primary")}>#{u.rank}</span>
-                </Row>
-                <Row label={t("Cobertura", "Coverage")}>
-                  <span className="font-bold">
-                    {Math.max(0, Math.min(100, Math.round((budget / Math.max(1, total)) * 100)))}%
-                  </span>
-                </Row>
-                <Row label={ok ? t("Te sobra", "Left over") : t("Falta al mes", "Monthly gap")}>
-                  <span className={cn("font-bold", ok ? "text-primary" : "text-amber-600 dark:text-amber-400")}>
-                    {ok ? money(budget - total, currency, true) : `+${money(gap / monthsLeft, currency, true)}`}
-                  </span>
-                </Row>
-                <Row label={t("Becas", "Scholarships")}>
-                  <span className="font-bold">{u.scholarship ? "🎁 Sí" : "—"}</span>
-                </Row>
-              </dl>
-            </div>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
-
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="flex items-center justify-between gap-2 border-b border-border/50 pb-1.5 last:border-0">
-      <dt className="text-muted-foreground">{label}</dt>
-      <dd className="text-right text-foreground">{children}</dd>
-    </div>
-  );
-}
-
-function Chip({
-
-  active,
-  onClick,
+function Select({
+  value,
+  onChange,
+  placeholder,
   children,
+  clearable = true,
 }: {
-  active: boolean;
-  onClick: () => void;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
   children: React.ReactNode;
+  clearable?: boolean;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
       className={cn(
-        "rounded-full border px-3 py-1.5 text-xs font-semibold transition",
-        active
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-border/70 bg-card text-muted-foreground hover:text-foreground",
+        "h-9 rounded-full border border-border/70 bg-card px-3 text-xs font-semibold text-foreground outline-none transition focus:border-primary",
+        !value && "text-muted-foreground",
       )}
     >
+      {clearable ? <option value="">{placeholder}</option> : null}
       {children}
-    </button>
+    </select>
   );
 }
-
