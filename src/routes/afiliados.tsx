@@ -198,7 +198,15 @@ function AffiliatesPage() {
             </Badge>
           )}
         </p>
+        <p className="mt-2 text-xs text-muted-foreground">
+          {t(
+            "Como afiliado tienes el plan Pro incluido durante 12 meses para usar y demostrar el producto.",
+            "As an affiliate you get the Pro plan included for 12 months to use and demo the product.",
+          )}
+        </p>
       </Panel>
+
+
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard label={t("Clics en tu enlace", "Link clicks")} value={String(clicks)} icon={MousePointerClick} accent index={0} />
