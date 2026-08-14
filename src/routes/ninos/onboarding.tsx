@@ -3,23 +3,13 @@ import { useState } from "react";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Button, Buddy, Card, Field, GrowthChart, inputClass } from "@/components/mfn-ui";
+import { Button, Buddy, Card, Field, inputClass } from "@/components/mfn-ui";
 import { useKidTheme } from "@/components/kid-shell";
 import { useActiveProfile, useMembers, useSubscription } from "@/hooks/use-mfn";
 import { kidLimit } from "@/lib/mfn-plan";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
 import { CITIES, CURRENCIES, currencyForCity, currencyLabel } from "@/lib/mfn-currencies";
-import {
-  FUND_GOALS,
-  RETURN_OPTIONS,
-  TASK_IDEAS,
-  WISH_IDEAS,
-  disclaimer,
-  goalLabel,
-  money,
-  projectFund,
-  seedHoldings,
-} from "@/lib/mfn";
+import { FUND_GOALS, TASK_IDEAS, WISH_IDEAS, money, seedHoldings } from "@/lib/mfn";
 
 export const Route = createFileRoute("/ninos/onboarding")({
   head: () => ({
@@ -42,7 +32,7 @@ export const Route = createFileRoute("/ninos/onboarding")({
 
 const AVATARS_BOY = ["🦊", "🐼", "🐯", "🐨", "🦁", "🐙", "🐧", "🐸", "🐲", "🦖"];
 const AVATARS_GIRL = ["🦄", "🐰", "🐱", "🦢", "🦋", "🐞", "🐝", "🦩", "🐬", "🦜"];
-const STEPS = [0, 1, 2, 3, 4, 5, 6];
+const STEPS = [0, 1, 2, 3, 4, 5];
 
 function Onboarding() {
   const router = useRouter();
@@ -72,7 +62,7 @@ function Onboarding() {
 
   useKidTheme(theme);
 
-  const projection = projectFund(initial, monthly, age, targetAge, expected);
+  
   const canNext = [
     name.trim().length > 1,
     city.trim().length > 1,
@@ -80,7 +70,6 @@ function Onboarding() {
     true,
     wishPrice > 0,
     monthly >= 0,
-    true,
   ][step];
 
   function pickCity(value: string) {
@@ -294,20 +283,18 @@ function Onboarding() {
             </Buddy>
             <Card>
               <Field label={t("Ciudad", "City")}>
-                <input
+                <select
                   className={inputClass}
-                  list="mfn-cities"
                   value={city}
                   onChange={(e) => pickCity(e.target.value)}
-                  placeholder={t("Ej. Madrid, Lima, Miami…", "e.g. Madrid, Lima, Miami…")}
-                />
-                <datalist id="mfn-cities">
+                >
+                  <option value="">{t("Elige tu ciudad…", "Choose your city…")}</option>
                   {CITIES.map((c) => (
                     <option key={c.city} value={c.city}>
-                      {c.flag} {c.country}
+                      {c.flag} {c.city} · {c.country}
                     </option>
                   ))}
-                </datalist>
+                </select>
               </Field>
               <div className="mt-3 flex flex-wrap gap-2">
                 {CITIES.slice(0, 10).map((c) => (
@@ -358,7 +345,7 @@ function Onboarding() {
               )}
             </Buddy>
             <Card>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-4">
                 <Field label={`${t("Cantidad", "Amount")} (${currency})`}>
                   <input
                     type="number"
@@ -521,77 +508,6 @@ function Onboarding() {
           </div>
         ) : null}
 
-        {step === 6 ? (
-          <div className="mt-8 space-y-5">
-            <Buddy>
-              {t(
-                `Ahora eligemos hasta qué edad va a crecer y con qué rentabilidad. Mira la proyección hasta sus ${targetAge} años.`,
-                `Now we choose until what age it grows and at what return. See the projection by age ${targetAge}.`,
-              )}
-            </Buddy>
-            <Card>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Field label={t("Edad objetivo", "Target age")}>
-                  <select
-                    className={inputClass}
-                    value={targetAge}
-                    onChange={(e) => setTargetAge(Number(e.target.value))}
-                  >
-                    {[18, 21, 25, 30].map((a) => (
-                      <option key={a} value={a}>
-                        {a} {t("años", "years")}
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-                <Field label={t("Rentabilidad esperada", "Expected return")}>
-                  <select
-                    className={inputClass}
-                    value={expected}
-                    onChange={(e) => setExpected(Number(e.target.value))}
-                  >
-                    {RETURN_OPTIONS.map((r) => (
-                      <option key={r} value={r}>
-                        {r}% {t("anual", "per year")}
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-              </div>
-              <div className="mt-4">
-                <Field label={t("Objetivo del fondo", "Fund goal")}>
-                  <select
-                    className={inputClass}
-                    value={goal}
-                    onChange={(e) => setGoal(e.target.value)}
-                  >
-                    {FUND_GOALS.map((g) => (
-                      <option key={g} value={g}>
-                        {goalLabel(g, lang)}
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-              </div>
-
-              <p className="mt-6 font-display text-2xl font-semibold text-foreground">
-                {money(projection.future, currency)}{" "}
-                <span className="text-sm font-normal text-muted-foreground">
-                  {t(`a los ${targetAge} años`, `at age ${targetAge}`)}
-                </span>
-              </p>
-              <GrowthChart
-                data={projection.points}
-                height={200}
-                areas={[
-                  { key: "total", color: "var(--color-chart-1)" },
-                  { key: "aportes", color: "var(--color-chart-4)" },
-                ]}
-              />
-              <p className="mt-2 text-[11px] text-muted-foreground">{disclaimer(lang)}</p>
-            </Card>
-          </div>
-        ) : null}
 
         <div className="mt-8 flex items-center justify-between gap-3">
           <Button
@@ -600,7 +516,7 @@ function Onboarding() {
           >
             <ArrowLeft className="h-4 w-4" /> {t("Atrás", "Back")}
           </Button>
-          {step < 6 ? (
+          {step < 5 ? (
             <Button disabled={!canNext} onClick={() => setStep(step + 1)}>
               {t("Siguiente", "Next")} <ArrowRight className="h-4 w-4" />
             </Button>
