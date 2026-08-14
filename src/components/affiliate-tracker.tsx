@@ -4,6 +4,8 @@ import { useRouterState } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/use-auth";
 import { clearPendingRef, getPendingRef, setPendingRef } from "@/lib/pending-ref";
 import { attachAffiliateReferral, trackAffiliateClick } from "@/utils/affiliates.functions";
+import { getPaddleEnvironment } from "@/lib/paddle";
+
 
 /** Captura ?ref= del enlace de afiliado y lo vincula al usuario cuando hay sesión. */
 export function AffiliateTracker() {
