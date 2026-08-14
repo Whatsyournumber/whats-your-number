@@ -332,7 +332,7 @@ function Landing() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.9, delay: 0.1, ease: "easeOut" }}
-            className="pointer-events-none absolute inset-y-0 right-0 hidden w-[55%] lg:block"
+            className="pointer-events-none absolute bottom-0 right-0 top-28 hidden w-[52%] lg:block"
             style={{
               WebkitMaskImage:
                 "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 26%, rgba(0,0,0,0.6) 48%, #000 72%)",
@@ -346,16 +346,16 @@ function Landing() {
               alt={t("Hombre feliz usando WhatsYourNumber en su laptop", "Happy man using WhatsYourNumber on his laptop")}
               width={1536}
               height={1024}
-              className="h-full w-full object-cover object-[60%_center]"
+              className="h-full w-full object-cover object-[62%_center]"
               loading="eager"
               fetchPriority="high"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/45" />
           </motion.div>
 
           {/* Mobile / tablet: the photo is the top of the background itself */}
           <div
-            className="pointer-events-none absolute inset-x-0 top-0 h-[46vh] min-h-[280px] lg:hidden"
+            className="pointer-events-none absolute inset-x-0 top-20 h-[42vh] min-h-[260px] lg:hidden"
             style={{
               WebkitMaskImage: "linear-gradient(to bottom, #000 42%, transparent 100%)",
               maskImage: "linear-gradient(to bottom, #000 42%, transparent 100%)",
@@ -365,11 +365,15 @@ function Landing() {
               src={heroManLaptopAsset.url}
               alt=""
               aria-hidden
-              className="h-full w-full object-cover object-[62%_28%]"
+              className="h-full w-full object-cover object-[62%_30%]"
               loading="eager"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-background/15" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-background/25" />
           </div>
+
+          {/* Soft veil so the floating nav never collides with the person */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-background via-background/80 to-transparent" />
+
 
 
 
