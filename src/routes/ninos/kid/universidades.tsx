@@ -178,7 +178,7 @@ function CollegeFinder({ member }: { member: Member }) {
       .filter(({ u, total }) => {
         if (bucket && bucketOf(u) !== bucket) return false;
         if (country && (lang === "en" ? u.country : u.countryEs) !== country) return false;
-        if (field && !u.fields.includes(field)) return false;
+        if (field && !uniFields(u).includes(field)) return false;
         if (rankMax && u.rank > Number(rankMax)) return false;
         if (tab === "afford" && total > projected) return false;
         if (tab === "close" && !(total > projected && total <= projected * 1.35)) return false;
@@ -458,13 +458,13 @@ function CollegeFinder({ member }: { member: Member }) {
         ))}
 
         <div className="ml-auto flex flex-wrap items-center gap-2">
-          <Select value={country} onChange={setCountry} placeholder={t("País", "Country")}>
-            {countries.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </Select>
+          <CountryCombobox
+            value={country}
+            onChange={setCountry}
+            options={countries}
+            placeholder={t("Buscar país", "Search country")}
+          />
+
           <Select
             value={field}
             onChange={(v) => setField(v as UniField | "")}
@@ -569,7 +569,7 @@ function CollegeFinder({ member }: { member: Member }) {
 
                 {ok ? (
                   <div className="mt-3 flex flex-wrap gap-1.5">
-                    {u.fields.slice(0, 3).map((f) => (
+                    {uniFields(u).slice(0, 3).map((f) => (
                       <span
                         key={f}
                         className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold text-muted-foreground"
