@@ -16,6 +16,8 @@ import { useT } from "@/hooks/use-language";
 import { useAuth } from "@/hooks/use-auth";
 import { useMyAffiliate } from "@/hooks/use-affiliate";
 import { AffiliateExplainer } from "@/components/affiliate-explainer";
+import { AffiliateLanding } from "@/components/affiliate-landing";
+
 import { joinAffiliateProgram, updateMyAffiliate } from "@/utils/affiliates.functions";
 import { getPaddleEnvironment } from "@/lib/paddle";
 
