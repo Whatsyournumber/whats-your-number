@@ -254,47 +254,43 @@ function MyNumber({ member }: { member: Member }) {
         title={t("Cómo crece mi número", "How my number grows")}
         hint={disclaimer(lang)}
       >
-        <div className="mb-4 rounded-2xl border border-border/60 bg-muted/30 p-4">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <span className="text-sm font-medium">
-              {t("Si lo dejo crecer", "If I let it grow")}{" "}
-              <span className="text-chart-1 font-bold">
-                {years} {t("años", "yrs")}
-              </span>
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          <span className="text-xs text-muted-foreground">
+            {t("A los", "At age")}
+          </span>
+          {[
+            member.age + 5,
+            targetAge,
+            25,
+            30,
+            40,
+          ]
+            .filter((a, i, arr) => a > member.age && arr.indexOf(a) === i)
+            .sort((a, b) => a - b)
+            .map((age) => {
+              const y = age - member.age;
+              const active = years === y;
+              return (
+                <button
+                  key={age}
+                  type="button"
+                  onClick={() => setHorizon(y)}
+                  className={`rounded-full px-3 py-1 text-xs font-medium transition ${
+                    active
+                      ? "bg-chart-1/15 text-chart-1"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {age}
+                </button>
+              );
+            })}
+          <span className="ml-auto text-sm text-muted-foreground">
+            {t("tendría", "I'd have")}{" "}
+            <span className="text-foreground font-bold">
+              {money(chartProjection.future, member.currency)}
             </span>
-            <span className="text-sm text-muted-foreground">
-              {t("tendría", "I'd have")}{" "}
-              <span className="text-foreground font-bold">
-                {money(chartProjection.future, member.currency)}
-              </span>
-            </span>
-          </div>
-          <input
-            type="range"
-            min={1}
-            max={40}
-            step={1}
-            value={years}
-            onChange={(e) => setHorizon(Number(e.target.value))}
-            className="accent-chart-1 mt-3 w-full cursor-pointer"
-            aria-label={t("Años de crecimiento", "Years of growth")}
-          />
-          <div className="mt-2 flex flex-wrap gap-2">
-            {[5, 10, 20, 30, 40].map((y) => (
-              <button
-                key={y}
-                type="button"
-                onClick={() => setHorizon(y)}
-                className={`rounded-full border px-3 py-1 text-xs transition ${
-                  years === y
-                    ? "border-chart-1 bg-chart-1/15 text-foreground"
-                    : "border-border/60 text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {y} {t("años", "yrs")}
-              </button>
-            ))}
-          </div>
+          </span>
         </div>
         <GrowthChart
           data={chartProjection.points}
