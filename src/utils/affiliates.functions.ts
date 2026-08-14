@@ -29,16 +29,20 @@ export const trackAffiliateClick = createServerFn({ method: "POST" })
 /** Creates (or returns) the affiliate account of the signed-in user. */
 export const joinAffiliateProgram = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data?: { displayName?: string; payoutEmail?: string }) => data ?? {})
+  .inputValidator((data?: { displayName?: string; payoutEmail?: string; environment?: "sandbox" | "live" }) => data ?? {})
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const environment = data.environment === "live" ? "live" : "sandbox";
 
     const { data: existing } = await supabaseAdmin
       .from("affiliates")
       .select("id,code")
       .eq("user_id", context.userId)
       .maybeSingle();
-    if (existing) return { ok: true, code: existing.code as string };
+    if (existing) {
+      await grantAffiliateProPlan(supabaseAdmin, context.userId, environment);
+      return { ok: true, code: existing.code as string };
+    }
 
     const base = slugifyCode(data.displayName ?? "") || "WYN";
     let code = "";
