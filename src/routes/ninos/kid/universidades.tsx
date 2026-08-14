@@ -369,19 +369,20 @@ function CollegeFinder({ member }: { member: Member }) {
                 );
               }}
               className={cn(
-                "rounded-2xl border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-md",
+                "rounded-xl border p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md",
                 continent === b.key ? "border-primary bg-primary/[0.07]" : "border-border/70 bg-background/50",
               )}
             >
-              <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                <span className="text-lg leading-none">{b.flag}</span>
+              <p className="flex items-center gap-1.5 text-[12px] font-semibold leading-tight text-foreground">
+                <span className="text-base leading-none">{b.flag}</span>
                 {b.label}
               </p>
-              <p className="mt-2 font-display text-3xl font-black text-primary">{b.count}</p>
-              <p className="text-[11px] text-muted-foreground">{t("universidades", "universities")}</p>
-              <p className="mt-2 text-[11px] text-muted-foreground">
+              <p className="mt-1 font-display text-2xl font-black leading-none text-primary">{b.count}</p>
+              <p className="text-[10px] text-muted-foreground">{t("universidades", "universities")}</p>
+              <p className="mt-1 text-[10px] leading-tight text-muted-foreground">
                 {t("Desde", "From")} {money(b.minGap, currency, true)} {t("de deuda", "of debt")}
               </p>
+
             </button>
           ))}
         </div>
