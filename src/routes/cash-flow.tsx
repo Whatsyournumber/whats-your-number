@@ -212,13 +212,13 @@ function CashFlow() {
         />
 
       {months.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-muted-foreground">{t("Mes:", "Month:")}</span>
+        <div className="no-scrollbar -mx-1 flex items-center gap-1.5 overflow-x-auto px-1 py-0.5">
+          <span className="shrink-0 text-xs text-muted-foreground">{t("Mes:", "Month:")}</span>
           {months.slice(0, 12).map((m) => (
             <button
               key={m}
               onClick={() => setMonth(m)}
-              className={`rounded-full border px-3 py-1 text-xs transition ${
+              className={`shrink-0 whitespace-nowrap rounded-full border px-2.5 py-1 text-[11px] leading-none transition ${
                 m === activeMonth
                   ? "border-primary bg-primary/10 text-primary"
                   : "border-border text-muted-foreground hover:text-foreground"
