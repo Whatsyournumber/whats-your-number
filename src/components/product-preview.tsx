@@ -159,32 +159,45 @@ export function ProductPreview() {
     },
   };
 
-  const insights = [
-    {
-      icon: Sparkles,
-      text: t(
-        "Detecté 3 suscripciones sin uso: ahorras $84/mes.",
-        "I found 3 unused subscriptions: you save $84/mo.",
-      ),
-    },
-    {
-      icon: FileText,
-      text: t(
-        "142 movimientos clasificados desde tu PDF en 9 segundos.",
-        "142 transactions classified from your PDF in 9 seconds.",
-      ),
-    },
-    {
+  const insights: Record<(typeof views)[number]["id"], { icon: typeof Sparkles; text: string }> = {
+    portafolio: {
       icon: TrendingUp,
       text: t(
-        "Si mantienes este ritmo, llegas a tu número 2 años antes.",
-        "At this pace, you reach your number 2 years earlier.",
+        "Tu cartera supera al S&P 500 en 6.1 pts: el 46% en ETFs es lo que amortigua la volatilidad.",
+        "Your portfolio beats the S&P 500 by 6.1 pts: the 46% in ETFs is what cushions volatility.",
       ),
     },
-  ];
+    gastos: {
+      icon: Sparkles,
+      text: t(
+        "Detecté 3 suscripciones sin uso y un 18% en restaurantes: recortando ahí ahorras €84/mes.",
+        "I found 3 unused subscriptions and 18% in restaurants: trimming there saves you €84/mo.",
+      ),
+    },
+    hipoteca: {
+      icon: Home,
+      text: t(
+        "Abonando €500/mes al capital pagas €49.606 menos en intereses y terminas 4 años antes.",
+        "Paying €500/mo extra to principal cuts €49,606 in interest and ends it 4 years sooner.",
+      ),
+    },
+    nextcity: {
+      icon: MapPin,
+      text: t(
+        "Lisboa cuesta €400/mes menos que Madrid: mudarte adelantaría tu número casi 1 año.",
+        "Lisbon costs €400/mo less than Madrid: moving would pull your number forward almost a year.",
+      ),
+    },
+    whatsyournumber: {
+      icon: FileText,
+      text: t(
+        "Si mantienes este ritmo de ahorro, llegas a tu número 2 años antes de lo previsto.",
+        "At this savings pace, you reach your number 2 years ahead of plan.",
+      ),
+    },
+  };
 
-  const [active, setActive] = useState<(typeof views)[number]["id"]>("hipoteca");
-  const [insight, setInsight] = useState(0);
+  const [active, setActive] = useState<(typeof views)[number]["id"]>("portafolio");
   const [paused, setPaused] = useState(false);
 
   useEffect(() => {
@@ -194,8 +207,8 @@ export function ProductPreview() {
         const i = views.findIndex((v) => v.id === cur);
         return views[(i + 1) % views.length]!.id;
       });
-      setInsight((i) => (i + 1) % insights.length);
     }, 7000);
+
     return () => clearInterval(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paused]);
