@@ -413,35 +413,18 @@ function Onboarding() {
             >
               <div className="space-y-5">
                 {(() => {
-                  const reorder = (
-                    key: "spend" | "save" | "grow",
-                    next: number,
-                  ) => {
-                    const others = (["spend", "save", "grow"] as const).filter(
+                  type K = "spend" | "save" | "grow";
+                  const reorder = (key: K, next: number) => {
+                    const rem = 100 - next;
+                    const [o1, o2] = (["spend", "save", "grow"] as K[]).filter(
                       (k) => k !== key,
-                    ) as ("spend" | "save" | "grow")[];
-                    const remaining = 100 - next;
-                    const otherSum = split[others[0]] + split[others[1]];
-                    const [a, b] =
-                      otherSum === 0
-                        ? [remaining / 2, remaining / 2]
-                        : [
-                            Math.round((split[others[0]] / otherSum) * remaining),
-                            0,
-                          ];
-                    const oB = remaining - a;
-                    setSplit({
-                      spend: key === "spend" ? next : others[0] === "spend" ? a : oB,
-                      save: key === "save" ? next : others[0] === "save" ? a : oB,
-                      grow: key === "grow" ? next : others[0] === "grow" ? a : oB,
-                    } as Record<"spend" | "save" | "grow", number>);
+                    );
+                    const sum = split[o1] + split[o2];
+                    const a = sum === 0 ? Math.round(rem / 2) : Math.round((split[o1] / sum) * rem);
+                    const b = rem - a;
+                    setSplit({ [key]: next, [o1]: a, [o2]: b } as Record<K, number>);
                   };
-                  const items: {
-                    key: "spend" | "save" | "grow";
-                    emoji: string;
-                    labelEs: string;
-                    labelEn: string;
-                  }[] = [
+                  const items: { key: K; emoji: string; labelEs: string; labelEn: string }[] = [
                     { key: "grow", emoji: "📈", labelEs: "Invertir", labelEn: "Invest" },
                     { key: "save", emoji: "🌱", labelEs: "Ahorrar", labelEn: "Save" },
                     { key: "spend", emoji: "🛍", labelEs: "Gastar", labelEn: "Spend" },
