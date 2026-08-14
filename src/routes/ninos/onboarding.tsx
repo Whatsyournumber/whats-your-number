@@ -55,8 +55,8 @@ function Onboarding() {
 
   const [name, setName] = useState("");
   const [age, setAge] = useState(0);
-  const [avatar, setAvatar] = useState("🦊");
   const [theme, setTheme] = useState<"boy" | "girl">("boy");
+  const [avatar, setAvatar] = useState("🦊");
   const [city, setCity] = useState("");
   const [currency, setCurrency] = useState("EUR");
   const [allowance, setAllowance] = useState(10);
