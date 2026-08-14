@@ -1,6 +1,6 @@
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Lock, Plus, Settings } from "lucide-react";
+import { LineChart, Lock, Plus, Settings } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button, Card, Field, inputClass } from "@/components/mfn-ui";
 import { useActiveProfile, useCreateParent, useMembers, useSubscription } from "@/hooks/use-mfn";
@@ -55,6 +55,21 @@ function ProfileSelector() {
   const parents = members.filter((m) => m.role === "parent");
   const kids = members.filter((m) => m.role === "child");
 
+  async function openAdult() {
+    const { data: auth } = await supabase.auth.getUser();
+    const uid = auth.user?.id;
+    if (!uid) {
+      router.navigate({ to: "/auth", search: { mode: "login" } });
+      return;
+    }
+    const { data: row } = await supabase
+      .from("onboarding_profiles")
+      .select("completed")
+      .eq("user_id", uid)
+      .maybeSingle();
+    router.navigate({ to: row?.completed ? "/dashboard" : "/onboarding" });
+  }
+
   function open(member: Member) {
     select(member.id);
     if (member.role === "parent") router.navigate({ to: "/ninos/padres" });
@@ -92,6 +107,23 @@ function ProfileSelector() {
         ) : (
           <>
             <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
+              <button
+                onClick={() => void openAdult()}
+                className="card-soft tap animate-rise flex flex-col items-center gap-3 p-5 hover:tap-active"
+              >
+                <span className="grid h-20 w-20 place-items-center rounded-3xl bg-primary/10 text-primary">
+                  <LineChart className="h-9 w-9" />
+                </span>
+                <span className="min-w-0 text-center">
+                  <span className="block truncate text-sm font-semibold text-foreground">
+                    {t("Mis finanzas", "My finances")}
+                  </span>
+                  <span className="block text-[11px] text-muted-foreground">
+                    {t("Perfil adulto", "Adult profile")}
+                  </span>
+                </span>
+              </button>
+
               {[...parents, ...kids].map((m) => (
                 <button
                   key={m.id}
