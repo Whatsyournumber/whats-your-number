@@ -347,7 +347,7 @@ function Landing() {
               loading="eager"
               fetchPriority="high"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/10 to-background/40" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
           </motion.div>
 
           <div className="relative z-10 mx-auto w-full max-w-6xl px-6">
