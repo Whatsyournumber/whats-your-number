@@ -124,9 +124,9 @@ export const adminUpdateAffiliate = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await assertSuperAdmin(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const patch: Record<string, unknown> = {};
-    if (typeof data.commissionRate === "number") patch["commission_rate"] = Math.max(0, Math.min(90, data.commissionRate));
-    if (data.status) patch["status"] = data.status === "paused" ? "paused" : "active";
+    const patch: { commission_rate?: number; status?: string } = {};
+    if (typeof data.commissionRate === "number") patch.commission_rate = Math.max(0, Math.min(90, data.commissionRate));
+    if (data.status) patch.status = data.status === "paused" ? "paused" : "active";
     const { error } = await supabaseAdmin.from("affiliates").update(patch).eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
