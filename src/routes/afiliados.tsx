@@ -149,8 +149,11 @@ function AffiliatesPage() {
         <AffiliateExplainer />
         <Panel
           className="mt-4"
-          title={t("Activa tu enlace", "Activate your link")}
-          description={t("Toma menos de un minuto y es gratis.", "It takes less than a minute and it's free.")}
+          title={t("Activa tu enlace y tu Pro gratis", "Activate your link and free Pro")}
+          description={t(
+            "Toma menos de un minuto, es gratis e incluye 12 meses del plan Pro.",
+            "It takes less than a minute, it's free and includes 12 months of the Pro plan.",
+          )}
         >
           <div className="grid gap-3 sm:max-w-md">
             <Input
