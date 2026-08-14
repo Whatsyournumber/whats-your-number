@@ -72,6 +72,17 @@ function MyData({ member }: { member: Member }) {
   const updateWish = useUpdateWish();
   const deleteWish = useDeleteWish();
   const updateHolding = useUpdateHolding();
+  const { data: movements = [] } = useMovements(member.id);
+  const addIncome = useAddIncome();
+  const addExpense = useAddExpense();
+  const totals = pocketTotals(movements);
+  const savedTotal =
+    Math.round((totals.gastar + totals.ahorrar + totals.crecer) * 100) / 100;
+  const [savedInput, setSavedInput] = useState("");
+  const [savedTouched, setSavedTouched] = useState(false);
+  useEffect(() => {
+    if (!savedTouched) setSavedInput(savedTotal ? String(savedTotal) : "");
+  }, [savedTotal, savedTouched]);
 
   const [profile, setProfile] = useState({
     name: member.name,
@@ -364,7 +375,7 @@ function MyData({ member }: { member: Member }) {
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
               {t("Ahora mismo tienes", "Right now you have")}{" "}
-              <strong className="text-foreground">{money(savedTotal, member.currency, lang)}</strong>
+              <strong className="text-foreground">{money(savedTotal, member.currency)}</strong>
             </p>
           </div>
         </Card>
