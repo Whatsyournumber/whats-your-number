@@ -1300,7 +1300,7 @@ function KidsFinanceLanding() {
           transition={{ duration: 0.5 }}
           className="relative -mt-16 overflow-hidden pt-16"
         >
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-full lg:w-[58%]">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[46vh] min-h-[300px] lg:inset-y-0 lg:left-auto lg:right-0 lg:h-auto lg:min-h-0 lg:w-[58%]">
             <img
               src={heroReal}
               alt={t(
@@ -1309,16 +1309,16 @@ function KidsFinanceLanding() {
               )}
               width={1280}
               height={1024}
-              className="h-full w-full object-cover object-[58%_42%] brightness-[1.35] contrast-[1.08] saturate-[1.05] [mask-image:linear-gradient(90deg,transparent_0%,transparent_22%,#000_62%,#000_100%)]"
+              className="h-full w-full object-cover object-[60%_22%] brightness-[1.35] contrast-[1.08] saturate-[1.05] lg:object-[58%_42%] lg:[mask-image:linear-gradient(90deg,transparent_0%,transparent_22%,#000_62%,#000_100%)]"
             />
             {/* Gradual fade into the dark background so the photo never shows a hard edge */}
-            <div className="absolute inset-y-0 left-0 w-[55%] bg-[linear-gradient(90deg,var(--background)_0%,transparent_100%)]" />
-            <div className="absolute inset-x-0 top-0 h-44 bg-[linear-gradient(180deg,var(--background)_0%,transparent_100%)]" />
-            <div className="absolute inset-x-0 bottom-0 h-44 bg-[linear-gradient(0deg,var(--background)_0%,transparent_100%)]" />
+            <div className="absolute inset-y-0 left-0 hidden w-[55%] bg-[linear-gradient(90deg,var(--background)_0%,transparent_100%)] lg:block" />
+            <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,var(--background)_0%,transparent_100%)] lg:h-44" />
+            <div className="absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(0deg,var(--background)_0%,transparent_100%)] lg:h-44" />
             <div className="absolute inset-0 bg-background/15" />
           </div>
 
-          <div className="relative mx-auto w-full max-w-7xl px-6 py-16 md:py-20 lg:py-24">
+          <div className="relative mx-auto w-full max-w-7xl px-6 pb-16 pt-[42vh] md:py-20 lg:py-24">
             <div className="lg:max-w-[50%]">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-kid-mint/25 bg-kid-mint/10 px-3 py-1 text-xs font-medium text-kid-mint backdrop-blur-sm">
                 <Sparkles className="h-3.5 w-3.5" />
