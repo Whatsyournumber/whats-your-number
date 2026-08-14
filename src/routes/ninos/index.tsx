@@ -164,9 +164,9 @@ function ProfileSelector() {
                           setPendingDelete(m);
                         }
                       }}
-                      className="absolute -right-2 -top-2 z-10 grid h-8 w-8 place-items-center rounded-full bg-destructive text-destructive-foreground shadow-lg ring-2 ring-background transition hover:scale-110"
+                      className="absolute -right-1.5 -top-1.5 z-10 grid h-7 w-7 place-items-center rounded-full bg-destructive/90 text-destructive-foreground shadow-md ring-2 ring-background opacity-0 transition-all duration-200 hover:scale-105 hover:bg-destructive group-hover:opacity-100"
                     >
-                      <X className="h-4 w-4" strokeWidth={3} />
+                      <X className="h-3.5 w-3.5" strokeWidth={2.5} />
                     </span>
                   ) : null}
                   <span className="min-w-0 text-center">
