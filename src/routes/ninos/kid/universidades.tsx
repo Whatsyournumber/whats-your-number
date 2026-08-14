@@ -332,15 +332,15 @@ function CollegeFinder({ member }: { member: Member }) {
       {/* Con X podrá estudiar en */}
       <section className="mb-5 rounded-[28px] border border-border/70 bg-card p-5 shadow-sm sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="flex flex-wrap items-baseline gap-2 font-display text-lg font-bold text-foreground">
+          <p className="flex items-baseline gap-1.5 font-display text-lg font-bold text-foreground">
             {t(
               `Con ${money(projected, currency, true)} podrá estudiar en`,
               `With ${money(projected, currency, true)} they can study in`,
             )}
-            <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
               {t(
-                `${counts.afford} de ${counts.all} opciones`,
-                `${counts.afford} of ${counts.all} options`,
+                `(${counts.afford}/${counts.all})`,
+                `(${counts.afford}/${counts.all})`,
               )}
             </span>
           </p>
