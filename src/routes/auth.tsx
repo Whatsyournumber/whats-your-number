@@ -97,7 +97,7 @@ function AuthPage() {
       return;
     }
     // La pantalla de perfiles solo existe para el plan Familiar.
-    navigate({ to: isPatrimonio ? "/elegir" : "/dashboard" });
+    navigate({ to: "/dashboard" });
   }, [loading, user, isPatrimonio, navigate, next]);
 
   const setMode = (value: "login" | "signup") =>
@@ -146,7 +146,7 @@ function AuthPage() {
       return;
     }
     if (result.redirected) return;
-    navigate({ to: next ?? (isPatrimonio ? "/elegir" : "/dashboard") });
+    navigate({ to: next ?? "/dashboard" });
   };
 
   return (

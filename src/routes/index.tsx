@@ -179,7 +179,7 @@ function Landing() {
     if (sessionStorage.getItem("wyn_chooser_seen") === "1") return;
     sessionStorage.setItem("wyn_chooser_seen", "1");
     // El selector de perfiles solo aplica al plan Familiar.
-    navigate({ to: isPatrimonio ? "/elegir" : "/dashboard", replace: true });
+    navigate({ to: "/dashboard", replace: true });
   }, [loading, user, isPatrimonio, navigate]);
 
   const features = [
