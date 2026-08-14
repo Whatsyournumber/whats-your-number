@@ -172,7 +172,7 @@ function RootLayout() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const { user, loading } = useAuth();
 
-  if (PUBLIC_PATHS.includes(pathname) || BARE_PATHS.includes(pathname)) {
+  if (PUBLIC_PATHS.includes(pathname) || BARE_PATHS.includes(pathname) || pathname.startsWith("/nino/")) {
     return <Outlet />;
   }
 
