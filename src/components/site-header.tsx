@@ -118,21 +118,41 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
       {/* Mobile / Tablet */}
       <div className="lg:hidden">
         <Sheet open={open} onOpenChange={setOpen}>
-          <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2">
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0 rounded-full">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">{t("Abrir menú", "Open menu")}</span>
-              </Button>
-            </SheetTrigger>
-
-            <div className="flex min-w-0 items-center justify-center">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex min-w-0 items-center gap-2">
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0 rounded-full">
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">{t("Abrir menú", "Open menu")}</span>
+                </Button>
+              </SheetTrigger>
               <Link to="/" className="shrink-0">
-                <BrandMark className="h-8 w-8" />
+                <BrandLogo className="h-7" />
               </Link>
             </div>
 
-            <div className="flex shrink-0 items-center justify-end">{mobileAuthButton}</div>
+            <div className="flex shrink-0 items-center gap-1">
+              <LanguageToggle />
+              {user ? (
+                <Button asChild size="sm" className="h-8 rounded-full px-3 text-xs">
+                  <Link to="/dashboard">{t("Dashboard", "Dashboard")}</Link>
+                </Button>
+              ) : (
+                <Button
+                  asChild
+                  variant="ghost"
+                  size="sm"
+                  className={cn(
+                    "h-8 rounded-full px-2.5 text-xs whitespace-nowrap",
+                    isLight && "text-slate-700 hover:bg-slate-100 hover:text-slate-900",
+                  )}
+                >
+                  <Link to="/auth" search={{ mode: "login" }}>
+                    {t("Iniciar sesión", "Sign in")}
+                  </Link>
+                </Button>
+              )}
+            </div>
           </div>
 
           <SheetContent side="left" className="w-full sm:max-w-xs">
@@ -146,19 +166,16 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
               </nav>
               {!user && (
                 <SheetClose asChild>
-                  <Button asChild variant="outline" size="sm" className="rounded-full">
-                    <Link to="/auth" search={{ mode: "login" }}>
-                      {t("Iniciar sesión", "Sign in")}
+                  <Button asChild size="sm" className="rounded-full">
+                    <Link to="/auth" search={{ mode: "signup" }}>
+                      {t("Crear cuenta", "Sign up")}
                     </Link>
                   </Button>
                 </SheetClose>
               )}
               <div className="flex items-center justify-between border-t border-border pt-4">
-                <span className="text-sm text-muted-foreground">{t("Idioma", "Language")}</span>
-                <div className="flex items-center gap-2">
-                  <CurrencyToggle />
-                  <LanguageToggle />
-                </div>
+                <span className="text-sm text-muted-foreground">{t("Moneda", "Currency")}</span>
+                <CurrencyToggle />
               </div>
             </div>
           </SheetContent>
