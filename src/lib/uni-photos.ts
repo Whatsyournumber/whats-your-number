@@ -383,8 +383,24 @@ import zaJohannesburg from "@/assets/uni/za-johannesburg.jpg";
 import zaRhodes from "@/assets/uni/za-rhodes.jpg";
 import zaNorthwest from "@/assets/uni/za-northwest.jpg";
 import zaWesternCape from "@/assets/uni/za-westerncape.jpg";
+import afUsthb from "@/assets/uni/af-usthb.jpg";
+import afAddis from "@/assets/uni/af-addis.jpg";
+import afDiop from "@/assets/uni/af-diop.jpg";
+import afZimbabwe from "@/assets/uni/af-zimbabwe.jpg";
+import afTunis from "@/assets/uni/af-tunis.jpg";
+import afObafemi from "@/assets/uni/af-obafemi.jpg";
+import afMakerere from "@/assets/uni/af-makerere.jpg";
+import afDar from "@/assets/uni/af-dar.jpg";
 
 const CURATED: Record<string, string> = {
+  "me-usthb-alger": afUsthb,
+  "me-addis-ababa": afAddis,
+  "me-cheikh-anta-diop": afDiop,
+  "me-zimbabwe": afZimbabwe,
+  "me-tunis-el-manar": afTunis,
+  "me-obafemi-awolowo": afObafemi,
+  "me-makerere": afMakerere,
+  "me-dar-es-salaam": afDar,
   "me-wits": zaWits,
   "me-stellenbosch": zaStellenbosch,
   "me-pretoria": zaPretoria,
