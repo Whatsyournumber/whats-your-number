@@ -395,8 +395,9 @@ function Landing() {
                   loading="eager"
                   fetchPriority="high"
                 />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent opacity-40 lg:opacity-30" />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent opacity-30 lg:opacity-50" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-30 lg:opacity-50" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent opacity-10 lg:opacity-40" />
+
 
               </div>
             </motion.div>
