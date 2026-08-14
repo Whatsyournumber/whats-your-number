@@ -1300,7 +1300,7 @@ function KidsFinanceLanding() {
           transition={{ duration: 0.5 }}
           className="relative -mt-16 overflow-hidden pt-16"
         >
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-[46vh] min-h-[300px] lg:inset-y-0 lg:left-auto lg:right-0 lg:h-auto lg:min-h-0 lg:w-[58%]">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[34vh] min-h-[240px] md:h-[46vh] lg:inset-y-0 lg:left-auto lg:right-0 lg:h-auto lg:min-h-0 lg:w-[58%]">
             <img
               src={heroReal}
               alt={t(
@@ -1309,25 +1309,35 @@ function KidsFinanceLanding() {
               )}
               width={1280}
               height={1024}
-              className="h-full w-full object-cover object-[60%_22%] brightness-[1.35] contrast-[1.08] saturate-[1.05] lg:object-[58%_42%] lg:[mask-image:linear-gradient(90deg,transparent_0%,transparent_22%,#000_62%,#000_100%)]"
+              className="h-full w-full object-cover object-[60%_18%] brightness-[1.35] contrast-[1.08] saturate-[1.05] md:object-[60%_22%] lg:object-[58%_42%] lg:[mask-image:linear-gradient(90deg,transparent_0%,transparent_22%,#000_62%,#000_100%)]"
             />
             {/* Gradual fade into the dark background so the photo never shows a hard edge */}
             <div className="absolute inset-y-0 left-0 hidden w-[55%] bg-[linear-gradient(90deg,var(--background)_0%,transparent_100%)] lg:block" />
             <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,var(--background)_0%,transparent_100%)] lg:h-44" />
-            <div className="absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(0deg,var(--background)_0%,transparent_100%)] lg:h-44" />
+            <div className="absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(0deg,var(--background)_0%,transparent_100%)] md:h-40 lg:h-44" />
             <div className="absolute inset-0 bg-background/15" />
           </div>
 
-          <div className="relative mx-auto w-full max-w-7xl px-6 pb-16 pt-[42vh] md:py-20 lg:py-24">
+          <div className="relative mx-auto w-full max-w-7xl px-6 pb-10 pt-[30vh] md:pb-16 md:pt-[42vh] md:py-20 lg:py-24">
             <div className="lg:max-w-[50%]">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-kid-mint/25 bg-kid-mint/10 px-3 py-1 text-xs font-medium text-kid-mint backdrop-blur-sm">
+              <span className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-kid-mint/25 bg-kid-mint/10 px-3 py-1 text-xs font-medium text-kid-mint backdrop-blur-sm">
                 <Sparkles className="h-3.5 w-3.5" />
                 {t(
                   "El futuro financiero de tus hijos, impulsado por IA",
                   "Your kids' financial future, powered by AI",
                 )}
               </span>
-              <h1 className="mt-5 font-display text-3xl font-semibold leading-[1.08] tracking-tight md:text-4xl lg:text-5xl">
+
+              {/* Mobile: shorter headline */}
+              <h1 className="font-display text-[1.75rem] font-semibold leading-[1.08] tracking-tight md:hidden">
+                {t("Construye su ", "Build their ")}
+                <span className="text-kid-mint">{t("número", "number")}</span>
+                <br />
+                {t("desde pequeños.", "from day one.")}
+              </h1>
+
+              {/* Desktop: full headline */}
+              <h1 className="mt-5 hidden font-display text-3xl font-semibold leading-[1.08] tracking-tight md:mt-5 md:block md:text-4xl lg:text-5xl">
                 {t("Construye ", "Build ")}
                 <span className="text-kid-mint">{t("su patrimonio.", "their wealth.")}</span>
                 <br />
@@ -1337,29 +1347,37 @@ function KidsFinanceLanding() {
                 {t("En una sola plataforma.", "In one single platform.")}
               </h1>
 
-              <p className="mt-6 max-w-lg text-sm leading-relaxed text-muted-foreground md:text-base">
-                {t(
-                  "Planifica cuánto tendrá tu hijo a los 18 años, crea su primera cartera de inversión, administra su mesada y ayúdalo a desarrollar hábitos financieros que lo acompañarán toda la vida.",
-                  "Plan how much your child will have at 18, build their first investment portfolio, manage their allowance and help them build money habits for life.",
-                )}
+              <p className="mt-4 max-w-lg text-sm leading-relaxed text-muted-foreground md:mt-6 md:text-base">
+                <span className="md:hidden">
+                  {t(
+                    "Planifica su futuro, mesada y hábitos de ahorro en un solo lugar.",
+                    "Plan their future, allowance and savings habits in one place.",
+                  )}
+                </span>
+                <span className="hidden md:inline">
+                  {t(
+                    "Planifica cuánto tendrá tu hijo a los 18 años, crea su primera cartera de inversión, administra su mesada y ayúdalo a desarrollar hábitos financieros que lo acompañarán toda la vida.",
+                    "Plan how much your child will have at 18, build their first investment portfolio, manage their allowance and help them build money habits for life.",
+                  )}
+                </span>
               </p>
-              <div className="mt-9 flex flex-wrap items-center gap-3">
+              <div className="mt-6 flex flex-wrap items-center gap-3 md:mt-9">
                 <Link
                   to="/precios"
-                  className="kid-gradient inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-background shadow-lg transition-all hover:gap-3"
+                  className="kid-gradient inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-background shadow-lg transition-all hover:gap-3 md:px-6 md:py-3"
                 >
                   {t("Crear plan Familiar", "Create Family plan")} <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
-              <div className="mt-10 flex items-center gap-3">
+              <div className="mt-6 flex items-center gap-3 md:mt-10">
                 <img
                   src={avatarFaces}
                   alt={t("Familias usando WhatsYournumber", "Families using WhatsYournumber")}
                   width={256}
                   height={128}
-                  className="h-12 w-auto shrink-0 mix-blend-lighten"
+                  className="h-10 w-auto shrink-0 mix-blend-lighten md:h-12"
                 />
-                <p className="text-sm font-medium text-foreground">
+                <p className="text-xs font-medium text-foreground md:text-sm">
                   {t(
                     "+3.200 familias ya están construyendo su futuro.",
                     "+3,200 families are already building their future.",
