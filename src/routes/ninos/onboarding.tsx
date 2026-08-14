@@ -506,42 +506,40 @@ function Onboarding() {
           <div className="mt-8 space-y-5">
             <Buddy>
               {t(
-                `¿Cuánto dinero le pones a su Fondo del Futuro? Puedes empezar con un aporte inicial y luego aportar cada mes.`,
-                `How much money do you put into their Future Fund? You can start with an initial deposit and then add money every month.`,
+                `¡Gracias por completar todo! Ya podemos crear el perfil de ${name.trim() || "tu hijo/a"}.`,
+                `Thanks for completing everything! We can now create ${name.trim() || "your child"}'s profile.`,
               )}
             </Buddy>
             <Card>
-              <div className="space-y-4">
-                <Field label={`${t("Aporte inicial", "Initial deposit")} (${currency})`}>
-                  <input
-                    type="number"
-                    min={0}
-                    className={inputClass}
-                    placeholder="0"
-                    value={initial || ""}
-                    onChange={(e) => setInitial(Number(e.target.value))}
-                  />
-                </Field>
-                <Field label={`${t("Aporte mensual", "Monthly contribution")} (${currency})`}>
-                  <input
-                    type="number"
-                    min={0}
-                    className={inputClass}
-                    placeholder="0"
-                    value={monthly || ""}
-                    onChange={(e) => setMonthly(Number(e.target.value))}
-                  />
-                </Field>
+              <div className="relative overflow-hidden py-10 text-center">
+                <style>{`@keyframes mfnFloat{0%{transform:translateY(120%) rotate(-6deg);opacity:0}15%{opacity:1}100%{transform:translateY(-140%) rotate(6deg);opacity:0}}`}</style>
+                {["🎈", "🎉", "🎈", "🎊", "🎈", "✨", "🎈", "🎉"].map((e, i) => (
+                  <span
+                    key={i}
+                    className="pointer-events-none absolute text-3xl"
+                    style={{
+                      left: `${6 + i * 12}%`,
+                      bottom: 0,
+                      animation: `mfnFloat ${4 + (i % 4)}s linear ${i * 0.45}s infinite`,
+                    }}
+                  >
+                    {e}
+                  </span>
+                ))}
+                <p className="relative text-2xl font-black text-foreground">
+                  {t("¡Gracias por completar!", "Thanks for completing!")}
+                </p>
+                <p className="relative mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
+                  {t(
+                    "Todo listo. Pulsa «Crear perfil» y empezamos a construir su primer número.",
+                    "All set. Tap “Create profile” and we'll start building their first number.",
+                  )}
+                </p>
               </div>
-              <p className="mt-4 text-sm text-muted-foreground">
-                {t(
-                  `Con ${money(initial, currency)} hoy y ${money(monthly, currency)}/mes, en los próximos años iremos viendo cómo crece.`,
-                  `With ${money(initial, currency)} today and ${money(monthly, currency)}/month, over the next few years we'll watch it grow.`,
-                )}
-              </p>
             </Card>
           </div>
         ) : null}
+
 
 
         <div className="mt-8 flex items-center justify-between gap-3">
