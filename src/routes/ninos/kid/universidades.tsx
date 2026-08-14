@@ -320,12 +320,21 @@ function CollegeFinder({ member }: { member: Member }) {
       {/* Con X podrá estudiar en */}
       <section className="mb-5 rounded-[28px] border border-border/70 bg-card p-5 shadow-sm sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="font-display text-lg font-bold text-foreground">
-            {t(
-              `Con ${money(projected, currency, true)} podrá estudiar en`,
-              `With ${money(projected, currency, true)} they can study in`,
-            )}
-          </p>
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              {t(
+                `${counts.afford} de ${counts.all} opciones disponibles`,
+                `${counts.afford} of ${counts.all} options available`,
+              )}
+            </p>
+            <p className="font-display text-lg font-bold text-foreground">
+              {t(
+                `Con ${money(projected, currency, true)} podrá estudiar en`,
+                `With ${money(projected, currency, true)} they can study in`,
+              )}
+            </p>
+          </div>
+
           <button
             type="button"
             onClick={() => setBucket(null)}
