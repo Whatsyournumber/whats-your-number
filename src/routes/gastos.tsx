@@ -997,7 +997,7 @@ function Gastos() {
                         {variation.toFixed(0)}%
                       </span>
                     )}
-                    <span className="numeric ml-auto text-sm font-semibold">{fmt(c.amount)}</span>
+                    <span className="numeric shrink-0 whitespace-nowrap text-sm font-semibold">{fmt(c.amount)}</span>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent>
