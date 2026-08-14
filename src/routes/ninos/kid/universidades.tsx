@@ -149,55 +149,157 @@ function CollegeFinder({ member }: { member: Member }) {
     .map((id) => list.find((r) => r.u.id === id) ?? null)
     .filter(Boolean) as { u: University; total: number }[];
 
+  // Resumen por región (recomendaciones arriba del hero)
+  const regionSummary = useMemo(
+    () =>
+      REGIONS.map((r) => {
+        const inRegion = UNIVERSITIES.filter((u) => u.region === r).map((u) => cost(u));
+        const ok = inRegion.filter((c) => c <= effectiveBudget).length;
+        const min = inRegion.length ? Math.min(...inRegion) : 0;
+        return { region: r, count: ok, total: inRegion.length, min };
+      }).sort((a, b) => b.count - a.count),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [effectiveBudget, includeLiving, usdFx.factor],
+  );
+
+  const topPicks = list.filter((r) => r.total <= effectiveBudget).slice(0, 3);
+
+  const REGION_EMOJI: Record<string, string> = { eu: "🇪🇺", na: "🇺🇸", latam: "🌎", apac: "🌏", other: "🌍" };
+
   return (
     <>
-      {/* Hero difuminado, sin bordes — imagen protagonista */}
-      <section className="relative mb-8 -mt-6 min-h-[380px] overflow-hidden sm:min-h-[460px]">
+      {/* Hero a sangre — imagen protagonista fundida con el fondo */}
+      <section className="relative mb-6 -mt-6 min-h-[440px] overflow-hidden sm:min-h-[560px]">
         <img
           src={heroImg}
           alt={t("Familia mirando universidades", "Family looking at universities")}
           width={1280}
           height={960}
-          className="pointer-events-none absolute inset-y-0 right-0 h-full w-full object-cover object-right opacity-100 sm:w-[88%]"
+          className="pointer-events-none absolute inset-y-0 right-0 h-full w-full object-cover object-right"
           style={{
             maskImage:
-              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.10) 10%, rgba(0,0,0,0.45) 30%, rgba(0,0,0,0.80) 50%, #000 68%, #000 100%), linear-gradient(to bottom, transparent 0%, #000 10%, #000 84%, transparent 100%)",
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 14%, rgba(0,0,0,0.55) 34%, rgba(0,0,0,0.88) 52%, #000 66%, #000 100%), linear-gradient(to bottom, transparent 0%, #000 8%, #000 78%, transparent 100%)",
             maskComposite: "intersect",
             WebkitMaskImage:
-              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.10) 10%, rgba(0,0,0,0.45) 30%, rgba(0,0,0,0.80) 50%, #000 68%, #000 100%), linear-gradient(to bottom, transparent 0%, #000 10%, #000 84%, transparent 100%)",
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 14%, rgba(0,0,0,0.55) 34%, rgba(0,0,0,0.88) 52%, #000 66%, #000 100%), linear-gradient(to bottom, transparent 0%, #000 8%, #000 78%, transparent 100%)",
             WebkitMaskComposite: "source-in",
           }}
         />
-        {/* Scrim solo en la columna del texto */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/70 to-transparent sm:via-background/35 sm:to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-background to-transparent" />
-        <div className="relative flex min-h-[380px] max-w-md flex-col justify-center py-10 pr-6 sm:min-h-[460px] sm:py-14">
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent sm:via-background/25" />
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-background to-transparent" />
+        <div className="relative flex min-h-[440px] max-w-lg flex-col justify-center py-10 pr-6 sm:min-h-[560px] sm:py-16">
           <p className="inline-flex w-fit items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-[11px] font-bold text-primary shadow-sm ring-1 ring-primary/10 backdrop-blur-sm">
             🎓 {t("Buscador de universidades", "College finder")}
           </p>
-          <h1 className="mt-3 font-display text-3xl font-black leading-tight text-foreground drop-shadow-[0_1px_10px_rgba(0,0,0,0.35)] sm:text-5xl">
+          <h1 className="mt-3 font-display text-4xl font-black leading-[1.05] text-foreground drop-shadow-[0_1px_12px_rgba(0,0,0,0.35)] sm:text-6xl">
             {t("¿Dónde podrá estudiar", "Where can they study")}{" "}
             <span className="text-primary">{t(`a los ${targetAge}?`, `at ${targetAge}?`)}</span>
           </h1>
-          <p className="mt-2 max-w-sm text-sm text-foreground/80 drop-shadow-[0_1px_6px_rgba(0,0,0,0.35)]">
+          <p className="mt-3 max-w-sm text-sm text-foreground/80 drop-shadow-[0_1px_6px_rgba(0,0,0,0.35)]">
             {t(
               `Con el capital que estás construyendo hoy para ${member.name}.`,
               `With the capital you're building today for ${member.name}.`,
             )}
           </p>
-          <div className="mt-5 w-fit rounded-3xl border border-primary/20 bg-background/80 p-4 shadow-lg backdrop-blur-md">
+
+          <div className="mt-6 w-full max-w-sm rounded-[28px] border border-primary/20 bg-background/80 p-5 shadow-[0_24px_60px_-30px_rgba(0,0,0,0.7)] backdrop-blur-xl">
             <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
               {t(`A los ${targetAge} años tendrá`, `At age ${targetAge} they'll have`)}
             </p>
-            <p className="font-display text-4xl font-black text-primary">
+            <p className="font-display text-4xl font-black text-primary sm:text-5xl">
               {money(effectiveBudget, currency, true)}
             </p>
             <p className="mt-1 text-[11px] text-muted-foreground">
               {touched ? t("Escenario manual", "Manual scenario") : t("Con tu plan actual", "With your current plan")}
             </p>
+
+            <div className="mt-4 grid grid-cols-3 gap-2 border-t border-border/60 pt-3 text-left">
+              {[
+                { v: money(initial, currency, true), l: t("Inicial", "Initial") },
+                { v: `${money(monthly, currency, true)}/${t("mes", "mo")}`, l: t("Aporte", "Monthly") },
+                { v: `${rate}%`, l: t("Rentabilidad", "Return") },
+              ].map((s) => (
+                <div key={s.l} className="min-w-0">
+                  <p className="truncate font-display text-sm font-bold text-foreground">{s.v}</p>
+                  <p className="truncate text-[10px] text-muted-foreground">{s.l}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+              <div
+                className="h-full rounded-full bg-primary"
+                style={{ width: `${Math.min(100, Math.round((effectiveBudget / Math.max(1, maxBudget)) * 100))}%` }}
+              />
+            </div>
+            <div className="mt-1.5 flex justify-between text-[10px] text-muted-foreground">
+              <span>{t("Hoy", "Today")} · {money(initial, currency, true)}</span>
+              <span>
+                {targetAge} {t("años", "yrs")} · {money(effectiveBudget, currency, true)}
+              </span>
+            </div>
           </div>
         </div>
       </section>
+
+      {/* Recomendaciones arriba: dónde puede estudiar */}
+      <section className="mb-5 rounded-[28px] border border-border/70 bg-card/80 p-5 shadow-sm backdrop-blur-sm">
+        <p className="font-display text-lg font-bold text-foreground">
+          {t(`Con ${money(effectiveBudget, currency, true)} podrá estudiar en`, `With ${money(effectiveBudget, currency, true)} they can study in`)}
+        </p>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          {regionSummary.map((r) => (
+            <button
+              key={r.region}
+              type="button"
+              onClick={() => setRegion(region === r.region ? null : r.region)}
+              className={cn(
+                "rounded-2xl border p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md",
+                region === r.region ? "border-primary bg-primary/10" : "border-border/70 bg-background/60",
+              )}
+            >
+              <p className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
+                <span>{REGION_EMOJI[r.region]}</span>
+                {UNI_REGION_LABELS[r.region][lang === "en" ? "en" : "es"]}
+              </p>
+              <p className="mt-1 font-display text-2xl font-black text-primary">{r.count}</p>
+              <p className="text-[10px] text-muted-foreground">
+                {t("universidades a tu alcance", "universities within reach")}
+              </p>
+              <p className="mt-1 text-[10px] text-muted-foreground">
+                {t("Desde", "From")} {money(r.min, currency, true)}
+              </p>
+            </button>
+          ))}
+        </div>
+
+        {topPicks.length > 0 ? (
+          <>
+            <p className="mt-5 text-xs font-bold uppercase tracking-wide text-muted-foreground">
+              {t("Recomendadas para ti", "Recommended for you")}
+            </p>
+            <div className="mt-2 grid gap-2 sm:grid-cols-3">
+              {topPicks.map(({ u, total }) => (
+                <div
+                  key={u.id}
+                  className="flex items-center gap-2.5 rounded-2xl border border-primary/25 bg-gradient-to-b from-primary/[0.08] to-background/40 p-3"
+                >
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-secondary/70 text-lg">
+                    {u.flag}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-bold text-foreground">{u.name}</p>
+                    <p className="truncate text-[11px] text-muted-foreground">
+                      {u.city} · {money(total, currency, true)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : null}
+      </section>
+
 
 
       <div className="grid gap-5">
