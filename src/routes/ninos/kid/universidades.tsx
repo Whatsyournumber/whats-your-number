@@ -4,6 +4,8 @@ import { GraduationCap, Search, Sparkles, Check, TrendingUp, Loader2 } from "luc
 
 import { KidPage, PageTitle } from "@/components/kid-page";
 import { useFund, useMovements } from "@/hooks/use-mfn";
+import { useProfile } from "@/hooks/use-profile";
+
 import { money, pocketTotals, type Member } from "@/lib/mfn";
 import { useI18n } from "@/lib/mfn-i18n";
 import { useFx } from "@/lib/mfn-fx";
