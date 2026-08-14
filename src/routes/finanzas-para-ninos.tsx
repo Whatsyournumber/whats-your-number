@@ -1300,7 +1300,7 @@ function KidsFinanceLanding() {
           transition={{ duration: 0.5 }}
           className="relative -mt-16 overflow-hidden pt-16"
         >
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-[38vh] min-h-[260px] md:h-[50vh] lg:inset-y-0 lg:left-auto lg:right-0 lg:h-auto lg:min-h-0 lg:w-[64%]">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[38vh] min-h-[260px] md:h-[50vh] lg:inset-y-0 lg:left-auto lg:right-0 lg:h-auto lg:min-h-0 lg:w-[66%]">
             <img
               src={heroReal}
               alt={t(
@@ -1309,12 +1309,12 @@ function KidsFinanceLanding() {
               )}
               width={1280}
               height={1024}
-              className="h-full w-full object-cover object-[40%_12%] brightness-[1.28] contrast-[1.02] saturate-[1.06] md:object-[38%_18%] lg:object-[34%_38%] lg:[mask-image:linear-gradient(90deg,transparent_0%,transparent_26%,#000_62%,#000_100%)]"
+              className="h-full w-full object-cover object-[32%_10%] brightness-[1.45] contrast-[1.04] saturate-[1.05] md:object-[28%_16%] lg:object-[18%_38%] lg:[mask-image:linear-gradient(90deg,transparent_0%,transparent_30%,#000_66%,#000_100%)]"
             />
             {/* Gradual fade into the dark background so the photo never shows a hard edge */}
-            <div className="absolute inset-y-0 left-0 hidden w-[42%] bg-[linear-gradient(90deg,var(--background)_0%,transparent_100%)] lg:block" />
-            <div className="absolute inset-x-0 top-0 h-16 bg-[linear-gradient(180deg,var(--background)_0%,transparent_100%)] lg:h-28" />
-            <div className="absolute inset-x-0 bottom-0 h-20 bg-[linear-gradient(0deg,var(--background)_0%,transparent_100%)] md:h-28 lg:h-32" />
+            <div className="absolute inset-y-0 left-0 hidden w-[34%] bg-[linear-gradient(90deg,var(--background)_0%,transparent_100%)] lg:block" />
+            <div className="absolute inset-x-0 top-0 h-12 bg-[linear-gradient(180deg,var(--background)_0%,transparent_100%)] lg:h-20" />
+            <div className="absolute inset-x-0 bottom-0 h-16 bg-[linear-gradient(0deg,var(--background)_0%,transparent_100%)] md:h-24 lg:h-28" />
           </div>
 
           <div className="relative mx-auto w-full max-w-7xl px-6 pb-10 pt-[30vh] md:pb-16 md:pt-[42vh] md:py-20 lg:py-24">
