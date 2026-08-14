@@ -144,8 +144,11 @@ function Onboarding() {
         emoji: wish.emoji,
         price: wishPrice,
       });
-      if (savedNow > 0) {
-        const parts = splitAmount(savedNow, {
+      // El monto inicial del fondo ya forma parte del dinero ahorrado:
+      // solo repartimos en bolsillos la diferencia para no duplicar montos.
+      const toPockets = Math.max(0, savedNow - initial);
+      if (toPockets > 0) {
+        const parts = splitAmount(toPockets, {
           split_spend: split.spend,
           split_save: split.save,
           split_grow: split.grow,
