@@ -51,7 +51,7 @@ function Onboarding() {
   const [currency, setCurrency] = useState("EUR");
   const [allowance, setAllowance] = useState(10);
   const [frequency, setFrequency] = useState("semanal");
-  const [split, setSplit] = useState({ spend: 40, save: 40, grow: 20 });
+  const [split, setSplit] = useState({ spend: 20, save: 40, grow: 40 });
   const [wish, setWish] = useState(WISH_IDEAS[0]!);
   const [wishPrice, setWishPrice] = useState(WISH_IDEAS[0]!.price);
   const [initial, setInitial] = useState(1000);
