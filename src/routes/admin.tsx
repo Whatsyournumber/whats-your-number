@@ -252,7 +252,7 @@ function AdminPage() {
   if (!isSuperAdmin) {
     return (
       <PageShell>
-        <PageHeader eyebrow="Admin" title={t("Acceso restringido", "Restricted access") subtitle={t("Esta sección es solo para super administradores.", "This section is for super admins only.") />
+        <PageHeader eyebrow="Admin" title={t("Acceso restringido", "Restricted access")} subtitle={t("Esta sección es solo para super administradores.", "This section is for super admins only.")} />
       </PageShell>
     );
   }
@@ -261,45 +261,45 @@ function AdminPage() {
     <PageShell>
       <PageHeader
         eyebrow="Super admin"
-        title={t("Panel de administración", "Admin panel")
-        subtitle={t("Todos los registros, suscripciones, pagos y actividad de la plataforma.", "All sign-ups, subscriptions, payments and platform activity.")
+        title={t("Panel de administración", "Admin panel")}
+        subtitle={t("Todos los registros, suscripciones, pagos y actividad de la plataforma.", "All sign-ups, subscriptions, payments and platform activity.")}
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard label={t("Usuarios registrados", "Registered users") value={String(users.length)} icon={Users} accent index={0} />
-        <KpiCard label={t("Onboarding completado", "Onboarding completed") value={String(onb.filter((o) => o.completed).length)} icon={TrendingUp} index={1} />
-        <KpiCard label={t("Suscripciones activas", "Active subscriptions") value={String(activeSubs.length)} icon={CreditCard} index={2} />
-        <KpiCard label={t("MRR estimado", "Estimated MRR") value={`${mrr} US$`} icon={FileText} index={3} />
+        <KpiCard label={t("Usuarios registrados", "Registered users")} value={String(users.length)} icon={Users} accent index={0} />
+        <KpiCard label={t("Onboarding completado", "Onboarding completed")} value={String(onb.filter((o) => o.completed).length)} icon={TrendingUp} index={1} />
+        <KpiCard label={t("Suscripciones activas", "Active subscriptions")} value={String(activeSubs.length)} icon={CreditCard} index={2} />
+        <KpiCard label={t("MRR estimado", "Estimated MRR")} value={`${mrr} US$`} icon={FileText} index={3} />
       </div>
 
       <Tabs defaultValue="users" className="w-full">
         <TabsList>
-          <TabsTrigger value="users">{t(t("Usuarios", "Users"), "Users")}</TabsTrigger>
-          <TabsTrigger value="subs">{t(t("Pagos y suscripciones", "Payments & subscriptions"), "Payments & subscriptions")}</TabsTrigger>
-          <TabsTrigger value="statements">{t(t("Estados de cuenta", "Statements"), "Statements")}</TabsTrigger>
-          <TabsTrigger value="promos">{t(t("Invitaciones", "Invites"), "Invites")}</TabsTrigger>
+          <TabsTrigger value="users">{t("Usuarios", "Users")}</TabsTrigger>
+          <TabsTrigger value="subs">{t("Pagos y suscripciones", "Payments & subscriptions")}</TabsTrigger>
+          <TabsTrigger value="statements">{t("Estados de cuenta", "Statements")}</TabsTrigger>
+          <TabsTrigger value="promos">{t("Invitaciones", "Invites")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="users" className="mt-4">
-          <Panel title={t("Registros", "Sign-ups") description={`${filteredUsers.length} usuarios`}>
+          <Panel title={t("Registros", "Sign-ups")} description={`${filteredUsers.length} usuarios`}>
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder={t("Buscar por nombre o email…", "Search by name or email…")
+              placeholder={t("Buscar por nombre o email…", "Search by name or email…")}
               className="mb-4 max-w-sm"
             />
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{t(t("Nombre", "Name"), "Name")}</TableHead>
+                    <TableHead>{t("Nombre", "Name")}</TableHead>
                     <TableHead>Email</TableHead>
-                    <TableHead>{t(t("Teléfono", "Phone"), "Phone")}</TableHead>
-                    <TableHead>{t(t("País", "Country"), "Country")}</TableHead>
+                    <TableHead>{t("Teléfono", "Phone")}</TableHead>
+                    <TableHead>{t("País", "Country")}</TableHead>
                     <TableHead>Onboarding</TableHead>
                     <TableHead>Plan</TableHead>
-                    <TableHead>{t(t("Alta", "Joined"), "Joined")}</TableHead>
-                    <TableHead className="text-right">{t(t("Acciones", "Actions"), "Actions")}</TableHead>
+                    <TableHead>{t("Alta", "Joined")}</TableHead>
+                    <TableHead className="text-right">{t("Acciones", "Actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -321,7 +321,7 @@ function AdminPage() {
                         <TableCell className="numeric text-muted-foreground">{fmtDate(u.created_at)}</TableCell>
                         <TableCell className="text-right">
                           <DeleteAction
-                            title={t("Borrar usuario", "Delete user")
+                            title={t("Borrar usuario", "Delete user")}
                             description={`Se eliminará la cuenta de ${u.email ?? u.id} y todos sus datos (perfil, gastos, estados de cuenta, suscripciones). Esta acción no se puede deshacer.`}
                             onConfirm={() =>
                               runDelete(() => adminDeleteUser({ data: { userId: u.id } }), t("Usuario eliminado", "User deleted"))
@@ -346,19 +346,19 @@ function AdminPage() {
         </TabsContent>
 
         <TabsContent value="subs" className="mt-4">
-          <Panel title={t("Suscripciones", "Subscriptions") description={`${subs.length} registros · MRR ${mrr} US$`}>
+          <Panel title={t("Suscripciones", "Subscriptions")} description={`${subs.length} registros · MRR ${mrr} US$`}>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{t(t("Usuario", "User"), "User")}</TableHead>
+                    <TableHead>{t("Usuario", "User")}</TableHead>
                     <TableHead>Plan</TableHead>
-                    <TableHead>{t(t("Estado", "Status"), "Status")}</TableHead>
-                    <TableHead>{t(t("Entorno", "Environment"), "Environment")}</TableHead>
-                    <TableHead>{t(t("Renueva", "Renews"), "Renews")}</TableHead>
-                    <TableHead>{t(t("Cancela al final", "Cancels at period end"), "Cancels at period end")}</TableHead>
-                    <TableHead>{t(t("Creada", "Created"), "Created")}</TableHead>
-                    <TableHead className="text-right">{t(t("Acciones", "Actions"), "Actions")}</TableHead>
+                    <TableHead>{t("Estado", "Status")}</TableHead>
+                    <TableHead>{t("Entorno", "Environment")}</TableHead>
+                    <TableHead>{t("Renueva", "Renews")}</TableHead>
+                    <TableHead>{t("Cancela al final", "Cancels at period end")}</TableHead>
+                    <TableHead>{t("Creada", "Created")}</TableHead>
+                    <TableHead className="text-right">{t("Acciones", "Actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -377,8 +377,8 @@ function AdminPage() {
                         <TableCell className="numeric text-muted-foreground">{fmtDate(s.created_at)}</TableCell>
                         <TableCell className="text-right">
                           <DeleteAction
-                            title={t("Borrar suscripción", "Delete subscription")
-                            description={t("Se eliminará este registro de suscripción y el usuario perderá el acceso asociado. No cancela el cobro en la pasarela de pago.", "This subscription record will be deleted and the user will lose the associated access. It does not cancel billing at the payment provider.")
+                            title={t("Borrar suscripción", "Delete subscription")}
+                            description={t("Se eliminará este registro de suscripción y el usuario perderá el acceso asociado. No cancela el cobro en la pasarela de pago.", "This subscription record will be deleted and the user will lose the associated access. It does not cancel billing at the payment provider.")}
                             onConfirm={() =>
                               runDelete(() => adminDeleteSubscription({ data: { id: s.id } }), t("Suscripción eliminada", "Subscription deleted"))
                             }
@@ -402,16 +402,16 @@ function AdminPage() {
         </TabsContent>
 
         <TabsContent value="statements" className="mt-4">
-          <Panel title={t("Estados de cuenta cargados", "Uploaded statements") description={`${stmts.length} archivos`}>
+          <Panel title={t("Estados de cuenta cargados", "Uploaded statements")} description={`${stmts.length} archivos`}>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{t(t("Usuario", "User"), "User")}</TableHead>
-                    <TableHead>{t(t("Archivo", "File"), "File")}</TableHead>
-                    <TableHead>{t(t("Estado", "Status"), "Status")}</TableHead>
-                    <TableHead>{t(t("Transacciones", "Transactions"), "Transactions")}</TableHead>
-                    <TableHead>{t(t("Fecha", "Date"), "Date")}</TableHead>
+                    <TableHead>{t("Usuario", "User")}</TableHead>
+                    <TableHead>{t("Archivo", "File")}</TableHead>
+                    <TableHead>{t("Estado", "Status")}</TableHead>
+                    <TableHead>{t("Transacciones", "Transactions")}</TableHead>
+                    <TableHead>{t("Fecha", "Date")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -443,17 +443,17 @@ function AdminPage() {
         </TabsContent>
 
         <TabsContent value="promos" className="mt-4 space-y-4">
-          <Panel title={t("Códigos de invitación", "Invite codes") description={t("Comparte el código para dar acceso Pro gratis", "Share the code to grant free Pro access")>
+          <Panel title={t("Códigos de invitación", "Invite codes")} description={t("Comparte el código para dar acceso Pro gratis", "Share the code to grant free Pro access")}>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{t(t("Código", "Code"), "Code")}</TableHead>
+                    <TableHead>{t("Código", "Code")}</TableHead>
                     <TableHead>Plan</TableHead>
-                    <TableHead>{t(t("Días", "Days"), "Days")}</TableHead>
-                    <TableHead>{t(t("Usos", "Uses"), "Uses")}</TableHead>
-                    <TableHead>{t(t("Estado", "Status"), "Status")}</TableHead>
-                    <TableHead className="text-right">{t(t("Acciones", "Actions"), "Actions")}</TableHead>
+                    <TableHead>{t("Días", "Days")}</TableHead>
+                    <TableHead>{t("Usos", "Uses")}</TableHead>
+                    <TableHead>{t("Estado", "Status")}</TableHead>
+                    <TableHead className="text-right">{t("Acciones", "Actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -468,7 +468,7 @@ function AdminPage() {
                       </TableCell>
                       <TableCell className="text-right">
                         <DeleteAction
-                          title={t("Borrar código", "Delete code")
+                          title={t("Borrar código", "Delete code")}
                           description={`Se eliminará el código ${c.code} y sus canjes registrados.`}
                           onConfirm={() =>
                             runDelete(() => adminDeletePromoCode({ data: { id: c.id } }), t("Código eliminado", "Code deleted"))
@@ -479,7 +479,7 @@ function AdminPage() {
                   ))}
                   {(promos.data?.codes ?? []).length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center text-muted-foreground">{t(t("Sin códigos", "No codes"), "No codes")}</TableCell>
+                      <TableCell colSpan={6} className="text-center text-muted-foreground">{t("Sin códigos", "No codes")}</TableCell>
                     </TableRow>
                   )}
                 </TableBody>
@@ -487,16 +487,16 @@ function AdminPage() {
             </div>
           </Panel>
 
-          <Panel title={t("Canjes", "Redemptions") description={`${promos.data?.redemptions.length ?? 0} canjes`}>
+          <Panel title={t("Canjes", "Redemptions")} description={`${promos.data?.redemptions.length ?? 0} canjes`}>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{t(t("Usuario", "User"), "User")}</TableHead>
-                    <TableHead>{t(t("Código", "Code"), "Code")}</TableHead>
-                    <TableHead>{t(t("Acceso hasta", "Access until"), "Access until")}</TableHead>
-                    <TableHead>{t(t("Fecha", "Date"), "Date")}</TableHead>
-                    <TableHead className="text-right">{t(t("Acciones", "Actions"), "Actions")}</TableHead>
+                    <TableHead>{t("Usuario", "User")}</TableHead>
+                    <TableHead>{t("Código", "Code")}</TableHead>
+                    <TableHead>{t("Acceso hasta", "Access until")}</TableHead>
+                    <TableHead>{t("Fecha", "Date")}</TableHead>
+                    <TableHead className="text-right">{t("Acciones", "Actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -510,8 +510,8 @@ function AdminPage() {
                         <TableCell className="numeric text-muted-foreground">{fmtDate(r.created_at)}</TableCell>
                         <TableCell className="text-right">
                           <DeleteAction
-                            title={t("Borrar canje", "Delete redemption")
-                            description={t("Se eliminará este canje. El usuario podrá volver a usar el código si sigue activo.", "This redemption will be deleted. The user can redeem the code again if it is still active.")
+                            title={t("Borrar canje", "Delete redemption")}
+                            description={t("Se eliminará este canje. El usuario podrá volver a usar el código si sigue activo.", "This redemption will be deleted. The user can redeem the code again if it is still active.")}
                             onConfirm={() =>
                               runDelete(() => adminDeletePromoRedemption({ data: { id: r.id } }), t("Canje eliminado", "Redemption deleted"))
                             }
@@ -522,7 +522,7 @@ function AdminPage() {
                   })}
                   {(promos.data?.redemptions ?? []).length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center text-muted-foreground">{t(t("Sin canjes", "No redemptions"), "No redemptions")}</TableCell>
+                      <TableCell colSpan={5} className="text-center text-muted-foreground">{t("Sin canjes", "No redemptions")}</TableCell>
                     </TableRow>
                   )}
 
