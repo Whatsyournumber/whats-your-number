@@ -242,7 +242,7 @@ function Dashboard() {
         
         <Panel title={t("Evolución de cuál tu número", "Evolution of your number")} description={t("Progreso hacia tu número para el retiro · últimos 12 meses", "Progress toward your retirement number · last 12 months")} className="lg:col-span-2">
           <ResponsiveContainer width="100%" height={280}>
-            <AreaChart data={months} margin={{ left: -12, right: 8, top: 8 }}>
+            <AreaChart data={months} margin={{ left: 4, right: 8, top: 8 }}>
               <defs>
                 <linearGradient id="nw" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="var(--color-chart-1)" stopOpacity={0.45} />
