@@ -1,7 +1,21 @@
 // Buscador de universidades: costes anuales indicativos (USD, tarifa internacional 2025).
 // tuition = matrícula anual media; living = coste de vida anual estimado; years = duración del grado.
 
-export type UniField = "business" | "engineering" | "health" | "arts" | "science" | "law";
+export type UniField =
+  | "business"
+  | "engineering"
+  | "health"
+  | "arts"
+  | "science"
+  | "law"
+  | "tech"
+  | "economics"
+  | "architecture"
+  | "media"
+  | "psychology"
+  | "education"
+  | "math"
+  | "sports";
 
 export type University = {
   id: string;
@@ -23,11 +37,47 @@ export type University = {
 export const FIELD_LABELS: Record<UniField, { es: string; en: string; emoji: string }> = {
   business: { es: "Negocios", en: "Business", emoji: "📈" },
   engineering: { es: "Ingeniería", en: "Engineering", emoji: "🛠️" },
-  health: { es: "Salud", en: "Health", emoji: "🩺" },
+  health: { es: "Salud y medicina", en: "Health & medicine", emoji: "🩺" },
   arts: { es: "Arte y diseño", en: "Arts & design", emoji: "🎨" },
   science: { es: "Ciencias", en: "Science", emoji: "🔬" },
   law: { es: "Derecho", en: "Law", emoji: "⚖️" },
+  tech: { es: "Informática y IA", en: "Computer science & AI", emoji: "💻" },
+  economics: { es: "Economía y finanzas", en: "Economics & finance", emoji: "💹" },
+  architecture: { es: "Arquitectura", en: "Architecture", emoji: "🏛️" },
+  media: { es: "Comunicación y medios", en: "Media & communication", emoji: "🎬" },
+  psychology: { es: "Psicología", en: "Psychology", emoji: "🧠" },
+  education: { es: "Educación", en: "Education", emoji: "📚" },
+  math: { es: "Matemáticas y datos", en: "Maths & data", emoji: "📐" },
+  sports: { es: "Deporte y nutrición", en: "Sports & nutrition", emoji: "🏅" },
 };
+
+/** Carreras derivadas que suelen ofrecerse junto a cada área base. */
+const DERIVED: Partial<Record<UniField, UniField[]>> = {
+  engineering: ["tech", "math", "architecture"],
+  business: ["economics", "media"],
+  health: ["psychology", "sports"],
+  arts: ["architecture", "media", "education"],
+  science: ["math", "tech", "psychology"],
+  law: ["economics", "education"],
+};
+
+function fieldHash(seed: string) {
+  let h = 0;
+  for (let i = 0; i < seed.length; i += 1) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  return h;
+}
+
+/** Áreas de estudio completas (base + derivadas estables) de una universidad. */
+export function uniFields(u: University): UniField[] {
+  const out = new Set<UniField>(u.fields);
+  for (const base of u.fields) {
+    for (const extra of DERIVED[base] ?? []) {
+      if (fieldHash(`${u.id}:${extra}`) % 3 !== 0) out.add(extra);
+    }
+  }
+  return Array.from(out);
+}
+
 
 export const UNI_REGION_LABELS: Record<University["region"], { es: string; en: string }> = {
   eu: { es: "Europa", en: "Europe" },
