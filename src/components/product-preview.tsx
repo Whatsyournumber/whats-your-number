@@ -634,6 +634,48 @@ export function ProductPreview() {
                   ))}
                 </div>
               </motion.div>
+            ) : active === "hipoteca" ? (
+              <motion.div
+                key="mortgage-summary"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.25 }}
+                className="rounded-2xl bg-elevated/60 p-5 ring-1 ring-border"
+              >
+                <p className="text-xs text-muted-foreground">
+                  {t("Simulador de hipoteca", "Mortgage simulator")}
+                </p>
+                <div className="mt-3 space-y-2">
+                  {[
+                    { label: t("Monto pendiente", "Outstanding balance"), value: "€160,000" },
+                    { label: t("Tasa · plazo", "Rate · term"), value: "5.5% · 20a" },
+                    { label: t("Pago mensual", "Monthly payment"), value: "€1,101" },
+                    { label: t("Libre de hipoteca", "Mortgage-free"), value: "oct 2037", accent: true },
+                  ].map((row) => (
+                    <div
+                      key={row.label}
+                      className="flex items-center justify-between rounded-lg bg-background/50 px-3 py-2 text-xs"
+                    >
+                      <span className="text-muted-foreground">{row.label}</span>
+                      <span
+                        className={cn(
+                          "numeric font-medium",
+                          row.accent ? "text-primary" : "text-foreground",
+                        )}
+                      >
+                        {row.value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-3 text-[11px] text-muted-foreground">
+                  {t(
+                    "Abonar €500/mes te libera 8 años y 10 meses antes.",
+                    "Paying €500/mo extra frees you 8 years 10 months earlier.",
+                  )}
+                </p>
+              </motion.div>
             ) : active === "whatsyournumber" ? (
               <motion.div
                 key="number-table"
