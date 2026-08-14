@@ -9,12 +9,14 @@ import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/s
 import { useAuth } from "@/hooks/use-auth";
 import { useT, LanguageToggle } from "@/hooks/use-language";
 
-export function SiteHeader() {
+export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" }) {
   const { user } = useAuth();
   const t = useT();
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
   const isKidsLanding = pathname === "/finanzas-para-ninos";
+  const isLight = variant === "light";
+
 
   const tabs = [
     { label: t("Cómo funciona", "How it works"), to: "/", hash: "funciones" },
