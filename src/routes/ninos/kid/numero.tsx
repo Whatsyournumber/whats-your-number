@@ -106,11 +106,11 @@ function MyNumber({ member }: { member: Member }) {
   const today = totals.gastar + totals.ahorrar + totals.crecer;
   const targetAge = Number(fund?.target_age ?? 18);
   const projection = projectFund(
-    Number(fund?.current_balance ?? 0) + totals.crecer,
+    Number(fund?.current_balance ?? 0) + today,
     Number(fund?.monthly_contribution ?? 0),
     member.age,
     targetAge,
-    Number(fund?.expected_return ?? 7),
+    Number(fund?.expected_return ?? 10),
   );
 
   const dreams = useMemo(() => {
