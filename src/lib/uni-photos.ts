@@ -101,7 +101,59 @@ import curatedGroningen from "@/assets/uni/nl-groningen.jpg";
 import curatedIcesi from "@/assets/uni/co-icesi.jpg";
 import curatedCattolica from "@/assets/uni/it-cattolica.jpg";
 
+import oc_uwa from "@/assets/uni/oc-uwa.jpg";
+import oc_adelaide from "@/assets/uni/oc-adelaide.jpg";
+import oc_uts from "@/assets/uni/oc-uts.jpg";
+import oc_macquarie from "@/assets/uni/oc-macquarie.jpg";
+import oc_rmit from "@/assets/uni/oc-rmit.jpg";
+import oc_qut from "@/assets/uni/oc-qut.jpg";
+import oc_curtin from "@/assets/uni/oc-curtin.jpg";
+import oc_deakin from "@/assets/uni/oc-deakin.jpg";
+import oc_uow from "@/assets/uni/oc-uow.jpg";
+import oc_newcastle from "@/assets/uni/oc-newcastle-au.jpg";
+import oc_griffith from "@/assets/uni/oc-griffith.jpg";
+import oc_latrobe from "@/assets/uni/oc-latrobe.jpg";
+import oc_tasmania from "@/assets/uni/oc-tasmania.jpg";
+import oc_swinburne from "@/assets/uni/oc-swinburne.jpg";
+import oc_flinders from "@/assets/uni/oc-flinders.jpg";
+import oc_murdoch from "@/assets/uni/oc-murdoch.jpg";
+import oc_jamescook from "@/assets/uni/oc-jamescook.jpg";
+import oc_westernsydney from "@/assets/uni/oc-westernsydney.jpg";
+import oc_canberra from "@/assets/uni/oc-canberra.jpg";
+import oc_southaustralia from "@/assets/uni/oc-southaustralia.jpg";
+import oc_bond from "@/assets/uni/oc-bond.jpg";
+import oc_acu from "@/assets/uni/oc-acu.jpg";
+import oc_charlesdarwin from "@/assets/uni/oc-charlesdarwin.jpg";
+import oc_edithcowan from "@/assets/uni/oc-edithcowan.jpg";
+import oc_victoriauni from "@/assets/uni/oc-victoriauni.jpg";
+import oc_cqu from "@/assets/uni/oc-cqu.jpg";
+import oc_federation from "@/assets/uni/oc-federation.jpg";
+import oc_southerncross from "@/assets/uni/oc-southerncross.jpg";
+import oc_sunshinecoast from "@/assets/uni/oc-sunshinecoast.jpg";
+import oc_newengland from "@/assets/uni/oc-newengland.jpg";
+import oc_charlessturt from "@/assets/uni/oc-charlessturt.jpg";
+import oc_notredameau from "@/assets/uni/oc-notredame-au.jpg";
+import oc_torrens from "@/assets/uni/oc-torrens.jpg";
+import oc_otago from "@/assets/uni/oc-otago.jpg";
+import oc_vicwellington from "@/assets/uni/oc-vicwellington.jpg";
+import oc_canterbury from "@/assets/uni/oc-canterbury.jpg";
+import oc_massey from "@/assets/uni/oc-massey.jpg";
+import oc_waikato from "@/assets/uni/oc-waikato.jpg";
+import oc_lincolnnz from "@/assets/uni/oc-lincoln-nz.jpg";
+import oc_aut from "@/assets/uni/oc-aut.jpg";
+import oc_uspfiji from "@/assets/uni/oc-usp-fiji.jpg";
+import oc_fijinational from "@/assets/uni/oc-fiji-national.jpg";
+import oc_png from "@/assets/uni/oc-png.jpg";
+import oc_samoa from "@/assets/uni/oc-samoa.jpg";
+import oc_divineword from "@/assets/uni/oc-divineword.jpg";
+import oc_eitnz from "@/assets/uni/oc-eit-nz.jpg";
+import oc_unitec from "@/assets/uni/oc-unitec.jpg";
+import oc_ara from "@/assets/uni/oc-ara-nz.jpg";
+import oc_otagopoly from "@/assets/uni/oc-otago-poly.jpg";
+import oc_wintec from "@/assets/uni/oc-wintec.jpg";
+
 import type { University } from "@/lib/universities";
+
 import { REAL_UNI_PHOTOS } from "@/lib/uni-photos-real";
 
 const POOLS: Record<University["region"], string[]> = {
@@ -589,7 +641,59 @@ const CURATED: Record<string, string> = {
   "us-uc-davis": cur_us_ucdavis,
   "us-uc-irvine": cur_us_ucirvine,
   "us-uc-santa-barbara": cur_us_ucsb,
+  // Oceanía: fotos de campus premium curadas
+  "oc-uwa": oc_uwa,
+  "oc-adelaide": oc_adelaide,
+  "oc-uts-sydney": oc_uts,
+  "oc-macquarie": oc_macquarie,
+  "oc-rmit": oc_rmit,
+  "oc-qut": oc_qut,
+  "oc-curtin": oc_curtin,
+  "oc-deakin": oc_deakin,
+  "oc-uow": oc_uow,
+  "oc-newcastle-au": oc_newcastle,
+  "oc-griffith": oc_griffith,
+  "oc-la-trobe": oc_latrobe,
+  "oc-uts-tasmania": oc_tasmania,
+  "oc-swinburne": oc_swinburne,
+  "oc-flinders": oc_flinders,
+  "oc-murdoch": oc_murdoch,
+  "oc-james-cook": oc_jamescook,
+  "oc-western-sydney": oc_westernsydney,
+  "oc-canberra": oc_canberra,
+  "oc-south-australia": oc_southaustralia,
+  "oc-bond": oc_bond,
+  "oc-acu": oc_acu,
+  "oc-charles-darwin": oc_charlesdarwin,
+  "oc-edith-cowan": oc_edithcowan,
+  "oc-victoria-university": oc_victoriauni,
+  "oc-central-queensland": oc_cqu,
+  "oc-federation": oc_federation,
+  "oc-southern-cross": oc_southerncross,
+  "oc-sunshine-coast": oc_sunshinecoast,
+  "oc-new-england-au": oc_newengland,
+  "oc-charles-sturt": oc_charlessturt,
+  "oc-notre-dame-au": oc_notredameau,
+  "oc-torrens": oc_torrens,
+  "oc-otago": oc_otago,
+  "oc-victoria-wellington": oc_vicwellington,
+  "oc-canterbury": oc_canterbury,
+  "oc-massey": oc_massey,
+  "oc-waikato": oc_waikato,
+  "oc-lincoln-nz": oc_lincolnnz,
+  "oc-aut": oc_aut,
+  "oc-usp-fiji": oc_uspfiji,
+  "oc-fiji-national": oc_fijinational,
+  "oc-papua-new-guinea": oc_png,
+  "oc-national-samoa": oc_samoa,
+  "oc-divine-word": oc_divineword,
+  "oc-eastern-institute-nz": oc_eitnz,
+  "oc-unitec-nz": oc_unitec,
+  "oc-ara-nz": oc_ara,
+  "oc-otago-polytechnic": oc_otagopoly,
+  "oc-wintec-nz": oc_wintec,
 };
+
 
 /** Foto de campus premium asignada de forma estable a cada universidad. */
 
