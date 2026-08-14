@@ -74,7 +74,7 @@ export function AppSidebar() {
     { title: "AI Advisor", url: "/advisor", icon: Bot },
     { title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserCog },
     { title: t("Suscripción", "Subscription"), url: "/suscripcion", icon: CreditCard },
-    { title: t("Afiliados", "Affiliates"), url: "/afiliados", icon: Handshake },
+    
     { title: t("Cargar EEFF", "Upload statements"), url: "/configuracion", icon: Settings },
   ] as const;
 
