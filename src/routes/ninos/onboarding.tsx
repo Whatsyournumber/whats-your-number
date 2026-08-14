@@ -10,7 +10,7 @@ import { useActiveProfile, useMembers, useSubscription } from "@/hooks/use-mfn";
 import { kidLimit } from "@/lib/mfn-plan";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
 import { CITIES, CURRENCIES, currencyForCity, currencyLabel } from "@/lib/mfn-currencies";
-import { FUND_GOALS, TASK_IDEAS, WISH_IDEAS, seedHoldings, type Member } from "@/lib/mfn";
+import { FUND_GOALS, TASK_IDEAS, WISH_IDEAS, seedHoldings, splitAmount, type Member } from "@/lib/mfn";
 
 export const Route = createFileRoute("/ninos/onboarding")({
   head: () => ({
@@ -57,6 +57,7 @@ function Onboarding() {
   const [wish, setWish] = useState(WISH_IDEAS[0]!);
   const [wishPrice, setWishPrice] = useState(WISH_IDEAS[0]!.price);
   const [initial, setInitial] = useState(1000);
+  const [savedNow, setSavedNow] = useState(0);
   const [monthly] = useState(50);
   const [targetAge, setTargetAge] = useState(18);
   const [expected, setExpected] = useState(10);
@@ -143,6 +144,27 @@ function Onboarding() {
         emoji: wish.emoji,
         price: wishPrice,
       });
+      if (savedNow > 0) {
+        const parts = splitAmount(savedNow, {
+          split_spend: split.spend,
+          split_save: split.save,
+          split_grow: split.grow,
+        });
+        const now = new Date().toISOString();
+        await supabase.from("kid_movements").insert(
+          (["gastar", "ahorrar", "crecer"] as const)
+            .filter((k) => parts[k] > 0)
+            .map((k) => ({
+              user_id,
+              member_id: member.id,
+              amount: parts[k],
+              pocket: k,
+              label: t("Ahorro inicial", "Starting savings"),
+              source: t("Ahorro previo", "Previous savings"),
+              occurred_at: now,
+            })),
+        );
+      }
       await supabase.from("kid_tasks").insert(
         TASK_IDEAS.slice(0, 4).map((task) => ({
           user_id,
@@ -379,6 +401,16 @@ function Onboarding() {
                     placeholder="0"
                     value={initial || ""}
                     onChange={(e) => setInitial(Number(e.target.value))}
+                  />
+                </Field>
+                <Field label={`${t("¿Cuánto dinero tiene ahorrado hasta ahora?", "How much money do they have saved so far?")} (${currency})`}>
+                  <input
+                    type="number"
+                    min={0}
+                    className={inputClass}
+                    placeholder="0"
+                    value={savedNow || ""}
+                    onChange={(e) => setSavedNow(Number(e.target.value))}
                   />
                 </Field>
                 <div className="grid gap-4 sm:grid-cols-2">
