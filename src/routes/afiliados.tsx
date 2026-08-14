@@ -104,27 +104,88 @@ function AffiliatesPage() {
   if (!user) {
     return (
       <PageShell>
-        <PageHeader
-          eyebrow={t("Programa de afiliados", "Affiliate program")}
-          title={t("Gana 30% recurrente recomendando WhatsYournumber", "Earn a recurring 30% recommending WhatsYournumber")}
-          subtitle={t(
-            "Únete gratis, comparte tu enlace y cobra una comisión cada mes por cada suscripción activa que traigas.",
-            "Join for free, share your link and get paid every month for every active subscription you bring.",
-          )}
-        />
-        <AffiliateExplainer />
+        <section className="relative overflow-hidden rounded-3xl border border-border/60 bg-elevated/30">
+          <div className="grid items-stretch gap-0 lg:grid-cols-2">
+            <div className="p-6 sm:p-10">
+              <Badge variant="outline" className="rounded-full border-primary/40 text-primary">
+                {t("Programa de afiliados", "Affiliate program")}
+              </Badge>
+              <h1 className="mt-4 font-display text-2xl font-semibold leading-tight tracking-tight sm:text-4xl">
+                {t("Gana 30% recurrente recomendando ", "Earn a recurring 30% recommending ")}
+                <span className="text-primary">WhatsYournumber</span>
+              </h1>
+              <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base">
+                {t(
+                  "Únete gratis, comparte tu enlace y cobra cada mes por cada suscripción activa que traigas. Además te regalamos el plan Pro 12 meses.",
+                  "Join for free, share your link and get paid every month for every active subscription you bring. Plus we gift you 12 months of Pro.",
+                )}
+              </p>
+
+              <div className="mt-5 grid gap-2 sm:grid-cols-3">
+                {[
+                  { icon: BadgePercent, label: t("30% recurrente", "30% recurring") },
+                  { icon: Sparkles, label: t("Plan Pro gratis", "Free Pro plan") },
+                  { icon: Users, label: t("Cookie 60 días", "60-day cookie") },
+                ].map(({ icon: Icon, label }) => (
+                  <div
+                    key={label}
+                    className="flex items-center gap-2 rounded-xl border border-border/60 bg-background/50 px-3 py-2 text-xs font-medium"
+                  >
+                    <Icon className="h-3.5 w-3.5 shrink-0 text-primary" />
+                    {label}
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 flex flex-wrap gap-2">
+                <Button asChild size="lg" className="rounded-full">
+                  <Link to="/auth" search={{ mode: "signup", next: "/afiliados" }}>
+                    {t("Registrarme como afiliado", "Sign up as an affiliate")}
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="rounded-full">
+                  <Link to="/auth" search={{ mode: "login", next: "/afiliados" }}>
+                    {t("Ya tengo cuenta", "I already have an account")}
+                  </Link>
+                </Button>
+              </div>
+              <p className="mt-3 text-xs text-muted-foreground">
+                {t("Gratis, sin tarjeta. Tu enlace queda listo en un minuto.", "Free, no card. Your link is ready in a minute.")}
+              </p>
+            </div>
+
+            <div className="relative min-h-[220px] lg:min-h-[420px]">
+              <img
+                src={affiliatesHero}
+                alt={t(
+                  "Dos personas sonriendo mientras revisan sus ganancias de afiliado",
+                  "Two people smiling while reviewing their affiliate earnings",
+                )}
+                width={1280}
+                height={960}
+                className="h-full w-full object-cover"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/35 to-transparent lg:bg-gradient-to-r lg:from-background lg:via-background/25 lg:to-transparent" />
+            </div>
+          </div>
+        </section>
+
+        <div className="mt-4">
+          <AffiliateExplainer />
+        </div>
+
         <Panel
           className="mt-4"
-          title={t("Únete al programa", "Join the program")}
+          title={t("¿Listo para empezar?", "Ready to start?")}
           description={t("Crea tu cuenta gratis y activa tu enlace en un minuto.", "Create your free account and activate your link in a minute.")}
         >
           <div className="flex flex-wrap gap-2">
-            <Button asChild>
+            <Button asChild className="rounded-full">
               <Link to="/auth" search={{ mode: "signup", next: "/afiliados" }}>
                 {t("Registrarme como afiliado", "Sign up as an affiliate")}
               </Link>
             </Button>
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" className="rounded-full">
               <Link to="/auth" search={{ mode: "login", next: "/afiliados" }}>
                 {t("Ya tengo cuenta", "I already have an account")}
               </Link>
