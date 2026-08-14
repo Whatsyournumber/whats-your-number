@@ -534,11 +534,3 @@ function Chip({
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl bg-secondary/50 px-3 py-3">
-      <p className="font-display text-lg font-bold text-foreground">{value}</p>
-      <p className="text-[10px] leading-tight text-muted-foreground">{label}</p>
-    </div>
-  );
-}
