@@ -46,7 +46,6 @@ import { Route as NinosKidDeseosRouteImport } from './routes/ninos/kid/deseos'
 import { Route as NinosKidDineroRouteImport } from './routes/ninos/kid/dinero'
 import { Route as NinosKidFuturoRouteImport } from './routes/ninos/kid/futuro'
 import { Route as NinosKidNumeroRouteImport } from './routes/ninos/kid/numero'
-import { Route as NinosKidSuscripcionRouteImport } from './routes/ninos/kid/suscripcion'
 import { Route as NinosKidTareasRouteImport } from './routes/ninos/kid/tareas'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
@@ -235,11 +234,6 @@ const NinosKidNumeroRoute = NinosKidNumeroRouteImport.update({
   path: '/ninos/kid/numero',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NinosKidSuscripcionRoute = NinosKidSuscripcionRouteImport.update({
-  id: '/ninos/kid/suscripcion',
-  path: '/ninos/kid/suscripcion',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const NinosKidTareasRoute = NinosKidTareasRouteImport.update({
   id: '/ninos/kid/tareas',
   path: '/ninos/kid/tareas',
@@ -290,7 +284,6 @@ export interface FileRoutesByFullPath {
   '/ninos/kid/dinero': typeof NinosKidDineroRoute
   '/ninos/kid/futuro': typeof NinosKidFuturoRoute
   '/ninos/kid/numero': typeof NinosKidNumeroRoute
-  '/ninos/kid/suscripcion': typeof NinosKidSuscripcionRoute
   '/ninos/kid/tareas': typeof NinosKidTareasRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
@@ -332,7 +325,6 @@ export interface FileRoutesByTo {
   '/ninos/kid/dinero': typeof NinosKidDineroRoute
   '/ninos/kid/futuro': typeof NinosKidFuturoRoute
   '/ninos/kid/numero': typeof NinosKidNumeroRoute
-  '/ninos/kid/suscripcion': typeof NinosKidSuscripcionRoute
   '/ninos/kid/tareas': typeof NinosKidTareasRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
@@ -375,7 +367,6 @@ export interface FileRoutesById {
   '/ninos/kid/dinero': typeof NinosKidDineroRoute
   '/ninos/kid/futuro': typeof NinosKidFuturoRoute
   '/ninos/kid/numero': typeof NinosKidNumeroRoute
-  '/ninos/kid/suscripcion': typeof NinosKidSuscripcionRoute
   '/ninos/kid/tareas': typeof NinosKidTareasRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
@@ -419,7 +410,6 @@ export interface FileRouteTypes {
     | '/ninos/kid/dinero'
     | '/ninos/kid/futuro'
     | '/ninos/kid/numero'
-    | '/ninos/kid/suscripcion'
     | '/ninos/kid/tareas'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -461,7 +451,6 @@ export interface FileRouteTypes {
     | '/ninos/kid/dinero'
     | '/ninos/kid/futuro'
     | '/ninos/kid/numero'
-    | '/ninos/kid/suscripcion'
     | '/ninos/kid/tareas'
     | '/api/public/payments/webhook'
   id:
@@ -503,7 +492,6 @@ export interface FileRouteTypes {
     | '/ninos/kid/dinero'
     | '/ninos/kid/futuro'
     | '/ninos/kid/numero'
-    | '/ninos/kid/suscripcion'
     | '/ninos/kid/tareas'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
@@ -546,7 +534,6 @@ export interface RootRouteChildren {
   NinosKidDineroRoute: typeof NinosKidDineroRoute
   NinosKidFuturoRoute: typeof NinosKidFuturoRoute
   NinosKidNumeroRoute: typeof NinosKidNumeroRoute
-  NinosKidSuscripcionRoute: typeof NinosKidSuscripcionRoute
   NinosKidTareasRoute: typeof NinosKidTareasRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
@@ -812,13 +799,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NinosKidNumeroRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/ninos/kid/suscripcion': {
-      id: '/ninos/kid/suscripcion'
-      path: '/ninos/kid/suscripcion'
-      fullPath: '/ninos/kid/suscripcion'
-      preLoaderRoute: typeof NinosKidSuscripcionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/ninos/kid/tareas': {
       id: '/ninos/kid/tareas'
       path: '/ninos/kid/tareas'
@@ -874,7 +854,6 @@ const rootRouteChildren: RootRouteChildren = {
   NinosKidDineroRoute: NinosKidDineroRoute,
   NinosKidFuturoRoute: NinosKidFuturoRoute,
   NinosKidNumeroRoute: NinosKidNumeroRoute,
-  NinosKidSuscripcionRoute: NinosKidSuscripcionRoute,
   NinosKidTareasRoute: NinosKidTareasRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }

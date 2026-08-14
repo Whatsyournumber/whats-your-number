@@ -282,3 +282,236 @@ input[type="number"] {
   -webkit-background-clip: text;
   color: transparent;
 }
+
+
+/* ───────── Zona infantil (My First Number) ───────── */
+/* Tema Niño — baby blue premium */
+[data-kid-theme="boy"] {
+  --background: oklch(0.945 0.035 232); /* baby blue */
+  --foreground: oklch(0.24 0.05 258);
+  --card: oklch(0.995 0.006 232 / 88%);
+  --card-foreground: oklch(0.24 0.05 258);
+  --primary: oklch(0.55 0.18 250);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.94 0.03 232);
+  --secondary-foreground: oklch(0.3 0.05 255);
+  --muted: oklch(0.955 0.025 232);
+  --muted-foreground: oklch(0.52 0.04 250);
+  --accent: oklch(0.88 0.06 225);
+  --accent-foreground: oklch(0.25 0.05 255);
+  --border: oklch(0.9 0.03 232);
+  --input: oklch(0.9 0.03 232);
+  --ring: oklch(0.55 0.18 250);
+  --chart-1: oklch(0.55 0.18 250);
+  --chart-2: oklch(0.7 0.14 233);
+  --chart-3: oklch(0.62 0.15 152);
+  --chart-4: oklch(0.8 0.07 250);
+  --surface: oklch(0.995 0.006 232 / 88%);
+  --surface-2: oklch(0.965 0.02 232);
+  --halo-1: oklch(0.82 0.1 232 / 55%);
+  --halo-2: oklch(0.9 0.07 200 / 45%);
+}
+
+/* Tema Niña — rosa premium */
+[data-kid-theme="girl"] {
+  --background: oklch(0.945 0.035 350); /* baby pink */
+  --foreground: oklch(0.26 0.05 340);
+  --card: oklch(0.995 0.006 350 / 88%);
+  --card-foreground: oklch(0.26 0.05 340);
+  --primary: oklch(0.63 0.2 355);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.94 0.03 350);
+  --secondary-foreground: oklch(0.32 0.05 345);
+  --muted: oklch(0.955 0.025 350);
+  --muted-foreground: oklch(0.54 0.05 345);
+  --accent: oklch(0.89 0.06 330);
+  --accent-foreground: oklch(0.27 0.05 340);
+  --border: oklch(0.9 0.03 350);
+  --input: oklch(0.9 0.03 350);
+  --ring: oklch(0.63 0.2 355);
+  --chart-1: oklch(0.63 0.22 355);
+  --chart-2: oklch(0.62 0.22 305);
+  --chart-3: oklch(0.62 0.15 152);
+  --chart-4: oklch(0.85 0.05 340);
+  --surface: oklch(0.995 0.006 350 / 88%);
+  --surface-2: oklch(0.965 0.02 350);
+  --halo-1: oklch(0.85 0.1 350 / 55%);
+  --halo-2: oklch(0.88 0.08 305 / 45%);
+}
+
+@utility card-soft {
+  background-color: var(--color-card);
+  background-image: linear-gradient(
+    160deg,
+    color-mix(in oklab, white 55%, transparent),
+    transparent 55%
+  );
+  backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid color-mix(in oklab, white 55%, var(--color-border));
+  border-radius: var(--radius-2xl);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, white 70%, transparent),
+    0 1px 2px oklch(0 0 0 / 4%),
+    0 18px 40px -26px color-mix(in oklab, var(--color-primary) 45%, oklch(0 0 0 / 30%));
+}
+
+
+@utility glow-primary {
+  box-shadow: 0 14px 34px -18px color-mix(in oklab, var(--color-primary) 70%, transparent);
+}
+
+@utility tap {
+  transition:
+    transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.18s ease;
+}
+
+@utility tap-active {
+  transform: translateY(-2px);
+}
+
+@keyframes coin-fly {
+  0% {
+    transform: translateY(6px) scale(0.85);
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-34px) scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes grow-tree {
+  from {
+    transform: scale(0.9);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@utility animate-coin {
+  animation: coin-fly 1.4s ease-out infinite;
+}
+
+@utility animate-rise {
+  animation: rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@utility animate-tree {
+  animation: grow-tree 2.6s ease-in-out infinite alternate;
+}
+
+/* ——— Look & feel kids: navegación y detalles juguetones ——— */
+@utility nav-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: var(--radius-2xl);
+  padding: 0.6rem 0.75rem;
+  font-weight: 600;
+  color: var(--color-muted-foreground);
+  border: 1px solid transparent;
+  transition:
+    transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1),
+    background-color 0.18s ease,
+    color 0.18s ease,
+    box-shadow 0.18s ease;
+
+  &:hover {
+    transform: translateX(2px);
+    color: var(--color-foreground);
+    background-color: color-mix(in oklab, var(--color-primary) 8%, transparent);
+  }
+}
+
+@utility nav-pill-active {
+  color: var(--color-primary-foreground);
+  background-image: linear-gradient(
+    135deg,
+    var(--color-primary),
+    color-mix(in oklab, var(--color-primary) 55%, var(--color-accent))
+  );
+  border-color: color-mix(in oklab, white 45%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, white 55%, transparent),
+    0 12px 26px -16px color-mix(in oklab, var(--color-primary) 85%, transparent);
+
+  &:hover {
+    color: var(--color-primary-foreground);
+    background-color: transparent;
+  }
+}
+
+@utility nav-icon {
+  display: grid;
+  place-items: center;
+  height: 2rem;
+  width: 2rem;
+  flex-shrink: 0;
+  border-radius: 0.85rem;
+  background-color: color-mix(in oklab, var(--color-primary) 12%, transparent);
+  color: var(--color-primary);
+}
+
+@utility nav-icon-active {
+  background-color: color-mix(in oklab, white 30%, transparent);
+  color: var(--color-primary-foreground);
+}
+
+@utility glass-nav {
+  background-color: color-mix(in oklab, var(--color-card) 85%, transparent);
+  backdrop-filter: blur(18px) saturate(150%);
+  border-color: color-mix(in oklab, white 45%, var(--color-border));
+}
+
+@utility text-gradient {
+  background-image: linear-gradient(
+    120deg,
+    var(--color-primary),
+    color-mix(in oklab, var(--color-accent) 70%, var(--color-primary))
+  );
+  background-clip: text;
+  color: transparent;
+}
+
+@utility avatar-ring {
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--color-primary) 25%, white),
+    color-mix(in oklab, var(--color-accent) 45%, white)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, white 80%, transparent),
+    0 10px 24px -16px color-mix(in oklab, var(--color-primary) 80%, transparent);
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.92);
+  }
+  60% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@utility animate-pop {
+  animation: pop 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}

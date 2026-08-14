@@ -10,7 +10,6 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   SlidersHorizontal,
-  CreditCard,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { THEME_ATTR, type Member } from "@/lib/mfn";
@@ -28,7 +27,6 @@ const TABS = [
 
 const BOTTOM_TABS = [
   { to: "/ninos/kid/datos", label: "Mis Datos", labelEn: "My Data", icon: SlidersHorizontal },
-  { to: "/ninos/kid/suscripcion", label: "Suscripción", labelEn: "Subscription", icon: CreditCard },
 ] as const;
 
 
