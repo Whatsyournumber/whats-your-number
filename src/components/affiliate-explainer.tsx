@@ -1,4 +1,4 @@
-import { Link2, Users, Wallet, BadgePercent } from "lucide-react";
+import { Link2, Users, Wallet, BadgePercent, Sparkles } from "lucide-react";
 
 import { Panel } from "@/components/page";
 import { useT } from "@/hooks/use-language";
