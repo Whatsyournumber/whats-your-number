@@ -2,8 +2,8 @@ import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { LineChart, Lock, Plus, Settings } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { Button, Card, Field, inputClass } from "@/components/mfn-ui";
-import { useActiveProfile, useCreateParent, useMembers, useSubscription } from "@/hooks/use-mfn";
+import { Button } from "@/components/mfn-ui";
+import { useActiveProfile, useMembers, useSubscription } from "@/hooks/use-mfn";
 import { THEME_ATTR, type Member } from "@/lib/mfn";
 import { activePlan, kidLimit, planLabel } from "@/lib/mfn-plan";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
@@ -32,16 +32,12 @@ export const Route = createFileRoute("/ninos/")({
   component: ProfileSelector,
 });
 
-const AVATARS = ["🦊", "🐼", "🦄", "🐯", "🐨", "🦁", "🐙", "🐧"];
-
 function ProfileSelector() {
   const router = useRouter();
   const { data: members = [], isLoading } = useMembers();
   const { data: subscription } = useSubscription();
   const { select } = useActiveProfile();
-  const createParent = useCreateParent();
   const { t, lang } = useI18n();
-  const [parentName, setParentName] = useState("");
   const [manage, setManage] = useState(false);
 
   const plan = activePlan(subscription);
