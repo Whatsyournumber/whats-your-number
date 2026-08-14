@@ -409,7 +409,7 @@ function Onboarding() {
             </Buddy>
             <Card
               title={t("Reparto automático", "Automatic split")}
-              hint={`${t("Gastar", "Spend")} ${split.spend}% · ${t("Ahorrar", "Save")} ${split.save}% · ${t("Crecer", "Grow")} ${split.grow}%`}
+              hint={`${t("Invertir", "Invest")} ${split.grow}% · ${t("Ahorrar", "Save")} ${split.save}% · ${t("Gastar", "Spend")} ${split.spend}%`}
             >
               <div className="space-y-5">
                 {(() => {
