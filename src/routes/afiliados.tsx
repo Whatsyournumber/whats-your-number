@@ -18,8 +18,11 @@ import { AffiliateLanding } from "@/components/affiliate-landing";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
-import { joinAffiliateProgram, updateMyAffiliate } from "@/utils/affiliates.functions";
+import { claimReferralReward, joinAffiliateProgram, updateMyAffiliate } from "@/utils/affiliates.functions";
 import { getPaddleEnvironment } from "@/lib/paddle";
+
+const REFERRAL_GOAL = 3;
+
 
 export const Route = createFileRoute("/afiliados")({
   ssr: false,
@@ -54,6 +57,22 @@ function AffiliatesPage() {
 
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const link = affiliate ? `${origin}/?ref=${affiliate.code}` : "";
+  const referralsToGo = Math.max(0, REFERRAL_GOAL - referrals.length);
+
+  const claimReward = async () => {
+    setBusy(true);
+    try {
+      const res = await claimReferralReward({ data: { environment: getPaddleEnvironment() } });
+      await qc.invalidateQueries({ queryKey: ["subscription"] });
+      if (res.unlocked) toast.success(t("¡Plan Pro gratis activado!", "Free Pro plan activated!"));
+      else toast.info(t("Aún no llegas a 3 registros.", "You haven't reached 3 sign-ups yet."));
+    } catch {
+      toast.error(t("No pudimos activar tu plan.", "We couldn't activate your plan."));
+    } finally {
+      setBusy(false);
+    }
+  };
+
 
   const join = async () => {
     setBusy(true);
@@ -68,7 +87,7 @@ function AffiliatesPage() {
       await qc.invalidateQueries({ queryKey: ["affiliate"] });
       await qc.invalidateQueries({ queryKey: ["subscription"] });
       toast.success(
-        t("¡Ya eres afiliado! Tu enlace está listo y tu plan Pro activado.", "You're an affiliate! Your link is ready and your Pro plan is active."),
+        t("¡Ya eres afiliado! Comparte tu enlace con 3 amigos y tu plan Pro es gratis.", "You're an affiliate! Share your link with 3 friends and your Pro plan is free."),
       );
     } catch {
       toast.error(t("No pudimos crear tu cuenta de afiliado.", "We couldn't create your affiliate account."));
@@ -133,10 +152,10 @@ function AffiliatesPage() {
         <AffiliateExplainer />
         <Panel
           className="mt-4"
-          title={t("Activa tu enlace y tu Pro gratis", "Activate your link and free Pro")}
+          title={t("Activa tu enlace y consigue Pro gratis", "Activate your link and get free Pro")}
           description={t(
-            "Toma menos de un minuto, es gratis e incluye 12 meses del plan Pro.",
-            "It takes less than a minute, it's free and includes 12 months of the Pro plan.",
+            "Toma menos de un minuto. Cuando 3 amigos se registren con tu enlace, te regalamos 12 meses del plan Pro.",
+            "It takes less than a minute. When 3 friends sign up with your link, we gift you 12 months of the Pro plan.",
           )}
         >
           <div className="grid gap-3 sm:max-w-md">
@@ -182,13 +201,53 @@ function AffiliatesPage() {
             </Badge>
           )}
         </p>
-        <p className="mt-2 text-xs text-muted-foreground">
-          {t(
-            "Como afiliado tienes el plan Pro incluido durante 12 meses para usar y demostrar el producto.",
-            "As an affiliate you get the Pro plan included for 12 months to use and demo the product.",
-          )}
-        </p>
       </Panel>
+
+      <Panel
+        className="mt-4"
+        title={t("Comparte con 3 amigos = Pro gratis", "Share with 3 friends = free Pro")}
+        description={t(
+          "Cuando 3 personas se registren con tu enlace, activamos tu plan Pro gratis durante 12 meses.",
+          "Once 3 people sign up with your link, we activate your Pro plan free for 12 months.",
+        )}
+      >
+        <div className="flex flex-wrap items-center gap-3">
+          {[0, 1, 2].map((i) => (
+            <span
+              key={i}
+              className={`inline-flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold ${
+                referrals.length > i
+                  ? "border-primary/50 bg-primary/15 text-primary"
+                  : "border-border bg-elevated/40 text-muted-foreground"
+              }`}
+            >
+              {referrals.length > i ? <Check className="h-4 w-4" /> : i + 1}
+            </span>
+          ))}
+          <span className="text-sm text-muted-foreground">
+            {referralsToGo > 0
+              ? t(
+                  `Te faltan ${referralsToGo} amigo${referralsToGo === 1 ? "" : "s"} para tu Pro gratis.`,
+                  `${referralsToGo} more friend${referralsToGo === 1 ? "" : "s"} to unlock your free Pro.`,
+                )
+              : t("¡Desbloqueado! Tu plan Pro gratis está activo.", "Unlocked! Your free Pro plan is active.")}
+          </span>
+          {referralsToGo === 0 && (
+            <Button variant="outline" size="sm" disabled={busy} onClick={() => void claimReward()}>
+              {busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+              {t("Activar mi Pro gratis", "Activate my free Pro")}
+            </Button>
+          )}
+        </div>
+        <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-elevated">
+          <div
+            className="h-full rounded-full bg-primary transition-all"
+            style={{ width: `${Math.min(100, (referrals.length / REFERRAL_GOAL) * 100)}%` }}
+          />
+        </div>
+      </Panel>
+
+
 
 
 

@@ -1,7 +1,14 @@
 import { createServerFn } from "@tanstack/react-start";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { assertSuperAdmin, grantAffiliateProPlan, randomCode, slugifyCode } from "@/lib/affiliates.server";
+import {
+  assertSuperAdmin,
+  maybeGrantReferralReward,
+  randomCode,
+  slugifyCode,
+  REFERRALS_FOR_FREE_PRO,
+} from "@/lib/affiliates.server";
+
 
 /** Public: records a visit coming from an affiliate link. */
 export const trackAffiliateClick = createServerFn({ method: "POST" })
@@ -40,9 +47,10 @@ export const joinAffiliateProgram = createServerFn({ method: "POST" })
       .eq("user_id", context.userId)
       .maybeSingle();
     if (existing) {
-      await grantAffiliateProPlan(supabaseAdmin, context.userId, environment);
-      return { ok: true, code: existing.code as string };
+      const reward = await maybeGrantReferralReward(supabaseAdmin, existing.id as string, environment);
+      return { ok: true, code: existing.code as string, ...reward };
     }
+
 
     const base = slugifyCode(data.displayName ?? "") || "WYN";
     let code = "";
@@ -63,16 +71,19 @@ export const joinAffiliateProgram = createServerFn({ method: "POST" })
       payout_email: data.payoutEmail ?? null,
     });
     if (error) throw new Error(error.message);
-    await grantAffiliateProPlan(supabaseAdmin, context.userId, environment);
-    return { ok: true, code, proGranted: true };
+    return { ok: true, code, unlocked: false, referrals: 0, goal: REFERRALS_FOR_FREE_PRO };
+
   });
 
 /** Links the signed-in user to the affiliate whose link they arrived with. */
 export const attachAffiliateReferral = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { code: string }) => {
+  .inputValidator((data: { code: string; environment?: "sandbox" | "live" }) => {
     if (!data?.code) throw new Error("code required");
-    return { code: data.code.trim().toUpperCase().slice(0, 24) };
+    return {
+      code: data.code.trim().toUpperCase().slice(0, 24),
+      environment: data.environment === "live" ? ("live" as const) : ("sandbox" as const),
+    };
   })
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -98,8 +109,30 @@ export const attachAffiliateReferral = createServerFn({ method: "POST" })
       code: data.code,
     });
     if (error) throw new Error(error.message);
+
+    // 3 amigos registrados con tu enlace = plan Pro gratis para quien comparte.
+    await maybeGrantReferralReward(supabaseAdmin, affiliate.id as string, data.environment);
     return { ok: true };
   });
+
+/** Checks the signed-in affiliate's referral progress and unlocks free Pro at 3 sign-ups. */
+export const claimReferralReward = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data?: { environment?: "sandbox" | "live" }) => ({
+    environment: data?.environment === "live" ? ("live" as const) : ("sandbox" as const),
+  }))
+  .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: affiliate } = await supabaseAdmin
+      .from("affiliates")
+      .select("id")
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    if (!affiliate) return { ok: false, unlocked: false, referrals: 0, goal: REFERRALS_FOR_FREE_PRO };
+    const reward = await maybeGrantReferralReward(supabaseAdmin, affiliate.id as string, data.environment);
+    return { ok: true, ...reward, goal: REFERRALS_FOR_FREE_PRO };
+  });
+
 
 /** Updates the payout details of the signed-in affiliate. */
 export const updateMyAffiliate = createServerFn({ method: "POST" })
