@@ -86,3 +86,14 @@ export async function recordAffiliateCommission(
     { onConflict: "paddle_subscription_id,period_start", ignoreDuplicates: true },
   );
 }
+
+export async function assertSuperAdmin(supabase: any, userId: string) {
+  const { data, error } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .eq("role", "super_admin")
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) throw new Error("Forbidden: super admin only");
+}
