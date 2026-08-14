@@ -504,7 +504,7 @@ function CollegeFinder({ member }: { member: Member }) {
               key={u.id}
               className="group overflow-hidden rounded-3xl border border-border/70 bg-card shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
-              <div className="relative h-36 overflow-hidden bg-secondary">
+              <div className="relative h-44 overflow-hidden bg-secondary">
                 <img
                   src={uniPhoto(u)}
                   alt={`${u.name} — ${u.city}`}
@@ -517,9 +517,9 @@ function CollegeFinder({ member }: { member: Member }) {
                     const fb = uniPhotoFallback(u);
                     if (img.src !== fb) img.src = fb;
                   }}
-                  className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  className="absolute inset-0 h-full w-full object-cover object-center brightness-[1.06] contrast-[1.05] saturate-[1.1] transition duration-700 group-hover:scale-[1.08]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/85 via-background/10 to-background/20" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/25 to-transparent" />
                 <span className="absolute left-3 top-3 grid h-8 w-8 place-items-center rounded-xl bg-background/80 text-lg backdrop-blur">
                   {u.flag}
                 </span>
