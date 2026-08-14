@@ -30,6 +30,22 @@ import curatedUfrgs from "@/assets/uni/br-ufrgs.jpg";
 import curatedUanl from "@/assets/uni/mx-uanl.jpg";
 import curatedUtp from "@/assets/uni/pa-utp.jpg";
 import curatedUcr from "@/assets/uni/cr-ucr.jpg";
+import curatedGuadalajara from "@/assets/uni/mx-guadalajara.jpg";
+import curatedAixMarseille from "@/assets/uni/fr-aix-marseille.jpg";
+import curatedGrenoble from "@/assets/uni/fr-grenoble.jpg";
+import curatedSalamanca from "@/assets/uni/es-salamanca.jpg";
+import curatedComplutense from "@/assets/uni/es-complutense.jpg";
+import curatedAutonomaMadrid from "@/assets/uni/es-autonoma-madrid.jpg";
+import curatedUb from "@/assets/uni/es-ub.jpg";
+import curatedUab from "@/assets/uni/es-uab.jpg";
+import curatedUc3m from "@/assets/uni/es-uc3m.jpg";
+import curatedUpv from "@/assets/uni/es-upv.jpg";
+import curatedEsade from "@/assets/uni/es-esade.jpg";
+import curatedIe from "@/assets/uni/es-ie.jpg";
+import curatedGranada from "@/assets/uni/es-granada.jpg";
+import curatedBelgrano from "@/assets/uni/ar-belgrano.jpg";
+import curatedPucRio from "@/assets/uni/br-puc-rio.jpg";
+import curatedUcu from "@/assets/uni/uy-ucu.jpg";
 
 import type { University } from "@/lib/universities";
 import { REAL_UNI_PHOTOS } from "@/lib/uni-photos-real";
@@ -74,6 +90,22 @@ const CURATED: Record<string, string> = {
   "mx-uanl": curatedUanl,
   "lat-universidad-tecnologica-de-p": curatedUtp,
   "lat-universidad-de-costa-rica": curatedUcr,
+  "mx-universidad-de-guadalajara": curatedGuadalajara,
+  "fr-aix-marseille-universite": curatedAixMarseille,
+  "fr-universite-grenoble-alpes": curatedGrenoble,
+  "es-universidad-de-salamanca": curatedSalamanca,
+  "es-universidad-complutense": curatedComplutense,
+  "es-universidad-autonoma-de-madr": curatedAutonomaMadrid,
+  "es-universitat-de-barcelona": curatedUb,
+  "es-universitat-autonoma-de-barc": curatedUab,
+  "es-universidad-carlos-iii": curatedUc3m,
+  "es-universitat-politecnica-de-v": curatedUpv,
+  "es-esade": curatedEsade,
+  "es-ie-university": curatedIe,
+  "es-universidad-de-granada": curatedGranada,
+  "ar-universidad-de-belgrano": curatedBelgrano,
+  "br-puc-rio": curatedPucRio,
+  "lat-universidad-catolica-del-uru": curatedUcu,
 };
 
 /** Foto de campus premium asignada de forma estable a cada universidad. */
