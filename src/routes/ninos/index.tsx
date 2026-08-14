@@ -55,6 +55,21 @@ function ProfileSelector() {
   const parents = members.filter((m) => m.role === "parent");
   const kids = members.filter((m) => m.role === "child");
 
+  async function openAdult() {
+    const { data: auth } = await supabase.auth.getUser();
+    const uid = auth.user?.id;
+    if (!uid) {
+      router.navigate({ to: "/auth", search: { mode: "login" } });
+      return;
+    }
+    const { data: row } = await supabase
+      .from("onboarding_profiles")
+      .select("completed")
+      .eq("user_id", uid)
+      .maybeSingle();
+    router.navigate({ to: row?.completed ? "/dashboard" : "/onboarding" });
+  }
+
   function open(member: Member) {
     select(member.id);
     if (member.role === "parent") router.navigate({ to: "/ninos/padres" });
