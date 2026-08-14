@@ -234,9 +234,10 @@ function Landing() {
   ];
 
   const panelChips = [
-    t("Tu hipoteca", "Your mortgage"),
-    t("Análisis de gasto", "Spending analysis"),
     t("Portafolio en vivo", "Live portfolio"),
+    t("Análisis de gasto", "Spending analysis"),
+    t("Tu hipoteca", "Your mortgage"),
+
     t("Cash flow 40/40/20", "40/40/20 cash flow"),
     "Life Planner",
     t("Your next city", "Your next city"),
