@@ -482,64 +482,141 @@ function CollegeFinder({ member }: { member: Member }) {
       </section>
 
       {/* Filtros */}
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        {(
-          [
-            ["afford", t(`Puede pagar (${counts.afford})`, `Affordable (${counts.afford})`)],
-            ["close", t(`Casi llega (${counts.close})`, `Almost there (${counts.close})`)],
-            ["all", t(`Todas (${counts.all})`, `All (${counts.all})`)],
-          ] as const
-        ).map(([k, label]) => (
+      <div className="mb-4 rounded-[28px] border border-border/70 bg-card p-3 shadow-sm sm:p-4">
+        {/* Continentes */}
+        <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <button
-            key={k}
             type="button"
-            onClick={() => setTab(k)}
+            onClick={() => {
+              setContinent(null);
+              setBucket(null);
+              setCountry("");
+            }}
             className={cn(
-              "rounded-full border px-4 py-2 text-xs font-bold transition",
-              tab === k
+              "shrink-0 rounded-2xl border px-3.5 py-2 text-xs font-bold transition",
+              !continent
                 ? "border-primary bg-primary text-primary-foreground"
-                : "border-border/70 bg-card text-muted-foreground hover:text-foreground",
+                : "border-border/70 bg-background/50 text-muted-foreground hover:text-foreground",
             )}
           >
-            {label}
+            {t("Todo el mundo", "Worldwide")}
           </button>
-        ))}
-
-        <div className="ml-auto flex flex-wrap items-center gap-2">
-          <CountryCombobox
-            value={country}
-            onChange={setCountry}
-            options={countries}
-            placeholder={t("Buscar país", "Search country")}
-          />
-
-          <Select
-            value={field}
-            onChange={(v) => setField(v as UniField | "")}
-            placeholder={t("Carrera", "Field")}
-          >
-            {FIELDS.map((f) => (
-              <option key={f} value={f}>
-                {FIELD_LABELS[f][lang === "en" ? "en" : "es"]}
-              </option>
-            ))}
-          </Select>
-          <Select value={rankMax} onChange={setRankMax} placeholder={t("Ranking", "Ranking")}>
-            <option value="100">Top 100</option>
-            <option value="300">Top 300</option>
-            <option value="500">Top 500</option>
-          </Select>
-          <Select
-            value={sort}
-            onChange={(v) => setSort(v as "cost" | "rank")}
-            placeholder={t("Coste total", "Total cost")}
-            clearable={false}
-          >
-            <option value="cost">{t("Coste total", "Total cost")}</option>
-            <option value="rank">{t("Mejor ranking", "Best ranking")}</option>
-          </Select>
+          {continentTabs.map((c) => {
+            const active = continent === c.key;
+            return (
+              <button
+                key={c.key}
+                type="button"
+                onClick={() => {
+                  setContinent(active ? null : c.key);
+                  setBucket(null);
+                  setCountry("");
+                }}
+                className={cn(
+                  "flex shrink-0 items-center gap-2 rounded-2xl border px-3.5 py-2 text-xs font-bold transition hover:-translate-y-0.5",
+                  active
+                    ? "border-primary bg-primary/[0.09] text-foreground"
+                    : "border-border/70 bg-background/50 text-muted-foreground hover:text-foreground",
+                )}
+              >
+                <span className="text-base leading-none">{c.flag}</span>
+                <span className="whitespace-nowrap">{c.label}</span>
+                <span
+                  className={cn(
+                    "rounded-full px-1.5 py-0.5 text-[10px] font-black",
+                    active ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground",
+                  )}
+                >
+                  {c.afford}
+                </span>
+              </button>
+            );
+          })}
         </div>
+
+        <div className="my-3 h-px bg-border/60" />
+
+        <div className="flex flex-wrap items-center gap-2">
+          {(
+            [
+              ["afford", t(`Puede pagar (${counts.afford})`, `Affordable (${counts.afford})`)],
+              ["close", t(`Casi llega (${counts.close})`, `Almost there (${counts.close})`)],
+              ["all", t(`Todas (${counts.all})`, `All (${counts.all})`)],
+            ] as const
+          ).map(([k, label]) => (
+            <button
+              key={k}
+              type="button"
+              onClick={() => setTab(k)}
+              className={cn(
+                "rounded-full border px-4 py-2 text-xs font-bold transition",
+                tab === k
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border/70 bg-background/50 text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {label}
+            </button>
+          ))}
+
+          <div className="ml-auto flex flex-wrap items-center gap-2">
+            <CountryCombobox
+              value={country}
+              onChange={setCountry}
+              options={countries}
+              placeholder={t("Buscar país", "Search country")}
+            />
+
+            <Select
+              value={field}
+              onChange={(v) => setField(v as UniField | "")}
+              placeholder={t("Carrera", "Field")}
+            >
+              {FIELDS.map((f) => (
+                <option key={f} value={f}>
+                  {FIELD_LABELS[f][lang === "en" ? "en" : "es"]}
+                </option>
+              ))}
+            </Select>
+            <Select value={rankMax} onChange={setRankMax} placeholder={t("Ranking", "Ranking")}>
+              <option value="100">Top 100</option>
+              <option value="300">Top 300</option>
+              <option value="500">Top 500</option>
+            </Select>
+            <Select
+              value={sort}
+              onChange={(v) => setSort(v as "cost" | "rank")}
+              placeholder={t("Coste total", "Total cost")}
+              clearable={false}
+            >
+              <option value="cost">{t("Coste total", "Total cost")}</option>
+              <option value="rank">{t("Mejor ranking", "Best ranking")}</option>
+            </Select>
+          </div>
+        </div>
+
+        {(continent || country || field || rankMax || bucket) ? (
+          <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border/60 pt-3">
+            <span className="text-[11px] font-semibold text-muted-foreground">
+              {t(`${list.length} resultados`, `${list.length} results`)}
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                setContinent(null);
+                setBucket(null);
+                setCountry("");
+                setField("");
+                setRankMax("");
+              }}
+              className="inline-flex items-center gap-1 rounded-full border border-border/70 px-2.5 py-1 text-[11px] font-bold text-muted-foreground transition hover:text-foreground"
+            >
+              <X className="h-3 w-3" /> {t("Limpiar filtros", "Clear filters")}
+            </button>
+          </div>
+        ) : null}
       </div>
+
 
       {/* Resultados */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
