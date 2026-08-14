@@ -537,7 +537,7 @@ export function MortgageModule() {
       <div className="grid gap-4 lg:grid-cols-5">
         <Panel
           variant="minimal"
-          className="lg:col-span-3"
+          className="min-w-0 lg:col-span-3"
           title={t("¿Qué deberías hacer?", "What should you do?")}
           description={t("Hemos comparado las mejores estrategias para ti.", "We compared the best strategies for you.")}
         >
@@ -549,7 +549,7 @@ export function MortgageModule() {
               )}
             </div>
           ) : (
-            <div className="-mx-1 overflow-x-auto px-1">
+            <div className="no-scrollbar -mx-1 w-full max-w-full overflow-x-auto px-1">
               <table className="w-full min-w-[680px] text-sm">
                 <thead>
                   <tr className="text-left text-xs text-muted-foreground">
