@@ -40,7 +40,8 @@ export const Route = createFileRoute("/ninos/onboarding")({
   component: Onboarding,
 });
 
-const AVATARS = ["🦊", "🐼", "🦄", "🐯", "🐨", "🦁", "🐙", "🐧", "🐸", "🐷"];
+const AVATARS_BOY = ["🦊", "🐼", "🐯", "🐨", "🦁", "🐙", "🐧", "🐸", "🐲", "🦖"];
+const AVATARS_GIRL = ["🦄", "🐰", "🐱", "🦢", "🦋", "🐞", "🐝", "🦩", "🐬", "🦜"];
 const STEPS = [0, 1, 2, 3, 4, 5, 6];
 
 function Onboarding() {
@@ -54,8 +55,8 @@ function Onboarding() {
 
   const [name, setName] = useState("");
   const [age, setAge] = useState(0);
-  const [avatar, setAvatar] = useState("🦊");
   const [theme, setTheme] = useState<"boy" | "girl">("boy");
+  const [avatar, setAvatar] = useState("🦊");
   const [city, setCity] = useState("");
   const [currency, setCurrency] = useState("EUR");
   const [allowance, setAllowance] = useState(10);
@@ -241,7 +242,7 @@ function Onboarding() {
                 {t("Avatar", "Avatar")}
               </p>
               <div className="mt-2 flex flex-wrap gap-2">
-                {AVATARS.map((a) => (
+                {(theme === "girl" ? AVATARS_GIRL : AVATARS_BOY).map((a) => (
                   <button
                     key={a}
                     onClick={() => setAvatar(a)}
@@ -260,7 +261,10 @@ function Onboarding() {
                 {(["boy", "girl"] as const).map((option) => (
                   <button
                     key={option}
-                    onClick={() => setTheme(option)}
+                    onClick={() => {
+                      setTheme(option);
+                      setAvatar((option === "girl" ? AVATARS_GIRL : AVATARS_BOY)[0]!);
+                    }}
                     className={`rounded-2xl border p-4 text-left text-sm font-semibold ${
                       theme === option
                         ? "border-primary bg-primary/10 text-primary"
