@@ -97,3 +97,42 @@ export async function assertSuperAdmin(supabase: any, userId: string) {
   if (error) throw new Error(error.message);
   if (!data) throw new Error("Forbidden: super admin only");
 }
+
+/** Grants a complimentary Pro plan to an affiliate so they can demo/sell the product. */
+export async function grantAffiliateProPlan(admin: any, userId: string, environment: string) {
+  const { data: existing } = await admin
+    .from("subscriptions")
+    .select("id,product_id,status,current_period_end")
+    .eq("user_id", userId)
+    .eq("environment", environment)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const until = new Date();
+  until.setFullYear(until.getFullYear() + 1);
+
+  // Never downgrade an existing paying customer.
+  if (existing && existing.product_id !== "affiliate_grant" && existing.status === "active") return;
+
+  const payload = {
+    user_id: userId,
+    paddle_subscription_id: `affiliate_grant_${userId}`,
+    paddle_customer_id: `affiliate_${userId}`,
+    product_id: "pro_plan",
+    price_id: "affiliate_pro_grant",
+    status: "active",
+    current_period_start: new Date().toISOString(),
+    current_period_end: until.toISOString(),
+    cancel_at_period_end: false,
+    environment,
+    access_product_id: "pro_plan",
+    access_until: until.toISOString(),
+  };
+
+  if (existing) {
+    await admin.from("subscriptions").update(payload).eq("id", existing.id);
+  } else {
+    await admin.from("subscriptions").insert(payload);
+  }
+}
