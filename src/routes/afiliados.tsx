@@ -15,6 +15,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useMyAffiliate } from "@/hooks/use-affiliate";
 import { AffiliateExplainer } from "@/components/affiliate-explainer";
 import { joinAffiliateProgram, updateMyAffiliate } from "@/utils/affiliates.functions";
+import { getPaddleEnvironment } from "@/lib/paddle";
 
 export const Route = createFileRoute("/afiliados")({
   ssr: false,
