@@ -1,5 +1,6 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,7 +10,7 @@ import { useActiveProfile, useMembers, useSubscription } from "@/hooks/use-mfn";
 import { kidLimit } from "@/lib/mfn-plan";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
 import { CITIES, CURRENCIES, currencyForCity, currencyLabel } from "@/lib/mfn-currencies";
-import { FUND_GOALS, TASK_IDEAS, WISH_IDEAS, seedHoldings } from "@/lib/mfn";
+import { FUND_GOALS, TASK_IDEAS, WISH_IDEAS, seedHoldings, type Member } from "@/lib/mfn";
 
 export const Route = createFileRoute("/ninos/onboarding")({
   head: () => ({
@@ -40,6 +41,7 @@ function Onboarding() {
   const { data: members = [] } = useMembers();
   const { data: subscription } = useSubscription();
   const { t, lang } = useI18n();
+  const queryClient = useQueryClient();
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
 
@@ -156,10 +158,18 @@ function Onboarding() {
       );
 
       select(member.id);
+      // Refresca la lista de perfiles antes de navegar para que el guard
+      // del panel infantil encuentre al nuevo perfil y no rebote a /ninos.
+      queryClient.setQueryData<Member[]>(["kid_members"], (prev) => [
+        ...(prev ?? []),
+        member as Member,
+      ]);
+      await queryClient.refetchQueries({ queryKey: ["kid_members"] });
       toast.success(
         t(`¡${member.name} ya tiene su primer número!`, `${member.name} now has a first number!`),
       );
-      router.navigate({ to: "/ninos/kid/numero" });
+      await router.navigate({ to: "/ninos/kid/numero" });
+
     } catch (e) {
       toast.error(
         e instanceof Error ? e.message : t("No se pudo crear el perfil", "Could not create profile"),
