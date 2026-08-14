@@ -95,50 +95,18 @@ export function BrandLogo({
 
 
 export function KidsBrandMark({ className }: { className?: string }) {
-  return (
-    <span
-      className={cn(
-        "relative inline-flex items-center justify-center overflow-hidden rounded-2xl bg-kid-sky/15 ring-1 ring-kid-sky/30",
-        className,
-      )}
-    >
-      <svg viewBox="0 0 32 32" fill="none" className="relative h-[76%] w-[76%]" aria-hidden="true">
-        <circle cx="16" cy="16" r="13" className="stroke-kid-sky/25" strokeWidth="1.2" />
-        {/* arco de crecimiento */}
-        <path
-          d="M5.5 22.5c2.6-8 8-12 15.5-12.6"
-          className="stroke-kid-grape"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-        {/* numeral 1 */}
-        <path
-          d="M12.6 12.4l3-1.9v11.6"
-          className="stroke-kid-mint"
-          strokeWidth="2.4"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        {/* dólar */}
-        <path
-          d="M23.2 12.6c-1.6-.7-3.4-.4-3.4 1s1.2 1.5 2.2 1.8c1.1.3 2.3.6 2.3 2s-1.8 2-3.5 1.3M21.6 10.8v9.6"
-          className="stroke-kid-sky"
-          strokeWidth="1.7"
-          strokeLinecap="round"
-        />
-      </svg>
-    </span>
-  );
+  return <BrandMark className={className ?? ""} />;
 }
 
 
 export function KidsBrandLogo({ className }: { className?: string }) {
   return (
     <span className={cn("flex items-center gap-2.5", className)}>
-      <KidsBrandMark className="h-9 w-9" />
+      <BrandMark className="h-9 w-9" />
       <span className="font-display text-sm font-semibold leading-none tracking-tight">
-        My First <span className="text-kid-mint">Number</span>
+        My First <span className="text-primary">Number</span>
       </span>
     </span>
   );
 }
+
