@@ -315,9 +315,12 @@ function Landing() {
     <div className="relative min-h-screen overflow-hidden bg-background">
       <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[900px] -translate-x-1/2 rounded-full opacity-[0.12] blur-3xl" />
 
-      <SiteHeader />
+      <div className="absolute inset-x-0 top-0 z-30">
+        <SiteHeader />
+      </div>
 
       <main className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-24">
+
         <motion.section
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
@@ -329,7 +332,7 @@ function Landing() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.9, delay: 0.1, ease: "easeOut" }}
-            className="pointer-events-none absolute inset-y-0 right-0 hidden w-[50%] lg:block"
+            className="pointer-events-none absolute inset-y-0 right-0 hidden w-[55%] lg:block"
             style={{
               WebkitMaskImage:
                 "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 26%, rgba(0,0,0,0.6) 48%, #000 72%)",
@@ -350,8 +353,28 @@ function Landing() {
             <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
           </motion.div>
 
+          {/* Mobile / tablet: the photo is the top of the background itself */}
+          <div
+            className="pointer-events-none absolute inset-x-0 top-0 h-[46vh] min-h-[280px] lg:hidden"
+            style={{
+              WebkitMaskImage: "linear-gradient(to bottom, #000 42%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, #000 42%, transparent 100%)",
+            }}
+          >
+            <img
+              src={heroManLaptopAsset.url}
+              alt=""
+              aria-hidden
+              className="h-full w-full object-cover object-[62%_28%]"
+              loading="eager"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-background/15" />
+          </div>
+
+
+
           <div className="relative z-10 mx-auto w-full max-w-6xl px-6">
-            <div className="max-w-2xl py-14 text-center md:py-24 lg:py-32 lg:text-left">
+            <div className="max-w-2xl pb-16 pt-[40vh] text-center md:pb-24 lg:pb-36 lg:pt-44 lg:text-left">
               <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground backdrop-blur">
                 <Sparkles className="h-3.5 w-3.5 text-primary" />
                 {t("Tu family office personal, potenciado con IA", "Your personal family office, powered by AI")}
@@ -404,22 +427,6 @@ function Landing() {
               </div>
             </div>
 
-            {/* Mobile: same photo, edge to edge, fading into the background */}
-            <div
-              className="relative -mx-6 -mt-4 h-[38vh] min-h-[240px] lg:hidden"
-              style={{
-                WebkitMaskImage: "linear-gradient(to bottom, #000 45%, transparent 100%)",
-                maskImage: "linear-gradient(to bottom, #000 45%, transparent 100%)",
-              }}
-            >
-              <img
-                src={heroManLaptopAsset.url}
-                alt=""
-                aria-hidden
-                className="h-full w-full object-cover object-[60%_30%]"
-                loading="eager"
-              />
-            </div>
           </div>
         </motion.section>
 
