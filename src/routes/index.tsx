@@ -407,22 +407,6 @@ function Landing() {
               </div>
             </div>
 
-            {/* Mobile: same photo, edge to edge, fading into the background */}
-            <div
-              className="relative -mx-6 -mt-4 h-[38vh] min-h-[240px] lg:hidden"
-              style={{
-                WebkitMaskImage: "linear-gradient(to bottom, #000 45%, transparent 100%)",
-                maskImage: "linear-gradient(to bottom, #000 45%, transparent 100%)",
-              }}
-            >
-              <img
-                src={heroManLaptopAsset.url}
-                alt=""
-                aria-hidden
-                className="h-full w-full object-cover object-[60%_30%]"
-                loading="eager"
-              />
-            </div>
           </div>
         </motion.section>
 
