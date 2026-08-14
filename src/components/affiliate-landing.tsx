@@ -170,11 +170,12 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
             <Badge variant="outline" className="rounded-full border-primary/40 uppercase tracking-[0.16em] text-primary">
               {t("Programa de afiliados", "Affiliate program")}
             </Badge>
-            <h1 className="mt-5 font-display text-3xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
+            <h1 className="mt-5 max-w-[13ch] font-display text-3xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
               {t("Gana ", "Earn ")}
               <span className="text-primary">{RATE}%</span>
-              {t(" recurrente recomendando la libertad financiera.", " recurring by recommending financial freedom.")}
+              {t(" recurrente y gana dinero pasivo", " recurring and earn passive income")}
             </h1>
+
             <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base">
               {t(
                 "Únete gratis, comparte tu enlace y cobra cada mes por cada suscripción activa que traigas.",
