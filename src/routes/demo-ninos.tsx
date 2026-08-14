@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LanguageToggle, useT } from "@/hooks/use-language";
 
-const CURRENCIES = { EUR: "€", USD: "$", GBP: "£", MXN: "$" } as const;
+const CURRENCIES = { EUR: "€", USD: "$" } as const;
 type CurrencyCode = keyof typeof CURRENCIES;
 
 export const Route = createFileRoute("/demo-ninos")({
