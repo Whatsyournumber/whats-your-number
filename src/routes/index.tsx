@@ -332,12 +332,12 @@ function Landing() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.9, delay: 0.1, ease: "easeOut" }}
-            className="pointer-events-none absolute inset-y-0 right-0 hidden w-[42%] lg:block"
+            className="pointer-events-none absolute inset-y-0 right-0 hidden w-[36%] md:block lg:w-[38%]"
             style={{
               WebkitMaskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 30%, rgba(0,0,0,0.6) 52%, #000 76%)",
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.18) 22%, rgba(0,0,0,0.65) 48%, #000 72%)",
               maskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 30%, rgba(0,0,0,0.6) 52%, #000 76%)",
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.18) 22%, rgba(0,0,0,0.65) 48%, #000 72%)",
             }}
 
           >
@@ -346,26 +346,26 @@ function Landing() {
               alt={t("Hombre feliz usando WhatsYourNumber en su laptop", "Happy man using WhatsYourNumber on his laptop")}
               width={1536}
               height={1024}
-              className="h-full w-full object-cover object-[55%_center]"
+              className="h-full w-full object-cover object-[55%_60%] md:object-[55%_65%] lg:object-[55%_70%]"
               loading="eager"
               fetchPriority="high"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/25" />
           </motion.div>
 
-          {/* Mobile / tablet: the photo is the top of the background itself */}
+          {/* Mobile: the photo is the top of the background itself */}
           <div
-            className="pointer-events-none absolute inset-x-0 top-0 h-[28vh] min-h-[200px] lg:hidden"
+            className="pointer-events-none absolute inset-x-0 top-0 h-[26vh] min-h-[190px] md:hidden"
             style={{
-              WebkitMaskImage: "linear-gradient(to bottom, #000 26%, transparent 100%)",
-              maskImage: "linear-gradient(to bottom, #000 26%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to bottom, #000 30%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, #000 30%, transparent 100%)",
             }}
           >
             <img
               src={heroManLaptopAsset.url}
               alt=""
               aria-hidden
-              className="h-full w-full object-cover object-[70%_35%]"
+              className="h-full w-full object-cover object-[70%_32%]"
               loading="eager"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-background/20" />
@@ -374,18 +374,18 @@ function Landing() {
 
 
           <div className="relative z-10 mx-auto w-full max-w-6xl px-6">
-            <div className="max-w-2xl pb-16 pt-[24vh] text-center md:pb-24 lg:pb-36 lg:pt-44 lg:text-left">
+            <div className="max-w-2xl pb-16 pt-[22vh] text-center md:pb-24 md:pt-32 md:text-left lg:pb-36 lg:pt-44">
               <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs text-muted-foreground backdrop-blur">
                 <Sparkles className="h-3.5 w-3.5 text-primary" />
                 {t("Tu family office personal, potenciado con IA", "Your personal family office, powered by AI")}
               </span>
-              <h1 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-semibold leading-[1.08] tracking-tight lg:mx-0 md:text-5xl lg:text-6xl">
+              <h1 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-semibold leading-[1.08] tracking-tight md:mx-0 md:text-5xl lg:text-6xl">
                 {t("Todo tu dinero", "All your money")}
                 <span className="block bg-gradient-to-r from-primary to-foreground bg-clip-text text-transparent">
                   {t("entendido en 30 segundos", "understood in 30 seconds")}
                 </span>
               </h1>
-              <p className="mx-auto mt-5 max-w-lg text-base text-muted-foreground lg:mx-0">
+              <p className="mx-auto mt-5 max-w-lg text-base text-muted-foreground md:mx-0">
                 {t(
                   "Patrimonio, gastos, cash flow, inversiones y retiro en una sola plataforma. Sube tus estados de cuenta y la IA hace el resto.",
                   "Net worth, spending, cash flow, investments and retirement in a single platform. Upload your statements and let the AI do the rest.",
