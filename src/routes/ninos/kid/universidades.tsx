@@ -216,22 +216,6 @@ function CollegeFinder({ member }: { member: Member }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [priced, bucket, continent, country, field, rankMax, tab, sort, projected, homeCountry, homeRegion, lang]);
 
-  const continentTabs = useMemo(() => {
-    const defs: { key: Continent; label: string; flag: string }[] = [
-      { key: "latam", label: t("Latinoamérica", "Latin America"), flag: "🌎" },
-      { key: "nam", label: t("EE.UU. / Canadá", "US / Canada"), flag: "🇺🇸" },
-      { key: "eu", label: t("Europa", "Europe"), flag: "🇪🇺" },
-      { key: "asia", label: t("Asia", "Asia"), flag: "🌏" },
-      { key: "oceania", label: t("Oceanía", "Oceania"), flag: "🇦🇺" },
-      { key: "africa", label: t("África / M. Oriente", "Africa / Mid. East"), flag: "🌍" },
-    ];
-    return defs.map((d) => ({
-      ...d,
-      total: priced.filter((r) => continentOf(r.u) === d.key).length,
-      afford: priced.filter((r) => continentOf(r.u) === d.key && r.total <= projected).length,
-    }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [priced, projected, lang]);
 
 
   const heroImg = member.theme === "girl" ? heroGirl : heroBoy;
@@ -383,63 +367,16 @@ function CollegeFinder({ member }: { member: Member }) {
           </button>
         </div>
 
-        {/* Continentes */}
-        <div className="mt-4 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <button
-            type="button"
-            onClick={() => {
-              setContinent(null);
-              setBucket(null);
-              setCountry("");
-            }}
-            className={cn(
-              "shrink-0 rounded-2xl border px-3.5 py-2 text-xs font-bold transition",
-              !continent
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border/70 bg-background/50 text-muted-foreground hover:text-foreground",
-            )}
-          >
-            {t("Todo el mundo", "Worldwide")}
-          </button>
-          {continentTabs.map((c) => {
-            const active = continent === c.key;
-            return (
-              <button
-                key={c.key}
-                type="button"
-                onClick={() => {
-                  setContinent(active ? null : c.key);
-                  setBucket(null);
-                  setCountry("");
-                }}
-                className={cn(
-                  "flex shrink-0 items-center gap-2 rounded-2xl border px-3.5 py-2 text-xs font-bold transition hover:-translate-y-0.5",
-                  active
-                    ? "border-primary bg-primary/[0.09] text-foreground"
-                    : "border-border/70 bg-background/50 text-muted-foreground hover:text-foreground",
-                )}
-              >
-                <span className="text-base leading-none">{c.flag}</span>
-                <span className="whitespace-nowrap">{c.label}</span>
-                <span
-                  className={cn(
-                    "rounded-full px-1.5 py-0.5 text-[10px] font-black",
-                    active ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground",
-                  )}
-                >
-                  {c.afford}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {buckets.map((b) => (
             <button
               key={b.key}
               type="button"
-              onClick={() => setBucket(bucket === b.key ? null : b.key)}
+              onClick={() => {
+                setContinent(null);
+                setCountry("");
+                setBucket(bucket === b.key ? null : b.key);
+              }}
               className={cn(
                 "rounded-2xl border p-4 text-left transition hover:-translate-y-0.5 hover:shadow-md",
                 bucket === b.key ? "border-primary bg-primary/[0.07]" : "border-border/70 bg-background/50",
