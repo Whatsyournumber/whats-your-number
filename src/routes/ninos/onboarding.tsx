@@ -53,7 +53,7 @@ function Onboarding() {
   const [saving, setSaving] = useState(false);
 
   const [name, setName] = useState("");
-  const [age, setAge] = useState(8);
+  const [age, setAge] = useState(0);
   const [avatar, setAvatar] = useState("🦊");
   const [theme, setTheme] = useState<"boy" | "girl">("boy");
   const [city, setCity] = useState("");
@@ -254,7 +254,7 @@ function Onboarding() {
                 ))}
               </div>
               <p className="mt-5 text-xs font-medium text-muted-foreground">
-                {t("Estilo visual", "Visual style")}
+                {t("Niño o niña", "Boy or girl")}
               </p>
               <div className="mt-2 grid grid-cols-2 gap-3">
                 {(["boy", "girl"] as const).map((option) => (
@@ -267,9 +267,7 @@ function Onboarding() {
                         : "border-border text-foreground"
                     }`}
                   >
-                    {option === "boy"
-                      ? t("🚀 Explorador", "🚀 Explorer")
-                      : t("✨ Creativa", "✨ Creative")}
+                    {option === "boy" ? t("👦 Niño", "👦 Boy") : t("👧 Niña", "👧 Girl")}
                     <span className="mt-1 block text-[11px] font-normal text-muted-foreground">
                       {option === "boy"
                         ? t("Baby blue, tecnología, espacio", "Baby blue, tech, space")
