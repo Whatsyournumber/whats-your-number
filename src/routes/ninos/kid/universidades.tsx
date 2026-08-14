@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowRight, BarChart3, Check, Heart, Pencil, TrendingUp } from "lucide-react";
+import { ArrowRight, BarChart3, Check, Heart, Pencil, Search, TrendingUp, X } from "lucide-react";
 
 import { KidPage } from "@/components/kid-page";
 import heroGirl from "@/assets/uni-hero-girl.jpg";
@@ -15,15 +15,18 @@ import {
   FIELD_LABELS,
   UNIVERSITIES,
   projectCapital,
+  uniFields,
   uniTotalUsd,
   type UniField,
   type University,
 } from "@/lib/universities";
+import { uniPhoto } from "@/lib/uni-photos";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
+
 
 export const Route = createFileRoute("/ninos/kid/universidades")({
   head: () => ({
