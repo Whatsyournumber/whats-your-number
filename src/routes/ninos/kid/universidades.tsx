@@ -521,7 +521,102 @@ function CollegeFinder({ member }: { member: Member }) {
   );
 }
 
+function ComparePanel({
+  items,
+  currency,
+  budget,
+  monthsLeft,
+  lang,
+  t,
+  onRemove,
+  onClear,
+}: {
+  items: { u: University; total: number }[];
+  currency: string;
+  budget: number;
+  monthsLeft: number;
+  lang: string;
+  t: (es: string, en: string) => string;
+  onRemove: (id: string) => void;
+  onClear: () => void;
+}) {
+  const cheapest = Math.min(...items.map((i) => i.total));
+  const best = Math.min(...items.map((i) => i.u.rank));
+
+  return (
+    <section className="overflow-hidden rounded-[28px] border border-primary/20 bg-gradient-to-b from-primary/[0.07] to-card p-4 shadow-sm sm:p-5">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <p className="font-display text-lg font-black text-foreground">
+          {t("Comparar universidades", "Compare universities")}
+        </p>
+        <Button variant="ghost" size="sm" className="h-8 text-xs" onClick={onClear}>
+          {t("Limpiar", "Clear")}
+        </Button>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-3">
+        {items.map(({ u, total }) => {
+          const ok = total <= budget;
+          const gap = total - budget;
+          return (
+            <div key={u.id} className="relative rounded-3xl border border-border/60 bg-background/70 p-4">
+              <button
+                type="button"
+                onClick={() => onRemove(u.id)}
+                aria-label={t("Quitar", "Remove")}
+                className="absolute right-3 top-3 grid h-6 w-6 place-items-center rounded-full bg-secondary text-xs text-muted-foreground transition hover:bg-destructive hover:text-destructive-foreground"
+              >
+                ×
+              </button>
+              <p className="text-xl">{u.flag}</p>
+              <p className="mt-1 pr-6 font-display text-sm font-bold leading-tight text-foreground">{u.name}</p>
+              <p className="truncate text-[11px] text-muted-foreground">
+                {u.city}, {lang === "en" ? u.country : u.countryEs}
+              </p>
+
+              <dl className="mt-3 space-y-2 text-xs">
+                <Row label={t("Coste total", "Total cost")}>
+                  <span className={cn("font-bold", total === cheapest && "text-primary")}>
+                    {money(total, currency, true)}
+                    {total === cheapest ? " 🏆" : ""}
+                  </span>
+                </Row>
+                <Row label={t("Ranking", "Ranking")}>
+                  <span className={cn("font-bold", u.rank === best && "text-primary")}>#{u.rank}</span>
+                </Row>
+                <Row label={t("Cobertura", "Coverage")}>
+                  <span className="font-bold">
+                    {Math.max(0, Math.min(100, Math.round((budget / Math.max(1, total)) * 100)))}%
+                  </span>
+                </Row>
+                <Row label={ok ? t("Te sobra", "Left over") : t("Falta al mes", "Monthly gap")}>
+                  <span className={cn("font-bold", ok ? "text-primary" : "text-amber-600 dark:text-amber-400")}>
+                    {ok ? money(budget - total, currency, true) : `+${money(gap / monthsLeft, currency, true)}`}
+                  </span>
+                </Row>
+                <Row label={t("Becas", "Scholarships")}>
+                  <span className="font-bold">{u.scholarship ? "🎁 Sí" : "—"}</span>
+                </Row>
+              </dl>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function Row({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-center justify-between gap-2 border-b border-border/50 pb-1.5 last:border-0">
+      <dt className="text-muted-foreground">{label}</dt>
+      <dd className="text-right text-foreground">{children}</dd>
+    </div>
+  );
+}
+
 function Chip({
+
   active,
   onClick,
   children,
