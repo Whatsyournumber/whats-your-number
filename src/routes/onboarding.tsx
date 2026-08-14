@@ -760,11 +760,21 @@ function OnboardingPage() {
 
         {step < 9 && (
           <div className="mt-12 flex items-center gap-3">
-            {step > 1 && (
+            {step > 1 ? (
               <Button variant="ghost" size="lg" className="rounded-full" onClick={() => go(-1)}>
                 <ArrowLeft className="mr-2 h-4 w-4" /> {t("Atrás", "Back")}
               </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                size="lg"
+                className="rounded-full"
+                onClick={() => navigate({ to: "/ninos" })}
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" /> {t("Perfiles", "Profiles")}
+              </Button>
             )}
+
             <Button size="lg" className="ml-auto min-w-[160px] rounded-full" disabled={!canContinue()} onClick={() => go(1)}>
               {t("Continuar", "Continue")}
               <ArrowRight className="ml-2 h-4 w-4" />
