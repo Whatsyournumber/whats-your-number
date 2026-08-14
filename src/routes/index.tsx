@@ -332,12 +332,12 @@ function Landing() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.9, delay: 0.1, ease: "easeOut" }}
-            className="pointer-events-none absolute inset-y-0 right-0 hidden w-[44%] md:block lg:w-[48%]"
+            className="pointer-events-none absolute inset-y-0 right-0 hidden w-[46%] md:block lg:w-[52%]"
             style={{
               WebkitMaskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.18) 14%, rgba(0,0,0,0.55) 38%, #000 62%)",
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.14) 10%, rgba(0,0,0,0.45) 30%, #000 55%)",
               maskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.18) 14%, rgba(0,0,0,0.55) 38%, #000 62%)",
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.14) 10%, rgba(0,0,0,0.45) 30%, #000 55%)",
             }}
 
           >
@@ -346,7 +346,7 @@ function Landing() {
               alt={t("Hombre feliz usando WhatsYourNumber en su laptop", "Happy man using WhatsYourNumber on his laptop")}
               width={1536}
               height={1024}
-              className="h-full w-full object-cover object-[32%_80%] md:object-[34%_84%] lg:object-[36%_88%]"
+              className="h-full w-full object-cover object-[24%_78%] md:object-[26%_82%] lg:object-[28%_86%]"
               loading="eager"
               fetchPriority="high"
             />
