@@ -16,7 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { setPendingPromoCode } from "@/lib/pending-promo";
 import { getPendingCheckoutPlan } from "@/lib/pending-checkout";
 
-type AuthSearch = { mode: "login" | "signup" };
+type AuthSearch = { mode: "login" | "signup"; next?: string };
 
 // Google nos devuelve nombre, email, teléfono y foto para construir el perfil.
 const GOOGLE_SCOPES = [
@@ -27,9 +27,15 @@ const GOOGLE_SCOPES = [
 ].join(" ");
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>): AuthSearch => ({
-    mode: search['mode'] === "signup" ? "signup" : "login",
-  }),
+  validateSearch: (search: Record<string, unknown>): AuthSearch => {
+    const rawNext = search["next"];
+    // Solo permitimos rutas internas para evitar redirecciones abiertas.
+    const next = typeof rawNext === "string" && /^\/[a-zA-Z0-9\-/_]*$/.test(rawNext) ? rawNext : undefined;
+    return {
+      mode: search["mode"] === "signup" ? "signup" : "login",
+      ...(next ? { next } : {}),
+    };
+  },
   head: () => ({
     meta: [
       { title: "Sign in — WhatsYournumber" },
@@ -67,7 +73,7 @@ function GoogleMark() {
 }
 
 function AuthPage() {
-  const { mode } = Route.useSearch();
+  const { mode, next } = Route.useSearch();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { isPatrimonio, loading: subscriptionLoading } = useSubscription();
@@ -86,11 +92,16 @@ function AuthPage() {
       navigate({ to: "/precios" });
       return;
     }
+    if (next) {
+      navigate({ to: next });
+      return;
+    }
     // La pantalla de perfiles solo existe para el plan Familiar.
     navigate({ to: isPatrimonio ? "/elegir" : "/dashboard" });
-  }, [loading, user, isPatrimonio, navigate]);
+  }, [loading, user, isPatrimonio, navigate, next]);
 
-  const setMode = (next: "login" | "signup") => navigate({ to: "/auth", search: { mode: next } });
+  const setMode = (value: "login" | "signup") =>
+    navigate({ to: "/auth", search: (prev) => ({ ...prev, mode: value }) });
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,7 +114,7 @@ function AuthPage() {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}${pendingCheckout ? "/precios" : "/onboarding"}`,
+            emailRedirectTo: `${window.location.origin}${pendingCheckout ? "/precios" : (next ?? "/onboarding")}`,
             data: { full_name: fullName },
           },
         });
@@ -126,7 +137,7 @@ function AuthPage() {
     setBusy(true);
     const pendingCheckout = getPendingCheckoutPlan();
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}${pendingCheckout ? "/precios" : "/dashboard"}`,
+      redirect_uri: `${window.location.origin}${pendingCheckout ? "/precios" : (next ?? "/dashboard")}`,
       extraParams: { scope: GOOGLE_SCOPES, prompt: "consent select_account" },
     });
     if (result.error) {
@@ -135,7 +146,7 @@ function AuthPage() {
       return;
     }
     if (result.redirected) return;
-    navigate({ to: isPatrimonio ? "/elegir" : "/dashboard" });
+    navigate({ to: next ?? (isPatrimonio ? "/elegir" : "/dashboard") });
   };
 
   return (
