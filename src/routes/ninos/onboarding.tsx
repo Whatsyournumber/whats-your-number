@@ -59,7 +59,7 @@ function Onboarding() {
   const [initial, setInitial] = useState(1000);
   const [monthly] = useState(50);
   const [targetAge, setTargetAge] = useState(18);
-  const [expected, setExpected] = useState(7);
+  const [expected, setExpected] = useState(10);
   const [goal, setGoal] = useState(FUND_GOALS[0]!);
 
   useKidTheme(theme);
