@@ -144,7 +144,7 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
     <div className="space-y-4">
       {/* HERO */}
       <section className="relative -mx-4 overflow-hidden px-4 sm:-mx-6 sm:px-6">
-        <div className="absolute inset-y-0 right-0 hidden w-[58%] lg:block">
+        <div className="pointer-events-none absolute inset-y-0 -right-[12vw] hidden w-[70%] lg:block">
           <img
             src={affiliatesHero}
             alt={t(
@@ -154,14 +154,15 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
             className="h-full w-full object-cover"
             style={{
               WebkitMaskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 22%, #000 55%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 78%, transparent 100%)",
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 20%, #000 50%, #000 62%, rgba(0,0,0,0.4) 82%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 74%, transparent 100%)",
               maskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 22%, #000 55%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 78%, transparent 100%)",
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 20%, #000 50%, #000 62%, rgba(0,0,0,0.4) 82%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 74%, transparent 100%)",
               WebkitMaskComposite: "source-in",
               maskComposite: "intersect",
             }}
           />
         </div>
+
 
 
         <div className="relative grid gap-0 lg:grid-cols-2">
