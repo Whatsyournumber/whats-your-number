@@ -197,14 +197,18 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
             </p>
           </div>
 
-          <div className="relative min-h-[240px] lg:min-h-[440px]">
+          <div className="relative min-h-[240px] pb-4 lg:min-h-[460px]">
             <img
               src={affiliatesHero}
               alt=""
               aria-hidden="true"
               className="h-full w-full object-cover lg:hidden"
+              style={{
+                WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%)",
+                maskImage: "linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%)",
+              }}
             />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent lg:hidden" />
+
 
             <div className="absolute bottom-5 left-4 right-4 rounded-2xl border border-border/60 bg-background/85 p-4 backdrop-blur sm:left-auto sm:right-6 sm:w-[300px]">
               <p className="text-xs text-muted-foreground">
