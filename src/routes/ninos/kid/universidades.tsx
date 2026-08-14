@@ -487,7 +487,23 @@ function CollegeFinder({ member }: { member: Member }) {
                         </>
                       )}
                     </p>
+
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={picked ? "default" : "outline"}
+                      disabled={full}
+                      onClick={() => toggleCompare(u.id)}
+                      className="mt-3 h-8 w-full rounded-full text-[11px] font-bold"
+                    >
+                      {picked
+                        ? t("Quitar de comparar", "Remove from compare")
+                        : full
+                          ? t("Máximo 3", "Max 3")
+                          : t("Comparar", "Compare")}
+                    </Button>
                   </article>
+
                 );
               })}
 
