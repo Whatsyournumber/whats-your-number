@@ -42,7 +42,7 @@ export const Route = createFileRoute("/ninos/onboarding")({
 
 const AVATARS_BOY = ["🦊", "🐼", "🐯", "🐨", "🦁", "🐙", "🐧", "🐸", "🐲", "🦖"];
 const AVATARS_GIRL = ["🦄", "🐰", "🐱", "🦢", "🦋", "🐞", "🐝", "🦩", "🐬", "🦜"];
-const STEPS = [0, 1, 2, 3, 4, 5, 6];
+const STEPS = [0, 1, 2, 3, 4, 5];
 
 function Onboarding() {
   const router = useRouter();
@@ -80,7 +80,6 @@ function Onboarding() {
     true,
     wishPrice > 0,
     monthly >= 0,
-    true,
   ][step];
 
   function pickCity(value: string) {
@@ -294,20 +293,18 @@ function Onboarding() {
             </Buddy>
             <Card>
               <Field label={t("Ciudad", "City")}>
-                <input
+                <select
                   className={inputClass}
-                  list="mfn-cities"
                   value={city}
                   onChange={(e) => pickCity(e.target.value)}
-                  placeholder={t("Ej. Madrid, Lima, Miami…", "e.g. Madrid, Lima, Miami…")}
-                />
-                <datalist id="mfn-cities">
+                >
+                  <option value="">{t("Elige tu ciudad…", "Choose your city…")}</option>
                   {CITIES.map((c) => (
                     <option key={c.city} value={c.city}>
-                      {c.flag} {c.country}
+                      {c.flag} {c.city} · {c.country}
                     </option>
                   ))}
-                </datalist>
+                </select>
               </Field>
               <div className="mt-3 flex flex-wrap gap-2">
                 {CITIES.slice(0, 10).map((c) => (
@@ -358,7 +355,7 @@ function Onboarding() {
               )}
             </Buddy>
             <Card>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-4">
                 <Field label={`${t("Cantidad", "Amount")} (${currency})`}>
                   <input
                     type="number"
