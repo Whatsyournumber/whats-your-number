@@ -44,6 +44,7 @@ function KidsDemoPage() {
   const [initial, setInitial] = useState("");
   const [age, setAge] = useState("");
   const [currency, setCurrency] = useState<CurrencyCode>("EUR");
+  const [resultTab, setResultTab] = useState<"number" | "uni">("number");
 
   const num = (v: string) => Number(v.replace(/[^\d.]/g, "")) || 0;
   const symbol = CURRENCIES[currency];
