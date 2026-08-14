@@ -473,7 +473,8 @@ function Landing() {
             ))}
           </div>
 
-        </motion.section>
+        </section>
+
 
 
 
