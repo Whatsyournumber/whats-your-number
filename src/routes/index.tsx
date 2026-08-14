@@ -332,10 +332,11 @@ function Landing() {
             className="pointer-events-none absolute inset-y-0 right-0 hidden w-[50%] lg:block"
             style={{
               WebkitMaskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 22%, #000 55%)",
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 26%, rgba(0,0,0,0.6) 48%, #000 72%)",
               maskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 22%, #000 55%)",
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 26%, rgba(0,0,0,0.6) 48%, #000 72%)",
             }}
+
           >
             <img
               src={heroManLaptopAsset.url}
