@@ -9,7 +9,7 @@ import { useActiveProfile, useMembers, useSubscription } from "@/hooks/use-mfn";
 import { kidLimit } from "@/lib/mfn-plan";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
 import { CITIES, CURRENCIES, currencyForCity, currencyLabel } from "@/lib/mfn-currencies";
-import { FUND_GOALS, TASK_IDEAS, WISH_IDEAS, money, seedHoldings } from "@/lib/mfn";
+import { FUND_GOALS, TASK_IDEAS, WISH_IDEAS, seedHoldings } from "@/lib/mfn";
 
 export const Route = createFileRoute("/ninos/onboarding")({
   head: () => ({
@@ -55,7 +55,7 @@ function Onboarding() {
   const [wish, setWish] = useState(WISH_IDEAS[0]!);
   const [wishPrice, setWishPrice] = useState(WISH_IDEAS[0]!.price);
   const [initial, setInitial] = useState(1000);
-  const [monthly, setMonthly] = useState(50);
+  const [monthly] = useState(50);
   const [targetAge, setTargetAge] = useState(18);
   const [expected, setExpected] = useState(7);
   const [goal, setGoal] = useState(FUND_GOALS[0]!);
