@@ -397,41 +397,65 @@ function CollegeFinder({ member }: { member: Member }) {
               {list.map(({ u, total }) => {
                 const ok = total <= effectiveBudget;
                 const gap = total - effectiveBudget;
+                const coverage = Math.max(0, Math.min(100, Math.round((effectiveBudget / Math.max(1, total)) * 100)));
                 return (
                   <article
                     key={u.id}
                     className={cn(
-                      "rounded-2xl border p-4 transition",
-                      ok ? "border-primary/40 bg-primary/[0.06]" : "border-border/70 bg-card",
+                      "group relative overflow-hidden rounded-3xl border p-4 transition hover:-translate-y-0.5 hover:shadow-md",
+                      ok
+                        ? "border-primary/30 bg-gradient-to-b from-primary/[0.09] to-card"
+                        : "border-border/60 bg-card",
                     )}
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0">
-                        <p className="truncate font-display text-base font-bold text-foreground">
-                          {u.flag} {u.name}
-                        </p>
-                        <p className="truncate text-xs text-muted-foreground">
-                          {u.city}, {lang === "en" ? u.country : u.countryEs} · #{u.rank}
-                        </p>
+                      <div className="flex min-w-0 items-start gap-2.5">
+                        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-secondary/70 text-xl">
+                          {u.flag}
+                        </span>
+                        <div className="min-w-0">
+                          <p className="truncate font-display text-base font-bold text-foreground">{u.name}</p>
+                          <p className="truncate text-xs text-muted-foreground">
+                            {u.city}, {lang === "en" ? u.country : u.countryEs} · #{u.rank}
+                          </p>
+                        </div>
                       </div>
                       <span
                         className={cn(
                           "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold",
-                          ok ? "bg-primary/15 text-primary" : "bg-destructive/10 text-destructive",
+                          ok ? "bg-primary/15 text-primary" : "bg-amber-500/15 text-amber-600 dark:text-amber-400",
                         )}
                       >
-                        {ok ? t("Puedes pagarlo", "Affordable") : t("Te falta", "Short by")}
+                        {coverage}% {t("cubierto", "covered")}
                       </span>
                     </div>
-                    <p className="mt-3 font-display text-lg font-bold text-foreground">
-                      {money(total, currency, true)}
-                    </p>
-                    <p className="text-[11px] text-muted-foreground">
-                      {t(
-                        `Coste total del grado (${u.years} años)`,
-                        `Total degree cost (${u.years} years)`,
-                      )}
-                    </p>
+
+                    <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+                      <div
+                        className={cn("h-full rounded-full", ok ? "bg-primary" : "bg-amber-500")}
+                        style={{ width: `${coverage}%` }}
+                      />
+                    </div>
+
+                    <div className="mt-3 flex items-end justify-between gap-3">
+                      <div>
+                        <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                          {t("Coste total", "Total cost")}
+                        </p>
+                        <p className="font-display text-lg font-bold text-foreground">
+                          {money(total, currency, true)}
+                        </p>
+                      </div>
+                      <p className="text-right text-[11px] leading-tight">
+                        <span className="block text-muted-foreground">
+                          {ok ? t("Te quedarían", "You'd have left") : t("Te faltarían", "You'd be short")}
+                        </span>
+                        <span className={cn("font-bold", ok ? "text-primary" : "text-amber-600 dark:text-amber-400")}>
+                          {money(ok ? effectiveBudget - total : gap, currency, true)}
+                        </span>
+                      </p>
+                    </div>
+
                     <div className="mt-3 flex flex-wrap items-center gap-1.5">
                       {u.fields.slice(0, 3).map((f) => (
                         <span
@@ -447,6 +471,7 @@ function CollegeFinder({ member }: { member: Member }) {
                         </span>
                       ) : null}
                     </div>
+
                     <p
                       className={cn(
                         "mt-3 flex items-center gap-1.5 text-[11px] font-semibold",
@@ -456,20 +481,20 @@ function CollegeFinder({ member }: { member: Member }) {
                       {ok ? (
                         <>
                           <Check className="h-3.5 w-3.5" />
-                          {t("Te sobrarían", "You'd have left")} {money(effectiveBudget - total, currency, true)}
+                          {t("Puede pagarlo con su plan", "Affordable with the plan")}
                         </>
                       ) : (
                         <>
                           <TrendingUp className="h-3.5 w-3.5" />
-                          {t("Faltan", "Missing")} {money(gap, currency, true)} ·{" "}
-                          {money(gap / monthsLeft, currency, true)}
-                          {t("/mes extra", "/mo extra")}
+                          +{money(gap / monthsLeft, currency, true)}
+                          {t("/mes desde hoy lo consigue", "/mo from today closes the gap")}
                         </>
                       )}
                     </p>
                   </article>
                 );
               })}
+
               {list.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
                   {t("No hay universidades con esos filtros.", "No universities match those filters.")}
