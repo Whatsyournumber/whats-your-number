@@ -242,24 +242,56 @@ export function AffiliateWizard() {
               {t("¡Tu enlace está listo!", "Your link is ready!")}
             </h2>
             <p className="mt-1.5 text-xs text-muted-foreground">
-              {t("Este es tu enlace único. Guárdalo y compártelo donde quieras.", "This is your unique link. Save it and share it anywhere.")}
+              {t("Compártelo y gana 30% de cada suscripción, cada mes.", "Share it and earn 30% of every subscription, every month.")}
             </p>
 
-            <div className="mt-5 flex flex-col gap-2 sm:flex-row">
-              <Input readOnly value={link} className="font-mono text-xs sm:text-sm" />
-              <Button onClick={() => void copy()} className="shrink-0">
-                {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
-                {t("Copiar", "Copy")}
-              </Button>
+            <div className="mt-5 rounded-2xl border border-border/60 bg-background/40 p-4 text-left">
+              <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-muted-foreground">
+                <Link2 className="h-3.5 w-3.5" />
+                {t("Tu enlace único", "Your unique link")}
+              </div>
+              <p className="mt-2 break-all font-mono text-sm text-foreground">{link}</p>
+              <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+                <Button onClick={() => void copy()} className="flex-1 rounded-xl">
+                  {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
+                  {copied ? t("¡Copiado!", "Copied!") : t("Copiar enlace", "Copy link")}
+                </Button>
+                <Button
+                  variant="outline"
+                  className="rounded-xl"
+                  onClick={() => {
+                    void navigator.clipboard.writeText(code ?? "");
+                    toast.success(t("Código copiado", "Code copied"));
+                  }}
+                >
+                  {t("Copiar código", "Copy code")}
+                </Button>
+              </div>
+              <p className="mt-3 text-[11px] text-muted-foreground">
+                {t("Tu código:", "Your code:")} <span className="font-mono text-foreground">{code}</span>
+              </p>
             </div>
-            <p className="mt-2 text-[11px] text-muted-foreground">
-              {t("Tu código:", "Your code:")} <span className="font-mono text-foreground">{code}</span>
-            </p>
+
+            <div className="mt-4 grid gap-2 sm:grid-cols-3">
+              {[
+                t("30% recurrente", "30% recurring"),
+                t("Pagos mensuales", "Monthly payouts"),
+                t("Seguimiento en vivo", "Live tracking"),
+              ].map((chip) => (
+                <span
+                  key={chip}
+                  className="rounded-full border border-border/50 bg-secondary/30 px-3 py-1.5 text-[11px] text-muted-foreground"
+                >
+                  {chip}
+                </span>
+              ))}
+            </div>
 
             <Button className="mt-5 w-full rounded-full" onClick={() => setStep(2)}>
               {t("Siguiente: compártelo", "Next: share it")}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
+
           </motion.div>
         )}
 
