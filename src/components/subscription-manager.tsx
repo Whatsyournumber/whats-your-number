@@ -5,7 +5,7 @@ import { ArrowUpRight, CreditCard, ExternalLink, Loader2, Mail, Receipt, User, X
 import { toast } from "sonner";
 
 import { Panel } from "@/components/page";
-import { PlanDetailsDialog } from "@/components/plan-details-dialog";
+import { PlanChangeDialog, PlanDetailsDialog } from "@/components/plan-details-dialog";
 
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
