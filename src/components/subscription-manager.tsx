@@ -116,6 +116,35 @@ export function SubscriptionManager() {
       </div>
 
       <div className="mt-5 grid gap-2 sm:grid-cols-3">
+        <InfoTile
+          icon={User}
+          label={t("Titular", "Account holder")}
+          value={displayName ?? t("Sin nombre", "No name")}
+          loading={billing.isLoading}
+        />
+        <InfoTile
+          icon={Mail}
+          label={t("Correo", "Email")}
+          value={displayEmail ?? "—"}
+          loading={billing.isLoading}
+        />
+        <InfoTile
+          icon={CreditCard}
+          label={t("Tarjeta", "Card")}
+          value={
+            card?.last4
+              ? `${card.brand ? `${card.brand.toUpperCase()} ` : ""}•••• ${card.last4}${card.expiry ? ` · ${card.expiry}` : ""}`
+              : card?.type
+                ? card.type.replace(/_/g, " ")
+                : tier === "free"
+                  ? t("Sin método de pago", "No payment method")
+                  : t("No disponible", "Not available")
+          }
+          loading={billing.isLoading}
+        />
+      </div>
+
+      <div className="mt-3 grid gap-2 sm:grid-cols-3">
           <PortalAction
             icon={CreditCard}
             label={t("Método de pago", "Payment method")}
