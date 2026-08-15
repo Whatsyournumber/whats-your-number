@@ -388,7 +388,7 @@ function Landing() {
 
 
           <div className="relative z-10 mx-auto w-full max-w-6xl px-6">
-            <div className="max-w-2xl pb-8 pt-[22vh] text-center md:max-w-[56%] md:pb-12 md:pt-28 md:text-left lg:max-w-2xl lg:pb-16 lg:pt-44">
+            <div className="max-w-2xl pb-8 pt-[34vh] text-center md:max-w-[56%] md:pb-12 md:pt-28 md:text-left lg:max-w-2xl lg:pb-16 lg:pt-44">
               <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-[11px] text-muted-foreground backdrop-blur md:text-xs">
                 <Sparkles className="h-3.5 w-3.5 text-primary" />
                 {t("Tu family office personal, potenciado con IA", "Your personal family office, powered by AI")}
@@ -455,12 +455,13 @@ function Landing() {
             <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
               {t("Tu dinero. Tu número. Tu plan.", "Your money. Your number. Your plan.")}
             </h2>
-            <p className="mx-auto mt-3 max-w-3xl text-sm text-muted-foreground md:whitespace-nowrap">
+            <p className="mx-auto mt-3 max-w-3xl text-xs text-muted-foreground sm:text-sm md:whitespace-nowrap">
               {t(
-                "Entiende dónde estás, descubre cuánto necesitas y toma mejores decisiones para llegar.",
-                "Understand where you are, discover how much you need and make better decisions to get there.",
+                "Sabe dónde estás, cuánto necesitas y cómo llegar.",
+                "Know where you are, how much you need and how to get there.",
               )}
             </p>
+
           </div>
 
 
@@ -517,15 +518,19 @@ function Landing() {
               )}
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-2">
-              {panelChips.map((chip) => (
+              {panelChips.map((chip, i) => (
                 <span
                   key={chip}
-                  className="rounded-full border border-border/60 bg-card/50 px-3 py-1 text-[11px] text-muted-foreground backdrop-blur"
+                  className={
+                    "rounded-full border border-border/60 bg-card/50 px-3 py-1 text-[11px] text-muted-foreground backdrop-blur" +
+                    (i === panelChips.length - 1 ? " hidden md:inline-block" : "")
+                  }
                 >
                   {chip}
                 </span>
               ))}
             </div>
+
           </div>
 
           <motion.div
