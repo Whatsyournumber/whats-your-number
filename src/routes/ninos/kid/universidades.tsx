@@ -1181,9 +1181,15 @@ function UniDetailDialog({
               <SourcesTip className="mt-1.5 shrink-0" />
             </DialogTitle>
             <p className="text-xs text-muted-foreground">
-              {uni.city}, {lang === "en" ? uni.country : uni.countryEs} · {t("Ranking mundial", "World rank")} #{uni.rank} ·{" "}
-              {uni.years} {t("años de carrera", "year degree")}
+              {uni.city}, {lang === "en" ? uni.country : uni.countryEs} · {t("Ranking mundial", "World rank")} #
+              {ranksOf(uni).global} · #{ranksOf(uni).continent}{" "}
+              {t(
+                `en ${CONTINENT_NAMES[ranksOf(uni).continentKey].es}`,
+                `in ${CONTINENT_NAMES[ranksOf(uni).continentKey].en}`,
+              )}{" "}
+              ({ranksOf(uni).continentTotal}) · {uni.years} {t("años de carrera", "year degree")}
             </p>
+
           </DialogHeader>
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
