@@ -382,6 +382,11 @@ import zaKwazulu from "@/assets/uni/za-kwazulu.jpg";
 import zaJohannesburg from "@/assets/uni/za-johannesburg.jpg";
 import zaRhodes from "@/assets/uni/za-rhodes.jpg";
 import zaNorthwest from "@/assets/uni/za-northwest.jpg";
+import afCovenant from "@/assets/uni/af-covenant.jpg";
+import afMauritius from "@/assets/uni/af-mauritius.jpg";
+import afZewail from "@/assets/uni/af-zewail.jpg";
+import afStrathmore from "@/assets/uni/af-strathmore.jpg";
+import afAlu from "@/assets/uni/af-alu.jpg";
 import zaWesternCape from "@/assets/uni/za-westerncape.jpg";
 import afUsthb from "@/assets/uni/af-usthb.jpg";
 import afAddis from "@/assets/uni/af-addis.jpg";
@@ -437,6 +442,11 @@ const CURATED: Record<string, string> = {
   "me-johannesburg": zaJohannesburg,
   "me-rhodes": zaRhodes,
   "me-north-west-za": zaNorthwest,
+  "me-covenant": afCovenant,
+  "me-mauritius": afMauritius,
+  "me-zewail-city": afZewail,
+  "me-strathmore": afStrathmore,
+  "me-alu-rwanda": afAlu,
   "me-western-cape": zaWesternCape,
   "ot-nyu-abu-dhabi": np_ae_nyuad,
   "de-universitat-heidelberg": np_de_heidelberg,
