@@ -1256,6 +1256,7 @@ function FamilyProfiles() {
 
 function KidsFinanceLanding() {
   const t = useT();
+  const liveCount = useLiveCount(1200);
 
 
 
