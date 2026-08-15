@@ -421,6 +421,57 @@ export function AffiliateWizard() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* QR Modal */}
+      <AnimatePresence>
+        {showQr && qrDataUrl && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowQr(false)}
+          >
+            <motion.div
+              className="relative w-full max-w-xs rounded-3xl border border-border bg-card p-6 text-center shadow-2xl"
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.92, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                className="absolute right-3 top-3 rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                onClick={() => setShowQr(false)}
+                aria-label={t("Cerrar", "Close")}
+              >
+                <X className="h-4 w-4" />
+              </button>
+
+              <div className="mx-auto mb-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary/15 text-primary">
+                <QrCode className="h-5 w-5" />
+              </div>
+              <h3 className="font-display text-lg font-semibold tracking-tight">
+                {t("Tu código QR", "Your QR code")}
+              </h3>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {t("Escanea para abrir tu enlace de afiliado.", "Scan to open your affiliate link.")}
+              </p>
+
+              <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-white p-3">
+                <img src={qrDataUrl} alt={`QR ${code}`} className="h-48 w-48 mx-auto" />
+              </div>
+
+              <p className="mt-3 font-mono text-sm font-semibold tracking-[0.12em] text-primary">{code}</p>
+
+              <Button className="mt-4 w-full rounded-full" onClick={() => downloadQr()}>
+                <Download className="mr-2 h-4 w-4" />
+                {t("Descargar QR", "Download QR")}
+              </Button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
