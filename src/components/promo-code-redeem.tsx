@@ -50,6 +50,27 @@ export function PromoCodeRedeem({ className }: { className?: string }) {
     }
     setLoading(true);
     try {
+      // Primero: ¿es un descuento de pago (ej. 30%)? Entonces va al checkout.
+      try {
+        const discount = (await lookupDiscountCode({
+          data: { code: clean, environment: getPaddleEnvironment() },
+        })) as { ok: boolean; code?: string; label?: string };
+        if (discount?.ok && discount.code) {
+          setPendingDiscount({ code: discount.code, label: discount.label ?? "" });
+          setCode("");
+          toast.success(
+            t(
+              `Descuento ${discount.label} listo. Elige tu plan para pagar con descuento.`,
+              `${discount.label} discount ready. Pick your plan to pay with the discount.`,
+            ),
+          );
+          navigate({ to: "/precios" });
+          return;
+        }
+      } catch {
+        // seguimos con el canje clásico
+      }
+
       const result = (await redeemPromoCode({
         data: { code: clean, environment: getPaddleEnvironment() },
       })) as RedeemResult;
@@ -57,6 +78,7 @@ export function PromoCodeRedeem({ className }: { className?: string }) {
         toast.error(errorText(result?.error ?? ""));
         return;
       }
+
       const until = result.until ? new Date(result.until).toLocaleDateString() : "";
       toast.success(
         t("¡Código activado! Acceso Pro hasta ", "Code activated! Pro access until ") + until,
