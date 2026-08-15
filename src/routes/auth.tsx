@@ -15,6 +15,7 @@ import { lovable } from "@/integrations/lovable/index";
 import { supabase } from "@/integrations/supabase/client";
 import { setPendingPromoCode } from "@/lib/pending-promo";
 import { getPendingCheckoutPlan } from "@/lib/pending-checkout";
+import { startAffiliateWizard } from "@/lib/affiliate-wizard-state";
 
 type AuthSearch = { mode: "login" | "signup"; next?: string; flow?: "affiliate" };
 
@@ -91,6 +92,11 @@ function AuthPage() {
   const [promo, setPromo] = useState("");
 
   const loading = authLoading || subscriptionLoading;
+
+  // Registro de afiliado: al terminar debe caer directo en los pasos del wizard.
+  useEffect(() => {
+    if (isAffiliate) startAffiliateWizard();
+  }, [isAffiliate]);
 
   useEffect(() => {
     if (loading || !user) return;

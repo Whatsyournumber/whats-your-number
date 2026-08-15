@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "motion/react";
 import {
   ArrowRight,
@@ -22,6 +23,7 @@ import { useT } from "@/hooks/use-language";
 import { useMyAffiliate } from "@/hooks/use-affiliate";
 import { getPaddleEnvironment } from "@/lib/paddle";
 import { joinAffiliateProgram } from "@/utils/affiliates.functions";
+import { endAffiliateWizard, startAffiliateWizard } from "@/lib/affiliate-wizard-state";
 
 const CHANNELS = [
   { es: "Redes sociales", en: "Social media" },
@@ -35,9 +37,15 @@ export function AffiliateWizard() {
   const t = useT();
   const { user } = useAuth();
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const { affiliate } = useMyAffiliate();
 
-  const [step, setStep] = useState(0); // 0 = about you, 1 = link ready, 2 = share
+  const [step, setStep] = useState(affiliate ? 1 : 0); // 0 = about you, 1 = link ready, 2 = share
+
+  // Mientras el wizard esté abierto, /afiliados no debe saltar al dashboard.
+  useEffect(() => {
+    startAffiliateWizard();
+  }, []);
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
   const [displayName, setDisplayName] = useState(user?.user_metadata?.["full_name"] ?? (user?.email ?? ""));
@@ -294,11 +302,15 @@ export function AffiliateWizard() {
               </Button>
             </div>
 
-            <Button asChild className="mt-5 w-full rounded-full">
-              <a href="/afiliados">
-                {t("Ir a mi panel", "Go to my dashboard")}
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </a>
+            <Button
+              className="mt-5 w-full rounded-full"
+              onClick={() => {
+                endAffiliateWizard();
+                void navigate({ to: "/afiliados" });
+              }}
+            >
+              {t("Ir a mi panel", "Go to my dashboard")}
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </motion.div>
         )}

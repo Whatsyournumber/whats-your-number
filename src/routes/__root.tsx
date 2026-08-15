@@ -26,6 +26,7 @@ import { AffiliateTracker } from "@/components/affiliate-tracker";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import { useMyAffiliate } from "@/hooks/use-affiliate";
+import { useAffiliateWizardActive } from "@/lib/affiliate-wizard-state";
 
 import { LanguageProvider, useT, LanguageToggle } from "@/hooks/use-language";
 import { CurrencyToggle } from "@/components/currency-toggle";
@@ -199,7 +200,8 @@ function RootLayout() {
 
 function AffiliatesGate() {
   const { affiliate, loading } = useMyAffiliate();
-  if (loading || !affiliate) return <Outlet />;
+  const wizardActive = useAffiliateWizardActive();
+  if (loading || !affiliate || wizardActive) return <Outlet />;
   return <AppShell />;
 }
 
