@@ -198,6 +198,13 @@ import cur_us_usf from "@/assets/uni/us-usf.jpg";
 import cur_us_fsu from "@/assets/uni/us-fsu.jpg";
 import cur_us_ucf from "@/assets/uni/us-ucf.jpg";
 import cur_hk_hku from "@/assets/uni/hk-hku.jpg";
+import cur_hk_cityu from "@/assets/uni/hk-cityu.jpg";
+import cur_hk_hkust from "@/assets/uni/hk-hkust.jpg";
+import cur_hk_polyu from "@/assets/uni/hk-polyu.jpg";
+import cur_kr_yonsei from "@/assets/uni/kr-yonsei.jpg";
+import cur_kr_korea from "@/assets/uni/kr-korea.jpg";
+import cur_kr_skku from "@/assets/uni/kr-skku.jpg";
+import cur_kr_hanyang from "@/assets/uni/kr-hanyang.jpg";
 import cur_ae_khalifa from "@/assets/uni/ae-khalifa.jpg";
 import cur_ae_uaeu from "@/assets/uni/ae-uaeu.jpg";
 import cur_tr_sabanci from "@/assets/uni/tr-sabanci.jpg";
@@ -753,6 +760,13 @@ const CURATED: Record<string, string> = {
   "us-florida-state-university": cur_us_fsu,
   "us-university-of-central-florid": cur_us_ucf,
   "ap-university-of-hong-kong": cur_hk_hku,
+  "ap-city-u-hong-kong": cur_hk_cityu,
+  "ap-hkust": cur_hk_hkust,
+  "ap-polyu-hong-kong": cur_hk_polyu,
+  "ap-yonsei-university": cur_kr_yonsei,
+  "ap-korea-university": cur_kr_korea,
+  "ap-sungkyunkwan": cur_kr_skku,
+  "ap-hanyang-university": cur_kr_hanyang,
   "ot-khalifa-university": cur_ae_khalifa,
   "me-uae-university": cur_ae_uaeu,
   "me-sabanci": cur_tr_sabanci,
