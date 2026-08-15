@@ -12,6 +12,12 @@ const socials = [
   { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/company/107005182/" },
 ];
 
+function openExternalSocial(event: React.MouseEvent<HTMLAnchorElement>, href: string) {
+  event.preventDefault();
+  const externalWindow = window.open(href, "_blank", "noopener,noreferrer");
+  if (externalWindow) externalWindow.opener = null;
+}
+
 type FooterLink = { label: string; to: string; policy?: boolean; external?: boolean };
 
 export function SiteFooter({ kids = false }: { kids?: boolean } = {}) {
@@ -196,6 +202,7 @@ export function SiteFooter({ kids = false }: { kids?: boolean } = {}) {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
+                 onClick={(event) => openExternalSocial(event, href)}
                 aria-label={label}
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-foreground/90 text-background transition-transform hover:scale-110 hover:bg-primary hover:text-primary-foreground"
               >
