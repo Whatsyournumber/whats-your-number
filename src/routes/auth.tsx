@@ -214,10 +214,10 @@ function AuthPage() {
                       : tt("Entra a tu panel de afiliado", "Sign in to your affiliate panel")}
                   </span>
                 </h1>
-                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                <p className="mt-2 whitespace-nowrap text-xs leading-relaxed text-muted-foreground">
                   {tt(
-                    "Es gratis. Al terminar te llevamos directo a tu panel para generar tu link.",
-                    "It's free. When you finish we take you straight to your panel to generate your link.",
+                    "Es gratis · Genera 30% · Dinero pasivo cada mes",
+                    "It's free · Earn 30% · Passive income every month",
                   )}
                 </p>
               </>
