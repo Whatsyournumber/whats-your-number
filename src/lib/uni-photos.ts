@@ -764,8 +764,6 @@ const CURATED: Record<string, string> = {
   "it-bocconi": cur_it_bocconi,
   "cl-universidad-del-desarrollo": cur_cl_udd,
   "cl-universidad-de-los-andes-chi": cur_cl_uandes,
-  "ap-seoul-national-university": cur_kr_snu,
-  "ap-kaist": cur_kr_kaist,
   "ot-university-of-cape-town": cur_za_uct,
   "ot-nova-lisboa": cur_pt_nova,
   "fr-sciences-po": cur_fr_sciencespo,
