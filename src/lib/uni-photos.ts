@@ -459,8 +459,26 @@ import curMahidol from "@/assets/uni/th-mahidol.jpg";
 import curNanjing from "@/assets/uni/cn-nanjing.jpg";
 import curIimA from "@/assets/uni/in-iim-ahmedabad.jpg";
 import curZhejiang from "@/assets/uni/cn-zhejiang.jpg";
+import curSpbu from "@/assets/uni/ru-spbu.jpg";
+import curMsu from "@/assets/uni/ru-msu.jpg";
+import curNtuTw from "@/assets/uni/tw-ntu.jpg";
+import curTsinghua from "@/assets/uni/cn-tsinghua.jpg";
+import curPeking from "@/assets/uni/cn-peking.jpg";
+import curKyushu from "@/assets/uni/jp-kyushu.jpg";
+import curHokkaido from "@/assets/uni/jp-hokkaido.jpg";
+import curPostech from "@/assets/uni/kr-postech.jpg";
+import curTohoku from "@/assets/uni/jp-tohoku.jpg";
 
 const CURATED: Record<string, string> = {
+  "ap-spbu": curSpbu,
+  "ap-msu-lomonosov": curMsu,
+  "ap-ntu-taiwan": curNtuTw,
+  "ap-tsinghua-university": curTsinghua,
+  "ap-peking-university": curPeking,
+  "ap-kyushu-university": curKyushu,
+  "ap-hokkaido-university": curHokkaido,
+  "ap-postech": curPostech,
+  "ap-tohoku-university": curTohoku,
   "ap-ashoka-university": curAshoka,
   "ap-ateneo-manila": curAteneo,
   "ap-universiti-malaya": curMalaya,
