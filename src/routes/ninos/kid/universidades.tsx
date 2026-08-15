@@ -493,6 +493,30 @@ function CollegeFinder({ member }: { member: Member }) {
           ))}
 
           <div className="ml-auto flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-0.5 rounded-full border border-border/70 bg-background/50 p-0.5">
+              {(
+                [
+                  [false, t("Solo matrícula", "Tuition only")],
+                  [true, t("Matrícula + vida", "Tuition + living")],
+                ] as const
+              ).map(([v, label]) => (
+                <button
+                  key={String(v)}
+                  type="button"
+                  onClick={() => setIncludeLiving(v)}
+                  className={cn(
+                    "rounded-full px-3 py-1.5 text-[11px] font-bold transition",
+                    includeLiving === v
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <SourcesTip />
+
             <CountryCombobox
               value={country}
               onChange={setCountry}
