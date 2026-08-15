@@ -16,6 +16,7 @@ import { useMyAffiliate } from "@/hooks/use-affiliate";
 import { AffiliateExplainer } from "@/components/affiliate-explainer";
 import { AffiliateLanding } from "@/components/affiliate-landing";
 import { AffiliateWizard } from "@/components/affiliate-wizard";
+import { AffiliateDashboard } from "@/components/affiliate-dashboard";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
@@ -194,23 +195,21 @@ function AffiliatesPage() {
         ).replace("{r}", String(affiliate.commission_rate))}
       />
 
-      <Panel title={t("Tu enlace", "Your link")} description={t("Compártelo donde quieras.", "Share it anywhere.")}>
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <Input readOnly value={link} className="font-mono text-xs sm:text-sm" />
-          <Button onClick={() => void copy()} className="shrink-0">
-            {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
-            {t("Copiar", "Copy")}
-          </Button>
-        </div>
-        <p className="mt-3 text-xs text-muted-foreground">
-          {t("Tu código:", "Your code:")} <span className="font-mono text-foreground">{affiliate.code}</span>
-          {affiliate.status !== "active" && (
-            <Badge variant="secondary" className="ml-2">
-              {t("pausado", "paused")}
-            </Badge>
-          )}
-        </p>
-      </Panel>
+      <AffiliateDashboard
+        link={link}
+        code={affiliate.code}
+        clicks={clicks}
+        referrals={referrals}
+        commissions={commissions}
+        pending={pending}
+        paid={paid}
+      />
+      {affiliate.status !== "active" && (
+        <Badge variant="secondary" className="mt-2">
+          {t("pausado", "paused")}
+        </Badge>
+      )}
+
 
       <Panel
         className="mt-4"
@@ -255,22 +254,6 @@ function AffiliatesPage() {
           />
         </div>
       </Panel>
-
-
-
-
-
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard label={t("Clics en tu enlace", "Link clicks")} value={String(clicks)} icon={MousePointerClick} accent index={0} />
-        <KpiCard label={t("Registros", "Sign-ups")} value={String(referrals.length)} icon={Users} index={1} />
-        <KpiCard
-          label={t("Clientes de pago", "Paying customers")}
-          value={String(referrals.filter((r) => r.status === "subscribed").length)}
-          icon={Wallet}
-          index={2}
-        />
-        <KpiCard label={t("Comisión pendiente", "Pending commission")} value={money(pending)} icon={Wallet} index={3} />
-      </div>
 
       <Panel
         className="mt-4"
