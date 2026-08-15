@@ -124,7 +124,7 @@ function CollegeFinder({ member }: { member: Member }) {
   const [bucket, setBucket] = useState<Bucket | null>(null);
   const [continent, setContinent] = useState<Continent | null>(null);
 
-  const [tab, setTab] = useState<"afford" | "close" | "all">("afford");
+  const [tab, setTab] = useState<"afford" | "close" | "all">("all");
   const [country, setCountry] = useState<string>("");
   const [field, setField] = useState<UniField | "">("");
   const [rankMax, setRankMax] = useState<string>("");
