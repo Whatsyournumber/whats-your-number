@@ -207,18 +207,21 @@ function ProfileSelector() {
                   </span>
                 </button>
               ) : (
-                <div className="flex flex-col items-center gap-3">
-                  <span className="grid aspect-square w-full place-items-center rounded-2xl border-2 border-dashed border-border text-muted-foreground">
-                    <Lock className="h-8 w-8" />
+                <div className="group flex flex-col items-center gap-3">
+                  <span className="grid aspect-square w-full place-items-center rounded-2xl bg-secondary text-muted-foreground/70">
+                    <Lock className="h-9 w-9" />
                   </span>
-                  <span className="text-center text-[11px] text-muted-foreground">
-                    {t(
-                      `Tu plan incluye ${maxKids} ${maxKids === 1 ? "perfil" : "perfiles"} de niño. Cada perfil extra cuesta $${EXTRA_KID_PRICE_USD}/mes.`,
-                      `Your plan includes ${maxKids} child ${maxKids === 1 ? "profile" : "profiles"}. Each extra profile costs $${EXTRA_KID_PRICE_USD}/mo.`,
-                    )}
+                  <span className="min-w-0 text-center">
+                    <span className="block truncate text-sm font-semibold text-muted-foreground">
+                      {t("Perfil extra", "Extra profile")}
+                    </span>
+                    <span className="block text-[11px] text-muted-foreground/70">
+                      ${EXTRA_KID_PRICE_USD}/{t("mes", "mo")}
+                    </span>
                   </span>
                 </div>
               )}
+
             </div>
 
             <div className="mt-14 flex flex-wrap items-center gap-3">
