@@ -394,20 +394,22 @@ function CollegeFinder({ member }: { member: Member }) {
       </section>
 
       {/* ¿Qué pasa si aportas más cada mes? */}
-      <section className="mb-5 rounded-[28px] border border-border/70 bg-card p-5 shadow-sm sm:p-6">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <p className="font-display text-lg font-bold text-foreground">
+      <section className="mb-5 rounded-[28px] border border-border/70 bg-card p-4 shadow-sm sm:p-6">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 sm:flex sm:flex-wrap sm:justify-between">
+          <div className="min-w-0">
+            <p className="font-display text-base font-bold text-foreground sm:text-lg">
               {t("¿Qué pasa si aportas más cada mes?", "What if you contribute more each month?")}
             </p>
             <p className="text-xs text-muted-foreground">
               {t("Simula y ve cómo crecen sus oportunidades.", "Simulate and watch their options grow.")}
             </p>
           </div>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-background/60 px-3 py-1.5 text-xs font-semibold text-foreground">
-            <BarChart3 className="h-3.5 w-3.5 text-primary" /> {t("Ver escenarios", "See scenarios")}
+          <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border/70 bg-background/60 px-2.5 py-1.5 text-[11px] font-semibold text-foreground sm:px-3 sm:text-xs">
+            <BarChart3 className="h-3.5 w-3.5 shrink-0 text-primary" />
+            <span>{t("Ver escenarios", "See scenarios")}</span>
           </span>
         </div>
+
 
         <div className="mt-4 grid gap-5 lg:grid-cols-2">
           <div>
@@ -432,7 +434,7 @@ function CollegeFinder({ member }: { member: Member }) {
             </p>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 rounded-2xl bg-primary/[0.06] p-4">
+          <div className="grid grid-cols-3 gap-2 rounded-2xl bg-primary/[0.06] p-3 sm:gap-3 sm:p-4">
             {[
               {
                 l: t(`A los ${targetAge} años tendría`, `At ${targetAge} they'd have`),
@@ -453,7 +455,7 @@ function CollegeFinder({ member }: { member: Member }) {
             ].map((s) => (
               <div key={s.l} className="min-w-0">
                 <p className="text-[10px] leading-tight text-muted-foreground">{s.l}</p>
-                <p className="mt-1 font-display text-xl font-black text-primary">{s.v}</p>
+                <p className="mt-1 break-words font-display text-base font-black leading-tight text-primary sm:text-xl">{s.v}</p>
                 {s.d !== 0 ? (
                   <p className="text-[10px] font-semibold text-primary/80">
                     ({s.d > 0 ? "+" : ""}
