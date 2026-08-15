@@ -922,7 +922,7 @@ const SOURCES: { name: string; detail: { es: string; en: string } }[] = [
   { name: "OECD Education at a Glance", detail: { es: "Duración típica del grado y medias por país.", en: "Typical degree length and country averages." } },
 ];
 
-function SourcesTip() {
+function SourcesTip({ className }: { className?: string }) {
   const { t } = useI18n();
   return (
     <TooltipProvider delayDuration={100}>
@@ -930,23 +930,133 @@ function SourcesTip() {
         <TooltipTrigger asChild>
           <button
             type="button"
-            className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border/70 bg-card px-3 text-[11px] font-semibold text-muted-foreground transition hover:text-foreground"
+            aria-label={t("Fuentes de los datos", "Data sources")}
+            className={cn(
+              "grid h-6 w-6 place-items-center rounded-full border border-border/70 bg-background/70 text-muted-foreground transition hover:text-foreground",
+              className,
+            )}
           >
-            <Info className="h-3.5 w-3.5" /> {t("Fuentes", "Sources")}
+            <Info className="h-3.5 w-3.5" />
           </button>
         </TooltipTrigger>
-        <TooltipContent className="max-w-xs">
-          <p className="mb-1 font-semibold">{t("Cifras estimadas 2025 (USD)", "Estimated 2025 figures (USD)")}</p>
+        <TooltipContent side="bottom" align="start" className="max-w-[280px] p-3">
+          <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+            {t("Fuentes de los datos", "Data sources")}
+          </p>
           <ul className="space-y-1">
             {SOURCES.map((s) => (
               <li key={s.name} className="text-[11px] leading-snug">
-                <span className="font-semibold">{s.name}</span> — {t(s.detail.es, s.detail.en)}
+                <span className="font-semibold">{s.name}</span>
+                <span className="text-muted-foreground"> — {t(s.detail.es, s.detail.en)}</span>
               </li>
             ))}
           </ul>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
+  );
+}
+
+function CompareDialog({
+  open,
+  onClose,
+  unis,
+  currency,
+  usdFactor,
+  projected,
+  includeLiving,
+}: {
+  open: boolean;
+  onClose: () => void;
+  unis: University[];
+  currency: string;
+  usdFactor: number;
+  projected: number;
+  includeLiving: boolean;
+}) {
+  const { t, lang } = useI18n();
+  if (!open || unis.length === 0) return null;
+
+  const rows = unis.map((u) => {
+    const tuition = u.tuition * usdFactor * u.years;
+    const living = u.living * usdFactor * u.years;
+    const total = tuition + (includeLiving ? living : 0);
+    return { u, tuition, living, total, ok: total <= projected };
+  });
+  const cheapest = Math.min(...rows.map((r) => r.total));
+
+  return (
+    <Dialog open onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-h-[88vh] max-w-4xl overflow-y-auto">
+        <DialogHeader className="text-left">
+          <DialogTitle className="flex items-center gap-2 font-display text-xl font-black">
+            {t("Comparar universidades", "Compare universities")}
+            <SourcesTip />
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className={cn("grid gap-3", rows.length === 2 ? "sm:grid-cols-2" : "sm:grid-cols-3")}>
+          {rows.map((r) => (
+            <div
+              key={r.u.id}
+              className={cn(
+                "overflow-hidden rounded-2xl border bg-card",
+                r.total === cheapest ? "border-primary shadow-sm" : "border-border/70",
+              )}
+            >
+              <div className="relative h-24 overflow-hidden">
+                <img
+                  src={uniPhoto(r.u)}
+                  alt={r.u.name}
+                  onError={(e) => {
+                    const img = e.currentTarget;
+                    const fb = uniPhotoFallback(r.u);
+                    if (img.src !== fb) img.src = fb;
+                  }}
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+                {r.total === cheapest ? (
+                  <span className="absolute right-2 top-2 rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold text-primary-foreground">
+                    {t("Más económica", "Most affordable")}
+                  </span>
+                ) : null}
+              </div>
+              <div className="space-y-2 p-3">
+                <p className="font-display text-sm font-bold leading-tight text-foreground">
+                  {r.u.flag} {r.u.name}
+                </p>
+                <p className="text-[11px] text-muted-foreground">
+                  {r.u.city}, {lang === "en" ? r.u.country : r.u.countryEs}
+                </p>
+                {[
+                  [t("Ranking", "Rank"), `#${r.u.rank}`],
+                  [t("Duración", "Duration"), `${r.u.years} ${t("años", "yrs")}`],
+                  [t("Matrícula total", "Total tuition"), money(r.tuition, currency, true)],
+                  [t("Vida total", "Total living"), money(r.living, currency, true)],
+                  [t("Becas", "Scholarships"), r.u.scholarship ? t("Sí", "Yes") : "—"],
+                ].map(([l, v]) => (
+                  <div key={l} className="flex items-center justify-between border-t border-border/50 pt-1.5 text-[11px]">
+                    <span className="text-muted-foreground">{l}</span>
+                    <span className="font-semibold text-foreground">{v}</span>
+                  </div>
+                ))}
+                <div className="rounded-xl bg-secondary/50 p-2 text-center">
+                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                    {t("Coste total", "Total cost")}
+                  </p>
+                  <p className="font-display text-base font-black text-foreground">{money(r.total, currency, true)}</p>
+                  <p className={cn("text-[11px] font-semibold", r.ok ? "text-primary" : "text-amber-600 dark:text-amber-400")}>
+                    {r.ok
+                      ? `${t("Te sobran", "Left over")} ${money(projected - r.total, currency, true)}`
+                      : `${t("Te faltan", "Short by")} ${money(r.total - projected, currency, true)}`}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
