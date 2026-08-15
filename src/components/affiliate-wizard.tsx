@@ -99,18 +99,24 @@ export function AffiliateWizard() {
     "I'm using WhatsYournumber to manage my wealth. Join with my link and let's start together:",
   );
 
-  const share = (where: "whatsapp" | "x" | "linkedin" | "copy") => {
+  const share = (where: "whatsapp" | "instagram" | "telegram" | "linkedin" | "copy") => {
     if (where === "copy") {
       void copy();
       return;
     }
     const url = encodeURIComponent(link);
     const text = encodeURIComponent(`${shareText} ${link}`);
+    if (where === "instagram") {
+      // Instagram no permite compartir enlaces por web: copiamos y abrimos la app.
+      void copy();
+      window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
+      return;
+    }
     const target =
       where === "whatsapp"
         ? `https://wa.me/?text=${text}`
-        : where === "x"
-          ? `https://twitter.com/intent/tweet?text=${text}`
+        : where === "telegram"
+          ? `https://t.me/share/url?url=${url}&text=${encodeURIComponent(shareText)}`
           : `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
     window.open(target, "_blank", "noopener,noreferrer");
   };
