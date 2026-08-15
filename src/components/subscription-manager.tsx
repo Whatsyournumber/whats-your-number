@@ -216,3 +216,29 @@ function PortalAction({
     </button>
   );
 }
+
+function InfoTile({
+  icon: Icon,
+  label,
+  value,
+  loading,
+}: {
+  icon: typeof CreditCard;
+  label: string;
+  value: string;
+  loading: boolean;
+}) {
+  return (
+    <div className="flex items-start gap-3 rounded-xl border border-border bg-elevated/40 p-3">
+      <span className="mt-0.5 rounded-lg border border-border bg-background p-1.5 text-muted-foreground">
+        <Icon className="h-4 w-4" />
+      </span>
+      <span className="min-w-0">
+        <span className="block text-xs text-muted-foreground">{label}</span>
+        <span className="mt-0.5 block truncate text-sm font-medium">
+          {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : value}
+        </span>
+      </span>
+    </div>
+  );
+}
