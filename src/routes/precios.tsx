@@ -12,6 +12,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { useT } from "@/hooks/use-language";
 import { getPendingCheckoutPlan, setPendingCheckoutPlan } from "@/lib/pending-checkout";
+import { clearPendingDiscount, getPendingDiscount, type PendingDiscount } from "@/lib/pending-discount";
+
 
 export const Route = createFileRoute("/precios")({
   head: () => ({
