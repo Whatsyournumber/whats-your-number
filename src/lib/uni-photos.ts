@@ -468,9 +468,26 @@ import curKyushu from "@/assets/uni/jp-kyushu.jpg";
 import curHokkaido from "@/assets/uni/jp-hokkaido.jpg";
 import curPostech from "@/assets/uni/kr-postech.jpg";
 import curTohoku from "@/assets/uni/jp-tohoku.jpg";
+import curNagoya from "@/assets/uni/jp-nagoya.jpg";
+import curOsaka from "@/assets/uni/jp-osaka.jpg";
+import curFudan from "@/assets/uni/cn-fudan.jpg";
+import curSjtu from "@/assets/uni/cn-sjtu.jpg";
+import curMonashMy from "@/assets/uni/my-monash.jpg";
+import curSnu from "@/assets/uni/kr-snu.jpg";
+import curKyungHee from "@/assets/uni/kr-kyunghee.jpg";
+import curKaist from "@/assets/uni/kr-kaist.jpg";
 
 const CURATED: Record<string, string> = {
+  "ap-nagoya-university": curNagoya,
+  "ap-osaka-university": curOsaka,
+  "ap-fudan-university": curFudan,
+  "ap-shanghai-jiao-tong": curSjtu,
+  "ap-monash-malaysia": curMonashMy,
+  "ap-seoul-national-university": curSnu,
+  "ap-kyung-hee-university": curKyungHee,
+  "ap-kaist": curKaist,
   "ap-spbu": curSpbu,
+
   "ap-msu-lomonosov": curMsu,
   "ap-ntu-taiwan": curNtuTw,
   "ap-tsinghua-university": curTsinghua,
