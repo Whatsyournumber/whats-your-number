@@ -26,8 +26,12 @@ export function RotatingAvatars({
   size?: number;
   className?: string;
 }) {
-  const [faces, setFaces] = useState<number[]>(() => pick(size));
+  const [faces, setFaces] = useState<number[]>(() => POOL.slice(0, size));
   const [fadeKey, setFadeKey] = useState(0);
+
+  useEffect(() => {
+    setFaces(pick(size));
+  }, [size]);
 
   useEffect(() => {
     let cancelled = false;

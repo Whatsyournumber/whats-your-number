@@ -17,8 +17,11 @@ function secondsSinceMidnight() {
  */
 export function useLiveCount(base: number) {
   // Resetea cada día: base + acumulado proporcional al tiempo transcurrido.
-  const dailyBase = base + Math.floor(secondsSinceMidnight() / 22);
-  const [count, setCount] = useState(dailyBase);
+  const [count, setCount] = useState(base);
+
+  useEffect(() => {
+    setCount(base + Math.floor(secondsSinceMidnight() / 22));
+  }, [base]);
 
   useEffect(() => {
     let cancelled = false;
