@@ -62,7 +62,7 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
             links: [
               { label: t("Funciones", "Features"), to: "/finanzas-para-ninos#funciones" },
               { label: t("Precios", "Pricing"), to: "/precios" },
-              { label: t("Demo gratis", "Free demo"), to: "/demo-ninos" },
+              { label: t("Programa de afiliados", "Affiliate program"), to: "/afiliados", external: true },
             ],
           }
         : {
