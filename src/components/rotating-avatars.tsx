@@ -10,7 +10,9 @@ function pick(count: number, exclude: number[] = []): number[] {
   const pool = [...available];
   for (let i = 0; i < count && pool.length; i++) {
     const idx = Math.floor(Math.random() * pool.length);
-    out.push(pool.splice(idx, 1)[0]);
+    const picked = pool.splice(idx, 1)[0];
+    if (picked === undefined) break;
+    out.push(picked);
   }
   return out;
 }
