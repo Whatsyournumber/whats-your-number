@@ -268,7 +268,7 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="relative">
+      <section id="como-funciona" className="relative scroll-mt-24">
         <div className="grid lg:grid-cols-2">
           {/* Photo */}
           <div className="relative min-h-[260px] lg:min-h-full">
@@ -332,7 +332,7 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
       </section>
 
       {/* EARNINGS */}
-      <section>
+      <section id="como-ganas" className="scroll-mt-24">
         <SectionTitle
           title={t("Cuánto puedes ganar al mes", "What you can earn per month")}
           description={t(
