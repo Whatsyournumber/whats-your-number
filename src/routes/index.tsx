@@ -166,6 +166,7 @@ function DemoCard() {
 
 function Landing() {
   const t = useT();
+  const liveCount = useLiveCount(1200);
   const { user, loading: authLoading } = useAuth();
   const { isPatrimonio, loading: subscriptionLoading } = useSubscription();
   const navigate = useNavigate();
