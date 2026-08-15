@@ -584,7 +584,13 @@ function CollegeFinder({ member }: { member: Member }) {
           return (
             <article
               key={u.id}
-              className="group overflow-hidden rounded-3xl border border-border/70 bg-card shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              role="button"
+              tabIndex={0}
+              onClick={() => setDetail(u)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") setDetail(u);
+              }}
+              className="group cursor-pointer overflow-hidden rounded-3xl border border-border/70 bg-card text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
               <div className="relative h-44 overflow-hidden bg-secondary">
                 <img
