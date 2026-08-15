@@ -590,22 +590,39 @@ function CollegeFinder({ member }: { member: Member }) {
                 <span className="absolute left-3 top-3 grid h-8 w-8 place-items-center rounded-xl bg-background/80 text-lg backdrop-blur">
                   {u.flag}
                 </span>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleSaved(u.id);
-                  }}
-                  className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-background/80 backdrop-blur"
-                  aria-label={t("Guardar", "Save")}
-                >
-                  <Heart
-                    className={cn(
-                      "h-4 w-4",
-                      saved.includes(u.id) ? "fill-primary text-primary" : "text-muted-foreground",
-                    )}
-                  />
-                </button>
+                <TooltipProvider delayDuration={100}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleSaved(u.id);
+                        }}
+                        className={cn(
+                          "absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-background/80 backdrop-blur transition",
+                          saved.includes(u.id) && "ring-2 ring-primary",
+                          !saved.includes(u.id) && saved.length >= 3 && "opacity-50",
+                        )}
+                        aria-label={t("Comparar", "Compare")}
+                      >
+                        <Heart
+                          className={cn(
+                            "h-4 w-4",
+                            saved.includes(u.id) ? "fill-primary text-primary" : "text-muted-foreground",
+                          )}
+                        />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="left" className="text-[11px] font-semibold">
+                      {saved.includes(u.id)
+                        ? t("Quitar de la comparación", "Remove from comparison")
+                        : saved.length >= 3
+                          ? t("Máximo 3 universidades", "Maximum 3 universities")
+                          : t(`Comparar hasta 3 (${saved.length}/3)`, `Compare up to 3 (${saved.length}/3)`)}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 <span className="absolute bottom-3 right-3 rounded-full bg-background/80 px-2 py-0.5 text-[10px] font-bold text-muted-foreground backdrop-blur">
                   #{u.rank}
                 </span>
