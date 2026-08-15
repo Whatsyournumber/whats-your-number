@@ -174,17 +174,19 @@ function AuthPage() {
 
         <div className="surface p-7">
           {isAffiliate && (
-            <div className="mb-6 flex items-center justify-center gap-2">
+            <div className="mb-6 flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
               {[
                 tt("Únete", "Join"),
                 tt("Crea tu cuenta", "Create account"),
+                tt("Sobre ti", "About you"),
                 tt("Tu link", "Your link"),
+                tt("Comparte", "Share"),
               ].map((label, i) => {
                 const active = i === 1;
                 const done = i === 0;
                 return (
                   <div key={label} className="flex items-center gap-2">
-                    {i > 0 && <span className="h-px w-4 bg-border" />}
+                    {i > 0 && <span className="h-px w-3 bg-border" />}
                     <span
                       className={`h-1.5 w-1.5 rounded-full ${
                         active || done ? "bg-primary" : "bg-muted-foreground/30"
