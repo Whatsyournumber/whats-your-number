@@ -656,8 +656,6 @@ function CollegeFinder({ member }: { member: Member }) {
                   </div>
                 ) : null}
 
-                <div className="mt-3 flex items-end justify-between gap-3">
-                  <div>
                 <div className="mt-3 grid grid-cols-3 gap-2 rounded-2xl bg-secondary/50 px-3 py-2 text-center">
                   <div className="min-w-0">
                     <p className="truncate font-display text-xs font-bold text-foreground">
