@@ -470,29 +470,7 @@ function CollegeFinder({ member }: { member: Member }) {
       {/* Filtros */}
       <div className="mb-4 rounded-[28px] border border-border/70 bg-card p-3 shadow-sm sm:p-4">
         <div className="flex flex-wrap items-center gap-2">
-          {(
-            [
-              ["afford", t(`Puede pagar (${counts.afford})`, `Affordable (${counts.afford})`)],
-              ["close", t(`Casi llega (${counts.close})`, `Almost there (${counts.close})`)],
-              ["all", t(`Todas (${counts.all})`, `All (${counts.all})`)],
-            ] as const
-          ).map(([k, label]) => (
-            <button
-              key={k}
-              type="button"
-              onClick={() => setTab(k)}
-              className={cn(
-                "rounded-full border px-4 py-2 text-xs font-bold transition",
-                tab === k
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border/70 bg-background/50 text-muted-foreground hover:text-foreground",
-              )}
-            >
-              {label}
-            </button>
-          ))}
-
-          <div className="ml-auto flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-0.5 rounded-full border border-border/70 bg-background/50 p-0.5">
               {(
                 [
