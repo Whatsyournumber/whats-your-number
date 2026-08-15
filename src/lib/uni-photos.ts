@@ -221,6 +221,7 @@ import cur_fr_polytechnique from "@/assets/uni/fr-polytechnique.jpg";
 import cur_fr_essec from "@/assets/uni/fr-essec.jpg";
 import cur_fr_hec from "@/assets/uni/fr-hec.jpg";
 import cur_cr_incae from "@/assets/uni/cr-incae.jpg";
+import cur_cr_tec from "@/assets/uni/cr-tec.jpg";
 import cur_nl_tudelft from "@/assets/uni/nl-tudelft.jpg";
 import cur_mx_tec from "@/assets/uni/mx-tec.jpg";
 import cur_jp_waseda from "@/assets/uni/jp-waseda.jpg";
