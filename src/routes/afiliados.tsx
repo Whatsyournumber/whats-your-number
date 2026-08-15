@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useT } from "@/hooks/use-language";
+import { LanguageToggle, useT } from "@/hooks/use-language";
 import { useAuth } from "@/hooks/use-auth";
 import { useMyAffiliate } from "@/hooks/use-affiliate";
 import { AffiliateExplainer } from "@/components/affiliate-explainer";
@@ -173,7 +173,9 @@ function AffiliatesPage() {
             <Link to="/" className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
               <ArrowLeft className="h-3.5 w-3.5" /> {t("Volver", "Back")}
             </Link>
+            <LanguageToggle />
           </div>
+
           <AffiliateWizard />
         </div>
       </div>
