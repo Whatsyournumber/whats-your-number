@@ -87,7 +87,7 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
             title: t("Recursos", "Resources"),
             links: [
               { label: "Blog", to: "/blog" },
-              { label: t("Su primer número", "Their first number"), to: "/demo-ninos" },
+              { label: t("Demo gratis", "Free demo"), to: "/demo-ninos" },
               { label: t("Finanzas para adultos", "Adult finance"), to: "/" },
             ],
           }
