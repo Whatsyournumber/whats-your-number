@@ -233,52 +233,62 @@ export function AffiliateWizard() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25 }}
-            className="surface p-6 text-center"
+            className="surface relative overflow-hidden p-6 text-center"
           >
-            <span className="mx-auto mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/15 text-primary">
-              <PartyPopper className="h-6 w-6" />
-            </span>
-            <h2 className="font-display text-xl font-semibold tracking-tight">
-              {t("¡Tu enlace está listo!", "Your link is ready!")}
-            </h2>
-            <p className="mt-1.5 text-xs text-muted-foreground">
-              {t("Compártelo y gana 30% de cada suscripción, cada mes.", "Share it and earn 30% of every subscription, every month.")}
-            </p>
-
-            <div className="mt-5 rounded-2xl border border-border/60 bg-background/40 p-4 text-left">
-              <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-muted-foreground">
-                <Link2 className="h-3.5 w-3.5" />
-                {t("Tu enlace único", "Your unique link")}
-              </div>
-              <p className="mt-2 truncate font-mono text-sm text-foreground" title={link}>
-                {link.replace(/^https?:\/\//, "").split("/?")[0]}/?ref={code}
-              </p>
-              <p className="mt-1.5 text-[11px] text-muted-foreground">
-                {t("Tu código:", "Your code:")}{" "}
-                <span className="font-mono font-semibold tracking-wide text-primary">{code}</span>
+            <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-primary/20 blur-3xl" />
+            <div className="relative">
+              <span className="mx-auto mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/15 text-primary ring-1 ring-primary/30 shadow-[0_0_30px_-8px_hsl(var(--primary))]">
+                <PartyPopper className="h-6 w-6" />
+              </span>
+              <h2 className="font-display text-xl font-semibold tracking-tight">
+                {t("¡Tu enlace está listo!", "Your link is ready!")}
+              </h2>
+              <p className="mt-1.5 text-xs text-muted-foreground">
+                {t("Compártelo y gana 30% de cada suscripción, cada mes.", "Share it and earn 30% of every subscription, every month.")}
               </p>
 
-              <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-                <Button onClick={() => void copy()} className="flex-1 rounded-xl">
-                  {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
-                  {copied ? t("¡Copiado!", "Copied!") : t("Copiar enlace", "Copy link")}
-                </Button>
-                <Button
-                  variant="outline"
-                  className="rounded-xl"
-                  onClick={() => {
-                    void navigator.clipboard.writeText(code ?? "");
-                    toast.success(t("Código copiado", "Code copied"));
-                  }}
+              <div className="mt-5 rounded-2xl border border-primary/20 bg-gradient-to-b from-primary/[0.07] to-transparent p-5 text-left backdrop-blur-sm">
+                <div className="flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                  <Link2 className="h-3.5 w-3.5" />
+                  {t("Tu código de afiliado", "Your affiliate code")}
+                </div>
+
+                <p className="mt-2 text-center font-mono text-2xl font-semibold tracking-[0.12em] text-primary">
+                  {code}
+                </p>
+
+                <div className="my-4 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+
+                <p
+                  className="truncate text-center font-mono text-xs text-muted-foreground"
+                  title={link}
                 >
-                  {t("Copiar código", "Copy code")}
-                </Button>
+                  {link.replace(/^https?:\/\//, "").split("/?")[0]}/?ref={code}
+                </p>
+
+                <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                  <Button onClick={() => void copy()} className="flex-1 rounded-xl">
+                    {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
+                    {copied ? t("¡Copiado!", "Copied!") : t("Copiar enlace", "Copy link")}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="rounded-xl border-primary/30 hover:bg-primary/10"
+                    onClick={() => {
+                      void navigator.clipboard.writeText(code ?? "");
+                      toast.success(t("Código copiado", "Code copied"));
+                    }}
+                  >
+                    {t("Copiar código", "Copy code")}
+                  </Button>
+                </div>
               </div>
+
+              <p className="mt-4 text-xs text-muted-foreground">
+                {t("Compártelo con tus amigos y empieza a ganar.", "Share it with your friends and start earning.")}
+              </p>
             </div>
 
-            <p className="mt-4 text-xs text-muted-foreground">
-              {t("Compártelo con tus amigos y empieza a ganar.", "Share it with your friends and start earning.")}
-            </p>
 
 
             <Button className="mt-5 w-full rounded-full" onClick={() => setStep(2)}>
