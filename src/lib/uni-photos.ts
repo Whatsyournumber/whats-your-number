@@ -188,6 +188,13 @@ import cur_us_fsu from "@/assets/uni/us-fsu.jpg";
 import cur_us_ucf from "@/assets/uni/us-ucf.jpg";
 import cur_hk_hku from "@/assets/uni/hk-hku.jpg";
 import cur_ae_khalifa from "@/assets/uni/ae-khalifa.jpg";
+import cur_ae_uaeu from "@/assets/uni/ae-uaeu.jpg";
+import cur_tr_sabanci from "@/assets/uni/tr-sabanci.jpg";
+import cur_eg_auc from "@/assets/uni/eg-auc.jpg";
+import cur_ae_zayed from "@/assets/uni/ae-zayed.jpg";
+import cur_ae_heriot from "@/assets/uni/ae-heriotwatt.jpg";
+import cur_ae_sharjah from "@/assets/uni/ae-sharjah.jpg";
+import cur_qa_georgetown from "@/assets/uni/qa-georgetown.jpg";
 import cur_ae_aud from "@/assets/uni/ae-aud.jpg";
 import cur_ar_uba from "@/assets/uni/ar-uba.jpg";
 import cur_ar_cordoba from "@/assets/uni/ar-cordoba.jpg";
@@ -640,6 +647,13 @@ const CURATED: Record<string, string> = {
   "us-university-of-central-florid": cur_us_ucf,
   "ap-university-of-hong-kong": cur_hk_hku,
   "ot-khalifa-university": cur_ae_khalifa,
+  "me-uae-university": cur_ae_uaeu,
+  "me-sabanci": cur_tr_sabanci,
+  "me-auc-cairo": cur_eg_auc,
+  "me-zayed-university": cur_ae_zayed,
+  "me-heriot-watt-dubai": cur_ae_heriot,
+  "me-sharjah": cur_ae_sharjah,
+  "me-ku-leuven-qatar": cur_qa_georgetown,
   "ot-american-university-of-dubai": cur_ae_aud,
   "ar-universidad-de-buenos-aires": cur_ar_uba,
   "ar-universidad-nacional-de-cord": cur_ar_cordoba,
