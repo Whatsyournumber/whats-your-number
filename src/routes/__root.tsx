@@ -25,6 +25,8 @@ import { AffiliateTracker } from "@/components/affiliate-tracker";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
+import { useMyAffiliate } from "@/hooks/use-affiliate";
+
 import { LanguageProvider, useT, LanguageToggle } from "@/hooks/use-language";
 import { CurrencyToggle } from "@/components/currency-toggle";
 import { Button } from "@/components/ui/button";
@@ -186,8 +188,21 @@ function RootLayout() {
     return <Outlet />;
   }
 
+  // /afiliados: la landing y el wizard van a pantalla completa; solo el panel
+  // de afiliado activo se muestra dentro del dashboard.
+  if (pathname === "/afiliados") {
+    return <AffiliatesGate />;
+  }
+
   return <AppShell />;
 }
+
+function AffiliatesGate() {
+  const { affiliate, loading } = useMyAffiliate();
+  if (loading || !affiliate) return <Outlet />;
+  return <AppShell />;
+}
+
 
 function AppShell() {
   const { user, loading, signOut } = useAuth();
