@@ -323,7 +323,7 @@ function Landing() {
         <SiteHeader />
       </div>
 
-      <main className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-24">
+      <main className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-10 md:pb-12">
 
         <motion.section
           initial={{ opacity: 0, y: 14 }}
@@ -692,7 +692,7 @@ function Landing() {
         </section>
 
 
-        <section className="surface mt-24 md:mt-32 flex flex-wrap items-center gap-6 p-8">
+        <section className="surface mt-10 md:mt-14 flex flex-wrap items-center gap-6 p-8">
           <div className="flex items-center gap-3">
             <ShieldCheck className="h-5 w-5 text-primary" />
             <p className="text-sm text-muted-foreground">
