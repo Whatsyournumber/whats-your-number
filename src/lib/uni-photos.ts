@@ -238,6 +238,12 @@ import cur_se_lund from "@/assets/uni/se-lund.jpg";
 import cur_se_kth from "@/assets/uni/se-kth.jpg";
 
 import cur_sg_nus from "@/assets/uni/sg-nus.jpg";
+import cur_sg_smu from "@/assets/uni/sg-smu.jpg";
+import cur_sg_sutd from "@/assets/uni/sg-sutd.jpg";
+import cur_hk_cuhk from "@/assets/uni/hk-cuhk.jpg";
+import cur_kz_nazarbayev from "@/assets/uni/kz-nazarbayev.jpg";
+import cur_jp_keio from "@/assets/uni/jp-keio.jpg";
+import cur_jp_sophia from "@/assets/uni/jp-sophia.jpg";
 import cur_ca_calgary from "@/assets/uni/ca-calgary.jpg";
 import cur_nz_auckland from "@/assets/uni/nz-auckland.jpg";
 import cur_uk_oxford from "@/assets/uni/uk-oxford.jpg";
@@ -437,7 +443,6 @@ import afNairobi from "@/assets/uni/af-nairobi.jpg";
 import afCairo from "@/assets/uni/af-cairo.jpg";
 import afNamibia from "@/assets/uni/af-namibia.jpg";
 import afBotswana from "@/assets/uni/af-botswana.jpg";
-import apNusReal from "@/assets/uni/ap-nus-real.jpg";
 import meTunisReal from "@/assets/uni/me-tunis.jpg";
 import meAkhawayn from "@/assets/uni/me-akhawayn.jpg";
 import meBahrain from "@/assets/uni/me-bahrain.jpg";
@@ -799,7 +804,14 @@ const CURATED: Record<string, string> = {
   "ot-university-of-copenhagen": cur_dk_copenhagen,
   "ot-lund-university": cur_se_lund,
   "ot-kth-royal-institute": cur_se_kth,
-  "ap-nus": apNusReal,
+  "ap-nus": cur_sg_nus,
+  "ap-nus-law": cur_sg_nus,
+  "ap-smu-singapore": cur_sg_smu,
+  "ap-sutd": cur_sg_sutd,
+  "ap-cuhk": cur_hk_cuhk,
+  "ap-nazarbayev-university": cur_kz_nazarbayev,
+  "ap-keio-university": cur_jp_keio,
+  "ap-sophia-university": cur_jp_sophia,
   "ca-university-of-calgary": cur_ca_calgary,
   "ap-university-of-auckland": cur_nz_auckland,
   "uk-university-of-oxford": cur_uk_oxford,
