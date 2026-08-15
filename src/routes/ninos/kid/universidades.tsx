@@ -727,6 +727,39 @@ function CollegeFinder({ member }: { member: Member }) {
         ) : null}
       </div>
 
+      {saved.length > 0 ? (
+        <div className="sticky bottom-4 z-30 mx-auto flex w-fit max-w-full items-center gap-3 rounded-full border border-border/70 bg-card/95 px-4 py-2 shadow-lg backdrop-blur">
+          <span className="text-[11px] font-bold text-muted-foreground">
+            {saved.length}/3 {t("seleccionadas", "selected")}
+          </span>
+          <Button
+            size="sm"
+            className="rounded-full"
+            disabled={saved.length < 2}
+            onClick={() => setCompareOpen(true)}
+          >
+            {t("Comparar", "Compare")}
+          </Button>
+          <button
+            type="button"
+            onClick={() => setSaved([])}
+            className="text-[11px] font-semibold text-muted-foreground hover:text-foreground"
+          >
+            {t("Limpiar", "Clear")}
+          </button>
+        </div>
+      ) : null}
+
+      <CompareDialog
+        open={compareOpen}
+        onClose={() => setCompareOpen(false)}
+        unis={priced.filter((u) => saved.includes(u.id))}
+        currency={currency}
+        usdFactor={usdFx.factor}
+        projected={projected}
+        includeLiving={includeLiving}
+      />
+
       <UniDetailDialog
         uni={detail}
         onClose={() => setDetail(null)}
