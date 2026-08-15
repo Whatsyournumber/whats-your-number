@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, CreditCard, ExternalLink, Loader2, Receipt, XCircle } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { ArrowUpRight, CreditCard, ExternalLink, Loader2, Mail, Receipt, User, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/use-auth";
 import { useT } from "@/hooks/use-language";
 import { useSubscription } from "@/hooks/use-subscription";
+import { getBillingDetails } from "@/lib/billing.functions";
 import { getPaddleEnvironment } from "@/lib/paddle";
 import { changePlan, openCustomerPortal, type PortalTarget } from "@/utils/subscriptions.functions";
 
