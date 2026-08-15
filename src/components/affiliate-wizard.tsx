@@ -48,7 +48,9 @@ export function AffiliateWizard() {
   const code = affiliate?.code ?? "";
   const link = code ? `${origin}/?ref=${code}` : "";
 
+  // Paso 2 ya está hecho (la cuenta existe); el wizard cubre los pasos 3, 4 y 5.
   const steps = [
+    t("Crea tu cuenta", "Create account"),
     t("Sobre ti", "About you"),
     t("Tu link", "Your link"),
     t("Comparte", "Share"),
@@ -107,8 +109,8 @@ export function AffiliateWizard() {
       {/* Stepper */}
       <div className="mb-6 flex items-center justify-center gap-2">
         {steps.map((label, i) => {
-          const done = i < step;
-          const active = i === step;
+          const done = i <= step; // el índice 0 (cuenta creada) siempre está completo
+          const active = i === step + 1;
           return (
             <div key={label} className="flex items-center gap-2">
               {i > 0 && <span className="h-px w-4 bg-border" />}
@@ -121,7 +123,7 @@ export function AffiliateWizard() {
                       : "bg-muted text-muted-foreground"
                 }`}
               >
-                {done ? <Check className="h-3 w-3" /> : i + 3}
+                {done && !active ? <Check className="h-3 w-3" /> : i + 2}
               </span>
               <span className={`text-[10px] ${active ? "font-medium text-foreground" : "text-muted-foreground"}`}>
                 {label}
