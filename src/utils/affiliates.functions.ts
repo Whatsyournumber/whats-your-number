@@ -4,7 +4,6 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
   assertSuperAdmin,
   maybeGrantReferralReward,
-  randomCode,
   slugifyCode,
   REFERRALS_FOR_FREE_PRO,
 } from "@/lib/affiliates.server";
