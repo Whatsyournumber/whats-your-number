@@ -208,6 +208,29 @@ function Pricing() {
             <Sparkles className="h-3.5 w-3.5 text-primary" />
             {t("Sin permanencia, cancela cuando quieras", "No lock-in, cancel anytime")}
           </span>
+
+          {discount ? (
+            <div className="mx-auto mt-4 flex max-w-md items-center justify-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-xs text-primary">
+              <Sparkles className="h-3.5 w-3.5" />
+              <span className="font-medium">
+                {t(
+                  `Código ${discount.code}: ${discount.label} de descuento se aplicará en el pago`,
+                  `Code ${discount.code}: ${discount.label} off will be applied at checkout`,
+                )}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  clearPendingDiscount();
+                  setDiscount(null);
+                }}
+                className="ml-1 text-primary/60 underline-offset-2 hover:text-primary hover:underline"
+              >
+                {t("Quitar", "Remove")}
+              </button>
+            </div>
+          ) : null}
+
           <h1 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-semibold tracking-tight md:text-5xl">
             {t("Un plan para cada etapa de tu libertad financiera", "A plan for every stage of your financial freedom")}
           </h1>
