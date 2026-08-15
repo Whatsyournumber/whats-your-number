@@ -662,7 +662,7 @@ function CollegeFinder({ member }: { member: Member }) {
                 <div className="mt-3 grid grid-cols-3 gap-2 rounded-2xl bg-secondary/50 px-3 py-2 text-center">
                   <div className="min-w-0">
                     <p className="truncate font-display text-xs font-bold text-foreground">
-                      {money(u.tuition * usdFx.factor, currency, true)}
+                      {u.tuition <= 0 ? t("Gratuita", "Free") : money(u.tuition * usdFx.factor, currency, true)}
                     </p>
                     <p className="truncate text-[9px] text-muted-foreground">{t("Matrícula/año", "Tuition/yr")}</p>
                   </div>
@@ -1128,9 +1128,15 @@ function UniDetailDialog({
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
-              { l: t("Matrícula / año", "Tuition / year"), v: money(tuitionYear, currency, true) },
+              {
+                l: t("Matrícula / año", "Tuition / year"),
+                v: uni.tuition <= 0 ? t("Gratuita", "Free") : money(tuitionYear, currency, true),
+              },
               { l: t("Coste de vida / año", "Living cost / year"), v: money(livingYear, currency, true) },
-              { l: t("Matrícula total", "Total tuition"), v: money(tuitionTotal, currency, true) },
+              {
+                l: t("Matrícula total", "Total tuition"),
+                v: uni.tuition <= 0 ? t("Gratuita", "Free") : money(tuitionTotal, currency, true),
+              },
               { l: t("Vida total", "Total living"), v: money(livingTotal, currency, true) },
             ].map((s) => (
               <div key={s.l} className="rounded-2xl border border-border/70 bg-secondary/40 p-3">
@@ -1139,6 +1145,18 @@ function UniDetailDialog({
               </div>
             ))}
           </div>
+
+          {uni.tuition <= 0 ? (
+            <div className="rounded-2xl border border-emerald-500/25 bg-emerald-500/[0.08] p-3 text-[11px] leading-relaxed text-foreground">
+              <span className="font-bold">{t("Matrícula gratuita.", "Tuition-free.")}</span>{" "}
+              {t(
+                "Universidad pública sin coste de matrícula para grado; solo se pagan tasas administrativas menores (aprox. 0–300 USD/año) y, en algunos casos, un examen de admisión. El coste real de estudiar es el de vida.",
+                "Public university with no undergraduate tuition; only minor administrative fees apply (about USD 0–300/yr) and, in some cases, an entrance exam. The real cost of studying is living expenses.",
+              )}
+            </div>
+          ) : null}
+
+
 
           <div className="rounded-2xl border border-primary/20 bg-primary/[0.07] p-4">
             <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
