@@ -238,6 +238,12 @@ import cur_se_lund from "@/assets/uni/se-lund.jpg";
 import cur_se_kth from "@/assets/uni/se-kth.jpg";
 
 import cur_sg_nus from "@/assets/uni/sg-nus.jpg";
+import cur_sg_smu from "@/assets/uni/sg-smu.jpg";
+import cur_sg_sutd from "@/assets/uni/sg-sutd.jpg";
+import cur_hk_cuhk from "@/assets/uni/hk-cuhk.jpg";
+import cur_kz_nazarbayev from "@/assets/uni/kz-nazarbayev.jpg";
+import cur_jp_keio from "@/assets/uni/jp-keio.jpg";
+import cur_jp_sophia from "@/assets/uni/jp-sophia.jpg";
 import cur_ca_calgary from "@/assets/uni/ca-calgary.jpg";
 import cur_nz_auckland from "@/assets/uni/nz-auckland.jpg";
 import cur_uk_oxford from "@/assets/uni/uk-oxford.jpg";
