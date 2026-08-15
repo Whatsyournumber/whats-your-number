@@ -222,17 +222,12 @@ export function AffiliateWizard() {
                 </Label>
                 <Input
                   id="aff-country"
-                  list="aff-country-list"
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
                   placeholder={t("Escribe tu país", "Type your country")}
                   className="mt-1.5 rounded-xl"
                 />
-                <datalist id="aff-country-list">
-                  {COUNTRIES.map((c) => (
-                    <option key={c.name} value={c.name} />
-                  ))}
-                </datalist>
+
 
               </div>
 
