@@ -351,6 +351,8 @@ function CollegeFinder({ member }: { member: Member }) {
               )}
             </span>
           </p>
+        </div>
+
 
 
 
