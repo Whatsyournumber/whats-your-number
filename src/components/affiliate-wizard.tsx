@@ -40,7 +40,7 @@ export function AffiliateWizard() {
   const [step, setStep] = useState(0); // 0 = about you, 1 = link ready, 2 = share
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [displayName, setDisplayName] = useState(user?.user_metadata?.["full_name"] ?? "");
+  const [displayName, setDisplayName] = useState(user?.user_metadata?.["full_name"] ?? (user?.email ?? ""));
   const [channel, setChannel] = useState(CHANNELS[0].es);
   const [payoutEmail, setPayoutEmail] = useState(user?.email ?? "");
 
@@ -59,7 +59,7 @@ export function AffiliateWizard() {
     try {
       await joinAffiliateProgram({
         data: {
-          displayName: displayName || user?.user_metadata?.["full_name"] ?? "",
+          displayName: displayName || (user?.user_metadata?.["full_name"] ?? ""),
           payoutEmail: payoutEmail || user?.email || "",
           environment: getPaddleEnvironment(),
         },
