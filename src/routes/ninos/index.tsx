@@ -7,7 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useActiveProfile, useMembers, useSubscription } from "@/hooks/use-mfn";
 import { THEME_ATTR, type Member } from "@/lib/mfn";
-import { activePlan, kidLimit, planLabel } from "@/lib/mfn-plan";
+import { EXTRA_KID_PRICE_USD, activePlan, kidLimit, planLabel } from "@/lib/mfn-plan";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
 
 export const Route = createFileRoute("/ninos/")({
@@ -213,8 +213,8 @@ function ProfileSelector() {
                   </span>
                   <span className="text-center text-[11px] text-muted-foreground">
                     {t(
-                      `Tu plan incluye ${maxKids} ${maxKids === 1 ? "perfil" : "perfiles"} de niño`,
-                      `Your plan includes ${maxKids} child ${maxKids === 1 ? "profile" : "profiles"}`,
+                      `Tu plan incluye ${maxKids} ${maxKids === 1 ? "perfil" : "perfiles"} de niño. Cada perfil extra cuesta $${EXTRA_KID_PRICE_USD}/mes.`,
+                      `Your plan includes ${maxKids} child ${maxKids === 1 ? "profile" : "profiles"}. Each extra profile costs $${EXTRA_KID_PRICE_USD}/mo.`,
                     )}
                   </span>
                 </div>
