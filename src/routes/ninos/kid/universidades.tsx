@@ -215,7 +215,7 @@ function CollegeFinder({ member }: { member: Member }) {
   const heroImg = member.theme === "girl" ? heroGirl : heroBoy;
 
   const toggleSaved = (id: string) =>
-    setSaved((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+    setSaved((p) => (p.includes(id) ? p.filter((x) => x !== id) : p.length >= 3 ? p : [...p, id]));
 
   return (
     <>
