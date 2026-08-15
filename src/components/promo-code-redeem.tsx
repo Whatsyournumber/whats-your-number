@@ -24,6 +24,8 @@ export function PromoCodeRedeem({ className }: { className?: string }) {
   const t = useT();
   const { user } = useAuth();
   const qc = useQueryClient();
+  const navigate = useNavigate();
+
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
 
