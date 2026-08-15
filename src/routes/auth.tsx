@@ -138,7 +138,22 @@ function AuthPage() {
     }
   };
 
+  const onForgot = async () => {
+    if (!email.trim()) {
+      toast.error(tt("Escribe tu correo primero", "Enter your email first"));
+      return;
+    }
+    setBusy(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setBusy(false);
+    if (error) toast.error(error.message);
+    else toast.success(tt("Te enviamos un enlace para cambiarla", "We sent you a link to change it"));
+  };
+
   const onOAuth = async () => {
+
     if (promo.trim()) setPendingPromoCode(promo);
     setBusy(true);
     const pendingCheckout = getPendingCheckoutPlan();
