@@ -8,8 +8,8 @@ import { PoliciesDialog } from "@/components/policies-dialog";
 import { useT } from "@/hooks/use-language";
 
 const socials = [
-  { icon: Instagram, label: "Instagram", href: "https://instagram.com" },
-  { icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com" },
+  { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/financialpsychologylab" },
+  { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/company/107005182/" },
 ];
 
 type FooterLink = { label: string; to: string; policy?: boolean; external?: boolean };
@@ -194,6 +194,8 @@ export function SiteFooter({ kids = false }: { kids?: boolean } = {}) {
               <a
                 key={label}
                 href={href}
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label={label}
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-foreground/90 text-background transition-transform hover:scale-110 hover:bg-primary hover:text-primary-foreground"
               >
