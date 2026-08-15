@@ -427,8 +427,33 @@ import meBahrain from "@/assets/uni/me-bahrain.jpg";
 import meReichman from "@/assets/uni/me-reichman.jpg";
 import meBgu from "@/assets/uni/me-bgu.jpg";
 import meHebrew from "@/assets/uni/me-hebrew.jpg";
+import curEth from "@/assets/uni/ch-eth.jpg";
+import curEpfl from "@/assets/uni/ch-epfl.jpg";
+import curPorto from "@/assets/uni/pt-porto.jpg";
+import curWeizmann from "@/assets/uni/il-weizmann.jpg";
+import curKoc from "@/assets/uni/tr-koc.jpg";
+import curBogazici from "@/assets/uni/tr-bogazici.jpg";
+import curQatarU from "@/assets/uni/qa-qatar-university.jpg";
+import curKaust from "@/assets/uni/sa-kaust.jpg";
+import curKfupm from "@/assets/uni/sa-kfupm.jpg";
+import curAub from "@/assets/uni/lb-aub.jpg";
+import curJordan from "@/assets/uni/jo-jordan.jpg";
+import curKuwait from "@/assets/uni/kw-kuwait.jpg";
 
 const CURATED: Record<string, string> = {
+  "ot-eth-zurich": curEth,
+  "ot-epfl": curEpfl,
+  "ot-universidade-do-porto": curPorto,
+  "me-weizmann": curWeizmann,
+  "me-koc-university": curKoc,
+  "me-bogazici": curBogazici,
+  "me-qatar-university": curQatarU,
+  "me-kaust": curKaust,
+  "me-kfupm": curKfupm,
+  "me-aub-beirut": curAub,
+  "me-jordan-university": curJordan,
+  "me-kuwait-university": curKuwait,
+
   "me-usthb-alger": afUsthb,
   "me-addis-ababa": afAddis,
   "me-cheikh-anta-diop": afDiop,
@@ -439,6 +464,7 @@ const CURATED: Record<string, string> = {
   "me-idc-reichman": meReichman,
   "me-bgu-negev": meBgu,
   "me-hebrew-jerusalem": meHebrew,
+
 
   "me-obafemi-awolowo": afObafemi,
   "me-makerere": afMakerere,
