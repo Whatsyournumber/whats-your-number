@@ -16,6 +16,7 @@ import { useMyAffiliate } from "@/hooks/use-affiliate";
 import { AffiliateExplainer } from "@/components/affiliate-explainer";
 import { AffiliateLanding } from "@/components/affiliate-landing";
 import { AffiliateWizard } from "@/components/affiliate-wizard";
+import { AffiliateDashboard } from "@/components/affiliate-dashboard";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
@@ -253,22 +254,6 @@ function AffiliatesPage() {
           />
         </div>
       </Panel>
-
-
-
-
-
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard label={t("Clics en tu enlace", "Link clicks")} value={String(clicks)} icon={MousePointerClick} accent index={0} />
-        <KpiCard label={t("Registros", "Sign-ups")} value={String(referrals.length)} icon={Users} index={1} />
-        <KpiCard
-          label={t("Clientes de pago", "Paying customers")}
-          value={String(referrals.filter((r) => r.status === "subscribed").length)}
-          icon={Wallet}
-          index={2}
-        />
-        <KpiCard label={t("Comisión pendiente", "Pending commission")} value={money(pending)} icon={Wallet} index={3} />
-      </div>
 
       <Panel
         className="mt-4"
