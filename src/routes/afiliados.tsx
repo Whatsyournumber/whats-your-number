@@ -194,23 +194,21 @@ function AffiliatesPage() {
         ).replace("{r}", String(affiliate.commission_rate))}
       />
 
-      <Panel title={t("Tu enlace", "Your link")} description={t("Compártelo donde quieras.", "Share it anywhere.")}>
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <Input readOnly value={link} className="font-mono text-xs sm:text-sm" />
-          <Button onClick={() => void copy()} className="shrink-0">
-            {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
-            {t("Copiar", "Copy")}
-          </Button>
-        </div>
-        <p className="mt-3 text-xs text-muted-foreground">
-          {t("Tu código:", "Your code:")} <span className="font-mono text-foreground">{affiliate.code}</span>
-          {affiliate.status !== "active" && (
-            <Badge variant="secondary" className="ml-2">
-              {t("pausado", "paused")}
-            </Badge>
-          )}
-        </p>
-      </Panel>
+      <AffiliateDashboard
+        link={link}
+        code={affiliate.code}
+        clicks={clicks}
+        referrals={referrals}
+        commissions={commissions}
+        pending={pending}
+        paid={paid}
+      />
+      {affiliate.status !== "active" && (
+        <Badge variant="secondary" className="mt-2">
+          {t("pausado", "paused")}
+        </Badge>
+      )}
+
 
       <Panel
         className="mt-4"
