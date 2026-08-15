@@ -406,7 +406,7 @@ function CollegeFinder({ member }: { member: Member }) {
           </div>
           <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border/70 bg-background/60 px-2.5 py-1.5 text-[11px] font-semibold text-foreground sm:px-3 sm:text-xs">
             <BarChart3 className="h-3.5 w-3.5 shrink-0 text-primary" />
-            <span className="hidden xs:inline sm:inline">{t("Ver escenarios", "See scenarios")}</span>
+            <span>{t("Ver escenarios", "See scenarios")}</span>
           </span>
         </div>
 
@@ -434,7 +434,7 @@ function CollegeFinder({ member }: { member: Member }) {
             </p>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 rounded-2xl bg-primary/[0.06] p-4">
+          <div className="grid grid-cols-3 gap-2 rounded-2xl bg-primary/[0.06] p-3 sm:gap-3 sm:p-4">
             {[
               {
                 l: t(`A los ${targetAge} años tendría`, `At ${targetAge} they'd have`),
@@ -455,7 +455,7 @@ function CollegeFinder({ member }: { member: Member }) {
             ].map((s) => (
               <div key={s.l} className="min-w-0">
                 <p className="text-[10px] leading-tight text-muted-foreground">{s.l}</p>
-                <p className="mt-1 font-display text-xl font-black text-primary">{s.v}</p>
+                <p className="mt-1 break-words font-display text-base font-black leading-tight text-primary sm:text-xl">{s.v}</p>
                 {s.d !== 0 ? (
                   <p className="text-[10px] font-semibold text-primary/80">
                     ({s.d > 0 ? "+" : ""}
