@@ -731,6 +731,18 @@ function CollegeFinder({ member }: { member: Member }) {
         ) : null}
       </div>
 
+      <UniDetailDialog
+        uni={detail}
+        onClose={() => setDetail(null)}
+        currency={currency}
+        usdFactor={usdFx.factor}
+        projected={projected}
+        monthsLeft={monthsLeft}
+        includeLiving={includeLiving}
+      />
+
+
+
       {/* CTA final */}
       <section className="mt-6 flex flex-wrap items-center gap-4 rounded-[28px] border border-primary/20 bg-primary/[0.07] p-5">
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-background/80">
