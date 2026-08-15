@@ -26,8 +26,8 @@ import { joinAffiliateProgram } from "@/utils/affiliates.functions";
 import { endAffiliateWizard, startAffiliateWizard } from "@/lib/affiliate-wizard-state";
 
 const AUDIENCES = [
-  { es: "Finanzas", en: "Finance" },
   { es: "Familias", en: "Families" },
+  { es: "Amigos", en: "Friends" },
   { es: "Emprendedores", en: "Entrepreneurs" },
   { es: "Inversores", en: "Investors" },
   { es: "Expatriados", en: "Expats" },
