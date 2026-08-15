@@ -493,7 +493,8 @@ function CollegeFinder({ member }: { member: Member }) {
                 </button>
               ))}
             </div>
-            <SourcesTip />
+
+
 
             <CountryCombobox
               value={country}
