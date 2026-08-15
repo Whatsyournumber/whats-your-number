@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowRight, BarChart3, Check, Heart, Pencil, Search, TrendingUp, X } from "lucide-react";
+import { ArrowRight, BarChart3, Check, Heart, Info, Pencil, Search, TrendingUp, X } from "lucide-react";
 
 import { KidPage } from "@/components/kid-page";
 import heroGirl from "@/assets/uni-hero-girl.jpg";
