@@ -4,7 +4,6 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
   assertSuperAdmin,
   maybeGrantReferralReward,
-  randomCode,
   slugifyCode,
   REFERRALS_FOR_FREE_PRO,
 } from "@/lib/affiliates.server";
@@ -52,10 +51,14 @@ export const joinAffiliateProgram = createServerFn({ method: "POST" })
     }
 
 
-    const base = slugifyCode(data.displayName ?? "") || "WYN";
+    // First name only + 3-4 digits -> e.g. OSCAR482
+    const firstName = (data.displayName ?? "").trim().split(/\s+/)[0] ?? "";
+    const base = (slugifyCode(firstName) || "WYN").slice(0, 10);
     let code = "";
     for (let i = 0; i < 6; i += 1) {
-      const candidate = `${base}${randomCode(4)}`.slice(0, 16);
+      const digits = String(100 + Math.floor(Math.random() * 900) + (i > 2 ? Math.floor(Math.random() * 9000) : 0));
+      const candidate = `${base}${digits}`.slice(0, 16);
+
       const { data: taken } = await supabaseAdmin.from("affiliates").select("id").eq("code", candidate).maybeSingle();
       if (!taken) {
         code = candidate;

@@ -253,6 +253,11 @@ export function AffiliateWizard() {
               <p className="mt-2 truncate font-mono text-sm text-foreground" title={link}>
                 {link.replace(/^https?:\/\//, "").split("/?")[0]}/?ref={code}
               </p>
+              <p className="mt-1.5 text-[11px] text-muted-foreground">
+                {t("Tu código:", "Your code:")}{" "}
+                <span className="font-mono font-semibold tracking-wide text-primary">{code}</span>
+              </p>
+
               <div className="mt-3 flex flex-col gap-2 sm:flex-row">
                 <Button onClick={() => void copy()} className="flex-1 rounded-xl">
                   {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
