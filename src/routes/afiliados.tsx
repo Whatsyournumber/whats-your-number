@@ -140,37 +140,17 @@ function AffiliatesPage() {
 
   if (!affiliate) {
     return (
-      <PageShell>
-        <PageHeader
-          eyebrow={t("Programa de afiliados", "Affiliate program")}
-          title={t("Gana con cada persona que invitas", "Earn from everyone you invite")}
-          subtitle={t(
-            "Recibes una comisión recurrente sobre cada suscripción que llegue con tu enlace. Nosotros cobramos, facturamos y damos soporte.",
-            "Get a recurring commission on every subscription that comes through your link. We handle billing, invoicing and support.",
-          )}
-        />
-        <AffiliateExplainer />
-        <Panel
-          className="mt-4"
-          title={t("Activa tu enlace y consigue Pro gratis", "Activate your link and get free Pro")}
-          description={t(
-            "Toma menos de un minuto. Cuando 3 amigos se registren con tu enlace, te regalamos 12 meses del plan Pro.",
-            "It takes less than a minute. When 3 friends sign up with your link, we gift you 12 months of the Pro plan.",
-          )}
-        >
-          <div className="grid gap-3 sm:max-w-md">
-            <Input
-              value={payoutEmail}
-              onChange={(e) => setPayoutEmail(e.target.value)}
-              placeholder={t("Email para recibir tus pagos", "Email to receive your payouts")}
-            />
-            <Button disabled={busy} onClick={() => void join()}>
-              {busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Link2 className="mr-2 h-4 w-4" />}
-              {t("Crear mi enlace de afiliado", "Create my affiliate link")}
-            </Button>
+      <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-12">
+        <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.10] blur-3xl" />
+        <div className="relative z-10 w-full max-w-sm">
+          <div className="mb-6 flex items-center justify-between">
+            <Link to="/" className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
+              <ArrowLeft className="h-3.5 w-3.5" /> {t("Volver", "Back")}
+            </Link>
           </div>
-        </Panel>
-      </PageShell>
+          <AffiliateWizard />
+        </div>
+      </div>
     );
   }
 
