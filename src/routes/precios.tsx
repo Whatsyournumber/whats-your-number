@@ -162,6 +162,7 @@ function Pricing() {
       customerEmail?: string;
       customData?: Record<string, string>;
       successUrl?: string;
+      discountCode?: string;
     } = {
       priceId: plan.priceId,
       quantity: 1,
@@ -169,8 +170,10 @@ function Pricing() {
       successUrl: `${window.location.origin}/checkout/success?plan=${selectedPlan}`,
     };
     if (user.email) checkoutOptions.customerEmail = user.email;
+    if (discount?.code) checkoutOptions.discountCode = discount.code;
     void openCheckout(checkoutOptions);
   };
+
 
   useEffect(() => {
     if (!user || resumedCheckout.current) return;
