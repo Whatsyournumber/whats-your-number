@@ -19,7 +19,22 @@ const fmtDate = (iso: string | null) =>
 export function SubscriptionManager() {
   const t = useT();
   const { subscription, tier, isTrial, loading } = useSubscription();
+  const { user } = useAuth();
   const [busy, setBusy] = useState<string | null>(null);
+
+  const billing = useQuery({
+    queryKey: ["billing-details", user?.id, getPaddleEnvironment(), subscription?.id ?? null],
+    enabled: Boolean(user),
+    queryFn: () => getBillingDetails({ data: { environment: getPaddleEnvironment() } }),
+    staleTime: 60_000,
+  });
+
+  const displayName =
+    billing.data?.name ??
+    (user?.user_metadata?.["full_name"] as string | undefined) ??
+    null;
+  const displayEmail = billing.data?.email ?? billing.data?.accountEmail ?? user?.email ?? null;
+  const card = billing.data?.card ?? null;
 
   const planLabel = tier === "patrimonio" ? "Familiar" : tier === "pro" ? "Pro" : "Free";
 
