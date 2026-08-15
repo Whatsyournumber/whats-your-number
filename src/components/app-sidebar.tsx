@@ -17,6 +17,7 @@ import {
   CreditCard,
   ShieldCheck,
   Users,
+  Handshake,
   
 } from "lucide-react";
 
@@ -40,6 +41,7 @@ import { buildDataset } from "@/lib/profile-data";
 import { useT } from "@/hooks/use-language";
 import { useRoles } from "@/hooks/use-role";
 import { useSubscription } from "@/hooks/use-subscription";
+import { useMyAffiliate } from "@/hooks/use-affiliate";
 
 export function AppSidebar() {
   const { state } = useSidebar();
@@ -50,6 +52,7 @@ export function AppSidebar() {
   const t = useT();
   const { isSuperAdmin } = useRoles();
   const { isPatrimonio } = useSubscription();
+  const { affiliate } = useMyAffiliate();
 
   const primary = [
     { title: t("Dashboard", "Dashboard"), url: "/dashboard", icon: LayoutDashboard },
