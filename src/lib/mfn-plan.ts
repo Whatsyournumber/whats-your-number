@@ -8,10 +8,13 @@ export type { Subscription };
 
 /** Perfiles de niño permitidos por plan. */
 export const KID_LIMITS: Record<string, number> = {
-  free: 1,
-  pro: 1,
-  family: 4,
+  free: 2,
+  pro: 2,
+  family: 2,
 };
+
+/** Coste mensual de cada perfil adicional a partir del límite incluido. */
+export const EXTRA_KID_PRICE_USD = 5;
 
 export function isActive(sub?: Subscription | null): boolean {
   if (!sub) return false;
