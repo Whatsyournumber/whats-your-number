@@ -159,11 +159,8 @@ export function AffiliateWizard() {
               <h2 className="font-display text-xl font-semibold tracking-tight">
                 {t("Cuéntanos un poco sobre ti", "Tell us a bit about you")}
               </h2>
-              <p className="mt-1.5 text-xs text-muted-foreground">
-                {t(
-                  "Necesitamos esto para crear tu enlace y saber dónde enviarte tus pagos.",
-                  "We need this to create your link and know where to send your payouts.",
-                )}
+              <p className="mt-1.5 whitespace-nowrap text-xs text-muted-foreground">
+                {t("Con esto creamos tu enlace personalizado.", "With this we create your personalized link.")}
               </p>
             </div>
 
@@ -198,18 +195,47 @@ export function AffiliateWizard() {
                 </select>
               </div>
               <div>
-                <Label htmlFor="aff-email" className="text-xs text-muted-foreground">
-                  {t("Email para tus pagos", "Email for your payouts")}
+                <Label className="text-xs text-muted-foreground">
+                  {t("¿A quién llegas principalmente?", "Who is your main audience?")}
                 </Label>
-                <Input
-                  id="aff-email"
-                  type="email"
-                  value={payoutEmail}
-                  onChange={(e) => setPayoutEmail(e.target.value)}
-                  placeholder="email@ejemplo.com"
-                  className="mt-1.5 rounded-xl"
-                />
+                <div className="mt-1.5 flex flex-wrap gap-1.5">
+                  {AUDIENCES.map((a) => {
+                    const active = audience === a.es;
+                    return (
+                      <button
+                        key={a.es}
+                        type="button"
+                        onClick={() => setAudience(a.es)}
+                        className={`rounded-full border px-3 py-1 text-xs transition-colors ${
+                          active
+                            ? "border-primary bg-primary/15 text-primary"
+                            : "border-input text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {t(a.es, a.en)}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
+              <div>
+                <Label htmlFor="aff-country" className="text-xs text-muted-foreground">
+                  {t("País de residencia", "Country of residence")}
+                </Label>
+                <select
+                  id="aff-country"
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  className="mt-1.5 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {COUNTRIES.map((c) => (
+                    <option key={c.name} value={c.name}>
+                      {c.flag} {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
             </div>
 
             <Button className="mt-5 w-full rounded-full" disabled={busy} onClick={() => void create()}>
