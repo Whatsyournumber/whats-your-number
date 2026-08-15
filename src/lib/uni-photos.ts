@@ -443,7 +443,6 @@ import afNairobi from "@/assets/uni/af-nairobi.jpg";
 import afCairo from "@/assets/uni/af-cairo.jpg";
 import afNamibia from "@/assets/uni/af-namibia.jpg";
 import afBotswana from "@/assets/uni/af-botswana.jpg";
-import apNusReal from "@/assets/uni/ap-nus-real.jpg";
 import meTunisReal from "@/assets/uni/me-tunis.jpg";
 import meAkhawayn from "@/assets/uni/me-akhawayn.jpg";
 import meBahrain from "@/assets/uni/me-bahrain.jpg";
