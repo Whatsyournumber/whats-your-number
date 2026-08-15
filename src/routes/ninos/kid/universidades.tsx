@@ -83,6 +83,46 @@ function continentOf(u: University): Continent {
   return "africa";
 }
 
+const CONTINENT_NAMES: Record<Continent, { es: string; en: string }> = {
+  latam: { es: "Latinoamérica", en: "Latin America" },
+  nam: { es: "Norteamérica", en: "North America" },
+  eu: { es: "Europa", en: "Europe" },
+  asia: { es: "Asia", en: "Asia" },
+  oceania: { es: "Oceanía", en: "Oceania" },
+  africa: { es: "África y Medio Oriente", en: "Africa & Middle East" },
+};
+
+/** Ranking global normalizado (1..n, sin huecos ni empates) y ranking dentro del continente. */
+const RANKS: Record<string, { global: number; continent: number; continentKey: Continent; continentTotal: number }> =
+  (() => {
+    const out: Record<string, { global: number; continent: number; continentKey: Continent; continentTotal: number }> =
+      {};
+    const sorted = [...UNIVERSITIES].sort((a, b) => a.rank - b.rank || a.name.localeCompare(b.name));
+    const counters: Partial<Record<Continent, number>> = {};
+    const totals: Partial<Record<Continent, number>> = {};
+    for (const u of sorted) {
+      const c = continentOf(u);
+      totals[c] = (totals[c] ?? 0) + 1;
+    }
+    sorted.forEach((u, i) => {
+      const c = continentOf(u);
+      counters[c] = (counters[c] ?? 0) + 1;
+      out[u.id] = {
+        global: i + 1,
+        continent: counters[c]!,
+        continentKey: c,
+        continentTotal: totals[c] ?? 0,
+      };
+    });
+    return out;
+  })();
+
+function ranksOf(u: University) {
+  return RANKS[u.id] ?? { global: u.rank, continent: u.rank, continentKey: continentOf(u), continentTotal: 0 };
+}
+
+
+
 
 function CollegeFinder({ member }: { member: Member }) {
   const { t, lang } = useI18n();
@@ -632,9 +672,16 @@ function CollegeFinder({ member }: { member: Member }) {
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                <span className="absolute bottom-3 right-3 rounded-full bg-background/80 px-2 py-0.5 text-[10px] font-bold text-muted-foreground backdrop-blur">
-                  #{u.rank}
+                <span className="absolute bottom-3 right-3 flex items-center gap-1 rounded-full bg-background/80 px-2 py-0.5 text-[10px] font-bold text-muted-foreground backdrop-blur">
+                  <span className="text-foreground">#{ranksOf(u).global}</span>
+                  <span className="opacity-60">
+                    {t("mundo", "world")} · #{ranksOf(u).continent} {t(
+                      CONTINENT_NAMES[ranksOf(u).continentKey].es,
+                      CONTINENT_NAMES[ranksOf(u).continentKey].en,
+                    )}
+                  </span>
                 </span>
+
               </div>
 
               <div className="p-4">
@@ -932,13 +979,18 @@ const SOURCES: { name: string; detail: { es: string; en: string } }[] = [
 
 function SourcesTip({ className }: { className?: string }) {
   const { t } = useI18n();
+  const [open, setOpen] = useState(false);
   return (
     <TooltipProvider delayDuration={100}>
-      <Tooltip>
+      <Tooltip open={open}>
         <TooltipTrigger asChild>
           <button
             type="button"
+            tabIndex={-1}
             aria-label={t("Fuentes de los datos", "Data sources")}
+            onMouseEnter={() => setOpen(true)}
+            onMouseLeave={() => setOpen(false)}
+            onClick={() => setOpen((v) => !v)}
             className={cn(
               "inline-grid h-4 w-4 place-items-center rounded-full text-muted-foreground/50 transition-colors hover:text-muted-foreground",
               className,
@@ -947,6 +999,7 @@ function SourcesTip({ className }: { className?: string }) {
             <Info className="h-3.5 w-3.5" />
           </button>
         </TooltipTrigger>
+
         <TooltipContent
           side="bottom"
           align="start"
@@ -1043,7 +1096,12 @@ function CompareDialog({
                   {r.u.city}, {lang === "en" ? r.u.country : r.u.countryEs}
                 </p>
                 {[
-                  [t("Ranking", "Rank"), `#${r.u.rank}`],
+                  [t("Ranking mundial", "World rank"), `#${ranksOf(r.u).global}`],
+                  [
+                    t(CONTINENT_NAMES[ranksOf(r.u).continentKey].es, CONTINENT_NAMES[ranksOf(r.u).continentKey].en),
+                    `#${ranksOf(r.u).continent}`,
+                  ],
+
                   [t("Duración", "Duration"), `${r.u.years} ${t("años", "yrs")}`],
                   [t("Matrícula total", "Total tuition"), money(r.tuition, currency, true)],
                   [t("Vida total", "Total living"), money(r.living, currency, true)],
@@ -1129,9 +1187,15 @@ function UniDetailDialog({
               <SourcesTip className="mt-1.5 shrink-0" />
             </DialogTitle>
             <p className="text-xs text-muted-foreground">
-              {uni.city}, {lang === "en" ? uni.country : uni.countryEs} · {t("Ranking mundial", "World rank")} #{uni.rank} ·{" "}
-              {uni.years} {t("años de carrera", "year degree")}
+              {uni.city}, {lang === "en" ? uni.country : uni.countryEs} · {t("Ranking mundial", "World rank")} #
+              {ranksOf(uni).global} · #{ranksOf(uni).continent}{" "}
+              {t(
+                `en ${CONTINENT_NAMES[ranksOf(uni).continentKey].es}`,
+                `in ${CONTINENT_NAMES[ranksOf(uni).continentKey].en}`,
+              )}{" "}
+              ({ranksOf(uni).continentTotal}) · {uni.years} {t("años de carrera", "year degree")}
             </p>
+
           </DialogHeader>
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
