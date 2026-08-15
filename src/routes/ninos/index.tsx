@@ -207,20 +207,19 @@ function ProfileSelector() {
                   </span>
                 </button>
               ) : (
-                <div className="group flex flex-col items-center gap-3">
-                  <span className="grid aspect-square w-full place-items-center rounded-2xl bg-secondary text-muted-foreground/70">
-                    <Lock className="h-9 w-9" />
-                  </span>
-                  <span className="min-w-0 text-center">
-                    <span className="block truncate text-sm font-semibold text-muted-foreground">
-                      {t("Perfil extra", "Extra profile")}
-                    </span>
-                    <span className="block text-[11px] text-muted-foreground/70">
-                      ${EXTRA_KID_PRICE_USD}/{t("mes", "mo")}
+                <div className="flex flex-col items-center gap-3">
+                  <span className="grid aspect-square w-full place-content-center justify-items-center gap-2 rounded-2xl border-2 border-dashed border-border px-4 text-center text-muted-foreground">
+                    <Lock className="h-8 w-8" />
+                    <span className="text-[13px] leading-snug text-muted-foreground">
+                      {t(
+                        `Tu plan incluye ${maxKids} ${maxKids === 1 ? "perfil" : "perfiles"} de niño`,
+                        `Your plan includes ${maxKids} child ${maxKids === 1 ? "profile" : "profiles"}`,
+                      )}
                     </span>
                   </span>
                 </div>
               )}
+
 
             </div>
 
