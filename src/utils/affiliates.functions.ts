@@ -51,7 +51,7 @@ export const joinAffiliateProgram = createServerFn({ method: "POST" })
     }
 
 
-    // Format: FIRSTNAMEWUN01, FIRSTNAMEWUN02, ... sequential by count of existing affiliates.
+    // Format: FIRSTNAMEWUO01, FIRSTNAMEWUO02, ... sequential by count of existing affiliates.
     const firstName = (data.displayName ?? "").trim().split(/\s+/)[0] ?? "";
     const base = (slugifyCode(firstName) || "WYN").slice(0, 12);
 
@@ -61,12 +61,12 @@ export const joinAffiliateProgram = createServerFn({ method: "POST" })
       .select("id", { count: "exact", head: true });
     const seq = String((count ?? 0) + 1).padStart(2, "0");
 
-    let code = `${base}WUN${seq}`.slice(0, 16);
+    let code = `${base}WUO${seq}`.slice(0, 16);
 
     // Guard against unlikely collisions by bumping the suffix.
     let bump = 0;
     while (true) {
-      const candidate = bump === 0 ? code : `${base}WUN${String((count ?? 0) + 1 + bump).padStart(2, "0")}`.slice(0, 16);
+      const candidate = bump === 0 ? code : `${base}WUO${String((count ?? 0) + 1 + bump).padStart(2, "0")}`.slice(0, 16);
       const { data: taken } = await supabaseAdmin.from("affiliates").select("id").eq("code", candidate).maybeSingle();
       if (!taken) {
         code = candidate;
