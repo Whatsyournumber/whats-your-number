@@ -250,7 +250,9 @@ export function AffiliateWizard() {
                 <Link2 className="h-3.5 w-3.5" />
                 {t("Tu enlace único", "Your unique link")}
               </div>
-              <p className="mt-2 break-all font-mono text-sm text-foreground">{link}</p>
+              <p className="mt-2 truncate font-mono text-sm text-foreground" title={link}>
+                {link.replace(/^https?:\/\//, "").split("/?")[0]}/?ref={code}
+              </p>
               <div className="mt-3 flex flex-col gap-2 sm:flex-row">
                 <Button onClick={() => void copy()} className="flex-1 rounded-xl">
                   {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
@@ -267,25 +269,12 @@ export function AffiliateWizard() {
                   {t("Copiar código", "Copy code")}
                 </Button>
               </div>
-              <p className="mt-3 text-[11px] text-muted-foreground">
-                {t("Tu código:", "Your code:")} <span className="font-mono text-foreground">{code}</span>
-              </p>
             </div>
 
-            <div className="mt-4 grid gap-2 sm:grid-cols-3">
-              {[
-                t("30% recurrente", "30% recurring"),
-                t("Pagos mensuales", "Monthly payouts"),
-                t("Seguimiento en vivo", "Live tracking"),
-              ].map((chip) => (
-                <span
-                  key={chip}
-                  className="rounded-full border border-border/50 bg-secondary/30 px-3 py-1.5 text-[11px] text-muted-foreground"
-                >
-                  {chip}
-                </span>
-              ))}
-            </div>
+            <p className="mt-4 text-xs text-muted-foreground">
+              {t("Compártelo con tus amigos y empieza a ganar.", "Share it with your friends and start earning.")}
+            </p>
+
 
             <Button className="mt-5 w-full rounded-full" onClick={() => setStep(2)}>
               {t("Siguiente: compártelo", "Next: share it")}
