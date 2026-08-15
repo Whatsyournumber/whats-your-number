@@ -33,6 +33,34 @@ const CHANNELS = [
   { es: "Otros", en: "Other" },
 ];
 
+const AUDIENCES = [
+  { es: "Finanzas", en: "Finance" },
+  { es: "Familias", en: "Families" },
+  { es: "Emprendedores", en: "Entrepreneurs" },
+  { es: "Inversores", en: "Investors" },
+  { es: "Expatriados", en: "Expats" },
+  { es: "Audiencia general", en: "General audience" },
+];
+
+const COUNTRIES = [
+  { name: "España", flag: "🇪🇸" },
+  { name: "México", flag: "🇲🇽" },
+  { name: "Colombia", flag: "🇨🇴" },
+  { name: "Argentina", flag: "🇦🇷" },
+  { name: "Chile", flag: "🇨🇱" },
+  { name: "Perú", flag: "🇵🇪" },
+  { name: "Panamá", flag: "🇵🇦" },
+  { name: "Venezuela", flag: "🇻🇪" },
+  { name: "Ecuador", flag: "🇪🇨" },
+  { name: "Uruguay", flag: "🇺🇾" },
+  { name: "República Dominicana", flag: "🇩🇴" },
+  { name: "Estados Unidos", flag: "🇺🇸" },
+  { name: "Portugal", flag: "🇵🇹" },
+  { name: "Reino Unido", flag: "🇬🇧" },
+  { name: "Andorra", flag: "🇦🇩" },
+  { name: "Otro", flag: "🌎" },
+];
+
 export function AffiliateWizard() {
   const t = useT();
   const { user } = useAuth();
