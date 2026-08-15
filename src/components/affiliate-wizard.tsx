@@ -34,24 +34,6 @@ const AUDIENCES = [
   { es: "Audiencia general", en: "General audience" },
 ];
 
-const COUNTRIES = [
-  { name: "España", flag: "🇪🇸" },
-  { name: "México", flag: "🇲🇽" },
-  { name: "Colombia", flag: "🇨🇴" },
-  { name: "Argentina", flag: "🇦🇷" },
-  { name: "Chile", flag: "🇨🇱" },
-  { name: "Perú", flag: "🇵🇪" },
-  { name: "Panamá", flag: "🇵🇦" },
-  { name: "Venezuela", flag: "🇻🇪" },
-  { name: "Ecuador", flag: "🇪🇨" },
-  { name: "Uruguay", flag: "🇺🇾" },
-  { name: "República Dominicana", flag: "🇩🇴" },
-  { name: "Estados Unidos", flag: "🇺🇸" },
-  { name: "Portugal", flag: "🇵🇹" },
-  { name: "Reino Unido", flag: "🇬🇧" },
-  { name: "Andorra", flag: "🇦🇩" },
-  { name: "Otro", flag: "🌎" },
-];
 
 export function AffiliateWizard() {
   const t = useT();
