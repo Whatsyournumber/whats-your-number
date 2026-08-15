@@ -26,6 +26,7 @@ import heroManLaptopAsset from "@/assets/hero-man-laptop.jpg.asset.json";
 
 
 import { BrandLogo } from "@/components/brand-logo";
+import { useLiveCount, formatCount } from "@/components/live-count";
 import { ProductPreview } from "@/components/product-preview";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
