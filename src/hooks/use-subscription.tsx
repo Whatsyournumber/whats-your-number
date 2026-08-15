@@ -85,19 +85,22 @@ export function useSubscription() {
     subscription?.access_product_id && subscription.access_until && new Date(subscription.access_until) > new Date()
       ? subscription.access_product_id
       : null;
-  const tier: PlanTier = active && subscription ? tierFromProduct(heldProduct ?? subscription.product_id) : "free";
+  const paidTier: PlanTier = active && subscription ? tierFromProduct(heldProduct ?? subscription.product_id) : "free";
+  // Super admins always get the highest plan (Familiar/Patrimonio) with full access.
+  const tier: PlanTier = isSuperAdmin ? "patrimonio" : paidTier;
 
   return {
     subscription,
     tier,
-    active,
+    active: active || isSuperAdmin,
     isFree: tier === "free",
     isPro: tier === "pro" || tier === "patrimonio",
     isPatrimonio: tier === "patrimonio",
     isTrial: subscription?.status === "trialing",
-    loading: query.isLoading,
+    loading: query.isLoading || rolesLoading,
   };
 }
+
 
 export function planMeetsTier(required: PlanTier, current: PlanTier): boolean {
   const rank: Record<PlanTier, number> = { free: 0, pro: 1, patrimonio: 2 };
