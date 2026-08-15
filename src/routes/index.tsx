@@ -369,17 +369,17 @@ function Landing() {
 
           {/* Mobile: the photo is the top of the background itself */}
           <div
-            className="pointer-events-none absolute inset-x-0 top-0 h-[26vh] min-h-[190px] md:hidden"
+            className="pointer-events-none absolute inset-x-0 top-0 h-[46vh] min-h-[320px] md:hidden"
             style={{
-              WebkitMaskImage: "linear-gradient(to bottom, #000 30%, transparent 100%)",
-              maskImage: "linear-gradient(to bottom, #000 30%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to bottom, #000 62%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, #000 62%, transparent 100%)",
             }}
           >
             <img
               src={heroManLaptopAsset.url}
               alt=""
               aria-hidden
-              className="h-full w-full object-cover object-[70%_55%]"
+              className="h-full w-full object-cover object-[70%_28%]"
               loading="eager"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-background/20" />
@@ -388,7 +388,7 @@ function Landing() {
 
 
           <div className="relative z-10 mx-auto w-full max-w-6xl px-6">
-            <div className="max-w-2xl pb-8 pt-[52vh] text-center md:max-w-[56%] md:pb-12 md:pt-28 md:text-left lg:max-w-2xl lg:pb-16 lg:pt-44">
+            <div className="max-w-2xl pb-8 pt-[46vh] text-center md:max-w-[56%] md:pb-12 md:pt-28 md:text-left lg:max-w-2xl lg:pb-16 lg:pt-44">
               <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-[11px] text-muted-foreground backdrop-blur md:text-xs">
                 <Sparkles className="h-3.5 w-3.5 text-primary" />
                 {t("Tu family office personal, potenciado con IA", "Your personal family office, powered by AI")}
