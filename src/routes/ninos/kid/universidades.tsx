@@ -17,6 +17,7 @@ import {
   projectCapital,
   uniFields,
   uniTotalUsd,
+  uniSector,
   type UniField,
   type University,
 } from "@/lib/universities";
@@ -128,6 +129,7 @@ function CollegeFinder({ member }: { member: Member }) {
   const [country, setCountry] = useState<string>("");
   const [field, setField] = useState<UniField | "">("");
   const [rankMax, setRankMax] = useState<string>("");
+  const [sector, setSector] = useState<"public" | "private" | "">("");
   const [sort, setSort] = useState<"cost" | "rank">("cost");
   const [saved, setSaved] = useState<string[]>([]);
   const [detail, setDetail] = useState<University | null>(null);
@@ -197,6 +199,7 @@ function CollegeFinder({ member }: { member: Member }) {
         if (country && (lang === "en" ? u.country : u.countryEs) !== country) return false;
         if (field && !uniFields(u).includes(field)) return false;
         if (rankMax && u.rank > Number(rankMax)) return false;
+        if (sector && uniSector(u) !== sector) return false;
         if (tab === "afford" && total > projected) return false;
         if (tab === "close" && !(total > projected && total <= projected * 1.35)) return false;
         return true;
@@ -209,7 +212,7 @@ function CollegeFinder({ member }: { member: Member }) {
         return a.total - b.total;
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [priced, bucket, continent, country, field, rankMax, tab, sort, projected, homeCountry, homeRegion, lang]);
+  }, [priced, bucket, continent, country, field, rankMax, sector, tab, sort, projected, homeCountry, homeRegion, lang]);
 
 
 
@@ -351,16 +354,11 @@ function CollegeFinder({ member }: { member: Member }) {
               )}
             </span>
           </p>
-
-
-          <button
-            type="button"
-            onClick={() => setBucket(null)}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-primary"
-          >
-            {t("Ver todas las regiones", "See all regions")} <ArrowRight className="h-3.5 w-3.5" />
-          </button>
         </div>
+
+
+
+
 
         <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
           {buckets.map((b) => (
@@ -470,69 +468,76 @@ function CollegeFinder({ member }: { member: Member }) {
 
       {/* Filtros */}
       <div className="mb-4 rounded-[28px] border border-border/70 bg-card p-3 shadow-sm sm:p-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-0.5 rounded-full border border-border/70 bg-background/50 p-0.5">
-              {(
-                [
-                  [false, t("Solo matrícula", "Tuition only")],
-                  [true, t("Matrícula + vida", "Tuition + living")],
-                ] as const
-              ).map(([v, label]) => (
-                <button
-                  key={String(v)}
-                  type="button"
-                  onClick={() => setIncludeLiving(v)}
-                  className={cn(
-                    "rounded-full px-3 py-1.5 text-[11px] font-bold transition",
-                    includeLiving === v
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground",
-                  )}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-
-
-
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
+          <div className="col-span-2 min-w-0 sm:col-auto">
             <CountryCombobox
               value={country}
               onChange={setCountry}
               options={countries}
               placeholder={t("Buscar país", "Search country")}
             />
+          </div>
 
-            <Select
-              value={field}
-              onChange={(v) => setField(v as UniField | "")}
-              placeholder={t("Carrera", "Field")}
-            >
-              {FIELDS.map((f) => (
-                <option key={f} value={f}>
-                  {FIELD_LABELS[f][lang === "en" ? "en" : "es"]}
-                </option>
-              ))}
-            </Select>
-            <Select value={rankMax} onChange={setRankMax} placeholder={t("Ranking", "Ranking")}>
-              <option value="100">Top 100</option>
-              <option value="300">Top 300</option>
-              <option value="500">Top 500</option>
-            </Select>
-            <Select
-              value={sort}
-              onChange={(v) => setSort(v as "cost" | "rank")}
-              placeholder={t("Coste total", "Total cost")}
-              clearable={false}
-            >
-              <option value="cost">{t("Coste total", "Total cost")}</option>
-              <option value="rank">{t("Mejor ranking", "Best ranking")}</option>
-            </Select>
+          <Select
+            value={field}
+            onChange={(v) => setField(v as UniField | "")}
+            placeholder={t("Carrera", "Field")}
+          >
+            {FIELDS.map((f) => (
+              <option key={f} value={f}>
+                {FIELD_LABELS[f][lang === "en" ? "en" : "es"]}
+              </option>
+            ))}
+          </Select>
+          <Select
+            value={sector}
+            onChange={(v) => setSector(v as "public" | "private" | "")}
+            placeholder={t("Tipo", "Type")}
+          >
+            <option value="public">{t("Pública", "Public")}</option>
+            <option value="private">{t("Privada", "Private")}</option>
+          </Select>
+          <Select value={rankMax} onChange={setRankMax} placeholder={t("Ranking", "Ranking")}>
+            <option value="100">Top 100</option>
+            <option value="300">Top 300</option>
+            <option value="500">Top 500</option>
+          </Select>
+          <Select
+            value={sort}
+            onChange={(v) => setSort(v as "cost" | "rank")}
+            placeholder={t("Coste total", "Total cost")}
+            clearable={false}
+          >
+            <option value="cost">{t("Coste total", "Total cost")}</option>
+            <option value="rank">{t("Mejor ranking", "Best ranking")}</option>
+          </Select>
+
+          <div className="col-span-2 flex items-center gap-0.5 rounded-full border border-border/70 bg-background/50 p-0.5 sm:col-auto">
+            {(
+              [
+                [false, t("Solo matrícula", "Tuition only")],
+                [true, t("Matrícula + vida", "Tuition + living")],
+              ] as const
+            ).map(([v, label]) => (
+              <button
+                key={String(v)}
+                type="button"
+                onClick={() => setIncludeLiving(v)}
+                className={cn(
+                  "flex-1 whitespace-nowrap rounded-full px-3 py-1.5 text-[11px] font-bold transition sm:flex-none",
+                  includeLiving === v
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {label}
+              </button>
+            ))}
           </div>
         </div>
 
-        {(continent || country || field || rankMax || bucket) ? (
+
+        {(continent || country || field || rankMax || sector || bucket) ? (
           <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border/60 pt-3">
             <span className="text-[11px] font-semibold text-muted-foreground">
               {t(`${list.length} resultados`, `${list.length} results`)}
@@ -545,6 +550,7 @@ function CollegeFinder({ member }: { member: Member }) {
                 setCountry("");
                 setField("");
                 setRankMax("");
+                setSector("");
               }}
               className="inline-flex items-center gap-1 rounded-full border border-border/70 px-2.5 py-1 text-[11px] font-bold text-muted-foreground transition hover:text-foreground"
             >
@@ -812,7 +818,7 @@ function Select({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className={cn(
-        "h-9 rounded-full border border-border/70 bg-card px-3 text-xs font-semibold text-foreground outline-none transition focus:border-primary",
+        "h-9 w-full rounded-full border border-border/70 bg-card px-3 text-xs sm:w-auto font-semibold text-foreground outline-none transition focus:border-primary",
         !value && "text-muted-foreground",
       )}
     >
@@ -853,7 +859,7 @@ function CountryCombobox({
     >
       <div
         className={cn(
-          "flex h-9 items-center gap-1.5 rounded-full border bg-card px-3 transition",
+          "flex h-9 w-full items-center gap-1.5 rounded-full border bg-card px-3 transition sm:w-auto",
           open ? "border-primary" : "border-border/70",
         )}
       >
@@ -866,7 +872,7 @@ function CountryCombobox({
           }}
           onFocus={() => setOpen(true)}
           placeholder={placeholder}
-          className="w-28 bg-transparent text-xs font-semibold text-foreground outline-none placeholder:font-medium placeholder:text-muted-foreground sm:w-36"
+          className="w-full min-w-0 bg-transparent text-xs sm:w-36 font-semibold text-foreground outline-none placeholder:font-medium placeholder:text-muted-foreground sm:w-36"
         />
         {value || q ? (
           <button
@@ -885,7 +891,7 @@ function CountryCombobox({
       </div>
 
       {open ? (
-        <ul className="absolute right-0 z-30 mt-2 max-h-64 w-56 overflow-auto rounded-2xl border border-border/70 bg-card p-1 shadow-2xl">
+        <ul className="absolute left-0 right-0 z-30 mt-2 max-h-64 w-full sm:left-auto sm:w-56 overflow-auto rounded-2xl border border-border/70 bg-card p-1 shadow-2xl">
           {filtered.map((c) => (
             <li key={c}>
               <button

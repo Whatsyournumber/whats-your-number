@@ -607,3 +607,23 @@ export function projectCapital(base: number, monthly: number, years: number, rat
   const fvMonthly = rm === 0 ? monthly * months : monthly * ((Math.pow(1 + rm, months) - 1) / rm);
   return Math.round(fvBase + fvMonthly);
 }
+
+/** Clasificación pública/privada (heurística por nombre + excepciones curadas). */
+export type UniSector = "public" | "private";
+
+const PRIVATE_PATTERNS: RegExp[] = [
+  /\b(MIT|Caltech|NYU)\b/i,
+  /\b(Harvard|Stanford|Princeton|Yale|Columbia|Cornell|Brown|Dartmouth|Johns Hopkins|Duke|Northwestern|Carnegie Mellon|Rice|Vanderbilt|Emory|Tufts|Georgetown|Notre Dame|Syracuse|Fordham|Pepperdine|Villanova|Baylor|Boston University|Boston College|Washington University|New York University|University of Chicago|University of Pennsylvania|University of Southern California|Southern Methodist|Wake Forest|Case Western|Lehigh|Rensselaer|Stevens Institute|Northeastern|Drexel|Babson|Bentley|Berklee|Juilliard|Parsons|Pratt|SCAD|Rochester Institute|Illinois Institute of Technology|Worcester Polytechnic)\b/i,
+  /\b(privad|private|privé|privata)/i,
+  /\b(cat[oó]lica|catholic|pontificia|pontifical|jesuit|adventist)\b/i,
+  /\b(American University|American Univ)\b/i,
+  /\b(Tecnol[oó]gico de Monterrey|ITAM|ITESO|An[aá]huac|UDLAP|Javeriana|Los Andes|UCAB|UNIMET|Del Rosario|Externado|Sabana|EAFIT|ICESI|CESA|UPC|USIL|San Ignacio|Palermo|Torcuato Di Tella|Austral|Belgrano|Insper|FGV|PUC|Mackenzie|ESPM|Anhembi)\b/i,
+  /\b(IE University|IESE|ESADE|ESIC|Deusto|Navarra|Comillas|Nebrija|CEU|Bocconi|LUISS|Cattolica|Bicocca Privata|Nova SBE|Cat[oó]lica Portuguesa|IST Lisboa Private)\b/i,
+  /\b(Ashoka|Amity|Manipal|BITS Pilani|Shiv Nadar|OP Jindal|Symbiosis|SRM|VIT)\b/i,
+  /\b(Ko[çc]|Sabanc[iı]|Bilkent|[İI]stanbul Bilgi|Ye[dđ]itepe|Reichman|Al Akhawayn|Ateneo|De La Salle|Divine Word|Waseda|Keio|Sophia University|Ritsumeikan|Doshisha|Yonsei|Korea University|Sungkyunkwan|Hanyang|Kyung Hee|Ewha|Sogang|Chung-Ang|Fu Jen|Tunghai|Bond University|Torrens)\b/i,
+  /\b(Ashesi|Strathmore|Covenant University|Babcock|Afe Babalola|Landmark University|Pan-Atlantic|Aga Khan)\b/i,
+];
+
+export function uniSector(u: University): UniSector {
+  return PRIVATE_PATTERNS.some((re) => re.test(u.name)) ? "private" : "public";
+}
