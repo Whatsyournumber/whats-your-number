@@ -136,7 +136,7 @@ export function AffiliateWizard() {
   return (
     <div className="mx-auto w-full max-w-md">
       {/* Stepper */}
-      <div className="mb-6 flex items-center justify-center gap-2">
+      <div className="mb-6 flex flex-nowrap items-center justify-center gap-1.5">
         {steps.map((label, i) => {
           const done = i <= step; // el índice 0 (cuenta creada) siempre está completo
           const active = i === step + 1;
