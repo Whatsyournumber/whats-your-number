@@ -52,7 +52,7 @@ export function SiteFooter({ kids = false }: { kids?: boolean } = {}) {
               { label: t("Funciones", "Features"), to: "/#funciones" },
               { label: t("Precios", "Pricing"), to: "/#precios" },
               { label: t("Demo gratis", "Free demo"), to: "/demo" },
-              { label: t("Programa de afiliados", "Affiliate program"), to: "/afiliados" },
+              { label: t("Programa de afiliados", "Affiliate program"), to: "/afiliados", external: true },
             ],
           },
       kids
