@@ -768,7 +768,7 @@ function CollegeFinder({ member }: { member: Member }) {
                 )}
 
                 <p className="mt-3 flex items-center justify-between text-xs font-semibold text-primary">
-                  {ok ? t("Ver detalles", "See details") : t("Ver cómo conseguirlo", "See how to get there")}
+                  {t("Ver más detalle", "See more detail")}
                   <ArrowRight className="h-3.5 w-3.5" />
                 </p>
               </div>
