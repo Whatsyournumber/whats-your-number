@@ -8,8 +8,8 @@ import { PoliciesDialog } from "@/components/policies-dialog";
 import { useT } from "@/hooks/use-language";
 
 const socials = [
-  { icon: Instagram, label: "Instagram", href: "https://instagram.com" },
-  { icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com" },
+  { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/financialpsychologylab" },
+  { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/company/107005182/" },
 ];
 
 type FooterLink = { label: string; to: string; policy?: boolean; external?: boolean };
