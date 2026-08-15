@@ -213,8 +213,8 @@ function ProfileSelector() {
                   </span>
                   <span className="text-center text-[11px] text-muted-foreground">
                     {t(
-                      `Tu plan incluye ${maxKids} ${maxKids === 1 ? "perfil" : "perfiles"} de niño`,
-                      `Your plan includes ${maxKids} child ${maxKids === 1 ? "profile" : "profiles"}`,
+                      `Tu plan incluye ${maxKids} ${maxKids === 1 ? "perfil" : "perfiles"} de niño. Cada perfil extra cuesta $${EXTRA_KID_PRICE_USD}/mes.`,
+                      `Your plan includes ${maxKids} child ${maxKids === 1 ? "profile" : "profiles"}. Each extra profile costs $${EXTRA_KID_PRICE_USD}/mo.`,
                     )}
                   </span>
                 </div>
