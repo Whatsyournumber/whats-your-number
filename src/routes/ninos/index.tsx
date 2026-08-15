@@ -7,7 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useActiveProfile, useMembers, useSubscription } from "@/hooks/use-mfn";
 import { THEME_ATTR, type Member } from "@/lib/mfn";
-import { activePlan, kidLimit, planLabel } from "@/lib/mfn-plan";
+import { EXTRA_KID_PRICE_USD, activePlan, kidLimit, planLabel } from "@/lib/mfn-plan";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
 
 export const Route = createFileRoute("/ninos/")({
