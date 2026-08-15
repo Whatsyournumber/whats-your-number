@@ -137,7 +137,7 @@ export function AffiliateWizard() {
     "I'm using WhatsYournumber to manage my wealth. Join with my link and let's start together:",
   );
 
-  const share = (where: "whatsapp" | "instagram" | "telegram" | "linkedin" | "copy") => {
+  const share = (where: "whatsapp" | "instagram" | "telegram" | "linkedin" | "x" | "copy") => {
     if (where === "copy") {
       void copy();
       return;
@@ -155,9 +155,12 @@ export function AffiliateWizard() {
         ? `https://wa.me/?text=${text}`
         : where === "telegram"
           ? `https://t.me/share/url?url=${url}&text=${encodeURIComponent(shareText)}`
-          : `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+          : where === "x"
+            ? `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${url}`
+            : `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
     window.open(target, "_blank", "noopener,noreferrer");
   };
+
 
   return (
     <div className="mx-auto w-full max-w-md">
