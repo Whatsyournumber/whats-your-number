@@ -16,7 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { setPendingPromoCode } from "@/lib/pending-promo";
 import { getPendingCheckoutPlan } from "@/lib/pending-checkout";
 
-type AuthSearch = { mode: "login" | "signup"; next?: string };
+type AuthSearch = { mode: "login" | "signup"; next?: string; flow?: "affiliate" };
 
 // Google nos devuelve nombre, email, teléfono y foto para construir el perfil.
 const GOOGLE_SCOPES = [
