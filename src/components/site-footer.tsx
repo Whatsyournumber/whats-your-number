@@ -56,15 +56,15 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
             { label: t("Precios", "Pricing"), to: "/precios" },
           ],
         }
-        : kids
-          ? {
-              title: t("Producto", "Product"),
-              links: [
-                { label: t("Funciones", "Features"), to: "/finanzas-para-ninos#funciones" },
-                { label: t("Precios", "Pricing"), to: "/precios" },
-                { label: t("Producto", "Product"), to: "/#funciones" },
-              ],
-            }
+      : kids
+        ? {
+            title: t("Producto", "Product"),
+            links: [
+              { label: t("Funciones", "Features"), to: "/finanzas-para-ninos#funciones" },
+              { label: t("Precios", "Pricing"), to: "/precios" },
+              { label: t("Demo gratis", "Free demo"), to: "/demo-ninos" },
+            ],
+          }
         : {
             title: t("Producto", "Product"),
             links: [
@@ -88,8 +88,8 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
             title: t("Recursos", "Resources"),
             links: [
               { label: "Blog", to: "/blog" },
+              { label: t("Su primer número", "Their first number"), to: "/demo-ninos" },
               { label: t("Finanzas para adultos", "Adult finance"), to: "/" },
-              { label: t("Programa de afiliados", "Affiliate program"), to: "/afiliados", external: true },
             ],
           }
         : {
