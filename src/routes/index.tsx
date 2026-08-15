@@ -455,12 +455,13 @@ function Landing() {
             <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
               {t("Tu dinero. Tu número. Tu plan.", "Your money. Your number. Your plan.")}
             </h2>
-            <p className="mx-auto mt-3 max-w-3xl text-sm text-muted-foreground md:whitespace-nowrap">
+            <p className="mx-auto mt-3 max-w-3xl text-xs text-muted-foreground sm:text-sm md:whitespace-nowrap">
               {t(
-                "Entiende dónde estás, descubre cuánto necesitas y toma mejores decisiones para llegar.",
-                "Understand where you are, discover how much you need and make better decisions to get there.",
+                "Sabe dónde estás, cuánto necesitas y cómo llegar.",
+                "Know where you are, how much you need and how to get there.",
               )}
             </p>
+
           </div>
 
 
