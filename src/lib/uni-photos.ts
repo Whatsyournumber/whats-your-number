@@ -28,6 +28,16 @@ import curatedErasmus from "@/assets/uni/nl-erasmus.jpg";
 import curatedLeiden from "@/assets/uni/nl-leiden.jpg";
 import curatedTwente from "@/assets/uni/nl-twente.jpg";
 import curatedTokyo from "@/assets/uni/jp-tokyo.jpg";
+import curatedInDelhi from "@/assets/uni/in-delhi.jpg";
+import curatedVnuHanoi from "@/assets/uni/vn-vnu-hanoi.jpg";
+import curatedIitMadras from "@/assets/uni/in-iit-madras.jpg";
+import curatedIisc from "@/assets/uni/in-iisc.jpg";
+import curatedUpDiliman from "@/assets/uni/ph-up-diliman.jpg";
+import curatedIitBombay from "@/assets/uni/in-iit-bombay.jpg";
+import curatedIitDelhi from "@/assets/uni/in-iit-delhi.jpg";
+import curatedUiJakarta from "@/assets/uni/id-ui.jpg";
+import curatedItb from "@/assets/uni/id-itb.jpg";
+import curatedUkm from "@/assets/uni/my-ukm.jpg";
 import curatedKyoto from "@/assets/uni/jp-kyoto.jpg";
 import curatedCharles from "@/assets/uni/cz-charles.jpg";
 
