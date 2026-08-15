@@ -590,8 +590,6 @@ function AdminPage() {
                     <TableHead>{t("Activas", "Active")}</TableHead>
                     <TableHead>{t("Ingresos", "Revenue")}</TableHead>
                     <TableHead>%</TableHead>
-                    <TableHead>{t("Pendiente", "Pending")}</TableHead>
-                    <TableHead>{t("Pagado", "Paid")}</TableHead>
                     <TableHead className="text-right">{t("Acciones", "Actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -622,8 +620,6 @@ function AdminPage() {
                             }}
                           />
                         </TableCell>
-                        <TableCell className="numeric font-medium">{a.pending.toFixed(2)} US$</TableCell>
-                        <TableCell className="numeric text-muted-foreground">{a.paidOut.toFixed(2)} US$</TableCell>
                         <TableCell className="space-x-2 text-right whitespace-nowrap">
                           <Button
                             size="sm"
