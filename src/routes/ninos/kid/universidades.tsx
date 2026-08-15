@@ -940,7 +940,7 @@ function SourcesTip({ className }: { className?: string }) {
             type="button"
             aria-label={t("Fuentes de los datos", "Data sources")}
             className={cn(
-              "grid h-5 w-5 place-items-center rounded-full text-muted-foreground/70 transition-colors hover:text-foreground",
+              "inline-grid h-4 w-4 place-items-center rounded-full text-muted-foreground/50 transition-colors hover:text-muted-foreground",
               className,
             )}
           >
@@ -950,22 +950,21 @@ function SourcesTip({ className }: { className?: string }) {
         <TooltipContent
           side="bottom"
           align="start"
-          className="w-[260px] rounded-xl border border-border/60 bg-popover p-0 shadow-md"
+          className="w-[240px] rounded-xl border border-border/40 bg-popover/95 p-3 shadow-lg backdrop-blur-sm"
         >
-          <p className="border-b border-border/50 px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <p className="mb-2 text-[9px] font-medium uppercase tracking-[0.14em] text-muted-foreground/70">
             {t("Fuentes", "Sources")}
           </p>
-          <ul className="divide-y divide-border/40">
+          <ul className="space-y-1.5">
             {SOURCES.map((s) => (
-              <li key={s.name} className="px-3 py-1.5">
-                <p className="text-[11px] font-medium leading-snug text-foreground">{s.name}</p>
-                <p className="text-[10px] leading-snug text-muted-foreground">
-                  {t(s.detail.es, s.detail.en)}
-                </p>
+              <li key={s.name} className="leading-snug">
+                <span className="text-[11px] font-medium text-popover-foreground">{s.name}</span>
+                <span className="text-[11px] text-muted-foreground"> · {t(s.detail.es, s.detail.en)}</span>
               </li>
             ))}
           </ul>
         </TooltipContent>
+
 
       </Tooltip>
     </TooltipProvider>
