@@ -83,6 +83,7 @@ import curatedPucRio from "@/assets/uni/br-puc-rio.jpg";
 import curatedUcu from "@/assets/uni/uy-ucu.jpg";
 import curatedNavarra from "@/assets/uni/es-navarra.jpg";
 import curatedLima from "@/assets/uni/pe-lima.jpg";
+import curatedPucp from "@/assets/uni/pe-pucp.jpg";
 import curatedInsaLyon from "@/assets/uni/fr-insa-lyon.jpg";
 import curatedLatinaPa from "@/assets/uni/pa-latina.jpg";
 import curatedBolivariana from "@/assets/uni/co-bolivariana.jpg";
@@ -708,6 +709,7 @@ const CURATED: Record<string, string> = {
   "lat-universidad-catolica-del-uru": curatedUcu,
   "es-universidad-de-navarra": curatedNavarra,
   "lat-universidad-de-lima": curatedLima,
+  "lat-pucp": curatedPucp,
   "fr-insa-lyon": curatedInsaLyon,
   "lat-universidad-latina-de-panama": curatedLatinaPa,
   "co-universidad-pontificia-boliv": curatedBolivariana,
