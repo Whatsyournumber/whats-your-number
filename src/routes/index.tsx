@@ -517,15 +517,19 @@ function Landing() {
               )}
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-2">
-              {panelChips.map((chip) => (
+              {panelChips.map((chip, i) => (
                 <span
                   key={chip}
-                  className="rounded-full border border-border/60 bg-card/50 px-3 py-1 text-[11px] text-muted-foreground backdrop-blur"
+                  className={
+                    "rounded-full border border-border/60 bg-card/50 px-3 py-1 text-[11px] text-muted-foreground backdrop-blur" +
+                    (i === panelChips.length - 1 ? " hidden md:inline-block" : "")
+                  }
                 >
                   {chip}
                 </span>
               ))}
             </div>
+
           </div>
 
           <motion.div
