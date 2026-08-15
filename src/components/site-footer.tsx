@@ -8,7 +8,7 @@ import { PoliciesDialog } from "@/components/policies-dialog";
 import { useT } from "@/hooks/use-language";
 
 const socials = [
-  { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/financialpsychologylab" },
+  { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/financialpsychologylab/" },
   { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/company/107005182/" },
 ];
 
