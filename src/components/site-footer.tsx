@@ -56,15 +56,15 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
             { label: t("Precios", "Pricing"), to: "/precios" },
           ],
         }
-      : kids
-        ? {
-            title: t("Producto", "Product"),
-            links: [
-              { label: t("Funciones", "Features"), to: "/finanzas-para-ninos#funciones" },
-              { label: t("Precios", "Pricing"), to: "/precios" },
-              { label: t("Demo gratis", "Free demo"), to: "/demo-ninos" },
-            ],
-          }
+        : kids
+          ? {
+              title: t("Producto", "Product"),
+              links: [
+                { label: t("Funciones", "Features"), to: "/finanzas-para-ninos#funciones" },
+                { label: t("Precios", "Pricing"), to: "/precios" },
+                { label: t("Producto", "Product"), to: "/#funciones" },
+              ],
+            }
         : {
             title: t("Producto", "Product"),
             links: [
