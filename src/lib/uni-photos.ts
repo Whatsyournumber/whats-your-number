@@ -214,8 +214,6 @@ import cur_ar_rosario from "@/assets/uni/ar-rosario.jpg";
 import cur_it_bocconi from "@/assets/uni/it-bocconi.jpg";
 import cur_cl_udd from "@/assets/uni/cl-udd.jpg";
 import cur_cl_uandes from "@/assets/uni/cl-uandes.jpg";
-import cur_kr_snu from "@/assets/uni/kr-snu.jpg";
-import cur_kr_kaist from "@/assets/uni/kr-kaist.jpg";
 import cur_za_uct from "@/assets/uni/za-uct.jpg";
 import cur_pt_nova from "@/assets/uni/pt-nova.jpg";
 import cur_fr_sciencespo from "@/assets/uni/fr-sciencespo.jpg";
@@ -468,9 +466,26 @@ import curKyushu from "@/assets/uni/jp-kyushu.jpg";
 import curHokkaido from "@/assets/uni/jp-hokkaido.jpg";
 import curPostech from "@/assets/uni/kr-postech.jpg";
 import curTohoku from "@/assets/uni/jp-tohoku.jpg";
+import curNagoya from "@/assets/uni/jp-nagoya.jpg";
+import curOsaka from "@/assets/uni/jp-osaka.jpg";
+import curFudan from "@/assets/uni/cn-fudan.jpg";
+import curSjtu from "@/assets/uni/cn-sjtu.jpg";
+import curMonashMy from "@/assets/uni/my-monash.jpg";
+import curSnu from "@/assets/uni/kr-snu.jpg";
+import curKyungHee from "@/assets/uni/kr-kyunghee.jpg";
+import curKaist from "@/assets/uni/kr-kaist.jpg";
 
 const CURATED: Record<string, string> = {
+  "ap-nagoya-university": curNagoya,
+  "ap-osaka-university": curOsaka,
+  "ap-fudan-university": curFudan,
+  "ap-shanghai-jiao-tong": curSjtu,
+  "ap-monash-malaysia": curMonashMy,
+  "ap-seoul-national-university": curSnu,
+  "ap-kyung-hee-university": curKyungHee,
+  "ap-kaist": curKaist,
   "ap-spbu": curSpbu,
+
   "ap-msu-lomonosov": curMsu,
   "ap-ntu-taiwan": curNtuTw,
   "ap-tsinghua-university": curTsinghua,
@@ -747,8 +762,6 @@ const CURATED: Record<string, string> = {
   "it-bocconi": cur_it_bocconi,
   "cl-universidad-del-desarrollo": cur_cl_udd,
   "cl-universidad-de-los-andes-chi": cur_cl_uandes,
-  "ap-seoul-national-university": cur_kr_snu,
-  "ap-kaist": cur_kr_kaist,
   "ot-university-of-cape-town": cur_za_uct,
   "ot-nova-lisboa": cur_pt_nova,
   "fr-sciences-po": cur_fr_sciencespo,
