@@ -2,6 +2,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { useRoles } from "@/hooks/use-role";
+
 import { getPaddleEnvironment } from "@/lib/paddle";
 
 export type PlanTier = "free" | "pro" | "patrimonio";
