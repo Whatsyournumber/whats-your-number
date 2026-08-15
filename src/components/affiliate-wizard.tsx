@@ -141,10 +141,10 @@ export function AffiliateWizard() {
           const done = i <= step; // el índice 0 (cuenta creada) siempre está completo
           const active = i === step + 1;
           return (
-            <div key={label} className="flex items-center gap-2">
-              {i > 0 && <span className="h-px w-4 bg-border" />}
+            <div key={label} className="flex flex-nowrap items-center gap-1.5">
+              {i > 0 && <span className="h-px w-3 shrink-0 bg-border" />}
               <span
-                className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-semibold transition-colors ${
+                className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold transition-colors ${
                   active
                     ? "bg-primary text-primary-foreground"
                     : done
@@ -154,10 +154,13 @@ export function AffiliateWizard() {
               >
                 {done && !active ? <Check className="h-3 w-3" /> : i + 2}
               </span>
-              <span className={`text-[10px] ${active ? "font-medium text-foreground" : "text-muted-foreground"}`}>
+              <span
+                className={`whitespace-nowrap text-[10px] ${active ? "font-medium text-foreground" : "text-muted-foreground"}`}
+              >
                 {label}
               </span>
             </div>
+
           );
         })}
       </div>
