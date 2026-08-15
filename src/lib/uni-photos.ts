@@ -474,8 +474,13 @@ import curMonashMy from "@/assets/uni/my-monash.jpg";
 import curSnu from "@/assets/uni/kr-snu.jpg";
 import curKyungHee from "@/assets/uni/kr-kyunghee.jpg";
 import curKaist from "@/assets/uni/kr-kaist.jpg";
+import curUcab from "@/assets/uni/ve-ucab.jpg";
+import curUnimet from "@/assets/uni/ve-unimet.jpg";
 
 const CURATED: Record<string, string> = {
+  "lat-ucab": curUcab,
+  "lat-unimet": curUnimet,
+
   "ap-nagoya-university": curNagoya,
   "ap-osaka-university": curOsaka,
   "ap-fudan-university": curFudan,
