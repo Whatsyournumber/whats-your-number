@@ -414,13 +414,25 @@ import afCairo from "@/assets/uni/af-cairo.jpg";
 import afNamibia from "@/assets/uni/af-namibia.jpg";
 import afBotswana from "@/assets/uni/af-botswana.jpg";
 import apNusReal from "@/assets/uni/ap-nus-real.jpg";
+import meTunisReal from "@/assets/uni/me-tunis.jpg";
+import meAkhawayn from "@/assets/uni/me-akhawayn.jpg";
+import meBahrain from "@/assets/uni/me-bahrain.jpg";
+import meReichman from "@/assets/uni/me-reichman.jpg";
+import meBgu from "@/assets/uni/me-bgu.jpg";
+import meHebrew from "@/assets/uni/me-hebrew.jpg";
 
 const CURATED: Record<string, string> = {
   "me-usthb-alger": afUsthb,
   "me-addis-ababa": afAddis,
   "me-cheikh-anta-diop": afDiop,
   "me-zimbabwe": afZimbabwe,
-  "me-tunis-el-manar": afTunis,
+  "me-tunis-el-manar": meTunisReal,
+  "me-al-akhawayn": meAkhawayn,
+  "me-bahrain-university": meBahrain,
+  "me-idc-reichman": meReichman,
+  "me-bgu-negev": meBgu,
+  "me-hebrew-jerusalem": meHebrew,
+
   "me-obafemi-awolowo": afObafemi,
   "me-makerere": afMakerere,
   "me-dar-es-salaam": afDar,
