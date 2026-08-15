@@ -169,29 +169,42 @@ export function AffiliateWizard() {
         {steps.map((label, i) => {
           const done = i <= step; // el índice 0 (cuenta creada) siempre está completo
           const active = i === step + 1;
+          const targetStep = i - 1; // i=0 es la cuenta ya creada
+          const canGoBack = targetStep >= 0 && targetStep < step;
           return (
             <div key={label} className="flex flex-nowrap items-center gap-1.5">
               {i > 0 && <span className="h-px w-3 shrink-0 bg-border" />}
-              <span
-                className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold transition-colors ${
-                  active
-                    ? "bg-primary text-primary-foreground"
-                    : done
-                      ? "bg-primary/20 text-primary"
-                      : "bg-muted text-muted-foreground"
+              <button
+                type="button"
+                disabled={!canGoBack}
+                onClick={() => canGoBack && setStep(targetStep)}
+                className={`flex flex-nowrap items-center gap-1.5 rounded-full transition-opacity ${
+                  canGoBack ? "cursor-pointer hover:opacity-80" : "cursor-default"
                 }`}
+                aria-label={label}
               >
-                {done && !active ? <Check className="h-3 w-3" /> : i + 2}
-              </span>
-              <span
-                className={`whitespace-nowrap text-[10px] ${active ? "font-medium text-foreground" : "text-muted-foreground"}`}
-              >
-                {label}
-              </span>
+                <span
+                  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold transition-colors ${
+                    active
+                      ? "bg-primary text-primary-foreground"
+                      : done
+                        ? "bg-primary/20 text-primary"
+                        : "bg-muted text-muted-foreground"
+                  }`}
+                >
+                  {done && !active ? <Check className="h-3 w-3" /> : i + 2}
+                </span>
+                <span
+                  className={`whitespace-nowrap text-[10px] ${active ? "font-medium text-foreground" : "text-muted-foreground"}`}
+                >
+                  {label}
+                </span>
+              </button>
             </div>
 
           );
         })}
+
       </div>
 
       <AnimatePresence mode="wait">
