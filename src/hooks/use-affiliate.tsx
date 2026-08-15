@@ -45,6 +45,7 @@ export function useMyAffiliate() {
   const account = useQuery({
     queryKey: ["affiliate", "me", user?.id],
     enabled: Boolean(user),
+    retry: 1,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("affiliates")
@@ -61,6 +62,7 @@ export function useMyAffiliate() {
   const stats = useQuery({
     queryKey: ["affiliate", "stats", affiliateId],
     enabled: Boolean(affiliateId),
+    retry: 1,
     queryFn: async () => {
       const [clicks, referrals, commissions] = await Promise.all([
         supabase.from("affiliate_clicks").select("id", { count: "exact", head: true }).eq("affiliate_id", affiliateId!),
@@ -97,6 +99,6 @@ export function useMyAffiliate() {
     pending,
     paid,
     total: pending + paid,
-    loading: account.isLoading || stats.isLoading,
+    loading: account.isLoading,
   };
 }
