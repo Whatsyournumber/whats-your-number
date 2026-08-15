@@ -203,12 +203,17 @@ function AuthPage() {
           <div className="flex flex-col items-center text-center">
             {isAffiliate ? (
               <>
-                <p className="font-display text-lg font-semibold tracking-tight">
-                  {mode === "signup"
-                    ? tt("Crea tu cuenta de afiliado", "Create your affiliate account")
-                    : tt("Entra a tu panel de afiliado", "Sign in to your affiliate panel")}
-                </p>
-                <p className="mt-1 text-xs text-muted-foreground">
+                <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-primary">
+                  {tt("Programa de afiliados", "Affiliate program")}
+                </span>
+                <h1 className="font-display text-2xl font-semibold leading-tight tracking-tight">
+                  <span className="bg-gradient-to-br from-foreground via-foreground to-primary bg-clip-text text-transparent">
+                    {mode === "signup"
+                      ? tt("Crea tu cuenta de afiliado", "Create your affiliate account")
+                      : tt("Entra a tu panel de afiliado", "Sign in to your affiliate panel")}
+                  </span>
+                </h1>
+                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
                   {tt(
                     "Es gratis. Al terminar te llevamos directo a tu panel para generar tu link.",
                     "It's free. When you finish we take you straight to your panel to generate your link.",
