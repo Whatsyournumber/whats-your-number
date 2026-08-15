@@ -449,8 +449,28 @@ import curKfupm from "@/assets/uni/sa-kfupm.jpg";
 import curAub from "@/assets/uni/lb-aub.jpg";
 import curJordan from "@/assets/uni/jo-jordan.jpg";
 import curKuwait from "@/assets/uni/kw-kuwait.jpg";
+import curAshoka from "@/assets/uni/in-ashoka.jpg";
+import curAteneo from "@/assets/uni/ph-ateneo.jpg";
+import curMalaya from "@/assets/uni/my-malaya.jpg";
+import curThammasat from "@/assets/uni/th-thammasat.jpg";
+import curWuhan from "@/assets/uni/cn-wuhan.jpg";
+import curChula from "@/assets/uni/th-chulalongkorn.jpg";
+import curMahidol from "@/assets/uni/th-mahidol.jpg";
+import curNanjing from "@/assets/uni/cn-nanjing.jpg";
+import curIimA from "@/assets/uni/in-iim-ahmedabad.jpg";
+import curZhejiang from "@/assets/uni/cn-zhejiang.jpg";
 
 const CURATED: Record<string, string> = {
+  "ap-ashoka-university": curAshoka,
+  "ap-ateneo-manila": curAteneo,
+  "ap-universiti-malaya": curMalaya,
+  "ap-thammasat": curThammasat,
+  "ap-wuhan-university": curWuhan,
+  "ap-chulalongkorn": curChula,
+  "ap-mahidol-university": curMahidol,
+  "ap-nanjing-university": curNanjing,
+  "ap-iim-ahmedabad": curIimA,
+  "ap-zhejiang-university": curZhejiang,
   "ot-eth-zurich": curEth,
   "ot-epfl": curEpfl,
   "ot-universidade-do-porto": curPorto,
