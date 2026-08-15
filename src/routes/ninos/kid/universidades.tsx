@@ -83,6 +83,46 @@ function continentOf(u: University): Continent {
   return "africa";
 }
 
+const CONTINENT_NAMES: Record<Continent, { es: string; en: string }> = {
+  latam: { es: "Latinoamérica", en: "Latin America" },
+  nam: { es: "Norteamérica", en: "North America" },
+  eu: { es: "Europa", en: "Europe" },
+  asia: { es: "Asia", en: "Asia" },
+  oceania: { es: "Oceanía", en: "Oceania" },
+  africa: { es: "África y Medio Oriente", en: "Africa & Middle East" },
+};
+
+/** Ranking global normalizado (1..n, sin huecos ni empates) y ranking dentro del continente. */
+const RANKS: Record<string, { global: number; continent: number; continentKey: Continent; continentTotal: number }> =
+  (() => {
+    const out: Record<string, { global: number; continent: number; continentKey: Continent; continentTotal: number }> =
+      {};
+    const sorted = [...UNIVERSITIES].sort((a, b) => a.rank - b.rank || a.name.localeCompare(b.name));
+    const counters: Partial<Record<Continent, number>> = {};
+    const totals: Partial<Record<Continent, number>> = {};
+    for (const u of sorted) {
+      const c = continentOf(u);
+      totals[c] = (totals[c] ?? 0) + 1;
+    }
+    sorted.forEach((u, i) => {
+      const c = continentOf(u);
+      counters[c] = (counters[c] ?? 0) + 1;
+      out[u.id] = {
+        global: i + 1,
+        continent: counters[c]!,
+        continentKey: c,
+        continentTotal: totals[c] ?? 0,
+      };
+    });
+    return out;
+  })();
+
+function ranksOf(u: University) {
+  return RANKS[u.id] ?? { global: u.rank, continent: u.rank, continentKey: continentOf(u), continentTotal: 0 };
+}
+
+
+
 
 function CollegeFinder({ member }: { member: Member }) {
   const { t, lang } = useI18n();
