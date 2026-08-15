@@ -173,7 +173,9 @@ function AffiliatesPage() {
             <Link to="/" className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
               <ArrowLeft className="h-3.5 w-3.5" /> {t("Volver", "Back")}
             </Link>
+            <LanguageToggle />
           </div>
+
           <AffiliateWizard />
         </div>
       </div>
