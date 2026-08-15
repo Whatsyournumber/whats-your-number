@@ -199,7 +199,8 @@ function RootLayout() {
 
 function AffiliatesGate() {
   const { affiliate, loading } = useMyAffiliate();
-  if (loading || !affiliate) return <Outlet />;
+  const wizardActive = useAffiliateWizardActive();
+  if (loading || !affiliate || wizardActive) return <Outlet />;
   return <AppShell />;
 }
 
