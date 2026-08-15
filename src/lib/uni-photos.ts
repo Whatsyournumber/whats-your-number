@@ -395,7 +395,7 @@ import afUsthb from "@/assets/uni/af-usthb.jpg";
 import afAddis from "@/assets/uni/af-addis.jpg";
 import afDiop from "@/assets/uni/af-diop.jpg";
 import afZimbabwe from "@/assets/uni/af-zimbabwe.jpg";
-import afTunis from "@/assets/uni/af-tunis.jpg";
+
 import afObafemi from "@/assets/uni/af-obafemi.jpg";
 import afMakerere from "@/assets/uni/af-makerere.jpg";
 import afDar from "@/assets/uni/af-dar.jpg";
