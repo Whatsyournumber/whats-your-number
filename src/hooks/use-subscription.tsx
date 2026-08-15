@@ -36,8 +36,10 @@ function isActive(status: string, currentPeriodEnd: string | null) {
 
 export function useSubscription() {
   const { user } = useAuth();
+  const { isSuperAdmin, loading: rolesLoading } = useRoles();
   const qc = useQueryClient();
   const environment = getPaddleEnvironment();
+
 
   const query = useQuery({
     queryKey: ["subscription", user?.id, environment],
