@@ -209,23 +209,8 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
 
       {/* Fixed bottom bar */}
       <div className="relative border-t border-border/60 bg-elevated/90 backdrop-blur-md md:h-16">
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-label={open ? t("Cerrar menú", "Close menu") : t("Abrir menú", "Open menu")}
-          className="group absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2"
-        >
-          <div className="relative flex h-16 w-28 items-center justify-center overflow-hidden">
-            <div className="absolute bottom-0 h-14 w-14 rounded-full bg-elevated/90 ring-1 ring-border/60 transition-transform duration-300 group-hover:scale-105 group-active:scale-95" />
-            <motion.div
-              animate={{ rotate: open ? 135 : 0 }}
-              transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
-              className="relative z-10 text-foreground"
-            >
-              <Plus className="h-6 w-6" />
-            </motion.div>
-          </div>
-        </button>
+        {!open && toggleButton}
+
 
         <div className="mx-auto flex h-full max-w-6xl flex-col items-center gap-3 px-4 pb-5 pt-10 text-center md:flex-row md:justify-between md:gap-4 md:px-6 md:py-0 md:text-left">
           <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs text-muted-foreground md:justify-start md:text-sm">
