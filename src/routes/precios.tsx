@@ -43,6 +43,12 @@ function Pricing() {
   const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
   const { openCheckout, loading } = usePaddleCheckout();
   const resumedCheckout = useRef(false);
+  const [discount, setDiscount] = useState<PendingDiscount | null>(null);
+
+  useEffect(() => {
+    setDiscount(getPendingDiscount());
+  }, []);
+
 
   const isYearly = billing === "yearly";
 
