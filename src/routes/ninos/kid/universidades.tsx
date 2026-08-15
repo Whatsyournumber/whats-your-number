@@ -353,14 +353,7 @@ function CollegeFinder({ member }: { member: Member }) {
           </p>
 
 
-          <button
-            type="button"
-            onClick={() => setBucket(null)}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-primary"
-          >
-            {t("Ver todas las regiones", "See all regions")} <ArrowRight className="h-3.5 w-3.5" />
-          </button>
-        </div>
+
 
         <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
           {buckets.map((b) => (
