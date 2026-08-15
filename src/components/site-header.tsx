@@ -31,6 +31,8 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
   ] as const;
 
   const kidsTabs = [
+    { label: t("Cómo funciona", "How it works"), to: "/finanzas-para-ninos", hash: "como-funciona" },
+    { label: "Blog", to: "/blog" },
     { label: t("Finanzas para adultos", "Adult finance"), to: "/" },
     { label: t("Precios", "Pricing"), to: "/precios" },
     { label: "demo", to: "/demo-ninos", search: { start: 1 } },
