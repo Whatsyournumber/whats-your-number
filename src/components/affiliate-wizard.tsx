@@ -2,16 +2,20 @@ import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "motion/react";
+import QRCode from "qrcode";
 import {
   ArrowRight,
   Check,
   Copy,
+  Download,
   Link2,
   Loader2,
   MessageCircle,
   PartyPopper,
+  QrCode,
   Share2,
   Sparkles,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 
