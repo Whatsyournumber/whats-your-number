@@ -2,6 +2,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { useRoles } from "@/hooks/use-role";
+
 import { getPaddleEnvironment } from "@/lib/paddle";
 
 export type PlanTier = "free" | "pro" | "patrimonio";
@@ -36,8 +38,10 @@ function isActive(status: string, currentPeriodEnd: string | null) {
 
 export function useSubscription() {
   const { user } = useAuth();
+  const { isSuperAdmin, loading: rolesLoading } = useRoles();
   const qc = useQueryClient();
   const environment = getPaddleEnvironment();
+
 
   const query = useQuery({
     queryKey: ["subscription", user?.id, environment],
@@ -85,19 +89,22 @@ export function useSubscription() {
     subscription?.access_product_id && subscription.access_until && new Date(subscription.access_until) > new Date()
       ? subscription.access_product_id
       : null;
-  const tier: PlanTier = active && subscription ? tierFromProduct(heldProduct ?? subscription.product_id) : "free";
+  const paidTier: PlanTier = active && subscription ? tierFromProduct(heldProduct ?? subscription.product_id) : "free";
+  // Super admins always get the highest plan (Familiar/Patrimonio) with full access.
+  const tier: PlanTier = isSuperAdmin ? "patrimonio" : paidTier;
 
   return {
     subscription,
     tier,
-    active,
+    active: active || isSuperAdmin,
     isFree: tier === "free",
     isPro: tier === "pro" || tier === "patrimonio",
     isPatrimonio: tier === "patrimonio",
     isTrial: subscription?.status === "trialing",
-    loading: query.isLoading,
+    loading: query.isLoading || rolesLoading,
   };
 }
+
 
 export function planMeetsTier(required: PlanTier, current: PlanTier): boolean {
   const rank: Record<PlanTier, number> = { free: 0, pro: 1, patrimonio: 2 };
