@@ -96,7 +96,7 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
             title: t("Recursos", "Resources"),
             links: [
               { label: "Blog", to: "/blog" },
-              { label: t("Tu número", "Your number"), to: "/demo" },
+              { label: t("Demo gratis", "Free demo"), to: "/demo" },
               { label: t("Finanzas para niños", "Kids finance"), to: "/finanzas-para-ninos", external: true },
             ],
           },
