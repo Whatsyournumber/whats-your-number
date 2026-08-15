@@ -12,6 +12,7 @@ export function usePaddleCheckout() {
     customerEmail?: string;
     customData?: Record<string, string>;
     successUrl?: string;
+    discountCode?: string;
   }) => {
     setLoading(true);
     try {
@@ -22,6 +23,7 @@ export function usePaddleCheckout() {
         items: [{ priceId: paddlePriceId, quantity: options.quantity ?? 1 }],
         customer: options.customerEmail ? { email: options.customerEmail } : undefined,
         customData: { userId: user?.id || "", ...options.customData },
+        ...(options.discountCode ? { discountCode: options.discountCode } : {}),
         settings: {
           displayMode: "overlay",
           locale: document.documentElement.lang.toLowerCase().startsWith("en") ? "en" : "es",
@@ -34,6 +36,7 @@ export function usePaddleCheckout() {
       setLoading(false);
     }
   };
+
 
   return { openCheckout, loading };
 }
