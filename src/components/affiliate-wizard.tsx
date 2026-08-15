@@ -25,14 +25,6 @@ import { getPaddleEnvironment } from "@/lib/paddle";
 import { joinAffiliateProgram } from "@/utils/affiliates.functions";
 import { endAffiliateWizard, startAffiliateWizard } from "@/lib/affiliate-wizard-state";
 
-const CHANNELS = [
-  { es: "Redes sociales", en: "Social media" },
-  { es: "YouTube o blog", en: "YouTube or blog" },
-  { es: "Email o newsletter", en: "Email or newsletter" },
-  { es: "Amigos y familia", en: "Friends and family" },
-  { es: "Otros", en: "Other" },
-];
-
 const AUDIENCES = [
   { es: "Finanzas", en: "Finance" },
   { es: "Familias", en: "Families" },
@@ -77,9 +69,8 @@ export function AffiliateWizard() {
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
   const [displayName, setDisplayName] = useState(user?.user_metadata?.["full_name"] ?? (user?.email ?? ""));
-  const [channel, setChannel] = useState(CHANNELS[0]!.es);
   const [audience, setAudience] = useState(AUDIENCES[0]!.es);
-  const [country, setCountry] = useState(COUNTRIES[0]!.name);
+  const [country, setCountry] = useState("");
   const payoutEmail = user?.email ?? "";
 
   const origin = typeof window !== "undefined" ? window.location.origin : "";
@@ -208,62 +199,41 @@ export function AffiliateWizard() {
                 />
               </div>
               <div>
-                <Label htmlFor="aff-channel" className="text-xs text-muted-foreground">
-                  {t("¿Cómo vas a compartir?", "How will you share?")}
-                </Label>
-                <select
-                  id="aff-channel"
-                  value={channel}
-                  onChange={(e) => setChannel(e.target.value)}
-                  className="mt-1.5 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  {CHANNELS.map((c) => (
-                    <option key={c.es} value={c.es}>
-                      {t(c.es, c.en)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <Label className="text-xs text-muted-foreground">
+                <Label htmlFor="aff-audience" className="text-xs text-muted-foreground">
                   {t("¿A quién llegas principalmente?", "Who is your main audience?")}
                 </Label>
-                <div className="mt-1.5 flex flex-wrap gap-1.5">
-                  {AUDIENCES.map((a) => {
-                    const active = audience === a.es;
-                    return (
-                      <button
-                        key={a.es}
-                        type="button"
-                        onClick={() => setAudience(a.es)}
-                        className={`rounded-full border px-3 py-1 text-xs transition-colors ${
-                          active
-                            ? "border-primary bg-primary/15 text-primary"
-                            : "border-input text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        {t(a.es, a.en)}
-                      </button>
-                    );
-                  })}
-                </div>
+                <select
+                  id="aff-audience"
+                  value={audience}
+                  onChange={(e) => setAudience(e.target.value)}
+                  className="mt-1.5 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {AUDIENCES.map((a) => (
+                    <option key={a.es} value={a.es}>
+                      {t(a.es, a.en)}
+                    </option>
+                  ))}
+                  <option value="Otro">{t("Otro", "Other")}</option>
+                </select>
               </div>
               <div>
                 <Label htmlFor="aff-country" className="text-xs text-muted-foreground">
                   {t("País de residencia", "Country of residence")}
                 </Label>
-                <select
+                <Input
                   id="aff-country"
+                  list="aff-country-list"
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
-                  className="mt-1.5 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
+                  placeholder={t("Escribe tu país", "Type your country")}
+                  className="mt-1.5 rounded-xl"
+                />
+                <datalist id="aff-country-list">
                   {COUNTRIES.map((c) => (
-                    <option key={c.name} value={c.name}>
-                      {c.flag} {c.name}
-                    </option>
+                    <option key={c.name} value={c.name} />
                   ))}
-                </select>
+                </datalist>
+
               </div>
 
             </div>
