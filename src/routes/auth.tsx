@@ -283,9 +283,20 @@ function AuthPage() {
               />
             </div>
             <div>
-              <Label htmlFor="password" className="text-xs text-muted-foreground">
-                {t("auth.password")}
-              </Label>
+              <div className="flex items-baseline justify-between">
+                <Label htmlFor="password" className="text-xs text-muted-foreground">
+                  {t("auth.password")}
+                </Label>
+                {mode === "login" && (
+                  <button
+                    type="button"
+                    onClick={() => void onForgot()}
+                    className="text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                  >
+                    {tt("¿Olvidaste tu contraseña?", "Forgot your password?")}
+                  </button>
+                )}
+              </div>
               <Input
                 id="password"
                 type="password"
@@ -298,6 +309,7 @@ function AuthPage() {
                 autoComplete={mode === "signup" ? "new-password" : "current-password"}
               />
             </div>
+
 
             {mode === "signup" && (
               <div>
