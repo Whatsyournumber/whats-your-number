@@ -120,6 +120,8 @@ export function AffiliateWizard() {
         data: {
           displayName: displayName || (user?.user_metadata?.["full_name"] ?? ""),
           payoutEmail: payoutEmail || user?.email || "",
+          country,
+          audience,
           environment: getPaddleEnvironment(),
         },
       });
