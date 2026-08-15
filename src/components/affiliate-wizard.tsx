@@ -48,6 +48,9 @@ export function AffiliateWizard() {
 
   const [step, setStep] = useState(affiliate ? 1 : 0); // 0 = about you, 1 = link ready, 2 = share
   const [maxStep, setMaxStep] = useState(affiliate ? 1 : 0);
+  useEffect(() => {
+    setMaxStep((m) => Math.max(m, step));
+  }, [step]);
 
   // Mientras el wizard esté abierto, /afiliados no debe saltar al dashboard.
   useEffect(() => {
@@ -168,7 +171,7 @@ export function AffiliateWizard() {
       {/* Stepper */}
       <div className="mb-6 flex flex-nowrap items-center justify-center gap-1.5">
         {steps.map((label, i) => {
-          const done = i <= step; // el índice 0 (cuenta creada) siempre está completo
+          const done = i <= maxStep; // el índice 0 (cuenta creada) siempre está completo
           const active = i === step + 1;
           const targetStep = i - 1; // i=0 es la cuenta ya creada
           const canGo = targetStep >= 0 && targetStep <= maxStep && targetStep !== step;
