@@ -230,7 +230,7 @@ function ProfileSelector() {
                 onClick={async () => {
                   select(null);
                   await supabase.auth.signOut();
-                  router.navigate({ to: "/auth", search: { mode: "login" } });
+                  router.navigate({ to: "/" });
                 }}
               >
                 {t("Salir", "Sign out")}

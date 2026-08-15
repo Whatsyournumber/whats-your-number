@@ -267,7 +267,15 @@ function AppShell() {
               <ThemeToggle />
               <CurrencyToggle />
               <LanguageToggle />
-              <Button variant="ghost" size="sm" className="gap-2 rounded-full" onClick={() => void signOut()}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-2 rounded-full"
+                onClick={() => {
+                  navigate({ to: "/", replace: true });
+                  void signOut();
+                }}
+              >
                 <LogOut className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">{t("Salir", "Log out")}</span>
               </Button>
