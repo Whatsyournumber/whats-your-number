@@ -48,7 +48,9 @@ export function AffiliateWizard() {
   const code = affiliate?.code ?? "";
   const link = code ? `${origin}/?ref=${code}` : "";
 
+  // Paso 2 ya está hecho (la cuenta existe); el wizard cubre los pasos 3, 4 y 5.
   const steps = [
+    t("Crea tu cuenta", "Create account"),
     t("Sobre ti", "About you"),
     t("Tu link", "Your link"),
     t("Comparte", "Share"),
