@@ -672,9 +672,16 @@ function CollegeFinder({ member }: { member: Member }) {
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                <span className="absolute bottom-3 right-3 rounded-full bg-background/80 px-2 py-0.5 text-[10px] font-bold text-muted-foreground backdrop-blur">
-                  #{u.rank}
+                <span className="absolute bottom-3 right-3 flex items-center gap-1 rounded-full bg-background/80 px-2 py-0.5 text-[10px] font-bold text-muted-foreground backdrop-blur">
+                  <span className="text-foreground">#{ranksOf(u).global}</span>
+                  <span className="opacity-60">
+                    {t("mundo", "world")} · #{ranksOf(u).continent} {t(
+                      CONTINENT_NAMES[ranksOf(u).continentKey].es,
+                      CONTINENT_NAMES[ranksOf(u).continentKey].en,
+                    )}
+                  </span>
                 </span>
+
               </div>
 
               <div className="p-4">
