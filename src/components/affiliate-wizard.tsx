@@ -51,6 +51,10 @@ export function AffiliateWizard() {
   useEffect(() => {
     setMaxStep((m) => Math.max(m, step));
   }, [step]);
+  // Con la cuenta de afiliado creada, todos los pasos quedan disponibles.
+  useEffect(() => {
+    if (affiliate) setMaxStep((m) => Math.max(m, 2));
+  }, [affiliate]);
 
   // Mientras el wizard esté abierto, /afiliados no debe saltar al dashboard.
   useEffect(() => {
@@ -174,14 +178,23 @@ export function AffiliateWizard() {
           const done = i <= maxStep; // el índice 0 (cuenta creada) siempre está completo
           const active = i === step + 1;
           const targetStep = i - 1; // i=0 es la cuenta ya creada
-          const canGo = targetStep >= 0 && targetStep <= maxStep && targetStep !== step;
+          const isAccountStep = i === 0;
+          const canGo = isAccountStep || (targetStep <= maxStep && targetStep !== step);
           return (
             <div key={label} className="flex flex-nowrap items-center gap-1.5">
               {i > 0 && <span className="h-px w-3 shrink-0 bg-border" />}
               <button
                 type="button"
                 disabled={!canGo}
-                onClick={() => canGo && setStep(targetStep)}
+                onClick={() => {
+                  if (!canGo) return;
+                  if (isAccountStep) {
+                    endAffiliateWizard();
+                    void navigate({ to: "/auth", search: { flow: "affiliate" } as never });
+                    return;
+                  }
+                  setStep(targetStep);
+                }}
                 className={`flex flex-nowrap items-center gap-1.5 rounded-full transition-opacity ${
                   canGo ? "cursor-pointer hover:opacity-80" : "cursor-default"
                 }`}
