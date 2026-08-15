@@ -45,6 +45,7 @@ import avatarFaces from "@/assets/kids-avatars-three.png";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useT } from "@/hooks/use-language";
+import { useLiveCount, formatCount } from "@/components/live-count";
 
 
 export const Route = createFileRoute("/finanzas-para-ninos")({
