@@ -31,11 +31,14 @@ export const Route = createFileRoute("/auth")({
     const rawNext = search["next"];
     // Solo permitimos rutas internas para evitar redirecciones abiertas.
     const next = typeof rawNext === "string" && /^\/[a-zA-Z0-9\-/_]*$/.test(rawNext) ? rawNext : undefined;
+    const affiliate = search["flow"] === "affiliate";
     return {
-      mode: search["mode"] === "signup" ? "signup" : "login",
-      ...(next ? { next } : {}),
+      mode: search["mode"] === "signup" || (affiliate && search["mode"] !== "login") ? "signup" : "login",
+      ...(next ? { next } : affiliate ? { next: "/afiliados" } : {}),
+      ...(affiliate ? { flow: "affiliate" as const } : {}),
     };
   },
+
   head: () => ({
     meta: [
       { title: "Sign in — WhatsYournumber" },
