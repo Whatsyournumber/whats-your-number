@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { Gift, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -8,7 +9,9 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/use-auth";
 import { useT } from "@/hooks/use-language";
 import { getPaddleEnvironment } from "@/lib/paddle";
-import { redeemPromoCode } from "@/lib/promo.functions";
+import { setPendingDiscount } from "@/lib/pending-discount";
+import { lookupDiscountCode, redeemPromoCode } from "@/lib/promo.functions";
+
 
 type RedeemResult = {
   ok: boolean;
