@@ -138,7 +138,22 @@ function AuthPage() {
     }
   };
 
+  const onForgot = async () => {
+    if (!email.trim()) {
+      toast.error(tt("Escribe tu correo primero", "Enter your email first"));
+      return;
+    }
+    setBusy(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setBusy(false);
+    if (error) toast.error(error.message);
+    else toast.success(tt("Te enviamos un enlace para cambiarla", "We sent you a link to change it"));
+  };
+
   const onOAuth = async () => {
+
     if (promo.trim()) setPendingPromoCode(promo);
     setBusy(true);
     const pendingCheckout = getPendingCheckoutPlan();
@@ -283,9 +298,20 @@ function AuthPage() {
               />
             </div>
             <div>
-              <Label htmlFor="password" className="text-xs text-muted-foreground">
-                {t("auth.password")}
-              </Label>
+              <div className="flex items-baseline justify-between">
+                <Label htmlFor="password" className="text-xs text-muted-foreground">
+                  {t("auth.password")}
+                </Label>
+                {mode === "login" && (
+                  <button
+                    type="button"
+                    onClick={() => void onForgot()}
+                    className="text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                  >
+                    {tt("¿Olvidaste tu contraseña?", "Forgot your password?")}
+                  </button>
+                )}
+              </div>
               <Input
                 id="password"
                 type="password"
@@ -298,6 +324,7 @@ function AuthPage() {
                 autoComplete={mode === "signup" ? "new-password" : "current-password"}
               />
             </div>
+
 
             {mode === "signup" && (
               <div>
