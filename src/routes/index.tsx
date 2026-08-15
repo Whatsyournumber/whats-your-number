@@ -388,7 +388,7 @@ function Landing() {
 
 
           <div className="relative z-10 mx-auto w-full max-w-6xl px-6">
-            <div className="max-w-2xl pb-16 pt-[22vh] text-center md:max-w-[56%] md:pb-24 md:pt-28 md:text-left lg:max-w-2xl lg:pb-36 lg:pt-44">
+            <div className="max-w-2xl pb-8 pt-[22vh] text-center md:max-w-[56%] md:pb-12 md:pt-28 md:text-left lg:max-w-2xl lg:pb-16 lg:pt-44">
               <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-[11px] text-muted-foreground backdrop-blur md:text-xs">
                 <Sparkles className="h-3.5 w-3.5 text-primary" />
                 {t("Tu family office personal, potenciado con IA", "Your personal family office, powered by AI")}
