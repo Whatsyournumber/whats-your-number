@@ -26,6 +26,7 @@ import heroManLaptopAsset from "@/assets/hero-man-laptop.jpg.asset.json";
 
 
 import { BrandLogo } from "@/components/brand-logo";
+import { useLiveCount, formatCount } from "@/components/live-count";
 import { ProductPreview } from "@/components/product-preview";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -166,6 +167,7 @@ function DemoCard() {
 
 function Landing() {
   const t = useT();
+  const liveCount = useLiveCount(1200);
   const { user, loading: authLoading } = useAuth();
   const { isPatrimonio, loading: subscriptionLoading } = useSubscription();
   const navigate = useNavigate();
@@ -434,7 +436,10 @@ function Landing() {
                   ))}
                 </div>
                 <span className="text-sm text-muted-foreground">
-                  {t("+8,231 personas ya descubrieron su número", "+8,231 people already found their number")}
+                  {t(
+                    `+${formatCount(liveCount, "es")} personas ya descubrieron su número`,
+                    `+${formatCount(liveCount, "en")} people already found their number`,
+                  )}
                 </span>
               </div>
             </div>
