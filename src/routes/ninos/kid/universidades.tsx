@@ -613,7 +613,10 @@ function CollegeFinder({ member }: { member: Member }) {
                 </span>
                 <button
                   type="button"
-                  onClick={() => toggleSaved(u.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleSaved(u.id);
+                  }}
                   className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-background/80 backdrop-blur"
                   aria-label={t("Guardar", "Save")}
                 >
