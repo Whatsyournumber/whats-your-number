@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Copy, Check, Link2, MousePointerClick, Users, Wallet, Loader2 } from "lucide-react";
+import { ArrowLeft, Copy, Check, Link2, MousePointerClick, Users, Wallet, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
@@ -15,6 +15,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useMyAffiliate } from "@/hooks/use-affiliate";
 import { AffiliateExplainer } from "@/components/affiliate-explainer";
 import { AffiliateLanding } from "@/components/affiliate-landing";
+import { AffiliateWizard } from "@/components/affiliate-wizard";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
