@@ -131,6 +131,7 @@ function CollegeFinder({ member }: { member: Member }) {
   const [sort, setSort] = useState<"cost" | "rank">("cost");
   const [saved, setSaved] = useState<string[]>([]);
   const [detail, setDetail] = useState<University | null>(null);
+  const [compareOpen, setCompareOpen] = useState(false);
 
   const cost = (u: University) => uniTotalUsd(u, includeLiving) * usdFx.factor;
   const isHome = (u: University) => !!homeCountry && (u.countryEs === homeCountry || u.country === homeCountry);
@@ -753,7 +754,7 @@ function CollegeFinder({ member }: { member: Member }) {
       <CompareDialog
         open={compareOpen}
         onClose={() => setCompareOpen(false)}
-        unis={priced.filter((u) => saved.includes(u.id))}
+        unis={priced.filter((r) => saved.includes(r.u.id)).map((r) => r.u)}
         currency={currency}
         usdFactor={usdFx.factor}
         projected={projected}
