@@ -883,3 +883,185 @@ function CountryCombobox({
     </div>
   );
 }
+
+const SOURCES: { name: string; detail: { es: string; en: string } }[] = [
+  { name: "QS World University Rankings 2025", detail: { es: "Posición mundial de cada universidad.", en: "World ranking position." } },
+  { name: "Times Higher Education 2025", detail: { es: "Contraste de ranking y reputación.", en: "Ranking and reputation cross-check." } },
+  { name: "Webs oficiales de admisiones", detail: { es: "Matrícula anual publicada (tarifa internacional).", en: "Published annual tuition (international rate)." } },
+  { name: "Numbeo / Expatistan", detail: { es: "Coste de vida estudiantil por ciudad.", en: "Student living cost by city." } },
+  { name: "OECD Education at a Glance", detail: { es: "Duración típica del grado y medias por país.", en: "Typical degree length and country averages." } },
+];
+
+function SourcesTip() {
+  const { t } = useI18n();
+  return (
+    <TooltipProvider delayDuration={100}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            type="button"
+            className="inline-flex h-9 items-center gap-1.5 rounded-full border border-border/70 bg-card px-3 text-[11px] font-semibold text-muted-foreground transition hover:text-foreground"
+          >
+            <Info className="h-3.5 w-3.5" /> {t("Fuentes", "Sources")}
+          </button>
+        </TooltipTrigger>
+        <TooltipContent className="max-w-xs">
+          <p className="mb-1 font-semibold">{t("Cifras estimadas 2025 (USD)", "Estimated 2025 figures (USD)")}</p>
+          <ul className="space-y-1">
+            {SOURCES.map((s) => (
+              <li key={s.name} className="text-[11px] leading-snug">
+                <span className="font-semibold">{s.name}</span> — {t(s.detail.es, s.detail.en)}
+              </li>
+            ))}
+          </ul>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
+
+function UniDetailDialog({
+  uni,
+  onClose,
+  currency,
+  usdFactor,
+  projected,
+  monthsLeft,
+  includeLiving,
+}: {
+  uni: University | null;
+  onClose: () => void;
+  currency: string;
+  usdFactor: number;
+  projected: number;
+  monthsLeft: number;
+  includeLiving: boolean;
+}) {
+  const { t, lang } = useI18n();
+  if (!uni) return null;
+
+  const tuitionYear = uni.tuition * usdFactor;
+  const livingYear = uni.living * usdFactor;
+  const tuitionTotal = tuitionYear * uni.years;
+  const livingTotal = livingYear * uni.years;
+  const total = tuitionTotal + (includeLiving ? livingTotal : 0);
+  const ok = total <= projected;
+  const gap = Math.max(0, total - projected);
+  const coverage = Math.max(0, Math.min(100, Math.round((projected / Math.max(1, total)) * 100)));
+
+  return (
+    <Dialog open onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-h-[88vh] max-w-2xl overflow-y-auto p-0">
+        <div className="relative h-44 overflow-hidden sm:h-56">
+          <img
+            src={uniPhoto(uni)}
+            alt={`${uni.name} — ${uni.city}`}
+            onError={(e) => {
+              const img = e.currentTarget;
+              const fb = uniPhotoFallback(uni);
+              if (img.src !== fb) img.src = fb;
+            }}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        </div>
+
+        <div className="-mt-10 space-y-5 p-5 sm:p-6">
+          <DialogHeader className="space-y-1 text-left">
+            <DialogTitle className="font-display text-2xl font-black leading-tight">
+              {uni.flag} {uni.name}
+            </DialogTitle>
+            <p className="text-xs text-muted-foreground">
+              {uni.city}, {lang === "en" ? uni.country : uni.countryEs} · {t("Ranking mundial", "World rank")} #{uni.rank} ·{" "}
+              {uni.years} {t("años de carrera", "year degree")}
+            </p>
+          </DialogHeader>
+
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {[
+              { l: t("Matrícula / año", "Tuition / year"), v: money(tuitionYear, currency, true) },
+              { l: t("Coste de vida / año", "Living cost / year"), v: money(livingYear, currency, true) },
+              { l: t("Matrícula total", "Total tuition"), v: money(tuitionTotal, currency, true) },
+              { l: t("Vida total", "Total living"), v: money(livingTotal, currency, true) },
+            ].map((s) => (
+              <div key={s.l} className="rounded-2xl border border-border/70 bg-secondary/40 p-3">
+                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{s.l}</p>
+                <p className="mt-1 font-display text-base font-bold text-foreground">{s.v}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="rounded-2xl border border-primary/20 bg-primary/[0.07] p-4">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              {includeLiving
+                ? t("Coste total de la carrera (matrícula + vida)", "Total degree cost (tuition + living)")
+                : t("Coste total (solo matrícula)", "Total cost (tuition only)")}
+            </p>
+            <p className="font-display text-3xl font-black text-primary">{money(total, currency, true)}</p>
+            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-secondary">
+              <div
+                className={cn("h-full rounded-full", ok ? "bg-primary" : "bg-amber-500")}
+                style={{ width: `${coverage}%` }}
+              />
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">
+              {t("Tu capital proyectado", "Your projected capital")}:{" "}
+              <span className="font-semibold text-foreground">{money(projected, currency, true)}</span> — {coverage}%{" "}
+              {t("cubierto", "covered")}
+            </p>
+            {ok ? (
+              <p className="mt-1 text-xs font-semibold text-primary">
+                {t("Te quedarían", "You'd have left")} {money(projected - total, currency, true)}
+              </p>
+            ) : (
+              <p className="mt-1 text-xs font-semibold text-amber-600 dark:text-amber-400">
+                {t("Te faltarían", "You'd be short")} {money(gap, currency, true)} · +
+                {money(gap / monthsLeft, currency, true)} {t("/ mes para cerrarlo", "/ mo to close it")}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              {t("Áreas de estudio", "Fields of study")}
+            </p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {uniFields(uni).map((f) => (
+                <span
+                  key={f}
+                  className="rounded-full bg-secondary px-2.5 py-1 text-[11px] font-semibold text-muted-foreground"
+                >
+                  {FIELD_LABELS[f].emoji} {FIELD_LABELS[f][lang === "en" ? "en" : "es"]}
+                </span>
+              ))}
+            </div>
+            {uni.scholarship ? (
+              <p className="mt-3 text-xs font-semibold text-primary">
+                🎓 {t("Ofrece becas para estudiantes internacionales", "Offers scholarships for international students")}
+              </p>
+            ) : null}
+          </div>
+
+          <div className="rounded-2xl border border-border/70 bg-secondary/30 p-4">
+            <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              <Info className="h-3.5 w-3.5" /> {t("Fuentes de los datos", "Data sources")}
+            </p>
+            <ul className="mt-2 space-y-1">
+              {SOURCES.map((s) => (
+                <li key={s.name} className="text-[11px] leading-snug text-muted-foreground">
+                  <span className="font-semibold text-foreground">{s.name}</span> — {t(s.detail.es, s.detail.en)}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-2 text-[10px] text-muted-foreground">
+              {t(
+                "Cifras indicativas 2025 en USD convertidas a tu moneda; pueden variar según programa, beca y tipo de cambio.",
+                "Indicative 2025 figures in USD converted to your currency; they can vary by program, scholarship and exchange rate.",
+              )}
+            </p>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
