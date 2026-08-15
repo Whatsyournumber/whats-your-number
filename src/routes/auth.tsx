@@ -172,15 +172,66 @@ function AuthPage() {
         </div>
 
         <div className="surface p-7">
+          {isAffiliate && (
+            <div className="-mx-1 mb-6 flex items-center gap-2">
+              {[
+                tt("Únete", "Join"),
+                tt("Crea tu cuenta", "Create account"),
+                tt("Tu link", "Your link"),
+              ].map((label, i) => {
+                const active = i === 1;
+                const done = i === 0;
+                return (
+                  <div key={label} className="flex min-w-0 flex-1 items-center gap-1.5">
+                    <span
+                      className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${
+                        active || done ? "bg-primary text-primary-foreground" : "bg-elevated text-muted-foreground"
+                      }`}
+                    >
+                      {i + 1}
+                    </span>
+                    <span
+                      className={`truncate text-[10px] ${active ? "font-semibold text-foreground" : "text-muted-foreground"}`}
+                    >
+                      {label}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
           <div className="flex flex-col items-center text-center">
             <BrandLogo />
-            <p className="mt-4 font-display text-lg font-semibold tracking-tight">
-              {mode === "signup" ? t("auth.title.signup") : t("auth.title.login")}
-            </p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {mode === "signup" ? t("auth.subtitle.signup") : t("auth.subtitle.login")}
-            </p>
+            {isAffiliate ? (
+              <>
+                <span className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-primary/40 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-primary">
+                  <Handshake className="h-3 w-3" />
+                  {tt("Programa de afiliados", "Affiliate program")}
+                </span>
+                <p className="mt-3 font-display text-lg font-semibold tracking-tight">
+                  {mode === "signup"
+                    ? tt("Crea tu cuenta de afiliado", "Create your affiliate account")
+                    : tt("Entra a tu panel de afiliado", "Sign in to your affiliate panel")}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {tt(
+                    "Es gratis. Al terminar te llevamos directo a tu panel para generar tu link.",
+                    "It's free. When you finish we take you straight to your panel to generate your link.",
+                  )}
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="mt-4 font-display text-lg font-semibold tracking-tight">
+                  {mode === "signup" ? t("auth.title.signup") : t("auth.title.login")}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {mode === "signup" ? t("auth.subtitle.signup") : t("auth.subtitle.login")}
+                </p>
+              </>
+            )}
           </div>
+
 
           <div className="mt-6 grid grid-cols-2 gap-1 rounded-full bg-elevated/60 p-1 text-xs">
             {(["login", "signup"] as const).map((value) => (
