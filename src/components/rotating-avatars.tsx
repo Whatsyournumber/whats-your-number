@@ -39,7 +39,7 @@ export function RotatingAvatars({
         const used = prev.filter((_, i) => i !== replaceIdx);
         const [next] = pick(1, used);
         const copy = [...prev];
-        copy[replaceIdx] = next;
+        if (next !== undefined) copy[replaceIdx] = next;
         return copy;
       });
       setFadeKey((k) => k + 1);
