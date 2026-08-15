@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { Gift, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -8,7 +9,9 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/use-auth";
 import { useT } from "@/hooks/use-language";
 import { getPaddleEnvironment } from "@/lib/paddle";
-import { redeemPromoCode } from "@/lib/promo.functions";
+import { setPendingDiscount } from "@/lib/pending-discount";
+import { lookupDiscountCode, redeemPromoCode } from "@/lib/promo.functions";
+
 
 type RedeemResult = {
   ok: boolean;
@@ -21,6 +24,8 @@ export function PromoCodeRedeem({ className }: { className?: string }) {
   const t = useT();
   const { user } = useAuth();
   const qc = useQueryClient();
+  const navigate = useNavigate();
+
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -50,6 +55,27 @@ export function PromoCodeRedeem({ className }: { className?: string }) {
     }
     setLoading(true);
     try {
+      // Primero: ¿es un descuento de pago (ej. 30%)? Entonces va al checkout.
+      try {
+        const discount = (await lookupDiscountCode({
+          data: { code: clean, environment: getPaddleEnvironment() },
+        })) as { ok: boolean; code?: string; label?: string };
+        if (discount?.ok && discount.code) {
+          setPendingDiscount({ code: discount.code, label: discount.label ?? "" });
+          setCode("");
+          toast.success(
+            t(
+              `Descuento ${discount.label} listo. Elige tu plan para pagar con descuento.`,
+              `${discount.label} discount ready. Pick your plan to pay with the discount.`,
+            ),
+          );
+          navigate({ to: "/precios" });
+          return;
+        }
+      } catch {
+        // seguimos con el canje clásico
+      }
+
       const result = (await redeemPromoCode({
         data: { code: clean, environment: getPaddleEnvironment() },
       })) as RedeemResult;
@@ -57,6 +83,7 @@ export function PromoCodeRedeem({ className }: { className?: string }) {
         toast.error(errorText(result?.error ?? ""));
         return;
       }
+
       const until = result.until ? new Date(result.until).toLocaleDateString() : "";
       toast.success(
         t("¡Código activado! Acceso Pro hasta ", "Code activated! Pro access until ") + until,
