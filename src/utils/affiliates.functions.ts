@@ -51,21 +51,30 @@ export const joinAffiliateProgram = createServerFn({ method: "POST" })
     }
 
 
-    // First name only + 3-4 digits -> e.g. OSCAR482
+    // Format: FIRSTNAMEWUN01, FIRSTNAMEWUN02, ... sequential by count of existing affiliates.
     const firstName = (data.displayName ?? "").trim().split(/\s+/)[0] ?? "";
-    const base = (slugifyCode(firstName) || "WYN").slice(0, 10);
-    let code = "";
-    for (let i = 0; i < 6; i += 1) {
-      const digits = String(100 + Math.floor(Math.random() * 900) + (i > 2 ? Math.floor(Math.random() * 9000) : 0));
-      const candidate = `${base}${digits}`.slice(0, 16);
+    const base = (slugifyCode(firstName) || "WYN").slice(0, 12);
 
+    // Determine the next sequential suffix from existing affiliates count.
+    const { count } = await supabaseAdmin
+      .from("affiliates")
+      .select("id", { count: "exact", head: true });
+    const seq = String((count ?? 0) + 1).padStart(2, "0");
+
+    let code = `${base}WUN${seq}`.slice(0, 16);
+
+    // Guard against unlikely collisions by bumping the suffix.
+    let bump = 0;
+    while (true) {
+      const candidate = bump === 0 ? code : `${base}WUN${String((count ?? 0) + 1 + bump).padStart(2, "0")}`.slice(0, 16);
       const { data: taken } = await supabaseAdmin.from("affiliates").select("id").eq("code", candidate).maybeSingle();
       if (!taken) {
         code = candidate;
         break;
       }
+      bump += 1;
+      if (bump > 50) throw new Error("Could not generate a code");
     }
-    if (!code) throw new Error("Could not generate a code");
 
     const { error } = await supabaseAdmin.from("affiliates").insert({
       user_id: context.userId,
