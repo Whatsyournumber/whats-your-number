@@ -998,8 +998,11 @@ function UniDetailDialog({
 
         <div className="-mt-10 space-y-5 p-5 sm:p-6">
           <DialogHeader className="space-y-1 text-left">
-            <DialogTitle className="font-display text-2xl font-black leading-tight">
-              {uni.flag} {uni.name}
+            <DialogTitle className="flex items-start gap-2 font-display text-2xl font-black leading-tight">
+              <span>
+                {uni.flag} {uni.name}
+              </span>
+              <SourcesTip className="mt-1.5 shrink-0" />
             </DialogTitle>
             <p className="text-xs text-muted-foreground">
               {uni.city}, {lang === "en" ? uni.country : uni.countryEs} · {t("Ranking mundial", "World rank")} #{uni.rank} ·{" "}
