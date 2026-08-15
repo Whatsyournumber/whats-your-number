@@ -371,6 +371,10 @@ export const UNIVERSITIES: University[] = [
   { id: "lat-udla-ecuador", name: "UDLA Ecuador", city: "Quito", country: "Ecuador", countryEs: "Ecuador", flag: "🇪🇨", region: "latam", tuition: 6000, living: 8000, years: 4, rank: 1100, fields: ["business", "health", "arts"] },
   { id: "lat-usfq", name: "USFQ", city: "Quito", country: "Ecuador", countryEs: "Ecuador", flag: "🇪🇨", region: "latam", tuition: 9000, living: 8000, years: 4, rank: 800, fields: ["business", "health", "arts"], scholarship: true },
   { id: "lat-universidad-catolica-del-uru", name: "Universidad Católica del Uruguay", city: "Montevideo", country: "Uruguay", countryEs: "Uruguay", flag: "🇺🇾", region: "latam", tuition: 7000, living: 8000, years: 4, rank: 1000, fields: ["business", "law", "health"] },
+  { id: "lat-ucab", name: "Universidad Católica Andrés Bello", city: "Caracas", country: "Venezuela", countryEs: "Venezuela", flag: "🇻🇪", region: "latam", tuition: 3500, living: 6000, years: 5, rank: 1200, fields: ["business", "law", "engineering"], scholarship: true },
+  { id: "lat-unimet", name: "Universidad Metropolitana", city: "Caracas", country: "Venezuela", countryEs: "Venezuela", flag: "🇻🇪", region: "latam", tuition: 4000, living: 6000, years: 5, rank: 1300, fields: ["business", "engineering", "economics"] },
+
+
 
   // Asia-Pacífico
   { id: "ap-nus", name: "NUS", city: "Singapur", country: "Singapore", countryEs: "Singapur", flag: "🇸🇬", region: "apac", tuition: 25000, living: 15000, years: 4, rank: 8, fields: ["engineering", "business", "science"], scholarship: true },
