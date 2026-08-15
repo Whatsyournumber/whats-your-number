@@ -236,7 +236,7 @@ function AdminPage() {
     enabled,
     queryFn: async () => {
       const [accounts, clicks, referrals, commissions] = await Promise.all([
-        supabase.from("affiliates").select("id,user_id,code,display_name,payout_email,commission_rate,status,created_at").order("created_at", { ascending: false }),
+        supabase.from("affiliates").select("id,user_id,code,display_name,payout_email,payout_notes,commission_rate,status,created_at").order("created_at", { ascending: false }),
         supabase.from("affiliate_clicks").select("id,affiliate_id"),
         supabase.from("affiliate_referrals").select("id,affiliate_id,user_id,status,created_at"),
         supabase.from("affiliate_commissions").select("id,affiliate_id,commission_amount,base_amount,status,created_at"),
@@ -482,6 +482,8 @@ function AdminPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>{t("Código", "Code")}</TableHead>
+                    <TableHead>{t("Correo", "Email")}</TableHead>
+                    <TableHead>{t("País", "Country")}</TableHead>
                     <TableHead>Plan</TableHead>
                     <TableHead>{t("Días", "Days")}</TableHead>
                     <TableHead>{t("Usos", "Uses")}</TableHead>
@@ -527,6 +529,8 @@ function AdminPage() {
                   <TableRow>
                     <TableHead>{t("Usuario", "User")}</TableHead>
                     <TableHead>{t("Código", "Code")}</TableHead>
+                    <TableHead>{t("Correo", "Email")}</TableHead>
+                    <TableHead>{t("País", "Country")}</TableHead>
                     <TableHead>{t("Acceso hasta", "Access until")}</TableHead>
                     <TableHead>{t("Fecha", "Date")}</TableHead>
                     <TableHead className="text-right">{t("Acciones", "Actions")}</TableHead>
@@ -579,6 +583,8 @@ function AdminPage() {
                   <TableRow>
                     <TableHead>{t("Afiliado", "Affiliate")}</TableHead>
                     <TableHead>{t("Código", "Code")}</TableHead>
+                    <TableHead>{t("Correo", "Email")}</TableHead>
+                    <TableHead>{t("País", "Country")}</TableHead>
                     <TableHead>{t("Clics", "Clicks")}</TableHead>
                     <TableHead>{t("Registros", "Sign-ups")}</TableHead>
                     <TableHead>{t("Activas", "Active")}</TableHead>
@@ -596,6 +602,10 @@ function AdminPage() {
                       <TableRow key={a.id}>
                         <TableCell className="font-medium">{a.display_name || u?.email || a.user_id.slice(0, 8)}</TableCell>
                         <TableCell className="font-mono text-xs">{a.code}</TableCell>
+                        <TableCell className="text-xs text-muted-foreground">{a.payout_email || u?.email || "—"}</TableCell>
+                        <TableCell className="text-xs text-muted-foreground">
+                          {(a.payout_notes ?? "").match(/País:\s*([^·]+)/)?.[1]?.trim() || "—"}
+                        </TableCell>
                         <TableCell className="numeric">{a.clicks}</TableCell>
                         <TableCell className="numeric">{a.signups}</TableCell>
                         <TableCell className="numeric">{a.active}</TableCell>
@@ -636,7 +646,7 @@ function AdminPage() {
                   })}
                   {affRows.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={10} className="text-center text-muted-foreground">{t("Sin afiliados todavía", "No affiliates yet")}</TableCell>
+                      <TableCell colSpan={12} className="text-center text-muted-foreground">{t("Sin afiliados todavía", "No affiliates yet")}</TableCell>
                     </TableRow>
                   )}
                 </TableBody>

@@ -35,7 +35,15 @@ export const trackAffiliateClick = createServerFn({ method: "POST" })
 /** Creates (or returns) the affiliate account of the signed-in user. */
 export const joinAffiliateProgram = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data?: { displayName?: string; payoutEmail?: string; environment?: "sandbox" | "live" }) => data ?? {})
+  .inputValidator(
+    (data?: {
+      displayName?: string;
+      payoutEmail?: string;
+      country?: string;
+      audience?: string;
+      environment?: "sandbox" | "live";
+    }) => data ?? {},
+  )
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const environment = data.environment === "live" ? "live" : "sandbox";
@@ -45,7 +53,20 @@ export const joinAffiliateProgram = createServerFn({ method: "POST" })
       .select("id,code")
       .eq("user_id", context.userId)
       .maybeSingle();
+    const notes = [data.country?.trim() ? `País: ${data.country.trim()}` : "", data.audience?.trim() ? `Audiencia: ${data.audience.trim()}` : ""]
+      .filter(Boolean)
+      .join(" · ");
+
     if (existing) {
+      if (data.country?.trim() || data.payoutEmail?.trim()) {
+        await supabaseAdmin
+          .from("affiliates")
+          .update({
+            ...(notes ? { payout_notes: notes } : {}),
+            ...(data.payoutEmail?.trim() ? { payout_email: data.payoutEmail.trim() } : {}),
+          })
+          .eq("id", existing.id);
+      }
       const reward = await maybeGrantReferralReward(supabaseAdmin, existing.id as string, environment);
       return { ok: true, code: existing.code as string, ...reward };
     }
@@ -81,6 +102,7 @@ export const joinAffiliateProgram = createServerFn({ method: "POST" })
       code,
       display_name: data.displayName ?? null,
       payout_email: data.payoutEmail ?? null,
+      payout_notes: notes || null,
     });
     if (error) throw new Error(error.message);
     return { ok: true, code, unlocked: false, referrals: 0, goal: REFERRALS_FOR_FREE_PRO };
