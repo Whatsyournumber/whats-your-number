@@ -202,13 +202,13 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
               {cta ?? (
                 <>
                   <Button asChild size="lg" className="rounded-full">
-                    <Link to="/auth" search={{ mode: "signup", next: "/afiliados" }}>
+                    <Link to="/auth" search={{ mode: "signup", next: "/afiliados", flow: "affiliate" }}>
                       {t("Quiero ser afiliado", "I want to be an affiliate")}
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
                   <Button asChild size="lg" variant="outline" className="rounded-full">
-                    <Link to="/auth" search={{ mode: "login", next: "/afiliados" }}>
+                    <Link to="/auth" search={{ mode: "login", next: "/afiliados", flow: "affiliate" }}>
                       {t("Ya tengo cuenta", "I already have an account")}
                     </Link>
                   </Button>
@@ -401,7 +401,7 @@ export function AffiliateLanding({ cta }: { cta?: ReactNode }) {
           </div>
           {cta ?? (
             <Button asChild size="lg" className="rounded-full">
-              <Link to="/auth" search={{ mode: "signup", next: "/afiliados" }}>
+              <Link to="/auth" search={{ mode: "signup", next: "/afiliados", flow: "affiliate" }}>
                 {t("Quiero mi enlace de afiliado", "I want my affiliate link")}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>

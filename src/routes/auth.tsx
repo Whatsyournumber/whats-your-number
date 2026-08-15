@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Handshake, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -9,14 +9,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/use-auth";
-import { LanguageToggle, useLanguage } from "@/hooks/use-language";
+import { LanguageToggle, useLanguage, useT } from "@/hooks/use-language";
 import { useSubscription } from "@/hooks/use-subscription";
 import { lovable } from "@/integrations/lovable/index";
 import { supabase } from "@/integrations/supabase/client";
 import { setPendingPromoCode } from "@/lib/pending-promo";
 import { getPendingCheckoutPlan } from "@/lib/pending-checkout";
 
-type AuthSearch = { mode: "login" | "signup"; next?: string };
+type AuthSearch = { mode: "login" | "signup"; next?: string; flow?: "affiliate" };
 
 // Google nos devuelve nombre, email, teléfono y foto para construir el perfil.
 const GOOGLE_SCOPES = [
@@ -31,11 +31,14 @@ export const Route = createFileRoute("/auth")({
     const rawNext = search["next"];
     // Solo permitimos rutas internas para evitar redirecciones abiertas.
     const next = typeof rawNext === "string" && /^\/[a-zA-Z0-9\-/_]*$/.test(rawNext) ? rawNext : undefined;
+    const affiliate = search["flow"] === "affiliate";
     return {
-      mode: search["mode"] === "signup" ? "signup" : "login",
-      ...(next ? { next } : {}),
+      mode: search["mode"] === "signup" || (affiliate && search["mode"] !== "login") ? "signup" : "login",
+      ...(next ? { next } : affiliate ? { next: "/afiliados" } : {}),
+      ...(affiliate ? { flow: "affiliate" as const } : {}),
     };
   },
+
   head: () => ({
     meta: [
       { title: "Sign in — WhatsYournumber" },
@@ -73,11 +76,14 @@ function GoogleMark() {
 }
 
 function AuthPage() {
-  const { mode, next } = Route.useSearch();
+  const { mode, next, flow } = Route.useSearch();
+  const isAffiliate = flow === "affiliate";
   const navigate = useNavigate();
+
   const { user, loading: authLoading } = useAuth();
   const { isPatrimonio, loading: subscriptionLoading } = useSubscription();
   const { t } = useLanguage();
+  const tt = useT();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -167,15 +173,66 @@ function AuthPage() {
         </div>
 
         <div className="surface p-7">
+          {isAffiliate && (
+            <div className="-mx-1 mb-6 flex items-center gap-2">
+              {[
+                tt("Únete", "Join"),
+                tt("Crea tu cuenta", "Create account"),
+                tt("Tu link", "Your link"),
+              ].map((label, i) => {
+                const active = i === 1;
+                const done = i === 0;
+                return (
+                  <div key={label} className="flex min-w-0 flex-1 items-center gap-1.5">
+                    <span
+                      className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold ${
+                        active || done ? "bg-primary text-primary-foreground" : "bg-elevated text-muted-foreground"
+                      }`}
+                    >
+                      {i + 1}
+                    </span>
+                    <span
+                      className={`truncate text-[10px] ${active ? "font-semibold text-foreground" : "text-muted-foreground"}`}
+                    >
+                      {label}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
           <div className="flex flex-col items-center text-center">
             <BrandLogo />
-            <p className="mt-4 font-display text-lg font-semibold tracking-tight">
-              {mode === "signup" ? t("auth.title.signup") : t("auth.title.login")}
-            </p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {mode === "signup" ? t("auth.subtitle.signup") : t("auth.subtitle.login")}
-            </p>
+            {isAffiliate ? (
+              <>
+                <span className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-primary/40 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-primary">
+                  <Handshake className="h-3 w-3" />
+                  {tt("Programa de afiliados", "Affiliate program")}
+                </span>
+                <p className="mt-3 font-display text-lg font-semibold tracking-tight">
+                  {mode === "signup"
+                    ? tt("Crea tu cuenta de afiliado", "Create your affiliate account")
+                    : tt("Entra a tu panel de afiliado", "Sign in to your affiliate panel")}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {tt(
+                    "Es gratis. Al terminar te llevamos directo a tu panel para generar tu link.",
+                    "It's free. When you finish we take you straight to your panel to generate your link.",
+                  )}
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="mt-4 font-display text-lg font-semibold tracking-tight">
+                  {mode === "signup" ? t("auth.title.signup") : t("auth.title.login")}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {mode === "signup" ? t("auth.subtitle.signup") : t("auth.subtitle.login")}
+                </p>
+              </>
+            )}
           </div>
+
 
           <div className="mt-6 grid grid-cols-2 gap-1 rounded-full bg-elevated/60 p-1 text-xs">
             {(["login", "signup"] as const).map((value) => (
