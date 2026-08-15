@@ -1380,8 +1380,8 @@ function KidsFinanceLanding() {
                 />
                 <p className="text-xs font-medium text-foreground md:text-sm">
                   {t(
-                    "+3.200 familias ya están construyendo su futuro.",
-                    "+3,200 families are already building their future.",
+                    `+${formatCount(liveCount, "es")} familias ya están construyendo su futuro.`,
+                    `+${formatCount(liveCount, "en")} families are already building their future.`,
                   )}
                 </p>
               </div>
