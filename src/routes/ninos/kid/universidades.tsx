@@ -1090,7 +1090,12 @@ function CompareDialog({
                   {r.u.city}, {lang === "en" ? r.u.country : r.u.countryEs}
                 </p>
                 {[
-                  [t("Ranking", "Rank"), `#${r.u.rank}`],
+                  [t("Ranking mundial", "World rank"), `#${ranksOf(r.u).global}`],
+                  [
+                    t(CONTINENT_NAMES[ranksOf(r.u).continentKey].es, CONTINENT_NAMES[ranksOf(r.u).continentKey].en),
+                    `#${ranksOf(r.u).continent}`,
+                  ],
+
                   [t("Duración", "Duration"), `${r.u.years} ${t("años", "yrs")}`],
                   [t("Matrícula total", "Total tuition"), money(r.tuition, currency, true)],
                   [t("Vida total", "Total living"), money(r.living, currency, true)],
