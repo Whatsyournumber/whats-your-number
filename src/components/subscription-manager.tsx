@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, CreditCard, ExternalLink, Loader2, Receipt, XCircle } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { ArrowUpRight, CreditCard, ExternalLink, Loader2, Mail, Receipt, User, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/use-auth";
 import { useT } from "@/hooks/use-language";
 import { useSubscription } from "@/hooks/use-subscription";
+import { getBillingDetails } from "@/lib/billing.functions";
 import { getPaddleEnvironment } from "@/lib/paddle";
 import { changePlan, openCustomerPortal, type PortalTarget } from "@/utils/subscriptions.functions";
 
@@ -16,7 +19,22 @@ const fmtDate = (iso: string | null) =>
 export function SubscriptionManager() {
   const t = useT();
   const { subscription, tier, isTrial, loading } = useSubscription();
+  const { user } = useAuth();
   const [busy, setBusy] = useState<string | null>(null);
+
+  const billing = useQuery({
+    queryKey: ["billing-details", user?.id, getPaddleEnvironment(), subscription?.id ?? null],
+    enabled: Boolean(user),
+    queryFn: () => getBillingDetails({ data: { environment: getPaddleEnvironment() } }),
+    staleTime: 60_000,
+  });
+
+  const displayName =
+    billing.data?.name ??
+    (user?.user_metadata?.["full_name"] as string | undefined) ??
+    null;
+  const displayEmail = billing.data?.email ?? billing.data?.accountEmail ?? user?.email ?? null;
+  const card = billing.data?.card ?? null;
 
   const planLabel = tier === "patrimonio" ? "Familiar" : tier === "pro" ? "Pro" : "Free";
 
@@ -98,6 +116,35 @@ export function SubscriptionManager() {
       </div>
 
       <div className="mt-5 grid gap-2 sm:grid-cols-3">
+        <InfoTile
+          icon={User}
+          label={t("Titular", "Account holder")}
+          value={displayName ?? t("Sin nombre", "No name")}
+          loading={billing.isLoading}
+        />
+        <InfoTile
+          icon={Mail}
+          label={t("Correo", "Email")}
+          value={displayEmail ?? "—"}
+          loading={billing.isLoading}
+        />
+        <InfoTile
+          icon={CreditCard}
+          label={t("Tarjeta", "Card")}
+          value={
+            card?.last4
+              ? `${card.brand ? `${card.brand.toUpperCase()} ` : ""}•••• ${card.last4}${card.expiry ? ` · ${card.expiry}` : ""}`
+              : card?.type
+                ? card.type.replace(/_/g, " ")
+                : tier === "free"
+                  ? t("Sin método de pago", "No payment method")
+                  : t("No disponible", "Not available")
+          }
+          loading={billing.isLoading}
+        />
+      </div>
+
+      <div className="mt-3 grid gap-2 sm:grid-cols-3">
           <PortalAction
             icon={CreditCard}
             label={t("Método de pago", "Payment method")}
@@ -167,5 +214,31 @@ function PortalAction({
         <span className="mt-0.5 block text-xs text-muted-foreground">{hint}</span>
       </span>
     </button>
+  );
+}
+
+function InfoTile({
+  icon: Icon,
+  label,
+  value,
+  loading,
+}: {
+  icon: typeof CreditCard;
+  label: string;
+  value: string;
+  loading: boolean;
+}) {
+  return (
+    <div className="flex items-start gap-3 rounded-xl border border-border bg-elevated/40 p-3">
+      <span className="mt-0.5 rounded-lg border border-border bg-background p-1.5 text-muted-foreground">
+        <Icon className="h-4 w-4" />
+      </span>
+      <span className="min-w-0">
+        <span className="block text-xs text-muted-foreground">{label}</span>
+        <span className="mt-0.5 block truncate text-sm font-medium">
+          {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : value}
+        </span>
+      </span>
+    </div>
   );
 }
