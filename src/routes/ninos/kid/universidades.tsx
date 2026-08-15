@@ -1072,24 +1072,12 @@ function UniDetailDialog({
             ) : null}
           </div>
 
-          <div className="rounded-2xl border border-border/70 bg-secondary/30 p-4">
-            <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-              <Info className="h-3.5 w-3.5" /> {t("Fuentes de los datos", "Data sources")}
-            </p>
-            <ul className="mt-2 space-y-1">
-              {SOURCES.map((s) => (
-                <li key={s.name} className="text-[11px] leading-snug text-muted-foreground">
-                  <span className="font-semibold text-foreground">{s.name}</span> — {t(s.detail.es, s.detail.en)}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-2 text-[10px] text-muted-foreground">
-              {t(
-                "Cifras indicativas 2025 en USD convertidas a tu moneda; pueden variar según programa, beca y tipo de cambio.",
-                "Indicative 2025 figures in USD converted to your currency; they can vary by program, scholarship and exchange rate.",
-              )}
-            </p>
-          </div>
+          <p className="text-[10px] text-muted-foreground">
+            {t(
+              "Cifras indicativas 2025 en USD convertidas a tu moneda; pueden variar según programa, beca y tipo de cambio.",
+              "Indicative 2025 figures in USD converted to your currency; they can vary by program, scholarship and exchange rate.",
+            )}
+          </p>
         </div>
       </DialogContent>
     </Dialog>
