@@ -25,14 +25,6 @@ import { getPaddleEnvironment } from "@/lib/paddle";
 import { joinAffiliateProgram } from "@/utils/affiliates.functions";
 import { endAffiliateWizard, startAffiliateWizard } from "@/lib/affiliate-wizard-state";
 
-const CHANNELS = [
-  { es: "Redes sociales", en: "Social media" },
-  { es: "YouTube o blog", en: "YouTube or blog" },
-  { es: "Email o newsletter", en: "Email or newsletter" },
-  { es: "Amigos y familia", en: "Friends and family" },
-  { es: "Otros", en: "Other" },
-];
-
 const AUDIENCES = [
   { es: "Finanzas", en: "Finance" },
   { es: "Familias", en: "Families" },
@@ -77,9 +69,8 @@ export function AffiliateWizard() {
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
   const [displayName, setDisplayName] = useState(user?.user_metadata?.["full_name"] ?? (user?.email ?? ""));
-  const [channel, setChannel] = useState(CHANNELS[0]!.es);
   const [audience, setAudience] = useState(AUDIENCES[0]!.es);
-  const [country, setCountry] = useState(COUNTRIES[0]!.name);
+  const [country, setCountry] = useState("");
   const payoutEmail = user?.email ?? "";
 
   const origin = typeof window !== "undefined" ? window.location.origin : "";
