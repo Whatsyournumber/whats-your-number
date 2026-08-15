@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useT } from "@/hooks/use-language";
 import { clearPendingCheckoutPlan, type PendingCheckoutPlan } from "@/lib/pending-checkout";
+import { clearPendingDiscount } from "@/lib/pending-discount";
 import { getPaddleEnvironment } from "@/lib/paddle";
 import { syncMySubscription } from "@/utils/subscriptions.functions";
 
@@ -43,6 +44,7 @@ function CheckoutSuccess() {
   useEffect(() => {
     if (!activated) return;
     clearPendingCheckoutPlan();
+    clearPendingDiscount();
     const timer = window.setTimeout(() => {
       navigate({ to: plan === "familiar" ? "/ninos" : "/dashboard", replace: true });
     }, 900);
