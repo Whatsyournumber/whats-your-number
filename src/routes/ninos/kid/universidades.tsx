@@ -130,6 +130,7 @@ function CollegeFinder({ member }: { member: Member }) {
   const [rankMax, setRankMax] = useState<string>("");
   const [sort, setSort] = useState<"cost" | "rank">("cost");
   const [saved, setSaved] = useState<string[]>([]);
+  const [detail, setDetail] = useState<University | null>(null);
 
   const cost = (u: University) => uniTotalUsd(u, includeLiving) * usdFx.factor;
   const isHome = (u: University) => !!homeCountry && (u.countryEs === homeCountry || u.country === homeCountry);
