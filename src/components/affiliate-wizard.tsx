@@ -78,7 +78,9 @@ export function AffiliateWizard() {
   const [copied, setCopied] = useState(false);
   const [displayName, setDisplayName] = useState(user?.user_metadata?.["full_name"] ?? (user?.email ?? ""));
   const [channel, setChannel] = useState(CHANNELS[0]!.es);
-  const [payoutEmail, setPayoutEmail] = useState(user?.email ?? "");
+  const [audience, setAudience] = useState(AUDIENCES[0]!.es);
+  const [country, setCountry] = useState(COUNTRIES[0]!.name);
+  const payoutEmail = user?.email ?? "";
 
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const code = affiliate?.code ?? "";
