@@ -57,11 +57,45 @@ export function AffiliateWizard() {
   const [displayName, setDisplayName] = useState(user?.user_metadata?.["full_name"] ?? (user?.email ?? ""));
   const [audience, setAudience] = useState(AUDIENCES[0]!.es);
   const [country, setCountry] = useState("");
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  const [qrLoading, setQrLoading] = useState(false);
+  const [showQr, setShowQr] = useState(false);
   const payoutEmail = user?.email ?? "";
 
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const code = affiliate?.code ?? "";
   const link = code ? `${origin}/?ref=${code}` : "";
+
+  const generateQr = async () => {
+    if (!link) return;
+    if (qrDataUrl) {
+      setShowQr(true);
+      return;
+    }
+    setQrLoading(true);
+    try {
+      const dataUrl = await QRCode.toDataURL(link, {
+        margin: 2,
+        width: 320,
+        color: { dark: "#0f172a", light: "#ffffff" },
+      });
+      setQrDataUrl(dataUrl);
+      setShowQr(true);
+    } catch {
+      toast.error(t("No pudimos generar el código QR.", "We couldn't generate the QR code."));
+    } finally {
+      setQrLoading(false);
+    }
+  };
+
+  const downloadQr = () => {
+    if (!qrDataUrl) return;
+    const a = document.createElement("a");
+    a.href = qrDataUrl;
+    a.download = `WUO-${code}.png`;
+    a.click();
+    toast.success(t("QR descargado", "QR downloaded"));
+  };
 
   // Paso 2 ya está hecho (la cuenta existe); el wizard cubre los pasos 3, 4 y 5.
   const steps = [
