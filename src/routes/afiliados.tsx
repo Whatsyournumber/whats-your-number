@@ -55,6 +55,7 @@ function AffiliatesPage() {
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
   const [payoutEmail, setPayoutEmail] = useState("");
+  const [started, setStarted] = useState(false);
 
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const link = affiliate ? `${origin}/?ref=${affiliate.code}` : "";
