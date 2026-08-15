@@ -186,8 +186,21 @@ function RootLayout() {
     return <Outlet />;
   }
 
+  // /afiliados: la landing y el wizard van a pantalla completa; solo el panel
+  // de afiliado activo se muestra dentro del dashboard.
+  if (pathname === "/afiliados") {
+    return <AffiliatesGate />;
+  }
+
   return <AppShell />;
 }
+
+function AffiliatesGate() {
+  const { affiliate, loading } = useMyAffiliate();
+  if (loading || !affiliate) return <Outlet />;
+  return <AppShell />;
+}
+
 
 function AppShell() {
   const { user, loading, signOut } = useAuth();
