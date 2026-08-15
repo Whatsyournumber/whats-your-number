@@ -369,17 +369,17 @@ function Landing() {
 
           {/* Mobile: the photo is the top of the background itself */}
           <div
-            className="pointer-events-none absolute inset-x-0 top-0 h-[26vh] min-h-[190px] md:hidden"
+            className="pointer-events-none absolute inset-x-0 top-0 h-[46vh] min-h-[320px] md:hidden"
             style={{
-              WebkitMaskImage: "linear-gradient(to bottom, #000 30%, transparent 100%)",
-              maskImage: "linear-gradient(to bottom, #000 30%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to bottom, #000 62%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, #000 62%, transparent 100%)",
             }}
           >
             <img
               src={heroManLaptopAsset.url}
               alt=""
               aria-hidden
-              className="h-full w-full object-cover object-[70%_55%]"
+              className="h-full w-full object-cover object-[70%_28%]"
               loading="eager"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-background/20" />
