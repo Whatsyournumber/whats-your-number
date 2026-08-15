@@ -5,6 +5,8 @@ import { ArrowUpRight, CreditCard, ExternalLink, Loader2, Mail, Receipt, User, X
 import { toast } from "sonner";
 
 import { Panel } from "@/components/page";
+import { PlanDetailsDialog } from "@/components/plan-details-dialog";
+
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { useT } from "@/hooks/use-language";
@@ -91,7 +93,13 @@ export function SubscriptionManager() {
             {fmtDate(subscription.current_period_end)}
           </span>
         )}
+        <PlanDetailsDialog
+          tier={tier}
+          isTrial={isTrial}
+          renewsOn={subscription?.current_period_end ? fmtDate(subscription.current_period_end) : null}
+        />
       </div>
+
 
       <div className="mt-5 flex flex-wrap gap-2">
         {tier === "free" && (
