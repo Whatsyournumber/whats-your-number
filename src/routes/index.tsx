@@ -434,7 +434,10 @@ function Landing() {
                   ))}
                 </div>
                 <span className="text-sm text-muted-foreground">
-                  {t("+8,231 personas ya descubrieron su número", "+8,231 people already found their number")}
+                  {t(
+                    `+${formatCount(liveCount, "es")} personas ya descubrieron su número`,
+                    `+${formatCount(liveCount, "en")} people already found their number`,
+                  )}
                 </span>
               </div>
             </div>
