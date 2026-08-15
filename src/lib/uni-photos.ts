@@ -775,6 +775,8 @@ const CURATED: Record<string, string> = {
   "fr-essec-business-school": cur_fr_essec,
   "fr-hec-paris": cur_fr_hec,
   "cr-incae-business-school": cur_cr_incae,
+  "lat-incae-business-school": cur_cr_incae,
+  "lat-tec-de-costa-rica": cur_cr_tec,
   "nl-tu-delft": cur_nl_tudelft,
   "mx-tec-de-monterrey": cur_mx_tec,
   "ap-waseda-university": cur_jp_waseda,
