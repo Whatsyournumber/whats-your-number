@@ -465,67 +465,74 @@ function CollegeFinder({ member }: { member: Member }) {
 
       {/* Filtros */}
       <div className="mb-4 rounded-[28px] border border-border/70 bg-card p-3 shadow-sm sm:p-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-0.5 rounded-full border border-border/70 bg-background/50 p-0.5">
-              {(
-                [
-                  [false, t("Solo matrícula", "Tuition only")],
-                  [true, t("Matrícula + vida", "Tuition + living")],
-                ] as const
-              ).map(([v, label]) => (
-                <button
-                  key={String(v)}
-                  type="button"
-                  onClick={() => setIncludeLiving(v)}
-                  className={cn(
-                    "rounded-full px-3 py-1.5 text-[11px] font-bold transition",
-                    includeLiving === v
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground",
-                  )}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-
-
-
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
+          <div className="col-span-2 min-w-0 sm:col-auto">
             <CountryCombobox
               value={country}
               onChange={setCountry}
               options={countries}
               placeholder={t("Buscar país", "Search country")}
             />
+          </div>
 
-            <Select
-              value={field}
-              onChange={(v) => setField(v as UniField | "")}
-              placeholder={t("Carrera", "Field")}
-            >
-              {FIELDS.map((f) => (
-                <option key={f} value={f}>
-                  {FIELD_LABELS[f][lang === "en" ? "en" : "es"]}
-                </option>
-              ))}
-            </Select>
-            <Select value={rankMax} onChange={setRankMax} placeholder={t("Ranking", "Ranking")}>
-              <option value="100">Top 100</option>
-              <option value="300">Top 300</option>
-              <option value="500">Top 500</option>
-            </Select>
-            <Select
-              value={sort}
-              onChange={(v) => setSort(v as "cost" | "rank")}
-              placeholder={t("Coste total", "Total cost")}
-              clearable={false}
-            >
-              <option value="cost">{t("Coste total", "Total cost")}</option>
-              <option value="rank">{t("Mejor ranking", "Best ranking")}</option>
-            </Select>
+          <Select
+            value={field}
+            onChange={(v) => setField(v as UniField | "")}
+            placeholder={t("Carrera", "Field")}
+          >
+            {FIELDS.map((f) => (
+              <option key={f} value={f}>
+                {FIELD_LABELS[f][lang === "en" ? "en" : "es"]}
+              </option>
+            ))}
+          </Select>
+          <Select
+            value={sector}
+            onChange={(v) => setSector(v as "public" | "private" | "")}
+            placeholder={t("Tipo", "Type")}
+          >
+            <option value="public">{t("Pública", "Public")}</option>
+            <option value="private">{t("Privada", "Private")}</option>
+          </Select>
+          <Select value={rankMax} onChange={setRankMax} placeholder={t("Ranking", "Ranking")}>
+            <option value="100">Top 100</option>
+            <option value="300">Top 300</option>
+            <option value="500">Top 500</option>
+          </Select>
+          <Select
+            value={sort}
+            onChange={(v) => setSort(v as "cost" | "rank")}
+            placeholder={t("Coste total", "Total cost")}
+            clearable={false}
+          >
+            <option value="cost">{t("Coste total", "Total cost")}</option>
+            <option value="rank">{t("Mejor ranking", "Best ranking")}</option>
+          </Select>
+
+          <div className="col-span-2 flex items-center gap-0.5 rounded-full border border-border/70 bg-background/50 p-0.5 sm:col-auto">
+            {(
+              [
+                [false, t("Solo matrícula", "Tuition only")],
+                [true, t("Matrícula + vida", "Tuition + living")],
+              ] as const
+            ).map(([v, label]) => (
+              <button
+                key={String(v)}
+                type="button"
+                onClick={() => setIncludeLiving(v)}
+                className={cn(
+                  "flex-1 whitespace-nowrap rounded-full px-3 py-1.5 text-[11px] font-bold transition sm:flex-none",
+                  includeLiving === v
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {label}
+              </button>
+            ))}
           </div>
         </div>
+
 
         {(continent || country || field || rankMax || bucket) ? (
           <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border/60 pt-3">
