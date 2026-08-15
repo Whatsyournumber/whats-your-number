@@ -134,7 +134,7 @@ function AffiliatesPage() {
         <main className="relative z-10 mx-auto w-full max-w-6xl px-4 pb-16 pt-6 md:px-6">
           <AffiliateLanding />
         </main>
-        <SiteFooter />
+        <SiteFooter affiliates />
       </div>
     );
   }
@@ -154,7 +154,7 @@ function AffiliatesPage() {
             }
           />
         </main>
-        <SiteFooter />
+        <SiteFooter affiliates />
       </div>
     );
   }
