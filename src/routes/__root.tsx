@@ -25,6 +25,8 @@ import { AffiliateTracker } from "@/components/affiliate-tracker";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
+import { useMyAffiliate } from "@/hooks/use-affiliate";
+
 import { LanguageProvider, useT, LanguageToggle } from "@/hooks/use-language";
 import { CurrencyToggle } from "@/components/currency-toggle";
 import { Button } from "@/components/ui/button";
