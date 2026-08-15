@@ -230,19 +230,18 @@ function CollegeFinder({ member }: { member: Member }) {
           alt={t("Familia mirando universidades", "Family looking at universities")}
           width={1280}
           height={960}
-          className="pointer-events-none absolute inset-y-0 right-0 h-full w-full object-cover object-[68%_45%]"
+          className="pointer-events-none absolute inset-y-0 right-0 h-full w-full object-cover object-right"
           style={{
             maskImage:
-              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 16%, rgba(0,0,0,0.5) 36%, rgba(0,0,0,0.85) 54%, #000 68%, #000 92%, transparent 100%), linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%)",
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 14%, rgba(0,0,0,0.55) 34%, rgba(0,0,0,0.88) 52%, #000 66%, #000 100%), linear-gradient(to bottom, transparent 0%, #000 8%, #000 80%, transparent 100%)",
             maskComposite: "intersect",
             WebkitMaskImage:
-              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.12) 16%, rgba(0,0,0,0.5) 36%, rgba(0,0,0,0.85) 54%, #000 68%, #000 92%, transparent 100%), linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%)",
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 14%, rgba(0,0,0,0.55) 34%, rgba(0,0,0,0.88) 52%, #000 66%, #000 100%), linear-gradient(to bottom, transparent 0%, #000 8%, #000 80%, transparent 100%)",
             WebkitMaskComposite: "source-in",
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/55 to-transparent sm:via-background/20" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent sm:via-background/25" />
         <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-background to-transparent" />
-
 
         <div className="relative flex min-h-[460px] max-w-lg flex-col justify-center py-10 pr-6 sm:min-h-[580px] sm:py-16">
           <h1 className="font-display text-4xl font-black leading-[1.05] text-foreground drop-shadow-[0_1px_12px_rgba(0,0,0,0.35)] sm:text-6xl">
