@@ -326,6 +326,20 @@ export function AffiliateWizard() {
                     {t("Copiar código", "Copy code")}
                   </Button>
                 </div>
+
+                <Button
+                  variant="ghost"
+                  className="mt-2 w-full rounded-xl text-xs text-muted-foreground hover:bg-primary/10 hover:text-primary"
+                  disabled={qrLoading || !link}
+                  onClick={() => void generateQr()}
+                >
+                  {qrLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <QrCode className="mr-2 h-4 w-4" />
+                  )}
+                  {t("Generar código QR", "Generate QR code")}
+                </Button>
               </div>
 
               <p className="mt-4 text-xs text-muted-foreground">
