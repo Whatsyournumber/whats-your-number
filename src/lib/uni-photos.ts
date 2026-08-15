@@ -382,6 +382,9 @@ import zaKwazulu from "@/assets/uni/za-kwazulu.jpg";
 import zaJohannesburg from "@/assets/uni/za-johannesburg.jpg";
 import zaRhodes from "@/assets/uni/za-rhodes.jpg";
 import zaNorthwest from "@/assets/uni/za-northwest.jpg";
+import ghAshesi from "@/assets/uni/gh-ashesi.jpg";
+import maUm6p from "@/assets/uni/ma-um6p.jpg";
+import omQaboos from "@/assets/uni/om-qaboos.jpg";
 import afCovenant from "@/assets/uni/af-covenant.jpg";
 import afMauritius from "@/assets/uni/af-mauritius.jpg";
 import afZewail from "@/assets/uni/af-zewail.jpg";
@@ -442,6 +445,9 @@ const CURATED: Record<string, string> = {
   "me-johannesburg": zaJohannesburg,
   "me-rhodes": zaRhodes,
   "me-north-west-za": zaNorthwest,
+  "me-ashesi": ghAshesi,
+  "me-um6p": maUm6p,
+  "me-sultan-qaboos": omQaboos,
   "me-covenant": afCovenant,
   "me-mauritius": afMauritius,
   "me-zewail-city": afZewail,
