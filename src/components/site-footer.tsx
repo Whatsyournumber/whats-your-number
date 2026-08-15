@@ -18,9 +18,9 @@ function openExternalSocial(event: React.MouseEvent<HTMLAnchorElement>, href: st
   if (externalWindow) externalWindow.opener = null;
 }
 
-type FooterLink = { label: string; to: string; policy?: boolean; external?: boolean };
+type FooterLink = { label: string; to: string; policy?: boolean; external?: boolean; anchor?: boolean };
 
-export function SiteFooter({ kids = false }: { kids?: boolean } = {}) {
+export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolean; affiliates?: boolean } = {}) {
   const t = useT();
   const [open, setOpen] = useState(false);
   const [policiesOpen, setPoliciesOpen] = useState(false);
@@ -31,6 +31,10 @@ export function SiteFooter({ kids = false }: { kids?: boolean } = {}) {
       <button type="button" onClick={() => setPoliciesOpen(true)} className={linkClass}>
         {l.label}
       </button>
+    ) : l.anchor ? (
+      <a href={l.to} className={linkClass}>
+        {l.label}
+      </a>
     ) : l.external ? (
       <a href={l.to} target="_blank" rel="noopener noreferrer" className={linkClass}>
         {l.label}
@@ -43,7 +47,16 @@ export function SiteFooter({ kids = false }: { kids?: boolean } = {}) {
 
 
   const columns = [
-      kids
+    affiliates
+      ? {
+          title: t("Producto", "Product"),
+          links: [
+            { label: t("Cómo funciona", "How it works"), to: "#como-funciona", anchor: true },
+            { label: t("Cómo ganas", "How you earn"), to: "#como-ganas", anchor: true },
+            { label: t("Precios", "Pricing"), to: "/precios" },
+          ],
+        }
+      : kids
         ? {
             title: t("Producto", "Product"),
             links: [
@@ -61,7 +74,16 @@ export function SiteFooter({ kids = false }: { kids?: boolean } = {}) {
               { label: t("Programa de afiliados", "Affiliate program"), to: "/afiliados", external: true },
             ],
           },
-      kids
+    affiliates
+      ? {
+          title: t("Recursos", "Resources"),
+          links: [
+            { label: "Blog", to: "/blog" },
+            { label: t("Finanzas para adultos", "Adult finance"), to: "/", external: true },
+            { label: t("Finanzas para niños", "Kids finance"), to: "/finanzas-para-ninos", external: true },
+          ],
+        }
+      : kids
         ? {
             title: t("Recursos", "Resources"),
             links: [
