@@ -979,13 +979,18 @@ const SOURCES: { name: string; detail: { es: string; en: string } }[] = [
 
 function SourcesTip({ className }: { className?: string }) {
   const { t } = useI18n();
+  const [open, setOpen] = useState(false);
   return (
     <TooltipProvider delayDuration={100}>
-      <Tooltip>
+      <Tooltip open={open}>
         <TooltipTrigger asChild>
           <button
             type="button"
+            tabIndex={-1}
             aria-label={t("Fuentes de los datos", "Data sources")}
+            onMouseEnter={() => setOpen(true)}
+            onMouseLeave={() => setOpen(false)}
+            onClick={() => setOpen((v) => !v)}
             className={cn(
               "inline-grid h-4 w-4 place-items-center rounded-full text-muted-foreground/50 transition-colors hover:text-muted-foreground",
               className,
@@ -994,6 +999,7 @@ function SourcesTip({ className }: { className?: string }) {
             <Info className="h-3.5 w-3.5" />
           </button>
         </TooltipTrigger>
+
         <TooltipContent
           side="bottom"
           align="start"
