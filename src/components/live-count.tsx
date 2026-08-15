@@ -1,11 +1,24 @@
 import { useEffect, useState } from "react";
 
 /**
- * Contador "vivo" de registros: arranca en `base` y sube poco a poco,
- * como si entraran nuevas personas mientras se ve la página.
+ * Segundos transcurridos desde la medianoche local.
+ */
+function secondsSinceMidnight() {
+  const now = new Date();
+  return (
+    now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds()
+  );
+}
+
+/**
+ * Contador "vivo" de registros: arranca en `base` cada día a las 00:00 y
+ * sube a lo largo del día (como si entraran nuevas personas), sumando
+ * además incrementos en vivo mientras se ve la página.
  */
 export function useLiveCount(base: number) {
-  const [count, setCount] = useState(base);
+  // Resetea cada día: base + acumulado proporcional al tiempo transcurrido.
+  const dailyBase = base + Math.floor(secondsSinceMidnight() / 22);
+  const [count, setCount] = useState(dailyBase);
 
   useEffect(() => {
     let cancelled = false;

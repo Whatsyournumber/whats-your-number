@@ -27,6 +27,7 @@ import heroManLaptopAsset from "@/assets/hero-man-laptop.jpg.asset.json";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { useLiveCount, formatCount } from "@/components/live-count";
+import { RotatingAvatars } from "@/components/rotating-avatars";
 import { ProductPreview } from "@/components/product-preview";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -420,21 +421,7 @@ function Landing() {
               </div>
 
               <div className="mt-6 flex items-center justify-center gap-3 md:justify-start">
-                <div className="flex -space-x-2">
-                  {[
-                    "https://i.pravatar.cc/80?img=12",
-                    "https://i.pravatar.cc/80?img=32",
-                    "https://i.pravatar.cc/80?img=45",
-                  ].map((src) => (
-                    <img
-                      key={src}
-                      src={src}
-                      alt={t("Usuario de WhatsYourNumber", "WhatsYourNumber user")}
-                      loading="lazy"
-                      className="h-8 w-8 rounded-full border-2 border-background object-cover"
-                    />
-                  ))}
-                </div>
+                <RotatingAvatars />
                 <span className="text-sm text-muted-foreground">
                   {t(
                     `+${formatCount(liveCount, "es")} personas ya descubrieron su número`,
