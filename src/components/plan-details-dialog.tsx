@@ -1,10 +1,11 @@
-import { Check, Info } from "lucide-react";
+import { ArrowRight, Check, Info, Loader2, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -134,6 +135,110 @@ export function PlanDetailsDialog({
             "This is exactly what your currently active plan includes.",
           )}
         </p>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/** Confirmación de cambio de plan: explica qué ganas o qué pierdes antes de confirmar. */
+export function PlanChangeDialog({
+  from,
+  to,
+  loading,
+  disabled,
+  onConfirm,
+}: {
+  from: PlanTier;
+  to: PlanTier;
+  loading: boolean;
+  disabled: boolean;
+  onConfirm: () => void;
+}) {
+  const t = useT();
+  const copy = usePlanCopy();
+  const target = copy[to];
+  const current = copy[from];
+  const isUpgrade = to === "patrimonio";
+
+  const gains = [
+    t("Perfiles familiares compartidos", "Shared family profiles"),
+    t("Plan de ahorro e inversión para cada hijo", "Savings and investment plan for each child"),
+    t("Simulador de universidad y educación", "College and education simulator"),
+    t("Meta de patrimonio a los 18 años de tu hijo", "Net worth goal by your child's 18th birthday"),
+    t("My First Number: aprenden jugando", "My First Number: they learn by playing"),
+    t("Soporte prioritario en 24h", "Priority support within 24h"),
+  ];
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button size="sm" variant={isUpgrade ? "default" : "outline"} disabled={disabled}>
+          {loading ? <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> : null}
+          {isUpgrade ? t("Mejorar a Familiar", "Upgrade to Familiar") : t("Bajar a Pro", "Downgrade to Pro")}
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>
+            {isUpgrade
+              ? t("Mejorar a Familiar", "Upgrade to Familiar")
+              : t("Bajar a Pro", "Downgrade to Pro")}
+          </DialogTitle>
+          <DialogDescription>
+            {isUpgrade
+              ? t(
+                  "Pasas de Pro a Familiar. El cambio es inmediato y se prorratea lo que ya pagaste.",
+                  "You move from Pro to Familiar. The change is immediate and what you already paid is pro-rated.",
+                )
+              : t(
+                  "Pasas de Familiar a Pro. Mantienes Familiar hasta el final del periodo que ya pagaste.",
+                  "You move from Familiar to Pro. You keep Familiar until the end of the period you already paid.",
+                )}
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="flex items-center gap-2 text-xs">
+          <span className="rounded-full border border-border px-2.5 py-1 text-muted-foreground">
+            {current.name} · {current.price}
+          </span>
+          <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+          <span className="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 font-medium text-primary">
+            {target.name} · {target.price}
+          </span>
+        </div>
+
+        <div>
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            {isUpgrade ? t("Lo que ganas", "What you gain") : t("Lo que dejas de tener", "What you lose")}
+          </p>
+          <ul className="mt-2 space-y-2">
+            {gains.map((f) => (
+              <li key={f} className="flex items-start gap-2 text-sm">
+                {isUpgrade ? (
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                ) : (
+                  <X className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+                )}
+                <span>{f}</span>
+              </li>
+            ))}
+          </ul>
+          {!isUpgrade && (
+            <p className="mt-3 text-xs text-muted-foreground">
+              {t(
+                "Sigues con todo lo de Pro: IA ilimitada, hipoteca, portafolio y multi-moneda.",
+                "You keep everything in Pro: unlimited AI, mortgage, portfolio and multi-currency.",
+              )}
+            </p>
+          )}
+        </div>
+
+        <DialogFooter>
+          <Button size="sm" disabled={disabled} onClick={onConfirm}>
+            {loading ? <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> : null}
+            {t("Confirmar cambio", "Confirm change")}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

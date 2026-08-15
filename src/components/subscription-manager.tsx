@@ -5,7 +5,7 @@ import { ArrowUpRight, CreditCard, ExternalLink, Loader2, Mail, Receipt, User, X
 import { toast } from "sonner";
 
 import { Panel } from "@/components/page";
-import { PlanDetailsDialog } from "@/components/plan-details-dialog";
+import { PlanChangeDialog, PlanDetailsDialog } from "@/components/plan-details-dialog";
 
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
@@ -110,17 +110,24 @@ export function SubscriptionManager() {
           </Button>
         )}
         {tier === "pro" && (
-          <Button size="sm" disabled={busy !== null} onClick={() => void switchPlan("patrimonio_monthly")}>
-            {spin("patrimonio_monthly") ? <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> : null}
-            {t("Mejorar a Familiar", "Upgrade to Familiar")}
-          </Button>
+          <PlanChangeDialog
+            from="pro"
+            to="patrimonio"
+            loading={spin("patrimonio_monthly")}
+            disabled={busy !== null}
+            onConfirm={() => void switchPlan("patrimonio_monthly")}
+          />
         )}
         {tier === "patrimonio" && (
-          <Button size="sm" variant="outline" disabled={busy !== null} onClick={() => void switchPlan("pro_monthly")}>
-            {spin("pro_monthly") ? <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> : null}
-            {t("Bajar a Pro", "Downgrade to Pro")}
-          </Button>
+          <PlanChangeDialog
+            from="patrimonio"
+            to="pro"
+            loading={spin("pro_monthly")}
+            disabled={busy !== null}
+            onConfirm={() => void switchPlan("pro_monthly")}
+          />
         )}
+
       </div>
 
       <div className="mt-5 grid gap-2 sm:grid-cols-3">
