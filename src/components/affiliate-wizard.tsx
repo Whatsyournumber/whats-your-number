@@ -47,6 +47,10 @@ export function AffiliateWizard() {
   const { affiliate } = useMyAffiliate();
 
   const [step, setStep] = useState(affiliate ? 1 : 0); // 0 = about you, 1 = link ready, 2 = share
+  const [maxStep, setMaxStep] = useState(affiliate ? 1 : 0);
+  useEffect(() => {
+    setMaxStep((m) => Math.max(m, step));
+  }, [step]);
 
   // Mientras el wizard esté abierto, /afiliados no debe saltar al dashboard.
   useEffect(() => {
@@ -167,19 +171,19 @@ export function AffiliateWizard() {
       {/* Stepper */}
       <div className="mb-6 flex flex-nowrap items-center justify-center gap-1.5">
         {steps.map((label, i) => {
-          const done = i <= step; // el índice 0 (cuenta creada) siempre está completo
+          const done = i <= maxStep; // el índice 0 (cuenta creada) siempre está completo
           const active = i === step + 1;
           const targetStep = i - 1; // i=0 es la cuenta ya creada
-          const canGoBack = targetStep >= 0 && targetStep < step;
+          const canGo = targetStep >= 0 && targetStep <= maxStep && targetStep !== step;
           return (
             <div key={label} className="flex flex-nowrap items-center gap-1.5">
               {i > 0 && <span className="h-px w-3 shrink-0 bg-border" />}
               <button
                 type="button"
-                disabled={!canGoBack}
-                onClick={() => canGoBack && setStep(targetStep)}
+                disabled={!canGo}
+                onClick={() => canGo && setStep(targetStep)}
                 className={`flex flex-nowrap items-center gap-1.5 rounded-full transition-opacity ${
-                  canGoBack ? "cursor-pointer hover:opacity-80" : "cursor-default"
+                  canGo ? "cursor-pointer hover:opacity-80" : "cursor-default"
                 }`}
                 aria-label={label}
               >
