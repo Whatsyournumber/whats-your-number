@@ -448,7 +448,7 @@ function Landing() {
 
 
 
-          <div className="mb-10 mt-14 text-center">
+          <div className="mb-8 mt-4 text-center md:mt-6">
             <span className="text-xs font-medium uppercase tracking-wider text-primary">
               {t("¿Por qué WhatsYourNumber?", "Why WhatsYourNumber?")}
             </span>
