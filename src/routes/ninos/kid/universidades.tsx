@@ -658,8 +658,34 @@ function CollegeFinder({ member }: { member: Member }) {
 
                 <div className="mt-3 flex items-end justify-between gap-3">
                   <div>
+                <div className="mt-3 grid grid-cols-3 gap-2 rounded-2xl bg-secondary/50 px-3 py-2 text-center">
+                  <div className="min-w-0">
+                    <p className="truncate font-display text-xs font-bold text-foreground">
+                      {money(u.tuition * usdFx.factor, currency, true)}
+                    </p>
+                    <p className="truncate text-[9px] text-muted-foreground">{t("Matrícula/año", "Tuition/yr")}</p>
+                  </div>
+                  <div className="min-w-0">
+                    <p
+                      className={cn(
+                        "truncate font-display text-xs font-bold",
+                        includeLiving ? "text-foreground" : "text-muted-foreground line-through",
+                      )}
+                    >
+                      {money(u.living * usdFx.factor, currency, true)}
+                    </p>
+                    <p className="truncate text-[9px] text-muted-foreground">{t("Vida/año", "Living/yr")}</p>
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate font-display text-xs font-bold text-foreground">{u.years}</p>
+                    <p className="truncate text-[9px] text-muted-foreground">{t("Años", "Years")}</p>
+                  </div>
+                </div>
+
+                <div className="mt-3 flex items-end justify-between gap-3">
+                  <div>
                     <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
-                      {t("Coste total", "Total cost")}
+                      {includeLiving ? t("Coste total carrera", "Total degree cost") : t("Matrícula total", "Total tuition")}
                     </p>
                     <p className="font-display text-lg font-bold text-foreground">{money(total, currency, true)}</p>
                   </div>
