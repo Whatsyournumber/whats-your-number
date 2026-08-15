@@ -214,8 +214,6 @@ import cur_ar_rosario from "@/assets/uni/ar-rosario.jpg";
 import cur_it_bocconi from "@/assets/uni/it-bocconi.jpg";
 import cur_cl_udd from "@/assets/uni/cl-udd.jpg";
 import cur_cl_uandes from "@/assets/uni/cl-uandes.jpg";
-import cur_kr_snu from "@/assets/uni/kr-snu.jpg";
-import cur_kr_kaist from "@/assets/uni/kr-kaist.jpg";
 import cur_za_uct from "@/assets/uni/za-uct.jpg";
 import cur_pt_nova from "@/assets/uni/pt-nova.jpg";
 import cur_fr_sciencespo from "@/assets/uni/fr-sciencespo.jpg";
