@@ -12,9 +12,9 @@ export function useLiveCount(base: number) {
     const tick = () => {
       if (cancelled) return;
       setCount((c) => c + 1);
-      window.setTimeout(tick, 6000 + Math.random() * 9000);
+      window.setTimeout(tick, 1500 + Math.random() * 3000);
     };
-    const id = window.setTimeout(tick, 4000 + Math.random() * 4000);
+    const id = window.setTimeout(tick, 1500 + Math.random() * 2000);
     return () => {
       cancelled = true;
       window.clearTimeout(id);
