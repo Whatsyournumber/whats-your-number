@@ -76,8 +76,10 @@ function GoogleMark() {
 }
 
 function AuthPage() {
-  const { mode, next } = Route.useSearch();
+  const { mode, next, flow } = Route.useSearch();
+  const isAffiliate = flow === "affiliate";
   const navigate = useNavigate();
+
   const { user, loading: authLoading } = useAuth();
   const { isPatrimonio, loading: subscriptionLoading } = useSubscription();
   const { t } = useLanguage();
