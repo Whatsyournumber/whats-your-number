@@ -28,6 +28,16 @@ import curatedErasmus from "@/assets/uni/nl-erasmus.jpg";
 import curatedLeiden from "@/assets/uni/nl-leiden.jpg";
 import curatedTwente from "@/assets/uni/nl-twente.jpg";
 import curatedTokyo from "@/assets/uni/jp-tokyo.jpg";
+import curatedInDelhi from "@/assets/uni/in-delhi.jpg";
+import curatedVnuHanoi from "@/assets/uni/vn-vnu-hanoi.jpg";
+import curatedIitMadras from "@/assets/uni/in-iit-madras.jpg";
+import curatedIisc from "@/assets/uni/in-iisc.jpg";
+import curatedUpDiliman from "@/assets/uni/ph-up-diliman.jpg";
+import curatedIitBombay from "@/assets/uni/in-iit-bombay.jpg";
+import curatedIitDelhi from "@/assets/uni/in-iit-delhi.jpg";
+import curatedUiJakarta from "@/assets/uni/id-ui.jpg";
+import curatedItb from "@/assets/uni/id-itb.jpg";
+import curatedUkm from "@/assets/uni/my-ukm.jpg";
 import curatedKyoto from "@/assets/uni/jp-kyoto.jpg";
 import curatedCharles from "@/assets/uni/cz-charles.jpg";
 
@@ -584,6 +594,16 @@ const CURATED: Record<string, string> = {
   "nl-leiden-university": curatedLeiden,
   "nl-university-of-twente": curatedTwente,
   "ap-university-of-tokyo": curatedTokyo,
+  "ap-delhi-university": curatedInDelhi,
+  "ap-vnu-hanoi": curatedVnuHanoi,
+  "ap-iit-madras": curatedIitMadras,
+  "ap-iisc-bangalore": curatedIisc,
+  "ap-up-diliman": curatedUpDiliman,
+  "ap-iit-bombay": curatedIitBombay,
+  "ap-iit-delhi": curatedIitDelhi,
+  "ap-universitas-indonesia": curatedUiJakarta,
+  "ap-itb-bandung": curatedItb,
+  "ap-universiti-kebangsaan": curatedUkm,
   "ap-kyoto-university": curatedKyoto,
   "ot-charles-university": curatedCharles,
   "mx-buap": curatedBuap,
