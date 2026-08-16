@@ -114,8 +114,8 @@ const cities = [
 ];
 
 const retirementTable = [
-  { year: "2026", age: "38", capital: "€248k", monthly: "—" },
-  { year: "2030", age: "42", capital: "€540k", monthly: "—" },
+  { year: "2026", age: "38", capital: "€248k", monthly: "€1.7k" },
+  { year: "2030", age: "42", capital: "€540k", monthly: "€3.6k" },
   { year: "2034", age: "46", capital: "€920k", monthly: "€6.1k" },
   { year: "2038", age: "50", capital: "€1.50M", monthly: "€10.0k" },
 ];
