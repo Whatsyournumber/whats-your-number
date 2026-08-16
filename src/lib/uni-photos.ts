@@ -98,6 +98,16 @@ import curatedPaisVasco from "@/assets/uni/es-pais-vasco.jpg";
 import curatedUpm from "@/assets/uni/es-upm.jpg";
 import curatedMalaga from "@/assets/uni/es-malaga.jpg";
 import curatedComenius from "@/assets/uni/sk-comenius.jpg";
+import curatedJagiellonian from "@/assets/uni/pl-jagiellonian.jpg";
+import curatedWarsawTech from "@/assets/uni/pl-warsaw-tech.jpg";
+import curatedAgh from "@/assets/uni/pl-agh.jpg";
+import curatedTartu from "@/assets/uni/ee-tartu.jpg";
+import curatedSofiaUni from "@/assets/uni/bg-sofia.jpg";
+import curatedMasaryk from "@/assets/uni/cz-masaryk.jpg";
+import curatedElte from "@/assets/uni/hu-elte.jpg";
+import curatedSemmelweis from "@/assets/uni/hu-semmelweis.jpg";
+import curatedLatvia from "@/assets/uni/lv-latvia.jpg";
+import curatedZagreb from "@/assets/uni/hr-zagreb.jpg";
 import curatedBabesBolyai from "@/assets/uni/ro-babes-bolyai.jpg";
 import curatedBucharest from "@/assets/uni/ro-bucharest.jpg";
 import curatedBelgrano from "@/assets/uni/ar-belgrano.jpg";
@@ -775,6 +785,16 @@ const CURATED: Record<string, string> = {
   "es-universidad-politecnica-de-mad": curatedUpm,
   "es-universidad-de-malaga": curatedMalaga,
   "sk-comenius-university": curatedComenius,
+  "pl-jagiellonian-university": curatedJagiellonian,
+  "pl-warsaw-university-of-technolog": curatedWarsawTech,
+  "pl-agh-university-of-krakow": curatedAgh,
+  "ee-university-of-tartu": curatedTartu,
+  "bg-sofia-university": curatedSofiaUni,
+  "cz-masaryk-university": curatedMasaryk,
+  "hu-eotvos-lorand-university": curatedElte,
+  "hu-semmelweis-university": curatedSemmelweis,
+  "lv-university-of-latvia": curatedLatvia,
+  "hr-university-of-zagreb": curatedZagreb,
   "ro-babes-bolyai-university": curatedBabesBolyai,
   "ro-university-of-bucharest": curatedBucharest,
   "ar-universidad-de-belgrano": curatedBelgrano,
