@@ -347,37 +347,54 @@ function HowItWorksSlider() {
       visual: (
         <ScreenCard title={t("Mi primer número", "My first number")} accent="var(--kid-sky)">
           <div className="flex items-center gap-2.5">
-            <img src={faceGirl} alt="" className="h-8 w-8 rounded-full object-cover" />
+            <img src={faceGirl} alt="" className="h-9 w-9 rounded-full object-cover" />
             <div>
-              <p className="text-xs font-medium">{t("Hola, Sofía", "Hi, Sofía")}</p>
-              <p className="text-[11px] text-muted-foreground">{t("Tu dinero de hoy", "Your money today")}</p>
+              <p className="text-sm font-medium">{t("Hola, Sofía", "Hi, Sofía")}</p>
+              <p className="text-[11px] text-muted-foreground">{t("9 años · ahorra cada semana", "Age 9 · saves every week")}</p>
             </div>
           </div>
-          <p className="numeric mt-3 text-3xl font-semibold text-kid-sky md:text-4xl">€120</p>
-          <div className="mt-3 rounded-xl border border-kid-grape/25 bg-kid-grape/10 p-3">
-            <p className="text-[10px] uppercase tracking-wider text-kid-grape">
-              {t("Mi futuro (18 años)", "My future (age 18)")}
-            </p>
-            <p className="numeric mt-0.5 text-xl font-semibold">€10.668</p>
-            <p className="mt-0.5 text-[11px] text-muted-foreground">
-              {t("Si ahorra 11,3 € al mes", "If they save €11.3 a month")}
-            </p>
+
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl bg-elevated/60 p-4 ring-1 ring-border">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                {t("Su dinero hoy", "Their money today")}
+              </p>
+              <p className="numeric mt-1 text-3xl font-semibold text-kid-sky">€120</p>
+              <p className="mt-1 text-[11px] text-kid-mint">+€6,50 {t("esta semana", "this week")}</p>
+            </div>
+            <div className="rounded-2xl border border-kid-grape/25 bg-kid-grape/10 p-4">
+              <p className="text-[10px] uppercase tracking-wider text-kid-grape">
+                {t("Su número a los 18", "Their number at 18")}
+              </p>
+              <p className="numeric mt-1 text-3xl font-semibold">€10.668</p>
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                {t("Ahorrando 11,3 € al mes", "Saving €11.3 a month")}
+              </p>
+            </div>
           </div>
-          <div className="mt-3 rounded-2xl bg-elevated/60 p-3 ring-1 ring-border">
+
+          <div className="mt-3 rounded-2xl bg-elevated/60 p-4 ring-1 ring-border">
             <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-              <span>{t("Progreso hacia su número", "Progress to their number")}</span>
-              <span className="numeric text-kid-sky">11%</span>
+              <span>{t("Cómo crece hasta los 18", "How it grows until 18")}</span>
+              <span className="numeric text-kid-sky">11% {t("recorrido", "done")}</span>
             </div>
             <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-card">
               <div className="h-full w-[11%] rounded-full bg-kid-sky" />
             </div>
-            <div className="mt-2 -mx-1">
+            <div className="mt-1 -mx-1">
               <MiniArea color="var(--kid-sky)" />
             </div>
+            <div className="mt-2 grid grid-cols-2 gap-2 text-[11px]">
+              <div className="rounded-xl bg-card px-3 py-2">
+                <span className="text-muted-foreground">{t("Lo que aporta", "What they put in")}</span>
+                <p className="numeric mt-0.5 text-sm font-semibold">€2.442</p>
+              </div>
+              <div className="rounded-xl bg-card px-3 py-2">
+                <span className="text-muted-foreground">{t("Lo que gana el interés", "What interest adds")}</span>
+                <p className="numeric mt-0.5 text-sm font-semibold text-kid-mint">€8.226</p>
+              </div>
+            </div>
           </div>
-
-
-
         </ScreenCard>
       ),
     },
@@ -393,9 +410,16 @@ function HowItWorksSlider() {
       ),
       visual: (
         <ScreenCard title={t("Mi dinero", "My money")} accent="var(--kid-mint)">
-          <p className="text-sm text-muted-foreground">{t("Regla 40/40/20", "40/40/20 rule")}</p>
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">
+              {t("Regla 40/40/20 · €60 al mes", "40/40/20 rule · €60 a month")}
+            </p>
+            <span className="numeric rounded-full bg-kid-mint/12 px-3 py-1 text-xs font-semibold text-kid-mint">
+              {t("Reparto automático", "Auto split")}
+            </span>
+          </div>
           <div className="mt-2 grid items-center gap-4 sm:grid-cols-2">
-            <div className="h-44">
+            <div className="relative h-44">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -413,17 +437,51 @@ function HowItWorksSlider() {
                   </Pie>
                 </PieChart>
               </ResponsiveContainer>
+              <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                <p className="numeric text-2xl font-semibold">€60</p>
+                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                  {t("al mes", "a month")}
+                </p>
+              </div>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {pockets.map((p) => (
-                <div key={p.label} className="flex items-center justify-between text-sm">
-                  <span className="flex items-center gap-2 text-muted-foreground">
-                    <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: p.color }} />
-                    {p.label} ({p.value}%)
-                  </span>
-                  <span className="numeric font-semibold">{p.amount}</span>
+                <div key={p.label} className="rounded-xl bg-elevated px-3 py-2.5">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="flex items-center gap-2 text-muted-foreground">
+                      <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: p.color }} />
+                      {p.label}
+                    </span>
+                    <span className="numeric font-semibold">{p.amount}</span>
+                  </div>
+                  <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-card">
+                    <div
+                      className="h-full rounded-full"
+                      style={{ width: `${p.value}%`, backgroundColor: p.color }}
+                    />
+                  </div>
                 </div>
               ))}
+            </div>
+          </div>
+          <div className="mt-3 rounded-2xl bg-elevated/60 p-3 ring-1 ring-border">
+            <p className="text-[11px] text-muted-foreground">
+              {t("Entradas de los últimos 6 meses", "Money in over the last 6 months")}
+            </p>
+            <div className="mt-2 h-24">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={pocketMonths} margin={{ top: 4, right: 2, bottom: 0, left: 0 }} barCategoryGap={6}>
+                  <XAxis
+                    dataKey="m"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "var(--muted-foreground)", fontSize: 10 }}
+                  />
+                  <Bar dataKey="save" stackId="a" fill="var(--kid-mint)" radius={[0, 0, 0, 0]} isAnimationActive={false} />
+                  <Bar dataKey="invest" stackId="a" fill="var(--kid-grape)" isAnimationActive={false} />
+                  <Bar dataKey="spend" stackId="a" fill="var(--kid-sky)" radius={[4, 4, 0, 0]} isAnimationActive={false} />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
         </ScreenCard>
@@ -505,6 +563,31 @@ function HowItWorksSlider() {
               </div>
             ))}
           </div>
+          <div className="mt-3 rounded-2xl bg-elevated/60 p-3 ring-1 ring-border">
+            <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+              <span>{t("Lo que gana cada semana", "What they earn each week")}</span>
+              <span className="numeric text-kid-sun">{t("media €5,50", "avg €5.50")}</span>
+            </div>
+            <div className="mt-2 h-24">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={choreWeeks} margin={{ top: 4, right: 2, bottom: 0, left: 0 }} barCategoryGap={10}>
+                  <XAxis
+                    dataKey="w"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "var(--muted-foreground)", fontSize: 10 }}
+                  />
+                  <Bar dataKey="v" fill="var(--kid-sun)" radius={[6, 6, 0, 0]} isAnimationActive={false} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              {t(
+                "Cada tarea aprobada se reparte sola: 40% ahorrar, 40% invertir, 20% gastar.",
+                "Every approved chore splits itself: 40% save, 40% invest, 20% spend.",
+              )}
+            </p>
+          </div>
         </ScreenCard>
       ),
     },
@@ -520,11 +603,24 @@ function HowItWorksSlider() {
       ),
       visual: (
         <ScreenCard title={t("Mi futuro", "My future")} accent="var(--kid-mint)">
-          <p className="text-sm text-muted-foreground">{t("Proyección a 18 años", "Projection to age 18")}</p>
-          <p className="numeric mt-1 text-4xl font-semibold">10.668 €</p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {t("Si ahorras", "If you save")} <span className="text-kid-mint">11,3 €</span> {t("al mes", "a month")}
-          </p>
+          <div className="flex flex-wrap items-end justify-between gap-2">
+            <div>
+              <p className="text-sm text-muted-foreground">{t("Proyección a 18 años", "Projection to age 18")}</p>
+              <p className="numeric mt-1 text-4xl font-semibold">10.668 €</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {t("Si ahorras", "If you save")} <span className="text-kid-mint">11,3 €</span> {t("al mes", "a month")}
+              </p>
+            </div>
+            <div className="flex gap-3 text-[11px] text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-kid-mint" /> {t("Con interés", "With interest")}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-muted-foreground/50" />{" "}
+                {t("Solo ahorrando", "Only saving")}
+              </span>
+            </div>
+          </div>
           <div className="mt-2 h-56">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={growCurve} margin={{ top: 8, right: 6, bottom: 0, left: 0 }}>
@@ -546,6 +642,16 @@ function HowItWorksSlider() {
                 />
                 <Area
                   type="monotone"
+                  dataKey="flat"
+                  stroke="var(--muted-foreground)"
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  fill="none"
+                  dot={false}
+                  isAnimationActive={false}
+                />
+                <Area
+                  type="monotone"
                   dataKey="y"
                   stroke="var(--kid-mint)"
                   strokeWidth={2.5}
@@ -555,6 +661,18 @@ function HowItWorksSlider() {
                 />
               </AreaChart>
             </ResponsiveContainer>
+          </div>
+          <div className="mt-2 grid grid-cols-3 gap-2 text-center">
+            {[
+              { k: t("A los 12", "At 12"), v: "€2.310" },
+              { k: t("A los 15", "At 15"), v: "€5.480" },
+              { k: t("A los 18", "At 18"), v: "€10.668" },
+            ].map((m) => (
+              <div key={m.k} className="rounded-xl bg-elevated px-3 py-2">
+                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{m.k}</p>
+                <p className="numeric mt-0.5 text-sm font-semibold text-kid-mint">{m.v}</p>
+              </div>
+            ))}
           </div>
         </ScreenCard>
       ),
@@ -706,7 +824,7 @@ function HowItWorksSlider() {
                   key={s.id}
                   type="button"
                   onClick={() => setI(k)}
-                  className="flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all"
+                  className="flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-[17px] font-medium transition-all lg:text-[17px]"
                   style={
                     isActive
                       ? {
@@ -717,12 +835,12 @@ function HowItWorksSlider() {
                       : { boxShadow: "inset 0 0 0 1px var(--border)" }
                   }
                 >
-                  <TabIcon className="h-3.5 w-3.5 shrink-0" />
+                  <TabIcon className="h-5 w-5 shrink-0" />
                   <span className="whitespace-nowrap">{s.tab}</span>
                 </button>
               );
             })}
-            <span className="ml-auto hidden shrink-0 items-center gap-1.5 rounded-full bg-elevated px-3 py-1 text-[11px] text-muted-foreground md:inline-flex">
+            <span className="ml-auto hidden shrink-0 items-center gap-2 rounded-full bg-elevated px-4 py-2 text-[15px] text-muted-foreground md:inline-flex">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-kid-mint opacity-75" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-kid-mint" />
@@ -871,6 +989,23 @@ function HowItWorksSlider() {
     </section>
   );
 }
+
+const pocketMonths = [
+  { m: "Ene", save: 16, invest: 16, spend: 8 },
+  { m: "Feb", save: 18, invest: 18, spend: 9 },
+  { m: "Mar", save: 20, invest: 20, spend: 10 },
+  { m: "Abr", save: 22, invest: 22, spend: 11 },
+  { m: "May", save: 23, invest: 23, spend: 11 },
+  { m: "Jun", save: 24, invest: 24, spend: 12 },
+];
+
+const choreWeeks = [
+  { w: "S1", v: 4.5 },
+  { w: "S2", v: 5 },
+  { w: "S3", v: 6 },
+  { w: "S4", v: 5.5 },
+  { w: "S5", v: 6.5 },
+];
 
 const planBars = [4, 7, 10, 13, 17, 21, 26, 32, 39, 47, 56, 66, 78, 92].map((v, i) => ({
   x: i,
