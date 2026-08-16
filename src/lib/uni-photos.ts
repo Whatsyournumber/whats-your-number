@@ -277,15 +277,9 @@ import curatedSouthampton from "@/assets/uni/uk-southampton.jpg";
 import curatedBirmingham from "@/assets/uni/uk-birmingham.jpg";
 import curatedNottingham from "@/assets/uni/uk-nottingham.jpg";
 import curatedAstonUni from "@/assets/uni/uk-aston.jpg";
-import curatedDurhamUni from "@/assets/uni/uk-durham.jpg";
-import curatedKclUni from "@/assets/uni/uk-kcl.jpg";
-import curatedUclUni from "@/assets/uni/uk-ucl.jpg";
-import curatedImperialUni from "@/assets/uni/uk-imperial.jpg";
 import curatedGalwayUni from "@/assets/uni/ie-galway.jpg";
 import curatedCorkUni from "@/assets/uni/ie-cork.jpg";
 import curatedLimerickUni from "@/assets/uni/ie-limerick.jpg";
-import curatedUcdUni from "@/assets/uni/ie-ucd.jpg";
-import curatedTrinityUni from "@/assets/uni/ie-trinity.jpg";
 import curatedQueenMary from "@/assets/uni/uk-queen-mary.jpg";
 import curatedLancaster from "@/assets/uni/uk-lancaster.jpg";
 import curatedYork from "@/assets/uni/uk-york.jpg";
@@ -648,15 +642,9 @@ import curUnimet from "@/assets/uni/ve-unimet.jpg";
 
 const CURATED: Record<string, string> = {
   "uk-aston-university": curatedAstonUni,
-  "uk-durham": curatedDurhamUni,
-  "uk-king-s-college-london": curatedKclUni,
-  "uk-ucl": curatedUclUni,
-  "uk-imperial-college-london": curatedImperialUni,
   "ie-university-of-galway": curatedGalwayUni,
   "ie-university-college-cork": curatedCorkUni,
   "ie-university-of-limerick": curatedLimerickUni,
-  "ie-ucd": curatedUcdUni,
-  "ie-trinity": curatedTrinityUni,
   "de-tu-braunschweig": curatedBraunschweig,
   "de-universitat-hohenheim": curatedHohenheim,
   "at-universitat-innsbruck": curatedInnsbruck,
