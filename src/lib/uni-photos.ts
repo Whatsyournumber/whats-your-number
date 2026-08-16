@@ -140,6 +140,16 @@ import curatedVerona from "@/assets/uni/it-verona.jpg";
 import curatedCaFoscari from "@/assets/uni/it-ca-foscari.jpg";
 import curatedScuolaNormale from "@/assets/uni/it-scuola-normale.jpg";
 import curatedPerugia from "@/assets/uni/it-perugia.jpg";
+import curatedParma from "@/assets/uni/it-parma.jpg";
+import curatedEnsParis from "@/assets/uni/fr-ens-paris.jpg";
+import curatedCentraleSupelec from "@/assets/uni/fr-centralesupelec.jpg";
+import curatedMontpellier from "@/assets/uni/fr-montpellier.jpg";
+import curatedToulouseFr from "@/assets/uni/fr-toulouse.jpg";
+import curatedMinesParis from "@/assets/uni/fr-mines-paris.jpg";
+import curatedEscp from "@/assets/uni/fr-escp.jpg";
+import curatedEmLyon from "@/assets/uni/fr-em-lyon.jpg";
+import curatedAudencia from "@/assets/uni/fr-audencia.jpg";
+import curatedPantheonSorbonne from "@/assets/uni/fr-pantheon-sorbonne.jpg";
 import curatedBelgrano from "@/assets/uni/ar-belgrano.jpg";
 import curatedPucRio from "@/assets/uni/br-puc-rio.jpg";
 import curatedUcu from "@/assets/uni/uy-ucu.jpg";
@@ -583,6 +593,16 @@ const CURATED: Record<string, string> = {
   "it-ca-foscari-venezia": curatedCaFoscari,
   "it-scuola-normale-superiore": curatedScuolaNormale,
   "it-universita-di-perugia": curatedPerugia,
+  "it-universita-di-parma": curatedParma,
+  "fr-ens-paris": curatedEnsParis,
+  "fr-centralesupelec": curatedCentraleSupelec,
+  "fr-universite-de-montpellier": curatedMontpellier,
+  "fr-universite-de-toulouse": curatedToulouseFr,
+  "fr-mines-paris-psl": curatedMinesParis,
+  "fr-escp-business-school": curatedEscp,
+  "fr-em-lyon-business-school": curatedEmLyon,
+  "fr-audencia-business-school": curatedAudencia,
+  "fr-universite-paris-1-pantheon-so": curatedPantheonSorbonne,
   "lat-ucab": curUcab,
   "lat-unimet": curUnimet,
 
