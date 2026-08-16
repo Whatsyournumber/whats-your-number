@@ -232,7 +232,13 @@ function UniFinderVisual() {
 
       {hero ? (
         <>
-          <div className="relative mt-3 h-32 overflow-hidden rounded-2xl ring-1 ring-border">
+          <p className="mt-2.5 text-[11px] text-muted-foreground">
+            {t(
+              `Con €${budget.toLocaleString("es-ES")} podría aplicar a ${eligible.length} de ${list.length} universidades mostradas`,
+              `With €${budget.toLocaleString("es-ES")} they could apply to ${eligible.length} of ${list.length} universities shown`,
+            )}
+          </p>
+          <div className="relative mt-2 h-32 overflow-hidden rounded-2xl ring-1 ring-border">
             <img
               src={REAL_UNI_PHOTOS[hero.id]}
               alt={hero.name}
@@ -242,6 +248,15 @@ function UniFinderVisual() {
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-transparent" />
             <span className="absolute left-3 top-3 rounded-full bg-kid-grape/90 px-2 py-0.5 text-[10px] font-semibold text-background">
               #{hero.rank} · {t("ranking mundial", "world ranking")}
+            </span>
+            <span
+              className={`absolute right-3 top-3 rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ${
+                hero.cost <= budget
+                  ? "bg-kid-mint/15 text-kid-mint ring-kid-mint/30"
+                  : "bg-elevated/80 text-muted-foreground ring-border"
+              }`}
+            >
+              {hero.cost <= budget ? t("Puede aplicar", "Can apply") : t("Le falta", "Short")}
             </span>
             <div className="absolute inset-x-3 bottom-2.5 flex items-end justify-between gap-3">
               <div className="min-w-0">
@@ -268,6 +283,11 @@ function UniFinderVisual() {
                   className="absolute inset-0 h-full w-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                {u.cost <= budget && (
+                  <span className="absolute right-2 top-2 rounded-full bg-kid-mint/20 px-1.5 py-0.5 text-[9px] font-semibold text-kid-mint">
+                    {t("Puede aplicar", "Can apply")}
+                  </span>
+                )}
                 <div className="absolute inset-x-2.5 bottom-2 flex items-end justify-between gap-2">
                   <div className="min-w-0">
                     <p className="truncate text-[11px] font-semibold">
@@ -294,6 +314,7 @@ function UniFinderVisual() {
           "QS/THE ranking + city living costs, compared with their future number.",
         )}
       </p>
+
     </ScreenCard>
   );
 }
