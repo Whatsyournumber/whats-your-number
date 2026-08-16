@@ -83,6 +83,12 @@ function Ring({ value, size = 116 }: { value: number; size?: number }) {
   );
 }
 
+// Escala el número según su longitud para que nunca invada la ilustración
+function fitAmount(text: string) {
+  const cqi = Math.max(4.2, Math.min(10, 92 / Math.max(text.length, 1)));
+  return { fontSize: `clamp(1.05rem, ${cqi.toFixed(2)}cqi, 4rem)` } as const;
+}
+
 const RATE_PRESETS = [
   { key: "banco", es: "Banco", en: "Bank", rate: 4 },
   { key: "bonos", es: "Bonos", en: "Bonds", rate: 6 },
@@ -194,7 +200,10 @@ function MyNumber({ member }: { member: Member }) {
 
               <div className="min-w-0">
                 <Eyebrow className="text-primary">{t("Mi dinero hoy", "My money today")}</Eyebrow>
-                <p className="mt-3 whitespace-nowrap font-display text-[clamp(1.3rem,10cqi,4rem)] font-bold leading-none tracking-tight text-foreground">
+                <p
+                  className="mt-3 whitespace-nowrap font-display font-bold leading-none tracking-tight text-foreground"
+                  style={fitAmount(money(today, member.currency))}
+                >
                   {money(today, member.currency)}
                 </p>
                 <p className="mt-3 whitespace-nowrap text-[clamp(12px,4.4cqi,20px)] leading-snug text-muted-foreground">
@@ -218,7 +227,10 @@ function MyNumber({ member }: { member: Member }) {
                 <Eyebrow className="text-chart-2">
                   {t(`Mi dinero a los ${shownAge}`, `My money at ${shownAge}`)}
                 </Eyebrow>
-                <p className="mt-3 whitespace-nowrap font-display text-[clamp(1.3rem,10cqi,4rem)] font-bold leading-none tracking-tight text-foreground">
+                <p
+                  className="mt-3 whitespace-nowrap font-display font-bold leading-none tracking-tight text-foreground"
+                  style={fitAmount(money(chartProjection.future, member.currency))}
+                >
                   {money(chartProjection.future, member.currency)}
                 </p>
                 <p className="mt-3 whitespace-nowrap text-[clamp(12px,4.4cqi,20px)] font-semibold leading-snug text-chart-2">
