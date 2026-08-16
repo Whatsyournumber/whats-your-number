@@ -130,6 +130,16 @@ import curatedUlm from "@/assets/uni/de-ulm.jpg";
 import curatedDuisburg from "@/assets/uni/de-duisburg-essen.jpg";
 import curatedKiel from "@/assets/uni/de-kiel.jpg";
 import curatedPotsdam from "@/assets/uni/de-potsdam.jpg";
+import curatedBraunschweig from "@/assets/uni/de-braunschweig.jpg";
+import curatedHohenheim from "@/assets/uni/de-hohenheim.jpg";
+import curatedInnsbruck from "@/assets/uni/at-innsbruck.jpg";
+import curatedGraz from "@/assets/uni/at-graz.jpg";
+import curatedTrento from "@/assets/uni/it-trento.jpg";
+import curatedPavia from "@/assets/uni/it-pavia.jpg";
+import curatedVerona from "@/assets/uni/it-verona.jpg";
+import curatedCaFoscari from "@/assets/uni/it-ca-foscari.jpg";
+import curatedScuolaNormale from "@/assets/uni/it-scuola-normale.jpg";
+import curatedPerugia from "@/assets/uni/it-perugia.jpg";
 import curatedBelgrano from "@/assets/uni/ar-belgrano.jpg";
 import curatedPucRio from "@/assets/uni/br-puc-rio.jpg";
 import curatedUcu from "@/assets/uni/uy-ucu.jpg";
@@ -563,6 +573,16 @@ import curUcab from "@/assets/uni/ve-ucab.jpg";
 import curUnimet from "@/assets/uni/ve-unimet.jpg";
 
 const CURATED: Record<string, string> = {
+  "de-tu-braunschweig": curatedBraunschweig,
+  "de-universitat-hohenheim": curatedHohenheim,
+  "at-universitat-innsbruck": curatedInnsbruck,
+  "at-universitat-graz": curatedGraz,
+  "it-universita-di-trento": curatedTrento,
+  "it-universita-di-pavia": curatedPavia,
+  "it-universita-di-verona": curatedVerona,
+  "it-ca-foscari-venezia": curatedCaFoscari,
+  "it-scuola-normale-superiore": curatedScuolaNormale,
+  "it-universita-di-perugia": curatedPerugia,
   "lat-ucab": curUcab,
   "lat-unimet": curUnimet,
 
