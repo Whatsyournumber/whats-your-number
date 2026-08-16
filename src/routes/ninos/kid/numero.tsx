@@ -43,7 +43,7 @@ export const Route = createFileRoute("/ninos/kid/numero")({
 
 function Eyebrow({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <p className={`whitespace-nowrap text-[clamp(9px,3cqi,11px)] font-bold uppercase leading-tight tracking-[0.12em] ${className}`}>
+    <p className={`whitespace-nowrap text-[clamp(11px,3.6cqi,14px)] font-bold uppercase leading-tight tracking-[0.12em] ${className}`}>
       {children}
     </p>
   );
