@@ -195,7 +195,7 @@ function UniFinderVisual() {
 
   const list = DEMO_UNIS.filter((u) => (region === "all" ? true : u.region === region)).filter((u) =>
     q.trim() ? `${u.name} ${u.city}`.toLowerCase().includes(q.trim().toLowerCase()) : true,
-  );
+  ).slice().sort((a, b) => a.rank - b.rank);
   const hero = list[0];
   const rest = list.slice(1, 3);
   const fmt = (v: number) => `€${Math.round(v).toLocaleString("es-ES")}`;
