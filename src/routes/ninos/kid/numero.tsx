@@ -156,13 +156,13 @@ function MyNumber({ member }: { member: Member }) {
       <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.62fr)_minmax(0,1fr)]">
         <div className="grid content-start gap-5">
           <div className="grid gap-5 sm:grid-cols-2">
-            <div className="card-soft animate-rise relative flex min-h-[210px] items-center justify-between gap-2 overflow-hidden bg-gradient-to-br from-primary/10 via-card to-card p-6">
-              <div className="min-w-0 self-center">
+            <div className="card-soft animate-rise relative grid min-h-[190px] grid-cols-[minmax(0,1fr)_auto] items-center gap-2 overflow-hidden bg-gradient-to-br from-primary/10 via-card to-card p-5 sm:p-6">
+              <div className="min-w-0">
                 <Eyebrow className="text-primary">{t("Mi dinero hoy", "My money today")}</Eyebrow>
-                <p className="mt-3 whitespace-nowrap font-display text-[clamp(1.6rem,3.4vw,2.4rem)] font-bold leading-none tracking-tight text-foreground">
+                <p className="mt-3 font-display text-[clamp(1.3rem,3vw,2.1rem)] font-bold leading-none tracking-tight text-foreground">
                   {money(today, member.currency)}
                 </p>
-                <p className="mt-4 whitespace-nowrap text-[13px] text-muted-foreground">
+                <p className="mt-4 text-[13px] leading-snug text-muted-foreground">
                   {t("Esta semana", "This week")}{" "}
                   <span className="font-semibold text-chart-3">+{money(pace, member.currency)} ↗</span>
                 </p>
@@ -174,22 +174,22 @@ function MyNumber({ member }: { member: Member }) {
                 loading="lazy"
                 width={768}
                 height={768}
-                className="pointer-events-none h-[132px] w-[132px] shrink-0 self-center object-contain"
+                className="pointer-events-none h-[clamp(84px,14vw,128px)] w-[clamp(84px,14vw,128px)] shrink-0 self-center object-contain"
               />
             </div>
 
-            <div className="card-soft animate-rise relative flex min-h-[210px] items-center justify-between gap-2 overflow-hidden bg-gradient-to-br from-chart-2/10 via-card to-card p-6">
-              <div className="min-w-0 self-center">
+            <div className="card-soft animate-rise relative grid min-h-[190px] grid-cols-[minmax(0,1fr)_auto] items-center gap-2 overflow-hidden bg-gradient-to-br from-chart-2/10 via-card to-card p-5 sm:p-6">
+              <div className="min-w-0">
                 <Eyebrow className="text-chart-2">
                   {t(`Mi dinero a los ${targetAge}`, `My money at ${targetAge}`)}
                 </Eyebrow>
-                <p className="mt-3 whitespace-nowrap font-display text-[clamp(1.6rem,3.4vw,2.4rem)] font-bold leading-none tracking-tight text-foreground">
+                <p className="mt-3 font-display text-[clamp(1.3rem,3vw,2.1rem)] font-bold leading-none tracking-tight text-foreground">
                   {money(projection.future, member.currency)}
                 </p>
-                <p className="mt-4 whitespace-nowrap text-[13px] text-muted-foreground">
+                <p className="mt-4 text-[13px] leading-snug text-muted-foreground">
                   {t("Si sigues ahorrando", "If you keep saving")}
                 </p>
-                <p className="whitespace-nowrap text-[13px] font-semibold text-chart-2">
+                <p className="text-[13px] font-semibold text-chart-2">
                   {money(monthly || pace, member.currency)} {t("al mes", "a month")}
                 </p>
               </div>
@@ -200,12 +200,12 @@ function MyNumber({ member }: { member: Member }) {
                 loading="lazy"
                 width={768}
                 height={768}
-                className="pointer-events-none h-[132px] w-[132px] shrink-0 self-center object-contain"
+                className="pointer-events-none h-[clamp(84px,14vw,128px)] w-[clamp(84px,14vw,128px)] shrink-0 self-center object-contain"
               />
             </div>
           </div>
 
-          <div className="card-soft p-6">
+          <div className="card-soft p-5 sm:p-6">
             <Eyebrow className="text-foreground">
               {t("¿Dónde está mi dinero?", "Where is my money?")}
             </Eyebrow>
@@ -220,17 +220,18 @@ function MyNumber({ member }: { member: Member }) {
                 ][i] ?? { text: "text-primary", bar: "bg-primary", chip: "bg-primary/10" };
                 return (
                   <div key={p.key} className="rounded-2xl border border-border/60 bg-card p-4">
-                    <p className="flex items-center gap-2">
-                      <span className={`grid size-8 shrink-0 place-items-center rounded-xl text-lg ${tone.chip}`}>
+                    <p className="flex items-center gap-2.5">
+                      <span className={`grid size-11 shrink-0 place-items-center rounded-2xl text-[26px] leading-none ${tone.chip}`}>
                         {p.emoji}
                       </span>
-                      <span className={`truncate text-sm font-semibold ${tone.text}`}>
+                      <span className={`truncate text-[15px] font-semibold ${tone.text}`}>
                         {pocketLabel(p.key, lang)}
                       </span>
                     </p>
-                    <p className="mt-2 whitespace-nowrap font-display text-[clamp(1.15rem,2.4vw,1.6rem)] font-bold leading-none text-foreground">
+                    <p className="mt-3 font-display text-[clamp(1.15rem,2.4vw,1.6rem)] font-bold leading-none text-foreground">
                       {money(amount, member.currency)}
                     </p>
+
                     <p className="mt-3 text-[11px] text-muted-foreground">
                       {pct}% {t("de tu dinero", "of your money")}
                     </p>
