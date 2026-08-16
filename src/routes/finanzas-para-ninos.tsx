@@ -11,6 +11,7 @@ import {
   GraduationCap,
   PiggyBank,
   Rocket,
+  Search,
   Sparkles,
   Star,
   Target,
@@ -46,6 +47,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useT } from "@/hooks/use-language";
 import { useLiveCount, formatCount } from "@/components/live-count";
+import { REAL_UNI_PHOTOS } from "@/lib/uni-photos-real";
 
 
 export const Route = createFileRoute("/finanzas-para-ninos")({
