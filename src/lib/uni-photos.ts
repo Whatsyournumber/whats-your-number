@@ -56,6 +56,10 @@ import curatedHumboldt from "@/assets/uni/de-humboldt.jpg";
 import curatedFuBerlin from "@/assets/uni/de-fu-berlin.jpg";
 import curatedTuBerlin from "@/assets/uni/de-tu-berlin.jpg";
 import curatedHamburg from "@/assets/uni/de-hamburg.jpg";
+import curatedGoethe from "@/assets/uni/de-goethe.jpg";
+import curatedDresden from "@/assets/uni/de-dresden.jpg";
+import curatedSorbonne from "@/assets/uni/fr-sorbonne.jpg";
+import curatedSaclay from "@/assets/uni/fr-paris-saclay.jpg";
 import curatedKit from "@/assets/uni/de-kit.jpg";
 import curatedPolimi from "@/assets/uni/it-polimi.jpg";
 import curatedSapienza from "@/assets/uni/it-sapienza.jpg";
@@ -720,6 +724,10 @@ const CURATED: Record<string, string> = {
   "de-freie-universitat-berlin": curatedFuBerlin,
   "de-tu-berlin": curatedTuBerlin,
   "de-universitat-hamburg": curatedHamburg,
+  "de-goethe-universitat": curatedGoethe,
+  "de-tu-dresden": curatedDresden,
+  "fr-sorbonne-universite": curatedSorbonne,
+  "fr-universite-paris-saclay": curatedSaclay,
   "de-kit-karlsruhe": curatedKit,
   "it-politecnico-di-milano": curatedPolimi,
   "it-sapienza-universita-di-roma": curatedSapienza,
