@@ -320,24 +320,27 @@ function CollegeFinder({ member }: { member: Member }) {
   return (
     <>
       {/* Hero a sangre */}
-      <section className="relative mb-6 -mt-6 min-h-[460px] overflow-hidden sm:min-h-[580px]">
-        <img
-          src={heroImg}
-          alt={t("Familia mirando universidades", "Family looking at universities")}
-          width={1280}
-          height={960}
-          className="pointer-events-none absolute inset-y-0 right-0 h-full w-full object-cover object-right"
-          style={{
-            maskImage:
-              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 14%, rgba(0,0,0,0.55) 34%, rgba(0,0,0,0.88) 52%, #000 66%, #000 100%), linear-gradient(to bottom, transparent 0%, #000 8%, #000 80%, transparent 100%)",
-            maskComposite: "intersect",
-            WebkitMaskImage:
-              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 14%, rgba(0,0,0,0.55) 34%, rgba(0,0,0,0.88) 52%, #000 66%, #000 100%), linear-gradient(to bottom, transparent 0%, #000 8%, #000 80%, transparent 100%)",
-            WebkitMaskComposite: "source-in",
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent sm:via-background/25" />
-        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-background to-transparent" />
+      <section className="relative mb-6 -mt-5 min-h-[460px] overflow-visible sm:min-h-[580px] lg:-mt-6">
+        <div className="pointer-events-none absolute inset-x-0 -top-24 bottom-0 overflow-hidden sm:-top-28 lg:-top-32">
+          <img
+            src={heroImg}
+            alt={t("Familia mirando universidades", "Family looking at universities")}
+            width={1280}
+            height={960}
+            className="absolute inset-0 h-full w-full scale-[1.18] object-cover object-[68%_18%] sm:scale-100 sm:object-right"
+            style={{
+              maskImage:
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 14%, rgba(0,0,0,0.55) 34%, rgba(0,0,0,0.88) 52%, #000 66%, #000 100%), linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 6%, #000 14%, #000 80%, transparent 100%)",
+              maskComposite: "intersect",
+              WebkitMaskImage:
+                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 14%, rgba(0,0,0,0.55) 34%, rgba(0,0,0,0.88) 52%, #000 66%, #000 100%), linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 6%, #000 14%, #000 80%, transparent 100%)",
+              WebkitMaskComposite: "source-in",
+            }}
+          />
+        </div>
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent sm:via-background/25" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-background to-transparent" />
+
 
         <div className="relative flex min-h-[460px] max-w-lg flex-col justify-center py-10 pr-6 sm:min-h-[580px] sm:py-16">
           <h1 className="font-display text-4xl font-black leading-[1.05] text-foreground drop-shadow-[0_1px_12px_rgba(0,0,0,0.35)] sm:text-6xl">
