@@ -102,6 +102,8 @@ function MyNumber({ member }: { member: Member }) {
   const today = totals.gastar + totals.ahorrar + totals.crecer;
   const targetAge = Number(fund?.target_age ?? 18);
   const [horizon, setHorizon] = useState<number | null>(null);
+  const [ageInput, setAgeInput] = useState<string | null>(null);
+
   const base = Math.max(today, Number(fund?.current_balance ?? 0));
   const monthly = Number(fund?.monthly_contribution ?? 0);
   const rate = Number(fund?.expected_return ?? 10);
@@ -448,16 +450,20 @@ function MyNumber({ member }: { member: Member }) {
             </span>
             <div className="mt-3 flex min-w-0 items-center gap-2">
               <input
-                type="number"
-                min={member.age + 1}
-                max={99}
-                value={member.age + years}
+                type="text"
+                inputMode="numeric"
+                value={ageInput ?? String(member.age + years)}
                 onChange={(e) => {
-                  const age = Number(e.target.value);
-                  if (age > member.age && age <= 99) setHorizon(age - member.age);
+                  const raw = e.target.value.replace(/\D/g, "").slice(0, 2);
+                  setAgeInput(raw);
+                  const age = Number(raw);
+                  if (raw && age > member.age && age <= 99) setHorizon(age - member.age);
                 }}
+                onFocus={(e) => e.currentTarget.select()}
+                onBlur={() => setAgeInput(null)}
                 className="h-9 w-16 shrink-0 rounded-full border border-border/60 bg-surface-1 text-center text-sm font-bold text-foreground outline-none focus:border-primary"
               />
+
               <span className="shrink-0 text-xs text-muted-foreground">{t("años", "yrs")}</span>
               <div className="flex min-w-0 flex-wrap gap-1.5">
                 {[member.age + 5, targetAge, 25, 30, 40]
