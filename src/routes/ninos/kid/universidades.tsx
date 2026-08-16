@@ -643,7 +643,12 @@ function CollegeFinder({ member }: { member: Member }) {
               </button>
             ))}
           </div>
+
+          <div className="col-span-2 flex items-center sm:col-auto">
+            <FilterLegendTip />
+          </div>
         </div>
+
 
 
         {(continent || country || field || rankMax || sector || bucket) ? (
@@ -1049,6 +1054,56 @@ const SOURCES: { name: string; detail: { es: string; en: string } }[] = [
   { name: "Numbeo / Expatistan", detail: { es: "Coste de vida estudiantil por ciudad.", en: "Student living cost by city." } },
   { name: "OECD Education at a Glance", detail: { es: "Duración típica del grado y medias por país.", en: "Typical degree length and country averages." } },
 ];
+
+function FilterLegendTip() {
+  const { t } = useI18n();
+  const [open, setOpen] = useState(false);
+  const rows = [
+    {
+      k: t("Ranking", "Ranking"),
+      v: t("QS World University Rankings 2025 (contraste con THE 2025).", "QS World University Rankings 2025 (cross-checked with THE 2025)."),
+    },
+    {
+      k: t("Coste de vida", "Living cost"),
+      v: t("Numbeo / Expatistan por ciudad · ajustado (piso compartido), moderado (residencia), premium (zona céntrica).", "Numbeo / Expatistan by city · tight (shared flat), moderate (student halls), premium (central area)."),
+    },
+  ];
+  return (
+    <TooltipProvider delayDuration={100}>
+      <Tooltip open={open}>
+        <TooltipTrigger asChild>
+          <button
+            type="button"
+            tabIndex={-1}
+            aria-label={t("Fuentes de ranking y coste de vida", "Ranking and living cost sources")}
+            onMouseEnter={() => setOpen(true)}
+            onMouseLeave={() => setOpen(false)}
+            onClick={() => setOpen((v) => !v)}
+            className="inline-flex items-center gap-1 text-[10px] font-medium text-muted-foreground/60 transition-colors hover:text-muted-foreground"
+          >
+            <Info className="h-3.5 w-3.5" />
+            {t("Fuentes", "Sources")}
+          </button>
+        </TooltipTrigger>
+        <TooltipContent
+          side="bottom"
+          align="start"
+          className="w-[250px] rounded-xl border border-border/40 bg-popover/95 p-3 shadow-lg backdrop-blur-sm"
+        >
+          <ul className="space-y-2">
+            {rows.map((r) => (
+              <li key={r.k} className="leading-snug">
+                <p className="text-[9px] font-medium uppercase tracking-[0.14em] text-muted-foreground/70">{r.k}</p>
+                <p className="text-[11px] text-popover-foreground">{r.v}</p>
+              </li>
+            ))}
+          </ul>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
+
 
 function SourcesTip({ className }: { className?: string }) {
   const { t } = useI18n();
