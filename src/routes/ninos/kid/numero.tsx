@@ -186,16 +186,16 @@ function MyNumber({ member }: { member: Member }) {
       />
 
       <div className="grid items-stretch gap-5 lg:grid-cols-[minmax(0,1.62fr)_minmax(0,1fr)]">
-        <div className="grid content-start gap-5 lg:grid-rows-[minmax(220px,auto)_1fr]">
+        <div className="grid content-start gap-5 lg:grid-rows-[minmax(240px,auto)_1fr]">
           <div className="grid gap-5 sm:grid-cols-2 [&>*]:h-full">
-            <div className="@container card-soft animate-rise relative grid min-h-[200px] grid-cols-[minmax(0,1fr)_auto] items-center gap-2 overflow-hidden bg-gradient-to-br from-primary/10 via-card to-card p-5 sm:p-6">
+            <div className="@container card-soft animate-rise relative grid min-h-[220px] grid-cols-[minmax(0,1fr)_auto] items-center gap-2 overflow-hidden bg-gradient-to-br from-primary/10 via-card to-card p-5 sm:p-6 lg:p-7">
 
               <div className="min-w-0">
                 <Eyebrow className="text-primary">{t("Mi dinero hoy", "My money today")}</Eyebrow>
-                <p className="mt-3 whitespace-nowrap font-display text-[clamp(1.15rem,7.4cqi,2.5rem)] font-bold leading-none tracking-tight text-foreground">
+                <p className="mt-3 whitespace-nowrap font-display text-[clamp(1.2rem,8.5cqi,3.25rem)] font-bold leading-none tracking-tight text-foreground">
                   {money(today, member.currency)}
                 </p>
-                <p className="mt-3 whitespace-nowrap text-[clamp(11px,3.4cqi,15px)] leading-snug text-muted-foreground">
+                <p className="mt-3 whitespace-nowrap text-[clamp(11px,3.8cqi,17px)] leading-snug text-muted-foreground">
                   <span className="font-semibold text-chart-3">+{money(pace, member.currency)} ↗</span>{" "}
                   {t("semana", "week")}
                 </p>
@@ -207,19 +207,19 @@ function MyNumber({ member }: { member: Member }) {
                 loading="lazy"
                 width={768}
                 height={768}
-                className="pointer-events-none h-[clamp(80px,30cqi,150px)] w-[clamp(80px,30cqi,150px)] shrink-0 self-center object-contain"
+                className="pointer-events-none h-[clamp(90px,38cqi,210px)] w-[clamp(90px,38cqi,210px)] shrink-0 self-center object-contain"
               />
             </div>
 
-            <div className="@container card-soft animate-rise relative grid min-h-[200px] grid-cols-[minmax(0,1fr)_auto] items-center gap-2 overflow-hidden bg-gradient-to-br from-chart-2/10 via-card to-card p-5 sm:p-6">
+            <div className="@container card-soft animate-rise relative grid min-h-[220px] grid-cols-[minmax(0,1fr)_auto] items-center gap-2 overflow-hidden bg-gradient-to-br from-chart-2/10 via-card to-card p-5 sm:p-6 lg:p-7">
               <div className="min-w-0">
                 <Eyebrow className="text-chart-2">
                   {t(`Mi dinero a los ${targetAge}`, `My money at ${targetAge}`)}
                 </Eyebrow>
-                <p className="mt-3 whitespace-nowrap font-display text-[clamp(1.15rem,7.4cqi,2.5rem)] font-bold leading-none tracking-tight text-foreground">
+                <p className="mt-3 whitespace-nowrap font-display text-[clamp(1.2rem,8.5cqi,3.25rem)] font-bold leading-none tracking-tight text-foreground">
                   {money(projection.future, member.currency)}
                 </p>
-                <p className="mt-3 whitespace-nowrap text-[clamp(11px,3.4cqi,15px)] font-semibold leading-snug text-chart-2">
+                <p className="mt-3 whitespace-nowrap text-[clamp(11px,3.8cqi,17px)] font-semibold leading-snug text-chart-2">
                   {money(monthly || pace, member.currency)} {t("al mes", "a month")}
                 </p>
               </div>
@@ -230,7 +230,7 @@ function MyNumber({ member }: { member: Member }) {
                 loading="lazy"
                 width={768}
                 height={768}
-                className="pointer-events-none h-[clamp(80px,30cqi,150px)] w-[clamp(80px,30cqi,150px)] shrink-0 self-center object-contain"
+                className="pointer-events-none h-[clamp(90px,38cqi,210px)] w-[clamp(90px,38cqi,210px)] shrink-0 self-center object-contain"
               />
             </div>
           </div>
@@ -251,14 +251,14 @@ function MyNumber({ member }: { member: Member }) {
                 return (
                   <div key={p.key} className="@container rounded-2xl border border-border/60 bg-card p-5">
                     <p className="flex items-center gap-3">
-                      <span className={`grid size-14 shrink-0 place-items-center rounded-2xl text-[34px] leading-none ${tone.chip}`}>
+                      <span className={`grid size-[clamp(52px,15cqi,72px)] shrink-0 place-items-center rounded-2xl text-[clamp(28px,9cqi,42px)] leading-none ${tone.chip}`}>
                         {p.emoji}
                       </span>
-                      <span className={`truncate text-[clamp(14px,8cqi,18px)] font-semibold ${tone.text}`}>
+                      <span className={`truncate text-[clamp(14px,8cqi,20px)] font-semibold ${tone.text}`}>
                         {pocketLabel(p.key, lang)}
                       </span>
                     </p>
-                    <p className="mt-4 whitespace-nowrap font-display text-[clamp(1.25rem,13cqi,2rem)] font-bold leading-none text-foreground">
+                    <p className="mt-4 whitespace-nowrap font-display text-[clamp(1.25rem,14cqi,2.6rem)] font-bold leading-none text-foreground">
                       {money(amount, member.currency)}
                     </p>
 
@@ -275,7 +275,7 @@ function MyNumber({ member }: { member: Member }) {
           </div>
         </div>
 
-        <div className="grid content-start gap-5 lg:grid-rows-[minmax(220px,auto)_1fr] [&>*]:h-full">
+        <div className="grid content-start gap-5 lg:grid-rows-[minmax(240px,auto)_1fr] [&>*]:h-full">
           <div className="card-soft animate-rise relative flex items-center gap-2 overflow-hidden bg-gradient-to-br from-primary/20 via-chart-2/15 to-chart-2/30 p-4 sm:p-5">
             <div className="pointer-events-none absolute -right-10 -top-12 h-36 w-36 rounded-full bg-card/40 blur-2xl" />
             <div className="pointer-events-none absolute right-24 top-5 text-lg opacity-70">✨</div>
@@ -325,7 +325,7 @@ function MyNumber({ member }: { member: Member }) {
               loading="lazy"
               width={768}
               height={768}
-              className="pointer-events-none relative -mr-1 hidden h-[130px] w-[92px] shrink-0 self-end object-contain sm:block"
+              className="pointer-events-none relative -mr-1 hidden h-[clamp(110px,22vh,200px)] w-[clamp(78px,15vh,140px)] shrink-0 self-end object-contain sm:block"
             />
 
           </div>
@@ -616,7 +616,7 @@ function MyNumber({ member }: { member: Member }) {
         <GrowthChart
           data={comparedPoints}
           currency={member.currency}
-          height={320}
+          height={380}
           areas={[
             { key: "total", color: "var(--color-chart-1)" },
             { key: "aportes", color: "var(--color-chart-4)" },
