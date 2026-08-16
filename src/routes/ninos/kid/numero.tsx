@@ -563,7 +563,7 @@ function MyNumber({ member }: { member: Member }) {
                     isMain
                       ? "bg-primary text-primary-foreground"
                       : isCompare
-                        ? "bg-chart-2 text-background"
+                        ? "bg-foreground text-background"
                         : "bg-surface-1 text-muted-foreground hover:text-foreground"
                   }`}
                 >
