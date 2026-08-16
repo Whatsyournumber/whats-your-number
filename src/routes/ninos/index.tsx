@@ -144,9 +144,15 @@ function ProfileSelector() {
                 </span>
                 <span className="min-w-0 text-center">
                   <span className="block truncate text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
+                    {parents[0]?.name
+                      ? `${parents[0].name} (${t("padre", "parent")})`
+                      : t("Padre / Madre", "Parent")}
+                  </span>
+                  <span className="block text-[11px] text-muted-foreground/70">
                     {t("Mis finanzas", "My finances")}
                   </span>
                 </span>
+
               </button>
 
               {[...parents, ...kids].map((m) => (
