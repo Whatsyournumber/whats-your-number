@@ -146,17 +146,21 @@ function MyNumber({ member }: { member: Member }) {
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         <div className="grid content-start gap-4">
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="card-soft animate-rise relative flex min-h-[190px] flex-col justify-center overflow-hidden bg-primary/5 p-5 pr-24">
-              <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-primary">
-                {t("Mi dinero hoy", "My money today")}
-              </p>
-              <p className="mt-2 font-display text-[2.6rem] font-bold leading-none tracking-tight text-foreground">
-                {money(today, member.currency)}
-              </p>
-              <p className="mt-3 text-sm text-muted-foreground">
-                {t("Esta semana", "This week")}{" "}
-                <span className="font-semibold text-chart-2">+{money(pace, member.currency)} ↗</span>
-              </p>
+            <div className="card-soft animate-rise grid min-h-[180px] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 overflow-hidden bg-primary/5 p-5">
+              <div className="min-w-0">
+                <p className="truncate text-[12px] font-bold uppercase tracking-[0.1em] text-primary">
+                  {t("Mi dinero hoy", "My money today")}
+                </p>
+                <p className="mt-2 truncate font-display text-[clamp(1.5rem,4.2vw,2.35rem)] font-bold leading-none tracking-tight text-foreground">
+                  {money(today, member.currency)}
+                </p>
+                <p className="mt-3 truncate text-sm text-muted-foreground">
+                  {t("Esta semana", "This week")}
+                </p>
+                <p className="truncate text-sm font-semibold text-chart-2">
+                  +{money(pace, member.currency)} ↗
+                </p>
+              </div>
               <img
                 src={piggyImg}
                 alt=""
@@ -164,23 +168,25 @@ function MyNumber({ member }: { member: Member }) {
                 loading="lazy"
                 width={768}
                 height={768}
-                className="pointer-events-none absolute -bottom-3 -right-2 h-[150px] w-[150px] object-contain"
+                className="pointer-events-none h-[110px] w-[110px] shrink-0 self-end object-contain sm:h-[124px] sm:w-[124px]"
               />
             </div>
 
-            <div className="card-soft animate-rise relative flex min-h-[190px] flex-col justify-center overflow-hidden bg-chart-3/10 p-5 pr-24">
-              <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-chart-3">
-                {t(`Mi dinero a los ${targetAge}`, `My money at ${targetAge}`)}
-              </p>
-              <p className="mt-2 font-display text-[2.6rem] font-bold leading-none tracking-tight text-foreground">
-                {money(projection.future, member.currency)}
-              </p>
-              <p className="mt-3 text-sm text-muted-foreground">
-                {t("Si sigues ahorrando", "If you keep saving")}
-                <span className="block font-semibold text-chart-3">
+            <div className="card-soft animate-rise grid min-h-[180px] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 overflow-hidden bg-chart-3/10 p-5">
+              <div className="min-w-0">
+                <p className="truncate text-[12px] font-bold uppercase tracking-[0.1em] text-chart-3">
+                  {t(`Mi dinero a los ${targetAge}`, `My money at ${targetAge}`)}
+                </p>
+                <p className="mt-2 truncate font-display text-[clamp(1.5rem,4.2vw,2.35rem)] font-bold leading-none tracking-tight text-foreground">
+                  {money(projection.future, member.currency)}
+                </p>
+                <p className="mt-3 truncate text-sm text-muted-foreground">
+                  {t("Si sigues ahorrando", "If you keep saving")}
+                </p>
+                <p className="truncate text-sm font-semibold text-chart-3">
                   {money(monthly || pace, member.currency)} {t("al mes", "a month")}
-                </span>
-              </p>
+                </p>
+              </div>
               <img
                 src={treeImg}
                 alt=""
@@ -188,9 +194,10 @@ function MyNumber({ member }: { member: Member }) {
                 loading="lazy"
                 width={768}
                 height={768}
-                className="pointer-events-none absolute -bottom-2 -right-3 h-[155px] w-[155px] object-contain"
+                className="pointer-events-none h-[110px] w-[110px] shrink-0 self-end object-contain sm:h-[124px] sm:w-[124px]"
               />
             </div>
+
           </div>
 
           <div className="card-soft p-5">
@@ -230,7 +237,8 @@ function MyNumber({ member }: { member: Member }) {
 
 
 
-        <div className="grid content-start gap-4">
+        <div className="grid gap-4 lg:grid-rows-[auto_1fr] [&>*]:h-full">
+
           <Buddy>{line}</Buddy>
           <Card title={t("Mis sueños", "My dreams")}>
             <div className="flex items-center gap-4">
