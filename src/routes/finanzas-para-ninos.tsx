@@ -1517,7 +1517,7 @@ function FamilyProfiles() {
   return (
     <section className="mt-16 md:mt-24">
       <SectionHeader
-        eyebrow={t("Perfiles", "Profiles")}
+        eyebrow={t("Perfiles tipo Netflix", "Netflix-style profiles")}
         title={
           <>
             {t("Para toda la ", "For the whole ")}
