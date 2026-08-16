@@ -237,7 +237,7 @@ function MyNumber({ member }: { member: Member }) {
 
 
 
-        <div className="grid content-start gap-4 [&>*]:h-full">
+        <div className="grid gap-4 lg:grid-rows-[auto_1fr] [&>*]:h-full">
 
           <Buddy>{line}</Buddy>
           <Card title={t("Mis sueños", "My dreams")}>
