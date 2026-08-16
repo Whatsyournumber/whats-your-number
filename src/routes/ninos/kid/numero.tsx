@@ -81,6 +81,14 @@ function Ring({ value, size = 116 }: { value: number; size?: number }) {
   );
 }
 
+const RATE_PRESETS = [
+  { key: "banco", es: "Banco", en: "Bank", rate: 4 },
+  { key: "bonos", es: "Bonos", en: "Bonds", rate: 6 },
+  { key: "sp500", es: "S&P 500", en: "S&P 500", rate: 10 },
+  { key: "nasdaq", es: "Nasdaq 100", en: "Nasdaq 100", rate: 13 },
+  { key: "cripto", es: "Cripto", en: "Crypto", rate: 20 },
+] as const;
+
 function MyNumber({ member }: { member: Member }) {
   const { t, lang } = useI18n();
   const { data: movements = [] } = useMovements(member.id);
@@ -97,7 +105,9 @@ function MyNumber({ member }: { member: Member }) {
   const rate = Number(fund?.expected_return ?? 10);
   const projection = projectFund(base, monthly, member.age, targetAge, rate);
   const years = horizon ?? Math.max(1, targetAge - member.age);
-  const chartProjection = projectFund(base, monthly, member.age, member.age + years, rate);
+  const [rateOverride, setRate] = useState<number | null>(null);
+  const chartRate = rateOverride ?? rate;
+  const chartProjection = projectFund(base, monthly, member.age, member.age + years, chartRate);
 
   const dreams = useMemo(() => {
     const active = wishes.filter((w) => !w.achieved);
