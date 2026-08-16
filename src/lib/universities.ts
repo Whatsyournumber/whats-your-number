@@ -1263,10 +1263,11 @@ export const LIVING_STYLES: Record<
   },
 };
 
-/** Coste de vida anual en USD según el estilo de alojamiento elegido. */
+/** Coste de vida anual en USD (indexado al año actual) según el estilo de alojamiento elegido. */
 export function uniLivingUsd(u: University, style: LivingStyle = "moderate") {
-  return Math.round((u.living * LIVING_STYLES[style].factor) / 10) * 10;
+  return indexed(u.living * LIVING_STYLES[style].factor);
 }
+
 
 /** Coste total del grado en USD (matrícula + vida), opcionalmente para una carrera y estilo de vida. */
 export function uniTotalUsd(
