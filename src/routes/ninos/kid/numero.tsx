@@ -500,9 +500,25 @@ function MyNumber({ member }: { member: Member }) {
 
           {/* Tasa */}
           <div className="flex flex-col rounded-2xl border border-border/60 bg-surface-2/40 p-4">
-            <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            <span className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
               {t("Tasa", "Rate")}
+              <TooltipProvider delayDuration={100}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button type="button" aria-label={t("Info tasas", "Rates info")} className="text-muted-foreground/70 transition hover:text-foreground">
+                      <Info className="h-3.5 w-3.5" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-[240px] text-xs font-medium normal-case tracking-normal">
+                    {t(
+                      "Las tasas están basadas en el histórico de los mercados (promedios de largo plazo). Son estimaciones, no rendimientos garantizados.",
+                      "Rates are based on historical market returns (long-term averages). They are estimates, not guaranteed returns.",
+                    )}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </span>
+
             <div className="mt-3 min-w-0">
               <button
                 type="button"
