@@ -164,7 +164,11 @@ export function GrowthChart({
           <XAxis dataKey={xKey} {...axis} />
           <YAxis {...axis} width={72} domain={[0, yMax ?? "dataMax"]} tickFormatter={(v) => money(Number(v), currency, true)} />
           <Tooltip
+            trigger="hover"
+            isAnimationActive={false}
+            wrapperStyle={{ outline: "none", pointerEvents: "none" }}
             cursor={{ stroke: "var(--color-primary)", strokeOpacity: 0.25, strokeWidth: 2 }}
+
             content={({ active, payload, label }) => {
               if (!active || !payload?.length) return null;
               return (
