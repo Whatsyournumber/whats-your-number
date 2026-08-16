@@ -147,7 +147,14 @@ function CollegeFinder({ member }: { member: Member }) {
   const homeRegion = HOME_REGION[homeCode] ?? null;
 
   const totals = pocketTotals(movements);
-  const fundInitial = Math.round(Math.max(totals.crecer, Number(fund?.current_balance ?? 0)) * fx.factor);
+  // Misma base que el planificador familiar: bolsillos del niño o saldo guardado del fondo.
+  const fundInitial = Math.round(
+    Math.max(
+      totals.crecer + totals.ahorrar + totals.gastar,
+      Number(fund?.current_balance ?? 0),
+    ) * fx.factor,
+  );
+
   const fundMonthly = Math.round(Number(fund?.monthly_contribution ?? 0) * fx.factor);
   const targetAge = Number(fund?.target_age ?? 18);
   const rate = Number(fund?.expected_return ?? 10);
