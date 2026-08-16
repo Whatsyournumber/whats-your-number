@@ -9,6 +9,8 @@ import { useActiveProfile, useMembers, useSubscription } from "@/hooks/use-mfn";
 import { THEME_ATTR, type Member } from "@/lib/mfn";
 import { EXTRA_KID_PRICE_USD, activePlan, kidLimit, planLabel } from "@/lib/mfn-plan";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
+import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
+
 
 export const Route = createFileRoute("/ninos/")({
   ssr: false,
@@ -43,7 +45,22 @@ function ProfileSelector() {
   const [manage, setManage] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<Member | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [showUnlock, setShowUnlock] = useState(false);
+  const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
   const queryClient = useQueryClient();
+
+  async function unlockExtraProfile() {
+    const { data } = await supabase.auth.getUser();
+    const user = data.user;
+    await openCheckout({
+      priceId: "extra_kid_monthly",
+      quantity: 1,
+      ...(user?.email ? { customerEmail: user.email } : {}),
+      customData: { userId: user?.id ?? "", type: "extra_kid_profile" },
+      successUrl: `${window.location.origin}/ninos`,
+    });
+  }
+
 
   async function confirmDelete() {
     if (!pendingDelete) return;
@@ -213,18 +230,24 @@ function ProfileSelector() {
                   </span>
                 </button>
               ) : (
-                <div className="flex flex-col items-center gap-3">
-                  <span className="grid aspect-square w-full place-content-center justify-items-center gap-2 rounded-2xl border-2 border-dashed border-border px-4 text-center text-muted-foreground">
-                    <Lock className="h-8 w-8" />
-                    <span className="text-[13px] leading-snug text-muted-foreground">
-                      {t(
-                        `Tu plan incluye ${maxKids} ${maxKids === 1 ? "perfil" : "perfiles"} de niño`,
-                        `Your plan includes ${maxKids} child ${maxKids === 1 ? "profile" : "profiles"}`,
-                      )}
+                <button
+                  onClick={() => setShowUnlock(true)}
+                  className="group flex flex-col items-center gap-3 outline-none"
+                >
+                  <span className="grid aspect-square w-full place-items-center rounded-2xl border-2 border-dashed border-border text-muted-foreground transition-all duration-200 group-hover:scale-105 group-hover:border-primary group-hover:text-primary">
+                    <Lock className="h-9 w-9" />
+                  </span>
+                  <span className="min-w-0 text-center">
+                    <span className="block truncate text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
+                      {t("Perfil extra", "Extra profile")}
+                    </span>
+                    <span className="block text-[11px] text-muted-foreground/70">
+                      ${EXTRA_KID_PRICE_USD}/{t("mes", "mo")}
                     </span>
                   </span>
-                </div>
+                </button>
               )}
+
 
 
             </div>
@@ -287,6 +310,44 @@ function ProfileSelector() {
                 </div>
               </div>
             ) : null}
+
+            {showUnlock ? (
+              <div
+                className="fixed inset-0 z-50 grid place-items-center bg-background/80 p-5 backdrop-blur-sm"
+                role="dialog"
+                aria-modal="true"
+              >
+                <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 text-left shadow-2xl">
+                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/10 text-primary">
+                    <Lock className="h-6 w-6" />
+                  </span>
+                  <h2 className="mt-4 font-display text-xl font-semibold text-foreground">
+                    {t("Desbloquea un perfil extra", "Unlock an extra profile")}
+                  </h2>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {t(
+                      `Tu plan incluye ${maxKids} perfiles de niño. Añade uno más por $${EXTRA_KID_PRICE_USD}/mes, cancela cuando quieras.`,
+                      `Your plan includes ${maxKids} child profiles. Add one more for $${EXTRA_KID_PRICE_USD}/mo, cancel anytime.`,
+                    )}
+                  </p>
+                  <div className="mt-6 flex justify-end gap-2">
+                    <Button variant="ghost" onClick={() => setShowUnlock(false)}>
+                      {t("Ahora no", "Not now")}
+                    </Button>
+                    <button
+                      onClick={() => void unlockExtraProfile()}
+                      disabled={checkoutLoading}
+                      className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
+                    >
+                      {checkoutLoading
+                        ? t("Abriendo…", "Opening…")
+                        : t(`Pagar $${EXTRA_KID_PRICE_USD}/mes`, `Pay $${EXTRA_KID_PRICE_USD}/mo`)}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
           </>
         )}
       </div>
