@@ -310,6 +310,44 @@ function ProfileSelector() {
                 </div>
               </div>
             ) : null}
+
+            {showUnlock ? (
+              <div
+                className="fixed inset-0 z-50 grid place-items-center bg-background/80 p-5 backdrop-blur-sm"
+                role="dialog"
+                aria-modal="true"
+              >
+                <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 text-left shadow-2xl">
+                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/10 text-primary">
+                    <Lock className="h-6 w-6" />
+                  </span>
+                  <h2 className="mt-4 font-display text-xl font-semibold text-foreground">
+                    {t("Desbloquea un perfil extra", "Unlock an extra profile")}
+                  </h2>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {t(
+                      `Tu plan incluye ${maxKids} perfiles de niño. Añade uno más por $${EXTRA_KID_PRICE_USD}/mes, cancela cuando quieras.`,
+                      `Your plan includes ${maxKids} child profiles. Add one more for $${EXTRA_KID_PRICE_USD}/mo, cancel anytime.`,
+                    )}
+                  </p>
+                  <div className="mt-6 flex justify-end gap-2">
+                    <Button variant="ghost" onClick={() => setShowUnlock(false)}>
+                      {t("Ahora no", "Not now")}
+                    </Button>
+                    <button
+                      onClick={() => void unlockExtraProfile()}
+                      disabled={checkoutLoading}
+                      className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
+                    >
+                      {checkoutLoading
+                        ? t("Abriendo…", "Opening…")
+                        : t(`Pagar $${EXTRA_KID_PRICE_USD}/mes`, `Pay $${EXTRA_KID_PRICE_USD}/mo`)}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
           </>
         )}
       </div>
