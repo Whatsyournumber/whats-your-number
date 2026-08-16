@@ -1240,7 +1240,7 @@ function PhoneMock({
 
           <p className="mt-6 text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
           <p
-            className={`numeric mt-1 font-semibold ${cute ? "text-[2rem]" : "text-3xl"}`}
+            className={`numeric mt-1 font-semibold ${cute ? "text-[2.35rem]" : "text-[2.35rem]"}`}
             style={{ color: accent }}
           >
             {value}
@@ -1330,7 +1330,7 @@ function DualDashboards() {
             face={faceDad}
             name={t("Papá", "Dad")}
             chip={t("Plan familiar", "Family plan")}
-            label={t("Fondo del futuro", "Future fund")}
+            label={t("Fondo para la universidad", "College fund")}
             value="€196.000"
             data={data}
             dataKey="p"
@@ -1366,7 +1366,7 @@ function DualDashboards() {
             face={faceGirl}
             name={t("Sofía", "Sofía")}
             chip={t("Su primer número", "Her first number")}
-            label={t("Su dinero hoy", "Her money today")}
+            label={t("Sofía aprende a crecer su dinero", "Sofía learns to grow her money")}
             value="€1.250"
             data={data}
             dataKey="k"
