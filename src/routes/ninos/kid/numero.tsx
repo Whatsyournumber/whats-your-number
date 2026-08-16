@@ -251,14 +251,14 @@ function MyNumber({ member }: { member: Member }) {
                 return (
                   <div key={p.key} className="@container rounded-2xl border border-border/60 bg-card p-5">
                     <p className="flex items-center gap-3">
-                      <span className={`grid size-14 shrink-0 place-items-center rounded-2xl text-[34px] leading-none ${tone.chip}`}>
+                      <span className={`grid size-[clamp(52px,15cqi,72px)] shrink-0 place-items-center rounded-2xl text-[clamp(28px,9cqi,42px)] leading-none ${tone.chip}`}>
                         {p.emoji}
                       </span>
-                      <span className={`truncate text-[clamp(14px,8cqi,18px)] font-semibold ${tone.text}`}>
+                      <span className={`truncate text-[clamp(14px,8cqi,20px)] font-semibold ${tone.text}`}>
                         {pocketLabel(p.key, lang)}
                       </span>
                     </p>
-                    <p className="mt-4 whitespace-nowrap font-display text-[clamp(1.25rem,13cqi,2rem)] font-bold leading-none text-foreground">
+                    <p className="mt-4 whitespace-nowrap font-display text-[clamp(1.25rem,14cqi,2.6rem)] font-bold leading-none text-foreground">
                       {money(amount, member.currency)}
                     </p>
 
