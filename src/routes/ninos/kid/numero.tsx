@@ -159,7 +159,7 @@ function MyNumber({ member }: { member: Member }) {
             <div className="card-soft animate-rise relative grid min-h-[190px] grid-cols-[minmax(0,1fr)_auto] items-center gap-2 overflow-hidden bg-gradient-to-br from-primary/10 via-card to-card p-5 sm:p-6">
               <div className="min-w-0">
                 <Eyebrow className="text-primary">{t("Mi dinero hoy", "My money today")}</Eyebrow>
-                <p className="mt-3 font-display text-[clamp(1.35rem,4.4cqw,2.15rem)] font-bold leading-none tracking-tight text-foreground [container-type:inline-size]">
+                <p className="mt-3 font-display text-[clamp(1.3rem,3vw,2.1rem)] font-bold leading-none tracking-tight text-foreground">
                   {money(today, member.currency)}
                 </p>
                 <p className="mt-4 text-[13px] leading-snug text-muted-foreground">
@@ -183,7 +183,7 @@ function MyNumber({ member }: { member: Member }) {
                 <Eyebrow className="text-chart-2">
                   {t(`Mi dinero a los ${targetAge}`, `My money at ${targetAge}`)}
                 </Eyebrow>
-                <p className="mt-3 font-display text-[clamp(1.35rem,4.4cqw,2.15rem)] font-bold leading-none tracking-tight text-foreground">
+                <p className="mt-3 font-display text-[clamp(1.3rem,3vw,2.1rem)] font-bold leading-none tracking-tight text-foreground">
                   {money(projection.future, member.currency)}
                 </p>
                 <p className="mt-4 text-[13px] leading-snug text-muted-foreground">
