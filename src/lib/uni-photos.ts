@@ -62,6 +62,7 @@ import curatedSapienza from "@/assets/uni/it-sapienza.jpg";
 import curatedBologna from "@/assets/uni/it-bologna.jpg";
 import curatedFirenze from "@/assets/uni/it-firenze.jpg";
 import curatedUfrgs from "@/assets/uni/br-ufrgs.jpg";
+import curatedUnam from "@/assets/uni/mx-unam.jpg";
 import curatedUanl from "@/assets/uni/mx-uanl.jpg";
 import curatedUtp from "@/assets/uni/pa-utp.jpg";
 import curatedUcr from "@/assets/uni/cr-ucr.jpg";
