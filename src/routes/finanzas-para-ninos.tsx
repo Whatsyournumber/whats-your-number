@@ -656,13 +656,10 @@ function HowItWorksSlider() {
     <section className="mt-16 md:mt-24">
       <SectionHeader
         eyebrow={t("Cómo funciona", "How it works")}
-        title={t(
-          "Todo lo que necesitan para aprender sobre dinero",
-          "Everything they need to learn about money",
-        )}
+        title={t("Aprender sobre dinero empieza aquí", "Learning about money starts here")}
         subtitle={t(
-          "Desde su primer ahorro hasta su primer gran sueño. Todo en un solo lugar.",
-          "From their first savings to their first big dream. All in one place.",
+          "Ahorrar, invertir, cumplir sueños y entender el valor del dinero. Todo en un solo lugar.",
+          "Saving, investing, chasing dreams and understanding the value of money. All in one place.",
         )}
       />
 
