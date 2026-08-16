@@ -84,10 +84,12 @@ function Ring({ value, size = 116 }: { value: number; size?: number }) {
 const RATE_PRESETS = [
   { key: "banco", es: "Banco", en: "Bank", rate: 4 },
   { key: "bonos", es: "Bonos", en: "Bonds", rate: 6 },
+  { key: "msci", es: "MSCI World (histórico)", en: "MSCI World (historical)", rate: 8 },
   { key: "sp500", es: "S&P 500", en: "S&P 500", rate: 10 },
   { key: "nasdaq", es: "Nasdaq 100", en: "Nasdaq 100", rate: 13 },
   { key: "cripto", es: "Cripto", en: "Crypto", rate: 20 },
 ] as const;
+
 
 function MyNumber({ member }: { member: Member }) {
   const { t, lang } = useI18n();
