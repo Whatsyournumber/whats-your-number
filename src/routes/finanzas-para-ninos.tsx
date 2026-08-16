@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import {
   ArrowRight,
+  Bot,
   BadgeCheck,
   Banknote,
   CalendarCheck,
@@ -308,11 +309,11 @@ function HowItWorksSlider() {
     { label: t("Gastar", "Spend"), value: 20, amount: "€12", color: "var(--kid-sky)" },
   ];
 
-  const slides = [
+  const rawSlides = [
 
     {
       id: "numbers",
-      tab: t("Mi número", "My number"),
+      tab: t("Mi Primer Número", "My First Number"),
       icon: Wallet,
       color: "var(--kid-sky)",
       title: t("Su número de hoy y el del futuro", "Their number today and tomorrow"),
@@ -339,7 +340,20 @@ function HowItWorksSlider() {
               {t("Si ahorra 11,3 € al mes", "If they save €11.3 a month")}
             </p>
           </div>
-          <MiniArea color="var(--kid-sky)" />
+          <div className="mt-3 rounded-2xl bg-elevated/60 p-3 ring-1 ring-border">
+            <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+              <span>{t("Progreso hacia su número", "Progress to their number")}</span>
+              <span className="numeric text-kid-sky">11%</span>
+            </div>
+            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-card">
+              <div className="h-full w-[11%] rounded-full bg-kid-sky" />
+            </div>
+            <div className="mt-2 -mx-1">
+              <MiniArea color="var(--kid-sky)" />
+            </div>
+          </div>
+
+
 
         </ScreenCard>
       ),
@@ -473,8 +487,8 @@ function HowItWorksSlider() {
     },
     {
       id: "grow",
-      tab: t("Mi futuro", "My future"),
-      icon: TrendingUp,
+      tab: t("Planificador familiar", "Family planner"),
+      icon: Rocket,
       color: "var(--kid-mint)",
       title: t("Interés compuesto explicado para niños", "Compound interest explained for kids"),
       desc: t(
@@ -606,6 +620,40 @@ function HowItWorksSlider() {
     },
   ];
 
+  const order = ["numbers", "grow", "unis", "pockets", "chores", "dreams", "badges"];
+  const slides = [...rawSlides].sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+
+  const buddy: Record<string, string> = {
+    numbers: t(
+      "Sofía va un 11% de camino a su número. Con 3 € más al mes llegaría 8 meses antes.",
+      "Sofía is 11% of the way to her number. Just €3 more a month gets her there 8 months sooner.",
+    ),
+    grow: t(
+      "El 77% de su futuro viene del interés compuesto, no de lo que aporta. Empezar hoy vale oro.",
+      "77% of her future comes from compound interest, not deposits. Starting today is worth gold.",
+    ),
+    unis: t(
+      "Con su número del futuro cubre el 111% de un grado en Barcelona, o el 26% de MIT.",
+      "Her future number covers 111% of a degree in Barcelona, or 26% of MIT.",
+    ),
+    pockets: t(
+      "Su bolsillo de gastar lleva 3 semanas intacto: buena señal para subir el de invertir al 45%.",
+      "Her spend pocket has been untouched for 3 weeks: a good sign to push invest up to 45%.",
+    ),
+    chores: t(
+      "Las tareas aportan el 39% de su dinero. Añadir una tarea de 1 € sumaría €52 al año.",
+      "Chores bring in 39% of her money. Adding a €1 chore would add €52 a year.",
+    ),
+    dreams: t(
+      "Si mueve 5 € del bolsillo de gastar, consigue la bici 6 semanas antes.",
+      "Moving €5 from her spend pocket gets her the bike 6 weeks earlier.",
+    ),
+    badges: t(
+      "7 semanas de racha: está en su mejor momento. Un reto nuevo mantiene el impulso.",
+      "7-week streak: she's at her best. A fresh quest keeps the momentum going.",
+    ),
+  };
+
   const stats: Record<string, Array<{ k: string; v: string }>> = {
     numbers: [
       { k: t("Hoy", "Today"), v: "€120" },
@@ -735,7 +783,39 @@ function HowItWorksSlider() {
             transition={{ duration: 0.35 }}
             className="mt-5 grid gap-4 lg:grid-cols-[1.55fr_1fr]"
           >
-            <div className="min-w-0">{active.visual}</div>
+            <div className="min-w-0 space-y-4">
+              {active.visual}
+
+              <div
+                className="relative overflow-hidden rounded-2xl p-4 ring-1"
+                style={{
+                  backgroundColor: `color-mix(in oklab, ${active.color} 7%, transparent)`,
+                  borderColor: "transparent",
+                  boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${active.color} 22%, transparent)`,
+                }}
+              >
+                <div className="flex items-center gap-2">
+                  <span
+                    className="flex h-7 w-7 items-center justify-center rounded-xl"
+                    style={{
+                      color: active.color,
+                      backgroundColor: `color-mix(in oklab, ${active.color} 15%, transparent)`,
+                    }}
+                  >
+                    <Bot className="h-4 w-4" />
+                  </span>
+                  <p
+                    className="text-[10px] font-semibold uppercase tracking-[0.18em]"
+                    style={{ color: active.color }}
+                  >
+                    UR Buddy
+                  </p>
+                </div>
+                <p className="mt-2 text-sm leading-relaxed text-foreground">
+                  {buddy[active.id]}
+                </p>
+              </div>
+            </div>
 
             <div className="flex min-w-0 flex-col gap-4">
               <div className="rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
