@@ -42,6 +42,16 @@ import curatedItb from "@/assets/uni/id-itb.jpg";
 import curatedUkm from "@/assets/uni/my-ukm.jpg";
 import curatedKyoto from "@/assets/uni/jp-kyoto.jpg";
 import curatedCharles from "@/assets/uni/cz-charles.jpg";
+import curatedEindhoven from "@/assets/uni/nl-eindhoven.jpg";
+import curatedSciencesPo from "@/assets/uni/fr-sciences-po.jpg";
+import curatedKarolinska from "@/assets/uni/se-karolinska.jpg";
+import curatedStockholmUni from "@/assets/uni/se-stockholm-uni.jpg";
+import curatedChalmers from "@/assets/uni/se-chalmers.jpg";
+import curatedGothenburg from "@/assets/uni/se-gothenburg.jpg";
+import curatedDtu from "@/assets/uni/dk-dtu.jpg";
+import curatedAarhus from "@/assets/uni/dk-aarhus.jpg";
+import curatedZurichUni from "@/assets/uni/ch-zurich-uni.jpg";
+import curatedBern from "@/assets/uni/ch-bern.jpg";
 
 import curatedBuap from "@/assets/uni/mx-buap.jpg";
 import curatedUnal from "@/assets/uni/co-unal.jpg";
