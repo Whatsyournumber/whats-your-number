@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import {
   ArrowRight,
+  Bot,
   BadgeCheck,
   Banknote,
   CalendarCheck,
@@ -782,7 +783,39 @@ function HowItWorksSlider() {
             transition={{ duration: 0.35 }}
             className="mt-5 grid gap-4 lg:grid-cols-[1.55fr_1fr]"
           >
-            <div className="min-w-0">{active.visual}</div>
+            <div className="min-w-0 space-y-4">
+              {active.visual}
+
+              <div
+                className="relative overflow-hidden rounded-2xl p-4 ring-1"
+                style={{
+                  backgroundColor: `color-mix(in oklab, ${active.color} 7%, transparent)`,
+                  borderColor: "transparent",
+                  boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${active.color} 22%, transparent)`,
+                }}
+              >
+                <div className="flex items-center gap-2">
+                  <span
+                    className="flex h-7 w-7 items-center justify-center rounded-xl"
+                    style={{
+                      color: active.color,
+                      backgroundColor: `color-mix(in oklab, ${active.color} 15%, transparent)`,
+                    }}
+                  >
+                    <Bot className="h-4 w-4" />
+                  </span>
+                  <p
+                    className="text-[10px] font-semibold uppercase tracking-[0.18em]"
+                    style={{ color: active.color }}
+                  >
+                    UR Buddy
+                  </p>
+                </div>
+                <p className="mt-2 text-sm leading-relaxed text-foreground">
+                  {buddy[active.id]}
+                </p>
+              </div>
+            </div>
 
             <div className="flex min-w-0 flex-col gap-4">
               <div className="rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
