@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ArrowUpRight, CheckSquare, Rocket, Star, Wallet } from "lucide-react";
 import { Buddy, Card, GrowthChart, Progress } from "@/components/mfn-ui";
+import { dreamPhotoUrl } from "@/lib/dream-image";
 import piggyImg from "@/assets/kid-piggy.png";
 import treeImg from "@/assets/kid-tree.png";
 import { KidPage, PageTitle } from "@/components/kid-page";
@@ -377,5 +378,28 @@ function MyNumber({ member }: { member: Member }) {
         />
       </Card>
     </>
+  );
+}
+
+function DreamPhoto({ title, emoji, pct }: { title: string; emoji: string; pct: number }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) {
+    return (
+      <div className="relative grid aspect-square w-full place-items-center overflow-hidden rounded-2xl bg-gradient-to-br from-primary/20 to-chart-3/20">
+        <span className="text-4xl">{emoji || "⭐"}</span>
+        <div className="absolute inset-x-2 bottom-2 h-1.5 overflow-hidden rounded-full bg-background/70">
+          <div className="h-full rounded-full bg-primary" style={{ width: `${Math.min(100, pct)}%` }} />
+        </div>
+      </div>
+    );
+  }
+  return (
+    <img
+      src={dreamPhotoUrl(title)}
+      alt={title}
+      loading="lazy"
+      onError={() => setFailed(true)}
+      className="aspect-square w-full rounded-2xl object-cover"
+    />
   );
 }
