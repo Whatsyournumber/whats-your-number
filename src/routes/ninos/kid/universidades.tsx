@@ -17,6 +17,7 @@ import {
   projectCapital,
   uniFields,
   uniTotalUsd,
+  uniTuitionUsd,
   uniSector,
   type UniField,
   type University,
@@ -175,7 +176,7 @@ function CollegeFinder({ member }: { member: Member }) {
   const [detail, setDetail] = useState<University | null>(null);
   const [compareOpen, setCompareOpen] = useState(false);
 
-  const cost = (u: University) => uniTotalUsd(u, includeLiving) * usdFx.factor;
+  const cost = (u: University) => uniTotalUsd(u, includeLiving, field) * usdFx.factor;
   const isHome = (u: University) => !!homeCountry && (u.countryEs === homeCountry || u.country === homeCountry);
 
   const bucketOf = (u: University): Bucket => {
@@ -188,7 +189,7 @@ function CollegeFinder({ member }: { member: Member }) {
   const priced = useMemo(
     () => UNIVERSITIES.map((u) => ({ u, total: cost(u) })),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [includeLiving, usdFx.factor],
+    [includeLiving, usdFx.factor, field],
   );
 
   const counts = useMemo(() => {
@@ -711,7 +712,7 @@ function CollegeFinder({ member }: { member: Member }) {
                 <div className="mt-3 grid grid-cols-3 gap-2 rounded-2xl bg-secondary/50 px-3 py-2 text-center">
                   <div className="min-w-0">
                     <p className="truncate font-display text-xs font-bold text-foreground">
-                      {u.tuition <= 0 ? t("Gratuita", "Free") : money(u.tuition * usdFx.factor, currency, true)}
+                      {u.tuition <= 0 ? t("Gratuita", "Free") : money(uniTuitionUsd(u, field) * usdFx.factor, currency, true)}
                     </p>
                     <p className="truncate text-[9px] text-muted-foreground">{t("Matrícula/año", "Tuition/yr")}</p>
                   </div>
@@ -814,6 +815,7 @@ function CollegeFinder({ member }: { member: Member }) {
         usdFactor={usdFx.factor}
         projected={projected}
         includeLiving={includeLiving}
+        field={field}
       />
 
       <UniDetailDialog
@@ -824,6 +826,7 @@ function CollegeFinder({ member }: { member: Member }) {
         projected={projected}
         monthsLeft={monthsLeft}
         includeLiving={includeLiving}
+        field={field}
       />
 
 
@@ -1032,6 +1035,7 @@ function CompareDialog({
   usdFactor,
   projected,
   includeLiving,
+  field,
 }: {
   open: boolean;
   onClose: () => void;
@@ -1040,12 +1044,13 @@ function CompareDialog({
   usdFactor: number;
   projected: number;
   includeLiving: boolean;
+  field?: UniField | "";
 }) {
   const { t, lang } = useI18n();
   if (!open || unis.length === 0) return null;
 
   const rows = unis.map((u) => {
-    const tuition = u.tuition * usdFactor * u.years;
+    const tuition = uniTuitionUsd(u, field) * usdFactor * u.years;
     const living = u.living * usdFactor * u.years;
     const total = tuition + (includeLiving ? living : 0);
     return { u, tuition, living, total, ok: total <= projected };
@@ -1140,6 +1145,7 @@ function UniDetailDialog({
   projected,
   monthsLeft,
   includeLiving,
+  field,
 }: {
   uni: University | null;
   onClose: () => void;
@@ -1148,11 +1154,12 @@ function UniDetailDialog({
   projected: number;
   monthsLeft: number;
   includeLiving: boolean;
+  field?: UniField | "";
 }) {
   const { t, lang } = useI18n();
   if (!uni) return null;
 
-  const tuitionYear = uni.tuition * usdFactor;
+  const tuitionYear = uniTuitionUsd(uni, field) * usdFactor;
   const livingYear = uni.living * usdFactor;
   const tuitionTotal = tuitionYear * uni.years;
   const livingTotal = livingYear * uni.years;
