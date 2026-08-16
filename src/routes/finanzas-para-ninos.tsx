@@ -603,11 +603,24 @@ function HowItWorksSlider() {
       ),
       visual: (
         <ScreenCard title={t("Mi futuro", "My future")} accent="var(--kid-mint)">
-          <p className="text-sm text-muted-foreground">{t("Proyección a 18 años", "Projection to age 18")}</p>
-          <p className="numeric mt-1 text-4xl font-semibold">10.668 €</p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {t("Si ahorras", "If you save")} <span className="text-kid-mint">11,3 €</span> {t("al mes", "a month")}
-          </p>
+          <div className="flex flex-wrap items-end justify-between gap-2">
+            <div>
+              <p className="text-sm text-muted-foreground">{t("Proyección a 18 años", "Projection to age 18")}</p>
+              <p className="numeric mt-1 text-4xl font-semibold">10.668 €</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {t("Si ahorras", "If you save")} <span className="text-kid-mint">11,3 €</span> {t("al mes", "a month")}
+              </p>
+            </div>
+            <div className="flex gap-3 text-[11px] text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-kid-mint" /> {t("Con interés", "With interest")}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-muted-foreground/50" />{" "}
+                {t("Solo ahorrando", "Only saving")}
+              </span>
+            </div>
+          </div>
           <div className="mt-2 h-56">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={growCurve} margin={{ top: 8, right: 6, bottom: 0, left: 0 }}>
@@ -629,6 +642,16 @@ function HowItWorksSlider() {
                 />
                 <Area
                   type="monotone"
+                  dataKey="flat"
+                  stroke="var(--muted-foreground)"
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  fill="none"
+                  dot={false}
+                  isAnimationActive={false}
+                />
+                <Area
+                  type="monotone"
                   dataKey="y"
                   stroke="var(--kid-mint)"
                   strokeWidth={2.5}
@@ -638,6 +661,18 @@ function HowItWorksSlider() {
                 />
               </AreaChart>
             </ResponsiveContainer>
+          </div>
+          <div className="mt-2 grid grid-cols-3 gap-2 text-center">
+            {[
+              { k: t("A los 12", "At 12"), v: "€2.310" },
+              { k: t("A los 15", "At 15"), v: "€5.480" },
+              { k: t("A los 18", "At 18"), v: "€10.668" },
+            ].map((m) => (
+              <div key={m.k} className="rounded-xl bg-elevated px-3 py-2">
+                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{m.k}</p>
+                <p className="numeric mt-0.5 text-sm font-semibold text-kid-mint">{m.v}</p>
+              </div>
+            ))}
           </div>
         </ScreenCard>
       ),
