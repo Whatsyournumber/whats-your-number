@@ -319,27 +319,28 @@ function CollegeFinder({ member }: { member: Member }) {
 
   return (
     <>
-      {/* Hero a sangre */}
-      <section className="relative mb-6 -mt-6 min-h-[460px] overflow-hidden sm:min-h-[580px]">
+      {/* Hero a sangre: sube hasta el borde superior y se funde por la derecha */}
+      <section className="relative z-0 mb-6 -mt-[86px] -mr-5 -ml-5 min-h-[560px] overflow-hidden sm:-mr-6 sm:-ml-6 sm:-mt-[90px] sm:min-h-[660px] lg:-mr-8 lg:-ml-8 lg:-mt-[96px]">
         <img
           src={heroImg}
           alt={t("Familia mirando universidades", "Family looking at universities")}
           width={1280}
           height={960}
-          className="pointer-events-none absolute inset-y-0 right-0 h-full w-full object-cover object-right"
+          className="pointer-events-none absolute inset-y-0 right-0 h-full w-full object-cover object-[72%_12%] sm:object-right"
           style={{
             maskImage:
-              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 14%, rgba(0,0,0,0.55) 34%, rgba(0,0,0,0.88) 52%, #000 66%, #000 100%), linear-gradient(to bottom, transparent 0%, #000 8%, #000 80%, transparent 100%)",
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 12%, rgba(0,0,0,0.75) 30%, #000 48%, #000 100%), linear-gradient(to bottom, #000 0%, #000 74%, transparent 100%)",
             maskComposite: "intersect",
             WebkitMaskImage:
-              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 14%, rgba(0,0,0,0.55) 34%, rgba(0,0,0,0.88) 52%, #000 66%, #000 100%), linear-gradient(to bottom, transparent 0%, #000 8%, #000 80%, transparent 100%)",
+              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.35) 12%, rgba(0,0,0,0.75) 30%, #000 48%, #000 100%), linear-gradient(to bottom, #000 0%, #000 74%, transparent 100%)",
             WebkitMaskComposite: "source-in",
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent sm:via-background/25" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/35 to-transparent sm:via-background/25" />
         <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-background to-transparent" />
 
-        <div className="relative flex min-h-[460px] max-w-lg flex-col justify-center py-10 pr-6 sm:min-h-[580px] sm:py-16">
+        <div className="relative flex min-h-[560px] max-w-lg flex-col justify-end px-5 pb-8 pt-[190px] sm:min-h-[660px] sm:justify-center sm:px-6 sm:pb-0 sm:pt-[110px] lg:px-8">
+
           <h1 className="font-display text-4xl font-black leading-[1.05] text-foreground drop-shadow-[0_1px_12px_rgba(0,0,0,0.35)] sm:text-6xl">
             {t("¿Dónde podrá", "Where can they")}
             <br />
