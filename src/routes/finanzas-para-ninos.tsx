@@ -347,37 +347,54 @@ function HowItWorksSlider() {
       visual: (
         <ScreenCard title={t("Mi primer número", "My first number")} accent="var(--kid-sky)">
           <div className="flex items-center gap-2.5">
-            <img src={faceGirl} alt="" className="h-8 w-8 rounded-full object-cover" />
+            <img src={faceGirl} alt="" className="h-9 w-9 rounded-full object-cover" />
             <div>
-              <p className="text-xs font-medium">{t("Hola, Sofía", "Hi, Sofía")}</p>
-              <p className="text-[11px] text-muted-foreground">{t("Tu dinero de hoy", "Your money today")}</p>
+              <p className="text-sm font-medium">{t("Hola, Sofía", "Hi, Sofía")}</p>
+              <p className="text-[11px] text-muted-foreground">{t("9 años · ahorra cada semana", "Age 9 · saves every week")}</p>
             </div>
           </div>
-          <p className="numeric mt-3 text-3xl font-semibold text-kid-sky md:text-4xl">€120</p>
-          <div className="mt-3 rounded-xl border border-kid-grape/25 bg-kid-grape/10 p-3">
-            <p className="text-[10px] uppercase tracking-wider text-kid-grape">
-              {t("Mi futuro (18 años)", "My future (age 18)")}
-            </p>
-            <p className="numeric mt-0.5 text-xl font-semibold">€10.668</p>
-            <p className="mt-0.5 text-[11px] text-muted-foreground">
-              {t("Si ahorra 11,3 € al mes", "If they save €11.3 a month")}
-            </p>
+
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl bg-elevated/60 p-4 ring-1 ring-border">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                {t("Su dinero hoy", "Their money today")}
+              </p>
+              <p className="numeric mt-1 text-3xl font-semibold text-kid-sky">€120</p>
+              <p className="mt-1 text-[11px] text-kid-mint">+€6,50 {t("esta semana", "this week")}</p>
+            </div>
+            <div className="rounded-2xl border border-kid-grape/25 bg-kid-grape/10 p-4">
+              <p className="text-[10px] uppercase tracking-wider text-kid-grape">
+                {t("Su número a los 18", "Their number at 18")}
+              </p>
+              <p className="numeric mt-1 text-3xl font-semibold">€10.668</p>
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                {t("Ahorrando 11,3 € al mes", "Saving €11.3 a month")}
+              </p>
+            </div>
           </div>
-          <div className="mt-3 rounded-2xl bg-elevated/60 p-3 ring-1 ring-border">
+
+          <div className="mt-3 rounded-2xl bg-elevated/60 p-4 ring-1 ring-border">
             <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-              <span>{t("Progreso hacia su número", "Progress to their number")}</span>
-              <span className="numeric text-kid-sky">11%</span>
+              <span>{t("Cómo crece hasta los 18", "How it grows until 18")}</span>
+              <span className="numeric text-kid-sky">11% {t("recorrido", "done")}</span>
             </div>
             <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-card">
               <div className="h-full w-[11%] rounded-full bg-kid-sky" />
             </div>
-            <div className="mt-2 -mx-1">
+            <div className="mt-1 -mx-1">
               <MiniArea color="var(--kid-sky)" />
             </div>
+            <div className="mt-2 grid grid-cols-2 gap-2 text-[11px]">
+              <div className="rounded-xl bg-card px-3 py-2">
+                <span className="text-muted-foreground">{t("Lo que aporta", "What they put in")}</span>
+                <p className="numeric mt-0.5 text-sm font-semibold">€2.442</p>
+              </div>
+              <div className="rounded-xl bg-card px-3 py-2">
+                <span className="text-muted-foreground">{t("Lo que gana el interés", "What interest adds")}</span>
+                <p className="numeric mt-0.5 text-sm font-semibold text-kid-mint">€8.226</p>
+              </div>
+            </div>
           </div>
-
-
-
         </ScreenCard>
       ),
     },
