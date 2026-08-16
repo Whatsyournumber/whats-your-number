@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ArrowUpRight, CheckSquare, Rocket, Star, Wallet } from "lucide-react";
-import { Buddy, Card, Coins, GrowthChart, Progress, Tile, Tree } from "@/components/mfn-ui";
+import { Buddy, Card, GrowthChart, Progress } from "@/components/mfn-ui";
 import { KidPage, PageTitle } from "@/components/kid-page";
 import { useI18n } from "@/lib/mfn-i18n";
 import { useFund, useMovements, useTasks, useWishes } from "@/hooks/use-mfn";
@@ -142,47 +142,73 @@ function MyNumber({ member }: { member: Member }) {
       />
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
-        <div className="card-soft animate-rise relative overflow-hidden p-6">
-          <Coins className="absolute right-6 top-5" />
-          <div className="grid gap-5 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-center">
-            <div className="min-w-0">
-              <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                {t("Mi número de hoy", "My number today")}
+        <div className="grid content-start gap-4">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="card-soft animate-rise relative overflow-hidden bg-primary/5 p-5">
+              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">
+                {t("Mi dinero hoy", "My money today")}
               </p>
-              <p className="mt-1 font-display text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+              <p className="mt-1 font-display text-[2.35rem] font-bold leading-none tracking-tight text-foreground">
                 {money(today, member.currency)}
               </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                {t("Ahorro medio", "Average saving")}: {money(pace, member.currency)}/{t("mes", "mo")}
+              <p className="mt-2 text-xs text-muted-foreground">
+                {t("Esta semana", "This week")}{" "}
+                <span className="font-semibold text-chart-2">+{money(pace, member.currency)} ↗</span>
               </p>
+              <span className="pointer-events-none absolute -bottom-2 right-1 text-[68px] leading-none opacity-90">
+                🐷
+              </span>
             </div>
-            <Tree level={Math.floor(member.xp / 50) + 1} />
-            <div className="min-w-0">
-              <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                {t("Mi número del futuro", "My future number")} · {targetAge} {t("años", "yrs")}
+
+            <div className="card-soft animate-rise relative overflow-hidden bg-chart-3/10 p-5">
+              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-chart-3">
+                {t(`Mi dinero a los ${targetAge}`, `My money at ${targetAge}`)}
               </p>
-              <p className="mt-1 font-display text-3xl font-semibold text-primary sm:text-4xl">
+              <p className="mt-1 font-display text-[2.35rem] font-bold leading-none tracking-tight text-foreground">
                 {money(projection.future, member.currency)}
               </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                +{money(projection.growth, member.currency)} {t("solo por esperar", "just by waiting")}
+              <p className="mt-2 text-xs text-muted-foreground">
+                {t("Si sigues ahorrando", "If you keep saving")}{" "}
+                <span className="block font-semibold text-chart-3">
+                  {money(monthly || pace, member.currency)} {t("al mes", "a month")}
+                </span>
               </p>
+              <span className="pointer-events-none absolute -bottom-2 right-1 text-[68px] leading-none opacity-90">
+                🌳
+              </span>
             </div>
           </div>
 
-          <div className="mt-5 grid gap-3 sm:grid-cols-3">
-            {POCKETS.map((p) => (
-              <Tile
-                key={p.key}
-                emoji={p.emoji}
-                label={pocketLabel(p.key, lang)}
-                value={totals[p.key]}
-                currency={member.currency}
-                hint={lang === "en" ? p.hintEn : p.hint}
-              />
-            ))}
+          <div className="card-soft p-5">
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+              {t("¿Dónde está mi dinero?", "Where is my money?")}
+            </p>
+            <div className="mt-3 grid gap-3 sm:grid-cols-3">
+              {POCKETS.map((p, i) => {
+                const amount = totals[p.key];
+                const pct = today > 0 ? Math.round((amount / today) * 100) : 0;
+                const tone = ["bg-primary", "bg-chart-2", "bg-chart-4"][i] ?? "bg-primary";
+                return (
+                  <div key={p.key} className="rounded-2xl bg-surface-2 p-4">
+                    <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                      <span className="text-xl">{p.emoji}</span> {pocketLabel(p.key, lang)}
+                    </p>
+                    <p className="mt-1 font-display text-2xl font-bold text-foreground">
+                      {money(amount, member.currency)}
+                    </p>
+                    <p className="mt-1 text-[11px] text-muted-foreground">
+                      {pct}% {t("de tu dinero", "of your money")}
+                    </p>
+                    <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-background/70">
+                      <div className={`h-full rounded-full ${tone}`} style={{ width: `${Math.min(100, pct)}%` }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
+
 
         <div className="grid content-start gap-4">
           <Buddy>{line}</Buddy>
