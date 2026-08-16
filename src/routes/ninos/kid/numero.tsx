@@ -307,14 +307,14 @@ function MyNumber({ member }: { member: Member }) {
                   </div>
                 ) : (
                   <>
-                    <p className="font-kid text-[17px] font-extrabold leading-tight text-foreground">
+                    <p className="font-kid line-clamp-2 text-[16px] font-extrabold leading-tight text-foreground">
                       {buddyTip?.headline ?? `${t(`¡Genial, ${member.name}!`, `Great job, ${member.name}!`)} 🚀`}
                     </p>
-                    <p className="mt-1 font-kid text-[15px] font-medium leading-snug text-muted-foreground">
+                    <p className="mt-1 font-kid line-clamp-2 text-[14px] font-medium leading-snug text-muted-foreground">
                       {buddyTip?.insight ?? line}
                     </p>
                     {buddyTip?.tip ? (
-                      <p className="mt-2 rounded-2xl bg-primary/10 px-3 py-2 font-kid text-[15px] font-semibold leading-snug text-foreground">
+                      <p className="mt-2 line-clamp-2 rounded-2xl bg-primary/10 px-3 py-2 font-kid text-[14px] font-semibold leading-snug text-foreground">
                         💡 {buddyTip.tip}
                       </p>
                     ) : null}
@@ -329,8 +329,9 @@ function MyNumber({ member }: { member: Member }) {
               loading="lazy"
               width={768}
               height={768}
-              className="pointer-events-none relative -mr-2 h-[160px] w-[130px] shrink-0 self-end object-contain"
+              className="pointer-events-none relative -mr-2 h-[140px] w-[110px] shrink-0 self-end object-contain"
             />
+
           </div>
 
 

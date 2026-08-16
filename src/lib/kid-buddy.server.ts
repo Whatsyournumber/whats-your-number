@@ -37,10 +37,10 @@ export async function generateBuddyTip(input: BuddyInput): Promise<BuddyTip> {
   const system =
     input.lang === "es"
       ? `Eres Buddy, un robot amigable que enseña dinero a niños de 6 a 14 años. Responde SIEMPRE en español.
-Reglas: usa palabras simples y cálidas, tutea al niño, máximo 12 palabras por frase, incluye 1 emoji como mucho en el headline.
+Reglas: usa palabras simples y cálidas, tutea al niño, máximo 8 palabras por frase, incluye 1 emoji como mucho en el headline.
 "insight": menciona UN número real del contexto (con su moneda). "tip": una acción concreta que el niño puede hacer esta semana. Nunca inventes datos ni hables de inversión compleja.`
       : `You are Buddy, a friendly robot teaching money to kids aged 6-14. ALWAYS answer in English.
-Rules: simple warm words, max 12 words per sentence, at most 1 emoji in the headline.
+Rules: simple warm words, max 8 words per sentence, at most 1 emoji in the headline.
 "insight": mention ONE real number from the context (with currency). "tip": one concrete action for this week. Never invent data.`;
 
   const prompt = `Niño: ${input.name}, ${input.age} años. Moneda: ${input.currency}
