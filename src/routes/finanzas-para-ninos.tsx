@@ -661,7 +661,7 @@ function HowItWorksSlider() {
       />
 
       <div
-        className="surface relative mt-8 overflow-hidden p-4 sm:p-6 md:mt-12 md:p-12"
+        className="relative mt-8 rounded-[30px] border border-border/70 bg-card/60 p-2 shadow-2xl backdrop-blur-sm md:mt-12 md:p-3"
         onTouchStart={(e) => {
           touchX.current = e.touches[0]?.clientX ?? null;
         }}
@@ -675,101 +675,137 @@ function HowItWorksSlider() {
           setI((v) => (dx < 0 ? (v + 1) % slides.length : (v - 1 + slides.length) % slides.length));
         }}
       >
-        <div className="kid-gradient absolute inset-x-0 top-0 h-1" />
+        <div
+          className="pointer-events-none absolute -inset-6 -z-10 rounded-[40px] blur-3xl"
+          style={{ background: `color-mix(in oklab, ${active.color} 12%, transparent)` }}
+        />
 
-        <div className="-mx-1 mb-6 flex gap-2 overflow-x-auto px-1 pb-1 md:mb-10 md:flex-wrap md:justify-center md:overflow-visible">
-          {slides.map((s, k) => {
-            const TabIcon = s.icon;
-            const isActive = k === i;
-            return (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => setI(k)}
-                className="flex shrink-0 items-center gap-2 rounded-full px-3.5 py-2 text-xs font-medium transition-all sm:text-sm"
-                style={
-                  isActive
-                    ? {
-                        color: s.color,
-                        backgroundColor: `color-mix(in oklab, ${s.color} 14%, transparent)`,
-                        boxShadow: `inset 0 0 0 1.5px color-mix(in oklab, ${s.color} 55%, transparent), 0 0 24px color-mix(in oklab, ${s.color} 18%, transparent)`,
-                      }
-                    : { boxShadow: "inset 0 0 0 1px var(--border)" }
-                }
-              >
-                <TabIcon className="h-4 w-4 shrink-0" />
-                <span className="whitespace-nowrap">{s.tab}</span>
-              </button>
-            );
-          })}
+        <div className="relative flex items-center gap-2 px-3 py-2">
+          <span className="flex gap-1.5">
+            <span className="h-2.5 w-2.5 rounded-full bg-kid-coral/70" />
+            <span className="h-2.5 w-2.5 rounded-full bg-kid-sun/70" />
+            <span className="h-2.5 w-2.5 rounded-full bg-kid-mint/70" />
+          </span>
+          <span className="mx-auto hidden rounded-full bg-elevated px-4 py-1 text-[11px] text-muted-foreground sm:inline-block">
+            {t("Su primer número, en 1 pantalla", "Their first number, on one screen")}
+          </span>
         </div>
-        <motion.div
-          key={active.id}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35 }}
-          className="grid items-center gap-6 md:grid-cols-2 md:gap-10"
-        >
-          <div>
-            <span
-              className="flex h-11 w-11 items-center justify-center rounded-2xl sm:h-14 sm:w-14"
-              style={{
-                color: active.color,
-                backgroundColor: `color-mix(in oklab, ${active.color} 12%, transparent)`,
-                boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${active.color} 25%, transparent)`,
-              }}
-            >
-              <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
+
+        <div className="relative overflow-hidden rounded-[24px] bg-background/70 p-4 ring-1 ring-border md:p-6">
+          <div className="kid-gradient pointer-events-none absolute inset-x-0 top-0 h-[2px] opacity-70" />
+
+          <div className="-mx-1 flex items-center gap-2 overflow-x-auto px-1 pb-1 scrollbar-hide">
+            {slides.map((s, k) => {
+              const TabIcon = s.icon;
+              const isActive = k === i;
+              return (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setI(k)}
+                  className="flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all"
+                  style={
+                    isActive
+                      ? {
+                          color: s.color,
+                          backgroundColor: `color-mix(in oklab, ${s.color} 14%, transparent)`,
+                          boxShadow: `inset 0 0 0 1.5px color-mix(in oklab, ${s.color} 55%, transparent), 0 0 24px color-mix(in oklab, ${s.color} 18%, transparent)`,
+                        }
+                      : { boxShadow: "inset 0 0 0 1px var(--border)" }
+                  }
+                >
+                  <TabIcon className="h-3.5 w-3.5 shrink-0" />
+                  <span className="whitespace-nowrap">{s.tab}</span>
+                </button>
+              );
+            })}
+            <span className="ml-auto hidden shrink-0 items-center gap-1.5 rounded-full bg-elevated px-3 py-1 text-[11px] text-muted-foreground md:inline-flex">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-kid-mint opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-kid-mint" />
+              </span>
+              {t("En vivo", "Live")}
             </span>
-            <h3 className="mt-4 font-display text-xl font-semibold tracking-tight sm:text-2xl md:mt-6 md:text-4xl">
-              {active.title}
-            </h3>
-            <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base md:mt-4">
-              {active.desc}
-            </p>
-          </div>
-          <div className="flex items-center md:min-h-[420px]">
-            <div className="w-full">{active.visual}</div>
           </div>
 
-        </motion.div>
+          <motion.div
+            key={active.id}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35 }}
+            className="mt-5 grid gap-4 lg:grid-cols-[1.55fr_1fr]"
+          >
+            <div className="min-w-0">{active.visual}</div>
 
-        <div className="mt-8 flex items-center justify-between">
-          <div className="flex gap-2">
-            {slides.map((s, k) => (
+            <div className="flex min-w-0 flex-col gap-4">
+              <div className="rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
+                <span
+                  className="flex h-11 w-11 items-center justify-center rounded-2xl"
+                  style={{
+                    color: active.color,
+                    backgroundColor: `color-mix(in oklab, ${active.color} 12%, transparent)`,
+                    boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${active.color} 25%, transparent)`,
+                  }}
+                >
+                  <Icon className="h-5 w-5" />
+                </span>
+                <h3 className="mt-4 font-display text-xl font-semibold tracking-tight md:text-2xl">
+                  {active.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{active.desc}</p>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                {(stats[active.id] ?? []).map((s) => (
+                  <div key={s.k} className="rounded-2xl bg-elevated/60 p-3 text-center ring-1 ring-border">
+                    <p className="truncate text-[10px] uppercase tracking-wider text-muted-foreground">{s.k}</p>
+                    <p className="numeric mt-1 text-sm font-semibold" style={{ color: active.color }}>
+                      {s.v}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          <div className="mt-6 flex items-center justify-between">
+            <div className="flex gap-2">
+              {slides.map((s, k) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  aria-label={s.title}
+                  onClick={() => setI(k)}
+                  className="h-1.5 rounded-full transition-all"
+                  style={{
+                    width: k === i ? 28 : 10,
+                    backgroundColor: k === i ? active.color : "var(--border)",
+                  }}
+                />
+              ))}
+            </div>
+            <div className="flex gap-2">
               <button
-                key={s.id}
                 type="button"
-                aria-label={s.title}
-                onClick={() => setI(k)}
-                className="h-1.5 rounded-full transition-all"
-                style={{
-                  width: k === i ? 28 : 10,
-                  backgroundColor: k === i ? active.color : "var(--border)",
-                }}
-              />
-            ))}
-          </div>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              aria-label={t("Anterior", "Previous")}
-              onClick={() => setI((v) => (v - 1 + slides.length) % slides.length)}
-              className="flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-border transition-colors hover:bg-elevated"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <button
-              type="button"
-              aria-label={t("Siguiente", "Next")}
-              onClick={() => setI((v) => (v + 1) % slides.length)}
-              className="flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-border transition-colors hover:bg-elevated"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
+                aria-label={t("Anterior", "Previous")}
+                onClick={() => setI((v) => (v - 1 + slides.length) % slides.length)}
+                className="flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-border transition-colors hover:bg-elevated"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                aria-label={t("Siguiente", "Next")}
+                onClick={() => setI((v) => (v + 1) % slides.length)}
+                className="flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-border transition-colors hover:bg-elevated"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
+
     </section>
   );
 }
