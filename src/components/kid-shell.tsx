@@ -27,7 +27,7 @@ const TABS = [
 ] as const;
 
 const PARENT_TABS = [
-  { to: "/ninos/padres", label: "Familia", labelEn: "Family", icon: Users },
+  { to: "/ninos", label: "Perfiles", labelEn: "Profiles", icon: Users },
   { to: "/ninos/kid/futuro", label: "Planificador", labelEn: "Planner", icon: Rocket },
   { to: "/ninos/kid/universidades", label: "Universidad", labelEn: "University", icon: GraduationCap },
   { to: "/ninos/kid/datos", label: "Ajustes", labelEn: "Settings", icon: SlidersHorizontal },

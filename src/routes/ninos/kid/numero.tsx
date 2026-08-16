@@ -186,18 +186,18 @@ function MyNumber({ member }: { member: Member }) {
       />
 
       <div className="grid items-stretch gap-5 lg:grid-cols-[minmax(0,1.62fr)_minmax(0,1fr)]">
-        <div className="grid content-start gap-5 lg:grid-rows-[220px_1fr]">
+        <div className="grid content-start gap-5 lg:grid-rows-[minmax(220px,auto)_1fr]">
           <div className="grid gap-5 sm:grid-cols-2 [&>*]:h-full">
-            <div className="@container card-soft animate-rise relative grid min-h-[220px] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 overflow-hidden bg-gradient-to-br from-primary/10 via-card to-card p-6 sm:p-7">
+            <div className="@container card-soft animate-rise relative grid min-h-[200px] grid-cols-[minmax(0,1fr)_auto] items-center gap-2 overflow-hidden bg-gradient-to-br from-primary/10 via-card to-card p-5 sm:p-6">
 
               <div className="min-w-0">
                 <Eyebrow className="text-primary">{t("Mi dinero hoy", "My money today")}</Eyebrow>
-                <p className="mt-3 whitespace-nowrap font-display text-[clamp(1.4rem,12cqi,3rem)] font-bold leading-none tracking-tight text-foreground">
+                <p className="mt-3 whitespace-nowrap font-display text-[clamp(1.15rem,7.4cqi,2.5rem)] font-bold leading-none tracking-tight text-foreground">
                   {money(today, member.currency)}
                 </p>
-                <p className="mt-4 whitespace-nowrap text-[clamp(12px,4.2cqi,16px)] leading-snug text-muted-foreground">
-                  {t("Esta semana", "This week")}{" "}
-                  <span className="font-semibold text-chart-3">+{money(pace, member.currency)} ↗</span>
+                <p className="mt-3 whitespace-nowrap text-[clamp(11px,3.4cqi,15px)] leading-snug text-muted-foreground">
+                  <span className="font-semibold text-chart-3">+{money(pace, member.currency)} ↗</span>{" "}
+                  {t("semana", "week")}
                 </p>
               </div>
               <img
@@ -207,22 +207,19 @@ function MyNumber({ member }: { member: Member }) {
                 loading="lazy"
                 width={768}
                 height={768}
-                className="pointer-events-none h-[clamp(96px,38cqi,180px)] w-[clamp(96px,38cqi,180px)] shrink-0 self-center object-contain"
+                className="pointer-events-none h-[clamp(80px,30cqi,150px)] w-[clamp(80px,30cqi,150px)] shrink-0 self-center object-contain"
               />
             </div>
 
-            <div className="@container card-soft animate-rise relative grid min-h-[220px] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 overflow-hidden bg-gradient-to-br from-chart-2/10 via-card to-card p-6 sm:p-7">
+            <div className="@container card-soft animate-rise relative grid min-h-[200px] grid-cols-[minmax(0,1fr)_auto] items-center gap-2 overflow-hidden bg-gradient-to-br from-chart-2/10 via-card to-card p-5 sm:p-6">
               <div className="min-w-0">
                 <Eyebrow className="text-chart-2">
                   {t(`Mi dinero a los ${targetAge}`, `My money at ${targetAge}`)}
                 </Eyebrow>
-                <p className="mt-3 whitespace-nowrap font-display text-[clamp(1.4rem,12cqi,3rem)] font-bold leading-none tracking-tight text-foreground">
+                <p className="mt-3 whitespace-nowrap font-display text-[clamp(1.15rem,7.4cqi,2.5rem)] font-bold leading-none tracking-tight text-foreground">
                   {money(projection.future, member.currency)}
                 </p>
-                <p className="mt-4 whitespace-nowrap text-[clamp(12px,4.2cqi,16px)] leading-snug text-muted-foreground">
-                  {t("Si sigues ahorrando", "If you keep saving")}
-                </p>
-                <p className="whitespace-nowrap text-[clamp(12px,4.2cqi,16px)] font-semibold text-chart-2">
+                <p className="mt-3 whitespace-nowrap text-[clamp(11px,3.4cqi,15px)] font-semibold leading-snug text-chart-2">
                   {money(monthly || pace, member.currency)} {t("al mes", "a month")}
                 </p>
               </div>
@@ -233,7 +230,7 @@ function MyNumber({ member }: { member: Member }) {
                 loading="lazy"
                 width={768}
                 height={768}
-                className="pointer-events-none h-[clamp(96px,38cqi,180px)] w-[clamp(96px,38cqi,180px)] shrink-0 self-center object-contain"
+                className="pointer-events-none h-[clamp(80px,30cqi,150px)] w-[clamp(80px,30cqi,150px)] shrink-0 self-center object-contain"
               />
             </div>
           </div>
@@ -278,20 +275,19 @@ function MyNumber({ member }: { member: Member }) {
           </div>
         </div>
 
-        <div className="grid content-start gap-5 lg:grid-rows-[220px_1fr] [&>*]:h-full">
-          <div className="card-soft animate-rise relative flex items-center overflow-hidden bg-gradient-to-br from-primary/20 via-chart-2/15 to-chart-2/30 p-5">
+        <div className="grid content-start gap-5 lg:grid-rows-[minmax(220px,auto)_1fr] [&>*]:h-full">
+          <div className="card-soft animate-rise relative flex items-center gap-2 overflow-hidden bg-gradient-to-br from-primary/20 via-chart-2/15 to-chart-2/30 p-4 sm:p-5">
             <div className="pointer-events-none absolute -right-10 -top-12 h-36 w-36 rounded-full bg-card/40 blur-2xl" />
             <div className="pointer-events-none absolute right-24 top-5 text-lg opacity-70">✨</div>
-            <div className="pointer-events-none absolute right-10 top-14 text-sm opacity-60">✦</div>
             <div className="relative min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-card text-lg shadow-sm">🤖</span>
-                <p className="font-kid text-2xl font-extrabold text-primary">Buddy</p>
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-card text-base shadow-sm">🤖</span>
+                <p className="font-kid text-xl font-extrabold text-primary">Buddy</p>
                 <span className="rounded-full bg-card/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">
                   IA
                 </span>
               </div>
-              <div className="mt-3 rounded-3xl rounded-bl-lg bg-card/95 px-4 py-3 shadow-sm">
+              <div className="mt-2.5 rounded-3xl rounded-bl-lg bg-card/95 px-3.5 py-2.5 shadow-sm">
                 {buddyThinking && !buddyTip ? (
                   <div className="flex items-center gap-1.5 py-2">
                     {[0, 1, 2].map((i) => (
@@ -307,14 +303,14 @@ function MyNumber({ member }: { member: Member }) {
                   </div>
                 ) : (
                   <>
-                    <p className="font-kid line-clamp-2 text-[16px] font-extrabold leading-tight text-foreground">
+                    <p className="font-kid line-clamp-2 text-[15px] font-extrabold leading-tight text-foreground">
                       {buddyTip?.headline ?? `${t(`¡Genial, ${member.name}!`, `Great job, ${member.name}!`)} 🚀`}
                     </p>
-                    <p className="mt-1 font-kid line-clamp-2 text-[14px] font-medium leading-snug text-muted-foreground">
+                    <p className="mt-1 font-kid line-clamp-2 text-[13px] font-medium leading-snug text-muted-foreground">
                       {buddyTip?.insight ?? line}
                     </p>
                     {buddyTip?.tip ? (
-                      <p className="mt-2 line-clamp-2 rounded-2xl bg-primary/10 px-3 py-2 font-kid text-[14px] font-semibold leading-snug text-foreground">
+                      <p className="mt-2 line-clamp-2 rounded-2xl bg-primary/10 px-2.5 py-1.5 font-kid text-[13px] font-semibold leading-snug text-foreground">
                         💡 {buddyTip.tip}
                       </p>
                     ) : null}
@@ -329,7 +325,7 @@ function MyNumber({ member }: { member: Member }) {
               loading="lazy"
               width={768}
               height={768}
-              className="pointer-events-none relative -mr-2 h-[140px] w-[110px] shrink-0 self-end object-contain"
+              className="pointer-events-none relative -mr-1 hidden h-[130px] w-[92px] shrink-0 self-end object-contain sm:block"
             />
 
           </div>
