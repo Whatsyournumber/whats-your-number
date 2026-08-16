@@ -186,7 +186,7 @@ function MyNumber({ member }: { member: Member }) {
       />
 
       <div className="grid items-stretch gap-5 lg:grid-cols-[minmax(0,1.62fr)_minmax(0,1fr)]">
-        <div className="grid content-start gap-5 lg:grid-rows-[minmax(220px,auto)_1fr]">
+        <div className="grid content-start gap-5 lg:grid-rows-[minmax(240px,auto)_1fr]">
           <div className="grid gap-5 sm:grid-cols-2 [&>*]:h-full">
             <div className="@container card-soft animate-rise relative grid min-h-[220px] grid-cols-[minmax(0,1fr)_auto] items-center gap-2 overflow-hidden bg-gradient-to-br from-primary/10 via-card to-card p-5 sm:p-6 lg:p-7">
 
