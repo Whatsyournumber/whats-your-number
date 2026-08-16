@@ -318,6 +318,14 @@ export function FamilyPlanner({
   const rate = vehicle.rate;
   const vehicleName = lang === "en" ? vehicle.nameEn : vehicle.name;
 
+  // Publica el plan (con debounce) para que otras pantallas usen el mismo número base.
+  useEffect(() => {
+    if (!onPlanChange) return;
+    const id = setTimeout(() => onPlanChange({ base, monthly, targetAge, rate }), 600);
+    return () => clearTimeout(id);
+  }, [base, monthly, targetAge, rate, onPlanChange]);
+
+
   const horizon = Math.max(1, monthsUntil(childAge, targetAge));
   const future = Math.round(futureValue(base, monthly, horizon, rate));
   const contributed = Math.round(monthly * horizon);
