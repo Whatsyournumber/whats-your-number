@@ -151,7 +151,7 @@ function MyNumber({ member }: { member: Member }) {
                 <p className="truncate text-[12px] font-bold uppercase tracking-[0.1em] text-primary">
                   {t("Mi dinero hoy", "My money today")}
                 </p>
-                <p className="mt-2 truncate font-display text-[clamp(1.5rem,4.2vw,2.35rem)] font-bold leading-none tracking-tight text-foreground">
+                <p className="mt-2 whitespace-nowrap font-display text-[clamp(1.25rem,3.4vw,1.95rem)] font-bold leading-none tracking-tight text-foreground">
                   {money(today, member.currency)}
                 </p>
                 <p className="mt-3 truncate text-sm text-muted-foreground">
@@ -177,7 +177,7 @@ function MyNumber({ member }: { member: Member }) {
                 <p className="truncate text-[12px] font-bold uppercase tracking-[0.1em] text-chart-3">
                   {t(`Mi dinero a los ${targetAge}`, `My money at ${targetAge}`)}
                 </p>
-                <p className="mt-2 truncate font-display text-[clamp(1.5rem,4.2vw,2.35rem)] font-bold leading-none tracking-tight text-foreground">
+                <p className="mt-2 whitespace-nowrap font-display text-[clamp(1.25rem,3.4vw,1.95rem)] font-bold leading-none tracking-tight text-foreground">
                   {money(projection.future, member.currency)}
                 </p>
                 <p className="mt-3 truncate text-sm text-muted-foreground">
