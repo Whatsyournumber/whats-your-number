@@ -50,30 +50,29 @@ function ProfileCard({ member, collapsed }: { member: Member; collapsed: boolean
   }
 
   return (
-    <div className="mt-2 shrink-0 rounded-2xl border border-border/70 bg-surface-2/70 p-2.5">
+    <div className="mt-2 shrink-0 rounded-2xl border border-border/70 bg-surface-2/70 p-2">
       <div className="flex items-center gap-2">
-        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-card text-base shadow-sm">
+        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-card text-sm shadow-sm">
           {member.avatar}
         </span>
         <div className="min-w-0">
-          <p className="truncate font-display text-xs font-bold text-foreground">{member.name}</p>
-          <p className="text-[10px] font-semibold text-muted-foreground">
+          <p className="truncate font-display text-[11px] font-bold text-foreground">{member.name}</p>
+          <p className="text-[9px] font-semibold text-muted-foreground">
             {t("Nivel", "Level")} {level} ⭐ · 🔥 {member.streak}
           </p>
         </div>
       </div>
 
-      <div className="mt-2 rounded-xl bg-card px-2.5 py-2">
-        <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+      <div className="mt-1.5 rounded-lg bg-card px-2 py-1.5">
+        <p className="text-[8px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
           {t("Mi primer número", "My first number")}
         </p>
-        <p className="font-display text-base font-semibold text-foreground">
+        <p className="font-display text-sm font-semibold leading-tight text-foreground">
           {money(saved, member.currency)}
         </p>
-        <p className="text-[9px] font-medium text-muted-foreground">{t("ahorrado", "saved")}</p>
       </div>
 
-      <div className="mt-2">
+      <div className="mt-1.5">
         <div className="h-1 w-full overflow-hidden rounded-full bg-surface-2">
           <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
         </div>
