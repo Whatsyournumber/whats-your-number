@@ -1,7 +1,9 @@
+import { useCallback } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { KidPage } from "@/components/kid-page";
 import { FamilyPlanner } from "@/components/family-planner";
-import { useFund, useMovements } from "@/hooks/use-mfn";
+import { useFund, useMovements, useSaveFund } from "@/hooks/use-mfn";
+
 import { goalLabel, pocketTotals, type Member } from "@/lib/mfn";
 import { useI18n } from "@/lib/mfn-i18n";
 
