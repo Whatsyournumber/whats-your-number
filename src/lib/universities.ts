@@ -1211,12 +1211,24 @@ const UNIQUE_TUITION: Record<string, number> = (() => {
   return out;
 })();
 
-/** Matrícula anual en USD; si se indica un área de estudio ajusta el precio a esa carrera. */
+/** Año de la última recogida de datos de matrícula y coste de vida. */
+export const DATA_BASE_YEAR = 2025;
+/** Inflación educativa anual aplicada para mantener los precios al día. */
+export const ANNUAL_INFLATION = 0.035;
+/** Año al que están indexados los precios que se muestran (se actualiza solo cada año). */
+export const PRICE_YEAR = Math.max(DATA_BASE_YEAR, new Date().getUTCFullYear());
+/** Factor de indexación anual acumulado desde el año base hasta el año actual. */
+export const INFLATION_FACTOR = Math.pow(1 + ANNUAL_INFLATION, PRICE_YEAR - DATA_BASE_YEAR);
+
+const indexed = (v: number) => Math.round((v * INFLATION_FACTOR) / 10) * 10;
+
+/** Matrícula anual en USD (indexada al año actual); si se indica un área de estudio ajusta el precio a esa carrera. */
 export function uniTuitionUsd(u: University, field?: UniField | "" | null) {
   const base = UNIQUE_TUITION[u.id] ?? u.tuition;
-  if (base <= 0 || !field) return base;
-  return Math.round((base * FIELD_COST_FACTOR[field]) / 10) * 10;
+  if (base <= 0) return 0;
+  return indexed(field ? base * FIELD_COST_FACTOR[field] : base);
 }
+
 
 /** Estilos de alojamiento/vida del estudiante y su factor sobre el coste de vida base. */
 export type LivingStyle = "shared" | "moderate" | "premium";
