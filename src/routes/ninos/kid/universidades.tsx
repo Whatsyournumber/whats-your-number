@@ -18,7 +18,11 @@ import {
   uniFields,
   uniTotalUsd,
   uniTuitionUsd,
+  uniLivingUsd,
+  uniFieldScore,
+  LIVING_STYLES,
   uniSector,
+  type LivingStyle,
   type UniField,
   type University,
 } from "@/lib/universities";
@@ -171,12 +175,13 @@ function CollegeFinder({ member }: { member: Member }) {
   const [field, setField] = useState<UniField | "">("");
   const [rankMax, setRankMax] = useState<string>("");
   const [sector, setSector] = useState<"public" | "private" | "">("");
+  const [living, setLiving] = useState<LivingStyle>("moderate");
   const [sort, setSort] = useState<"cost" | "rank">("cost");
   const [saved, setSaved] = useState<string[]>([]);
   const [detail, setDetail] = useState<University | null>(null);
   const [compareOpen, setCompareOpen] = useState(false);
 
-  const cost = (u: University) => uniTotalUsd(u, includeLiving, field) * usdFx.factor;
+  const cost = (u: University) => uniTotalUsd(u, includeLiving, field, living) * usdFx.factor;
   const isHome = (u: University) => !!homeCountry && (u.countryEs === homeCountry || u.country === homeCountry);
 
   const bucketOf = (u: University): Bucket => {
@@ -189,8 +194,42 @@ function CollegeFinder({ member }: { member: Member }) {
   const priced = useMemo(
     () => UNIVERSITIES.map((u) => ({ u, total: cost(u) })),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [includeLiving, usdFx.factor, field],
+    [includeLiving, usdFx.factor, field, living],
   );
+
+  /** Ranking dentro de la carrera seleccionada (solo universidades que la ofrecen). */
+  const fieldRanks = useMemo(() => {
+    if (!field) return null;
+    const arr = UNIVERSITIES.filter((u) => uniFields(u).includes(field)).sort(
+      (a, b) => uniFieldScore(a, field) - uniFieldScore(b, field),
+    );
+    const map: Record<string, number> = {};
+    arr.forEach((u, i) => {
+      map[u.id] = i + 1;
+    });
+    return { map, total: arr.length };
+  }, [field]);
+
+  /**
+   * Etiqueta de ranking contextual: mundial siempre; + continental si hay
+   * continente activo; + por carrera si hay carrera activa.
+   */
+  const rankChips = (u: University): { v: string; l: string }[] => {
+    const r = ranksOf(u);
+    const out = [{ v: `#${r.global}`, l: t("mundo", "world") }];
+    if (continent) {
+      out.push({
+        v: `#${r.continent}`,
+        l: t(CONTINENT_NAMES[r.continentKey].es, CONTINENT_NAMES[r.continentKey].en),
+      });
+    }
+    if (field && fieldRanks?.map[u.id]) {
+      out.push({ v: `#${fieldRanks.map[u.id]}`, l: FIELD_LABELS[field][lang === "en" ? "en" : "es"] });
+    }
+    return out;
+  };
+
+  const rankLine = (u: University) => rankChips(u).map((c) => `${c.v} ${c.l}`).join(" · ");
 
   const counts = useMemo(() => {
     const afford = priced.filter((r) => r.total <= projected).length;
@@ -246,14 +285,20 @@ function CollegeFinder({ member }: { member: Member }) {
         return true;
       })
       .sort((a, b) => {
-        if (sort === "rank") return a.u.rank - b.u.rank;
+        if (sort === "rank") {
+          if (field && fieldRanks) {
+            return (fieldRanks.map[a.u.id] ?? 9999) - (fieldRanks.map[b.u.id] ?? 9999);
+          }
+          if (continent) return ranksOf(a.u).continent - ranksOf(b.u).continent;
+          return ranksOf(a.u).global - ranksOf(b.u).global;
+        }
         const aHome = isHome(a.u) ? 0 : homeRegion && a.u.region === homeRegion ? 1 : 2;
         const bHome = isHome(b.u) ? 0 : homeRegion && b.u.region === homeRegion ? 1 : 2;
         if (aHome !== bHome) return aHome - bHome;
         return a.total - b.total;
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [priced, bucket, continent, country, field, rankMax, sector, tab, sort, projected, homeCountry, homeRegion, lang]);
+  }, [priced, bucket, continent, country, field, fieldRanks, rankMax, sector, tab, sort, projected, homeCountry, homeRegion, lang]);
 
 
 
@@ -577,6 +622,37 @@ function CollegeFinder({ member }: { member: Member }) {
               </button>
             ))}
           </div>
+
+          {includeLiving ? (
+            <div className="col-span-2 flex items-center gap-1 overflow-x-auto rounded-full border border-border/70 bg-background/50 p-0.5 sm:col-auto">
+              {(Object.keys(LIVING_STYLES) as LivingStyle[]).map((k) => {
+                const st = LIVING_STYLES[k];
+                return (
+                  <TooltipProvider key={k} delayDuration={150}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          onClick={() => setLiving(k)}
+                          className={cn(
+                            "flex-1 whitespace-nowrap rounded-full px-3 py-1.5 text-[11px] font-bold transition sm:flex-none",
+                            living === k
+                              ? "bg-primary text-primary-foreground"
+                              : "text-muted-foreground hover:text-foreground",
+                          )}
+                        >
+                          {st.emoji} {t(st.es, st.en)}
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="max-w-[220px] text-[11px] leading-relaxed">
+                        {t(st.descEs, st.descEn)}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                );
+              })}
+            </div>
+          ) : null}
         </div>
 
 
@@ -674,13 +750,13 @@ function CollegeFinder({ member }: { member: Member }) {
                   </Tooltip>
                 </TooltipProvider>
                 <span className="absolute bottom-3 right-3 flex items-center gap-1 rounded-full bg-background/80 px-2 py-0.5 text-[10px] font-bold text-muted-foreground backdrop-blur">
-                  <span className="text-foreground">#{ranksOf(u).global}</span>
-                  <span className="opacity-60">
-                    {t("mundo", "world")} · #{ranksOf(u).continent} {t(
-                      CONTINENT_NAMES[ranksOf(u).continentKey].es,
-                      CONTINENT_NAMES[ranksOf(u).continentKey].en,
-                    )}
-                  </span>
+                  {rankChips(u).map((c, i) => (
+                    <span key={c.l} className="flex items-center gap-1">
+                      {i > 0 ? <span className="opacity-40">·</span> : null}
+                      <span className="text-foreground">{c.v}</span>
+                      <span className="opacity-60">{c.l}</span>
+                    </span>
+                  ))}
                 </span>
 
               </div>
@@ -723,7 +799,7 @@ function CollegeFinder({ member }: { member: Member }) {
                         includeLiving ? "text-foreground" : "text-muted-foreground line-through",
                       )}
                     >
-                      {money(u.living * usdFx.factor, currency, true)}
+                      {money(uniLivingUsd(u, living) * usdFx.factor, currency, true)}
                     </p>
                     <p className="truncate text-[9px] text-muted-foreground">{t("Vida/año", "Living/yr")}</p>
                   </div>
@@ -816,6 +892,8 @@ function CollegeFinder({ member }: { member: Member }) {
         projected={projected}
         includeLiving={includeLiving}
         field={field}
+        living={living}
+        rankLine={rankLine}
       />
 
       <UniDetailDialog
@@ -827,6 +905,8 @@ function CollegeFinder({ member }: { member: Member }) {
         monthsLeft={monthsLeft}
         includeLiving={includeLiving}
         field={field}
+        living={living}
+        rankLine={rankLine}
       />
 
 
@@ -1036,6 +1116,8 @@ function CompareDialog({
   projected,
   includeLiving,
   field,
+  living,
+  rankLine,
 }: {
   open: boolean;
   onClose: () => void;
@@ -1045,15 +1127,17 @@ function CompareDialog({
   projected: number;
   includeLiving: boolean;
   field?: UniField | "";
+  living: LivingStyle;
+  rankLine: (u: University) => string;
 }) {
   const { t, lang } = useI18n();
   if (!open || unis.length === 0) return null;
 
   const rows = unis.map((u) => {
     const tuition = uniTuitionUsd(u, field) * usdFactor * u.years;
-    const living = u.living * usdFactor * u.years;
-    const total = tuition + (includeLiving ? living : 0);
-    return { u, tuition, living, total, ok: total <= projected };
+    const livingTotal = uniLivingUsd(u, living) * usdFactor * u.years;
+    const total = tuition + (includeLiving ? livingTotal : 0);
+    return { u, tuition, livingTotal, total, ok: total <= projected };
   });
   const cheapest = Math.min(...rows.map((r) => r.total));
 
@@ -1101,15 +1185,11 @@ function CompareDialog({
                   {r.u.city}, {lang === "en" ? r.u.country : r.u.countryEs}
                 </p>
                 {[
-                  [t("Ranking mundial", "World rank"), `#${ranksOf(r.u).global}`],
-                  [
-                    t(CONTINENT_NAMES[ranksOf(r.u).continentKey].es, CONTINENT_NAMES[ranksOf(r.u).continentKey].en),
-                    `#${ranksOf(r.u).continent}`,
-                  ],
+                  [t("Ranking", "Ranking"), rankLine(r.u)],
 
                   [t("Duración", "Duration"), `${r.u.years} ${t("años", "yrs")}`],
                   [t("Matrícula total", "Total tuition"), money(r.tuition, currency, true)],
-                  [t("Vida total", "Total living"), money(r.living, currency, true)],
+                  [t("Vida total", "Total living"), money(r.livingTotal, currency, true)],
                   [t("Becas", "Scholarships"), r.u.scholarship ? t("Sí", "Yes") : "—"],
                 ].map(([l, v]) => (
                   <div key={l} className="flex items-center justify-between border-t border-border/50 pt-1.5 text-[11px]">
@@ -1146,6 +1226,8 @@ function UniDetailDialog({
   monthsLeft,
   includeLiving,
   field,
+  living,
+  rankLine,
 }: {
   uni: University | null;
   onClose: () => void;
@@ -1155,12 +1237,14 @@ function UniDetailDialog({
   monthsLeft: number;
   includeLiving: boolean;
   field?: UniField | "";
+  living: LivingStyle;
+  rankLine: (u: University) => string;
 }) {
   const { t, lang } = useI18n();
   if (!uni) return null;
 
   const tuitionYear = uniTuitionUsd(uni, field) * usdFactor;
-  const livingYear = uni.living * usdFactor;
+  const livingYear = uniLivingUsd(uni, living) * usdFactor;
   const tuitionTotal = tuitionYear * uni.years;
   const livingTotal = livingYear * uni.years;
   const total = tuitionTotal + (includeLiving ? livingTotal : 0);
@@ -1194,13 +1278,8 @@ function UniDetailDialog({
               <SourcesTip className="mt-1.5 shrink-0" />
             </DialogTitle>
             <p className="text-xs text-muted-foreground">
-              {uni.city}, {lang === "en" ? uni.country : uni.countryEs} · {t("Ranking mundial", "World rank")} #
-              {ranksOf(uni).global} · #{ranksOf(uni).continent}{" "}
-              {t(
-                `en ${CONTINENT_NAMES[ranksOf(uni).continentKey].es}`,
-                `in ${CONTINENT_NAMES[ranksOf(uni).continentKey].en}`,
-              )}{" "}
-              ({ranksOf(uni).continentTotal}) · {uni.years} {t("años de carrera", "year degree")}
+              {uni.city}, {lang === "en" ? uni.country : uni.countryEs} · {rankLine(uni)} · {uni.years}{" "}
+              {t("años de carrera", "year degree")}
             </p>
 
           </DialogHeader>

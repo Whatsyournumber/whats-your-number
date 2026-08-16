@@ -1218,9 +1218,63 @@ export function uniTuitionUsd(u: University, field?: UniField | "" | null) {
   return Math.round((base * FIELD_COST_FACTOR[field]) / 10) * 10;
 }
 
-/** Coste total del grado en USD (matrícula + vida), opcionalmente para una carrera concreta. */
-export function uniTotalUsd(u: University, includeLiving = true, field?: UniField | "" | null) {
-  return (uniTuitionUsd(u, field) + (includeLiving ? u.living : 0)) * u.years;
+/** Estilos de alojamiento/vida del estudiante y su factor sobre el coste de vida base. */
+export type LivingStyle = "shared" | "moderate" | "premium";
+
+export const LIVING_STYLES: Record<
+  LivingStyle,
+  { factor: number; es: string; en: string; descEs: string; descEn: string; emoji: string }
+> = {
+  shared: {
+    factor: 0.72,
+    es: "Ajustado",
+    en: "Budget",
+    descEs: "Piso compartido con varios compañeros, transporte público y cocinar en casa.",
+    descEn: "Flat shared with several roommates, public transport and cooking at home.",
+    emoji: "🛏️",
+  },
+  moderate: {
+    factor: 1,
+    es: "Moderado",
+    en: "Moderate",
+    descEs: "Residencia de estudiantes o studio pequeño, con gastos e internet incluidos.",
+    descEn: "Student dorm or small studio, bills and internet included.",
+    emoji: "🏫",
+  },
+  premium: {
+    factor: 1.48,
+    es: "Premium",
+    en: "Premium",
+    descEs: "Apartamento propio en buena zona, caminando a la universidad.",
+    descEn: "Own apartment in a good area, walking distance to campus.",
+    emoji: "✨",
+  },
+};
+
+/** Coste de vida anual en USD según el estilo de alojamiento elegido. */
+export function uniLivingUsd(u: University, style: LivingStyle = "moderate") {
+  return Math.round((u.living * LIVING_STYLES[style].factor) / 10) * 10;
+}
+
+/** Coste total del grado en USD (matrícula + vida), opcionalmente para una carrera y estilo de vida. */
+export function uniTotalUsd(
+  u: University,
+  includeLiving = true,
+  field?: UniField | "" | null,
+  style: LivingStyle = "moderate",
+) {
+  return (uniTuitionUsd(u, field) + (includeLiving ? uniLivingUsd(u, style) : 0)) * u.years;
+}
+
+/**
+ * Puntuación de una universidad dentro de un área de estudio concreta.
+ * Ajusta el ranking global con una fortaleza determinista por carrera, de modo
+ * que el orden por carrera no sea idéntico al ranking mundial.
+ */
+export function uniFieldScore(u: University, field: UniField) {
+  const core = u.fields.includes(field) ? 0.88 : 1.06; // fuerte en su área base
+  const jitter = 1 + ((fieldHash(`${u.id}#${field}`) % 25) - 12) / 100; // ±12%
+  return u.rank * core * jitter;
 }
 
 
