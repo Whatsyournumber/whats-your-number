@@ -184,6 +184,32 @@ function CollegeFinder({ member }: { member: Member }) {
   const cost = (u: University) => uniTotalUsd(u, includeLiving, field, living) * usdFx.factor;
   const isHome = (u: University) => !!homeCountry && (u.countryEs === homeCountry || u.country === homeCountry);
 
+  /** Modo de ranking unificado: combina orden (coste vs ranking) y tope (Top 100/300/500). */
+  const rankMode = sort === "cost" ? "cost" : rankMax || "best";
+  const setRankMode = (v: string) => {
+    if (v === "cost") {
+      setSort("cost");
+      setRankMax("");
+    } else if (v === "best") {
+      setSort("rank");
+      setRankMax("");
+    } else {
+      setSort("rank");
+      setRankMax(v);
+    }
+  };
+
+  /** Modo de coste de vida unificado: solo matrícula o estilo de alojamiento. */
+  const lifeMode = includeLiving ? living : "tuition";
+  const setLifeMode = (v: string) => {
+    if (v === "tuition") {
+      setIncludeLiving(false);
+    } else {
+      setIncludeLiving(true);
+      setLiving(v as LivingStyle);
+    }
+  };
+
   const bucketOf = (u: University): Bucket => {
     if (isHome(u)) return "home";
     if (u.region === "eu") return "eu";
