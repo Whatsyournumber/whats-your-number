@@ -147,6 +147,7 @@ export function KidShell({ member, children }: { member: Member; children: React
             <Link
               key={tab.to}
               to={tab.to}
+              activeOptions={{ exact: true }}
               activeProps={{ className: "nav-pill-active" }}
               className={cn("nav-pill text-sm", collapsed && "justify-center px-0")}
               title={collapsed ? label(tab) : undefined}
@@ -173,6 +174,7 @@ export function KidShell({ member, children }: { member: Member; children: React
             <Link
               key={tab.to}
               to={tab.to}
+              activeOptions={{ exact: true }}
               activeProps={{ className: "nav-pill-active" }}
               className={cn("nav-pill text-sm", collapsed && "justify-center px-0")}
               title={collapsed ? label(tab) : undefined}
@@ -224,6 +226,7 @@ export function KidShell({ member, children }: { member: Member; children: React
             <Link
               key={tab.to}
               to={tab.to}
+              activeOptions={{ exact: true }}
               activeProps={{ className: "nav-pill-active" }}
               className="flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full border border-border/60 bg-secondary/60 px-2 py-1.5 text-[11px] font-semibold text-muted-foreground"
             >
@@ -237,6 +240,7 @@ export function KidShell({ member, children }: { member: Member; children: React
             <Link
               key={tab.to}
               to={tab.to}
+              activeOptions={{ exact: true }}
               className="flex min-w-0 flex-1 flex-col items-center gap-1 rounded-2xl px-1 py-1.5 text-[10px] font-semibold text-muted-foreground"
             >
               {({ isActive }: { isActive: boolean }) => (
