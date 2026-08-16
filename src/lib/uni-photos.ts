@@ -112,6 +112,8 @@ import curatedRadboud from "@/assets/uni/nl-radboud.jpg";
 import curatedGroningen from "@/assets/uni/nl-groningen.jpg";
 import curatedIcesi from "@/assets/uni/co-icesi.jpg";
 import curatedCattolica from "@/assets/uni/it-cattolica.jpg";
+import curatedUtdt from "@/assets/uni/ar-utdt.jpg";
+import curatedUchile from "@/assets/uni/cl-uchile.jpg";
 
 import oc_uwa from "@/assets/uni/oc-uwa.jpg";
 import oc_adelaide from "@/assets/uni/oc-adelaide.jpg";
