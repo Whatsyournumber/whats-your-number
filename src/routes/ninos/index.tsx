@@ -55,7 +55,7 @@ function ProfileSelector() {
     await openCheckout({
       priceId: "extra_kid_monthly",
       quantity: 1,
-      customerEmail: user?.email,
+      ...(user?.email ? { customerEmail: user.email } : {}),
       customData: { userId: user?.id ?? "", type: "extra_kid_profile" },
       successUrl: `${window.location.origin}/ninos`,
     });
