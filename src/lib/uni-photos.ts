@@ -700,6 +700,7 @@ const CURATED: Record<string, string> = {
   "it-universita-di-bologna": curatedBologna,
   "it-universita-di-firenze": curatedFirenze,
   "br-ufrgs": curatedUfrgs,
+  "mx-unam": curatedUnam,
   "mx-uanl": curatedUanl,
   "lat-universidad-tecnologica-de-p": curatedUtp,
   "lat-universidad-de-costa-rica": curatedUcr,
