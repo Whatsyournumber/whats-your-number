@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { getBuddyTip } from "@/lib/kid-buddy.functions";
-import { ArrowUpRight, CheckSquare, ChevronRight } from "lucide-react";
+import { ArrowUpRight, CheckSquare, ChevronDown, ChevronRight } from "lucide-react";
 import { Card, GrowthChart, Progress } from "@/components/mfn-ui";
 import buddyImg from "@/assets/kid-buddy-robot.png";
 import piggyImg from "@/assets/kid-piggy.png";
