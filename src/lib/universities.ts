@@ -1169,10 +1169,60 @@ export const UNIVERSITIES: University[] = [
 ];
 
 
-/** Coste total del grado en USD (matrícula + vida). */
-export function uniTotalUsd(u: University, includeLiving = true) {
-  return (u.tuition + (includeLiving ? u.living : 0)) * u.years;
+/**
+ * Factor de coste por área de estudio: una carrera de Medicina o Ingeniería
+ * cuesta más que Educación o Arte en la misma universidad.
+ */
+export const FIELD_COST_FACTOR: Record<UniField, number> = {
+  health: 1.38,
+  tech: 1.22,
+  engineering: 1.18,
+  business: 1.16,
+  economics: 1.12,
+  architecture: 1.1,
+  law: 1.08,
+  science: 1.06,
+  math: 1.0,
+  psychology: 0.97,
+  media: 0.95,
+  arts: 0.92,
+  sports: 0.9,
+  education: 0.86,
+};
+
+/**
+ * Matrícula base única por universidad: se aplica un desvío determinista y se
+ * resuelven colisiones para que no haya dos universidades con el mismo precio.
+ */
+const UNIQUE_TUITION: Record<string, number> = (() => {
+  const used = new Set<number>();
+  const out: Record<string, number> = {};
+  for (const u of UNIVERSITIES) {
+    if (u.tuition <= 0) {
+      out[u.id] = 0;
+      continue;
+    }
+    const spread = (fieldHash(u.id) % 37) - 18; // -18..18
+    let v = Math.max(500, u.tuition + spread * 25);
+    while (used.has(v)) v += 25;
+    used.add(v);
+    out[u.id] = v;
+  }
+  return out;
+})();
+
+/** Matrícula anual en USD; si se indica un área de estudio ajusta el precio a esa carrera. */
+export function uniTuitionUsd(u: University, field?: UniField | "" | null) {
+  const base = UNIQUE_TUITION[u.id] ?? u.tuition;
+  if (base <= 0 || !field) return base;
+  return Math.round((base * FIELD_COST_FACTOR[field]) / 10) * 10;
 }
+
+/** Coste total del grado en USD (matrícula + vida), opcionalmente para una carrera concreta. */
+export function uniTotalUsd(u: University, includeLiving = true, field?: UniField | "" | null) {
+  return (uniTuitionUsd(u, field) + (includeLiving ? u.living : 0)) * u.years;
+}
+
 
 /** Proyección de capital: base + aportes mensuales capitalizados hasta la edad objetivo. */
 export function projectCapital(base: number, monthly: number, years: number, ratePct: number) {
