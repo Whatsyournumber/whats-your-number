@@ -135,6 +135,8 @@ export function GrowthChart({
   areas = [{ key: "total", color: "var(--color-chart-1)" }],
   lines = [],
   yMax,
+  seriesNames,
+  tooltipLabel,
 }: {
   data: Record<string, number | string>[];
   currency?: string;
@@ -143,6 +145,8 @@ export function GrowthChart({
   areas?: { key: string; color: string }[];
   lines?: { key: string; color: string }[];
   yMax?: number | undefined;
+  seriesNames?: Record<string, string>;
+  tooltipLabel?: (label: string | number) => string;
 }) {
   return (
     <div style={{ height }}>
@@ -161,7 +165,11 @@ export function GrowthChart({
           <YAxis {...axis} width={72} domain={[0, yMax ?? "dataMax"]} tickFormatter={(v) => money(Number(v), currency, true)} />
           <Tooltip
             contentStyle={tooltipStyle()}
-            formatter={(v: number | string) => money(Number(v), currency)}
+            labelFormatter={(l) => (tooltipLabel ? tooltipLabel(l as string | number) : String(l))}
+            formatter={(v: number | string, name: string) => [
+              money(Number(v), currency),
+              seriesNames?.[name] ?? name,
+            ]}
           />
           {areas.map((a) => (
             <Area
@@ -217,7 +225,11 @@ export function Donut({
           </Pie>
           <Tooltip
             contentStyle={tooltipStyle()}
-            formatter={(v: number | string) => money(Number(v), currency)}
+            labelFormatter={(l) => (tooltipLabel ? tooltipLabel(l as string | number) : String(l))}
+            formatter={(v: number | string, name: string) => [
+              money(Number(v), currency),
+              seriesNames?.[name] ?? name,
+            ]}
           />
         </PieChart>
       </ResponsiveContainer>
