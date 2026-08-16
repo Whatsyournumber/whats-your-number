@@ -117,7 +117,9 @@ function MyNumber({ member }: { member: Member }) {
   const activePreset =
     RATE_PRESETS.find((p) => Math.abs(chartRate - p.rate) < 0.01) ??
     ({ es: "Personalizado", en: "Custom" } as { es: string; en: string });
+  const shownAge = member.age + years;
   const chartProjection = projectFund(base, monthly, member.age, member.age + years, chartRate);
+
   const [compareRate, setCompareRate] = useState<number | null>(null);
   const comparedPoints = useMemo(() => {
     if (compareRate === null) return chartProjection.points;
