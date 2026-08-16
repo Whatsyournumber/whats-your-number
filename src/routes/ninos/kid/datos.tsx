@@ -104,7 +104,7 @@ function MyData({ member }: { member: Member }) {
     monthly_contribution: 0,
     target_age: 18,
     expected_return: 7,
-    goal: "🎓 Universidad",
+    goal: "",
   });
 
   useEffect(() => {
@@ -296,9 +296,9 @@ function MyData({ member }: { member: Member }) {
             <div className="grid gap-4 sm:grid-cols-3">
               {(
                 [
-                  ["split_spend", "🛍️ Gastar"],
-                  ["split_save", "🏦 Ahorrar"],
-                  ["split_grow", "🌱 Crecer"],
+                  ["split_spend", `🛍️ ${t("Gastar", "Spend")}`],
+                  ["split_save", `🏦 ${t("Ahorrar", "Save")}`],
+                  ["split_grow", `🌱 ${t("Crecer", "Grow")}`],
                 ] as const
               ).map(([key, label]) => (
                 <label key={key} className="block">
