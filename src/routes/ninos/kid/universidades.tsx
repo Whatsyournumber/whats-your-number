@@ -20,7 +20,7 @@ import {
   uniTuitionUsd,
   uniLivingUsd,
   uniFieldScore,
-  LIVING_STYLES,
+  
   uniSector,
   type LivingStyle,
   type UniField,
