@@ -694,7 +694,7 @@ function HowItWorksSlider() {
           </span>
         </div>
 
-        <div className="relative overflow-hidden rounded-[24px] bg-background/70 p-4 ring-1 ring-border md:p-6">
+        <div className="relative overflow-hidden rounded-[24px] bg-background/70 p-4 ring-1 ring-border md:p-6 lg:[zoom:0.72]">
           <div className="kid-gradient pointer-events-none absolute inset-x-0 top-0 h-[2px] opacity-70" />
 
           <div className="-mx-1 flex items-center gap-2 overflow-x-auto px-1 pb-1 scrollbar-hide">
