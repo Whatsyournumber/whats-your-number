@@ -149,7 +149,9 @@ function MyNumber({ member }: { member: Member }) {
   const { data: buddyTip, isFetching: buddyThinking } = useQuery({
     queryKey: ["kid-buddy-tip", member.id, lang, Math.round(today), Math.round(projection.future)],
     enabled: movements.length > 0,
-    staleTime: 1000 * 60 * 30,
+    staleTime: 1000 * 60 * 2,
+    refetchOnWindowFocus: false,
+
     retry: false,
     queryFn: () =>
       buddyTipFn({
