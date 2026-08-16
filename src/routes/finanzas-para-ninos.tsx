@@ -308,7 +308,7 @@ function HowItWorksSlider() {
     { label: t("Gastar", "Spend"), value: 20, amount: "€12", color: "var(--kid-sky)" },
   ];
 
-  const slides = [
+  const rawSlides = [
 
     {
       id: "numbers",
@@ -618,6 +618,40 @@ function HowItWorksSlider() {
       visual: <UniFinderVisual />,
     },
   ];
+
+  const order = ["numbers", "grow", "unis", "pockets", "chores", "dreams", "badges"];
+  const slides = [...rawSlides].sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+
+  const buddy: Record<string, string> = {
+    numbers: t(
+      "Sofía va un 11% de camino a su número. Con 3 € más al mes llegaría 8 meses antes.",
+      "Sofía is 11% of the way to her number. Just €3 more a month gets her there 8 months sooner.",
+    ),
+    grow: t(
+      "El 77% de su futuro viene del interés compuesto, no de lo que aporta. Empezar hoy vale oro.",
+      "77% of her future comes from compound interest, not deposits. Starting today is worth gold.",
+    ),
+    unis: t(
+      "Con su número del futuro cubre el 111% de un grado en Barcelona, o el 26% de MIT.",
+      "Her future number covers 111% of a degree in Barcelona, or 26% of MIT.",
+    ),
+    pockets: t(
+      "Su bolsillo de gastar lleva 3 semanas intacto: buena señal para subir el de invertir al 45%.",
+      "Her spend pocket has been untouched for 3 weeks: a good sign to push invest up to 45%.",
+    ),
+    chores: t(
+      "Las tareas aportan el 39% de su dinero. Añadir una tarea de 1 € sumaría €52 al año.",
+      "Chores bring in 39% of her money. Adding a €1 chore would add €52 a year.",
+    ),
+    dreams: t(
+      "Si mueve 5 € del bolsillo de gastar, consigue la bici 6 semanas antes.",
+      "Moving €5 from her spend pocket gets her the bike 6 weeks earlier.",
+    ),
+    badges: t(
+      "7 semanas de racha: está en su mejor momento. Un reto nuevo mantiene el impulso.",
+      "7-week streak: she's at her best. A fresh quest keeps the momentum going.",
+    ),
+  };
 
   const stats: Record<string, Array<{ k: string; v: string }>> = {
     numbers: [
