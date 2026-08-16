@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowUpRight, CheckSquare, Rocket, Star, Wallet } from "lucide-react";
+import { ArrowUpRight, CheckSquare, ChevronRight, Rocket, Star, Wallet } from "lucide-react";
 import { Buddy, Card, GrowthChart, Progress } from "@/components/mfn-ui";
+import buddyImg from "@/assets/kid-buddy-robot.png";
 import piggyImg from "@/assets/kid-piggy.png";
 import treeImg from "@/assets/kid-tree.png";
 import { KidPage, PageTitle } from "@/components/kid-page";
