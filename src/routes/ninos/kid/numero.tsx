@@ -572,8 +572,9 @@ function MyNumber({ member }: { member: Member }) {
               );
             })}
             <span className="text-[11px] text-muted-foreground">
-              {t("Toca otra para comparar · doble clic para fijarla", "Tap another to compare · double-click to set it")}
+              {t("Analiza el histórico de las tasas", "Analyzes the historical rates")}
             </span>
+
           </div>
         )}
 
