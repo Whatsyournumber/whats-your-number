@@ -239,43 +239,87 @@ function MyNumber({ member }: { member: Member }) {
 
         <div className="grid gap-4 lg:grid-rows-[auto_1fr] [&>*]:h-full">
 
-          <Buddy>{line}</Buddy>
-          <Card title={t("Mis sueños", "My dreams")}>
+          <div className="card-soft animate-rise relative overflow-hidden bg-gradient-to-br from-chart-3/85 to-primary/70 p-4 sm:p-5">
+            <div className="pointer-events-none absolute right-6 top-4 text-lg opacity-80">✨</div>
+            <div className="pointer-events-none absolute right-16 top-10 text-sm opacity-70">✦</div>
+            <div className="flex items-center gap-2">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-background/80 text-lg">🤖</span>
+              <p className="font-display text-lg font-bold text-background">Buddy</p>
+            </div>
+            <div className="mt-3 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-2">
+              <div className="rounded-2xl bg-background/95 p-3 text-sm leading-relaxed text-foreground shadow-sm">
+                <p className="font-bold">
+                  {t(`¡Genial, ${member.name}!`, `Great job, ${member.name}!`)} 🚀
+                </p>
+                <p className="mt-1 text-muted-foreground">{line}</p>
+              </div>
+              <img
+                src={buddyImg}
+                alt=""
+                aria-hidden
+                loading="lazy"
+                width={768}
+                height={768}
+                className="h-[92px] w-[92px] shrink-0 object-contain sm:h-[110px] sm:w-[110px]"
+              />
+            </div>
+          </div>
+
+          <div className="card-soft animate-rise p-4 sm:p-5">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-primary">
+                {t("Mi próximo sueño", "My next dream")}
+              </p>
+              <Link to="/ninos/kid/deseos" aria-label={t("Ver mis sueños", "See my dreams")}>
+                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              </Link>
+            </div>
+
             {dreams.next ? (
               (() => {
                 const saved = Number(dreams.next.saved);
                 const price = Number(dreams.next.price);
                 const pct = Math.max(0, Math.min(100, (saved / Math.max(1, price)) * 100));
                 const missing = Math.max(0, price - saved);
+                const months = pace > 0 ? Math.max(1, Math.ceil(missing / pace)) : null;
                 return (
-                  <div className="grid grid-cols-[104px_minmax(0,1fr)] items-center gap-4 sm:grid-cols-[128px_minmax(0,1fr)]">
-                    <DreamPhoto title={dreams.next.title} emoji={dreams.next.emoji} pct={pct} />
-                    <div className="min-w-0">
-                      <p className="truncate text-base font-bold text-foreground">
-                        {dreams.next.emoji} {dreams.next.title}
-                      </p>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        <span className="font-semibold text-foreground">{money(saved, member.currency)}</span>{" "}
-                        {t("de", "of")} {money(price, member.currency)}
-                      </p>
-                      <div className="mt-2 flex items-center gap-2">
-                        <Progress className="flex-1" value={pct} />
-                        <span className="text-xs font-bold text-primary">{Math.round(pct)}%</span>
+                  <div className="mt-3 rounded-2xl bg-surface-2/60 p-3 sm:p-4">
+                    <div className="grid grid-cols-[92px_minmax(0,1fr)] items-center gap-4 sm:grid-cols-[112px_minmax(0,1fr)]">
+                      <DreamPhoto title={dreams.next.title} emoji={dreams.next.emoji} pct={pct} />
+                      <div className="min-w-0">
+                        <p className="truncate font-display text-base font-bold text-foreground">
+                          {dreams.next.title} <span className="text-sm">{dreams.next.emoji}</span>
+                        </p>
+                        <p className="mt-1 text-lg font-bold text-foreground">
+                          {money(saved, member.currency)}{" "}
+                          <span className="text-sm font-medium text-muted-foreground">
+                            {t("de", "of")} {money(price, member.currency)}
+                          </span>
+                        </p>
+                        <div className="mt-2 flex items-center gap-2">
+                          <Progress className="flex-1" value={pct} />
+                          <span className="text-xs font-bold text-muted-foreground">{Math.round(pct)}%</span>
+                        </div>
                       </div>
-                      {missing > 0 && (
-                        <span className="mt-3 inline-block rounded-full bg-surface-2 px-3 py-1 text-xs font-semibold text-foreground">
-                          {t("Te faltan", "You need")} {money(missing, member.currency)}
-                        </span>
-                      )}
-                      <Link to="/ninos/kid/deseos" className="mt-3 block text-xs font-semibold text-primary">
-                        {t("Ver mis sueños", "See my dreams")} →
-                      </Link>
                     </div>
+                    {missing > 0 && (
+                      <span className="mt-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-foreground">
+                        {t("Te faltan", "You need")} {money(missing, member.currency)}
+                      </span>
+                    )}
+                    {months && (
+                      <p className="mt-3 text-sm text-muted-foreground">
+                        {t(
+                          `A este ritmo la tendrás en ${months} ${months === 1 ? "mes" : "meses"}.`,
+                          `At this pace you'll get it in ${months} ${months === 1 ? "month" : "months"}.`,
+                        )}
+                      </p>
+                    )}
                   </div>
                 );
               })()
             ) : (
-              <div className="flex items-center gap-4">
+              <div className="mt-3 flex items-center gap-4">
                 <Ring value={dreams.progress} />
                 <div className="min-w-0">
                   <p className="text-sm text-muted-foreground">
@@ -287,7 +331,8 @@ function MyNumber({ member }: { member: Member }) {
                 </div>
               </div>
             )}
-          </Card>
+          </div>
+
 
         </div>
       </div>
