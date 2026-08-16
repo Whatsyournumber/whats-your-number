@@ -1366,7 +1366,7 @@ function DualDashboards() {
             face={faceGirl}
             name={t("Sofía", "Sofía")}
             chip={t("Su primer número", "Her first number")}
-            label={t("Su dinero hoy", "Her money today")}
+            label={t("Sofía aprende a crecer su dinero", "Sofía learns to grow her money")}
             value="€1.250"
             data={data}
             dataKey="k"
