@@ -219,20 +219,20 @@ function MyNumber({ member }: { member: Member }) {
                   { text: "text-chart-2", bar: "bg-chart-2", chip: "bg-chart-2/10" },
                 ][i] ?? { text: "text-primary", bar: "bg-primary", chip: "bg-primary/10" };
                 return (
-                  <div key={p.key} className="@container rounded-2xl border border-border/60 bg-card p-4">
-                    <p className="flex items-center gap-2.5">
-                      <span className={`grid size-12 shrink-0 place-items-center rounded-2xl text-[30px] leading-none ${tone.chip}`}>
+                  <div key={p.key} className="@container rounded-2xl border border-border/60 bg-card p-5">
+                    <p className="flex items-center gap-3">
+                      <span className={`grid size-14 shrink-0 place-items-center rounded-2xl text-[34px] leading-none ${tone.chip}`}>
                         {p.emoji}
                       </span>
-                      <span className={`truncate text-[clamp(12px,7cqi,15px)] font-semibold ${tone.text}`}>
+                      <span className={`truncate text-[clamp(14px,8cqi,18px)] font-semibold ${tone.text}`}>
                         {pocketLabel(p.key, lang)}
                       </span>
                     </p>
-                    <p className="mt-3 whitespace-nowrap font-display text-[clamp(1rem,11cqi,1.6rem)] font-bold leading-none text-foreground">
+                    <p className="mt-4 whitespace-nowrap font-display text-[clamp(1.25rem,13cqi,2rem)] font-bold leading-none text-foreground">
                       {money(amount, member.currency)}
                     </p>
 
-                    <p className="mt-3 text-[11px] text-muted-foreground">
+                    <p className="mt-3 text-[13px] text-muted-foreground">
                       {pct}% {t("de tu dinero", "of your money")}
                     </p>
                     <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-2">
