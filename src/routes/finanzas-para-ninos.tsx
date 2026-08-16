@@ -706,7 +706,7 @@ function HowItWorksSlider() {
                   key={s.id}
                   type="button"
                   onClick={() => setI(k)}
-                  className="flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all"
+                  className="flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-[17px] font-medium transition-all lg:text-[17px]"
                   style={
                     isActive
                       ? {
