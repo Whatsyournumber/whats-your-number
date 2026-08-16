@@ -195,7 +195,7 @@ export function GrowthChart({
                 if (!near) return null;
               }
 
-              const order = [...lines.map((l) => l.key), ...areas.map((a) => a.key)];
+              const order = [...areas.map((a) => a.key), ...lines.map((l) => l.key)];
               const sorted = [...payload].sort((a, b) => {
                 const rank = (k: string) => {
                   if (k === "aportes") return 99;
