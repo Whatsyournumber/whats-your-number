@@ -285,6 +285,16 @@ import curatedLiverpool from "@/assets/uni/uk-liverpool.jpg";
 import curatedCardiff from "@/assets/uni/uk-cardiff.jpg";
 import curatedAberdeen from "@/assets/uni/uk-aberdeen.jpg";
 import curatedLoughborough from "@/assets/uni/uk-loughborough.jpg";
+import curatedReading from "@/assets/uni/uk-reading.jpg";
+import curatedLeicester from "@/assets/uni/uk-leicester.jpg";
+import curatedSurrey from "@/assets/uni/uk-surrey.jpg";
+import curatedStrathclyde from "@/assets/uni/uk-strathclyde.jpg";
+import curatedEastAnglia from "@/assets/uni/uk-east-anglia.jpg";
+import curatedHolloway from "@/assets/uni/uk-royal-holloway.jpg";
+import curatedCityLondon from "@/assets/uni/uk-city-london.jpg";
+import curatedSOAS from "@/assets/uni/uk-soas.jpg";
+import curatedHeriotWatt from "@/assets/uni/uk-heriot-watt.jpg";
+import curatedKent from "@/assets/uni/uk-kent.jpg";
 import cur_uk_manchester from "@/assets/uni/uk-manchester.jpg";
 import cur_uk_bristol from "@/assets/uni/uk-bristol.jpg";
 import cur_uk_edinburgh from "@/assets/uni/uk-edinburgh.jpg";
@@ -978,6 +988,16 @@ const CURATED: Record<string, string> = {
   "uk-cardiff-university": curatedCardiff,
   "uk-university-of-aberdeen": curatedAberdeen,
   "uk-loughborough-university": curatedLoughborough,
+  "uk-university-of-reading": curatedReading,
+  "uk-university-of-leicester": curatedLeicester,
+  "uk-university-of-surrey": curatedSurrey,
+  "uk-university-of-strathclyde": curatedStrathclyde,
+  "uk-university-of-east-anglia": curatedEastAnglia,
+  "uk-royal-holloway": curatedHolloway,
+  "uk-city-university-of-london": curatedCityLondon,
+  "uk-soas-university-of-london": curatedSOAS,
+  "uk-heriot-watt-university": curatedHeriotWatt,
+  "uk-university-of-kent": curatedKent,
   "uk-university-of-manchester": cur_uk_manchester,
   "uk-university-of-bristol": cur_uk_bristol,
   "uk-university-of-edinburgh": cur_uk_edinburgh,
