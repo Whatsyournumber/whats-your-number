@@ -50,34 +50,34 @@ function ProfileCard({ member, collapsed }: { member: Member; collapsed: boolean
   }
 
   return (
-    <div className="mt-3 shrink-0 rounded-3xl border border-border/70 bg-surface-2/70 p-3.5">
-      <div className="flex items-center gap-3">
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-card text-2xl shadow-sm">
+    <div className="mt-2 shrink-0 rounded-2xl border border-border/70 bg-surface-2/70 p-2.5">
+      <div className="flex items-center gap-2">
+        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-card text-base shadow-sm">
           {member.avatar}
         </span>
         <div className="min-w-0">
-          <p className="truncate font-display text-sm font-bold text-foreground">{member.name}</p>
-          <p className="text-[11px] font-semibold text-muted-foreground">
+          <p className="truncate font-display text-xs font-bold text-foreground">{member.name}</p>
+          <p className="text-[10px] font-semibold text-muted-foreground">
             {t("Nivel", "Level")} {level} ⭐ · 🔥 {member.streak}
           </p>
         </div>
       </div>
 
-      <div className="mt-3 rounded-2xl bg-card px-3 py-2.5">
-        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
-          {t("Su primer número", "Their first number")}
+      <div className="mt-2 rounded-xl bg-card px-2.5 py-2">
+        <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+          {t("Mi primer número", "My first number")}
         </p>
-        <p className="font-display text-xl font-semibold text-foreground">
+        <p className="font-display text-base font-semibold text-foreground">
           {money(saved, member.currency)}
         </p>
-        <p className="text-[10px] font-medium text-muted-foreground">{t("ahorrado", "saved")}</p>
+        <p className="text-[9px] font-medium text-muted-foreground">{t("ahorrado", "saved")}</p>
       </div>
 
-      <div className="mt-3">
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-2">
+      <div className="mt-2">
+        <div className="h-1 w-full overflow-hidden rounded-full bg-surface-2">
           <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
         </div>
-        <p className="mt-1.5 text-[10px] font-medium text-muted-foreground">
+        <p className="mt-1 text-[9px] font-medium text-muted-foreground">
           {50 - (member.xp % 50)} XP {t("para nivel", "to level")} {level + 1}
         </p>
       </div>
