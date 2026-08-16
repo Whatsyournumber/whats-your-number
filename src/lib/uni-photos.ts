@@ -1009,7 +1009,7 @@ const CURATED: Record<string, string> = {
   "cl-universidad-de-los-andes-chi": cur_cl_uandes,
   "ot-university-of-cape-town": cur_za_uct,
   "ot-nova-lisboa": cur_pt_nova,
-  "fr-sciences-po": cur_fr_sciencespo,
+  
   "fr-ecole-polytechnique": cur_fr_polytechnique,
   "fr-essec-business-school": cur_fr_essec,
   "fr-hec-paris": cur_fr_hec,
