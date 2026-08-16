@@ -144,21 +144,19 @@ function MyNumber({ member }: { member: Member }) {
         subtitle={t("¡Vamos por un gran futuro!", "Let's go for a great future!")}
       />
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+      <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         <div className="grid content-start gap-4">
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="card-soft animate-rise grid min-h-[180px] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 overflow-hidden bg-primary/5 p-5">
-              <div className="min-w-0">
-                <p className="truncate text-[12px] font-bold uppercase tracking-[0.1em] text-primary">
-                  {t("Mi dinero hoy", "My money today")}
-                </p>
-                <p className="mt-2 whitespace-nowrap font-display text-[clamp(1.25rem,3.4vw,1.95rem)] font-bold leading-none tracking-tight text-foreground">
+            <div className="card-soft animate-rise relative grid min-h-[196px] grid-cols-[minmax(0,1fr)_auto] items-end gap-2 overflow-hidden bg-primary/5 p-5 ring-1 ring-inset ring-primary/10">
+              <div className="min-w-0 self-start">
+                <Eyebrow className="text-primary">{t("Mi dinero hoy", "My money today")}</Eyebrow>
+                <p className="mt-2 whitespace-nowrap font-display text-[clamp(1.15rem,3vw,1.75rem)] font-bold leading-none tracking-tight text-foreground">
                   {money(today, member.currency)}
                 </p>
-                <p className="mt-3 truncate text-sm text-muted-foreground">
+                <p className="mt-4 truncate text-[13px] text-muted-foreground">
                   {t("Esta semana", "This week")}
                 </p>
-                <p className="truncate text-sm font-semibold text-chart-2">
+                <p className="truncate text-[13px] font-semibold text-chart-2">
                   +{money(pace, member.currency)} ↗
                 </p>
               </div>
@@ -169,22 +167,22 @@ function MyNumber({ member }: { member: Member }) {
                 loading="lazy"
                 width={768}
                 height={768}
-                className="pointer-events-none h-[110px] w-[110px] shrink-0 self-end object-contain sm:h-[124px] sm:w-[124px]"
+                className="pointer-events-none -mb-1 h-[104px] w-[104px] shrink-0 self-end object-contain sm:h-[120px] sm:w-[120px]"
               />
             </div>
 
-            <div className="card-soft animate-rise grid min-h-[180px] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 overflow-hidden bg-chart-3/10 p-5">
-              <div className="min-w-0">
-                <p className="truncate text-[12px] font-bold uppercase tracking-[0.1em] text-chart-3">
+            <div className="card-soft animate-rise relative grid min-h-[196px] grid-cols-[minmax(0,1fr)_auto] items-end gap-2 overflow-hidden bg-chart-3/10 p-5 ring-1 ring-inset ring-chart-3/15">
+              <div className="min-w-0 self-start">
+                <Eyebrow className="text-chart-3">
                   {t(`Mi dinero a los ${targetAge}`, `My money at ${targetAge}`)}
-                </p>
-                <p className="mt-2 whitespace-nowrap font-display text-[clamp(1.25rem,3.4vw,1.95rem)] font-bold leading-none tracking-tight text-foreground">
+                </Eyebrow>
+                <p className="mt-2 whitespace-nowrap font-display text-[clamp(1.15rem,3vw,1.75rem)] font-bold leading-none tracking-tight text-foreground">
                   {money(projection.future, member.currency)}
                 </p>
-                <p className="mt-3 truncate text-sm text-muted-foreground">
+                <p className="mt-4 truncate text-[13px] text-muted-foreground">
                   {t("Si sigues ahorrando", "If you keep saving")}
                 </p>
-                <p className="truncate text-sm font-semibold text-chart-3">
+                <p className="truncate text-[13px] font-semibold text-chart-3">
                   {money(monthly || pace, member.currency)} {t("al mes", "a month")}
                 </p>
               </div>
@@ -195,35 +193,36 @@ function MyNumber({ member }: { member: Member }) {
                 loading="lazy"
                 width={768}
                 height={768}
-                className="pointer-events-none h-[110px] w-[110px] shrink-0 self-end object-contain sm:h-[124px] sm:w-[124px]"
+                className="pointer-events-none -mb-1 h-[104px] w-[104px] shrink-0 self-end object-contain sm:h-[120px] sm:w-[120px]"
               />
             </div>
-
           </div>
 
           <div className="card-soft p-5">
-            <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-foreground">
+            <Eyebrow className="text-foreground">
               {t("¿Dónde está mi dinero?", "Where is my money?")}
-            </p>
-            <div className="mt-3 grid gap-3 sm:grid-cols-3">
+            </Eyebrow>
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
               {POCKETS.map((p, i) => {
                 const amount = totals[p.key];
                 const pct = today > 0 ? Math.round((amount / today) * 100) : 0;
                 const tone = [
-                  { bg: "bg-primary/5", text: "text-primary", bar: "bg-primary" },
-                  { bg: "bg-chart-2/10", text: "text-chart-2", bar: "bg-chart-2" },
-                  { bg: "bg-chart-4/10", text: "text-chart-4", bar: "bg-chart-4" },
-                ][i] ?? { bg: "bg-surface-2", text: "text-primary", bar: "bg-primary" };
+                  { bg: "bg-primary/5 ring-primary/10", text: "text-primary", bar: "bg-primary" },
+                  { bg: "bg-chart-2/10 ring-chart-2/15", text: "text-chart-2", bar: "bg-chart-2" },
+                  { bg: "bg-chart-4/10 ring-chart-4/15", text: "text-chart-4", bar: "bg-chart-4" },
+                ][i] ?? { bg: "bg-surface-2 ring-border", text: "text-primary", bar: "bg-primary" };
                 return (
-                  <div key={p.key} className={`rounded-2xl p-4 ${tone.bg}`}>
-                    <p className="flex items-center gap-2 text-sm font-semibold">
-                      <span className="text-2xl leading-none">{p.emoji}</span>
-                      <span className={tone.text}>{pocketLabel(p.key, lang)}</span>
+                  <div key={p.key} className={`rounded-2xl p-4 ring-1 ring-inset ${tone.bg}`}>
+                    <p className="flex items-center gap-2">
+                      <span className="text-xl leading-none">{p.emoji}</span>
+                      <span className={`truncate text-sm font-semibold ${tone.text}`}>
+                        {pocketLabel(p.key, lang)}
+                      </span>
                     </p>
-                    <p className="mt-1 font-display text-2xl font-bold text-foreground">
+                    <p className="mt-2 whitespace-nowrap font-display text-[clamp(1.05rem,2.4vw,1.5rem)] font-bold leading-none text-foreground">
                       {money(amount, member.currency)}
                     </p>
-                    <p className="mt-2 text-[11px] text-muted-foreground">
+                    <p className="mt-3 text-[11px] text-muted-foreground">
                       {pct}% {t("de tu dinero", "of your money")}
                     </p>
                     <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-background/70">
@@ -236,23 +235,20 @@ function MyNumber({ member }: { member: Member }) {
           </div>
         </div>
 
-
-
-        <div className="grid gap-4 lg:grid-rows-[auto_1fr] [&>*]:h-full">
-
-          <div className="card-soft animate-rise relative overflow-hidden bg-gradient-to-br from-chart-3/85 to-primary/70 p-4 sm:p-5">
+        <div className="grid gap-4 lg:grid-rows-[196px_1fr] [&>*]:h-full">
+          <div className="card-soft animate-rise relative overflow-hidden bg-gradient-to-br from-chart-3 to-primary p-5">
             <div className="pointer-events-none absolute right-6 top-4 text-lg opacity-80">✨</div>
             <div className="pointer-events-none absolute right-16 top-10 text-sm opacity-70">✦</div>
             <div className="flex items-center gap-2">
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-background/80 text-lg">🤖</span>
-              <p className="font-display text-lg font-bold text-background">Buddy</p>
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-background/85 text-base">🤖</span>
+              <p className="font-display text-base font-bold text-background">Buddy</p>
             </div>
             <div className="mt-3 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-2">
-              <div className="rounded-2xl bg-background/95 p-3 text-sm leading-relaxed text-foreground shadow-sm">
+              <div className="rounded-2xl bg-background/95 px-3 py-2.5 text-[13px] leading-snug text-foreground shadow-sm">
                 <p className="font-bold">
                   {t(`¡Genial, ${member.name}!`, `Great job, ${member.name}!`)} 🚀
                 </p>
-                <p className="mt-1 text-muted-foreground">{line}</p>
+                <p className="mt-1 line-clamp-2 text-muted-foreground">{line}</p>
               </div>
               <img
                 src={buddyImg}
@@ -261,18 +257,16 @@ function MyNumber({ member }: { member: Member }) {
                 loading="lazy"
                 width={768}
                 height={768}
-                className="h-[92px] w-[92px] shrink-0 object-contain sm:h-[110px] sm:w-[110px]"
+                className="-mb-1 h-[88px] w-[88px] shrink-0 object-contain"
               />
             </div>
           </div>
 
-          <div className="card-soft animate-rise p-4 sm:p-5">
+          <div className="card-soft animate-rise flex flex-col p-5">
             <div className="flex items-center justify-between gap-2">
-              <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-primary">
-                {t("Mi próximo sueño", "My next dream")}
-              </p>
+              <Eyebrow className="text-primary">{t("Mi próximo sueño", "My next dream")}</Eyebrow>
               <Link to="/ninos/kid/deseos" aria-label={t("Ver mis sueños", "See my dreams")}>
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                <ChevronRight className="h-4 w-4 text-muted-foreground transition hover:text-primary" />
               </Link>
             </div>
 
@@ -284,43 +278,45 @@ function MyNumber({ member }: { member: Member }) {
                 const missing = Math.max(0, price - saved);
                 const months = pace > 0 ? Math.max(1, Math.ceil(missing / pace)) : null;
                 return (
-                  <div className="mt-3 rounded-2xl bg-surface-2/60 p-3 sm:p-4">
-                    <div className="grid grid-cols-[92px_minmax(0,1fr)] items-center gap-4 sm:grid-cols-[112px_minmax(0,1fr)]">
+                  <div className="mt-4 flex flex-1 flex-col">
+                    <div className="grid grid-cols-[88px_minmax(0,1fr)] items-center gap-4">
                       <DreamPhoto title={dreams.next.title} emoji={dreams.next.emoji} pct={pct} />
                       <div className="min-w-0">
-                        <p className="truncate font-display text-base font-bold text-foreground">
-                          {dreams.next.title} <span className="text-sm">{dreams.next.emoji}</span>
+                        <p className="truncate font-display text-[15px] font-bold text-foreground">
+                          {dreams.next.title}
                         </p>
-                        <p className="mt-1 text-lg font-bold text-foreground">
+                        <p className="mt-1 whitespace-nowrap text-base font-bold text-foreground">
                           {money(saved, member.currency)}{" "}
-                          <span className="text-sm font-medium text-muted-foreground">
+                          <span className="text-[13px] font-medium text-muted-foreground">
                             {t("de", "of")} {money(price, member.currency)}
                           </span>
                         </p>
-                        <div className="mt-2 flex items-center gap-2">
+                        <div className="mt-3 flex items-center gap-2">
                           <Progress className="flex-1" value={pct} />
-                          <span className="text-xs font-bold text-muted-foreground">{Math.round(pct)}%</span>
+                          <span className="text-[11px] font-bold text-muted-foreground">{Math.round(pct)}%</span>
                         </div>
                       </div>
                     </div>
-                    {missing > 0 && (
-                      <span className="mt-3 inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-foreground">
-                        {t("Te faltan", "You need")} {money(missing, member.currency)}
-                      </span>
-                    )}
-                    {months && (
-                      <p className="mt-3 text-sm text-muted-foreground">
-                        {t(
-                          `A este ritmo la tendrás en ${months} ${months === 1 ? "mes" : "meses"}.`,
-                          `At this pace you'll get it in ${months} ${months === 1 ? "month" : "months"}.`,
-                        )}
-                      </p>
-                    )}
+                    <div className="mt-auto pt-4">
+                      {missing > 0 && (
+                        <span className="inline-block rounded-full bg-primary/10 px-3 py-1 text-[12px] font-semibold text-foreground">
+                          {t("Te faltan", "You need")} {money(missing, member.currency)}
+                        </span>
+                      )}
+                      {months && (
+                        <p className="mt-2 text-[13px] text-muted-foreground">
+                          {t(
+                            `A este ritmo la tendrás en ${months} ${months === 1 ? "mes" : "meses"}.`,
+                            `At this pace you'll get it in ${months} ${months === 1 ? "month" : "months"}.`,
+                          )}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 );
               })()
             ) : (
-              <div className="mt-3 flex items-center gap-4">
+              <div className="mt-4 flex flex-1 items-center gap-4">
                 <Ring value={dreams.progress} />
                 <div className="min-w-0">
                   <p className="text-sm text-muted-foreground">
@@ -333,10 +329,9 @@ function MyNumber({ member }: { member: Member }) {
               </div>
             )}
           </div>
-
-
         </div>
       </div>
+
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MiniStat
