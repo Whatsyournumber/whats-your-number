@@ -537,41 +537,50 @@ function MyNumber({ member }: { member: Member }) {
           </div>
         </div>
 
-        {/* Tasa — línea horizontal de chips */}
+        {/* Tasa — línea horizontal de chips (puedes elegir 2 para comparar) */}
         {ratesOpen && (
           <div className="mb-5 flex flex-wrap items-center gap-2">
             <span className="shrink-0 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
               {t("Tasa", "Rate")}:
             </span>
             {RATE_PRESETS.map((preset) => {
-              const active = Math.abs(chartRate - preset.rate) < 0.01;
+              const isMain = Math.abs(chartRate - preset.rate) < 0.01;
+              const isCompare = compareRate !== null && Math.abs(compareRate - preset.rate) < 0.01;
               return (
                 <button
                   key={preset.key}
                   type="button"
                   onClick={() => {
+                    if (isMain) return;
+                    if (isCompare) setCompareRate(null);
+                    else setCompareRate(preset.rate);
+                  }}
+                  onDoubleClick={() => {
                     setRate(preset.rate);
-                    setRatesOpen(false);
+                    setCompareRate(null);
                   }}
                   className={`h-8 rounded-full px-3 text-xs font-semibold transition ${
-                    active
+                    isMain
                       ? "bg-primary text-primary-foreground"
-                      : "bg-surface-1 text-muted-foreground hover:text-foreground"
+                      : isCompare
+                        ? "bg-chart-2 text-background"
+                        : "bg-surface-1 text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {t(preset.es, preset.en)} · {preset.rate}%
                 </button>
               );
             })}
+            <span className="text-[11px] text-muted-foreground">
+              {t("Toca otra para comparar · doble clic para fijarla", "Tap another to compare · double-click to set it")}
+            </span>
           </div>
         )}
-
-
 
         <div className="mb-3 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
           <span className="flex items-center gap-2">
             <span className="h-1 w-5 rounded-full bg-chart-1" />
-            {t("Tu dinero con intereses", "Your money with interest")}
+            {t("Tu dinero con intereses", "Your money with interest")} · {chartRate}%
           </span>
           <span className="flex items-center gap-2">
             <span className="h-1 w-5 rounded-full bg-chart-4" />
@@ -583,36 +592,8 @@ function MyNumber({ member }: { member: Member }) {
               {t("Comparación", "Comparison")} · {compareRate}%
             </span>
           )}
-          <div className="ml-auto flex flex-wrap items-center gap-1.5">
-            <span className="text-[11px] font-semibold uppercase tracking-wide">
-              {t("Comparar con", "Compare with")}:
-            </span>
-            {RATE_PRESETS.filter((p) => Math.abs(p.rate - chartRate) > 0.01).map((p) => (
-              <button
-                key={p.key}
-                type="button"
-                onClick={() => setCompareRate(compareRate === p.rate ? null : p.rate)}
-                className={`h-7 rounded-full px-3 text-[11px] font-semibold transition ${
-                  compareRate === p.rate
-                    ? "bg-chart-2 text-background"
-                    : "bg-surface-1 text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {t(p.es, p.en)} · {p.rate}%
-              </button>
-            ))}
-            {compareRate !== null && (
-              <button
-                type="button"
-                onClick={() => setCompareRate(null)}
-                className="h-7 rounded-full px-2.5 text-[11px] font-semibold text-muted-foreground hover:text-foreground"
-              >
-                {t("Quitar", "Clear")}
-              </button>
-            )}
-          </div>
-
         </div>
+
 
         <GrowthChart
           data={comparedPoints}
