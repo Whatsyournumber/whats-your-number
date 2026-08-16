@@ -155,9 +155,9 @@ export function KidShell({ member, children }: { member: Member; children: React
             </Link>
           ))}
 
-          <div className={cn("mt-5 border-t border-border/70 pt-4", collapsed && "mx-1")}>
+          <div className={cn("mt-3 border-t border-border/70 pt-2.5", collapsed && "mx-1")}>
             {collapsed ? null : (
-              <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+              <p className="px-2.5 pb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
                 {t("Para papás", "For parents")}
               </p>
             )}
