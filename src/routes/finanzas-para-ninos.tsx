@@ -1330,7 +1330,7 @@ function DualDashboards() {
             face={faceDad}
             name={t("Papá", "Dad")}
             chip={t("Plan familiar", "Family plan")}
-            label={t("Fondo del futuro", "Future fund")}
+            label={t("Fondo para la universidad", "College fund")}
             value="€196.000"
             data={data}
             dataKey="p"
