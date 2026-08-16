@@ -643,7 +643,12 @@ function CollegeFinder({ member }: { member: Member }) {
               </button>
             ))}
           </div>
+
+          <div className="col-span-2 flex items-center sm:col-auto">
+            <FilterLegendTip />
+          </div>
         </div>
+
 
 
         {(continent || country || field || rankMax || sector || bucket) ? (
