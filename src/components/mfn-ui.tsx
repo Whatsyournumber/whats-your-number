@@ -225,12 +225,9 @@ export function Donut({
           </Pie>
           <Tooltip
             contentStyle={tooltipStyle()}
-            labelFormatter={(l) => (tooltipLabel ? tooltipLabel(l as string | number) : String(l))}
-            formatter={(v: number | string, name: string) => [
-              money(Number(v), currency),
-              seriesNames?.[name] ?? name,
-            ]}
+            formatter={(v: number | string) => money(Number(v), currency)}
           />
+
         </PieChart>
       </ResponsiveContainer>
     </div>
