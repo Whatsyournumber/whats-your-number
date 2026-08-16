@@ -545,7 +545,7 @@ function Landing() {
               <span className="h-2.5 w-2.5 rounded-full bg-primary/30" />
               <span className="h-2.5 w-2.5 rounded-full bg-positive/40" />
               <span className="mx-auto rounded-full bg-elevated/70 px-3 py-1 text-[10px] text-muted-foreground">
-                Tu propio dashboard a tu medida en 1 click
+                {t("Tu propio dashboard a tu medida en 1 click", "Your own tailored dashboard in 1 click")}
               </span>
             </div>
             <ProductPreview />
