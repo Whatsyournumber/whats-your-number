@@ -717,7 +717,7 @@ function HowItWorksSlider() {
                       : { boxShadow: "inset 0 0 0 1px var(--border)" }
                   }
                 >
-                  <TabIcon className="h-3.5 w-3.5 shrink-0" />
+                  <TabIcon className="h-5 w-5 shrink-0" />
                   <span className="whitespace-nowrap">{s.tab}</span>
                 </button>
               );
