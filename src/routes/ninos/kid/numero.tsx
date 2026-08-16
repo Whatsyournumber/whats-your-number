@@ -84,7 +84,7 @@ function Ring({ value, size = 116 }: { value: number; size?: number }) {
 const RATE_PRESETS = [
   { key: "banco", es: "Banco", en: "Bank", rate: 4 },
   { key: "bonos", es: "Bonos", en: "Bonds", rate: 6 },
-  { key: "msci", es: "MSCI World (histórico)", en: "MSCI World (historical)", rate: 8 },
+  { key: "msci", es: "MSCI World", en: "MSCI World", rate: 8 },
   { key: "sp500", es: "S&P 500", en: "S&P 500", rate: 10 },
   { key: "nasdaq", es: "Nasdaq 100", en: "Nasdaq 100", rate: 13 },
   { key: "cripto", es: "Cripto", en: "Crypto", rate: 20 },
@@ -572,8 +572,9 @@ function MyNumber({ member }: { member: Member }) {
               );
             })}
             <span className="text-[11px] text-muted-foreground">
-              {t("Toca otra para comparar · doble clic para fijarla", "Tap another to compare · double-click to set it")}
+              {t("Analiza el histórico de las tasas", "Analyzes the historical rates")}
             </span>
+
           </div>
         )}
 
