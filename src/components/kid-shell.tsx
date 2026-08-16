@@ -11,27 +11,29 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   SlidersHorizontal,
+  Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { THEME_ATTR, type Member } from "@/lib/mfn";
+import { THEME_ATTR, money, pocketTotals, type Member } from "@/lib/mfn";
+import { useMovements } from "@/hooks/use-mfn";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
 import { CurrencySelect } from "@/components/mfn-currency-select";
 
 const TABS = [
-  { to: "/ninos/kid/numero", label: "Mi Primer Número", labelEn: "My First Number", icon: Home },
-  { to: "/ninos/kid/futuro", label: "Planificador familiar", labelEn: "Family Planner", icon: Rocket },
-  { to: "/ninos/kid/universidades", label: "Universidades", labelEn: "Universities", icon: GraduationCap },
-  { to: "/ninos/kid/dinero", label: "Mi Dinero", labelEn: "My Money", icon: Wallet },
-  { to: "/ninos/kid/tareas", label: "Mis Tareas", labelEn: "My Tasks", icon: CheckSquare },
-  { to: "/ninos/kid/deseos", label: "Mis Sueños", labelEn: "My Dreams", icon: Star },
+  { to: "/ninos/kid/numero", label: "Inicio", labelEn: "Home", icon: Home },
+  { to: "/ninos/kid/dinero", label: "Mi dinero", labelEn: "My Money", icon: Wallet },
+  { to: "/ninos/kid/tareas", label: "Tareas", labelEn: "Tasks", icon: CheckSquare },
+  { to: "/ninos/kid/deseos", label: "Sueños", labelEn: "Dreams", icon: Star },
 ] as const;
 
-
-const BOTTOM_TABS = [
-  { to: "/ninos/kid/datos", label: "Mis Datos", labelEn: "My Data", icon: SlidersHorizontal },
+const PARENT_TABS = [
+  { to: "/ninos/padres", label: "Familia", labelEn: "Family", icon: Users },
+  { to: "/ninos/kid/futuro", label: "Planificador", labelEn: "Planner", icon: Rocket },
+  { to: "/ninos/kid/universidades", label: "Universidad", labelEn: "University", icon: GraduationCap },
+  { to: "/ninos/kid/datos", label: "Ajustes", labelEn: "Settings", icon: SlidersHorizontal },
 ] as const;
 
-
+const MOBILE_TABS = [...TABS, PARENT_TABS[1], PARENT_TABS[2]] as const;
 
 /** Aplica el tema visual del perfil (niño / niña / neutro). */
 export function useKidTheme(theme?: string) {
