@@ -9,10 +9,13 @@ import { CurrencyToggle } from "@/components/currency-toggle";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/use-auth";
+import { useSubscription } from "@/hooks/use-subscription";
 import { useT, LanguageToggle } from "@/hooks/use-language";
 
 export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" }) {
   const { user } = useAuth();
+  const { isPatrimonio } = useSubscription();
+  const homeTo = isPatrimonio ? "/ninos" : "/dashboard";
   const t = useT();
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
@@ -72,7 +75,7 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
 
   const authButtons = user ? (
     <Button asChild size="sm" className="rounded-full">
-      <Link to="/dashboard">{t("Ir al dashboard", "Go to dashboard")}</Link>
+      <Link to={homeTo}>{t("Ir al dashboard", "Go to dashboard")}</Link>
     </Button>
   ) : (
     <>
@@ -100,7 +103,7 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
 
   const mobileAuthButton = user ? (
     <Button asChild size="sm" className="h-8 rounded-full px-3 text-xs">
-      <Link to="/dashboard">{t("Dashboard", "Dashboard")}</Link>
+      <Link to={homeTo}>{t("Dashboard", "Dashboard")}</Link>
     </Button>
   ) : (
     <Button asChild size="sm" className="h-8 rounded-full px-3 text-xs">
@@ -147,7 +150,7 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
               <LanguageToggle />
               {user ? (
                 <Button asChild size="sm" className="h-8 rounded-full px-3 text-xs">
-                  <Link to="/dashboard">{t("Dashboard", "Dashboard")}</Link>
+                  <Link to={homeTo}>{t("Dashboard", "Dashboard")}</Link>
                 </Button>
               ) : (
                 <>
