@@ -570,24 +570,50 @@ function MyNumber({ member }: { member: Member }) {
             <span className="h-1 w-5 rounded-full bg-chart-4" />
             {t("Lo que ahorraste", "What you saved")}
           </span>
+          {compareRate !== null && (
+            <span className="flex items-center gap-2">
+              <span className="h-1 w-5 rounded-full bg-chart-2" />
+              {t("Comparación", "Comparison")} · {compareRate}%
+            </span>
+          )}
+          <div className="ml-auto flex flex-wrap items-center gap-1.5">
+            <span className="text-[11px] font-semibold uppercase tracking-wide">
+              {t("Comparar con", "Compare with")}:
+            </span>
+            {RATE_PRESETS.filter((p) => Math.abs(p.rate - chartRate) > 0.01).map((p) => (
+              <button
+                key={p.key}
+                type="button"
+                onClick={() => setCompareRate(compareRate === p.rate ? null : p.rate)}
+                className={`h-7 rounded-full px-2.5 text-[11px] font-bold transition ${
+                  compareRate === p.rate
+                    ? "bg-chart-2 text-background"
+                    : "bg-surface-1 text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {p.rate}%
+              </button>
+            ))}
+          </div>
         </div>
 
         <GrowthChart
-          data={chartProjection.points}
+          data={comparedPoints}
           currency={member.currency}
           height={320}
           areas={[
             { key: "total", color: "var(--color-chart-1)" },
             { key: "aportes", color: "var(--color-chart-4)" },
           ]}
+          lines={compareRate !== null ? [{ key: "compare", color: "var(--color-chart-2)" }] : []}
           seriesNames={{
-            total: t("Con intereses", "With interest"),
+            total: `${t("Con intereses", "With interest")} · ${chartRate}%`,
             aportes: t("Lo que ahorraste", "What you saved"),
+            compare: `${t("Comparación", "Comparison")} · ${compareRate ?? 0}%`,
           }}
-          tooltipLabel={(l) =>
-            `${t("A los", "At age")} ${Number(member.age) + Number(l)} ${t("años", "yrs")}`
-          }
+          tooltipLabel={(l) => `${t("A los", "At age")} ${Number(l)} ${t("años", "yrs")}`}
         />
+
 
         <p className="mt-4 rounded-2xl bg-primary/10 px-4 py-3 font-kid text-sm font-semibold text-foreground">
           💡{" "}
