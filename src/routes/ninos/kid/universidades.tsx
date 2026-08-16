@@ -1070,6 +1070,14 @@ function FilterLegendTip() {
       k: t("Coste de vida", "Living cost"),
       v: t("Numbeo / Expatistan por ciudad · ajustado (piso compartido), moderado (residencia), premium (zona céntrica).", "Numbeo / Expatistan by city · tight (shared flat), moderate (student halls), premium (central area)."),
     },
+    {
+      k: t("Actualización", "Update"),
+      v: t(
+        `Precios indexados a ${PRICE_YEAR} · se ajustan automáticamente cada año (+${(ANNUAL_INFLATION * 100).toFixed(1)}% inflación educativa).`,
+        `Prices indexed to ${PRICE_YEAR} · auto-adjusted every year (+${(ANNUAL_INFLATION * 100).toFixed(1)}% education inflation).`,
+      ),
+    },
+
   ];
   return (
     <TooltipProvider delayDuration={100}>
