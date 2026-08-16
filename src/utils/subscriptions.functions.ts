@@ -30,7 +30,10 @@ export const startProTrial = createServerFn({ method: "POST" })
     const periodEnd = new Date(now);
     periodEnd.setDate(periodEnd.getDate() + 14);
 
-    const { error } = await supabase.from("subscriptions").upsert(
+    // Writes to subscriptions require the service-role client: RLS only grants
+    // INSERT/UPDATE to service_role (authenticated has SELECT only).
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.from("subscriptions").upsert(
       {
         user_id: userId,
         paddle_subscription_id: `trial_${userId}_${now.getTime()}`,
