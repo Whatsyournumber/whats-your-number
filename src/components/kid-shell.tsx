@@ -37,7 +37,7 @@ function ProfileCard({ member, collapsed }: { member: Member; collapsed: boolean
   const { t } = useI18n();
   const { data: movements = [] } = useMovements(member.id);
   const totals = pocketTotals(movements);
-  const saved = totals.ahorrar + totals.crecer;
+  const saved = totals.gastar + totals.ahorrar + totals.crecer;
   const level = Math.floor(member.xp / 50) + 1;
   const pct = ((member.xp % 50) / 50) * 100;
 
@@ -50,39 +50,43 @@ function ProfileCard({ member, collapsed }: { member: Member; collapsed: boolean
   }
 
   return (
-    <div className="mt-2 shrink-0 rounded-2xl border border-border/70 bg-surface-2/70 p-2">
+    <div className="mt-2 shrink-0 overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-primary/10 via-surface-2/70 to-chart-2/10 p-2.5 shadow-sm">
       <div className="flex items-center gap-2">
-        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-card text-sm shadow-sm">
+        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-card text-base shadow-sm ring-1 ring-primary/20">
           {member.avatar}
         </span>
         <div className="min-w-0">
-          <p className="truncate font-display text-[11px] font-bold text-foreground">{member.name}</p>
+          <p className="truncate font-display text-xs font-extrabold text-foreground">{member.name}</p>
           <p className="text-[9px] font-semibold text-muted-foreground">
             {t("Nivel", "Level")} {level} ⭐ · 🔥 {member.streak}
           </p>
         </div>
       </div>
 
-      <div className="mt-1.5 rounded-lg bg-card px-2 py-1.5">
-        <p className="text-[8px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-          {t("Mi primer número", "My first number")}
+      <div className="mt-2 rounded-xl bg-card/90 px-2.5 py-2 shadow-sm ring-1 ring-border/50">
+        <p className="text-[8px] font-bold uppercase tracking-[0.14em] text-primary">
+          {t("Mi dinero hoy", "My money today")}
         </p>
-        <p className="font-display text-sm font-semibold leading-tight text-foreground">
+        <p className="mt-0.5 whitespace-nowrap font-display text-[15px] font-extrabold leading-tight tracking-tight text-foreground">
           {money(saved, member.currency)}
         </p>
       </div>
 
-      <div className="mt-1.5">
-        <div className="h-1 w-full overflow-hidden rounded-full bg-surface-2">
-          <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
+      <div className="mt-2">
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-card/70">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-primary to-chart-2 transition-all duration-500"
+            style={{ width: `${pct}%` }}
+          />
         </div>
-        <p className="mt-1 text-[9px] font-medium text-muted-foreground">
+        <p className="mt-1 text-[9px] font-semibold text-muted-foreground">
           {50 - (member.xp % 50)} XP {t("para nivel", "to level")} {level + 1}
         </p>
       </div>
     </div>
   );
 }
+
 
 /** Aplica el tema visual del perfil (niño / niña / neutro). */
 export function useKidTheme(theme?: string) {
