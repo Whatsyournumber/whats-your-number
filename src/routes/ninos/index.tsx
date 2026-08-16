@@ -242,8 +242,9 @@ function ProfileSelector() {
                       {t("Perfil extra", "Extra profile")}
                     </span>
                     <span className="block text-[11px] text-muted-foreground/70">
-                      ${EXTRA_KID_PRICE_USD}/{t("mes", "mo")}
+                      {t("Desbloquear", "Unlock")}
                     </span>
+
                   </span>
                 </button>
               )}
