@@ -306,6 +306,8 @@ function HowItWorksSlider() {
     { label: t("Gastar", "Spend"), value: 20, amount: "€12", color: "var(--kid-sky)" },
   ];
 
+  const slides = [
+
     {
       id: "numbers",
       tab: t("Mi número", "My number"),
