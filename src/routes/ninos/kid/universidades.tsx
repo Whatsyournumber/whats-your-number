@@ -1137,7 +1137,7 @@ function CompareDialog({
     const tuition = uniTuitionUsd(u, field) * usdFactor * u.years;
     const livingTotal = uniLivingUsd(u, living) * usdFactor * u.years;
     const total = tuition + (includeLiving ? livingTotal : 0);
-    return { u, tuition, living, total, ok: total <= projected };
+    return { u, tuition, livingTotal, total, ok: total <= projected };
   });
   const cheapest = Math.min(...rows.map((r) => r.total));
 
@@ -1185,15 +1185,11 @@ function CompareDialog({
                   {r.u.city}, {lang === "en" ? r.u.country : r.u.countryEs}
                 </p>
                 {[
-                  [t("Ranking mundial", "World rank"), `#${ranksOf(r.u).global}`],
-                  [
-                    t(CONTINENT_NAMES[ranksOf(r.u).continentKey].es, CONTINENT_NAMES[ranksOf(r.u).continentKey].en),
-                    `#${ranksOf(r.u).continent}`,
-                  ],
+                  [t("Ranking", "Ranking"), rankLine(r.u)],
 
                   [t("Duración", "Duration"), `${r.u.years} ${t("años", "yrs")}`],
                   [t("Matrícula total", "Total tuition"), money(r.tuition, currency, true)],
-                  [t("Vida total", "Total living"), money(r.living, currency, true)],
+                  [t("Vida total", "Total living"), money(r.livingTotal, currency, true)],
                   [t("Becas", "Scholarships"), r.u.scholarship ? t("Sí", "Yes") : "—"],
                 ].map(([l, v]) => (
                   <div key={l} className="flex items-center justify-between border-t border-border/50 pt-1.5 text-[11px]">
