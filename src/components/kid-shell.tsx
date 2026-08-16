@@ -146,7 +146,7 @@ export function KidShell({ member, children }: { member: Member; children: React
       </aside>
 
       <div className="min-w-0 flex-1 pb-36 lg:pb-0">
-        <header className="flex items-center justify-between gap-3 px-5 pt-6 sm:px-6 lg:px-10">
+        <header className="relative z-20 flex items-center justify-between gap-3 px-5 pt-6 sm:px-6 lg:px-10">
           <button
             onClick={() => router.navigate({ to: "/ninos" })}
             className="flex items-center gap-2 text-xs font-semibold text-muted-foreground lg:hidden"
