@@ -145,6 +145,36 @@ function MyNumber({ member }: { member: Member }) {
   const lines = buddyLines(lang);
   const line = lines[(member.xp / 10) % lines.length | 0] ?? lines[0];
 
+  const buddyTipFn = useServerFn(getBuddyTip);
+  const { data: buddyTip, isFetching: buddyThinking } = useQuery({
+    queryKey: ["kid-buddy-tip", member.id, lang, Math.round(today), Math.round(projection.future)],
+    enabled: movements.length > 0,
+    staleTime: 1000 * 60 * 30,
+    retry: false,
+    queryFn: () =>
+      buddyTipFn({
+        data: {
+          name: member.name,
+          age: member.age,
+          currency: member.currency,
+          lang,
+          today,
+          future: projection.future,
+          targetAge,
+          monthly,
+          pace,
+          pockets: POCKETS.map((p) => ({ label: pocketLabel(p.key, lang), amount: totals[p.key] })),
+          dream: dreams.next
+            ? {
+                title: dreams.next.title,
+                saved: Number(dreams.next.saved),
+                price: Number(dreams.next.price),
+              }
+            : null,
+        },
+      }),
+  });
+
   return (
     <>
       <PageTitle
