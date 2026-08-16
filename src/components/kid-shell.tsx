@@ -135,7 +135,7 @@ export function KidShell({ member, children }: { member: Member; children: React
             {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
           </button>
         </div>
-        <nav className="mt-6 flex min-h-0 flex-1 flex-col gap-1.5 overflow-y-auto">
+        <nav className="mt-4 flex min-h-0 flex-1 flex-col gap-1 overflow-hidden [&_.nav-icon]:h-7 [&_.nav-icon]:w-7 [&_.nav-pill]:gap-2.5 [&_.nav-pill]:px-2.5 [&_.nav-pill]:py-1.5">
           {TABS.map((tab) => (
             <Link
               key={tab.to}
