@@ -374,6 +374,38 @@ export const UNIVERSITIES: University[] = [
   { id: "lat-ucab", name: "Universidad Católica Andrés Bello", city: "Caracas", country: "Venezuela", countryEs: "Venezuela", flag: "🇻🇪", region: "latam", tuition: 3500, living: 6000, years: 5, rank: 1200, fields: ["business", "law", "engineering"], scholarship: true },
   { id: "lat-unimet", name: "Universidad Metropolitana", city: "Caracas", country: "Venezuela", countryEs: "Venezuela", flag: "🇻🇪", region: "latam", tuition: 4000, living: 6000, years: 5, rank: 1300, fields: ["business", "engineering", "economics"] },
 
+  // Guatemala
+  { id: "lat-uvg-guatemala", name: "Universidad del Valle de Guatemala", city: "Ciudad de Guatemala", country: "Guatemala", countryEs: "Guatemala", flag: "🇬🇹", region: "latam", tuition: 6500, living: 6000, years: 5, rank: 1150, fields: ["engineering", "science", "business"], scholarship: true },
+  { id: "lat-ufm-guatemala", name: "Universidad Francisco Marroquín", city: "Ciudad de Guatemala", country: "Guatemala", countryEs: "Guatemala", flag: "🇬🇹", region: "latam", tuition: 9000, living: 6000, years: 5, rank: 1200, fields: ["business", "law", "health"] },
+
+  // El Salvador
+  { id: "lat-uca-el-salvador", name: "UCA José Simeón Cañas", city: "San Salvador", country: "El Salvador", countryEs: "El Salvador", flag: "🇸🇻", region: "latam", tuition: 3200, living: 5500, years: 5, rank: 1250, fields: ["engineering", "business", "law"] },
+  { id: "lat-ues-el-salvador", name: "Universidad de El Salvador", city: "San Salvador", country: "El Salvador", countryEs: "El Salvador", flag: "🇸🇻", region: "latam", tuition: 800, living: 5500, years: 5, rank: 1300, fields: ["health", "engineering", "science"] },
+
+  // República Dominicana
+  { id: "lat-pucmm-rd", name: "PUCMM", city: "Santiago de los Caballeros", country: "Dominican Republic", countryEs: "República Dominicana", flag: "🇩🇴", region: "latam", tuition: 5500, living: 6500, years: 4, rank: 1100, fields: ["health", "business", "engineering"], scholarship: true },
+  { id: "lat-intec-rd", name: "INTEC", city: "Santo Domingo", country: "Dominican Republic", countryEs: "República Dominicana", flag: "🇩🇴", region: "latam", tuition: 6000, living: 6500, years: 4, rank: 1150, fields: ["engineering", "health", "business"] },
+
+  // Bolivia
+  { id: "lat-umsa-bolivia", name: "Universidad Mayor de San Andrés", city: "La Paz", country: "Bolivia", countryEs: "Bolivia", flag: "🇧🇴", region: "latam", tuition: 600, living: 4500, years: 5, rank: 1200, fields: ["health", "engineering", "law"] },
+  { id: "lat-upb-bolivia", name: "Universidad Privada Boliviana", city: "Cochabamba", country: "Bolivia", countryEs: "Bolivia", flag: "🇧🇴", region: "latam", tuition: 5000, living: 4500, years: 5, rank: 1250, fields: ["engineering", "business", "science"], scholarship: true },
+
+  // Paraguay
+  { id: "lat-una-paraguay", name: "Universidad Nacional de Asunción", city: "Asunción", country: "Paraguay", countryEs: "Paraguay", flag: "🇵🇾", region: "latam", tuition: 900, living: 5000, years: 5, rank: 1200, fields: ["health", "engineering", "law"] },
+  { id: "lat-uca-paraguay", name: "Universidad Católica Nuestra Señora de la Asunción", city: "Asunción", country: "Paraguay", countryEs: "Paraguay", flag: "🇵🇾", region: "latam", tuition: 4200, living: 5000, years: 5, rank: 1280, fields: ["business", "law", "health"] },
+
+  // Ecuador (Guayaquil)
+  { id: "lat-espol-guayaquil", name: "ESPOL", city: "Guayaquil", country: "Ecuador", countryEs: "Ecuador", flag: "🇪🇨", region: "latam", tuition: 4500, living: 7000, years: 4, rank: 950, fields: ["engineering", "science", "business"], scholarship: true },
+  { id: "lat-ucsg-guayaquil", name: "Universidad Católica de Santiago de Guayaquil", city: "Guayaquil", country: "Ecuador", countryEs: "Ecuador", flag: "🇪🇨", region: "latam", tuition: 5200, living: 7000, years: 4, rank: 1150, fields: ["health", "business", "law"] },
+
+  // Honduras
+  { id: "lat-unah-honduras", name: "UNAH", city: "Tegucigalpa", country: "Honduras", countryEs: "Honduras", flag: "🇭🇳", region: "latam", tuition: 700, living: 5000, years: 5, rank: 1300, fields: ["health", "engineering", "law"] },
+  { id: "lat-unitec-honduras", name: "UNITEC Honduras", city: "Tegucigalpa", country: "Honduras", countryEs: "Honduras", flag: "🇭🇳", region: "latam", tuition: 4800, living: 5000, years: 5, rank: 1350, fields: ["business", "engineering", "health"] },
+
+  // Puerto Rico
+  { id: "lat-upr-rio-piedras", name: "UPR Río Piedras", city: "San Juan", country: "Puerto Rico", countryEs: "Puerto Rico", flag: "🇵🇷", region: "latam", tuition: 4500, living: 12000, years: 4, rank: 900, fields: ["science", "business", "law"] },
+  { id: "lat-upr-mayaguez", name: "UPR Mayagüez", city: "Mayagüez", country: "Puerto Rico", countryEs: "Puerto Rico", flag: "🇵🇷", region: "latam", tuition: 4500, living: 11000, years: 4, rank: 950, fields: ["engineering", "science", "business"], scholarship: true },
+
 
 
   // Asia-Pacífico

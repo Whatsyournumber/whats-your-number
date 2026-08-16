@@ -220,6 +220,22 @@ import cur_ae_aud from "@/assets/uni/ae-aud.jpg";
 import cur_ar_uba from "@/assets/uni/ar-uba.jpg";
 import cur_ar_cordoba from "@/assets/uni/ar-cordoba.jpg";
 import cur_br_ufmg from "@/assets/uni/br-ufmg.jpg";
+import cur_gt_uvg from "@/assets/uni/gt-uvg.jpg";
+import cur_gt_ufm from "@/assets/uni/gt-ufm.jpg";
+import cur_sv_uca from "@/assets/uni/sv-uca.jpg";
+import cur_sv_ues from "@/assets/uni/sv-ues.jpg";
+import cur_do_pucmm from "@/assets/uni/do-pucmm.jpg";
+import cur_do_intec from "@/assets/uni/do-intec.jpg";
+import cur_bo_umsa from "@/assets/uni/bo-umsa.jpg";
+import cur_bo_upb from "@/assets/uni/bo-upb.jpg";
+import cur_py_una from "@/assets/uni/py-una.jpg";
+import cur_py_uca from "@/assets/uni/py-uca.jpg";
+import cur_ec_espol from "@/assets/uni/ec-espol.jpg";
+import cur_ec_ucsg from "@/assets/uni/ec-ucsg.jpg";
+import cur_hn_unah from "@/assets/uni/hn-unah.jpg";
+import cur_hn_unitec from "@/assets/uni/hn-unitec.jpg";
+import cur_pr_upr_rp from "@/assets/uni/pr-upr-rp.jpg";
+import cur_pr_upr_may from "@/assets/uni/pr-upr-may.jpg";
 import cur_ar_laplata from "@/assets/uni/ar-laplata.jpg";
 import cur_ar_utn from "@/assets/uni/ar-utn.jpg";
 import cur_ar_rosario from "@/assets/uni/ar-rosario.jpg";
@@ -791,6 +807,22 @@ const CURATED: Record<string, string> = {
   "ar-universidad-de-buenos-aires": cur_ar_uba,
   "ar-universidad-nacional-de-cord": cur_ar_cordoba,
   "br-ufmg": cur_br_ufmg,
+  "lat-uvg-guatemala": cur_gt_uvg,
+  "lat-ufm-guatemala": cur_gt_ufm,
+  "lat-uca-el-salvador": cur_sv_uca,
+  "lat-ues-el-salvador": cur_sv_ues,
+  "lat-pucmm-rd": cur_do_pucmm,
+  "lat-intec-rd": cur_do_intec,
+  "lat-umsa-bolivia": cur_bo_umsa,
+  "lat-upb-bolivia": cur_bo_upb,
+  "lat-una-paraguay": cur_py_una,
+  "lat-uca-paraguay": cur_py_uca,
+  "lat-espol-guayaquil": cur_ec_espol,
+  "lat-ucsg-guayaquil": cur_ec_ucsg,
+  "lat-unah-honduras": cur_hn_unah,
+  "lat-unitec-honduras": cur_hn_unitec,
+  "lat-upr-rio-piedras": cur_pr_upr_rp,
+  "lat-upr-mayaguez": cur_pr_upr_may,
   "ar-universidad-nacional-de-la-p": cur_ar_laplata,
   "ar-utn-universidad-tecnologica-": cur_ar_utn,
   "ar-universidad-nacional-de-rosa": cur_ar_rosario,
