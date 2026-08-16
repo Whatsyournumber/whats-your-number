@@ -511,12 +511,16 @@ function MyNumber({ member }: { member: Member }) {
                       <Info className="h-3.5 w-3.5" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="top" className="max-w-[240px] text-xs font-medium normal-case tracking-normal">
+                  <TooltipContent
+                    side="top"
+                    className="max-w-[200px] rounded-2xl border-none bg-foreground px-3.5 py-2.5 text-center font-kid text-[12px] font-semibold normal-case leading-snug tracking-normal text-background shadow-lg"
+                  >
                     {t(
-                      "Las tasas están basadas en el histórico de los mercados (promedios de largo plazo). Son estimaciones, no rendimientos garantizados.",
-                      "Rates are based on historical market returns (long-term averages). They are estimates, not guaranteed returns.",
+                      "Tasas del histórico de los mercados. Son estimaciones 🙂",
+                      "Rates from market history. These are estimates 🙂",
                     )}
                   </TooltipContent>
+
                 </Tooltip>
               </TooltipProvider>
             </span>
