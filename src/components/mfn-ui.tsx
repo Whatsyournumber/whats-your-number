@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Area, AreaChart, CartesianGrid, Cell, Line, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, ComposedChart, CartesianGrid, Cell, Line, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { cn } from "@/lib/utils";
 import { money } from "@/lib/mfn";
 
@@ -151,7 +151,7 @@ export function GrowthChart({
   return (
     <div style={{ height }}>
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={data} margin={{ top: 12, right: 16, bottom: 8, left: 4 }}>
+        <ComposedChart data={data} margin={{ top: 12, right: 16, bottom: 8, left: 4 }}>
           <defs>
             {areas.map((a) => (
               <linearGradient key={a.key} id={`g-${a.key}`} x1="0" y1="0" x2="0" y2="1">
@@ -225,7 +225,7 @@ export function GrowthChart({
             />
           ))}
 
-        </AreaChart>
+        </ComposedChart>
       </ResponsiveContainer>
     </div>
   );
