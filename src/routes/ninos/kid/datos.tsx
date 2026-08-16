@@ -104,7 +104,7 @@ function MyData({ member }: { member: Member }) {
     monthly_contribution: 0,
     target_age: 18,
     expected_return: 7,
-    goal: "",
+    goal: t("🎓 Universidad", "🎓 College"),
   });
 
   useEffect(() => {
