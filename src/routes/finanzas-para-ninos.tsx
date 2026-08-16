@@ -592,7 +592,58 @@ function HowItWorksSlider() {
         </ScreenCard>
       ),
     },
+    {
+      id: "unis",
+      tab: t("Universidades", "Universities"),
+      icon: GraduationCap,
+      color: "var(--kid-grape)",
+      title: t("Buscador de universidades", "University finder"),
+      desc: t(
+        "Busca por universidad, ciudad o continente y mira al instante qué parte de la carrera cubre su número del futuro.",
+        "Search by university, city or continent and instantly see how much of the degree their future number covers.",
+      ),
+      visual: <UniFinderVisual />,
+    },
   ];
+
+  const stats: Record<string, Array<{ k: string; v: string }>> = {
+    numbers: [
+      { k: t("Hoy", "Today"), v: "€120" },
+      { k: t("A los 18", "At 18"), v: "€10.668" },
+      { k: t("Ahorro/mes", "Saving/mo"), v: "€11,3" },
+    ],
+    pockets: [
+      { k: t("Ahorrar", "Save"), v: "40%" },
+      { k: t("Invertir", "Invest"), v: "40%" },
+      { k: t("Gastar", "Spend"), v: "20%" },
+    ],
+    dreams: [
+      { k: t("Sueños activos", "Active dreams"), v: "3" },
+      { k: t("Progreso", "Progress"), v: "62%" },
+      { k: t("Conseguidos", "Achieved"), v: "5" },
+    ],
+    chores: [
+      { k: t("Esta semana", "This week"), v: "+€6,50" },
+      { k: t("Mesada", "Allowance"), v: "€10/sem" },
+      { k: t("Tareas", "Chores"), v: "4" },
+    ],
+    grow: [
+      { k: t("Interés", "Return"), v: "7,2%" },
+      { k: t("Aportado", "Contributed"), v: "€2.442" },
+      { k: t("Intereses", "Growth"), v: "€8.226" },
+    ],
+    badges: [
+      { k: t("Racha", "Streak"), v: "7 " + t("sem.", "wks") },
+      { k: t("Insignias", "Badges"), v: "12" },
+      { k: t("Nivel", "Level"), v: "4" },
+    ],
+    unis: [
+      { k: t("Universidades", "Universities"), v: "500+" },
+      { k: t("Países", "Countries"), v: "28" },
+      { k: t("Cobertura", "Coverage"), v: "111%" },
+    ],
+  };
+
 
 
   const active = slides[i]!;
