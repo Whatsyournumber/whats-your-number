@@ -91,6 +91,15 @@ import curatedUpv from "@/assets/uni/es-upv.jpg";
 import curatedEsade from "@/assets/uni/es-esade.jpg";
 import curatedIe from "@/assets/uni/es-ie.jpg";
 import curatedGranada from "@/assets/uni/es-granada.jpg";
+import curatedValenciaUv from "@/assets/uni/es-valencia-uv.jpg";
+import curatedSevilla from "@/assets/uni/es-sevilla.jpg";
+import curatedZaragoza from "@/assets/uni/es-zaragoza.jpg";
+import curatedPaisVasco from "@/assets/uni/es-pais-vasco.jpg";
+import curatedUpm from "@/assets/uni/es-upm.jpg";
+import curatedMalaga from "@/assets/uni/es-malaga.jpg";
+import curatedComenius from "@/assets/uni/sk-comenius.jpg";
+import curatedBabesBolyai from "@/assets/uni/ro-babes-bolyai.jpg";
+import curatedBucharest from "@/assets/uni/ro-bucharest.jpg";
 import curatedBelgrano from "@/assets/uni/ar-belgrano.jpg";
 import curatedPucRio from "@/assets/uni/br-puc-rio.jpg";
 import curatedUcu from "@/assets/uni/uy-ucu.jpg";
@@ -759,6 +768,15 @@ const CURATED: Record<string, string> = {
   "es-esade": curatedEsade,
   "es-ie-university": curatedIe,
   "es-universidad-de-granada": curatedGranada,
+  "es-universitat-de-valencia": curatedValenciaUv,
+  "es-universidad-de-sevilla": curatedSevilla,
+  "es-universidad-de-zaragoza": curatedZaragoza,
+  "es-universidad-del-pais-vasco": curatedPaisVasco,
+  "es-universidad-politecnica-de-mad": curatedUpm,
+  "es-universidad-de-malaga": curatedMalaga,
+  "sk-comenius-university": curatedComenius,
+  "ro-babes-bolyai-university": curatedBabesBolyai,
+  "ro-university-of-bucharest": curatedBucharest,
   "ar-universidad-de-belgrano": curatedBelgrano,
   "br-puc-rio": curatedPucRio,
   "lat-universidad-catolica-del-uru": curatedUcu,
