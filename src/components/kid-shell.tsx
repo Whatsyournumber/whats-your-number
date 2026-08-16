@@ -11,27 +11,79 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   SlidersHorizontal,
+  Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { THEME_ATTR, type Member } from "@/lib/mfn";
+import { THEME_ATTR, money, pocketTotals, type Member } from "@/lib/mfn";
+import { useMovements } from "@/hooks/use-mfn";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
 import { CurrencySelect } from "@/components/mfn-currency-select";
 
 const TABS = [
-  { to: "/ninos/kid/numero", label: "Mi Primer Número", labelEn: "My First Number", icon: Home },
-  { to: "/ninos/kid/futuro", label: "Planificador familiar", labelEn: "Family Planner", icon: Rocket },
-  { to: "/ninos/kid/universidades", label: "Universidades", labelEn: "Universities", icon: GraduationCap },
-  { to: "/ninos/kid/dinero", label: "Mi Dinero", labelEn: "My Money", icon: Wallet },
-  { to: "/ninos/kid/tareas", label: "Mis Tareas", labelEn: "My Tasks", icon: CheckSquare },
-  { to: "/ninos/kid/deseos", label: "Mis Sueños", labelEn: "My Dreams", icon: Star },
+  { to: "/ninos/kid/numero", label: "Inicio", labelEn: "Home", icon: Home },
+  { to: "/ninos/kid/dinero", label: "Mi dinero", labelEn: "My Money", icon: Wallet },
+  { to: "/ninos/kid/tareas", label: "Tareas", labelEn: "Tasks", icon: CheckSquare },
+  { to: "/ninos/kid/deseos", label: "Sueños", labelEn: "Dreams", icon: Star },
 ] as const;
 
-
-const BOTTOM_TABS = [
-  { to: "/ninos/kid/datos", label: "Mis Datos", labelEn: "My Data", icon: SlidersHorizontal },
+const PARENT_TABS = [
+  { to: "/ninos/padres", label: "Familia", labelEn: "Family", icon: Users },
+  { to: "/ninos/kid/futuro", label: "Planificador", labelEn: "Planner", icon: Rocket },
+  { to: "/ninos/kid/universidades", label: "Universidad", labelEn: "University", icon: GraduationCap },
+  { to: "/ninos/kid/datos", label: "Ajustes", labelEn: "Settings", icon: SlidersHorizontal },
 ] as const;
 
+function ProfileCard({ member, collapsed }: { member: Member; collapsed: boolean }) {
+  const { t } = useI18n();
+  const { data: movements = [] } = useMovements(member.id);
+  const totals = pocketTotals(movements);
+  const saved = totals.ahorrar + totals.crecer;
+  const level = Math.floor(member.xp / 50) + 1;
+  const pct = ((member.xp % 50) / 50) * 100;
 
+  if (collapsed) {
+    return (
+      <div className="mt-3 grid place-items-center rounded-2xl bg-surface-2 p-2 text-2xl" title={member.name}>
+        {member.avatar}
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-3 shrink-0 rounded-3xl border border-border/70 bg-surface-2/70 p-3.5">
+      <div className="flex items-center gap-3">
+        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-card text-2xl shadow-sm">
+          {member.avatar}
+        </span>
+        <div className="min-w-0">
+          <p className="truncate font-display text-sm font-bold text-foreground">{member.name}</p>
+          <p className="text-[11px] font-semibold text-muted-foreground">
+            {t("Nivel", "Level")} {level} ⭐ · 🔥 {member.streak}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-3 rounded-2xl bg-card px-3 py-2.5">
+        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+          {t("Su primer número", "Their first number")}
+        </p>
+        <p className="font-display text-xl font-semibold text-foreground">
+          {money(saved, member.currency)}
+        </p>
+        <p className="text-[10px] font-medium text-muted-foreground">{t("ahorrado", "saved")}</p>
+      </div>
+
+      <div className="mt-3">
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-2">
+          <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
+        </div>
+        <p className="mt-1.5 text-[10px] font-medium text-muted-foreground">
+          {50 - (member.xp % 50)} XP {t("para nivel", "to level")} {level + 1}
+        </p>
+      </div>
+    </div>
+  );
+}
 
 /** Aplica el tema visual del perfil (niño / niña / neutro). */
 export function useKidTheme(theme?: string) {
@@ -83,27 +135,7 @@ export function KidShell({ member, children }: { member: Member; children: React
             {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
           </button>
         </div>
-        <div
-          className={cn(
-            "mt-6 flex items-center rounded-3xl p-3 avatar-ring",
-            collapsed ? "justify-center" : "gap-3",
-          )}
-        >
-          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-card text-2xl shadow-sm">
-            {member.avatar}
-          </span>
-          {collapsed ? null : (
-          <div className="min-w-0">
-            <p className="truncate font-display text-base font-bold text-foreground">
-              {member.name}
-            </p>
-            <p className="text-[11px] font-semibold text-foreground/70">
-              {member.age} {t("años", "yrs")} · ⭐ {member.xp} XP · 🔥 {member.streak}
-            </p>
-          </div>
-          )}
-        </div>
-        <nav className="mt-6 flex min-h-0 flex-1 flex-col gap-1.5">
+        <nav className="mt-6 flex min-h-0 flex-1 flex-col gap-1.5 overflow-y-auto">
           {TABS.map((tab) => (
             <Link
               key={tab.to}
@@ -122,14 +154,20 @@ export function KidShell({ member, children }: { member: Member; children: React
               )}
             </Link>
           ))}
-        </nav>
-        <nav className="mt-3 shrink-0 space-y-1.5 border-t border-border/70 pt-3">
-          {BOTTOM_TABS.map((tab) => (
+
+          <div className={cn("mt-5 border-t border-border/70 pt-4", collapsed && "mx-1")}>
+            {collapsed ? null : (
+              <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                {t("Para papás", "For parents")}
+              </p>
+            )}
+          </div>
+          {PARENT_TABS.map((tab) => (
             <Link
               key={tab.to}
               to={tab.to}
               activeProps={{ className: "nav-pill-active" }}
-              className={cn("nav-pill text-[13px]", collapsed && "justify-center px-0")}
+              className={cn("nav-pill text-sm", collapsed && "justify-center px-0")}
               title={collapsed ? label(tab) : undefined}
             >
               {({ isActive }: { isActive: boolean }) => (
@@ -143,6 +181,8 @@ export function KidShell({ member, children }: { member: Member; children: React
             </Link>
           ))}
         </nav>
+
+        <ProfileCard member={member} collapsed={collapsed} />
       </aside>
 
       <div className="min-w-0 flex-1 pb-36 lg:pb-0">
@@ -173,7 +213,7 @@ export function KidShell({ member, children }: { member: Member; children: React
 
       <div className="glass-nav fixed inset-x-0 bottom-0 z-30 border-t lg:hidden">
         <div className="mx-auto flex max-w-lg items-center gap-2 px-3 pt-2">
-          {BOTTOM_TABS.map((tab) => (
+          {PARENT_TABS.map((tab) => (
             <Link
               key={tab.to}
               to={tab.to}
