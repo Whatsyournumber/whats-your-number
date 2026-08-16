@@ -159,4 +159,5 @@ export const EU_UNI_PHOTOS: Record<string, string> = {
   "cy-university-of-cyprus": "https://upload.wikimedia.org/wikipedia/commons/1/10/Otokar_Tempo_Northern_Cyprus.jpg",
   "mt-university-of-malta": "https://upload.wikimedia.org/wikipedia/commons/1/18/2022_-_Univ_of_Malta.jpg",
   "ua-taras-shevchenko-university": "https://upload.wikimedia.org/wikipedia/commons/0/03/Universit%C3%A9_Tarass_Chevtchenko.jpg",
+  "fi-university-of-oulu": "https://upload.wikimedia.org/wikipedia/commons/4/41/University-of-Oulu-Linnanmaa.JPG",
 };
