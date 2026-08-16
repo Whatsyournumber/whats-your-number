@@ -586,36 +586,40 @@ function CollegeFinder({ member }: { member: Member }) {
             <option value="private">{t("Privada", "Private")}</option>
           </Select>
           <Select
-            value={rankMax}
-            onChange={(v) => setRankMax(v)}
+            value={sort === "rank" ? "best" : rankMax}
+            onChange={(v) => {
+              if (v === "best") {
+                setSort("rank");
+                setRankMax("");
+              } else {
+                setSort("cost");
+                setRankMax(v);
+              }
+            }}
             placeholder={t("Ranking", "Ranking")}
           >
+            <option value="best">{t("Mejor ranking", "Best ranking")}</option>
             <option value="100">Top 100</option>
             <option value="300">Top 300</option>
             <option value="500">Top 500</option>
           </Select>
 
           <Select
-            value={includeLiving ? living : ""}
-            onChange={(v) => v && setLiving(v as LivingStyle)}
+            value={living}
+            onChange={(v) => {
+              if (!v) return;
+              setLiving(v as LivingStyle);
+              setIncludeLiving(true);
+            }}
             placeholder={t("Coste de vida", "Living cost")}
           >
             {(Object.keys(LIVING_STYLES) as LivingStyle[]).map((k) => (
-              <option key={k} value={k} disabled={!includeLiving}>
+              <option key={k} value={k}>
                 {LIVING_STYLES[k].emoji} {t(LIVING_STYLES[k].es, LIVING_STYLES[k].en)}
               </option>
             ))}
           </Select>
 
-          <Select
-            value={sort}
-            onChange={(v) => setSort(v as "cost" | "rank")}
-            placeholder={t("Coste total", "Total cost")}
-            clearable={false}
-          >
-            <option value="cost">{t("Coste total", "Total cost")}</option>
-            <option value="rank">{t("Mejor ranking", "Best ranking")}</option>
-          </Select>
 
           <div className="col-span-2 flex items-center gap-0.5 rounded-full border border-border/70 bg-background/50 p-0.5 sm:col-auto">
             {(
