@@ -9,6 +9,8 @@ import { useActiveProfile, useMembers, useSubscription } from "@/hooks/use-mfn";
 import { THEME_ATTR, type Member } from "@/lib/mfn";
 import { EXTRA_KID_PRICE_USD, activePlan, kidLimit, planLabel } from "@/lib/mfn-plan";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
+import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
+
 
 export const Route = createFileRoute("/ninos/")({
   ssr: false,
