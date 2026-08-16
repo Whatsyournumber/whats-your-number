@@ -102,6 +102,8 @@ function MyNumber({ member }: { member: Member }) {
   const today = totals.gastar + totals.ahorrar + totals.crecer;
   const targetAge = Number(fund?.target_age ?? 18);
   const [horizon, setHorizon] = useState<number | null>(null);
+  const [ageInput, setAgeInput] = useState<string | null>(null);
+
   const base = Math.max(today, Number(fund?.current_balance ?? 0));
   const monthly = Number(fund?.monthly_contribution ?? 0);
   const rate = Number(fund?.expected_return ?? 10);
