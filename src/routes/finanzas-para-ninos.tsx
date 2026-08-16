@@ -563,6 +563,31 @@ function HowItWorksSlider() {
               </div>
             ))}
           </div>
+          <div className="mt-3 rounded-2xl bg-elevated/60 p-3 ring-1 ring-border">
+            <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+              <span>{t("Lo que gana cada semana", "What they earn each week")}</span>
+              <span className="numeric text-kid-sun">{t("media €5,50", "avg €5.50")}</span>
+            </div>
+            <div className="mt-2 h-24">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={choreWeeks} margin={{ top: 4, right: 2, bottom: 0, left: 0 }} barCategoryGap={10}>
+                  <XAxis
+                    dataKey="w"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "var(--muted-foreground)", fontSize: 10 }}
+                  />
+                  <Bar dataKey="v" fill="var(--kid-sun)" radius={[6, 6, 0, 0]} isAnimationActive={false} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              {t(
+                "Cada tarea aprobada se reparte sola: 40% ahorrar, 40% invertir, 20% gastar.",
+                "Every approved chore splits itself: 40% save, 40% invest, 20% spend.",
+              )}
+            </p>
+          </div>
         </ScreenCard>
       ),
     },
