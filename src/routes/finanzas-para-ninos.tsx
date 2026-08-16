@@ -312,7 +312,7 @@ function HowItWorksSlider() {
 
     {
       id: "numbers",
-      tab: t("Mi número", "My number"),
+      tab: t("Mi Primer Número", "My First Number"),
       icon: Wallet,
       color: "var(--kid-sky)",
       title: t("Su número de hoy y el del futuro", "Their number today and tomorrow"),
@@ -486,8 +486,8 @@ function HowItWorksSlider() {
     },
     {
       id: "grow",
-      tab: t("Mi futuro", "My future"),
-      icon: TrendingUp,
+      tab: t("Planificador familiar", "Family planner"),
+      icon: Rocket,
       color: "var(--kid-mint)",
       title: t("Interés compuesto explicado para niños", "Compound interest explained for kids"),
       desc: t(
