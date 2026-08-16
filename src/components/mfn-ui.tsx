@@ -170,35 +170,72 @@ export function GrowthChart({
             allowEscapeViewBox={{ x: false, y: true }}
             wrapperStyle={{ outline: "none", pointerEvents: "none" }}
             cursor={{ stroke: "var(--color-primary)", strokeOpacity: 0.25, strokeWidth: 2 }}
-
-
-            content={({ active, payload, label }) => {
+            content={(props) => {
+              const { active, payload, label } = props;
+              const coordinate = (props as { coordinate?: { x: number; y: number } }).coordinate;
+              const viewBox = (props as { viewBox?: { y?: number; height?: number } }).viewBox;
               if (!active || !payload?.length) return null;
+
+              // Only show when the pointer is close to one of the plotted lines
+              const domainMax =
+                yMax ??
+                Math.max(
+                  1,
+                  ...data.flatMap((row) =>
+                    [...areas, ...lines].map((s) => Number(row[s.key] ?? 0)),
+                  ),
+                );
+              if (coordinate && viewBox && typeof viewBox.height === "number") {
+                const top = viewBox.y ?? 0;
+                const h = viewBox.height;
+                const near = payload.some((p) => {
+                  const py = top + h * (1 - Number(p.value ?? 0) / domainMax);
+                  return Math.abs(py - coordinate.y) <= 28;
+                });
+                if (!near) return null;
+              }
+
+              const order = [...areas.map((a) => a.key), ...lines.map((l) => l.key)];
+              const sorted = [...payload].sort((a, b) => {
+                const rank = (k: string) => {
+                  if (k === "aportes") return 99;
+                  const i = order.indexOf(k);
+                  return i === -1 ? 50 : i;
+                };
+                return rank(String(a.dataKey)) - rank(String(b.dataKey));
+              });
+
               return (
                 <div className="rounded-2xl border border-border/60 bg-surface-2 px-4 py-3 shadow-xl">
                   <div className="mb-2 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
                     {tooltipLabel ? tooltipLabel(label as string | number) : String(label)}
                   </div>
                   <div className="space-y-1.5">
-                    {payload.map((p) => (
-                      <div key={String(p.dataKey)} className="flex items-center gap-3">
-                        <span
-                          className="h-2.5 w-2.5 shrink-0 rounded-full"
-                          style={{ background: String(p.color) }}
-                        />
-                        <span className="text-sm text-muted-foreground">
-                          {seriesNames?.[String(p.dataKey)] ?? String(p.name)}
-                        </span>
-                        <span className="ml-auto text-sm font-bold text-foreground">
-                          {money(Number(p.value), currency)}
-                        </span>
-                      </div>
-                    ))}
+                    {sorted.map((p) => {
+                      const isSaved = String(p.dataKey) === "aportes";
+                      return (
+                        <div key={String(p.dataKey)} className="flex items-center gap-3">
+                          <span
+                            className="h-2.5 w-2.5 shrink-0 rounded-full"
+                            style={{ background: String(p.color) }}
+                          />
+                          <span className={`text-sm ${isSaved ? "text-muted-foreground/70" : "text-muted-foreground"}`}>
+                            {seriesNames?.[String(p.dataKey)] ?? String(p.name)}
+                          </span>
+                          <span
+                            className={`ml-auto text-sm font-bold ${isSaved ? "text-muted-foreground" : "text-foreground"}`}
+                          >
+                            {money(Number(p.value), currency)}
+                          </span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               );
             }}
           />
+
 
           {areas.map((a) => (
             <Area
