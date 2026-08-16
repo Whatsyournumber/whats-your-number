@@ -140,7 +140,9 @@ function MyNumber({ member }: { member: Member }) {
     };
   }, [wishes]);
 
-  const pending = tasks.filter((x) => x.status === "pendiente").length;
+  const openTasks = tasks.filter((x) => x.status === "pendiente").slice(0, 4);
+  const pending = openTasks.length;
+
   const earned = tasks
     .filter((x) => x.status === "aprobada")
     .reduce((s, x) => s + Number(x.reward), 0);
