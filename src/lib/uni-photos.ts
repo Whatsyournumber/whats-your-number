@@ -120,6 +120,16 @@ import curatedNhh from "@/assets/uni/no-nhh.jpg";
 import curatedBonn from "@/assets/uni/de-bonn.jpg";
 import curatedGottingen from "@/assets/uni/de-gottingen.jpg";
 import curatedFreiburg from "@/assets/uni/de-freiburg.jpg";
+import curatedNtnu from "@/assets/uni/no-ntnu.jpg";
+import curatedKoln from "@/assets/uni/de-koln.jpg";
+import curatedMunster from "@/assets/uni/de-munster.jpg";
+import curatedFau from "@/assets/uni/de-fau-erlangen.jpg";
+import curatedDarmstadt from "@/assets/uni/de-tu-darmstadt.jpg";
+import curatedWurzburg from "@/assets/uni/de-wurzburg.jpg";
+import curatedUlm from "@/assets/uni/de-ulm.jpg";
+import curatedDuisburg from "@/assets/uni/de-duisburg-essen.jpg";
+import curatedKiel from "@/assets/uni/de-kiel.jpg";
+import curatedPotsdam from "@/assets/uni/de-potsdam.jpg";
 import curatedBelgrano from "@/assets/uni/ar-belgrano.jpg";
 import curatedPucRio from "@/assets/uni/br-puc-rio.jpg";
 import curatedUcu from "@/assets/uni/uy-ucu.jpg";
@@ -817,6 +827,16 @@ const CURATED: Record<string, string> = {
   "de-universitat-bonn": curatedBonn,
   "de-universitat-gottingen": curatedGottingen,
   "de-universitat-freiburg": curatedFreiburg,
+  "no-ntnu": curatedNtnu,
+  "de-universitat-zu-koln": curatedKoln,
+  "de-universitat-munster": curatedMunster,
+  "de-fau-erlangen-nurnberg": curatedFau,
+  "de-tu-darmstadt": curatedDarmstadt,
+  "de-universitat-wurzburg": curatedWurzburg,
+  "de-universitat-ulm": curatedUlm,
+  "de-universitat-duisburg-essen": curatedDuisburg,
+  "de-universitat-kiel": curatedKiel,
+  "de-universitat-potsdam": curatedPotsdam,
   "ar-universidad-de-belgrano": curatedBelgrano,
   "br-puc-rio": curatedPucRio,
   "lat-universidad-catolica-del-uru": curatedUcu,
