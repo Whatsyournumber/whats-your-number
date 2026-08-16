@@ -325,7 +325,7 @@ function MyNumber({ member }: { member: Member }) {
               loading="lazy"
               width={768}
               height={768}
-              className="pointer-events-none relative -mr-2 h-[140px] w-[110px] shrink-0 self-end object-contain"
+              className="pointer-events-none relative -mr-1 hidden h-[130px] w-[92px] shrink-0 self-end object-contain sm:block"
             />
 
           </div>
