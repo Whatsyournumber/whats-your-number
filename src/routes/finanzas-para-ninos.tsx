@@ -537,90 +537,21 @@ function HowItWorksSlider() {
       ),
     },
     {
-      id: "badges",
-      tab: t("Mis logros", "My badges"),
-      icon: Trophy,
-      color: "var(--kid-grape)",
-      title: t("Premios, rachas y retos", "Rewards, streaks and quests"),
-      desc: t(
-        "Cada semana que ahorra desbloquea premios como una bici nueva, rachas e insignias.",
-        "Every week they save unlocks rewards like a new bike, streaks and badges.",
-      ),
-      visual: (
-        <ScreenCard title={t("Mis premios", "My rewards")} accent="var(--kid-grape)">
-          <div className="relative overflow-hidden rounded-2xl bg-elevated p-4 ring-1 ring-kid-mint/15">
-            <div
-              className="pointer-events-none absolute -right-6 -top-8 h-32 w-32 rounded-full blur-2xl"
-              style={{ background: "color-mix(in oklab, var(--kid-mint) 25%, transparent)" }}
-            />
-            <div className="relative flex items-center gap-3">
-              <img
-                src={bikeAsset.url}
-                alt={t("Bici nueva", "New bike")}
-                loading="lazy"
-                width={816}
-                height={816}
-                className="h-20 w-20 shrink-0 object-contain drop-shadow-[0_8px_20px_rgba(0,0,0,0.45)]"
-              />
-              <div className="min-w-0">
-                <p className="text-sm font-medium">{t("Bici nueva", "New bike")}</p>
-                <p className="numeric text-xs text-muted-foreground">
-                  {t("Desbloqueado a los", "Unlocked at")} €250
-                </p>
-              </div>
-              <span className="numeric ml-auto text-lg font-semibold text-kid-mint">62%</span>
-            </div>
-            <div className="relative mt-3 h-2 w-full overflow-hidden rounded-full bg-card">
-              <div className="h-full w-[62%] rounded-full bg-kid-mint" />
-            </div>
-          </div>
-
-
-          <div className="mt-3 flex items-center justify-between rounded-2xl bg-elevated px-4 py-3">
-            <div>
-              <p className="text-xs text-muted-foreground">{t("Racha", "Streak")}</p>
-              <p className="numeric mt-0.5 text-xl font-semibold text-kid-grape">
-                7 {t("sem.", "wks")}
-              </p>
-            </div>
-            <div className="flex gap-1">
-              {Array.from({ length: 7 }).map((_, k) => (
-                <Star
-                  key={k}
-                  className="h-4 w-4 fill-kid-sun text-kid-sun"
-                />
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-3 grid grid-cols-4 gap-2">
-            {[Trophy, Star, BadgeCheck, Sparkles].map((Ic, k) => (
-              <span
-                key={k}
-                className="flex aspect-square items-center justify-center rounded-xl text-kid-grape ring-1 ring-kid-grape/20 kid-gradient-soft"
-              >
-                <Ic className="h-4 w-4" />
-              </span>
-            ))}
-          </div>
-        </ScreenCard>
-      ),
-    },
-    {
       id: "unis",
       tab: t("Universidades", "Universities"),
       icon: GraduationCap,
       color: "var(--kid-grape)",
       title: t("Buscador de universidades", "University finder"),
       desc: t(
-        "Busca por universidad, ciudad o continente y mira al instante qué parte de la carrera cubre su número del futuro.",
-        "Search by university, city or continent and instantly see how much of the degree their future number covers.",
+        "Busca por universidad, ciudad o continente y mira al instante a cuáles podría aplicar con su número del futuro.",
+        "Search by university, city or continent and instantly see which ones they could apply to with their future number.",
       ),
       visual: <UniFinderVisual />,
     },
   ];
 
-  const order = ["numbers", "grow", "unis", "pockets", "chores", "dreams", "badges"];
+  const order = ["numbers", "grow", "unis", "pockets", "chores", "dreams"];
+
   const slides = [...rawSlides].sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
 
   const buddy: Record<string, string> = {
