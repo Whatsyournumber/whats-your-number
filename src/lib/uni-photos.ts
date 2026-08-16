@@ -219,6 +219,7 @@ import cur_qa_georgetown from "@/assets/uni/qa-georgetown.jpg";
 import cur_ae_aud from "@/assets/uni/ae-aud.jpg";
 import cur_ar_uba from "@/assets/uni/ar-uba.jpg";
 import cur_ar_cordoba from "@/assets/uni/ar-cordoba.jpg";
+import cur_br_ufmg from "@/assets/uni/br-ufmg.jpg";
 import cur_ar_laplata from "@/assets/uni/ar-laplata.jpg";
 import cur_ar_utn from "@/assets/uni/ar-utn.jpg";
 import cur_ar_rosario from "@/assets/uni/ar-rosario.jpg";
@@ -789,6 +790,7 @@ const CURATED: Record<string, string> = {
   "ot-american-university-of-dubai": cur_ae_aud,
   "ar-universidad-de-buenos-aires": cur_ar_uba,
   "ar-universidad-nacional-de-cord": cur_ar_cordoba,
+  "br-ufmg": cur_br_ufmg,
   "ar-universidad-nacional-de-la-p": cur_ar_laplata,
   "ar-utn-universidad-tecnologica-": cur_ar_utn,
   "ar-universidad-nacional-de-rosa": cur_ar_rosario,
