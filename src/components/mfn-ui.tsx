@@ -164,13 +164,35 @@ export function GrowthChart({
           <XAxis dataKey={xKey} {...axis} />
           <YAxis {...axis} width={72} domain={[0, yMax ?? "dataMax"]} tickFormatter={(v) => money(Number(v), currency, true)} />
           <Tooltip
-            contentStyle={tooltipStyle()}
-            labelFormatter={(l) => (tooltipLabel ? tooltipLabel(l as string | number) : String(l))}
-            formatter={(v: number | string, name: string) => [
-              money(Number(v), currency),
-              seriesNames?.[name] ?? name,
-            ]}
+            cursor={{ stroke: "var(--color-primary)", strokeOpacity: 0.25, strokeWidth: 2 }}
+            content={({ active, payload, label }) => {
+              if (!active || !payload?.length) return null;
+              return (
+                <div className="rounded-2xl border border-border/60 bg-surface-2 px-4 py-3 shadow-xl">
+                  <div className="mb-2 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+                    {tooltipLabel ? tooltipLabel(label as string | number) : String(label)}
+                  </div>
+                  <div className="space-y-1.5">
+                    {payload.map((p) => (
+                      <div key={String(p.dataKey)} className="flex items-center gap-3">
+                        <span
+                          className="h-2.5 w-2.5 shrink-0 rounded-full"
+                          style={{ background: String(p.color) }}
+                        />
+                        <span className="text-sm text-muted-foreground">
+                          {seriesNames?.[String(p.dataKey)] ?? String(p.name)}
+                        </span>
+                        <span className="ml-auto text-sm font-bold text-foreground">
+                          {money(Number(p.value), currency)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            }}
           />
+
           {areas.map((a) => (
             <Area
               key={a.key}
