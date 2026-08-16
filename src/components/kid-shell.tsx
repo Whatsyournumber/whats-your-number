@@ -113,8 +113,8 @@ export function KidShell({ member, children }: { member: Member; children: React
     <div className="min-h-screen lg:flex">
       <aside
         className={cn(
-          "glass-nav sticky top-0 hidden h-screen shrink-0 flex-col overflow-hidden border-r py-6 transition-[width] duration-300 lg:flex",
-          collapsed ? "w-[86px] px-2" : "w-72 px-4",
+          "glass-nav sticky top-0 hidden h-screen shrink-0 flex-col overflow-hidden border-r py-5 transition-[width] duration-300 lg:flex",
+          collapsed ? "w-[78px] px-2" : "w-60 px-3",
         )}
       >
         <div className={cn("flex items-center", collapsed ? "justify-center" : "justify-between gap-2")}>
