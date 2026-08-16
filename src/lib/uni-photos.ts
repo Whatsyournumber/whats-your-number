@@ -110,6 +110,16 @@ import curatedLatvia from "@/assets/uni/lv-latvia.jpg";
 import curatedZagreb from "@/assets/uni/hr-zagreb.jpg";
 import curatedBabesBolyai from "@/assets/uni/ro-babes-bolyai.jpg";
 import curatedBucharest from "@/assets/uni/ro-bucharest.jpg";
+import curatedNtua from "@/assets/uni/gr-ntua.jpg";
+import curatedIceland from "@/assets/uni/is-iceland.jpg";
+import curatedLuxembourg from "@/assets/uni/lu-luxembourg.jpg";
+import curatedOslo from "@/assets/uni/no-oslo.jpg";
+import curatedBergen from "@/assets/uni/no-bergen.jpg";
+import curatedMinho from "@/assets/uni/pt-minho.jpg";
+import curatedNhh from "@/assets/uni/no-nhh.jpg";
+import curatedBonn from "@/assets/uni/de-bonn.jpg";
+import curatedGottingen from "@/assets/uni/de-gottingen.jpg";
+import curatedFreiburg from "@/assets/uni/de-freiburg.jpg";
 import curatedBelgrano from "@/assets/uni/ar-belgrano.jpg";
 import curatedPucRio from "@/assets/uni/br-puc-rio.jpg";
 import curatedUcu from "@/assets/uni/uy-ucu.jpg";
@@ -797,6 +807,16 @@ const CURATED: Record<string, string> = {
   "hr-university-of-zagreb": curatedZagreb,
   "ro-babes-bolyai-university": curatedBabesBolyai,
   "ro-university-of-bucharest": curatedBucharest,
+  "gr-national-technical-university": curatedNtua,
+  "is-university-of-iceland": curatedIceland,
+  "lu-university-of-luxembourg": curatedLuxembourg,
+  "no-university-of-oslo": curatedOslo,
+  "no-university-of-bergen": curatedBergen,
+  "pt-universidade-do-minho": curatedMinho,
+  "no-nhh-norwegian-school-of-econom": curatedNhh,
+  "de-universitat-bonn": curatedBonn,
+  "de-universitat-gottingen": curatedGottingen,
+  "de-universitat-freiburg": curatedFreiburg,
   "ar-universidad-de-belgrano": curatedBelgrano,
   "br-puc-rio": curatedPucRio,
   "lat-universidad-catolica-del-uru": curatedUcu,
