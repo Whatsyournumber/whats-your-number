@@ -42,6 +42,16 @@ import curatedItb from "@/assets/uni/id-itb.jpg";
 import curatedUkm from "@/assets/uni/my-ukm.jpg";
 import curatedKyoto from "@/assets/uni/jp-kyoto.jpg";
 import curatedCharles from "@/assets/uni/cz-charles.jpg";
+import curatedEindhoven from "@/assets/uni/nl-eindhoven.jpg";
+import curatedSciencesPo from "@/assets/uni/fr-sciences-po.jpg";
+import curatedKarolinska from "@/assets/uni/se-karolinska.jpg";
+import curatedStockholmUni from "@/assets/uni/se-stockholm-uni.jpg";
+import curatedChalmers from "@/assets/uni/se-chalmers.jpg";
+import curatedGothenburg from "@/assets/uni/se-gothenburg.jpg";
+import curatedDtu from "@/assets/uni/dk-dtu.jpg";
+import curatedAarhus from "@/assets/uni/dk-aarhus.jpg";
+import curatedZurichUni from "@/assets/uni/ch-zurich-uni.jpg";
+import curatedBern from "@/assets/uni/ch-bern.jpg";
 
 import curatedBuap from "@/assets/uni/mx-buap.jpg";
 import curatedUnal from "@/assets/uni/co-unal.jpg";
@@ -324,7 +334,7 @@ import cur_cl_udd from "@/assets/uni/cl-udd.jpg";
 import cur_cl_uandes from "@/assets/uni/cl-uandes.jpg";
 import cur_za_uct from "@/assets/uni/za-uct.jpg";
 import cur_pt_nova from "@/assets/uni/pt-nova.jpg";
-import cur_fr_sciencespo from "@/assets/uni/fr-sciencespo.jpg";
+
 import cur_fr_polytechnique from "@/assets/uni/fr-polytechnique.jpg";
 import cur_fr_essec from "@/assets/uni/fr-essec.jpg";
 import cur_fr_hec from "@/assets/uni/fr-hec.jpg";
@@ -798,6 +808,16 @@ const CURATED: Record<string, string> = {
   "ap-universiti-kebangsaan": curatedUkm,
   "ap-kyoto-university": curatedKyoto,
   "ot-charles-university": curatedCharles,
+  "nl-eindhoven-university-of-tech": curatedEindhoven,
+  "fr-sciences-po": curatedSciencesPo,
+  "se-karolinska-institutet": curatedKarolinska,
+  "se-stockholm-university": curatedStockholmUni,
+  "se-chalmers-university-of-technol": curatedChalmers,
+  "se-university-of-gothenburg": curatedGothenburg,
+  "dk-dtu-technical-university-of-de": curatedDtu,
+  "dk-aarhus-university": curatedAarhus,
+  "ch-universitat-zurich": curatedZurichUni,
+  "ch-universitat-bern": curatedBern,
   "mx-buap": curatedBuap,
 
   "co-universidad-nacional-de-colo": curatedUnal,
@@ -989,7 +1009,7 @@ const CURATED: Record<string, string> = {
   "cl-universidad-de-los-andes-chi": cur_cl_uandes,
   "ot-university-of-cape-town": cur_za_uct,
   "ot-nova-lisboa": cur_pt_nova,
-  "fr-sciences-po": cur_fr_sciencespo,
+  
   "fr-ecole-polytechnique": cur_fr_polytechnique,
   "fr-essec-business-school": cur_fr_essec,
   "fr-hec-paris": cur_fr_hec,
