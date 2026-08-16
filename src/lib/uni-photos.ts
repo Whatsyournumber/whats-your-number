@@ -753,6 +753,8 @@ const CURATED: Record<string, string> = {
   "nl-university-of-groningen": curatedGroningen,
   "co-universidad-icesi": curatedIcesi,
   "it-universita-cattolica": curatedCattolica,
+  "ar-utdt-torcuato-di-tella": curatedUtdt,
+  "cl-universidad-de-chile": curatedUchile,
   "uk-university-of-leeds": cur_uk_leeds,
   "uk-university-of-manchester": cur_uk_manchester,
   "uk-university-of-bristol": cur_uk_bristol,
