@@ -2,6 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ArrowUpRight, CheckSquare, Rocket, Star, Wallet } from "lucide-react";
 import { Buddy, Card, GrowthChart, Progress } from "@/components/mfn-ui";
+import piggyImg from "@/assets/kid-piggy.png";
+import treeImg from "@/assets/kid-tree.png";
 import { KidPage, PageTitle } from "@/components/kid-page";
 import { useI18n } from "@/lib/mfn-i18n";
 import { useFund, useMovements, useTasks, useWishes } from "@/hooks/use-mfn";
@@ -136,71 +138,88 @@ function MyNumber({ member }: { member: Member }) {
   return (
     <>
       <PageTitle
-        emoji={member.avatar}
+        emoji="👋"
         title={`${t("Hola", "Hello")}, ${member.name}`}
-        subtitle={`${t("Nivel", "Level")} ${Math.floor(member.xp / 50) + 1} · ${member.xp} XP · 🔥 ${t("racha de", "streak of")} ${member.streak}`}
+        subtitle={t("¡Vamos por un gran futuro!", "Let's go for a great future!")}
       />
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         <div className="grid content-start gap-4">
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="card-soft animate-rise relative overflow-hidden bg-primary/5 p-5">
-              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-primary">
+            <div className="card-soft animate-rise relative flex min-h-[190px] flex-col justify-center overflow-hidden bg-primary/5 p-5 pr-24">
+              <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-primary">
                 {t("Mi dinero hoy", "My money today")}
               </p>
-              <p className="mt-1 font-display text-[2.35rem] font-bold leading-none tracking-tight text-foreground">
+              <p className="mt-2 font-display text-[2.6rem] font-bold leading-none tracking-tight text-foreground">
                 {money(today, member.currency)}
               </p>
-              <p className="mt-2 text-xs text-muted-foreground">
+              <p className="mt-3 text-sm text-muted-foreground">
                 {t("Esta semana", "This week")}{" "}
                 <span className="font-semibold text-chart-2">+{money(pace, member.currency)} ↗</span>
               </p>
-              <span className="pointer-events-none absolute -bottom-2 right-1 text-[68px] leading-none opacity-90">
-                🐷
-              </span>
+              <img
+                src={piggyImg}
+                alt=""
+                aria-hidden
+                loading="lazy"
+                width={768}
+                height={768}
+                className="pointer-events-none absolute -bottom-3 -right-2 h-[150px] w-[150px] object-contain"
+              />
             </div>
 
-            <div className="card-soft animate-rise relative overflow-hidden bg-chart-3/10 p-5">
-              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-chart-3">
+            <div className="card-soft animate-rise relative flex min-h-[190px] flex-col justify-center overflow-hidden bg-chart-3/10 p-5 pr-24">
+              <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-chart-3">
                 {t(`Mi dinero a los ${targetAge}`, `My money at ${targetAge}`)}
               </p>
-              <p className="mt-1 font-display text-[2.35rem] font-bold leading-none tracking-tight text-foreground">
+              <p className="mt-2 font-display text-[2.6rem] font-bold leading-none tracking-tight text-foreground">
                 {money(projection.future, member.currency)}
               </p>
-              <p className="mt-2 text-xs text-muted-foreground">
-                {t("Si sigues ahorrando", "If you keep saving")}{" "}
+              <p className="mt-3 text-sm text-muted-foreground">
+                {t("Si sigues ahorrando", "If you keep saving")}
                 <span className="block font-semibold text-chart-3">
                   {money(monthly || pace, member.currency)} {t("al mes", "a month")}
                 </span>
               </p>
-              <span className="pointer-events-none absolute -bottom-2 right-1 text-[68px] leading-none opacity-90">
-                🌳
-              </span>
+              <img
+                src={treeImg}
+                alt=""
+                aria-hidden
+                loading="lazy"
+                width={768}
+                height={768}
+                className="pointer-events-none absolute -bottom-2 -right-3 h-[155px] w-[155px] object-contain"
+              />
             </div>
           </div>
 
           <div className="card-soft p-5">
-            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+            <p className="text-[12px] font-bold uppercase tracking-[0.1em] text-foreground">
               {t("¿Dónde está mi dinero?", "Where is my money?")}
             </p>
             <div className="mt-3 grid gap-3 sm:grid-cols-3">
               {POCKETS.map((p, i) => {
                 const amount = totals[p.key];
                 const pct = today > 0 ? Math.round((amount / today) * 100) : 0;
-                const tone = ["bg-primary", "bg-chart-2", "bg-chart-4"][i] ?? "bg-primary";
+                const tone = [
+                  { bg: "bg-primary/5", text: "text-primary", bar: "bg-primary" },
+                  { bg: "bg-chart-2/10", text: "text-chart-2", bar: "bg-chart-2" },
+                  { bg: "bg-chart-4/10", text: "text-chart-4", bar: "bg-chart-4" },
+                ][i] ?? { bg: "bg-surface-2", text: "text-primary", bar: "bg-primary" };
                 return (
-                  <div key={p.key} className="rounded-2xl bg-surface-2 p-4">
-                    <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                      <span className="text-xl">{p.emoji}</span> {pocketLabel(p.key, lang)}
+                  <div key={p.key} className={`rounded-2xl p-4 ${tone.bg}`}>
+                    <p className="flex items-center gap-2 text-sm font-semibold">
+                      <span className="text-2xl leading-none">{p.emoji}</span>
+                      <span className={tone.text}>{pocketLabel(p.key, lang)}</span>
                     </p>
                     <p className="mt-1 font-display text-2xl font-bold text-foreground">
                       {money(amount, member.currency)}
                     </p>
-                    <p className="mt-1 text-[11px] text-muted-foreground">
+                    <p className="mt-2 text-[11px] text-muted-foreground">
                       {pct}% {t("de tu dinero", "of your money")}
                     </p>
                     <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-background/70">
-                      <div className={`h-full rounded-full ${tone}`} style={{ width: `${Math.min(100, pct)}%` }} />
+                      <div className={`h-full rounded-full ${tone.bar}`} style={{ width: `${Math.min(100, pct)}%` }} />
                     </div>
                   </div>
                 );
@@ -208,6 +227,7 @@ function MyNumber({ member }: { member: Member }) {
             </div>
           </div>
         </div>
+
 
 
         <div className="grid content-start gap-4">
