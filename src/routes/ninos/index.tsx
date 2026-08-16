@@ -43,7 +43,22 @@ function ProfileSelector() {
   const [manage, setManage] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<Member | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [showUnlock, setShowUnlock] = useState(false);
+  const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
   const queryClient = useQueryClient();
+
+  async function unlockExtraProfile() {
+    const { data } = await supabase.auth.getUser();
+    const user = data.user;
+    await openCheckout({
+      priceId: "extra_kid_monthly",
+      quantity: 1,
+      customerEmail: user?.email,
+      customData: { userId: user?.id ?? "", type: "extra_kid_profile" },
+      successUrl: `${window.location.origin}/ninos`,
+    });
+  }
+
 
   async function confirmDelete() {
     if (!pendingDelete) return;
