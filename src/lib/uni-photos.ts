@@ -267,6 +267,14 @@ function hash(id: string) {
 
 /** Fotos curadas de alta calidad que sustituyen a las fuentes externas. */
 import cur_uk_leeds from "@/assets/uni/uk-leeds.jpg";
+import curatedGeneve from "@/assets/uni/ch-geneve.jpg";
+import curatedCbs from "@/assets/uni/dk-cbs.jpg";
+import curatedBasel from "@/assets/uni/ch-basel.jpg";
+import curatedLausanne from "@/assets/uni/ch-lausanne.jpg";
+import curatedLugano from "@/assets/uni/ch-usi-lugano.jpg";
+import curatedStGallen from "@/assets/uni/ch-st-gallen.jpg";
+import curatedSouthampton from "@/assets/uni/uk-southampton.jpg";
+import curatedBirmingham from "@/assets/uni/uk-birmingham.jpg";
 import cur_uk_manchester from "@/assets/uni/uk-manchester.jpg";
 import cur_uk_bristol from "@/assets/uni/uk-bristol.jpg";
 import cur_uk_edinburgh from "@/assets/uni/uk-edinburgh.jpg";
@@ -942,6 +950,14 @@ const CURATED: Record<string, string> = {
   "ar-utdt-torcuato-di-tella": curatedUtdt,
   "cl-universidad-de-chile": curatedUchile,
   "uk-university-of-leeds": cur_uk_leeds,
+  "ch-universite-de-geneve": curatedGeneve,
+  "dk-copenhagen-business-school": curatedCbs,
+  "ch-universitat-basel": curatedBasel,
+  "ch-universite-de-lausanne": curatedLausanne,
+  "ch-usi-lugano": curatedLugano,
+  "ch-university-of-st-gallen": curatedStGallen,
+  "uk-university-of-southampton": curatedSouthampton,
+  "uk-university-of-birmingham": curatedBirmingham,
   "uk-university-of-manchester": cur_uk_manchester,
   "uk-university-of-bristol": cur_uk_bristol,
   "uk-university-of-edinburgh": cur_uk_edinburgh,
