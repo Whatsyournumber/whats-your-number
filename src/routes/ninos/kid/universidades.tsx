@@ -21,6 +21,9 @@ import {
   uniLivingUsd,
   uniFieldScore,
   LIVING_STYLES,
+  PRICE_YEAR,
+  ANNUAL_INFLATION,
+
   uniSector,
   type LivingStyle,
   type UniField,
