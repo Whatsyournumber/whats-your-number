@@ -592,16 +592,26 @@ function MyNumber({ member }: { member: Member }) {
                 key={p.key}
                 type="button"
                 onClick={() => setCompareRate(compareRate === p.rate ? null : p.rate)}
-                className={`h-7 rounded-full px-2.5 text-[11px] font-bold transition ${
+                className={`h-7 rounded-full px-3 text-[11px] font-semibold transition ${
                   compareRate === p.rate
                     ? "bg-chart-2 text-background"
                     : "bg-surface-1 text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {p.rate}%
+                {t(p.es, p.en)} · {p.rate}%
               </button>
             ))}
+            {compareRate !== null && (
+              <button
+                type="button"
+                onClick={() => setCompareRate(null)}
+                className="h-7 rounded-full px-2.5 text-[11px] font-semibold text-muted-foreground hover:text-foreground"
+              >
+                {t("Quitar", "Clear")}
+              </button>
+            )}
           </div>
+
         </div>
 
         <GrowthChart
