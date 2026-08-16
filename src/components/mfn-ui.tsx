@@ -166,8 +166,11 @@ export function GrowthChart({
           <Tooltip
             trigger="hover"
             isAnimationActive={false}
+            position={{ y: 8 }}
+            allowEscapeViewBox={{ x: false, y: true }}
             wrapperStyle={{ outline: "none", pointerEvents: "none" }}
             cursor={{ stroke: "var(--color-primary)", strokeOpacity: 0.25, strokeWidth: 2 }}
+
 
             content={({ active, payload, label }) => {
               if (!active || !payload?.length) return null;
