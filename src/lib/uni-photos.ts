@@ -267,6 +267,14 @@ function hash(id: string) {
 
 /** Fotos curadas de alta calidad que sustituyen a las fuentes externas. */
 import cur_uk_leeds from "@/assets/uni/uk-leeds.jpg";
+import curatedGeneve from "@/assets/uni/ch-geneve.jpg";
+import curatedCbs from "@/assets/uni/dk-cbs.jpg";
+import curatedBasel from "@/assets/uni/ch-basel.jpg";
+import curatedLausanne from "@/assets/uni/ch-lausanne.jpg";
+import curatedLugano from "@/assets/uni/ch-usi-lugano.jpg";
+import curatedStGallen from "@/assets/uni/ch-st-gallen.jpg";
+import curatedSouthampton from "@/assets/uni/uk-southampton.jpg";
+import curatedBirmingham from "@/assets/uni/uk-birmingham.jpg";
 import cur_uk_manchester from "@/assets/uni/uk-manchester.jpg";
 import cur_uk_bristol from "@/assets/uni/uk-bristol.jpg";
 import cur_uk_edinburgh from "@/assets/uni/uk-edinburgh.jpg";
