@@ -135,7 +135,15 @@ export function KidShell({ member, children }: { member: Member; children: React
           </button>
         </div>
         <nav className="mt-4 flex min-h-0 flex-1 flex-col gap-1 overflow-hidden [&_.nav-icon]:h-7 [&_.nav-icon]:w-7 [&_.nav-pill]:gap-2.5 [&_.nav-pill]:px-2.5 [&_.nav-pill]:py-1.5">
+          <div className={cn("pb-1", collapsed && "mx-1")}>
+            {collapsed ? null : (
+              <p className="px-2.5 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                {t(`Para ${member.name}`, `For ${member.name}`)}
+              </p>
+            )}
+          </div>
           {TABS.map((tab) => (
+
             <Link
               key={tab.to}
               to={tab.to}
