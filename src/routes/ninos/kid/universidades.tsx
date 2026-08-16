@@ -654,37 +654,6 @@ function CollegeFinder({ member }: { member: Member }) {
               </button>
             ))}
           </div>
-
-          {includeLiving ? (
-            <div className="col-span-2 flex items-center gap-1 overflow-x-auto rounded-full border border-border/70 bg-background/50 p-0.5 sm:col-auto">
-              {(Object.keys(LIVING_STYLES) as LivingStyle[]).map((k) => {
-                const st = LIVING_STYLES[k];
-                return (
-                  <TooltipProvider key={k} delayDuration={150}>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          type="button"
-                          onClick={() => setLiving(k)}
-                          className={cn(
-                            "flex-1 whitespace-nowrap rounded-full px-3 py-1.5 text-[11px] font-bold transition sm:flex-none",
-                            living === k
-                              ? "bg-primary text-primary-foreground"
-                              : "text-muted-foreground hover:text-foreground",
-                          )}
-                        >
-                          {st.emoji} {t(st.es, st.en)}
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" className="max-w-[220px] text-[11px] leading-relaxed">
-                        {t(st.descEs, st.descEn)}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                );
-              })}
-            </div>
-          ) : null}
         </div>
 
 
