@@ -20,7 +20,6 @@ import {
   uniTuitionUsd,
   uniLivingUsd,
   uniFieldScore,
-  LIVING_STYLES,
   uniSector,
   type LivingStyle,
   type UniField,
@@ -183,6 +182,32 @@ function CollegeFinder({ member }: { member: Member }) {
 
   const cost = (u: University) => uniTotalUsd(u, includeLiving, field, living) * usdFx.factor;
   const isHome = (u: University) => !!homeCountry && (u.countryEs === homeCountry || u.country === homeCountry);
+
+  /** Modo de ranking unificado: combina orden (coste vs ranking) y tope (Top 100/300/500). */
+  const rankMode = sort === "cost" ? "cost" : rankMax || "best";
+  const setRankMode = (v: string) => {
+    if (v === "cost") {
+      setSort("cost");
+      setRankMax("");
+    } else if (v === "best") {
+      setSort("rank");
+      setRankMax("");
+    } else {
+      setSort("rank");
+      setRankMax(v);
+    }
+  };
+
+  /** Modo de coste de vida unificado: solo matrícula o estilo de alojamiento. */
+  const lifeMode = includeLiving ? living : "tuition";
+  const setLifeMode = (v: string) => {
+    if (v === "tuition") {
+      setIncludeLiving(false);
+    } else {
+      setIncludeLiving(true);
+      setLiving(v as LivingStyle);
+    }
+  };
 
   const bucketOf = (u: University): Bucket => {
     if (isHome(u)) return "home";
@@ -585,74 +610,20 @@ function CollegeFinder({ member }: { member: Member }) {
             <option value="public">{t("Pública", "Public")}</option>
             <option value="private">{t("Privada", "Private")}</option>
           </Select>
-          <Select value={rankMax} onChange={setRankMax} placeholder={t("Ranking", "Ranking")}>
+          <Select value={rankMode} onChange={setRankMode} placeholder={t("Ranking", "Ranking")} clearable={false}>
+            <option value="cost">{t("Coste total", "Total cost")}</option>
+            <option value="best">{t("Mejor ranking", "Best ranking")}</option>
             <option value="100">Top 100</option>
             <option value="300">Top 300</option>
             <option value="500">Top 500</option>
           </Select>
-          <Select
-            value={sort}
-            onChange={(v) => setSort(v as "cost" | "rank")}
-            placeholder={t("Coste total", "Total cost")}
-            clearable={false}
-          >
-            <option value="cost">{t("Coste total", "Total cost")}</option>
-            <option value="rank">{t("Mejor ranking", "Best ranking")}</option>
+
+          <Select value={lifeMode} onChange={setLifeMode} placeholder={t("Coste de vida", "Cost of living")} clearable={false}>
+            <option value="tuition">{t("Solo matrícula", "Tuition only")}</option>
+            <option value="shared">🛏️ {t("Ajustado", "Budget")}</option>
+            <option value="moderate">🏫 {t("Moderado", "Moderate")}</option>
+            <option value="premium">✨ {t("Premium", "Premium")}</option>
           </Select>
-
-          <div className="col-span-2 flex items-center gap-0.5 rounded-full border border-border/70 bg-background/50 p-0.5 sm:col-auto">
-            {(
-              [
-                [false, t("Solo matrícula", "Tuition only")],
-                [true, t("Matrícula + vida", "Tuition + living")],
-              ] as const
-            ).map(([v, label]) => (
-              <button
-                key={String(v)}
-                type="button"
-                onClick={() => setIncludeLiving(v)}
-                className={cn(
-                  "flex-1 whitespace-nowrap rounded-full px-3 py-1.5 text-[11px] font-bold transition sm:flex-none",
-                  includeLiving === v
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground",
-                )}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-
-          {includeLiving ? (
-            <div className="col-span-2 flex items-center gap-1 overflow-x-auto rounded-full border border-border/70 bg-background/50 p-0.5 sm:col-auto">
-              {(Object.keys(LIVING_STYLES) as LivingStyle[]).map((k) => {
-                const st = LIVING_STYLES[k];
-                return (
-                  <TooltipProvider key={k} delayDuration={150}>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          type="button"
-                          onClick={() => setLiving(k)}
-                          className={cn(
-                            "flex-1 whitespace-nowrap rounded-full px-3 py-1.5 text-[11px] font-bold transition sm:flex-none",
-                            living === k
-                              ? "bg-primary text-primary-foreground"
-                              : "text-muted-foreground hover:text-foreground",
-                          )}
-                        >
-                          {st.emoji} {t(st.es, st.en)}
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" className="max-w-[220px] text-[11px] leading-relaxed">
-                        {t(st.descEs, st.descEn)}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                );
-              })}
-            </div>
-          ) : null}
         </div>
 
 
