@@ -381,25 +381,11 @@ function MyNumber({ member }: { member: Member }) {
   );
 }
 
-function DreamPhoto({ title, emoji, pct }: { title: string; emoji: string; pct: number }) {
-  const [failed, setFailed] = useState(false);
-  if (failed) {
-    return (
-      <div className="relative grid aspect-square w-full place-items-center overflow-hidden rounded-2xl bg-gradient-to-br from-primary/20 to-chart-3/20">
-        <span className="text-4xl">{emoji || "⭐"}</span>
-        <div className="absolute inset-x-2 bottom-2 h-1.5 overflow-hidden rounded-full bg-background/70">
-          <div className="h-full rounded-full bg-primary" style={{ width: `${Math.min(100, pct)}%` }} />
-        </div>
-      </div>
-    );
-  }
+function DreamPhoto({ emoji }: { title: string; emoji: string; pct: number }) {
   return (
-    <img
-      src={dreamPhotoUrl(title)}
-      alt={title}
-      loading="lazy"
-      onError={() => setFailed(true)}
-      className="aspect-square w-full rounded-2xl object-cover"
-    />
+    <div className="grid aspect-square w-full place-items-center rounded-2xl bg-primary/10">
+      <span className="text-[clamp(2.5rem,7vw,3.5rem)] leading-none">{emoji || "⭐"}</span>
+    </div>
   );
+
 }
