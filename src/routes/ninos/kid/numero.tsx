@@ -563,7 +563,7 @@ function MyNumber({ member }: { member: Member }) {
                     isMain
                       ? "bg-primary text-primary-foreground"
                       : isCompare
-                        ? "bg-chart-2 text-background"
+                        ? "bg-foreground text-background"
                         : "bg-surface-1 text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -589,7 +589,7 @@ function MyNumber({ member }: { member: Member }) {
           </span>
           {compareRate !== null && (
             <span className="flex items-center gap-2">
-              <span className="h-1 w-5 rounded-full bg-chart-2" />
+              <span className="h-1 w-5 rounded-full bg-foreground" />
               {t("Comparación", "Comparison")} · {compareRate}%
             </span>
           )}
@@ -604,7 +604,7 @@ function MyNumber({ member }: { member: Member }) {
             { key: "total", color: "var(--color-chart-1)" },
             { key: "aportes", color: "var(--color-chart-4)" },
           ]}
-          lines={compareRate !== null ? [{ key: "compare", color: "var(--color-chart-2)" }] : []}
+          lines={compareRate !== null ? [{ key: "compare", color: "var(--color-foreground)" }] : []}
           seriesNames={{
             total: `${t("Con intereses", "With interest")} · ${chartRate}%`,
             aportes: t("Lo que ahorraste", "What you saved"),

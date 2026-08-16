@@ -215,13 +215,16 @@ export function GrowthChart({
               key={l.key}
               type="monotone"
               dataKey={l.key}
+              name={seriesNames?.[l.key] ?? l.key}
               stroke={l.color}
               strokeWidth={2}
               strokeDasharray="6 6"
               fillOpacity={0}
               dot={false}
+              activeDot={{ r: 4, fill: l.color, stroke: "var(--color-card)", strokeWidth: 2 }}
             />
           ))}
+
         </AreaChart>
       </ResponsiveContainer>
     </div>
