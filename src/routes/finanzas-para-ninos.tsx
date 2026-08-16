@@ -1084,9 +1084,13 @@ function ThreePillars() {
 
   return (
     <section className="mt-16">
-      <h2 className="text-center font-display text-lg font-semibold tracking-tight md:text-xl">
+      <p className="text-center text-xs font-medium uppercase tracking-wider text-kid-mint">
+        {t("¿Por qué usar My First Number?", "Why use My First Number?")}
+      </p>
+      <h2 className="mt-3 text-center font-display text-lg font-semibold tracking-tight md:text-xl">
         {t("Cuatro pilares para un futuro increíble", "Four pillars for an incredible future")}
       </h2>
+
       <p className="mx-auto mt-2 max-w-lg text-center text-xs text-muted-foreground">
         {t(
           "Un plan para los padres, hábitos para los hijos y tiempo trabajando a su favor.",
