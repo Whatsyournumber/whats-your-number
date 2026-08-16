@@ -8,6 +8,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 
 import { Card, GrowthChart, Progress } from "@/components/mfn-ui";
 import buddyImg from "@/assets/kid-buddy-robot.png";
+import piggyImg from "@/assets/kid-piggy.png";
+import treeImg from "@/assets/kid-tree.png";
 import { KidPage, PageTitle } from "@/components/kid-page";
 import { useI18n } from "@/lib/mfn-i18n";
 import { useFund, useMovements, useTasks, useWishes } from "@/hooks/use-mfn";
@@ -185,17 +187,66 @@ function MyNumber({ member }: { member: Member }) {
 
   return (
     <>
+      <PageTitle
+        emoji="👋"
+        title={`${t("Hola", "Hello")}, ${member.name}`}
+        subtitle={t("¡Vamos por un gran futuro!", "Let's go for a great future!")}
+      />
+
       <div className="grid items-stretch gap-5 lg:grid-cols-[minmax(0,1.62fr)_minmax(0,1fr)]">
-        <div className="grid content-start gap-5 lg:grid-rows-[minmax(220px,auto)_1fr]">
-          <div className="@container card-soft animate-rise relative grid min-h-[220px] content-center items-center overflow-hidden bg-gradient-to-br from-primary/10 via-card to-card p-6 sm:p-8 lg:p-10">
-            <div className="min-w-0">
-              <Eyebrow className="text-primary">{t("Mi Primer Número", "My First Number")}</Eyebrow>
-              <p
-                className="mt-4 whitespace-nowrap font-display font-bold leading-none tracking-tight text-foreground"
-                style={fitAmount(money(today, member.currency))}
-              >
-                {money(today, member.currency)}
-              </p>
+        <div className="grid content-start gap-5 lg:grid-rows-[minmax(240px,auto)_1fr]">
+          <div className="grid gap-5 sm:grid-cols-2 [&>*]:h-full">
+            <div className="@container card-soft animate-rise relative grid min-h-[220px] grid-cols-[minmax(0,1fr)_auto] content-center items-center gap-2 overflow-hidden bg-gradient-to-br from-primary/10 via-card to-card p-5 sm:p-6 lg:p-7">
+
+              <div className="min-w-0">
+                <Eyebrow className="text-primary">{t("Mi dinero hoy", "My money today")}</Eyebrow>
+                <p
+                  className="mt-3 whitespace-nowrap font-display font-bold leading-none tracking-tight text-foreground"
+                  style={fitAmount(money(today, member.currency))}
+                >
+                  {money(today, member.currency)}
+                </p>
+                <p className="mt-3 whitespace-nowrap text-[clamp(12px,4.4cqi,20px)] leading-snug text-muted-foreground">
+                  <span className="font-semibold text-chart-3">+{money(pace, member.currency)} ↗</span>{" "}
+                  {t("semana", "week")}
+                </p>
+              </div>
+              <img
+                src={piggyImg}
+                alt=""
+                aria-hidden
+                loading="lazy"
+                width={768}
+                height={768}
+                className="pointer-events-none h-[clamp(100px,50cqi,300px)] w-[clamp(100px,50cqi,300px)] shrink-0 self-center object-contain"
+              />
+            </div>
+
+            <div className="@container card-soft animate-rise relative grid min-h-[220px] grid-cols-[minmax(0,1fr)_auto] content-center items-center gap-2 overflow-hidden bg-gradient-to-br from-chart-2/10 via-card to-card p-5 sm:p-6 lg:p-7">
+              <div className="min-w-0">
+                <Eyebrow className="text-chart-2">
+                  {t(`Mi dinero a los ${shownAge}`, `My money at ${shownAge}`)}
+                </Eyebrow>
+                <p
+                  className="mt-3 whitespace-nowrap font-display font-bold leading-none tracking-tight text-foreground"
+                  style={fitAmount(money(chartProjection.future, member.currency))}
+                >
+                  {money(chartProjection.future, member.currency)}
+                </p>
+                <p className="mt-3 whitespace-nowrap text-[clamp(12px,4.4cqi,20px)] font-semibold leading-snug text-chart-2">
+                  {money(monthly || pace, member.currency)} {t("al mes", "a month")}
+                </p>
+              </div>
+
+              <img
+                src={treeImg}
+                alt=""
+                aria-hidden
+                loading="lazy"
+                width={768}
+                height={768}
+                className="pointer-events-none h-[clamp(100px,50cqi,300px)] w-[clamp(100px,50cqi,300px)] shrink-0 self-center object-contain"
+              />
             </div>
           </div>
 
