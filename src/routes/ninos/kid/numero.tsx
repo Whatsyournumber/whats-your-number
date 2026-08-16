@@ -116,6 +116,13 @@ function MyNumber({ member }: { member: Member }) {
     RATE_PRESETS.find((p) => Math.abs(chartRate - p.rate) < 0.01) ??
     ({ es: "Personalizado", en: "Custom" } as { es: string; en: string });
   const chartProjection = projectFund(base, monthly, member.age, member.age + years, chartRate);
+  const [compareRate, setCompareRate] = useState<number | null>(null);
+  const comparedPoints = useMemo(() => {
+    if (compareRate === null) return chartProjection.points;
+    const alt = projectFund(base, monthly, member.age, member.age + years, compareRate).points;
+    return chartProjection.points.map((p, i) => ({ ...p, compare: alt[i]?.total ?? 0 }));
+  }, [compareRate, chartProjection.points, base, monthly, member.age, years]);
+
 
 
   const dreams = useMemo(() => {
