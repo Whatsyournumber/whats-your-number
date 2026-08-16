@@ -408,36 +408,46 @@ function MyNumber({ member }: { member: Member }) {
 
 
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MiniStat
-          to="/ninos/kid/dinero"
-          icon={<Wallet className="h-5 w-5 text-primary" />}
-          label={t("Mi dinero", "My money")}
-          value={money(today, member.currency)}
-          hint={t("ingresos y gastos", "income and expenses")}
-        />
-        <MiniStat
-          to="/ninos/kid/tareas"
-          icon={<CheckSquare className="h-5 w-5 text-chart-2" />}
-          label={t("Mis tareas", "My tasks")}
-          value={`${pending} ${t("pendientes", "pending")}`}
-          hint={`${money(earned, member.currency)} ${t("ganados", "earned")}`}
-        />
-        <MiniStat
-          to="/ninos/kid/deseos"
-          icon={<Star className="h-5 w-5 text-chart-3" />}
-          label={t("Mis sueños", "My dreams")}
-          value={`${dreams.active.length} ${t("activos", "active")}`}
-          hint={`${dreams.achieved} ${t("cumplidos", "achieved")}`}
-        />
-        <MiniStat
-          to="/ninos/kid/futuro"
-          icon={<Rocket className="h-5 w-5 text-chart-4" />}
-          label={t("Mi futuro", "My future")}
-          value={money(projection.future, member.currency)}
-          hint={`${t("a los", "at")} ${targetAge} ${t("años", "yrs")}`}
-        />
+      <div className="card-soft mt-4 p-5 sm:p-6">
+        <div className="flex items-center justify-between gap-3">
+          <Eyebrow className="text-chart-2">{t("Mis tareas abiertas", "My open tasks")}</Eyebrow>
+          <Link
+            to="/ninos/kid/tareas"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-primary"
+          >
+            {t("Ver todas", "See all")} <ChevronRight className="h-4 w-4" />
+          </Link>
+        </div>
+        {openTasks.length ? (
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {openTasks.map((task) => (
+              <Link
+                key={task.id}
+                to="/ninos/kid/tareas"
+                className="card-soft group grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 p-4 transition hover:border-primary/40"
+              >
+                <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-chart-2/10">
+                  <CheckSquare className="h-5 w-5 text-chart-2" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate font-kid text-[15px] font-bold text-foreground">
+                    {task.title}
+                  </span>
+                  <span className="block truncate text-[12px] text-muted-foreground">
+                    {t("Ganas", "You earn")} {money(Number(task.reward), member.currency)}
+                  </span>
+                </span>
+                <ArrowUpRight className="h-4 w-4 text-muted-foreground transition group-hover:text-primary" />
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-4 font-kid text-sm text-muted-foreground">
+            {t("¡No tienes tareas pendientes! 🎉", "No pending tasks! 🎉")}
+          </p>
+        )}
       </div>
+
 
       <Card
         className="mt-4"
