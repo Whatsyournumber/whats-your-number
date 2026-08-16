@@ -279,7 +279,7 @@ function MyNumber({ member }: { member: Member }) {
           </div>
         </div>
 
-        <div className="grid gap-5 lg:grid-rows-[260px_1fr] [&>*]:h-full">
+        <div className="grid content-start gap-5 lg:grid-rows-[220px_1fr] [&>*]:h-full">
           <div className="card-soft animate-rise relative flex items-center overflow-hidden bg-gradient-to-br from-primary/20 via-chart-2/15 to-chart-2/30 p-5">
             <div className="pointer-events-none absolute -right-10 -top-12 h-36 w-36 rounded-full bg-card/40 blur-2xl" />
             <div className="pointer-events-none absolute right-24 top-5 text-lg opacity-70">✨</div>
