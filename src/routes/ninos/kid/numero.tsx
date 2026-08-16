@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { getBuddyTip } from "@/lib/kid-buddy.functions";
-import { ArrowUpRight, CheckSquare, ChevronRight, Rocket, Star, Wallet } from "lucide-react";
+import { ArrowUpRight, CheckSquare, ChevronRight } from "lucide-react";
 import { Card, GrowthChart, Progress } from "@/components/mfn-ui";
 import buddyImg from "@/assets/kid-buddy-robot.png";
 import piggyImg from "@/assets/kid-piggy.png";
@@ -81,35 +81,6 @@ function Ring({ value, size = 116 }: { value: number; size?: number }) {
   );
 }
 
-function MiniStat({
-  icon,
-  label,
-  value,
-  hint,
-  to,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  hint: string;
-  to: "/ninos/kid/dinero" | "/ninos/kid/deseos" | "/ninos/kid/tareas" | "/ninos/kid/futuro";
-}) {
-  return (
-    <Link
-      to={to}
-      className="card-soft group grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 p-4 transition hover:border-primary/40"
-    >
-      <span className="grid size-10 place-items-center rounded-2xl bg-surface-2">{icon}</span>
-      <span className="min-w-0">
-        <span className="block text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{label}</span>
-        <span className="block truncate font-display text-lg font-semibold text-foreground">{value}</span>
-        <span className="block truncate text-[11px] text-muted-foreground">{hint}</span>
-      </span>
-      <ArrowUpRight className="h-4 w-4 text-muted-foreground transition group-hover:text-primary" />
-    </Link>
-  );
-}
-
 function MyNumber({ member }: { member: Member }) {
   const { t, lang } = useI18n();
   const { data: movements = [] } = useMovements(member.id);
@@ -141,11 +112,7 @@ function MyNumber({ member }: { member: Member }) {
   }, [wishes]);
 
   const openTasks = tasks.filter((x) => x.status === "pendiente").slice(0, 4);
-  const pending = openTasks.length;
 
-  const earned = tasks
-    .filter((x) => x.status === "aprobada")
-    .reduce((s, x) => s + Number(x.reward), 0);
   const pace = monthlySavingPace(movements);
   const lines = buddyLines(lang);
   const line = lines[(member.xp / 10) % lines.length | 0] ?? lines[0];
