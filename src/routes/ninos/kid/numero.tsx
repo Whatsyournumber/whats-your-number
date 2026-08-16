@@ -8,8 +8,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 
 import { Card, GrowthChart, Progress } from "@/components/mfn-ui";
 import buddyImg from "@/assets/kid-buddy-robot.png";
-import piggyImg from "@/assets/kid-piggy.png";
-import treeImg from "@/assets/kid-tree.png";
 import { KidPage, PageTitle } from "@/components/kid-page";
 import { useI18n } from "@/lib/mfn-i18n";
 import { useFund, useMovements, useTasks, useWishes } from "@/hooks/use-mfn";
