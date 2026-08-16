@@ -11,6 +11,7 @@ import {
   GraduationCap,
   PiggyBank,
   Rocket,
+  Search,
   Sparkles,
   Star,
   Target,
@@ -46,6 +47,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useT } from "@/hooks/use-language";
 import { useLiveCount, formatCount } from "@/components/live-count";
+import { REAL_UNI_PHOTOS } from "@/lib/uni-photos-real";
 
 
 export const Route = createFileRoute("/finanzas-para-ninos")({
@@ -137,6 +139,164 @@ function MiniArea({ color }: { color: string }) {
   );
 }
 
+const DEMO_UNIS = [
+  {
+    id: "es-universitat-de-barcelona",
+    name: "Universitat de Barcelona",
+    city: "Barcelona",
+    country: "🇪🇸",
+    rank: 149,
+    cost: 9600,
+    region: "eu",
+  },
+  {
+    id: "uk-university-of-oxford",
+    name: "University of Oxford",
+    city: "Oxford",
+    country: "🇬🇧",
+    rank: 3,
+    cost: 46200,
+    region: "eu",
+  },
+  {
+    id: "nl-tu-delft",
+    name: "TU Delft",
+    city: "Delft",
+    country: "🇳🇱",
+    rank: 49,
+    cost: 21400,
+    region: "eu",
+  },
+  {
+    id: "ca-university-of-toronto",
+    name: "University of Toronto",
+    city: "Toronto",
+    country: "🇨🇦",
+    rank: 21,
+    cost: 38900,
+    region: "na",
+  },
+  {
+    id: "us-mit",
+    name: "MIT",
+    city: "Boston",
+    country: "🇺🇸",
+    rank: 1,
+    cost: 82500,
+    region: "na",
+  },
+] as const;
+
+function UniFinderVisual() {
+  const t = useT();
+  const [q, setQ] = useState("");
+  const [region, setRegion] = useState<"all" | "eu" | "na">("all");
+  const budget = 10668;
+
+  const list = DEMO_UNIS.filter((u) => (region === "all" ? true : u.region === region)).filter((u) =>
+    q.trim() ? `${u.name} ${u.city}`.toLowerCase().includes(q.trim().toLowerCase()) : true,
+  ).slice().sort((a, b) => a.rank - b.rank);
+  const hero = list[0];
+  const rest = list.slice(1, 3);
+  const fmt = (v: number) => `€${Math.round(v).toLocaleString("es-ES")}`;
+
+  return (
+    <ScreenCard title={t("Buscador de universidades", "University finder")} accent="var(--kid-grape)">
+      <div className="flex items-center gap-2 rounded-full border border-border bg-elevated px-3 py-2">
+        <Search className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder={t("Busca una universidad o ciudad", "Search a university or city")}
+          className="w-full bg-transparent text-xs outline-none placeholder:text-muted-foreground"
+        />
+      </div>
+
+      <div className="mt-2.5 flex gap-1.5">
+        {(["all", "eu", "na"] as const).map((r) => (
+          <button
+            key={r}
+            type="button"
+            onClick={() => setRegion(r)}
+            className={`rounded-full px-3 py-1 text-[11px] font-medium transition-colors ${
+              region === r
+                ? "bg-kid-grape/15 text-kid-grape ring-1 ring-kid-grape/40"
+                : "bg-elevated text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {r === "all" ? t("Mundo", "World") : r === "eu" ? t("Europa", "Europe") : t("Norteamérica", "N. America")}
+          </button>
+        ))}
+      </div>
+
+      {hero ? (
+        <>
+          <div className="relative mt-3 h-32 overflow-hidden rounded-2xl ring-1 ring-border">
+            <img
+              src={REAL_UNI_PHOTOS[hero.id]}
+              alt={hero.name}
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-transparent" />
+            <span className="absolute left-3 top-3 rounded-full bg-kid-grape/90 px-2 py-0.5 text-[10px] font-semibold text-background">
+              #{hero.rank} · {t("ranking mundial", "world ranking")}
+            </span>
+            <div className="absolute inset-x-3 bottom-2.5 flex items-end justify-between gap-3">
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold">
+                  {hero.country} {hero.name}
+                </p>
+                <p className="text-[11px] text-muted-foreground">
+                  {hero.city} · {fmt(hero.cost)} {t("carrera completa", "full degree")}
+                </p>
+              </div>
+              <span className="numeric rounded-full bg-kid-mint/15 px-2.5 py-1 text-xs font-semibold text-kid-mint ring-1 ring-kid-mint/30">
+                {Math.min(999, Math.round((budget / hero.cost) * 100))}%
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-2.5 grid grid-cols-2 gap-2.5">
+            {rest.map((u) => (
+              <div key={u.id} className="relative h-20 overflow-hidden rounded-xl ring-1 ring-border">
+                <img
+                  src={REAL_UNI_PHOTOS[u.id]}
+                  alt={u.name}
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                <div className="absolute inset-x-2.5 bottom-2 flex items-end justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="truncate text-[11px] font-semibold">
+                      {u.country} {u.name}
+                    </p>
+                    <p className="numeric truncate text-[10px] text-muted-foreground">{fmt(u.cost)}</p>
+                  </div>
+                  <span className="numeric rounded-full bg-kid-grape/15 px-1.5 py-0.5 text-[10px] font-medium text-kid-grape">
+                    #{u.rank}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      ) : (
+        <p className="mt-6 text-center text-xs text-muted-foreground">{t("Sin resultados", "No results")}</p>
+      )}
+
+      <p className="mt-3 flex items-start gap-1.5 text-[10px] leading-relaxed text-muted-foreground">
+        <GraduationCap className="mt-0.5 h-3 w-3 shrink-0" />
+        {t(
+          "Ranking QS/THE + coste de vida por ciudad, comparado con su número del futuro.",
+          "QS/THE ranking + city living costs, compared with their future number.",
+        )}
+      </p>
+    </ScreenCard>
+  );
+}
+
 function HowItWorksSlider() {
   const t = useT();
   const [i, setI] = useState(0);
@@ -149,6 +309,7 @@ function HowItWorksSlider() {
   ];
 
   const slides = [
+
     {
       id: "numbers",
       tab: t("Mi número", "My number"),
@@ -431,7 +592,58 @@ function HowItWorksSlider() {
         </ScreenCard>
       ),
     },
+    {
+      id: "unis",
+      tab: t("Universidades", "Universities"),
+      icon: GraduationCap,
+      color: "var(--kid-grape)",
+      title: t("Buscador de universidades", "University finder"),
+      desc: t(
+        "Busca por universidad, ciudad o continente y mira al instante qué parte de la carrera cubre su número del futuro.",
+        "Search by university, city or continent and instantly see how much of the degree their future number covers.",
+      ),
+      visual: <UniFinderVisual />,
+    },
   ];
+
+  const stats: Record<string, Array<{ k: string; v: string }>> = {
+    numbers: [
+      { k: t("Hoy", "Today"), v: "€120" },
+      { k: t("A los 18", "At 18"), v: "€10.668" },
+      { k: t("Ahorro/mes", "Saving/mo"), v: "€11,3" },
+    ],
+    pockets: [
+      { k: t("Ahorrar", "Save"), v: "40%" },
+      { k: t("Invertir", "Invest"), v: "40%" },
+      { k: t("Gastar", "Spend"), v: "20%" },
+    ],
+    dreams: [
+      { k: t("Sueños activos", "Active dreams"), v: "3" },
+      { k: t("Progreso", "Progress"), v: "62%" },
+      { k: t("Conseguidos", "Achieved"), v: "5" },
+    ],
+    chores: [
+      { k: t("Esta semana", "This week"), v: "+€6,50" },
+      { k: t("Mesada", "Allowance"), v: "€10/sem" },
+      { k: t("Tareas", "Chores"), v: "4" },
+    ],
+    grow: [
+      { k: t("Interés", "Return"), v: "7,2%" },
+      { k: t("Aportado", "Contributed"), v: "€2.442" },
+      { k: t("Intereses", "Growth"), v: "€8.226" },
+    ],
+    badges: [
+      { k: t("Racha", "Streak"), v: "7 " + t("sem.", "wks") },
+      { k: t("Insignias", "Badges"), v: "12" },
+      { k: t("Nivel", "Level"), v: "4" },
+    ],
+    unis: [
+      { k: t("Universidades", "Universities"), v: "500+" },
+      { k: t("Países", "Countries"), v: "28" },
+      { k: t("Cobertura", "Coverage"), v: "111%" },
+    ],
+  };
+
 
 
   const active = slides[i]!;
@@ -449,7 +661,7 @@ function HowItWorksSlider() {
       />
 
       <div
-        className="surface relative mt-8 overflow-hidden p-4 sm:p-6 md:mt-12 md:p-12"
+        className="relative mt-8 rounded-[30px] border border-border/70 bg-card/60 p-2 shadow-2xl backdrop-blur-sm md:mt-12 md:p-3"
         onTouchStart={(e) => {
           touchX.current = e.touches[0]?.clientX ?? null;
         }}
@@ -463,101 +675,137 @@ function HowItWorksSlider() {
           setI((v) => (dx < 0 ? (v + 1) % slides.length : (v - 1 + slides.length) % slides.length));
         }}
       >
-        <div className="kid-gradient absolute inset-x-0 top-0 h-1" />
+        <div
+          className="pointer-events-none absolute -inset-6 -z-10 rounded-[40px] blur-3xl"
+          style={{ background: `color-mix(in oklab, ${active.color} 12%, transparent)` }}
+        />
 
-        <div className="-mx-1 mb-6 flex gap-2 overflow-x-auto px-1 pb-1 md:mb-10 md:flex-wrap md:justify-center md:overflow-visible">
-          {slides.map((s, k) => {
-            const TabIcon = s.icon;
-            const isActive = k === i;
-            return (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => setI(k)}
-                className="flex shrink-0 items-center gap-2 rounded-full px-3.5 py-2 text-xs font-medium transition-all sm:text-sm"
-                style={
-                  isActive
-                    ? {
-                        color: s.color,
-                        backgroundColor: `color-mix(in oklab, ${s.color} 14%, transparent)`,
-                        boxShadow: `inset 0 0 0 1.5px color-mix(in oklab, ${s.color} 55%, transparent), 0 0 24px color-mix(in oklab, ${s.color} 18%, transparent)`,
-                      }
-                    : { boxShadow: "inset 0 0 0 1px var(--border)" }
-                }
-              >
-                <TabIcon className="h-4 w-4 shrink-0" />
-                <span className="whitespace-nowrap">{s.tab}</span>
-              </button>
-            );
-          })}
+        <div className="relative flex items-center gap-2 px-3 py-2">
+          <span className="flex gap-1.5">
+            <span className="h-2.5 w-2.5 rounded-full bg-kid-coral/70" />
+            <span className="h-2.5 w-2.5 rounded-full bg-kid-sun/70" />
+            <span className="h-2.5 w-2.5 rounded-full bg-kid-mint/70" />
+          </span>
+          <span className="mx-auto hidden rounded-full bg-elevated px-4 py-1 text-[11px] text-muted-foreground sm:inline-block">
+            {t("Su primer número, en 1 pantalla", "Their first number, on one screen")}
+          </span>
         </div>
-        <motion.div
-          key={active.id}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35 }}
-          className="grid items-center gap-6 md:grid-cols-2 md:gap-10"
-        >
-          <div>
-            <span
-              className="flex h-11 w-11 items-center justify-center rounded-2xl sm:h-14 sm:w-14"
-              style={{
-                color: active.color,
-                backgroundColor: `color-mix(in oklab, ${active.color} 12%, transparent)`,
-                boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${active.color} 25%, transparent)`,
-              }}
-            >
-              <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
+
+        <div className="relative overflow-hidden rounded-[24px] bg-background/70 p-4 ring-1 ring-border md:p-6">
+          <div className="kid-gradient pointer-events-none absolute inset-x-0 top-0 h-[2px] opacity-70" />
+
+          <div className="-mx-1 flex items-center gap-2 overflow-x-auto px-1 pb-1 scrollbar-hide">
+            {slides.map((s, k) => {
+              const TabIcon = s.icon;
+              const isActive = k === i;
+              return (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setI(k)}
+                  className="flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all"
+                  style={
+                    isActive
+                      ? {
+                          color: s.color,
+                          backgroundColor: `color-mix(in oklab, ${s.color} 14%, transparent)`,
+                          boxShadow: `inset 0 0 0 1.5px color-mix(in oklab, ${s.color} 55%, transparent), 0 0 24px color-mix(in oklab, ${s.color} 18%, transparent)`,
+                        }
+                      : { boxShadow: "inset 0 0 0 1px var(--border)" }
+                  }
+                >
+                  <TabIcon className="h-3.5 w-3.5 shrink-0" />
+                  <span className="whitespace-nowrap">{s.tab}</span>
+                </button>
+              );
+            })}
+            <span className="ml-auto hidden shrink-0 items-center gap-1.5 rounded-full bg-elevated px-3 py-1 text-[11px] text-muted-foreground md:inline-flex">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-kid-mint opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-kid-mint" />
+              </span>
+              {t("En vivo", "Live")}
             </span>
-            <h3 className="mt-4 font-display text-xl font-semibold tracking-tight sm:text-2xl md:mt-6 md:text-4xl">
-              {active.title}
-            </h3>
-            <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base md:mt-4">
-              {active.desc}
-            </p>
-          </div>
-          <div className="flex items-center md:min-h-[420px]">
-            <div className="w-full">{active.visual}</div>
           </div>
 
-        </motion.div>
+          <motion.div
+            key={active.id}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35 }}
+            className="mt-5 grid gap-4 lg:grid-cols-[1.55fr_1fr]"
+          >
+            <div className="min-w-0">{active.visual}</div>
 
-        <div className="mt-8 flex items-center justify-between">
-          <div className="flex gap-2">
-            {slides.map((s, k) => (
+            <div className="flex min-w-0 flex-col gap-4">
+              <div className="rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
+                <span
+                  className="flex h-11 w-11 items-center justify-center rounded-2xl"
+                  style={{
+                    color: active.color,
+                    backgroundColor: `color-mix(in oklab, ${active.color} 12%, transparent)`,
+                    boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${active.color} 25%, transparent)`,
+                  }}
+                >
+                  <Icon className="h-5 w-5" />
+                </span>
+                <h3 className="mt-4 font-display text-xl font-semibold tracking-tight md:text-2xl">
+                  {active.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{active.desc}</p>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                {(stats[active.id] ?? []).map((s) => (
+                  <div key={s.k} className="rounded-2xl bg-elevated/60 p-3 text-center ring-1 ring-border">
+                    <p className="truncate text-[10px] uppercase tracking-wider text-muted-foreground">{s.k}</p>
+                    <p className="numeric mt-1 text-sm font-semibold" style={{ color: active.color }}>
+                      {s.v}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          <div className="mt-6 flex items-center justify-between">
+            <div className="flex gap-2">
+              {slides.map((s, k) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  aria-label={s.title}
+                  onClick={() => setI(k)}
+                  className="h-1.5 rounded-full transition-all"
+                  style={{
+                    width: k === i ? 28 : 10,
+                    backgroundColor: k === i ? active.color : "var(--border)",
+                  }}
+                />
+              ))}
+            </div>
+            <div className="flex gap-2">
               <button
-                key={s.id}
                 type="button"
-                aria-label={s.title}
-                onClick={() => setI(k)}
-                className="h-1.5 rounded-full transition-all"
-                style={{
-                  width: k === i ? 28 : 10,
-                  backgroundColor: k === i ? active.color : "var(--border)",
-                }}
-              />
-            ))}
-          </div>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              aria-label={t("Anterior", "Previous")}
-              onClick={() => setI((v) => (v - 1 + slides.length) % slides.length)}
-              className="flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-border transition-colors hover:bg-elevated"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <button
-              type="button"
-              aria-label={t("Siguiente", "Next")}
-              onClick={() => setI((v) => (v + 1) % slides.length)}
-              className="flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-border transition-colors hover:bg-elevated"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
+                aria-label={t("Anterior", "Previous")}
+                onClick={() => setI((v) => (v - 1 + slides.length) % slides.length)}
+                className="flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-border transition-colors hover:bg-elevated"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                aria-label={t("Siguiente", "Next")}
+                onClick={() => setI((v) => (v + 1) % slides.length)}
+                className="flex h-9 w-9 items-center justify-center rounded-full ring-1 ring-border transition-colors hover:bg-elevated"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
+
     </section>
   );
 }
