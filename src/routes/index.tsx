@@ -181,8 +181,8 @@ function Landing() {
     // al home a propósito (logo), se queda aquí.
     if (sessionStorage.getItem("wyn_chooser_seen") === "1") return;
     sessionStorage.setItem("wyn_chooser_seen", "1");
-    // El selector de perfiles solo aplica al plan Familiar.
-    navigate({ to: "/dashboard", replace: true });
+    // El plan Familiar siempre entra por el selector de perfiles.
+    navigate({ to: isPatrimonio ? "/ninos" : "/dashboard", replace: true });
   }, [loading, user, isPatrimonio, navigate]);
 
   const features = [
