@@ -739,13 +739,13 @@ function HowItWorksSlider() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35 }}
-            className="mt-5 grid gap-4 lg:grid-cols-[1.55fr_1fr]"
+            className="mt-5 grid items-stretch gap-4 lg:min-h-[620px] lg:grid-cols-[1.55fr_1fr]"
           >
-            <div className="min-w-0 space-y-4">
-              {active.visual}
+            <div className="flex min-w-0 flex-col gap-4">
+              <div className="min-w-0 flex-1">{active.visual}</div>
 
               <div
-                className="relative overflow-hidden rounded-2xl p-4 ring-1"
+                className="relative mt-auto overflow-hidden rounded-2xl p-4 ring-1"
                 style={{
                   backgroundColor: `color-mix(in oklab, ${active.color} 7%, transparent)`,
                   borderColor: "transparent",
