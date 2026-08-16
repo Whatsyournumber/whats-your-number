@@ -275,20 +275,19 @@ function MyNumber({ member }: { member: Member }) {
           </div>
         </div>
 
-        <div className="grid content-start gap-5 lg:grid-rows-[220px_1fr] [&>*]:h-full">
-          <div className="card-soft animate-rise relative flex items-center overflow-hidden bg-gradient-to-br from-primary/20 via-chart-2/15 to-chart-2/30 p-5">
+        <div className="grid content-start gap-5 lg:grid-rows-[minmax(220px,auto)_1fr] [&>*]:h-full">
+          <div className="card-soft animate-rise relative flex items-center gap-2 overflow-hidden bg-gradient-to-br from-primary/20 via-chart-2/15 to-chart-2/30 p-4 sm:p-5">
             <div className="pointer-events-none absolute -right-10 -top-12 h-36 w-36 rounded-full bg-card/40 blur-2xl" />
             <div className="pointer-events-none absolute right-24 top-5 text-lg opacity-70">✨</div>
-            <div className="pointer-events-none absolute right-10 top-14 text-sm opacity-60">✦</div>
             <div className="relative min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-card text-lg shadow-sm">🤖</span>
-                <p className="font-kid text-2xl font-extrabold text-primary">Buddy</p>
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-card text-base shadow-sm">🤖</span>
+                <p className="font-kid text-xl font-extrabold text-primary">Buddy</p>
                 <span className="rounded-full bg-card/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">
                   IA
                 </span>
               </div>
-              <div className="mt-3 rounded-3xl rounded-bl-lg bg-card/95 px-4 py-3 shadow-sm">
+              <div className="mt-2.5 rounded-3xl rounded-bl-lg bg-card/95 px-3.5 py-2.5 shadow-sm">
                 {buddyThinking && !buddyTip ? (
                   <div className="flex items-center gap-1.5 py-2">
                     {[0, 1, 2].map((i) => (
