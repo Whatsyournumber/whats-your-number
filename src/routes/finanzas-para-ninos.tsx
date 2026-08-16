@@ -656,10 +656,13 @@ function HowItWorksSlider() {
     <section className="mt-16 md:mt-24">
       <SectionHeader
         eyebrow={t("Cómo funciona", "How it works")}
-        title={t("Todo lo que hay dentro, en una pantalla", "Everything inside, on one screen")}
+        title={t(
+          "Todo lo que necesitan para aprender sobre dinero",
+          "Everything they need to learn about money",
+        )}
         subtitle={t(
-          "Desliza para ver las funciones que hacen que tus hijos quieran volver mañana.",
-          "Slide through the features that make your kids want to come back tomorrow.",
+          "Desde su primer ahorro hasta su primer gran sueño. Todo en un solo lugar.",
+          "From their first savings to their first big dream. All in one place.",
         )}
       />
 
@@ -736,13 +739,13 @@ function HowItWorksSlider() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35 }}
-            className="mt-5 grid gap-4 lg:grid-cols-[1.55fr_1fr]"
+            className="mt-5 grid items-stretch gap-4 lg:min-h-[620px] lg:grid-cols-[1.55fr_1fr]"
           >
-            <div className="min-w-0 space-y-4">
-              {active.visual}
+            <div className="flex min-w-0 flex-col gap-4">
+              <div className="min-w-0 flex-1">{active.visual}</div>
 
               <div
-                className="relative overflow-hidden rounded-2xl p-4 ring-1"
+                className="relative mt-auto overflow-hidden rounded-2xl p-4 ring-1"
                 style={{
                   backgroundColor: `color-mix(in oklab, ${active.color} 7%, transparent)`,
                   borderColor: "transparent",
@@ -801,7 +804,8 @@ function HowItWorksSlider() {
                 ))}
               </div>
 
-              <div className="rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
+              <div className="mt-auto rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
+
                 <div className="flex items-center gap-2 text-sm">
                   <Target className="h-4 w-4" style={{ color: active.color }} />
                   <span>{t("Progreso hacia su número", "Progress to their number")}</span>
