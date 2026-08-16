@@ -186,10 +186,11 @@ function MyNumber({ member }: { member: Member }) {
         subtitle={t("¡Vamos por un gran futuro!", "Let's go for a great future!")}
       />
 
-      <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.62fr)_minmax(0,1fr)]">
-        <div className="grid content-start gap-5">
-          <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid items-stretch gap-5 lg:grid-cols-[minmax(0,1.62fr)_minmax(0,1fr)]">
+        <div className="grid content-start gap-5 lg:grid-rows-[220px_1fr]">
+          <div className="grid gap-5 sm:grid-cols-2 [&>*]:h-full">
             <div className="@container card-soft animate-rise relative grid min-h-[220px] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 overflow-hidden bg-gradient-to-br from-primary/10 via-card to-card p-6 sm:p-7">
+
               <div className="min-w-0">
                 <Eyebrow className="text-primary">{t("Mi dinero hoy", "My money today")}</Eyebrow>
                 <p className="mt-3 whitespace-nowrap font-display text-[clamp(1.4rem,12cqi,3rem)] font-bold leading-none tracking-tight text-foreground">
