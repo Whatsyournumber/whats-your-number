@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { getBuddyTip } from "@/lib/kid-buddy.functions";
-import { ArrowUpRight, CheckSquare, ChevronRight } from "lucide-react";
+import { ArrowUpRight, CheckSquare, ChevronDown, ChevronRight } from "lucide-react";
 import { Card, GrowthChart, Progress } from "@/components/mfn-ui";
 import buddyImg from "@/assets/kid-buddy-robot.png";
 import piggyImg from "@/assets/kid-piggy.png";
@@ -84,10 +84,12 @@ function Ring({ value, size = 116 }: { value: number; size?: number }) {
 const RATE_PRESETS = [
   { key: "banco", es: "Banco", en: "Bank", rate: 4 },
   { key: "bonos", es: "Bonos", en: "Bonds", rate: 6 },
+  { key: "msci", es: "MSCI World (histórico)", en: "MSCI World (historical)", rate: 8 },
   { key: "sp500", es: "S&P 500", en: "S&P 500", rate: 10 },
   { key: "nasdaq", es: "Nasdaq 100", en: "Nasdaq 100", rate: 13 },
   { key: "cripto", es: "Cripto", en: "Crypto", rate: 20 },
 ] as const;
+
 
 function MyNumber({ member }: { member: Member }) {
   const { t, lang } = useI18n();
@@ -107,7 +109,12 @@ function MyNumber({ member }: { member: Member }) {
   const years = horizon ?? Math.max(1, targetAge - member.age);
   const [rateOverride, setRate] = useState<number | null>(null);
   const chartRate = rateOverride ?? rate;
+  const [ratesOpen, setRatesOpen] = useState(false);
+  const activePreset =
+    RATE_PRESETS.find((p) => Math.abs(chartRate - p.rate) < 0.01) ??
+    ({ es: "Personalizado", en: "Custom" } as { es: string; en: string });
   const chartProjection = projectFund(base, monthly, member.age, member.age + years, chartRate);
+
 
   const dreams = useMemo(() => {
     const active = wishes.filter((w) => !w.achieved);
@@ -472,28 +479,48 @@ function MyNumber({ member }: { member: Member }) {
           </span>
         </div>
 
-        <div className="mb-4 flex flex-wrap items-center gap-2">
-          <span className="text-xs text-muted-foreground">
-            {t("Si invierto en", "If I invest in")}
-          </span>
-          {RATE_PRESETS.map((preset) => {
-            const active = Math.abs(chartRate - preset.rate) < 0.01;
-            return (
-              <button
-                key={preset.key}
-                type="button"
-                onClick={() => setRate(preset.rate)}
-                className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
-                  active
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "bg-surface-2 text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {t(preset.es, preset.en)} · {preset.rate}%
-              </button>
-            );
-          })}
+        <div className="mb-4">
+          <button
+            type="button"
+            onClick={() => setRatesOpen((v) => !v)}
+            className="flex w-full items-center gap-2 rounded-xl bg-surface-2/60 px-3 py-2 text-left"
+          >
+            <span className="text-xs font-semibold text-muted-foreground">
+              {t("Si invierto en", "If I invest in")}
+            </span>
+            <span className="rounded-full bg-primary px-2.5 py-1 text-[11px] font-bold text-primary-foreground">
+              {t(activePreset.es, activePreset.en)} · {chartRate}%
+            </span>
+            <ChevronDown
+              className={`ml-auto h-4 w-4 text-muted-foreground transition-transform ${ratesOpen ? "rotate-180" : ""}`}
+            />
+          </button>
+          {ratesOpen && (
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              {RATE_PRESETS.map((preset) => {
+                const active = Math.abs(chartRate - preset.rate) < 0.01;
+                return (
+                  <button
+                    key={preset.key}
+                    type="button"
+                    onClick={() => {
+                      setRate(preset.rate);
+                      setRatesOpen(false);
+                    }}
+                    className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+                      active
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "bg-surface-2 text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {t(preset.es, preset.en)} · {preset.rate}%
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
+
 
         <div className="mb-3 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
           <span className="flex items-center gap-2">
