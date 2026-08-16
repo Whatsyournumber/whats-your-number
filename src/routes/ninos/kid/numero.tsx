@@ -461,6 +461,41 @@ function MyNumber({ member }: { member: Member }) {
             </span>
           </span>
         </div>
+
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          <span className="text-xs text-muted-foreground">
+            {t("Si invierto en", "If I invest in")}
+          </span>
+          {RATE_PRESETS.map((preset) => {
+            const active = Math.abs(chartRate - preset.rate) < 0.01;
+            return (
+              <button
+                key={preset.key}
+                type="button"
+                onClick={() => setRate(preset.rate)}
+                className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+                  active
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "bg-surface-2 text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {t(preset.es, preset.en)} · {preset.rate}%
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mb-3 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+          <span className="flex items-center gap-2">
+            <span className="h-1 w-5 rounded-full bg-chart-1" />
+            {t("Tu dinero con intereses", "Your money with interest")}
+          </span>
+          <span className="flex items-center gap-2">
+            <span className="h-1 w-5 rounded-full bg-chart-4" />
+            {t("Lo que ahorraste", "What you saved")}
+          </span>
+        </div>
+
         <GrowthChart
           data={chartProjection.points}
           currency={member.currency}
@@ -469,7 +504,23 @@ function MyNumber({ member }: { member: Member }) {
             { key: "total", color: "var(--color-chart-1)" },
             { key: "aportes", color: "var(--color-chart-4)" },
           ]}
+          seriesNames={{
+            total: t("Con intereses", "With interest"),
+            aportes: t("Lo que ahorraste", "What you saved"),
+          }}
+          tooltipLabel={(l) =>
+            `${t("A los", "At age")} ${Number(member.age) + Number(l)} ${t("años", "yrs")}`
+          }
         />
+
+        <p className="mt-4 rounded-2xl bg-primary/10 px-4 py-3 font-kid text-sm font-semibold text-foreground">
+          💡{" "}
+          {t(
+            `Con ${chartRate}% al año, tus intereses suman ${money(Math.max(0, chartProjection.future - chartProjection.contributed), member.currency)} extra.`,
+            `At ${chartRate}% a year, interest adds ${money(Math.max(0, chartProjection.future - chartProjection.contributed), member.currency)} extra.`,
+          )}
+        </p>
+
       </Card>
     </>
   );
