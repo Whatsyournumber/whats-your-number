@@ -587,8 +587,9 @@ function HowItWorksSlider() {
       "77% of her future comes from compound interest, not deposits. Starting today is worth gold.",
     ),
     unis: t(
-      "Con su número del futuro cubre el 111% de un grado en Barcelona, o el 26% de MIT.",
-      "Her future number covers 111% of a degree in Barcelona, or 26% of MIT.",
+      "Con su número podría aplicar hoy a 3 de estas universidades: cubre el 111% de un grado en Barcelona.",
+      "With her number she could already apply to 3 of these universities: it covers 111% of a degree in Barcelona.",
+
     ),
     pockets: t(
       "Su bolsillo de gastar lleva 3 semanas intacto: buena señal para subir el de invertir al 45%.",
