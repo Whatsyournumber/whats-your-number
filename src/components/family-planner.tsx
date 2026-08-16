@@ -273,7 +273,9 @@ export function FamilyPlanner({
   goal,
   defaultBase = 0,
   defaultMonthly = 0,
+  defaultTargetAge = 18,
   defaultRate = 10,
+  onPlanChange,
 }: {
   childName: string;
   childAge: number;
@@ -283,13 +285,20 @@ export function FamilyPlanner({
   defaultMonthly?: number;
   defaultTargetAge?: number;
   defaultRate?: number;
+  /** Se dispara (con debounce) cuando el padre cambia base, aporte, edad objetivo o vehículo. */
+  onPlanChange?: (plan: {
+    base: number;
+    monthly: number;
+    targetAge: number;
+    rate: number;
+  }) => void;
 }) {
   const { t, lang } = useI18n();
   const [base, setBase] = useState(Math.round(defaultBase));
   const [baseTouched, setBaseTouched] = useState(false);
   const [monthly, setMonthly] = useState(Math.round(defaultMonthly) || 200);
   const [target, setTarget] = useState(150000);
-  const [targetAge, setTargetAge] = useState(18);
+  const [targetAge, setTargetAge] = useState(Math.round(defaultTargetAge) || 18);
   const [showPicks, setShowPicks] = useState(false);
   const [pick, setPick] = useState(
     VEHICLES.find((v) => Math.abs(v.rate - defaultRate) <= 1)?.key ?? "sp500",
@@ -302,6 +311,7 @@ export function FamilyPlanner({
   useEffect(() => {
     if (defaultMonthly) setMonthly(Math.round(defaultMonthly));
   }, [defaultMonthly]);
+
 
 
   const vehicle = VEHICLES.find((v) => v.key === pick) ?? VEHICLES[0]!;
