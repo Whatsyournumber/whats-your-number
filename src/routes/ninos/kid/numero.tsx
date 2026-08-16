@@ -589,7 +589,7 @@ function MyNumber({ member }: { member: Member }) {
           </span>
           {compareRate !== null && (
             <span className="flex items-center gap-2">
-              <span className="h-1 w-5 rounded-full bg-chart-2" />
+              <span className="h-1 w-5 rounded-full bg-foreground" />
               {t("Comparación", "Comparison")} · {compareRate}%
             </span>
           )}
