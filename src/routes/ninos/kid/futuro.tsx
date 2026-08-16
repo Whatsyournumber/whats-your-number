@@ -1,7 +1,9 @@
+import { useCallback } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { KidPage } from "@/components/kid-page";
 import { FamilyPlanner } from "@/components/family-planner";
-import { useFund, useMovements } from "@/hooks/use-mfn";
+import { useFund, useMovements, useSaveFund } from "@/hooks/use-mfn";
+
 import { goalLabel, pocketTotals, type Member } from "@/lib/mfn";
 import { useI18n } from "@/lib/mfn-i18n";
 
@@ -28,6 +30,7 @@ function MyFuture({ member }: { member: Member }) {
   const { lang } = useI18n();
   const { data: fund } = useFund(member.id);
   const { data: movements = [] } = useMovements(member.id);
+  const saveFund = useSaveFund();
 
   const totals = pocketTotals(movements);
   // Empieza con todo lo que el niño tiene hoy (bolsillos + fondo) y crece con el interés
@@ -37,6 +40,29 @@ function MyFuture({ member }: { member: Member }) {
   const monthly = Number(fund?.monthly_contribution ?? 0);
   const targetAge = Number(fund?.target_age ?? 18);
   const rate = Number(fund?.expected_return ?? 10);
+
+  // Lo que el padre ajusta aquí queda guardado y alimenta el resto (universidades, etc.).
+  const handlePlanChange = useCallback(
+    (plan: { base: number; monthly: number; targetAge: number; rate: number }) => {
+      if (
+        plan.base === Math.round(base) &&
+        plan.monthly === Math.round(monthly) &&
+        plan.targetAge === targetAge &&
+        plan.rate === rate
+      )
+        return;
+      saveFund.mutate({
+        memberId: member.id,
+        patch: {
+          current_balance: plan.base,
+          monthly_contribution: plan.monthly,
+          target_age: plan.targetAge,
+          expected_return: plan.rate,
+        },
+      });
+    },
+    [base, monthly, targetAge, rate, member.id, saveFund],
+  );
 
   return (
     <FamilyPlanner
@@ -48,6 +74,8 @@ function MyFuture({ member }: { member: Member }) {
       defaultMonthly={monthly}
       defaultTargetAge={targetAge}
       defaultRate={rate}
+      onPlanChange={handlePlanChange}
     />
   );
 }
+
