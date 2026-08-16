@@ -334,7 +334,7 @@ import cur_cl_udd from "@/assets/uni/cl-udd.jpg";
 import cur_cl_uandes from "@/assets/uni/cl-uandes.jpg";
 import cur_za_uct from "@/assets/uni/za-uct.jpg";
 import cur_pt_nova from "@/assets/uni/pt-nova.jpg";
-import cur_fr_sciencespo from "@/assets/uni/fr-sciencespo.jpg";
+
 import cur_fr_polytechnique from "@/assets/uni/fr-polytechnique.jpg";
 import cur_fr_essec from "@/assets/uni/fr-essec.jpg";
 import cur_fr_hec from "@/assets/uni/fr-hec.jpg";
