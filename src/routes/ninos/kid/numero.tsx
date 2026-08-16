@@ -571,9 +571,6 @@ function MyNumber({ member }: { member: Member }) {
                 </button>
               );
             })}
-            <span className="text-[11px] text-muted-foreground">
-              {t("Analiza el histórico de las tasas", "Analyzes the historical rates")}
-            </span>
 
           </div>
         )}
