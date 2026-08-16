@@ -604,7 +604,7 @@ function MyNumber({ member }: { member: Member }) {
             { key: "total", color: "var(--color-chart-1)" },
             { key: "aportes", color: "var(--color-chart-4)" },
           ]}
-          lines={compareRate !== null ? [{ key: "compare", color: "var(--color-chart-2)" }] : []}
+          lines={compareRate !== null ? [{ key: "compare", color: "var(--color-foreground)" }] : []}
           seriesNames={{
             total: `${t("Con intereses", "With interest")} · ${chartRate}%`,
             aportes: t("Lo que ahorraste", "What you saved"),
