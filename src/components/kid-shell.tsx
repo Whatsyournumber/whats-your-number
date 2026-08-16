@@ -163,7 +163,7 @@ export function KidShell({ member, children }: { member: Member; children: React
 
       <div className="glass-nav fixed inset-x-0 bottom-0 z-30 border-t lg:hidden">
         <div className="mx-auto flex max-w-lg items-center gap-2 px-3 pt-2">
-          {BOTTOM_TABS.map((tab) => (
+          {PARENT_TABS.map((tab) => (
             <Link
               key={tab.to}
               to={tab.to}
