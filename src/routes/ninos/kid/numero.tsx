@@ -237,7 +237,8 @@ function MyNumber({ member }: { member: Member }) {
 
 
 
-        <div className="grid content-start gap-4">
+        <div className="grid content-start gap-4 [&>*]:h-full">
+
           <Buddy>{line}</Buddy>
           <Card title={t("Mis sueños", "My dreams")}>
             <div className="flex items-center gap-4">
