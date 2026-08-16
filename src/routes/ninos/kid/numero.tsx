@@ -440,87 +440,88 @@ function MyNumber({ member }: { member: Member }) {
         title={t("Cómo crece mi número", "How my number grows")}
         hint={disclaimer(lang)}
       >
-        <div className="mb-5 grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-stretch">
-          <div className="min-w-0 space-y-2.5 rounded-2xl border border-border/60 bg-surface-2/40 p-3">
-            <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3">
-              <span className="shrink-0 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                {t("Edad", "Age")}
-              </span>
-              <div className="flex min-w-0 flex-wrap gap-1.5">
-                {[member.age + 5, targetAge, 25, 30, 40]
-                  .filter((a, i, arr) => a > member.age && arr.indexOf(a) === i)
-                  .sort((a, b) => a - b)
-                  .map((age) => {
-                    const y = age - member.age;
-                    const active = years === y;
-                    return (
-                      <button
-                        key={age}
-                        type="button"
-                        onClick={() => setHorizon(y)}
-                        className={`h-8 min-w-9 rounded-full px-3 text-xs font-bold transition ${
-                          active
-                            ? "bg-foreground text-background"
-                            : "bg-surface-1 text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        {age}
-                      </button>
-                    );
-                  })}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3">
-              <span className="mt-1.5 shrink-0 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                {t("Tasa", "Rate")}
-              </span>
-              <div className="min-w-0">
-                <button
-                  type="button"
-                  onClick={() => setRatesOpen((v) => !v)}
-                  className="flex h-8 w-full items-center gap-2 rounded-full bg-surface-1 pl-1 pr-3 text-left transition hover:bg-surface-1/70"
-                >
-                  <span className="truncate rounded-full bg-primary px-2.5 py-1 text-[11px] font-bold text-primary-foreground">
-                    {t(activePreset.es, activePreset.en)} · {chartRate}%
-                  </span>
-                  <ChevronDown
-                    className={`ml-auto h-4 w-4 shrink-0 text-muted-foreground transition-transform ${ratesOpen ? "rotate-180" : ""}`}
-                  />
-                </button>
-                {ratesOpen && (
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    {RATE_PRESETS.map((preset) => {
-                      const active = Math.abs(chartRate - preset.rate) < 0.01;
-                      return (
-                        <button
-                          key={preset.key}
-                          type="button"
-                          onClick={() => {
-                            setRate(preset.rate);
-                            setRatesOpen(false);
-                          }}
-                          className={`h-8 rounded-full px-3 text-xs font-semibold transition ${
-                            active
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-surface-1 text-muted-foreground hover:text-foreground"
-                          }`}
-                        >
-                          {t(preset.es, preset.en)} · {preset.rate}%
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
+        <div className="mb-5 grid gap-3 lg:grid-cols-3 lg:items-stretch">
+          {/* Edad */}
+          <div className="flex flex-col rounded-2xl border border-border/60 bg-surface-2/40 p-4">
+            <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              {t("Edad", "Age")}
+            </span>
+            <div className="mt-3 flex min-w-0 flex-wrap gap-1.5">
+              {[member.age + 5, targetAge, 25, 30, 40]
+                .filter((a, i, arr) => a > member.age && arr.indexOf(a) === i)
+                .sort((a, b) => a - b)
+                .map((age) => {
+                  const y = age - member.age;
+                  const active = years === y;
+                  return (
+                    <button
+                      key={age}
+                      type="button"
+                      onClick={() => setHorizon(y)}
+                      className={`h-8 min-w-9 rounded-full px-3 text-xs font-bold transition ${
+                        active
+                          ? "bg-foreground text-background"
+                          : "bg-surface-1 text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {age}
+                    </button>
+                  );
+                })}
             </div>
           </div>
 
-          <div className="flex flex-col justify-center rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3 lg:min-w-[220px]">
+          {/* Tasa */}
+          <div className="flex flex-col rounded-2xl border border-border/60 bg-surface-2/40 p-4">
             <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-              {t(`A los ${member.age + years} años tendría`, `At age ${member.age + years} I'd have`)}
+              {t("Tasa", "Rate")}
             </span>
-            <span className="mt-0.5 font-kid text-[clamp(1.5rem,3.4vw,2rem)] font-black leading-none text-primary">
+            <div className="mt-3 min-w-0">
+              <button
+                type="button"
+                onClick={() => setRatesOpen((v) => !v)}
+                className="flex h-8 w-full items-center gap-2 rounded-full bg-surface-1 pl-1 pr-3 text-left transition hover:bg-surface-1/70"
+              >
+                <span className="truncate rounded-full bg-primary px-2.5 py-1 text-[11px] font-bold text-primary-foreground">
+                  {t(activePreset.es, activePreset.en)} · {chartRate}%
+                </span>
+                <ChevronDown
+                  className={`ml-auto h-4 w-4 shrink-0 text-muted-foreground transition-transform ${ratesOpen ? "rotate-180" : ""}`}
+                />
+              </button>
+              {ratesOpen && (
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {RATE_PRESETS.map((preset) => {
+                    const active = Math.abs(chartRate - preset.rate) < 0.01;
+                    return (
+                      <button
+                        key={preset.key}
+                        type="button"
+                        onClick={() => {
+                          setRate(preset.rate);
+                          setRatesOpen(false);
+                        }}
+                        className={`h-8 rounded-full px-3 text-xs font-semibold transition ${
+                          active
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-surface-1 text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {t(preset.es, preset.en)} · {preset.rate}%
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Resultado */}
+          <div className="flex flex-col justify-center rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3">
+            <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              {t(`A los ${member.age + years} años`, `At age ${member.age + years}`)}
+            </span>
+            <span className="mt-0.5 whitespace-nowrap font-kid text-[clamp(1.4rem,3.2vw,2rem)] font-black leading-none text-primary">
               {money(chartProjection.future, member.currency)}
             </span>
             <span className="mt-1.5 text-xs text-muted-foreground">
