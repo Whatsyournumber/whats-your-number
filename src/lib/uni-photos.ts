@@ -112,6 +112,8 @@ import curatedRadboud from "@/assets/uni/nl-radboud.jpg";
 import curatedGroningen from "@/assets/uni/nl-groningen.jpg";
 import curatedIcesi from "@/assets/uni/co-icesi.jpg";
 import curatedCattolica from "@/assets/uni/it-cattolica.jpg";
+import curatedUtdt from "@/assets/uni/ar-utdt.jpg";
+import curatedUchile from "@/assets/uni/cl-uchile.jpg";
 
 import oc_uwa from "@/assets/uni/oc-uwa.jpg";
 import oc_adelaide from "@/assets/uni/oc-adelaide.jpg";
@@ -751,6 +753,8 @@ const CURATED: Record<string, string> = {
   "nl-university-of-groningen": curatedGroningen,
   "co-universidad-icesi": curatedIcesi,
   "it-universita-cattolica": curatedCattolica,
+  "ar-utdt-torcuato-di-tella": curatedUtdt,
+  "cl-universidad-de-chile": curatedUchile,
   "uk-university-of-leeds": cur_uk_leeds,
   "uk-university-of-manchester": cur_uk_manchester,
   "uk-university-of-bristol": cur_uk_bristol,
