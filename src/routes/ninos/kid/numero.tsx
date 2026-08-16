@@ -109,7 +109,12 @@ function MyNumber({ member }: { member: Member }) {
   const years = horizon ?? Math.max(1, targetAge - member.age);
   const [rateOverride, setRate] = useState<number | null>(null);
   const chartRate = rateOverride ?? rate;
+  const [ratesOpen, setRatesOpen] = useState(false);
+  const activePreset =
+    RATE_PRESETS.find((p) => Math.abs(chartRate - p.rate) < 0.01) ??
+    ({ es: "Personalizado", en: "Custom" } as { es: string; en: string });
   const chartProjection = projectFund(base, monthly, member.age, member.age + years, chartRate);
+
 
   const dreams = useMemo(() => {
     const active = wishes.filter((w) => !w.achieved);
