@@ -446,28 +446,42 @@ function MyNumber({ member }: { member: Member }) {
             <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
               {t("Edad", "Age")}
             </span>
-            <div className="mt-3 flex min-w-0 flex-wrap gap-1.5">
-              {[member.age + 5, targetAge, 25, 30, 40]
-                .filter((a, i, arr) => a > member.age && arr.indexOf(a) === i)
-                .sort((a, b) => a - b)
-                .map((age) => {
-                  const y = age - member.age;
-                  const active = years === y;
-                  return (
-                    <button
-                      key={age}
-                      type="button"
-                      onClick={() => setHorizon(y)}
-                      className={`h-8 min-w-9 rounded-full px-3 text-xs font-bold transition ${
-                        active
-                          ? "bg-foreground text-background"
-                          : "bg-surface-1 text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      {age}
-                    </button>
-                  );
-                })}
+            <div className="mt-3 flex min-w-0 items-center gap-2">
+              <input
+                type="number"
+                min={member.age + 1}
+                max={99}
+                value={member.age + years}
+                onChange={(e) => {
+                  const age = Number(e.target.value);
+                  if (age > member.age && age <= 99) setHorizon(age - member.age);
+                }}
+                className="h-9 w-16 shrink-0 rounded-full border border-border/60 bg-surface-1 text-center text-sm font-bold text-foreground outline-none focus:border-primary"
+              />
+              <span className="shrink-0 text-xs text-muted-foreground">{t("años", "yrs")}</span>
+              <div className="flex min-w-0 flex-wrap gap-1.5">
+                {[member.age + 5, targetAge, 25, 30, 40]
+                  .filter((a, i, arr) => a > member.age && arr.indexOf(a) === i)
+                  .sort((a, b) => a - b)
+                  .map((age) => {
+                    const y = age - member.age;
+                    const active = years === y;
+                    return (
+                      <button
+                        key={age}
+                        type="button"
+                        onClick={() => setHorizon(y)}
+                        className={`h-8 min-w-9 rounded-full px-3 text-xs font-bold transition ${
+                          active
+                            ? "bg-foreground text-background"
+                            : "bg-surface-1 text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {age}
+                      </button>
+                    );
+                  })}
+              </div>
             </div>
           </div>
 
@@ -489,30 +503,6 @@ function MyNumber({ member }: { member: Member }) {
                   className={`ml-auto h-4 w-4 shrink-0 text-muted-foreground transition-transform ${ratesOpen ? "rotate-180" : ""}`}
                 />
               </button>
-              {ratesOpen && (
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {RATE_PRESETS.map((preset) => {
-                    const active = Math.abs(chartRate - preset.rate) < 0.01;
-                    return (
-                      <button
-                        key={preset.key}
-                        type="button"
-                        onClick={() => {
-                          setRate(preset.rate);
-                          setRatesOpen(false);
-                        }}
-                        className={`h-8 rounded-full px-3 text-xs font-semibold transition ${
-                          active
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-surface-1 text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        {t(preset.es, preset.en)} · {preset.rate}%
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
             </div>
           </div>
 
@@ -533,6 +523,35 @@ function MyNumber({ member }: { member: Member }) {
             </span>
           </div>
         </div>
+
+        {/* Tasa — línea horizontal de chips */}
+        {ratesOpen && (
+          <div className="mb-5 flex flex-wrap items-center gap-2">
+            <span className="shrink-0 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              {t("Tasa", "Rate")}:
+            </span>
+            {RATE_PRESETS.map((preset) => {
+              const active = Math.abs(chartRate - preset.rate) < 0.01;
+              return (
+                <button
+                  key={preset.key}
+                  type="button"
+                  onClick={() => {
+                    setRate(preset.rate);
+                    setRatesOpen(false);
+                  }}
+                  className={`h-8 rounded-full px-3 text-xs font-semibold transition ${
+                    active
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-surface-1 text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {t(preset.es, preset.en)} · {preset.rate}%
+                </button>
+              );
+            })}
+          </div>
+        )}
 
 
 
