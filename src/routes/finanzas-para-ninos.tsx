@@ -722,7 +722,7 @@ function HowItWorksSlider() {
                 </button>
               );
             })}
-            <span className="ml-auto hidden shrink-0 items-center gap-1.5 rounded-full bg-elevated px-3 py-1 text-[11px] text-muted-foreground md:inline-flex">
+            <span className="ml-auto hidden shrink-0 items-center gap-2 rounded-full bg-elevated px-4 py-2 text-[15px] text-muted-foreground md:inline-flex">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-kid-mint opacity-75" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-kid-mint" />
