@@ -311,6 +311,15 @@ import cur_ar_laplata from "@/assets/uni/ar-laplata.jpg";
 import cur_ar_utn from "@/assets/uni/ar-utn.jpg";
 import cur_ar_rosario from "@/assets/uni/ar-rosario.jpg";
 import cur_it_bocconi from "@/assets/uni/it-bocconi.jpg";
+import cur_fr_sorbonne_nord from "@/assets/uni/fr-sorbonne-paris-nord.jpg";
+import cur_fr_insa_toulouse from "@/assets/uni/fr-insa-toulouse.jpg";
+import cur_cy_cyprus from "@/assets/uni/cy-cyprus.jpg";
+import cur_fi_turku from "@/assets/uni/fi-turku.jpg";
+import cur_be_ghent from "@/assets/uni/be-ghent.jpg";
+import cur_be_uclouvain from "@/assets/uni/be-uclouvain.jpg";
+import cur_be_vub from "@/assets/uni/be-vub.jpg";
+import cur_be_antwerp from "@/assets/uni/be-antwerp-uni.jpg";
+import cur_be_ulb from "@/assets/uni/be-ulb.jpg";
 import cur_cl_udd from "@/assets/uni/cl-udd.jpg";
 import cur_cl_uandes from "@/assets/uni/cl-uandes.jpg";
 import cur_za_uct from "@/assets/uni/za-uct.jpg";
@@ -967,6 +976,15 @@ const CURATED: Record<string, string> = {
   "ar-utn-universidad-tecnologica-": cur_ar_utn,
   "ar-universidad-nacional-de-rosa": cur_ar_rosario,
   "it-bocconi": cur_it_bocconi,
+  "fr-universite-sorbonne-paris-nord": cur_fr_sorbonne_nord,
+  "fr-insa-toulouse": cur_fr_insa_toulouse,
+  "cy-university-of-cyprus": cur_cy_cyprus,
+  "fi-university-of-turku": cur_fi_turku,
+  "be-ghent-university": cur_be_ghent,
+  "be-uclouvain": cur_be_uclouvain,
+  "be-vrije-universiteit-brussel": cur_be_vub,
+  "be-university-of-antwerp": cur_be_antwerp,
+  "be-universite-libre-de-bruxelles": cur_be_ulb,
   "cl-universidad-del-desarrollo": cur_cl_udd,
   "cl-universidad-de-los-andes-chi": cur_cl_uandes,
   "ot-university-of-cape-town": cur_za_uct,
