@@ -339,7 +339,20 @@ function HowItWorksSlider() {
               {t("Si ahorra 11,3 € al mes", "If they save €11.3 a month")}
             </p>
           </div>
-          <MiniArea color="var(--kid-sky)" />
+          <div className="mt-3 rounded-2xl bg-elevated/60 p-3 ring-1 ring-border">
+            <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+              <span>{t("Progreso hacia su número", "Progress to their number")}</span>
+              <span className="numeric text-kid-sky">11%</span>
+            </div>
+            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-card">
+              <div className="h-full w-[11%] rounded-full bg-kid-sky" />
+            </div>
+            <div className="mt-2 -mx-1">
+              <MiniArea color="var(--kid-sky)" />
+            </div>
+          </div>
+
+
 
         </ScreenCard>
       ),
