@@ -211,15 +211,15 @@ function MyNumber({ member }: { member: Member }) {
               />
             </div>
 
-            <div className="@container card-soft animate-rise relative grid min-h-[200px] grid-cols-[minmax(0,1fr)_auto] items-center gap-2 overflow-hidden bg-gradient-to-br from-chart-2/10 via-card to-card p-5 sm:p-6">
+            <div className="@container card-soft animate-rise relative grid min-h-[220px] grid-cols-[minmax(0,1fr)_auto] items-center gap-2 overflow-hidden bg-gradient-to-br from-chart-2/10 via-card to-card p-5 sm:p-6 lg:p-7">
               <div className="min-w-0">
                 <Eyebrow className="text-chart-2">
                   {t(`Mi dinero a los ${targetAge}`, `My money at ${targetAge}`)}
                 </Eyebrow>
-                <p className="mt-3 whitespace-nowrap font-display text-[clamp(1.15rem,7.4cqi,2.5rem)] font-bold leading-none tracking-tight text-foreground">
+                <p className="mt-3 whitespace-nowrap font-display text-[clamp(1.2rem,8.5cqi,3.25rem)] font-bold leading-none tracking-tight text-foreground">
                   {money(projection.future, member.currency)}
                 </p>
-                <p className="mt-3 whitespace-nowrap text-[clamp(11px,3.4cqi,15px)] font-semibold leading-snug text-chart-2">
+                <p className="mt-3 whitespace-nowrap text-[clamp(11px,3.8cqi,17px)] font-semibold leading-snug text-chart-2">
                   {money(monthly || pace, member.currency)} {t("al mes", "a month")}
                 </p>
               </div>
@@ -230,7 +230,7 @@ function MyNumber({ member }: { member: Member }) {
                 loading="lazy"
                 width={768}
                 height={768}
-                className="pointer-events-none h-[clamp(80px,30cqi,150px)] w-[clamp(80px,30cqi,150px)] shrink-0 self-center object-contain"
+                className="pointer-events-none h-[clamp(90px,38cqi,210px)] w-[clamp(90px,38cqi,210px)] shrink-0 self-center object-contain"
               />
             </div>
           </div>
