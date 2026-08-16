@@ -616,7 +616,7 @@ function MyNumber({ member }: { member: Member }) {
         <GrowthChart
           data={comparedPoints}
           currency={member.currency}
-          height={320}
+          height={380}
           areas={[
             { key: "total", color: "var(--color-chart-1)" },
             { key: "aportes", color: "var(--color-chart-4)" },
