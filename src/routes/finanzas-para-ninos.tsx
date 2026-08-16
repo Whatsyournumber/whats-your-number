@@ -197,7 +197,9 @@ function UniFinderVisual() {
   const list = DEMO_UNIS.filter((u) => (region === "all" ? true : u.region === region)).filter((u) =>
     q.trim() ? `${u.name} ${u.city}`.toLowerCase().includes(q.trim().toLowerCase()) : true,
   ).slice().sort((a, b) => a.rank - b.rank);
+  const eligible = list.filter((u) => u.cost <= budget);
   const hero = list[0];
+
   const rest = list.slice(1, 3);
   const fmt = (v: number) => `€${Math.round(v).toLocaleString("es-ES")}`;
 
@@ -232,7 +234,13 @@ function UniFinderVisual() {
 
       {hero ? (
         <>
-          <div className="relative mt-3 h-32 overflow-hidden rounded-2xl ring-1 ring-border">
+          <p className="mt-2.5 text-[11px] text-muted-foreground">
+            {t(
+              `Con €${budget.toLocaleString("es-ES")} podría aplicar a ${eligible.length} de ${list.length} universidades mostradas`,
+              `With €${budget.toLocaleString("es-ES")} they could apply to ${eligible.length} of ${list.length} universities shown`,
+            )}
+          </p>
+          <div className="relative mt-2 h-32 overflow-hidden rounded-2xl ring-1 ring-border">
             <img
               src={REAL_UNI_PHOTOS[hero.id]}
               alt={hero.name}
@@ -242,6 +250,15 @@ function UniFinderVisual() {
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-transparent" />
             <span className="absolute left-3 top-3 rounded-full bg-kid-grape/90 px-2 py-0.5 text-[10px] font-semibold text-background">
               #{hero.rank} · {t("ranking mundial", "world ranking")}
+            </span>
+            <span
+              className={`absolute right-3 top-3 rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ${
+                hero.cost <= budget
+                  ? "bg-kid-mint/15 text-kid-mint ring-kid-mint/30"
+                  : "bg-elevated/80 text-muted-foreground ring-border"
+              }`}
+            >
+              {hero.cost <= budget ? t("Puede aplicar", "Can apply") : t("Le falta", "Short")}
             </span>
             <div className="absolute inset-x-3 bottom-2.5 flex items-end justify-between gap-3">
               <div className="min-w-0">
@@ -268,6 +285,11 @@ function UniFinderVisual() {
                   className="absolute inset-0 h-full w-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                {u.cost <= budget && (
+                  <span className="absolute right-2 top-2 rounded-full bg-kid-mint/20 px-1.5 py-0.5 text-[9px] font-semibold text-kid-mint">
+                    {t("Puede aplicar", "Can apply")}
+                  </span>
+                )}
                 <div className="absolute inset-x-2.5 bottom-2 flex items-end justify-between gap-2">
                   <div className="min-w-0">
                     <p className="truncate text-[11px] font-semibold">
@@ -294,6 +316,7 @@ function UniFinderVisual() {
           "QS/THE ranking + city living costs, compared with their future number.",
         )}
       </p>
+
     </ScreenCard>
   );
 }
@@ -537,90 +560,21 @@ function HowItWorksSlider() {
       ),
     },
     {
-      id: "badges",
-      tab: t("Mis logros", "My badges"),
-      icon: Trophy,
-      color: "var(--kid-grape)",
-      title: t("Premios, rachas y retos", "Rewards, streaks and quests"),
-      desc: t(
-        "Cada semana que ahorra desbloquea premios como una bici nueva, rachas e insignias.",
-        "Every week they save unlocks rewards like a new bike, streaks and badges.",
-      ),
-      visual: (
-        <ScreenCard title={t("Mis premios", "My rewards")} accent="var(--kid-grape)">
-          <div className="relative overflow-hidden rounded-2xl bg-elevated p-4 ring-1 ring-kid-mint/15">
-            <div
-              className="pointer-events-none absolute -right-6 -top-8 h-32 w-32 rounded-full blur-2xl"
-              style={{ background: "color-mix(in oklab, var(--kid-mint) 25%, transparent)" }}
-            />
-            <div className="relative flex items-center gap-3">
-              <img
-                src={bikeAsset.url}
-                alt={t("Bici nueva", "New bike")}
-                loading="lazy"
-                width={816}
-                height={816}
-                className="h-20 w-20 shrink-0 object-contain drop-shadow-[0_8px_20px_rgba(0,0,0,0.45)]"
-              />
-              <div className="min-w-0">
-                <p className="text-sm font-medium">{t("Bici nueva", "New bike")}</p>
-                <p className="numeric text-xs text-muted-foreground">
-                  {t("Desbloqueado a los", "Unlocked at")} €250
-                </p>
-              </div>
-              <span className="numeric ml-auto text-lg font-semibold text-kid-mint">62%</span>
-            </div>
-            <div className="relative mt-3 h-2 w-full overflow-hidden rounded-full bg-card">
-              <div className="h-full w-[62%] rounded-full bg-kid-mint" />
-            </div>
-          </div>
-
-
-          <div className="mt-3 flex items-center justify-between rounded-2xl bg-elevated px-4 py-3">
-            <div>
-              <p className="text-xs text-muted-foreground">{t("Racha", "Streak")}</p>
-              <p className="numeric mt-0.5 text-xl font-semibold text-kid-grape">
-                7 {t("sem.", "wks")}
-              </p>
-            </div>
-            <div className="flex gap-1">
-              {Array.from({ length: 7 }).map((_, k) => (
-                <Star
-                  key={k}
-                  className="h-4 w-4 fill-kid-sun text-kid-sun"
-                />
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-3 grid grid-cols-4 gap-2">
-            {[Trophy, Star, BadgeCheck, Sparkles].map((Ic, k) => (
-              <span
-                key={k}
-                className="flex aspect-square items-center justify-center rounded-xl text-kid-grape ring-1 ring-kid-grape/20 kid-gradient-soft"
-              >
-                <Ic className="h-4 w-4" />
-              </span>
-            ))}
-          </div>
-        </ScreenCard>
-      ),
-    },
-    {
       id: "unis",
       tab: t("Universidades", "Universities"),
       icon: GraduationCap,
       color: "var(--kid-grape)",
       title: t("Buscador de universidades", "University finder"),
       desc: t(
-        "Busca por universidad, ciudad o continente y mira al instante qué parte de la carrera cubre su número del futuro.",
-        "Search by university, city or continent and instantly see how much of the degree their future number covers.",
+        "Busca por universidad, ciudad o continente y mira al instante a cuáles podría aplicar con su número del futuro.",
+        "Search by university, city or continent and instantly see which ones they could apply to with their future number.",
       ),
       visual: <UniFinderVisual />,
     },
   ];
 
-  const order = ["numbers", "grow", "unis", "pockets", "chores", "dreams", "badges"];
+  const order = ["numbers", "grow", "unis", "pockets", "chores", "dreams"];
+
   const slides = [...rawSlides].sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
 
   const buddy: Record<string, string> = {
@@ -633,8 +587,9 @@ function HowItWorksSlider() {
       "77% of her future comes from compound interest, not deposits. Starting today is worth gold.",
     ),
     unis: t(
-      "Con su número del futuro cubre el 111% de un grado en Barcelona, o el 26% de MIT.",
-      "Her future number covers 111% of a degree in Barcelona, or 26% of MIT.",
+      "Con su número podría aplicar hoy a 3 de estas universidades: cubre el 111% de un grado en Barcelona.",
+      "With her number she could already apply to 3 of these universities: it covers 111% of a degree in Barcelona.",
+
     ),
     pockets: t(
       "Su bolsillo de gastar lleva 3 semanas intacto: buena señal para subir el de invertir al 45%.",
@@ -845,6 +800,32 @@ function HowItWorksSlider() {
                   </div>
                 ))}
               </div>
+
+              <div className="rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
+                <div className="flex items-center gap-2 text-sm">
+                  <Target className="h-4 w-4" style={{ color: active.color }} />
+                  <span>{t("Progreso hacia su número", "Progress to their number")}</span>
+                </div>
+                <div className="mt-3 h-2 overflow-hidden rounded-full bg-background">
+                  <motion.div
+                    key={active.id}
+                    initial={{ width: 0 }}
+                    animate={{ width: "11%" }}
+                    transition={{ duration: 1.1, ease: "easeOut" }}
+                    className="h-full rounded-full"
+                    style={{ backgroundColor: active.color }}
+                  />
+                </div>
+                <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
+                  <span className="numeric text-foreground">€1.150</span>
+                  <span>11%</span>
+                  <span className="numeric text-foreground">€10.668</span>
+                </div>
+                <p className="mt-2 text-[11px] text-muted-foreground">
+                  {t("Ahorrando €11,3 al mes hasta los 18 años.", "Saving €11.3 a month until age 18.")}
+                </p>
+              </div>
+
             </div>
           </motion.div>
 
