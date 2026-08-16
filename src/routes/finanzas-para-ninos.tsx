@@ -804,7 +804,8 @@ function HowItWorksSlider() {
                 ))}
               </div>
 
-              <div className="rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
+              <div className="mt-auto rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
+
                 <div className="flex items-center gap-2 text-sm">
                   <Target className="h-4 w-4" style={{ color: active.color }} />
                   <span>{t("Progreso hacia su número", "Progress to their number")}</span>
