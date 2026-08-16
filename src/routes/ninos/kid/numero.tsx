@@ -41,7 +41,16 @@ export const Route = createFileRoute("/ninos/kid/numero")({
   component: () => <KidPage>{(member) => <MyNumber member={member} />}</KidPage>,
 });
 
+function Eyebrow({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <p className={`text-[11px] font-bold uppercase leading-tight tracking-[0.12em] ${className}`}>
+      {children}
+    </p>
+  );
+}
+
 function Ring({ value, size = 116 }: { value: number; size?: number }) {
+
   const pct = Math.max(0, Math.min(100, value));
   const stroke = 11;
   const r = (size - stroke) / 2;
