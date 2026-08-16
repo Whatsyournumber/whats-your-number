@@ -1,4 +1,5 @@
 import campusEu1 from "@/assets/uni/campus-eu-1.jpg";
+import { EU_UNI_PHOTOS } from "@/lib/uni-photos-eu";
 import campusEu2 from "@/assets/uni/campus-eu-2.jpg";
 import campusNa1 from "@/assets/uni/campus-na-1.jpg";
 import campusNa2 from "@/assets/uni/campus-na-2.jpg";
@@ -1049,6 +1050,8 @@ const COUNTRY_POOLS: Record<string, string[]> = {
 export function uniPhoto(u: University) {
   const curated = CURATED[u.id];
   if (curated) return curated;
+  const eu = EU_UNI_PHOTOS[u.id];
+  if (eu) return eu;
   const real = REAL_UNI_PHOTOS[u.id];
   if (real) return real;
   const pool = COUNTRY_POOLS[u.country];
