@@ -48,13 +48,19 @@ function ProfileCard({ member, collapsed }: { member: Member; collapsed: boolean
   }
 
   return (
-    <div className="mt-2 shrink-0 rounded-2xl border border-border/60 bg-card/60 px-3 py-2.5">
-      <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-primary">
-        {t("Mi primer número", "My first number")}
-      </p>
-      <p className="mt-0.5 whitespace-nowrap font-display text-[17px] font-extrabold leading-tight tracking-tight text-foreground">
-        {money(saved, member.currency)}
-      </p>
+    <div className="mt-2 flex shrink-0 items-center gap-2.5 rounded-2xl border border-border/60 bg-card/60 p-2.5">
+      <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary/10 text-2xl">
+        {member.avatar}
+      </div>
+      <div className="min-w-0">
+        <p className="truncate text-[11px] font-bold text-foreground">{member.name}</p>
+        <p className="text-[9px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+          {t("Mi primer número", "My first number")}
+        </p>
+        <p className="mt-0.5 whitespace-nowrap font-display text-[19px] font-extrabold leading-tight tracking-tight text-primary">
+          {money(saved, member.currency)}
+        </p>
+      </div>
     </div>
   );
 }
