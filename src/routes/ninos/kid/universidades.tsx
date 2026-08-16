@@ -585,42 +585,27 @@ function CollegeFinder({ member }: { member: Member }) {
             <option value="public">{t("Pública", "Public")}</option>
             <option value="private">{t("Privada", "Private")}</option>
           </Select>
-          <select
-            value=""
-            onChange={(e) => {
-              const v = e.target.value;
-              if (!v) return;
-              if (v === "rank:") setRankMax("");
-              else if (v.startsWith("rank:")) setRankMax(v.slice(5));
-              else if (v.startsWith("live:") && includeLiving) setLiving(v.slice(5) as LivingStyle);
-            }}
-            className="h-9 w-full rounded-full border border-border/70 bg-card px-3 text-xs font-semibold text-foreground outline-none transition focus:border-primary sm:w-auto"
+          <Select
+            value={rankMax}
+            onChange={(v) => setRankMax(v)}
+            placeholder={t("Ranking", "Ranking")}
           >
-            <option value="">
-              {`${t("Ranking", "Ranking")}: ${rankMax ? `Top ${rankMax}` : t("Todos", "All")}${
-                includeLiving ? ` · ${t(LIVING_STYLES[living].es, LIVING_STYLES[living].en)}` : ""
-              }`}
-            </option>
-            <optgroup label={t("Ranking", "Ranking")}>
-              <option value="rank:">{t("Todos", "All")}</option>
-              <option value="rank:100">Top 100</option>
-              <option value="rank:300">Top 300</option>
-              <option value="rank:500">Top 500</option>
-            </optgroup>
-            <optgroup
-              label={
-                includeLiving
-                  ? t("Coste de vida", "Living cost")
-                  : t("Coste de vida (activa Matrícula + vida)", "Living cost (enable Tuition + living)")
-              }
-            >
-              {(Object.keys(LIVING_STYLES) as LivingStyle[]).map((k) => (
-                <option key={k} value={`live:${k}`} disabled={!includeLiving}>
-                  {LIVING_STYLES[k].emoji} {t(LIVING_STYLES[k].es, LIVING_STYLES[k].en)}
-                </option>
-              ))}
-            </optgroup>
-          </select>
+            <option value="100">Top 100</option>
+            <option value="300">Top 300</option>
+            <option value="500">Top 500</option>
+          </Select>
+
+          <Select
+            value={includeLiving ? living : ""}
+            onChange={(v) => v && setLiving(v as LivingStyle)}
+            placeholder={t("Coste de vida", "Living cost")}
+          >
+            {(Object.keys(LIVING_STYLES) as LivingStyle[]).map((k) => (
+              <option key={k} value={k} disabled={!includeLiving}>
+                {LIVING_STYLES[k].emoji} {t(LIVING_STYLES[k].es, LIVING_STYLES[k].en)}
+              </option>
+            ))}
+          </Select>
 
           <Select
             value={sort}
