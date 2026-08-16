@@ -241,34 +241,54 @@ function MyNumber({ member }: { member: Member }) {
 
           <Buddy>{line}</Buddy>
           <Card title={t("Mis sueños", "My dreams")}>
-            <div className="flex items-center gap-4">
-              <Ring value={dreams.progress} />
-              <div className="min-w-0">
-                {dreams.next ? (
-                  <>
-                    <p className="truncate text-sm font-semibold text-foreground">
-                      {dreams.next.emoji} {dreams.next.title}
-                    </p>
-                    <p className="mt-0.5 text-xs text-muted-foreground">
-                      {money(Number(dreams.next.saved), member.currency)} {t("de", "of")}{" "}
-                      {money(Number(dreams.next.price), member.currency)}
-                    </p>
-                    <Progress
-                      className="mt-2"
-                      value={(Number(dreams.next.saved) / Math.max(1, Number(dreams.next.price))) * 100}
-                    />
-                  </>
-                ) : (
+            {dreams.next ? (
+              (() => {
+                const saved = Number(dreams.next.saved);
+                const price = Number(dreams.next.price);
+                const pct = Math.max(0, Math.min(100, (saved / Math.max(1, price)) * 100));
+                const missing = Math.max(0, price - saved);
+                return (
+                  <div className="grid grid-cols-[104px_minmax(0,1fr)] items-center gap-4 sm:grid-cols-[128px_minmax(0,1fr)]">
+                    <DreamPhoto title={dreams.next.title} emoji={dreams.next.emoji} pct={pct} />
+                    <div className="min-w-0">
+                      <p className="truncate text-base font-bold text-foreground">
+                        {dreams.next.emoji} {dreams.next.title}
+                      </p>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        <span className="font-semibold text-foreground">{money(saved, member.currency)}</span>{" "}
+                        {t("de", "of")} {money(price, member.currency)}
+                      </p>
+                      <div className="mt-2 flex items-center gap-2">
+                        <Progress className="flex-1" value={pct} />
+                        <span className="text-xs font-bold text-primary">{Math.round(pct)}%</span>
+                      </div>
+                      {missing > 0 && (
+                        <span className="mt-3 inline-block rounded-full bg-surface-2 px-3 py-1 text-xs font-semibold text-foreground">
+                          {t("Te faltan", "You need")} {money(missing, member.currency)}
+                        </span>
+                      )}
+                      <Link to="/ninos/kid/deseos" className="mt-3 block text-xs font-semibold text-primary">
+                        {t("Ver mis sueños", "See my dreams")} →
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })()
+            ) : (
+              <div className="flex items-center gap-4">
+                <Ring value={dreams.progress} />
+                <div className="min-w-0">
                   <p className="text-sm text-muted-foreground">
                     {t("Añade tu primer sueño.", "Add your first dream.")}
                   </p>
-                )}
-                <Link to="/ninos/kid/deseos" className="mt-3 inline-block text-xs font-semibold text-primary">
-                  {t("Ver mis sueños", "See my dreams")} →
-                </Link>
+                  <Link to="/ninos/kid/deseos" className="mt-3 inline-block text-xs font-semibold text-primary">
+                    {t("Ver mis sueños", "See my dreams")} →
+                  </Link>
+                </div>
               </div>
-            </div>
+            )}
           </Card>
+
         </div>
       </div>
 
