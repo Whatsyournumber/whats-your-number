@@ -85,27 +85,7 @@ export function KidShell({ member, children }: { member: Member; children: React
             {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
           </button>
         </div>
-        <div
-          className={cn(
-            "mt-6 flex items-center rounded-3xl p-3 avatar-ring",
-            collapsed ? "justify-center" : "gap-3",
-          )}
-        >
-          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-card text-2xl shadow-sm">
-            {member.avatar}
-          </span>
-          {collapsed ? null : (
-          <div className="min-w-0">
-            <p className="truncate font-display text-base font-bold text-foreground">
-              {member.name}
-            </p>
-            <p className="text-[11px] font-semibold text-foreground/70">
-              {member.age} {t("años", "yrs")} · ⭐ {member.xp} XP · 🔥 {member.streak}
-            </p>
-          </div>
-          )}
-        </div>
-        <nav className="mt-6 flex min-h-0 flex-1 flex-col gap-1.5">
+        <nav className="mt-6 flex min-h-0 flex-1 flex-col gap-1.5 overflow-y-auto">
           {TABS.map((tab) => (
             <Link
               key={tab.to}
@@ -124,14 +104,20 @@ export function KidShell({ member, children }: { member: Member; children: React
               )}
             </Link>
           ))}
-        </nav>
-        <nav className="mt-3 shrink-0 space-y-1.5 border-t border-border/70 pt-3">
-          {BOTTOM_TABS.map((tab) => (
+
+          <div className={cn("mt-5 border-t border-border/70 pt-4", collapsed && "mx-1")}>
+            {collapsed ? null : (
+              <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                {t("Para papás", "For parents")}
+              </p>
+            )}
+          </div>
+          {PARENT_TABS.map((tab) => (
             <Link
               key={tab.to}
               to={tab.to}
               activeProps={{ className: "nav-pill-active" }}
-              className={cn("nav-pill text-[13px]", collapsed && "justify-center px-0")}
+              className={cn("nav-pill text-sm", collapsed && "justify-center px-0")}
               title={collapsed ? label(tab) : undefined}
             >
               {({ isActive }: { isActive: boolean }) => (
@@ -145,6 +131,8 @@ export function KidShell({ member, children }: { member: Member; children: React
             </Link>
           ))}
         </nav>
+
+        <ProfileCard member={member} collapsed={collapsed} />
       </aside>
 
       <div className="min-w-0 flex-1 pb-36 lg:pb-0">
