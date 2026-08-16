@@ -1,5 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
+import { getBuddyTip } from "@/lib/kid-buddy.functions";
 import { ArrowUpRight, CheckSquare, ChevronRight, Rocket, Star, Wallet } from "lucide-react";
 import { Card, GrowthChart, Progress } from "@/components/mfn-ui";
 import buddyImg from "@/assets/kid-buddy-robot.png";
@@ -145,6 +148,36 @@ function MyNumber({ member }: { member: Member }) {
   const lines = buddyLines(lang);
   const line = lines[(member.xp / 10) % lines.length | 0] ?? lines[0];
 
+  const buddyTipFn = useServerFn(getBuddyTip);
+  const { data: buddyTip, isFetching: buddyThinking } = useQuery({
+    queryKey: ["kid-buddy-tip", member.id, lang, Math.round(today), Math.round(projection.future)],
+    enabled: movements.length > 0,
+    staleTime: 1000 * 60 * 30,
+    retry: false,
+    queryFn: () =>
+      buddyTipFn({
+        data: {
+          name: member.name,
+          age: member.age,
+          currency: member.currency,
+          lang,
+          today,
+          future: projection.future,
+          targetAge,
+          monthly,
+          pace,
+          pockets: POCKETS.map((p) => ({ label: pocketLabel(p.key, lang), amount: totals[p.key] })),
+          dream: dreams.next
+            ? {
+                title: dreams.next.title,
+                saved: Number(dreams.next.saved),
+                price: Number(dreams.next.price),
+              }
+            : null,
+        },
+      }),
+  });
+
   return (
     <>
       <PageTitle
@@ -245,20 +278,48 @@ function MyNumber({ member }: { member: Member }) {
           </div>
         </div>
 
-        <div className="grid gap-5 lg:grid-rows-[210px_1fr] [&>*]:h-full">
-          <div className="card-soft animate-rise relative flex items-center overflow-hidden bg-gradient-to-br from-primary/15 via-chart-2/15 to-chart-2/25 p-5">
-            <div className="pointer-events-none absolute right-24 top-5 text-base opacity-70">✨</div>
-            <div className="pointer-events-none absolute right-10 top-12 text-sm opacity-60">✦</div>
-            <div className="min-w-0 flex-1">
+        <div className="grid gap-5 lg:grid-rows-[260px_1fr] [&>*]:h-full">
+          <div className="card-soft animate-rise relative flex items-center overflow-hidden bg-gradient-to-br from-primary/20 via-chart-2/15 to-chart-2/30 p-5">
+            <div className="pointer-events-none absolute -right-10 -top-12 h-36 w-36 rounded-full bg-card/40 blur-2xl" />
+            <div className="pointer-events-none absolute right-24 top-5 text-lg opacity-70">✨</div>
+            <div className="pointer-events-none absolute right-10 top-14 text-sm opacity-60">✦</div>
+            <div className="relative min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-card text-base shadow-sm">🤖</span>
-                <p className="font-display text-lg font-bold text-primary">Buddy</p>
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-card text-lg shadow-sm">🤖</span>
+                <p className="font-kid text-2xl font-extrabold text-primary">Buddy</p>
+                <span className="rounded-full bg-card/80 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">
+                  IA
+                </span>
               </div>
-              <div className="mt-3 rounded-2xl bg-card/95 px-4 py-3 text-[13px] leading-snug text-foreground shadow-sm">
-                <p className="font-bold">
-                  {t(`¡Genial, ${member.name}!`, `Great job, ${member.name}!`)} 🚀
-                </p>
-                <p className="mt-1 line-clamp-2 text-muted-foreground">{line}</p>
+              <div className="mt-3 rounded-3xl rounded-bl-lg bg-card/95 px-4 py-3 shadow-sm">
+                {buddyThinking && !buddyTip ? (
+                  <div className="flex items-center gap-1.5 py-2">
+                    {[0, 1, 2].map((i) => (
+                      <span
+                        key={i}
+                        className="h-2 w-2 animate-bounce rounded-full bg-primary/60"
+                        style={{ animationDelay: `${i * 0.15}s` }}
+                      />
+                    ))}
+                    <span className="ml-2 font-kid text-sm text-muted-foreground">
+                      {t("Leyendo tus números…", "Reading your numbers…")}
+                    </span>
+                  </div>
+                ) : (
+                  <>
+                    <p className="font-kid text-[17px] font-extrabold leading-tight text-foreground">
+                      {buddyTip?.headline ?? `${t(`¡Genial, ${member.name}!`, `Great job, ${member.name}!`)} 🚀`}
+                    </p>
+                    <p className="mt-1 font-kid text-[15px] font-medium leading-snug text-muted-foreground">
+                      {buddyTip?.insight ?? line}
+                    </p>
+                    {buddyTip?.tip ? (
+                      <p className="mt-2 rounded-2xl bg-primary/10 px-3 py-2 font-kid text-[15px] font-semibold leading-snug text-foreground">
+                        💡 {buddyTip.tip}
+                      </p>
+                    ) : null}
+                  </>
+                )}
               </div>
             </div>
             <img
@@ -268,9 +329,10 @@ function MyNumber({ member }: { member: Member }) {
               loading="lazy"
               width={768}
               height={768}
-              className="pointer-events-none -mr-2 h-[130px] w-[110px] shrink-0 self-end object-contain"
+              className="pointer-events-none relative -mr-2 h-[160px] w-[130px] shrink-0 self-end object-contain"
             />
           </div>
+
 
           <div className="card-soft animate-rise flex flex-col p-6">
             <div className="flex items-center justify-between gap-2">

@@ -31,11 +31,13 @@ export function KidPage({ children }: { children: (member: Member) => ReactNode 
 export function PageTitle({ emoji, title, subtitle }: { emoji: string; title: string; subtitle?: string }) {
   return (
     <header className="mb-6">
-      <h1 className="font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-        <span className="mr-2">{emoji}</span>
+      <h1 className="flex items-center gap-3 font-kid text-[clamp(1.9rem,4.4vw,2.7rem)] font-extrabold leading-tight tracking-[-0.01em] text-foreground">
+        <span className="text-[1.1em] leading-none">{emoji}</span>
         {title}
       </h1>
-      {subtitle ? <p className="mt-1.5 text-sm text-muted-foreground">{subtitle}</p> : null}
+      {subtitle ? (
+        <p className="mt-1 font-kid text-[clamp(1rem,2vw,1.2rem)] font-medium text-muted-foreground">{subtitle}</p>
+      ) : null}
     </header>
   );
 }
