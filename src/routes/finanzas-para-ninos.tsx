@@ -1240,7 +1240,7 @@ function PhoneMock({
 
           <p className="mt-6 text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
           <p
-            className={`numeric mt-1 font-semibold ${cute ? "text-[2rem]" : "text-3xl"}`}
+            className={`numeric mt-1 font-semibold ${cute ? "text-[2.35rem]" : "text-[2.35rem]"}`}
             style={{ color: accent }}
           >
             {value}
