@@ -930,6 +930,23 @@ function HowItWorksSlider() {
   );
 }
 
+const pocketMonths = [
+  { m: "Ene", save: 16, invest: 16, spend: 8 },
+  { m: "Feb", save: 18, invest: 18, spend: 9 },
+  { m: "Mar", save: 20, invest: 20, spend: 10 },
+  { m: "Abr", save: 22, invest: 22, spend: 11 },
+  { m: "May", save: 23, invest: 23, spend: 11 },
+  { m: "Jun", save: 24, invest: 24, spend: 12 },
+];
+
+const choreWeeks = [
+  { w: "S1", v: 4.5 },
+  { w: "S2", v: 5 },
+  { w: "S3", v: 6 },
+  { w: "S4", v: 5.5 },
+  { w: "S5", v: 6.5 },
+];
+
 const planBars = [4, 7, 10, 13, 17, 21, 26, 32, 39, 47, 56, 66, 78, 92].map((v, i) => ({
   x: i,
   v,
