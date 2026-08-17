@@ -227,13 +227,11 @@ function AppShell() {
         .eq("user_id", user.id)
         .maybeSingle();
       if (!active) return;
-      const skipped =
-        typeof window !== "undefined" &&
-        window.localStorage.getItem(`wyn_onboarding_skipped:${user.id}`) === "1";
-      if (!data?.completed && !skipped) {
+      if (!data?.completed) {
         navigate({ to: "/onboarding", replace: true });
         return;
       }
+
       setOnboardingChecked(true);
     })();
     return () => {
