@@ -14,17 +14,21 @@ export function ChartTooltip({
   payload,
   label,
   formatter,
+  labelFormatter,
 }: {
   active?: boolean;
   payload?: { name?: string; value?: number | string; color?: string; dataKey?: string }[];
   label?: ReactNode;
   formatter?: (v: number) => string;
+  labelFormatter?: (label: any, payload: any) => ReactNode;
 }) {
   if (!active || !payload?.length) return null;
   const f = formatter ?? ((v: number) => fmt(v));
+  const shownLabel = labelFormatter ? labelFormatter(label, payload) : label;
   return (
     <div className="rounded-xl border border-border bg-popover/95 px-3 py-2 text-xs shadow-lg backdrop-blur">
-      {label !== undefined && <p className="mb-1 font-medium text-popover-foreground">{label}</p>}
+      {shownLabel !== undefined && <p className="mb-1 font-medium text-popover-foreground">{shownLabel}</p>}
+
       <div className="space-y-1">
         {payload.map((p, i) => (
           <div key={i} className="flex items-center gap-2">
