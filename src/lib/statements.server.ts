@@ -30,8 +30,16 @@ y en cualquier alfabeto. Detecta el idioma automáticamente, interpreta encabeza
 abono/crédito/credit/Haben, saldo/balance) y normaliza formatos locales: fechas DD/MM/AAAA, MM/DD/AAAA, DD.MM.AAAA, meses escritos en su idioma; números con coma decimal (1.234,56)
 o punto decimal (1,234.56); símbolos y códigos de moneda (€, $, £, R$, ₺, ¥, CHF, MXN...) y sufijos de signo como "-", "(...)", "DR"/"CR".
 Devuelve cada movimiento con: fecha (YYYY-MM-DD), comercio, descripción, monto (negativo = gasto, positivo = ingreso/abono),
-moneda ISO, categoría y subcategoría SIEMPRE en español (ej. Vivienda, Alimentación, Transporte, Lifestyle, Salud, Suscripciones,
-Inversiones, Ingresos), y excluded=true cuando el movimiento NO es un gasto real: traspasos entre cuentas, pagos de tarjeta,
+moneda ISO, y la categoría en español ELEGIDA OBLIGATORIAMENTE de esta lista exacta:
+Mercado, Restaurantes, Delivery, Nightlife, Deportes, Compras, Viajes, Transporte, Salud, Apps, Marketing digital, Bancos & Seguros, Otros.
+Guías clave:
+- "Restaurantes": bares, cafeterías, panaderías, heladerías, tabernas, food halls, hoteles-restaurante y cualquier consumo de comida fuera de casa (no supermercado).
+- "Delivery": Glovo, Uber Eats, Rappi, Just Eat, Deliveroo, DoorDash, PedidosYa y similares.
+- "Apps": suscripciones y software digital (Tinder, Bumble, Netflix, Spotify, Apple, Google Play/One/Workspace, OpenAI, ChatGPT, Canva, Zoho, Twilio, ElevenLabs, hosting, dominios, SaaS y apps de citas).
+- "Marketing digital": publicidad y captación (Facebook/Meta Ads, Google Ads, LinkedIn, TikTok Ads, Instagram Ads, agencias, leads).
+- Si dudas entre Apps y Marketing digital: si sirve para anunciarse o captar clientes es Marketing digital; si es una herramienta o suscripción de uso propio es Apps.
+Rellena subcategoría con el detalle libre (ej. "cena", "publicidad Meta", "suscripción mensual").
+Marca excluded=true cuando el movimiento NO es un gasto real: traspasos entre cuentas, pagos de tarjeta,
 compra de activos o inversiones. Conserva el nombre del comercio tal cual aparece. Máximo 200 movimientos. Escribe un resumen de 1-2 frases en español.`;
 
 function toBase64(bytes: Uint8Array): string {
