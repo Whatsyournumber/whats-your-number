@@ -582,15 +582,24 @@ function JobProgress({ job }: { job: Job }) {
     return () => clearInterval(id);
   }, [isDone, isError]);
 
+  // Countdown of time remaining: estimate from progress speed, but only ever tick down
+  const remainingRef = useRef<number | null>(null);
   let eta: string | null = null;
-  if (!isDone && !isError && pct > 0 && pct < 100) {
+  if (isDone || isError) {
+    remainingRef.current = null;
+  } else if (pct > 0 && pct < 100) {
     const elapsed = Math.max(1, (now - startedRef.current) / 1000);
-    const remaining = Math.min(240, Math.max(3, Math.round((elapsed * (100 - pct)) / pct)));
+    const estimate = Math.min(240, Math.max(2, Math.round((elapsed * (100 - pct)) / pct)));
+    const prev = remainingRef.current;
+    // never let the countdown grow: it should feel like time running out
+    remainingRef.current = prev === null ? estimate : Math.max(2, Math.min(prev, estimate));
+    const remaining = remainingRef.current;
     eta =
       remaining >= 60
-        ? `~${Math.ceil(remaining / 60)} min`
-        : `~${remaining}s`;
+        ? t(`queda ~${Math.ceil(remaining / 60)} min`, `~${Math.ceil(remaining / 60)} min left`)
+        : t(`queda ~${remaining}s`, `~${remaining}s left`);
   }
+
 
 
   return (
