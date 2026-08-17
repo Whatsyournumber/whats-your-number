@@ -12,7 +12,7 @@ export const Route = createFileRoute("/blog")({
       { title: "Blog — WhatsYournumber" },
       {
         name: "description",
-        content: "Ideas prácticas sobre patrimonio, cash flow, inversión y automatización financiera con IA.",
+        content: "Ideas prácticas sobre patrimonio, gasto consciente, inversión y libertad financiera.",
       },
       { property: "og:title", content: "Blog — WhatsYournumber" },
       { property: "og:description", content: "Artículos sobre finanzas personales, inversión y IA." },
