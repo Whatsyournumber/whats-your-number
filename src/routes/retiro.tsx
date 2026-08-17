@@ -313,8 +313,21 @@ function RetiroContent() {
             </thead>
             <tbody>
               {capitals.map((cap) => (
-                <tr key={cap} className="border-b border-border/60 last:border-0 hover:bg-elevated/40">
-                  <td className="numeric px-3 py-3 text-left font-semibold">{fmt(cap)}</td>
+                <tr
+                  key={cap}
+                  className={cn(
+                    "border-b border-border/60 last:border-0 hover:bg-elevated/40",
+                    cap === roundNice(baseNumber) && "bg-primary/5",
+                  )}
+                >
+                  <td className="numeric px-3 py-3 text-left font-semibold">
+                    {fmt(cap)}
+                    {cap === roundNice(baseNumber) && (
+                      <span className="ml-2 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] uppercase tracking-wide text-primary">
+                        {t("tu número", "your number")}
+                      </span>
+                    )}
+                  </td>
                   {rates.map((rr) => {
                     const inc = (cap * (rr / 100)) / 12;
                     const covers = inc >= d.expenses && d.expenses > 0;
