@@ -166,7 +166,7 @@ function BlogArticle() {
                         <tbody>
                           {extras.table.rows.map((row) => (
                             <tr
-                              key={row.cells[0].en}
+                              key={row.cells[0]?.en ?? ""}
                               className={`border-t border-border/40 ${row.highlight ? "bg-primary/10" : ""}`}
                             >
                               {row.cells.map((cell, ci) => (
