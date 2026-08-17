@@ -121,7 +121,39 @@ export function wealthTotals(list: Holding[], prices?: Record<string, number>): 
   };
 }
 
+/** Crea el detalle inicial a partir de los totales del perfil (para quien nunca lo ha editado). */
+export function seedHoldingsFromTotals(p: {
+  assets_cash: number;
+  assets_bank: number;
+  assets_retirement: number;
+  assets_etf: number;
+  assets_stocks: number;
+  assets_crypto: number;
+  assets_property: number;
+  liabilities: number;
+  expected_return: number;
+}): Holding[] {
+  const rows: [HoldingKind, string, number][] = [
+    ["cash", "Efectivo", p.assets_cash],
+    ["bank", "Cuentas bancarias", p.assets_bank],
+    ["retirement", "Fondo de retiro", p.assets_retirement],
+    ["etf", "ETFs / fondos", p.assets_etf],
+    ["stock", "Acciones", p.assets_stocks],
+    ["crypto", "Cripto", p.assets_crypto],
+    ["property", "Propiedad", p.assets_property],
+    ["debt", "Deudas", p.liabilities],
+  ];
+  return rows
+    .filter(([, , v]) => v > 0)
+    .map(([kind, label, v], i) => ({
+      ...newHolding(kind, label, i),
+      manual_value: Math.round(v),
+      expected_return: kind === "crypto" ? 12 : kind === "stock" ? 9 : kind === "property" ? 4 : p.expected_return || 7,
+    }));
+}
+
 /** Aporte mensual total declarado en inversiones + retiro. */
+
 export function monthlyContributions(list: Holding[]) {
   return list
     .filter((h) => ["etf", "stock", "crypto", "other", "retirement"].includes(h.kind))
