@@ -60,7 +60,7 @@ const GOALS_EN: Record<string, string> = {
   patrimonio: "Grow my net worth",
   gastos: "Understand and control my expenses",
   vivienda: "Save for a home",
-  viajar: "Travel more",
+  negocio: "Start my business",
   organizar: "Better organize my money",
   otro: "Another goal (write it down)",
 };
@@ -274,7 +274,11 @@ function OnboardingPage() {
   }
 
   const canContinue = () => {
-    if (step === 1) return life.goal === "otro" ? life.goal_note.trim().length > 2 : !!life.goal;
+    if (step === 1) {
+      if (life.goal === "otro") return life.goal_note.trim().length > 2;
+      if (life.goal === "negocio") return data.business_target > 0;
+      return !!life.goal;
+    }
     if (step === 2) return !!data.age;
     if (step === 4) return !!life.city;
     if (step === 5) return !!life.marital_status && !!life.children && !!life.plans_children;
@@ -389,6 +393,36 @@ function OnboardingPage() {
                                   `You need to save ${money(plan.monthlyToGoal, cur)} per month to get there in 3 years.`,
                                 )
                               : ""}
+                          </p>
+                        </div>
+                      )}
+                    </Reveal>
+                  )}
+                  {life.goal === "negocio" && (
+                    <Reveal>
+                      <SubQuestion title={t("¿Cuánto capital necesitas para montarlo?", "How much capital do you need to start it?")} />
+                      <MoneyField
+                        emoji="🚀"
+                        label={t("Capital para mi negocio", "Capital for my business")}
+                        currency={cur}
+                        value={data.business_target}
+                        onChange={(v) => set("business_target", v)}
+                      />
+                      {data.business_target > 0 && (
+                        <div className="mt-3 rounded-2xl border border-primary/40 bg-primary/10 px-5 py-4">
+                          <p className="text-[11px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
+                          <p className="numeric mt-1 text-2xl font-semibold">{money(plan.businessTarget, cur)}</p>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {t(
+                              "Este es el número que necesitas para montar tu negocio.",
+                              "This is the number you need to launch your business.",
+                            )}{" "}
+                            {plan.monthlyToGoal > 0
+                              ? t(
+                                  `Necesitas ahorrar ${money(plan.monthlyToGoal, cur)} al mes para lograrlo en 3 años.`,
+                                  `You need to save ${money(plan.monthlyToGoal, cur)} per month to get there in 3 years.`,
+                                )
+                              : t("Ya tienes el capital cubierto.", "You already have the capital covered.")}
                           </p>
                         </div>
                       )}
@@ -1452,6 +1486,16 @@ function SummaryScreen({
                       `You need to save ${money(plan.monthlyToGoal, currency)} per month to get there in 3 years.`,
                     )
                   : t("Ya tienes cubierta la entrada.", "You already have the down payment covered.")}
+              </p>
+            ) : plan.mode === "business" ? (
+              <p className="mt-2 text-xs text-muted-foreground">
+                {t("El capital para montar tu negocio", "The capital to start your business")}{". "}
+                {plan.monthlyToGoal > 0
+                  ? t(
+                      `Necesitas ahorrar ${money(plan.monthlyToGoal, currency)} al mes para lograrlo en 3 años.`,
+                      `You need to save ${money(plan.monthlyToGoal, currency)} per month to get there in 3 years.`,
+                    )
+                  : t("Ya tienes el capital cubierto.", "You already have the capital covered.")}
               </p>
             ) : (
               <p className="mt-2 text-xs text-muted-foreground">

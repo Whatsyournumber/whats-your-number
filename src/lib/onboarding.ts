@@ -40,6 +40,7 @@ export type OnboardingData = {
   risk_profile: string;
   home_price: number;
   down_payment_pct: number;
+  business_target: number;
 };
 
 export const emptyOnboarding: OnboardingData = {
@@ -83,6 +84,7 @@ export const emptyOnboarding: OnboardingData = {
   risk_profile: "",
   home_price: 0,
   down_payment_pct: 20,
+  business_target: 0,
 };
 
 export type Country = { name: string; code: string; currency: string; tz: string };
@@ -160,10 +162,11 @@ export type NorthPlan = {
   probability: number;
   freedomAge: number;
   progress: number;
-  /** "home" cuando el objetivo principal es la entrada de la primera vivienda. */
-  mode: "freedom" | "home";
+  /** "home" = entrada de la primera vivienda, "business" = capital para montar un negocio. */
+  mode: "freedom" | "home" | "business";
   homePrice: number;
   downPayment: number;
+  businessTarget: number;
   monthlyToGoal: number;
   monthsToGoal: number;
 };
@@ -185,11 +188,15 @@ export function buildPlan(d: OnboardingData): NorthPlan {
   const downPct = Math.min(100, Math.max(1, d.down_payment_pct || 20));
   // Entrada + costes de compra estimados (~10% impuestos y gastos).
   const downPayment = homeMode ? homePrice * (downPct / 100) * 1.1 : 0;
+  // Objetivo "montar mi negocio": Your Number es el capital que necesitas levantar.
+  const businessTarget = Math.max(0, d.business_target || 0);
+  const businessMode = !homeMode && d.priority === "negocio" && businessTarget > 0;
   const liquid = Math.max(0, d.assets_cash + d.assets_bank);
-  const missingHome = Math.max(0, downPayment - liquid);
-  const monthsToGoal = homeMode && savings > 0 ? Math.ceil(missingHome / savings) : 0;
+  const goalAmount = homeMode ? downPayment : businessMode ? businessTarget : 0;
+  const missingGoal = Math.max(0, goalAmount - liquid);
+  const monthsToGoal = goalAmount > 0 && savings > 0 ? Math.ceil(missingGoal / savings) : 0;
 
-  const targetCapital = homeMode ? downPayment : (desiredIncome * 12) / swr;
+  const targetCapital = goalAmount > 0 ? goalAmount : (desiredIncome * 12) / swr;
 
 
   const r = d.expected_return / 100;
@@ -219,13 +226,14 @@ export function buildPlan(d: OnboardingData): NorthPlan {
     freedomAge: freedomAgeEstimate(d, targetCapital) ?? d.retire_age,
     progress:
       targetCapital > 0
-        ? Math.min(100, Math.max(0, ((homeMode ? liquid : Math.max(0, netWorth(d))) / targetCapital) * 100))
+        ? Math.min(100, Math.max(0, ((goalAmount > 0 ? liquid : Math.max(0, netWorth(d))) / targetCapital) * 100))
         : 0,
-    mode: homeMode ? "home" : "freedom",
+    mode: homeMode ? "home" : businessMode ? "business" : "freedom",
     homePrice,
     downPayment,
+    businessTarget,
     // Ahorro mensual necesario para lograrlo en 3 años.
-    monthlyToGoal: homeMode ? missingHome / 36 : 0,
+    monthlyToGoal: goalAmount > 0 ? missingGoal / 36 : 0,
     monthsToGoal,
   };
 }
@@ -291,7 +299,7 @@ export const goals = [
   { value: "patrimonio", emoji: "📈", label: "Hacer crecer mi patrimonio" },
   { value: "gastos", emoji: "💳", label: "Entender y controlar mis gastos" },
   { value: "vivienda", emoji: "🏡", label: "Ahorrar para una vivienda" },
-  { value: "viajar", emoji: "✈️", label: "Viajar más" },
+  { value: "negocio", emoji: "🚀", label: "Montar mi negocio" },
   { value: "organizar", emoji: "💼", label: "Organizar mejor mi dinero" },
   { value: "otro", emoji: "✍️", label: "Otro objetivo (escríbelo)" },
 ];
