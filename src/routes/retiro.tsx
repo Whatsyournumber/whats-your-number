@@ -235,7 +235,15 @@ function RetiroContent() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title={t("Proyección hasta el retiro", "Projection to retirement")} description={`${t("Saldo estimado a los", "Estimated balance at")} ${retireAge} ${t("años", "years old")}`} className="lg:col-span-2">
+        <Panel
+          title={isGoal ? t("Proyección hasta tu objetivo", "Projection to your goal") : t("Proyección hasta el retiro", "Projection to retirement")}
+          description={
+            isGoal
+              ? `${goalLabel} · ${t("saldo estimado en", "estimated balance in")} ${horizonYears} ${horizonYears === 1 ? t("año", "year") : t("años", "years")}`
+              : `${t("Saldo estimado a los", "Estimated balance at")} ${retireAge} ${t("años", "years old")}`
+          }
+          className="lg:col-span-2"
+        >
           <ResponsiveContainer width="100%" height={320}>
             <AreaChart data={data} margin={{ left: -8, right: 8, top: 8 }}>
               <defs>
