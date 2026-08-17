@@ -182,7 +182,7 @@ function AuthPage() {
     setBusy(true);
     const pendingCheckout = getPendingCheckoutPlan();
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}${pendingCheckout ? "/precios" : (next ?? "/dashboard")}`,
+      redirect_uri: `${window.location.origin}${pendingCheckout ? "/precios" : (next ?? "/auth?mode=login")}`,
       extraParams: { scope: GOOGLE_SCOPES, prompt: "consent select_account" },
     });
     if (result.error) {
