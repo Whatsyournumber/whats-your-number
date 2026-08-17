@@ -267,10 +267,10 @@ function Dashboard() {
           </ResponsiveContainer>
         </Panel>
 
-        <Panel title={t("Tu Número", "Your Number")} description={t(`Libertad estimada a los ${plan.freedomAge} años`, `Freedom estimated at age ${plan.freedomAge}`)}>
+        <Panel title={numberTitle} description={numberDescription}>
           <div className="space-y-4">
             <div>
-              <p className="text-xs text-muted-foreground">Your Number</p>
+              <p className="text-xs text-muted-foreground">{numberLabel}</p>
               <p
                 className={cn(
                   "numeric mt-1 truncate text-ellipsis whitespace-nowrap font-semibold leading-tight",
@@ -280,9 +280,8 @@ function Dashboard() {
               >
                 {fmt(targetNumber)}
               </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                {t(`Para vivir con ${fmt(desiredIncome)} al mes`, `To live on ${fmt(desiredIncome)} a month`)}
-              </p>
+              <p className="mt-1 text-xs text-muted-foreground">{numberHint}</p>
+
               {usingDemo && (
                 <p className="mt-1 text-[11px] text-muted-foreground/80">
                   {t("Calculado con tu demo. Edita tus datos para afinarlo.", "Based on your demo. Edit your data to refine it.")}
