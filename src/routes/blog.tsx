@@ -50,8 +50,8 @@ function BlogIndex() {
           <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight md:text-5xl">{t("Blog", "Blog")}</h1>
           <p className="mt-4 max-w-xl text-sm text-muted-foreground">
             {t(
-              "Ideas prácticas sobre patrimonio, gasto consciente, inversión y automatización con IA.",
-              "Practical ideas about net worth, mindful spending, investing and AI automation.",
+              "Ideas prácticas sobre patrimonio, gasto consciente, inversión y libertad financiera.",
+              "Practical ideas about net worth, mindful spending, investing and financial freedom.",
             )}
           </p>
         </section>
