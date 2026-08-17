@@ -59,6 +59,9 @@ function MiPerfil() {
   const { profile, isLoading, save, saving } = useProfile();
   const navigate = useNavigate();
   const [form, setForm] = useState<Profile>(profile);
+  const { holdings, isLoading: loadingHoldings, saveAll } = useHoldings();
+  const [wealth, setWealth] = useState<Holding[]>([]);
+
 
   const [dirty, setDirty] = useState(false);
   const [pendingGoal, setPendingGoal] = useState<string | null>(null);
