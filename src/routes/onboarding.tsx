@@ -1477,7 +1477,11 @@ function SummaryScreen({
               </p>
             ) : plan.mode === "business" ? (
               <p className="mt-2 text-xs text-muted-foreground">
-                {t("El capital para montar tu negocio", "The capital to start your business")}{". "}
+                {life.goal === "otro"
+                  ? life.goal_note.trim()
+                    ? `${t("El capital para", "The capital for")}: ${life.goal_note.trim()}`
+                    : t("El capital para tu objetivo", "The capital for your goal")
+                  : t("El capital para montar tu negocio", "The capital to start your business")}{". "}
                 {plan.monthlyToGoal > 0
                   ? t(
                       `Necesitas ahorrar ${money(plan.monthlyToGoal, currency)} al mes para lograrlo en 3 años.`,
