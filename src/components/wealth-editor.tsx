@@ -289,19 +289,36 @@ function InlineRow({ label, children }: { label: string; children: React.ReactNo
   );
 }
 
-function Card({ title, onRemove, children }: { title: string; onRemove: () => void; children: React.ReactNode }) {
+function Card({
+  title,
+  onRemove,
+  onCollapse,
+  children,
+}: {
+  title: string;
+  onRemove: () => void;
+  onCollapse?: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <div className="space-y-2.5 rounded-xl border border-border/60 bg-background/40 p-3">
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-medium">{title}</p>
-        <button
-          type="button"
-          onClick={onRemove}
-          className="text-muted-foreground transition hover:text-negative"
-          aria-label="Remove"
-        >
-          <Trash2 className="h-4 w-4" />
-        </button>
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+        <p className="truncate text-sm font-medium">{title}</p>
+        <div className="flex shrink-0 items-center gap-2">
+          {onCollapse ? (
+            <button type="button" onClick={onCollapse} className="text-muted-foreground transition hover:text-primary" aria-label="Done">
+              <Check className="h-4 w-4" />
+            </button>
+          ) : null}
+          <button
+            type="button"
+            onClick={onRemove}
+            className="text-muted-foreground transition hover:text-negative"
+            aria-label="Remove"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </div>
       </div>
       {children}
     </div>
