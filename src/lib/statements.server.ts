@@ -167,18 +167,35 @@ export async function processStatementForUser(
     // usamos la fecha de carga del archivo para que el movimiento SÍ entre en Gastos.
     const fallbackDate = new Date((statement.created_at as string) || Date.now()).toISOString().slice(0, 10);
 
-    const rows = parsed.transactions.slice(0, 200).map((t) => ({
-      user_id: userId,
-      statement_id: statementId,
-      tx_date: t.date && /^\d{4}-\d{2}-\d{2}$/.test(t.date) ? t.date : fallbackDate,
-      merchant: t.merchant || "Sin comercio",
-      description: t.description,
-      amount: Number.isFinite(t.amount) ? t.amount : 0,
-      currency: (t.currency || "USD").toUpperCase().slice(0, 3),
-      category: t.category,
-      subcategory: t.subcategory,
-      excluded: Boolean(t.excluded),
-    }));
+    const rows = parsed.transactions.slice(0, 200).map((t) => {
+      const merchant = t.merchant || "Sin comercio";
+      // Normalizamos la categoría con las mismas reglas que usa Análisis de gastos,
+      // para que Restaurantes, Apps y Marketing digital queden bien desde la carga.
+      const ruleCategory = categorizeTx({
+        merchant,
+        description: t.description,
+        subcategory: t.subcategory,
+        category: t.category,
+      });
+      const aiCategory = (t.category || "").trim();
+      const category =
+        ruleCategory !== "Otros"
+          ? ruleCategory
+          : BASE_CATEGORIES.find((c) => c.toLowerCase() === aiCategory.toLowerCase()) ?? "Otros";
+
+      return {
+        user_id: userId,
+        statement_id: statementId,
+        tx_date: t.date && /^\d{4}-\d{2}-\d{2}$/.test(t.date) ? t.date : fallbackDate,
+        merchant,
+        description: t.description,
+        amount: Number.isFinite(t.amount) ? t.amount : 0,
+        currency: (t.currency || "USD").toUpperCase().slice(0, 3),
+        category,
+        subcategory: t.subcategory,
+        excluded: Boolean(t.excluded),
+      };
+    });
 
     if (rows.length === 0) {
       throw new Error(
