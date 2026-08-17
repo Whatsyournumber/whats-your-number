@@ -244,6 +244,14 @@ function RetiroContent() {
           <KpiCard label={t("Aportes estimados al año", "Estimated contributions per year")} value={fmt(retirement.contributionsYTD)} index={4} />
         )}
         <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${swr}%`} hint={t("anual · tu tasa de retiro", "annual · your withdrawal rate")} index={5} />
+        {goalMode === "business" && (
+          <KpiCard
+            label={t("Puedes aportar al mes", "You can contribute monthly")}
+            value={fmt(Math.max(0, d.income - d.expenses))}
+            hint={t("ingreso menos gastos", "income minus expenses")}
+            index={6}
+          />
+        )}
       </div>
       <div className="surface p-5">
         <div className="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:justify-between sm:gap-4">
