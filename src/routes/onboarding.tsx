@@ -362,6 +362,7 @@ function OnboardingPage() {
                                 label={t("Precio de la vivienda", "Home price")}
                                 currency={cur}
                                 value={data.home_price}
+                                hint={t("Escribe aquí", "Type here")}
                                 onChange={(v) => set("home_price", v)}
                               />
                               <div className="rounded-2xl border border-border bg-elevated/50 px-5 py-4">
@@ -405,6 +406,7 @@ function OnboardingPage() {
                               label={t("Capital para mi negocio", "Capital for my business")}
                               currency={cur}
                               value={data.business_target}
+                              hint={t("Escribe aquí", "Type here")}
                               onChange={(v) => set("business_target", v)}
                             />
                             {data.business_target > 0 && (
