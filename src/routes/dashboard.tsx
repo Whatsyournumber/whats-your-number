@@ -163,6 +163,48 @@ function Dashboard() {
   const insights = buildInsights(plan, profile, profile, d.currency, lang);
   const firstName = (profile.full_name || "").trim().split(" ")[0];
 
+  // El título, subtítulo y textos del panel cambian según el objetivo elegido.
+  const goalMode = plan.mode;
+  const priority = (profile as { priority?: string }).priority || "libertad";
+  const goalNote = ((profile as { goal_note?: string }).goal_note || "").trim();
+  const numberTitle =
+    goalMode === "home"
+      ? t("Tu entrada", "Your down payment")
+      : goalMode === "business"
+        ? priority === "otro"
+          ? t("Tu objetivo", "Your goal")
+          : t("Tu negocio", "Your business")
+        : t("Tu Número", "Your Number");
+  const numberDescription =
+    goalMode === "home"
+      ? t("Capital para la entrada de tu vivienda", "Capital for your home down payment")
+      : goalMode === "business"
+        ? priority === "otro"
+          ? `${t("Capital para llegar a tu objetivo", "Capital to reach your goal")}${goalNote ? `: ${goalNote}` : ""}`
+          : t("Capital para montar tu negocio", "Capital to launch your business")
+        : priority === "patrimonio"
+          ? t("Hasta dónde puede crecer tu patrimonio", "How far your wealth can grow")
+          : priority === "gastos"
+            ? t("Capital para vivir de tus inversiones", "Capital to live off your investments")
+            : priority === "organizar"
+              ? t("El número que ordena tu dinero", "The number that organizes your money")
+              : t(`Libertad estimada a los ${plan.freedomAge} años`, `Freedom estimated at age ${plan.freedomAge}`);
+  const numberLabel =
+    goalMode === "home"
+      ? t("Entrada objetivo", "Target down payment")
+      : goalMode === "business"
+        ? t("Capital objetivo", "Target capital")
+        : "Your Number";
+  const numberHint =
+    goalMode === "home"
+      ? t("Para comprar tu vivienda", "To buy your home")
+      : goalMode === "business"
+        ? priority === "otro" && goalNote
+          ? t(`Para ${goalNote}`, `For ${goalNote}`)
+          : t("Para arrancar tu negocio", "To start your business")
+        : t(`Para vivir con ${fmt(desiredIncome)} al mes`, `To live on ${fmt(desiredIncome)} a month`);
+
+
   return (
     <PageShell>
       <CheckoutWelcome />
@@ -267,10 +309,10 @@ function Dashboard() {
           </ResponsiveContainer>
         </Panel>
 
-        <Panel title={t("Tu Número", "Your Number")} description={t(`Libertad estimada a los ${plan.freedomAge} años`, `Freedom estimated at age ${plan.freedomAge}`)}>
+        <Panel title={numberTitle} description={numberDescription}>
           <div className="space-y-4">
             <div>
-              <p className="text-xs text-muted-foreground">Your Number</p>
+              <p className="text-xs text-muted-foreground">{numberLabel}</p>
               <p
                 className={cn(
                   "numeric mt-1 truncate text-ellipsis whitespace-nowrap font-semibold leading-tight",
@@ -280,9 +322,8 @@ function Dashboard() {
               >
                 {fmt(targetNumber)}
               </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                {t(`Para vivir con ${fmt(desiredIncome)} al mes`, `To live on ${fmt(desiredIncome)} a month`)}
-              </p>
+              <p className="mt-1 text-xs text-muted-foreground">{numberHint}</p>
+
               {usingDemo && (
                 <p className="mt-1 text-[11px] text-muted-foreground/80">
                   {t("Calculado con tu demo. Edita tus datos para afinarlo.", "Based on your demo. Edit your data to refine it.")}
