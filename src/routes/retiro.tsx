@@ -84,8 +84,16 @@ function RetiroContent() {
   const gap = targetNow - final.value;
 
 
-  // Escenarios de renta mensual: capital acumulado x rentabilidad anual.
-  const capitals = [500_000, 750_000, 1_000_000, 1_200_000, 1_500_000, 2_000_000, 3_000_000, 5_000_000];
+  // Escenarios de renta mensual: se construyen alrededor de TU número (el que estás editando).
+  const baseNumber = targetNow > 0 ? targetNow : 1_000_000;
+  const roundNice = (v: number) => {
+    if (v <= 0) return 0;
+    const mag = Math.pow(10, Math.floor(Math.log10(v)) - 1);
+    return Math.max(mag, Math.round(v / mag) * mag);
+  };
+  const capitals = Array.from(
+    new Set([0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3].map((m) => roundNice(baseNumber * m)).filter((v) => v > 0)),
+  ).sort((a, b) => a - b);
   const rates = [4, 6, 8, 10, 12];
 
   return (
@@ -305,8 +313,21 @@ function RetiroContent() {
             </thead>
             <tbody>
               {capitals.map((cap) => (
-                <tr key={cap} className="border-b border-border/60 last:border-0 hover:bg-elevated/40">
-                  <td className="numeric px-3 py-3 text-left font-semibold">{fmt(cap)}</td>
+                <tr
+                  key={cap}
+                  className={cn(
+                    "border-b border-border/60 last:border-0 hover:bg-elevated/40",
+                    cap === roundNice(baseNumber) && "bg-primary/5",
+                  )}
+                >
+                  <td className="numeric px-3 py-3 text-left font-semibold">
+                    {fmt(cap)}
+                    {cap === roundNice(baseNumber) && (
+                      <span className="ml-2 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] uppercase tracking-wide text-primary">
+                        {t("tu número", "your number")}
+                      </span>
+                    )}
+                  </td>
                   {rates.map((rr) => {
                     const inc = (cap * (rr / 100)) / 12;
                     const covers = inc >= d.expenses && d.expenses > 0;
