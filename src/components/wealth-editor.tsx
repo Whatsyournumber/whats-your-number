@@ -1,14 +1,8 @@
-import { Building2, Coins, CreditCard, Gift, Info, LineChart, Plus, Trash2, Wallet } from "lucide-react";
+import { Building2, Coins, CreditCard, Gift, LineChart, Plus, Trash2, Wallet } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useT } from "@/hooks/use-language";
 import { holdingValue, newHolding, type Holding, type HoldingKind } from "@/hooks/use-holdings";
 import { cn } from "@/lib/utils";
@@ -77,29 +71,6 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
             </p>
           </div>
         </div>
-        <TooltipProvider delayDuration={100}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                type="button"
-                className="flex items-center gap-2 rounded-xl border border-border/60 bg-elevated/60 px-3 py-2 text-left text-xs leading-tight text-muted-foreground transition hover:text-foreground"
-              >
-                <Info className="h-4 w-4 shrink-0" />
-                <span>
-                  {t("¿Por qué pedimos", "Why do we ask for")}
-                  <br />
-                  {t("esta información?", "this information?")}
-                </span>
-              </button>
-            </TooltipTrigger>
-            <TooltipContent className="max-w-xs text-xs">
-              {t(
-                "Con el detalle de tus activos, deudas y aportes calculamos tu número, tus proyecciones y tu portafolio real.",
-                "With the detail of your assets, debts and contributions we calculate your number, your projections and your real portfolio.",
-              )}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
       </div>
 
       {/* Resumen vivo */}
