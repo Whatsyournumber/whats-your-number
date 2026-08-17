@@ -148,6 +148,7 @@ function OnboardingPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const t = useT();
+  const { isPatrimonio } = useSubscription();
   const [step, setStep] = useState(1);
 
   const [data, setData] = useState<OnboardingData>({ ...emptyOnboarding, currency: detectCurrency(), monthly_expenses: 0 });
