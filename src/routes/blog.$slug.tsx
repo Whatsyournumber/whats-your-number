@@ -225,6 +225,26 @@ function BlogArticle() {
           </div>
         </aside>
 
+        <section className="surface mt-8 flex flex-col gap-5 p-6 sm:flex-row sm:items-start">
+          <img
+            src={author.photo}
+            alt={`${author.name} — ${author.role[lang]}`}
+            loading="lazy"
+            width={816}
+            height={816}
+            className="h-20 w-20 shrink-0 rounded-full object-cover ring-2 ring-primary/40"
+          />
+          <div>
+            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-primary">
+              {t("Escrito por", "Written by")}
+            </p>
+            <p className="mt-1 font-display text-lg font-semibold">{author.name}</p>
+            <p className="text-xs text-muted-foreground">{author.role[lang]}</p>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{author.bio[lang]}</p>
+          </div>
+        </section>
+
+
         <section className="surface glow mt-8 p-7">
           <p className="font-display text-lg font-semibold leading-snug">
             {t("Entiende tu libertad financiera con tus números reales", "Understand your financial freedom with your real numbers")}
