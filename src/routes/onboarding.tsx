@@ -1095,6 +1095,8 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
 
 
   const exact = list.some((c) => norm(c.name) === term);
+  const [pickedKey, setPickedKey] = useState<string | null>(null);
+  const keyOf = (c: { name: string; country: string }) => `${norm(c.name)}|${norm(c.country)}`;
   const selected =
     catalog.find((c) => c.name === value) ??
     remote.find((c) => c.name === value) ??
@@ -1126,14 +1128,15 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
         )}
         {customName.length >= 2 && !exact && (
           <button
-            onClick={() =>
+            onClick={() => {
+              setPickedKey(`${norm(customName)}|`);
               onSelect({
                 name: customName.charAt(0).toUpperCase() + customName.slice(1),
                 country: "",
                 currency: "USD",
                 cost: Math.round(convertAmount(2400, "USD", "EUR")),
-              })
-            }
+              });
+            }}
             className={cn(
               "flex w-full items-center gap-3 rounded-xl border border-dashed px-4 py-3 text-left text-sm transition-colors",
               "border-primary/50 bg-primary/5 hover:bg-primary/10",
@@ -1151,10 +1154,15 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
         {list.map((c) => (
           <button
             key={`${c.name}-${c.country}`}
-            onClick={() => onSelect(c)}
+            onClick={() => {
+              setPickedKey(keyOf(c));
+              onSelect(c);
+            }}
             className={cn(
               "flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm transition-colors",
-              value === c.name ? "border-primary bg-primary/10" : "border-transparent bg-elevated/40 hover:bg-elevated",
+              (pickedKey ? pickedKey === keyOf(c) : value === c.name)
+                ? "border-primary bg-primary/10"
+                : "border-transparent bg-elevated/40 hover:bg-elevated",
             )}
           >
             <span className="font-medium">{c.name}</span>
