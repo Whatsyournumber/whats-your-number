@@ -861,9 +861,10 @@ function OnboardingPage() {
                 variant="ghost"
                 size="lg"
                 className="rounded-full"
-                onClick={() => navigate({ to: "/ninos" })}
+                onClick={() => navigate({ to: isPatrimonio ? "/ninos" : "/" })}
               >
-                <ArrowLeft className="mr-2 h-4 w-4" /> {t("Perfiles", "Profiles")}
+                <ArrowLeft className="mr-2 h-4 w-4" />{" "}
+                {isPatrimonio ? t("Perfiles", "Profiles") : t("Inicio", "Home")}
               </Button>
             )}
 
