@@ -63,6 +63,15 @@ const STAGE_PROGRESS: Record<JobStage, number> = {
   error: 100,
 };
 
+const STAGE_ESTIMATED_SECONDS: Record<JobStage, number> = {
+  reading: 5,
+  uploading: 15,
+  extracting: 20,
+  analyzing: 90,
+  done: 0,
+  error: 0,
+};
+
 export function StatementImporter() {
   const t = useT();
   const { user, signOut } = useAuth();
@@ -574,23 +583,13 @@ function JobProgress({ job }: { job: Job }) {
   const isDone = job.stage === "done";
   const activeIndex = STAGE_ORDER.indexOf(job.stage);
 
-  // Real countdown: deadline recalculated on stage change, ticking down every second
-  const startedRef = useRef<number>(Date.now());
-  const deadlineRef = useRef<number | null>(null);
+  const stageStartedRef = useRef<number>(Date.now());
   const [, setTick] = useState(0);
 
   useEffect(() => {
-    if (isDone || isError || pct <= 0 || pct >= 100) {
-      deadlineRef.current = null;
-      return;
-    }
-    const elapsed = Math.max(1, (Date.now() - startedRef.current) / 1000);
-    const estimate = Math.min(240, Math.max(3, Math.round((elapsed * (100 - pct)) / pct)));
-    const candidate = Date.now() + estimate * 1000;
-    // only shorten the deadline, never push it further away
-    deadlineRef.current =
-      deadlineRef.current === null ? candidate : Math.min(deadlineRef.current, candidate);
-  }, [job.stage, pct, isDone, isError]);
+    stageStartedRef.current = Date.now();
+    setTick((n) => n + 1);
+  }, [job.stage]);
 
   useEffect(() => {
     if (isDone || isError) return;
@@ -599,12 +598,14 @@ function JobProgress({ job }: { job: Job }) {
   }, [isDone, isError]);
 
   let eta: string | null = null;
-  if (!isDone && !isError && deadlineRef.current) {
-    const remaining = Math.max(1, Math.round((deadlineRef.current - Date.now()) / 1000));
-    eta =
-      remaining >= 60
-        ? t(`quedan ~${Math.ceil(remaining / 60)} min`, `~${Math.ceil(remaining / 60)} min left`)
-        : t(`quedan ~${remaining}s`, `~${remaining}s left`);
+  if (!isDone && !isError) {
+    const elapsed = Math.floor((Date.now() - stageStartedRef.current) / 1000);
+    const remaining = STAGE_ESTIMATED_SECONDS[job.stage] - elapsed;
+    eta = remaining > 0
+      ? remaining >= 60
+        ? t(`quedan aprox. ${Math.ceil(remaining / 60)} min`, `approx. ${Math.ceil(remaining / 60)} min left`)
+        : t(`quedan aprox. ${remaining}s`, `approx. ${remaining}s left`)
+      : t("terminando…", "finishing…");
   }
 
 
@@ -626,7 +627,7 @@ function JobProgress({ job }: { job: Job }) {
             {labels[job.stage]}
             {job.message ? ` · ${job.message}` : ""}
           </span>
-          {eta ? <span className="shrink-0 text-[10px] text-muted-foreground/60">{eta}</span> : null}
+          {eta ? <span className="shrink-0 text-xs font-medium text-muted-foreground/80">{eta}</span> : null}
         </span>
       </div>
 
