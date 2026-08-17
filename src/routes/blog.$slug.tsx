@@ -40,6 +40,7 @@ function BlogArticle() {
   if (!post) return null;
 
   const extras = postExtras[post.slug];
+  const author = getAuthor(post.slug);
 
   // Cumulative paragraph count after each section
   const cumulative: number[] = [];
