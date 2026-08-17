@@ -1041,18 +1041,17 @@ function MoneyField({
         <p className="text-sm font-medium">{label}</p>
         {desc && <p className="mt-0.5 text-xs text-muted-foreground">{desc}</p>}
       </div>
-      <span className="ml-auto flex items-center gap-2 rounded-xl border border-dashed border-primary/40 bg-primary/5 px-3 py-1.5">
+      <span className="ml-auto flex items-center gap-1.5">
         <input
           type="number"
           inputMode="decimal"
           value={value || ""}
-          placeholder={hint ?? "Escribe aquí"}
+          placeholder={hint ?? t("Escribe aquí", "Type here")}
           onChange={(e) => onChange(Number(e.target.value || 0))}
-          className="numeric w-28 bg-transparent text-right text-base font-semibold outline-none placeholder:text-xs placeholder:font-normal placeholder:text-muted-foreground/70"
+          className="numeric w-28 border-b border-dashed border-border bg-transparent text-right text-base font-semibold outline-none transition-colors focus:border-primary/60 placeholder:text-xs placeholder:font-normal placeholder:text-muted-foreground/50"
         />
         <span className="text-xs text-muted-foreground">{currency}</span>
       </span>
-
     </label>
   );
 }
