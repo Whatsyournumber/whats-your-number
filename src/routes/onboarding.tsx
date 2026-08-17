@@ -362,6 +362,7 @@ function OnboardingPage() {
                                 label={t("Precio de la vivienda", "Home price")}
                                 currency={cur}
                                 value={data.home_price}
+                                hint={t("Escribe aquí", "Type here")}
                                 onChange={(v) => set("home_price", v)}
                               />
                               <div className="rounded-2xl border border-border bg-elevated/50 px-5 py-4">
@@ -405,6 +406,7 @@ function OnboardingPage() {
                               label={t("Capital para mi negocio", "Capital for my business")}
                               currency={cur}
                               value={data.business_target}
+                              hint={t("Escribe aquí", "Type here")}
                               onChange={(v) => set("business_target", v)}
                             />
                             {data.business_target > 0 && (
@@ -1022,6 +1024,7 @@ function MoneyField({
   value,
   onChange,
   currency,
+  hint,
 }: {
   label: string;
   desc?: string;
@@ -1029,6 +1032,7 @@ function MoneyField({
   value: number;
   onChange: (v: number) => void;
   currency: string;
+  hint?: string;
 }) {
   return (
     <label className="flex items-center gap-3.5 rounded-2xl border border-border bg-elevated/50 px-5 py-4 transition-colors focus-within:border-primary/60">
@@ -1037,15 +1041,18 @@ function MoneyField({
         <p className="text-sm font-medium">{label}</p>
         {desc && <p className="mt-0.5 text-xs text-muted-foreground">{desc}</p>}
       </div>
-      <input
-        type="number"
-        inputMode="decimal"
-        value={value || ""}
-        placeholder="0"
-        onChange={(e) => onChange(Number(e.target.value || 0))}
-        className="numeric ml-auto w-28 bg-transparent text-right text-base font-semibold outline-none placeholder:text-muted-foreground/50"
-      />
-      <span className="text-xs text-muted-foreground">{currency}</span>
+      <span className="ml-auto flex items-center gap-2 rounded-xl border border-dashed border-primary/40 bg-primary/5 px-3 py-1.5">
+        <input
+          type="number"
+          inputMode="decimal"
+          value={value || ""}
+          placeholder={hint ?? "Escribe aquí"}
+          onChange={(e) => onChange(Number(e.target.value || 0))}
+          className="numeric w-28 bg-transparent text-right text-base font-semibold outline-none placeholder:text-xs placeholder:font-normal placeholder:text-muted-foreground/70"
+        />
+        <span className="text-xs text-muted-foreground">{currency}</span>
+      </span>
+
     </label>
   );
 }
