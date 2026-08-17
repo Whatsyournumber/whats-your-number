@@ -1,8 +1,10 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { createFileRoute, Link, Outlet, useMatches } from "@tanstack/react-router";
+import { ArrowRight, ArrowUpRight, Clock } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
-import { useT } from "@/hooks/use-language";
+import { SiteFooter } from "@/components/site-footer";
+import { useLanguage, useT } from "@/hooks/use-language";
+import { blogPosts } from "@/lib/blog-posts";
 
 export const Route = createFileRoute("/blog")({
   head: () => ({
@@ -18,86 +20,20 @@ export const Route = createFileRoute("/blog")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Blog,
+  component: BlogLayout,
 });
 
-function Blog() {
-  const t = useT();
+function BlogLayout() {
+  const matches = useMatches();
+  const isChild = matches.some((m) => m.routeId.startsWith("/blog/"));
+  if (isChild) return <Outlet />;
+  return <BlogIndex />;
+}
 
-  const posts = [
-    {
-      tag: t("Patrimonio", "Net worth"),
-      date: t("12 jul 2026", "Jul 12, 2026"),
-      title: t(
-        "Cómo calcular tu patrimonio neto real (y por qué casi todos lo hacen mal)",
-        "How to calculate your real net worth (and why almost everyone gets it wrong)",
-      ),
-      excerpt: t(
-        "Activos menos pasivos suena simple, hasta que aparecen las deudas revolventes, los activos ilíquidos y la inflación.",
-        "Assets minus liabilities sounds simple, until revolving debt, illiquid assets and inflation show up.",
-      ),
-    },
-    {
-      tag: t("Cash flow", "Cash flow"),
-      date: t("28 jun 2026", "Jun 28, 2026"),
-      title: t(
-        "La regla del runway personal: cuántos meses aguantas sin ingresos",
-        "The personal runway rule: how many months you can last without income",
-      ),
-      excerpt: t(
-        "Una métrica de startups aplicada a tu vida: cómo medirla y cómo llevarla de 3 a 12 meses.",
-        "A startup metric applied to your life: how to measure it and take it from 3 to 12 months.",
-      ),
-    },
-    {
-      tag: t("Inversión", "Investing"),
-      date: t("9 jun 2026", "Jun 9, 2026"),
-      title: t(
-        "Tu portafolio contra el S&P 500: el benchmark que duele pero enseña",
-        "Your portfolio vs. the S&P 500: the benchmark that hurts but teaches",
-      ),
-      excerpt: t(
-        "Comparar rendimiento sin engañarte: costo base, dividendos, comisiones y sesgo de supervivencia.",
-        "Comparing returns without fooling yourself: cost basis, dividends, fees and survivorship bias.",
-      ),
-    },
-    {
-      tag: t("IA", "AI"),
-      date: t("21 may 2026", "May 21, 2026"),
-      title: t(
-        "Clasificación automática de gastos: qué puede y qué no puede hacer la IA",
-        "Automatic expense classification: what AI can and can't do",
-      ),
-      excerpt: t(
-        "Cómo entrenamos reglas híbridas para que un traspaso no se cuente como gasto nunca más.",
-        "How we trained hybrid rules so a transfer never gets counted as an expense again.",
-      ),
-    },
-    {
-      tag: t("Retiro", "Retirement"),
-      date: t("3 may 2026", "May 3, 2026"),
-      title: t(
-        "El número de tu libertad financiera, explicado sin humo",
-        "Your financial freedom number, explained with no fluff",
-      ),
-      excerpt: t(
-        "Tasa de retiro segura, secuencia de rendimientos y por qué tu tasa de ahorro pesa más que tu retorno.",
-        "Safe withdrawal rate, sequence of returns, and why your savings rate matters more than your return.",
-      ),
-    },
-    {
-      tag: t("Hábitos", "Habits"),
-      date: t("14 abr 2026", "Apr 14, 2026"),
-      title: t(
-        "Revisión financiera de 20 minutos al mes",
-        "A 20-minute monthly financial review",
-      ),
-      excerpt: t(
-        "El ritual mínimo viable para mantener tu norte sin convertirte en contador de tiempo completo.",
-        "The minimum viable ritual to keep your number without becoming a full-time accountant.",
-      ),
-    },
-  ];
+function BlogIndex() {
+  const t = useT();
+  const { lang } = useLanguage();
+  const [featured, ...rest] = blogPosts;
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
@@ -106,7 +42,10 @@ function Blog() {
 
       <main className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-24">
         <section className="pt-10 md:pt-16">
-          <h1 className="font-display text-4xl font-semibold tracking-tight md:text-5xl">{t("Blog", "Blog")}</h1>
+          <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+            {t("Aprende con nosotros", "Learn with us")}
+          </p>
+          <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight md:text-5xl">{t("Blog", "Blog")}</h1>
           <p className="mt-4 max-w-xl text-sm text-muted-foreground">
             {t(
               "Ideas prácticas sobre patrimonio, gasto consciente, inversión y automatización con IA.",
@@ -115,20 +54,79 @@ function Blog() {
           </p>
         </section>
 
-        <section className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post) => (
-            <article key={post.title} className="surface group flex flex-col p-6">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span className="rounded-full bg-elevated px-2.5 py-1 text-primary">{post.tag}</span>
-                <span>{post.date}</span>
-              </div>
-              <h2 className="mt-4 text-base font-semibold leading-snug">{post.title}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{post.excerpt}</p>
-              <span className="mt-5 inline-flex items-center gap-1.5 text-xs font-medium text-primary">
-                {t("Leer artículo", "Read article")}
-                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+        {/* Destacado */}
+        <a
+          href={`/blog/${featured.slug}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="surface group mt-10 grid overflow-hidden md:grid-cols-2"
+        >
+          <div className="relative h-56 overflow-hidden md:h-full md:min-h-[320px]">
+            <img
+              src={featured.image}
+              alt={featured.title[lang]}
+              width={1200}
+              height={750}
+              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-transparent md:bg-gradient-to-r" />
+          </div>
+          <div className="flex flex-col justify-center p-7 md:p-10">
+            <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+              <span className="rounded-full bg-elevated px-2.5 py-1 font-medium text-primary">{featured.tag[lang]}</span>
+              <span>{featured.date[lang]}</span>
+              <span className="inline-flex items-center gap-1">
+                <Clock className="h-3 w-3" /> {featured.readMinutes} min
               </span>
-            </article>
+            </div>
+            <h2 className="mt-4 font-display text-2xl font-semibold leading-tight md:text-3xl">
+              {featured.title[lang]}
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{featured.excerpt[lang]}</p>
+            <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-primary">
+              {t("Leer artículo", "Read article")}
+              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </span>
+          </div>
+        </a>
+
+        <section className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {rest.map((post) => (
+            <a
+              key={post.slug}
+              href={`/blog/${post.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="surface group flex flex-col overflow-hidden"
+            >
+              <div className="relative h-44 overflow-hidden">
+                <img
+                  src={post.image}
+                  alt={post.title[lang]}
+                  loading="lazy"
+                  width={1200}
+                  height={750}
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <span className="absolute left-3 top-3 rounded-full bg-background/80 px-2.5 py-1 text-xs font-medium text-primary backdrop-blur">
+                  {post.tag[lang]}
+                </span>
+              </div>
+              <div className="flex flex-1 flex-col p-6">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <span>{post.date[lang]}</span>
+                  <span className="inline-flex items-center gap-1">
+                    <Clock className="h-3 w-3" /> {post.readMinutes} min
+                  </span>
+                </div>
+                <h2 className="mt-3 text-base font-semibold leading-snug">{post.title[lang]}</h2>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{post.excerpt[lang]}</p>
+                <span className="mt-auto pt-5 inline-flex items-center gap-1.5 text-xs font-medium text-primary">
+                  {t("Leer artículo", "Read article")}
+                  <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </span>
+              </div>
+            </a>
           ))}
         </section>
 
@@ -148,6 +146,8 @@ function Blog() {
           </Link>
         </section>
       </main>
+
+      <SiteFooter />
     </div>
   );
 }
