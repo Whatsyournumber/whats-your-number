@@ -343,7 +343,11 @@ function RetiroContent() {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
-              <XAxis dataKey="year" {...axisProps} tickFormatter={(v) => `${v}a`} />
+              <XAxis
+                dataKey="year"
+                {...axisProps}
+                tickFormatter={(v) => (data.length > 10 ? `${v}a` : `${v} ${t("años", "yrs")}`)}
+              />
               <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={62} />
               <Tooltip
                 content={<ChartTooltip />}
