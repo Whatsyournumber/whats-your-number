@@ -351,27 +351,20 @@ function MiPerfil() {
           </div>
         </Panel>
 
-        <Panel title={t("Patrimonio", "Net worth")} description={t("Activos y deudas actuales", "Current assets and liabilities")}>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {moneyFields
-              .filter((f) => f.group === "assets")
-              .map((f) => (
-                <Field key={String(f.key)} label={f.label}>
-                  <Input
-                    type="number"
-                    value={(form[f.key] as number) || ""}
-                    onChange={(e) => set(f.key, Number(e.target.value || 0) as Profile[typeof f.key])}
-                    placeholder="0"
-                  />
-                </Field>
-              ))}
-          </div>
-          <div className="mt-5 grid gap-3 sm:grid-cols-3">
+        <Panel title={t("Resumen de patrimonio", "Net worth summary")} description={t("Se calcula con el detalle de abajo", "Calculated from the detail below")}>
+          <div className="grid gap-3 sm:grid-cols-3">
             <Stat label={t("Activos totales", "Total assets")} value={preview.fmt(preview.totalAssets)} />
             <Stat label={t("Deudas totales", "Total liabilities")} value={preview.fmt(preview.totalLiabilities)} />
             <Stat label={t("Patrimonio neto", "Net worth")} value={preview.fmt(preview.netWorth)} />
           </div>
+          <p className="mt-4 text-xs text-muted-foreground">
+            {t(
+              "Edita cada activo, propiedad, activo futuro y deuda en la sección “Tu Patrimonio”. Tu portafolio y tus proyecciones usan ese detalle.",
+              "Edit every asset, property, future asset and debt in the “Your Net Worth” section. Your portfolio and projections use that detail.",
+            )}
+          </p>
         </Panel>
+
 
 
 
