@@ -96,10 +96,10 @@ export function AppSidebar() {
     const active = pathname === item.url;
     return (
       <SidebarMenuItem key={item.url}>
-        <SidebarMenuButton asChild isActive={active} tooltip={item.title}>
-          <Link to={item.url} className="flex items-center gap-3">
-            <item.icon className="h-4 w-4 shrink-0" />
-            <span className="truncate text-sm">{item.title}</span>
+        <SidebarMenuButton asChild isActive={active} tooltip={item.title} className="h-7 gap-2 px-2">
+          <Link to={item.url} className="flex items-center gap-2">
+            <item.icon className="h-3.5 w-3.5 shrink-0" />
+            <span className="truncate text-[13px] leading-none">{item.title}</span>
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
