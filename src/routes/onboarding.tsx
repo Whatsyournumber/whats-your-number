@@ -17,8 +17,6 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { getPaddleEnvironment } from "@/lib/paddle";
-import { startProTrial } from "@/utils/subscriptions.functions";
 
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -262,9 +260,9 @@ function OnboardingPage() {
   const finish = () => {
     setStep(SUMMARY_STEP);
     void persist({ completed: true, completed_at: new Date().toISOString(), desired_retirement_income: desiredIncome });
-    // Regalo de bienvenida: 14 días de Pro sin tarjeta.
-    void startProTrial({ data: { environment: getPaddleEnvironment() } }).catch(() => undefined);
+    // Sin prueba automática: toda cuenta nueva entra en el plan gratis.
   };
+
 
   if (loading || !ready) {
     return (
