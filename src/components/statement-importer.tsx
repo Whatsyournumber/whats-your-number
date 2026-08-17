@@ -574,23 +574,40 @@ function JobProgress({ job }: { job: Job }) {
   const isDone = job.stage === "done";
   const activeIndex = STAGE_ORDER.indexOf(job.stage);
 
+  // Real countdown: deadline recalculated on stage change, ticking down every second
   const startedRef = useRef<number>(Date.now());
-  const [now, setNow] = useState(Date.now());
+  const deadlineRef = useRef<number | null>(null);
+  const [, setTick] = useState(0);
+
+  useEffect(() => {
+    if (isDone || isError || pct <= 0 || pct >= 100) {
+      deadlineRef.current = null;
+      return;
+    }
+    const elapsed = Math.max(1, (Date.now() - startedRef.current) / 1000);
+    const estimate = Math.min(240, Math.max(3, Math.round((elapsed * (100 - pct)) / pct)));
+    const candidate = Date.now() + estimate * 1000;
+    // only shorten the deadline, never push it further away
+    deadlineRef.current =
+      deadlineRef.current === null ? candidate : Math.min(deadlineRef.current, candidate);
+  }, [job.stage, pct, isDone, isError]);
+
   useEffect(() => {
     if (isDone || isError) return;
-    const id = setInterval(() => setNow(Date.now()), 1000);
+    const id = setInterval(() => setTick((n) => n + 1), 1000);
     return () => clearInterval(id);
   }, [isDone, isError]);
 
   let eta: string | null = null;
-  if (!isDone && !isError && pct > 0 && pct < 100) {
-    const elapsed = Math.max(1, (now - startedRef.current) / 1000);
-    const remaining = Math.min(240, Math.max(3, Math.round((elapsed * (100 - pct)) / pct)));
+  if (!isDone && !isError && deadlineRef.current) {
+    const remaining = Math.max(1, Math.round((deadlineRef.current - Date.now()) / 1000));
     eta =
       remaining >= 60
-        ? `~${Math.ceil(remaining / 60)} min`
-        : `~${remaining}s`;
+        ? t(`quedan ~${Math.ceil(remaining / 60)} min`, `~${Math.ceil(remaining / 60)} min left`)
+        : t(`quedan ~${remaining}s`, `~${remaining}s left`);
   }
+
+
 
 
   return (
