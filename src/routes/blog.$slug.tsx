@@ -40,7 +40,25 @@ function BlogArticle() {
   if (!post) return null;
 
   const extras = postExtras[post.slug];
-  const midPoint = Math.max(0, Math.ceil(post.sections.length / 2) - 1);
+
+  // Cumulative paragraph count after each section
+  const cumulative: number[] = [];
+  post.sections.reduce((acc, s, i) => {
+    const next = acc + s.paragraphs.length;
+    cumulative[i] = next;
+    return next;
+  }, 0);
+  const last = post.sections.length - 1;
+  const findAfter = (minParas: number, from: number) => {
+    for (let i = from; i <= last; i += 1) {
+      if (cumulative[i]! >= minParas) return i;
+    }
+    return last;
+  };
+  // second image after at least 3 paragraphs
+  const imageIndex = findAfter(3, 0);
+  // table at least 3 more paragraphs after the second image
+  const tableIndex = Math.min(last, Math.max(findAfter(cumulative[imageIndex]! + 3, imageIndex + 1), imageIndex + 1));
 
   const related = blogPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
 
