@@ -604,9 +604,12 @@ function JobProgress({ job }: { job: Job }) {
           <Loader2 className="h-4 w-4 shrink-0 animate-spin text-primary" />
         )}
         <p className="truncate text-sm font-medium">{job.name}</p>
-        <span className={cn("ml-auto numeric text-xs", isError ? "text-destructive" : "text-muted-foreground")}>
-          {labels[job.stage]}
-          {job.message ? ` · ${job.message}` : ""}
+        <span className={cn("ml-auto flex items-baseline gap-2 numeric text-xs", isError ? "text-destructive" : "text-muted-foreground")}>
+          <span className="truncate">
+            {labels[job.stage]}
+            {job.message ? ` · ${job.message}` : ""}
+          </span>
+          {eta ? <span className="shrink-0 text-[10px] text-muted-foreground/60">{eta}</span> : null}
         </span>
       </div>
 
