@@ -395,15 +395,27 @@ function OnboardingPage() {
                         )}
                         {life.goal === g.value && g.value === "otro" && (
                           <Reveal>
-                            <SubQuestion title={t("Cuéntanos tu objetivo", "Tell us your goal")} />
-                            <textarea
-                              value={life.goal_note}
-                              onChange={(e) => setL("goal_note", e.target.value.slice(0, 300))}
-                              maxLength={300}
-                              rows={3}
-                              placeholder={t("Ej: quiero montar mi propio negocio en 2 años…", "E.g. I want to start my own business in 2 years…")}
-                              className="w-full resize-none rounded-2xl border border-border bg-elevated/50 px-5 py-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
-                            />
+                            <SubQuestion title={t("Cuéntanos tu objetivo y cuánto cuesta", "Tell us your goal and how much it costs")} />
+                            <div className="grid gap-2.5 sm:grid-cols-2">
+                              <div className="rounded-2xl border border-border bg-elevated/50 px-5 py-4">
+                                <p className="text-xs text-muted-foreground">{t("¿Cuál es tu objetivo?", "What's your goal?")}</p>
+                                <input
+                                  value={life.goal_note}
+                                  onChange={(e) => setL("goal_note", e.target.value.slice(0, 120))}
+                                  maxLength={120}
+                                  placeholder={t("Ej: hacer un MBA", "E.g. do an MBA")}
+                                  className="mt-2 w-full border-b border-dashed border-border bg-transparent pb-1 text-lg font-semibold outline-none transition-colors placeholder:text-sm placeholder:font-normal placeholder:text-muted-foreground focus:border-primary"
+                                />
+                              </div>
+                              <MoneyField
+                                emoji="🎯"
+                                label={t("¿Cuánto necesitas?", "How much do you need?")}
+                                currency={cur}
+                                value={data.business_target}
+                                hint={t("Escribe aquí", "Type here")}
+                                onChange={(v) => set("business_target", v)}
+                              />
+                            </div>
                           </Reveal>
                         )}
                       </AnimatePresence>
