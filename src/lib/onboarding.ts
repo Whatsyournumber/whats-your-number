@@ -188,11 +188,15 @@ export function buildPlan(d: OnboardingData): NorthPlan {
   const downPct = Math.min(100, Math.max(1, d.down_payment_pct || 20));
   // Entrada + costes de compra estimados (~10% impuestos y gastos).
   const downPayment = homeMode ? homePrice * (downPct / 100) * 1.1 : 0;
+  // Objetivo "montar mi negocio": Your Number es el capital que necesitas levantar.
+  const businessTarget = Math.max(0, d.business_target || 0);
+  const businessMode = !homeMode && d.priority === "negocio" && businessTarget > 0;
   const liquid = Math.max(0, d.assets_cash + d.assets_bank);
-  const missingHome = Math.max(0, downPayment - liquid);
-  const monthsToGoal = homeMode && savings > 0 ? Math.ceil(missingHome / savings) : 0;
+  const goalAmount = homeMode ? downPayment : businessMode ? businessTarget : 0;
+  const missingGoal = Math.max(0, goalAmount - liquid);
+  const monthsToGoal = goalAmount > 0 && savings > 0 ? Math.ceil(missingGoal / savings) : 0;
 
-  const targetCapital = homeMode ? downPayment : (desiredIncome * 12) / swr;
+  const targetCapital = goalAmount > 0 ? goalAmount : (desiredIncome * 12) / swr;
 
 
   const r = d.expected_return / 100;
