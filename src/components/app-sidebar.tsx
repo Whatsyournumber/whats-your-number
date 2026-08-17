@@ -108,9 +108,9 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r">
-      <SidebarHeader className="px-3 py-4">
-        <div className="flex items-center gap-3">
-          <BrandMark className="h-9 w-9 shrink-0" />
+      <SidebarHeader className="px-3 py-3">
+        <div className="flex items-center gap-2.5">
+          <BrandMark className="h-8 w-8 shrink-0" />
           {!collapsed && (
             <div className="min-w-0">
               <p className="truncate font-display text-sm font-semibold">WhatsYournumber</p>
