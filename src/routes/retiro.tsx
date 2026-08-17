@@ -109,9 +109,26 @@ function RetiroContent() {
   ).sort((a, b) => a - b);
   const rates = [4, 6, 8, 10, 12];
 
+  const headerSubtitle =
+    goalMode === "home"
+      ? t(
+          "Cuánto necesitas para la entrada de tu vivienda y cuánto llevas ahorrado.",
+          "How much you need for your home down payment and how much you have saved.",
+        )
+      : goalMode === "business"
+        ? t(
+            "Cuánto capital necesitas para montar tu negocio y cuánto llevas ahorrado.",
+            "How much capital you need to launch your business and how much you have saved.",
+          )
+        : t(
+            "Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar.",
+            "How much you have today and how much you will have when you stop working.",
+          );
+
   return (
     <PageShell>
-      <PageHeader eyebrow={t("Largo plazo", "Long term")} title="WhatsYournumber" subtitle={t("Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar.", "How much you have today and how much you will have when you stop working.")} />
+      <PageHeader eyebrow={t("Largo plazo", "Long term")} title="WhatsYournumber" subtitle={headerSubtitle} />
+
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 
