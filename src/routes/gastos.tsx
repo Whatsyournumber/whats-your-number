@@ -199,7 +199,8 @@ function Gastos() {
   const variableTotal = sum(current);
   const prevVariable = sum(previous);
   // gastos fijos prorrateados a los días del periodo
-  const fixedInPeriod = (fixed.total / 30) * days;
+  // Gasto del periodo = fijos + variables (los fijos se cuentan completos por mes del periodo)
+  const fixedInPeriod = fixed.total * Math.max(1, Math.round(days / 30));
   const total = variableTotal + fixedInPeriod;
   const prevTotal = prevVariable + fixedInPeriod;
   const delta = prevTotal > 0 ? ((total - prevTotal) / prevTotal) * 100 : 0;
