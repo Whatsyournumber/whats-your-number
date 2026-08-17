@@ -87,6 +87,7 @@ function RetiroContent() {
     setHorizonYears(defaultHorizon);
   }, [defaultHorizon]);
 
+
   const years = isGoal ? horizonYears : Math.max(0, retireAge - retirement.currentAge);
   // Parte de TODO lo que ya tengo invertido (no solo la cuenta de retiro).
   const data = projectRetirementFrom(monthly, rate, years, investable, retirement.currentAge);
@@ -95,7 +96,23 @@ function RetiroContent() {
   const targetNow = isGoal ? plan.targetCapital : liveNumber > 0 ? liveNumber : plan.targetCapital;
   const gap = targetNow - final.value;
 
+  // Aporte mensual necesario para alcanzar el objetivo (negocio/vivienda) según lo que ya tienes,
+  // la rentabilidad elegida y el plazo. En libertad financiera usa tu capacidad de ahorro real.
+  const requiredMonthly = (() => {
+    if (!isGoal) return Math.max(0, d.income - d.expenses);
+    const r = rate / 100;
+    const months = Math.max(1, years * 12);
+    const fvCurrent = investable * Math.pow(1 + r, years);
+    const remaining = Math.max(0, targetNow - fvCurrent);
+    if (remaining <= 0) return 0;
+    const mr = r / 12;
+    return Math.ceil(mr > 0 ? (remaining * mr) / (Math.pow(1 + mr, months) - 1) : remaining / months);
+  })();
 
+  // En modo negocio/vivienda el simulador parte del aporte mensual necesario para llegar a tiempo.
+  useEffect(() => {
+    if (isGoal) setMonthly(requiredMonthly);
+  }, [requiredMonthly, isGoal]);
 
   // Escenarios de renta mensual: se construyen alrededor de TU número (el que estás editando).
   const baseNumber = targetNow > 0 ? targetNow : 1_000_000;
@@ -240,9 +257,9 @@ function RetiroContent() {
         <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${swr}%`} hint={t("anual · tu tasa de retiro", "annual · your withdrawal rate")} index={4} />
         {goalMode === "business" && (
           <KpiCard
-            label={t("Puedes aportar al mes", "You can contribute monthly")}
-            value={fmt(Math.max(0, d.income - d.expenses))}
-            hint={t("ingreso menos gastos", "income minus expenses")}
+            label={t("Aporte necesario al mes", "Required monthly contribution")}
+            value={fmt(requiredMonthly)}
+            hint={t("para llegar a tu capital en el plazo", "to reach your capital on time")}
             index={5}
           />
         )}
