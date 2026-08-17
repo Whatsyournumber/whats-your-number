@@ -2,6 +2,7 @@ import { NoObjectGeneratedError, Output, streamText } from "ai";
 import { z } from "zod";
 
 import { createLovableAiGatewayProvider } from "./ai-gateway.server";
+import { BASE_CATEGORIES, categorizeTx } from "./categorize";
 
 type AnySupabase = {
   from: (table: string) => any;
@@ -30,8 +31,16 @@ y en cualquier alfabeto. Detecta el idioma automáticamente, interpreta encabeza
 abono/crédito/credit/Haben, saldo/balance) y normaliza formatos locales: fechas DD/MM/AAAA, MM/DD/AAAA, DD.MM.AAAA, meses escritos en su idioma; números con coma decimal (1.234,56)
 o punto decimal (1,234.56); símbolos y códigos de moneda (€, $, £, R$, ₺, ¥, CHF, MXN...) y sufijos de signo como "-", "(...)", "DR"/"CR".
 Devuelve cada movimiento con: fecha (YYYY-MM-DD), comercio, descripción, monto (negativo = gasto, positivo = ingreso/abono),
-moneda ISO, categoría y subcategoría SIEMPRE en español (ej. Vivienda, Alimentación, Transporte, Lifestyle, Salud, Suscripciones,
-Inversiones, Ingresos), y excluded=true cuando el movimiento NO es un gasto real: traspasos entre cuentas, pagos de tarjeta,
+moneda ISO, y la categoría en español ELEGIDA OBLIGATORIAMENTE de esta lista exacta:
+Mercado, Restaurantes, Delivery, Nightlife, Deportes, Compras, Viajes, Transporte, Salud, Apps, Marketing digital, Bancos & Seguros, Otros.
+Guías clave:
+- "Restaurantes": bares, cafeterías, panaderías, heladerías, tabernas, food halls, hoteles-restaurante y cualquier consumo de comida fuera de casa (no supermercado).
+- "Delivery": Glovo, Uber Eats, Rappi, Just Eat, Deliveroo, DoorDash, PedidosYa y similares.
+- "Apps": suscripciones y software digital (Tinder, Bumble, Netflix, Spotify, Apple, Google Play/One/Workspace, OpenAI, ChatGPT, Canva, Zoho, Twilio, ElevenLabs, hosting, dominios, SaaS y apps de citas).
+- "Marketing digital": publicidad y captación (Facebook/Meta Ads, Google Ads, LinkedIn, TikTok Ads, Instagram Ads, agencias, leads).
+- Si dudas entre Apps y Marketing digital: si sirve para anunciarse o captar clientes es Marketing digital; si es una herramienta o suscripción de uso propio es Apps.
+Rellena subcategoría con el detalle libre (ej. "cena", "publicidad Meta", "suscripción mensual").
+Marca excluded=true cuando el movimiento NO es un gasto real: traspasos entre cuentas, pagos de tarjeta,
 compra de activos o inversiones. Conserva el nombre del comercio tal cual aparece. Máximo 200 movimientos. Escribe un resumen de 1-2 frases en español.`;
 
 function toBase64(bytes: Uint8Array): string {
@@ -159,18 +168,35 @@ export async function processStatementForUser(
     // usamos la fecha de carga del archivo para que el movimiento SÍ entre en Gastos.
     const fallbackDate = new Date((statement.created_at as string) || Date.now()).toISOString().slice(0, 10);
 
-    const rows = parsed.transactions.slice(0, 200).map((t) => ({
-      user_id: userId,
-      statement_id: statementId,
-      tx_date: t.date && /^\d{4}-\d{2}-\d{2}$/.test(t.date) ? t.date : fallbackDate,
-      merchant: t.merchant || "Sin comercio",
-      description: t.description,
-      amount: Number.isFinite(t.amount) ? t.amount : 0,
-      currency: (t.currency || "USD").toUpperCase().slice(0, 3),
-      category: t.category,
-      subcategory: t.subcategory,
-      excluded: Boolean(t.excluded),
-    }));
+    const rows = parsed.transactions.slice(0, 200).map((t) => {
+      const merchant = t.merchant || "Sin comercio";
+      // Normalizamos la categoría con las mismas reglas que usa Análisis de gastos,
+      // para que Restaurantes, Apps y Marketing digital queden bien desde la carga.
+      const ruleCategory = categorizeTx({
+        merchant,
+        description: t.description,
+        subcategory: t.subcategory,
+        category: t.category,
+      });
+      const aiCategory = (t.category || "").trim();
+      const category =
+        ruleCategory !== "Otros"
+          ? ruleCategory
+          : BASE_CATEGORIES.find((c) => c.toLowerCase() === aiCategory.toLowerCase()) ?? "Otros";
+
+      return {
+        user_id: userId,
+        statement_id: statementId,
+        tx_date: t.date && /^\d{4}-\d{2}-\d{2}$/.test(t.date) ? t.date : fallbackDate,
+        merchant,
+        description: t.description,
+        amount: Number.isFinite(t.amount) ? t.amount : 0,
+        currency: (t.currency || "USD").toUpperCase().slice(0, 3),
+        category,
+        subcategory: t.subcategory,
+        excluded: Boolean(t.excluded),
+      };
+    });
 
     if (rows.length === 0) {
       throw new Error(
