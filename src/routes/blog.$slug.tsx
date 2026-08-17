@@ -40,7 +40,25 @@ function BlogArticle() {
   if (!post) return null;
 
   const extras = postExtras[post.slug];
-  const midPoint = Math.max(0, Math.ceil(post.sections.length / 2) - 1);
+
+  // Cumulative paragraph count after each section
+  const cumulative: number[] = [];
+  post.sections.reduce((acc, s, i) => {
+    const next = acc + s.paragraphs.length;
+    cumulative[i] = next;
+    return next;
+  }, 0);
+  const last = post.sections.length - 1;
+  const findAfter = (minParas: number, from: number) => {
+    for (let i = from; i <= last; i += 1) {
+      if (cumulative[i]! >= minParas) return i;
+    }
+    return last;
+  };
+  // second image after at least 3 paragraphs
+  const imageIndex = findAfter(3, 0);
+  // table at least 3 more paragraphs after the second image
+  const tableIndex = Math.min(last, Math.max(findAfter(cumulative[imageIndex]! + 3, imageIndex + 1), imageIndex + 1));
 
   const related = blogPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
 
@@ -68,7 +86,6 @@ function BlogArticle() {
           <h1 className="mt-4 font-display text-3xl font-semibold leading-tight tracking-tight md:text-4xl">
             {post.title[lang]}
           </h1>
-          <p className="mt-4 text-base leading-relaxed text-muted-foreground">{post.intro[lang]}</p>
         </header>
 
         <figure className="surface mt-8 overflow-hidden">
@@ -102,6 +119,8 @@ function BlogArticle() {
           </nav>
         )}
 
+        <p className="mt-8 text-base leading-relaxed text-muted-foreground">{post.intro[lang]}</p>
+
         <article className="mt-10 space-y-10">
           {post.sections.map((section, i) => (
             <Fragment key={section.heading.en}>
@@ -126,22 +145,23 @@ function BlogArticle() {
                 )}
               </section>
 
-              {extras && i === midPoint && (
-                <>
-                  <figure className="surface overflow-hidden">
-                    <img
-                      src={extras.image2}
-                      alt={extras.image2Alt[lang]}
-                      loading="lazy"
-                      width={1200}
-                      height={750}
-                      className="h-full w-full object-cover"
-                    />
-                    <figcaption className="border-t border-border/50 px-5 py-3 text-xs text-muted-foreground">
-                      {extras.image2Caption[lang]}
-                    </figcaption>
-                  </figure>
+              {extras && i === imageIndex && (
+                <figure className="surface overflow-hidden">
+                  <img
+                    src={extras.image2}
+                    alt={extras.image2Alt[lang]}
+                    loading="lazy"
+                    width={1200}
+                    height={750}
+                    className="h-full w-full object-cover"
+                  />
+                  <figcaption className="border-t border-border/50 px-5 py-3 text-xs text-muted-foreground">
+                    {extras.image2Caption[lang]}
+                  </figcaption>
+                </figure>
+              )}
 
+              {extras && i === tableIndex && (
                   <figure className="surface overflow-hidden">
                     <figcaption className="flex flex-wrap items-baseline gap-2 border-b border-border/50 px-5 py-4">
                       <span className="font-display text-sm font-semibold">{extras.table.title[lang]}</span>
@@ -189,7 +209,6 @@ function BlogArticle() {
                       </table>
                     </div>
                   </figure>
-                </>
               )}
             </Fragment>
           ))}
