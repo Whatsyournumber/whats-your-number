@@ -109,8 +109,26 @@ function AuthPage() {
       return;
     }
     // El plan Familiar siempre entra por la pantalla de perfiles.
-    navigate({ to: isPatrimonio ? "/ninos" : "/dashboard" });
+    if (isPatrimonio) {
+      navigate({ to: "/ninos" });
+      return;
+    }
+    let active = true;
+    void (async () => {
+      const { data } = await supabase
+        .from("onboarding_profiles")
+        .select("completed")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!active) return;
+      // Cuenta nueva (Free o Pro): siempre pasa primero por el onboarding.
+      navigate({ to: data?.completed ? "/dashboard" : "/onboarding" });
+    })();
+    return () => {
+      active = false;
+    };
   }, [loading, user, isPatrimonio, navigate, next]);
+
 
   const setMode = (value: "login" | "signup") =>
     navigate({ to: "/auth", search: (prev) => ({ ...prev, mode: value }) });
