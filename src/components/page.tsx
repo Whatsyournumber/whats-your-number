@@ -45,6 +45,7 @@ export function Panel({
   title,
   description,
   actions,
+  icon,
   className,
   variant = "default",
   children,
@@ -52,6 +53,7 @@ export function Panel({
   title?: ReactNode;
   description?: string;
   actions?: ReactNode;
+  icon?: ReactNode;
   className?: string;
   variant?: "default" | "minimal";
   children: ReactNode;
@@ -67,9 +69,20 @@ export function Panel({
     >
       {(title || actions) && (
         <div className="mb-4 flex items-start justify-between gap-3">
-          <div>
-            {title && <h2 className="text-sm font-semibold">{title}</h2>}
-            {description && <p className="mt-0.5 text-xs text-muted-foreground">{description}</p>}
+          <div className="flex items-center gap-3">
+            {icon && (
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-primary/15 text-primary [&_svg]:h-5 [&_svg]:w-5">
+                {icon}
+              </span>
+            )}
+            <div>
+              {title && (
+                <h2 className={cn(icon ? "text-xl font-semibold tracking-tight" : "text-sm font-semibold")}>{title}</h2>
+              )}
+              {description && (
+                <p className={cn("mt-0.5 text-muted-foreground", icon ? "text-sm" : "text-xs")}>{description}</p>
+              )}
+            </div>
           </div>
           {actions}
         </div>
@@ -78,6 +91,7 @@ export function Panel({
     </section>
   );
 }
+
 
 export function Delta({ value, inverse = false }: { value: number; inverse?: boolean }) {
   const good = inverse ? value < 0 : value > 0;
