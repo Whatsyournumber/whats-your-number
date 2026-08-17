@@ -226,13 +226,14 @@ export function buildPlan(d: OnboardingData): NorthPlan {
     freedomAge: freedomAgeEstimate(d, targetCapital) ?? d.retire_age,
     progress:
       targetCapital > 0
-        ? Math.min(100, Math.max(0, ((homeMode ? liquid : Math.max(0, netWorth(d))) / targetCapital) * 100))
+        ? Math.min(100, Math.max(0, ((goalAmount > 0 ? liquid : Math.max(0, netWorth(d))) / targetCapital) * 100))
         : 0,
-    mode: homeMode ? "home" : "freedom",
+    mode: homeMode ? "home" : businessMode ? "business" : "freedom",
     homePrice,
     downPayment,
+    businessTarget,
     // Ahorro mensual necesario para lograrlo en 3 años.
-    monthlyToGoal: homeMode ? missingHome / 36 : 0,
+    monthlyToGoal: goalAmount > 0 ? missingGoal / 36 : 0,
     monthsToGoal,
   };
 }
