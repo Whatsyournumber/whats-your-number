@@ -262,11 +262,14 @@ function RetiroContent() {
           </ResponsiveContainer>
         </Panel>
 
-        <Panel title={t("Simulador", "Simulator")} description={t("Ajusta y mira el impacto", "Adjust and see the impact")}>
+        <Panel
+          title={t("Simulador", "Simulator")}
+          description={isGoal ? `${goalLabel} · ${fmt(plan.targetCapital)}` : t("Ajusta y mira el impacto", "Adjust and see the impact")}
+        >
           <div className="space-y-6">
             <div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">{t("Aporte mensual", "Monthly contribution")}</span>
+                <span className="text-muted-foreground">{isGoal ? t("Ahorro mensual", "Monthly saving") : t("Aporte mensual", "Monthly contribution")}</span>
                 <span className="numeric font-semibold">{fmt(monthly)}</span>
               </div>
               <Slider
@@ -285,32 +288,58 @@ function RetiroContent() {
               </div>
               <Slider className="mt-3" min={1} max={15} step={0.5} value={[rate]} onValueChange={([v]) => setRate(v ?? 7)} />
             </div>
-            <div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">{t("Edad de retiro", "Retirement age")}</span>
-                <span className="numeric font-semibold">{retireAge} {t("años", "years old")}</span>
+            {isGoal ? (
+              <div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">{t("Plazo para lograrlo", "Time to reach it")}</span>
+                  <span className="numeric font-semibold">
+                    {horizonYears} {horizonYears === 1 ? t("año", "year") : t("años", "years")}
+                  </span>
+                </div>
+                <Slider
+                  className="mt-3"
+                  min={1}
+                  max={15}
+                  step={1}
+                  value={[horizonYears]}
+                  onValueChange={([v]) => setHorizonYears(v ?? defaultHorizon)}
+                />
               </div>
-              <Slider
-                className="mt-3"
-                min={Math.min(retirement.currentAge + 1, 80)}
-                max={85}
-                step={1}
-                value={[retireAge]}
-                onValueChange={([v]) => setRetireAge(v ?? retirement.retireAge)}
-              />
-            </div>
+            ) : (
+              <div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">{t("Edad de retiro", "Retirement age")}</span>
+                  <span className="numeric font-semibold">{retireAge} {t("años", "years old")}</span>
+                </div>
+                <Slider
+                  className="mt-3"
+                  min={Math.min(retirement.currentAge + 1, 80)}
+                  max={85}
+                  step={1}
+                  value={[retireAge]}
+                  onValueChange={([v]) => setRetireAge(v ?? retirement.retireAge)}
+                />
+              </div>
+            )}
             <div className="rounded-xl bg-elevated/60 p-4">
-              <p className="text-xs text-muted-foreground">{t("Saldo proyectado", "Projected balance")}</p>
+              <p className="text-xs text-muted-foreground">{isGoal ? t("Tendrías en", "You'd have in") + ` ${horizonYears}a` : t("Saldo proyectado", "Projected balance")}</p>
               <p className="numeric mt-1 text-2xl font-semibold">{fmt(final.value)}</p>
               <p className="mt-1 text-xs text-muted-foreground">
                 {gap <= 0
-                  ? `${t("Superas tu número por", "You exceed your number by")} ${fmt(-gap)} 🎯`
+                  ? `${isGoal ? t("Superas tu objetivo por", "You exceed your goal by") : t("Superas tu número por", "You exceed your number by")} ${fmt(-gap)} 🎯`
                   : `${t("Te faltarían", "You'd still need")} ${fmt(gap)}`}
               </p>
               <p className="mt-1 text-[11px] text-muted-foreground">
-                {t("Partes de", "Starting from")} {fmt(investable)} {t("que ya tienes · objetivo", "you already have · target")} {fmt(targetNow)}
+                {t("Partes de", "Starting from")} {fmt(investable)}{" "}
+                {isGoal ? `${t("que ya tienes ·", "you already have ·")} ${goalLabel} ${fmt(targetNow)}` : `${t("que ya tienes · objetivo", "you already have · target")} ${fmt(targetNow)}`}
               </p>
+              {isGoal && gap > 0 && years > 0 ? (
+                <p className="mt-2 text-[11px] text-primary">
+                  {t("Ahorra", "Save")} {fmt(Math.ceil(gap / (years * 12)))}/{t("mes más para llegar a tiempo", "mo more to make it on time")}
+                </p>
+              ) : null}
             </div>
+
 
           </div>
         </Panel>
