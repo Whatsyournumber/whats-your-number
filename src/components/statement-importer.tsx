@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { CheckCircle2, FileSpreadsheet, FileText, Image as ImageIcon, Loader2, Lock, Sparkles, Trash2, TriangleAlert, Upload } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 
@@ -574,6 +574,25 @@ function JobProgress({ job }: { job: Job }) {
   const isDone = job.stage === "done";
   const activeIndex = STAGE_ORDER.indexOf(job.stage);
 
+  const startedRef = useRef<number>(Date.now());
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    if (isDone || isError) return;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [isDone, isError]);
+
+  let eta: string | null = null;
+  if (!isDone && !isError && pct > 0 && pct < 100) {
+    const elapsed = Math.max(1, (now - startedRef.current) / 1000);
+    const remaining = Math.min(240, Math.max(3, Math.round((elapsed * (100 - pct)) / pct)));
+    eta =
+      remaining >= 60
+        ? `~${Math.ceil(remaining / 60)} min`
+        : `~${remaining}s`;
+  }
+
+
   return (
     <div className="rounded-xl border border-border bg-elevated/60 px-3 py-3">
       <div className="flex items-center gap-2">
@@ -585,9 +604,12 @@ function JobProgress({ job }: { job: Job }) {
           <Loader2 className="h-4 w-4 shrink-0 animate-spin text-primary" />
         )}
         <p className="truncate text-sm font-medium">{job.name}</p>
-        <span className={cn("ml-auto numeric text-xs", isError ? "text-destructive" : "text-muted-foreground")}>
-          {labels[job.stage]}
-          {job.message ? ` · ${job.message}` : ""}
+        <span className={cn("ml-auto flex items-baseline gap-2 numeric text-xs", isError ? "text-destructive" : "text-muted-foreground")}>
+          <span className="truncate">
+            {labels[job.stage]}
+            {job.message ? ` · ${job.message}` : ""}
+          </span>
+          {eta ? <span className="shrink-0 text-[10px] text-muted-foreground/60">{eta}</span> : null}
         </span>
       </div>
 
