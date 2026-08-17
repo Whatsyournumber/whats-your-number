@@ -950,17 +950,81 @@ function MoneyField({
   );
 }
 
+const norm = (s: string) =>
+  s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+
+function editDistance(a: string, b: string) {
+  const m = a.length;
+  const n = b.length;
+  if (!m || !n) return Math.max(m, n);
+  let prev = Array.from({ length: n + 1 }, (_, i) => i);
+  for (let i = 1; i <= m; i++) {
+    const cur = [i];
+    for (let j = 1; j <= n; j++) {
+      cur[j] = Math.min(
+        (prev[j] ?? 0) + 1,
+        (cur[j - 1] ?? 0) + 1,
+        (prev[j - 1] ?? 0) + (a[i - 1] === b[j - 1] ? 0 : 1),
+      );
+    }
+    prev = cur;
+  }
+  return prev[n] ?? 0;
+}
+
 function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof cities)[number]) => void }) {
   const t = useT();
   const [q, setQ] = useState("");
-  const term = q.toLowerCase().trim();
-  const list = cities.filter((c) => c.name.toLowerCase().includes(term) || c.country.toLowerCase().includes(term));
-  const selected = cities.find((c) => c.name === value);
+  const term = norm(q);
+
+  // Catálogo ampliado: ciudades base + catálogo de estilo de vida (costes en USD).
+  const catalog = useMemo(() => {
+    const base = cities.map((c) => ({ ...c }));
+    const known = new Set(base.map((c) => norm(c.name)));
+    for (const lc of lifestyleCities) {
+      if (known.has(norm(lc.name))) continue;
+      const usd =
+        lc.housing + lc.food + lc.transport + lc.healthcare + lc.internet + lc.entertainment;
+      base.push({
+        name: lc.name,
+        country: lc.country,
+        currency: "USD",
+        cost: Math.round(convertAmount(usd, "USD", "EUR")),
+      });
+      known.add(norm(lc.name));
+    }
+    return base.sort((a, b) => a.name.localeCompare(b.name));
+  }, []);
+
+  const list = useMemo(() => {
+    if (!term) return catalog;
+    const scored = catalog
+      .map((c) => {
+        const n = norm(c.name);
+        const co = norm(c.country);
+        let score = -1;
+        if (n.startsWith(term)) score = 0;
+        else if (n.includes(term) || co.includes(term)) score = 1;
+        else {
+          const d = editDistance(n, term);
+          const tol = term.length <= 4 ? 1 : term.length <= 7 ? 2 : 3;
+          if (d <= tol) score = 2 + d;
+        }
+        return { c, score };
+      })
+      .filter((x) => x.score >= 0)
+      .sort((a, b) => a.score - b.score || a.c.name.localeCompare(b.c.name));
+    return scored.map((x) => x.c);
+  }, [catalog, term]);
+
+  const exact = list.some((c) => norm(c.name) === term);
+  const selected = catalog.find((c) => c.name === value) ?? (value ? { name: value, country: "", currency: "EUR", cost: 2200 } : undefined);
   const cityCost = (c: (typeof cities)[number]) => {
     const v = convertAmount(c.cost, "EUR", c.currency);
     const step = v >= 100000 ? 5000 : v >= 10000 ? 500 : v >= 1000 ? 50 : 10;
     return Math.round(v / step) * step;
   };
+  const customName = q.trim().replace(/\s+/g, " ");
   return (
     <div>
       <div className="flex items-center gap-2 rounded-2xl border border-border bg-elevated/50 px-4">
@@ -969,14 +1033,37 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
           autoFocus
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder={t("Busca una ciudad…", "Search a city…")}
+          placeholder={t("Escribe cualquier ciudad…", "Type any city…")}
           className="h-14 flex-1 bg-transparent text-base outline-none"
         />
       </div>
       <div className="mt-3 max-h-72 space-y-1.5 overflow-y-auto pr-1">
+        {customName.length >= 2 && !exact && (
+          <button
+            onClick={() =>
+              onSelect({
+                name: customName.charAt(0).toUpperCase() + customName.slice(1),
+                country: "",
+                currency: "EUR",
+                cost: 2200,
+              })
+            }
+            className={cn(
+              "flex w-full items-center gap-3 rounded-xl border border-dashed px-4 py-3 text-left text-sm transition-colors",
+              "border-primary/50 bg-primary/5 hover:bg-primary/10",
+            )}
+          >
+            <span className="font-medium">
+              {t("Usar", "Use")} “{customName}”
+            </span>
+            <span className="ml-auto text-xs text-muted-foreground">
+              {t("coste estimado, ajustable después", "estimated cost, editable later")}
+            </span>
+          </button>
+        )}
         {list.map((c) => (
           <button
-            key={c.name}
+            key={`${c.name}-${c.country}`}
             onClick={() => onSelect(c)}
             className={cn(
               "flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm transition-colors",
@@ -990,7 +1077,8 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
             </span>
           </button>
         ))}
-        {list.length === 0 && <p className="px-2 py-4 text-sm text-muted-foreground">{t("Sin resultados.", "No results.")}</p>}
+      </div>
+
       </div>
       {selected && (
         <p className="mt-3 text-center text-xs text-muted-foreground">
