@@ -99,29 +99,98 @@ function BlogArticle() {
         )}
 
         <article className="mt-10 space-y-10">
-          {post.sections.map((section) => (
-            <section key={section.heading.en} id={sectionId(section.heading.en)} className="scroll-mt-24">
-              <h2 className="font-display text-xl font-semibold tracking-tight">{section.heading[lang]}</h2>
-              <div className="mt-3 space-y-4">
-                {section.paragraphs.map((p) => (
-                  <p key={p.en} className="text-[15px] leading-relaxed text-muted-foreground">
-                    {p[lang]}
-                  </p>
-                ))}
-              </div>
-              {section.bullets && (
-                <ul className="mt-4 space-y-2">
-                  {section.bullets.map((b) => (
-                    <li key={b.en} className="flex gap-2 text-[15px] leading-relaxed text-muted-foreground">
-                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                      {b[lang]}
-                    </li>
+          {post.sections.map((section, i) => (
+            <Fragment key={section.heading.en}>
+              <section id={sectionId(section.heading.en)} className="scroll-mt-24">
+                <h2 className="font-display text-xl font-semibold tracking-tight">{section.heading[lang]}</h2>
+                <div className="mt-3 space-y-4">
+                  {section.paragraphs.map((p) => (
+                    <p key={p.en} className="text-[15px] leading-relaxed text-muted-foreground">
+                      {p[lang]}
+                    </p>
                   ))}
-                </ul>
+                </div>
+                {section.bullets && (
+                  <ul className="mt-4 space-y-2">
+                    {section.bullets.map((b) => (
+                      <li key={b.en} className="flex gap-2 text-[15px] leading-relaxed text-muted-foreground">
+                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                        {b[lang]}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+
+              {extras && i === midPoint && (
+                <>
+                  <figure className="surface overflow-hidden">
+                    <img
+                      src={extras.image2}
+                      alt={extras.image2Alt[lang]}
+                      loading="lazy"
+                      width={1200}
+                      height={750}
+                      className="h-full w-full object-cover"
+                    />
+                    <figcaption className="border-t border-border/50 px-5 py-3 text-xs text-muted-foreground">
+                      {extras.image2Caption[lang]}
+                    </figcaption>
+                  </figure>
+
+                  <figure className="surface overflow-hidden">
+                    <figcaption className="flex flex-wrap items-baseline gap-2 border-b border-border/50 px-5 py-4">
+                      <span className="font-display text-sm font-semibold">{extras.table.title[lang]}</span>
+                      {extras.table.note && (
+                        <span className="text-xs text-muted-foreground">{extras.table.note[lang]}</span>
+                      )}
+                    </figcaption>
+                    <div className="overflow-x-auto">
+                      <table className="w-full border-collapse text-left text-[13px]">
+                        <thead>
+                          <tr className="bg-elevated/60">
+                            {extras.table.columns.map((c) => (
+                              <th
+                                key={c.en}
+                                className="whitespace-nowrap px-4 py-3 text-xs font-medium uppercase tracking-[0.1em] text-muted-foreground"
+                              >
+                                {c[lang]}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {extras.table.rows.map((row) => (
+                            <tr
+                              key={row.cells[0].en}
+                              className={`border-t border-border/40 ${row.highlight ? "bg-primary/10" : ""}`}
+                            >
+                              {row.cells.map((cell, ci) => (
+                                <td
+                                  key={cell.en}
+                                  className={`px-4 py-3 align-top ${
+                                    ci === 0
+                                      ? "font-medium"
+                                      : row.highlight
+                                        ? "font-medium text-primary"
+                                        : "text-muted-foreground"
+                                  }`}
+                                >
+                                  {cell[lang]}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </figure>
+                </>
               )}
-            </section>
+            </Fragment>
           ))}
         </article>
+
 
         <aside className="surface glow mt-12 flex gap-3 p-6">
           <Sparkles className="h-5 w-5 shrink-0 text-primary" />
