@@ -404,7 +404,7 @@ function InvestmentCard({
   onRemove: () => void;
 }) {
   const t = useT();
-  const filled = Boolean(h.label.trim()) && (h.manual_value > 0 || h.monthly_contribution > 0);
+  const filled = Boolean(h.label.trim()) || h.manual_value > 0 || h.monthly_contribution > 0;
   const [open, setOpen] = useState(!filled);
 
   const kindLabel: Record<string, string> = {
@@ -449,7 +449,7 @@ function InvestmentCard({
     <Card
       title={h.label || t("Activo", "Asset")}
       onRemove={onRemove}
-      {...(filled ? { onCollapse: () => setOpen(false) } : {})}
+      onCollapse={() => setOpen(false)}
     >
       <InlineRow label={t("Nombre", "Name")}>
         <Input value={h.label} onChange={(e) => onPatch({ label: e.target.value })} placeholder={t("Nombre", "Name")} className="h-9" />
