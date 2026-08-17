@@ -379,6 +379,7 @@ function MiPerfil() {
 
 
         <Panel
+          className="h-full"
           icon={<Target />}
           title={t("Estilo de vida y objetivos", "Lifestyle & goals")}
           description={t("Define hacia dónde vas y cómo quieres vivir.", "Define where you are going and how you want to live.")}
