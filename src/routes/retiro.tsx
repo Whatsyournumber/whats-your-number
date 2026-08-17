@@ -423,7 +423,11 @@ function RetiroContent() {
               </div>
             )}
             <div className="rounded-xl bg-elevated/60 p-4">
-              <p className="text-xs text-muted-foreground">{isGoal ? t("Tendrías en", "You'd have in") + ` ${horizonYears}a` : t("Saldo proyectado", "Projected balance")}</p>
+              <p className="truncate text-xs text-muted-foreground">
+                {isGoal
+                  ? `${t("Tendrías en", "You'd have in")} ${horizonYears} ${horizonYears === 1 ? t("año", "year") : t("años", "years")}`
+                  : t("Saldo proyectado", "Projected balance")}
+              </p>
               <p className="numeric mt-1 text-2xl font-semibold">{fmt(final.value)}</p>
               <p className="mt-1 text-xs text-muted-foreground">
                 {gap <= 0
