@@ -998,6 +998,49 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
     return base.sort((a, b) => a.name.localeCompare(b.name));
   }, []);
 
+  // Búsqueda global (todas las ciudades del mundo) vía geocoding público.
+  const [remote, setRemote] = useState<(typeof cities)[number][]>([]);
+  const [searching, setSearching] = useState(false);
+  useEffect(() => {
+    const query = q.trim();
+    if (query.length < 2) {
+      setRemote([]);
+      setSearching(false);
+      return;
+    }
+    let cancelled = false;
+    setSearching(true);
+    const id = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=10&language=es&format=json`,
+        );
+        const json = (await res.json()) as {
+          results?: { name: string; country?: string; admin1?: string; population?: number }[];
+        };
+        if (cancelled) return;
+        const found = (json.results ?? [])
+          .filter((r) => r.name)
+          .map((r) => ({
+            name: r.name,
+            country: r.country ?? r.admin1 ?? "",
+            currency: "USD",
+            // Coste estimado por defecto en USD; ajustable después.
+            cost: Math.round(convertAmount(2400, "USD", "EUR")),
+          }));
+        setRemote(found);
+      } catch {
+        if (!cancelled) setRemote([]);
+      } finally {
+        if (!cancelled) setSearching(false);
+      }
+    }, 300);
+    return () => {
+      cancelled = true;
+      clearTimeout(id);
+    };
+  }, [q]);
+
   const list = useMemo(() => {
     if (!term) return catalog;
     const scored = catalog
@@ -1016,17 +1059,29 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
       })
       .filter((x) => x.score >= 0)
       .sort((a, b) => a.score - b.score || a.c.name.localeCompare(b.c.name));
-    return scored.map((x) => x.c);
-  }, [catalog, term]);
+    const local = scored.map((x) => x.c);
+    const seen = new Set(local.map((c) => `${norm(c.name)}|${norm(c.country)}`));
+    const extras = remote.filter((c) => {
+      const k = `${norm(c.name)}|${norm(c.country)}`;
+      if (seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
+    return [...local, ...extras];
+  }, [catalog, term, remote]);
 
   const exact = list.some((c) => norm(c.name) === term);
-  const selected = catalog.find((c) => c.name === value) ?? (value ? { name: value, country: "", currency: "EUR", cost: 2200 } : undefined);
+  const selected =
+    catalog.find((c) => c.name === value) ??
+    remote.find((c) => c.name === value) ??
+    (value ? { name: value, country: "", currency: "USD", cost: Math.round(convertAmount(2400, "USD", "EUR")) } : undefined);
   const cityCost = (c: (typeof cities)[number]) => {
     const v = convertAmount(c.cost, "EUR", c.currency);
     const step = v >= 100000 ? 5000 : v >= 10000 ? 500 : v >= 1000 ? 50 : 10;
     return Math.round(v / step) * step;
   };
   const customName = q.trim().replace(/\s+/g, " ");
+
   return (
     <div>
       <div className="flex items-center gap-2 rounded-2xl border border-border bg-elevated/50 px-4">
