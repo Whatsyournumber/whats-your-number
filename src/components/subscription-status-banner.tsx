@@ -10,11 +10,14 @@ const daysLeft = (iso: string | null) =>
 /** Trial countdown and dunning notice. Renders nothing when everything is fine. */
 export function SubscriptionStatusBanner({ className }: { className?: string | undefined }) {
   const t = useT();
-  const { subscription, isTrial, loading } = useSubscription();
+  const { subscription, isTrial, isPromo, loading } = useSubscription();
 
   if (loading || !subscription) return null;
+  // Accesos por código de invitación no son cancelaciones ni pruebas: sin aviso.
+  if (isPromo) return null;
 
   const days = daysLeft(subscription.current_period_end);
+
 
   if (subscription.status === "past_due") {
     return (

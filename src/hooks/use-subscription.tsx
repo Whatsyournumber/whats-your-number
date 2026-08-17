@@ -93,6 +93,9 @@ export function useSubscription() {
   // Super admins always get the highest plan (Familiar/Patrimonio) with full access.
   const tier: PlanTier = isSuperAdmin ? "patrimonio" : paidTier;
 
+  // Accesos otorgados con código de invitación: no son prueba ni cancelación.
+  const isPromo = Boolean(subscription?.price_id?.startsWith("promo_"));
+
   return {
     subscription,
     tier,
@@ -100,9 +103,11 @@ export function useSubscription() {
     isFree: tier === "free",
     isPro: tier === "pro" || tier === "patrimonio",
     isPatrimonio: tier === "patrimonio",
-    isTrial: subscription?.status === "trialing",
+    isPromo,
+    isTrial: subscription?.status === "trialing" && !isPromo,
     loading: query.isLoading || rolesLoading,
   };
+
 }
 
 
