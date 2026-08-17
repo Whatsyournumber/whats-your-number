@@ -150,10 +150,27 @@ export function AppSidebar() {
           <div className="surface p-3">
             <p className="text-xs text-muted-foreground">WhatsYournumber</p>
             <p className="numeric mt-1 text-lg font-semibold">{data.fmtCompact(data.plan.targetCapital)}</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {t("Quieres", "You want")} {data.fmtCompact(data.plan.desiredIncome)}
-              {t("/mes", "/mo")}
-            </p>
+            {data.plan.mode !== "freedom" ? (
+              <p className="mt-1 text-xs text-muted-foreground">
+                {(() => {
+                  const months = data.plan.monthsToGoal || 0;
+                  const years = Math.max(1, Math.round(months / 12));
+                  const amount = data.fmtCompact(data.plan.monthlyToGoal || 0);
+                  return months > 0
+                    ? t(
+                        `Ahorra ${amount}/mes para llegar en ${years} ${years === 1 ? "año" : "años"}`,
+                        `Save ${amount}/mo to get there in ${years} ${years === 1 ? "year" : "years"}`,
+                      )
+                    : t("Define tu ahorro mensual", "Set your monthly savings");
+                })()}
+              </p>
+            ) : (
+              <p className="mt-1 text-xs text-muted-foreground">
+                {t("Quieres", "You want")} {data.fmtCompact(data.plan.desiredIncome)}
+                {t("/mes", "/mo")}
+              </p>
+            )}
+
           </div>
         </SidebarFooter>
       )}
