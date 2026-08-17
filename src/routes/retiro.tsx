@@ -127,6 +127,8 @@ function RetiroContent() {
   ).sort((a, b) => a - b);
   const rates = [4, 6, 8, 10, 12];
 
+  // El subtítulo siempre cambia según el objetivo elegido en el onboarding / perfil.
+  const priority = (profile as { priority?: string }).priority || "libertad";
   const headerSubtitle =
     goalMode === "home"
       ? t(
@@ -134,14 +136,35 @@ function RetiroContent() {
           "How much you need for your home down payment and how much you have saved.",
         )
       : goalMode === "business"
-        ? t(
-            "Cuánto capital necesitas para montar tu negocio y cuánto llevas ahorrado.",
-            "How much capital you need to launch your business and how much you have saved.",
-          )
-        : t(
-            "Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar.",
-            "How much you have today and how much you will have when you stop working.",
-          );
+        ? priority === "otro"
+          ? t(
+              "Cuánto capital necesitas para tu objetivo y cuánto llevas ahorrado.",
+              "How much capital you need for your goal and how much you have saved.",
+            )
+          : t(
+              "Cuánto capital necesitas para montar tu negocio y cuánto llevas ahorrado.",
+              "How much capital you need to launch your business and how much you have saved.",
+            )
+        : priority === "gastos"
+          ? t(
+              "Controla tus gastos y mira cuánto capital necesitas para vivir de tus inversiones.",
+              "Control your spending and see how much capital you need to live off your investments.",
+            )
+          : priority === "patrimonio"
+            ? t(
+                "Cuánto patrimonio tienes hoy y hasta dónde puede crecer con tus aportes.",
+                "How much wealth you have today and how far it can grow with your contributions.",
+              )
+            : priority === "organizar"
+              ? t(
+                  "Ordena tu dinero y mira cuánto necesitas para alcanzar tu número.",
+                  "Organize your money and see how much you need to reach your number.",
+                )
+              : t(
+                  "Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar.",
+                  "How much you have today and how much you will have when you stop working.",
+                );
+
 
   return (
     <PageShell>
