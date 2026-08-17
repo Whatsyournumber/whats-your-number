@@ -229,7 +229,7 @@ function AppShell() {
       if (!active) return;
       const skipped =
         typeof window !== "undefined" &&
-        window.localStorage.getItem("wyn_onboarding_skipped") === "1";
+        window.localStorage.getItem(`wyn_onboarding_skipped:${user.id}`) === "1";
       if (!data?.completed && !skipped) {
         navigate({ to: "/onboarding", replace: true });
         return;
