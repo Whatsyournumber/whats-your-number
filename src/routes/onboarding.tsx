@@ -999,7 +999,7 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
   }, []);
 
   // Búsqueda global (todas las ciudades del mundo) vía geocoding público.
-  const [remote, setRemote] = useState<(typeof cities)[number][]>([]);
+  const [remote, setRemote] = useState<((typeof cities)[number] & { pop: number })[]>([]);
   const [searching, setSearching] = useState(false);
   useEffect(() => {
     const query = q.trim();
@@ -1013,22 +1013,42 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
     const id = setTimeout(async () => {
       try {
         const res = await fetch(
-          `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=10&language=es&format=json`,
+          `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=20&language=es&format=json`,
         );
         const json = (await res.json()) as {
-          results?: { name: string; country?: string; admin1?: string; population?: number }[];
+          results?: {
+            name: string;
+            country?: string;
+            admin1?: string;
+            population?: number;
+            feature_code?: string;
+          }[];
         };
         if (cancelled) return;
-        const found = (json.results ?? [])
-          .filter((r) => r.name)
-          .map((r) => ({
+        const byCountry = new Map<string, (typeof cities)[number] & { pop: number }>();
+        for (const r of json.results ?? []) {
+          if (!r.name) continue;
+          if (r.feature_code && !r.feature_code.startsWith("PPL")) continue;
+          const pop = r.population ?? 0;
+          const country = r.country ?? r.admin1 ?? "";
+          const key = norm(country);
+          const item = {
             name: r.name,
-            country: r.country ?? r.admin1 ?? "",
+            country,
             currency: "USD",
             // Coste estimado por defecto en USD; ajustable después.
             cost: Math.round(convertAmount(2400, "USD", "EUR")),
-          }));
-        setRemote(found);
+            pop,
+          };
+          const prev = byCountry.get(key);
+          if (!prev || pop > prev.pop) byCountry.set(key, item);
+        }
+        setRemote(
+          [...byCountry.values()]
+            .filter((c) => c.pop >= 50000)
+            .sort((a, b) => b.pop - a.pop)
+            .slice(0, 4),
+        );
       } catch {
         if (!cancelled) setRemote([]);
       } finally {
@@ -1048,7 +1068,8 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
         const n = norm(c.name);
         const co = norm(c.country);
         let score = -1;
-        if (n.startsWith(term)) score = 0;
+        if (n === term) score = -1000;
+        else if (n.startsWith(term)) score = 0;
         else if (n.includes(term) || co.includes(term)) score = 1;
         else {
           const d = editDistance(n, term);
@@ -1057,18 +1078,21 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
         }
         return { c, score };
       })
-      .filter((x) => x.score >= 0)
+      .filter((x) => x.score >= -1000 && x.score !== -1)
       .sort((a, b) => a.score - b.score || a.c.name.localeCompare(b.c.name));
     const local = scored.map((x) => x.c);
     const seen = new Set(local.map((c) => `${norm(c.name)}|${norm(c.country)}`));
+    const seenCountry = new Set(local.map((c) => norm(c.country)));
     const extras = remote.filter((c) => {
       const k = `${norm(c.name)}|${norm(c.country)}`;
-      if (seen.has(k)) return false;
+      if (seen.has(k) || seenCountry.has(norm(c.country))) return false;
       seen.add(k);
+      seenCountry.add(norm(c.country));
       return true;
     });
-    return [...local, ...extras];
+    return [...local, ...extras].slice(0, 6);
   }, [catalog, term, remote]);
+
 
   const exact = list.some((c) => norm(c.name) === term);
   const selected =
