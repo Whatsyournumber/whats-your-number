@@ -233,7 +233,16 @@ function RetiroContent() {
         <Link to="/gastos" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
           <KpiCard label={t("Gastos mensuales", "Monthly expenses")} value={fmt(d.expenses)} hint={`${fmt(d.expenses * 12)} ${t("al año", "per year")}`} index={3} />
         </Link>
-        <KpiCard label={t("Aportes estimados al año", "Estimated contributions per year")} value={fmt(retirement.contributionsYTD)} index={4} />
+        {goalMode === "business" ? (
+          <KpiCard
+            label={t("Ingreso mensual", "Monthly income")}
+            value={fmt(d.income)}
+            hint={t("lo que entra cada mes", "what comes in each month")}
+            index={4}
+          />
+        ) : (
+          <KpiCard label={t("Aportes estimados al año", "Estimated contributions per year")} value={fmt(retirement.contributionsYTD)} index={4} />
+        )}
         <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${swr}%`} hint={t("anual · tu tasa de retiro", "annual · your withdrawal rate")} index={5} />
       </div>
       <div className="surface p-5">
