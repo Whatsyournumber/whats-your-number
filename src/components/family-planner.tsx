@@ -296,7 +296,7 @@ export function FamilyPlanner({
   const { t, lang } = useI18n();
   const [base, setBase] = useState(Math.round(defaultBase));
   const [baseTouched, setBaseTouched] = useState(false);
-  const [monthly, setMonthly] = useState(Math.round(defaultMonthly) || 200);
+  const [monthly, setMonthly] = useState(Math.round(defaultMonthly));
   const [target, setTarget] = useState(150000);
   const [targetAge, setTargetAge] = useState(Math.round(defaultTargetAge) || 18);
   const [showPicks, setShowPicks] = useState(false);
@@ -309,21 +309,32 @@ export function FamilyPlanner({
     if (!baseTouched) setBase(Math.round(defaultBase));
   }, [defaultBase, baseTouched]);
   useEffect(() => {
-    if (defaultMonthly) setMonthly(Math.round(defaultMonthly));
+    setMonthly(Math.round(defaultMonthly));
   }, [defaultMonthly]);
 
 
 
   const vehicle = VEHICLES.find((v) => v.key === pick) ?? VEHICLES[0]!;
-  const rate = vehicle.rate;
+  // Si la tasa guardada no coincide con ningún preset, respetamos la guardada.
+  const exactPreset = VEHICLES.find((v) => v.rate === Math.round(defaultRate));
+  const [rateTouched, setRateTouched] = useState(false);
+  const rate = rateTouched || exactPreset ? vehicle.rate : Math.round(defaultRate);
   const vehicleName = lang === "en" ? vehicle.nameEn : vehicle.name;
 
-  // Publica el plan (con debounce) para que otras pantallas usen el mismo número base.
+  // Publica el plan (con debounce) SOLO cuando el padre cambia algo de verdad.
+  const initialPlanRef = useRef<string | null>(null);
   useEffect(() => {
+    const key = JSON.stringify({ base, monthly, targetAge, rate });
+    if (initialPlanRef.current === null) {
+      initialPlanRef.current = key;
+      return;
+    }
+    if (key === initialPlanRef.current) return;
     if (!onPlanChange) return;
     const id = setTimeout(() => onPlanChange({ base, monthly, targetAge, rate }), 600);
     return () => clearTimeout(id);
   }, [base, monthly, targetAge, rate, onPlanChange]);
+
 
 
   const horizon = Math.max(1, monthsUntil(childAge, targetAge));
