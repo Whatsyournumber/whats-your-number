@@ -162,10 +162,11 @@ export type NorthPlan = {
   probability: number;
   freedomAge: number;
   progress: number;
-  /** "home" cuando el objetivo principal es la entrada de la primera vivienda. */
-  mode: "freedom" | "home";
+  /** "home" = entrada de la primera vivienda, "business" = capital para montar un negocio. */
+  mode: "freedom" | "home" | "business";
   homePrice: number;
   downPayment: number;
+  businessTarget: number;
   monthlyToGoal: number;
   monthsToGoal: number;
 };
