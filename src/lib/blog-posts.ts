@@ -4,6 +4,12 @@ import benchmarkImg from "@/assets/blog/benchmark.jpg";
 import aiExpensesImg from "@/assets/blog/ai-expenses.jpg";
 import freedomImg from "@/assets/blog/freedom-number.jpg";
 import reviewImg from "@/assets/blog/review.jpg";
+import netWorth2Img from "@/assets/blog/net-worth-2.jpg";
+import runway2Img from "@/assets/blog/runway-2.jpg";
+import benchmark2Img from "@/assets/blog/benchmark-2.jpg";
+import aiExpenses2Img from "@/assets/blog/ai-expenses-2.jpg";
+import freedom2Img from "@/assets/blog/freedom-number-2.jpg";
+import review2Img from "@/assets/blog/review-2.jpg";
 
 export type BlogSection = {
   heading: { es: string; en: string };
@@ -690,3 +696,190 @@ export const blogPosts: BlogPost[] = [
 export function getPost(slug: string) {
   return blogPosts.find((p) => p.slug === slug);
 }
+
+export type BlogTable = {
+  title: { es: string; en: string };
+  note?: { es: string; en: string };
+  columns: { es: string; en: string }[];
+  rows: { cells: { es: string; en: string }[]; highlight?: boolean }[];
+};
+
+export type BlogExtras = {
+  image2: string;
+  image2Alt: { es: string; en: string };
+  image2Caption: { es: string; en: string };
+  table: BlogTable;
+};
+
+/** Second photo + comparative table shown mid-article. */
+export const postExtras: Record<string, BlogExtras> = {
+  "calcular-patrimonio-neto-real": {
+    image2: netWorth2Img,
+    image2Alt: {
+      es: "Persona comparando el balance impreso de activos y deudas con la gráfica de patrimonio neto en el portátil",
+      en: "Person comparing a printed balance sheet of assets and debts with the net worth chart on a laptop",
+    },
+    image2Caption: {
+      es: "El mismo activo puede valer tres cifras distintas según cómo lo valores.",
+      en: "The same asset can be worth three different figures depending on how you value it.",
+    },
+    table: {
+      title: { es: "Valoración optimista vs. valoración conservadora", en: "Optimistic vs. conservative valuation" },
+      note: {
+        es: "Ejemplo con un patrimonio declarado de 400.000 €. La diferencia es del 27%.",
+        en: "Example on a declared net worth of €400,000. The gap is 27%.",
+      },
+      columns: [
+        { es: "Partida", en: "Item" },
+        { es: "Cálculo optimista", en: "Optimistic" },
+        { es: "Cálculo conservador", en: "Conservative" },
+      ],
+      rows: [
+        { cells: [{ es: "Vivienda", en: "Home" }, { es: "350.000 €", en: "€350,000" }, { es: "322.000 € (−8% costes)", en: "€322,000 (−8% costs)" }] },
+        { cells: [{ es: "Coche", en: "Car" }, { es: "25.000 €", en: "€25,000" }, { es: "17.000 € (mercado real)", en: "€17,000 (real market)" }] },
+        { cells: [{ es: "Cartera", en: "Portfolio" }, { es: "90.000 €", en: "€90,000" }, { es: "78.000 € (−impuestos)", en: "€78,000 (−taxes)" }] },
+        { cells: [{ es: "Tarjetas y financiación", en: "Cards & financing" }, { es: "No contada", en: "Not counted" }, { es: "−11.000 €", en: "−€11,000" }] },
+        { cells: [{ es: "Patrimonio neto", en: "Net worth" }, { es: "465.000 €", en: "€465,000" }, { es: "406.000 €", en: "€406,000" }], highlight: true },
+      ],
+    },
+  },
+  "runway-personal": {
+    image2: runway2Img,
+    image2Alt: {
+      es: "Joven profesional calculando en su cuaderno cuántos meses de gastos cubre su ahorro",
+      en: "Young professional working out in a notebook how many months of expenses his savings cover",
+    },
+    image2Caption: {
+      es: "El mismo colchón dura el doble en modo austero que con el tren de vida actual.",
+      en: "The same buffer lasts twice as long in austere mode as at your current lifestyle.",
+    },
+    table: {
+      title: { es: "Runway según perfil y modo de gasto", en: "Runway by profile and spending mode" },
+      note: {
+        es: "Colchón de 18.000 € líquidos en los tres casos.",
+        en: "€18,000 liquid buffer in all three cases.",
+      },
+      columns: [
+        { es: "Perfil", en: "Profile" },
+        { es: "Gasto actual", en: "Current spending" },
+        { es: "Modo austero", en: "Austere mode" },
+        { es: "Objetivo", en: "Target" },
+      ],
+      rows: [
+        { cells: [{ es: "Empleado, doble ingreso", en: "Employee, dual income" }, { es: "5 meses", en: "5 months" }, { es: "9 meses", en: "9 months" }, { es: "4-6", en: "4-6" }] },
+        { cells: [{ es: "Ingreso único con hijos", en: "Single income, kids" }, { es: "3 meses", en: "3 months" }, { es: "6 meses", en: "6 months" }, { es: "9-12", en: "9-12" }], highlight: true },
+        { cells: [{ es: "Autónomo", en: "Freelancer" }, { es: "4 meses", en: "4 months" }, { es: "8 meses", en: "8 months" }, { es: "12", en: "12" }] },
+      ],
+    },
+  },
+  "portafolio-vs-sp500": {
+    image2: benchmark2Img,
+    image2Alt: {
+      es: "Inversor analizando la rentabilidad de su cartera frente al índice en dos pantallas a oscuras",
+      en: "Investor analysing his portfolio return against the index on two screens in the dark",
+    },
+    image2Caption: {
+      es: "El mismo año, cuatro formas de medirlo y cuatro conclusiones distintas.",
+      en: "The same year, four ways to measure it and four different conclusions.",
+    },
+    table: {
+      title: { es: "Cómo cambia tu resultado según cómo lo midas", en: "How your result changes with the method" },
+      note: {
+        es: "Cartera de ejemplo con aportaciones mensuales durante 12 meses.",
+        en: "Sample portfolio with monthly contributions over 12 months.",
+      },
+      columns: [
+        { es: "Método", en: "Method" },
+        { es: "Tu cartera", en: "Your portfolio" },
+        { es: "S&P 500", en: "S&P 500" },
+        { es: "Diferencia", en: "Gap" },
+      ],
+      rows: [
+        { cells: [{ es: "Retorno simple", en: "Simple return" }, { es: "+14,0%", en: "+14.0%" }, { es: "+11,5% (price)", en: "+11.5% (price)" }, { es: "+2,5", en: "+2.5" }] },
+        { cells: [{ es: "TIR sobre flujos", en: "IRR on cash flows" }, { es: "+9,1%", en: "+9.1%" }, { es: "+10,4%", en: "+10.4%" }, { es: "−1,3", en: "−1.3" }] },
+        { cells: [{ es: "Con dividendos y comisiones", en: "With dividends & fees" }, { es: "+7,6%", en: "+7.6%" }, { es: "+12,3% (total return)", en: "+12.3% (total return)" }, { es: "−4,7", en: "−4.7" }], highlight: true },
+        { cells: [{ es: "En moneda de gasto (EUR)", en: "In spending currency (EUR)" }, { es: "+5,2%", en: "+5.2%" }, { es: "+9,8%", en: "+9.8%" }, { es: "−4,6", en: "−4.6" }] },
+      ],
+    },
+  },
+  "clasificacion-automatica-gastos-ia": {
+    image2: aiExpenses2Img,
+    image2Alt: {
+      es: "Móvil mostrando movimientos bancarios ya categorizados junto a recibos en papel",
+      en: "Phone showing already categorised bank transactions next to paper receipts",
+    },
+    image2Caption: {
+      es: "Reglas para lo repetitivo, IA para la cola larga: cada una en lo que gana.",
+      en: "Rules for the repetitive, AI for the long tail: each where it wins.",
+    },
+    table: {
+      title: { es: "Reglas vs. IA: quién gana en cada caso", en: "Rules vs. AI: who wins where" },
+      columns: [
+        { es: "Tipo de movimiento", en: "Transaction type" },
+        { es: "Reglas", en: "Rules" },
+        { es: "IA", en: "AI" },
+        { es: "Mejor opción", en: "Best" },
+      ],
+      rows: [
+        { cells: [{ es: "Nómina e hipoteca", en: "Payroll & mortgage" }, { es: "100%", en: "100%" }, { es: "95%", en: "95%" }, { es: "Reglas", en: "Rules" }] },
+        { cells: [{ es: "Traspaso entre tus cuentas", en: "Transfer between your accounts" }, { es: "98%", en: "98%" }, { es: "60%", en: "60%" }, { es: "Reglas", en: "Rules" }], highlight: true },
+        { cells: [{ es: "Comercio desconocido", en: "Unknown merchant" }, { es: "0%", en: "0%" }, { es: "93%", en: "93%" }, { es: "IA", en: "AI" }] },
+        { cells: [{ es: "Gasto de viaje mixto", en: "Mixed travel spending" }, { es: "35%", en: "35%" }, { es: "88%", en: "88%" }, { es: "IA + etiqueta", en: "AI + tag" }] },
+      ],
+    },
+  },
+  "numero-libertad-financiera": {
+    image2: freedom2Img,
+    image2Alt: {
+      es: "Persona revisando en una tablet la proyección de su capital y su fecha de independencia financiera",
+      en: "Person reviewing on a tablet the projection of their capital and financial independence date",
+    },
+    image2Caption: {
+      es: "Un cuarto de punto en la tasa de retiro cambia tu número en decenas de miles.",
+      en: "A quarter point in the withdrawal rate moves your number by tens of thousands.",
+    },
+    table: {
+      title: { es: "Tu número según la tasa de retiro", en: "Your number by withdrawal rate" },
+      note: {
+        es: "Para un gasto anual de 40.000 €, antes de impuestos sobre plusvalías.",
+        en: "For €40,000 annual spending, before capital gains tax.",
+      },
+      columns: [
+        { es: "Tasa de retiro", en: "Withdrawal rate" },
+        { es: "Capital necesario", en: "Capital needed" },
+        { es: "Múltiplo", en: "Multiple" },
+        { es: "Horizonte cómodo", en: "Comfortable horizon" },
+      ],
+      rows: [
+        { cells: [{ es: "4,0%", en: "4.0%" }, { es: "1.000.000 €", en: "€1,000,000" }, { es: "25×", en: "25×" }, { es: "30 años", en: "30 years" }] },
+        { cells: [{ es: "3,5%", en: "3.5%" }, { es: "1.142.000 €", en: "€1,142,000" }, { es: "28,6×", en: "28.6×" }, { es: "40 años", en: "40 years" }], highlight: true },
+        { cells: [{ es: "3,25%", en: "3.25%" }, { es: "1.230.000 €", en: "€1,230,000" }, { es: "30,8×", en: "30.8×" }, { es: "45-50 años", en: "45-50 years" }] },
+        { cells: [{ es: "3,0%", en: "3.0%" }, { es: "1.333.000 €", en: "€1,333,000" }, { es: "33,3×", en: "33.3×" }, { es: "50+ años", en: "50+ years" }] },
+      ],
+    },
+  },
+  "revision-financiera-20-minutos": {
+    image2: review2Img,
+    image2Alt: {
+      es: "Mujer con café revisando su calendario financiero mensual en el portátil",
+      en: "Woman with coffee reviewing her monthly financial calendar on a laptop",
+    },
+    image2Caption: {
+      es: "Veinte minutos al mes, cuatro horas al año, doce decisiones ejecutadas.",
+      en: "Twenty minutes a month, four hours a year, twelve executed decisions.",
+    },
+    table: {
+      title: { es: "Qué revisar y cada cuánto", en: "What to review and how often" },
+      columns: [
+        { es: "Frecuencia", en: "Frequency" },
+        { es: "Tiempo", en: "Time" },
+        { es: "Qué haces", en: "What you do" },
+      ],
+      rows: [
+        { cells: [{ es: "Mensual", en: "Monthly" }, { es: "20 min", en: "20 min" }, { es: "Saldos, 3 métricas y 1 decisión", en: "Balances, 3 metrics and 1 decision" }], highlight: true },
+        { cells: [{ es: "Trimestral", en: "Quarterly" }, { es: "+20 min", en: "+20 min" }, { es: "Rebalanceo y gastos fijos", en: "Rebalancing and fixed costs" }] },
+        { cells: [{ es: "Anual", en: "Annual" }, { es: "1 h", en: "1 h" }, { es: "Número objetivo, seguros, fiscalidad", en: "Target number, insurance, taxes" }] },
+      ],
+    },
+  },
+};
