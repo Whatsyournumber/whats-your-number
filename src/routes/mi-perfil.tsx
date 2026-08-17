@@ -24,6 +24,7 @@ import { useLanguage, useT } from "@/hooks/use-language";
 import { translateOption } from "@/lib/i18n-data";
 
 import { useProfile, type Profile } from "@/hooks/use-profile";
+import { seedHoldingsFromTotals, useHoldings, wealthTotals, type Holding } from "@/hooks/use-holdings";
 import {
   childrenOptions,
   cities,
@@ -125,12 +126,13 @@ function MiPerfil() {
   };
 
 
-  const merged: Profile = { ...form };
+  const merged: Profile = { ...form, ...wealthTotals(wealth) };
   const preview = buildDataset(merged);
 
   const onSave = async () => {
     const { completed: _c, ...rest } = merged;
     try {
+      await saveAll(wealth);
       await save({ ...rest, completed: true });
 
       setDirty(false);
