@@ -2,6 +2,7 @@ import { NoObjectGeneratedError, Output, streamText } from "ai";
 import { z } from "zod";
 
 import { createLovableAiGatewayProvider } from "./ai-gateway.server";
+import { BASE_CATEGORIES, categorizeTx } from "./categorize";
 
 type AnySupabase = {
   from: (table: string) => any;
