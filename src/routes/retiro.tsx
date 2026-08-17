@@ -261,12 +261,14 @@ function RetiroContent() {
           )}
         </motion.div>
 
-        <KpiCard
-          label={t("Ingreso mensual", "Monthly income")}
-          value={fmt(d.income)}
-          hint={t("lo que entra cada mes", "what comes in each month")}
-          index={1}
-        />
+        {goalMode === "business" && (
+          <KpiCard
+            label={t("Ingreso mensual", "Monthly income")}
+            value={fmt(d.income)}
+            hint={t("lo que entra cada mes", "what comes in each month")}
+            index={1}
+          />
+        )}
         <EditableKpiCard
           label={t("Cuánto tengo", "How much I have")}
           value={fmt(investable)}
@@ -279,10 +281,15 @@ function RetiroContent() {
           hint={t("Ahorros e inversiones — sin contar propiedades", "Savings and investments — excluding properties")}
           index={2}
         />
-
+        {goalMode !== "business" && (
+          <KpiCard label={t("Cómo voy", "How I'm doing")} value={`${progressPct.toFixed(1)}%`} hint={t("del capital objetivo", "of target capital")} index={2} />
+        )}
         <Link to="/gastos" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
           <KpiCard label={t("Gastos mensuales", "Monthly expenses")} value={fmt(d.expenses)} hint={`${fmt(d.expenses * 12)} ${t("al año", "per year")}`} index={3} />
         </Link>
+        {goalMode !== "business" && (
+          <KpiCard label={t("Aportes estimados al año", "Estimated contributions per year")} value={fmt(retirement.contributionsYTD)} index={4} />
+        )}
         <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${swr}%`} hint={t("anual · tu tasa de retiro", "annual · your withdrawal rate")} index={4} />
         {goalMode === "business" && (
           <KpiCard
@@ -292,6 +299,7 @@ function RetiroContent() {
             index={5}
           />
         )}
+
       </div>
       <div className="surface p-5">
         <div className="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:justify-between sm:gap-4">
