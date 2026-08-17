@@ -109,8 +109,10 @@ function RetiroContent() {
     return Math.ceil(mr > 0 ? (remaining * mr) / (Math.pow(1 + mr, months) - 1) : remaining / months);
   })();
 
-
-
+  // En modo negocio/vivienda el simulador parte del aporte mensual necesario para llegar a tiempo.
+  useEffect(() => {
+    if (isGoal) setMonthly(requiredMonthly);
+  }, [requiredMonthly, isGoal]);
 
   // Escenarios de renta mensual: se construyen alrededor de TU número (el que estás editando).
   const baseNumber = targetNow > 0 ? targetNow : 1_000_000;
