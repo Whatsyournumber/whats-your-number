@@ -60,7 +60,7 @@ const GOALS_EN: Record<string, string> = {
   patrimonio: "Grow my net worth",
   gastos: "Understand and control my expenses",
   vivienda: "Save for a home",
-  viajar: "Travel more",
+  negocio: "Start my business",
   organizar: "Better organize my money",
   otro: "Another goal (write it down)",
 };

@@ -40,6 +40,7 @@ export type OnboardingData = {
   risk_profile: string;
   home_price: number;
   down_payment_pct: number;
+  business_target: number;
 };
 
 export const emptyOnboarding: OnboardingData = {
@@ -83,6 +84,7 @@ export const emptyOnboarding: OnboardingData = {
   risk_profile: "",
   home_price: 0,
   down_payment_pct: 20,
+  business_target: 0,
 };
 
 export type Country = { name: string; code: string; currency: string; tz: string };
@@ -291,7 +293,7 @@ export const goals = [
   { value: "patrimonio", emoji: "📈", label: "Hacer crecer mi patrimonio" },
   { value: "gastos", emoji: "💳", label: "Entender y controlar mis gastos" },
   { value: "vivienda", emoji: "🏡", label: "Ahorrar para una vivienda" },
-  { value: "viajar", emoji: "✈️", label: "Viajar más" },
+  { value: "negocio", emoji: "🚀", label: "Montar mi negocio" },
   { value: "organizar", emoji: "💼", label: "Organizar mejor mi dinero" },
   { value: "otro", emoji: "✍️", label: "Otro objetivo (escríbelo)" },
 ];
