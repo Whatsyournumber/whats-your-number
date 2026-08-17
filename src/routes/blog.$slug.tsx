@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { blogPosts, getPost, postExtras, sectionId } from "@/lib/blog-posts";
+import { getAuthor } from "@/lib/blog-authors";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
@@ -40,6 +41,7 @@ function BlogArticle() {
   if (!post) return null;
 
   const extras = postExtras[post.slug];
+  const author = getAuthor(post.slug);
 
   // Cumulative paragraph count after each section
   const cumulative: number[] = [];
@@ -224,6 +226,26 @@ function BlogArticle() {
             <p className="mt-2 text-sm leading-relaxed">{post.takeaway[lang]}</p>
           </div>
         </aside>
+
+        <section className="surface mt-8 flex flex-col gap-5 p-6 sm:flex-row sm:items-start">
+          <img
+            src={author.photo}
+            alt={`${author.name} — ${author.role[lang]}`}
+            loading="lazy"
+            width={816}
+            height={816}
+            className="h-20 w-20 shrink-0 rounded-full object-cover ring-2 ring-primary/40"
+          />
+          <div>
+            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-primary">
+              {t("Escrito por", "Written by")}
+            </p>
+            <p className="mt-1 font-display text-lg font-semibold">{author.name}</p>
+            <p className="text-xs text-muted-foreground">{author.role[lang]}</p>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{author.bio[lang]}</p>
+          </div>
+        </section>
+
 
         <section className="surface glow mt-8 p-7">
           <p className="font-display text-lg font-semibold leading-snug">
