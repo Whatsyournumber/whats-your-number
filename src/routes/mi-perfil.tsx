@@ -442,6 +442,19 @@ function MiPerfil() {
         </Panel>
       </div>
 
+      <WealthEditor
+        value={wealth}
+        onChange={(next) => {
+          setDirty(true);
+          setWealth(next);
+        }}
+        fmt={preview.fmt}
+        retireAge={form.retire_age}
+        onRetireAge={(n) => set("retire_age", n)}
+      />
+
+
+
 
 
 
