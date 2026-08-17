@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -595,7 +595,10 @@ export function FamilyPlanner({
               <button
                 key={v.key}
                 type="button"
-                onClick={() => setPick(v.key)}
+                onClick={() => {
+                  setRateTouched(true);
+                  setPick(v.key);
+                }}
                 className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
                   v.key === pick
                     ? "bg-primary text-primary-foreground"
