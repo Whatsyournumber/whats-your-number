@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { blogPosts, getPost, postExtras, sectionId } from "@/lib/blog-posts";
+import { getAuthor } from "@/lib/blog-authors";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
