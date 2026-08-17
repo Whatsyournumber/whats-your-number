@@ -59,9 +59,10 @@ export function AppSidebar() {
     { title: t("Análisis de Gastos", "Spending Analysis"), url: "/gastos", icon: PieChart },
     { title: t("Distribución del dinero", "Money Distribution"), url: "/cash-flow", icon: Waves },
     { title: t("Análisis de hipoteca", "Mortgage analysis"), url: "/hipoteca", icon: Home },
+    { title: "WhatsYournumber", url: "/retiro", icon: PiggyBank },
     { title: t("Patrimonio", "Net Worth"), url: "/patrimonio", icon: Landmark },
     { title: t("Portafolio", "Portfolio"), url: "/portafolio", icon: LineChart },
-    { title: "WhatsYournumber", url: "/retiro", icon: PiggyBank },
+
     { title: "Lifestyle Simulator", url: "/ciudades", icon: Globe },
     { title: "Life Planner", url: "/life-planner", icon: Target },
   ] as const;
