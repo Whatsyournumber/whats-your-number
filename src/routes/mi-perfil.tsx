@@ -101,6 +101,13 @@ function MiPerfil() {
     if (!dirty) setForm(profile);
   }, [profile, dirty]);
 
+  // Detalle del patrimonio: si nunca lo editaste, lo sembramos con los totales del perfil.
+  useEffect(() => {
+    if (dirty || loadingHoldings) return;
+    setWealth(holdings.length ? holdings : seedHoldingsFromTotals(profile));
+  }, [holdings, loadingHoldings, profile, dirty]);
+
+
   const set = <K extends keyof Profile>(key: K, value: Profile[K]) => {
     setDirty(true);
     setForm((f) => ({ ...f, [key]: value }));
