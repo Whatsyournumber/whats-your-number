@@ -1,10 +1,11 @@
+import { Fragment } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, Clock, List, Sparkles } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useLanguage, useT } from "@/hooks/use-language";
-import { blogPosts, getPost, sectionId } from "@/lib/blog-posts";
+import { blogPosts, getPost, postExtras, sectionId } from "@/lib/blog-posts";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
@@ -37,6 +38,9 @@ function BlogArticle() {
   const post = getPost(slug);
 
   if (!post) return null;
+
+  const extras = postExtras[post.slug];
+  const midPoint = Math.max(0, Math.ceil(post.sections.length / 2) - 1);
 
   const related = blogPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
 
@@ -205,8 +209,8 @@ function BlogArticle() {
         <section className="surface mt-8 flex flex-wrap items-center gap-4 p-7">
           <p className="text-sm text-muted-foreground">
             {t(
-              "Calcula tu número con tus datos reales en minutos.",
-              "Calculate your number with your real data in minutes.",
+              "¿Quieres entender tu libertad financiera con tus datos reales? Crea tu cuenta y calcula tu número en minutos.",
+              "Want to understand your financial freedom with your real data? Create your account and calculate your number in minutes.",
             )}
           </p>
           <Link
