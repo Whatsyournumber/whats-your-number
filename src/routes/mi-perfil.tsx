@@ -59,6 +59,7 @@ function MiPerfil() {
   const [form, setForm] = useState<Profile>(profile);
 
   const [dirty, setDirty] = useState(false);
+  const [pendingGoal, setPendingGoal] = useState<string | null>(null);
   // Tasas del día: necesarias para reconvertir los importes al cambiar de moneda.
   useFxRates();
 
