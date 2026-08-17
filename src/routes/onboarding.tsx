@@ -1505,11 +1505,35 @@ function SummaryScreen({
               </p>
             )}
           </div>
-          <div className="text-right">
-            <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">📅 {t("Libertad financiera", "Financial freedom")}</p>
-            <p className="numeric mt-2 text-4xl font-semibold text-primary">{plan.freedomAge} {t("años", "years")}</p>
-            <p className="mt-2 text-xs text-muted-foreground">{t("Tu meta eran los", "Your goal was")} {plan.retireAge} {t("años.", "years old.")}</p>
+          <div className="sm:text-right">
+            {plan.mode === "business" || plan.mode === "home" ? (
+              <>
+                <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                  ⏳ {plan.mode === "business" ? t("Montar tu negocio", "Start your business") : t("Comprar tu vivienda", "Buy your home")}
+                </p>
+                <p className="numeric mt-2 text-4xl font-semibold text-primary">
+                  {plan.monthsToGoal > 0
+                    ? `${Math.max(1, Math.ceil(plan.monthsToGoal / 12))} ${plan.monthsToGoal <= 12 ? t("año", "year") : t("años", "years")}`
+                    : t("Listo", "Ready")}
+                </p>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  {plan.monthsToGoal > 0
+                    ? t(
+                        `A tu ritmo de ahorro actual lo alcanzas a los ${(data.age ?? 30) + Math.max(1, Math.ceil(plan.monthsToGoal / 12))} años.`,
+                        `At your current savings rate you reach it at age ${(data.age ?? 30) + Math.max(1, Math.ceil(plan.monthsToGoal / 12))}.`,
+                      )
+                    : t("Ya tienes el capital necesario.", "You already have the capital you need.")}
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">📅 {t("Libertad financiera", "Financial freedom")}</p>
+                <p className="numeric mt-2 text-4xl font-semibold text-primary">{plan.freedomAge} {t("años", "years")}</p>
+                <p className="mt-2 text-xs text-muted-foreground">{t("Tu meta eran los", "Your goal was")} {plan.retireAge} {t("años.", "years old.")}</p>
+              </>
+            )}
           </div>
+
         </div>
 
         <div className="mt-6">
