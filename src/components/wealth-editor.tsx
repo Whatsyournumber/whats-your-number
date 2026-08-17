@@ -142,7 +142,17 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
         <div className="space-y-4">
           <Section icon={<Building2 className="h-4 w-4" />} tone="indigo" title={t("Propiedades", "Properties")} total={fmt(propertyTotal)}>
             {list("property").map((h) => (
-              <Card key={h.id} title={h.label || t("Propiedad", "Property")} onRemove={() => remove(h.id)}>
+              <CollapsibleCard
+                key={h.id}
+                title={h.label || t("Propiedad", "Property")}
+                filled={Boolean(h.label.trim()) || h.manual_value > 0}
+                summary={[
+                  h.manual_value > 0 ? fmt(h.manual_value) : null,
+                  h.linked_liability > 0 ? `${t("Hipoteca", "Mortgage")} ${fmt(h.linked_liability)}` : null,
+                  h.monthly_income > 0 ? `${t("Renta", "Rent")} ${fmt(h.monthly_income)}/${t("mes", "mo")}` : null,
+                ]}
+                onRemove={() => remove(h.id)}
+              >
                 <InlineRow label={t("Nombre", "Name")}>
                   <Input value={h.label} onChange={(e) => patch(h.id, { label: e.target.value })} className="h-9" />
                 </InlineRow>
@@ -161,7 +171,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
                 <p className="text-[11px] text-muted-foreground">
                   {t("Equity neto", "Net equity")}: {fmt(Math.max(0, h.manual_value - h.linked_liability))}
                 </p>
-              </Card>
+              </CollapsibleCard>
             ))}
             <AddButton onClick={() => add("property", t("Propiedad", "Property"))}>
               {t("Agregar otra propiedad", "Add another property")}
@@ -170,7 +180,17 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
 
           <Section icon={<Gift className="h-4 w-4" />} tone="violet" title={t("Activos futuros", "Future assets")} total={fmt(Math.round(futureTotal))}>
             {list("future").map((h) => (
-              <Card key={h.id} title={h.label || t("Activo futuro", "Future asset")} onRemove={() => remove(h.id)}>
+              <CollapsibleCard
+                key={h.id}
+                title={h.label || t("Activo futuro", "Future asset")}
+                filled={Boolean(h.label.trim()) || h.manual_value > 0}
+                summary={[
+                  h.manual_value > 0 ? fmt(h.manual_value) : null,
+                  h.target_year ? String(h.target_year) : null,
+                  `${h.probability}%`,
+                ]}
+                onRemove={() => remove(h.id)}
+              >
                 <InlineRow label={t("Nombre", "Name")}>
                   <Input value={h.label} onChange={(e) => patch(h.id, { label: e.target.value })} className="h-9" />
                 </InlineRow>
@@ -195,7 +215,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
                 <p className="text-[11px] text-muted-foreground">
                   {t("Valor ponderado", "Weighted value")}: {fmt(Math.round((h.manual_value * h.probability) / 100))}
                 </p>
-              </Card>
+              </CollapsibleCard>
             ))}
             <AddButton onClick={() => add("future", "")}>{t("Agregar otro activo futuro", "Add another future asset")}</AddButton>
           </Section>
@@ -389,6 +409,47 @@ function Select({
         </option>
       ))}
     </select>
+  );
+}
+
+function CollapsibleCard({
+  title,
+  summary,
+  filled,
+  onRemove,
+  children,
+}: {
+  title: string;
+  summary: (string | null)[];
+  filled: boolean;
+  onRemove: () => void;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(!filled);
+  if (!open) {
+    return (
+      <div className="rounded-xl border border-border/60 bg-background/40 p-3">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+          <button type="button" onClick={() => setOpen(true)} className="min-w-0 text-left">
+            <p className="truncate text-sm font-medium">{title}</p>
+            <p className="truncate text-[11px] text-muted-foreground">{summary.filter(Boolean).join(" · ")}</p>
+          </button>
+          <div className="flex shrink-0 items-center gap-1">
+            <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={() => setOpen(true)}>
+              <Pencil className="h-3.5 w-3.5" />
+            </Button>
+            <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground" onClick={onRemove}>
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <Card title={title} onRemove={onRemove} onCollapse={() => setOpen(false)}>
+      {children}
+    </Card>
   );
 }
 
