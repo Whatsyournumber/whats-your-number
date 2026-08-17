@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
+import { WealthEditor } from "@/components/wealth-editor";
+
 import { SubscriptionManager } from "@/components/subscription-manager";
 import { Button } from "@/components/ui/button";
 import {
