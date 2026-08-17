@@ -274,7 +274,11 @@ function OnboardingPage() {
   }
 
   const canContinue = () => {
-    if (step === 1) return life.goal === "otro" ? life.goal_note.trim().length > 2 : !!life.goal;
+    if (step === 1) {
+      if (life.goal === "otro") return life.goal_note.trim().length > 2;
+      if (life.goal === "negocio") return data.business_target > 0;
+      return !!life.goal;
+    }
     if (step === 2) return !!data.age;
     if (step === 4) return !!life.city;
     if (step === 5) return !!life.marital_status && !!life.children && !!life.plans_children;
