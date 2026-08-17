@@ -68,6 +68,14 @@ function RetiroContent() {
   const [rate, setRate] = useState(retirement.returnAnnualized);
   const [retireAge, setRetireAge] = useState(retirement.retireAge);
 
+  // El simulador cambia según tu objetivo: libertad financiera, vivienda o negocio.
+  const goalMode = plan.mode;
+  const isGoal = goalMode !== "freedom";
+  const goalLabel =
+    goalMode === "home" ? t("Entrada de tu vivienda", "Your home down payment") : t("Capital para tu negocio", "Capital for your business");
+  const defaultHorizon = Math.max(1, Math.min(15, Math.ceil((plan.monthsToGoal || 36) / 12)));
+  const [horizonYears, setHorizonYears] = useState(defaultHorizon);
+
   // Sincroniza el simulador cuando el perfil termina de cargar o el usuario edita sus datos.
   useEffect(() => {
     setMonthly(retirement.monthlyContribution);
@@ -75,13 +83,18 @@ function RetiroContent() {
     setRetireAge(retirement.retireAge);
   }, [retirement.monthlyContribution, retirement.returnAnnualized, retirement.retireAge]);
 
-  const years = Math.max(0, retireAge - retirement.currentAge);
+  useEffect(() => {
+    setHorizonYears(defaultHorizon);
+  }, [defaultHorizon]);
+
+  const years = isGoal ? horizonYears : Math.max(0, retireAge - retirement.currentAge);
   // Parte de TODO lo que ya tengo invertido (no solo la cuenta de retiro).
   const data = projectRetirementFrom(monthly, rate, years, investable, retirement.currentAge);
   const final = data[data.length - 1]!;
-  // El objetivo se compara contra el número que estás editando en vivo.
-  const targetNow = liveNumber > 0 ? liveNumber : plan.targetCapital;
+  // El objetivo se compara contra tu meta activa (vivienda/negocio) o el número que editas en vivo.
+  const targetNow = isGoal ? plan.targetCapital : liveNumber > 0 ? liveNumber : plan.targetCapital;
   const gap = targetNow - final.value;
+
 
 
   // Escenarios de renta mensual: se construyen alrededor de TU número (el que estás editando).
@@ -222,7 +235,15 @@ function RetiroContent() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title={t("Proyección hasta el retiro", "Projection to retirement")} description={`${t("Saldo estimado a los", "Estimated balance at")} ${retireAge} ${t("años", "years old")}`} className="lg:col-span-2">
+        <Panel
+          title={isGoal ? t("Proyección hasta tu objetivo", "Projection to your goal") : t("Proyección hasta el retiro", "Projection to retirement")}
+          description={
+            isGoal
+              ? `${goalLabel} · ${t("saldo estimado en", "estimated balance in")} ${horizonYears} ${horizonYears === 1 ? t("año", "year") : t("años", "years")}`
+              : `${t("Saldo estimado a los", "Estimated balance at")} ${retireAge} ${t("años", "years old")}`
+          }
+          className="lg:col-span-2"
+        >
           <ResponsiveContainer width="100%" height={320}>
             <AreaChart data={data} margin={{ left: -8, right: 8, top: 8 }}>
               <defs>
@@ -241,11 +262,14 @@ function RetiroContent() {
           </ResponsiveContainer>
         </Panel>
 
-        <Panel title={t("Simulador", "Simulator")} description={t("Ajusta y mira el impacto", "Adjust and see the impact")}>
+        <Panel
+          title={t("Simulador", "Simulator")}
+          description={isGoal ? `${goalLabel} · ${fmt(plan.targetCapital)}` : t("Ajusta y mira el impacto", "Adjust and see the impact")}
+        >
           <div className="space-y-6">
             <div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">{t("Aporte mensual", "Monthly contribution")}</span>
+                <span className="text-muted-foreground">{isGoal ? t("Ahorro mensual", "Monthly saving") : t("Aporte mensual", "Monthly contribution")}</span>
                 <span className="numeric font-semibold">{fmt(monthly)}</span>
               </div>
               <Slider
@@ -264,32 +288,58 @@ function RetiroContent() {
               </div>
               <Slider className="mt-3" min={1} max={15} step={0.5} value={[rate]} onValueChange={([v]) => setRate(v ?? 7)} />
             </div>
-            <div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">{t("Edad de retiro", "Retirement age")}</span>
-                <span className="numeric font-semibold">{retireAge} {t("años", "years old")}</span>
+            {isGoal ? (
+              <div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">{t("Plazo para lograrlo", "Time to reach it")}</span>
+                  <span className="numeric font-semibold">
+                    {horizonYears} {horizonYears === 1 ? t("año", "year") : t("años", "years")}
+                  </span>
+                </div>
+                <Slider
+                  className="mt-3"
+                  min={1}
+                  max={15}
+                  step={1}
+                  value={[horizonYears]}
+                  onValueChange={([v]) => setHorizonYears(v ?? defaultHorizon)}
+                />
               </div>
-              <Slider
-                className="mt-3"
-                min={Math.min(retirement.currentAge + 1, 80)}
-                max={85}
-                step={1}
-                value={[retireAge]}
-                onValueChange={([v]) => setRetireAge(v ?? retirement.retireAge)}
-              />
-            </div>
+            ) : (
+              <div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">{t("Edad de retiro", "Retirement age")}</span>
+                  <span className="numeric font-semibold">{retireAge} {t("años", "years old")}</span>
+                </div>
+                <Slider
+                  className="mt-3"
+                  min={Math.min(retirement.currentAge + 1, 80)}
+                  max={85}
+                  step={1}
+                  value={[retireAge]}
+                  onValueChange={([v]) => setRetireAge(v ?? retirement.retireAge)}
+                />
+              </div>
+            )}
             <div className="rounded-xl bg-elevated/60 p-4">
-              <p className="text-xs text-muted-foreground">{t("Saldo proyectado", "Projected balance")}</p>
+              <p className="text-xs text-muted-foreground">{isGoal ? t("Tendrías en", "You'd have in") + ` ${horizonYears}a` : t("Saldo proyectado", "Projected balance")}</p>
               <p className="numeric mt-1 text-2xl font-semibold">{fmt(final.value)}</p>
               <p className="mt-1 text-xs text-muted-foreground">
                 {gap <= 0
-                  ? `${t("Superas tu número por", "You exceed your number by")} ${fmt(-gap)} 🎯`
+                  ? `${isGoal ? t("Superas tu objetivo por", "You exceed your goal by") : t("Superas tu número por", "You exceed your number by")} ${fmt(-gap)} 🎯`
                   : `${t("Te faltarían", "You'd still need")} ${fmt(gap)}`}
               </p>
               <p className="mt-1 text-[11px] text-muted-foreground">
-                {t("Partes de", "Starting from")} {fmt(investable)} {t("que ya tienes · objetivo", "you already have · target")} {fmt(targetNow)}
+                {t("Partes de", "Starting from")} {fmt(investable)}{" "}
+                {isGoal ? `${t("que ya tienes ·", "you already have ·")} ${goalLabel} ${fmt(targetNow)}` : `${t("que ya tienes · objetivo", "you already have · target")} ${fmt(targetNow)}`}
               </p>
+              {isGoal && gap > 0 && years > 0 ? (
+                <p className="mt-2 text-[11px] text-primary">
+                  {t("Ahorra", "Save")} {fmt(Math.ceil(gap / (years * 12)))}/{t("mes más para llegar a tiempo", "mo more to make it on time")}
+                </p>
+              ) : null}
             </div>
+
 
           </div>
         </Panel>
