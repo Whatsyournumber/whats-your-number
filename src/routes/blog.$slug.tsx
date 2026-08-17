@@ -18,15 +18,41 @@ export const Route = createFileRoute("/blog/$slug")({
     const post = getPost(params.slug);
     const title = post ? `${post.title.es} — WhatsYournumber` : "Artículo — WhatsYournumber";
     const description = post?.excerpt.es ?? "Artículos sobre finanzas personales, inversión y IA.";
+    const author = getAuthor(params.slug);
+    const url = `https://whatsyournumber.lovable.app/blog/${params.slug}`;
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: post?.title.es ?? title,
+      description,
+      inLanguage: "es",
+      mainEntityOfPage: { "@type": "WebPage", "@id": url },
+      keywords: post?.keyword.es ?? undefined,
+      author: {
+        "@type": "Person",
+        name: author.name,
+        jobTitle: author.role.es,
+        description: author.bio.es,
+      },
+      publisher: {
+        "@type": "Organization",
+        name: "WhatsYournumber",
+        url: "https://whatsyournumber.lovable.app",
+      },
+    };
     return {
       meta: [
         { title: title.slice(0, 70) },
         { name: "description", content: description.slice(0, 158) },
+        { name: "author", content: author.name },
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "article" },
+        { property: "article:author", content: author.name },
         { name: "twitter:card", content: "summary_large_image" },
       ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [{ type: "application/ld+json", children: JSON.stringify(jsonLd) }],
     };
   },
   component: BlogArticle,
@@ -227,22 +253,34 @@ function BlogArticle() {
           </div>
         </aside>
 
-        <section className="surface mt-8 flex flex-col gap-5 p-6 sm:flex-row sm:items-start">
+        <section
+          className="surface mt-8 flex flex-col gap-5 p-6 sm:flex-row sm:items-start"
+          itemScope
+          itemType="https://schema.org/Person"
+          aria-label={t("Autor del artículo", "Article author")}
+        >
           <img
             src={author.photo}
-            alt={`${author.name} — ${author.role[lang]}`}
+            alt={`${author.name}, ${author.role[lang]} — ${t("autora/autor en WhatsYournumber", "author at WhatsYournumber")}`}
             loading="lazy"
             width={816}
             height={816}
+            itemProp="image"
             className="h-20 w-20 shrink-0 rounded-full object-cover ring-2 ring-primary/40"
           />
           <div>
             <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-primary">
               {t("Escrito por", "Written by")}
             </p>
-            <p className="mt-1 font-display text-lg font-semibold">{author.name}</p>
-            <p className="text-xs text-muted-foreground">{author.role[lang]}</p>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{author.bio[lang]}</p>
+            <p className="mt-1 font-display text-lg font-semibold" itemProp="name">
+              {author.name}
+            </p>
+            <p className="text-xs text-muted-foreground" itemProp="jobTitle">
+              {author.role[lang]}
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground" itemProp="description">
+              {author.bio[lang]}
+            </p>
           </div>
         </section>
 
