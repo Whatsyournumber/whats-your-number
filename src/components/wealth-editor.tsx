@@ -292,16 +292,17 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-border/60 bg-elevated/40 p-4">
-      <div className="mb-3 flex items-center gap-2">
-        <span className={cn("grid h-8 w-8 place-items-center rounded-xl", TONES[tone] ?? TONES["sky"])}>{icon}</span>
-        <h3 className="text-base font-semibold">{title}</h3>
-        <span className="numeric ml-auto text-sm font-medium text-muted-foreground">{total}</span>
+    <section className="rounded-2xl border border-border/60 bg-elevated/40 p-3 sm:p-4">
+      <div className="mb-3 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2">
+        <span className={cn("grid h-8 w-8 shrink-0 place-items-center rounded-xl", TONES[tone] ?? TONES["sky"])}>{icon}</span>
+        <h3 className="truncate text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{title}</h3>
+        <span className="numeric shrink-0 text-sm font-medium">{total}</span>
       </div>
       <div className="space-y-2.5">{children}</div>
     </section>
   );
 }
+
 
 function Summary({ label, value, hint, accent, negative }: { label: string; value: string; hint?: string | undefined; accent?: boolean; negative?: boolean }) {
   return (
