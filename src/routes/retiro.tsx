@@ -220,36 +220,30 @@ function RetiroContent() {
           )}
         </motion.div>
 
+        <KpiCard
+          label={t("Ingreso mensual", "Monthly income")}
+          value={fmt(d.income)}
+          hint={t("lo que entra cada mes", "what comes in each month")}
+          index={1}
+        />
         <Link to="/patrimonio" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
           <KpiCard
             label={t("Cuánto tengo", "How much I have")}
             value={fmt(investable)}
             hint={t("Sin contar propiedades — solo activos que generan retorno", "Excluding properties — only assets that generate returns")}
-            index={1}
+            index={2}
           />
         </Link>
-
-        <KpiCard label={t("Cómo voy", "How I'm doing")} value={`${progressPct.toFixed(1)}%`} hint={t("del capital objetivo", "of target capital")} index={2} />
         <Link to="/gastos" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
           <KpiCard label={t("Gastos mensuales", "Monthly expenses")} value={fmt(d.expenses)} hint={`${fmt(d.expenses * 12)} ${t("al año", "per year")}`} index={3} />
         </Link>
-        {goalMode === "business" ? (
-          <KpiCard
-            label={t("Ingreso mensual", "Monthly income")}
-            value={fmt(d.income)}
-            hint={t("lo que entra cada mes", "what comes in each month")}
-            index={4}
-          />
-        ) : (
-          <KpiCard label={t("Aportes estimados al año", "Estimated contributions per year")} value={fmt(retirement.contributionsYTD)} index={4} />
-        )}
-        <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${swr}%`} hint={t("anual · tu tasa de retiro", "annual · your withdrawal rate")} index={5} />
+        <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${swr}%`} hint={t("anual · tu tasa de retiro", "annual · your withdrawal rate")} index={4} />
         {goalMode === "business" && (
           <KpiCard
             label={t("Puedes aportar al mes", "You can contribute monthly")}
             value={fmt(Math.max(0, d.income - d.expenses))}
             hint={t("ingreso menos gastos", "income minus expenses")}
-            index={6}
+            index={5}
           />
         )}
       </div>
