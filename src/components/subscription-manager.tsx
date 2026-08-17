@@ -90,14 +90,26 @@ export function SubscriptionManager() {
               : ""}
 
         </span>
-        {subscription?.current_period_end && (
-          <span className="text-xs text-muted-foreground">
-            {subscription.status === "canceled" || subscription.cancel_at_period_end
-              ? t("Acceso hasta", "Access until")
-              : t("Renueva el", "Renews on")}{" "}
-            {fmtDate(subscription.current_period_end)}
-          </span>
-        )}
+        {subscription?.current_period_end &&
+          (isPromo ? (
+            new Date(subscription.current_period_end).getTime() - Date.now() < 5 * 365 * 86_400_000 ? (
+              <span className="text-xs text-muted-foreground">
+                {t("Acceso hasta", "Access until")} {fmtDate(subscription.current_period_end)}
+              </span>
+            ) : (
+              <span className="text-xs text-muted-foreground">
+                {t("Acceso sin caducidad", "No expiry")}
+              </span>
+            )
+          ) : (
+            <span className="text-xs text-muted-foreground">
+              {subscription.status === "canceled" || subscription.cancel_at_period_end
+                ? t("Acceso hasta", "Access until")
+                : t("Renueva el", "Renews on")}{" "}
+              {fmtDate(subscription.current_period_end)}
+            </span>
+          ))}
+
         <PlanDetailsDialog
           tier={tier}
           isTrial={isTrial}
