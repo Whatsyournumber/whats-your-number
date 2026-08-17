@@ -355,6 +355,7 @@ function OnboardingPage() {
                       <SubQuestion title={t("¿Cuánto cuesta la vivienda que quieres?", "How much does the home you want cost?")} />
                       <div className="grid gap-2.5 sm:grid-cols-2">
                         <MoneyField
+                          emoji="🏡"
                           label={t("Precio de la vivienda", "Home price")}
                           currency={cur}
                           value={data.home_price}
@@ -1442,10 +1443,22 @@ function SummaryScreen({
           <div>
             <p className="text-[11px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
             <p className="numeric mt-2 text-4xl font-semibold">{compact(plan.targetCapital, currency)}</p>
-            <p className="mt-2 text-xs text-muted-foreground">
-              {t("El capital que te permite vivir con", "The capital that lets you live on")} {money(plan.desiredIncome, currency)} {t("al mes", "per month")}
-              {life.city ? ` ${t("en", "in")} ${life.city}` : ""}.
-            </p>
+            {plan.mode === "home" ? (
+              <p className="mt-2 text-xs text-muted-foreground">
+                {t("La entrada de tu primera vivienda", "The down payment for your first home")} ({money(plan.homePrice, currency)}){". "}
+                {plan.monthlyToGoal > 0
+                  ? t(
+                      `Necesitas ahorrar ${money(plan.monthlyToGoal, currency)} al mes para lograrlo en 3 años.`,
+                      `You need to save ${money(plan.monthlyToGoal, currency)} per month to get there in 3 years.`,
+                    )
+                  : t("Ya tienes cubierta la entrada.", "You already have the down payment covered.")}
+              </p>
+            ) : (
+              <p className="mt-2 text-xs text-muted-foreground">
+                {t("El capital que te permite vivir con", "The capital that lets you live on")} {money(plan.desiredIncome, currency)} {t("al mes", "per month")}
+                {life.city ? ` ${t("en", "in")} ${life.city}` : ""}.
+              </p>
+            )}
           </div>
           <div className="text-right">
             <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">📅 {t("Libertad financiera", "Financial freedom")}</p>
