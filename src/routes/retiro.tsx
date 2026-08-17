@@ -434,14 +434,17 @@ function RetiroContent() {
                   ? `${isGoal ? t("Superas tu objetivo por", "You exceed your goal by") : t("Superas tu número por", "You exceed your number by")} ${fmt(-gap)} 🎯`
                   : `${t("Te faltarían", "You'd still need")} ${fmt(gap)}`}
               </p>
-              <div className="mt-1 text-[11px] leading-snug text-muted-foreground">
-                <p className="truncate">
-                  {t("Partes de", "Starting from")} {fmt(investable)} {t("que ya tienes", "you already have")}
-                </p>
-                <p className="truncate">
-                  {isGoal ? goalLabel : t("Objetivo", "Target")}: {fmt(targetNow)}
-                </p>
-              </div>
+              <dl className="mt-3 grid grid-cols-1 gap-1.5 border-t border-border/60 pt-3 text-[11px] leading-snug">
+                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-2">
+                  <dt className="truncate text-muted-foreground">{t("Partes de", "Starting from")}</dt>
+                  <dd className="numeric shrink-0 font-medium">{fmt(investable)}</dd>
+                </div>
+                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-2">
+                  <dt className="truncate text-muted-foreground">{isGoal ? goalLabel : t("Objetivo", "Target")}</dt>
+                  <dd className="numeric shrink-0 font-medium">{fmt(targetNow)}</dd>
+                </div>
+              </dl>
+
 
               {isGoal && gap > 0 && years > 0 ? (
                 <p className="mt-2 text-[11px] text-primary">
