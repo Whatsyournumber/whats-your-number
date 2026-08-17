@@ -456,7 +456,7 @@ function MiPerfil() {
           </div>
         </Panel>
 
-        <div className="text-sm [&_.text-2xl]:text-lg [&_.text-lg]:text-base [&_.text-xl]:text-lg [&_button]:text-xs [&_input]:h-8 [&_input]:text-xs [&_label]:text-[11px]">
+        <div className="h-full text-sm [&>*]:h-full [&_.text-2xl]:text-lg [&_.text-lg]:text-base [&_.text-xl]:text-lg [&_button]:text-xs [&_input]:h-8 [&_input]:text-xs [&_label]:text-[11px]">
           <WealthEditor
             value={wealth}
             onChange={(next) => {
