@@ -206,21 +206,34 @@ function BlogArticle() {
           </div>
         </aside>
 
-        <section className="surface mt-8 flex flex-wrap items-center gap-4 p-7">
-          <p className="text-sm text-muted-foreground">
+        <section className="surface glow mt-8 p-7">
+          <p className="font-display text-lg font-semibold leading-snug">
+            {t("Entiende tu libertad financiera con tus números reales", "Understand your financial freedom with your real numbers")}
+          </p>
+          <p className="mt-2 max-w-xl text-sm text-muted-foreground">
             {t(
-              "¿Quieres entender tu libertad financiera con tus datos reales? Crea tu cuenta y calcula tu número en minutos.",
-              "Want to understand your financial freedom with your real data? Create your account and calculate your number in minutes.",
+              "Crea tu cuenta gratis y calcula tu patrimonio, tu runway y tu número en minutos. Si ya tienes cuenta, entra y continúa donde lo dejaste.",
+              "Create your free account and calculate your net worth, runway and number in minutes. Already have an account? Sign in and pick up where you left off.",
             )}
           </p>
-          <Link
-            to="/auth"
-            search={{ mode: "signup" }}
-            className="ml-auto inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
-          >
-            {t("Empezar gratis", "Start for free")} <ArrowRight className="h-4 w-4" />
-          </Link>
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <Link
+              to="/auth"
+              search={{ mode: "signup" }}
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
+            >
+              {t("Crear cuenta gratis", "Create free account")} <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              to="/auth"
+              search={{ mode: "login" }}
+              className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium transition-colors hover:border-primary hover:text-primary"
+            >
+              {t("Iniciar sesión", "Sign in")}
+            </Link>
+          </div>
         </section>
+
 
         <section className="mt-12">
           <h2 className="text-sm font-semibold">{t("Sigue leyendo", "Keep reading")}</h2>
