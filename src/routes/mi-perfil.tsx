@@ -500,10 +500,14 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
+const SUBLABEL = "text-[11px] font-medium uppercase tracking-wide text-muted-foreground";
+
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="space-y-1.5">
-      <Label className="text-xs text-muted-foreground">{label}</Label>
+    <div className="min-w-0 space-y-1.5">
+      <Label className={cn(SUBLABEL, "block truncate")} title={label}>
+        {label}
+      </Label>
       {children}
     </div>
   );
@@ -521,8 +525,8 @@ function Chips({
   onSelect: (v: string) => void;
 }) {
   return (
-    <div>
-      <p className="mb-2 text-xs text-muted-foreground">{label}</p>
+    <div className="min-w-0">
+      <p className={cn("mb-2", SUBLABEL)}>{label}</p>
       <div className="flex flex-wrap gap-2">
         {options.map((o) => (
           <button
