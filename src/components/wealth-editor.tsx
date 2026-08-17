@@ -1,4 +1,5 @@
-import { Building2, Coins, CreditCard, Gift, LineChart, Plus, Trash2, Wallet } from "lucide-react";
+import { useState } from "react";
+import { Building2, Check, Coins, CreditCard, Gift, LineChart, Pencil, Plus, Trash2, Wallet } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -97,50 +98,13 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
 
           <Section icon={<LineChart className="h-4 w-4" />} tone="sky" title={t("Inversiones", "Investments")} total={fmt(investTotal)}>
             {investments.map((h) => (
-              <Card key={h.id} title={h.label || t("Activo", "Asset")} onRemove={() => remove(h.id)}>
-                <InlineRow label={t("Nombre", "Name")}>
-                  <Input
-                    value={h.label}
-                    onChange={(e) => patch(h.id, { label: e.target.value })}
-                    placeholder={t("Nombre", "Name")}
-                    className="h-9"
-                  />
-                </InlineRow>
-                <InlineRow label={t("Tipo", "Type")}>
-                  <Select
-                    value={h.kind}
-                    onChange={(v) => patch(h.id, { kind: v as HoldingKind })}
-                    options={[
-                      { value: "etf", label: t("ETF / fondo", "ETF / fund") },
-                      { value: "stock", label: t("Acción", "Stock") },
-                      { value: "crypto", label: t("Cripto", "Crypto") },
-                      { value: "other", label: t("Otro", "Other") },
-                    ]}
-                  />
-                </InlineRow>
-                <InlineRow label={t("Valor actual", "Current value")}>
-                  <Money value={h.manual_value} onChange={(n) => patch(h.id, { manual_value: n })} />
-                </InlineRow>
-                <InlineRow label={t("Aporte mensual", "Monthly contribution")}>
-                  <Money value={h.monthly_contribution} onChange={(n) => patch(h.id, { monthly_contribution: n })} />
-                </InlineRow>
-                <InlineRow label={t("Retorno esperado anual", "Expected annual return")}>
-                  <Pct value={h.expected_return} onChange={(n) => patch(h.id, { expected_return: n })} />
-                </InlineRow>
-                <InlineRow label={t("Ticker (opcional)", "Ticker (optional)")}>
-                  <Input
-                    value={h.ticker ?? ""}
-                    onChange={(e) => patch(h.id, { ticker: e.target.value.toUpperCase() || null })}
-                    className="h-9"
-                  />
-                </InlineRow>
-                <InlineRow label={t("Unidades", "Units")}>
-                  <Money value={h.quantity} onChange={(n) => patch(h.id, { quantity: n })} decimals />
-                </InlineRow>
-                <InlineRow label={t("Costo invertido", "Invested cost")}>
-                  <Money value={h.cost_basis} onChange={(n) => patch(h.id, { cost_basis: n })} />
-                </InlineRow>
-              </Card>
+              <InvestmentCard
+                key={h.id}
+                holding={h}
+                fmt={fmt}
+                onPatch={(p) => patch(h.id, p)}
+                onRemove={() => remove(h.id)}
+              />
             ))}
             <AddButton onClick={() => add("etf", "")}>{t("Agregar otro activo", "Add another asset")}</AddButton>
           </Section>
@@ -325,19 +289,36 @@ function InlineRow({ label, children }: { label: string; children: React.ReactNo
   );
 }
 
-function Card({ title, onRemove, children }: { title: string; onRemove: () => void; children: React.ReactNode }) {
+function Card({
+  title,
+  onRemove,
+  onCollapse,
+  children,
+}: {
+  title: string;
+  onRemove: () => void;
+  onCollapse?: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <div className="space-y-2.5 rounded-xl border border-border/60 bg-background/40 p-3">
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-medium">{title}</p>
-        <button
-          type="button"
-          onClick={onRemove}
-          className="text-muted-foreground transition hover:text-negative"
-          aria-label="Remove"
-        >
-          <Trash2 className="h-4 w-4" />
-        </button>
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+        <p className="truncate text-sm font-medium">{title}</p>
+        <div className="flex shrink-0 items-center gap-2">
+          {onCollapse ? (
+            <button type="button" onClick={onCollapse} className="text-muted-foreground transition hover:text-primary" aria-label="Done">
+              <Check className="h-4 w-4" />
+            </button>
+          ) : null}
+          <button
+            type="button"
+            onClick={onRemove}
+            className="text-muted-foreground transition hover:text-negative"
+            aria-label="Remove"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </div>
       </div>
       {children}
     </div>
@@ -408,5 +389,101 @@ function Select({
         </option>
       ))}
     </select>
+  );
+}
+
+function InvestmentCard({
+  holding: h,
+  fmt,
+  onPatch,
+  onRemove,
+}: {
+  holding: Holding;
+  fmt: (n: number) => string;
+  onPatch: (p: Partial<Holding>) => void;
+  onRemove: () => void;
+}) {
+  const t = useT();
+  const filled = Boolean(h.label.trim()) && (h.manual_value > 0 || h.monthly_contribution > 0);
+  const [open, setOpen] = useState(!filled);
+
+  const kindLabel: Record<string, string> = {
+    etf: t("ETF / fondo", "ETF / fund"),
+    stock: t("Acción", "Stock"),
+    crypto: t("Cripto", "Crypto"),
+    other: t("Otro", "Other"),
+  };
+
+  if (!open) {
+    return (
+      <div className="rounded-xl border border-border/60 bg-background/40 p-3">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+          <button type="button" onClick={() => setOpen(true)} className="min-w-0 text-left">
+            <p className="truncate text-sm font-medium">{h.label || t("Activo", "Asset")}</p>
+            <p className="truncate text-[11px] text-muted-foreground">
+              {[
+                kindLabel[h.kind],
+                h.manual_value > 0 ? fmt(h.manual_value) : null,
+                h.monthly_contribution > 0 ? `+${fmt(h.monthly_contribution)}/${t("mes", "mo")}` : null,
+                h.expected_return ? `${h.expected_return}%` : null,
+                h.ticker || null,
+              ]
+                .filter(Boolean)
+                .join(" · ")}
+            </p>
+          </button>
+          <div className="flex shrink-0 items-center gap-1">
+            <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={() => setOpen(true)}>
+              <Pencil className="h-3.5 w-3.5" />
+            </Button>
+            <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground" onClick={onRemove}>
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <Card
+      title={h.label || t("Activo", "Asset")}
+      onRemove={onRemove}
+      {...(filled ? { onCollapse: () => setOpen(false) } : {})}
+    >
+      <InlineRow label={t("Nombre", "Name")}>
+        <Input value={h.label} onChange={(e) => onPatch({ label: e.target.value })} placeholder={t("Nombre", "Name")} className="h-9" />
+      </InlineRow>
+      <InlineRow label={t("Tipo", "Type")}>
+        <Select
+          value={h.kind}
+          onChange={(v) => onPatch({ kind: v as HoldingKind })}
+          options={[
+            { value: "etf", label: kindLabel["etf"] ?? "ETF" },
+            { value: "stock", label: kindLabel["stock"] ?? "Stock" },
+            { value: "crypto", label: kindLabel["crypto"] ?? "Crypto" },
+            { value: "other", label: kindLabel["other"] ?? "Other" },
+          ]}
+        />
+      </InlineRow>
+      <InlineRow label={t("Valor actual", "Current value")}>
+        <Money value={h.manual_value} onChange={(n) => onPatch({ manual_value: n })} />
+      </InlineRow>
+      <InlineRow label={t("Aporte mensual", "Monthly contribution")}>
+        <Money value={h.monthly_contribution} onChange={(n) => onPatch({ monthly_contribution: n })} />
+      </InlineRow>
+      <InlineRow label={t("Retorno esperado anual", "Expected annual return")}>
+        <Pct value={h.expected_return} onChange={(n) => onPatch({ expected_return: n })} />
+      </InlineRow>
+      <InlineRow label={t("Ticker (opcional)", "Ticker (optional)")}>
+        <Input value={h.ticker ?? ""} onChange={(e) => onPatch({ ticker: e.target.value.toUpperCase() || null })} className="h-9" />
+      </InlineRow>
+      <InlineRow label={t("Unidades", "Units")}>
+        <Money value={h.quantity} onChange={(n) => onPatch({ quantity: n })} decimals />
+      </InlineRow>
+      <InlineRow label={t("Costo invertido", "Invested cost")}>
+        <Money value={h.cost_basis} onChange={(n) => onPatch({ cost_basis: n })} />
+      </InlineRow>
+    </Card>
   );
 }
