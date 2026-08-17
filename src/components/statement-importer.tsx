@@ -334,7 +334,7 @@ export function StatementImporter() {
   return (
     <div className="space-y-4">
       <Panel
-        title={t("Cargar EEFF", "Upload statements")}
+        title={t("Cargar tus gastos", "Upload your expenses")}
         description={t(
           "PDF de tarjetas, CSV bancarios o capturas de pantalla — la IA extrae y clasifica cada movimiento",
           "Card PDFs, bank CSVs or screenshots — AI extracts and classifies each transaction",
