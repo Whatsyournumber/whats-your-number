@@ -66,7 +66,7 @@ function BlogIndex() {
           <div className="relative h-56 overflow-hidden md:h-full md:min-h-[320px]">
             <img
               src={featured.image}
-              alt={featured.title[lang]}
+              alt={featured.imageAlt[lang]}
               width={1200}
               height={750}
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -104,7 +104,7 @@ function BlogIndex() {
               <div className="relative h-44 overflow-hidden">
                 <img
                   src={post.image}
-                  alt={post.title[lang]}
+                  alt={post.imageAlt[lang]}
                   loading="lazy"
                   width={1200}
                   height={750}
