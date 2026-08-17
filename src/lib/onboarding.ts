@@ -224,7 +224,8 @@ export function buildPlan(d: OnboardingData): NorthPlan {
     mode: homeMode ? "home" : "freedom",
     homePrice,
     downPayment,
-    monthlyToGoal: homeMode ? (monthsToGoal > 0 ? missingHome / monthsToGoal : missingHome) : 0,
+    // Ahorro mensual necesario para lograrlo en 3 años.
+    monthlyToGoal: homeMode ? missingHome / 36 : 0,
     monthsToGoal,
   };
 }
