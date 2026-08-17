@@ -38,6 +38,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RetiroRouteImport } from './routes/retiro'
 import { Route as SuscripcionRouteImport } from './routes/suscripcion'
 import { Route as TerminosRouteImport } from './routes/terminos'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout/success'
 import { Route as NinosIndexRouteImport } from './routes/ninos/index'
 import { Route as NinosOnboardingRouteImport } from './routes/ninos/onboarding'
@@ -196,6 +197,11 @@ const TerminosRoute = TerminosRouteImport.update({
   path: '/terminos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => BlogRoute,
+} as any)
 const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
   id: '/checkout/success',
   path: '/checkout/success',
@@ -265,7 +271,7 @@ export interface FileRoutesByFullPath {
   '/advisor': typeof AdvisorRoute
   '/afiliados': typeof AfiliadosRoute
   '/auth': typeof AuthRoute
-  '/blog': typeof BlogRoute
+  '/blog': typeof BlogRouteWithChildren
   '/cash-flow': typeof CashFlowRoute
   '/ciudades': typeof CiudadesRoute
   '/configuracion': typeof ConfiguracionRoute
@@ -288,6 +294,7 @@ export interface FileRoutesByFullPath {
   '/retiro': typeof RetiroRoute
   '/suscripcion': typeof SuscripcionRoute
   '/terminos': typeof TerminosRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
@@ -307,7 +314,7 @@ export interface FileRoutesByTo {
   '/advisor': typeof AdvisorRoute
   '/afiliados': typeof AfiliadosRoute
   '/auth': typeof AuthRoute
-  '/blog': typeof BlogRoute
+  '/blog': typeof BlogRouteWithChildren
   '/cash-flow': typeof CashFlowRoute
   '/ciudades': typeof CiudadesRoute
   '/configuracion': typeof ConfiguracionRoute
@@ -330,6 +337,7 @@ export interface FileRoutesByTo {
   '/retiro': typeof RetiroRoute
   '/suscripcion': typeof SuscripcionRoute
   '/terminos': typeof TerminosRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
@@ -351,7 +359,7 @@ export interface FileRoutesById {
   '/advisor': typeof AdvisorRoute
   '/afiliados': typeof AfiliadosRoute
   '/auth': typeof AuthRoute
-  '/blog': typeof BlogRoute
+  '/blog': typeof BlogRouteWithChildren
   '/cash-flow': typeof CashFlowRoute
   '/ciudades': typeof CiudadesRoute
   '/configuracion': typeof ConfiguracionRoute
@@ -374,6 +382,7 @@ export interface FileRoutesById {
   '/retiro': typeof RetiroRoute
   '/suscripcion': typeof SuscripcionRoute
   '/terminos': typeof TerminosRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
@@ -419,6 +428,7 @@ export interface FileRouteTypes {
     | '/retiro'
     | '/suscripcion'
     | '/terminos'
+    | '/blog/$slug'
     | '/checkout/success'
     | '/ninos/onboarding'
     | '/ninos/padres'
@@ -461,6 +471,7 @@ export interface FileRouteTypes {
     | '/retiro'
     | '/suscripcion'
     | '/terminos'
+    | '/blog/$slug'
     | '/checkout/success'
     | '/ninos/onboarding'
     | '/ninos/padres'
@@ -504,6 +515,7 @@ export interface FileRouteTypes {
     | '/retiro'
     | '/suscripcion'
     | '/terminos'
+    | '/blog/$slug'
     | '/checkout/success'
     | '/ninos/onboarding'
     | '/ninos/padres'
@@ -525,7 +537,7 @@ export interface RootRouteChildren {
   AdvisorRoute: typeof AdvisorRoute
   AfiliadosRoute: typeof AfiliadosRoute
   AuthRoute: typeof AuthRoute
-  BlogRoute: typeof BlogRoute
+  BlogRoute: typeof BlogRouteWithChildren
   CashFlowRoute: typeof CashFlowRoute
   CiudadesRoute: typeof CiudadesRoute
   ConfiguracionRoute: typeof ConfiguracionRoute
@@ -757,6 +769,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TerminosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof BlogRoute
+    }
     '/checkout/success': {
       id: '/checkout/success'
       path: '/checkout/success'
@@ -874,6 +893,16 @@ const NinosRouteRouteWithChildren = NinosRouteRoute._addFileChildren(
   NinosRouteRouteChildren,
 )
 
+interface BlogRouteChildren {
+  BlogSlugRoute: typeof BlogSlugRoute
+}
+
+const BlogRouteChildren: BlogRouteChildren = {
+  BlogSlugRoute: BlogSlugRoute,
+}
+
+const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   NinosRouteRoute: NinosRouteRouteWithChildren,
@@ -881,7 +910,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdvisorRoute: AdvisorRoute,
   AfiliadosRoute: AfiliadosRoute,
   AuthRoute: AuthRoute,
-  BlogRoute: BlogRoute,
+  BlogRoute: BlogRouteWithChildren,
   CashFlowRoute: CashFlowRoute,
   CiudadesRoute: CiudadesRoute,
   ConfiguracionRoute: ConfiguracionRoute,
