@@ -54,6 +54,7 @@ import { currencyForCountry } from "@/lib/country-currency";
 import { cn } from "@/lib/utils";
 import { detectCurrency } from "@/lib/geo";
 import { useT } from "@/hooks/use-language";
+import { useSubscription } from "@/hooks/use-subscription";
 
 const GOALS_EN: Record<string, string> = {
   libertad: "Achieve financial freedom",
@@ -148,6 +149,7 @@ function OnboardingPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const t = useT();
+  const { isPatrimonio } = useSubscription();
   const [step, setStep] = useState(1);
 
   const [data, setData] = useState<OnboardingData>({ ...emptyOnboarding, currency: detectCurrency(), monthly_expenses: 0 });
@@ -859,9 +861,10 @@ function OnboardingPage() {
                 variant="ghost"
                 size="lg"
                 className="rounded-full"
-                onClick={() => navigate({ to: "/ninos" })}
+                onClick={() => navigate({ to: isPatrimonio ? "/ninos" : "/" })}
               >
-                <ArrowLeft className="mr-2 h-4 w-4" /> {t("Perfiles", "Profiles")}
+                <ArrowLeft className="mr-2 h-4 w-4" />{" "}
+                {isPatrimonio ? t("Perfiles", "Profiles") : t("Inicio", "Home")}
               </Button>
             )}
 
