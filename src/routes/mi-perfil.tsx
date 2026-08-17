@@ -365,19 +365,7 @@ function MiPerfil() {
           </div>
         </Panel>
 
-        <Panel title={t("Resumen de patrimonio", "Net worth summary")} description={t("Se calcula con el detalle de abajo", "Calculated from the detail below")}>
-          <div className="grid gap-3 sm:grid-cols-3">
-            <Stat label={t("Activos totales", "Total assets")} value={preview.fmt(preview.totalAssets)} />
-            <Stat label={t("Deudas totales", "Total liabilities")} value={preview.fmt(preview.totalLiabilities)} />
-            <Stat label={t("Patrimonio neto", "Net worth")} value={preview.fmt(preview.netWorth)} />
-          </div>
-          <p className="mt-4 text-xs text-muted-foreground">
-            {t(
-              "Edita cada activo, propiedad, activo futuro y deuda en la sección “Tu Patrimonio”. Tu portafolio y tus proyecciones usan ese detalle.",
-              "Edit every asset, property, future asset and debt in the “Your Net Worth” section. Your portfolio and projections use that detail.",
-            )}
-          </p>
-        </Panel>
+
 
 
 
