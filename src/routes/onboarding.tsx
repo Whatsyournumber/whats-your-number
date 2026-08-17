@@ -1078,8 +1078,6 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
           </button>
         ))}
       </div>
-
-      </div>
       {selected && (
         <p className="mt-3 text-center text-xs text-muted-foreground">
           {t("Moneda del análisis:", "Analysis currency:")}{" "}
