@@ -426,10 +426,15 @@ function RetiroContent() {
                   ? `${isGoal ? t("Superas tu objetivo por", "You exceed your goal by") : t("Superas tu número por", "You exceed your number by")} ${fmt(-gap)} 🎯`
                   : `${t("Te faltarían", "You'd still need")} ${fmt(gap)}`}
               </p>
-              <p className="mt-1 text-[11px] text-muted-foreground">
-                {t("Partes de", "Starting from")} {fmt(investable)}{" "}
-                {isGoal ? `${t("que ya tienes ·", "you already have ·")} ${goalLabel} ${fmt(targetNow)}` : `${t("que ya tienes · objetivo", "you already have · target")} ${fmt(targetNow)}`}
-              </p>
+              <div className="mt-1 text-[11px] leading-snug text-muted-foreground">
+                <p className="truncate">
+                  {t("Partes de", "Starting from")} {fmt(investable)} {t("que ya tienes", "you already have")}
+                </p>
+                <p className="truncate">
+                  {isGoal ? goalLabel : t("Objetivo", "Target")}: {fmt(targetNow)}
+                </p>
+              </div>
+
               {isGoal && gap > 0 && years > 0 ? (
                 <p className="mt-2 text-[11px] text-primary">
                   {t("Ahorra", "Save")} {fmt(Math.ceil(gap / (years * 12)))}/{t("mes más para llegar a tiempo", "mo more to make it on time")}
