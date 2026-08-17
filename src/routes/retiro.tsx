@@ -308,7 +308,10 @@ function RetiroContent() {
       </div>
       <div className="surface p-5">
         <div className="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-          <span className="min-w-0 text-muted-foreground">{t("Progreso hacia tu capital objetivo", "Progress toward your target capital")}</span>
+          <span className="min-w-0 text-muted-foreground">
+            {t("Progreso hacia tu capital objetivo", "Progress toward your target capital")}
+            {isGoal && goalNote ? `: ${goalNote}` : ""}
+          </span>
           <span className="numeric whitespace-nowrap font-semibold sm:text-right">
             {fmt(investable)} / {fmt(plan.targetCapital)}
           </span>
