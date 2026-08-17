@@ -97,7 +97,7 @@ export function AppSidebar() {
     const active = pathname === item.url;
     return (
       <SidebarMenuItem key={item.url}>
-        <SidebarMenuButton asChild isActive={active} tooltip={item.title} className="h-8 gap-2 px-2">
+        <SidebarMenuButton asChild isActive={active} tooltip={item.title} className="h-7 gap-2 px-2">
           <Link to={item.url} className="flex items-center gap-2">
             <item.icon className="h-3.5 w-3.5 shrink-0" />
             <span className="truncate text-[13px] leading-none">{item.title}</span>
@@ -127,18 +127,18 @@ export function AppSidebar() {
             {t("Patrimonio", "Net Worth")}
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="gap-1">{primary.map(renderItem)}</SidebarMenu>
+            <SidebarMenu className="gap-0.5">{primary.map(renderItem)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <div className="mx-auto my-2 h-px w-2/3 bg-gradient-to-r from-transparent via-border to-transparent" />
+        <div className="mx-auto my-1.5 h-px w-2/3 bg-gradient-to-r from-transparent via-border to-transparent" />
 
         <SidebarGroup className="p-1.5">
           <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
             {t("Inteligencia", "Intelligence")}
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="gap-1">{secondary.map(renderItem)}</SidebarMenu>
+            <SidebarMenu className="gap-0.5">{secondary.map(renderItem)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
@@ -146,7 +146,7 @@ export function AppSidebar() {
           <SidebarGroup className="p-1.5">
             <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">Admin</SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu className="gap-1">{adminItems.map(renderItem)}</SidebarMenu>
+              <SidebarMenu className="gap-0.5">{adminItems.map(renderItem)}</SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
         )}
