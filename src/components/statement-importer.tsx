@@ -574,6 +574,25 @@ function JobProgress({ job }: { job: Job }) {
   const isDone = job.stage === "done";
   const activeIndex = STAGE_ORDER.indexOf(job.stage);
 
+  const startedRef = useRef<number>(Date.now());
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    if (isDone || isError) return;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [isDone, isError]);
+
+  let eta: string | null = null;
+  if (!isDone && !isError && pct > 0 && pct < 100) {
+    const elapsed = Math.max(1, (now - startedRef.current) / 1000);
+    const remaining = Math.min(240, Math.max(3, Math.round((elapsed * (100 - pct)) / pct)));
+    eta =
+      remaining >= 60
+        ? `~${Math.ceil(remaining / 60)} min`
+        : `~${remaining}s`;
+  }
+
+
   return (
     <div className="rounded-xl border border-border bg-elevated/60 px-3 py-3">
       <div className="flex items-center gap-2">
