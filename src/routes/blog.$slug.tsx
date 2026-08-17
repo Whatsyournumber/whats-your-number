@@ -27,7 +27,7 @@ export const Route = createFileRoute("/blog/$slug")({
       description,
       inLanguage: "es",
       mainEntityOfPage: { "@type": "WebPage", "@id": url },
-      keywords: post?.keyword ?? undefined,
+      keywords: post?.keyword.es ?? undefined,
       author: {
         "@type": "Person",
         name: author.name,
