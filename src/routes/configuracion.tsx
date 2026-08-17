@@ -13,9 +13,9 @@ import { useT } from "@/hooks/use-language";
 export const Route = createFileRoute("/configuracion")({
   head: () => ({
     meta: [
-      { title: "Cargar EEFF — Finance OS" },
+      { title: "Cargar tus gastos — Finance OS" },
       { name: "description", content: "Carga estados de cuenta PDF/CSV, gestiona cuentas, categorías y reglas automáticas." },
-      { property: "og:title", content: "Cargar EEFF — Finance OS" },
+      { property: "og:title", content: "Cargar tus gastos — Finance OS" },
       { property: "og:description", content: "Importa tus estados de cuenta y deja que la IA los clasifique." },
     ],
   }),
@@ -26,7 +26,7 @@ function Configuracion() {
   const t = useT();
   return (
     <PageShell>
-      <PageHeader eyebrow={t("Sistema", "System")} title={t("Cargar EEFF", "Upload statements")} subtitle={t("Carga tus estados de cuenta, cuentas y reglas de clasificación.", "Upload your statements, accounts and classification rules.")} />
+      <PageHeader eyebrow={t("Sistema", "System")} title={t("Cargar tus gastos", "Upload your expenses")} subtitle={t("Carga tus estados de cuenta, cuentas y reglas de clasificación.", "Upload your statements, accounts and classification rules.")} />
 
       <Tabs defaultValue="importacion">
         <TabsList className="mb-4 w-full sm:w-auto">

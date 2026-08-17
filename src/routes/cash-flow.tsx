@@ -207,7 +207,7 @@ function CashFlow() {
           subtitle={
             hasReal
               ? t("Cómo se reparte cada dólar que entra, según tus estados de cuenta cargados.", "How every dollar you receive is allocated, based on your uploaded statements.")
-              : t("Carga tus estados de cuenta en «Cargar EEFF» para ver tu flujo real. Mientras tanto, usamos tu perfil.", "Upload your statements in \u00abUpload statements\u00bb to see your real flow. Meanwhile, we use your profile.")
+              : t("Carga tus estados de cuenta en «Cargar tus gastos» para ver tu flujo real. Mientras tanto, usamos tu perfil.", "Upload your statements in \u00abUpload your expenses\u00bb to see your real flow. Meanwhile, we use your profile.")
           }
         />
 
