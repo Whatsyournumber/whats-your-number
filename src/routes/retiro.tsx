@@ -243,14 +243,19 @@ function RetiroContent() {
           hint={t("lo que entra cada mes", "what comes in each month")}
           index={1}
         />
-        <Link to="/patrimonio" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
-          <KpiCard
-            label={t("Cuánto tengo", "How much I have")}
-            value={fmt(investable)}
-            hint={t("Sin contar propiedades — solo activos que generan retorno", "Excluding properties — only assets that generate returns")}
-            index={2}
-          />
-        </Link>
+        <EditableKpiCard
+          label={t("Cuánto tengo", "How much I have")}
+          value={fmt(investable)}
+          rawValue={investable}
+          format={fmt}
+          onChange={(v) => {
+            const others = investable - profile.assets_bank;
+            void save({ assets_bank: Math.max(0, Math.round(v - others)) });
+          }}
+          hint={t("Ahorros e inversiones — sin contar propiedades", "Savings and investments — excluding properties")}
+          index={2}
+        />
+
         <Link to="/gastos" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
           <KpiCard label={t("Gastos mensuales", "Monthly expenses")} value={fmt(d.expenses)} hint={`${fmt(d.expenses * 12)} ${t("al año", "per year")}`} index={3} />
         </Link>
