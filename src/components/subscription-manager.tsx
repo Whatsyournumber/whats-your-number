@@ -20,7 +20,7 @@ const fmtDate = (iso: string | null) =>
 
 export function SubscriptionManager() {
   const t = useT();
-  const { subscription, tier, isTrial, loading } = useSubscription();
+  const { subscription, tier, isTrial, isPromo, loading } = useSubscription();
   const { user } = useAuth();
   const [busy, setBusy] = useState<string | null>(null);
 
@@ -83,7 +83,12 @@ export function SubscriptionManager() {
       <div className="flex flex-wrap items-center gap-3">
         <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
           {planLabel}
-          {isTrial ? ` · ${t("prueba", "trial")}` : ""}
+          {isPromo
+            ? ` · ${t("código de invitación", "invite code")}`
+            : isTrial
+              ? ` · ${t("prueba", "trial")}`
+              : ""}
+
         </span>
         {subscription?.current_period_end && (
           <span className="text-xs text-muted-foreground">
