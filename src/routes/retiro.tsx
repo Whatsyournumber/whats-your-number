@@ -280,9 +280,37 @@ function RetiroContent() {
           rawValue={investable}
           format={fmt}
           onChange={(v) => {
-            const others = investable - profile.assets_bank;
-            void save({ assets_bank: Math.max(0, Math.round(v - others)) });
+            const target = Math.max(0, Math.round(v));
+            const keys = [
+              "assets_cash",
+              "assets_bank",
+              "assets_retirement",
+              "assets_etf",
+              "assets_stocks",
+              "assets_crypto",
+            ] as const;
+            if (target === investable) return;
+            if (investable <= 0) {
+              void save({ assets_bank: target });
+              return;
+            }
+            if (target > investable) {
+              // Lo nuevo entra como liquidez, sin tocar las inversiones existentes.
+              void save({ assets_bank: Math.round(profile.assets_bank + (target - investable)) });
+              return;
+            }
+            // Al bajar el total, reducimos cada partida en proporción para respetar el número escrito.
+            const factor = target / investable;
+            const next: Partial<Record<(typeof keys)[number], number>> = {};
+            let acc = 0;
+            keys.forEach((k, i) => {
+              const value = i === keys.length - 1 ? Math.max(0, target - acc) : Math.round(profile[k] * factor);
+              next[k] = value;
+              acc += value;
+            });
+            void save(next);
           }}
+
           hint={t("Ahorros e inversiones — sin contar propiedades", "Savings and investments — excluding properties")}
           index={2}
         />
