@@ -50,6 +50,8 @@ import {
 } from "@/lib/onboarding";
 import { useFxRates } from "@/hooks/use-fx-rates";
 import { convertAmount } from "@/lib/fx";
+import { lifestyleCities } from "@/lib/lifestyle-cities";
+
 import { cn } from "@/lib/utils";
 import { detectCurrency } from "@/lib/geo";
 import { useT } from "@/hooks/use-language";
