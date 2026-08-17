@@ -87,7 +87,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
 
       <div className="mt-5 grid items-start gap-4 lg:grid-cols-2">
         <div className="space-y-4">
-          <Section icon={<Wallet className="h-4 w-4" />} tone="emerald" title={t("1. Liquidez", "1. Liquidity")} total={fmt(liquidTotal)}>
+          <Section icon={<Wallet className="h-4 w-4" />} tone="emerald" title={t("Liquidez", "Liquidity")} total={fmt(liquidTotal)}>
             {liquidity.map(({ kind, label }) => (
               <InlineRow key={kind} label={label}>
                 <Money value={single(kind)?.manual_value ?? 0} onChange={(n) => setSingle(kind, label, { manual_value: n })} />
@@ -95,7 +95,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
             ))}
           </Section>
 
-          <Section icon={<LineChart className="h-4 w-4" />} tone="sky" title={t("2. Inversiones", "2. Investments")} total={fmt(investTotal)}>
+          <Section icon={<LineChart className="h-4 w-4" />} tone="sky" title={t("Inversiones", "Investments")} total={fmt(investTotal)}>
             {investments.map((h) => (
               <Card key={h.id} title={h.label || t("Activo", "Asset")} onRemove={() => remove(h.id)}>
                 <InlineRow label={t("Nombre", "Name")}>
@@ -146,7 +146,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
           </Section>
 
 
-          <Section icon={<Coins className="h-4 w-4" />} tone="amber" title={t("3. Fondo de retiro", "3. Retirement fund")} total={fmt(retireTotal)}>
+          <Section icon={<Coins className="h-4 w-4" />} tone="amber" title={t("Fondo de retiro", "Retirement fund")} total={fmt(retireTotal)}>
             <InlineRow label={t("Valor actual", "Current value")}>
               <Money
                 value={retirement?.manual_value ?? 0}
@@ -176,7 +176,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
         </div>
 
         <div className="space-y-4">
-          <Section icon={<Building2 className="h-4 w-4" />} tone="indigo" title={t("4. Propiedades", "4. Properties")} total={fmt(propertyTotal)}>
+          <Section icon={<Building2 className="h-4 w-4" />} tone="indigo" title={t("Propiedades", "Properties")} total={fmt(propertyTotal)}>
             {list("property").map((h) => (
               <Card key={h.id} title={h.label || t("Propiedad", "Property")} onRemove={() => remove(h.id)}>
                 <InlineRow label={t("Nombre", "Name")}>
@@ -204,7 +204,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
             </AddButton>
           </Section>
 
-          <Section icon={<Gift className="h-4 w-4" />} tone="violet" title={t("5. Activos futuros", "5. Future assets")} total={fmt(Math.round(futureTotal))}>
+          <Section icon={<Gift className="h-4 w-4" />} tone="violet" title={t("Activos futuros", "Future assets")} total={fmt(Math.round(futureTotal))}>
             {list("future").map((h) => (
               <Card key={h.id} title={h.label || t("Activo futuro", "Future asset")} onRemove={() => remove(h.id)}>
                 <InlineRow label={t("Nombre", "Name")}>
@@ -236,7 +236,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
             <AddButton onClick={() => add("future", "")}>{t("Agregar otro activo futuro", "Add another future asset")}</AddButton>
           </Section>
 
-          <Section icon={<CreditCard className="h-4 w-4" />} tone="rose" title={t("6. Deudas", "6. Debts")} total={fmt(debtTotal)}>
+          <Section icon={<CreditCard className="h-4 w-4" />} tone="rose" title={t("Deudas", "Debts")} total={fmt(debtTotal)}>
             {list("debt").map((h) => (
               <div key={h.id} className="grid grid-cols-[1.3fr_1fr_24px] items-center gap-2">
                 <Input
@@ -292,16 +292,17 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-border/60 bg-elevated/40 p-4">
-      <div className="mb-3 flex items-center gap-2">
-        <span className={cn("grid h-8 w-8 place-items-center rounded-xl", TONES[tone] ?? TONES["sky"])}>{icon}</span>
-        <h3 className="text-base font-semibold">{title}</h3>
-        <span className="numeric ml-auto text-sm font-medium text-muted-foreground">{total}</span>
+    <section className="rounded-2xl border border-border/60 bg-elevated/40 p-3 sm:p-4">
+      <div className="mb-3 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2">
+        <span className={cn("grid h-8 w-8 shrink-0 place-items-center rounded-xl", TONES[tone] ?? TONES["sky"])}>{icon}</span>
+        <h3 className="truncate text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{title}</h3>
+        <span className="numeric shrink-0 text-sm font-medium">{total}</span>
       </div>
       <div className="space-y-2.5">{children}</div>
     </section>
   );
 }
+
 
 function Summary({ label, value, hint, accent, negative }: { label: string; value: string; hint?: string | undefined; accent?: boolean; negative?: boolean }) {
   return (
@@ -315,9 +316,11 @@ function Summary({ label, value, hint, accent, negative }: { label: string; valu
 
 function InlineRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="grid grid-cols-[1fr_auto] items-center gap-3">
-      <Label className="text-xs text-muted-foreground">{label}</Label>
-      <div className="w-[46%] min-w-[130px] justify-self-end">{children}</div>
+    <div className="grid gap-1.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-3">
+      <Label className="min-w-0 text-[11px] font-medium uppercase tracking-wide text-muted-foreground sm:normal-case sm:tracking-normal sm:text-xs">
+        {label}
+      </Label>
+      <div className="w-full sm:w-[46%] sm:min-w-[130px] sm:justify-self-end">{children}</div>
     </div>
   );
 }
