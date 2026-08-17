@@ -54,6 +54,7 @@ import { currencyForCountry } from "@/lib/country-currency";
 import { cn } from "@/lib/utils";
 import { detectCurrency } from "@/lib/geo";
 import { useT } from "@/hooks/use-language";
+import { useSubscription } from "@/hooks/use-subscription";
 
 const GOALS_EN: Record<string, string> = {
   libertad: "Achieve financial freedom",
