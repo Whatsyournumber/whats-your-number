@@ -463,12 +463,12 @@ function OnboardingPage() {
             {step === 3 && (
               <Screen
                 title={t(
-                  "¿A qué edad te gustaría alcanzar tu libertad financiera?",
-                  "At what age would you like to reach financial freedom?",
+                  "¿A qué edad te gustaría alcanzar tu objetivo financiero?",
+                  "At what age would you like to reach your financial goal?",
                 )}
                 hint={t(
-                  "La libertad financiera es cuando trabajar deja de ser una obligación y se convierte en una elección.",
-                  "Financial freedom is when working stops being an obligation and becomes a choice.",
+                  "Tu objetivo puede ser la libertad financiera, tu primera vivienda, montar tu negocio o el que tú elijas.",
+                  "Your goal can be financial freedom, your first home, starting your business or whichever you choose.",
                 )}
               >
                 <BigNumber value={data.retire_age} suffix={t("años", "years")} />
