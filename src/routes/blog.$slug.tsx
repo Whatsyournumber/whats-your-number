@@ -86,7 +86,6 @@ function BlogArticle() {
           <h1 className="mt-4 font-display text-3xl font-semibold leading-tight tracking-tight md:text-4xl">
             {post.title[lang]}
           </h1>
-          <p className="mt-4 text-base leading-relaxed text-muted-foreground">{post.intro[lang]}</p>
         </header>
 
         <figure className="surface mt-8 overflow-hidden">
