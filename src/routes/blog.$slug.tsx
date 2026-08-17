@@ -18,15 +18,41 @@ export const Route = createFileRoute("/blog/$slug")({
     const post = getPost(params.slug);
     const title = post ? `${post.title.es} — WhatsYournumber` : "Artículo — WhatsYournumber";
     const description = post?.excerpt.es ?? "Artículos sobre finanzas personales, inversión y IA.";
+    const author = getAuthor(params.slug);
+    const url = `https://whatsyournumber.lovable.app/blog/${params.slug}`;
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: post?.title.es ?? title,
+      description,
+      inLanguage: "es",
+      mainEntityOfPage: { "@type": "WebPage", "@id": url },
+      keywords: post?.keyword ?? undefined,
+      author: {
+        "@type": "Person",
+        name: author.name,
+        jobTitle: author.role.es,
+        description: author.bio.es,
+      },
+      publisher: {
+        "@type": "Organization",
+        name: "WhatsYournumber",
+        url: "https://whatsyournumber.lovable.app",
+      },
+    };
     return {
       meta: [
         { title: title.slice(0, 70) },
         { name: "description", content: description.slice(0, 158) },
+        { name: "author", content: author.name },
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "article" },
+        { property: "article:author", content: author.name },
         { name: "twitter:card", content: "summary_large_image" },
       ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [{ type: "application/ld+json", children: JSON.stringify(jsonLd) }],
     };
   },
   component: BlogArticle,
