@@ -1487,6 +1487,16 @@ function SummaryScreen({
                     )
                   : t("Ya tienes cubierta la entrada.", "You already have the down payment covered.")}
               </p>
+            ) : plan.mode === "business" ? (
+              <p className="mt-2 text-xs text-muted-foreground">
+                {t("El capital para montar tu negocio", "The capital to start your business")}{". "}
+                {plan.monthlyToGoal > 0
+                  ? t(
+                      `Necesitas ahorrar ${money(plan.monthlyToGoal, currency)} al mes para lograrlo en 3 años.`,
+                      `You need to save ${money(plan.monthlyToGoal, currency)} per month to get there in 3 years.`,
+                    )
+                  : t("Ya tienes el capital cubierto.", "You already have the capital covered.")}
+              </p>
             ) : (
               <p className="mt-2 text-xs text-muted-foreground">
                 {t("El capital que te permite vivir con", "The capital that lets you live on")} {money(plan.desiredIncome, currency)} {t("al mes", "per month")}
