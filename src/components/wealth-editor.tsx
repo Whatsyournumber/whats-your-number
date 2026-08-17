@@ -1,4 +1,4 @@
-import { Building2, Coins, CreditCard, Gift, Info, LineChart, Plus, Trash2, Wallet } from "lucide-react";
+import { Building2, Coins, CreditCard, Gift, LineChart, Plus, Trash2, Wallet } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
