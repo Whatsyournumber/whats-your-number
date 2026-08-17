@@ -1131,9 +1131,11 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
         {customName.length >= 2 && !exact && (
           <button
             onClick={() => {
+              const pretty = customName.charAt(0).toUpperCase() + customName.slice(1);
               setPickedKey(`${norm(customName)}|`);
+              setQ(pretty);
               onSelect({
-                name: customName.charAt(0).toUpperCase() + customName.slice(1),
+                name: pretty,
                 country: "",
                 currency: "USD",
                 cost: Math.round(convertAmount(2400, "USD", "EUR")),
@@ -1158,6 +1160,7 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
             key={`${c.name}-${c.country}`}
             onClick={() => {
               setPickedKey(keyOf(c));
+              setQ(c.name);
               onSelect(c);
             }}
             className={cn(
