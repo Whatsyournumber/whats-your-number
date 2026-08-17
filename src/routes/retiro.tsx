@@ -87,10 +87,6 @@ function RetiroContent() {
     setHorizonYears(defaultHorizon);
   }, [defaultHorizon]);
 
-  // En modo negocio/vivienda el simulador parte del aporte mensual necesario para llegar a tiempo.
-  useEffect(() => {
-    if (isGoal) setMonthly(requiredMonthly);
-  }, [requiredMonthly, isGoal]);
 
   const years = isGoal ? horizonYears : Math.max(0, retireAge - retirement.currentAge);
   // Parte de TODO lo que ya tengo invertido (no solo la cuenta de retiro).
