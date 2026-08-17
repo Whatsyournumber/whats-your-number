@@ -393,16 +393,20 @@ function MiPerfil() {
                     <Field label={t("Ingreso mensual deseado", "Desired monthly income")}>
                       <Input
                         type="number"
+                        min={0}
                         value={form.desired_retirement_income || ""}
-                        onChange={(e) => set("desired_retirement_income", Number(e.target.value || 0))}
+                        onChange={(e) => set("desired_retirement_income", Math.max(0, Number(e.target.value || 0)))}
                         placeholder="0"
                       />
                     </Field>
                     <Field label={t("Tasa de retiro (%)", "Withdrawal rate (%)")}>
                       <Input
                         type="number"
+                        min={1}
+                        max={15}
+                        step={0.1}
                         value={form.withdrawal_rate || 7}
-                        onChange={(e) => set("withdrawal_rate", Number(e.target.value || 0))}
+                        onChange={(e) => set("withdrawal_rate", Math.min(15, Math.max(1, Number(e.target.value || 0))))}
                       />
                     </Field>
                   </>
@@ -413,16 +417,20 @@ function MiPerfil() {
                     <Field label={t("Precio de la vivienda", "Home price")}>
                       <Input
                         type="number"
+                        min={0}
                         value={form.home_price || ""}
-                        onChange={(e) => set("home_price", Number(e.target.value || 0))}
+                        onChange={(e) => set("home_price", Math.max(0, Number(e.target.value || 0)))}
                         placeholder="0"
                       />
                     </Field>
                     <Field label={t("Entrada (%)", "Down payment (%)")}>
                       <Input
                         type="number"
+                        min={1}
+                        max={100}
+                        step={1}
                         value={form.down_payment_pct || 20}
-                        onChange={(e) => set("down_payment_pct", Number(e.target.value || 0))}
+                        onChange={(e) => set("down_payment_pct", Math.min(100, Math.max(1, Number(e.target.value || 0))))}
                       />
                     </Field>
                   </>
