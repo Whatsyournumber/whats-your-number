@@ -1,10 +1,10 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Clock, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, List, Sparkles } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useLanguage, useT } from "@/hooks/use-language";
-import { blogPosts, getPost } from "@/lib/blog-posts";
+import { blogPosts, getPost, sectionId } from "@/lib/blog-posts";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
@@ -70,16 +70,37 @@ function BlogArticle() {
         <figure className="surface mt-8 overflow-hidden">
           <img
             src={post.image}
-            alt={post.title[lang]}
+            alt={post.imageAlt[lang]}
             width={1200}
             height={750}
             className="h-full w-full object-cover"
           />
         </figure>
 
+        {post.toc && (
+          <nav className="surface mt-8 p-6" aria-label={t("Índice del artículo", "Table of contents")}>
+            <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-primary">
+              <List className="h-3.5 w-3.5" /> {t("Índice", "Contents")}
+            </p>
+            <ol className="mt-4 space-y-2">
+              {post.sections.map((section, i) => (
+                <li key={section.heading.en} className="flex gap-3 text-[15px] leading-snug">
+                  <span className="w-5 shrink-0 text-right text-xs text-muted-foreground">{i + 1}.</span>
+                  <a
+                    href={`#${sectionId(section.heading.en)}`}
+                    className="text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    {section.heading[lang]}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
+
         <article className="mt-10 space-y-10">
           {post.sections.map((section) => (
-            <section key={section.heading.en}>
+            <section key={section.heading.en} id={sectionId(section.heading.en)} className="scroll-mt-24">
               <h2 className="font-display text-xl font-semibold tracking-tight">{section.heading[lang]}</h2>
               <div className="mt-3 space-y-4">
                 {section.paragraphs.map((p) => (
@@ -139,7 +160,7 @@ function BlogArticle() {
               >
                 <img
                   src={r.image}
-                  alt={r.title[lang]}
+                  alt={r.imageAlt[lang]}
                   loading="lazy"
                   width={1200}
                   height={750}
