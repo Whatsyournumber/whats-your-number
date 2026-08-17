@@ -1095,14 +1095,19 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
         />
       </div>
       <div className="mt-3 max-h-72 space-y-1.5 overflow-y-auto pr-1">
+        {searching && (
+          <p className="px-1 py-1 text-xs text-muted-foreground">
+            {t("Buscando ciudades en todo el mundo…", "Searching cities worldwide…")}
+          </p>
+        )}
         {customName.length >= 2 && !exact && (
           <button
             onClick={() =>
               onSelect({
                 name: customName.charAt(0).toUpperCase() + customName.slice(1),
                 country: "",
-                currency: "EUR",
-                cost: 2200,
+                currency: "USD",
+                cost: Math.round(convertAmount(2400, "USD", "EUR")),
               })
             }
             className={cn(
@@ -1114,10 +1119,11 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
               {t("Usar", "Use")} “{customName}”
             </span>
             <span className="ml-auto text-xs text-muted-foreground">
-              {t("coste estimado, ajustable después", "estimated cost, editable later")}
+              {t("análisis en USD, ajustable después", "analysis in USD, editable later")}
             </span>
           </button>
         )}
+
         {list.map((c) => (
           <button
             key={`${c.name}-${c.country}`}
