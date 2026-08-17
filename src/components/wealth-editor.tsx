@@ -3,12 +3,6 @@ import { Building2, Coins, CreditCard, Gift, LineChart, Plus, Trash2, Wallet } f
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useT } from "@/hooks/use-language";
 import { holdingValue, newHolding, type Holding, type HoldingKind } from "@/hooks/use-holdings";
 import { cn } from "@/lib/utils";
