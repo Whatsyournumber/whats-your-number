@@ -342,108 +342,109 @@ function OnboardingPage() {
               >
                 <div className="space-y-2.5">
                   {goals.map((g) => (
-                    <OptionRow
-                      key={g.value}
-                      emoji={g.emoji}
-                      title={t(g.label, GOALS_EN[g.value] ?? g.label)}
-                      selected={life.goal === g.value}
-                      onClick={() => {
-                        setL("goal", g.value);
-                        setData((d) => ({ ...d, priority: g.value }));
-                      }}
-                    />
+                    <div key={g.value} className="space-y-2.5">
+                      <OptionRow
+                        emoji={g.emoji}
+                        title={t(g.label, GOALS_EN[g.value] ?? g.label)}
+                        selected={life.goal === g.value}
+                        onClick={() => {
+                          setL("goal", g.value);
+                          setData((d) => ({ ...d, priority: g.value }));
+                        }}
+                      />
+                      <AnimatePresence>
+                        {life.goal === g.value && g.value === "vivienda" && (
+                          <Reveal>
+                            <SubQuestion title={t("¿Cuánto cuesta la vivienda que quieres?", "How much does the home you want cost?")} />
+                            <div className="grid gap-2.5 sm:grid-cols-2">
+                              <MoneyField
+                                emoji="🏡"
+                                label={t("Precio de la vivienda", "Home price")}
+                                currency={cur}
+                                value={data.home_price}
+                                onChange={(v) => set("home_price", v)}
+                              />
+                              <div className="rounded-2xl border border-border bg-elevated/50 px-5 py-4">
+                                <p className="text-xs text-muted-foreground">{t("Entrada (down payment)", "Down payment")}</p>
+                                <p className="numeric mt-1 text-lg font-semibold">{data.down_payment_pct}%</p>
+                                <Slider
+                                  className="mt-3"
+                                  min={5}
+                                  max={100}
+                                  step={5}
+                                  value={[data.down_payment_pct || 20]}
+                                  onValueChange={(v) => set("down_payment_pct", v[0]!)}
+                                />
+                              </div>
+                            </div>
+                            {data.home_price > 0 && (
+                              <div className="mt-3 rounded-2xl border border-primary/40 bg-primary/10 px-5 py-4">
+                                <p className="text-[11px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
+                                <p className="numeric mt-1 text-2xl font-semibold">{money(plan.downPayment, cur)}</p>
+                                <p className="mt-1 text-xs text-muted-foreground">
+                                  {t(
+                                    "Entrada + gastos de compra estimados (~10%).",
+                                    "Down payment + estimated purchase costs (~10%).",
+                                  )}{" "}
+                                  {plan.monthlyToGoal > 0
+                                    ? t(
+                                        `Necesitas ahorrar ${money(plan.monthlyToGoal, cur)} al mes para lograrlo en 3 años.`,
+                                        `You need to save ${money(plan.monthlyToGoal, cur)} per month to get there in 3 years.`,
+                                      )
+                                    : ""}
+                                </p>
+                              </div>
+                            )}
+                          </Reveal>
+                        )}
+                        {life.goal === g.value && g.value === "negocio" && (
+                          <Reveal>
+                            <SubQuestion title={t("¿Cuánto capital necesitas para montarlo?", "How much capital do you need to start it?")} />
+                            <MoneyField
+                              emoji="🚀"
+                              label={t("Capital para mi negocio", "Capital for my business")}
+                              currency={cur}
+                              value={data.business_target}
+                              onChange={(v) => set("business_target", v)}
+                            />
+                            {data.business_target > 0 && (
+                              <div className="mt-3 rounded-2xl border border-primary/40 bg-primary/10 px-5 py-4">
+                                <p className="text-[11px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
+                                <p className="numeric mt-1 text-2xl font-semibold">{money(plan.businessTarget, cur)}</p>
+                                <p className="mt-1 text-xs text-muted-foreground">
+                                  {t(
+                                    "Este es el número que necesitas para montar tu negocio.",
+                                    "This is the number you need to launch your business.",
+                                  )}{" "}
+                                  {plan.monthlyToGoal > 0
+                                    ? t(
+                                        `Necesitas ahorrar ${money(plan.monthlyToGoal, cur)} al mes para lograrlo en 3 años.`,
+                                        `You need to save ${money(plan.monthlyToGoal, cur)} per month to get there in 3 years.`,
+                                      )
+                                    : t("Ya tienes el capital cubierto.", "You already have the capital covered.")}
+                                </p>
+                              </div>
+                            )}
+                          </Reveal>
+                        )}
+                        {life.goal === g.value && g.value === "otro" && (
+                          <Reveal>
+                            <SubQuestion title={t("Cuéntanos tu objetivo", "Tell us your goal")} />
+                            <textarea
+                              value={life.goal_note}
+                              onChange={(e) => setL("goal_note", e.target.value.slice(0, 300))}
+                              maxLength={300}
+                              rows={3}
+                              placeholder={t("Ej: quiero montar mi propio negocio en 2 años…", "E.g. I want to start my own business in 2 years…")}
+                              className="w-full resize-none rounded-2xl border border-border bg-elevated/50 px-5 py-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
+                            />
+                          </Reveal>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   ))}
                 </div>
 
-                <AnimatePresence>
-                  {life.goal === "vivienda" && (
-                    <Reveal>
-                      <SubQuestion title={t("¿Cuánto cuesta la vivienda que quieres?", "How much does the home you want cost?")} />
-                      <div className="grid gap-2.5 sm:grid-cols-2">
-                        <MoneyField
-                          emoji="🏡"
-                          label={t("Precio de la vivienda", "Home price")}
-                          currency={cur}
-                          value={data.home_price}
-                          onChange={(v) => set("home_price", v)}
-                        />
-                        <div className="rounded-2xl border border-border bg-elevated/50 px-5 py-4">
-                          <p className="text-xs text-muted-foreground">{t("Entrada (down payment)", "Down payment")}</p>
-                          <p className="numeric mt-1 text-lg font-semibold">{data.down_payment_pct}%</p>
-                          <Slider
-                            className="mt-3"
-                            min={5}
-                            max={100}
-                            step={5}
-                            value={[data.down_payment_pct || 20]}
-                            onValueChange={(v) => set("down_payment_pct", v[0]!)}
-                          />
-                        </div>
-                      </div>
-                      {data.home_price > 0 && (
-                        <div className="mt-3 rounded-2xl border border-primary/40 bg-primary/10 px-5 py-4">
-                          <p className="text-[11px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
-                          <p className="numeric mt-1 text-2xl font-semibold">{money(plan.downPayment, cur)}</p>
-                          <p className="mt-1 text-xs text-muted-foreground">
-                            {t(
-                              "Entrada + gastos de compra estimados (~10%).",
-                              "Down payment + estimated purchase costs (~10%).",
-                            )}{" "}
-                            {plan.monthlyToGoal > 0
-                              ? t(
-                                  `Necesitas ahorrar ${money(plan.monthlyToGoal, cur)} al mes para lograrlo en 3 años.`,
-                                  `You need to save ${money(plan.monthlyToGoal, cur)} per month to get there in 3 years.`,
-                                )
-                              : ""}
-                          </p>
-                        </div>
-                      )}
-                    </Reveal>
-                  )}
-                  {life.goal === "negocio" && (
-                    <Reveal>
-                      <SubQuestion title={t("¿Cuánto capital necesitas para montarlo?", "How much capital do you need to start it?")} />
-                      <MoneyField
-                        emoji="🚀"
-                        label={t("Capital para mi negocio", "Capital for my business")}
-                        currency={cur}
-                        value={data.business_target}
-                        onChange={(v) => set("business_target", v)}
-                      />
-                      {data.business_target > 0 && (
-                        <div className="mt-3 rounded-2xl border border-primary/40 bg-primary/10 px-5 py-4">
-                          <p className="text-[11px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
-                          <p className="numeric mt-1 text-2xl font-semibold">{money(plan.businessTarget, cur)}</p>
-                          <p className="mt-1 text-xs text-muted-foreground">
-                            {t(
-                              "Este es el número que necesitas para montar tu negocio.",
-                              "This is the number you need to launch your business.",
-                            )}{" "}
-                            {plan.monthlyToGoal > 0
-                              ? t(
-                                  `Necesitas ahorrar ${money(plan.monthlyToGoal, cur)} al mes para lograrlo en 3 años.`,
-                                  `You need to save ${money(plan.monthlyToGoal, cur)} per month to get there in 3 years.`,
-                                )
-                              : t("Ya tienes el capital cubierto.", "You already have the capital covered.")}
-                          </p>
-                        </div>
-                      )}
-                    </Reveal>
-                  )}
-                  {life.goal === "otro" && (
-                    <Reveal>
-                      <SubQuestion title={t("Cuéntanos tu objetivo", "Tell us your goal")} />
-                      <textarea
-                        value={life.goal_note}
-                        onChange={(e) => setL("goal_note", e.target.value.slice(0, 300))}
-                        maxLength={300}
-                        rows={3}
-                        placeholder={t("Ej: quiero montar mi propio negocio en 2 años…", "E.g. I want to start my own business in 2 years…")}
-                        className="w-full resize-none rounded-2xl border border-border bg-elevated/50 px-5 py-4 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
-                      />
-                    </Reveal>
-                  )}
-                </AnimatePresence>
               </Screen>
             )}
 
