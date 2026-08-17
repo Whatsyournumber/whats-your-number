@@ -680,88 +680,104 @@ function OnboardingPage() {
                 </div>
 
 
-                <div className="mt-5 space-y-2.5">
-                  <MoneyField
-                    emoji="💰"
-                    label={t("Ahorros", "Savings")}
-                    desc={t("Cuentas bancarias y efectivo", "Bank accounts and cash")}
-                    currency={cur}
-                    value={data.assets_bank}
-                    onChange={(v) => set("assets_bank", v)}
-                  />
-                  <MoneyField
-                    emoji="📈"
-                    label={t("Inversiones", "Investments")}
-                    desc={t("Acciones, ETFs y fondos", "Stocks, ETFs and funds")}
-                    currency={cur}
-                    value={data.assets_etf}
-                    onChange={(v) => set("assets_etf", v)}
-                  />
-                  <MoneyField
-                    emoji="₿"
-                    label={t("Criptomonedas", "Cryptocurrencies")}
-                    desc={t("Valor aproximado actual", "Current approximate value")}
-                    currency={cur}
-                    value={data.assets_crypto}
-                    onChange={(v) => set("assets_crypto", v)}
-                  />
-                  <MoneyField
-                    emoji="🏠"
-                    label={t("Bienes inmuebles", "Real estate")}
-                    desc={t("Valor de tus propiedades", "Value of your properties")}
-                    currency={cur}
-                    value={data.assets_property}
-                    onChange={(v) => set("assets_property", v)}
-                  />
-                  <MoneyField
-                    emoji="💳"
-                    label={t("Deudas", "Debts")}
-                    desc={t("Hipotecas, préstamos y otras deudas", "Mortgages, loans and other debts")}
-                    currency={cur}
-                    value={data.liabilities}
-                    onChange={(v) => set("liabilities", v)}
-                  />
-                  <MoneyField
-                    emoji="🏦"
-                    label={t("Hipoteca: saldo pendiente", "Mortgage: outstanding balance")}
-                    desc={t("Lo que aún debes al banco", "What you still owe the bank")}
-                    currency={cur}
-                    value={data.mortgage_balance}
-                    onChange={(v) => set("mortgage_balance", v)}
-                  />
-                  <MoneyField
-                    emoji="📊"
-                    label={t("Hipoteca: tasa de interés", "Mortgage: interest rate")}
-                    desc={t("Tasa anual actual", "Current annual rate")}
-                    currency="%"
-                    value={data.mortgage_rate}
-                    onChange={(v) => set("mortgage_rate", v)}
-                  />
-                  <MoneyField
-                    emoji="📅"
-                    label={t("Hipoteca: plazo restante", "Mortgage: remaining term")}
-                    desc={t("Años que te faltan por pagar", "Years left to pay")}
-                    currency={t("años", "years")}
-                    value={data.mortgage_term}
-                    onChange={(v) => set("mortgage_term", v)}
-                  />
-                  <MoneyField
-                    emoji="🪙"
-                    label={t("Ingreso mensual", "Monthly income")}
-                    desc={t("Neto, después de impuestos", "Net, after taxes")}
-                    currency={cur}
-                    value={data.income_salary}
-                    onChange={(v) => set("income_salary", v)}
-                  />
-                  <MoneyField
-                    emoji="🧾"
-                    label={t("Gasto mensual", "Monthly expenses")}
-                    desc={t("Aproximado, todo incluido", "Approximate, all included")}
-                    currency={cur}
-                    value={data.monthly_expenses}
-                    onChange={(v) => set("monthly_expenses", v)}
-                  />
+                <div className="mt-6">
+                  <SubQuestion title={t("Ingresos y flujo mensual", "Income and monthly flow")} />
+                  <div className="mt-4 space-y-2.5">
+                    <MoneyField
+                      emoji="🪙"
+                      label={t("Ingreso mensual", "Monthly income")}
+                      desc={t("Neto, después de impuestos", "Net, after taxes")}
+                      currency={cur}
+                      value={data.income_salary}
+                      onChange={(v) => set("income_salary", v)}
+                    />
+                    <MoneyField
+                      emoji="🧾"
+                      label={t("Gasto mensual", "Monthly expenses")}
+                      desc={t("Aproximado, todo incluido", "Approximate, all included")}
+                      currency={cur}
+                      value={data.monthly_expenses}
+                      onChange={(v) => set("monthly_expenses", v)}
+                    />
+                  </div>
                 </div>
+
+                <div className="mt-8">
+                  <SubQuestion title={t("Activos", "Assets")} />
+                  <div className="mt-4 space-y-2.5">
+                    <MoneyField
+                      emoji="💰"
+                      label={t("Ahorros", "Savings")}
+                      desc={t("Cuentas bancarias y efectivo", "Bank accounts and cash")}
+                      currency={cur}
+                      value={data.assets_bank}
+                      onChange={(v) => set("assets_bank", v)}
+                    />
+                    <MoneyField
+                      emoji="📈"
+                      label={t("Inversiones", "Investments")}
+                      desc={t("Acciones, ETFs y fondos", "Stocks, ETFs and funds")}
+                      currency={cur}
+                      value={data.assets_etf}
+                      onChange={(v) => set("assets_etf", v)}
+                    />
+                    <MoneyField
+                      emoji="₿"
+                      label={t("Criptomonedas", "Cryptocurrencies")}
+                      desc={t("Valor aproximado actual", "Current approximate value")}
+                      currency={cur}
+                      value={data.assets_crypto}
+                      onChange={(v) => set("assets_crypto", v)}
+                    />
+                    <MoneyField
+                      emoji="🏠"
+                      label={t("Bienes inmuebles", "Real estate")}
+                      desc={t("Valor de tus propiedades", "Value of your properties")}
+                      currency={cur}
+                      value={data.assets_property}
+                      onChange={(v) => set("assets_property", v)}
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-8">
+                  <SubQuestion title={t("Pasivos", "Liabilities")} />
+                  <div className="mt-4 space-y-2.5">
+                    <MoneyField
+                      emoji="💳"
+                      label={t("Deudas", "Debts")}
+                      desc={t("Préstamos, tarjetas y otras deudas", "Loans, cards and other debts")}
+                      currency={cur}
+                      value={data.liabilities}
+                      onChange={(v) => set("liabilities", v)}
+                    />
+                    <MoneyField
+                      emoji="🏦"
+                      label={t("Hipoteca: saldo pendiente", "Mortgage: outstanding balance")}
+                      desc={t("Lo que aún debes al banco", "What you still owe the bank")}
+                      currency={cur}
+                      value={data.mortgage_balance}
+                      onChange={(v) => set("mortgage_balance", v)}
+                    />
+                    <MoneyField
+                      emoji="📊"
+                      label={t("Hipoteca: tasa de interés", "Mortgage: interest rate")}
+                      desc={t("Tasa anual actual", "Current annual rate")}
+                      currency="%"
+                      value={data.mortgage_rate}
+                      onChange={(v) => set("mortgage_rate", v)}
+                    />
+                    <MoneyField
+                      emoji="📅"
+                      label={t("Hipoteca: plazo restante", "Mortgage: remaining term")}
+                      desc={t("Años que te faltan por pagar", "Years left to pay")}
+                      currency={t("años", "years")}
+                      value={data.mortgage_term}
+                      onChange={(v) => set("mortgage_term", v)}
+                    />
+                  </div>
+                </div>
+
 
                 <div className="mt-8">
                   <SubQuestion title={t("Tus gastos fijos mensuales", "Your monthly fixed expenses")} />
