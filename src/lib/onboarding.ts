@@ -190,7 +190,7 @@ export function buildPlan(d: OnboardingData): NorthPlan {
   const downPayment = homeMode ? homePrice * (downPct / 100) * 1.1 : 0;
   // Objetivo "montar mi negocio": Your Number es el capital que necesitas levantar.
   const businessTarget = Math.max(0, d.business_target || 0);
-  const businessMode = !homeMode && d.priority === "negocio" && businessTarget > 0;
+  const businessMode = !homeMode && (d.priority === "negocio" || d.priority === "otro") && businessTarget > 0;
   const liquid = Math.max(0, d.assets_cash + d.assets_bank);
   const goalAmount = homeMode ? downPayment : businessMode ? businessTarget : 0;
   const missingGoal = Math.max(0, goalAmount - liquid);
