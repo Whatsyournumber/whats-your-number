@@ -434,7 +434,7 @@ function RetiroContent() {
                   ? `${isGoal ? t("Superas tu objetivo por", "You exceed your goal by") : t("Superas tu número por", "You exceed your number by")} ${fmt(-gap)} 🎯`
                   : `${t("Te faltarían", "You'd still need")} ${fmt(gap)}`}
               </p>
-              <div className="mt-1 text-[11px] leading-snug text-muted-foreground">
+              <div className="mt-1.5 space-y-0.5 text-xs leading-relaxed text-muted-foreground">
                 <p className="truncate">
                   {t("Partes de", "Starting from")} {fmt(investable)} {t("que ya tienes", "you already have")}
                 </p>
