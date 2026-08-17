@@ -129,6 +129,7 @@ function RetiroContent() {
 
   // El subtítulo siempre cambia según el objetivo elegido en el onboarding / perfil.
   const priority = (profile as { priority?: string }).priority || "libertad";
+  const goalNote = ((profile as { goal_note?: string }).goal_note || "").trim();
   const headerSubtitle =
     goalMode === "home"
       ? t(
@@ -189,7 +190,11 @@ function RetiroContent() {
               </div>
               <p className="numeric relative mt-3 text-2xl font-semibold md:text-3xl">{fmt(plan.targetCapital)}</p>
               <div className="relative mt-2 flex items-center gap-2">
-                <span className="text-xs text-muted-foreground">{`${fmt(Math.round((plan.targetCapital * (swr / 100)) / 12))} ${t("al mes con", "per month at")} ${swr}%`}</span>
+                <span className="text-xs text-muted-foreground">
+                  {isGoal
+                    ? `${t("Capital para llegar a tu objetivo", "Capital to reach your goal")}${goalNote ? `: ${goalNote}` : ""}`
+                    : `${fmt(Math.round((plan.targetCapital * (swr / 100)) / 12))} ${t("al mes con", "per month at")} ${swr}%`}
+                </span>
               </div>
             </>
           ) : (
@@ -303,7 +308,10 @@ function RetiroContent() {
       </div>
       <div className="surface p-5">
         <div className="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-          <span className="min-w-0 text-muted-foreground">{t("Progreso hacia tu capital objetivo", "Progress toward your target capital")}</span>
+          <span className="min-w-0 text-muted-foreground">
+            {t("Progreso hacia tu capital objetivo", "Progress toward your target capital")}
+            {isGoal && goalNote ? `: ${goalNote}` : ""}
+          </span>
           <span className="numeric whitespace-nowrap font-semibold sm:text-right">
             {fmt(investable)} / {fmt(plan.targetCapital)}
           </span>
