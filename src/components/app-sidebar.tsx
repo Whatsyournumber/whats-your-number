@@ -151,25 +151,33 @@ export function AppSidebar() {
             <p className="text-xs text-muted-foreground">WhatsYournumber</p>
             <p className="numeric mt-1 text-lg font-semibold">{data.fmtCompact(data.plan.targetCapital)}</p>
             {data.plan.mode !== "freedom" ? (
-              <p className="mt-1 text-xs text-muted-foreground">
+              <p className="mt-1 flex items-center gap-1.5 whitespace-nowrap text-xs text-muted-foreground">
                 {(() => {
                   const months = data.plan.monthsToGoal || 0;
                   const years = Math.max(1, Math.round(months / 12));
                   const amount = data.fmtCompact(data.plan.monthlyToGoal || 0);
-                  return months > 0
-                    ? t(
-                        `Ahorra ${amount}/mes para llegar en ${years} ${years === 1 ? "año" : "años"}`,
-                        `Save ${amount}/mo to get there in ${years} ${years === 1 ? "year" : "years"}`,
-                      )
-                    : t("Define tu ahorro mensual", "Set your monthly savings");
+                  if (months <= 0) return t("Define tu ahorro mensual", "Set your monthly savings");
+                  return (
+                    <>
+                      <span className="font-medium text-foreground">
+                        {amount}
+                        {t("/mes", "/mo")}
+                      </span>
+                      <span className="text-muted-foreground/50">•</span>
+                      <span>
+                        {years} {t(years === 1 ? "año" : "años", years === 1 ? "year" : "years")}
+                      </span>
+                    </>
+                  );
                 })()}
               </p>
             ) : (
-              <p className="mt-1 text-xs text-muted-foreground">
+              <p className="mt-1 truncate whitespace-nowrap text-xs text-muted-foreground">
                 {t("Quieres", "You want")} {data.fmtCompact(data.plan.desiredIncome)}
                 {t("/mes", "/mo")}
               </p>
             )}
+
 
           </div>
         </SidebarFooter>
