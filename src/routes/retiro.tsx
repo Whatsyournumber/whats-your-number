@@ -189,7 +189,11 @@ function RetiroContent() {
               </div>
               <p className="numeric relative mt-3 text-2xl font-semibold md:text-3xl">{fmt(plan.targetCapital)}</p>
               <div className="relative mt-2 flex items-center gap-2">
-                <span className="text-xs text-muted-foreground">{`${fmt(Math.round((plan.targetCapital * (swr / 100)) / 12))} ${t("al mes con", "per month at")} ${swr}%`}</span>
+                <span className="text-xs text-muted-foreground">
+                  {isGoal
+                    ? `${t("Capital para llegar a tu objetivo", "Capital to reach your goal")}${goalNote ? `: ${goalNote}` : ""}`
+                    : `${fmt(Math.round((plan.targetCapital * (swr / 100)) / 12))} ${t("al mes con", "per month at")} ${swr}%`}
+                </span>
               </div>
             </>
           ) : (
