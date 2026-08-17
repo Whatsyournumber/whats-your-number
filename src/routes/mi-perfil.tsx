@@ -386,31 +386,12 @@ function MiPerfil() {
                 setPendingGoal(v);
               }}
             />
-            {
+            {(form.goal === "vivienda" || form.goal === "negocio" || form.goal === "otro") && (
               <div className="grid gap-3 sm:grid-cols-2">
-                {form.goal !== "vivienda" && form.goal !== "negocio" && (
-                  <>
-                    <Field label={t("Ingreso mensual deseado", "Desired monthly income")}>
-                      <Input
-                        type="number"
-                        min={0}
-                        value={form.desired_retirement_income || ""}
-                        onChange={(e) => set("desired_retirement_income", Math.max(0, Number(e.target.value || 0)))}
-                        placeholder="0"
-                      />
-                    </Field>
-                    <Field label={t("Tasa de retiro (%)", "Withdrawal rate (%)")}>
-                      <Input
-                        type="number"
-                        min={1}
-                        max={15}
-                        step={0.1}
-                        value={form.withdrawal_rate || 7}
-                        onChange={(e) => set("withdrawal_rate", Math.min(15, Math.max(1, Number(e.target.value || 0))))}
-                      />
-                    </Field>
-                  </>
-                )}
+                <div className="sm:col-span-2 rounded-lg border border-primary/30 bg-primary/5 p-3">
+                  <p className="text-xs text-muted-foreground">{t("Your Number", "Your Number")}</p>
+                  <p className="numeric text-lg font-semibold">{preview.fmtCompact(preview.plan.targetCapital)}</p>
+                </div>
 
                 {form.goal === "vivienda" && (
                   <>
@@ -455,12 +436,8 @@ function MiPerfil() {
                     />
                   </Field>
                 )}
-                <div className="sm:col-span-2 rounded-lg border border-primary/30 bg-primary/5 p-3">
-                  <p className="text-xs text-muted-foreground">{t("Your Number", "Your Number")}</p>
-                  <p className="numeric text-lg font-semibold">{preview.fmtCompact(preview.plan.targetCapital)}</p>
-                </div>
               </div>
-            }
+            )}
 
             <Chips label={t("Estado civil", "Marital status")} options={maritalOptions.map((m) => ({ value: m, label: tr(m) }))} value={form.marital_status} onSelect={(v) => set("marital_status", v)} />
             <Chips label={t("Hijos", "Children")} options={childrenOptions.map((c) => ({ value: c, label: c }))} value={form.children} onSelect={(v) => set("children", v)} />
