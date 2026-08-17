@@ -59,6 +59,7 @@ function MiPerfil() {
   const [form, setForm] = useState<Profile>(profile);
 
   const [dirty, setDirty] = useState(false);
+  const [pendingGoal, setPendingGoal] = useState<string | null>(null);
   // Tasas del día: necesarias para reconvertir los importes al cambiar de moneda.
   useFxRates();
 
@@ -180,6 +181,48 @@ function MiPerfil() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
+
+          <Dialog open={pendingGoal !== null} onOpenChange={(open) => !open && setPendingGoal(null)}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>{t("¿Cambiar tu objetivo principal?", "Change your main goal?")}</DialogTitle>
+                <DialogDescription>
+                  {t(
+                    "Al cambiar tu objetivo también cambia tu WhatsYournumber: recalcularemos el capital objetivo y el ahorro mensual necesario.",
+                    "Changing your goal also changes your WhatsYournumber: we'll recalculate your target capital and the monthly savings needed.",
+                  )}
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter className="gap-2">
+                <Button variant="outline" onClick={() => setPendingGoal(null)}>
+                  {t("Cancelar", "Cancel")}
+                </Button>
+                <Button
+                  onClick={() => {
+                    const next = pendingGoal;
+                    setPendingGoal(null);
+                    if (!next) return;
+                    setDirty(true);
+                    setForm((f) => ({
+                      ...f,
+                      goal: next,
+                      priority: next,
+                      ...(next === "vivienda" ? {} : { home_price: 0 }),
+                      ...(next === "negocio" || next === "otro" ? {} : { business_target: 0 }),
+                      ...(next === "otro" ? {} : { goal_note: "" }),
+                    }));
+                    toast.success(t("Objetivo actualizado", "Goal updated"), {
+                      description: t("Recalculamos tu WhatsYournumber.", "We recalculated your WhatsYournumber."),
+                    });
+                  }}
+                >
+                  {t("Sí, cambiar mi número", "Yes, change my number")}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+
 
           <PageShell>
             <PageHeader
@@ -334,7 +377,61 @@ function MiPerfil() {
 
         <Panel title={t("Estilo de vida y objetivos", "Lifestyle & goals")}>
           <div className="space-y-5">
-            <Chips label={t("Objetivo principal", "Main goal")} options={goals.map((g) => ({ value: g.value, label: `${g.emoji} ${tr(g.label)}` }))} value={form.goal} onSelect={(v) => set("goal", v)} />
+            <Chips
+              label={t("Objetivo principal", "Main goal")}
+              options={goals.map((g) => ({ value: g.value, label: `${g.emoji} ${tr(g.label)}` }))}
+              value={form.goal}
+              onSelect={(v) => {
+                if (v === form.goal) return;
+                setPendingGoal(v);
+              }}
+            />
+            {(form.goal === "vivienda" || form.goal === "negocio" || form.goal === "otro") && (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {form.goal === "vivienda" && (
+                  <>
+                    <Field label={t("Precio de la vivienda", "Home price")}>
+                      <Input
+                        type="number"
+                        value={form.home_price || ""}
+                        onChange={(e) => set("home_price", Number(e.target.value || 0))}
+                        placeholder="0"
+                      />
+                    </Field>
+                    <Field label={t("Entrada (%)", "Down payment (%)")}>
+                      <Input
+                        type="number"
+                        value={form.down_payment_pct || 20}
+                        onChange={(e) => set("down_payment_pct", Number(e.target.value || 0))}
+                      />
+                    </Field>
+                  </>
+                )}
+                {form.goal === "otro" && (
+                  <Field label={t("¿Cuál es tu objetivo?", "What is your goal?")}>
+                    <Input
+                      value={form.goal_note}
+                      onChange={(e) => set("goal_note", e.target.value.slice(0, 120))}
+                      placeholder={t("Ej: hacer un MBA", "e.g. do an MBA")}
+                    />
+                  </Field>
+                )}
+                {(form.goal === "negocio" || form.goal === "otro") && (
+                  <Field label={t("Capital que necesitas", "Capital you need")}>
+                    <Input
+                      type="number"
+                      value={form.business_target || ""}
+                      onChange={(e) => set("business_target", Number(e.target.value || 0))}
+                      placeholder="0"
+                    />
+                  </Field>
+                )}
+                <div className="sm:col-span-2 rounded-lg border border-primary/30 bg-primary/5 p-3">
+                  <p className="text-xs text-muted-foreground">{t("Your Number", "Your Number")}</p>
+                  <p className="numeric text-lg font-semibold">{preview.fmtCompact(preview.plan.targetCapital)}</p>
+                </div>
+              </div>
+            )}
             <Chips label={t("Estado civil", "Marital status")} options={maritalOptions.map((m) => ({ value: m, label: tr(m) }))} value={form.marital_status} onSelect={(v) => set("marital_status", v)} />
             <Chips label={t("Hijos", "Children")} options={childrenOptions.map((c) => ({ value: c, label: c }))} value={form.children} onSelect={(v) => set("children", v)} />
             <Chips label={t("¿Planeas tener hijos?", "Planning to have children?")} options={plansChildrenOptions.map((c) => ({ value: c, label: tr(c) }))} value={form.plans_children} onSelect={(v) => set("plans_children", v)} />
