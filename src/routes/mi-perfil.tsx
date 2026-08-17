@@ -268,7 +268,11 @@ function MiPerfil() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title={t("Sobre ti", "About you")}>
+        <Panel
+          icon={<UserRound />}
+          title={t("Sobre ti", "About you")}
+          description={t("Tus datos base para las proyecciones.", "Your base data for the projections.")}
+        >
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label={t("Nombre", "Name")}>
               <Input value={form.full_name} onChange={(e) => set("full_name", e.target.value)} placeholder={t("Tu nombre", "Your name")} />
@@ -348,7 +352,11 @@ function MiPerfil() {
           </div>
         </Panel>
 
-        <Panel title={t("Ingresos y flujo", "Income & flow")} description={t("Importes mensuales", "Monthly amounts")}>
+        <Panel
+          icon={<Wallet />}
+          title={t("Ingresos y flujo", "Income & flow")}
+          description={t("Importes mensuales de entrada y salida.", "Monthly inflow and outflow amounts.")}
+        >
           <div className="grid gap-4 sm:grid-cols-2">
             {moneyFields
               .filter((f) => f.group === "income" || f.group === "flow")
@@ -370,7 +378,11 @@ function MiPerfil() {
 
 
 
-        <Panel title={t("Estilo de vida y objetivos", "Lifestyle & goals")}>
+        <Panel
+          icon={<Target />}
+          title={t("Estilo de vida y objetivos", "Lifestyle & goals")}
+          description={t("Define hacia dónde vas y cómo quieres vivir.", "Define where you are going and how you want to live.")}
+        >
           <div className="space-y-5">
             <Chips
               label={t("Objetivo principal", "Main goal")}
