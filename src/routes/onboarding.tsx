@@ -51,6 +51,7 @@ import {
 import { useFxRates } from "@/hooks/use-fx-rates";
 import { convertAmount } from "@/lib/fx";
 import { lifestyleCities } from "@/lib/lifestyle-cities";
+import { currencyForCountry } from "@/lib/country-currency";
 
 import { cn } from "@/lib/utils";
 import { detectCurrency } from "@/lib/geo";
@@ -1019,6 +1020,7 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
           results?: {
             name: string;
             country?: string;
+            country_code?: string;
             admin1?: string;
             population?: number;
             feature_code?: string;
@@ -1035,7 +1037,7 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
           const item = {
             name: r.name,
             country,
-            currency: "USD",
+            currency: currencyForCountry(r.country_code, r.country),
             // Coste estimado por defecto en USD; ajustable después.
             cost: Math.round(convertAmount(2400, "USD", "EUR")),
             pop,
