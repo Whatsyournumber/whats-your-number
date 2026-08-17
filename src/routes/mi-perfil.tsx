@@ -448,8 +448,9 @@ function MiPerfil() {
                   <Field label={t("Capital que necesitas", "Capital you need")}>
                     <Input
                       type="number"
+                      min={0}
                       value={form.business_target || ""}
-                      onChange={(e) => set("business_target", Number(e.target.value || 0))}
+                      onChange={(e) => set("business_target", Math.max(0, Number(e.target.value || 0)))}
                       placeholder="0"
                     />
                   </Field>
