@@ -306,7 +306,14 @@ function RetiroContent() {
               <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
               <XAxis dataKey="year" {...axisProps} tickFormatter={(v) => `${v}a`} />
               <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={62} />
-              <Tooltip content={<ChartTooltip />} />
+              <Tooltip
+                content={<ChartTooltip />}
+                labelFormatter={(v) =>
+                  isGoal
+                    ? `${t("Año", "Year")} ${v}`
+                    : `${v} ${Number(v) === 1 ? t("año", "year old") : t("años", "years old")}`
+                }
+              />
               <Area type="monotone" dataKey="value" name={t("Proyección", "Projection")} stroke="var(--color-chart-4)" strokeWidth={2.5} fill="url(#ret)" />
               <Area type="monotone" dataKey="contributed" name={t("Aportado", "Contributed")} stroke="var(--color-chart-8)" strokeWidth={2} strokeDasharray="4 4" fill="transparent" />
             </AreaChart>
