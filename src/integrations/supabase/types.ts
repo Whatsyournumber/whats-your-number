@@ -766,6 +766,7 @@ export type Database = {
           assets_property: number | null
           assets_retirement: number | null
           assets_stocks: number | null
+          business_target: number
           children: string | null
           city: string | null
           completed: boolean
@@ -823,6 +824,7 @@ export type Database = {
           assets_property?: number | null
           assets_retirement?: number | null
           assets_stocks?: number | null
+          business_target?: number
           children?: string | null
           city?: string | null
           completed?: boolean
@@ -880,6 +882,7 @@ export type Database = {
           assets_property?: number | null
           assets_retirement?: number | null
           assets_stocks?: number | null
+          business_target?: number
           children?: string | null
           city?: string | null
           completed?: boolean

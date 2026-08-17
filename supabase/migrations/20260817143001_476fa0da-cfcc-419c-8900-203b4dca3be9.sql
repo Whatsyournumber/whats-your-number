@@ -1,0 +1,1 @@
+ALTER TABLE public.onboarding_profiles ADD COLUMN IF NOT EXISTS business_target numeric NOT NULL DEFAULT 0;
