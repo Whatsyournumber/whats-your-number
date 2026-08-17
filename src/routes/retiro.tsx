@@ -127,6 +127,8 @@ function RetiroContent() {
   ).sort((a, b) => a - b);
   const rates = [4, 6, 8, 10, 12];
 
+  // El subtítulo siempre cambia según el objetivo elegido en el onboarding / perfil.
+  const priority = (profile as { priority?: string }).priority || "libertad";
   const headerSubtitle =
     goalMode === "home"
       ? t(
@@ -134,14 +136,35 @@ function RetiroContent() {
           "How much you need for your home down payment and how much you have saved.",
         )
       : goalMode === "business"
-        ? t(
-            "Cuánto capital necesitas para montar tu negocio y cuánto llevas ahorrado.",
-            "How much capital you need to launch your business and how much you have saved.",
-          )
-        : t(
-            "Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar.",
-            "How much you have today and how much you will have when you stop working.",
-          );
+        ? priority === "otro"
+          ? t(
+              "Cuánto capital necesitas para tu objetivo y cuánto llevas ahorrado.",
+              "How much capital you need for your goal and how much you have saved.",
+            )
+          : t(
+              "Cuánto capital necesitas para montar tu negocio y cuánto llevas ahorrado.",
+              "How much capital you need to launch your business and how much you have saved.",
+            )
+        : priority === "gastos"
+          ? t(
+              "Controla tus gastos y mira cuánto capital necesitas para vivir de tus inversiones.",
+              "Control your spending and see how much capital you need to live off your investments.",
+            )
+          : priority === "patrimonio"
+            ? t(
+                "Cuánto patrimonio tienes hoy y hasta dónde puede crecer con tus aportes.",
+                "How much wealth you have today and how far it can grow with your contributions.",
+              )
+            : priority === "organizar"
+              ? t(
+                  "Ordena tu dinero y mira cuánto necesitas para alcanzar tu número.",
+                  "Organize your money and see how much you need to reach your number.",
+                )
+              : t(
+                  "Cuánto tienes hoy y cuánto tendrás cuando dejes de trabajar.",
+                  "How much you have today and how much you will have when you stop working.",
+                );
+
 
   return (
     <PageShell>
@@ -238,12 +261,14 @@ function RetiroContent() {
           )}
         </motion.div>
 
-        <KpiCard
-          label={t("Ingreso mensual", "Monthly income")}
-          value={fmt(d.income)}
-          hint={t("lo que entra cada mes", "what comes in each month")}
-          index={1}
-        />
+        {goalMode === "business" && (
+          <KpiCard
+            label={t("Ingreso mensual", "Monthly income")}
+            value={fmt(d.income)}
+            hint={t("lo que entra cada mes", "what comes in each month")}
+            index={1}
+          />
+        )}
         <EditableKpiCard
           label={t("Cuánto tengo", "How much I have")}
           value={fmt(investable)}
@@ -256,10 +281,15 @@ function RetiroContent() {
           hint={t("Ahorros e inversiones — sin contar propiedades", "Savings and investments — excluding properties")}
           index={2}
         />
-
+        {goalMode !== "business" && (
+          <KpiCard label={t("Cómo voy", "How I'm doing")} value={`${progressPct.toFixed(1)}%`} hint={t("del capital objetivo", "of target capital")} index={2} />
+        )}
         <Link to="/gastos" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
           <KpiCard label={t("Gastos mensuales", "Monthly expenses")} value={fmt(d.expenses)} hint={`${fmt(d.expenses * 12)} ${t("al año", "per year")}`} index={3} />
         </Link>
+        {goalMode !== "business" && (
+          <KpiCard label={t("Aportes estimados al año", "Estimated contributions per year")} value={fmt(retirement.contributionsYTD)} index={4} />
+        )}
         <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${swr}%`} hint={t("anual · tu tasa de retiro", "annual · your withdrawal rate")} index={4} />
         {goalMode === "business" && (
           <KpiCard
@@ -269,6 +299,7 @@ function RetiroContent() {
             index={5}
           />
         )}
+
       </div>
       <div className="surface p-5">
         <div className="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:justify-between sm:gap-4">
