@@ -209,7 +209,6 @@ function BlogArticle() {
                       </table>
                     </div>
                   </figure>
-                </>
               )}
             </Fragment>
           ))}
