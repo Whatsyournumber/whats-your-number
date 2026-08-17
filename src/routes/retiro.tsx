@@ -257,9 +257,9 @@ function RetiroContent() {
         <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${swr}%`} hint={t("anual · tu tasa de retiro", "annual · your withdrawal rate")} index={4} />
         {goalMode === "business" && (
           <KpiCard
-            label={t("Puedes aportar al mes", "You can contribute monthly")}
-            value={fmt(Math.max(0, d.income - d.expenses))}
-            hint={t("ingreso menos gastos", "income minus expenses")}
+            label={t("Aporte necesario al mes", "Required monthly contribution")}
+            value={fmt(requiredMonthly)}
+            hint={t("para llegar a tu capital en el plazo", "to reach your capital on time")}
             index={5}
           />
         )}
