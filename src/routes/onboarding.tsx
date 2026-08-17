@@ -1034,6 +1034,7 @@ function MoneyField({
   currency: string;
   hint?: string;
 }) {
+  const t = useT();
   return (
     <label className="flex items-center gap-3.5 rounded-2xl border border-border bg-elevated/50 px-5 py-4 transition-colors focus-within:border-primary/60">
       <span className="text-lg">{emoji}</span>
