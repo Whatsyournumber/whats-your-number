@@ -426,17 +426,14 @@ function RetiroContent() {
                   ? `${isGoal ? t("Superas tu objetivo por", "You exceed your goal by") : t("Superas tu número por", "You exceed your number by")} ${fmt(-gap)} 🎯`
                   : `${t("Te faltarían", "You'd still need")} ${fmt(gap)}`}
               </p>
-              <div className="mt-2 w-full space-y-1 text-[11px] leading-snug text-muted-foreground">
-                <div className="flex w-full items-baseline justify-between gap-2">
-                  <span className="truncate">{t("Partes de", "Starting from")}</span>
-                  <span className="numeric shrink-0 font-medium text-foreground/80">{fmt(investable)}</span>
-                </div>
-                <div className="flex w-full items-baseline justify-between gap-2">
-                  <span className="truncate">{isGoal ? goalLabel : t("Objetivo", "Target")}</span>
-                  <span className="numeric shrink-0 font-medium text-foreground/80">{fmt(targetNow)}</span>
-                </div>
+              <div className="mt-1 text-[11px] leading-snug text-muted-foreground">
+                <p className="truncate">
+                  {t("Partes de", "Starting from")} {fmt(investable)} {t("que ya tienes", "you already have")}
+                </p>
+                <p className="truncate">
+                  {isGoal ? goalLabel : t("Objetivo", "Target")}: {fmt(targetNow)}
+                </p>
               </div>
-
 
               {isGoal && gap > 0 && years > 0 ? (
                 <p className="mt-2 text-[11px] text-primary">
