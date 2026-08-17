@@ -1473,8 +1473,9 @@ function SummaryScreen({
       )}
 
       <div className="surface mt-3 overflow-hidden p-6">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
+        <div className="flex flex-col gap-6 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
+          <div className="order-first">
+
             <p className="text-[11px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
             <p className="numeric mt-2 text-4xl font-semibold">{compact(plan.targetCapital, currency)}</p>
             {plan.mode === "home" ? (
