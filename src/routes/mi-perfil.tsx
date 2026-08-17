@@ -182,6 +182,48 @@ function MiPerfil() {
             </DialogContent>
           </Dialog>
 
+          <Dialog open={pendingGoal !== null} onOpenChange={(open) => !open && setPendingGoal(null)}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>{t("¿Cambiar tu objetivo principal?", "Change your main goal?")}</DialogTitle>
+                <DialogDescription>
+                  {t(
+                    "Al cambiar tu objetivo también cambia tu WhatsYournumber: recalcularemos el capital objetivo y el ahorro mensual necesario.",
+                    "Changing your goal also changes your WhatsYournumber: we'll recalculate your target capital and the monthly savings needed.",
+                  )}
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter className="gap-2">
+                <Button variant="outline" onClick={() => setPendingGoal(null)}>
+                  {t("Cancelar", "Cancel")}
+                </Button>
+                <Button
+                  onClick={() => {
+                    const next = pendingGoal;
+                    setPendingGoal(null);
+                    if (!next) return;
+                    setDirty(true);
+                    setForm((f) => ({
+                      ...f,
+                      goal: next,
+                      priority: next,
+                      ...(next === "vivienda" ? {} : { home_price: 0 }),
+                      ...(next === "negocio" || next === "otro" ? {} : { business_target: 0 }),
+                      ...(next === "otro" ? {} : { goal_note: "" }),
+                    }));
+                    toast.success(t("Objetivo actualizado", "Goal updated"), {
+                      description: t("Recalculamos tu WhatsYournumber.", "We recalculated your WhatsYournumber."),
+                    });
+                  }}
+                >
+                  {t("Sí, cambiar mi número", "Yes, change my number")}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+
+
           <PageShell>
             <PageHeader
               eyebrow={t("Perfil financiero", "Financial profile")}
