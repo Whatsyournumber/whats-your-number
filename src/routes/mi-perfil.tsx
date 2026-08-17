@@ -442,18 +442,21 @@ function MiPerfil() {
             <Chips label={t("Vivienda", "Housing")} options={housingOptions.map((h) => ({ value: h.value, label: `${h.emoji} ${tr(h.label)}` }))} value={form.housing} onSelect={(v) => set("housing", v)} />
           </div>
         </Panel>
+
+        <div className="text-sm [&_.text-2xl]:text-lg [&_.text-lg]:text-base [&_.text-xl]:text-lg [&_button]:text-xs [&_input]:h-8 [&_input]:text-xs [&_label]:text-[11px]">
+          <WealthEditor
+            value={wealth}
+            onChange={(next) => {
+              setDirty(true);
+              setWealth(next);
+            }}
+            fmt={preview.fmt}
+            retireAge={form.retire_age}
+            onRetireAge={(n) => set("retire_age", n)}
+          />
+        </div>
       </div>
 
-      <WealthEditor
-        value={wealth}
-        onChange={(next) => {
-          setDirty(true);
-          setWealth(next);
-        }}
-        fmt={preview.fmt}
-        retireAge={form.retire_age}
-        onRetireAge={(n) => set("retire_age", n)}
-      />
 
 
 
