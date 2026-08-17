@@ -386,8 +386,28 @@ function MiPerfil() {
                 setPendingGoal(v);
               }}
             />
-            {(form.goal === "vivienda" || form.goal === "negocio" || form.goal === "otro") && (
+            {
               <div className="grid gap-3 sm:grid-cols-2">
+                {form.goal !== "vivienda" && form.goal !== "negocio" && (
+                  <>
+                    <Field label={t("Ingreso mensual deseado", "Desired monthly income")}>
+                      <Input
+                        type="number"
+                        value={form.desired_retirement_income || ""}
+                        onChange={(e) => set("desired_retirement_income", Number(e.target.value || 0))}
+                        placeholder="0"
+                      />
+                    </Field>
+                    <Field label={t("Tasa de retiro (%)", "Withdrawal rate (%)")}>
+                      <Input
+                        type="number"
+                        value={form.withdrawal_rate || 7}
+                        onChange={(e) => set("withdrawal_rate", Number(e.target.value || 0))}
+                      />
+                    </Field>
+                  </>
+                )}
+
                 {form.goal === "vivienda" && (
                   <>
                     <Field label={t("Precio de la vivienda", "Home price")}>
