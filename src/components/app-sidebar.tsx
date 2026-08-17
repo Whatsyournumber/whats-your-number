@@ -120,36 +120,40 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>{t("Patrimonio", "Net Worth")}</SidebarGroupLabel>
+      <SidebarContent className="gap-0.5 overflow-hidden">
+        <SidebarGroup className="p-1.5">
+          <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
+            {t("Patrimonio", "Net Worth")}
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>{primary.map(renderItem)}</SidebarMenu>
+            <SidebarMenu className="gap-0.5">{primary.map(renderItem)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup>
-          <SidebarGroupLabel>{t("Inteligencia", "Intelligence")}</SidebarGroupLabel>
+        <SidebarGroup className="p-1.5">
+          <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
+            {t("Inteligencia", "Intelligence")}
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>{secondary.map(renderItem)}</SidebarMenu>
+            <SidebarMenu className="gap-0.5">{secondary.map(renderItem)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
         {adminItems.length > 0 && (
-          <SidebarGroup>
-            <SidebarGroupLabel>Admin</SidebarGroupLabel>
+          <SidebarGroup className="p-1.5">
+            <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">Admin</SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu>{adminItems.map(renderItem)}</SidebarMenu>
+              <SidebarMenu className="gap-0.5">{adminItems.map(renderItem)}</SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
         )}
       </SidebarContent>
 
       {!collapsed && (
-        <SidebarFooter className="p-3">
-          <div className="surface p-3">
-            <p className="text-xs text-muted-foreground">WhatsYournumber</p>
-            <p className="numeric mt-1 text-lg font-semibold">{data.fmtCompact(data.plan.targetCapital)}</p>
+        <SidebarFooter className="p-2">
+          <div className="surface p-2.5">
+            <p className="text-[11px] text-muted-foreground">WhatsYournumber</p>
+            <p className="numeric mt-0.5 text-base font-semibold">{data.fmtCompact(data.plan.targetCapital)}</p>
             {data.plan.mode !== "freedom" ? (
               <p className="mt-1 flex items-center gap-1.5 whitespace-nowrap text-xs text-muted-foreground">
                 {(() => {
