@@ -129,6 +129,7 @@ function RetiroContent() {
 
   // El subtítulo siempre cambia según el objetivo elegido en el onboarding / perfil.
   const priority = (profile as { priority?: string }).priority || "libertad";
+  const goalNote = ((profile as { goal_note?: string }).goal_note || "").trim();
   const headerSubtitle =
     goalMode === "home"
       ? t(
