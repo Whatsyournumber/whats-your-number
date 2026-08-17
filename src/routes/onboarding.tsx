@@ -1158,6 +1158,7 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
             key={`${c.name}-${c.country}`}
             onClick={() => {
               setPickedKey(keyOf(c));
+              setQ(c.name);
               onSelect(c);
             }}
             className={cn(
