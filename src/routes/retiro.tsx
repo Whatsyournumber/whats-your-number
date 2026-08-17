@@ -68,6 +68,14 @@ function RetiroContent() {
   const [rate, setRate] = useState(retirement.returnAnnualized);
   const [retireAge, setRetireAge] = useState(retirement.retireAge);
 
+  // El simulador cambia según tu objetivo: libertad financiera, vivienda o negocio.
+  const goalMode = plan.mode;
+  const isGoal = goalMode !== "freedom";
+  const goalLabel =
+    goalMode === "home" ? t("Entrada de tu vivienda", "Your home down payment") : t("Capital para tu negocio", "Capital for your business");
+  const defaultHorizon = Math.max(1, Math.min(15, Math.ceil((plan.monthsToGoal || 36) / 12)));
+  const [horizonYears, setHorizonYears] = useState(defaultHorizon);
+
   // Sincroniza el simulador cuando el perfil termina de cargar o el usuario edita sus datos.
   useEffect(() => {
     setMonthly(retirement.monthlyContribution);
@@ -75,13 +83,18 @@ function RetiroContent() {
     setRetireAge(retirement.retireAge);
   }, [retirement.monthlyContribution, retirement.returnAnnualized, retirement.retireAge]);
 
-  const years = Math.max(0, retireAge - retirement.currentAge);
+  useEffect(() => {
+    setHorizonYears(defaultHorizon);
+  }, [defaultHorizon]);
+
+  const years = isGoal ? horizonYears : Math.max(0, retireAge - retirement.currentAge);
   // Parte de TODO lo que ya tengo invertido (no solo la cuenta de retiro).
   const data = projectRetirementFrom(monthly, rate, years, investable, retirement.currentAge);
   const final = data[data.length - 1]!;
-  // El objetivo se compara contra el número que estás editando en vivo.
-  const targetNow = liveNumber > 0 ? liveNumber : plan.targetCapital;
+  // El objetivo se compara contra tu meta activa (vivienda/negocio) o el número que editas en vivo.
+  const targetNow = isGoal ? plan.targetCapital : liveNumber > 0 ? liveNumber : plan.targetCapital;
   const gap = targetNow - final.value;
+
 
 
   // Escenarios de renta mensual: se construyen alrededor de TU número (el que estás editando).
