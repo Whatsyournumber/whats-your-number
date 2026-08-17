@@ -130,7 +130,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup className="p-1.5">
+        <SidebarGroup className="mt-3 border-t border-border/60 p-1.5 pt-3">
           <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
             {t("Inteligencia", "Intelligence")}
           </SidebarGroupLabel>
