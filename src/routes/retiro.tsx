@@ -303,11 +303,13 @@ function RetiroContent() {
             const factor = target / investable;
             const next: Partial<Record<(typeof keys)[number], number>> = {};
             let acc = 0;
-            keys.forEach((k, i) => {
-              const value = i === keys.length - 1 ? Math.max(0, target - acc) : Math.round(profile[k] * factor);
+            keys.forEach((k) => {
+              const value = Math.max(0, Math.round(profile[k] * factor));
               next[k] = value;
               acc += value;
             });
+            // El redondeo se ajusta en liquidez para que el total sea exacto.
+            next.assets_bank = Math.max(0, (next.assets_bank ?? 0) + (target - acc));
             void save(next);
           }}
 
