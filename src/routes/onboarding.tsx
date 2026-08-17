@@ -294,15 +294,9 @@ function OnboardingPage() {
           <div className="mx-auto flex max-w-2xl items-center gap-3 px-5 py-4">
             <Link
               to="/"
-              onClick={() => {
-                try {
-                  if (user) window.localStorage.setItem(`wyn_onboarding_skipped:${user.id}`, "1");
-                } catch {
-                  /* noop */
-                }
-              }}
               className="flex items-center gap-3 transition-opacity hover:opacity-80"
             >
+
               <Compass className="h-4 w-4 text-primary" />
               <span className="font-display text-sm font-semibold">WhatsYournumber</span>
             </Link>
