@@ -38,6 +38,8 @@ export type OnboardingData = {
   withdrawal_rate: number;
   priority: string;
   risk_profile: string;
+  home_price: number;
+  down_payment_pct: number;
 };
 
 export const emptyOnboarding: OnboardingData = {
@@ -79,6 +81,8 @@ export const emptyOnboarding: OnboardingData = {
 
   priority: "",
   risk_profile: "",
+  home_price: 0,
+  down_payment_pct: 20,
 };
 
 export type Country = { name: string; code: string; currency: string; tz: string };
@@ -156,6 +160,12 @@ export type NorthPlan = {
   probability: number;
   freedomAge: number;
   progress: number;
+  /** "home" cuando el objetivo principal es la entrada de la primera vivienda. */
+  mode: "freedom" | "home";
+  homePrice: number;
+  downPayment: number;
+  monthlyToGoal: number;
+  monthsToGoal: number;
 };
 
 /** Capital needed using the user's safe withdrawal rate (default 4%) on the desired annual income. */
@@ -168,7 +178,18 @@ export function buildPlan(d: OnboardingData): NorthPlan {
   const yearsLeft = Math.max(0, d.retire_age - age);
   const swr = Math.min(15, Math.max(1, d.withdrawal_rate || 7)) / 100;
   const desiredIncome = d.desired_retirement_income || expenses || 0;
-  const targetCapital = (desiredIncome * 12) / swr;
+
+  // Objetivo "primera vivienda": Your Number es la entrada (down payment) que necesitas.
+  const homeMode = d.priority === "vivienda" && (d.home_price || 0) > 0;
+  const homePrice = Math.max(0, d.home_price || 0);
+  const downPct = Math.min(100, Math.max(1, d.down_payment_pct || 20));
+  // Entrada + costes de compra estimados (~10% impuestos y gastos).
+  const downPayment = homeMode ? homePrice * (downPct / 100) * 1.1 : 0;
+  const liquid = Math.max(0, d.assets_cash + d.assets_bank);
+  const missingHome = Math.max(0, downPayment - liquid);
+  const monthsToGoal = homeMode && savings > 0 ? Math.ceil(missingHome / savings) : 0;
+
+  const targetCapital = homeMode ? downPayment : (desiredIncome * 12) / swr;
 
 
   const r = d.expected_return / 100;
@@ -196,7 +217,16 @@ export function buildPlan(d: OnboardingData): NorthPlan {
     projected,
     probability,
     freedomAge: freedomAgeEstimate(d, targetCapital) ?? d.retire_age,
-    progress: targetCapital > 0 ? Math.min(100, Math.max(0, (Math.max(0, netWorth(d)) / targetCapital) * 100)) : 0,
+    progress:
+      targetCapital > 0
+        ? Math.min(100, Math.max(0, ((homeMode ? liquid : Math.max(0, netWorth(d))) / targetCapital) * 100))
+        : 0,
+    mode: homeMode ? "home" : "freedom",
+    homePrice,
+    downPayment,
+    // Ahorro mensual necesario para lograrlo en 3 años.
+    monthlyToGoal: homeMode ? missingHome / 36 : 0,
+    monthsToGoal,
   };
 }
 
@@ -234,6 +264,7 @@ export function compact(v: number, currency = "USD") {
 
 export type LifeData = {
   goal: string;
+  goal_note: string;
   city: string;
   marital_status: string;
   children: string;
@@ -245,6 +276,7 @@ export type LifeData = {
 
 export const emptyLife: LifeData = {
   goal: "",
+  goal_note: "",
   city: "",
   marital_status: "",
   children: "",
@@ -261,6 +293,7 @@ export const goals = [
   { value: "vivienda", emoji: "🏡", label: "Ahorrar para una vivienda" },
   { value: "viajar", emoji: "✈️", label: "Viajar más" },
   { value: "organizar", emoji: "💼", label: "Organizar mejor mi dinero" },
+  { value: "otro", emoji: "✍️", label: "Otro objetivo (escríbelo)" },
 ];
 
 export const maritalOptions = ["Soltero", "En pareja", "Casado", "Divorciado"];

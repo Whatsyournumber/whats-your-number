@@ -776,6 +776,7 @@ export type Database = {
           currency: string | null
           current_step: number
           desired_retirement_income: number | null
+          down_payment_pct: number | null
           expected_return: number | null
           fixed_education: number
           fixed_housing: number
@@ -787,6 +788,8 @@ export type Database = {
           fixed_utilities: number
           full_name: string | null
           goal: string | null
+          goal_note: string | null
+          home_price: number | null
           housing: string | null
           id: string
           income_bonus: number | null
@@ -830,6 +833,7 @@ export type Database = {
           currency?: string | null
           current_step?: number
           desired_retirement_income?: number | null
+          down_payment_pct?: number | null
           expected_return?: number | null
           fixed_education?: number
           fixed_housing?: number
@@ -841,6 +845,8 @@ export type Database = {
           fixed_utilities?: number
           full_name?: string | null
           goal?: string | null
+          goal_note?: string | null
+          home_price?: number | null
           housing?: string | null
           id?: string
           income_bonus?: number | null
@@ -884,6 +890,7 @@ export type Database = {
           currency?: string | null
           current_step?: number
           desired_retirement_income?: number | null
+          down_payment_pct?: number | null
           expected_return?: number | null
           fixed_education?: number
           fixed_housing?: number
@@ -895,6 +902,8 @@ export type Database = {
           fixed_utilities?: number
           full_name?: string | null
           goal?: string | null
+          goal_note?: string | null
+          home_price?: number | null
           housing?: string | null
           id?: string
           income_bonus?: number | null
