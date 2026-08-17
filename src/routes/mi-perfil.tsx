@@ -451,7 +451,8 @@ function MiPerfil() {
                   <p className="numeric text-lg font-semibold">{preview.fmtCompact(preview.plan.targetCapital)}</p>
                 </div>
               </div>
-            )}
+            }
+
             <Chips label={t("Estado civil", "Marital status")} options={maritalOptions.map((m) => ({ value: m, label: tr(m) }))} value={form.marital_status} onSelect={(v) => set("marital_status", v)} />
             <Chips label={t("Hijos", "Children")} options={childrenOptions.map((c) => ({ value: c, label: c }))} value={form.children} onSelect={(v) => set("children", v)} />
             <Chips label={t("¿Planeas tener hijos?", "Planning to have children?")} options={plansChildrenOptions.map((c) => ({ value: c, label: tr(c) }))} value={form.plans_children} onSelect={(v) => set("plans_children", v)} />
