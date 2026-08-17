@@ -145,22 +145,23 @@ function BlogArticle() {
                 )}
               </section>
 
-              {extras && i === midPoint && (
-                <>
-                  <figure className="surface overflow-hidden">
-                    <img
-                      src={extras.image2}
-                      alt={extras.image2Alt[lang]}
-                      loading="lazy"
-                      width={1200}
-                      height={750}
-                      className="h-full w-full object-cover"
-                    />
-                    <figcaption className="border-t border-border/50 px-5 py-3 text-xs text-muted-foreground">
-                      {extras.image2Caption[lang]}
-                    </figcaption>
-                  </figure>
+              {extras && i === imageIndex && (
+                <figure className="surface overflow-hidden">
+                  <img
+                    src={extras.image2}
+                    alt={extras.image2Alt[lang]}
+                    loading="lazy"
+                    width={1200}
+                    height={750}
+                    className="h-full w-full object-cover"
+                  />
+                  <figcaption className="border-t border-border/50 px-5 py-3 text-xs text-muted-foreground">
+                    {extras.image2Caption[lang]}
+                  </figcaption>
+                </figure>
+              )}
 
+              {extras && i === tableIndex && (
                   <figure className="surface overflow-hidden">
                     <figcaption className="flex flex-wrap items-baseline gap-2 border-b border-border/50 px-5 py-4">
                       <span className="font-display text-sm font-semibold">{extras.table.title[lang]}</span>
