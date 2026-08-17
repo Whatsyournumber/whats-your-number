@@ -296,7 +296,7 @@ function OnboardingPage() {
               to="/"
               onClick={() => {
                 try {
-                  window.localStorage.setItem("wyn_onboarding_skipped", "1");
+                  if (user) window.localStorage.setItem(`wyn_onboarding_skipped:${user.id}`, "1");
                 } catch {
                   /* noop */
                 }

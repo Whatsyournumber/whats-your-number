@@ -104,10 +104,6 @@ function AuthPage() {
       navigate({ to: "/precios" });
       return;
     }
-    if (next) {
-      navigate({ to: next });
-      return;
-    }
     // El plan Familiar siempre entra por la pantalla de perfiles.
     if (isPatrimonio) {
       navigate({ to: "/ninos" });
@@ -122,7 +118,11 @@ function AuthPage() {
         .maybeSingle();
       if (!active) return;
       // Cuenta nueva (Free o Pro): siempre pasa primero por el onboarding.
-      navigate({ to: data?.completed ? "/dashboard" : "/onboarding" });
+      if (!data?.completed) {
+        navigate({ to: "/onboarding" });
+        return;
+      }
+      navigate({ to: next ?? "/dashboard" });
     })();
     return () => {
       active = false;
