@@ -33,7 +33,9 @@ function BlogLayout() {
 function BlogIndex() {
   const t = useT();
   const { lang } = useLanguage();
-  const [featured, ...rest] = blogPosts;
+  const featured = blogPosts[0]!;
+  const rest = blogPosts.slice(1);
+
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
