@@ -119,6 +119,8 @@ function BlogArticle() {
           </nav>
         )}
 
+        <p className="mt-8 text-base leading-relaxed text-muted-foreground">{post.intro[lang]}</p>
+
         <article className="mt-10 space-y-10">
           {post.sections.map((section, i) => (
             <Fragment key={section.heading.en}>
