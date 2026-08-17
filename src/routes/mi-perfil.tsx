@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
+import { WealthEditor } from "@/components/wealth-editor";
+
 import { SubscriptionManager } from "@/components/subscription-manager";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,6 +24,7 @@ import { useLanguage, useT } from "@/hooks/use-language";
 import { translateOption } from "@/lib/i18n-data";
 
 import { useProfile, type Profile } from "@/hooks/use-profile";
+import { seedHoldingsFromTotals, useHoldings, wealthTotals, type Holding } from "@/hooks/use-holdings";
 import {
   childrenOptions,
   cities,
@@ -57,6 +60,9 @@ function MiPerfil() {
   const { profile, isLoading, save, saving } = useProfile();
   const navigate = useNavigate();
   const [form, setForm] = useState<Profile>(profile);
+  const { holdings, isLoading: loadingHoldings, saveAll } = useHoldings();
+  const [wealth, setWealth] = useState<Holding[]>([]);
+
 
   const [dirty, setDirty] = useState(false);
   const [pendingGoal, setPendingGoal] = useState<string | null>(null);
@@ -96,6 +102,13 @@ function MiPerfil() {
     if (!dirty) setForm(profile);
   }, [profile, dirty]);
 
+  // Detalle del patrimonio: si nunca lo editaste, lo sembramos con los totales del perfil.
+  useEffect(() => {
+    if (dirty || loadingHoldings) return;
+    setWealth(holdings.length ? holdings : seedHoldingsFromTotals(profile));
+  }, [holdings, loadingHoldings, profile, dirty]);
+
+
   const set = <K extends keyof Profile>(key: K, value: Profile[K]) => {
     setDirty(true);
     setForm((f) => ({ ...f, [key]: value }));
@@ -113,12 +126,13 @@ function MiPerfil() {
   };
 
 
-  const merged: Profile = { ...form };
+  const merged: Profile = { ...form, ...wealthTotals(wealth) };
   const preview = buildDataset(merged);
 
   const onSave = async () => {
     const { completed: _c, ...rest } = merged;
     try {
+      await saveAll(wealth);
       await save({ ...rest, completed: true });
 
       setDirty(false);
@@ -351,27 +365,20 @@ function MiPerfil() {
           </div>
         </Panel>
 
-        <Panel title={t("Patrimonio", "Net worth")} description={t("Activos y deudas actuales", "Current assets and liabilities")}>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {moneyFields
-              .filter((f) => f.group === "assets")
-              .map((f) => (
-                <Field key={String(f.key)} label={f.label}>
-                  <Input
-                    type="number"
-                    value={(form[f.key] as number) || ""}
-                    onChange={(e) => set(f.key, Number(e.target.value || 0) as Profile[typeof f.key])}
-                    placeholder="0"
-                  />
-                </Field>
-              ))}
-          </div>
-          <div className="mt-5 grid gap-3 sm:grid-cols-3">
+        <Panel title={t("Resumen de patrimonio", "Net worth summary")} description={t("Se calcula con el detalle de abajo", "Calculated from the detail below")}>
+          <div className="grid gap-3 sm:grid-cols-3">
             <Stat label={t("Activos totales", "Total assets")} value={preview.fmt(preview.totalAssets)} />
             <Stat label={t("Deudas totales", "Total liabilities")} value={preview.fmt(preview.totalLiabilities)} />
             <Stat label={t("Patrimonio neto", "Net worth")} value={preview.fmt(preview.netWorth)} />
           </div>
+          <p className="mt-4 text-xs text-muted-foreground">
+            {t(
+              "Edita cada activo, propiedad, activo futuro y deuda en la sección “Tu Patrimonio”. Tu portafolio y tus proyecciones usan ese detalle.",
+              "Edit every asset, property, future asset and debt in the “Your Net Worth” section. Your portfolio and projections use that detail.",
+            )}
+          </p>
         </Panel>
+
 
 
 
@@ -448,6 +455,19 @@ function MiPerfil() {
           </div>
         </Panel>
       </div>
+
+      <WealthEditor
+        value={wealth}
+        onChange={(next) => {
+          setDirty(true);
+          setWealth(next);
+        }}
+        fmt={preview.fmt}
+        retireAge={form.retire_age}
+        onRetireAge={(n) => set("retire_age", n)}
+      />
+
+
 
 
 
