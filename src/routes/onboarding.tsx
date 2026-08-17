@@ -1022,6 +1022,7 @@ function MoneyField({
   value,
   onChange,
   currency,
+  hint,
 }: {
   label: string;
   desc?: string;
@@ -1029,6 +1030,7 @@ function MoneyField({
   value: number;
   onChange: (v: number) => void;
   currency: string;
+  hint?: string;
 }) {
   return (
     <label className="flex items-center gap-3.5 rounded-2xl border border-border bg-elevated/50 px-5 py-4 transition-colors focus-within:border-primary/60">
