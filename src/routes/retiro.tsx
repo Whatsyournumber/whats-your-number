@@ -587,8 +587,7 @@ function RetiroContent() {
                 )}
               </div>
             ) : null}
-
-
+          </div>
         </Panel>
       </div>
 
