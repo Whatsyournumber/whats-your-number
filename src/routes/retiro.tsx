@@ -459,6 +459,8 @@ function RetiroContent() {
             </AreaChart>
           </ResponsiveContainer>
           </div>
+        </Panel>
+
 
 
         <Panel
