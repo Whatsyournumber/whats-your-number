@@ -384,10 +384,11 @@ function RetiroContent() {
                 t("no necesitas aportar más", "no extra saving needed")
               ) : !feasible && shortfallMonthly > 0 ? (
                 <span className="flex flex-col gap-0.5">
-                  <span className="text-amber-400">
+                  <span className="text-amber-400/60">
                     {t("Baja tus gastos en", "Cut expenses by")} {fmt(shortfallMonthly)}/{t("mes", "mo")}
                   </span>
-                  <span className="text-positive/80">
+                  <span className="text-positive/55">
+
                     {t("o produce extra de", "or earn extra")} {fmt(shortfallMonthly)}/{t("mes", "mo")} · {yearsLabel}
                   </span>
                 </span>
@@ -421,7 +422,11 @@ function RetiroContent() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel
-          title={isGoal ? t("Proyección hasta tu objetivo", "Projection to your goal") : t("Proyección hasta el retiro", "Projection to retirement")}
+          title={
+            <span className="text-base font-semibold tracking-tight">
+              {isGoal ? t("Proyección hasta tu objetivo", "Projection to your goal") : t("Proyección hasta el retiro", "Projection to retirement")}
+            </span>
+          }
           description={
             isGoal
               ? `${goalLabel} · ${t("saldo estimado en", "estimated balance in")} ${horizonYears} ${horizonYears === 1 ? t("año", "year") : t("años", "years")}`
@@ -429,7 +434,8 @@ function RetiroContent() {
           }
           className="flex flex-col lg:col-span-2"
         >
-          <div className="min-h-[280px] flex-1">
+          <div className="min-h-[240px] max-h-[360px] flex-1">
+
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data} margin={{ left: -8, right: 8, top: 8, bottom: 0 }}>
 
@@ -464,7 +470,7 @@ function RetiroContent() {
 
 
         <Panel
-          title={t("Simulador", "Simulator")}
+          title={<span className="text-base font-semibold tracking-tight">{t("Simulador", "Simulator")}</span>}
           description={isGoal ? `${goalLabel} · ${fmt(plan.targetCapital)}` : t("Ajusta y mira el impacto", "Adjust and see the impact")}
         >
           <div className="space-y-6">
