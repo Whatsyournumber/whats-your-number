@@ -40,10 +40,7 @@ function PatrimonioContent() {
   const debtRows = holdings
     .filter((h) => h.kind === "debt" && holdingValue(h) > 0)
     .map((h) => ({ id: h.id, label: h.label || t("Deuda", "Debt"), value: holdingValue(h), interest: h.expected_return }));
-  const mortgageRows = holdings
-    .filter((h) => h.kind === "property" && h.linked_liability > 0)
-    .map((h) => ({ id: h.id, label: t(`Hipoteca · ${h.label || "Propiedad"}`, `Mortgage · ${h.label || "Property"}`), value: h.linked_liability, interest: h.expected_return }));
-  const liabilityRows = [...debtRows, ...mortgageRows].sort((a, b) => b.value - a.value);
+  const liabilityRows = [...debtRows].sort((a, b) => b.value - a.value);
 
   return (
     <PageShell>
