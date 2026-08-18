@@ -211,20 +211,17 @@ function PortafolioContent() {
         .filter((h) => h.type === "Cash" || h.type === "Renta fija" || h.type === "Estructurado")
         .reduce((s, h) => s + h.value, 0) / totalValue
     : 0;
+  const cashWeight = totalValue
+    ? enriched.filter((h) => h.type === "Cash").reduce((s, h) => s + h.value, 0) / totalValue
+    : 0;
   const annualGain = enriched.reduce((s, h) => s + h.value * h.growth, 0);
   const top = [...enriched].sort((a, b) => b.value - a.value)[0];
   const concentration = top && totalValue ? (top.value / totalValue) * 100 : 0;
-  const debts = holdings.filter((h) => h.kind === "debt");
-  const debtTotal =
-    debts.reduce((s, h) => s + h.manual_value, 0) +
-    holdings.filter((h) => h.kind === "property").reduce((s, h) => s + h.linked_liability, 0);
-  const debtCost = debts.reduce((s, h) => s + h.manual_value * (Math.max(0, h.expected_return || 0) / 100), 0);
-  const netAnnual = (totalValue * weightedReturn) / 100 - debtCost;
+  const netAnnual = (totalValue * weightedReturn) / 100;
   const passiveMonthly = dividends / 12;
-  // Nivel de riesgo del portafolio: volatilidad + concentración + apalancamiento.
-  const riskScore =
-    riskWeight * 100 * 0.6 + Math.max(0, concentration - 30) * 0.6 + (totalValue ? (debtTotal / totalValue) * 40 : 0);
-  const riskLevel: "Alto" | "Medio" | "Bajo" = riskScore > 55 ? "Alto" : riskScore > 28 ? "Medio" : "Bajo";
+  // Nivel de riesgo del portafolio: volatilidad + concentración (solo posiciones de inversión).
+  const riskScore = riskWeight * 100 * 0.6 + Math.max(0, concentration - 30) * 0.6;
+  const riskLevel: "Alto" | "Medio" | "Bajo" = riskScore > 40 ? "Alto" : riskScore > 20 ? "Medio" : "Bajo";
   const riskLabel = t(riskLevel, riskLevel === "Alto" ? "High" : riskLevel === "Medio" ? "Medium" : "Low");
 
   const insights = [
@@ -252,15 +249,6 @@ function PortafolioContent() {
           text: t(
             `${(safeWeight * 100).toFixed(0)}% está en cash y renta fija: seguro, pero rinde poco frente a la inflación.`,
             `${(safeWeight * 100).toFixed(0)}% is in cash and fixed income: safe, but it barely beats inflation.`,
-          ),
-        }
-      : null,
-    debtCost > 0 && debtCost > (totalValue * weightedReturn) / 100 * 0.5
-      ? {
-          tone: "warn" as const,
-          text: t(
-            `Tus deudas cuestan ${fmt(Math.round(debtCost))} al año y se comen buena parte de tu rentabilidad. Amortizar puede rendir más que invertir.`,
-            `Your debts cost ${fmt(Math.round(debtCost))} a year and eat much of your return. Paying them down may beat investing.`,
           ),
         }
       : null,
@@ -354,7 +342,6 @@ function PortafolioContent() {
 
   // ---- Análisis de riesgo y rebalanceo (2 líneas, basado en data real) ----
   const volPct = hasStats ? volPort : riskWeight * 100 * 1.2;
-  const debtPct = totalValue ? (debtTotal / totalValue) * 100 : 0;
   // Métricas explicadas en lenguaje simple con valor cualitativo + frase clara.
   type Tone = "good" | "warn" | "neutral";
 
@@ -510,21 +497,21 @@ function PortafolioContent() {
             : t("Poco en activos volátiles.", "Little in volatile assets."),
     },
     {
-      label: `${t("Deuda", "Debt")}`,
-      value: `${debtPct.toFixed(0)}%`,
+      label: `${t("Liquidez", "Liquidity")}`,
+      value: `${(cashWeight * 100).toFixed(0)}%`,
       qual:
-        debtPct > 40
+        cashWeight > 0.4
           ? t("Alta", "High")
-          : debtPct > 20
+          : cashWeight > 0.1
             ? t("Media", "Medium")
             : t("Baja", "Low"),
-      tone: debtPct > 40 ? ("warn" as Tone) : debtPct > 20 ? ("neutral" as Tone) : ("good" as Tone),
+      tone: cashWeight > 0.4 ? ("warn" as Tone) : cashWeight > 0.1 ? ("good" as Tone) : ("neutral" as Tone),
       sentence:
-        debtPct > 40
-          ? t("Debes mucho frente a tu portafolio.", "You owe a lot vs your portfolio.")
-          : debtPct > 20
-            ? t("Tu deuda es manejable.", "Your debt is manageable.")
-            : t("Casi sin deuda.", "Almost debt-free."),
+        cashWeight > 0.4
+          ? t("Mucho cash sin rendir.", "Too much idle cash.")
+          : cashWeight > 0.1
+            ? t("Colchón de cash sano.", "Healthy cash buffer.")
+            : t("Poco cash disponible.", "Little cash available."),
     },
   ];
 
