@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { motion } from "motion/react";
 import type { LucideIcon } from "lucide-react";
 
