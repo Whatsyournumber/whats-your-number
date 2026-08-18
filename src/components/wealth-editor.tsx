@@ -57,7 +57,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
     { kind: "money_market", label: t("Money market (opcional)", "Money market (optional)") },
   ];
 
-  const investments = value.filter((h) => ["etf", "stock", "bond", "tbill", "note", "crypto", "other"].includes(h.kind));
+  const investments = value.filter((h) => ["etf", "stock", "bond", "tbill", "note", "structured", "crypto", "other"].includes(h.kind));
   const retirement = single("retirement");
 
   const sum = (list_: Holding[]) => list_.reduce((s, h) => s + holdingValue(h), 0);
@@ -498,6 +498,7 @@ function InvestmentCard({
     bond: t("Bono", "Bond"),
     tbill: t("Treasury bill", "Treasury bill"),
     note: t("Nota / pagaré", "Note"),
+    structured: t("Structured Product", "Structured Product"),
     crypto: t("Cripto", "Crypto"),
     other: t("Otro", "Other"),
   };
@@ -552,6 +553,7 @@ function InvestmentCard({
             { value: "bond", label: kindLabel["bond"] ?? "Bond" },
             { value: "tbill", label: kindLabel["tbill"] ?? "Treasury bill" },
             { value: "note", label: kindLabel["note"] ?? "Note" },
+            { value: "structured", label: kindLabel["structured"] ?? "Structured Product" },
             { value: "crypto", label: kindLabel["crypto"] ?? "Crypto" },
             { value: "other", label: kindLabel["other"] ?? "Other" },
           ]}

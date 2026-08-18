@@ -12,6 +12,7 @@ export const HOLDING_KINDS = [
   "bond",
   "tbill",
   "note",
+  "structured",
   "crypto",
   "other",
   "retirement",
@@ -72,6 +73,7 @@ export function defaultReturn(kind: HoldingKind): number {
   if (kind === "bond") return 5;
   if (kind === "tbill") return 4;
   if (kind === "note") return 5;
+  if (kind === "structured") return 6;
   if (kind === "debt") return 0;
   return 7;
 }
@@ -128,7 +130,7 @@ export function wealthTotals(list: Holding[], prices?: Record<string, number>): 
     assets_cash: sum(["cash"]),
     assets_bank: sum(["bank", "money_market"]),
     assets_retirement: sum(["retirement"]),
-    assets_etf: sum(["etf", "other", "bond", "tbill", "note"]),
+    assets_etf: sum(["etf", "other", "bond", "tbill", "note", "structured"]),
     assets_stocks: sum(["stock"]),
     assets_crypto: sum(["crypto"]),
     assets_property: sum(["property"]),
@@ -171,7 +173,7 @@ export function seedHoldingsFromTotals(p: {
 
 export function monthlyContributions(list: Holding[]) {
   return list
-    .filter((h) => ["etf", "stock", "bond", "tbill", "note", "crypto", "other", "retirement"].includes(h.kind))
+    .filter((h) => ["etf", "stock", "bond", "tbill", "note", "structured", "crypto", "other", "retirement"].includes(h.kind))
     .reduce((s, h) => s + h.monthly_contribution, 0);
 }
 
