@@ -694,13 +694,11 @@ function PortafolioContent() {
           </div>
 
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-            {riskMetrics.map((m, i) => (
+            {riskMetrics.map((m) => (
               <div key={m.label} className="rounded-xl border border-border/50 bg-elevated/30 px-3 py-2">
-                <p className="truncate text-[10px] uppercase tracking-wide text-muted-foreground">{m.label}</p>
-                <p className="numeric text-sm font-semibold text-foreground">{m.value}</p>
-                <p className="line-clamp-1 text-[10px] leading-tight text-muted-foreground">
-                  {aiHints[i]?.trim() || m.hint}
-                </p>
+                <p className="truncate text-[11px] font-medium text-foreground">{m.label}</p>
+                <p className="numeric mt-0.5 text-base font-bold text-foreground">{m.value}</p>
+                <p className="mt-1 text-[11px] leading-snug text-muted-foreground">{m.hint}</p>
               </div>
             ))}
           </div>
