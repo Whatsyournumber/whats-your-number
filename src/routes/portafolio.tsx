@@ -121,7 +121,18 @@ function PortafolioContent() {
   const enriched = positions.map((h) => ({
     ...h,
     avgCost: h.cost,
-    dividends: Math.round(h.type === "ETF" ? h.value * 0.018 : h.type === "Acción" ? h.value * 0.012 : 0),
+    dividends:
+      h.income > 0
+        ? h.income
+        : Math.round(
+            h.type === "ETF"
+              ? h.value * 0.018
+              : h.type === "Acción"
+                ? h.value * 0.012
+                : h.type === "Renta fija"
+                  ? h.value * h.growth
+                  : 0,
+          ),
     gain: h.value - h.cost,
     ret: h.cost ? ((h.value - h.cost) / h.cost) * 100 : 0,
   }));
@@ -131,6 +142,77 @@ function PortafolioContent() {
   const totalCost = enriched.reduce((s, h) => s + h.cost, 0);
   const totalGain = totalValue - totalCost;
   const dividends = enriched.reduce((s, h) => s + h.dividends, 0);
+
+  // ---- Análisis basado en tu data real ----
+  const weightedReturn = totalValue
+    ? enriched.reduce((s, h) => s + h.growth * 100 * h.value, 0) / totalValue
+    : 0;
+  const riskWeight = totalValue
+    ? enriched
+        .filter((h) => h.type === "Cripto" || h.type === "Acción")
+        .reduce((s, h) => s + h.value, 0) / totalValue
+    : 0;
+  const safeWeight = totalValue
+    ? enriched
+        .filter((h) => h.type === "Cash" || h.type === "Renta fija")
+        .reduce((s, h) => s + h.value, 0) / totalValue
+    : 0;
+  const top = [...enriched].sort((a, b) => b.value - a.value)[0];
+  const concentration = top && totalValue ? (top.value / totalValue) * 100 : 0;
+  const debts = holdings.filter((h) => h.kind === "debt");
+  const debtTotal =
+    debts.reduce((s, h) => s + h.manual_value, 0) +
+    holdings.filter((h) => h.kind === "property").reduce((s, h) => s + h.linked_liability, 0);
+  const debtCost = debts.reduce((s, h) => s + h.manual_value * (Math.max(0, h.expected_return || 0) / 100), 0);
+  const netAnnual = (totalValue * weightedReturn) / 100 - debtCost;
+  const passiveMonthly = dividends / 12;
+  const insights = [
+    concentration > 40 && top
+      ? {
+          tone: "warn" as const,
+          text: t(
+            `Concentración alta: ${top.ticker} pesa ${concentration.toFixed(0)}% del portafolio. Diversificar reduce el riesgo.`,
+            `High concentration: ${top.ticker} is ${concentration.toFixed(0)}% of the portfolio. Diversifying lowers risk.`,
+          ),
+        }
+      : null,
+    riskWeight > 0.7
+      ? {
+          tone: "warn" as const,
+          text: t(
+            `${(riskWeight * 100).toFixed(0)}% está en activos volátiles (acciones/cripto). Considera renta fija o cash para amortiguar caídas.`,
+            `${(riskWeight * 100).toFixed(0)}% sits in volatile assets (stocks/crypto). Consider fixed income or cash as a buffer.`,
+          ),
+        }
+      : null,
+    safeWeight > 0.6
+      ? {
+          tone: "warn" as const,
+          text: t(
+            `${(safeWeight * 100).toFixed(0)}% está en cash y renta fija: seguro, pero rinde poco frente a la inflación.`,
+            `${(safeWeight * 100).toFixed(0)}% is in cash and fixed income: safe, but it barely beats inflation.`,
+          ),
+        }
+      : null,
+    debtCost > 0 && debtCost > (totalValue * weightedReturn) / 100 * 0.5
+      ? {
+          tone: "warn" as const,
+          text: t(
+            `Tus deudas cuestan ${fmt(Math.round(debtCost))} al año y se comen buena parte de tu rentabilidad. Amortizar puede rendir más que invertir.`,
+            `Your debts cost ${fmt(Math.round(debtCost))} a year and eat much of your return. Paying them down may beat investing.`,
+          ),
+        }
+      : null,
+    passiveMonthly > 0
+      ? {
+          tone: "good" as const,
+          text: t(
+            `Tu portafolio ya genera ~${fmt(Math.round(passiveMonthly))} al mes en ingresos pasivos (dividendos, cupones y rentas).`,
+            `Your portfolio already generates ~${fmt(Math.round(passiveMonthly))} per month in passive income (dividends, coupons and rent).`,
+          ),
+        }
+      : null,
+  ].filter(Boolean) as { tone: "warn" | "good"; text: string }[];
 
   // Real market series: S&P 500 vs a blend that mirrors your allocation (equities → SPY, crypto → BTC, cash → 0%).
   const series = seriesQuery.data?.series ?? {};
