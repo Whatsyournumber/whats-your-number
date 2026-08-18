@@ -18,7 +18,7 @@ export function KpiCard({
   label: string;
   value: string;
   delta?: number;
-  hint?: string;
+  hint?: ReactNode;
   icon?: LucideIcon;
   accent?: boolean;
   inverse?: boolean;
