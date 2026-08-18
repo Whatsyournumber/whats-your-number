@@ -45,6 +45,8 @@ const chartColors = [
 
 function PortafolioContent() {
   const t = useT();
+  const { lang } = useLanguage();
+
   const typeLabels: Record<(typeof types)[number], string> = {
     ETF: t("ETF", "ETF"),
     "Acción": t("Acción", "Stock"),
