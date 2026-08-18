@@ -56,6 +56,7 @@ type AdviceAction = {
   overspent: boolean;
 };
 import { cn } from "@/lib/utils";
+import { Amount } from "@/components/ui/amount";
 
 export const Route = createFileRoute("/gastos")({
   head: () => ({
@@ -705,7 +706,7 @@ function Gastos() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                  <p className="numeric text-3xl font-semibold">{fmtCompact(variableTotal)}</p>
+                  <p className="text-3xl font-semibold"><Amount full={fmt(variableTotal)} short={fmtCompact(variableTotal)} from="lg" /></p>
                   <p className="text-sm text-muted-foreground">{t("gasto variable del periodo", "variable period spend")}</p>
                   <p className={cn("numeric mt-0.5 text-xs", variableDelta > 0 ? "text-negative" : "text-positive")}>
                     {variableDelta > 0 ? "+" : ""}
@@ -1160,7 +1161,7 @@ function Gastos() {
                   <p className="text-xs text-muted-foreground">{t("ahorro potencial total", "total potential savings")}</p>
                 </div>
                 <div>
-                  <p className="numeric text-xl font-semibold text-positive">{fmtCompact(futureValue(totalSaving))}</p>
+                  <p className="text-xl font-semibold text-positive"><Amount full={fmt(futureValue(totalSaving))} short={fmtCompact(futureValue(totalSaving))} from="xl" /></p>
                   <p className="text-xs text-muted-foreground">
                     {t("en", "in")} {horizonYears.toFixed(0)} {t("años al 7% anual", "years at 7% a year")}
                   </p>

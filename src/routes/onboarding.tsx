@@ -55,6 +55,7 @@ import { cn } from "@/lib/utils";
 import { detectCurrency } from "@/lib/geo";
 import { useT } from "@/hooks/use-language";
 import { useSubscription } from "@/hooks/use-subscription";
+import { Amount } from "@/components/ui/amount";
 
 const GOALS_EN: Record<string, string> = {
   libertad: "Achieve financial freedom",
@@ -1480,7 +1481,7 @@ function SummaryScreen({
           <div className="order-first">
 
             <p className="text-[11px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
-            <p className="numeric mt-2 text-4xl font-semibold">{compact(plan.targetCapital, currency)}</p>
+            <p className="mt-2 text-4xl font-semibold"><Amount full={money(plan.targetCapital, currency)} short={compact(plan.targetCapital, currency)} from="md" /></p>
             {plan.mode === "home" ? (
               <p className="mt-2 text-xs text-muted-foreground">
                 {t("La entrada de tu primera vivienda", "The down payment for your first home")} ({money(plan.homePrice, currency)}){". "}

@@ -17,6 +17,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { useT } from "@/hooks/use-language";
 import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
+import { Amount } from "@/components/ui/amount";
 
 export const Route = createFileRoute("/retiro")({
   head: () => ({
@@ -244,7 +245,7 @@ function RetiroContent() {
               </div>
               <div className="flex items-center justify-between pt-1">
                 <div>
-                  <p className="numeric text-lg font-semibold leading-tight">{fmtCompact(liveNumber)}</p>
+                  <p className="text-lg font-semibold leading-tight"><Amount full={fmt(liveNumber)} short={fmtCompact(liveNumber)} from="lg" /></p>
                   <p className="text-[10px] text-muted-foreground">{fmt(wantMonthly)}/{t("mes", "mo")} · {swr.toFixed(1)}%</p>
                 </div>
                 <Button

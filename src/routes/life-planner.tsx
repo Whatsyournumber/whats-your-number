@@ -39,6 +39,7 @@ import { GOAL_TEMPLATES, defaultValues, parseMeta, templateById, type TemplateId
 import { addMonths, formatImpact, monthsToTarget, yearsDiff, type SimGoal } from "@/lib/life-planner";
 import { buildDataset } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
+import { Amount } from "@/components/ui/amount";
 
 export const Route = createFileRoute("/life-planner")({
   head: () => ({
@@ -292,7 +293,7 @@ function LifePlannerContent() {
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-            <HeroStat icon={Target} label={t("Patrimonio objetivo", "Target capital")} value={data.fmtCompact(target)} />
+            <HeroStat icon={Target} label={t("Patrimonio objetivo", "Target capital")} value={<Amount full={data.fmt(target)} short={data.fmtCompact(target)} from="xl" />} />
             <HeroStat
               icon={CalendarDays}
               label={t("Fecha estimada de retiro", "Estimated freedom date")}
@@ -302,11 +303,11 @@ function LifePlannerContent() {
                   : t("+60 años", "+60 years")
               }
             />
-            <HeroStat icon={Wallet} label={t("Patrimonio líquido actual", "Current liquid net worth")} value={data.fmtCompact(start)} />
+            <HeroStat icon={Wallet} label={t("Patrimonio líquido actual", "Current liquid net worth")} value={<Amount full={data.fmt(start)} short={data.fmtCompact(start)} from="xl" />} />
             <HeroStat
               icon={Compass}
               label={t("Con nuevas decisiones", "With new decisions")}
-              value={data.fmtCompact(Math.max(0, adjustedStart))}
+              value={<Amount full={data.fmt(Math.max(0, adjustedStart))} short={data.fmtCompact(Math.max(0, adjustedStart))} from="xl" />}
               {...(progressDelta > 0.05 ? { tone: "up" as const } : progressDelta < -0.05 ? { tone: "down" as const } : {})}
             />
           </div>
@@ -700,7 +701,7 @@ function HeroStat({
 }: {
   icon: typeof Target;
   label: string;
-  value: string;
+  value: React.ReactNode;
   tone?: "up" | "down";
 }) {
   const badge =
