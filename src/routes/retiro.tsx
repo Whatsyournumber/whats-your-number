@@ -540,28 +540,35 @@ function RetiroContent() {
                   ? `${isGoal ? t("Superas tu objetivo por", "You exceed your goal by") : t("Superas tu número por", "You exceed your number by")} ${fmt(-gap)} 🎯`
                   : `${t("Te faltarían", "You'd still need")} ${fmt(gap)}`}
               </p>
-              <dl className="mt-3 grid grid-cols-1 gap-1.5 border-t border-border/60 pt-3 text-[11px] leading-snug">
-                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-2">
-                  <dt className="truncate text-muted-foreground">{t("Partes de", "Starting from")}</dt>
-                  <dd className="numeric shrink-0 font-medium">{fmt(investable)}</dd>
-                </div>
-                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-2">
-                  <dt className="truncate text-muted-foreground">{isGoal ? goalLabel : t("Objetivo", "Target")}</dt>
-                  <dd className="numeric shrink-0 font-medium">{fmt(targetNow)}</dd>
-                </div>
-                {isGoal ? (
-                  <>
-                    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-2">
-                      <dt className="truncate text-muted-foreground">{t("Plazo", "Timeframe")}</dt>
-                      <dd className="numeric shrink-0 font-medium">{yearsLabel}</dd>
-                    </div>
-                    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-2">
-                      <dt className="truncate text-muted-foreground">{t("Aporte necesario", "Required saving")}</dt>
-                      <dd className="numeric shrink-0 font-medium">{fmt(requiredMonthly)}/{t("mes", "mo")}</dd>
-                    </div>
-                  </>
-                ) : null}
-              </dl>
+              <details className="group mt-3 border-t border-border/60 pt-2">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-[11px] text-muted-foreground">
+                  <span>{t("Ver desglose", "See breakdown")}</span>
+                  <span className="transition-transform group-open:rotate-180">⌄</span>
+                </summary>
+                <dl className="mt-2 grid grid-cols-1 gap-1.5 text-[11px] leading-snug">
+                  <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-2">
+                    <dt className="truncate text-muted-foreground">{t("Partes de", "Starting from")}</dt>
+                    <dd className="numeric shrink-0 font-medium">{fmt(investable)}</dd>
+                  </div>
+                  <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-2">
+                    <dt className="truncate text-muted-foreground">{isGoal ? goalLabel : t("Objetivo", "Target")}</dt>
+                    <dd className="numeric shrink-0 font-medium">{fmt(targetNow)}</dd>
+                  </div>
+                  {isGoal ? (
+                    <>
+                      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-2">
+                        <dt className="truncate text-muted-foreground">{t("Plazo", "Timeframe")}</dt>
+                        <dd className="numeric shrink-0 font-medium">{yearsLabel}</dd>
+                      </div>
+                      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-2">
+                        <dt className="truncate text-muted-foreground">{t("Aporte necesario", "Required saving")}</dt>
+                        <dd className="numeric shrink-0 font-medium">{fmt(requiredMonthly)}/{t("mes", "mo")}</dd>
+                      </div>
+                    </>
+                  ) : null}
+                </dl>
+              </details>
+
 
               {isGoal && gap > 0 && years > 0 ? (
                 <p className="mt-2 text-[11px] text-primary">
