@@ -189,11 +189,6 @@ function PortafolioContent() {
   const annualGain = enriched.reduce((s, h) => s + h.value * h.growth, 0);
   const top = [...enriched].sort((a, b) => b.value - a.value)[0];
   const concentration = top && totalValue ? (top.value / totalValue) * 100 : 0;
-  // Nivel de riesgo del portafolio: volatilidad + concentración + apalancamiento.
-  const riskScore =
-    riskWeight * 100 * 0.6 + Math.max(0, concentration - 30) * 0.6 + (totalValue ? (debtTotalPre / totalValue) * 40 : 0);
-  const riskLevel: "Alto" | "Medio" | "Bajo" = riskScore > 55 ? "Alto" : riskScore > 28 ? "Medio" : "Bajo";
-  const riskLabel = t(riskLevel, riskLevel === "Alto" ? "High" : riskLevel === "Medio" ? "Medium" : "Low");
   const debts = holdings.filter((h) => h.kind === "debt");
   const debtTotal =
     debts.reduce((s, h) => s + h.manual_value, 0) +
@@ -201,6 +196,31 @@ function PortafolioContent() {
   const debtCost = debts.reduce((s, h) => s + h.manual_value * (Math.max(0, h.expected_return || 0) / 100), 0);
   const netAnnual = (totalValue * weightedReturn) / 100 - debtCost;
   const passiveMonthly = dividends / 12;
+  // Nivel de riesgo del portafolio: volatilidad + concentración + apalancamiento.
+  const riskScore =
+    riskWeight * 100 * 0.6 + Math.max(0, concentration - 30) * 0.6 + (totalValue ? (debtTotal / totalValue) * 40 : 0);
+  const riskLevel: "Alto" | "Medio" | "Bajo" = riskScore > 55 ? "Alto" : riskScore > 28 ? "Medio" : "Bajo";
+  const riskLabel = t(riskLevel, riskLevel === "Alto" ? "High" : riskLevel === "Medio" ? "Medium" : "Low");
+  const riskReason = t(
+    `Volatilidad ${(riskWeight * 100).toFixed(0)}% · mayor posición ${concentration.toFixed(0)}% · deuda ${totalValue ? ((debtTotal / totalValue) * 100).toFixed(0) : 0}% del portafolio.`,
+    `Volatility ${(riskWeight * 100).toFixed(0)}% · largest position ${concentration.toFixed(0)}% · debt ${totalValue ? ((debtTotal / totalValue) * 100).toFixed(0) : 0}% of portfolio.`,
+  );
+  const riskAdvice =
+    riskLevel === "Alto"
+      ? t(
+          "Riesgo alto: una caída fuerte del mercado te golpearía duro. Baja exposición volátil, diversifica la mayor posición y reduce deuda.",
+          "High risk: a market drop would hit you hard. Lower volatile exposure, diversify the largest position and cut debt.",
+        )
+      : riskLevel === "Medio"
+        ? t(
+            "Riesgo medio: balance razonable. Vigila la concentración y mantén 6 meses de gastos en cash.",
+            "Medium risk: reasonable balance. Watch concentration and keep 6 months of expenses in cash.",
+          )
+        : t(
+            "Riesgo bajo: portafolio defensivo. Puedes asumir algo más de renta variable para ganarle a la inflación.",
+            "Low risk: defensive portfolio. You could take a bit more equity exposure to beat inflation.",
+          );
+
   const insights = [
     concentration > 40 && top
       ? {
