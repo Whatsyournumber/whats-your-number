@@ -535,7 +535,7 @@ function Chips({
             type="button"
             onClick={() => onSelect(o.value)}
             className={cn(
-              "rounded-full border px-3 py-1.5 text-xs transition-colors",
+              "rounded-full border px-4 py-2 text-sm transition-colors",
               value === o.value
                 ? "border-primary bg-primary/15 text-foreground"
                 : "border-border bg-elevated/50 text-muted-foreground hover:text-foreground",
