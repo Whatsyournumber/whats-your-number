@@ -140,9 +140,10 @@ function PatrimonioContent() {
 
   // Activos futuros (trading, venta de empresa…) ponderados: suman al patrimonio y al allocation.
   const futureTotal = detailRows.filter((r) => r.group.key === "future").reduce((s, r) => s + r.value, 0);
-  const assetRows = futureTotal > 0
+  const assetRows = (futureTotal > 0
     ? [...assets, { key: "assets_future", name: t("Activos futuros", "Future assets"), value: futureTotal, color: "var(--color-chart-3)" }]
-    : assets;
+    : assets
+  ).slice().sort((a, b) => b.value - a.value);
   const totalAssetsAll = d.totalAssets + futureTotal;
   const netWorthAll = d.netWorth + futureTotal;
 
