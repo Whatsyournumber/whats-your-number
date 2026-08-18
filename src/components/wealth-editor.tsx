@@ -129,6 +129,9 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
               <InlineRow label={t("Valor de compra", "Purchase price")}>
                 <Money value={h.cost_basis} onChange={(n) => patch(h.id, { cost_basis: n })} />
               </InlineRow>
+              <InlineRow label={t("Mejoras / remodelaciones", "Improvements / renovations")}>
+                <Money value={h.quantity} onChange={(n) => patch(h.id, { quantity: n })} />
+              </InlineRow>
               <InlineRow label={t("Valor actual", "Current value")}>
                 <Money value={h.manual_value} onChange={(n) => patch(h.id, { manual_value: n })} />
               </InlineRow>
@@ -146,16 +149,31 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
                   {t("Equity neto", "Net equity")}:{" "}
                   <span className="text-foreground/80">{fmt(Math.max(0, h.manual_value - h.linked_liability))}</span>
                 </p>
-                {h.cost_basis > 0 && h.manual_value > 0 && (
+                {h.cost_basis + h.quantity > 0 && h.manual_value > 0 && (
                   <p>
-                    {t("Ganancia vs compra", "Gain vs purchase")}:{" "}
-                    <span className={h.manual_value >= h.cost_basis ? "text-emerald-400/90" : "text-rose-400/80"}>
-                      {h.manual_value >= h.cost_basis ? "+" : "−"}
-                      {fmt(Math.abs(h.manual_value - h.cost_basis))} (
-                      {((Math.abs(h.manual_value - h.cost_basis) / h.cost_basis) * 100).toFixed(1)}%)
+                    {t("Ganancia vs inversión total", "Gain vs total invested")}:{" "}
+                    <span
+                      className={
+                        h.manual_value >= h.cost_basis + h.quantity ? "text-emerald-400/90" : "text-rose-400/80"
+                      }
+                    >
+                      {h.manual_value >= h.cost_basis + h.quantity ? "+" : "−"}
+                      {fmt(Math.abs(h.manual_value - (h.cost_basis + h.quantity)))} (
+                      {(
+                        (Math.abs(h.manual_value - (h.cost_basis + h.quantity)) / (h.cost_basis + h.quantity)) *
+                        100
+                      ).toFixed(1)}
+                      %)
                     </span>
+                    {h.quantity > 0 && (
+                      <span className="ml-1 opacity-70">
+                        · {t("compra", "purchase")} {fmt(h.cost_basis)} + {t("mejoras", "improvements")}{" "}
+                        {fmt(h.quantity)}
+                      </span>
+                    )}
                   </p>
                 )}
+
                 {h.monthly_income > 0 && h.manual_value > 0 && (
                   <p>
                     {t("Rentabilidad por renta", "Rental yield")}:{" "}
