@@ -648,25 +648,24 @@ function InvestmentCard({
       {/* --- Activos con ticker / precio de mercado (ETF, acción, cripto) --- */}
       {isMarket ? (
         <>
-          <InlineRow label={t("Ticker (opcional)", "Ticker (optional)")}>
-            <div className="space-y-1">
-              <Input
-                value={h.ticker ?? ""}
-                onChange={(e) => onPatch({ ticker: e.target.value.toUpperCase() || null })}
-                placeholder={h.kind === "crypto" ? "BTC-USD" : "VOO"}
-                onBlur={(e) => {
-                  const v = e.target.value.trim().toUpperCase();
-                  if (h.kind === "crypto" && v && !v.includes("-")) onPatch({ ticker: `${v}-USD` });
-                }}
-                className="h-9"
-              />
-              {h.kind === "crypto" ? (
-                <p className="text-[10px] leading-tight text-muted-foreground">
-                  {t("Usa BTC-USD, ETH-USD o SOL-USD para seguir el precio en vivo.", "Use BTC-USD, ETH-USD or SOL-USD to track the live price.")}
-                </p>
-              ) : null}
-            </div>
+          <InlineRow label={t("Ticker", "Ticker")}>
+            <Input
+              value={h.ticker ?? ""}
+              onChange={(e) => onPatch({ ticker: e.target.value.toUpperCase() || null })}
+              placeholder={h.kind === "crypto" ? "BTC-USD" : "VOO"}
+              onBlur={(e) => {
+                const v = e.target.value.trim().toUpperCase();
+                if (h.kind === "crypto" && v && !v.includes("-")) onPatch({ ticker: `${v}-USD` });
+              }}
+              className="h-9"
+            />
           </InlineRow>
+          {h.kind === "crypto" ? (
+            <p className="-mt-1 text-[10px] leading-tight text-muted-foreground">
+              {t("Usa BTC-USD, ETH-USD o SOL-USD para seguir el precio en vivo.", "Use BTC-USD, ETH-USD or SOL-USD to track the live price.")}
+            </p>
+          ) : null}
+
 
           <InlineRow label={t("Monto de compra", "Purchase amount")}>
             <Money value={h.cost_basis} onChange={(n) => onPatch({ cost_basis: n })} />
