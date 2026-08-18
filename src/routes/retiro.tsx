@@ -326,7 +326,16 @@ function RetiroContent() {
         {goalMode !== "business" && (
           <KpiCard label={t("Aportes estimados al año", "Estimated contributions per year")} value={fmt(retirement.contributionsYTD)} index={4} />
         )}
-        <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${swr}%`} hint={t("anual · tu tasa de retiro", "annual · your withdrawal rate")} index={4} />
+        {isGoal ? (
+          <KpiCard
+            label={t("Porcentaje de mi ingreso", "Share of my income")}
+            value={`${d.income > 0 ? Math.min(999, Math.round((requiredMonthly / d.income) * 100)) : 0}%`}
+            hint={t("lo que necesitas ahorrar para llegar al monto", "what you need to save to reach the amount")}
+            index={4}
+          />
+        ) : (
+          <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${swr}%`} hint={t("anual · tu tasa de retiro", "annual · your withdrawal rate")} index={4} />
+        )}
         {goalMode === "business" && (
           <KpiCard
             label={t("Aporte necesario al mes", "Required monthly contribution")}
