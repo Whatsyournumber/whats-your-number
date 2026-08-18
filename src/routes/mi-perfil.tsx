@@ -208,6 +208,13 @@ function MiPerfil() {
                   )}
                 </DialogDescription>
               </DialogHeader>
+              <p className="rounded-lg border border-positive/25 bg-positive/10 px-3 py-2 text-[0.8125rem] text-muted-foreground">
+                {t(
+                  "No pierdes nada: tus datos de cada objetivo se guardan. Puedes tener varios objetivos y cambiar de uno a otro cuando quieras.",
+                  "Nothing is lost: the data for each goal is saved. You can keep several goals and switch between them whenever you want.",
+                )}
+              </p>
+
               <DialogFooter className="gap-2">
                 <Button variant="outline" onClick={() => setPendingGoal(null)}>
                   {t("Cancelar", "Cancel")}
@@ -222,13 +229,14 @@ function MiPerfil() {
                       ...f,
                       goal: next,
                       priority: next,
-                      ...(next === "vivienda" ? {} : { home_price: 0 }),
-                      ...(next === "negocio" || next === "otro" ? {} : { business_target: 0 }),
-                      ...(next === "otro" ? {} : { goal_note: "" }),
                     }));
                     toast.success(t("Objetivo actualizado", "Goal updated"), {
-                      description: t("Recalculamos tu WhatsYournumber.", "We recalculated your WhatsYournumber."),
+                      description: t(
+                        "Recalculamos tu WhatsYournumber. Tus otros objetivos quedan guardados.",
+                        "We recalculated your WhatsYournumber. Your other goals stay saved.",
+                      ),
                     });
+
                   }}
                 >
                   {t("Sí, cambiar mi número", "Yes, change my number")}
