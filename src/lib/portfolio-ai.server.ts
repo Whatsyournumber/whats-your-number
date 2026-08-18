@@ -34,10 +34,10 @@ export async function generatePortfolioInsight(
 
   const system = es
     ? `Eres un asesor de inversiones que explica en español simple, como a un amigo sin conocimientos financieros.
-Devuelve "hints": una explicación por métrica, en el MISMO orden, máximo 9 palabras cada una, sin repetir el número ni el nombre de la métrica, diciendo qué significa ESE valor para el usuario (bueno/malo y por qué).
+Devuelve "hints": una explicación por métrica, en el MISMO orden, EXACTAMENTE 4-6 palabras cada una, ultra corta, sin repetir el número ni el nombre de la métrica. Ejemplo válido: "oscilación moderada, nada alarmante". Sin comas largas ni frases.
 Devuelve "advice": máximo 2 frases cortas (menos de 30 palabras en total) con la acción concreta más útil ahora, mencionando porcentajes objetivo si hacen falta. Nada de jerga.`
     : `You are an investment advisor explaining in plain English to someone with no finance background.
-Return "hints": one explanation per metric, SAME order, max 9 words each, without repeating the number or metric name, saying what THAT value means for the user (good/bad and why).
+Return "hints": one explanation per metric, SAME order, EXACTLY 4-6 words each, ultra short, without repeating the number or metric name. Valid example: "moderate swing, nothing alarming". No long phrases.
 Return "advice": max 2 short sentences (under 30 words total) with the single most useful action now. No jargon.`;
 
   const prompt = `Riesgo: ${input.riskLevel}
