@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Pencil, RefreshCw, ShieldCheck, Sparkles, X } from "lucide-react";
+import { Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, X } from "lucide-react";
 import { useState } from "react";
 import { CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
@@ -757,7 +757,7 @@ function PortafolioContent() {
             )}
 
             {searchOpen && newSymbol.trim().length >= 1 && (
-              <div className="absolute left-0 top-11 z-30 w-[min(24rem,90vw)] overflow-hidden rounded-xl border border-border/60 bg-elevated shadow-xl">
+              <div className="absolute left-0 top-12 z-30 w-[min(26rem,90vw)] overflow-hidden rounded-2xl border border-border/60 bg-card/95 shadow-2xl backdrop-blur-xl">
                 {searchQuery.isFetching && !searchQuery.data && (
                   <p className="px-3 py-2 text-xs text-muted-foreground">{t("Buscando…", "Searching…")}</p>
                 )}
@@ -772,11 +772,19 @@ function PortafolioContent() {
                         setSearchOpen(false);
                       }
                     }}
-                    className="flex w-full items-center gap-3 px-3 py-2 text-left transition hover:bg-surface"
+                    className="group flex w-full items-center gap-3 border-b border-border/40 px-3 py-2.5 text-left transition last:border-0 hover:bg-primary/10"
                   >
-                    <span className="text-sm font-semibold">{h.symbol}</span>
-                    <span className="truncate text-xs text-muted-foreground">{h.name}</span>
-                    <span className="ml-auto shrink-0 text-[10px] uppercase text-muted-foreground">{h.type}</span>
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-[10px] font-bold text-primary">
+                      {h.symbol.slice(0, 2)}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-sm font-semibold leading-tight">{h.symbol}</span>
+                      <span className="block truncate text-xs text-muted-foreground">{h.name}</span>
+                    </span>
+                    <span className="ml-auto flex shrink-0 items-center gap-2">
+                      <span className="rounded-full bg-elevated px-2 py-0.5 text-[10px] uppercase tracking-wide text-muted-foreground">{h.type}</span>
+                      <Plus className="h-3.5 w-3.5 text-muted-foreground transition group-hover:text-primary" />
+                    </span>
                   </button>
                 ))}
                 {!searchQuery.isFetching && (searchQuery.data?.hits?.length ?? 0) === 0 && (
@@ -785,7 +793,7 @@ function PortafolioContent() {
               </div>
             )}
           </div>
-          <Button type="submit" size="sm" variant="secondary">
+          <Button type="submit" size="sm" variant="secondary" className="h-10 shrink-0 rounded-full px-4">
             {t("Agregar", "Add")}
           </Button>
         </form>
