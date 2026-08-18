@@ -472,8 +472,6 @@ function PortafolioContent() {
               ))}
             </div>
           )}
-
-          )}
         </Panel>
 
 
