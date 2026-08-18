@@ -457,26 +457,23 @@ function PortafolioContent() {
           </div>
         </div>
 
-        <div className="mt-4 border-t border-border/50 pt-4">
-          <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1.5">
-            <span className="text-xs text-muted-foreground">{t("Nivel de riesgo", "Risk level")}</span>
-            <span
-              className={cn(
-                "rounded-full px-2.5 py-0.5 text-xs font-semibold",
-                riskLevel === "Alto"
-                  ? "bg-negative/12 text-negative"
-                  : riskLevel === "Medio"
-                    ? "bg-amber-400/12 text-amber-200"
-                    : "bg-positive/12 text-positive",
-              )}
-            >
-              {riskLabel}
-            </span>
-            <span className="text-[11px] text-muted-foreground">{riskReason}</span>
-          </div>
-          <p
+        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-border/50 pt-4 text-[11px]">
+          <span className="text-muted-foreground">{t("Nivel de riesgo", "Risk level")}</span>
+          <span
             className={cn(
-              "mb-3 text-[11px] leading-relaxed",
+              "rounded-full px-2.5 py-0.5 text-xs font-semibold",
+              riskLevel === "Alto"
+                ? "bg-negative/12 text-negative"
+                : riskLevel === "Medio"
+                  ? "bg-amber-400/12 text-amber-200"
+                  : "bg-positive/12 text-positive",
+            )}
+          >
+            {riskLabel}
+          </span>
+          <span
+            className={cn(
+              "leading-relaxed",
               riskLevel === "Alto"
                 ? "text-negative/80"
                 : riskLevel === "Medio"
@@ -485,36 +482,7 @@ function PortafolioContent() {
             )}
           >
             {riskAdvice}
-          </p>
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs">
-
-            {[
-              { label: t("Retorno ponderado", "Weighted return"), value: `${weightedReturn.toFixed(1)}%` },
-              { label: t("Ingreso pasivo / mes", "Passive income / mo"), value: fmt(Math.round(passiveMonthly)) },
-              { label: t("Costo de deuda / año", "Debt cost / yr"), value: debtTotal > 0 ? fmt(Math.round(debtCost)) : fmt(0) },
-              { label: t("Neto anual", "Net annual"), value: fmt(Math.round(netAnnual)) },
-              { label: t("Volátil", "Volatile"), value: `${(riskWeight * 100).toFixed(0)}%` },
-              { label: t("Defensivo", "Defensive"), value: `${(safeWeight * 100).toFixed(0)}%` },
-              { label: t("Mayor posición", "Largest position"), value: `${concentration.toFixed(0)}%` },
-            ].map((m) => (
-              <span key={m.label} className="text-muted-foreground">
-                {m.label} <span className="numeric font-semibold text-foreground">{m.value}</span>
-              </span>
-            ))}
-          </div>
-          <div className="mt-3 space-y-1.5">
-            {insights.map((i) => (
-              <p
-                key={i.text}
-                className={cn(
-                  "text-[11px] leading-relaxed",
-                  i.tone === "warn" ? "text-amber-200/70" : "text-emerald-200/70",
-                )}
-              >
-                · {i.text}
-              </p>
-            ))}
-          </div>
+          </span>
         </div>
       </Panel>
 
