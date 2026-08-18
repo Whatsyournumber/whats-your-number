@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useT } from "@/hooks/use-language";
+import { useQuotes } from "@/hooks/use-market";
 import { holdingValue, newHolding, type Holding, type HoldingKind } from "@/hooks/use-holdings";
 import { Amount } from "@/components/ui/amount";
 import { cn } from "@/lib/utils";
@@ -551,6 +552,11 @@ function InvestmentCard({
   const t = useT();
   const filled = Boolean(h.label.trim()) || h.manual_value > 0 || h.monthly_contribution > 0;
   const [open, setOpen] = useState(!filled);
+  const ticker = (h.ticker ?? "").trim().toUpperCase();
+  const { data: quotes } = useQuotes(ticker ? [ticker] : []);
+  const quote = quotes?.quotes?.[0] ?? null;
+  const buyPrice = h.quantity > 0 && h.cost_basis > 0 ? h.cost_basis / h.quantity : 0;
+  const marketValue = quote && h.quantity > 0 ? quote.price * h.quantity : null;
 
   const kindLabel: Record<string, string> = {
     etf: t("ETF / fondo", "ETF / fund"),
@@ -631,12 +637,54 @@ function InvestmentCard({
       <InlineRow label={t("Ticker (opcional)", "Ticker (optional)")}>
         <Input value={h.ticker ?? ""} onChange={(e) => onPatch({ ticker: e.target.value.toUpperCase() || null })} className="h-9" />
       </InlineRow>
+      <InlineRow label={t("Monto de compra", "Purchase amount")}>
+        <Money value={h.cost_basis} onChange={(n) => onPatch({ cost_basis: n })} />
+      </InlineRow>
+      <InlineRow label={t("Precio de compra", "Purchase price")}>
+        <Money
+          value={buyPrice}
+          decimals
+          onChange={(n) => {
+            if (n > 0 && h.cost_basis > 0) onPatch({ quantity: h.cost_basis / n });
+            else if (n > 0 && h.quantity > 0) onPatch({ cost_basis: n * h.quantity });
+          }}
+        />
+      </InlineRow>
       <InlineRow label={t("Unidades", "Units")}>
         <Money value={h.quantity} onChange={(n) => onPatch({ quantity: n })} decimals />
       </InlineRow>
-      <InlineRow label={t("Costo invertido", "Invested cost")}>
-        <Money value={h.cost_basis} onChange={(n) => onPatch({ cost_basis: n })} />
-      </InlineRow>
+      {ticker ? (
+        <div className="rounded-lg border border-border/50 bg-background/40 px-3 py-2 text-[11px]">
+          {quote ? (
+            <div className="space-y-0.5">
+              <p className="text-muted-foreground">
+                {ticker} · {t("precio hoy", "price today")}{" "}
+                <span className="font-semibold text-foreground">{quote.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>{" "}
+                <span className={quote.changePct >= 0 ? "text-positive" : "text-destructive"}>
+                  {quote.changePct >= 0 ? "+" : ""}
+                  {quote.changePct.toFixed(2)}%
+                </span>
+              </p>
+              {marketValue !== null ? (
+                <p className="text-muted-foreground">
+                  {t("Valor de mercado", "Market value")}: <span className="font-semibold text-foreground">{fmt(marketValue)}</span>
+                  {h.cost_basis > 0 ? (
+                    <span className={marketValue - h.cost_basis >= 0 ? " text-positive" : " text-destructive"}>
+                      {" "}
+                      ({marketValue - h.cost_basis >= 0 ? "+" : ""}
+                      {(((marketValue - h.cost_basis) / h.cost_basis) * 100).toFixed(1)}%)
+                    </span>
+                  ) : null}
+                </p>
+              ) : (
+                <p className="text-muted-foreground">{t("Añade unidades para ver el valor de mercado.", "Add units to see market value.")}</p>
+              )}
+            </div>
+          ) : (
+            <p className="text-muted-foreground">{t("Buscando precio de mercado…", "Fetching market price…")}</p>
+          )}
+        </div>
+      ) : null}
     </Card>
   );
 }
