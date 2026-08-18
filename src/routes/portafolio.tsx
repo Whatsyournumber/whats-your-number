@@ -859,11 +859,7 @@ function PortafolioContent() {
             </div>
 
             <p className="text-[13px] leading-relaxed text-muted-foreground">
-              {metricSummary}
-            </p>
-
-            <p className="text-[13px] leading-relaxed text-muted-foreground">
-              {insight.isLoading ? t("Analizando…", "Analyzing…") : aiAdvice}
+              {metricSummary} {insight.isLoading ? t("Analizando…", "Analyzing…") : aiAdvice}
             </p>
           </div>
         </div>
