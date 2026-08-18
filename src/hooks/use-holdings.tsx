@@ -84,7 +84,7 @@ export function newHolding(kind: HoldingKind, label = "", position = 0): Holding
     kind,
     label,
     ticker: null,
-    quantity: 0,
+    quantity: kind === "structured" ? 100 : 0,
     cost_basis: 0,
     manual_value: 0,
     monthly_contribution: 0,
