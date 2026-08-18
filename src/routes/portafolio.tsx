@@ -186,6 +186,7 @@ function PortafolioContent() {
         .filter((h) => h.type === "Cash" || h.type === "Renta fija" || h.type === "Estructurado")
         .reduce((s, h) => s + h.value, 0) / totalValue
     : 0;
+  const annualGain = enriched.reduce((s, h) => s + h.value * h.growth, 0);
   const top = [...enriched].sort((a, b) => b.value - a.value)[0];
   const concentration = top && totalValue ? (top.value / totalValue) * 100 : 0;
   const debts = holdings.filter((h) => h.kind === "debt");
@@ -195,6 +196,31 @@ function PortafolioContent() {
   const debtCost = debts.reduce((s, h) => s + h.manual_value * (Math.max(0, h.expected_return || 0) / 100), 0);
   const netAnnual = (totalValue * weightedReturn) / 100 - debtCost;
   const passiveMonthly = dividends / 12;
+  // Nivel de riesgo del portafolio: volatilidad + concentración + apalancamiento.
+  const riskScore =
+    riskWeight * 100 * 0.6 + Math.max(0, concentration - 30) * 0.6 + (totalValue ? (debtTotal / totalValue) * 40 : 0);
+  const riskLevel: "Alto" | "Medio" | "Bajo" = riskScore > 55 ? "Alto" : riskScore > 28 ? "Medio" : "Bajo";
+  const riskLabel = t(riskLevel, riskLevel === "Alto" ? "High" : riskLevel === "Medio" ? "Medium" : "Low");
+  const riskReason = t(
+    `Volatilidad ${(riskWeight * 100).toFixed(0)}% · mayor posición ${concentration.toFixed(0)}% · deuda ${totalValue ? ((debtTotal / totalValue) * 100).toFixed(0) : 0}% del portafolio.`,
+    `Volatility ${(riskWeight * 100).toFixed(0)}% · largest position ${concentration.toFixed(0)}% · debt ${totalValue ? ((debtTotal / totalValue) * 100).toFixed(0) : 0}% of portfolio.`,
+  );
+  const riskAdvice =
+    riskLevel === "Alto"
+      ? t(
+          "Riesgo alto: una caída fuerte del mercado te golpearía duro. Baja exposición volátil, diversifica la mayor posición y reduce deuda.",
+          "High risk: a market drop would hit you hard. Lower volatile exposure, diversify the largest position and cut debt.",
+        )
+      : riskLevel === "Medio"
+        ? t(
+            "Riesgo medio: balance razonable. Vigila la concentración y mantén 6 meses de gastos en cash.",
+            "Medium risk: reasonable balance. Watch concentration and keep 6 months of expenses in cash.",
+          )
+        : t(
+            "Riesgo bajo: portafolio defensivo. Puedes asumir algo más de renta variable para ganarle a la inflación.",
+            "Low risk: defensive portfolio. You could take a bit more equity exposure to beat inflation.",
+          );
+
   const insights = [
     concentration > 40 && top
       ? {
@@ -286,18 +312,15 @@ function PortafolioContent() {
             <p className="numeric text-sm">{fmt(h.value)}</p>
           </div>
           <div>
-            <p className="text-[11px] text-muted-foreground">{t("Costo prom.", "Avg. cost")}</p>
-            <p className="numeric text-sm">{fmt(h.avgCost)}</p>
-            {h.improvements > 0 && (
-              <p className="text-[10px] text-muted-foreground">
-                {t("incl. mejoras", "incl. improvements")} {fmt(h.improvements)}
-              </p>
-            )}
+            <p className="text-[11px] text-muted-foreground">{t("Ganancia anual", "Annual gain")}</p>
+            <p className="numeric text-sm text-positive">{fmt(Math.round(h.value * h.growth))}</p>
+            <p className="text-[10px] text-muted-foreground">{(h.growth * 100).toFixed(1)}%</p>
           </div>
           <div>
-            <p className="text-[11px] text-muted-foreground">{t("Ganancia", "Gain")}</p>
-            <p className={cn("numeric text-sm", h.gain >= 0 ? "text-positive" : "text-negative")}>{fmt(h.gain)}</p>
+            <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
+            <p className="numeric text-sm text-positive">{fmt(Math.round((h.value * h.growth) / 12))}</p>
           </div>
+
           <div>
             <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
             <p className={cn("numeric text-sm font-semibold", h.ret >= 0 ? "text-positive" : "text-negative")}>
@@ -419,16 +442,15 @@ function PortafolioContent() {
             <p className="numeric text-sm font-semibold">{fmt(totalValue)}</p>
           </div>
           <div>
-            <p className="text-[11px] text-muted-foreground">{t("Costo prom.", "Avg. cost")}</p>
-            <p className="numeric text-sm">{fmt(totalCost)}</p>
+            <p className="text-[11px] text-muted-foreground">{t("Ganancia anual", "Annual gain")}</p>
+            <p className="numeric text-sm font-semibold text-positive">{fmt(Math.round(annualGain))}</p>
+            <p className="text-[10px] text-muted-foreground">{weightedReturn.toFixed(1)}%</p>
           </div>
           <div>
-            <p className="text-[11px] text-muted-foreground">{t("Ganancia", "Gain")}</p>
-            <p className={cn("numeric text-sm font-semibold", totalGain >= 0 ? "text-positive" : "text-negative")}>
-              {totalGain >= 0 ? "+" : ""}
-              {fmt(totalGain)}
-            </p>
+            <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
+            <p className="numeric text-sm font-semibold text-positive">{fmt(Math.round(annualGain / 12))}</p>
           </div>
+
           <div>
             <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
             <p className={cn("numeric text-sm font-semibold", totalRet >= 0 ? "text-positive" : "text-negative")}>
@@ -439,7 +461,36 @@ function PortafolioContent() {
         </div>
 
         <div className="mt-4 border-t border-border/50 pt-4">
+          <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+            <span className="text-xs text-muted-foreground">{t("Nivel de riesgo", "Risk level")}</span>
+            <span
+              className={cn(
+                "rounded-full px-2.5 py-0.5 text-xs font-semibold",
+                riskLevel === "Alto"
+                  ? "bg-negative/12 text-negative"
+                  : riskLevel === "Medio"
+                    ? "bg-amber-400/12 text-amber-200"
+                    : "bg-positive/12 text-positive",
+              )}
+            >
+              {riskLabel}
+            </span>
+            <span className="text-[11px] text-muted-foreground">{riskReason}</span>
+          </div>
+          <p
+            className={cn(
+              "mb-3 text-[11px] leading-relaxed",
+              riskLevel === "Alto"
+                ? "text-negative/80"
+                : riskLevel === "Medio"
+                  ? "text-amber-200/70"
+                  : "text-emerald-200/70",
+            )}
+          >
+            {riskAdvice}
+          </p>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs">
+
             {[
               { label: t("Retorno ponderado", "Weighted return"), value: `${weightedReturn.toFixed(1)}%` },
               { label: t("Ingreso pasivo / mes", "Passive income / mo"), value: fmt(Math.round(passiveMonthly)) },
