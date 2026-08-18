@@ -724,9 +724,8 @@ function PortafolioContent() {
                     {m.qual}
                   </span>
                 </div>
-                </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </Panel>
 
