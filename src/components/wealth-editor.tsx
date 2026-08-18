@@ -689,30 +689,14 @@ function InvestmentCard({
           {ticker ? (
             <div className="rounded-lg border border-border/50 bg-background/40 px-3 py-2 text-[11px]">
               {quote ? (
-                <div className="space-y-0.5">
-                  <p className="text-muted-foreground">
-                    {ticker} · {t("precio hoy", "price today")}{" "}
-                    <span className="font-semibold text-foreground">{quote.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>{" "}
-                    <span className={quote.changePct >= 0 ? "text-positive" : "text-destructive"}>
-                      {quote.changePct >= 0 ? "+" : ""}
-                      {quote.changePct.toFixed(2)}%
-                    </span>
-                  </p>
-                  {marketValue !== null ? (
-                    <p className="text-muted-foreground">
-                      {t("Valor de mercado", "Market value")}: <span className="font-semibold text-foreground">{fmt(marketValue)}</span>
-                      {h.cost_basis > 0 ? (
-                        <span className={marketValue - h.cost_basis >= 0 ? " text-positive" : " text-destructive"}>
-                          {" "}
-                          ({marketValue - h.cost_basis >= 0 ? "+" : ""}
-                          {(((marketValue - h.cost_basis) / h.cost_basis) * 100).toFixed(1)}%)
-                        </span>
-                      ) : null}
-                    </p>
-                  ) : (
-                    <p className="text-muted-foreground">{t("Añade unidades para ver el valor de mercado.", "Add units to see market value.")}</p>
-                  )}
-                </div>
+                <p className="text-muted-foreground">
+                  {ticker} · {t("precio hoy", "price today")}{" "}
+                  <span className="font-semibold text-foreground">{quote.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>{" "}
+                  <span className={quote.changePct >= 0 ? "text-positive" : "text-destructive"}>
+                    {quote.changePct >= 0 ? "+" : ""}
+                    {quote.changePct.toFixed(2)}%
+                  </span>
+                </p>
               ) : (
                 <p className="text-muted-foreground">{t("Buscando precio de mercado…", "Fetching market price…")}</p>
               )}
