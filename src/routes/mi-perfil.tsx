@@ -248,14 +248,14 @@ function MiPerfil() {
               )}
             />
 
-            <div className="surface flex flex-wrap items-center gap-3 p-4">
-        <div className="grid flex-1 grid-cols-2 gap-4 sm:grid-cols-4">
-          <Stat label={t("Patrimonio neto", "Net worth")} value={preview.fmt(preview.netWorth)} />
-          <Stat label={t("Ahorro mensual", "Monthly savings")} value={preview.fmt(preview.savings)} />
+            <div className="surface flex flex-col gap-3 p-4 lg:flex-row lg:items-center">
+        <div className="grid min-w-0 flex-1 grid-cols-2 gap-4 sm:grid-cols-4">
+          <Stat label={t("Patrimonio neto", "Net worth")} value={preview.fmtCompact(preview.netWorth)} />
+          <Stat label={t("Ahorro mensual", "Monthly savings")} value={preview.fmtCompact(preview.savings)} />
           <Stat label={t("Your Number", "Your Number")} value={preview.fmtCompact(preview.plan.targetCapital)} />
           <Stat label={t("Libertad", "Freedom")} value={`${preview.plan.freedomAge} ${t("años", "years")}`} />
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button variant="outline" className="gap-2 rounded-full" onClick={() => navigate({ to: "/onboarding" })}>
             <RefreshCw className="h-4 w-4" />
             {t("Rehacer onboarding", "Redo onboarding")}
@@ -494,9 +494,11 @@ function MiPerfil() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div>
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="numeric mt-0.5 text-lg font-semibold">{value}</p>
+    <div className="min-w-0">
+      <p className="truncate text-xs text-muted-foreground">{label}</p>
+      <p className="numeric mt-0.5 truncate text-base font-semibold sm:text-lg" title={value}>
+        {value}
+      </p>
     </div>
   );
 }

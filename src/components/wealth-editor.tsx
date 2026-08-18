@@ -20,8 +20,21 @@ const RETURN_OPTIONS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15];
 const PROBABILITY_OPTIONS = [20, 40, 60, 80, 100];
 const RETIRE_AGES = [45, 50, 55, 60, 62, 65, 67, 70];
 
+/** Formato corto: 1,4M / 149,6K para que las cifras no rompan el layout. */
+function makeShort(fmt: (n: number) => string) {
+  return (n: number) => {
+    const abs = Math.abs(n);
+    if (abs < 10000) return fmt(n);
+    const div = abs >= 1_000_000 ? 1_000_000 : 1_000;
+    const suffix = abs >= 1_000_000 ? "M" : "K";
+    const base = fmt(Math.round((n / div) * 10) / 10);
+    return base.replace(/([\d.,]+)/, (m) => `${m}${suffix}`);
+  };
+}
+
 export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: Props) {
   const t = useT();
+  const fmtShort = makeShort(fmt);
 
   const patch = (id: string, p: Partial<Holding>) => onChange(value.map((h) => (h.id === id ? { ...h, ...p } : h)));
   const remove = (id: string) => onChange(value.filter((h) => h.id !== id));
@@ -76,18 +89,18 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
 
       {/* Resumen vivo */}
       <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Summary label={t("Activos", "Assets")} value={fmt(assetsTotal)} />
-        <Summary label={t("Deudas", "Debts")} value={fmt(debtTotal)} negative />
-        <Summary label={t("Patrimonio neto", "Net worth")} value={fmt(assetsTotal - debtTotal)} accent />
+        <Summary label={t("Activos", "Assets")} value={fmtShort(assetsTotal)} />
+        <Summary label={t("Deudas", "Debts")} value={fmtShort(debtTotal)} negative />
+        <Summary label={t("Patrimonio neto", "Net worth")} value={fmtShort(assetsTotal - debtTotal)} accent />
         <Summary
           label={t("Aportes / mes", "Contributions / mo")}
-          value={fmt(monthlyIn)}
+          value={fmtShort(monthlyIn)}
           hint={rentIncome > 0 ? `${t("Renta", "Rent")} ${fmt(rentIncome)}` : undefined}
         />
       </div>
 
       <div className="mt-5 grid items-start gap-4 lg:grid-cols-2">
-        <Section icon={<Wallet className="h-4 w-4" />} tone="emerald" title={t("Liquidez", "Liquidity")} total={fmt(liquidTotal)}>
+        <Section icon={<Wallet className="h-4 w-4" />} tone="emerald" title={t("Liquidez", "Liquidity")} total={fmtShort(liquidTotal)}>
           {liquidity.map(({ kind, label }) => (
             <InlineRow key={kind} label={label}>
               <Money value={single(kind)?.manual_value ?? 0} onChange={(n) => setSingle(kind, label, { manual_value: n })} />
@@ -95,7 +108,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
           ))}
         </Section>
 
-        <Section icon={<Building2 className="h-4 w-4" />} tone="indigo" title={t("Propiedades", "Properties")} total={fmt(propertyTotal)}>
+        <Section icon={<Building2 className="h-4 w-4" />} tone="indigo" title={t("Propiedades", "Properties")} total={fmtShort(propertyTotal)}>
           {list("property").map((h) => (
             <CollapsibleCard
               key={h.id}
@@ -133,7 +146,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
           </AddButton>
         </Section>
 
-        <Section icon={<LineChart className="h-4 w-4" />} tone="sky" title={t("Inversiones", "Investments")} total={fmt(investTotal)}>
+        <Section icon={<LineChart className="h-4 w-4" />} tone="sky" title={t("Inversiones", "Investments")} total={fmtShort(investTotal)}>
           {investments.map((h) => (
             <InvestmentCard
               key={h.id}
@@ -146,7 +159,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
           <AddButton onClick={() => add("etf", "")}>{t("Agregar otro activo", "Add another asset")}</AddButton>
         </Section>
 
-        <Section icon={<Gift className="h-4 w-4" />} tone="violet" title={t("Activos futuros", "Future assets")} total={fmt(Math.round(futureTotal))}>
+        <Section icon={<Gift className="h-4 w-4" />} tone="violet" title={t("Activos futuros", "Future assets")} total={fmtShort(Math.round(futureTotal))}>
           {list("future").map((h) => (
             <CollapsibleCard
               key={h.id}
@@ -188,7 +201,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
           <AddButton onClick={() => add("future", "")}>{t("Agregar otro activo futuro", "Add another future asset")}</AddButton>
         </Section>
 
-        <Section icon={<Coins className="h-4 w-4" />} tone="amber" title={t("Fondo de retiro", "Retirement fund")} total={fmt(retireTotal)}>
+        <Section icon={<Coins className="h-4 w-4" />} tone="amber" title={t("Fondo de retiro", "Retirement fund")} total={fmtShort(retireTotal)}>
           <InlineRow label={t("Valor actual", "Current value")}>
             <Money
               value={retirement?.manual_value ?? 0}
@@ -216,7 +229,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
           </InlineRow>
         </Section>
 
-        <Section icon={<CreditCard className="h-4 w-4" />} tone="rose" title={t("Deudas", "Debts")} total={fmt(debtTotal)}>
+        <Section icon={<CreditCard className="h-4 w-4" />} tone="rose" title={t("Deudas", "Debts")} total={fmtShort(debtTotal)}>
           {list("debt").map((h) => (
             <div key={h.id} className="grid grid-cols-[1.3fr_1fr_24px] items-center gap-2">
               <Input
@@ -272,9 +285,11 @@ function Section({
 }) {
   return (
     <section className="rounded-2xl border border-border/60 bg-elevated/40 p-3 sm:p-4">
-      <div className="mb-3 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2">
+      <div className="mb-3 flex flex-wrap items-center gap-x-2 gap-y-1">
         <span className={cn("grid h-8 w-8 shrink-0 place-items-center rounded-xl", TONES[tone] ?? TONES["sky"])}>{icon}</span>
-        <h3 className="truncate text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{title}</h3>
+        <h3 className="min-w-0 flex-1 break-words text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+          {title}
+        </h3>
         <span className="numeric shrink-0 text-sm font-medium">{total}</span>
       </div>
       <div className="space-y-2.5">{children}</div>
@@ -285,9 +300,11 @@ function Section({
 
 function Summary({ label, value, hint, accent, negative }: { label: string; value: string; hint?: string | undefined; accent?: boolean; negative?: boolean }) {
   return (
-    <div className={cn("rounded-xl border border-border/60 bg-elevated/50 p-3", accent && "border-primary/40 bg-primary/10")}>
-      <p className="text-[11px] text-muted-foreground">{label}</p>
-      <p className={cn("numeric mt-0.5 text-base font-semibold", negative && "text-negative")}>{value}</p>
+    <div className={cn("min-w-0 rounded-xl border border-border/60 bg-elevated/50 p-3", accent && "border-primary/40 bg-primary/10")}>
+      <p className="truncate text-[11px] text-muted-foreground">{label}</p>
+      <p className={cn("numeric mt-0.5 truncate text-sm font-semibold sm:text-base", negative && "text-negative")} title={value}>
+        {value}
+      </p>
       {hint ? <p className="mt-0.5 text-[11px] text-muted-foreground">{hint}</p> : null}
     </div>
   );
@@ -295,11 +312,11 @@ function Summary({ label, value, hint, accent, negative }: { label: string; valu
 
 function InlineRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="grid gap-1.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-3">
-      <Label className="min-w-0 text-[11px] font-medium uppercase tracking-wide text-muted-foreground sm:normal-case sm:tracking-normal sm:text-xs">
+    <div className="grid gap-1.5 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-center xl:gap-3">
+      <Label className="min-w-0 break-words text-[11px] font-medium uppercase tracking-wide text-muted-foreground xl:text-xs xl:normal-case xl:tracking-normal">
         {label}
       </Label>
-      <div className="w-full sm:w-[46%] sm:min-w-[130px] sm:justify-self-end">{children}</div>
+      <div className="w-full min-w-0 xl:w-[46%] xl:min-w-[130px] xl:justify-self-end">{children}</div>
     </div>
   );
 }
