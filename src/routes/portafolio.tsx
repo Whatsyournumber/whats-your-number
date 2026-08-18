@@ -433,9 +433,6 @@ function PortafolioContent() {
         <div className="mt-2 grid grid-cols-2 items-center gap-3 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2.5 md:grid-cols-6">
           <div className="col-span-2 md:col-span-2">
             <p className="text-xs font-semibold text-muted-foreground">{t("Total", "Total")}</p>
-            <p className="text-[10px] text-muted-foreground">
-              {t("Valor futuro", "Future value")} {fmt(futureValue)} · {yearsToRetire} {t("años", "yrs")}
-            </p>
           </div>
           <div>
             <p className="text-[11px] text-muted-foreground">{t("Valor", "Value")}</p>
