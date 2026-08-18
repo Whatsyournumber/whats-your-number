@@ -35,6 +35,8 @@ const chartColors = [
   "var(--color-chart-2)",
   "var(--color-chart-3)",
   "var(--color-chart-4)",
+  "var(--color-chart-5)",
+  "var(--color-chart-6)",
 ];
 
 function PortafolioContent() {
@@ -42,7 +44,9 @@ function PortafolioContent() {
   const typeLabels: Record<(typeof types)[number], string> = {
     ETF: t("ETF", "ETF"),
     "Acción": t("Acción", "Stock"),
+    "Renta fija": t("Renta fija", "Fixed income"),
     Cripto: t("Cripto", "Crypto"),
+    Inmueble: t("Inmueble", "Real estate"),
     Cash: t("Cash", "Cash"),
   };
   const { profile } = useProfile();
@@ -62,10 +66,18 @@ function PortafolioContent() {
   const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
 
   const typeOf = (kind: string) =>
-    kind === "stock" ? ("Acción" as const) : kind === "crypto" ? ("Cripto" as const) : ("ETF" as const);
+    kind === "stock"
+      ? ("Acción" as const)
+      : kind === "crypto"
+        ? ("Cripto" as const)
+        : ["bond", "tbill", "note"].includes(kind)
+          ? ("Renta fija" as const)
+          : kind === "property"
+            ? ("Inmueble" as const)
+            : ("ETF" as const);
 
   const detailed = holdings
-    .filter((h) => ["etf", "stock", "crypto", "other", "retirement"].includes(h.kind))
+    .filter((h) => ["etf", "stock", "crypto", "other", "retirement", "bond", "tbill", "note", "property"].includes(h.kind))
     .map((h) => {
       const value = holdingValue(h, prices);
       const growth = Math.max(0, h.expected_return || 7) / 100;
@@ -75,6 +87,7 @@ function PortafolioContent() {
         type: typeOf(h.kind),
         value,
         growth,
+        income: Math.round((h.monthly_income || 0) * 12),
         cost: h.cost_basis > 0 ? Math.round(h.cost_basis) : Math.round(value / (1 + growth)),
       };
     })
@@ -90,16 +103,17 @@ function PortafolioContent() {
         type: "Cash" as never,
         value: cash,
         growth: 0,
+        income: 0,
         cost: cash,
       });
   }
 
   const fallback = [
-    { ticker: t("ETFs / fondos", "ETFs / funds"), name: t("Fondos indexados y ETFs", "Index funds and ETFs"), type: "ETF" as const, value: profile.assets_etf, growth: r, cost: Math.round(profile.assets_etf / (1 + r)) },
-    { ticker: t("Fondo de retiro", "Retirement fund"), name: t("Plan de pensiones / retiro", "Pension / retirement plan"), type: "ETF" as const, value: profile.assets_retirement, growth: r * 0.8, cost: Math.round(profile.assets_retirement / (1 + r * 0.8)) },
-    { ticker: t("Acciones", "Stocks"), name: t("Posiciones individuales", "Individual positions"), type: "Acción" as const, value: profile.assets_stocks, growth: r * 1.3, cost: Math.round(profile.assets_stocks / (1 + r * 1.3)) },
-    { ticker: t("Cripto", "Crypto"), name: t("Activos digitales", "Digital assets"), type: "Cripto" as const, value: profile.assets_crypto, growth: r * 2, cost: Math.round(profile.assets_crypto / (1 + r * 2)) },
-    { ticker: t("Efectivo", "Cash"), name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"), type: "Cash" as const, value: profile.assets_cash + profile.assets_bank, growth: 0, cost: profile.assets_cash + profile.assets_bank },
+    { ticker: t("ETFs / fondos", "ETFs / funds"), name: t("Fondos indexados y ETFs", "Index funds and ETFs"), type: "ETF" as const, value: profile.assets_etf, growth: r, income: 0, cost: Math.round(profile.assets_etf / (1 + r)) },
+    { ticker: t("Fondo de retiro", "Retirement fund"), name: t("Plan de pensiones / retiro", "Pension / retirement plan"), type: "ETF" as const, value: profile.assets_retirement, growth: r * 0.8, income: 0, cost: Math.round(profile.assets_retirement / (1 + r * 0.8)) },
+    { ticker: t("Acciones", "Stocks"), name: t("Posiciones individuales", "Individual positions"), type: "Acción" as const, value: profile.assets_stocks, growth: r * 1.3, income: 0, cost: Math.round(profile.assets_stocks / (1 + r * 1.3)) },
+    { ticker: t("Cripto", "Crypto"), name: t("Activos digitales", "Digital assets"), type: "Cripto" as const, value: profile.assets_crypto, growth: r * 2, income: 0, cost: Math.round(profile.assets_crypto / (1 + r * 2)) },
+    { ticker: t("Efectivo", "Cash"), name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"), type: "Cash" as const, value: profile.assets_cash + profile.assets_bank, growth: 0, income: 0, cost: profile.assets_cash + profile.assets_bank },
   ].filter((h) => h.value > 0);
 
   const positions = detailed.length ? detailed : fallback;
@@ -107,7 +121,18 @@ function PortafolioContent() {
   const enriched = positions.map((h) => ({
     ...h,
     avgCost: h.cost,
-    dividends: Math.round(h.type === "ETF" ? h.value * 0.018 : h.type === "Acción" ? h.value * 0.012 : 0),
+    dividends:
+      h.income > 0
+        ? h.income
+        : Math.round(
+            h.type === "ETF"
+              ? h.value * 0.018
+              : h.type === "Acción"
+                ? h.value * 0.012
+                : h.type === "Renta fija"
+                  ? h.value * h.growth
+                  : 0,
+          ),
     gain: h.value - h.cost,
     ret: h.cost ? ((h.value - h.cost) / h.cost) * 100 : 0,
   }));
@@ -117,6 +142,77 @@ function PortafolioContent() {
   const totalCost = enriched.reduce((s, h) => s + h.cost, 0);
   const totalGain = totalValue - totalCost;
   const dividends = enriched.reduce((s, h) => s + h.dividends, 0);
+
+  // ---- Análisis basado en tu data real ----
+  const weightedReturn = totalValue
+    ? enriched.reduce((s, h) => s + h.growth * 100 * h.value, 0) / totalValue
+    : 0;
+  const riskWeight = totalValue
+    ? enriched
+        .filter((h) => h.type === "Cripto" || h.type === "Acción")
+        .reduce((s, h) => s + h.value, 0) / totalValue
+    : 0;
+  const safeWeight = totalValue
+    ? enriched
+        .filter((h) => h.type === "Cash" || h.type === "Renta fija")
+        .reduce((s, h) => s + h.value, 0) / totalValue
+    : 0;
+  const top = [...enriched].sort((a, b) => b.value - a.value)[0];
+  const concentration = top && totalValue ? (top.value / totalValue) * 100 : 0;
+  const debts = holdings.filter((h) => h.kind === "debt");
+  const debtTotal =
+    debts.reduce((s, h) => s + h.manual_value, 0) +
+    holdings.filter((h) => h.kind === "property").reduce((s, h) => s + h.linked_liability, 0);
+  const debtCost = debts.reduce((s, h) => s + h.manual_value * (Math.max(0, h.expected_return || 0) / 100), 0);
+  const netAnnual = (totalValue * weightedReturn) / 100 - debtCost;
+  const passiveMonthly = dividends / 12;
+  const insights = [
+    concentration > 40 && top
+      ? {
+          tone: "warn" as const,
+          text: t(
+            `Concentración alta: ${top.ticker} pesa ${concentration.toFixed(0)}% del portafolio. Diversificar reduce el riesgo.`,
+            `High concentration: ${top.ticker} is ${concentration.toFixed(0)}% of the portfolio. Diversifying lowers risk.`,
+          ),
+        }
+      : null,
+    riskWeight > 0.7
+      ? {
+          tone: "warn" as const,
+          text: t(
+            `${(riskWeight * 100).toFixed(0)}% está en activos volátiles (acciones/cripto). Considera renta fija o cash para amortiguar caídas.`,
+            `${(riskWeight * 100).toFixed(0)}% sits in volatile assets (stocks/crypto). Consider fixed income or cash as a buffer.`,
+          ),
+        }
+      : null,
+    safeWeight > 0.6
+      ? {
+          tone: "warn" as const,
+          text: t(
+            `${(safeWeight * 100).toFixed(0)}% está en cash y renta fija: seguro, pero rinde poco frente a la inflación.`,
+            `${(safeWeight * 100).toFixed(0)}% is in cash and fixed income: safe, but it barely beats inflation.`,
+          ),
+        }
+      : null,
+    debtCost > 0 && debtCost > (totalValue * weightedReturn) / 100 * 0.5
+      ? {
+          tone: "warn" as const,
+          text: t(
+            `Tus deudas cuestan ${fmt(Math.round(debtCost))} al año y se comen buena parte de tu rentabilidad. Amortizar puede rendir más que invertir.`,
+            `Your debts cost ${fmt(Math.round(debtCost))} a year and eat much of your return. Paying them down may beat investing.`,
+          ),
+        }
+      : null,
+    passiveMonthly > 0
+      ? {
+          tone: "good" as const,
+          text: t(
+            `Tu portafolio ya genera ~${fmt(Math.round(passiveMonthly))} al mes en ingresos pasivos (dividendos, cupones y rentas).`,
+            `Your portfolio already generates ~${fmt(Math.round(passiveMonthly))} per month in passive income (dividends, coupons and rent).`,
+          ),
+        }
+      : null,
+  ].filter(Boolean) as { tone: "warn" | "good"; text: string }[];
 
   // Real market series: S&P 500 vs a blend that mirrors your allocation (equities → SPY, crypto → BTC, cash → 0%).
   const series = seriesQuery.data?.series ?? {};
@@ -137,7 +233,7 @@ function PortafolioContent() {
 
 
 
-  const types = ["ETF", "Acción", "Cripto", "Cash"] as const;
+  const types = ["ETF", "Acción", "Renta fija", "Cripto", "Inmueble", "Cash"] as const;
   const allocation = types.map((ty, i) => ({
     name: ty,
     value: enriched.filter((h) => h.type === ty).reduce((s, h) => s + h.value, 0),
@@ -234,6 +330,52 @@ function PortafolioContent() {
           </ul>
         </Panel>
       </div>
+
+      <Panel
+        title={t("Análisis de tu portafolio", "Your portfolio analysis")}
+        description={t("Calculado con tus posiciones, rentabilidades e intereses de deuda reales.", "Computed from your real positions, expected returns and debt interest.")}
+      >
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {[
+            { label: t("Retorno esperado ponderado", "Weighted expected return"), value: `${weightedReturn.toFixed(1)}%` },
+            { label: t("Ingreso pasivo / mes", "Passive income / mo"), value: fmt(Math.round(passiveMonthly)) },
+            { label: t("Costo anual de deuda", "Annual debt cost"), value: debtTotal > 0 ? fmt(Math.round(debtCost)) : fmt(0) },
+            { label: t("Rendimiento neto anual", "Net annual return"), value: fmt(Math.round(netAnnual)) },
+          ].map((m) => (
+            <div key={m.label} className="rounded-xl bg-elevated/60 p-3">
+              <p className="text-[11px] text-muted-foreground">{m.label}</p>
+              <p className="numeric mt-1 text-lg font-semibold">{m.value}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-4 space-y-2">
+          <div className="flex flex-wrap gap-2 text-[11px]">
+            <span className="rounded-full bg-elevated/60 px-2.5 py-1 text-muted-foreground">
+              {t("Volátil", "Volatile")}: <span className="numeric font-medium text-foreground">{(riskWeight * 100).toFixed(0)}%</span>
+            </span>
+            <span className="rounded-full bg-elevated/60 px-2.5 py-1 text-muted-foreground">
+              {t("Defensivo", "Defensive")}: <span className="numeric font-medium text-foreground">{(safeWeight * 100).toFixed(0)}%</span>
+            </span>
+            <span className="rounded-full bg-elevated/60 px-2.5 py-1 text-muted-foreground">
+              {t("Mayor posición", "Largest position")}: <span className="numeric font-medium text-foreground">{concentration.toFixed(0)}%</span>
+            </span>
+          </div>
+          {insights.map((i) => (
+            <p
+              key={i.text}
+              className={cn(
+                "rounded-xl border px-3 py-2 text-xs leading-relaxed",
+                i.tone === "warn"
+                  ? "border-amber-500/20 bg-amber-500/5 text-amber-200/90"
+                  : "border-emerald-500/20 bg-emerald-500/5 text-emerald-200/90",
+              )}
+            >
+              {i.text}
+            </p>
+          ))}
+        </div>
+      </Panel>
 
       <Panel
         title={t("Mercado en vivo", "Live market")}
