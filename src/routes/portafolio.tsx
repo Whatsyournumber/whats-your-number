@@ -327,7 +327,6 @@ function PortafolioContent() {
     crypto: t("Cripto / alternativos", "Crypto / alternatives"),
     cash: t("Cash", "Cash"),
   };
-  const rebalanceNeeded = buckets.some((b) => Math.abs(b.deltaPct) >= 5);
 
   // ---- Análisis de riesgo y rebalanceo (2 líneas, basado en data real) ----
   const volPct = hasStats ? volPort : riskWeight * 100 * 1.2;
