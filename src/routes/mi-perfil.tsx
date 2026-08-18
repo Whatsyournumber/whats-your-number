@@ -208,12 +208,23 @@ function MiPerfil() {
                   )}
                 </DialogDescription>
               </DialogHeader>
-              <p className="rounded-lg border border-positive/25 bg-positive/10 px-3 py-2 text-[0.8125rem] text-muted-foreground">
-                {t(
-                  "No pierdes nada: tus datos de cada objetivo se guardan. Puedes tener varios objetivos y cambiar de uno a otro cuando quieras.",
-                  "Nothing is lost: the data for each goal is saved. You can keep several goals and switch between them whenever you want.",
-                )}
-              </p>
+              <div className="flex items-start gap-3 rounded-xl border border-positive/20 bg-gradient-to-br from-positive/12 to-transparent p-3.5">
+                <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full bg-positive/15 text-positive">
+                  <RefreshCw className="size-3.5" />
+                </span>
+                <div className="space-y-0.5">
+                  <p className="text-[0.8125rem] font-semibold text-foreground">
+                    {t("No pierdes nada", "Nothing is lost")}
+                  </p>
+                  <p className="text-[0.8125rem] leading-relaxed text-muted-foreground">
+                    {t(
+                      "Los datos de cada objetivo se guardan. Puedes tener varios y cambiar de uno a otro cuando quieras.",
+                      "The data for each goal is saved. You can keep several and switch between them whenever you want.",
+                    )}
+                  </p>
+                </div>
+              </div>
+
 
               <DialogFooter className="gap-2">
                 <Button variant="outline" onClick={() => setPendingGoal(null)}>
