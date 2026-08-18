@@ -462,6 +462,41 @@ function Money({
   );
 }
 
+/**
+ * Editable field for a *derived* value (e.g. purchase price = cost_basis / quantity).
+ * Holds a local string while typing so the controlled recompute doesn't fight the user.
+ */
+function DerivedPrice({
+  value,
+  onCommit,
+}: {
+  value: number;
+  onCommit: (n: number) => void;
+}) {
+  const [str, setStr] = useState("");
+  const [focused, setFocused] = useState(false);
+  const display = focused ? str : value > 0 ? String(Number(value.toFixed(6))) : "";
+  return (
+    <Input
+      type="number"
+      step="any"
+      className="h-9"
+      value={display}
+      placeholder="0"
+      onFocus={() => {
+        setFocused(true);
+        setStr(value > 0 ? String(Number(value.toFixed(6))) : "");
+      }}
+      onChange={(e) => {
+        setStr(e.target.value);
+        const n = Number(e.target.value || 0);
+        if (n > 0) onCommit(n);
+      }}
+      onBlur={() => setFocused(false)}
+    />
+  );
+}
+
 function Pct({ value, onChange }: { value: number; onChange: (n: number) => void }) {
   return (
     <Select
