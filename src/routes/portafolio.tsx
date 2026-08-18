@@ -576,21 +576,24 @@ function PortafolioContent() {
           </div>
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-border/50 pt-4 text-[11px]">
-          <span className="text-muted-foreground">{t("Nivel de riesgo", "Risk level")}</span>
-          <span
-            className={cn(
-              "rounded-full px-2.5 py-0.5 text-xs font-semibold",
-              riskLevel === "Alto"
-                ? "bg-negative/12 text-negative"
-                : riskLevel === "Medio"
-                  ? "bg-amber-400/12 text-amber-200"
-                  : "bg-positive/12 text-positive",
-            )}
-          >
-            {riskLabel}
-          </span>
-          <span
+        <div className="mt-4 space-y-1 border-t border-border/50 pt-4 text-[11px]">
+          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+            <span className="text-muted-foreground">{t("Nivel de riesgo", "Risk level")}</span>
+            <span
+              className={cn(
+                "rounded-full px-2.5 py-0.5 text-xs font-semibold",
+                riskLevel === "Alto"
+                  ? "bg-negative/12 text-negative"
+                  : riskLevel === "Medio"
+                    ? "bg-amber-400/12 text-amber-200"
+                    : "bg-positive/12 text-positive",
+              )}
+            >
+              {riskLabel}
+            </span>
+            <span className="text-muted-foreground">{riskReason}</span>
+          </div>
+          <p
             className={cn(
               "leading-relaxed",
               riskLevel === "Alto"
@@ -601,7 +604,7 @@ function PortafolioContent() {
             )}
           >
             {riskAdvice}
-          </span>
+          </p>
         </div>
       </Panel>
 
