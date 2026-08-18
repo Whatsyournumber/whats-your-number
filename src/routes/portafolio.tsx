@@ -494,6 +494,7 @@ function PortafolioContent() {
         actions={
           <Link
             to="/mi-perfil"
+            hash="patrimonio"
             className="inline-flex items-center gap-1.5 rounded-full border border-border/60 px-3 py-1.5 text-xs text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
             aria-label={t("Editar en mis datos", "Edit in my data")}
           >
