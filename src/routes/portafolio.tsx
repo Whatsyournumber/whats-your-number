@@ -74,14 +74,14 @@ function PortafolioContent() {
         ? ("Retiro" as const)
         : kind === "crypto"
         ? ("Cripto" as const)
-        : ["bond", "tbill", "note"].includes(kind)
+        : ["bond", "tbill", "note", "structured"].includes(kind)
           ? ("Renta fija" as const)
           : kind === "property"
             ? ("Inmueble" as const)
             : ("ETF" as const);
 
   const detailed = holdings
-    .filter((h) => ["etf", "stock", "crypto", "other", "retirement", "bond", "tbill", "note", "property"].includes(h.kind))
+    .filter((h) => ["etf", "stock", "crypto", "other", "retirement", "bond", "tbill", "note", "structured", "property"].includes(h.kind))
     .map((h) => {
       const value = holdingValue(h, prices);
       const growth = Math.max(0, h.expected_return || 7) / 100;
