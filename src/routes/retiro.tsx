@@ -378,16 +378,22 @@ function RetiroContent() {
             label={t("Aporte necesario al mes", "Required monthly contribution")}
             value={targetNow <= 0 ? "—" : fmt(requiredMonthly)}
             hint={
-              targetNow <= 0
-                ? t("falta el monto objetivo", "goal amount missing")
-                : goalReached
-                  ? t("no necesitas aportar más", "no extra saving needed")
-                  : !feasible && shortfallMonthly > 0
-                    ? t(
-                        `Solo te sobra ${fmt(capacity)}/mes: baja tus gastos en ${fmt(shortfallMonthly)} si quieres llegar en ${yearsLabel}`,
-                        `Only ${fmt(capacity)}/mo left: cut expenses by ${fmt(shortfallMonthly)} to make it in ${yearsLabel}`,
-                      )
-                    : `${t("para llegar a", "to reach")} ${fmt(targetNow)} ${t("en", "in")} ${yearsLabel} ${t("al", "at")} ${rate}%`
+              targetNow <= 0 ? (
+                t("falta el monto objetivo", "goal amount missing")
+              ) : goalReached ? (
+                t("no necesitas aportar más", "no extra saving needed")
+              ) : !feasible && shortfallMonthly > 0 ? (
+                <span className="flex flex-col gap-0.5 text-amber-400">
+                  <span>
+                    {t("Baja tus gastos en", "Cut expenses by")} {fmt(shortfallMonthly)}/{t("mes", "mo")}
+                  </span>
+                  <span>
+                    {t("o produce extra de", "or earn extra")} {fmt(shortfallMonthly)}/{t("mes", "mo")}
+                  </span>
+                </span>
+              ) : (
+                `${t("para llegar a", "to reach")} ${fmt(targetNow)} ${t("en", "in")} ${yearsLabel} ${t("al", "at")} ${rate}%`
+              )
             }
             index={5}
           />

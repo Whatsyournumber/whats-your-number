@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { motion } from "motion/react";
 import type { LucideIcon } from "lucide-react";
 
@@ -17,7 +18,7 @@ export function KpiCard({
   label: string;
   value: string;
   delta?: number;
-  hint?: string;
+  hint?: ReactNode;
   icon?: LucideIcon;
   accent?: boolean;
   inverse?: boolean;
