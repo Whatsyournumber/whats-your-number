@@ -37,7 +37,8 @@ const chartColors = [
   "var(--color-chart-4)",
   "var(--color-chart-5)",
   "var(--color-chart-6)",
-  "var(--color-chart-1)",
+  "var(--color-chart-7)",
+  "var(--color-chart-8)",
 ];
 
 function PortafolioContent() {
@@ -265,12 +266,13 @@ function PortafolioContent() {
       value: enriched.filter((h) => h.type === ty).reduce((s, h) => s + h.value, 0),
       color: chartColors[i]!,
     }))
-    .filter((a) => a.value > 0);
+    .filter((a) => a.value > 0)
+    .sort((a, b) => b.value - a.value);
   const activeTypes = types.filter((ty) => enriched.some((h) => h.type === ty && h.value > 0));
 
   const rows = (list: typeof enriched) => (
     <div className="space-y-2">
-      {list.map((h) => (
+      {[...list].sort((a, b) => b.value - a.value).map((h) => (
         <div key={h.ticker} className="grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 md:grid-cols-6">
           <div className="col-span-2 md:col-span-2">
             <p className="text-sm font-medium">{h.ticker}</p>
