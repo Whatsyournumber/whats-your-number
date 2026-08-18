@@ -458,7 +458,8 @@ function RetiroContent() {
               <Area type="monotone" dataKey="contributed" name={t("Aportado", "Contributed")} stroke="var(--color-chart-8)" strokeWidth={2} strokeDasharray="4 4" fill="transparent" />
             </AreaChart>
           </ResponsiveContainer>
-        </Panel>
+          </div>
+
 
         <Panel
           title={t("Simulador", "Simulator")}
