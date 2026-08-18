@@ -604,7 +604,7 @@ function RetiroContent() {
                     </Link>
                   </div>
                 )}
-              </div>
+              </details>
             ) : null}
           </div>
         </Panel>
