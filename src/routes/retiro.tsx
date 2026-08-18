@@ -466,7 +466,7 @@ function RetiroContent() {
                 <Slider
                   className="mt-3"
                   min={1}
-                  max={15}
+                  max={30}
                   step={1}
                   value={[horizonYears]}
                   onValueChange={([v]) => setHorizonYears(v ?? defaultHorizon)}
