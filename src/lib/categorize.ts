@@ -78,7 +78,7 @@ const MERCHANT_OVERRIDES: { hints: string[]; category: string }[] = [
   },
   {
     category: "Marketing digital",
-    hints: ["linkedin", "lovable"],
+    hints: ["linkedin", "lovable", "upwork", "up work", "fiverr", "freelancer.com", "workana", "servicios profesionales", "professional services"],
   },
   {
     category: "Apps",
