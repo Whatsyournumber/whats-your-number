@@ -35,6 +35,8 @@ const chartColors = [
   "var(--color-chart-2)",
   "var(--color-chart-3)",
   "var(--color-chart-4)",
+  "var(--color-chart-5)",
+  "var(--color-chart-6)",
 ];
 
 function PortafolioContent() {
@@ -42,7 +44,9 @@ function PortafolioContent() {
   const typeLabels: Record<(typeof types)[number], string> = {
     ETF: t("ETF", "ETF"),
     "Acción": t("Acción", "Stock"),
+    "Renta fija": t("Renta fija", "Fixed income"),
     Cripto: t("Cripto", "Crypto"),
+    Inmueble: t("Inmueble", "Real estate"),
     Cash: t("Cash", "Cash"),
   };
   const { profile } = useProfile();
