@@ -826,7 +826,7 @@ function PortafolioContent() {
 
           <div
             className={cn(
-              "rounded-xl border p-3",
+              "rounded-xl border px-3 py-2.5",
               riskLevel === "Alto"
                 ? "border-negative/25 bg-negative/[0.06]"
                 : riskLevel === "Medio"
@@ -837,7 +837,7 @@ function PortafolioContent() {
             <div className="flex items-center gap-2">
               <Sparkles
                 className={cn(
-                  "h-4 w-4 shrink-0",
+                  "h-3.5 w-3.5 shrink-0",
                   riskLevel === "Alto" ? "text-negative" : riskLevel === "Medio" ? "text-amber-200" : "text-positive",
                 )}
               />
@@ -846,35 +846,23 @@ function PortafolioContent() {
               </p>
             </div>
 
-            <div className="mt-3 space-y-1.5">
-              {insight.isLoading
-                ? riskMetrics.map((m) => (
-                    <div key={m.label} className="flex items-center gap-2 text-xs">
-                      <span className="w-28 shrink-0 font-medium text-foreground/80">{m.label}</span>
-                      <span className="numeric font-semibold text-foreground">{m.value}</span>
-                      <span className="text-muted-foreground">·</span>
-                      <span className="text-muted-foreground">
-                        {t("Analizando…", "Analyzing…")}
-                      </span>
-                    </div>
-                  ))
-                : riskMetrics.map((m, i) => (
-                    <div key={m.label} className="flex items-center gap-2 text-xs">
-                      <span className="w-28 shrink-0 font-medium text-foreground/80">{m.label}</span>
-                      <span className="numeric font-semibold text-foreground">{m.value}</span>
-                      <span className="text-muted-foreground">·</span>
-                      <span className="min-w-0 truncate text-muted-foreground">
-                        {aiHints[i] || m.sentence}
-                      </span>
-                    </div>
-                  ))}
+            <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] leading-tight text-muted-foreground">
+              {riskMetrics.map((m, i) => (
+                <span key={m.label} className="inline-flex items-center gap-1">
+                  <span className="font-medium text-foreground/80">{m.label}</span>
+                  <span className="numeric font-semibold text-foreground">{m.value}</span>
+                  <span className="hidden text-muted-foreground/60 sm:inline">·</span>
+                  <span className="text-muted-foreground">
+                    {insight.isLoading ? t("Analizando…", "Analyzing…") : aiHints[i] || m.qual}
+                  </span>
+                  <span className="text-muted-foreground/40">|</span>
+                </span>
+              ))}
             </div>
 
-            <div className="mt-3 flex items-start gap-2 border-t border-border/40 pt-2.5">
-              <p className="text-xs leading-relaxed text-muted-foreground">
-                {aiAdvice}
-              </p>
-            </div>
+            <p className="mt-1.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground">
+              {aiAdvice}
+            </p>
           </div>
         </div>
       </Panel>
