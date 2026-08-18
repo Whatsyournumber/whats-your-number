@@ -120,6 +120,24 @@ function RetiroContent() {
   })();
   const yearsLabel = `${horizonYears} ${horizonYears === 1 ? t("año", "year") : t("años", "years")}`;
 
+  // Realismo: lo que de verdad te sobra hoy con tus gastos reales (fijos + variables importados).
+  const capacity = Math.max(0, d.income - d.expenses);
+  const feasible = requiredMonthly <= capacity;
+  const shortfallMonthly = Math.max(0, requiredMonthly - capacity);
+  // Con tu capacidad real de ahorro, ¿en cuántos años llegarías?
+  const realisticYears = (() => {
+    if (!isGoal || targetNow <= 0 || goalReached) return 0;
+    const r = rate / 100;
+    const mr = r / 12;
+    let balance = investable;
+    for (let m = 1; m <= 720; m += 1) {
+      balance = balance * (1 + mr) + capacity;
+      if (balance >= targetNow) return Math.round((m / 12) * 10) / 10;
+    }
+    return 0; // no alcanzable en 60 años con el ahorro actual
+  })();
+  const expenseCutNeeded = shortfallMonthly;
+
   // En modo negocio/vivienda el simulador parte del aporte mensual necesario para llegar a tiempo.
   useEffect(() => {
     if (isGoal) setMonthly(requiredMonthly);
