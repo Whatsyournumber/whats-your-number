@@ -539,7 +539,8 @@ function CollapsibleCard({
 }
 
 const MARKET_KINDS: HoldingKind[] = ["etf", "stock", "crypto"];
-const FIXED_INCOME_KINDS: HoldingKind[] = ["bond", "tbill", "note", "structured"];
+const FIXED_INCOME_KINDS: HoldingKind[] = ["bond", "tbill", "note"];
+const PROTECTION_OPTIONS = [0, 90, 100];
 
 function InvestmentCard({
   holding: h,
