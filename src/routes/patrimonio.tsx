@@ -88,6 +88,21 @@ function PatrimonioContent() {
     .map((h) => {
       const raw = holdingValue(h, prices);
       const weighted = h.kind === "future" ? Math.round((raw * (h.probability ?? 100)) / 100) : raw;
+
+      // Ganancia real por tipo de activo:
+      // · Inmueble → renta anual declarada (no revalorización).
+      // · Efectivo → no genera intereses.
+      // · Ticker con costo de compra → plusvalía real de mercado (valor hoy − costo).
+      // · Resto → rentabilidad esperada.
+      const cost = h.cost_basis > 0 && h.quantity > 0 ? Math.round(h.cost_basis * h.quantity) : 0;
+      const marketGain = h.ticker && cost > 0 && raw > 0 ? raw - cost : null;
+      let annual: number;
+      if (h.kind === "property") annual = Math.round(h.monthly_income * 12);
+      else if (h.kind === "cash") annual = 0;
+      else if (marketGain !== null) annual = marketGain;
+      else annual = Math.round((weighted * (h.expected_return || 0)) / 100);
+      const rate = weighted > 0 ? (annual / weighted) * 100 : 0;
+
       return {
         id: h.id,
         group: groupOf(h.kind),
@@ -97,7 +112,9 @@ function PatrimonioContent() {
         ticker: h.ticker,
         quantity: h.quantity,
         value: weighted,
-        rate: h.expected_return,
+        annual,
+        rate,
+        isMarketGain: marketGain !== null,
         monthlyContribution: h.monthly_contribution,
         monthlyIncome: h.monthly_income,
         mortgage: h.kind === "property" ? h.linked_liability : 0,
@@ -118,7 +135,8 @@ function PatrimonioContent() {
   const [activeTab, setTab] = useState("all");
   const visibleRows = activeTab === "all" ? detailRows : detailRows.filter((r) => r.group.key === activeTab);
   const visibleTotal = visibleRows.reduce((s, r) => s + r.value, 0);
-  const visibleAnnual = Math.round(visibleRows.reduce((s, r) => s + (r.value * (r.rate || 0)) / 100, 0));
+  const visibleAnnual = Math.round(visibleRows.reduce((s, r) => s + r.annual, 0));
+
 
   // Activos futuros (trading, venta de empresa…) ponderados: suman al patrimonio y al allocation.
   const futureTotal = detailRows.filter((r) => r.group.key === "future").reduce((s, r) => s + r.value, 0);
@@ -272,7 +290,14 @@ function PatrimonioContent() {
 
             <div className="space-y-2">
               {visibleRows.map((r) => {
-                const annual = Math.round((r.value * (r.rate || 0)) / 100);
+                const annual = r.annual;
+                const gainLabel =
+                  r.kind === "property"
+                    ? t("Renta anual", "Annual rent")
+                    : r.isMarketGain
+                      ? t("Plusvalía", "Market gain")
+                      : t("Ganancia anual", "Annual gain");
+                const gainTone = annual > 0 ? "text-positive" : annual < 0 ? "text-negative" : "text-muted-foreground";
                 const meta = [
                   r.sub,
                   r.ticker && r.quantity > 0 ? `${r.quantity} u.` : null,
@@ -296,20 +321,21 @@ function PatrimonioContent() {
                       <p className="numeric text-sm">{fmt(r.value)}</p>
                     </div>
                     <div>
-                      <p className="text-[11px] text-muted-foreground">{t("Ganancia anual", "Annual gain")}</p>
-                      <p className="numeric text-sm text-positive">{fmt(annual)}</p>
+                      <p className="text-[11px] text-muted-foreground">{gainLabel}</p>
+                      <p className={cn("numeric text-sm", gainTone)}>{fmt(annual)}</p>
                     </div>
                     <div>
                       <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
-                      <p className="numeric text-sm text-positive">{fmt(Math.round(annual / 12))}</p>
+                      <p className={cn("numeric text-sm", gainTone)}>{fmt(Math.round(annual / 12))}</p>
                     </div>
                     <div>
                       <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
-                      <p className="numeric text-sm font-semibold text-positive">
-                        {(r.rate || 0) > 0 ? "+" : ""}
-                        {(r.rate || 0).toFixed(1)}%
+                      <p className={cn("numeric text-sm font-semibold", gainTone)}>
+                        {r.rate > 0 ? "+" : ""}
+                        {r.rate.toFixed(1)}%
                       </p>
                     </div>
+
                   </div>
                 );
               })}
