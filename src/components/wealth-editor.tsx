@@ -736,14 +736,8 @@ function InvestmentCard({
           <InlineRow label={t("Valor actual", "Current value")}>
             <Money value={h.manual_value} onChange={(n) => onPatch({ manual_value: n })} />
           </InlineRow>
-          <InlineRow label={t("Costo invertido", "Invested cost")}>
-            <Money value={h.cost_basis} onChange={(n) => onPatch({ cost_basis: n })} />
-          </InlineRow>
           <InlineRow label={t("Rendimiento anual", "Annual yield")}>
             <Pct value={h.expected_return} onChange={(n) => onPatch({ expected_return: n })} />
-          </InlineRow>
-          <InlineRow label={t("Aporte mensual", "Monthly contribution")}>
-            <Money value={h.monthly_contribution} onChange={(n) => onPatch({ monthly_contribution: n })} />
           </InlineRow>
           <InlineRow label={t("Año de vencimiento", "Maturity year")}>
             <Input
