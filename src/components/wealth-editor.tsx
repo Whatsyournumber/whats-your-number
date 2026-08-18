@@ -706,12 +706,11 @@ function InvestmentCard({
             <Money value={h.cost_basis} onChange={(n) => onPatch({ cost_basis: n })} />
           </InlineRow>
           <InlineRow label={t("Precio de compra", "Purchase price")}>
-            <Money
+            <DerivedPrice
               value={buyPrice}
-              decimals
-              onChange={(n) => {
-                if (n > 0 && h.cost_basis > 0) onPatch({ quantity: h.cost_basis / n });
-                else if (n > 0 && h.quantity > 0) onPatch({ cost_basis: n * h.quantity });
+              onCommit={(n) => {
+                if (h.cost_basis > 0) onPatch({ quantity: h.cost_basis / n });
+                else if (h.quantity > 0) onPatch({ cost_basis: n * h.quantity });
               }}
             />
           </InlineRow>
