@@ -826,7 +826,7 @@ function PortafolioContent() {
 
           <div
             className={cn(
-              "rounded-xl border px-3 py-2.5",
+              "flex flex-col gap-1 rounded-xl border px-3 py-2",
               riskLevel === "Alto"
                 ? "border-negative/25 bg-negative/[0.06]"
                 : riskLevel === "Medio"
@@ -846,23 +846,23 @@ function PortafolioContent() {
               </p>
             </div>
 
-            <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] leading-tight text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px] leading-tight text-muted-foreground">
               {riskMetrics.map((m, i) => (
                 <span key={m.label} className="inline-flex items-center gap-1">
                   <span className="font-medium text-foreground/80">{m.label}</span>
                   <span className="numeric font-semibold text-foreground">{m.value}</span>
-                  <span className="hidden text-muted-foreground/60 sm:inline">·</span>
+                  <span className="text-muted-foreground/40">·</span>
                   <span className="text-muted-foreground">
                     {insight.isLoading ? t("Analizando…", "Analyzing…") : aiHints[i] || m.qual}
                   </span>
-                  <span className="text-muted-foreground/40">|</span>
                 </span>
               ))}
             </div>
 
-            <p className="mt-1.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground">
+            <p className="line-clamp-1 text-[11px] leading-tight text-muted-foreground">
               {aiAdvice}
             </p>
+          </div>
           </div>
         </div>
       </Panel>
