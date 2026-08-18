@@ -61,7 +61,7 @@ export function KpiCard({
       >
         {value}
       </p>
-      <div className="relative mt-2 flex items-center gap-2">
+      <div className="relative mt-auto flex items-center gap-2 pt-2">
         {delta !== undefined && (
           <span
             className={cn(
