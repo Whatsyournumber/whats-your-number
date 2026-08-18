@@ -732,30 +732,6 @@ function InvestmentCard({
               className="h-9"
             />
           </InlineRow>
-          {/* Resumen visual */}
-          <div className="grid grid-cols-2 gap-2 rounded-lg border border-border/50 bg-background/40 px-3 py-2 text-[11px]">
-            <p className="text-muted-foreground">
-              {t("Protección", "Protection")}:{" "}
-              <span className="font-medium text-foreground">
-                {(h.quantity || 100) === 0 ? t("Sin protección", "Unprotected") : `${h.quantity || 100}%`}
-              </span>
-            </p>
-            <p className="text-muted-foreground">
-              {t("Cupón", "Coupon")}:{" "}
-              <span className="font-medium text-foreground">{h.expected_return}% {t("anual", "annual")}</span>
-            </p>
-            <p className="text-muted-foreground">
-              {t("Cupón anual", "Annual coupon")}:{" "}
-              <span className="font-medium text-emerald-400/90">
-                {fmt((h.manual_value * (h.expected_return || 0)) / 100)}
-              </span>
-            </p>
-            {h.target_year ? (
-              <p className="text-muted-foreground">
-                {t("Vencimiento", "Maturity")}: <span className="font-medium text-foreground">{h.target_year}</span>
-              </p>
-            ) : null}
-          </div>
         </>
       ) : isFixed ? (
         <>
