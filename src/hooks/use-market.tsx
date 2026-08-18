@@ -33,7 +33,7 @@ export function useWatchlist() {
   const add = useCallback(
     (raw: string) => {
       const s = raw.trim().toUpperCase();
-      if (!s || !/^[A-Z0-9.^=-]{1,15}$/.test(s)) return false;
+      if (!s || !/^[A-Z0-9.^=:&/-]{1,20}$/.test(s)) return false;
       if (symbols.includes(s)) return false;
       persist([...symbols, s].slice(0, 20));
       return true;

@@ -4,7 +4,7 @@ export const getMarketQuotes = createServerFn({ method: "GET" })
   .inputValidator((input: { symbols: string[] }) => ({
     symbols: (input?.symbols ?? [])
       .map((s) => String(s).trim().toUpperCase())
-      .filter((s) => /^[A-Z0-9.^=-]{1,15}$/.test(s))
+      .filter((s) => /^[A-Z0-9.^=:&/-]{1,20}$/.test(s))
       .slice(0, 20),
   }))
   .handler(async ({ data }) => {
@@ -16,7 +16,7 @@ export const getMarketSeries = createServerFn({ method: "GET" })
   .inputValidator((input: { symbols: string[] }) => ({
     symbols: (input?.symbols ?? [])
       .map((s) => String(s).trim().toUpperCase())
-      .filter((s) => /^[A-Z0-9.^=-]{1,15}$/.test(s))
+      .filter((s) => /^[A-Z0-9.^=:&/-]{1,20}$/.test(s))
       .slice(0, 5),
   }))
   .handler(async ({ data }) => {
