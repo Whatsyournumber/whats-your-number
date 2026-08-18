@@ -801,7 +801,7 @@ function PortafolioContent() {
           </div>
 
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-            {riskMetrics.map((m, i) => (
+            {riskMetrics.map((m) => (
               <div key={m.label} className="rounded-xl border border-border/50 bg-elevated/30 px-3 py-2.5">
                 <p className="truncate text-[11px] font-medium text-foreground">{m.label}</p>
                 <div className="mt-1 flex items-baseline gap-1.5">
@@ -819,16 +819,14 @@ function PortafolioContent() {
                     {m.qual}
                   </span>
                 </div>
-                <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
-                  {aiHints[i] || m.sentence}
-                </p>
+                <p className="mt-1 text-[11px] leading-snug text-muted-foreground">{m.sentence}</p>
               </div>
             ))}
           </div>
 
           <div
             className={cn(
-              "flex items-start gap-2 rounded-xl border px-3 py-2",
+              "flex flex-col gap-0.5 rounded-xl border px-3 py-1.5",
               riskLevel === "Alto"
                 ? "border-negative/25 bg-negative/[0.06]"
                 : riskLevel === "Medio"
@@ -836,20 +834,29 @@ function PortafolioContent() {
                   : "border-positive/25 bg-positive/[0.06]",
             )}
           >
-            <Sparkles
-              className={cn(
-                "mt-0.5 h-3.5 w-3.5 shrink-0",
-                riskLevel === "Alto" ? "text-negative" : riskLevel === "Medio" ? "text-amber-200" : "text-positive",
-              )}
-            />
-            <div className="min-w-0 flex-1">
-              <p className="text-[11px] font-semibold leading-tight text-foreground">
+            <div className="flex items-center gap-1.5 text-[11px] leading-tight">
+              <Sparkles
+                className={cn(
+                  "h-3 w-3 shrink-0",
+                  riskLevel === "Alto" ? "text-negative" : riskLevel === "Medio" ? "text-amber-200" : "text-positive",
+                )}
+              />
+              <span className="font-semibold text-foreground">
                 {t("Qué hacer ahora", "What to do now")}
-              </p>
-              <p className="mt-0.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground">
-                {insight.isLoading ? t("Analizando…", "Analyzing…") : aiAdvice}
-              </p>
+              </span>
+              <span className="text-muted-foreground/40">·</span>
+              {riskMetrics.map((m, i) => (
+                <span key={m.label} className="inline-flex items-center gap-0.5 whitespace-nowrap">
+                  {i > 0 && <span className="text-muted-foreground/30">·</span>}
+                  <span className="font-medium text-foreground/80">{m.label}</span>
+                  <span className="numeric font-semibold text-foreground">{m.value}</span>
+                </span>
+              ))}
             </div>
+
+            <p className="line-clamp-1 text-[11px] leading-tight text-muted-foreground">
+              {insight.isLoading ? t("Analizando…", "Analyzing…") : aiAdvice}
+            </p>
           </div>
         </div>
       </Panel>
