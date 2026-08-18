@@ -802,10 +802,24 @@ function PortafolioContent() {
 
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
             {riskMetrics.map((m) => (
-              <div key={m.label} className="rounded-xl border border-border/50 bg-elevated/30 px-3 py-2">
+              <div key={m.label} className="rounded-xl border border-border/50 bg-elevated/30 px-3 py-2.5">
                 <p className="truncate text-[11px] font-medium text-foreground">{m.label}</p>
-                <p className="numeric mt-0.5 text-base font-bold text-foreground">{m.value}</p>
-                <p className="mt-1 text-[11px] leading-snug text-muted-foreground">{m.hint}</p>
+                <div className="mt-1 flex items-baseline gap-1.5">
+                  <p className="numeric text-lg font-bold text-foreground">{m.value}</p>
+                  <span
+                    className={cn(
+                      "rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide",
+                      m.tone === "good"
+                        ? "bg-positive/12 text-positive"
+                        : m.tone === "warn"
+                          ? "bg-negative/12 text-negative"
+                          : "bg-amber-400/12 text-amber-200",
+                    )}
+                  >
+                    {m.qual}
+                  </span>
+                </div>
+                <p className="mt-1 text-[11px] leading-snug text-muted-foreground">{m.sentence}</p>
               </div>
             ))}
           </div>
