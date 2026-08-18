@@ -234,7 +234,19 @@ function PatrimonioContent() {
         </Panel>
       </div>
 
-      <Panel title={t("Detalle de tus activos", "Your assets in detail")}>
+      <Panel
+        title={t("Detalle de tus activos", "Your assets in detail")}
+        actions={
+          <Link
+            to="/mi-perfil"
+            hash="patrimonio"
+            className="flex items-center gap-2 rounded-lg px-2 py-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <span className="tabular-nums">{detailRows.length} {t("activos", "assets")}</span>
+            <Pencil className="h-3.5 w-3.5" />
+          </Link>
+        }
+      >
         {detailRows.length === 0 ? (
           <p className="text-sm text-muted-foreground">{t("Aún no registras activos.", "You haven't recorded any assets yet.")}</p>
         ) : (
