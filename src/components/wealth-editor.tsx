@@ -58,15 +58,15 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
   const rentIncome = list("property").reduce((s, h) => s + h.monthly_income, 0);
 
   return (
-    <div className="surface overflow-hidden p-4 sm:p-6">
+    <div className="surface overflow-hidden p-5">
       {/* Cabecera */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-primary/15 text-primary">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-primary/15 text-primary">
             <Wallet className="h-5 w-5" />
           </span>
           <div>
-            <h2 className="text-2xl font-semibold tracking-tight">{t("Tu Patrimonio", "Your Net Worth")}</h2>
+            <h2 className="text-xl font-semibold tracking-tight">{t("Tu Patrimonio", "Your Net Worth")}</h2>
             <p className="text-sm text-muted-foreground">
               {t("Ingresa tu información actual para construir tus proyecciones.", "Enter your current information to build your projections.")}
             </p>
