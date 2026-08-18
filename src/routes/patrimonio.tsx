@@ -88,6 +88,21 @@ function PatrimonioContent() {
     .map((h) => {
       const raw = holdingValue(h, prices);
       const weighted = h.kind === "future" ? Math.round((raw * (h.probability ?? 100)) / 100) : raw;
+
+      // Ganancia real por tipo de activo:
+      // · Inmueble → renta anual declarada (no revalorización).
+      // · Efectivo → no genera intereses.
+      // · Ticker con costo de compra → plusvalía real de mercado (valor hoy − costo).
+      // · Resto → rentabilidad esperada.
+      const cost = h.cost_basis > 0 && h.quantity > 0 ? Math.round(h.cost_basis * h.quantity) : 0;
+      const marketGain = h.ticker && cost > 0 && raw > 0 ? raw - cost : null;
+      let annual: number;
+      if (h.kind === "property") annual = Math.round(h.monthly_income * 12);
+      else if (h.kind === "cash") annual = 0;
+      else if (marketGain !== null) annual = marketGain;
+      else annual = Math.round((weighted * (h.expected_return || 0)) / 100);
+      const rate = weighted > 0 ? (annual / weighted) * 100 : 0;
+
       return {
         id: h.id,
         group: groupOf(h.kind),
@@ -97,7 +112,9 @@ function PatrimonioContent() {
         ticker: h.ticker,
         quantity: h.quantity,
         value: weighted,
-        rate: h.expected_return,
+        annual,
+        rate,
+        isMarketGain: marketGain !== null,
         monthlyContribution: h.monthly_contribution,
         monthlyIncome: h.monthly_income,
         mortgage: h.kind === "property" ? h.linked_liability : 0,
@@ -118,7 +135,8 @@ function PatrimonioContent() {
   const [activeTab, setTab] = useState("all");
   const visibleRows = activeTab === "all" ? detailRows : detailRows.filter((r) => r.group.key === activeTab);
   const visibleTotal = visibleRows.reduce((s, r) => s + r.value, 0);
-  const visibleAnnual = Math.round(visibleRows.reduce((s, r) => s + (r.value * (r.rate || 0)) / 100, 0));
+  const visibleAnnual = Math.round(visibleRows.reduce((s, r) => s + r.annual, 0));
+
 
   // Activos futuros (trading, venta de empresa…) ponderados: suman al patrimonio y al allocation.
   const futureTotal = detailRows.filter((r) => r.group.key === "future").reduce((s, r) => s + r.value, 0);
