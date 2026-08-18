@@ -554,7 +554,7 @@ function InvestmentCard({
   const [open, setOpen] = useState(!filled);
   const ticker = (h.ticker ?? "").trim().toUpperCase();
   const { data: quotes } = useQuotes(ticker ? [ticker] : []);
-  const quote = quotes?.[0] ?? null;
+  const quote = quotes?.quotes?.[0] ?? null;
   const buyPrice = h.quantity > 0 && h.cost_basis > 0 ? h.cost_basis / h.quantity : 0;
   const marketValue = quote && h.quantity > 0 ? quote.price * h.quantity : null;
 
