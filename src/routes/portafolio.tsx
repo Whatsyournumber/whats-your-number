@@ -574,6 +574,17 @@ function PortafolioContent() {
   const aiHints = insight.data?.hints ?? [];
   const aiAdvice = insight.data?.advice?.trim() || riskAdvice;
 
+  // Resumen interpretativo: nuevo análisis, no repite los números de arriba.
+  const volDesc = volPct > 22 ? t("alta volatilidad", "high volatility") : volPct > 14 ? t("volatilidad moderada", "moderate volatility") : t("baja volatilidad", "low volatility");
+  const betaDesc = beta > 1.2 ? t("se mueve más que el mercado", "moves more than the market") : beta < 0.85 ? t("se mueve menos que el mercado", "moves less than the market") : t("sigue al mercado", "tracks the market");
+  const ddDesc = maxDrawdown < -25 ? t("caídas severas en el pasado", "severe past drawdowns") : maxDrawdown < -15 ? t("caídas notables pero asumibles", "notable but manageable drawdowns") : t("caídas controladas", "controlled drawdowns");
+  const sharpeDesc = sharpe > 1 ? t("buen retorno por unidad de riesgo", "good return per unit of risk") : sharpe > 0.5 ? t("retorno justo para el riesgo asumido", "fair return for the risk taken") : t("el retorno no compensa el riesgo", "return doesn't justify the risk");
+  const concDesc = concentration > 40 ? top ? t(`excesiva dependencia de ${top.ticker}`, `over-reliance on ${top.ticker}`) : t("excesiva concentración", "over-concentration") : concentration > 25 ? t("concentración media", "medium concentration") : t("bien diversificado", "well diversified");
+  const metricSummary = t(
+    `${volDesc}, ${betaDesc}, ${ddDesc}; ${sharpeDesc} y ${concDesc}.`,
+    `${volDesc}, ${betaDesc}, ${ddDesc}; ${sharpeDesc} and ${concDesc}.`,
+  );
+
   const types = ["ETF", "Acción", "Renta fija", "Estructurado", "Retiro", "Cripto", "Inmueble", "Cash"] as const;
   const allocation = types
     .map((ty, i) => ({
@@ -844,14 +855,11 @@ function PortafolioContent() {
               <span className="font-semibold text-foreground">
                 {t("Qué hacer ahora", "What to do now")}
               </span>
-              <span className="text-muted-foreground/50">·</span>
-              <span className="text-muted-foreground">
-                {t(
-                  `Riesgo ${riskLabel}: volatilidad ${volPct.toFixed(0)}%, beta ${beta.toFixed(2)}, caída máx ${maxDrawdown.toFixed(0)}%, concentración ${concentration.toFixed(0)}%.`,
-                  `Risk ${riskLabel}: volatility ${volPct.toFixed(0)}%, beta ${beta.toFixed(2)}, max drawdown ${maxDrawdown.toFixed(0)}%, concentration ${concentration.toFixed(0)}%.`,
-                )}
-              </span>
             </div>
+
+            <p className="line-clamp-1 text-[11px] leading-snug text-muted-foreground">
+              {metricSummary}
+            </p>
 
             <p className="line-clamp-2 text-[11px] leading-snug text-muted-foreground">
               {insight.isLoading ? t("Analizando…", "Analyzing…") : aiAdvice}
