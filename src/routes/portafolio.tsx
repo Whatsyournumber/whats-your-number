@@ -703,7 +703,7 @@ function PortafolioContent() {
           <span className="inline-flex items-center gap-2">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-positive opacity-70" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-positive shadow-[0_0_10px_hsl(var(--positive))]" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-positive shadow-[0_0_10px_var(--positive)]" />
             </span>
             {t("Mercado en vivo", "Live market")}
           </span>
