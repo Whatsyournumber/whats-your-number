@@ -720,7 +720,7 @@ function PortafolioContent() {
           <Input
             value={newSymbol}
             onChange={(e) => setNewSymbol(e.target.value)}
-            placeholder={t("Agregar ticker (VOO, TSLA, SOL-USD…)", "Add ticker (VOO, TSLA, SOL-USD…)")}
+            placeholder={t("Busca cualquier activo: VOO, TSLA, BTC-USD, ^GSPC, EURUSD=X…", "Search any asset: VOO, TSLA, BTC-USD, ^GSPC, EURUSD=X…")}
             className="h-9 max-w-xs"
           />
           <Button type="submit" size="sm" variant="secondary">
