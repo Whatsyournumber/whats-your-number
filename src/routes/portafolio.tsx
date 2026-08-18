@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { RefreshCw, X } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Pencil, RefreshCw, X } from "lucide-react";
 import { useState } from "react";
 import { CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
@@ -487,7 +487,19 @@ function PortafolioContent() {
 
 
 
-      <Panel title={t("Posiciones", "Positions")}>
+      <Panel
+        title={t("Posiciones", "Positions")}
+        actions={
+          <Link
+            to="/mi-perfil"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border/60 px-3 py-1.5 text-xs text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
+            aria-label={t("Editar en mis datos", "Edit in my data")}
+          >
+            <Pencil className="h-3.5 w-3.5" />
+            {t("Editar", "Edit")}
+          </Link>
+        }
+      >
         <Tabs defaultValue="Todos">
           <TabsList className="mb-4">
             <TabsTrigger value="Todos">{t("Todos", "All")}</TabsTrigger>
