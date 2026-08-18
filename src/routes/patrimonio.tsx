@@ -303,8 +303,6 @@ function PatrimonioContent() {
                   r.sub,
                   r.ticker && r.quantity > 0 ? `${r.quantity} u.` : null,
                   r.monthlyContribution > 0 ? t(`+${fmt(r.monthlyContribution)}/mes`, `+${fmt(r.monthlyContribution)}/mo`) : null,
-                  r.monthlyIncome > 0 ? t(`renta ${fmt(r.monthlyIncome)}/mes`, `income ${fmt(r.monthlyIncome)}/mo`) : null,
-                  r.mortgage > 0 ? t(`hipoteca ${fmt(r.mortgage)}`, `mortgage ${fmt(r.mortgage)}`) : null,
                   r.targetYear ? String(r.targetYear) : null,
                   r.probability != null && r.probability < 100 ? `${r.probability}%` : null,
                 ].filter(Boolean);
