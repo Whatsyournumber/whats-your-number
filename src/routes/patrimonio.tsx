@@ -135,7 +135,7 @@ function PatrimonioContent() {
   const [activeTab, setTab] = useState("all");
   const visibleRows = activeTab === "all" ? detailRows : detailRows.filter((r) => r.group.key === activeTab);
   const visibleTotal = visibleRows.reduce((s, r) => s + r.value, 0);
-  const visibleAnnual = Math.round(visibleRows.reduce((s, r) => s + r.annual, 0));
+  const visibleAnnual = Math.round(visibleRows.filter((r) => r.group.key !== "cash").reduce((s, r) => s + r.annual, 0));
 
 
   // Activos futuros (trading, venta de empresa…) ponderados: suman al patrimonio y al allocation.
@@ -291,6 +291,7 @@ function PatrimonioContent() {
             <div className="space-y-2">
               {visibleRows.map((r) => {
                 const annual = r.annual;
+                const isCash = r.group.key === "cash";
                 const gainLabel =
                   r.kind === "property"
                     ? t("Renta anual", "Annual rent")
@@ -322,17 +323,20 @@ function PatrimonioContent() {
                     </div>
                     <div>
                       <p className="text-[11px] text-muted-foreground">{gainLabel}</p>
-                      <p className={cn("numeric text-sm", gainTone)}>{fmt(annual)}</p>
+                      <p className={cn("numeric text-sm", isCash ? "text-muted-foreground/50" : gainTone)}>
+                        {isCash ? "—" : fmt(annual)}
+                      </p>
                     </div>
                     <div>
                       <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
-                      <p className={cn("numeric text-sm", gainTone)}>{fmt(Math.round(annual / 12))}</p>
+                      <p className={cn("numeric text-sm", isCash ? "text-muted-foreground/50" : gainTone)}>
+                        {isCash ? "—" : fmt(Math.round(annual / 12))}
+                      </p>
                     </div>
                     <div>
                       <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
-                      <p className={cn("numeric text-sm font-semibold", gainTone)}>
-                        {r.rate > 0 ? "+" : ""}
-                        {r.rate.toFixed(1)}%
+                      <p className={cn("numeric text-sm font-semibold", isCash ? "text-muted-foreground/50" : gainTone)}>
+                        {isCash ? "—" : `${r.rate > 0 ? "+" : ""}${r.rate.toFixed(1)}%`}
                       </p>
                     </div>
 
