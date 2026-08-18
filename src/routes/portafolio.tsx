@@ -324,7 +324,7 @@ function PortafolioContent() {
         <KpiCard label={t("Valor actual", "Current value")} value={fmt(totalValue)} accent index={0} />
         <KpiCard label={t("Costo invertido", "Invested cost")} value={fmt(totalCost)} index={1} />
         <KpiCard label={t("Ganancia total", "Total gain")} value={fmt(totalGain)} delta={totalCost > 0 ? (totalGain / totalCost) * 100 : 0} index={2} />
-        <KpiCard label={t("Ganancia mensual", "Monthly gain")} value={fmt(Math.round(totalGain / 12))} index={3} />
+        <KpiCard label={t("Dividendos 12m", "Dividends 12m")} value={fmt(dividends)} index={3} />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
@@ -376,7 +376,15 @@ function PortafolioContent() {
       </div>
 
       <Panel
-        title={t("Posiciones", "Positions")}
+        title={
+          <span className="flex items-center gap-2.5">
+            {t("Posiciones", "Positions")}
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-positive/30 bg-positive/10 px-2.5 py-1 text-[11px] font-medium text-positive">
+              <span className="text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</span>
+              <span className="numeric font-semibold">{fmt(Math.round(totalGain / 12))}</span>
+            </span>
+          </span>
+        }
         description={`${enriched.length} ${t("posiciones", "positions")}`}
         actions={
           <Link
