@@ -837,7 +837,7 @@ function PortafolioContent() {
 
           <div
             className={cn(
-              "flex flex-col gap-1 rounded-xl border px-3 py-2",
+              "flex flex-col gap-2 rounded-xl border px-4 py-3.5",
               riskLevel === "Alto"
                 ? "border-negative/25 bg-negative/[0.06]"
                 : riskLevel === "Medio"
@@ -845,10 +845,10 @@ function PortafolioContent() {
                   : "border-positive/25 bg-positive/[0.06]",
             )}
           >
-            <div className="flex items-center gap-1.5 text-[11px] leading-snug">
+            <div className="flex items-center gap-2 text-sm">
               <Sparkles
                 className={cn(
-                  "h-3 w-3 shrink-0",
+                  "h-4 w-4 shrink-0",
                   riskLevel === "Alto" ? "text-negative" : riskLevel === "Medio" ? "text-amber-200" : "text-positive",
                 )}
               />
@@ -857,11 +857,11 @@ function PortafolioContent() {
               </span>
             </div>
 
-            <p className="line-clamp-1 text-[11px] leading-snug text-muted-foreground">
+            <p className="text-[13px] leading-relaxed text-muted-foreground">
               {metricSummary}
             </p>
 
-            <p className="line-clamp-2 text-[11px] leading-snug text-muted-foreground">
+            <p className="text-[13px] leading-relaxed text-muted-foreground">
               {insight.isLoading ? t("Analizando…", "Analyzing…") : aiAdvice}
             </p>
           </div>
