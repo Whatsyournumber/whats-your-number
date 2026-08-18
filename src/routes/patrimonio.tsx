@@ -110,6 +110,8 @@ function PatrimonioContent() {
     })
     .filter((g) => g.rows.length > 0)
     .sort((a, b) => b.total - a.total);
+  const detailTotal = detailRows.reduce((s, r) => s + r.value, 0);
+  const detailAnnual = Math.round(detailRows.reduce((s, r) => s + (r.value * (r.rate || 0)) / 100, 0));
 
 
   return (
@@ -232,37 +234,81 @@ function PatrimonioContent() {
                   <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{g.label}</p>
                   <span className="numeric text-xs font-semibold text-muted-foreground">{fmt(g.total)}</span>
                 </div>
-                <div className="space-y-1.5">
-                  {g.rows.map((r) => (
-                    <div key={r.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl bg-elevated/60 p-3">
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium">
-                          {r.label}
-                          {r.ticker ? <span className="ml-2 text-xs text-muted-foreground">{r.ticker}</span> : null}
-                        </p>
-                        <p className="truncate text-[11px] text-muted-foreground">
-                          {[
-                            r.sub,
-                            r.ticker && r.quantity > 0 ? `${r.quantity} u.` : null,
-                            r.rate > 0 ? t(`${r.rate}% anual`, `${r.rate}% annual`) : null,
-                            r.monthlyContribution > 0 ? t(`+${fmt(r.monthlyContribution)}/mes`, `+${fmt(r.monthlyContribution)}/mo`) : null,
-                            r.monthlyIncome > 0 ? t(`renta ${fmt(r.monthlyIncome)}/mes`, `income ${fmt(r.monthlyIncome)}/mo`) : null,
-                            r.mortgage > 0 ? t(`hipoteca ${fmt(r.mortgage)}`, `mortgage ${fmt(r.mortgage)}`) : null,
-                            r.targetYear ? String(r.targetYear) : null,
-                            r.probability != null && r.probability < 100 ? `${r.probability}%` : null,
-                          ]
-                            .filter(Boolean)
-                            .join(" · ")}
-                        </p>
+                <div className="space-y-2">
+                  {g.rows.map((r) => {
+                    const annual = Math.round((r.value * (r.rate || 0)) / 100);
+                    const meta = [
+                      r.ticker && r.quantity > 0 ? `${r.quantity} u.` : null,
+                      r.monthlyContribution > 0 ? t(`+${fmt(r.monthlyContribution)}/mes`, `+${fmt(r.monthlyContribution)}/mo`) : null,
+                      r.monthlyIncome > 0 ? t(`renta ${fmt(r.monthlyIncome)}/mes`, `income ${fmt(r.monthlyIncome)}/mo`) : null,
+                      r.mortgage > 0 ? t(`hipoteca ${fmt(r.mortgage)}`, `mortgage ${fmt(r.mortgage)}`) : null,
+                      r.targetYear ? String(r.targetYear) : null,
+                      r.probability != null && r.probability < 100 ? `${r.probability}%` : null,
+                    ].filter(Boolean);
+                    return (
+                      <div key={r.id} className="grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 md:grid-cols-6">
+                        <div className="col-span-2 md:col-span-2 min-w-0">
+                          <p className="truncate text-sm font-medium">
+                            {r.label}
+                            {r.ticker ? <span className="ml-2 text-xs text-muted-foreground">{r.ticker}</span> : null}
+                          </p>
+                          <p className="truncate text-xs text-muted-foreground">
+                            {[r.sub, ...meta].join(" · ")}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-[11px] text-muted-foreground">{t("Valor", "Value")}</p>
+                          <p className="numeric text-sm">{fmt(r.value)}</p>
+                        </div>
+                        <div>
+                          <p className="text-[11px] text-muted-foreground">{t("Ganancia anual", "Annual gain")}</p>
+                          <p className="numeric text-sm text-positive">{fmt(annual)}</p>
+                          <p className="text-[10px] text-muted-foreground">{(r.rate || 0).toFixed(1)}%</p>
+                        </div>
+                        <div>
+                          <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
+                          <p className="numeric text-sm text-positive">{fmt(Math.round(annual / 12))}</p>
+                        </div>
+                        <div>
+                          <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
+                          <p className="numeric text-sm font-semibold text-positive">
+                            {(r.rate || 0) > 0 ? "+" : ""}
+                            {(r.rate || 0).toFixed(1)}%
+                          </p>
+                        </div>
                       </div>
-                      <span className="numeric shrink-0 text-sm font-semibold">{fmt(r.value)}</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             ))}
+
+            <div className="grid grid-cols-2 items-center gap-3 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2.5 md:grid-cols-6">
+              <div className="col-span-2 md:col-span-2">
+                <p className="text-xs font-semibold text-muted-foreground">{t("Total", "Total")}</p>
+              </div>
+              <div>
+                <p className="text-[11px] text-muted-foreground">{t("Valor", "Value")}</p>
+                <p className="numeric text-sm font-semibold">{fmt(detailTotal)}</p>
+              </div>
+              <div>
+                <p className="text-[11px] text-muted-foreground">{t("Ganancia anual", "Annual gain")}</p>
+                <p className="numeric text-sm font-semibold text-positive">{fmt(detailAnnual)}</p>
+              </div>
+              <div>
+                <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
+                <p className="numeric text-sm font-semibold text-positive">{fmt(Math.round(detailAnnual / 12))}</p>
+              </div>
+              <div>
+                <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
+                <p className="numeric text-sm font-semibold text-positive">
+                  {detailTotal > 0 ? `+${((detailAnnual / detailTotal) * 100).toFixed(1)}` : "0.0"}%
+                </p>
+              </div>
+            </div>
           </div>
         )}
+
         <Button asChild variant="outline" size="sm" className="mt-4 w-full rounded-full">
           <Link to="/mi-perfil" hash="patrimonio">{t("Editar mi patrimonio", "Edit my net worth")}</Link>
         </Button>
