@@ -213,6 +213,8 @@ export const RULES: CategoryRule[] = [
       "theater", "concierto", "concert", "festival", "ticketmaster", "eventbrite", "entradas eventos",
       "taquillas", "boliche", "bowling", "karaoke", "casino", "entretenimiento", "nightlife", "copas",
       "wine bar", "vinoteca", "fandango", "ocio", "club", "clubs", "clubes",
+      "vida nocturna", "vidanocturna", "night", "noche", "after", "antro", "coctele",
+
     ],
   },
   {
