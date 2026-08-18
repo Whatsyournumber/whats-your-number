@@ -613,24 +613,49 @@ function PortafolioContent() {
 
   const rows = (list: typeof enriched) => (
     <div className="space-y-2">
-      {[...list].sort((a, b) => b.value - a.value).map((h) => (
+      {[...list].sort((a, b) => b.value - a.value).map((h) => {
+        const isEtf = h.type === "ETF";
+        const tk = h.ticker?.toUpperCase();
+        const today = tk && dayChange[tk] !== undefined ? dayChange[tk] : null;
+        return (
         <div key={h.ticker} className="grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 md:grid-cols-6">
           <div className="col-span-2 md:col-span-2">
             <p className="text-sm font-medium">{h.ticker}</p>
             <p className="truncate text-xs text-muted-foreground">{h.name}</p>
           </div>
-          <div>
-            <p className="text-[11px] text-muted-foreground">{t("Valor", "Value")}</p>
-            <p className="numeric text-sm">{fmt(h.value)}</p>
-          </div>
-          <div>
-            <p className="text-[11px] text-muted-foreground">{t("Ganancia anual", "Annual gain")}</p>
-            <p className="numeric text-sm text-positive">{fmt(Math.round(h.value * h.growth))}</p>
-          </div>
-          <div>
-            <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
-            <p className="numeric text-sm text-positive">{fmt(Math.round((h.value * h.growth) / 12))}</p>
-          </div>
+          {isEtf ? (
+            <>
+              <div>
+                <p className="text-[11px] text-muted-foreground">{t("Valor compra", "Purchase value")}</p>
+                <p className="numeric text-sm text-muted-foreground">{fmt(h.cost)}</p>
+              </div>
+              <div>
+                <p className="text-[11px] text-muted-foreground">{t("Valor actual", "Current value")}</p>
+                <p className="numeric text-sm font-medium">{fmt(h.value)}</p>
+              </div>
+              <div>
+                <p className="text-[11px] text-muted-foreground">{t("Mercado hoy", "Market today")}</p>
+                <p className={cn("numeric text-sm font-semibold", today === null ? "text-muted-foreground/50" : today < 0 ? "text-negative" : "text-positive")}>
+                  {today === null ? "—" : `${today > 0 ? "+" : ""}${today.toFixed(2)}%`}
+                </p>
+              </div>
+            </>
+          ) : (
+            <>
+              <div>
+                <p className="text-[11px] text-muted-foreground">{t("Valor", "Value")}</p>
+                <p className="numeric text-sm">{fmt(h.value)}</p>
+              </div>
+              <div>
+                <p className="text-[11px] text-muted-foreground">{t("Ganancia anual", "Annual gain")}</p>
+                <p className="numeric text-sm text-positive">{fmt(Math.round(h.value * h.growth))}</p>
+              </div>
+              <div>
+                <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
+                <p className="numeric text-sm text-positive">{fmt(Math.round((h.value * h.growth) / 12))}</p>
+              </div>
+            </>
+          )}
 
           <div>
             <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
@@ -638,7 +663,7 @@ function PortafolioContent() {
               {h.ret > 0 ? "+" : ""}
               {h.ret.toFixed(1)}%
             </p>
-            {h.cagr !== null && (
+            {h.cagr !== null && !isEtf && (
               <p className="text-[10px] text-muted-foreground">
                 {h.cagr > 0 ? "+" : ""}
                 {h.cagr.toFixed(1)}% {t("anual", "annual")} · {h.years} {t("años", "yrs")}
@@ -646,7 +671,8 @@ function PortafolioContent() {
             )}
           </div>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 
