@@ -416,16 +416,15 @@ function PortafolioContent() {
             <p className="numeric text-sm font-semibold">{fmt(totalValue)}</p>
           </div>
           <div>
-            <p className="text-[11px] text-muted-foreground">{t("Costo prom.", "Avg. cost")}</p>
-            <p className="numeric text-sm">{fmt(totalCost)}</p>
+            <p className="text-[11px] text-muted-foreground">{t("Ganancia anual", "Annual gain")}</p>
+            <p className="numeric text-sm font-semibold text-positive">{fmt(Math.round(annualGain))}</p>
+            <p className="text-[10px] text-muted-foreground">{weightedReturn.toFixed(1)}%</p>
           </div>
           <div>
-            <p className="text-[11px] text-muted-foreground">{t("Ganancia", "Gain")}</p>
-            <p className={cn("numeric text-sm font-semibold", totalGain >= 0 ? "text-positive" : "text-negative")}>
-              {totalGain >= 0 ? "+" : ""}
-              {fmt(totalGain)}
-            </p>
+            <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
+            <p className="numeric text-sm font-semibold text-positive">{fmt(Math.round(annualGain / 12))}</p>
           </div>
+
           <div>
             <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
             <p className={cn("numeric text-sm font-semibold", totalRet >= 0 ? "text-positive" : "text-negative")}>
