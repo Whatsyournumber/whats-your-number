@@ -286,18 +286,15 @@ function PortafolioContent() {
             <p className="numeric text-sm">{fmt(h.value)}</p>
           </div>
           <div>
-            <p className="text-[11px] text-muted-foreground">{t("Costo prom.", "Avg. cost")}</p>
-            <p className="numeric text-sm">{fmt(h.avgCost)}</p>
-            {h.improvements > 0 && (
-              <p className="text-[10px] text-muted-foreground">
-                {t("incl. mejoras", "incl. improvements")} {fmt(h.improvements)}
-              </p>
-            )}
+            <p className="text-[11px] text-muted-foreground">{t("Ganancia anual", "Annual gain")}</p>
+            <p className="numeric text-sm text-positive">{fmt(Math.round(h.value * h.growth))}</p>
+            <p className="text-[10px] text-muted-foreground">{(h.growth * 100).toFixed(1)}%</p>
           </div>
           <div>
-            <p className="text-[11px] text-muted-foreground">{t("Ganancia", "Gain")}</p>
-            <p className={cn("numeric text-sm", h.gain >= 0 ? "text-positive" : "text-negative")}>{fmt(h.gain)}</p>
+            <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
+            <p className="numeric text-sm text-positive">{fmt(Math.round((h.value * h.growth) / 12))}</p>
           </div>
+
           <div>
             <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
             <p className={cn("numeric text-sm font-semibold", h.ret >= 0 ? "text-positive" : "text-negative")}>
