@@ -488,37 +488,6 @@ function PortafolioContent() {
 
 
 
-      <Panel
-        title={t("Posiciones", "Positions")}
-        actions={
-          <Link
-            to="/mi-perfil"
-            hash="patrimonio"
-            className="inline-flex items-center gap-1.5 rounded-full border border-border/60 px-3 py-1.5 text-xs text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
-            aria-label={t("Editar en mis datos", "Edit in my data")}
-          >
-            <Pencil className="h-3.5 w-3.5" />
-            {t("Editar", "Edit")}
-          </Link>
-        }
-      >
-        <Tabs defaultValue="Todos">
-          <TabsList className="mb-4">
-            <TabsTrigger value="Todos">{t("Todos", "All")}</TabsTrigger>
-            {activeTypes.map((ty) => (
-              <TabsTrigger key={ty} value={ty}>
-                {typeLabels[ty]}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          <TabsContent value="Todos">{rows(enriched)}</TabsContent>
-          {activeTypes.map((ty) => (
-            <TabsContent key={ty} value={ty}>
-              {rows(enriched.filter((h) => h.type === ty))}
-            </TabsContent>
-          ))}
-        </Tabs>
-      </Panel>
     </PageShell>
   );
 }
