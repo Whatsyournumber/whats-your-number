@@ -19,7 +19,7 @@ type Props = {
 
 const RETURN_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 18, 20, 25, 30];
 const PROBABILITY_OPTIONS = [20, 40, 60, 80, 100];
-const RETIRE_AGES = [35, 40, 45, 50, 55, 58, 60, 62, 65, 67, 70, 72, 75, 80, 85];
+const RETIRE_AGES = Array.from({ length: 56 }, (_, i) => 30 + i); // 30..85
 
 /** Formato corto: 1,4M / 149,6K para que las cifras no rompan el layout. */
 function makeShort(fmt: (n: number) => string) {
