@@ -80,3 +80,28 @@ export async function fetchYearSeries(symbol: string): Promise<SeriesPoint[]> {
     return { label: MONTHS[date.getUTCMonth()]!, value: ((p.c - base) / base) * 100 };
   });
 }
+
+export type SymbolHit = { symbol: string; name: string; type: string; exchange: string };
+
+export async function searchSymbols(query: string): Promise<SymbolHit[]> {
+  try {
+    const res = await fetch(
+      `https://query1.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(query)}&quotesCount=8&newsCount=0`,
+      { headers: { "User-Agent": "Mozilla/5.0", Accept: "application/json" } },
+    );
+    if (!res.ok) return [];
+    const json = (await res.json()) as {
+      quotes?: { symbol?: string; shortname?: string; longname?: string; quoteType?: string; exchange?: string }[];
+    };
+    return (json.quotes ?? [])
+      .filter((q) => q.symbol)
+      .map((q) => ({
+        symbol: q.symbol!,
+        name: q.shortname ?? q.longname ?? q.symbol!,
+        type: q.quoteType ?? "",
+        exchange: q.exchange ?? "",
+      }));
+  } catch {
+    return [];
+  }
+}

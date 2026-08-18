@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useT } from "@/hooks/use-language";
-import { useMarketSeries, useQuotes, useWatchlist } from "@/hooks/use-market";
+import { useMarketSeries, useQuotes, useSymbolSearch, useWatchlist } from "@/hooks/use-market";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
 import { buildDataset } from "@/lib/profile-data";
@@ -80,6 +80,8 @@ function PortafolioContent() {
   const seriesQuery = useMarketSeries(["^GSPC", "^IXIC", "URTH", "SPY", "BTC-USD"]);
   const [benchmark, setBenchmark] = useState<"sp500" | "nasdaq" | "world">("sp500");
   const [newSymbol, setNewSymbol] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchQuery = useSymbolSearch(newSymbol);
 
   // Precios reales para las posiciones con ticker + unidades.
   const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
@@ -711,22 +713,62 @@ function PortafolioContent() {
         }
       >
         <form
-          className="mb-4 flex gap-2"
+          className="relative mb-4 flex gap-2"
           onSubmit={(e) => {
             e.preventDefault();
-            if (watchlist.add(newSymbol)) setNewSymbol("");
+            const pick = searchQuery.data?.hits?.[0]?.symbol ?? newSymbol;
+            if (watchlist.add(pick)) {
+              setNewSymbol("");
+              setSearchOpen(false);
+            }
           }}
         >
-          <Input
-            value={newSymbol}
-            onChange={(e) => setNewSymbol(e.target.value)}
-            placeholder={t("Busca cualquier activo: VOO, TSLA, BTC-USD, ^GSPC, EURUSD=X…", "Search any asset: VOO, TSLA, BTC-USD, ^GSPC, EURUSD=X…")}
-            className="h-9 max-w-xs"
-          />
+          <div className="relative w-full max-w-xs">
+            <Input
+              value={newSymbol}
+              onChange={(e) => {
+                setNewSymbol(e.target.value);
+                setSearchOpen(true);
+              }}
+              onFocus={() => setSearchOpen(true)}
+              onBlur={() => window.setTimeout(() => setSearchOpen(false), 150)}
+              placeholder={t("Busca por nombre o ticker: JPMorgan, VOO, TSLA, BTC-USD…", "Search by name or ticker: JPMorgan, VOO, TSLA, BTC-USD…")}
+              className="h-9"
+            />
+            {searchOpen && newSymbol.trim().length >= 1 && (
+              <div className="absolute left-0 top-11 z-30 w-[min(24rem,90vw)] overflow-hidden rounded-xl border border-border/60 bg-elevated shadow-xl">
+                {searchQuery.isFetching && !searchQuery.data && (
+                  <p className="px-3 py-2 text-xs text-muted-foreground">{t("Buscando…", "Searching…")}</p>
+                )}
+                {(searchQuery.data?.hits ?? []).slice(0, 8).map((h) => (
+                  <button
+                    key={h.symbol}
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      if (watchlist.add(h.symbol)) {
+                        setNewSymbol("");
+                        setSearchOpen(false);
+                      }
+                    }}
+                    className="flex w-full items-center gap-3 px-3 py-2 text-left transition hover:bg-surface"
+                  >
+                    <span className="text-sm font-semibold">{h.symbol}</span>
+                    <span className="truncate text-xs text-muted-foreground">{h.name}</span>
+                    <span className="ml-auto shrink-0 text-[10px] uppercase text-muted-foreground">{h.type}</span>
+                  </button>
+                ))}
+                {!searchQuery.isFetching && (searchQuery.data?.hits?.length ?? 0) === 0 && (
+                  <p className="px-3 py-2 text-xs text-muted-foreground">{t("Sin resultados", "No results")}</p>
+                )}
+              </div>
+            )}
+          </div>
           <Button type="submit" size="sm" variant="secondary">
             {t("Agregar", "Add")}
           </Button>
         </form>
+
 
         <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
           {(quotesQuery.data?.quotes ?? []).map((q) => (

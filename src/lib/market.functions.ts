@@ -26,3 +26,11 @@ export const getMarketSeries = createServerFn({ method: "GET" })
     );
     return { series: Object.fromEntries(entries), updatedAt: Date.now() };
   });
+
+export const searchMarketSymbols = createServerFn({ method: "GET" })
+  .inputValidator((input: { query: string }) => ({ query: String(input?.query ?? "").trim().slice(0, 40) }))
+  .handler(async ({ data }) => {
+    if (data.query.length < 1) return { hits: [] };
+    const { searchSymbols } = await import("./market.server");
+    return { hits: await searchSymbols(data.query) };
+  });
