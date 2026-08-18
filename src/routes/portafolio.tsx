@@ -372,48 +372,71 @@ function PortafolioContent() {
       </div>
 
       <Panel
-        title={t("Análisis de tu portafolio", "Your portfolio analysis")}
-        description={t("Calculado con tus posiciones, rentabilidades e intereses de deuda reales.", "Computed from your real positions, expected returns and debt interest.")}
+        title={t("Posiciones", "Positions")}
+        description={`${fmt(totalValue)} · ${enriched.length} ${t("posiciones", "positions")}`}
+        actions={
+          <Link
+            to="/mi-perfil"
+            hash="patrimonio"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border/60 px-3 py-1.5 text-xs text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
+            aria-label={t("Editar en mis datos", "Edit in my data")}
+          >
+            <Pencil className="h-3.5 w-3.5" />
+            {t("Editar", "Edit")}
+          </Link>
+        }
       >
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          {[
-            { label: t("Retorno esperado ponderado", "Weighted expected return"), value: `${weightedReturn.toFixed(1)}%` },
-            { label: t("Ingreso pasivo / mes", "Passive income / mo"), value: fmt(Math.round(passiveMonthly)) },
-            { label: t("Costo anual de deuda", "Annual debt cost"), value: debtTotal > 0 ? fmt(Math.round(debtCost)) : fmt(0) },
-            { label: t("Rendimiento neto anual", "Net annual return"), value: fmt(Math.round(netAnnual)) },
-          ].map((m) => (
-            <div key={m.label} className="rounded-xl bg-elevated/60 p-3">
-              <p className="text-[11px] text-muted-foreground">{m.label}</p>
-              <p className="numeric mt-1 text-lg font-semibold">{m.value}</p>
-            </div>
+        <Tabs defaultValue="Todos">
+          <TabsList className="mb-4">
+            <TabsTrigger value="Todos">{t("Todos", "All")}</TabsTrigger>
+            {activeTypes.map((ty) => (
+              <TabsTrigger key={ty} value={ty}>
+                {typeLabels[ty]}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          <TabsContent value="Todos">{rows(enriched)}</TabsContent>
+          {activeTypes.map((ty) => (
+            <TabsContent key={ty} value={ty}>
+              {rows(enriched.filter((h) => h.type === ty))}
+            </TabsContent>
           ))}
+        </Tabs>
+
+        <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2.5">
+          <span className="text-xs text-muted-foreground">{t("Total", "Total")}</span>
+          <span className="numeric text-base font-semibold">{fmt(totalValue)}</span>
         </div>
 
-        <div className="mt-4 space-y-2">
-          <div className="flex flex-wrap gap-2 text-[11px]">
-            <span className="rounded-full bg-elevated/60 px-2.5 py-1 text-muted-foreground">
-              {t("Volátil", "Volatile")}: <span className="numeric font-medium text-foreground">{(riskWeight * 100).toFixed(0)}%</span>
-            </span>
-            <span className="rounded-full bg-elevated/60 px-2.5 py-1 text-muted-foreground">
-              {t("Defensivo", "Defensive")}: <span className="numeric font-medium text-foreground">{(safeWeight * 100).toFixed(0)}%</span>
-            </span>
-            <span className="rounded-full bg-elevated/60 px-2.5 py-1 text-muted-foreground">
-              {t("Mayor posición", "Largest position")}: <span className="numeric font-medium text-foreground">{concentration.toFixed(0)}%</span>
-            </span>
+        <div className="mt-4 border-t border-border/50 pt-4">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs">
+            {[
+              { label: t("Retorno ponderado", "Weighted return"), value: `${weightedReturn.toFixed(1)}%` },
+              { label: t("Ingreso pasivo / mes", "Passive income / mo"), value: fmt(Math.round(passiveMonthly)) },
+              { label: t("Costo de deuda / año", "Debt cost / yr"), value: debtTotal > 0 ? fmt(Math.round(debtCost)) : fmt(0) },
+              { label: t("Neto anual", "Net annual"), value: fmt(Math.round(netAnnual)) },
+              { label: t("Volátil", "Volatile"), value: `${(riskWeight * 100).toFixed(0)}%` },
+              { label: t("Defensivo", "Defensive"), value: `${(safeWeight * 100).toFixed(0)}%` },
+              { label: t("Mayor posición", "Largest position"), value: `${concentration.toFixed(0)}%` },
+            ].map((m) => (
+              <span key={m.label} className="text-muted-foreground">
+                {m.label} <span className="numeric font-semibold text-foreground">{m.value}</span>
+              </span>
+            ))}
           </div>
-          {insights.map((i) => (
-            <p
-              key={i.text}
-              className={cn(
-                "rounded-xl border px-3 py-2 text-xs leading-relaxed",
-                i.tone === "warn"
-                  ? "border-amber-500/20 bg-amber-500/5 text-amber-200/90"
-                  : "border-emerald-500/20 bg-emerald-500/5 text-emerald-200/90",
-              )}
-            >
-              {i.text}
-            </p>
-          ))}
+          <div className="mt-3 space-y-1.5">
+            {insights.map((i) => (
+              <p
+                key={i.text}
+                className={cn(
+                  "text-[11px] leading-relaxed",
+                  i.tone === "warn" ? "text-amber-200/70" : "text-emerald-200/70",
+                )}
+              >
+                · {i.text}
+              </p>
+            ))}
+          </div>
         </div>
       </Panel>
 
@@ -488,37 +511,6 @@ function PortafolioContent() {
 
 
 
-      <Panel
-        title={t("Posiciones", "Positions")}
-        actions={
-          <Link
-            to="/mi-perfil"
-            hash="patrimonio"
-            className="inline-flex items-center gap-1.5 rounded-full border border-border/60 px-3 py-1.5 text-xs text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
-            aria-label={t("Editar en mis datos", "Edit in my data")}
-          >
-            <Pencil className="h-3.5 w-3.5" />
-            {t("Editar", "Edit")}
-          </Link>
-        }
-      >
-        <Tabs defaultValue="Todos">
-          <TabsList className="mb-4">
-            <TabsTrigger value="Todos">{t("Todos", "All")}</TabsTrigger>
-            {activeTypes.map((ty) => (
-              <TabsTrigger key={ty} value={ty}>
-                {typeLabels[ty]}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          <TabsContent value="Todos">{rows(enriched)}</TabsContent>
-          {activeTypes.map((ty) => (
-            <TabsContent key={ty} value={ty}>
-              {rows(enriched.filter((h) => h.type === ty))}
-            </TabsContent>
-          ))}
-        </Tabs>
-      </Panel>
     </PageShell>
   );
 }
