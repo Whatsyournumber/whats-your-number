@@ -731,6 +731,41 @@ function PortafolioContent() {
       </div>
 
       <Panel
+        title={
+          <span className="inline-flex items-center gap-2">
+            <ShieldCheck className="h-4 w-4 text-muted-foreground" />
+            {t("Análisis de riesgo de mercado", "Market risk analysis")}
+          </span>
+        }
+        description={hasStats
+          ? t("Basado en datos reales de los últimos 12 meses", "Based on real data from the last 12 months")
+          : t("Estimación basada en tu composición actual", "Estimate based on your current composition")}
+      >
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {marketRiskMetrics.map((m) => (
+            <div key={m.label} className="rounded-xl border border-border/50 bg-elevated/30 px-3 py-2.5">
+              <p className="truncate text-[11px] font-medium text-foreground">{m.label}</p>
+              <div className="mt-1 flex items-baseline gap-1.5">
+                <p className="numeric text-lg font-bold text-foreground">{m.value}</p>
+                <span
+                  className={cn(
+                    "rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide",
+                    m.tone === "good"
+                      ? "bg-positive/12 text-positive"
+                      : m.tone === "warn"
+                        ? "bg-negative/12 text-negative"
+                        : "bg-amber-400/12 text-amber-200",
+                  )}
+                >
+                  {m.qual}
+                </span>
+              </div>
+              <p className="mt-1 text-[11px] leading-snug text-muted-foreground">{m.sentence}</p>
+            </div>
+          ))}
+        </div>
+      </Panel>
+
         title={t("Posiciones", "Positions")}
         description={`${enriched.length} ${t("posiciones", "positions")}`}
         actions={
