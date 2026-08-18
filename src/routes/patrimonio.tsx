@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
+import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
 
