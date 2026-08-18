@@ -364,30 +364,63 @@ const TRAVEL_ABSORBED = new Set(["Transporte"]);
 
 const dayKey = (d: Date) => d.toISOString().slice(0, 10);
 
+/** Pistas que indican un vuelo (no hotel, no tour): definen el inicio/fin del viaje. */
+const FLIGHT_HINTS = [
+  "vuelo", "flight", "aeroli", "airline", "airlines", "airways", "aeropuerto", "airport",
+  "avianca", "latam", "iberia", "vueling", "ryanair", "easyjet", "wizz", "air europa",
+  "air serbia", "air france", "klm", "lufthansa", "united air", "american air", "delta air",
+  "copa air", "wingo", "jetsmart", "volaris", "aeromexico", "turkish airlines", "emirates",
+  "qatar airways", "level.com", "plusultra", "edreams", "kiwi.com", "skyscanner",
+];
+
+const isFlightTx = (t: CategorizableTx) => {
+  const s = `${t.description ?? ""} ${t.merchant ?? ""}`.toLowerCase();
+  return FLIGHT_HINTS.some((h) => s.includes(h));
+};
+
 /**
- * Días que forman parte de un viaje: se agrupan las fechas con gastos de "Viajes"
- * (vuelos, hoteles…) uniendo huecos de hasta 3 días y añadiendo un día de margen.
+ * Días que forman parte de un viaje.
+ * 1) Si hay vuelos, cada par de vuelos separados por <= 45 días define la ventana
+ *    completa del viaje (ida → vuelta) y todos los días intermedios cuentan.
+ * 2) Además se agrupan las fechas con otros gastos de "Viajes" (hoteles, Airbnb…)
+ *    uniendo huecos de hasta 3 días y con un día de margen.
  */
 export function buildTravelDays(
   txs: (CategorizableTx & { tx_date: string | null })[],
   custom: CategoryRule[] = [],
 ): Set<string> {
+  const dated = txs.filter((t) => t.tx_date);
   const seeds = [
     ...new Set(
-      txs
-        .filter((t) => t.tx_date && categorizeTx(t, custom) === "Viajes")
+      dated
+        .filter((t) => categorizeTx(t, custom) === "Viajes")
         .map((t) => t.tx_date!.slice(0, 10)),
     ),
   ].sort();
 
   const days = new Set<string>();
-  if (seeds.length === 0) return days;
-
   const DAY = 86_400_000;
   const add = (from: Date, to: Date) => {
     for (let d = from.getTime(); d <= to.getTime(); d += DAY) days.add(dayKey(new Date(d)));
   };
 
+  // 1) Ventanas definidas por vuelos (ida y vuelta).
+  const flightDays = [
+    ...new Set(dated.filter(isFlightTx).map((t) => t.tx_date!.slice(0, 10))),
+  ].sort();
+  for (let i = 0; i < flightDays.length - 1; i++) {
+    const a = new Date(`${flightDays[i]}T00:00:00Z`);
+    const b = new Date(`${flightDays[i + 1]}T00:00:00Z`);
+    if (b.getTime() - a.getTime() <= 45 * DAY) add(a, b);
+  }
+  for (const f of flightDays) {
+    const d = new Date(`${f}T00:00:00Z`);
+    add(d, d);
+  }
+
+  if (seeds.length === 0) return days;
+
+  // 2) Clusters de otros gastos de viaje.
   let start = new Date(`${seeds[0]}T00:00:00Z`);
   let end = start;
   for (const s of seeds.slice(1)) {
@@ -402,6 +435,7 @@ export function buildTravelDays(
   add(new Date(start.getTime() - DAY), new Date(end.getTime() + DAY));
   return days;
 }
+
 
 /** Igual que categorizeTx, pero durante un viaje restaurantes y transporte suman a "Viajes". */
 export function categorizeTxWithTravel(
