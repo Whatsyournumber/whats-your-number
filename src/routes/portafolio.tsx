@@ -331,16 +331,63 @@ function PortafolioContent() {
   // ---- Análisis de riesgo y rebalanceo (2 líneas, basado en data real) ----
   const volPct = hasStats ? volPort : riskWeight * 100 * 1.2;
   const debtPct = totalValue ? (debtTotal / totalValue) * 100 : 0;
-  // Línea 1 — volatilidad, beta, drawdown, Sharpe y concentración.
-  const riskReason = hasStats
-    ? t(
-        `Volatilidad ${volPct.toFixed(1)}% (índice ${volBench.toFixed(1)}%) · β ${beta.toFixed(2)} · caída máx ${maxDrawdown.toFixed(1)}% · Sharpe ${sharpe.toFixed(2)} · concentración ${concentration.toFixed(0)}%`,
-        `Volatility ${volPct.toFixed(1)}% (index ${volBench.toFixed(1)}%) · β ${beta.toFixed(2)} · max drawdown ${maxDrawdown.toFixed(1)}% · Sharpe ${sharpe.toFixed(2)} · concentration ${concentration.toFixed(0)}%`,
-      )
-    : t(
-        `Volatilidad estimada ${volPct.toFixed(0)}% · activos volátiles ${(riskWeight * 100).toFixed(0)}% · mayor posición ${concentration.toFixed(0)}% · deuda ${debtPct.toFixed(0)}%`,
-        `Estimated volatility ${volPct.toFixed(0)}% · volatile assets ${(riskWeight * 100).toFixed(0)}% · largest position ${concentration.toFixed(0)}% · debt ${debtPct.toFixed(0)}%`,
-      );
+  // Métricas explicadas en lenguaje simple.
+  const riskMetrics: { label: string; value: string; hint: string }[] = hasStats
+    ? [
+        {
+          label: t("Volatilidad", "Volatility"),
+          value: `${volPct.toFixed(1)}%`,
+          hint: t(`cuánto oscila · índice ${volBench.toFixed(1)}%`, `how much it swings · index ${volBench.toFixed(1)}%`),
+        },
+        {
+          label: t("Beta", "Beta"),
+          value: beta.toFixed(2),
+          hint:
+            beta > 1
+              ? t("se mueve más que el mercado", "moves more than the market")
+              : t("se mueve menos que el mercado", "moves less than the market"),
+        },
+        {
+          label: t("Caída máxima", "Max drawdown"),
+          value: `${maxDrawdown.toFixed(1)}%`,
+          hint: t("peor bajada en 12 meses", "worst drop in 12 months"),
+        },
+        {
+          label: t("Sharpe", "Sharpe"),
+          value: sharpe.toFixed(2),
+          hint:
+            sharpe > 1
+              ? t("buen retorno por riesgo", "good return per unit of risk")
+              : t("retorno bajo para el riesgo", "low return for the risk taken"),
+        },
+        {
+          label: t("Concentración", "Concentration"),
+          value: `${concentration.toFixed(0)}%`,
+          hint: top ? t(`en ${top.ticker}`, `in ${top.ticker}`) : t("mayor posición", "largest position"),
+        },
+      ]
+    : [
+        {
+          label: t("Volatilidad estimada", "Estimated volatility"),
+          value: `${volPct.toFixed(0)}%`,
+          hint: t("oscilación esperada al año", "expected swing per year"),
+        },
+        {
+          label: t("Activos volátiles", "Volatile assets"),
+          value: `${(riskWeight * 100).toFixed(0)}%`,
+          hint: t("acciones y cripto", "stocks and crypto"),
+        },
+        {
+          label: t("Concentración", "Concentration"),
+          value: `${concentration.toFixed(0)}%`,
+          hint: top ? t(`en ${top.ticker}`, `in ${top.ticker}`) : t("mayor posición", "largest position"),
+        },
+        {
+          label: t("Deuda", "Debt"),
+          value: `${debtPct.toFixed(0)}%`,
+          hint: t("sobre el valor del portafolio", "of portfolio value"),
+        },
+      ];
   // Línea 2 — recomendación universal de distribución y balanceo según el drift.
   const drift = buckets.find((b) => Math.abs(b.deltaPct) === Math.max(...buckets.map((x) => Math.abs(x.deltaPct))));
   const biggestDrift = drift && Math.abs(drift.deltaPct) >= 5 ? drift : null;
