@@ -321,20 +321,21 @@ function PatrimonioContent() {
                       <p className="numeric text-sm">{fmt(r.value)}</p>
                     </div>
                     <div>
-                      <p className="text-[11px] text-muted-foreground">{t("Ganancia anual", "Annual gain")}</p>
-                      <p className="numeric text-sm text-positive">{fmt(annual)}</p>
+                      <p className="text-[11px] text-muted-foreground">{gainLabel}</p>
+                      <p className={cn("numeric text-sm", gainTone)}>{fmt(annual)}</p>
                     </div>
                     <div>
                       <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
-                      <p className="numeric text-sm text-positive">{fmt(Math.round(annual / 12))}</p>
+                      <p className={cn("numeric text-sm", gainTone)}>{fmt(Math.round(annual / 12))}</p>
                     </div>
                     <div>
                       <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
-                      <p className="numeric text-sm font-semibold text-positive">
-                        {(r.rate || 0) > 0 ? "+" : ""}
-                        {(r.rate || 0).toFixed(1)}%
+                      <p className={cn("numeric text-sm font-semibold", gainTone)}>
+                        {r.rate > 0 ? "+" : ""}
+                        {r.rate.toFixed(1)}%
                       </p>
                     </div>
+
                   </div>
                 );
               })}
