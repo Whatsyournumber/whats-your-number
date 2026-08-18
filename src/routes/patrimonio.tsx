@@ -10,6 +10,7 @@ import { useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
+import { useQuotes } from "@/hooks/use-market";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
 
@@ -36,11 +37,80 @@ function PatrimonioContent() {
   const growth =
     months[0]!.netWorth > 0 ? ((d.netWorth - months[0]!.netWorth) / Math.abs(months[0]!.netWorth)) * 100 : 0;
 
-  // Deudas individuales desde holdings (TDC, préstamos, etc.) + hipotecas de propiedades.
+  // Precios reales para posiciones con ticker.
+  const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
+  const holdingQuotes = useQuotes(holdingSymbols);
+  const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
+
+  // Deudas individuales desde holdings (TDC, préstamos, etc.).
   const debtRows = holdings
     .filter((h) => h.kind === "debt" && holdingValue(h) > 0)
     .map((h) => ({ id: h.id, label: h.label || t("Deuda", "Debt"), value: holdingValue(h), interest: h.expected_return }));
   const liabilityRows = [...debtRows].sort((a, b) => b.value - a.value);
+
+  // Detalle completo: inversiones + inmuebles + retiro + cash + activos futuros (trading, venta, etc.).
+  const groupOf = (kind: string) =>
+    ["cash", "bank", "money_market"].includes(kind)
+      ? { key: "cash", label: t("Liquidez", "Cash") }
+      : kind === "retirement"
+        ? { key: "retirement", label: t("Fondo de retiro", "Retirement fund") }
+        : kind === "property"
+          ? { key: "property", label: t("Inmuebles", "Real estate") }
+          : kind === "future"
+            ? { key: "future", label: t("Activos futuros", "Future assets") }
+            : { key: "invest", label: t("Inversiones", "Investments") };
+
+  const kindLabel = (kind: string) =>
+    ({
+      cash: t("Efectivo", "Cash"),
+      bank: t("Cuenta bancaria", "Bank account"),
+      money_market: t("Money market", "Money market"),
+      etf: t("ETF", "ETF"),
+      stock: t("Acción", "Stock"),
+      bond: t("Bono", "Bond"),
+      tbill: t("Letra del tesoro", "T-Bill"),
+      note: t("Nota", "Note"),
+      structured: t("Producto estructurado", "Structured product"),
+      crypto: t("Cripto", "Crypto"),
+      retirement: t("Fondo de retiro", "Retirement fund"),
+      property: t("Inmueble", "Real estate"),
+      future: t("Activo futuro", "Future asset"),
+      other: t("Otro", "Other"),
+    })[kind] ?? t("Activo", "Asset");
+
+  const detailRows = holdings
+    .filter((h) => h.kind !== "debt")
+    .map((h) => {
+      const raw = holdingValue(h, prices);
+      const weighted = h.kind === "future" ? Math.round((raw * (h.probability ?? 100)) / 100) : raw;
+      return {
+        id: h.id,
+        group: groupOf(h.kind),
+        kind: h.kind,
+        label: h.label || kindLabel(h.kind),
+        sub: kindLabel(h.kind),
+        ticker: h.ticker,
+        quantity: h.quantity,
+        value: weighted,
+        rate: h.expected_return,
+        monthlyContribution: h.monthly_contribution,
+        monthlyIncome: h.monthly_income,
+        mortgage: h.kind === "property" ? h.linked_liability : 0,
+        targetYear: h.kind === "future" ? h.target_year : null,
+        probability: h.kind === "future" ? h.probability : null,
+      };
+    })
+    .filter((r) => r.value > 0)
+    .sort((a, b) => b.value - a.value);
+
+  const groups = ["invest", "retirement", "property", "future", "cash"]
+    .map((key) => {
+      const rows = detailRows.filter((r) => r.group.key === key);
+      return { key, label: rows[0]?.group.label ?? "", rows, total: rows.reduce((s, r) => s + r.value, 0) };
+    })
+    .filter((g) => g.rows.length > 0)
+    .sort((a, b) => b.total - a.total);
+
 
   return (
     <PageShell>
