@@ -705,35 +705,27 @@ function PortafolioContent() {
             </ResponsiveContainer>
           )}
 
-          <div className="mt-4 border-t border-border/40 pt-3">
-            <div className="mb-2 flex items-center gap-1.5">
-              <ShieldCheck className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                {t("Análisis de riesgo de mercado", "Market risk analysis")}
-              </span>
-            </div>
-            <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
-              {marketRiskMetrics.map((m) => (
-                <div key={m.label} className="rounded-lg border border-border/40 bg-elevated/20 px-2.5 py-2">
-                  <p className="truncate text-[10px] font-medium text-muted-foreground">{m.label}</p>
-                  <div className="mt-0.5 flex items-baseline gap-1.5">
-                    <p className="numeric text-base font-bold text-foreground">{m.value}</p>
-                    <span
-                      className={cn(
-                        "rounded-full px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wide",
-                        m.tone === "good"
-                          ? "bg-positive/12 text-positive"
-                          : m.tone === "warn"
-                            ? "bg-negative/12 text-negative"
-                            : "bg-amber-400/12 text-amber-200",
-                      )}
-                    >
-                      {m.qual}
-                    </span>
-                  </div>
+          <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-border/40 pt-3 lg:grid-cols-4">
+            {marketRiskMetrics.map((m) => (
+              <div key={m.label}>
+                <p className="truncate text-[10px] font-medium text-muted-foreground">{m.label}</p>
+                <div className="mt-0.5 flex items-baseline gap-1.5">
+                  <p className="numeric text-base font-bold text-foreground">{m.value}</p>
+                  <span
+                    className={cn(
+                      "rounded-full px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wide",
+                      m.tone === "good"
+                        ? "bg-positive/12 text-positive"
+                        : m.tone === "warn"
+                          ? "bg-negative/12 text-negative"
+                          : "bg-amber-400/12 text-amber-200",
+                    )}
+                  >
+                    {m.qual}
+                  </span>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </Panel>
 
