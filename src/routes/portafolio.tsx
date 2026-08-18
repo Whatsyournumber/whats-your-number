@@ -407,33 +407,34 @@ function PortafolioContent() {
           ))}
         </Tabs>
 
-        <div className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border/60 bg-border/40 md:grid-cols-4">
-          <div className="bg-elevated/60 p-3">
-            <p className="text-[11px] text-muted-foreground">{t("Valor", "Value")}</p>
-            <p className="numeric text-base font-semibold">{fmt(totalValue)}</p>
+        <div className="mt-2 grid grid-cols-2 items-center gap-3 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2.5 md:grid-cols-6">
+          <div className="col-span-2 md:col-span-2">
+            <p className="text-xs font-semibold text-muted-foreground">{t("Total", "Total")}</p>
+            <p className="text-[10px] text-muted-foreground">
+              {t("Valor futuro", "Future value")} {fmt(futureValue)} · {yearsToRetire} {t("años", "yrs")}
+            </p>
           </div>
-          <div className="bg-elevated/60 p-3">
+          <div>
+            <p className="text-[11px] text-muted-foreground">{t("Valor", "Value")}</p>
+            <p className="numeric text-sm font-semibold">{fmt(totalValue)}</p>
+          </div>
+          <div>
+            <p className="text-[11px] text-muted-foreground">{t("Costo prom.", "Avg. cost")}</p>
+            <p className="numeric text-sm">{fmt(totalCost)}</p>
+          </div>
+          <div>
             <p className="text-[11px] text-muted-foreground">{t("Ganancia", "Gain")}</p>
-            <p className={cn("numeric text-base font-semibold", totalGain >= 0 ? "text-positive" : "text-negative")}>
+            <p className={cn("numeric text-sm font-semibold", totalGain >= 0 ? "text-positive" : "text-negative")}>
               {totalGain >= 0 ? "+" : ""}
               {fmt(totalGain)}
             </p>
           </div>
-          <div className="bg-elevated/60 p-3">
+          <div>
             <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
-            <p className={cn("numeric text-base font-semibold", totalRet >= 0 ? "text-positive" : "text-negative")}>
+            <p className={cn("numeric text-sm font-semibold", totalRet >= 0 ? "text-positive" : "text-negative")}>
               {totalRet > 0 ? "+" : ""}
               {totalRet.toFixed(1)}%
             </p>
-          </div>
-          <div className="bg-elevated/60 p-3">
-            <p className="text-[11px] text-muted-foreground">
-              {t("Valor futuro", "Future value")}{" "}
-              <span className="text-muted-foreground/70">
-                · {yearsToRetire} {t("años", "yrs")}
-              </span>
-            </p>
-            <p className="numeric text-base font-semibold">{fmt(futureValue)}</p>
           </div>
         </div>
 
