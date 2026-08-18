@@ -343,36 +343,31 @@ function PatrimonioContent() {
               })}
             </div>
 
-            <div className="grid grid-cols-2 items-center gap-3 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2.5 md:grid-cols-6">
+            <div className="grid grid-cols-2 items-center gap-3 rounded-xl border-2 border-border bg-elevated px-4 py-3.5 md:grid-cols-6">
               <div className="col-span-2 md:col-span-2">
-                <p className="text-xs font-semibold text-muted-foreground">{t("Total", "Total")}</p>
+                <p className="text-sm font-bold uppercase tracking-wide text-foreground">{t("Total", "Total")}</p>
               </div>
               <div>
                 <p className="text-[11px] text-muted-foreground">{t("Valor", "Value")}</p>
-                <p className="numeric text-sm font-semibold">{fmt(visibleTotal)}</p>
+                <p className="numeric text-base font-bold">{fmt(visibleTotal)}</p>
               </div>
               <div>
                 <p className="text-[11px] text-muted-foreground">{t("Ganancia anual", "Annual gain")}</p>
-                <p className="numeric text-sm font-semibold text-positive">{fmt(visibleAnnual)}</p>
+                <p className="numeric text-base font-bold text-positive">{fmt(visibleAnnual)}</p>
               </div>
               <div>
                 <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
-                <p className="numeric text-sm font-semibold text-positive">{fmt(Math.round(visibleAnnual / 12))}</p>
+                <p className="numeric text-base font-bold text-positive">{fmt(Math.round(visibleAnnual / 12))}</p>
               </div>
               <div>
                 <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
-                <p className="numeric text-sm font-semibold text-positive">
+                <p className="numeric text-base font-bold text-positive">
                   {visibleTotal > 0 ? `+${((visibleAnnual / visibleTotal) * 100).toFixed(1)}` : "0.0"}%
                 </p>
               </div>
             </div>
           </div>
         )}
-
-
-        <Button asChild variant="outline" size="sm" className="mt-4 w-full rounded-full">
-          <Link to="/mi-perfil" hash="patrimonio">{t("Editar mi patrimonio", "Edit my net worth")}</Link>
-        </Button>
       </Panel>
     </PageShell>
 
