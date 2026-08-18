@@ -32,9 +32,20 @@ function makeShort(fmt: (n: number) => string) {
   };
 }
 
+/** Muestra la cifra completa y solo abrevia cuando el espacio es estrecho. */
+function Amount({ full, short }: { full: string; short: string }) {
+  return (
+    <span title={full}>
+      <span className="hidden xl:inline">{full}</span>
+      <span className="xl:hidden">{short}</span>
+    </span>
+  );
+}
+
 export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: Props) {
   const t = useT();
   const fmtShort = makeShort(fmt);
+  const amt = (n: number) => <Amount full={fmt(n)} short={fmtShort(n)} />;
 
   const patch = (id: string, p: Partial<Holding>) => onChange(value.map((h) => (h.id === id ? { ...h, ...p } : h)));
   const remove = (id: string) => onChange(value.filter((h) => h.id !== id));
@@ -89,18 +100,18 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
 
       {/* Resumen vivo */}
       <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Summary label={t("Activos", "Assets")} value={fmtShort(assetsTotal)} />
-        <Summary label={t("Deudas", "Debts")} value={fmtShort(debtTotal)} negative />
-        <Summary label={t("Patrimonio neto", "Net worth")} value={fmtShort(assetsTotal - debtTotal)} accent />
+        <Summary label={t("Activos", "Assets")} value={amt(assetsTotal)} />
+        <Summary label={t("Deudas", "Debts")} value={amt(debtTotal)} negative />
+        <Summary label={t("Patrimonio neto", "Net worth")} value={amt(assetsTotal - debtTotal)} accent />
         <Summary
           label={t("Aportes / mes", "Contributions / mo")}
-          value={fmtShort(monthlyIn)}
+          value={amt(monthlyIn)}
           hint={rentIncome > 0 ? `${t("Renta", "Rent")} ${fmt(rentIncome)}` : undefined}
         />
       </div>
 
       <div className="mt-5 grid items-start gap-4 lg:grid-cols-2">
-        <Section icon={<Wallet className="h-4 w-4" />} tone="emerald" title={t("Liquidez", "Liquidity")} total={fmtShort(liquidTotal)}>
+        <Section icon={<Wallet className="h-4 w-4" />} tone="emerald" title={t("Liquidez", "Liquidity")} total={amt(liquidTotal)}>
           {liquidity.map(({ kind, label }) => (
             <InlineRow key={kind} label={label}>
               <Money value={single(kind)?.manual_value ?? 0} onChange={(n) => setSingle(kind, label, { manual_value: n })} />
@@ -108,7 +119,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
           ))}
         </Section>
 
-        <Section icon={<Building2 className="h-4 w-4" />} tone="indigo" title={t("Propiedades", "Properties")} total={fmtShort(propertyTotal)}>
+        <Section icon={<Building2 className="h-4 w-4" />} tone="indigo" title={t("Propiedades", "Properties")} total={amt(propertyTotal)}>
           {list("property").map((h) => (
             <CollapsibleCard
               key={h.id}
@@ -146,7 +157,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
           </AddButton>
         </Section>
 
-        <Section icon={<LineChart className="h-4 w-4" />} tone="sky" title={t("Inversiones", "Investments")} total={fmtShort(investTotal)}>
+        <Section icon={<LineChart className="h-4 w-4" />} tone="sky" title={t("Inversiones", "Investments")} total={amt(investTotal)}>
           {investments.map((h) => (
             <InvestmentCard
               key={h.id}
@@ -159,7 +170,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
           <AddButton onClick={() => add("etf", "")}>{t("Agregar otro activo", "Add another asset")}</AddButton>
         </Section>
 
-        <Section icon={<Gift className="h-4 w-4" />} tone="violet" title={t("Activos futuros", "Future assets")} total={fmtShort(Math.round(futureTotal))}>
+        <Section icon={<Gift className="h-4 w-4" />} tone="violet" title={t("Activos futuros", "Future assets")} total={amt(Math.round(futureTotal))}>
           {list("future").map((h) => (
             <CollapsibleCard
               key={h.id}
@@ -201,7 +212,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
           <AddButton onClick={() => add("future", "")}>{t("Agregar otro activo futuro", "Add another future asset")}</AddButton>
         </Section>
 
-        <Section icon={<Coins className="h-4 w-4" />} tone="amber" title={t("Fondo de retiro", "Retirement fund")} total={fmtShort(retireTotal)}>
+        <Section icon={<Coins className="h-4 w-4" />} tone="amber" title={t("Fondo de retiro", "Retirement fund")} total={amt(retireTotal)}>
           <InlineRow label={t("Valor actual", "Current value")}>
             <Money
               value={retirement?.manual_value ?? 0}
@@ -229,7 +240,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
           </InlineRow>
         </Section>
 
-        <Section icon={<CreditCard className="h-4 w-4" />} tone="rose" title={t("Deudas", "Debts")} total={fmtShort(debtTotal)}>
+        <Section icon={<CreditCard className="h-4 w-4" />} tone="rose" title={t("Deudas", "Debts")} total={amt(debtTotal)}>
           {list("debt").map((h) => (
             <div key={h.id} className="grid grid-cols-[1.3fr_1fr_24px] items-center gap-2">
               <Input
@@ -280,7 +291,7 @@ function Section({
   icon: React.ReactNode;
   tone: keyof typeof TONES | string;
   title: string;
-  total: string;
+  total: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
@@ -298,11 +309,11 @@ function Section({
 }
 
 
-function Summary({ label, value, hint, accent, negative }: { label: string; value: string; hint?: string | undefined; accent?: boolean; negative?: boolean }) {
+function Summary({ label, value, hint, accent, negative }: { label: string; value: React.ReactNode; hint?: string | undefined; accent?: boolean; negative?: boolean }) {
   return (
     <div className={cn("min-w-0 rounded-xl border border-border/60 bg-elevated/50 p-3", accent && "border-primary/40 bg-primary/10")}>
       <p className="truncate text-[11px] text-muted-foreground">{label}</p>
-      <p className={cn("numeric mt-0.5 truncate text-sm font-semibold sm:text-base", negative && "text-negative")} title={value}>
+      <p className={cn("numeric mt-0.5 truncate text-sm font-semibold sm:text-base", negative && "text-negative")}>
         {value}
       </p>
       {hint ? <p className="mt-0.5 text-[11px] text-muted-foreground">{hint}</p> : null}
