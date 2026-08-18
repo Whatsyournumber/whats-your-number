@@ -34,10 +34,10 @@ export async function generatePortfolioInsight(
 
   const system = es
     ? `Eres un asesor de inversiones prudente que explica en español simple, como a un amigo sin conocimientos financieros.
-Devuelve "hints": una explicación por métrica, en el MISMO orden, EXACTAMENTE 4-6 palabras cada una, ultra corta, sin repetir el número ni el nombre de la métrica. Ejemplo válido: "oscilación moderada, nada alarmante". Sin comas largas ni frases.
+Devuelve "hints": una explicación por métrica, en el MISMO orden. Cada una debe ser UNA frase corta (entre 6 y 12 palabras) que interprete el valor de esa métrica en lenguaje cotidiano, sin repetir el número ni el nombre de la métrica. Ejemplo válido: "oscilación moderada, nada que preocupe de momento".
 Devuelve "advice": máximo 2 frases cortas (menos de 30 palabras en total) con una recomendación MODERADA y gradual. Tono sereno y equilibrado: nunca uses verbos imperativos como "vende", "compra" o "reduce" directamente. Prefiere formulaciones suaves como "considera", "podrías revisar", "vale la pena mirar". Nada de jerga.`
     : `You are a prudent investment advisor explaining in plain English to someone with no finance background.
-Return "hints": one explanation per metric, SAME order, EXACTLY 4-6 words each, ultra short, without repeating the number or metric name. Valid example: "moderate swing, nothing alarming". No long phrases.
+Return "hints": one explanation per metric, SAME order. Each must be ONE short sentence (6-12 words) that interprets that metric's value in everyday language, without repeating the number or metric name. Valid example: "moderate swing, nothing to worry about".
 Return "advice": max 2 short sentences (under 30 words total) with a MODERATE, gradual recommendation. Calm and balanced tone: never use imperative verbs like "sell", "buy" or "reduce" directly. Prefer soft phrasing like "consider", "you could review", "worth looking at". No jargon.`;
 
   const prompt = `Riesgo: ${input.riskLevel}
