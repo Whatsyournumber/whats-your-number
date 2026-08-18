@@ -135,7 +135,7 @@ function PatrimonioContent() {
   const [activeTab, setTab] = useState("all");
   const visibleRows = activeTab === "all" ? detailRows : detailRows.filter((r) => r.group.key === activeTab);
   const visibleTotal = visibleRows.reduce((s, r) => s + r.value, 0);
-  const visibleAnnual = Math.round(visibleRows.reduce((s, r) => s + r.annual, 0));
+  const visibleAnnual = Math.round(visibleRows.filter((r) => r.group.key !== "cash").reduce((s, r) => s + r.annual, 0));
 
 
   // Activos futuros (trading, venta de empresa…) ponderados: suman al patrimonio y al allocation.
