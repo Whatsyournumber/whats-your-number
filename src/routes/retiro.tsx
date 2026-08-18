@@ -509,12 +509,23 @@ function RetiroContent() {
                   <dt className="truncate text-muted-foreground">{isGoal ? goalLabel : t("Objetivo", "Target")}</dt>
                   <dd className="numeric shrink-0 font-medium">{fmt(targetNow)}</dd>
                 </div>
+                {isGoal ? (
+                  <>
+                    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-2">
+                      <dt className="truncate text-muted-foreground">{t("Plazo", "Timeframe")}</dt>
+                      <dd className="numeric shrink-0 font-medium">{yearsLabel}</dd>
+                    </div>
+                    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-2">
+                      <dt className="truncate text-muted-foreground">{t("Aporte necesario", "Required saving")}</dt>
+                      <dd className="numeric shrink-0 font-medium">{fmt(requiredMonthly)}/{t("mes", "mo")}</dd>
+                    </div>
+                  </>
+                ) : null}
               </dl>
-
 
               {isGoal && gap > 0 && years > 0 ? (
                 <p className="mt-2 text-[11px] text-primary">
-                  {t("Ahorra", "Save")} {fmt(Math.ceil(gap / (years * 12)))}/{t("mes más para llegar a tiempo", "mo more to make it on time")}
+                  {t("Ahorra", "Save")} {fmt(Math.ceil(requiredMonthly - monthly > 0 ? requiredMonthly - monthly : gap / (years * 12)))}/{t("mes más para llegar a tiempo", "mo more to make it on time")}
                 </p>
               ) : null}
             </div>
