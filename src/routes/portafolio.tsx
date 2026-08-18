@@ -221,10 +221,9 @@ function PortafolioContent() {
   const debtCost = debts.reduce((s, h) => s + h.manual_value * (Math.max(0, h.expected_return || 0) / 100), 0);
   const netAnnual = (totalValue * weightedReturn) / 100 - debtCost;
   const passiveMonthly = dividends / 12;
-  // Nivel de riesgo del portafolio: volatilidad + concentración + apalancamiento.
-  const riskScore =
-    riskWeight * 100 * 0.6 + Math.max(0, concentration - 30) * 0.6 + (totalValue ? (debtTotal / totalValue) * 40 : 0);
-  const riskLevel: "Alto" | "Medio" | "Bajo" = riskScore > 55 ? "Alto" : riskScore > 28 ? "Medio" : "Bajo";
+  // Nivel de riesgo del portafolio: volatilidad + concentración (solo posiciones de inversión).
+  const riskScore = riskWeight * 100 * 0.6 + Math.max(0, concentration - 30) * 0.6;
+  const riskLevel: "Alto" | "Medio" | "Bajo" = riskScore > 40 ? "Alto" : riskScore > 20 ? "Medio" : "Bajo";
   const riskLabel = t(riskLevel, riskLevel === "Alto" ? "High" : riskLevel === "Medio" ? "Medium" : "Low");
 
   const insights = [
