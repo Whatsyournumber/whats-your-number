@@ -509,21 +509,21 @@ function PortafolioContent() {
             : t("Poco en activos volátiles.", "Little in volatile assets."),
     },
     {
-      label: `${t("Deuda", "Debt")}`,
-      value: `${debtPct.toFixed(0)}%`,
+      label: `${t("Liquidez", "Liquidity")}`,
+      value: `${(cashWeight * 100).toFixed(0)}%`,
       qual:
-        debtPct > 40
+        cashWeight > 0.4
           ? t("Alta", "High")
-          : debtPct > 20
+          : cashWeight > 0.1
             ? t("Media", "Medium")
             : t("Baja", "Low"),
-      tone: debtPct > 40 ? ("warn" as Tone) : debtPct > 20 ? ("neutral" as Tone) : ("good" as Tone),
+      tone: cashWeight > 0.4 ? ("warn" as Tone) : cashWeight > 0.1 ? ("good" as Tone) : ("neutral" as Tone),
       sentence:
-        debtPct > 40
-          ? t("Debes mucho frente a tu portafolio.", "You owe a lot vs your portfolio.")
-          : debtPct > 20
-            ? t("Tu deuda es manejable.", "Your debt is manageable.")
-            : t("Casi sin deuda.", "Almost debt-free."),
+        cashWeight > 0.4
+          ? t("Mucho cash sin rendir.", "Too much idle cash.")
+          : cashWeight > 0.1
+            ? t("Colchón de cash sano.", "Healthy cash buffer.")
+            : t("Poco cash disponible.", "Little cash available."),
     },
   ];
 
