@@ -338,21 +338,38 @@ function RetiroContent() {
         {isGoal ? (
           <KpiCard
             label={t("Porcentaje de mi ingreso", "Share of my income")}
-            value={`${d.income > 0 ? Math.min(999, Math.round((requiredMonthly / d.income) * 100)) : 0}%`}
-            hint={t("lo que necesitas ahorrar para llegar al monto", "what you need to save to reach the amount")}
+            value={
+              targetNow <= 0
+                ? "—"
+                : `${d.income > 0 ? Math.min(999, Math.round((requiredMonthly / d.income) * 100)) : 0}%`
+            }
+            hint={
+              targetNow <= 0
+                ? t("define el monto de tu objetivo", "set your goal amount")
+                : goalReached
+                  ? t("ya tienes el capital 🎯", "you already have the capital 🎯")
+                  : `${t("de tu ingreso durante", "of your income for")} ${yearsLabel}`
+            }
             index={4}
           />
         ) : (
           <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${swr}%`} hint={t("anual · tu tasa de retiro", "annual · your withdrawal rate")} index={4} />
         )}
-        {goalMode === "business" && (
+        {isGoal && (
           <KpiCard
             label={t("Aporte necesario al mes", "Required monthly contribution")}
-            value={fmt(requiredMonthly)}
-            hint={t("para llegar a tu capital en el plazo", "to reach your capital on time")}
+            value={targetNow <= 0 ? "—" : fmt(requiredMonthly)}
+            hint={
+              targetNow <= 0
+                ? t("falta el monto objetivo", "goal amount missing")
+                : goalReached
+                  ? t("no necesitas aportar más", "no extra saving needed")
+                  : `${t("para llegar a", "to reach")} ${fmt(targetNow)} ${t("en", "in")} ${yearsLabel} ${t("al", "at")} ${rate}%`
+            }
             index={5}
           />
         )}
+
 
       </div>
       <div className="surface p-5">
