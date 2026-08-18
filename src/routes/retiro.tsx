@@ -422,7 +422,11 @@ function RetiroContent() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel
-          title={isGoal ? t("Proyección hasta tu objetivo", "Projection to your goal") : t("Proyección hasta el retiro", "Projection to retirement")}
+          title={
+            <span className="text-base font-semibold tracking-tight">
+              {isGoal ? t("Proyección hasta tu objetivo", "Projection to your goal") : t("Proyección hasta el retiro", "Projection to retirement")}
+            </span>
+          }
           description={
             isGoal
               ? `${goalLabel} · ${t("saldo estimado en", "estimated balance in")} ${horizonYears} ${horizonYears === 1 ? t("año", "year") : t("años", "years")}`
@@ -430,7 +434,8 @@ function RetiroContent() {
           }
           className="flex flex-col lg:col-span-2"
         >
-          <div className="min-h-[280px] flex-1">
+          <div className="min-h-[240px] max-h-[360px] flex-1">
+
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data} margin={{ left: -8, right: 8, top: 8, bottom: 0 }}>
 
