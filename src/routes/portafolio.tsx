@@ -801,13 +801,12 @@ function PortafolioContent() {
             <p className="text-xs font-semibold text-muted-foreground">{t("Total", "Total")}</p>
           </div>
           <div>
-            <p className="text-[11px] text-muted-foreground">{t("Valor", "Value")}</p>
-            <p className="numeric text-sm font-semibold">{fmt(totalValue)}</p>
+            <p className="text-[11px] text-muted-foreground">{t("Valor de compra", "Purchase value")}</p>
+            <p className="numeric text-sm font-semibold">{fmt(totalCost)}</p>
           </div>
           <div>
-            <p className="text-[11px] text-muted-foreground">{t("Ganancia anual", "Annual gain")}</p>
-            <p className="numeric text-sm font-semibold text-positive">{fmt(Math.round(annualGain))}</p>
-            
+            <p className="text-[11px] text-muted-foreground">{t("Valor actual", "Current value")}</p>
+            <p className="numeric text-sm font-semibold">{fmt(totalValue)}</p>
           </div>
           <div>
             <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
