@@ -37,6 +37,7 @@ const chartColors = [
   "var(--color-chart-4)",
   "var(--color-chart-5)",
   "var(--color-chart-6)",
+  "var(--color-chart-1)",
 ];
 
 function PortafolioContent() {
@@ -45,6 +46,7 @@ function PortafolioContent() {
     ETF: t("ETF", "ETF"),
     "Acción": t("Acción", "Stock"),
     "Renta fija": t("Renta fija", "Fixed income"),
+    Retiro: t("Fondo de retiro", "Retirement fund"),
     Cripto: t("Cripto", "Crypto"),
     Inmueble: t("Inmueble", "Real estate"),
     Cash: t("Cash", "Cash"),
@@ -68,7 +70,9 @@ function PortafolioContent() {
   const typeOf = (kind: string) =>
     kind === "stock"
       ? ("Acción" as const)
-      : kind === "crypto"
+      : kind === "retirement"
+        ? ("Retiro" as const)
+        : kind === "crypto"
         ? ("Cripto" as const)
         : ["bond", "tbill", "note"].includes(kind)
           ? ("Renta fija" as const)
@@ -110,7 +114,7 @@ function PortafolioContent() {
 
   const fallback = [
     { ticker: t("ETFs / fondos", "ETFs / funds"), name: t("Fondos indexados y ETFs", "Index funds and ETFs"), type: "ETF" as const, value: profile.assets_etf, growth: r, income: 0, cost: Math.round(profile.assets_etf / (1 + r)) },
-    { ticker: t("Fondo de retiro", "Retirement fund"), name: t("Plan de pensiones / retiro", "Pension / retirement plan"), type: "ETF" as const, value: profile.assets_retirement, growth: r * 0.8, income: 0, cost: Math.round(profile.assets_retirement / (1 + r * 0.8)) },
+    { ticker: t("Fondo de retiro", "Retirement fund"), name: t("Plan de pensiones / retiro", "Pension / retirement plan"), type: "Retiro" as const, value: profile.assets_retirement, growth: r * 0.8, income: 0, cost: Math.round(profile.assets_retirement / (1 + r * 0.8)) },
     { ticker: t("Acciones", "Stocks"), name: t("Posiciones individuales", "Individual positions"), type: "Acción" as const, value: profile.assets_stocks, growth: r * 1.3, income: 0, cost: Math.round(profile.assets_stocks / (1 + r * 1.3)) },
     { ticker: t("Cripto", "Crypto"), name: t("Activos digitales", "Digital assets"), type: "Cripto" as const, value: profile.assets_crypto, growth: r * 2, income: 0, cost: Math.round(profile.assets_crypto / (1 + r * 2)) },
     { ticker: t("Efectivo", "Cash"), name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"), type: "Cash" as const, value: profile.assets_cash + profile.assets_bank, growth: 0, income: 0, cost: profile.assets_cash + profile.assets_bank },
@@ -127,6 +131,8 @@ function PortafolioContent() {
         : Math.round(
             h.type === "ETF"
               ? h.value * 0.018
+              : h.type === "Retiro"
+                ? 0
               : h.type === "Acción"
                 ? h.value * 0.012
                 : h.type === "Renta fija"
@@ -233,7 +239,7 @@ function PortafolioContent() {
 
 
 
-  const types = ["ETF", "Acción", "Renta fija", "Cripto", "Inmueble", "Cash"] as const;
+  const types = ["ETF", "Acción", "Renta fija", "Retiro", "Cripto", "Inmueble", "Cash"] as const;
   const allocation = types
     .map((ty, i) => ({
       name: ty,
