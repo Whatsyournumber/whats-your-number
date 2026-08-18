@@ -272,7 +272,7 @@ function PortafolioContent() {
 
   const rows = (list: typeof enriched) => (
     <div className="space-y-2">
-      {list.map((h) => (
+      {[...list].sort((a, b) => b.value - a.value).map((h) => (
         <div key={h.ticker} className="grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 md:grid-cols-6">
           <div className="col-span-2 md:col-span-2">
             <p className="text-sm font-medium">{h.ticker}</p>
