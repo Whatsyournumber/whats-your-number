@@ -234,11 +234,14 @@ function PortafolioContent() {
 
 
   const types = ["ETF", "Acción", "Renta fija", "Cripto", "Inmueble", "Cash"] as const;
-  const allocation = types.map((ty, i) => ({
-    name: ty,
-    value: enriched.filter((h) => h.type === ty).reduce((s, h) => s + h.value, 0),
-    color: chartColors[i]!,
-  }));
+  const allocation = types
+    .map((ty, i) => ({
+      name: ty,
+      value: enriched.filter((h) => h.type === ty).reduce((s, h) => s + h.value, 0),
+      color: chartColors[i]!,
+    }))
+    .filter((a) => a.value > 0);
+  const activeTypes = types.filter((ty) => enriched.some((h) => h.type === ty && h.value > 0));
 
   const rows = (list: typeof enriched) => (
     <div className="space-y-2">
