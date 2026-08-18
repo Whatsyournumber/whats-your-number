@@ -85,7 +85,7 @@ function PortafolioContent() {
             : ("ETF" as const);
 
   const detailed = holdings
-    .filter((h) => ["etf", "stock", "crypto", "other", "retirement", "bond", "tbill", "note", "structured", "property"].includes(h.kind))
+    .filter((h) => ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured"].includes(h.kind))
     .map((h) => {
       const value = holdingValue(h, prices);
       const growth = Math.max(0, h.expected_return || 7) / 100;
