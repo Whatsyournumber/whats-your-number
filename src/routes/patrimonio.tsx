@@ -290,7 +290,14 @@ function PatrimonioContent() {
 
             <div className="space-y-2">
               {visibleRows.map((r) => {
-                const annual = Math.round((r.value * (r.rate || 0)) / 100);
+                const annual = r.annual;
+                const gainLabel =
+                  r.kind === "property"
+                    ? t("Renta anual", "Annual rent")
+                    : r.isMarketGain
+                      ? t("Plusvalía", "Market gain")
+                      : t("Ganancia anual", "Annual gain");
+                const gainTone = annual > 0 ? "text-positive" : annual < 0 ? "text-negative" : "text-muted-foreground";
                 const meta = [
                   r.sub,
                   r.ticker && r.quantity > 0 ? `${r.quantity} u.` : null,
