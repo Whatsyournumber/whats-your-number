@@ -117,12 +117,13 @@ function PortafolioContent() {
       const value = holdingValue(h, prices);
       // Retorno derivado del mercado: plusvalía real (valor hoy − costo) cuando hay ticker + costo;
       // si no hay costo pero hay ticker, usa el cambio diario del mercado. Resto: retorno esperado.
+      const tk = h.ticker?.toUpperCase();
       const marketCost = h.cost_basis > 0 && h.quantity > 0 ? h.cost_basis * h.quantity : 0;
       const marketGrowth =
-        h.ticker && marketCost > 0 && value > 0
+        tk && marketCost > 0 && value > 0
           ? (value - marketCost) / marketCost
-          : h.ticker && dayChange[h.ticker.toUpperCase()] !== undefined
-            ? dayChange[h.ticker.toUpperCase()] / 100
+          : tk && dayChange[tk] !== undefined
+            ? dayChange[tk] / 100
             : null;
       const growth = marketGrowth !== null ? Math.max(0, marketGrowth) : Math.max(0, h.expected_return || 7) / 100;
       const tickerLabel = h.ticker || h.label || t("Activo", "Asset");
