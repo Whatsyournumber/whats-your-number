@@ -826,7 +826,7 @@ function PortafolioContent() {
 
           <div
             className={cn(
-              "flex items-start gap-3 rounded-xl border p-3",
+              "rounded-xl border p-3",
               riskLevel === "Alto"
                 ? "border-negative/25 bg-negative/[0.06]"
                 : riskLevel === "Medio"
@@ -834,18 +834,45 @@ function PortafolioContent() {
                   : "border-positive/25 bg-positive/[0.06]",
             )}
           >
-            <Sparkles
-              className={cn(
-                "mt-0.5 h-4 w-4 shrink-0",
-                riskLevel === "Alto" ? "text-negative" : riskLevel === "Medio" ? "text-amber-200" : "text-positive",
-              )}
-            />
-            <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <Sparkles
+                className={cn(
+                  "h-4 w-4 shrink-0",
+                  riskLevel === "Alto" ? "text-negative" : riskLevel === "Medio" ? "text-amber-200" : "text-positive",
+                )}
+              />
               <p className="text-xs font-semibold text-foreground">
                 {t("Qué hacer ahora", "What to do now")}
               </p>
-              <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
-                {insight.isLoading ? t("Analizando tu portafolio…", "Analyzing your portfolio…") : aiAdvice}
+            </div>
+
+            <div className="mt-3 space-y-1.5">
+              {insight.isLoading
+                ? riskMetrics.map((m) => (
+                    <div key={m.label} className="flex items-center gap-2 text-xs">
+                      <span className="w-28 shrink-0 font-medium text-foreground/80">{m.label}</span>
+                      <span className="numeric font-semibold text-foreground">{m.value}</span>
+                      <span className="text-muted-foreground">·</span>
+                      <span className="text-muted-foreground">
+                        {t("Analizando…", "Analyzing…")}
+                      </span>
+                    </div>
+                  ))
+                : riskMetrics.map((m, i) => (
+                    <div key={m.label} className="flex items-center gap-2 text-xs">
+                      <span className="w-28 shrink-0 font-medium text-foreground/80">{m.label}</span>
+                      <span className="numeric font-semibold text-foreground">{m.value}</span>
+                      <span className="text-muted-foreground">·</span>
+                      <span className="min-w-0 truncate text-muted-foreground">
+                        {aiHints[i] || m.sentence}
+                      </span>
+                    </div>
+                  ))}
+            </div>
+
+            <div className="mt-3 flex items-start gap-2 border-t border-border/40 pt-2.5">
+              <p className="text-xs leading-relaxed text-muted-foreground">
+                {aiAdvice}
               </p>
             </div>
           </div>
