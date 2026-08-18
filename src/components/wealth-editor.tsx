@@ -87,167 +87,162 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
       </div>
 
       <div className="mt-5 grid items-start gap-4 lg:grid-cols-2">
-        <div className="space-y-4">
-          <Section icon={<Wallet className="h-4 w-4" />} tone="emerald" title={t("Liquidez", "Liquidity")} total={fmt(liquidTotal)}>
-            {liquidity.map(({ kind, label }) => (
-              <InlineRow key={kind} label={label}>
-                <Money value={single(kind)?.manual_value ?? 0} onChange={(n) => setSingle(kind, label, { manual_value: n })} />
+        <Section icon={<Wallet className="h-4 w-4" />} tone="emerald" title={t("Liquidez", "Liquidity")} total={fmt(liquidTotal)}>
+          {liquidity.map(({ kind, label }) => (
+            <InlineRow key={kind} label={label}>
+              <Money value={single(kind)?.manual_value ?? 0} onChange={(n) => setSingle(kind, label, { manual_value: n })} />
+            </InlineRow>
+          ))}
+        </Section>
+
+        <Section icon={<Building2 className="h-4 w-4" />} tone="indigo" title={t("Propiedades", "Properties")} total={fmt(propertyTotal)}>
+          {list("property").map((h) => (
+            <CollapsibleCard
+              key={h.id}
+              title={h.label || t("Propiedad", "Property")}
+              filled={Boolean(h.label.trim()) || h.manual_value > 0}
+              summary={[
+                h.manual_value > 0 ? fmt(h.manual_value) : null,
+                h.linked_liability > 0 ? `${t("Hipoteca", "Mortgage")} ${fmt(h.linked_liability)}` : null,
+                h.monthly_income > 0 ? `${t("Renta", "Rent")} ${fmt(h.monthly_income)}/${t("mes", "mo")}` : null,
+              ]}
+              onRemove={() => remove(h.id)}
+            >
+              <InlineRow label={t("Nombre", "Name")}>
+                <Input value={h.label} onChange={(e) => patch(h.id, { label: e.target.value })} className="h-9" />
               </InlineRow>
-            ))}
-          </Section>
-
-          <Section icon={<LineChart className="h-4 w-4" />} tone="sky" title={t("Inversiones", "Investments")} total={fmt(investTotal)}>
-            {investments.map((h) => (
-              <InvestmentCard
-                key={h.id}
-                holding={h}
-                fmt={fmt}
-                onPatch={(p) => patch(h.id, p)}
-                onRemove={() => remove(h.id)}
-              />
-            ))}
-            <AddButton onClick={() => add("etf", "")}>{t("Agregar otro activo", "Add another asset")}</AddButton>
-          </Section>
-
-
-          <Section icon={<Coins className="h-4 w-4" />} tone="amber" title={t("Fondo de retiro", "Retirement fund")} total={fmt(retireTotal)}>
-            <InlineRow label={t("Valor actual", "Current value")}>
-              <Money
-                value={retirement?.manual_value ?? 0}
-                onChange={(n) => setSingle("retirement", t("Fondo de retiro", "Retirement fund"), { manual_value: n })}
-              />
-            </InlineRow>
-            <InlineRow label={t("Aporte mensual", "Monthly contribution")}>
-              <Money
-                value={retirement?.monthly_contribution ?? 0}
-                onChange={(n) => setSingle("retirement", t("Fondo de retiro", "Retirement fund"), { monthly_contribution: n })}
-              />
-            </InlineRow>
-            <InlineRow label={t("Retorno esperado anual", "Expected annual return")}>
-              <Pct
-                value={retirement?.expected_return ?? 7}
-                onChange={(n) => setSingle("retirement", t("Fondo de retiro", "Retirement fund"), { expected_return: n })}
-              />
-            </InlineRow>
-            <InlineRow label={t("Edad de retiro deseada", "Desired retirement age")}>
-              <Select
-                value={String(retireAge || 65)}
-                onChange={(v) => onRetireAge(Number(v))}
-                options={RETIRE_AGES.map((a) => ({ value: String(a), label: `${a} ${t("años", "years")}` }))}
-              />
-            </InlineRow>
-          </Section>
-        </div>
-
-        <div className="space-y-4">
-          <Section icon={<Building2 className="h-4 w-4" />} tone="indigo" title={t("Propiedades", "Properties")} total={fmt(propertyTotal)}>
-            {list("property").map((h) => (
-              <CollapsibleCard
-                key={h.id}
-                title={h.label || t("Propiedad", "Property")}
-                filled={Boolean(h.label.trim()) || h.manual_value > 0}
-                summary={[
-                  h.manual_value > 0 ? fmt(h.manual_value) : null,
-                  h.linked_liability > 0 ? `${t("Hipoteca", "Mortgage")} ${fmt(h.linked_liability)}` : null,
-                  h.monthly_income > 0 ? `${t("Renta", "Rent")} ${fmt(h.monthly_income)}/${t("mes", "mo")}` : null,
-                ]}
-                onRemove={() => remove(h.id)}
-              >
-                <InlineRow label={t("Nombre", "Name")}>
-                  <Input value={h.label} onChange={(e) => patch(h.id, { label: e.target.value })} className="h-9" />
-                </InlineRow>
-                <InlineRow label={t("Valor actual", "Current value")}>
-                  <Money value={h.manual_value} onChange={(n) => patch(h.id, { manual_value: n })} />
-                </InlineRow>
-                <InlineRow label={t("Hipoteca pendiente", "Outstanding mortgage")}>
-                  <Money value={h.linked_liability} onChange={(n) => patch(h.id, { linked_liability: n })} />
-                </InlineRow>
-                <InlineRow label={t("Renta mensual (opcional)", "Monthly rent (optional)")}>
-                  <Money value={h.monthly_income} onChange={(n) => patch(h.id, { monthly_income: n })} />
-                </InlineRow>
-                <InlineRow label={t("Plusvalía esperada anual", "Expected annual appreciation")}>
-                  <Pct value={h.expected_return} onChange={(n) => patch(h.id, { expected_return: n })} />
-                </InlineRow>
-                <p className="text-[11px] text-muted-foreground">
-                  {t("Equity neto", "Net equity")}: {fmt(Math.max(0, h.manual_value - h.linked_liability))}
-                </p>
-              </CollapsibleCard>
-            ))}
-            <AddButton onClick={() => add("property", t("Propiedad", "Property"))}>
-              {t("Agregar otra propiedad", "Add another property")}
-            </AddButton>
-          </Section>
-
-          <Section icon={<Gift className="h-4 w-4" />} tone="violet" title={t("Activos futuros", "Future assets")} total={fmt(Math.round(futureTotal))}>
-            {list("future").map((h) => (
-              <CollapsibleCard
-                key={h.id}
-                title={h.label || t("Activo futuro", "Future asset")}
-                filled={Boolean(h.label.trim()) || h.manual_value > 0}
-                summary={[
-                  h.manual_value > 0 ? fmt(h.manual_value) : null,
-                  h.target_year ? String(h.target_year) : null,
-                  `${h.probability}%`,
-                ]}
-                onRemove={() => remove(h.id)}
-              >
-                <InlineRow label={t("Nombre", "Name")}>
-                  <Input value={h.label} onChange={(e) => patch(h.id, { label: e.target.value })} className="h-9" />
-                </InlineRow>
-                <InlineRow label={t("Monto estimado", "Estimated amount")}>
-                  <Money value={h.manual_value} onChange={(n) => patch(h.id, { manual_value: n })} />
-                </InlineRow>
-                <InlineRow label={t("Año estimado", "Estimated year")}>
-                  <Input
-                    type="number"
-                    className="h-9"
-                    value={h.target_year ?? ""}
-                    onChange={(e) => patch(h.id, { target_year: e.target.value ? Number(e.target.value) : null })}
-                  />
-                </InlineRow>
-                <InlineRow label={t("Probabilidad", "Probability")}>
-                  <Select
-                    value={String(h.probability)}
-                    onChange={(v) => patch(h.id, { probability: Number(v) })}
-                    options={PROBABILITY_OPTIONS.map((p) => ({ value: String(p), label: `${p}%` }))}
-                  />
-                </InlineRow>
-                <p className="text-[11px] text-muted-foreground">
-                  {t("Valor ponderado", "Weighted value")}: {fmt(Math.round((h.manual_value * h.probability) / 100))}
-                </p>
-              </CollapsibleCard>
-            ))}
-            <AddButton onClick={() => add("future", "")}>{t("Agregar otro activo futuro", "Add another future asset")}</AddButton>
-          </Section>
-
-          <Section icon={<CreditCard className="h-4 w-4" />} tone="rose" title={t("Deudas", "Debts")} total={fmt(debtTotal)}>
-            {list("debt").map((h) => (
-              <div key={h.id} className="grid grid-cols-[1.3fr_1fr_24px] items-center gap-2">
-                <Input
-                  value={h.label}
-                  onChange={(e) => patch(h.id, { label: e.target.value })}
-                  placeholder={t("Tarjetas, préstamos…", "Cards, loans…")}
-                  className="h-9"
-                />
+              <InlineRow label={t("Valor actual", "Current value")}>
                 <Money value={h.manual_value} onChange={(n) => patch(h.id, { manual_value: n })} />
-                <button
-                  type="button"
-                  onClick={() => remove(h.id)}
-                  className="justify-self-end text-muted-foreground transition hover:text-negative"
-                  aria-label={t("Eliminar", "Remove")}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-            ))}
-            {propertyDebt > 0 && (
+              </InlineRow>
+              <InlineRow label={t("Hipoteca pendiente", "Outstanding mortgage")}>
+                <Money value={h.linked_liability} onChange={(n) => patch(h.id, { linked_liability: n })} />
+              </InlineRow>
+              <InlineRow label={t("Renta mensual (opcional)", "Monthly rent (optional)")}>
+                <Money value={h.monthly_income} onChange={(n) => patch(h.id, { monthly_income: n })} />
+              </InlineRow>
+              <InlineRow label={t("Plusvalía esperada anual", "Expected annual appreciation")}>
+                <Pct value={h.expected_return} onChange={(n) => patch(h.id, { expected_return: n })} />
+              </InlineRow>
               <p className="text-[11px] text-muted-foreground">
-                {t("Hipotecas de propiedades", "Property mortgages")}: {fmt(propertyDebt)}
+                {t("Equity neto", "Net equity")}: {fmt(Math.max(0, h.manual_value - h.linked_liability))}
               </p>
-            )}
-            <AddButton onClick={() => add("debt", "")}>{t("Agregar deuda", "Add debt")}</AddButton>
-          </Section>
-        </div>
+            </CollapsibleCard>
+          ))}
+          <AddButton onClick={() => add("property", t("Propiedad", "Property"))}>
+            {t("Agregar otra propiedad", "Add another property")}
+          </AddButton>
+        </Section>
+
+        <Section icon={<LineChart className="h-4 w-4" />} tone="sky" title={t("Inversiones", "Investments")} total={fmt(investTotal)}>
+          {investments.map((h) => (
+            <InvestmentCard
+              key={h.id}
+              holding={h}
+              fmt={fmt}
+              onPatch={(p) => patch(h.id, p)}
+              onRemove={() => remove(h.id)}
+            />
+          ))}
+          <AddButton onClick={() => add("etf", "")}>{t("Agregar otro activo", "Add another asset")}</AddButton>
+        </Section>
+
+        <Section icon={<Gift className="h-4 w-4" />} tone="violet" title={t("Activos futuros", "Future assets")} total={fmt(Math.round(futureTotal))}>
+          {list("future").map((h) => (
+            <CollapsibleCard
+              key={h.id}
+              title={h.label || t("Activo futuro", "Future asset")}
+              filled={Boolean(h.label.trim()) || h.manual_value > 0}
+              summary={[
+                h.manual_value > 0 ? fmt(h.manual_value) : null,
+                h.target_year ? String(h.target_year) : null,
+                `${h.probability}%`,
+              ]}
+              onRemove={() => remove(h.id)}
+            >
+              <InlineRow label={t("Nombre", "Name")}>
+                <Input value={h.label} onChange={(e) => patch(h.id, { label: e.target.value })} className="h-9" />
+              </InlineRow>
+              <InlineRow label={t("Monto estimado", "Estimated amount")}>
+                <Money value={h.manual_value} onChange={(n) => patch(h.id, { manual_value: n })} />
+              </InlineRow>
+              <InlineRow label={t("Año estimado", "Estimated year")}>
+                <Input
+                  type="number"
+                  className="h-9"
+                  value={h.target_year ?? ""}
+                  onChange={(e) => patch(h.id, { target_year: e.target.value ? Number(e.target.value) : null })}
+                />
+              </InlineRow>
+              <InlineRow label={t("Probabilidad", "Probability")}>
+                <Select
+                  value={String(h.probability)}
+                  onChange={(v) => patch(h.id, { probability: Number(v) })}
+                  options={PROBABILITY_OPTIONS.map((p) => ({ value: String(p), label: `${p}%` }))}
+                />
+              </InlineRow>
+              <p className="text-[11px] text-muted-foreground">
+                {t("Valor ponderado", "Weighted value")}: {fmt(Math.round((h.manual_value * h.probability) / 100))}
+              </p>
+            </CollapsibleCard>
+          ))}
+          <AddButton onClick={() => add("future", "")}>{t("Agregar otro activo futuro", "Add another future asset")}</AddButton>
+        </Section>
+
+        <Section icon={<Coins className="h-4 w-4" />} tone="amber" title={t("Fondo de retiro", "Retirement fund")} total={fmt(retireTotal)}>
+          <InlineRow label={t("Valor actual", "Current value")}>
+            <Money
+              value={retirement?.manual_value ?? 0}
+              onChange={(n) => setSingle("retirement", t("Fondo de retiro", "Retirement fund"), { manual_value: n })}
+            />
+          </InlineRow>
+          <InlineRow label={t("Aporte mensual", "Monthly contribution")}>
+            <Money
+              value={retirement?.monthly_contribution ?? 0}
+              onChange={(n) => setSingle("retirement", t("Fondo de retiro", "Retirement fund"), { monthly_contribution: n })}
+            />
+          </InlineRow>
+          <InlineRow label={t("Retorno esperado anual", "Expected annual return")}>
+            <Pct
+              value={retirement?.expected_return ?? 7}
+              onChange={(n) => setSingle("retirement", t("Fondo de retiro", "Retirement fund"), { expected_return: n })}
+            />
+          </InlineRow>
+          <InlineRow label={t("Edad de retiro deseada", "Desired retirement age")}>
+            <Select
+              value={String(retireAge || 65)}
+              onChange={(v) => onRetireAge(Number(v))}
+              options={RETIRE_AGES.map((a) => ({ value: String(a), label: `${a} ${t("años", "years")}` }))}
+            />
+          </InlineRow>
+        </Section>
+
+        <Section icon={<CreditCard className="h-4 w-4" />} tone="rose" title={t("Deudas", "Debts")} total={fmt(debtTotal)}>
+          {list("debt").map((h) => (
+            <div key={h.id} className="grid grid-cols-[1.3fr_1fr_24px] items-center gap-2">
+              <Input
+                value={h.label}
+                onChange={(e) => patch(h.id, { label: e.target.value })}
+                placeholder={t("Tarjetas, préstamos…", "Cards, loans…")}
+                className="h-9"
+              />
+              <Money value={h.manual_value} onChange={(n) => patch(h.id, { manual_value: n })} />
+              <button
+                type="button"
+                onClick={() => remove(h.id)}
+                className="justify-self-end text-muted-foreground transition hover:text-negative"
+                aria-label={t("Eliminar", "Remove")}
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
+          ))}
+          {propertyDebt > 0 && (
+            <p className="text-[11px] text-muted-foreground">
+              {t("Hipotecas de propiedades", "Property mortgages")}: {fmt(propertyDebt)}
+            </p>
+          )}
+          <AddButton onClick={() => add("debt", "")}>{t("Agregar deuda", "Add debt")}</AddButton>
+        </Section>
       </div>
     </div>
   );
