@@ -461,7 +461,36 @@ function PortafolioContent() {
         </div>
 
         <div className="mt-4 border-t border-border/50 pt-4">
+          <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+            <span className="text-xs text-muted-foreground">{t("Nivel de riesgo", "Risk level")}</span>
+            <span
+              className={cn(
+                "rounded-full px-2.5 py-0.5 text-xs font-semibold",
+                riskLevel === "Alto"
+                  ? "bg-negative/12 text-negative"
+                  : riskLevel === "Medio"
+                    ? "bg-amber-400/12 text-amber-200"
+                    : "bg-positive/12 text-positive",
+              )}
+            >
+              {riskLabel}
+            </span>
+            <span className="text-[11px] text-muted-foreground">{riskReason}</span>
+          </div>
+          <p
+            className={cn(
+              "mb-3 text-[11px] leading-relaxed",
+              riskLevel === "Alto"
+                ? "text-negative/80"
+                : riskLevel === "Medio"
+                  ? "text-amber-200/70"
+                  : "text-emerald-200/70",
+            )}
+          >
+            {riskAdvice}
+          </p>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs">
+
             {[
               { label: t("Retorno ponderado", "Weighted return"), value: `${weightedReturn.toFixed(1)}%` },
               { label: t("Ingreso pasivo / mes", "Passive income / mo"), value: fmt(Math.round(passiveMonthly)) },
