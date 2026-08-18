@@ -266,7 +266,8 @@ function PortafolioContent() {
       value: enriched.filter((h) => h.type === ty).reduce((s, h) => s + h.value, 0),
       color: chartColors[i]!,
     }))
-    .filter((a) => a.value > 0);
+    .filter((a) => a.value > 0)
+    .sort((a, b) => b.value - a.value);
   const activeTypes = types.filter((ty) => enriched.some((h) => h.type === ty && h.value > 0));
 
   const rows = (list: typeof enriched) => (
