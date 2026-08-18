@@ -415,9 +415,30 @@ function PortafolioContent() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel
-          title={t("Portafolio vs S&P 500", "Portfolio vs S&P 500")}
+          title={t(`Portafolio vs ${benchName}`, `Portfolio vs ${benchName}`)}
           description={t("Datos reales de mercado · últimos 12 meses", "Real market data · last 12 months")}
           className="lg:col-span-2"
+          actions={
+            <div className="flex rounded-full border border-border/60 p-0.5">
+              {([
+                { k: "sp500", l: "S&P 500" },
+                { k: "nasdaq", l: "Nasdaq" },
+                { k: "world", l: "MSCI World" },
+              ] as const).map((b) => (
+                <button
+                  key={b.k}
+                  type="button"
+                  onClick={() => setBenchmark(b.k)}
+                  className={cn(
+                    "rounded-full px-2.5 py-1 text-[11px] transition",
+                    benchmark === b.k ? "bg-primary/15 text-foreground" : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {b.l}
+                </button>
+              ))}
+            </div>
+          }
         >
           {benchmarkData.length === 0 ? (
             <div className="flex h-[290px] items-center justify-center text-sm text-muted-foreground">
@@ -431,9 +452,27 @@ function PortafolioContent() {
                 <YAxis {...axisProps} tickFormatter={(v) => `${v}%`} width={46} />
                 <Tooltip content={<ChartTooltip formatter={(v) => `${v.toFixed(1)}%`} />} />
                 <Line type="monotone" dataKey="portfolio" name={t("Portafolio", "Portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.5} dot={false} />
-                <Line type="monotone" dataKey="sp500" name="S&P 500" stroke="var(--color-chart-8)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
+                <Line type="monotone" dataKey="bench" name={benchName} stroke="var(--color-chart-8)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
               </LineChart>
             </ResponsiveContainer>
+          )}
+          {hasStats && (
+            <div className="mt-3 grid grid-cols-2 gap-3 border-t border-border/50 pt-3 text-[11px] sm:grid-cols-4">
+              {[
+                { l: t("Alfa vs índice", "Alpha vs index"), v: `${alpha12 > 0 ? "+" : ""}${alpha12.toFixed(1)}%`, good: alpha12 >= 0 },
+                { l: t("Volatilidad anual", "Annual volatility"), v: `${volPort.toFixed(1)}%`, sub: `${t("índice", "index")} ${volBench.toFixed(1)}%` },
+                { l: "Beta", v: beta.toFixed(2), sub: `${t("correlación", "correlation")} ${correlation.toFixed(2)}` },
+                { l: t("Caída máxima", "Max drawdown"), v: `${maxDrawdown.toFixed(1)}%`, good: maxDrawdown > -15 },
+              ].map((m) => (
+                <div key={m.l}>
+                  <p className="text-muted-foreground">{m.l}</p>
+                  <p className={cn("numeric text-sm font-semibold", m.good === undefined ? "" : m.good ? "text-positive" : "text-negative")}>{m.v}</p>
+                  {m.sub && <p className="text-[10px] text-muted-foreground">{m.sub}</p>}
+                </div>
+              ))}
+            </div>
+          )}
+
           )}
         </Panel>
 
