@@ -538,6 +538,9 @@ function CollapsibleCard({
   );
 }
 
+const MARKET_KINDS: HoldingKind[] = ["etf", "stock", "crypto"];
+const FIXED_INCOME_KINDS: HoldingKind[] = ["bond", "tbill", "note", "structured"];
+
 function InvestmentCard({
   holding: h,
   fmt,
@@ -552,9 +555,12 @@ function InvestmentCard({
   const t = useT();
   const filled = Boolean(h.label.trim()) || h.manual_value > 0 || h.monthly_contribution > 0;
   const [open, setOpen] = useState(!filled);
-  const isEtf = h.kind === "etf";
+
+  const isMarket = MARKET_KINDS.includes(h.kind);
+  const isFixed = FIXED_INCOME_KINDS.includes(h.kind);
+
   const ticker = (h.ticker ?? "").trim().toUpperCase();
-  const { data: quotes } = useQuotes(isEtf && ticker ? [ticker] : []);
+  const { data: quotes } = useQuotes(isMarket && ticker ? [ticker] : []);
   const quote = quotes?.quotes?.[0] ?? null;
   const buyPrice = h.quantity > 0 && h.cost_basis > 0 ? h.cost_basis / h.quantity : 0;
   const marketValue = quote && h.quantity > 0 ? quote.price * h.quantity : null;
@@ -602,11 +608,8 @@ function InvestmentCard({
   }
 
   return (
-    <Card
-      title={h.label || t("Activo", "Asset")}
-      onRemove={onRemove}
-      onCollapse={() => setOpen(false)}
-    >
+    <Card title={h.label || t("Activo", "Asset")} onRemove={onRemove} onCollapse={() => setOpen(false)}>
+      {/* Campos comunes */}
       <InlineRow label={t("Nombre", "Name")}>
         <Input value={h.label} onChange={(e) => onPatch({ label: e.target.value })} placeholder={t("Nombre", "Name")} className="h-9" />
       </InlineRow>
@@ -626,20 +629,13 @@ function InvestmentCard({
           ]}
         />
       </InlineRow>
-      <InlineRow label={t("Valor actual", "Current value")}>
-        <Money value={h.manual_value} onChange={(n) => onPatch({ manual_value: n })} />
-      </InlineRow>
-      <InlineRow label={t("Aporte mensual", "Monthly contribution")}>
-        <Money value={h.monthly_contribution} onChange={(n) => onPatch({ monthly_contribution: n })} />
-      </InlineRow>
-      <InlineRow label={t("Retorno esperado anual", "Expected annual return")}>
-        <Pct value={h.expected_return} onChange={(n) => onPatch({ expected_return: n })} />
-      </InlineRow>
-      <InlineRow label={t("Ticker (opcional)", "Ticker (optional)")}>
-        <Input value={h.ticker ?? ""} onChange={(e) => onPatch({ ticker: e.target.value.toUpperCase() || null })} className="h-9" />
-      </InlineRow>
-      {isEtf ? (
+
+      {/* --- Activos con ticker / precio de mercado (ETF, acción, cripto) --- */}
+      {isMarket ? (
         <>
+          <InlineRow label={t("Ticker (opcional)", "Ticker (optional)")}>
+            <Input value={h.ticker ?? ""} onChange={(e) => onPatch({ ticker: e.target.value.toUpperCase() || null })} className="h-9" />
+          </InlineRow>
           <InlineRow label={t("Monto de compra", "Purchase amount")}>
             <Money value={h.cost_basis} onChange={(n) => onPatch({ cost_basis: n })} />
           </InlineRow>
@@ -653,47 +649,101 @@ function InvestmentCard({
               }}
             />
           </InlineRow>
-        </>
-      ) : (
-        <InlineRow label={t("Costo invertido", "Invested cost")}>
-          <Money value={h.cost_basis} onChange={(n) => onPatch({ cost_basis: n })} />
-        </InlineRow>
-      )}
-      <InlineRow label={t("Unidades", "Units")}>
-        <Money value={h.quantity} onChange={(n) => onPatch({ quantity: n })} decimals />
-      </InlineRow>
-      {isEtf && ticker ? (
-        <div className="rounded-lg border border-border/50 bg-background/40 px-3 py-2 text-[11px]">
-          {quote ? (
-            <div className="space-y-0.5">
-              <p className="text-muted-foreground">
-                {ticker} · {t("precio hoy", "price today")}{" "}
-                <span className="font-semibold text-foreground">{quote.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>{" "}
-                <span className={quote.changePct >= 0 ? "text-positive" : "text-destructive"}>
-                  {quote.changePct >= 0 ? "+" : ""}
-                  {quote.changePct.toFixed(2)}%
-                </span>
-              </p>
-              {marketValue !== null ? (
-                <p className="text-muted-foreground">
-                  {t("Valor de mercado", "Market value")}: <span className="font-semibold text-foreground">{fmt(marketValue)}</span>
-                  {h.cost_basis > 0 ? (
-                    <span className={marketValue - h.cost_basis >= 0 ? " text-positive" : " text-destructive"}>
-                      {" "}
-                      ({marketValue - h.cost_basis >= 0 ? "+" : ""}
-                      {(((marketValue - h.cost_basis) / h.cost_basis) * 100).toFixed(1)}%)
+          <InlineRow label={t("Unidades", "Units")}>
+            <Money value={h.quantity} onChange={(n) => onPatch({ quantity: n })} decimals />
+          </InlineRow>
+          <InlineRow label={t("Aporte mensual", "Monthly contribution")}>
+            <Money value={h.monthly_contribution} onChange={(n) => onPatch({ monthly_contribution: n })} />
+          </InlineRow>
+          <InlineRow label={t("Retorno esperado anual", "Expected annual return")}>
+            <Pct value={h.expected_return} onChange={(n) => onPatch({ expected_return: n })} />
+          </InlineRow>
+          {ticker ? (
+            <div className="rounded-lg border border-border/50 bg-background/40 px-3 py-2 text-[11px]">
+              {quote ? (
+                <div className="space-y-0.5">
+                  <p className="text-muted-foreground">
+                    {ticker} · {t("precio hoy", "price today")}{" "}
+                    <span className="font-semibold text-foreground">{quote.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>{" "}
+                    <span className={quote.changePct >= 0 ? "text-positive" : "text-destructive"}>
+                      {quote.changePct >= 0 ? "+" : ""}
+                      {quote.changePct.toFixed(2)}%
                     </span>
-                  ) : null}
-                </p>
+                  </p>
+                  {marketValue !== null ? (
+                    <p className="text-muted-foreground">
+                      {t("Valor de mercado", "Market value")}: <span className="font-semibold text-foreground">{fmt(marketValue)}</span>
+                      {h.cost_basis > 0 ? (
+                        <span className={marketValue - h.cost_basis >= 0 ? " text-positive" : " text-destructive"}>
+                          {" "}
+                          ({marketValue - h.cost_basis >= 0 ? "+" : ""}
+                          {(((marketValue - h.cost_basis) / h.cost_basis) * 100).toFixed(1)}%)
+                        </span>
+                      ) : null}
+                    </p>
+                  ) : (
+                    <p className="text-muted-foreground">{t("Añade unidades para ver el valor de mercado.", "Add units to see market value.")}</p>
+                  )}
+                </div>
               ) : (
-                <p className="text-muted-foreground">{t("Añade unidades para ver el valor de mercado.", "Add units to see market value.")}</p>
+                <p className="text-muted-foreground">{t("Buscando precio de mercado…", "Fetching market price…")}</p>
               )}
             </div>
-          ) : (
-            <p className="text-muted-foreground">{t("Buscando precio de mercado…", "Fetching market price…")}</p>
-          )}
-        </div>
-      ) : null}
+          ) : null}
+        </>
+      ) : isFixed ? (
+        <>
+          {/* --- Renta fija (bonos, treasury bills, notas, estructurados) --- */}
+          <InlineRow label={t("Valor actual", "Current value")}>
+            <Money value={h.manual_value} onChange={(n) => onPatch({ manual_value: n })} />
+          </InlineRow>
+          <InlineRow label={t("Costo invertido", "Invested cost")}>
+            <Money value={h.cost_basis} onChange={(n) => onPatch({ cost_basis: n })} />
+          </InlineRow>
+          <InlineRow label={t("Rendimiento anual", "Annual yield")}>
+            <Pct value={h.expected_return} onChange={(n) => onPatch({ expected_return: n })} />
+          </InlineRow>
+          <InlineRow label={t("Aporte mensual", "Monthly contribution")}>
+            <Money value={h.monthly_contribution} onChange={(n) => onPatch({ monthly_contribution: n })} />
+          </InlineRow>
+          <InlineRow label={t("Año de vencimiento", "Maturity year")}>
+            <Input
+              type="number"
+              inputMode="numeric"
+              placeholder={t("opcional", "optional")}
+              value={h.target_year ? String(h.target_year) : ""}
+              onChange={(e) => onPatch({ target_year: e.target.value ? Number(e.target.value) : null })}
+              className="h-9"
+            />
+          </InlineRow>
+          {h.cost_basis > 0 && h.manual_value > 0 ? (
+            <p className="text-[11px] text-muted-foreground">
+              {t("Ganancia", "Gain")}:{" "}
+              <span className={h.manual_value >= h.cost_basis ? "text-emerald-400/90" : "text-rose-400/80"}>
+                {h.manual_value >= h.cost_basis ? "+" : "−"}
+                {fmt(Math.abs(h.manual_value - h.cost_basis))} (
+                {((Math.abs(h.manual_value - h.cost_basis) / h.cost_basis) * 100).toFixed(1)}%)
+              </span>
+            </p>
+          ) : null}
+        </>
+      ) : (
+        <>
+          {/* --- Otro activo --- */}
+          <InlineRow label={t("Valor actual", "Current value")}>
+            <Money value={h.manual_value} onChange={(n) => onPatch({ manual_value: n })} />
+          </InlineRow>
+          <InlineRow label={t("Costo invertido", "Invested cost")}>
+            <Money value={h.cost_basis} onChange={(n) => onPatch({ cost_basis: n })} />
+          </InlineRow>
+          <InlineRow label={t("Aporte mensual", "Monthly contribution")}>
+            <Money value={h.monthly_contribution} onChange={(n) => onPatch({ monthly_contribution: n })} />
+          </InlineRow>
+          <InlineRow label={t("Retorno esperado anual", "Expected annual return")}>
+            <Pct value={h.expected_return} onChange={(n) => onPatch({ expected_return: n })} />
+          </InlineRow>
+        </>
+      )}
     </Card>
   );
 }
