@@ -411,7 +411,7 @@ function PortafolioContent() {
                 : t("La peor pérdida histórica fue limitada.", "The worst historical loss was limited."),
         },
         {
-          label: `⭐ ${t("Sharpe", "Sharpe")}`,
+          label: `${t("Sharpe", "Sharpe")}`,
           value: sharpe.toFixed(2),
           qual:
             sharpe > 1
