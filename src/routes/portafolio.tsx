@@ -577,13 +577,17 @@ function PortafolioContent() {
   // Resumen interpretativo: nuevo análisis, no repite los números de arriba.
   const volDesc = volPct > 22 ? t("alta volatilidad", "high volatility") : volPct > 14 ? t("volatilidad moderada", "moderate volatility") : t("baja volatilidad", "low volatility");
   const betaDesc = beta > 1.2 ? t("se mueve más que el mercado", "moves more than the market") : beta < 0.85 ? t("se mueve menos que el mercado", "moves less than the market") : t("sigue al mercado", "tracks the market");
-  const ddDesc = maxDrawdown < -25 ? t("caídas severas en el pasado", "severe past drawdowns") : maxDrawdown < -15 ? t("caídas notables pero asumibles", "notable but manageable drawdowns") : t("caídas controladas", "controlled drawdowns");
-  const sharpeDesc = sharpe > 1 ? t("buen retorno por unidad de riesgo", "good return per unit of risk") : sharpe > 0.5 ? t("retorno justo para el riesgo asumido", "fair return for the risk taken") : t("el retorno no compensa el riesgo", "return doesn't justify the risk");
-  const concDesc = concentration > 40 ? top ? t(`excesiva dependencia de ${top.ticker}`, `over-reliance on ${top.ticker}`) : t("excesiva concentración", "over-concentration") : concentration > 25 ? t("concentración media", "medium concentration") : t("bien diversificado", "well diversified");
+  const ddDesc = maxDrawdown < -25 ? t("caídas severas", "severe drawdowns") : maxDrawdown < -15 ? t("caídas asumibles", "manageable drawdowns") : t("caídas controladas", "controlled drawdowns");
+  const sharpeDesc = sharpe > 1 ? t("buen retorno por riesgo", "good return per risk") : sharpe > 0.5 ? t("retorno justo", "fair return") : t("retorno bajo", "low return");
+  const concDesc = concentration > 40 ? top ? t(`dependencia de ${top.ticker}`, `reliance on ${top.ticker}`) : t("excesiva concentración", "over-concentration") : concentration > 25 ? t("concentración media", "medium concentration") : t("bien diversificado", "well diversified");
   const cap = (s: string) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
-  const metricSummary = cap(t(
-    `Tu portafolio presenta ${volDesc} y ${betaDesc}. Históricamente ha tenido ${ddDesc}, lo que indica cuánto podría bajar en un mal momento. ${sharpeDesc} y está ${concDesc}.`,
-    `Your portfolio shows ${volDesc} and ${betaDesc}. Historically it has had ${ddDesc}, which indicates how much it could fall in a bad moment. ${sharpeDesc} and it is ${concDesc}.`,
+  const metricLine1 = cap(t(
+    `Volatilidad ${volPct.toFixed(0)}% (${volDesc}) · Beta ${beta.toFixed(2)} ${betaDesc} · Caída máx ${maxDrawdown.toFixed(0)}% (${ddDesc})`,
+    `Volatility ${volPct.toFixed(0)}% (${volDesc}) · Beta ${beta.toFixed(2)} ${betaDesc} · Max drawdown ${maxDrawdown.toFixed(0)}% (${ddDesc})`,
+  ));
+  const metricLine2 = cap(t(
+    `Sharpe ${sharpe.toFixed(2)} (${sharpeDesc}) · Concentración ${concentration.toFixed(0)}% (${concDesc})`,
+    `Sharpe ${sharpe.toFixed(2)} (${sharpeDesc}) · Concentration ${concentration.toFixed(0)}% (${concDesc})`,
   ));
 
   const types = ["ETF", "Acción", "Renta fija", "Estructurado", "Retiro", "Cripto", "Inmueble", "Cash"] as const;
@@ -859,7 +863,11 @@ function PortafolioContent() {
             </div>
 
             <p className="text-[13px] leading-relaxed text-muted-foreground">
-              {metricSummary}
+              {metricLine1}
+            </p>
+
+            <p className="text-[13px] leading-relaxed text-muted-foreground">
+              {metricLine2}
             </p>
 
             <p className="text-[13px] leading-relaxed text-muted-foreground">
