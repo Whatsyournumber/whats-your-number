@@ -357,7 +357,14 @@ function PortafolioContent() {
   const debtPct = totalValue ? (debtTotal / totalValue) * 100 : 0;
   // Métricas explicadas en lenguaje simple con valor cualitativo + frase clara.
   type Tone = "good" | "warn" | "neutral";
-  const riskMetrics: { label: string; value: string; qual: string; tone: Tone; sentence: string }[] = hasStats
+
+  // Diversificación efectiva (número efectivo de posiciones por HHI).
+  const weights = totalValue > 0 ? enriched.map((h) => h.value / totalValue) : [];
+  const hhi = weights.reduce((s, w) => s + w * w, 0);
+  const effectiveN = hhi > 0 ? 1 / hhi : enriched.length;
+
+  // ---- Market risk analysis (debajo de la gráfica) ----
+  const marketRiskMetrics: { label: string; value: string; qual: string; tone: Tone; sentence: string }[] = hasStats
     ? [
         {
           label: `${t("Volatilidad", "Volatility")}`,
@@ -427,24 +434,6 @@ function PortafolioContent() {
                 ? t("El retorno es justo para el riesgo.", "The return is fair for the risk.")
                 : t("El retorno no compensa el riesgo.", "The return doesn't justify the risk."),
         },
-        {
-          label: `${t("Concentración", "Concentration")}`,
-          value: `${concentration.toFixed(0)}%`,
-          qual:
-            concentration > 40
-              ? t("Alta", "High")
-              : concentration > 25
-                ? t("Media", "Medium")
-                : t("Baja", "Low"),
-          tone: concentration > 40 ? ("warn" as Tone) : concentration > 25 ? ("neutral" as Tone) : ("good" as Tone),
-          sentence: top
-            ? concentration > 40
-              ? t(`Dependes mucho de ${top.ticker}.`, `You rely a lot on ${top.ticker}.`)
-              : t(`Tu activo mayor es ${top.ticker}.`, `Your top asset is ${top.ticker}.`)
-            : concentration > 40
-              ? t("Dependes mucho de un solo activo.", "You rely a lot on one asset.")
-              : t("Estás bien diversificado.", "You're well diversified."),
-        },
       ]
     : [
         {
@@ -464,59 +453,83 @@ function PortafolioContent() {
                 ? t("Tu cartera tiene movimientos normales.", "Your portfolio has normal swings.")
                 : t("Tu cartera se mueve poco, es estable.", "Your portfolio barely moves, it's stable."),
         },
-        {
-          label: `${t("Activos volátiles", "Volatile assets")}`,
-          value: `${(riskWeight * 100).toFixed(0)}%`,
-          qual:
-            riskWeight > 0.7
-              ? t("Alta", "High")
-              : riskWeight > 0.4
-                ? t("Media", "Medium")
-                : t("Baja", "Low"),
-          tone: riskWeight > 0.7 ? ("warn" as Tone) : riskWeight > 0.4 ? ("neutral" as Tone) : ("good" as Tone),
-          sentence:
-            riskWeight > 0.7
-              ? t("Mucho en acciones y cripto.", "A lot in stocks and crypto.")
-              : riskWeight > 0.4
-                ? t("Parte en acciones y cripto.", "Some in stocks and crypto.")
-                : t("Poco en activos volátiles.", "Little in volatile assets."),
-        },
-        {
-          label: `${t("Concentración", "Concentration")}`,
-          value: `${concentration.toFixed(0)}%`,
-          qual:
-            concentration > 40
-              ? t("Alta", "High")
-              : concentration > 25
-                ? t("Media", "Medium")
-                : t("Baja", "Low"),
-          tone: concentration > 40 ? ("warn" as Tone) : concentration > 25 ? ("neutral" as Tone) : ("good" as Tone),
-          sentence: top
-            ? concentration > 40
-              ? t(`Dependes mucho de ${top.ticker}.`, `You rely a lot on ${top.ticker}.`)
-              : t(`Tu activo mayor es ${top.ticker}.`, `Your top asset is ${top.ticker}.`)
-            : concentration > 40
-              ? t("Dependes mucho de un solo activo.", "You rely a lot on one asset.")
-              : t("Estás bien diversificado.", "You're well diversified."),
-        },
-        {
-          label: `${t("Deuda", "Debt")}`,
-          value: `${debtPct.toFixed(0)}%`,
-          qual:
-            debtPct > 40
-              ? t("Alta", "High")
-              : debtPct > 20
-                ? t("Media", "Medium")
-                : t("Baja", "Low"),
-          tone: debtPct > 40 ? ("warn" as Tone) : debtPct > 20 ? ("neutral" as Tone) : ("good" as Tone),
-          sentence:
-            debtPct > 40
-              ? t("Debes mucho frente a tu portafolio.", "You owe a lot vs your portfolio.")
-              : debtPct > 20
-                ? t("Tu deuda es manejable.", "Your debt is manageable.")
-                : t("Casi sin deuda.", "Almost debt-free."),
-        },
       ];
+
+  // ---- Portfolio metrics (debajo de posiciones) ----
+  const portfolioMetrics: { label: string; value: string; qual: string; tone: Tone; sentence: string }[] = [
+    {
+      label: `${t("Diversificación", "Diversification")}`,
+      value: effectiveN.toFixed(1),
+      qual:
+        effectiveN >= 5
+          ? t("Alta", "High")
+          : effectiveN >= 2.5
+            ? t("Media", "Medium")
+            : t("Baja", "Low"),
+      tone: effectiveN >= 5 ? ("good" as Tone) : effectiveN >= 2.5 ? ("neutral" as Tone) : ("warn" as Tone),
+      sentence:
+        effectiveN >= 5
+          ? t("Estás bien repartido entre varios activos.", "You're well spread across several assets.")
+          : effectiveN >= 2.5
+            ? t("Repito moderado, conviene ampliar posiciones.", "Moderate spread, worth adding positions.")
+            : t("Dependes de pocos activos.", "You depend on few assets."),
+    },
+    {
+      label: `${t("Concentración", "Concentration")}`,
+      value: `${concentration.toFixed(0)}%`,
+      qual:
+        concentration > 40
+          ? t("Alta", "High")
+          : concentration > 25
+            ? t("Media", "Medium")
+            : t("Baja", "Low"),
+      tone: concentration > 40 ? ("warn" as Tone) : concentration > 25 ? ("neutral" as Tone) : ("good" as Tone),
+      sentence: top
+        ? concentration > 40
+          ? t(`Dependes mucho de ${top.ticker}.`, `You rely a lot on ${top.ticker}.`)
+          : t(`Tu activo mayor es ${top.ticker}.`, `Your top asset is ${top.ticker}.`)
+        : concentration > 40
+          ? t("Dependes mucho de un solo activo.", "You rely a lot on one asset.")
+          : t("Estás bien diversificado.", "You're well diversified."),
+    },
+    {
+      label: `${t("Activos volátiles", "Volatile assets")}`,
+      value: `${(riskWeight * 100).toFixed(0)}%`,
+      qual:
+        riskWeight > 0.7
+          ? t("Alta", "High")
+          : riskWeight > 0.4
+            ? t("Media", "Medium")
+            : t("Baja", "Low"),
+      tone: riskWeight > 0.7 ? ("warn" as Tone) : riskWeight > 0.4 ? ("neutral" as Tone) : ("good" as Tone),
+      sentence:
+        riskWeight > 0.7
+          ? t("Mucho en acciones y cripto.", "A lot in stocks and crypto.")
+          : riskWeight > 0.4
+            ? t("Parte en acciones y cripto.", "Some in stocks and crypto.")
+            : t("Poco en activos volátiles.", "Little in volatile assets."),
+    },
+    {
+      label: `${t("Deuda", "Debt")}`,
+      value: `${debtPct.toFixed(0)}%`,
+      qual:
+        debtPct > 40
+          ? t("Alta", "High")
+          : debtPct > 20
+            ? t("Media", "Medium")
+            : t("Baja", "Low"),
+      tone: debtPct > 40 ? ("warn" as Tone) : debtPct > 20 ? ("neutral" as Tone) : ("good" as Tone),
+      sentence:
+        debtPct > 40
+          ? t("Debes mucho frente a tu portafolio.", "You owe a lot vs your portfolio.")
+          : debtPct > 20
+            ? t("Tu deuda es manejable.", "Your debt is manageable.")
+            : t("Casi sin deuda.", "Almost debt-free."),
+    },
+  ];
+
+  // Referencia combinada para el análisis de IA.
+  const riskMetrics = [...marketRiskMetrics, ...portfolioMetrics];
   // Línea 2 — recomendación universal de distribución y balanceo según el drift.
   const drift = buckets.find((b) => Math.abs(b.deltaPct) === Math.max(...buckets.map((x) => Math.abs(x.deltaPct))));
   const biggestDrift = drift && Math.abs(drift.deltaPct) >= 5 ? drift : null;
