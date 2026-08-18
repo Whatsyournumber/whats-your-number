@@ -355,59 +355,166 @@ function PortafolioContent() {
   // ---- Análisis de riesgo y rebalanceo (2 líneas, basado en data real) ----
   const volPct = hasStats ? volPort : riskWeight * 100 * 1.2;
   const debtPct = totalValue ? (debtTotal / totalValue) * 100 : 0;
-  // Métricas explicadas en lenguaje simple.
-  const riskMetrics: { label: string; value: string; hint: string }[] = hasStats
+  // Métricas explicadas en lenguaje simple con valor cualitativo + frase clara.
+  type Tone = "good" | "warn" | "neutral";
+  const riskMetrics: { label: string; value: string; qual: string; tone: Tone; sentence: string }[] = hasStats
     ? [
         {
           label: `📈 ${t("Volatilidad", "Volatility")}`,
           value: `${volPct.toFixed(1)}%`,
-          hint: t("Qué tanto puede variar tu dinero", "How much your money can swing"),
+          qual:
+            volPct > 22
+              ? t("Alta", "High")
+              : volPct > 14
+                ? t("Moderada", "Moderate")
+                : t("Baja", "Low"),
+          tone: volPct > 22 ? ("warn" as Tone) : volPct > 14 ? ("neutral" as Tone) : ("good" as Tone),
+          sentence:
+            volPct > 22
+              ? t("Tu cartera tiene movimientos fuertes.", "Your portfolio swings hard.")
+              : volPct > 14
+                ? t("Tu cartera tiene movimientos normales.", "Your portfolio has normal swings.")
+                : t("Tu cartera se mueve poco, es estable.", "Your portfolio barely moves, it's stable."),
         },
         {
           label: `📊 ${t("Beta", "Beta")}`,
           value: beta.toFixed(2),
-          hint: t("Qué tanto depende del mercado", "How tied it is to the market"),
+          qual:
+            beta > 1.2
+              ? t("Agresiva", "Aggressive")
+              : beta < 0.85
+                ? t("Defensiva", "Defensive")
+                : t("Equilibrada", "Balanced"),
+          tone: beta > 1.2 ? ("warn" as Tone) : beta < 0.85 ? ("good" as Tone) : ("neutral" as Tone),
+          sentence:
+            beta > 1.2
+              ? t("Se mueve más que el mercado.", "It moves more than the market.")
+              : beta < 0.85
+                ? t("Se mueve menos que el mercado.", "It moves less than the market.")
+                : t("Se mueve parecido al mercado.", "It moves about like the market."),
         },
         {
           label: `📉 ${t("Caída máxima", "Max drawdown")}`,
           value: `${maxDrawdown.toFixed(1)}%`,
-          hint: t("Lo máximo que podrías haber perdido", "The most you could have lost"),
+          qual:
+            maxDrawdown < -25
+              ? t("Severa", "Severe")
+              : maxDrawdown < -15
+                ? t("Notable", "Notable")
+                : t("Controlada", "Controlled"),
+          tone: maxDrawdown < -25 ? ("warn" as Tone) : maxDrawdown < -15 ? ("neutral" as Tone) : ("good" as Tone),
+          sentence:
+            maxDrawdown < -25
+              ? t("La peor pérdida histórica fue grande.", "The worst historical loss was large.")
+              : maxDrawdown < -15
+                ? t("La peor pérdida histórica fue notable.", "The worst historical loss was notable.")
+                : t("La peor pérdida histórica fue limitada.", "The worst historical loss was limited."),
         },
         {
           label: `⭐ ${t("Sharpe", "Sharpe")}`,
           value: sharpe.toFixed(2),
-          hint: t("Si el riesgo realmente vale la pena", "Whether the risk is worth it"),
+          qual:
+            sharpe > 1
+              ? t("Muy bueno", "Very good")
+              : sharpe > 0.5
+                ? t("Aceptable", "Acceptable")
+                : t("Bajo", "Low"),
+          tone: sharpe > 1 ? ("good" as Tone) : sharpe > 0.5 ? ("neutral" as Tone) : ("warn" as Tone),
+          sentence:
+            sharpe > 1
+              ? t("Obtienes buen retorno para el riesgo asumido.", "You get good return for the risk taken.")
+              : sharpe > 0.5
+                ? t("El retorno es justo para el riesgo.", "The return is fair for the risk.")
+                : t("El retorno no compensa el riesgo.", "The return doesn't justify the risk."),
         },
         {
           label: `🎯 ${t("Concentración", "Concentration")}`,
           value: `${concentration.toFixed(0)}%`,
-          hint: top
-            ? t(`Cuánto pesa tu activo mayor (${top.ticker})`, `How much your top asset (${top.ticker}) weighs`)
-            : t("Cuánto pesa tu activo mayor", "How much your top asset weighs"),
+          qual:
+            concentration > 40
+              ? t("Alta", "High")
+              : concentration > 25
+                ? t("Media", "Medium")
+                : t("Baja", "Low"),
+          tone: concentration > 40 ? ("warn" as Tone) : concentration > 25 ? ("neutral" as Tone) : ("good" as Tone),
+          sentence: top
+            ? concentration > 40
+              ? t(`Dependes mucho de ${top.ticker}.`, `You rely a lot on ${top.ticker}.`)
+              : t(`Tu activo mayor es ${top.ticker}.`, `Your top asset is ${top.ticker}.`)
+            : concentration > 40
+              ? t("Dependes mucho de un solo activo.", "You rely a lot on one asset.")
+              : t("Estás bien diversificado.", "You're well diversified."),
         },
       ]
     : [
         {
           label: `📈 ${t("Volatilidad estimada", "Estimated volatility")}`,
           value: `${volPct.toFixed(0)}%`,
-          hint: t("Qué tanto puede variar tu dinero", "How much your money can swing"),
+          qual:
+            volPct > 22
+              ? t("Alta", "High")
+              : volPct > 14
+                ? t("Moderada", "Moderate")
+                : t("Baja", "Low"),
+          tone: volPct > 22 ? ("warn" as Tone) : volPct > 14 ? ("neutral" as Tone) : ("good" as Tone),
+          sentence:
+            volPct > 22
+              ? t("Tu cartera tiene movimientos fuertes.", "Your portfolio swings hard.")
+              : volPct > 14
+                ? t("Tu cartera tiene movimientos normales.", "Your portfolio has normal swings.")
+                : t("Tu cartera se mueve poco, es estable.", "Your portfolio barely moves, it's stable."),
         },
         {
           label: `⚡ ${t("Activos volátiles", "Volatile assets")}`,
           value: `${(riskWeight * 100).toFixed(0)}%`,
-          hint: t("En acciones y cripto", "In stocks and crypto"),
+          qual:
+            riskWeight > 0.7
+              ? t("Alta", "High")
+              : riskWeight > 0.4
+                ? t("Media", "Medium")
+                : t("Baja", "Low"),
+          tone: riskWeight > 0.7 ? ("warn" as Tone) : riskWeight > 0.4 ? ("neutral" as Tone) : ("good" as Tone),
+          sentence:
+            riskWeight > 0.7
+              ? t("Mucho en acciones y cripto.", "A lot in stocks and crypto.")
+              : riskWeight > 0.4
+                ? t("Parte en acciones y cripto.", "Some in stocks and crypto.")
+                : t("Poco en activos volátiles.", "Little in volatile assets."),
         },
         {
           label: `🎯 ${t("Concentración", "Concentration")}`,
           value: `${concentration.toFixed(0)}%`,
-          hint: top
-            ? t(`Cuánto pesa tu activo mayor (${top.ticker})`, `How much your top asset (${top.ticker}) weighs`)
-            : t("Cuánto pesa tu activo mayor", "How much your top asset weighs"),
+          qual:
+            concentration > 40
+              ? t("Alta", "High")
+              : concentration > 25
+                ? t("Media", "Medium")
+                : t("Baja", "Low"),
+          tone: concentration > 40 ? ("warn" as Tone) : concentration > 25 ? ("neutral" as Tone) : ("good" as Tone),
+          sentence: top
+            ? concentration > 40
+              ? t(`Dependes mucho de ${top.ticker}.`, `You rely a lot on ${top.ticker}.`)
+              : t(`Tu activo mayor es ${top.ticker}.`, `Your top asset is ${top.ticker}.`)
+            : concentration > 40
+              ? t("Dependes mucho de un solo activo.", "You rely a lot on one asset.")
+              : t("Estás bien diversificado.", "You're well diversified."),
         },
         {
           label: `💳 ${t("Deuda", "Debt")}`,
           value: `${debtPct.toFixed(0)}%`,
-          hint: t("Cuánto debes frente a tu portafolio", "How much you owe vs your portfolio"),
+          qual:
+            debtPct > 40
+              ? t("Alta", "High")
+              : debtPct > 20
+                ? t("Media", "Medium")
+                : t("Baja", "Low"),
+          tone: debtPct > 40 ? ("warn" as Tone) : debtPct > 20 ? ("neutral" as Tone) : ("good" as Tone),
+          sentence:
+            debtPct > 40
+              ? t("Debes mucho frente a tu portafolio.", "You owe a lot vs your portfolio.")
+              : debtPct > 20
+                ? t("Tu deuda es manejable.", "Your debt is manageable.")
+                : t("Casi sin deuda.", "Almost debt-free."),
         },
       ];
   // Línea 2 — recomendación universal de distribución y balanceo según el drift.
