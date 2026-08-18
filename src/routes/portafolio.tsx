@@ -826,7 +826,7 @@ function PortafolioContent() {
 
           <div
             className={cn(
-              "flex flex-col gap-1 rounded-xl border px-3 py-2",
+              "flex flex-col gap-0.5 rounded-xl border px-3 py-1.5",
               riskLevel === "Alto"
                 ? "border-negative/25 bg-negative/[0.06]"
                 : riskLevel === "Medio"
@@ -834,33 +834,28 @@ function PortafolioContent() {
                   : "border-positive/25 bg-positive/[0.06]",
             )}
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 text-[11px] leading-tight">
               <Sparkles
                 className={cn(
-                  "h-3.5 w-3.5 shrink-0",
+                  "h-3 w-3 shrink-0",
                   riskLevel === "Alto" ? "text-negative" : riskLevel === "Medio" ? "text-amber-200" : "text-positive",
                 )}
               />
-              <p className="text-xs font-semibold text-foreground">
+              <span className="font-semibold text-foreground">
                 {t("Qué hacer ahora", "What to do now")}
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px] leading-tight text-muted-foreground">
+              </span>
+              <span className="text-muted-foreground/40">·</span>
               {riskMetrics.map((m, i) => (
-                <span key={m.label} className="inline-flex items-center gap-1">
+                <span key={m.label} className="inline-flex items-center gap-0.5 whitespace-nowrap">
+                  {i > 0 && <span className="text-muted-foreground/30">·</span>}
                   <span className="font-medium text-foreground/80">{m.label}</span>
                   <span className="numeric font-semibold text-foreground">{m.value}</span>
-                  <span className="text-muted-foreground/40">·</span>
-                  <span className="text-muted-foreground">
-                    {insight.isLoading ? t("Analizando…", "Analyzing…") : aiHints[i] || m.qual}
-                  </span>
                 </span>
               ))}
             </div>
 
             <p className="line-clamp-1 text-[11px] leading-tight text-muted-foreground">
-              {aiAdvice}
+              {insight.isLoading ? t("Analizando…", "Analyzing…") : aiAdvice}
             </p>
           </div>
         </div>
