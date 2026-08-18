@@ -575,9 +575,12 @@ function PortafolioContent() {
           </div>
         </div>
 
-        <div className="mt-4 space-y-1 border-t border-border/50 pt-4 text-[11px]">
-          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-            <span className="text-muted-foreground">{t("Nivel de riesgo", "Risk level")}</span>
+        <div className="mt-4 space-y-3 border-t border-border/50 pt-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              {t("Nivel de riesgo", "Risk level")}
+            </span>
             <span
               className={cn(
                 "rounded-full px-2.5 py-0.5 text-xs font-semibold",
@@ -590,20 +593,41 @@ function PortafolioContent() {
             >
               {riskLabel}
             </span>
-            <span className="text-muted-foreground">{riskReason}</span>
           </div>
-          <p
+
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+            {riskMetrics.map((m) => (
+              <div key={m.label} className="rounded-xl border border-border/50 bg-elevated/30 px-3 py-2">
+                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{m.label}</p>
+                <p className="numeric text-sm font-semibold text-foreground">{m.value}</p>
+                <p className="text-[10px] leading-tight text-muted-foreground">{m.hint}</p>
+              </div>
+            ))}
+          </div>
+
+          <div
             className={cn(
-              "leading-relaxed",
+              "flex items-start gap-3 rounded-xl border p-3",
               riskLevel === "Alto"
-                ? "text-negative/80"
+                ? "border-negative/25 bg-negative/[0.06]"
                 : riskLevel === "Medio"
-                  ? "text-amber-200/70"
-                  : "text-emerald-200/70",
+                  ? "border-amber-400/25 bg-amber-400/[0.06]"
+                  : "border-positive/25 bg-positive/[0.06]",
             )}
           >
-            {riskAdvice}
-          </p>
+            <Sparkles
+              className={cn(
+                "mt-0.5 h-4 w-4 shrink-0",
+                riskLevel === "Alto" ? "text-negative" : riskLevel === "Medio" ? "text-amber-200" : "text-positive",
+              )}
+            />
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-foreground">
+                {t("Qué hacer ahora", "What to do now")}
+              </p>
+              <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{riskAdvice}</p>
+            </div>
+          </div>
         </div>
       </Panel>
 
