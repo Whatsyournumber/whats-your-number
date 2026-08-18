@@ -109,6 +109,14 @@ function MiPerfil() {
     setWealth(holdings.length ? holdings : seedHoldingsFromTotals(profile));
   }, [holdings, loadingHoldings, profile, dirty]);
 
+  // Abrir directo en la sección de patrimonio (#patrimonio).
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.location.hash !== "#patrimonio") return;
+    const el = document.getElementById("patrimonio");
+    if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 250);
+  }, [isLoading]);
+
 
   const set = <K extends keyof Profile>(key: K, value: Profile[K]) => {
     setDirty(true);
@@ -476,7 +484,7 @@ function MiPerfil() {
           </div>
         </Panel>
 
-        <div className="h-full text-sm [&>*]:h-full [&_.text-2xl]:text-lg [&_.text-lg]:text-base [&_.text-xl]:text-lg [&_button]:text-xs [&_input]:h-8 [&_input]:text-xs [&_label]:text-[11px]">
+        <div id="patrimonio" className="scroll-mt-24 h-full text-sm [&>*]:h-full [&_.text-2xl]:text-lg [&_.text-lg]:text-base [&_.text-xl]:text-lg [&_button]:text-xs [&_input]:h-8 [&_input]:text-xs [&_label]:text-[11px]">
           <WealthEditor
             value={wealth}
             onChange={(next) => {
