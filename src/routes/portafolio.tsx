@@ -166,12 +166,16 @@ function PortafolioContent() {
   const totalValue = enriched.reduce((s, h) => s + h.value, 0);
   const totalCost = enriched.reduce((s, h) => s + h.cost, 0);
   const totalGain = totalValue - totalCost;
+  const totalRet = totalCost ? (totalGain / totalCost) * 100 : 0;
   const dividends = enriched.reduce((s, h) => s + h.dividends, 0);
 
   // ---- Análisis basado en tu data real ----
   const weightedReturn = totalValue
     ? enriched.reduce((s, h) => s + h.growth * 100 * h.value, 0) / totalValue
     : 0;
+  // Valor futuro: proyección al edad de retiro con el retorno ponderado del portafolio.
+  const yearsToRetire = Math.max(1, (profile.retire_age || 60) - (profile.age ?? 30));
+  const futureValue = Math.round(totalValue * Math.pow(1 + weightedReturn / 100, yearsToRetire));
   const riskWeight = totalValue
     ? enriched
         .filter((h) => h.type === "Cripto" || h.type === "Acción")
@@ -373,7 +377,7 @@ function PortafolioContent() {
 
       <Panel
         title={t("Posiciones", "Positions")}
-        description={`${fmt(totalValue)} · ${enriched.length} ${t("posiciones", "positions")}`}
+        description={`${enriched.length} ${t("posiciones", "positions")}`}
         actions={
           <Link
             to="/mi-perfil"
@@ -403,9 +407,34 @@ function PortafolioContent() {
           ))}
         </Tabs>
 
-        <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2.5">
-          <span className="text-xs text-muted-foreground">{t("Total", "Total")}</span>
-          <span className="numeric text-base font-semibold">{fmt(totalValue)}</span>
+        <div className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border/60 bg-border/40 md:grid-cols-4">
+          <div className="bg-elevated/60 p-3">
+            <p className="text-[11px] text-muted-foreground">{t("Valor", "Value")}</p>
+            <p className="numeric text-base font-semibold">{fmt(totalValue)}</p>
+          </div>
+          <div className="bg-elevated/60 p-3">
+            <p className="text-[11px] text-muted-foreground">{t("Ganancia", "Gain")}</p>
+            <p className={cn("numeric text-base font-semibold", totalGain >= 0 ? "text-positive" : "text-negative")}>
+              {totalGain >= 0 ? "+" : ""}
+              {fmt(totalGain)}
+            </p>
+          </div>
+          <div className="bg-elevated/60 p-3">
+            <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
+            <p className={cn("numeric text-base font-semibold", totalRet >= 0 ? "text-positive" : "text-negative")}>
+              {totalRet > 0 ? "+" : ""}
+              {totalRet.toFixed(1)}%
+            </p>
+          </div>
+          <div className="bg-elevated/60 p-3">
+            <p className="text-[11px] text-muted-foreground">
+              {t("Valor futuro", "Future value")}{" "}
+              <span className="text-muted-foreground/70">
+                · {yearsToRetire} {t("años", "yrs")}
+              </span>
+            </p>
+            <p className="numeric text-base font-semibold">{fmt(futureValue)}</p>
+          </div>
         </div>
 
         <div className="mt-4 border-t border-border/50 pt-4">
