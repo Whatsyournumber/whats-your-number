@@ -211,10 +211,14 @@ export const RULES: CategoryRule[] = [
       "discoteca", "club nocturno", "nightclub", "night club", "beach club", "lounge", "rooftop",
       "roofbar", "terrace", "terraza", "cine", "cinema", "cinepolis", "cinépolis", "yelmo", "teatro",
       "theater", "concierto", "concert", "festival", "ticketmaster", "eventbrite", "entradas eventos",
-      "taquillas", "boliche", "bowling", "karaoke", "casino", "entretenimiento", "nightlife", "copas",
-      "wine bar", "vinoteca", "fandango", "ocio", "club", "clubs", "clubes",
-      "vida nocturna", "vidanocturna", "night", "noche", "after", "antro", "coctele",
-
+      "taquillas", "boliche", "boliches", "bowling", "karaoke", "casino", "entretenimiento",
+      "nightlife", "copas", "wine bar", "vinoteca", "fandango", "ocio", "club", "clubs", "clubes",
+      "vida nocturna", "vidanocturna", "night", "noche", "after", "antro", "antros", "coctele",
+      // Regionalismos de discoteca/vida nocturna por país
+      "balada", "boate", "boîte", "boite", "carrete", "farra", "parranda", "guateque", "marcha",
+      "movida", "pachanga", "peña", "pena", "whiskeria", "whiskería", "discoteque", "discoteck",
+      "macrodisco", "sala de fiestas", "sala fiestas", "salón de baile", "salon de baile",
+      "cantina", "taquilla", "juerga", "rumba", "guaro", "chiquiteca", "tarima",
     ],
   },
   {
