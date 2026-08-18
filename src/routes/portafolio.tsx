@@ -699,7 +699,15 @@ function PortafolioContent() {
       </Panel>
 
       <Panel
-        title={t("Mercado en vivo", "Live market")}
+        title={
+          <span className="inline-flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-positive opacity-70" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-positive shadow-[0_0_10px_hsl(var(--positive))]" />
+            </span>
+            {t("Mercado en vivo", "Live market")}
+          </span>
+        }
         description={t("ETFs, acciones y cripto · precios reales, actualizados cada minuto", "ETFs, stocks and crypto · real prices, refreshed every minute")}
         actions={
           <button
@@ -723,7 +731,8 @@ function PortafolioContent() {
             }
           }}
         >
-          <div className="relative w-full max-w-xs">
+          <div className="relative w-full max-w-sm">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={newSymbol}
               onChange={(e) => {
@@ -732,9 +741,21 @@ function PortafolioContent() {
               }}
               onFocus={() => setSearchOpen(true)}
               onBlur={() => window.setTimeout(() => setSearchOpen(false), 150)}
-              placeholder={t("Busca por nombre o ticker: JPMorgan, VOO, TSLA, BTC-USD…", "Search by name or ticker: JPMorgan, VOO, TSLA, BTC-USD…")}
-              className="h-9"
+              placeholder={t("Busca por nombre o ticker…", "Search by name or ticker…")}
+              className="h-10 rounded-full border-border/60 bg-elevated/70 pl-9 pr-9 text-sm transition focus-visible:border-primary/60 focus-visible:ring-2 focus-visible:ring-primary/25"
             />
+            {newSymbol && (
+              <button
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => setNewSymbol("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition hover:text-foreground"
+                aria-label={t("Limpiar", "Clear")}
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+
             {searchOpen && newSymbol.trim().length >= 1 && (
               <div className="absolute left-0 top-11 z-30 w-[min(24rem,90vw)] overflow-hidden rounded-xl border border-border/60 bg-elevated shadow-xl">
                 {searchQuery.isFetching && !searchQuery.data && (
