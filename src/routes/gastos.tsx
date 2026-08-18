@@ -254,10 +254,8 @@ function Gastos() {
       map.delete(name);
     }
     const rest = Array.from(map.values()).filter((c) => c.amount > 0 || showEmptyCategories);
-    const all = [...ordered, ...rest].sort((a, b) => b.amount - a.amount);
-    const custom = all.filter((r) => customNames.has(r.name));
-    const others = all.filter((r) => !customNames.has(r.name));
-    return [...others, ...custom];
+    // Siempre de mayor a menor monto, sin importar si la categoría es propia o base.
+    return [...ordered, ...rest].sort((a, b) => b.amount - a.amount);
   }, [byCategory, categories.names, categories.items, showEmptyCategories]);
 
 
