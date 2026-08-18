@@ -197,6 +197,10 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
                   options={PROBABILITY_OPTIONS.map((p) => ({ value: String(p), label: `${p}%` }))}
                 />
               </InlineRow>
+              <InlineRow label={t("Rentabilidad anual esperada", "Expected annual return")}>
+                <Pct value={h.expected_return} onChange={(n) => patch(h.id, { expected_return: n })} />
+              </InlineRow>
+
               <p className="text-[11px] text-muted-foreground">
                 {t("Valor ponderado", "Weighted value")}: {fmt(Math.round((h.manual_value * h.probability) / 100))}
               </p>
