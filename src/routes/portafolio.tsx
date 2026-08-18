@@ -106,9 +106,11 @@ function PortafolioContent() {
     .map((h) => {
       const value = holdingValue(h, prices);
       const growth = Math.max(0, h.expected_return || 7) / 100;
+      const tickerLabel = h.ticker || h.label || t("Activo", "Asset");
       return {
-        ticker: h.ticker || h.label || t("Activo", "Asset"),
-        name: h.label && h.label !== (h.ticker || "") ? h.label : kindSubtitle(h.kind),
+        ticker: tickerLabel,
+        name: h.label && h.label !== tickerLabel ? h.label : kindSubtitle(h.kind),
+
         type: typeOf(h.kind),
         value,
         growth,
