@@ -91,10 +91,10 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
       <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Summary label={t("Activos", "Assets")} value={fmtShort(assetsTotal)} />
         <Summary label={t("Deudas", "Debts")} value={fmtShort(debtTotal)} negative />
-        <Summary label={t("Patrimonio neto", "Net worth")} value={fmt(assetsTotal - debtTotal)} accent />
+        <Summary label={t("Patrimonio neto", "Net worth")} value={fmtShort(assetsTotal - debtTotal)} accent />
         <Summary
           label={t("Aportes / mes", "Contributions / mo")}
-          value={fmt(monthlyIn)}
+          value={fmtShort(monthlyIn)}
           hint={rentIncome > 0 ? `${t("Renta", "Rent")} ${fmt(rentIncome)}` : undefined}
         />
       </div>
@@ -300,9 +300,11 @@ function Section({
 
 function Summary({ label, value, hint, accent, negative }: { label: string; value: string; hint?: string | undefined; accent?: boolean; negative?: boolean }) {
   return (
-    <div className={cn("rounded-xl border border-border/60 bg-elevated/50 p-3", accent && "border-primary/40 bg-primary/10")}>
-      <p className="text-[11px] text-muted-foreground">{label}</p>
-      <p className={cn("numeric mt-0.5 text-base font-semibold", negative && "text-negative")}>{value}</p>
+    <div className={cn("min-w-0 rounded-xl border border-border/60 bg-elevated/50 p-3", accent && "border-primary/40 bg-primary/10")}>
+      <p className="truncate text-[11px] text-muted-foreground">{label}</p>
+      <p className={cn("numeric mt-0.5 truncate text-sm font-semibold sm:text-base", negative && "text-negative")} title={value}>
+        {value}
+      </p>
       {hint ? <p className="mt-0.5 text-[11px] text-muted-foreground">{hint}</p> : null}
     </div>
   );
