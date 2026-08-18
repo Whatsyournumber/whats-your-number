@@ -269,9 +269,11 @@ function PortafolioContent() {
       : null,
   ].filter(Boolean) as { tone: "warn" | "good"; text: string }[];
 
-  // Real market series: S&P 500 vs a blend that mirrors your allocation (equities → SPY, crypto → BTC, cash → 0%).
+  // Real market series: benchmarks vs a blend that mirrors your allocation (equities → SPY, crypto → BTC, cash → 0%).
   const series = seriesQuery.data?.series ?? {};
-  const spx = series["^GSPC"] ?? [];
+  const benchSymbol = benchmark === "nasdaq" ? "^IXIC" : benchmark === "world" ? "URTH" : "^GSPC";
+  const benchName = benchmark === "nasdaq" ? "Nasdaq 100" : benchmark === "world" ? "MSCI World" : "S&P 500";
+  const benchSeries = series[benchSymbol] ?? [];
   const spy = series["SPY"] ?? [];
   const btc = series["BTC-USD"] ?? [];
   const equityValue = profile.assets_etf + profile.assets_retirement + profile.assets_stocks;
@@ -280,11 +282,71 @@ function PortafolioContent() {
   const base = equityValue + cryptoValue + cashValue;
   const wEq = base ? equityValue / base : 1;
   const wCr = base ? cryptoValue / base : 0;
-  const benchmarkData = spx.map((p, i) => ({
+  const benchmarkData = benchSeries.map((p, i) => ({
     label: p.label,
-    sp500: p.value,
+    bench: p.value,
     portfolio: (spy[i]?.value ?? p.value) * wEq + (btc[i]?.value ?? 0) * wCr,
   }));
+
+  // ---- Estadística real: volatilidad, drawdown, beta, correlación, Sharpe ----
+  const toReturns = (vals: number[]) =>
+    vals.slice(1).map((v, i) => (1 + v / 100) / (1 + (vals[i] ?? 0) / 100) - 1);
+  const pRet = toReturns(benchmarkData.map((p) => p.portfolio));
+  const bRet = toReturns(benchmarkData.map((p) => p.bench));
+  const mean = (a: number[]) => (a.length ? a.reduce((s, x) => s + x, 0) / a.length : 0);
+  const std = (a: number[]) => {
+    if (a.length < 2) return 0;
+    const m = mean(a);
+    return Math.sqrt(a.reduce((s, x) => s + (x - m) ** 2, 0) / (a.length - 1));
+  };
+  const ann = Math.sqrt(12);
+  const volPort = std(pRet) * ann * 100;
+  const volBench = std(bRet) * ann * 100;
+  const covPB = pRet.length > 1 ? mean(pRet.map((x, i) => (x - mean(pRet)) * ((bRet[i] ?? 0) - mean(bRet)))) : 0;
+  const beta = std(bRet) > 0 ? covPB / std(bRet) ** 2 : 0;
+  const correlation = std(pRet) > 0 && std(bRet) > 0 ? covPB / (std(pRet) * std(bRet)) : 0;
+  const port12 = benchmarkData.length ? benchmarkData[benchmarkData.length - 1]!.portfolio : 0;
+  const bench12 = benchmarkData.length ? benchmarkData[benchmarkData.length - 1]!.bench : 0;
+  const alpha12 = port12 - bench12;
+  const riskFree = 4.2;
+  const sharpe = volPort > 0 ? (port12 - riskFree) / volPort : 0;
+  let peak = -Infinity;
+  let maxDD = 0;
+  for (const p of benchmarkData) {
+    const v = 1 + p.portfolio / 100;
+    peak = Math.max(peak, v);
+    maxDD = Math.min(maxDD, v / peak - 1);
+  }
+  const maxDrawdown = maxDD * 100;
+  const hasStats = benchmarkData.length > 3;
+
+  // ---- Distribución objetivo universal (glidepath por horizonte) ----
+  const horizon = yearsToRetire;
+  const targetEquity = Math.min(80, Math.max(30, 100 - (profile.age ?? 35) * 0.8));
+  const targetAlloc = {
+    equity: Math.round(targetEquity),
+    fixed: Math.round(Math.max(10, 90 - targetEquity - (horizon > 15 ? 5 : 0))),
+    crypto: horizon > 10 ? 5 : 2,
+    cash: 0,
+  };
+  targetAlloc.cash = Math.max(0, 100 - targetAlloc.equity - targetAlloc.fixed - targetAlloc.crypto);
+  const bucketOf = (ty: string) =>
+    ty === "Cripto" ? "crypto" : ty === "Cash" ? "cash" : ty === "Renta fija" || ty === "Estructurado" ? "fixed" : "equity";
+  const currentAlloc = { equity: 0, fixed: 0, crypto: 0, cash: 0 } as Record<string, number>;
+  for (const h of enriched) currentAlloc[bucketOf(h.type)]! += h.value;
+  const buckets = (["equity", "fixed", "crypto", "cash"] as const).map((k) => {
+    const cur = totalValue ? (currentAlloc[k]! / totalValue) * 100 : 0;
+    const tgt = targetAlloc[k];
+    return { key: k, cur, tgt, deltaPct: tgt - cur, deltaAmount: Math.round(((tgt - cur) / 100) * totalValue) };
+  });
+  const bucketLabel: Record<string, string> = {
+    equity: t("Renta variable", "Equities"),
+    fixed: t("Renta fija", "Fixed income"),
+    crypto: t("Cripto / alternativos", "Crypto / alternatives"),
+    cash: t("Cash", "Cash"),
+  };
+  const rebalanceNeeded = buckets.some((b) => Math.abs(b.deltaPct) >= 5);
+
 
 
 
