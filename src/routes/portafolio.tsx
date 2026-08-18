@@ -168,14 +168,14 @@ function PortafolioContent() {
   const totalGain = totalValue - totalCost;
   const totalRet = totalCost ? (totalGain / totalCost) * 100 : 0;
   const dividends = enriched.reduce((s, h) => s + h.dividends, 0);
-  // Valor futuro: proyección al edad de retiro con el retorno ponderado del portafolio.
-  const yearsToRetire = Math.max(1, (profile.retire_age || 60) - (profile.age ?? 30));
-  const futureValue = Math.round(totalValue * Math.pow(1 + weightedReturn / 100, yearsToRetire));
 
   // ---- Análisis basado en tu data real ----
   const weightedReturn = totalValue
     ? enriched.reduce((s, h) => s + h.growth * 100 * h.value, 0) / totalValue
     : 0;
+  // Valor futuro: proyección al edad de retiro con el retorno ponderado del portafolio.
+  const yearsToRetire = Math.max(1, (profile.retire_age || 60) - (profile.age ?? 30));
+  const futureValue = Math.round(totalValue * Math.pow(1 + weightedReturn / 100, yearsToRetire));
   const riskWeight = totalValue
     ? enriched
         .filter((h) => h.type === "Cripto" || h.type === "Acción")
