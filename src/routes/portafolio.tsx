@@ -327,7 +327,6 @@ function PortafolioContent() {
     crypto: t("Cripto / alternativos", "Crypto / alternatives"),
     cash: t("Cash", "Cash"),
   };
-  const rebalanceNeeded = buckets.some((b) => Math.abs(b.deltaPct) >= 5);
 
   // ---- Análisis de riesgo y rebalanceo (2 líneas, basado en data real) ----
   const volPct = hasStats ? volPort : riskWeight * 100 * 1.2;
@@ -607,61 +606,6 @@ function PortafolioContent() {
           </p>
         </div>
       </Panel>
-
-      <Panel
-        title={t("Distribución objetivo y rebalanceo", "Target allocation & rebalancing")}
-        description={t(
-          `Modelo universal por horizonte (${horizon} años) · qué mover para llegar al objetivo`,
-          `Universal model by horizon (${horizon} yrs) · what to move to hit the target`,
-        )}
-      >
-        <div className="space-y-2">
-          {buckets.map((b) => (
-            <div key={b.key} className="grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 md:grid-cols-5">
-              <div className="col-span-2">
-                <p className="text-sm font-medium">{bucketLabel[b.key]}</p>
-                <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-border/50">
-                  <div className="h-full rounded-full bg-primary/70" style={{ width: `${Math.min(100, b.cur)}%` }} />
-                </div>
-              </div>
-              <div>
-                <p className="text-[11px] text-muted-foreground">{t("Actual", "Current")}</p>
-                <p className="numeric text-sm">{b.cur.toFixed(0)}%</p>
-              </div>
-              <div>
-                <p className="text-[11px] text-muted-foreground">{t("Objetivo", "Target")}</p>
-                <p className="numeric text-sm">{b.tgt}%</p>
-              </div>
-              <div>
-                <p className="text-[11px] text-muted-foreground">{t("Ajuste", "Adjustment")}</p>
-                <p
-                  className={cn(
-                    "numeric text-sm font-semibold",
-                    Math.abs(b.deltaPct) < 5 ? "text-muted-foreground" : b.deltaPct > 0 ? "text-positive" : "text-amber-200",
-                  )}
-                >
-                  {Math.abs(b.deltaPct) < 5
-                    ? t("En rango", "In range")
-                    : `${b.deltaPct > 0 ? t("Aportar", "Add") : t("Reducir", "Trim")} ${fmt(Math.abs(b.deltaAmount))}`}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-        <p className="mt-3 border-t border-border/50 pt-3 text-[11px] leading-relaxed text-muted-foreground">
-          {rebalanceNeeded
-            ? t(
-                `Tu mezcla se desvía del objetivo. Rebalancea 1–2 veces al año con aportes nuevos (más eficiente en impuestos) antes de vender. Volatilidad actual ${volPort.toFixed(1)}% vs ${volBench.toFixed(1)}% del índice.`,
-                `Your mix drifts from target. Rebalance 1–2 times a year using new contributions (more tax-efficient) before selling. Current volatility ${volPort.toFixed(1)}% vs ${volBench.toFixed(1)}% for the index.`,
-              )
-            : t(
-                `Tu mezcla está alineada con el objetivo. Mantén el rumbo y revisa cada 6 meses. Sharpe estimado ${sharpe.toFixed(2)}.`,
-                `Your mix is aligned with the target. Stay the course and review every 6 months. Estimated Sharpe ${sharpe.toFixed(2)}.`,
-              )}
-        </p>
-      </Panel>
-
-
 
       <Panel
         title={t("Mercado en vivo", "Live market")}
