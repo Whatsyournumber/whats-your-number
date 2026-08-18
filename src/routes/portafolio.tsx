@@ -359,57 +359,55 @@ function PortafolioContent() {
   const riskMetrics: { label: string; value: string; hint: string }[] = hasStats
     ? [
         {
-          label: t("Volatilidad", "Volatility"),
+          label: `📈 ${t("Volatilidad", "Volatility")}`,
           value: `${volPct.toFixed(1)}%`,
-          hint: t(`cuánto oscila · índice ${volBench.toFixed(1)}%`, `how much it swings · index ${volBench.toFixed(1)}%`),
+          hint: t("Qué tanto puede variar tu dinero", "How much your money can swing"),
         },
         {
-          label: t("Beta", "Beta"),
+          label: `📊 ${t("Beta", "Beta")}`,
           value: beta.toFixed(2),
-          hint:
-            beta > 1
-              ? t("se mueve más que el mercado", "moves more than the market")
-              : t("se mueve menos que el mercado", "moves less than the market"),
+          hint: t("Qué tanto depende del mercado", "How tied it is to the market"),
         },
         {
-          label: t("Caída máxima", "Max drawdown"),
+          label: `📉 ${t("Caída máxima", "Max drawdown")}`,
           value: `${maxDrawdown.toFixed(1)}%`,
-          hint: t("peor bajada en 12 meses", "worst drop in 12 months"),
+          hint: t("Lo máximo que podrías haber perdido", "The most you could have lost"),
         },
         {
-          label: t("Sharpe", "Sharpe"),
+          label: `⭐ ${t("Sharpe", "Sharpe")}`,
           value: sharpe.toFixed(2),
-          hint:
-            sharpe > 1
-              ? t("buen retorno por riesgo", "good return per unit of risk")
-              : t("retorno bajo para el riesgo", "low return for the risk taken"),
+          hint: t("Si el riesgo realmente vale la pena", "Whether the risk is worth it"),
         },
         {
-          label: t("Concentración", "Concentration"),
+          label: `🎯 ${t("Concentración", "Concentration")}`,
           value: `${concentration.toFixed(0)}%`,
-          hint: top ? t(`en ${top.ticker}`, `in ${top.ticker}`) : t("mayor posición", "largest position"),
+          hint: top
+            ? t(`Cuánto pesa tu activo mayor (${top.ticker})`, `How much your top asset (${top.ticker}) weighs`)
+            : t("Cuánto pesa tu activo mayor", "How much your top asset weighs"),
         },
       ]
     : [
         {
-          label: t("Volatilidad estimada", "Estimated volatility"),
+          label: `📈 ${t("Volatilidad estimada", "Estimated volatility")}`,
           value: `${volPct.toFixed(0)}%`,
-          hint: t("oscilación esperada al año", "expected swing per year"),
+          hint: t("Qué tanto puede variar tu dinero", "How much your money can swing"),
         },
         {
-          label: t("Activos volátiles", "Volatile assets"),
+          label: `⚡ ${t("Activos volátiles", "Volatile assets")}`,
           value: `${(riskWeight * 100).toFixed(0)}%`,
-          hint: t("acciones y cripto", "stocks and crypto"),
+          hint: t("En acciones y cripto", "In stocks and crypto"),
         },
         {
-          label: t("Concentración", "Concentration"),
+          label: `🎯 ${t("Concentración", "Concentration")}`,
           value: `${concentration.toFixed(0)}%`,
-          hint: top ? t(`en ${top.ticker}`, `in ${top.ticker}`) : t("mayor posición", "largest position"),
+          hint: top
+            ? t(`Cuánto pesa tu activo mayor (${top.ticker})`, `How much your top asset (${top.ticker}) weighs`)
+            : t("Cuánto pesa tu activo mayor", "How much your top asset weighs"),
         },
         {
-          label: t("Deuda", "Debt"),
+          label: `💳 ${t("Deuda", "Debt")}`,
           value: `${debtPct.toFixed(0)}%`,
-          hint: t("sobre el valor del portafolio", "of portfolio value"),
+          hint: t("Cuánto debes frente a tu portafolio", "How much you owe vs your portfolio"),
         },
       ];
   // Línea 2 — recomendación universal de distribución y balanceo según el drift.
