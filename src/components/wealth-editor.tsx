@@ -126,6 +126,9 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
               <InlineRow label={t("Nombre", "Name")}>
                 <Input value={h.label} onChange={(e) => patch(h.id, { label: e.target.value })} className="h-9" />
               </InlineRow>
+              <InlineRow label={t("Valor de compra", "Purchase price")}>
+                <Money value={h.cost_basis} onChange={(n) => patch(h.id, { cost_basis: n })} />
+              </InlineRow>
               <InlineRow label={t("Valor actual", "Current value")}>
                 <Money value={h.manual_value} onChange={(n) => patch(h.id, { manual_value: n })} />
               </InlineRow>
@@ -138,9 +141,31 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
               <InlineRow label={t("Plusvalía esperada anual", "Expected annual appreciation")}>
                 <Pct value={h.expected_return} onChange={(n) => patch(h.id, { expected_return: n })} />
               </InlineRow>
-              <p className="text-[11px] text-muted-foreground">
-                {t("Equity neto", "Net equity")}: {fmt(Math.max(0, h.manual_value - h.linked_liability))}
-              </p>
+              <div className="space-y-1 text-[11px] text-muted-foreground">
+                <p>
+                  {t("Equity neto", "Net equity")}:{" "}
+                  <span className="text-foreground/80">{fmt(Math.max(0, h.manual_value - h.linked_liability))}</span>
+                </p>
+                {h.cost_basis > 0 && h.manual_value > 0 && (
+                  <p>
+                    {t("Ganancia vs compra", "Gain vs purchase")}:{" "}
+                    <span className={h.manual_value >= h.cost_basis ? "text-emerald-400/90" : "text-rose-400/80"}>
+                      {h.manual_value >= h.cost_basis ? "+" : "−"}
+                      {fmt(Math.abs(h.manual_value - h.cost_basis))} (
+                      {((Math.abs(h.manual_value - h.cost_basis) / h.cost_basis) * 100).toFixed(1)}%)
+                    </span>
+                  </p>
+                )}
+                {h.monthly_income > 0 && h.manual_value > 0 && (
+                  <p>
+                    {t("Rentabilidad por renta", "Rental yield")}:{" "}
+                    <span className="text-foreground/80">
+                      {(((h.monthly_income * 12) / h.manual_value) * 100).toFixed(1)}% {t("anual", "annual")}
+                    </span>
+                  </p>
+                )}
+              </div>
+
             </CollapsibleCard>
           ))}
           <AddButton onClick={() => add("property", t("Propiedad", "Property"))}>
