@@ -1,5 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { Area, AreaChart, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
+
+import { cn } from "@/lib/utils";
+
 
 import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
@@ -110,8 +114,11 @@ function PatrimonioContent() {
     })
     .filter((g) => g.rows.length > 0)
     .sort((a, b) => b.total - a.total);
-  const detailTotal = detailRows.reduce((s, r) => s + r.value, 0);
-  const detailAnnual = Math.round(detailRows.reduce((s, r) => s + (r.value * (r.rate || 0)) / 100, 0));
+  const [activeTab, setTab] = useState("all");
+  const visibleRows = activeTab === "all" ? detailRows : detailRows.filter((r) => r.group.key === activeTab);
+  const visibleTotal = visibleRows.reduce((s, r) => s + r.value, 0);
+  const visibleAnnual = Math.round(visibleRows.reduce((s, r) => s + (r.value * (r.rate || 0)) / 100, 0));
+
 
 
   return (
@@ -220,68 +227,71 @@ function PatrimonioContent() {
         </Panel>
       </div>
 
-      <Panel
-        title={t("Detalle de tus activos", "Your assets in detail")}
-        description={t("Inversiones, inmuebles, fondo de retiro, activos futuros y liquidez.", "Investments, real estate, retirement fund, future assets and cash.")}
-      >
-        {groups.length === 0 ? (
+      <Panel title={t("Detalle de tus activos", "Your assets in detail")}>
+        {detailRows.length === 0 ? (
           <p className="text-sm text-muted-foreground">{t("Aún no registras activos.", "You haven't recorded any assets yet.")}</p>
         ) : (
-          <div className="space-y-5">
-            {groups.map((g) => (
-              <div key={g.key}>
-                <div className="mb-2 flex items-center justify-between">
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{g.label}</p>
-                  <span className="numeric text-xs font-semibold text-muted-foreground">{fmt(g.total)}</span>
-                </div>
-                <div className="space-y-2">
-                  {g.rows.map((r) => {
-                    const annual = Math.round((r.value * (r.rate || 0)) / 100);
-                    const meta = [
-                      r.ticker && r.quantity > 0 ? `${r.quantity} u.` : null,
-                      r.monthlyContribution > 0 ? t(`+${fmt(r.monthlyContribution)}/mes`, `+${fmt(r.monthlyContribution)}/mo`) : null,
-                      r.monthlyIncome > 0 ? t(`renta ${fmt(r.monthlyIncome)}/mes`, `income ${fmt(r.monthlyIncome)}/mo`) : null,
-                      r.mortgage > 0 ? t(`hipoteca ${fmt(r.mortgage)}`, `mortgage ${fmt(r.mortgage)}`) : null,
-                      r.targetYear ? String(r.targetYear) : null,
-                      r.probability != null && r.probability < 100 ? `${r.probability}%` : null,
-                    ].filter(Boolean);
-                    return (
-                      <div key={r.id} className="grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 md:grid-cols-6">
-                        <div className="col-span-2 md:col-span-2 min-w-0">
-                          <p className="truncate text-sm font-medium">
-                            {r.label}
-                            {r.ticker ? <span className="ml-2 text-xs text-muted-foreground">{r.ticker}</span> : null}
-                          </p>
-                          <p className="truncate text-xs text-muted-foreground">
-                            {[r.sub, ...meta].join(" · ")}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-[11px] text-muted-foreground">{t("Valor", "Value")}</p>
-                          <p className="numeric text-sm">{fmt(r.value)}</p>
-                        </div>
-                        <div>
-                          <p className="text-[11px] text-muted-foreground">{t("Ganancia anual", "Annual gain")}</p>
-                          <p className="numeric text-sm text-positive">{fmt(annual)}</p>
-                          <p className="text-[10px] text-muted-foreground">{(r.rate || 0).toFixed(1)}%</p>
-                        </div>
-                        <div>
-                          <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
-                          <p className="numeric text-sm text-positive">{fmt(Math.round(annual / 12))}</p>
-                        </div>
-                        <div>
-                          <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
-                          <p className="numeric text-sm font-semibold text-positive">
-                            {(r.rate || 0) > 0 ? "+" : ""}
-                            {(r.rate || 0).toFixed(1)}%
-                          </p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
+          <div className="space-y-4">
+            <div className="flex flex-wrap gap-1 rounded-full bg-elevated/60 p-1">
+              {[{ key: "all", label: t("Todos", "All") }, ...groups.map((g) => ({ key: g.key, label: g.label }))].map((tab) => (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => setTab(tab.key)}
+                  className={cn(
+                    "rounded-full px-4 py-1.5 text-sm transition-colors",
+                    activeTab === tab.key ? "bg-background font-semibold text-foreground" : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="space-y-2">
+              {visibleRows.map((r) => {
+                const annual = Math.round((r.value * (r.rate || 0)) / 100);
+                const meta = [
+                  r.sub,
+                  r.ticker && r.quantity > 0 ? `${r.quantity} u.` : null,
+                  r.monthlyContribution > 0 ? t(`+${fmt(r.monthlyContribution)}/mes`, `+${fmt(r.monthlyContribution)}/mo`) : null,
+                  r.monthlyIncome > 0 ? t(`renta ${fmt(r.monthlyIncome)}/mes`, `income ${fmt(r.monthlyIncome)}/mo`) : null,
+                  r.mortgage > 0 ? t(`hipoteca ${fmt(r.mortgage)}`, `mortgage ${fmt(r.mortgage)}`) : null,
+                  r.targetYear ? String(r.targetYear) : null,
+                  r.probability != null && r.probability < 100 ? `${r.probability}%` : null,
+                ].filter(Boolean);
+                return (
+                  <div key={r.id} className="grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 md:grid-cols-6">
+                    <div className="col-span-2 md:col-span-2 min-w-0">
+                      <p className="truncate text-sm font-medium">
+                        {r.label}
+                        {r.ticker ? <span className="ml-2 text-xs text-muted-foreground">{r.ticker}</span> : null}
+                      </p>
+                      <p className="truncate text-xs text-muted-foreground">{meta.join(" · ")}</p>
+                    </div>
+                    <div>
+                      <p className="text-[11px] text-muted-foreground">{t("Valor", "Value")}</p>
+                      <p className="numeric text-sm">{fmt(r.value)}</p>
+                    </div>
+                    <div>
+                      <p className="text-[11px] text-muted-foreground">{t("Ganancia anual", "Annual gain")}</p>
+                      <p className="numeric text-sm text-positive">{fmt(annual)}</p>
+                    </div>
+                    <div>
+                      <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
+                      <p className="numeric text-sm text-positive">{fmt(Math.round(annual / 12))}</p>
+                    </div>
+                    <div>
+                      <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
+                      <p className="numeric text-sm font-semibold text-positive">
+                        {(r.rate || 0) > 0 ? "+" : ""}
+                        {(r.rate || 0).toFixed(1)}%
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
 
             <div className="grid grid-cols-2 items-center gap-3 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2.5 md:grid-cols-6">
               <div className="col-span-2 md:col-span-2">
@@ -289,25 +299,26 @@ function PatrimonioContent() {
               </div>
               <div>
                 <p className="text-[11px] text-muted-foreground">{t("Valor", "Value")}</p>
-                <p className="numeric text-sm font-semibold">{fmt(detailTotal)}</p>
+                <p className="numeric text-sm font-semibold">{fmt(visibleTotal)}</p>
               </div>
               <div>
                 <p className="text-[11px] text-muted-foreground">{t("Ganancia anual", "Annual gain")}</p>
-                <p className="numeric text-sm font-semibold text-positive">{fmt(detailAnnual)}</p>
+                <p className="numeric text-sm font-semibold text-positive">{fmt(visibleAnnual)}</p>
               </div>
               <div>
                 <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
-                <p className="numeric text-sm font-semibold text-positive">{fmt(Math.round(detailAnnual / 12))}</p>
+                <p className="numeric text-sm font-semibold text-positive">{fmt(Math.round(visibleAnnual / 12))}</p>
               </div>
               <div>
                 <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
                 <p className="numeric text-sm font-semibold text-positive">
-                  {detailTotal > 0 ? `+${((detailAnnual / detailTotal) * 100).toFixed(1)}` : "0.0"}%
+                  {visibleTotal > 0 ? `+${((visibleAnnual / visibleTotal) * 100).toFixed(1)}` : "0.0"}%
                 </p>
               </div>
             </div>
           </div>
         )}
+
 
         <Button asChild variant="outline" size="sm" className="mt-4 w-full rounded-full">
           <Link to="/mi-perfil" hash="patrimonio">{t("Editar mi patrimonio", "Edit my net worth")}</Link>
