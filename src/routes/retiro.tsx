@@ -434,7 +434,7 @@ function RetiroContent() {
           }
           className="flex flex-col lg:col-span-2"
         >
-          <div className="min-h-[240px] max-h-[360px] flex-1">
+          <div className="min-h-[260px] flex-1">
 
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data} margin={{ left: -8, right: 8, top: 8, bottom: 0 }}>
