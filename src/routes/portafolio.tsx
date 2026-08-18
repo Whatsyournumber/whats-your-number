@@ -580,10 +580,11 @@ function PortafolioContent() {
   const ddDesc = maxDrawdown < -25 ? t("caídas severas en el pasado", "severe past drawdowns") : maxDrawdown < -15 ? t("caídas notables pero asumibles", "notable but manageable drawdowns") : t("caídas controladas", "controlled drawdowns");
   const sharpeDesc = sharpe > 1 ? t("buen retorno por unidad de riesgo", "good return per unit of risk") : sharpe > 0.5 ? t("retorno justo para el riesgo asumido", "fair return for the risk taken") : t("el retorno no compensa el riesgo", "return doesn't justify the risk");
   const concDesc = concentration > 40 ? top ? t(`excesiva dependencia de ${top.ticker}`, `over-reliance on ${top.ticker}`) : t("excesiva concentración", "over-concentration") : concentration > 25 ? t("concentración media", "medium concentration") : t("bien diversificado", "well diversified");
-  const metricSummary = t(
-    `${volDesc}, ${betaDesc}, ${ddDesc}; ${sharpeDesc} y ${concDesc}.`,
-    `${volDesc}, ${betaDesc}, ${ddDesc}; ${sharpeDesc} and ${concDesc}.`,
-  );
+  const cap = (s: string) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
+  const metricSummary = cap(t(
+    `Tu portafolio presenta ${volDesc} y ${betaDesc}. Históricamente ha tenido ${ddDesc}, lo que indica cuánto podría bajar en un mal momento. ${sharpeDesc} y está ${concDesc}.`,
+    `Your portfolio shows ${volDesc} and ${betaDesc}. Historically it has had ${ddDesc}, which indicates how much it could fall in a bad moment. ${sharpeDesc} and it is ${concDesc}.`,
+  ));
 
   const types = ["ETF", "Acción", "Renta fija", "Estructurado", "Retiro", "Cripto", "Inmueble", "Cash"] as const;
   const allocation = types
