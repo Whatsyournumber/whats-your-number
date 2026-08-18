@@ -120,6 +120,24 @@ function RetiroContent() {
   })();
   const yearsLabel = `${horizonYears} ${horizonYears === 1 ? t("año", "year") : t("años", "years")}`;
 
+  // Realismo: lo que de verdad te sobra hoy con tus gastos reales (fijos + variables importados).
+  const capacity = Math.max(0, d.income - d.expenses);
+  const feasible = requiredMonthly <= capacity;
+  const shortfallMonthly = Math.max(0, requiredMonthly - capacity);
+  // Con tu capacidad real de ahorro, ¿en cuántos años llegarías?
+  const realisticYears = (() => {
+    if (!isGoal || targetNow <= 0 || goalReached) return 0;
+    const r = rate / 100;
+    const mr = r / 12;
+    let balance = investable;
+    for (let m = 1; m <= 720; m += 1) {
+      balance = balance * (1 + mr) + capacity;
+      if (balance >= targetNow) return Math.round((m / 12) * 10) / 10;
+    }
+    return 0; // no alcanzable en 60 años con el ahorro actual
+  })();
+  const expenseCutNeeded = shortfallMonthly;
+
   // En modo negocio/vivienda el simulador parte del aporte mensual necesario para llegar a tiempo.
   useEffect(() => {
     if (isGoal) setMonthly(requiredMonthly);
@@ -530,7 +548,45 @@ function RetiroContent() {
               ) : null}
             </div>
 
-
+            {isGoal && targetNow > 0 && !goalReached ? (
+              <div className="rounded-xl border border-border/60 bg-elevated/40 p-4 text-[11px] leading-relaxed">
+                <p className="text-xs font-semibold">{t("¿Es realista con tus gastos?", "Is it realistic with your spending?")}</p>
+                <dl className="mt-2 space-y-1">
+                  <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-2">
+                    <dt className="truncate text-muted-foreground">{t("Ingresos", "Income")}</dt>
+                    <dd className="numeric shrink-0 font-medium">{fmt(d.income)}</dd>
+                  </div>
+                  <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-2">
+                    <dt className="truncate text-muted-foreground">{t("Gastos reales", "Actual expenses")}</dt>
+                    <dd className="numeric shrink-0 font-medium">-{fmt(d.expenses)}</dd>
+                  </div>
+                  <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-2 border-t border-border/60 pt-1">
+                    <dt className="truncate text-muted-foreground">{t("Te queda para ahorrar", "Left to save")}</dt>
+                    <dd className="numeric shrink-0 font-semibold">{fmt(capacity)}/{t("mes", "mo")}</dd>
+                  </div>
+                </dl>
+                {feasible ? (
+                  <p className="mt-2 text-primary">
+                    ✅ {t("Alcanzable: el aporte necesario", "Doable: the required saving")} ({fmt(requiredMonthly)}) {t("cabe en tu ahorro actual", "fits your current saving")}
+                    {capacity > 0 ? ` (${Math.round((requiredMonthly / capacity) * 100)}%)` : ""}.
+                  </p>
+                ) : (
+                  <div className="mt-2 space-y-1 text-amber-400">
+                    <p>
+                      ⚠️ {t("Te faltan", "You're short")} {fmt(expenseCutNeeded)}/{t("mes", "mo")}: {t("recorta gastos o sube ingresos", "cut expenses or raise income")}.
+                    </p>
+                    <p className="text-muted-foreground">
+                      {realisticYears > 0
+                        ? `${t("Con tu ahorro actual llegarías en", "At your current saving you'd get there in")} ${realisticYears} ${t("años", "years")}.`
+                        : t("Con tu ahorro actual no llegarías en 60 años.", "At your current saving you wouldn't get there in 60 years.")}
+                    </p>
+                    <Link to="/gastos" className="inline-block text-primary underline underline-offset-2">
+                      {t("Ver dónde recortar", "See where to cut")}
+                    </Link>
+                  </div>
+                )}
+              </div>
+            ) : null}
           </div>
         </Panel>
       </div>
