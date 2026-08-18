@@ -47,12 +47,28 @@ function PortafolioContent() {
     ETF: t("ETF", "ETF"),
     "Acción": t("Acción", "Stock"),
     "Renta fija": t("Renta fija", "Fixed income"),
-    Estructurado: t("Structured product", "Structured product"),
+    Estructurado: t("Producto estructurado", "Structured product"),
     Retiro: t("Fondo de retiro", "Retirement fund"),
     Cripto: t("Cripto", "Crypto"),
     Inmueble: t("Inmueble", "Real estate"),
     Cash: t("Cash", "Cash"),
   };
+  const kindSubtitle = (kind: string) =>
+    kind === "bond"
+      ? t("Bono", "Bond")
+      : kind === "tbill"
+        ? t("Letra del tesoro", "T-Bill")
+        : kind === "note"
+          ? t("Nota", "Note")
+          : kind === "structured"
+            ? t("Producto estructurado", "Structured product")
+            : kind === "etf"
+              ? t("ETF", "ETF")
+              : kind === "stock"
+                ? t("Acción", "Stock")
+                : kind === "crypto"
+                  ? t("Cripto", "Crypto")
+                  : t("Activo", "Asset");
   const { profile } = useProfile();
   const { holdings } = useHoldings();
   const d = buildDataset(profile);
@@ -92,7 +108,7 @@ function PortafolioContent() {
       const growth = Math.max(0, h.expected_return || 7) / 100;
       return {
         ticker: h.ticker || h.label || t("Activo", "Asset"),
-        name: h.label || h.ticker || "",
+        name: h.label && h.label !== (h.ticker || "") ? h.label : kindSubtitle(h.kind),
         type: typeOf(h.kind),
         value,
         growth,
