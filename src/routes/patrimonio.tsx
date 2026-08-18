@@ -306,16 +306,12 @@ function PatrimonioContent() {
                   r.sub,
                   r.ticker && r.quantity > 0 ? `${r.quantity} u.` : null,
                   r.cost > 0 ? t(`Compra ${fmt(r.cost)}`, `Cost ${fmt(r.cost)}`) : null,
-                  r.livePrice
-                    ? t(
-                        `Hoy ${fmt(r.value)} (${new Date().toLocaleDateString("es-ES", { day: "2-digit", month: "short" })})`,
-                        `Today ${fmt(r.value)} (${new Date().toLocaleDateString("en-US", { day: "2-digit", month: "short" })})`,
-                      )
-                    : null,
                   r.monthlyContribution > 0 ? t(`+${fmt(r.monthlyContribution)}/mes`, `+${fmt(r.monthlyContribution)}/mo`) : null,
                   r.targetYear ? String(r.targetYear) : null,
                   r.probability != null && r.probability < 100 ? `${r.probability}%` : null,
                 ].filter(Boolean);
+                const todayLabel = new Date().toLocaleDateString("es-ES", { day: "2-digit", month: "short" });
+                const todayLabelEn = new Date().toLocaleDateString("en-US", { day: "2-digit", month: "short" });
                 return (
                   <div key={r.id} className="grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 md:grid-cols-6">
                     <div className="col-span-2 md:col-span-2 min-w-0">
@@ -324,6 +320,11 @@ function PatrimonioContent() {
                         {r.ticker ? <span className="ml-2 text-xs text-muted-foreground">{r.ticker}</span> : null}
                       </p>
                       <p className="truncate text-xs text-muted-foreground">{meta.join(" · ")}</p>
+                      {r.livePrice ? (
+                        <p className="truncate text-xs text-positive">
+                          {t(`Valor de mercado hoy: ${fmt(r.value)} (${todayLabel})`, `Market value today: ${fmt(r.value)} (${todayLabelEn})`)}
+                        </p>
+                      ) : null}
                     </div>
                     <div>
                       <p className="text-[11px] text-muted-foreground">{t("Valor", "Value")}</p>
