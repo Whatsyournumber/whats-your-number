@@ -110,6 +110,8 @@ function PatrimonioContent() {
         label: h.label || kindLabel(h.kind),
         sub: kindLabel(h.kind),
         ticker: h.ticker,
+        cost,
+        livePrice: h.ticker ? (prices[h.ticker.toUpperCase()] ?? null) : null,
         quantity: h.quantity,
         value: weighted,
         annual,
@@ -303,6 +305,13 @@ function PatrimonioContent() {
                 const meta = [
                   r.sub,
                   r.ticker && r.quantity > 0 ? `${r.quantity} u.` : null,
+                  r.cost > 0 ? t(`Compra ${fmt(r.cost)}`, `Cost ${fmt(r.cost)}`) : null,
+                  r.livePrice
+                    ? t(
+                        `Hoy ${fmt(r.value)} (${new Date().toLocaleDateString("es-ES", { day: "2-digit", month: "short" })})`,
+                        `Today ${fmt(r.value)} (${new Date().toLocaleDateString("en-US", { day: "2-digit", month: "short" })})`,
+                      )
+                    : null,
                   r.monthlyContribution > 0 ? t(`+${fmt(r.monthlyContribution)}/mes`, `+${fmt(r.monthlyContribution)}/mo`) : null,
                   r.targetYear ? String(r.targetYear) : null,
                   r.probability != null && r.probability < 100 ? `${r.probability}%` : null,
