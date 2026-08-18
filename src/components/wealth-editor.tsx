@@ -712,17 +712,6 @@ function InvestmentCard({
           <InlineRow label={t("Valor actual", "Current value")}>
             <Money value={h.manual_value} onChange={(n) => onPatch({ manual_value: n })} />
           </InlineRow>
-          <InlineRow label={t("Costo invertido", "Invested cost")}>
-            <Money value={h.cost_basis} onChange={(n) => onPatch({ cost_basis: n })} />
-          </InlineRow>
-          <InlineRow label={t("Activo subyacente", "Underlying asset")}>
-            <Input
-              value={h.note ?? ""}
-              onChange={(e) => onPatch({ note: e.target.value || null })}
-              placeholder={t("Ej. S&P 500, Nasdaq, oro…", "e.g. S&P 500, Nasdaq, gold…")}
-              className="h-9"
-            />
-          </InlineRow>
           <InlineRow label={t("Protección de capital", "Capital protection")}>
             <Select
               value={String(h.quantity || 100)}
