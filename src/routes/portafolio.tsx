@@ -197,50 +197,11 @@ function PortafolioContent() {
   const debtCost = debts.reduce((s, h) => s + h.manual_value * (Math.max(0, h.expected_return || 0) / 100), 0);
   const netAnnual = (totalValue * weightedReturn) / 100 - debtCost;
   const passiveMonthly = dividends / 12;
-  // Nivel de riesgo del portafolio: volatilidad real + concentración + apalancamiento.
+  // Nivel de riesgo del portafolio: volatilidad + concentración + apalancamiento.
   const riskScore =
     riskWeight * 100 * 0.6 + Math.max(0, concentration - 30) * 0.6 + (totalValue ? (debtTotal / totalValue) * 40 : 0);
   const riskLevel: "Alto" | "Medio" | "Bajo" = riskScore > 55 ? "Alto" : riskScore > 28 ? "Medio" : "Bajo";
   const riskLabel = t(riskLevel, riskLevel === "Alto" ? "High" : riskLevel === "Medio" ? "Medium" : "Low");
-  // Línea 1 — métricas de volatilidad y riesgo basadas en data real.
-  const volPct = hasStats ? volPort : riskWeight * 100 * 1.2;
-  const debtPct = totalValue ? (debtTotal / totalValue) * 100 : 0;
-  const riskReason = hasStats
-    ? t(
-        `Volatilidad ${volPct.toFixed(1)}% (índice ${volBench.toFixed(1)}%) · β ${beta.toFixed(2)} · caída máx ${maxDrawdown.toFixed(1)}% · Sharpe ${sharpe.toFixed(2)} · concentración ${concentration.toFixed(0)}%`,
-        `Volatility ${volPct.toFixed(1)}% (index ${volBench.toFixed(1)}%) · β ${beta.toFixed(2)} · max drawdown ${maxDrawdown.toFixed(1)}% · Sharpe ${sharpe.toFixed(2)} · concentration ${concentration.toFixed(0)}%`,
-      )
-    : t(
-        `Volatilidad estimada ${volPct.toFixed(0)}% · activos volátiles ${(riskWeight * 100).toFixed(0)}% · mayor posición ${concentration.toFixed(0)}% · deuda ${debtPct.toFixed(0)}%`,
-        `Estimated volatility ${volPct.toFixed(0)}% · volatile assets ${(riskWeight * 100).toFixed(0)}% · largest position ${concentration.toFixed(0)}% · debt ${debtPct.toFixed(0)}%`,
-      );
-  // Línea 2 — recomendación universal de distribución y balanceo basada en el drift real.
-  const drift = buckets.find((b) => Math.abs(b.deltaPct) === Math.max(...buckets.map((x) => Math.abs(x.deltaPct))));
-  const biggestDrift = drift && Math.abs(drift.deltaPct) >= 5 ? drift : null;
-  const riskAdvice = biggestDrift
-    ? biggestDrift.deltaPct > 0
-      ? t(
-          `Rebalanceo: sube ${biggestDrift.tgt}% en ${bucketLabel[biggestDrift.key]} (ahora ${biggestDrift.cur.toFixed(0)}%). Usa aportes nuevos antes de vender para diferir impuestos; revisa cada 6 meses.`,
-          `Rebalance: raise ${bucketLabel[biggestDrift.key]} to ${biggestDrift.tgt}% (now ${biggestDrift.cur.toFixed(0)}%). Use new contributions before selling to defer taxes; review every 6 months.`,
-        )
-      : t(
-          `Rebalanceo: reduce ${bucketLabel[biggestDrift.key]} del ${biggestDrift.cur.toFixed(0)}% al ${biggestDrift.tgt}% objetivo. Vende lo que sobra y redistribuye en las clases por debajo de su meta.`,
-          `Rebalance: trim ${bucketLabel[biggestDrift.key]} from ${biggestDrift.cur.toFixed(0)}% to the ${biggestDrift.tgt}% target. Sell the excess and redistribute into below-target classes.`,
-        )
-    : riskLevel === "Alto"
-      ? t(
-          "Distribución alineada, pero el riesgo es alto: baja exposición volátil y diversifica la mayor posición antes de añadir.",
-          "Allocation aligned, but risk is high: cut volatile exposure and diversify the largest position before adding more.",
-        )
-      : riskLevel === "Medio"
-        ? t(
-            "Distribución alineada con tu horizonte. Mantén 6 meses de gastos en cash y revisa el balance cada 6 meses.",
-            "Allocation aligned with your horizon. Keep 6 months of expenses in cash and review the balance every 6 months.",
-          )
-        : t(
-            "Distribución alineada y portafolio defensivo. Puedes asumir algo más de renta variable para superar la inflación.",
-            "Allocation aligned and defensive portfolio. You could take a bit more equity to outpace inflation.",
-          );
 
   const insights = [
     concentration > 40 && top
