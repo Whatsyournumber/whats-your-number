@@ -217,7 +217,58 @@ function PatrimonioContent() {
           </div>
         </Panel>
       </div>
+
+      <Panel
+        title={t("Detalle de tus activos", "Your assets in detail")}
+        description={t("Inversiones, inmuebles, fondo de retiro, activos futuros y liquidez.", "Investments, real estate, retirement fund, future assets and cash.")}
+      >
+        {groups.length === 0 ? (
+          <p className="text-sm text-muted-foreground">{t("Aún no registras activos.", "You haven't recorded any assets yet.")}</p>
+        ) : (
+          <div className="space-y-5">
+            {groups.map((g) => (
+              <div key={g.key}>
+                <div className="mb-2 flex items-center justify-between">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{g.label}</p>
+                  <span className="numeric text-xs font-semibold text-muted-foreground">{fmt(g.total)}</span>
+                </div>
+                <div className="space-y-1.5">
+                  {g.rows.map((r) => (
+                    <div key={r.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl bg-elevated/60 p-3">
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium">
+                          {r.label}
+                          {r.ticker ? <span className="ml-2 text-xs text-muted-foreground">{r.ticker}</span> : null}
+                        </p>
+                        <p className="truncate text-[11px] text-muted-foreground">
+                          {[
+                            r.sub,
+                            r.ticker && r.quantity > 0 ? `${r.quantity} u.` : null,
+                            r.rate > 0 ? t(`${r.rate}% anual`, `${r.rate}% annual`) : null,
+                            r.monthlyContribution > 0 ? t(`+${fmt(r.monthlyContribution)}/mes`, `+${fmt(r.monthlyContribution)}/mo`) : null,
+                            r.monthlyIncome > 0 ? t(`renta ${fmt(r.monthlyIncome)}/mes`, `income ${fmt(r.monthlyIncome)}/mo`) : null,
+                            r.mortgage > 0 ? t(`hipoteca ${fmt(r.mortgage)}`, `mortgage ${fmt(r.mortgage)}`) : null,
+                            r.targetYear ? String(r.targetYear) : null,
+                            r.probability != null && r.probability < 100 ? `${r.probability}%` : null,
+                          ]
+                            .filter(Boolean)
+                            .join(" · ")}
+                        </p>
+                      </div>
+                      <span className="numeric shrink-0 text-sm font-semibold">{fmt(r.value)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        <Button asChild variant="outline" size="sm" className="mt-4 w-full rounded-full">
+          <Link to="/mi-perfil" hash="patrimonio">{t("Editar mi patrimonio", "Edit my net worth")}</Link>
+        </Button>
+      </Panel>
     </PageShell>
+
   );
 }
 
