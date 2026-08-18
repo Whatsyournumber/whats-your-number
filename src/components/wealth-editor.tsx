@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useT } from "@/hooks/use-language";
+import { useQuotes } from "@/hooks/use-market";
 import { holdingValue, newHolding, type Holding, type HoldingKind } from "@/hooks/use-holdings";
 import { Amount } from "@/components/ui/amount";
 import { cn } from "@/lib/utils";
