@@ -766,6 +766,7 @@ function PortafolioContent() {
         </div>
       </Panel>
 
+      <Panel
         title={t("Posiciones", "Positions")}
         description={`${enriched.length} ${t("posiciones", "positions")}`}
         actions={
