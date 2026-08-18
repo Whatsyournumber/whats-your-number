@@ -855,14 +855,11 @@ function PortafolioContent() {
               <span className="font-semibold text-foreground">
                 {t("Qué hacer ahora", "What to do now")}
               </span>
-              <span className="text-muted-foreground/50">·</span>
-              <span className="text-muted-foreground">
-                {t(
-                  `Riesgo ${riskLabel}: volatilidad ${volPct.toFixed(0)}%, beta ${beta.toFixed(2)}, caída máx ${maxDrawdown.toFixed(0)}%, concentración ${concentration.toFixed(0)}%.`,
-                  `Risk ${riskLabel}: volatility ${volPct.toFixed(0)}%, beta ${beta.toFixed(2)}, max drawdown ${maxDrawdown.toFixed(0)}%, concentration ${concentration.toFixed(0)}%.`,
-                )}
-              </span>
             </div>
+
+            <p className="line-clamp-1 text-[11px] leading-snug text-muted-foreground">
+              {metricSummary}
+            </p>
 
             <p className="line-clamp-2 text-[11px] leading-snug text-muted-foreground">
               {insight.isLoading ? t("Analizando…", "Analyzing…") : aiAdvice}
