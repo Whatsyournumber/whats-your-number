@@ -845,8 +845,8 @@ function PortafolioContent() {
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-            {riskMetrics.map((m) => (
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {portfolioMetrics.map((m) => (
               <div key={m.label} className="rounded-xl border border-border/50 bg-elevated/30 px-3 py-2.5">
                 <p className="truncate text-[11px] font-medium text-foreground">{m.label}</p>
                 <div className="mt-1 flex items-baseline gap-1.5">
