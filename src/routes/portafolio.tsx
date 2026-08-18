@@ -108,7 +108,7 @@ function PortafolioContent() {
       const growth = Math.max(0, h.expected_return || 7) / 100;
       return {
         ticker: h.ticker || h.label || t("Activo", "Asset"),
-        name: h.label || h.ticker || "",
+        name: h.label && h.label !== (h.ticker || "") ? h.label : kindSubtitle(h.kind),
         type: typeOf(h.kind),
         value,
         growth,
