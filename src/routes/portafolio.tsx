@@ -709,7 +709,7 @@ function PortafolioContent() {
 
           <div
             className={cn(
-              "grid gap-4 rounded-xl border p-4 lg:grid-cols-[1.1fr_1fr]",
+              "flex items-start gap-3 rounded-xl border p-3",
               riskLevel === "Alto"
                 ? "border-negative/25 bg-negative/[0.06]"
                 : riskLevel === "Medio"
@@ -717,38 +717,19 @@ function PortafolioContent() {
                   : "border-positive/25 bg-positive/[0.06]",
             )}
           >
-            <div className="flex items-start gap-3">
-              <Sparkles
-                className={cn(
-                  "mt-0.5 h-4 w-4 shrink-0",
-                  riskLevel === "Alto" ? "text-negative" : riskLevel === "Medio" ? "text-amber-200" : "text-positive",
-                )}
-              />
-              <div className="min-w-0">
-                <p className="text-xs font-semibold text-foreground">
-                  {t("Qué hacer ahora", "What to do now")}
-                </p>
-                <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
-                  {insight.isLoading ? t("Analizando tu portafolio…", "Analyzing your portfolio…") : aiAdvice}
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-1.5 border-t border-border/40 pt-3 lg:border-t-0 lg:pl-4 lg:pt-0">
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-                {t("Qué significan tus métricas", "What your metrics mean")}
+            <Sparkles
+              className={cn(
+                "mt-0.5 h-4 w-4 shrink-0",
+                riskLevel === "Alto" ? "text-negative" : riskLevel === "Medio" ? "text-amber-200" : "text-positive",
+              )}
+            />
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-foreground">
+                {t("Qué hacer ahora", "What to do now")}
               </p>
-              {riskMetrics.map((m, i) => (
-                <div key={m.label} className="flex items-baseline gap-2 text-[11px] leading-snug">
-                  <span className="numeric shrink-0 font-semibold text-foreground">{m.value}</span>
-                  <span className="shrink-0 text-muted-foreground">{m.label}:</span>
-                  <span className="text-muted-foreground/90">
-                    {insight.isLoading
-                      ? m.hint
-                      : aiHints[i]?.trim() || m.hint}
-                  </span>
-                </div>
-              ))}
+              <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
+                {insight.isLoading ? t("Analizando tu portafolio…", "Analyzing your portfolio…") : aiAdvice}
+              </p>
             </div>
           </div>
         </div>
