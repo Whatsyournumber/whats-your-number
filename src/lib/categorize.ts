@@ -73,11 +73,12 @@ const MERCHANT_OVERRIDES: { hints: string[]; category: string }[] = [
       "pasteleria", "pastelería", "sonder", "mini super daniel", "riva milica", "sp oasis", "tr nita",
       "basca doo", "dekaderon", "matesevo", "prijepolje", "algetarik", "host auy", "la imprenta",
       "capon mejia", "capón mejía", "hostelería", "hosteleria", "restauracion", "restauración",
+      "la chocita", "world wide kebab", "aguachiles", "frozen yogurt", "myka frozen",
     ],
   },
   {
     category: "Marketing digital",
-    hints: ["linkedin"],
+    hints: ["linkedin", "lovable"],
   },
   {
     category: "Apps",
@@ -359,7 +360,7 @@ export function categorizeTx(t: CategorizableTx, custom: CategoryRule[] = []): s
 }
 
 /** Categorías que, durante un viaje, se consideran gasto del viaje. */
-const TRAVEL_ABSORBED = new Set(["Restaurantes", "Transporte"]);
+const TRAVEL_ABSORBED = new Set(["Transporte"]);
 
 const dayKey = (d: Date) => d.toISOString().slice(0, 10);
 
