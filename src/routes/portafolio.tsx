@@ -46,6 +46,7 @@ function PortafolioContent() {
     ETF: t("ETF", "ETF"),
     "Acción": t("Acción", "Stock"),
     "Renta fija": t("Renta fija", "Fixed income"),
+    Estructurado: t("Structured product", "Structured product"),
     Retiro: t("Fondo de retiro", "Retirement fund"),
     Cripto: t("Cripto", "Crypto"),
     Inmueble: t("Inmueble", "Real estate"),
@@ -74,7 +75,9 @@ function PortafolioContent() {
         ? ("Retiro" as const)
         : kind === "crypto"
         ? ("Cripto" as const)
-        : ["bond", "tbill", "note", "structured"].includes(kind)
+        : kind === "structured"
+        ? ("Estructurado" as const)
+        : ["bond", "tbill", "note"].includes(kind)
           ? ("Renta fija" as const)
           : kind === "property"
             ? ("Inmueble" as const)
@@ -92,7 +95,19 @@ function PortafolioContent() {
         value,
         growth,
         income: Math.round((h.monthly_income || 0) * 12),
-        cost: h.cost_basis > 0 ? Math.round(h.cost_basis) : Math.round(value / (1 + growth)),
+        cost:
+          h.kind === "property"
+            ? h.cost_basis > 0
+              ? Math.round(h.cost_basis + (h.quantity || 0))
+              : Math.round(value / (1 + growth))
+            : h.cost_basis > 0
+              ? Math.round(h.cost_basis)
+              : Math.round(value / (1 + growth)),
+        improvements: h.kind === "property" ? Math.round(h.quantity || 0) : 0,
+        years:
+          h.kind === "property" && h.target_year && h.target_year > 1900
+            ? Math.max(0, new Date().getFullYear() - h.target_year)
+            : 0,
       };
     })
     .filter((h) => h.value > 0);
@@ -109,15 +124,17 @@ function PortafolioContent() {
         growth: 0,
         income: 0,
         cost: cash,
+        improvements: 0,
+        years: 0,
       });
   }
 
   const fallback = [
-    { ticker: t("ETFs / fondos", "ETFs / funds"), name: t("Fondos indexados y ETFs", "Index funds and ETFs"), type: "ETF" as const, value: profile.assets_etf, growth: r, income: 0, cost: Math.round(profile.assets_etf / (1 + r)) },
-    { ticker: t("Fondo de retiro", "Retirement fund"), name: t("Plan de pensiones / retiro", "Pension / retirement plan"), type: "Retiro" as const, value: profile.assets_retirement, growth: r * 0.8, income: 0, cost: Math.round(profile.assets_retirement / (1 + r * 0.8)) },
-    { ticker: t("Acciones", "Stocks"), name: t("Posiciones individuales", "Individual positions"), type: "Acción" as const, value: profile.assets_stocks, growth: r * 1.3, income: 0, cost: Math.round(profile.assets_stocks / (1 + r * 1.3)) },
-    { ticker: t("Cripto", "Crypto"), name: t("Activos digitales", "Digital assets"), type: "Cripto" as const, value: profile.assets_crypto, growth: r * 2, income: 0, cost: Math.round(profile.assets_crypto / (1 + r * 2)) },
-    { ticker: t("Efectivo", "Cash"), name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"), type: "Cash" as const, value: profile.assets_cash + profile.assets_bank, growth: 0, income: 0, cost: profile.assets_cash + profile.assets_bank },
+    { ticker: t("ETFs / fondos", "ETFs / funds"), name: t("Fondos indexados y ETFs", "Index funds and ETFs"), type: "ETF" as const, value: profile.assets_etf, growth: r, income: 0, cost: Math.round(profile.assets_etf / (1 + r)), improvements: 0, years: 0 },
+    { ticker: t("Fondo de retiro", "Retirement fund"), name: t("Plan de pensiones / retiro", "Pension / retirement plan"), type: "Retiro" as const, value: profile.assets_retirement, growth: r * 0.8, income: 0, cost: Math.round(profile.assets_retirement / (1 + r * 0.8)), improvements: 0, years: 0 },
+    { ticker: t("Acciones", "Stocks"), name: t("Posiciones individuales", "Individual positions"), type: "Acción" as const, value: profile.assets_stocks, growth: r * 1.3, income: 0, cost: Math.round(profile.assets_stocks / (1 + r * 1.3)), improvements: 0, years: 0 },
+    { ticker: t("Cripto", "Crypto"), name: t("Activos digitales", "Digital assets"), type: "Cripto" as const, value: profile.assets_crypto, growth: r * 2, income: 0, cost: Math.round(profile.assets_crypto / (1 + r * 2)), improvements: 0, years: 0 },
+    { ticker: t("Efectivo", "Cash"), name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"), type: "Cash" as const, value: profile.assets_cash + profile.assets_bank, growth: 0, income: 0, cost: profile.assets_cash + profile.assets_bank, improvements: 0, years: 0 },
   ].filter((h) => h.value > 0);
 
   const positions = detailed.length ? detailed : fallback;
@@ -135,12 +152,14 @@ function PortafolioContent() {
                 ? 0
               : h.type === "Acción"
                 ? h.value * 0.012
-                : h.type === "Renta fija"
+                : h.type === "Renta fija" || h.type === "Estructurado"
                   ? h.value * h.growth
                   : 0,
           ),
     gain: h.value - h.cost,
     ret: h.cost ? ((h.value - h.cost) / h.cost) * 100 : 0,
+    cagr:
+      h.cost > 0 && h.years > 0 ? (Math.pow(h.value / h.cost, 1 / h.years) - 1) * 100 : null,
   }));
 
 
@@ -160,7 +179,7 @@ function PortafolioContent() {
     : 0;
   const safeWeight = totalValue
     ? enriched
-        .filter((h) => h.type === "Cash" || h.type === "Renta fija")
+        .filter((h) => h.type === "Cash" || h.type === "Renta fija" || h.type === "Estructurado")
         .reduce((s, h) => s + h.value, 0) / totalValue
     : 0;
   const top = [...enriched].sort((a, b) => b.value - a.value)[0];
@@ -239,7 +258,7 @@ function PortafolioContent() {
 
 
 
-  const types = ["ETF", "Acción", "Renta fija", "Retiro", "Cripto", "Inmueble", "Cash"] as const;
+  const types = ["ETF", "Acción", "Renta fija", "Estructurado", "Retiro", "Cripto", "Inmueble", "Cash"] as const;
   const allocation = types
     .map((ty, i) => ({
       name: ty,
@@ -264,6 +283,11 @@ function PortafolioContent() {
           <div>
             <p className="text-[11px] text-muted-foreground">{t("Costo prom.", "Avg. cost")}</p>
             <p className="numeric text-sm">{fmt(h.avgCost)}</p>
+            {h.improvements > 0 && (
+              <p className="text-[10px] text-muted-foreground">
+                {t("incl. mejoras", "incl. improvements")} {fmt(h.improvements)}
+              </p>
+            )}
           </div>
           <div>
             <p className="text-[11px] text-muted-foreground">{t("Ganancia", "Gain")}</p>
@@ -275,6 +299,12 @@ function PortafolioContent() {
               {h.ret > 0 ? "+" : ""}
               {h.ret.toFixed(1)}%
             </p>
+            {h.cagr !== null && (
+              <p className="text-[10px] text-muted-foreground">
+                {h.cagr > 0 ? "+" : ""}
+                {h.cagr.toFixed(1)}% {t("anual", "annual")} · {h.years} {t("años", "yrs")}
+              </p>
+            )}
           </div>
         </div>
       ))}
