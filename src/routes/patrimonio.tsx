@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
+import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
 
@@ -28,11 +29,21 @@ function PatrimonioContent() {
   const t = useT();
   const { profile } = useProfile();
   const { transactions } = useTransactions();
+  const { holdings } = useHoldings();
   const d = buildDataset(profile);
-  const { fmt, fmtCompact, assets, liabilities } = d;
+  const { fmt, fmtCompact, assets } = d;
   const months = buildRealMonths(transactions, d.netWorth) ?? d.months;
   const growth =
     months[0]!.netWorth > 0 ? ((d.netWorth - months[0]!.netWorth) / Math.abs(months[0]!.netWorth)) * 100 : 0;
+
+  // Deudas individuales desde holdings (TDC, préstamos, etc.) + hipotecas de propiedades.
+  const debtRows = holdings
+    .filter((h) => h.kind === "debt" && holdingValue(h) > 0)
+    .map((h) => ({ id: h.id, label: h.label || t("Deuda", "Debt"), value: holdingValue(h), interest: h.expected_return }));
+  const mortgageRows = holdings
+    .filter((h) => h.kind === "property" && h.linked_liability > 0)
+    .map((h) => ({ id: h.id, label: t(`Hipoteca · ${h.label || "Propiedad"}`, `Mortgage · ${h.label || "Property"}`), value: h.linked_liability, interest: h.expected_return }));
+  const liabilityRows = [...debtRows, ...mortgageRows].sort((a, b) => b.value - a.value);
 
   return (
     <PageShell>
@@ -116,14 +127,19 @@ function PatrimonioContent() {
 
         <Panel title={t("Pasivos", "Liabilities")} description={fmt(d.totalLiabilities)}>
           <div className="space-y-2">
-            {liabilities.map((l) => (
-              <div key={l.name} className="flex items-center gap-2 rounded-xl bg-elevated/60 p-3">
-                <span className="h-2.5 w-2.5 rounded-full bg-negative" />
-                <p className="text-sm font-medium">{l.name}</p>
-                <span className="numeric ml-auto text-sm font-semibold">{fmt(l.value)}</span>
+            {liabilityRows.map((l) => (
+              <div key={l.id} className="flex items-center gap-2 rounded-xl bg-elevated/60 p-3">
+                <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-negative" />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">{l.label}</p>
+                  {l.interest > 0 && (
+                    <p className="text-[11px] text-muted-foreground">{t(`${l.interest}% anual`, `${l.interest}% annual`)}</p>
+                  )}
+                </div>
+                <span className="numeric ml-auto shrink-0 text-sm font-semibold">{fmt(l.value)}</span>
               </div>
             ))}
-            {liabilities.length === 0 && <p className="text-sm text-muted-foreground">{t("No registras deudas. 🎉", "You have no debts. 🎉")}</p>}
+            {liabilityRows.length === 0 && <p className="text-sm text-muted-foreground">{t("No registras deudas. 🎉", "You have no debts. 🎉")}</p>}
           </div>
           <div className="mt-4 rounded-xl border border-dashed border-border p-4">
             <p className="text-xs text-muted-foreground">{t("Ratio deuda / activos", "Debt / asset ratio")}</p>
