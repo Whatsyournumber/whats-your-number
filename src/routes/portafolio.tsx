@@ -523,26 +523,26 @@ function PortafolioContent() {
   const riskAdvice = biggestDrift
     ? biggestDrift.deltaPct > 0
       ? t(
-          `Rebalanceo: sube ${bucketLabel[biggestDrift.key]} al ${biggestDrift.tgt}% (ahora ${biggestDrift.cur.toFixed(0)}%). Usa aportes nuevos antes de vender para diferir impuestos; revisa cada 6 meses.`,
-          `Rebalance: raise ${bucketLabel[biggestDrift.key]} to ${biggestDrift.tgt}% (now ${biggestDrift.cur.toFixed(0)}%). Use new contributions before selling to defer taxes; review every 6 months.`,
+          `Considera subir ${bucketLabel[biggestDrift.key]} hacia el ${biggestDrift.tgt}% (hoy ${biggestDrift.cur.toFixed(0)}%). Podrías usar aportes nuevos antes de vender; revisa cada 6 meses.`,
+          `Consider raising ${bucketLabel[biggestDrift.key]} toward ${biggestDrift.tgt}% (now ${biggestDrift.cur.toFixed(0)}%). You could use new contributions before selling; review every 6 months.`,
         )
       : t(
-          `Rebalanceo: reduce ${bucketLabel[biggestDrift.key]} del ${biggestDrift.cur.toFixed(0)}% al ${biggestDrift.tgt}% objetivo. Vende el exceso y redistribuye en clases por debajo de su meta.`,
-          `Rebalance: trim ${bucketLabel[biggestDrift.key]} from ${biggestDrift.cur.toFixed(0)}% to the ${biggestDrift.tgt}% target. Sell the excess and redistribute into below-target classes.`,
+          `Podrías revisar ${bucketLabel[biggestDrift.key]}, del ${biggestDrift.cur.toFixed(0)}% al objetivo ${biggestDrift.tgt}%. Vale la pena mirar el exceso y redistribuir gradualmente.`,
+          `You could review ${bucketLabel[biggestDrift.key]}, from ${biggestDrift.cur.toFixed(0)}% to the ${biggestDrift.tgt}% target. Worth looking at the excess and gradually redistributing.`,
         )
     : riskLevel === "Alto"
       ? t(
-          "Distribución alineada, pero el riesgo es alto: baja exposición volátil y diversifica la mayor posición antes de añadir.",
-          "Allocation aligned, but risk is high: cut volatile exposure and diversify the largest position before adding more.",
+          "Distribución alineada, aunque el riesgo es algo alto. Vale la pena bajar la exposición volátil y diversificar la mayor posición de forma gradual.",
+          "Allocation aligned, though risk is somewhat high. It's worth gradually lowering volatile exposure and diversifying the largest position.",
         )
       : riskLevel === "Medio"
         ? t(
-            "Distribución alineada con tu horizonte. Mantén 6 meses de gastos en cash y revisa el balance cada 6 meses.",
-            "Allocation aligned with your horizon. Keep 6 months of expenses in cash and review the balance every 6 months.",
+            "Distribución alineada con tu horizonte. Conviene mantener 6 meses de gastos en cash y revisar el balance cada 6 meses.",
+            "Allocation aligned with your horizon. It's wise to keep 6 months of expenses in cash and review the balance every 6 months.",
           )
         : t(
-            "Distribución alineada y portafolio defensivo. Puedes asumir algo más de renta variable para superar la inflación.",
-            "Allocation aligned and defensive portfolio. You could take a bit more equity to outpace inflation.",
+            "Distribución alineada y portafolio defensivo. Podrías considerar algo más de renta variable para acompañar la inflación.",
+            "Allocation aligned and defensive portfolio. You could consider a bit more equity to keep pace with inflation.",
           );
 
   // ---- Explicación con IA (con fallback a los textos locales) ----
