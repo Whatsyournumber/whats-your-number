@@ -455,14 +455,14 @@ function PortafolioContent() {
         <Tabs defaultValue="Todos">
           <TabsList className="mb-4">
             <TabsTrigger value="Todos">{t("Todos", "All")}</TabsTrigger>
-            {types.map((ty) => (
+            {activeTypes.map((ty) => (
               <TabsTrigger key={ty} value={ty}>
                 {typeLabels[ty]}
               </TabsTrigger>
             ))}
           </TabsList>
           <TabsContent value="Todos">{rows(enriched)}</TabsContent>
-          {types.map((ty) => (
+          {activeTypes.map((ty) => (
             <TabsContent key={ty} value={ty}>
               {rows(enriched.filter((h) => h.type === ty))}
             </TabsContent>
