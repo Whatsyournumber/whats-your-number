@@ -202,25 +202,6 @@ function PortafolioContent() {
     riskWeight * 100 * 0.6 + Math.max(0, concentration - 30) * 0.6 + (totalValue ? (debtTotal / totalValue) * 40 : 0);
   const riskLevel: "Alto" | "Medio" | "Bajo" = riskScore > 55 ? "Alto" : riskScore > 28 ? "Medio" : "Bajo";
   const riskLabel = t(riskLevel, riskLevel === "Alto" ? "High" : riskLevel === "Medio" ? "Medium" : "Low");
-  const riskReason = t(
-    `Volatilidad ${(riskWeight * 100).toFixed(0)}% · mayor posición ${concentration.toFixed(0)}% · deuda ${totalValue ? ((debtTotal / totalValue) * 100).toFixed(0) : 0}% del portafolio.`,
-    `Volatility ${(riskWeight * 100).toFixed(0)}% · largest position ${concentration.toFixed(0)}% · debt ${totalValue ? ((debtTotal / totalValue) * 100).toFixed(0) : 0}% of portfolio.`,
-  );
-  const riskAdvice =
-    riskLevel === "Alto"
-      ? t(
-          "Riesgo alto: una caída fuerte del mercado te golpearía duro. Baja exposición volátil, diversifica la mayor posición y reduce deuda.",
-          "High risk: a market drop would hit you hard. Lower volatile exposure, diversify the largest position and cut debt.",
-        )
-      : riskLevel === "Medio"
-        ? t(
-            "Riesgo medio: balance razonable. Vigila la concentración y mantén 6 meses de gastos en cash.",
-            "Medium risk: reasonable balance. Watch concentration and keep 6 months of expenses in cash.",
-          )
-        : t(
-            "Riesgo bajo: portafolio defensivo. Puedes asumir algo más de renta variable para ganarle a la inflación.",
-            "Low risk: defensive portfolio. You could take a bit more equity exposure to beat inflation.",
-          );
 
   const insights = [
     concentration > 40 && top
@@ -348,8 +329,46 @@ function PortafolioContent() {
   };
   const rebalanceNeeded = buckets.some((b) => Math.abs(b.deltaPct) >= 5);
 
-
-
+  // ---- Análisis de riesgo y rebalanceo (2 líneas, basado en data real) ----
+  const volPct = hasStats ? volPort : riskWeight * 100 * 1.2;
+  const debtPct = totalValue ? (debtTotal / totalValue) * 100 : 0;
+  // Línea 1 — volatilidad, beta, drawdown, Sharpe y concentración.
+  const riskReason = hasStats
+    ? t(
+        `Volatilidad ${volPct.toFixed(1)}% (índice ${volBench.toFixed(1)}%) · β ${beta.toFixed(2)} · caída máx ${maxDrawdown.toFixed(1)}% · Sharpe ${sharpe.toFixed(2)} · concentración ${concentration.toFixed(0)}%`,
+        `Volatility ${volPct.toFixed(1)}% (index ${volBench.toFixed(1)}%) · β ${beta.toFixed(2)} · max drawdown ${maxDrawdown.toFixed(1)}% · Sharpe ${sharpe.toFixed(2)} · concentration ${concentration.toFixed(0)}%`,
+      )
+    : t(
+        `Volatilidad estimada ${volPct.toFixed(0)}% · activos volátiles ${(riskWeight * 100).toFixed(0)}% · mayor posición ${concentration.toFixed(0)}% · deuda ${debtPct.toFixed(0)}%`,
+        `Estimated volatility ${volPct.toFixed(0)}% · volatile assets ${(riskWeight * 100).toFixed(0)}% · largest position ${concentration.toFixed(0)}% · debt ${debtPct.toFixed(0)}%`,
+      );
+  // Línea 2 — recomendación universal de distribución y balanceo según el drift.
+  const drift = buckets.find((b) => Math.abs(b.deltaPct) === Math.max(...buckets.map((x) => Math.abs(x.deltaPct))));
+  const biggestDrift = drift && Math.abs(drift.deltaPct) >= 5 ? drift : null;
+  const riskAdvice = biggestDrift
+    ? biggestDrift.deltaPct > 0
+      ? t(
+          `Rebalanceo: sube ${bucketLabel[biggestDrift.key]} al ${biggestDrift.tgt}% (ahora ${biggestDrift.cur.toFixed(0)}%). Usa aportes nuevos antes de vender para diferir impuestos; revisa cada 6 meses.`,
+          `Rebalance: raise ${bucketLabel[biggestDrift.key]} to ${biggestDrift.tgt}% (now ${biggestDrift.cur.toFixed(0)}%). Use new contributions before selling to defer taxes; review every 6 months.`,
+        )
+      : t(
+          `Rebalanceo: reduce ${bucketLabel[biggestDrift.key]} del ${biggestDrift.cur.toFixed(0)}% al ${biggestDrift.tgt}% objetivo. Vende el exceso y redistribuye en clases por debajo de su meta.`,
+          `Rebalance: trim ${bucketLabel[biggestDrift.key]} from ${biggestDrift.cur.toFixed(0)}% to the ${biggestDrift.tgt}% target. Sell the excess and redistribute into below-target classes.`,
+        )
+    : riskLevel === "Alto"
+      ? t(
+          "Distribución alineada, pero el riesgo es alto: baja exposición volátil y diversifica la mayor posición antes de añadir.",
+          "Allocation aligned, but risk is high: cut volatile exposure and diversify the largest position before adding more.",
+        )
+      : riskLevel === "Medio"
+        ? t(
+            "Distribución alineada con tu horizonte. Mantén 6 meses de gastos en cash y revisa el balance cada 6 meses.",
+            "Allocation aligned with your horizon. Keep 6 months of expenses in cash and review the balance every 6 months.",
+          )
+        : t(
+            "Distribución alineada y portafolio defensivo. Puedes asumir algo más de renta variable para superar la inflación.",
+            "Allocation aligned and defensive portfolio. You could take a bit more equity to outpace inflation.",
+          );
 
   const types = ["ETF", "Acción", "Renta fija", "Estructurado", "Retiro", "Cripto", "Inmueble", "Cash"] as const;
   const allocation = types
@@ -557,21 +576,24 @@ function PortafolioContent() {
           </div>
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-border/50 pt-4 text-[11px]">
-          <span className="text-muted-foreground">{t("Nivel de riesgo", "Risk level")}</span>
-          <span
-            className={cn(
-              "rounded-full px-2.5 py-0.5 text-xs font-semibold",
-              riskLevel === "Alto"
-                ? "bg-negative/12 text-negative"
-                : riskLevel === "Medio"
-                  ? "bg-amber-400/12 text-amber-200"
-                  : "bg-positive/12 text-positive",
-            )}
-          >
-            {riskLabel}
-          </span>
-          <span
+        <div className="mt-4 space-y-1 border-t border-border/50 pt-4 text-[11px]">
+          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+            <span className="text-muted-foreground">{t("Nivel de riesgo", "Risk level")}</span>
+            <span
+              className={cn(
+                "rounded-full px-2.5 py-0.5 text-xs font-semibold",
+                riskLevel === "Alto"
+                  ? "bg-negative/12 text-negative"
+                  : riskLevel === "Medio"
+                    ? "bg-amber-400/12 text-amber-200"
+                    : "bg-positive/12 text-positive",
+              )}
+            >
+              {riskLabel}
+            </span>
+            <span className="text-muted-foreground">{riskReason}</span>
+          </div>
+          <p
             className={cn(
               "leading-relaxed",
               riskLevel === "Alto"
@@ -582,7 +604,7 @@ function PortafolioContent() {
             )}
           >
             {riskAdvice}
-          </span>
+          </p>
         </div>
       </Panel>
 
