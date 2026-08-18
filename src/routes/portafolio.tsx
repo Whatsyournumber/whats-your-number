@@ -377,7 +377,7 @@ function PortafolioContent() {
 
       <Panel
         title={t("Posiciones", "Positions")}
-        description={`${fmt(totalValue)} · ${enriched.length} ${t("posiciones", "positions")}`}
+        description={`${enriched.length} ${t("posiciones", "positions")}`}
         actions={
           <Link
             to="/mi-perfil"
