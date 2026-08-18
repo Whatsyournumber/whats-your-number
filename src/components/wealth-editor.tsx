@@ -559,6 +559,7 @@ function InvestmentCard({
 
   const isMarket = MARKET_KINDS.includes(h.kind);
   const isFixed = FIXED_INCOME_KINDS.includes(h.kind);
+  const isStructured = h.kind === "structured";
 
   const ticker = (h.ticker ?? "").trim().toUpperCase();
   const { data: quotes } = useQuotes(isMarket && ticker ? [ticker] : []);
