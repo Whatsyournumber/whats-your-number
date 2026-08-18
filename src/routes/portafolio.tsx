@@ -704,22 +704,6 @@ function PortafolioContent() {
               </LineChart>
             </ResponsiveContainer>
           )}
-          {hasStats && (
-            <div className="mt-3 grid grid-cols-2 gap-3 border-t border-border/50 pt-3 text-[11px] sm:grid-cols-4">
-              {[
-                { l: t("Alfa vs índice", "Alpha vs index"), v: `${alpha12 > 0 ? "+" : ""}${alpha12.toFixed(1)}%`, good: alpha12 >= 0 },
-                { l: t("Volatilidad anual", "Annual volatility"), v: `${volPort.toFixed(1)}%`, sub: `${t("índice", "index")} ${volBench.toFixed(1)}%` },
-                { l: "Beta", v: beta.toFixed(2), sub: `${t("correlación", "correlation")} ${correlation.toFixed(2)}` },
-                { l: t("Caída máxima", "Max drawdown"), v: `${maxDrawdown.toFixed(1)}%`, good: maxDrawdown > -15 },
-              ].map((m) => (
-                <div key={m.l}>
-                  <p className="text-muted-foreground">{m.l}</p>
-                  <p className={cn("numeric text-sm font-semibold", m.good === undefined ? "" : m.good ? "text-positive" : "text-negative")}>{m.v}</p>
-                  {m.sub && <p className="text-[10px] text-muted-foreground">{m.sub}</p>}
-                </div>
-              ))}
-            </div>
-          )}
         </Panel>
 
 
