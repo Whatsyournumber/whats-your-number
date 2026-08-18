@@ -126,12 +126,23 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
               <InlineRow label={t("Nombre", "Name")}>
                 <Input value={h.label} onChange={(e) => patch(h.id, { label: e.target.value })} className="h-9" />
               </InlineRow>
+              <InlineRow label={t("Año de compra", "Purchase year")}>
+                <Input
+                  type="number"
+                  inputMode="numeric"
+                  placeholder="2018"
+                  value={h.target_year ? String(h.target_year) : ""}
+                  onChange={(e) => patch(h.id, { target_year: Number(e.target.value) || null })}
+                  className="h-9"
+                />
+              </InlineRow>
               <InlineRow label={t("Valor de compra", "Purchase price")}>
                 <Money value={h.cost_basis} onChange={(n) => patch(h.id, { cost_basis: n })} />
               </InlineRow>
               <InlineRow label={t("Mejoras / remodelaciones", "Improvements / renovations")}>
                 <Money value={h.quantity} onChange={(n) => patch(h.id, { quantity: n })} />
               </InlineRow>
+
               <InlineRow label={t("Valor actual", "Current value")}>
                 <Money value={h.manual_value} onChange={(n) => patch(h.id, { manual_value: n })} />
               </InlineRow>
