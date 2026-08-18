@@ -722,9 +722,6 @@ function InvestmentCard({
           <InlineRow label={t("Cupón anual", "Annual coupon")}>
             <Pct value={h.expected_return} onChange={(n) => onPatch({ expected_return: n })} />
           </InlineRow>
-          <InlineRow label={t("Aporte mensual", "Monthly contribution")}>
-            <Money value={h.monthly_contribution} onChange={(n) => onPatch({ monthly_contribution: n })} />
-          </InlineRow>
           <InlineRow label={t("Año de vencimiento", "Maturity year")}>
             <Input
               type="number"
@@ -737,18 +734,21 @@ function InvestmentCard({
           </InlineRow>
           {/* Resumen visual */}
           <div className="grid grid-cols-2 gap-2 rounded-lg border border-border/50 bg-background/40 px-3 py-2 text-[11px]">
-            {h.note ? (
-              <p className="text-muted-foreground">
-                {t("Subyacente", "Underlying")}: <span className="font-medium text-foreground">{h.note}</span>
-              </p>
-            ) : null}
             <p className="text-muted-foreground">
               {t("Protección", "Protection")}:{" "}
-              <span className="font-medium text-foreground">{h.quantity || 100}%</span>
+              <span className="font-medium text-foreground">
+                {(h.quantity || 100) === 0 ? t("Sin protección", "Unprotected") : `${h.quantity || 100}%`}
+              </span>
             </p>
             <p className="text-muted-foreground">
               {t("Cupón", "Coupon")}:{" "}
               <span className="font-medium text-foreground">{h.expected_return}% {t("anual", "annual")}</span>
+            </p>
+            <p className="text-muted-foreground">
+              {t("Cupón anual", "Annual coupon")}:{" "}
+              <span className="font-medium text-emerald-400/90">
+                {fmt((h.manual_value * (h.expected_return || 0)) / 100)}
+              </span>
             </p>
             {h.target_year ? (
               <p className="text-muted-foreground">
@@ -756,16 +756,6 @@ function InvestmentCard({
               </p>
             ) : null}
           </div>
-          {h.cost_basis > 0 && h.manual_value > 0 ? (
-            <p className="text-[11px] text-muted-foreground">
-              {t("Ganancia", "Gain")}:{" "}
-              <span className={h.manual_value >= h.cost_basis ? "text-emerald-400/90" : "text-rose-400/80"}>
-                {h.manual_value >= h.cost_basis ? "+" : "−"}
-                {fmt(Math.abs(h.manual_value - h.cost_basis))} (
-                {((Math.abs(h.manual_value - h.cost_basis) / h.cost_basis) * 100).toFixed(1)}%)
-              </span>
-            </p>
-          ) : null}
         </>
       ) : isFixed ? (
         <>
