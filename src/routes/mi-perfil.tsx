@@ -109,6 +109,14 @@ function MiPerfil() {
     setWealth(holdings.length ? holdings : seedHoldingsFromTotals(profile));
   }, [holdings, loadingHoldings, profile, dirty]);
 
+  // Abrir directo en la sección de patrimonio (#patrimonio).
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.location.hash !== "#patrimonio") return;
+    const el = document.getElementById("patrimonio");
+    if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 250);
+  }, [isLoading]);
+
 
   const set = <K extends keyof Profile>(key: K, value: Profile[K]) => {
     setDirty(true);
