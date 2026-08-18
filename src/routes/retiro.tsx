@@ -470,7 +470,7 @@ function RetiroContent() {
 
 
         <Panel
-          title={t("Simulador", "Simulator")}
+          title={<span className="text-base font-semibold tracking-tight">{t("Simulador", "Simulator")}</span>}
           description={isGoal ? `${goalLabel} · ${fmt(plan.targetCapital)}` : t("Ajusta y mira el impacto", "Adjust and see the impact")}
         >
           <div className="space-y-6">
