@@ -283,6 +283,11 @@ function PortafolioContent() {
           <div>
             <p className="text-[11px] text-muted-foreground">{t("Costo prom.", "Avg. cost")}</p>
             <p className="numeric text-sm">{fmt(h.avgCost)}</p>
+            {h.improvements > 0 && (
+              <p className="text-[10px] text-muted-foreground">
+                {t("incl. mejoras", "incl. improvements")} {fmt(h.improvements)}
+              </p>
+            )}
           </div>
           <div>
             <p className="text-[11px] text-muted-foreground">{t("Ganancia", "Gain")}</p>
@@ -294,6 +299,12 @@ function PortafolioContent() {
               {h.ret > 0 ? "+" : ""}
               {h.ret.toFixed(1)}%
             </p>
+            {h.cagr !== null && (
+              <p className="text-[10px] text-muted-foreground">
+                {h.cagr > 0 ? "+" : ""}
+                {h.cagr.toFixed(1)}% {t("anual", "annual")} · {h.years} {t("años", "yrs")}
+              </p>
+            )}
           </div>
         </div>
       ))}
