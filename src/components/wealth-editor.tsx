@@ -171,7 +171,9 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
                 h.manual_value > 0 ? fmt(h.manual_value) : null,
                 h.target_year ? String(h.target_year) : null,
                 `${h.probability}%`,
+                h.expected_return ? `${h.expected_return}% ${t("anual", "yr")}` : null,
               ]}
+
               onRemove={() => remove(h.id)}
             >
               <InlineRow label={t("Nombre", "Name")}>
