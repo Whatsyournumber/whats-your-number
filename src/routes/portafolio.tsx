@@ -826,7 +826,7 @@ function PortafolioContent() {
 
           <div
             className={cn(
-              "flex flex-col gap-0.5 rounded-xl border px-3 py-1.5",
+              "flex flex-col gap-1 rounded-xl border px-3 py-2",
               riskLevel === "Alto"
                 ? "border-negative/25 bg-negative/[0.06]"
                 : riskLevel === "Medio"
@@ -834,7 +834,7 @@ function PortafolioContent() {
                   : "border-positive/25 bg-positive/[0.06]",
             )}
           >
-            <div className="flex items-center gap-1.5 text-[11px] leading-tight">
+            <div className="flex items-center gap-1.5 text-[11px] leading-snug">
               <Sparkles
                 className={cn(
                   "h-3 w-3 shrink-0",
@@ -844,17 +844,16 @@ function PortafolioContent() {
               <span className="font-semibold text-foreground">
                 {t("Qué hacer ahora", "What to do now")}
               </span>
-              <span className="text-muted-foreground/40">·</span>
-              {riskMetrics.map((m, i) => (
-                <span key={m.label} className="inline-flex items-center gap-0.5 whitespace-nowrap">
-                  {i > 0 && <span className="text-muted-foreground/30">·</span>}
-                  <span className="font-medium text-foreground/80">{m.label}</span>
-                  <span className="numeric font-semibold text-foreground">{m.value}</span>
-                </span>
-              ))}
+              <span className="text-muted-foreground/50">·</span>
+              <span className="text-muted-foreground">
+                {t(
+                  `Riesgo ${riskLabel}: volatilidad ${volPct.toFixed(0)}%, beta ${beta.toFixed(2)}, caída máx ${maxDrawdown.toFixed(0)}%, concentración ${concentration.toFixed(0)}%.`,
+                  `Risk ${riskLabel}: volatility ${volPct.toFixed(0)}%, beta ${beta.toFixed(2)}, max drawdown ${maxDrawdown.toFixed(0)}%, concentration ${concentration.toFixed(0)}%.`,
+                )}
+              </span>
             </div>
 
-            <p className="line-clamp-1 text-[11px] leading-tight text-muted-foreground">
+            <p className="line-clamp-2 text-[11px] leading-snug text-muted-foreground">
               {insight.isLoading ? t("Analizando…", "Analyzing…") : aiAdvice}
             </p>
           </div>
