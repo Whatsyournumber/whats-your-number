@@ -40,6 +40,7 @@ import {
 import { convertAmount, convertProfileCurrency } from "@/lib/fx";
 import { buildDataset } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
+import { Amount } from "@/components/ui/amount";
 
 export const Route = createFileRoute("/mi-perfil")({
   head: () => ({
@@ -398,7 +399,7 @@ function MiPerfil() {
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="sm:col-span-2 rounded-lg border border-primary/30 bg-primary/5 p-3">
                   <p className="text-xs text-muted-foreground">{t("Your Number", "Your Number")}</p>
-                  <p className="numeric text-lg font-semibold">{preview.fmtCompact(preview.plan.targetCapital)}</p>
+                  <p className="text-lg font-semibold"><Amount full={preview.fmt(preview.plan.targetCapital)} short={preview.fmtCompact(preview.plan.targetCapital)} from="lg" /></p>
                 </div>
 
                 {form.goal === "vivienda" && (
