@@ -863,7 +863,11 @@ function PortafolioContent() {
             </div>
 
             <p className="text-[13px] leading-relaxed text-muted-foreground">
-              {metricSummary}
+              {metricLine1}
+            </p>
+
+            <p className="text-[13px] leading-relaxed text-muted-foreground">
+              {metricLine2}
             </p>
 
             <p className="text-[13px] leading-relaxed text-muted-foreground">
