@@ -332,6 +332,52 @@ function PortafolioContent() {
       </div>
 
       <Panel
+        title={t("Análisis de tu portafolio", "Your portfolio analysis")}
+        description={t("Calculado con tus posiciones, rentabilidades e intereses de deuda reales.", "Computed from your real positions, expected returns and debt interest.")}
+      >
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {[
+            { label: t("Retorno esperado ponderado", "Weighted expected return"), value: `${weightedReturn.toFixed(1)}%` },
+            { label: t("Ingreso pasivo / mes", "Passive income / mo"), value: fmt(Math.round(passiveMonthly)) },
+            { label: t("Costo anual de deuda", "Annual debt cost"), value: debtTotal > 0 ? fmt(Math.round(debtCost)) : fmt(0) },
+            { label: t("Rendimiento neto anual", "Net annual return"), value: fmt(Math.round(netAnnual)) },
+          ].map((m) => (
+            <div key={m.label} className="rounded-xl bg-elevated/60 p-3">
+              <p className="text-[11px] text-muted-foreground">{m.label}</p>
+              <p className="numeric mt-1 text-lg font-semibold">{m.value}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-4 space-y-2">
+          <div className="flex flex-wrap gap-2 text-[11px]">
+            <span className="rounded-full bg-elevated/60 px-2.5 py-1 text-muted-foreground">
+              {t("Volátil", "Volatile")}: <span className="numeric font-medium text-foreground">{(riskWeight * 100).toFixed(0)}%</span>
+            </span>
+            <span className="rounded-full bg-elevated/60 px-2.5 py-1 text-muted-foreground">
+              {t("Defensivo", "Defensive")}: <span className="numeric font-medium text-foreground">{(safeWeight * 100).toFixed(0)}%</span>
+            </span>
+            <span className="rounded-full bg-elevated/60 px-2.5 py-1 text-muted-foreground">
+              {t("Mayor posición", "Largest position")}: <span className="numeric font-medium text-foreground">{concentration.toFixed(0)}%</span>
+            </span>
+          </div>
+          {insights.map((i) => (
+            <p
+              key={i.text}
+              className={cn(
+                "rounded-xl border px-3 py-2 text-xs leading-relaxed",
+                i.tone === "warn"
+                  ? "border-amber-500/20 bg-amber-500/5 text-amber-200/90"
+                  : "border-emerald-500/20 bg-emerald-500/5 text-emerald-200/90",
+              )}
+            >
+              {i.text}
+            </p>
+          ))}
+        </div>
+      </Panel>
+
+      <Panel
         title={t("Mercado en vivo", "Live market")}
         description={t("ETFs, acciones y cripto · precios reales, actualizados cada minuto", "ETFs, stocks and crypto · real prices, refreshed every minute")}
         actions={
