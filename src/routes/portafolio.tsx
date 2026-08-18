@@ -61,7 +61,8 @@ function PortafolioContent() {
 
   const watchlist = useWatchlist();
   const quotesQuery = useQuotes(watchlist.symbols);
-  const seriesQuery = useMarketSeries(["^GSPC", "SPY", "BTC-USD"]);
+  const seriesQuery = useMarketSeries(["^GSPC", "^IXIC", "URTH", "SPY", "BTC-USD"]);
+  const [benchmark, setBenchmark] = useState<"sp500" | "nasdaq" | "world">("sp500");
   const [newSymbol, setNewSymbol] = useState("");
 
   // Precios reales para las posiciones con ticker + unidades.
