@@ -845,16 +845,13 @@ function PortafolioContent() {
                 {t("Qué hacer ahora", "What to do now")}
               </span>
               <span className="text-muted-foreground/40">·</span>
-              {riskMetrics.map((m) => (
+              {riskMetrics.map((m, i) => (
                 <span key={m.label} className="inline-flex items-center gap-0.5 whitespace-nowrap">
+                  {i > 0 && <span className="text-muted-foreground/30">·</span>}
                   <span className="font-medium text-foreground/80">{m.label}</span>
                   <span className="numeric font-semibold text-foreground">{m.value}</span>
                 </span>
-              )).reduce<ReactNode[]>((acc, el, i) => {
-                if (i > 0) acc.push(<span key={`sep-${i}`} className="text-muted-foreground/30">·</span>);
-                acc.push(el);
-                return acc;
-              }, [])}
+              ))}
             </div>
 
             <p className="line-clamp-1 text-[11px] leading-tight text-muted-foreground">
