@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useT } from "@/hooks/use-language";
-import { useMarketSeries, useQuotes, useWatchlist } from "@/hooks/use-market";
+import { useMarketSeries, useQuotes, useSymbolSearch, useWatchlist } from "@/hooks/use-market";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
 import { buildDataset } from "@/lib/profile-data";
@@ -80,6 +80,8 @@ function PortafolioContent() {
   const seriesQuery = useMarketSeries(["^GSPC", "^IXIC", "URTH", "SPY", "BTC-USD"]);
   const [benchmark, setBenchmark] = useState<"sp500" | "nasdaq" | "world">("sp500");
   const [newSymbol, setNewSymbol] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchQuery = useSymbolSearch(newSymbol);
 
   // Precios reales para las posiciones con ticker + unidades.
   const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
