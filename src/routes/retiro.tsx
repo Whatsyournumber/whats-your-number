@@ -75,7 +75,13 @@ function RetiroContent() {
   const isGoal = goalMode !== "freedom";
   const goalLabel =
     goalMode === "home" ? t("Entrada de tu vivienda", "Your home down payment") : t("Capital para tu negocio", "Capital for your business");
-  const defaultHorizon = Math.max(1, Math.min(15, Math.ceil((plan.monthsToGoal || 36) / 12)));
+  // El plazo por defecto es la edad objetivo que elegiste ("¿a qué edad quieres lograrlo?").
+  // Si no hay edad válida, caemos al plazo estimado por tu capacidad de ahorro.
+  const ageHorizon = Math.max(0, (retirement.retireAge || 0) - retirement.currentAge);
+  const defaultHorizon = Math.max(
+    1,
+    Math.min(30, ageHorizon > 0 ? ageHorizon : Math.ceil((plan.monthsToGoal || 36) / 12)),
+  );
   const [horizonYears, setHorizonYears] = useState(defaultHorizon);
 
   // Sincroniza el simulador cuando el perfil termina de cargar o el usuario edita sus datos.
@@ -100,16 +106,19 @@ function RetiroContent() {
 
   // Aporte mensual necesario para alcanzar el objetivo (negocio/vivienda) según lo que ya tienes,
   // la rentabilidad elegida y el plazo. En libertad financiera usa tu capacidad de ahorro real.
+  const goalReached = isGoal && targetNow > 0 && investable >= targetNow;
   const requiredMonthly = (() => {
     if (!isGoal) return Math.max(0, d.income - d.expenses);
+    if (targetNow <= 0) return 0;
     const r = rate / 100;
-    const months = Math.max(1, years * 12);
+    const months = Math.max(1, Math.round(years * 12));
     const fvCurrent = investable * Math.pow(1 + r, years);
     const remaining = Math.max(0, targetNow - fvCurrent);
     if (remaining <= 0) return 0;
     const mr = r / 12;
     return Math.ceil(mr > 0 ? (remaining * mr) / (Math.pow(1 + mr, months) - 1) : remaining / months);
   })();
+  const yearsLabel = `${horizonYears} ${horizonYears === 1 ? t("año", "year") : t("años", "years")}`;
 
   // En modo negocio/vivienda el simulador parte del aporte mensual necesario para llegar a tiempo.
   useEffect(() => {
@@ -329,21 +338,38 @@ function RetiroContent() {
         {isGoal ? (
           <KpiCard
             label={t("Porcentaje de mi ingreso", "Share of my income")}
-            value={`${d.income > 0 ? Math.min(999, Math.round((requiredMonthly / d.income) * 100)) : 0}%`}
-            hint={t("lo que necesitas ahorrar para llegar al monto", "what you need to save to reach the amount")}
+            value={
+              targetNow <= 0
+                ? "—"
+                : `${d.income > 0 ? Math.min(999, Math.round((requiredMonthly / d.income) * 100)) : 0}%`
+            }
+            hint={
+              targetNow <= 0
+                ? t("define el monto de tu objetivo", "set your goal amount")
+                : goalReached
+                  ? t("ya tienes el capital 🎯", "you already have the capital 🎯")
+                  : `${t("de tu ingreso durante", "of your income for")} ${yearsLabel}`
+            }
             index={4}
           />
         ) : (
           <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${swr}%`} hint={t("anual · tu tasa de retiro", "annual · your withdrawal rate")} index={4} />
         )}
-        {goalMode === "business" && (
+        {isGoal && (
           <KpiCard
             label={t("Aporte necesario al mes", "Required monthly contribution")}
-            value={fmt(requiredMonthly)}
-            hint={t("para llegar a tu capital en el plazo", "to reach your capital on time")}
+            value={targetNow <= 0 ? "—" : fmt(requiredMonthly)}
+            hint={
+              targetNow <= 0
+                ? t("falta el monto objetivo", "goal amount missing")
+                : goalReached
+                  ? t("no necesitas aportar más", "no extra saving needed")
+                  : `${t("para llegar a", "to reach")} ${fmt(targetNow)} ${t("en", "in")} ${yearsLabel} ${t("al", "at")} ${rate}%`
+            }
             index={5}
           />
         )}
+
 
       </div>
       <div className="surface p-5">
@@ -440,7 +466,7 @@ function RetiroContent() {
                 <Slider
                   className="mt-3"
                   min={1}
-                  max={15}
+                  max={30}
                   step={1}
                   value={[horizonYears]}
                   onValueChange={([v]) => setHorizonYears(v ?? defaultHorizon)}
@@ -483,12 +509,23 @@ function RetiroContent() {
                   <dt className="truncate text-muted-foreground">{isGoal ? goalLabel : t("Objetivo", "Target")}</dt>
                   <dd className="numeric shrink-0 font-medium">{fmt(targetNow)}</dd>
                 </div>
+                {isGoal ? (
+                  <>
+                    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-2">
+                      <dt className="truncate text-muted-foreground">{t("Plazo", "Timeframe")}</dt>
+                      <dd className="numeric shrink-0 font-medium">{yearsLabel}</dd>
+                    </div>
+                    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-2">
+                      <dt className="truncate text-muted-foreground">{t("Aporte necesario", "Required saving")}</dt>
+                      <dd className="numeric shrink-0 font-medium">{fmt(requiredMonthly)}/{t("mes", "mo")}</dd>
+                    </div>
+                  </>
+                ) : null}
               </dl>
-
 
               {isGoal && gap > 0 && years > 0 ? (
                 <p className="mt-2 text-[11px] text-primary">
-                  {t("Ahorra", "Save")} {fmt(Math.ceil(gap / (years * 12)))}/{t("mes más para llegar a tiempo", "mo more to make it on time")}
+                  {t("Ahorra", "Save")} {fmt(Math.ceil(requiredMonthly - monthly > 0 ? requiredMonthly - monthly : gap / (years * 12)))}/{t("mes más para llegar a tiempo", "mo more to make it on time")}
                 </p>
               ) : null}
             </div>
