@@ -758,11 +758,29 @@ function PortafolioContent() {
             <p className="text-sm text-muted-foreground">{t("Cargando precios…", "Loading prices…")}</p>
           )}
         </div>
-        {quotesQuery.data?.updatedAt && (
-          <p className="mt-3 text-[11px] text-muted-foreground">
-            {t("Actualizado", "Updated")} {new Date(quotesQuery.data.updatedAt).toLocaleTimeString()}
-          </p>
-        )}
+        {quotesQuery.data?.updatedAt && (() => {
+          const d = new Date(quotesQuery.data.updatedAt);
+          const ny = d.toLocaleTimeString("en-US", { timeZone: "America/New_York", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
+          const local = d.toLocaleTimeString();
+          const parts = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", weekday: "short", hour: "numeric", minute: "numeric", hour12: false }).formatToParts(d);
+          const get = (tp: string) => parts.find((p) => p.type === tp)?.value ?? "";
+          const wd = get("weekday");
+          const mins = Number(get("hour")) * 60 + Number(get("minute"));
+          const open = !["Sat", "Sun"].includes(wd) && mins >= 9 * 60 + 30 && mins < 16 * 60;
+          return (
+            <p className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-muted-foreground">
+              <span className={cn("inline-flex items-center gap-1.5 font-medium", open ? "text-positive" : "text-muted-foreground")}>
+                <span className={cn("h-1.5 w-1.5 rounded-full", open ? "bg-positive" : "bg-muted-foreground/60")} />
+                {open ? t("Bolsa de Nueva York abierta", "New York Stock Exchange open") : t("Bolsa de Nueva York cerrada", "New York Stock Exchange closed")}
+              </span>
+              <span className="opacity-40">·</span>
+              <span>{t("Hora Nueva York (NYSE)", "New York time (NYSE)")} {ny} ET</span>
+              <span className="opacity-40">·</span>
+              <span>{t("Actualizado", "Updated")} {local} {t("hora local", "local time")}</span>
+            </p>
+          );
+        })()}
+
       </Panel>
 
 
