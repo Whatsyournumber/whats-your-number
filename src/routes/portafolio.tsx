@@ -360,7 +360,7 @@ function PortafolioContent() {
   const riskMetrics: { label: string; value: string; qual: string; tone: Tone; sentence: string }[] = hasStats
     ? [
         {
-          label: `📈 ${t("Volatilidad", "Volatility")}`,
+          label: `${t("Volatilidad", "Volatility")}`,
           value: `${volPct.toFixed(1)}%`,
           qual:
             volPct > 22
@@ -377,7 +377,7 @@ function PortafolioContent() {
                 : t("Tu cartera se mueve poco, es estable.", "Your portfolio barely moves, it's stable."),
         },
         {
-          label: `📊 ${t("Beta", "Beta")}`,
+          label: `${t("Beta", "Beta")}`,
           value: beta.toFixed(2),
           qual:
             beta > 1.2
@@ -394,7 +394,7 @@ function PortafolioContent() {
                 : t("Se mueve parecido al mercado.", "It moves about like the market."),
         },
         {
-          label: `📉 ${t("Caída máxima", "Max drawdown")}`,
+          label: `${t("Caída máxima", "Max drawdown")}`,
           value: `${maxDrawdown.toFixed(1)}%`,
           qual:
             maxDrawdown < -25
@@ -428,7 +428,7 @@ function PortafolioContent() {
                 : t("El retorno no compensa el riesgo.", "The return doesn't justify the risk."),
         },
         {
-          label: `🎯 ${t("Concentración", "Concentration")}`,
+          label: `${t("Concentración", "Concentration")}`,
           value: `${concentration.toFixed(0)}%`,
           qual:
             concentration > 40
@@ -448,7 +448,7 @@ function PortafolioContent() {
       ]
     : [
         {
-          label: `📈 ${t("Volatilidad estimada", "Estimated volatility")}`,
+          label: `${t("Volatilidad estimada", "Estimated volatility")}`,
           value: `${volPct.toFixed(0)}%`,
           qual:
             volPct > 22
@@ -465,7 +465,7 @@ function PortafolioContent() {
                 : t("Tu cartera se mueve poco, es estable.", "Your portfolio barely moves, it's stable."),
         },
         {
-          label: `⚡ ${t("Activos volátiles", "Volatile assets")}`,
+          label: `${t("Activos volátiles", "Volatile assets")}`,
           value: `${(riskWeight * 100).toFixed(0)}%`,
           qual:
             riskWeight > 0.7
@@ -482,7 +482,7 @@ function PortafolioContent() {
                 : t("Poco en activos volátiles.", "Little in volatile assets."),
         },
         {
-          label: `🎯 ${t("Concentración", "Concentration")}`,
+          label: `${t("Concentración", "Concentration")}`,
           value: `${concentration.toFixed(0)}%`,
           qual:
             concentration > 40
@@ -500,7 +500,7 @@ function PortafolioContent() {
               : t("Estás bien diversificado.", "You're well diversified."),
         },
         {
-          label: `💳 ${t("Deuda", "Debt")}`,
+          label: `${t("Deuda", "Debt")}`,
           value: `${debtPct.toFixed(0)}%`,
           qual:
             debtPct > 40
