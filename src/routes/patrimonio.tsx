@@ -110,6 +110,8 @@ function PatrimonioContent() {
         label: h.label || kindLabel(h.kind),
         sub: kindLabel(h.kind),
         ticker: h.ticker,
+        cost,
+        livePrice: h.ticker ? (prices[h.ticker.toUpperCase()] ?? null) : null,
         quantity: h.quantity,
         value: weighted,
         annual,
