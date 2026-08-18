@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Pencil, RefreshCw, X } from "lucide-react";
+import { Pencil, RefreshCw, ShieldCheck, Sparkles, X } from "lucide-react";
 import { useState } from "react";
 import { CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
