@@ -212,7 +212,7 @@ export const RULES: CategoryRule[] = [
       "roofbar", "terrace", "terraza", "cine", "cinema", "cinepolis", "cinépolis", "yelmo", "teatro",
       "theater", "concierto", "concert", "festival", "ticketmaster", "eventbrite", "entradas eventos",
       "taquillas", "boliche", "bowling", "karaoke", "casino", "entretenimiento", "nightlife", "copas",
-      "wine bar", "vinoteca", "fandango", "ocio",
+      "wine bar", "vinoteca", "fandango", "ocio", "club", "clubs", "clubes",
     ],
   },
   {
