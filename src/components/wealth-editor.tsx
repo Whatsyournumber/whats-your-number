@@ -637,23 +637,31 @@ function InvestmentCard({
       <InlineRow label={t("Ticker (opcional)", "Ticker (optional)")}>
         <Input value={h.ticker ?? ""} onChange={(e) => onPatch({ ticker: e.target.value.toUpperCase() || null })} className="h-9" />
       </InlineRow>
-      <InlineRow label={t("Monto de compra", "Purchase amount")}>
-        <Money value={h.cost_basis} onChange={(n) => onPatch({ cost_basis: n })} />
-      </InlineRow>
-      <InlineRow label={t("Precio de compra", "Purchase price")}>
-        <Money
-          value={buyPrice}
-          decimals
-          onChange={(n) => {
-            if (n > 0 && h.cost_basis > 0) onPatch({ quantity: h.cost_basis / n });
-            else if (n > 0 && h.quantity > 0) onPatch({ cost_basis: n * h.quantity });
-          }}
-        />
-      </InlineRow>
+      {isEtf ? (
+        <>
+          <InlineRow label={t("Monto de compra", "Purchase amount")}>
+            <Money value={h.cost_basis} onChange={(n) => onPatch({ cost_basis: n })} />
+          </InlineRow>
+          <InlineRow label={t("Precio de compra", "Purchase price")}>
+            <Money
+              value={buyPrice}
+              decimals
+              onChange={(n) => {
+                if (n > 0 && h.cost_basis > 0) onPatch({ quantity: h.cost_basis / n });
+                else if (n > 0 && h.quantity > 0) onPatch({ cost_basis: n * h.quantity });
+              }}
+            />
+          </InlineRow>
+        </>
+      ) : (
+        <InlineRow label={t("Costo invertido", "Invested cost")}>
+          <Money value={h.cost_basis} onChange={(n) => onPatch({ cost_basis: n })} />
+        </InlineRow>
+      )}
       <InlineRow label={t("Unidades", "Units")}>
         <Money value={h.quantity} onChange={(n) => onPatch({ quantity: n })} decimals />
       </InlineRow>
-      {ticker ? (
+      {isEtf && ticker ? (
         <div className="rounded-lg border border-border/50 bg-background/40 px-3 py-2 text-[11px]">
           {quote ? (
             <div className="space-y-0.5">
