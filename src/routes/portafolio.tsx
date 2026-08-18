@@ -626,7 +626,6 @@ function PortafolioContent() {
           <div>
             <p className="text-[11px] text-muted-foreground">{t("Ganancia anual", "Annual gain")}</p>
             <p className="numeric text-sm text-positive">{fmt(Math.round(h.value * h.growth))}</p>
-            <p className="text-[10px] text-muted-foreground">{(h.growth * 100).toFixed(1)}%</p>
           </div>
           <div>
             <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
