@@ -211,6 +211,9 @@ function PortafolioContent() {
         .filter((h) => h.type === "Cash" || h.type === "Renta fija" || h.type === "Estructurado")
         .reduce((s, h) => s + h.value, 0) / totalValue
     : 0;
+  const cashWeight = totalValue
+    ? enriched.filter((h) => h.type === "Cash").reduce((s, h) => s + h.value, 0) / totalValue
+    : 0;
   const annualGain = enriched.reduce((s, h) => s + h.value * h.growth, 0);
   const top = [...enriched].sort((a, b) => b.value - a.value)[0];
   const concentration = top && totalValue ? (top.value / totalValue) * 100 : 0;
