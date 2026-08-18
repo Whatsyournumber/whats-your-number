@@ -75,7 +75,13 @@ function RetiroContent() {
   const isGoal = goalMode !== "freedom";
   const goalLabel =
     goalMode === "home" ? t("Entrada de tu vivienda", "Your home down payment") : t("Capital para tu negocio", "Capital for your business");
-  const defaultHorizon = Math.max(1, Math.min(15, Math.ceil((plan.monthsToGoal || 36) / 12)));
+  // El plazo por defecto es la edad objetivo que elegiste ("¿a qué edad quieres lograrlo?").
+  // Si no hay edad válida, caemos al plazo estimado por tu capacidad de ahorro.
+  const ageHorizon = Math.max(0, (retirement.retireAge || 0) - retirement.currentAge);
+  const defaultHorizon = Math.max(
+    1,
+    Math.min(30, ageHorizon > 0 ? ageHorizon : Math.ceil((plan.monthsToGoal || 36) / 12)),
+  );
   const [horizonYears, setHorizonYears] = useState(defaultHorizon);
 
   // Sincroniza el simulador cuando el perfil termina de cargar o el usuario edita sus datos.
