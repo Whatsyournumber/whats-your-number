@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, X } from "lucide-react";
 import { useState } from "react";
@@ -10,8 +11,9 @@ import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { useT } from "@/hooks/use-language";
+import { useLanguage, useT } from "@/hooks/use-language";
 import { useMarketSeries, useQuotes, useSymbolSearch, useWatchlist } from "@/hooks/use-market";
+import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
 import { buildDataset } from "@/lib/profile-data";
@@ -43,6 +45,8 @@ const chartColors = [
 
 function PortafolioContent() {
   const t = useT();
+  const { lang } = useLanguage();
+
   const typeLabels: Record<(typeof types)[number], string> = {
     ETF: t("ETF", "ETF"),
     "Acción": t("Acción", "Stock"),
@@ -436,6 +440,35 @@ function PortafolioContent() {
             "Allocation aligned and defensive portfolio. You could take a bit more equity to outpace inflation.",
           );
 
+  // ---- Explicación con IA (con fallback a los textos locales) ----
+  const insightKey = JSON.stringify({
+    lang,
+    r: riskLevel,
+    m: riskMetrics.map((m) => `${m.label}:${m.value}`),
+    b: buckets.map((b) => `${b.key}:${b.cur.toFixed(0)}/${b.tgt}`),
+  });
+  const insight = useQuery({
+    queryKey: ["portfolio-insight", insightKey],
+    enabled: totalValue > 0,
+    staleTime: 30 * 60_000,
+    retry: false,
+    queryFn: () =>
+      getPortfolioInsight({
+        data: {
+          lang: lang === "en" ? "en" : "es",
+          currency: "USD",
+          riskLevel,
+          metrics: riskMetrics.map((m) => ({ label: m.label, value: m.value })),
+          buckets: buckets.map((b) => ({ label: bucketLabel[b.key]!, current: b.cur, target: b.tgt })),
+          totalValue,
+          annualGain,
+          topPosition: top ? { name: top.ticker, pct: concentration } : null,
+        },
+      }),
+  });
+  const aiHints = insight.data?.hints ?? [];
+  const aiAdvice = insight.data?.advice?.trim() || riskAdvice;
+
   const types = ["ETF", "Acción", "Renta fija", "Estructurado", "Retiro", "Cripto", "Inmueble", "Cash"] as const;
   const allocation = types
     .map((ty, i) => ({
@@ -663,11 +696,13 @@ function PortafolioContent() {
           </div>
 
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-            {riskMetrics.map((m) => (
+            {riskMetrics.map((m, i) => (
               <div key={m.label} className="rounded-xl border border-border/50 bg-elevated/30 px-3 py-2">
-                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{m.label}</p>
+                <p className="truncate text-[10px] uppercase tracking-wide text-muted-foreground">{m.label}</p>
                 <p className="numeric text-sm font-semibold text-foreground">{m.value}</p>
-                <p className="text-[10px] leading-tight text-muted-foreground">{m.hint}</p>
+                <p className="line-clamp-2 text-[10px] leading-tight text-muted-foreground">
+                  {aiHints[i]?.trim() || m.hint}
+                </p>
               </div>
             ))}
           </div>
@@ -692,7 +727,9 @@ function PortafolioContent() {
               <p className="text-xs font-semibold text-foreground">
                 {t("Qué hacer ahora", "What to do now")}
               </p>
-              <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{riskAdvice}</p>
+              <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
+                {insight.isLoading ? t("Analizando tu portafolio…", "Analyzing your portfolio…") : aiAdvice}
+              </p>
             </div>
           </div>
         </div>
