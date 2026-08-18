@@ -552,8 +552,9 @@ function InvestmentCard({
   const t = useT();
   const filled = Boolean(h.label.trim()) || h.manual_value > 0 || h.monthly_contribution > 0;
   const [open, setOpen] = useState(!filled);
+  const isEtf = h.kind === "etf";
   const ticker = (h.ticker ?? "").trim().toUpperCase();
-  const { data: quotes } = useQuotes(ticker ? [ticker] : []);
+  const { data: quotes } = useQuotes(isEtf && ticker ? [ticker] : []);
   const quote = quotes?.quotes?.[0] ?? null;
   const buyPrice = h.quantity > 0 && h.cost_basis > 0 ? h.cost_basis / h.quantity : 0;
   const marketValue = quote && h.quantity > 0 ? quote.price * h.quantity : null;
