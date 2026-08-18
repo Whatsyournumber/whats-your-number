@@ -10,6 +10,7 @@ import { useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
+import { useQuotes } from "@/hooks/use-market";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
 
@@ -36,11 +37,80 @@ function PatrimonioContent() {
   const growth =
     months[0]!.netWorth > 0 ? ((d.netWorth - months[0]!.netWorth) / Math.abs(months[0]!.netWorth)) * 100 : 0;
 
-  // Deudas individuales desde holdings (TDC, préstamos, etc.) + hipotecas de propiedades.
+  // Precios reales para posiciones con ticker.
+  const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
+  const holdingQuotes = useQuotes(holdingSymbols);
+  const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
+
+  // Deudas individuales desde holdings (TDC, préstamos, etc.).
   const debtRows = holdings
     .filter((h) => h.kind === "debt" && holdingValue(h) > 0)
     .map((h) => ({ id: h.id, label: h.label || t("Deuda", "Debt"), value: holdingValue(h), interest: h.expected_return }));
   const liabilityRows = [...debtRows].sort((a, b) => b.value - a.value);
+
+  // Detalle completo: inversiones + inmuebles + retiro + cash + activos futuros (trading, venta, etc.).
+  const groupOf = (kind: string) =>
+    ["cash", "bank", "money_market"].includes(kind)
+      ? { key: "cash", label: t("Liquidez", "Cash") }
+      : kind === "retirement"
+        ? { key: "retirement", label: t("Fondo de retiro", "Retirement fund") }
+        : kind === "property"
+          ? { key: "property", label: t("Inmuebles", "Real estate") }
+          : kind === "future"
+            ? { key: "future", label: t("Activos futuros", "Future assets") }
+            : { key: "invest", label: t("Inversiones", "Investments") };
+
+  const kindLabel = (kind: string) =>
+    ({
+      cash: t("Efectivo", "Cash"),
+      bank: t("Cuenta bancaria", "Bank account"),
+      money_market: t("Money market", "Money market"),
+      etf: t("ETF", "ETF"),
+      stock: t("Acción", "Stock"),
+      bond: t("Bono", "Bond"),
+      tbill: t("Letra del tesoro", "T-Bill"),
+      note: t("Nota", "Note"),
+      structured: t("Producto estructurado", "Structured product"),
+      crypto: t("Cripto", "Crypto"),
+      retirement: t("Fondo de retiro", "Retirement fund"),
+      property: t("Inmueble", "Real estate"),
+      future: t("Activo futuro", "Future asset"),
+      other: t("Otro", "Other"),
+    })[kind] ?? t("Activo", "Asset");
+
+  const detailRows = holdings
+    .filter((h) => h.kind !== "debt")
+    .map((h) => {
+      const raw = holdingValue(h, prices);
+      const weighted = h.kind === "future" ? Math.round((raw * (h.probability ?? 100)) / 100) : raw;
+      return {
+        id: h.id,
+        group: groupOf(h.kind),
+        kind: h.kind,
+        label: h.label || kindLabel(h.kind),
+        sub: kindLabel(h.kind),
+        ticker: h.ticker,
+        quantity: h.quantity,
+        value: weighted,
+        rate: h.expected_return,
+        monthlyContribution: h.monthly_contribution,
+        monthlyIncome: h.monthly_income,
+        mortgage: h.kind === "property" ? h.linked_liability : 0,
+        targetYear: h.kind === "future" ? h.target_year : null,
+        probability: h.kind === "future" ? h.probability : null,
+      };
+    })
+    .filter((r) => r.value > 0)
+    .sort((a, b) => b.value - a.value);
+
+  const groups = ["invest", "retirement", "property", "future", "cash"]
+    .map((key) => {
+      const rows = detailRows.filter((r) => r.group.key === key);
+      return { key, label: rows[0]?.group.label ?? "", rows, total: rows.reduce((s, r) => s + r.value, 0) };
+    })
+    .filter((g) => g.rows.length > 0)
+    .sort((a, b) => b.total - a.total);
+
 
   return (
     <PageShell>
@@ -147,7 +217,58 @@ function PatrimonioContent() {
           </div>
         </Panel>
       </div>
+
+      <Panel
+        title={t("Detalle de tus activos", "Your assets in detail")}
+        description={t("Inversiones, inmuebles, fondo de retiro, activos futuros y liquidez.", "Investments, real estate, retirement fund, future assets and cash.")}
+      >
+        {groups.length === 0 ? (
+          <p className="text-sm text-muted-foreground">{t("Aún no registras activos.", "You haven't recorded any assets yet.")}</p>
+        ) : (
+          <div className="space-y-5">
+            {groups.map((g) => (
+              <div key={g.key}>
+                <div className="mb-2 flex items-center justify-between">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{g.label}</p>
+                  <span className="numeric text-xs font-semibold text-muted-foreground">{fmt(g.total)}</span>
+                </div>
+                <div className="space-y-1.5">
+                  {g.rows.map((r) => (
+                    <div key={r.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl bg-elevated/60 p-3">
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium">
+                          {r.label}
+                          {r.ticker ? <span className="ml-2 text-xs text-muted-foreground">{r.ticker}</span> : null}
+                        </p>
+                        <p className="truncate text-[11px] text-muted-foreground">
+                          {[
+                            r.sub,
+                            r.ticker && r.quantity > 0 ? `${r.quantity} u.` : null,
+                            r.rate > 0 ? t(`${r.rate}% anual`, `${r.rate}% annual`) : null,
+                            r.monthlyContribution > 0 ? t(`+${fmt(r.monthlyContribution)}/mes`, `+${fmt(r.monthlyContribution)}/mo`) : null,
+                            r.monthlyIncome > 0 ? t(`renta ${fmt(r.monthlyIncome)}/mes`, `income ${fmt(r.monthlyIncome)}/mo`) : null,
+                            r.mortgage > 0 ? t(`hipoteca ${fmt(r.mortgage)}`, `mortgage ${fmt(r.mortgage)}`) : null,
+                            r.targetYear ? String(r.targetYear) : null,
+                            r.probability != null && r.probability < 100 ? `${r.probability}%` : null,
+                          ]
+                            .filter(Boolean)
+                            .join(" · ")}
+                        </p>
+                      </div>
+                      <span className="numeric shrink-0 text-sm font-semibold">{fmt(r.value)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        <Button asChild variant="outline" size="sm" className="mt-4 w-full rounded-full">
+          <Link to="/mi-perfil" hash="patrimonio">{t("Editar mi patrimonio", "Edit my net worth")}</Link>
+        </Button>
+      </Panel>
     </PageShell>
+
   );
 }
 
