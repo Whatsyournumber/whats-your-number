@@ -110,8 +110,11 @@ function PatrimonioContent() {
     })
     .filter((g) => g.rows.length > 0)
     .sort((a, b) => b.total - a.total);
-  const detailTotal = detailRows.reduce((s, r) => s + r.value, 0);
-  const detailAnnual = Math.round(detailRows.reduce((s, r) => s + (r.value * (r.rate || 0)) / 100, 0));
+  const [activeTab, setTab] = useState("all");
+  const visibleRows = activeTab === "all" ? detailRows : detailRows.filter((r) => r.group.key === activeTab);
+  const visibleTotal = visibleRows.reduce((s, r) => s + r.value, 0);
+  const visibleAnnual = Math.round(visibleRows.reduce((s, r) => s + (r.value * (r.rate || 0)) / 100, 0));
+
 
 
   return (
