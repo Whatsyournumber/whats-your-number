@@ -17,9 +17,9 @@ type Props = {
   onRetireAge: (n: number) => void;
 };
 
-const RETURN_OPTIONS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15];
+const RETURN_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 18, 20, 25, 30];
 const PROBABILITY_OPTIONS = [20, 40, 60, 80, 100];
-const RETIRE_AGES = [45, 50, 55, 60, 62, 65, 67, 70];
+const RETIRE_AGES = [35, 40, 45, 50, 55, 58, 60, 62, 65, 67, 70, 72, 75, 80, 85];
 
 /** Formato corto: 1,4M / 149,6K para que las cifras no rompan el layout. */
 function makeShort(fmt: (n: number) => string) {
@@ -57,7 +57,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
     { kind: "money_market", label: t("Money market (opcional)", "Money market (optional)") },
   ];
 
-  const investments = value.filter((h) => ["etf", "stock", "crypto", "other"].includes(h.kind));
+  const investments = value.filter((h) => ["etf", "stock", "bond", "tbill", "note", "crypto", "other"].includes(h.kind));
   const retirement = single("retirement");
 
   const sum = (list_: Holding[]) => list_.reduce((s, h) => s + holdingValue(h), 0);
@@ -233,7 +233,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
 
         <Section icon={<CreditCard className="h-4 w-4" />} tone="rose" title={t("Deudas", "Debts")} total={amt(debtTotal)}>
           {list("debt").map((h) => (
-            <div key={h.id} className="grid grid-cols-[1.3fr_1fr_24px] items-center gap-2">
+            <div key={h.id} className="grid grid-cols-[1.3fr_1fr_0.8fr_24px] items-center gap-2">
               <Input
                 value={h.label}
                 onChange={(e) => patch(h.id, { label: e.target.value })}
@@ -241,6 +241,16 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
                 className="h-9"
               />
               <Money value={h.manual_value} onChange={(n) => patch(h.id, { manual_value: n })} />
+              <Input
+                type="number"
+                className="h-9"
+                inputMode="decimal"
+                step="0.1"
+                value={h.expected_return || ""}
+                placeholder={t("% int.", "% int.")}
+                title={t("Interés anual (opcional)", "Annual interest (optional)")}
+                onChange={(e) => patch(h.id, { expected_return: Math.max(0, Number(e.target.value || 0)) })}
+              />
               <button
                 type="button"
                 onClick={() => remove(h.id)}
@@ -485,6 +495,9 @@ function InvestmentCard({
   const kindLabel: Record<string, string> = {
     etf: t("ETF / fondo", "ETF / fund"),
     stock: t("Acción", "Stock"),
+    bond: t("Bono", "Bond"),
+    tbill: t("Treasury bill", "Treasury bill"),
+    note: t("Nota / pagaré", "Note"),
     crypto: t("Cripto", "Crypto"),
     other: t("Otro", "Other"),
   };
@@ -536,6 +549,9 @@ function InvestmentCard({
           options={[
             { value: "etf", label: kindLabel["etf"] ?? "ETF" },
             { value: "stock", label: kindLabel["stock"] ?? "Stock" },
+            { value: "bond", label: kindLabel["bond"] ?? "Bond" },
+            { value: "tbill", label: kindLabel["tbill"] ?? "Treasury bill" },
+            { value: "note", label: kindLabel["note"] ?? "Note" },
             { value: "crypto", label: kindLabel["crypto"] ?? "Crypto" },
             { value: "other", label: kindLabel["other"] ?? "Other" },
           ]}
