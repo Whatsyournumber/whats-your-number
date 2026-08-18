@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Pencil, RefreshCw, X } from "lucide-react";
+import { Pencil, RefreshCw, ShieldCheck, Sparkles, X } from "lucide-react";
 import { useState } from "react";
 import { CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
@@ -331,16 +331,63 @@ function PortafolioContent() {
   // ---- Análisis de riesgo y rebalanceo (2 líneas, basado en data real) ----
   const volPct = hasStats ? volPort : riskWeight * 100 * 1.2;
   const debtPct = totalValue ? (debtTotal / totalValue) * 100 : 0;
-  // Línea 1 — volatilidad, beta, drawdown, Sharpe y concentración.
-  const riskReason = hasStats
-    ? t(
-        `Volatilidad ${volPct.toFixed(1)}% (índice ${volBench.toFixed(1)}%) · β ${beta.toFixed(2)} · caída máx ${maxDrawdown.toFixed(1)}% · Sharpe ${sharpe.toFixed(2)} · concentración ${concentration.toFixed(0)}%`,
-        `Volatility ${volPct.toFixed(1)}% (index ${volBench.toFixed(1)}%) · β ${beta.toFixed(2)} · max drawdown ${maxDrawdown.toFixed(1)}% · Sharpe ${sharpe.toFixed(2)} · concentration ${concentration.toFixed(0)}%`,
-      )
-    : t(
-        `Volatilidad estimada ${volPct.toFixed(0)}% · activos volátiles ${(riskWeight * 100).toFixed(0)}% · mayor posición ${concentration.toFixed(0)}% · deuda ${debtPct.toFixed(0)}%`,
-        `Estimated volatility ${volPct.toFixed(0)}% · volatile assets ${(riskWeight * 100).toFixed(0)}% · largest position ${concentration.toFixed(0)}% · debt ${debtPct.toFixed(0)}%`,
-      );
+  // Métricas explicadas en lenguaje simple.
+  const riskMetrics: { label: string; value: string; hint: string }[] = hasStats
+    ? [
+        {
+          label: t("Volatilidad", "Volatility"),
+          value: `${volPct.toFixed(1)}%`,
+          hint: t(`cuánto oscila · índice ${volBench.toFixed(1)}%`, `how much it swings · index ${volBench.toFixed(1)}%`),
+        },
+        {
+          label: t("Beta", "Beta"),
+          value: beta.toFixed(2),
+          hint:
+            beta > 1
+              ? t("se mueve más que el mercado", "moves more than the market")
+              : t("se mueve menos que el mercado", "moves less than the market"),
+        },
+        {
+          label: t("Caída máxima", "Max drawdown"),
+          value: `${maxDrawdown.toFixed(1)}%`,
+          hint: t("peor bajada en 12 meses", "worst drop in 12 months"),
+        },
+        {
+          label: t("Sharpe", "Sharpe"),
+          value: sharpe.toFixed(2),
+          hint:
+            sharpe > 1
+              ? t("buen retorno por riesgo", "good return per unit of risk")
+              : t("retorno bajo para el riesgo", "low return for the risk taken"),
+        },
+        {
+          label: t("Concentración", "Concentration"),
+          value: `${concentration.toFixed(0)}%`,
+          hint: top ? t(`en ${top.ticker}`, `in ${top.ticker}`) : t("mayor posición", "largest position"),
+        },
+      ]
+    : [
+        {
+          label: t("Volatilidad estimada", "Estimated volatility"),
+          value: `${volPct.toFixed(0)}%`,
+          hint: t("oscilación esperada al año", "expected swing per year"),
+        },
+        {
+          label: t("Activos volátiles", "Volatile assets"),
+          value: `${(riskWeight * 100).toFixed(0)}%`,
+          hint: t("acciones y cripto", "stocks and crypto"),
+        },
+        {
+          label: t("Concentración", "Concentration"),
+          value: `${concentration.toFixed(0)}%`,
+          hint: top ? t(`en ${top.ticker}`, `in ${top.ticker}`) : t("mayor posición", "largest position"),
+        },
+        {
+          label: t("Deuda", "Debt"),
+          value: `${debtPct.toFixed(0)}%`,
+          hint: t("sobre el valor del portafolio", "of portfolio value"),
+        },
+      ];
   // Línea 2 — recomendación universal de distribución y balanceo según el drift.
   const drift = buckets.find((b) => Math.abs(b.deltaPct) === Math.max(...buckets.map((x) => Math.abs(x.deltaPct))));
   const biggestDrift = drift && Math.abs(drift.deltaPct) >= 5 ? drift : null;
@@ -559,7 +606,7 @@ function PortafolioContent() {
           <div>
             <p className="text-[11px] text-muted-foreground">{t("Ganancia anual", "Annual gain")}</p>
             <p className="numeric text-sm font-semibold text-positive">{fmt(Math.round(annualGain))}</p>
-            <p className="text-[10px] text-muted-foreground">{weightedReturn.toFixed(1)}%</p>
+            
           </div>
           <div>
             <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
@@ -575,9 +622,12 @@ function PortafolioContent() {
           </div>
         </div>
 
-        <div className="mt-4 space-y-1 border-t border-border/50 pt-4 text-[11px]">
-          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-            <span className="text-muted-foreground">{t("Nivel de riesgo", "Risk level")}</span>
+        <div className="mt-4 space-y-3 border-t border-border/50 pt-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              {t("Nivel de riesgo", "Risk level")}
+            </span>
             <span
               className={cn(
                 "rounded-full px-2.5 py-0.5 text-xs font-semibold",
@@ -590,20 +640,41 @@ function PortafolioContent() {
             >
               {riskLabel}
             </span>
-            <span className="text-muted-foreground">{riskReason}</span>
           </div>
-          <p
+
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+            {riskMetrics.map((m) => (
+              <div key={m.label} className="rounded-xl border border-border/50 bg-elevated/30 px-3 py-2">
+                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{m.label}</p>
+                <p className="numeric text-sm font-semibold text-foreground">{m.value}</p>
+                <p className="text-[10px] leading-tight text-muted-foreground">{m.hint}</p>
+              </div>
+            ))}
+          </div>
+
+          <div
             className={cn(
-              "leading-relaxed",
+              "flex items-start gap-3 rounded-xl border p-3",
               riskLevel === "Alto"
-                ? "text-negative/80"
+                ? "border-negative/25 bg-negative/[0.06]"
                 : riskLevel === "Medio"
-                  ? "text-amber-200/70"
-                  : "text-emerald-200/70",
+                  ? "border-amber-400/25 bg-amber-400/[0.06]"
+                  : "border-positive/25 bg-positive/[0.06]",
             )}
           >
-            {riskAdvice}
-          </p>
+            <Sparkles
+              className={cn(
+                "mt-0.5 h-4 w-4 shrink-0",
+                riskLevel === "Alto" ? "text-negative" : riskLevel === "Medio" ? "text-amber-200" : "text-positive",
+              )}
+            />
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-foreground">
+                {t("Qué hacer ahora", "What to do now")}
+              </p>
+              <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{riskAdvice}</p>
+            </div>
+          </div>
         </div>
       </Panel>
 
