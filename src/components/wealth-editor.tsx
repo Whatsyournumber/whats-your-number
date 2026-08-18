@@ -572,7 +572,7 @@ function InvestmentCard({
     bond: t("Bono", "Bond"),
     tbill: t("Treasury bill", "Treasury bill"),
     note: t("Nota / pagaré", "Note"),
-    structured: t("Structured Product", "Structured Product"),
+    structured: t("Producto estructurado", "Structured Product"),
     crypto: t("Cripto", "Crypto"),
     other: t("Otro", "Other"),
   };
