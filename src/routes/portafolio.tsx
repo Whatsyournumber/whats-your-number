@@ -66,10 +66,18 @@ function PortafolioContent() {
   const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
 
   const typeOf = (kind: string) =>
-    kind === "stock" ? ("Acción" as const) : kind === "crypto" ? ("Cripto" as const) : ("ETF" as const);
+    kind === "stock"
+      ? ("Acción" as const)
+      : kind === "crypto"
+        ? ("Cripto" as const)
+        : ["bond", "tbill", "note"].includes(kind)
+          ? ("Renta fija" as const)
+          : kind === "property"
+            ? ("Inmueble" as const)
+            : ("ETF" as const);
 
   const detailed = holdings
-    .filter((h) => ["etf", "stock", "crypto", "other", "retirement"].includes(h.kind))
+    .filter((h) => ["etf", "stock", "crypto", "other", "retirement", "bond", "tbill", "note", "property"].includes(h.kind))
     .map((h) => {
       const value = holdingValue(h, prices);
       const growth = Math.max(0, h.expected_return || 7) / 100;
@@ -79,6 +87,7 @@ function PortafolioContent() {
         type: typeOf(h.kind),
         value,
         growth,
+        income: Math.round((h.monthly_income || 0) * 12),
         cost: h.cost_basis > 0 ? Math.round(h.cost_basis) : Math.round(value / (1 + growth)),
       };
     })
