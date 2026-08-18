@@ -863,7 +863,6 @@ function PortafolioContent() {
               {aiAdvice}
             </p>
           </div>
-          </div>
         </div>
       </Panel>
 
