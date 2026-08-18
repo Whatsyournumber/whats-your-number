@@ -158,7 +158,7 @@ function PatrimonioContent() {
         </Panel>
 
         <Panel title={t("Asset allocation", "Asset allocation")}>
-          {assets.length === 0 ? (
+          {assetRows.length === 0 ? (
             <div className="space-y-3 py-8 text-center">
               <p className="text-sm text-muted-foreground">{t("Aún no registras activos.", "You haven't recorded any assets yet.")}</p>
               <Button asChild size="sm" className="rounded-full">
@@ -169,8 +169,8 @@ function PatrimonioContent() {
             <>
               <ResponsiveContainer width="100%" height={230}>
                 <PieChart>
-                  <Pie data={assets} dataKey="value" nameKey="name" innerRadius={60} outerRadius={100} paddingAngle={3} stroke="none">
-                    {assets.map((a) => (
+                  <Pie data={assetRows} dataKey="value" nameKey="name" innerRadius={60} outerRadius={100} paddingAngle={3} stroke="none">
+                    {assetRows.map((a) => (
                       <Cell key={a.name} fill={a.color} />
                     ))}
                   </Pie>
@@ -178,11 +178,11 @@ function PatrimonioContent() {
                 </PieChart>
               </ResponsiveContainer>
               <ul className="mt-2 space-y-1.5">
-                {assets.map((a) => (
+                {assetRows.map((a) => (
                   <li key={a.name} className="flex items-center gap-2 text-xs">
                     <span className="h-2 w-2 rounded-full" style={{ background: a.color }} />
                     <span className="truncate text-muted-foreground">{a.name}</span>
-                    <span className="numeric ml-auto font-medium">{((a.value / d.totalAssets) * 100).toFixed(0)}%</span>
+                    <span className="numeric ml-auto font-medium">{((a.value / Math.max(1, totalAssetsAll)) * 100).toFixed(0)}%</span>
                   </li>
                 ))}
               </ul>
@@ -192,16 +192,16 @@ function PatrimonioContent() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title={t("Activos", "Assets")} description={fmt(d.totalAssets)}>
+        <Panel title={t("Activos", "Assets")} description={fmt(totalAssetsAll)}>
           <div className="space-y-2">
-            {assets.map((a) => (
+            {assetRows.map((a) => (
               <div key={a.name} className="flex items-center gap-2 rounded-xl bg-elevated/60 p-3">
                 <span className="h-2.5 w-2.5 rounded-full" style={{ background: a.color }} />
                 <p className="text-sm font-medium">{a.name}</p>
                 <span className="numeric ml-auto text-sm font-semibold">{fmt(a.value)}</span>
               </div>
             ))}
-            {assets.length === 0 && <p className="text-sm text-muted-foreground">{t("Sin activos registrados.", "No assets recorded.")}</p>}
+            {assetRows.length === 0 && <p className="text-sm text-muted-foreground">{t("Sin activos registrados.", "No assets recorded.")}</p>}
           </div>
           <Button asChild variant="outline" size="sm" className="mt-4 w-full rounded-full">
             <Link to="/mi-perfil">{t("Editar activos", "Edit assets")}</Link>
@@ -227,7 +227,7 @@ function PatrimonioContent() {
           <div className="mt-4 rounded-xl border border-dashed border-border p-4">
             <p className="text-xs text-muted-foreground">{t("Ratio deuda / activos", "Debt / asset ratio")}</p>
             <p className="numeric mt-1 text-2xl font-semibold">
-              {d.totalAssets > 0 ? ((d.totalLiabilities / d.totalAssets) * 100).toFixed(1) : "0.0"}%
+              {totalAssetsAll > 0 ? ((d.totalLiabilities / totalAssetsAll) * 100).toFixed(1) : "0.0"}%
             </p>
             <p className="mt-1 text-xs text-muted-foreground">{t("Bajo el 40% se considera saludable", "Below 40% is considered healthy")}</p>
           </div>
