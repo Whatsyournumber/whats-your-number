@@ -61,7 +61,8 @@ function PortafolioContent() {
 
   const watchlist = useWatchlist();
   const quotesQuery = useQuotes(watchlist.symbols);
-  const seriesQuery = useMarketSeries(["^GSPC", "SPY", "BTC-USD"]);
+  const seriesQuery = useMarketSeries(["^GSPC", "^IXIC", "URTH", "SPY", "BTC-USD"]);
+  const [benchmark, setBenchmark] = useState<"sp500" | "nasdaq" | "world">("sp500");
   const [newSymbol, setNewSymbol] = useState("");
 
   // Precios reales para las posiciones con ticker + unidades.
@@ -269,9 +270,11 @@ function PortafolioContent() {
       : null,
   ].filter(Boolean) as { tone: "warn" | "good"; text: string }[];
 
-  // Real market series: S&P 500 vs a blend that mirrors your allocation (equities → SPY, crypto → BTC, cash → 0%).
+  // Real market series: benchmarks vs a blend that mirrors your allocation (equities → SPY, crypto → BTC, cash → 0%).
   const series = seriesQuery.data?.series ?? {};
-  const spx = series["^GSPC"] ?? [];
+  const benchSymbol = benchmark === "nasdaq" ? "^IXIC" : benchmark === "world" ? "URTH" : "^GSPC";
+  const benchName = benchmark === "nasdaq" ? "Nasdaq 100" : benchmark === "world" ? "MSCI World" : "S&P 500";
+  const benchSeries = series[benchSymbol] ?? [];
   const spy = series["SPY"] ?? [];
   const btc = series["BTC-USD"] ?? [];
   const equityValue = profile.assets_etf + profile.assets_retirement + profile.assets_stocks;
@@ -280,11 +283,71 @@ function PortafolioContent() {
   const base = equityValue + cryptoValue + cashValue;
   const wEq = base ? equityValue / base : 1;
   const wCr = base ? cryptoValue / base : 0;
-  const benchmarkData = spx.map((p, i) => ({
+  const benchmarkData = benchSeries.map((p, i) => ({
     label: p.label,
-    sp500: p.value,
+    bench: p.value,
     portfolio: (spy[i]?.value ?? p.value) * wEq + (btc[i]?.value ?? 0) * wCr,
   }));
+
+  // ---- Estadística real: volatilidad, drawdown, beta, correlación, Sharpe ----
+  const toReturns = (vals: number[]) =>
+    vals.slice(1).map((v, i) => (1 + v / 100) / (1 + (vals[i] ?? 0) / 100) - 1);
+  const pRet = toReturns(benchmarkData.map((p) => p.portfolio));
+  const bRet = toReturns(benchmarkData.map((p) => p.bench));
+  const mean = (a: number[]) => (a.length ? a.reduce((s, x) => s + x, 0) / a.length : 0);
+  const std = (a: number[]) => {
+    if (a.length < 2) return 0;
+    const m = mean(a);
+    return Math.sqrt(a.reduce((s, x) => s + (x - m) ** 2, 0) / (a.length - 1));
+  };
+  const ann = Math.sqrt(12);
+  const volPort = std(pRet) * ann * 100;
+  const volBench = std(bRet) * ann * 100;
+  const covPB = pRet.length > 1 ? mean(pRet.map((x, i) => (x - mean(pRet)) * ((bRet[i] ?? 0) - mean(bRet)))) : 0;
+  const beta = std(bRet) > 0 ? covPB / std(bRet) ** 2 : 0;
+  const correlation = std(pRet) > 0 && std(bRet) > 0 ? covPB / (std(pRet) * std(bRet)) : 0;
+  const port12 = benchmarkData.length ? benchmarkData[benchmarkData.length - 1]!.portfolio : 0;
+  const bench12 = benchmarkData.length ? benchmarkData[benchmarkData.length - 1]!.bench : 0;
+  const alpha12 = port12 - bench12;
+  const riskFree = 4.2;
+  const sharpe = volPort > 0 ? (port12 - riskFree) / volPort : 0;
+  let peak = -Infinity;
+  let maxDD = 0;
+  for (const p of benchmarkData) {
+    const v = 1 + p.portfolio / 100;
+    peak = Math.max(peak, v);
+    maxDD = Math.min(maxDD, v / peak - 1);
+  }
+  const maxDrawdown = maxDD * 100;
+  const hasStats = benchmarkData.length > 3;
+
+  // ---- Distribución objetivo universal (glidepath por horizonte) ----
+  const horizon = yearsToRetire;
+  const targetEquity = Math.min(80, Math.max(30, 100 - (profile.age ?? 35) * 0.8));
+  const targetAlloc = {
+    equity: Math.round(targetEquity),
+    fixed: Math.round(Math.max(10, 90 - targetEquity - (horizon > 15 ? 5 : 0))),
+    crypto: horizon > 10 ? 5 : 2,
+    cash: 0,
+  };
+  targetAlloc.cash = Math.max(0, 100 - targetAlloc.equity - targetAlloc.fixed - targetAlloc.crypto);
+  const bucketOf = (ty: string) =>
+    ty === "Cripto" ? "crypto" : ty === "Cash" ? "cash" : ty === "Renta fija" || ty === "Estructurado" ? "fixed" : "equity";
+  const currentAlloc = { equity: 0, fixed: 0, crypto: 0, cash: 0 } as Record<string, number>;
+  for (const h of enriched) currentAlloc[bucketOf(h.type)]! += h.value;
+  const buckets = (["equity", "fixed", "crypto", "cash"] as const).map((k) => {
+    const cur = totalValue ? (currentAlloc[k]! / totalValue) * 100 : 0;
+    const tgt = targetAlloc[k];
+    return { key: k, cur, tgt, deltaPct: tgt - cur, deltaAmount: Math.round(((tgt - cur) / 100) * totalValue) };
+  });
+  const bucketLabel: Record<string, string> = {
+    equity: t("Renta variable", "Equities"),
+    fixed: t("Renta fija", "Fixed income"),
+    crypto: t("Cripto / alternativos", "Crypto / alternatives"),
+    cash: t("Cash", "Cash"),
+  };
+  const rebalanceNeeded = buckets.some((b) => Math.abs(b.deltaPct) >= 5);
+
 
 
 
@@ -352,9 +415,30 @@ function PortafolioContent() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel
-          title={t("Portafolio vs S&P 500", "Portfolio vs S&P 500")}
+          title={t(`Portafolio vs ${benchName}`, `Portfolio vs ${benchName}`)}
           description={t("Datos reales de mercado · últimos 12 meses", "Real market data · last 12 months")}
           className="lg:col-span-2"
+          actions={
+            <div className="flex rounded-full border border-border/60 p-0.5">
+              {([
+                { k: "sp500", l: "S&P 500" },
+                { k: "nasdaq", l: "Nasdaq" },
+                { k: "world", l: "MSCI World" },
+              ] as const).map((b) => (
+                <button
+                  key={b.k}
+                  type="button"
+                  onClick={() => setBenchmark(b.k)}
+                  className={cn(
+                    "rounded-full px-2.5 py-1 text-[11px] transition",
+                    benchmark === b.k ? "bg-primary/15 text-foreground" : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {b.l}
+                </button>
+              ))}
+            </div>
+          }
         >
           {benchmarkData.length === 0 ? (
             <div className="flex h-[290px] items-center justify-center text-sm text-muted-foreground">
@@ -368,9 +452,25 @@ function PortafolioContent() {
                 <YAxis {...axisProps} tickFormatter={(v) => `${v}%`} width={46} />
                 <Tooltip content={<ChartTooltip formatter={(v) => `${v.toFixed(1)}%`} />} />
                 <Line type="monotone" dataKey="portfolio" name={t("Portafolio", "Portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.5} dot={false} />
-                <Line type="monotone" dataKey="sp500" name="S&P 500" stroke="var(--color-chart-8)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
+                <Line type="monotone" dataKey="bench" name={benchName} stroke="var(--color-chart-8)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
               </LineChart>
             </ResponsiveContainer>
+          )}
+          {hasStats && (
+            <div className="mt-3 grid grid-cols-2 gap-3 border-t border-border/50 pt-3 text-[11px] sm:grid-cols-4">
+              {[
+                { l: t("Alfa vs índice", "Alpha vs index"), v: `${alpha12 > 0 ? "+" : ""}${alpha12.toFixed(1)}%`, good: alpha12 >= 0 },
+                { l: t("Volatilidad anual", "Annual volatility"), v: `${volPort.toFixed(1)}%`, sub: `${t("índice", "index")} ${volBench.toFixed(1)}%` },
+                { l: "Beta", v: beta.toFixed(2), sub: `${t("correlación", "correlation")} ${correlation.toFixed(2)}` },
+                { l: t("Caída máxima", "Max drawdown"), v: `${maxDrawdown.toFixed(1)}%`, good: maxDrawdown > -15 },
+              ].map((m) => (
+                <div key={m.l}>
+                  <p className="text-muted-foreground">{m.l}</p>
+                  <p className={cn("numeric text-sm font-semibold", m.good === undefined ? "" : m.good ? "text-positive" : "text-negative")}>{m.v}</p>
+                  {m.sub && <p className="text-[10px] text-muted-foreground">{m.sub}</p>}
+                </div>
+              ))}
+            </div>
           )}
         </Panel>
 
@@ -485,6 +585,61 @@ function PortafolioContent() {
           </span>
         </div>
       </Panel>
+
+      <Panel
+        title={t("Distribución objetivo y rebalanceo", "Target allocation & rebalancing")}
+        description={t(
+          `Modelo universal por horizonte (${horizon} años) · qué mover para llegar al objetivo`,
+          `Universal model by horizon (${horizon} yrs) · what to move to hit the target`,
+        )}
+      >
+        <div className="space-y-2">
+          {buckets.map((b) => (
+            <div key={b.key} className="grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 md:grid-cols-5">
+              <div className="col-span-2">
+                <p className="text-sm font-medium">{bucketLabel[b.key]}</p>
+                <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-border/50">
+                  <div className="h-full rounded-full bg-primary/70" style={{ width: `${Math.min(100, b.cur)}%` }} />
+                </div>
+              </div>
+              <div>
+                <p className="text-[11px] text-muted-foreground">{t("Actual", "Current")}</p>
+                <p className="numeric text-sm">{b.cur.toFixed(0)}%</p>
+              </div>
+              <div>
+                <p className="text-[11px] text-muted-foreground">{t("Objetivo", "Target")}</p>
+                <p className="numeric text-sm">{b.tgt}%</p>
+              </div>
+              <div>
+                <p className="text-[11px] text-muted-foreground">{t("Ajuste", "Adjustment")}</p>
+                <p
+                  className={cn(
+                    "numeric text-sm font-semibold",
+                    Math.abs(b.deltaPct) < 5 ? "text-muted-foreground" : b.deltaPct > 0 ? "text-positive" : "text-amber-200",
+                  )}
+                >
+                  {Math.abs(b.deltaPct) < 5
+                    ? t("En rango", "In range")
+                    : `${b.deltaPct > 0 ? t("Aportar", "Add") : t("Reducir", "Trim")} ${fmt(Math.abs(b.deltaAmount))}`}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className="mt-3 border-t border-border/50 pt-3 text-[11px] leading-relaxed text-muted-foreground">
+          {rebalanceNeeded
+            ? t(
+                `Tu mezcla se desvía del objetivo. Rebalancea 1–2 veces al año con aportes nuevos (más eficiente en impuestos) antes de vender. Volatilidad actual ${volPort.toFixed(1)}% vs ${volBench.toFixed(1)}% del índice.`,
+                `Your mix drifts from target. Rebalance 1–2 times a year using new contributions (more tax-efficient) before selling. Current volatility ${volPort.toFixed(1)}% vs ${volBench.toFixed(1)}% for the index.`,
+              )
+            : t(
+                `Tu mezcla está alineada con el objetivo. Mantén el rumbo y revisa cada 6 meses. Sharpe estimado ${sharpe.toFixed(2)}.`,
+                `Your mix is aligned with the target. Stay the course and review every 6 months. Estimated Sharpe ${sharpe.toFixed(2)}.`,
+              )}
+        </p>
+      </Panel>
+
+
 
       <Panel
         title={t("Mercado en vivo", "Live market")}
