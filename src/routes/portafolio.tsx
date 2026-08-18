@@ -91,6 +91,10 @@ function PortafolioContent() {
   const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
   const holdingQuotes = useQuotes(holdingSymbols);
   const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
+  // Cambio diario por ticker (para derivar retorno del mercado en ETFs/acciones/cripto).
+  const dayChange: Record<string, number> = Object.fromEntries(
+    (holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.changePct ?? 0]),
+  );
 
   const typeOf = (kind: string) =>
     kind === "stock"
@@ -111,7 +115,17 @@ function PortafolioContent() {
     .filter((h) => ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured"].includes(h.kind))
     .map((h) => {
       const value = holdingValue(h, prices);
-      const growth = Math.max(0, h.expected_return || 7) / 100;
+      // Retorno derivado del mercado: plusvalía real (valor hoy − costo) cuando hay ticker + costo;
+      // si no hay costo pero hay ticker, usa el cambio diario del mercado. Resto: retorno esperado.
+      const tk = h.ticker?.toUpperCase();
+      const marketCost = h.cost_basis > 0 && h.quantity > 0 ? h.cost_basis * h.quantity : 0;
+      const marketGrowth =
+        tk && marketCost > 0 && value > 0
+          ? (value - marketCost) / marketCost
+          : tk && dayChange[tk] !== undefined
+            ? dayChange[tk] / 100
+            : null;
+      const growth = marketGrowth !== null ? Math.max(0, marketGrowth) : Math.max(0, h.expected_return || 7) / 100;
       const tickerLabel = h.ticker || h.label || t("Activo", "Asset");
       return {
         ticker: tickerLabel,

@@ -670,9 +670,6 @@ function InvestmentCard({
           <InlineRow label={t("Aporte mensual", "Monthly contribution")}>
             <Money value={h.monthly_contribution} onChange={(n) => onPatch({ monthly_contribution: n })} />
           </InlineRow>
-          <InlineRow label={t("Retorno esperado anual", "Expected annual return")}>
-            <Pct value={h.expected_return} onChange={(n) => onPatch({ expected_return: n })} />
-          </InlineRow>
           {ticker ? (
             <div className="rounded-lg border border-border/50 bg-background/40 px-3 py-2 text-[11px]">
               {quote ? (
