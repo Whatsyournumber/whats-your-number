@@ -186,8 +186,14 @@ function PortafolioContent() {
         .filter((h) => h.type === "Cash" || h.type === "Renta fija" || h.type === "Estructurado")
         .reduce((s, h) => s + h.value, 0) / totalValue
     : 0;
+  const annualGain = enriched.reduce((s, h) => s + h.value * h.growth, 0);
   const top = [...enriched].sort((a, b) => b.value - a.value)[0];
   const concentration = top && totalValue ? (top.value / totalValue) * 100 : 0;
+  // Nivel de riesgo del portafolio: volatilidad + concentración + apalancamiento.
+  const riskScore =
+    riskWeight * 100 * 0.6 + Math.max(0, concentration - 30) * 0.6 + (totalValue ? (debtTotalPre / totalValue) * 40 : 0);
+  const riskLevel: "Alto" | "Medio" | "Bajo" = riskScore > 55 ? "Alto" : riskScore > 28 ? "Medio" : "Bajo";
+  const riskLabel = t(riskLevel, riskLevel === "Alto" ? "High" : riskLevel === "Medio" ? "Medium" : "Low");
   const debts = holdings.filter((h) => h.kind === "debt");
   const debtTotal =
     debts.reduce((s, h) => s + h.manual_value, 0) +
