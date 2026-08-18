@@ -383,12 +383,15 @@ function RetiroContent() {
               ) : goalReached ? (
                 t("no necesitas aportar más", "no extra saving needed")
               ) : !feasible && shortfallMonthly > 0 ? (
-                <span className="flex flex-col gap-0.5 text-amber-400">
-                  <span>
+                <span className="flex flex-col gap-0.5">
+                  <span className="text-negative/80">
                     {t("Baja tus gastos en", "Cut expenses by")} {fmt(shortfallMonthly)}/{t("mes", "mo")}
                   </span>
-                  <span>
+                  <span className="text-positive/80">
                     {t("o produce extra de", "or earn extra")} {fmt(shortfallMonthly)}/{t("mes", "mo")}
+                  </span>
+                  <span className="text-muted-foreground">
+                    {t("para llegar en", "to get there in")} {yearsLabel}
                   </span>
                 </span>
               ) : (

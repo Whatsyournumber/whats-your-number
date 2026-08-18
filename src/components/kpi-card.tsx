@@ -33,7 +33,7 @@ export function KpiCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.05, ease: "easeOut" }}
       className={cn(
-        "relative overflow-hidden p-5",
+        "relative flex h-full flex-col overflow-hidden p-5",
         variant === "default" && "surface",
         variant === "flat" && "rounded-2xl border border-border/60 bg-card/40",
         accent && "glow",
@@ -61,7 +61,7 @@ export function KpiCard({
       >
         {value}
       </p>
-      <div className="relative mt-2 flex items-center gap-2">
+      <div className="relative mt-auto flex items-center gap-2 pt-2">
         {delta !== undefined && (
           <span
             className={cn(
