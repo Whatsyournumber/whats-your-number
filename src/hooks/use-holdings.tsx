@@ -9,6 +9,9 @@ export const HOLDING_KINDS = [
   "money_market",
   "etf",
   "stock",
+  "bond",
+  "tbill",
+  "note",
   "crypto",
   "other",
   "retirement",
@@ -61,6 +64,18 @@ function toHolding(r: Row, i: number): Holding {
   };
 }
 
+/** Retorno anual sugerido por tipo de activo. */
+export function defaultReturn(kind: HoldingKind): number {
+  if (kind === "crypto") return 12;
+  if (kind === "stock") return 9;
+  if (kind === "property") return 4;
+  if (kind === "bond") return 5;
+  if (kind === "tbill") return 4;
+  if (kind === "note") return 5;
+  if (kind === "debt") return 0;
+  return 7;
+}
+
 export function newHolding(kind: HoldingKind, label = "", position = 0): Holding {
   return {
     id: crypto.randomUUID(),
@@ -71,7 +86,7 @@ export function newHolding(kind: HoldingKind, label = "", position = 0): Holding
     cost_basis: 0,
     manual_value: 0,
     monthly_contribution: 0,
-    expected_return: kind === "crypto" ? 12 : kind === "stock" ? 9 : kind === "property" ? 4 : 7,
+    expected_return: defaultReturn(kind),
     linked_liability: 0,
     monthly_income: 0,
     target_year: kind === "future" ? new Date().getFullYear() + 5 : null,
@@ -113,7 +128,7 @@ export function wealthTotals(list: Holding[], prices?: Record<string, number>): 
     assets_cash: sum(["cash"]),
     assets_bank: sum(["bank", "money_market"]),
     assets_retirement: sum(["retirement"]),
-    assets_etf: sum(["etf", "other"]),
+    assets_etf: sum(["etf", "other", "bond", "tbill", "note"]),
     assets_stocks: sum(["stock"]),
     assets_crypto: sum(["crypto"]),
     assets_property: sum(["property"]),
@@ -148,7 +163,7 @@ export function seedHoldingsFromTotals(p: {
     .map(([kind, label, v], i) => ({
       ...newHolding(kind, label, i),
       manual_value: Math.round(v),
-      expected_return: kind === "crypto" ? 12 : kind === "stock" ? 9 : kind === "property" ? 4 : p.expected_return || 7,
+      expected_return: ["crypto", "stock", "property"].includes(kind) ? defaultReturn(kind) : p.expected_return || 7,
     }));
 }
 
@@ -156,7 +171,7 @@ export function seedHoldingsFromTotals(p: {
 
 export function monthlyContributions(list: Holding[]) {
   return list
-    .filter((h) => ["etf", "stock", "crypto", "other", "retirement"].includes(h.kind))
+    .filter((h) => ["etf", "stock", "bond", "tbill", "note", "crypto", "other", "retirement"].includes(h.kind))
     .reduce((s, h) => s + h.monthly_contribution, 0);
 }
 
