@@ -119,17 +119,24 @@ function PatrimonioContent() {
   const visibleTotal = visibleRows.reduce((s, r) => s + r.value, 0);
   const visibleAnnual = Math.round(visibleRows.reduce((s, r) => s + (r.value * (r.rate || 0)) / 100, 0));
 
-
+  // Activos futuros (trading, venta de empresa…) ponderados: suman al patrimonio y al allocation.
+  const futureTotal = detailRows.filter((r) => r.group.key === "future").reduce((s, r) => s + r.value, 0);
+  const assetRows = futureTotal > 0
+    ? [...assets, { key: "assets_future", name: t("Activos futuros", "Future assets"), value: futureTotal, color: "var(--color-chart-3)" }]
+    : assets;
+  const totalAssetsAll = d.totalAssets + futureTotal;
+  const netWorthAll = d.netWorth + futureTotal;
 
   return (
     <PageShell>
       <PageHeader eyebrow={t("Balance", "Balance")} title={t("Patrimonio", "Net worth")} subtitle={t("Todo lo que tienes y lo que debes, en una sola vista.", "Everything you own and owe, in one view.")} />
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <KpiCard label={t("Patrimonio neto", "Net worth")} value={fmt(d.netWorth)} delta={growth} hint={t("últimos 12 meses", "last 12 months")} accent index={0} />
-        <KpiCard label={t("Activos", "Assets")} value={fmt(d.totalAssets)} index={1} />
+        <KpiCard label={t("Patrimonio neto", "Net worth")} value={fmt(netWorthAll)} delta={growth} hint={t("últimos 12 meses", "last 12 months")} accent index={0} />
+        <KpiCard label={t("Activos", "Assets")} value={fmt(totalAssetsAll)} index={1} />
         <KpiCard label={t("Pasivos", "Liabilities")} value={fmt(d.totalLiabilities)} inverse index={2} />
       </div>
+
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel title={t("Crecimiento del patrimonio", "Net worth growth")} className="lg:col-span-2">
