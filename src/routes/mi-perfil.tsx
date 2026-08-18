@@ -250,9 +250,9 @@ function MiPerfil() {
 
             <div className="surface flex flex-col gap-3 p-4 lg:flex-row lg:items-center">
         <div className="grid min-w-0 flex-1 grid-cols-2 gap-4 sm:grid-cols-4">
-          <Stat label={t("Patrimonio neto", "Net worth")} value={preview.fmtCompact(preview.netWorth)} />
-          <Stat label={t("Ahorro mensual", "Monthly savings")} value={preview.fmtCompact(preview.savings)} />
-          <Stat label={t("Your Number", "Your Number")} value={preview.fmtCompact(preview.plan.targetCapital)} />
+          <Stat label={t("Patrimonio neto", "Net worth")} value={preview.fmt(preview.netWorth)} short={preview.fmtCompact(preview.netWorth)} />
+          <Stat label={t("Ahorro mensual", "Monthly savings")} value={preview.fmt(preview.savings)} short={preview.fmtCompact(preview.savings)} />
+          <Stat label={t("Your Number", "Your Number")} value={preview.fmt(preview.plan.targetCapital)} short={preview.fmtCompact(preview.plan.targetCapital)} />
           <Stat label={t("Libertad", "Freedom")} value={`${preview.plan.freedomAge} ${t("años", "years")}`} />
         </div>
         <div className="flex flex-wrap gap-2">
@@ -492,12 +492,19 @@ function MiPerfil() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function Stat({ label, value, short }: { label: string; value: string; short?: string }) {
   return (
     <div className="min-w-0">
       <p className="truncate text-xs text-muted-foreground">{label}</p>
       <p className="numeric mt-0.5 truncate text-base font-semibold sm:text-lg" title={value}>
-        {value}
+        {short && short !== value ? (
+          <>
+            <span className="hidden xl:inline">{value}</span>
+            <span className="xl:hidden">{short}</span>
+          </>
+        ) : (
+          value
+        )}
       </p>
     </div>
   );
