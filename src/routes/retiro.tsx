@@ -382,7 +382,12 @@ function RetiroContent() {
                 ? t("falta el monto objetivo", "goal amount missing")
                 : goalReached
                   ? t("no necesitas aportar más", "no extra saving needed")
-                  : `${t("para llegar a", "to reach")} ${fmt(targetNow)} ${t("en", "in")} ${yearsLabel} ${t("al", "at")} ${rate}%`
+                  : !feasible && shortfallMonthly > 0
+                    ? t(
+                        `Solo te sobra ${fmt(capacity)}/mes: baja tus gastos en ${fmt(shortfallMonthly)} si quieres llegar en ${yearsLabel}`,
+                        `Only ${fmt(capacity)}/mo left: cut expenses by ${fmt(shortfallMonthly)} to make it in ${yearsLabel}`,
+                      )
+                    : `${t("para llegar a", "to reach")} ${fmt(targetNow)} ${t("en", "in")} ${yearsLabel} ${t("al", "at")} ${rate}%`
             }
             index={5}
           />
