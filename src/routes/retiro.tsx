@@ -384,14 +384,11 @@ function RetiroContent() {
                 t("no necesitas aportar más", "no extra saving needed")
               ) : !feasible && shortfallMonthly > 0 ? (
                 <span className="flex flex-col gap-0.5">
-                  <span className="text-negative/80">
+                  <span className="text-amber-400">
                     {t("Baja tus gastos en", "Cut expenses by")} {fmt(shortfallMonthly)}/{t("mes", "mo")}
                   </span>
                   <span className="text-positive/80">
-                    {t("o produce extra de", "or earn extra")} {fmt(shortfallMonthly)}/{t("mes", "mo")}
-                  </span>
-                  <span className="text-muted-foreground">
-                    {t("para llegar en", "to get there in")} {yearsLabel}
+                    {t("o produce extra de", "or earn extra")} {fmt(shortfallMonthly)}/{t("mes", "mo")} · {yearsLabel}
                   </span>
                 </span>
               ) : (
@@ -563,8 +560,16 @@ function RetiroContent() {
             </div>
 
             {isGoal && targetNow > 0 && !goalReached ? (
-              <div className="rounded-xl border border-border/60 bg-elevated/40 p-4 text-[11px] leading-relaxed">
-                <p className="text-xs font-semibold">{t("¿Es realista con tus gastos?", "Is it realistic with your spending?")}</p>
+              <details className="group rounded-xl border border-border/60 bg-elevated/40 p-4 text-[11px] leading-relaxed">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-xs font-semibold">
+                  <span>{t("¿Es realista con tus gastos?", "Is it realistic with your spending?")}</span>
+                  <span className="text-[11px] font-normal text-muted-foreground group-open:hidden">
+                    {t("Ver más análisis", "See more analysis")}
+                  </span>
+                  <span className="hidden text-[11px] font-normal text-muted-foreground group-open:inline">
+                    {t("Ocultar", "Hide")}
+                  </span>
+                </summary>
                 <dl className="mt-2 space-y-1">
                   <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-2">
                     <dt className="truncate text-muted-foreground">{t("Ingresos", "Income")}</dt>
@@ -599,7 +604,7 @@ function RetiroContent() {
                     </Link>
                   </div>
                 )}
-              </div>
+              </details>
             ) : null}
           </div>
         </Panel>
