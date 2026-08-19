@@ -138,6 +138,12 @@ function PatrimonioContent() {
   const visibleRows = activeTab === "all" ? detailRows : detailRows.filter((r) => r.group.key === activeTab);
   const visibleTotal = visibleRows.reduce((s, r) => s + r.value, 0);
   const visibleAnnual = Math.round(visibleRows.filter((r) => r.group.key !== "cash").reduce((s, r) => s + r.annual, 0));
+  // Rentabilidad real: promedio ponderado por el capital de los rubros que sí rinden
+  // (excluye efectivo y activos sin ganancia).
+  const yieldingRows = visibleRows.filter((r) => r.group.key !== "cash" && r.value > 0 && r.annual !== 0);
+  const yieldingBase = yieldingRows.reduce((s, r) => s + r.value, 0);
+  const visibleRate = yieldingBase ? (yieldingRows.reduce((s, r) => s + r.annual, 0) / yieldingBase) * 100 : 0;
+
 
 
   // Activos futuros (trading, venta de empresa…) ponderados: suman al patrimonio y al allocation.
@@ -332,22 +338,23 @@ function PatrimonioContent() {
                     </div>
                     <div>
                       <p className="text-[11px] text-muted-foreground">{gainLabel}</p>
-                      <p className={cn("numeric text-sm", isCash ? "text-muted-foreground/50" : gainTone)}>
-                        {isCash ? "—" : fmt(annual)}
+                      <p className={cn("numeric text-sm", isCash || annual === 0 ? "text-muted-foreground/50" : gainTone)}>
+                        {isCash || annual === 0 ? "—" : fmt(annual)}
                       </p>
                     </div>
                     <div>
                       <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
-                      <p className={cn("numeric text-sm", isCash ? "text-muted-foreground/50" : gainTone)}>
-                        {isCash ? "—" : fmt(Math.round(annual / 12))}
+                      <p className={cn("numeric text-sm", isCash || annual === 0 ? "text-muted-foreground/50" : gainTone)}>
+                        {isCash || annual === 0 ? "—" : fmt(Math.round(annual / 12))}
                       </p>
                     </div>
                     <div>
                       <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
-                      <p className={cn("numeric text-sm font-semibold", isCash ? "text-muted-foreground/50" : gainTone)}>
-                        {isCash ? "—" : `${r.rate > 0 ? "+" : ""}${r.rate.toFixed(1)}%`}
+                      <p className={cn("numeric text-sm font-semibold", isCash || r.rate === 0 ? "text-muted-foreground/50" : gainTone)}>
+                        {isCash || r.rate === 0 ? "—" : `${r.rate > 0 ? "+" : ""}${r.rate.toFixed(1)}%`}
                       </p>
                     </div>
+
 
                   </div>
                 );
@@ -372,9 +379,10 @@ function PatrimonioContent() {
               </div>
               <div>
                 <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
-                <p className="numeric text-base font-bold text-positive">
-                  {visibleTotal > 0 ? `+${((visibleAnnual / visibleTotal) * 100).toFixed(1)}` : "0.0"}%
+                <p className={cn("numeric text-base font-bold", visibleRate === 0 ? "text-muted-foreground/50" : "text-positive")}>
+                  {visibleRate === 0 ? "—" : `${visibleRate > 0 ? "+" : ""}${visibleRate.toFixed(1)}%`}
                 </p>
+
               </div>
             </div>
           </div>
