@@ -1762,7 +1762,7 @@ function GrowsWithThem() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.45 }}
-            className="relative overflow-hidden rounded-3xl border border-border h-[28rem] flex flex-col"
+            className="relative overflow-hidden rounded-3xl border border-border h-[26rem] flex flex-col"
             style={{ background: "oklch(0 0 0)" }}
           >
             {/* Full-card photo background */}
@@ -1784,20 +1784,20 @@ function GrowsWithThem() {
             />
             {/* Bottom fade for the pill area */}
             <span
-              className="absolute inset-x-0 bottom-0 h-20 pointer-events-none"
-              style={{ background: "linear-gradient(to top, oklch(0.01 0 0 / 0.85), transparent)" }}
+              className="absolute inset-x-0 bottom-0 h-24 pointer-events-none"
+              style={{ background: "linear-gradient(to top, oklch(0.01 0 0 / 0.9), transparent)" }}
             />
 
-            {/* Content layer — two columns: text left, data box right, same height */}
+            {/* Content layer — two columns: text left, data box right, pushed down near pill */}
             <div className="relative flex h-full flex-col p-6 md:p-7">
-              <div className="flex flex-1 items-start gap-4">
+              <div className="flex flex-1 items-end gap-4">
                 {/* Left: headline + text + features */}
                 <div className="flex min-w-0 flex-1 flex-col">
                   <h3 className="font-display text-[22px] font-semibold leading-[1.15] tracking-tight">
                     {s.headline}
                   </h3>
                   <p className="mt-1.5 text-[12px] leading-relaxed text-muted-foreground">{s.text}</p>
-                  <ul className="mt-4 space-y-2.5">
+                  <ul className="mt-3 space-y-2">
                     {s.features.map((f) => (
                       <li key={f.label} className="flex items-center gap-2.5 text-[13px]">
                         <f.icon className="h-4 w-4 shrink-0" style={{ color: s.color }} strokeWidth={1.6} />
@@ -1807,14 +1807,14 @@ function GrowsWithThem() {
                   </ul>
                 </div>
 
-                {/* Right: data overlay card — same top as text */}
-                <div className="pointer-events-none w-[42%] max-w-[13rem] shrink-0">
+                {/* Right: data overlay card — same bottom as text */}
+                <div className="pointer-events-none w-[42%] max-w-[13rem] shrink-0 self-end">
                   {s.overlay}
                 </div>
               </div>
 
-              {/* Bottom: pill, relaxed */}
-              <div className="mt-auto pt-6">
+              {/* Bottom: pill, just below content */}
+              <div className="mt-3">
                 <span
                   className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-[12px] font-semibold"
                   style={{
