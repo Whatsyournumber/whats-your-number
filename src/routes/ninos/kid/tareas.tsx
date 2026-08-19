@@ -145,11 +145,36 @@ function MyTasks({ member }: { member: Member }) {
   const goalPct = goal ? Math.min(100, (Number(goal.saved) / Math.max(1, Number(goal.price))) * 100) : 0;
 
   const badges = [
-    { emoji: "🥇", label: t("10 tareas completadas", "10 tasks completed"), now: approved.length, max: 10 },
-    { emoji: "🐷", label: t("100 ganados", "100 earned"), now: Math.round(earnedMonth), max: 100 },
-    { emoji: "📅", label: t("14 días seguidos", "14 days streak"), now: member.streak, max: 14 },
-    { emoji: "🏆", label: t("Maestro de tareas", "Task master"), now: approved.length, max: 20 },
+    {
+      emoji: "🥇",
+      label: t("10 tareas completadas", "10 tasks completed"),
+      how: t("Completa tareas y aprueba con papá o mamá", "Complete tasks approved by a parent"),
+      now: approved.length,
+      max: 10,
+    },
+    {
+      emoji: "🐷",
+      label: t("100 ganados", "100 earned"),
+      how: t("Gana dinero con tus tareas este mes", "Earn money from tasks this month"),
+      now: Math.round(earnedMonth),
+      max: 100,
+    },
+    {
+      emoji: "📅",
+      label: t("14 días seguidos", "14 days streak"),
+      how: t("Haz al menos una tarea cada día", "Do at least one task every day"),
+      now: member.streak,
+      max: 14,
+    },
+    {
+      emoji: "🏆",
+      label: t("Maestro de tareas", "Task master"),
+      how: t("Llega a 20 tareas aprobadas en total", "Reach 20 approved tasks in total"),
+      now: approved.length,
+      max: 20,
+    },
   ];
+
 
   function submit() {
     const name = title.trim() || (lang === "es" ? idea.title : idea.titleEn);
