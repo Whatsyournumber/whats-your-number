@@ -265,7 +265,16 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
         </Section>
 
         <Section icon={<Coins className="h-4 w-4" />} tone="amber" title={t("Fondo de retiro", "Retirement fund")} total={amt(retireTotal)}>
+          <InlineRow label={t("Nombre del fondo", "Fund name")}>
+            <Input
+              className="h-9"
+              placeholder={t("Ej. Fidelity 401k", "e.g. Fidelity 401k")}
+              value={retirement?.label ?? ""}
+              onChange={(e) => setSingle("retirement", t("Fondo de retiro", "Retirement fund"), { label: e.target.value })}
+            />
+          </InlineRow>
           <InlineRow label={t("Valor actual", "Current value")}>
+
             <Money
               value={retirement?.manual_value ?? 0}
               onChange={(n) => setSingle("retirement", t("Fondo de retiro", "Retirement fund"), { manual_value: n })}
