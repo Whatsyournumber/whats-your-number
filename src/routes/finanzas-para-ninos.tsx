@@ -1772,12 +1772,12 @@ function GrowsWithThem() {
               loading="lazy"
               width={640}
               height={900}
-              className="absolute inset-y-0 right-0 h-full w-[68%] object-cover object-top"
+              className="absolute inset-y-0 right-0 h-full w-[62%] object-cover object-top"
               style={{
                 maskImage:
-                  "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 18%, #000 40%), linear-gradient(to bottom, #000 50%, rgba(0,0,0,0.4) 86%, transparent 100%)",
+                  "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 14%, #000 34%), linear-gradient(to bottom, #000 55%, rgba(0,0,0,0.35) 88%, transparent 100%)",
                 WebkitMaskImage:
-                  "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 18%, #000 40%), linear-gradient(to bottom, #000 50%, rgba(0,0,0,0.4) 86%, transparent 100%)",
+                  "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 14%, #000 34%), linear-gradient(to bottom, #000 55%, rgba(0,0,0,0.35) 88%, transparent 100%)",
                 maskComposite: "intersect",
                 WebkitMaskComposite: "source-in",
               }}
@@ -1806,15 +1806,15 @@ function GrowsWithThem() {
             {/* Content layer */}
             <div className="relative flex h-full flex-col p-6 md:p-7">
               {/* Top-left: headline + text + features */}
-              <div className="w-[54%] min-w-0">
+              <div className="w-[56%] min-w-0">
                 <h3 className="font-display text-[26px] font-semibold leading-[1.1] tracking-tight">
                   {s.headline}
                 </h3>
                 <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground">{s.text}</p>
-                <ul className="mt-8 space-y-2.5">
+                <ul className="mt-5 space-y-3.5">
                   {s.features.map((f) => (
-                    <li key={f.label} className="flex items-center gap-2.5 text-[12.5px]">
-                      <f.icon className="h-3.5 w-3.5 shrink-0" style={{ color: s.color }} strokeWidth={1.6} />
+                    <li key={f.label} className="flex items-center gap-3 text-[14px]">
+                      <f.icon className="h-[18px] w-[18px] shrink-0" style={{ color: s.color }} strokeWidth={1.6} />
                       <span className="truncate">{f.label}</span>
                     </li>
                   ))}
