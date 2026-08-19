@@ -150,8 +150,8 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
                   <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
                     {kids
                       ? t(
-                          "Enseña a tus hijos a construir su primer número: ahorro, inversión y libertad desde los 8 años.",
-                          "Teach your kids to build their first number: saving, investing and freedom from age 8.",
+                          "Enseña a tus hijos a construir su primer número: ahorro, inversión y libertad desde pequeños.",
+                          "Teach your kids to build their first number: saving, investing and freedom from a young age.",
                         )
                       : t(
                           "La libertad financiera tiene un número. Nosotros te ayudamos a encontrarlo.",
@@ -179,8 +179,8 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
                   <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
                     {kids
                       ? t(
-                          "Enseña a tus hijos a construir su primer número: ahorro, inversión y libertad desde los 8 años.",
-                          "Teach your kids to build their first number: saving, investing and freedom from age 8.",
+                          "Enseña a tus hijos a construir su primer número: ahorro, inversión y libertad desde pequeños.",
+                          "Teach your kids to build their first number: saving, investing and freedom from a young age.",
                         )
                       : t(
                           "La libertad financiera tiene un número. Nosotros te ayudamos a encontrarlo.",
