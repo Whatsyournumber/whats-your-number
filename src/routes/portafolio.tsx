@@ -837,7 +837,7 @@ function PortafolioContent() {
         <div className="relative mt-2 overflow-hidden rounded-2xl border border-border/50 bg-elevated/50 px-4 py-3.5">
           <div className="grid grid-cols-2 items-center gap-3 md:grid-cols-6">
             <div className="col-span-2 flex items-center gap-2 md:col-span-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/15 text-primary">
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-muted/60 text-muted-foreground">
                 <TrendingUp className="h-4 w-4" />
               </span>
               <p className="text-sm font-bold tracking-wide text-foreground">{t("Total", "Total")}</p>
