@@ -345,8 +345,9 @@ function PatrimonioContent() {
                         {r.ticker ? <span className="ml-2 text-xs text-muted-foreground">{r.ticker}</span> : null}
                       </p>
                       <p className="truncate text-xs text-muted-foreground">
-                        {r.kind === "crypto" ? t("Cripto", "Crypto") : meta.join(" · ")}
+                        {r.kind === "crypto" ? t("Cripto", "Crypto") : r.kind === "etf" ? "" : meta.join(" · ")}
                       </p>
+
                     </div>
                     {isEtf ? (
                       <>
