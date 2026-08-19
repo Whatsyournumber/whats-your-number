@@ -1754,7 +1754,7 @@ function GrowsWithThem() {
       </div>
 
       {/* Stage cards */}
-      <div className="mt-10 grid gap-5 md:grid-cols-3">
+      <div className="mt-10 grid gap-6 md:grid-cols-3">
         {stages.map((s) => (
           <motion.div
             key={s.range}
@@ -1762,54 +1762,63 @@ function GrowsWithThem() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.45 }}
-            className="surface relative flex flex-col overflow-hidden p-5 md:p-6"
+            className="surface relative overflow-hidden rounded-3xl"
           >
-            <span
-              className="pointer-events-none absolute inset-x-0 top-0 h-1"
-              style={{ backgroundColor: s.color, opacity: 0.75 }}
-            />
-            <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{s.range}</p>
-            <h3 className="mt-1.5 font-display text-lg font-semibold tracking-tight">{s.headline}</h3>
-            <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{s.text}</p>
-
-            <ul className="mt-4 grid grid-cols-2 gap-2">
-              {s.features.map((f) => (
-                <li key={f.label} className="flex items-center gap-1.5 text-xs">
-                  <f.icon className="h-3.5 w-3.5 shrink-0" style={{ color: s.color }} />
-                  <span className="text-muted-foreground">{f.label}</span>
-                </li>
-              ))}
-            </ul>
-
-            <div className="relative mt-4">
-              <div className="overflow-hidden rounded-2xl ring-1 ring-border">
-                <img
-                  src={s.image}
-                  alt={s.imageAlt}
-                  loading="lazy"
-                  width={640}
-                  height={768}
-                  className="h-44 w-full object-cover md:h-52"
-                />
-              </div>
-              <div className="absolute -bottom-3 left-3 right-3">{s.overlay}</div>
+            {/* Photo on the right, bleeding to the card edge */}
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-[58%]">
+              <img
+                src={s.image}
+                alt={s.imageAlt}
+                loading="lazy"
+                width={640}
+                height={768}
+                className="h-full w-full object-cover object-top"
+              />
+              <span
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(90deg, var(--color-card) 0%, color-mix(in oklab, var(--color-card) 55%, transparent) 35%, transparent 72%)",
+                }}
+              />
             </div>
 
-            <div className="mt-7 flex justify-center">
-              <span
-                className="rounded-full px-3 py-1 text-[11px] font-semibold"
-                style={{
-                  color: s.color,
-                  backgroundColor: `color-mix(in oklab, ${s.color} 12%, transparent)`,
-                  boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${s.color} 30%, transparent)`,
-                }}
-              >
-                {s.pill}
-              </span>
+            <div className="relative flex min-h-[26rem] flex-col p-5 md:p-6">
+              <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{s.range}</p>
+              <h3 className="mt-2 max-w-[62%] font-display text-2xl font-semibold leading-tight tracking-tight">
+                {s.headline}
+              </h3>
+              <p className="mt-2 max-w-[58%] text-xs leading-relaxed text-muted-foreground">{s.text}</p>
+
+              <ul className="mt-5 space-y-3">
+                {s.features.map((f) => (
+                  <li key={f.label} className="flex items-center gap-2.5 text-sm">
+                    <f.icon className="h-4 w-4 shrink-0" style={{ color: s.color }} strokeWidth={1.75} />
+                    <span className="font-medium">{f.label}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-auto pt-6">
+                <span
+                  className="inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-[11px] font-semibold"
+                  style={{
+                    color: s.color,
+                    backgroundColor: `color-mix(in oklab, ${s.color} 12%, transparent)`,
+                  }}
+                >
+                  <Users className="h-3.5 w-3.5" />
+                  {s.pill}
+                </span>
+              </div>
+
+              {/* Floating stat card over the photo */}
+              <div className="pointer-events-none absolute bottom-5 right-4 w-[62%] max-w-[15rem]">{s.overlay}</div>
             </div>
           </motion.div>
         ))}
       </div>
+
     </section>
   );
 }
