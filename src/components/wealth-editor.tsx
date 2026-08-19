@@ -59,18 +59,17 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
   ];
 
   const investments = value.filter((h) => ["etf", "stock", "bond", "tbill", "note", "structured", "crypto", "other"].includes(h.kind));
-  const retirement = single("retirement");
-
   const sum = (list_: Holding[]) => list_.reduce((s, h) => s + holdingValue(h), 0);
   const liquidTotal = sum(value.filter((h) => ["cash", "bank", "money_market"].includes(h.kind)));
   const investTotal = sum(investments);
-  const retireTotal = retirement?.manual_value ?? 0;
+  const retireFunds = list("retirement");
+  const retireTotal = sum(retireFunds);
   const propertyTotal = sum(list("property"));
   const propertyDebt = list("property").reduce((s, h) => s + h.linked_liability, 0);
   const futureTotal = list("future").reduce((s, h) => s + (h.manual_value * h.probability) / 100, 0);
   const debtTotal = sum(list("debt")) + propertyDebt;
   const assetsTotal = liquidTotal + investTotal + retireTotal + propertyTotal;
-  const monthlyIn = investments.reduce((s, h) => s + h.monthly_contribution, 0) + (retirement?.monthly_contribution ?? 0);
+  const monthlyIn = investments.reduce((s, h) => s + h.monthly_contribution, 0) + retireFunds.reduce((s, h) => s + h.monthly_contribution, 0);
   const rentIncome = list("property").reduce((s, h) => s + h.monthly_income, 0);
 
   return (
