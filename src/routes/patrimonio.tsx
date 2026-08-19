@@ -132,7 +132,14 @@ function PatrimonioContent() {
       };
     })
     .filter((r) => r.value > 0)
-    .sort((a, b) => b.value - a.value);
+    .sort((a, b) => {
+      // ETFs y cripto siempre al final (cripto de últimas).
+      const rank = (k: string) => (k === "crypto" ? 2 : k === "etf" ? 1 : 0);
+      const ra = rank(a.kind);
+      const rb = rank(b.kind);
+      if (ra !== rb) return ra - rb;
+      return b.value - a.value;
+    });
 
   const groups = ["invest", "retirement", "property", "future", "cash"]
     .map((key) => {
