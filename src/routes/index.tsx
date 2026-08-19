@@ -189,58 +189,58 @@ function Landing() {
   const features = [
     {
       icon: PieChart,
-      title: t("Tus Gastos", "Your Spending"),
+      title: t("Análisis de tus gastos", "Your Spending Analysis"),
       desc: t(
-        "Sube tus estados de cuenta y en menos de 30 segundos la IA categoriza cada movimiento, compara tus gastos mes a mes, detecta sobrecostos y te dice exactamente dónde puedes ahorrar.",
-        "Upload your statements and in under 30 seconds the AI categorizes every transaction, compares your spending month over month, detects overspending and tells you exactly where you can save.",
+        "Sube tus estados de cuenta y la IA categoriza cada movimiento en segundos. Compara mes a mes, detecta sobrecostos y descubre dónde ahorrar.",
+        "Upload your statements and the AI categorizes every transaction in seconds. Compare month over month, spot overspending and find where to save.",
       ),
     },
     {
       icon: Home,
-      title: t("Tu Hipoteca", "Your Mortgage"),
+      title: t("Análisis de tu hipoteca", "Your Mortgage Analysis"),
       desc: t(
-        "Entiende el verdadero costo de tu hipoteca. Compara tasas, simula pagos anticipados y descubre cuánto dinero e intereses puedes ahorrar para alcanzar antes tu libertad financiera.",
-        "Understand the true cost of your mortgage. Compare rates, simulate early payments and discover how much money and interest you can save to reach financial freedom sooner.",
+        "Entiende el verdadero costo de tu hipoteca. Compara tasas, simula pagos anticipados y descubre cuánto puedes ahorrar en intereses.",
+        "Understand the true cost of your mortgage. Compare rates, simulate early payments and see how much interest you can save.",
       ),
     },
     {
       icon: LineChart,
       title: t("Tu Patrimonio & Portfolio", "Your Net Worth & Portfolio"),
       desc: t(
-        "Por fin entiende cuánto vales. Organiza todo tu patrimonio en un solo lugar, sigue tus activos en tiempo real y analiza su rendimiento, riesgo e ingresos pasivos para acelerar tu camino hacia la independencia financiera.",
-        "Finally understand what you're worth. Organize all your wealth in one place, track your assets in real time and analyze their performance, risk and passive income to accelerate your path to financial independence.",
+        "Organiza todo tu patrimonio en un solo lugar. Sigue tus activos en tiempo real y analiza rendimiento, riesgo e ingresos pasivos.",
+        "Organize all your wealth in one place. Track your assets in real time and analyze performance, risk and passive income.",
       ),
     },
     {
       icon: RouteIcon,
       title: t("Tu Plan de Vida", "Your Life Plan"),
       desc: t(
-        "Simula las decisiones más importantes de tu vida —comprar una casa, emprender, casarte, tener hijos o mudarte de país— y descubre cómo cada una impacta tu patrimonio y tu fecha de retiro.",
-        "Simulate the most important decisions of your life —buying a house, starting a business, getting married, having kids or moving abroad— and discover how each one impacts your wealth and retirement date.",
+        "Simula las decisiones más importantes de tu vida —comprar, emprender, casarte, mudarte— y ve cómo impactan tu patrimonio y retiro.",
+        "Simulate life's biggest decisions —buying, starting a business, marrying, moving— and see how they impact your wealth and retirement.",
       ),
     },
     {
       icon: Globe,
       title: t("Tu Próxima Ciudad", "Your Next City"),
       desc: t(
-        "Descubre dónde tu dinero rinde más. Compara más de 150 ciudades según costo de vida, salarios, impuestos, clima, seguridad y calidad de vida para encontrar el lugar ideal para vivir y construir tu futuro.",
-        "Discover where your money goes further. Compare over 150 cities by cost of living, salaries, taxes, climate, safety and quality of life to find the ideal place to live and build your future.",
+        "Compara más de 150 ciudades por costo de vida, salarios, impuestos, clima y seguridad. Encuentra dónde tu dinero rinde más.",
+        "Compare over 150 cities by cost of living, salaries, taxes, climate and safety. Find where your money goes further.",
       ),
     },
     {
       icon: Bot,
       title: t("Tu Copiloto Financiero IA", "Your AI Financial Copilot"),
       desc: t(
-        "Importa tus estados de cuenta, conversa con la IA en lenguaje natural y recibe respuestas, análisis e insights personalizados sobre tus gastos, patrimonio, inversiones y metas financieras, todo en un solo lugar.",
-        "Import your statements, chat with AI in plain language and get personalized answers, analysis and insights on your spending, wealth, investments and financial goals, all in one place.",
+        "Importa tus estados de cuenta y conversa con la IA en lenguaje natural. Recibe análisis e insights sobre tus gastos, patrimonio y metas.",
+        "Import your statements and chat with AI in plain language. Get analysis and insights on your spending, wealth and goals.",
       ),
     },
   ];
 
   const panelChips = [
     t("Portafolio en vivo", "Live portfolio"),
-    t("Tus Gastos", "Your Spending"),
-    t("Tu Hipoteca", "Your Mortgage"),
+    t("Análisis de tus gastos", "Your Spending Analysis"),
+    t("Análisis de tu hipoteca", "Your Mortgage Analysis"),
     t("Cash flow 40/40/20", "40/40/20 cash flow"),
     t("Tu Plan de Vida", "Your Life Plan"),
     t("Tu Próxima Ciudad", "Your Next City"),
