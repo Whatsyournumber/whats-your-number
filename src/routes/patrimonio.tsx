@@ -315,6 +315,7 @@ function PatrimonioContent() {
               {visibleRows.map((r) => {
                 const annual = r.annual;
                 const isCash = r.group.key === "cash";
+                const isRetirement = r.group.key === "retirement";
                 const gainLabel =
                   r.kind === "property"
                     ? t("Renta anual", "Annual rent")
