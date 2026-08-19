@@ -1766,7 +1766,7 @@ function GrowsWithThem() {
           >
             {/* Photo blended into one continuous black background */}
             <div
-              className="pointer-events-none absolute bottom-0 right-0 top-0 w-[60%]"
+              className="pointer-events-none absolute bottom-0 right-0 top-0 w-[52%]"
               style={{
                 maskImage:
                   "linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 18%, #000 42%, #000 100%)",
@@ -1780,15 +1780,15 @@ function GrowsWithThem() {
                 loading="lazy"
                 width={768}
                 height={1024}
-                className="h-full w-full object-cover object-[50%_12%] mix-blend-screen"
+                className="h-full w-full object-cover object-[62%_8%] mix-blend-screen"
               />
             </div>
 
-            <div className="relative flex min-h-[28rem] flex-col p-6 md:p-7">
-              <h3 className="max-w-[56%] font-display text-[26px] font-semibold leading-[1.15] tracking-tight">
+            <div className="relative flex min-h-[31rem] flex-col p-6 md:p-7">
+              <h3 className="max-w-[54%] font-display text-[26px] font-semibold leading-[1.15] tracking-tight">
                 {s.headline}
               </h3>
-              <p className="mt-3 max-w-[50%] text-[13px] leading-relaxed text-muted-foreground">{s.text}</p>
+              <p className="mt-3 max-w-[48%] text-[13px] leading-relaxed text-muted-foreground">{s.text}</p>
 
               <ul className="mt-6 space-y-4">
                 {s.features.map((f) => (
@@ -1814,7 +1814,7 @@ function GrowsWithThem() {
               </div>
 
               {/* Floating stat card over the photo */}
-              <div className="pointer-events-none absolute bottom-6 right-5 w-[56%] max-w-[15rem]">{s.overlay}</div>
+              <div className="pointer-events-none absolute bottom-[5.5rem] right-4 w-[50%] max-w-[13rem]">{s.overlay}</div>
             </div>
 
 
