@@ -118,10 +118,11 @@ function KpiCard({
   tone: "primary" | "success" | "danger";
 }) {
   const hintTone = {
-    primary: "text-primary",
+    primary: "text-success",
     success: "text-success",
     danger: "text-destructive",
   }[tone];
+
   return (
     <Card>
       <div className="flex items-start gap-3">
@@ -175,7 +176,7 @@ function BreakdownList({
       </ul>
       <div className="mt-4 flex items-center justify-between border-t border-border pt-3 text-sm font-semibold">
         <span className="text-foreground">{totalLabel}</span>
-        <span className={tone === "in" ? "text-primary" : "text-destructive"}>
+        <span className={tone === "in" ? "text-success" : "text-destructive"}>
           {money(total, currency)}
         </span>
       </div>
@@ -426,9 +427,10 @@ function MyMoney({ member }: { member: Member }) {
             )}
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button onClick={() => openSheet("income")}>
+            <Button variant="success" onClick={() => openSheet("income")}>
               ＋ {t("Agregar ingreso", "Add income")}
             </Button>
+
             <Button variant="ghost" onClick={() => openSheet("expense")}>
               － {t("Agregar gasto", "Add expense")}
             </Button>
@@ -521,16 +523,17 @@ function MyMoney({ member }: { member: Member }) {
                 currency={member.currency}
                 height={260}
                 areas={[
-                  { key: "ingresos", color: "var(--color-chart-1)" },
+                  { key: "ingresos", color: "var(--color-success)" },
                   { key: "gastos", color: "var(--color-destructive)" },
                 ]}
               />
               <p className="mt-1 text-xs text-muted-foreground">
                 {t(
-                  "Azul: ingresos acumulados. Rojo: gastos acumulados.",
-                  "Blue: income so far. Red: spending so far.",
+                  "Verde: ingresos acumulados. Rojo: gastos acumulados.",
+                  "Green: income so far. Red: spending so far.",
                 )}
               </p>
+
 
             </>
           )}
