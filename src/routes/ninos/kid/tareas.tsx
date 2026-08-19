@@ -266,7 +266,7 @@ function MyTasks({ member }: { member: Member }) {
           <div className="grid gap-3 sm:grid-cols-2">
             <KpiCard
               emoji="👛"
-              label={t("Incentivos disponibles", "Available rewards")}
+              label={t("Ingresos totales", "Total income")}
               value={money(available, member.currency)}
               hint={t("Listo para usar", "Ready to use")}
             />
