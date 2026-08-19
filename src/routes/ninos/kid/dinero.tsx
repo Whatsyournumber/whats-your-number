@@ -427,9 +427,10 @@ function MyMoney({ member }: { member: Member }) {
             )}
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button onClick={() => openSheet("income")}>
+            <Button variant="success" onClick={() => openSheet("income")}>
               ＋ {t("Agregar ingreso", "Add income")}
             </Button>
+
             <Button variant="ghost" onClick={() => openSheet("expense")}>
               － {t("Agregar gasto", "Add expense")}
             </Button>
