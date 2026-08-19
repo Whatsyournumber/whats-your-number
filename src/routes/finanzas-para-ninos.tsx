@@ -1765,59 +1765,62 @@ function GrowsWithThem() {
             className="relative overflow-hidden rounded-3xl border border-border"
             style={{ background: "linear-gradient(160deg, oklch(0.04 0.003 265), oklch(0 0 0))" }}
           >
-            {/* Photo on the right, bleeding to the card edge */}
-            <div className="pointer-events-none absolute inset-y-0 right-0 w-[62%]">
-              <img
-                src={s.image}
-                alt={s.imageAlt}
-                loading="lazy"
-                width={640}
-                height={768}
-                className="h-full w-full object-cover object-top"
-              />
-              {/* Very subtle gradient so the photo melts into the card's dark surface */}
-              <span
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(90deg, oklch(0.03 0.003 265) 0%, oklch(0.02 0.002 265 / 0.6) 16%, oklch(0 0 0 / 0.15) 34%, transparent 58%)",
-                }}
-              />
-            </div>
+            <div className="grid grid-cols-[1fr_1.05fr] min-h-[28rem]">
+              {/* ── Left: text ── */}
+              <div className="flex flex-col p-6 md:p-7">
+                <h3 className="font-display text-[24px] font-semibold leading-[1.15] tracking-tight">
+                  {s.headline}
+                </h3>
+                <p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground">{s.text}</p>
 
-            <div className="relative flex min-h-[27rem] flex-col p-6 md:p-7">
-              <h3 className="max-w-[58%] font-display text-[26px] font-semibold leading-[1.15] tracking-tight">
-                {s.headline}
-              </h3>
-              <p className="mt-3 max-w-[52%] text-[13px] leading-relaxed text-muted-foreground">{s.text}</p>
+                <ul className="mt-5 space-y-3.5">
+                  {s.features.map((f) => (
+                    <li key={f.label} className="flex items-center gap-3 text-[14px]">
+                      <f.icon className="h-[17px] w-[17px] shrink-0" style={{ color: s.color }} strokeWidth={1.6} />
+                      <span>{f.label}</span>
+                    </li>
+                  ))}
+                </ul>
 
-              <ul className="mt-6 space-y-4">
-                {s.features.map((f) => (
-                  <li key={f.label} className="flex items-center gap-3 text-[15px]">
-                    <f.icon className="h-[18px] w-[18px] shrink-0" style={{ color: s.color }} strokeWidth={1.6} />
-                    <span>{f.label}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-auto pt-8">
-                <span
-                  className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[12px] font-semibold"
-                  style={{
-                    color: s.color,
-                    backgroundColor: `color-mix(in oklab, ${s.color} 10%, transparent)`,
-                    boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${s.color} 28%, transparent)`,
-                  }}
-                >
-                  <Users className="h-4 w-4" strokeWidth={1.6} />
-                  {s.pill}
-                </span>
+                <div className="mt-auto pt-6">
+                  <span
+                    className="inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-[11px] font-semibold"
+                    style={{
+                      color: s.color,
+                      backgroundColor: `color-mix(in oklab, ${s.color} 10%, transparent)`,
+                      boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${s.color} 28%, transparent)`,
+                    }}
+                  >
+                    <Users className="h-3.5 w-3.5" strokeWidth={1.6} />
+                    {s.pill}
+                  </span>
+                </div>
               </div>
 
-              {/* Floating stat card over the photo */}
-              <div className="pointer-events-none absolute bottom-6 right-4 w-[58%] max-w-[15.5rem]">{s.overlay}</div>
+              {/* ── Right: photo + data overlay ── */}
+              <div className="relative min-h-[28rem]">
+                <img
+                  src={s.image}
+                  alt={s.imageAlt}
+                  loading="lazy"
+                  width={640}
+                  height={768}
+                  className="absolute inset-0 h-full w-full object-cover object-top"
+                />
+                {/* Subtle left-edge melt so photo blends with the dark text column */}
+                <span
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, oklch(0.02 0.002 265) 0%, oklch(0 0 0 / 0.35) 12%, transparent 30%)",
+                  }}
+                />
+                {/* Floating stat card over the photo */}
+                <div className="pointer-events-none absolute bottom-5 left-3 right-3 max-w-[15rem]">
+                  {s.overlay}
+                </div>
+              </div>
             </div>
-
           </motion.div>
         ))}
       </div>
