@@ -12,6 +12,7 @@ import {
   useMovements,
   useTasks,
   useUpdateTask,
+  useUncompleteTask,
   useWishes,
 } from "@/hooks/use-mfn";
 import { money, TASK_IDEAS, type Member, type Task } from "@/lib/mfn";
