@@ -103,7 +103,8 @@ function PatrimonioContent() {
       // Mismo criterio que Portafolio: el costo mostrado es el valor de compra registrado
       // y la plusvalía se mide contra el costo total (precio de compra × unidades).
       const cost = h.cost_basis > 0 ? Math.round(h.cost_basis) : 0;
-      const marketCost = h.cost_basis > 0 && h.quantity > 0 ? h.cost_basis * h.quantity : 0;
+      // cost_basis guarda el MONTO TOTAL de compra (no el precio por unidad).
+      const marketCost = h.cost_basis > 0 ? h.cost_basis : 0;
       const marketGain = h.ticker && marketCost > 0 && raw > 0 ? raw - marketCost : null;
       let annual: number;
       if (h.kind === "property") annual = Math.round(h.monthly_income * 12);

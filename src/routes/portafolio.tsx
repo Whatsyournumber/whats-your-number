@@ -118,7 +118,8 @@ function PortafolioContent() {
       // Retorno derivado del mercado: plusvalía real (valor hoy − costo) cuando hay ticker + costo;
       // si no hay costo pero hay ticker, usa el cambio diario del mercado. Resto: retorno esperado.
       const tk = h.ticker?.toUpperCase();
-      const marketCost = h.cost_basis > 0 && h.quantity > 0 ? h.cost_basis * h.quantity : 0;
+      // cost_basis guarda el MONTO TOTAL de compra (no el precio por unidad).
+      const marketCost = h.cost_basis > 0 ? h.cost_basis : 0;
       const marketGrowth =
         tk && marketCost > 0 && value > 0
           ? (value - marketCost) / marketCost
