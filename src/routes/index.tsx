@@ -594,8 +594,8 @@ function Landing() {
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground">
               {t(
-                "Dinos cuál es tu próximo gran objetivo —libertad financiera, tu primera hipoteca, crear un negocio, estudiar un MBA, mudarte de país o simplemente tener el control de tu dinero. La IA te muestra el camino más rápido para alcanzarlo.",
-                "Tell us your next big goal —financial freedom, your first mortgage, starting a business, an MBA, moving abroad or just taking control of your money. The AI shows you the fastest path to reach it.",
+                "Cuéntanos tu objetivo —libertad financiera, tu primera hipoteca, crear un negocio, estudiar un MBA, mudarte de país o tener el control de tu dinero. La IA te muestra el camino para alcanzarlo.",
+                "Tell us your goal —financial freedom, your first mortgage, starting a business, an MBA, moving abroad or taking control of your money. The AI shows you the path to reach it.",
               )}
             </p>
           </motion.div>
