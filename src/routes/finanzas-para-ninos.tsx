@@ -1806,7 +1806,7 @@ function GrowsWithThem() {
             {/* Content layer */}
             <div className="relative flex h-full flex-col p-6 md:p-7">
               {/* Top-left: headline + text + features */}
-              <div className="w-[58%] min-w-0">
+              <div className="w-[56%] min-w-0">
                 <h3 className="font-display text-[26px] font-semibold leading-[1.1] tracking-tight">
                   {s.headline}
                 </h3>
@@ -1822,7 +1822,7 @@ function GrowsWithThem() {
               </div>
 
               {/* Data box: bottom-right, floating just above the pill */}
-              <div className="pointer-events-none absolute bottom-[5.25rem] right-5 w-[48%] max-w-[14rem] md:right-6">
+              <div className="pointer-events-none absolute bottom-[5.25rem] right-4 w-[46%] max-w-[13.5rem] md:right-5">
                 {s.overlay}
               </div>
 
