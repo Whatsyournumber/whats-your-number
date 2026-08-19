@@ -229,6 +229,13 @@ function PortafolioContent() {
     ? enriched.filter((h) => h.type === "Cash").reduce((s, h) => s + h.value, 0) / totalValue
     : 0;
   const annualGain = enriched.reduce((s, h) => s + h.value * h.growth, 0);
+  // Rentabilidad promedio ponderada por valor: usa la rentabilidad realizada (vs costo)
+  // cuando existe costo, y el retorno esperado anual cuando no lo hay.
+  const avgRetBase = enriched.reduce((s, h) => s + (h.cost > 0 || h.growth > 0 ? h.value : 0), 0);
+  const avgRet = avgRetBase
+    ? enriched.reduce((s, h) => s + h.value * (h.cost > 0 ? h.ret : h.growth * 100), 0) / avgRetBase
+    : null;
+
   const top = [...enriched].sort((a, b) => b.value - a.value)[0];
   const concentration = top && totalValue ? (top.value / totalValue) * 100 : 0;
   const netAnnual = (totalValue * weightedReturn) / 100;
