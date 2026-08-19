@@ -56,6 +56,7 @@ export type Wish = {
   price: number;
   saved: number;
   achieved: boolean;
+  target_date?: string | null;
 };
 
 export type Movement = {
