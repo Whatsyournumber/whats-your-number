@@ -1762,65 +1762,78 @@ function GrowsWithThem() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.45 }}
-            className="relative overflow-hidden rounded-3xl border border-border h-[26rem] flex flex-col"
+            className="relative overflow-hidden rounded-3xl border border-border h-[30rem] flex flex-col"
             style={{ background: "oklch(0 0 0)" }}
           >
-            {/* Full-card photo background */}
+            {/* Photo anchored to the right half, blended into the black card */}
             <img
               src={s.image}
               alt={s.imageAlt}
               loading="lazy"
               width={640}
               height={900}
-              className="absolute inset-0 h-full w-full object-cover object-center"
+              className="absolute inset-y-0 right-0 h-full w-[62%] object-cover object-top"
+              style={{
+                maskImage:
+                  "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 14%, #000 34%), linear-gradient(to bottom, #000 55%, rgba(0,0,0,0.35) 88%, transparent 100%)",
+                WebkitMaskImage:
+                  "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 14%, #000 34%), linear-gradient(to bottom, #000 55%, rgba(0,0,0,0.35) 88%, transparent 100%)",
+                maskComposite: "intersect",
+                WebkitMaskComposite: "source-in",
+              }}
             />
-            {/* Gradient: strong on left for text, fades right so photo stays visible */}
+            {/* Soft glow behind the subject so the photo melts into the black */}
+            <span
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: `radial-gradient(120% 80% at 78% 22%, color-mix(in oklab, ${s.color} 16%, transparent) 0%, transparent 62%)`,
+              }}
+            />
+            {/* Left darkening for text legibility */}
             <span
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  "linear-gradient(95deg, oklch(0.01 0 0) 0%, oklch(0.01 0 0 / 0.92) 42%, oklch(0.01 0 0 / 0.4) 62%, oklch(0.01 0 0 / 0.08) 82%, transparent 100%)",
+                  "linear-gradient(95deg, oklch(0 0 0) 0%, oklch(0 0 0 / 0.94) 34%, oklch(0 0 0 / 0.35) 56%, transparent 74%)",
               }}
             />
-            {/* Bottom fade for the pill area */}
+            {/* Bottom fade */}
             <span
-              className="absolute inset-x-0 bottom-0 h-24 pointer-events-none"
-              style={{ background: "linear-gradient(to top, oklch(0.01 0 0 / 0.9), transparent)" }}
+              className="absolute inset-x-0 bottom-0 h-32 pointer-events-none"
+              style={{ background: "linear-gradient(to top, oklch(0 0 0) 12%, oklch(0 0 0 / 0.7) 45%, transparent)" }}
             />
 
-            {/* Content layer — content pushed to bottom near pill */}
+            {/* Content layer */}
             <div className="relative flex h-full flex-col p-6 md:p-7">
-              <div className="mt-auto flex items-end gap-4">
-                {/* Left: headline + text + features */}
-                <div className="flex min-w-0 flex-1 flex-col">
-                  <h3 className="font-display text-[22px] font-semibold leading-[1.15] tracking-tight">
-                    {s.headline}
-                  </h3>
-                  <p className="mt-1.5 text-[12px] leading-relaxed text-muted-foreground">{s.text}</p>
-                  <ul className="mt-3 space-y-2">
-                    {s.features.map((f) => (
-                      <li key={f.label} className="flex items-center gap-2.5 text-[13px]">
-                        <f.icon className="h-4 w-4 shrink-0" style={{ color: s.color }} strokeWidth={1.6} />
-                        <span>{f.label}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Right: data overlay card — same bottom as text */}
-                <div className="pointer-events-none w-[42%] max-w-[13rem] shrink-0 self-end">
-                  {s.overlay}
-                </div>
+              {/* Top-left: headline + text + features */}
+              <div className="w-[56%] min-w-0">
+                <h3 className="font-display text-[26px] font-semibold leading-[1.1] tracking-tight">
+                  {s.headline}
+                </h3>
+                <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground">{s.text}</p>
+                <ul className="mt-5 space-y-3.5">
+                  {s.features.map((f) => (
+                    <li key={f.label} className="flex items-center gap-3 text-[14px]">
+                      <f.icon className="h-[18px] w-[18px] shrink-0" style={{ color: s.color }} strokeWidth={1.6} />
+                      <span className="truncate">{f.label}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
 
-              {/* Bottom: pill, just below content */}
-              <div className="mt-3">
+              {/* Data box: bottom-right, floating just above the pill */}
+              <div className="pointer-events-none absolute bottom-[5.25rem] right-4 w-[46%] max-w-[13.5rem] md:right-5">
+                {s.overlay}
+              </div>
+
+              {/* Bottom-left pill */}
+              <div className="mt-auto">
                 <span
-                  className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-[12px] font-semibold"
+                  className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[12px] font-semibold"
                   style={{
                     color: s.color,
                     backgroundColor: `color-mix(in oklab, ${s.color} 10%, transparent)`,
-                    boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${s.color} 28%, transparent)`,
+                    boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${s.color} 32%, transparent)`,
                   }}
                 >
                   <Users className="h-4 w-4" strokeWidth={1.6} />
@@ -1828,6 +1841,7 @@ function GrowsWithThem() {
                 </span>
               </div>
             </div>
+
           </motion.div>
         ))}
       </div>
