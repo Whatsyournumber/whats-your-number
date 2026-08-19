@@ -207,8 +207,8 @@ function Landing() {
       icon: PieChart,
       title: t("Análisis de tus gastos", "Your Spending Analysis"),
       desc: t(
-        "Sube tus estados de cuenta y en menos de 30 segundos la IA categoriza cada movimiento, compara tus gastos, detecta sobrecostos y te dice exactamente dónde puedes ahorrar.",
-        "Upload your statements and in under 30 seconds the AI categorizes every transaction, compares your spending, detects overspending and tells you exactly where you can save.",
+        "Sube tus estados de cuenta y en menos de 30 segundos la IA categoriza cada movimiento, compara, detecta sobrecostos y te dice exactamente dónde puedes ahorrar.",
+        "Upload your statements and in under 30 seconds the AI categorizes every transaction, compares, detects overspending and tells you exactly where you can save.",
       ),
       highlight: t("detecta sobrecostos", "detects overspending"),
     },
