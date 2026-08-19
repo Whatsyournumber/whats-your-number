@@ -643,7 +643,7 @@ function PortafolioContent() {
                     </span>
                   ) : null}
                 </p>
-                <p className="numeric text-sm font-semibold">{tk && prices[tk] ? fmt(prices[tk]) : "—"}</p>
+                <p className="numeric text-sm font-semibold">{tk && prices[tk] ? prices[tk].toLocaleString("en-US", { maximumFractionDigits: prices[tk] < 10 ? 4 : 2 }) : "—"}</p>
                 <p className={cn("numeric text-[11px]", today === null ? "text-muted-foreground/50" : today < 0 ? "text-negative" : "text-positive")}>
                   {today === null ? "—" : `${today > 0 ? "+" : ""}${today.toFixed(2)}%`}
                 </p>
