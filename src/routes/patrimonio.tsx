@@ -97,14 +97,18 @@ function PatrimonioContent() {
       // · Efectivo → no genera intereses.
       // · Ticker con costo de compra → plusvalía real de mercado (valor hoy − costo).
       // · Resto → rentabilidad esperada.
-      const cost = h.cost_basis > 0 && h.quantity > 0 ? Math.round(h.cost_basis * h.quantity) : 0;
-      const marketGain = h.ticker && cost > 0 && raw > 0 ? raw - cost : null;
+      // Mismo criterio que Portafolio: el costo mostrado es el valor de compra registrado
+      // y la plusvalía se mide contra el costo total (precio de compra × unidades).
+      const cost = h.cost_basis > 0 ? Math.round(h.cost_basis) : 0;
+      const marketCost = h.cost_basis > 0 && h.quantity > 0 ? h.cost_basis * h.quantity : 0;
+      const marketGain = h.ticker && marketCost > 0 && raw > 0 ? raw - marketCost : null;
       let annual: number;
       if (h.kind === "property") annual = Math.round(h.monthly_income * 12);
       else if (h.kind === "cash") annual = 0;
-      else if (marketGain !== null) annual = marketGain;
+      else if (marketGain !== null) annual = Math.round(marketGain);
       else annual = Math.round((weighted * (h.expected_return || 0)) / 100);
-      const rate = weighted > 0 ? (annual / weighted) * 100 : 0;
+      const rate = marketGain !== null ? (marketGain / marketCost) * 100 : weighted > 0 ? (annual / weighted) * 100 : 0;
+
 
       return {
         id: h.id,
