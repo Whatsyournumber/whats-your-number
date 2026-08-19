@@ -315,6 +315,7 @@ function PatrimonioContent() {
               {visibleRows.map((r) => {
                 const annual = r.annual;
                 const isCash = r.group.key === "cash";
+                const isRetirement = r.group.key === "retirement";
                 const gainLabel =
                   r.kind === "property"
                     ? t("Renta anual", "Annual rent")
@@ -385,14 +386,14 @@ function PatrimonioContent() {
                         </div>
                         <div>
                           <p className="text-[11px] text-muted-foreground">{gainLabel}</p>
-                          <p className={cn("numeric text-sm", isCash || annual === 0 ? "text-muted-foreground/50" : gainTone)}>
-                            {isCash || annual === 0 ? "—" : fmt(annual)}
+                          <p className={cn("numeric text-sm", isCash || isRetirement || annual === 0 ? "text-muted-foreground/50" : gainTone)}>
+                            {isCash || isRetirement || annual === 0 ? "—" : fmt(annual)}
                           </p>
                         </div>
                         <div>
                           <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
-                          <p className={cn("numeric text-sm", isCash || annual === 0 ? "text-muted-foreground/50" : gainTone)}>
-                            {isCash || annual === 0 ? "—" : fmt(Math.round(annual / 12))}
+                          <p className={cn("numeric text-sm", isCash || isRetirement || annual === 0 ? "text-muted-foreground/50" : gainTone)}>
+                            {isCash || isRetirement || annual === 0 ? "—" : fmt(Math.round(annual / 12))}
                           </p>
                         </div>
                       </>
