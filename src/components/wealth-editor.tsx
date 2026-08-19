@@ -264,24 +264,6 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
         </Section>
 
         <Section icon={<Coins className="h-4 w-4" />} tone="amber" title={t("Fondo de retiro", "Retirement fund")} total={amt(retireTotal)}>
-          <InlineRow label={t("Valor actual", "Current value")}>
-            <Money
-              value={retirement?.manual_value ?? 0}
-              onChange={(n) => setSingle("retirement", t("Fondo de retiro", "Retirement fund"), { manual_value: n })}
-            />
-          </InlineRow>
-          <InlineRow label={t("Aporte mensual", "Monthly contribution")}>
-            <Money
-              value={retirement?.monthly_contribution ?? 0}
-              onChange={(n) => setSingle("retirement", t("Fondo de retiro", "Retirement fund"), { monthly_contribution: n })}
-            />
-          </InlineRow>
-          <InlineRow label={t("Retorno esperado anual", "Expected annual return")}>
-            <Pct
-              value={retirement?.expected_return ?? 7}
-              onChange={(n) => setSingle("retirement", t("Fondo de retiro", "Retirement fund"), { expected_return: n })}
-            />
-          </InlineRow>
           <InlineRow label={t("Edad de retiro deseada", "Desired retirement age")}>
             <Select
               value={String(retireAge || 65)}
@@ -289,6 +271,33 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
               options={RETIRE_AGES.map((a) => ({ value: String(a), label: `${a} ${t("años", "years")}` }))}
             />
           </InlineRow>
+          {retireFunds.map((h) => (
+            <CollapsibleCard
+              key={h.id}
+              title={h.label || t("Fondo de retiro", "Retirement fund")}
+              filled={Boolean(h.label.trim()) || h.manual_value > 0}
+              summary={[
+                h.manual_value > 0 ? fmt(h.manual_value) : null,
+                h.monthly_contribution > 0 ? `${t("Aporte", "Contrib.")} ${fmt(h.monthly_contribution)}/${t("mes", "mo")}` : null,
+                h.expected_return ? `${h.expected_return}%` : null,
+              ]}
+              onRemove={() => remove(h.id)}
+            >
+              <InlineRow label={t("Nombre", "Name")}>
+                <Input value={h.label} onChange={(e) => patch(h.id, { label: e.target.value })} className="h-9" placeholder={t("Mi fondo de pensión", "My pension fund")} />
+              </InlineRow>
+              <InlineRow label={t("Valor actual", "Current value")}>
+                <Money value={h.manual_value} onChange={(n) => patch(h.id, { manual_value: n })} />
+              </InlineRow>
+              <InlineRow label={t("Aporte mensual", "Monthly contribution")}>
+                <Money value={h.monthly_contribution} onChange={(n) => patch(h.id, { monthly_contribution: n })} />
+              </InlineRow>
+              <InlineRow label={t("Retorno esperado anual", "Expected annual return")}>
+                <Pct value={h.expected_return} onChange={(n) => patch(h.id, { expected_return: n })} />
+              </InlineRow>
+            </CollapsibleCard>
+          ))}
+          <AddButton onClick={() => add("retirement", "")}>{t("Agregar otro fondo", "Add another fund")}</AddButton>
         </Section>
 
         <Section icon={<CreditCard className="h-4 w-4" />} tone="rose" title={t("Deudas", "Debts")} total={amt(debtTotal)}>
