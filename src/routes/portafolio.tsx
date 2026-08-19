@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, X } from "lucide-react";
+import { Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, TrendingUp, X } from "lucide-react";
 import { useState } from "react";
 import { CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
