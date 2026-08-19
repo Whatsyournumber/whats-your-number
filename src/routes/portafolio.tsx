@@ -673,11 +673,10 @@ function PortafolioContent() {
 
           <div>
             <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
-            <p className={cn("numeric text-sm font-semibold", h.ret >= 0 ? "text-positive" : "text-negative")}>
-              {h.ret > 0 ? "+" : ""}
-              {h.ret.toFixed(1)}%
+            <p className={cn("numeric text-sm font-semibold", h.ret === 0 ? "text-muted-foreground/50" : h.ret >= 0 ? "text-positive" : "text-negative")}>
+              {h.ret === 0 ? "—" : `${h.ret > 0 ? "+" : ""}${h.ret.toFixed(1)}%`}
             </p>
-            {h.cagr !== null && !isEtf && (
+            {h.cagr !== null && !isEtf && h.cagr !== 0 && (
               <p className="text-[10px] text-muted-foreground">
                 {h.cagr > 0 ? "+" : ""}
                 {h.cagr.toFixed(1)}% {t("anual", "annual")} · {h.years} {t("años", "yrs")}
