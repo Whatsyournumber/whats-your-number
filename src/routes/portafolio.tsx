@@ -205,7 +205,13 @@ function PortafolioContent() {
   const totalValue = enriched.reduce((s, h) => s + h.value, 0);
   const totalCost = enriched.reduce((s, h) => s + h.cost, 0);
   const totalGain = totalValue - totalCost;
-  const totalRet = totalCost ? (totalGain / totalCost) * 100 : 0;
+  // Rentabilidad real: promedio ponderado por capital invertido, solo de rubros que rinden
+  // (excluye efectivo y posiciones sin ganancia).
+  const yieldingHoldings = enriched.filter((h) => h.cost > 0 && h.value !== h.cost);
+  const yieldingCost = yieldingHoldings.reduce((s, h) => s + h.cost, 0);
+  const yieldingGain = yieldingHoldings.reduce((s, h) => s + (h.value - h.cost), 0);
+  const totalRet = yieldingCost ? (yieldingGain / yieldingCost) * 100 : 0;
+
   const dividends = enriched.reduce((s, h) => s + h.dividends, 0);
 
   // ---- Análisis basado en tu data real ----
