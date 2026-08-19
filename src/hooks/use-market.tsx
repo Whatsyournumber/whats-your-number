@@ -51,8 +51,12 @@ export function useQuotes(symbols: string[]) {
     queryKey: ["market-quotes", symbols.join(",")],
     queryFn: () => getMarketQuotes({ data: { symbols } }),
     enabled: symbols.length > 0,
-    refetchInterval: 60_000,
-    staleTime: 30_000,
+    // near real-time: refresh every 10s while the tab is visible
+    refetchInterval: 10_000,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: true,
+    refetchOnMount: "always",
+    staleTime: 0,
   });
 }
 
