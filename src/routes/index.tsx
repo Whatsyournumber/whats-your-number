@@ -6,6 +6,7 @@ import {
   Crosshair,
   FileText,
   Globe,
+  Home,
   LineChart,
   Lock,
   PieChart,
