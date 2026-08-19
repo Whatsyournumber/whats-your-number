@@ -55,14 +55,19 @@ function RetiroContent() {
 
   const [editing, setEditing] = useState(false);
 
-  // Solo activos que generan retorno (excluye propiedades).
-  const investable =
+  // Solo activos que generan retorno (excluye propiedades). Viene del detalle de "Mis datos".
+  const investableFallback =
     profile.assets_cash +
     profile.assets_bank +
     profile.assets_retirement +
     profile.assets_etf +
     profile.assets_stocks +
     profile.assets_crypto;
+  const investableFromHoldings = holdings
+    .filter((h) => h.kind !== "property" && h.kind !== "debt")
+    .reduce((s, h) => s + holdingValue(h, prices), 0);
+  const investable = holdings.length ? investableFromHoldings : investableFallback;
+
   const progressPct = plan.targetCapital > 0 ? Math.max(0, (investable / plan.targetCapital) * 100) : 0;
 
 
