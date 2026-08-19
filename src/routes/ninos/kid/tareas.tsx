@@ -146,28 +146,28 @@ function MyTasks({ member }: { member: Member }) {
 
   const badges = [
     {
-      emoji: "🥇",
+      emoji: "🏅",
       label: t("10 tareas completadas", "10 tasks completed"),
       how: t("Completa tareas y aprueba con papá o mamá", "Complete tasks approved by a parent"),
       now: approved.length,
       max: 10,
     },
     {
-      emoji: "🐷",
+      emoji: "💰",
       label: t("100 ganados", "100 earned"),
       how: t("Gana dinero con tus tareas este mes", "Earn money from tasks this month"),
       now: Math.round(earnedMonth),
       max: 100,
     },
     {
-      emoji: "📅",
+      emoji: "🔥",
       label: t("14 días seguidos", "14 days streak"),
       how: t("Haz al menos una tarea cada día", "Do at least one task every day"),
       now: member.streak,
       max: 14,
     },
     {
-      emoji: "🏆",
+      emoji: "👑",
       label: t("Maestro de tareas", "Task master"),
       how: t("Llega a 20 tareas aprobadas en total", "Reach 20 approved tasks in total"),
       now: approved.length,
