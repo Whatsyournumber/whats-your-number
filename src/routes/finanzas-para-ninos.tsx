@@ -1548,7 +1548,7 @@ function GrowsWithThem() {
       image: stageBaby,
       imageAlt: t("Bebé", "Baby"),
       overlay: (
-        <div className="rounded-2xl border border-border bg-card/95 p-3.5 shadow-xl backdrop-blur">
+        <div className="rounded-2xl border border-white/10 bg-[color-mix(in_oklab,var(--color-card)_88%,black)] p-4 shadow-[0_18px_40px_-12px_rgba(0,0,0,0.8)] backdrop-blur-xl">
           <p className="flex items-center gap-1 text-xs font-semibold">
             {t("El futuro de Sofía", "Sofía's future")} <Star className="h-3 w-3 fill-kid-sun text-kid-sun" />
           </p>
@@ -1594,7 +1594,7 @@ function GrowsWithThem() {
       image: stageBoy,
       imageAlt: t("Niño con móvil", "Boy with phone"),
       overlay: (
-        <div className="rounded-2xl border border-border bg-card/95 p-3.5 shadow-xl backdrop-blur">
+        <div className="rounded-2xl border border-white/10 bg-[color-mix(in_oklab,var(--color-card)_88%,black)] p-4 shadow-[0_18px_40px_-12px_rgba(0,0,0,0.8)] backdrop-blur-xl">
           <p className="text-xs font-semibold">{t("Mi dinero", "My money")}</p>
           <p className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
             {t("Este mes", "This month")}
@@ -1657,7 +1657,7 @@ function GrowsWithThem() {
       image: stageTeen,
       imageAlt: t("Adolescente con móvil", "Teen with phone"),
       overlay: (
-        <div className="rounded-2xl border border-border bg-card/95 p-3.5 shadow-xl backdrop-blur">
+        <div className="rounded-2xl border border-white/10 bg-[color-mix(in_oklab,var(--color-card)_88%,black)] p-4 shadow-[0_18px_40px_-12px_rgba(0,0,0,0.8)] backdrop-blur-xl">
           <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
             {t("Tu patrimonio a los 18", "Your wealth at 18")}
           </p>
@@ -1778,7 +1778,7 @@ function GrowsWithThem() {
                 className="absolute inset-0"
                 style={{
                   background:
-                    "linear-gradient(90deg, var(--color-card) 0%, color-mix(in oklab, var(--color-card) 70%, transparent) 22%, color-mix(in oklab, var(--color-card) 25%, transparent) 48%, transparent 75%)",
+                    "linear-gradient(90deg, var(--color-card) 0%, var(--color-card) 8%, color-mix(in oklab, var(--color-card) 60%, transparent) 30%, transparent 62%)",
                 }}
               />
             </div>
