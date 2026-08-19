@@ -479,6 +479,8 @@ function DreamRow({
   boosters,
   onBoost,
   onDelete,
+  onSetDate,
+  onAdd,
 }: {
   wish: Wish;
   member: Member;
@@ -486,10 +488,18 @@ function DreamRow({
   boosters: Task[];
   onBoost: (task: Task) => void;
   onDelete: () => void;
+  onSetDate: (date: string | null) => void;
+  onAdd: (amount: number) => void;
 }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
+  const [boostOpen, setBoostOpen] = useState(false);
   const f = wishForecast(wish, pace);
   const months = Number.isFinite(f.months) ? Math.max(1, Math.round(f.months)) : null;
+  const locale = lang === "en" ? "en-US" : "es-ES";
+  const fmtDate = (d: Date) => d.toLocaleDateString(locale, { day: "2-digit", month: "short", year: "numeric" });
+  const quick = [0.1, 0.25, 0.5]
+    .map((p) => Math.max(1, Math.round((f.missing * p) / 5) * 5))
+    .filter((v, i, arr) => v > 0 && arr.indexOf(v) === i && v <= f.missing);
 
   return (
     <div className="grid gap-4 py-4 first:pt-0 md:grid-cols-[auto_minmax(0,1fr)] md:items-start">
@@ -521,11 +531,80 @@ function DreamRow({
               {t("Te faltan", "You need")} {money(f.missing, member.currency)}
             </span>
           </div>
-          {months ? (
-            <span className="mt-3 inline-flex items-center gap-2 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-medium text-foreground">
-              <CalendarDays className="h-3.5 w-3.5 text-primary" />
-              {t("Llegará en", "Arrives in")} {months} {months === 1 ? t("mes", "month") : t("meses", "months")}
-            </span>
+
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            {f.etaDate ? (
+              <span className="inline-flex items-center gap-2 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-medium text-foreground">
+                <CalendarDays className="h-3.5 w-3.5 text-primary" />
+                {t("Llegará el", "Arrives on")} {fmtDate(f.etaDate)}
+                {months ? ` · ${months} ${months === 1 ? t("mes", "month") : t("meses", "months")}` : ""}
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-2 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-medium text-muted-foreground">
+                <CalendarDays className="h-3.5 w-3.5 text-primary" />
+                {t("Empieza a ahorrar para ver la fecha", "Start saving to see the date")}
+              </span>
+            )}
+            <label className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
+              🎯 {t("Meta", "Target")}
+              <input
+                type="date"
+                value={wish.target_date ?? ""}
+                min={new Date().toISOString().slice(0, 10)}
+                onChange={(e) => onSetDate(e.target.value || null)}
+                className="bg-transparent text-xs font-semibold text-foreground outline-none"
+              />
+            </label>
+            <Button variant="success" className="h-8 px-3 text-xs" onClick={() => setBoostOpen((v) => !v)}>
+              <Rocket className="h-3.5 w-3.5" /> {t("Acelerar", "Speed up")}
+            </Button>
+          </div>
+
+          {f.targetDate ? (
+            <p className={`mt-2 text-xs font-medium ${f.onTrack ? "text-chart-2" : "text-destructive"}`}>
+              {f.onTrack
+                ? t("¡Vas a tiempo para tu fecha!", "You're on track for your date!")
+                : `${t("Para llegar el", "To make it by")} ${fmtDate(f.targetDate)} ${t("necesitas ahorrar", "you need to save")} ${money(Math.round(f.neededMonthly), member.currency)}/${t("mes", "mo")}`}
+            </p>
+          ) : null}
+
+          {boostOpen ? (
+            <div className="mt-3 rounded-2xl border border-primary/30 bg-primary/5 p-4">
+              <p className="flex items-center gap-2 text-xs font-semibold text-foreground">
+                <Zap className="h-3.5 w-3.5 text-primary" />
+                {t("Suma ahora y adelanta tu sueño", "Add now and bring your dream closer")}
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {quick.length === 0 ? (
+                  <span className="text-xs text-muted-foreground">{t("¡Ya está completo!", "Already complete!")}</span>
+                ) : (
+                  quick.map((amount) => {
+                    const newMonths = pace > 0 ? Math.max(0, (f.missing - amount) / pace) : null;
+                    const saved = months && newMonths !== null ? Math.max(0, months - Math.round(newMonths)) : 0;
+                    return (
+                      <button
+                        key={amount}
+                        onClick={() => onAdd(amount)}
+                        className="rounded-full border border-primary/40 bg-card px-3 py-1.5 text-xs font-semibold text-primary transition hover:bg-primary/10"
+                      >
+                        +{money(amount, member.currency)}
+                        {saved > 0 ? (
+                          <span className="ml-1 font-normal text-muted-foreground">
+                            −{saved} {saved === 1 ? t("mes", "mo") : t("meses", "mo")}
+                          </span>
+                        ) : null}
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+              <p className="mt-3 text-[11px] text-muted-foreground">
+                {t(
+                  "Cada tarea que completas se suma directo a este sueño.",
+                  "Every task you complete goes straight into this dream.",
+                )}
+              </p>
+            </div>
           ) : null}
         </div>
 
