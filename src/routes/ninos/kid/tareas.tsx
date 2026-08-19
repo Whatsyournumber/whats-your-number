@@ -146,28 +146,28 @@ function MyTasks({ member }: { member: Member }) {
 
   const badges = [
     {
-      emoji: "🏅",
+      emoji: "🥇",
       label: t("10 tareas completadas", "10 tasks completed"),
       how: t("Completa tareas y aprueba con papá o mamá", "Complete tasks approved by a parent"),
       now: approved.length,
       max: 10,
     },
     {
-      emoji: "💰",
+      emoji: "🐷",
       label: t("100 ganados", "100 earned"),
       how: t("Gana dinero con tus tareas este mes", "Earn money from tasks this month"),
       now: Math.round(earnedMonth),
       max: 100,
     },
     {
-      emoji: "🔥",
+      emoji: "📅",
       label: t("14 días seguidos", "14 days streak"),
       how: t("Haz al menos una tarea cada día", "Do at least one task every day"),
       now: member.streak,
       max: 14,
     },
     {
-      emoji: "👑",
+      emoji: "🏆",
       label: t("Maestro de tareas", "Task master"),
       how: t("Llega a 20 tareas aprobadas en total", "Reach 20 approved tasks in total"),
       now: approved.length,
@@ -389,54 +389,45 @@ function MyTasks({ member }: { member: Member }) {
                   "Every approved task counts. Fill the bar to unlock the badge.",
                 )}
               </p>
-              <ul className="grid gap-3 xl:grid-cols-2">
+              <ul className="grid gap-2.5 sm:grid-cols-2">
                 {badges.map((b) => {
-                  const now = Math.min(b.now, b.max);
-                  const pct = Math.min(100, (now / b.max) * 100);
+                  const pct = Math.min(100, (Math.min(b.now, b.max) / b.max) * 100);
                   const done = b.now >= b.max;
                   return (
                     <li
                       key={b.label}
-                      className={`group relative overflow-hidden rounded-3xl border p-4 transition hover:-translate-y-0.5 hover:shadow-lg ${
-                        done
-                          ? "border-success/40 bg-success/10"
-                          : "border-border/60 bg-linear-to-br from-surface-2/70 to-card"
+                      className={`grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 rounded-2xl border p-3 transition ${
+                        done ? "border-success/40 bg-success/10" : "border-border/60 bg-surface-2/50"
                       }`}
                     >
-                      <div className="flex items-start gap-3">
-                        <span
-                          className={`grid size-12 shrink-0 place-items-center rounded-2xl text-2xl shadow-sm transition group-hover:scale-105 ${
-                            done ? "bg-success/25" : "bg-card"
-                          } ${done ? "" : "opacity-90 grayscale-[0.3]"}`}
-                          aria-hidden
-                        >
-                          {b.emoji}
-                        </span>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm font-semibold leading-snug text-foreground">{b.label}</p>
-                          <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">{b.how}</p>
+                      <span
+                        className={`grid size-11 shrink-0 place-items-center rounded-full text-xl ${
+                          done ? "bg-success/20" : "bg-card"
+                        } ${done ? "" : "grayscale-[0.35] opacity-80"}`}
+                      >
+                        {b.emoji}
+                      </span>
+                      <div className="min-w-0">
+                        <div className="flex items-baseline justify-between gap-2">
+                          <p className="min-w-0 text-xs font-semibold leading-tight text-foreground">{b.label}</p>
+                          <span
+                            className={`shrink-0 text-[11px] font-semibold ${done ? "text-success" : "text-muted-foreground"}`}
+                          >
+                            {done ? t("¡Logrado!", "Unlocked!") : `${Math.min(b.now, b.max)}/${b.max}`}
+                          </span>
                         </div>
-                        <span
-                          className={`shrink-0 whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-bold ${
-                            done ? "bg-success/20 text-success" : "bg-surface-2 text-muted-foreground"
-                          }`}
-                        >
-                          {done ? t("¡Logrado!", "Unlocked!") : `${now}/${b.max}`}
-                        </span>
-                      </div>
-                      <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-border/50">
-                        <div
-                          className={`h-full rounded-full transition-all duration-500 ${
-                            done ? "bg-success" : "bg-linear-to-r from-primary/70 to-primary"
-                          }`}
-                          style={{ width: `${pct}%` }}
-                        />
+                        <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-border/60">
+                          <div
+                            className={`h-full rounded-full transition-all ${done ? "bg-success" : "bg-primary"}`}
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                        <p className="mt-1.5 text-[11px] leading-snug text-muted-foreground">{b.how}</p>
                       </div>
                     </li>
                   );
                 })}
               </ul>
-
             </Card>
 
           </div>
