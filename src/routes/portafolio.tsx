@@ -614,7 +614,7 @@ function PortafolioContent() {
   const rows = (list: typeof enriched) => (
     <div className="space-y-2">
       {[...list].sort((a, b) => b.value - a.value).map((h) => {
-        const isEtf = h.type === "ETF";
+        const isEtf = h.type === "ETF" || h.type === "Cripto";
         const tk = h.ticker?.toUpperCase();
         const today = tk && dayChange[tk] !== undefined ? dayChange[tk] : null;
         return (
