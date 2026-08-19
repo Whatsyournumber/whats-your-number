@@ -199,8 +199,8 @@ function Landing() {
       icon: Home,
       title: t("Análisis de tu hipoteca", "Your Mortgage Analysis"),
       desc: t(
-        "Entiende el verdadero costo de tu hipoteca. Compara tasas, simula pagos anticipados y descubre cuánto puedes ahorrar en intereses.",
-        "Understand the true cost of your mortgage. Compare rates, simulate early payments and see how much interest you can save.",
+        "No pagues más intereses de los necesarios. Entiende el verdadero costo de tu hipoteca, compara tasas, simula pagos anticipados y descubre cuánto dinero puedes ahorrar.",
+        "Don't pay more interest than necessary. Understand the true cost of your mortgage, compare rates, simulate early payments and find out how much money you can save.",
       ),
     },
     {
