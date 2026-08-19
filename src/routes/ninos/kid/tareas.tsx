@@ -313,6 +313,16 @@ function MyTasks({ member }: { member: Member }) {
                         },
                       )
                     }
+                    onUncomplete={() =>
+                      uncompleteTask.mutate(
+                        { task, member },
+                        {
+                          onSuccess: () =>
+                            toast.success(t("Tarea marcada como pendiente", "Task set back to pending")),
+                          onError: () => toast.error(t("No se pudo deshacer", "Could not undo")),
+                        },
+                      )
+                    }
                     onDelete={() => deleteTask.mutate({ id: task.id, memberId: member.id })}
                   />
                 ))}
