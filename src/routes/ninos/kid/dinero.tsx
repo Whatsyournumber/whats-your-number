@@ -40,7 +40,7 @@ const PRESETS = [
   { days: 365, es: "12 meses", en: "12 months" },
 ];
 
-const INCOME_SOURCES = ["Mesada", "Regalo", "Tareas", "Otro"];
+const INCOME_SOURCES = ["Mesada", "Regalo", "Tareas", "Negocio", "Otro"];
 const EXPENSE_CATEGORIES = ["Ocio y diversión", "Comida y snacks", "Compras", "Otros"];
 
 /** Suma de ingresos (importes positivos). */
