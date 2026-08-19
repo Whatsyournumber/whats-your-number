@@ -644,7 +644,9 @@ function Landing() {
                   </div>
                   <div className="min-w-0">
                     <h3 className="text-sm font-semibold">{f.title}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">{f.desc}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      <HighlightDesc desc={f.desc} highlight={f.highlight} />
+                    </p>
                   </div>
                 </motion.div>
               ))}
