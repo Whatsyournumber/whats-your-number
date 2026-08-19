@@ -322,16 +322,18 @@ export function Button({
 }: {
   children: ReactNode;
   onClick?: () => void;
-  variant?: "primary" | "ghost" | "soft";
+  variant?: "primary" | "ghost" | "soft" | "success";
   className?: string;
   type?: "button" | "submit";
   disabled?: boolean;
 }) {
   const styles = {
     primary: "glow-primary bg-primary text-primary-foreground hover:-translate-y-0.5",
+    success: "bg-success text-success-foreground hover:-translate-y-0.5",
     soft: "bg-secondary text-secondary-foreground hover:bg-muted",
     ghost: "border border-border bg-card text-foreground hover:bg-muted",
   }[variant];
+
   return (
     <button
       type={type}
