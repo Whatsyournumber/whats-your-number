@@ -419,3 +419,11 @@ export function humanDuration(months: number | null, lang: Lang2 = "es") {
   if (m === 0) return yy;
   return en ? `${yy} and ${mm}` : `${yy} y ${mm}`;
 }
+
+/** Edad mínima para activar la zona del niño; por debajo solo se usa la zona de padres. */
+export const KID_MIN_AGE = 5;
+
+/** True si el perfil ya puede manejar su propio dinero (5+ años). */
+export function kidZoneEnabled(member: { age?: number | null }) {
+  return Number(member?.age ?? 0) >= KID_MIN_AGE;
+}
