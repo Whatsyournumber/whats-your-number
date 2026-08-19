@@ -3,21 +3,31 @@ import { useRouter } from "@tanstack/react-router";
 import { KidShell } from "@/components/kid-shell";
 import { useI18n } from "@/lib/mfn-i18n";
 import { useActiveMember } from "@/hooks/use-mfn";
-import type { Member } from "@/lib/mfn";
+import { kidZoneEnabled, type Member } from "@/lib/mfn";
 
 /** Envuelve una pantalla infantil: exige perfil activo de tipo niño. */
-export function KidPage({ children }: { children: (member: Member) => ReactNode }) {
+export function KidPage({
+  children,
+  area = "kid",
+}: {
+  children: (member: Member) => ReactNode;
+  area?: "kid" | "parent";
+}) {
   const { t } = useI18n();
   const { member, isLoading, ready } = useActiveMember();
   const router = useRouter();
+  const kidZoneBlocked = Boolean(member && area === "kid" && !kidZoneEnabled(member));
 
   useEffect(() => {
     if (ready && !isLoading && (!member || member.role !== "child")) {
       router.navigate({ to: "/ninos" });
+      return;
     }
-  }, [ready, isLoading, member, router]);
+    // Menores de 5 años: solo la zona de padres.
+    if (kidZoneBlocked) router.navigate({ to: "/ninos/kid/futuro" });
+  }, [ready, isLoading, member, router, kidZoneBlocked]);
 
-  if (!member || member.role !== "child") {
+  if (!member || member.role !== "child" || kidZoneBlocked) {
     return (
       <div className="grid min-h-screen place-items-center bg-background">
         <p className="text-sm text-muted-foreground">{t("Cargando tu mundo…", "Loading your world…")}</p>
