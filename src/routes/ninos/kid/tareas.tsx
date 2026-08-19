@@ -468,11 +468,13 @@ function TaskRow({
   task,
   member,
   onComplete,
+  onUncomplete,
   onDelete,
 }: {
   task: Task;
   member: Member;
   onComplete: () => void;
+  onUncomplete: () => void;
   onDelete: () => void;
 }) {
   const { t } = useI18n();
