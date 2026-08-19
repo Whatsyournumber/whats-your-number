@@ -97,14 +97,18 @@ function PatrimonioContent() {
       // · Efectivo → no genera intereses.
       // · Ticker con costo de compra → plusvalía real de mercado (valor hoy − costo).
       // · Resto → rentabilidad esperada.
-      const cost = h.cost_basis > 0 && h.quantity > 0 ? Math.round(h.cost_basis * h.quantity) : 0;
-      const marketGain = h.ticker && cost > 0 && raw > 0 ? raw - cost : null;
+      // Mismo criterio que Portafolio: el costo mostrado es el valor de compra registrado
+      // y la plusvalía se mide contra el costo total (precio de compra × unidades).
+      const cost = h.cost_basis > 0 ? Math.round(h.cost_basis) : 0;
+      const marketCost = h.cost_basis > 0 && h.quantity > 0 ? h.cost_basis * h.quantity : 0;
+      const marketGain = h.ticker && marketCost > 0 && raw > 0 ? raw - marketCost : null;
       let annual: number;
       if (h.kind === "property") annual = Math.round(h.monthly_income * 12);
       else if (h.kind === "cash") annual = 0;
-      else if (marketGain !== null) annual = marketGain;
+      else if (marketGain !== null) annual = Math.round(marketGain);
       else annual = Math.round((weighted * (h.expected_return || 0)) / 100);
-      const rate = weighted > 0 ? (annual / weighted) * 100 : 0;
+      const rate = marketGain !== null ? (marketGain / marketCost) * 100 : weighted > 0 ? (annual / weighted) * 100 : 0;
+
 
       return {
         id: h.id,
@@ -128,7 +132,14 @@ function PatrimonioContent() {
       };
     })
     .filter((r) => r.value > 0)
-    .sort((a, b) => b.value - a.value);
+    .sort((a, b) => {
+      // ETFs y cripto siempre al final (cripto de últimas).
+      const rank = (k: string) => (k === "crypto" ? 2 : k === "etf" ? 1 : 0);
+      const ra = rank(a.kind);
+      const rb = rank(b.kind);
+      if (ra !== rb) return ra - rb;
+      return b.value - a.value;
+    });
 
   const groups = ["invest", "retirement", "property", "future", "cash"]
     .map((key) => {
@@ -334,8 +345,9 @@ function PatrimonioContent() {
                         {r.ticker ? <span className="ml-2 text-xs text-muted-foreground">{r.ticker}</span> : null}
                       </p>
                       <p className="truncate text-xs text-muted-foreground">
-                        {r.kind === "crypto" ? t("Cripto", "Crypto") : meta.join(" · ")}
+                        {r.kind === "crypto" ? t("Cripto", "Crypto") : r.kind === "etf" ? "" : meta.join(" · ")}
                       </p>
+
                     </div>
                     {isEtf ? (
                       <>
