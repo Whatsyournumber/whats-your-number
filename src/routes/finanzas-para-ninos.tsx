@@ -1788,9 +1788,9 @@ function GrowsWithThem() {
               style={{ background: "linear-gradient(to top, oklch(0.01 0 0 / 0.9), transparent)" }}
             />
 
-            {/* Content layer — two columns: text left, data box right, pushed down near pill */}
+            {/* Content layer — content pushed to bottom near pill */}
             <div className="relative flex h-full flex-col p-6 md:p-7">
-              <div className="flex flex-1 items-end gap-4">
+              <div className="mt-auto flex items-end gap-4">
                 {/* Left: headline + text + features */}
                 <div className="flex min-w-0 flex-1 flex-col">
                   <h3 className="font-display text-[22px] font-semibold leading-[1.15] tracking-tight">
