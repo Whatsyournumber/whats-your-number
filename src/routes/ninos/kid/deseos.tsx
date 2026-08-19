@@ -503,7 +503,7 @@ function DreamRow({
             </span>
           </div>
 
-          <div className="mt-3 flex flex-wrap items-center gap-2">
+          <div className="mt-3 flex items-center gap-2">
             {f.etaDate ? (
               <span className="inline-flex items-center gap-2 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-medium text-foreground">
                 <CalendarDays className="h-3.5 w-3.5 text-primary" />
@@ -516,7 +516,7 @@ function DreamRow({
                 {t("Empieza a ahorrar para ver la fecha", "Start saving to see the date")}
               </span>
             )}
-            <Button variant="success" className="h-8 px-3 text-xs" onClick={() => setBoostOpen((v) => !v)}>
+            <Button variant="success" className="h-8 shrink-0 px-3 text-xs" onClick={() => setBoostOpen((v) => !v)}>
               <Rocket className="h-3.5 w-3.5" /> {t("Acelerar", "Speed up")}
             </Button>
           </div>
