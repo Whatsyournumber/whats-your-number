@@ -1762,7 +1762,7 @@ function GrowsWithThem() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.45 }}
-            className="relative overflow-hidden rounded-3xl border border-border h-[34rem] flex flex-col"
+            className="relative overflow-hidden rounded-3xl border border-border h-[28rem] flex flex-col"
             style={{ background: "oklch(0 0 0)" }}
           >
             {/* Full-card photo background */}
@@ -1779,42 +1779,42 @@ function GrowsWithThem() {
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  "linear-gradient(95deg, oklch(0.01 0 0) 0%, oklch(0.01 0 0 / 0.92) 38%, oklch(0.01 0 0 / 0.35) 60%, oklch(0.01 0 0 / 0.05) 82%, transparent 100%)",
+                  "linear-gradient(95deg, oklch(0.01 0 0) 0%, oklch(0.01 0 0 / 0.92) 42%, oklch(0.01 0 0 / 0.4) 62%, oklch(0.01 0 0 / 0.08) 82%, transparent 100%)",
               }}
             />
             {/* Bottom fade for the pill area */}
             <span
-              className="absolute inset-x-0 bottom-0 h-24 pointer-events-none"
+              className="absolute inset-x-0 bottom-0 h-20 pointer-events-none"
               style={{ background: "linear-gradient(to top, oklch(0.01 0 0 / 0.85), transparent)" }}
             />
 
-            {/* Content layer */}
+            {/* Content layer — two columns: text left, data box right, same height */}
             <div className="relative flex h-full flex-col p-6 md:p-7">
-              {/* Top: headline + text on the left */}
-              <div className="max-w-[60%]">
-                <h3 className="font-display text-[24px] font-semibold leading-[1.15] tracking-tight">
-                  {s.headline}
-                </h3>
-                <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">{s.text}</p>
-              </div>
+              <div className="flex flex-1 items-start gap-4">
+                {/* Left: headline + text + features */}
+                <div className="flex min-w-0 flex-1 flex-col">
+                  <h3 className="font-display text-[22px] font-semibold leading-[1.15] tracking-tight">
+                    {s.headline}
+                  </h3>
+                  <p className="mt-1.5 text-[12px] leading-relaxed text-muted-foreground">{s.text}</p>
+                  <ul className="mt-4 space-y-2.5">
+                    {s.features.map((f) => (
+                      <li key={f.label} className="flex items-center gap-2.5 text-[13px]">
+                        <f.icon className="h-4 w-4 shrink-0" style={{ color: s.color }} strokeWidth={1.6} />
+                        <span>{f.label}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-              {/* Middle: features list aligned with the data box */}
-              <ul className="mt-5 max-w-[60%] space-y-3.5">
-                {s.features.map((f) => (
-                  <li key={f.label} className="flex items-center gap-3 text-[14px]">
-                    <f.icon className="h-[17px] w-[17px] shrink-0" style={{ color: s.color }} strokeWidth={1.6} />
-                    <span>{f.label}</span>
-                  </li>
-                ))}
-              </ul>
-
-              {/* Right: data overlay card — fixed-height wrapper for alignment */}
-              <div className="pointer-events-none absolute bottom-24 right-5 flex h-[200px] w-[44%] max-w-[14.5rem] flex-col justify-end">
-                {s.overlay}
+                {/* Right: data overlay card — same top as text */}
+                <div className="pointer-events-none w-[42%] max-w-[13rem] shrink-0">
+                  {s.overlay}
+                </div>
               </div>
 
               {/* Bottom: pill, relaxed */}
-              <div className="mt-auto pt-10">
+              <div className="mt-auto pt-6">
                 <span
                   className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-[12px] font-semibold"
                   style={{
