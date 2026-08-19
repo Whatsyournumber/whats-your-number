@@ -613,7 +613,12 @@ function PortafolioContent() {
 
   const rows = (list: typeof enriched) => (
     <div className="space-y-2">
-      {[...list].sort((a, b) => b.value - a.value).map((h) => {
+      {[...list].sort((a, b) => {
+        const aC = a.type === "Cripto" ? 1 : 0;
+        const bC = b.type === "Cripto" ? 1 : 0;
+        if (aC !== bC) return aC - bC;
+        return b.value - a.value;
+      }).map((h) => {
         const isEtf = h.type === "ETF" || h.type === "Cripto";
         const tk = h.ticker?.toUpperCase();
         const today = tk && dayChange[tk] !== undefined ? dayChange[tk] : null;
@@ -621,7 +626,7 @@ function PortafolioContent() {
         <div key={h.ticker} className="grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 md:grid-cols-6">
           <div className="col-span-2 md:col-span-2">
             <p className="text-sm font-medium">{h.ticker}</p>
-            <p className="truncate text-xs text-muted-foreground">{h.name}</p>
+            <p className="truncate text-xs text-muted-foreground">{h.type === "Cripto" ? t("Cripto", "Crypto") : h.name}</p>
           </div>
           {isEtf ? (
             <>
