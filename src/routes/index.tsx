@@ -207,7 +207,7 @@ function Landing() {
       icon: LineChart,
       title: t("Tu Patrimonio & Portfolio", "Your Net Worth & Portfolio"),
       desc: t(
-        "Organiza todo tu patrimonio en un solo lugar. Sigue tus activos en tiempo real y analiza rendimiento, riesgo e ingresos pasivos.",
+        "Por fin entiende cuánto vales. Organiza todo tu patrimonio en un solo lugar, sigue tus activos en tiempo real y analiza su rendimiento, riesgo e ingresos pasivos.",
         "Organize all your wealth in one place. Track your assets in real time and analyze performance, risk and passive income.",
       ),
     },
