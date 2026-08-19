@@ -151,13 +151,13 @@ function PatrimonioContent() {
   const [activeTab, setTab] = useState("all");
   const visibleRows = activeTab === "all" ? detailRows : detailRows.filter((r) => r.group.key === activeTab);
   const visibleTotal = visibleRows.reduce((s, r) => s + r.value, 0);
-  // Solo activos que generan rentabilidad: propiedades, bonos, productos estructurados,
-  // trading (activos futuros), ETFs y cripto con plusvalía.
-  // Excluye liquidez (efectivo, cuentas bancarias) y fondo de retiro.
-  const yieldingRows = visibleRows.filter((r) => r.group.key !== "cash" && r.group.key !== "retirement" && r.value > 0 && r.annual !== 0);
-  const visibleAnnual = Math.round(yieldingRows.reduce((s, r) => s + r.annual, 0));
-  // Rentabilidad total ponderada por el peso (valor actual) de cada rubro que rinde.
-  const yieldingBase = yieldingRows.reduce((s, r) => s + r.value, 0);
+  // Ganancia anual/mensual del Total: SOLO propiedad + bono + producto estructurado + trading.
+  const totalGainRows = visibleRows.filter((r) =>
+    ["property", "bond", "structured", "future"].includes(r.kind),
+  );
+  const visibleAnnual = Math.round(totalGainRows.reduce((s, r) => s + r.annual, 0));
+  // Rentabilidad total ponderada por el peso (valor actual) de esos mismos rubros.
+  const yieldingBase = totalGainRows.reduce((s, r) => s + r.value, 0);
   const visibleRate = yieldingBase ? (visibleAnnual / yieldingBase) * 100 : 0;
 
 
