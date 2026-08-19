@@ -560,66 +560,53 @@ function DreamRow({
         </div>
 
         <div className="grid content-start gap-3">
-        {boostOpen ? (
-            <div className="rounded-2xl border border-primary/30 bg-primary/5 p-4">
+          {boostOpen ? (
+            <div className="rounded-2xl border border-success/30 bg-success/5 p-4">
               <p className="flex items-center gap-2 text-xs font-semibold text-foreground">
-                <Zap className="h-3.5 w-3.5 text-primary" />
-                {t("Suma ahora y adelanta tu sueño", "Add now and bring your dream closer")}
+                <Zap className="h-3.5 w-3.5 text-success" />
+                {t("Haz tareas y adelanta tu sueño", "Do tasks and bring your dream closer")}
               </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {quick.length === 0 ? (
-                  <span className="text-xs text-muted-foreground">{t("¡Ya está completo!", "Already complete!")}</span>
-                ) : (
-                  quick.map((amount) => {
-                    const newMonths = pace > 0 ? Math.max(0, (f.missing - amount) / pace) : null;
+              {boosters.length === 0 ? (
+                <p className="mt-3 text-xs text-muted-foreground">
+                  {t("No hay tareas pendientes. ¡Crea una nueva!", "No pending tasks. Create a new one!")}
+                </p>
+              ) : (
+                <ul className="mt-3 grid gap-2">
+                  {boosters.map((b) => {
+                    const reward = Number(b.reward);
+                    const newMonths = pace > 0 ? Math.max(0, (f.missing - reward) / pace) : null;
                     const savedM = months && newMonths !== null ? Math.max(0, months - Math.round(newMonths)) : 0;
                     return (
-                      <button
-                        key={amount}
-                        onClick={() => onAdd(amount)}
-                        className="rounded-full border border-primary/40 bg-card px-3 py-1.5 text-xs font-semibold text-primary transition hover:bg-primary/10"
-                      >
-                        +{money(amount, member.currency)}
-                        {savedM > 0 ? (
-                          <span className="ml-1 font-normal text-muted-foreground">
-                            −{savedM} {savedM === 1 ? t("mes", "mo") : t("meses", "mo")}
-                          </span>
-                        ) : null}
-                      </button>
+                      <li key={b.id}>
+                        <button
+                          onClick={() => onBoost(b)}
+                          className="grid w-full grid-cols-[auto_minmax(0,1fr)_auto_auto] items-center gap-2 rounded-xl border border-success/20 bg-card px-2 py-1.5 text-xs transition hover:bg-success/10"
+                          aria-label={`${t("Completar", "Complete")} ${b.title}`}
+                        >
+                          <span className="text-base">{b.emoji}</span>
+                          <span className="truncate text-left text-foreground">{b.title}</span>
+                          <span className="font-semibold text-success">+{money(reward, member.currency)}</span>
+                          {savedM > 0 ? (
+                            <span className="font-normal text-muted-foreground">
+                              −{savedM} {savedM === 1 ? t("mes", "mo") : t("meses", "mo")}
+                            </span>
+                          ) : (
+                            <span />
+                          )}
+                        </button>
+                      </li>
                     );
-                  })
-                )}
-              </div>
+                  })}
+                </ul>
+              )}
+              <Link
+                to="/ninos/kid/tareas"
+                className="mt-3 flex items-center justify-end gap-1 text-xs font-semibold text-primary"
+              >
+                {t("Ver todas las tareas", "View all tasks")} <ChevronRight className="h-3.5 w-3.5" />
+              </Link>
             </div>
           ) : null}
-        {boosters.length > 0 ? (
-          <div className="rounded-2xl bg-surface-2 p-4">
-            <p className="text-xs font-semibold text-foreground">
-              {t("¿Cómo conseguirlo más rápido?", "How to get it faster?")}
-            </p>
-            <ul className="mt-3 grid gap-2">
-              {boosters.map((b) => (
-                <li key={b.id}>
-                  <button
-                    onClick={() => onBoost(b)}
-                    className="grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 rounded-xl px-1.5 py-1 text-xs transition hover:bg-primary/10"
-                    aria-label={`${t("Sumar", "Add")} ${b.title}`}
-                  >
-                    <span className="text-base">{b.emoji}</span>
-                    <span className="truncate text-left text-foreground">{b.title}</span>
-                    <span className="font-semibold text-chart-2">+{money(Number(b.reward), member.currency)}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-            <Link
-              to="/ninos/kid/tareas"
-              className="mt-3 flex items-center justify-end gap-1 text-xs font-semibold text-primary"
-            >
-              {t("Ver detalle", "View detail")} <ChevronRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-        ) : null}
         </div>
       </div>
     </div>
