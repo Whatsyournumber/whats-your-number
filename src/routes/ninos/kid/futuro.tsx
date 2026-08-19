@@ -23,7 +23,7 @@ export const Route = createFileRoute("/ninos/kid/futuro")({
       },
     ],
   }),
-  component: () => <KidPage>{(member) => <MyFuture member={member} />}</KidPage>,
+  component: () => <KidPage area="parent">{(member) => <MyFuture member={member} />}</KidPage>,
 });
 
 function MyFuture({ member }: { member: Member }) {

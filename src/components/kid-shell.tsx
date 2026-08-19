@@ -14,7 +14,7 @@ import {
   Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { THEME_ATTR, money, pocketTotals, type Member } from "@/lib/mfn";
+import { THEME_ATTR, kidZoneEnabled, money, pocketTotals, type Member } from "@/lib/mfn";
 import { useMovements } from "@/hooks/use-mfn";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
 import { CurrencySelect } from "@/components/mfn-currency-select";
@@ -78,6 +78,8 @@ export function useKidTheme(theme?: string) {
 
 export function KidShell({ member, children }: { member: Member; children: ReactNode }) {
   useKidTheme(member.theme);
+  const showKidTabs = kidZoneEnabled(member);
+  const kidTabs = showKidTabs ? TABS : [];
   const router = useRouter();
   const { t, lang } = useI18n();
   const label = (tab: { label: string; labelEn: string }) => (lang === "en" ? tab.labelEn : tab.label);
@@ -119,13 +121,13 @@ export function KidShell({ member, children }: { member: Member; children: React
         </div>
         <nav className="mt-4 flex min-h-0 flex-1 flex-col gap-1 overflow-hidden [&_.nav-icon]:h-7 [&_.nav-icon]:w-7 [&_.nav-pill]:gap-2.5 [&_.nav-pill]:px-2.5 [&_.nav-pill]:py-1.5">
           <div className={cn("pb-1", collapsed && "mx-1")}>
-            {collapsed ? null : (
+            {collapsed || !showKidTabs ? null : (
               <p className="px-2.5 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
                 {t(`Para ${member.name}`, `For ${member.name}`)}
               </p>
             )}
           </div>
-          {TABS.map((tab) => (
+          {kidTabs.map((tab) => (
 
             <Link
               key={tab.to}
@@ -146,9 +148,11 @@ export function KidShell({ member, children }: { member: Member; children: React
             </Link>
           ))}
 
-          <div className={cn("mt-6 mb-1", collapsed && "mx-1")}>
-            <span className="block h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
-          </div>
+          {showKidTabs ? (
+            <div className={cn("mt-6 mb-1", collapsed && "mx-1")}>
+              <span className="block h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
+            </div>
+          ) : null}
 
           <div className={cn(!collapsed && "px-2.5")}>
             {collapsed ? null : (
@@ -223,7 +227,7 @@ export function KidShell({ member, children }: { member: Member; children: React
           ))}
         </div>
         <nav className="mx-auto flex max-w-lg items-stretch justify-between gap-1 px-2 py-2">
-          {TABS.map((tab) => (
+          {kidTabs.map((tab) => (
             <Link
               key={tab.to}
               to={tab.to}

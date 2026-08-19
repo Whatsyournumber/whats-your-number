@@ -36,7 +36,7 @@ export const Route = createFileRoute("/ninos/kid/datos")({
       },
     ],
   }),
-  component: () => <KidPage>{(member) => <MyData member={member} />}</KidPage>,
+  component: () => <KidPage area="parent">{(member) => <MyData member={member} />}</KidPage>,
 });
 
 const AVATARS = ["👦", "👧", "🦄", "🦊", "🐼", "🚀", "🐨", "🐯"];
