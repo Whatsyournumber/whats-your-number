@@ -470,25 +470,23 @@ function MyNumber({ member }: { member: Member }) {
             <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
               {t("Edad", "Age")}
             </span>
-            <div className="mt-3 flex min-w-0 flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  value={ageInput ?? String(member.age + years)}
-                  onChange={(e) => {
-                    const raw = e.target.value.replace(/\D/g, "").slice(0, 2);
-                    setAgeInput(raw);
-                    const age = Number(raw);
-                    if (raw && age > member.age && age <= 99) setHorizon(age - member.age);
-                  }}
-                  onFocus={(e) => e.currentTarget.select()}
-                  onBlur={() => setAgeInput(null)}
-                  className="h-9 w-16 shrink-0 rounded-full border border-border/60 bg-surface-1 text-center text-sm font-bold text-foreground outline-none focus:border-primary"
-                />
-                <span className="shrink-0 text-xs text-muted-foreground">{t("años", "yrs")}</span>
-              </div>
-              <div className="-mx-1 flex min-w-0 items-center gap-1.5 overflow-x-auto px-1 pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="mt-3 flex min-w-0 items-center gap-2">
+              <input
+                type="text"
+                inputMode="numeric"
+                value={ageInput ?? String(member.age + years)}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/\D/g, "").slice(0, 2);
+                  setAgeInput(raw);
+                  const age = Number(raw);
+                  if (raw && age > member.age && age <= 99) setHorizon(age - member.age);
+                }}
+                onFocus={(e) => e.currentTarget.select()}
+                onBlur={() => setAgeInput(null)}
+                className="h-7 w-12 shrink-0 rounded-full border border-border/60 bg-surface-1 text-center text-[12px] font-bold text-foreground outline-none focus:border-primary"
+              />
+              <span className="shrink-0 text-[11px] text-muted-foreground">{t("años", "yrs")}</span>
+              <div className="hidden min-w-0 items-center gap-1.5 overflow-x-auto pl-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden xl:flex">
                 {[member.age + 5, targetAge, 25, 30, 40]
                   .filter((a, i, arr) => a > member.age && arr.indexOf(a) === i)
                   .sort((a, b) => a - b)
@@ -500,7 +498,7 @@ function MyNumber({ member }: { member: Member }) {
                         key={age}
                         type="button"
                         onClick={() => setHorizon(y)}
-                        className={`h-8 min-w-9 shrink-0 rounded-full px-3 text-xs font-bold transition ${
+                        className={`h-7 min-w-8 shrink-0 rounded-full px-2.5 text-[11px] font-bold transition ${
                           active
                             ? "bg-foreground text-background"
                             : "bg-surface-1 text-muted-foreground hover:text-foreground"
@@ -512,7 +510,6 @@ function MyNumber({ member }: { member: Member }) {
                   })}
               </div>
             </div>
-
           </div>
 
           {/* Tasa */}
