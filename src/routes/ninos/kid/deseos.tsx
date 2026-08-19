@@ -496,9 +496,6 @@ function DreamRow({
   const months = Number.isFinite(f.months) ? Math.max(1, Math.round(f.months)) : null;
   const locale = lang === "en" ? "en-US" : "es-ES";
   const fmtDate = (d: Date) => d.toLocaleDateString(locale, { day: "2-digit", month: "short", year: "numeric" });
-  const quick = [0.1, 0.25, 0.5]
-    .map((p) => Math.max(1, Math.round((f.missing * p) / 5) * 5))
-    .filter((v, i, arr) => v > 0 && arr.indexOf(v) === i && v <= f.missing);
 
   return (
     <div className="grid gap-4 py-4 first:pt-0 md:grid-cols-[auto_minmax(0,1fr)] md:items-start">
