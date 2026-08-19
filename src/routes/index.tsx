@@ -38,6 +38,22 @@ import { useSubscription } from "@/hooks/use-subscription";
 import { useT } from "@/hooks/use-language";
 import { useEffect } from "react";
 
+/** Renderiza la descripción resaltando la frase clave con una línea de gradiente sutil. */
+function HighlightDesc({ desc, highlight }: { desc: string; highlight?: string }) {
+  if (!highlight || !desc.includes(highlight)) return <>{desc}</>;
+  const idx = desc.indexOf(highlight);
+  return (
+    <>
+      {desc.slice(0, idx)}
+      <span className="relative font-medium text-foreground">
+        {highlight}
+        <span className="absolute -bottom-0.5 left-0 h-px w-full bg-gradient-to-r from-primary/30 via-primary/70 to-primary/30" />
+      </span>
+      {desc.slice(idx + highlight.length)}
+    </>
+  );
+}
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
