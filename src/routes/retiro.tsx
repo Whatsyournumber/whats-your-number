@@ -14,6 +14,9 @@ import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 import { useProfile } from "@/hooks/use-profile";
+import { useHoldings, holdingValue } from "@/hooks/use-holdings";
+import { useQuotes } from "@/hooks/use-market";
+
 import { useT } from "@/hooks/use-language";
 import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
