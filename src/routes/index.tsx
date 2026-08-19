@@ -239,12 +239,11 @@ function Landing() {
 
   const panelChips = [
     t("Portafolio en vivo", "Live portfolio"),
-    t("Análisis de gasto", "Spending analysis"),
-    t("Tu hipoteca", "Your mortgage"),
-
+    t("Tus Gastos", "Your Spending"),
+    t("Tu Hipoteca", "Your Mortgage"),
     t("Cash flow 40/40/20", "40/40/20 cash flow"),
-    "Life Planner",
-    t("Your next city", "Your next city"),
+    t("Tu Plan de Vida", "Your Life Plan"),
+    t("Tu Próxima Ciudad", "Your Next City"),
   ];
 
   const whyCards = [
