@@ -182,6 +182,10 @@ function MyDreams({ member }: { member: Member }) {
           setTitle("");
           setTargetDate("");
         },
+        onError: (err: unknown) =>
+          toast.error(
+            t("No se pudo guardar", "Could not save") + ": " + ((err as Error)?.message ?? ""),
+          ),
       },
     );
 
@@ -319,9 +323,6 @@ function MyDreams({ member }: { member: Member }) {
                     )
                   }
                   onDelete={() => remove.mutate({ id: w.id, memberId: member.id })}
-                  onSetDate={(date) =>
-                    update.mutate({ id: w.id, memberId: member.id, patch: { target_date: date } as never })
-                  }
                   onAdd={(amount) =>
                     update.mutate(
                       {
@@ -479,7 +480,6 @@ function DreamRow({
   boosters,
   onBoost,
   onDelete,
-  onSetDate,
   onAdd,
 }: {
   wish: Wish;
@@ -488,7 +488,6 @@ function DreamRow({
   boosters: Task[];
   onBoost: (task: Task) => void;
   onDelete: () => void;
-  onSetDate: (date: string | null) => void;
   onAdd: (amount: number) => void;
 }) {
   const { t, lang } = useI18n();
@@ -545,16 +544,6 @@ function DreamRow({
                 {t("Empieza a ahorrar para ver la fecha", "Start saving to see the date")}
               </span>
             )}
-            <label className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
-              🎯 {t("Meta", "Target")}
-              <input
-                type="date"
-                value={wish.target_date ?? ""}
-                min={new Date().toISOString().slice(0, 10)}
-                onChange={(e) => onSetDate(e.target.value || null)}
-                className="bg-transparent text-xs font-semibold text-foreground outline-none"
-              />
-            </label>
             <Button variant="success" className="h-8 px-3 text-xs" onClick={() => setBoostOpen((v) => !v)}>
               <Rocket className="h-3.5 w-3.5" /> {t("Acelerar", "Speed up")}
             </Button>
@@ -568,8 +557,11 @@ function DreamRow({
             </p>
           ) : null}
 
-          {boostOpen ? (
-            <div className="mt-3 rounded-2xl border border-primary/30 bg-primary/5 p-4">
+        </div>
+
+        <div className="grid content-start gap-3">
+        {boostOpen ? (
+            <div className="rounded-2xl border border-primary/30 bg-primary/5 p-4">
               <p className="flex items-center gap-2 text-xs font-semibold text-foreground">
                 <Zap className="h-3.5 w-3.5 text-primary" />
                 {t("Suma ahora y adelanta tu sueño", "Add now and bring your dream closer")}
@@ -580,7 +572,7 @@ function DreamRow({
                 ) : (
                   quick.map((amount) => {
                     const newMonths = pace > 0 ? Math.max(0, (f.missing - amount) / pace) : null;
-                    const saved = months && newMonths !== null ? Math.max(0, months - Math.round(newMonths)) : 0;
+                    const savedM = months && newMonths !== null ? Math.max(0, months - Math.round(newMonths)) : 0;
                     return (
                       <button
                         key={amount}
@@ -588,9 +580,9 @@ function DreamRow({
                         className="rounded-full border border-primary/40 bg-card px-3 py-1.5 text-xs font-semibold text-primary transition hover:bg-primary/10"
                       >
                         +{money(amount, member.currency)}
-                        {saved > 0 ? (
+                        {savedM > 0 ? (
                           <span className="ml-1 font-normal text-muted-foreground">
-                            −{saved} {saved === 1 ? t("mes", "mo") : t("meses", "mo")}
+                            −{savedM} {savedM === 1 ? t("mes", "mo") : t("meses", "mo")}
                           </span>
                         ) : null}
                       </button>
@@ -598,16 +590,8 @@ function DreamRow({
                   })
                 )}
               </div>
-              <p className="mt-3 text-[11px] text-muted-foreground">
-                {t(
-                  "Cada tarea que completas se suma directo a este sueño.",
-                  "Every task you complete goes straight into this dream.",
-                )}
-              </p>
             </div>
           ) : null}
-        </div>
-
         {boosters.length > 0 ? (
           <div className="rounded-2xl bg-surface-2 p-4">
             <p className="text-xs font-semibold text-foreground">
@@ -636,6 +620,7 @@ function DreamRow({
             </Link>
           </div>
         ) : null}
+        </div>
       </div>
     </div>
   );
