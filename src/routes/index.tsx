@@ -594,8 +594,8 @@ function Landing() {
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
               {t(
-                "Deja de navegar a ciegas. Conecta cuentas, tarjetas e inversiones para ver por dónde entra, por dónde sale y hacia dónde crece.",
-                "Stop navigating blind. Connect accounts, cards and investments to see where it comes in, where it goes out and where it's growing.",
+                "Dinos cuál es tu próximo gran objetivo —libertad financiera, tu primera hipoteca, crear un negocio, estudiar un MBA, mudarte de país o simplemente tener el control de tu dinero. La IA te muestra el camino más rápido para alcanzarlo.",
+                "Tell us your next big goal —financial freedom, your first mortgage, starting a business, an MBA, moving abroad or just taking control of your money. The AI shows you the fastest path to reach it.",
               )}
             </p>
           </motion.div>
