@@ -379,9 +379,10 @@ function PatrimonioContent() {
               </div>
               <div>
                 <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
-                <p className="numeric text-base font-bold text-positive">
-                  {visibleTotal > 0 ? `+${((visibleAnnual / visibleTotal) * 100).toFixed(1)}` : "0.0"}%
+                <p className={cn("numeric text-base font-bold", visibleRate === 0 ? "text-muted-foreground/50" : "text-positive")}>
+                  {visibleRate === 0 ? "—" : `${visibleRate > 0 ? "+" : ""}${visibleRate.toFixed(1)}%`}
                 </p>
+
               </div>
             </div>
           </div>
