@@ -469,7 +469,13 @@ export function useCompleteTaskForWish() {
 export function useCreateWish() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (wish: { memberId: string; title: string; emoji: string; price: number }) => {
+    mutationFn: async (wish: {
+      memberId: string;
+      title: string;
+      emoji: string;
+      price: number;
+      targetDate?: string | null;
+    }) => {
       const user_id = await requireUser();
       const { error } = await supabase.from("kid_wishes").insert({
         user_id,
@@ -477,6 +483,7 @@ export function useCreateWish() {
         title: wish.title,
         emoji: wish.emoji,
         price: wish.price,
+        target_date: wish.targetDate || null,
       });
       if (error) throw error;
     },
