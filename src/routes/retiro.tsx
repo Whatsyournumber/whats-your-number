@@ -37,6 +37,13 @@ export const Route = createFileRoute("/retiro")({
 function RetiroContent() {
   const t = useT();
   const { profile, save, saving } = useProfile();
+  const { holdings } = useHoldings();
+  const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
+  const holdingQuotes = useQuotes(holdingSymbols);
+  const prices = Object.fromEntries(
+    (holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]),
+  );
+
 
   // Editor de "tu número": ingreso mensual deseado y tasa de retiro elegida.
   const [wantMonthly, setWantMonthly] = useState(profile.desired_retirement_income);
