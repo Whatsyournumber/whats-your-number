@@ -146,9 +146,18 @@ export function KidShell({ member, children }: { member: Member; children: React
             </Link>
           ))}
 
-          <div className={cn("mt-3 border-t border-border/70 pt-2.5", collapsed && "mx-1")}>
+          <div className={cn("mt-6 mb-1 flex items-center gap-2", collapsed && "mx-1 justify-center")}>
+            <span className="h-px flex-1 bg-gradient-to-r from-transparent via-border to-transparent" />
+            {!collapsed ? (
+              <span className="grid size-5 shrink-0 place-items-center rounded-full border border-border/70 bg-surface-2 text-[9px] text-muted-foreground">
+                ✦
+              </span>
+            ) : null}
+            <span className="h-px flex-1 bg-gradient-to-l from-transparent via-border to-transparent" />
+          </div>
+          <div className={cn(!collapsed && "px-2.5")}>
             {collapsed ? null : (
-              <p className="px-2.5 pb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+              <p className="pb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
                 {t("Para papás", "For parents")}
               </p>
             )}
