@@ -254,7 +254,22 @@ export function wishForecast(wish: Wish, pace: number) {
     Number.isFinite(months) && Number.isFinite(weeksSaved)
       ? Math.max(1, Math.round(months * 4.3 - weeksSaved))
       : 2;
-  return { missing, progress, months, soonerWeeks };
+  const etaDate = Number.isFinite(months) ? addMonthsFrac(new Date(), months) : null;
+  const targetDate = wish.target_date ? new Date(`${wish.target_date}T00:00:00`) : null;
+  const monthsToTarget = targetDate
+    ? (targetDate.getTime() - Date.now()) / (30.44 * 24 * 3600 * 1000)
+    : null;
+  /** Cuánto hay que ahorrar al mes para llegar en la fecha objetivo. */
+  const neededMonthly =
+    monthsToTarget !== null && monthsToTarget > 0 ? missing / monthsToTarget : missing;
+  const onTrack = monthsToTarget === null ? true : Number.isFinite(months) && months <= monthsToTarget;
+  return { missing, progress, months, soonerWeeks, etaDate, targetDate, monthsToTarget, neededMonthly, onTrack };
+}
+
+export function addMonthsFrac(from: Date, months: number) {
+  const d = new Date(from.getTime());
+  d.setDate(d.getDate() + Math.round(months * 30.44));
+  return d;
 }
 
 export const THEME_ATTR = "data-kid-theme";
