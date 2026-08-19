@@ -57,7 +57,7 @@ export const Route = createFileRoute("/ninos/kid/universidades")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: () => <KidPage>{(member) => <CollegeFinder member={member} />}</KidPage>,
+  component: () => <KidPage area="parent">{(member) => <CollegeFinder member={member} />}</KidPage>,
 });
 
 const FIELDS = Object.keys(FIELD_LABELS) as UniField[];
