@@ -7,13 +7,15 @@ import { Pencil, X } from "lucide-react";
 import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
-import { EditableKpiCard } from "@/components/editable-kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 import { useProfile } from "@/hooks/use-profile";
+import { useHoldings, holdingValue } from "@/hooks/use-holdings";
+import { useQuotes } from "@/hooks/use-market";
+
 import { useT } from "@/hooks/use-language";
 import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
@@ -37,6 +39,13 @@ export const Route = createFileRoute("/retiro")({
 function RetiroContent() {
   const t = useT();
   const { profile, save, saving } = useProfile();
+  const { holdings } = useHoldings();
+  const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
+  const holdingQuotes = useQuotes(holdingSymbols);
+  const prices = Object.fromEntries(
+    (holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]),
+  );
+
 
   // Editor de "tu número": ingreso mensual deseado y tasa de retiro elegida.
   const [wantMonthly, setWantMonthly] = useState(profile.desired_retirement_income);
@@ -55,14 +64,19 @@ function RetiroContent() {
 
   const [editing, setEditing] = useState(false);
 
-  // Solo activos que generan retorno (excluye propiedades).
-  const investable =
+  // Solo activos que generan retorno (excluye propiedades). Viene del detalle de "Mis datos".
+  const investableFallback =
     profile.assets_cash +
     profile.assets_bank +
     profile.assets_retirement +
     profile.assets_etf +
     profile.assets_stocks +
     profile.assets_crypto;
+  const investableFromHoldings = holdings
+    .filter((h) => h.kind !== "property" && h.kind !== "debt")
+    .reduce((s, h) => s + holdingValue(h, prices), 0);
+  const investable = holdings.length ? investableFromHoldings : investableFallback;
+
   const progressPct = plan.targetCapital > 0 ? Math.max(0, (investable / plan.targetCapital) * 100) : 0;
 
 
@@ -302,48 +316,16 @@ function RetiroContent() {
             index={1}
           />
         )}
-        <EditableKpiCard
-          label={t("Cuánto tengo", "How much I have")}
-          value={fmt(investable)}
-          rawValue={investable}
-          format={fmt}
-          onChange={(v) => {
-            const target = Math.max(0, Math.round(v));
-            const keys = [
-              "assets_cash",
-              "assets_bank",
-              "assets_retirement",
-              "assets_etf",
-              "assets_stocks",
-              "assets_crypto",
-            ] as const;
-            if (target === investable) return;
-            if (investable <= 0) {
-              void save({ assets_bank: target });
-              return;
-            }
-            if (target > investable) {
-              // Lo nuevo entra como liquidez, sin tocar las inversiones existentes.
-              void save({ assets_bank: Math.round(profile.assets_bank + (target - investable)) });
-              return;
-            }
-            // Al bajar el total, reducimos cada partida en proporción para respetar el número escrito.
-            const factor = target / investable;
-            const next: Partial<Record<(typeof keys)[number], number>> = {};
-            let acc = 0;
-            keys.forEach((k) => {
-              const value = Math.max(0, Math.round(profile[k] * factor));
-              next[k] = value;
-              acc += value;
-            });
-            // El redondeo se ajusta en liquidez para que el total sea exacto.
-            next.assets_bank = Math.max(0, (next.assets_bank ?? 0) + (target - acc));
-            void save(next);
-          }}
+        <Link to="/mi-perfil" hash="patrimonio" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
+          <KpiCard
+            label={t("Cuánto tengo", "How much I have")}
+            value={fmt(investable)}
+            icon={Pencil}
+            hint={t("Ahorros e inversiones — sin contar propiedades", "Savings and investments — excluding properties")}
+            index={2}
+          />
+        </Link>
 
-          hint={t("Ahorros e inversiones — sin contar propiedades", "Savings and investments — excluding properties")}
-          index={2}
-        />
         {goalMode !== "business" && (
           <KpiCard label={t("Cómo voy", "How I'm doing")} value={`${progressPct.toFixed(1)}%`} hint={t("del capital objetivo", "of target capital")} index={2} />
         )}
