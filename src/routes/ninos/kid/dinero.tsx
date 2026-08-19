@@ -523,16 +523,17 @@ function MyMoney({ member }: { member: Member }) {
                 currency={member.currency}
                 height={260}
                 areas={[
-                  { key: "ingresos", color: "var(--color-chart-1)" },
+                  { key: "ingresos", color: "var(--color-success)" },
                   { key: "gastos", color: "var(--color-destructive)" },
                 ]}
               />
               <p className="mt-1 text-xs text-muted-foreground">
                 {t(
-                  "Azul: ingresos acumulados. Rojo: gastos acumulados.",
-                  "Blue: income so far. Red: spending so far.",
+                  "Verde: ingresos acumulados. Rojo: gastos acumulados.",
+                  "Green: income so far. Red: spending so far.",
                 )}
               </p>
+
 
             </>
           )}
