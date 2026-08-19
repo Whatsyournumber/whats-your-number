@@ -105,6 +105,7 @@ function MyTasks({ member }: { member: Member }) {
   const completeToWish = useCompleteTaskForWish();
   const createTask = useCreateTask();
   const deleteTask = useDeleteTask();
+  const uncompleteTask = useUncompleteTask();
 
   const [filter, setFilter] = useState<Filter>("todas");
   const [open, setOpen] = useState(false);
