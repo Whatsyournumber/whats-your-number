@@ -42,8 +42,12 @@
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-positive: var(--positive);
+  --color-success: var(--positive);
+  --color-success-foreground: oklch(0.99 0 0);
+  --color-tree: var(--positive);
   --color-negative: var(--negative);
   --color-warning: var(--warning);
+
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
