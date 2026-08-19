@@ -45,7 +45,7 @@ function HighlightDesc({ desc, highlight }: { desc: string; highlight?: string }
   return (
     <>
       {desc.slice(0, idx)}
-      <span className="relative text-foreground">
+      <span className="relative">
         {highlight}
         <span className="absolute -bottom-1 left-0 h-[2px] w-full rounded-full bg-gradient-to-r from-primary/20 via-primary/60 to-primary/20" />
       </span>
@@ -219,7 +219,7 @@ function Landing() {
         "No pagues más intereses de los necesarios. Entiende el verdadero costo de tu hipoteca, compara tasas, simula pagos anticipados y descubre cuánto dinero puedes ahorrar.",
         "Don't pay more interest than necessary. Understand the true cost of your mortgage, compare rates, simulate early payments and find out how much money you can save.",
       ),
-      highlight: t("no pagues más", "don't pay more"),
+      highlight: t("No pagues más", "Don't pay more"),
     },
     {
       icon: LineChart,
