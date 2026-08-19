@@ -12,6 +12,7 @@ import {
   useMovements,
   useTasks,
   useUpdateTask,
+  useUncompleteTask,
   useWishes,
 } from "@/hooks/use-mfn";
 import { money, TASK_IDEAS, type Member, type Task } from "@/lib/mfn";
@@ -104,6 +105,7 @@ function MyTasks({ member }: { member: Member }) {
   const completeToWish = useCompleteTaskForWish();
   const createTask = useCreateTask();
   const deleteTask = useDeleteTask();
+  const uncompleteTask = useUncompleteTask();
 
   const [filter, setFilter] = useState<Filter>("todas");
   const [open, setOpen] = useState(false);
@@ -311,6 +313,16 @@ function MyTasks({ member }: { member: Member }) {
                         },
                       )
                     }
+                    onUncomplete={() =>
+                      uncompleteTask.mutate(
+                        { task, member },
+                        {
+                          onSuccess: () =>
+                            toast.success(t("Tarea marcada como pendiente", "Task set back to pending")),
+                          onError: () => toast.error(t("No se pudo deshacer", "Could not undo")),
+                        },
+                      )
+                    }
                     onDelete={() => deleteTask.mutate({ id: task.id, memberId: member.id })}
                   />
                 ))}
@@ -456,11 +468,13 @@ function TaskRow({
   task,
   member,
   onComplete,
+  onUncomplete,
   onDelete,
 }: {
   task: Task;
   member: Member;
   onComplete: () => void;
+  onUncomplete: () => void;
   onDelete: () => void;
 }) {
   const { t } = useI18n();
@@ -566,8 +580,9 @@ function TaskRow({
         </button>
         <button
           type="button"
-          onClick={done ? undefined : onComplete}
-          aria-label={t("Marcar como hecha", "Mark as done")}
+          onClick={done ? onUncomplete : onComplete}
+          title={done ? t("Deshacer tarea", "Undo task") : t("Marcar como hecha", "Mark as done")}
+          aria-label={done ? t("Deshacer tarea", "Undo task") : t("Marcar como hecha", "Mark as done")}
           className={cn(
             "grid size-8 place-items-center rounded-full text-xs font-bold transition-colors",
             task.status === "aprobada"

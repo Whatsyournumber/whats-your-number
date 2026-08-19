@@ -464,6 +464,66 @@ export function useCompleteTaskForWish() {
   });
 }
 
+export function useUncompleteTask() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ task, member }: { task: Task; member: Member }) => {
+      const amount = Number(task.reward) || 0;
+
+      const { error } = await supabase
+        .from("kid_tasks")
+        .update({ status: "pendiente", completed_at: null, approved_at: null })
+        .eq("id", task.id);
+      if (error) throw error;
+
+      if (amount > 0) {
+        // remove the movement created when the task was completed
+        const { data: mv } = await supabase
+          .from("kid_movements")
+          .select("id")
+          .eq("member_id", member.id)
+          .eq("source", "Tareas")
+          .eq("label", task.title)
+          .eq("amount", amount)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (mv?.id) await supabase.from("kid_movements").delete().eq("id", mv.id);
+
+        // roll back the wish that received the reward
+        const { data: wish } = await supabase
+          .from("kid_wishes")
+          .select("*")
+          .eq("member_id", member.id)
+          .gt("saved", 0)
+          .order("created_at", { ascending: true })
+          .limit(1)
+          .maybeSingle();
+        if (wish) {
+          const saved = Math.max(0, Number((wish as Wish).saved) - amount);
+          await supabase
+            .from("kid_wishes")
+            .update({ saved, achieved: saved >= Number((wish as Wish).price) })
+            .eq("id", (wish as Wish).id);
+        }
+      }
+
+      await supabase
+        .from("kid_members")
+        .update({ xp: Math.max(0, member.xp - 10), streak: Math.max(0, member.streak - 1) })
+        .eq("id", member.id);
+
+      return { amount };
+    },
+    onSuccess: (_d, vars) => {
+      qc.invalidateQueries({ queryKey: ["kid_tasks", vars.member.id] });
+      qc.invalidateQueries({ queryKey: ["kid_wishes", vars.member.id] });
+      qc.invalidateQueries({ queryKey: ["kid_movements", vars.member.id] });
+      qc.invalidateQueries({ queryKey: ["kid_members"] });
+    },
+  });
+}
+
 
 
 export function useCreateWish() {
