@@ -662,11 +662,15 @@ function PortafolioContent() {
               </div>
               <div>
                 <p className="text-[11px] text-muted-foreground">{t("Ganancia anual", "Annual gain")}</p>
-                <p className="numeric text-sm text-positive">{fmt(Math.round(h.value * h.growth))}</p>
+                <p className={cn("numeric text-sm", Math.round(h.value * h.growth) === 0 ? "text-muted-foreground/50" : "text-positive")}>
+                  {Math.round(h.value * h.growth) === 0 ? "—" : fmt(Math.round(h.value * h.growth))}
+                </p>
               </div>
               <div>
                 <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
-                <p className="numeric text-sm text-positive">{fmt(Math.round((h.value * h.growth) / 12))}</p>
+                <p className={cn("numeric text-sm", Math.round((h.value * h.growth) / 12) === 0 ? "text-muted-foreground/50" : "text-positive")}>
+                  {Math.round((h.value * h.growth) / 12) === 0 ? "—" : fmt(Math.round((h.value * h.growth) / 12))}
+                </p>
               </div>
             </>
           )}
