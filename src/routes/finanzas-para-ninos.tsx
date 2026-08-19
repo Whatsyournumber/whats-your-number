@@ -1527,115 +1527,286 @@ function DualDashboards() {
 
 function GrowsWithThem() {
   const t = useT();
-  const items = [
-    { age: t("0 años", "Age 0"), label: t("Primer aporte", "First deposit"), icon: Gift },
-    { age: t("4 años", "Age 4"), label: t("Primeras monedas", "First coins"), icon: Coins },
-    { age: t("8 años", "Age 8"), label: t("Mesada", "Allowance"), icon: Banknote },
-    { age: t("10 años", "Age 10"), label: t("Primer ahorro", "First savings"), icon: PiggyBank },
-    { age: t("12 años", "Age 12"), label: t("Primer ETF", "First ETF"), icon: TrendingUp },
-    { age: t("16 años", "Age 16"), label: t("Primer negocio", "First business"), icon: Rocket },
-    { age: t("18 años", "Age 18"), label: t("Universidad", "University"), icon: GraduationCap },
-  ];
   const stages = [
     {
-      range: t("0 a 6 años", "Ages 0 to 6"),
-      desc: t(
-        "Los padres abren su cartera y aportan desde el día uno. El tiempo hace el trabajo pesado.",
-        "Parents open their portfolio and contribute from day one. Time does the heavy lifting.",
+      range: t("0 a 5 años", "Ages 0 to 5"),
+      headline: (
+        <>
+          {t("Construyes ", "You build ")}
+          <span style={{ color: "var(--kid-grape)" }}>{t("su futuro", "their future")}</span>
+        </>
       ),
-      icon: Gift,
+      text: t("Tú empiezas por ellos mientras crecen.", "You start for them while they grow."),
+      features: [
+        { label: t("College Fund", "College Fund"), icon: GraduationCap },
+        { label: t("Aportes mensuales", "Monthly deposits"), icon: Coins },
+        { label: t("Proyección a los 18", "Projection to 18"), icon: TrendingUp },
+        { label: t("Universidad", "University"), icon: Banknote },
+      ],
+      pill: t("Gestionado por los padres", "Managed by parents"),
       color: "var(--kid-grape)",
+      image: stageBaby,
+      imageAlt: t("Bebé", "Baby"),
+      overlay: (
+        <div className="rounded-2xl border border-border bg-card/95 p-3.5 shadow-xl backdrop-blur">
+          <p className="flex items-center gap-1 text-xs font-semibold">
+            {t("El futuro de Sofía", "Sofía's future")} <Star className="h-3 w-3 fill-kid-sun text-kid-sun" />
+          </p>
+          <p className="mt-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">
+            {t("Patrimonio a los 18 años", "Wealth projected at 18")}
+          </p>
+          <p className="numeric text-xl font-semibold" style={{ color: "var(--kid-grape)" }}>
+            $96,400
+          </p>
+          <div className="mt-2 h-10">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={growCurve} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
+                <defs>
+                  <linearGradient id="grape-area" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--kid-grape)" stopOpacity={0.4} />
+                    <stop offset="100%" stopColor="var(--kid-grape)" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <Area type="monotone" dataKey="y" stroke="var(--kid-grape)" strokeWidth={2} fill="url(#grape-area)" dot={false} isAnimationActive={false} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      ),
     },
     {
-      range: t("7 a 9 años", "Ages 7 to 9"),
-      desc: t(
-        "Monedas, bolsillos y su primer sueño. Aprenden que el dinero se guarda antes de gastarse.",
-        "Coins, pockets and their first dream. They learn money is saved before it's spent.",
+      range: t("6 a 12 años", "Ages 6 to 12"),
+      headline: (
+        <>
+          {t("Aprende ", "Learns ")}
+          <span style={{ color: "var(--kid-mint)" }}>{t("con dinero", "with money")}</span>
+        </>
       ),
-      icon: Banknote,
-      color: "var(--kid-sky)",
-    },
-    {
-      range: t("10 a 13 años", "Ages 10 to 13"),
-      desc: t(
-        "Mesada, tareas y metas más grandes. Empiezan a planificar semanas y meses.",
-        "Allowance, chores and bigger goals. They start planning weeks and months.",
-      ),
-      icon: CalendarCheck,
+      text: t("Ahora aprende contigo sobre el valor del dinero.", "Now they learn with you the value of money."),
+      features: [
+        { label: t("Mi dinero", "My money"), icon: Wallet },
+        { label: t("Misiones", "Missions"), icon: Target },
+        { label: t("Mis sueños", "My dreams"), icon: Sparkles },
+        { label: t("Ahorro y metas", "Savings & goals"), icon: PiggyBank },
+      ],
+      pill: t("Padres + niño", "Parents + child"),
       color: "var(--kid-mint)",
+      image: stageBoy,
+      imageAlt: t("Niño con móvil", "Boy with phone"),
+      overlay: (
+        <div className="rounded-2xl border border-border bg-card/95 p-3.5 shadow-xl backdrop-blur">
+          <p className="text-xs font-semibold">{t("Mi dinero", "My money")}</p>
+          <p className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
+            {t("Este mes", "This month")}
+          </p>
+          <p className="numeric text-xl font-semibold" style={{ color: "var(--kid-mint)" }}>
+            $120
+          </p>
+          <div className="mt-2 flex items-center gap-3">
+            <div className="h-14 w-14">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={[
+                      { value: 60, fill: "var(--kid-mint)" },
+                      { value: 40, fill: "var(--kid-grape)" },
+                      { value: 20, fill: "var(--kid-sky)" },
+                    ]}
+                    dataKey="value"
+                    innerRadius="60%"
+                    outerRadius="95%"
+                    paddingAngle={3}
+                    stroke="none"
+                    isAnimationActive={false}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="space-y-1 text-[10px]">
+              <p className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: "var(--kid-mint)" }} /> {t("Futuro", "Future")} $60
+              </p>
+              <p className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: "var(--kid-grape)" }} /> {t("Sueños", "Dreams")} $40
+              </p>
+              <p className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: "var(--kid-sky)" }} /> {t("Disponible", "Free")} $20
+              </p>
+            </div>
+          </div>
+        </div>
+      ),
     },
     {
-      range: t("14 a 17 años", "Ages 14 to 17"),
-      desc: t(
-        "Interés compuesto, inversión y su número del futuro. Salen de casa sabiendo su número.",
-        "Compound interest, investing and their future number. They leave home knowing their number.",
+      range: t("13 a 17 años", "Ages 13 to 17"),
+      headline: (
+        <>
+          {t("Se prepara ", "Gets ready ")}
+          <span style={{ color: "var(--kid-sky)" }}>{t("para decidir", "to decide")}</span>
+        </>
       ),
-      icon: TrendingUp,
-      color: "var(--kid-coral)",
+      text: t("Empieza a tomar sus propias decisiones financieras.", "They start making their own financial decisions."),
+      features: [
+        { label: t("Presupuesto", "Budget"), icon: Wallet },
+        { label: t("Inversión", "Investing"), icon: TrendingUp },
+        { label: t("Universidad", "University"), icon: GraduationCap },
+        { label: t("Su Number", "Their Number"), icon: Target },
+      ],
+      pill: t("Adolescente + padres", "Teen + parents"),
+      color: "var(--kid-sky)",
+      image: stageTeen,
+      imageAlt: t("Adolescente con móvil", "Teen with phone"),
+      overlay: (
+        <div className="rounded-2xl border border-border bg-card/95 p-3.5 shadow-xl backdrop-blur">
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+            {t("Tu patrimonio a los 18", "Your wealth at 18")}
+          </p>
+          <p className="numeric text-xl font-semibold" style={{ color: "var(--kid-sky)" }}>
+            $38,450
+          </p>
+          <div className="mt-2">
+            <div className="flex items-center justify-between text-[10px]">
+              <span className="text-muted-foreground">{t("Universidad", "University")}</span>
+              <span className="font-semibold" style={{ color: "var(--kid-sky)" }}>72%</span>
+            </div>
+            <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-elevated">
+              <div className="h-full rounded-full" style={{ width: "72%", backgroundColor: "var(--kid-sky)" }} />
+            </div>
+          </div>
+          <div className="mt-2 flex items-center justify-between">
+            <span className="text-[10px] text-muted-foreground">{t("Inversión", "Investing")} $8,450</span>
+            <div className="h-6 w-16">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={growCurve} margin={{ top: 1, right: 0, bottom: 0, left: 0 }}>
+                  <defs>
+                    <linearGradient id="mint-inv" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="var(--kid-mint)" stopOpacity={0.4} />
+                      <stop offset="100%" stopColor="var(--kid-mint)" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <Area type="monotone" dataKey="y" stroke="var(--kid-mint)" strokeWidth={1.5} fill="url(#mint-inv)" dot={false} isAnimationActive={false} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      ),
     },
   ];
+
+  const timeline = [
+    { icon: "👶", color: "var(--kid-grape)", label: "0" },
+    { icon: "🌱", color: "var(--kid-mint)", label: "6" },
+    { icon: "🚀", color: "var(--kid-sky)", label: "13" },
+    { icon: "18", color: "var(--kid-mint)", label: "18", isEnd: true },
+  ];
+
   return (
     <section className="mt-16 md:mt-24">
-      <SectionHeader
-        eyebrow={t("Crece con ellos", "It grows with them")}
-        title={t("De los 0 a los 18 años", "From age 0 to 18")}
-        subtitle={t(
-          "Un solo camino: los padres empiezan desde el día uno y la app cambia con cada edad, de las primeras monedas al interés compuesto.",
-          "One single path: parents start on day one and the app evolves with every age, from first coins to compound interest.",
-        )}
-      />
+      <div className="mx-auto max-w-2xl text-center">
+        <span className="text-xs font-medium uppercase tracking-wider text-kid-mint">
+          {t("Crece con ellos", "It grows with them")}
+        </span>
+        <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
+          {t("Una app. Tres etapas. De los ", "One app. Three stages. From ")}
+          <span style={{ color: "var(--kid-grape)" }}>0</span>
+          {t(" a los ", " to ")}
+          <span style={{ color: "var(--kid-mint)" }}>18</span>.
+        </h2>
+        <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
+          {t(
+            "Los padres empiezan por ellos; luego aprenden juntos; al final deciden solos. ",
+            "Parents start for them; then they learn together; finally they decide on their own. ",
+          )}
+          <span style={{ color: "var(--kid-grape)" }}>{t("su futuro", "their future")}</span>
+          {", "}
+          <span style={{ color: "var(--kid-mint)" }}>{t("con dinero", "with money")}</span>
+          {", "}
+          <span style={{ color: "var(--kid-sky)" }}>{t("para decidir", "to decide")}</span>.
+        </p>
+      </div>
 
-      <div className="relative mt-8 md:mt-12">
-        <div className="kid-gradient absolute inset-x-6 top-[52px] hidden h-px opacity-40 md:block" />
-        <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:grid-cols-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-7">
-          {items.map(({ age, label, icon: Icon }) => (
-            <motion.div
-              key={age}
-              initial={{ opacity: 0, y: 14 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.4 }}
-              className="surface relative w-[124px] shrink-0 snap-start p-4 text-center sm:w-auto"
-            >
-              <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl text-kid-mint ring-1 ring-kid-mint/25 kid-gradient-soft">
-                <Icon className="h-4.5 w-4.5" />
+      {/* Timeline */}
+      <div className="relative mx-auto mt-10 max-w-2xl">
+        <div
+          className="absolute left-0 right-0 top-5 h-0.5 hidden sm:block"
+          style={{ background: "linear-gradient(90deg, var(--kid-grape), var(--kid-mint), var(--kid-sky))", opacity: 0.35 }}
+        />
+        <div className="relative flex items-center justify-between">
+          {timeline.map((tl) => (
+            <div key={tl.label} className="flex flex-col items-center gap-2">
+              <span
+                className="flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold ring-2 ring-background"
+                style={{
+                  backgroundColor: tl.isEnd
+                    ? "var(--kid-mint)"
+                    : `color-mix(in oklab, ${tl.color} 15%, transparent)`,
+                  color: tl.isEnd ? "white" : tl.color,
+                  boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${tl.color} 35%, transparent)`,
+                }}
+              >
+                {tl.icon}
               </span>
-              <p className="mt-3 text-sm font-semibold">{age}</p>
-              <p className="mt-1 text-[11px] text-muted-foreground">{label}</p>
-            </motion.div>
+              <span className="text-[10px] font-medium text-muted-foreground">{tl.label}</span>
+            </div>
           ))}
         </div>
       </div>
 
-
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {stages.map(({ icon: Icon, range, desc, color }) => (
+      {/* Stage cards */}
+      <div className="mt-10 grid gap-5 md:grid-cols-3">
+        {stages.map((s) => (
           <motion.div
-            key={range}
-            initial={{ opacity: 0, y: 14 }}
+            key={s.range}
+            initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.4 }}
-            className="surface relative overflow-hidden p-5 md:p-6"
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.45 }}
+            className="surface relative flex flex-col overflow-hidden p-5 md:p-6"
           >
             <span
-              className="pointer-events-none absolute inset-x-0 top-0 h-px"
-              style={{
-                background: `linear-gradient(90deg, transparent, color-mix(in oklab, ${color} 75%, transparent), transparent)`,
-              }}
+              className="pointer-events-none absolute inset-x-0 top-0 h-1"
+              style={{ backgroundColor: s.color, opacity: 0.75 }}
             />
-            <span
-              className="flex h-9 w-9 items-center justify-center rounded-xl"
-              style={{
-                color,
-                backgroundColor: `color-mix(in oklab, ${color} 12%, transparent)`,
-                boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${color} 25%, transparent)`,
-              }}
-            >
-              <Icon className="h-4 w-4" />
-            </span>
-            <h3 className="mt-4 font-display text-base font-semibold tracking-tight">{range}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{desc}</p>
+            <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{s.range}</p>
+            <h3 className="mt-1.5 font-display text-lg font-semibold tracking-tight">{s.headline}</h3>
+            <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{s.text}</p>
+
+            <ul className="mt-4 grid grid-cols-2 gap-2">
+              {s.features.map((f) => (
+                <li key={f.label} className="flex items-center gap-1.5 text-xs">
+                  <f.icon className="h-3.5 w-3.5 shrink-0" style={{ color: s.color }} />
+                  <span className="text-muted-foreground">{f.label}</span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="relative mt-4">
+              <div className="overflow-hidden rounded-2xl ring-1 ring-border">
+                <img
+                  src={s.image}
+                  alt={s.imageAlt}
+                  loading="lazy"
+                  width={640}
+                  height={768}
+                  className="h-44 w-full object-cover md:h-52"
+                />
+              </div>
+              <div className="absolute -bottom-3 left-3 right-3">{s.overlay}</div>
+            </div>
+
+            <div className="mt-7 flex justify-center">
+              <span
+                className="rounded-full px-3 py-1 text-[11px] font-semibold"
+                style={{
+                  color: s.color,
+                  backgroundColor: `color-mix(in oklab, ${s.color} 12%, transparent)`,
+                  boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${s.color} 30%, transparent)`,
+                }}
+              >
+                {s.pill}
+              </span>
+            </div>
           </motion.div>
         ))}
       </div>
