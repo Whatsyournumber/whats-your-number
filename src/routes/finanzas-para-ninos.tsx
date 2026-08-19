@@ -1780,7 +1780,7 @@ function GrowsWithThem() {
                 className="absolute inset-0"
                 style={{
                   background:
-                    "linear-gradient(90deg, oklch(0.12 0.006 265) 0%, oklch(0.12 0.006 265 / 0.55) 14%, oklch(0.1 0.005 265 / 0.18) 32%, transparent 56%)",
+                    "linear-gradient(90deg, oklch(0.03 0.003 265) 0%, oklch(0.02 0.002 265 / 0.6) 16%, oklch(0 0 0 / 0.15) 34%, transparent 58%)",
                 }}
               />
             </div>
