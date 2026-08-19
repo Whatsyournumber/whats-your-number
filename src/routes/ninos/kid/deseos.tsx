@@ -129,7 +129,6 @@ function MyDreams({ member }: { member: Member }) {
   const { data: tasks = [] } = useTasks(member.id);
   const create = useCreateWish();
   const remove = useDeleteWish();
-  const update = useUpdateWish();
 
   const [open, setOpen] = useState(false);
   const [idea, setIdea] = useState(WISH_IDEAS[0]!);
