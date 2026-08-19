@@ -1762,7 +1762,8 @@ function GrowsWithThem() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.45 }}
-            className="surface relative overflow-hidden rounded-3xl"
+            className="relative overflow-hidden rounded-3xl border border-border"
+            style={{ background: "linear-gradient(160deg, oklch(0.14 0.008 265), oklch(0.085 0.004 265))" }}
           >
             {/* Photo on the right, bleeding to the card edge */}
             <div className="pointer-events-none absolute inset-y-0 right-0 w-[62%]">
@@ -1774,11 +1775,12 @@ function GrowsWithThem() {
                 height={768}
                 className="h-full w-full object-cover object-top"
               />
+              {/* Very subtle gradient so the photo melts into the card's dark surface */}
               <span
                 className="absolute inset-0"
                 style={{
                   background:
-                    "linear-gradient(90deg, var(--color-card) 0%, var(--color-card) 8%, color-mix(in oklab, var(--color-card) 60%, transparent) 30%, transparent 62%)",
+                    "linear-gradient(90deg, oklch(0.12 0.006 265) 0%, oklch(0.12 0.006 265 / 0.55) 14%, oklch(0.1 0.005 265 / 0.18) 32%, transparent 56%)",
                 }}
               />
             </div>
