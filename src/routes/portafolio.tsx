@@ -832,7 +832,7 @@ function PortafolioContent() {
           ))}
         </Tabs>
 
-        <div className="mt-2 grid grid-cols-2 items-center gap-3 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2.5 md:grid-cols-6">
+        <div className="mt-2 grid grid-cols-2 items-center gap-3 rounded-xl border-t border-border/60 bg-elevated/40 px-3 py-2.5 md:grid-cols-6">
           <div className="col-span-2 md:col-span-2">
             <p className="text-xs font-semibold text-muted-foreground">{t("Total", "Total")}</p>
           </div>
@@ -851,13 +851,18 @@ function PortafolioContent() {
           </div>
 
           <div>
-            <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
-            <p className={cn("numeric text-sm font-semibold", totalRet >= 0 ? "text-positive" : "text-negative")}>
-              {totalRet > 0 ? "+" : ""}
-              {totalRet.toFixed(1)}%
-            </p>
+            <p className="text-[11px] text-muted-foreground">{t("Rentabilidad prom.", "Avg. return")}</p>
+            {avgRet === null || Math.abs(avgRet) < 0.05 ? (
+              <p className="numeric text-sm font-semibold text-muted-foreground">—</p>
+            ) : (
+              <p className={cn("numeric text-sm font-semibold", avgRet >= 0 ? "text-positive" : "text-negative")}>
+                {avgRet > 0 ? "+" : ""}
+                {avgRet.toFixed(1)}%
+              </p>
+            )}
           </div>
         </div>
+
 
         <div className="mt-4 space-y-3 border-t border-border/50 pt-4">
           <div className="flex flex-wrap items-center gap-2">
