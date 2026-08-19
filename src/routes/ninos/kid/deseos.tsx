@@ -503,23 +503,26 @@ function DreamRow({
             </span>
           </div>
 
-          <div className="mt-3 flex items-center gap-2">
+          <div className="mt-3 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
             {f.etaDate ? (
-              <span className="inline-flex items-center gap-2 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-medium text-foreground">
-                <CalendarDays className="h-3.5 w-3.5 text-primary" />
-                {t("Llegará el", "Arrives on")} {fmtDate(f.etaDate)}
-                {months ? ` · ${months} ${months === 1 ? t("mes", "month") : t("meses", "months")}` : ""}
+              <span className="inline-flex min-w-0 items-center gap-2 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-medium text-foreground">
+                <CalendarDays className="h-3.5 w-3.5 shrink-0 text-primary" />
+                <span className="truncate">
+                  {t("Llegará el", "Arrives on")} {fmtDate(f.etaDate)}
+                  {months ? ` · ${months} ${months === 1 ? t("mes", "month") : t("meses", "months")}` : ""}
+                </span>
               </span>
             ) : (
-              <span className="inline-flex items-center gap-2 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-medium text-muted-foreground">
-                <CalendarDays className="h-3.5 w-3.5 text-primary" />
-                {t("Empieza a ahorrar para ver la fecha", "Start saving to see the date")}
+              <span className="inline-flex min-w-0 items-center gap-2 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-medium text-muted-foreground">
+                <CalendarDays className="h-3.5 w-3.5 shrink-0 text-primary" />
+                <span className="truncate">{t("Empieza a ahorrar para ver la fecha", "Start saving to see the date")}</span>
               </span>
             )}
             <Button variant="success" className="h-8 shrink-0 px-3 text-xs" onClick={() => setBoostOpen((v) => !v)}>
-              <Rocket className="h-3.5 w-3.5" /> {t("Acelerar", "Speed up")}
+              <Rocket className="h-3.5 w-3.5" /> <span className="hidden sm:inline">{t("Acelerar", "Speed up")}</span>
             </Button>
           </div>
+
 
           {f.targetDate ? (
             <p className={`mt-2 text-xs font-medium ${f.onTrack ? "text-chart-2" : "text-destructive"}`}>
