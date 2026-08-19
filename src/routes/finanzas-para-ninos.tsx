@@ -1790,7 +1790,7 @@ function GrowsWithThem() {
               </h3>
               <p className="mt-3 max-w-[48%] text-[13px] leading-relaxed text-muted-foreground">{s.text}</p>
 
-              <ul className="mt-6 space-y-4">
+              <ul className="mt-5 space-y-3.5">
                 {s.features.map((f) => (
                   <li key={f.label} className="flex items-center gap-3 text-[15px]">
                     <f.icon className="h-[18px] w-[18px] shrink-0" style={{ color: s.color }} strokeWidth={1.6} />
@@ -1814,7 +1814,7 @@ function GrowsWithThem() {
               </div>
 
               {/* Floating stat card over the photo */}
-              <div className="pointer-events-none absolute bottom-[5.5rem] right-4 w-[50%] max-w-[13rem]">{s.overlay}</div>
+              <div className="pointer-events-none absolute bottom-[4.25rem] right-4 w-[48%] max-w-[12.25rem]">{s.overlay}</div>
             </div>
 
 
