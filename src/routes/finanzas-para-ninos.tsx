@@ -1762,44 +1762,45 @@ function GrowsWithThem() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.45 }}
-            className="surface relative overflow-hidden rounded-3xl bg-[#080809]"
+            className="relative overflow-hidden rounded-3xl border border-border"
+            style={{ background: "linear-gradient(160deg, oklch(0.04 0.003 265), oklch(0 0 0))" }}
           >
-            {/* Photo blended into one continuous black background */}
-            <div
-              className="pointer-events-none absolute bottom-0 right-0 top-0 w-[52%]"
-              style={{
-                maskImage:
-                  "linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 18%, #000 42%, #000 100%)",
-                WebkitMaskImage:
-                  "linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.55) 18%, #000 42%, #000 100%)",
-              }}
-            >
+            {/* Photo on the right, bleeding to the card edge */}
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-[62%]">
               <img
                 src={s.image}
                 alt={s.imageAlt}
                 loading="lazy"
-                width={768}
-                height={1024}
-                className="h-full w-full object-cover object-[62%_8%] mix-blend-screen"
+                width={640}
+                height={768}
+                className="h-full w-full object-cover object-top"
+              />
+              {/* Very subtle gradient so the photo melts into the card's dark surface */}
+              <span
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(90deg, oklch(0.03 0.003 265) 0%, oklch(0.02 0.002 265 / 0.6) 16%, oklch(0 0 0 / 0.15) 34%, transparent 58%)",
+                }}
               />
             </div>
 
-            <div className="relative flex min-h-[31rem] flex-col p-6 md:p-7">
-              <h3 className="max-w-[54%] font-display text-[26px] font-semibold leading-[1.15] tracking-tight">
+            <div className="relative flex min-h-[27rem] flex-col p-6 md:p-7">
+              <h3 className="max-w-[58%] font-display text-[26px] font-semibold leading-[1.15] tracking-tight">
                 {s.headline}
               </h3>
-              <p className="mt-3 max-w-[48%] text-[13px] leading-relaxed text-muted-foreground">{s.text}</p>
+              <p className="mt-3 max-w-[52%] text-[13px] leading-relaxed text-muted-foreground">{s.text}</p>
 
-              <ul className="mt-5 max-w-[56%] space-y-3.5">
+              <ul className="mt-6 space-y-4">
                 {s.features.map((f) => (
-                  <li key={f.label} className="flex items-center gap-3 text-[14px]">
+                  <li key={f.label} className="flex items-center gap-3 text-[15px]">
                     <f.icon className="h-[18px] w-[18px] shrink-0" style={{ color: s.color }} strokeWidth={1.6} />
-                    <span className="truncate">{f.label}</span>
+                    <span>{f.label}</span>
                   </li>
                 ))}
               </ul>
 
-              <div className="mt-auto max-w-[56%] pt-10">
+              <div className="mt-auto pt-8">
                 <span
                   className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-[12px] font-semibold"
                   style={{
@@ -1814,9 +1815,8 @@ function GrowsWithThem() {
               </div>
 
               {/* Floating stat card over the photo */}
-              <div className="pointer-events-none absolute bottom-6 right-3 w-[42%] max-w-[12rem]">{s.overlay}</div>
+              <div className="pointer-events-none absolute bottom-6 right-4 w-[58%] max-w-[15.5rem]">{s.overlay}</div>
             </div>
-
 
           </motion.div>
         ))}
