@@ -626,12 +626,12 @@ function PortafolioContent() {
           {isEtf ? (
             <>
               <div>
-                <p className="text-[11px] text-muted-foreground">{t("Valor compra", "Purchase value")}</p>
-                <p className="numeric text-sm text-muted-foreground">{fmt(h.cost)}</p>
-              </div>
-              <div>
                 <p className="text-[11px] text-muted-foreground">{t("Valor actual", "Current value")}</p>
                 <p className="numeric text-sm font-medium">{fmt(h.value)}</p>
+              </div>
+              <div>
+                <p className="text-[11px] text-muted-foreground">{t("Valor compra", "Purchase value")}</p>
+                <p className="numeric text-sm text-muted-foreground">{fmt(h.cost)}</p>
               </div>
               <div>
                 <p className="text-[11px] text-muted-foreground">{t("Mercado hoy", "Market today")}</p>
