@@ -1772,12 +1772,12 @@ function GrowsWithThem() {
               loading="lazy"
               width={640}
               height={900}
-              className="absolute inset-y-0 right-0 h-full w-[62%] object-cover object-top"
+              className="absolute inset-y-0 right-0 h-full w-[68%] object-cover object-top"
               style={{
                 maskImage:
-                  "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 14%, #000 34%), linear-gradient(to bottom, #000 55%, rgba(0,0,0,0.35) 88%, transparent 100%)",
+                  "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 18%, #000 40%), linear-gradient(to bottom, #000 50%, rgba(0,0,0,0.4) 86%, transparent 100%)",
                 WebkitMaskImage:
-                  "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.6) 14%, #000 34%), linear-gradient(to bottom, #000 55%, rgba(0,0,0,0.35) 88%, transparent 100%)",
+                  "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 18%, #000 40%), linear-gradient(to bottom, #000 50%, rgba(0,0,0,0.4) 86%, transparent 100%)",
                 maskComposite: "intersect",
                 WebkitMaskComposite: "source-in",
               }}
