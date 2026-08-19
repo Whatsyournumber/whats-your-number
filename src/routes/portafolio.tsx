@@ -635,7 +635,8 @@ function PortafolioContent() {
               </div>
               <div>
                 <p className="text-[11px] text-muted-foreground">{t("Mercado hoy", "Market today")}</p>
-                <p className={cn("numeric text-sm font-semibold", today === null ? "text-muted-foreground/50" : today < 0 ? "text-negative" : "text-positive")}>
+                <p className="numeric text-sm font-semibold">{tk && prices[tk] ? fmt(prices[tk]) : "—"}</p>
+                <p className={cn("numeric text-[11px]", today === null ? "text-muted-foreground/50" : today < 0 ? "text-negative" : "text-positive")}>
                   {today === null ? "—" : `${today > 0 ? "+" : ""}${today.toFixed(2)}%`}
                 </p>
               </div>
