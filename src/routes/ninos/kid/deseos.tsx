@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Bell, CalendarDays, ChevronRight, Flame, Plus, Share2, Trash2, Trophy, Wallet } from "lucide-react";
+import { Bell, CalendarDays, ChevronRight, Flame, Plus, Rocket, Share2, Trash2, Trophy, Wallet, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { Button, Card, Field, Progress, inputClass } from "@/components/mfn-ui";
 import { KidPage } from "@/components/kid-page";
@@ -10,6 +10,7 @@ import {
   useCreateWish,
   useDeleteWish,
   useMovements,
+  useUpdateWish,
   useTasks,
   useWishes,
 } from "@/hooks/use-mfn";
@@ -128,20 +129,22 @@ function MyDreams({ member }: { member: Member }) {
   const { data: tasks = [] } = useTasks(member.id);
   const create = useCreateWish();
   const remove = useDeleteWish();
+  const update = useUpdateWish();
 
   const [open, setOpen] = useState(false);
   const [idea, setIdea] = useState(WISH_IDEAS[0]!);
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState<string>(String(WISH_IDEAS[0]!.price));
+  const [targetDate, setTargetDate] = useState<string>("");
 
   const pace = monthlySavingPace(movements) || Number(member.allowance_amount) * 0.4;
   const active = wishes.filter((w) => !w.achieved);
   const achieved = wishes.filter((w) => w.achieved);
 
   const totals = useMemo(() => {
-    const saved = wishes.reduce((s, w) => s + Number(w.saved), 0);
+    const saved = wishes.reduce((s, w) => s + Math.min(Number(w.saved), Number(w.price)), 0);
     const price = wishes.reduce((s, w) => s + Number(w.price), 0);
-    return { saved, price, progress: price > 0 ? (saved / price) * 100 : 0 };
+    return { saved, price, progress: price > 0 ? Math.min(100, (saved / price) * 100) : 0 };
   }, [wishes]);
 
   const thisMonth = savedThisMonth(movements);
@@ -170,12 +173,14 @@ function MyDreams({ member }: { member: Member }) {
         title: title.trim() || (lang === "en" ? idea.titleEn : idea.title),
         emoji: idea.emoji,
         price: Number(price) || idea.price,
+        targetDate: targetDate || null,
       },
       {
         onSuccess: () => {
           toast.success(t("¡Sueño añadido!", "Dream added!"));
           setOpen(false);
           setTitle("");
+          setTargetDate("");
         },
       },
     );
@@ -248,7 +253,7 @@ function MyDreams({ member }: { member: Member }) {
               </button>
             ))}
           </div>
-          <div className="mt-4 grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-end">
+          <div className="mt-4 grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-end">
             <Field label={t("Nombre", "Name")}>
               <input
                 className={inputClass}
@@ -264,6 +269,15 @@ function MyDreams({ member }: { member: Member }) {
                 className={inputClass}
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
+              />
+            </Field>
+            <Field label={t("¿Para cuándo?", "By when?")}>
+              <input
+                type="date"
+                className={inputClass}
+                min={new Date().toISOString().slice(0, 10)}
+                value={targetDate}
+                onChange={(e) => setTargetDate(e.target.value)}
               />
             </Field>
             <Button disabled={create.isPending} onClick={submit}>
@@ -305,6 +319,30 @@ function MyDreams({ member }: { member: Member }) {
                     )
                   }
                   onDelete={() => remove.mutate({ id: w.id, memberId: member.id })}
+                  onSetDate={(date) =>
+                    update.mutate({ id: w.id, memberId: member.id, patch: { target_date: date } as never })
+                  }
+                  onAdd={(amount) =>
+                    update.mutate(
+                      {
+                        id: w.id,
+                        memberId: member.id,
+                        patch: {
+                          saved: Math.min(Number(w.price), Number(w.saved) + amount),
+                          achieved: Number(w.saved) + amount >= Number(w.price),
+                        } as never,
+                      },
+                      {
+                        onSuccess: () =>
+                          toast.success(
+                            t(
+                              `¡+${money(amount, member.currency)} para ${w.title}!`,
+                              `+${money(amount, member.currency)} towards ${w.title}!`,
+                            ),
+                          ),
+                      },
+                    )
+                  }
                 />
               ))}
             </div>
