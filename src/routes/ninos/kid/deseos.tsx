@@ -505,17 +505,17 @@ function DreamRow({
 
           <div className="mt-3 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
             {f.etaDate ? (
-              <span className="inline-flex min-w-0 items-center gap-2 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-medium text-foreground">
+              <span className="inline-flex items-center gap-2 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-medium text-foreground">
                 <CalendarDays className="h-3.5 w-3.5 shrink-0 text-primary" />
-                <span className="truncate">
+                <span className="leading-tight">
                   {t("Llegará el", "Arrives on")} {fmtDate(f.etaDate)}
                   {months ? ` · ${months} ${months === 1 ? t("mes", "month") : t("meses", "months")}` : ""}
                 </span>
               </span>
             ) : (
-              <span className="inline-flex min-w-0 items-center gap-2 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-medium text-muted-foreground">
+              <span className="inline-flex items-center gap-2 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-medium text-muted-foreground">
                 <CalendarDays className="h-3.5 w-3.5 shrink-0 text-primary" />
-                <span className="truncate">{t("Empieza a ahorrar para ver la fecha", "Start saving to see the date")}</span>
+                <span className="leading-tight">{t("Empieza a ahorrar para ver la fecha", "Start saving to see the date")}</span>
               </span>
             )}
             <Button variant="success" className="h-8 shrink-0 px-3 text-xs" onClick={() => setBoostOpen((v) => !v)}>
