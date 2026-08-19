@@ -562,20 +562,21 @@ function DreamRow({
                       <li key={b.id}>
                         <button
                           onClick={() => onBoost(b)}
-                          className="grid w-full grid-cols-[auto_minmax(0,1fr)_auto_auto] items-center gap-2 rounded-xl border border-success/20 bg-card px-2 py-1.5 text-xs transition hover:bg-success/10"
+                          className="grid w-full grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2 gap-y-1 rounded-xl border border-success/20 bg-card px-2.5 py-2 text-xs transition hover:bg-success/10"
                           aria-label={`${t("Completar", "Complete")} ${b.title}`}
                         >
-                          <span className="text-base">{b.emoji}</span>
-                          <span className="truncate text-left text-foreground">{b.title}</span>
-                          <span className="font-semibold text-success">+{money(reward, member.currency)}</span>
-                          {savedM > 0 ? (
-                            <span className="font-normal text-muted-foreground">
-                              −{savedM} {savedM === 1 ? t("mes", "mo") : t("meses", "mo")}
-                            </span>
-                          ) : (
-                            <span />
-                          )}
+                          <span className="row-span-2 text-base leading-none">{b.emoji}</span>
+                          <span className="min-w-0 text-left leading-snug text-foreground">{b.title}</span>
+                          <span className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-left text-[11px]">
+                            <span className="font-semibold text-success">+{money(reward, member.currency)}</span>
+                            {savedM > 0 ? (
+                              <span className="text-muted-foreground">
+                                −{savedM} {savedM === 1 ? t("mes", "mo") : t("meses", "mo")}
+                              </span>
+                            ) : null}
+                          </span>
                         </button>
+
                       </li>
                     );
                   })}
