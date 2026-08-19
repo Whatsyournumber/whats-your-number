@@ -138,6 +138,12 @@ function PatrimonioContent() {
   const visibleRows = activeTab === "all" ? detailRows : detailRows.filter((r) => r.group.key === activeTab);
   const visibleTotal = visibleRows.reduce((s, r) => s + r.value, 0);
   const visibleAnnual = Math.round(visibleRows.filter((r) => r.group.key !== "cash").reduce((s, r) => s + r.annual, 0));
+  // Rentabilidad real: promedio ponderado por el capital de los rubros que sí rinden
+  // (excluye efectivo y activos sin ganancia).
+  const yieldingRows = visibleRows.filter((r) => r.group.key !== "cash" && r.value > 0 && r.annual !== 0);
+  const yieldingBase = yieldingRows.reduce((s, r) => s + r.value, 0);
+  const visibleRate = yieldingBase ? (yieldingRows.reduce((s, r) => s + r.annual, 0) / yieldingBase) * 100 : 0;
+
 
 
   // Activos futuros (trading, venta de empresa…) ponderados: suman al patrimonio y al allocation.
