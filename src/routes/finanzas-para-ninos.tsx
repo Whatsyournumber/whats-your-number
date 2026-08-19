@@ -1762,63 +1762,70 @@ function GrowsWithThem() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.45 }}
-            className="relative overflow-hidden rounded-3xl border border-border"
-            style={{ background: "linear-gradient(160deg, oklch(0.04 0.003 265), oklch(0 0 0))" }}
+            className="relative overflow-hidden rounded-3xl border border-border h-[34rem] flex flex-col"
+            style={{ background: "oklch(0 0 0)" }}
           >
-            <div className="grid grid-cols-[1fr_1.05fr] min-h-[28rem]">
-              {/* ── Left: text ── */}
-              <div className="flex flex-col p-6 md:p-7">
+            {/* Full-card photo background */}
+            <img
+              src={s.image}
+              alt={s.imageAlt}
+              loading="lazy"
+              width={640}
+              height={900}
+              className="absolute inset-0 h-full w-full object-cover object-center"
+            />
+            {/* Gradient: strong on left for text, fades right so photo stays visible */}
+            <span
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background:
+                  "linear-gradient(95deg, oklch(0.01 0 0) 0%, oklch(0.01 0 0 / 0.92) 38%, oklch(0.01 0 0 / 0.35) 60%, oklch(0.01 0 0 / 0.05) 82%, transparent 100%)",
+              }}
+            />
+            {/* Bottom fade for the pill area */}
+            <span
+              className="absolute inset-x-0 bottom-0 h-24 pointer-events-none"
+              style={{ background: "linear-gradient(to top, oklch(0.01 0 0 / 0.85), transparent)" }}
+            />
+
+            {/* Content layer */}
+            <div className="relative flex h-full flex-col p-6 md:p-7">
+              {/* Top: headline + text on the left */}
+              <div className="max-w-[60%]">
                 <h3 className="font-display text-[24px] font-semibold leading-[1.15] tracking-tight">
                   {s.headline}
                 </h3>
-                <p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground">{s.text}</p>
-
-                <ul className="mt-5 space-y-3.5">
-                  {s.features.map((f) => (
-                    <li key={f.label} className="flex items-center gap-3 text-[14px]">
-                      <f.icon className="h-[17px] w-[17px] shrink-0" style={{ color: s.color }} strokeWidth={1.6} />
-                      <span>{f.label}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="mt-auto pt-6">
-                  <span
-                    className="inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-[11px] font-semibold"
-                    style={{
-                      color: s.color,
-                      backgroundColor: `color-mix(in oklab, ${s.color} 10%, transparent)`,
-                      boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${s.color} 28%, transparent)`,
-                    }}
-                  >
-                    <Users className="h-3.5 w-3.5" strokeWidth={1.6} />
-                    {s.pill}
-                  </span>
-                </div>
+                <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">{s.text}</p>
               </div>
 
-              {/* ── Right: photo + data overlay ── */}
-              <div className="relative min-h-[28rem]">
-                <img
-                  src={s.image}
-                  alt={s.imageAlt}
-                  loading="lazy"
-                  width={640}
-                  height={768}
-                  className="absolute inset-0 h-full w-full object-cover object-top"
-                />
-                {/* Subtle left-edge melt so photo blends with the dark text column */}
+              {/* Middle: features list aligned with the data box */}
+              <ul className="mt-5 max-w-[60%] space-y-3.5">
+                {s.features.map((f) => (
+                  <li key={f.label} className="flex items-center gap-3 text-[14px]">
+                    <f.icon className="h-[17px] w-[17px] shrink-0" style={{ color: s.color }} strokeWidth={1.6} />
+                    <span>{f.label}</span>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Right: data overlay card — fixed-height wrapper for alignment */}
+              <div className="pointer-events-none absolute bottom-24 right-5 flex h-[200px] w-[44%] max-w-[14.5rem] flex-col justify-end">
+                {s.overlay}
+              </div>
+
+              {/* Bottom: pill, relaxed */}
+              <div className="mt-auto pt-10">
                 <span
-                  className="absolute inset-0 pointer-events-none"
+                  className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-[12px] font-semibold"
                   style={{
-                    background:
-                      "linear-gradient(90deg, oklch(0.02 0.002 265) 0%, oklch(0 0 0 / 0.35) 12%, transparent 30%)",
+                    color: s.color,
+                    backgroundColor: `color-mix(in oklab, ${s.color} 10%, transparent)`,
+                    boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${s.color} 28%, transparent)`,
                   }}
-                />
-                {/* Floating stat card over the photo */}
-                <div className="pointer-events-none absolute bottom-5 left-3 right-3 max-w-[15rem]">
-                  {s.overlay}
-                </div>
+                >
+                  <Users className="h-4 w-4" strokeWidth={1.6} />
+                  {s.pill}
+                </span>
               </div>
             </div>
           </motion.div>
