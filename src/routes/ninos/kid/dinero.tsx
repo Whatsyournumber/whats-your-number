@@ -118,10 +118,11 @@ function KpiCard({
   tone: "primary" | "success" | "danger";
 }) {
   const hintTone = {
-    primary: "text-primary",
+    primary: "text-success",
     success: "text-success",
     danger: "text-destructive",
   }[tone];
+
   return (
     <Card>
       <div className="flex items-start gap-3">
