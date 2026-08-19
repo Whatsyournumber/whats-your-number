@@ -580,8 +580,9 @@ function TaskRow({
         </button>
         <button
           type="button"
-          onClick={done ? undefined : onComplete}
-          aria-label={t("Marcar como hecha", "Mark as done")}
+          onClick={done ? onUncomplete : onComplete}
+          title={done ? t("Deshacer tarea", "Undo task") : t("Marcar como hecha", "Mark as done")}
+          aria-label={done ? t("Deshacer tarea", "Undo task") : t("Marcar como hecha", "Mark as done")}
           className={cn(
             "grid size-8 place-items-center rounded-full text-xs font-bold transition-colors",
             task.status === "aprobada"
