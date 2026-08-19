@@ -239,8 +239,8 @@ function Landing() {
 
   const panelChips = [
     t("Portafolio en vivo", "Live portfolio"),
-    t("Tus Gastos", "Your Spending"),
-    t("Tu Hipoteca", "Your Mortgage"),
+    t("Análisis de tus gastos", "Your Spending Analysis"),
+    t("Análisis de tu hipoteca", "Your Mortgage Analysis"),
     t("Cash flow 40/40/20", "40/40/20 cash flow"),
     t("Tu Plan de Vida", "Your Life Plan"),
     t("Tu Próxima Ciudad", "Your Next City"),
