@@ -480,7 +480,6 @@ function DreamRow({
   boosters,
   onBoost,
   onDelete,
-  onAdd,
 }: {
   wish: Wish;
   member: Member;
@@ -488,7 +487,6 @@ function DreamRow({
   boosters: Task[];
   onBoost: (task: Task) => void;
   onDelete: () => void;
-  onAdd: (amount: number) => void;
 }) {
   const { t, lang } = useI18n();
   const [boostOpen, setBoostOpen] = useState(false);
