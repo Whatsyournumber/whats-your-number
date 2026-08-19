@@ -46,6 +46,9 @@ function PatrimonioContent() {
   const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
   const holdingQuotes = useQuotes(holdingSymbols);
   const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
+  const dayChange: Record<string, number> = Object.fromEntries(
+    (holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.changePct ?? 0]),
+  );
 
   // Deudas individuales desde holdings (TDC, préstamos, etc.).
   const debtRows = holdings
@@ -308,16 +311,21 @@ function PatrimonioContent() {
                       ? t("Plusvalía", "Market gain")
                       : t("Ganancia anual", "Annual gain");
                 const gainTone = annual > 0 ? "text-positive" : annual < 0 ? "text-negative" : "text-muted-foreground";
-                const meta = [
-                  r.sub,
-                  r.ticker && r.quantity > 0 ? `${r.quantity} u.` : null,
-                  r.cost > 0 ? t(`Compra ${fmt(r.cost)}`, `Cost ${fmt(r.cost)}`) : null,
-                  r.monthlyContribution > 0 ? t(`+${fmt(r.monthlyContribution)}/mes`, `+${fmt(r.monthlyContribution)}/mo`) : null,
-                  r.targetYear ? String(r.targetYear) : null,
-                  r.probability != null && r.probability < 100 ? `${r.probability}%` : null,
-                ].filter(Boolean);
-                const todayLabel = new Date().toLocaleDateString("es-ES", { day: "2-digit", month: "short" });
-                const todayLabelEn = new Date().toLocaleDateString("en-US", { day: "2-digit", month: "short" });
+                const isMarketRow = r.kind === "etf" || r.kind === "crypto";
+                const qtyFmt = r.quantity > 0 ? Number(r.quantity.toPrecision(6)).toString() : null;
+                const meta = isMarketRow
+                  ? [r.sub, r.ticker && r.quantity > 0 ? `${qtyFmt} u.` : null].filter(Boolean)
+                  : [
+                      r.sub,
+                      r.ticker && r.quantity > 0 ? `${qtyFmt} u.` : null,
+                      r.cost > 0 ? t(`Compra ${fmt(r.cost)}`, `Cost ${fmt(r.cost)}`) : null,
+                      r.monthlyContribution > 0 ? t(`+${fmt(r.monthlyContribution)}/mes`, `+${fmt(r.monthlyContribution)}/mo`) : null,
+                      r.targetYear ? String(r.targetYear) : null,
+                      r.probability != null && r.probability < 100 ? `${r.probability}%` : null,
+                    ].filter(Boolean);
+                const isEtf = r.kind === "etf" || r.kind === "crypto";
+                const tk = r.ticker?.toUpperCase();
+                const today = tk && dayChange[tk] !== undefined ? dayChange[tk] : null;
                 return (
                   <div key={r.id} className="grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 md:grid-cols-6">
                     <div className="col-span-2 md:col-span-2 min-w-0">
@@ -325,37 +333,64 @@ function PatrimonioContent() {
                         {r.label}
                         {r.ticker ? <span className="ml-2 text-xs text-muted-foreground">{r.ticker}</span> : null}
                       </p>
-                      <p className="truncate text-xs text-muted-foreground">{meta.join(" · ")}</p>
-                      {r.livePrice ? (
-                        <p className="truncate text-xs text-positive">
-                          {t(`Valor de mercado hoy: ${fmt(r.value)} (${todayLabel})`, `Market value today: ${fmt(r.value)} (${todayLabelEn})`)}
-                        </p>
-                      ) : null}
-                    </div>
-                    <div>
-                      <p className="text-[11px] text-muted-foreground">{t("Valor", "Value")}</p>
-                      <p className="numeric text-sm">{fmt(r.value)}</p>
-                    </div>
-                    <div>
-                      <p className="text-[11px] text-muted-foreground">{gainLabel}</p>
-                      <p className={cn("numeric text-sm", isCash || annual === 0 ? "text-muted-foreground/50" : gainTone)}>
-                        {isCash || annual === 0 ? "—" : fmt(annual)}
+                      <p className="truncate text-xs text-muted-foreground">
+                        {r.kind === "crypto" ? t("Cripto", "Crypto") : meta.join(" · ")}
                       </p>
                     </div>
-                    <div>
-                      <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
-                      <p className={cn("numeric text-sm", isCash || annual === 0 ? "text-muted-foreground/50" : gainTone)}>
-                        {isCash || annual === 0 ? "—" : fmt(Math.round(annual / 12))}
-                      </p>
-                    </div>
+                    {isEtf ? (
+                      <>
+                        <div>
+                          <p className="text-[11px] text-muted-foreground">{t("Valor actual", "Current value")}</p>
+                          <p className="numeric text-sm font-medium">{fmt(r.value)}</p>
+                        </div>
+                        <div>
+                          <p className="text-[11px] text-muted-foreground">{t("Valor compra", "Purchase value")}</p>
+                          <p className="numeric text-sm text-muted-foreground">{r.cost > 0 ? fmt(r.cost) : "—"}</p>
+                        </div>
+                        <div>
+                          <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                            {t("Mercado hoy", "Market today")}
+                            {r.livePrice ? (
+                              <span className="relative flex h-1.5 w-1.5">
+                                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-positive/70" />
+                                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-positive" />
+                              </span>
+                            ) : null}
+                          </p>
+                          <p className="numeric text-sm font-semibold">
+                            {r.livePrice ? r.livePrice.toLocaleString("en-US", { maximumFractionDigits: r.livePrice < 10 ? 4 : 2 }) : "—"}
+                          </p>
+                          <p className={cn("numeric text-[11px]", today === null ? "text-muted-foreground/50" : today < 0 ? "text-negative" : "text-positive")}>
+                            {today === null ? "—" : `${today > 0 ? "+" : ""}${today.toFixed(2)}%`}
+                          </p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div>
+                          <p className="text-[11px] text-muted-foreground">{t("Valor", "Value")}</p>
+                          <p className="numeric text-sm">{fmt(r.value)}</p>
+                        </div>
+                        <div>
+                          <p className="text-[11px] text-muted-foreground">{gainLabel}</p>
+                          <p className={cn("numeric text-sm", isCash || annual === 0 ? "text-muted-foreground/50" : gainTone)}>
+                            {isCash || annual === 0 ? "—" : fmt(annual)}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
+                          <p className={cn("numeric text-sm", isCash || annual === 0 ? "text-muted-foreground/50" : gainTone)}>
+                            {isCash || annual === 0 ? "—" : fmt(Math.round(annual / 12))}
+                          </p>
+                        </div>
+                      </>
+                    )}
                     <div>
                       <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
                       <p className={cn("numeric text-sm font-semibold", isCash || r.rate === 0 ? "text-muted-foreground/50" : gainTone)}>
                         {isCash || r.rate === 0 ? "—" : `${r.rate > 0 ? "+" : ""}${r.rate.toFixed(1)}%`}
                       </p>
                     </div>
-
-
                   </div>
                 );
               })}
