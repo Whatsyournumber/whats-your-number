@@ -475,7 +475,7 @@ function DreamRow({
   return (
     <div className="grid gap-4 py-4 first:pt-0 md:grid-cols-[auto_minmax(0,1fr)] md:items-start">
       <span className="grid size-24 place-items-center rounded-2xl bg-surface-2 text-4xl">{wish.emoji}</span>
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+      <div className={`grid gap-4 ${boostOpen ? "lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]" : ""}`}>
         <div className="min-w-0">
           <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
             <div className="min-w-0">
