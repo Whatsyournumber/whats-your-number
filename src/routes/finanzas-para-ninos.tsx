@@ -1763,7 +1763,7 @@ function GrowsWithThem() {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.45 }}
             className="relative overflow-hidden rounded-3xl border border-border"
-            style={{ background: "linear-gradient(160deg, oklch(0.14 0.008 265), oklch(0.085 0.004 265))" }}
+            style={{ background: "linear-gradient(160deg, oklch(0.04 0.003 265), oklch(0 0 0))" }}
           >
             {/* Photo on the right, bleeding to the card edge */}
             <div className="pointer-events-none absolute inset-y-0 right-0 w-[62%]">
