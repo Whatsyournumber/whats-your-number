@@ -194,6 +194,7 @@ function Landing() {
         "Sube tus estados de cuenta y en menos de 30 segundos la IA categoriza cada movimiento, compara tus gastos, detecta sobrecostos y te dice exactamente dónde puedes ahorrar.",
         "Upload your statements and in under 30 seconds the AI categorizes every transaction, compares your spending, detects overspending and tells you exactly where you can save.",
       ),
+      highlight: t("30 segundos", "30 seconds"),
     },
     {
       icon: Home,
@@ -202,14 +203,16 @@ function Landing() {
         "No pagues más intereses de los necesarios. Entiende el verdadero costo de tu hipoteca, compara tasas, simula pagos anticipados y descubre cuánto dinero puedes ahorrar.",
         "Don't pay more interest than necessary. Understand the true cost of your mortgage, compare rates, simulate early payments and find out how much money you can save.",
       ),
+      highlight: t("cuánto dinero puedes ahorrar", "how much money you can save"),
     },
     {
       icon: LineChart,
       title: t("Tu Patrimonio & Portfolio", "Your Net Worth & Portfolio"),
       desc: t(
         "Por fin entiende cuánto vales. Organiza todo tu patrimonio en un solo lugar, sigue tus activos en tiempo real y analiza su rendimiento, riesgo e ingresos pasivos.",
-        "Organize all your wealth in one place. Track your assets in real time and analyze performance, risk and passive income.",
+        "Finally understand how much you're worth. Organize all your wealth in one place, track your assets in real time and analyze their performance, risk and passive income.",
       ),
+      highlight: t("cuánto vales", "how much you're worth"),
     },
     {
       icon: RouteIcon,
@@ -218,6 +221,7 @@ function Landing() {
         "Simula las decisiones más importantes de tu vida —comprar, emprender, casarte, mudarte— y ve cómo impactan tu patrimonio y retiro.",
         "Simulate life's biggest decisions —buying, starting a business, marrying, moving— and see how they impact your wealth and retirement.",
       ),
+      highlight: t("tu patrimonio y retiro", "your wealth and retirement"),
     },
     {
       icon: Globe,
@@ -226,6 +230,7 @@ function Landing() {
         "Compara más de 150 ciudades por costo de vida, salarios, impuestos, clima y seguridad. Encuentra dónde tu dinero rinde más.",
         "Compare over 150 cities by cost of living, salaries, taxes, climate and safety. Find where your money goes further.",
       ),
+      highlight: t("tu dinero rinde más", "your money goes further"),
     },
     {
       icon: Bot,
@@ -234,6 +239,7 @@ function Landing() {
         "Importa tus estados de cuenta y conversa con la IA en lenguaje natural. Recibe análisis e insights sobre tus gastos, patrimonio y metas.",
         "Import your statements and chat with AI in plain language. Get analysis and insights on your spending, wealth and goals.",
       ),
+      highlight: t("en lenguaje natural", "in plain language"),
     },
   ];
 
