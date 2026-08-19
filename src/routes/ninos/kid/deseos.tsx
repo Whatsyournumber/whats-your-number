@@ -10,7 +10,6 @@ import {
   useCreateWish,
   useDeleteWish,
   useMovements,
-  useUpdateWish,
   useTasks,
   useWishes,
 } from "@/hooks/use-mfn";
