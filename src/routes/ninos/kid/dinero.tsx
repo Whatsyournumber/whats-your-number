@@ -176,7 +176,7 @@ function BreakdownList({
       </ul>
       <div className="mt-4 flex items-center justify-between border-t border-border pt-3 text-sm font-semibold">
         <span className="text-foreground">{totalLabel}</span>
-        <span className={tone === "in" ? "text-primary" : "text-destructive"}>
+        <span className={tone === "in" ? "text-success" : "text-destructive"}>
           {money(total, currency)}
         </span>
       </div>
