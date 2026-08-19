@@ -834,7 +834,7 @@ function PortafolioContent() {
           ))}
         </Tabs>
 
-        <div className="relative mt-2 overflow-hidden rounded-2xl border border-primary/25 bg-gradient-to-br from-primary/[0.08] via-elevated/60 to-elevated/40 px-4 py-3.5 shadow-[0_8px_30px_-12px_var(--color-primary)]">
+        <div className="relative mt-2 overflow-hidden rounded-2xl border border-border/50 bg-elevated/50 px-4 py-3.5">
           <div className="grid grid-cols-2 items-center gap-3 md:grid-cols-6">
             <div className="col-span-2 flex items-center gap-2 md:col-span-2">
               <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/15 text-primary">
