@@ -50,11 +50,14 @@ function PatrimonioContent() {
     (holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.changePct ?? 0]),
   );
 
-  // Deudas individuales desde holdings (TDC, préstamos, etc.).
+  // Pasivos: deudas explícitas (TDC, préstamos) + hipotecas ligadas a propiedades.
   const debtRows = holdings
     .filter((h) => h.kind === "debt" && holdingValue(h) > 0)
     .map((h) => ({ id: h.id, label: h.label || t("Deuda", "Debt"), value: holdingValue(h), interest: h.expected_return }));
-  const liabilityRows = [...debtRows].sort((a, b) => b.value - a.value);
+  const mortgageRows = holdings
+    .filter((h) => h.kind === "property" && h.linked_liability > 0)
+    .map((h) => ({ id: `mort-${h.id}`, label: t(`Hipoteca · ${h.label || t("Propiedad", "Property")}`, `Mortgage · ${h.label || t("Property", "Property")}`), value: h.linked_liability, interest: 0 }));
+  const liabilityRows = [...debtRows, ...mortgageRows].sort((a, b) => b.value - a.value);
 
   // Detalle completo: inversiones + inmuebles + retiro + cash + activos futuros (trading, venta, etc.).
   const groupOf = (kind: string) =>
