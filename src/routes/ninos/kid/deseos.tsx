@@ -299,7 +299,7 @@ function MyDreams({ member }: { member: Member }) {
             </p>
           ) : (
             <div className="divide-y divide-border">
-              {active.map((w, i) => (
+              {active.map((w) => (
                 <DreamRow
                   key={w.id}
                   wish={w}
