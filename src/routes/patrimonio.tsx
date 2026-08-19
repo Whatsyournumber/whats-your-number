@@ -46,6 +46,9 @@ function PatrimonioContent() {
   const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
   const holdingQuotes = useQuotes(holdingSymbols);
   const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
+  const dayChange: Record<string, number> = Object.fromEntries(
+    (holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.changePct ?? 0]),
+  );
 
   // Deudas individuales desde holdings (TDC, préstamos, etc.).
   const debtRows = holdings
