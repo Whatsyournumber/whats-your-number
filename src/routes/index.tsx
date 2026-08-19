@@ -188,51 +188,51 @@ function Landing() {
 
   const features = [
     {
-      icon: FileText,
-      title: t("Importación inteligente", "Smart import"),
+      icon: PieChart,
+      title: t("Tus Gastos", "Your Spending"),
       desc: t(
-        "Sube el PDF de tu tarjeta o un CSV bancario. La IA extrae fecha, comercio, monto y categoría.",
-        "Upload your card's PDF or a bank CSV. The AI extracts date, merchant, amount and category.",
+        "Sube tus estados de cuenta y en menos de 30 segundos la IA categoriza cada movimiento, compara tus gastos mes a mes, detecta sobrecostos y te dice exactamente dónde puedes ahorrar.",
+        "Upload your statements and in under 30 seconds the AI categorizes every transaction, compares your spending month over month, detects overspending and tells you exactly where you can save.",
       ),
     },
     {
-      icon: PieChart,
-      title: t("Análisis de gastos", "Spending analysis"),
+      icon: Home,
+      title: t("Tu Hipoteca", "Your Mortgage"),
       desc: t(
-        "Categorías propias, gastos fijos, mapa de calor diario y tu gasto target mes a mes.",
-        "Custom categories, fixed expenses, a daily heatmap and your target spend month after month.",
+        "Entiende el verdadero costo de tu hipoteca. Compara tasas, simula pagos anticipados y descubre cuánto dinero e intereses puedes ahorrar para alcanzar antes tu libertad financiera.",
+        "Understand the true cost of your mortgage. Compare rates, simulate early payments and discover how much money and interest you can save to reach financial freedom sooner.",
       ),
     },
     {
       icon: LineChart,
-      title: t("Patrimonio y portafolio", "Net worth and portfolio"),
+      title: t("Tu Patrimonio & Portfolio", "Your Net Worth & Portfolio"),
       desc: t(
-        "Activos, pasivos, asignación y rendimiento con precios de mercado en vivo.",
-        "Assets, liabilities, allocation and performance with live market prices.",
+        "Por fin entiende cuánto vales. Organiza todo tu patrimonio en un solo lugar, sigue tus activos en tiempo real y analiza su rendimiento, riesgo e ingresos pasivos para acelerar tu camino hacia la independencia financiera.",
+        "Finally understand what you're worth. Organize all your wealth in one place, track your assets in real time and analyze their performance, risk and passive income to accelerate your path to financial independence.",
       ),
     },
     {
       icon: RouteIcon,
-      title: "Life Planner",
+      title: t("Tu Plan de Vida", "Your Life Plan"),
       desc: t(
-        "Simula casa, hijos, negocio o venta de empresa y mira cuántos años te acerca o aleja del retiro.",
-        "Simulate a home, kids, a business or an exit and see how many years it moves your retirement.",
+        "Simula las decisiones más importantes de tu vida —comprar una casa, emprender, casarte, tener hijos o mudarte de país— y descubre cómo cada una impacta tu patrimonio y tu fecha de retiro.",
+        "Simulate the most important decisions of your life —buying a house, starting a business, getting married, having kids or moving abroad— and discover how each one impacts your wealth and retirement date.",
       ),
     },
     {
       icon: Globe,
-      title: t("Your next city", "Your next city"),
+      title: t("Tu Próxima Ciudad", "Your Next City"),
       desc: t(
-        "152 ciudades puntuadas con el Your next city score: costo, calidad de vida, seguridad y visados.",
-        "152 cities scored with the Your next city score: cost, quality of life, safety and visas.",
+        "Descubre dónde tu dinero rinde más. Compara más de 150 ciudades según costo de vida, salarios, impuestos, clima, seguridad y calidad de vida para encontrar el lugar ideal para vivir y construir tu futuro.",
+        "Discover where your money goes further. Compare over 150 cities by cost of living, salaries, taxes, climate, safety and quality of life to find the ideal place to live and build your future.",
       ),
     },
     {
       icon: Bot,
-      title: "AI Advisor",
+      title: t("Tu Copiloto Financiero IA", "Your AI Financial Copilot"),
       desc: t(
-        "Pregunta en lenguaje natural y recibe insights, anomalías y proyecciones de retiro.",
-        "Ask in plain language and get insights, anomalies and retirement projections.",
+        "Importa tus estados de cuenta, conversa con la IA en lenguaje natural y recibe respuestas, análisis e insights personalizados sobre tus gastos, patrimonio, inversiones y metas financieras, todo en un solo lugar.",
+        "Import your statements, chat with AI in plain language and get personalized answers, analysis and insights on your spending, wealth, investments and financial goals, all in one place.",
       ),
     },
   ];
