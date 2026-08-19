@@ -323,27 +323,6 @@ function MyDreams({ member }: { member: Member }) {
                     )
                   }
                   onDelete={() => remove.mutate({ id: w.id, memberId: member.id })}
-                  onAdd={(amount) =>
-                    update.mutate(
-                      {
-                        id: w.id,
-                        memberId: member.id,
-                        patch: {
-                          saved: Math.min(Number(w.price), Number(w.saved) + amount),
-                          achieved: Number(w.saved) + amount >= Number(w.price),
-                        } as never,
-                      },
-                      {
-                        onSuccess: () =>
-                          toast.success(
-                            t(
-                              `¡+${money(amount, member.currency)} para ${w.title}!`,
-                              `+${money(amount, member.currency)} towards ${w.title}!`,
-                            ),
-                          ),
-                      },
-                    )
-                  }
                 />
               ))}
             </div>
