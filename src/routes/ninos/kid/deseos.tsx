@@ -518,8 +518,8 @@ function DreamRow({
                 <span className="leading-tight">{t("Empieza a ahorrar para ver la fecha", "Start saving to see the date")}</span>
               </span>
             )}
-            <Button variant="success" className="h-8 shrink-0 px-3 text-xs" onClick={() => setBoostOpen((v) => !v)}>
-              <Rocket className="h-3.5 w-3.5" /> <span className="hidden sm:inline">{t("Acelerar", "Speed up")}</span>
+            <Button variant="success" className="h-8 shrink-0 whitespace-nowrap px-3 text-xs" onClick={() => setBoostOpen((v) => !v)}>
+              <Rocket className="h-3.5 w-3.5" /> {t("Acelerar", "Speed up")}
             </Button>
           </div>
 
