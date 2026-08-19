@@ -302,48 +302,16 @@ function RetiroContent() {
             index={1}
           />
         )}
-        <EditableKpiCard
-          label={t("Cuánto tengo", "How much I have")}
-          value={fmt(investable)}
-          rawValue={investable}
-          format={fmt}
-          onChange={(v) => {
-            const target = Math.max(0, Math.round(v));
-            const keys = [
-              "assets_cash",
-              "assets_bank",
-              "assets_retirement",
-              "assets_etf",
-              "assets_stocks",
-              "assets_crypto",
-            ] as const;
-            if (target === investable) return;
-            if (investable <= 0) {
-              void save({ assets_bank: target });
-              return;
-            }
-            if (target > investable) {
-              // Lo nuevo entra como liquidez, sin tocar las inversiones existentes.
-              void save({ assets_bank: Math.round(profile.assets_bank + (target - investable)) });
-              return;
-            }
-            // Al bajar el total, reducimos cada partida en proporción para respetar el número escrito.
-            const factor = target / investable;
-            const next: Partial<Record<(typeof keys)[number], number>> = {};
-            let acc = 0;
-            keys.forEach((k) => {
-              const value = Math.max(0, Math.round(profile[k] * factor));
-              next[k] = value;
-              acc += value;
-            });
-            // El redondeo se ajusta en liquidez para que el total sea exacto.
-            next.assets_bank = Math.max(0, (next.assets_bank ?? 0) + (target - acc));
-            void save(next);
-          }}
+        <Link to="/mi-perfil" hash="patrimonio" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
+          <KpiCard
+            label={t("Cuánto tengo", "How much I have")}
+            value={fmt(investable)}
+            icon={Pencil}
+            hint={t("Ahorros e inversiones — sin contar propiedades", "Savings and investments — excluding properties")}
+            index={2}
+          />
+        </Link>
 
-          hint={t("Ahorros e inversiones — sin contar propiedades", "Savings and investments — excluding properties")}
-          index={2}
-        />
         {goalMode !== "business" && (
           <KpiCard label={t("Cómo voy", "How I'm doing")} value={`${progressPct.toFixed(1)}%`} hint={t("del capital objetivo", "of target capital")} index={2} />
         )}
