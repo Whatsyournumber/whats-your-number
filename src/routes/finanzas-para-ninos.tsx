@@ -965,36 +965,18 @@ function HowItWorksSlider() {
                       </div>
                     </div>
 
-                    <div className="mt-4">
+                    <div className="mt-4 rounded-2xl bg-background/60 p-4 ring-1 ring-border/50">
                       <div className="flex items-center justify-between">
-                        <p className="text-xs text-muted-foreground">{t("Seguimiento de tareas", "Chore tracking")}</p>
-                        <span className="numeric text-xs font-semibold text-kid-mint">{t("3/4 hoy", "3/4 today")}</span>
-                      </div>
-                      <div className="mt-3 space-y-2">
-                        {choreTrack.map((c) => (
-                          <div
-                            key={c.k}
-                            className="flex items-center gap-2.5 rounded-xl bg-background/60 px-3 py-2 ring-1 ring-border/40"
-                          >
-                            <span className="text-base">{c.e}</span>
-                            <span className={`truncate text-xs ${c.done ? "text-muted-foreground line-through" : ""}`}>
-                              {t(c.k, c.en)}
-                            </span>
-                            <span
-                              className={`ml-auto flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
-                                c.done ? "bg-kid-mint text-background" : "ring-1 ring-border/60 text-muted-foreground"
-                              }`}
-                            >
-                              {c.done ? "✓" : ""}
-                            </span>
-                          </div>
-                        ))}
+                        <p className="text-xs text-muted-foreground">{t("Racha de la semana", "Weekly streak")}</p>
+                        <span className="numeric text-xs font-semibold text-kid-mint">
+                          {t("4 días seguidos", "4 days in a row")}
+                        </span>
                       </div>
                       <div className="mt-3 flex items-center justify-between">
                         {["L", "M", "M", "J", "V", "S", "D"].map((d, idx) => (
-                          <div key={idx} className="flex flex-col items-center gap-1">
+                          <div key={idx} className="flex flex-col items-center gap-1.5">
                             <span
-                              className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold ${
+                              className={`flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold ${
                                 idx < 4 ? "bg-kid-mint text-background" : "ring-1 ring-border/60 text-muted-foreground"
                               }`}
                             >
@@ -1006,25 +988,6 @@ function HowItWorksSlider() {
                       </div>
                     </div>
 
-
-                    <div className="mt-4 space-y-2.5 border-t border-border/40 pt-4">
-                      <p className="text-xs text-muted-foreground">{t("Cómo se reparte lo ganado", "How earnings split")}</p>
-                      {[
-                        { k: t("Ahorrar", "Save"), pct: 40, c: "var(--kid-mint)" },
-                        { k: t("Invertir", "Invest"), pct: 40, c: "var(--kid-sky)" },
-                        { k: t("Gastar", "Spend"), pct: 20, c: "var(--kid-coral)" },
-                      ].map((r) => (
-                        <div key={r.k}>
-                          <div className="flex items-center justify-between text-xs">
-                            <span className="text-muted-foreground">{r.k}</span>
-                            <span className="numeric font-semibold" style={{ color: r.c }}>{r.pct}%</span>
-                          </div>
-                          <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-background">
-                            <div className="h-full rounded-full" style={{ width: `${r.pct * 2}%`, backgroundColor: r.c }} />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
 
                   </>
                 ) : active.id === "dreams" ? (
@@ -1226,12 +1189,6 @@ const pocketMonths = [
   { m: "Jun", save: 24, invest: 24, spend: 12 },
 ];
 
-const choreTrack: { e: string; k: string; en: string; done: boolean }[] = [
-  { e: "🛏️", k: "Hacer la cama", en: "Make the bed", done: true },
-  { e: "🐶", k: "Pasear al perro", en: "Walk the dog", done: true },
-  { e: "🧺", k: "Ordenar la ropa", en: "Sort the laundry", done: true },
-  { e: "📚", k: "Leer 20 minutos", en: "Read 20 minutes", done: false },
-];
 
 const planBars = [4, 7, 10, 13, 17, 21, 26, 32, 39, 47, 56, 66, 78, 92].map((v, i) => ({
   x: i,
