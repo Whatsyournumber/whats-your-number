@@ -131,13 +131,15 @@ function ScreenCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative w-full overflow-hidden rounded-[26px] border border-border bg-card shadow-2xl">
+    <div className="@container relative w-full overflow-hidden rounded-[26px] border border-border bg-card shadow-2xl">
       <div className="h-1 w-full" style={{ backgroundColor: accent, opacity: 0.7 }} />
-      <div className="flex items-center gap-2 border-b border-border/60 px-5 py-3">
-        <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: accent }} />
-        <span className="text-sm font-medium uppercase tracking-wider text-muted-foreground">{title}</span>
+      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3 @[420px]:px-5">
+        <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: accent }} />
+        <span className="truncate text-[13px] font-medium uppercase tracking-wider text-muted-foreground @[420px]:text-sm">
+          {title}
+        </span>
       </div>
-      <div className="p-5 md:p-6">{children}</div>
+      <div className="p-3.5 @[420px]:p-5 @[560px]:p-6">{children}</div>
     </div>
   );
 }
