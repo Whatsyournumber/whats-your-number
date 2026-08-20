@@ -1054,30 +1054,17 @@ function HowItWorksSlider() {
                 )}
               </div>
 
-              <div className="grid grid-cols-3 gap-2">
-                {(stats[active.id] ?? []).map((s) => (
-                  <div key={s.k} className="flex flex-col justify-center rounded-2xl bg-elevated/60 p-3 text-center ring-1 ring-border">
-                    <p className="truncate text-[11px] uppercase tracking-wider text-muted-foreground">{s.k}</p>
-                    <p className="numeric mt-1 text-base font-semibold" style={{ color: active.color }}>
-                      {s.v}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-
-
               <div className="mt-auto rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
 
                 <div className="flex items-center gap-2 text-sm">
                   <Target className="h-4 w-4" style={{ color: active.color }} />
-                  <span className="font-medium">{t("Progreso hacia su número", "Progress to their number")}</span>
+                  <span className="font-medium">{t("Progreso del mes", "Month progress")}</span>
                 </div>
                 <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-background">
                   <motion.div
                     key={active.id}
                     initial={{ width: 0 }}
-                    animate={{ width: "11%" }}
+                    animate={{ width: "68%" }}
                     transition={{ duration: 1.1, ease: "easeOut" }}
                     className="h-full rounded-full"
                     style={{ backgroundColor: active.color }}
@@ -1085,7 +1072,7 @@ function HowItWorksSlider() {
                 </div>
                 <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
                   <span className="numeric text-foreground">€1.150</span>
-                  <span>11%</span>
+                  <span>68%</span>
                   <span className="numeric text-foreground">€10.668</span>
                 </div>
                 <p className="mt-2 text-xs text-muted-foreground">
