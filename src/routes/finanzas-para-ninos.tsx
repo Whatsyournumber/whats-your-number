@@ -410,44 +410,95 @@ function HowItWorksSlider() {
             </div>
           </div>
 
-          <div className="mt-3 h-56">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={growCurve} margin={{ top: 8, right: 6, bottom: 0, left: 0 }}>
-                <defs>
-                  <linearGradient id="first-number-area" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--kid-sky)" stopOpacity={0.4} />
-                    <stop offset="100%" stopColor="var(--kid-sky)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <XAxis
-                  dataKey="x"
-                  ticks={[0, 5, 10, 14, 18]}
-                  tickFormatter={(v: number) => (v === 0 ? t("Hoy", "Today") : `${v}`)}
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="flat"
-                  stroke="var(--muted-foreground)"
-                  strokeWidth={2}
-                  strokeDasharray="5 5"
-                  fill="none"
-                  dot={false}
-                  isAnimationActive={false}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="y"
-                  stroke="var(--kid-sky)"
-                  strokeWidth={2.5}
-                  fill="url(#first-number-area)"
-                  dot={false}
-                  isAnimationActive={false}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+          <div className="mt-3 grid gap-3 sm:grid-cols-[1.35fr_1fr]">
+            <div className="h-56">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={growCurve} margin={{ top: 8, right: 6, bottom: 0, left: 0 }}>
+                  <defs>
+                    <linearGradient id="first-number-area" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="var(--kid-sky)" stopOpacity={0.4} />
+                      <stop offset="100%" stopColor="var(--kid-sky)" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis
+                    dataKey="x"
+                    ticks={[0, 5, 10, 14, 18]}
+                    tickFormatter={(v: number) => (v === 0 ? t("Hoy", "Today") : `${v}`)}
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="flat"
+                    stroke="var(--muted-foreground)"
+                    strokeWidth={2}
+                    strokeDasharray="5 5"
+                    fill="none"
+                    dot={false}
+                    isAnimationActive={false}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="y"
+                    stroke="var(--kid-sky)"
+                    strokeWidth={2.5}
+                    fill="url(#first-number-area)"
+                    dot={false}
+                    isAnimationActive={false}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="flex h-56 flex-col rounded-2xl bg-elevated/60 p-3 ring-1 ring-border">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                {t("Cómo se reparte", "How it splits")}
+              </p>
+              <div className="relative flex-1">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={[
+                        { label: t("Ahorrado", "Saved"), value: 2442, color: "var(--kid-sky)" },
+                        { label: t("Intereses", "Interest"), value: 8226, color: "var(--kid-mint)" },
+                      ]}
+                      dataKey="value"
+                      innerRadius="60%"
+                      outerRadius="92%"
+                      paddingAngle={3}
+                      stroke="none"
+                      isAnimationActive={false}
+                    >
+                      <Cell fill="var(--kid-sky)" />
+                      <Cell fill="var(--kid-mint)" />
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                  <p className="numeric text-xl font-semibold">77%</p>
+                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                    {t("Intereses", "Interest")}
+                  </p>
+                </div>
+              </div>
+              <div className="mt-2 space-y-1.5 text-[11px]">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-1.5 text-muted-foreground">
+                    <span className="h-2 w-2 rounded-full bg-kid-sky" />
+                    {t("Ahorrado", "Saved")}
+                  </span>
+                  <span className="numeric font-semibold">€2.442</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-1.5 text-muted-foreground">
+                    <span className="h-2 w-2 rounded-full bg-kid-mint" />
+                    {t("Intereses", "Interest")}
+                  </span>
+                  <span className="numeric font-semibold">€8.226</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="mt-3 rounded-2xl bg-kid-sky/10 px-4 py-2.5 text-[12px] text-foreground ring-1 ring-kid-sky/20">
