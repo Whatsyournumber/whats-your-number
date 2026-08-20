@@ -19,7 +19,7 @@ export const Route = createFileRoute("/blog/$slug")({
     const title = post ? `${post.title.es} — WhatsYournumber` : "Artículo — WhatsYournumber";
     const description = post?.excerpt.es ?? "Artículos sobre finanzas personales, inversión y IA.";
     const author = getAuthor(params.slug);
-    const url = `https://whatsyournumber.lovable.app/blog/${params.slug}`;
+    const url = `https://whatsyour-number.com/blog/${params.slug}`;
     const jsonLd = {
       "@context": "https://schema.org",
       "@type": "Article",
@@ -37,7 +37,7 @@ export const Route = createFileRoute("/blog/$slug")({
       publisher: {
         "@type": "Organization",
         name: "WhatsYournumber",
-        url: "https://whatsyournumber.lovable.app",
+        url: "https://whatsyour-number.com",
       },
     };
     return {
@@ -49,6 +49,9 @@ export const Route = createFileRoute("/blog/$slug")({
         { property: "og:description", content: description },
         { property: "og:type", content: "article" },
         { property: "article:author", content: author.name },
+        { property: "og:url", content: url },
+        { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
+        { name: "twitter:image", content: "https://whatsyour-number.com/og-cover.jpg" },
         { name: "twitter:card", content: "summary_large_image" },
       ],
       links: [{ rel: "canonical", href: url }],
