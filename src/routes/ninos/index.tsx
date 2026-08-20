@@ -46,10 +46,6 @@ function ProfileSelector() {
   const [pendingDelete, setPendingDelete] = useState<Member | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [showUnlock, setShowUnlock] = useState(false);
-  const [editing, setEditing] = useState<Member | null>(null);
-  const [editName, setEditName] = useState("");
-  const [editSubtitle, setEditSubtitle] = useState("");
-  const [savingEdit, setSavingEdit] = useState(false);
   const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
   const queryClient = useQueryClient();
 
