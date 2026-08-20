@@ -181,6 +181,27 @@ function ProfileSelector() {
                   <span className="grid aspect-square w-full place-items-center rounded-2xl bg-secondary text-5xl ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4 sm:text-6xl">
                     {m.avatar}
                   </span>
+                  {manage ? (
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      aria-label={t("Editar nombre", "Edit name")}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        startEdit(m);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          startEdit(m);
+                        }
+                      }}
+                      className="absolute -left-1.5 -top-1.5 z-10 grid h-7 w-7 place-items-center rounded-full bg-primary text-primary-foreground shadow-md ring-2 ring-background transition-all duration-200 hover:scale-105"
+                    >
+                      <Pencil className="h-3.5 w-3.5" strokeWidth={2.5} />
+                    </span>
+                  ) : null}
                   {m.role === "child" ? (
                     <span
                       role="button"
@@ -207,11 +228,13 @@ function ProfileSelector() {
                       {m.name}
                     </span>
                     <span className="block text-[11px] text-muted-foreground/70">
-                      {m.role === "parent"
-                        ? t("Padre / Madre", "Parent")
-                        : m.age < 1
-                          ? `${Math.round(m.age * 12)} ${t("meses", "months")}`
-                          : `${Math.round(m.age)} ${t("años", "years")}`}
+                      {m.subtitle
+                        ? m.subtitle
+                        : m.role === "parent"
+                          ? t("Padre / Madre", "Parent")
+                          : m.age < 1
+                            ? `${Math.round(m.age * 12)} ${t("meses", "months")}`
+                            : `${Math.round(m.age)} ${t("años", "years")}`}
                     </span>
                   </span>
                 </button>
