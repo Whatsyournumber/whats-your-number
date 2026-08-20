@@ -558,6 +558,33 @@ function HowItWorksSlider() {
               ))}
             </span>
           </div>
+
+          <div className="mt-auto pt-5">
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-muted-foreground">{t("Lo que gana cada semana", "What they earn each week")}</p>
+              <span className="numeric text-xs font-semibold text-kid-sun">{t("Media €5,50", "Avg €5.50")}</span>
+            </div>
+            <div className="mt-3 flex h-20 items-end gap-2">
+              {choreWeeks.map((w, idx) => {
+                const max = Math.max(...choreWeeks.map((c) => c.v));
+                const h = (w.v / max) * 100;
+                return (
+                  <div key={idx} className="flex flex-1 flex-col items-center gap-1.5">
+                    <div className="flex w-full flex-1 items-end">
+                      <div
+                        className="w-full rounded-md transition-all"
+                        style={{
+                          height: `${h}%`,
+                          background: "linear-gradient(to top, color-mix(in oklab, var(--kid-sun) 55%, transparent), var(--kid-sun))",
+                        }}
+                      />
+                    </div>
+                    <span className="text-[10px] text-muted-foreground">{w.w}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </ScreenCard>
       ),
     },
