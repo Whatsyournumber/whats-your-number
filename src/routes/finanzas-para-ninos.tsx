@@ -332,9 +332,9 @@ function HowItWorksSlider() {
   const touchX = useRef<number | null>(null);
 
   const pockets = [
-    { label: t("Ahorrar", "Save"), value: 40, amount: "€24", color: "var(--kid-sky)" },
-    { label: t("Invertir", "Invest"), value: 40, amount: "€24", color: "color-mix(in oklab, var(--kid-sky) 65%, transparent)" },
-    { label: t("Gastar", "Spend"), value: 20, amount: "€12", color: "color-mix(in oklab, var(--kid-sky) 35%, transparent)" },
+    { label: t("Ahorrar", "Save"), value: 40, amount: "€24", color: "var(--kid-mint)" },
+    { label: t("Invertir", "Invest"), value: 40, amount: "€24", color: "var(--kid-grape)" },
+    { label: t("Gastar", "Spend"), value: 20, amount: "€12", color: "var(--kid-sky)" },
   ];
 
   const rawSlides = [
@@ -398,14 +398,14 @@ function HowItWorksSlider() {
                 S&P 500 · 7,2%
               </span>
             </div>
-            <div className="rounded-2xl border border-kid-sky/25 bg-kid-sky/10 p-3">
-              <p className="text-[10px] uppercase tracking-wider text-kid-sky">
+            <div className="rounded-2xl border border-kid-grape/25 bg-kid-grape/10 p-3">
+              <p className="text-[10px] uppercase tracking-wider text-kid-grape">
                 {t("A los 18 años", "At age 18")}
               </p>
               <p className="numeric mt-1 text-2xl font-semibold">€10.668</p>
               <p className="numeric mt-0.5 text-[11px] text-muted-foreground">
                 {t("Ahorrado", "Saved")} €2.442 · {t("Intereses", "Interest")}{" "}
-                <span className="text-kid-sky">€8.226</span>
+                <span className="text-kid-mint">€8.226</span>
               </p>
             </div>
           </div>
@@ -466,38 +466,50 @@ function HowItWorksSlider() {
       tab: t("Mis sueños", "My dreams"),
       icon: Target,
       color: "var(--kid-coral)",
-      title: t("Sueños completados", "Completed dreams"),
+      title: t("Sueños con barra de progreso", "Dreams with a progress bar"),
       desc: t(
-        "Cada sueño logrado se celebra: ven lo que han conseguido y cuánto ahorraron para lograrlo.",
-        "Every achieved dream is celebrated: they see what they accomplished and how much they saved to get there.",
+        "La bici, el viaje o el videojuego: ven cuánto les falta y ahorran para conseguirlo.",
+        "The bike, the trip or the game: they see what's left and save to get there.",
       ),
       visual: (
-        <ScreenCard title={t("Sueños completados", "Completed dreams")} accent="var(--kid-coral)">
+        <ScreenCard title={t("Mis sueños activos", "My active dreams")} accent="var(--kid-coral)">
           <div className="space-y-4">
             {[
               {
                 e: "🚲",
                 name: t("Bici nueva", "New bike"),
+                have: "€186",
                 goal: "€300",
-                date: t("Conseguido el 12 dic 2025", "Achieved Dec 12, 2025"),
-                c: "var(--kid-coral)",
+                missing: "€114",
+                pct: 62,
+                date: t("Llegará el 12 dic 2026", "Arrives Dec 12, 2026"),
+                eta: t("en 3 meses", "in 3 months"),
+                c: "var(--kid-mint)",
               },
               {
                 e: "🎮",
                 name: t("Nintendo Switch", "Nintendo Switch"),
+                have: "€9",
                 goal: "€300",
-                date: t("Conseguido el 3 feb 2026", "Achieved Feb 3, 2026"),
+                missing: "€291",
+                pct: 3,
+                date: t("Llegará el 8 mar 2027", "Arrives Mar 8, 2027"),
+                eta: t("en 18 meses", "in 18 months"),
                 c: "var(--kid-coral)",
               },
               {
                 e: "🎢",
                 name: t("Viaje a Disney", "Disney trip"),
+                have: "€120",
                 goal: "€1.200",
-                date: t("Conseguido el 15 jul 2026", "Achieved Jul 15, 2026"),
-                c: "var(--kid-coral)",
+                missing: "€1.080",
+                pct: 10,
+                date: t("Llegará el 20 ago 2028", "Arrives Aug 20, 2028"),
+                eta: t("en 2 años", "in 2 years"),
+                c: "var(--kid-sun)",
               },
             ].map((d) => (
-              <div key={d.name} className="rounded-2xl bg-elevated/70 p-4 ring-1 ring-kid-coral/30">
+              <div key={d.name} className="rounded-2xl bg-elevated/70 p-4 ring-1 ring-border/50">
                 <div className="flex items-start gap-3.5">
                   <div
                     className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-2xl"
@@ -510,25 +522,25 @@ function HowItWorksSlider() {
                       <p className="text-sm font-semibold">{d.name}</p>
                       <span className="numeric text-xs text-muted-foreground">{d.goal}</span>
                     </div>
-                    <div className="mt-0.5 flex items-center gap-1.5 text-[11px]">
-                      <span className="numeric font-bold" style={{ color: d.c }}>
-                        {t("¡Conseguido!", "Achieved!")}
+                    <div className="mt-0.5 flex items-center justify-between text-[11px]">
+                      <span className="numeric font-medium" style={{ color: d.c }}>
+                        {d.have} {t("ahorrados", "saved")}
+                      </span>
+                      <span className="text-muted-foreground">
+                        {t("Te faltan", "Missing")} <span className="numeric font-medium">{d.missing}</span>
                       </span>
                     </div>
                   </div>
-                  <span
-                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
-                    style={{ backgroundColor: d.c }}
-                  >
-                    <BadgeCheck className="h-4 w-4 text-background" />
-                  </span>
                 </div>
 
-                <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-card">
-                  <div
-                    className="h-full rounded-full"
-                    style={{ width: "100%", background: `linear-gradient(90deg, ${d.c}, color-mix(in oklab, ${d.c} 60%, white))` }}
-                  />
+                <div className="mt-3 flex items-center gap-3">
+                  <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-card">
+                    <div
+                      className="h-full rounded-full transition-all"
+                      style={{ width: `${Math.max(d.pct, 2)}%`, background: `linear-gradient(90deg, ${d.c}, color-mix(in oklab, ${d.c} 60%, white))` }}
+                    />
+                  </div>
+                  <span className="numeric text-xs font-bold" style={{ color: d.c }}>{d.pct}%</span>
                 </div>
 
                 <div className="mt-3 flex items-center justify-between">
@@ -536,13 +548,14 @@ function HowItWorksSlider() {
                     <CalendarCheck className="h-3.5 w-3.5" style={{ color: d.c }} />
                     <span>{d.date}</span>
                   </div>
-                  <span
-                    className="flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-semibold"
-                    style={{ color: d.c, backgroundColor: `color-mix(in oklab, ${d.c} 14%, transparent)` }}
+                  <button
+                    type="button"
+                    className="flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-semibold text-background transition-transform hover:scale-105"
+                    style={{ backgroundColor: d.c }}
                   >
-                    <Trophy className="h-3 w-3" />
-                    {t("Logrado", "Done")}
-                  </span>
+                    <Rocket className="h-3 w-3" />
+                    {t("Acelerar", "Accelerate")}
+                  </button>
                 </div>
               </div>
             ))}
@@ -565,8 +578,8 @@ function HowItWorksSlider() {
           <div className="grid grid-cols-3 gap-2">
             {[
               { e: "💰", k: t("Ganado", "Earned"), v: "€6,50", c: "var(--kid-sun)" },
-              { e: "✅", k: t("Hechas", "Done"), v: "2/4", c: "var(--kid-sun)" },
-              { e: "🔥", k: t("Racha", "Streak"), v: t("4 días", "4 days"), c: "var(--kid-sun)" },
+              { e: "✅", k: t("Hechas", "Done"), v: "2/4", c: "var(--kid-mint)" },
+              { e: "🔥", k: t("Racha", "Streak"), v: t("4 días", "4 days"), c: "var(--kid-coral)" },
             ].map((s) => (
               <div key={s.k} className="rounded-2xl bg-background/60 p-3 ring-1 ring-border/50">
                 <span className="text-base leading-none">{s.e}</span>
@@ -592,18 +605,18 @@ function HowItWorksSlider() {
                 key={r.k}
                 className={cn(
                   "flex items-center gap-3.5 rounded-2xl px-4 py-4 ring-1",
-                  r.ok ? "bg-kid-sun/10 ring-kid-sun/25" : "bg-background/40 ring-border/40",
+                  r.ok ? "bg-kid-mint/10 ring-kid-mint/25" : "bg-background/40 ring-border/40",
                 )}
               >
                 <span className="text-2xl leading-none">{r.e}</span>
                 <span className={cn("min-w-0 flex-1 truncate text-[15px] font-medium", r.ok && "text-muted-foreground line-through")}>
                   {r.k}
                 </span>
-                <span className={cn("numeric text-[15px] font-semibold", r.ok ? "text-kid-sun" : "text-muted-foreground")}>{r.v}</span>
+                <span className={cn("numeric text-[15px] font-semibold", r.ok ? "text-kid-mint" : "text-muted-foreground")}>{r.v}</span>
                 <span
                   className={cn(
                     "flex h-7 w-7 shrink-0 items-center justify-center rounded-full",
-                    r.ok ? "bg-kid-sun text-background" : "bg-card ring-1 ring-border",
+                    r.ok ? "bg-kid-mint text-background" : "bg-card ring-1 ring-border",
                   )}
                 >
                   <BadgeCheck className={cn("h-4 w-4", r.ok ? "" : "text-muted-foreground/40")} />
@@ -744,8 +757,8 @@ function HowItWorksSlider() {
       "Chores bring in 39% of her money. Adding a €1 chore would add €52 a year.",
     ),
     dreams: t(
-      "3 sueños cumplidos este año. Su próximo reto: ahorrar para unos patines.",
-      "3 dreams achieved this year. Her next challenge: saving for roller skates.",
+      "Si mueve 5 € del bolsillo de gastar, consigue la bici 6 semanas antes.",
+      "Moving €5 from her spend pocket gets her the bike 6 weeks earlier.",
     ),
     badges: t(
       "7 semanas de racha: está en su mejor momento. Un reto nuevo mantiene el impulso.",
@@ -765,9 +778,9 @@ function HowItWorksSlider() {
       { k: t("Gastar", "Spend"), v: "20%" },
     ],
     dreams: [
-      { k: t("Sueños logrados", "Dreams achieved"), v: "3" },
-      { k: t("Ahorrado", "Saved"), v: "€1.800" },
-      { k: t("Racha", "Streak"), v: "5" },
+      { k: t("Sueños activos", "Active dreams"), v: "3" },
+      { k: t("Progreso", "Progress"), v: "62%" },
+      { k: t("Conseguidos", "Achieved"), v: "5" },
     ],
     chores: [
       { k: t("Esta semana", "This week"), v: "+€6,50" },
@@ -797,7 +810,7 @@ function HowItWorksSlider() {
     numbers: t("Cómo se reparte su dinero", "How their money is split"),
     pockets: t("Cómo se reparte su dinero", "How their money is split"),
     chores: t("Seguimiento de tareas", "Chore tracking"),
-    dreams: t("Sus sueños completados", "Their completed dreams"),
+    dreams: t("Sus sueños en marcha", "Their dreams in progress"),
     grow: t("Su futuro, año a año", "Their future, year by year"),
     unis: t("Universidades que podría pagar", "Universities they could afford"),
   };
@@ -976,7 +989,7 @@ function HowItWorksSlider() {
                       <div className="relative mt-2.5 h-2.5 overflow-hidden rounded-full bg-card">
                         <div
                           className="h-full rounded-full"
-                          style={{ width: "11%", background: "linear-gradient(90deg, var(--kid-sky), color-mix(in oklab, var(--kid-sky) 60%, white))" }}
+                          style={{ width: "11%", background: "linear-gradient(90deg, var(--kid-sky), var(--kid-mint))" }}
                         />
                       </div>
                       <p className="mt-2 text-[11px] text-muted-foreground">
@@ -1003,14 +1016,14 @@ function HowItWorksSlider() {
                         <p className="mt-1 text-xs text-muted-foreground">
                           {t("Completadas esta semana", "Completed this week")}
                         </p>
-                        <p className="numeric mt-2 text-sm font-bold text-kid-sun">+€6,50</p>
+                        <p className="numeric mt-2 text-sm font-bold text-kid-mint">+€6,50</p>
                       </div>
                     </div>
 
                     <div className="mt-4 rounded-2xl bg-background/60 p-4 ring-1 ring-border/50">
                       <div className="flex items-center justify-between">
                         <p className="text-xs text-muted-foreground">{t("Racha de la semana", "Weekly streak")}</p>
-                        <span className="numeric text-xs font-semibold text-kid-sun">
+                        <span className="numeric text-xs font-semibold text-kid-mint">
                           {t("4 días seguidos", "4 days in a row")}
                         </span>
                       </div>
@@ -1019,7 +1032,7 @@ function HowItWorksSlider() {
                           <div key={idx} className="flex flex-col items-center gap-1.5">
                             <span
                               className={`flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold ${
-                                idx < 4 ? "bg-kid-sun text-background" : "ring-1 ring-border/60 text-muted-foreground"
+                                idx < 4 ? "bg-kid-mint text-background" : "ring-1 ring-border/60 text-muted-foreground"
                               }`}
                             >
                               {idx < 4 ? "✓" : ""}
@@ -1033,7 +1046,7 @@ function HowItWorksSlider() {
                     <div className="mt-4 grid grid-cols-2 gap-3">
                       {[
                         { e: "💰", k: t("Este mes", "This month"), v: "€24,00", c: "var(--kid-sun)" },
-                        { e: "🏆", k: t("Mejor racha", "Best streak"), v: t("12 días", "12 days"), c: "var(--kid-sun)" },
+                        { e: "🏆", k: t("Mejor racha", "Best streak"), v: t("12 días", "12 days"), c: "var(--kid-coral)" },
                       ].map((s) => (
                         <div key={s.k} className="rounded-2xl bg-background/60 p-3.5 ring-1 ring-border/50">
                           <span className="text-base leading-none">{s.e}</span>
@@ -1051,7 +1064,7 @@ function HowItWorksSlider() {
                       <div className="mt-2.5 h-2.5 overflow-hidden rounded-full bg-card">
                         <div
                           className="h-full rounded-full"
-                          style={{ width: "80%", background: "linear-gradient(90deg, var(--kid-sun), color-mix(in oklab, var(--kid-sun) 60%, white))" }}
+                          style={{ width: "80%", background: "linear-gradient(90deg, var(--kid-sun), var(--kid-mint))" }}
                         />
                       </div>
                       <p className="mt-2 text-[11px] text-muted-foreground">
@@ -1069,52 +1082,49 @@ function HowItWorksSlider() {
                         className="relative flex h-32 w-32 items-center justify-center rounded-full"
                         style={{
                           background:
-                            "conic-gradient(var(--kid-coral) 0% 100%)",
+                            "conic-gradient(var(--kid-coral) 0% 25%, var(--kid-sun) 25% 33%, var(--kid-mint) 33% 75%, color-mix(in oklab, var(--kid-coral) 14%, transparent) 75% 100%)",
                         }}
                       >
                         <span className="flex h-[88px] w-[88px] flex-col items-center justify-center rounded-full bg-elevated">
-                          <span className="numeric text-xl font-bold text-kid-coral">3</span>
-                          <span className="text-[10px] text-muted-foreground">{t("sueños logrados", "dreams achieved")}</span>
+                          <span className="numeric text-xl font-bold text-kid-coral">€315</span>
+                          <span className="text-[10px] text-muted-foreground">{t("ahorrados", "saved")}</span>
                         </span>
                       </div>
                       <p className="mt-2 text-xs text-muted-foreground">
-                        {t("€1.800 ahorrados en total", "€1,800 saved in total")}
+                        {t("de €1.800 en total", "of €1,800 total")}
                       </p>
                     </div>
 
                     <div className="mt-4 space-y-2.5">
                       {[
-                        { e: "🚲", n: t("Bici nueva", "New bike"), date: t("dic 2025", "Dec 2025"), c: "var(--kid-coral)" },
-                        { e: "🎮", n: "Nintendo Switch", date: t("feb 2026", "Feb 2026"), c: "var(--kid-coral)" },
-                        { e: "🎢", n: t("Viaje a Disney", "Disney trip"), date: t("jul 2026", "Jul 2026"), c: "var(--kid-coral)" },
+                        { e: "🚲", n: t("Bici nueva", "New bike"), eta: t("3 meses", "3 months"), c: "var(--kid-mint)" },
+                        { e: "🎢", n: t("Viaje a Disney", "Disney trip"), eta: t("2 años", "2 years"), c: "var(--kid-sun)" },
+                        { e: "🎮", n: "Nintendo Switch", eta: t("18 meses", "18 months"), c: "var(--kid-coral)" },
                       ].map((d) => (
-                        <div key={d.n} className="flex items-center gap-2.5 rounded-xl bg-background/60 p-2.5 ring-1 ring-kid-coral/20">
+                        <div key={d.n} className="flex items-center gap-2.5 rounded-xl bg-background/60 p-2.5 ring-1 ring-border/40">
                           <span className="text-lg leading-none">{d.e}</span>
                           <span className="min-w-0 flex-1 truncate text-xs font-medium">{d.n}</span>
                           <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
                             <CalendarCheck className="h-3 w-3" style={{ color: d.c }} />
-                            {d.date}
+                            {d.eta}
                           </span>
                         </div>
                       ))}
                     </div>
 
-                    <div className="mt-4 rounded-2xl bg-background/60 p-4 ring-1 ring-kid-coral/25">
+                    <div className="mt-4 rounded-2xl bg-background/60 p-4 ring-1 ring-border/50">
                       <div className="flex items-center justify-between text-xs">
-                        <p className="text-muted-foreground">{t("Último sueño logrado", "Last dream achieved")}</p>
-                        <span className="flex items-center gap-1 font-semibold text-kid-coral">
-                          <Trophy className="h-3.5 w-3.5" />
-                          {t("Viaje a Disney", "Disney trip")}
-                        </span>
+                        <p className="text-muted-foreground">{t("Próximo sueño", "Next dream")}</p>
+                        <span className="numeric font-semibold text-kid-mint">€186 / €300</span>
                       </div>
                       <div className="mt-2.5 h-2.5 overflow-hidden rounded-full bg-card">
                         <div
                           className="h-full rounded-full"
-                          style={{ width: "100%", background: "linear-gradient(90deg, var(--kid-coral), color-mix(in oklab, var(--kid-coral) 60%, white))" }}
+                          style={{ width: "62%", background: "linear-gradient(90deg, var(--kid-mint), var(--kid-sky))" }}
                         />
                       </div>
                       <p className="mt-2 text-[11px] text-muted-foreground">
-                        {t("¡1.200 € ahorrados y disfrutados! 🎢", "€1,200 saved and enjoyed! 🎢")}
+                        {t("Le faltan €114 para su bici nueva 🚲", "€114 to go for their new bike 🚲")}
                       </p>
                     </div>
                   </>
@@ -1151,10 +1161,10 @@ function HowItWorksSlider() {
                     </div>
                     <div className="mt-2 space-y-2.5">
                       {[
-                         { k: t("A los 12", "At 12"), v: "€2.310", c: "color-mix(in oklab, var(--kid-mint) 45%, transparent)" },
-                         { k: t("A los 15", "At 15"), v: "€5.480", c: "color-mix(in oklab, var(--kid-mint) 70%, transparent)" },
-                         { k: t("A los 18", "At 18"), v: "€10.668", c: "var(--kid-mint)" },
-                       ].map((r) => (
+                        { k: t("A los 12", "At 12"), v: "€2.310", c: "var(--kid-sky)" },
+                        { k: t("A los 15", "At 15"), v: "€5.480", c: "var(--kid-grape)" },
+                        { k: t("A los 18", "At 18"), v: "€10.668", c: "var(--kid-mint)" },
+                      ].map((r) => (
                         <div key={r.k} className="flex items-center gap-2 text-sm">
                           <span className="h-3 w-3 shrink-0 rounded-full" style={{ background: r.c }} />
                           <span className="truncate text-muted-foreground">{r.k}</span>
@@ -1170,9 +1180,9 @@ function HowItWorksSlider() {
                   <>
                     <div className="mt-3 space-y-3">
                       {[
-                        { n: "Univ. de Barcelona", cost: "€9.600", pct: 111, c: "var(--kid-grape)" },
-                        { n: "TU Delft", cost: "€16.200", pct: 66, c: "color-mix(in oklab, var(--kid-grape) 65%, transparent)" },
-                        { n: "Univ. of Toronto", cost: "€45.000", pct: 24, c: "color-mix(in oklab, var(--kid-grape) 40%, transparent)" },
+                        { n: "Univ. de Barcelona", cost: "€9.600", pct: 111, c: "var(--kid-mint)" },
+                        { n: "TU Delft", cost: "€16.200", pct: 66, c: "var(--kid-sky)" },
+                        { n: "Univ. of Toronto", cost: "€45.000", pct: 24, c: "var(--kid-grape)" },
                       ].map((u) => (
                         <div key={u.n} className="rounded-xl bg-background/60 p-3">
                           <div className="flex items-center justify-between text-sm">
