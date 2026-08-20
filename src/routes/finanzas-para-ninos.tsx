@@ -2112,7 +2112,7 @@ function DualDashboards() {
             id="kid"
             accent="var(--kid-pink)"
             cute
-            face={faceLaura}
+            face={faceSofia}
             name={t("Laura", "Laura")}
             chip={t("Su primer número", "Her first number")}
             label={t("Laura aprende a crecer su dinero", "Laura learns to grow her money")}
