@@ -45,6 +45,7 @@ export const Route = createFileRoute("/dashboard")({
       { name: "description", content: "Tu situación financiera completa en menos de 30 segundos: patrimonio, ingresos, gastos y ahorro." },
       { property: "og:title", content: "Dashboard — WhatsYournumber" },
       { property: "og:description", content: "Patrimonio neto, flujo libre, tasa de ahorro y metas en un solo panel." },
+      { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: Dashboard,

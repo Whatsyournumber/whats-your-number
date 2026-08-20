@@ -30,6 +30,7 @@ export const Route = createFileRoute("/retiro")({
       { property: "og:description", content: "Proyecta tu número ajustando aporte mensual, rentabilidad y edad objetivo." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: Retiro,

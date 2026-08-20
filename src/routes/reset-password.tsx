@@ -20,6 +20,7 @@ export const Route = createFileRoute("/reset-password")({
       { property: "og:description", content: "Define una contraseña nueva para tu cuenta." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: ResetPasswordPage,

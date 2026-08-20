@@ -27,6 +27,7 @@ export const Route = createFileRoute("/portafolio")({
       { name: "description", content: "ETFs, acciones, cripto y cash con costo promedio, rentabilidad, dividendos y benchmark." },
       { property: "og:title", content: "Portafolio — Finance OS" },
       { property: "og:description", content: "Rentabilidad de tu portafolio comparada contra el S&P 500." },
+      { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: Portafolio,

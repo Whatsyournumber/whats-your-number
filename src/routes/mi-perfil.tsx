@@ -49,6 +49,7 @@ export const Route = createFileRoute("/mi-perfil")({
       { name: "description", content: "Edita tus ingresos, gastos, activos, deudas y objetivos: toda la app se recalcula al instante." },
       { property: "og:title", content: "Mis datos — WhatsYournumber" },
       { property: "og:description", content: "Tu perfil financiero editable en WhatsYournumber." },
+      { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: MiPerfil,

@@ -17,6 +17,7 @@ export const Route = createFileRoute("/configuracion")({
       { name: "description", content: "Carga estados de cuenta PDF/CSV, gestiona cuentas, categorías y reglas automáticas." },
       { property: "og:title", content: "Cargar tus gastos — Finance OS" },
       { property: "og:description", content: "Importa tus estados de cuenta y deja que la IA los clasifique." },
+      { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: Configuracion,
