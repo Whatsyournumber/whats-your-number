@@ -767,7 +767,7 @@ function HowItWorksSlider() {
       id: "dreams",
       tab: t("Mis sueños", "My dreams"),
       icon: Target,
-      color: "var(--kid-coral)",
+      color: "var(--kid-mint)",
       title: t("Sueños con barra de progreso", "Dreams with a progress bar"),
       desc: t(
         "La bici, el viaje o el videojuego: ven cuánto les falta y ahorran para conseguirlo.",
