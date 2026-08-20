@@ -14,6 +14,7 @@ export const Route = createFileRoute("/suscripcion")({
       { property: "og:description", content: "Portal del cliente: plan, pagos, facturas y cancelación." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: SuscripcionPage,

@@ -26,6 +26,7 @@ export const Route = createFileRoute("/patrimonio")({
       { name: "description", content: "Activos, pasivos, asset allocation y crecimiento de tu patrimonio neto." },
       { property: "og:title", content: "Patrimonio — WhatsYournumber" },
       { property: "og:description", content: "Efectivo, bancos, fondos, ETFs, cripto, propiedades y deudas consolidados." },
+      { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: Patrimonio,

@@ -18,7 +18,11 @@ export const Route = createFileRoute("/blog")({
       { property: "og:description", content: "Artículos sobre finanzas personales, inversión y IA." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:url", content: "https://whatsyour-number.com/blog" },
+      { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
+      { name: "twitter:image", content: "https://whatsyour-number.com/og-cover.jpg" },
     ],
+    links: [{ rel: "canonical", href: "https://whatsyour-number.com/blog" }],
   }),
   component: BlogLayout,
 });

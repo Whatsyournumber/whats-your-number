@@ -15,6 +15,7 @@ export const Route = createFileRoute("/hipoteca")({
       { property: "og:description", content: "Simula abono, renegociación o inversión y mide cuánto te acerca a tu número." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: Hipoteca,

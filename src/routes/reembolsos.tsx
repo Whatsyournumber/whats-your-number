@@ -12,7 +12,11 @@ export const Route = createFileRoute("/reembolsos")({
       { property: "og:description", content: "30 días de garantía de devolución, gestionada por Paddle." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:url", content: "https://whatsyour-number.com/reembolsos" },
+      { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
+      { name: "twitter:image", content: "https://whatsyour-number.com/og-cover.jpg" },
     ],
+    links: [{ rel: "canonical", href: "https://whatsyour-number.com/reembolsos" }],
   }),
   component: ReembolsosPage,
 });

@@ -19,6 +19,7 @@ export const Route = createFileRoute("/advisor")({
       { name: "description", content: "Insights automáticos, detección de gastos inusuales y respuestas en lenguaje natural sobre tus finanzas." },
       { property: "og:title", content: "AI Advisor — Finance OS" },
       { property: "og:description", content: "Tu CFO personal: pregúntale a tus datos financieros en lenguaje natural." },
+      { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: Advisor,

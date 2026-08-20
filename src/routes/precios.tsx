@@ -27,7 +27,11 @@ export const Route = createFileRoute("/precios")({
       { property: "og:description", content: "Planes simples para ordenar tu patrimonio con IA." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:url", content: "https://whatsyour-number.com/precios" },
+      { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
+      { name: "twitter:image", content: "https://whatsyour-number.com/og-cover.jpg" },
     ],
+    links: [{ rel: "canonical", href: "https://whatsyour-number.com/precios" }],
   }),
   component: Pricing,
 });

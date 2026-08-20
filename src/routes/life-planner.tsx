@@ -53,6 +53,7 @@ export const Route = createFileRoute("/life-planner")({
       { property: "og:description", content: "Cada meta de vida, con su impacto real en tu fecha de retiro." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "robots", content: "noindex, nofollow" },
     ],
   }),
   component: LifePlanner,

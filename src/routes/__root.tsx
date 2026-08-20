@@ -101,19 +101,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Finance OS — Tu CFO personal" },
+      { title: "WhatsYournumber — Tu CFO personal con IA" },
       {
         name: "description",
         content:
           "Plataforma de finanzas personales y gestión patrimonial: patrimonio, gastos, cash flow, portafolio e insights con IA.",
       },
-      { property: "og:title", content: "Finance OS — Tu CFO personal" },
+      { property: "og:site_name", content: "WhatsYournumber" },
+      { property: "og:locale", content: "es_ES" },
+      { property: "og:title", content: "WhatsYournumber — Tu CFO personal con IA" },
       {
         property: "og:description",
         content: "Patrimonio, gastos, inversiones e insights con IA en un solo lugar.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "theme-color", content: "#04100c" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -123,7 +126,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Baloo+2:wght@500..800&family=DM+Sans:opsz,wght@9..40,300..700&family=Space+Grotesk:wght@400..700&display=swap",
       },
-      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "icon", href: "/favicon.png", type: "image/png" },
+      { rel: "apple-touch-icon", href: "/favicon.png" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "WhatsYournumber",
+          url: "https://whatsyour-number.com",
+          logo: "https://whatsyour-number.com/favicon.png",
+          description:
+            "Plataforma de finanzas personales y gestión patrimonial con IA: patrimonio, gastos, cash flow y portafolio.",
+        }),
+      },
     ],
   }),
   shellComponent: RootShell,

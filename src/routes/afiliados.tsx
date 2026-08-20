@@ -40,7 +40,11 @@ export const Route = createFileRoute("/afiliados")({
       { property: "og:description", content: "Gana comisión recurrente por cada usuario que llega con tu enlace." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:url", content: "https://whatsyour-number.com/afiliados" },
+      { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
+      { name: "twitter:image", content: "https://whatsyour-number.com/og-cover.jpg" },
     ],
+    links: [{ rel: "canonical", href: "https://whatsyour-number.com/afiliados" }],
   }),
   component: AffiliatesPage,
 });
