@@ -773,23 +773,32 @@ function CollegeFinder({ member }: { member: Member }) {
                   {u.city}, {lang === "en" ? u.country : u.countryEs}
                 </p>
 
-                <p className="mt-3 flex items-center gap-1.5 text-sm">
+                <div className="mt-3 flex items-center justify-between gap-2">
                   <span
                     className={cn(
-                      "font-display text-xl font-black",
-                      ok ? "text-primary" : "text-amber-600 dark:text-amber-400",
+                      "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold backdrop-blur",
+                      ok
+                        ? "bg-primary/15 text-primary"
+                        : "bg-amber-500/15 text-amber-600 dark:text-amber-400",
                     )}
                   >
+                    {ok ? <Check className="h-3.5 w-3.5" /> : <TrendingUp className="h-3.5 w-3.5" />}
                     {coverage}%
+                    <span className="font-medium opacity-70">{t("cubierto", "covered")}</span>
                   </span>
-                  <span className="text-xs text-muted-foreground">{t("cubierto", "covered")}</span>
-                  {ok ? <Check className="h-3.5 w-3.5 text-primary" /> : null}
-                </p>
-                {!ok ? (
-                  <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
-                    <div className="h-full rounded-full bg-amber-500" style={{ width: `${coverage}%` }} />
-                  </div>
-                ) : null}
+                  {ok ? (
+                    <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                      {t("A tu alcance", "Within reach")}
+                    </span>
+                  ) : null}
+                </div>
+
+                <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+                  <div
+                    className={cn("h-full rounded-full transition-all", ok ? "bg-primary" : "bg-amber-500")}
+                    style={{ width: `${coverage}%` }}
+                  />
+                </div>
 
                 <div className="mt-3 grid grid-cols-3 gap-2 rounded-2xl bg-secondary/50 px-3 py-2 text-center">
                   <div className="min-w-0">
@@ -815,21 +824,31 @@ function CollegeFinder({ member }: { member: Member }) {
                   </div>
                 </div>
 
-                <div className="mt-3 flex items-end justify-between gap-3">
-                  <div>
+                <div
+                  className={cn(
+                    "mt-3 flex items-end justify-between gap-3 rounded-2xl border px-3 py-2.5",
+                    ok ? "border-primary/20 bg-primary/[0.04]" : "border-amber-500/20 bg-amber-500/[0.04]",
+                  )}
+                >
+                  <div className="min-w-0">
                     <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
                       {includeLiving ? t("Coste total carrera", "Total degree cost") : t("Matrícula total", "Total tuition")}
                     </p>
                     <p className="font-display text-lg font-bold text-foreground">{money(total, currency, true)}</p>
                   </div>
-                  <p className="text-right text-[11px] leading-tight">
-                    <span className="block text-muted-foreground">
+                  <div className="text-right">
+                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
                       {ok ? t("Te quedarían", "You'd have left") : t("Te faltarían", "You'd be short")}
-                    </span>
-                    <span className={cn("font-bold", ok ? "text-primary" : "text-amber-600 dark:text-amber-400")}>
+                    </p>
+                    <p
+                      className={cn(
+                        "font-display text-base font-bold",
+                        ok ? "text-primary" : "text-amber-600 dark:text-amber-400",
+                      )}
+                    >
                       {money(ok ? projected - total : gap, currency, true)}
-                    </span>
-                  </p>
+                    </p>
+                  </div>
                 </div>
 
                 {ok ? (
