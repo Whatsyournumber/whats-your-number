@@ -112,8 +112,8 @@ function Pricing() {
       yearlyPrice: prices.family.yearly,
       priceId: isYearly ? "patrimonio_yearly" : "patrimonio_monthly",
       desc: t(
-        "Para familias que quieren ordenar su patrimonio y construir el futuro financiero de sus hijos.",
-        "For families who want to organize their wealth and build their children's financial future.",
+        "Ordena el patrimonio de tu familia y construye el futuro financiero de tus hijos.",
+        "Organize your family's wealth and build your children's financial future.",
       ),
       features: [
         t("Todo lo de Pro", "Everything in Pro"),
