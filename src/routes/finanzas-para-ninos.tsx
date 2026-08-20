@@ -2462,8 +2462,9 @@ function FamilyProfiles() {
   const members = [
     { name: "Carlos", role: t("Padre", "Dad"), photo: faceDad, active: false },
     { name: "Laura", role: t("Madre", "Mom"), photo: faceMom, active: false },
-    { name: "Sofía", role: t("12 años", "Age 12"), photo: faceSofia, active: true },
-    { name: "Lucas", role: t("7 años", "Age 7"), photo: faceBoy, active: false },
+    { name: "Lucas", role: t("6 años", "Age 6"), photo: faceBoy, active: false },
+    { name: "Sofía", role: t("13 años", "Age 13"), photo: faceSofia, active: true },
+
   ];
   return (
     <section className="mt-16 md:mt-24">
@@ -2486,7 +2487,7 @@ function FamilyProfiles() {
             key={m.name}
             className={`surface relative p-6 text-center transition-colors ${
               m.active ? "border-kid-mint/50 shadow-[0_0_30px_-12px_var(--kid-mint)]" : ""
-            } ${m.name === "Lucas" ? "hidden sm:block" : ""}`}
+            }`}
           >
             {m.active && (
               <Star className="absolute right-3 top-3 h-4 w-4 fill-kid-mint text-kid-mint" />
