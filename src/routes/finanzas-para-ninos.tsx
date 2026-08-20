@@ -57,7 +57,19 @@ import { useT } from "@/hooks/use-language";
 import { cn } from "@/lib/utils";
 
 import { useLiveCount, formatCount } from "@/components/live-count";
-import { REAL_UNI_PHOTOS } from "@/lib/uni-photos-real";
+import photoMit from "@/assets/uni/us-mit.jpg";
+import photoIe from "@/assets/uni/es-ie.jpg";
+import photoSnu from "@/assets/uni/kr-snu.jpg";
+import photoOxford from "@/assets/uni/uk-oxford.jpg";
+import photoToronto from "@/assets/uni/ca-toronto.jpg";
+
+const DEMO_UNI_PHOTOS: Record<string, string> = {
+  "us-mit": photoMit,
+  "es-ie-university": photoIe,
+  "ap-seoul-national-university": photoSnu,
+  "uk-university-of-oxford": photoOxford,
+  "ca-university-of-toronto": photoToronto,
+};
 
 
 export const Route = createFileRoute("/finanzas-para-ninos")({
@@ -379,13 +391,34 @@ function FamilyPlannerVisual() {
 
 const DEMO_UNIS = [
   {
-    id: "es-universitat-de-barcelona",
-    name: "Universitat de Barcelona",
-    city: "Barcelona",
+    id: "us-mit",
+    name: "MIT",
+    city: "Boston",
+    country: "🇺🇸",
+    rank: 1,
+    cost: 82500,
+    region: "na",
+    feat: 0,
+  },
+  {
+    id: "es-ie-university",
+    name: "IE University",
+    city: "Madrid",
     country: "🇪🇸",
-    rank: 149,
-    cost: 9600,
+    rank: 30,
+    cost: 24800,
     region: "eu",
+    feat: 1,
+  },
+  {
+    id: "ap-seoul-national-university",
+    name: "Seoul National University",
+    city: "Seúl",
+    country: "🇰🇷",
+    rank: 31,
+    cost: 18600,
+    region: "apac",
+    feat: 2,
   },
   {
     id: "uk-university-of-oxford",
@@ -395,15 +428,7 @@ const DEMO_UNIS = [
     rank: 3,
     cost: 46200,
     region: "eu",
-  },
-  {
-    id: "nl-tu-delft",
-    name: "TU Delft",
-    city: "Delft",
-    country: "🇳🇱",
-    rank: 49,
-    cost: 21400,
-    region: "eu",
+    feat: 3,
   },
   {
     id: "ca-university-of-toronto",
@@ -413,15 +438,7 @@ const DEMO_UNIS = [
     rank: 21,
     cost: 38900,
     region: "na",
-  },
-  {
-    id: "us-mit",
-    name: "MIT",
-    city: "Boston",
-    country: "🇺🇸",
-    rank: 1,
-    cost: 82500,
-    region: "na",
+    feat: 4,
   },
 ] as const;
 
@@ -433,7 +450,7 @@ function UniFinderVisual() {
 
   const list = DEMO_UNIS.filter((u) => (region === "all" ? true : u.region === region)).filter((u) =>
     q.trim() ? `${u.name} ${u.city}`.toLowerCase().includes(q.trim().toLowerCase()) : true,
-  ).slice().sort((a, b) => a.rank - b.rank);
+  ).slice().sort((a, b) => (region === "all" ? a.feat - b.feat : a.rank - b.rank));
   const eligible = list.filter((u) => u.cost <= budget);
   const hero = list[0];
 
@@ -477,13 +494,14 @@ function UniFinderVisual() {
               `With €${budget.toLocaleString("es-ES")} they could apply to ${eligible.length} of ${list.length} universities shown`,
             )}
           </p>
-          <div className="relative mt-2 h-32 overflow-hidden rounded-2xl ring-1 ring-border">
+          <div className="relative mt-2 h-48 overflow-hidden rounded-2xl ring-1 ring-border">
             <img
-              src={REAL_UNI_PHOTOS[hero.id]}
+              src={DEMO_UNI_PHOTOS[hero.id]}
               alt={hero.name}
               loading="lazy"
               className="absolute inset-0 h-full w-full object-cover"
             />
+
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-transparent" />
             <span className="absolute left-3 top-3 rounded-full bg-kid-grape/90 px-2 py-0.5 text-[10px] font-semibold text-background">
               #{hero.rank} · {t("ranking mundial", "world ranking")}
@@ -514,14 +532,15 @@ function UniFinderVisual() {
 
           <div className="mt-2.5 grid grid-cols-2 gap-2.5">
             {rest.map((u) => (
-              <div key={u.id} className="relative h-20 overflow-hidden rounded-xl ring-1 ring-border">
+              <div key={u.id} className="relative h-32 overflow-hidden rounded-2xl ring-1 ring-border">
                 <img
-                  src={REAL_UNI_PHOTOS[u.id]}
+                  src={DEMO_UNI_PHOTOS[u.id]}
                   alt={u.name}
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+
                 {u.cost <= budget && (
                   <span className="absolute right-2 top-2 rounded-full bg-kid-mint/20 px-1.5 py-0.5 text-[9px] font-semibold text-kid-mint">
                     {t("Puede aplicar", "Can apply")}
