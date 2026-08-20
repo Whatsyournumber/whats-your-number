@@ -920,6 +920,22 @@ function HowItWorksSlider() {
                     <p className="mt-2 text-xs text-muted-foreground">
                       {t("Su regla: 80% ahorrar e invertir · 20% gastar", "Their rule: 80% save & invest · 20% spend")}
                     </p>
+
+                    <div className="mt-4 rounded-2xl bg-background/60 p-4 ring-1 ring-border/50">
+                      <div className="flex items-center justify-between text-xs">
+                        <p className="text-muted-foreground">{t("Progreso del mes", "Month progress")}</p>
+                        <span className="numeric font-semibold text-kid-sky">€1.150 / €10.668</span>
+                      </div>
+                      <div className="relative mt-2.5 h-2.5 overflow-hidden rounded-full bg-card">
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: "11%", background: "linear-gradient(90deg, var(--kid-sky), var(--kid-mint))" }}
+                        />
+                      </div>
+                      <p className="mt-2 text-[11px] text-muted-foreground">
+                        {t("Ahorrando €11,3 al mes hasta los 18 años.", "Saving €11.3 per month until age 18.")}
+                      </p>
+                    </div>
                   </>
                 ) : active.id === "chores" ? (
                   <>
