@@ -333,49 +333,8 @@ function ProfileSelector() {
               </p>
             ) : null}
 
-            {editing ? (
-              <div
-                className="fixed inset-0 z-50 grid place-items-center bg-background/80 p-5 backdrop-blur-sm"
-                role="dialog"
-                aria-modal="true"
-              >
-                <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-2xl">
-                  <h2 className="font-display text-xl font-semibold text-foreground">
-                    {t("Editar perfil", "Edit profile")}
-                  </h2>
-                  <label className="mt-4 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    {t("Nombre", "Name")}
-                  </label>
-                  <input
-                    value={editName}
-                    onChange={(e) => setEditName(e.target.value)}
-                    autoFocus
-                    className="mt-1.5 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
-                  />
-                  <label className="mt-4 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    {t("Subtítulo", "Subtitle")}
-                  </label>
-                  <input
-                    value={editSubtitle}
-                    onChange={(e) => setEditSubtitle(e.target.value)}
-                    placeholder={
-                      editing.role === "parent"
-                        ? t("Padre / Madre", "Parent")
-                        : `${Math.round(editing.age)} ${t("años", "years")}`
-                    }
-                    className="mt-1.5 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground/60 focus:border-primary"
-                  />
-                  <div className="mt-6 flex justify-end gap-2">
-                    <Button variant="ghost" onClick={() => setEditing(null)}>
-                      {t("Cancelar", "Cancel")}
-                    </Button>
-                    <Button onClick={() => void saveEdit()} disabled={savingEdit || !editName.trim()}>
-                      {savingEdit ? t("Guardando…", "Saving…") : t("Guardar", "Save")}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ) : null}
+
+
 
 
             {pendingDelete ? (
