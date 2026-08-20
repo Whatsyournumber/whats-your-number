@@ -11,6 +11,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useT } from "@/hooks/use-language";
+import { useRegionalPricing } from "@/hooks/use-regional-pricing";
+import { formatUsd } from "@/lib/pricing-tiers";
 import type { PlanTier } from "@/hooks/use-subscription";
 
 /** Detalle de cada plan para explicar al usuario qué incluye lo que compró. */
@@ -38,7 +40,10 @@ function usePlanCopy() {
     },
     pro: {
       name: "Pro",
-      price: t("7 $/mes · 60 $/año", "$7/mo · $60/yr"),
+      price: t(
+        `${formatUsd(prices.pro.monthly)}/mes · ${formatUsd(prices.pro.yearly)}/año`,
+        `${formatUsd(prices.pro.monthly)}/mo · ${formatUsd(prices.pro.yearly)}/yr`,
+      ),
       desc: t(
         "Todo el sistema financiero con IA ilimitada.",
         "The full financial OS with unlimited AI.",
@@ -58,7 +63,10 @@ function usePlanCopy() {
     },
     patrimonio: {
       name: "Familiar",
-      price: t("19 $/mes", "$19/mo"),
+      price: t(
+        `${formatUsd(prices.family.monthly)}/mes · ${formatUsd(prices.family.yearly)}/año`,
+        `${formatUsd(prices.family.monthly)}/mo · ${formatUsd(prices.family.yearly)}/yr`,
+      ),
       desc: t(
         "Para familias: tu patrimonio y el futuro financiero de tus hijos.",
         "For families: your wealth and your children's financial future.",
