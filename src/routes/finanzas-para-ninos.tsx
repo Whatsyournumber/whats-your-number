@@ -1325,7 +1325,7 @@ function HowItWorksSlider() {
                     </div>
 
                     {/* Equation: how the number is built */}
-                    <div className="space-y-2">
+                    <div className="flex flex-1 flex-col justify-center gap-2.5">
                       <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                         {t("Cómo se construye", "How it's built")}
                       </p>
@@ -1336,7 +1336,7 @@ function HowItWorksSlider() {
                       ].map((m) => (
                         <div
                           key={m.k}
-                          className={`flex items-center justify-between rounded-xl px-4 py-3 ring-1 ring-border/40 ${
+                          className={`flex items-center justify-between rounded-xl px-4 py-3.5 ring-1 ring-border/40 ${
                             m.strong ? "bg-kid-mint/8" : "bg-background/60"
                           }`}
                         >
