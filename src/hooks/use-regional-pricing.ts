@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { getVisitorPricingTier } from "@/lib/geo-pricing.functions";
@@ -31,7 +32,12 @@ export function useRegionalPricing() {
     retry: 1,
   });
 
-  const tier: PricingTier = query.data?.tier ?? fallbackTier();
+  // El primer render del cliente debe coincidir con el HTML del servidor:
+  // solo aplicamos la heurística local después de hidratar.
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
+
+  const tier: PricingTier = query.data?.tier ?? (hydrated ? fallbackTier() : "standard");
 
   return {
     tier,
