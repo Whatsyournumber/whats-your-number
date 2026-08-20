@@ -1151,10 +1151,10 @@ function HowItWorksSlider() {
                     </div>
                     <div className="mt-2 space-y-2.5">
                       {[
-                        { k: t("A los 12", "At 12"), v: "€2.310", c: "var(--kid-sky)" },
-                        { k: t("A los 15", "At 15"), v: "€5.480", c: "var(--kid-grape)" },
-                        { k: t("A los 18", "At 18"), v: "€10.668", c: "var(--kid-mint)" },
-                      ].map((r) => (
+                         { k: t("A los 12", "At 12"), v: "€2.310", c: "color-mix(in oklab, var(--kid-mint) 45%, transparent)" },
+                         { k: t("A los 15", "At 15"), v: "€5.480", c: "color-mix(in oklab, var(--kid-mint) 70%, transparent)" },
+                         { k: t("A los 18", "At 18"), v: "€10.668", c: "var(--kid-mint)" },
+                       ].map((r) => (
                         <div key={r.k} className="flex items-center gap-2 text-sm">
                           <span className="h-3 w-3 shrink-0 rounded-full" style={{ background: r.c }} />
                           <span className="truncate text-muted-foreground">{r.k}</span>
@@ -1170,9 +1170,9 @@ function HowItWorksSlider() {
                   <>
                     <div className="mt-3 space-y-3">
                       {[
-                        { n: "Univ. de Barcelona", cost: "€9.600", pct: 111, c: "var(--kid-mint)" },
-                        { n: "TU Delft", cost: "€16.200", pct: 66, c: "var(--kid-sky)" },
-                        { n: "Univ. of Toronto", cost: "€45.000", pct: 24, c: "var(--kid-grape)" },
+                        { n: "Univ. de Barcelona", cost: "€9.600", pct: 111, c: "var(--kid-grape)" },
+                        { n: "TU Delft", cost: "€16.200", pct: 66, c: "color-mix(in oklab, var(--kid-grape) 65%, transparent)" },
+                        { n: "Univ. of Toronto", cost: "€45.000", pct: 24, c: "color-mix(in oklab, var(--kid-grape) 40%, transparent)" },
                       ].map((u) => (
                         <div key={u.n} className="rounded-xl bg-background/60 p-3">
                           <div className="flex items-center justify-between text-sm">
