@@ -18,6 +18,7 @@ import type { PlanTier } from "@/hooks/use-subscription";
 /** Detalle de cada plan para explicar al usuario qué incluye lo que compró. */
 function usePlanCopy() {
   const t = useT();
+  const { prices } = useRegionalPricing();
 
   const copy: Record<PlanTier, { name: string; price: string; desc: string; features: string[] }> = {
     free: {
