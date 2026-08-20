@@ -862,86 +862,13 @@ function HowItWorksSlider() {
       tab: t("Planificador familiar", "Family planner"),
       icon: Rocket,
       color: "var(--kid-mint)",
-      title: t("Interés compuesto explicado para niños", "Compound interest explained for kids"),
+      title: t("El plan del futuro, en una pantalla", "The future plan, on one screen"),
       desc: t(
-        "Ven cómo cada euro ahorrado se multiplica con el tiempo, con gráficas que entienden solos.",
-        "They watch every saved euro multiply over time, with charts they get on their own.",
+        "Ajusta capital, aporte mensual y edad objetivo: verás al instante cuánto tendrá y cuánto viene del interés compuesto.",
+        "Tune starting capital, monthly deposit and target age: see instantly how much they'll have and how much comes from compounding.",
       ),
-      visual: (
-        <ScreenCard title={t("Mi futuro", "My future")} accent="var(--kid-mint)">
-          <div className="flex flex-wrap items-end justify-between gap-2">
-            <div>
-              <p className="text-sm text-muted-foreground">{t("Proyección a 18 años", "Projection to age 18")}</p>
-              <p className="numeric mt-1 text-4xl font-semibold">10.668 €</p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                {t("Si ahorras", "If you save")} <span className="text-kid-mint">11,3 €</span> {t("al mes", "a month")}
-              </p>
-            </div>
-            <div className="flex gap-3 text-[11px] text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-kid-mint" /> {t("Con interés", "With interest")}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-muted-foreground/50" />{" "}
-                {t("Solo ahorrando", "Only saving")}
-              </span>
-            </div>
-          </div>
-          <div className="mt-2 h-56">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={growCurve} margin={{ top: 8, right: 6, bottom: 0, left: 0 }}>
-                <defs>
-                  <linearGradient id="grow-area" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--kid-mint)" stopOpacity={0.4} />
-                    <stop offset="100%" stopColor="var(--kid-mint)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <XAxis
-                  dataKey="x"
-                  ticks={[0, 10, 18]}
-                  tickFormatter={(v: number) =>
-                    v === 0 ? t("Hoy", "Today") : `${v} ${t("años", "yrs")}`
-                  }
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="flat"
-                  stroke="var(--muted-foreground)"
-                  strokeWidth={2}
-                  strokeDasharray="5 5"
-                  fill="none"
-                  dot={false}
-                  isAnimationActive={false}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="y"
-                  stroke="var(--kid-mint)"
-                  strokeWidth={2.5}
-                  fill="url(#grow-area)"
-                  dot={false}
-                  isAnimationActive={false}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="mt-2 grid grid-cols-3 gap-2 text-center">
-            {[
-              { k: t("A los 12", "At 12"), v: "€2.310" },
-              { k: t("A los 15", "At 15"), v: "€5.480" },
-              { k: t("A los 18", "At 18"), v: "€10.668" },
-            ].map((m) => (
-              <div key={m.k} className="rounded-xl bg-elevated px-3 py-2">
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{m.k}</p>
-                <p className="numeric mt-0.5 text-sm font-semibold text-kid-mint">{m.v}</p>
-              </div>
-            ))}
-          </div>
-        </ScreenCard>
-      ),
+      visual: <FamilyPlannerVisual />,
+
     },
     {
       id: "unis",
