@@ -445,8 +445,8 @@ const DEMO_UNIS = [
 function UniFinderVisual() {
   const t = useT();
   const [q, setQ] = useState("");
-  const [region, setRegion] = useState<"all" | "eu" | "na">("all");
-  const budget = 10668;
+  const [region, setRegion] = useState<"all" | "eu" | "na" | "apac">("all");
+  const budget = PLAN_FUTURE;
 
   const list = DEMO_UNIS.filter((u) => (region === "all" ? true : u.region === region)).filter((u) =>
     q.trim() ? `${u.name} ${u.city}`.toLowerCase().includes(q.trim().toLowerCase()) : true,
@@ -457,121 +457,160 @@ function UniFinderVisual() {
   const rest = list.slice(1, 3);
   const fmt = (v: number) => `€${Math.round(v).toLocaleString("es-ES")}`;
 
+  const regions: { id: "all" | "eu" | "na" | "apac"; label: string; emoji: string }[] = [
+    { id: "all", label: t("Mundo", "World"), emoji: "🌍" },
+    { id: "eu", label: t("Europa", "Europe"), emoji: "🇪🇺" },
+    { id: "na", label: t("Norteamérica", "N. America"), emoji: "🗽" },
+    { id: "apac", label: t("Asia", "Asia"), emoji: "🌏" },
+  ];
+
   return (
     <ScreenCard title={t("Buscador de universidades", "University finder")} accent="var(--kid-grape)">
-      <div className="flex items-center gap-2 rounded-full border border-border bg-elevated px-3 py-2">
-        <Search className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder={t("Busca una universidad o ciudad", "Search a university or city")}
-          className="w-full bg-transparent text-xs outline-none placeholder:text-muted-foreground"
-        />
-      </div>
+      <div className="grid gap-4 lg:grid-cols-[200px_1fr]">
+        {/* ---- Filters sidebar ---- */}
+        <aside className="flex flex-col gap-3">
+          {/* Budget badge */}
+          <div className="rounded-2xl border border-kid-grape/25 bg-kid-grape/8 p-3.5">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-kid-grape">
+              {t("Su número a los 18", "Her number at 18")}
+            </p>
+            <p className="numeric mt-1.5 text-2xl font-bold text-kid-grape">{fmt(budget)}</p>
+            <p className="mt-0.5 text-[10px] text-muted-foreground">
+              {t("para pagar la universidad", "to pay for college")}
+            </p>
+          </div>
 
-      <div className="mt-2.5 flex gap-1.5">
-        {(["all", "eu", "na"] as const).map((r) => (
-          <button
-            key={r}
-            type="button"
-            onClick={() => setRegion(r)}
-            className={`rounded-full px-3 py-1 text-[11px] font-medium transition-colors ${
-              region === r
-                ? "bg-kid-grape/15 text-kid-grape ring-1 ring-kid-grape/40"
-                : "bg-elevated text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {r === "all" ? t("Mundo", "World") : r === "eu" ? t("Europa", "Europe") : t("Norteamérica", "N. America")}
-          </button>
-        ))}
-      </div>
-
-      {hero ? (
-        <>
-          <p className="mt-2.5 text-[11px] text-muted-foreground">
-            {t(
-              `Con €${budget.toLocaleString("es-ES")} podría aplicar a ${eligible.length} de ${list.length} universidades mostradas`,
-              `With €${budget.toLocaleString("es-ES")} they could apply to ${eligible.length} of ${list.length} universities shown`,
-            )}
-          </p>
-          <div className="relative mt-2 h-48 overflow-hidden rounded-2xl ring-1 ring-border">
-            <img
-              src={DEMO_UNI_PHOTOS[hero.id]}
-              alt={hero.name}
-              loading="lazy"
-              className="absolute inset-0 h-full w-full object-cover"
+          {/* Search */}
+          <div className="group flex items-center gap-2 rounded-xl border border-border bg-elevated px-3 py-2.5 transition-colors focus-within:border-kid-grape/50 focus-within:bg-kid-grape/5">
+            <Search className="h-3.5 w-3.5 shrink-0 text-muted-foreground transition-colors group-focus-within:text-kid-grape" />
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder={t("Busca...", "Search...")}
+              className="w-full bg-transparent text-xs outline-none placeholder:text-muted-foreground"
             />
+          </div>
 
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-transparent" />
-            <span className="absolute left-3 top-3 rounded-full bg-kid-grape/90 px-2 py-0.5 text-[10px] font-semibold text-background">
-              #{hero.rank} · {t("ranking mundial", "world ranking")}
-            </span>
-            <span
-              className={`absolute right-3 top-3 rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ${
-                hero.cost <= budget
-                  ? "bg-kid-mint/15 text-kid-mint ring-kid-mint/30"
-                  : "bg-elevated/80 text-muted-foreground ring-border"
-              }`}
-            >
-              {hero.cost <= budget ? t("Puede aplicar", "Can apply") : t("Le falta", "Short")}
-            </span>
-            <div className="absolute inset-x-3 bottom-2.5 flex items-end justify-between gap-3">
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold">
-                  {hero.country} {hero.name}
-                </p>
-                <p className="text-[11px] text-muted-foreground">
-                  {hero.city} · {fmt(hero.cost)} {t("carrera completa", "full degree")}
-                </p>
-              </div>
-              <span className="numeric rounded-full bg-kid-mint/15 px-2.5 py-1 text-xs font-semibold text-kid-mint ring-1 ring-kid-mint/30">
-                {Math.min(999, Math.round((budget / hero.cost) * 100))}%
-              </span>
+          {/* Region selector */}
+          <div className="flex flex-col gap-1.5">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              {t("Región", "Region")}
+            </p>
+            <div className="flex flex-col gap-1">
+              {regions.map((r) => (
+                <button
+                  key={r.id}
+                  type="button"
+                  onClick={() => setRegion(r.id)}
+                  className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium transition-all ${
+                    region === r.id
+                      ? "bg-kid-grape/15 text-kid-grape ring-1 ring-kid-grape/40"
+                      : "bg-elevated/60 text-muted-foreground hover:bg-elevated hover:text-foreground"
+                  }`}
+                >
+                  <span className="text-sm">{r.emoji}</span>
+                  {r.label}
+                </button>
+              ))}
             </div>
           </div>
 
-          <div className="mt-2.5 grid grid-cols-2 gap-2.5">
-            {rest.map((u) => (
-              <div key={u.id} className="relative h-32 overflow-hidden rounded-2xl ring-1 ring-border">
+          {/* Eligibility counter */}
+          <div className="mt-auto rounded-xl bg-background/60 p-3 ring-1 ring-border/40">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+              {t("Puede aplicar a", "Can apply to")}
+            </p>
+            <p className="numeric mt-1 text-lg font-bold text-kid-mint">
+              {eligible.length}
+              <span className="text-sm text-muted-foreground"> / {list.length}</span>
+            </p>
+          </div>
+        </aside>
+
+        {/* ---- Results ---- */}
+        <div className="min-w-0">
+          {hero ? (
+            <>
+              <div className="relative h-52 overflow-hidden rounded-2xl ring-1 ring-border">
                 <img
-                  src={DEMO_UNI_PHOTOS[u.id]}
-                  alt={u.name}
+                  src={DEMO_UNI_PHOTOS[hero.id]}
+                  alt={hero.name}
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
 
-                {u.cost <= budget && (
-                  <span className="absolute right-2 top-2 rounded-full bg-kid-mint/20 px-1.5 py-0.5 text-[9px] font-semibold text-kid-mint">
-                    {t("Puede aplicar", "Can apply")}
-                  </span>
-                )}
-                <div className="absolute inset-x-2.5 bottom-2 flex items-end justify-between gap-2">
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-transparent" />
+                <span className="absolute left-3 top-3 rounded-full bg-kid-grape/90 px-2 py-0.5 text-[10px] font-semibold text-background">
+                  #{hero.rank} · {t("ranking mundial", "world ranking")}
+                </span>
+                <span
+                  className={`absolute right-3 top-3 rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ${
+                    hero.cost <= budget
+                      ? "bg-kid-mint/15 text-kid-mint ring-kid-mint/30"
+                      : "bg-elevated/80 text-muted-foreground ring-border"
+                  }`}
+                >
+                  {hero.cost <= budget ? t("Puede aplicar", "Can apply") : t("Le falta", "Short")}
+                </span>
+                <div className="absolute inset-x-3 bottom-2.5 flex items-end justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="truncate text-[11px] font-semibold">
-                      {u.country} {u.name}
+                    <p className="truncate text-sm font-semibold">
+                      {hero.country} {hero.name}
                     </p>
-                    <p className="numeric truncate text-[10px] text-muted-foreground">{fmt(u.cost)}</p>
+                    <p className="text-[11px] text-muted-foreground">
+                      {hero.city} · {fmt(hero.cost)} {t("carrera completa", "full degree")}
+                    </p>
                   </div>
-                  <span className="numeric rounded-full bg-kid-grape/15 px-1.5 py-0.5 text-[10px] font-medium text-kid-grape">
-                    #{u.rank}
+                  <span className="numeric rounded-full bg-kid-mint/15 px-2.5 py-1 text-xs font-semibold text-kid-mint ring-1 ring-kid-mint/30">
+                    {Math.min(999, Math.round((budget / hero.cost) * 100))}%
                   </span>
                 </div>
               </div>
-            ))}
-          </div>
-        </>
-      ) : (
-        <p className="mt-6 text-center text-xs text-muted-foreground">{t("Sin resultados", "No results")}</p>
-      )}
 
-      <p className="mt-3 flex items-start gap-1.5 text-[10px] leading-relaxed text-muted-foreground">
-        <GraduationCap className="mt-0.5 h-3 w-3 shrink-0" />
-        {t(
-          "Ranking QS/THE + coste de vida por ciudad, comparado con su número del futuro.",
-          "QS/THE ranking + city living costs, compared with their future number.",
-        )}
-      </p>
+              <div className="mt-2.5 grid grid-cols-2 gap-2.5">
+                {rest.map((u) => (
+                  <div key={u.id} className="relative h-36 overflow-hidden rounded-2xl ring-1 ring-border">
+                    <img
+                      src={DEMO_UNI_PHOTOS[u.id]}
+                      alt={u.name}
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+
+                    {u.cost <= budget && (
+                      <span className="absolute right-2 top-2 rounded-full bg-kid-mint/20 px-1.5 py-0.5 text-[9px] font-semibold text-kid-mint">
+                        {t("Puede aplicar", "Can apply")}
+                      </span>
+                    )}
+                    <div className="absolute inset-x-2.5 bottom-2 flex items-end justify-between gap-2">
+                      <div className="min-w-0">
+                        <p className="truncate text-[11px] font-semibold">
+                          {u.country} {u.name}
+                        </p>
+                        <p className="numeric truncate text-[10px] text-muted-foreground">{fmt(u.cost)}</p>
+                      </div>
+                      <span className="numeric rounded-full bg-kid-grape/15 px-1.5 py-0.5 text-[10px] font-medium text-kid-grape">
+                        #{u.rank}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <p className="mt-6 text-center text-xs text-muted-foreground">{t("Sin resultados", "No results")}</p>
+          )}
+
+          <p className="mt-3 flex items-start gap-1.5 text-[10px] leading-relaxed text-muted-foreground">
+            <GraduationCap className="mt-0.5 h-3 w-3 shrink-0" />
+            {t(
+              "Ranking QS/THE + coste de vida por ciudad, comparado con su número del futuro.",
+              "QS/THE ranking + city living costs, compared with their future number.",
+            )}
+          </p>
+        </div>
+      </div>
 
     </ScreenCard>
   );
@@ -1385,7 +1424,7 @@ function HowItWorksSlider() {
 
                 ) : (
                   (() => {
-                    const uniNumber = 10668;
+                    const uniNumber = PLAN_FUTURE;
                     const rows = [
                       { n: "Univ. de Barcelona", f: "🇪🇸", city: "Barcelona", cost: 9600 },
                       { n: "Seoul Nat. University", f: "🇰🇷", city: "Seúl", cost: 18600 },
