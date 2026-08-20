@@ -230,7 +230,7 @@ function PlannerChart() {
           {t("Objetivo", "Goal")}
         </span>
       </div>
-      <div className="mt-2 min-h-0 flex-1">
+      <div className="mt-2 h-[340px]">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={plannerCurve} margin={{ top: 46, right: 12, bottom: 0, left: 4 }}>
             <defs>
