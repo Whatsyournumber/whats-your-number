@@ -1147,7 +1147,7 @@ function HowItWorksSlider() {
                   type="button"
                   onClick={() => setI(k)}
                   className={cn(
-                    "flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all",
+                    "flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium transition-all md:gap-2 md:px-4 md:py-2 md:text-sm",
                     isActive ? "shadow-lg" : "bg-elevated text-muted-foreground hover:text-foreground",
                   )}
                   style={
