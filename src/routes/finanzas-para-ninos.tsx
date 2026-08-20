@@ -58,21 +58,15 @@ import { cn } from "@/lib/utils";
 
 import { useLiveCount, formatCount } from "@/components/live-count";
 import photoMit from "@/assets/uni/us-mit.jpg";
-import photoIe from "@/assets/uni/es-ie.jpg";
-import photoSnu from "@/assets/uni/kr-snu.jpg";
 import photoOxford from "@/assets/uni/uk-oxford.jpg";
 import photoToronto from "@/assets/uni/ca-toronto.jpg";
-import photoStanford from "@/assets/uni-stanford.jpg";
-import photoHarvard from "@/assets/uni-harvard.jpg";
+import photoEth from "@/assets/uni/ch-eth.jpg";
 
 const DEMO_UNI_PHOTOS: Record<string, string> = {
   "us-mit": photoMit,
-  "es-ie-university": photoIe,
-  "ap-seoul-national-university": photoSnu,
   "uk-university-of-oxford": photoOxford,
   "ca-university-of-toronto": photoToronto,
-  "us-stanford": photoStanford,
-  "us-harvard": photoHarvard,
+  "ch-eth-zurich": photoEth,
 };
 
 
@@ -400,29 +394,9 @@ const DEMO_UNIS = [
     city: "Boston",
     country: "🇺🇸",
     rank: 1,
-    cost: 82500,
+    cost: 96000,
     region: "na",
     feat: 0,
-  },
-  {
-    id: "es-ie-university",
-    name: "IE University",
-    city: "Madrid",
-    country: "🇪🇸",
-    rank: 30,
-    cost: 24800,
-    region: "eu",
-    feat: 1,
-  },
-  {
-    id: "ap-seoul-national-university",
-    name: "Seoul National University",
-    city: "Seúl",
-    country: "🇰🇷",
-    rank: 31,
-    cost: 18600,
-    region: "apac",
-    feat: 2,
   },
   {
     id: "uk-university-of-oxford",
@@ -430,9 +404,9 @@ const DEMO_UNIS = [
     city: "Oxford",
     country: "🇬🇧",
     rank: 3,
-    cost: 46200,
+    cost: 89000,
     region: "eu",
-    feat: 3,
+    feat: 1,
   },
   {
     id: "ca-university-of-toronto",
@@ -440,29 +414,19 @@ const DEMO_UNIS = [
     city: "Toronto",
     country: "🇨🇦",
     rank: 21,
-    cost: 38900,
+    cost: 87000,
     region: "na",
-    feat: 4,
+    feat: 2,
   },
   {
-    id: "us-stanford",
-    name: "Stanford University",
-    city: "Palo Alto",
-    country: "🇺🇸",
-    rank: 6,
-    cost: 96400,
-    region: "na",
-    feat: 5,
-  },
-  {
-    id: "us-harvard",
-    name: "Harvard University",
-    city: "Cambridge",
-    country: "🇺🇸",
-    rank: 4,
-    cost: 91200,
-    region: "na",
-    feat: 6,
+    id: "ch-eth-zurich",
+    name: "ETH Zürich",
+    city: "Zúrich",
+    country: "🇨🇭",
+    rank: 7,
+    cost: 90000,
+    region: "eu",
+    feat: 3,
   },
 ] as const;
 
@@ -485,7 +449,7 @@ function UniFinderVisual() {
   const rest = [
     ...eligible.filter((u) => u.id !== hero?.id),
     ...over.filter((u) => u.id !== hero?.id),
-  ].slice(0, 2);
+  ].slice(0, 3);
   const fmt = (v: number) => `€${Math.round(v).toLocaleString("es-ES")}`;
 
   return (
@@ -604,7 +568,7 @@ function UniFinderVisual() {
             </div>
           </div>
 
-          <div className="mt-2.5 grid grid-cols-2 gap-2.5">
+          <div className="mt-2.5 grid grid-cols-3 gap-2.5">
             {rest.map((u) => (
               <div key={u.id} className="relative h-32 overflow-hidden rounded-2xl ring-1 ring-border">
                 <img
@@ -1009,9 +973,8 @@ function HowItWorksSlider() {
       "At €99/mo Sofía reaches 82% of her university goal. Raising it to €185/mo covers it fully.",
     ),
     unis: t(
-      "Con su número podría aplicar hoy a 3 de estas universidades: cubre el 111% de un grado en Barcelona.",
-      "With her number she could already apply to 3 of these universities: it covers 111% of a degree in Barcelona.",
-
+      "Con su número de 122.717 € no le alcanza para ninguna de estas 4 universidades: le faltan entre 3.000 € y 17.000 €.",
+      "With her number of €122,717 she can't afford any of these 4 universities: she's between €3,000 and €17,000 short.",
     ),
     pockets: t(
       "Su bolsillo de gastar lleva 3 semanas intacto: buena señal para subir el de invertir al 45%.",
@@ -1468,12 +1431,10 @@ function HowItWorksSlider() {
                   (() => {
                     const uniNumber = 122717;
                     const rows = [
-                      { n: "Univ. de Barcelona", f: "🇪🇸", city: "Barcelona", cost: 9600 },
-                      { n: "Seoul Nat. University", f: "🇰🇷", city: "Seúl", cost: 18600 },
-                      { n: "IE University", f: "🇪🇸", city: "Madrid", cost: 24800 },
-                      { n: "MIT", f: "🇺🇸", city: "Boston", cost: 82500 },
-                      { n: "Harvard University", f: "🇺🇸", city: "Cambridge", cost: 132200 },
-                      { n: "Stanford University", f: "🇺🇸", city: "Palo Alto", cost: 139800 },
+                      { n: "MIT", f: "🇺🇸", city: "Boston", cost: 139200 },
+                      { n: "ETH Zürich", f: "🇨🇭", city: "Zúrich", cost: 130500 },
+                      { n: "University of Oxford", f: "🇬🇧", city: "Oxford", cost: 129050 },
+                      { n: "University of Toronto", f: "🇨🇦", city: "Toronto", cost: 126150 },
                     ].map((u) => {
                       const pct = Math.round((uniNumber / u.cost) * 100);
                       return {
