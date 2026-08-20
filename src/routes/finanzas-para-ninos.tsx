@@ -332,9 +332,9 @@ function HowItWorksSlider() {
   const touchX = useRef<number | null>(null);
 
   const pockets = [
-    { label: t("Ahorrar", "Save"), value: 40, amount: "€24", color: "var(--kid-mint)" },
-    { label: t("Invertir", "Invest"), value: 40, amount: "€24", color: "var(--kid-grape)" },
-    { label: t("Gastar", "Spend"), value: 20, amount: "€12", color: "var(--kid-sky)" },
+    { label: t("Ahorrar", "Save"), value: 40, amount: "€24", color: "var(--kid-sky)" },
+    { label: t("Invertir", "Invest"), value: 40, amount: "€24", color: "color-mix(in oklab, var(--kid-sky) 65%, transparent)" },
+    { label: t("Gastar", "Spend"), value: 20, amount: "€12", color: "color-mix(in oklab, var(--kid-sky) 35%, transparent)" },
   ];
 
   const rawSlides = [
