@@ -942,9 +942,9 @@ function HowItWorksSlider() {
       { k: t("Tareas", "Chores"), v: "4" },
     ],
     grow: [
-      { k: t("Interés", "Return"), v: "7,2%" },
-      { k: t("Aportado", "Contributed"), v: "€2.442" },
-      { k: t("Intereses", "Growth"), v: "€8.226" },
+      { k: t("Rentabilidad", "Return"), v: "10%" },
+      { k: t("Aportado", "Contributed"), v: eur(PLAN_CONTRIB) },
+      { k: t("Intereses", "Growth"), v: eur(PLAN_GROWTH) },
     ],
     badges: [
       { k: t("Racha", "Streak"), v: "7 " + t("sem.", "wks") },
