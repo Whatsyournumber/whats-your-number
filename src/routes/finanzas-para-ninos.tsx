@@ -2487,7 +2487,7 @@ function FamilyProfiles() {
             key={m.name}
             className={`surface relative p-6 text-center transition-colors ${
               m.active ? "border-kid-mint/50 shadow-[0_0_30px_-12px_var(--kid-mint)]" : ""
-            } ${m.name === "Lucas" ? "hidden sm:block" : ""}`}
+            }`}
           >
             {m.active && (
               <Star className="absolute right-3 top-3 h-4 w-4 fill-kid-mint text-kid-mint" />
