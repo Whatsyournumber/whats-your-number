@@ -1410,7 +1410,7 @@ function HowItWorksSlider() {
 
                 ) : (
                   (() => {
-                    const uniNumber = 10668;
+                    const uniNumber = 122717;
                     const rows = [
                       { n: "Univ. de Barcelona", f: "🇪🇸", city: "Barcelona", cost: 9600 },
                       { n: "Seoul Nat. University", f: "🇰🇷", city: "Seúl", cost: 18600 },
