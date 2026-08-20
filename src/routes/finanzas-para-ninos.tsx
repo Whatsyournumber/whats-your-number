@@ -1623,14 +1623,14 @@ function GrowsWithThem() {
               </ResponsiveContainer>
             </div>
             <div className="space-y-1 text-[10px]">
-              <p className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: "var(--kid-mint)" }} /> {t("Futuro", "Future")} $60
+              <p className="flex items-center gap-1.5 whitespace-nowrap">
+                <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "var(--kid-mint)" }} /> {t("Futuro", "Future")} $60
               </p>
-              <p className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: "var(--kid-grape)" }} /> {t("Sueños", "Dreams")} $40
+              <p className="flex items-center gap-1.5 whitespace-nowrap">
+                <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "var(--kid-grape)" }} /> {t("Sueños", "Dreams")} $40
               </p>
-              <p className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: "var(--kid-sky)" }} /> {t("Disponible", "Free")} $20
+              <p className="flex items-center gap-1.5 whitespace-nowrap">
+                <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "var(--kid-sky)" }} /> {t("Disponible", "Free")} $20
               </p>
             </div>
           </div>
