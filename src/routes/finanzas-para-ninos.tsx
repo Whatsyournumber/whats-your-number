@@ -1160,7 +1160,7 @@ function HowItWorksSlider() {
                       : undefined
                   }
                 >
-                  <TabIcon className="h-4 w-4 shrink-0" />
+                  <TabIcon className="h-3.5 w-3.5 shrink-0 md:h-4 md:w-4" />
                   <span className="whitespace-nowrap">{s.tab}</span>
                 </button>
               );
