@@ -158,10 +158,8 @@ function DemoCard() {
                 className="relative flex h-40 w-40 items-center justify-center rounded-full bg-elevated ring-1 ring-border transition-transform duration-300 group-hover:scale-105"
               >
                 <span className="absolute inset-3 rounded-full ring-1 ring-primary/40" />
-                <span className="relative font-display text-7xl font-bold leading-none text-primary drop-shadow-[0_6px_24px_color-mix(in_oklab,var(--color-primary)_45%,transparent)]">
-                  ?
-                </span>
-
+                <Target className="absolute h-24 w-24 text-primary/20" strokeWidth={1} />
+                <span className="relative font-display text-6xl font-bold leading-none text-primary">?</span>
               </motion.div>
             </div>
 
