@@ -2462,8 +2462,9 @@ function FamilyProfiles() {
   const members = [
     { name: "Carlos", role: t("Padre", "Dad"), photo: faceDad, active: false },
     { name: "Laura", role: t("Madre", "Mom"), photo: faceMom, active: false },
-    { name: "Sofía", role: t("12 años", "Age 12"), photo: faceSofia, active: true },
-    { name: "Lucas", role: t("7 años", "Age 7"), photo: faceBoy, active: false },
+    { name: "Lucas", role: t("6 años", "Age 6"), photo: faceBoy, active: false },
+    { name: "Sofía", role: t("13 años", "Age 13"), photo: faceSofia, active: true },
+
   ];
   return (
     <section className="mt-16 md:mt-24">
