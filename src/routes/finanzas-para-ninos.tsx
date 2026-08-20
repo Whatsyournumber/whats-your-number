@@ -111,7 +111,7 @@ function ScreenCard({
       <div className="h-1 w-full" style={{ backgroundColor: accent, opacity: 0.7 }} />
       <div className="flex items-center gap-2 border-b border-border/60 px-5 py-3">
         <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: accent }} />
-        <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{title}</span>
+        <span className="text-sm font-medium uppercase tracking-wider text-muted-foreground">{title}</span>
       </div>
       <div className="p-5 md:p-6">{children}</div>
     </div>
