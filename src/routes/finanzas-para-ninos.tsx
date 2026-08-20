@@ -1294,41 +1294,73 @@ function HowItWorksSlider() {
                     </div>
                   </>
                 ) : active.id === "grow" ? (
-                  <div className="flex h-full flex-col items-center gap-4">
-                    <div className="text-center">
-                      <p className="flex items-center justify-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                  <div className="flex h-full flex-col gap-4">
+                    {/* Headline */}
+                    <div>
+                      <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                         <GraduationCap className="h-3.5 w-3.5" /> {t("El futuro de Sofía", "Sofía's future")}
                       </p>
-                      <p className="numeric mt-1.5 text-3xl font-bold text-kid-mint">{eur(PLAN_FUTURE)}</p>
-                      <p className="text-[11px] text-muted-foreground">{t("a los 18 años", "at age 18")}</p>
+                      <p className="numeric mt-2 text-3xl font-bold text-kid-mint">{eur(PLAN_FUTURE)}</p>
+                      <p className="text-[11px] text-muted-foreground">{t("cuando cumpla 18 años", "when she turns 18")}</p>
                     </div>
 
-                    <div
-                      className="relative flex h-24 w-24 items-center justify-center rounded-full"
-                      style={{
-                        background: `conic-gradient(var(--kid-mint) 0% ${PLAN_PCT}%, color-mix(in oklab, var(--kid-mint) 14%, transparent) ${PLAN_PCT}% 100%)`,
-                      }}
-                    >
-                      <span className="flex h-[74px] w-[74px] flex-col items-center justify-center rounded-full bg-card">
-                        <span className="numeric text-lg font-bold text-kid-mint">{PLAN_PCT}%</span>
-                        <span className="text-[9px] text-muted-foreground">{t("del objetivo", "of goal")}</span>
-                      </span>
+                    {/* Progress ring */}
+                    <div className="flex items-center gap-3 rounded-2xl bg-background/60 p-3 ring-1 ring-border/40">
+                      <div
+                        className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-full"
+                        style={{
+                          background: `conic-gradient(var(--kid-mint) 0% ${PLAN_PCT}%, color-mix(in oklab, var(--kid-mint) 14%, transparent) ${PLAN_PCT}% 100%)`,
+                        }}
+                      >
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-card">
+                          <span className="numeric text-sm font-bold text-kid-mint">{PLAN_PCT}%</span>
+                        </span>
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-[11px] font-medium">{t("Camino a la meta", "On track to goal")}</p>
+                        <p className="mt-0.5 text-[10px] leading-relaxed text-muted-foreground">
+                          {t("Faltan 14 años y 11 meses", "14 years and 11 months to go")}
+                        </p>
+                      </div>
                     </div>
 
-                    <div className="w-full space-y-2">
+                    {/* Equation: how the number is built */}
+                    <div className="space-y-1.5">
+                      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        {t("Cómo se construye", "How it's built")}
+                      </p>
                       {[
-                        { k: t("Aporte", "Deposit"), v: `${eur(PLAN_MONTHLY)}/mes`, c: "var(--kid-sky)" },
-                        { k: t("Crecimiento", "Growth"), v: eur(PLAN_GROWTH), c: "var(--kid-mint)" },
-                        { k: t("Objetivo", "Goal"), v: eur(PLAN_GOAL), c: "var(--kid-grape)" },
+                        { k: t("Aportes totales", "Total deposits"), v: eur(PLAN_CONTRIB), c: "var(--kid-sky)" },
+                        { k: t("Interés compuesto", "Compound interest"), v: `+ ${eur(PLAN_GROWTH)}`, c: "var(--kid-mint)" },
+                        { k: t("Valor a los 18", "Value at 18"), v: eur(PLAN_FUTURE), c: "var(--kid-grape)", strong: true },
                       ].map((m) => (
-                        <div key={m.k} className="flex items-center justify-between rounded-xl bg-background/60 px-3 py-2 ring-1 ring-border/40">
+                        <div
+                          key={m.k}
+                          className={`flex items-center justify-between rounded-xl px-3 py-2 ring-1 ring-border/40 ${
+                            m.strong ? "bg-kid-mint/8" : "bg-background/60"
+                          }`}
+                        >
                           <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
                             <span className="h-1.5 w-1.5 rounded-full" style={{ background: m.c }} />
                             {m.k}
                           </span>
-                          <span className="numeric text-sm font-semibold">{m.v}</span>
+                          <span
+                            className={`numeric ${m.strong ? "text-sm font-bold" : "text-sm font-semibold"}`}
+                            style={m.strong ? { color: m.c } : undefined}
+                          >
+                            {m.v}
+                          </span>
                         </div>
                       ))}
+                    </div>
+
+                    {/* Gap to goal */}
+                    <div className="mt-auto flex items-center gap-2 rounded-xl bg-kid-sun/10 px-3 py-2.5 ring-1 ring-kid-sun/25">
+                      <Target className="h-4 w-4 shrink-0 text-kid-sun" />
+                      <p className="text-[11px] leading-tight">
+                        <span className="font-semibold text-kid-sun">{t("Faltan 86 €/mes", "86 €/mo to go")}</span>{" "}
+                        <span className="text-muted-foreground">{t("para cubrir el objetivo", "to fully cover the goal")}</span>
+                      </p>
                     </div>
                   </div>
 
