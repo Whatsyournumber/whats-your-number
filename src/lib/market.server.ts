@@ -105,3 +105,56 @@ export async function searchSymbols(query: string): Promise<SymbolHit[]> {
     return [];
   }
 }
+
+export type IndexStat = {
+  symbol: string;
+  price: number;
+  changePct: number;
+  cagr10y: number | null;
+  cagr5y: number | null;
+  ytdPct: number | null;
+  currency: string;
+};
+
+/** Rendimiento real (CAGR) de un índice a partir del histórico mensual de Yahoo Finance. */
+export async function fetchIndexStat(symbol: string): Promise<IndexStat | null> {
+  const [live, hist] = await Promise.all([
+    chart(symbol, "5d", "1d"),
+    chart(symbol, "10y", "1mo"),
+  ]);
+  if (!live?.meta?.regularMarketPrice && !hist?.meta?.regularMarketPrice) return null;
+  const price = live?.meta?.regularMarketPrice ?? hist?.meta?.regularMarketPrice ?? 0;
+  const prev = live?.meta?.previousClose ?? live?.meta?.chartPreviousClose ?? price;
+
+  const closes = hist?.indicators?.quote?.[0]?.close ?? [];
+  const stamps = hist?.timestamp ?? [];
+  const pts: { t: number; c: number }[] = [];
+  for (let i = 0; i < stamps.length; i += 1) {
+    const c = closes[i];
+    const t = stamps[i];
+    if (typeof c === "number" && typeof t === "number") pts.push({ t, c });
+  }
+  const last = pts[pts.length - 1]?.c ?? price;
+
+  const cagrFrom = (yearsBack: number): number | null => {
+    const target = Date.now() / 1000 - yearsBack * 365.25 * 24 * 3600;
+    const start = pts.find((p) => p.t >= target);
+    if (!start || !start.c || !last) return null;
+    const years = (Date.now() / 1000 - start.t) / (365.25 * 24 * 3600);
+    if (years < 1) return null;
+    return (Math.pow(last / start.c, 1 / years) - 1) * 100;
+  };
+
+  const jan1 = Date.UTC(new Date().getUTCFullYear(), 0, 1) / 1000;
+  const ytdStart = pts.find((p) => p.t >= jan1 - 40 * 24 * 3600)?.c;
+
+  return {
+    symbol,
+    price,
+    changePct: prev ? ((price - prev) / prev) * 100 : 0,
+    cagr10y: cagrFrom(10),
+    cagr5y: cagrFrom(5),
+    ytdPct: ytdStart && price ? ((price - ytdStart) / ytdStart) * 100 : null,
+    currency: live?.meta?.currency ?? hist?.meta?.currency ?? "USD",
+  };
+}

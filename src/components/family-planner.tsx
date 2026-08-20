@@ -29,6 +29,7 @@ import {
   monthsUntil,
 } from "@/lib/mfn";
 import { useI18n } from "@/lib/mfn-i18n";
+import { useIndexReturns } from "@/hooks/use-index-returns";
 
 /* ---------------- small pieces ---------------- */
 
@@ -300,6 +301,14 @@ export function FamilyPlanner({
   const [target, setTarget] = useState(150000);
   const [targetAge, setTargetAge] = useState(Math.round(defaultTargetAge) || 18);
   const [showPicks, setShowPicks] = useState(false);
+  const { live, updatedAt } = useIndexReturns();
+
+  // Vehículos con la rentabilidad real de los índices (CAGR 10 años, refrescado en vivo).
+  const vehicles = useMemo(
+    () => VEHICLES.map((v) => (live[v.key] ? { ...v, rate: live[v.key]!.rate, isLive: true } : { ...v, isLive: false })),
+    [live],
+  );
+
   const [pick, setPick] = useState(
     VEHICLES.find((v) => Math.abs(v.rate - defaultRate) <= 1)?.key ?? "sp500",
   );
@@ -314,12 +323,20 @@ export function FamilyPlanner({
 
 
 
-  const vehicle = VEHICLES.find((v) => v.key === pick) ?? VEHICLES[0]!;
-  // Si la tasa guardada no coincide con ningún preset, respetamos la guardada.
-  const exactPreset = VEHICLES.find((v) => v.rate === Math.round(defaultRate));
+  const vehicle = vehicles.find((v) => v.key === pick) ?? vehicles[0]!;
+  // Con datos en vivo mandan los índices reales; si no, respetamos la tasa guardada.
+  const exactPreset = vehicles.find((v) => v.rate === Math.round(defaultRate));
   const [rateTouched, setRateTouched] = useState(false);
-  const rate = rateTouched || exactPreset ? vehicle.rate : Math.round(defaultRate);
+  const rate = vehicle.isLive || rateTouched || exactPreset ? vehicle.rate : Math.round(defaultRate);
   const vehicleName = lang === "en" ? vehicle.nameEn : vehicle.name;
+  const liveNow = live[vehicle.key];
+  const liveTime = updatedAt
+    ? new Date(updatedAt).toLocaleTimeString(lang === "en" ? "en-US" : "es-ES", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : null;
+
 
   // Publica el plan (con debounce) SOLO cuando el padre cambia algo de verdad.
   const initialPlanRef = useRef<string | null>(null);
@@ -575,7 +592,11 @@ export function FamilyPlanner({
             label={t("Rentabilidad esperada", "Expected return")}
             value={rate}
             suffix={t("anual", "yearly")}
-            hint={vehicleName}
+            hint={
+              liveNow
+                ? `${vehicleName} · ${t("real", "real")} ${liveNow.cagr10y != null ? `${liveNow.cagr10y.toFixed(1)}%` : ""} · ${liveTime ?? ""}`
+                : vehicleName
+            }
             action={
               <button
                 type="button"
@@ -591,7 +612,7 @@ export function FamilyPlanner({
 
         {showPicks ? (
           <div className="mt-3 flex flex-wrap gap-2">
-            {VEHICLES.map((v) => (
+            {vehicles.map((v) => (
               <button
                 key={v.key}
                 type="button"
@@ -599,17 +620,25 @@ export function FamilyPlanner({
                   setRateTouched(true);
                   setPick(v.key);
                 }}
-                className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
+                className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition ${
                   v.key === pick
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted text-muted-foreground hover:text-foreground"
                 }`}
               >
+                {v.isLive ? <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> : null}
                 {(lang === "en" ? v.nameEn : v.name)} · {v.rate}%
+                {v.isLive && live[v.key]?.changePct != null ? (
+                  <span className="opacity-70">
+                    {live[v.key]!.changePct >= 0 ? "+" : ""}
+                    {live[v.key]!.changePct.toFixed(1)}% hoy
+                  </span>
+                ) : null}
               </button>
             ))}
           </div>
         ) : null}
+
 
         {/* chart */}
         <div className="mt-3 rounded-[28px] bg-card p-4 shadow-[0_20px_50px_-42px_oklch(0_0_0/38%)] sm:p-5">
@@ -630,9 +659,19 @@ export function FamilyPlanner({
             <MilestoneChart data={series} currency={currency} yMax={yMax} height={chartH} />
           </div>
           <p className="mt-2 truncate border-t border-border/60 pt-2 text-[11px] text-muted-foreground/80">
-            {t("Fuente:", "Source:")} {lang === "en" ? vehicle.sourceEn : vehicle.source}.{" "}
+            {t("Fuente:", "Source:")}{" "}
+            {liveNow
+              ? t(
+                  `datos reales de mercado · ${vehicleName} ${liveNow.cagr10y != null ? `${liveNow.cagr10y.toFixed(1)}% anual (10 años)` : ""}${liveTime ? ` · actualizado ${liveTime}` : ""}`,
+                  `live market data · ${vehicleName} ${liveNow.cagr10y != null ? `${liveNow.cagr10y.toFixed(1)}% yearly (10y)` : ""}${liveTime ? ` · updated ${liveTime}` : ""}`,
+                )
+              : lang === "en"
+                ? vehicle.sourceEn
+                : vehicle.source}
+            .{" "}
             {t("Rentabilidad pasada no garantiza la futura.", "Past performance does not guarantee future results.")}
           </p>
+
 
         </div>
 
