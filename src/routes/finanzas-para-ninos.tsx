@@ -2103,7 +2103,7 @@ function DualDashboards() {
             </span>
             <span className="text-xs font-medium text-kid-money">Family Planner</span>
           </div>
-          <span className="hidden h-px w-10 bg-border lg:block lg:h-14 lg:w-px" />
+          <span className="block h-px w-10 bg-border lg:h-14 lg:w-px" />
         </div>
 
         <motion.div
