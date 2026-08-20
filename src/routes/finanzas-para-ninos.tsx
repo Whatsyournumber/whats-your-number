@@ -565,8 +565,8 @@ function HowItWorksSlider() {
           <div className="grid grid-cols-3 gap-2">
             {[
               { e: "💰", k: t("Ganado", "Earned"), v: "€6,50", c: "var(--kid-sun)" },
-              { e: "✅", k: t("Hechas", "Done"), v: "2/4", c: "var(--kid-mint)" },
-              { e: "🔥", k: t("Racha", "Streak"), v: t("4 días", "4 days"), c: "var(--kid-coral)" },
+              { e: "✅", k: t("Hechas", "Done"), v: "2/4", c: "var(--kid-sun)" },
+              { e: "🔥", k: t("Racha", "Streak"), v: t("4 días", "4 days"), c: "var(--kid-sun)" },
             ].map((s) => (
               <div key={s.k} className="rounded-2xl bg-background/60 p-3 ring-1 ring-border/50">
                 <span className="text-base leading-none">{s.e}</span>
@@ -592,18 +592,18 @@ function HowItWorksSlider() {
                 key={r.k}
                 className={cn(
                   "flex items-center gap-3.5 rounded-2xl px-4 py-4 ring-1",
-                  r.ok ? "bg-kid-mint/10 ring-kid-mint/25" : "bg-background/40 ring-border/40",
+                  r.ok ? "bg-kid-sun/10 ring-kid-sun/25" : "bg-background/40 ring-border/40",
                 )}
               >
                 <span className="text-2xl leading-none">{r.e}</span>
                 <span className={cn("min-w-0 flex-1 truncate text-[15px] font-medium", r.ok && "text-muted-foreground line-through")}>
                   {r.k}
                 </span>
-                <span className={cn("numeric text-[15px] font-semibold", r.ok ? "text-kid-mint" : "text-muted-foreground")}>{r.v}</span>
+                <span className={cn("numeric text-[15px] font-semibold", r.ok ? "text-kid-sun" : "text-muted-foreground")}>{r.v}</span>
                 <span
                   className={cn(
                     "flex h-7 w-7 shrink-0 items-center justify-center rounded-full",
-                    r.ok ? "bg-kid-mint text-background" : "bg-card ring-1 ring-border",
+                    r.ok ? "bg-kid-sun text-background" : "bg-card ring-1 ring-border",
                   )}
                 >
                   <BadgeCheck className={cn("h-4 w-4", r.ok ? "" : "text-muted-foreground/40")} />
