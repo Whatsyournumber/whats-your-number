@@ -462,95 +462,6 @@ function HowItWorksSlider() {
 
     },
     {
-      id: "pockets",
-      tab: t("Mi dinero", "My money"),
-      icon: PiggyBank,
-      color: "var(--kid-mint)",
-      title: t("Bolsillos: ahorrar, invertir y gastar", "Pockets: save, invest and spend"),
-      desc: t(
-        "La regla 40/40/20, digital. Cada euro que entra ya sabe a dónde va.",
-        "The 40/40/20 rule, gone digital. Every euro that arrives knows where it goes.",
-      ),
-      visual: (
-        <ScreenCard title={t("Mi dinero", "My money")} accent="var(--kid-mint)">
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">
-              {t("Regla 40/40/20 · €60 al mes", "40/40/20 rule · €60 a month")}
-            </p>
-            <span className="numeric rounded-full bg-kid-mint/12 px-3 py-1 text-xs font-semibold text-kid-mint">
-              {t("Reparto automático", "Auto split")}
-            </span>
-          </div>
-          <div className="mt-2 grid items-center gap-4 sm:grid-cols-2">
-            <div className="relative h-44">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={pockets}
-                    dataKey="value"
-                    innerRadius="62%"
-                    outerRadius="95%"
-                    paddingAngle={3}
-                    stroke="none"
-                    isAnimationActive={false}
-                  >
-                    {pockets.map((p) => (
-                      <Cell key={p.label} fill={p.color} />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                <p className="numeric text-2xl font-semibold">€60</p>
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                  {t("al mes", "a month")}
-                </p>
-              </div>
-            </div>
-            <div className="space-y-2.5">
-              {pockets.map((p) => (
-                <div key={p.label} className="rounded-xl bg-elevated px-3 py-2.5">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="flex items-center gap-2 text-muted-foreground">
-                      <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: p.color }} />
-                      {p.label}
-                    </span>
-                    <span className="numeric font-semibold">{p.amount}</span>
-                  </div>
-                  <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-card">
-                    <div
-                      className="h-full rounded-full"
-                      style={{ width: `${p.value}%`, backgroundColor: p.color }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="mt-3 rounded-2xl bg-elevated/60 p-3 ring-1 ring-border">
-            <p className="text-[11px] text-muted-foreground">
-              {t("Entradas de los últimos 6 meses", "Money in over the last 6 months")}
-            </p>
-            <div className="mt-2 h-24">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={pocketMonths} margin={{ top: 4, right: 2, bottom: 0, left: 0 }} barCategoryGap={6}>
-                  <XAxis
-                    dataKey="m"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: "var(--muted-foreground)", fontSize: 10 }}
-                  />
-                  <Bar dataKey="save" stackId="a" fill="var(--kid-mint)" radius={[0, 0, 0, 0]} isAnimationActive={false} />
-                  <Bar dataKey="invest" stackId="a" fill="var(--kid-grape)" isAnimationActive={false} />
-                  <Bar dataKey="spend" stackId="a" fill="var(--kid-sky)" radius={[4, 4, 0, 0]} isAnimationActive={false} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </ScreenCard>
-      ),
-    },
-    {
       id: "dreams",
       tab: t("Mis sueños", "My dreams"),
       icon: Target,
@@ -754,7 +665,7 @@ function HowItWorksSlider() {
     },
   ];
 
-  const order = ["numbers", "chores", "dreams", "grow", "unis", "pockets"];
+  const order = ["numbers", "chores", "dreams", "grow", "unis"];
 
   const slides = [...rawSlides].sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
 
@@ -969,7 +880,7 @@ function HowItWorksSlider() {
               <div className="flex flex-1 flex-col justify-between rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
                 <p className="text-sm font-semibold">{sideTitle[active.id] ?? t("Resumen", "Summary")}</p>
 
-                {active.id === "numbers" || active.id === "pockets" ? (
+                {active.id === "numbers" ? (
                   <>
                     <div className="mt-1 h-[210px]">
                       <ResponsiveContainer width="100%" height="100%">
