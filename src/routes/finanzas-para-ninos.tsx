@@ -558,6 +558,33 @@ function HowItWorksSlider() {
               ))}
             </span>
           </div>
+
+          <div className="mt-auto pt-5">
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-muted-foreground">{t("Lo que gana cada semana", "What they earn each week")}</p>
+              <span className="numeric text-xs font-semibold text-kid-sun">{t("Media €5,50", "Avg €5.50")}</span>
+            </div>
+            <div className="mt-3 flex h-20 items-end gap-2">
+              {choreWeeks.map((w, idx) => {
+                const max = Math.max(...choreWeeks.map((c) => c.v));
+                const h = (w.v / max) * 100;
+                return (
+                  <div key={idx} className="flex flex-1 flex-col items-center gap-1.5">
+                    <div className="flex w-full flex-1 items-end">
+                      <div
+                        className="w-full rounded-md transition-all"
+                        style={{
+                          height: `${h}%`,
+                          background: "linear-gradient(to top, color-mix(in oklab, var(--kid-sun) 55%, transparent), var(--kid-sun))",
+                        }}
+                      />
+                    </div>
+                    <span className="text-[10px] text-muted-foreground">{w.w}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </ScreenCard>
       ),
     },
@@ -915,33 +942,42 @@ function HowItWorksSlider() {
                   </>
                 ) : active.id === "chores" ? (
                   <>
-                    <div className="mt-1 h-[150px]">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={choreWeeks} margin={{ top: 8, right: 4, bottom: 0, left: 0 }} barCategoryGap={14}>
-                          <XAxis
-                            dataKey="w"
-                            axisLine={false}
-                            tickLine={false}
-                            tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
-                          />
-                          <Bar dataKey="v" fill="var(--kid-sun)" radius={[6, 6, 0, 0]} isAnimationActive={false} />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-
-                    <div className="mt-3 flex items-center justify-between border-t border-border/40 pt-3 text-sm">
-                      <span className="text-muted-foreground">{t("Completadas", "Completed")}</span>
-                      <span className="numeric font-semibold">
+                    <div className="mt-2 flex flex-col items-center">
+                      <div
+                        className="relative flex h-32 w-32 items-center justify-center rounded-full"
+                        style={{
+                          background:
+                            "conic-gradient(var(--kid-sun) 0% 75%, color-mix(in oklab, var(--kid-sun) 14%, transparent) 75% 100%)",
+                        }}
+                      >
+                        <span className="flex h-24 w-24 flex-col items-center justify-center rounded-full bg-elevated">
+                          <span className="numeric text-2xl font-bold text-kid-sun">75%</span>
+                          <span className="text-[10px] text-muted-foreground">{t("completado", "done")}</span>
+                        </span>
+                      </div>
+                      <p className="mt-3 text-sm font-semibold">
                         3 / 4 {t("esta semana", "this week")}
-                      </span>
+                      </p>
                     </div>
 
-                    <p className="mt-3 text-xs text-muted-foreground">
-                      {t(
-                        "Cada tarea aprobada se reparte sola entre sus bolsillos.",
-                        "Every approved chore splits itself across pockets.",
-                      )}
-                    </p>
+                    <div className="mt-4 space-y-2.5 border-t border-border/40 pt-4">
+                      <p className="text-xs text-muted-foreground">{t("Cómo se reparte lo ganado", "How earnings split")}</p>
+                      {[
+                        { k: t("Ahorrar", "Save"), pct: 40, c: "var(--kid-mint)" },
+                        { k: t("Invertir", "Invest"), pct: 40, c: "var(--kid-sky)" },
+                        { k: t("Gastar", "Spend"), pct: 20, c: "var(--kid-coral)" },
+                      ].map((r) => (
+                        <div key={r.k}>
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-muted-foreground">{r.k}</span>
+                            <span className="numeric font-semibold" style={{ color: r.c }}>{r.pct}%</span>
+                          </div>
+                          <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-background">
+                            <div className="h-full rounded-full" style={{ width: `${r.pct * 2}%`, backgroundColor: r.c }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </>
                 ) : active.id === "dreams" ? (
                   <>
@@ -1060,15 +1096,23 @@ function HowItWorksSlider() {
                   <Target className="h-4 w-4" style={{ color: active.color }} />
                   <span className="font-medium">{t("Progreso del mes", "Month progress")}</span>
                 </div>
-                <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-background">
+                <div className="relative mt-3 h-3 overflow-hidden rounded-full bg-background ring-1 ring-border/50">
                   <motion.div
                     key={active.id}
                     initial={{ width: 0 }}
                     animate={{ width: "68%" }}
                     transition={{ duration: 1.1, ease: "easeOut" }}
-                    className="h-full rounded-full"
-                    style={{ backgroundColor: active.color }}
-                  />
+                    className="relative h-full rounded-full"
+                    style={{
+                      background: `linear-gradient(90deg, color-mix(in oklab, ${active.color} 50%, transparent), ${active.color})`,
+                      boxShadow: `0 0 14px color-mix(in oklab, ${active.color} 55%, transparent)`,
+                    }}
+                  >
+                    <span
+                      className="absolute right-0 top-1/2 h-4 w-4 -translate-y-1/2 translate-x-1/2 rounded-full border-2 border-background"
+                      style={{ backgroundColor: active.color }}
+                    />
+                  </motion.div>
                 </div>
                 <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
                   <span className="numeric text-foreground">€1.150</span>
