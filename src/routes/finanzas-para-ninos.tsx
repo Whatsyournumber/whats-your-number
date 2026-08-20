@@ -28,11 +28,15 @@ import {
   AreaChart,
   Bar,
   BarChart,
+  CartesianGrid,
   Cell,
+  ComposedChart,
+  Line,
   Pie,
   PieChart,
   ResponsiveContainer,
   XAxis,
+  YAxis,
 } from "recharts";
 
 
