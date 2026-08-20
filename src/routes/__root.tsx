@@ -101,19 +101,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Finance OS — Tu CFO personal" },
+      { title: "WhatsYournumber — Tu CFO personal con IA" },
       {
         name: "description",
         content:
           "Plataforma de finanzas personales y gestión patrimonial: patrimonio, gastos, cash flow, portafolio e insights con IA.",
       },
-      { property: "og:title", content: "Finance OS — Tu CFO personal" },
+      { property: "og:site_name", content: "WhatsYournumber" },
+      { property: "og:locale", content: "es_ES" },
+      { property: "og:title", content: "WhatsYournumber — Tu CFO personal con IA" },
       {
         property: "og:description",
         content: "Patrimonio, gastos, inversiones e insights con IA en un solo lugar.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "theme-color", content: "#04100c" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
