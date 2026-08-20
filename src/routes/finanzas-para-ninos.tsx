@@ -826,8 +826,8 @@ function HowItWorksSlider() {
                   boxShadow: almost ? `0 0 0 1px color-mix(in oklab, ${d.c} 45%, transparent)` : undefined,
                 }}
               >
-                <div className="flex items-stretch gap-0">
-                  <div className="relative h-[124px] w-[148px] shrink-0 overflow-hidden">
+                <div className="flex flex-col items-stretch gap-0 @[380px]:flex-row">
+                  <div className="relative h-24 w-full shrink-0 overflow-hidden @[380px]:h-[124px] @[380px]:w-[128px] @[520px]:w-[148px]">
                     <img
                       src={d.img}
                       alt={d.name}
@@ -836,7 +836,7 @@ function HowItWorksSlider() {
                       height={512}
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.06]"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-background/10 via-transparent to-elevated" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-elevated via-transparent to-transparent @[380px]:bg-gradient-to-r @[380px]:from-background/10 @[380px]:via-transparent @[380px]:to-elevated" />
                     <div
                       className="absolute inset-x-0 bottom-0 h-1"
                       style={{ background: `linear-gradient(90deg, ${d.c}, transparent)` }}
@@ -849,7 +849,7 @@ function HowItWorksSlider() {
                     </span>
                   </div>
 
-                  <div className="min-w-0 flex-1 p-3.5">
+                  <div className="min-w-0 flex-1 p-3 @[420px]:p-3.5">
                     <div className="flex items-center justify-between gap-2">
                       <p className="truncate text-sm font-semibold">{d.name}</p>
                       {almost ? (
@@ -866,13 +866,11 @@ function HowItWorksSlider() {
                         <span className="numeric shrink-0 text-xs text-muted-foreground">{d.goal}</span>
                       )}
                     </div>
-                    <div className="mt-0.5 flex items-center justify-between text-[11px]">
-                      <span className="numeric font-medium" style={{ color: d.c }}>
+                    <div className="mt-0.5 flex items-center justify-between gap-2 text-[11px]">
+                      <span className="numeric truncate font-medium" style={{ color: d.c }}>
                         {d.have} {t("ahorrados", "saved")}
                       </span>
-                      <span className="text-muted-foreground">
-                        {t("Te faltan", "Missing")} <span className="numeric font-medium">{d.missing}</span>
-                      </span>
+                      <span className="numeric shrink-0 font-medium text-muted-foreground">−{d.missing}</span>
                     </div>
 
                     <div className="mt-2.5 flex items-center gap-3">
@@ -885,14 +883,14 @@ function HowItWorksSlider() {
                       <span className="numeric text-xs font-bold" style={{ color: d.c }}>{d.pct}%</span>
                     </div>
 
-                    <div className="mt-2.5 flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-                        <CalendarCheck className="h-3.5 w-3.5" style={{ color: d.c }} />
-                        <span>{d.date}</span>
+                    <div className="mt-2.5 flex items-center justify-between gap-2">
+                      <div className="flex min-w-0 items-center gap-1.5 text-[11px] text-muted-foreground">
+                        <CalendarCheck className="h-3.5 w-3.5 shrink-0" style={{ color: d.c }} />
+                        <span className="truncate">{d.date}</span>
                       </div>
                       <button
                         type="button"
-                        className="flex items-center gap-1 rounded-full bg-kid-mint px-3 py-1.5 text-[11px] font-semibold text-background transition-transform hover:scale-105"
+                        className="flex shrink-0 items-center gap-1 rounded-full bg-kid-mint px-3 py-1.5 text-[11px] font-semibold text-background transition-transform hover:scale-105"
                       >
                         <Rocket className="h-3 w-3" />
                         {t("Acelerar", "Accelerate")}
