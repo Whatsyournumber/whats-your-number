@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import brandLighthouse from "@/assets/brand-lighthouse-clean.png.asset.json";
+import brandLighthouse from "@/assets/brand-lighthouse-soft.png.asset.json";
 
 export function BrandMark({
   className,
