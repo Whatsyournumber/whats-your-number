@@ -446,11 +446,14 @@ function UniFinderVisual() {
   const t = useT();
   const [q, setQ] = useState("");
   const [region, setRegion] = useState<"all" | "eu" | "na">("all");
-  const budget = 10668;
+  const [costMode, setCostMode] = useState<"tuition" | "full">("full");
+  const budget = 122717;
+  const mult = costMode === "full" ? 1.45 : 1;
 
   const list = DEMO_UNIS.filter((u) => (region === "all" ? true : u.region === region)).filter((u) =>
     q.trim() ? `${u.name} ${u.city}`.toLowerCase().includes(q.trim().toLowerCase()) : true,
-  ).slice().sort((a, b) => (region === "all" ? a.feat - b.feat : a.rank - b.rank));
+  ).slice().sort((a, b) => (region === "all" ? a.feat - b.feat : a.rank - b.rank))
+    .map((u) => ({ ...u, cost: Math.round(u.cost * mult) }));
   const eligible = list.filter((u) => u.cost <= budget);
   const hero = list[0];
 
@@ -459,6 +462,28 @@ function UniFinderVisual() {
 
   return (
     <ScreenCard title={t("Buscador de universidades", "University finder")} accent="var(--kid-grape)">
+      <div className="mb-2.5 flex items-center gap-0.5 rounded-full border border-border bg-elevated p-0.5">
+        {(
+          [
+            { id: "tuition" as const, label: t("Solo matrícula", "Tuition only") },
+            { id: "full" as const, label: t("Matrícula + vida", "Tuition + living") },
+          ]
+        ).map((m) => (
+          <button
+            key={m.id}
+            type="button"
+            onClick={() => setCostMode(m.id)}
+            className={`flex-1 rounded-full px-3 py-1.5 text-[11px] font-semibold transition-colors ${
+              costMode === m.id
+                ? "bg-kid-grape text-background shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {m.label}
+          </button>
+        ))}
+      </div>
+
       <div className="flex items-center gap-2 rounded-full border border-border bg-elevated px-3 py-2">
         <Search className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
         <input
