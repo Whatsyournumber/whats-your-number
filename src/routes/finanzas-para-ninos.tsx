@@ -444,6 +444,26 @@ const DEMO_UNIS = [
     region: "na",
     feat: 4,
   },
+  {
+    id: "us-stanford",
+    name: "Stanford University",
+    city: "Palo Alto",
+    country: "🇺🇸",
+    rank: 6,
+    cost: 96400,
+    region: "na",
+    feat: 5,
+  },
+  {
+    id: "us-harvard",
+    name: "Harvard University",
+    city: "Cambridge",
+    country: "🇺🇸",
+    rank: 4,
+    cost: 91200,
+    region: "na",
+    feat: 6,
+  },
 ] as const;
 
 function UniFinderVisual() {
