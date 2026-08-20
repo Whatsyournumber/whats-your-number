@@ -2590,7 +2590,7 @@ function KidsFinanceLanding() {
             <div className="absolute inset-0 bg-background/15" />
           </div>
 
-          <div className="relative mx-auto w-full max-w-7xl px-6 pb-10 pt-[30vh] md:pb-16 md:pt-[42vh] md:py-20 lg:py-24">
+          <div className="relative mx-auto w-full max-w-7xl px-5 pb-10 pt-[clamp(196px,28vh,268px)] sm:px-6 md:pb-16 md:pt-[clamp(250px,42vh,420px)] lg:py-24">
             <div className="lg:max-w-[50%]">
               <span className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-kid-mint/25 bg-kid-mint/10 px-3 py-1 text-xs font-medium text-kid-mint backdrop-blur-sm">
                 <Sparkles className="h-3.5 w-3.5" />
