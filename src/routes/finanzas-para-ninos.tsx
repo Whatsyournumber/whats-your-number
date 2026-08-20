@@ -965,7 +965,7 @@ function HowItWorksSlider() {
     pockets: t("Cómo se reparte su dinero", "How their money is split"),
     chores: t("Seguimiento de tareas", "Chore tracking"),
     dreams: t("Sus sueños en marcha", "Their dreams in progress"),
-    grow: t("Su futuro, año a año", "Their future, year by year"),
+    grow: t("Plan sugerido y objetivo", "Suggested plan and goal"),
     unis: t("Universidades que podría pagar", "Universities they could afford"),
   };
 
