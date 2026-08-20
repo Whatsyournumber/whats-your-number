@@ -133,7 +133,7 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
       {/* Mobile / Tablet */}
       <div className="lg:hidden">
         <Sheet open={open} onOpenChange={setOpen}>
-          <div className="flex items-center justify-between gap-2">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
             <div className="flex min-w-0 items-center gap-2">
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0 rounded-full">
@@ -141,13 +141,14 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
                   <span className="sr-only">{t("Abrir menú", "Open menu")}</span>
                 </Button>
               </SheetTrigger>
-              <Link to={isKidsLanding ? "/finanzas-para-ninos" : "/"} className="shrink-0">
-                {isKidsLanding ? <KidsBrandLogo className="h-7" /> : <BrandLogo className="h-7" />}
+              <Link to={isKidsLanding ? "/finanzas-para-ninos" : "/"} className="min-w-0">
+                {isKidsLanding ? <KidsBrandLogo className="h-7" compact /> : <BrandLogo className="h-7" compact />}
               </Link>
             </div>
 
             <div className="flex shrink-0 items-center gap-1.5">
               <LanguageToggle />
+
               {user ? (
                 <Button asChild size="sm" className="h-8 rounded-full px-3 text-xs">
                   <Link to={homeTo}>{t("Dashboard", "Dashboard")}</Link>
