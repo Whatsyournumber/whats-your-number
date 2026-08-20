@@ -117,12 +117,13 @@ function Pricing() {
       ),
       features: [
         t("Todo lo de Pro", "Everything in Pro"),
-        t("Perfiles familiares compartidos", "Shared family profiles"),
+        t("Hasta 3 perfiles familiares", "Up to 3 family profiles"),
         t("Plan de ahorro e inversión para cada hijo", "Savings and investment plan for each child"),
         t("Simulador de universidad y educación", "College and education simulator"),
         t("Meta de patrimonio a los 18 años de tu hijo", "Net worth goal by your child's 18th birthday"),
+        t("Tareas que enseñan: tus hijos aprenden ahorrando por sus sueños", "Tasks that teach: your kids learn by saving toward their dreams"),
+        t("Sueños alcanzables: ven cuánto les falta para cada meta", "Dreams within reach: they see how close they are to each goal"),
         t("Controles de acceso para tus hijos", "Access controls for your children"),
-        t("Aprenden finanzas de forma divertida", "Learn finances in a fun way"),
         t("Soporte prioritario en 24h", "Priority support within 24h"),
       ],
       cta: t("Empezar con Familiar", "Get started with Familiar"),
@@ -294,7 +295,7 @@ function Pricing() {
                   <h2 className="text-sm font-semibold">{plan.name}</h2>
                   {isYearly && plan.monthlyPrice > 0 && (
                     <span className="rounded-full border border-positive/30 bg-positive/10 px-2 py-0.5 text-[10px] font-semibold text-positive">
-                      {t("2 meses gratis", "2 months free")}
+                      {t("2 meses gratis · 17% OFF", "2 months free · 17% OFF")}
                     </span>
                   )}
                 </div>
