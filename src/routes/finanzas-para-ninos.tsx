@@ -1811,7 +1811,7 @@ function ThreePillars() {
       id: "plan",
       icon: CalendarCheck,
       color: "var(--kid-grape)",
-      title: t("Planifica", "Plan"),
+      title: t("Planifica su futuro", "Plan their future"),
       desc: t(
         "Calcula cuánto invertir hoy para su universidad o su primer hogar.",
         "Work out how much to invest today for university or their first home.",
@@ -1823,7 +1823,7 @@ function ThreePillars() {
       id: "teach",
       icon: GraduationCap,
       color: "var(--kid-sky)",
-      title: t("Enseña", "Teach"),
+      title: t("Enseña a ahorrar", "Teach them saving"),
       desc: t(
         "Aprenden a ahorrar, gastar e invertir con su propio dinero.",
         "They learn to save, spend and invest with their own money.",
@@ -1835,7 +1835,7 @@ function ThreePillars() {
       id: "grow",
       icon: Rocket,
       color: "var(--kid-mint)",
-      title: t("Crece", "Grow"),
+      title: t("Crece con interés", "Grow with interest"),
       desc: t(
         "Cada euro ahorrado crece con el tiempo gracias al interés compuesto.",
         "Every euro saved compounds over time.",
@@ -1847,7 +1847,7 @@ function ThreePillars() {
       id: "fun",
       icon: Trophy,
       color: "var(--kid-sun)",
-      title: t("Aprende finanzas divertido", "Learning money is fun"),
+      title: t("Gana premios reales", "Win real rewards"),
       desc: t(
         "Cada meta cumplida se convierte en un premio real: su bici nueva.",
         "Every goal they hit turns into a real reward: their new bike.",
