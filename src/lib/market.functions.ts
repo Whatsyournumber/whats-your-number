@@ -34,3 +34,14 @@ export const searchMarketSymbols = createServerFn({ method: "GET" })
     const { searchSymbols } = await import("./market.server");
     return { hits: await searchSymbols(data.query) };
   });
+
+/** Rendimiento real de los índices que usa el planificador (S&P 500, Nasdaq 100, Bitcoin). */
+export const getIndexReturns = createServerFn({ method: "GET" }).handler(async () => {
+  const { fetchIndexStat } = await import("./market.server");
+  const symbols = ["^GSPC", "^NDX", "BTC-USD"] as const;
+  const stats = await Promise.all(symbols.map((s) => fetchIndexStat(s)));
+  return {
+    indexes: Object.fromEntries(symbols.map((s, i) => [s, stats[i] ?? null])),
+    updatedAt: Date.now(),
+  };
+});
