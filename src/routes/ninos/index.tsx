@@ -1,6 +1,6 @@
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { LineChart, Lock, Plus, Settings, Trash2, X } from "lucide-react";
+import { LineChart, Lock, Pencil, Plus, Settings, Trash2, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/mfn-ui";
 import { useQueryClient } from "@tanstack/react-query";
@@ -46,6 +46,10 @@ function ProfileSelector() {
   const [pendingDelete, setPendingDelete] = useState<Member | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [showUnlock, setShowUnlock] = useState(false);
+  const [editing, setEditing] = useState<Member | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editSubtitle, setEditSubtitle] = useState("");
+  const [savingEdit, setSavingEdit] = useState(false);
   const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
   const queryClient = useQueryClient();
 
@@ -59,6 +63,33 @@ function ProfileSelector() {
       customData: { userId: user?.id ?? "", type: "extra_kid_profile" },
       successUrl: `${window.location.origin}/ninos`,
     });
+  }
+
+  function startEdit(m: Member) {
+    setEditing(m);
+    setEditName(m.name);
+    setEditSubtitle(m.subtitle ?? "");
+  }
+
+  async function saveEdit() {
+    if (!editing) return;
+    const name = editName.trim();
+    if (!name) return;
+    setSavingEdit(true);
+    try {
+      const { error } = await supabase
+        .from("kid_members")
+        .update({ name, subtitle: editSubtitle.trim() || null })
+        .eq("id", editing.id);
+      if (error) throw error;
+      await queryClient.refetchQueries({ queryKey: ["kid_members"] });
+      toast.success(t("Perfil actualizado", "Profile updated"));
+      setEditing(null);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : t("No se pudo guardar", "Could not save"));
+    } finally {
+      setSavingEdit(false);
+    }
   }
 
 
@@ -181,6 +212,27 @@ function ProfileSelector() {
                   <span className="grid aspect-square w-full place-items-center rounded-2xl bg-secondary text-5xl ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4 sm:text-6xl">
                     {m.avatar}
                   </span>
+                  {manage ? (
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      aria-label={t("Editar nombre", "Edit name")}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        startEdit(m);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          startEdit(m);
+                        }
+                      }}
+                      className="absolute -left-1.5 -top-1.5 z-10 grid h-7 w-7 place-items-center rounded-full bg-primary text-primary-foreground shadow-md ring-2 ring-background transition-all duration-200 hover:scale-105"
+                    >
+                      <Pencil className="h-3.5 w-3.5" strokeWidth={2.5} />
+                    </span>
+                  ) : null}
                   {m.role === "child" ? (
                     <span
                       role="button"
@@ -207,11 +259,13 @@ function ProfileSelector() {
                       {m.name}
                     </span>
                     <span className="block text-[11px] text-muted-foreground/70">
-                      {m.role === "parent"
-                        ? t("Padre / Madre", "Parent")
-                        : m.age < 1
-                          ? `${Math.round(m.age * 12)} ${t("meses", "months")}`
-                          : `${Math.round(m.age)} ${t("años", "years")}`}
+                      {m.subtitle
+                        ? m.subtitle
+                        : m.role === "parent"
+                          ? t("Padre / Madre", "Parent")
+                          : m.age < 1
+                            ? `${Math.round(m.age * 12)} ${t("meses", "months")}`
+                            : `${Math.round(m.age)} ${t("años", "years")}`}
                     </span>
                   </span>
                 </button>
@@ -273,11 +327,56 @@ function ProfileSelector() {
             {manage ? (
               <p className="mt-4 text-xs text-muted-foreground">
                 {t(
-                  "Toca la papelera para borrar un perfil, o entra como padre/madre para editar mesada, tareas y el Fondo del Futuro.",
-                  "Tap the trash icon to delete a profile, or sign in as a parent to edit allowance, tasks and the Future Fund.",
+                  "Toca el lápiz para cambiar el nombre y el subtítulo, la equis para borrar un perfil, o entra como padre/madre para editar mesada, tareas y el Fondo del Futuro.",
+                  "Tap the pencil to change the name and subtitle, the cross to delete a profile, or sign in as a parent to edit allowance, tasks and the Future Fund.",
                 )}
               </p>
             ) : null}
+
+            {editing ? (
+              <div
+                className="fixed inset-0 z-50 grid place-items-center bg-background/80 p-5 backdrop-blur-sm"
+                role="dialog"
+                aria-modal="true"
+              >
+                <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-2xl">
+                  <h2 className="font-display text-xl font-semibold text-foreground">
+                    {t("Editar perfil", "Edit profile")}
+                  </h2>
+                  <label className="mt-4 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    {t("Nombre", "Name")}
+                  </label>
+                  <input
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    autoFocus
+                    className="mt-1.5 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
+                  />
+                  <label className="mt-4 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    {t("Subtítulo", "Subtitle")}
+                  </label>
+                  <input
+                    value={editSubtitle}
+                    onChange={(e) => setEditSubtitle(e.target.value)}
+                    placeholder={
+                      editing.role === "parent"
+                        ? t("Padre / Madre", "Parent")
+                        : `${Math.round(editing.age)} ${t("años", "years")}`
+                    }
+                    className="mt-1.5 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground/60 focus:border-primary"
+                  />
+                  <div className="mt-6 flex justify-end gap-2">
+                    <Button variant="ghost" onClick={() => setEditing(null)}>
+                      {t("Cancelar", "Cancel")}
+                    </Button>
+                    <Button onClick={() => void saveEdit()} disabled={savingEdit || !editName.trim()}>
+                      {savingEdit ? t("Guardando…", "Saving…") : t("Guardar", "Save")}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
 
             {pendingDelete ? (
               <div

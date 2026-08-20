@@ -1,0 +1,1 @@
+ALTER TABLE public.kid_members ADD COLUMN IF NOT EXISTS subtitle text;

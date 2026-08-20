@@ -8,6 +8,7 @@ export type Pocket = "gastar" | "ahorrar" | "crecer";
 export type Member = {
   id: string;
   name: string;
+  subtitle?: string | null;
   role: string;
   theme: string;
   avatar: string;
