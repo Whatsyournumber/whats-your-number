@@ -227,7 +227,7 @@ function PlanMilestoneDot(props: {
       >
         {eur(payload.value)}
       </text>
-      <circle cx={cx} cy={cy} r={5} fill="var(--color-background)" stroke="var(--kid-mint)" strokeWidth={2.5} />
+      <circle cx={cx} cy={cy} r={5} fill="var(--color-background)" stroke="var(--kid-money)" strokeWidth={2.5} />
     </g>
   );
 }
@@ -239,7 +239,7 @@ function PlannerChart() {
       <div className="flex flex-wrap items-center gap-4">
         <p className="text-sm font-medium">{t("Proyección de crecimiento", "Growth projection")}</p>
         <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-          <span className="h-0.5 w-5 rounded-full bg-kid-mint" /> {t("Tu inversión", "Your investment")}
+          <span className="h-0.5 w-5 rounded-full bg-kid-money" /> {t("Tu inversión", "Your investment")}
         </span>
         <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
           <span className="h-0.5 w-5 rounded-full border-t-2 border-dashed border-muted-foreground/60" />{" "}
@@ -251,8 +251,8 @@ function PlannerChart() {
           <ComposedChart data={plannerCurve} margin={{ top: 46, right: 12, bottom: 0, left: 4 }}>
             <defs>
               <linearGradient id="planner-area" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="var(--kid-mint)" stopOpacity={0.35} />
-                <stop offset="100%" stopColor="var(--kid-mint)" stopOpacity={0} />
+                <stop offset="0%" stopColor="var(--kid-money)" stopOpacity={0.35} />
+                <stop offset="100%" stopColor="var(--kid-money)" stopOpacity={0} />
               </linearGradient>
             </defs>
             <CartesianGrid stroke="var(--border)" strokeDasharray="4 6" vertical={false} />
@@ -283,7 +283,7 @@ function PlannerChart() {
             <Area
               type="monotone"
               dataKey="value"
-              stroke="var(--kid-mint)"
+              stroke="var(--kid-money)"
               strokeWidth={3}
               fill="url(#planner-area)"
               isAnimationActive={false}
@@ -316,13 +316,13 @@ function FamilyPlannerVisual() {
 
   const summary = [
     { k: t("Aportes totales", "Total deposits"), v: eur(PLAN_CONTRIB), s: t("Durante 13 años", "Over 13 years"), c: "var(--kid-sky)" },
-    { k: t("Crecimiento estimado", "Estimated growth"), v: eur(PLAN_GROWTH), s: t("Gracias al interés compuesto", "Thanks to compound interest"), c: "var(--kid-mint)" },
+    { k: t("Crecimiento estimado", "Estimated growth"), v: eur(PLAN_GROWTH), s: t("Gracias al interés compuesto", "Thanks to compound interest"), c: "var(--kid-money)" },
     { k: t("Valor a los 18", "Value at 18"), v: eur(PLAN_FUTURE), s: t("Objetivo final", "Final goal"), c: "var(--kid-grape)" },
     { k: t("Tiempo para lograrlo", "Time to get there"), v: t("13 años", "13 years"), s: t("Antes de los 18", "Before turning 18"), c: "var(--kid-sun)" },
   ];
 
   return (
-    <ScreenCard title={t("Fondo para la universidad", "College fund")} accent="var(--kid-mint)">
+    <ScreenCard title={t("Fondo para la universidad", "College fund")} accent="var(--kid-money)">
       <div className="grid gap-4 lg:grid-cols-[1.5fr_0.9fr]">
         <div>
           <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
@@ -334,7 +334,7 @@ function FamilyPlannerVisual() {
           <p className="mt-2 text-xs text-muted-foreground">
             {t(`Si inviertes ${eur(PLAN_MONTHLY)} al mes desde hoy, Sofía tendrá`, `If you invest ${eur(PLAN_MONTHLY)} a month from today, Sofía will have`)}
           </p>
-          <p className="numeric mt-1 text-4xl font-semibold text-kid-mint md:text-5xl">{eur(PLAN_FUTURE)}</p>
+          <p className="numeric mt-1 text-4xl font-semibold text-kid-money md:text-5xl">{eur(PLAN_FUTURE)}</p>
           <p className="mt-1 text-xs text-muted-foreground">{t("cuando cumpla 18 años.", "when she turns 18.")}</p>
           <span className="numeric mt-3 inline-flex items-center gap-1.5 rounded-full bg-kid-sun/12 px-3 py-1.5 text-xs font-semibold text-kid-sun ring-1 ring-kid-sun/25">
             <Target className="h-3.5 w-3.5" /> {t("Faltan 86 €/mes", "86 €/mo to go")}
@@ -345,11 +345,11 @@ function FamilyPlannerVisual() {
           <div
             className="relative flex h-28 w-28 items-center justify-center rounded-full"
             style={{
-              background: `conic-gradient(var(--kid-mint) 0% ${PLAN_PCT}%, color-mix(in oklab, var(--kid-mint) 14%, transparent) ${PLAN_PCT}% 100%)`,
+              background: `conic-gradient(var(--kid-money) 0% ${PLAN_PCT}%, color-mix(in oklab, var(--kid-money) 14%, transparent) ${PLAN_PCT}% 100%)`,
             }}
           >
             <span className="flex h-[86px] w-[86px] flex-col items-center justify-center rounded-full bg-card">
-              <span className="numeric text-xl font-bold text-kid-mint">{PLAN_PCT}%</span>
+              <span className="numeric text-xl font-bold text-kid-money">{PLAN_PCT}%</span>
               <span className="text-[10px] text-muted-foreground">{t("del objetivo", "of goal")}</span>
             </span>
           </div>
@@ -365,7 +365,7 @@ function FamilyPlannerVisual() {
           return (
             <div key={m.k} className="rounded-2xl bg-elevated/60 p-3 ring-1 ring-border/60">
               <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-                <Icon className="h-3.5 w-3.5 text-kid-mint" />
+                <Icon className="h-3.5 w-3.5 text-kid-money" />
                 <span className="truncate">{m.k}</span>
               </p>
               <p className="numeric mt-1.5 text-lg font-semibold">{m.v}</p>
@@ -645,7 +645,7 @@ function HowItWorksSlider() {
       id: "numbers",
       tab: t("Mi Primer Número", "My First Number"),
       icon: Wallet,
-      color: "var(--kid-sky)",
+      color: "var(--kid-baby)",
       title: t("Su número de hoy y el del futuro", "Their number today and tomorrow"),
       desc: t(
         "Ve su dinero disponible en grande y hacia dónde puede llegar si sigue ahorrando cada semana.",
@@ -973,14 +973,14 @@ function HowItWorksSlider() {
       id: "grow",
       tab: t("Fondo para la universidad", "College fund"),
       icon: Rocket,
-      color: "var(--kid-mint)",
+      color: "var(--kid-money)",
       title: t("El plan del futuro, en una pantalla", "The future plan, on one screen"),
       desc: t(
         "Ajusta capital, aporte mensual y edad objetivo: verás al instante cuánto tendrá y cuánto viene del interés compuesto.",
         "Tune starting capital, monthly deposit and target age: see instantly how much they'll have and how much comes from compounding.",
       ),
       visual: (
-        <ScreenCard title={t("Fondo para la universidad", "College fund")} accent="var(--kid-mint)">
+        <ScreenCard title={t("Fondo para la universidad", "College fund")} accent="var(--kid-money)">
           <div className="flex h-full min-h-[420px] flex-col">
             <PlannerChart />
           </div>
@@ -1448,7 +1448,7 @@ function HowItWorksSlider() {
                       <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                         <GraduationCap className="h-4 w-4" /> {t("El futuro de Sofía", "Sofía's future")}
                       </p>
-                      <p className="numeric mt-3 text-4xl font-bold leading-tight text-kid-mint">{eur(PLAN_FUTURE)}</p>
+                      <p className="numeric mt-3 text-4xl font-bold leading-tight text-kid-money">{eur(PLAN_FUTURE)}</p>
                       <p className="mt-1 text-xs text-muted-foreground">{t("cuando cumpla 18 años", "when she turns 18")}</p>
                     </div>
 
@@ -1457,11 +1457,11 @@ function HowItWorksSlider() {
                       <div
                         className="relative flex h-20 w-20 shrink-0 items-center justify-center rounded-full"
                         style={{
-                          background: `conic-gradient(var(--kid-mint) 0% ${PLAN_PCT}%, color-mix(in oklab, var(--kid-mint) 14%, transparent) ${PLAN_PCT}% 100%)`,
+                          background: `conic-gradient(var(--kid-money) 0% ${PLAN_PCT}%, color-mix(in oklab, var(--kid-money) 14%, transparent) ${PLAN_PCT}% 100%)`,
                         }}
                       >
                         <span className="flex h-[60px] w-[60px] flex-col items-center justify-center rounded-full bg-card">
-                          <span className="numeric text-lg font-bold text-kid-mint">{PLAN_PCT}%</span>
+                          <span className="numeric text-lg font-bold text-kid-money">{PLAN_PCT}%</span>
                         </span>
                       </div>
                       <div className="min-w-0">
@@ -1479,13 +1479,13 @@ function HowItWorksSlider() {
                       </p>
                       {[
                         { k: t("Aportes totales", "Total deposits"), v: eur(PLAN_CONTRIB), c: "var(--kid-sky)" },
-                        { k: t("Interés compuesto", "Compound interest"), v: `+ ${eur(PLAN_GROWTH)}`, c: "var(--kid-mint)" },
+                        { k: t("Interés compuesto", "Compound interest"), v: `+ ${eur(PLAN_GROWTH)}`, c: "var(--kid-money)" },
                         { k: t("Valor a los 18", "Value at 18"), v: eur(PLAN_FUTURE), c: "var(--kid-grape)", strong: true },
                       ].map((m) => (
                         <div
                           key={m.k}
                           className={`flex items-center justify-between rounded-xl px-4 py-3.5 ring-1 ring-border/40 ${
-                            m.strong ? "bg-kid-mint/8" : "bg-background/60"
+                            m.strong ? "bg-kid-money/8" : "bg-background/60"
                           }`}
                         >
                           <span className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -2110,7 +2110,7 @@ function DualDashboards() {
         >
           <PhoneMock
             id="dad"
-            accent="var(--kid-mint)"
+            accent="var(--kid-money)"
             face={faceDad}
             name={t("Papá", "Dad")}
             chip={t("Plan familiar", "Family plan")}
@@ -2129,10 +2129,10 @@ function DualDashboards() {
         <div className="flex items-center justify-center gap-3 lg:flex-col">
           <span className="hidden h-px w-10 bg-border lg:block lg:h-14 lg:w-px" />
           <div className="flex flex-col items-center gap-1.5">
-            <span className="flex h-12 w-12 items-center justify-center rounded-full border border-kid-mint/30 bg-kid-mint/10 text-kid-mint">
+            <span className="flex h-12 w-12 items-center justify-center rounded-full border border-kid-money/30 bg-kid-money/10 text-kid-money">
               <Users className="h-4 w-4" />
             </span>
-            <span className="text-xs font-medium text-kid-mint">Family Planner</span>
+            <span className="text-xs font-medium text-kid-money">Family Planner</span>
           </div>
           <span className="hidden h-px w-10 bg-border lg:block lg:h-14 lg:w-px" />
         </div>
