@@ -515,47 +515,93 @@ function HowItWorksSlider() {
       ),
       visual: (
         <ScreenCard title={t("Mis tareas", "My chores")} accent="var(--kid-sun)">
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">{t("Tareas pendientes", "Pending chores")}</p>
+          <div className="grid grid-cols-3 gap-2.5">
+            {[
+              { e: "🐷", k: t("Ganado este mes", "Earned this month"), v: "€26,00", c: "var(--kid-sun)" },
+              { e: "✅", k: t("Tareas hechas", "Chores done"), v: "18", c: "var(--kid-mint)" },
+              { e: "🔥", k: t("Racha", "Streak"), v: t("7 sem.", "7 wks"), c: "var(--kid-coral)" },
+            ].map((s) => (
+              <div
+                key={s.k}
+                className="rounded-2xl bg-elevated p-3 ring-1 ring-border/60"
+                style={{ boxShadow: `inset 0 -2px 0 color-mix(in oklab, ${s.c} 35%, transparent)` }}
+              >
+                <span className="text-xl leading-none">{s.e}</span>
+                <p className="numeric mt-1.5 text-lg font-semibold" style={{ color: s.c }}>
+                  {s.v}
+                </p>
+                <p className="truncate text-[11px] text-muted-foreground">{s.k}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">{t("Tareas de esta semana", "This week's chores")}</p>
             <span className="numeric rounded-full bg-kid-sun/12 px-3 py-1 text-xs font-semibold text-kid-sun">
               +€6,50 {t("esta semana", "this week")}
             </span>
           </div>
-          <div className="mt-4 space-y-3">
+
+          <div className="mt-3 space-y-2.5">
             {[
-              { k: t("Mesada semanal", "Weekly allowance"), v: "+€10,00", ok: true },
-              { k: t("Hacer mi cama", "Make my bed"), v: "+€0,50", ok: true },
-              { k: t("Ordenar mi habitación", "Tidy my room"), v: "+€1,00", ok: false },
-              { k: t("Leer 20 minutos", "Read 20 minutes"), v: "+€0,50", ok: false },
+              { e: "🛏️", k: t("Hacer mi cama", "Make my bed"), s: t("cada día", "every day"), v: "+€0,50", ok: true },
+              { e: "🐶", k: t("Pasear al perro", "Walk the dog"), s: t("semanal", "weekly"), v: "+€2,00", ok: true },
+              { e: "🧺", k: t("Ordenar mi habitación", "Tidy my room"), s: t("semanal", "weekly"), v: "+€1,00", ok: false },
+              { e: "📚", k: t("Leer 20 minutos", "Read 20 minutes"), s: t("cada día", "every day"), v: "+€0,50", ok: false },
             ].map((r) => (
-              <div key={r.k} className="flex items-center justify-between rounded-xl bg-elevated px-4 py-3 text-sm">
-                <span className="flex items-center gap-2.5">
-                  <BadgeCheck className={`h-5 w-5 ${r.ok ? "text-kid-mint" : "text-muted-foreground/40"}`} />
-                  {r.k}
+              <div
+                key={r.k}
+                className="flex items-center gap-3 rounded-2xl bg-elevated px-3.5 py-2.5 ring-1 ring-border/50"
+              >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-card text-lg">
+                  {r.e}
                 </span>
-                <span className="numeric text-base font-semibold text-kid-sun">{r.v}</span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-medium">{r.k}</span>
+                  <span className="block text-[11px] text-muted-foreground">{r.s}</span>
+                </span>
+                <span className="numeric text-sm font-semibold text-kid-sun">{r.v}</span>
+                <span
+                  className={cn(
+                    "flex h-7 w-7 shrink-0 items-center justify-center rounded-full",
+                    r.ok ? "bg-kid-mint text-background" : "bg-card ring-1 ring-border",
+                  )}
+                >
+                  <BadgeCheck className={cn("h-4 w-4", r.ok ? "" : "text-muted-foreground/40")} />
+                </span>
               </div>
             ))}
           </div>
-          <div className="mt-3 rounded-2xl bg-elevated/60 p-3 ring-1 ring-border">
+
+          <div className="mt-3 rounded-2xl bg-kid-sun/8 p-3 ring-1 ring-kid-sun/20">
             <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-              <span>{t("Lo que gana cada semana", "What they earn each week")}</span>
-              <span className="numeric text-kid-sun">{t("media €5,50", "avg €5.50")}</span>
+              <span>🔥 {t("Racha de esta semana", "This week's streak")}</span>
+              <span className="numeric text-kid-sun">{t("4 días seguidos", "4 days in a row")}</span>
             </div>
-            <div className="mt-2 h-24">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={choreWeeks} margin={{ top: 4, right: 2, bottom: 0, left: 0 }} barCategoryGap={10}>
-                  <XAxis
-                    dataKey="w"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={{ fill: "var(--muted-foreground)", fontSize: 10 }}
-                  />
-                  <Bar dataKey="v" fill="var(--kid-sun)" radius={[6, 6, 0, 0]} isAnimationActive={false} />
-                </BarChart>
-              </ResponsiveContainer>
+            <div className="mt-2 flex items-center justify-between gap-1.5">
+              {[
+                { d: t("L", "M"), ok: true },
+                { d: t("M", "T"), ok: true },
+                { d: t("X", "W"), ok: true },
+                { d: t("J", "T"), ok: true },
+                { d: t("V", "F"), ok: false },
+                { d: t("S", "S"), ok: false },
+                { d: t("D", "S"), ok: false },
+              ].map((d, idx) => (
+                <span key={idx} className="flex flex-1 flex-col items-center gap-1">
+                  <span
+                    className={cn(
+                      "flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-semibold",
+                      d.ok ? "bg-kid-mint text-background" : "bg-card text-muted-foreground/50 ring-1 ring-border",
+                    )}
+                  >
+                    {d.ok ? "✓" : ""}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground">{d.d}</span>
+                </span>
+              ))}
             </div>
-            <p className="mt-1 text-[11px] text-muted-foreground">
+            <p className="mt-2 text-[11px] text-muted-foreground">
               {t(
                 "Cada tarea aprobada se reparte sola: 40% ahorrar, 40% invertir, 20% gastar.",
                 "Every approved chore splits itself: 40% save, 40% invest, 20% spend.",
@@ -565,6 +611,7 @@ function HowItWorksSlider() {
         </ScreenCard>
       ),
     },
+
     {
       id: "grow",
       tab: t("Planificador familiar", "Family planner"),
