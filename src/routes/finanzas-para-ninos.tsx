@@ -894,8 +894,8 @@ function HowItWorksSlider() {
       "Sofía is 11% of the way to her number. Just €3 more a month gets her there 8 months sooner.",
     ),
     grow: t(
-      "El 77% de su futuro viene del interés compuesto, no de lo que aporta. Empezar hoy vale oro.",
-      "77% of her future comes from compound interest, not deposits. Starting today is worth gold.",
+      "Con 99 €/mes Sofía llega al 82% de su objetivo universitario. Subiendo a 185 €/mes lo cubre entero.",
+      "At €99/mo Sofía reaches 82% of her university goal. Raising it to €185/mo covers it fully.",
     ),
     unis: t(
       "Con su número podría aplicar hoy a 3 de estas universidades: cubre el 111% de un grado en Barcelona.",
