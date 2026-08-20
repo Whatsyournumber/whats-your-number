@@ -988,6 +988,36 @@ function HowItWorksSlider() {
                       </div>
                     </div>
 
+                    <div className="mt-4 grid grid-cols-2 gap-3">
+                      {[
+                        { e: "💰", k: t("Este mes", "This month"), v: "€24,00", c: "var(--kid-sun)" },
+                        { e: "🏆", k: t("Mejor racha", "Best streak"), v: t("12 días", "12 days"), c: "var(--kid-coral)" },
+                      ].map((s) => (
+                        <div key={s.k} className="rounded-2xl bg-background/60 p-3.5 ring-1 ring-border/50">
+                          <span className="text-base leading-none">{s.e}</span>
+                          <p className="numeric mt-1.5 text-base font-bold" style={{ color: s.c }}>{s.v}</p>
+                          <p className="text-[11px] text-muted-foreground">{s.k}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-4 rounded-2xl bg-background/60 p-4 ring-1 ring-border/50">
+                      <div className="flex items-center justify-between text-xs">
+                        <p className="text-muted-foreground">{t("Próxima recompensa", "Next reward")}</p>
+                        <span className="numeric font-semibold text-kid-sun">€24 / €30</span>
+                      </div>
+                      <div className="mt-2.5 h-2.5 overflow-hidden rounded-full bg-card">
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: "80%", background: "linear-gradient(90deg, var(--kid-sun), var(--kid-mint))" }}
+                        />
+                      </div>
+                      <p className="mt-2 text-[11px] text-muted-foreground">
+                        {t("Le faltan €6 para su bici nueva 🚲", "€6 to go for their new bike 🚲")}
+                      </p>
+                    </div>
+
+
 
                   </>
                 ) : active.id === "dreams" ? (
