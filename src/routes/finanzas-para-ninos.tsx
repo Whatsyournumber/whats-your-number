@@ -830,6 +830,15 @@ function HowItWorksSlider() {
 
 
 
+  const sideTitle: Record<string, string> = {
+    numbers: t("Cómo se reparte su dinero", "How their money is split"),
+    pockets: t("Cómo se reparte su dinero", "How their money is split"),
+    chores: t("Lo que gana cada semana", "What they earn each week"),
+    dreams: t("Sus sueños en marcha", "Their dreams in progress"),
+    grow: t("Su futuro, año a año", "Their future, year by year"),
+    unis: t("Universidades que podría pagar", "Universities they could afford"),
+  };
+
   const active = slides[i]!;
 
   return (
