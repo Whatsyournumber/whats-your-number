@@ -44,22 +44,26 @@ export function BrandLogo({
   className,
   vertical,
   variant = "auto",
+  compact,
 }: {
   className?: string;
   vertical?: boolean;
   variant?: BrandVariant;
+  /** Oculta el wordmark en pantallas muy estrechas para evitar solapes. */
+  compact?: boolean;
 }) {
   return (
     <span
       className={cn(
-        vertical ? "flex flex-col items-center gap-2" : "flex items-center gap-2.5",
+        vertical ? "flex flex-col items-center gap-2" : "flex min-w-0 items-center gap-2.5",
         className,
       )}
     >
-      <BrandMark className={vertical ? "h-12 w-12" : "h-9 w-9"} variant={variant} />
+      <BrandMark className={cn("shrink-0", vertical ? "h-12 w-12" : "h-9 w-9")} variant={variant} />
       <span
         className={cn(
-          "font-display text-sm font-semibold leading-none tracking-tight",
+          "truncate font-display text-sm font-semibold leading-none tracking-tight",
+          compact && "hidden sm:inline",
           variant === "light" && "text-slate-900",
         )}
       >
@@ -76,14 +80,20 @@ export function KidsBrandMark({ className }: { className?: string }) {
 }
 
 
-export function KidsBrandLogo({ className }: { className?: string }) {
+export function KidsBrandLogo({ className, compact }: { className?: string; compact?: boolean }) {
   return (
-    <span className={cn("flex items-center gap-2.5", className)}>
-      <BrandMark className="h-9 w-9" />
-      <span className="font-display text-sm font-semibold leading-none tracking-tight">
+    <span className={cn("flex min-w-0 items-center gap-2.5", className)}>
+      <BrandMark className="h-9 w-9 shrink-0" />
+      <span
+        className={cn(
+          "truncate font-display text-sm font-semibold leading-none tracking-tight",
+          compact && "hidden sm:inline",
+        )}
+      >
         My First <span className="text-primary">Number</span>
       </span>
     </span>
   );
 }
+
 
