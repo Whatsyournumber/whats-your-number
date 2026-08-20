@@ -37,11 +37,18 @@ export function useRegionalPricing() {
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
 
-  const tier: PricingTier = query.data?.tier ?? (hydrated ? fallbackTier() : "standard");
+  // Si el servidor no pudo geolocalizar (sin headers de edge, p.ej. en preview),
+  // usamos la heurística local por zona horaria una vez hidratados.
+  const serverCountry = query.data?.country ?? null;
+  const tier: PricingTier = serverCountry
+    ? query.data!.tier
+    : hydrated
+      ? fallbackTier()
+      : "standard";
 
   return {
     tier,
-    country: query.data?.country ?? null,
+    country: serverCountry,
     prices: TIER_PRICES[tier],
     loading: query.isLoading,
   };
