@@ -306,7 +306,7 @@ function FamilyPlannerVisual() {
   ];
 
   return (
-    <ScreenCard title={t("Planificador familiar", "Family planner")} accent="var(--kid-mint)">
+    <ScreenCard title={t("Fondo para la universidad", "College fund")} accent="var(--kid-mint)">
       <div className="grid gap-4 lg:grid-cols-[1.5fr_0.9fr]">
         <div>
           <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
