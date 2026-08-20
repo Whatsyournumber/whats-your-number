@@ -31,7 +31,11 @@ export const Route = createFileRoute("/demo")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:url", content: "https://whatsyour-number.com/demo" },
+      { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
+      { name: "twitter:image", content: "https://whatsyour-number.com/og-cover.jpg" },
     ],
+    links: [{ rel: "canonical", href: "https://whatsyour-number.com/demo" }],
   }),
   component: DemoPage,
 });

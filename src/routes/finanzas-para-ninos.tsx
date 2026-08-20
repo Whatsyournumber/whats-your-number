@@ -93,7 +93,11 @@ export const Route = createFileRoute("/finanzas-para-ninos")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:url", content: "https://whatsyour-number.com/finanzas-para-ninos" },
+      { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
+      { name: "twitter:image", content: "https://whatsyour-number.com/og-cover.jpg" },
     ],
+    links: [{ rel: "canonical", href: "https://whatsyour-number.com/finanzas-para-ninos" }],
   }),
   component: KidsFinanceLanding,
 });
