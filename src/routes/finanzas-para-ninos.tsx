@@ -615,11 +615,18 @@ function UniFinderVisual() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
 
-                {u.cost <= budget && (
-                  <span className="absolute right-2 top-2 rounded-full bg-kid-mint/20 px-1.5 py-0.5 text-[9px] font-semibold text-kid-mint">
-                    {t("Puede aplicar", "Can apply")}
-                  </span>
-                )}
+                <span
+                  className={`absolute right-2 top-2 rounded-full px-1.5 py-0.5 text-[9px] font-semibold ${
+                    u.cost <= budget
+                      ? "bg-kid-mint/20 text-kid-mint"
+                      : "bg-background/70 text-muted-foreground ring-1 ring-border"
+                  }`}
+                >
+                  {u.cost <= budget
+                    ? t("Puede aplicar", "Can apply")
+                    : `${t("faltan", "short")} ${fmt(u.cost - budget)}`}
+                </span>
+
                 <div className="absolute inset-x-2.5 bottom-2 flex items-end justify-between gap-2">
                   <div className="min-w-0">
                     <p className="truncate text-[11px] font-semibold">
