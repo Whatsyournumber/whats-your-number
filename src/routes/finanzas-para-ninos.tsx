@@ -515,22 +515,44 @@ function HowItWorksSlider() {
       ),
       visual: (
         <ScreenCard title={t("Mis tareas", "My chores")} accent="var(--kid-sun)">
-          <div className="flex items-center justify-between">
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { e: "💰", k: t("Ganado", "Earned"), v: "€6,50", c: "var(--kid-sun)" },
+              { e: "✅", k: t("Hechas", "Done"), v: "2/4", c: "var(--kid-mint)" },
+              { e: "🔥", k: t("Racha", "Streak"), v: t("4 días", "4 days"), c: "var(--kid-coral)" },
+            ].map((s) => (
+              <div key={s.k} className="rounded-2xl bg-background/60 p-3 ring-1 ring-border/50">
+                <span className="text-base leading-none">{s.e}</span>
+                <p className="numeric mt-1.5 text-sm font-bold" style={{ color: s.c }}>{s.v}</p>
+                <p className="text-[11px] text-muted-foreground">{s.k}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 flex items-center justify-between">
             <p className="text-sm text-muted-foreground">{t("Tareas de esta semana", "This week's chores")}</p>
             <span className="numeric text-sm font-semibold text-kid-sun">+€6,50</span>
           </div>
 
-          <div className="mt-4 space-y-1">
+          <div className="mt-2 space-y-1.5">
             {[
               { e: "🛏️", k: t("Hacer mi cama", "Make my bed"), v: "+€0,50", ok: true },
               { e: "🐶", k: t("Pasear al perro", "Walk the dog"), v: "+€2,00", ok: true },
               { e: "🧺", k: t("Ordenar mi habitación", "Tidy my room"), v: "+€1,00", ok: false },
               { e: "📚", k: t("Leer 20 minutos", "Read 20 minutes"), v: "+€0,50", ok: false },
             ].map((r) => (
-              <div key={r.k} className="flex items-center gap-3 rounded-xl px-2 py-2.5">
+              <div
+                key={r.k}
+                className={cn(
+                  "flex items-center gap-3 rounded-xl px-3 py-2.5 ring-1",
+                  r.ok ? "bg-kid-mint/10 ring-kid-mint/25" : "bg-background/40 ring-border/40",
+                )}
+              >
                 <span className="text-lg leading-none">{r.e}</span>
-                <span className="min-w-0 flex-1 truncate text-sm font-medium">{r.k}</span>
-                <span className="numeric text-sm text-muted-foreground">{r.v}</span>
+                <span className={cn("min-w-0 flex-1 truncate text-sm font-medium", r.ok && "text-muted-foreground line-through")}>
+                  {r.k}
+                </span>
+                <span className={cn("numeric text-sm font-semibold", r.ok ? "text-kid-mint" : "text-muted-foreground")}>{r.v}</span>
                 <span
                   className={cn(
                     "flex h-6 w-6 shrink-0 items-center justify-center rounded-full",
@@ -543,49 +565,29 @@ function HowItWorksSlider() {
             ))}
           </div>
 
-          <div className="mt-4 flex items-center gap-3 border-t border-border/50 pt-3">
-            <span className="text-sm">🔥</span>
-            <span className="text-sm text-muted-foreground">{t("Racha de 4 días", "4-day streak")}</span>
-            <span className="ml-auto flex gap-1">
-              {Array.from({ length: 7 }).map((_, idx) => (
-                <span
-                  key={idx}
-                  className={cn(
-                    "h-1.5 w-1.5 rounded-full",
-                    idx < 4 ? "bg-kid-mint" : "bg-border",
-                  )}
-                />
-              ))}
-            </span>
-          </div>
-
-          <div className="mt-auto pt-5">
+          <div className="mt-auto border-t border-border/50 pt-4">
             <div className="flex items-center justify-between">
-              <p className="text-xs text-muted-foreground">{t("Lo que gana cada semana", "What they earn each week")}</p>
-              <span className="numeric text-xs font-semibold text-kid-sun">{t("Media €5,50", "Avg €5.50")}</span>
+              <p className="text-xs text-muted-foreground">{t("Racha de la semana", "Weekly streak")}</p>
+              <span className="text-xs font-semibold text-kid-coral">🔥 4</span>
             </div>
-            <div className="mt-3 flex h-20 items-end gap-2">
-              {choreWeeks.map((w, idx) => {
-                const max = Math.max(...choreWeeks.map((c) => c.v));
-                const h = (w.v / max) * 100;
-                return (
-                  <div key={idx} className="flex flex-1 flex-col items-center gap-1.5">
-                    <div className="flex w-full flex-1 items-end">
-                      <div
-                        className="w-full rounded-md transition-all"
-                        style={{
-                          height: `${h}%`,
-                          background: "linear-gradient(to top, color-mix(in oklab, var(--kid-sun) 55%, transparent), var(--kid-sun))",
-                        }}
-                      />
-                    </div>
-                    <span className="text-[10px] text-muted-foreground">{w.w}</span>
-                  </div>
-                );
-              })}
+            <div className="mt-2.5 flex justify-between gap-1.5">
+              {[t("L", "M"), t("M", "T"), t("M", "W"), t("J", "T"), t("V", "F"), t("S", "S"), t("D", "S")].map((d, idx) => (
+                <div key={idx} className="flex flex-1 flex-col items-center gap-1">
+                  <span
+                    className={cn(
+                      "flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold",
+                      idx < 4 ? "bg-kid-mint text-background" : "bg-background text-muted-foreground/50 ring-1 ring-border",
+                    )}
+                  >
+                    {idx < 4 ? "✓" : ""}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground">{d}</span>
+                </div>
+              ))}
             </div>
           </div>
         </ScreenCard>
+
       ),
     },
 
@@ -942,22 +944,52 @@ function HowItWorksSlider() {
                   </>
                 ) : active.id === "chores" ? (
                   <>
-                    <div className="mt-2 flex flex-col items-center">
+                    <div className="mt-3 flex items-center gap-4 rounded-2xl bg-background/60 p-4 ring-1 ring-border/50">
                       <div
-                        className="relative flex h-32 w-32 items-center justify-center rounded-full"
+                        className="relative flex h-24 w-24 shrink-0 items-center justify-center rounded-full"
                         style={{
                           background:
                             "conic-gradient(var(--kid-sun) 0% 75%, color-mix(in oklab, var(--kid-sun) 14%, transparent) 75% 100%)",
                         }}
                       >
-                        <span className="flex h-24 w-24 flex-col items-center justify-center rounded-full bg-elevated">
-                          <span className="numeric text-2xl font-bold text-kid-sun">75%</span>
-                          <span className="text-[10px] text-muted-foreground">{t("completado", "done")}</span>
+                        <span className="flex h-[70px] w-[70px] flex-col items-center justify-center rounded-full bg-elevated">
+                          <span className="numeric text-lg font-bold text-kid-sun">75%</span>
                         </span>
                       </div>
-                      <p className="mt-3 text-sm font-semibold">
-                        3 / 4 {t("esta semana", "this week")}
-                      </p>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold">{t("3 de 4 tareas", "3 of 4 chores")}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {t("Completadas esta semana", "Completed this week")}
+                        </p>
+                        <p className="numeric mt-2 text-sm font-bold text-kid-mint">+€6,50</p>
+                      </div>
+                    </div>
+
+                    <div className="mt-4">
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs text-muted-foreground">{t("Lo que gana cada semana", "What they earn each week")}</p>
+                        <span className="numeric text-xs font-semibold text-kid-sun">{t("Media €5,50", "Avg €5.50")}</span>
+                      </div>
+                      <div className="mt-3 flex h-[110px] items-end gap-2">
+                        {choreWeeks.map((w, idx) => {
+                          const max = Math.max(...choreWeeks.map((c) => c.v));
+                          const h = Math.max(12, (w.v / max) * 88);
+                          return (
+                            <div key={idx} className="flex flex-1 flex-col items-center gap-1.5">
+                              <span className="numeric text-[10px] text-muted-foreground">€{w.v}</span>
+                              <div
+                                className="w-full rounded-lg"
+                                style={{
+                                  height: `${h}px`,
+                                  background:
+                                    "linear-gradient(to top, color-mix(in oklab, var(--kid-sun) 45%, transparent), var(--kid-sun))",
+                                }}
+                              />
+                              <span className="text-[10px] text-muted-foreground">{w.w}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
 
                     <div className="mt-4 space-y-2.5 border-t border-border/40 pt-4">
@@ -978,6 +1010,7 @@ function HowItWorksSlider() {
                         </div>
                       ))}
                     </div>
+
                   </>
                 ) : active.id === "dreams" ? (
                   <>
