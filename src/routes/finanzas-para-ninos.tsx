@@ -1876,73 +1876,42 @@ function ThreePillars() {
           "A plan for parents, habits for kids and time working in their favour.",
         )}
       </p>
-      <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-
-
-        {pillars.map(({ id, icon: Icon, color, title, desc, metric, metricLabel }) => (
+      <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {pillars.map(({ id, icon: Icon, color, title, desc }) => (
           <motion.div
             key={id}
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.45 }}
-            className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all duration-300 hover:-translate-y-1 md:p-5"
-            style={{ boxShadow: "0 1px 0 0 color-mix(in oklab, var(--foreground) 5%, transparent) inset" }}
+            transition={{ duration: 0.4 }}
+            className="group relative flex flex-col rounded-2xl border border-border bg-card p-5 transition-colors duration-300 hover:border-border/80"
           >
             <span
-              className="pointer-events-none absolute inset-x-0 top-0 h-px opacity-70"
+              className="flex h-9 w-9 items-center justify-center rounded-full"
               style={{
-                background: `linear-gradient(90deg, transparent, color-mix(in oklab, ${color} 70%, transparent), transparent)`,
+                color,
+                boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${color} 35%, transparent)`,
               }}
-            />
+            >
+              <Icon className="h-4 w-4" />
+            </span>
+
+            <h3 className="mt-4 font-display text-base font-semibold leading-snug tracking-tight">
+              {title}
+            </h3>
+            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{desc}</p>
+
             <span
-              className="pointer-events-none absolute -top-24 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
-              style={{ backgroundColor: `color-mix(in oklab, ${color} 22%, transparent)` }}
+              className="mt-4 block h-px w-8 rounded-full"
+              style={{ backgroundColor: color }}
             />
-
-            <div className="relative flex items-center gap-2.5">
-              <span
-                className="flex h-7 w-7 items-center justify-center rounded-lg"
-                style={{
-                  color,
-                  backgroundColor: `color-mix(in oklab, ${color} 12%, transparent)`,
-                  boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${color} 25%, transparent)`,
-                }}
-              >
-                <Icon className="h-3.5 w-3.5" />
-              </span>
-              <h3 className="font-display text-sm font-medium tracking-tight">{title}</h3>
-            </div>
-            <p className="relative mt-2.5 text-xs leading-relaxed text-muted-foreground">{desc}</p>
-
-            <div className="relative mt-auto pt-4">
-              <div className="flex items-baseline gap-2">
-                <span className="numeric text-xl font-semibold" style={{ color }}>
-                  {metric}
-                </span>
-              </div>
-              <p className="mt-0.5 text-[11px] text-muted-foreground">{metricLabel}</p>
-
-              <PillarVisual
-                id={id}
-                color={color}
-                labels={[t("Ahorrar", "Save"), t("Invertir", "Invest"), t("Gastar", "Spend")]}
-              />
-              <div className="mt-2.5 flex justify-between border-t border-border/60 pt-2 text-[9px] uppercase tracking-wider text-muted-foreground/70">
-                <span>{pillarAxis[id]?.[0]}</span>
-                <span>{pillarAxis[id]?.[1]}</span>
-              </div>
-            </div>
-
-
           </motion.div>
         ))}
       </div>
-
     </section>
-
   );
 }
+
 
 function PhoneMock({
   accent,
