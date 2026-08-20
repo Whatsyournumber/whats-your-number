@@ -59,13 +59,13 @@ import { cn } from "@/lib/utils";
 import { useLiveCount, formatCount } from "@/components/live-count";
 import photoMit from "@/assets/uni/us-mit.jpg";
 import photoOxford from "@/assets/uni/uk-oxford.jpg";
-import photoToronto from "@/assets/uni/ca-toronto.jpg";
+import photoIE from "@/assets/uni/es-ie.jpg";
 import photoEth from "@/assets/uni/ch-eth.jpg";
 
 const DEMO_UNI_PHOTOS: Record<string, string> = {
   "us-mit": photoMit,
   "uk-university-of-oxford": photoOxford,
-  "ca-university-of-toronto": photoToronto,
+  "es-ie-university": photoIE,
   "ch-eth-zurich": photoEth,
 };
 
@@ -409,13 +409,13 @@ const DEMO_UNIS = [
     feat: 1,
   },
   {
-    id: "ca-university-of-toronto",
-    name: "University of Toronto",
-    city: "Toronto",
-    country: "🇨🇦",
-    rank: 21,
+    id: "es-ie-university",
+    name: "IE University",
+    city: "Madrid",
+    country: "🇪🇸",
+    rank: 30,
     cost: 87000,
-    region: "na",
+    region: "eu",
     feat: 2,
   },
   {
@@ -1434,7 +1434,7 @@ function HowItWorksSlider() {
                       { n: "MIT", f: "🇺🇸", city: "Boston", cost: 139200 },
                       { n: "ETH Zürich", f: "🇨🇭", city: "Zúrich", cost: 130500 },
                       { n: "University of Oxford", f: "🇬🇧", city: "Oxford", cost: 129050 },
-                      { n: "University of Toronto", f: "🇨🇦", city: "Toronto", cost: 126150 },
+                      { n: "IE University", f: "🇪🇸", city: "Madrid", cost: 126150 },
                     ].map((u) => {
                       const pct = Math.round((uniNumber / u.cost) * 100);
                       return {
