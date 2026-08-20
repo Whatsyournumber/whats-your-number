@@ -62,6 +62,8 @@ import photoIe from "@/assets/uni/es-ie.jpg";
 import photoSnu from "@/assets/uni/kr-snu.jpg";
 import photoOxford from "@/assets/uni/uk-oxford.jpg";
 import photoToronto from "@/assets/uni/ca-toronto.jpg";
+import photoStanford from "@/assets/uni-stanford.jpg";
+import photoHarvard from "@/assets/uni-harvard.jpg";
 
 const DEMO_UNI_PHOTOS: Record<string, string> = {
   "us-mit": photoMit,
@@ -69,6 +71,8 @@ const DEMO_UNI_PHOTOS: Record<string, string> = {
   "ap-seoul-national-university": photoSnu,
   "uk-university-of-oxford": photoOxford,
   "ca-university-of-toronto": photoToronto,
+  "us-stanford": photoStanford,
+  "us-harvard": photoHarvard,
 };
 
 
