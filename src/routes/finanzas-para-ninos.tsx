@@ -1012,9 +1012,9 @@ function HowItWorksSlider() {
 
                 <div className="flex items-center gap-2 text-sm">
                   <Target className="h-4 w-4" style={{ color: active.color }} />
-                  <span>{t("Progreso hacia su número", "Progress to their number")}</span>
+                  <span className="font-medium">{t("Progreso hacia su número", "Progress to their number")}</span>
                 </div>
-                <div className="mt-3 h-2 overflow-hidden rounded-full bg-background">
+                <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-background">
                   <motion.div
                     key={active.id}
                     initial={{ width: 0 }}
@@ -1024,12 +1024,12 @@ function HowItWorksSlider() {
                     style={{ backgroundColor: active.color }}
                   />
                 </div>
-                <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
+                <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
                   <span className="numeric text-foreground">€1.150</span>
                   <span>11%</span>
                   <span className="numeric text-foreground">€10.668</span>
                 </div>
-                <p className="mt-2 text-[11px] text-muted-foreground">
+                <p className="mt-2 text-xs text-muted-foreground">
                   {t("Ahorrando €11,3 al mes hasta los 18 años.", "Saving €11.3 a month until age 18.")}
                 </p>
               </div>
