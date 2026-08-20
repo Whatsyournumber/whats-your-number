@@ -944,22 +944,52 @@ function HowItWorksSlider() {
                   </>
                 ) : active.id === "chores" ? (
                   <>
-                    <div className="mt-2 flex flex-col items-center">
+                    <div className="mt-3 flex items-center gap-4 rounded-2xl bg-background/60 p-4 ring-1 ring-border/50">
                       <div
-                        className="relative flex h-32 w-32 items-center justify-center rounded-full"
+                        className="relative flex h-24 w-24 shrink-0 items-center justify-center rounded-full"
                         style={{
                           background:
                             "conic-gradient(var(--kid-sun) 0% 75%, color-mix(in oklab, var(--kid-sun) 14%, transparent) 75% 100%)",
                         }}
                       >
-                        <span className="flex h-24 w-24 flex-col items-center justify-center rounded-full bg-elevated">
-                          <span className="numeric text-2xl font-bold text-kid-sun">75%</span>
-                          <span className="text-[10px] text-muted-foreground">{t("completado", "done")}</span>
+                        <span className="flex h-[70px] w-[70px] flex-col items-center justify-center rounded-full bg-elevated">
+                          <span className="numeric text-lg font-bold text-kid-sun">75%</span>
                         </span>
                       </div>
-                      <p className="mt-3 text-sm font-semibold">
-                        3 / 4 {t("esta semana", "this week")}
-                      </p>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold">{t("3 de 4 tareas", "3 of 4 chores")}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {t("Completadas esta semana", "Completed this week")}
+                        </p>
+                        <p className="numeric mt-2 text-sm font-bold text-kid-mint">+€6,50</p>
+                      </div>
+                    </div>
+
+                    <div className="mt-4">
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs text-muted-foreground">{t("Lo que gana cada semana", "What they earn each week")}</p>
+                        <span className="numeric text-xs font-semibold text-kid-sun">{t("Media €5,50", "Avg €5.50")}</span>
+                      </div>
+                      <div className="mt-3 flex h-[110px] items-end gap-2">
+                        {choreWeeks.map((w, idx) => {
+                          const max = Math.max(...choreWeeks.map((c) => c.v));
+                          const h = Math.max(12, (w.v / max) * 88);
+                          return (
+                            <div key={idx} className="flex flex-1 flex-col items-center gap-1.5">
+                              <span className="numeric text-[10px] text-muted-foreground">€{w.v}</span>
+                              <div
+                                className="w-full rounded-lg"
+                                style={{
+                                  height: `${h}px`,
+                                  background:
+                                    "linear-gradient(to top, color-mix(in oklab, var(--kid-sun) 45%, transparent), var(--kid-sun))",
+                                }}
+                              />
+                              <span className="text-[10px] text-muted-foreground">{w.w}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
 
                     <div className="mt-4 space-y-2.5 border-t border-border/40 pt-4">
@@ -980,6 +1010,7 @@ function HowItWorksSlider() {
                         </div>
                       ))}
                     </div>
+
                   </>
                 ) : active.id === "dreams" ? (
                   <>
