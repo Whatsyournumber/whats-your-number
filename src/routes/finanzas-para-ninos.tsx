@@ -149,6 +149,229 @@ function MiniArea({ color }: { color: string }) {
   );
 }
 
+/* ---------- Planificador familiar (demo) ---------- */
+const PLAN_START = 25000;
+const PLAN_MONTHLY = 99;
+const PLAN_GOAL = 150000;
+const PLAN_AGE_NOW = 5;
+const PLAN_AGE_TARGET = 18;
+const PLAN_RATE = 0.1;
+
+const plannerCurve = Array.from({ length: PLAN_AGE_TARGET - PLAN_AGE_NOW + 1 }, (_, i) => {
+  const r = PLAN_RATE / 12;
+  const n = i * 12;
+  const growth = Math.pow(1 + r, n);
+  const value = PLAN_START * growth + (n === 0 ? 0 : PLAN_MONTHLY * ((growth - 1) / r));
+  return {
+    age: PLAN_AGE_NOW + i,
+    value: Math.round(value),
+    goal: Math.round((PLAN_GOAL * i) / (PLAN_AGE_TARGET - PLAN_AGE_NOW)),
+  };
+});
+const PLAN_FUTURE = plannerCurve[plannerCurve.length - 1]!.value;
+const PLAN_CONTRIB = PLAN_MONTHLY * 12 * (PLAN_AGE_TARGET - PLAN_AGE_NOW);
+const PLAN_GROWTH = PLAN_FUTURE - PLAN_CONTRIB - PLAN_START;
+const PLAN_PCT = Math.round((PLAN_FUTURE / PLAN_GOAL) * 100);
+
+const eur = (n: number) => `${n.toLocaleString("es-ES", { maximumFractionDigits: 0 })} €`;
+
+function PlanMilestoneDot(props: {
+  cx?: number;
+  cy?: number;
+  payload?: { age: number; value: number };
+}) {
+  const { cx, cy, payload } = props;
+  if (cx == null || cy == null || !payload) return null;
+  if (![10, 15, 18].includes(payload.age)) return null;
+  const w = 86;
+  const flip = payload.age === 18;
+  const x = flip ? cx - w + 6 : cx - w / 2;
+  return (
+    <g>
+      <line x1={cx} y1={cy} x2={cx} y2={cy - 26} stroke="var(--border)" strokeWidth={1} />
+      <rect
+        x={x}
+        y={cy - 62}
+        rx={12}
+        width={w}
+        height={36}
+        fill="var(--color-card)"
+        stroke="var(--border)"
+      />
+      <text x={x + w / 2} y={cy - 47} textAnchor="middle" fontSize={9} fill="var(--muted-foreground)">
+        {payload.age} años
+      </text>
+      <text
+        x={x + w / 2}
+        y={cy - 35}
+        textAnchor="middle"
+        fontSize={12}
+        fontWeight={600}
+        fill="var(--color-foreground)"
+      >
+        {eur(payload.value)}
+      </text>
+      <circle cx={cx} cy={cy} r={5} fill="var(--color-background)" stroke="var(--kid-mint)" strokeWidth={2.5} />
+    </g>
+  );
+}
+
+function FamilyPlannerVisual() {
+  const t = useT();
+
+  const metrics = [
+    { icon: PiggyBank, k: t("Capital inicial", "Starting capital"), v: eur(PLAN_START), s: t("Hoy", "Today") },
+    { icon: Coins, k: t("Aporte mensual", "Monthly deposit"), v: eur(PLAN_MONTHLY), s: t("Cada mes", "Every month") },
+    { icon: Target, k: t("Objetivo", "Goal"), v: eur(PLAN_GOAL), s: t("A los 18 años", "At age 18") },
+    { icon: GraduationCap, k: t("Edad objetivo", "Target age"), v: "18", s: t("13 años por delante", "13 years ahead") },
+    { icon: TrendingUp, k: t("Rentabilidad", "Expected return"), v: "10%", s: "S&P 500" },
+  ];
+
+  const summary = [
+    { k: t("Aportes totales", "Total deposits"), v: eur(PLAN_CONTRIB), s: t("Durante 13 años", "Over 13 years"), c: "var(--kid-sky)" },
+    { k: t("Crecimiento estimado", "Estimated growth"), v: eur(PLAN_GROWTH), s: t("Gracias al interés compuesto", "Thanks to compound interest"), c: "var(--kid-mint)" },
+    { k: t("Valor a los 18", "Value at 18"), v: eur(PLAN_FUTURE), s: t("Objetivo final", "Final goal"), c: "var(--kid-grape)" },
+    { k: t("Tiempo para lograrlo", "Time to get there"), v: t("13 años", "13 years"), s: t("Antes de los 18", "Before turning 18"), c: "var(--kid-sun)" },
+  ];
+
+  return (
+    <ScreenCard title={t("Planificador familiar", "Family planner")} accent="var(--kid-mint)">
+      <div className="grid gap-4 lg:grid-cols-[1.5fr_0.9fr]">
+        <div>
+          <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+            <GraduationCap className="h-3.5 w-3.5" /> {t("Universidad", "University")}
+          </p>
+          <p className="mt-1 font-display text-2xl font-semibold">
+            {t("El futuro de Sofía", "Sofía's future")}
+          </p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            {t(`Si inviertes ${eur(PLAN_MONTHLY)} al mes desde hoy, Sofía tendrá`, `If you invest ${eur(PLAN_MONTHLY)} a month from today, Sofía will have`)}
+          </p>
+          <p className="numeric mt-1 text-4xl font-semibold text-kid-mint md:text-5xl">{eur(PLAN_FUTURE)}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{t("cuando cumpla 18 años.", "when she turns 18.")}</p>
+          <span className="numeric mt-3 inline-flex items-center gap-1.5 rounded-full bg-kid-sun/12 px-3 py-1.5 text-xs font-semibold text-kid-sun ring-1 ring-kid-sun/25">
+            <Target className="h-3.5 w-3.5" /> {t("Faltan 86 €/mes", "86 €/mo to go")}
+          </span>
+        </div>
+
+        <div className="flex flex-col items-center justify-center rounded-2xl bg-elevated/60 p-4 ring-1 ring-border/60">
+          <div
+            className="relative flex h-28 w-28 items-center justify-center rounded-full"
+            style={{
+              background: `conic-gradient(var(--kid-mint) 0% ${PLAN_PCT}%, color-mix(in oklab, var(--kid-mint) 14%, transparent) ${PLAN_PCT}% 100%)`,
+            }}
+          >
+            <span className="flex h-[86px] w-[86px] flex-col items-center justify-center rounded-full bg-card">
+              <span className="numeric text-xl font-bold text-kid-mint">{PLAN_PCT}%</span>
+              <span className="text-[10px] text-muted-foreground">{t("del objetivo", "of goal")}</span>
+            </span>
+          </div>
+          <p className="mt-3 text-center text-[11px] leading-relaxed text-muted-foreground">
+            {t("Faltan 14 años y 11 meses para alcanzar tu meta", "14 years and 11 months to reach your goal")}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+        {metrics.map((m) => {
+          const Icon = m.icon;
+          return (
+            <div key={m.k} className="rounded-2xl bg-elevated/60 p-3 ring-1 ring-border/60">
+              <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">
+                <Icon className="h-3.5 w-3.5 text-kid-mint" />
+                <span className="truncate">{m.k}</span>
+              </p>
+              <p className="numeric mt-1.5 text-lg font-semibold">{m.v}</p>
+              <p className="mt-0.5 truncate text-[10px] text-muted-foreground">{m.s}</p>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mt-4 rounded-2xl bg-elevated/40 p-3 ring-1 ring-border/50">
+        <div className="flex flex-wrap items-center gap-4">
+          <p className="text-sm font-medium">{t("Proyección de crecimiento", "Growth projection")}</p>
+          <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+            <span className="h-0.5 w-5 rounded-full bg-kid-mint" /> {t("Tu inversión", "Your investment")}
+          </span>
+          <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+            <span className="h-0.5 w-5 rounded-full border-t-2 border-dashed border-muted-foreground/60" />{" "}
+            {t("Objetivo", "Goal")}
+          </span>
+        </div>
+        <div className="mt-2 h-[230px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <ComposedChart data={plannerCurve} margin={{ top: 46, right: 12, bottom: 0, left: 4 }}>
+              <defs>
+                <linearGradient id="planner-area" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--kid-mint)" stopOpacity={0.35} />
+                  <stop offset="100%" stopColor="var(--kid-mint)" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid stroke="var(--border)" strokeDasharray="4 6" vertical={false} />
+              <XAxis
+                dataKey="age"
+                ticks={[5, 10, 15, 18]}
+                tickFormatter={(v: number) => `${v} ${t("años", "yrs")}`}
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
+              />
+              <YAxis
+                width={62}
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: "var(--muted-foreground)", fontSize: 10 }}
+                tickFormatter={(v: number) => (v === 0 ? "0 €" : `${Math.round(v / 1000)} mil €`)}
+              />
+              <Line
+                type="monotone"
+                dataKey="goal"
+                stroke="var(--muted-foreground)"
+                strokeWidth={1.5}
+                strokeDasharray="6 6"
+                dot={false}
+                isAnimationActive={false}
+              />
+              <Area
+                type="monotone"
+                dataKey="value"
+                stroke="var(--kid-mint)"
+                strokeWidth={3}
+                fill="url(#planner-area)"
+                isAnimationActive={false}
+                dot={<PlanMilestoneDot />}
+                activeDot={false}
+              />
+            </ComposedChart>
+          </ResponsiveContainer>
+        </div>
+        <p className="mt-1 text-[10px] leading-relaxed text-muted-foreground">
+          {t(
+            "Fuente: retorno histórico nominal del S&P 500 con dividendos reinvertidos, ~10% anual desde 1957. La rentabilidad pasada no garantiza la futura.",
+            "Source: nominal historical S&P 500 return with dividends reinvested, ~10% a year since 1957. Past returns don't guarantee future ones.",
+          )}
+        </p>
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-2 lg:grid-cols-4">
+        {summary.map((s) => (
+          <div key={s.k} className="rounded-2xl bg-elevated/60 p-3 ring-1 ring-border/60">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.k}</p>
+            <p className="numeric mt-1 text-lg font-semibold">{s.v}</p>
+            <p className="mt-0.5 flex items-center gap-1.5 text-[10px] text-muted-foreground">
+              <span className="h-1.5 w-1.5 rounded-full" style={{ background: s.c }} />
+              <span className="truncate">{s.s}</span>
+            </p>
+          </div>
+        ))}
+      </div>
+    </ScreenCard>
+  );
+}
+
+
+
 const DEMO_UNIS = [
   {
     id: "es-universitat-de-barcelona",
