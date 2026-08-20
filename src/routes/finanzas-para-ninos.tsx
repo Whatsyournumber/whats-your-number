@@ -131,13 +131,15 @@ function ScreenCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative w-full overflow-hidden rounded-[26px] border border-border bg-card shadow-2xl">
+    <div className="@container relative w-full overflow-hidden rounded-[26px] border border-border bg-card shadow-2xl">
       <div className="h-1 w-full" style={{ backgroundColor: accent, opacity: 0.7 }} />
-      <div className="flex items-center gap-2 border-b border-border/60 px-5 py-3">
-        <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: accent }} />
-        <span className="text-sm font-medium uppercase tracking-wider text-muted-foreground">{title}</span>
+      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3 @[420px]:px-5">
+        <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: accent }} />
+        <span className="truncate text-[13px] font-medium uppercase tracking-wider text-muted-foreground @[420px]:text-sm">
+          {title}
+        </span>
       </div>
-      <div className="p-5 md:p-6">{children}</div>
+      <div className="p-3.5 @[420px]:p-5 @[560px]:p-6">{children}</div>
     </div>
   );
 }
@@ -824,8 +826,8 @@ function HowItWorksSlider() {
                   boxShadow: almost ? `0 0 0 1px color-mix(in oklab, ${d.c} 45%, transparent)` : undefined,
                 }}
               >
-                <div className="flex items-stretch gap-0">
-                  <div className="relative h-[124px] w-[148px] shrink-0 overflow-hidden">
+                <div className="flex flex-col items-stretch gap-0 @[380px]:flex-row">
+                  <div className="relative h-24 w-full shrink-0 overflow-hidden @[380px]:h-[124px] @[380px]:w-[128px] @[520px]:w-[148px]">
                     <img
                       src={d.img}
                       alt={d.name}
@@ -834,7 +836,7 @@ function HowItWorksSlider() {
                       height={512}
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.06]"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-background/10 via-transparent to-elevated" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-elevated via-transparent to-transparent @[380px]:bg-gradient-to-r @[380px]:from-background/10 @[380px]:via-transparent @[380px]:to-elevated" />
                     <div
                       className="absolute inset-x-0 bottom-0 h-1"
                       style={{ background: `linear-gradient(90deg, ${d.c}, transparent)` }}
@@ -847,7 +849,7 @@ function HowItWorksSlider() {
                     </span>
                   </div>
 
-                  <div className="min-w-0 flex-1 p-3.5">
+                  <div className="min-w-0 flex-1 p-3 @[420px]:p-3.5">
                     <div className="flex items-center justify-between gap-2">
                       <p className="truncate text-sm font-semibold">{d.name}</p>
                       {almost ? (
@@ -864,13 +866,11 @@ function HowItWorksSlider() {
                         <span className="numeric shrink-0 text-xs text-muted-foreground">{d.goal}</span>
                       )}
                     </div>
-                    <div className="mt-0.5 flex items-center justify-between text-[11px]">
-                      <span className="numeric font-medium" style={{ color: d.c }}>
+                    <div className="mt-0.5 flex items-center justify-between gap-2 text-[11px]">
+                      <span className="numeric truncate font-medium" style={{ color: d.c }}>
                         {d.have} {t("ahorrados", "saved")}
                       </span>
-                      <span className="text-muted-foreground">
-                        {t("Te faltan", "Missing")} <span className="numeric font-medium">{d.missing}</span>
-                      </span>
+                      <span className="numeric shrink-0 font-medium text-muted-foreground">−{d.missing}</span>
                     </div>
 
                     <div className="mt-2.5 flex items-center gap-3">
@@ -883,14 +883,14 @@ function HowItWorksSlider() {
                       <span className="numeric text-xs font-bold" style={{ color: d.c }}>{d.pct}%</span>
                     </div>
 
-                    <div className="mt-2.5 flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-                        <CalendarCheck className="h-3.5 w-3.5" style={{ color: d.c }} />
-                        <span>{d.date}</span>
+                    <div className="mt-2.5 flex items-center justify-between gap-2">
+                      <div className="flex min-w-0 items-center gap-1.5 text-[11px] text-muted-foreground">
+                        <CalendarCheck className="h-3.5 w-3.5 shrink-0" style={{ color: d.c }} />
+                        <span className="truncate">{d.date}</span>
                       </div>
                       <button
                         type="button"
-                        className="flex items-center gap-1 rounded-full bg-kid-mint px-3 py-1.5 text-[11px] font-semibold text-background transition-transform hover:scale-105"
+                        className="flex shrink-0 items-center gap-1 rounded-full bg-kid-mint px-3 py-1.5 text-[11px] font-semibold text-background transition-transform hover:scale-105"
                       >
                         <Rocket className="h-3 w-3" />
                         {t("Acelerar", "Accelerate")}
@@ -2571,7 +2571,7 @@ function KidsFinanceLanding() {
           transition={{ duration: 0.5 }}
           className="relative -mt-16 overflow-hidden pt-16"
         >
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-[34vh] min-h-[240px] md:h-[46vh] lg:inset-y-0 lg:left-auto lg:right-0 lg:h-auto lg:min-h-0 lg:w-[56%]">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[clamp(220px,32vh,300px)] md:h-[clamp(280px,46vh,460px)] lg:inset-y-0 lg:left-auto lg:right-0 lg:h-auto lg:min-h-0 lg:w-[56%]">
             <img
               src={heroReal}
               alt={t(
@@ -2590,7 +2590,7 @@ function KidsFinanceLanding() {
             <div className="absolute inset-0 bg-background/15" />
           </div>
 
-          <div className="relative mx-auto w-full max-w-7xl px-6 pb-10 pt-[30vh] md:pb-16 md:pt-[42vh] md:py-20 lg:py-24">
+          <div className="relative mx-auto w-full max-w-7xl px-5 pb-10 pt-[clamp(196px,28vh,268px)] sm:px-6 md:pb-16 md:pt-[clamp(250px,42vh,420px)] lg:py-24">
             <div className="lg:max-w-[50%]">
               <span className="hidden md:inline-flex items-center gap-1.5 rounded-full border border-kid-mint/25 bg-kid-mint/10 px-3 py-1 text-xs font-medium text-kid-mint backdrop-blur-sm">
                 <Sparkles className="h-3.5 w-3.5" />
