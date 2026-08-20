@@ -765,9 +765,9 @@ function HowItWorksSlider() {
       { k: t("Gastar", "Spend"), v: "20%" },
     ],
     dreams: [
-      { k: t("Sueños activos", "Active dreams"), v: "3" },
-      { k: t("Progreso", "Progress"), v: "62%" },
-      { k: t("Conseguidos", "Achieved"), v: "5" },
+      { k: t("Sueños logrados", "Dreams achieved"), v: "3" },
+      { k: t("Ahorrado", "Saved"), v: "€1.800" },
+      { k: t("Racha", "Streak"), v: "5" },
     ],
     chores: [
       { k: t("Esta semana", "This week"), v: "+€6,50" },
@@ -797,7 +797,7 @@ function HowItWorksSlider() {
     numbers: t("Cómo se reparte su dinero", "How their money is split"),
     pockets: t("Cómo se reparte su dinero", "How their money is split"),
     chores: t("Seguimiento de tareas", "Chore tracking"),
-    dreams: t("Sus sueños en marcha", "Their dreams in progress"),
+    dreams: t("Sus sueños completados", "Their completed dreams"),
     grow: t("Su futuro, año a año", "Their future, year by year"),
     unis: t("Universidades que podría pagar", "Universities they could afford"),
   };
