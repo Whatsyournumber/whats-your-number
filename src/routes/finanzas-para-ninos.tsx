@@ -1294,7 +1294,7 @@ function HowItWorksSlider() {
                     </div>
                   </>
                 ) : active.id === "grow" ? (
-                  <div className="flex h-full flex-col justify-between gap-3">
+                  <div className="flex flex-1 flex-col justify-between gap-3">
                     {/* Headline */}
                     <div>
                       <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
