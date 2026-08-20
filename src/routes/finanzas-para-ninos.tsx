@@ -1835,7 +1835,7 @@ function ThreePillars() {
       id: "grow",
       icon: Rocket,
       color: "var(--kid-mint)",
-      title: t("Crece con interés", "Grow with interest"),
+      title: t("Aprenden el valor del dinero", "They learn the value of money"),
       desc: t(
         "Cada euro ahorrado crece con el tiempo gracias al interés compuesto.",
         "Every euro saved compounds over time.",
@@ -1847,7 +1847,7 @@ function ThreePillars() {
       id: "fun",
       icon: Trophy,
       color: "var(--kid-sun)",
-      title: t("Gana premios reales", "Win real rewards"),
+      title: t("Ganan premios con diversión", "They earn rewards with fun"),
       desc: t(
         "Cada meta cumplida se convierte en un premio real: su bici nueva.",
         "Every goal they hit turns into a real reward: their new bike.",
