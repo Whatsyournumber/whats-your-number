@@ -398,14 +398,14 @@ function HowItWorksSlider() {
                 S&P 500 · 7,2%
               </span>
             </div>
-            <div className="rounded-2xl border border-kid-grape/25 bg-kid-grape/10 p-3">
-              <p className="text-[10px] uppercase tracking-wider text-kid-grape">
+            <div className="rounded-2xl border border-kid-sky/25 bg-kid-sky/10 p-3">
+              <p className="text-[10px] uppercase tracking-wider text-kid-sky">
                 {t("A los 18 años", "At age 18")}
               </p>
               <p className="numeric mt-1 text-2xl font-semibold">€10.668</p>
               <p className="numeric mt-0.5 text-[11px] text-muted-foreground">
                 {t("Ahorrado", "Saved")} €2.442 · {t("Intereses", "Interest")}{" "}
-                <span className="text-kid-mint">€8.226</span>
+                <span className="text-kid-sky">€8.226</span>
               </p>
             </div>
           </div>
@@ -976,7 +976,7 @@ function HowItWorksSlider() {
                       <div className="relative mt-2.5 h-2.5 overflow-hidden rounded-full bg-card">
                         <div
                           className="h-full rounded-full"
-                          style={{ width: "11%", background: "linear-gradient(90deg, var(--kid-sky), var(--kid-mint))" }}
+                          style={{ width: "11%", background: "linear-gradient(90deg, var(--kid-sky), color-mix(in oklab, var(--kid-sky) 60%, white))" }}
                         />
                       </div>
                       <p className="mt-2 text-[11px] text-muted-foreground">
