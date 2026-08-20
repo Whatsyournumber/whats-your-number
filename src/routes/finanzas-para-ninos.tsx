@@ -1069,49 +1069,52 @@ function HowItWorksSlider() {
                         className="relative flex h-32 w-32 items-center justify-center rounded-full"
                         style={{
                           background:
-                            "conic-gradient(var(--kid-coral) 0% 25%, var(--kid-sun) 25% 33%, var(--kid-mint) 33% 75%, color-mix(in oklab, var(--kid-coral) 14%, transparent) 75% 100%)",
+                            "conic-gradient(var(--kid-coral) 0% 100%)",
                         }}
                       >
                         <span className="flex h-[88px] w-[88px] flex-col items-center justify-center rounded-full bg-elevated">
-                          <span className="numeric text-xl font-bold text-kid-coral">€315</span>
-                          <span className="text-[10px] text-muted-foreground">{t("ahorrados", "saved")}</span>
+                          <span className="numeric text-xl font-bold text-kid-coral">3</span>
+                          <span className="text-[10px] text-muted-foreground">{t("sueños logrados", "dreams achieved")}</span>
                         </span>
                       </div>
                       <p className="mt-2 text-xs text-muted-foreground">
-                        {t("de €1.800 en total", "of €1,800 total")}
+                        {t("€1.800 ahorrados en total", "€1,800 saved in total")}
                       </p>
                     </div>
 
                     <div className="mt-4 space-y-2.5">
                       {[
-                        { e: "🚲", n: t("Bici nueva", "New bike"), eta: t("3 meses", "3 months"), c: "var(--kid-mint)" },
-                        { e: "🎢", n: t("Viaje a Disney", "Disney trip"), eta: t("2 años", "2 years"), c: "var(--kid-sun)" },
-                        { e: "🎮", n: "Nintendo Switch", eta: t("18 meses", "18 months"), c: "var(--kid-coral)" },
+                        { e: "🚲", n: t("Bici nueva", "New bike"), date: t("dic 2025", "Dec 2025"), c: "var(--kid-coral)" },
+                        { e: "🎮", n: "Nintendo Switch", date: t("feb 2026", "Feb 2026"), c: "var(--kid-coral)" },
+                        { e: "🎢", n: t("Viaje a Disney", "Disney trip"), date: t("jul 2026", "Jul 2026"), c: "var(--kid-coral)" },
                       ].map((d) => (
-                        <div key={d.n} className="flex items-center gap-2.5 rounded-xl bg-background/60 p-2.5 ring-1 ring-border/40">
+                        <div key={d.n} className="flex items-center gap-2.5 rounded-xl bg-background/60 p-2.5 ring-1 ring-kid-coral/20">
                           <span className="text-lg leading-none">{d.e}</span>
                           <span className="min-w-0 flex-1 truncate text-xs font-medium">{d.n}</span>
                           <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
                             <CalendarCheck className="h-3 w-3" style={{ color: d.c }} />
-                            {d.eta}
+                            {d.date}
                           </span>
                         </div>
                       ))}
                     </div>
 
-                    <div className="mt-4 rounded-2xl bg-background/60 p-4 ring-1 ring-border/50">
+                    <div className="mt-4 rounded-2xl bg-background/60 p-4 ring-1 ring-kid-coral/25">
                       <div className="flex items-center justify-between text-xs">
-                        <p className="text-muted-foreground">{t("Próximo sueño", "Next dream")}</p>
-                        <span className="numeric font-semibold text-kid-mint">€186 / €300</span>
+                        <p className="text-muted-foreground">{t("Último sueño logrado", "Last dream achieved")}</p>
+                        <span className="flex items-center gap-1 font-semibold text-kid-coral">
+                          <Trophy className="h-3.5 w-3.5" />
+                          {t("Viaje a Disney", "Disney trip")}
+                        </span>
                       </div>
                       <div className="mt-2.5 h-2.5 overflow-hidden rounded-full bg-card">
                         <div
                           className="h-full rounded-full"
-                          style={{ width: "62%", background: "linear-gradient(90deg, var(--kid-mint), var(--kid-sky))" }}
+                          style={{ width: "100%", background: "linear-gradient(90deg, var(--kid-coral), color-mix(in oklab, var(--kid-coral) 60%, white))" }}
                         />
                       </div>
                       <p className="mt-2 text-[11px] text-muted-foreground">
-                        {t("Le faltan €114 para su bici nueva 🚲", "€114 to go for their new bike 🚲")}
+                        {t("¡1.200 € ahorrados y disfrutados! 🎢", "€1,200 saved and enjoyed! 🎢")}
                       </p>
                     </div>
                   </>
