@@ -1110,40 +1110,6 @@ function HowItWorksSlider() {
                 )}
               </div>
 
-              <div className="mt-auto rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
-
-                <div className="flex items-center gap-2 text-sm">
-                  <Target className="h-4 w-4" style={{ color: active.color }} />
-                  <span className="font-medium">{t("Progreso del mes", "Month progress")}</span>
-                </div>
-                <div className="relative mt-3 h-3 overflow-hidden rounded-full bg-background ring-1 ring-border/50">
-                  <motion.div
-                    key={active.id}
-                    initial={{ width: 0 }}
-                    animate={{ width: "68%" }}
-                    transition={{ duration: 1.1, ease: "easeOut" }}
-                    className="relative h-full rounded-full"
-                    style={{
-                      background: `linear-gradient(90deg, color-mix(in oklab, ${active.color} 50%, transparent), ${active.color})`,
-                      boxShadow: `0 0 14px color-mix(in oklab, ${active.color} 55%, transparent)`,
-                    }}
-                  >
-                    <span
-                      className="absolute right-0 top-1/2 h-4 w-4 -translate-y-1/2 translate-x-1/2 rounded-full border-2 border-background"
-                      style={{ backgroundColor: active.color }}
-                    />
-                  </motion.div>
-                </div>
-                <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-                  <span className="numeric text-foreground">€1.150</span>
-                  <span>68%</span>
-                  <span className="numeric text-foreground">€10.668</span>
-                </div>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  {t("Ahorrando €11,3 al mes hasta los 18 años.", "Saving €11.3 a month until age 18.")}
-                </p>
-              </div>
-
             </div>
           </motion.div>
 
