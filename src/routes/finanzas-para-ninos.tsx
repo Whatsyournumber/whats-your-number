@@ -885,29 +885,33 @@ function HowItWorksSlider() {
                   key={s.id}
                   type="button"
                   onClick={() => setI(k)}
-                  className="flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-[17px] font-medium transition-all lg:text-[17px]"
+                  className={cn(
+                    "flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all",
+                    isActive ? "shadow-lg" : "bg-elevated text-muted-foreground hover:text-foreground",
+                  )}
                   style={
                     isActive
                       ? {
-                          color: s.color,
-                          backgroundColor: `color-mix(in oklab, ${s.color} 14%, transparent)`,
-                          boxShadow: `inset 0 0 0 1.5px color-mix(in oklab, ${s.color} 55%, transparent), 0 0 24px color-mix(in oklab, ${s.color} 18%, transparent)`,
+                          backgroundColor: s.color,
+                          color: "var(--color-background)",
+                          boxShadow: `0 8px 24px color-mix(in oklab, ${s.color} 25%, transparent)`,
                         }
-                      : { boxShadow: "inset 0 0 0 1px var(--border)" }
+                      : undefined
                   }
                 >
-                  <TabIcon className="h-5 w-5 shrink-0" />
+                  <TabIcon className="h-3.5 w-3.5 shrink-0" />
                   <span className="whitespace-nowrap">{s.tab}</span>
                 </button>
               );
             })}
-            <span className="ml-auto hidden shrink-0 items-center gap-2 rounded-full bg-elevated px-4 py-2 text-[15px] text-muted-foreground md:inline-flex">
+            <span className="ml-auto hidden shrink-0 items-center gap-1.5 rounded-full bg-elevated px-3 py-1 text-[11px] text-muted-foreground md:inline-flex">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-kid-mint opacity-75" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-kid-mint" />
               </span>
               {t("En vivo", "Live")}
             </span>
+
           </div>
 
           <motion.div
