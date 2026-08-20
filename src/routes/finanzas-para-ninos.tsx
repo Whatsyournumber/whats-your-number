@@ -306,7 +306,7 @@ function FamilyPlannerVisual() {
   ];
 
   return (
-    <ScreenCard title={t("Planificador familiar", "Family planner")} accent="var(--kid-mint)">
+    <ScreenCard title={t("Fondo para la universidad", "College fund")} accent="var(--kid-mint)">
       <div className="grid gap-4 lg:grid-cols-[1.5fr_0.9fr]">
         <div>
           <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
@@ -864,7 +864,7 @@ function HowItWorksSlider() {
 
     {
       id: "grow",
-      tab: t("Planificador familiar", "Family planner"),
+      tab: t("Fondo para la universidad", "College fund"),
       icon: Rocket,
       color: "var(--kid-mint)",
       title: t("El plan del futuro, en una pantalla", "The future plan, on one screen"),
@@ -873,7 +873,7 @@ function HowItWorksSlider() {
         "Tune starting capital, monthly deposit and target age: see instantly how much they'll have and how much comes from compounding.",
       ),
       visual: (
-        <ScreenCard title={t("Planificador familiar", "Family planner")} accent="var(--kid-mint)">
+        <ScreenCard title={t("Fondo para la universidad", "College fund")} accent="var(--kid-mint)">
           <div className="flex h-full min-h-[420px] flex-col">
             <PlannerChart />
           </div>
