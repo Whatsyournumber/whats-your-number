@@ -1,30 +1,19 @@
 import { cn } from "@/lib/utils";
-import brandLighthouse from "@/assets/brand-lighthouse.png.asset.json";
+import brandLighthouse from "@/assets/brand-lighthouse-clean.png.asset.json";
 
 
 export function BrandMark({
   className,
-  variant = "dark",
 }: {
   className?: string;
   variant?: "dark" | "light";
 }) {
   return (
-    <span
-      className={cn(
-        "relative inline-flex items-center justify-center overflow-hidden rounded-xl",
-        variant === "light"
-          ? "bg-white/70 ring-1 ring-slate-200/70 shadow-sm"
-          : "bg-elevated ring-1 ring-border",
-        className,
-      )}
-    >
-      <span className="absolute inset-0 bg-primary/5" />
-      <span className="absolute inset-0 wealth-gradient opacity-20" />
+    <span className={cn("relative inline-flex items-center justify-center", className)}>
       <img
         src={brandLighthouse.url}
         alt="Logo de WhatsYournumber: faro verde que guía tus finanzas"
-        className="relative h-full w-full object-cover"
+        className="relative h-full w-full object-contain"
         loading="lazy"
       />
     </span>
