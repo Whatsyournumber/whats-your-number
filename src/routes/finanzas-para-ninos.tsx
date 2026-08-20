@@ -1003,14 +1003,14 @@ function HowItWorksSlider() {
                         <p className="mt-1 text-xs text-muted-foreground">
                           {t("Completadas esta semana", "Completed this week")}
                         </p>
-                        <p className="numeric mt-2 text-sm font-bold text-kid-mint">+€6,50</p>
+                        <p className="numeric mt-2 text-sm font-bold text-kid-sun">+€6,50</p>
                       </div>
                     </div>
 
                     <div className="mt-4 rounded-2xl bg-background/60 p-4 ring-1 ring-border/50">
                       <div className="flex items-center justify-between">
                         <p className="text-xs text-muted-foreground">{t("Racha de la semana", "Weekly streak")}</p>
-                        <span className="numeric text-xs font-semibold text-kid-mint">
+                        <span className="numeric text-xs font-semibold text-kid-sun">
                           {t("4 días seguidos", "4 days in a row")}
                         </span>
                       </div>
@@ -1019,7 +1019,7 @@ function HowItWorksSlider() {
                           <div key={idx} className="flex flex-col items-center gap-1.5">
                             <span
                               className={`flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold ${
-                                idx < 4 ? "bg-kid-mint text-background" : "ring-1 ring-border/60 text-muted-foreground"
+                                idx < 4 ? "bg-kid-sun text-background" : "ring-1 ring-border/60 text-muted-foreground"
                               }`}
                             >
                               {idx < 4 ? "✓" : ""}
@@ -1033,7 +1033,7 @@ function HowItWorksSlider() {
                     <div className="mt-4 grid grid-cols-2 gap-3">
                       {[
                         { e: "💰", k: t("Este mes", "This month"), v: "€24,00", c: "var(--kid-sun)" },
-                        { e: "🏆", k: t("Mejor racha", "Best streak"), v: t("12 días", "12 days"), c: "var(--kid-coral)" },
+                        { e: "🏆", k: t("Mejor racha", "Best streak"), v: t("12 días", "12 days"), c: "var(--kid-sun)" },
                       ].map((s) => (
                         <div key={s.k} className="rounded-2xl bg-background/60 p-3.5 ring-1 ring-border/50">
                           <span className="text-base leading-none">{s.e}</span>
@@ -1051,7 +1051,7 @@ function HowItWorksSlider() {
                       <div className="mt-2.5 h-2.5 overflow-hidden rounded-full bg-card">
                         <div
                           className="h-full rounded-full"
-                          style={{ width: "80%", background: "linear-gradient(90deg, var(--kid-sun), var(--kid-mint))" }}
+                          style={{ width: "80%", background: "linear-gradient(90deg, var(--kid-sun), color-mix(in oklab, var(--kid-sun) 60%, white))" }}
                         />
                       </div>
                       <p className="mt-2 text-[11px] text-muted-foreground">
