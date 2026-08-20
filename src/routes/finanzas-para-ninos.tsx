@@ -810,24 +810,33 @@ function HowItWorksSlider() {
                 date: t("Llegará el 20 ago 2028", "Arrives Aug 20, 2028"),
                 c: "var(--kid-sun)",
               },
-            ].map((d) => (
+            ].map((d) => {
+              const almost = d.pct >= 50;
+              return (
               <div
                 key={d.name}
-                className="overflow-hidden rounded-2xl bg-elevated/70 ring-1 ring-border/50"
+                className="group relative overflow-hidden rounded-2xl bg-elevated/70 ring-1 transition-shadow"
+                style={{
+                  boxShadow: almost ? `0 0 0 1px color-mix(in oklab, ${d.c} 45%, transparent)` : undefined,
+                }}
               >
                 <div className="flex items-stretch gap-0">
-                  <div className="relative h-[120px] w-[140px] shrink-0 overflow-hidden">
+                  <div className="relative h-[124px] w-[148px] shrink-0 overflow-hidden">
                     <img
                       src={d.img}
                       alt={d.name}
                       loading="lazy"
                       width={768}
                       height={512}
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.06]"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent to-elevated/80" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-background/10 via-transparent to-elevated" />
+                    <div
+                      className="absolute inset-x-0 bottom-0 h-1"
+                      style={{ background: `linear-gradient(90deg, ${d.c}, transparent)` }}
+                    />
                     <span
-                      className="absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-xl text-sm backdrop-blur-sm"
+                      className="absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-xl text-sm ring-1 ring-white/10 backdrop-blur-md"
                       style={{ backgroundColor: `color-mix(in oklab, ${d.c} 30%, transparent)` }}
                     >
                       {d.e}
@@ -835,9 +844,21 @@ function HowItWorksSlider() {
                   </div>
 
                   <div className="min-w-0 flex-1 p-3.5">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-2">
                       <p className="truncate text-sm font-semibold">{d.name}</p>
-                      <span className="numeric text-xs text-muted-foreground">{d.goal}</span>
+                      {almost ? (
+                        <span
+                          className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                          style={{
+                            backgroundColor: `color-mix(in oklab, ${d.c} 18%, transparent)`,
+                            color: d.c,
+                          }}
+                        >
+                          {t("¡Casi lo logra!", "Almost there!")}
+                        </span>
+                      ) : (
+                        <span className="numeric shrink-0 text-xs text-muted-foreground">{d.goal}</span>
+                      )}
                     </div>
                     <div className="mt-0.5 flex items-center justify-between text-[11px]">
                       <span className="numeric font-medium" style={{ color: d.c }}>
@@ -865,8 +886,7 @@ function HowItWorksSlider() {
                       </div>
                       <button
                         type="button"
-                        className="flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-semibold text-background transition-transform hover:scale-105"
-                        style={{ backgroundColor: d.c }}
+                        className="flex items-center gap-1 rounded-full bg-kid-mint px-3 py-1.5 text-[11px] font-semibold text-background transition-transform hover:scale-105"
                       >
                         <Rocket className="h-3 w-3" />
                         {t("Acelerar", "Accelerate")}
@@ -875,7 +895,9 @@ function HowItWorksSlider() {
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
+
           </div>
         </ScreenCard>
       ),
