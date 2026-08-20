@@ -831,7 +831,6 @@ function HowItWorksSlider() {
 
 
   const active = slides[i]!;
-  const Icon = active.icon;
 
   return (
     <section className="mt-16 md:mt-24">
@@ -958,23 +957,6 @@ function HowItWorksSlider() {
             </div>
 
             <div className="flex min-w-0 flex-col gap-4">
-              <div className="rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
-                <span
-                  className="flex h-11 w-11 items-center justify-center rounded-2xl"
-                  style={{
-                    color: active.color,
-                    backgroundColor: `color-mix(in oklab, ${active.color} 12%, transparent)`,
-                    boxShadow: `inset 0 0 0 1px color-mix(in oklab, ${active.color} 25%, transparent)`,
-                  }}
-                >
-                  <Icon className="h-5 w-5" />
-                </span>
-                <h3 className="mt-4 font-display text-xl font-semibold tracking-tight md:text-2xl">
-                  {active.title}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{active.desc}</p>
-              </div>
-
               {active.id === "numbers" ? (
                 <div className="flex flex-1 flex-col rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
                   <p className="text-sm font-medium">{t("Cómo se reparte su dinero", "How their money is split")}</p>
