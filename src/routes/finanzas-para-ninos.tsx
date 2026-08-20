@@ -2530,15 +2530,6 @@ function KidsFinanceLanding() {
   const quotes = [
     {
       quote: t(
-        "Mi hija de 9 años ahora pregunta cuánto le falta para su bici, no cuánto le doy.",
-        "My 9-year-old now asks how much is left for her bike, not how much I'll give her.",
-      ),
-      author: "Marta Salas",
-      initials: "MS",
-      role: t("Mamá de 2 · Valencia", "Mom of 2 · Valencia"),
-    },
-    {
-      quote: t(
         "Las tareas dejaron de ser pelea: ahora las hace porque ve subir su número.",
         "Chores stopped being a fight: he does them because he sees his number go up.",
       ),
