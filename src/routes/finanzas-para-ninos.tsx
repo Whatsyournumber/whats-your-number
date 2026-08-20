@@ -1802,12 +1802,8 @@ function PillarVisual({ id, color, labels }: { id: string; color: string; labels
 function ThreePillars() {
   const t = useT();
 
-  const pillarAxis: Record<string, [string, string]> = {
-    plan: [t("Aporte mensual", "Monthly deposit"), t("18 años", "Age 18")],
-    teach: [t("Ahorrar · invertir", "Save · invest"), t("Gastar", "Spend")],
-    grow: [t("Hoy", "Today"), t("Interés compuesto", "Compounding")],
-    fun: [t("Ahorra cada semana", "Saves every week"), t("Premio", "Reward")],
-  };
+
+
 
 
   const pillars = [
