@@ -29,6 +29,7 @@ import {
   monthsUntil,
 } from "@/lib/mfn";
 import { useI18n } from "@/lib/mfn-i18n";
+import { useIndexReturns } from "@/hooks/use-index-returns";
 
 /* ---------------- small pieces ---------------- */
 
