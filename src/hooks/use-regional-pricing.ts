@@ -2,7 +2,14 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { getVisitorPricingTier } from "@/lib/geo-pricing.functions";
-import { TIER_PRICES, tierForCountry, type PricingTier } from "@/lib/pricing-tiers";
+import {
+  TIER_PRICES,
+  currencyForCountry,
+  tierForCountry,
+  type DisplayCurrency,
+  type PricingTier,
+} from "@/lib/pricing-tiers";
+
 
 /** Heurística local mientras llega la respuesta del servidor. */
 function fallbackTier(): PricingTier {
@@ -46,12 +53,20 @@ export function useRegionalPricing() {
       ? fallbackTier()
       : "standard";
 
+  const currency: DisplayCurrency = serverCountry
+    ? currencyForCountry(serverCountry)
+    : hydrated && /^Europe\//.test(Intl.DateTimeFormat().resolvedOptions().timeZone ?? "")
+      ? "EUR"
+      : "USD";
+
   return {
     tier,
     country: serverCountry,
+    currency,
     prices: TIER_PRICES[tier],
     loading: query.isLoading,
   };
+
 }
 
 export { tierForCountry };
