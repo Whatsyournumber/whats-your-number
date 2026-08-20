@@ -1356,16 +1356,16 @@ function HowItWorksSlider() {
                     const total = done.reduce((s, d) => s + d.price, 0);
                     return (
                       <div className="mt-3 flex flex-1 flex-col gap-3">
-                        {/* Donut */}
-                        <div className="flex items-center gap-4 rounded-2xl bg-background/60 p-3 ring-1 ring-border/50">
-                          <div className="relative h-[112px] w-[112px] shrink-0">
+                        {/* Clean donut on top */}
+                        <div className="flex flex-col items-center justify-center rounded-2xl bg-background/60 p-4 ring-1 ring-border/50">
+                          <div className="relative h-[120px] w-[120px]">
                             <ResponsiveContainer width="100%" height="100%">
                               <PieChart>
                                 <Pie
                                   data={done}
                                   dataKey="price"
-                                  innerRadius={38}
-                                  outerRadius={54}
+                                  innerRadius={42}
+                                  outerRadius={58}
                                   paddingAngle={3}
                                   stroke="none"
                                   startAngle={90}
@@ -1384,32 +1384,20 @@ function HowItWorksSlider() {
                               </span>
                             </div>
                           </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="numeric text-lg font-bold">€{total}</p>
-                            <p className="text-[11px] text-muted-foreground">
-                              {t("ahorrados y gastados en sus sueños", "saved and spent on their dreams")}
-                            </p>
-                            <div className="mt-2 space-y-1">
-                              {done.map((d) => (
-                                <div key={d.n} className="flex items-center gap-1.5 text-[10px]">
-                                  <span className="h-1.5 w-1.5 rounded-full" style={{ background: d.c }} />
-                                  <span className="truncate text-muted-foreground">{d.n}</span>
-                                  <span className="numeric ml-auto font-medium">
-                                    {Math.round((d.price / total) * 100)}%
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
+                          <p className="numeric mt-2 text-base font-bold text-kid-mint">€{total}</p>
+                          <p className="text-[11px] text-muted-foreground">
+                            {t("ahorrados y gastados en sus sueños", "saved and spent on their dreams")}
+                          </p>
                         </div>
 
+                        {/* Dreams below with completion line + % */}
                         <div className="flex flex-1 flex-col gap-2.5">
                           {done.map((d) => (
                             <div
                               key={d.n}
                               className="group flex flex-1 items-center gap-3 overflow-hidden rounded-2xl bg-background/60 p-2 ring-1 ring-kid-mint/20"
                             >
-                              <div className="relative h-full min-h-[56px] w-[76px] shrink-0 overflow-hidden rounded-xl">
+                              <div className="relative h-full min-h-[60px] w-[68px] shrink-0 overflow-hidden rounded-xl">
                                 <img
                                   src={d.img}
                                   alt={d.n}
@@ -1421,26 +1409,33 @@ function HowItWorksSlider() {
                                 <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent" />
                               </div>
                               <div className="min-w-0 flex-1">
-                                <p className="truncate text-xs font-semibold">
-                                  {d.e} {d.n}
-                                </p>
+                                <div className="flex items-center justify-between gap-2">
+                                  <p className="truncate text-xs font-semibold">
+                                    {d.e} {d.n}
+                                  </p>
+                                  <BadgeCheck className="h-4 w-4 shrink-0 text-kid-mint" />
+                                </div>
                                 <p className="mt-0.5 text-[11px] text-muted-foreground">
                                   {t("Conseguido en", "Achieved in")} {d.when}
                                 </p>
+                                <div className="mt-2">
+                                  <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                                    <span>{t("Cumplimiento", "Completion")}</span>
+                                    <span className="numeric font-semibold text-kid-mint">100%</span>
+                                  </div>
+                                  <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-card">
+                                    <div
+                                      className="h-full rounded-full"
+                                      style={{ width: "100%", background: `linear-gradient(90deg, ${d.c}, var(--kid-mint))` }}
+                                    />
+                                  </div>
+                                </div>
                               </div>
-                              <div className="flex flex-col items-end gap-1">
+                              <div className="flex flex-col items-end justify-center">
                                 <span className="numeric text-xs font-semibold text-kid-mint">€{d.price}</span>
-                                <BadgeCheck className="h-4 w-4 text-kid-mint" />
                               </div>
                             </div>
                           ))}
-                        </div>
-
-                        <div className="rounded-2xl bg-kid-mint/10 p-3 text-[11px] text-foreground ring-1 ring-kid-mint/20">
-                          {t(
-                            "🎉 Cada sueño cumplido le enseña que ahorrar funciona.",
-                            "🎉 Every dream achieved teaches them that saving works.",
-                          )}
                         </div>
                       </div>
                     );
