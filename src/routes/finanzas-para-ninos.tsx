@@ -472,30 +472,90 @@ function HowItWorksSlider() {
         "The bike, the trip or the game: they see what's left and save to get there.",
       ),
       visual: (
-        <ScreenCard title={t("Mis sueños", "My dreams")} accent="var(--kid-coral)">
-          <div className="space-y-5">
+        <ScreenCard title={t("Mis sueños activos", "My active dreams")} accent="var(--kid-coral)">
+          <div className="space-y-4">
             {[
-              { name: t("Bici nueva", "New bike"), have: "€186", goal: "€300", pct: 62, c: "var(--kid-mint)" },
-              { name: t("Viaje a Disney", "Disney trip"), have: "€120", goal: "€1.200", pct: 10, c: "var(--kid-sun)" },
-              { name: t("Nintendo Switch", "Nintendo Switch"), have: "€0", goal: "€300", pct: 3, c: "var(--kid-coral)" },
+              {
+                e: "🚲",
+                name: t("Bici nueva", "New bike"),
+                have: "€186",
+                goal: "€300",
+                missing: "€114",
+                pct: 62,
+                date: t("Llegará el 12 dic 2026", "Arrives Dec 12, 2026"),
+                eta: t("en 3 meses", "in 3 months"),
+                c: "var(--kid-mint)",
+              },
+              {
+                e: "🎮",
+                name: t("Nintendo Switch", "Nintendo Switch"),
+                have: "€9",
+                goal: "€300",
+                missing: "€291",
+                pct: 3,
+                date: t("Llegará el 8 mar 2027", "Arrives Mar 8, 2027"),
+                eta: t("en 18 meses", "in 18 months"),
+                c: "var(--kid-coral)",
+              },
+              {
+                e: "🎢",
+                name: t("Viaje a Disney", "Disney trip"),
+                have: "€120",
+                goal: "€1.200",
+                missing: "€1.080",
+                pct: 10,
+                date: t("Llegará el 20 ago 2028", "Arrives Aug 20, 2028"),
+                eta: t("en 2 años", "in 2 years"),
+                c: "var(--kid-sun)",
+              },
             ].map((d) => (
-              <div key={d.name} className="rounded-2xl bg-elevated p-4">
-                <div className="flex items-end justify-between">
-                  <div>
-                    <p className="text-sm font-medium">{d.name}</p>
-                    <p className="numeric text-xs text-muted-foreground">
-                      {d.have} {t("de", "of")} {d.goal}
-                    </p>
-                  </div>
-                  <span className="numeric text-lg font-semibold" style={{ color: d.c }}>
-                    {d.pct}%
-                  </span>
-                </div>
-                <div className="mt-3 h-3 w-full overflow-hidden rounded-full bg-card">
+              <div key={d.name} className="rounded-2xl bg-elevated/70 p-4 ring-1 ring-border/50">
+                <div className="flex items-start gap-3.5">
                   <div
-                    className="h-full rounded-full"
-                    style={{ width: `${Math.max(d.pct, 3)}%`, backgroundColor: d.c }}
-                  />
+                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-2xl"
+                    style={{ backgroundColor: `color-mix(in oklab, ${d.c} 12%, transparent)` }}
+                  >
+                    {d.e}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-semibold">{d.name}</p>
+                      <span className="numeric text-xs text-muted-foreground">{d.goal}</span>
+                    </div>
+                    <div className="mt-0.5 flex items-center justify-between text-[11px]">
+                      <span className="numeric font-medium" style={{ color: d.c }}>
+                        {d.have} {t("ahorrados", "saved")}
+                      </span>
+                      <span className="text-muted-foreground">
+                        {t("Te faltan", "Missing")} <span className="numeric font-medium">{d.missing}</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-3 flex items-center gap-3">
+                  <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-card">
+                    <div
+                      className="h-full rounded-full transition-all"
+                      style={{ width: `${Math.max(d.pct, 2)}%`, background: `linear-gradient(90deg, ${d.c}, color-mix(in oklab, ${d.c} 60%, white))` }}
+                    />
+                  </div>
+                  <span className="numeric text-xs font-bold" style={{ color: d.c }}>{d.pct}%</span>
+                </div>
+
+                <div className="mt-3 flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                    <CalendarCheck className="h-3.5 w-3.5" style={{ color: d.c }} />
+                    <span>{d.date}</span>
+                  </div>
+                  <button
+                    type="button"
+                    className="flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-semibold text-background transition-transform hover:scale-105"
+                    style={{ backgroundColor: d.c }}
+                  >
+                    <Rocket className="h-3 w-3" />
+                    {t("Acelerar", "Accelerate")}
+                  </button>
                 </div>
               </div>
             ))}
