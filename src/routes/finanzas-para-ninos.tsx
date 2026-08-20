@@ -645,7 +645,7 @@ function HowItWorksSlider() {
       id: "numbers",
       tab: t("Mi Primer Número", "My First Number"),
       icon: Wallet,
-      color: "var(--kid-sky)",
+      color: "var(--kid-baby)",
       title: t("Su número de hoy y el del futuro", "Their number today and tomorrow"),
       desc: t(
         "Ve su dinero disponible en grande y hacia dónde puede llegar si sigue ahorrando cada semana.",
@@ -973,7 +973,7 @@ function HowItWorksSlider() {
       id: "grow",
       tab: t("Fondo para la universidad", "College fund"),
       icon: Rocket,
-      color: "var(--kid-mint)",
+      color: "var(--kid-money)",
       title: t("El plan del futuro, en una pantalla", "The future plan, on one screen"),
       desc: t(
         "Ajusta capital, aporte mensual y edad objetivo: verás al instante cuánto tendrá y cuánto viene del interés compuesto.",
