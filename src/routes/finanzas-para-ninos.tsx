@@ -2110,7 +2110,7 @@ function DualDashboards() {
         >
           <PhoneMock
             id="dad"
-            accent="var(--kid-mint)"
+            accent="var(--kid-money)"
             face={faceDad}
             name={t("Papá", "Dad")}
             chip={t("Plan familiar", "Family plan")}
@@ -2129,10 +2129,10 @@ function DualDashboards() {
         <div className="flex items-center justify-center gap-3 lg:flex-col">
           <span className="hidden h-px w-10 bg-border lg:block lg:h-14 lg:w-px" />
           <div className="flex flex-col items-center gap-1.5">
-            <span className="flex h-12 w-12 items-center justify-center rounded-full border border-kid-mint/30 bg-kid-mint/10 text-kid-mint">
+            <span className="flex h-12 w-12 items-center justify-center rounded-full border border-kid-money/30 bg-kid-money/10 text-kid-money">
               <Users className="h-4 w-4" />
             </span>
-            <span className="text-xs font-medium text-kid-mint">Family Planner</span>
+            <span className="text-xs font-medium text-kid-money">Family Planner</span>
           </div>
           <span className="hidden h-px w-10 bg-border lg:block lg:h-14 lg:w-px" />
         </div>
