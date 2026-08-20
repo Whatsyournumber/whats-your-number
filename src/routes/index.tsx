@@ -26,7 +26,6 @@ import ctaLifestyle from "@/assets/cta-lifestyle.jpg";
 import heroManLaptopAsset from "@/assets/hero-man-laptop.jpg.asset.json";
 
 
-import { BrandLogo } from "@/components/brand-logo";
 import { useLiveCount, formatCount } from "@/components/live-count";
 import { RotatingAvatars } from "@/components/rotating-avatars";
 import { ProductPreview } from "@/components/product-preview";
@@ -160,7 +159,7 @@ function DemoCard() {
               >
                 <span className="absolute inset-3 rounded-full ring-1 ring-primary/40" />
                 <Target className="absolute h-24 w-24 text-primary/20" strokeWidth={1} />
-                <BrandLogo className="relative h-12 w-12" />
+                <span className="relative font-display text-6xl font-bold leading-none text-primary">?</span>
               </motion.div>
             </div>
 

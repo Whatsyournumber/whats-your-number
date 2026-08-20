@@ -1147,7 +1147,7 @@ function HowItWorksSlider() {
                   type="button"
                   onClick={() => setI(k)}
                   className={cn(
-                    "flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all",
+                    "flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium transition-all md:gap-2 md:px-4 md:py-2 md:text-sm",
                     isActive ? "shadow-lg" : "bg-elevated text-muted-foreground hover:text-foreground",
                   )}
                   style={
@@ -1160,7 +1160,7 @@ function HowItWorksSlider() {
                       : undefined
                   }
                 >
-                  <TabIcon className="h-4 w-4 shrink-0" />
+                  <TabIcon className="h-3.5 w-3.5 shrink-0 md:h-4 md:w-4" />
                   <span className="whitespace-nowrap">{s.tab}</span>
                 </button>
               );
@@ -2647,11 +2647,19 @@ function KidsFinanceLanding() {
                   height={128}
                   className="h-10 w-auto shrink-0 mix-blend-lighten md:h-12"
                 />
-                <p className="text-xs font-medium text-foreground md:text-sm">
-                  {t(
-                    `+${formatCount(liveCount, "es")} familias ya están construyendo su futuro.`,
-                    `+${formatCount(liveCount, "en")} families are already building their future.`,
-                  )}
+                <p className="min-w-0 text-xs font-medium text-foreground md:text-sm">
+                  <span className="block truncate md:hidden">
+                    {t(
+                      `+${formatCount(liveCount, "es")} familias construyendo su futuro`,
+                      `+${formatCount(liveCount, "en")} families building their future`,
+                    )}
+                  </span>
+                  <span className="hidden md:inline">
+                    {t(
+                      `+${formatCount(liveCount, "es")} familias ya están construyendo su futuro.`,
+                      `+${formatCount(liveCount, "en")} families are already building their future.`,
+                    )}
+                  </span>
                 </p>
               </div>
             </div>
