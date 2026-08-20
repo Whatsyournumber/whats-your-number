@@ -43,11 +43,11 @@ export function BrandMark({
 export function BrandLogo({
   className,
   vertical,
-  variant = "dark",
+  variant = "auto",
 }: {
   className?: string;
   vertical?: boolean;
-  variant?: "dark" | "light";
+  variant?: BrandVariant;
 }) {
   return (
     <span
