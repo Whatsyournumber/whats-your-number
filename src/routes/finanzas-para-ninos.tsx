@@ -877,7 +877,7 @@ function HowItWorksSlider() {
         <div className="relative overflow-hidden rounded-[24px] bg-background/70 p-4 ring-1 ring-border md:p-6 lg:[zoom:0.72]">
           <div className="kid-gradient pointer-events-none absolute inset-x-0 top-0 h-[2px] opacity-70" />
 
-          <div className="-mx-1 flex items-center gap-2 overflow-x-auto px-1 pb-1 scrollbar-hide">
+          <div className="-mx-1 flex items-center gap-2.5 overflow-x-auto px-1 pb-1 scrollbar-hide">
             {slides.map((s, k) => {
               const TabIcon = s.icon;
               const isActive = k === i;
@@ -887,7 +887,7 @@ function HowItWorksSlider() {
                   type="button"
                   onClick={() => setI(k)}
                   className={cn(
-                    "flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all",
+                    "flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all",
                     isActive ? "shadow-lg" : "bg-elevated text-muted-foreground hover:text-foreground",
                   )}
                   style={
@@ -900,12 +900,12 @@ function HowItWorksSlider() {
                       : undefined
                   }
                 >
-                  <TabIcon className="h-3.5 w-3.5 shrink-0" />
+                  <TabIcon className="h-4 w-4 shrink-0" />
                   <span className="whitespace-nowrap">{s.tab}</span>
                 </button>
               );
             })}
-            <span className="ml-auto hidden shrink-0 items-center gap-1.5 rounded-full bg-elevated px-3 py-1 text-[11px] text-muted-foreground md:inline-flex">
+            <span className="ml-auto hidden shrink-0 items-center gap-1.5 rounded-full bg-elevated px-3.5 py-2 text-xs text-muted-foreground md:inline-flex">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-kid-mint opacity-75" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-kid-mint" />
