@@ -391,13 +391,34 @@ function FamilyPlannerVisual() {
 
 const DEMO_UNIS = [
   {
-    id: "es-universitat-de-barcelona",
-    name: "Universitat de Barcelona",
-    city: "Barcelona",
+    id: "us-mit",
+    name: "MIT",
+    city: "Boston",
+    country: "🇺🇸",
+    rank: 1,
+    cost: 82500,
+    region: "na",
+    feat: 0,
+  },
+  {
+    id: "es-ie-university",
+    name: "IE University",
+    city: "Madrid",
     country: "🇪🇸",
-    rank: 149,
-    cost: 9600,
+    rank: 30,
+    cost: 24800,
     region: "eu",
+    feat: 1,
+  },
+  {
+    id: "ap-seoul-national-university",
+    name: "Seoul National University",
+    city: "Seúl",
+    country: "🇰🇷",
+    rank: 31,
+    cost: 18600,
+    region: "apac",
+    feat: 2,
   },
   {
     id: "uk-university-of-oxford",
@@ -407,15 +428,7 @@ const DEMO_UNIS = [
     rank: 3,
     cost: 46200,
     region: "eu",
-  },
-  {
-    id: "nl-tu-delft",
-    name: "TU Delft",
-    city: "Delft",
-    country: "🇳🇱",
-    rank: 49,
-    cost: 21400,
-    region: "eu",
+    feat: 3,
   },
   {
     id: "ca-university-of-toronto",
@@ -425,15 +438,7 @@ const DEMO_UNIS = [
     rank: 21,
     cost: 38900,
     region: "na",
-  },
-  {
-    id: "us-mit",
-    name: "MIT",
-    city: "Boston",
-    country: "🇺🇸",
-    rank: 1,
-    cost: 82500,
-    region: "na",
+    feat: 4,
   },
 ] as const;
 
