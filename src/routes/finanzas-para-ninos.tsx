@@ -1008,12 +1008,12 @@ function HowItWorksSlider() {
 
   const buddy: Record<string, string> = {
     numbers: t(
-      "Laura va un 11% de camino a su número. Con 3 € más al mes llegaría 8 meses antes.",
-      "Laura is 11% of the way to her number. Just €3 more a month gets her there 8 months sooner.",
+      "Sofía va un 11% de camino a su número. Con 3 € más al mes llegaría 8 meses antes.",
+      "Sofia is 11% of the way to her number. Just €3 more a month gets her there 8 months sooner.",
     ),
     grow: t(
-      "Con 99 €/mes Laura llega al 82% de su objetivo universitario. Subiendo a 185 €/mes lo cubre entero.",
-      "At €99/mo Laura reaches 82% of her university goal. Raising it to €185/mo covers it fully.",
+      "Con 99 €/mes Sofía llega al 82% de su objetivo universitario. Subiendo a 185 €/mes lo cubre entero.",
+      "At €99/mo Sofia reaches 82% of her university goal. Raising it to €185/mo covers it fully.",
     ),
     unis: t(
       "Con su número de 122.717 € no le alcanza para ninguna de estas 4 universidades: le faltan entre 3.000 € y 17.000 €.",
@@ -1538,8 +1538,8 @@ function HowItWorksSlider() {
                           </p>
                           <p className="mt-1 text-xs text-muted-foreground">
                             {t(
-                              "el número de Laura a los 18 para pagar sus estudios",
-                              "Laura's number at 18 to pay for her studies",
+                              "el número de Sofía a los 18 para pagar sus estudios",
+                              "Sofia's number at 18 to pay for her studies",
                             )}
                           </p>
                         </div>
