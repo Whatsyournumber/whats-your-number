@@ -659,7 +659,7 @@ function HowItWorksSlider() {
         <ScreenCard title={t("Mi primer número", "My first number")} accent="var(--kid-sky)">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
-              <img src={faceSofia} alt="" className="h-9 w-9 rounded-full object-cover" />
+              <img src={faceSofia} alt="Sofía, 13 años, usando su panel de ahorro" className="h-9 w-9 rounded-full object-cover" />
               <div>
                 <p className="text-sm font-medium">{t("Cómo crece mi número", "How my number grows")}</p>
                 <p className="text-[11px] text-muted-foreground">
@@ -1754,7 +1754,7 @@ function PillarVisual({ id, color, labels }: { id: string; color: string; labels
         />
         <img
           src={bikeAsset.url}
-          alt=""
+          alt="Bicicleta nueva, uno de los sueños de ahorro de los niños"
           loading="lazy"
           className="relative h-[86px] w-auto object-contain drop-shadow-[0_10px_22px_rgba(0,0,0,0.5)]"
         />
@@ -1976,7 +1976,7 @@ function PhoneMock({
             >
               <img
                 src={face}
-                alt=""
+                alt="Retrato del perfil infantil en la app"
                 width={48}
                 height={48}
                 className="h-full w-full rounded-full object-cover"

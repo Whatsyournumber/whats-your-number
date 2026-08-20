@@ -403,7 +403,7 @@ function Landing() {
           >
             <img
               src={heroManLaptopAsset.url}
-              alt=""
+              alt="Usuario revisando su patrimonio en WhatsYournumber desde el portátil"
               aria-hidden
               className="h-full w-full object-cover object-[70%_28%]"
               loading="eager"
