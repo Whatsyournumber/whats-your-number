@@ -967,30 +967,45 @@ function HowItWorksSlider() {
 
                     <div className="mt-4">
                       <div className="flex items-center justify-between">
-                        <p className="text-xs text-muted-foreground">{t("Lo que gana cada semana", "What they earn each week")}</p>
-                        <span className="numeric text-xs font-semibold text-kid-sun">{t("Media €5,50", "Avg €5.50")}</span>
+                        <p className="text-xs text-muted-foreground">{t("Seguimiento de tareas", "Chore tracking")}</p>
+                        <span className="numeric text-xs font-semibold text-kid-mint">{t("3/4 hoy", "3/4 today")}</span>
                       </div>
-                      <div className="mt-3 flex h-[110px] items-end gap-2">
-                        {choreWeeks.map((w, idx) => {
-                          const max = Math.max(...choreWeeks.map((c) => c.v));
-                          const h = Math.max(12, (w.v / max) * 88);
-                          return (
-                            <div key={idx} className="flex flex-1 flex-col items-center gap-1.5">
-                              <span className="numeric text-[10px] text-muted-foreground">€{w.v}</span>
-                              <div
-                                className="w-full rounded-lg"
-                                style={{
-                                  height: `${h}px`,
-                                  background:
-                                    "linear-gradient(to top, color-mix(in oklab, var(--kid-sun) 45%, transparent), var(--kid-sun))",
-                                }}
-                              />
-                              <span className="text-[10px] text-muted-foreground">{w.w}</span>
-                            </div>
-                          );
-                        })}
+                      <div className="mt-3 space-y-2">
+                        {choreTrack.map((c) => (
+                          <div
+                            key={c.k}
+                            className="flex items-center gap-2.5 rounded-xl bg-background/60 px-3 py-2 ring-1 ring-border/40"
+                          >
+                            <span className="text-base">{c.e}</span>
+                            <span className={`truncate text-xs ${c.done ? "text-muted-foreground line-through" : ""}`}>
+                              {t(c.k, c.en)}
+                            </span>
+                            <span
+                              className={`ml-auto flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
+                                c.done ? "bg-kid-mint text-background" : "ring-1 ring-border/60 text-muted-foreground"
+                              }`}
+                            >
+                              {c.done ? "✓" : ""}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mt-3 flex items-center justify-between">
+                        {["L", "M", "M", "J", "V", "S", "D"].map((d, idx) => (
+                          <div key={idx} className="flex flex-col items-center gap-1">
+                            <span
+                              className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold ${
+                                idx < 4 ? "bg-kid-mint text-background" : "ring-1 ring-border/60 text-muted-foreground"
+                              }`}
+                            >
+                              {idx < 4 ? "✓" : ""}
+                            </span>
+                            <span className="text-[10px] text-muted-foreground">{d}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
+
 
                     <div className="mt-4 space-y-2.5 border-t border-border/40 pt-4">
                       <p className="text-xs text-muted-foreground">{t("Cómo se reparte lo ganado", "How earnings split")}</p>
