@@ -958,9 +958,9 @@ function HowItWorksSlider() {
 
             <div className="flex min-w-0 flex-col gap-4">
               {active.id === "numbers" ? (
-                <div className="flex flex-1 flex-col rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
-                  <p className="text-sm font-medium">{t("Cómo se reparte su dinero", "How their money is split")}</p>
-                  <div className="mt-2 h-[190px]">
+                <div className="flex flex-1 flex-col justify-between rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
+                  <p className="text-sm font-semibold">{t("Cómo se reparte su dinero", "How their money is split")}</p>
+                  <div className="mt-1 h-[230px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
@@ -979,10 +979,10 @@ function HowItWorksSlider() {
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
-                  <div className="mt-3 space-y-2">
+                  <div className="mt-2 space-y-2.5">
                     {pockets.map((p) => (
-                      <div key={p.label} className="flex items-center gap-2 text-[13px]">
-                        <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: p.color }} />
+                      <div key={p.label} className="flex items-center gap-2 text-sm">
+                        <span className="h-3 w-3 shrink-0 rounded-full" style={{ background: p.color }} />
                         <span className="truncate text-muted-foreground">
                           {p.label} ({p.value}%)
                         </span>
@@ -990,7 +990,7 @@ function HowItWorksSlider() {
                       </div>
                     ))}
                   </div>
-                  <p className="mt-3 text-[11px] text-muted-foreground">
+                  <p className="mt-2 text-xs text-muted-foreground">
                     {t("Su regla: 80% ahorrar e invertir · 20% gastar", "Their rule: 80% save & invest · 20% spend")}
                   </p>
                 </div>
