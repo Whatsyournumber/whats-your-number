@@ -450,7 +450,7 @@ function UniFinderVisual() {
 
   const list = DEMO_UNIS.filter((u) => (region === "all" ? true : u.region === region)).filter((u) =>
     q.trim() ? `${u.name} ${u.city}`.toLowerCase().includes(q.trim().toLowerCase()) : true,
-  ).slice().sort((a, b) => a.rank - b.rank);
+  ).slice().sort((a, b) => (region === "all" ? a.feat - b.feat : a.rank - b.rank));
   const eligible = list.filter((u) => u.cost <= budget);
   const hero = list[0];
 
