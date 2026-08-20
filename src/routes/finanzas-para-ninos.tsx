@@ -1384,36 +1384,86 @@ function HowItWorksSlider() {
                   </div>
 
                 ) : (
-                  <>
-                    <div className="mt-3 space-y-3">
-                      {[
-                        { n: "Univ. de Barcelona", cost: "€9.600", pct: 111, c: "var(--kid-mint)" },
-                        { n: "TU Delft", cost: "€16.200", pct: 66, c: "var(--kid-sky)" },
-                        { n: "Univ. of Toronto", cost: "€45.000", pct: 24, c: "var(--kid-grape)" },
-                      ].map((u) => (
-                        <div key={u.n} className="rounded-xl bg-background/60 p-3">
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="truncate">{u.n}</span>
-                            <span className="numeric font-semibold" style={{ color: u.c }}>
-                              {u.pct}%
-                            </span>
-                          </div>
-                          <div className="mt-2 h-2 overflow-hidden rounded-full bg-card">
-                            <div
-                              className="h-full rounded-full"
-                              style={{ width: `${Math.min(u.pct, 100)}%`, backgroundColor: u.c }}
-                            />
-                          </div>
-                          <p className="numeric mt-1.5 text-[11px] text-muted-foreground">
-                            {t("Coste del grado", "Degree cost")} {u.cost}
+                  (() => {
+                    const uniNumber = 10668;
+                    const rows = [
+                      { n: "Univ. de Barcelona", f: "🇪🇸", city: "Barcelona", cost: 9600 },
+                      { n: "Seoul Nat. University", f: "🇰🇷", city: "Seúl", cost: 18600 },
+                      { n: "IE University", f: "🇪🇸", city: "Madrid", cost: 24800 },
+                      { n: "MIT", f: "🇺🇸", city: "Boston", cost: 82500 },
+                    ].map((u) => {
+                      const pct = Math.round((uniNumber / u.cost) * 100);
+                      return {
+                        ...u,
+                        pct,
+                        c: pct >= 100 ? "var(--kid-mint)" : pct >= 50 ? "var(--kid-sky)" : "var(--kid-grape)",
+                      };
+                    });
+                    const okCount = rows.filter((r) => r.pct >= 100).length;
+                    const money = (v: number) => `€${v.toLocaleString("es-ES")}`;
+                    return (
+                      <div className="flex flex-1 flex-col justify-between gap-3">
+                        <div>
+                          <p className="numeric mt-3 text-4xl font-bold leading-tight text-kid-grape">
+                            {money(uniNumber)}
+                          </p>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {t(
+                              "el número de Sofía a los 18 para pagar sus estudios",
+                              "Sofía's number at 18 to pay for her studies",
+                            )}
                           </p>
                         </div>
-                      ))}
-                    </div>
-                    <p className="mt-2 text-xs text-muted-foreground">
-                      {t("Cobertura estimada con su número a los 18.", "Estimated coverage with their number at 18.")}
-                    </p>
-                  </>
+
+                        <div className="flex flex-1 flex-col justify-center gap-2.5">
+                          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                            {t("Cuánto cubre en cada una", "How much it covers at each")}
+                          </p>
+                          {rows.map((u) => (
+                            <div key={u.n} className="rounded-xl bg-background/60 p-3.5 ring-1 ring-border/40">
+                              <div className="flex items-center justify-between gap-2 text-sm">
+                                <span className="min-w-0 truncate">
+                                  <span className="mr-1.5">{u.f}</span>
+                                  {u.n}
+                                </span>
+                                <span className="numeric shrink-0 font-bold" style={{ color: u.c }}>
+                                  {u.pct}%
+                                </span>
+                              </div>
+                              <div className="mt-2 h-2 overflow-hidden rounded-full bg-card">
+                                <div
+                                  className="h-full rounded-full"
+                                  style={{ width: `${Math.min(u.pct, 100)}%`, backgroundColor: u.c }}
+                                />
+                              </div>
+                              <p className="numeric mt-1.5 flex items-center justify-between text-[11px] text-muted-foreground">
+                                <span>
+                                  {u.city} · {t("grado", "degree")} {money(u.cost)}
+                                </span>
+                                <span style={{ color: u.c }}>
+                                  {u.pct >= 100
+                                    ? `${t("le sobran", "left over")} ${money(uniNumber - u.cost)}`
+                                    : `${t("faltan", "short")} ${money(u.cost - uniNumber)}`}
+                                </span>
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="flex items-center gap-3 rounded-xl bg-kid-mint/10 px-4 py-3.5 ring-1 ring-kid-mint/25">
+                          <GraduationCap className="h-5 w-5 shrink-0 text-kid-mint" />
+                          <p className="text-sm leading-tight">
+                            <span className="font-semibold text-kid-mint">
+                              {okCount} {t("de", "of")} {rows.length}
+                            </span>{" "}
+                            <span className="text-muted-foreground">
+                              {t("cubiertas al 100% con su número", "fully covered with her number")}
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })()
                 )}
               </div>
 
