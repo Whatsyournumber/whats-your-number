@@ -774,7 +774,7 @@ function HowItWorksSlider() {
         "The bike, the trip or the game: they see what's left and save to get there.",
       ),
       visual: (
-        <ScreenCard title={t("Mis sueños activos", "My active dreams")} accent="var(--kid-coral)">
+        <ScreenCard title={t("Mis sueños activos", "My active dreams")} accent="var(--kid-mint)">
           <div className="space-y-3.5">
             {[
               {
