@@ -2647,11 +2647,19 @@ function KidsFinanceLanding() {
                   height={128}
                   className="h-10 w-auto shrink-0 mix-blend-lighten md:h-12"
                 />
-                <p className="text-xs font-medium text-foreground md:text-sm">
-                  {t(
-                    `+${formatCount(liveCount, "es")} familias ya están construyendo su futuro.`,
-                    `+${formatCount(liveCount, "en")} families are already building their future.`,
-                  )}
+                <p className="min-w-0 text-xs font-medium text-foreground md:text-sm">
+                  <span className="block truncate md:hidden">
+                    {t(
+                      `+${formatCount(liveCount, "es")} familias construyendo su futuro`,
+                      `+${formatCount(liveCount, "en")} families building their future`,
+                    )}
+                  </span>
+                  <span className="hidden md:inline">
+                    {t(
+                      `+${formatCount(liveCount, "es")} familias ya están construyendo su futuro.`,
+                      `+${formatCount(liveCount, "en")} families are already building their future.`,
+                    )}
+                  </span>
                 </p>
               </div>
             </div>
