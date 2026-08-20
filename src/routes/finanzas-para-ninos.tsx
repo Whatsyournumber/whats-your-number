@@ -529,12 +529,12 @@ function HowItWorksSlider() {
             ))}
           </div>
 
-          <div className="mt-4 flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">{t("Tareas de esta semana", "This week's chores")}</p>
+          <div className="mt-5 flex items-center justify-between">
+            <p className="text-sm font-medium">{t("Tareas de esta semana", "This week's chores")}</p>
             <span className="numeric text-sm font-semibold text-kid-sun">+€6,50</span>
           </div>
 
-          <div className="mt-2 space-y-1.5">
+          <div className="mt-3 space-y-2.5">
             {[
               { e: "🛏️", k: t("Hacer mi cama", "Make my bed"), v: "+€0,50", ok: true },
               { e: "🐶", k: t("Pasear al perro", "Walk the dog"), v: "+€2,00", ok: true },
@@ -544,48 +544,27 @@ function HowItWorksSlider() {
               <div
                 key={r.k}
                 className={cn(
-                  "flex items-center gap-3 rounded-xl px-3 py-2.5 ring-1",
+                  "flex items-center gap-3.5 rounded-2xl px-4 py-4 ring-1",
                   r.ok ? "bg-kid-mint/10 ring-kid-mint/25" : "bg-background/40 ring-border/40",
                 )}
               >
-                <span className="text-lg leading-none">{r.e}</span>
-                <span className={cn("min-w-0 flex-1 truncate text-sm font-medium", r.ok && "text-muted-foreground line-through")}>
+                <span className="text-2xl leading-none">{r.e}</span>
+                <span className={cn("min-w-0 flex-1 truncate text-[15px] font-medium", r.ok && "text-muted-foreground line-through")}>
                   {r.k}
                 </span>
-                <span className={cn("numeric text-sm font-semibold", r.ok ? "text-kid-mint" : "text-muted-foreground")}>{r.v}</span>
+                <span className={cn("numeric text-[15px] font-semibold", r.ok ? "text-kid-mint" : "text-muted-foreground")}>{r.v}</span>
                 <span
                   className={cn(
-                    "flex h-6 w-6 shrink-0 items-center justify-center rounded-full",
+                    "flex h-7 w-7 shrink-0 items-center justify-center rounded-full",
                     r.ok ? "bg-kid-mint text-background" : "bg-card ring-1 ring-border",
                   )}
                 >
-                  <BadgeCheck className={cn("h-3.5 w-3.5", r.ok ? "" : "text-muted-foreground/40")} />
+                  <BadgeCheck className={cn("h-4 w-4", r.ok ? "" : "text-muted-foreground/40")} />
                 </span>
               </div>
             ))}
           </div>
 
-          <div className="mt-auto border-t border-border/50 pt-4">
-            <div className="flex items-center justify-between">
-              <p className="text-xs text-muted-foreground">{t("Racha de la semana", "Weekly streak")}</p>
-              <span className="text-xs font-semibold text-kid-coral">🔥 4</span>
-            </div>
-            <div className="mt-2.5 flex justify-between gap-1.5">
-              {[t("L", "M"), t("M", "T"), t("M", "W"), t("J", "T"), t("V", "F"), t("S", "S"), t("D", "S")].map((d, idx) => (
-                <div key={idx} className="flex flex-1 flex-col items-center gap-1">
-                  <span
-                    className={cn(
-                      "flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold",
-                      idx < 4 ? "bg-kid-mint text-background" : "bg-background text-muted-foreground/50 ring-1 ring-border",
-                    )}
-                  >
-                    {idx < 4 ? "✓" : ""}
-                  </span>
-                  <span className="text-[10px] text-muted-foreground">{d}</span>
-                </div>
-              ))}
-            </div>
-          </div>
         </ScreenCard>
 
       ),
