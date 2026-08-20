@@ -2571,7 +2571,7 @@ function KidsFinanceLanding() {
           transition={{ duration: 0.5 }}
           className="relative -mt-16 overflow-hidden pt-16"
         >
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-[34vh] min-h-[240px] md:h-[46vh] lg:inset-y-0 lg:left-auto lg:right-0 lg:h-auto lg:min-h-0 lg:w-[56%]">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[clamp(220px,32vh,300px)] md:h-[clamp(280px,46vh,460px)] lg:inset-y-0 lg:left-auto lg:right-0 lg:h-auto lg:min-h-0 lg:w-[56%]">
             <img
               src={heroReal}
               alt={t(
