@@ -754,7 +754,7 @@ function HowItWorksSlider() {
     },
   ];
 
-  const order = ["numbers", "grow", "unis", "pockets", "chores", "dreams"];
+  const order = ["numbers", "chores", "dreams", "grow", "unis", "pockets"];
 
   const slides = [...rawSlides].sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
 
@@ -829,6 +829,15 @@ function HowItWorksSlider() {
   };
 
 
+
+  const sideTitle: Record<string, string> = {
+    numbers: t("Cómo se reparte su dinero", "How their money is split"),
+    pockets: t("Cómo se reparte su dinero", "How their money is split"),
+    chores: t("Lo que gana cada semana", "What they earn each week"),
+    dreams: t("Sus sueños en marcha", "Their dreams in progress"),
+    grow: t("Su futuro, año a año", "Their future, year by year"),
+    unis: t("Universidades que podría pagar", "Universities they could afford"),
+  };
 
   const active = slides[i]!;
 
@@ -957,55 +966,202 @@ function HowItWorksSlider() {
             </div>
 
             <div className="flex min-w-0 flex-col gap-4">
-              {active.id === "numbers" ? (
-                <div className="flex flex-1 flex-col justify-between rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
-                  <p className="text-sm font-semibold">{t("Cómo se reparte su dinero", "How their money is split")}</p>
-                  <div className="mt-1 h-[230px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={pockets}
-                          dataKey="value"
-                          nameKey="label"
-                          innerRadius="62%"
-                          outerRadius="92%"
-                          paddingAngle={3}
-                          stroke="none"
-                        >
-                          {pockets.map((p) => (
-                            <Cell key={p.label} fill={p.color} />
-                          ))}
-                        </Pie>
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div className="mt-2 space-y-2.5">
-                    {pockets.map((p) => (
-                      <div key={p.label} className="flex items-center gap-2 text-sm">
-                        <span className="h-3 w-3 shrink-0 rounded-full" style={{ background: p.color }} />
-                        <span className="truncate text-muted-foreground">
-                          {p.label} ({p.value}%)
-                        </span>
-                        <span className="numeric ml-auto font-semibold">{p.amount}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    {t("Su regla: 80% ahorrar e invertir · 20% gastar", "Their rule: 80% save & invest · 20% spend")}
-                  </p>
-                </div>
-              ) : (
-                <div className="grid flex-1 grid-cols-3 gap-2">
-                  {(stats[active.id] ?? []).map((s) => (
-                    <div key={s.k} className="flex flex-col justify-center rounded-2xl bg-elevated/60 p-3 text-center ring-1 ring-border">
-                      <p className="truncate text-[11px] uppercase tracking-wider text-muted-foreground">{s.k}</p>
-                      <p className="numeric mt-1 text-base font-semibold" style={{ color: active.color }}>
-                        {s.v}
-                      </p>
+              <div className="flex flex-1 flex-col justify-between rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
+                <p className="text-sm font-semibold">{sideTitle[active.id] ?? t("Resumen", "Summary")}</p>
+
+                {active.id === "numbers" || active.id === "pockets" ? (
+                  <>
+                    <div className="mt-1 h-[210px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={pockets}
+                            dataKey="value"
+                            nameKey="label"
+                            innerRadius="62%"
+                            outerRadius="92%"
+                            paddingAngle={3}
+                            stroke="none"
+                          >
+                            {pockets.map((p) => (
+                              <Cell key={p.label} fill={p.color} />
+                            ))}
+                          </Pie>
+                        </PieChart>
+                      </ResponsiveContainer>
                     </div>
-                  ))}
-                </div>
-              )}
+                    <div className="mt-2 space-y-2.5">
+                      {pockets.map((p) => (
+                        <div key={p.label} className="flex items-center gap-2 text-sm">
+                          <span className="h-3 w-3 shrink-0 rounded-full" style={{ background: p.color }} />
+                          <span className="truncate text-muted-foreground">
+                            {p.label} ({p.value}%)
+                          </span>
+                          <span className="numeric ml-auto font-semibold">{p.amount}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      {t("Su regla: 80% ahorrar e invertir · 20% gastar", "Their rule: 80% save & invest · 20% spend")}
+                    </p>
+                  </>
+                ) : active.id === "chores" ? (
+                  <>
+                    <div className="mt-1 h-[190px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={choreWeeks} margin={{ top: 8, right: 4, bottom: 0, left: 0 }} barCategoryGap={12}>
+                          <XAxis
+                            dataKey="w"
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
+                          />
+                          <Bar dataKey="v" fill="var(--kid-sun)" radius={[8, 8, 0, 0]} isAnimationActive={false} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <div className="mt-2 space-y-2.5">
+                      {[
+                        { k: t("Tareas aprobadas", "Approved chores"), v: "18", c: "var(--kid-sun)" },
+                        { k: t("Racha", "Streak"), v: t("7 semanas", "7 weeks"), c: "var(--kid-mint)" },
+                        { k: t("Media semanal", "Weekly average"), v: "€5,50", c: "var(--kid-sky)" },
+                      ].map((r) => (
+                        <div key={r.k} className="flex items-center gap-2 text-sm">
+                          <span className="h-3 w-3 shrink-0 rounded-full" style={{ background: r.c }} />
+                          <span className="truncate text-muted-foreground">{r.k}</span>
+                          <span className="numeric ml-auto font-semibold">{r.v}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      {t(
+                        "Cada tarea se reparte sola: 40/40/20.",
+                        "Every chore splits itself: 40/40/20.",
+                      )}
+                    </p>
+                  </>
+                ) : active.id === "dreams" ? (
+                  <>
+                    <div className="mt-3 space-y-3">
+                      {[
+                        { n: t("Bici nueva", "New bike"), pct: 62, eta: t("en 3 meses", "in 3 months"), c: "var(--kid-mint)" },
+                        { n: t("Viaje a Disney", "Disney trip"), pct: 10, eta: t("en 2 años", "in 2 years"), c: "var(--kid-sun)" },
+                        { n: t("Nintendo Switch", "Nintendo Switch"), pct: 3, eta: t("en 18 meses", "in 18 months"), c: "var(--kid-coral)" },
+                      ].map((d) => (
+                        <div key={d.n} className="rounded-xl bg-background/60 p-3">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="truncate">{d.n}</span>
+                            <span className="numeric font-semibold" style={{ color: d.c }}>
+                              {d.pct}%
+                            </span>
+                          </div>
+                          <div className="mt-2 h-2 overflow-hidden rounded-full bg-card">
+                            <div
+                              className="h-full rounded-full"
+                              style={{ width: `${Math.max(d.pct, 3)}%`, backgroundColor: d.c }}
+                            />
+                          </div>
+                          <p className="mt-1.5 text-[11px] text-muted-foreground">{d.eta}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      {t("Puede acelerar cualquier sueño moviendo dinero.", "She can speed up any dream by moving money.")}
+                    </p>
+                  </>
+                ) : active.id === "grow" ? (
+                  <>
+                    <div className="mt-1 h-[190px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={growCurve} margin={{ top: 8, right: 4, bottom: 0, left: 0 }}>
+                          <defs>
+                            <linearGradient id="side-grow-area" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="var(--kid-mint)" stopOpacity={0.45} />
+                              <stop offset="100%" stopColor="var(--kid-mint)" stopOpacity={0} />
+                            </linearGradient>
+                          </defs>
+                          <XAxis
+                            dataKey="x"
+                            ticks={[0, 9, 18]}
+                            tickFormatter={(v: number) => (v === 0 ? t("Hoy", "Today") : `${v}a`)}
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
+                          />
+                          <Area
+                            type="monotone"
+                            dataKey="y"
+                            stroke="var(--kid-mint)"
+                            strokeWidth={2.5}
+                            fill="url(#side-grow-area)"
+                            dot={false}
+                            isAnimationActive={false}
+                          />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <div className="mt-2 space-y-2.5">
+                      {[
+                        { k: t("A los 12", "At 12"), v: "€2.310", c: "var(--kid-sky)" },
+                        { k: t("A los 15", "At 15"), v: "€5.480", c: "var(--kid-grape)" },
+                        { k: t("A los 18", "At 18"), v: "€10.668", c: "var(--kid-mint)" },
+                      ].map((r) => (
+                        <div key={r.k} className="flex items-center gap-2 text-sm">
+                          <span className="h-3 w-3 shrink-0 rounded-full" style={{ background: r.c }} />
+                          <span className="truncate text-muted-foreground">{r.k}</span>
+                          <span className="numeric ml-auto font-semibold">{r.v}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      {t("El 77% viene del interés compuesto.", "77% comes from compound interest.")}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <div className="mt-3 space-y-3">
+                      {[
+                        { n: "Univ. de Barcelona", cost: "€9.600", pct: 111, c: "var(--kid-mint)" },
+                        { n: "TU Delft", cost: "€16.200", pct: 66, c: "var(--kid-sky)" },
+                        { n: "Univ. of Toronto", cost: "€45.000", pct: 24, c: "var(--kid-grape)" },
+                      ].map((u) => (
+                        <div key={u.n} className="rounded-xl bg-background/60 p-3">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="truncate">{u.n}</span>
+                            <span className="numeric font-semibold" style={{ color: u.c }}>
+                              {u.pct}%
+                            </span>
+                          </div>
+                          <div className="mt-2 h-2 overflow-hidden rounded-full bg-card">
+                            <div
+                              className="h-full rounded-full"
+                              style={{ width: `${Math.min(u.pct, 100)}%`, backgroundColor: u.c }}
+                            />
+                          </div>
+                          <p className="numeric mt-1.5 text-[11px] text-muted-foreground">
+                            {t("Coste del grado", "Degree cost")} {u.cost}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      {t("Cobertura estimada con su número a los 18.", "Estimated coverage with their number at 18.")}
+                    </p>
+                  </>
+                )}
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                {(stats[active.id] ?? []).map((s) => (
+                  <div key={s.k} className="flex flex-col justify-center rounded-2xl bg-elevated/60 p-3 text-center ring-1 ring-border">
+                    <p className="truncate text-[11px] uppercase tracking-wider text-muted-foreground">{s.k}</p>
+                    <p className="numeric mt-1 text-base font-semibold" style={{ color: active.color }}>
+                      {s.v}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
 
 
               <div className="mt-auto rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
