@@ -111,7 +111,7 @@ function ScreenCard({
       <div className="h-1 w-full" style={{ backgroundColor: accent, opacity: 0.7 }} />
       <div className="flex items-center gap-2 border-b border-border/60 px-5 py-3">
         <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: accent }} />
-        <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{title}</span>
+        <span className="text-sm font-medium uppercase tracking-wider text-muted-foreground">{title}</span>
       </div>
       <div className="p-5 md:p-6">{children}</div>
     </div>
@@ -877,7 +877,7 @@ function HowItWorksSlider() {
         <div className="relative overflow-hidden rounded-[24px] bg-background/70 p-4 ring-1 ring-border md:p-6 lg:[zoom:0.72]">
           <div className="kid-gradient pointer-events-none absolute inset-x-0 top-0 h-[2px] opacity-70" />
 
-          <div className="-mx-1 flex items-center gap-2 overflow-x-auto px-1 pb-1 scrollbar-hide">
+          <div className="-mx-1 flex items-center gap-2.5 overflow-x-auto px-1 pb-1 scrollbar-hide">
             {slides.map((s, k) => {
               const TabIcon = s.icon;
               const isActive = k === i;
@@ -887,7 +887,7 @@ function HowItWorksSlider() {
                   type="button"
                   onClick={() => setI(k)}
                   className={cn(
-                    "flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all",
+                    "flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all",
                     isActive ? "shadow-lg" : "bg-elevated text-muted-foreground hover:text-foreground",
                   )}
                   style={
@@ -900,12 +900,12 @@ function HowItWorksSlider() {
                       : undefined
                   }
                 >
-                  <TabIcon className="h-3.5 w-3.5 shrink-0" />
+                  <TabIcon className="h-4 w-4 shrink-0" />
                   <span className="whitespace-nowrap">{s.tab}</span>
                 </button>
               );
             })}
-            <span className="ml-auto hidden shrink-0 items-center gap-1.5 rounded-full bg-elevated px-3 py-1 text-[11px] text-muted-foreground md:inline-flex">
+            <span className="ml-auto hidden shrink-0 items-center gap-1.5 rounded-full bg-elevated px-3.5 py-2 text-xs text-muted-foreground md:inline-flex">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-kid-mint opacity-75" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-kid-mint" />
@@ -958,9 +958,9 @@ function HowItWorksSlider() {
 
             <div className="flex min-w-0 flex-col gap-4">
               {active.id === "numbers" ? (
-                <div className="flex flex-1 flex-col rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
-                  <p className="text-sm font-medium">{t("Cómo se reparte su dinero", "How their money is split")}</p>
-                  <div className="mt-2 h-[190px]">
+                <div className="flex flex-1 flex-col justify-between rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
+                  <p className="text-sm font-semibold">{t("Cómo se reparte su dinero", "How their money is split")}</p>
+                  <div className="mt-1 h-[230px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
@@ -979,10 +979,10 @@ function HowItWorksSlider() {
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
-                  <div className="mt-3 space-y-2">
+                  <div className="mt-2 space-y-2.5">
                     {pockets.map((p) => (
-                      <div key={p.label} className="flex items-center gap-2 text-[13px]">
-                        <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: p.color }} />
+                      <div key={p.label} className="flex items-center gap-2 text-sm">
+                        <span className="h-3 w-3 shrink-0 rounded-full" style={{ background: p.color }} />
                         <span className="truncate text-muted-foreground">
                           {p.label} ({p.value}%)
                         </span>
@@ -990,16 +990,16 @@ function HowItWorksSlider() {
                       </div>
                     ))}
                   </div>
-                  <p className="mt-3 text-[11px] text-muted-foreground">
+                  <p className="mt-2 text-xs text-muted-foreground">
                     {t("Su regla: 80% ahorrar e invertir · 20% gastar", "Their rule: 80% save & invest · 20% spend")}
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid flex-1 grid-cols-3 gap-2">
                   {(stats[active.id] ?? []).map((s) => (
-                    <div key={s.k} className="rounded-2xl bg-elevated/60 p-3 text-center ring-1 ring-border">
-                      <p className="truncate text-[10px] uppercase tracking-wider text-muted-foreground">{s.k}</p>
-                      <p className="numeric mt-1 text-sm font-semibold" style={{ color: active.color }}>
+                    <div key={s.k} className="flex flex-col justify-center rounded-2xl bg-elevated/60 p-3 text-center ring-1 ring-border">
+                      <p className="truncate text-[11px] uppercase tracking-wider text-muted-foreground">{s.k}</p>
+                      <p className="numeric mt-1 text-base font-semibold" style={{ color: active.color }}>
                         {s.v}
                       </p>
                     </div>
@@ -1012,9 +1012,9 @@ function HowItWorksSlider() {
 
                 <div className="flex items-center gap-2 text-sm">
                   <Target className="h-4 w-4" style={{ color: active.color }} />
-                  <span>{t("Progreso hacia su número", "Progress to their number")}</span>
+                  <span className="font-medium">{t("Progreso hacia su número", "Progress to their number")}</span>
                 </div>
-                <div className="mt-3 h-2 overflow-hidden rounded-full bg-background">
+                <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-background">
                   <motion.div
                     key={active.id}
                     initial={{ width: 0 }}
@@ -1024,12 +1024,12 @@ function HowItWorksSlider() {
                     style={{ backgroundColor: active.color }}
                   />
                 </div>
-                <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
+                <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
                   <span className="numeric text-foreground">€1.150</span>
                   <span>11%</span>
                   <span className="numeric text-foreground">€10.668</span>
                 </div>
-                <p className="mt-2 text-[11px] text-muted-foreground">
+                <p className="mt-2 text-xs text-muted-foreground">
                   {t("Ahorrando €11,3 al mes hasta los 18 años.", "Saving €11.3 a month until age 18.")}
                 </p>
               </div>
