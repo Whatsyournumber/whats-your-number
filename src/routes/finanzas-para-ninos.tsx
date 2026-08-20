@@ -975,16 +975,56 @@ function HowItWorksSlider() {
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{active.desc}</p>
               </div>
 
-              <div className="grid grid-cols-3 gap-2">
-                {(stats[active.id] ?? []).map((s) => (
-                  <div key={s.k} className="rounded-2xl bg-elevated/60 p-3 text-center ring-1 ring-border">
-                    <p className="truncate text-[10px] uppercase tracking-wider text-muted-foreground">{s.k}</p>
-                    <p className="numeric mt-1 text-sm font-semibold" style={{ color: active.color }}>
-                      {s.v}
-                    </p>
+              {active.id === "numbers" ? (
+                <div className="flex flex-1 flex-col rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
+                  <p className="text-sm font-medium">{t("Cómo se reparte su dinero", "How their money is split")}</p>
+                  <div className="mt-2 h-[190px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={pockets}
+                          dataKey="value"
+                          nameKey="label"
+                          innerRadius="62%"
+                          outerRadius="92%"
+                          paddingAngle={3}
+                          stroke="none"
+                        >
+                          {pockets.map((p) => (
+                            <Cell key={p.label} fill={p.color} />
+                          ))}
+                        </Pie>
+                      </PieChart>
+                    </ResponsiveContainer>
                   </div>
-                ))}
-              </div>
+                  <div className="mt-3 space-y-2">
+                    {pockets.map((p) => (
+                      <div key={p.label} className="flex items-center gap-2 text-[13px]">
+                        <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: p.color }} />
+                        <span className="truncate text-muted-foreground">
+                          {p.label} ({p.value}%)
+                        </span>
+                        <span className="numeric ml-auto font-semibold">{p.amount}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-3 text-[11px] text-muted-foreground">
+                    {t("Su regla: 80% ahorrar e invertir · 20% gastar", "Their rule: 80% save & invest · 20% spend")}
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-3 gap-2">
+                  {(stats[active.id] ?? []).map((s) => (
+                    <div key={s.k} className="rounded-2xl bg-elevated/60 p-3 text-center ring-1 ring-border">
+                      <p className="truncate text-[10px] uppercase tracking-wider text-muted-foreground">{s.k}</p>
+                      <p className="numeric mt-1 text-sm font-semibold" style={{ color: active.color }}>
+                        {s.v}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
 
               <div className="mt-auto rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
 
