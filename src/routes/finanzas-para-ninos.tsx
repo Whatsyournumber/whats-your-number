@@ -568,7 +568,7 @@ function UniFinderVisual() {
             </div>
           </div>
 
-          <div className="mt-2.5 grid grid-cols-2 gap-2.5">
+          <div className="mt-2.5 grid grid-cols-3 gap-2.5">
             {rest.map((u) => (
               <div key={u.id} className="relative h-32 overflow-hidden rounded-2xl ring-1 ring-border">
                 <img
