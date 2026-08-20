@@ -754,7 +754,7 @@ function HowItWorksSlider() {
     },
   ];
 
-  const order = ["numbers", "grow", "unis", "pockets", "chores", "dreams"];
+  const order = ["numbers", "chores", "dreams", "grow", "unis", "pockets"];
 
   const slides = [...rawSlides].sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
 
