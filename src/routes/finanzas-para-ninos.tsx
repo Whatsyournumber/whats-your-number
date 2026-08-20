@@ -1431,12 +1431,10 @@ function HowItWorksSlider() {
                   (() => {
                     const uniNumber = 122717;
                     const rows = [
-                      { n: "Univ. de Barcelona", f: "🇪🇸", city: "Barcelona", cost: 9600 },
-                      { n: "Seoul Nat. University", f: "🇰🇷", city: "Seúl", cost: 18600 },
-                      { n: "IE University", f: "🇪🇸", city: "Madrid", cost: 24800 },
-                      { n: "MIT", f: "🇺🇸", city: "Boston", cost: 82500 },
-                      { n: "Harvard University", f: "🇺🇸", city: "Cambridge", cost: 132200 },
-                      { n: "Stanford University", f: "🇺🇸", city: "Palo Alto", cost: 139800 },
+                      { n: "MIT", f: "🇺🇸", city: "Boston", cost: 139200 },
+                      { n: "ETH Zürich", f: "🇨🇭", city: "Zúrich", cost: 130500 },
+                      { n: "University of Oxford", f: "🇬🇧", city: "Oxford", cost: 129050 },
+                      { n: "University of Toronto", f: "🇨🇦", city: "Toronto", cost: 126150 },
                     ].map((u) => {
                       const pct = Math.round((uniNumber / u.cost) * 100);
                       return {
