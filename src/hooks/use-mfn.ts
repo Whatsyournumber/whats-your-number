@@ -467,8 +467,17 @@ export function useCompleteTaskForWish() {
 export function useUncompleteTask() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ task, member }: { task: Task; member: Member }) => {
+    mutationFn: async ({
+      task,
+      member,
+      wishId,
+    }: {
+      task: Task;
+      member: Member;
+      wishId?: string;
+    }) => {
       const amount = Number(task.reward) || 0;
+      const wasRewarded = task.status === "aprobada" || task.status === "completada";
 
       const { error } = await supabase
         .from("kid_tasks")
@@ -476,7 +485,7 @@ export function useUncompleteTask() {
         .eq("id", task.id);
       if (error) throw error;
 
-      if (amount > 0) {
+      if (amount > 0 && wasRewarded) {
         // remove the movement created when the task was completed
         const { data: mv } = await supabase
           .from("kid_movements")
@@ -490,31 +499,50 @@ export function useUncompleteTask() {
           .maybeSingle();
         if (mv?.id) await supabase.from("kid_movements").delete().eq("id", mv.id);
 
-        // roll back the wish that received the reward
-        const { data: wish } = await supabase
-          .from("kid_wishes")
-          .select("*")
-          .eq("member_id", member.id)
-          .gt("saved", 0)
-          .order("created_at", { ascending: true })
-          .limit(1)
-          .maybeSingle();
-        if (wish) {
-          const saved = Math.max(0, Number((wish as Wish).saved) - amount);
+        // roll back the same wish that received the reward
+        let wish: Wish | null = null;
+        if (wishId) {
+          const { data } = await supabase
+            .from("kid_wishes")
+            .select("*")
+            .eq("id", wishId)
+            .maybeSingle();
+          wish = (data as Wish | null) ?? null;
+        } else {
+          const { data } = await supabase
+            .from("kid_wishes")
+            .select("*")
+            .eq("member_id", member.id)
+            .gt("saved", 0)
+            .order("created_at", { ascending: true });
+          const list = (data ?? []) as Wish[];
+          // the credited wish was the oldest one that was still open at the time:
+          // either it is still open, or this very reward is what completed it.
+          wish =
+            list.find(
+              (w) => !w.achieved || Number(w.saved) - amount < Number(w.price),
+            ) ?? null;
+        }
+
+        if (wish && Number(wish.saved) > 0) {
+          const saved = Math.max(0, Number(wish.saved) - amount);
           await supabase
             .from("kid_wishes")
-            .update({ saved, achieved: saved >= Number((wish as Wish).price) })
-            .eq("id", (wish as Wish).id);
+            .update({ saved, achieved: saved >= Number(wish.price) })
+            .eq("id", wish.id);
         }
       }
 
-      await supabase
-        .from("kid_members")
-        .update({ xp: Math.max(0, member.xp - 10), streak: Math.max(0, member.streak - 1) })
-        .eq("id", member.id);
+      if (wasRewarded) {
+        await supabase
+          .from("kid_members")
+          .update({ xp: Math.max(0, member.xp - 10), streak: Math.max(0, member.streak - 1) })
+          .eq("id", member.id);
+      }
 
       return { amount };
     },
+
     onSuccess: (_d, vars) => {
       qc.invalidateQueries({ queryKey: ["kid_tasks", vars.member.id] });
       qc.invalidateQueries({ queryKey: ["kid_wishes", vars.member.id] });
