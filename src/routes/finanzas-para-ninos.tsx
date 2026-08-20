@@ -216,6 +216,77 @@ function PlanMilestoneDot(props: {
   );
 }
 
+function PlannerChart() {
+  const t = useT();
+  return (
+    <div className="flex h-full flex-col">
+      <div className="flex flex-wrap items-center gap-4">
+        <p className="text-sm font-medium">{t("Proyección de crecimiento", "Growth projection")}</p>
+        <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+          <span className="h-0.5 w-5 rounded-full bg-kid-mint" /> {t("Tu inversión", "Your investment")}
+        </span>
+        <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+          <span className="h-0.5 w-5 rounded-full border-t-2 border-dashed border-muted-foreground/60" />{" "}
+          {t("Objetivo", "Goal")}
+        </span>
+      </div>
+      <div className="mt-2 min-h-0 flex-1">
+        <ResponsiveContainer width="100%" height="100%">
+          <ComposedChart data={plannerCurve} margin={{ top: 46, right: 12, bottom: 0, left: 4 }}>
+            <defs>
+              <linearGradient id="planner-area" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="var(--kid-mint)" stopOpacity={0.35} />
+                <stop offset="100%" stopColor="var(--kid-mint)" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid stroke="var(--border)" strokeDasharray="4 6" vertical={false} />
+            <XAxis
+              dataKey="age"
+              ticks={[5, 10, 15, 18]}
+              tickFormatter={(v: number) => `${v} ${t("años", "yrs")}`}
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
+            />
+            <YAxis
+              width={62}
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "var(--muted-foreground)", fontSize: 10 }}
+              tickFormatter={(v: number) => (v === 0 ? "0 €" : `${Math.round(v / 1000)} mil €`)}
+            />
+            <Line
+              type="monotone"
+              dataKey="goal"
+              stroke="var(--muted-foreground)"
+              strokeWidth={1.5}
+              strokeDasharray="6 6"
+              dot={false}
+              isAnimationActive={false}
+            />
+            <Area
+              type="monotone"
+              dataKey="value"
+              stroke="var(--kid-mint)"
+              strokeWidth={3}
+              fill="url(#planner-area)"
+              isAnimationActive={false}
+              dot={<PlanMilestoneDot />}
+              activeDot={false}
+            />
+          </ComposedChart>
+        </ResponsiveContainer>
+      </div>
+      <p className="mt-2 text-[10px] leading-relaxed text-muted-foreground">
+        {t(
+          "Fuente: retorno histórico nominal del S&P 500 con dividendos reinvertidos, ~10% anual desde 1957. La rentabilidad pasada no garantiza la futura.",
+          "Source: nominal historical S&P 500 return with dividends reinvested, ~10% a year since 1957. Past returns don't guarantee future ones.",
+        )}
+      </p>
+    </div>
+  );
+}
+
 function FamilyPlannerVisual() {
   const t = useT();
 
@@ -286,72 +357,6 @@ function FamilyPlannerVisual() {
             </div>
           );
         })}
-      </div>
-
-      <div className="mt-4 rounded-2xl bg-elevated/40 p-3 ring-1 ring-border/50">
-        <div className="flex flex-wrap items-center gap-4">
-          <p className="text-sm font-medium">{t("Proyección de crecimiento", "Growth projection")}</p>
-          <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-            <span className="h-0.5 w-5 rounded-full bg-kid-mint" /> {t("Tu inversión", "Your investment")}
-          </span>
-          <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-            <span className="h-0.5 w-5 rounded-full border-t-2 border-dashed border-muted-foreground/60" />{" "}
-            {t("Objetivo", "Goal")}
-          </span>
-        </div>
-        <div className="mt-2 h-[230px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={plannerCurve} margin={{ top: 46, right: 12, bottom: 0, left: 4 }}>
-              <defs>
-                <linearGradient id="planner-area" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--kid-mint)" stopOpacity={0.35} />
-                  <stop offset="100%" stopColor="var(--kid-mint)" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid stroke="var(--border)" strokeDasharray="4 6" vertical={false} />
-              <XAxis
-                dataKey="age"
-                ticks={[5, 10, 15, 18]}
-                tickFormatter={(v: number) => `${v} ${t("años", "yrs")}`}
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
-              />
-              <YAxis
-                width={62}
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "var(--muted-foreground)", fontSize: 10 }}
-                tickFormatter={(v: number) => (v === 0 ? "0 €" : `${Math.round(v / 1000)} mil €`)}
-              />
-              <Line
-                type="monotone"
-                dataKey="goal"
-                stroke="var(--muted-foreground)"
-                strokeWidth={1.5}
-                strokeDasharray="6 6"
-                dot={false}
-                isAnimationActive={false}
-              />
-              <Area
-                type="monotone"
-                dataKey="value"
-                stroke="var(--kid-mint)"
-                strokeWidth={3}
-                fill="url(#planner-area)"
-                isAnimationActive={false}
-                dot={<PlanMilestoneDot />}
-                activeDot={false}
-              />
-            </ComposedChart>
-          </ResponsiveContainer>
-        </div>
-        <p className="mt-1 text-[10px] leading-relaxed text-muted-foreground">
-          {t(
-            "Fuente: retorno histórico nominal del S&P 500 con dividendos reinvertidos, ~10% anual desde 1957. La rentabilidad pasada no garantiza la futura.",
-            "Source: nominal historical S&P 500 return with dividends reinvested, ~10% a year since 1957. Past returns don't guarantee future ones.",
-          )}
-        </p>
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-2 lg:grid-cols-4">
