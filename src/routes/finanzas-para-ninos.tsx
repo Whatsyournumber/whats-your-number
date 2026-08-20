@@ -2096,7 +2096,7 @@ function DualDashboards() {
         </motion.div>
 
         <div className="flex items-center justify-center gap-3 lg:flex-col">
-          <span className="hidden h-px w-10 bg-border lg:block lg:h-14 lg:w-px" />
+          <span className="block h-px w-10 bg-border lg:h-14 lg:w-px" />
           <div className="flex flex-col items-center gap-1.5">
             <span className="flex h-12 w-12 items-center justify-center rounded-full border border-kid-money/30 bg-kid-money/10 text-kid-money">
               <Users className="h-4 w-4" />
