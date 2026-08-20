@@ -831,7 +831,6 @@ function HowItWorksSlider() {
 
 
   const active = slides[i]!;
-  const Icon = active.icon;
 
   return (
     <section className="mt-16 md:mt-24">
