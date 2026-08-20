@@ -44,7 +44,6 @@ import heroReal from "@/assets/kids-hero-real.jpg";
 import ctaFamily from "@/assets/kids-cta-family.jpg";
 import faceDad from "@/assets/kid-face-dad.jpg";
 import faceMom from "@/assets/kid-face-mom.jpg";
-import faceGirl from "@/assets/kid-face-girl.jpg";
 import faceSofia from "@/assets/kid-face-sofia.jpg";
 import bikeAsset from "@/assets/kid-bike.png.asset.json";
 import faceBoy from "@/assets/kid-face-boy.jpg";
