@@ -466,10 +466,10 @@ function HowItWorksSlider() {
       tab: t("Mis sueños", "My dreams"),
       icon: Target,
       color: "var(--kid-coral)",
-      title: t("Sueños con barra de progreso", "Dreams with a progress bar"),
+      title: t("Sueños completados", "Completed dreams"),
       desc: t(
-        "La bici, el viaje o el videojuego: ven cuánto les falta y ahorran para conseguirlo.",
-        "The bike, the trip or the game: they see what's left and save to get there.",
+        "Cada sueño logrado se celebra: ven lo que han conseguido y cuánto ahorraron para lograrlo.",
+        "Every achieved dream is celebrated: they see what they accomplished and how much they saved to get there.",
       ),
       visual: (
         <ScreenCard title={t("Sueños completados", "Completed dreams")} accent="var(--kid-coral)">
