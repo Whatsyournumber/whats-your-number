@@ -449,7 +449,7 @@ function UniFinderVisual() {
   const rest = [
     ...eligible.filter((u) => u.id !== hero?.id),
     ...over.filter((u) => u.id !== hero?.id),
-  ].slice(0, 2);
+  ].slice(0, 3);
   const fmt = (v: number) => `€${Math.round(v).toLocaleString("es-ES")}`;
 
   return (
