@@ -327,8 +327,8 @@ function ProfileSelector() {
             {manage ? (
               <p className="mt-4 text-xs text-muted-foreground">
                 {t(
-                  "Toca la papelera para borrar un perfil, o entra como padre/madre para editar mesada, tareas y el Fondo del Futuro.",
-                  "Tap the trash icon to delete a profile, or sign in as a parent to edit allowance, tasks and the Future Fund.",
+                  "Toca el lápiz para cambiar el nombre y el subtítulo, la equis para borrar un perfil, o entra como padre/madre para editar mesada, tareas y el Fondo del Futuro.",
+                  "Tap the pencil to change the name and subtitle, the cross to delete a profile, or sign in as a parent to edit allowance, tasks and the Future Fund.",
                 )}
               </p>
             ) : null}
