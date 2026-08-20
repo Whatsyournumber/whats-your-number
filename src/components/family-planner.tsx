@@ -592,7 +592,11 @@ export function FamilyPlanner({
             label={t("Rentabilidad esperada", "Expected return")}
             value={rate}
             suffix={t("anual", "yearly")}
-            hint={vehicleName}
+            hint={
+              liveNow
+                ? `${vehicleName} · ${t("real", "real")} ${liveNow.cagr10y != null ? `${liveNow.cagr10y.toFixed(1)}%` : ""} · ${liveTime ?? ""}`
+                : vehicleName
+            }
             action={
               <button
                 type="button"
@@ -608,7 +612,7 @@ export function FamilyPlanner({
 
         {showPicks ? (
           <div className="mt-3 flex flex-wrap gap-2">
-            {VEHICLES.map((v) => (
+            {vehicles.map((v) => (
               <button
                 key={v.key}
                 type="button"
@@ -616,17 +620,25 @@ export function FamilyPlanner({
                   setRateTouched(true);
                   setPick(v.key);
                 }}
-                className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
+                className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition ${
                   v.key === pick
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted text-muted-foreground hover:text-foreground"
                 }`}
               >
+                {v.isLive ? <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> : null}
                 {(lang === "en" ? v.nameEn : v.name)} · {v.rate}%
+                {v.isLive && live[v.key]?.changePct != null ? (
+                  <span className="opacity-70">
+                    {live[v.key]!.changePct >= 0 ? "+" : ""}
+                    {live[v.key]!.changePct.toFixed(1)}% hoy
+                  </span>
+                ) : null}
               </button>
             ))}
           </div>
         ) : null}
+
 
         {/* chart */}
         <div className="mt-3 rounded-[28px] bg-card p-4 shadow-[0_20px_50px_-42px_oklch(0_0_0/38%)] sm:p-5">
