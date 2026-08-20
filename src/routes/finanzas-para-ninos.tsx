@@ -1294,39 +1294,39 @@ function HowItWorksSlider() {
                     </div>
                   </>
                 ) : active.id === "grow" ? (
-                  <div className="flex h-full flex-col gap-4">
+                  <div className="flex h-full flex-col justify-between gap-3">
                     {/* Headline */}
                     <div>
-                      <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                        <GraduationCap className="h-3.5 w-3.5" /> {t("El futuro de Sofía", "Sofía's future")}
+                      <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                        <GraduationCap className="h-4 w-4" /> {t("El futuro de Sofía", "Sofía's future")}
                       </p>
-                      <p className="numeric mt-2 text-3xl font-bold text-kid-mint">{eur(PLAN_FUTURE)}</p>
-                      <p className="text-[11px] text-muted-foreground">{t("cuando cumpla 18 años", "when she turns 18")}</p>
+                      <p className="numeric mt-3 text-4xl font-bold leading-tight text-kid-mint">{eur(PLAN_FUTURE)}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">{t("cuando cumpla 18 años", "when she turns 18")}</p>
                     </div>
 
                     {/* Progress ring */}
-                    <div className="flex items-center gap-3 rounded-2xl bg-background/60 p-3 ring-1 ring-border/40">
+                    <div className="flex items-center gap-4 rounded-2xl bg-background/60 p-4 ring-1 ring-border/40">
                       <div
-                        className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-full"
+                        className="relative flex h-20 w-20 shrink-0 items-center justify-center rounded-full"
                         style={{
                           background: `conic-gradient(var(--kid-mint) 0% ${PLAN_PCT}%, color-mix(in oklab, var(--kid-mint) 14%, transparent) ${PLAN_PCT}% 100%)`,
                         }}
                       >
-                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-card">
-                          <span className="numeric text-sm font-bold text-kid-mint">{PLAN_PCT}%</span>
+                        <span className="flex h-[60px] w-[60px] flex-col items-center justify-center rounded-full bg-card">
+                          <span className="numeric text-lg font-bold text-kid-mint">{PLAN_PCT}%</span>
                         </span>
                       </div>
                       <div className="min-w-0">
-                        <p className="text-[11px] font-medium">{t("Camino a la meta", "On track to goal")}</p>
-                        <p className="mt-0.5 text-[10px] leading-relaxed text-muted-foreground">
+                        <p className="text-sm font-medium">{t("Camino a la meta", "On track to goal")}</p>
+                        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                           {t("Faltan 14 años y 11 meses", "14 years and 11 months to go")}
                         </p>
                       </div>
                     </div>
 
                     {/* Equation: how the number is built */}
-                    <div className="space-y-1.5">
-                      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    <div className="space-y-2">
+                      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                         {t("Cómo se construye", "How it's built")}
                       </p>
                       {[
@@ -1336,16 +1336,16 @@ function HowItWorksSlider() {
                       ].map((m) => (
                         <div
                           key={m.k}
-                          className={`flex items-center justify-between rounded-xl px-3 py-2 ring-1 ring-border/40 ${
+                          className={`flex items-center justify-between rounded-xl px-4 py-3 ring-1 ring-border/40 ${
                             m.strong ? "bg-kid-mint/8" : "bg-background/60"
                           }`}
                         >
-                          <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-                            <span className="h-1.5 w-1.5 rounded-full" style={{ background: m.c }} />
+                          <span className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <span className="h-2 w-2 rounded-full" style={{ background: m.c }} />
                             {m.k}
                           </span>
                           <span
-                            className={`numeric ${m.strong ? "text-sm font-bold" : "text-sm font-semibold"}`}
+                            className={`numeric ${m.strong ? "text-base font-bold" : "text-base font-semibold"}`}
                             style={m.strong ? { color: m.c } : undefined}
                           >
                             {m.v}
@@ -1355,9 +1355,9 @@ function HowItWorksSlider() {
                     </div>
 
                     {/* Gap to goal */}
-                    <div className="mt-auto flex items-center gap-2 rounded-xl bg-kid-sun/10 px-3 py-2.5 ring-1 ring-kid-sun/25">
-                      <Target className="h-4 w-4 shrink-0 text-kid-sun" />
-                      <p className="text-[11px] leading-tight">
+                    <div className="flex items-center gap-3 rounded-xl bg-kid-sun/10 px-4 py-3.5 ring-1 ring-kid-sun/25">
+                      <Target className="h-5 w-5 shrink-0 text-kid-sun" />
+                      <p className="text-sm leading-tight">
                         <span className="font-semibold text-kid-sun">{t("Faltan 86 €/mes", "86 €/mo to go")}</span>{" "}
                         <span className="text-muted-foreground">{t("para cubrir el objetivo", "to fully cover the goal")}</span>
                       </p>
