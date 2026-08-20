@@ -942,33 +942,42 @@ function HowItWorksSlider() {
                   </>
                 ) : active.id === "chores" ? (
                   <>
-                    <div className="mt-1 h-[150px]">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={choreWeeks} margin={{ top: 8, right: 4, bottom: 0, left: 0 }} barCategoryGap={14}>
-                          <XAxis
-                            dataKey="w"
-                            axisLine={false}
-                            tickLine={false}
-                            tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
-                          />
-                          <Bar dataKey="v" fill="var(--kid-sun)" radius={[6, 6, 0, 0]} isAnimationActive={false} />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-
-                    <div className="mt-3 flex items-center justify-between border-t border-border/40 pt-3 text-sm">
-                      <span className="text-muted-foreground">{t("Completadas", "Completed")}</span>
-                      <span className="numeric font-semibold">
+                    <div className="mt-2 flex flex-col items-center">
+                      <div
+                        className="relative flex h-32 w-32 items-center justify-center rounded-full"
+                        style={{
+                          background:
+                            "conic-gradient(var(--kid-sun) 0% 75%, color-mix(in oklab, var(--kid-sun) 14%, transparent) 75% 100%)",
+                        }}
+                      >
+                        <span className="flex h-24 w-24 flex-col items-center justify-center rounded-full bg-elevated">
+                          <span className="numeric text-2xl font-bold text-kid-sun">75%</span>
+                          <span className="text-[10px] text-muted-foreground">{t("completado", "done")}</span>
+                        </span>
+                      </div>
+                      <p className="mt-3 text-sm font-semibold">
                         3 / 4 {t("esta semana", "this week")}
-                      </span>
+                      </p>
                     </div>
 
-                    <p className="mt-3 text-xs text-muted-foreground">
-                      {t(
-                        "Cada tarea aprobada se reparte sola entre sus bolsillos.",
-                        "Every approved chore splits itself across pockets.",
-                      )}
-                    </p>
+                    <div className="mt-4 space-y-2.5 border-t border-border/40 pt-4">
+                      <p className="text-xs text-muted-foreground">{t("Cómo se reparte lo ganado", "How earnings split")}</p>
+                      {[
+                        { k: t("Ahorrar", "Save"), pct: 40, c: "var(--kid-mint)" },
+                        { k: t("Invertir", "Invest"), pct: 40, c: "var(--kid-sky)" },
+                        { k: t("Gastar", "Spend"), pct: 20, c: "var(--kid-coral)" },
+                      ].map((r) => (
+                        <div key={r.k}>
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-muted-foreground">{r.k}</span>
+                            <span className="numeric font-semibold" style={{ color: r.c }}>{r.pct}%</span>
+                          </div>
+                          <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-background">
+                            <div className="h-full rounded-full" style={{ width: `${r.pct * 2}%`, backgroundColor: r.c }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </>
                 ) : active.id === "dreams" ? (
                   <>
