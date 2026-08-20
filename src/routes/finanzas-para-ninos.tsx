@@ -973,9 +973,8 @@ function HowItWorksSlider() {
       "At €99/mo Sofía reaches 82% of her university goal. Raising it to €185/mo covers it fully.",
     ),
     unis: t(
-      "Con su número podría aplicar hoy a 3 de estas universidades: cubre el 111% de un grado en Barcelona.",
-      "With her number she could already apply to 3 of these universities: it covers 111% of a degree in Barcelona.",
-
+      "Con su número de 122.717 € no le alcanza para ninguna de estas 4 universidades: le faltan entre 3.000 € y 17.000 €.",
+      "With her number of €122,717 she can't afford any of these 4 universities: she's between €3,000 and €17,000 short.",
     ),
     pockets: t(
       "Su bolsillo de gastar lleva 3 semanas intacto: buena señal para subir el de invertir al 45%.",
