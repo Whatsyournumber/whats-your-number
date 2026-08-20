@@ -59,13 +59,13 @@ import { cn } from "@/lib/utils";
 import { useLiveCount, formatCount } from "@/components/live-count";
 import photoMit from "@/assets/uni/us-mit.jpg";
 import photoOxford from "@/assets/uni/uk-oxford.jpg";
-import photoToronto from "@/assets/uni/ca-toronto.jpg";
+import photoIE from "@/assets/uni/es-ie.jpg";
 import photoEth from "@/assets/uni/ch-eth.jpg";
 
 const DEMO_UNI_PHOTOS: Record<string, string> = {
   "us-mit": photoMit,
   "uk-university-of-oxford": photoOxford,
-  "ca-university-of-toronto": photoToronto,
+  "es-ie-university": photoIE,
   "ch-eth-zurich": photoEth,
 };
 
