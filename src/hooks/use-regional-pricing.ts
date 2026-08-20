@@ -53,12 +53,20 @@ export function useRegionalPricing() {
       ? fallbackTier()
       : "standard";
 
+  const currency: DisplayCurrency = serverCountry
+    ? currencyForCountry(serverCountry)
+    : hydrated && /^Europe\//.test(Intl.DateTimeFormat().resolvedOptions().timeZone ?? "")
+      ? "EUR"
+      : "USD";
+
   return {
     tier,
     country: serverCountry,
+    currency,
     prices: TIER_PRICES[tier],
     loading: query.isLoading,
   };
+
 }
 
 export { tierForCountry };
