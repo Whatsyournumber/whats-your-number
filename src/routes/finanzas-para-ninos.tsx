@@ -1059,7 +1059,7 @@ function HowItWorksSlider() {
     numbers: t("Cómo se reparte su dinero", "How their money is split"),
     pockets: t("Cómo se reparte su dinero", "How their money is split"),
     chores: t("Seguimiento de tareas", "Chore tracking"),
-    dreams: t("Sus sueños en marcha", "Their dreams in progress"),
+    dreams: t("Sueños completados", "Completed dreams"),
     grow: t("Proyección de crecimiento", "Growth projection"),
     unis: t("Universidades que podría pagar", "Universities they could afford"),
   };
@@ -1325,58 +1325,55 @@ function HowItWorksSlider() {
 
                   </>
                 ) : active.id === "dreams" ? (
-                  <>
-                    <div className="mt-3 flex flex-col items-center">
-                      <div
-                        className="relative flex h-32 w-32 items-center justify-center rounded-full"
-                        style={{
-                          background:
-                            "conic-gradient(var(--kid-coral) 0% 25%, var(--kid-sun) 25% 33%, var(--kid-mint) 33% 75%, color-mix(in oklab, var(--kid-coral) 14%, transparent) 75% 100%)",
-                        }}
-                      >
-                        <span className="flex h-[88px] w-[88px] flex-col items-center justify-center rounded-full bg-elevated">
-                          <span className="numeric text-xl font-bold text-kid-coral">€315</span>
-                          <span className="text-[10px] text-muted-foreground">{t("ahorrados", "saved")}</span>
-                        </span>
-                      </div>
-                      <p className="mt-2 text-xs text-muted-foreground">
-                        {t("de €1.800 en total", "of €1,800 total")}
+                  <div className="mt-3 flex flex-1 flex-col">
+                    <div className="rounded-2xl bg-background/60 p-4 text-center ring-1 ring-border/50">
+                      <p className="numeric text-3xl font-bold text-kid-mint">3</p>
+                      <p className="mt-1 text-[11px] text-muted-foreground">
+                        {t("sueños ya conseguidos · €465 ahorrados", "dreams achieved · €465 saved")}
                       </p>
                     </div>
 
-                    <div className="mt-4 space-y-2.5">
+                    <div className="mt-4 flex flex-1 flex-col gap-3">
                       {[
-                        { e: "🚲", n: t("Bici nueva", "New bike"), eta: t("3 meses", "3 months"), c: "var(--kid-mint)" },
-                        { e: "🎢", n: t("Viaje a Disney", "Disney trip"), eta: t("2 años", "2 years"), c: "var(--kid-sun)" },
-                        { e: "🎮", n: "Nintendo Switch", eta: t("18 meses", "18 months"), c: "var(--kid-coral)" },
+                        { img: dreamSkates, e: "🛼", n: t("Patines", "Roller skates"), price: "€75", when: t("May 2026", "May 2026") },
+                        { img: dreamBlocks, e: "🧱", n: t("Castillo de bloques", "Block castle"), price: "€90", when: t("Feb 2026", "Feb 2026") },
+                        { img: dreamGuitar, e: "🎸", n: t("Guitarra", "Guitar"), price: "€300", when: t("Nov 2025", "Nov 2025") },
                       ].map((d) => (
-                        <div key={d.n} className="flex items-center gap-2.5 rounded-xl bg-background/60 p-2.5 ring-1 ring-border/40">
-                          <span className="text-lg leading-none">{d.e}</span>
-                          <span className="min-w-0 flex-1 truncate text-xs font-medium">{d.n}</span>
-                          <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
-                            <CalendarCheck className="h-3 w-3" style={{ color: d.c }} />
-                            {d.eta}
-                          </span>
+                        <div
+                          key={d.n}
+                          className="flex items-center gap-3 overflow-hidden rounded-2xl bg-background/60 p-2 ring-1 ring-kid-mint/20"
+                        >
+                          <img
+                            src={d.img}
+                            alt={d.n}
+                            loading="lazy"
+                            width={768}
+                            height={512}
+                            className="h-14 w-16 shrink-0 rounded-xl object-cover"
+                          />
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-xs font-semibold">
+                              {d.e} {d.n}
+                            </p>
+                            <p className="mt-0.5 text-[11px] text-muted-foreground">
+                              {t("Conseguido en", "Achieved in")} {d.when}
+                            </p>
+                          </div>
+                          <div className="flex flex-col items-end gap-1">
+                            <span className="numeric text-xs font-semibold text-kid-mint">{d.price}</span>
+                            <BadgeCheck className="h-4 w-4 text-kid-mint" />
+                          </div>
                         </div>
                       ))}
                     </div>
 
-                    <div className="mt-4 rounded-2xl bg-background/60 p-4 ring-1 ring-border/50">
-                      <div className="flex items-center justify-between text-xs">
-                        <p className="text-muted-foreground">{t("Próximo sueño", "Next dream")}</p>
-                        <span className="numeric font-semibold text-kid-mint">€186 / €300</span>
-                      </div>
-                      <div className="mt-2.5 h-2.5 overflow-hidden rounded-full bg-card">
-                        <div
-                          className="h-full rounded-full"
-                          style={{ width: "62%", background: "linear-gradient(90deg, var(--kid-mint), var(--kid-sky))" }}
-                        />
-                      </div>
-                      <p className="mt-2 text-[11px] text-muted-foreground">
-                        {t("Le faltan €114 para su bici nueva 🚲", "€114 to go for their new bike 🚲")}
-                      </p>
+                    <div className="mt-4 rounded-2xl bg-kid-mint/10 p-3 text-[11px] text-foreground ring-1 ring-kid-mint/20">
+                      {t(
+                        "🎉 Cada sueño cumplido le enseña que ahorrar funciona.",
+                        "🎉 Every dream achieved teaches them that saving works.",
+                      )}
                     </div>
-                  </>
+                  </div>
                 ) : active.id === "grow" ? (
                   <div className="flex flex-1 flex-col justify-between gap-3">
                     {/* Headline */}
