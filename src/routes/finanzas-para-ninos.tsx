@@ -655,7 +655,7 @@ function HowItWorksSlider() {
         <ScreenCard title={t("Mi primer número", "My first number")} accent="var(--kid-sky)">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
-              <img src={faceLaura} alt="" className="h-9 w-9 rounded-full object-cover" />
+              <img src={faceSofia} alt="" className="h-9 w-9 rounded-full object-cover" />
               <div>
                 <p className="text-sm font-medium">{t("Cómo crece mi número", "How my number grows")}</p>
                 <p className="text-[11px] text-muted-foreground">
