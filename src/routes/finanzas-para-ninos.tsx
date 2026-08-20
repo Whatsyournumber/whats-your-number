@@ -349,57 +349,115 @@ function HowItWorksSlider() {
       ),
       visual: (
         <ScreenCard title={t("Mi primer número", "My first number")} accent="var(--kid-sky)">
-          <div className="flex items-center gap-2.5">
-            <img src={faceGirl} alt="" className="h-9 w-9 rounded-full object-cover" />
-            <div>
-              <p className="text-sm font-medium">{t("Hola, Sofía", "Hi, Sofía")}</p>
-              <p className="text-[11px] text-muted-foreground">{t("9 años · ahorra cada semana", "Age 9 · saves every week")}</p>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <img src={faceGirl} alt="" className="h-9 w-9 rounded-full object-cover" />
+              <div>
+                <p className="text-sm font-medium">{t("Cómo crece mi número", "How my number grows")}</p>
+                <p className="text-[11px] text-muted-foreground">
+                  {t(
+                    "Simulación basada en hipótesis de rentabilidad.",
+                    "Simulation based on return assumptions.",
+                  )}
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-3 text-[11px] text-muted-foreground">
+              <span className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-kid-sky" />
+                {t("Con intereses · 7,2%", "With interest · 7.2%")}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-muted-foreground/50" />
+                {t("Lo que ahorró", "What she saved")}
+              </span>
             </div>
           </div>
 
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-2xl bg-elevated/60 p-4 ring-1 ring-border">
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                {t("Su dinero hoy", "Their money today")}
-              </p>
-              <p className="numeric mt-1 text-3xl font-semibold text-kid-sky">€120</p>
-              <p className="mt-1 text-[11px] text-kid-mint">+€6,50 {t("esta semana", "this week")}</p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-[1.1fr_0.9fr_1fr]">
+            <div className="rounded-2xl bg-elevated/60 p-3 ring-1 ring-border">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("Edad", "Age")}</p>
+              <div className="mt-2 flex items-center gap-1.5">
+                {[10, 18, 25, 30].map((a) => (
+                  <span
+                    key={a}
+                    className={`numeric rounded-full px-2.5 py-1 text-xs font-semibold ${
+                      a === 18 ? "bg-kid-sky text-background" : "text-muted-foreground"
+                    }`}
+                  >
+                    {a}
+                  </span>
+                ))}
+              </div>
             </div>
-            <div className="rounded-2xl border border-kid-grape/25 bg-kid-grape/10 p-4">
+            <div className="rounded-2xl bg-elevated/60 p-3 ring-1 ring-border">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{t("Tasa", "Rate")}</p>
+              <span className="numeric mt-2 inline-flex rounded-full bg-kid-sky/15 px-3 py-1 text-xs font-semibold text-kid-sky">
+                S&P 500 · 7,2%
+              </span>
+            </div>
+            <div className="rounded-2xl border border-kid-grape/25 bg-kid-grape/10 p-3">
               <p className="text-[10px] uppercase tracking-wider text-kid-grape">
-                {t("Su número a los 18", "Their number at 18")}
+                {t("A los 18 años", "At age 18")}
               </p>
-              <p className="numeric mt-1 text-3xl font-semibold">€10.668</p>
-              <p className="mt-1 text-[11px] text-muted-foreground">
-                {t("Ahorrando 11,3 € al mes", "Saving €11.3 a month")}
+              <p className="numeric mt-1 text-2xl font-semibold">€10.668</p>
+              <p className="numeric mt-0.5 text-[11px] text-muted-foreground">
+                {t("Ahorrado", "Saved")} €2.442 · {t("Intereses", "Interest")}{" "}
+                <span className="text-kid-mint">€8.226</span>
               </p>
             </div>
           </div>
 
-          <div className="mt-3 rounded-2xl bg-elevated/60 p-4 ring-1 ring-border">
-            <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-              <span>{t("Cómo crece hasta los 18", "How it grows until 18")}</span>
-              <span className="numeric text-kid-sky">11% {t("recorrido", "done")}</span>
-            </div>
-            <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-card">
-              <div className="h-full w-[11%] rounded-full bg-kid-sky" />
-            </div>
-            <div className="mt-1 -mx-1">
-              <MiniArea color="var(--kid-sky)" />
-            </div>
-            <div className="mt-2 grid grid-cols-2 gap-2 text-[11px]">
-              <div className="rounded-xl bg-card px-3 py-2">
-                <span className="text-muted-foreground">{t("Lo que aporta", "What they put in")}</span>
-                <p className="numeric mt-0.5 text-sm font-semibold">€2.442</p>
-              </div>
-              <div className="rounded-xl bg-card px-3 py-2">
-                <span className="text-muted-foreground">{t("Lo que gana el interés", "What interest adds")}</span>
-                <p className="numeric mt-0.5 text-sm font-semibold text-kid-mint">€8.226</p>
-              </div>
-            </div>
+          <div className="mt-3 h-56">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={growCurve} margin={{ top: 8, right: 6, bottom: 0, left: 0 }}>
+                <defs>
+                  <linearGradient id="first-number-area" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--kid-sky)" stopOpacity={0.4} />
+                    <stop offset="100%" stopColor="var(--kid-sky)" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <XAxis
+                  dataKey="x"
+                  ticks={[0, 5, 10, 14, 18]}
+                  tickFormatter={(v: number) => (v === 0 ? t("Hoy", "Today") : `${v}`)}
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="flat"
+                  stroke="var(--muted-foreground)"
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  fill="none"
+                  dot={false}
+                  isAnimationActive={false}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="y"
+                  stroke="var(--kid-sky)"
+                  strokeWidth={2.5}
+                  fill="url(#first-number-area)"
+                  dot={false}
+                  isAnimationActive={false}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="mt-3 rounded-2xl bg-kid-sky/10 px-4 py-2.5 text-[12px] text-foreground ring-1 ring-kid-sky/20">
+            💡{" "}
+            {t(
+              "Con un 7,2% al año, sus intereses suman €8.226 extra.",
+              "At 7.2% a year, her interest adds €8,226 extra.",
+            )}
           </div>
         </ScreenCard>
       ),
+
     },
     {
       id: "pockets",
