@@ -744,8 +744,8 @@ function HowItWorksSlider() {
       "Chores bring in 39% of her money. Adding a €1 chore would add €52 a year.",
     ),
     dreams: t(
-      "Si mueve 5 € del bolsillo de gastar, consigue la bici 6 semanas antes.",
-      "Moving €5 from her spend pocket gets her the bike 6 weeks earlier.",
+      "3 sueños cumplidos este año. Su próximo reto: ahorrar para unos patines.",
+      "3 dreams achieved this year. Her next challenge: saving for roller skates.",
     ),
     badges: t(
       "7 semanas de racha: está en su mejor momento. Un reto nuevo mantiene el impulso.",
