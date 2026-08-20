@@ -51,27 +51,50 @@ export interface PlanPrice {
   yearly: number;
 }
 
-/** Precios visibles en USD por tier. */
+/** Precios visibles por tier (mismo número, la moneda cambia según región). */
 export const TIER_PRICES: Record<PricingTier, { pro: PlanPrice; family: PlanPrice }> = {
   accessible: {
     pro: { monthly: 2.99, yearly: 29 },
-    family: { monthly: 5.99, yearly: 59 },
+    family: { monthly: 5.99, yearly: 53 },
   },
   standard: {
     pro: { monthly: 5.99, yearly: 59 },
-    family: { monthly: 9.99, yearly: 99 },
+    family: { monthly: 9.99, yearly: 89 },
   },
   premium: {
     pro: { monthly: 8.99, yearly: 89 },
-    family: { monthly: 12.99, yearly: 129 },
+    family: { monthly: 12.99, yearly: 116 },
   },
 };
 
+export type DisplayCurrency = "USD" | "EUR";
+
+/** Europa (incl. no-UE): mostramos precios en EUR. */
+const EUROPE_COUNTRIES = new Set<string>([
+  "ES", "PT", "IT", "GR", "CY", "MT", "PL", "CZ", "SK", "HU", "RO", "BG", "HR",
+  "SI", "EE", "LV", "LT", "RS", "BA", "MK", "AL", "ME", "UA", "MD",
+  "FR", "DE", "BE", "NL", "LU", "AT", "IE", "CH", "NO", "SE", "DK", "FI", "IS",
+  "GB", "LI", "MC", "AD", "SM", "VA",
+]);
+
+export function currencyForCountry(country: string | null | undefined): DisplayCurrency {
+  if (!country) return "USD";
+  return EUROPE_COUNTRIES.has(country.trim().toUpperCase()) ? "EUR" : "USD";
+}
+
+const SYMBOL: Record<DisplayCurrency, string> = { USD: "$", EUR: "€" };
+
+export function formatMoney(amount: number, currency: DisplayCurrency = "USD"): string {
+  const s = SYMBOL[currency];
+  return Number.isInteger(amount) ? `${s}${amount}` : `${s}${amount.toFixed(2)}`;
+}
+
 export function formatUsd(amount: number): string {
-  return Number.isInteger(amount) ? `$${amount}` : `$${amount.toFixed(2)}`;
+  return formatMoney(amount, "USD");
 }
 
 /** Precio mensual equivalente del plan anual, ej. 29/12 = 2.42 */
-export function monthlyEquivalent(yearly: number): string {
-  return `$${(yearly / 12).toFixed(2)}`;
+export function monthlyEquivalent(yearly: number, currency: DisplayCurrency = "USD"): string {
+  return `${SYMBOL[currency]}${(yearly / 12).toFixed(2)}`;
 }
+
