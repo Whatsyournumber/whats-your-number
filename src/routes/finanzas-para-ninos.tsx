@@ -1233,14 +1233,6 @@ const choreTrack: { e: string; k: string; en: string; done: boolean }[] = [
   { e: "📚", k: "Leer 20 minutos", en: "Read 20 minutes", done: false },
 ];
 
-const choreWeeks = [
-  { w: "S1", v: 4.5 },
-  { w: "S2", v: 5 },
-  { w: "S3", v: 6 },
-  { w: "S4", v: 5.5 },
-  { w: "S5", v: 6.5 },
-];
-
 const planBars = [4, 7, 10, 13, 17, 21, 26, 32, 39, 47, 56, 66, 78, 92].map((v, i) => ({
   x: i,
   v,
