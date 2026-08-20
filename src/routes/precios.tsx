@@ -91,7 +91,7 @@ function Pricing() {
       features: [
         t("Todo lo de Free", "Everything in Free"),
         t("Cuentas y bancos ilimitados", "Unlimited accounts and banks"),
-        t("Importación PDF y CSV ilimitada", "Unlimited PDF and CSV imports"),
+        t("Importación PDF y CSV ilimitada en 30s", "Unlimited PDF and CSV imports in 30s"),
         t("AI Advisor: pregúntale lo que sea", "AI Advisor: ask anything"),
         t("Recomendaciones de ahorro inteligentes", "Smart savings recommendations"),
         t("Multi-moneda avanzada EUR/USD/GBP", "Advanced multi-currency EUR/USD/GBP"),
