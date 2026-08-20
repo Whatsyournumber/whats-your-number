@@ -515,98 +515,48 @@ function HowItWorksSlider() {
       ),
       visual: (
         <ScreenCard title={t("Mis tareas", "My chores")} accent="var(--kid-sun)">
-          <div className="grid grid-cols-3 gap-2.5">
-            {[
-              { e: "🐷", k: t("Ganado este mes", "Earned this month"), v: "€26,00", c: "var(--kid-sun)" },
-              { e: "✅", k: t("Tareas hechas", "Chores done"), v: "18", c: "var(--kid-mint)" },
-              { e: "🔥", k: t("Racha", "Streak"), v: t("7 sem.", "7 wks"), c: "var(--kid-coral)" },
-            ].map((s) => (
-              <div
-                key={s.k}
-                className="rounded-2xl bg-elevated p-3 ring-1 ring-border/60"
-                style={{ boxShadow: `inset 0 -2px 0 color-mix(in oklab, ${s.c} 35%, transparent)` }}
-              >
-                <span className="text-xl leading-none">{s.e}</span>
-                <p className="numeric mt-1.5 text-lg font-semibold" style={{ color: s.c }}>
-                  {s.v}
-                </p>
-                <p className="truncate text-[11px] text-muted-foreground">{s.k}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-4 flex items-center justify-between">
+          <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">{t("Tareas de esta semana", "This week's chores")}</p>
-            <span className="numeric rounded-full bg-kid-sun/12 px-3 py-1 text-xs font-semibold text-kid-sun">
-              +€6,50 {t("esta semana", "this week")}
-            </span>
+            <span className="numeric text-sm font-semibold text-kid-sun">+€6,50</span>
           </div>
 
-          <div className="mt-3 space-y-2.5">
+          <div className="mt-4 space-y-1">
             {[
-              { e: "🛏️", k: t("Hacer mi cama", "Make my bed"), s: t("cada día", "every day"), v: "+€0,50", ok: true },
-              { e: "🐶", k: t("Pasear al perro", "Walk the dog"), s: t("semanal", "weekly"), v: "+€2,00", ok: true },
-              { e: "🧺", k: t("Ordenar mi habitación", "Tidy my room"), s: t("semanal", "weekly"), v: "+€1,00", ok: false },
-              { e: "📚", k: t("Leer 20 minutos", "Read 20 minutes"), s: t("cada día", "every day"), v: "+€0,50", ok: false },
+              { e: "🛏️", k: t("Hacer mi cama", "Make my bed"), v: "+€0,50", ok: true },
+              { e: "🐶", k: t("Pasear al perro", "Walk the dog"), v: "+€2,00", ok: true },
+              { e: "🧺", k: t("Ordenar mi habitación", "Tidy my room"), v: "+€1,00", ok: false },
+              { e: "📚", k: t("Leer 20 minutos", "Read 20 minutes"), v: "+€0,50", ok: false },
             ].map((r) => (
-              <div
-                key={r.k}
-                className="flex items-center gap-3 rounded-2xl bg-elevated px-3.5 py-2.5 ring-1 ring-border/50"
-              >
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-card text-lg">
-                  {r.e}
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-medium">{r.k}</span>
-                  <span className="block text-[11px] text-muted-foreground">{r.s}</span>
-                </span>
-                <span className="numeric text-sm font-semibold text-kid-sun">{r.v}</span>
+              <div key={r.k} className="flex items-center gap-3 rounded-xl px-2 py-2.5">
+                <span className="text-lg leading-none">{r.e}</span>
+                <span className="min-w-0 flex-1 truncate text-sm font-medium">{r.k}</span>
+                <span className="numeric text-sm text-muted-foreground">{r.v}</span>
                 <span
                   className={cn(
-                    "flex h-7 w-7 shrink-0 items-center justify-center rounded-full",
+                    "flex h-6 w-6 shrink-0 items-center justify-center rounded-full",
                     r.ok ? "bg-kid-mint text-background" : "bg-card ring-1 ring-border",
                   )}
                 >
-                  <BadgeCheck className={cn("h-4 w-4", r.ok ? "" : "text-muted-foreground/40")} />
+                  <BadgeCheck className={cn("h-3.5 w-3.5", r.ok ? "" : "text-muted-foreground/40")} />
                 </span>
               </div>
             ))}
           </div>
 
-          <div className="mt-3 rounded-2xl bg-kid-sun/8 p-3 ring-1 ring-kid-sun/20">
-            <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-              <span>🔥 {t("Racha de esta semana", "This week's streak")}</span>
-              <span className="numeric text-kid-sun">{t("4 días seguidos", "4 days in a row")}</span>
-            </div>
-            <div className="mt-2 flex items-center justify-between gap-1.5">
-              {[
-                { d: t("L", "M"), ok: true },
-                { d: t("M", "T"), ok: true },
-                { d: t("X", "W"), ok: true },
-                { d: t("J", "T"), ok: true },
-                { d: t("V", "F"), ok: false },
-                { d: t("S", "S"), ok: false },
-                { d: t("D", "S"), ok: false },
-              ].map((d, idx) => (
-                <span key={idx} className="flex flex-1 flex-col items-center gap-1">
-                  <span
-                    className={cn(
-                      "flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-semibold",
-                      d.ok ? "bg-kid-mint text-background" : "bg-card text-muted-foreground/50 ring-1 ring-border",
-                    )}
-                  >
-                    {d.ok ? "✓" : ""}
-                  </span>
-                  <span className="text-[10px] text-muted-foreground">{d.d}</span>
-                </span>
+          <div className="mt-4 flex items-center gap-3 border-t border-border/50 pt-3">
+            <span className="text-sm">🔥</span>
+            <span className="text-sm text-muted-foreground">{t("Racha de 4 días", "4-day streak")}</span>
+            <span className="ml-auto flex gap-1">
+              {Array.from({ length: 7 }).map((_, idx) => (
+                <span
+                  key={idx}
+                  className={cn(
+                    "h-1.5 w-1.5 rounded-full",
+                    idx < 4 ? "bg-kid-mint" : "bg-border",
+                  )}
+                />
               ))}
-            </div>
-            <p className="mt-2 text-[11px] text-muted-foreground">
-              {t(
-                "Cada tarea aprobada se reparte sola: 40% ahorrar, 40% invertir, 20% gastar.",
-                "Every approved chore splits itself: 40% save, 40% invest, 20% spend.",
-              )}
-            </p>
+            </span>
           </div>
         </ScreenCard>
       ),
