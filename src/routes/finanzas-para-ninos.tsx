@@ -2462,7 +2462,6 @@ function FamilyProfiles() {
   const members = [
     { name: "Carlos", role: t("Padre", "Dad"), photo: faceDad, active: false },
     { name: "María", role: t("Madre", "Mom"), photo: faceMom, active: false },
-    ...
     { name: "Sofía", role: t("13 años", "Age 13"), photo: faceSofia, active: true },
 
   ];
