@@ -1216,7 +1216,7 @@ function HowItWorksSlider() {
               </div>
             </div>
 
-            <div className="flex min-w-0 flex-col gap-4">
+            <div className="hidden min-w-0 flex-col gap-4 lg:flex">
               <div className="flex flex-1 flex-col justify-between rounded-2xl bg-elevated/60 p-5 ring-1 ring-border">
                 <p className="text-sm font-semibold">{sideTitle[active.id] ?? t("Resumen", "Summary")}</p>
 
