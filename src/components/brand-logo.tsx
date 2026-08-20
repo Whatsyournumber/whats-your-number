@@ -1,6 +1,4 @@
 import { cn } from "@/lib/utils";
-import brandLighthouse from "@/assets/brand-lighthouse-official.png.asset.json";
-
 
 export function BrandMark({
   className,
@@ -11,14 +9,14 @@ export function BrandMark({
   return (
     <span className={cn("relative inline-flex items-center justify-center", className)}>
       <img
-        src={brandLighthouse.url}
+        src="/brand-lighthouse.svg"
         alt="Logo de WhatsYournumber: faro verde que guía tus finanzas"
         className="relative h-full w-full object-contain"
-        loading="lazy"
       />
     </span>
   );
 }
+
 
 export function BrandLogo({
   className,
