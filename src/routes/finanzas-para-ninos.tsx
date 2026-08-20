@@ -965,7 +965,7 @@ function HowItWorksSlider() {
                   </>
                 ) : active.id === "chores" ? (
                   <>
-                    <div className="mt-1 h-[190px]">
+                    <div className="mt-1 h-[170px]">
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={choreWeeks} margin={{ top: 8, right: 4, bottom: 0, left: 0 }} barCategoryGap={12}>
                           <XAxis
@@ -978,25 +978,49 @@ function HowItWorksSlider() {
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
-                    <div className="mt-2 space-y-2.5">
+
+                    <div className="mt-2 flex items-center gap-3 rounded-2xl bg-background/60 p-3">
+                      <div
+                        className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-full"
+                        style={{
+                          background:
+                            "conic-gradient(var(--kid-mint) 0% 75%, color-mix(in oklab, var(--kid-mint) 15%, transparent) 75% 100%)",
+                        }}
+                      >
+                        <span className="numeric flex h-12 w-12 items-center justify-center rounded-full bg-elevated text-sm font-semibold">
+                          75%
+                        </span>
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold">{t("Tareas completadas", "Chores completed")}</p>
+                        <p className="numeric text-xs text-muted-foreground">
+                          3 / 4 {t("esta semana", "this week")}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-2 space-y-2">
                       {[
-                        { k: t("Tareas aprobadas", "Approved chores"), v: "18", c: "var(--kid-sun)" },
-                        { k: t("Racha", "Streak"), v: t("7 semanas", "7 weeks"), c: "var(--kid-mint)" },
-                        { k: t("Media semanal", "Weekly average"), v: "€5,50", c: "var(--kid-sky)" },
+                        { e: "⭐", k: t("Tareas aprobadas", "Approved chores"), v: "18" },
+                        { e: "🔥", k: t("Racha", "Streak"), v: t("7 semanas", "7 weeks") },
+                        { e: "💰", k: t("Media semanal", "Weekly average"), v: "€5,50" },
                       ].map((r) => (
                         <div key={r.k} className="flex items-center gap-2 text-sm">
-                          <span className="h-3 w-3 shrink-0 rounded-full" style={{ background: r.c }} />
+                          <span className="text-base leading-none">{r.e}</span>
                           <span className="truncate text-muted-foreground">{r.k}</span>
                           <span className="numeric ml-auto font-semibold">{r.v}</span>
                         </div>
                       ))}
                     </div>
-                    <p className="mt-2 text-xs text-muted-foreground">
+
+                    <div className="mt-2 flex items-center gap-2 rounded-xl bg-kid-sun/10 px-3 py-2 text-[11px] text-foreground ring-1 ring-kid-sun/20">
+                      <span className="text-sm">🏅</span>
                       {t(
-                        "Cada tarea se reparte sola: 40/40/20.",
-                        "Every chore splits itself: 40/40/20.",
+                        "Le faltan 2 tareas para la medalla \"Súper ayudante\".",
+                        "2 more chores to unlock the \"Super helper\" badge.",
                       )}
-                    </p>
+                    </div>
+
                   </>
                 ) : active.id === "dreams" ? (
                   <>
