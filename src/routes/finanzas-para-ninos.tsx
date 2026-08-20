@@ -1472,6 +1472,8 @@ function HowItWorksSlider() {
                       { n: "Seoul Nat. University", f: "🇰🇷", city: "Seúl", cost: 18600 },
                       { n: "IE University", f: "🇪🇸", city: "Madrid", cost: 24800 },
                       { n: "MIT", f: "🇺🇸", city: "Boston", cost: 82500 },
+                      { n: "Harvard University", f: "🇺🇸", city: "Cambridge", cost: 132200 },
+                      { n: "Stanford University", f: "🇺🇸", city: "Palo Alto", cost: 139800 },
                     ].map((u) => {
                       const pct = Math.round((uniNumber / u.cost) * 100);
                       return {
