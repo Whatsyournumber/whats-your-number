@@ -1549,11 +1549,11 @@ function GrowsWithThem() {
       imageAlt: t("Bebé", "Baby"),
       overlay: (
         <div className="rounded-2xl border border-white/10 bg-[color-mix(in_oklab,var(--color-card)_88%,black)] p-4 shadow-[0_18px_40px_-12px_rgba(0,0,0,0.8)] backdrop-blur-xl">
-          <p className="flex items-center gap-1 text-xs font-semibold">
-            {t("El futuro de Sofía", "Sofía's future")} <Star className="h-3 w-3 fill-kid-sun text-kid-sun" />
+          <p className="flex items-center gap-1 whitespace-nowrap text-xs font-semibold">
+            {t("El futuro de Sofía", "Sofía's future")} <Star className="h-3 w-3 shrink-0 fill-kid-sun text-kid-sun" />
           </p>
-          <p className="mt-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-            {t("Patrimonio a los 18 años", "Wealth projected at 18")}
+          <p className="mt-1.5 whitespace-nowrap text-[10px] uppercase tracking-wider text-muted-foreground">
+            {t("Patrimonio a los 18a", "Wealth at 18")}
           </p>
           <p className="numeric text-xl font-semibold" style={{ color: "var(--kid-grape)" }}>
             $96,400
