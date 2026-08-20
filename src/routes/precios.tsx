@@ -12,6 +12,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { useT } from "@/hooks/use-language";
 import { getPendingCheckoutPlan, setPendingCheckoutPlan } from "@/lib/pending-checkout";
+import { useRegionalPricing } from "@/hooks/use-regional-pricing";
+import { formatUsd, monthlyEquivalent } from "@/lib/pricing-tiers";
 import { clearPendingDiscount, getPendingDiscount, type PendingDiscount } from "@/lib/pending-discount";
 
 
@@ -36,10 +38,6 @@ export const Route = createFileRoute("/precios")({
   component: Pricing,
 });
 
-function yearlyTotal(monthly: number, discount: number) {
-  return Math.round(monthly * 12 * (1 - discount));
-}
-
 function Pricing() {
   const t = useT();
   const { user } = useAuth();
@@ -48,6 +46,7 @@ function Pricing() {
   const { openCheckout, loading } = usePaddleCheckout();
   const resumedCheckout = useRef(false);
   const [discount, setDiscount] = useState<PendingDiscount | null>(null);
+  const { prices } = useRegionalPricing();
 
   useEffect(() => {
     setDiscount(getPendingDiscount());
@@ -61,7 +60,6 @@ function Pricing() {
       name: "Free",
       monthlyPrice: 0,
       yearlyPrice: 0,
-      yearlyDiscount: 0,
       priceId: null,
       desc: t(
         "Descubre tu número en 30 segundos y ordena tus finanzas básicas.",
@@ -83,9 +81,8 @@ function Pricing() {
     },
     {
       name: "Pro",
-      monthlyPrice: 7,
-      yearlyPrice: 60,
-      yearlyDiscount: 1 - 60 / (7 * 12),
+      monthlyPrice: prices.pro.monthly,
+      yearlyPrice: prices.pro.yearly,
       priceId: isYearly ? "pro_yearly" : "pro_monthly",
       desc: t(
         "Todo el sistema financiero con IA ilimitada para acelerar tu libertad.",
@@ -108,9 +105,8 @@ function Pricing() {
     },
     {
       name: "Familiar",
-      monthlyPrice: 19,
-      yearlyPrice: yearlyTotal(19, 0.3),
-      yearlyDiscount: 0.3,
+      monthlyPrice: prices.family.monthly,
+      yearlyPrice: prices.family.yearly,
       priceId: isYearly ? "patrimonio_yearly" : "patrimonio_monthly",
       desc: t(
         "Para familias que quieren ordenar su patrimonio y construir el futuro financiero de sus hijos.",
@@ -263,13 +259,13 @@ function Pricing() {
                 billing === "yearly" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              {t("Anual", "Yearly")}
+              {t("Anual · 2 meses gratis", "Yearly · 2 months free")}
             </button>
           </div>
           <p className="mt-2 text-xs text-muted-foreground">
             {t(
-              "El plan anual se factura en un solo pago y ahorra 2 meses al año.",
-              "The yearly plan is billed in one payment and saves 2 months per year.",
+              "El plan anual se factura en un solo pago: pagas 10 meses y usas 12.",
+              "The yearly plan is billed in one payment: pay for 10 months, use 12.",
             )}
           </p>
         </section>
@@ -278,7 +274,7 @@ function Pricing() {
           {plans.map((plan) => {
             const price = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
             const period = isYearly ? t("/año", "/year") : t("/mes", "/mo");
-            const equivalentMonthly = isYearly && plan.monthlyPrice > 0 ? Math.round(plan.yearlyPrice / 12) : null;
+            const equivalentMonthly = isYearly && plan.monthlyPrice > 0 ? monthlyEquivalent(plan.yearlyPrice) : null;
 
             return (
               <div
@@ -294,19 +290,19 @@ function Pricing() {
                 )}
                 <div className="flex items-start justify-between gap-2">
                   <h2 className="text-sm font-semibold">{plan.name}</h2>
-                  {isYearly && plan.yearlyDiscount > 0 && (
+                  {isYearly && plan.monthlyPrice > 0 && (
                     <span className="rounded-full border border-positive/30 bg-positive/10 px-2 py-0.5 text-[10px] font-semibold text-positive">
-                      {t(`Ahorras ${Math.round(plan.yearlyDiscount * 100)}%`, `Save ${Math.round(plan.yearlyDiscount * 100)}%`)}
+                      {t("2 meses gratis", "2 months free")}
                     </span>
                   )}
                 </div>
                 <div className="mt-3 flex items-end gap-1">
-                  <span className="numeric text-4xl font-semibold tracking-tight">${price}</span>
+                  <span className="numeric text-4xl font-semibold tracking-tight">{formatUsd(price)}</span>
                   <span className="pb-1 text-xs text-muted-foreground">{period}</span>
                 </div>
                 {equivalentMonthly && (
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {t("Equivale a ${{month}}/mes", "Equals ${{month}}/month").replace("{{month}}", String(equivalentMonthly))}
+                    {t("Equivale a {{month}}/mes", "Equals {{month}}/month").replace("{{month}}", equivalentMonthly)}
                   </p>
                 )}
                 <p className="mt-2 text-sm text-muted-foreground">{plan.desc}</p>
