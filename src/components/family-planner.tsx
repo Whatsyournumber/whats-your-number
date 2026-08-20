@@ -300,6 +300,14 @@ export function FamilyPlanner({
   const [target, setTarget] = useState(150000);
   const [targetAge, setTargetAge] = useState(Math.round(defaultTargetAge) || 18);
   const [showPicks, setShowPicks] = useState(false);
+  const { live, updatedAt } = useIndexReturns();
+
+  // Vehículos con la rentabilidad real de los índices (CAGR 10 años, refrescado en vivo).
+  const vehicles = useMemo(
+    () => VEHICLES.map((v) => (live[v.key] ? { ...v, rate: live[v.key]!.rate, isLive: true } : { ...v, isLive: false })),
+    [live],
+  );
+
   const [pick, setPick] = useState(
     VEHICLES.find((v) => Math.abs(v.rate - defaultRate) <= 1)?.key ?? "sp500",
   );
@@ -314,12 +322,20 @@ export function FamilyPlanner({
 
 
 
-  const vehicle = VEHICLES.find((v) => v.key === pick) ?? VEHICLES[0]!;
-  // Si la tasa guardada no coincide con ningún preset, respetamos la guardada.
-  const exactPreset = VEHICLES.find((v) => v.rate === Math.round(defaultRate));
+  const vehicle = vehicles.find((v) => v.key === pick) ?? vehicles[0]!;
+  // Con datos en vivo mandan los índices reales; si no, respetamos la tasa guardada.
+  const exactPreset = vehicles.find((v) => v.rate === Math.round(defaultRate));
   const [rateTouched, setRateTouched] = useState(false);
-  const rate = rateTouched || exactPreset ? vehicle.rate : Math.round(defaultRate);
+  const rate = vehicle.isLive || rateTouched || exactPreset ? vehicle.rate : Math.round(defaultRate);
   const vehicleName = lang === "en" ? vehicle.nameEn : vehicle.name;
+  const liveNow = live[vehicle.key];
+  const liveTime = updatedAt
+    ? new Date(updatedAt).toLocaleTimeString(lang === "en" ? "en-US" : "es-ES", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : null;
+
 
   // Publica el plan (con debounce) SOLO cuando el padre cambia algo de verdad.
   const initialPlanRef = useRef<string | null>(null);
