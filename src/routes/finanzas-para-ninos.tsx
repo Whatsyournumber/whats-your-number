@@ -2339,7 +2339,7 @@ function GrowsWithThem() {
       {/* Timeline */}
       <div className="relative mx-auto mt-10 max-w-2xl">
         <div
-          className="absolute left-0 right-0 top-5 h-0.5 hidden sm:block"
+          className="absolute left-0 right-0 top-5 h-0.5 block"
           style={{ background: "linear-gradient(90deg, var(--kid-grape), var(--kid-mint), var(--kid-sky))", opacity: 0.35 }}
         />
         <div className="relative flex items-center justify-between">
