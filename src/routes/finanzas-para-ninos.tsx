@@ -47,6 +47,12 @@ import faceMom from "@/assets/kid-face-mom.jpg";
 import faceGirl from "@/assets/kid-face-girl.jpg";
 import bikeAsset from "@/assets/kid-bike.png.asset.json";
 import faceBoy from "@/assets/kid-face-boy.jpg";
+import dreamBike from "@/assets/dream-bike.jpg";
+import dreamConsole from "@/assets/dream-console.jpg";
+import dreamPark from "@/assets/dream-park.jpg";
+import dreamSkates from "@/assets/dream-skates.jpg";
+import dreamBlocks from "@/assets/dream-blocks.jpg";
+import dreamGuitar from "@/assets/dream-guitar.jpg";
 import avatarFaces from "@/assets/kids-avatars-three.png";
 import stageBaby from "@/assets/kid-stage-baby.jpg";
 import stageBoy from "@/assets/kid-stage-boy.jpg";
@@ -769,53 +775,68 @@ function HowItWorksSlider() {
       ),
       visual: (
         <ScreenCard title={t("Mis sueños activos", "My active dreams")} accent="var(--kid-coral)">
-          <div className="space-y-4">
+          <div className="space-y-3.5">
             {[
               {
                 e: "🚲",
+                img: dreamBike,
                 name: t("Bici nueva", "New bike"),
                 have: "€186",
                 goal: "€300",
                 missing: "€114",
                 pct: 62,
                 date: t("Llegará el 12 dic 2026", "Arrives Dec 12, 2026"),
-                eta: t("en 3 meses", "in 3 months"),
                 c: "var(--kid-mint)",
               },
               {
                 e: "🎮",
+                img: dreamConsole,
                 name: t("Nintendo Switch", "Nintendo Switch"),
                 have: "€9",
                 goal: "€300",
                 missing: "€291",
                 pct: 3,
                 date: t("Llegará el 8 mar 2027", "Arrives Mar 8, 2027"),
-                eta: t("en 18 meses", "in 18 months"),
                 c: "var(--kid-coral)",
               },
               {
                 e: "🎢",
+                img: dreamPark,
                 name: t("Viaje a Disney", "Disney trip"),
                 have: "€120",
                 goal: "€1.200",
                 missing: "€1.080",
                 pct: 10,
                 date: t("Llegará el 20 ago 2028", "Arrives Aug 20, 2028"),
-                eta: t("en 2 años", "in 2 years"),
                 c: "var(--kid-sun)",
               },
             ].map((d) => (
-              <div key={d.name} className="rounded-2xl bg-elevated/70 p-4 ring-1 ring-border/50">
-                <div className="flex items-start gap-3.5">
-                  <div
-                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-2xl"
-                    style={{ backgroundColor: `color-mix(in oklab, ${d.c} 12%, transparent)` }}
-                  >
-                    {d.e}
+              <div
+                key={d.name}
+                className="overflow-hidden rounded-2xl bg-elevated/70 ring-1 ring-border/50"
+              >
+                <div className="flex items-stretch gap-0">
+                  <div className="relative h-[120px] w-[140px] shrink-0 overflow-hidden">
+                    <img
+                      src={d.img}
+                      alt={d.name}
+                      loading="lazy"
+                      width={768}
+                      height={512}
+                      className="h-full w-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent to-elevated/80" />
+                    <span
+                      className="absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-xl text-sm backdrop-blur-sm"
+                      style={{ backgroundColor: `color-mix(in oklab, ${d.c} 30%, transparent)` }}
+                    >
+                      {d.e}
+                    </span>
                   </div>
-                  <div className="min-w-0 flex-1">
+
+                  <div className="min-w-0 flex-1 p-3.5">
                     <div className="flex items-center justify-between">
-                      <p className="text-sm font-semibold">{d.name}</p>
+                      <p className="truncate text-sm font-semibold">{d.name}</p>
                       <span className="numeric text-xs text-muted-foreground">{d.goal}</span>
                     </div>
                     <div className="mt-0.5 flex items-center justify-between text-[11px]">
@@ -826,32 +847,32 @@ function HowItWorksSlider() {
                         {t("Te faltan", "Missing")} <span className="numeric font-medium">{d.missing}</span>
                       </span>
                     </div>
-                  </div>
-                </div>
 
-                <div className="mt-3 flex items-center gap-3">
-                  <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-card">
-                    <div
-                      className="h-full rounded-full transition-all"
-                      style={{ width: `${Math.max(d.pct, 2)}%`, background: `linear-gradient(90deg, ${d.c}, color-mix(in oklab, ${d.c} 60%, white))` }}
-                    />
-                  </div>
-                  <span className="numeric text-xs font-bold" style={{ color: d.c }}>{d.pct}%</span>
-                </div>
+                    <div className="mt-2.5 flex items-center gap-3">
+                      <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-card">
+                        <div
+                          className="h-full rounded-full transition-all"
+                          style={{ width: `${Math.max(d.pct, 2)}%`, background: `linear-gradient(90deg, ${d.c}, color-mix(in oklab, ${d.c} 60%, white))` }}
+                        />
+                      </div>
+                      <span className="numeric text-xs font-bold" style={{ color: d.c }}>{d.pct}%</span>
+                    </div>
 
-                <div className="mt-3 flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-                    <CalendarCheck className="h-3.5 w-3.5" style={{ color: d.c }} />
-                    <span>{d.date}</span>
+                    <div className="mt-2.5 flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                        <CalendarCheck className="h-3.5 w-3.5" style={{ color: d.c }} />
+                        <span>{d.date}</span>
+                      </div>
+                      <button
+                        type="button"
+                        className="flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-semibold text-background transition-transform hover:scale-105"
+                        style={{ backgroundColor: d.c }}
+                      >
+                        <Rocket className="h-3 w-3" />
+                        {t("Acelerar", "Accelerate")}
+                      </button>
+                    </div>
                   </div>
-                  <button
-                    type="button"
-                    className="flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-semibold text-background transition-transform hover:scale-105"
-                    style={{ backgroundColor: d.c }}
-                  >
-                    <Rocket className="h-3 w-3" />
-                    {t("Acelerar", "Accelerate")}
-                  </button>
                 </div>
               </div>
             ))}
@@ -1038,7 +1059,7 @@ function HowItWorksSlider() {
     numbers: t("Cómo se reparte su dinero", "How their money is split"),
     pockets: t("Cómo se reparte su dinero", "How their money is split"),
     chores: t("Seguimiento de tareas", "Chore tracking"),
-    dreams: t("Sus sueños en marcha", "Their dreams in progress"),
+    dreams: t("Sueños completados", "Completed dreams"),
     grow: t("Proyección de crecimiento", "Growth projection"),
     unis: t("Universidades que podría pagar", "Universities they could afford"),
   };
@@ -1304,58 +1325,55 @@ function HowItWorksSlider() {
 
                   </>
                 ) : active.id === "dreams" ? (
-                  <>
-                    <div className="mt-3 flex flex-col items-center">
-                      <div
-                        className="relative flex h-32 w-32 items-center justify-center rounded-full"
-                        style={{
-                          background:
-                            "conic-gradient(var(--kid-coral) 0% 25%, var(--kid-sun) 25% 33%, var(--kid-mint) 33% 75%, color-mix(in oklab, var(--kid-coral) 14%, transparent) 75% 100%)",
-                        }}
-                      >
-                        <span className="flex h-[88px] w-[88px] flex-col items-center justify-center rounded-full bg-elevated">
-                          <span className="numeric text-xl font-bold text-kid-coral">€315</span>
-                          <span className="text-[10px] text-muted-foreground">{t("ahorrados", "saved")}</span>
-                        </span>
-                      </div>
-                      <p className="mt-2 text-xs text-muted-foreground">
-                        {t("de €1.800 en total", "of €1,800 total")}
+                  <div className="mt-3 flex flex-1 flex-col">
+                    <div className="rounded-2xl bg-background/60 p-4 text-center ring-1 ring-border/50">
+                      <p className="numeric text-3xl font-bold text-kid-mint">3</p>
+                      <p className="mt-1 text-[11px] text-muted-foreground">
+                        {t("sueños ya conseguidos · €465 ahorrados", "dreams achieved · €465 saved")}
                       </p>
                     </div>
 
-                    <div className="mt-4 space-y-2.5">
+                    <div className="mt-4 flex flex-1 flex-col gap-3">
                       {[
-                        { e: "🚲", n: t("Bici nueva", "New bike"), eta: t("3 meses", "3 months"), c: "var(--kid-mint)" },
-                        { e: "🎢", n: t("Viaje a Disney", "Disney trip"), eta: t("2 años", "2 years"), c: "var(--kid-sun)" },
-                        { e: "🎮", n: "Nintendo Switch", eta: t("18 meses", "18 months"), c: "var(--kid-coral)" },
+                        { img: dreamSkates, e: "🛼", n: t("Patines", "Roller skates"), price: "€75", when: t("May 2026", "May 2026") },
+                        { img: dreamBlocks, e: "🧱", n: t("Castillo de bloques", "Block castle"), price: "€90", when: t("Feb 2026", "Feb 2026") },
+                        { img: dreamGuitar, e: "🎸", n: t("Guitarra", "Guitar"), price: "€300", when: t("Nov 2025", "Nov 2025") },
                       ].map((d) => (
-                        <div key={d.n} className="flex items-center gap-2.5 rounded-xl bg-background/60 p-2.5 ring-1 ring-border/40">
-                          <span className="text-lg leading-none">{d.e}</span>
-                          <span className="min-w-0 flex-1 truncate text-xs font-medium">{d.n}</span>
-                          <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
-                            <CalendarCheck className="h-3 w-3" style={{ color: d.c }} />
-                            {d.eta}
-                          </span>
+                        <div
+                          key={d.n}
+                          className="flex items-center gap-3 overflow-hidden rounded-2xl bg-background/60 p-2 ring-1 ring-kid-mint/20"
+                        >
+                          <img
+                            src={d.img}
+                            alt={d.n}
+                            loading="lazy"
+                            width={768}
+                            height={512}
+                            className="h-14 w-16 shrink-0 rounded-xl object-cover"
+                          />
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-xs font-semibold">
+                              {d.e} {d.n}
+                            </p>
+                            <p className="mt-0.5 text-[11px] text-muted-foreground">
+                              {t("Conseguido en", "Achieved in")} {d.when}
+                            </p>
+                          </div>
+                          <div className="flex flex-col items-end gap-1">
+                            <span className="numeric text-xs font-semibold text-kid-mint">{d.price}</span>
+                            <BadgeCheck className="h-4 w-4 text-kid-mint" />
+                          </div>
                         </div>
                       ))}
                     </div>
 
-                    <div className="mt-4 rounded-2xl bg-background/60 p-4 ring-1 ring-border/50">
-                      <div className="flex items-center justify-between text-xs">
-                        <p className="text-muted-foreground">{t("Próximo sueño", "Next dream")}</p>
-                        <span className="numeric font-semibold text-kid-mint">€186 / €300</span>
-                      </div>
-                      <div className="mt-2.5 h-2.5 overflow-hidden rounded-full bg-card">
-                        <div
-                          className="h-full rounded-full"
-                          style={{ width: "62%", background: "linear-gradient(90deg, var(--kid-mint), var(--kid-sky))" }}
-                        />
-                      </div>
-                      <p className="mt-2 text-[11px] text-muted-foreground">
-                        {t("Le faltan €114 para su bici nueva 🚲", "€114 to go for their new bike 🚲")}
-                      </p>
+                    <div className="mt-4 rounded-2xl bg-kid-mint/10 p-3 text-[11px] text-foreground ring-1 ring-kid-mint/20">
+                      {t(
+                        "🎉 Cada sueño cumplido le enseña que ahorrar funciona.",
+                        "🎉 Every dream achieved teaches them that saving works.",
+                      )}
                     </div>
-                  </>
+                  </div>
                 ) : active.id === "grow" ? (
                   <div className="flex flex-1 flex-col justify-between gap-3">
                     {/* Headline */}
