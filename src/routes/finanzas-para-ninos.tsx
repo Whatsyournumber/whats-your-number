@@ -1325,55 +1325,105 @@ function HowItWorksSlider() {
 
                   </>
                 ) : active.id === "dreams" ? (
-                  <div className="mt-3 flex flex-1 flex-col">
-                    <div className="rounded-2xl bg-background/60 p-4 text-center ring-1 ring-border/50">
-                      <p className="numeric text-3xl font-bold text-kid-mint">3</p>
-                      <p className="mt-1 text-[11px] text-muted-foreground">
-                        {t("sueños ya conseguidos · €465 ahorrados", "dreams achieved · €465 saved")}
-                      </p>
-                    </div>
-
-                    <div className="mt-4 flex flex-1 flex-col gap-3">
-                      {[
-                        { img: dreamSkates, e: "🛼", n: t("Patines", "Roller skates"), price: "€75", when: t("May 2026", "May 2026") },
-                        { img: dreamBlocks, e: "🧱", n: t("Castillo de bloques", "Block castle"), price: "€90", when: t("Feb 2026", "Feb 2026") },
-                        { img: dreamGuitar, e: "🎸", n: t("Guitarra", "Guitar"), price: "€300", when: t("Nov 2025", "Nov 2025") },
-                      ].map((d) => (
-                        <div
-                          key={d.n}
-                          className="flex items-center gap-3 overflow-hidden rounded-2xl bg-background/60 p-2 ring-1 ring-kid-mint/20"
-                        >
-                          <img
-                            src={d.img}
-                            alt={d.n}
-                            loading="lazy"
-                            width={768}
-                            height={512}
-                            className="h-14 w-16 shrink-0 rounded-xl object-cover"
-                          />
-                          <div className="min-w-0 flex-1">
-                            <p className="truncate text-xs font-semibold">
-                              {d.e} {d.n}
-                            </p>
-                            <p className="mt-0.5 text-[11px] text-muted-foreground">
-                              {t("Conseguido en", "Achieved in")} {d.when}
-                            </p>
+                  (() => {
+                    const done = [
+                      { img: dreamSkates, e: "🛼", n: t("Patines", "Roller skates"), price: 75, when: t("May 2026", "May 2026"), c: "var(--kid-mint)" },
+                      { img: dreamBlocks, e: "🧱", n: t("Castillo de bloques", "Block castle"), price: 90, when: t("Feb 2026", "Feb 2026"), c: "var(--kid-sky)" },
+                      { img: dreamGuitar, e: "🎸", n: t("Guitarra", "Guitar"), price: 300, when: t("Nov 2025", "Nov 2025"), c: "var(--kid-sun)" },
+                    ];
+                    const total = done.reduce((s, d) => s + d.price, 0);
+                    return (
+                      <div className="mt-3 flex flex-1 flex-col gap-3">
+                        {/* Donut */}
+                        <div className="flex items-center gap-4 rounded-2xl bg-background/60 p-3 ring-1 ring-border/50">
+                          <div className="relative h-[112px] w-[112px] shrink-0">
+                            <ResponsiveContainer width="100%" height="100%">
+                              <PieChart>
+                                <Pie
+                                  data={done}
+                                  dataKey="price"
+                                  innerRadius={38}
+                                  outerRadius={54}
+                                  paddingAngle={3}
+                                  stroke="none"
+                                  startAngle={90}
+                                  endAngle={-270}
+                                >
+                                  {done.map((d) => (
+                                    <Cell key={d.n} fill={d.c} />
+                                  ))}
+                                </Pie>
+                              </PieChart>
+                            </ResponsiveContainer>
+                            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                              <span className="numeric text-2xl font-bold text-kid-mint leading-none">{done.length}</span>
+                              <span className="text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+                                {t("logrados", "achieved")}
+                              </span>
+                            </div>
                           </div>
-                          <div className="flex flex-col items-end gap-1">
-                            <span className="numeric text-xs font-semibold text-kid-mint">{d.price}</span>
-                            <BadgeCheck className="h-4 w-4 text-kid-mint" />
+                          <div className="min-w-0 flex-1">
+                            <p className="numeric text-lg font-bold">€{total}</p>
+                            <p className="text-[11px] text-muted-foreground">
+                              {t("ahorrados y gastados en sus sueños", "saved and spent on their dreams")}
+                            </p>
+                            <div className="mt-2 space-y-1">
+                              {done.map((d) => (
+                                <div key={d.n} className="flex items-center gap-1.5 text-[10px]">
+                                  <span className="h-1.5 w-1.5 rounded-full" style={{ background: d.c }} />
+                                  <span className="truncate text-muted-foreground">{d.n}</span>
+                                  <span className="numeric ml-auto font-medium">
+                                    {Math.round((d.price / total) * 100)}%
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         </div>
-                      ))}
-                    </div>
 
-                    <div className="mt-4 rounded-2xl bg-kid-mint/10 p-3 text-[11px] text-foreground ring-1 ring-kid-mint/20">
-                      {t(
-                        "🎉 Cada sueño cumplido le enseña que ahorrar funciona.",
-                        "🎉 Every dream achieved teaches them that saving works.",
-                      )}
-                    </div>
-                  </div>
+                        <div className="flex flex-1 flex-col gap-2.5">
+                          {done.map((d) => (
+                            <div
+                              key={d.n}
+                              className="group flex flex-1 items-center gap-3 overflow-hidden rounded-2xl bg-background/60 p-2 ring-1 ring-kid-mint/20"
+                            >
+                              <div className="relative h-full min-h-[56px] w-[76px] shrink-0 overflow-hidden rounded-xl">
+                                <img
+                                  src={d.img}
+                                  alt={d.n}
+                                  loading="lazy"
+                                  width={768}
+                                  height={512}
+                                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent" />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <p className="truncate text-xs font-semibold">
+                                  {d.e} {d.n}
+                                </p>
+                                <p className="mt-0.5 text-[11px] text-muted-foreground">
+                                  {t("Conseguido en", "Achieved in")} {d.when}
+                                </p>
+                              </div>
+                              <div className="flex flex-col items-end gap-1">
+                                <span className="numeric text-xs font-semibold text-kid-mint">€{d.price}</span>
+                                <BadgeCheck className="h-4 w-4 text-kid-mint" />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="rounded-2xl bg-kid-mint/10 p-3 text-[11px] text-foreground ring-1 ring-kid-mint/20">
+                          {t(
+                            "🎉 Cada sueño cumplido le enseña que ahorrar funciona.",
+                            "🎉 Every dream achieved teaches them that saving works.",
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()
+
                 ) : active.id === "grow" ? (
                   <div className="flex flex-1 flex-col justify-between gap-3">
                     {/* Headline */}
