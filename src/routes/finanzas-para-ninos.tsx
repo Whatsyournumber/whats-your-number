@@ -1288,73 +1288,9 @@ function HowItWorksSlider() {
                     </div>
                   </>
                 ) : active.id === "grow" ? (
-                  <>
-                    <div className="mt-3 rounded-2xl bg-kid-mint/8 p-4 ring-1 ring-kid-mint/25">
-                      <p className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-kid-mint">
-                        <Sparkles className="h-3.5 w-3.5" /> Buddy
-                      </p>
-                      <p className="mt-2 text-sm leading-relaxed">
-                        {t(
-                          "Si aportas 185 €/mes llegarías al objetivo 9 meses antes.",
-                          "Depositing €185/mo would hit the goal 9 months sooner.",
-                        )}
-                      </p>
-                      <div className="mt-3 rounded-xl bg-card px-3 py-2 ring-1 ring-border/60">
-                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                          {t("Aporte mensual sugerido", "Suggested monthly deposit")}
-                        </p>
-                        <p className="numeric text-xl font-bold text-kid-mint">
-                          185 €<span className="text-xs font-medium text-muted-foreground">/mes</span>
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 space-y-2.5">
-                      {plannerCurve
-                        .filter((p) => [8, 12, 15, 18].includes(p.age))
-                        .map((p, idx) => (
-                          <div key={p.age} className="rounded-xl bg-background/60 p-3 ring-1 ring-border/40">
-                            <div className="flex items-center justify-between text-xs">
-                              <span className="text-muted-foreground">
-                                {t(`A los ${p.age} años`, `At age ${p.age}`)}
-                              </span>
-                              <span className="numeric font-semibold">{eur(p.value)}</span>
-                            </div>
-                            <div className="mt-2 h-2 overflow-hidden rounded-full bg-card">
-                              <div
-                                className="h-full rounded-full"
-                                style={{
-                                  width: `${Math.min(100, (p.value / PLAN_GOAL) * 100)}%`,
-                                  background: ["var(--kid-sky)", "var(--kid-grape)", "var(--kid-sun)", "var(--kid-mint)"][idx],
-                                }}
-                              />
-                            </div>
-                          </div>
-                        ))}
-                    </div>
-
-                    <div className="mt-4 grid grid-cols-2 gap-3">
-                      <div className="rounded-2xl bg-background/60 p-3.5 ring-1 ring-border/50">
-                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                          {t("Tú aportas", "You deposit")}
-                        </p>
-                        <p className="numeric mt-1 text-base font-bold text-kid-sky">{eur(PLAN_CONTRIB)}</p>
-                      </div>
-                      <div className="rounded-2xl bg-background/60 p-3.5 ring-1 ring-border/50">
-                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                          {t("Interés compuesto", "Compound interest")}
-                        </p>
-                        <p className="numeric mt-1 text-base font-bold text-kid-mint">{eur(PLAN_GROWTH)}</p>
-                      </div>
-                    </div>
-
-                    <p className="mt-3 text-xs text-muted-foreground">
-                      {t(
-                        `El ${Math.round((PLAN_GROWTH / PLAN_FUTURE) * 100)}% de su futuro viene del interés compuesto.`,
-                        `${Math.round((PLAN_GROWTH / PLAN_FUTURE) * 100)}% of their future comes from compounding.`,
-                      )}
-                    </p>
-                  </>
+                  <div className="mt-2 min-h-0 flex-1">
+                    <PlannerChart />
+                  </div>
 
                 ) : (
                   <>
