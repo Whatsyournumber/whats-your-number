@@ -44,7 +44,7 @@ import heroReal from "@/assets/kids-hero-real.jpg";
 import ctaFamily from "@/assets/kids-cta-family.jpg";
 import faceDad from "@/assets/kid-face-dad.jpg";
 import faceMom from "@/assets/kid-face-mom.jpg";
-import faceLaura from "@/assets/kid-face-laura.jpg";
+import faceSofia from "@/assets/kid-face-sofia.jpg";
 import bikeAsset from "@/assets/kid-bike.png.asset.json";
 import faceBoy from "@/assets/kid-face-boy.jpg";
 import dreamBike from "@/assets/dream-bike.jpg";
@@ -329,10 +329,10 @@ function FamilyPlannerVisual() {
             <GraduationCap className="h-3.5 w-3.5" /> {t("Universidad", "University")}
           </p>
           <p className="mt-1 font-display text-2xl font-semibold">
-            {t("El futuro de Laura", "Laura's future")}
+            {t("El futuro de Sofía", "Sofia's future")}
           </p>
           <p className="mt-2 text-xs text-muted-foreground">
-            {t(`Si inviertes ${eur(PLAN_MONTHLY)} al mes desde hoy, Laura tendrá`, `If you invest ${eur(PLAN_MONTHLY)} a month from today, Laura will have`)}
+            {t(`Si inviertes ${eur(PLAN_MONTHLY)} al mes desde hoy, Sofía tendrá`, `If you invest ${eur(PLAN_MONTHLY)} a month from today, Sofia will have`)}
           </p>
           <p className="numeric mt-1 text-4xl font-semibold text-kid-money md:text-5xl">{eur(PLAN_FUTURE)}</p>
           <p className="mt-1 text-xs text-muted-foreground">{t("cuando cumpla 18 años.", "when she turns 18.")}</p>
@@ -655,7 +655,7 @@ function HowItWorksSlider() {
         <ScreenCard title={t("Mi primer número", "My first number")} accent="var(--kid-sky)">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
-              <img src={faceLaura} alt="" className="h-9 w-9 rounded-full object-cover" />
+              <img src={faceSofia} alt="" className="h-9 w-9 rounded-full object-cover" />
               <div>
                 <p className="text-sm font-medium">{t("Cómo crece mi número", "How my number grows")}</p>
                 <p className="text-[11px] text-muted-foreground">
@@ -1008,12 +1008,12 @@ function HowItWorksSlider() {
 
   const buddy: Record<string, string> = {
     numbers: t(
-      "Laura va un 11% de camino a su número. Con 3 € más al mes llegaría 8 meses antes.",
-      "Laura is 11% of the way to her number. Just €3 more a month gets her there 8 months sooner.",
+      "Sofía va un 11% de camino a su número. Con 3 € más al mes llegaría 8 meses antes.",
+      "Sofia is 11% of the way to her number. Just €3 more a month gets her there 8 months sooner.",
     ),
     grow: t(
-      "Con 99 €/mes Laura llega al 82% de su objetivo universitario. Subiendo a 185 €/mes lo cubre entero.",
-      "At €99/mo Laura reaches 82% of her university goal. Raising it to €185/mo covers it fully.",
+      "Con 99 €/mes Sofía llega al 82% de su objetivo universitario. Subiendo a 185 €/mes lo cubre entero.",
+      "At €99/mo Sofia reaches 82% of her university goal. Raising it to €185/mo covers it fully.",
     ),
     unis: t(
       "Con su número de 122.717 € no le alcanza para ninguna de estas 4 universidades: le faltan entre 3.000 € y 17.000 €.",
@@ -1446,7 +1446,7 @@ function HowItWorksSlider() {
                     {/* Headline */}
                     <div>
                       <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                        <GraduationCap className="h-4 w-4" /> {t("El futuro de Laura", "Laura's future")}
+                        <GraduationCap className="h-4 w-4" /> {t("El futuro de Sofía", "Sofia's future")}
                       </p>
                       <p className="numeric mt-3 text-4xl font-bold leading-tight text-kid-money">{eur(PLAN_FUTURE)}</p>
                       <p className="mt-1 text-xs text-muted-foreground">{t("cuando cumpla 18 años", "when she turns 18")}</p>
@@ -1538,8 +1538,8 @@ function HowItWorksSlider() {
                           </p>
                           <p className="mt-1 text-xs text-muted-foreground">
                             {t(
-                              "el número de Laura a los 18 para pagar sus estudios",
-                              "Laura's number at 18 to pay for her studies",
+                              "el número de Sofía a los 18 para pagar sus estudios",
+                              "Sofia's number at 18 to pay for her studies",
                             )}
                           </p>
                         </div>
@@ -2112,10 +2112,10 @@ function DualDashboards() {
             id="kid"
             accent="var(--kid-pink)"
             cute
-            face={faceLaura}
-            name={t("Laura", "Laura")}
+            face={faceSofia}
+            name={t("Sofía", "Sofia")}
             chip={t("Su primer número", "Her first number")}
-            label={t("Laura aprende a crecer su dinero", "Laura learns to grow her money")}
+            label={t("Sofía aprende a crecer su dinero", "Sofia learns to grow her money")}
             value="€1.250"
             data={data}
             dataKey="k"
@@ -2156,7 +2156,7 @@ function GrowsWithThem() {
       overlay: (
         <div className="rounded-2xl border border-white/10 bg-[color-mix(in_oklab,var(--color-card)_88%,black)] p-4 shadow-[0_18px_40px_-12px_rgba(0,0,0,0.8)] backdrop-blur-xl">
           <p className="flex items-center gap-1 whitespace-nowrap text-xs font-semibold">
-            {t("El futuro de Laura", "Laura's future")} <Star className="h-3 w-3 shrink-0 fill-kid-sun text-kid-sun" />
+            {t("El futuro de Sofía", "Sofia's future")} <Star className="h-3 w-3 shrink-0 fill-kid-sun text-kid-sun" />
           </p>
           <p className="mt-1.5 whitespace-nowrap text-[10px] uppercase tracking-wider text-muted-foreground">
             {t("Patrimonio a los 18a", "Wealth at 18")}
@@ -2463,7 +2463,7 @@ function FamilyProfiles() {
     { name: "Carlos", role: t("Padre", "Dad"), photo: faceDad, active: false },
     { name: "María", role: t("Madre", "Mom"), photo: faceMom, active: false },
     { name: "Lucas", role: t("6 años", "Age 6"), photo: faceBoy, active: false },
-    { name: "Laura", role: t("13 años", "Age 13"), photo: faceLaura, active: true },
+    { name: "Sofía", role: t("13 años", "Age 13"), photo: faceSofia, active: true },
 
   ];
   return (
