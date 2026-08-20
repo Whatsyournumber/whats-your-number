@@ -13,7 +13,7 @@ import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 import { useT } from "@/hooks/use-language";
 import { getPendingCheckoutPlan, setPendingCheckoutPlan } from "@/lib/pending-checkout";
 import { useRegionalPricing } from "@/hooks/use-regional-pricing";
-import { formatUsd, monthlyEquivalent } from "@/lib/pricing-tiers";
+import { formatMoney, monthlyEquivalent } from "@/lib/pricing-tiers";
 import { clearPendingDiscount, getPendingDiscount, type PendingDiscount } from "@/lib/pending-discount";
 
 
