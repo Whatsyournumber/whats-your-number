@@ -65,6 +65,33 @@ function ProfileSelector() {
     });
   }
 
+  function startEdit(m: Member) {
+    setEditing(m);
+    setEditName(m.name);
+    setEditSubtitle(m.subtitle ?? "");
+  }
+
+  async function saveEdit() {
+    if (!editing) return;
+    const name = editName.trim();
+    if (!name) return;
+    setSavingEdit(true);
+    try {
+      const { error } = await supabase
+        .from("kid_members")
+        .update({ name, subtitle: editSubtitle.trim() || null })
+        .eq("id", editing.id);
+      if (error) throw error;
+      await queryClient.refetchQueries({ queryKey: ["kid_members"] });
+      toast.success(t("Perfil actualizado", "Profile updated"));
+      setEditing(null);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : t("No se pudo guardar", "Could not save"));
+    } finally {
+      setSavingEdit(false);
+    }
+  }
+
 
   async function confirmDelete() {
     if (!pendingDelete) return;
