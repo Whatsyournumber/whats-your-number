@@ -45,6 +45,7 @@ import ctaFamily from "@/assets/kids-cta-family.jpg";
 import faceDad from "@/assets/kid-face-dad.jpg";
 import faceMom from "@/assets/kid-face-mom.jpg";
 import faceGirl from "@/assets/kid-face-girl.jpg";
+import faceSofia from "@/assets/kid-face-sofia.jpg";
 import bikeAsset from "@/assets/kid-bike.png.asset.json";
 import faceBoy from "@/assets/kid-face-boy.jpg";
 import dreamBike from "@/assets/dream-bike.jpg";
@@ -655,7 +656,7 @@ function HowItWorksSlider() {
         <ScreenCard title={t("Mi primer número", "My first number")} accent="var(--kid-sky)">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
-              <img src={faceGirl} alt="" className="h-9 w-9 rounded-full object-cover" />
+              <img src={faceSofia} alt="" className="h-9 w-9 rounded-full object-cover" />
               <div>
                 <p className="text-sm font-medium">{t("Cómo crece mi número", "How my number grows")}</p>
                 <p className="text-[11px] text-muted-foreground">
@@ -2112,7 +2113,7 @@ function DualDashboards() {
             id="kid"
             accent="var(--kid-pink)"
             cute
-            face={faceGirl}
+            face={faceSofia}
             name={t("Sofía", "Sofía")}
             chip={t("Su primer número", "Her first number")}
             label={t("Sofía aprende a crecer su dinero", "Sofía learns to grow her money")}
@@ -2462,7 +2463,7 @@ function FamilyProfiles() {
   const members = [
     { name: "Carlos", role: t("Padre", "Dad"), photo: faceDad, active: false },
     { name: "Laura", role: t("Madre", "Mom"), photo: faceMom, active: false },
-    { name: "Sofía", role: t("10 años", "Age 10"), photo: faceGirl, active: true },
+    { name: "Sofía", role: t("12 años", "Age 12"), photo: faceSofia, active: true },
     { name: "Lucas", role: t("7 años", "Age 7"), photo: faceBoy, active: false },
   ];
   return (
