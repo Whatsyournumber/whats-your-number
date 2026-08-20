@@ -1837,8 +1837,8 @@ function ThreePillars() {
       color: "var(--kid-mint)",
       title: t("Crece con interés", "Grow with interest"),
       desc: t(
-        "Aprenden el valor del dinero.",
-        "They learn the value of money.",
+        "Cada euro ahorrado crece con el tiempo gracias al interés compuesto.",
+        "Every euro saved compounds over time.",
       ),
       metric: "7,2%",
       metricLabel: t("rendimiento anual medio", "average annual return"),
