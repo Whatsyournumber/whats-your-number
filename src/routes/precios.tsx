@@ -295,7 +295,7 @@ function Pricing() {
                   <h2 className="text-sm font-semibold">{plan.name}</h2>
                   {isYearly && plan.monthlyPrice > 0 && (
                     <span className="rounded-full border border-positive/30 bg-positive/10 px-2 py-0.5 text-[10px] font-semibold text-positive">
-                      {t("2 meses gratis", "2 months free")}
+                      {t("2 meses gratis · 17% OFF", "2 months free · 17% OFF")}
                     </span>
                   )}
                 </div>
