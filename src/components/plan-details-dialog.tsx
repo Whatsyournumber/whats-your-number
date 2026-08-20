@@ -12,13 +12,13 @@ import {
 } from "@/components/ui/dialog";
 import { useT } from "@/hooks/use-language";
 import { useRegionalPricing } from "@/hooks/use-regional-pricing";
-import { formatUsd } from "@/lib/pricing-tiers";
+import { formatMoney } from "@/lib/pricing-tiers";
 import type { PlanTier } from "@/hooks/use-subscription";
 
 /** Detalle de cada plan para explicar al usuario qué incluye lo que compró. */
 function usePlanCopy() {
   const t = useT();
-  const { prices } = useRegionalPricing();
+  const { prices, currency } = useRegionalPricing();
 
   const copy: Record<PlanTier, { name: string; price: string; desc: string; features: string[] }> = {
     free: {
@@ -42,8 +42,8 @@ function usePlanCopy() {
     pro: {
       name: "Pro",
       price: t(
-        `${formatUsd(prices.pro.monthly)}/mes · ${formatUsd(prices.pro.yearly)}/año`,
-        `${formatUsd(prices.pro.monthly)}/mo · ${formatUsd(prices.pro.yearly)}/yr`,
+        `${formatMoney(prices.pro.monthly, currency)}/mes · ${formatMoney(prices.pro.yearly, currency)}/año`,
+        `${formatMoney(prices.pro.monthly, currency)}/mo · ${formatMoney(prices.pro.yearly, currency)}/yr`,
       ),
       desc: t(
         "Todo el sistema financiero con IA ilimitada.",
@@ -68,8 +68,8 @@ function usePlanCopy() {
     patrimonio: {
       name: "Familiar",
       price: t(
-        `${formatUsd(prices.family.monthly)}/mes · ${formatUsd(prices.family.yearly)}/año`,
-        `${formatUsd(prices.family.monthly)}/mo · ${formatUsd(prices.family.yearly)}/yr`,
+        `${formatMoney(prices.family.monthly, currency)}/mes · ${formatMoney(prices.family.yearly, currency)}/año`,
+        `${formatMoney(prices.family.monthly, currency)}/mo · ${formatMoney(prices.family.yearly, currency)}/yr`,
       ),
       desc: t(
         "Para familias: tu patrimonio y el futuro financiero de tus hijos.",
