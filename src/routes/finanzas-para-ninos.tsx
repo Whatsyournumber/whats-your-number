@@ -770,7 +770,7 @@ function HowItWorksSlider() {
   const sideTitle: Record<string, string> = {
     numbers: t("Cómo se reparte su dinero", "How their money is split"),
     pockets: t("Cómo se reparte su dinero", "How their money is split"),
-    chores: t("Lo que gana cada semana", "What they earn each week"),
+    chores: t("Seguimiento de tareas", "Chore tracking"),
     dreams: t("Sus sueños en marcha", "Their dreams in progress"),
     grow: t("Su futuro, año a año", "Their future, year by year"),
     unis: t("Universidades que podría pagar", "Universities they could afford"),
@@ -1224,6 +1224,13 @@ const pocketMonths = [
   { m: "Abr", save: 22, invest: 22, spend: 11 },
   { m: "May", save: 23, invest: 23, spend: 11 },
   { m: "Jun", save: 24, invest: 24, spend: 12 },
+];
+
+const choreTrack: { e: string; k: string; en: string; done: boolean }[] = [
+  { e: "🛏️", k: "Hacer la cama", en: "Make the bed", done: true },
+  { e: "🐶", k: "Pasear al perro", en: "Walk the dog", done: true },
+  { e: "🧺", k: "Ordenar la ropa", en: "Sort the laundry", done: true },
+  { e: "📚", k: "Leer 20 minutos", en: "Read 20 minutes", done: false },
 ];
 
 const choreWeeks = [
