@@ -230,7 +230,7 @@ function PlannerChart() {
           {t("Objetivo", "Goal")}
         </span>
       </div>
-      <div className="mt-2 min-h-0 flex-1">
+      <div className="mt-2 h-[340px]">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={plannerCurve} margin={{ top: 46, right: 12, bottom: 0, left: 4 }}>
             <defs>
@@ -872,7 +872,13 @@ function HowItWorksSlider() {
         "Ajusta capital, aporte mensual y edad objetivo: verás al instante cuánto tendrá y cuánto viene del interés compuesto.",
         "Tune starting capital, monthly deposit and target age: see instantly how much they'll have and how much comes from compounding.",
       ),
-      visual: <FamilyPlannerVisual />,
+      visual: (
+        <ScreenCard title={t("Planificador familiar", "Family planner")} accent="var(--kid-mint)">
+          <div className="flex h-full min-h-[420px] flex-col">
+            <PlannerChart />
+          </div>
+        </ScreenCard>
+      ),
 
     },
     {
@@ -1288,8 +1294,42 @@ function HowItWorksSlider() {
                     </div>
                   </>
                 ) : active.id === "grow" ? (
-                  <div className="mt-2 min-h-0 flex-1">
-                    <PlannerChart />
+                  <div className="flex h-full flex-col items-center gap-4">
+                    <div className="text-center">
+                      <p className="flex items-center justify-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                        <GraduationCap className="h-3.5 w-3.5" /> {t("El futuro de Sofía", "Sofía's future")}
+                      </p>
+                      <p className="numeric mt-1.5 text-3xl font-bold text-kid-mint">{eur(PLAN_FUTURE)}</p>
+                      <p className="text-[11px] text-muted-foreground">{t("a los 18 años", "at age 18")}</p>
+                    </div>
+
+                    <div
+                      className="relative flex h-24 w-24 items-center justify-center rounded-full"
+                      style={{
+                        background: `conic-gradient(var(--kid-mint) 0% ${PLAN_PCT}%, color-mix(in oklab, var(--kid-mint) 14%, transparent) ${PLAN_PCT}% 100%)`,
+                      }}
+                    >
+                      <span className="flex h-[74px] w-[74px] flex-col items-center justify-center rounded-full bg-card">
+                        <span className="numeric text-lg font-bold text-kid-mint">{PLAN_PCT}%</span>
+                        <span className="text-[9px] text-muted-foreground">{t("del objetivo", "of goal")}</span>
+                      </span>
+                    </div>
+
+                    <div className="w-full space-y-2">
+                      {[
+                        { k: t("Aporte", "Deposit"), v: `${eur(PLAN_MONTHLY)}/mes`, c: "var(--kid-sky)" },
+                        { k: t("Crecimiento", "Growth"), v: eur(PLAN_GROWTH), c: "var(--kid-mint)" },
+                        { k: t("Objetivo", "Goal"), v: eur(PLAN_GOAL), c: "var(--kid-grape)" },
+                      ].map((m) => (
+                        <div key={m.k} className="flex items-center justify-between rounded-xl bg-background/60 px-3 py-2 ring-1 ring-border/40">
+                          <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                            <span className="h-1.5 w-1.5 rounded-full" style={{ background: m.c }} />
+                            {m.k}
+                          </span>
+                          <span className="numeric text-sm font-semibold">{m.v}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
                 ) : (
