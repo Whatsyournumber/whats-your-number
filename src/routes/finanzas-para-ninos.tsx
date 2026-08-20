@@ -494,13 +494,14 @@ function UniFinderVisual() {
               `With €${budget.toLocaleString("es-ES")} they could apply to ${eligible.length} of ${list.length} universities shown`,
             )}
           </p>
-          <div className="relative mt-2 h-32 overflow-hidden rounded-2xl ring-1 ring-border">
+          <div className="relative mt-2 h-48 overflow-hidden rounded-2xl ring-1 ring-border">
             <img
-              src={REAL_UNI_PHOTOS[hero.id]}
+              src={DEMO_UNI_PHOTOS[hero.id]}
               alt={hero.name}
               loading="lazy"
               className="absolute inset-0 h-full w-full object-cover"
             />
+
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-transparent" />
             <span className="absolute left-3 top-3 rounded-full bg-kid-grape/90 px-2 py-0.5 text-[10px] font-semibold text-background">
               #{hero.rank} · {t("ranking mundial", "world ranking")}
