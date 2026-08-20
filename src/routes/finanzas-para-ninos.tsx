@@ -1189,12 +1189,6 @@ const pocketMonths = [
   { m: "Jun", save: 24, invest: 24, spend: 12 },
 ];
 
-const choreTrack: { e: string; k: string; en: string; done: boolean }[] = [
-  { e: "🛏️", k: "Hacer la cama", en: "Make the bed", done: true },
-  { e: "🐶", k: "Pasear al perro", en: "Walk the dog", done: true },
-  { e: "🧺", k: "Ordenar la ropa", en: "Sort the laundry", done: true },
-  { e: "📚", k: "Leer 20 minutos", en: "Read 20 minutes", done: false },
-];
 
 const planBars = [4, 7, 10, 13, 17, 21, 26, 32, 39, 47, 56, 66, 78, 92].map((v, i) => ({
   x: i,
