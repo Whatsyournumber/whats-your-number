@@ -57,7 +57,19 @@ import { useT } from "@/hooks/use-language";
 import { cn } from "@/lib/utils";
 
 import { useLiveCount, formatCount } from "@/components/live-count";
-import { REAL_UNI_PHOTOS } from "@/lib/uni-photos-real";
+import photoMit from "@/assets/uni/us-mit.jpg";
+import photoIe from "@/assets/uni/es-ie.jpg";
+import photoSnu from "@/assets/uni/kr-snu.jpg";
+import photoOxford from "@/assets/uni/uk-oxford.jpg";
+import photoToronto from "@/assets/uni/ca-toronto.jpg";
+
+const DEMO_UNI_PHOTOS: Record<string, string> = {
+  "us-mit": photoMit,
+  "es-ie-university": photoIe,
+  "ap-seoul-national-university": photoSnu,
+  "uk-university-of-oxford": photoOxford,
+  "ca-university-of-toronto": photoToronto,
+};
 
 
 export const Route = createFileRoute("/finanzas-para-ninos")({
