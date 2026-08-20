@@ -767,14 +767,14 @@ function HowItWorksSlider() {
       id: "dreams",
       tab: t("Mis sueños", "My dreams"),
       icon: Target,
-      color: "var(--kid-coral)",
+      color: "var(--kid-mint)",
       title: t("Sueños con barra de progreso", "Dreams with a progress bar"),
       desc: t(
         "La bici, el viaje o el videojuego: ven cuánto les falta y ahorran para conseguirlo.",
         "The bike, the trip or the game: they see what's left and save to get there.",
       ),
       visual: (
-        <ScreenCard title={t("Mis sueños activos", "My active dreams")} accent="var(--kid-coral)">
+        <ScreenCard title={t("Mis sueños activos", "My active dreams")} accent="var(--kid-mint)">
           <div className="space-y-3.5">
             {[
               {
@@ -810,24 +810,33 @@ function HowItWorksSlider() {
                 date: t("Llegará el 20 ago 2028", "Arrives Aug 20, 2028"),
                 c: "var(--kid-sun)",
               },
-            ].map((d) => (
+            ].map((d) => {
+              const almost = d.pct >= 50;
+              return (
               <div
                 key={d.name}
-                className="overflow-hidden rounded-2xl bg-elevated/70 ring-1 ring-border/50"
+                className="group relative overflow-hidden rounded-2xl bg-elevated/70 ring-1 transition-shadow"
+                style={{
+                  boxShadow: almost ? `0 0 0 1px color-mix(in oklab, ${d.c} 45%, transparent)` : undefined,
+                }}
               >
                 <div className="flex items-stretch gap-0">
-                  <div className="relative h-[120px] w-[140px] shrink-0 overflow-hidden">
+                  <div className="relative h-[124px] w-[148px] shrink-0 overflow-hidden">
                     <img
                       src={d.img}
                       alt={d.name}
                       loading="lazy"
                       width={768}
                       height={512}
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.06]"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent to-elevated/80" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-background/10 via-transparent to-elevated" />
+                    <div
+                      className="absolute inset-x-0 bottom-0 h-1"
+                      style={{ background: `linear-gradient(90deg, ${d.c}, transparent)` }}
+                    />
                     <span
-                      className="absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-xl text-sm backdrop-blur-sm"
+                      className="absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-xl text-sm ring-1 ring-white/10 backdrop-blur-md"
                       style={{ backgroundColor: `color-mix(in oklab, ${d.c} 30%, transparent)` }}
                     >
                       {d.e}
@@ -835,9 +844,21 @@ function HowItWorksSlider() {
                   </div>
 
                   <div className="min-w-0 flex-1 p-3.5">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-2">
                       <p className="truncate text-sm font-semibold">{d.name}</p>
-                      <span className="numeric text-xs text-muted-foreground">{d.goal}</span>
+                      {almost ? (
+                        <span
+                          className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                          style={{
+                            backgroundColor: `color-mix(in oklab, ${d.c} 18%, transparent)`,
+                            color: d.c,
+                          }}
+                        >
+                          {t("¡Casi lo logra!", "Almost there!")}
+                        </span>
+                      ) : (
+                        <span className="numeric shrink-0 text-xs text-muted-foreground">{d.goal}</span>
+                      )}
                     </div>
                     <div className="mt-0.5 flex items-center justify-between text-[11px]">
                       <span className="numeric font-medium" style={{ color: d.c }}>
@@ -865,8 +886,7 @@ function HowItWorksSlider() {
                       </div>
                       <button
                         type="button"
-                        className="flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-semibold text-background transition-transform hover:scale-105"
-                        style={{ backgroundColor: d.c }}
+                        className="flex items-center gap-1 rounded-full bg-kid-mint px-3 py-1.5 text-[11px] font-semibold text-background transition-transform hover:scale-105"
                       >
                         <Rocket className="h-3 w-3" />
                         {t("Acelerar", "Accelerate")}
@@ -875,7 +895,9 @@ function HowItWorksSlider() {
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
+
           </div>
         </ScreenCard>
       ),
@@ -1325,55 +1347,105 @@ function HowItWorksSlider() {
 
                   </>
                 ) : active.id === "dreams" ? (
-                  <div className="mt-3 flex flex-1 flex-col">
-                    <div className="rounded-2xl bg-background/60 p-4 text-center ring-1 ring-border/50">
-                      <p className="numeric text-3xl font-bold text-kid-mint">3</p>
-                      <p className="mt-1 text-[11px] text-muted-foreground">
-                        {t("sueños ya conseguidos · €465 ahorrados", "dreams achieved · €465 saved")}
-                      </p>
-                    </div>
-
-                    <div className="mt-4 flex flex-1 flex-col gap-3">
-                      {[
-                        { img: dreamSkates, e: "🛼", n: t("Patines", "Roller skates"), price: "€75", when: t("May 2026", "May 2026") },
-                        { img: dreamBlocks, e: "🧱", n: t("Castillo de bloques", "Block castle"), price: "€90", when: t("Feb 2026", "Feb 2026") },
-                        { img: dreamGuitar, e: "🎸", n: t("Guitarra", "Guitar"), price: "€300", when: t("Nov 2025", "Nov 2025") },
-                      ].map((d) => (
-                        <div
-                          key={d.n}
-                          className="flex items-center gap-3 overflow-hidden rounded-2xl bg-background/60 p-2 ring-1 ring-kid-mint/20"
-                        >
-                          <img
-                            src={d.img}
-                            alt={d.n}
-                            loading="lazy"
-                            width={768}
-                            height={512}
-                            className="h-14 w-16 shrink-0 rounded-xl object-cover"
-                          />
-                          <div className="min-w-0 flex-1">
-                            <p className="truncate text-xs font-semibold">
-                              {d.e} {d.n}
-                            </p>
-                            <p className="mt-0.5 text-[11px] text-muted-foreground">
-                              {t("Conseguido en", "Achieved in")} {d.when}
-                            </p>
+                  (() => {
+                    const done = [
+                      { img: dreamSkates, e: "🛼", n: t("Patines", "Roller skates"), price: 75, when: t("May 2026", "May 2026"), c: "var(--kid-mint)" },
+                      { img: dreamBlocks, e: "🧱", n: t("Castillo de bloques", "Block castle"), price: 90, when: t("Feb 2026", "Feb 2026"), c: "var(--kid-sky)" },
+                      { img: dreamGuitar, e: "🎸", n: t("Guitarra", "Guitar"), price: 300, when: t("Nov 2025", "Nov 2025"), c: "var(--kid-sun)" },
+                    ];
+                    const total = done.reduce((s, d) => s + d.price, 0);
+                    return (
+                      <div className="mt-3 flex flex-1 flex-col gap-3">
+                        {/* Donut */}
+                        <div className="flex items-center gap-4 rounded-2xl bg-background/60 p-3 ring-1 ring-border/50">
+                          <div className="relative h-[112px] w-[112px] shrink-0">
+                            <ResponsiveContainer width="100%" height="100%">
+                              <PieChart>
+                                <Pie
+                                  data={done}
+                                  dataKey="price"
+                                  innerRadius={38}
+                                  outerRadius={54}
+                                  paddingAngle={3}
+                                  stroke="none"
+                                  startAngle={90}
+                                  endAngle={-270}
+                                >
+                                  {done.map((d) => (
+                                    <Cell key={d.n} fill={d.c} />
+                                  ))}
+                                </Pie>
+                              </PieChart>
+                            </ResponsiveContainer>
+                            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                              <span className="numeric text-2xl font-bold text-kid-mint leading-none">{done.length}</span>
+                              <span className="text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+                                {t("logrados", "achieved")}
+                              </span>
+                            </div>
                           </div>
-                          <div className="flex flex-col items-end gap-1">
-                            <span className="numeric text-xs font-semibold text-kid-mint">{d.price}</span>
-                            <BadgeCheck className="h-4 w-4 text-kid-mint" />
+                          <div className="min-w-0 flex-1">
+                            <p className="numeric text-lg font-bold">€{total}</p>
+                            <p className="text-[11px] text-muted-foreground">
+                              {t("ahorrados y gastados en sus sueños", "saved and spent on their dreams")}
+                            </p>
+                            <div className="mt-2 space-y-1">
+                              {done.map((d) => (
+                                <div key={d.n} className="flex items-center gap-1.5 text-[10px]">
+                                  <span className="h-1.5 w-1.5 rounded-full" style={{ background: d.c }} />
+                                  <span className="truncate text-muted-foreground">{d.n}</span>
+                                  <span className="numeric ml-auto font-medium">
+                                    {Math.round((d.price / total) * 100)}%
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         </div>
-                      ))}
-                    </div>
 
-                    <div className="mt-4 rounded-2xl bg-kid-mint/10 p-3 text-[11px] text-foreground ring-1 ring-kid-mint/20">
-                      {t(
-                        "🎉 Cada sueño cumplido le enseña que ahorrar funciona.",
-                        "🎉 Every dream achieved teaches them that saving works.",
-                      )}
-                    </div>
-                  </div>
+                        <div className="flex flex-1 flex-col gap-2.5">
+                          {done.map((d) => (
+                            <div
+                              key={d.n}
+                              className="group flex flex-1 items-center gap-3 overflow-hidden rounded-2xl bg-background/60 p-2 ring-1 ring-kid-mint/20"
+                            >
+                              <div className="relative h-full min-h-[56px] w-[76px] shrink-0 overflow-hidden rounded-xl">
+                                <img
+                                  src={d.img}
+                                  alt={d.n}
+                                  loading="lazy"
+                                  width={768}
+                                  height={512}
+                                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent" />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <p className="truncate text-xs font-semibold">
+                                  {d.e} {d.n}
+                                </p>
+                                <p className="mt-0.5 text-[11px] text-muted-foreground">
+                                  {t("Conseguido en", "Achieved in")} {d.when}
+                                </p>
+                              </div>
+                              <div className="flex flex-col items-end gap-1">
+                                <span className="numeric text-xs font-semibold text-kid-mint">€{d.price}</span>
+                                <BadgeCheck className="h-4 w-4 text-kid-mint" />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="rounded-2xl bg-kid-mint/10 p-3 text-[11px] text-foreground ring-1 ring-kid-mint/20">
+                          {t(
+                            "🎉 Cada sueño cumplido le enseña que ahorrar funciona.",
+                            "🎉 Every dream achieved teaches them that saving works.",
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()
+
                 ) : active.id === "grow" ? (
                   <div className="flex flex-1 flex-col justify-between gap-3">
                     {/* Headline */}
