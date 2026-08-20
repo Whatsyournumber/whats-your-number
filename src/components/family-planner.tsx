@@ -659,9 +659,19 @@ export function FamilyPlanner({
             <MilestoneChart data={series} currency={currency} yMax={yMax} height={chartH} />
           </div>
           <p className="mt-2 truncate border-t border-border/60 pt-2 text-[11px] text-muted-foreground/80">
-            {t("Fuente:", "Source:")} {lang === "en" ? vehicle.sourceEn : vehicle.source}.{" "}
+            {t("Fuente:", "Source:")}{" "}
+            {liveNow
+              ? t(
+                  `datos reales de mercado · ${vehicleName} ${liveNow.cagr10y != null ? `${liveNow.cagr10y.toFixed(1)}% anual (10 años)` : ""}${liveTime ? ` · actualizado ${liveTime}` : ""}`,
+                  `live market data · ${vehicleName} ${liveNow.cagr10y != null ? `${liveNow.cagr10y.toFixed(1)}% yearly (10y)` : ""}${liveTime ? ` · updated ${liveTime}` : ""}`,
+                )
+              : lang === "en"
+                ? vehicle.sourceEn
+                : vehicle.source}
+            .{" "}
             {t("Rentabilidad pasada no garantiza la futura.", "Past performance does not guarantee future results.")}
           </p>
+
 
         </div>
 
