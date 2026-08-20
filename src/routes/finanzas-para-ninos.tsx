@@ -199,7 +199,7 @@ function PlanMilestoneDot(props: {
         stroke="var(--border)"
       />
       <text x={x + w / 2} y={cy - 47} textAnchor="middle" fontSize={9} fill="var(--muted-foreground)">
-        {payload.age} años
+        {payload.age}
       </text>
       <text
         x={x + w / 2}
