@@ -2555,6 +2555,15 @@ function KidsFinanceLanding() {
       initials: "LP",
       role: t("Mamá de 1 · Madrid", "Mom of 1 · Madrid"),
     },
+    {
+      quote: t(
+        "Ahora mi hija sabe el valor del dinero y el esfuerzo que cuesta tener una bicicleta nueva.",
+        "Now my daughter knows the value of money and the effort it takes to get a new bike.",
+      ),
+      author: "Sarah Mitchell",
+      initials: "SM",
+      role: t("Mamá de 2 · Boston", "Mom of 2 · Boston"),
+    },
   ];
 
   return (
