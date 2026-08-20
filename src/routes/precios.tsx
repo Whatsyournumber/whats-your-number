@@ -112,8 +112,8 @@ function Pricing() {
       yearlyPrice: prices.family.yearly,
       priceId: isYearly ? "patrimonio_yearly" : "patrimonio_monthly",
       desc: t(
-        "Para familias que quieren ordenar su patrimonio y construir el futuro financiero de sus hijos.",
-        "For families who want to organize their wealth and build their children's financial future.",
+        "Ordena el patrimonio de tu familia y construye el futuro financiero de tus hijos.",
+        "Organize your family's wealth and build your children's financial future.",
       ),
       features: [
         t("Todo lo de Pro", "Everything in Pro"),
@@ -293,16 +293,16 @@ function Pricing() {
                 )}
                 <div className="flex items-start justify-between gap-2">
                   <h2 className="text-sm font-semibold">{plan.name}</h2>
-                  {isYearly && plan.monthlyPrice > 0 && (
-                    <span className="rounded-full border border-positive/30 bg-positive/10 px-2 py-0.5 text-[10px] font-semibold text-positive">
-                      {t("2 meses gratis · 17% OFF", "2 months free · 17% OFF")}
-                    </span>
-                  )}
                 </div>
                 <div className="mt-3 flex items-end gap-1">
                   <span className="numeric text-4xl font-semibold tracking-tight">{formatUsd(price)}</span>
                   <span className="pb-1 text-xs text-muted-foreground">{period}</span>
                 </div>
+                {isYearly && plan.monthlyPrice > 0 && (
+                  <span className="mt-2 inline-flex w-fit rounded-full border border-positive/30 bg-positive/10 px-2 py-0.5 text-[10px] font-semibold text-positive">
+                    {t("2 meses gratis · 17% OFF", "2 months free · 17% OFF")}
+                  </span>
+                )}
                 {equivalentMonthly && (
                   <p className="mt-1 text-xs text-muted-foreground">
                     {t("Equivale a {{month}}/mes", "Equals {{month}}/month").replace("{{month}}", equivalentMonthly)}
