@@ -212,27 +212,6 @@ function ProfileSelector() {
                   <span className="grid aspect-square w-full place-items-center rounded-2xl bg-secondary text-5xl ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4 sm:text-6xl">
                     {m.avatar}
                   </span>
-                  {manage ? (
-                    <span
-                      role="button"
-                      tabIndex={0}
-                      aria-label={t("Editar nombre", "Edit name")}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        startEdit(m);
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          startEdit(m);
-                        }
-                      }}
-                      className="absolute -left-1.5 -top-1.5 z-10 grid h-7 w-7 place-items-center rounded-full bg-primary text-primary-foreground shadow-md ring-2 ring-background transition-all duration-200 hover:scale-105"
-                    >
-                      <Pencil className="h-3.5 w-3.5" strokeWidth={2.5} />
-                    </span>
-                  ) : null}
                   {m.role === "child" ? (
                     <span
                       role="button"
@@ -254,20 +233,47 @@ function ProfileSelector() {
                       <X className="h-3.5 w-3.5" strokeWidth={2.5} />
                     </span>
                   ) : null}
-                  <span className="min-w-0 text-center">
-                    <span className="block truncate text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
-                      {m.name}
+                  {manage ? (
+                    <span
+                      className="w-full space-y-1"
+                      onClick={(e) => e.stopPropagation()}
+                      onKeyDown={(e) => e.stopPropagation()}
+                    >
+                      <input
+                        defaultValue={m.name}
+                        aria-label={t("Nombre", "Name")}
+                        onBlur={(e) => void saveField(m, "name", e.target.value)}
+                        className="w-full rounded-lg border border-border bg-background px-2 py-1 text-center text-sm font-semibold text-foreground outline-none focus:border-primary"
+                      />
+                      <input
+                        defaultValue={m.subtitle ?? ""}
+                        aria-label={t("Subtítulo", "Subtitle")}
+                        placeholder={
+                          m.role === "parent"
+                            ? t("Padre / Madre", "Parent")
+                            : `${Math.round(m.age)} ${t("años", "years")}`
+                        }
+                        onBlur={(e) => void saveField(m, "subtitle", e.target.value)}
+                        className="w-full rounded-lg border border-border bg-background px-2 py-1 text-center text-[11px] text-muted-foreground outline-none placeholder:text-muted-foreground/60 focus:border-primary"
+                      />
                     </span>
-                    <span className="block text-[11px] text-muted-foreground/70">
-                      {m.subtitle
-                        ? m.subtitle
-                        : m.role === "parent"
-                          ? t("Padre / Madre", "Parent")
-                          : m.age < 1
-                            ? `${Math.round(m.age * 12)} ${t("meses", "months")}`
-                            : `${Math.round(m.age)} ${t("años", "years")}`}
+                  ) : (
+                    <span className="min-w-0 text-center">
+                      <span className="block truncate text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
+                        {m.name}
+                      </span>
+                      <span className="block text-[11px] text-muted-foreground/70">
+                        {m.subtitle
+                          ? m.subtitle
+                          : m.role === "parent"
+                            ? t("Padre / Madre", "Parent")
+                            : m.age < 1
+                              ? `${Math.round(m.age * 12)} ${t("meses", "months")}`
+                              : `${Math.round(m.age)} ${t("años", "years")}`}
+                      </span>
                     </span>
-                  </span>
+                  )}
+
                 </button>
               ))}
 
