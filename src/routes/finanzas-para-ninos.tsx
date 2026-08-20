@@ -995,11 +995,11 @@ function HowItWorksSlider() {
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid flex-1 grid-cols-3 gap-2">
                   {(stats[active.id] ?? []).map((s) => (
-                    <div key={s.k} className="rounded-2xl bg-elevated/60 p-3 text-center ring-1 ring-border">
-                      <p className="truncate text-[10px] uppercase tracking-wider text-muted-foreground">{s.k}</p>
-                      <p className="numeric mt-1 text-sm font-semibold" style={{ color: active.color }}>
+                    <div key={s.k} className="flex flex-col justify-center rounded-2xl bg-elevated/60 p-3 text-center ring-1 ring-border">
+                      <p className="truncate text-[11px] uppercase tracking-wider text-muted-foreground">{s.k}</p>
+                      <p className="numeric mt-1 text-base font-semibold" style={{ color: active.color }}>
                         {s.v}
                       </p>
                     </div>
