@@ -532,14 +532,15 @@ function UniFinderVisual() {
 
           <div className="mt-2.5 grid grid-cols-2 gap-2.5">
             {rest.map((u) => (
-              <div key={u.id} className="relative h-20 overflow-hidden rounded-xl ring-1 ring-border">
+              <div key={u.id} className="relative h-32 overflow-hidden rounded-2xl ring-1 ring-border">
                 <img
-                  src={REAL_UNI_PHOTOS[u.id]}
+                  src={DEMO_UNI_PHOTOS[u.id]}
                   alt={u.name}
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+
                 {u.cost <= budget && (
                   <span className="absolute right-2 top-2 rounded-full bg-kid-mint/20 px-1.5 py-0.5 text-[9px] font-semibold text-kid-mint">
                     {t("Puede aplicar", "Can apply")}
