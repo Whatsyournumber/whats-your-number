@@ -428,6 +428,7 @@ export type Database = {
           split_save: number
           split_spend: number
           streak: number
+          subtitle: string | null
           theme: string
           updated_at: string
           user_id: string
@@ -449,6 +450,7 @@ export type Database = {
           split_save?: number
           split_spend?: number
           streak?: number
+          subtitle?: string | null
           theme?: string
           updated_at?: string
           user_id: string
@@ -470,6 +472,7 @@ export type Database = {
           split_save?: number
           split_spend?: number
           streak?: number
+          subtitle?: string | null
           theme?: string
           updated_at?: string
           user_id?: string
