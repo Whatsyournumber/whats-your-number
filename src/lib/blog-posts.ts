@@ -54,8 +54,8 @@ export const blogPosts: BlogPost[] = [
     slug: "rico-vs-adinerado",
     image: richVsWealthyImg,
     imageAlt: {
-      es: "Hombre tranquilo al amanecer revisando en una tablet la proyección de su cartera de inversión",
-      en: "Calm man at dawn reviewing his investment portfolio projection on a tablet",
+      es: "Composición dividida: a la izquierda un profesional estresado atrapado en la rutina del salario; a la derecha una persona serena y libre al amanecer, sin pensar en dinero",
+      en: "Split composition: on the left a stressed professional trapped in the salary grind; on the right a serene person free at sunrise, no longer thinking about money",
     },
     keyword: { es: "ser rico o ser adinerado", en: "rich vs wealthy" },
     toc: true,
