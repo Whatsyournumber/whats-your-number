@@ -10,6 +10,8 @@ import benchmark2Img from "@/assets/blog/benchmark-2.jpg";
 import aiExpenses2Img from "@/assets/blog/ai-expenses-2.jpg";
 import freedom2Img from "@/assets/blog/freedom-number-2.jpg";
 import review2Img from "@/assets/blog/review-2.jpg";
+import richVsWealthyImg from "@/assets/blog/rich-vs-wealthy.jpg";
+import richVsWealthy2Img from "@/assets/blog/rich-vs-wealthy-2.jpg";
 
 export type BlogSection = {
   heading: { es: string; en: string };
@@ -840,6 +842,36 @@ export type BlogExtras = {
 
 /** Second photo + comparative table shown mid-article. */
 export const postExtras: Record<string, BlogExtras> = {
+  "rico-vs-adinerado": {
+    image2: richVsWealthy2Img,
+    image2Alt: {
+      es: "Manos anotando el coste mensual de vida en una libreta junto a un portátil con la distribución de la cartera",
+      en: "Hands writing monthly living costs in a notebook next to a laptop showing portfolio allocation",
+    },
+    image2Caption: {
+      es: "Primero la línea base mensual, después el capital. Nunca al revés.",
+      en: "The monthly baseline first, the capital second. Never the other way round.",
+    },
+    table: {
+      title: { es: "Rico vs. adinerado: dos vidas con el mismo ingreso", en: "Rich vs. wealthy: two lives on the same income" },
+      note: {
+        es: "Ambos ingresan 8.000 € netos al mes durante 15 años.",
+        en: "Both earn €8,000 net per month for 15 years.",
+      },
+      columns: [
+        { es: "Concepto", en: "Item" },
+        { es: "Perfil \"rico\"", en: "\"Rich\" profile" },
+        { es: "Perfil \"adinerado\"", en: "\"Wealthy\" profile" },
+      ],
+      rows: [
+        { cells: [{ es: "Gasto mensual", en: "Monthly spending" }, { es: "7.400 €", en: "€7,400" }, { es: "4.800 €", en: "€4,800" }] },
+        { cells: [{ es: "Ahorro invertido", en: "Invested savings" }, { es: "600 €/mes", en: "€600/mo" }, { es: "3.200 €/mes", en: "€3,200/mo" }] },
+        { cells: [{ es: "Capital a 15 años (7%)", en: "Capital after 15 years (7%)" }, { es: "190.000 €", en: "€190,000" }, { es: "1.014.000 €", en: "€1,014,000" }] },
+        { cells: [{ es: "Meses de vida cubiertos", en: "Months of life covered" }, { es: "26", en: "26" }, { es: "211", en: "211" }] },
+        { cells: [{ es: "¿Puede dejar de trabajar?", en: "Can they stop working?" }, { es: "No", en: "No" }, { es: "Casi (72% del número)", en: "Almost (72% of the number)" }], highlight: true },
+      ],
+    },
+  },
   "calcular-patrimonio-neto-real": {
     image2: netWorth2Img,
     image2Alt: {
@@ -1009,4 +1041,97 @@ export const postExtras: Record<string, BlogExtras> = {
       ],
     },
   },
+};
+
+export type BlogChart = {
+  id: string;
+  kind: "bar" | "area";
+  stacked?: boolean;
+  unit?: "money" | "years" | "percent";
+  title: { es: string; en: string };
+  note?: { es: string; en: string };
+  series: { key: string; label: { es: string; en: string } }[];
+  data: (Record<string, number> & { label: { es: string; en: string } })[];
+  /** Index of the section this chart is rendered after. */
+  after: number;
+};
+
+/** Charts rendered inside specific articles. */
+export const postCharts: Record<string, BlogChart[]> = {
+  "rico-vs-adinerado": [
+    {
+      id: "capital",
+      kind: "bar",
+      unit: "money",
+      after: 2,
+      title: {
+        es: "Capital necesario según tu estándar de vida",
+        en: "Capital needed by standard of living",
+      },
+      note: {
+        es: "Gasto mensual objetivo convertido en capital con tasa de retiro del 4% y del 3,5%.",
+        en: "Target monthly spending converted into capital at a 4% and a 3.5% withdrawal rate.",
+      },
+      series: [
+        { key: "wr4", label: { es: "Tasa 4%", en: "4% rate" } },
+        { key: "wr35", label: { es: "Tasa 3,5%", en: "3.5% rate" } },
+      ],
+      data: [
+        { label: { es: "3.000 €/mes", en: "€3,000/mo" }, wr4: 900000, wr35: 1030000 },
+        { label: { es: "5.000 €/mes", en: "€5,000/mo" }, wr4: 1500000, wr35: 1715000 },
+        { label: { es: "7.000 €/mes", en: "€7,000/mo" }, wr4: 2100000, wr35: 2400000 },
+        { label: { es: "10.000 €/mes", en: "€10,000/mo" }, wr4: 3000000, wr35: 3430000 },
+      ],
+    },
+    {
+      id: "years",
+      kind: "bar",
+      unit: "years",
+      after: 3,
+      title: {
+        es: "Años hasta la libertad según tu tasa de ahorro",
+        en: "Years to freedom by savings rate",
+      },
+      note: {
+        es: "Partiendo de cero, con una rentabilidad real del 5% anual y gasto constante.",
+        en: "Starting from zero, with a 5% real annual return and constant spending.",
+      },
+      series: [{ key: "years", label: { es: "Años de trabajo necesarios", en: "Years of work needed" } }],
+      data: [
+        { label: { es: "10%", en: "10%" }, years: 43 },
+        { label: { es: "20%", en: "20%" }, years: 32 },
+        { label: { es: "30%", en: "30%" }, years: 25 },
+        { label: { es: "40%", en: "40%" }, years: 20 },
+        { label: { es: "50%", en: "50%" }, years: 16 },
+        { label: { es: "60%", en: "60%" }, years: 12 },
+        { label: { es: "70%", en: "70%" }, years: 9 },
+      ],
+    },
+    {
+      id: "compound",
+      kind: "area",
+      stacked: true,
+      unit: "money",
+      after: 4,
+      title: {
+        es: "Aportaciones vs. interés compuesto",
+        en: "Contributions vs. compound interest",
+      },
+      note: {
+        es: "2.000 € invertidos cada mes con una rentabilidad del 7% anual.",
+        en: "€2,000 invested every month at a 7% annual return.",
+      },
+      series: [
+        { key: "aportado", label: { es: "Lo que aportas tú", en: "What you contribute" } },
+        { key: "interes", label: { es: "Lo que aporta el interés", en: "What compounding adds" } },
+      ],
+      data: [
+        { label: { es: "Año 5", en: "Year 5" }, aportado: 120000, interes: 23000 },
+        { label: { es: "Año 10", en: "Year 10" }, aportado: 240000, interes: 106000 },
+        { label: { es: "Año 15", en: "Year 15" }, aportado: 360000, interes: 274000 },
+        { label: { es: "Año 20", en: "Year 20" }, aportado: 480000, interes: 562000 },
+        { label: { es: "Año 25", en: "Year 25" }, aportado: 600000, interes: 1021000 },
+      ],
+    },
+  ],
 };
