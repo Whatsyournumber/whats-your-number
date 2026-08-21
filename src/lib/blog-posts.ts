@@ -1051,7 +1051,7 @@ export type BlogChart = {
   title: { es: string; en: string };
   note?: { es: string; en: string };
   series: { key: string; label: { es: string; en: string } }[];
-  data: (Record<string, number> & { label: { es: string; en: string } })[];
+  data: ({ label: { es: string; en: string } } & Record<string, unknown>)[];
   /** Index of the section this chart is rendered after. */
   after: number;
 };

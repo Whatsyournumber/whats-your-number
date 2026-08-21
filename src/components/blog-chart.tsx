@@ -19,7 +19,7 @@ const PALETTE = ["var(--color-chart-1)", "var(--color-chart-2)", "var(--color-ch
 
 export function BlogChartBlock({ chart }: { chart: BlogChart }) {
   const { lang } = useLanguage();
-  const data = chart.data.map((d) => ({ ...d, label: d.label[lang] }));
+  const data = chart.data.map((d) => ({ ...d, label: d.label[lang] })) as Record<string, unknown>[];
   const fmt = (v: number) =>
     chart.unit === "years"
       ? `${v} ${lang === "es" ? "años" : "yrs"}`
