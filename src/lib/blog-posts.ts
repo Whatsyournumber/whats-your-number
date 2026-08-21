@@ -10,6 +10,8 @@ import benchmark2Img from "@/assets/blog/benchmark-2.jpg";
 import aiExpenses2Img from "@/assets/blog/ai-expenses-2.jpg";
 import freedom2Img from "@/assets/blog/freedom-number-2.jpg";
 import review2Img from "@/assets/blog/review-2.jpg";
+import richVsWealthyImg from "@/assets/blog/rich-vs-wealthy.jpg";
+import richVsWealthy2Img from "@/assets/blog/rich-vs-wealthy-2.jpg";
 
 export type BlogSection = {
   heading: { es: string; en: string };
@@ -48,6 +50,133 @@ export function sectionId(heading: string) {
 }
 
 export const blogPosts: BlogPost[] = [
+  {
+    slug: "rico-vs-adinerado",
+    image: richVsWealthyImg,
+    imageAlt: {
+      es: "Hombre tranquilo al amanecer revisando en una tablet la proyección de su cartera de inversión",
+      en: "Calm man at dawn reviewing his investment portfolio projection on a tablet",
+    },
+    keyword: { es: "ser rico o ser adinerado", en: "rich vs wealthy" },
+    toc: true,
+    readMinutes: 14,
+    tag: { es: "Libertad financiera", en: "Financial freedom" },
+    date: { es: "21 ago 2026", en: "Aug 21, 2026" },
+    title: {
+      es: "Ser rico vs. ser adinerado: cuánto necesitas para dejar de pensar en dinero",
+      en: "Rich vs. wealthy: how much you need to stop thinking about money",
+    },
+    excerpt: {
+      es: "Rico es cuánto ganas. Adinerado es cuántos meses puedes vivir sin ganar nada. Aquí tienes las cifras, los años y la estrategia de inversión.",
+      en: "Rich is how much you earn. Wealthy is how many months you can live without earning. Here are the figures, the years and the investing strategy.",
+    },
+    intro: {
+      es: "Casi todo el mundo persigue ser rico: un sueldo más alto, un bonus mejor, una facturación mayor. Pero un ingreso alto solo compra un estilo de vida alto, y el estilo de vida se lleva el dinero antes de que llegue a convertirse en patrimonio. Ser adinerado es otra cosa: es tener suficiente capital invertido para que tu vida se pague sola aunque mañana dejes de trabajar. La pregunta útil no es cuánto puedes ganar, sino cuánto necesitas acumular para cubrir tu línea base y dejar de pensar en dinero. En este artículo verás, con gráficas, cuánto capital exige cada estándar de vida (3.000 €, 5.000 €, 7.000 € o 10.000 € al mes), en cuántos años lo alcanzas según tu tasa de ahorro y cómo invertirlo de forma inteligente para llegar antes.",
+      en: "Almost everyone chases being rich: a bigger salary, a better bonus, higher revenue. But high income only buys a high lifestyle, and lifestyle eats the money before it ever becomes wealth. Being wealthy is different: it means holding enough invested capital that your life pays for itself even if you stop working tomorrow. The useful question is not how much you can earn, but how much you need to accumulate to cover your baseline and stop thinking about money. This article shows, with charts, how much capital each standard of living demands (€3,000, €5,000, €7,000 or €10,000 a month), how many years it takes depending on your savings rate, and how to invest intelligently to get there sooner.",
+    },
+    sections: [
+      {
+        heading: { es: "Rico es un flujo. Adinerado es un stock", en: "Rich is a flow. Wealthy is a stock" },
+        paragraphs: [
+          {
+            es: "Rico describe tu cuenta de resultados: cuánto entra cada mes. Adinerado describe tu balance: cuánto capital tienes trabajando. Son dos cosas independientes. Hay directivos con 250.000 € al año y tres meses de colchón, y hay profesores con 45.000 € al año y veinte años de gastos cubiertos. El primero necesita seguir yendo a la oficina; el segundo, no.",
+            en: "Rich describes your income statement: how much comes in each month. Wealthy describes your balance sheet: how much capital you have working. They are independent. There are executives earning €250,000 a year with three months of buffer, and teachers earning €45,000 a year with twenty years of expenses covered. The first one must keep showing up; the second one does not.",
+          },
+          {
+            es: "La métrica que separa ambos mundos es simple: patrimonio invertido dividido entre tu gasto mensual. Ese cociente son meses de libertad. Todo lo que aumente el numerador o reduzca el denominador te acerca; todo lo demás es ruido.",
+            en: "The metric that separates both worlds is simple: invested net worth divided by your monthly spending. That ratio is months of freedom. Anything that raises the numerator or lowers the denominator moves you closer; everything else is noise.",
+          },
+        ],
+        bullets: [
+          { es: "Ingreso alto + gasto alto = rico y atrapado.", en: "High income + high spending = rich and trapped." },
+          { es: "Ingreso medio + gasto controlado + inversión = adinerado.", en: "Mid income + controlled spending + investing = wealthy." },
+          { es: "Lo que no inviertes no compra libertad, compra semanas.", en: "What you do not invest buys weeks, not freedom." },
+        ],
+      },
+      {
+        heading: { es: "Tu línea base: el número que casi nadie calcula", en: "Your baseline: the number almost nobody calculates" },
+        paragraphs: [
+          {
+            es: "Antes de hablar de millones necesitas una cifra honesta: cuánto cuesta un mes normal de tu vida. No el mes ideal ni el mes de emergencia, sino el real, con vivienda, comida, transporte, seguros, colegios, ocio y los gastos anuales prorrateados (IBI, seguros, vacaciones, revisiones del coche).",
+            en: "Before talking millions you need an honest figure: what a normal month of your life costs. Not the ideal month nor the emergency month, but the real one, with housing, food, transport, insurance, schools, leisure and annualised costs spread monthly (property tax, insurance, holidays, car servicing).",
+          },
+          {
+            es: "Después divide ese gasto en dos capas. La capa base es lo que necesitas para vivir con dignidad y sin estrés: normalmente entre el 55% y el 70% del total. La capa opcional es lo que hace la vida más agradable: viajes, restaurantes, suscripciones, caprichos. Tu libertad financiera empieza el día en que el capital cubre la capa base; el resto es lujo negociable.",
+            en: "Then split that spending into two layers. The base layer is what you need to live with dignity and without stress: usually 55-70% of the total. The optional layer is what makes life nicer: travel, restaurants, subscriptions, treats. Financial freedom starts the day your capital covers the base layer; the rest is negotiable luxury.",
+          },
+        ],
+      },
+      {
+        heading: { es: "Cuánto capital necesitas según tu estándar de vida", en: "How much capital each standard of living needs" },
+        paragraphs: [
+          {
+            es: "La regla es directa: capital necesario = gasto anual ÷ tasa de retiro. Con una tasa del 4% necesitas 25 veces tu gasto anual; con una tasa más conservadora del 3,5%, unas 28,6 veces. La diferencia parece pequeña en porcentaje y es enorme en euros: en un gasto de 7.000 € al mes son casi 300.000 € más de capital.",
+            en: "The rule is direct: capital needed = annual spending ÷ withdrawal rate. At 4% you need 25 times your annual spending; at a more conservative 3.5%, about 28.6 times. The gap looks small in percentage terms and is huge in euros: at €7,000 a month it is nearly €300,000 of extra capital.",
+          },
+          {
+            es: "Mira la gráfica: cada 2.000 € más de estándar de vida mensual añaden entre 600.000 € y 686.000 € al objetivo. Ese es el precio real de subir de nivel de vida. No es que no puedas permitírtelo: es que cada subida te cuesta años de trabajo obligatorio.",
+            en: "Look at the chart: every extra €2,000 of monthly lifestyle adds €600,000-686,000 to the target. That is the real price of lifestyle inflation. It is not that you cannot afford it: it is that every upgrade costs you years of mandatory work.",
+          },
+        ],
+        bullets: [
+          { es: "3.000 €/mes → 900.000 € al 4% · 1.030.000 € al 3,5%.", en: "€3,000/mo → €900,000 at 4% · €1,030,000 at 3.5%." },
+          { es: "5.000 €/mes → 1.500.000 € al 4% · 1.715.000 € al 3,5%.", en: "€5,000/mo → €1,500,000 at 4% · €1,715,000 at 3.5%." },
+          { es: "7.000 €/mes → 2.100.000 € al 4% · 2.400.000 € al 3,5%.", en: "€7,000/mo → €2,100,000 at 4% · €2,400,000 at 3.5%." },
+          { es: "10.000 €/mes → 3.000.000 € al 4% · 3.430.000 € al 3,5%.", en: "€10,000/mo → €3,000,000 at 4% · €3,430,000 at 3.5%." },
+        ],
+      },
+      {
+        heading: { es: "Cuántos años tardas: manda la tasa de ahorro", en: "How many years it takes: the savings rate rules" },
+        paragraphs: [
+          {
+            es: "El dato más contraintuitivo de las finanzas personales es este: el tiempo hasta la libertad depende mucho más del porcentaje que ahorras que de cuánto ganas. Si ahorras el 10% de tu ingreso necesitas más de cuarenta años; si ahorras el 50%, unos dieciséis; con el 70%, menos de diez. La razón es doble: ahorrar más aumenta el capital y, a la vez, reduce el gasto que ese capital tendrá que financiar.",
+            en: "The most counterintuitive fact in personal finance is this: time to freedom depends far more on the share you save than on how much you earn. Saving 10% of your income takes over forty years; saving 50%, about sixteen; at 70%, under ten. The reason is twofold: saving more grows capital and simultaneously shrinks the spending that capital must fund.",
+          },
+          {
+            es: "Por eso una subida de sueldo solo acelera tu libertad si no la conviertes en gasto. Un aumento del 20% que se va íntegro en un coche nuevo no mueve tu fecha ni un mes; el mismo aumento invertido puede adelantarla tres o cuatro años.",
+            en: "That is why a raise only accelerates your freedom if you do not turn it into spending. A 20% raise fully absorbed by a new car does not move your date by a single month; the same raise invested can pull it forward three or four years.",
+          },
+        ],
+      },
+      {
+        heading: { es: "Cómo invertir de forma inteligente para llegar antes", en: "How to invest intelligently to arrive sooner" },
+        paragraphs: [
+          {
+            es: "Invertir bien aquí no significa acertar acciones: significa capturar la rentabilidad del mercado con costes bajos, riesgo ajustado a tu horizonte y sin interrumpir el proceso. La combinación que ha funcionado durante décadas es aburrida: fondos indexados globales, aportación automática cada mes, rebalanceo una o dos veces al año y no vender en las caídas.",
+            en: "Investing well here does not mean picking winners: it means capturing market returns with low costs, risk matched to your horizon, and never interrupting the process. The combination that has worked for decades is boring: global index funds, an automatic monthly contribution, rebalancing once or twice a year and not selling in drawdowns.",
+          },
+          {
+            es: "La gráfica de aportaciones frente a intereses lo resume todo: en los primeros cinco años casi todo tu capital viene de lo que aportas, y a partir del año quince el interés compuesto aporta más que tú. La paciencia no es una virtud moral en inversión, es el motor matemático del resultado.",
+            en: "The contributions-versus-interest chart says it all: in the first five years nearly all your capital comes from what you put in, and from year fifteen onwards compounding contributes more than you do. Patience is not a moral virtue in investing, it is the mathematical engine of the outcome.",
+          },
+        ],
+        bullets: [
+          { es: "Núcleo 70-90% en renta variable global indexada, coste total por debajo del 0,25%.", en: "Core 70-90% in global equity index funds, total cost under 0.25%." },
+          { es: "Colchón de 6-12 meses en liquidez remunerada, fuera de la cartera.", en: "A 6-12 month buffer in cash-like yield, outside the portfolio." },
+          { es: "Renta fija o monetario creciendo a medida que te acercas a tu número.", en: "Bonds or money market growing as you approach your number." },
+          { es: "Aportación automática el día de cobro: primero inviertes, luego gastas.", en: "Automatic contribution on payday: invest first, spend later." },
+          { es: "Alternativos (inmobiliario, cripto) como satélite, nunca como núcleo.", en: "Alternatives (real estate, crypto) as a satellite, never as the core." },
+        ],
+      },
+      {
+        heading: { es: "Escapar del sistema por fases, no de golpe", en: "Escaping the system in phases, not in one jump" },
+        paragraphs: [
+          {
+            es: "No hace falta llegar al 100% del número para que tu vida cambie. Con 25 veces tu gasto mensual (unos dos años de colchón) puedes rechazar un mal trabajo. Con 10 veces tu gasto anual ya puedes bajar de jornada o cambiar de sector con margen. Con la capa base cubierta al 100% trabajas porque quieres. Cada fase compra un tipo distinto de tranquilidad.",
+            en: "You do not need 100% of your number for your life to change. With 25 times your monthly spending (about two years of buffer) you can turn down a bad job. With 10 times your annual spending you can already cut hours or switch industries with room to breathe. With your base layer fully covered you work because you want to. Each phase buys a different kind of calm.",
+          },
+          {
+            es: "Define tus fases, ponles fecha estimada y revísalas una vez al mes. La libertad financiera deja de ser una fantasía cuando se convierte en un porcentaje que sube.",
+            en: "Define your phases, give them an estimated date and review them once a month. Financial freedom stops being a fantasy when it becomes a percentage that goes up.",
+          },
+        ],
+      },
+    ],
+    takeaway: {
+      es: "Calcula tu línea base mensual, multiplícala por 300 (25 años de gasto) y conviértela en un plan de aportación automática. Ese número, no tu sueldo, es el que decide cuándo dejas de pensar en dinero.",
+      en: "Work out your monthly baseline, multiply it by 300 (25 years of spending) and turn it into an automatic contribution plan. That number, not your salary, decides when you stop thinking about money.",
+    },
+  },
   {
     slug: "calcular-patrimonio-neto-real",
     image: netWorthImg,
@@ -713,6 +842,36 @@ export type BlogExtras = {
 
 /** Second photo + comparative table shown mid-article. */
 export const postExtras: Record<string, BlogExtras> = {
+  "rico-vs-adinerado": {
+    image2: richVsWealthy2Img,
+    image2Alt: {
+      es: "Manos anotando el coste mensual de vida en una libreta junto a un portátil con la distribución de la cartera",
+      en: "Hands writing monthly living costs in a notebook next to a laptop showing portfolio allocation",
+    },
+    image2Caption: {
+      es: "Primero la línea base mensual, después el capital. Nunca al revés.",
+      en: "The monthly baseline first, the capital second. Never the other way round.",
+    },
+    table: {
+      title: { es: "Rico vs. adinerado: dos vidas con el mismo ingreso", en: "Rich vs. wealthy: two lives on the same income" },
+      note: {
+        es: "Ambos ingresan 8.000 € netos al mes durante 15 años.",
+        en: "Both earn €8,000 net per month for 15 years.",
+      },
+      columns: [
+        { es: "Concepto", en: "Item" },
+        { es: "Perfil \"rico\"", en: "\"Rich\" profile" },
+        { es: "Perfil \"adinerado\"", en: "\"Wealthy\" profile" },
+      ],
+      rows: [
+        { cells: [{ es: "Gasto mensual", en: "Monthly spending" }, { es: "7.400 €", en: "€7,400" }, { es: "4.800 €", en: "€4,800" }] },
+        { cells: [{ es: "Ahorro invertido", en: "Invested savings" }, { es: "600 €/mes", en: "€600/mo" }, { es: "3.200 €/mes", en: "€3,200/mo" }] },
+        { cells: [{ es: "Capital a 15 años (7%)", en: "Capital after 15 years (7%)" }, { es: "190.000 €", en: "€190,000" }, { es: "1.014.000 €", en: "€1,014,000" }] },
+        { cells: [{ es: "Meses de vida cubiertos", en: "Months of life covered" }, { es: "26", en: "26" }, { es: "211", en: "211" }] },
+        { cells: [{ es: "¿Puede dejar de trabajar?", en: "Can they stop working?" }, { es: "No", en: "No" }, { es: "Casi (72% del número)", en: "Almost (72% of the number)" }], highlight: true },
+      ],
+    },
+  },
   "calcular-patrimonio-neto-real": {
     image2: netWorth2Img,
     image2Alt: {
@@ -882,4 +1041,97 @@ export const postExtras: Record<string, BlogExtras> = {
       ],
     },
   },
+};
+
+export type BlogChart = {
+  id: string;
+  kind: "bar" | "area";
+  stacked?: boolean;
+  unit?: "money" | "years" | "percent";
+  title: { es: string; en: string };
+  note?: { es: string; en: string };
+  series: { key: string; label: { es: string; en: string } }[];
+  data: ({ label: { es: string; en: string } } & Record<string, unknown>)[];
+  /** Index of the section this chart is rendered after. */
+  after: number;
+};
+
+/** Charts rendered inside specific articles. */
+export const postCharts: Record<string, BlogChart[]> = {
+  "rico-vs-adinerado": [
+    {
+      id: "capital",
+      kind: "bar",
+      unit: "money",
+      after: 2,
+      title: {
+        es: "Capital necesario según tu estándar de vida",
+        en: "Capital needed by standard of living",
+      },
+      note: {
+        es: "Gasto mensual objetivo convertido en capital con tasa de retiro del 4% y del 3,5%.",
+        en: "Target monthly spending converted into capital at a 4% and a 3.5% withdrawal rate.",
+      },
+      series: [
+        { key: "wr4", label: { es: "Tasa 4%", en: "4% rate" } },
+        { key: "wr35", label: { es: "Tasa 3,5%", en: "3.5% rate" } },
+      ],
+      data: [
+        { label: { es: "3.000 €/mes", en: "€3,000/mo" }, wr4: 900000, wr35: 1030000 },
+        { label: { es: "5.000 €/mes", en: "€5,000/mo" }, wr4: 1500000, wr35: 1715000 },
+        { label: { es: "7.000 €/mes", en: "€7,000/mo" }, wr4: 2100000, wr35: 2400000 },
+        { label: { es: "10.000 €/mes", en: "€10,000/mo" }, wr4: 3000000, wr35: 3430000 },
+      ],
+    },
+    {
+      id: "years",
+      kind: "bar",
+      unit: "years",
+      after: 3,
+      title: {
+        es: "Años hasta la libertad según tu tasa de ahorro",
+        en: "Years to freedom by savings rate",
+      },
+      note: {
+        es: "Partiendo de cero, con una rentabilidad real del 5% anual y gasto constante.",
+        en: "Starting from zero, with a 5% real annual return and constant spending.",
+      },
+      series: [{ key: "years", label: { es: "Años de trabajo necesarios", en: "Years of work needed" } }],
+      data: [
+        { label: { es: "10%", en: "10%" }, years: 43 },
+        { label: { es: "20%", en: "20%" }, years: 32 },
+        { label: { es: "30%", en: "30%" }, years: 25 },
+        { label: { es: "40%", en: "40%" }, years: 20 },
+        { label: { es: "50%", en: "50%" }, years: 16 },
+        { label: { es: "60%", en: "60%" }, years: 12 },
+        { label: { es: "70%", en: "70%" }, years: 9 },
+      ],
+    },
+    {
+      id: "compound",
+      kind: "area",
+      stacked: true,
+      unit: "money",
+      after: 4,
+      title: {
+        es: "Aportaciones vs. interés compuesto",
+        en: "Contributions vs. compound interest",
+      },
+      note: {
+        es: "2.000 € invertidos cada mes con una rentabilidad del 7% anual.",
+        en: "€2,000 invested every month at a 7% annual return.",
+      },
+      series: [
+        { key: "aportado", label: { es: "Lo que aportas tú", en: "What you contribute" } },
+        { key: "interes", label: { es: "Lo que aporta el interés", en: "What compounding adds" } },
+      ],
+      data: [
+        { label: { es: "Año 5", en: "Year 5" }, aportado: 120000, interes: 23000 },
+        { label: { es: "Año 10", en: "Year 10" }, aportado: 240000, interes: 106000 },
+        { label: { es: "Año 15", en: "Year 15" }, aportado: 360000, interes: 274000 },
+        { label: { es: "Año 20", en: "Year 20" }, aportado: 480000, interes: 562000 },
+        { label: { es: "Año 25", en: "Year 25" }, aportado: 600000, interes: 1021000 },
+      ],
+    },
+  ],
 };
