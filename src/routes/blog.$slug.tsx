@@ -5,7 +5,8 @@ import { ArrowLeft, ArrowRight, Clock, List, Sparkles } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useLanguage, useT } from "@/hooks/use-language";
-import { blogPosts, getPost, postExtras, sectionId } from "@/lib/blog-posts";
+import { blogPosts, getPost, postCharts, postExtras, sectionId } from "@/lib/blog-posts";
+import { BlogChartBlock } from "@/components/blog-chart";
 import { getAuthor } from "@/lib/blog-authors";
 
 export const Route = createFileRoute("/blog/$slug")({
@@ -70,6 +71,7 @@ function BlogArticle() {
   if (!post) return null;
 
   const extras = postExtras[post.slug];
+  const charts = postCharts[post.slug] ?? [];
   const author = getAuthor(post.slug);
 
   // Cumulative paragraph count after each section
@@ -175,6 +177,12 @@ function BlogArticle() {
                   </ul>
                 )}
               </section>
+
+              {charts
+                .filter((c) => c.after === i)
+                .map((c) => (
+                  <BlogChartBlock key={c.id} chart={c} />
+                ))}
 
               {extras && i === imageIndex && (
                 <figure className="surface overflow-hidden">
