@@ -43,6 +43,7 @@ import { Route as CheckoutSuccessRouteImport } from './routes/checkout/success'
 import { Route as NinosIndexRouteImport } from './routes/ninos/index'
 import { Route as NinosOnboardingRouteImport } from './routes/ninos/onboarding'
 import { Route as NinosPadresRouteImport } from './routes/ninos/padres'
+import { Route as ApiPublicRssRouteImport } from './routes/api/public/rss'
 import { Route as NinosKidDatosRouteImport } from './routes/ninos/kid/datos'
 import { Route as NinosKidDeseosRouteImport } from './routes/ninos/kid/deseos'
 import { Route as NinosKidDineroRouteImport } from './routes/ninos/kid/dinero'
@@ -223,6 +224,11 @@ const NinosPadresRoute = NinosPadresRouteImport.update({
   path: '/padres',
   getParentRoute: () => NinosRouteRoute,
 } as any)
+const ApiPublicRssRoute = ApiPublicRssRouteImport.update({
+  id: '/api/public/rss',
+  path: '/api/public/rss',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NinosKidDatosRoute = NinosKidDatosRouteImport.update({
   id: '/kid/datos',
   path: '/kid/datos',
@@ -306,6 +312,7 @@ export interface FileRoutesByFullPath {
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/ninos/': typeof NinosIndexRoute
+  '/api/public/rss': typeof ApiPublicRssRoute
   '/ninos/kid/datos': typeof NinosKidDatosRoute
   '/ninos/kid/deseos': typeof NinosKidDeseosRoute
   '/ninos/kid/dinero': typeof NinosKidDineroRoute
@@ -350,6 +357,7 @@ export interface FileRoutesByTo {
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/ninos': typeof NinosIndexRoute
+  '/api/public/rss': typeof ApiPublicRssRoute
   '/ninos/kid/datos': typeof NinosKidDatosRoute
   '/ninos/kid/deseos': typeof NinosKidDeseosRoute
   '/ninos/kid/dinero': typeof NinosKidDineroRoute
@@ -396,6 +404,7 @@ export interface FileRoutesById {
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/ninos/': typeof NinosIndexRoute
+  '/api/public/rss': typeof ApiPublicRssRoute
   '/ninos/kid/datos': typeof NinosKidDatosRoute
   '/ninos/kid/deseos': typeof NinosKidDeseosRoute
   '/ninos/kid/dinero': typeof NinosKidDineroRoute
@@ -443,6 +452,7 @@ export interface FileRouteTypes {
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/ninos/'
+    | '/api/public/rss'
     | '/ninos/kid/datos'
     | '/ninos/kid/deseos'
     | '/ninos/kid/dinero'
@@ -487,6 +497,7 @@ export interface FileRouteTypes {
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/ninos'
+    | '/api/public/rss'
     | '/ninos/kid/datos'
     | '/ninos/kid/deseos'
     | '/ninos/kid/dinero'
@@ -532,6 +543,7 @@ export interface FileRouteTypes {
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/ninos/'
+    | '/api/public/rss'
     | '/ninos/kid/datos'
     | '/ninos/kid/deseos'
     | '/ninos/kid/dinero'
@@ -574,6 +586,7 @@ export interface RootRouteChildren {
   SuscripcionRoute: typeof SuscripcionRoute
   TerminosRoute: typeof TerminosRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
+  ApiPublicRssRoute: typeof ApiPublicRssRoute
   ApiPublicLinkedinCallbackRoute: typeof ApiPublicLinkedinCallbackRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
@@ -818,6 +831,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NinosPadresRouteImport
       parentRoute: typeof NinosRouteRoute
     }
+    '/api/public/rss': {
+      id: '/api/public/rss'
+      path: '/api/public/rss'
+      fullPath: '/api/public/rss'
+      preLoaderRoute: typeof ApiPublicRssRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ninos/kid/datos': {
       id: '/ninos/kid/datos'
       path: '/kid/datos'
@@ -955,6 +975,7 @@ const rootRouteChildren: RootRouteChildren = {
   SuscripcionRoute: SuscripcionRoute,
   TerminosRoute: TerminosRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,
+  ApiPublicRssRoute: ApiPublicRssRoute,
   ApiPublicLinkedinCallbackRoute: ApiPublicLinkedinCallbackRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
