@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { blogPosts } from "@/lib/blog-posts";
 
-const SITE = "https://www.whatsyour-number.com";
+const SITE = "https://whatsyour-number.com";
 
 function esc(value: string) {
   return value
