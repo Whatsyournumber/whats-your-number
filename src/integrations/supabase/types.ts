@@ -726,6 +726,93 @@ export type Database = {
         }
         Relationships: []
       }
+      linkedin_connection: {
+        Row: {
+          access_token: string | null
+          connected_by: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          oauth_state: string | null
+          oauth_state_at: string | null
+          org_name: string | null
+          org_urn: string | null
+          refresh_expires_at: string | null
+          refresh_token: string | null
+          scope: string | null
+          updated_at: string
+        }
+        Insert: {
+          access_token?: string | null
+          connected_by?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          oauth_state?: string | null
+          oauth_state_at?: string | null
+          org_name?: string | null
+          org_urn?: string | null
+          refresh_expires_at?: string | null
+          refresh_token?: string | null
+          scope?: string | null
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string | null
+          connected_by?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          oauth_state?: string | null
+          oauth_state_at?: string | null
+          org_name?: string | null
+          org_urn?: string | null
+          refresh_expires_at?: string | null
+          refresh_token?: string | null
+          scope?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      linkedin_posts: {
+        Row: {
+          commentary: string | null
+          created_at: string
+          created_by: string | null
+          error: string | null
+          id: string
+          lang: string
+          post_url: string | null
+          post_urn: string | null
+          slug: string
+          status: string
+        }
+        Insert: {
+          commentary?: string | null
+          created_at?: string
+          created_by?: string | null
+          error?: string | null
+          id?: string
+          lang?: string
+          post_url?: string | null
+          post_urn?: string | null
+          slug: string
+          status?: string
+        }
+        Update: {
+          commentary?: string | null
+          created_at?: string
+          created_by?: string | null
+          error?: string | null
+          id?: string
+          lang?: string
+          post_url?: string | null
+          post_urn?: string | null
+          slug?: string
+          status?: string
+        }
+        Relationships: []
+      }
       net_worth_snapshots: {
         Row: {
           assets: number
