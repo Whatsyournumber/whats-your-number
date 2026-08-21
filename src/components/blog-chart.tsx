@@ -56,7 +56,7 @@ export function BlogChartBlock({ chart }: { chart: BlogChart }) {
                   type="monotone"
                   dataKey={s.key}
                   name={s.label[lang]}
-                  stackId={chart.stacked ? "a" : undefined}
+                  {...(chart.stacked ? { stackId: "a" } : {})}
                   stroke={PALETTE[i % PALETTE.length]}
                   fill={`url(#bg-${chart.id}-${s.key})`}
                   strokeWidth={2}
