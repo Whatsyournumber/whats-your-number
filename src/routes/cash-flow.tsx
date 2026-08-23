@@ -161,9 +161,17 @@ function CashFlow() {
   const fixedSavings = savingItems.reduce((s, i) => s + (i.amount || 0), 0);
   const fixedNeeds = needFixedItems.reduce((s, i) => s + (i.amount || 0), 0);
 
+  // Aporte mensual al fondo de retiro (misma fuente que la pestaña «Fondo de retiro»).
+  const retirementContribution = Math.max(0, Math.round(d.retirement.monthlyContribution || 0));
+
   const fixedAmount = hasReal ? fixedNeeds + spend.needs : d.cashFlow.buckets[0]!.amount;
   const lifestyleAmount = hasReal ? spend.wants : d.cashFlow.buckets[1]!.amount;
-  const investAmount = hasReal ? fixedSavings : d.cashFlow.buckets[2]!.amount;
+  // El bucket de inversión lee tanto los gastos fijos de ahorro como el aporte al fondo de retiro
+  // (se toma el mayor de ambos para no duplicar el mismo dinero).
+  const investAmount = hasReal
+    ? Math.max(fixedSavings, retirementContribution)
+    : Math.max(d.cashFlow.buckets[2]!.amount, retirementContribution);
+
   const freeAmount = Math.max(0, totalIncome - fixedAmount - lifestyleAmount - investAmount);
 
   const buckets = [
