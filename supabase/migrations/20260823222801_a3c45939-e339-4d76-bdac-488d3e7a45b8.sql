@@ -1,0 +1,1 @@
+ALTER TABLE public.onboarding_profiles ADD COLUMN IF NOT EXISTS retirement_monthly_contribution numeric NOT NULL DEFAULT 0;
