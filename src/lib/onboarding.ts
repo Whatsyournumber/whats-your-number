@@ -36,6 +36,7 @@ export type OnboardingData = {
   desired_retirement_income: number;
   expected_return: number;
   withdrawal_rate: number;
+  retirement_monthly_contribution: number;
   priority: string;
   risk_profile: string;
   home_price: number;
@@ -79,6 +80,7 @@ export const emptyOnboarding: OnboardingData = {
   desired_retirement_income: 0,
   expected_return: 7,
   withdrawal_rate: 7,
+  retirement_monthly_contribution: 0,
 
   priority: "",
   risk_profile: "",

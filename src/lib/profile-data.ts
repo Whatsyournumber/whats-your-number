@@ -218,11 +218,19 @@ export function buildDataset(p: Profile): Dataset {
     plan,
     retirement: {
       balance: p.assets_retirement,
-      monthlyContribution: Math.round(savings * 0.3),
+      // Si el usuario fijó un aporte mensual en el simulador, se respeta;
+      // si no, se estima como el 30% de su ahorro mensual.
+      monthlyContribution:
+        p.retirement_monthly_contribution > 0
+          ? Math.round(p.retirement_monthly_contribution)
+          : Math.round(savings * 0.3),
       returnAnnualized: p.expected_return,
       currentAge: p.age ?? 30,
       retireAge: p.retire_age,
-      contributionsYTD: Math.round(savings * 0.3 * 12),
+      contributionsYTD:
+        (p.retirement_monthly_contribution > 0
+          ? Math.round(p.retirement_monthly_contribution)
+          : Math.round(savings * 0.3)) * 12,
     },
     goals,
     cashFlow: {
