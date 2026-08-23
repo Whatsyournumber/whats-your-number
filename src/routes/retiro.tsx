@@ -469,6 +469,16 @@ function RetiroContent() {
                 step={50}
                 value={[monthly]}
                 onValueChange={([v]) => setMonthly(v ?? 0)}
+                onValueCommit={([v]) => {
+                  // En modo libertad financiera el aporte lo elige el usuario;
+                  // lo persistimos para que cash-flow y demás pestañas lo lean.
+                  if (isGoal) return;
+                  const next = v ?? 0;
+                  if (next === profile.retirement_monthly_contribution) return;
+                  void save({ retirement_monthly_contribution: next }).then(() =>
+                    toast.success(t("Aporte mensual guardado", "Monthly contribution saved")),
+                  );
+                }}
               />
             </div>
             <div>
