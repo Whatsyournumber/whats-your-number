@@ -173,12 +173,10 @@ function AuthPage() {
     if (promo.trim()) setPendingPromoCode(promo);
     setBusy(true);
     try {
-      const result = await lovable.auth.signInWithOAuth("google", {
-        // El broker OAuth necesita volver a una URL pública del mismo origen.
-        // El destino final se resuelve aquí después de recibir la sesión.
-        redirect_uri: window.location.origin,
-        extraParams: { prompt: "select_account" },
-      });
+      // El helper administrado detecta la URL pública correcta y coordina el
+      // popup con la vista previa. Pasar parámetros manuales aquí puede dejar
+      // una ventana `about:blank` en navegadores embebidos.
+      const result = await lovable.auth.signInWithOAuth("google");
       if (result.error) {
         toast.error(t("auth.toast.oauth"));
         setBusy(false);
