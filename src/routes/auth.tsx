@@ -19,14 +19,6 @@ import { startAffiliateWizard } from "@/lib/affiliate-wizard-state";
 
 type AuthSearch = { mode: "login" | "signup"; next?: string; flow?: "affiliate" };
 
-// Google nos devuelve nombre, email, teléfono y foto para construir el perfil.
-const GOOGLE_SCOPES = [
-  "openid",
-  "email",
-  "profile",
-  "https://www.googleapis.com/auth/user.phonenumbers.read",
-].join(" ");
-
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>): AuthSearch => {
     const rawNext = search["next"];
@@ -178,21 +170,27 @@ function AuthPage() {
   };
 
   const onOAuth = async () => {
-
     if (promo.trim()) setPendingPromoCode(promo);
     setBusy(true);
-    const pendingCheckout = getPendingCheckoutPlan();
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}${pendingCheckout ? "/precios" : (next ?? "/auth?mode=login")}`,
-      extraParams: { scope: GOOGLE_SCOPES, prompt: "consent select_account" },
-    });
-    if (result.error) {
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        // El broker OAuth necesita volver a una URL pública del mismo origen.
+        // El destino final se resuelve aquí después de recibir la sesión.
+        redirect_uri: window.location.origin,
+        extraParams: { prompt: "select_account" },
+      });
+      if (result.error) {
+        toast.error(t("auth.toast.oauth"));
+        setBusy(false);
+        return;
+      }
+      if (result.redirected) return;
+      navigate({ to: getPendingCheckoutPlan() ? "/precios" : (next ?? "/dashboard") });
+    } catch (error) {
+      console.error(error);
       toast.error(t("auth.toast.oauth"));
       setBusy(false);
-      return;
     }
-    if (result.redirected) return;
-    navigate({ to: next ?? "/dashboard" });
   };
 
   return (
