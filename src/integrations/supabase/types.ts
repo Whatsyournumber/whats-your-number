@@ -901,6 +901,7 @@ export type Database = {
           plans_children: string | null
           priority: string | null
           retire_age: number | null
+          retirement_monthly_contribution: number
           risk_profile: string | null
           timezone: string | null
           travel_frequency: string | null
@@ -959,6 +960,7 @@ export type Database = {
           plans_children?: string | null
           priority?: string | null
           retire_age?: number | null
+          retirement_monthly_contribution?: number
           risk_profile?: string | null
           timezone?: string | null
           travel_frequency?: string | null
@@ -1017,6 +1019,7 @@ export type Database = {
           plans_children?: string | null
           priority?: string | null
           retire_age?: number | null
+          retirement_monthly_contribution?: number
           risk_profile?: string | null
           timezone?: string | null
           travel_frequency?: string | null
