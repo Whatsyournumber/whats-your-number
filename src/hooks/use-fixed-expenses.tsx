@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useProfile } from "@/hooks/use-profile";
 import { convertMoneyValue } from "@/lib/fx";
@@ -11,59 +11,60 @@ const KEY = "whatsyournumber:fixed-expenses";
 /** Sin gastos fijos precargados: cada persona añade los suyos. */
 const defaults: FixedExpense[] = [];
 
-/** Gastos fijos mensuales editables, guardados localmente en el navegador. */
+/** Gastos fijos mensuales editables.
+ *  Los gastos estándar (FIXED_FIELDS) se derivan del onboarding (fuente de verdad);
+ *  los personalizados que añade el usuario se guardan en el navegador. */
 export function useFixedExpenses() {
   const [items, setItems] = useState<FixedExpense[]>(defaults);
   const [hydrated, setHydrated] = useState(false);
   const { profile } = useProfile();
 
+  const onboardingKeys = useMemo(() => new Set(FIXED_FIELDS.map((f) => f.key as string)), []);
+
+  // Carga solo los items personalizados (no del onboarding) desde localStorage.
   useEffect(() => {
     try {
       const raw = window.localStorage.getItem(KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as FixedExpense[];
-        if (Array.isArray(parsed)) setItems(parsed);
+        if (Array.isArray(parsed)) {
+          const custom = parsed.filter((i) => !onboardingKeys.has(i.id));
+          setItems(custom);
+        }
       }
     } catch {
       /* ignore */
     }
     setHydrated(true);
-  }, []);
+  }, [onboardingKeys]);
 
-  // Si aún no hay gastos fijos guardados, se rellenan con los del onboarding.
+  // Sincroniza los gastos fijos estándar con el onboarding (fuente de verdad).
   useEffect(() => {
     if (!hydrated) return;
-    let stored = false;
-    try {
-      stored = window.localStorage.getItem(KEY) !== null;
-    } catch {
-      /* ignore */
-    }
-    if (stored) return;
-    const seeded = FIXED_FIELDS.map((f) => ({
+    const fromOnboarding = FIXED_FIELDS.map((f) => ({
       id: f.key as string,
       name: f.es,
       amount: Number(profile[f.key]) || 0,
     })).filter((i) => i.amount > 0);
-    if (seeded.length === 0) return;
-    setItems(seeded);
-    try {
-      window.localStorage.setItem(KEY, JSON.stringify(seeded));
-    } catch {
-      /* ignore */
-    }
-  }, [hydrated, profile]);
+    setItems((prev) => {
+      const custom = prev.filter((i) => !onboardingKeys.has(i.id));
+      return [...fromOnboarding, ...custom];
+    });
+  }, [hydrated, profile, onboardingKeys]);
 
-
-
-  const persist = useCallback((next: FixedExpense[]) => {
-    setItems(next);
-    try {
-      window.localStorage.setItem(KEY, JSON.stringify(next));
-    } catch {
-      /* ignore */
-    }
-  }, []);
+  // Persiste solo los items personalizados; los estándar vienen del onboarding.
+  const persist = useCallback(
+    (next: FixedExpense[]) => {
+      setItems(next);
+      try {
+        const custom = next.filter((i) => !onboardingKeys.has(i.id));
+        window.localStorage.setItem(KEY, JSON.stringify(custom));
+      } catch {
+        /* ignore */
+      }
+    },
+    [onboardingKeys],
+  );
 
   const update = useCallback(
     (id: string, patch: Partial<FixedExpense>) =>
@@ -83,7 +84,7 @@ export function useFixedExpenses() {
   return { items, update, add, remove, total };
 }
 
-/** Reconvierte los gastos fijos guardados al cambiar la moneda del perfil. */
+/** Reconvierte los gastos fijos personalizados guardados al cambiar la moneda del perfil. */
 export function convertStoredFixedExpenses(from: string, to: string) {
   if (!from || !to || from.toUpperCase() === to.toUpperCase()) return;
   try {
