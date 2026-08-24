@@ -285,8 +285,8 @@ function OnboardingPage() {
       return !!life.goal;
     }
     if (step === 2) return !!data.age;
-    if (step === 4) return !!life.city;
-    if (step === 5) return !!life.marital_status && !!life.children && !!life.plans_children;
+    if (step === 4) return !!life.marital_status && !!life.children && !!life.plans_children;
+    if (step === 5) return !!life.city;
     if (step === 6) return !!life.lifestyle && !!life.travel_frequency;
     if (step === 7) return !!life.housing;
     return true;
