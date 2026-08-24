@@ -712,11 +712,35 @@ function OnboardingPage() {
                   <div className="mt-4 space-y-2.5">
                     <MoneyField
                       emoji="🪙"
-                      label={t("Ingreso mensual", "Monthly income")}
+                      label={t("Salario mensual", "Monthly salary")}
                       desc={t("Neto, después de impuestos", "Net, after taxes")}
                       currency={cur}
                       value={data.income_salary}
                       onChange={(v) => set("income_salary", v)}
+                    />
+                    <MoneyField
+                      emoji="🎯"
+                      label={t("Bonos / variables", "Bonuses / variable pay")}
+                      desc={t("Promedio mensual", "Monthly average")}
+                      currency={cur}
+                      value={data.income_bonus}
+                      onChange={(v) => set("income_bonus", v)}
+                    />
+                    <MoneyField
+                      emoji="🏘"
+                      label={t("Alquileres", "Rental income")}
+                      desc={t("Rentas que recibes cada mes", "Rent you receive each month")}
+                      currency={cur}
+                      value={data.income_rent}
+                      onChange={(v) => set("income_rent", v)}
+                    />
+                    <MoneyField
+                      emoji="✨"
+                      label={t("Otros ingresos", "Other income")}
+                      desc={t("Dividendos, side projects…", "Dividends, side projects…")}
+                      currency={cur}
+                      value={data.income_other}
+                      onChange={(v) => set("income_other", v)}
                     />
                     <MoneyField
                       emoji="🧾"
@@ -733,20 +757,44 @@ function OnboardingPage() {
                   <SubQuestion title={t("Activos", "Assets")} />
                   <div className="mt-4 space-y-2.5">
                     <MoneyField
+                      emoji="💵"
+                      label={t("Efectivo", "Cash")}
+                      desc={t("Dinero disponible fuera del banco", "Money available outside the bank")}
+                      currency={cur}
+                      value={data.assets_cash}
+                      onChange={(v) => set("assets_cash", v)}
+                    />
+                    <MoneyField
                       emoji="💰"
-                      label={t("Ahorros", "Savings")}
-                      desc={t("Cuentas bancarias y efectivo", "Bank accounts and cash")}
+                      label={t("Cuentas bancarias", "Bank accounts")}
+                      desc={t("Ahorros en el banco", "Savings in the bank")}
                       currency={cur}
                       value={data.assets_bank}
                       onChange={(v) => set("assets_bank", v)}
                     />
                     <MoneyField
+                      emoji="🏦"
+                      label={t("Fondo de retiro", "Retirement fund")}
+                      desc={t("Pensión, AFP, 401k…", "Pension, 401k…")}
+                      currency={cur}
+                      value={data.assets_retirement}
+                      onChange={(v) => set("assets_retirement", v)}
+                    />
+                    <MoneyField
                       emoji="📈"
-                      label={t("Inversiones", "Investments")}
-                      desc={t("Acciones, ETFs y fondos", "Stocks, ETFs and funds")}
+                      label={t("ETFs / fondos", "ETFs / funds")}
+                      desc={t("Fondos indexados y ETFs", "Index funds and ETFs")}
                       currency={cur}
                       value={data.assets_etf}
                       onChange={(v) => set("assets_etf", v)}
+                    />
+                    <MoneyField
+                      emoji="📊"
+                      label={t("Acciones", "Stocks")}
+                      desc={t("Acciones individuales", "Individual stocks")}
+                      currency={cur}
+                      value={data.assets_stocks}
+                      onChange={(v) => set("assets_stocks", v)}
                     />
                     <MoneyField
                       emoji="₿"
@@ -764,6 +812,7 @@ function OnboardingPage() {
                       value={data.assets_property}
                       onChange={(v) => set("assets_property", v)}
                     />
+
                   </div>
                 </div>
 
