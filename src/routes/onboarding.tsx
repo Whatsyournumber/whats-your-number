@@ -49,6 +49,7 @@ import {
 import { useFxRates } from "@/hooks/use-fx-rates";
 import { convertAmount } from "@/lib/fx";
 import { lifestyleCities } from "@/lib/lifestyle-cities";
+import { comfortableCostEur } from "@/lib/city-cost";
 import { currencyForCountry } from "@/lib/country-currency";
 
 import { cn } from "@/lib/utils";
@@ -1108,13 +1109,12 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
     const known = new Set(base.map((c) => norm(c.name)));
     for (const lc of lifestyleCities) {
       if (known.has(norm(lc.name))) continue;
-      const usd =
-        lc.housing + lc.food + lc.transport + lc.healthcare + lc.internet + lc.entertainment;
       base.push({
         name: lc.name,
         country: lc.country,
         currency: "USD",
-        cost: Math.round(convertAmount(usd, "USD", "EUR")),
+        // Coste de vida cómodo (no mínimo de subsistencia).
+        cost: comfortableCostEur({ name: lc.name, country: lc.country }),
       });
       known.add(norm(lc.name));
     }
@@ -1160,8 +1160,13 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
             name: r.name,
             country,
             currency: currencyForCountry(r.country_code, r.country),
-            // Coste estimado por defecto en USD; ajustable después.
-            cost: Math.round(convertAmount(2400, "USD", "EUR")),
+            // Coste de vida cómodo estimado por país y tamaño de ciudad.
+            cost: comfortableCostEur({
+              name: r.name,
+              country: r.country,
+              countryCode: r.country_code,
+              population: pop,
+            }),
             pop,
           };
           const prev = byCountry.get(key);
@@ -1224,7 +1229,7 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
   const selected =
     catalog.find((c) => c.name === value) ??
     remote.find((c) => c.name === value) ??
-    (value ? { name: value, country: "", currency: "USD", cost: Math.round(convertAmount(2400, "USD", "EUR")) } : undefined);
+    (value ? { name: value, country: "", currency: "USD", cost: comfortableCostEur({ name: value }) } : undefined);
   const cityCost = (c: (typeof cities)[number]) => {
     const v = convertAmount(c.cost, "EUR", c.currency);
     const step = v >= 100000 ? 5000 : v >= 10000 ? 500 : v >= 1000 ? 50 : 10;
@@ -1260,7 +1265,7 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
                 name: pretty,
                 country: "",
                 currency: "USD",
-                cost: Math.round(convertAmount(2400, "USD", "EUR")),
+                cost: comfortableCostEur({ name: pretty }),
               });
             }}
             className={cn(

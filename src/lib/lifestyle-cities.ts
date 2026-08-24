@@ -648,24 +648,28 @@ export const defaultFilters: Filters = {
 /** Cuánto encarece el costo de vida según cómo quieres vivir (factor global de referencia). */
 export const COMFORT_FACTOR: Record<ComfortPref, number> = {
   tight: 0.82,
-  comfortable: 1,
+  comfortable: 1.18,
   luxury: 1.55,
 };
 
 /**
- * Lujo no es "todo x1.55": es un estilo de vida concreto.
- * Vivienda = alquiler de 2 habitaciones en barrio prime (tipo Salamanca en Madrid),
- * transporte = coche de marca (cuota + seguro + parking), ocio = restaurantes top,
- * salud = seguro privado premium, educación = colegio internacional y viajes frecuentes.
+ * Cada estilo es una cesta concreta, no un multiplicador plano.
+ * Ajustado = lo justo para vivir bien sin extras.
+ * Cómodo = piso en buen barrio, comer fuera varias veces por semana, seguro
+ * privado, ocio real y alguna escapada: por eso está por encima de los índices
+ * de coste de vida "medios" que publican Numbeo o similares.
+ * Lujo = 2 habitaciones en barrio prime, coche de marca, restaurantes top,
+ * salud premium, colegio internacional y viajes frecuentes.
  */
 export const COMFORT_CATEGORY: Record<
   ComfortPref,
   { housing: number; food: number; transport: number; healthcare: number; entertainment: number; education: number; travelOfHousing: number }
 > = {
   tight: { housing: 0.75, food: 0.8, transport: 0.7, healthcare: 0.95, entertainment: 0.6, education: 0.9, travelOfHousing: 0 },
-  comfortable: { housing: 1, food: 1, transport: 1, healthcare: 1, entertainment: 1, education: 1, travelOfHousing: 0 },
+  comfortable: { housing: 1.2, food: 1.15, transport: 1.12, healthcare: 1.1, entertainment: 1.3, education: 1, travelOfHousing: 0.08 },
   luxury: { housing: 2.2, food: 1.6, transport: 2.4, healthcare: 1.5, entertainment: 2.4, education: 1.7, travelOfHousing: 0.35 },
 };
+
 
 
 
