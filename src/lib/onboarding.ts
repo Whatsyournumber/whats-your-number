@@ -379,9 +379,11 @@ export function estimateDesiredIncome(
   const factor = lifestyles.find((l) => l.value === life.lifestyle)?.factor ?? 1;
   const travel = travelOptions.find((t) => t.value === life.travel_frequency)?.extra ?? 0;
   const kids = (extra.children ?? life.children) === "1" ? 1 : (extra.children ?? life.children) === "2" ? 2 : (extra.children ?? life.children) === "3+" ? 3 : 0;
+  // Un hijo planeado cuenta a media ponderación (aún no está en el hogar).
+  const plannedKids = life.plans_children === "Sí" ? 0.5 : 0;
   const partner = life.marital_status === "Casado" || life.marital_status === "En pareja" ? 1.35 : 1;
   const housing = life.housing === "pagada" ? 0.78 : 1;
-  const eur = base * factor * partner * housing + travel + kids * 450;
+  const eur = base * factor * partner * housing + travel + (kids + plannedKids) * 450;
   const target = (extra.currency || "EUR").toUpperCase();
   const value = convertAmount(eur, "EUR", target);
   // Redondeo proporcional a la magnitud (50 en EUR/USD, 1.000 en MXN/JPY, etc.).
