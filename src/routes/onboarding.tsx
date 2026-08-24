@@ -599,13 +599,66 @@ function OnboardingPage() {
               <Screen title={t("¿Tienes vivienda propia?", "Do you own your home?")}>
                 <div className="space-y-2.5">
                   {housingOptions.map((h) => (
-                    <OptionRow
-                      key={h.value}
-                      emoji={h.emoji}
-                      title={t(h.label, HOUSING_EN[h.value] ?? h.label)}
-                      selected={life.housing === h.value}
-                      onClick={() => setL("housing", h.value)}
-                    />
+                    <div key={h.value} className="space-y-2.5">
+                      <OptionRow
+                        emoji={h.emoji}
+                        title={t(h.label, HOUSING_EN[h.value] ?? h.label)}
+                        selected={life.housing === h.value}
+                        onClick={() => setL("housing", h.value)}
+                      />
+                      <AnimatePresence>
+                        {life.housing === h.value && h.value === "hipoteca" && (
+                          <Reveal>
+                            <div className="rounded-2xl border border-primary/25 bg-primary/5 px-5 py-4">
+                              <div className="space-y-2.5">
+                                <MoneyField
+                                  emoji="🏦"
+                                  label={t("Saldo pendiente", "Outstanding balance")}
+                                  desc={t("Lo que aún debes al banco", "What you still owe the bank")}
+                                  currency={cur}
+                                  value={data.mortgage_balance}
+                                  hint={t("Escribe aquí", "Type here")}
+                                  onChange={(v) => set("mortgage_balance", v)}
+                                />
+                                <MoneyField
+                                  emoji="📊"
+                                  label={t("Tasa de interés", "Interest rate")}
+                                  desc={t("Tasa anual actual", "Current annual rate")}
+                                  currency="%"
+                                  value={data.mortgage_rate}
+                                  hint={t("Escribe aquí", "Type here")}
+                                  onChange={(v) => set("mortgage_rate", v)}
+                                />
+                                <MoneyField
+                                  emoji="📅"
+                                  label={t("Plazo restante", "Remaining term")}
+                                  desc={t("Años que te faltan por pagar", "Years left to pay")}
+                                  currency={t("años", "years")}
+                                  value={data.mortgage_term}
+                                  hint={t("Escribe aquí", "Type here")}
+                                  onChange={(v) => set("mortgage_term", v)}
+                                />
+                              </div>
+                            </div>
+                          </Reveal>
+                        )}
+                        {life.housing === h.value && h.value === "alquiler" && (
+                          <Reveal>
+                            <div className="rounded-2xl border border-primary/25 bg-primary/5 px-5 py-4">
+                              <MoneyField
+                                emoji="🏢"
+                                label={t("Alquiler mensual", "Monthly rent")}
+                                desc={t("Lo que pagas de alquiler cada mes", "What you pay in rent each month")}
+                                currency={cur}
+                                value={data.fixed_housing}
+                                hint={t("Escribe aquí", "Type here")}
+                                onChange={(v) => setFixed("fixed_housing", v)}
+                              />
+                            </div>
+                          </Reveal>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   ))}
                 </div>
               </Screen>
