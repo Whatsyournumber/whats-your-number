@@ -1,3 +1,4 @@
+import { comfortableCostEur } from "./city-cost";
 import { convertAmount } from "./fx";
 import { SUPPORTED_CURRENCY_CODES } from "@/lib/fx";
 export type OnboardingData = {
@@ -375,7 +376,8 @@ export function estimateDesiredIncome(
   extra: { children?: string; currency?: string } = {},
 ) {
   const city = cities.find((c) => c.name === life.city);
-  const base = city?.cost ?? 2600;
+  // Si la ciudad no está en el catálogo curado, estimamos su coste de vida cómodo.
+  const base = city?.cost ?? (life.city ? comfortableCostEur({ name: life.city }) : 2600);
   const factor = lifestyles.find((l) => l.value === life.lifestyle)?.factor ?? 1;
   const travel = travelOptions.find((t) => t.value === life.travel_frequency)?.extra ?? 0;
   const kids = (extra.children ?? life.children) === "1" ? 1 : (extra.children ?? life.children) === "2" ? 2 : (extra.children ?? life.children) === "3+" ? 3 : 0;
