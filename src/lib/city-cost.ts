@@ -9,7 +9,6 @@
  * Fuentes de referencia: Numbeo (rent + cost of living index), Expatistan,
  * Nomad List y OCDE. Cifras indicativas, no oficiales.
  */
-import { cities } from "./onboarding";
 import { lifestyleCities } from "./lifestyle-cities";
 import { convertAmount } from "./fx";
 
@@ -117,7 +116,7 @@ export function comfortableCostUsdFromDataset(name: string) {
 
 /**
  * Coste de vida cómodo estimado en EUR/mes.
- * Orden: catálogo curado → dataset lifestyle → tabla por país → media global.
+ * Orden: dataset lifestyle → tabla por país → media global.
  */
 export function comfortableCostEur(opts: {
   name: string;
@@ -125,9 +124,6 @@ export function comfortableCostEur(opts: {
   countryCode?: string;
   population?: number;
 }) {
-  const curated = cities.find((c) => norm(c.name) === norm(opts.name));
-  if (curated) return Math.round(convertAmount(curated.cost, curated.currency, "EUR"));
-
   const dataset = comfortableCostUsdFromDataset(opts.name);
   if (dataset) return Math.round(convertAmount(dataset, "USD", "EUR"));
 
