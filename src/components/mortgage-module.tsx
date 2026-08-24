@@ -53,9 +53,9 @@ const KEY = "whatsyournumber:mortgage";
 
 const defaults: MortgageState = {
   balance: 0,
-  rate: 3.5,
+  rate: 0,
   rateType: "variable",
-  term: 30,
+  term: 0,
   payment: 0,
   extra: 250,
   lump: 25000,
@@ -183,21 +183,32 @@ export function MortgageModule() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Prefill con la data del onboarding: hipoteca declarada o, en su defecto, pasivos + cuota.
+  // Prefill desde el onboarding (fuente de verdad). Sin hipoteca declarada → campos vacíos.
   useEffect(() => {
     if (!ready) return;
     const mBalance = Number(profile.mortgage_balance) || 0;
+    // Sin hipoteca en onboarding: limpiar datos residuales y dejar campos vacíos.
+    if (mBalance <= 0) {
+      setS((prev) => {
+        if (prev.balance === 0) return prev;
+        try {
+          window.localStorage.removeItem(KEY);
+        } catch {
+          /* ignore */
+        }
+        return { ...defaults };
+      });
+      return;
+    }
     const mRate = Number(profile.mortgage_rate) || 0;
     const mTerm = Number(profile.mortgage_term) || 0;
-    const liabilities = Number(profile.liabilities) || 0;
     const housing = Number(profile.fixed_housing) || 0;
-    const balance = mBalance || liabilities;
-    if (!balance || s.balance) return;
     const rate = mRate || s.rate;
-    const term = mTerm || (housing > 0 ? termFor(balance, rate, housing) : s.term);
-    const payment = Math.round(paymentFor(balance, rate, term * 12));
+    const term = mTerm || (housing > 0 ? termFor(mBalance, rate, housing) : s.term);
+    const payment = Math.round(paymentFor(mBalance, rate, term * 12));
     setS((prev) => {
-      const next = { ...prev, balance, rate, term, payment };
+      if (prev.balance === mBalance && prev.rate === rate && prev.term === term) return prev;
+      const next = { ...prev, balance: mBalance, rate, term, payment };
       try {
         window.localStorage.setItem(KEY, JSON.stringify(next));
       } catch {
@@ -206,7 +217,7 @@ export function MortgageModule() {
       return next;
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, profile.mortgage_balance, profile.mortgage_rate, profile.mortgage_term, profile.liabilities, profile.fixed_housing]);
+  }, [ready, profile.mortgage_balance, profile.mortgage_rate, profile.mortgage_term, profile.fixed_housing]);
 
   // Recalcula la cuota cuando cambian saldo, tasa o plazo (no cuando el usuario la editó directamente).
   useEffect(() => {
