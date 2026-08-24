@@ -120,9 +120,9 @@ export function comfortableCostUsdFromDataset(name: string) {
  */
 export function comfortableCostEur(opts: {
   name: string;
-  country?: string;
-  countryCode?: string;
-  population?: number;
+  country?: string | undefined;
+  countryCode?: string | undefined;
+  population?: number | undefined;
 }) {
   const dataset = comfortableCostUsdFromDataset(opts.name);
   if (dataset) return Math.round(convertAmount(dataset, "USD", "EUR"));
