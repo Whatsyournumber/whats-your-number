@@ -511,7 +511,13 @@ function OnboardingPage() {
                   )}
                   {life.children && (
                     <Reveal>
-                      <SubQuestion title={t("¿Planeas tener hijos?", "Are you planning to have children?")} />
+                      <SubQuestion
+                        title={
+                          life.children === "0"
+                            ? t("¿Planeas tener hijos?", "Are you planning to have children?")
+                            : t("¿Planeas tener más hijos?", "Are you planning to have more children?")
+                        }
+                      />
                       <ChipGroup
                         options={plansChildrenOptions.map((c) => ({ value: c, label: t(c, PLANS_CHILDREN_EN[c] ?? c) }))}
                         value={life.plans_children}
