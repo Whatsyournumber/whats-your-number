@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { useLanguage } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { convertMoneyValue } from "@/lib/fx";
 import { FIXED_FIELDS } from "@/lib/onboarding";
@@ -11,6 +12,54 @@ const KEY = "whatsyournumber:fixed-expenses";
 /** Sin gastos fijos precargados: cada persona añade los suyos. */
 const defaults: FixedExpense[] = [];
 
+const norm = (s: string) =>
+  s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+
+/** Nombres heredados que en realidad son categorías del onboarding y no deben duplicarse. */
+const LEGACY_ALIASES: Record<string, string> = {};
+for (const f of FIXED_FIELDS) {
+  LEGACY_ALIASES[norm(f.es)] = f.key;
+  LEGACY_ALIASES[norm(f.en)] = f.key;
+}
+const EXTRA_ALIASES: Record<string, string> = {
+  hipoteca: "fixed_housing",
+  mortgage: "fixed_housing",
+  alquiler: "fixed_housing",
+  renta: "fixed_housing",
+  rent: "fixed_housing",
+  "fondo de ahorro": "fixed_savings",
+  ahorro: "fixed_savings",
+  savings: "fixed_savings",
+  "seguro de salud": "fixed_insurance",
+  seguros: "fixed_insurance",
+  insurance: "fixed_insurance",
+  "health insurance": "fixed_insurance",
+  servicios: "fixed_utilities",
+  utilities: "fixed_utilities",
+  luz: "fixed_utilities",
+  internet: "fixed_utilities",
+  transporte: "fixed_transport",
+  transport: "fixed_transport",
+  educacion: "fixed_education",
+  colegio: "fixed_education",
+  education: "fixed_education",
+  suscripciones: "fixed_subscriptions",
+  subscriptions: "fixed_subscriptions",
+};
+
+/** ¿Este item personalizado duplica una categoría del onboarding? */
+function isOnboardingCategory(name: string) {
+  const n = norm(name);
+  if (LEGACY_ALIASES[n] || EXTRA_ALIASES[n]) return true;
+  // "Pago de renta Madrid", "Renta piso" → vivienda
+  return /^(pago de )?(renta|alquiler|rent|hipoteca|mortgage)\b/.test(n);
+}
+
 /** Gastos fijos mensuales editables.
  *  Los gastos estándar (FIXED_FIELDS) se derivan del onboarding (fuente de verdad);
  *  los personalizados que añade el usuario se guardan en el navegador. */
@@ -18,6 +67,7 @@ export function useFixedExpenses() {
   const [items, setItems] = useState<FixedExpense[]>(defaults);
   const [hydrated, setHydrated] = useState(false);
   const { profile } = useProfile();
+  const { lang } = useLanguage();
 
   const onboardingKeys = useMemo(() => new Set(FIXED_FIELDS.map((f) => f.key as string)), []);
 
@@ -28,8 +78,10 @@ export function useFixedExpenses() {
       if (raw) {
         const parsed = JSON.parse(raw) as FixedExpense[];
         if (Array.isArray(parsed)) {
-          const custom = parsed.filter((i) => !onboardingKeys.has(i.id));
+          const custom = parsed.filter((i) => !onboardingKeys.has(i.id) && !isOnboardingCategory(i.name));
           setItems(custom);
+          // Limpia los duplicados heredados del almacenamiento.
+          if (custom.length !== parsed.length) window.localStorage.setItem(KEY, JSON.stringify(custom));
         }
       }
     } catch {
@@ -38,19 +90,21 @@ export function useFixedExpenses() {
     setHydrated(true);
   }, [onboardingKeys]);
 
-  // Sincroniza los gastos fijos estándar con el onboarding (fuente de verdad).
+  // Sincroniza los gastos fijos estándar con el onboarding (fuente de verdad),
+  // en el mismo orden y con las etiquetas del onboarding.
   useEffect(() => {
     if (!hydrated) return;
     const fromOnboarding = FIXED_FIELDS.map((f) => ({
       id: f.key as string,
-      name: f.es,
+      name: `${f.emoji} ${lang === "en" ? f.en : f.es}`,
       amount: Number(profile[f.key]) || 0,
     })).filter((i) => i.amount > 0);
     setItems((prev) => {
       const custom = prev.filter((i) => !onboardingKeys.has(i.id));
       return [...fromOnboarding, ...custom];
     });
-  }, [hydrated, profile, onboardingKeys]);
+  }, [hydrated, profile, onboardingKeys, lang]);
+
 
   // Persiste solo los items personalizados; los estándar vienen del onboarding.
   const persist = useCallback(
