@@ -567,12 +567,30 @@ function OnboardingPage() {
                     </Reveal>
                   )}
                 </AnimatePresence>
-                {life.lifestyle && life.travel_frequency && (
-                  <p className="mt-8 text-center text-sm text-muted-foreground">
-                    {t("Objetivo estimado de vida:", "Estimated lifestyle target:")}{" "}
-                    <span className="numeric text-foreground">{money(desiredIncome, cur)}</span> {t("al mes.", "per month.")}
-                  </p>
-                )}
+                {life.lifestyle && life.travel_frequency && (() => {
+                  const kidsCount = life.children === "1" ? 1 : life.children === "2" ? 2 : life.children === "3+" ? 3 : 0;
+                  const hasPartner = life.marital_status === "Casado" || life.marital_status === "En pareja";
+                  const family = hasPartner || kidsCount > 0 || life.plans_children === "Sí";
+                  const parts: string[] = [];
+                  if (hasPartner) parts.push(t("pareja", "partner"));
+                  if (kidsCount > 0) parts.push(`${kidsCount} ${kidsCount === 1 ? t("hijo", "child") : t("hijos", "children")}`);
+                  if (life.plans_children === "Sí") parts.push(t("hijos planeados", "planned children"));
+                  return (
+                    <div className="mt-8 space-y-1 text-center text-sm text-muted-foreground">
+                      <p>
+                        {family
+                          ? t("Objetivo estimado de vida familiar:", "Estimated family lifestyle target:")
+                          : t("Objetivo estimado de vida:", "Estimated lifestyle target:")}{" "}
+                        <span className="numeric text-foreground">{money(desiredIncome, cur)}</span> {t("al mes.", "per month.")}
+                      </p>
+                      {parts.length > 0 && (
+                        <p className="text-xs">
+                          {t("Incluye", "Includes")} {parts.join(t(" y ", " and "))}.
+                        </p>
+                      )}
+                    </div>
+                  );
+                })()}
               </Screen>
             )}
 
