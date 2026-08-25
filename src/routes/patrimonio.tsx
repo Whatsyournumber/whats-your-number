@@ -255,7 +255,7 @@ function PatrimonioContent() {
           </div>
         </Panel>
 
-        <Panel title={t("Asset allocation", "Asset allocation")}>
+        <Panel title={t("Asset allocation", "Asset allocation")} className="flex flex-col">
           {assetRows.length === 0 ? (
             <div className="space-y-3 py-8 text-center">
               <p className="text-sm text-muted-foreground">{t("Aún no registras activos.", "You haven't recorded any assets yet.")}</p>
@@ -265,17 +265,19 @@ function PatrimonioContent() {
             </div>
           ) : (
             <>
-              <ResponsiveContainer width="100%" height={230}>
-                <PieChart>
-                  <Pie data={assetRows} dataKey="value" nameKey="name" innerRadius={60} outerRadius={100} paddingAngle={3} stroke="none">
-                    {assetRows.map((a) => (
-                      <Cell key={a.name} fill={a.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<ChartTooltip />} />
-                </PieChart>
-              </ResponsiveContainer>
-              <ul className="mt-2 space-y-1.5">
+              <div className="min-h-[230px] flex-1 lg:min-h-0">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={assetRows} dataKey="value" nameKey="name" innerRadius={60} outerRadius={100} paddingAngle={3} stroke="none">
+                      {assetRows.map((a) => (
+                        <Cell key={a.name} fill={a.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip content={<ChartTooltip />} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <ul className="mt-2 shrink-0 space-y-1.5">
                 {assetRows.map((a) => (
                   <li key={a.name} className="flex items-center gap-2 text-xs">
                     <span className="h-2 w-2 rounded-full" style={{ background: a.color }} />
