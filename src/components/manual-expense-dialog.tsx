@@ -75,9 +75,13 @@ export function ManualExpenseDialog({ categories }: { categories: string[] }) {
   const [merchant, setMerchant] = useState("");
   const [category, setCategory] = useState(categories[0] ?? "Otros");
   const [amount, setAmount] = useState<number>(0);
+  const [precision, setPrecision] = useState<"day" | "month">("day");
   const [saving, setSaving] = useState(false);
 
   const currency = (profile?.currency as string) || "EUR";
+
+  /** Fecha efectiva: día exacto o primer día del mes seleccionado. */
+  const effectiveDate = precision === "month" ? new Date(date.getFullYear(), date.getMonth(), 1) : date;
 
   async function onSave() {
     if (!user?.id) return;
