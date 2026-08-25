@@ -34,7 +34,9 @@ import { NumberInput } from "@/components/ui/number-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { useT } from "@/hooks/use-language";
+import { useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
+
 import { compact, money } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
@@ -184,10 +186,26 @@ export function MortgageModule() {
   }, []);
 
   // Prefill desde Mis datos / onboarding (fuente de verdad).
-  // Orden: saldo de hipoteca → deudas declaradas (si la vivienda es hipoteca) → precio de vivienda menos entrada.
+  // Propiedades de Mis datos primero: hipoteca pendiente, tasa (%) y año de compra.
+  const { holdings } = useHoldings();
+  const propertyLoan = useMemo(() => {
+    const props = holdings.filter((h) => h.kind === "property" && h.linked_liability > 0);
+    if (!props.length) return null;
+    const best = props.reduce((a, b) => (b.linked_liability > a.linked_liability ? b : a));
+    const nowYear = new Date().getFullYear();
+    const elapsed = best.target_year ? Math.max(0, nowYear - best.target_year) : 0;
+    return {
+      balance: Math.round(best.linked_liability),
+      rate: Number(best.expected_return) > 0 ? Number(best.expected_return) : 0,
+      // Asume un préstamo original a 30 años desde el año de compra.
+      term: best.target_year ? Math.max(1, 30 - elapsed) : 0,
+    };
+  }, [holdings]);
+
   const hasMortgageHousing = ((profile as { housing?: string }).housing || "") === "hipoteca";
   const derivedBalance =
-    Number(profile.mortgage_balance) > 0
+    propertyLoan?.balance ??
+    (Number(profile.mortgage_balance) > 0
       ? Number(profile.mortgage_balance)
       : hasMortgageHousing && Number(profile.liabilities) > 0
         ? Number(profile.liabilities)
@@ -195,9 +213,11 @@ export function MortgageModule() {
           ? Math.round(
               Number(profile.home_price) * (1 - (Number(profile.down_payment_pct) || 0) / 100),
             )
-          : 0;
+          : 0);
   const hasProfileMortgage = derivedBalance > 0;
 
+  const derivedRate = propertyLoan?.rate || Number(profile.mortgage_rate) || 0;
+  const derivedTerm = propertyLoan?.term || Number(profile.mortgage_term) || 0;
 
   useEffect(() => {
     if (!ready) return;
@@ -215,11 +235,9 @@ export function MortgageModule() {
       });
       return;
     }
-    const mRate = Number(profile.mortgage_rate) || 0;
-    const mTerm = Number(profile.mortgage_term) || 0;
     const housing = Number(profile.fixed_housing) || 0;
-    const rate = mRate || s.rate;
-    const term = mTerm || (housing > 0 ? termFor(mBalance, rate, housing) : s.term);
+    const rate = derivedRate || s.rate;
+    const term = derivedTerm || (housing > 0 ? termFor(mBalance, rate, housing) : s.term);
     const payment = Math.round(paymentFor(mBalance, rate, term * 12));
     setS((prev) => {
       if (prev.balance === mBalance && prev.rate === rate && prev.term === term) return prev;
@@ -232,7 +250,8 @@ export function MortgageModule() {
       return next;
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, derivedBalance, profile.mortgage_rate, profile.mortgage_term, profile.fixed_housing]);
+  }, [ready, derivedBalance, derivedRate, derivedTerm, profile.fixed_housing]);
+
 
 
   // Recalcula la cuota cuando cambian saldo, tasa o plazo (no cuando el usuario la editó directamente).
