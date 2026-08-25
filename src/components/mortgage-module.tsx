@@ -406,6 +406,20 @@ export function MortgageModule() {
             </span>
             <h2 className="text-lg font-semibold">{t("Análisis de hipoteca", "Mortgage analysis")}</h2>
           </div>
+          {!hasProfileMortgage && (
+            <div className="mb-5 flex flex-col gap-2 rounded-xl border border-border/60 bg-muted/30 p-3 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+              <span>
+                {t(
+                  "No encontramos tu hipoteca en Mis datos. Complétala allí o escribe los importes aquí.",
+                  "We couldn't find your mortgage in your profile. Add it there or type the amounts here.",
+                )}
+              </span>
+              <Button variant="outline" size="sm" className="shrink-0" asChild>
+                <a href="/mi-perfil#patrimonio">{t("Ir a Mis datos", "Go to my data")}</a>
+              </Button>
+            </div>
+          )}
+
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <div>
               <p className="text-xs text-muted-foreground">{t("Monto pendiente", "Outstanding balance")}</p>
