@@ -193,10 +193,33 @@ function PatrimonioContent() {
 
   // Activos futuros (trading, venta de empresa…) ponderados: suman al patrimonio y al allocation.
   const futureTotal = detailRows.filter((r) => r.group.key === "future").reduce((s, r) => s + r.value, 0);
+
+  // ETF, bonos y notas estructuradas son productos distintos: se separan en filas propias
+  // (el perfil los agrega todos en "assets_etf").
+  const sumKinds = (kinds: string[]) =>
+    detailRows.filter((r) => kinds.includes(r.kind)).reduce((s, r) => s + r.value, 0);
+  const bondsTotal = sumKinds(["bond", "tbill"]);
+  const notesTotal = sumKinds(["note", "structured"]);
+  const etfTotal = sumKinds(["etf", "other"]);
+  const splitFunds = bondsTotal + notesTotal + etfTotal > 0;
+
+  const baseAssets = splitFunds
+    ? assets.flatMap((a) =>
+        a.key === "assets_etf"
+          ? [
+              { key: "assets_etf", name: t("ETFs / fondos", "ETFs / funds"), value: etfTotal, color: a.color },
+              { key: "assets_bonds", name: t("Bonos", "Bonds"), value: bondsTotal, color: "var(--color-chart-2)" },
+              { key: "assets_structured", name: t("Notas estructuradas", "Structured notes"), value: notesTotal, color: "var(--color-chart-5)" },
+            ].filter((r) => r.value > 0)
+          : [a],
+      )
+    : assets;
+
   const assetRows = (futureTotal > 0
-    ? [...assets, { key: "assets_future", name: t("Activos futuros", "Future assets"), value: futureTotal, color: "var(--color-chart-3)" }]
-    : assets
+    ? [...baseAssets, { key: "assets_future", name: t("Activos futuros", "Future assets"), value: futureTotal, color: "var(--color-chart-3)" }]
+    : baseAssets
   ).slice().sort((a, b) => b.value - a.value);
+
   const totalAssetsAll = d.totalAssets + futureTotal;
   const netWorthAll = d.netWorth + futureTotal;
 
@@ -276,16 +299,17 @@ function PatrimonioContent() {
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium">{a.name}</p>
                     {info && (
-                      <p className="truncate text-[11px] text-muted-foreground">
-                        {t(info.es, info.en)}
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span className="truncate text-[11px] text-muted-foreground">{t(info.es, info.en)}</span>
                         {risk && (
-                          <span className={`ml-1.5 rounded-full border px-1.5 py-px text-[10px] font-medium ${risk.cls}`}>
+                          <span className={`shrink-0 whitespace-nowrap rounded-full border px-1.5 py-px text-[10px] font-medium ${risk.cls}`}>
                             {t(risk.es, risk.en)}
                           </span>
                         )}
-                      </p>
+                      </div>
                     )}
                   </div>
+
                   <span className="numeric ml-auto text-sm font-semibold">{fmt(a.value)}</span>
                 </div>
               );
