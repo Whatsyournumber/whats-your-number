@@ -92,10 +92,11 @@ export function ManualExpenseDialog({ categories }: { categories: string[] }) {
     setSaving(true);
     try {
       const statementId = await ensureManualStatement(user.id);
+      const txDateStr = format(effectiveDate, "yyyy-MM-dd");
       const { error } = await supabase.from("imported_transactions").insert({
         user_id: user.id,
         statement_id: statementId,
-        tx_date: format(date, "yyyy-MM-dd"),
+        tx_date: txDateStr,
         merchant: merchant.trim() || translateCategory(category, lang),
         description: t("Gasto manual", "Manual expense"),
         amount: -Math.abs(amount),
@@ -104,8 +105,9 @@ export function ManualExpenseDialog({ categories }: { categories: string[] }) {
       });
       if (error) throw new Error(error.message);
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
+      const fmtStr = precision === "month" ? "MMM yyyy" : "d MMM yyyy";
       toast.success(t("Gasto guardado", "Expense saved"), {
-        description: `${format(date, "d MMM yyyy", (lang === "es" ? { locale: es } : undefined))} · ${translateCategory(category, lang)}`,
+        description: `${format(effectiveDate, fmtStr, (lang === "es" ? { locale: es } : undefined))} · ${translateCategory(category, lang)}`,
       });
       setMerchant("");
       setAmount(0);
