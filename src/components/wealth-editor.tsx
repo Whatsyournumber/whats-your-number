@@ -153,9 +153,30 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
               <InlineRow label={t("Renta mensual (opcional)", "Monthly rent (optional)")}>
                 <Money value={h.monthly_income} onChange={(n) => patch(h.id, { monthly_income: n })} />
               </InlineRow>
-              <InlineRow label={t("Plusvalía esperada anual", "Expected annual appreciation")}>
-                <Pct value={h.expected_return} onChange={(n) => patch(h.id, { expected_return: n })} />
+              <InlineRow label={t("Tasa (%)", "Rate (%)")}>
+                <PctInput value={h.expected_return} onChange={(n) => patch(h.id, { expected_return: n })} />
               </InlineRow>
+              {(() => {
+                const invested = h.cost_basis + h.quantity;
+                const years = h.target_year ? Math.max(1, new Date().getFullYear() - h.target_year) : 0;
+                const cagr =
+                  invested > 0 && h.manual_value > 0 && years > 0
+                    ? (Math.pow(h.manual_value / invested, 1 / years) - 1) * 100
+                    : 0;
+                const rentYield = h.manual_value > 0 ? ((h.monthly_income * 12) / h.manual_value) * 100 : 0;
+                const total = cagr + rentYield;
+                if (total <= 0) return null;
+                return (
+                  <p className="text-[11px] text-muted-foreground">
+                    {t("Plusvalía estimada automática", "Auto-estimated appreciation")}:{" "}
+                    <span className="text-emerald-400/90">{total.toFixed(1)}%</span>{" "}
+                    <span className="opacity-70">
+                      ({t("valor", "value")} {cagr.toFixed(1)}% + {t("renta", "rent")} {rentYield.toFixed(1)}%)
+                    </span>
+                  </p>
+                );
+              })()}
+
               <div className="space-y-1 text-[11px] text-muted-foreground">
                 <p>
                   {t("Equity neto", "Net equity")}:{" "}
