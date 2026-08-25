@@ -235,25 +235,27 @@ function PatrimonioContent() {
 
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title={t("Crecimiento del patrimonio", "Net worth growth")} className="lg:col-span-2">
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={months} margin={{ left: -12, right: 8, top: 8 }}>
-              <defs>
-                <linearGradient id="pw" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.45} />
-                  <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
-              <XAxis dataKey="label" {...axisProps} />
-              <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={56} />
-              <Tooltip content={<ChartTooltip />} />
-              <Area type="monotone" dataKey="netWorth" name={t("Patrimonio", "Net worth")} stroke="var(--color-chart-2)" strokeWidth={2.5} fill="url(#pw)" />
-            </AreaChart>
-          </ResponsiveContainer>
+        <Panel title={t("Crecimiento del patrimonio", "Net worth growth")} className="flex flex-col lg:col-span-2">
+          <div className="min-h-[300px] flex-1 lg:min-h-0">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={months} margin={{ left: -12, right: 8, top: 8 }}>
+                <defs>
+                  <linearGradient id="pw" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.45} />
+                    <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
+                <XAxis dataKey="label" {...axisProps} />
+                <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={56} />
+                <Tooltip content={<ChartTooltip />} />
+                <Area type="monotone" dataKey="netWorth" name={t("Patrimonio", "Net worth")} stroke="var(--color-chart-2)" strokeWidth={2.5} fill="url(#pw)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
         </Panel>
 
-        <Panel title={t("Asset allocation", "Asset allocation")}>
+        <Panel title={t("Asset allocation", "Asset allocation")} className="flex flex-col">
           {assetRows.length === 0 ? (
             <div className="space-y-3 py-8 text-center">
               <p className="text-sm text-muted-foreground">{t("Aún no registras activos.", "You haven't recorded any assets yet.")}</p>
@@ -263,17 +265,19 @@ function PatrimonioContent() {
             </div>
           ) : (
             <>
-              <ResponsiveContainer width="100%" height={230}>
-                <PieChart>
-                  <Pie data={assetRows} dataKey="value" nameKey="name" innerRadius={60} outerRadius={100} paddingAngle={3} stroke="none">
-                    {assetRows.map((a) => (
-                      <Cell key={a.name} fill={a.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<ChartTooltip />} />
-                </PieChart>
-              </ResponsiveContainer>
-              <ul className="mt-2 space-y-1.5">
+              <div className="min-h-[230px] flex-1 lg:min-h-0">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={assetRows} dataKey="value" nameKey="name" innerRadius="42%" outerRadius="78%" paddingAngle={3} stroke="none">
+                      {assetRows.map((a) => (
+                        <Cell key={a.name} fill={a.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip content={<ChartTooltip />} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <ul className="mt-2 shrink-0 space-y-1.5">
                 {assetRows.map((a) => (
                   <li key={a.name} className="flex items-center gap-2 text-xs">
                     <span className="h-2 w-2 rounded-full" style={{ background: a.color }} />
