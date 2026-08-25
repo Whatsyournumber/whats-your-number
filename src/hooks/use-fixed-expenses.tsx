@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useLanguage } from "@/hooks/use-language";
-import { useProfile } from "@/hooks/use-profile";
+import { useProfile, type Profile } from "@/hooks/use-profile";
 import { convertMoneyValue } from "@/lib/fx";
 import { FIXED_FIELDS } from "@/lib/onboarding";
 
@@ -12,52 +12,12 @@ const KEY = "whatsyournumber:fixed-expenses";
 /** Sin gastos fijos precargados: cada persona añade los suyos. */
 const defaults: FixedExpense[] = [];
 
-const norm = (s: string) =>
-  s
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, " ")
-    .trim();
+type FixedFieldKey = (typeof FIXED_FIELDS)[number]["key"];
 
-/** Nombres heredados que en realidad son categorías del onboarding y no deben duplicarse. */
-const LEGACY_ALIASES: Record<string, string> = {};
-for (const f of FIXED_FIELDS) {
-  LEGACY_ALIASES[norm(f.es)] = f.key;
-  LEGACY_ALIASES[norm(f.en)] = f.key;
-}
-const EXTRA_ALIASES: Record<string, string> = {
-  hipoteca: "fixed_housing",
-  mortgage: "fixed_housing",
-  alquiler: "fixed_housing",
-  renta: "fixed_housing",
-  rent: "fixed_housing",
-  "fondo de ahorro": "fixed_savings",
-  ahorro: "fixed_savings",
-  savings: "fixed_savings",
-  "seguro de salud": "fixed_insurance",
-  seguros: "fixed_insurance",
-  insurance: "fixed_insurance",
-  "health insurance": "fixed_insurance",
-  servicios: "fixed_utilities",
-  utilities: "fixed_utilities",
-  luz: "fixed_utilities",
-  internet: "fixed_utilities",
-  transporte: "fixed_transport",
-  transport: "fixed_transport",
-  educacion: "fixed_education",
-  colegio: "fixed_education",
-  education: "fixed_education",
-  suscripciones: "fixed_subscriptions",
-  subscriptions: "fixed_subscriptions",
-};
+const fixedFieldKeys = FIXED_FIELDS.map((f) => f.key);
 
-/** ¿Este item personalizado duplica una categoría del onboarding? */
-function isOnboardingCategory(name: string) {
-  const n = norm(name);
-  if (LEGACY_ALIASES[n] || EXTRA_ALIASES[n]) return true;
-  // "Pago de renta Madrid", "Renta piso" → vivienda
-  return /^(pago de )?(renta|alquiler|rent|hipoteca|mortgage)\b/.test(n);
+function isFixedFieldKey(id: string): id is FixedFieldKey {
+  return fixedFieldKeys.includes(id as FixedFieldKey);
 }
 
 /** Gastos fijos mensuales editables.
@@ -66,19 +26,20 @@ function isOnboardingCategory(name: string) {
 export function useFixedExpenses() {
   const [items, setItems] = useState<FixedExpense[]>(defaults);
   const [hydrated, setHydrated] = useState(false);
-  const { profile } = useProfile();
+  const { profile, save } = useProfile();
   const { lang } = useLanguage();
 
   const onboardingKeys = useMemo(() => new Set(FIXED_FIELDS.map((f) => f.key as string)), []);
 
-  // Carga solo los items personalizados (no del onboarding) desde localStorage.
+  // Carga solo los items personalizados desde localStorage. No se filtra por nombre:
+  // "Internet", "Transporte" o "Renta garaje" pueden ser gastos personalizados válidos.
   useEffect(() => {
     try {
       const raw = window.localStorage.getItem(KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as FixedExpense[];
         if (Array.isArray(parsed)) {
-          const custom = parsed.filter((i) => !onboardingKeys.has(i.id) && !isOnboardingCategory(i.name));
+          const custom = parsed.filter((i) => !onboardingKeys.has(i.id));
           setItems(custom);
           // Limpia los duplicados heredados del almacenamiento.
           if (custom.length !== parsed.length) window.localStorage.setItem(KEY, JSON.stringify(custom));
@@ -121,9 +82,21 @@ export function useFixedExpenses() {
   );
 
   const update = useCallback(
-    (id: string, patch: Partial<FixedExpense>) =>
-      persist(items.map((i) => (i.id === id ? { ...i, ...patch } : i))),
-    [items, persist],
+    (id: string, patch: Partial<FixedExpense>) => {
+      const next = items.map((i) => (i.id === id ? { ...i, ...patch } : i));
+      setItems(next);
+
+      if (isFixedFieldKey(id)) {
+        if (typeof patch.amount === "number") {
+          const amount = Number.isFinite(patch.amount) ? Math.max(0, patch.amount) : 0;
+          void save({ [id]: amount } as Partial<Profile>).catch(() => setItems(items));
+        }
+        return;
+      }
+
+      persist(next);
+    },
+    [items, persist, save],
   );
 
   const add = useCallback(
@@ -131,7 +104,20 @@ export function useFixedExpenses() {
     [items, persist],
   );
 
-  const remove = useCallback((id: string) => persist(items.filter((i) => i.id !== id)), [items, persist]);
+  const remove = useCallback(
+    (id: string) => {
+      const next = items.filter((i) => i.id !== id);
+      setItems(next);
+
+      if (isFixedFieldKey(id)) {
+        void save({ [id]: 0 } as Partial<Profile>).catch(() => setItems(items));
+        return;
+      }
+
+      persist(next);
+    },
+    [items, persist, save],
+  );
 
   const total = items.reduce((s, i) => s + (Number.isFinite(i.amount) ? i.amount : 0), 0);
 
