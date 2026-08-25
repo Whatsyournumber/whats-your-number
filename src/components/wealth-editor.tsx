@@ -4,8 +4,7 @@ import { Building2, Check, Coins, CreditCard, Gift, LineChart, Pencil, Plus, Tra
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useLanguage, useT } from "@/hooks/use-language";
-import { assetClassText } from "@/lib/asset-classes";
+import { useT } from "@/hooks/use-language";
 import { useQuotes } from "@/hooks/use-market";
 import { holdingValue, newHolding, type Holding, type HoldingKind } from "@/hooks/use-holdings";
 import { Amount } from "@/components/ui/amount";
@@ -612,8 +611,6 @@ function InvestmentCard({
   onRemove: () => void;
 }) {
   const t = useT();
-  const { lang } = useLanguage();
-  const klass = assetClassText(h.kind, lang === "en" ? "en" : "es");
   const filled = Boolean(h.label.trim()) || h.manual_value > 0 || h.monthly_contribution > 0;
   const [open, setOpen] = useState(!filled);
 
@@ -646,7 +643,7 @@ function InvestmentCard({
             <p className="truncate text-sm font-medium">{h.label || t("Activo", "Asset")}</p>
             <p className="truncate text-[11px] text-muted-foreground">
               {[
-                klass ? `${kindLabel[h.kind]} (${klass})` : kindLabel[h.kind],
+                kindLabel[h.kind],
                 h.manual_value > 0 ? fmt(h.manual_value) : null,
                 h.monthly_contribution > 0 ? `+${fmt(h.monthly_contribution)}/${t("mes", "mo")}` : null,
                 h.expected_return ? `${h.expected_return}%` : null,
@@ -691,7 +688,6 @@ function InvestmentCard({
           ]}
         />
       </InlineRow>
-      {klass ? <p className="-mt-1 text-[10px] leading-tight text-muted-foreground">({klass})</p> : null}
 
       {/* --- Activos con ticker / precio de mercado (ETF, acción, cripto) --- */}
       {isMarket ? (

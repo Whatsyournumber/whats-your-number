@@ -17,7 +17,6 @@ import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
 import { buildDataset } from "@/lib/profile-data";
-import { assetClassText } from "@/lib/asset-classes";
 import { cn } from "@/lib/utils";
 
 
@@ -59,12 +58,7 @@ function PortafolioContent() {
     Inmueble: t("Inmueble", "Real estate"),
     Cash: t("Cash", "Cash"),
   };
-  const kindSubtitle = (kind: string) => {
-    const base = kindName(kind);
-    const klass = assetClassText(kind, lang === "en" ? "en" : "es");
-    return klass ? `${base} (${klass})` : base;
-  };
-  const kindName = (kind: string) =>
+  const kindSubtitle = (kind: string) =>
     kind === "bond"
       ? t("Bono", "Bond")
       : kind === "tbill"
