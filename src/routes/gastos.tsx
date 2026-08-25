@@ -42,7 +42,7 @@ import { useCategories } from "@/hooks/use-categories";
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions, type Tx } from "@/hooks/use-transactions";
-import { compact, money } from "@/lib/onboarding";
+import { compact, FIXED_FIELDS, money } from "@/lib/onboarding";
 import { getSpendAdvice } from "@/lib/spend-advice.functions";
 import { getPaddleEnvironment } from "@/lib/paddle";
 import { buildDataset } from "@/lib/profile-data";
@@ -107,6 +107,7 @@ function buildPresets(t: (es: string, en: string) => string) {
 const isExpense = (t: Tx) => t.amount < 0;
 
 const RANGE_KEY = "wyn.gastos.range";
+const FIXED_FIELD_IDS = new Set(FIXED_FIELDS.map((field) => field.key as string));
 
 /** Mantiene el filtro del calendario aunque cambies de pestaña. */
 function usePersistedRange(fallback: () => DateRange) {
@@ -802,46 +803,53 @@ function Gastos() {
         >
           <CollapsibleContent>
             <div className="space-y-2">
-              {fixed.items.map((item) => (
-                <div key={item.id} className="flex flex-wrap items-center gap-2 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
-                  <Input
-                    value={translateFixedName(item.name, lang)}
-                    onChange={(e) => fixed.update(item.id, { name: e.target.value })}
-                    className="h-8 w-full max-w-[260px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border"
-                  />
-                  <div className="ml-auto flex items-center gap-2">
-                    <div className="flex flex-col items-end">
-                      <NumberInput
-                        value={item.amount}
-                        onChange={(v) => fixed.update(item.id, { amount: v })}
-                        className="h-8 w-28 text-right text-sm"
-                      />
-                      <span className="numeric mt-0.5 text-[11px] text-muted-foreground">
-                        {isLongRange
-                          ? `${fmt(item.amount * monthsInRange)} · ${t(`${monthsInRange} meses`, `${monthsInRange} months`)}`
-                          : `${fmt(item.amount)} ${t("en este periodo", "in this period")}`}
-                      </span>
+              {fixed.items.map((item) => {
+                const isStandardFixed = FIXED_FIELD_IDS.has(item.id);
+                return (
+                  <div key={item.id} className="flex flex-wrap items-center gap-2 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
+                    <Input
+                      value={translateFixedName(item.name, lang)}
+                      readOnly={isStandardFixed}
+                      onChange={(e) => fixed.update(item.id, { name: e.target.value })}
+                      className={cn(
+                        "h-8 w-full max-w-[260px] border-transparent bg-transparent text-sm font-medium focus-visible:border-border",
+                        isStandardFixed && "cursor-default focus-visible:ring-0",
+                      )}
+                    />
+                    <div className="ml-auto flex items-center gap-2">
+                      <div className="flex flex-col items-end">
+                        <NumberInput
+                          value={item.amount}
+                          onChange={(v) => fixed.update(item.id, { amount: v })}
+                          className="h-8 w-28 text-right text-sm"
+                        />
+                        <span className="numeric mt-0.5 text-[11px] text-muted-foreground">
+                          {isLongRange
+                            ? `${fmt(item.amount * monthsInRange)} · ${t(`${monthsInRange} meses`, `${monthsInRange} months`)}`
+                            : `${fmt(item.amount)} ${t("en este periodo", "in this period")}`}
+                        </span>
+                      </div>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-8 w-8 text-muted-foreground hover:text-negative"
+                        onClick={() => fixed.remove(item.id)}
+                        aria-label={`${t("Eliminar", "Delete")} ${item.name}`}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-8 w-8 text-muted-foreground hover:text-negative"
-                      onClick={() => fixed.remove(item.id)}
-                      aria-label={`${t("Eliminar", "Delete")} ${item.name}`}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <div className="w-full">
-                    <div className="h-1 overflow-hidden rounded-full bg-muted">
-                      <div
-                        className="h-full rounded-full bg-chart-3"
-                        style={{ width: `${fixed.total > 0 ? (item.amount / fixed.total) * 100 : 0}%` }}
-                      />
+                    <div className="w-full">
+                      <div className="h-1 overflow-hidden rounded-full bg-muted">
+                        <div
+                          className="h-full rounded-full bg-chart-3"
+                          style={{ width: `${fixed.total > 0 ? (item.amount / fixed.total) * 100 : 0}%` }}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <div className="mt-3 flex flex-wrap items-center gap-3">
               <Button size="sm" variant="outline" className="gap-2" onClick={fixed.add}>
