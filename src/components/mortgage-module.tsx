@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   Banknote,
@@ -158,7 +158,7 @@ function healthLabel(score: number) {
 /** Módulo de hipoteca: abonar, renegociar o invertir y su impacto en Your Number. */
 export function MortgageModule() {
   const t = useT();
-  const { profile } = useProfile();
+  const { profile, save } = useProfile();
   const d = buildDataset(profile);
   const currency = profile.currency || "EUR";
   const fmt = (n: number) => (Number.isFinite(n) ? money(Math.round(n), currency) : "—");
