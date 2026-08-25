@@ -173,7 +173,7 @@ export function ManualExpenseDialog({ categories }: { categories: string[] }) {
 
           <div className="grid gap-1.5">
             <Label>{`${t("Monto", "Amount")} (${currency})`}</Label>
-            <NumberInput value={amount} onValueChange={(v) => setAmount(Number(v) || 0)} min={0} />
+            <NumberInput value={amount} onChange={(v) => setAmount(v || 0)} min={0} format />
           </div>
         </div>
 
