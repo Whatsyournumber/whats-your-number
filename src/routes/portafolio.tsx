@@ -58,7 +58,12 @@ function PortafolioContent() {
     Inmueble: t("Inmueble", "Real estate"),
     Cash: t("Cash", "Cash"),
   };
-  const kindSubtitle = (kind: string) =>
+  const kindSubtitle = (kind: string) => {
+    const base = kindName(kind);
+    const klass = assetClassText(kind, lang === "en" ? "en" : "es");
+    return klass ? `${base} (${klass})` : base;
+  };
+  const kindName = (kind: string) =>
     kind === "bond"
       ? t("Bono", "Bond")
       : kind === "tbill"
