@@ -646,7 +646,7 @@ function InvestmentCard({
             <p className="truncate text-sm font-medium">{h.label || t("Activo", "Asset")}</p>
             <p className="truncate text-[11px] text-muted-foreground">
               {[
-                kindLabel[h.kind],
+                klass ? `${kindLabel[h.kind]} (${klass})` : kindLabel[h.kind],
                 h.manual_value > 0 ? fmt(h.manual_value) : null,
                 h.monthly_contribution > 0 ? `+${fmt(h.monthly_contribution)}/${t("mes", "mo")}` : null,
                 h.expected_return ? `${h.expected_return}%` : null,
