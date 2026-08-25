@@ -537,7 +537,26 @@ function Pct({ value, onChange }: { value: number; onChange: (n: number) => void
   );
 }
 
+/** Porcentaje editable libre: acepta cualquier número. */
+function PctInput({ value, onChange }: { value: number; onChange: (n: number) => void }) {
+  return (
+    <div className="relative">
+      <Input
+        type="number"
+        inputMode="decimal"
+        step="0.1"
+        className="h-9 pr-7"
+        value={value ? String(value) : ""}
+        placeholder="0"
+        onChange={(e) => onChange(Math.max(0, Number(e.target.value || 0)))}
+      />
+      <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">%</span>
+    </div>
+  );
+}
+
 function Select({
+
   value,
   onChange,
   options,
