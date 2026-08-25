@@ -93,7 +93,7 @@ export function ManualExpenseDialog({ categories }: { categories: string[] }) {
       if (error) throw new Error(error.message);
       await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
       toast.success(t("Gasto guardado", "Expense saved"), {
-        description: `${format(date, "d MMM yyyy", { locale: lang === "es" ? es : undefined })} · ${translateCategory(category, lang)}`,
+        description: `${format(date, "d MMM yyyy", (lang === "es" ? { locale: es } : undefined))} · ${translateCategory(category, lang)}`,
       });
       setMerchant("");
       setAmount(0);
@@ -131,7 +131,7 @@ export function ManualExpenseDialog({ categories }: { categories: string[] }) {
               <PopoverTrigger asChild>
                 <Button variant="outline" className={cn("justify-start gap-2 font-normal")}>
                   <CalendarIcon className="h-4 w-4" />
-                  {format(date, "d MMM yyyy", { locale: lang === "es" ? es : undefined })}
+                  {format(date, "d MMM yyyy", (lang === "es" ? { locale: es } : undefined))}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
