@@ -32,6 +32,30 @@ export const Route = createFileRoute("/patrimonio")({
   component: Patrimonio,
 });
 
+type RiskLevel = "low" | "mid" | "high";
+
+/** Clase de activo y nivel de riesgo por rubro del patrimonio. */
+const ASSET_CLASS: Record<string, { es: string; en: string; risk: RiskLevel }> = {
+  assets_cash: { es: "Efectivo y equivalentes", en: "Cash & equivalents", risk: "low" },
+  assets_bank: { es: "Efectivo y equivalentes / depósitos", en: "Cash & equivalents / deposits", risk: "low" },
+  assets_retirement: { es: "Fondos de inversión / mixto", en: "Mutual funds / balanced", risk: "mid" },
+  assets_etf: { es: "Fondos y ETF (renta fija y variable)", en: "Funds & ETFs (fixed income & equities)", risk: "mid" },
+  assets_bonds: { es: "Renta fija", en: "Fixed income", risk: "low" },
+  assets_structured: { es: "Productos estructurados", en: "Structured products", risk: "mid" },
+  assets_stocks: { es: "Renta variable", en: "Equities", risk: "high" },
+  assets_crypto: { es: "Activos digitales", en: "Digital assets", risk: "high" },
+  assets_property: { es: "Bienes raíces", en: "Real estate", risk: "mid" },
+  assets_commodities: { es: "Materias primas", en: "Commodities", risk: "mid" },
+  assets_private_equity: { es: "Inversiones alternativas", en: "Private equity", risk: "high" },
+  assets_future: { es: "Inversiones alternativas / futuras", en: "Alternative / future assets", risk: "high" },
+};
+
+const RISK_LABEL: Record<RiskLevel, { es: string; en: string; cls: string }> = {
+  low: { es: "riesgo bajo", en: "low risk", cls: "text-positive/80 border-positive/25 bg-positive/10" },
+  mid: { es: "riesgo medio", en: "medium risk", cls: "text-chart-4 border-chart-4/25 bg-chart-4/10" },
+  high: { es: "riesgo alto", en: "high risk", cls: "text-negative/90 border-negative/25 bg-negative/10" },
+};
+
 function PatrimonioContent() {
   const t = useT();
   const { profile } = useProfile();
@@ -243,13 +267,30 @@ function PatrimonioContent() {
       <div className="grid gap-4 lg:grid-cols-2">
         <Panel title={t("Activos", "Assets")} description={fmt(totalAssetsAll)}>
           <div className="space-y-2">
-            {assetRows.map((a) => (
-              <div key={a.name} className="flex items-center gap-2 rounded-xl bg-elevated/60 p-3">
-                <span className="h-2.5 w-2.5 rounded-full" style={{ background: a.color }} />
-                <p className="text-sm font-medium">{a.name}</p>
-                <span className="numeric ml-auto text-sm font-semibold">{fmt(a.value)}</span>
-              </div>
-            ))}
+            {assetRows.map((a) => {
+              const info = ASSET_CLASS[a.key];
+              const risk = info ? RISK_LABEL[info.risk] : null;
+              return (
+                <div key={a.name} className="flex items-center gap-2.5 rounded-xl bg-elevated/60 p-3">
+                  <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: a.color }} />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium">{a.name}</p>
+                    {info && (
+                      <p className="truncate text-[11px] text-muted-foreground">
+                        {t(info.es, info.en)}
+                        {risk && (
+                          <span className={`ml-1.5 rounded-full border px-1.5 py-px text-[10px] font-medium ${risk.cls}`}>
+                            {t(risk.es, risk.en)}
+                          </span>
+                        )}
+                      </p>
+                    )}
+                  </div>
+                  <span className="numeric ml-auto text-sm font-semibold">{fmt(a.value)}</span>
+                </div>
+              );
+            })}
+
             {assetRows.length === 0 && <p className="text-sm text-muted-foreground">{t("Sin activos registrados.", "No assets recorded.")}</p>}
           </div>
           <Button asChild variant="outline" size="sm" className="mt-4 w-full rounded-full">
