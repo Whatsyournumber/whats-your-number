@@ -268,7 +268,7 @@ function PatrimonioContent() {
               <div className="min-h-[230px] flex-1 lg:min-h-0">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie data={assetRows} dataKey="value" nameKey="name" innerRadius={60} outerRadius={100} paddingAngle={3} stroke="none">
+                    <Pie data={assetRows} dataKey="value" nameKey="name" innerRadius="42%" outerRadius="78%" paddingAngle={3} stroke="none">
                       {assetRows.map((a) => (
                         <Cell key={a.name} fill={a.color} />
                       ))}
