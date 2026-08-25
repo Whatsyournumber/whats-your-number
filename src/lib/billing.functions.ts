@@ -18,20 +18,30 @@ export const getBillingDetails = createServerFn({ method: "POST" })
       .limit(1)
       .maybeSingle();
 
+    const subscriptionId = sub?.paddle_subscription_id ?? "";
+    const customerId = sub?.paddle_customer_id ?? "";
+
     if (
       !sub ||
-      sub.paddle_customer_id === "trial" ||
-      sub.paddle_subscription_id.startsWith("trial_") ||
-      sub.paddle_subscription_id.startsWith("promo_")
+      !subscriptionId ||
+      !customerId ||
+      customerId === "trial" ||
+      subscriptionId.startsWith("trial_") ||
+      subscriptionId.startsWith("promo_")
     ) {
       return { accountEmail, name: null, email: null, card: null };
     }
 
-    const { fetchBillingDetails } = await import("@/lib/billing.server");
-    const details = await fetchBillingDetails(
-      sub.environment as PaddleEnv,
-      sub.paddle_customer_id,
-      sub.paddle_subscription_id,
-    );
-    return { accountEmail, ...details };
+    try {
+      const { fetchBillingDetails } = await import("@/lib/billing.server");
+      const details = await fetchBillingDetails(
+        (sub.environment ?? data.environment) as PaddleEnv,
+        customerId,
+        subscriptionId,
+      );
+      return { accountEmail, ...details };
+    } catch (error) {
+      console.error("[billing] fetchBillingDetails failed", error);
+      return { accountEmail, name: null, email: null, card: null };
+    }
   });
