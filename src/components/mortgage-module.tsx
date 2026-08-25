@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   Banknote,
@@ -158,7 +158,7 @@ function healthLabel(score: number) {
 /** Módulo de hipoteca: abonar, renegociar o invertir y su impacto en Your Number. */
 export function MortgageModule() {
   const t = useT();
-  const { profile } = useProfile();
+  const { profile, save } = useProfile();
   const d = buildDataset(profile);
   const currency = profile.currency || "EUR";
   const fmt = (n: number) => (Number.isFinite(n) ? money(Math.round(n), currency) : "—");
@@ -254,6 +254,20 @@ export function MortgageModule() {
   }, [s.balance, s.rate, s.term]);
 
 
+  // Guarda en Mis datos (perfil) con un pequeño debounce para no escribir en cada tecla.
+  const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const syncToProfile = (next: MortgageState) => {
+    if (syncTimer.current) clearTimeout(syncTimer.current);
+    syncTimer.current = setTimeout(() => {
+      const patch: Record<string, number> = {};
+      if (Math.round(next.balance) !== Math.round(Number(profile.mortgage_balance) || 0))
+        patch["mortgage_balance"] = Math.round(next.balance);
+      if (next.rate !== (Number(profile.mortgage_rate) || 0)) patch["mortgage_rate"] = next.rate;
+      if (next.term !== (Number(profile.mortgage_term) || 0)) patch["mortgage_term"] = next.term;
+      if (Object.keys(patch).length > 0) void save(patch);
+    }, 700);
+  };
+
   const set = (patch: Partial<MortgageState>) => {
     const next = { ...s, ...patch };
     setS(next);
@@ -262,7 +276,9 @@ export function MortgageModule() {
     } catch {
       /* ignore */
     }
+    if ("balance" in patch || "rate" in patch || "term" in patch) syncToProfile(next);
   };
+
 
   const payment = s.payment;
   const base = useMemo(() => simulate(s.balance, s.rate, payment), [s.balance, s.rate, payment]);
