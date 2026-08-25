@@ -183,10 +183,20 @@ export function MortgageModule() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Prefill desde el onboarding (fuente de verdad). Sin hipoteca declarada → campos vacíos.
+  // Prefill desde el onboarding (fuente de verdad). Si no hay saldo, se estima con precio de vivienda y entrada.
+  const derivedBalance =
+    Number(profile.mortgage_balance) > 0
+      ? Number(profile.mortgage_balance)
+      : Number(profile.home_price) > 0
+        ? Math.round(
+            Number(profile.home_price) * (1 - (Number(profile.down_payment_pct) || 0) / 100),
+          )
+        : 0;
+  const hasProfileMortgage = derivedBalance > 0;
+
   useEffect(() => {
     if (!ready) return;
-    const mBalance = Number(profile.mortgage_balance) || 0;
+    const mBalance = derivedBalance;
     // Sin hipoteca en onboarding: limpiar datos residuales y dejar campos vacíos.
     if (mBalance <= 0) {
       setS((prev) => {
@@ -217,7 +227,8 @@ export function MortgageModule() {
       return next;
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, profile.mortgage_balance, profile.mortgage_rate, profile.mortgage_term, profile.fixed_housing]);
+  }, [ready, derivedBalance, profile.mortgage_rate, profile.mortgage_term, profile.fixed_housing]);
+
 
   // Recalcula la cuota cuando cambian saldo, tasa o plazo (no cuando el usuario la editó directamente).
   useEffect(() => {
