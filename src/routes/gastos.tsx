@@ -35,6 +35,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { planCategories } from "@/lib/category-ai.functions";
 import { CategoryChat } from "@/components/category-chat";
+import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { useCategories } from "@/hooks/use-categories";
 
@@ -244,7 +245,7 @@ function Gastos() {
   const donutData = useMemo(() => byCategory.map((c) => ({ ...c, fixed: false })).sort((a, b) => b.amount - a.amount), [byCategory]);
 
   // Categorías con gastos visibles por defecto; toggle para ver vacías
-  const [showEmptyCategories, setShowEmptyCategories] = useState(false);
+  const showEmptyCategories = false;
   const detailRows = useMemo(() => {
     // Las categorías base se muestran primero; las creadas por el usuario al final.
     const customNames = new Set(categories.items.map((i) => i.name.trim()).filter(Boolean));
@@ -944,7 +945,7 @@ function Gastos() {
         variant="minimal"
         title={t("Gastos variables", "Variable expenses")}
         description={t("Solo categorías con gastos; puedes cargarlos manualmente con su fecha.", "Only categories with spending; you can add them manually with their date.")}
-        actions={<ManualExpenseDialog categories={detailRows.length ? detailRows.map((r) => r.name) : categories.names} />}
+        actions={<ManualExpenseDialog categories={categories.names} />}
       >
         <Accordion type="single" collapsible className="w-full">
           {detailRows.map((c, i) => {
