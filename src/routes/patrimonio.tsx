@@ -32,6 +32,30 @@ export const Route = createFileRoute("/patrimonio")({
   component: Patrimonio,
 });
 
+type RiskLevel = "low" | "mid" | "high";
+
+/** Clase de activo y nivel de riesgo por rubro del patrimonio. */
+const ASSET_CLASS: Record<string, { es: string; en: string; risk: RiskLevel }> = {
+  assets_cash: { es: "Efectivo y equivalentes", en: "Cash & equivalents", risk: "low" },
+  assets_bank: { es: "Efectivo y equivalentes / depósitos", en: "Cash & equivalents / deposits", risk: "low" },
+  assets_retirement: { es: "Fondos de inversión / mixto", en: "Mutual funds / balanced", risk: "mid" },
+  assets_etf: { es: "Fondos y ETF (renta fija y variable)", en: "Funds & ETFs (fixed income & equities)", risk: "mid" },
+  assets_bonds: { es: "Renta fija", en: "Fixed income", risk: "low" },
+  assets_structured: { es: "Productos estructurados", en: "Structured products", risk: "mid" },
+  assets_stocks: { es: "Renta variable", en: "Equities", risk: "high" },
+  assets_crypto: { es: "Activos digitales", en: "Digital assets", risk: "high" },
+  assets_property: { es: "Bienes raíces", en: "Real estate", risk: "mid" },
+  assets_commodities: { es: "Materias primas", en: "Commodities", risk: "mid" },
+  assets_private_equity: { es: "Inversiones alternativas", en: "Private equity", risk: "high" },
+  assets_future: { es: "Inversiones alternativas / futuras", en: "Alternative / future assets", risk: "high" },
+};
+
+const RISK_LABEL: Record<RiskLevel, { es: string; en: string; cls: string }> = {
+  low: { es: "riesgo bajo", en: "low risk", cls: "text-positive/80 border-positive/25 bg-positive/10" },
+  mid: { es: "riesgo medio", en: "medium risk", cls: "text-chart-4 border-chart-4/25 bg-chart-4/10" },
+  high: { es: "riesgo alto", en: "high risk", cls: "text-negative/90 border-negative/25 bg-negative/10" },
+};
+
 function PatrimonioContent() {
   const t = useT();
   const { profile } = useProfile();
