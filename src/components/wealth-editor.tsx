@@ -691,6 +691,7 @@ function InvestmentCard({
           ]}
         />
       </InlineRow>
+      {klass ? <p className="-mt-1 text-[10px] leading-tight text-muted-foreground">({klass})</p> : null}
 
       {/* --- Activos con ticker / precio de mercado (ETF, acción, cripto) --- */}
       {isMarket ? (
