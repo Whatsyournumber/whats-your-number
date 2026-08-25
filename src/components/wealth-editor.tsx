@@ -4,7 +4,8 @@ import { Building2, Check, Coins, CreditCard, Gift, LineChart, Pencil, Plus, Tra
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useT } from "@/hooks/use-language";
+import { useLanguage, useT } from "@/hooks/use-language";
+import { assetClassText } from "@/lib/asset-classes";
 import { useQuotes } from "@/hooks/use-market";
 import { holdingValue, newHolding, type Holding, type HoldingKind } from "@/hooks/use-holdings";
 import { Amount } from "@/components/ui/amount";
