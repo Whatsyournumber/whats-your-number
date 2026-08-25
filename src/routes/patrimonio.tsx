@@ -299,16 +299,17 @@ function PatrimonioContent() {
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium">{a.name}</p>
                     {info && (
-                      <p className="truncate text-[11px] text-muted-foreground">
-                        {t(info.es, info.en)}
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span className="truncate text-[11px] text-muted-foreground">{t(info.es, info.en)}</span>
                         {risk && (
-                          <span className={`ml-1.5 rounded-full border px-1.5 py-px text-[10px] font-medium ${risk.cls}`}>
+                          <span className={`shrink-0 whitespace-nowrap rounded-full border px-1.5 py-px text-[10px] font-medium ${risk.cls}`}>
                             {t(risk.es, risk.en)}
                           </span>
                         )}
-                      </p>
+                      </div>
                     )}
                   </div>
+
                   <span className="numeric ml-auto text-sm font-semibold">{fmt(a.value)}</span>
                 </div>
               );
