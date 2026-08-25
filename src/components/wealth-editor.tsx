@@ -612,6 +612,8 @@ function InvestmentCard({
   onRemove: () => void;
 }) {
   const t = useT();
+  const { lang } = useLanguage();
+  const klass = assetClassText(h.kind, lang === "en" ? "en" : "es");
   const filled = Boolean(h.label.trim()) || h.manual_value > 0 || h.monthly_contribution > 0;
   const [open, setOpen] = useState(!filled);
 
