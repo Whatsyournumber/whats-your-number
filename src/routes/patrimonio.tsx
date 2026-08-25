@@ -267,13 +267,30 @@ function PatrimonioContent() {
       <div className="grid gap-4 lg:grid-cols-2">
         <Panel title={t("Activos", "Assets")} description={fmt(totalAssetsAll)}>
           <div className="space-y-2">
-            {assetRows.map((a) => (
-              <div key={a.name} className="flex items-center gap-2 rounded-xl bg-elevated/60 p-3">
-                <span className="h-2.5 w-2.5 rounded-full" style={{ background: a.color }} />
-                <p className="text-sm font-medium">{a.name}</p>
-                <span className="numeric ml-auto text-sm font-semibold">{fmt(a.value)}</span>
-              </div>
-            ))}
+            {assetRows.map((a) => {
+              const info = ASSET_CLASS[a.key];
+              const risk = info ? RISK_LABEL[info.risk] : null;
+              return (
+                <div key={a.name} className="flex items-center gap-2.5 rounded-xl bg-elevated/60 p-3">
+                  <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: a.color }} />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium">{a.name}</p>
+                    {info && (
+                      <p className="truncate text-[11px] text-muted-foreground">
+                        {t(info.es, info.en)}
+                        {risk && (
+                          <span className={`ml-1.5 rounded-full border px-1.5 py-px text-[10px] font-medium ${risk.cls}`}>
+                            {t(risk.es, risk.en)}
+                          </span>
+                        )}
+                      </p>
+                    )}
+                  </div>
+                  <span className="numeric ml-auto text-sm font-semibold">{fmt(a.value)}</span>
+                </div>
+              );
+            })}
+
             {assetRows.length === 0 && <p className="text-sm text-muted-foreground">{t("Sin activos registrados.", "No assets recorded.")}</p>}
           </div>
           <Button asChild variant="outline" size="sm" className="mt-4 w-full rounded-full">
