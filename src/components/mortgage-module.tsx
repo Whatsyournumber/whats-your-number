@@ -183,10 +183,20 @@ export function MortgageModule() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Prefill desde el onboarding (fuente de verdad). Sin hipoteca declarada → campos vacíos.
+  // Prefill desde el onboarding (fuente de verdad). Si no hay saldo, se estima con precio de vivienda y entrada.
+  const derivedBalance =
+    Number(profile.mortgage_balance) > 0
+      ? Number(profile.mortgage_balance)
+      : Number(profile.home_price) > 0
+        ? Math.round(
+            Number(profile.home_price) * (1 - (Number(profile.down_payment_pct) || 0) / 100),
+          )
+        : 0;
+  const hasProfileMortgage = derivedBalance > 0;
+
   useEffect(() => {
     if (!ready) return;
-    const mBalance = Number(profile.mortgage_balance) || 0;
+    const mBalance = derivedBalance;
     // Sin hipoteca en onboarding: limpiar datos residuales y dejar campos vacíos.
     if (mBalance <= 0) {
       setS((prev) => {
@@ -217,7 +227,8 @@ export function MortgageModule() {
       return next;
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, profile.mortgage_balance, profile.mortgage_rate, profile.mortgage_term, profile.fixed_housing]);
+  }, [ready, derivedBalance, profile.mortgage_rate, profile.mortgage_term, profile.fixed_housing]);
+
 
   // Recalcula la cuota cuando cambian saldo, tasa o plazo (no cuando el usuario la editó directamente).
   useEffect(() => {
@@ -395,6 +406,20 @@ export function MortgageModule() {
             </span>
             <h2 className="text-lg font-semibold">{t("Análisis de hipoteca", "Mortgage analysis")}</h2>
           </div>
+          {!hasProfileMortgage && (
+            <div className="mb-5 flex flex-col gap-2 rounded-xl border border-border/60 bg-muted/30 p-3 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+              <span>
+                {t(
+                  "No encontramos tu hipoteca en Mis datos. Complétala allí o escribe los importes aquí.",
+                  "We couldn't find your mortgage in your profile. Add it there or type the amounts here.",
+                )}
+              </span>
+              <Button variant="outline" size="sm" className="shrink-0" asChild>
+                <a href="/mi-perfil#patrimonio">{t("Ir a Mis datos", "Go to my data")}</a>
+              </Button>
+            </div>
+          )}
+
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <div>
               <p className="text-xs text-muted-foreground">{t("Monto pendiente", "Outstanding balance")}</p>
