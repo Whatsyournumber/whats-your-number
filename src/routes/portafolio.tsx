@@ -17,6 +17,7 @@ import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
 import { buildDataset } from "@/lib/profile-data";
+import { assetClassText } from "@/lib/asset-classes";
 import { cn } from "@/lib/utils";
 
 
