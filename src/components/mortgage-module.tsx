@@ -183,16 +183,21 @@ export function MortgageModule() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Prefill desde el onboarding (fuente de verdad). Si no hay saldo, se estima con precio de vivienda y entrada.
+  // Prefill desde Mis datos / onboarding (fuente de verdad).
+  // Orden: saldo de hipoteca → deudas declaradas (si la vivienda es hipoteca) → precio de vivienda menos entrada.
+  const hasMortgageHousing = ((profile as { housing?: string }).housing || "") === "hipoteca";
   const derivedBalance =
     Number(profile.mortgage_balance) > 0
       ? Number(profile.mortgage_balance)
-      : Number(profile.home_price) > 0
-        ? Math.round(
-            Number(profile.home_price) * (1 - (Number(profile.down_payment_pct) || 0) / 100),
-          )
-        : 0;
+      : hasMortgageHousing && Number(profile.liabilities) > 0
+        ? Number(profile.liabilities)
+        : Number(profile.home_price) > 0
+          ? Math.round(
+              Number(profile.home_price) * (1 - (Number(profile.down_payment_pct) || 0) / 100),
+            )
+          : 0;
   const hasProfileMortgage = derivedBalance > 0;
+
 
   useEffect(() => {
     if (!ready) return;
