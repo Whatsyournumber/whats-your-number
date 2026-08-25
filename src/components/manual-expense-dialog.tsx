@@ -140,24 +140,83 @@ export function ManualExpenseDialog({ categories }: { categories: string[] }) {
 
         <div className="grid gap-3">
           <div className="grid gap-1.5">
-            <Label>{t("Fecha", "Date")}</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className={cn("justify-start gap-2 font-normal")}>
-                  <CalendarIcon className="h-4 w-4" />
-                  {format(date, "d MMM yyyy", (lang === "es" ? { locale: es } : undefined))}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={(d) => d && setDate(d)}
-                  initialFocus
-                  className={cn("p-3 pointer-events-auto")}
-                />
-              </PopoverContent>
-            </Popover>
+            <div className="flex items-center justify-between">
+              <Label>{t("Fecha", "Date")}</Label>
+              <div className="flex rounded-md border border-white/10 p-0.5 text-xs">
+                <button
+                  type="button"
+                  onClick={() => setPrecision("day")}
+                  className={cn("rounded px-2 py-0.5 transition", precision === "day" ? "bg-white/15 text-white" : "text-muted-foreground")}
+                >
+                  {t("Día exacto", "Exact day")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPrecision("month")}
+                  className={cn("rounded px-2 py-0.5 transition", precision === "month" ? "bg-white/15 text-white" : "text-muted-foreground")}
+                >
+                  {t("Solo mes", "Month only")}
+                </button>
+              </div>
+            </div>
+
+            {precision === "day" ? (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className={cn("justify-start gap-2 font-normal")}>
+                    <CalendarIcon className="h-4 w-4" />
+                    {format(date, "d MMM yyyy", (lang === "es" ? { locale: es } : undefined))}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={(d) => d && setDate(d)}
+                    initialFocus
+                    className={cn("p-3 pointer-events-auto")}
+                  />
+                </PopoverContent>
+              </Popover>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className={cn("justify-start gap-2 font-normal")}>
+                    <CalendarIcon className="h-4 w-4" />
+                    {format(date, "MMMM yyyy", (lang === "es" ? { locale: es } : undefined))}
+                    <ChevronDown className="ml-auto h-4 w-4 opacity-50" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="max-h-72 overflow-y-auto">
+                  <DropdownMenuLabel>{t("Selecciona el mes", "Select month")}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {Array.from({ length: 12 }, (_, m) => {
+                    const candidate = new Date(date.getFullYear(), m, 1);
+                    const isSel = date.getMonth() === m;
+                    return (
+                      <DropdownMenuItem
+                        key={m}
+                        onSelect={() => setDate(candidate)}
+                        className={cn(isSel && "bg-white/10")}
+                      >
+                        {format(candidate, "MMMM yyyy", (lang === "es" ? { locale: es } : undefined))}
+                      </DropdownMenuItem>
+                    );
+                  })}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel>{t("Año", "Year")}</DropdownMenuLabel>
+                  {Array.from({ length: 7 }, (_, i) => date.getFullYear() - 3 + i).map((y) => (
+                    <DropdownMenuItem
+                      key={y}
+                      onSelect={() => setDate(new Date(y, date.getMonth(), 1))}
+                      className={cn(date.getFullYear() === y && "bg-white/10")}
+                    >
+                      {y}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
 
           <div className="grid gap-1.5">
