@@ -215,22 +215,23 @@ export function useHoldings() {
         if (error) throw error;
       }
       if (list.length) {
+        // Saneamos: cualquier NaN/undefined numérico rompería el upsert con un 400.
         const payload = list.map((h, i) => ({
           id: h.id,
           user_id: userId,
           kind: h.kind,
-          label: h.label,
-          ticker: h.ticker,
-          quantity: h.quantity,
-          cost_basis: h.cost_basis,
-          manual_value: h.manual_value,
-          monthly_contribution: h.monthly_contribution,
-          expected_return: h.expected_return,
-          linked_liability: h.linked_liability,
-          monthly_income: h.monthly_income,
-          target_year: h.target_year,
-          probability: h.probability,
-          note: h.note,
+          label: h.label || "Posición",
+          ticker: h.ticker || null,
+          quantity: num(h.quantity),
+          cost_basis: num(h.cost_basis),
+          manual_value: num(h.manual_value),
+          monthly_contribution: num(h.monthly_contribution),
+          expected_return: num(h.expected_return),
+          linked_liability: num(h.linked_liability),
+          monthly_income: num(h.monthly_income),
+          target_year: h.target_year == null || Number.isNaN(h.target_year) ? null : Math.round(num(h.target_year)),
+          probability: h.probability == null || Number.isNaN(h.probability) ? 100 : num(h.probability),
+          note: h.note || null,
           position: i,
         }));
         const { error } = await supabase.from("holdings").upsert(payload);

@@ -141,17 +141,25 @@ function MiPerfil() {
 
   const onSave = async () => {
     const { completed: _c, ...rest } = merged;
-    try {
-      await saveAll(wealth);
-      await save({ ...rest, completed: true });
+    // Guardamos perfil y patrimonio por separado: si uno falla, el otro igualmente se guarda.
+    const [wealthRes, profileRes] = await Promise.allSettled([
+      saveAll(wealth),
+      save({ ...rest, completed: true }),
+    ]);
 
-      setDirty(false);
-      toast.success(t("Cambios guardados", "Changes saved"), {
-        description: t("Recalculamos todos los números de tus pestañas.", "We recalculated every number across your tabs."),
+    if (wealthRes.status === "rejected" || profileRes.status === "rejected") {
+      const err = wealthRes.status === "rejected" ? wealthRes.reason : profileRes.status === "rejected" ? profileRes.reason : null;
+      console.error("[mi-perfil] save failed", err);
+      toast.error(t("No pudimos guardar tus datos", "We couldn't save your data"), {
+        description: err instanceof Error ? err.message : String(err ?? ""),
       });
-    } catch {
-      toast.error(t("No pudimos guardar tus datos", "We couldn't save your data"));
+      return;
     }
+
+    setDirty(false);
+    toast.success(t("Cambios guardados", "Changes saved"), {
+      description: t("Recalculamos todos los números de tus pestañas.", "We recalculated every number across your tabs."),
+    });
   };
 
 
