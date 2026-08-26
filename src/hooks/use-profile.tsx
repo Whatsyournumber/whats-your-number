@@ -48,14 +48,21 @@ export function useProfile() {
   const mutation = useMutation({
     mutationFn: async (patch: Partial<Profile>) => {
       if (!userId) throw new Error("Sin sesión");
+      // Saneamos: NaN/undefined en numéricos rompe el update con un 400 silencioso.
+      const clean = Object.fromEntries(
+        Object.entries(patch).map(([k, v]) => [
+          k,
+          typeof v === "number" && !Number.isFinite(v) ? 0 : v === undefined ? null : v,
+        ]),
+      );
       const { data: existing } = await supabase
         .from("onboarding_profiles")
         .select("id")
         .eq("user_id", userId)
         .maybeSingle();
       const { error } = existing
-        ? await supabase.from("onboarding_profiles").update(patch).eq("id", existing.id)
-        : await supabase.from("onboarding_profiles").insert({ user_id: userId, ...patch });
+        ? await supabase.from("onboarding_profiles").update(clean).eq("id", existing.id)
+        : await supabase.from("onboarding_profiles").insert({ user_id: userId, ...clean });
       if (error) throw error;
       return patch;
     },
