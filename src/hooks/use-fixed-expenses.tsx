@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useLanguage } from "@/hooks/use-language";
 import { useProfile, type Profile } from "@/hooks/use-profile";
@@ -26,6 +26,7 @@ function isFixedFieldKey(id: string): id is FixedFieldKey {
 export function useFixedExpenses() {
   const [items, setItems] = useState<FixedExpense[]>(defaults);
   const [hydrated, setHydrated] = useState(false);
+  const saveTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
   const { profile, save } = useProfile();
   const { lang } = useLanguage();
 
@@ -66,6 +67,13 @@ export function useFixedExpenses() {
     });
   }, [hydrated, profile, onboardingKeys, lang]);
 
+  useEffect(
+    () => () => {
+      for (const timer of Object.values(saveTimers.current)) clearTimeout(timer);
+    },
+    [],
+  );
+
 
   // Persiste solo los items personalizados; los estándar vienen del onboarding.
   const persist = useCallback(
@@ -89,7 +97,12 @@ export function useFixedExpenses() {
       if (isFixedFieldKey(id)) {
         if (typeof patch.amount === "number") {
           const amount = Number.isFinite(patch.amount) ? Math.max(0, patch.amount) : 0;
-          void save({ [id]: amount } as Partial<Profile>).catch(() => setItems(items));
+          if (saveTimers.current[id]) clearTimeout(saveTimers.current[id]);
+          if (amount > 0) {
+            saveTimers.current[id] = setTimeout(() => {
+              void save({ [id]: amount } as Partial<Profile>).catch(() => setItems(items));
+            }, 500);
+          }
         }
         return;
       }
