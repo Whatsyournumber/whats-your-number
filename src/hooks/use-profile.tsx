@@ -54,7 +54,7 @@ export function useProfile() {
           k,
           typeof v === "number" && !Number.isFinite(v) ? 0 : v === undefined ? null : v,
         ]),
-      );
+      ) as Partial<Profile>;
       const { data: existing } = await supabase
         .from("onboarding_profiles")
         .select("id")
