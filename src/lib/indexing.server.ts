@@ -240,9 +240,10 @@ export type DistributionReport = {
 
 /** Ejecuta todos los canales de indexación/difusión para las URLs indicadas. */
 export async function distribute(urls: string[]): Promise<DistributionReport> {
-  const [indexNow, google, esPings, enPings, esHub, enHub] = await Promise.all([
+  const [indexNow, google, llm, esPings, enPings, esHub, enHub] = await Promise.all([
     submitIndexNow(urls),
     submitSitemapToGoogle(),
+    refreshLlmSurfaces(urls),
     pingAggregators("es"),
     pingAggregators("en"),
     pingWebSub("es"),
@@ -251,9 +252,10 @@ export async function distribute(urls: string[]): Promise<DistributionReport> {
   return {
     ranAt: new Date().toISOString(),
     urls: urls.length,
-    results: [indexNow, google, ...esPings, ...enPings, esHub, enHub],
+    results: [indexNow, google, llm, ...esPings, ...enPings, esHub, enHub],
   };
 }
+
 
 /* --------------------- Difusión automática de artículos -------------------- */
 
