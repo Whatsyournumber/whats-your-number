@@ -212,7 +212,11 @@ function RetiroContent() {
 
   return (
     <PageShell>
-      <PageHeader eyebrow={t("Largo plazo", "Long term")} title="WhatsYournumber" subtitle={headerSubtitle} />
+      <PageHeader
+        eyebrow={t("Largo plazo", "Long term")}
+        title={t("Calculadora de retiro — WhatsYournumber", "Retirement Calculator — WhatsYournumber")}
+        subtitle={headerSubtitle}
+      />
 
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
