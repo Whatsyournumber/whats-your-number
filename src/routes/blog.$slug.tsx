@@ -77,11 +77,12 @@ type InlineCandidate = {
   render: (matched: string) => ReactNode;
 };
 
-/** Full label plus a shorter "core" variant (last 3 words) to maximise matches. */
+/** Full label plus shorter "core" variants (last 3 and last 2 words) to maximise matches. */
 function needleVariants(label: string): string[] {
   const words = label.split(/\s+/);
   const variants = [label];
   if (words.length > 3) variants.push(words.slice(-3).join(" "));
+  if (words.length > 2) variants.push(words.slice(-2).join(" "));
   return variants;
 }
 
@@ -121,9 +122,10 @@ function makeInlineLinker(links: PostLinks | null, lang: "es" | "en") {
   if (links) {
     for (const l of links.internal) {
       const to = lang === "en" ? (l.enTo ?? l.to) : l.to;
+      const all = [l.label, ...(l.aliases ?? [])];
       candidates.push({
         key: `in:${l.to}`,
-        needles: needleVariants(l.label[lang]),
+        needles: all.flatMap((a) => needleVariants(a[lang])),
         render: (m) => (
           <Link
             to={to}
@@ -136,7 +138,9 @@ function makeInlineLinker(links: PostLinks | null, lang: "es" | "en") {
     }
     candidates.push({
       key: "ext",
-      needles: needleVariants(links.external.label[lang]),
+      needles: [links.external.label, ...(links.external.aliases ?? [])].flatMap((a) =>
+        needleVariants(a[lang]),
+      ),
       render: (m) => (
         <a
           href={links.external.href}
