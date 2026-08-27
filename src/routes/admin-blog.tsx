@@ -217,6 +217,7 @@ function BlogBackOffice() {
           <TabsTrigger value="trafico">Tráfico por artículo</TabsTrigger>
           <TabsTrigger value="paises">Países</TabsTrigger>
           <TabsTrigger value="checklist">Checklist SEO</TabsTrigger>
+          <TabsTrigger value="difusion">Difusión</TabsTrigger>
           <TabsTrigger value="conexiones">Conexiones</TabsTrigger>
         </TabsList>
 
@@ -227,6 +228,12 @@ function BlogBackOffice() {
             <KeywordGroupPanel key={group.id} group={group} rankMap={rankMap} />
           ))}
         </TabsContent>
+
+        {/* ------------------------------ Difusión ------------------------------ */}
+        <TabsContent value="difusion" className="space-y-6">
+          <DistributionPanel />
+        </TabsContent>
+
 
         {/* ------------------------------ Kws Blog ------------------------------ */}
         <TabsContent value="kws-blog" className="space-y-6">
