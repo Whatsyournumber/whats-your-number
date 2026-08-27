@@ -49,6 +49,7 @@ import { Route as NinosOnboardingRouteImport } from './routes/ninos/onboarding'
 import { Route as NinosPadresRouteImport } from './routes/ninos/padres'
 import { Route as ApiPublicDistributeNewPostsRouteImport } from './routes/api/public/distribute-new-posts'
 import { Route as ApiPublicRssRouteImport } from './routes/api/public/rss'
+import { Route as ApiPublicVerifyBacklinksRouteImport } from './routes/api/public/verify-backlinks'
 import { Route as EnBlogSlugRouteImport } from './routes/en.blog.$slug'
 import { Route as NinosKidDatosRouteImport } from './routes/ninos/kid/datos'
 import { Route as NinosKidDeseosRouteImport } from './routes/ninos/kid/deseos'
@@ -261,6 +262,12 @@ const ApiPublicRssRoute = ApiPublicRssRouteImport.update({
   path: '/api/public/rss',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicVerifyBacklinksRoute =
+  ApiPublicVerifyBacklinksRouteImport.update({
+    id: '/api/public/verify-backlinks',
+    path: '/api/public/verify-backlinks',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const EnBlogSlugRoute = EnBlogSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -355,6 +362,7 @@ export interface FileRoutesByFullPath {
   '/ninos/': typeof NinosIndexRoute
   '/api/public/distribute-new-posts': typeof ApiPublicDistributeNewPostsRoute
   '/api/public/rss': typeof ApiPublicRssRoute
+  '/api/public/verify-backlinks': typeof ApiPublicVerifyBacklinksRoute
   '/en/blog/$slug': typeof EnBlogSlugRoute
   '/ninos/kid/datos': typeof NinosKidDatosRoute
   '/ninos/kid/deseos': typeof NinosKidDeseosRoute
@@ -406,6 +414,7 @@ export interface FileRoutesByTo {
   '/ninos': typeof NinosIndexRoute
   '/api/public/distribute-new-posts': typeof ApiPublicDistributeNewPostsRoute
   '/api/public/rss': typeof ApiPublicRssRoute
+  '/api/public/verify-backlinks': typeof ApiPublicVerifyBacklinksRoute
   '/en/blog/$slug': typeof EnBlogSlugRoute
   '/ninos/kid/datos': typeof NinosKidDatosRoute
   '/ninos/kid/deseos': typeof NinosKidDeseosRoute
@@ -459,6 +468,7 @@ export interface FileRoutesById {
   '/ninos/': typeof NinosIndexRoute
   '/api/public/distribute-new-posts': typeof ApiPublicDistributeNewPostsRoute
   '/api/public/rss': typeof ApiPublicRssRoute
+  '/api/public/verify-backlinks': typeof ApiPublicVerifyBacklinksRoute
   '/en/blog/$slug': typeof EnBlogSlugRoute
   '/ninos/kid/datos': typeof NinosKidDatosRoute
   '/ninos/kid/deseos': typeof NinosKidDeseosRoute
@@ -513,6 +523,7 @@ export interface FileRouteTypes {
     | '/ninos/'
     | '/api/public/distribute-new-posts'
     | '/api/public/rss'
+    | '/api/public/verify-backlinks'
     | '/en/blog/$slug'
     | '/ninos/kid/datos'
     | '/ninos/kid/deseos'
@@ -564,6 +575,7 @@ export interface FileRouteTypes {
     | '/ninos'
     | '/api/public/distribute-new-posts'
     | '/api/public/rss'
+    | '/api/public/verify-backlinks'
     | '/en/blog/$slug'
     | '/ninos/kid/datos'
     | '/ninos/kid/deseos'
@@ -616,6 +628,7 @@ export interface FileRouteTypes {
     | '/ninos/'
     | '/api/public/distribute-new-posts'
     | '/api/public/rss'
+    | '/api/public/verify-backlinks'
     | '/en/blog/$slug'
     | '/ninos/kid/datos'
     | '/ninos/kid/deseos'
@@ -663,6 +676,7 @@ export interface RootRouteChildren {
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   ApiPublicDistributeNewPostsRoute: typeof ApiPublicDistributeNewPostsRoute
   ApiPublicRssRoute: typeof ApiPublicRssRoute
+  ApiPublicVerifyBacklinksRoute: typeof ApiPublicVerifyBacklinksRoute
   ApiPublicLinkedinCallbackRoute: typeof ApiPublicLinkedinCallbackRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
@@ -949,6 +963,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicRssRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/verify-backlinks': {
+      id: '/api/public/verify-backlinks'
+      path: '/api/public/verify-backlinks'
+      fullPath: '/api/public/verify-backlinks'
+      preLoaderRoute: typeof ApiPublicVerifyBacklinksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/en/blog/$slug': {
       id: '/en/blog/$slug'
       path: '/$slug'
@@ -1120,6 +1141,7 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutSuccessRoute: CheckoutSuccessRoute,
   ApiPublicDistributeNewPostsRoute: ApiPublicDistributeNewPostsRoute,
   ApiPublicRssRoute: ApiPublicRssRoute,
+  ApiPublicVerifyBacklinksRoute: ApiPublicVerifyBacklinksRoute,
   ApiPublicLinkedinCallbackRoute: ApiPublicLinkedinCallbackRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
