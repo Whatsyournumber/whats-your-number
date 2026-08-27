@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Clock, List, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, ExternalLink, HelpCircle, Link2, List, Sparkles } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -10,7 +10,8 @@ import { BlogChartBlock } from "@/components/blog-chart";
 import { getAuthor } from "@/lib/blog-authors";
 import { BlogSidebar } from "@/components/blog-sidebar";
 import { postCategory } from "@/lib/blog-categories";
-import { absoluteUrl, buildArticleJsonLd, buildBreadcrumbJsonLd, buildFaqJsonLd, postIsoDate } from "@/lib/blog-jsonld";
+import { absoluteUrl, buildArticleJsonLd, buildBreadcrumbJsonLd, buildFaqJsonLd, getPostFaqs, postIsoDate } from "@/lib/blog-jsonld";
+import { getPostLinks } from "@/lib/blog-links";
 
 
 export const Route = createFileRoute("/blog/$slug")({
@@ -81,6 +82,8 @@ export function BlogArticleView({ slug }: { slug: string }) {
   const charts = postCharts[post.slug] ?? [];
   const quotes = postQuotes[post.slug] ?? [];
   const author = getAuthor(post.slug);
+  const faqs = getPostFaqs(post.slug);
+  const links = getPostLinks(post.slug);
 
   // Cumulative paragraph count after each section
   const cumulative: number[] = [];
@@ -315,6 +318,57 @@ export function BlogArticleView({ slug }: { slug: string }) {
             </Fragment>
           ))}
         </article>
+
+        {faqs.length > 0 && (
+          <section className="mt-12" aria-label={t("Preguntas frecuentes", "Frequently asked questions")}>
+            <h2 className="font-display text-xl font-semibold tracking-tight">
+              {t("Preguntas frecuentes", "Frequently asked questions")}
+            </h2>
+            <div className="mt-4 space-y-3">
+              {faqs.map((f) => (
+                <details key={f.q.en} className="surface group px-5 py-4">
+                  <summary className="flex cursor-pointer list-none items-start gap-2 text-[15px] font-medium leading-snug">
+                    <HelpCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                    <h3 className="font-display text-[15px] font-semibold">{f.q[lang]}</h3>
+                  </summary>
+                  <p className="mt-3 pl-6 text-[15px] leading-relaxed text-muted-foreground">{f.a[lang]}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {links && (
+          <section className="surface mt-10 p-6" aria-label={t("Enlaces relacionados", "Related links")}>
+            <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-primary">
+              <Link2 className="h-3.5 w-3.5" /> {t("Sigue profundizando", "Go deeper")}
+            </p>
+            <ul className="mt-4 space-y-3">
+              {links.internal.map((l) => (
+                <li key={l.to} className="text-[15px] leading-snug">
+                  <a
+                    href={lang === "en" ? (l.enTo ?? l.to) : l.to}
+                    className="font-medium text-primary underline-offset-4 hover:underline"
+                  >
+                    {l.label[lang]}
+                  </a>
+                  <span className="text-muted-foreground"> — {l.note[lang]}</span>
+                </li>
+              ))}
+              <li className="border-t border-border/50 pt-3 text-[15px] leading-snug">
+                <a
+                  href={links.external.href}
+                  target="_blank"
+                  rel="noopener nofollow"
+                  className="inline-flex items-center gap-1.5 font-medium text-foreground underline-offset-4 hover:text-primary hover:underline"
+                >
+                  {links.external.label[lang]} <ExternalLink className="h-3.5 w-3.5" />
+                </a>
+                <span className="text-muted-foreground"> — {links.external.note[lang]}</span>
+              </li>
+            </ul>
+          </section>
+        )}
 
 
         <aside className="surface glow mt-12 flex gap-3 p-6">
