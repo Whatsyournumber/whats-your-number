@@ -41,6 +41,7 @@ import { Route as SuscripcionRouteImport } from './routes/suscripcion'
 import { Route as TerminosRouteImport } from './routes/terminos'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout/success'
+import { Route as EnBlogRouteImport } from './routes/en.blog'
 import { Route as EnFinanzasParaNinosRouteImport } from './routes/en.finanzas-para-ninos'
 import { Route as NinosIndexRouteImport } from './routes/ninos/index'
 import { Route as NinosOnboardingRouteImport } from './routes/ninos/onboarding'
@@ -216,6 +217,11 @@ const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
   path: '/checkout/success',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnBlogRoute = EnBlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => EnRoute,
+} as any)
 const EnFinanzasParaNinosRoute = EnFinanzasParaNinosRouteImport.update({
   id: '/finanzas-para-ninos',
   path: '/finanzas-para-ninos',
@@ -322,6 +328,7 @@ export interface FileRoutesByFullPath {
   '/terminos': typeof TerminosRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
+  '/en/blog': typeof EnBlogRoute
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
@@ -369,6 +376,7 @@ export interface FileRoutesByTo {
   '/terminos': typeof TerminosRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
+  '/en/blog': typeof EnBlogRoute
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
@@ -418,6 +426,7 @@ export interface FileRoutesById {
   '/terminos': typeof TerminosRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
+  '/en/blog': typeof EnBlogRoute
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
@@ -468,6 +477,7 @@ export interface FileRouteTypes {
     | '/terminos'
     | '/blog/$slug'
     | '/checkout/success'
+    | '/en/blog'
     | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
@@ -515,6 +525,7 @@ export interface FileRouteTypes {
     | '/terminos'
     | '/blog/$slug'
     | '/checkout/success'
+    | '/en/blog'
     | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
@@ -563,6 +574,7 @@ export interface FileRouteTypes {
     | '/terminos'
     | '/blog/$slug'
     | '/checkout/success'
+    | '/en/blog'
     | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
@@ -842,6 +854,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutSuccessRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/en/blog': {
+      id: '/en/blog'
+      path: '/blog'
+      fullPath: '/en/blog'
+      preLoaderRoute: typeof EnBlogRouteImport
+      parentRoute: typeof EnRoute
+    }
     '/en/finanzas-para-ninos': {
       id: '/en/finanzas-para-ninos'
       path: '/finanzas-para-ninos'
@@ -984,10 +1003,12 @@ const BlogRouteChildren: BlogRouteChildren = {
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 
 interface EnRouteChildren {
+  EnBlogRoute: typeof EnBlogRoute
   EnFinanzasParaNinosRoute: typeof EnFinanzasParaNinosRoute
 }
 
 const EnRouteChildren: EnRouteChildren = {
+  EnBlogRoute: EnBlogRoute,
   EnFinanzasParaNinosRoute: EnFinanzasParaNinosRoute,
 }
 
