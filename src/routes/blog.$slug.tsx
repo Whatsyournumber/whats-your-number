@@ -359,7 +359,7 @@ export function BlogArticleView({ slug }: { slug: string }) {
         </section>
         </div>
 
-        <aside className="lg:pt-8">
+        <aside className="lg:pt-[42px]">
           <BlogSidebar activeCategory={postCategory(post.slug)?.id} />
         </aside>
         </div>
