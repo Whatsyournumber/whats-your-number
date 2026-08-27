@@ -56,16 +56,17 @@ function HighlightDesc({ desc, highlight }: { desc: string; highlight?: string }
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "WhatsYournumber — Tu CFO personal con IA" },
+      { title: "Finanzas Personales con IA | Controla Gastos, Patrimonio y Retiro" },
       {
         name: "description",
         content:
-          "Consolida patrimonio, gastos, inversiones y cash flow en una sola plataforma. Sube tus estados de cuenta en PDF o CSV y deja que la IA clasifique todo.",
+          "Controla tus gastos, patrimonio, inversiones y flujo de caja en una sola plataforma. Descubre cómo cada decisión financiera te acerca o aleja de tu número de retiro.",
       },
-      { property: "og:title", content: "WhatsYournumber — Tu CFO personal con IA" },
+      { property: "og:title", content: "Finanzas Personales con IA | Controla Gastos, Patrimonio y Retiro" },
       {
         property: "og:description",
-        content: "Patrimonio, gastos, portafolio e insights con IA. Importa PDF y CSV en segundos.",
+        content:
+          "Controla tus gastos, patrimonio, inversiones y flujo de caja en una sola plataforma. Descubre cómo cada decisión financiera te acerca o aleja de tu número de retiro.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

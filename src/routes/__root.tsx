@@ -101,18 +101,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "WhatsYournumber — Tu CFO personal con IA" },
+      { title: "Finanzas Personales con IA | Controla Gastos, Patrimonio y Retiro" },
       {
         name: "description",
         content:
-          "Plataforma de finanzas personales y gestión patrimonial: patrimonio, gastos, cash flow, portafolio e insights con IA.",
+          "Controla tus gastos, patrimonio, inversiones y flujo de caja en una sola plataforma. Descubre cómo cada decisión financiera te acerca o aleja de tu número de retiro.",
       },
       { property: "og:site_name", content: "WhatsYournumber" },
       { property: "og:locale", content: "es_ES" },
-      { property: "og:title", content: "WhatsYournumber — Tu CFO personal con IA" },
+      { property: "og:title", content: "Finanzas Personales con IA | Controla Gastos, Patrimonio y Retiro" },
       {
         property: "og:description",
-        content: "Patrimonio, gastos, inversiones e insights con IA en un solo lugar.",
+        content:
+          "Controla tus gastos, patrimonio, inversiones y flujo de caja en una sola plataforma. Descubre cómo cada decisión financiera te acerca o aleja de tu número de retiro.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
