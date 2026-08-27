@@ -37,7 +37,7 @@ import { useRoles } from "@/hooks/use-role";
 import { blogPosts } from "@/lib/blog-posts";
 import { auditAllPosts, MIN_WORDS, type PostAudit } from "@/lib/blog-audit";
 import { getBlogSearchConsole, getBlogTraffic, getKeywordRankings, getSerpRankings } from "@/lib/blog-analytics.functions";
-import type { SerpRank } from "@/lib/keyword-serp.server";
+import { REGION_LABEL, type SerpRank, type SerpRegion } from "@/lib/keyword-serp.server";
 import { lovableAnalytics } from "@/lib/lovable-analytics-snapshot";
 
 import type { GscRow, GscSummary, KeywordRank, KeywordRankings } from "@/lib/blog-analytics.server";
@@ -699,7 +699,11 @@ function KeywordGroupPanel({
   date?: string | undefined;
 }) {
   const keywords = useMemo(
-    () => group.keywords.flatMap((kw) => [kw.es, kw.en]),
+    () =>
+      group.keywords.flatMap((kw) => [
+        { keyword: kw.es, region: "es" as SerpRegion },
+        { keyword: kw.en, region: "us" as SerpRegion },
+      ]),
     [group],
   );
   const [serp, setSerp] = useState<{ ranks: SerpRank[]; checkedAt: string } | null>(null);
@@ -708,7 +712,7 @@ function KeywordGroupPanel({
 
   const serpMap = useMemo(() => {
     const map = new Map<string, SerpRank>();
-    serp?.ranks.forEach((rank) => map.set(rank.keyword.toLowerCase(), rank));
+    serp?.ranks.forEach((rank) => map.set(`${rank.region}|${rank.keyword.toLowerCase()}`, rank));
     return map;
   }, [serp]);
 
@@ -756,6 +760,7 @@ function KeywordGroupPanel({
           <TableRow>
             <TableHead>Keyword objetivo</TableHead>
             <TableHead className="w-20">Idioma</TableHead>
+            <TableHead className="w-28">País</TableHead>
             <TableHead className="text-right">Clics</TableHead>
             <TableHead className="text-right">Impresiones</TableHead>
             <TableHead className="text-right">Posición</TableHead>
@@ -768,8 +773,14 @@ function KeywordGroupPanel({
               <TableRow key={`${group.id}-${lang}-${kw[lang]}`}>
                 <TableCell className="font-medium">{kw[lang]}</TableCell>
                 <TableCell className="uppercase text-xs text-muted-foreground">{lang}</TableCell>
+                <TableCell className="text-xs text-muted-foreground">
+                  {REGION_LABEL[lang === "es" ? "es" : "us"]}
+                </TableCell>
                 <RankCells rank={rankMap.get(kw[lang].toLowerCase())} />
-                <SerpCell rank={serpMap.get(kw[lang].toLowerCase())} measuring={measuring} />
+                <SerpCell
+                  rank={serpMap.get(`${lang === "es" ? "es" : "us"}|${kw[lang].toLowerCase()}`)}
+                  measuring={measuring}
+                />
               </TableRow>
             )),
           )}
