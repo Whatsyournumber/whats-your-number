@@ -10,7 +10,7 @@ import { BlogChartBlock } from "@/components/blog-chart";
 import { getAuthor } from "@/lib/blog-authors";
 import { BlogSidebar } from "@/components/blog-sidebar";
 import { postCategory } from "@/lib/blog-categories";
-import { absoluteUrl, buildArticleJsonLd, buildBreadcrumbJsonLd, postIsoDate } from "@/lib/blog-jsonld";
+import { absoluteUrl, buildArticleJsonLd, buildBreadcrumbJsonLd, buildFaqJsonLd, postIsoDate } from "@/lib/blog-jsonld";
 
 
 export const Route = createFileRoute("/blog/$slug")({
@@ -57,7 +57,7 @@ export const Route = createFileRoute("/blog/$slug")({
         { rel: "alternate", hrefLang: "en", href: `https://whatsyour-number.com/en/blog/${params.slug}` },
         { rel: "alternate", hrefLang: "x-default", href: url },
       ],
-      scripts: [jsonLd, buildBreadcrumbJsonLd(params.slug, "es")]
+      scripts: [jsonLd, buildBreadcrumbJsonLd(params.slug, "es"), buildFaqJsonLd(params.slug, "es")]
         .filter(Boolean)
         .map((data) => ({ type: "application/ld+json", children: JSON.stringify(data) })),
     };
