@@ -4,8 +4,27 @@
  * la primera aparición de nuestro dominio.
  */
 
+export type SerpRegion = "es" | "us" | "mx" | "gb";
+
+/** Parámetro regional de DuckDuckGo (kl) por país. */
+const REGION_KL: Record<SerpRegion, string> = {
+  es: "es-es",
+  mx: "mx-es",
+  us: "us-en",
+  gb: "uk-en",
+};
+
+export const REGION_LABEL: Record<SerpRegion, string> = {
+  es: "España",
+  mx: "México",
+  us: "EE. UU.",
+  gb: "Reino Unido",
+};
+
 export type SerpRank = {
   keyword: string;
+  /** País/región desde el que se midió el SERP. */
+  region: SerpRegion;
   /** Posición 1-based en el SERP, o null si no aparece en la primera página. */
   position: number | null;
   /** URL nuestra encontrada, si la hay. */
@@ -35,14 +54,18 @@ function isAd(href: string) {
   return href.includes("ad_provider") || href.includes("y.js") || href.includes("bing.com/aclick");
 }
 
-export async function fetchSerpRank(keyword: string, domain: string): Promise<SerpRank> {
+export async function fetchSerpRank(
+  keyword: string,
+  domain: string,
+  region: SerpRegion = "es",
+): Promise<SerpRank> {
   try {
     const response = await fetch(
-      `https://html.duckduckgo.com/html/?q=${encodeURIComponent(keyword)}`,
+      `https://html.duckduckgo.com/html/?q=${encodeURIComponent(keyword)}&kl=${REGION_KL[region]}`,
       { headers: { "User-Agent": UA, Accept: "text/html" } },
     );
     if (!response.ok) {
-      return { keyword, position: null, url: null, topDomains: [], error: `HTTP ${response.status}` };
+      return { keyword, region, position: null, url: null, topDomains: [], error: `HTTP ${response.status}` };
     }
     const html = await response.text();
     const matches = [...html.matchAll(/class="result__a"\s+href="([^"]+)"/g)];
@@ -74,10 +97,11 @@ export async function fetchSerpRank(keyword: string, domain: string): Promise<Se
       }
     });
 
-    return { keyword, position, url: found, topDomains };
+    return { keyword, region, position, url: found, topDomains };
   } catch (error) {
     return {
       keyword,
+      region,
       position: null,
       url: null,
       topDomains: [],
@@ -87,14 +111,18 @@ export async function fetchSerpRank(keyword: string, domain: string): Promise<Se
 }
 
 /** Ejecuta las consultas con concurrencia limitada para no saturar la fuente. */
-export async function fetchSerpRanks(keywords: string[], domain: string, concurrency = 4) {
+export async function fetchSerpRanks(
+  keywords: { keyword: string; region: SerpRegion }[],
+  domain: string,
+  concurrency = 4,
+) {
   const results: SerpRank[] = [];
   let cursor = 0;
   const workers = Array.from({ length: Math.min(concurrency, keywords.length) }, async () => {
     while (cursor < keywords.length) {
       const index = cursor++;
-      const keyword = keywords[index]!;
-      results[index] = await fetchSerpRank(keyword, domain);
+      const item = keywords[index]!;
+      results[index] = await fetchSerpRank(item.keyword, domain, item.region);
     }
   });
   await Promise.all(workers);
