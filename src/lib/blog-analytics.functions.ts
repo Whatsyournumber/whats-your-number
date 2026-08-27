@@ -93,8 +93,15 @@ export const getKeywordRankings = createServerFn({ method: "POST" })
  */
 export const getSerpRankings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { keywords: string[] }) => ({
-    keywords: (data?.keywords ?? []).slice(0, 24).map((k) => String(k).slice(0, 120)),
+  .inputValidator((data: { keywords: { keyword: string; region?: string }[] }) => ({
+    keywords: (data?.keywords ?? []).slice(0, 24).map((k) => ({
+      keyword: String(k?.keyword ?? "").slice(0, 120),
+      region: (["es", "mx", "us", "gb"].includes(String(k?.region)) ? String(k?.region) : "es") as
+        | "es"
+        | "mx"
+        | "us"
+        | "gb",
+    })),
   }))
   .handler(async ({ data, context }): Promise<SerpRankings> => {
     await assertAdmin(context.supabase, context.userId);
