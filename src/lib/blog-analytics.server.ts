@@ -337,3 +337,102 @@ export async function loadKeywordRankings(
 
   return { status: "ok", siteUrl, range: { start, end }, ranks };
 }
+
+/* ------------------------- Análisis deep LLM / IA -------------------------- */
+
+/** Motores de respuesta / asistentes de IA que envían tráfico al blog. */
+const AI_SOURCES: { id: string; label: string; match: RegExp }[] = [
+  { id: "chatgpt", label: "ChatGPT", match: /(chatgpt\.com|chat\.openai\.com|openai\.com|searchgpt)/i },
+  { id: "perplexity", label: "Perplexity", match: /perplexity\.ai/i },
+  { id: "gemini", label: "Google Gemini / AI Overviews", match: /(gemini\.google|bard\.google|google\.com\/search\?.*udm=50)/i },
+  { id: "copilot", label: "Microsoft Copilot", match: /(copilot\.microsoft|bing\.com\/chat|edgeservices\.bing)/i },
+  { id: "claude", label: "Claude", match: /claude\.ai/i },
+  { id: "grok", label: "Grok", match: /(grok\.com|x\.ai)/i },
+  { id: "deepseek", label: "DeepSeek", match: /deepseek\.com/i },
+  { id: "mistral", label: "Le Chat (Mistral)", match: /(chat\.mistral|mistral\.ai)/i },
+  { id: "you", label: "You.com", match: /you\.com/i },
+  { id: "poe", label: "Poe", match: /poe\.com/i },
+  { id: "phind", label: "Phind", match: /phind\.com/i },
+];
+
+export type LlmInsights = {
+  days: number;
+  totalViews: number;
+  aiViews: number;
+  aiShare: number;
+  bySource: { id: string; label: string; views: number; sessions: number }[];
+  byPost: { slug: string; lang: string; views: number; sources: string[] }[];
+  byDay: { date: string; views: number }[];
+  byCountry: { country: string; views: number }[];
+};
+
+function aiSource(raw: string | null): { id: string; label: string } | null {
+  if (!raw) return null;
+  const found = AI_SOURCES.find((source) => source.match.test(raw));
+  return found ? { id: found.id, label: found.label } : null;
+}
+
+/** Dónde están leyendo los LLM nuestros contenidos (tráfico desde asistentes de IA). */
+export async function loadLlmInsights(days: number): Promise<LlmInsights> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const since = new Date(Date.now() - days * 86_400_000).toISOString();
+  const { data, error } = await supabaseAdmin
+    .from("blog_page_views")
+    .select("slug,lang,country,referrer,device,session_id,created_at")
+    .gte("created_at", since)
+    .order("created_at", { ascending: false })
+    .limit(50_000);
+  if (error) throw new Error(error.message);
+
+  const rows = (data ?? []) as ViewRow[];
+  const bySource = new Map<string, { label: string; views: number; sessions: Set<string> }>();
+  const byPost = new Map<string, { lang: string; views: number; sources: Set<string> }>();
+  const byDay = new Map<string, number>();
+  const byCountry = new Map<string, number>();
+  let aiViews = 0;
+
+  for (const row of rows) {
+    const source = aiSource(row.referrer);
+    if (!source) continue;
+    aiViews += 1;
+
+    const entry = bySource.get(source.id) ?? { label: source.label, views: 0, sessions: new Set<string>() };
+    entry.views += 1;
+    if (row.session_id) entry.sessions.add(row.session_id);
+    bySource.set(source.id, entry);
+
+    const post = byPost.get(row.slug) ?? { lang: row.lang, views: 0, sources: new Set<string>() };
+    post.views += 1;
+    post.sources.add(source.label);
+    byPost.set(row.slug, post);
+
+    const day = row.created_at.slice(0, 10);
+    byDay.set(day, (byDay.get(day) ?? 0) + 1);
+
+    const country = row.country ?? "??";
+    byCountry.set(country, (byCountry.get(country) ?? 0) + 1);
+  }
+
+  const series: { date: string; views: number }[] = [];
+  for (let i = days - 1; i >= 0; i -= 1) {
+    const date = new Date(Date.now() - i * 86_400_000).toISOString().slice(0, 10);
+    series.push({ date, views: byDay.get(date) ?? 0 });
+  }
+
+  return {
+    days,
+    totalViews: rows.length,
+    aiViews,
+    aiShare: rows.length ? aiViews / rows.length : 0,
+    bySource: [...bySource.entries()]
+      .map(([id, value]) => ({ id, label: value.label, views: value.views, sessions: value.sessions.size }))
+      .sort((a, b) => b.views - a.views),
+    byPost: [...byPost.entries()]
+      .map(([slug, value]) => ({ slug, lang: value.lang, views: value.views, sources: [...value.sources] }))
+      .sort((a, b) => b.views - a.views),
+    byDay: series,
+    byCountry: [...byCountry.entries()]
+      .map(([country, views]) => ({ country, views }))
+      .sort((a, b) => b.views - a.views),
+  };
+}

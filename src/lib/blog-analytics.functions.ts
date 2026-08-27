@@ -108,3 +108,15 @@ export const getSerpRankings = createServerFn({ method: "POST" })
     const { fetchSerpRanks } = await import("@/lib/keyword-serp.server");
     return fetchSerpRanks(data.keywords, "whatsyour-number.com");
   });
+
+/** Análisis deep de tráfico procedente de LLM / asistentes de IA (solo admins). */
+export const getLlmInsights = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { days?: number }) => ({
+    days: Math.min(Math.max(Number(data?.days ?? 28), 1), 365),
+  }))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.supabase, context.userId);
+    const { loadLlmInsights } = await import("@/lib/blog-analytics.server");
+    return loadLlmInsights(data.days);
+  });
