@@ -2,7 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { BrandMark } from "@/components/brand-mark";
+import { BrandLogo } from "@/components/brand-logo";
 
 type OAuthNamespace = {
   getAuthorizationDetails: (id: string) => Promise<{ data: AuthorizationDetails | null; error: Error | null }>;
@@ -75,7 +75,7 @@ function Consent() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-background px-4 py-12">
       <div className="w-full max-w-md rounded-3xl border border-border/60 bg-elevated/60 p-8 shadow-xl backdrop-blur">
-        <BrandMark className="mb-6" />
+        <BrandLogo className="mb-6" />
         <h1 className="text-xl font-semibold text-foreground">
           Conectar {clientName} con tu cuenta
         </h1>
