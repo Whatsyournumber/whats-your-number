@@ -64,14 +64,48 @@ export function BlogIndex() {
           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
             {t("Aprende con nosotros", "Learn with us")}
           </p>
-          <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight md:text-5xl">{t("Blog", "Blog")}</h1>
+          <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight md:text-5xl">
+            {activeCatMeta ? activeCatMeta.label[lang] : t("Blog", "Blog")}
+          </h1>
           <p className="mt-4 max-w-xl text-sm text-muted-foreground">
-            {t(
-              "Ideas prácticas sobre patrimonio, gasto consciente, inversión y libertad financiera.",
-              "Practical ideas about net worth, mindful spending, investing and financial freedom.",
-            )}
+            {activeCatMeta
+              ? activeCatMeta.description[lang]
+              : t(
+                  "Ideas prácticas sobre patrimonio, gasto consciente, inversión y libertad financiera.",
+                  "Practical ideas about net worth, mindful spending, investing and financial freedom.",
+                )}
           </p>
+
+          <div className="mt-6 flex flex-wrap gap-2">
+            <a
+              href={blogHref}
+              className={`rounded-full border px-4 py-1.5 text-xs font-medium transition-colors ${
+                activeCat
+                  ? "border-border text-muted-foreground hover:border-primary hover:text-primary"
+                  : "border-primary bg-primary/10 text-primary"
+              }`}
+            >
+              {t("Todo", "All")}
+            </a>
+            {blogCategories.map((c) => (
+              <a
+                key={c.id}
+                href={c.href ? c.href[lang] : `${blogHref}?cat=${c.id}`}
+                className={`rounded-full border px-4 py-1.5 text-xs font-medium transition-colors ${
+                  activeCat === c.id
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border text-muted-foreground hover:border-primary hover:text-primary"
+                }`}
+              >
+                {c.label[lang]}
+              </a>
+            ))}
+          </div>
         </section>
+
+        <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <div className="min-w-0">
+
 
         {/* Destacado */}
         {!activeCat && (
