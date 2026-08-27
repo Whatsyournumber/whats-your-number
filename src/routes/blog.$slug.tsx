@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, Clock, List, Sparkles } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useLanguage, useT } from "@/hooks/use-language";
-import { blogPosts, getPost, postCharts, postExtras, sectionId } from "@/lib/blog-posts";
+import { blogPosts, getPost, postCharts, postExtras, postQuotes, sectionId } from "@/lib/blog-posts";
 import { BlogChartBlock } from "@/components/blog-chart";
 import { getAuthor } from "@/lib/blog-authors";
 import { BlogSidebar } from "@/components/blog-sidebar";
@@ -79,6 +79,7 @@ export function BlogArticleView({ slug }: { slug: string }) {
 
   const extras = postExtras[post.slug];
   const charts = postCharts[post.slug] ?? [];
+  const quotes = postQuotes[post.slug] ?? [];
   const author = getAuthor(post.slug);
 
   // Cumulative paragraph count after each section
@@ -192,6 +193,20 @@ export function BlogArticleView({ slug }: { slug: string }) {
                 .filter((c) => c.after === i)
                 .map((c) => (
                   <BlogChartBlock key={c.id} chart={c} />
+                ))}
+
+              {quotes
+                .filter((q) => q.after === i)
+                .map((q) => (
+                  <figure key={q.author} className="surface relative overflow-hidden px-6 py-5">
+                    <span className="absolute left-0 top-0 h-full w-1 bg-primary/70" />
+                    <blockquote className="font-display text-[17px] leading-relaxed text-foreground">
+                      “{q.text[lang]}”
+                    </blockquote>
+                    <figcaption className="mt-3 text-xs text-muted-foreground">
+                      <span className="font-medium text-foreground">{q.author}</span> · {q.role[lang]}
+                    </figcaption>
+                  </figure>
                 ))}
 
               {extras && i === imageIndex && (
