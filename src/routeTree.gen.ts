@@ -22,6 +22,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as DemoNinosRouteImport } from './routes/demo-ninos'
 import { Route as ElegirRouteImport } from './routes/elegir'
+import { Route as EnRouteImport } from './routes/en'
 import { Route as FinanzasParaNinosRouteImport } from './routes/finanzas-para-ninos'
 import { Route as GastosRouteImport } from './routes/gastos'
 import { Route as HipotecaRouteImport } from './routes/hipoteca'
@@ -117,6 +118,11 @@ const DemoNinosRoute = DemoNinosRouteImport.update({
 const ElegirRoute = ElegirRouteImport.update({
   id: '/elegir',
   path: '/elegir',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnRoute = EnRouteImport.update({
+  id: '/en',
+  path: '/en',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FinanzasParaNinosRoute = FinanzasParaNinosRouteImport.update({
@@ -292,6 +298,7 @@ export interface FileRoutesByFullPath {
   '/demo': typeof DemoRoute
   '/demo-ninos': typeof DemoNinosRoute
   '/elegir': typeof ElegirRoute
+  '/en': typeof EnRoute
   '/finanzas-para-ninos': typeof FinanzasParaNinosRoute
   '/gastos': typeof GastosRoute
   '/hipoteca': typeof HipotecaRoute
@@ -337,6 +344,7 @@ export interface FileRoutesByTo {
   '/demo': typeof DemoRoute
   '/demo-ninos': typeof DemoNinosRoute
   '/elegir': typeof ElegirRoute
+  '/en': typeof EnRoute
   '/finanzas-para-ninos': typeof FinanzasParaNinosRoute
   '/gastos': typeof GastosRoute
   '/hipoteca': typeof HipotecaRoute
@@ -384,6 +392,7 @@ export interface FileRoutesById {
   '/demo': typeof DemoRoute
   '/demo-ninos': typeof DemoNinosRoute
   '/elegir': typeof ElegirRoute
+  '/en': typeof EnRoute
   '/finanzas-para-ninos': typeof FinanzasParaNinosRoute
   '/gastos': typeof GastosRoute
   '/hipoteca': typeof HipotecaRoute
@@ -432,6 +441,7 @@ export interface FileRouteTypes {
     | '/demo'
     | '/demo-ninos'
     | '/elegir'
+    | '/en'
     | '/finanzas-para-ninos'
     | '/gastos'
     | '/hipoteca'
@@ -477,6 +487,7 @@ export interface FileRouteTypes {
     | '/demo'
     | '/demo-ninos'
     | '/elegir'
+    | '/en'
     | '/finanzas-para-ninos'
     | '/gastos'
     | '/hipoteca'
@@ -523,6 +534,7 @@ export interface FileRouteTypes {
     | '/demo'
     | '/demo-ninos'
     | '/elegir'
+    | '/en'
     | '/finanzas-para-ninos'
     | '/gastos'
     | '/hipoteca'
@@ -570,6 +582,7 @@ export interface RootRouteChildren {
   DemoRoute: typeof DemoRoute
   DemoNinosRoute: typeof DemoNinosRoute
   ElegirRoute: typeof ElegirRoute
+  EnRoute: typeof EnRoute
   FinanzasParaNinosRoute: typeof FinanzasParaNinosRoute
   GastosRoute: typeof GastosRoute
   HipotecaRoute: typeof HipotecaRoute
@@ -682,6 +695,13 @@ declare module '@tanstack/react-router' {
       path: '/elegir'
       fullPath: '/elegir'
       preLoaderRoute: typeof ElegirRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/en': {
+      id: '/en'
+      path: '/en'
+      fullPath: '/en'
+      preLoaderRoute: typeof EnRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/finanzas-para-ninos': {
@@ -959,6 +979,7 @@ const rootRouteChildren: RootRouteChildren = {
   DemoRoute: DemoRoute,
   DemoNinosRoute: DemoNinosRoute,
   ElegirRoute: ElegirRoute,
+  EnRoute: EnRoute,
   FinanzasParaNinosRoute: FinanzasParaNinosRoute,
   GastosRoute: GastosRoute,
   HipotecaRoute: HipotecaRoute,

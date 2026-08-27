@@ -74,7 +74,12 @@ export const Route = createFileRoute("/")({
       { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
       { name: "twitter:image", content: "https://whatsyour-number.com/og-cover.jpg" },
     ],
-    links: [{ rel: "canonical", href: "https://whatsyour-number.com" }],
+    links: [
+      { rel: "canonical", href: "https://whatsyour-number.com" },
+      { rel: "alternate", hrefLang: "es", href: "https://whatsyour-number.com" },
+      { rel: "alternate", hrefLang: "en", href: "https://whatsyour-number.com/en" },
+      { rel: "alternate", hrefLang: "x-default", href: "https://whatsyour-number.com" },
+    ],
   }),
   component: Landing,
 });
@@ -187,7 +192,7 @@ function DemoCard() {
   );
 }
 
-function Landing() {
+export function Landing() {
   const t = useT();
   const liveCount = useLiveCount(1200);
   const { user, loading: authLoading } = useAuth();
