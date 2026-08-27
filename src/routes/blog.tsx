@@ -3,7 +3,6 @@ import { ArrowRight, ArrowUpRight, Clock } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { BlogSidebar } from "@/components/blog-sidebar";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { blogPosts } from "@/lib/blog-posts";
 import { blogCategories, postsByCategory } from "@/lib/blog-categories";
@@ -114,8 +113,7 @@ export function BlogIndex() {
           </div>
         </section>
 
-        <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_300px]">
-        <div className="min-w-0">
+        <div className="mt-2">
 
 
         {/* Destacado */}
@@ -204,11 +202,6 @@ export function BlogIndex() {
             {t("Pronto publicaremos artículos de esta categoría.", "We'll publish articles in this category soon.")}
           </p>
         )}
-        </div>
-
-        <aside className="lg:pt-2">
-          <BlogSidebar activeCategory={activeCat ?? undefined} />
-        </aside>
         </div>
 
 
