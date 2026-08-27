@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Clock, List, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, ExternalLink, HelpCircle, Link2, List, Sparkles } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
