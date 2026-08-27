@@ -6,23 +6,32 @@ import { SiteFooter } from "@/components/site-footer";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { blogPosts } from "@/lib/blog-posts";
 
+const TITLE = "Blog de Finanzas Personales | Ahorro, Inversiones y Negocios";
+const DESCRIPTION =
+  "Aprende sobre finanzas personales, ahorro, inversiones, patrimonio, jubilación y negocios. Guías prácticas para tomar mejores decisiones financieras y alcanzar tu número de retiro.";
+
 export const Route = createFileRoute("/blog")({
   head: () => ({
     meta: [
-      { title: "Blog — WhatsYournumber" },
-      {
-        name: "description",
-        content: "Ideas prácticas sobre patrimonio, gasto consciente, inversión y libertad financiera.",
-      },
-      { property: "og:title", content: "Blog — WhatsYournumber" },
-      { property: "og:description", content: "Artículos sobre finanzas personales, inversión y IA." },
+      { title: TITLE },
+      { name: "description", content: DESCRIPTION },
+      { property: "og:title", content: TITLE },
+      { property: "og:description", content: DESCRIPTION },
       { property: "og:type", content: "website" },
+      { property: "og:locale", content: "es_ES" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: TITLE },
+      { name: "twitter:description", content: DESCRIPTION },
       { property: "og:url", content: "https://whatsyour-number.com/blog" },
       { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
       { name: "twitter:image", content: "https://whatsyour-number.com/og-cover.jpg" },
     ],
-    links: [{ rel: "canonical", href: "https://whatsyour-number.com/blog" }],
+    links: [
+      { rel: "canonical", href: "https://whatsyour-number.com/blog" },
+      { rel: "alternate", hrefLang: "es", href: "https://whatsyour-number.com/blog" },
+      { rel: "alternate", hrefLang: "en", href: "https://whatsyour-number.com/en/blog" },
+      { rel: "alternate", hrefLang: "x-default", href: "https://whatsyour-number.com/blog" },
+    ],
   }),
   component: BlogLayout,
 });
@@ -34,7 +43,7 @@ function BlogLayout() {
   return <BlogIndex />;
 }
 
-function BlogIndex() {
+export function BlogIndex() {
   const t = useT();
   const { lang } = useLanguage();
   const featured = blogPosts[0]!;

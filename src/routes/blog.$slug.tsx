@@ -55,7 +55,12 @@ export const Route = createFileRoute("/blog/$slug")({
         { name: "twitter:image", content: "https://whatsyour-number.com/og-cover.jpg" },
         { name: "twitter:card", content: "summary_large_image" },
       ],
-      links: [{ rel: "canonical", href: url }],
+      links: [
+        { rel: "canonical", href: url },
+        { rel: "alternate", hrefLang: "es", href: url },
+        { rel: "alternate", hrefLang: "en", href: `https://whatsyour-number.com/en/blog/${params.slug}` },
+        { rel: "alternate", hrefLang: "x-default", href: url },
+      ],
       scripts: [{ type: "application/ld+json", children: JSON.stringify(jsonLd) }],
     };
   },
@@ -64,6 +69,10 @@ export const Route = createFileRoute("/blog/$slug")({
 
 function BlogArticle() {
   const { slug } = Route.useParams();
+  return <BlogArticleView slug={slug} />;
+}
+
+export function BlogArticleView({ slug }: { slug: string }) {
   const t = useT();
   const { lang } = useLanguage();
   const post = getPost(slug);
