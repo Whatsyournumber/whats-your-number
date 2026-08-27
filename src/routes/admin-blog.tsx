@@ -35,7 +35,7 @@ import { useRoles } from "@/hooks/use-role";
 import { blogPosts } from "@/lib/blog-posts";
 import { auditAllPosts, MIN_WORDS, type PostAudit } from "@/lib/blog-audit";
 import { getBlogSearchConsole, getBlogTraffic, getKeywordRankings } from "@/lib/blog-analytics.functions";
-import type { GscRow, GscSummary, KeywordRank } from "@/lib/blog-analytics.server";
+import type { GscRow, GscSummary, KeywordRank, KeywordRankings } from "@/lib/blog-analytics.server";
 import {
   allTargetKeywords,
   homeKeywords,
@@ -98,17 +98,20 @@ function BlogBackOffice() {
     queryFn: () => getBlogSearchConsole({ data: { days } }),
   });
 
-  const trackedGroups = useMemo<KeywordGroup[]>(() => {
-    const postGroups: KeywordGroup[] = blogPosts
-      .filter((post) => postKeywords[post.slug])
-      .map((post) => ({
-        id: post.slug,
-        label: { es: post.title.es, en: post.title.en },
-        path: `/blog/${post.slug}`,
-        keywords: postKeywords[post.slug]!,
-      }));
-    return [homeKeywords, kidsKeywords, ...postGroups];
-  }, []);
+  const siteGroups = useMemo<KeywordGroup[]>(() => [homeKeywords, kidsKeywords], []);
+
+  const postGroups = useMemo<KeywordGroup[]>(
+    () =>
+      blogPosts
+        .filter((post) => postKeywords[post.slug])
+        .map((post) => ({
+          id: post.slug,
+          label: { es: post.title.es, en: post.title.en },
+          path: `/blog/${post.slug}`,
+          keywords: postKeywords[post.slug]!,
+        })),
+    [],
+  );
 
   const targetList = useMemo(() => allTargetKeywords(), []);
 
@@ -188,43 +191,33 @@ function BlogBackOffice() {
         <KpiCard label="Artículos 100% checklist" value={`${readyPosts}/${audits.length}`} icon={ListChecks} />
       </div>
 
-      <Tabs defaultValue="objetivo">
+      <Tabs defaultValue="kws-home">
         <TabsList className="mb-6 flex-wrap">
-          <TabsTrigger value="objetivo">Keywords objetivo</TabsTrigger>
-          <TabsTrigger value="keywords">Keywords</TabsTrigger>
+          <TabsTrigger value="kws-home">Kws Home</TabsTrigger>
+          <TabsTrigger value="kws-blog">Kws Blog</TabsTrigger>
           <TabsTrigger value="trafico">Tráfico por artículo</TabsTrigger>
           <TabsTrigger value="paises">Países</TabsTrigger>
           <TabsTrigger value="checklist">Checklist SEO</TabsTrigger>
           <TabsTrigger value="conexiones">Conexiones</TabsTrigger>
         </TabsList>
 
-        {/* -------------------------- Keywords objetivo -------------------------- */}
-        <TabsContent value="objetivo" className="space-y-6">
-          {ranks.isLoading && <Panel className="p-6 text-muted-foreground">Consultando posiciones…</Panel>}
-          {ranks.isError && (
-            <Panel className="p-6">
-              <p className="mb-1 font-medium">No se pudieron leer las posiciones</p>
-              <p className="text-sm text-muted-foreground">{(ranks.error as Error).message}</p>
-            </Panel>
-          )}
-          {ranks.data && ranks.data.status !== "ok" && (
-            <Panel className="p-6">
-              <p className="font-medium">Search Console todavía no devuelve posiciones</p>
-              <p className="text-sm text-muted-foreground">
-                Las keywords objetivo ya están definidas y se trackean en cuanto la propiedad de whatsyour-number.com
-                esté verificada y Google registre datos.
-              </p>
-            </Panel>
-          )}
-          {trackedGroups.map((group) => (
+        {/* ------------------------------ Kws Home ------------------------------ */}
+        <TabsContent value="kws-home" className="space-y-6">
+          <RanksStatus ranks={ranks} />
+          {siteGroups.map((group) => (
             <KeywordGroupPanel key={group.id} group={group} rankMap={rankMap} />
           ))}
         </TabsContent>
 
+        {/* ------------------------------ Kws Blog ------------------------------ */}
+        <TabsContent value="kws-blog" className="space-y-6">
+          <RanksStatus ranks={ranks} />
+          {postGroups.map((group) => (
+            <KeywordGroupPanel key={group.id} group={group} rankMap={rankMap} />
+          ))}
 
-        {/* ------------------------------ Keywords ------------------------------ */}
-        <TabsContent value="keywords" className="space-y-6">
           {gsc.isLoading && <Panel className="p-6 text-muted-foreground">Consultando Search Console…</Panel>}
+
 
           {gsc.isError && (
             <Panel className="p-6">
@@ -647,4 +640,32 @@ function KeywordGroupPanel({
       </Table>
     </Panel>
   );
+}
+
+function RanksStatus({
+  ranks,
+}: {
+  ranks: { isLoading: boolean; isError: boolean; error: unknown; data: KeywordRankings | undefined };
+}) {
+  if (ranks.isLoading) return <Panel className="p-6 text-muted-foreground">Consultando posiciones…</Panel>;
+  if (ranks.isError) {
+    return (
+      <Panel className="p-6">
+        <p className="mb-1 font-medium">No se pudieron leer las posiciones</p>
+        <p className="text-sm text-muted-foreground">{(ranks.error as Error).message}</p>
+      </Panel>
+    );
+  }
+  if (ranks.data && ranks.data.status !== "ok") {
+    return (
+      <Panel className="p-6">
+        <p className="font-medium">Search Console todavía no devuelve posiciones</p>
+        <p className="text-sm text-muted-foreground">
+          Las keywords objetivo ya están definidas y se trackean en cuanto la propiedad de whatsyour-number.com esté
+          verificada y Google registre datos.
+        </p>
+      </Panel>
+    );
+  }
+  return null;
 }
