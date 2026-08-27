@@ -5,7 +5,7 @@ import { useLanguage, useT } from "@/hooks/use-language";
 import { blogCategories, categoryCount } from "@/lib/blog-categories";
 
 /** Sticky rail shown to the right of an article: demo CTA + category navigation. */
-export function BlogSidebar({ activeCategory }: { activeCategory?: string }) {
+export function BlogSidebar({ activeCategory }: { activeCategory?: string | undefined }) {
   const t = useT();
   const { lang } = useLanguage();
   const blogHref = lang === "en" ? "/en/blog" : "/blog";
