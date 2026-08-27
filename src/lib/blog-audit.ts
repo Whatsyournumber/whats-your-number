@@ -82,7 +82,14 @@ export function auditPost(post: BlogPost, lang: Lang): PostAudit {
   const faqs = getPostFaqs(post.slug)?.length ?? 0;
   const postLinks = getPostLinks(post.slug);
   const links = postLinks ? postLinks.internal.length + 1 : 0;
-  const altOk = Boolean(post.imageAlt?.[lang]) && post.sections.every((s) => !s.image || Boolean(s.imageAlt?.[lang]));
+  const extraAltOk = postExtras[post.slug] ? Boolean(postExtras[post.slug]?.image2Alt?.[lang]) : true;
+  const missingAlt =
+    (post.imageAlt?.[lang] ? 0 : 1) +
+    post.sections.filter((s) => s.image && !s.imageAlt?.[lang]).length +
+    (extraAltOk ? 0 : 1);
+  const altOk = missingAlt === 0;
+  const keywords = postKeywords[post.slug] ?? [];
+  const strongKeywords = keywords.filter((k) => (k.volume?.[lang] ?? 0) >= MIN_KEYWORD_VOLUME);
   const metaOk =
     post.title[lang].length > 0 &&
     post.title[lang].length <= 70 &&
