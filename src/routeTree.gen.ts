@@ -49,6 +49,7 @@ import { Route as EnFinanzasParaNinosRouteImport } from './routes/en.finanzas-pa
 import { Route as NinosIndexRouteImport } from './routes/ninos/index'
 import { Route as NinosOnboardingRouteImport } from './routes/ninos/onboarding'
 import { Route as NinosPadresRouteImport } from './routes/ninos/padres'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as ApiPublicDistributeNewPostsRouteImport } from './routes/api/public/distribute-new-posts'
 import { Route as ApiPublicRssRouteImport } from './routes/api/public/rss'
 import { Route as ApiPublicVerifyBacklinksRouteImport } from './routes/api/public/verify-backlinks'
@@ -263,6 +264,11 @@ const NinosPadresRoute = NinosPadresRouteImport.update({
   path: '/padres',
   getParentRoute: () => NinosRouteRoute,
 } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicDistributeNewPostsRoute =
   ApiPublicDistributeNewPostsRouteImport.update({
     id: '/api/public/distribute-new-posts',
@@ -374,6 +380,7 @@ export interface FileRoutesByFullPath {
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/ninos/': typeof NinosIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/api/public/distribute-new-posts': typeof ApiPublicDistributeNewPostsRoute
   '/api/public/rss': typeof ApiPublicRssRoute
   '/api/public/verify-backlinks': typeof ApiPublicVerifyBacklinksRoute
@@ -428,6 +435,7 @@ export interface FileRoutesByTo {
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/ninos': typeof NinosIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/api/public/distribute-new-posts': typeof ApiPublicDistributeNewPostsRoute
   '/api/public/rss': typeof ApiPublicRssRoute
   '/api/public/verify-backlinks': typeof ApiPublicVerifyBacklinksRoute
@@ -484,6 +492,7 @@ export interface FileRoutesById {
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/ninos/': typeof NinosIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/api/public/distribute-new-posts': typeof ApiPublicDistributeNewPostsRoute
   '/api/public/rss': typeof ApiPublicRssRoute
   '/api/public/verify-backlinks': typeof ApiPublicVerifyBacklinksRoute
@@ -541,6 +550,7 @@ export interface FileRouteTypes {
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/ninos/'
+    | '/.lovable/oauth/consent'
     | '/api/public/distribute-new-posts'
     | '/api/public/rss'
     | '/api/public/verify-backlinks'
@@ -595,6 +605,7 @@ export interface FileRouteTypes {
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/ninos'
+    | '/.lovable/oauth/consent'
     | '/api/public/distribute-new-posts'
     | '/api/public/rss'
     | '/api/public/verify-backlinks'
@@ -650,6 +661,7 @@ export interface FileRouteTypes {
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/ninos/'
+    | '/.lovable/oauth/consent'
     | '/api/public/distribute-new-posts'
     | '/api/public/rss'
     | '/api/public/verify-backlinks'
@@ -700,6 +712,7 @@ export interface RootRouteChildren {
   SuscripcionRoute: typeof SuscripcionRoute
   TerminosRoute: typeof TerminosRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   ApiPublicDistributeNewPostsRoute: typeof ApiPublicDistributeNewPostsRoute
   ApiPublicRssRoute: typeof ApiPublicRssRoute
   ApiPublicVerifyBacklinksRoute: typeof ApiPublicVerifyBacklinksRoute
@@ -989,6 +1002,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NinosPadresRouteImport
       parentRoute: typeof NinosRouteRoute
     }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/distribute-new-posts': {
       id: '/api/public/distribute-new-posts'
       path: '/api/public/distribute-new-posts'
@@ -1181,6 +1201,7 @@ const rootRouteChildren: RootRouteChildren = {
   SuscripcionRoute: SuscripcionRoute,
   TerminosRoute: TerminosRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   ApiPublicDistributeNewPostsRoute: ApiPublicDistributeNewPostsRoute,
   ApiPublicRssRoute: ApiPublicRssRoute,
   ApiPublicVerifyBacklinksRoute: ApiPublicVerifyBacklinksRoute,
