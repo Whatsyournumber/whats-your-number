@@ -47,6 +47,7 @@ import { Route as EnFinanzasParaNinosRouteImport } from './routes/en.finanzas-pa
 import { Route as NinosIndexRouteImport } from './routes/ninos/index'
 import { Route as NinosOnboardingRouteImport } from './routes/ninos/onboarding'
 import { Route as NinosPadresRouteImport } from './routes/ninos/padres'
+import { Route as ApiPublicDistributeNewPostsRouteImport } from './routes/api/public/distribute-new-posts'
 import { Route as ApiPublicRssRouteImport } from './routes/api/public/rss'
 import { Route as EnBlogSlugRouteImport } from './routes/en.blog.$slug'
 import { Route as NinosKidDatosRouteImport } from './routes/ninos/kid/datos'
@@ -249,6 +250,12 @@ const NinosPadresRoute = NinosPadresRouteImport.update({
   path: '/padres',
   getParentRoute: () => NinosRouteRoute,
 } as any)
+const ApiPublicDistributeNewPostsRoute =
+  ApiPublicDistributeNewPostsRouteImport.update({
+    id: '/api/public/distribute-new-posts',
+    path: '/api/public/distribute-new-posts',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicRssRoute = ApiPublicRssRouteImport.update({
   id: '/api/public/rss',
   path: '/api/public/rss',
@@ -346,6 +353,7 @@ export interface FileRoutesByFullPath {
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/ninos/': typeof NinosIndexRoute
+  '/api/public/distribute-new-posts': typeof ApiPublicDistributeNewPostsRoute
   '/api/public/rss': typeof ApiPublicRssRoute
   '/en/blog/$slug': typeof EnBlogSlugRoute
   '/ninos/kid/datos': typeof NinosKidDatosRoute
@@ -396,6 +404,7 @@ export interface FileRoutesByTo {
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/ninos': typeof NinosIndexRoute
+  '/api/public/distribute-new-posts': typeof ApiPublicDistributeNewPostsRoute
   '/api/public/rss': typeof ApiPublicRssRoute
   '/en/blog/$slug': typeof EnBlogSlugRoute
   '/ninos/kid/datos': typeof NinosKidDatosRoute
@@ -448,6 +457,7 @@ export interface FileRoutesById {
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/ninos/': typeof NinosIndexRoute
+  '/api/public/distribute-new-posts': typeof ApiPublicDistributeNewPostsRoute
   '/api/public/rss': typeof ApiPublicRssRoute
   '/en/blog/$slug': typeof EnBlogSlugRoute
   '/ninos/kid/datos': typeof NinosKidDatosRoute
@@ -501,6 +511,7 @@ export interface FileRouteTypes {
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/ninos/'
+    | '/api/public/distribute-new-posts'
     | '/api/public/rss'
     | '/en/blog/$slug'
     | '/ninos/kid/datos'
@@ -551,6 +562,7 @@ export interface FileRouteTypes {
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/ninos'
+    | '/api/public/distribute-new-posts'
     | '/api/public/rss'
     | '/en/blog/$slug'
     | '/ninos/kid/datos'
@@ -602,6 +614,7 @@ export interface FileRouteTypes {
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/ninos/'
+    | '/api/public/distribute-new-posts'
     | '/api/public/rss'
     | '/en/blog/$slug'
     | '/ninos/kid/datos'
@@ -648,6 +661,7 @@ export interface RootRouteChildren {
   SuscripcionRoute: typeof SuscripcionRoute
   TerminosRoute: typeof TerminosRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
+  ApiPublicDistributeNewPostsRoute: typeof ApiPublicDistributeNewPostsRoute
   ApiPublicRssRoute: typeof ApiPublicRssRoute
   ApiPublicLinkedinCallbackRoute: typeof ApiPublicLinkedinCallbackRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
@@ -921,6 +935,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NinosPadresRouteImport
       parentRoute: typeof NinosRouteRoute
     }
+    '/api/public/distribute-new-posts': {
+      id: '/api/public/distribute-new-posts'
+      path: '/api/public/distribute-new-posts'
+      fullPath: '/api/public/distribute-new-posts'
+      preLoaderRoute: typeof ApiPublicDistributeNewPostsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/rss': {
       id: '/api/public/rss'
       path: '/api/public/rss'
@@ -1097,6 +1118,7 @@ const rootRouteChildren: RootRouteChildren = {
   SuscripcionRoute: SuscripcionRoute,
   TerminosRoute: TerminosRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,
+  ApiPublicDistributeNewPostsRoute: ApiPublicDistributeNewPostsRoute,
   ApiPublicRssRoute: ApiPublicRssRoute,
   ApiPublicLinkedinCallbackRoute: ApiPublicLinkedinCallbackRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
