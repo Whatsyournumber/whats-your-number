@@ -415,7 +415,7 @@ function BlogBackOffice() {
                 <TableBody>
                   {gscOk.countries.map((row) => (
                     <TableRow key={row.keys[0]}>
-                      <TableCell className="font-medium">{countryName(row.keys[0])}</TableCell>
+                      <TableCell className="font-medium">{countryName(row.keys[0] ?? "")}</TableCell>
                       <TableCell className="text-right">{row.clicks}</TableCell>
                       <TableCell className="text-right">{row.impressions}</TableCell>
                     </TableRow>
