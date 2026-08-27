@@ -383,3 +383,57 @@ export const backlinkStats = {
     backlinkTargets.reduce((sum, target) => sum + target.da, 0) / backlinkTargets.length,
   ),
 };
+
+/* --------------------------- Priorización ---------------------------- */
+
+/**
+ * Prioriza los destinos por: relevancia financiera, autoridad real (dofollow +
+ * DA), probabilidad de aprobación e idioma. El objetivo es maximizar calidad
+ * del enlace y minimizar riesgo de spam (nada de enlaces masivos ni PBNs).
+ */
+const RELEVANCE: Record<BacklinkTarget["type"], number> = {
+  "Foro finanzas": 100,
+  "Medio finanzas": 95,
+  Syndicación: 75,
+  Directorio: 65,
+  Comunidad: 60,
+};
+
+/** Probabilidad estimada de que el enlace acabe publicado (0-1). */
+export function approvalOdds(target: BacklinkTarget): number {
+  let odds = target.auto ? 0.9 : 0.6;
+  if (target.type === "Directorio") odds -= 0.1;
+  if (target.type === "Medio finanzas") odds -= 0.2;
+  if (target.da >= 90 && !target.auto) odds -= 0.1;
+  if (target.spam === "muy bajo") odds += 0.05;
+  return Math.max(0.15, Math.min(0.97, odds));
+}
+
+export type Priority = {
+  score: number;
+  relevance: number;
+  approval: number;
+  authority: number;
+};
+
+/** Puntuación 0-100 combinando relevancia, autoridad y probabilidad. */
+export function priorityOf(target: BacklinkTarget, lang: "es" | "en" | "both" = "both"): Priority {
+  const relevance = RELEVANCE[target.type];
+  const authority = target.da * (target.dofollow ? 1 : 0.45);
+  const approval = approvalOdds(target);
+  const langFit =
+    lang === "both" || target.lang === "both" || target.lang === lang ? 1 : 0.65;
+  const spamPenalty = target.spam === "muy bajo" ? 1 : 0.93;
+  const score =
+    (relevance * 0.35 + authority * 0.4 + approval * 100 * 0.25) * langFit * spamPenalty;
+  return { score: Math.round(score), relevance, approval, authority: Math.round(authority) };
+}
+
+/** Destinos ordenados de mayor a menor prioridad. */
+export function prioritizedTargets(lang: "es" | "en" | "both" = "both"): (BacklinkTarget & {
+  priority: Priority;
+})[] {
+  return backlinkTargets
+    .map((target) => ({ ...target, priority: priorityOf(target, lang) }))
+    .sort((a, b) => b.priority.score - a.priority.score);
+}
