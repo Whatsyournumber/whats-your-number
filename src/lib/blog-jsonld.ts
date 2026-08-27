@@ -1,5 +1,5 @@
 import { getAuthor } from "@/lib/blog-authors";
-import { getPost } from "@/lib/blog-posts";
+import { blogPosts, getPost } from "@/lib/blog-posts";
 
 const SITE = "https://whatsyour-number.com";
 const FALLBACK_IMAGE = `${SITE}/og-cover.jpg`;
@@ -364,4 +364,31 @@ export function buildFaqJsonLd(slug: string, lang: "es" | "en") {
 /** Curated FAQ pairs for rendering the visible FAQ block. */
 export function getPostFaqs(slug: string): Faq[] {
   return POST_FAQ[slug] ?? [];
+}
+
+/** schema.org CollectionPage listing every published article for the blog index. */
+export function buildBlogCollectionJsonLd(lang: "es" | "en") {
+  const blog = lang === "en" ? `${SITE}/en/blog` : `${SITE}/blog`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${blog}#collection`,
+    url: blog,
+    name:
+      lang === "en"
+        ? "Personal Finance Blog | Saving, Investing and Business"
+        : "Blog de Finanzas Personales | Ahorro, Inversiones y Negocios",
+    inLanguage: lang === "en" ? "en" : "es",
+    isPartOf: { "@type": "WebSite", url: SITE, name: "WhatsYourNumber" },
+    publisher: { "@type": "Organization", name: "WhatsYourNumber", url: SITE },
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: blogPosts.map((post, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        url: lang === "en" ? `${SITE}/en/blog/${post.slug}` : `${SITE}/blog/${post.slug}`,
+        name: post.title[lang],
+      })),
+    },
+  };
 }
