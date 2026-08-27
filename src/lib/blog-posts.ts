@@ -1,3 +1,4 @@
+import { extraSections } from "@/lib/blog-extra";
 import netWorthImg from "@/assets/blog/net-worth.jpg";
 import runwayImg from "@/assets/blog/runway.jpg";
 import benchmarkImg from "@/assets/blog/benchmark.jpg";
@@ -1341,9 +1342,16 @@ export const blogPosts: BlogPost[] = [
   },
 ];
 
+/* Amplía cada artículo con sus secciones extra (contenido largo para SEO/GEO). */
+for (const post of blogPosts) {
+  const extra = extraSections[post.slug];
+  if (extra?.length) post.sections = [...post.sections, ...extra];
+}
+
 export function getPost(slug: string) {
   return blogPosts.find((p) => p.slug === slug);
 }
+
 
 export type BlogTable = {
   title: { es: string; en: string };
