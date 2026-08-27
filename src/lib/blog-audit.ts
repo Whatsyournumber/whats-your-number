@@ -6,6 +6,7 @@
 import { blogPosts, postCharts, postExtras, postQuotes, type BlogPost } from "@/lib/blog-posts";
 import { getPostFaqs } from "@/lib/blog-jsonld";
 import { getPostLinks } from "@/lib/blog-links";
+import { MIN_KEYWORDS_PER_POST, MIN_KEYWORD_VOLUME, postKeywords } from "@/lib/blog-keywords";
 
 export type Lang = "es" | "en";
 
@@ -21,6 +22,8 @@ export type CheckKey =
   | "case"
   | "faq"
   | "links"
+  | "keywords"
+  | "alt"
   | "insight";
 
 export type CheckResult = {
@@ -79,7 +82,14 @@ export function auditPost(post: BlogPost, lang: Lang): PostAudit {
   const faqs = getPostFaqs(post.slug)?.length ?? 0;
   const postLinks = getPostLinks(post.slug);
   const links = postLinks ? postLinks.internal.length + 1 : 0;
-  const altOk = Boolean(post.imageAlt?.[lang]) && post.sections.every((s) => !s.image || Boolean(s.imageAlt?.[lang]));
+  const extraAltOk = postExtras[post.slug] ? Boolean(postExtras[post.slug]?.image2Alt?.[lang]) : true;
+  const missingAlt =
+    (post.imageAlt?.[lang] ? 0 : 1) +
+    post.sections.filter((s) => s.image && !s.imageAlt?.[lang]).length +
+    (extraAltOk ? 0 : 1);
+  const altOk = missingAlt === 0;
+  const keywords = postKeywords[post.slug] ?? [];
+  const strongKeywords = keywords.filter((k) => (k.volume?.[lang] ?? 0) >= MIN_KEYWORD_VOLUME);
   const metaOk =
     post.title[lang].length > 0 &&
     post.title[lang].length <= 70 &&
@@ -140,6 +150,21 @@ export function auditPost(post: BlogPost, lang: Lang): PostAudit {
       label: { es: "Enlaces internos + externo", en: "Internal + external links" },
       ok: links >= 2,
       detail: `${links}`,
+    },
+    {
+      key: "keywords",
+      label: {
+        es: `${MIN_KEYWORDS_PER_POST} keywords con +${MIN_KEYWORD_VOLUME} búsquedas/mes`,
+        en: `${MIN_KEYWORDS_PER_POST} keywords with ${MIN_KEYWORD_VOLUME}+ monthly searches`,
+      },
+      ok: strongKeywords.length >= MIN_KEYWORDS_PER_POST,
+      detail: `${strongKeywords.length}/${keywords.length}`,
+    },
+    {
+      key: "alt",
+      label: { es: "Alt text en todas las imágenes", en: "Alt text on every image" },
+      ok: altOk,
+      detail: altOk ? "sí" : `faltan ${missingAlt}`,
     },
   ];
 
