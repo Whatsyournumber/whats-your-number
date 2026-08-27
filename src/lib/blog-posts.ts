@@ -73,6 +73,270 @@ export function sectionId(heading: string) {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: "boring-business-comprar-libertad-financiera",
+    image: boringCoverImg,
+    imageAlt: {
+      es: "Emprendedor con las llaves de un pequeño negocio local al atardecer, ejemplo de boring business que genera flujo de caja",
+      en: "Entrepreneur holding the keys of a small local business at dusk, an example of a boring business that generates cash flow",
+    },
+    keyword: { es: "boring business", en: "boring business" },
+    toc: true,
+    readMinutes: 14,
+    tag: { es: "Business ideas", en: "Business ideas" },
+    date: { es: "27 ago 2026", en: "Aug 27, 2026" },
+    title: {
+      es: "Los 5 boring businesses que puedes comprar para alcanzar tu libertad financiera (empezando con poco dinero)",
+      en: "The 5 boring businesses you can buy to reach financial freedom (starting with little money)",
+    },
+    excerpt: {
+      es: "Agencia de ventas, vending especializado, house flipping, lavanderías y self storage: capital inicial, tiempo, potencial mensual y cómo modernizarlos con IA para acercar tu número de libertad financiera.",
+      en: "Sales agency, specialized vending, house flipping, laundromats and self storage: upfront capital, timeline, monthly potential and how to modernize them with AI to bring your freedom number closer.",
+    },
+    intro: {
+      es: "Mientras las redes hablan de crear la próxima startup unicornio o de hacerse millonario con criptomonedas, existe otra forma de construir riqueza mucho más silenciosa y mucho más predecible: los boring businesses. Negocios sencillos, poco glamurosos, con flujo de caja constante, clientes recurrentes, demanda estable y fáciles de automatizar. Lo mejor es que no necesitas inventarlos: la verdadera oportunidad está en comprar negocios que ya facturan, cuyos dueños se acercan a la jubilación, y modernizarlos con tecnología e inteligencia artificial. Esa estrategia se llama Entrepreneurship Through Acquisition (ETA) y cada vez es más popular en Estados Unidos y Europa. En este artículo verás cinco negocios concretos, cuánto capital necesitas, cuánto tardan en dar dinero y cómo cada uno de ellos reduce los años que te separan de tu libertad financiera.",
+      en: "While social media obsesses over the next unicorn startup or getting rich with crypto, there is a much quieter and far more predictable way to build wealth: boring businesses. Simple, unglamorous businesses with steady cash flow, recurring customers, stable demand and easy automation. The best part is you do not need to invent them: the real opportunity is buying businesses that already generate revenue from owners approaching retirement, then modernizing them with technology and AI. That strategy is called Entrepreneurship Through Acquisition (ETA) and it keeps growing in the US and Europe. In this article you will see five concrete businesses, how much capital you need, how long they take to pay off and how each one cuts the years between you and financial freedom.",
+    },
+    sections: [
+      {
+        heading: { es: "Qué es un boring business y por qué funciona", en: "What a boring business is and why it works" },
+        paragraphs: [
+          {
+            es: "Un boring business es un negocio que nadie presume en redes sociales pero que cobra todos los meses: una lavandería, un taller, una empresa de limpieza, una ruta de vending, un self storage. No hay hype, no hay ronda de inversión y no hay que educar al mercado. Alguien ya paga por ese servicio desde hace veinte años y seguirá pagando el mes que viene.",
+            en: "A boring business is one nobody brags about online but that collects money every month: a laundromat, a repair shop, a cleaning company, a vending route, a self-storage facility. No hype, no funding round, no need to educate the market. Someone has been paying for that service for twenty years and will keep paying next month.",
+          },
+          {
+            es: "Esa previsibilidad es exactamente lo que un inversor busca. En una startup el riesgo principal es que el producto no interese a nadie. En un boring business rentable el riesgo es operativo: gestionarlo mal. El primero es un riesgo que no controlas; el segundo sí.",
+            en: "That predictability is exactly what an investor wants. In a startup the main risk is that nobody wants the product. In a profitable boring business the risk is operational: running it badly. The first risk is outside your control; the second one is not.",
+          },
+        ],
+        bullets: [
+          { es: "Flujo de caja constante y clientes recurrentes.", en: "Steady cash flow and recurring customers." },
+          { es: "Demanda estable, poco dependiente de modas.", en: "Stable demand, barely affected by trends." },
+          { es: "Fácil de automatizar con software e IA.", en: "Easy to automate with software and AI." },
+          { es: "Posibilidad de crecer y comprar el siguiente durante décadas.", en: "Room to grow and buy the next one for decades." },
+        ],
+      },
+      {
+        heading: { es: "Por qué ahora es el mejor momento para comprar", en: "Why now is the best moment to buy" },
+        paragraphs: [
+          {
+            es: "Durante los próximos años, millones de pequeños empresarios alcanzarán la edad de jubilación. Muchos tienen negocios rentables que funcionan desde hace 20 o 30 años y no tienen a quién dejárselos: sus hijos no quieren continuar, nunca digitalizaron el negocio, no usan IA, no tienen presencia online y gestionan todo de forma manual, muchas veces en papel.",
+            en: "Over the coming years, millions of small business owners will reach retirement age. Many run profitable businesses built over 20 or 30 years with nobody to hand them to: their children do not want to continue, they never digitized, they use no AI, they have no online presence and they run everything manually, often on paper.",
+          },
+          {
+            es: "Ahí está la oportunidad. No necesitas reinventar el negocio: solo hacerlo un 10 o un 20 % mejor. Una web decente, reseñas en Google, pago con móvil, un CRM y precios revisados suelen bastar para mover el beneficio de forma notable en el primer año.",
+            en: "That is the opportunity. You do not need to reinvent the business: you only need to make it 10 or 20% better. A decent website, Google reviews, mobile payments, a CRM and revised prices are usually enough to move profit meaningfully in the first year.",
+          },
+        ],
+      },
+      {
+        heading: { es: "La estrategia: generar caja, comprar, automatizar, repetir", en: "The strategy: generate cash, buy, automate, repeat" },
+        paragraphs: [
+          {
+            es: "La secuencia es sencilla y funciona igual con 500 € que con 500.000 €: generas flujo de caja con un negocio barato de arrancar, compras un pequeño negocio existente, lo automatizas, aumentas beneficios y usas esa caja para comprar el siguiente. Así es como muchas personas construyen patrimonios importantes sin haber lanzado nunca un producto nuevo.",
+            en: "The sequence is simple and works the same with €500 or €500,000: you generate cash flow with a cheap-to-start business, buy a small existing business, automate it, increase profits and use that cash to buy the next one. That is how many people build serious wealth without ever launching a new product.",
+          },
+          {
+            es: "Lo importante es el orden. Empezar por el negocio caro sin saber vender es la forma más rápida de quedarte sin capital. Empezar por el que te enseña a vender es la forma más rápida de financiar todos los demás.",
+            en: "Order matters. Starting with the expensive business before you know how to sell is the fastest way to run out of capital. Starting with the one that teaches you to sell is the fastest way to fund all the others.",
+          },
+        ],
+        bullets: [
+          { es: "1. Generar flujo de caja con un negocio de bajo capital.", en: "1. Generate cash flow with a low-capital business." },
+          { es: "2. Comprar un pequeño negocio ya rentable.", en: "2. Buy a small business that is already profitable." },
+          { es: "3. Automatizarlo y digitalizarlo con IA.", en: "3. Automate and digitize it with AI." },
+          { es: "4. Aumentar beneficios y márgenes.", en: "4. Increase profit and margins." },
+          { es: "5. Reinvertir esa caja en el siguiente negocio.", en: "5. Reinvest that cash into the next business." },
+        ],
+      },
+      {
+        heading: { es: "1. Agencia de growth marketing (solo ventas)", en: "1. Growth marketing agency (sales only)" },
+        image: boringAgencyImg,
+        imageAlt: {
+          es: "Emprendedor con auriculares cerrando una venta desde su portátil para su agencia de growth marketing",
+          en: "Entrepreneur with a headset closing a sale from his laptop for his growth marketing agency",
+        },
+        imageCaption: {
+          es: "Inversión inicial: 0–500 USD. El único activo que necesitas es aprender a vender.",
+          en: "Upfront investment: $0–500. The only asset you need is learning how to sell.",
+        },
+        paragraphs: [
+          {
+            es: "Inversión: 0–500 USD. Si hoy empezara desde cero, este sería mi primer negocio. No necesitas empleados, ni diseñadores, ni programadores, ni ejecutar campañas. Solo necesitas conseguir clientes. Miles de agencias buscan personas capaces de traer negocio y pagan comisión recurrente por ello.",
+            en: "Investment: $0–500. If I started from scratch today, this would be my first business. No employees, no designers, no developers, no campaigns to run. You only need to bring clients. Thousands of agencies are looking for people who can source business and pay a recurring commission for it.",
+          },
+          {
+            es: "Tú consigues el cliente, la agencia presta el servicio y tú cobras cada mes mientras el cliente siga activo. Con apenas 10 clientes puedes generar entre 3.000 y 8.000 USD mensuales según el tipo de servicio. Tiempo estimado hasta ingresos estables: de 3 a 9 meses.",
+            en: "You bring the client, the agency delivers the service and you get paid monthly while the client stays. With just 10 clients you can generate $3,000–8,000 a month depending on the service. Estimated time to stable income: 3 to 9 months.",
+          },
+        ],
+        bullets: [
+          { es: "Puedes especializarte en SEO, Google Ads, Meta Ads, IA, desarrollo web, automatizaciones o CRM.", en: "You can specialize in SEO, Google Ads, Meta Ads, AI, web development, automation or CRM." },
+          { es: "Aprendes la habilidad más importante de cualquier empresario: vender.", en: "You learn the single most important skill of any entrepreneur: selling." },
+          { es: "Caso típico: un fundador, un portátil, LinkedIn, email y mucha prospección antes de contratar a nadie.", en: "Typical case: one founder, a laptop, LinkedIn, email and a lot of prospecting before hiring anyone." },
+        ],
+      },
+      {
+        heading: { es: "2. Máquinas expendedoras especializadas (vending)", en: "2. Specialized vending machines" },
+        image: boringVendingImg,
+        imageAlt: {
+          es: "Máquina expendedora especializada en un gimnasio con proteínas y bebidas, con pago contactless",
+          en: "Specialized vending machine in a gym selling protein and drinks with contactless payment",
+        },
+        imageCaption: {
+          es: "Inversión inicial: 2.000–8.000 USD. La especialización sube el ticket y baja la competencia.",
+          en: "Upfront investment: $2,000–8,000. Specialization raises the ticket and lowers competition.",
+        },
+        paragraphs: [
+          {
+            es: "Inversión: 2.000–8.000 USD. Olvídate de la típica máquina de refrescos: hoy el dinero está en especializarse por ubicación. Gimnasios (proteína, creatina, aminoácidos, bebidas energéticas, barritas), hoteles (cargadores, adaptadores, snacks premium, kits de viaje), hospitales (higiene, café, agua), mascotas (snacks, bolsas, juguetes, pelotas), clubes deportivos (pelotas, toallas, isotónicas) y playas (protector solar, gafas, agua, toallas).",
+            en: "Investment: $2,000–8,000. Forget the classic soda machine: today the money is in specializing by location. Gyms (protein, creatine, amino acids, energy drinks, bars), hotels (chargers, adapters, premium snacks, travel kits), hospitals (hygiene, coffee, water), pet spots (treats, bags, toys, balls), sports clubs (balls, towels, isotonic drinks) and beaches (sunscreen, sunglasses, water, towels).",
+          },
+          {
+            es: "La especialización permite mayor ticket medio, menos competencia y mayor margen. Tiempo hasta ingresos estables: 6–18 meses. Puedes comprar máquinas ya instaladas con contrato de ubicación, que es la parte difícil del negocio.",
+            en: "Specialization means a higher average ticket, less competition and better margins. Time to stable income: 6–18 months. You can buy machines that already have a location contract, which is the hard part of this business.",
+          },
+        ],
+        subsections: [
+          {
+            heading: { es: "Cómo aumentar los beneficios", en: "How to increase profits" },
+            bullets: [
+              { es: "Pago con tarjeta y pago móvil en todas las máquinas.", en: "Card and mobile payments on every machine." },
+              { es: "Cámaras inteligentes y control remoto de inventario.", en: "Smart cameras and remote inventory control." },
+              { es: "IA para prever reposiciones y evitar rutas vacías.", en: "AI to forecast restocks and avoid empty routes." },
+              { es: "Precios por ubicación en lugar de un precio único.", en: "Location-based pricing instead of a single price." },
+            ],
+          },
+        ],
+      },
+      {
+        heading: { es: "3. House flipping", en: "3. House flipping" },
+        image: boringFlipImg,
+        imageAlt: {
+          es: "Inversor y contratista revisando planos en una vivienda en reforma para house flipping",
+          en: "Investor and contractor reviewing plans inside a house being renovated for flipping",
+        },
+        imageCaption: {
+          es: "Inversión variable: puedes empezar con financiación bancaria o socios.",
+          en: "Variable investment: you can start with bank financing or partners.",
+        },
+        paragraphs: [
+          {
+            es: "Muchos creen que el negocio consiste en reformar casas. No: el negocio consiste en comprar bien. La reforma solo materializa el valor que ya estaba en el precio de compra. La rentabilidad está en detectar oportunidades que otros no ven: herencias, divorcios, adjudicaciones bancarias, propiedades muy deterioradas y zonas en crecimiento.",
+            en: "Many think the business is renovating houses. It is not: the business is buying well. The renovation only unlocks value that was already in the purchase price. The return comes from spotting deals others miss: inheritances, divorces, bank repossessions, badly deteriorated properties and up-and-coming areas.",
+          },
+          {
+            es: "La rentabilidad habitual está entre el 15 % y el 30 % por operación, con un ciclo de 12 a 24 meses si cuentas búsqueda, obra y venta. Es el negocio menos pasivo de la lista y el que más capital inmoviliza, pero también el que más rápido puede multiplicar una operación bien comprada.",
+            en: "Typical returns run between 15% and 30% per deal, with a 12 to 24 month cycle once you count sourcing, works and sale. It is the least passive business on the list and the one that locks up the most capital, but also the one where a well-bought deal compounds fastest.",
+          },
+        ],
+        bullets: [
+          { es: "El margen se gana el día que compras, no el día que vendes.", en: "The margin is earned the day you buy, not the day you sell." },
+          { es: "Presupuesta la obra con un 20 % de colchón: siempre aparece algo.", en: "Budget works with a 20% buffer: something always shows up." },
+          { es: "Referencia conocida: Tarek El Moussa empezó comprando y reformando viviendas tras la crisis de 2008 y convirtió esa estrategia en una empresa inmobiliaria.", en: "A known reference: Tarek El Moussa started buying and renovating homes after the 2008 crash and turned that strategy into a real estate company." },
+        ],
+      },
+      {
+        heading: { es: "4. Lavanderías automáticas", en: "4. Self-service laundromats" },
+        image: boringLaundryImg,
+        imageAlt: {
+          es: "Interior de una lavandería automática moderna con cliente pagando desde el móvil",
+          en: "Interior of a modern self-service laundromat with a customer paying from his phone",
+        },
+        imageCaption: {
+          es: "Inversión inicial: 40.000–150.000 USD. El cliente paga antes de usar el servicio.",
+          en: "Upfront investment: $40,000–150,000. The customer pays before using the service.",
+        },
+        paragraphs: [
+          {
+            es: "Inversión: 40.000–150.000 USD. Es uno de los negocios favoritos de muchos inversores porque prácticamente funciona solo: los clientes pagan antes de usar el servicio, no hay inventario complicado, no hay cuentas por cobrar y casi todo puede automatizarse. Tiempo hasta madurar: 12–24 meses.",
+            en: "Investment: $40,000–150,000. It is a favorite among investors because it practically runs itself: customers pay before using the service, there is no complex inventory, no accounts receivable and almost everything can be automated. Time to maturity: 12–24 months.",
+          },
+          {
+            es: "La jugada inteligente no es montar una desde cero, sino comprar una lavandería cuyo propietario quiera jubilarse. Muchas veces ni siquiera necesitas cambiar las máquinas: solo mejorar la gestión.",
+            en: "The smart move is not building one from scratch but buying a laundromat whose owner wants to retire. Often you do not even need to replace the machines: you just need better management.",
+          },
+        ],
+        subsections: [
+          {
+            heading: { es: "Cómo modernizar una lavandería antigua", en: "How to modernize an old laundromat" },
+            bullets: [
+              { es: "Pago desde el móvil y reservas online.", en: "Mobile payments and online booking." },
+              { es: "Cámaras con IA y sensores de mantenimiento predictivo.", en: "AI cameras and predictive maintenance sensors." },
+              { es: "Precios dinámicos por franja horaria.", en: "Dynamic pricing by time slot." },
+              { es: "Google Reviews automatizadas, CRM y programa de fidelización.", en: "Automated Google reviews, CRM and a loyalty program." },
+            ],
+          },
+        ],
+      },
+      {
+        heading: { es: "5. Self storage (el bonus para cuando ya tienes caja)", en: "5. Self storage (the bonus once you already have cash)" },
+        image: boringStorageImg,
+        imageAlt: {
+          es: "Instalación moderna de self storage con puertas naranjas y acceso mediante código QR al atardecer",
+          en: "Modern self-storage facility with orange doors and QR code access at dusk",
+        },
+        imageCaption: {
+          es: "Inversión inicial: 150.000 USD o más. Probablemente el negocio más pasivo de la lista.",
+          en: "Upfront investment: $150,000 or more. Probably the most passive business on the list.",
+        },
+        paragraphs: [
+          {
+            es: "Inversión: 150.000 USD o más. No lo usaría para empezar; lo compraría cuando ya dispusiera de flujo de caja. Es probablemente uno de los negocios más pasivos del mundo: los clientes pagan mensualmente, las visitas son mínimas, el mantenimiento es reducido y todo puede automatizarse. Horizonte realista: 2–5 años hasta ocupación óptima.",
+            en: "Investment: $150,000 or more. I would not use it to start; I would buy it once I already had cash flow. It is probably one of the most passive businesses in the world: customers pay monthly, visits are rare, maintenance is low and everything can be automated. Realistic horizon: 2–5 years to optimal occupancy.",
+          },
+        ],
+        subsections: [
+          {
+            heading: { es: "Cómo automatizarlo casi por completo", en: "How to automate it almost entirely" },
+            bullets: [
+              { es: "Acceso mediante QR y cerraduras electrónicas.", en: "QR access and electronic locks." },
+              { es: "Aplicación móvil y facturación automática recurrente.", en: "Mobile app and automatic recurring billing." },
+              { es: "Cámaras inteligentes y atención al cliente con IA.", en: "Smart cameras and AI customer support." },
+            ],
+          },
+        ],
+      },
+      {
+        heading: { es: "Lo que hacen los mejores inversores", en: "What the best investors actually do" },
+        paragraphs: [
+          {
+            es: "Los mejores empresarios rara vez crean un negocio desde cero. Compran negocios aburridos y rentables y después los automatizan, los digitalizan, mejoran el marketing, incorporan IA, ajustan precios y mejoran la experiencia del cliente. Luego repiten el proceso con la caja que generan.",
+            en: "The best operators rarely build from zero. They buy boring, profitable businesses and then automate them, digitize them, improve the marketing, add AI, adjust prices and upgrade the customer experience. Then they repeat the process with the cash it throws off.",
+          },
+          {
+            es: "Ninguno de esos pasos requiere genialidad. Requiere criterio y constancia, que es exactamente lo que falta en la mayoría de negocios que están a la venta ahora mismo.",
+            en: "None of those steps requires genius. They require judgment and consistency, which is exactly what is missing in most businesses currently for sale.",
+          },
+        ],
+      },
+      {
+        heading: { es: "Del negocio a tu número: cómo esto acelera tu libertad financiera", en: "From business to your number: how this speeds up your freedom" },
+        paragraphs: [
+          {
+            es: "El objetivo no es tener un negocio: es construir patrimonio. Cada negocio que compras no es solo una fuente de ingresos, es un activo que se suma a tu patrimonio y una máquina que aumenta tu tasa de ahorro. Y la tasa de ahorro es la variable que más manda sobre los años que te faltan para ser libre.",
+            en: "The goal is not owning a business: it is building wealth. Every business you buy is not just income, it is an asset on your balance sheet and a machine that raises your savings rate. And your savings rate is the variable that dominates how many years you still owe the system.",
+          },
+          {
+            es: "Con un gasto de 3.000 € al mes, tu número ronda los 900.000 € al 4 % de retiro seguro. Si tu trabajo te deja ahorrar 1.000 € al mes, tardas décadas. Si un boring business añade 2.000 € netos mensuales y los reinviertes íntegros, el mismo objetivo se acerca más de diez años. Eso es lo que hace el flujo de caja: no te hace rico, te compra tiempo.",
+            en: "With €3,000 a month in spending, your number sits around €900,000 at a 4% safe withdrawal rate. If your job lets you save €1,000 a month, it takes decades. If a boring business adds €2,000 net a month and you reinvest all of it, the same goal moves more than ten years closer. That is what cash flow does: it does not make you rich, it buys you time.",
+          },
+        ],
+        bullets: [
+          { es: "Empieza con un negocio que puedas lanzar con poco dinero y aprende a vender.", en: "Start with a business you can launch cheaply and learn how to sell." },
+          { es: "Reinvierte cada euro de beneficio en lugar de subir tu nivel de vida.", en: "Reinvest every euro of profit instead of upgrading your lifestyle." },
+          { es: "Compra un negocio existente y modernízalo con tecnología e IA.", en: "Buy an existing business and modernize it with technology and AI." },
+          { es: "Usa esa caja para adquirir el siguiente y repite el ciclo.", en: "Use that cash to acquire the next one and repeat the cycle." },
+        ],
+      },
+    ],
+    takeaway: {
+      es: "No necesitas la próxima gran idea: necesitas activos que generen caja. Empieza por el negocio que te enseña a vender, reinvierte todo, compra el siguiente y mide cada mes cuántos años le quitas a tu número de libertad financiera.",
+      en: "You do not need the next big idea: you need assets that generate cash. Start with the business that teaches you to sell, reinvest everything, buy the next one and measure every month how many years you shave off your freedom number.",
+    },
+  },
+
+  {
     slug: "100k-hijo-18-anos-sp500",
     image: kids100kImg,
     imageAlt: {
