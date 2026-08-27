@@ -41,6 +41,7 @@ import { Route as SuscripcionRouteImport } from './routes/suscripcion'
 import { Route as TerminosRouteImport } from './routes/terminos'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout/success'
+import { Route as EnFinanzasParaNinosRouteImport } from './routes/en.finanzas-para-ninos'
 import { Route as NinosIndexRouteImport } from './routes/ninos/index'
 import { Route as NinosOnboardingRouteImport } from './routes/ninos/onboarding'
 import { Route as NinosPadresRouteImport } from './routes/ninos/padres'
@@ -215,6 +216,11 @@ const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
   path: '/checkout/success',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnFinanzasParaNinosRoute = EnFinanzasParaNinosRouteImport.update({
+  id: '/finanzas-para-ninos',
+  path: '/finanzas-para-ninos',
+  getParentRoute: () => EnRoute,
+} as any)
 const NinosIndexRoute = NinosIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -298,7 +304,7 @@ export interface FileRoutesByFullPath {
   '/demo': typeof DemoRoute
   '/demo-ninos': typeof DemoNinosRoute
   '/elegir': typeof ElegirRoute
-  '/en': typeof EnRoute
+  '/en': typeof EnRouteWithChildren
   '/finanzas-para-ninos': typeof FinanzasParaNinosRoute
   '/gastos': typeof GastosRoute
   '/hipoteca': typeof HipotecaRoute
@@ -316,6 +322,7 @@ export interface FileRoutesByFullPath {
   '/terminos': typeof TerminosRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
+  '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/ninos/': typeof NinosIndexRoute
@@ -344,7 +351,7 @@ export interface FileRoutesByTo {
   '/demo': typeof DemoRoute
   '/demo-ninos': typeof DemoNinosRoute
   '/elegir': typeof ElegirRoute
-  '/en': typeof EnRoute
+  '/en': typeof EnRouteWithChildren
   '/finanzas-para-ninos': typeof FinanzasParaNinosRoute
   '/gastos': typeof GastosRoute
   '/hipoteca': typeof HipotecaRoute
@@ -362,6 +369,7 @@ export interface FileRoutesByTo {
   '/terminos': typeof TerminosRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
+  '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/ninos': typeof NinosIndexRoute
@@ -392,7 +400,7 @@ export interface FileRoutesById {
   '/demo': typeof DemoRoute
   '/demo-ninos': typeof DemoNinosRoute
   '/elegir': typeof ElegirRoute
-  '/en': typeof EnRoute
+  '/en': typeof EnRouteWithChildren
   '/finanzas-para-ninos': typeof FinanzasParaNinosRoute
   '/gastos': typeof GastosRoute
   '/hipoteca': typeof HipotecaRoute
@@ -410,6 +418,7 @@ export interface FileRoutesById {
   '/terminos': typeof TerminosRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
+  '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/ninos/': typeof NinosIndexRoute
@@ -459,6 +468,7 @@ export interface FileRouteTypes {
     | '/terminos'
     | '/blog/$slug'
     | '/checkout/success'
+    | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/ninos/'
@@ -505,6 +515,7 @@ export interface FileRouteTypes {
     | '/terminos'
     | '/blog/$slug'
     | '/checkout/success'
+    | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/ninos'
@@ -552,6 +563,7 @@ export interface FileRouteTypes {
     | '/terminos'
     | '/blog/$slug'
     | '/checkout/success'
+    | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/ninos/'
@@ -582,7 +594,7 @@ export interface RootRouteChildren {
   DemoRoute: typeof DemoRoute
   DemoNinosRoute: typeof DemoNinosRoute
   ElegirRoute: typeof ElegirRoute
-  EnRoute: typeof EnRoute
+  EnRoute: typeof EnRouteWithChildren
   FinanzasParaNinosRoute: typeof FinanzasParaNinosRoute
   GastosRoute: typeof GastosRoute
   HipotecaRoute: typeof HipotecaRoute
@@ -830,6 +842,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutSuccessRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/en/finanzas-para-ninos': {
+      id: '/en/finanzas-para-ninos'
+      path: '/finanzas-para-ninos'
+      fullPath: '/en/finanzas-para-ninos'
+      preLoaderRoute: typeof EnFinanzasParaNinosRouteImport
+      parentRoute: typeof EnRoute
+    }
     '/ninos/': {
       id: '/ninos/'
       path: '/'
@@ -964,6 +983,16 @@ const BlogRouteChildren: BlogRouteChildren = {
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 
+interface EnRouteChildren {
+  EnFinanzasParaNinosRoute: typeof EnFinanzasParaNinosRoute
+}
+
+const EnRouteChildren: EnRouteChildren = {
+  EnFinanzasParaNinosRoute: EnFinanzasParaNinosRoute,
+}
+
+const EnRouteWithChildren = EnRoute._addFileChildren(EnRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   NinosRouteRoute: NinosRouteRouteWithChildren,
@@ -979,7 +1008,7 @@ const rootRouteChildren: RootRouteChildren = {
   DemoRoute: DemoRoute,
   DemoNinosRoute: DemoNinosRoute,
   ElegirRoute: ElegirRoute,
-  EnRoute: EnRoute,
+  EnRoute: EnRouteWithChildren,
   FinanzasParaNinosRoute: FinanzasParaNinosRoute,
   GastosRoute: GastosRoute,
   HipotecaRoute: HipotecaRoute,
