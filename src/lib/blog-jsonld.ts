@@ -346,3 +346,8 @@ export function buildFaqJsonLd(slug: string, lang: "es" | "en") {
     })),
   };
 }
+
+/** Curated FAQ pairs for rendering the visible FAQ block. */
+export function getPostFaqs(slug: string): Faq[] {
+  return POST_FAQ[slug] ?? [];
+}
