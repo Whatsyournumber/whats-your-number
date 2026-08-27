@@ -36,7 +36,7 @@ import { blogPosts } from "@/lib/blog-posts";
 import { auditAllPosts, MIN_WORDS, type PostAudit } from "@/lib/blog-audit";
 import { getBlogSearchConsole, getBlogTraffic } from "@/lib/blog-analytics.functions";
 
-export const Route = createFileRoute("/admin/blog")({
+export const Route = createFileRoute("/admin-blog")({
   ssr: false,
   beforeLoad: async () => {
     const { data, error } = await supabase.auth.getUser();
