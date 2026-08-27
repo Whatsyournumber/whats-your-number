@@ -72,6 +72,9 @@ export function buildBlogIndexBreadcrumbJsonLd(lang: "es" | "en") {
   };
 }
 
+/** Fecha de la última ampliación editorial de los artículos (dateModified). */
+export const CONTENT_UPDATED_AT = "2026-08-27";
+
 /** Full schema.org Article JSON-LD for a blog post in the given language. */
 export function buildArticleJsonLd(slug: string, lang: "es" | "en") {
   const post = getPost(slug);
