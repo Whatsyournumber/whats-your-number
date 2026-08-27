@@ -82,6 +82,8 @@ export function BlogArticleView({ slug }: { slug: string }) {
   const charts = postCharts[post.slug] ?? [];
   const quotes = postQuotes[post.slug] ?? [];
   const author = getAuthor(post.slug);
+  const faqs = getPostFaqs(post.slug);
+  const links = getPostLinks(post.slug);
 
   // Cumulative paragraph count after each section
   const cumulative: number[] = [];
