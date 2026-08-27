@@ -20,6 +20,58 @@ export function postIsoDate(slug: string) {
   return parsed.toISOString().slice(0, 10);
 }
 
+/** schema.org BreadcrumbList for a blog post (Home → Blog → Article). */
+export function buildBreadcrumbJsonLd(slug: string, lang: "es" | "en") {
+  const post = getPost(slug);
+  if (!post) return null;
+  const home = lang === "en" ? `${SITE}/en` : SITE;
+  const blog = lang === "en" ? `${SITE}/en/blog` : `${SITE}/blog`;
+  const article = lang === "en" ? `${SITE}/en/blog/${slug}` : `${SITE}/blog/${slug}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: lang === "en" ? "Home" : "Inicio",
+        item: home,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Blog",
+        item: blog,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: post.title[lang],
+        item: article,
+      },
+    ],
+  };
+}
+
+/** schema.org BreadcrumbList for the blog index (Home → Blog). */
+export function buildBlogIndexBreadcrumbJsonLd(lang: "es" | "en") {
+  const home = lang === "en" ? `${SITE}/en` : SITE;
+  const blog = lang === "en" ? `${SITE}/en/blog` : `${SITE}/blog`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: lang === "en" ? "Home" : "Inicio",
+        item: home,
+      },
+      { "@type": "ListItem", position: 2, name: "Blog", item: blog },
+    ],
+  };
+}
+
 /** Full schema.org Article JSON-LD for a blog post in the given language. */
 export function buildArticleJsonLd(slug: string, lang: "es" | "en") {
   const post = getPost(slug);
