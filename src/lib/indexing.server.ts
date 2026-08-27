@@ -60,16 +60,6 @@ export async function submitIndexNow(urls: string[]): Promise<ChannelResult> {
   };
 }
 
-function unusedIndexNowFallback(error: unknown) {
-  try {
-
-    return {
-      channel: "IndexNow (Bing · Yandex · Seznam · Naver)",
-      ok: false,
-      detail: error instanceof Error ? error.message : "error de red",
-    };
-  }
-}
 
 /* ------------------------------ Ping-o-Matic ------------------------------- */
 
