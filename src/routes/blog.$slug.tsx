@@ -127,7 +127,7 @@ function makeInlineLinker(links: PostLinks | null, lang: "es" | "en") {
         render: (m) => (
           <Link
             to={to}
-            className="font-medium text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
+            className="font-bold text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
           >
             {m}
           </Link>
@@ -142,7 +142,7 @@ function makeInlineLinker(links: PostLinks | null, lang: "es" | "en") {
           href={links.external.href}
           target="_blank"
           rel="noopener nofollow"
-          className="inline-flex items-baseline gap-1 font-medium text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
+          className="inline-flex items-baseline gap-1 font-bold text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
         >
           {m}
           <ExternalLink className="h-3 w-3 self-center" />
