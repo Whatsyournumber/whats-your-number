@@ -1,4 +1,5 @@
 import { auth, defineMcp } from "@lovable.dev/mcp-js";
+import type { AnyToolDefinition } from "@lovable.dev/mcp-js";
 
 import createLifeGoalTool from "./tools/create-life-goal";
 import getFinancialProfileTool from "./tools/get-financial-profile";
@@ -24,5 +25,5 @@ export default defineMcp({
     listLifeGoalsTool,
     createLifeGoalTool,
     listRecentExpensesTool,
-  ],
+  ] as unknown as AnyToolDefinition[],
 });
