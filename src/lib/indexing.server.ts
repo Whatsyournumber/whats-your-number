@@ -202,3 +202,88 @@ export async function distribute(urls: string[]): Promise<DistributionReport> {
     results: [indexNow, google, ...esPings, ...enPings, esHub, enHub],
   };
 }
+
+/* --------------------- Difusión automática de artículos -------------------- */
+
+export type DistributedLink = {
+  slug: string;
+  lang: "es" | "en";
+  url: string;
+  title: string;
+  ok: boolean;
+  distributedAt: string;
+};
+
+export type AutoDistributionResult = {
+  newSlugs: string[];
+  report: DistributionReport | null;
+  links: DistributedLink[];
+};
+
+function postUrl(slug: string, lang: "es" | "en") {
+  return lang === "en" ? `${SITE}/en/blog/${slug}` : `${SITE}/blog/${slug}`;
+}
+
+/** Lee el histórico de enlaces difundidos (más recientes primero). */
+export async function listDistributedLinks(): Promise<DistributedLink[]> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { blogPosts } = await import("@/lib/blog-posts");
+  const { data } = await supabaseAdmin
+    .from("blog_distributions")
+    .select("slug, lang, url, ok, distributed_at")
+    .order("distributed_at", { ascending: false });
+
+  return (data ?? []).map((row) => ({
+    slug: row.slug as string,
+    lang: (row.lang === "en" ? "en" : "es") as "es" | "en",
+    url: row.url as string,
+    title:
+      blogPosts.find((post) => post.slug === row.slug)?.title[row.lang === "en" ? "en" : "es"] ??
+      (row.slug as string),
+    ok: Boolean(row.ok),
+    distributedAt: row.distributed_at as string,
+  }));
+}
+
+/**
+ * Detecta los artículos que todavía no se han difundido y los envía a todos
+ * los canales. Idempotente: si no hay artículos nuevos, no hace nada.
+ */
+export async function distributeNewPosts(force = false): Promise<AutoDistributionResult> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { blogPosts } = await import("@/lib/blog-posts");
+
+  const { data: existing } = await supabaseAdmin.from("blog_distributions").select("slug");
+  const done = new Set((existing ?? []).map((row) => row.slug as string));
+  const pending = force ? blogPosts : blogPosts.filter((post) => !done.has(post.slug));
+
+  if (!pending.length) {
+    return { newSlugs: [], report: null, links: await listDistributedLinks() };
+  }
+
+  const urls = [
+    SITE,
+    `${SITE}/blog`,
+    `${SITE}/en/blog`,
+    ...pending.flatMap((post) => [postUrl(post.slug, "es"), postUrl(post.slug, "en")]),
+  ];
+  const report = await distribute(urls);
+  const ok = report.results.some((result) => result.ok);
+  const channels = report.results.map((result) => ({ channel: result.channel, ok: result.ok }));
+
+  await supabaseAdmin.from("blog_distributions").upsert(
+    pending.flatMap((post) =>
+      (["es", "en"] as const).map((lang) => ({
+        slug: post.slug,
+        lang,
+        url: postUrl(post.slug, lang),
+        ok,
+        channels,
+        distributed_at: new Date().toISOString(),
+      })),
+    ),
+    { onConflict: "slug,lang" },
+  );
+
+  return { newSlugs: pending.map((post) => post.slug), report, links: await listDistributedLinks() };
+}
