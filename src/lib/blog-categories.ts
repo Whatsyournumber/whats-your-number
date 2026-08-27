@@ -4,8 +4,7 @@ export type BlogCategoryId =
   | "ahorro"
   | "inversiones"
   | "fire"
-  | "patrimonio"
-  | "ia"
+  | "business"
   | "habitos"
   | "ninos";
 
@@ -26,10 +25,10 @@ export const blogCategories: BlogCategory[] = [
   },
   {
     id: "inversiones",
-    label: { es: "Inversiones", en: "Investing" },
+    label: { es: "Inversiones & patrimonio", en: "Investing & net worth" },
     description: {
-      es: "Carteras, índices, riesgo y rentabilidad real a largo plazo.",
-      en: "Portfolios, index funds, risk and real long-term returns.",
+      es: "Carteras, índices, activos y cómo medir de verdad lo que tienes.",
+      en: "Portfolios, index funds, assets and how to truly measure what you own.",
     },
   },
   {
@@ -41,19 +40,11 @@ export const blogCategories: BlogCategory[] = [
     },
   },
   {
-    id: "patrimonio",
-    label: { es: "Patrimonio", en: "Net worth" },
+    id: "business",
+    label: { es: "Business ideas", en: "Business ideas" },
     description: {
-      es: "Activos, pasivos y cómo medir de verdad lo que tienes.",
-      en: "Assets, liabilities and how to truly measure what you own.",
-    },
-  },
-  {
-    id: "ia",
-    label: { es: "IA y finanzas", en: "AI & finance" },
-    description: {
-      es: "Automatiza gastos, categorías y decisiones con inteligencia artificial.",
-      en: "Automate expenses, categories and decisions with AI.",
+      es: "Ingresos extra, negocios y proyectos que multiplican tu capacidad de ahorro.",
+      en: "Side income, businesses and projects that multiply your saving power.",
     },
   },
   {
@@ -77,11 +68,12 @@ export const blogCategories: BlogCategory[] = [
 const POST_CATEGORY: Record<string, BlogCategoryId> = {
   "rico-vs-adinerado": "fire",
   "numero-libertad-financiera": "fire",
-  "calcular-patrimonio-neto-real": "patrimonio",
+  "calcular-patrimonio-neto-real": "inversiones",
   "runway-personal": "ahorro",
   "portafolio-vs-sp500": "inversiones",
-  "clasificacion-automatica-gastos-ia": "ia",
+  "clasificacion-automatica-gastos-ia": "habitos",
   "revision-financiera-20-minutos": "habitos",
+  "100k-hijo-18-anos-sp500": "ninos",
 };
 
 export function postCategory(slug: string): BlogCategory | undefined {

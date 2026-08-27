@@ -50,6 +50,7 @@ const authors: Record<string, BlogAuthor> = {
 };
 
 const bySlug: Record<string, keyof typeof authors> = {
+  "100k-hijo-18-anos-sp500": "carolina",
   "rico-vs-adinerado": "mateo",
   "calcular-patrimonio-neto-real": "valeria",
   "runway-personal": "mateo",
