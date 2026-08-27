@@ -13,6 +13,7 @@ import {
   type KeywordRankings,
   type TrafficSummary,
 } from "@/lib/blog-analytics.server";
+import type { SerpRankings } from "@/lib/keyword-serp.server";
 
 async function assertAdmin(supabase: any, userId: string) {
   const { data, error } = await supabase
@@ -84,4 +85,19 @@ export const getKeywordRankings = createServerFn({ method: "POST" })
   .handler(async ({ data, context }): Promise<KeywordRankings> => {
     await assertAdmin(context.supabase, context.userId);
     return loadKeywordRankings("https://whatsyour-number.com/", data.keywords, data.days, data.siteUrl);
+  });
+
+/**
+ * Fuente alternativa de posiciones (SERP público) mientras Search Console
+ * todavía no devuelve datos para la propiedad. Solo admins.
+ */
+export const getSerpRankings = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { keywords: string[] }) => ({
+    keywords: (data?.keywords ?? []).slice(0, 24).map((k) => String(k).slice(0, 120)),
+  }))
+  .handler(async ({ data, context }): Promise<SerpRankings> => {
+    await assertAdmin(context.supabase, context.userId);
+    const { fetchSerpRanks } = await import("@/lib/keyword-serp.server");
+    return fetchSerpRanks(data.keywords, "whatsyour-number.com");
   });
