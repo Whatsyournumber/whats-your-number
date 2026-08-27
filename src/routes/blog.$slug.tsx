@@ -195,6 +195,8 @@ export function BlogArticleView({ slug }: { slug: string }) {
   const tableIndex = Math.min(last, Math.max(findAfter(cumulative[imageIndex]! + 3, imageIndex + 1), imageIndex + 1));
 
   const related = blogPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const isKids = postCategory(post.slug)?.id === "ninos";
+  const demoTo = isKids ? "/demo-ninos" : "/demo";
 
   return (
     <div className="relative min-h-screen overflow-x-clip bg-background">
