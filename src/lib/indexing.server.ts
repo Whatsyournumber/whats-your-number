@@ -21,33 +21,48 @@ export type ChannelResult = {
 
 /* --------------------------------- IndexNow -------------------------------- */
 
-/** Envía hasta 10.000 URLs a la red IndexNow (Bing, Yandex, Seznam, Naver). */
+/** Envía hasta 10.000 URLs a toda la red IndexNow (Bing, Yandex, Seznam, Naver). */
 export async function submitIndexNow(urls: string[]): Promise<ChannelResult> {
+  const endpoints = [
+    "https://api.indexnow.org/IndexNow",
+    "https://www.bing.com/indexnow",
+    "https://yandex.com/indexnow",
+    "https://search.seznam.cz/indexnow",
+    "https://searchadvisor.naver.com/indexnow",
+  ];
+  const body = JSON.stringify({
+    host: new URL(SITE).hostname,
+    key: INDEXNOW_KEY,
+    keyLocation: `${SITE}/${INDEXNOW_KEY}.txt`,
+    urlList: urls.slice(0, 10_000),
+  });
+
+  const outcomes = await Promise.all(
+    endpoints.map(async (endpoint) => {
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json; charset=utf-8" },
+          body,
+        });
+        return { endpoint, ok: response.ok || response.status === 202, status: `${response.status}` };
+      } catch {
+        return { endpoint, ok: false, status: "error" };
+      }
+    }),
+  );
+
+  const okCount = outcomes.filter((outcome) => outcome.ok).length;
+  return {
+    channel: "IndexNow (Bing · Yandex · Seznam · Naver)",
+    ok: okCount > 0,
+    detail: `${okCount}/${endpoints.length} endpoints OK · ${urls.length} URLs`,
+  };
+}
+
+function unusedIndexNowFallback(error: unknown) {
   try {
-    const endpoints = [
-      "https://api.indexnow.org/IndexNow",
-      "https://www.bing.com/indexnow",
-      "https://yandex.com/indexnow",
-      "https://search.seznam.cz/indexnow",
-      "https://searchadvisor.naver.com/indexnow",
-    ];
-    const response = await fetch(endpoints[0]!, {
-      method: "POST",
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-      body: JSON.stringify({
-        host: new URL(SITE).hostname,
-        key: INDEXNOW_KEY,
-        keyLocation: `${SITE}/${INDEXNOW_KEY}.txt`,
-        urlList: urls.slice(0, 10_000),
-      }),
-    });
-    const text = await response.text();
-    return {
-      channel: "IndexNow (Bing · Yandex · Seznam · Naver)",
-      ok: response.ok || response.status === 202,
-      detail: `HTTP ${response.status}${text ? ` · ${text.slice(0, 120)}` : ""} · ${urls.length} URLs`,
-    };
-  } catch (error) {
+
     return {
       channel: "IndexNow (Bing · Yandex · Seznam · Naver)",
       ok: false,
