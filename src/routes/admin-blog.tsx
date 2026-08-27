@@ -8,7 +8,9 @@ import {
   CheckCircle2,
   Eye,
   Globe2,
+  CalendarDays,
   ListChecks,
+  RefreshCw,
   MousePointerClick,
   Search,
   XCircle,
@@ -34,7 +36,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useRoles } from "@/hooks/use-role";
 import { blogPosts } from "@/lib/blog-posts";
 import { auditAllPosts, MIN_WORDS, type PostAudit } from "@/lib/blog-audit";
-import { getBlogSearchConsole, getBlogTraffic, getKeywordRankings } from "@/lib/blog-analytics.functions";
+import { getBlogSearchConsole, getBlogTraffic, getKeywordRankings, getSerpRankings } from "@/lib/blog-analytics.functions";
+import type { SerpRank } from "@/lib/keyword-serp.server";
 import { lovableAnalytics } from "@/lib/lovable-analytics-snapshot";
 
 import type { GscRow, GscSummary, KeywordRank, KeywordRankings } from "@/lib/blog-analytics.server";
@@ -100,6 +103,11 @@ function BlogBackOffice() {
     queryFn: () => getBlogSearchConsole({ data: { days } }),
   });
 
+  const postDates = useMemo(
+    () => new Map(blogPosts.map((post) => [post.slug, post.date.es] as const)),
+    [],
+  );
+
   const siteGroups = useMemo<KeywordGroup[]>(() => [homeKeywords, kidsKeywords], []);
 
   const postGroups = useMemo<KeywordGroup[]>(
@@ -110,6 +118,7 @@ function BlogBackOffice() {
           id: post.slug,
           label: { es: post.title.es, en: post.title.en },
           path: `/blog/${post.slug}`,
+          date: post.date.es,
           keywords: postKeywords[post.slug]!,
         })),
     [],
@@ -278,6 +287,7 @@ function BlogBackOffice() {
                       <TableHead className="text-right">Impresiones</TableHead>
                       <TableHead className="text-right">CTR</TableHead>
                       <TableHead className="text-right">Posición</TableHead>
+            <TableHead className="text-right">Pos. alternativa</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -310,6 +320,7 @@ function BlogBackOffice() {
                       <TableHead className="text-right">Clics</TableHead>
                       <TableHead className="text-right">Impresiones</TableHead>
                       <TableHead className="text-right">Posición</TableHead>
+            <TableHead className="text-right">Pos. alternativa</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -567,7 +578,7 @@ function BlogBackOffice() {
             </div>
             <div className="space-y-4">
               {audits.map((audit) => (
-                <AuditCard key={audit.slug} audit={audit} />
+                <AuditCard key={audit.slug} audit={audit} date={postDates.get(audit.slug)} />
               ))}
             </div>
           </Panel>
@@ -621,7 +632,7 @@ function BlogBackOffice() {
   );
 }
 
-function AuditCard({ audit }: { audit: PostAudit }) {
+function AuditCard({ audit, date }: { audit: PostAudit; date?: string }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="rounded-xl border border-border/60 p-4">
@@ -630,6 +641,7 @@ function AuditCard({ audit }: { audit: PostAudit }) {
           <div className="min-w-0 flex-1">
             <p className="truncate font-medium">{audit.title}</p>
             <p className="text-xs text-muted-foreground">
+              {date ? `Publicado el ${date} · ` : ""}
               {audit.words.toLocaleString("es-ES")} palabras · {audit.images} imágenes
             </p>
           </div>
@@ -680,16 +692,65 @@ function RankCells({ rank }: { rank: KeywordRank | undefined }) {
 function KeywordGroupPanel({
   group,
   rankMap,
+  date,
 }: {
   group: KeywordGroup;
   rankMap: Map<string, KeywordRank>;
+  date?: string;
 }) {
+  const keywords = useMemo(
+    () => group.keywords.flatMap((kw) => [kw.es, kw.en]),
+    [group],
+  );
+  const [serp, setSerp] = useState<{ ranks: SerpRank[]; checkedAt: string } | null>(null);
+  const [measuring, setMeasuring] = useState(false);
+  const [serpError, setSerpError] = useState<string | null>(null);
+
+  const serpMap = useMemo(() => {
+    const map = new Map<string, SerpRank>();
+    serp?.ranks.forEach((rank) => map.set(rank.keyword.toLowerCase(), rank));
+    return map;
+  }, [serp]);
+
+  const measure = async () => {
+    setMeasuring(true);
+    setSerpError(null);
+    try {
+      const result = await getSerpRankings({ data: { keywords } });
+      setSerp({ ranks: result.ranks, checkedAt: result.checkedAt });
+    } catch (error) {
+      setSerpError(error instanceof Error ? error.message : "Error midiendo posiciones");
+    } finally {
+      setMeasuring(false);
+    }
+  };
+
   return (
     <Panel className="p-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-lg font-semibold">{group.label.es}</h2>
-        <Badge variant="secondary">{group.path}</Badge>
+        <div className="min-w-0">
+          <h2 className="text-lg font-semibold">{group.label.es}</h2>
+          {date && (
+            <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+              <CalendarDays className="h-3.5 w-3.5" /> Publicado el {date}
+            </p>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          <Badge variant="secondary">{group.path}</Badge>
+          <Button size="sm" variant="outline" onClick={measure} disabled={measuring}>
+            <RefreshCw className={`mr-1.5 h-3.5 w-3.5 ${measuring ? "animate-spin" : ""}`} />
+            {measuring ? "Midiendo…" : "Medir sin Search Console"}
+          </Button>
+        </div>
       </div>
+      {serp && (
+        <p className="mb-3 text-xs text-muted-foreground">
+          Fuente alternativa: SERP público (índice Bing/DuckDuckGo) · medido el{" "}
+          {new Date(serp.checkedAt).toLocaleString("es-ES")}
+        </p>
+      )}
+      {serpError && <p className="mb-3 text-xs text-destructive">{serpError}</p>}
       <Table>
         <TableHeader>
           <TableRow>
@@ -698,6 +759,7 @@ function KeywordGroupPanel({
             <TableHead className="text-right">Clics</TableHead>
             <TableHead className="text-right">Impresiones</TableHead>
             <TableHead className="text-right">Posición</TableHead>
+            <TableHead className="text-right">Pos. alternativa</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
