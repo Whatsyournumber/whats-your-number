@@ -27,6 +27,9 @@ export function useFixedExpenses() {
   const [items, setItems] = useState<FixedExpense[]>(defaults);
   const [hydrated, setHydrated] = useState(false);
   const saveTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+  // Ids de gastos estándar puestos a 0 en esta sesión: la fila se mantiene
+  // visible aunque el perfil ya tenga 0 (el filtro del sync los excluiría).
+  const zeroHold = useRef<Set<string>>(new Set());
   const { profile, save } = useProfile();
   const { lang } = useLanguage();
 
