@@ -6,9 +6,11 @@ import {
   headerCity,
   headerCountry,
   insertBlogView,
+  loadKeywordRankings,
   loadSearchConsole,
   loadTraffic,
   type GscSummary,
+  type KeywordRankings,
   type TrafficSummary,
 } from "@/lib/blog-analytics.server";
 
@@ -69,4 +71,17 @@ export const getBlogSearchConsole = createServerFn({ method: "POST" })
   .handler(async ({ data, context }): Promise<GscSummary> => {
     await assertAdmin(context.supabase, context.userId);
     return loadSearchConsole("https://whatsyour-number.com/", data.siteUrl, data.days);
+  });
+
+/** Posicionamiento de las keywords objetivo (home, niños y artículos). Solo admins. */
+export const getKeywordRankings = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { keywords: string[]; days?: number; siteUrl?: string }) => ({
+    keywords: (data?.keywords ?? []).slice(0, 400).map((k) => String(k).slice(0, 120)),
+    days: Math.min(Math.max(Number(data?.days ?? 28), 1), 180),
+    siteUrl: data?.siteUrl?.slice(0, 200),
+  }))
+  .handler(async ({ data, context }): Promise<KeywordRankings> => {
+    await assertAdmin(context.supabase, context.userId);
+    return loadKeywordRankings("https://whatsyour-number.com/", data.keywords, data.days, data.siteUrl);
   });

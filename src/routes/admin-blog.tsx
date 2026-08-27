@@ -34,8 +34,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { useRoles } from "@/hooks/use-role";
 import { blogPosts } from "@/lib/blog-posts";
 import { auditAllPosts, MIN_WORDS, type PostAudit } from "@/lib/blog-audit";
-import { getBlogSearchConsole, getBlogTraffic } from "@/lib/blog-analytics.functions";
-import type { GscRow, GscSummary } from "@/lib/blog-analytics.server";
+import { getBlogSearchConsole, getBlogTraffic, getKeywordRankings } from "@/lib/blog-analytics.functions";
+import type { GscRow, GscSummary, KeywordRank } from "@/lib/blog-analytics.server";
+import {
+  allTargetKeywords,
+  homeKeywords,
+  kidsKeywords,
+  postKeywords,
+  type KeywordGroup,
+} from "@/lib/blog-keywords";
 
 export const Route = createFileRoute("/admin-blog")({
   ssr: false,
@@ -91,9 +98,39 @@ function BlogBackOffice() {
     queryFn: () => getBlogSearchConsole({ data: { days } }),
   });
 
+  const trackedGroups = useMemo<KeywordGroup[]>(() => {
+    const postGroups: KeywordGroup[] = blogPosts
+      .filter((post) => postKeywords[post.slug])
+      .map((post) => ({
+        id: post.slug,
+        label: { es: post.title.es, en: post.title.en },
+        path: `/blog/${post.slug}`,
+        keywords: postKeywords[post.slug]!,
+      }));
+    return [homeKeywords, kidsKeywords, ...postGroups];
+  }, []);
+
+  const targetList = useMemo(() => allTargetKeywords(), []);
+
+  const ranks = useQuery({
+    queryKey: ["blog-keyword-ranks", days],
+    enabled: isAdmin,
+    retry: false,
+    queryFn: () => getKeywordRankings({ data: { keywords: targetList, days } }),
+  });
+
+  const rankMap = useMemo(() => {
+    const map = new Map<string, KeywordRank>();
+    if (ranks.data && ranks.data.status === "ok") {
+      for (const rank of ranks.data.ranks) map.set(rank.keyword.toLowerCase(), rank);
+    }
+    return map;
+  }, [ranks.data]);
+
   const audits = useMemo(() => auditAllPosts("es"), []);
   const totalWords = audits.reduce((sum, a) => sum + a.words, 0);
   const readyPosts = audits.filter((a) => a.score === 100).length;
+
 
   if (loading) {
     return (
@@ -151,14 +188,39 @@ function BlogBackOffice() {
         <KpiCard label="Artículos 100% checklist" value={`${readyPosts}/${audits.length}`} icon={ListChecks} />
       </div>
 
-      <Tabs defaultValue="keywords">
+      <Tabs defaultValue="objetivo">
         <TabsList className="mb-6 flex-wrap">
+          <TabsTrigger value="objetivo">Keywords objetivo</TabsTrigger>
           <TabsTrigger value="keywords">Keywords</TabsTrigger>
           <TabsTrigger value="trafico">Tráfico por artículo</TabsTrigger>
           <TabsTrigger value="paises">Países</TabsTrigger>
           <TabsTrigger value="checklist">Checklist SEO</TabsTrigger>
           <TabsTrigger value="conexiones">Conexiones</TabsTrigger>
         </TabsList>
+
+        {/* -------------------------- Keywords objetivo -------------------------- */}
+        <TabsContent value="objetivo" className="space-y-6">
+          {ranks.isLoading && <Panel className="p-6 text-muted-foreground">Consultando posiciones…</Panel>}
+          {ranks.isError && (
+            <Panel className="p-6">
+              <p className="mb-1 font-medium">No se pudieron leer las posiciones</p>
+              <p className="text-sm text-muted-foreground">{(ranks.error as Error).message}</p>
+            </Panel>
+          )}
+          {ranks.data && ranks.data.status !== "ok" && (
+            <Panel className="p-6">
+              <p className="font-medium">Search Console todavía no devuelve posiciones</p>
+              <p className="text-sm text-muted-foreground">
+                Las keywords objetivo ya están definidas y se trackean en cuanto la propiedad de whatsyour-number.com
+                esté verificada y Google registre datos.
+              </p>
+            </Panel>
+          )}
+          {trackedGroups.map((group) => (
+            <KeywordGroupPanel key={group.id} group={group} rankMap={rankMap} />
+          ))}
+        </TabsContent>
+
 
         {/* ------------------------------ Keywords ------------------------------ */}
         <TabsContent value="keywords" className="space-y-6">
@@ -524,5 +586,65 @@ function AuditCard({ audit }: { audit: PostAudit }) {
         </ul>
       )}
     </div>
+  );
+}
+
+function RankCells({ rank }: { rank: KeywordRank | undefined }) {
+  if (!rank || (rank.position === null && rank.impressions === 0)) {
+    return (
+      <>
+        <TableCell className="text-right text-muted-foreground">—</TableCell>
+        <TableCell className="text-right text-muted-foreground">—</TableCell>
+        <TableCell className="text-right text-muted-foreground">Sin datos</TableCell>
+      </>
+    );
+  }
+  return (
+    <>
+      <TableCell className="text-right">{rank.clicks}</TableCell>
+      <TableCell className="text-right">{rank.impressions}</TableCell>
+      <TableCell className="text-right font-medium">
+        {rank.position === null ? "—" : rank.position.toFixed(1)}
+      </TableCell>
+    </>
+  );
+}
+
+function KeywordGroupPanel({
+  group,
+  rankMap,
+}: {
+  group: KeywordGroup;
+  rankMap: Map<string, KeywordRank>;
+}) {
+  return (
+    <Panel className="p-6">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-lg font-semibold">{group.label.es}</h2>
+        <Badge variant="secondary">{group.path}</Badge>
+      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Keyword objetivo</TableHead>
+            <TableHead className="w-20">Idioma</TableHead>
+            <TableHead className="text-right">Clics</TableHead>
+            <TableHead className="text-right">Impresiones</TableHead>
+            <TableHead className="text-right">Posición</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {group.keywords.flatMap((kw) =>
+            (["es", "en"] as const).map((lang) => (
+              <TableRow key={`${group.id}-${lang}-${kw[lang]}`}>
+                <TableCell className="font-medium">{kw[lang]}</TableCell>
+                <TableCell className="uppercase text-xs text-muted-foreground">{lang}</TableCell>
+                <RankCells rank={rankMap.get(kw[lang].toLowerCase())} />
+              </TableRow>
+            )),
+          )}
+        </TableBody>
+      </Table>
+    </Panel>
   );
 }
