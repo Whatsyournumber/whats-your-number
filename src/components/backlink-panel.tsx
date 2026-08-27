@@ -62,7 +62,7 @@ export function BacklinkPanel() {
   });
 
   const nextStatus = (current: string) =>
-    STATUSES[(STATUSES.indexOf(current as (typeof STATUSES)[number]) + 1) % STATUSES.length];
+    STATUSES[(STATUSES.indexOf(current as (typeof STATUSES)[number]) + 1) % STATUSES.length]!;
 
   const done = backlinkTargets.filter(
     (target) => byTarget.get(target.id)?.status === "publicado",
