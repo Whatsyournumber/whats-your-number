@@ -19,6 +19,23 @@ import { startAffiliateWizard } from "@/lib/affiliate-wizard-state";
 
 type AuthSearch = { mode: "login" | "signup"; next?: string; flow?: "affiliate" };
 
+/**
+ * Navega al destino guardado. Las rutas con query o punto (p. ej. el
+ * consentimiento OAuth `/.lovable/oauth/consent?authorization_id=...`) se
+ * resuelven con el navegador porque no forman parte del árbol tipado.
+ */
+function goNext(
+  next: string | undefined,
+  fallback: string,
+  navigate: (opts: { to: string }) => void,
+) {
+  if (next && (next.includes("?") || next.includes("."))) {
+    window.location.assign(next);
+    return;
+  }
+  navigate({ to: next ?? fallback });
+}
+
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>): AuthSearch => {
     const rawNext = search["next"];
