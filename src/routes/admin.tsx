@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Users, CreditCard, FileText, TrendingUp, Trash2, Handshake } from "lucide-react";
@@ -296,6 +296,11 @@ function AdminPage() {
         eyebrow="Super admin"
         title={t("Panel de administración", "Admin panel")}
         subtitle={t("Todos los registros, suscripciones, pagos y actividad de la plataforma.", "All sign-ups, subscriptions, payments and platform activity.")}
+        actions={
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/admin-blog">{t("Back office del blog", "Blog back office")}</Link>
+          </Button>
+        }
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

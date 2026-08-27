@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AdminBlogRouteImport } from './routes/admin-blog'
 import { Route as AdvisorRouteImport } from './routes/advisor'
 import { Route as AfiliadosRouteImport } from './routes/afiliados'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -66,6 +67,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminBlogRoute = AdminBlogRouteImport.update({
+  id: '/admin-blog',
+  path: '/admin-blog',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdvisorRoute = AdvisorRouteImport.update({
@@ -305,6 +311,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ninos': typeof NinosRouteRouteWithChildren
   '/admin': typeof AdminRoute
+  '/admin-blog': typeof AdminBlogRoute
   '/advisor': typeof AdvisorRoute
   '/afiliados': typeof AfiliadosRoute
   '/auth': typeof AuthRoute
@@ -354,6 +361,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/admin-blog': typeof AdminBlogRoute
   '/advisor': typeof AdvisorRoute
   '/afiliados': typeof AfiliadosRoute
   '/auth': typeof AuthRoute
@@ -405,6 +413,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/ninos': typeof NinosRouteRouteWithChildren
   '/admin': typeof AdminRoute
+  '/admin-blog': typeof AdminBlogRoute
   '/advisor': typeof AdvisorRoute
   '/afiliados': typeof AfiliadosRoute
   '/auth': typeof AuthRoute
@@ -457,6 +466,7 @@ export interface FileRouteTypes {
     | '/'
     | '/ninos'
     | '/admin'
+    | '/admin-blog'
     | '/advisor'
     | '/afiliados'
     | '/auth'
@@ -506,6 +516,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
+    | '/admin-blog'
     | '/advisor'
     | '/afiliados'
     | '/auth'
@@ -556,6 +567,7 @@ export interface FileRouteTypes {
     | '/'
     | '/ninos'
     | '/admin'
+    | '/admin-blog'
     | '/advisor'
     | '/afiliados'
     | '/auth'
@@ -607,6 +619,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   NinosRouteRoute: typeof NinosRouteRouteWithChildren
   AdminRoute: typeof AdminRoute
+  AdminBlogRoute: typeof AdminBlogRoute
   AdvisorRoute: typeof AdvisorRoute
   AfiliadosRoute: typeof AfiliadosRoute
   AuthRoute: typeof AuthRoute
@@ -654,6 +667,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin-blog': {
+      id: '/admin-blog'
+      path: '/admin-blog'
+      fullPath: '/admin-blog'
+      preLoaderRoute: typeof AdminBlogRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/advisor': {
@@ -1048,6 +1068,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   NinosRouteRoute: NinosRouteRouteWithChildren,
   AdminRoute: AdminRoute,
+  AdminBlogRoute: AdminBlogRoute,
   AdvisorRoute: AdvisorRoute,
   AfiliadosRoute: AfiliadosRoute,
   AuthRoute: AuthRoute,

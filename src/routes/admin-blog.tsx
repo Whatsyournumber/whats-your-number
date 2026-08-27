@@ -1,0 +1,528 @@
+import { useMemo, useState } from "react";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import {
+  AlertCircle,
+  ArrowUpRight,
+  BarChart3,
+  CheckCircle2,
+  Eye,
+  Globe2,
+  ListChecks,
+  MousePointerClick,
+  Search,
+  XCircle,
+} from "lucide-react";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip as RTooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+
+import { PageHeader, PageShell, Panel } from "@/components/page";
+import { KpiCard } from "@/components/kpi-card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { supabase } from "@/integrations/supabase/client";
+import { useRoles } from "@/hooks/use-role";
+import { blogPosts } from "@/lib/blog-posts";
+import { auditAllPosts, MIN_WORDS, type PostAudit } from "@/lib/blog-audit";
+import { getBlogSearchConsole, getBlogTraffic } from "@/lib/blog-analytics.functions";
+import type { GscRow, GscSummary } from "@/lib/blog-analytics.server";
+
+export const Route = createFileRoute("/admin-blog")({
+  ssr: false,
+  beforeLoad: async () => {
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data.user) throw redirect({ to: "/auth", search: { mode: "login" } });
+  },
+  head: () => ({
+    meta: [
+      { title: "Back office del blog — WhatsYournumber" },
+      {
+        name: "description",
+        content: "Panel interno del blog: keywords de Search Console, tráfico por artículo, países y checklist SEO.",
+      },
+      { name: "robots", content: "noindex" },
+      { property: "og:title", content: "Back office del blog — WhatsYournumber" },
+      { property: "og:description", content: "Keywords, tráfico, países y checklist SEO de cada artículo." },
+    ],
+  }),
+  component: BlogBackOffice,
+});
+
+const REGION = new Intl.DisplayNames(["es"], { type: "region" });
+
+function countryName(code: string) {
+  if (!code || code === "??") return "Desconocido";
+  const upper = code.length === 3 ? code.slice(0, 2).toUpperCase() : code.toUpperCase();
+  try {
+    return REGION.of(upper) ?? upper;
+  } catch {
+    return upper;
+  }
+}
+
+function pct(value: number) {
+  return `${(value * 100).toFixed(1)} %`;
+}
+
+function BlogBackOffice() {
+  const { isAdmin, loading } = useRoles();
+  const [days, setDays] = useState(28);
+
+  const traffic = useQuery({
+    queryKey: ["blog-traffic", days],
+    enabled: isAdmin,
+    queryFn: () => getBlogTraffic({ data: { days } }),
+  });
+
+  const gsc = useQuery({
+    queryKey: ["blog-gsc", days],
+    enabled: isAdmin,
+    retry: false,
+    queryFn: () => getBlogSearchConsole({ data: { days } }),
+  });
+
+  const audits = useMemo(() => auditAllPosts("es"), []);
+  const totalWords = audits.reduce((sum, a) => sum + a.words, 0);
+  const readyPosts = audits.filter((a) => a.score === 100).length;
+
+  if (loading) {
+    return (
+      <PageShell>
+        <p className="text-muted-foreground">Cargando…</p>
+      </PageShell>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <PageShell>
+        <Panel className="p-8 text-center">
+          <AlertCircle className="mx-auto mb-3 h-6 w-6 text-muted-foreground" />
+          <p className="text-muted-foreground">Esta sección es solo para administradores.</p>
+        </Panel>
+      </PageShell>
+    );
+  }
+
+  const gscData = gsc.data;
+  const gscOk =
+    gscData && gscData.status === "ok" ? (gscData as Extract<GscSummary, { status: "ok" }>) : null;
+
+  return (
+    <PageShell>
+      <PageHeader
+        title="Back office del blog"
+        subtitle="Keywords, tráfico por artículo, países y checklist SEO/GEO en un solo sitio."
+      />
+
+      <div className="mb-6 flex flex-wrap items-center gap-2">
+        {[7, 28, 90].map((d) => (
+          <Button key={d} size="sm" variant={days === d ? "default" : "outline"} onClick={() => setDays(d)}>
+            {d} días
+          </Button>
+        ))}
+        <Button size="sm" variant="ghost" asChild className="ml-auto">
+          <Link to="/admin">← Panel general</Link>
+        </Button>
+      </div>
+
+      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <KpiCard label="Visitas al blog" value={(traffic.data?.totalViews ?? 0).toLocaleString("es-ES")} icon={Eye} />
+        <KpiCard
+          label="Lectores únicos"
+          value={(traffic.data?.uniqueSessions ?? 0).toLocaleString("es-ES")}
+          icon={Globe2}
+        />
+        <KpiCard
+          label="Clics desde Google"
+          value={gscOk ? gscOk.totals.clicks.toLocaleString("es-ES") : "—"}
+          icon={MousePointerClick}
+        />
+        <KpiCard label="Artículos 100% checklist" value={`${readyPosts}/${audits.length}`} icon={ListChecks} />
+      </div>
+
+      <Tabs defaultValue="keywords">
+        <TabsList className="mb-6 flex-wrap">
+          <TabsTrigger value="keywords">Keywords</TabsTrigger>
+          <TabsTrigger value="trafico">Tráfico por artículo</TabsTrigger>
+          <TabsTrigger value="paises">Países</TabsTrigger>
+          <TabsTrigger value="checklist">Checklist SEO</TabsTrigger>
+          <TabsTrigger value="conexiones">Conexiones</TabsTrigger>
+        </TabsList>
+
+        {/* ------------------------------ Keywords ------------------------------ */}
+        <TabsContent value="keywords" className="space-y-6">
+          {gsc.isLoading && <Panel className="p-6 text-muted-foreground">Consultando Search Console…</Panel>}
+
+          {gsc.isError && (
+            <Panel className="p-6">
+              <p className="mb-1 font-medium">No se pudo leer Search Console</p>
+              <p className="text-sm text-muted-foreground">{(gsc.error as Error).message}</p>
+            </Panel>
+          )}
+
+          {gscData?.status === "not_connected" && (
+            <Panel className="p-6">
+              <p className="font-medium">Search Console no está conectado</p>
+              <p className="text-sm text-muted-foreground">
+                Conecta la cuenta de Google desde los conectores del proyecto para ver keywords, clics e impresiones.
+              </p>
+            </Panel>
+          )}
+
+          {gscData?.status === "no_property" && (
+            <Panel className="p-6">
+              <p className="font-medium">Aún no hay una propiedad verificada para whatsyour-number.com</p>
+              <p className="text-sm text-muted-foreground">
+                Verifica el dominio en Search Console y en cuanto Google empiece a registrar datos aparecerán aquí las
+                keywords de cada artículo.
+              </p>
+              {gscData.sites.length > 0 && (
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Propiedades disponibles en la cuenta: {gscData.sites.join(", ")}
+                </p>
+              )}
+            </Panel>
+          )}
+
+          {gscData?.status === "selection_required" && (
+            <Panel className="p-6">
+              <p className="font-medium">Hay varias propiedades que cubren el dominio</p>
+              <p className="text-sm text-muted-foreground">Elige cuál usar: {gscData.candidates.join(", ")}</p>
+            </Panel>
+          )}
+
+          {gscOk && (
+            <>
+              <div className="grid gap-4 sm:grid-cols-4">
+                <KpiCard label="Clics" value={gscOk.totals.clicks.toLocaleString("es-ES")} icon={MousePointerClick} />
+                <KpiCard label="Impresiones" value={gscOk.totals.impressions.toLocaleString("es-ES")} icon={Eye} />
+                <KpiCard label="CTR" value={pct(gscOk.totals.ctr)} icon={BarChart3} />
+                <KpiCard label="Posición media" value={gscOk.totals.position.toFixed(1)} icon={Search} />
+              </div>
+
+              <Panel className="p-6">
+                <h2 className="mb-4 text-lg font-semibold">Keywords que traen tráfico al blog</h2>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Keyword</TableHead>
+                      <TableHead className="text-right">Clics</TableHead>
+                      <TableHead className="text-right">Impresiones</TableHead>
+                      <TableHead className="text-right">CTR</TableHead>
+                      <TableHead className="text-right">Posición</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {gscOk.queries.slice(0, 50).map((row: GscRow) => (
+                      <TableRow key={row.keys[0]}>
+                        <TableCell className="font-medium">{row.keys[0]}</TableCell>
+                        <TableCell className="text-right">{row.clicks}</TableCell>
+                        <TableCell className="text-right">{row.impressions}</TableCell>
+                        <TableCell className="text-right">{pct(row.ctr)}</TableCell>
+                        <TableCell className="text-right">{row.position.toFixed(1)}</TableCell>
+                      </TableRow>
+                    ))}
+                    {gscOk.queries.length === 0 && (
+                      <TableRow>
+                        <TableCell colSpan={5} className="text-center text-muted-foreground">
+                          Google todavía no reporta consultas para el blog en este periodo.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </Panel>
+
+              <Panel className="p-6">
+                <h2 className="mb-4 text-lg font-semibold">Páginas del blog en Google</h2>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>URL</TableHead>
+                      <TableHead className="text-right">Clics</TableHead>
+                      <TableHead className="text-right">Impresiones</TableHead>
+                      <TableHead className="text-right">Posición</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {gscOk.pages.slice(0, 30).map((row: GscRow) => (
+                      <TableRow key={row.keys[0]}>
+                        <TableCell className="max-w-[380px] truncate">{row.keys[0]}</TableCell>
+                        <TableCell className="text-right">{row.clicks}</TableCell>
+                        <TableCell className="text-right">{row.impressions}</TableCell>
+                        <TableCell className="text-right">{row.position.toFixed(1)}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Panel>
+            </>
+          )}
+        </TabsContent>
+
+        {/* ---------------------------- Tráfico interno --------------------------- */}
+        <TabsContent value="trafico" className="space-y-6">
+          <Panel className="p-6">
+            <h2 className="mb-4 text-lg font-semibold">Visitas por día</h2>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={traffic.data?.byDay ?? []}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
+                  <XAxis dataKey="date" tick={{ fontSize: 11 }} tickFormatter={(d: string) => d.slice(5)} />
+                  <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
+                  <RTooltip />
+                  <Bar dataKey="views" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </Panel>
+
+          <Panel className="p-6">
+            <h2 className="mb-4 text-lg font-semibold">Artículos más leídos</h2>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Artículo</TableHead>
+                  <TableHead className="text-right">Visitas</TableHead>
+                  <TableHead className="text-right">Únicos</TableHead>
+                  <TableHead className="text-right">ES / EN</TableHead>
+                  <TableHead />
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {(traffic.data?.byPost ?? []).map((row) => {
+                  const post = blogPosts.find((p) => p.slug === row.slug);
+                  return (
+                    <TableRow key={row.slug}>
+                      <TableCell className="max-w-[420px] truncate font-medium">
+                        {post?.title.es ?? row.slug}
+                      </TableCell>
+                      <TableCell className="text-right">{row.views}</TableCell>
+                      <TableCell className="text-right">{row.sessions}</TableCell>
+                      <TableCell className="text-right text-muted-foreground">
+                        {row.es} / {row.en}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button size="sm" variant="ghost" asChild>
+                          <Link to="/blog/$slug" params={{ slug: row.slug }} target="_blank">
+                            <ArrowUpRight className="h-4 w-4" />
+                          </Link>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+                {(traffic.data?.byPost.length ?? 0) === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center text-muted-foreground">
+                      Todavía no hay visitas registradas en este periodo.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </Panel>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Panel className="p-6">
+              <h2 className="mb-4 text-lg font-semibold">De dónde llegan</h2>
+              <ul className="space-y-2 text-sm">
+                {(traffic.data?.byReferrer ?? []).map((row) => (
+                  <li key={row.source} className="flex items-center justify-between">
+                    <span>{row.source}</span>
+                    <span className="font-medium">{row.views}</span>
+                  </li>
+                ))}
+                {(traffic.data?.byReferrer.length ?? 0) === 0 && (
+                  <li className="text-muted-foreground">Sin datos todavía.</li>
+                )}
+              </ul>
+            </Panel>
+            <Panel className="p-6">
+              <h2 className="mb-4 text-lg font-semibold">Dispositivos</h2>
+              <ul className="space-y-2 text-sm">
+                {(traffic.data?.byDevice ?? []).map((row) => (
+                  <li key={row.device} className="flex items-center justify-between">
+                    <span className="capitalize">{row.device}</span>
+                    <span className="font-medium">{row.views}</span>
+                  </li>
+                ))}
+                {(traffic.data?.byDevice.length ?? 0) === 0 && (
+                  <li className="text-muted-foreground">Sin datos todavía.</li>
+                )}
+              </ul>
+            </Panel>
+          </div>
+        </TabsContent>
+
+        {/* -------------------------------- Países ------------------------------- */}
+        <TabsContent value="paises" className="space-y-6">
+          <Panel className="p-6">
+            <h2 className="mb-4 text-lg font-semibold">Países de nuestros lectores (analítica propia)</h2>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>País</TableHead>
+                  <TableHead className="text-right">Visitas</TableHead>
+                  <TableHead className="text-right">%</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {(traffic.data?.byCountry ?? []).map((row) => (
+                  <TableRow key={row.country}>
+                    <TableCell className="font-medium">{countryName(row.country)}</TableCell>
+                    <TableCell className="text-right">{row.views}</TableCell>
+                    <TableCell className="text-right text-muted-foreground">
+                      {traffic.data?.totalViews
+                        ? `${((row.views / traffic.data.totalViews) * 100).toFixed(1)} %`
+                        : "—"}
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {(traffic.data?.byCountry.length ?? 0) === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={3} className="text-center text-muted-foreground">
+                      Sin visitas registradas todavía.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </Panel>
+
+          {gscOk && gscOk.countries.length > 0 && (
+            <Panel className="p-6">
+              <h2 className="mb-4 text-lg font-semibold">Países según Google Search Console</h2>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>País</TableHead>
+                    <TableHead className="text-right">Clics</TableHead>
+                    <TableHead className="text-right">Impresiones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {gscOk.countries.map((row) => (
+                    <TableRow key={row.keys[0]}>
+                      <TableCell className="font-medium">{countryName(row.keys[0] ?? "")}</TableCell>
+                      <TableCell className="text-right">{row.clicks}</TableCell>
+                      <TableCell className="text-right">{row.impressions}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Panel>
+          )}
+        </TabsContent>
+
+        {/* ------------------------------ Checklist ------------------------------ */}
+        <TabsContent value="checklist" className="space-y-6">
+          <Panel className="p-6">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+              <h2 className="text-lg font-semibold">Checklist SEO / GEO por artículo</h2>
+              <span className="text-sm text-muted-foreground">
+                {totalWords.toLocaleString("es-ES")} palabras en total · objetivo {MIN_WORDS.toLocaleString("es-ES")} por
+                artículo
+              </span>
+            </div>
+            <div className="space-y-4">
+              {audits.map((audit) => (
+                <AuditCard key={audit.slug} audit={audit} />
+              ))}
+            </div>
+          </Panel>
+        </TabsContent>
+
+        {/* ----------------------------- Conexiones ------------------------------ */}
+        <TabsContent value="conexiones" className="space-y-4">
+          <Panel className="p-6">
+            <h2 className="mb-4 text-lg font-semibold">Fuentes de datos</h2>
+            <ul className="space-y-4 text-sm">
+              <li className="flex items-start gap-3">
+                <CheckCircle2 className="mt-0.5 h-4 w-4 text-emerald-500" />
+                <div>
+                  <p className="font-medium">Analítica propia del blog</p>
+                  <p className="text-muted-foreground">
+                    Cada visita a un artículo se registra en el backend (artículo, idioma, país, referente y
+                    dispositivo). Sin cookies ni datos personales.
+                  </p>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                {gscData?.status === "ok" ? (
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 text-emerald-500" />
+                ) : (
+                  <AlertCircle className="mt-0.5 h-4 w-4 text-amber-500" />
+                )}
+                <div>
+                  <p className="font-medium">Google Search Console</p>
+                  <p className="text-muted-foreground">
+                    {gscData?.status === "ok"
+                      ? `Conectado a ${gscData.siteUrl}. Datos del ${gscData.range.start} al ${gscData.range.end}.`
+                      : "Cuenta conectada. Falta verificar la propiedad del dominio para que Google devuelva datos."}
+                  </p>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <AlertCircle className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                <div>
+                  <p className="font-medium">Google Analytics 4</p>
+                  <p className="text-muted-foreground">
+                    Pendiente de conectar. Cuando autorices la cuenta, añado sesiones y tiempo de lectura junto al resto
+                    de métricas.
+                  </p>
+                </div>
+              </li>
+            </ul>
+          </Panel>
+        </TabsContent>
+      </Tabs>
+    </PageShell>
+  );
+}
+
+function AuditCard({ audit }: { audit: PostAudit }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-xl border border-border/60 p-4">
+      <button type="button" onClick={() => setOpen((v) => !v)} className="w-full text-left">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="truncate font-medium">{audit.title}</p>
+            <p className="text-xs text-muted-foreground">
+              {audit.words.toLocaleString("es-ES")} palabras · {audit.images} imágenes
+            </p>
+          </div>
+          <Badge variant={audit.score === 100 ? "default" : "secondary"}>{audit.score}%</Badge>
+        </div>
+        <Progress value={audit.score} className="mt-3 h-1.5" />
+      </button>
+      {open && (
+        <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+          {audit.checks.map((check) => (
+            <li key={check.key} className="flex items-center gap-2 text-sm">
+              {check.ok ? (
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />
+              ) : (
+                <XCircle className="h-4 w-4 shrink-0 text-destructive" />
+              )}
+              <span className={check.ok ? "" : "text-destructive"}>{check.label.es}</span>
+              <span className="ml-auto text-xs text-muted-foreground">{check.detail}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
