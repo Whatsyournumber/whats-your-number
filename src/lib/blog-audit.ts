@@ -22,6 +22,8 @@ export type CheckKey =
   | "case"
   | "faq"
   | "links"
+  | "keywords"
+  | "alt"
   | "insight";
 
 export type CheckResult = {
