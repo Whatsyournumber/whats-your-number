@@ -129,7 +129,7 @@ function makeInlineLinker(links: PostLinks | null, lang: "es" | "en") {
         render: (m) => (
           <Link
             to={to}
-            className="font-bold text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
+            className="font-bold text-primary transition-colors hover:text-primary/80"
           >
             {m}
           </Link>
@@ -146,7 +146,7 @@ function makeInlineLinker(links: PostLinks | null, lang: "es" | "en") {
           href={links.external.href}
           target="_blank"
           rel="noopener nofollow"
-          className="inline-flex items-baseline gap-1 font-bold text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
+          className="inline-flex items-baseline gap-1 font-bold text-primary transition-colors hover:text-primary/80"
         >
           {m}
           <ExternalLink className="h-3 w-3 self-center" />
@@ -433,9 +433,20 @@ export function BlogArticleView({ slug }: { slug: string }) {
           <Sparkles className="h-5 w-5 shrink-0 text-primary" />
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.18em] text-primary">
-              {t("Para llevar", "Takeaway")}
+              {t("Nuestra visión", "Our insight")}
             </p>
             <p className="mt-2 text-sm leading-relaxed">{post.takeaway[lang]}</p>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              {t("Lo único que cambia el resultado es verlo con tus propios números: ", "The only thing that changes the outcome is seeing it with your own numbers: ")}
+              <Link to="/demo" search={{ start: 1 }} className="font-medium text-primary hover:text-primary/80">
+                {t("pruébalo en el demo", "try it in the demo")}
+              </Link>
+              {t(" o descubre ", " or discover ")}
+              <Link to="/" className="font-medium text-primary hover:text-primary/80">
+                {t("cómo funciona WhatsYournumber", "how WhatsYournumber works")}
+              </Link>
+              {"."}
+            </p>
           </div>
         </aside>
 

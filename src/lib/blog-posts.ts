@@ -21,6 +21,15 @@ import boringVendingImg from "@/assets/blog/boring-vending.jpg";
 import boringFlipImg from "@/assets/blog/boring-house-flipping.jpg";
 import boringLaundryImg from "@/assets/blog/boring-laundromat.jpg";
 import boringStorageImg from "@/assets/blog/boring-self-storage.jpg";
+import caseKids100kImg from "@/assets/blog/case-kids-100k.jpg";
+import caseBoringOwnerImg from "@/assets/blog/case-boring-owner.jpg";
+import caseNetWorthImg from "@/assets/blog/case-net-worth.jpg";
+import caseRunwayImg from "@/assets/blog/case-runway.jpg";
+import casePortfolioImg from "@/assets/blog/case-portfolio.jpg";
+import caseAiExpensesImg from "@/assets/blog/case-ai-expenses.jpg";
+import caseFreedomImg from "@/assets/blog/case-freedom.jpg";
+import caseReviewImg from "@/assets/blog/case-review.jpg";
+import caseRichWealthyImg from "@/assets/blog/case-rich-wealthy.jpg";
 
 export type BlogSubsection = {
   heading: { es: string; en: string };
@@ -329,6 +338,16 @@ export const blogPosts: BlogPost[] = [
           { es: "Usa esa caja para adquirir el siguiente y repite el ciclo.", en: "Use that cash to acquire the next one and repeat the cycle." },
         ],
       },
+      {
+        heading: { es: "Caso real: 118.000 € para comprar una lavandería y 4.900 € al mes de caja", en: "Real case: €118,000 to buy a laundromat and €4,900 a month in cash flow" },
+        paragraphs: [
+          { es: "Rubén, ingeniero de 36 años, compró en 2023 una lavandería de barrio a un dueño que se jubilaba: 118.000 € (35.000 € propios y el resto financiado), 6.100 € de facturación mensual y 4.900 € de beneficio operativo tras costes.", en: "Rubén, a 36-year-old engineer, bought a neighbourhood laundromat in 2023 from a retiring owner: €118,000 (€35,000 of his own money, the rest financed), €6,100 monthly revenue and €4,900 operating profit after costs." },
+          { es: "En doce meses digitalizó el pago, instaló sensores de ocupación y automatizó el marketing local: la facturación subió un 22 % con las mismas máquinas. Reinvierte 2.500 € al mes en su cartera indexada, lo que adelanta su libertad financiera más de nueve años frente a su plan anterior de solo ahorrar la nómina.", en: "In twelve months he digitized payments, installed occupancy sensors and automated local marketing: revenue rose 22% with the same machines. He reinvests €2,500 a month into his index portfolio, pulling his financial freedom forward by over nine years compared with his previous salary-only plan." },
+        ],
+        image: caseBoringOwnerImg,
+        imageAlt: { es: "Nuevo propietario dentro de la lavandería automática que acaba de comprar como boring business", en: "New owner standing inside the self-service laundromat he just bought as a boring business" },
+        imageCaption: { es: "Comprar caja existente y modernizarla suele batir a inventar un negocio desde cero.", en: "Buying existing cash flow and modernizing it usually beats inventing a business from scratch." },
+      },
     ],
     takeaway: {
       es: "No necesitas la próxima gran idea: necesitas activos que generen caja. Empieza por el negocio que te enseña a vender, reinvierte todo, compra el siguiente y mide cada mes cuántos años le quitas a tu número de libertad financiera.",
@@ -462,6 +481,16 @@ export const blogPosts: BlogPost[] = [
           },
         ],
       },
+      {
+        heading: { es: "Caso real: 210 € al mes desde el nacimiento y 104.000 € a los 18", en: "Real case: €210 a month from birth and €104,000 at 18" },
+        paragraphs: [
+          { es: "Cuando nació Mateo, sus padres abrieron una cuenta indexada al S&P 500 a su nombre y automatizaron 210 € el día 1 de cada mes. Subieron la aportación un 5 % cada enero y destinaron los regalos de cumpleaños al mismo fondo.", en: "When Mateo was born, his parents opened an S&P 500 index account in his name and automated €210 on the 1st of every month. They raised the contribution 5% each January and routed birthday gifts into the same fund." },
+          { es: "Aportaron unos 58.000 € en total. Con una rentabilidad media del 8 %, el saldo al cumplir 18 años fue de 104.000 €: casi la mitad del dinero lo puso el interés compuesto, no la familia. Nunca vendieron durante las tres caídas importantes de esos años, y ese fue el verdadero mérito.", en: "They contributed about €58,000 in total. At an average 8% return, the balance at 18 was €104,000: almost half the money came from compounding, not from the family. They never sold during the three big drawdowns of those years, and that was the real achievement." },
+        ],
+        image: caseKids100kImg,
+        imageAlt: { es: "Padres y su hijo pequeño ahorrando en una hucha junto a un portátil con la evolución de la inversión indexada", en: "Parents and their toddler saving into a piggy bank next to a laptop showing index investment growth" },
+        imageCaption: { es: "58.000 € aportados, 104.000 € entregados: la diferencia la puso el tiempo.", en: "€58,000 contributed, €104,000 handed over: the difference was made by time." },
+      },
     ],
     takeaway: {
       es: "Abre hoy una cuenta indexada al S&P 500 a nombre de tu hijo, automatiza 210 € al mes (o lo que puedas y súbelo un 5% cada año) y no la toques hasta los 18. El dinero es lo de menos: lo que le estás regalando son dieciocho años de interés compuesto que él ya no podrá comprar.",
@@ -588,6 +617,16 @@ export const blogPosts: BlogPost[] = [
             en: "Define your phases, give them an estimated date and review them once a month. Financial freedom stops being a fantasy when it becomes a percentage that goes up.",
           },
         ],
+      },
+      {
+        heading: { es: "Caso real: dos ingresos idénticos, dos vidas distintas", en: "Real case: identical incomes, two different lives" },
+        paragraphs: [
+          { es: "Javier y Marta ganan lo mismo: 7.000 € netos al mes. Javier gasta 6.500 € y tiene un patrimonio líquido de 40.000 €; su runway es de seis semanas. Marta vive con 4.200 €, invierte 2.800 € al mes desde hace nueve años y acumula 410.000 € en cartera indexada. Su runway supera los ocho años.", en: "Javier and Marta earn the same: €7,000 net a month. Javier spends €6,500 and holds €40,000 in liquid wealth; his runway is six weeks. Marta lives on €4,200, has invested €2,800 a month for nine years and holds €410,000 in an index portfolio. Her runway is over eight years." },
+          { es: "Nadie diría que Marta es la rica: Javier conduce mejor coche y viaja más. Pero si mañana desaparece el salario, Javier tiene que aceptar la primera oferta que llegue y Marta puede decir que no durante años. Esa es toda la diferencia entre parecer rico y ser adinerado, y se mide con dos números: tu tasa de ahorro y tu patrimonio neto.", en: "Nobody would call Marta the rich one: Javier drives a better car and travels more. But if the salary disappears tomorrow, Javier must accept the first offer that comes and Marta can say no for years. That is the whole difference between looking rich and being wealthy, and it is measured with two numbers: your savings rate and your net worth." },
+        ],
+        image: caseRichWealthyImg,
+        imageAlt: { es: "Contraste entre un profesional corriendo con maletín y otro relajado frente al mar, ejemplo de ser rico frente a ser adinerado", en: "Contrast between a professional rushing with a briefcase and another relaxed by the sea, illustrating rich versus wealthy" },
+        imageCaption: { es: "Mismo sueldo, distinta libertad: lo que decide el resultado es cuánto conservas, no cuánto ingresas.", en: "Same salary, different freedom: what decides the outcome is how much you keep, not how much you earn." },
       },
     ],
     takeaway: {
@@ -728,6 +767,16 @@ export const blogPosts: BlogPost[] = [
           },
         ],
       },
+      {
+        heading: { es: "Caso real: de una cifra inflada a un patrimonio neto honesto", en: "Real case: from an inflated figure to an honest net worth" },
+        paragraphs: [
+          { es: "Cuando Laura, arquitecta de 38 años, hizo el ejercicio por primera vez, creía tener 320.000 € de patrimonio. Al restar la hipoteca pendiente, los costes de venta del piso y el préstamo del coche, la cifra real fue de 187.000 €, y solo 46.000 € eran líquidos.", en: "When Laura, a 38-year-old architect, ran the exercise for the first time she believed she had €320,000. After subtracting the outstanding mortgage, the flat's selling costs and the car loan, the real figure was €187,000, and only €46,000 of it was liquid." },
+          { es: "El impacto no fue emocional, fue operativo: en catorce meses subió su liquidez a 71.000 €, canceló el préstamo del coche y su patrimonio neto real creció un 19 % sin ganar un euro más. Medir bien no te hace más rico, pero te enseña dónde estabas engañándote.", en: "The impact was not emotional, it was operational: in fourteen months she raised liquidity to €71,000, cleared the car loan, and her real net worth grew 19% without earning a single euro more. Measuring properly does not make you richer, but it shows where you were fooling yourself." },
+        ],
+        image: caseNetWorthImg,
+        imageAlt: { es: "Mujer revisando en casa el cálculo de su patrimonio neto real con portátil y extracto impreso", en: "Woman at home reviewing her real net worth calculation with a laptop and a printed statement" },
+        imageCaption: { es: "El primer cálculo honesto suele doler; el segundo ya es una hoja de ruta.", en: "The first honest calculation usually stings; the second one is already a roadmap." },
+      },
     ],
     takeaway: {
       es: "Calcula tu patrimonio neto el mismo día de cada mes, con las mismas reglas y en la misma moneda. La tendencia importa mucho más que el nivel.",
@@ -832,6 +881,16 @@ export const blogPosts: BlogPost[] = [
           },
         ],
       },
+      {
+        heading: { es: "Caso real: el runway que convirtió un despido en una oportunidad", en: "Real case: the runway that turned a layoff into an opportunity" },
+        paragraphs: [
+          { es: "Diego, 34 años, desarrollador, tenía 28.000 € ahorrados y un gasto mensual de 2.300 €: doce meses de runway. Cuando su empresa cerró la división, no entró en pánico. Recortó gastos variables a 1.900 € y su runway pasó a casi quince meses.", en: "Diego, 34, a developer, had €28,000 saved and a €2,300 monthly spend: twelve months of runway. When his company shut the division down, he did not panic. He cut variable spending to €1,900 and his runway stretched to nearly fifteen months." },
+          { es: "Usó cuatro meses para especializarse y rechazó dos ofertas peores que su empleo anterior. La séptima entrevista terminó en un contrato un 31 % mejor pagado. El runway no le dio dinero: le dio el derecho a decir que no.", en: "He used four months to specialize and turned down two offers worse than his previous job. The seventh interview ended in a contract paying 31% more. The runway did not give him money: it gave him the right to say no." },
+        ],
+        image: caseRunwayImg,
+        imageAlt: { es: "Hombre calculando en una tablet cuántos meses de runway financiero tiene tras perder su empleo", en: "Man calculating on a tablet how many months of financial runway he has after losing his job" },
+        imageCaption: { es: "Cada mes de runway es un mes de poder de negociación.", en: "Every month of runway is a month of negotiating power." },
+      },
     ],
     takeaway: {
       es: "Por debajo de 3 meses estás expuesto; entre 6 y 12 puedes negociar, cambiar de trabajo y decir que no. El runway compra opciones, no solo seguridad.",
@@ -933,6 +992,16 @@ export const blogPosts: BlogPost[] = [
           },
         ],
       },
+      {
+        heading: { es: "Caso real: la cartera que perdía contra el índice sin saberlo", en: "Real case: the portfolio quietly losing to the index" },
+        paragraphs: [
+          { es: "Sergio gestionaba doce posiciones y estaba convencido de batir al mercado. Al comparar con el S&P 500 durante cinco años descubrió que su rentabilidad anualizada era del 6,4 % frente al 11,1 % del índice, y que las comisiones y la rotación explicaban casi dos puntos de la diferencia.", en: "Sergio ran twelve positions and was convinced he was beating the market. Comparing against the S&P 500 over five years, he found his annualized return was 6.4% versus the index's 11.1%, with fees and turnover explaining almost two points of the gap." },
+          { es: "Mantuvo tres convicciones y movió el 80 % restante a un indexado global. Dos años después no solo la rentabilidad mejoró: dejó de revisar la cartera a diario. Comparar contra un índice no es humillarte, es dejar de pagar por una habilidad que quizá no tienes.", en: "He kept three convictions and moved the remaining 80% into a global index fund. Two years later not only did returns improve: he stopped checking the portfolio daily. Benchmarking is not humiliation, it is refusing to pay for a skill you may not have." },
+        ],
+        image: casePortfolioImg,
+        imageAlt: { es: "Inversor comparando en dos pantallas la rentabilidad de su cartera frente al S&P 500", en: "Investor comparing his portfolio return against the S&P 500 on two screens" },
+        imageCaption: { es: "Sin benchmark no hay resultado: solo sensaciones.", en: "Without a benchmark there is no result: only feelings." },
+      },
     ],
     takeaway: {
       es: "Compara con TIR, contra el total return y en tu moneda de gasto. Si el índice gana tres años seguidos, indexa el núcleo y experimenta con el 10%.",
@@ -947,6 +1016,7 @@ export const blogPosts: BlogPost[] = [
       en: "Person reviewing AI-powered automatic expense classification on the month's bank statement",
     },
     keyword: { es: "clasificación automática de gastos con IA", en: "automatic expense classification with AI" },
+    toc: true,
     readMinutes: 9,
     tag: { es: "IA", en: "AI" },
     date: { es: "21 may 2026", en: "May 21, 2026" },
@@ -1024,6 +1094,16 @@ export const blogPosts: BlogPost[] = [
             en: "Classifying needs neither your name, your IBAN nor your balance. The transaction description, amount and date are enough. Any system that needs more than that to categorise is asking for data it does not use.",
           },
         ],
+      },
+      {
+        heading: { es: "Caso real: 900 € al mes que no aparecían en ninguna categoría", en: "Real case: €900 a month hiding outside every category" },
+        paragraphs: [
+          { es: "Nuria, freelance, subía sus extractos y clasificaba a mano una vez al trimestre; siempre acababa con un 40 % en «otros». Al automatizar la categorización con IA, ese cajón se redujo al 4 % y apareció el patrón: 900 € al mes entre suscripciones olvidadas, comida a domicilio y transporte de última hora.", en: "Nuria, a freelancer, uploaded statements and categorized by hand once a quarter; she always ended with 40% in “other”. Automating categorization with AI shrank that bucket to 4% and revealed the pattern: €900 a month across forgotten subscriptions, food delivery and last-minute transport." },
+          { es: "No eliminó todo: cortó 430 € que no le aportaban nada y mantuvo el resto sin culpa. Ese recorte, invertido al 7 %, adelanta su libertad financiera casi tres años. La IA no le dijo qué gastar; le enseñó dónde estaba mirando mal.", en: "She did not cut everything: she removed €430 that gave her nothing and kept the rest guilt-free. That cut, invested at 7%, brings her financial freedom forward by almost three years. The AI did not tell her what to spend; it showed her where she was looking wrong." },
+        ],
+        image: caseAiExpensesImg,
+        imageAlt: { es: "Freelance revisando en el móvil sus gastos clasificados automáticamente con inteligencia artificial", en: "Freelancer reviewing on her phone the expenses automatically categorized with artificial intelligence" },
+        imageCaption: { es: "Cuando la categoría «otros» baja del 5 %, empiezas a decidir con datos reales.", en: "When the “other” bucket drops below 5%, you start deciding with real data." },
       },
     ],
     takeaway: {
@@ -1140,6 +1220,16 @@ export const blogPosts: BlogPost[] = [
           },
         ],
       },
+      {
+        heading: { es: "Caso real: la pareja que bajó su número en 260.000 €", en: "Real case: the couple that cut their number by €260,000" },
+        paragraphs: [
+          { es: "Ana y Pablo calcularon su número por primera vez con un gasto de 5.400 €/mes: necesitaban 1.620.000 € al 4 %. La cifra les pareció inalcanzable y estuvieron a punto de abandonar el plan.", en: "Ana and Pablo first calculated their number with a €5,400/mo spend: they needed €1,620,000 at 4%. The figure felt unreachable and they nearly abandoned the plan." },
+          { es: "Revisaron gastos fijos, cambiaron de ciudad dentro del mismo país y ajustaron el coche y los seguros. Su gasto objetivo bajó a 4.530 €/mes y su número a 1.359.000 €: 261.000 € menos y siete años antes. No aumentaron el ingreso; cambiaron la base sobre la que se calcula todo.", en: "They reviewed fixed costs, moved city within the same country and adjusted car and insurance. Their target spend fell to €4,530/mo and their number to €1,359,000: €261,000 less and seven years earlier. They did not raise income; they changed the base everything is calculated on." },
+        ],
+        image: caseFreedomImg,
+        imageAlt: { es: "Pareja calculando en casa su número de libertad financiera en un portátil", en: "Couple at home calculating their financial freedom number on a laptop" },
+        imageCaption: { es: "Bajar 500 € de gasto mensual recorta 150.000 € de tu número. Ese es el atajo real.", en: "Cutting €500 of monthly spending removes €150,000 from your number. That is the real shortcut." },
+      },
     ],
     takeaway: {
       es: "Tu número de libertad financiera no es fijo: baja cuando reduces gasto y sube cuando cambias de ciudad o de estilo de vida. Revísalo una vez al año.",
@@ -1154,6 +1244,7 @@ export const blogPosts: BlogPost[] = [
       en: "Woman doing her 20-minute monthly financial review with coffee and her phone in hand",
     },
     keyword: { es: "revisión financiera mensual", en: "monthly financial review" },
+    toc: true,
     readMinutes: 8,
     tag: { es: "Hábitos", en: "Habits" },
     date: { es: "14 abr 2026", en: "Apr 14, 2026" },
@@ -1231,6 +1322,16 @@ export const blogPosts: BlogPost[] = [
             en: "People do not quit because of a bad month: they quit by stopping looking after a bad month. Consistency of tracking beats the quality of any individual decision.",
           },
         ],
+      },
+      {
+        heading: { es: "Caso real: doce revisiones, una decisión cada mes", en: "Real case: twelve reviews, one decision a month" },
+        paragraphs: [
+          { es: "Carlos empezó con una regla mínima: el primer domingo de cada mes, veinte minutos con temporizador. En doce revisiones tomó doce decisiones pequeñas: cancelar dos seguros duplicados, subir la aportación automática dos veces, refinanciar el préstamo y rebalancear una vez.", en: "Carlos started with one minimal rule: the first Sunday of every month, twenty minutes on a timer. Across twelve reviews he made twelve small decisions: cancelling two duplicate insurances, raising his automatic contribution twice, refinancing a loan and rebalancing once." },
+          { es: "Al cerrar el año su tasa de ahorro había subido del 14 % al 23 % sin ningún cambio drástico. Cuatro horas de atención al año valieron más que cualquier hoja de cálculo perfecta que nunca abrió.", en: "By year-end his savings rate had climbed from 14% to 23% without a single dramatic change. Four hours of attention a year were worth more than any perfect spreadsheet he never opened." },
+        ],
+        image: caseReviewImg,
+        imageAlt: { es: "Persona con temporizador y café haciendo su revisión financiera mensual de veinte minutos", en: "Person with a timer and coffee doing their twenty-minute monthly financial review" },
+        imageCaption: { es: "La constancia gana a la intensidad: doce decisiones pequeñas superan a un plan perfecto.", en: "Consistency beats intensity: twelve small decisions beat one perfect plan." },
       },
     ],
     takeaway: {
@@ -1541,6 +1642,243 @@ export type BlogChart = {
 
 /** Charts rendered inside specific articles. */
 export const postCharts: Record<string, BlogChart[]> = {
+  "calcular-patrimonio-neto-real": [
+    {
+      id: "composicion-patrimonio",
+      kind: "bar",
+      unit: "money",
+      after: 2,
+      title: { es: "De qué está hecho tu patrimonio neto real", en: "What your real net worth is made of" },
+      note: { es: "Ejemplo de un perfil de 38 años: valor bruto declarado frente al valor neto tras deuda y costes de venta.", en: "Example of a 38-year-old profile: gross declared value versus net value after debt and selling costs." },
+      series: [
+        { key: "bruto", label: { es: "Valor bruto", en: "Gross value" } },
+        { key: "neto", label: { es: "Valor neto real", en: "Real net value" } },
+      ],
+      data: [
+        { label: { es: "Vivienda", en: "Home" }, bruto: 320000, neto: 118000 },
+        { label: { es: "Inversiones", en: "Investments" }, bruto: 52000, neto: 52000 },
+        { label: { es: "Liquidez", en: "Cash" }, bruto: 19000, neto: 19000 },
+        { label: { es: "Coche", en: "Car" }, bruto: 18000, neto: -2000 },
+      ],
+    },
+    {
+      id: "tendencia-patrimonio",
+      kind: "area",
+      unit: "money",
+      after: 5,
+      title: { es: "Tendencia mensual: ahorro frente a mercado", en: "Monthly trend: savings versus market" },
+      note: { es: "Separar ambas fuentes es lo que revela si tu progreso es disciplina o simplemente un buen año.", en: "Separating both sources reveals whether your progress is discipline or just a good year." },
+      series: [
+        { key: "ahorro", label: { es: "Aportado por ti", en: "Contributed by you" } },
+        { key: "mercado", label: { es: "Generado por el mercado", en: "Market-generated" } },
+      ],
+      data: [
+        { label: { es: "Ene", en: "Ene" }, ahorro: 1500, mercado: 300 },
+        { label: { es: "Mar", en: "Mar" }, ahorro: 4500, mercado: 1100 },
+        { label: { es: "May", en: "May" }, ahorro: 7500, mercado: 2400 },
+        { label: { es: "Jul", en: "Jul" }, ahorro: 10500, mercado: 1800 },
+        { label: { es: "Sep", en: "Sep" }, ahorro: 13500, mercado: 4200 },
+        { label: { es: "Nov", en: "Nov" }, ahorro: 16500, mercado: 6100 },
+      ],
+    },
+  ],
+
+  "runway-personal": [
+    {
+      id: "runway-meses",
+      kind: "bar",
+      unit: "years",
+      after: 1,
+      title: { es: "Meses de runway según tu colchón y tu gasto", en: "Months of runway by cushion and spending" },
+      note: { es: "Con un gasto mensual de 2.300 €: cada 5.000 € ahorrados suman poco más de dos meses de libertad.", en: "With €2,300 monthly spending: every €5,000 saved adds a bit over two months of freedom." },
+      series: [
+        { key: "meses", label: { es: "Meses de runway", en: "Months of runway" } },
+      ],
+      data: [
+        { label: { es: "5.000 €", en: "€5,000" }, meses: 2.2 },
+        { label: { es: "10.000 €", en: "€10,000" }, meses: 4.3 },
+        { label: { es: "20.000 €", en: "€20,000" }, meses: 8.7 },
+        { label: { es: "30.000 €", en: "€30,000" }, meses: 13.0 },
+        { label: { es: "50.000 €", en: "€50,000" }, meses: 21.7 },
+        { label: { es: "80.000 €", en: "€80,000" }, meses: 34.8 },
+      ],
+    },
+    {
+      id: "runway-recorte",
+      kind: "bar",
+      unit: "years",
+      after: 3,
+      title: { es: "Efecto de recortar gasto sobre tu runway", en: "Effect of cutting spending on your runway" },
+      note: { es: "Mismo colchón de 28.000 €. Reducir el gasto alarga el runway más rápido que ahorrar más.", en: "Same €28,000 cushion. Cutting spending stretches runway faster than saving more." },
+      series: [
+        { key: "meses", label: { es: "Meses de runway", en: "Months of runway" } },
+      ],
+      data: [
+        { label: { es: "Gasto 2800 €", en: "€2800 spend" }, meses: 10.0 },
+        { label: { es: "Gasto 2500 €", en: "€2500 spend" }, meses: 11.2 },
+        { label: { es: "Gasto 2300 €", en: "€2300 spend" }, meses: 12.2 },
+        { label: { es: "Gasto 2000 €", en: "€2000 spend" }, meses: 14.0 },
+        { label: { es: "Gasto 1700 €", en: "€1700 spend" }, meses: 16.5 },
+      ],
+    },
+  ],
+
+  "portafolio-vs-sp500": [
+    {
+      id: "cartera-vs-indice",
+      kind: "area",
+      unit: "percent",
+      after: 1,
+      title: { es: "Rentabilidad acumulada: cartera activa vs. S&P 500", en: "Cumulative return: active portfolio vs. S&P 500" },
+      note: { es: "Ejemplo real de cinco años. La brecha no aparece de golpe: se acumula silenciosamente.", en: "A real five-year example. The gap does not appear at once: it compounds quietly." },
+      series: [
+        { key: "cartera", label: { es: "Tu cartera", en: "Your portfolio" } },
+        { key: "indice", label: { es: "S&P 500", en: "S&P 500" } },
+      ],
+      data: [
+        { label: { es: "Año 1", en: "Year 1" }, cartera: 6, indice: 11 },
+        { label: { es: "Año 2", en: "Year 2" }, cartera: 13, indice: 24 },
+        { label: { es: "Año 3", en: "Year 3" }, cartera: 19, indice: 37 },
+        { label: { es: "Año 4", en: "Year 4" }, cartera: 28, indice: 55 },
+        { label: { es: "Año 5", en: "Year 5" }, cartera: 36, indice: 69 },
+      ],
+    },
+    {
+      id: "coste-comisiones",
+      kind: "bar",
+      unit: "money",
+      after: 3,
+      title: { es: "Lo que te cuestan las comisiones en 20 años", en: "What fees cost you over 20 years" },
+      note: { es: "Sobre 100.000 € invertidos al 8 % bruto anual durante 20 años.", en: "On €100,000 invested at 8% gross annually for 20 years." },
+      series: [
+        { key: "final", label: { es: "Valor final", en: "Final value" } },
+      ],
+      data: [
+        { label: { es: "Comisión 0.1 %", en: "0.1% fee" }, final: 457540 },
+        { label: { es: "Comisión 0.5 %", en: "0.5% fee" }, final: 424785 },
+        { label: { es: "Comisión 1.0 %", en: "1.0% fee" }, final: 386968 },
+        { label: { es: "Comisión 1.8 %", en: "1.8% fee" }, final: 333035 },
+        { label: { es: "Comisión 2.5 %", en: "2.5% fee" }, final: 291776 },
+      ],
+    },
+  ],
+
+  "clasificacion-automatica-gastos-ia": [
+    {
+      id: "otros-categoria",
+      kind: "bar",
+      unit: "percent",
+      after: 1,
+      title: { es: "Porcentaje de gasto en la categoría «otros»", en: "Share of spending in the “other” bucket" },
+      note: { es: "Clasificación manual frente a clasificación automática con IA sobre los mismos extractos.", en: "Manual categorization versus AI categorization on the same statements." },
+      series: [
+        { key: "otros", label: { es: "% en «otros»", en: "% in “other”" } },
+      ],
+      data: [
+        { label: { es: "Manual trimestral", en: "Quarterly manual" }, otros: 40 },
+        { label: { es: "Reglas fijas", en: "Fixed rules" }, otros: 22 },
+        { label: { es: "IA sin revisar", en: "AI unreviewed" }, otros: 9 },
+        { label: { es: "IA + revisión", en: "AI + review" }, otros: 4 },
+      ],
+    },
+    {
+      id: "fugas-detectadas",
+      kind: "bar",
+      unit: "money",
+      after: 3,
+      title: { es: "Fugas mensuales detectadas al categorizar bien", en: "Monthly leaks found once categorization is right" },
+      note: { es: "Caso de una freelance: 900 € al mes escondidos en la categoría «otros».", en: "A freelancer's case: €900 a month hidden in the “other” bucket." },
+      series: [
+        { key: "importe", label: { es: "€ al mes", en: "€ per month" } },
+      ],
+      data: [
+        { label: { es: "Suscripciones", en: "Subscriptions" }, importe: 180 },
+        { label: { es: "Comida a domicilio", en: "Food delivery" }, importe: 310 },
+        { label: { es: "Transporte", en: "Transport" }, importe: 150 },
+        { label: { es: "Compras impulsivas", en: "Impulse buys" }, importe: 260 },
+      ],
+    },
+  ],
+
+  "numero-libertad-financiera": [
+    {
+      id: "numero-por-gasto",
+      kind: "bar",
+      unit: "money",
+      after: 1,
+      title: { es: "Tu número según el gasto mensual que quieras cubrir", en: "Your number by the monthly spending you want covered" },
+      note: { es: "Regla del 4 %: número = gasto anual × 25.", en: "The 4% rule: number = annual spending × 25." },
+      series: [
+        { key: "numero", label: { es: "Patrimonio necesario", en: "Wealth needed" } },
+      ],
+      data: [
+        { label: { es: "2000 €/mes", en: "€2000/mo" }, numero: 600000 },
+        { label: { es: "3000 €/mes", en: "€3000/mo" }, numero: 900000 },
+        { label: { es: "4000 €/mes", en: "€4000/mo" }, numero: 1200000 },
+        { label: { es: "5000 €/mes", en: "€5000/mo" }, numero: 1500000 },
+        { label: { es: "7000 €/mes", en: "€7000/mo" }, numero: 2100000 },
+      ],
+    },
+    {
+      id: "anos-por-tasa-ahorro",
+      kind: "bar",
+      unit: "years",
+      after: 4,
+      title: { es: "Años hasta tu número según tu tasa de ahorro", en: "Years to your number by savings rate" },
+      note: { es: "Partiendo de cero, con rentabilidad real del 5 % anual.", en: "Starting from zero, with a 5% real annual return." },
+      series: [
+        { key: "anos", label: { es: "Años necesarios", en: "Years needed" } },
+      ],
+      data: [
+        { label: { es: "10 %", en: "10%" }, anos: 43 },
+        { label: { es: "20 %", en: "20%" }, anos: 32 },
+        { label: { es: "30 %", en: "30%" }, anos: 25 },
+        { label: { es: "40 %", en: "40%" }, anos: 20 },
+        { label: { es: "50 %", en: "50%" }, anos: 16 },
+        { label: { es: "60 %", en: "60%" }, anos: 12 },
+      ],
+    },
+  ],
+
+  "revision-financiera-20-minutos": [
+    {
+      id: "tasa-ahorro-revisiones",
+      kind: "area",
+      unit: "percent",
+      after: 1,
+      title: { es: "Tasa de ahorro tras doce revisiones mensuales", en: "Savings rate after twelve monthly reviews" },
+      note: { es: "Caso real: ninguna decisión drástica, doce decisiones pequeñas.", en: "Real case: no drastic decision, twelve small ones." },
+      series: [
+        { key: "tasa", label: { es: "Tasa de ahorro (%)", en: "Savings rate (%)" } },
+      ],
+      data: [
+        { label: { es: "Mes 1", en: "Mes 1" }, tasa: 14 },
+        { label: { es: "Mes 3", en: "Mes 3" }, tasa: 16 },
+        { label: { es: "Mes 5", en: "Mes 5" }, tasa: 18 },
+        { label: { es: "Mes 7", en: "Mes 7" }, tasa: 19 },
+        { label: { es: "Mes 9", en: "Mes 9" }, tasa: 21 },
+        { label: { es: "Mes 12", en: "Mes 12" }, tasa: 23 },
+      ],
+    },
+    {
+      id: "tiempo-vs-impacto",
+      kind: "bar",
+      unit: "money",
+      after: 3,
+      title: { es: "Impacto anual estimado de cada bloque de la revisión", en: "Estimated annual impact of each review block" },
+      note: { es: "Euros al año liberados por cada tarea de los veinte minutos.", en: "Euros per year freed by each task inside the twenty minutes." },
+      series: [
+        { key: "impacto", label: { es: "€ al año", en: "€ per year" } },
+      ],
+      data: [
+        { label: { es: "Gastos fijos", en: "Fixed costs" }, impacto: 1450 },
+        { label: { es: "Suscripciones", en: "Subscriptions" }, impacto: 620 },
+        { label: { es: "Comisiones", en: "Fees" }, impacto: 780 },
+        { label: { es: "Refinanciación", en: "Refinancing" }, impacto: 1900 },
+      ],
+    },
+  ],
+
   "boring-business-comprar-libertad-financiera": [
     {
       id: "capital-vs-caja",
@@ -1758,6 +2096,153 @@ export type BlogQuote = {
 
 /** Expert quotes rendered inside specific articles. */
 export const postQuotes: Record<string, BlogQuote[]> = {
+  "rico-vs-adinerado": [
+    {
+      after: 0,
+      author: "Morgan Housel",
+      role: { es: "Autor de 'La psicología del dinero'", en: "Author of 'The Psychology of Money'" },
+      text: { es: "La riqueza es lo que no ves: son los coches que no se compraron y las mejoras de casa que no se hicieron.", en: "Wealth is what you don't see: it's the cars not purchased and the home upgrades not made." },
+    },
+    {
+      after: 2,
+      author: "Naval Ravikant",
+      role: { es: "Inversor y cofundador de AngelList", en: "Investor and AngelList co-founder" },
+      text: { es: "Buscas libertad, no dinero. El dinero es solo la herramienta para comprar tu tiempo.", en: "You want freedom, not money. Money is just the tool that buys back your time." },
+    },
+    {
+      after: 4,
+      author: "Vicki Robin",
+      role: { es: "Coautora de 'La bolsa o la vida'", en: "Co-author of 'Your Money or Your Life'" },
+      text: { es: "El dinero es energía vital: lo cambias por horas de tu vida, así que pregúntate siempre cuántas horas cuesta realmente lo que compras.", en: "Money is life energy: you trade hours of your life for it, so always ask how many hours something really costs." },
+    },
+  ],
+
+  "calcular-patrimonio-neto-real": [
+    {
+      after: 0,
+      author: "Thomas J. Stanley",
+      role: { es: "Autor de 'El millonario de la puerta de al lado'", en: "Author of 'The Millionaire Next Door'" },
+      text: { es: "La riqueza no es lo mismo que el ingreso. Ganar mucho y no acumular nada solo significa que vives bien hoy y pobre mañana.", en: "Wealth is not the same as income. Earning a lot and accumulating nothing simply means you live well today and poor tomorrow." },
+    },
+    {
+      after: 3,
+      author: "Peter Drucker",
+      role: { es: "Padre de la gestión moderna", en: "Father of modern management" },
+      text: { es: "Lo que no se mide, no se puede gestionar.", en: "What gets measured gets managed." },
+    },
+    {
+      after: 6,
+      author: "Charlie Munger",
+      role: { es: "Vicepresidente de Berkshire Hathaway", en: "Vice Chairman of Berkshire Hathaway" },
+      text: { es: "Los primeros 100.000 dólares son los más difíciles. Consíguelos como sea: a partir de ahí el interés compuesto trabaja para ti.", en: "The first $100,000 is the hardest. Get it by any means: after that, compounding works for you." },
+    },
+  ],
+
+  "runway-personal": [
+    {
+      after: 0,
+      author: "Ramit Sethi",
+      role: { es: "Autor de 'Te enseñaré a ser rico'", en: "Author of 'I Will Teach You To Be Rich'" },
+      text: { es: "Un colchón grande no es miedo: es la razón por la que puedes rechazar un mal trabajo y esperar al bueno.", en: "A big cushion isn't fear: it's the reason you can turn down a bad job and wait for the right one." },
+    },
+    {
+      after: 2,
+      author: "Nassim Nicholas Taleb",
+      role: { es: "Autor de 'Antifrágil'", en: "Author of 'Antifragile'" },
+      text: { es: "La verdadera libertad es no tener que responder que sí por necesidad económica.", en: "Real freedom is never having to say yes out of financial necessity." },
+    },
+    {
+      after: 4,
+      author: "Vicki Robin",
+      role: { es: "Coautora de 'La bolsa o la vida'", en: "Co-author of 'Your Money or Your Life'" },
+      text: { es: "Cada euro que no gastas compra un trozo de tu tiempo futuro.", en: "Every euro you don't spend buys back a piece of your future time." },
+    },
+  ],
+
+  "portafolio-vs-sp500": [
+    {
+      after: 0,
+      author: "John C. Bogle",
+      role: { es: "Fundador de Vanguard", en: "Founder of Vanguard" },
+      text: { es: "En la inversión, obtienes exactamente aquello por lo que no pagas: cada punto de comisión sale directamente de tu rentabilidad.", en: "In investing, you get precisely what you don't pay for: every point of fees comes straight out of your return." },
+    },
+    {
+      after: 2,
+      author: "Warren Buffett",
+      role: { es: "Presidente de Berkshire Hathaway", en: "Chairman of Berkshire Hathaway" },
+      text: { es: "Un fondo indexado de bajo coste al S&P 500 es la mejor inversión que puede hacer la inmensa mayoría de los inversores.", en: "A low-cost S&P 500 index fund is the best investment the vast majority of investors can make." },
+    },
+    {
+      after: 4,
+      author: "Charlie Munger",
+      role: { es: "Vicepresidente de Berkshire Hathaway", en: "Vice Chairman of Berkshire Hathaway" },
+      text: { es: "La primera regla del interés compuesto: nunca lo interrumpas innecesariamente.", en: "The first rule of compounding: never interrupt it unnecessarily." },
+    },
+  ],
+
+  "clasificacion-automatica-gastos-ia": [
+    {
+      after: 0,
+      author: "Peter Drucker",
+      role: { es: "Padre de la gestión moderna", en: "Father of modern management" },
+      text: { es: "No puedes mejorar lo que no puedes ver con claridad.", en: "You cannot improve what you cannot clearly see." },
+    },
+    {
+      after: 2,
+      author: "Ramit Sethi",
+      role: { es: "Autor de 'Te enseñaré a ser rico'", en: "Author of 'I Will Teach You To Be Rich'" },
+      text: { es: "Gasta sin culpa en lo que amas, y recorta sin piedad en todo lo demás. Para eso necesitas saber qué es cada cosa.", en: "Spend extravagantly on what you love and cut mercilessly on everything else. For that you need to know which is which." },
+    },
+    {
+      after: 4,
+      author: "Morgan Housel",
+      role: { es: "Autor de 'La psicología del dinero'", en: "Author of 'The Psychology of Money'" },
+      text: { es: "La mayoría de los errores financieros no vienen de la falta de información, sino de no mirar los datos que ya tienes.", en: "Most financial mistakes don't come from missing information, but from not looking at the data you already have." },
+    },
+  ],
+
+  "numero-libertad-financiera": [
+    {
+      after: 0,
+      author: "William Bengen",
+      role: { es: "Creador de la regla del 4 %", en: "Creator of the 4% rule" },
+      text: { es: "La tasa de retiro segura no es una promesa: es un margen de seguridad que te permite dormir tranquilo durante treinta años.", en: "The safe withdrawal rate isn't a promise: it's a margin of safety that lets you sleep for thirty years." },
+    },
+    {
+      after: 2,
+      author: "Pete Adeney (Mr. Money Mustache)",
+      role: { es: "Referente del movimiento FIRE", en: "FIRE movement figurehead" },
+      text: { es: "Tu tiempo hasta la jubilación depende de una sola variable: el porcentaje de tu ingreso que ahorras.", en: "Your time to retirement depends on one variable only: the percentage of your income that you save." },
+    },
+    {
+      after: 5,
+      author: "Morgan Housel",
+      role: { es: "Autor de 'La psicología del dinero'", en: "Author of 'The Psychology of Money'" },
+      text: { es: "Tener el control de tu tiempo es el mayor dividendo que paga el dinero.", en: "Controlling your time is the highest dividend money pays." },
+    },
+  ],
+
+  "revision-financiera-20-minutos": [
+    {
+      after: 0,
+      author: "James Clear",
+      role: { es: "Autor de 'Hábitos atómicos'", en: "Author of 'Atomic Habits'" },
+      text: { es: "No te elevas al nivel de tus objetivos: caes al nivel de tus sistemas.", en: "You do not rise to the level of your goals: you fall to the level of your systems." },
+    },
+    {
+      after: 2,
+      author: "Charlie Munger",
+      role: { es: "Vicepresidente de Berkshire Hathaway", en: "Vice Chairman of Berkshire Hathaway" },
+      text: { es: "Cada día intenta acostarte siendo un poco más sabio que cuando te levantaste. Poco a poco, avanzas muchísimo.", en: "Each day try to go to bed a little wiser than when you woke up. Little by little, you get very far." },
+    },
+    {
+      after: 4,
+      author: "Ramit Sethi",
+      role: { es: "Autor de 'Te enseñaré a ser rico'", en: "Author of 'I Will Teach You To Be Rich'" },
+      text: { es: "Automatiza lo aburrido y dedica tu atención a las pocas decisiones que de verdad mueven la aguja.", en: "Automate the boring parts and spend your attention on the few decisions that actually move the needle." },
+    },
+  ],
+
   "boring-business-comprar-libertad-financiera": [
     {
       after: 0,
