@@ -1,6 +1,6 @@
-import { Fragment } from "react";
+import { Fragment, type ReactNode } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Clock, ExternalLink, HelpCircle, Link2, List, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, ExternalLink, HelpCircle, List, Sparkles } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -11,7 +11,7 @@ import { getAuthor } from "@/lib/blog-authors";
 import { BlogSidebar } from "@/components/blog-sidebar";
 import { postCategory } from "@/lib/blog-categories";
 import { absoluteUrl, buildArticleJsonLd, buildBreadcrumbJsonLd, buildFaqJsonLd, getPostFaqs, postIsoDate } from "@/lib/blog-jsonld";
-import { getPostLinks } from "@/lib/blog-links";
+import { getPostLinks, type PostLinks } from "@/lib/blog-links";
 
 
 export const Route = createFileRoute("/blog/$slug")({
@@ -71,6 +71,90 @@ function BlogArticle() {
   return <BlogArticleView slug={slug} />;
 }
 
+type InlineCandidate = {
+  key: string;
+  needles: string[];
+  render: (matched: string) => ReactNode;
+};
+
+/** Full label plus a shorter "core" variant (last 3 words) to maximise matches. */
+function needleVariants(label: string): string[] {
+  const words = label.split(/\s+/);
+  const variants = [label];
+  if (words.length > 3) variants.push(words.slice(-3).join(" "));
+  return variants;
+}
+
+function linkifyInline(
+  text: string,
+  candidates: InlineCandidate[],
+  used: Set<string>,
+): ReactNode {
+  const available = candidates.filter((c) => !used.has(c.key));
+  let best: { idx: number; len: number; cand: InlineCandidate } | null = null;
+  const lower = text.toLowerCase();
+  for (const cand of available) {
+    for (const needle of cand.needles) {
+      const idx = lower.indexOf(needle.toLowerCase());
+      if (idx !== -1 && (!best || idx < best.idx)) {
+        best = { idx, len: needle.length, cand };
+        break;
+      }
+    }
+  }
+  if (!best) return text;
+  used.add(best.cand.key);
+  const before = text.slice(0, best.idx);
+  const matched = text.slice(best.idx, best.idx + best.len);
+  const after = text.slice(best.idx + best.len);
+  return (
+    <>
+      {before}
+      {best.cand.render(matched)}
+      {linkifyInline(after, candidates, used)}
+    </>
+  );
+}
+
+function makeInlineLinker(links: PostLinks | null, lang: "es" | "en") {
+  const candidates: InlineCandidate[] = [];
+  if (links) {
+    for (const l of links.internal) {
+      const to = lang === "en" ? (l.enTo ?? l.to) : l.to;
+      candidates.push({
+        key: `in:${l.to}`,
+        needles: needleVariants(l.label[lang]),
+        render: (m) => (
+          <Link
+            to={to}
+            className="font-medium text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
+          >
+            {m}
+          </Link>
+        ),
+      });
+    }
+    candidates.push({
+      key: "ext",
+      needles: needleVariants(links.external.label[lang]),
+      render: (m) => (
+        <a
+          href={links.external.href}
+          target="_blank"
+          rel="noopener nofollow"
+          className="inline-flex items-baseline gap-1 font-medium text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
+        >
+          {m}
+          <ExternalLink className="h-3 w-3 self-center" />
+        </a>
+      ),
+    });
+  }
+  const used = new Set<string>();
+  return (text: string): ReactNode =>
+    candidates.length === 0 ? text : linkifyInline(text, candidates, used);
+}
+
 export function BlogArticleView({ slug }: { slug: string }) {
   const t = useT();
   const { lang } = useLanguage();
@@ -84,6 +168,7 @@ export function BlogArticleView({ slug }: { slug: string }) {
   const author = getAuthor(post.slug);
   const faqs = getPostFaqs(post.slug);
   const links = getPostLinks(post.slug);
+  const linkify = makeInlineLinker(links, lang);
 
   // Cumulative paragraph count after each section
   const cumulative: number[] = [];
@@ -166,7 +251,7 @@ export function BlogArticleView({ slug }: { slug: string }) {
           </nav>
         )}
 
-        <p className="mt-8 text-base leading-relaxed text-muted-foreground">{post.intro[lang]}</p>
+        <p className="mt-8 text-base leading-relaxed text-muted-foreground">{linkify(post.intro[lang])}</p>
 
         <article className="mt-10 space-y-10">
           {post.sections.map((section, i) => (
@@ -176,7 +261,7 @@ export function BlogArticleView({ slug }: { slug: string }) {
                 <div className="mt-3 space-y-4">
                   {section.paragraphs.map((p) => (
                     <p key={p.en} className="text-[15px] leading-relaxed text-muted-foreground">
-                      {p[lang]}
+                      {linkify(p[lang])}
                     </p>
                   ))}
                 </div>
@@ -212,7 +297,7 @@ export function BlogArticleView({ slug }: { slug: string }) {
                     <h3 className="font-display text-base font-semibold tracking-tight">{sub.heading[lang]}</h3>
                     {sub.paragraphs?.map((p) => (
                       <p key={p.en} className="mt-2 text-[15px] leading-relaxed text-muted-foreground">
-                        {p[lang]}
+                        {linkify(p[lang])}
                       </p>
                     ))}
                     {sub.bullets && (
@@ -338,37 +423,6 @@ export function BlogArticleView({ slug }: { slug: string }) {
           </section>
         )}
 
-        {links && (
-          <section className="surface mt-10 p-6" aria-label={t("Enlaces relacionados", "Related links")}>
-            <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-primary">
-              <Link2 className="h-3.5 w-3.5" /> {t("Sigue profundizando", "Go deeper")}
-            </p>
-            <ul className="mt-4 space-y-3">
-              {links.internal.map((l) => (
-                <li key={l.to} className="text-[15px] leading-snug">
-                  <a
-                    href={lang === "en" ? (l.enTo ?? l.to) : l.to}
-                    className="font-medium text-primary underline-offset-4 hover:underline"
-                  >
-                    {l.label[lang]}
-                  </a>
-                  <span className="text-muted-foreground"> — {l.note[lang]}</span>
-                </li>
-              ))}
-              <li className="border-t border-border/50 pt-3 text-[15px] leading-snug">
-                <a
-                  href={links.external.href}
-                  target="_blank"
-                  rel="noopener nofollow"
-                  className="inline-flex items-center gap-1.5 font-medium text-foreground underline-offset-4 hover:text-primary hover:underline"
-                >
-                  {links.external.label[lang]} <ExternalLink className="h-3.5 w-3.5" />
-                </a>
-                <span className="text-muted-foreground"> — {links.external.note[lang]}</span>
-              </li>
-            </ul>
-          </section>
-        )}
 
 
         <aside className="surface glow mt-12 flex gap-3 p-6">
