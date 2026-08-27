@@ -63,7 +63,7 @@ export function useFixedExpenses() {
       id: f.key as string,
       name: `${f.emoji} ${lang === "en" ? f.en : f.es}`,
       amount: Number(profile[f.key]) || 0,
-    })).filter((i) => i.amount > 0);
+    })).filter((i) => i.amount > 0 || zeroHold.current.has(i.id));
     setItems((prev) => {
       const custom = prev.filter((i) => !onboardingKeys.has(i.id));
       return [...fromOnboarding, ...custom];
