@@ -49,13 +49,11 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
         <ul className="mt-4 space-y-1">
           {blogCategories.map((c) => {
             const count = categoryCount(c.id);
-            const isKids = c.id === "ninos";
-            const href = isKids ? "/demo-ninos" : c.href ? c.href[lang] : `${blogHref}?cat=${c.id}`;
+            const href = `${blogHref}?cat=${c.id}`;
             return (
               <li key={c.id}>
                 <a
                   href={href}
-                  {...(isKids ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   className={`flex items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-elevated hover:text-primary ${
                     activeCategory === c.id ? "bg-elevated text-primary" : "text-muted-foreground"
                   }`}
