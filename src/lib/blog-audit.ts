@@ -62,7 +62,7 @@ export function postWordCount(post: BlogPost, lang: Lang): number {
 
 export function postImageCount(post: BlogPost): number {
   const sectionImages = post.sections.filter((s) => Boolean(s.image)).length;
-  const extraImage = postExtras[post.slug]?.caseImage ? 1 : 0;
+  const extraImage = postExtras[post.slug]?.image2 ? 1 : 0;
   return 1 + sectionImages + extraImage;
 }
 
@@ -78,8 +78,9 @@ export function auditPost(post: BlogPost, lang: Lang): PostAudit {
   const charts = postCharts[post.slug]?.length ?? 0;
   const quotes = postQuotes[post.slug]?.length ?? 0;
   const table = Boolean(postExtras[post.slug]?.table);
-  const faqs = getPostFaqs(post.slug, lang)?.length ?? 0;
-  const links = getPostLinks(post.slug)?.length ?? 0;
+  const faqs = getPostFaqs(post.slug)?.length ?? 0;
+  const postLinks = getPostLinks(post.slug);
+  const links = postLinks ? postLinks.internal.length + 1 : 0;
   const altOk = Boolean(post.imageAlt?.[lang]) && post.sections.every((s) => !s.image || Boolean(s.imageAlt?.[lang]));
   const metaOk =
     post.title[lang].length > 0 &&
