@@ -855,7 +855,19 @@ function RanksStatus({
 
 /** Indexación acelerada (IndexNow, Google, agregadores) y difusión del feed ES/EN. */
 function DistributionPanel() {
-  const run = useMutation({ mutationFn: () => runIndexingDistribution({ data: {} }) });
+  // Al abrir el tab se difunden automáticamente los artículos que aún no se han enviado.
+  const auto = useQuery({
+    queryKey: ["distribution-sync"],
+    queryFn: () => syncNewPostsDistribution(),
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+  const run = useMutation({ mutationFn: () => runIndexingDistribution({ data: { force: true } }) });
+
+  const data = run.data ?? auto.data;
+  const links = data?.links ?? [];
+  const report = data?.report ?? null;
+  const newSlugs = data?.newSlugs ?? [];
 
   const channels = [
     {
@@ -884,13 +896,21 @@ function DistributionPanel() {
           <div className="mr-auto">
             <h3 className="font-semibold">Indexación acelerada y difusión off-site</h3>
             <p className="text-sm text-muted-foreground">
-              Enlaces limpios y avisos a buscadores. Nada de granjas de enlaces: Google las penaliza.
+              Automático: cada artículo nuevo se difunde solo. Nada de granjas de enlaces.
             </p>
           </div>
-          <Button onClick={() => run.mutate()} disabled={run.isPending}>
-            {run.isPending ? "Difundiendo…" : "Difundir ahora"}
+          <Button onClick={() => run.mutate()} disabled={run.isPending || auto.isFetching}>
+            {run.isPending ? "Difundiendo…" : "Reenviar todo"}
           </Button>
         </div>
+
+        <p className="mb-4 text-sm text-muted-foreground">
+          {auto.isFetching && !run.isPending
+            ? "Comprobando artículos nuevos…"
+            : newSlugs.length
+              ? `${newSlugs.length} artículo(s) difundido(s) ahora: ${newSlugs.join(", ")}`
+              : "Todos los artículos publicados ya están difundidos."}
+        </p>
 
         <div className="grid gap-3 sm:grid-cols-2">
           {channels.map((channel) => (
@@ -902,16 +922,66 @@ function DistributionPanel() {
         </div>
       </Panel>
 
-      {run.isError && (
+      {(run.isError || auto.isError) && (
         <Panel className="p-6 text-sm text-destructive">
-          {run.error instanceof Error ? run.error.message : "No se pudo ejecutar la difusión."}
+          {(run.error ?? auto.error) instanceof Error
+            ? (run.error ?? auto.error as Error).message
+            : "No se pudo ejecutar la difusión."}
         </Panel>
       )}
 
-      {run.data && (
+      {links.length > 0 && (
+        <Panel className="p-6">
+          <h3 className="mb-4 font-semibold">Enlaces difundidos ({links.length})</h3>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Artículo</TableHead>
+                <TableHead>Idioma</TableHead>
+                <TableHead>Enlace</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead>Fecha</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {links.map((link) => (
+                <TableRow key={`${link.slug}-${link.lang}`}>
+                  <TableCell className="font-medium">{link.title}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{link.lang.toUpperCase()}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+                    >
+                      {link.url.replace("https://", "")}
+                      <ArrowUpRight className="h-3.5 w-3.5" />
+                    </a>
+                  </TableCell>
+                  <TableCell>
+                    {link.ok ? (
+                      <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                    ) : (
+                      <XCircle className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </TableCell>
+                  <TableCell className="text-sm text-muted-foreground">
+                    {new Date(link.distributedAt).toLocaleDateString("es-ES")}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Panel>
+      )}
+
+      {report && (
         <Panel className="p-6">
           <p className="mb-4 text-sm text-muted-foreground">
-            {run.data.urls} URLs enviadas · {new Date(run.data.ranAt).toLocaleString("es-ES")}
+            {report.urls} URLs enviadas · {new Date(report.ranAt).toLocaleString("es-ES")}
           </p>
           <Table>
             <TableHeader>
@@ -922,7 +992,7 @@ function DistributionPanel() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {run.data.results.map((result) => (
+              {report.results.map((result) => (
                 <TableRow key={result.channel}>
                   <TableCell className="font-medium">{result.channel}</TableCell>
                   <TableCell>
@@ -942,3 +1012,4 @@ function DistributionPanel() {
     </>
   );
 }
+
