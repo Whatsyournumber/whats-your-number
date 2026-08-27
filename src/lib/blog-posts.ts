@@ -1073,12 +1073,12 @@ export const blogPosts: BlogPost[] = [
           {
         heading: { es: "Caso real: 900 € al mes que no aparecían en ninguna categoría", en: "Real case: €900 a month hiding outside every category" },
         paragraphs: [
-          { es: "Nuria, freelance, subía sus extractos y clasificaba a mano una vez al trimestre; siempre acababa con un 40 % en «otros». Al automatizar la categorización con IA, ese cajón se redujo al 4 % y apareció el patrón: 900 € al mes entre suscripciones olvidadas, comida a domicilio y transporte de última hora.", en: "Nuria, a freelancer, uploaded statements and categorized by hand once a quarter; she always ended with 40% in \\u201cother\\u201d. Automating categorization with AI shrank that bucket to 4% and revealed the pattern: €900 a month across forgotten subscriptions, food delivery and last-minute transport." },
+          { es: "Nuria, freelance, subía sus extractos y clasificaba a mano una vez al trimestre; siempre acababa con un 40 % en «otros». Al automatizar la categorización con IA, ese cajón se redujo al 4 % y apareció el patrón: 900 € al mes entre suscripciones olvidadas, comida a domicilio y transporte de última hora.", en: "Nuria, a freelancer, uploaded statements and categorized by hand once a quarter; she always ended with 40% in “other”. Automating categorization with AI shrank that bucket to 4% and revealed the pattern: €900 a month across forgotten subscriptions, food delivery and last-minute transport." },
           { es: "No eliminó todo: cortó 430 € que no le aportaban nada y mantuvo el resto sin culpa. Ese recorte, invertido al 7 %, adelanta su libertad financiera casi tres años. La IA no le dijo qué gastar; le enseñó dónde estaba mirando mal.", en: "She did not cut everything: she removed €430 that gave her nothing and kept the rest guilt-free. That cut, invested at 7%, brings her financial freedom forward by almost three years. The AI did not tell her what to spend; it showed her where she was looking wrong." },
         ],
         image: caseAiExpensesImg,
         imageAlt: { es: "Freelance revisando en el móvil sus gastos clasificados automáticamente con inteligencia artificial", en: "Freelancer reviewing on her phone the expenses automatically categorized with artificial intelligence" },
-        imageCaption: { es: "Cuando la categoría «otros» baja del 5 %, empiezas a decidir con datos reales.", en: "When the \\u201cother\\u201d bucket drops below 5%, you start deciding with real data." },
+        imageCaption: { es: "Cuando la categoría «otros» baja del 5 %, empiezas a decidir con datos reales.", en: "When the “other” bucket drops below 5%, you start deciding with real data." },
       },
     ],
       },
