@@ -2530,7 +2530,7 @@ function FamilyProfiles() {
 }
 
 
-function KidsFinanceLanding() {
+export function KidsFinanceLanding() {
   const t = useT();
   const liveCount = useLiveCount(1200);
 
