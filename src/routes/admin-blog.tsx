@@ -526,65 +526,11 @@ function BlogBackOffice() {
           </div>
         </TabsContent>
 
-        {/* -------------------------------- Países ------------------------------- */}
-        <TabsContent value="paises" className="space-y-6">
-          <Panel className="p-6">
-            <h2 className="mb-4 text-lg font-semibold">Países de nuestros lectores (analítica propia)</h2>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>País</TableHead>
-                  <TableHead className="text-right">Visitas</TableHead>
-                  <TableHead className="text-right">%</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {(traffic.data?.byCountry ?? []).map((row) => (
-                  <TableRow key={row.country}>
-                    <TableCell className="font-medium">{countryName(row.country)}</TableCell>
-                    <TableCell className="text-right">{row.views}</TableCell>
-                    <TableCell className="text-right text-muted-foreground">
-                      {traffic.data?.totalViews
-                        ? `${((row.views / traffic.data.totalViews) * 100).toFixed(1)} %`
-                        : "—"}
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {(traffic.data?.byCountry.length ?? 0) === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={3} className="text-center text-muted-foreground">
-                      Sin visitas registradas todavía.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </Panel>
-
-          {gscOk && gscOk.countries.length > 0 && (
-            <Panel className="p-6">
-              <h2 className="mb-4 text-lg font-semibold">Países según Google Search Console</h2>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>País</TableHead>
-                    <TableHead className="text-right">Clics</TableHead>
-                    <TableHead className="text-right">Impresiones</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {gscOk.countries.map((row) => (
-                    <TableRow key={row.keys[0]}>
-                      <TableCell className="font-medium">{countryName(row.keys[0] ?? "")}</TableCell>
-                      <TableCell className="text-right">{row.clicks}</TableCell>
-                      <TableCell className="text-right">{row.impressions}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Panel>
-          )}
+        {/* ---------------------------- IA & LLM deep ---------------------------- */}
+        <TabsContent value="llm" className="space-y-6">
+          <LlmPanel days={days} enabled={isAdmin} countryLabel={countryName} />
         </TabsContent>
+
 
         {/* ------------------------------ Checklist ------------------------------ */}
         <TabsContent value="checklist" className="space-y-6">
