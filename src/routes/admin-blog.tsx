@@ -35,6 +35,8 @@ import { useRoles } from "@/hooks/use-role";
 import { blogPosts } from "@/lib/blog-posts";
 import { auditAllPosts, MIN_WORDS, type PostAudit } from "@/lib/blog-audit";
 import { getBlogSearchConsole, getBlogTraffic, getKeywordRankings } from "@/lib/blog-analytics.functions";
+import { lovableAnalytics } from "@/lib/lovable-analytics-snapshot";
+
 import type { GscRow, GscSummary, KeywordRank, KeywordRankings } from "@/lib/blog-analytics.server";
 import {
   allTargetKeywords,
