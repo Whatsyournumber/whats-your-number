@@ -101,11 +101,13 @@ export function useFixedExpenses() {
         if (typeof patch.amount === "number") {
           const amount = Number.isFinite(patch.amount) ? Math.max(0, patch.amount) : 0;
           if (saveTimers.current[id]) clearTimeout(saveTimers.current[id]);
-          if (amount > 0) {
-            saveTimers.current[id] = setTimeout(() => {
-              void save({ [id]: amount } as Partial<Profile>).catch(() => setItems(items));
-            }, 500);
-          }
+          // El 0 también se persiste (p. ej. dejaste de pagar el gimnasio);
+          // zeroHold mantiene la fila visible aunque el perfil pase a 0.
+          if (amount > 0) zeroHold.current.delete(id);
+          else zeroHold.current.add(id);
+          saveTimers.current[id] = setTimeout(() => {
+            void save({ [id]: amount } as Partial<Profile>).catch(() => setItems(items));
+          }, 500);
         }
         return;
       }
