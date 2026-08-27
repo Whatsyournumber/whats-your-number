@@ -34,7 +34,7 @@ function render(post: BlogPost, lang: "es" | "en") {
  * /llms-full.txt — texto completo de todos los artículos (ES + EN) en texto
  * plano para que los asistentes de IA puedan citarlos con atribución.
  */
-export const Route = createFileRoute("/llms-full[.]txt")({
+export const Route = createFileRoute("/llms-full.txt")({
   server: {
     handlers: {
       GET: () => {

@@ -139,7 +139,45 @@ export async function pingWebSub(lang: "es" | "en"): Promise<ChannelResult> {
   }
 }
 
+/* ------------------------ Superficies LLM (GEO / AEO) ---------------------- */
+
+/** URLs que consumen los rastreadores de IA para citar el contenido. */
+export const LLM_SURFACES = [
+  `${SITE}/llms.txt`,
+  `${SITE}/llms-full.txt`,
+  `${SITE}/api/public/rss`,
+  `${SITE}/api/public/rss?lang=en`,
+];
+
+/**
+ * Refresca las superficies que leen los modelos (llms.txt, llms-full.txt y los
+ * feeds) y las reenvía a IndexNow, que es la vía real por la que ChatGPT
+ * Search, Copilot y Perplexity descubren contenido nuevo en minutos.
+ */
+export async function refreshLlmSurfaces(urls: string[]): Promise<ChannelResult> {
+  const warmed = await Promise.all(
+    LLM_SURFACES.map(async (surface) => {
+      try {
+        const response = await fetch(surface, {
+          headers: { "Cache-Control": "no-cache", "User-Agent": "WhatsYourNumberGEO/1.0" },
+        });
+        return response.ok;
+      } catch {
+        return false;
+      }
+    }),
+  );
+  const submitted = await submitIndexNow([...LLM_SURFACES, ...urls]);
+  const okCount = warmed.filter(Boolean).length;
+  return {
+    channel: "Superficies LLM (llms.txt · feeds · IndexNow IA)",
+    ok: okCount > 0 && submitted.ok,
+    detail: `${okCount}/${LLM_SURFACES.length} superficies actualizadas · ${submitted.detail}`,
+  };
+}
+
 /* --------------------------- Google Search Console ------------------------- */
+
 
 const GATEWAY = "https://connector-gateway.lovable.dev/google_search_console";
 
