@@ -21,6 +21,8 @@ import boringVendingImg from "@/assets/blog/boring-vending.jpg";
 import boringFlipImg from "@/assets/blog/boring-house-flipping.jpg";
 import boringLaundryImg from "@/assets/blog/boring-laundromat.jpg";
 import boringStorageImg from "@/assets/blog/boring-self-storage.jpg";
+import caseKids100kImg from "@/assets/blog/case-kids-100k.jpg";
+import caseBoringOwnerImg from "@/assets/blog/case-boring-owner.jpg";
 import caseNetWorthImg from "@/assets/blog/case-net-worth.jpg";
 import caseRunwayImg from "@/assets/blog/case-runway.jpg";
 import casePortfolioImg from "@/assets/blog/case-portfolio.jpg";
@@ -336,6 +338,16 @@ export const blogPosts: BlogPost[] = [
           { es: "Usa esa caja para adquirir el siguiente y repite el ciclo.", en: "Use that cash to acquire the next one and repeat the cycle." },
         ],
       },
+      {
+        heading: { es: "Caso real: 118.000 € para comprar una lavandería y 4.900 € al mes de caja", en: "Real case: €118,000 to buy a laundromat and €4,900 a month in cash flow" },
+        paragraphs: [
+          { es: "Rubén, ingeniero de 36 años, compró en 2023 una lavandería de barrio a un dueño que se jubilaba: 118.000 € (35.000 € propios y el resto financiado), 6.100 € de facturación mensual y 4.900 € de beneficio operativo tras costes.", en: "Rubén, a 36-year-old engineer, bought a neighbourhood laundromat in 2023 from a retiring owner: €118,000 (€35,000 of his own money, the rest financed), €6,100 monthly revenue and €4,900 operating profit after costs." },
+          { es: "En doce meses digitalizó el pago, instaló sensores de ocupación y automatizó el marketing local: la facturación subió un 22 % con las mismas máquinas. Reinvierte 2.500 € al mes en su cartera indexada, lo que adelanta su libertad financiera más de nueve años frente a su plan anterior de solo ahorrar la nómina.", en: "In twelve months he digitized payments, installed occupancy sensors and automated local marketing: revenue rose 22% with the same machines. He reinvests €2,500 a month into his index portfolio, pulling his financial freedom forward by over nine years compared with his previous salary-only plan." },
+        ],
+        image: caseBoringOwnerImg,
+        imageAlt: { es: "Nuevo propietario dentro de la lavandería automática que acaba de comprar como boring business", en: "New owner standing inside the self-service laundromat he just bought as a boring business" },
+        imageCaption: { es: "Comprar caja existente y modernizarla suele batir a inventar un negocio desde cero.", en: "Buying existing cash flow and modernizing it usually beats inventing a business from scratch." },
+      },
     ],
     takeaway: {
       es: "No necesitas la próxima gran idea: necesitas activos que generen caja. Empieza por el negocio que te enseña a vender, reinvierte todo, compra el siguiente y mide cada mes cuántos años le quitas a tu número de libertad financiera.",
@@ -468,6 +480,16 @@ export const blogPosts: BlogPost[] = [
             en: "Plus one cultural, not legal, condition: to unlock each tranche they must present a one-page written plan with the use of the money and the expected return. It is not about control, it is about making the first capital decision of their life a reasoned one. In WhatsYourNumber you can create their own kids profile, watch the fund grow and work on their first number together.",
           },
         ],
+      },
+      {
+        heading: { es: "Caso real: 210 € al mes desde el nacimiento y 104.000 € a los 18", en: "Real case: €210 a month from birth and €104,000 at 18" },
+        paragraphs: [
+          { es: "Cuando nació Mateo, sus padres abrieron una cuenta indexada al S&P 500 a su nombre y automatizaron 210 € el día 1 de cada mes. Subieron la aportación un 5 % cada enero y destinaron los regalos de cumpleaños al mismo fondo.", en: "When Mateo was born, his parents opened an S&P 500 index account in his name and automated €210 on the 1st of every month. They raised the contribution 5% each January and routed birthday gifts into the same fund." },
+          { es: "Aportaron unos 58.000 € en total. Con una rentabilidad media del 8 %, el saldo al cumplir 18 años fue de 104.000 €: casi la mitad del dinero lo puso el interés compuesto, no la familia. Nunca vendieron durante las tres caídas importantes de esos años, y ese fue el verdadero mérito.", en: "They contributed about €58,000 in total. At an average 8% return, the balance at 18 was €104,000: almost half the money came from compounding, not from the family. They never sold during the three big drawdowns of those years, and that was the real achievement." },
+        ],
+        image: caseKids100kImg,
+        imageAlt: { es: "Padres y su hijo pequeño ahorrando en una hucha junto a un portátil con la evolución de la inversión indexada", en: "Parents and their toddler saving into a piggy bank next to a laptop showing index investment growth" },
+        imageCaption: { es: "58.000 € aportados, 104.000 € entregados: la diferencia la puso el tiempo.", en: "€58,000 contributed, €104,000 handed over: the difference was made by time." },
       },
     ],
     takeaway: {
