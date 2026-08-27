@@ -1260,6 +1260,39 @@ export type BlogExtras = {
 
 /** Second photo + comparative table shown mid-article. */
 export const postExtras: Record<string, BlogExtras> = {
+  "boring-business-comprar-libertad-financiera": {
+    image2: boring2Img,
+    image2Alt: {
+      es: "Propietario a punto de jubilarse entregando las llaves de su taller al comprador joven del negocio",
+      en: "Retiring owner handing the keys of his workshop to the young buyer of the business",
+    },
+    image2Caption: {
+      es: "Millones de pequeños negocios rentables cambiarán de dueño en la próxima década. Esa es la oportunidad.",
+      en: "Millions of profitable small businesses will change hands over the next decade. That is the opportunity.",
+    },
+    table: {
+      title: { es: "Comparativa de los 5 boring businesses", en: "The 5 boring businesses compared" },
+      note: {
+        es: "Rangos orientativos en USD; varían mucho según país, ubicación y estado del negocio comprado.",
+        en: "Indicative ranges in USD; they vary widely by country, location and the condition of the business bought.",
+      },
+      columns: [
+        { es: "Negocio", en: "Business" },
+        { es: "Capital inicial", en: "Upfront capital" },
+        { es: "Tiempo", en: "Timeline" },
+        { es: "Potencial mensual", en: "Monthly potential" },
+        { es: "Automatización", en: "Automation" },
+      ],
+      rows: [
+        { cells: [{ es: "Agencia de growth marketing", en: "Growth marketing agency" }, { es: "0–500 $", en: "$0–500" }, { es: "3–9 meses", en: "3–9 months" }, { es: "3.000–10.000 $", en: "$3,000–10,000" }, { es: "★★★★★", en: "★★★★★" }], highlight: true },
+        { cells: [{ es: "Vending especializado", en: "Specialized vending" }, { es: "2.000–8.000 $", en: "$2,000–8,000" }, { es: "6–18 meses", en: "6–18 months" }, { es: "2.000–15.000 $", en: "$2,000–15,000" }, { es: "★★★★☆", en: "★★★★☆" }] },
+        { cells: [{ es: "House flipping", en: "House flipping" }, { es: "Variable", en: "Variable" }, { es: "12–24 meses", en: "12–24 months" }, { es: "15–30 % por operación", en: "15–30% per deal" }, { es: "★★★☆☆", en: "★★★☆☆" }] },
+        { cells: [{ es: "Lavandería automática", en: "Self-service laundromat" }, { es: "40.000–150.000 $", en: "$40,000–150,000" }, { es: "12–24 meses", en: "12–24 months" }, { es: "5.000–30.000 $", en: "$5,000–30,000" }, { es: "★★★★★", en: "★★★★★" }] },
+        { cells: [{ es: "Self storage", en: "Self storage" }, { es: "150.000 $+", en: "$150,000+" }, { es: "2–5 años", en: "2–5 years" }, { es: "20.000 $+", en: "$20,000+" }, { es: "★★★★★", en: "★★★★★" }] },
+      ],
+    },
+  },
+
   "100k-hijo-18-anos-sp500": {
     image2: kids100k2Img,
     image2Alt: {
