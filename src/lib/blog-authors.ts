@@ -21,7 +21,7 @@ const authors: Record<string, BlogAuthor> = {
     },
   },
   mateo: {
-    name: "Mateo Herrera",
+    name: "Marco Rinaldi",
     photo: author2,
     role: { es: "Editor de inversión", en: "Investing editor" },
     bio: {
@@ -30,7 +30,7 @@ const authors: Record<string, BlogAuthor> = {
     },
   },
   carolina: {
-    name: "Carolina Duarte",
+    name: "Emma Lindström",
     photo: author3,
     role: { es: "Planificadora financiera", en: "Financial planner" },
     bio: {
@@ -38,6 +38,7 @@ const authors: Record<string, BlogAuthor> = {
       en: "Loves finance and honest money conversations. She is passionate about turning wealth planning into simple everyday decisions.",
     },
   },
+
   daniel: {
     name: "Daniel Ortega",
     photo: author4,
