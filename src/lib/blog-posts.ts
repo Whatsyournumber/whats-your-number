@@ -53,6 +53,138 @@ export function sectionId(heading: string) {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: "100k-hijo-18-anos-sp500",
+    image: kids100kImg,
+    imageAlt: {
+      es: "Padre e hija pequeña frente a un portátil con la curva ascendente del S&P 500 y una hucha sobre la mesa",
+      en: "Father and young daughter in front of a laptop showing a rising S&P 500 chart with a piggy bank on the table",
+    },
+    keyword: { es: "ahorrar para tus hijos e invertir en el S&P 500", en: "investing for kids in the S&P 500" },
+    toc: true,
+    readMinutes: 13,
+    tag: { es: "Finanzas para niños", en: "Kids & money" },
+    date: { es: "27 ago 2026", en: "Aug 27, 2026" },
+    title: {
+      es: "Cómo conseguir que tu hijo tenga 100.000 € a los 18 años invirtiendo en el S&P 500",
+      en: "How to give your child €100,000 by age 18 by investing in the S&P 500",
+    },
+    excerpt: {
+      es: "Con 210 € al mes desde que nace, un índice global y cero intervenciones, tu hijo llega a los 18 con seis cifras. Aquí están los números, los años y los errores que lo arruinan.",
+      en: "With €210 a month from birth, one index fund and zero meddling, your child hits six figures at 18. Here are the numbers, the years and the mistakes that ruin it.",
+    },
+    intro: {
+      es: "Regalar dinero a un hijo es fácil; regalarle tiempo invertido es lo que de verdad cambia su vida. Un niño que nace hoy tiene el activo más escaso del mundo financiero: dieciocho años de interés compuesto por delante, y luego otros cincuenta más si no toca el capital. Este artículo responde a una pregunta muy concreta: cuánto hay que aportar cada mes, desde qué edad y en qué instrumento para que tu hijo llegue a los 18 años con al menos 100.000 € invertidos. Verás las cifras exactas según la edad a la que empiezas, qué rentabilidad es razonable esperar del S&P 500, cómo enseñarle a no gastárselo el primer año y qué dicen los inversores más respetados del mundo sobre invertir a muy largo plazo.",
+      en: "Giving a child money is easy; giving them invested time is what actually changes their life. A child born today owns the scarcest asset in finance: eighteen years of compounding ahead, and another fifty after that if the capital is left alone. This article answers one very specific question: how much to contribute each month, from what age and in which instrument, so your child reaches 18 with at least €100,000 invested. You will see the exact figures by starting age, what return is reasonable to expect from the S&P 500, how to teach them not to blow it in the first year, and what the world's most respected investors say about investing for the very long run.",
+    },
+    sections: [
+      {
+        heading: { es: "Por qué 100.000 € a los 18 lo cambia todo", en: "Why €100,000 at 18 changes everything" },
+        paragraphs: [
+          {
+            es: "Cien mil euros a los 18 años no son cien mil euros. Si tu hijo no los toca y siguen invertidos al 7% real, a los 30 años son unos 225.000 €, a los 40 rondan los 443.000 € y a los 60 superan el 1,7 millones sin aportar un solo euro más. Ese capital compra dos cosas que el dinero rara vez compra: opciones y calma. Puede estudiar sin deuda, montar un negocio, mudarse de país o simplemente decir que no a un mal trabajo.",
+            en: "One hundred thousand euros at 18 is not one hundred thousand euros. If your child leaves it invested at a 7% real return, it becomes roughly €225,000 by age 30, about €443,000 by 40 and over €1.7 million by 60 without a single extra contribution. That capital buys two things money rarely buys: options and calm. They can study debt-free, start a business, move abroad or simply say no to a bad job.",
+          },
+          {
+            es: "El objetivo, por tanto, no es que gaste ese dinero a los 18. Es que llegue a la mayoría de edad con una base que ya trabaja sola y con la educación necesaria para no destruirla. Lo primero es matemática; lo segundo es crianza, y es la parte difícil.",
+            en: "The goal, then, is not for them to spend that money at 18. It is to reach adulthood with a base that already works on its own, plus the education needed not to destroy it. The first part is maths; the second is parenting, and that is the hard part.",
+          },
+        ],
+        bullets: [
+          { es: "100.000 € a los 18 = universidad cubierta sin préstamos en la mayoría de países europeos.", en: "€100,000 at 18 = university covered with no loans in most European countries." },
+          { es: "Si no lo toca, ese capital se multiplica por 17 antes de que cumpla 60.", en: "Left untouched, that capital multiplies about 17x before they turn 60." },
+          { es: "El activo real que le regalas no es el dinero: son los años de mercado.", en: "The real asset you gift is not the money: it is the years in the market." },
+        ],
+      },
+      {
+        heading: { es: "Cuánto tienes que aportar cada mes según la edad de tu hijo", en: "How much to contribute monthly by your child's age" },
+        paragraphs: [
+          {
+            es: "Usamos una rentabilidad anual del 8% nominal, que es conservadora frente al histórico del S&P 500 (alrededor del 10% nominal anual desde 1957, y cerca del 7% descontando inflación). Con esa hipótesis, la aportación mensual necesaria para llegar a 100.000 € el día que cumple 18 años depende brutalmente de cuándo empiezas.",
+            en: "We use an 8% nominal annual return, conservative versus the S&P 500's history (around 10% nominal a year since 1957, and close to 7% after inflation). Under that assumption, the monthly contribution needed to reach €100,000 on their 18th birthday depends brutally on when you start.",
+          },
+          {
+            es: "Empezar el mes que nace cuesta unos 210 € al mes. Esperar a que cumpla 6 años sube la cuota a 380 €. Esperar a los 12 la dispara a 900 €. No es que el dinero sea más caro: es que has quemado los años que hacían el trabajo por ti. Cada año de retraso encarece la misma meta entre un 12% y un 20%.",
+            en: "Starting the month they are born costs about €210 a month. Waiting until age 6 raises it to €380. Waiting until 12 pushes it to €900. Money did not get more expensive: you burned the years that were doing the work for you. Every year of delay makes the same goal 12-20% more costly.",
+          },
+        ],
+        bullets: [
+          { es: "Desde 0 años: ~210 €/mes (aportado total: 45.400 €).", en: "From age 0: ~€210/mo (total contributed: €45,400)." },
+          { es: "Desde 3 años: ~285 €/mes (aportado total: 51.300 €).", en: "From age 3: ~€285/mo (total contributed: €51,300)." },
+          { es: "Desde 6 años: ~380 €/mes (aportado total: 54.700 €).", en: "From age 6: ~€380/mo (total contributed: €54,700)." },
+          { es: "Desde 12 años: ~900 €/mes (aportado total: 64.800 €).", en: "From age 12: ~€900/mo (total contributed: €64,800)." },
+        ],
+      },
+      {
+        heading: { es: "Por qué el S&P 500 (y no acciones sueltas)", en: "Why the S&P 500 (and not single stocks)" },
+        paragraphs: [
+          {
+            es: "El S&P 500 agrupa las 500 mayores compañías cotizadas de Estados Unidos y se renueva solo: las empresas que dejan de importar salen del índice y entran las nuevas. Eso convierte un fondo indexado en la apuesta más aburrida y más difícil de batir a 18 años vista. Entre 1957 y hoy ha entregado en torno a un 10% anual nominal, con caídas fuertes por el camino (–37% en 2008, –34% en semanas en 2020) que siempre se recuperaron en horizontes largos.",
+            en: "The S&P 500 holds the 500 largest listed companies in the United States and renews itself: firms that stop mattering drop out and new ones come in. That makes an index fund the most boring and hardest-to-beat bet over an 18-year horizon. From 1957 to today it has delivered around 10% nominal a year, with brutal drawdowns along the way (–37% in 2008, –34% in weeks in 2020) that always recovered over long horizons.",
+          },
+          {
+            es: "Para una cuenta de un niño, la implementación importa poco pero los costes importan mucho. Busca un fondo o ETF indexado al S&P 500 (o, si prefieres diversificar más, a un índice mundial tipo MSCI World o All-Country) con comisión total por debajo del 0,20%, acumulación de dividendos y aportación automática mensual. Un 1% extra de comisión durante 18 años se come más de 15.000 € del resultado final.",
+            en: "For a child's account the implementation matters little, but costs matter a lot. Look for an S&P 500 index fund or ETF (or, if you prefer wider diversification, a global index such as MSCI World or All-Country) with a total fee below 0.20%, accumulating dividends and an automatic monthly contribution. An extra 1% in fees over 18 years eats more than €15,000 of the final result.",
+          },
+        ],
+        bullets: [
+          { es: "Fondo o ETF indexado, acumulación, coste total <0,20%.", en: "Index fund or ETF, accumulating, total cost <0.20%." },
+          { es: "Aportación automática el mismo día de cada mes. Sin decidir, sin dudar.", en: "Automatic contribution the same day every month. No decisions, no doubts." },
+          { es: "Nada de acciones sueltas ni cripto en la cuenta del objetivo. Eso va aparte y con dinero simbólico.", en: "No single stocks or crypto in the goal account. Keep that separate and symbolic." },
+          { es: "Cuenta a nombre del menor o cuenta tuya etiquetada: lo importante es que nunca se mezcle con tu día a día.", en: "A minor's account or an earmarked account of yours: the key is never mixing it with daily money." },
+        ],
+      },
+      {
+        heading: { es: "Lo que dicen los que llevan décadas en esto", en: "What people who have done this for decades say" },
+        paragraphs: [
+          {
+            es: "No hace falta inventar una estrategia nueva. Los inversores que más dinero han generado para familias corrientes llevan cincuenta años repitiendo el mismo mensaje: compra el mercado entero, hazlo barato, hazlo siempre y no lo toques. John Bogle fundó Vanguard sobre esa idea; Warren Buffett dejó instrucciones para que el 90% del dinero de su familia se invierta en un fondo indexado al S&P 500 de bajo coste.",
+            en: "There is no need to invent a new strategy. The investors who have created the most wealth for ordinary families have repeated the same message for fifty years: buy the whole market, buy it cheaply, buy it always and do not touch it. John Bogle built Vanguard on that idea; Warren Buffett left instructions for 90% of his family's money to go into a low-cost S&P 500 index fund.",
+          },
+          {
+            es: "El otro consenso, menos citado, es sobre la conducta: el mayor enemigo del plan no es el mercado, es el adulto que lo interrumpe. Morgan Housel lo resume diciendo que invertir bien no consiste en tomar buenas decisiones, sino en no interrumpir el interés compuesto innecesariamente.",
+            en: "The other, less quoted consensus is about behaviour: the plan's biggest enemy is not the market, it is the adult who interrupts it. Morgan Housel puts it simply: investing well is not about making great decisions, it is about not interrupting compounding unnecessarily.",
+          },
+        ],
+      },
+      {
+        heading: { es: "Los cuatro errores que arruinan el plan", en: "The four mistakes that ruin the plan" },
+        paragraphs: [
+          {
+            es: "El primero es empezar tarde esperando a tener más dinero: 50 € al mes desde que nace valen más que 300 € desde los doce. El segundo es parar en las caídas; las tres crisis que verás durante esos 18 años son precisamente donde compras barato. El tercero es pagar comisiones altas por un producto vendido en el banco con la palabra 'infantil' en el nombre. El cuarto es contárselo mal al niño y entregarle 100.000 € a los 18 sin ninguna preparación.",
+            en: "The first is starting late while waiting for more money: €50 a month from birth beats €300 a month from age twelve. The second is stopping during crashes; the three downturns you will see in those 18 years are exactly when you buy cheap. The third is paying high fees for a bank product with the word 'junior' in the name. The fourth is framing it badly and handing over €100,000 at 18 with zero preparation.",
+          },
+          {
+            es: "La solución al cuarto error es sencilla: haz al niño partícipe desde los 6 o 7 años. Que vea el saldo una vez al mes, que entienda que baja algunos meses y sube otros, y que aporte él una parte simbólica de su paga. Un niño que ha visto una caída del 20% y ha seguido aportando no vende con pánico a los 25.",
+            en: "The fix for the fourth mistake is simple: involve the child from age 6 or 7. Let them see the balance once a month, understand that it falls some months and rises others, and contribute a symbolic slice of their pocket money. A child who has lived through a 20% drop and kept contributing will not panic-sell at 25.",
+          },
+        ],
+        bullets: [
+          { es: "Empieza hoy con lo que puedas y sube la aportación un 5% cada año.", en: "Start today with whatever you can and raise the contribution 5% each year." },
+          { es: "Automatiza: la transferencia sale el día de la nómina.", en: "Automate: the transfer leaves on payday." },
+          { es: "Revisa una vez al año, no una vez a la semana.", en: "Review once a year, not once a week." },
+          { es: "A los 16-17 años, plan de entrega por tramos, no un cheque único.", en: "At 16-17, plan a staged handover, not a single cheque." },
+        ],
+      },
+      {
+        heading: { es: "Cómo entregarlo a los 18 sin que desaparezca", en: "How to hand it over at 18 without it vanishing" },
+        paragraphs: [
+          {
+            es: "La entrega en un solo pago es el momento de mayor riesgo de todo el plan: 18 años de disciplina pueden evaporarse en dos años de coche, viajes y malas decisiones. Un esquema que funciona bien es dividir el capital en tres tramos: uno disponible a los 18 para estudios o formación, otro a los 21 para un proyecto concreto y justificado (negocio, entrada de vivienda, máster), y un tercero que sigue invertido y solo se toca a los 25.",
+            en: "A single lump-sum handover is the riskiest moment of the whole plan: 18 years of discipline can evaporate in two years of cars, trips and bad decisions. A scheme that works well is splitting the capital into three tranches: one available at 18 for education or training, another at 21 for a specific, justified project (business, home deposit, master's), and a third that stays invested and is only touched at 25.",
+          },
+          {
+            es: "Y una condición cultural, no legal: para tocar cada tramo tiene que presentar un plan escrito de una página con el destino del dinero y el retorno esperado. No se trata de controlar, se trata de que la primera decisión de capital de su vida sea razonada. En WhatsYourNumber puedes crearle su propio perfil infantil, ver cómo crece el fondo y trabajar juntos su primer número.",
+            en: "Plus one cultural, not legal, condition: to unlock each tranche they must present a one-page written plan with the use of the money and the expected return. It is not about control, it is about making the first capital decision of their life a reasoned one. In WhatsYourNumber you can create their own kids profile, watch the fund grow and work on their first number together.",
+          },
+        ],
+      },
+    ],
+    takeaway: {
+      es: "Abre hoy una cuenta indexada al S&P 500 a nombre de tu hijo, automatiza 210 € al mes (o lo que puedas y súbelo un 5% cada año) y no la toques hasta los 18. El dinero es lo de menos: lo que le estás regalando son dieciocho años de interés compuesto que él ya no podrá comprar.",
+      en: "Open an S&P 500 index account for your child today, automate €210 a month (or whatever you can, raised 5% each year) and do not touch it until 18. The money is the small part: what you are gifting is eighteen years of compounding they can never buy back.",
+    },
+  },
+  {
     slug: "rico-vs-adinerado",
     image: richVsWealthyImg,
     imageAlt: {
