@@ -35,6 +35,7 @@ import { useRoles } from "@/hooks/use-role";
 import { blogPosts } from "@/lib/blog-posts";
 import { auditAllPosts, MIN_WORDS, type PostAudit } from "@/lib/blog-audit";
 import { getBlogSearchConsole, getBlogTraffic } from "@/lib/blog-analytics.functions";
+import type { GscRow, GscSummary } from "@/lib/blog-analytics.server";
 
 export const Route = createFileRoute("/admin-blog")({
   ssr: false,
@@ -114,7 +115,8 @@ function BlogBackOffice() {
   }
 
   const gscData = gsc.data;
-  const gscOk = gscData?.status === "ok" ? gscData : null;
+  const gscOk =
+    gscData && gscData.status === "ok" ? (gscData as Extract<GscSummary, { status: "ok" }>) : null;
 
   return (
     <PageShell>
@@ -137,12 +139,12 @@ function BlogBackOffice() {
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <KpiCard label="Visitas al blog" value={(traffic.data?.totalViews ?? 0).toLocaleString("es-ES")} icon={Eye} />
         <KpiCard
-          title="Lectores únicos"
+          label="Lectores únicos"
           value={(traffic.data?.uniqueSessions ?? 0).toLocaleString("es-ES")}
           icon={Globe2}
         />
         <KpiCard
-          title="Clics desde Google"
+          label="Clics desde Google"
           value={gscOk ? gscOk.totals.clicks.toLocaleString("es-ES") : "—"}
           icon={MousePointerClick}
         />
@@ -222,7 +224,7 @@ function BlogBackOffice() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {gscOk.queries.slice(0, 50).map((row) => (
+                    {gscOk.queries.slice(0, 50).map((row: GscRow) => (
                       <TableRow key={row.keys[0]}>
                         <TableCell className="font-medium">{row.keys[0]}</TableCell>
                         <TableCell className="text-right">{row.clicks}</TableCell>
@@ -254,7 +256,7 @@ function BlogBackOffice() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {gscOk.pages.slice(0, 30).map((row) => (
+                    {gscOk.pages.slice(0, 30).map((row: GscRow) => (
                       <TableRow key={row.keys[0]}>
                         <TableCell className="max-w-[380px] truncate">{row.keys[0]}</TableCell>
                         <TableCell className="text-right">{row.clicks}</TableCell>

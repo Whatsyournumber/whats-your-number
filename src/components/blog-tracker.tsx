@@ -38,7 +38,7 @@ export function BlogTracker({ slug, lang }: { slug: string; lang: "es" | "en" })
       data: {
         slug,
         lang,
-        referrer: document.referrer || undefined,
+        referrer: document.referrer || "",
         device: deviceKind(),
         sessionId: sessionId(),
       },

@@ -229,7 +229,7 @@ export async function loadSearchConsole(
   } else if (matches.length === 0) {
     return { status: "no_property", sites: verified.map((m) => m.siteUrl) };
   } else if (matches.length === 1) {
-    siteUrl = matches[0].siteUrl;
+    siteUrl = matches[0]!.siteUrl;
   } else {
     return { status: "selection_required", candidates: matches.map((m) => m.siteUrl) };
   }
