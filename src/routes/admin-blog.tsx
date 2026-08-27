@@ -35,7 +35,7 @@ import { useRoles } from "@/hooks/use-role";
 import { blogPosts } from "@/lib/blog-posts";
 import { auditAllPosts, MIN_WORDS, type PostAudit } from "@/lib/blog-audit";
 import { getBlogSearchConsole, getBlogTraffic, getKeywordRankings } from "@/lib/blog-analytics.functions";
-import type { GscRow, GscSummary, KeywordRank } from "@/lib/blog-analytics.server";
+import type { GscRow, GscSummary, KeywordRank, KeywordRankings } from "@/lib/blog-analytics.server";
 import {
   allTargetKeywords,
   homeKeywords,
@@ -98,17 +98,20 @@ function BlogBackOffice() {
     queryFn: () => getBlogSearchConsole({ data: { days } }),
   });
 
-  const trackedGroups = useMemo<KeywordGroup[]>(() => {
-    const postGroups: KeywordGroup[] = blogPosts
-      .filter((post) => postKeywords[post.slug])
-      .map((post) => ({
-        id: post.slug,
-        label: { es: post.title.es, en: post.title.en },
-        path: `/blog/${post.slug}`,
-        keywords: postKeywords[post.slug]!,
-      }));
-    return [homeKeywords, kidsKeywords, ...postGroups];
-  }, []);
+  const siteGroups = useMemo<KeywordGroup[]>(() => [homeKeywords, kidsKeywords], []);
+
+  const postGroups = useMemo<KeywordGroup[]>(
+    () =>
+      blogPosts
+        .filter((post) => postKeywords[post.slug])
+        .map((post) => ({
+          id: post.slug,
+          label: { es: post.title.es, en: post.title.en },
+          path: `/blog/${post.slug}`,
+          keywords: postKeywords[post.slug]!,
+        })),
+    [],
+  );
 
   const targetList = useMemo(() => allTargetKeywords(), []);
 
@@ -637,4 +640,32 @@ function KeywordGroupPanel({
       </Table>
     </Panel>
   );
+}
+
+function RanksStatus({
+  ranks,
+}: {
+  ranks: { isLoading: boolean; isError: boolean; error: unknown; data?: KeywordRankings };
+}) {
+  if (ranks.isLoading) return <Panel className="p-6 text-muted-foreground">Consultando posiciones…</Panel>;
+  if (ranks.isError) {
+    return (
+      <Panel className="p-6">
+        <p className="mb-1 font-medium">No se pudieron leer las posiciones</p>
+        <p className="text-sm text-muted-foreground">{(ranks.error as Error).message}</p>
+      </Panel>
+    );
+  }
+  if (ranks.data && ranks.data.status !== "ok") {
+    return (
+      <Panel className="p-6">
+        <p className="font-medium">Search Console todavía no devuelve posiciones</p>
+        <p className="text-sm text-muted-foreground">
+          Las keywords objetivo ya están definidas y se trackean en cuanto la propiedad de whatsyour-number.com esté
+          verificada y Google registre datos.
+        </p>
+      </Panel>
+    );
+  }
+  return null;
 }
