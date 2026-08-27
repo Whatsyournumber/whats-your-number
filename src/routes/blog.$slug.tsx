@@ -441,15 +441,10 @@ export function BlogArticleView({ slug }: { slug: string }) {
             </p>
             <p className="mt-2 text-sm leading-relaxed">{post.takeaway[lang]}</p>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              {isKids
-                ? t(
-                    "Lo único que cambia el resultado es verlo con tus propios números: ",
-                    "The only thing that changes the outcome is seeing it with your own numbers: ",
-                  )
-                : t(
-                    "Lo único que cambia el resultado es verlo con tus propios números: ",
-                    "The only thing that changes the outcome is seeing it with your own numbers: ",
-                  )}
+              {t(
+                "Lo único que cambia el resultado es verlo con tus propios números: ",
+                "The only thing that changes the outcome is seeing it with your own numbers: ",
+              )}
               <Link to={demoTo} search={{ start: 1 }} className="font-medium text-primary hover:text-primary/80">
                 {isKids
                   ? t("prueba el demo para tu hijo", "try the demo for your child")
