@@ -195,6 +195,8 @@ export function BlogArticleView({ slug }: { slug: string }) {
   const tableIndex = Math.min(last, Math.max(findAfter(cumulative[imageIndex]! + 3, imageIndex + 1), imageIndex + 1));
 
   const related = blogPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const isKids = postCategory(post.slug)?.id === "ninos";
+  const demoTo = isKids ? "/demo-ninos" : "/demo";
 
   return (
     <div className="relative min-h-screen overflow-x-clip bg-background">
@@ -439,9 +441,14 @@ export function BlogArticleView({ slug }: { slug: string }) {
             </p>
             <p className="mt-2 text-sm leading-relaxed">{post.takeaway[lang]}</p>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              {t("Lo único que cambia el resultado es verlo con tus propios números: ", "The only thing that changes the outcome is seeing it with your own numbers: ")}
-              <Link to="/demo" search={{ start: 1 }} className="font-medium text-primary hover:text-primary/80">
-                {t("pruébalo en el demo", "try it in the demo")}
+              {t(
+                "Lo único que cambia el resultado es verlo con tus propios números: ",
+                "The only thing that changes the outcome is seeing it with your own numbers: ",
+              )}
+              <Link to={demoTo} search={{ start: 1 }} className="font-medium text-primary hover:text-primary/80">
+                {isKids
+                  ? t("prueba el demo para tu hijo", "try the demo for your child")
+                  : t("pruébalo en el demo", "try it in the demo")}
               </Link>
               {t(" o descubre ", " or discover ")}
               <Link to="/" className="font-medium text-primary hover:text-primary/80">
@@ -486,21 +493,37 @@ export function BlogArticleView({ slug }: { slug: string }) {
 
         <section className="surface glow mt-8 p-7">
           <p className="font-display text-lg font-semibold leading-snug">
-            {t("Prueba el demo gratis y entiende tu libertad financiera", "Try the free demo and understand your financial freedom")}
+            {isKids
+              ? t(
+                  "Prueba el demo gratis y descubre el número de tu hijo a los 18",
+                  "Try the free demo and discover your child's number at 18",
+                )
+              : t(
+                  "Prueba el demo gratis y entiende tu libertad financiera",
+                  "Try the free demo and understand your financial freedom",
+                )}
           </p>
           <p className="mt-2 max-w-xl text-sm text-muted-foreground">
-            {t(
-              "Haz el demo gratis en minutos: calcula tu patrimonio, tu runway y tu número sin pagar nada. Si ya tienes cuenta, entra y continúa donde lo dejaste.",
-              "Take the free demo in minutes: calculate your net worth, runway and number at no cost. Already have an account? Sign in and pick up where you left off.",
-            )}
+            {isKids
+              ? t(
+                  "Haz el demo gratis en minutos: calcula cuánto tendrá tu hijo invirtiendo en el S&P 500 al 10% anual. Si ya tienes cuenta, entra y continúa donde lo dejaste.",
+                  "Take the free demo in minutes: calculate what your child will have investing in the S&P 500 at 10% a year. Already have an account? Sign in and pick up where you left off.",
+                )
+              : t(
+                  "Haz el demo gratis en minutos: calcula tu patrimonio, tu runway y tu número sin pagar nada. Si ya tienes cuenta, entra y continúa donde lo dejaste.",
+                  "Take the free demo in minutes: calculate your net worth, runway and number at no cost. Already have an account? Sign in and pick up where you left off.",
+                )}
           </p>
           <div className="mt-5 flex flex-wrap items-center gap-3">
             <Link
-              to="/demo"
+              to={demoTo}
               search={{ start: 1 }}
               className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
             >
-              {t("Hacer el demo gratis", "Try the free demo")} <ArrowRight className="h-4 w-4" />
+              {isKids
+                ? t("Hacer el demo para tu hijo", "Try the demo for your child")
+                : t("Hacer el demo gratis", "Try the free demo")}{" "}
+              <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               to="/auth"
