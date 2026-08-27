@@ -23,7 +23,13 @@ export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>): AuthSearch => {
     const rawNext = search["next"];
     // Solo permitimos rutas internas para evitar redirecciones abiertas.
-    const next = typeof rawNext === "string" && /^\/[a-zA-Z0-9\-/_]*$/.test(rawNext) ? rawNext : undefined;
+    // Ruta interna relativa (permitimos punto y query para el consentimiento OAuth).
+    const next =
+      typeof rawNext === "string" &&
+      !rawNext.startsWith("//") &&
+      /^\/[A-Za-z0-9\-._~/]*(\?[A-Za-z0-9\-._~/=&%]*)?$/.test(rawNext)
+        ? rawNext
+        : undefined;
     const affiliate = search["flow"] === "affiliate";
     return {
       mode: search["mode"] === "signup" || (affiliate && search["mode"] !== "login") ? "signup" : "login",
