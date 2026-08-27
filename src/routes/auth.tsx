@@ -138,7 +138,7 @@ function AuthPage() {
         navigate({ to: "/onboarding" });
         return;
       }
-      navigate({ to: next ?? "/dashboard" });
+      goNext(next, "/dashboard", navigate);
     })();
     return () => {
       active = false;
@@ -206,7 +206,8 @@ function AuthPage() {
         return;
       }
       if (result.redirected) return;
-      navigate({ to: getPendingCheckoutPlan() ? "/precios" : (next ?? "/dashboard") });
+      if (getPendingCheckoutPlan()) navigate({ to: "/precios" });
+      else goNext(next, "/dashboard", navigate);
     } catch (error) {
       console.error(error);
       toast.error(t("auth.toast.oauth"));
