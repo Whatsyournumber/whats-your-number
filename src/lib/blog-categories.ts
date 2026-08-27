@@ -13,8 +13,6 @@ export type BlogCategory = {
   id: BlogCategoryId;
   label: { es: string; en: string };
   description: { es: string; en: string };
-  /** Optional external landing page for categories without articles yet. */
-  href?: { es: string; en: string };
 };
 
 export const blogCategories: BlogCategory[] = [
@@ -73,7 +71,6 @@ export const blogCategories: BlogCategory[] = [
       es: "Educación financiera para tus hijos desde los 5 años.",
       en: "Financial education for your kids from age 5.",
     },
-    href: { es: "/finanzas-para-ninos", en: "/en/finanzas-para-ninos" },
   },
 ];
 
