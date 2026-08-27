@@ -6,6 +6,7 @@
 import { blogPosts, postCharts, postExtras, postQuotes, type BlogPost } from "@/lib/blog-posts";
 import { getPostFaqs } from "@/lib/blog-jsonld";
 import { getPostLinks } from "@/lib/blog-links";
+import { MIN_KEYWORDS_PER_POST, MIN_KEYWORD_VOLUME, postKeywords } from "@/lib/blog-keywords";
 
 export type Lang = "es" | "en";
 
