@@ -37,7 +37,7 @@ import { useRoles } from "@/hooks/use-role";
 import { blogPosts } from "@/lib/blog-posts";
 import { auditAllPosts, MIN_WORDS, type PostAudit } from "@/lib/blog-audit";
 import { getBlogSearchConsole, getBlogTraffic, getKeywordRankings, getSerpRankings } from "@/lib/blog-analytics.functions";
-import { REGION_LABEL, type SerpRank, type SerpRegion } from "@/lib/keyword-serp.server";
+import type { SerpRank, SerpRegion } from "@/lib/keyword-serp.server";
 import { lovableAnalytics } from "@/lib/lovable-analytics-snapshot";
 
 import type { GscRow, GscSummary, KeywordRank, KeywordRankings } from "@/lib/blog-analytics.server";
@@ -71,6 +71,14 @@ export const Route = createFileRoute("/admin-blog")({
 });
 
 const REGION = new Intl.DisplayNames(["es"], { type: "region" });
+
+/** Etiqueta del país desde el que se mide el SERP alternativo. */
+const SERP_REGION_LABEL: Record<SerpRegion, string> = {
+  es: "España",
+  mx: "México",
+  us: "EE. UU.",
+  gb: "Reino Unido",
+};
 
 function countryName(code: string) {
   if (!code || code === "??") return "Desconocido";
@@ -774,7 +782,7 @@ function KeywordGroupPanel({
                 <TableCell className="font-medium">{kw[lang]}</TableCell>
                 <TableCell className="uppercase text-xs text-muted-foreground">{lang}</TableCell>
                 <TableCell className="text-xs text-muted-foreground">
-                  {REGION_LABEL[lang === "es" ? "es" : "us"]}
+                  {SERP_REGION_LABEL[lang === "es" ? "es" : "us"]}
                 </TableCell>
                 <RankCells rank={rankMap.get(kw[lang].toLowerCase())} />
                 <SerpCell
