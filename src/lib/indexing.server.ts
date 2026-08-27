@@ -24,7 +24,14 @@ export type ChannelResult = {
 /** Envía hasta 10.000 URLs a la red IndexNow (Bing, Yandex, Seznam, Naver). */
 export async function submitIndexNow(urls: string[]): Promise<ChannelResult> {
   try {
-    const response = await fetch("https://api.indexnow.org/IndexNow", {
+    const endpoints = [
+      "https://api.indexnow.org/IndexNow",
+      "https://www.bing.com/indexnow",
+      "https://yandex.com/indexnow",
+      "https://search.seznam.cz/indexnow",
+      "https://searchadvisor.naver.com/indexnow",
+    ];
+    const response = await fetch(endpoints[0]!, {
       method: "POST",
       headers: { "Content-Type": "application/json; charset=utf-8" },
       body: JSON.stringify({
@@ -72,6 +79,8 @@ export async function pingAggregators(lang: "es" | "en"): Promise<ChannelResult[
     { name: "Ping-o-Matic", url: "https://rpc.pingomatic.com/" },
     { name: "Twingly", url: "https://rpc.twingly.com/" },
     { name: "Blogdigger", url: "https://pinger.blogflux.com/rpc/" },
+    { name: "Weblogs.com", url: "https://rpc.weblogs.com/RPC2" },
+    { name: "Yandex Blogs", url: "https://ping.blogs.yandex.ru/RPC2" },
   ];
 
   return Promise.all(
