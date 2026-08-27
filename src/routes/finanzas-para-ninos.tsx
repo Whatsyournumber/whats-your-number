@@ -2612,22 +2612,24 @@ export function KidsFinanceLanding() {
                 )}
               </span>
 
-              {/* Mobile: shorter headline */}
-              <h1 className="font-display text-[1.75rem] font-semibold leading-[1.08] tracking-tight md:hidden">
-                {t("Construye su ", "Build their ")}
-                <span className="text-kid-mint">{t("número", "number")}</span>
-                <br />
-                {t("desde pequeños.", "from day one.")}
+              <h1 className="font-display text-[1.75rem] font-semibold leading-[1.08] tracking-tight md:mt-5 md:text-4xl lg:text-5xl">
+                {/* Mobile: shorter headline */}
+                <span className="md:hidden">
+                  {t("Construye su ", "Build their ")}
+                  <span className="text-kid-mint">{t("número", "number")}</span>
+                  <br />
+                  {t("desde pequeños.", "from day one.")}
+                </span>
+                {/* Desktop: full headline */}
+                <span className="hidden md:inline">
+                  {t("Construye ", "Build ")}
+                  <span className="text-kid-mint">{t("su patrimonio.", "their wealth.")}</span>
+                  <br />
+                  {t("Enséñale ", "Teach them ")}
+                  <span className="text-kid-mint">{t("a manejarlo.", "to manage it.")}</span>
+                </span>
               </h1>
 
-              {/* Desktop: full headline */}
-              <h1 className="mt-5 hidden font-display text-3xl font-semibold leading-[1.08] tracking-tight md:mt-5 md:block md:text-4xl lg:text-5xl">
-                {t("Construye ", "Build ")}
-                <span className="text-kid-mint">{t("su patrimonio.", "their wealth.")}</span>
-                <br />
-                {t("Enséñale ", "Teach them ")}
-                <span className="text-kid-mint">{t("a manejarlo.", "to manage it.")}</span>
-              </h1>
 
               <p className="mt-4 max-w-lg text-sm leading-relaxed text-muted-foreground md:mt-6 md:text-base">
                 <span className="md:hidden">
