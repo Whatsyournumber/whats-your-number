@@ -94,6 +94,12 @@ export const Route = createFileRoute("/finanzas-para-ninos")({
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "es_ES" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Finanzas para Niños | Planifica su Futuro Financiero" },
+      {
+        name: "twitter:description",
+        content:
+          "Enseña a tus hijos el valor del dinero, el ahorro y la inversión. Calcula cuánto ahorrar desde pequeños para su universidad y ayúdales a construir un mejor futuro financiero.",
+      },
       { property: "og:url", content: "https://whatsyour-number.com/finanzas-para-ninos" },
       { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
       { name: "twitter:image", content: "https://whatsyour-number.com/og-cover.jpg" },
