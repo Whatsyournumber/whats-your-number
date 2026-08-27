@@ -79,25 +79,31 @@ const DEMO_UNI_PHOTOS: Record<string, string> = {
 export const Route = createFileRoute("/finanzas-para-ninos")({
   head: () => ({
     meta: [
-      { title: "Finanzas para niños — su primer número | WhatsYournumber" },
+      { title: "Finanzas para Niños | Planifica su Futuro Financiero" },
       {
         name: "description",
         content:
-          "La app de finanzas para niños más premium: número de hoy, número del futuro, bolsillos de ahorro, sueños, tareas, insignias e interés compuesto explicado para peques.",
+          "Enseña a tus hijos el valor del dinero, el ahorro y la inversión. Calcula cuánto ahorrar desde pequeños para su universidad y ayúdales a construir un mejor futuro financiero.",
       },
-      { property: "og:title", content: "Finanzas para niños — su primer número" },
+      { property: "og:title", content: "Finanzas para Niños | Planifica su Futuro Financiero" },
       {
         property: "og:description",
         content:
-          "Bolsillos, sueños, tareas, insignias y su número del futuro: la forma más divertida de que tus hijos aprendan a manejar dinero real.",
+          "Enseña a tus hijos el valor del dinero, el ahorro y la inversión. Calcula cuánto ahorrar desde pequeños para su universidad y ayúdales a construir un mejor futuro financiero.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:locale", content: "es_ES" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:url", content: "https://whatsyour-number.com/finanzas-para-ninos" },
       { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
       { name: "twitter:image", content: "https://whatsyour-number.com/og-cover.jpg" },
     ],
-    links: [{ rel: "canonical", href: "https://whatsyour-number.com/finanzas-para-ninos" }],
+    links: [
+      { rel: "canonical", href: "https://whatsyour-number.com/finanzas-para-ninos" },
+      { rel: "alternate", hrefLang: "es", href: "https://whatsyour-number.com/finanzas-para-ninos" },
+      { rel: "alternate", hrefLang: "en", href: "https://whatsyour-number.com/en/finanzas-para-ninos" },
+      { rel: "alternate", hrefLang: "x-default", href: "https://whatsyour-number.com/finanzas-para-ninos" },
+    ],
   }),
   component: KidsFinanceLanding,
 });
