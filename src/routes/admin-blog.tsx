@@ -91,9 +91,39 @@ function BlogBackOffice() {
     queryFn: () => getBlogSearchConsole({ data: { days } }),
   });
 
+  const trackedGroups = useMemo<KeywordGroup[]>(() => {
+    const postGroups: KeywordGroup[] = blogPosts
+      .filter((post) => postKeywords[post.slug])
+      .map((post) => ({
+        id: post.slug,
+        label: { es: post.title.es, en: post.title.en },
+        path: `/blog/${post.slug}`,
+        keywords: postKeywords[post.slug]!,
+      }));
+    return [homeKeywords, kidsKeywords, ...postGroups];
+  }, []);
+
+  const targetList = useMemo(() => allTargetKeywords(), []);
+
+  const ranks = useQuery({
+    queryKey: ["blog-keyword-ranks", days],
+    enabled: isAdmin,
+    retry: false,
+    queryFn: () => getKeywordRankings({ data: { keywords: targetList, days } }),
+  });
+
+  const rankMap = useMemo(() => {
+    const map = new Map<string, KeywordRank>();
+    if (ranks.data && ranks.data.status === "ok") {
+      for (const rank of ranks.data.ranks) map.set(rank.keyword.toLowerCase(), rank);
+    }
+    return map;
+  }, [ranks.data]);
+
   const audits = useMemo(() => auditAllPosts("es"), []);
   const totalWords = audits.reduce((sum, a) => sum + a.words, 0);
   const readyPosts = audits.filter((a) => a.score === 100).length;
+
 
   if (loading) {
     return (
