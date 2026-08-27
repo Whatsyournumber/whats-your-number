@@ -66,7 +66,9 @@ export const blogCategories: BlogCategory[] = [
 ];
 
 const POST_CATEGORY: Record<string, BlogCategoryId> = {
+  "boring-business-comprar-libertad-financiera": "business",
   "rico-vs-adinerado": "fire",
+
   "numero-libertad-financiera": "fire",
   "calcular-patrimonio-neto-real": "inversiones",
   "runway-personal": "ahorro",

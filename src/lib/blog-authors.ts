@@ -51,6 +51,7 @@ const authors: Record<string, BlogAuthor> = {
 };
 
 const bySlug: Record<string, keyof typeof authors> = {
+  "boring-business-comprar-libertad-financiera": "mateo",
   "100k-hijo-18-anos-sp500": "carolina",
   "rico-vs-adinerado": "mateo",
   "calcular-patrimonio-neto-real": "valeria",

@@ -10,7 +10,7 @@ import { BlogChartBlock } from "@/components/blog-chart";
 import { getAuthor } from "@/lib/blog-authors";
 import { BlogSidebar } from "@/components/blog-sidebar";
 import { postCategory } from "@/lib/blog-categories";
-import { absoluteUrl, buildArticleJsonLd, buildBreadcrumbJsonLd, postIsoDate } from "@/lib/blog-jsonld";
+import { absoluteUrl, buildArticleJsonLd, buildBreadcrumbJsonLd, buildFaqJsonLd, postIsoDate } from "@/lib/blog-jsonld";
 
 
 export const Route = createFileRoute("/blog/$slug")({
@@ -57,7 +57,7 @@ export const Route = createFileRoute("/blog/$slug")({
         { rel: "alternate", hrefLang: "en", href: `https://whatsyour-number.com/en/blog/${params.slug}` },
         { rel: "alternate", hrefLang: "x-default", href: url },
       ],
-      scripts: [jsonLd, buildBreadcrumbJsonLd(params.slug, "es")]
+      scripts: [jsonLd, buildBreadcrumbJsonLd(params.slug, "es"), buildFaqJsonLd(params.slug, "es")]
         .filter(Boolean)
         .map((data) => ({ type: "application/ld+json", children: JSON.stringify(data) })),
     };
@@ -187,7 +187,45 @@ export function BlogArticleView({ slug }: { slug: string }) {
                     ))}
                   </ul>
                 )}
+                {section.image && (
+                  <figure className="surface mt-6 overflow-hidden">
+                    <img
+                      src={section.image}
+                      alt={section.imageAlt?.[lang] ?? section.heading[lang]}
+                      loading="lazy"
+                      width={1200}
+                      height={750}
+                      className="h-full w-full object-cover"
+                    />
+                    {section.imageCaption && (
+                      <figcaption className="border-t border-border/50 px-5 py-3 text-xs text-muted-foreground">
+                        {section.imageCaption[lang]}
+                      </figcaption>
+                    )}
+                  </figure>
+                )}
+                {section.subsections?.map((sub) => (
+                  <div key={sub.heading.en} className="mt-6">
+                    <h3 className="font-display text-base font-semibold tracking-tight">{sub.heading[lang]}</h3>
+                    {sub.paragraphs?.map((p) => (
+                      <p key={p.en} className="mt-2 text-[15px] leading-relaxed text-muted-foreground">
+                        {p[lang]}
+                      </p>
+                    ))}
+                    {sub.bullets && (
+                      <ul className="mt-3 space-y-2">
+                        {sub.bullets.map((b) => (
+                          <li key={b.en} className="flex gap-2 text-[15px] leading-relaxed text-muted-foreground">
+                            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/70" />
+                            {b[lang]}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ))}
               </section>
+
 
               {charts
                 .filter((c) => c.after === i)

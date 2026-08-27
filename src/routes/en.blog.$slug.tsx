@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { BlogArticleView } from "@/routes/blog.$slug";
 import { getPost } from "@/lib/blog-posts";
 import { getAuthor } from "@/lib/blog-authors";
-import { absoluteUrl, buildArticleJsonLd, buildBreadcrumbJsonLd, postIsoDate } from "@/lib/blog-jsonld";
+import { absoluteUrl, buildArticleJsonLd, buildBreadcrumbJsonLd, buildFaqJsonLd, postIsoDate } from "@/lib/blog-jsonld";
 import { useLanguage } from "@/hooks/use-language";
 
 export const Route = createFileRoute("/en/blog/$slug")({
@@ -51,7 +51,7 @@ export const Route = createFileRoute("/en/blog/$slug")({
         { rel: "alternate", hrefLang: "en", href: url },
         { rel: "alternate", hrefLang: "x-default", href: `https://whatsyour-number.com/blog/${params.slug}` },
       ],
-      scripts: [jsonLd, buildBreadcrumbJsonLd(params.slug, "en")]
+      scripts: [jsonLd, buildBreadcrumbJsonLd(params.slug, "en"), buildFaqJsonLd(params.slug, "en")]
         .filter(Boolean)
         .map((data) => ({ type: "application/ld+json", children: JSON.stringify(data) })),
     };
