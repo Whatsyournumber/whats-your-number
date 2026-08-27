@@ -149,6 +149,20 @@ export function BlogIndex() {
           ))}
         </section>
 
+        {listed.length === 0 && (
+          <p className="surface mt-6 p-8 text-sm text-muted-foreground">
+            {t("Pronto publicaremos artículos de esta categoría.", "We'll publish articles in this category soon.")}
+          </p>
+        )}
+        </div>
+
+        <aside className="lg:pt-2">
+          <BlogSidebar activeCategory={activeCat ?? undefined} />
+        </aside>
+        </div>
+
+
+
         <section className="surface mt-12 flex flex-wrap items-center gap-4 p-8">
           <p className="text-sm text-muted-foreground">
             {t(
