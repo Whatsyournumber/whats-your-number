@@ -19,11 +19,34 @@ import { startAffiliateWizard } from "@/lib/affiliate-wizard-state";
 
 type AuthSearch = { mode: "login" | "signup"; next?: string; flow?: "affiliate" };
 
+/**
+ * Navega al destino guardado. Las rutas con query o punto (p. ej. el
+ * consentimiento OAuth `/.lovable/oauth/consent?authorization_id=...`) se
+ * resuelven con el navegador porque no forman parte del árbol tipado.
+ */
+function goNext(
+  next: string | undefined,
+  fallback: string,
+  navigate: (opts: { to: string }) => void,
+) {
+  if (next && (next.includes("?") || next.includes("."))) {
+    window.location.assign(next);
+    return;
+  }
+  navigate({ to: next ?? fallback });
+}
+
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>): AuthSearch => {
     const rawNext = search["next"];
     // Solo permitimos rutas internas para evitar redirecciones abiertas.
-    const next = typeof rawNext === "string" && /^\/[a-zA-Z0-9\-/_]*$/.test(rawNext) ? rawNext : undefined;
+    // Ruta interna relativa (permitimos punto y query para el consentimiento OAuth).
+    const next =
+      typeof rawNext === "string" &&
+      !rawNext.startsWith("//") &&
+      /^\/[A-Za-z0-9\-._~/]*(\?[A-Za-z0-9\-._~/=&%]*)?$/.test(rawNext)
+        ? rawNext
+        : undefined;
     const affiliate = search["flow"] === "affiliate";
     return {
       mode: search["mode"] === "signup" || (affiliate && search["mode"] !== "login") ? "signup" : "login",
@@ -115,7 +138,7 @@ function AuthPage() {
         navigate({ to: "/onboarding" });
         return;
       }
-      navigate({ to: next ?? "/dashboard" });
+      goNext(next, "/dashboard", navigate);
     })();
     return () => {
       active = false;
@@ -183,7 +206,8 @@ function AuthPage() {
         return;
       }
       if (result.redirected) return;
-      navigate({ to: getPendingCheckoutPlan() ? "/precios" : (next ?? "/dashboard") });
+      if (getPendingCheckoutPlan()) navigate({ to: "/precios" });
+      else goNext(next, "/dashboard", navigate);
     } catch (error) {
       console.error(error);
       toast.error(t("auth.toast.oauth"));

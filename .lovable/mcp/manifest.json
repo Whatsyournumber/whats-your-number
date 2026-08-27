@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "sdk_version": "0.28.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://jtuwtnnmsvfefzqpzyxf.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "whatsyournumber",
+      "version": "0.1.0",
+      "title": "WhatsYourNumber"
+    },
+    "tools": [
+      {
+        "name": "get_financial_profile",
+        "title": "Get financial profile",
+        "description": "Read the signed-in user's financial profile: income, fixed expenses, assets, liabilities, retirement target and risk profile.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_holdings",
+        "title": "List holdings",
+        "description": "List the signed-in user's wealth positions (investments, cash, property, businesses) with value, cost basis and expected return.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_life_goals",
+        "title": "List life goals",
+        "description": "List the signed-in user's financial goals with cost, amount saved, monthly contribution and target year.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "create_life_goal",
+        "title": "Create life goal",
+        "description": "Create a new financial goal (house, business, travel, other) for the signed-in user.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Goal name, e.g. 'Down payment for a flat'."
+            },
+            "cost": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Total amount needed, in the user's currency."
+            },
+            "saved": {
+              "description": "Amount already saved towards the goal.",
+              "type": "number",
+              "minimum": 0
+            },
+            "monthly": {
+              "description": "Monthly contribution towards the goal.",
+              "type": "number",
+              "minimum": 0
+            },
+            "target_year": {
+              "description": "Year the goal should be reached.",
+              "type": "integer",
+              "minimum": 2024,
+              "maximum": 2100
+            },
+            "kind": {
+              "description": "Goal category, e.g. 'house', 'business', 'travel', 'other'.",
+              "type": "string"
+            },
+            "emoji": {
+              "description": "Emoji shown on the goal card.",
+              "type": "string"
+            },
+            "note": {
+              "description": "Free-form note about the goal.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "cost"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_recent_expenses",
+        "title": "List recent expenses",
+        "description": "List the signed-in user's most recent imported transactions, optionally filtered by category.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "limit": {
+              "description": "How many transactions to return (default 50).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            },
+            "category": {
+              "description": "Only return transactions in this category.",
+              "type": "string"
+            }
+          }
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

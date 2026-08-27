@@ -30,6 +30,7 @@ import { Route as HipotecaRouteImport } from './routes/hipoteca'
 import { Route as LifePlannerRouteImport } from './routes/life-planner'
 import { Route as LlmsFullDottxtRouteImport } from './routes/llms-full[.]txt'
 import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as MiPerfilRouteImport } from './routes/mi-perfil'
 import { Route as NinosRouteRouteImport } from './routes/ninos/route'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
@@ -42,6 +43,8 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RetiroRouteImport } from './routes/retiro'
 import { Route as SuscripcionRouteImport } from './routes/suscripcion'
 import { Route as TerminosRouteImport } from './routes/terminos'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout/success'
 import { Route as EnBlogRouteImport } from './routes/en.blog'
@@ -49,6 +52,8 @@ import { Route as EnFinanzasParaNinosRouteImport } from './routes/en.finanzas-pa
 import { Route as NinosIndexRouteImport } from './routes/ninos/index'
 import { Route as NinosOnboardingRouteImport } from './routes/ninos/onboarding'
 import { Route as NinosPadresRouteImport } from './routes/ninos/padres'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as ApiPublicDistributeNewPostsRouteImport } from './routes/api/public/distribute-new-posts'
 import { Route as ApiPublicRssRouteImport } from './routes/api/public/rss'
 import { Route as ApiPublicVerifyBacklinksRouteImport } from './routes/api/public/verify-backlinks'
@@ -168,6 +173,11 @@ const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
   path: '/llms.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MiPerfilRoute = MiPerfilRouteImport.update({
   id: '/mi-perfil',
   path: '/mi-perfil',
@@ -228,6 +238,18 @@ const TerminosRoute = TerminosRouteImport.update({
   path: '/terminos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -263,6 +285,17 @@ const NinosPadresRoute = NinosPadresRouteImport.update({
   path: '/padres',
   getParentRoute: () => NinosRouteRoute,
 } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicDistributeNewPostsRoute =
   ApiPublicDistributeNewPostsRouteImport.update({
     id: '/api/public/distribute-new-posts',
@@ -356,6 +389,7 @@ export interface FileRoutesByFullPath {
   '/life-planner': typeof LifePlannerRoute
   '/llms-full.txt': typeof LlmsFullDottxtRoute
   '/llms.txt': typeof LlmsDottxtRoute
+  '/mcp': typeof McpRoute
   '/mi-perfil': typeof MiPerfilRoute
   '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
@@ -367,6 +401,8 @@ export interface FileRoutesByFullPath {
   '/retiro': typeof RetiroRoute
   '/suscripcion': typeof SuscripcionRoute
   '/terminos': typeof TerminosRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/en/blog': typeof EnBlogRouteWithChildren
@@ -374,6 +410,8 @@ export interface FileRoutesByFullPath {
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/ninos/': typeof NinosIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/distribute-new-posts': typeof ApiPublicDistributeNewPostsRoute
   '/api/public/rss': typeof ApiPublicRssRoute
   '/api/public/verify-backlinks': typeof ApiPublicVerifyBacklinksRoute
@@ -410,6 +448,7 @@ export interface FileRoutesByTo {
   '/life-planner': typeof LifePlannerRoute
   '/llms-full.txt': typeof LlmsFullDottxtRoute
   '/llms.txt': typeof LlmsDottxtRoute
+  '/mcp': typeof McpRoute
   '/mi-perfil': typeof MiPerfilRoute
   '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
@@ -421,6 +460,8 @@ export interface FileRoutesByTo {
   '/retiro': typeof RetiroRoute
   '/suscripcion': typeof SuscripcionRoute
   '/terminos': typeof TerminosRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/en/blog': typeof EnBlogRouteWithChildren
@@ -428,6 +469,8 @@ export interface FileRoutesByTo {
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/ninos': typeof NinosIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/distribute-new-posts': typeof ApiPublicDistributeNewPostsRoute
   '/api/public/rss': typeof ApiPublicRssRoute
   '/api/public/verify-backlinks': typeof ApiPublicVerifyBacklinksRoute
@@ -466,6 +509,7 @@ export interface FileRoutesById {
   '/life-planner': typeof LifePlannerRoute
   '/llms-full.txt': typeof LlmsFullDottxtRoute
   '/llms.txt': typeof LlmsDottxtRoute
+  '/mcp': typeof McpRoute
   '/mi-perfil': typeof MiPerfilRoute
   '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
@@ -477,6 +521,8 @@ export interface FileRoutesById {
   '/retiro': typeof RetiroRoute
   '/suscripcion': typeof SuscripcionRoute
   '/terminos': typeof TerminosRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/en/blog': typeof EnBlogRouteWithChildren
@@ -484,6 +530,8 @@ export interface FileRoutesById {
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/ninos/': typeof NinosIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/public/distribute-new-posts': typeof ApiPublicDistributeNewPostsRoute
   '/api/public/rss': typeof ApiPublicRssRoute
   '/api/public/verify-backlinks': typeof ApiPublicVerifyBacklinksRoute
@@ -523,6 +571,7 @@ export interface FileRouteTypes {
     | '/life-planner'
     | '/llms-full.txt'
     | '/llms.txt'
+    | '/mcp'
     | '/mi-perfil'
     | '/onboarding'
     | '/patrimonio'
@@ -534,6 +583,8 @@ export interface FileRouteTypes {
     | '/retiro'
     | '/suscripcion'
     | '/terminos'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/blog/$slug'
     | '/checkout/success'
     | '/en/blog'
@@ -541,6 +592,8 @@ export interface FileRouteTypes {
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/ninos/'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/api/public/distribute-new-posts'
     | '/api/public/rss'
     | '/api/public/verify-backlinks'
@@ -577,6 +630,7 @@ export interface FileRouteTypes {
     | '/life-planner'
     | '/llms-full.txt'
     | '/llms.txt'
+    | '/mcp'
     | '/mi-perfil'
     | '/onboarding'
     | '/patrimonio'
@@ -588,6 +642,8 @@ export interface FileRouteTypes {
     | '/retiro'
     | '/suscripcion'
     | '/terminos'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/blog/$slug'
     | '/checkout/success'
     | '/en/blog'
@@ -595,6 +651,8 @@ export interface FileRouteTypes {
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/ninos'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/api/public/distribute-new-posts'
     | '/api/public/rss'
     | '/api/public/verify-backlinks'
@@ -632,6 +690,7 @@ export interface FileRouteTypes {
     | '/life-planner'
     | '/llms-full.txt'
     | '/llms.txt'
+    | '/mcp'
     | '/mi-perfil'
     | '/onboarding'
     | '/patrimonio'
@@ -643,6 +702,8 @@ export interface FileRouteTypes {
     | '/retiro'
     | '/suscripcion'
     | '/terminos'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/blog/$slug'
     | '/checkout/success'
     | '/en/blog'
@@ -650,6 +711,8 @@ export interface FileRouteTypes {
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/ninos/'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/api/public/distribute-new-posts'
     | '/api/public/rss'
     | '/api/public/verify-backlinks'
@@ -688,6 +751,7 @@ export interface RootRouteChildren {
   LifePlannerRoute: typeof LifePlannerRoute
   LlmsFullDottxtRoute: typeof LlmsFullDottxtRoute
   LlmsDottxtRoute: typeof LlmsDottxtRoute
+  McpRoute: typeof McpRoute
   MiPerfilRoute: typeof MiPerfilRoute
   OnboardingRoute: typeof OnboardingRoute
   PatrimonioRoute: typeof PatrimonioRoute
@@ -699,7 +763,11 @@ export interface RootRouteChildren {
   RetiroRoute: typeof RetiroRoute
   SuscripcionRoute: typeof SuscripcionRoute
   TerminosRoute: typeof TerminosRoute
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicDistributeNewPostsRoute: typeof ApiPublicDistributeNewPostsRoute
   ApiPublicRssRoute: typeof ApiPublicRssRoute
   ApiPublicVerifyBacklinksRoute: typeof ApiPublicVerifyBacklinksRoute
@@ -856,6 +924,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LlmsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mi-perfil': {
       id: '/mi-perfil'
       path: '/mi-perfil'
@@ -940,6 +1015,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TerminosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog/$slug': {
       id: '/blog/$slug'
       path: '/$slug'
@@ -988,6 +1077,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/ninos/padres'
       preLoaderRoute: typeof NinosPadresRouteImport
       parentRoute: typeof NinosRouteRoute
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/distribute-new-posts': {
       id: '/api/public/distribute-new-posts'
@@ -1169,6 +1272,7 @@ const rootRouteChildren: RootRouteChildren = {
   LifePlannerRoute: LifePlannerRoute,
   LlmsFullDottxtRoute: LlmsFullDottxtRoute,
   LlmsDottxtRoute: LlmsDottxtRoute,
+  McpRoute: McpRoute,
   MiPerfilRoute: MiPerfilRoute,
   OnboardingRoute: OnboardingRoute,
   PatrimonioRoute: PatrimonioRoute,
@@ -1180,7 +1284,12 @@ const rootRouteChildren: RootRouteChildren = {
   RetiroRoute: RetiroRoute,
   SuscripcionRoute: SuscripcionRoute,
   TerminosRoute: TerminosRoute,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicDistributeNewPostsRoute: ApiPublicDistributeNewPostsRoute,
   ApiPublicRssRoute: ApiPublicRssRoute,
   ApiPublicVerifyBacklinksRoute: ApiPublicVerifyBacklinksRoute,
