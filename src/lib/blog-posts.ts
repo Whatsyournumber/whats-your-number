@@ -594,7 +594,8 @@ export const blogPosts: BlogPost[] = [
             es: "Define tus fases, ponles fecha estimada y revísalas una vez al mes. La libertad financiera deja de ser una fantasía cuando se convierte en un porcentaje que sube.",
             en: "Define your phases, give them an estimated date and review them once a month. Financial freedom stops being a fantasy when it becomes a percentage that goes up.",
           },
-          {
+      },
+      {
         heading: { es: "Caso real: dos ingresos idénticos, dos vidas distintas", en: "Real case: identical incomes, two different lives" },
         paragraphs: [
           { es: "Javier y Marta ganan lo mismo: 7.000 € netos al mes. Javier gasta 6.500 € y tiene un patrimonio líquido de 40.000 €; su runway es de seis semanas. Marta vive con 4.200 €, invierte 2.800 € al mes desde hace nueve años y acumula 410.000 € en cartera indexada. Su runway supera los ocho años.", en: "Javier and Marta earn the same: €7,000 net a month. Javier spends €6,500 and holds €40,000 in liquid wealth; his runway is six weeks. Marta lives on €4,200, has invested €2,800 a month for nine years and holds €410,000 in an index portfolio. Her runway is over eight years." },
@@ -603,8 +604,6 @@ export const blogPosts: BlogPost[] = [
         image: caseRichWealthyImg,
         imageAlt: { es: "Contraste entre un profesional corriendo con maletín y otro relajado frente al mar, ejemplo de ser rico frente a ser adinerado", en: "Contrast between a professional rushing with a briefcase and another relaxed by the sea, illustrating rich versus wealthy" },
         imageCaption: { es: "Mismo sueldo, distinta libertad: lo que decide el resultado es cuánto conservas, no cuánto ingresas.", en: "Same salary, different freedom: what decides the outcome is how much you keep, not how much you earn." },
-      },
-    ],
       },
     ],
     takeaway: {
@@ -743,7 +742,8 @@ export const blogPosts: BlogPost[] = [
             es: "Separar crecimiento por ahorro de crecimiento por mercado es especialmente revelador: el primero demuestra disciplina, el segundo solo demuestra exposición. En años buenos casi todo el mundo parece brillante; la tasa de ahorro es lo que se sostiene en años malos.",
             en: "Separating savings-driven growth from market-driven growth is especially revealing: the first proves discipline, the second only proves exposure. In good years everyone looks brilliant; the savings rate is what holds up in bad ones.",
           },
-          {
+      },
+      {
         heading: { es: "Caso real: de una cifra inflada a un patrimonio neto honesto", en: "Real case: from an inflated figure to an honest net worth" },
         paragraphs: [
           { es: "Cuando Laura, arquitecta de 38 años, hizo el ejercicio por primera vez, creía tener 320.000 € de patrimonio. Al restar la hipoteca pendiente, los costes de venta del piso y el préstamo del coche, la cifra real fue de 187.000 €, y solo 46.000 € eran líquidos.", en: "When Laura, a 38-year-old architect, ran the exercise for the first time she believed she had €320,000. After subtracting the outstanding mortgage, the flat's selling costs and the car loan, the real figure was €187,000, and only €46,000 of it was liquid." },
@@ -752,8 +752,6 @@ export const blogPosts: BlogPost[] = [
         image: caseNetWorthImg,
         imageAlt: { es: "Mujer revisando en casa el cálculo de su patrimonio neto real con portátil y extracto impreso", en: "Woman at home reviewing her real net worth calculation with a laptop and a printed statement" },
         imageCaption: { es: "El primer cálculo honesto suele doler; el segundo ya es una hoja de ruta.", en: "The first honest calculation usually stings; the second one is already a roadmap." },
-      },
-    ],
       },
     ],
     takeaway: {
@@ -857,7 +855,8 @@ export const blogPosts: BlogPost[] = [
             es: "Guárdalo en una entidad distinta a la de tu cuenta diaria. La fricción de tener que hacer una transferencia entre bancos evita que el colchón se erosione en compras que no eran emergencias.",
             en: "Keep it at a different institution from your everyday account. The friction of an inter-bank transfer stops the buffer eroding into purchases that were never emergencies.",
           },
-          {
+      },
+      {
         heading: { es: "Caso real: el runway que convirtió un despido en una oportunidad", en: "Real case: the runway that turned a layoff into an opportunity" },
         paragraphs: [
           { es: "Diego, 34 años, desarrollador, tenía 28.000 € ahorrados y un gasto mensual de 2.300 €: doce meses de runway. Cuando su empresa cerró la división, no entró en pánico. Recortó gastos variables a 1.900 € y su runway pasó a casi quince meses.", en: "Diego, 34, a developer, had €28,000 saved and a €2,300 monthly spend: twelve months of runway. When his company shut the division down, he did not panic. He cut variable spending to €1,900 and his runway stretched to nearly fifteen months." },
@@ -866,8 +865,6 @@ export const blogPosts: BlogPost[] = [
         image: caseRunwayImg,
         imageAlt: { es: "Hombre calculando en una tablet cuántos meses de runway financiero tiene tras perder su empleo", en: "Man calculating on a tablet how many months of financial runway he has after losing his job" },
         imageCaption: { es: "Cada mes de runway es un mes de poder de negociación.", en: "Every month of runway is a month of negotiating power." },
-      },
-    ],
       },
     ],
     takeaway: {
@@ -968,7 +965,8 @@ export const blogPosts: BlogPost[] = [
             es: "Si sí lo superas, verifica antes de celebrarlo que no fue una sola posición, un solo año o una sola divisa. La habilidad se demuestra en la repetición, no en el mejor trimestre.",
             en: "If you do beat it, verify before celebrating that it was not one position, one year or one currency. Skill shows in repetition, not in your best quarter.",
           },
-          {
+      },
+      {
         heading: { es: "Caso real: la cartera que perdía contra el índice sin saberlo", en: "Real case: the portfolio quietly losing to the index" },
         paragraphs: [
           { es: "Sergio gestionaba doce posiciones y estaba convencido de batir al mercado. Al comparar con el S&P 500 durante cinco años descubrió que su rentabilidad anualizada era del 6,4 % frente al 11,1 % del índice, y que las comisiones y la rotación explicaban casi dos puntos de la diferencia.", en: "Sergio ran twelve positions and was convinced he was beating the market. Comparing against the S&P 500 over five years, he found his annualized return was 6.4% versus the index's 11.1%, with fees and turnover explaining almost two points of the gap." },
@@ -977,8 +975,6 @@ export const blogPosts: BlogPost[] = [
         image: casePortfolioImg,
         imageAlt: { es: "Inversor comparando en dos pantallas la rentabilidad de su cartera frente al S&P 500", en: "Investor comparing his portfolio return against the S&P 500 on two screens" },
         imageCaption: { es: "Sin benchmark no hay resultado: solo sensaciones.", en: "Without a benchmark there is no result: only feelings." },
-      },
-    ],
       },
     ],
     takeaway: {
@@ -1070,7 +1066,8 @@ export const blogPosts: BlogPost[] = [
             es: "Para clasificar no hace falta enviar tu nombre, tu IBAN ni tu saldo. Basta con el concepto del movimiento, el importe y la fecha. Cualquier sistema que necesite más de eso para categorizar está pidiendo datos que no usa.",
             en: "Classifying needs neither your name, your IBAN nor your balance. The transaction description, amount and date are enough. Any system that needs more than that to categorise is asking for data it does not use.",
           },
-          {
+      },
+      {
         heading: { es: "Caso real: 900 € al mes que no aparecían en ninguna categoría", en: "Real case: €900 a month hiding outside every category" },
         paragraphs: [
           { es: "Nuria, freelance, subía sus extractos y clasificaba a mano una vez al trimestre; siempre acababa con un 40 % en «otros». Al automatizar la categorización con IA, ese cajón se redujo al 4 % y apareció el patrón: 900 € al mes entre suscripciones olvidadas, comida a domicilio y transporte de última hora.", en: "Nuria, a freelancer, uploaded statements and categorized by hand once a quarter; she always ended with 40% in “other”. Automating categorization with AI shrank that bucket to 4% and revealed the pattern: €900 a month across forgotten subscriptions, food delivery and last-minute transport." },
@@ -1079,8 +1076,6 @@ export const blogPosts: BlogPost[] = [
         image: caseAiExpensesImg,
         imageAlt: { es: "Freelance revisando en el móvil sus gastos clasificados automáticamente con inteligencia artificial", en: "Freelancer reviewing on her phone the expenses automatically categorized with artificial intelligence" },
         imageCaption: { es: "Cuando la categoría «otros» baja del 5 %, empiezas a decidir con datos reales.", en: "When the “other” bucket drops below 5%, you start deciding with real data." },
-      },
-    ],
       },
     ],
     takeaway: {
@@ -1195,7 +1190,8 @@ export const blogPosts: BlogPost[] = [
             es: "Ese último hito —a veces llamado coast— suele llegar entre 10 y 15 años antes que el número completo, y es el momento en que el estrés financiero baja de verdad.",
             en: "That last milestone — sometimes called coast — usually arrives 10 to 15 years before the full number, and it is when financial stress genuinely drops.",
           },
-          {
+      },
+      {
         heading: { es: "Caso real: la pareja que bajó su número en 260.000 €", en: "Real case: the couple that cut their number by €260,000" },
         paragraphs: [
           { es: "Ana y Pablo calcularon su número por primera vez con un gasto de 5.400 €/mes: necesitaban 1.620.000 € al 4 %. La cifra les pareció inalcanzable y estuvieron a punto de abandonar el plan.", en: "Ana and Pablo first calculated their number with a €5,400/mo spend: they needed €1,620,000 at 4%. The figure felt unreachable and they nearly abandoned the plan." },
@@ -1204,8 +1200,6 @@ export const blogPosts: BlogPost[] = [
         image: caseFreedomImg,
         imageAlt: { es: "Pareja calculando en casa su número de libertad financiera en un portátil", en: "Couple at home calculating their financial freedom number on a laptop" },
         imageCaption: { es: "Bajar 500 € de gasto mensual recorta 150.000 € de tu número. Ese es el atajo real.", en: "Cutting €500 of monthly spending removes €150,000 from your number. That is the real shortcut." },
-      },
-    ],
       },
     ],
     takeaway: {
@@ -1297,7 +1291,8 @@ export const blogPosts: BlogPost[] = [
             es: "Los que abandonan no lo hacen por un mal mes: lo hacen por dejar de mirar después de un mal mes. La constancia del registro vale más que la calidad de cualquier decisión individual.",
             en: "People do not quit because of a bad month: they quit by stopping looking after a bad month. Consistency of tracking beats the quality of any individual decision.",
           },
-          {
+      },
+      {
         heading: { es: "Caso real: doce revisiones, una decisión cada mes", en: "Real case: twelve reviews, one decision a month" },
         paragraphs: [
           { es: "Carlos empezó con una regla mínima: el primer domingo de cada mes, veinte minutos con temporizador. En doce revisiones tomó doce decisiones pequeñas: cancelar dos seguros duplicados, subir la aportación automática dos veces, refinanciar el préstamo y rebalancear una vez.", en: "Carlos started with one minimal rule: the first Sunday of every month, twenty minutes on a timer. Across twelve reviews he made twelve small decisions: cancelling two duplicate insurances, raising his automatic contribution twice, refinancing a loan and rebalancing once." },
@@ -1306,8 +1301,6 @@ export const blogPosts: BlogPost[] = [
         image: caseReviewImg,
         imageAlt: { es: "Persona con temporizador y café haciendo su revisión financiera mensual de veinte minutos", en: "Person with a timer and coffee doing their twenty-minute monthly financial review" },
         imageCaption: { es: "La constancia gana a la intensidad: doce decisiones pequeñas superan a un plan perfecto.", en: "Consistency beats intensity: twelve small decisions beat one perfect plan." },
-      },
-    ],
       },
     ],
     takeaway: {
