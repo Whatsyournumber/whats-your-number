@@ -6,7 +6,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { blogPosts } from "@/lib/blog-posts";
 import { blogCategories, postsByCategory } from "@/lib/blog-categories";
-import { buildBlogIndexBreadcrumbJsonLd } from "@/lib/blog-jsonld";
+import { buildBlogCollectionJsonLd, buildBlogIndexBreadcrumbJsonLd } from "@/lib/blog-jsonld";
 
 
 const TITLE = "Blog de Finanzas Personales | Ahorro, Inversiones y Negocios";
@@ -37,6 +37,7 @@ export const Route = createFileRoute("/blog")({
     ],
     scripts: [
       { type: "application/ld+json", children: JSON.stringify(buildBlogIndexBreadcrumbJsonLd("es")) },
+      { type: "application/ld+json", children: JSON.stringify(buildBlogCollectionJsonLd("es")) },
     ],
   }),
   component: BlogLayout,

@@ -217,7 +217,7 @@ function Advisor() {
                 placeholder={t("Pregunta sobre tus gastos, inversiones o metas…", "Ask about your spending, investments or goals…")}
                 className="min-h-[52px] resize-none rounded-2xl"
               />
-              <Button type="submit" size="icon" className="h-[52px] w-[52px] rounded-2xl">
+              <Button type="submit" size="icon" aria-label={t("Enviar mensaje", "Send message")} className="h-[52px] w-[52px] rounded-2xl">
                 <ArrowUp className="h-4 w-4" />
               </Button>
             </form>

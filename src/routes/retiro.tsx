@@ -212,7 +212,11 @@ function RetiroContent() {
 
   return (
     <PageShell>
-      <PageHeader eyebrow={t("Largo plazo", "Long term")} title="WhatsYournumber" subtitle={headerSubtitle} />
+      <PageHeader
+        eyebrow={t("Largo plazo", "Long term")}
+        title={t("Calculadora de retiro — WhatsYournumber", "Retirement Calculator — WhatsYournumber")}
+        subtitle={headerSubtitle}
+      />
 
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -244,7 +248,7 @@ function RetiroContent() {
             <div className="space-y-4" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center justify-between">
                 <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{t("Edita tu número", "Edit your number")}</p>
-                <button type="button" onClick={() => setEditing(false)} className="rounded-full p-1 text-muted-foreground hover:bg-elevated hover:text-foreground">
+                <button type="button" aria-label={t("Cerrar edición", "Close editor")} onClick={() => setEditing(false)} className="rounded-full p-1 text-muted-foreground hover:bg-elevated hover:text-foreground">
                   <X className="h-4 w-4" />
                 </button>
               </div>

@@ -3,7 +3,7 @@ import { useEffect } from "react";
 
 import { BlogIndex } from "@/routes/blog";
 import { useLanguage } from "@/hooks/use-language";
-import { buildBlogIndexBreadcrumbJsonLd } from "@/lib/blog-jsonld";
+import { buildBlogCollectionJsonLd, buildBlogIndexBreadcrumbJsonLd } from "@/lib/blog-jsonld";
 
 const TITLE = "Personal Finance Blog | Saving, Investing & Business";
 const DESCRIPTION =
@@ -33,6 +33,7 @@ export const Route = createFileRoute("/en/blog")({
     ],
     scripts: [
       { type: "application/ld+json", children: JSON.stringify(buildBlogIndexBreadcrumbJsonLd("en")) },
+      { type: "application/ld+json", children: JSON.stringify(buildBlogCollectionJsonLd("en")) },
     ],
   }),
   component: EnglishBlogLayout,
