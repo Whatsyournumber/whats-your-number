@@ -201,6 +201,36 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_distributions: {
+        Row: {
+          channels: Json
+          distributed_at: string
+          id: string
+          lang: string
+          ok: boolean
+          slug: string
+          url: string
+        }
+        Insert: {
+          channels?: Json
+          distributed_at?: string
+          id?: string
+          lang: string
+          ok?: boolean
+          slug: string
+          url: string
+        }
+        Update: {
+          channels?: Json
+          distributed_at?: string
+          id?: string
+          lang?: string
+          ok?: boolean
+          slug?: string
+          url?: string
+        }
+        Relationships: []
+      }
       blog_page_views: {
         Row: {
           city: string | null
