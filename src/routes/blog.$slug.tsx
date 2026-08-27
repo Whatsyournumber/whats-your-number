@@ -423,37 +423,6 @@ export function BlogArticleView({ slug }: { slug: string }) {
           </section>
         )}
 
-        {links && (
-          <section className="surface mt-10 p-6" aria-label={t("Enlaces relacionados", "Related links")}>
-            <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-primary">
-              <Link2 className="h-3.5 w-3.5" /> {t("Sigue profundizando", "Go deeper")}
-            </p>
-            <ul className="mt-4 space-y-3">
-              {links.internal.map((l) => (
-                <li key={l.to} className="text-[15px] leading-snug">
-                  <a
-                    href={lang === "en" ? (l.enTo ?? l.to) : l.to}
-                    className="font-medium text-primary underline-offset-4 hover:underline"
-                  >
-                    {l.label[lang]}
-                  </a>
-                  <span className="text-muted-foreground"> — {l.note[lang]}</span>
-                </li>
-              ))}
-              <li className="border-t border-border/50 pt-3 text-[15px] leading-snug">
-                <a
-                  href={links.external.href}
-                  target="_blank"
-                  rel="noopener nofollow"
-                  className="inline-flex items-center gap-1.5 font-medium text-foreground underline-offset-4 hover:text-primary hover:underline"
-                >
-                  {links.external.label[lang]} <ExternalLink className="h-3.5 w-3.5" />
-                </a>
-                <span className="text-muted-foreground"> — {links.external.note[lang]}</span>
-              </li>
-            </ul>
-          </section>
-        )}
 
 
         <aside className="surface glow mt-12 flex gap-3 p-6">
