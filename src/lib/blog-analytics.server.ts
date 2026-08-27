@@ -204,13 +204,13 @@ async function gscQuery(
   return json.rows ?? [];
 }
 
-export async function loadSearchConsole(
-  targetUrl: string,
-  selectedSiteUrl?: string,
-  days = 28,
-): Promise<GscSummary> {
+type SiteResolution =
+  | { ok: true; siteUrl: string; headers: Record<string, string> }
+  | { ok: false; summary: Exclude<GscSummary, { status: "ok" }> };
+
+async function resolveSite(targetUrl: string, selectedSiteUrl?: string): Promise<SiteResolution> {
   const headers = gscHeaders();
-  if (!headers) return { status: "not_connected" };
+  if (!headers) return { ok: false, summary: { status: "not_connected" } };
 
   const listed = await fetch(`${GATEWAY}/webmasters/v3/sites`, { headers });
   if (!listed.ok) throw new Error(`Search Console [${listed.status}]: ${await listed.text()}`);
@@ -221,18 +221,29 @@ export async function loadSearchConsole(
   const target = new URL(targetUrl);
   const matches = verified.filter((entry) => coversTarget(entry.siteUrl, target));
 
-  let siteUrl: string;
   if (selectedSiteUrl) {
     const found = matches.find((entry) => entry.siteUrl === selectedSiteUrl);
-    if (!found) return { status: "selection_required", candidates: matches.map((m) => m.siteUrl) };
-    siteUrl = found.siteUrl;
-  } else if (matches.length === 0) {
-    return { status: "no_property", sites: verified.map((m) => m.siteUrl) };
-  } else if (matches.length === 1) {
-    siteUrl = matches[0]!.siteUrl;
-  } else {
-    return { status: "selection_required", candidates: matches.map((m) => m.siteUrl) };
+    if (!found) {
+      return { ok: false, summary: { status: "selection_required", candidates: matches.map((m) => m.siteUrl) } };
+    }
+    return { ok: true, siteUrl: found.siteUrl, headers };
   }
+  if (matches.length === 0) {
+    return { ok: false, summary: { status: "no_property", sites: verified.map((m) => m.siteUrl) } };
+  }
+  if (matches.length === 1) return { ok: true, siteUrl: matches[0]!.siteUrl, headers };
+  return { ok: false, summary: { status: "selection_required", candidates: matches.map((m) => m.siteUrl) } };
+}
+
+export async function loadSearchConsole(
+  targetUrl: string,
+  selectedSiteUrl?: string,
+  days = 28,
+): Promise<GscSummary> {
+  const resolved = await resolveSite(targetUrl, selectedSiteUrl);
+  if (!resolved.ok) return resolved.summary;
+  const { headers, siteUrl } = resolved;
+
 
   const end = new Date(Date.now() - 2 * 86_400_000).toISOString().slice(0, 10);
   const start = new Date(Date.now() - (days + 2) * 86_400_000).toISOString().slice(0, 10);
