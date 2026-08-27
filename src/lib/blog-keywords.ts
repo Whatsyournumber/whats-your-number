@@ -5,7 +5,17 @@
  * - 4 keywords por artículo del blog
  */
 
-export type KeywordTarget = { es: string; en: string };
+/**
+ * `volume` = búsquedas mensuales estimadas (es = España, en = EE. UU.).
+ * Solo trackeamos keywords con al menos MIN_KEYWORD_VOLUME búsquedas/mes.
+ */
+export type KeywordTarget = { es: string; en: string; volume?: { es: number; en: number } };
+
+/** Volumen mínimo mensual exigido a una keyword objetivo. */
+export const MIN_KEYWORD_VOLUME = 150;
+
+/** Nº mínimo de keywords objetivo por artículo. */
+export const MIN_KEYWORDS_PER_POST = 4;
 
 export type KeywordGroup = {
   id: string;
