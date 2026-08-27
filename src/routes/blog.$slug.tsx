@@ -8,7 +8,7 @@ import { useLanguage, useT } from "@/hooks/use-language";
 import { blogPosts, getPost, postCharts, postExtras, sectionId } from "@/lib/blog-posts";
 import { BlogChartBlock } from "@/components/blog-chart";
 import { getAuthor } from "@/lib/blog-authors";
-import { absoluteUrl, buildArticleJsonLd, postIsoDate } from "@/lib/blog-jsonld";
+import { absoluteUrl, buildArticleJsonLd, buildBreadcrumbJsonLd, postIsoDate } from "@/lib/blog-jsonld";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
@@ -54,7 +54,9 @@ export const Route = createFileRoute("/blog/$slug")({
         { rel: "alternate", hrefLang: "en", href: `https://whatsyour-number.com/en/blog/${params.slug}` },
         { rel: "alternate", hrefLang: "x-default", href: url },
       ],
-      scripts: jsonLd ? [{ type: "application/ld+json", children: JSON.stringify(jsonLd) }] : [],
+      scripts: [jsonLd, buildBreadcrumbJsonLd(params.slug, "es")]
+        .filter(Boolean)
+        .map((data) => ({ type: "application/ld+json", children: JSON.stringify(data) })),
     };
   },
   component: BlogArticle,
