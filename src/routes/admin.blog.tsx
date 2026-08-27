@@ -135,7 +135,7 @@ function BlogBackOffice() {
       </div>
 
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <KpiCard title="Visitas al blog" value={(traffic.data?.totalViews ?? 0).toLocaleString("es-ES")} icon={Eye} />
+        <KpiCard label="Visitas al blog" value={(traffic.data?.totalViews ?? 0).toLocaleString("es-ES")} icon={Eye} />
         <KpiCard
           title="Lectores únicos"
           value={(traffic.data?.uniqueSessions ?? 0).toLocaleString("es-ES")}
@@ -146,7 +146,7 @@ function BlogBackOffice() {
           value={gscOk ? gscOk.totals.clicks.toLocaleString("es-ES") : "—"}
           icon={MousePointerClick}
         />
-        <KpiCard title="Artículos 100% checklist" value={`${readyPosts}/${audits.length}`} icon={ListChecks} />
+        <KpiCard label="Artículos 100% checklist" value={`${readyPosts}/${audits.length}`} icon={ListChecks} />
       </div>
 
       <Tabs defaultValue="keywords">
@@ -203,10 +203,10 @@ function BlogBackOffice() {
           {gscOk && (
             <>
               <div className="grid gap-4 sm:grid-cols-4">
-                <KpiCard title="Clics" value={gscOk.totals.clicks.toLocaleString("es-ES")} icon={MousePointerClick} />
-                <KpiCard title="Impresiones" value={gscOk.totals.impressions.toLocaleString("es-ES")} icon={Eye} />
-                <KpiCard title="CTR" value={pct(gscOk.totals.ctr)} icon={BarChart3} />
-                <KpiCard title="Posición media" value={gscOk.totals.position.toFixed(1)} icon={Search} />
+                <KpiCard label="Clics" value={gscOk.totals.clicks.toLocaleString("es-ES")} icon={MousePointerClick} />
+                <KpiCard label="Impresiones" value={gscOk.totals.impressions.toLocaleString("es-ES")} icon={Eye} />
+                <KpiCard label="CTR" value={pct(gscOk.totals.ctr)} icon={BarChart3} />
+                <KpiCard label="Posición media" value={gscOk.totals.position.toFixed(1)} icon={Search} />
               </div>
 
               <Panel className="p-6">
