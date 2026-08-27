@@ -141,7 +141,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           url: "https://whatsyour-number.com",
           logo: "https://whatsyour-number.com/favicon.png",
           description:
-            "Plataforma de finanzas personales y gestión patrimonial con IA: patrimonio, gastos, cash flow y portafolio.",
+            "Plataforma de finanzas personales con IA: controla gastos, patrimonio, inversiones, flujo de caja y retiro en un solo lugar.",
         }),
       },
     ],
