@@ -645,7 +645,7 @@ function KeywordGroupPanel({
 function RanksStatus({
   ranks,
 }: {
-  ranks: { isLoading: boolean; isError: boolean; error: unknown; data?: KeywordRankings };
+  ranks: { isLoading: boolean; isError: boolean; error: unknown; data: KeywordRankings | undefined };
 }) {
   if (ranks.isLoading) return <Panel className="p-6 text-muted-foreground">Consultando posiciones…</Panel>;
   if (ranks.isError) {
