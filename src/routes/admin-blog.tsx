@@ -401,7 +401,7 @@ function BlogBackOffice() {
 
           <Panel className="p-6">
 
-            <h2 className="mb-4 text-lg font-semibold">Visitas por día</h2>
+            <h2 className="mb-4 text-lg font-semibold">Visitas al blog por día (analítica propia)</h2>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={traffic.data?.byDay ?? []}>
