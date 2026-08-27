@@ -12,6 +12,8 @@ import freedom2Img from "@/assets/blog/freedom-number-2.jpg";
 import review2Img from "@/assets/blog/review-2.jpg";
 import richVsWealthyImg from "@/assets/blog/rich-vs-wealthy.jpg";
 import richVsWealthy2Img from "@/assets/blog/rich-vs-wealthy-2.jpg";
+import kids100kImg from "@/assets/blog/kids-sp500-100k.jpg";
+import kids100k2Img from "@/assets/blog/kids-sp500-100k-2.jpg";
 
 export type BlogSection = {
   heading: { es: string; en: string };
