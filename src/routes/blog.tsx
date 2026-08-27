@@ -110,6 +110,8 @@ export function BlogIndex() {
             </span>
           </div>
         </a>
+        )}
+
 
         <section className="mt-6 grid gap-5 md:grid-cols-2">
           {listed.map((post) => (
