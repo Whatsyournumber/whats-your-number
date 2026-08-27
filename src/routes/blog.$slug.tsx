@@ -251,7 +251,7 @@ export function BlogArticleView({ slug }: { slug: string }) {
           </nav>
         )}
 
-        <p className="mt-8 text-base leading-relaxed text-muted-foreground">{post.intro[lang]}</p>
+        <p className="mt-8 text-base leading-relaxed text-muted-foreground">{linkify(post.intro[lang])}</p>
 
         <article className="mt-10 space-y-10">
           {post.sections.map((section, i) => (
@@ -261,7 +261,7 @@ export function BlogArticleView({ slug }: { slug: string }) {
                 <div className="mt-3 space-y-4">
                   {section.paragraphs.map((p) => (
                     <p key={p.en} className="text-[15px] leading-relaxed text-muted-foreground">
-                      {p[lang]}
+                      {linkify(p[lang])}
                     </p>
                   ))}
                 </div>
@@ -297,7 +297,7 @@ export function BlogArticleView({ slug }: { slug: string }) {
                     <h3 className="font-display text-base font-semibold tracking-tight">{sub.heading[lang]}</h3>
                     {sub.paragraphs?.map((p) => (
                       <p key={p.en} className="mt-2 text-[15px] leading-relaxed text-muted-foreground">
-                        {p[lang]}
+                        {linkify(p[lang])}
                       </p>
                     ))}
                     {sub.bullets && (
