@@ -12,9 +12,11 @@ import {
   ListChecks,
   RefreshCw,
   MousePointerClick,
+  Rocket,
   Search,
   XCircle,
 } from "lucide-react";
+
 import {
   Bar,
   BarChart,
