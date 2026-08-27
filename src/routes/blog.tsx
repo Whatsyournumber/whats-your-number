@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { blogPosts } from "@/lib/blog-posts";
+import { buildBlogIndexBreadcrumbJsonLd } from "@/lib/blog-jsonld";
 
 const TITLE = "Blog de Finanzas Personales | Ahorro, Inversiones y Negocios";
 const DESCRIPTION =
@@ -31,6 +32,9 @@ export const Route = createFileRoute("/blog")({
       { rel: "alternate", hrefLang: "es", href: "https://whatsyour-number.com/blog" },
       { rel: "alternate", hrefLang: "en", href: "https://whatsyour-number.com/en/blog" },
       { rel: "alternate", hrefLang: "x-default", href: "https://whatsyour-number.com/blog" },
+    ],
+    scripts: [
+      { type: "application/ld+json", children: JSON.stringify(buildBlogIndexBreadcrumbJsonLd("es")) },
     ],
   }),
   component: BlogLayout,

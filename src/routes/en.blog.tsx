@@ -3,6 +3,7 @@ import { useEffect } from "react";
 
 import { BlogIndex } from "@/routes/blog";
 import { useLanguage } from "@/hooks/use-language";
+import { buildBlogIndexBreadcrumbJsonLd } from "@/lib/blog-jsonld";
 
 const TITLE = "Personal Finance Blog | Saving, Investing & Business";
 const DESCRIPTION =
@@ -29,6 +30,9 @@ export const Route = createFileRoute("/en/blog")({
       { rel: "alternate", hrefLang: "es", href: "https://whatsyour-number.com/blog" },
       { rel: "alternate", hrefLang: "en", href: "https://whatsyour-number.com/en/blog" },
       { rel: "alternate", hrefLang: "x-default", href: "https://whatsyour-number.com/blog" },
+    ],
+    scripts: [
+      { type: "application/ld+json", children: JSON.stringify(buildBlogIndexBreadcrumbJsonLd("en")) },
     ],
   }),
   component: EnglishBlogLayout,
