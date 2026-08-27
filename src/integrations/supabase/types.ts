@@ -201,6 +201,33 @@ export type Database = {
         }
         Relationships: []
       }
+      backlink_submissions: {
+        Row: {
+          id: string
+          link_url: string | null
+          notes: string | null
+          status: string
+          target_id: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          link_url?: string | null
+          notes?: string | null
+          status?: string
+          target_id: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          link_url?: string | null
+          notes?: string | null
+          status?: string
+          target_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       blog_distributions: {
         Row: {
           channels: Json

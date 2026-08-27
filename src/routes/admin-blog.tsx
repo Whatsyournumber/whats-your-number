@@ -42,6 +42,7 @@ import { getBlogSearchConsole, getBlogTraffic, getKeywordRankings, getSerpRankin
 import type { SerpRank, SerpRegion } from "@/lib/keyword-serp.server";
 import { lovableAnalytics } from "@/lib/lovable-analytics-snapshot";
 import { runIndexingDistribution, syncNewPostsDistribution } from "@/lib/indexing.functions";
+import { BacklinkPanel } from "@/components/backlink-panel";
 
 
 import type { GscRow, GscSummary, KeywordRank, KeywordRankings } from "@/lib/blog-analytics.server";
@@ -929,6 +930,8 @@ function DistributionPanel() {
             : "No se pudo ejecutar la difusión."}
         </Panel>
       )}
+
+      <BacklinkPanel />
 
       {links.length > 0 && (
         <Panel className="p-6">
