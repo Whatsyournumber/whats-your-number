@@ -329,6 +329,78 @@ function BlogBackOffice() {
         {/* ---------------------------- Tráfico interno --------------------------- */}
         <TabsContent value="trafico" className="space-y-6">
           <Panel className="p-6">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+              <h2 className="text-lg font-semibold">Tráfico global del sitio (analítica de Lovable)</h2>
+              <Badge variant="outline">
+                {lovableAnalytics.period.start} → {lovableAnalytics.period.end}
+              </Badge>
+            </div>
+            <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <KpiCard label="Visitantes" value={lovableAnalytics.totals.visitors.toLocaleString("es-ES")} icon={Globe2} />
+              <KpiCard label="Páginas vistas" value={lovableAnalytics.totals.pageviews.toLocaleString("es-ES")} icon={Eye} />
+              <KpiCard label="Páginas / visita" value={lovableAnalytics.totals.pageviewsPerVisit.toFixed(2)} icon={BarChart3} />
+              <KpiCard label="Rebote" value={`${lovableAnalytics.totals.bounceRate} %`} icon={MousePointerClick} />
+            </div>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={lovableAnalytics.byDay}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
+                  <XAxis dataKey="date" tick={{ fontSize: 11 }} tickFormatter={(d: string) => d.slice(5)} />
+                  <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
+                  <RTooltip />
+                  <Bar dataKey="pageviews" name="Páginas vistas" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="visitors" name="Visitantes" fill="hsl(var(--muted-foreground))" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </Panel>
+
+          <div className="grid gap-6 lg:grid-cols-3">
+            <Panel className="p-6">
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Páginas más vistas</h3>
+              <ul className="space-y-2 text-sm">
+                {lovableAnalytics.pages.map((row) => (
+                  <li key={row.label} className="flex items-center justify-between gap-3">
+                    <span className="truncate">{row.label}</span>
+                    <span className="font-medium">{row.value}</span>
+                  </li>
+                ))}
+              </ul>
+            </Panel>
+            <Panel className="p-6">
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Fuentes</h3>
+              <ul className="space-y-2 text-sm">
+                {lovableAnalytics.sources.map((row) => (
+                  <li key={row.label} className="flex items-center justify-between gap-3">
+                    <span className="truncate">{row.label}</span>
+                    <span className="font-medium">{row.value}</span>
+                  </li>
+                ))}
+              </ul>
+            </Panel>
+            <Panel className="p-6">
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Países y dispositivos</h3>
+              <ul className="space-y-2 text-sm">
+                {lovableAnalytics.countries.map((row) => (
+                  <li key={row.label} className="flex items-center justify-between gap-3">
+                    <span>{countryName(row.label)}</span>
+                    <span className="font-medium">{row.value}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-4 space-y-2 border-t border-border pt-4 text-sm">
+                {lovableAnalytics.devices.map((row) => (
+                  <div key={row.label} className="flex items-center justify-between gap-3">
+                    <span className="capitalize">{row.label}</span>
+                    <span className="font-medium">{row.value}</span>
+                  </div>
+                ))}
+              </div>
+            </Panel>
+          </div>
+
+          <Panel className="p-6">
+
             <h2 className="mb-4 text-lg font-semibold">Visitas por día</h2>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
