@@ -1758,6 +1758,46 @@ export type BlogQuote = {
 
 /** Expert quotes rendered inside specific articles. */
 export const postQuotes: Record<string, BlogQuote[]> = {
+  "boring-business-comprar-libertad-financiera": [
+    {
+      after: 0,
+      author: "Codie Sanchez",
+      role: { es: "Inversora en pequeños negocios, fundadora de Contrarian Thinking", en: "Small business investor, founder of Contrarian Thinking" },
+      text: {
+        es: "Compra flujos de caja, no solo ideas. Los negocios aburridos de la calle principal hacen más millonarios que las startups.",
+        en: "Buy cash flow, not just ideas. Boring main-street businesses create more millionaires than startups do.",
+      },
+    },
+    {
+      after: 1,
+      author: "Walker Deibel",
+      role: { es: "Autor de 'Buy Then Build'", en: "Author of 'Buy Then Build'" },
+      text: {
+        es: "Adquirir una empresa rentable ofrece mejores probabilidades de éxito que empezar de cero: los clientes, los ingresos y los procesos ya existen.",
+        en: "Acquiring a profitable company offers better odds than starting from scratch: the customers, the revenue and the processes already exist.",
+      },
+    },
+    {
+      after: 8,
+      author: "Warren Buffett",
+      role: { es: "Presidente de Berkshire Hathaway", en: "Chairman of Berkshire Hathaway" },
+      text: {
+        es: "Es mucho mejor comprar una compañía maravillosa a un precio razonable que una compañía razonable a un precio maravilloso.",
+        en: "It's far better to buy a wonderful company at a fair price than a fair company at a wonderful price.",
+      },
+    },
+    {
+      after: 9,
+      author: "Andrew Wilkinson",
+      role: { es: "Cofundador de Tiny", en: "Co-founder of Tiny" },
+      text: {
+        es: "Compramos negocios rentables y aburridos, dejamos que los dirija su equipo y les damos décadas para crecer. Eso genera más patrimonio que perseguir la próxima gran idea.",
+        en: "We buy profitable, boring businesses, let their teams run them and give them decades to grow. That builds more wealth than chasing the next big idea.",
+      },
+    },
+  ],
+
+
   "100k-hijo-18-anos-sp500": [
     {
       after: 0,
