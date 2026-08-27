@@ -201,6 +201,42 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_page_views: {
+        Row: {
+          city: string | null
+          country: string | null
+          created_at: string
+          device: string | null
+          id: string
+          lang: string
+          referrer: string | null
+          session_id: string | null
+          slug: string
+        }
+        Insert: {
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device?: string | null
+          id?: string
+          lang?: string
+          referrer?: string | null
+          session_id?: string | null
+          slug: string
+        }
+        Update: {
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device?: string | null
+          id?: string
+          lang?: string
+          referrer?: string | null
+          session_id?: string | null
+          slug?: string
+        }
+        Relationships: []
+      }
       holdings: {
         Row: {
           cost_basis: number
