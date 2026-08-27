@@ -187,7 +187,45 @@ export function BlogArticleView({ slug }: { slug: string }) {
                     ))}
                   </ul>
                 )}
+                {section.image && (
+                  <figure className="surface mt-6 overflow-hidden">
+                    <img
+                      src={section.image}
+                      alt={section.imageAlt?.[lang] ?? section.heading[lang]}
+                      loading="lazy"
+                      width={1200}
+                      height={750}
+                      className="h-full w-full object-cover"
+                    />
+                    {section.imageCaption && (
+                      <figcaption className="border-t border-border/50 px-5 py-3 text-xs text-muted-foreground">
+                        {section.imageCaption[lang]}
+                      </figcaption>
+                    )}
+                  </figure>
+                )}
+                {section.subsections?.map((sub) => (
+                  <div key={sub.heading.en} className="mt-6">
+                    <h3 className="font-display text-base font-semibold tracking-tight">{sub.heading[lang]}</h3>
+                    {sub.paragraphs?.map((p) => (
+                      <p key={p.en} className="mt-2 text-[15px] leading-relaxed text-muted-foreground">
+                        {p[lang]}
+                      </p>
+                    ))}
+                    {sub.bullets && (
+                      <ul className="mt-3 space-y-2">
+                        {sub.bullets.map((b) => (
+                          <li key={b.en} className="flex gap-2 text-[15px] leading-relaxed text-muted-foreground">
+                            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary/70" />
+                            {b[lang]}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ))}
               </section>
+
 
               {charts
                 .filter((c) => c.after === i)
