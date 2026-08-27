@@ -8,7 +8,10 @@ import { useLanguage, useT } from "@/hooks/use-language";
 import { blogPosts, getPost, postCharts, postExtras, sectionId } from "@/lib/blog-posts";
 import { BlogChartBlock } from "@/components/blog-chart";
 import { getAuthor } from "@/lib/blog-authors";
+import { BlogSidebar } from "@/components/blog-sidebar";
+import { postCategory } from "@/lib/blog-categories";
 import { absoluteUrl, buildArticleJsonLd, buildBreadcrumbJsonLd, postIsoDate } from "@/lib/blog-jsonld";
+
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
