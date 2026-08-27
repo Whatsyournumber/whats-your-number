@@ -203,28 +203,46 @@ export type Database = {
       }
       backlink_submissions: {
         Row: {
+          check_error: string | null
+          dofollow_ok: boolean
+          http_status: number | null
           id: string
+          last_checked_at: string | null
           link_url: string | null
           notes: string | null
+          priority: number
           status: string
           target_id: string
           updated_at: string
+          verified: boolean
         }
         Insert: {
+          check_error?: string | null
+          dofollow_ok?: boolean
+          http_status?: number | null
           id?: string
+          last_checked_at?: string | null
           link_url?: string | null
           notes?: string | null
+          priority?: number
           status?: string
           target_id: string
           updated_at?: string
+          verified?: boolean
         }
         Update: {
+          check_error?: string | null
+          dofollow_ok?: boolean
+          http_status?: number | null
           id?: string
+          last_checked_at?: string | null
           link_url?: string | null
           notes?: string | null
+          priority?: number
           status?: string
           target_id?: string
           updated_at?: string
+          verified?: boolean
         }
         Relationships: []
       }
