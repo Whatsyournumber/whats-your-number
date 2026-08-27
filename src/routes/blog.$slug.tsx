@@ -11,7 +11,7 @@ import { getAuthor } from "@/lib/blog-authors";
 import { BlogSidebar } from "@/components/blog-sidebar";
 import { postCategory } from "@/lib/blog-categories";
 import { absoluteUrl, buildArticleJsonLd, buildBreadcrumbJsonLd, buildFaqJsonLd, getPostFaqs, postIsoDate } from "@/lib/blog-jsonld";
-import { getPostLinks } from "@/lib/blog-links";
+import { getPostLinks, type PostLinks } from "@/lib/blog-links";
 
 
 export const Route = createFileRoute("/blog/$slug")({
@@ -168,6 +168,7 @@ export function BlogArticleView({ slug }: { slug: string }) {
   const author = getAuthor(post.slug);
   const faqs = getPostFaqs(post.slug);
   const links = getPostLinks(post.slug);
+  const linkify = makeInlineLinker(links, lang);
 
   // Cumulative paragraph count after each section
   const cumulative: number[] = [];
