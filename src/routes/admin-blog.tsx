@@ -14,6 +14,7 @@ import {
   MousePointerClick,
   Rocket,
   Search,
+  Sparkles,
   XCircle,
 } from "lucide-react";
 
@@ -38,7 +39,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useRoles } from "@/hooks/use-role";
 import { blogPosts } from "@/lib/blog-posts";
 import { auditAllPosts, MIN_WORDS, type PostAudit } from "@/lib/blog-audit";
-import { getBlogSearchConsole, getBlogTraffic, getKeywordRankings, getSerpRankings } from "@/lib/blog-analytics.functions";
+import {
+  getBlogSearchConsole,
+  getBlogTraffic,
+  getKeywordRankings,
+  getLlmInsights,
+  getSerpRankings,
+} from "@/lib/blog-analytics.functions";
 import type { SerpRank, SerpRegion } from "@/lib/keyword-serp.server";
 import { lovableAnalytics } from "@/lib/lovable-analytics-snapshot";
 import { runIndexingDistribution, syncNewPostsDistribution } from "@/lib/indexing.functions";
@@ -962,3 +969,131 @@ function DistributionPanel() {
   );
 }
 
+
+/* ---------------------------- IA & LLM deep ------------------------------- */
+
+/**
+ * Análisis profundo del tráfico que llega desde asistentes de IA (ChatGPT,
+ * Perplexity, Gemini, Copilot, Claude…): dónde se están leyendo y citando
+ * nuestros contenidos en las respuestas generadas.
+ */
+function LlmPanel({
+  days,
+  enabled,
+  countryLabel,
+}: {
+  days: number;
+  enabled: boolean;
+  countryLabel: (code: string) => string;
+}) {
+  const llm = useQuery({
+    queryKey: ["llm-insights", days],
+    enabled,
+    queryFn: () => getLlmInsights({ data: { days } }),
+  });
+
+  const data = llm.data;
+  const top = data?.bySource[0];
+
+  return (
+    <>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <KpiCard label="Visitas desde IA" value={(data?.aiViews ?? 0).toLocaleString("es-ES")} icon={Sparkles} />
+        <KpiCard label="% del tráfico" value={data ? pct(data.aiShare) : "—"} icon={BarChart3} />
+        <KpiCard label="Asistente líder" value={top?.label ?? "—"} icon={Rocket} />
+        <KpiCard label="Artículos citados" value={String(data?.byPost.length ?? 0)} icon={ListChecks} />
+      </div>
+
+      {llm.isLoading && <Panel className="p-6 text-muted-foreground">Analizando tráfico de IA…</Panel>}
+      {llm.isError && (
+        <Panel className="p-6">
+          <p className="mb-1 font-medium">No se pudo cargar el análisis de IA</p>
+          <p className="text-sm text-muted-foreground">{(llm.error as Error).message}</p>
+        </Panel>
+      )}
+
+      <Panel className="p-6">
+        <h2 className="mb-1 text-lg font-semibold">Dónde se están leyendo nuestros prompts</h2>
+        <p className="mb-4 text-sm text-muted-foreground">
+          Visitas que llegan directamente desde una respuesta generada por un asistente de IA en los últimos {days} días.
+        </p>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Asistente / motor de respuesta</TableHead>
+              <TableHead className="text-right">Visitas</TableHead>
+              <TableHead className="text-right">Lectores únicos</TableHead>
+              <TableHead className="text-right">% del tráfico IA</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {(data?.bySource ?? []).map((row) => (
+              <TableRow key={row.id}>
+                <TableCell className="font-medium">{row.label}</TableCell>
+                <TableCell className="text-right">{row.views}</TableCell>
+                <TableCell className="text-right">{row.sessions}</TableCell>
+                <TableCell className="text-right text-muted-foreground">
+                  {data && data.aiViews ? `${((row.views / data.aiViews) * 100).toFixed(1)} %` : "—"}
+                </TableCell>
+              </TableRow>
+            ))}
+            {(data?.bySource.length ?? 0) === 0 && !llm.isLoading && (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center text-muted-foreground">
+                  Todavía no hay visitas identificadas desde asistentes de IA.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </Panel>
+
+      <Panel className="p-6">
+        <h2 className="mb-4 text-lg font-semibold">Artículos que la IA está citando más</h2>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Artículo</TableHead>
+              <TableHead>Idioma</TableHead>
+              <TableHead>Asistentes</TableHead>
+              <TableHead className="text-right">Visitas IA</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {(data?.byPost ?? []).map((row) => (
+              <TableRow key={row.slug}>
+                <TableCell className="font-medium">{row.slug}</TableCell>
+                <TableCell>
+                  <Badge variant="outline">{row.lang.toUpperCase()}</Badge>
+                </TableCell>
+                <TableCell className="text-sm text-muted-foreground">{row.sources.join(" · ")}</TableCell>
+                <TableCell className="text-right">{row.views}</TableCell>
+              </TableRow>
+            ))}
+            {(data?.byPost.length ?? 0) === 0 && !llm.isLoading && (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center text-muted-foreground">
+                  Sin citas detectadas todavía.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </Panel>
+
+      {(data?.byCountry.length ?? 0) > 0 && (
+        <Panel className="p-6">
+          <h2 className="mb-4 text-lg font-semibold">Desde qué países llegan las respuestas de IA</h2>
+          <ul className="space-y-2 text-sm">
+            {(data?.byCountry ?? []).slice(0, 12).map((row) => (
+              <li key={row.country} className="flex items-center justify-between">
+                <span>{countryLabel(row.country)}</span>
+                <span className="text-muted-foreground">{row.views}</span>
+              </li>
+            ))}
+          </ul>
+        </Panel>
+      )}
+    </>
+  );
+}
