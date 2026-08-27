@@ -109,8 +109,9 @@ export function BlogIndex() {
           </div>
         </a>
 
-        <section className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {rest.map((post) => (
+        <section className="mt-6 grid gap-5 md:grid-cols-2">
+          {listed.map((post) => (
+
             <a
               key={post.slug}
               href={`/blog/${post.slug}`}
