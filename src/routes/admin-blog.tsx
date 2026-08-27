@@ -632,7 +632,7 @@ function BlogBackOffice() {
   );
 }
 
-function AuditCard({ audit, date }: { audit: PostAudit; date?: string }) {
+function AuditCard({ audit, date }: { audit: PostAudit; date?: string | undefined }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="rounded-xl border border-border/60 p-4">
@@ -696,7 +696,7 @@ function KeywordGroupPanel({
 }: {
   group: KeywordGroup;
   rankMap: Map<string, KeywordRank>;
-  date?: string;
+  date?: string | undefined;
 }) {
   const keywords = useMemo(
     () => group.keywords.flatMap((kw) => [kw.es, kw.en]),
