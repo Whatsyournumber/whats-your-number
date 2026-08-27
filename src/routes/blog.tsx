@@ -1,11 +1,14 @@
-import { createFileRoute, Link, Outlet, useMatches } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useMatches, useRouterState } from "@tanstack/react-router";
 import { ArrowRight, ArrowUpRight, Clock } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { BlogSidebar } from "@/components/blog-sidebar";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { blogPosts } from "@/lib/blog-posts";
+import { blogCategories, postsByCategory } from "@/lib/blog-categories";
 import { buildBlogIndexBreadcrumbJsonLd } from "@/lib/blog-jsonld";
+
 
 const TITLE = "Blog de Finanzas Personales | Ahorro, Inversiones y Negocios";
 const DESCRIPTION =
