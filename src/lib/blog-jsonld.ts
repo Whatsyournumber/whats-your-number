@@ -72,6 +72,9 @@ export function buildBlogIndexBreadcrumbJsonLd(lang: "es" | "en") {
   };
 }
 
+/** Fecha de la última ampliación editorial de los artículos (dateModified). */
+export const CONTENT_UPDATED_AT = "2026-08-27";
+
 /** Full schema.org Article JSON-LD for a blog post in the given language. */
 export function buildArticleJsonLd(slug: string, lang: "es" | "en") {
   const post = getPost(slug);
@@ -92,11 +95,22 @@ export function buildArticleJsonLd(slug: string, lang: "es" | "en") {
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
     keywords: post.keyword[lang],
     articleSection: post.tag[lang],
-    wordCount: post.sections.reduce(
-      (acc, s) => acc + s.paragraphs.reduce((a, p) => a + p[lang].split(/\s+/).length, 0),
-      0,
-    ),
-    ...(published ? { datePublished: published, dateModified: published } : {}),
+    isAccessibleForFree: true,
+    timeRequired: `PT${post.readMinutes}M`,
+    wordCount: post.sections.reduce((acc, s) => {
+      const words = (text: string) => text.trim().split(/\s+/).filter(Boolean).length;
+      let total = words(s.heading[lang]);
+      for (const p of s.paragraphs) total += words(p[lang]);
+      for (const b of s.bullets ?? []) total += words(b[lang]);
+      for (const sub of s.subsections ?? []) {
+        total += words(sub.heading[lang]);
+        for (const p of sub.paragraphs ?? []) total += words(p[lang]);
+        for (const b of sub.bullets ?? []) total += words(b[lang]);
+      }
+      return acc + total;
+    }, 0),
+    ...(published ? { datePublished: published, dateModified: CONTENT_UPDATED_AT } : {}),
+
     author: {
       "@type": "Person",
       name: author.name,

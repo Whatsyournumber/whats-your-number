@@ -1,3 +1,4 @@
+import { extraSections } from "@/lib/blog-extra";
 import netWorthImg from "@/assets/blog/net-worth.jpg";
 import runwayImg from "@/assets/blog/runway.jpg";
 import benchmarkImg from "@/assets/blog/benchmark.jpg";
@@ -90,7 +91,7 @@ export const blogPosts: BlogPost[] = [
     },
     keyword: { es: "boring business", en: "boring business" },
     toc: true,
-    readMinutes: 14,
+    readMinutes: 13,
     tag: { es: "Business ideas", en: "Business ideas" },
     date: { es: "27 ago 2026", en: "Aug 27, 2026" },
     title: {
@@ -506,7 +507,7 @@ export const blogPosts: BlogPost[] = [
     },
     keyword: { es: "ser rico o ser adinerado", en: "rich vs wealthy" },
     toc: true,
-    readMinutes: 14,
+    readMinutes: 16,
     tag: { es: "Libertad financiera", en: "Financial freedom" },
     date: { es: "21 ago 2026", en: "Aug 21, 2026" },
     title: {
@@ -792,7 +793,7 @@ export const blogPosts: BlogPost[] = [
     },
     keyword: { es: "runway personal", en: "personal runway" },
     toc: true,
-    readMinutes: 10,
+    readMinutes: 16,
     tag: { es: "Cash flow", en: "Cash flow" },
     date: { es: "28 jun 2026", en: "Jun 28, 2026" },
     title: {
@@ -906,7 +907,7 @@ export const blogPosts: BlogPost[] = [
     },
     keyword: { es: "comparar portafolio con el S&P 500", en: "benchmark portfolio against the S&P 500" },
     toc: true,
-    readMinutes: 11,
+    readMinutes: 13,
     tag: { es: "Inversión", en: "Investing" },
     date: { es: "9 jun 2026", en: "Jun 9, 2026" },
     title: {
@@ -1017,7 +1018,7 @@ export const blogPosts: BlogPost[] = [
     },
     keyword: { es: "clasificación automática de gastos con IA", en: "automatic expense classification with AI" },
     toc: true,
-    readMinutes: 9,
+    readMinutes: 13,
     tag: { es: "IA", en: "AI" },
     date: { es: "21 may 2026", en: "May 21, 2026" },
     title: {
@@ -1245,7 +1246,7 @@ export const blogPosts: BlogPost[] = [
     },
     keyword: { es: "revisión financiera mensual", en: "monthly financial review" },
     toc: true,
-    readMinutes: 8,
+    readMinutes: 12,
     tag: { es: "Hábitos", en: "Habits" },
     date: { es: "14 abr 2026", en: "Apr 14, 2026" },
     title: {
@@ -1341,9 +1342,16 @@ export const blogPosts: BlogPost[] = [
   },
 ];
 
+/* Amplía cada artículo con sus secciones extra (contenido largo para SEO/GEO). */
+for (const post of blogPosts) {
+  const extra = extraSections[post.slug];
+  if (extra?.length) post.sections = [...post.sections, ...extra];
+}
+
 export function getPost(slug: string) {
   return blogPosts.find((p) => p.slug === slug);
 }
+
 
 export type BlogTable = {
   title: { es: string; en: string };
