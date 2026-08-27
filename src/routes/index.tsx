@@ -77,10 +77,71 @@ export const Route = createFileRoute("/")({
     links: [
       { rel: "canonical", href: "https://whatsyour-number.com" },
       { rel: "alternate", hrefLang: "es", href: "https://whatsyour-number.com" },
+      { rel: "alternate", hrefLang: "es-ES", href: "https://whatsyour-number.com" },
+      { rel: "alternate", hrefLang: "es-MX", href: "https://whatsyour-number.com" },
+      { rel: "alternate", hrefLang: "es-AR", href: "https://whatsyour-number.com" },
+      { rel: "alternate", hrefLang: "es-CO", href: "https://whatsyour-number.com" },
       { rel: "alternate", hrefLang: "en", href: "https://whatsyour-number.com/en" },
       { rel: "alternate", hrefLang: "x-default", href: "https://whatsyour-number.com" },
+      {
+        rel: "alternate",
+        type: "application/rss+xml",
+        title: "Blog de WhatsYourNumber",
+        href: "https://whatsyour-number.com/api/public/rss",
+      },
+      {
+        rel: "alternate",
+        type: "application/rss+xml",
+        title: "WhatsYourNumber Blog (EN)",
+        href: "https://whatsyour-number.com/api/public/rss?lang=en",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://whatsyour-number.com/#organization",
+              name: "WhatsYourNumber",
+              url: "https://whatsyour-number.com",
+              logo: "https://whatsyour-number.com/og-cover.jpg",
+              slogan: "La libertad financiera tiene un número",
+              knowsLanguage: ["es", "en"],
+              areaServed: [
+                { "@type": "Country", name: "España" },
+                { "@type": "Country", name: "México" },
+                { "@type": "Country", name: "Argentina" },
+                { "@type": "Country", name: "Colombia" },
+                { "@type": "Country", name: "Chile" },
+                { "@type": "Country", name: "Estados Unidos" },
+              ],
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://whatsyour-number.com/#website",
+              url: "https://whatsyour-number.com",
+              name: "WhatsYourNumber",
+              inLanguage: ["es-ES", "en-US"],
+              publisher: { "@id": "https://whatsyour-number.com/#organization" },
+            },
+            {
+              "@type": "SoftwareApplication",
+              name: "WhatsYourNumber",
+              applicationCategory: "FinanceApplication",
+              operatingSystem: "Web",
+              inLanguage: ["es-ES", "en-US"],
+              url: "https://whatsyour-number.com",
+              publisher: { "@id": "https://whatsyour-number.com/#organization" },
+            },
+          ],
+        }),
+      },
     ],
   }),
+
   component: Landing,
 });
 
