@@ -12,6 +12,8 @@ export type KeywordGroup = {
   label: { es: string; en: string };
   /** Ruta canónica en español (para abrir la página desde el panel). */
   path: string;
+  /** Fecha de creación/publicación (solo artículos). */
+  date?: string;
   keywords: KeywordTarget[];
 };
 

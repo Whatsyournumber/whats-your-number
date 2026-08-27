@@ -224,7 +224,7 @@ function BlogBackOffice() {
         <TabsContent value="kws-blog" className="space-y-6">
           <RanksStatus ranks={ranks} />
           {postGroups.map((group) => (
-            <KeywordGroupPanel key={group.id} group={group} rankMap={rankMap} />
+            <KeywordGroupPanel key={group.id} group={group} rankMap={rankMap} date={group.date} />
           ))}
 
           {gsc.isLoading && <Panel className="p-6 text-muted-foreground">Consultando Search Console…</Panel>}
@@ -769,6 +769,7 @@ function KeywordGroupPanel({
                 <TableCell className="font-medium">{kw[lang]}</TableCell>
                 <TableCell className="uppercase text-xs text-muted-foreground">{lang}</TableCell>
                 <RankCells rank={rankMap.get(kw[lang].toLowerCase())} />
+                <SerpCell rank={serpMap.get(kw[lang].toLowerCase())} measuring={measuring} />
               </TableRow>
             )),
           )}
@@ -776,6 +777,20 @@ function KeywordGroupPanel({
       </Table>
     </Panel>
   );
+}
+
+function SerpCell({ rank, measuring }: { rank: SerpRank | undefined; measuring: boolean }) {
+  if (measuring && !rank) {
+    return <TableCell className="text-right text-xs text-muted-foreground">Midiendo…</TableCell>;
+  }
+  if (!rank) return <TableCell className="text-right text-muted-foreground">—</TableCell>;
+  if (rank.error) {
+    return <TableCell className="text-right text-xs text-muted-foreground">Sin respuesta</TableCell>;
+  }
+  if (rank.position === null) {
+    return <TableCell className="text-right text-xs text-muted-foreground">&gt; top 30</TableCell>;
+  }
+  return <TableCell className="text-right font-medium text-emerald-500">#{rank.position}</TableCell>;
 }
 
 function RanksStatus({
