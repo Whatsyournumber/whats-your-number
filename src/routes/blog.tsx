@@ -114,8 +114,7 @@ export function BlogIndex() {
           </div>
         </section>
 
-        <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_300px]">
-        <div className="min-w-0">
+        <div className="mt-2">
 
 
         {/* Destacado */}

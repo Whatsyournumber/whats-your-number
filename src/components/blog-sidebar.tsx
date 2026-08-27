@@ -25,13 +25,14 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
             "Net worth, runway and years to financial freedom. No card required.",
           )}
         </p>
-        <Link
-          to="/demo"
-          search={{ start: 1 }}
+        <a
+          href="/demo?start=1"
+          target="_blank"
+          rel="noopener noreferrer"
           className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground"
         >
           {t("Hacer el demo", "Try the demo")} <ArrowRight className="h-4 w-4" />
-        </Link>
+        </a>
         <Link
           to="/auth"
           search={{ mode: "signup" }}
@@ -48,11 +49,13 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
         <ul className="mt-4 space-y-1">
           {blogCategories.map((c) => {
             const count = categoryCount(c.id);
-            const href = c.href ? c.href[lang] : `${blogHref}?cat=${c.id}`;
+            const isKids = c.id === "ninos";
+            const href = isKids ? "/demo-ninos" : c.href ? c.href[lang] : `${blogHref}?cat=${c.id}`;
             return (
               <li key={c.id}>
                 <a
                   href={href}
+                  {...(isKids ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   className={`flex items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-elevated hover:text-primary ${
                     activeCategory === c.id ? "bg-elevated text-primary" : "text-muted-foreground"
                   }`}
