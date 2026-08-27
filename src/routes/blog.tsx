@@ -3,7 +3,6 @@ import { ArrowRight, ArrowUpRight, Clock } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { BlogSidebar } from "@/components/blog-sidebar";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { blogPosts } from "@/lib/blog-posts";
 import { blogCategories, postsByCategory } from "@/lib/blog-categories";
@@ -203,11 +202,6 @@ export function BlogIndex() {
             {t("Pronto publicaremos artículos de esta categoría.", "We'll publish articles in this category soon.")}
           </p>
         )}
-        </div>
-
-        <aside className="lg:pt-2">
-          <BlogSidebar activeCategory={activeCat ?? undefined} />
-        </aside>
         </div>
 
 
