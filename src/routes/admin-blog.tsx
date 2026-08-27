@@ -41,6 +41,8 @@ import { auditAllPosts, MIN_WORDS, type PostAudit } from "@/lib/blog-audit";
 import { getBlogSearchConsole, getBlogTraffic, getKeywordRankings, getSerpRankings } from "@/lib/blog-analytics.functions";
 import type { SerpRank, SerpRegion } from "@/lib/keyword-serp.server";
 import { lovableAnalytics } from "@/lib/lovable-analytics-snapshot";
+import { runIndexingDistribution } from "@/lib/indexing.functions";
+
 
 import type { GscRow, GscSummary, KeywordRank, KeywordRankings } from "@/lib/blog-analytics.server";
 import {
