@@ -1,0 +1,70 @@
+import { Link } from "@tanstack/react-router";
+import { ArrowRight, Sparkles, Tag } from "lucide-react";
+
+import { useLanguage, useT } from "@/hooks/use-language";
+import { blogCategories, categoryCount } from "@/lib/blog-categories";
+
+/** Sticky rail shown to the right of an article: demo CTA + category navigation. */
+export function BlogSidebar({ activeCategory }: { activeCategory?: string }) {
+  const t = useT();
+  const { lang } = useLanguage();
+  const blogHref = lang === "en" ? "/en/blog" : "/blog";
+
+  return (
+    <div className="sticky top-24 space-y-5">
+      <div className="surface glow p-6">
+        <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-primary">
+          <Sparkles className="h-3.5 w-3.5" /> {t("Demo gratis", "Free demo")}
+        </p>
+        <p className="mt-3 font-display text-base font-semibold leading-snug">
+          {t("Calcula tu número en 3 minutos", "Calculate your number in 3 minutes")}
+        </p>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          {t(
+            "Patrimonio, runway y años hasta tu libertad financiera. Sin tarjeta.",
+            "Net worth, runway and years to financial freedom. No card required.",
+          )}
+        </p>
+        <Link
+          to="/demo"
+          search={{ start: 1 }}
+          className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground"
+        >
+          {t("Hacer el demo", "Try the demo")} <ArrowRight className="h-4 w-4" />
+        </Link>
+        <Link
+          to="/auth"
+          search={{ mode: "signup" }}
+          className="mt-2 inline-flex w-full items-center justify-center rounded-full border border-border px-4 py-2 text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+        >
+          {t("Crear cuenta gratis", "Create free account")}
+        </Link>
+      </div>
+
+      <nav className="surface p-6" aria-label={t("Categorías del blog", "Blog categories")}>
+        <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-primary">
+          <Tag className="h-3.5 w-3.5" /> {t("Categorías", "Categories")}
+        </p>
+        <ul className="mt-4 space-y-1">
+          {blogCategories.map((c) => {
+            const count = categoryCount(c.id);
+            const href = c.href ? c.href[lang] : `${blogHref}?cat=${c.id}`;
+            return (
+              <li key={c.id}>
+                <a
+                  href={href}
+                  className={`flex items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-elevated hover:text-primary ${
+                    activeCategory === c.id ? "bg-elevated text-primary" : "text-muted-foreground"
+                  }`}
+                >
+                  <span>{c.label[lang]}</span>
+                  {count > 0 && <span className="text-xs text-muted-foreground">{count}</span>}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+    </div>
+  );
+}
