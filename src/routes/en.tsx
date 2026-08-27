@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useMatches } from "@tanstack/react-router";
 import { useEffect } from "react";
 
 import { Landing } from "@/routes/index";
@@ -33,6 +33,7 @@ export const Route = createFileRoute("/en")({
 });
 
 function EnglishLanding() {
+  const matches = useMatches();
   const { lang, setLang } = useLanguage();
 
   // La URL /en fuerza el idioma inglés al entrar.
@@ -40,5 +41,8 @@ function EnglishLanding() {
     if (lang !== "en") setLang("en");
   }, [lang, setLang]);
 
+  // Rutas hijas (/en/blog, /en/blog/$slug, /en/finanzas-para-ninos) se renderizan vía Outlet.
+  const isChild = matches.some((m) => m.routeId.startsWith("/en/"));
+  if (isChild) return <Outlet />;
   return <Landing />;
 }
