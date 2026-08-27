@@ -108,9 +108,6 @@ export function BlogArticleView({ slug }: { slug: string }) {
       <SiteHeader />
 
       <main className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-24">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_300px]">
-        <div className="min-w-0">
-
         <Link
           to="/blog"
           className="mt-8 inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
@@ -118,7 +115,10 @@ export function BlogArticleView({ slug }: { slug: string }) {
           <ArrowLeft className="h-3.5 w-3.5" /> {t("Volver al blog", "Back to blog")}
         </Link>
 
-        <header className="mt-6">
+        <div className="mt-6 grid gap-10 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <div className="min-w-0">
+
+        <header>
           <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
             <span className="rounded-full bg-elevated px-2.5 py-1 font-medium text-primary">{post.tag[lang]}</span>
             <span>{post.date[lang]}</span>
@@ -359,7 +359,7 @@ export function BlogArticleView({ slug }: { slug: string }) {
         </section>
         </div>
 
-        <aside className="lg:pt-8">
+        <aside className="lg:pt-[42px]">
           <BlogSidebar activeCategory={postCategory(post.slug)?.id} />
         </aside>
         </div>

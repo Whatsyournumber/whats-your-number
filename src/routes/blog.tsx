@@ -100,7 +100,7 @@ export function BlogIndex() {
             {blogCategories.map((c) => (
               <a
                 key={c.id}
-                href={c.href ? c.href[lang] : `${blogHref}?cat=${c.id}`}
+                href={`${blogHref}?cat=${c.id}`}
                 className={`rounded-full border px-4 py-1.5 text-xs font-medium transition-colors ${
                   activeCat === c.id
                     ? "border-primary bg-primary/10 text-primary"
