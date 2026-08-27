@@ -976,6 +976,38 @@ export type BlogExtras = {
 
 /** Second photo + comparative table shown mid-article. */
 export const postExtras: Record<string, BlogExtras> = {
+  "100k-hijo-18-anos-sp500": {
+    image2: kids100k2Img,
+    image2Alt: {
+      es: "Joven de 18 años revisando en una tablet la cartera indexada que sus padres construyeron durante su infancia",
+      en: "An 18-year-old checking on a tablet the index portfolio his parents built through his childhood",
+    },
+    image2Caption: {
+      es: "El objetivo no es entregarle dinero a los 18: es entregarle un capital que ya sabe usar.",
+      en: "The goal is not handing over money at 18: it is handing over capital they already know how to use.",
+    },
+    table: {
+      title: { es: "Aportación mensual necesaria para llegar a 100.000 €", en: "Monthly contribution needed to reach €100,000" },
+      note: {
+        es: "Rentabilidad del 8% anual, aportación constante hasta el día que cumple 18 años.",
+        en: "8% annual return, constant contribution until their 18th birthday.",
+      },
+      columns: [
+        { es: "Edad a la que empiezas", en: "Age when you start" },
+        { es: "Aportación mensual", en: "Monthly contribution" },
+        { es: "Total aportado", en: "Total contributed" },
+        { es: "Lo que pone el mercado", en: "What the market adds" },
+      ],
+      rows: [
+        { cells: [{ es: "Recién nacido", en: "Newborn" }, { es: "210 €", en: "€210" }, { es: "45.400 €", en: "€45,400" }, { es: "54.600 €", en: "€54,600" }], highlight: true },
+        { cells: [{ es: "3 años", en: "3 years" }, { es: "285 €", en: "€285" }, { es: "51.300 €", en: "€51,300" }, { es: "48.700 €", en: "€48,700" }] },
+        { cells: [{ es: "6 años", en: "6 years" }, { es: "380 €", en: "€380" }, { es: "54.700 €", en: "€54,700" }, { es: "45.300 €", en: "€45,300" }] },
+        { cells: [{ es: "9 años", en: "9 years" }, { es: "550 €", en: "€550" }, { es: "59.400 €", en: "€59,400" }, { es: "40.600 €", en: "€40,600" }] },
+        { cells: [{ es: "12 años", en: "12 years" }, { es: "900 €", en: "€900" }, { es: "64.800 €", en: "€64,800" }, { es: "35.200 €", en: "€35,200" }] },
+      ],
+    },
+  },
+
   "rico-vs-adinerado": {
     image2: richVsWealthy2Img,
     image2Alt: {
@@ -1192,6 +1224,82 @@ export type BlogChart = {
 
 /** Charts rendered inside specific articles. */
 export const postCharts: Record<string, BlogChart[]> = {
+  "100k-hijo-18-anos-sp500": [
+    {
+      id: "aporte-edad",
+      kind: "bar",
+      unit: "money",
+      after: 1,
+      title: {
+        es: "Aportación mensual necesaria según la edad a la que empiezas",
+        en: "Monthly contribution needed by starting age",
+      },
+      note: {
+        es: "Objetivo: 100.000 € el día que cumple 18 años, con una rentabilidad del 8% anual.",
+        en: "Goal: €100,000 on their 18th birthday, at an 8% annual return.",
+      },
+      series: [{ key: "cuota", label: { es: "Aportación mensual (€)", en: "Monthly contribution (€)" } }],
+      data: [
+        { label: { es: "0 años", en: "Age 0" }, cuota: 210 },
+        { label: { es: "3 años", en: "Age 3" }, cuota: 285 },
+        { label: { es: "6 años", en: "Age 6" }, cuota: 380 },
+        { label: { es: "9 años", en: "Age 9" }, cuota: 550 },
+        { label: { es: "12 años", en: "Age 12" }, cuota: 900 },
+        { label: { es: "15 años", en: "Age 15" }, cuota: 2350 },
+      ],
+    },
+    {
+      id: "crecimiento",
+      kind: "area",
+      stacked: true,
+      unit: "money",
+      after: 2,
+      title: {
+        es: "Cómo se construyen los 100.000 €: tú vs. el interés compuesto",
+        en: "How the €100,000 is built: you vs. compounding",
+      },
+      note: {
+        es: "210 € al mes desde el nacimiento, rentabilidad del 8% anual en un indexado al S&P 500.",
+        en: "€210 a month from birth, 8% annual return in an S&P 500 index fund.",
+      },
+      series: [
+        { key: "aportado", label: { es: "Lo que aportas tú", en: "What you contribute" } },
+        { key: "mercado", label: { es: "Lo que aporta el mercado", en: "What the market adds" } },
+      ],
+      data: [
+        { label: { es: "3 años", en: "Age 3" }, aportado: 7560, mercado: 950 },
+        { label: { es: "6 años", en: "Age 6" }, aportado: 15120, mercado: 4200 },
+        { label: { es: "9 años", en: "Age 9" }, aportado: 22680, mercado: 10600 },
+        { label: { es: "12 años", en: "Age 12" }, aportado: 30240, mercado: 21400 },
+        { label: { es: "15 años", en: "Age 15" }, aportado: 37800, mercado: 37900 },
+        { label: { es: "18 años", en: "Age 18" }, aportado: 45400, mercado: 54600 },
+      ],
+    },
+    {
+      id: "despues18",
+      kind: "bar",
+      unit: "money",
+      after: 5,
+      title: {
+        es: "Si no toca el capital a los 18: valor futuro sin aportar nada más",
+        en: "If they leave it untouched at 18: future value with no extra contributions",
+      },
+      note: {
+        es: "100.000 € invertidos al 7% real anual, sin nuevas aportaciones.",
+        en: "€100,000 invested at a 7% real annual return, with no new contributions.",
+      },
+      series: [{ key: "valor", label: { es: "Capital acumulado", en: "Accumulated capital" } }],
+      data: [
+        { label: { es: "18 años", en: "Age 18" }, valor: 100000 },
+        { label: { es: "25 años", en: "Age 25" }, valor: 160600 },
+        { label: { es: "30 años", en: "Age 30" }, valor: 225200 },
+        { label: { es: "40 años", en: "Age 40" }, valor: 443000 },
+        { label: { es: "50 años", en: "Age 50" }, valor: 871000 },
+        { label: { es: "60 años", en: "Age 60" }, valor: 1713000 },
+      ],
+    },
+  ],
+
   "rico-vs-adinerado": [
     {
       id: "capital",
@@ -1266,6 +1374,57 @@ export const postCharts: Record<string, BlogChart[]> = {
         { label: { es: "Año 20", en: "Year 20" }, aportado: 480000, interes: 562000 },
         { label: { es: "Año 25", en: "Year 25" }, aportado: 600000, interes: 1021000 },
       ],
+    },
+  ],
+};
+
+
+export type BlogQuote = {
+  text: { es: string; en: string };
+  author: string;
+  role: { es: string; en: string };
+  /** Index of the section this quote is rendered after. */
+  after: number;
+};
+
+/** Expert quotes rendered inside specific articles. */
+export const postQuotes: Record<string, BlogQuote[]> = {
+  "100k-hijo-18-anos-sp500": [
+    {
+      after: 0,
+      author: "Warren Buffett",
+      role: { es: "Presidente de Berkshire Hathaway", en: "Chairman of Berkshire Hathaway" },
+      text: {
+        es: "Mi consejo para el fideicomiso de mi familia es este: pon el 10% en bonos del Estado a corto plazo y el 90% en un fondo indexado al S&P 500 de muy bajo coste.",
+        en: "My advice to the trustee of my family's estate is this: put 10% in short-term government bonds and 90% in a very low-cost S&P 500 index fund.",
+      },
+    },
+    {
+      after: 2,
+      author: "John C. Bogle",
+      role: { es: "Fundador de Vanguard", en: "Founder of Vanguard" },
+      text: {
+        es: "No busques la aguja en el pajar: compra directamente el pajar. En la inversión, obtienes exactamente aquello por lo que no pagas.",
+        en: "Don't look for the needle in the haystack: just buy the haystack. In investing, you get precisely what you don't pay for.",
+      },
+    },
+    {
+      after: 3,
+      author: "Morgan Housel",
+      role: { es: "Autor de 'La psicología del dinero'", en: "Author of 'The Psychology of Money'" },
+      text: {
+        es: "Invertir bien no consiste en tomar buenas decisiones, sino en no interrumpir el interés compuesto de forma innecesaria.",
+        en: "Investing well is not about making good decisions; it's about consistently not screwing up — never interrupting compounding unnecessarily.",
+      },
+    },
+    {
+      after: 4,
+      author: "Burton Malkiel",
+      role: { es: "Autor de 'Un paseo aleatorio por Wall Street'", en: "Author of 'A Random Walk Down Wall Street'" },
+      text: {
+        es: "El tiempo en el mercado es mucho más importante que acertar el momento de entrar. Empezar pronto y aportar de forma periódica es la ventaja que sí está a tu alcance.",
+        en: "Time in the market matters far more than timing the market. Starting early and contributing regularly is the edge that is actually available to you.",
+      },
     },
   ],
 };
