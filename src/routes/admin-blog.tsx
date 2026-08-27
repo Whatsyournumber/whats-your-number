@@ -850,3 +850,95 @@ function RanksStatus({
   }
   return null;
 }
+
+/* ------------------------------- Difusión --------------------------------- */
+
+/** Indexación acelerada (IndexNow, Google, agregadores) y difusión del feed ES/EN. */
+function DistributionPanel() {
+  const run = useMutation({ mutationFn: () => runIndexingDistribution({ data: {} }) });
+
+  const channels = [
+    {
+      name: "IndexNow",
+      what: "Bing, Yandex, Seznam y Naver reciben las URLs nuevas y suelen indexarlas en minutos.",
+    },
+    {
+      name: "Google Search Console",
+      what: "Reenvía el sitemap a la propiedad verificada para acelerar el rastreo.",
+    },
+    {
+      name: "Ping-o-Matic · Twingly · BlogFlux",
+      what: "Avisan a directorios y agregadores de blogs (ES y EN) de que hay contenido nuevo.",
+    },
+    {
+      name: "WebSub / RSS hub",
+      what: "Distribuye el feed en español e inglés a lectores y agregadores al instante.",
+    },
+  ];
+
+  return (
+    <>
+      <Panel className="p-6">
+        <div className="mb-4 flex flex-wrap items-center gap-3">
+          <Rocket className="h-5 w-5 text-primary" />
+          <div className="mr-auto">
+            <h3 className="font-semibold">Indexación acelerada y difusión off-site</h3>
+            <p className="text-sm text-muted-foreground">
+              Enlaces limpios y avisos a buscadores. Nada de granjas de enlaces: Google las penaliza.
+            </p>
+          </div>
+          <Button onClick={() => run.mutate()} disabled={run.isPending}>
+            {run.isPending ? "Difundiendo…" : "Difundir ahora"}
+          </Button>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          {channels.map((channel) => (
+            <div key={channel.name} className="rounded-lg border border-border/60 p-4">
+              <p className="text-sm font-medium">{channel.name}</p>
+              <p className="mt-1 text-sm text-muted-foreground">{channel.what}</p>
+            </div>
+          ))}
+        </div>
+      </Panel>
+
+      {run.isError && (
+        <Panel className="p-6 text-sm text-destructive">
+          {run.error instanceof Error ? run.error.message : "No se pudo ejecutar la difusión."}
+        </Panel>
+      )}
+
+      {run.data && (
+        <Panel className="p-6">
+          <p className="mb-4 text-sm text-muted-foreground">
+            {run.data.urls} URLs enviadas · {new Date(run.data.ranAt).toLocaleString("es-ES")}
+          </p>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Canal</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead>Detalle</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {run.data.results.map((result) => (
+                <TableRow key={result.channel}>
+                  <TableCell className="font-medium">{result.channel}</TableCell>
+                  <TableCell>
+                    {result.ok ? (
+                      <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                    ) : (
+                      <XCircle className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </TableCell>
+                  <TableCell className="text-sm text-muted-foreground">{result.detail}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Panel>
+      )}
+    </>
+  );
+}
