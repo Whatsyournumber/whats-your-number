@@ -19,11 +19,9 @@ export type CheckKey =
   | "table"
   | "quotes"
   | "case"
-  | "toc"
   | "faq"
   | "links"
-  | "alt"
-  | "meta";
+  | "insight";
 
 export type CheckResult = {
   key: CheckKey;
@@ -126,34 +124,22 @@ export function auditPost(post: BlogPost, lang: Lang): PostAudit {
       detail: hasCase(post) ? "sí" : "falta",
     },
     {
-      key: "toc",
-      label: { es: "Tabla de contenidos", en: "Table of contents" },
-      ok: Boolean(post.toc),
-      detail: post.toc ? "sí" : "falta",
-    },
-    {
       key: "faq",
       label: { es: "FAQ + schema", en: "FAQ + schema" },
       ok: faqs >= 3,
       detail: `${faqs} preguntas`,
     },
     {
+      key: "insight",
+      label: { es: "Cierre \"Nuestra visión\" + CTA", en: '"Our insight" close + CTA' },
+      ok: post.takeaway[lang].trim().length > 120,
+      detail: post.takeaway[lang].trim().length > 120 ? "sí" : "falta",
+    },
+    {
       key: "links",
       label: { es: "Enlaces internos + externo", en: "Internal + external links" },
       ok: links >= 2,
       detail: `${links}`,
-    },
-    {
-      key: "alt",
-      label: { es: "Alt text en imágenes", en: "Image alt text" },
-      ok: altOk,
-      detail: altOk ? "completo" : "incompleto",
-    },
-    {
-      key: "meta",
-      label: { es: "Title y description", en: "Title and description" },
-      ok: metaOk,
-      detail: `${post.title[lang].length} / ${post.excerpt[lang].length} car.`,
     },
   ];
 
