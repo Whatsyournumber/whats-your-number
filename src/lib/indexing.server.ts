@@ -139,7 +139,45 @@ export async function pingWebSub(lang: "es" | "en"): Promise<ChannelResult> {
   }
 }
 
+/* ------------------------ Superficies LLM (GEO / AEO) ---------------------- */
+
+/** URLs que consumen los rastreadores de IA para citar el contenido. */
+export const LLM_SURFACES = [
+  `${SITE}/llms.txt`,
+  `${SITE}/llms-full.txt`,
+  `${SITE}/api/public/rss`,
+  `${SITE}/api/public/rss?lang=en`,
+];
+
+/**
+ * Refresca las superficies que leen los modelos (llms.txt, llms-full.txt y los
+ * feeds) y las reenvía a IndexNow, que es la vía real por la que ChatGPT
+ * Search, Copilot y Perplexity descubren contenido nuevo en minutos.
+ */
+export async function refreshLlmSurfaces(urls: string[]): Promise<ChannelResult> {
+  const warmed = await Promise.all(
+    LLM_SURFACES.map(async (surface) => {
+      try {
+        const response = await fetch(surface, {
+          headers: { "Cache-Control": "no-cache", "User-Agent": "WhatsYourNumberGEO/1.0" },
+        });
+        return response.ok;
+      } catch {
+        return false;
+      }
+    }),
+  );
+  const submitted = await submitIndexNow([...LLM_SURFACES, ...urls]);
+  const okCount = warmed.filter(Boolean).length;
+  return {
+    channel: "Superficies LLM (llms.txt · feeds · IndexNow IA)",
+    ok: okCount > 0 && submitted.ok,
+    detail: `${okCount}/${LLM_SURFACES.length} superficies actualizadas · ${submitted.detail}`,
+  };
+}
+
 /* --------------------------- Google Search Console ------------------------- */
+
 
 const GATEWAY = "https://connector-gateway.lovable.dev/google_search_console";
 
@@ -202,9 +240,10 @@ export type DistributionReport = {
 
 /** Ejecuta todos los canales de indexación/difusión para las URLs indicadas. */
 export async function distribute(urls: string[]): Promise<DistributionReport> {
-  const [indexNow, google, esPings, enPings, esHub, enHub] = await Promise.all([
+  const [indexNow, google, llm, esPings, enPings, esHub, enHub] = await Promise.all([
     submitIndexNow(urls),
     submitSitemapToGoogle(),
+    refreshLlmSurfaces(urls),
     pingAggregators("es"),
     pingAggregators("en"),
     pingWebSub("es"),
@@ -213,9 +252,10 @@ export async function distribute(urls: string[]): Promise<DistributionReport> {
   return {
     ranAt: new Date().toISOString(),
     urls: urls.length,
-    results: [indexNow, google, ...esPings, ...enPings, esHub, enHub],
+    results: [indexNow, google, llm, ...esPings, ...enPings, esHub, enHub],
   };
 }
+
 
 /* --------------------- Difusión automática de artículos -------------------- */
 

@@ -28,6 +28,8 @@ import { Route as FinanzasParaNinosRouteImport } from './routes/finanzas-para-ni
 import { Route as GastosRouteImport } from './routes/gastos'
 import { Route as HipotecaRouteImport } from './routes/hipoteca'
 import { Route as LifePlannerRouteImport } from './routes/life-planner'
+import { Route as LlmsFullDottxtRouteImport } from './routes/llms-full[.]txt'
+import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as MiPerfilRouteImport } from './routes/mi-perfil'
 import { Route as NinosRouteRouteImport } from './routes/ninos/route'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
@@ -154,6 +156,16 @@ const HipotecaRoute = HipotecaRouteImport.update({
 const LifePlannerRoute = LifePlannerRouteImport.update({
   id: '/life-planner',
   path: '/life-planner',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LlmsFullDottxtRoute = LlmsFullDottxtRouteImport.update({
+  id: '/llms-full.txt',
+  path: '/llms-full.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
+  id: '/llms.txt',
+  path: '/llms.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MiPerfilRoute = MiPerfilRouteImport.update({
@@ -342,6 +354,8 @@ export interface FileRoutesByFullPath {
   '/gastos': typeof GastosRoute
   '/hipoteca': typeof HipotecaRoute
   '/life-planner': typeof LifePlannerRoute
+  '/llms-full.txt': typeof LlmsFullDottxtRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/mi-perfil': typeof MiPerfilRoute
   '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
@@ -394,6 +408,8 @@ export interface FileRoutesByTo {
   '/gastos': typeof GastosRoute
   '/hipoteca': typeof HipotecaRoute
   '/life-planner': typeof LifePlannerRoute
+  '/llms-full.txt': typeof LlmsFullDottxtRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/mi-perfil': typeof MiPerfilRoute
   '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
@@ -448,6 +464,8 @@ export interface FileRoutesById {
   '/gastos': typeof GastosRoute
   '/hipoteca': typeof HipotecaRoute
   '/life-planner': typeof LifePlannerRoute
+  '/llms-full.txt': typeof LlmsFullDottxtRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/mi-perfil': typeof MiPerfilRoute
   '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
@@ -503,6 +521,8 @@ export interface FileRouteTypes {
     | '/gastos'
     | '/hipoteca'
     | '/life-planner'
+    | '/llms-full.txt'
+    | '/llms.txt'
     | '/mi-perfil'
     | '/onboarding'
     | '/patrimonio'
@@ -555,6 +575,8 @@ export interface FileRouteTypes {
     | '/gastos'
     | '/hipoteca'
     | '/life-planner'
+    | '/llms-full.txt'
+    | '/llms.txt'
     | '/mi-perfil'
     | '/onboarding'
     | '/patrimonio'
@@ -608,6 +630,8 @@ export interface FileRouteTypes {
     | '/gastos'
     | '/hipoteca'
     | '/life-planner'
+    | '/llms-full.txt'
+    | '/llms.txt'
     | '/mi-perfil'
     | '/onboarding'
     | '/patrimonio'
@@ -662,6 +686,8 @@ export interface RootRouteChildren {
   GastosRoute: typeof GastosRoute
   HipotecaRoute: typeof HipotecaRoute
   LifePlannerRoute: typeof LifePlannerRoute
+  LlmsFullDottxtRoute: typeof LlmsFullDottxtRoute
+  LlmsDottxtRoute: typeof LlmsDottxtRoute
   MiPerfilRoute: typeof MiPerfilRoute
   OnboardingRoute: typeof OnboardingRoute
   PatrimonioRoute: typeof PatrimonioRoute
@@ -814,6 +840,20 @@ declare module '@tanstack/react-router' {
       path: '/life-planner'
       fullPath: '/life-planner'
       preLoaderRoute: typeof LifePlannerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/llms-full.txt': {
+      id: '/llms-full.txt'
+      path: '/llms-full.txt'
+      fullPath: '/llms-full.txt'
+      preLoaderRoute: typeof LlmsFullDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/llms.txt': {
+      id: '/llms.txt'
+      path: '/llms.txt'
+      fullPath: '/llms.txt'
+      preLoaderRoute: typeof LlmsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mi-perfil': {
@@ -1127,6 +1167,8 @@ const rootRouteChildren: RootRouteChildren = {
   GastosRoute: GastosRoute,
   HipotecaRoute: HipotecaRoute,
   LifePlannerRoute: LifePlannerRoute,
+  LlmsFullDottxtRoute: LlmsFullDottxtRoute,
+  LlmsDottxtRoute: LlmsDottxtRoute,
   MiPerfilRoute: MiPerfilRoute,
   OnboardingRoute: OnboardingRoute,
   PatrimonioRoute: PatrimonioRoute,
