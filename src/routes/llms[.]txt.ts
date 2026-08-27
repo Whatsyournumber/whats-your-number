@@ -8,7 +8,7 @@ const SITE = "https://whatsyour-number.com";
  * /llms.txt — índice legible por modelos de lenguaje (ChatGPT, Perplexity,
  * Claude, Gemini…) con el mapa del sitio y los artículos en ES/EN.
  */
-export const Route = createFileRoute("/llms[.]txt")({
+export const Route = createFileRoute("/llms.txt")({
   server: {
     handlers: {
       GET: () => {
