@@ -1541,6 +1541,58 @@ export type BlogChart = {
 
 /** Charts rendered inside specific articles. */
 export const postCharts: Record<string, BlogChart[]> = {
+  "boring-business-comprar-libertad-financiera": [
+    {
+      id: "capital-vs-caja",
+      kind: "bar",
+      unit: "money",
+      after: 2,
+      title: {
+        es: "Capital inicial vs. potencial de caja mensual",
+        en: "Upfront capital vs. monthly cash potential",
+      },
+      note: {
+        es: "Valores medios orientativos en USD para un negocio ya en marcha y bien gestionado.",
+        en: "Indicative average values in USD for a running, well-managed business.",
+      },
+      series: [
+        { key: "capital", label: { es: "Capital inicial", en: "Upfront capital" } },
+        { key: "caja", label: { es: "Caja mensual potencial", en: "Potential monthly cash" } },
+      ],
+      data: [
+        { label: { es: "Agencia", en: "Agency" }, capital: 500, caja: 6000 },
+        { label: { es: "Vending", en: "Vending" }, capital: 5000, caja: 6000 },
+        { label: { es: "House flipping", en: "House flipping" }, capital: 60000, caja: 4000 },
+        { label: { es: "Lavandería", en: "Laundromat" }, capital: 95000, caja: 12000 },
+        { label: { es: "Self storage", en: "Self storage" }, capital: 180000, caja: 20000 },
+      ],
+    },
+    {
+      id: "anos-libertad",
+      kind: "bar",
+      unit: "years",
+      after: 9,
+      title: {
+        es: "Años hasta tu libertad financiera según la caja extra que reinviertes",
+        en: "Years to financial freedom by the extra cash you reinvest",
+      },
+      note: {
+        es: "Objetivo de 900.000 € (3.000 €/mes al 4 %), ahorro base de 1.000 €/mes y rentabilidad real del 5 % anual.",
+        en: "€900,000 goal (€3,000/mo at 4%), €1,000/mo base saving and a 5% real annual return.",
+      },
+      series: [{ key: "anos", label: { es: "Años necesarios", en: "Years needed" } }],
+      data: [
+        { label: { es: "Sin negocio", en: "No business" }, anos: 33 },
+        { label: { es: "+500 €/mes", en: "+€500/mo" }, anos: 27 },
+        { label: { es: "+1.000 €/mes", en: "+€1,000/mo" }, anos: 23 },
+        { label: { es: "+2.000 €/mes", en: "+€2,000/mo" }, anos: 18 },
+        { label: { es: "+4.000 €/mes", en: "+€4,000/mo" }, anos: 13 },
+        { label: { es: "+8.000 €/mes", en: "+€8,000/mo" }, anos: 9 },
+      ],
+    },
+  ],
+
+
   "100k-hijo-18-anos-sp500": [
     {
       id: "aporte-edad",
