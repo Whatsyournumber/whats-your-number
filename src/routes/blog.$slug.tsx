@@ -9,6 +9,7 @@ import { blogPosts, getPost, postCharts, postExtras, postQuotes, sectionId } fro
 import { BlogChartBlock } from "@/components/blog-chart";
 import { getAuthor } from "@/lib/blog-authors";
 import { BlogSidebar } from "@/components/blog-sidebar";
+import { BlogTracker } from "@/components/blog-tracker";
 import { postCategory } from "@/lib/blog-categories";
 import { absoluteUrl, buildArticleJsonLd, buildBreadcrumbJsonLd, buildFaqJsonLd, getPostFaqs, postIsoDate } from "@/lib/blog-jsonld";
 import { getPostLinks, type PostLinks } from "@/lib/blog-links";
@@ -198,6 +199,7 @@ export function BlogArticleView({ slug }: { slug: string }) {
   return (
     <div className="relative min-h-screen overflow-x-clip bg-background">
       <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[900px] -translate-x-1/2 rounded-full opacity-[0.12] blur-3xl" />
+      <BlogTracker slug={post.slug} lang={lang} />
       <SiteHeader />
 
       <main className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-24">
