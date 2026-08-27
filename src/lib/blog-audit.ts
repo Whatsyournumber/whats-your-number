@@ -151,6 +151,21 @@ export function auditPost(post: BlogPost, lang: Lang): PostAudit {
       ok: links >= 2,
       detail: `${links}`,
     },
+    {
+      key: "keywords",
+      label: {
+        es: `${MIN_KEYWORDS_PER_POST} keywords con +${MIN_KEYWORD_VOLUME} búsquedas/mes`,
+        en: `${MIN_KEYWORDS_PER_POST} keywords with ${MIN_KEYWORD_VOLUME}+ monthly searches`,
+      },
+      ok: strongKeywords.length >= MIN_KEYWORDS_PER_POST,
+      detail: `${strongKeywords.length}/${keywords.length}`,
+    },
+    {
+      key: "alt",
+      label: { es: "Alt text en todas las imágenes", en: "Alt text on every image" },
+      ok: altOk,
+      detail: altOk ? "sí" : `faltan ${missingAlt}`,
+    },
   ];
 
   const passed = checks.filter((c) => c.ok).length;
