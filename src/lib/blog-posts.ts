@@ -594,6 +594,7 @@ export const blogPosts: BlogPost[] = [
             es: "Define tus fases, ponles fecha estimada y revísalas una vez al mes. La libertad financiera deja de ser una fantasía cuando se convierte en un porcentaje que sube.",
             en: "Define your phases, give them an estimated date and review them once a month. Financial freedom stops being a fantasy when it becomes a percentage that goes up.",
           },
+        ],
       },
       {
         heading: { es: "Caso real: dos ingresos idénticos, dos vidas distintas", en: "Real case: identical incomes, two different lives" },
@@ -742,6 +743,7 @@ export const blogPosts: BlogPost[] = [
             es: "Separar crecimiento por ahorro de crecimiento por mercado es especialmente revelador: el primero demuestra disciplina, el segundo solo demuestra exposición. En años buenos casi todo el mundo parece brillante; la tasa de ahorro es lo que se sostiene en años malos.",
             en: "Separating savings-driven growth from market-driven growth is especially revealing: the first proves discipline, the second only proves exposure. In good years everyone looks brilliant; the savings rate is what holds up in bad ones.",
           },
+        ],
       },
       {
         heading: { es: "Caso real: de una cifra inflada a un patrimonio neto honesto", en: "Real case: from an inflated figure to an honest net worth" },
@@ -855,6 +857,7 @@ export const blogPosts: BlogPost[] = [
             es: "Guárdalo en una entidad distinta a la de tu cuenta diaria. La fricción de tener que hacer una transferencia entre bancos evita que el colchón se erosione en compras que no eran emergencias.",
             en: "Keep it at a different institution from your everyday account. The friction of an inter-bank transfer stops the buffer eroding into purchases that were never emergencies.",
           },
+        ],
       },
       {
         heading: { es: "Caso real: el runway que convirtió un despido en una oportunidad", en: "Real case: the runway that turned a layoff into an opportunity" },
@@ -965,6 +968,7 @@ export const blogPosts: BlogPost[] = [
             es: "Si sí lo superas, verifica antes de celebrarlo que no fue una sola posición, un solo año o una sola divisa. La habilidad se demuestra en la repetición, no en el mejor trimestre.",
             en: "If you do beat it, verify before celebrating that it was not one position, one year or one currency. Skill shows in repetition, not in your best quarter.",
           },
+        ],
       },
       {
         heading: { es: "Caso real: la cartera que perdía contra el índice sin saberlo", en: "Real case: the portfolio quietly losing to the index" },
@@ -1066,6 +1070,7 @@ export const blogPosts: BlogPost[] = [
             es: "Para clasificar no hace falta enviar tu nombre, tu IBAN ni tu saldo. Basta con el concepto del movimiento, el importe y la fecha. Cualquier sistema que necesite más de eso para categorizar está pidiendo datos que no usa.",
             en: "Classifying needs neither your name, your IBAN nor your balance. The transaction description, amount and date are enough. Any system that needs more than that to categorise is asking for data it does not use.",
           },
+        ],
       },
       {
         heading: { es: "Caso real: 900 € al mes que no aparecían en ninguna categoría", en: "Real case: €900 a month hiding outside every category" },
@@ -1190,6 +1195,7 @@ export const blogPosts: BlogPost[] = [
             es: "Ese último hito —a veces llamado coast— suele llegar entre 10 y 15 años antes que el número completo, y es el momento en que el estrés financiero baja de verdad.",
             en: "That last milestone — sometimes called coast — usually arrives 10 to 15 years before the full number, and it is when financial stress genuinely drops.",
           },
+        ],
       },
       {
         heading: { es: "Caso real: la pareja que bajó su número en 260.000 €", en: "Real case: the couple that cut their number by €260,000" },
@@ -1291,6 +1297,7 @@ export const blogPosts: BlogPost[] = [
             es: "Los que abandonan no lo hacen por un mal mes: lo hacen por dejar de mirar después de un mal mes. La constancia del registro vale más que la calidad de cualquier decisión individual.",
             en: "People do not quit because of a bad month: they quit by stopping looking after a bad month. Consistency of tracking beats the quality of any individual decision.",
           },
+        ],
       },
       {
         heading: { es: "Caso real: doce revisiones, una decisión cada mes", en: "Real case: twelve reviews, one decision a month" },
