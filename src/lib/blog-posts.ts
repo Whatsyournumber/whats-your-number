@@ -14,12 +14,32 @@ import richVsWealthyImg from "@/assets/blog/rich-vs-wealthy.jpg";
 import richVsWealthy2Img from "@/assets/blog/rich-vs-wealthy-2.jpg";
 import kids100kImg from "@/assets/blog/kids-sp500-100k.jpg";
 import kids100k2Img from "@/assets/blog/kids-sp500-100k-2.jpg";
+import boringCoverImg from "@/assets/blog/boring-business-cover.jpg";
+import boring2Img from "@/assets/blog/boring-business-2.jpg";
+import boringAgencyImg from "@/assets/blog/boring-agency.jpg";
+import boringVendingImg from "@/assets/blog/boring-vending.jpg";
+import boringFlipImg from "@/assets/blog/boring-house-flipping.jpg";
+import boringLaundryImg from "@/assets/blog/boring-laundromat.jpg";
+import boringStorageImg from "@/assets/blog/boring-self-storage.jpg";
+
+export type BlogSubsection = {
+  heading: { es: string; en: string };
+  paragraphs?: { es: string; en: string }[];
+  bullets?: { es: string; en: string }[];
+};
 
 export type BlogSection = {
   heading: { es: string; en: string };
   paragraphs: { es: string; en: string }[];
   bullets?: { es: string; en: string }[];
+  /** Optional in-section illustration (rendered after the paragraphs). */
+  image?: string;
+  imageAlt?: { es: string; en: string };
+  imageCaption?: { es: string; en: string };
+  /** Optional H3 blocks rendered after the section body. */
+  subsections?: BlogSubsection[];
 };
+
 
 export type BlogPost = {
   slug: string;
