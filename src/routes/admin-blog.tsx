@@ -220,7 +220,7 @@ function BlogBackOffice() {
           <TabsTrigger value="kws-home">Kws Home</TabsTrigger>
           <TabsTrigger value="kws-blog">Kws Blog</TabsTrigger>
           <TabsTrigger value="trafico">Tráfico por artículo</TabsTrigger>
-          <TabsTrigger value="paises">Países</TabsTrigger>
+          <TabsTrigger value="llm">IA & LLM</TabsTrigger>
           <TabsTrigger value="checklist">Checklist SEO</TabsTrigger>
           <TabsTrigger value="difusion">Difusión</TabsTrigger>
           <TabsTrigger value="conexiones">Conexiones</TabsTrigger>
