@@ -21,26 +21,9 @@ export const Route = createFileRoute("/blog/$slug")({
     const description = post?.excerpt.es ?? "Artículos sobre finanzas personales, inversión y IA.";
     const author = getAuthor(params.slug);
     const url = `https://whatsyour-number.com/blog/${params.slug}`;
-    const jsonLd = {
-      "@context": "https://schema.org",
-      "@type": "Article",
-      headline: post?.title.es ?? title,
-      description,
-      inLanguage: "es",
-      mainEntityOfPage: { "@type": "WebPage", "@id": url },
-      keywords: post?.keyword.es ?? undefined,
-      author: {
-        "@type": "Person",
-        name: author.name,
-        jobTitle: author.role.es,
-        description: author.bio.es,
-      },
-      publisher: {
-        "@type": "Organization",
-        name: "WhatsYournumber",
-        url: "https://whatsyour-number.com",
-      },
-    };
+    const image = absoluteUrl(post?.image);
+    const published = postIsoDate(params.slug);
+    const jsonLd = buildArticleJsonLd(params.slug, "es");
     return {
       meta: [
         { title: title.slice(0, 70) },
@@ -49,11 +32,20 @@ export const Route = createFileRoute("/blog/$slug")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "article" },
+        { property: "og:locale", content: "es_ES" },
         { property: "article:author", content: author.name },
+        ...(published
+          ? [
+              { property: "article:published_time", content: published },
+              { property: "article:modified_time", content: published },
+            ]
+          : []),
         { property: "og:url", content: url },
-        { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
-        { name: "twitter:image", content: "https://whatsyour-number.com/og-cover.jpg" },
+        { property: "og:image", content: image },
+        { name: "twitter:image", content: image },
         { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
       ],
       links: [
         { rel: "canonical", href: url },
@@ -61,7 +53,7 @@ export const Route = createFileRoute("/blog/$slug")({
         { rel: "alternate", hrefLang: "en", href: `https://whatsyour-number.com/en/blog/${params.slug}` },
         { rel: "alternate", hrefLang: "x-default", href: url },
       ],
-      scripts: [{ type: "application/ld+json", children: JSON.stringify(jsonLd) }],
+      scripts: jsonLd ? [{ type: "application/ld+json", children: JSON.stringify(jsonLd) }] : [],
     };
   },
   component: BlogArticle,
