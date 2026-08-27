@@ -198,6 +198,7 @@ function RootLayout() {
   if (
     PUBLIC_PATHS.includes(pathname) ||
     pathname.startsWith("/blog/") ||
+    pathname.startsWith("/en/blog/") ||
     BARE_PATHS.includes(pathname) ||
     pathname.startsWith("/nino/") ||
     pathname === "/ninos" ||
