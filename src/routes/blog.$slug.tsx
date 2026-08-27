@@ -104,7 +104,10 @@ export function BlogArticleView({ slug }: { slug: string }) {
       <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[900px] -translate-x-1/2 rounded-full opacity-[0.12] blur-3xl" />
       <SiteHeader />
 
-      <main className="relative z-10 mx-auto w-full max-w-3xl px-6 pb-24">
+      <main className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-24">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <div className="min-w-0">
+
         <Link
           to="/blog"
           className="mt-8 inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
