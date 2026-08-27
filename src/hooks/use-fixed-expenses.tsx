@@ -128,6 +128,7 @@ export function useFixedExpenses() {
       setItems(next);
 
       if (isFixedFieldKey(id)) {
+        zeroHold.current.delete(id);
         void save({ [id]: 0 } as Partial<Profile>).catch(() => setItems(items));
         return;
       }
