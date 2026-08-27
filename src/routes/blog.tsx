@@ -54,7 +54,7 @@ export function BlogIndex() {
   const t = useT();
   const { lang } = useLanguage();
   const search = useRouterState({ select: (s) => s.location.search }) as Record<string, unknown>;
-  const rawCat = typeof search?.cat === "string" ? search.cat : null;
+  const rawCat = typeof search?.['cat'] === "string" ? (search['cat'] as string) : null;
   const activeCatMeta = blogCategories.find((c) => c.id === rawCat);
   const activeCat = activeCatMeta?.id ?? null;
   const blogHref = lang === "en" ? "/en/blog" : "/blog";
