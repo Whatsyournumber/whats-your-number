@@ -74,7 +74,9 @@ export function BlogIndex() {
         </section>
 
         {/* Destacado */}
+        {!activeCat && (
         <a
+
           href={`/blog/${featured.slug}`}
           target="_blank"
           rel="noopener noreferrer"
