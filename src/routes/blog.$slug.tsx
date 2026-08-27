@@ -1,6 +1,6 @@
-import { Fragment } from "react";
+import { Fragment, type ReactNode } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Clock, ExternalLink, HelpCircle, Link2, List, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, ExternalLink, HelpCircle, List, Sparkles } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -69,6 +69,90 @@ export const Route = createFileRoute("/blog/$slug")({
 function BlogArticle() {
   const { slug } = Route.useParams();
   return <BlogArticleView slug={slug} />;
+}
+
+type InlineCandidate = {
+  key: string;
+  needles: string[];
+  render: (matched: string) => ReactNode;
+};
+
+/** Full label plus a shorter "core" variant (last 3 words) to maximise matches. */
+function needleVariants(label: string): string[] {
+  const words = label.split(/\s+/);
+  const variants = [label];
+  if (words.length > 3) variants.push(words.slice(-3).join(" "));
+  return variants;
+}
+
+function linkifyInline(
+  text: string,
+  candidates: InlineCandidate[],
+  used: Set<string>,
+): ReactNode {
+  const available = candidates.filter((c) => !used.has(c.key));
+  let best: { idx: number; len: number; cand: InlineCandidate } | null = null;
+  const lower = text.toLowerCase();
+  for (const cand of available) {
+    for (const needle of cand.needles) {
+      const idx = lower.indexOf(needle.toLowerCase());
+      if (idx !== -1 && (!best || idx < best.idx)) {
+        best = { idx, len: needle.length, cand };
+        break;
+      }
+    }
+  }
+  if (!best) return text;
+  used.add(best.cand.key);
+  const before = text.slice(0, best.idx);
+  const matched = text.slice(best.idx, best.idx + best.len);
+  const after = text.slice(best.idx + best.len);
+  return (
+    <>
+      {before}
+      {best.cand.render(matched)}
+      {linkifyInline(after, candidates, used)}
+    </>
+  );
+}
+
+function makeInlineLinker(links: PostLinks | null, lang: "es" | "en") {
+  const candidates: InlineCandidate[] = [];
+  if (links) {
+    for (const l of links.internal) {
+      const to = lang === "en" ? (l.enTo ?? l.to) : l.to;
+      candidates.push({
+        key: `in:${l.to}`,
+        needles: needleVariants(l.label[lang]),
+        render: (m) => (
+          <Link
+            to={to}
+            className="font-medium text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
+          >
+            {m}
+          </Link>
+        ),
+      });
+    }
+    candidates.push({
+      key: "ext",
+      needles: needleVariants(links.external.label[lang]),
+      render: (m) => (
+        <a
+          href={links.external.href}
+          target="_blank"
+          rel="noopener nofollow"
+          className="inline-flex items-baseline gap-1 font-medium text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
+        >
+          {m}
+          <ExternalLink className="h-3 w-3 self-center" />
+        </a>
+      ),
+    });
+  }
+  const used = new Set<string>();
+  return (text: string): ReactNode =>
+    candidates.length === 0 ? text : linkifyInline(text, candidates, used);
 }
 
 export function BlogArticleView({ slug }: { slug: string }) {
