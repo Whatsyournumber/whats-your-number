@@ -103,7 +103,7 @@ export function BlogArticleView({ slug }: { slug: string }) {
   const related = blogPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-background">
+    <div className="relative min-h-screen overflow-x-clip bg-background">
       <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[900px] -translate-x-1/2 rounded-full opacity-[0.12] blur-3xl" />
       <SiteHeader />
 
