@@ -177,9 +177,9 @@ function KidsDemoPage() {
               transition={{ duration: 0.28 }}
             >
               {step === 1 && (
-                <div className="mb-6 text-center">
-                  <KidsBrandLogo className="mx-auto" />
-                  <h1 className="mt-4 font-display text-2xl font-semibold leading-tight tracking-tight">
+                <div className="mb-10 flex flex-col items-center text-center">
+                  <KidsBrandLogo />
+                  <h1 className="mt-5 font-display text-2xl font-semibold leading-tight tracking-tight">
                     {t("Descubre el número", "Discover your child's")}
                     <span className="block bg-gradient-to-r from-kid-sky to-kid-mint bg-clip-text text-transparent">
                       {t("de tu hijo a los 18", "number at 18")}
