@@ -285,11 +285,41 @@ export async function diagnoseGa4(): Promise<Ga4Diagnostics> {
     return { ok: true, steps, serviceAccountEmail: sa.client_email, propertyId };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    const hint = msg.includes("403")
+    let hint = msg.includes("403")
       ? ` Añade ${sa.client_email} como Lector (Viewer) en Admin → Property Access Management de la propiedad G-D29CDEZY4L.`
       : msg.includes("404")
         ? " La propiedad no existe o el Property ID es incorrecto."
         : "";
+
+    // En 403, lista las propiedades a las que SÍ tiene acceso el service account
+    // para distinguir "ID numérico incorrecto" de "permiso no concedido".
+    if (msg.includes("403")) {
+      try {
+        const res = await fetch(
+          "https://analyticsadmin.googleapis.com/v1beta/accountSummaries?pageSize=50",
+          { headers: { Authorization: `Bearer ${token}` } },
+        );
+        if (res.ok) {
+          const json = (await res.json()) as {
+            accountSummaries?: Array<{
+              displayName?: string;
+              propertySummaries?: Array<{ property?: string; displayName?: string }>;
+            }>;
+          };
+          const props = (json.accountSummaries ?? []).flatMap((a) =>
+            (a.propertySummaries ?? []).map(
+              (p) => `${p.displayName ?? "?"} (ID numérico: ${(p.property ?? "").replace("properties/", "")})`,
+            ),
+          );
+          hint += props.length
+            ? ` El service account SÍ tiene acceso a: ${props.join(", ")}. Compara el ID numérico con GA4_PROPERTY_ID (${propertyId}).`
+            : " El service account NO tiene acceso a ninguna propiedad todavía (la lista viene vacía): el permiso de Viewer no se ha aplicado o se quitó.";
+        }
+      } catch {
+        // Si el Admin API falla, dejamos solo la pista original.
+      }
+    }
+
     steps.push({ label: "Acceso de Lector a la propiedad", status: "fail", detail: msg + hint });
     return { ok: false, steps, serviceAccountEmail: sa.client_email, propertyId };
   }
