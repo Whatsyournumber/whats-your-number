@@ -12,30 +12,31 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
 
   return (
     <div className="sticky top-24 space-y-5">
-      <div className="surface flex flex-col items-center p-5 text-center">
+      <div className="surface p-5">
         <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
           <Sparkles className="h-3 w-3" />
           {t("Demo gratis", "Free demo")}
         </div>
-        <p className="mt-3 font-display text-lg font-semibold leading-tight">
+        <p className="mt-3 whitespace-nowrap font-display text-[15px] font-semibold leading-tight">
           {activeCategory === "ninos"
-            ? t("Descubre su número en 30seg", "Discover their number in 30s")
-            : t("Descubre tu número en 30seg", "Discover your number in 30s")}
+            ? t("Descubre su número en 30seg", "Their number in 30s")
+            : t("Descubre tu número en 30seg", "Your number in 30s")}
         </p>
         <img
           src={demoCircle.url}
           alt={t("Demo del número financiero", "Financial number demo")}
-          width={160}
-          height={160}
+          width={200}
+          height={200}
           loading="lazy"
-          className="mt-4 h-28 w-28 rounded-full object-cover"
+          className="mx-auto mt-4 block h-32 w-32 rounded-full object-contain"
         />
-        <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-4 text-center text-sm leading-relaxed text-muted-foreground">
           {t(
             "El número para retirarte y alcanzar tu libertad financiera antes.",
             "The number to retire and reach financial freedom sooner.",
           )}
         </p>
+
 
 
         <a
