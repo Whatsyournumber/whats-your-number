@@ -402,6 +402,70 @@ function BlogBackOffice() {
             </div>
           </Panel>
 
+          <Panel className="p-6">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+              <h2 className="text-lg font-semibold">Tráfico global del sitio (Google Analytics 4)</h2>
+              {ga4.data?.configured ? (
+                <Badge variant="outline">
+                  {ga4.data.range.start} → {ga4.data.range.end}
+                </Badge>
+              ) : (
+                <Badge variant="secondary">Sin configurar</Badge>
+              )}
+            </div>
+
+            {ga4.isLoading ? (
+              <p className="text-sm text-muted-foreground">Cargando datos de GA4…</p>
+            ) : !ga4.data?.configured ? (
+              <div className="rounded-xl border border-dashed border-border p-5 text-sm text-muted-foreground">
+                <p className="mb-2 font-medium text-foreground">
+                  {ga4.data?.error ? `Error: ${ga4.data.error}` : "Conecta GA4 para ver el tráfico real aquí."}
+                </p>
+                <ol className="list-decimal space-y-1 pl-5">
+                  <li>Crea un service account en Google Cloud y descarga su clave JSON.</li>
+                  <li>Añade su email como <strong>Lector</strong> en la propiedad GA4 (G-D29CDEZY4L).</li>
+                  <li>Guarda los secretos <code>GA4_PROPERTY_ID</code> (numérico) y <code>GA4_SERVICE_ACCOUNT_JSON</code> en el proyecto.</li>
+                </ol>
+              </div>
+            ) : (
+              <>
+                <div className="mb-6 grid gap-4 sm:grid-cols-3">
+                  <KpiCard label="Usuarios" value={ga4.data.totals.users.toLocaleString("es-ES")} icon={Globe2} />
+                  <KpiCard label="Sesiones" value={ga4.data.totals.sessions.toLocaleString("es-ES")} icon={MousePointerClick} />
+                  <KpiCard label="Páginas vistas" value={ga4.data.totals.pageviews.toLocaleString("es-ES")} icon={Eye} />
+                </div>
+                <div className="mb-6 h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={ga4.data.byDay}>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
+                      <XAxis dataKey="date" tick={{ fontSize: 11 }} tickFormatter={(d: string) => d.slice(5)} />
+                      <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
+                      <RTooltip />
+                      <Bar dataKey="pageviews" name="Páginas vistas" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="users" name="Usuarios" fill="hsl(var(--muted-foreground))" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+                <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                  Artículos del blog según GA4
+                </h3>
+                <ul className="space-y-2 text-sm">
+                  {ga4.data.blogPages.length === 0 && (
+                    <li className="text-muted-foreground">Sin visitas al blog en este periodo.</li>
+                  )}
+                  {ga4.data.blogPages.map((row) => (
+                    <li key={row.path} className="flex items-center justify-between gap-3">
+                      <span className="truncate">{row.path}</span>
+                      <span className="font-medium">
+                        {row.pageviews.toLocaleString("es-ES")} vistas · {row.users.toLocaleString("es-ES")} usuarios
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </Panel>
+
           <div className="grid gap-6 lg:grid-cols-3">
             <Panel className="p-6">
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Páginas más vistas</h3>
