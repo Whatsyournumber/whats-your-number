@@ -11,7 +11,7 @@ import { LanguageToggle, useT } from "@/hooks/use-language";
 import { saveDemoSnapshot } from "@/lib/demo-snapshot";
 
 const demoSearchSchema = z.object({
-  start: z.coerce.number().optional().default(0),
+  start: z.coerce.number().optional(),
 });
 
 export const Route = createFileRoute("/demo")({
