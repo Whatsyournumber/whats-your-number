@@ -206,3 +206,91 @@ export async function loadGa4Traffic(days: number): Promise<Ga4Summary> {
     };
   }
 }
+
+export interface Ga4Diagnostics {
+  ok: boolean;
+  steps: Array<{ label: string; status: "ok" | "fail" | "skip"; detail?: string }>;
+  serviceAccountEmail?: string;
+  propertyId?: string;
+}
+
+/** Comprueba paso a paso que el service account puede leer la propiedad GA4. */
+export async function diagnoseGa4(): Promise<Ga4Diagnostics> {
+  const steps: Ga4Diagnostics["steps"] = [];
+  const propertyId = process.env["GA4_PROPERTY_ID"]?.trim();
+  const rawSa = process.env["GA4_SERVICE_ACCOUNT_JSON"];
+
+  if (!propertyId) {
+    steps.push({ label: "Secreto GA4_PROPERTY_ID", status: "fail", detail: "No configurado. Debe ser el ID numérico de la propiedad (no G-XXXX)." });
+  } else if (!/^\d+$/.test(propertyId)) {
+    steps.push({ label: "Secreto GA4_PROPERTY_ID", status: "fail", detail: `Valor "${propertyId}" no es numérico. Usa el Property ID (Admin → Property settings).` });
+  } else {
+    steps.push({ label: "Secreto GA4_PROPERTY_ID", status: "ok", detail: propertyId });
+  }
+
+  let sa: ServiceAccountKey | null = null;
+  if (!rawSa) {
+    steps.push({ label: "Secreto GA4_SERVICE_ACCOUNT_JSON", status: "fail", detail: "No configurado." });
+  } else {
+    try {
+      const parsed = JSON.parse(rawSa) as ServiceAccountKey;
+      if (!parsed.client_email || !parsed.private_key) throw new Error("Faltan client_email o private_key");
+      sa = parsed;
+      steps.push({ label: "Service account JSON", status: "ok", detail: parsed.client_email });
+    } catch (err) {
+      steps.push({
+        label: "Service account JSON",
+        status: "fail",
+        detail: err instanceof Error ? err.message : String(err),
+      });
+    }
+  }
+
+  if (!sa) {
+    steps.push({ label: "Token OAuth de Google", status: "skip" });
+    steps.push({ label: "Acceso de Lector a la propiedad", status: "skip" });
+    return { ok: false, steps, ...(propertyId ? { propertyId } : {}) };
+  }
+
+  let token: string;
+  try {
+    token = await getAccessToken(sa);
+    steps.push({ label: "Token OAuth de Google", status: "ok", detail: "Credenciales válidas" });
+  } catch (err) {
+    steps.push({
+      label: "Token OAuth de Google",
+      status: "fail",
+      detail: err instanceof Error ? err.message : String(err),
+    });
+    steps.push({ label: "Acceso de Lector a la propiedad", status: "skip" });
+    return { ok: false, steps, serviceAccountEmail: sa.client_email, ...(propertyId ? { propertyId } : {}) };
+  }
+
+  if (!propertyId || !/^\d+$/.test(propertyId)) {
+    steps.push({ label: "Acceso de Lector a la propiedad", status: "skip" });
+    return { ok: false, steps, serviceAccountEmail: sa.client_email };
+  }
+
+  try {
+    await runReport(token, propertyId, {
+      dateRanges: [{ startDate: "7daysAgo", endDate: "today" }],
+      metrics: [{ name: "sessions" }],
+      limit: 1,
+    });
+    steps.push({
+      label: "Acceso de Lector a la propiedad",
+      status: "ok",
+      detail: `El service account puede leer la propiedad ${propertyId}.`,
+    });
+    return { ok: true, steps, serviceAccountEmail: sa.client_email, propertyId };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    const hint = msg.includes("403")
+      ? ` Añade ${sa.client_email} como Lector (Viewer) en Admin → Property Access Management de la propiedad G-D29CDEZY4L.`
+      : msg.includes("404")
+        ? " La propiedad no existe o el Property ID es incorrecto."
+        : "";
+    steps.push({ label: "Acceso de Lector a la propiedad", status: "fail", detail: msg + hint });
+    return { ok: false, steps, serviceAccountEmail: sa.client_email, propertyId };
+  }
+}
