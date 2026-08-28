@@ -1,6 +1,7 @@
-import { ArrowRight, Sparkles, Tag, Target } from "lucide-react";
+import { ArrowRight, Sparkles, Tag } from "lucide-react";
 import { motion } from "motion/react";
 
+import { KidsBrandLogo } from "@/components/brand-logo";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { blogCategories, categoryCount } from "@/lib/blog-categories";
 
@@ -17,45 +18,60 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
           <Sparkles className="h-3 w-3" />
           {t("Demo gratis", "Free demo")}
         </div>
-        <p className="mt-3 whitespace-nowrap font-display text-[15px] font-semibold leading-tight">
-          {activeCategory === "ninos"
-            ? t("Descubre su número en 30seg", "Their number in 30s")
-            : t("Descubre tu número en 30seg", "Your number in 30s")}
-        </p>
-        <div className="relative mx-auto mt-4 flex h-32 w-32 shrink-0 items-center justify-center">
-          <div className="absolute inset-0 animate-pulse rounded-full bg-primary/15 blur-3xl" />
-          {[0, 1, 2].map((i) => (
-            <motion.span
-              key={i}
-              className="absolute rounded-full border border-primary/30"
-              initial={{ width: 74, height: 74, opacity: 0.6 }}
-              animate={{ width: 128, height: 128, opacity: 0 }}
-              transition={{ duration: 3, repeat: Infinity, delay: i, ease: "easeOut" }}
-            />
-          ))}
-          <motion.span
-            className="absolute h-[112px] w-[112px] rounded-full border border-dashed border-primary/25"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
-          />
-          <motion.div
-            animate={{ scale: [1, 1.04, 1] }}
-            transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
-            className="relative flex h-24 w-24 items-center justify-center rounded-full bg-elevated ring-1 ring-border transition-transform duration-300 group-hover:scale-105"
-          >
-            <span className="absolute inset-2 rounded-full ring-1 ring-primary/40" />
-            <Target className="absolute h-14 w-14 text-primary/20" strokeWidth={1} />
-            <span className="relative font-display text-4xl font-bold leading-none text-primary">?</span>
-          </motion.div>
-        </div>
-        <p className="mt-4 text-center text-sm leading-relaxed text-muted-foreground">
-          {t(
-            "El número para retirarte y alcanzar tu libertad financiera antes.",
-            "The number to retire and reach financial freedom sooner.",
-          )}
-        </p>
 
-
+        {activeCategory === "ninos" ? (
+          <>
+            <div className="mt-4 flex justify-center">
+              <KidsBrandLogo className="text-sm" />
+            </div>
+            <p className="mt-4 text-center font-display text-[15px] font-semibold leading-tight">
+              {t("Descubre el número de tu hijo a los 18", "Discover your child's number by age 18")}
+            </p>
+            <p className="mt-3 text-center text-sm leading-relaxed text-muted-foreground">
+              {t(
+                "3 preguntas y calculamos cuánto tendrá invirtiendo en el S&P 500 al 10% anual.",
+                "3 questions and we calculate how much they'll have investing in the S&P 500 at 10% annually.",
+              )}
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="mt-3 whitespace-nowrap font-display text-[15px] font-semibold leading-tight">
+              {t("Descubre tu número en 30seg", "Your number in 30s")}
+            </p>
+            <div className="relative mx-auto mt-4 flex h-32 w-32 shrink-0 items-center justify-center">
+              <div className="absolute inset-0 animate-pulse rounded-full bg-primary/15 blur-3xl" />
+              {[0, 1, 2].map((i) => (
+                <motion.span
+                  key={i}
+                  className="absolute rounded-full border border-primary/30"
+                  initial={{ width: 74, height: 74, opacity: 0.6 }}
+                  animate={{ width: 128, height: 128, opacity: 0 }}
+                  transition={{ duration: 3, repeat: Infinity, delay: i, ease: "easeOut" }}
+                />
+              ))}
+              <motion.span
+                className="absolute h-[112px] w-[112px] rounded-full border border-dashed border-primary/25"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
+              />
+              <motion.div
+                animate={{ scale: [1, 1.04, 1] }}
+                transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+                className="relative flex h-24 w-24 items-center justify-center rounded-full bg-elevated ring-1 ring-border transition-transform duration-300 group-hover:scale-105"
+              >
+                <span className="absolute inset-2 rounded-full ring-1 ring-primary/40" />
+                <span className="relative font-display text-4xl font-bold leading-none text-primary">?</span>
+              </motion.div>
+            </div>
+            <p className="mt-4 text-center text-sm leading-relaxed text-muted-foreground">
+              {t(
+                "El número para retirarte y alcanzar tu libertad financiera antes.",
+                "The number to retire and reach financial freedom sooner.",
+              )}
+            </p>
+          </>
+        )}
 
         <a
           href={activeCategory === "ninos" ? "/demo-ninos?start=1" : "/demo?start=1"}
