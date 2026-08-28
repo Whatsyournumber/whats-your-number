@@ -26,12 +26,12 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
               </span>
             </div>
             <p className="mt-4 text-nowrap text-center font-display text-[15px] font-semibold leading-tight">
-              {t("Descubre el número de tu hijo a los 18", "Discover your child's number by age 18")}
+              {t("El número de tu hijo en 30seg", "Your child's number in 30s")}
             </p>
             <p className="mt-3 text-center text-sm leading-relaxed text-muted-foreground">
               {t(
-                "3 preguntas y calculamos cuánto tendrá invirtiendo en el S&P 500 al 10% anual.",
-                "3 questions and we calculate how much they'll have investing in the S&P 500 at 10% annually.",
+                "Calculamos cuánto necesita a los 18 años para ir a cualquier universidad.",
+                "We calculate how much they need by age 18 to go to any university.",
               )}
             </p>
           </>
