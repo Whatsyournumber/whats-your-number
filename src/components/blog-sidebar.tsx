@@ -69,31 +69,7 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
             <p className="mt-3 whitespace-nowrap font-display text-[15px] font-semibold leading-tight">
               {t("Descubre tu número en 30seg", "Your number in 30s")}
             </p>
-            <div className="relative mx-auto mt-4 flex h-32 w-32 shrink-0 items-center justify-center">
-              <div className="absolute inset-0 animate-pulse rounded-full bg-primary/15 blur-3xl" />
-              {[0, 1, 2].map((i) => (
-                <motion.span
-                  key={i}
-                  className="absolute rounded-full border border-primary/30"
-                  initial={{ width: 74, height: 74, opacity: 0.6 }}
-                  animate={{ width: 128, height: 128, opacity: 0 }}
-                  transition={{ duration: 3, repeat: Infinity, delay: i, ease: "easeOut" }}
-                />
-              ))}
-              <motion.span
-                className="absolute h-[112px] w-[112px] rounded-full border border-dashed border-primary/25"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
-              />
-              <motion.div
-                animate={{ scale: [1, 1.04, 1] }}
-                transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
-                className="relative flex h-24 w-24 items-center justify-center rounded-full bg-elevated ring-1 ring-border transition-transform duration-300 group-hover:scale-105"
-              >
-                <span className="absolute inset-2 rounded-full ring-1 ring-primary/40" />
-                <span className="relative font-display text-4xl font-bold leading-none text-primary">?</span>
-              </motion.div>
-            </div>
+            <AnimatedDemoLogo className="mt-4" />
             <p className="mt-4 text-center text-sm leading-relaxed text-muted-foreground">
               {t(
                 "El número para retirarte y alcanzar tu libertad financiera antes.",
