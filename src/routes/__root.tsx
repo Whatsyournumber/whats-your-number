@@ -20,6 +20,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppSidebar } from "@/components/app-sidebar";
 import { AskAiSearch } from "@/components/ask-ai-search";
 import { ConsentBanner } from "@/components/consent-banner";
+import { GoogleAnalytics } from "@/components/google-analytics";
 import { PromoAutoRedeem } from "@/components/promo-auto-redeem";
 import { AffiliateTracker } from "@/components/affiliate-tracker";
 
