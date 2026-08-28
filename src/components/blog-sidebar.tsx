@@ -14,17 +14,18 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
   return (
     <div className="sticky top-24 space-y-5">
       <div className="surface p-5">
-        <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
-          <Sparkles className="h-3 w-3" />
-          {t("Demo gratis", "Free demo")}
-        </div>
-
         {activeCategory === "ninos" ? (
           <>
-            <div className="mt-4 flex justify-center">
-              <KidsBrandLogo className="text-sm" />
+            <div className="flex justify-center">
+              <KidsBrandLogo />
             </div>
-            <p className="mt-4 text-center font-display text-[15px] font-semibold leading-tight">
+            <div className="mt-3 flex justify-center">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
+                <Sparkles className="h-3 w-3" />
+                Demo gratis
+              </span>
+            </div>
+            <p className="mt-4 text-nowrap text-center font-display text-[15px] font-semibold leading-tight">
               {t("Descubre el número de tu hijo a los 18", "Discover your child's number by age 18")}
             </p>
             <p className="mt-3 text-center text-sm leading-relaxed text-muted-foreground">
@@ -36,6 +37,10 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
           </>
         ) : (
           <>
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
+              <Sparkles className="h-3 w-3" />
+              {t("Demo gratis", "Free demo")}
+            </div>
             <p className="mt-3 whitespace-nowrap font-display text-[15px] font-semibold leading-tight">
               {t("Descubre tu número en 30seg", "Your number in 30s")}
             </p>
