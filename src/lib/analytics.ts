@@ -6,7 +6,7 @@ declare global {
 }
 
 const STORAGE_KEY = "wyn.consent.v1";
-const MEASUREMENT_ID = import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_ANALYTICS_API_KEY;
+const MEASUREMENT_ID = import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_ANALYTICS_API_KEY"];
 
 let initialized = false;
 
