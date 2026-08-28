@@ -13,42 +13,15 @@ const TITLE = "Blog de Finanzas Personales | Ahorro, Inversiones y Negocios";
 const DESCRIPTION =
   "Aprende sobre finanzas personales, ahorro, inversiones, patrimonio, jubilación y negocios. Guías prácticas para tomar mejores decisiones financieras y alcanzar tu número de retiro.";
 
+export const BLOG_TITLE = TITLE;
+export const BLOG_DESCRIPTION = DESCRIPTION;
+
+// Layout puro: el head (canonical/hreflang) vive en las rutas hoja para
+// evitar canonicals duplicadas y conflictos de hreflang en /blog/$slug.
 export const Route = createFileRoute("/blog")({
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESCRIPTION },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESCRIPTION },
-      { property: "og:type", content: "website" },
-      { property: "og:locale", content: "es_ES" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: TITLE },
-      { name: "twitter:description", content: DESCRIPTION },
-      { property: "og:url", content: "https://whatsyour-number.com/blog" },
-      { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
-      { name: "twitter:image", content: "https://whatsyour-number.com/og-cover.jpg" },
-    ],
-    links: [
-      { rel: "canonical", href: "https://whatsyour-number.com/blog" },
-      { rel: "alternate", hrefLang: "es", href: "https://whatsyour-number.com/blog" },
-      { rel: "alternate", hrefLang: "en", href: "https://whatsyour-number.com/en/blog" },
-      { rel: "alternate", hrefLang: "x-default", href: "https://whatsyour-number.com/blog" },
-    ],
-    scripts: [
-      { type: "application/ld+json", children: JSON.stringify(buildBlogIndexBreadcrumbJsonLd("es")) },
-      { type: "application/ld+json", children: JSON.stringify(buildBlogCollectionJsonLd("es")) },
-    ],
-  }),
-  component: BlogLayout,
+  component: () => <Outlet />,
 });
 
-function BlogLayout() {
-  const matches = useMatches();
-  const isChild = matches.some((m) => m.routeId.startsWith("/blog/"));
-  if (isChild) return <Outlet />;
-  return <BlogIndex />;
-}
 
 export function BlogIndex() {
   const t = useT();
