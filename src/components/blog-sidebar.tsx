@@ -17,13 +17,23 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
           <Sparkles className="h-3.5 w-3.5" /> {t("Demo gratis", "Free demo")}
         </p>
         <p className="mt-3 font-display text-base font-semibold leading-snug">
-          {t("Calcula tu número en 3 minutos", "Calculate your number in 3 minutes")}
+          {activeCategory === "ninos"
+            ? t(
+                "Calcula el número de tu hijo en 3 minutos",
+                "Calculate your child's number in 3 minutes",
+              )
+            : t("Calcula tu número en 3 minutos", "Calculate your number in 3 minutes")}
         </p>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          {t(
-            "Patrimonio, runway y años hasta tu libertad financiera. Sin tarjeta.",
-            "Net worth, runway and years to financial freedom. No card required.",
-          )}
+          {activeCategory === "ninos"
+            ? t(
+                "Proyecta cuánto tendrá a los 18 años si inviertes una cantidad fija cada mes en el S&P 500 (10% anual). Ves el capital final, los años de crecimiento y el esfuerzo mensual que necesitas. Sin tarjeta.",
+                "Project what they'll have at 18 if you invest a fixed amount each month in the S&P 500 (10% a year). See the final capital, the years of growth and the monthly effort needed. No card required.",
+              )
+            : t(
+                "Patrimonio, runway y años hasta tu libertad financiera. Sin tarjeta.",
+                "Net worth, runway and years to financial freedom. No card required.",
+              )}
         </p>
         <a
           href={activeCategory === "ninos" ? "/demo-ninos?start=1" : "/demo?start=1"}
