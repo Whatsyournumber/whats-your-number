@@ -299,8 +299,9 @@ export async function diagnoseGa4(): Promise<Ga4Diagnostics> {
           "https://analyticsadmin.googleapis.com/v1beta/accountSummaries?pageSize=50",
           { headers: { Authorization: `Bearer ${token}` } },
         );
+        const bodyText = await res.text();
         if (res.ok) {
-          const json = (await res.json()) as {
+          const json = JSON.parse(bodyText) as {
             accountSummaries?: Array<{
               displayName?: string;
               propertySummaries?: Array<{ property?: string; displayName?: string }>;
@@ -313,10 +314,12 @@ export async function diagnoseGa4(): Promise<Ga4Diagnostics> {
           );
           hint += props.length
             ? ` El service account SÍ tiene acceso a: ${props.join(", ")}. Compara el ID numérico con GA4_PROPERTY_ID (${propertyId}).`
-            : " El service account NO tiene acceso a ninguna propiedad todavía (la lista viene vacía): el permiso de Viewer no se ha aplicado o se quitó.";
+            : " El service account NO ve ninguna propiedad (lista vacía): el permiso de Viewer no se ha aplicado o se quitó.";
+        } else {
+          hint += ` Consulta de propiedades accesibles falló [${res.status}]: ${bodyText.slice(0, 300)}`;
         }
-      } catch {
-        // Si el Admin API falla, dejamos solo la pista original.
+      } catch (adminErr) {
+        hint += ` No se pudo consultar el Admin API: ${adminErr instanceof Error ? adminErr.message : String(adminErr)}`;
       }
     }
 
