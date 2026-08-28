@@ -48,6 +48,7 @@ import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } fr
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout/success'
+import { Route as EnIndexRouteImport } from './routes/en.index'
 import { Route as EnBlogRouteImport } from './routes/en.blog'
 import { Route as EnFinanzasParaNinosRouteImport } from './routes/en.finanzas-para-ninos'
 import { Route as NinosIndexRouteImport } from './routes/ninos/index'
@@ -266,6 +267,11 @@ const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
   path: '/checkout/success',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnIndexRoute = EnIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => EnRoute,
+} as any)
 const EnBlogRoute = EnBlogRouteImport.update({
   id: '/blog',
   path: '/blog',
@@ -416,6 +422,7 @@ export interface FileRoutesByFullPath {
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/blog/': typeof BlogIndexRoute
+  '/en/': typeof EnIndexRoute
   '/ninos/': typeof NinosIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -447,7 +454,6 @@ export interface FileRoutesByTo {
   '/demo': typeof DemoRoute
   '/demo-ninos': typeof DemoNinosRoute
   '/elegir': typeof ElegirRoute
-  '/en': typeof EnRouteWithChildren
   '/finanzas-para-ninos': typeof FinanzasParaNinosRoute
   '/gastos': typeof GastosRoute
   '/hipoteca': typeof HipotecaRoute
@@ -475,6 +481,7 @@ export interface FileRoutesByTo {
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/blog': typeof BlogIndexRoute
+  '/en': typeof EnIndexRoute
   '/ninos': typeof NinosIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -537,6 +544,7 @@ export interface FileRoutesById {
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
   '/blog/': typeof BlogIndexRoute
+  '/en/': typeof EnIndexRoute
   '/ninos/': typeof NinosIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -600,6 +608,7 @@ export interface FileRouteTypes {
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/blog/'
+    | '/en/'
     | '/ninos/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -631,7 +640,6 @@ export interface FileRouteTypes {
     | '/demo'
     | '/demo-ninos'
     | '/elegir'
-    | '/en'
     | '/finanzas-para-ninos'
     | '/gastos'
     | '/hipoteca'
@@ -659,6 +667,7 @@ export interface FileRouteTypes {
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/blog'
+    | '/en'
     | '/ninos'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -720,6 +729,7 @@ export interface FileRouteTypes {
     | '/ninos/onboarding'
     | '/ninos/padres'
     | '/blog/'
+    | '/en/'
     | '/ninos/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -1060,6 +1070,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutSuccessRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/en/': {
+      id: '/en/'
+      path: '/'
+      fullPath: '/en/'
+      preLoaderRoute: typeof EnIndexRouteImport
+      parentRoute: typeof EnRoute
+    }
     '/en/blog': {
       id: '/en/blog'
       path: '/blog'
@@ -1259,11 +1276,13 @@ const EnBlogRouteWithChildren =
 interface EnRouteChildren {
   EnBlogRoute: typeof EnBlogRouteWithChildren
   EnFinanzasParaNinosRoute: typeof EnFinanzasParaNinosRoute
+  EnIndexRoute: typeof EnIndexRoute
 }
 
 const EnRouteChildren: EnRouteChildren = {
   EnBlogRoute: EnBlogRouteWithChildren,
   EnFinanzasParaNinosRoute: EnFinanzasParaNinosRoute,
+  EnIndexRoute: EnIndexRoute,
 }
 
 const EnRouteWithChildren = EnRoute._addFileChildren(EnRouteChildren)
