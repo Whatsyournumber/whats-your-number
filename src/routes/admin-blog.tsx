@@ -117,6 +117,12 @@ function BlogBackOffice() {
     queryFn: () => getBlogTraffic({ data: { days } }),
   });
 
+  const ga4 = useQuery({
+    queryKey: ["ga4-traffic", days],
+    enabled: isAdmin,
+    queryFn: () => getGa4Traffic({ data: { days } }),
+  });
+
   const gsc = useQuery({
     queryKey: ["blog-gsc", days],
     enabled: isAdmin,
