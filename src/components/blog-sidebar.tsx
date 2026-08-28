@@ -2,6 +2,7 @@ import { ArrowRight, Sparkles, Tag } from "lucide-react";
 
 import { useLanguage, useT } from "@/hooks/use-language";
 import { blogCategories, categoryCount } from "@/lib/blog-categories";
+import demoCircle from "@/assets/blog/demo-number-circle.png.asset.json";
 
 /** Sticky rail shown to the right of an article: demo CTA + category navigation. */
 export function BlogSidebar({ activeCategory }: { activeCategory?: string | undefined }) {
@@ -16,24 +17,26 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
           <Sparkles className="h-3 w-3" />
           {t("Demo gratis", "Free demo")}
         </div>
-        <p className="mt-3 font-display text-xl font-semibold leading-tight">
-          {activeCategory === "ninos"
-            ? t(
-                "Descubre el número de tu hijo en 30 segundos",
-                "Discover your child's number in 30 seconds",
-              )
-            : t("Descubre tu número en 30 segundos", "Discover your number in 30 seconds")}
-        </p>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          {activeCategory === "ninos"
-            ? t(
-                "3 preguntas. Sin registro. Proyección hasta los 18 años.",
-                "3 questions. No signup. Projection until age 18.",
-              )
-            : t(
-                "3 preguntas. Sin registro. Sin conectar bancos. Solo tu ritmo, tu patrimonio y tu meta.",
-                "3 questions. No signup. No bank connections. Just your pace, your net worth and your goal.",
-              )}
+        <div className="mt-3 flex items-center gap-3">
+          <img
+            src={demoCircle.url}
+            alt={t("Demo del número financiero", "Financial number demo")}
+            width={64}
+            height={64}
+            loading="lazy"
+            className="h-14 w-14 shrink-0 rounded-full object-cover"
+          />
+          <p className="min-w-0 truncate font-display text-base font-semibold leading-tight">
+            {activeCategory === "ninos"
+              ? t("El número de tu hijo", "Your child's number")
+              : t("Descubre tu número", "Discover your number")}
+          </p>
+        </div>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          {t(
+            "Descubre el número que necesitas para retirarte antes y llegar a tu libertad financiera antes que todos.",
+            "Discover the number you need to retire earlier and reach financial freedom before everyone else.",
+          )}
         </p>
         <a
           href={activeCategory === "ninos" ? "/demo-ninos?start=1" : "/demo?start=1"}
@@ -47,6 +50,7 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
           <ArrowRight className="h-4 w-4" />
         </a>
       </div>
+
 
       <nav className="surface p-6" aria-label={t("Categorías del blog", "Blog categories")}>
         <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-primary">
