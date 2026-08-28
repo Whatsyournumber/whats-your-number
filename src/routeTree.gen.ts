@@ -45,8 +45,10 @@ import { Route as SuscripcionRouteImport } from './routes/suscripcion'
 import { Route as TerminosRouteImport } from './routes/terminos'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout/success'
+import { Route as EnIndexRouteImport } from './routes/en.index'
 import { Route as EnBlogRouteImport } from './routes/en.blog'
 import { Route as EnFinanzasParaNinosRouteImport } from './routes/en.finanzas-para-ninos'
 import { Route as NinosIndexRouteImport } from './routes/ninos/index'
@@ -57,6 +59,7 @@ import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[
 import { Route as ApiPublicDistributeNewPostsRouteImport } from './routes/api/public/distribute-new-posts'
 import { Route as ApiPublicRssRouteImport } from './routes/api/public/rss'
 import { Route as ApiPublicVerifyBacklinksRouteImport } from './routes/api/public/verify-backlinks'
+import { Route as EnBlogIndexRouteImport } from './routes/en.blog.index'
 import { Route as EnBlogSlugRouteImport } from './routes/en.blog.$slug'
 import { Route as NinosKidDatosRouteImport } from './routes/ninos/kid/datos'
 import { Route as NinosKidDeseosRouteImport } from './routes/ninos/kid/deseos'
@@ -250,6 +253,11 @@ const Char91DotwellKnownChar93OauthProtectedResourceRoute =
     path: '/.well-known/oauth-protected-resource',
     getParentRoute: () => rootRouteImport,
   } as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BlogRoute,
+} as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -259,6 +267,11 @@ const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
   id: '/checkout/success',
   path: '/checkout/success',
   getParentRoute: () => rootRouteImport,
+} as any)
+const EnIndexRoute = EnIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => EnRoute,
 } as any)
 const EnBlogRoute = EnBlogRouteImport.update({
   id: '/blog',
@@ -313,6 +326,11 @@ const ApiPublicVerifyBacklinksRoute =
     path: '/api/public/verify-backlinks',
     getParentRoute: () => rootRouteImport,
   } as any)
+const EnBlogIndexRoute = EnBlogIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => EnBlogRoute,
+} as any)
 const EnBlogSlugRoute = EnBlogSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -409,6 +427,8 @@ export interface FileRoutesByFullPath {
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
+  '/blog/': typeof BlogIndexRoute
+  '/en/': typeof EnIndexRoute
   '/ninos/': typeof NinosIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -423,6 +443,7 @@ export interface FileRoutesByFullPath {
   '/ninos/kid/numero': typeof NinosKidNumeroRoute
   '/ninos/kid/tareas': typeof NinosKidTareasRoute
   '/ninos/kid/universidades': typeof NinosKidUniversidadesRoute
+  '/en/blog/': typeof EnBlogIndexRoute
   '/api/public/linkedin/callback': typeof ApiPublicLinkedinCallbackRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
@@ -433,7 +454,6 @@ export interface FileRoutesByTo {
   '/advisor': typeof AdvisorRoute
   '/afiliados': typeof AfiliadosRoute
   '/auth': typeof AuthRoute
-  '/blog': typeof BlogRouteWithChildren
   '/cash-flow': typeof CashFlowRoute
   '/ciudades': typeof CiudadesRoute
   '/configuracion': typeof ConfiguracionRoute
@@ -441,7 +461,6 @@ export interface FileRoutesByTo {
   '/demo': typeof DemoRoute
   '/demo-ninos': typeof DemoNinosRoute
   '/elegir': typeof ElegirRoute
-  '/en': typeof EnRouteWithChildren
   '/finanzas-para-ninos': typeof FinanzasParaNinosRoute
   '/gastos': typeof GastosRoute
   '/hipoteca': typeof HipotecaRoute
@@ -464,10 +483,11 @@ export interface FileRoutesByTo {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
-  '/en/blog': typeof EnBlogRouteWithChildren
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
+  '/blog': typeof BlogIndexRoute
+  '/en': typeof EnIndexRoute
   '/ninos': typeof NinosIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -482,6 +502,7 @@ export interface FileRoutesByTo {
   '/ninos/kid/numero': typeof NinosKidNumeroRoute
   '/ninos/kid/tareas': typeof NinosKidTareasRoute
   '/ninos/kid/universidades': typeof NinosKidUniversidadesRoute
+  '/en/blog': typeof EnBlogIndexRoute
   '/api/public/linkedin/callback': typeof ApiPublicLinkedinCallbackRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
@@ -529,6 +550,8 @@ export interface FileRoutesById {
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
+  '/blog/': typeof BlogIndexRoute
+  '/en/': typeof EnIndexRoute
   '/ninos/': typeof NinosIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -543,6 +566,7 @@ export interface FileRoutesById {
   '/ninos/kid/numero': typeof NinosKidNumeroRoute
   '/ninos/kid/tareas': typeof NinosKidTareasRoute
   '/ninos/kid/universidades': typeof NinosKidUniversidadesRoute
+  '/en/blog/': typeof EnBlogIndexRoute
   '/api/public/linkedin/callback': typeof ApiPublicLinkedinCallbackRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
@@ -591,6 +615,8 @@ export interface FileRouteTypes {
     | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
+    | '/blog/'
+    | '/en/'
     | '/ninos/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -605,6 +631,7 @@ export interface FileRouteTypes {
     | '/ninos/kid/numero'
     | '/ninos/kid/tareas'
     | '/ninos/kid/universidades'
+    | '/en/blog/'
     | '/api/public/linkedin/callback'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -615,7 +642,6 @@ export interface FileRouteTypes {
     | '/advisor'
     | '/afiliados'
     | '/auth'
-    | '/blog'
     | '/cash-flow'
     | '/ciudades'
     | '/configuracion'
@@ -623,7 +649,6 @@ export interface FileRouteTypes {
     | '/demo'
     | '/demo-ninos'
     | '/elegir'
-    | '/en'
     | '/finanzas-para-ninos'
     | '/gastos'
     | '/hipoteca'
@@ -646,10 +671,11 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/blog/$slug'
     | '/checkout/success'
-    | '/en/blog'
     | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
+    | '/blog'
+    | '/en'
     | '/ninos'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -664,6 +690,7 @@ export interface FileRouteTypes {
     | '/ninos/kid/numero'
     | '/ninos/kid/tareas'
     | '/ninos/kid/universidades'
+    | '/en/blog'
     | '/api/public/linkedin/callback'
     | '/api/public/payments/webhook'
   id:
@@ -710,6 +737,8 @@ export interface FileRouteTypes {
     | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
+    | '/blog/'
+    | '/en/'
     | '/ninos/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -724,6 +753,7 @@ export interface FileRouteTypes {
     | '/ninos/kid/numero'
     | '/ninos/kid/tareas'
     | '/ninos/kid/universidades'
+    | '/en/blog/'
     | '/api/public/linkedin/callback'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
@@ -1029,6 +1059,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/': {
+      id: '/blog/'
+      path: '/'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof BlogRoute
+    }
     '/blog/$slug': {
       id: '/blog/$slug'
       path: '/$slug'
@@ -1042,6 +1079,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/checkout/success'
       preLoaderRoute: typeof CheckoutSuccessRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/en/': {
+      id: '/en/'
+      path: '/'
+      fullPath: '/en/'
+      preLoaderRoute: typeof EnIndexRouteImport
+      parentRoute: typeof EnRoute
     }
     '/en/blog': {
       id: '/en/blog'
@@ -1112,6 +1156,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/public/verify-backlinks'
       preLoaderRoute: typeof ApiPublicVerifyBacklinksRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/en/blog/': {
+      id: '/en/blog/'
+      path: '/'
+      fullPath: '/en/blog/'
+      preLoaderRoute: typeof EnBlogIndexRouteImport
+      parentRoute: typeof EnBlogRoute
     }
     '/en/blog/$slug': {
       id: '/en/blog/$slug'
@@ -1218,20 +1269,24 @@ const NinosRouteRouteWithChildren = NinosRouteRoute._addFileChildren(
 
 interface BlogRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
+  BlogIndexRoute: typeof BlogIndexRoute
 }
 
 const BlogRouteChildren: BlogRouteChildren = {
   BlogSlugRoute: BlogSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
 }
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 
 interface EnBlogRouteChildren {
   EnBlogSlugRoute: typeof EnBlogSlugRoute
+  EnBlogIndexRoute: typeof EnBlogIndexRoute
 }
 
 const EnBlogRouteChildren: EnBlogRouteChildren = {
   EnBlogSlugRoute: EnBlogSlugRoute,
+  EnBlogIndexRoute: EnBlogIndexRoute,
 }
 
 const EnBlogRouteWithChildren =
@@ -1240,11 +1295,13 @@ const EnBlogRouteWithChildren =
 interface EnRouteChildren {
   EnBlogRoute: typeof EnBlogRouteWithChildren
   EnFinanzasParaNinosRoute: typeof EnFinanzasParaNinosRoute
+  EnIndexRoute: typeof EnIndexRoute
 }
 
 const EnRouteChildren: EnRouteChildren = {
   EnBlogRoute: EnBlogRouteWithChildren,
   EnFinanzasParaNinosRoute: EnFinanzasParaNinosRoute,
+  EnIndexRoute: EnIndexRoute,
 }
 
 const EnRouteWithChildren = EnRoute._addFileChildren(EnRouteChildren)
