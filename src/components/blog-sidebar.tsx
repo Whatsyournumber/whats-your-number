@@ -25,7 +25,7 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
                 Demo gratis
               </span>
             </div>
-            <p className="mt-4 text-center font-display text-[15px] font-semibold leading-tight">
+            <p className="mt-4 text-nowrap text-center font-display text-[15px] font-semibold leading-tight">
               {t("Descubre el número de tu hijo a los 18", "Discover your child's number by age 18")}
             </p>
             <p className="mt-3 text-center text-sm leading-relaxed text-muted-foreground">
