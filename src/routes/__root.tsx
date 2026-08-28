@@ -180,6 +180,7 @@ function RootComponent() {
         <AuthProvider>
           <PromoAutoRedeem />
           <AffiliateTracker />
+          <GoogleAnalytics />
           <RootLayout />
           <ConsentBanner />
           <Toaster />
