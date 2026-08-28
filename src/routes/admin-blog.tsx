@@ -14,6 +14,7 @@ import {
   MousePointerClick,
   Rocket,
   Search,
+  ShieldCheck,
   Sparkles,
   XCircle,
 } from "lucide-react";
@@ -48,7 +49,7 @@ import {
 } from "@/lib/blog-analytics.functions";
 import type { SerpRank, SerpRegion } from "@/lib/keyword-serp.server";
 import { lovableAnalytics } from "@/lib/lovable-analytics-snapshot";
-import { getGa4Traffic } from "@/lib/ga4.functions";
+import { checkGa4Access, getGa4Traffic } from "@/lib/ga4.functions";
 import { runIndexingDistribution, syncNewPostsDistribution } from "@/lib/indexing.functions";
 import { BacklinkPanel } from "@/components/backlink-panel";
 
@@ -115,6 +116,10 @@ function BlogBackOffice() {
     queryKey: ["blog-traffic", days],
     enabled: isAdmin,
     queryFn: () => getBlogTraffic({ data: { days } }),
+  });
+
+  const ga4Check = useMutation({
+    mutationFn: () => checkGa4Access({}),
   });
 
   const ga4 = useQuery({
