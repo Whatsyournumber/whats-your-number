@@ -45,6 +45,7 @@ import { Route as SuscripcionRouteImport } from './routes/suscripcion'
 import { Route as TerminosRouteImport } from './routes/terminos'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout/success'
 import { Route as EnBlogRouteImport } from './routes/en.blog'
@@ -250,6 +251,11 @@ const Char91DotwellKnownChar93OauthProtectedResourceRoute =
     path: '/.well-known/oauth-protected-resource',
     getParentRoute: () => rootRouteImport,
   } as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BlogRoute,
+} as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -409,6 +415,7 @@ export interface FileRoutesByFullPath {
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
+  '/blog/': typeof BlogIndexRoute
   '/ninos/': typeof NinosIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -433,7 +440,6 @@ export interface FileRoutesByTo {
   '/advisor': typeof AdvisorRoute
   '/afiliados': typeof AfiliadosRoute
   '/auth': typeof AuthRoute
-  '/blog': typeof BlogRouteWithChildren
   '/cash-flow': typeof CashFlowRoute
   '/ciudades': typeof CiudadesRoute
   '/configuracion': typeof ConfiguracionRoute
@@ -468,6 +474,7 @@ export interface FileRoutesByTo {
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
+  '/blog': typeof BlogIndexRoute
   '/ninos': typeof NinosIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -529,6 +536,7 @@ export interface FileRoutesById {
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
+  '/blog/': typeof BlogIndexRoute
   '/ninos/': typeof NinosIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -591,6 +599,7 @@ export interface FileRouteTypes {
     | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
+    | '/blog/'
     | '/ninos/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -615,7 +624,6 @@ export interface FileRouteTypes {
     | '/advisor'
     | '/afiliados'
     | '/auth'
-    | '/blog'
     | '/cash-flow'
     | '/ciudades'
     | '/configuracion'
@@ -650,6 +658,7 @@ export interface FileRouteTypes {
     | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
+    | '/blog'
     | '/ninos'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -710,6 +719,7 @@ export interface FileRouteTypes {
     | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
+    | '/blog/'
     | '/ninos/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -1029,6 +1039,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/': {
+      id: '/blog/'
+      path: '/'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof BlogRoute
+    }
     '/blog/$slug': {
       id: '/blog/$slug'
       path: '/$slug'
@@ -1218,10 +1235,12 @@ const NinosRouteRouteWithChildren = NinosRouteRoute._addFileChildren(
 
 interface BlogRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
+  BlogIndexRoute: typeof BlogIndexRoute
 }
 
 const BlogRouteChildren: BlogRouteChildren = {
   BlogSlugRoute: BlogSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
 }
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
