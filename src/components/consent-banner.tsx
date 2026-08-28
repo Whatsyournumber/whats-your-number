@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 import { useT } from "@/hooks/use-language";
+import { updateConsent } from "@/lib/analytics";
 
 const STORAGE_KEY = "wyn.consent.v1";
 
@@ -56,6 +57,7 @@ export function ConsentBanner() {
 
   const decide = (a: boolean, m: boolean) => {
     save({ analytics: a, marketing: m });
+    updateConsent();
     setOpen(false);
     setVisible(false);
   };
