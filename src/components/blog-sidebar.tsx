@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Sparkles, Tag } from "lucide-react";
+import { ArrowRight, Check, Sparkles, Tag } from "lucide-react";
+import demoNinosCard from "@/assets/blog/demo-ninos-card.png.asset.json";
 
 import { useLanguage, useT } from "@/hooks/use-language";
 import { blogCategories, categoryCount } from "@/lib/blog-categories";
