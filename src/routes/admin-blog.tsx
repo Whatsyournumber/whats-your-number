@@ -14,6 +14,7 @@ import {
   MousePointerClick,
   Rocket,
   Search,
+  ShieldCheck,
   Sparkles,
   XCircle,
 } from "lucide-react";
@@ -48,7 +49,7 @@ import {
 } from "@/lib/blog-analytics.functions";
 import type { SerpRank, SerpRegion } from "@/lib/keyword-serp.server";
 import { lovableAnalytics } from "@/lib/lovable-analytics-snapshot";
-import { getGa4Traffic } from "@/lib/ga4.functions";
+import { checkGa4Access, getGa4Traffic } from "@/lib/ga4.functions";
 import { runIndexingDistribution, syncNewPostsDistribution } from "@/lib/indexing.functions";
 import { BacklinkPanel } from "@/components/backlink-panel";
 
@@ -115,6 +116,10 @@ function BlogBackOffice() {
     queryKey: ["blog-traffic", days],
     enabled: isAdmin,
     queryFn: () => getBlogTraffic({ data: { days } }),
+  });
+
+  const ga4Check = useMutation({
+    mutationFn: () => checkGa4Access({}),
   });
 
   const ga4 = useQuery({
@@ -405,14 +410,61 @@ function BlogBackOffice() {
           <Panel className="p-6">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
               <h2 className="text-lg font-semibold">Tráfico global del sitio (Google Analytics 4)</h2>
-              {ga4.data?.configured ? (
-                <Badge variant="outline">
-                  {ga4.data.range.start} → {ga4.data.range.end}
-                </Badge>
-              ) : (
-                <Badge variant="secondary">Sin configurar</Badge>
-              )}
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => ga4Check.mutate()}
+                  disabled={ga4Check.isPending}
+                >
+                  <ShieldCheck className="mr-2 h-4 w-4" />
+                  {ga4Check.isPending ? "Verificando…" : "Verificar acceso"}
+                </Button>
+                {ga4.data?.configured ? (
+                  <Badge variant="outline">
+                    {ga4.data.range.start} → {ga4.data.range.end}
+                  </Badge>
+                ) : (
+                  <Badge variant="secondary">Sin configurar</Badge>
+                )}
+              </div>
             </div>
+
+            {(ga4Check.data || ga4Check.error) && (
+              <div className="mb-5 rounded-xl border border-border p-4 text-sm">
+                <p className="mb-3 font-medium">
+                  {ga4Check.error
+                    ? "No se pudo ejecutar el diagnóstico"
+                    : ga4Check.data?.ok
+                      ? "Acceso verificado correctamente"
+                      : "Hay problemas de acceso a GA4"}
+                </p>
+                {ga4Check.error ? (
+                  <p className="text-muted-foreground">{(ga4Check.error as Error).message}</p>
+                ) : (
+                  <ul className="space-y-2">
+                    {ga4Check.data?.steps.map((step) => (
+                      <li key={step.label} className="flex items-start gap-2">
+                        {step.status === "ok" ? (
+                          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                        ) : step.status === "fail" ? (
+                          <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+                        ) : (
+                          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                        )}
+                        <span>
+                          <span className="font-medium">{step.label}</span>
+                          {step.detail ? (
+                            <span className="block break-words text-muted-foreground">{step.detail}</span>
+                          ) : null}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+
 
             {ga4.isLoading ? (
               <p className="text-sm text-muted-foreground">Cargando datos de GA4…</p>

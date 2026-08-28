@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { loadGa4Traffic, type Ga4Summary } from "@/lib/ga4.server";
+import { diagnoseGa4, loadGa4Traffic, type Ga4Diagnostics, type Ga4Summary } from "@/lib/ga4.server";
 
 async function assertAdmin(supabase: any, userId: string) {
   const { data, error } = await supabase
@@ -22,4 +22,12 @@ export const getGa4Traffic = createServerFn({ method: "POST" })
   .handler(async ({ data, context }): Promise<Ga4Summary> => {
     await assertAdmin((context as any).supabase, (context as any).userId);
     return loadGa4Traffic(data.days);
+  });
+
+/** Diagnóstico de acceso del service account a GA4 (solo admins). */
+export const checkGa4Access = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<Ga4Diagnostics> => {
+    await assertAdmin((context as any).supabase, (context as any).userId);
+    return diagnoseGa4();
   });
