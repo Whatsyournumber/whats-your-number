@@ -57,6 +57,7 @@ export function ConsentBanner() {
 
   const decide = (a: boolean, m: boolean) => {
     save({ analytics: a, marketing: m });
+    updateConsent();
     setOpen(false);
     setVisible(false);
   };
