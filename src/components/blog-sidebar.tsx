@@ -17,27 +17,26 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
           <Sparkles className="h-3 w-3" />
           {t("Demo gratis", "Free demo")}
         </div>
-        <div className="mt-3 flex items-center gap-3">
-          <img
-            src={demoCircle.url}
-            alt={t("Demo del número financiero", "Financial number demo")}
-            width={64}
-            height={64}
-            loading="lazy"
-            className="h-14 w-14 shrink-0 rounded-full object-cover"
-          />
-          <p className="min-w-0 truncate font-display text-base font-semibold leading-tight">
-            {activeCategory === "ninos"
-              ? t("El número de tu hijo", "Your child's number")
-              : t("Descubre tu número", "Discover your number")}
-          </p>
-        </div>
+        <p className="mt-3 font-display text-base font-semibold leading-tight">
+          {activeCategory === "ninos"
+            ? t("Descubre su número en 30seg", "Discover their number in 30s")
+            : t("Descubre tu número en 30seg", "Discover your number in 30s")}
+        </p>
+        <img
+          src={demoCircle.url}
+          alt={t("Demo del número financiero", "Financial number demo")}
+          width={96}
+          height={96}
+          loading="lazy"
+          className="mt-3 h-20 w-20 rounded-full object-cover"
+        />
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
           {t(
-            "Descubre el número que necesitas para retirarte antes y llegar a tu libertad financiera antes que todos.",
-            "Discover the number you need to retire earlier and reach financial freedom before everyone else.",
+            "El número que necesitas para retirarte y llegar a la libertad financiera antes que todos.",
+            "The number you need to retire and reach financial freedom before everyone else.",
           )}
         </p>
+
         <a
           href={activeCategory === "ninos" ? "/demo-ninos?start=1" : "/demo?start=1"}
           target="_blank"
