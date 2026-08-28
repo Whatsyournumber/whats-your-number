@@ -12,12 +12,12 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
 
   return (
     <div className="sticky top-24 space-y-5">
-      <div className="surface p-5">
+      <div className="surface flex flex-col items-center p-5 text-center">
         <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
           <Sparkles className="h-3 w-3" />
           {t("Demo gratis", "Free demo")}
         </div>
-        <p className="mt-3 font-display text-base font-semibold leading-tight">
+        <p className="mt-3 font-display text-lg font-semibold leading-tight">
           {activeCategory === "ninos"
             ? t("Descubre su número en 30seg", "Discover their number in 30s")
             : t("Descubre tu número en 30seg", "Discover your number in 30s")}
@@ -25,17 +25,18 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
         <img
           src={demoCircle.url}
           alt={t("Demo del número financiero", "Financial number demo")}
-          width={96}
-          height={96}
+          width={160}
+          height={160}
           loading="lazy"
-          className="mt-3 h-20 w-20 rounded-full object-cover"
+          className="mt-4 h-28 w-28 rounded-full object-cover"
         />
-        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
           {t(
-            "El número que necesitas para retirarte y llegar a la libertad financiera antes que todos.",
-            "The number you need to retire and reach financial freedom before everyone else.",
+            "El número para retirarte y alcanzar tu libertad financiera antes.",
+            "The number to retire and reach financial freedom sooner.",
           )}
         </p>
+
 
         <a
           href={activeCategory === "ninos" ? "/demo-ninos?start=1" : "/demo?start=1"}
