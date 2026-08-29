@@ -366,6 +366,10 @@ function Pricing() {
                   >
                     {plan.cta}
                   </Button>
+                ) : isContact ? (
+                  <Button asChild variant="outline" className="mt-8 w-full rounded-full">
+                    <a href={plan.href}>{plan.cta}</a>
+                  </Button>
                 ) : (
                   <Button asChild variant={plan.highlight ? "default" : "outline"} className="mt-8 w-full rounded-full">
                     <Link to={plan.name === "Free" ? "/demo" : "/auth"} search={plan.name === "Free" ? {} : { mode: "signup" }}>
