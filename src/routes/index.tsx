@@ -591,6 +591,9 @@ export function Landing() {
                 <span className="block bg-gradient-to-r from-primary to-foreground bg-clip-text text-transparent">
                   {t("entendido en 30 segundos", "understood in 30 seconds")}
                 </span>
+                <span className="sr-only">
+                  {t(" — Finanzas personales para familias", " — Personal finance for families")}
+                </span>
               </h1>
               <p className="mx-auto mt-5 max-w-lg text-base text-muted-foreground md:mx-0 md:text-sm lg:text-base">
                 {t(
