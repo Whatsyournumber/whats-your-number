@@ -293,7 +293,7 @@ export function Landing() {
     },
     {
       icon: LineChart,
-      title: t("Tu Patrimonio & Portfolio", "Your Net Worth & Portfolio"),
+      title: t("Tu Patrimonio & Portfolio", "Investment & Net Worth Tracker"),
       desc: t(
         "Por fin entiende cuánto vales. Organiza todo tu patrimonio en un solo lugar, sigue tus activos en tiempo real y analiza su rendimiento, riesgo e ingresos pasivos.",
         "Finally understand how much you're worth. Organize all your wealth in one place, track your assets in real time and analyze their performance, risk and passive income.",
