@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 
+import { KIDS_FAQS, buildLandingFaqJsonLd } from "@/lib/landing-faqs";
 import { KidsFinanceLanding } from "@/routes/finanzas-para-ninos";
 import { useLanguage } from "@/hooks/use-language";
 
