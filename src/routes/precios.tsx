@@ -150,8 +150,8 @@ function Pricing() {
       priceId: null,
       contact: true,
       desc: t(
-        "Dale a tus clientes una experiencia financiera premium: planning patrimonial, reportes bajo tu marca y herramientas que escalan contigo.",
-        "Give your clients a premium financial experience: wealth planning, white-label reports, and tools that scale with you.",
+        "Planning patrimonial para tus clientes.\nReportes bajo tu marca.\nHerramientas que escalan contigo.",
+        "Wealth planning for your clients.\nBranded reports under your identity.\nTools that scale with you.",
       ),
       features: [
         t("Todo lo de Familiar para cada miembro", "Everything in Familiar for each member"),
