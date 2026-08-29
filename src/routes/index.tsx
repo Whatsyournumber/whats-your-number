@@ -497,7 +497,7 @@ export function Landing() {
               <p className="mx-auto mt-5 max-w-lg text-base text-muted-foreground md:mx-0 md:text-sm lg:text-base">
                 {t(
                   "La calculadora de libertad financiera que responde cuál es tu número para retiro: control de gastos e ingresos, patrimonio, inversiones y cash flow en una sola plataforma. Sube tus estados de cuenta y la IA hace el resto.",
-                  "The financial freedom calculator that answers your retirement number: spending and income tracking, net worth, investments and cash flow in a single platform. Upload your statements and let the AI do the rest.",
+                  "The Financial Freedom Calculator that answers what is your number for retirement. A personal income and expense tracker, net worth and retirement calculator, and investment tracker in one platform. Upload your statements and let the AI do the rest.",
                 )}
               </p>
 
