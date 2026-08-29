@@ -4,9 +4,9 @@ import { useEffect } from "react";
 import { Landing } from "@/routes/index";
 import { useLanguage } from "@/hooks/use-language";
 
-const TITLE = "Personal Finance AI | Track Spending, Net Worth & Retirement";
+const TITLE = "What Is Your Number for Retirement? | Financial Freedom Calculator";
 const DESCRIPTION =
-  "Track your spending, investments, net worth and cash flow in one place. See how every financial decision moves you closer to or further from your retirement number.";
+  "Discover what is your number for retirement with the Financial Freedom Calculator. The personal income and expense tracker, net worth and retirement calculator, and investment and net worth tracker built for personal finance for families.";
 
 export const Route = createFileRoute("/en/")({
   head: () => ({
