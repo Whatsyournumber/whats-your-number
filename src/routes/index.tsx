@@ -636,6 +636,8 @@ export function Landing() {
           />
         </motion.section>
 
+        <SeoPillars />
+
         <section>
 
 
