@@ -46,6 +46,7 @@ function Pricing() {
   const { openCheckout, loading } = usePaddleCheckout();
   const resumedCheckout = useRef(false);
   const [discount, setDiscount] = useState<PendingDiscount | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const { prices, currency } = useRegionalPricing();
 
   useEffect(() => {
@@ -149,8 +150,8 @@ function Pricing() {
       priceId: null,
       contact: true,
       desc: t(
-        "Dale a tus clientes una experiencia financiera premium: planning patrimonial, reportes bajo tu marca y herramientas que escalan contigo.",
-        "Give your clients a premium financial experience: wealth planning, white-label reports, and tools that scale with you.",
+        "Planning patrimonial para tus clientes.\nReportes bajo tu marca.\nHerramientas que escalan contigo.",
+        "Wealth planning for your clients.\nBranded reports under your identity.\nTools that scale with you.",
       ),
       features: [
         t("Todo lo de Familiar para cada miembro", "Everything in Familiar for each member"),
@@ -327,11 +328,27 @@ function Pricing() {
               ? t("3 meses gratis · 25% OFF", "3 months free · 25% OFF")
               : t("2 meses gratis · 17% OFF", "2 months free · 17% OFF");
 
+            const isSelected = selectedPlan === plan.name;
+
             return (
               <div
                 key={plan.name}
-                className={`surface relative flex flex-col p-6 transition-colors ${
-                  plan.highlight ? "bg-gradient-to-b from-primary/5 to-transparent ring-1 ring-primary/40" : ""
+                role="button"
+                tabIndex={0}
+                onClick={() => setSelectedPlan(isSelected ? null : plan.name)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    setSelectedPlan(isSelected ? null : plan.name);
+                  }
+                }}
+                className={`surface relative flex cursor-pointer flex-col p-6 transition-all ${
+                  plan.highlight
+                    ? "bg-gradient-to-b from-primary/5 to-transparent ring-1 ring-primary/40"
+                    : ""
+                } ${
+                  isSelected
+                    ? "bg-positive/[0.04] ring-1 ring-positive/50 shadow-[0_0_24px_-6px_hsl(var(--positive)/0.35)]"
+                    : ""
                 }`}
               >
                 {plan.highlight && (
@@ -365,7 +382,7 @@ function Pricing() {
                   </span>
                 )}
 
-                <p className="mt-2 text-sm text-muted-foreground">{plan.desc}</p>
+                <p className="mt-2 whitespace-pre-line text-sm text-muted-foreground">{plan.desc}</p>
                 <ul className="mt-6 flex-1 space-y-2.5">
                   {plan.features.map((f) => (
                     <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
@@ -376,19 +393,42 @@ function Pricing() {
                 </ul>
                 {plan.priceId ? (
                   <Button
-                    variant={plan.highlight ? "default" : "outline"}
-                    className="mt-8 w-full rounded-full"
-                    onClick={() => handleCta(plan)}
+                    variant={plan.highlight || isSelected ? "default" : "outline"}
+                    className={`mt-8 w-full rounded-full ${
+                      isSelected && !plan.highlight
+                        ? "bg-positive text-positive-foreground hover:bg-positive/90"
+                        : ""
+                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCta(plan);
+                    }}
                     disabled={loading}
                   >
                     {plan.cta}
                   </Button>
                 ) : isContact ? (
-                  <Button asChild variant="outline" className="mt-8 w-full rounded-full">
+                  <Button
+                    asChild
+                    variant={isSelected ? "default" : "outline"}
+                    className={`mt-8 w-full rounded-full ${
+                      isSelected ? "bg-positive text-positive-foreground hover:bg-positive/90" : ""
+                    }`}
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <a href={plan.href}>{plan.cta}</a>
                   </Button>
                 ) : (
-                  <Button asChild variant={plan.highlight ? "default" : "outline"} className="mt-8 w-full rounded-full">
+                  <Button
+                    asChild
+                    variant={plan.highlight || isSelected ? "default" : "outline"}
+                    className={`mt-8 w-full rounded-full ${
+                      isSelected && !plan.highlight
+                        ? "bg-positive text-positive-foreground hover:bg-positive/90"
+                        : ""
+                    }`}
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <Link to={plan.name === "Free" ? "/demo" : "/auth"} search={plan.name === "Free" ? {} : { mode: "signup" }}>
                       {plan.cta}
                     </Link>
