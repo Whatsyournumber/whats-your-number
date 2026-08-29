@@ -56,17 +56,17 @@ function HighlightDesc({ desc, highlight }: { desc: string; highlight?: string }
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Finanzas Personales con IA | Controla Gastos, Patrimonio y Retiro" },
+      { title: "¿Cuál Es Tu Número para Retiro? | Calculadora de Libertad Financiera" },
       {
         name: "description",
         content:
-          "Controla tus gastos, patrimonio, inversiones y flujo de caja en una sola plataforma. Descubre cómo cada decisión financiera te acerca o aleja de tu número de retiro.",
+          "Descubre cuál es tu número para retiro con la calculadora de libertad financiera. Control de gastos e ingresos, calculadora de patrimonio y jubilación y comparador de costo de vida en una sola app de finanzas personales para familias.",
       },
-      { property: "og:title", content: "Finanzas Personales con IA | Controla Gastos, Patrimonio y Retiro" },
+      { property: "og:title", content: "¿Cuál Es Tu Número para Retiro? | Calculadora de Libertad Financiera" },
       {
         property: "og:description",
         content:
-          "Controla tus gastos, patrimonio, inversiones y flujo de caja en una sola plataforma. Descubre cómo cada decisión financiera te acerca o aleja de tu número de retiro.",
+          "Descubre cuál es tu número para retiro: control de gastos e ingresos, calculadora de patrimonio y jubilación y comparador de costo de vida en una sola plataforma.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -439,7 +439,7 @@ export function Landing() {
           >
             <img
               src={heroManLaptopAsset.url}
-              alt={t("Hombre feliz usando WhatsYourNumber en su laptop", "Happy man using WhatsYourNumber on his laptop")}
+              alt={t("Hombre feliz calculando cuál es su número para retiro con la calculadora de libertad financiera de WhatsYourNumber", "Happy man finding out his retirement number with WhatsYourNumber's financial freedom calculator")}
               width={1536}
               height={1024}
               className="h-full w-full object-cover object-[18%_78%] md:object-[20%_82%] lg:object-[22%_86%]"
@@ -469,7 +469,7 @@ export function Landing() {
           >
             <img
               src={heroManLaptopAsset.url}
-              alt="Usuario revisando su patrimonio en WhatsYournumber desde el portátil"
+              alt="Usuario usando la calculadora de patrimonio y jubilación de WhatsYournumber desde el portátil"
               aria-hidden
               className="h-full w-full object-cover object-[70%_28%]"
               loading="eager"
@@ -493,8 +493,8 @@ export function Landing() {
               </h1>
               <p className="mx-auto mt-5 max-w-lg text-base text-muted-foreground md:mx-0 md:text-sm lg:text-base">
                 {t(
-                  "Patrimonio, gastos, cash flow, inversiones y retiro en una sola plataforma. Sube tus estados de cuenta y la IA hace el resto.",
-                  "Net worth, spending, cash flow, investments and retirement in a single platform. Upload your statements and let the AI do the rest.",
+                  "La calculadora de libertad financiera que responde cuál es tu número para retiro: control de gastos e ingresos, patrimonio, inversiones y cash flow en una sola plataforma. Sube tus estados de cuenta y la IA hace el resto.",
+                  "The financial freedom calculator that answers your retirement number: spending and income tracking, net worth, investments and cash flow in a single platform. Upload your statements and let the AI do the rest.",
                 )}
               </p>
 
