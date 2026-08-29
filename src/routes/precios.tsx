@@ -55,7 +55,20 @@ function Pricing() {
 
   const isYearly = billing === "yearly";
 
-  const plans = [
+  type PricingPlan = {
+    name: string;
+    monthlyPrice: number | null;
+    yearlyPrice: number | null;
+    priceId: string | null;
+    contact?: boolean;
+    desc: string;
+    features: string[];
+    cta: string;
+    href?: string;
+    highlight: boolean;
+  };
+
+  const plans: PricingPlan[] = [
     {
       name: "Free",
       monthlyPrice: 0,
