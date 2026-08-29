@@ -469,10 +469,7 @@ export function Landing() {
           >
             <img
               src={heroManLaptopAsset.url}
-              alt={t(
-                "Usuario usando la calculadora de patrimonio y jubilación de WhatsYournumber desde el portátil",
-                "User using WhatsYournumber's net worth and retirement calculator on a laptop",
-              )}
+              alt={t("cuál es tu número para retiro", "what is your number for retirement")}
               aria-hidden
               className="h-full w-full object-cover object-[70%_28%]"
               loading="eager"
