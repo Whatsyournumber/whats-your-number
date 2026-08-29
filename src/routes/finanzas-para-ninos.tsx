@@ -1988,7 +1988,7 @@ function PhoneMock({
             >
               <img
                 src={face}
-                alt="Retrato del perfil infantil en la app"
+                alt={t("calculadora de ahorro para hijos", "savings calculator for children")}
                 width={48}
                 height={48}
                 className="h-full w-full rounded-full object-cover"
