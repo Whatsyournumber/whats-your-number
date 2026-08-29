@@ -439,7 +439,7 @@ export function Landing() {
           >
             <img
               src={heroManLaptopAsset.url}
-              alt={t("Hombre feliz calculando cuál es su número para retiro con la calculadora de libertad financiera de WhatsYourNumber", "Happy man finding out his retirement number with WhatsYourNumber's financial freedom calculator")}
+              alt={t("cuál es tu número para retiro", "what is your number for retirement")}
               width={1536}
               height={1024}
               className="h-full w-full object-cover object-[18%_78%] md:object-[20%_82%] lg:object-[22%_86%]"
@@ -469,10 +469,7 @@ export function Landing() {
           >
             <img
               src={heroManLaptopAsset.url}
-              alt={t(
-                "Usuario usando la calculadora de patrimonio y jubilación de WhatsYournumber desde el portátil",
-                "User using WhatsYournumber's net worth and retirement calculator on a laptop",
-              )}
+              alt={t("cuál es tu número para retiro", "what is your number for retirement")}
               aria-hidden
               className="h-full w-full object-cover object-[70%_28%]"
               loading="eager"
@@ -683,10 +680,7 @@ export function Landing() {
             >
               <img
                 src={ctaLifestyle}
-                alt={t(
-                  "Pareja organizando sus finanzas personales para familias en casa con WhatsYournumber",
-                  "Couple using WhatsYournumber for personal finance for families at home",
-                )}
+                alt={t("finanzas personales para familias", "personal finance for families")}
                 loading="lazy"
                 width={1280}
                 height={960}
