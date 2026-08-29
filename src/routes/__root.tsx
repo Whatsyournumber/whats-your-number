@@ -181,7 +181,14 @@ const HYBRID_PATHS = ["/afiliados"];
 
 function RootLayout() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const matches = useRouterState({ select: (r) => r.matches });
   const { user, loading } = useAuth();
+
+  // Ruta catch-all: muestra la página 404 sin redirigir a auth.
+  const isCatchAll = matches.some((m) => m.routeId === "/$" || m.routeId.endsWith("/$"));
+  if (isCatchAll) {
+    return <Outlet />;
+  }
 
   if (
     PUBLIC_PATHS.includes(pathname) ||
