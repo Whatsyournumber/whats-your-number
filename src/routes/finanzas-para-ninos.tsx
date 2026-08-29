@@ -79,26 +79,26 @@ const DEMO_UNI_PHOTOS: Record<string, string> = {
 export const Route = createFileRoute("/finanzas-para-ninos")({
   head: () => ({
     meta: [
-      { title: "Finanzas para Niños | Planifica su Futuro Financiero" },
+      { title: "Educación Financiera para Niños | App de Finanzas para Niños" },
       {
         name: "description",
         content:
-          "Enseña a tus hijos el valor del dinero, el ahorro y la inversión. Calcula cuánto ahorrar desde pequeños para su universidad y ayúdales a construir un mejor futuro financiero.",
+          "La app de finanzas para niños que combina educación financiera, mesada y tareas. Enseña a ahorrar a los niños y calcula el ahorro para la universidad de tus hijos con IA.",
       },
-      { property: "og:title", content: "Finanzas para Niños | Planifica su Futuro Financiero" },
+      { property: "og:title", content: "Educación Financiera para Niños | App de Finanzas para Niños" },
       {
         property: "og:description",
         content:
-          "Enseña a tus hijos el valor del dinero, el ahorro y la inversión. Calcula cuánto ahorrar desde pequeños para su universidad y ayúdales a construir un mejor futuro financiero.",
+          "La app de finanzas para niños que combina educación financiera, mesada y tareas. Enseña a ahorrar a los niños y calcula el ahorro para la universidad de tus hijos con IA.",
       },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "es_ES" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Finanzas para Niños | Planifica su Futuro Financiero" },
+      { name: "twitter:title", content: "Educación Financiera para Niños | App de Finanzas para Niños" },
       {
         name: "twitter:description",
         content:
-          "Enseña a tus hijos el valor del dinero, el ahorro y la inversión. Calcula cuánto ahorrar desde pequeños para su universidad y ayúdales a construir un mejor futuro financiero.",
+          "La app de finanzas para niños que combina educación financiera, mesada y tareas. Enseña a ahorrar a los niños y calcula el ahorro para la universidad de tus hijos con IA.",
       },
       { property: "og:url", content: "https://whatsyour-number.com/finanzas-para-ninos" },
       { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
