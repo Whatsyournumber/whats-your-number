@@ -16,12 +16,12 @@ export const HOME_FAQS: LandingFaq[] = [
   },
   {
     q: {
-      es: "¿Cómo funciona la calculadora de libertad financiera?",
-      en: "How does the financial freedom calculator work?",
+      es: "¿Puedo cancelar mi plan de pago cuando quiera?",
+      en: "Can I cancel my paid plan at any time?",
     },
     a: {
-      es: "Cargas o conectas tus movimientos, defines tu estilo de vida y la calculadora de libertad financiera proyecta cuánto necesitas ahorrar e invertir cada mes para llegar a tu número antes de lo que crees.",
-      en: "You upload or connect your transactions, define your lifestyle, and the financial freedom calculator projects how much you need to save and invest each month to hit your number sooner than you think.",
+      es: "Sí. Un solo clic, sin llamadas ni trucos de retención. Conservas el acceso Premium hasta el final de tu periodo de facturación y luego vuelves al plan gratuito con todos tus datos intactos.",
+      en: "Yes. One click, no calls, no retention scripts. You'll keep Premium until your billing period ends, then drop back to the free tier with all your data intact.",
     },
   },
   {
