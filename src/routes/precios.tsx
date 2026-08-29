@@ -129,7 +129,30 @@ function Pricing() {
       cta: t("Empezar con Familiar", "Get started with Familiar"),
       highlight: false,
     },
+    {
+      name: "Corporativo",
+      monthlyPrice: null,
+      yearlyPrice: null,
+      priceId: null,
+      contact: true,
+      desc: t(
+        "Bienestar financiero para tu equipo o clientes: WhatsYournumber para empresas.",
+        "Financial wellness for your team or clients: WhatsYournumber for business.",
+      ),
+      features: [
+        t("Todo lo de Familiar para cada miembro", "Everything in Familiar for each member"),
+        t("Licencias por volumen para tu equipo", "Volume licensing for your team"),
+        t("Onboarding y workshops para empleados", "Onboarding and employee workshops"),
+        t("Dashboard agregado y anonimizado de RRHH", "Aggregated, anonymized HR dashboard"),
+        t("Marca blanca para asesores y bancos", "White label for advisors and banks"),
+        t("Integración SSO y soporte dedicado", "SSO integration and dedicated support"),
+      ],
+      cta: t("Contactar", "Contact us"),
+      href: "mailto:hello@whatsyour-number.com?subject=Plan%20Corporativo%20B2B",
+      highlight: false,
+    },
   ];
+
 
 
   const incentives = [
