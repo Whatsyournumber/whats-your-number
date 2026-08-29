@@ -2631,14 +2631,14 @@ export function KidsFinanceLanding() {
               <p className="mt-4 max-w-lg text-sm leading-relaxed text-muted-foreground md:mt-6 md:text-base">
                 <span className="md:hidden">
                   {t(
-                    "Planifica su futuro, mesada y hábitos de ahorro en un solo lugar.",
-                    "Plan their future, allowance and savings habits in one place.",
+                    "La app de finanzas para niños que une educación financiera, mesada y tareas para enseñar a ahorrar desde pequeños.",
+                    "The finance app for kids that combines financial education, allowance and chores to teach kids to save from an early age.",
                   )}
                 </span>
                 <span className="hidden md:inline">
                   {t(
-                    "Planifica cuánto tendrá tu hijo a los 18 años, crea su primera cartera de inversión, administra su mesada y ayúdalo a desarrollar hábitos financieros que lo acompañarán toda la vida.",
-                    "Plan how much your child will have at 18, build their first investment portfolio, manage their allowance and help them build money habits for life.",
+                    "La app de finanzas para niños que une educación financiera, mesada y tareas. Planifica cuánto tendrá tu hijo a los 18 años, crea su primera cartera de inversión y ayúdalo a desarrollar hábitos de ahorro para toda la vida.",
+                    "The finance app for kids that combines financial education, allowance and chores. Plan how much your child will have at 18, build their first investment portfolio and help them build lifelong savings habits.",
                   )}
                 </span>
               </p>
