@@ -32,9 +32,11 @@ import { ProductPreview } from "@/components/product-preview";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
+import { FaqSection } from "@/components/faq-section";
 import { useAuth } from "@/hooks/use-auth";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useT } from "@/hooks/use-language";
+import { HOME_FAQS, buildLandingFaqJsonLd } from "@/lib/landing-faqs";
 import { useEffect } from "react";
 
 /** Renderiza la descripción resaltando la frase clave con una línea de gradiente sutil. */
@@ -138,6 +140,10 @@ export const Route = createFileRoute("/")({
             },
           ],
         }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(buildLandingFaqJsonLd(HOME_FAQS, "es")),
       },
     ],
   }),
@@ -787,6 +793,15 @@ export function Landing() {
           </div>
         </section>
 
+        <FaqSection
+          faqs={HOME_FAQS}
+          eyebrow={t("Preguntas frecuentes", "FAQ")}
+          title={t("Todo lo que necesitas saber", "Everything you need to know")}
+          subtitle={t(
+            "Respuestas claras sobre cómo calcular tu número, proteger tus datos y usar WhatsYournumber en familia.",
+            "Clear answers on how to calculate your number, protect your data, and use WhatsYournumber as a family.",
+          )}
+        />
 
         <section className="surface mt-10 md:mt-14 flex flex-wrap items-center gap-6 p-8">
           <div className="flex items-center gap-3">

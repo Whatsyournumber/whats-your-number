@@ -59,8 +59,10 @@ import stageBoy from "@/assets/kid-stage-boy.jpg";
 import stageTeen from "@/assets/kid-stage-teen.jpg";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { FaqSection } from "@/components/faq-section";
 import { useT } from "@/hooks/use-language";
 import { cn } from "@/lib/utils";
+import { KIDS_FAQS, buildLandingFaqJsonLd } from "@/lib/landing-faqs";
 
 import { useLiveCount, formatCount } from "@/components/live-count";
 import photoMit from "@/assets/uni/us-mit.jpg";
@@ -109,6 +111,12 @@ export const Route = createFileRoute("/finanzas-para-ninos")({
       { rel: "alternate", hrefLang: "es", href: "https://whatsyour-number.com/finanzas-para-ninos" },
       { rel: "alternate", hrefLang: "en", href: "https://whatsyour-number.com/en/finanzas-para-ninos" },
       { rel: "alternate", hrefLang: "x-default", href: "https://whatsyour-number.com/finanzas-para-ninos" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(buildLandingFaqJsonLd(KIDS_FAQS, "es")),
+      },
     ],
   }),
   component: KidsFinanceLanding,
@@ -2732,6 +2740,17 @@ export function KidsFinanceLanding() {
             ))}
           </div>
         </section>
+
+        <FaqSection
+          faqs={KIDS_FAQS}
+          variant="kids"
+          eyebrow={t("Preguntas frecuentes", "FAQ")}
+          title={t("Todo sobre educación financiera para niños", "All about financial education for kids")}
+          subtitle={t(
+            "Respuestas para padres que quieren enseñar a ahorrar, invertir y planificar el futuro universitario de sus hijos.",
+            "Answers for parents who want to teach saving, investing, and planning their children's college future.",
+          )}
+        />
 
         <section className="relative mt-24 overflow-hidden">
           <div className="relative grid items-center gap-0 md:grid-cols-2">

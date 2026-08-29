@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 
+import { HOME_FAQS, buildLandingFaqJsonLd } from "@/lib/landing-faqs";
 import { Landing } from "@/routes/index";
 import { useLanguage } from "@/hooks/use-language";
 
@@ -27,6 +28,12 @@ export const Route = createFileRoute("/en/")({
       { rel: "alternate", hrefLang: "es", href: "https://whatsyour-number.com" },
       { rel: "alternate", hrefLang: "en", href: "https://whatsyour-number.com/en" },
       { rel: "alternate", hrefLang: "x-default", href: "https://whatsyour-number.com" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(buildLandingFaqJsonLd(HOME_FAQS, "en")),
+      },
     ],
   }),
   component: EnglishLanding,
