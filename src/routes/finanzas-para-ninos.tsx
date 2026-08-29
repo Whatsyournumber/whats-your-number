@@ -112,6 +112,12 @@ export const Route = createFileRoute("/finanzas-para-ninos")({
       { rel: "alternate", hrefLang: "en", href: "https://whatsyour-number.com/en/finanzas-para-ninos" },
       { rel: "alternate", hrefLang: "x-default", href: "https://whatsyour-number.com/finanzas-para-ninos" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(buildLandingFaqJsonLd(KIDS_FAQS, "es")),
+      },
+    ],
   }),
   component: KidsFinanceLanding,
 });
