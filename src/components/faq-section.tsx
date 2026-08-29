@@ -62,7 +62,7 @@ export function FaqSection({
                     transition={{ duration: 0.3, delay: i * 0.06 }}
                   >
                     <AccordionItem value={`item-${index}`} className="border-b-0 px-2 md:px-3">
-                      <AccordionTrigger className="text-left text-sm font-medium text-foreground md:text-base">
+                      <AccordionTrigger className="text-left text-sm font-medium text-foreground md:text-base whitespace-nowrap">
                         {t(f.q.es, f.q.en)}
                       </AccordionTrigger>
                       <AccordionContent className="text-sm leading-relaxed text-muted-foreground">

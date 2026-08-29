@@ -46,8 +46,8 @@ export const HOME_FAQS: LandingFaq[] = [
   },
   {
     q: {
-      es: "¿Eres nómada digital? Prueba el comparador de costo de vida entre ciudades",
-      en: "Are you a digital nomad? Try the cost-of-living comparison between cities",
+      es: "¿Eres nómada digital? Prueba el comparador de ciudades",
+      en: "Are you a digital nomad? Try the city comparator",
     },
     a: {
       es: "Sí. El comparador de costo de vida te dice cuánto necesitarías en otra ciudad para mantener tu mismo estilo de vida, y el seguimiento de inversiones muestra tus posiciones con precios en tiempo real.",
