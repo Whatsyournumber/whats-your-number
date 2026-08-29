@@ -42,26 +42,40 @@ export function FaqSection({
         )}
       </div>
 
-      <Accordion type="single" collapsible className="surface divide-y divide-border rounded-2xl p-2 md:p-6">
-        {faqs.map((f, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.3, delay: i * 0.06 }}
-          >
-            <AccordionItem value={`item-${i}`} className="border-b-0 px-2 md:px-4">
-              <AccordionTrigger className="text-sm font-medium text-foreground md:text-base">
-                {t(f.q.es, f.q.en)}
-              </AccordionTrigger>
-              <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
-                {t(f.a.es, f.a.en)}
-              </AccordionContent>
-            </AccordionItem>
-          </motion.div>
-        ))}
-      </Accordion>
+      <div className="grid gap-4 md:grid-cols-2 md:gap-6">
+        {[faqs.slice(0, Math.ceil(faqs.length / 2)), faqs.slice(Math.ceil(faqs.length / 2))].map(
+          (column, colIndex) => (
+            <Accordion
+              key={colIndex}
+              type="single"
+              collapsible
+              className="surface h-fit divide-y divide-border rounded-2xl p-2 md:p-4"
+            >
+              {column.map((f, i) => {
+                const index = colIndex * Math.ceil(faqs.length / 2) + i;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 12 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: i * 0.06 }}
+                  >
+                    <AccordionItem value={`item-${index}`} className="border-b-0 px-2 md:px-3">
+                      <AccordionTrigger className="text-left text-sm font-medium text-foreground md:text-base">
+                        {t(f.q.es, f.q.en)}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
+                        {t(f.a.es, f.a.en)}
+                      </AccordionContent>
+                    </AccordionItem>
+                  </motion.div>
+                );
+              })}
+            </Accordion>
+          ),
+        )}
+      </div>
     </section>
   );
 }

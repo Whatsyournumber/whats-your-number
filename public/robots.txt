@@ -64,5 +64,29 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /dashboard
+Disallow: /gastos
+Disallow: /patrimonio
+Disallow: /portafolio
+Disallow: /retiro
+Disallow: /cash-flow
+Disallow: /advisor
+Disallow: /configuracion
+Disallow: /mi-perfil
+Disallow: /onboarding
+Disallow: /suscripcion
+Disallow: /checkout/
+Disallow: /auth
+Disallow: /reset-password
+Disallow: /admin
+Disallow: /admin-blog
+Disallow: /hipoteca
+Disallow: /ciudades
+Disallow: /life-planner
+Disallow: /ninos/
+Disallow: /elegir
+Disallow: /api/
+Disallow: /.mcp/
+Disallow: /mcp
 
 Sitemap: https://whatsyour-number.com/sitemap.xml

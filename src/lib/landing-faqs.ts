@@ -6,12 +6,12 @@ export interface LandingFaq {
 export const HOME_FAQS: LandingFaq[] = [
   {
     q: {
-      es: "¿Qué significa 'cuál es tu número para retiro'?",
-      en: "What does 'what is your number for retirement' mean?",
+      es: "¿Cuál es tu número para retiro y cómo se calcula?",
+      en: "What is your number for retirement and how is it calculated?",
     },
     a: {
-      es: "Es la cantidad de patrimonio que necesitas para cubrir tus gastos de por vida sin depender de un salario. WhatsYournumber calcula ese número basado en tu estilo de vida, gastos, ingresos e inversiones.",
-      en: "It's the net worth you need to cover your living expenses for life without relying on a paycheck. WhatsYournumber calculates that number based on your lifestyle, expenses, income, and investments.",
+      es: "Tu número para retiro es el patrimonio que necesitas para cubrir tus gastos de por vida sin depender de un salario. WhatsYournumber lo calcula con tus gastos e ingresos, tu patrimonio y tus inversiones, y te muestra en qué año lo alcanzas.",
+      en: "Your number for retirement is the net worth you need to cover your living expenses for life without relying on a paycheck. WhatsYournumber calculates it from your income and expenses, your net worth, and your investments, and shows the year you reach it.",
     },
   },
   {
@@ -20,38 +20,48 @@ export const HOME_FAQS: LandingFaq[] = [
       en: "How does the financial freedom calculator work?",
     },
     a: {
-      es: "Conectas o cargas manualmente tus gastos e ingresos, añades tu patrimonio e inversiones, y la IA proyecta cuánto necesitas ahorrar cada mes para alcanzar tu libertad financiera.",
-      en: "You connect or manually enter your expenses and income, add your net worth and investments, and the AI projects how much you need to save each month to reach financial freedom.",
+      es: "Cargas o conectas tus movimientos, defines tu estilo de vida y la calculadora de libertad financiera proyecta cuánto necesitas ahorrar e invertir cada mes para llegar a tu número antes de lo que crees.",
+      en: "You upload or connect your transactions, define your lifestyle, and the financial freedom calculator projects how much you need to save and invest each month to hit your number sooner than you think.",
     },
   },
   {
     q: {
-      es: "¿Es gratis usar WhatsYournumber?",
-      en: "Is WhatsYournumber free to use?",
+      es: "¿Sirve como control de gastos e ingresos mensual?",
+      en: "Does it work as a personal income and expense tracker?",
     },
     a: {
-      es: "Sí. El plan FREE incluye tu número de retiro, control de gastos e ingresos, y patrimonio básico. Los planes PRO y FAMILY desbloquean IA, comparador de costo de vida, universidades y el plan familiar.",
-      en: "Yes. The FREE plan includes your retirement number, income and expense tracking, and basic net worth. PRO and FAMILY plans unlock AI, cost-of-living comparison, university planning, and the family plan.",
+      es: "Sí. Tienes control de gastos e ingresos con categorización automática por IA, carga manual o desde estados de cuenta, y un flujo de caja mensual que se conecta directamente con tu número de retiro.",
+      en: "Yes. It works as a personal income and expense tracker with AI auto-categorization, manual entry or statement upload, and a monthly cash flow that feeds directly into your retirement number.",
     },
   },
   {
     q: {
-      es: "¿Qué tan seguros están mis datos financieros?",
-      en: "How secure are my financial data?",
+      es: "¿Incluye calculadora de patrimonio y jubilación?",
+      en: "Does it include a net worth and retirement calculator?",
     },
     a: {
-      es: "Tus datos se almacenan cifrados en la base de datos, solo tú puedes acceder a ellos mediante autenticación segura. No vendemos ni compartimos tu información.",
-      en: "Your data is stored encrypted in the database, and only you can access it through secure authentication. We do not sell or share your information.",
+      es: "Sí. La calculadora de patrimonio y jubilación suma tus activos, propiedades e inversiones, resta tus deudas y proyecta tu patrimonio neto año a año hasta la edad en la que quieres retirarte.",
+      en: "Yes. The net worth and retirement calculator adds up your assets, properties and investments, subtracts your debts, and projects your net worth year by year until the age you want to retire.",
     },
   },
   {
     q: {
-      es: "¿Puedo usar WhatsYournumber para toda mi familia?",
-      en: "Can I use WhatsYournumber for my whole family?",
+      es: "¿Puedo seguir mis inversiones y comparar el costo de vida entre ciudades?",
+      en: "Can I track my investments and compare the cost of living between cities?",
     },
     a: {
-      es: "Sí. El plan Familiar incluye perfiles para tus hijos con My First Number: aprenden a ahorrar, gestionan tareas y mesada, y proyectan su patrimonio a los 18 años.",
-      en: "Yes. The Family plan includes profiles for your kids with My First Number: they learn to save, manage chores and allowance, and project their wealth at age 18.",
+      es: "Sí. El seguimiento de inversiones y patrimonio muestra tus posiciones con precios en tiempo real, y el comparador de costo de vida calcula cuánto necesitarías en otra ciudad para mantener tu mismo estilo de vida.",
+      en: "Yes. The investment and net worth tracker shows your positions with real-time prices, and the cost-of-living comparison calculates how much you'd need in another city to keep the same lifestyle.",
+    },
+  },
+  {
+    q: {
+      es: "¿Funciona para finanzas personales para familias?",
+      en: "Does it work as personal finance for families?",
+    },
+    a: {
+      es: "Sí. El plan Familiar está pensado para finanzas personales para familias: perfiles para tu pareja e hijos con My First Number, metas compartidas y planificación de la universidad de tus hijos.",
+      en: "Yes. The Family plan is built for personal finance for families: profiles for your partner and kids with My First Number, shared goals, and planning for your children's college.",
     },
   },
 ];
@@ -59,52 +69,62 @@ export const HOME_FAQS: LandingFaq[] = [
 export const KIDS_FAQS: LandingFaq[] = [
   {
     q: {
-      es: "¿Qué es My First Number y cómo enseña finanzas a los niños?",
-      en: "What is My First Number and how does it teach kids about money?",
+      es: "¿Qué es My First Number, la app de finanzas para niños?",
+      en: "What is My First Number, the finance app for kids?",
     },
     a: {
-      es: "My First Number es la versión infantil de WhatsYournumber. Ayuda a los niños a entender el ahorro, la mesada y las tareas mientras los padres proyectan su patrimonio futuro.",
-      en: "My First Number is the kids' version of WhatsYournumber. It helps children understand saving, allowance, and chores while parents project their future wealth.",
+      es: "My First Number es la app de finanzas para niños de WhatsYournumber: enseña educación financiera para niños con metas de ahorro, mesada y tareas, mientras los padres proyectan su patrimonio a los 18 años.",
+      en: "My First Number is WhatsYournumber's finance app for kids: it teaches children financial literacy with savings goals, allowance and chores, while parents project their wealth at age 18.",
     },
   },
   {
     q: {
-      es: "¿A qué edad debería empezar a enseñar finanzas a mi hijo?",
-      en: "At what age should I start teaching my child about money?",
+      es: "¿A qué edad empezar con la educación financiera para niños?",
+      en: "At what age should kids' financial education start?",
     },
     a: {
-      es: "Cuanto antes mejor. Desde los 4 o 5 años los niños pueden entender conceptos básicos como ahorrar para una meta. La app se adapta a cada edad con tareas y metas adecuadas.",
-      en: "The earlier the better. From age 4 or 5, kids can grasp basic concepts like saving for a goal. The app adapts to each age with appropriate chores and goals.",
+      es: "Cuanto antes mejor. Desde los 4 o 5 años ya pueden entender ahorrar para una meta. La app adapta la educación financiera para niños a cada edad, con tareas y objetivos apropiados.",
+      en: "The earlier the better. From age 4 or 5 they already grasp saving for a goal. The app adapts kids' financial education to each age with age-appropriate chores and goals.",
     },
   },
   {
     q: {
-      es: "¿Cómo ayuda la app a mi hijo a ahorrar?",
-      en: "How does the app help my child save?",
+      es: "¿Cómo enseñar a ahorrar a los niños con la app?",
+      en: "How do you teach kids to save with the app?",
     },
     a: {
-      es: "Los niños crean sueños (una bicicleta, un videojuego, la universidad), completan tareas para ganar mesada y ven cómo crece su dinero con el tiempo gracias a la inversión.",
-      en: "Kids create dreams (a bike, a video game, college), complete chores to earn allowance, and see how their money grows over time through investing.",
+      es: "Enseñar a ahorrar a los niños se vuelve un juego: crean sus sueños (una bicicleta, un viaje, la universidad), los dividen en aportes y ven cómo el interés compuesto hace crecer su dinero.",
+      en: "Teaching kids to save becomes a game: they create dreams (a bike, a trip, college), split them into contributions, and watch compound interest grow their money.",
     },
   },
   {
     q: {
-      es: "¿Es segura la app de finanzas para niños?",
-      en: "Is the finance app for kids safe?",
+      es: "¿Cómo funciona la app de mesada y tareas para niños?",
+      en: "How does the allowance and chores app for kids work?",
     },
     a: {
-      es: "Sí. Los padres controlan las cuentas, los movimientos y los permisos. Los niños solo ven su espacio diseñado para ellos, sin acceso a datos bancarios reales.",
-      en: "Yes. Parents control accounts, transactions, and permissions. Kids only see their own kid-friendly space, with no access to real banking data.",
+      es: "En la app de mesada y tareas para niños los padres asignan tareas con su recompensa, el niño las marca como hechas y la mesada se acumula automáticamente en su ahorro o en su cartera de inversión.",
+      en: "In the allowance and chores app for kids, parents assign tasks with a reward, the child marks them done, and the allowance automatically flows into their savings or investment portfolio.",
     },
   },
   {
     q: {
-      es: "¿Cómo funciona la calculadora de ahorro para la universidad de mis hijos?",
-      en: "How does the college savings calculator for my children work?",
+      es: "¿Cómo funciona la calculadora de ahorro para hijos?",
+      en: "How does the savings calculator for children work?",
     },
     a: {
-      es: "Ingresas la edad de tu hijo, cuánto puedes aportar mensualmente y el crecimiento esperado. La app calcula cuánto tendrá a los 18 años y a qué universidades podría aplicar.",
-      en: "You enter your child's age, how much you can contribute monthly, and expected growth. The app calculates how much they'll have at 18 and which universities they could apply to.",
+      es: "La calculadora de ahorro para hijos toma la edad de tu hijo, tu aporte mensual y un rendimiento esperado (por ejemplo el 10% histórico del S&P 500) y proyecta cuánto tendrá a los 18 años.",
+      en: "The savings calculator for children takes your child's age, your monthly contribution, and an expected return (for example the S&P 500's historical 10%) and projects how much they'll have at 18.",
+    },
+  },
+  {
+    q: {
+      es: "¿Incluye calculadora de ahorro para la universidad de los hijos?",
+      en: "Does it include a college savings calculator for children?",
+    },
+    a: {
+      es: "Sí. La calculadora de ahorro para universidad de los hijos compara tu proyección con el costo real de cientos de universidades y te muestra a cuáles podría aplicar tu hijo con su número.",
+      en: "Yes. The college savings calculator for children compares your projection with the real cost of hundreds of universities and shows which ones your child could afford with their number.",
     },
   },
 ];
