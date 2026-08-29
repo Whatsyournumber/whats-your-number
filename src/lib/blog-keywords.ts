@@ -32,16 +32,16 @@ export const homeKeywords: KeywordGroup = {
   label: { es: "Home · WhatsYourNumber", en: "Home · WhatsYourNumber" },
   path: "/",
   keywords: [
-    { es: "cuál es tu número para retiro", en: "what is your retirement number", volume: { es: 390, en: 1300 } },
+    { es: "cuál es tu número para retiro", en: "what is your number for retirement", volume: { es: 390, en: 1300 } },
     { es: "whats your number para retiro", en: "whats your number for retirement", volume: { es: 170, en: 210 } },
-    { es: "finanzas personales para familias", en: "family personal finance", volume: { es: 720, en: 1600 } },
+    { es: "finanzas personales para familias", en: "personal finance for families", volume: { es: 720, en: 1600 } },
     { es: "calculadora de libertad financiera", en: "financial freedom calculator", volume: { es: 880, en: 1600 } },
-    { es: "control de gastos e ingresos", en: "income and expense tracker", volume: { es: 1600, en: 2400 } },
+    { es: "control de gastos e ingresos", en: "personal income and expense tracker", volume: { es: 1600, en: 2400 } },
     { es: "calculadora de patrimonio y jubilación", en: "net worth and retirement calculator", volume: { es: 480, en: 1900 } },
     { es: "comparador de costo de vida", en: "cost of living comparison", volume: { es: 590, en: 2900 } },
     { es: "finanzas personales", en: "personal finance app", volume: { es: 40500, en: 9900 } },
     { es: "cuánto dinero necesito para jubilarme", en: "how much money do i need to retire", volume: { es: 720, en: 2400 } },
-    { es: "app para controlar gastos e inversiones", en: "net worth tracker app", volume: { es: 590, en: 3600 } },
+    { es: "app para controlar gastos e inversiones", en: "investment and net worth tracker", volume: { es: 590, en: 3600 } },
   ],
 };
 

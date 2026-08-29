@@ -293,7 +293,7 @@ export function Landing() {
     },
     {
       icon: LineChart,
-      title: t("Tu Patrimonio & Portfolio", "Your Net Worth & Portfolio"),
+      title: t("Tu Patrimonio & Portfolio", "Investment & Net Worth Tracker"),
       desc: t(
         "Por fin entiende cuánto vales. Organiza todo tu patrimonio en un solo lugar, sigue tus activos en tiempo real y analiza su rendimiento, riesgo e ingresos pasivos.",
         "Finally understand how much you're worth. Organize all your wealth in one place, track your assets in real time and analyze their performance, risk and passive income.",
@@ -469,7 +469,10 @@ export function Landing() {
           >
             <img
               src={heroManLaptopAsset.url}
-              alt="Usuario usando la calculadora de patrimonio y jubilación de WhatsYournumber desde el portátil"
+              alt={t(
+                "Usuario usando la calculadora de patrimonio y jubilación de WhatsYournumber desde el portátil",
+                "User using WhatsYournumber's net worth and retirement calculator on a laptop",
+              )}
               aria-hidden
               className="h-full w-full object-cover object-[70%_28%]"
               loading="eager"
@@ -494,7 +497,7 @@ export function Landing() {
               <p className="mx-auto mt-5 max-w-lg text-base text-muted-foreground md:mx-0 md:text-sm lg:text-base">
                 {t(
                   "La calculadora de libertad financiera que responde cuál es tu número para retiro: control de gastos e ingresos, patrimonio, inversiones y cash flow en una sola plataforma. Sube tus estados de cuenta y la IA hace el resto.",
-                  "The financial freedom calculator that answers your retirement number: spending and income tracking, net worth, investments and cash flow in a single platform. Upload your statements and let the AI do the rest.",
+                  "The Financial Freedom Calculator that answers what is your number for retirement. A personal income and expense tracker, net worth and retirement calculator, and investment tracker in one platform. Upload your statements and let the AI do the rest.",
                 )}
               </p>
 
@@ -665,7 +668,7 @@ export function Landing() {
             <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground">
               {t(
                 "Cuéntanos tu objetivo —libertad financiera, tu primera hipoteca, crear un negocio, estudiar un MBA, mudarte de país o tener el control de tu dinero. La IA te muestra el camino para alcanzarlo.",
-                "Tell us your goal —financial freedom, your first mortgage, starting a business, an MBA, moving abroad or taking control of your money. The AI shows you the path to reach it.",
+                "Tell us your goal —financial freedom, your first mortgage, starting a business, an MBA, moving abroad or taking control of your money. Built for personal finance for families, the AI shows you the path to reach it.",
               )}
             </p>
           </motion.div>
@@ -682,7 +685,7 @@ export function Landing() {
                 src={ctaLifestyle}
                 alt={t(
                   "Pareja organizando sus finanzas personales para familias en casa con WhatsYournumber",
-                  "Couple organizing their family personal finances at home with WhatsYournumber",
+                  "Couple using WhatsYournumber for personal finance for families at home",
                 )}
                 loading="lazy"
                 width={1280}
@@ -697,7 +700,7 @@ export function Landing() {
                 <p className="mt-2 max-w-sm text-sm text-muted-foreground">
                   {t(
                     "Tu whats your number para retiro en 3 preguntas: descúbrelo gratis en 30 segundos, ideal para las finanzas personales para familias.",
-                    "Your retirement number in 3 questions: find out free in 30 seconds, built for family personal finance.",
+                    "Your retirement number in 3 questions: find out free in 30 seconds. Personal finance for families, made simple.",
                   )}
                 </p>
                 <div className="mt-5 flex flex-wrap items-center gap-3">
