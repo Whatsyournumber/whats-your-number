@@ -2639,13 +2639,8 @@ export function KidsFinanceLanding() {
                 </span>
                 <span className="hidden md:inline">
                   {t(
-                    "Planifica cuánto tendrá tu hijo a los 18 años, crea su primera cartera de inversión,",
-                    "Plan how much your child will have at 18, build their first investment portfolio,",
-                  )}
-                  <br />
-                  {t(
-                    "administra su mesada y tareas, enséñale a ahorrar e invertir",
-                    "manage their allowance and chores, teach them to save and invest",
+                    "Planifica cuánto tendrá tu hijo a los 18 años, crea su primera cartera de inversión, administra su mesada y tareas, enséñale a ahorrar e invertir",
+                    "Plan how much your child will have at 18, build their first investment portfolio, manage their allowance and chores, teach them to save and invest",
                   )}
                   <br />
                   {t(
