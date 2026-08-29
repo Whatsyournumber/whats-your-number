@@ -90,4 +90,3 @@ Disallow: /.mcp/
 Disallow: /mcp
 
 Sitemap: https://whatsyour-number.com/sitemap.xml
-Sitemap: https://www.whatsyour-number.com/sitemap.xml
