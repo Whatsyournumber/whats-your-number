@@ -64,6 +64,26 @@ export const HOME_FAQS: LandingFaq[] = [
       en: "Yes. The Family plan is built for personal finance for families: profiles for your partner and kids with My First Number, shared goals, and planning for your children's college.",
     },
   },
+  {
+    q: {
+      es: "¿Conectáis con mi banco?",
+      en: "Do you connect to my bank?",
+    },
+    a: {
+      es: "No. Nunca tocamos tus credenciales bancarias, no usamos agregadores tipo Plaid ni Open Banking, y nunca vemos tus transacciones. Añades tus cuentas manualmente (tarda unos cinco minutos) y actualizas los saldos cuando quieras.",
+      en: "No. We never touch your bank login, never use Plaid or open-banking aggregators, and never see a transaction. You add accounts manually (it takes about five minutes) and update balances when you want.",
+    },
+  },
+  {
+    q: {
+      es: "¿Y si tengo activos en distintas monedas?",
+      en: "What if I have assets in different currencies?",
+    },
+    a: {
+      es: "Puedes guardarlos en GBP, USD, EUR, CHF, AUD o CAD. Convertimos todo a tu moneda base con tasas de cambio diarias a nivel ECB, así tu patrimonio neto siempre es un solo número claro.",
+      en: "Hold them in any of GBP, USD, EUR, CHF, AUD or CAD. We convert everything to your home currency using daily ECB-grade FX rates, so your net worth is always one clean number.",
+    },
+  },
 ];
 
 export const KIDS_FAQS: LandingFaq[] = [
