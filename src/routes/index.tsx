@@ -668,7 +668,7 @@ export function Landing() {
             <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground">
               {t(
                 "Cuéntanos tu objetivo —libertad financiera, tu primera hipoteca, crear un negocio, estudiar un MBA, mudarte de país o tener el control de tu dinero. La IA te muestra el camino para alcanzarlo.",
-                "Tell us your goal —financial freedom, your first mortgage, starting a business, an MBA, moving abroad or taking control of your money. The AI shows you the path to reach it.",
+                "Tell us your goal —financial freedom, your first mortgage, starting a business, an MBA, moving abroad or taking control of your money. Built for personal finance for families, the AI shows you the path to reach it.",
               )}
             </p>
           </motion.div>
