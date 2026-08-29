@@ -16,6 +16,16 @@ export const HOME_FAQS: LandingFaq[] = [
   },
   {
     q: {
+      es: "¿Puedo cancelar Premium en cualquier momento?",
+      en: "Can I cancel Premium any time?",
+    },
+    a: {
+      es: "Sí. Un clic, sin llamadas ni scripts de retención. Conservas Premium hasta que termine tu período de facturación y luego vuelves al plan gratuito con todos tus datos intactos.",
+      en: "Yes. One click, no calls, no retention scripts. You'll keep Premium until your billing period ends, then drop back to the free tier with all your data intact.",
+    },
+  },
+  {
+    q: {
       es: "¿Cómo funciona la calculadora de libertad financiera?",
       en: "How does the financial freedom calculator work?",
     },
