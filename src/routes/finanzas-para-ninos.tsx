@@ -2645,12 +2645,12 @@ export function KidsFinanceLanding() {
                   <br />
                   {t(
                     "administra su mesada y tareas, enséñale a ahorrar e invertir",
-                    "manage their allowance and chores, teach them to save and invest,",
+                    "manage their allowance and chores, teach them to save and invest",
                   )}
                   <br />
                   {t(
-                    "y ayúdalo a desarrollar hábitos financieros que lo acompañarán toda la vida.",
-                    "and help them build financial habits that will last a lifetime.",
+                    "y ayúdalo a desarrollar hábitos financieros",
+                    "and help them develop financial habits",
                   )}
                 </span>
               </p>
