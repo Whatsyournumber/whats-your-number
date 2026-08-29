@@ -1191,7 +1191,7 @@ function HowItWorksSlider() {
           <div className="relative">
             <div
               ref={scrollRef}
-              className="-mx-1 flex items-center gap-2.5 overflow-x-auto overflow-y-hidden px-8 pb-1 scrollbar-hide scroll-smooth md:px-1"
+              className="-mx-1 flex items-center gap-2.5 overflow-x-auto overflow-y-hidden px-9 pb-1 scrollbar-hide scroll-smooth md:px-1"
             >
               {slides.map((s, k) => {
                 const TabIcon = s.icon;
