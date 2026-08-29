@@ -13,6 +13,7 @@ import { BlogTracker } from "@/components/blog-tracker";
 import { postCategory } from "@/lib/blog-categories";
 import { absoluteUrl, buildArticleJsonLd, buildBreadcrumbJsonLd, buildFaqJsonLd, getPostFaqs, postIsoDate } from "@/lib/blog-jsonld";
 import { getPostLinks, type PostLinks } from "@/lib/blog-links";
+import { ShareArticle } from "@/components/share-article";
 
 
 export const Route = createFileRoute("/blog/$slug")({
@@ -228,7 +229,9 @@ export function BlogArticleView({ slug }: { slug: string }) {
           </h1>
         </header>
 
-        <figure className="surface mt-8 overflow-hidden">
+        <ShareArticle title={post.title[lang]} />
+
+        <figure className="surface mt-6 overflow-hidden">
           <img
             src={post.image}
             alt={post.imageAlt[lang]}
@@ -412,8 +415,10 @@ export function BlogArticleView({ slug }: { slug: string }) {
           ))}
         </article>
 
+        <ShareArticle title={post.title[lang]} />
+
         {faqs.length > 0 && (
-          <section className="mt-12" aria-label={t("Preguntas frecuentes", "Frequently asked questions")}>
+          <section className="mt-10" aria-label={t("Preguntas frecuentes", "Frequently asked questions")}>
             <h2 className="font-display text-xl font-semibold tracking-tight">
               {t("Preguntas frecuentes", "Frequently asked questions")}
             </h2>
