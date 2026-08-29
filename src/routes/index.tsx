@@ -56,17 +56,17 @@ function HighlightDesc({ desc, highlight }: { desc: string; highlight?: string }
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Finanzas Personales con IA | Controla Gastos, Patrimonio y Retiro" },
+      { title: "¿Cuál Es Tu Número para Retiro? | Calculadora de Libertad Financiera" },
       {
         name: "description",
         content:
-          "Controla tus gastos, patrimonio, inversiones y flujo de caja en una sola plataforma. Descubre cómo cada decisión financiera te acerca o aleja de tu número de retiro.",
+          "Descubre cuál es tu número para retiro con la calculadora de libertad financiera. Control de gastos e ingresos, calculadora de patrimonio y jubilación y comparador de costo de vida en una sola app de finanzas personales para familias.",
       },
-      { property: "og:title", content: "Finanzas Personales con IA | Controla Gastos, Patrimonio y Retiro" },
+      { property: "og:title", content: "¿Cuál Es Tu Número para Retiro? | Calculadora de Libertad Financiera" },
       {
         property: "og:description",
         content:
-          "Controla tus gastos, patrimonio, inversiones y flujo de caja en una sola plataforma. Descubre cómo cada decisión financiera te acerca o aleja de tu número de retiro.",
+          "Descubre cuál es tu número para retiro: control de gastos e ingresos, calculadora de patrimonio y jubilación y comparador de costo de vida en una sola plataforma.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -313,8 +313,8 @@ export function Landing() {
       icon: Globe,
       title: t("Tu Próxima Ciudad", "Your Next City"),
       desc: t(
-        "Compara más de 150 ciudades por costo de vida, salarios, impuestos, clima y seguridad. Encuentra dónde tu dinero rinde más.",
-        "Compare over 150 cities by cost of living, salaries, taxes, climate and safety. Find where your money goes further.",
+        "Comparador de costo de vida con más de 150 ciudades: salarios, impuestos, clima y seguridad. Encuentra dónde tu dinero rinde más.",
+        "Cost of living comparison across 150+ cities: salaries, taxes, climate and safety. Find where your money goes further.",
       ),
       highlight: t("tu dinero rinde más", "your money goes further"),
     },
@@ -355,8 +355,8 @@ export function Landing() {
       titleLight: t("Descubre cuándo", "Discover when"),
       titleAccent: t("puedes dejar de trabajar.", "you can stop working."),
       desc: t(
-        "Conoce el capital que necesitas para vivir de tus rendimientos y cuánto te falta para llegar.",
-        "Know the capital you need to live off your returns and how far you are from getting there.",
+        "Usa la calculadora de patrimonio y jubilación para conocer el capital que necesitas para vivir de tus rendimientos y cuánto te falta para llegar.",
+        "Use the net worth and retirement calculator to know the capital you need to live off your returns and how far you are from getting there.",
       ),
     },
     {
@@ -439,7 +439,7 @@ export function Landing() {
           >
             <img
               src={heroManLaptopAsset.url}
-              alt={t("Hombre feliz usando WhatsYourNumber en su laptop", "Happy man using WhatsYourNumber on his laptop")}
+              alt={t("Hombre feliz calculando cuál es su número para retiro con la calculadora de libertad financiera de WhatsYourNumber", "Happy man finding out his retirement number with WhatsYourNumber's financial freedom calculator")}
               width={1536}
               height={1024}
               className="h-full w-full object-cover object-[18%_78%] md:object-[20%_82%] lg:object-[22%_86%]"
@@ -469,7 +469,7 @@ export function Landing() {
           >
             <img
               src={heroManLaptopAsset.url}
-              alt="Usuario revisando su patrimonio en WhatsYournumber desde el portátil"
+              alt="Usuario usando la calculadora de patrimonio y jubilación de WhatsYournumber desde el portátil"
               aria-hidden
               className="h-full w-full object-cover object-[70%_28%]"
               loading="eager"
@@ -493,8 +493,8 @@ export function Landing() {
               </h1>
               <p className="mx-auto mt-5 max-w-lg text-base text-muted-foreground md:mx-0 md:text-sm lg:text-base">
                 {t(
-                  "Patrimonio, gastos, cash flow, inversiones y retiro en una sola plataforma. Sube tus estados de cuenta y la IA hace el resto.",
-                  "Net worth, spending, cash flow, investments and retirement in a single platform. Upload your statements and let the AI do the rest.",
+                  "La calculadora de libertad financiera que responde cuál es tu número para retiro: control de gastos e ingresos, patrimonio, inversiones y cash flow en una sola plataforma. Sube tus estados de cuenta y la IA hace el resto.",
+                  "The financial freedom calculator that answers your retirement number: spending and income tracking, net worth, investments and cash flow in a single platform. Upload your statements and let the AI do the rest.",
                 )}
               </p>
 
@@ -681,8 +681,8 @@ export function Landing() {
               <img
                 src={ctaLifestyle}
                 alt={t(
-                  "Pareja revisando sus finanzas en casa con WhatsYournumber",
-                  "Couple reviewing their finances at home with WhatsYournumber",
+                  "Pareja organizando sus finanzas personales para familias en casa con WhatsYournumber",
+                  "Couple organizing their family personal finances at home with WhatsYournumber",
                 )}
                 loading="lazy"
                 width={1280}
@@ -696,8 +696,8 @@ export function Landing() {
                 </h3>
                 <p className="mt-2 max-w-sm text-sm text-muted-foreground">
                   {t(
-                    "Responde 3 preguntas y descúbrelo gratis en 30 segundos.",
-                    "Answer 3 questions and find out free in 30 seconds.",
+                    "Tu whats your number para retiro en 3 preguntas: descúbrelo gratis en 30 segundos, ideal para las finanzas personales para familias.",
+                    "Your retirement number in 3 questions: find out free in 30 seconds, built for family personal finance.",
                   )}
                 </p>
                 <div className="mt-5 flex flex-wrap items-center gap-3">
