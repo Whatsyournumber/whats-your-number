@@ -18,6 +18,8 @@ import {
 import {
   BarChart3,
   Bot,
+  ChevronLeft,
+  ChevronRight,
   FileText,
   Globe,
   Home,
