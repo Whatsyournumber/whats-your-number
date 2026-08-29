@@ -42,14 +42,14 @@ export function FaqSection({
         )}
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 md:gap-6">
+      <div className="grid items-stretch gap-4 md:grid-cols-2 md:gap-6">
         {[faqs.slice(0, Math.ceil(faqs.length / 2)), faqs.slice(Math.ceil(faqs.length / 2))].map(
           (column, colIndex) => (
             <Accordion
               key={colIndex}
               type="single"
               collapsible
-              className="surface h-fit divide-y divide-border rounded-2xl p-2 md:p-4"
+              className="surface flex h-full flex-col divide-y divide-border rounded-2xl p-2 md:p-4"
             >
               {column.map((f, i) => {
                 const index = colIndex * Math.ceil(faqs.length / 2) + i;
