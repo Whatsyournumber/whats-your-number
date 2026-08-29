@@ -1951,6 +1951,7 @@ function PhoneMock({
   id: string;
   cute?: boolean;
 }) {
+  const t = useT();
   return (
     <div
       className="relative mx-auto w-full max-w-[310px] rounded-[2.75rem] bg-elevated p-[10px]"
