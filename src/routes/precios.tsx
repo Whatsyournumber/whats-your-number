@@ -46,6 +46,7 @@ function Pricing() {
   const { openCheckout, loading } = usePaddleCheckout();
   const resumedCheckout = useRef(false);
   const [discount, setDiscount] = useState<PendingDiscount | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const { prices, currency } = useRegionalPricing();
 
   useEffect(() => {
