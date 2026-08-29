@@ -2586,10 +2586,7 @@ export function KidsFinanceLanding() {
           <div className="pointer-events-none absolute inset-x-0 top-0 h-[clamp(220px,32vh,300px)] md:h-[clamp(280px,46vh,460px)] lg:inset-y-0 lg:left-auto lg:right-0 lg:h-auto lg:min-h-0 lg:w-[56%]">
             <img
               src={heroReal}
-              alt={t(
-                "Padre e hija revisando juntos su plan de ahorro en una tablet",
-                "Father and daughter reviewing their savings plan together on a tablet",
-              )}
+              alt={t("educación financiera para niños", "financial education for kids")}
               width={1280}
               height={1024}
               className="h-full w-full object-cover object-[45%_18%] brightness-110 contrast-[1.06] saturate-[1.08] md:object-[45%_22%] lg:object-[66%_48%] lg:[mask-image:linear-gradient(90deg,transparent_0%,transparent_8%,#000_28%,#000_82%,transparent_100%)]"
