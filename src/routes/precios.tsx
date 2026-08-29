@@ -326,15 +326,23 @@ function Pricing() {
                   <h2 className="text-sm font-semibold">{plan.name}</h2>
                 </div>
                 <div className="mt-3 flex flex-wrap items-end gap-x-2 gap-y-1">
-                  <span className="numeric text-4xl font-semibold tracking-tight">{formatMoney(price, currency)}</span>
-                  <span className="pb-1 text-xs text-muted-foreground">{period}</span>
-                  {equivalentMonthly && (
-                    <span className="pb-1 text-xs text-muted-foreground">
-                      {t("· equivale a {{month}}/mes", "· equals {{month}}/month").replace("{{month}}", equivalentMonthly)}
+                  {isContact ? (
+                    <span className="numeric text-3xl font-semibold tracking-tight">
+                      {t("A medida", "Custom")}
                     </span>
+                  ) : (
+                    <>
+                      <span className="numeric text-4xl font-semibold tracking-tight">{formatMoney(price ?? 0, currency)}</span>
+                      <span className="pb-1 text-xs text-muted-foreground">{period}</span>
+                      {equivalentMonthly && (
+                        <span className="pb-1 text-xs text-muted-foreground">
+                          {t("· equivale a {{month}}/mes", "· equals {{month}}/month").replace("{{month}}", equivalentMonthly)}
+                        </span>
+                      )}
+                    </>
                   )}
                 </div>
-                {isYearly && plan.monthlyPrice > 0 && (
+                {!isContact && isYearly && (plan.monthlyPrice ?? 0) > 0 && (
                   <span className="mt-2 inline-flex w-fit rounded-full border border-positive/30 bg-positive/10 px-2 py-0.5 text-[10px] font-semibold text-positive">
                     {yearlyBadge}
                   </span>
