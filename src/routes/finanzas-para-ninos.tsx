@@ -1683,6 +1683,7 @@ const teachSplit = [
 ];
 
 function PillarVisual({ id, color, labels }: { id: string; color: string; labels: string[] }) {
+  const t = useT();
   if (id === "plan") {
     return (
       <div className="mt-4 h-24">
