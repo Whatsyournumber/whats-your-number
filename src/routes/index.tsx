@@ -685,7 +685,7 @@ export function Landing() {
                 src={ctaLifestyle}
                 alt={t(
                   "Pareja organizando sus finanzas personales para familias en casa con WhatsYournumber",
-                  "Couple organizing their family personal finances at home with WhatsYournumber",
+                  "Couple using WhatsYournumber for personal finance for families at home",
                 )}
                 loading="lazy"
                 width={1280}
