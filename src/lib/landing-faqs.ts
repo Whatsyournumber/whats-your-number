@@ -6,12 +6,12 @@ export interface LandingFaq {
 export const HOME_FAQS: LandingFaq[] = [
   {
     q: {
-      es: "¿Cuál es tu número para retiro y cómo se calcula?",
-      en: "What is your number for retirement and how is it calculated?",
+      es: "¿Cómo funciona mi número para la libertad financiera?",
+      en: "How does my financial freedom number work?",
     },
     a: {
-      es: "Tu número para retiro es el patrimonio que necesitas para cubrir tus gastos de por vida sin depender de un salario. WhatsYournumber lo calcula con tus gastos e ingresos, tu patrimonio y tus inversiones, y te muestra en qué año lo alcanzas.",
-      en: "Your number for retirement is the net worth you need to cover your living expenses for life without relying on a paycheck. WhatsYournumber calculates it from your income and expenses, your net worth, and your investments, and shows the year you reach it.",
+      es: "Tu número para la libertad financiera es el patrimonio que necesitas para que tus inversiones cubran tus gastos de por vida sin depender de un salario. WhatsYournumber lo calcula con tu flujo de caja, activos y deudas, y te muestra el año en el que lo alcanzas.",
+      en: "Your financial freedom number is the net worth you need so your investments cover your living expenses for life without relying on a paycheck. WhatsYournumber calculates it from your cash flow, assets and debts, and shows you the year you'll reach it.",
     },
   },
   {
@@ -36,22 +36,22 @@ export const HOME_FAQS: LandingFaq[] = [
   },
   {
     q: {
-      es: "¿Incluye calculadora de patrimonio y jubilación?",
-      en: "Does it include a net worth and retirement calculator?",
+      es: "¿Incluye calculadora de patrimonio y portfolio?",
+      en: "Does it include a net worth and portfolio calculator?",
     },
     a: {
-      es: "Sí. La calculadora de patrimonio y jubilación suma tus activos, propiedades e inversiones, resta tus deudas y proyecta tu patrimonio neto año a año hasta la edad en la que quieres retirarte.",
-      en: "Yes. The net worth and retirement calculator adds up your assets, properties and investments, subtracts your debts, and projects your net worth year by year until the age you want to retire.",
+      es: "Sí. La calculadora de patrimonio y portfolio suma tus activos, propiedades e inversiones, resta tus deudas y hace seguimiento en tiempo real de todos tus activos para proyectar tu patrimonio neto año a año.",
+      en: "Yes. The net worth and portfolio calculator adds up your assets, properties and investments, subtracts your debts, and tracks all your assets in real time to project your net worth year by year.",
     },
   },
   {
     q: {
-      es: "¿Puedo seguir mis inversiones y comparar el costo de vida entre ciudades?",
-      en: "Can I track my investments and compare the cost of living between cities?",
+      es: "¿Eres nómada digital? Prueba el comparador de costo de vida entre ciudades",
+      en: "Are you a digital nomad? Try the cost-of-living comparison between cities",
     },
     a: {
-      es: "Sí. El seguimiento de inversiones y patrimonio muestra tus posiciones con precios en tiempo real, y el comparador de costo de vida calcula cuánto necesitarías en otra ciudad para mantener tu mismo estilo de vida.",
-      en: "Yes. The investment and net worth tracker shows your positions with real-time prices, and the cost-of-living comparison calculates how much you'd need in another city to keep the same lifestyle.",
+      es: "Sí. El comparador de costo de vida te dice cuánto necesitarías en otra ciudad para mantener tu mismo estilo de vida, y el seguimiento de inversiones muestra tus posiciones con precios en tiempo real.",
+      en: "Yes. The cost-of-living comparison tells you how much you'd need in another city to keep the same lifestyle, and the investment tracker shows your positions with real-time prices.",
     },
   },
   {
