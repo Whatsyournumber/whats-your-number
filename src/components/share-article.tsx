@@ -64,38 +64,35 @@ export function ShareArticle({ title }: { title: string }) {
   const encodedText = encodeURIComponent(`${shareText} ${url}`);
 
   return (
-    <div className="mt-8 flex items-center justify-between gap-3 border-t border-border/40 pt-4">
-      <span className="text-xs text-muted-foreground/60">{t("Compartir", "Share")}</span>
-      <div className="flex items-center gap-1">
-        <ShareButton
-          label="WhatsApp"
-          href={`https://wa.me/?text=${encodedText}`}
-          icon={<WhatsAppIcon className="h-4 w-4" />}
-        />
-        <ShareButton
-          label="X / Twitter"
-          href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`}
-          icon={<XIcon className="h-4 w-4" />}
-        />
-        <ShareButton
-          label="LinkedIn"
-          href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`}
-          icon={<Linkedin className="h-4 w-4" />}
-        />
-        <ShareButton
-          label="Facebook"
-          href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`}
-          icon={<Facebook className="h-4 w-4" />}
-        />
-        <button
-          type="button"
-          onClick={handleCopy}
-          aria-label={copied ? t("Enlace copiado", "Link copied") : t("Copiar enlace", "Copy link")}
-          className="inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground/70 transition-colors hover:text-foreground"
-        >
-          {copied ? <Check className="h-4 w-4" /> : <LinkIcon className="h-4 w-4" />}
-        </button>
-      </div>
+    <div className="mt-8 flex items-center justify-end gap-1 border-t border-border/40 pt-4">
+      <ShareButton
+        label="WhatsApp"
+        href={`https://wa.me/?text=${encodedText}`}
+        icon={<WhatsAppIcon className="h-4 w-4" />}
+      />
+      <ShareButton
+        label="X / Twitter"
+        href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`}
+        icon={<XIcon className="h-4 w-4" />}
+      />
+      <ShareButton
+        label="LinkedIn"
+        href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`}
+        icon={<Linkedin className="h-4 w-4" />}
+      />
+      <ShareButton
+        label="Facebook"
+        href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`}
+        icon={<Facebook className="h-4 w-4" />}
+      />
+      <button
+        type="button"
+        onClick={handleCopy}
+        aria-label={copied ? t("Enlace copiado", "Link copied") : t("Copiar enlace", "Copy link")}
+        className="inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground/70 transition-colors hover:text-foreground"
+      >
+        {copied ? <Check className="h-4 w-4" /> : <LinkIcon className="h-4 w-4" />}
+      </button>
     </div>
   );
 }
