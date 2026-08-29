@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Area,
@@ -18,6 +18,8 @@ import {
 import {
   BarChart3,
   Bot,
+  ChevronLeft,
+  ChevronRight,
   FileText,
   Globe,
   Home,
@@ -219,6 +221,37 @@ export function ProductPreview() {
     return () => clearTimeout(resume);
   }, [paused]);
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScroll, setCanScroll] = useState({ left: false, right: false });
+
+  const checkScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScroll({
+      left: el.scrollLeft > 4,
+      right: el.scrollLeft + el.clientWidth < el.scrollWidth - 4,
+    });
+  };
+
+  useEffect(() => {
+    checkScroll();
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => checkScroll();
+    el.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", checkScroll);
+    return () => {
+      el.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", checkScroll);
+    };
+  }, []);
+
+  const scrollTabs = (dir: "left" | "right") => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir === "left" ? -180 : 180, behavior: "smooth" });
+  };
+
   const view = views.find((v) => v.id === active)!;
   const kpi = kpis[active];
   const Insight = insights[active];
@@ -235,36 +268,71 @@ export function ProductPreview() {
       <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.05]" />
       <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
 
-      <div className="relative flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
-        {views.map((v) => {
-          const Icon = v.icon;
-          return (
-            <button
-              key={v.id}
-              type="button"
-              onClick={() => {
-                setActive(v.id);
-                setPaused(true);
-              }}
-              className={cn(
-                "flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all",
-                active === v.id
-                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                  : "bg-elevated text-muted-foreground hover:bg-elevated/80 hover:text-foreground",
-              )}
-            >
-              <Icon className="h-3.5 w-3.5" />
-              {v.label}
-            </button>
-          );
-        })}
-        <span className="ml-auto hidden shrink-0 items-center gap-1.5 rounded-full bg-elevated px-3 py-1 text-[11px] text-muted-foreground md:inline-flex">
-          <span className="relative flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+      <div className="relative">
+        <div
+          ref={scrollRef}
+          className="relative flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide scroll-smooth"
+        >
+          {views.map((v) => {
+            const Icon = v.icon;
+            return (
+              <button
+                key={v.id}
+                type="button"
+                onClick={() => {
+                  setActive(v.id);
+                  setPaused(true);
+                }}
+                className={cn(
+                  "flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all",
+                  active === v.id
+                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                    : "bg-elevated text-muted-foreground hover:bg-elevated/80 hover:text-foreground",
+                )}
+              >
+                <Icon className="h-3.5 w-3.5" />
+                {v.label}
+              </button>
+            );
+          })}
+          <span className="ml-auto hidden shrink-0 items-center gap-1.5 rounded-full bg-elevated px-3 py-1 text-[11px] text-muted-foreground md:inline-flex">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+            </span>
+            {t("En vivo", "Live")}
           </span>
-          {t("En vivo", "Live")}
-        </span>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => scrollTabs("left")}
+          aria-label={t("Anterior", "Previous")}
+          className={cn(
+            "absolute left-0 top-1/2 z-10 -translate-y-1/2 md:hidden",
+            "flex h-7 w-7 items-center justify-center rounded-full",
+            "bg-card/80 text-muted-foreground shadow-sm backdrop-blur-sm ring-1 ring-border/40",
+            "transition-all duration-200",
+            canScroll.left ? "translate-x-0 opacity-100" : "-translate-x-2 opacity-0 pointer-events-none",
+          )}
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+
+        <button
+          type="button"
+          onClick={() => scrollTabs("right")}
+          aria-label={t("Siguiente", "Next")}
+          className={cn(
+            "absolute right-0 top-1/2 z-10 -translate-y-1/2 md:hidden",
+            "flex h-7 w-7 items-center justify-center rounded-full",
+            "bg-card/80 text-muted-foreground shadow-sm backdrop-blur-sm ring-1 ring-border/40",
+            "transition-all duration-200",
+            canScroll.right ? "translate-x-0 opacity-100" : "translate-x-2 opacity-0 pointer-events-none",
+          )}
+        >
+          <ChevronRight className="h-4 w-4" />
+        </button>
       </div>
 
       <div className="relative mt-5 grid gap-4 lg:grid-cols-[1.55fr_1fr]">
