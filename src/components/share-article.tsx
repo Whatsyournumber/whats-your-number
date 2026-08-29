@@ -64,7 +64,7 @@ export function ShareArticle({ title }: { title: string }) {
   const encodedText = encodeURIComponent(`${shareText} ${url}`);
 
   return (
-    <div className="mt-8 flex items-center justify-end gap-1 border-t border-border/40 pt-4">
+    <div className="mt-6 flex items-center justify-end gap-1">
       <ShareButton
         label="WhatsApp"
         href={`https://wa.me/?text=${encodedText}`}
