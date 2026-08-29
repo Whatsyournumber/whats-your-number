@@ -2653,7 +2653,7 @@ export function KidsFinanceLanding() {
               <div className="mt-6 flex items-center gap-3 md:mt-10">
                 <img
                   src={avatarFaces}
-                  alt={t("Familias usando WhatsYournumber", "Families using WhatsYournumber")}
+                  alt={t("enseñar a ahorrar a los niños con WhatsYournumber", "teach kids to save with WhatsYournumber")}
                   width={256}
                   height={128}
                   className="h-10 w-auto shrink-0 mix-blend-lighten md:h-12"
