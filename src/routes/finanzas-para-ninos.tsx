@@ -1766,7 +1766,7 @@ function PillarVisual({ id, color, labels }: { id: string; color: string; labels
         />
         <img
           src={bikeAsset.url}
-          alt="Bicicleta nueva, uno de los sueños de ahorro de los niños"
+          alt={t("app de mesada y tareas para niños", "allowance and chores app for kids")}
           loading="lazy"
           className="relative h-[86px] w-auto object-contain drop-shadow-[0_10px_22px_rgba(0,0,0,0.5)]"
         />
