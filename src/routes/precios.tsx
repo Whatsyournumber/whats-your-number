@@ -55,7 +55,20 @@ function Pricing() {
 
   const isYearly = billing === "yearly";
 
-  const plans = [
+  type PricingPlan = {
+    name: string;
+    monthlyPrice: number | null;
+    yearlyPrice: number | null;
+    priceId: string | null;
+    contact?: boolean;
+    desc: string;
+    features: string[];
+    cta: string;
+    href?: string;
+    highlight: boolean;
+  };
+
+  const plans: PricingPlan[] = [
     {
       name: "Free",
       monthlyPrice: 0,
@@ -129,7 +142,30 @@ function Pricing() {
       cta: t("Empezar con Familiar", "Get started with Familiar"),
       highlight: false,
     },
+    {
+      name: "Corporativo",
+      monthlyPrice: null,
+      yearlyPrice: null,
+      priceId: null,
+      contact: true,
+      desc: t(
+        "Bienestar financiero para tu equipo o clientes: WhatsYournumber para empresas.",
+        "Financial wellness for your team or clients: WhatsYournumber for business.",
+      ),
+      features: [
+        t("Todo lo de Familiar para cada miembro", "Everything in Familiar for each member"),
+        t("Licencias por volumen para tu equipo", "Volume licensing for your team"),
+        t("Onboarding y workshops para empleados", "Onboarding and employee workshops"),
+        t("Dashboard agregado y anonimizado de RRHH", "Aggregated, anonymized HR dashboard"),
+        t("Marca blanca para asesores y bancos", "White label for advisors and banks"),
+        t("Integración SSO y soporte dedicado", "SSO integration and dedicated support"),
+      ],
+      cta: t("Contactar", "Contact us"),
+      href: "mailto:hello@whatsyour-number.com?subject=Plan%20Corporativo%20B2B",
+      highlight: false,
+    },
   ];
+
 
 
   const incentives = [
@@ -273,12 +309,15 @@ function Pricing() {
           </p>
         </section>
 
-        <section className="mt-10 grid gap-4 md:grid-cols-3">
+        <section className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {plans.map((plan) => {
+            const isContact = "contact" in plan && plan.contact;
             const price = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
             const period = isYearly ? t("/año", "/year") : t("/mes", "/mo");
             const equivalentMonthly =
-              isYearly && plan.monthlyPrice > 0 ? monthlyEquivalent(plan.yearlyPrice, currency) : null;
+              !isContact && isYearly && (plan.monthlyPrice ?? 0) > 0 && plan.yearlyPrice != null
+                ? monthlyEquivalent(plan.yearlyPrice, currency)
+                : null;
             const isFamily = plan.name === "Familiar";
             const yearlyBadge = isFamily
               ? t("3 meses gratis · 25% OFF", "3 months free · 25% OFF")
@@ -300,15 +339,23 @@ function Pricing() {
                   <h2 className="text-sm font-semibold">{plan.name}</h2>
                 </div>
                 <div className="mt-3 flex flex-wrap items-end gap-x-2 gap-y-1">
-                  <span className="numeric text-4xl font-semibold tracking-tight">{formatMoney(price, currency)}</span>
-                  <span className="pb-1 text-xs text-muted-foreground">{period}</span>
-                  {equivalentMonthly && (
-                    <span className="pb-1 text-xs text-muted-foreground">
-                      {t("· equivale a {{month}}/mes", "· equals {{month}}/month").replace("{{month}}", equivalentMonthly)}
+                  {isContact ? (
+                    <span className="numeric text-3xl font-semibold tracking-tight">
+                      {t("A medida", "Custom")}
                     </span>
+                  ) : (
+                    <>
+                      <span className="numeric text-4xl font-semibold tracking-tight">{formatMoney(price ?? 0, currency)}</span>
+                      <span className="pb-1 text-xs text-muted-foreground">{period}</span>
+                      {equivalentMonthly && (
+                        <span className="pb-1 text-xs text-muted-foreground">
+                          {t("· equivale a {{month}}/mes", "· equals {{month}}/month").replace("{{month}}", equivalentMonthly)}
+                        </span>
+                      )}
+                    </>
                   )}
                 </div>
-                {isYearly && plan.monthlyPrice > 0 && (
+                {!isContact && isYearly && (plan.monthlyPrice ?? 0) > 0 && (
                   <span className="mt-2 inline-flex w-fit rounded-full border border-positive/30 bg-positive/10 px-2 py-0.5 text-[10px] font-semibold text-positive">
                     {yearlyBadge}
                   </span>
@@ -331,6 +378,10 @@ function Pricing() {
                     disabled={loading}
                   >
                     {plan.cta}
+                  </Button>
+                ) : isContact ? (
+                  <Button asChild variant="outline" className="mt-8 w-full rounded-full">
+                    <a href={plan.href}>{plan.cta}</a>
                   </Button>
                 ) : (
                   <Button asChild variant={plan.highlight ? "default" : "outline"} className="mt-8 w-full rounded-full">
