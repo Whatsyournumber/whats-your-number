@@ -34,7 +34,7 @@ function ShareButton({ label, href, icon, onClick }: ShareButtonProps) {
       rel="noopener noreferrer"
       onClick={onClick}
       aria-label={label}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-elevated text-muted-foreground ring-1 ring-border transition-all hover:bg-primary hover:text-primary-foreground hover:ring-primary"
+      className="inline-flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground/70 transition-colors hover:text-foreground"
     >
       {icon}
     </a>
