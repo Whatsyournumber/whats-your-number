@@ -550,7 +550,7 @@ export function Landing() {
             <span className="text-xs font-medium uppercase tracking-wider text-primary">
               {t("¿Por qué WhatsYourNumber?", "Why WhatsYourNumber?")}
             </span>
-            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
+            <h2 className="mt-3 whitespace-nowrap font-display text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
               {t("Tu dinero. Tu número. Tu plan.", "Your money. Your number. Your plan.")}
             </h2>
             <p className="mx-auto mt-3 max-w-3xl text-xs text-muted-foreground sm:text-sm md:whitespace-nowrap">
