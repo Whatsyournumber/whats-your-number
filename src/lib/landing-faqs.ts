@@ -70,8 +70,8 @@ export const HOME_FAQS: LandingFaq[] = [
       en: "Do you connect to my bank?",
     },
     a: {
-      es: "No. Nunca tocamos tus credenciales bancarias, no usamos agregadores tipo Plaid ni Open Banking, y nunca vemos tus transacciones. Añades tus cuentas manualmente (tarda unos cinco minutos) y actualizas los saldos cuando quieras.",
-      en: "No. We never touch your bank login, never use Plaid or open-banking aggregators, and never see a transaction. You add accounts manually (it takes about five minutes) and update balances when you want.",
+      es: "No. Nunca tocamos tus credenciales bancarias, no usamos agregadores tipo Plaid ni Open Banking, y nunca vemos tus transacciones. Añades tus cuentas manualmente o bajas tus EEFF (tarda 30 segs) y actualizas los saldos cuando quieras.",
+      en: "No. We never touch your bank login, never use Plaid or open-banking aggregators, and never see a transaction. You add accounts manually or upload your statements (it takes 30 seconds) and update balances when you want.",
     },
   },
   {
