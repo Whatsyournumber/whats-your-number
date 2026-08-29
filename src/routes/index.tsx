@@ -700,7 +700,7 @@ export function Landing() {
                 <p className="mt-2 max-w-sm text-sm text-muted-foreground">
                   {t(
                     "Tu whats your number para retiro en 3 preguntas: descúbrelo gratis en 30 segundos, ideal para las finanzas personales para familias.",
-                    "Your retirement number in 3 questions: find out free in 30 seconds, built for family personal finance.",
+                    "Your retirement number in 3 questions: find out free in 30 seconds. Personal finance for families, made simple.",
                   )}
                 </p>
                 <div className="mt-5 flex flex-wrap items-center gap-3">
