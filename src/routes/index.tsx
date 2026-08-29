@@ -313,8 +313,8 @@ export function Landing() {
       icon: Globe,
       title: t("Tu Próxima Ciudad", "Your Next City"),
       desc: t(
-        "Compara más de 150 ciudades por costo de vida, salarios, impuestos, clima y seguridad. Encuentra dónde tu dinero rinde más.",
-        "Compare over 150 cities by cost of living, salaries, taxes, climate and safety. Find where your money goes further.",
+        "Comparador de costo de vida con más de 150 ciudades: salarios, impuestos, clima y seguridad. Encuentra dónde tu dinero rinde más.",
+        "Cost of living comparison across 150+ cities: salaries, taxes, climate and safety. Find where your money goes further.",
       ),
       highlight: t("tu dinero rinde más", "your money goes further"),
     },
@@ -355,8 +355,8 @@ export function Landing() {
       titleLight: t("Descubre cuándo", "Discover when"),
       titleAccent: t("puedes dejar de trabajar.", "you can stop working."),
       desc: t(
-        "Conoce el capital que necesitas para vivir de tus rendimientos y cuánto te falta para llegar.",
-        "Know the capital you need to live off your returns and how far you are from getting there.",
+        "Usa la calculadora de patrimonio y jubilación para conocer el capital que necesitas para vivir de tus rendimientos y cuánto te falta para llegar.",
+        "Use the net worth and retirement calculator to know the capital you need to live off your returns and how far you are from getting there.",
       ),
     },
     {
@@ -681,8 +681,8 @@ export function Landing() {
               <img
                 src={ctaLifestyle}
                 alt={t(
-                  "Pareja revisando sus finanzas en casa con WhatsYournumber",
-                  "Couple reviewing their finances at home with WhatsYournumber",
+                  "Pareja organizando sus finanzas personales para familias en casa con WhatsYournumber",
+                  "Couple organizing their family personal finances at home with WhatsYournumber",
                 )}
                 loading="lazy"
                 width={1280}
@@ -696,8 +696,8 @@ export function Landing() {
                 </h3>
                 <p className="mt-2 max-w-sm text-sm text-muted-foreground">
                   {t(
-                    "Responde 3 preguntas y descúbrelo gratis en 30 segundos.",
-                    "Answer 3 questions and find out free in 30 seconds.",
+                    "Tu whats your number para retiro en 3 preguntas: descúbrelo gratis en 30 segundos, ideal para las finanzas personales para familias.",
+                    "Your retirement number in 3 questions: find out free in 30 seconds, built for family personal finance.",
                   )}
                 </p>
                 <div className="mt-5 flex flex-wrap items-center gap-3">
