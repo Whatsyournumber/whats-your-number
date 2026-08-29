@@ -3,6 +3,8 @@ import { motion } from "motion/react";
 import {
   ArrowRight,
   Bot,
+  Building2,
+  Calculator,
   Crosshair,
   FileText,
   Globe,
@@ -10,6 +12,7 @@ import {
   LineChart,
   Lock,
   PieChart,
+  Receipt,
   Route as RouteIcon,
   ScanEye,
   ShieldCheck,
@@ -17,6 +20,8 @@ import {
   Star,
   Target,
   TrendingUp,
+  Users,
+  Wallet,
 } from "lucide-react";
 
 
