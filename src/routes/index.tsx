@@ -698,10 +698,13 @@ export function Landing() {
                   {t("¿Cuál es tu número?", "What's your number?")}
                 </h3>
                 <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-                  {t(
-                    "Tu whats your number para retiro en 3 preguntas: descúbrelo gratis en 30 segundos, ideal para las finanzas personales para familias.",
-                    "Your retirement number in 3 questions: find out free in 30 seconds. Personal finance for families, made simple.",
-                  )}
+                  <span className="sm:hidden">{t("Descúbrelo gratis en 30 segundos.", "Find out free in 30 seconds.")}</span>
+                  <span className="hidden sm:inline">
+                    {t(
+                      "Tu número para retiro en 3 preguntas: descúbrelo gratis en 30 segundos.",
+                      "Your retirement number in 3 questions: find out free in 30 seconds.",
+                    )}
+                  </span>
                 </p>
                 <div className="mt-5 flex flex-wrap items-center gap-3">
                   <Button asChild size="lg" className="gap-2 rounded-full px-6">
