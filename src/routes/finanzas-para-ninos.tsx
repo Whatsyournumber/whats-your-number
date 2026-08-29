@@ -559,7 +559,7 @@ function UniFinderVisual() {
           <div className="relative mt-2 h-48 overflow-hidden rounded-2xl ring-1 ring-border">
             <img
               src={DEMO_UNI_PHOTOS[hero.id]}
-              alt={hero.name}
+              alt={t("calculadora de ahorro para universidad de los hijos", "college savings calculator for kids")}
               loading="lazy"
               className="absolute inset-0 h-full w-full object-cover"
             />
