@@ -29,6 +29,12 @@ export const Route = createFileRoute("/en/")({
       { rel: "alternate", hrefLang: "en", href: "https://whatsyour-number.com/en" },
       { rel: "alternate", hrefLang: "x-default", href: "https://whatsyour-number.com" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(buildLandingFaqJsonLd(HOME_FAQS, "en")),
+      },
+    ],
   }),
   component: EnglishLanding,
 });
