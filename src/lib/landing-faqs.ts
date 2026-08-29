@@ -16,6 +16,16 @@ export const HOME_FAQS: LandingFaq[] = [
   },
   {
     q: {
+      es: "¿Puedo cancelar Premium en cualquier momento?",
+      en: "Can I cancel Premium any time?",
+    },
+    a: {
+      es: "Sí. Un clic, sin llamadas ni scripts de retención. Conservas Premium hasta que termine tu período de facturación y luego vuelves al plan gratuito con todos tus datos intactos.",
+      en: "Yes. One click, no calls, no retention scripts. You'll keep Premium until your billing period ends, then drop back to the free tier with all your data intact.",
+    },
+  },
+  {
+    q: {
       es: "¿Cómo funciona la calculadora de libertad financiera?",
       en: "How does the financial freedom calculator work?",
     },
@@ -66,22 +76,12 @@ export const HOME_FAQS: LandingFaq[] = [
   },
   {
     q: {
-      es: "¿Conectáis con mi banco?",
-      en: "Do you connect to my bank?",
+      es: "¿Conectáis con mi banco y qué pasa si tengo activos en distintas monedas?",
+      en: "Do you connect to my bank and what if I have assets in different currencies?",
     },
     a: {
-      es: "No. Nunca tocamos tus credenciales bancarias, no usamos agregadores tipo Plaid ni Open Banking, y nunca vemos tus transacciones. Añades tus cuentas manualmente (tarda unos cinco minutos) y actualizas los saldos cuando quieras.",
-      en: "No. We never touch your bank login, never use Plaid or open-banking aggregators, and never see a transaction. You add accounts manually (it takes about five minutes) and update balances when you want.",
-    },
-  },
-  {
-    q: {
-      es: "¿Y si tengo activos en distintas monedas?",
-      en: "What if I have assets in different currencies?",
-    },
-    a: {
-      es: "Puedes guardarlos en GBP, USD, EUR, CHF, AUD o CAD. Convertimos todo a tu moneda base con tasas de cambio diarias a nivel ECB, así tu patrimonio neto siempre es un solo número claro.",
-      en: "Hold them in any of GBP, USD, EUR, CHF, AUD or CAD. We convert everything to your home currency using daily ECB-grade FX rates, so your net worth is always one clean number.",
+      es: "No tocamos tu banco: no usamos Plaid ni Open Banking y nunca vemos tus credenciales ni transacciones. Añades tus cuentas manualmente en minutos y actualizas saldos cuando quieras. Además, puedes guardar activos en GBP, USD, EUR, CHF, AUD o CAD y los convertimos a tu moneda base con tasas diarias tipo ECB.",
+      en: "We don't touch your bank: no Plaid, no open banking, and we never see your login or transactions. You add accounts manually in minutes and update balances when you want. You can also hold assets in GBP, USD, EUR, CHF, AUD or CAD, and we convert them to your home currency using daily ECB-grade FX rates.",
     },
   },
 ];
