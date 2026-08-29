@@ -80,8 +80,8 @@ export const HOME_FAQS: LandingFaq[] = [
       en: "What if I have assets in different currencies?",
     },
     a: {
-      es: "Puedes guardarlos en GBP, USD, EUR, CHF, AUD o CAD. Convertimos todo a tu moneda base con tasas de cambio diarias a nivel ECB, así tu patrimonio neto siempre es un solo número claro.",
-      en: "Hold them in any of GBP, USD, EUR, CHF, AUD or CAD. We convert everything to your home currency using daily ECB-grade FX rates, so your net worth is always one clean number.",
+      es: "Puedes guardarlos en GBP, USD, EUR, CHF, AUD, CAD o la que quieras. Convertimos todo a tu moneda base con tasas de cambio diarias a nivel Google rate, así tu patrimonio neto siempre es un solo número claro.",
+      en: "You can hold them in GBP, USD, EUR, CHF, AUD, CAD or whichever currency you prefer. We convert everything to your home currency using daily Google-rate FX rates, so your net worth is always one clean number.",
     },
   },
 ];
