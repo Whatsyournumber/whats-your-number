@@ -32,9 +32,11 @@ import { ProductPreview } from "@/components/product-preview";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
+import { FaqSection } from "@/components/faq-section";
 import { useAuth } from "@/hooks/use-auth";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useT } from "@/hooks/use-language";
+import { HOME_FAQS, buildLandingFaqJsonLd } from "@/lib/landing-faqs";
 import { useEffect } from "react";
 
 /** Renderiza la descripción resaltando la frase clave con una línea de gradiente sutil. */
