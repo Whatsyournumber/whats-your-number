@@ -229,7 +229,9 @@ export function BlogArticleView({ slug }: { slug: string }) {
           </h1>
         </header>
 
-        <figure className="surface mt-8 overflow-hidden">
+        <ShareArticle title={post.title[lang]} />
+
+        <figure className="surface mt-6 overflow-hidden">
           <img
             src={post.image}
             alt={post.imageAlt[lang]}
