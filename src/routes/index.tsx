@@ -258,6 +258,102 @@ function DemoCard() {
   );
 }
 
+/** Pilares SEO visibles con H2/H3 enfocados en las keywords principales del home.
+ *  Se mantiene todo el contenido existente; esta sección añade jerarquía de
+ *  encabezados estratégica sin alterar textos ni diseño actuales.
+ */
+function SeoPillars() {
+  const t = useT();
+
+  const pillars = [
+    {
+      icon: Users,
+      level: "h2" as const,
+      title: t("Finanzas personales para familias", "Personal finance for families"),
+      desc: t(
+        "Gestiona el dinero familiar, planifica gastos compartidos y construye patrimonio para las próximas generaciones.",
+        "Manage family money, plan shared expenses and build wealth for the next generations.",
+      ),
+    },
+    {
+      icon: Calculator,
+      level: "h2" as const,
+      title: t("Calculadora de libertad financiera", "Financial freedom calculator"),
+      desc: t(
+        "Descubre cuánto capital necesitas y cuánto tiempo te falta para vivir de tus inversiones sin depender de un sueldo.",
+        "Find out how much capital you need and how long until you can live off your investments without a paycheck.",
+      ),
+    },
+    {
+      icon: Receipt,
+      level: "h2" as const,
+      title: t("control de gastos e ingresos", "income and expense control"),
+      desc: t(
+        "Categoriza automáticamente cada movimiento, detecta suscripciones ocultas y optimiza tu flujo de caja mensual.",
+        "Automatically categorize every transaction, detect hidden subscriptions and optimize your monthly cash flow.",
+      ),
+    },
+    {
+      icon: Building2,
+      level: "h2" as const,
+      title: t("calculadora de patrimonio y jubilación", "net worth and retirement calculator"),
+      desc: t(
+        "Visualiza tu patrimonio neto real, proyecta tu jubilación y ajusta tu ahorro para llegar antes a tu meta.",
+        "See your real net worth, project your retirement and adjust savings to reach your goal sooner.",
+      ),
+    },
+    {
+      icon: Wallet,
+      level: "h3" as const,
+      title: t("calculadora de libertad financiera", "financial freedom calculator"),
+      desc: t(
+        "Simula escenarios personalizados: ahorro extra, cambios de gasto o nuevas fuentes de ingresos pasivos.",
+        "Simulate personalized scenarios: extra savings, spending changes or new passive income streams.",
+      ),
+    },
+  ];
+
+  return (
+    <section className="mt-16 scroll-mt-24 md:mt-20" aria-label={t("Pilares del producto", "Product pillars")}>
+      <div className="mb-6 text-center md:mb-8">
+        <span className="text-xs font-medium uppercase tracking-wider text-primary">
+          {t("Todo en una plataforma", "Everything in one platform")}
+        </span>
+        <h2 className="sr-only">
+          {t(
+            "Finanzas personales para familias, calculadora de libertad financiera, control de gastos e ingresos y calculadora de patrimonio y jubilación.",
+            "Personal finance for families, financial freedom calculator, income and expense control, and net worth and retirement calculator.",
+          )}
+        </h2>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        {pillars.map((p, i) => {
+          const Heading = p.level === "h2" ? "h2" : "h3";
+          return (
+            <motion.div
+              key={p.title}
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.35, delay: i * 0.06 }}
+              className="surface flex flex-col items-start p-5 transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:bg-card/70"
+            >
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
+                <p.icon className="h-4.5 w-4.5 text-primary" />
+              </div>
+              <Heading className="mt-4 text-base font-semibold leading-snug tracking-tight">
+                {p.title}
+              </Heading>
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground/80">{p.desc}</p>
+            </motion.div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
 export function Landing() {
   const t = useT();
   const liveCount = useLiveCount(1200);
