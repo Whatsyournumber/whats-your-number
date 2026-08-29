@@ -79,26 +79,26 @@ const DEMO_UNI_PHOTOS: Record<string, string> = {
 export const Route = createFileRoute("/finanzas-para-ninos")({
   head: () => ({
     meta: [
-      { title: "Finanzas para Niños | Planifica su Futuro Financiero" },
+      { title: "Educación Financiera para Niños | App de Finanzas para Niños" },
       {
         name: "description",
         content:
-          "Enseña a tus hijos el valor del dinero, el ahorro y la inversión. Calcula cuánto ahorrar desde pequeños para su universidad y ayúdales a construir un mejor futuro financiero.",
+          "La app de finanzas para niños que combina educación financiera, mesada y tareas. Enseña a ahorrar a los niños y calcula el ahorro para la universidad de tus hijos con IA.",
       },
-      { property: "og:title", content: "Finanzas para Niños | Planifica su Futuro Financiero" },
+      { property: "og:title", content: "Educación Financiera para Niños | App de Finanzas para Niños" },
       {
         property: "og:description",
         content:
-          "Enseña a tus hijos el valor del dinero, el ahorro y la inversión. Calcula cuánto ahorrar desde pequeños para su universidad y ayúdales a construir un mejor futuro financiero.",
+          "La app de finanzas para niños que combina educación financiera, mesada y tareas. Enseña a ahorrar a los niños y calcula el ahorro para la universidad de tus hijos con IA.",
       },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "es_ES" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Finanzas para Niños | Planifica su Futuro Financiero" },
+      { name: "twitter:title", content: "Educación Financiera para Niños | App de Finanzas para Niños" },
       {
         name: "twitter:description",
         content:
-          "Enseña a tus hijos el valor del dinero, el ahorro y la inversión. Calcula cuánto ahorrar desde pequeños para su universidad y ayúdales a construir un mejor futuro financiero.",
+          "La app de finanzas para niños que combina educación financiera, mesada y tareas. Enseña a ahorrar a los niños y calcula el ahorro para la universidad de tus hijos con IA.",
       },
       { property: "og:url", content: "https://whatsyour-number.com/finanzas-para-ninos" },
       { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
@@ -559,7 +559,7 @@ function UniFinderVisual() {
           <div className="relative mt-2 h-48 overflow-hidden rounded-2xl ring-1 ring-border">
             <img
               src={DEMO_UNI_PHOTOS[hero.id]}
-              alt={hero.name}
+              alt={t("calculadora de ahorro para universidad de los hijos", "college savings calculator for kids")}
               loading="lazy"
               className="absolute inset-0 h-full w-full object-cover"
             />
@@ -597,7 +597,7 @@ function UniFinderVisual() {
               <div key={u.id} className="relative h-32 overflow-hidden rounded-2xl ring-1 ring-border">
                 <img
                   src={DEMO_UNI_PHOTOS[u.id]}
-                  alt={u.name}
+                  alt={t("calculadora de ahorro para universidad", "college savings calculator")}
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-cover"
                 />
@@ -1683,6 +1683,7 @@ const teachSplit = [
 ];
 
 function PillarVisual({ id, color, labels }: { id: string; color: string; labels: string[] }) {
+  const t = useT();
   if (id === "plan") {
     return (
       <div className="mt-4 h-24">
@@ -1766,7 +1767,7 @@ function PillarVisual({ id, color, labels }: { id: string; color: string; labels
         />
         <img
           src={bikeAsset.url}
-          alt="Bicicleta nueva, uno de los sueños de ahorro de los niños"
+          alt={t("app de mesada y tareas para niños", "allowance and chores app for kids")}
           loading="lazy"
           className="relative h-[86px] w-auto object-contain drop-shadow-[0_10px_22px_rgba(0,0,0,0.5)]"
         />
@@ -1950,6 +1951,7 @@ function PhoneMock({
   id: string;
   cute?: boolean;
 }) {
+  const t = useT();
   return (
     <div
       className="relative mx-auto w-full max-w-[310px] rounded-[2.75rem] bg-elevated p-[10px]"
@@ -1988,7 +1990,7 @@ function PhoneMock({
             >
               <img
                 src={face}
-                alt="Retrato del perfil infantil en la app"
+                alt={t("calculadora de ahorro para hijos", "savings calculator for children")}
                 width={48}
                 height={48}
                 className="h-full w-full rounded-full object-cover"
@@ -2586,10 +2588,7 @@ export function KidsFinanceLanding() {
           <div className="pointer-events-none absolute inset-x-0 top-0 h-[clamp(220px,32vh,300px)] md:h-[clamp(280px,46vh,460px)] lg:inset-y-0 lg:left-auto lg:right-0 lg:h-auto lg:min-h-0 lg:w-[56%]">
             <img
               src={heroReal}
-              alt={t(
-                "Padre e hija revisando juntos su plan de ahorro en una tablet",
-                "Father and daughter reviewing their savings plan together on a tablet",
-              )}
+              alt={t("educación financiera para niños", "financial education for kids")}
               width={1280}
               height={1024}
               className="h-full w-full object-cover object-[45%_18%] brightness-110 contrast-[1.06] saturate-[1.08] md:object-[45%_22%] lg:object-[66%_48%] lg:[mask-image:linear-gradient(90deg,transparent_0%,transparent_8%,#000_28%,#000_82%,transparent_100%)]"
@@ -2634,14 +2633,14 @@ export function KidsFinanceLanding() {
               <p className="mt-4 max-w-lg text-sm leading-relaxed text-muted-foreground md:mt-6 md:text-base">
                 <span className="md:hidden">
                   {t(
-                    "Planifica su futuro, mesada y hábitos de ahorro en un solo lugar.",
-                    "Plan their future, allowance and savings habits in one place.",
+                    "La app de finanzas para niños que une educación financiera, mesada y tareas para enseñar a ahorrar desde pequeños.",
+                    "The finance app for kids that combines financial education, allowance and chores to teach kids to save from an early age.",
                   )}
                 </span>
                 <span className="hidden md:inline">
                   {t(
-                    "Planifica cuánto tendrá tu hijo a los 18 años, crea su primera cartera de inversión, administra su mesada y ayúdalo a desarrollar hábitos financieros que lo acompañarán toda la vida.",
-                    "Plan how much your child will have at 18, build their first investment portfolio, manage their allowance and help them build money habits for life.",
+                    "La app de finanzas para niños que une educación financiera, mesada y tareas. Planifica cuánto tendrá tu hijo a los 18 años, crea su primera cartera de inversión y ayúdalo a desarrollar hábitos de ahorro para toda la vida.",
+                    "The finance app for kids that combines financial education, allowance and chores. Plan how much your child will have at 18, build their first investment portfolio and help them build lifelong savings habits.",
                   )}
                 </span>
               </p>
@@ -2656,7 +2655,7 @@ export function KidsFinanceLanding() {
               <div className="mt-6 flex items-center gap-3 md:mt-10">
                 <img
                   src={avatarFaces}
-                  alt={t("Familias usando WhatsYournumber", "Families using WhatsYournumber")}
+                  alt={t("enseñar a ahorrar a los niños con WhatsYournumber", "teach kids to save with WhatsYournumber")}
                   width={256}
                   height={128}
                   className="h-10 w-auto shrink-0 mix-blend-lighten md:h-12"
@@ -2763,10 +2762,7 @@ export function KidsFinanceLanding() {
             <div className="relative h-72 md:absolute md:inset-y-0 md:right-0 md:h-full md:w-[58%]">
               <img
                 src={ctaFamily}
-                alt={t(
-                  "Familia revisando sus finanzas juntos",
-                  "Family reviewing their finances together",
-                )}
+                alt={t("app de finanzas para niños en familia", "finance app for kids and families")}
                 loading="lazy"
                 width={1408}
                 height={912}
