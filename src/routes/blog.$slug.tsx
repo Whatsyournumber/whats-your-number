@@ -415,8 +415,10 @@ export function BlogArticleView({ slug }: { slug: string }) {
           ))}
         </article>
 
+        <ShareArticle title={post.title[lang]} />
+
         {faqs.length > 0 && (
-          <section className="mt-12" aria-label={t("Preguntas frecuentes", "Frequently asked questions")}>
+          <section className="mt-10" aria-label={t("Preguntas frecuentes", "Frequently asked questions")}>
             <h2 className="font-display text-xl font-semibold tracking-tight">
               {t("Preguntas frecuentes", "Frequently asked questions")}
             </h2>
