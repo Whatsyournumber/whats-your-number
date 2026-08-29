@@ -793,6 +793,15 @@ export function Landing() {
           </div>
         </section>
 
+        <FaqSection
+          faqs={HOME_FAQS}
+          eyebrow={t("Preguntas frecuentes", "FAQ")}
+          title={t("Todo lo que necesitas saber", "Everything you need to know")}
+          subtitle={t(
+            "Respuestas claras sobre cómo calcular tu número, proteger tus datos y usar WhatsYournumber en familia.",
+            "Clear answers on how to calculate your number, protect your data, and use WhatsYournumber as a family.",
+          )}
+        />
 
         <section className="surface mt-10 md:mt-14 flex flex-wrap items-center gap-6 p-8">
           <div className="flex items-center gap-3">
