@@ -2741,6 +2741,17 @@ export function KidsFinanceLanding() {
           </div>
         </section>
 
+        <FaqSection
+          faqs={KIDS_FAQS}
+          variant="kids"
+          eyebrow={t("Preguntas frecuentes", "FAQ")}
+          title={t("Todo sobre educación financiera para niños", "All about financial education for kids")}
+          subtitle={t(
+            "Respuestas para padres que quieren enseñar a ahorrar, invertir y planificar el futuro universitario de sus hijos.",
+            "Answers for parents who want to teach saving, investing, and planning their children's college future.",
+          )}
+        />
+
         <section className="relative mt-24 overflow-hidden">
           <div className="relative grid items-center gap-0 md:grid-cols-2">
             <div className="relative z-10 py-10 md:py-16 md:pr-10">
