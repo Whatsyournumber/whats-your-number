@@ -1188,42 +1188,76 @@ function HowItWorksSlider() {
         <div className="relative overflow-hidden rounded-[24px] bg-background/70 p-4 ring-1 ring-border md:p-6 lg:[zoom:0.72]">
           <div className="kid-gradient pointer-events-none absolute inset-x-0 top-0 h-[2px] opacity-70" />
 
-          <div className="-mx-1 flex items-center gap-2.5 overflow-x-auto px-1 pb-1 scrollbar-hide">
-            {slides.map((s, k) => {
-              const TabIcon = s.icon;
-              const isActive = k === i;
-              return (
-                <button
-                  key={s.id}
-                  type="button"
-                  onClick={() => setI(k)}
-                  className={cn(
-                    "flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium transition-all md:gap-2 md:px-4 md:py-2 md:text-sm",
-                    isActive ? "shadow-lg" : "bg-elevated text-muted-foreground hover:text-foreground",
-                  )}
-                  style={
-                    isActive
-                      ? {
-                          backgroundColor: s.color,
-                          color: "var(--color-background)",
-                          boxShadow: `0 8px 24px color-mix(in oklab, ${s.color} 25%, transparent)`,
-                        }
-                      : undefined
-                  }
-                >
-                  <TabIcon className="h-3.5 w-3.5 shrink-0 md:h-4 md:w-4" />
-                  <span className="whitespace-nowrap">{s.tab}</span>
-                </button>
-              );
-            })}
-            <span className="ml-auto hidden shrink-0 items-center gap-1.5 rounded-full bg-elevated px-3.5 py-2 text-xs text-muted-foreground md:inline-flex">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-kid-mint opacity-75" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-kid-mint" />
+          <div className="relative">
+            <div
+              ref={scrollRef}
+              className="-mx-1 flex items-center gap-2.5 overflow-x-auto overflow-y-hidden px-9 pb-1 scrollbar-hide scroll-smooth md:px-1"
+            >
+              {slides.map((s, k) => {
+                const TabIcon = s.icon;
+                const isActive = k === i;
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => setI(k)}
+                    className={cn(
+                      "flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium transition-all md:gap-2 md:px-4 md:py-2 md:text-sm",
+                      isActive ? "shadow-lg" : "bg-elevated text-muted-foreground hover:text-foreground",
+                    )}
+                    style={
+                      isActive
+                        ? {
+                            backgroundColor: s.color,
+                            color: "var(--color-background)",
+                            boxShadow: `0 8px 24px color-mix(in oklab, ${s.color} 25%, transparent)`,
+                          }
+                        : undefined
+                    }
+                  >
+                    <TabIcon className="h-3.5 w-3.5 shrink-0 md:h-4 md:w-4" />
+                    <span className="whitespace-nowrap">{s.tab}</span>
+                  </button>
+                );
+              })}
+              <span className="ml-auto hidden shrink-0 items-center gap-1.5 rounded-full bg-elevated px-3.5 py-2 text-xs text-muted-foreground md:inline-flex">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-kid-mint opacity-75" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-kid-mint" />
+                </span>
+                {t("En vivo", "Live")}
               </span>
-              {t("En vivo", "Live")}
-            </span>
+            </div>
 
+            <button
+              type="button"
+              onClick={() => scrollTabs("left")}
+              aria-label={t("Anterior", "Previous")}
+              className={cn(
+                "absolute left-1 top-1/2 z-10 -translate-y-1/2 md:hidden",
+                "flex h-6 w-6 items-center justify-center rounded-full",
+                "bg-card/70 text-muted-foreground/80 backdrop-blur-sm ring-1 ring-border/30",
+                "transition-all duration-200",
+                canScroll.left ? "translate-x-0 opacity-100" : "-translate-x-2 opacity-0 pointer-events-none",
+              )}
+            >
+              <ChevronLeft className="h-3.5 w-3.5" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => scrollTabs("right")}
+              aria-label={t("Siguiente", "Next")}
+              className={cn(
+                "absolute right-1 top-1/2 z-10 -translate-y-1/2 md:hidden",
+                "flex h-6 w-6 items-center justify-center rounded-full",
+                "bg-card/70 text-muted-foreground/80 backdrop-blur-sm ring-1 ring-border/30",
+                "transition-all duration-200",
+                canScroll.right ? "translate-x-0 opacity-100" : "translate-x-2 opacity-0 pointer-events-none",
+              )}
+            >
+              <ChevronRight className="h-3.5 w-3.5" />
+            </button>
           </div>
 
           <motion.div
