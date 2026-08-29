@@ -37,26 +37,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
-  const t = useT();
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">{t("Página no encontrada", "Page not found")}</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {t("Este módulo no existe o fue movido.", "This module doesn't exist or was moved.")}
-        </p>
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            {t("Ir al dashboard", "Go to dashboard")}
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
+  return <NotFoundPage />;
 }
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
