@@ -2633,14 +2633,26 @@ export function KidsFinanceLanding() {
               <p className="mt-4 max-w-lg text-sm leading-relaxed text-muted-foreground md:mt-6 md:text-base">
                 <span className="md:hidden">
                   {t(
-                    "La app de finanzas para niños que une educación financiera, mesada y tareas para enseñar a ahorrar desde pequeños.",
-                    "The finance app for kids that combines financial education, allowance and chores to teach kids to save from an early age.",
+                    "Planifica cuánto tendrá tu hijo a los 18 años, crea su primera cartera y enséñale a ahorrar e invertir.",
+                    "Plan how much your child will have at 18, build their first portfolio and teach them to save and invest.",
                   )}
                 </span>
                 <span className="hidden md:inline">
                   {t(
-                    "La app de finanzas para niños que une educación financiera, mesada y tareas. Planifica cuánto tendrá tu hijo a los 18 años, crea su primera cartera de inversión y ayúdalo a desarrollar hábitos de ahorro para toda la vida.",
-                    "The finance app for kids that combines financial education, allowance and chores. Plan how much your child will have at 18, build their first investment portfolio and help them build lifelong savings habits.",
+                    <>
+                      Planifica cuánto tendrá tu hijo a los 18 años, crea su primera cartera de inversión,
+                      <br />
+                      administra su mesada y tareas, enséñale a ahorrar e invertir
+                      <br />
+                      y ayúdalo a desarrollar hábitos financieros que lo acompañarán toda la vida.
+                    </>,
+                    <>
+                      Plan how much your child will have at 18, build their first investment portfolio,
+                      <br />
+                      manage their allowance and chores, teach them to save and invest,
+                      <br />
+                      and help them build financial habits that will last a lifetime.
+                    </>,
                   )}
                 </span>
               </p>
