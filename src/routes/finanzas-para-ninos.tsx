@@ -659,6 +659,37 @@ function HowItWorksSlider() {
   const [i, setI] = useState(0);
   const touchX = useRef<number | null>(null);
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScroll, setCanScroll] = useState({ left: false, right: false });
+
+  const checkScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScroll({
+      left: el.scrollLeft > 4,
+      right: el.scrollLeft + el.clientWidth < el.scrollWidth - 4,
+    });
+  };
+
+  useEffect(() => {
+    checkScroll();
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => checkScroll();
+    el.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", checkScroll);
+    return () => {
+      el.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", checkScroll);
+    };
+  }, []);
+
+  const scrollTabs = (dir: "left" | "right") => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir === "left" ? -160 : 160, behavior: "smooth" });
+  };
+
   const pockets = [
     { label: t("Ahorrar", "Save"), value: 40, amount: "€24", color: "var(--kid-mint)" },
     { label: t("Invertir", "Invest"), value: 40, amount: "€24", color: "var(--kid-grape)" },
