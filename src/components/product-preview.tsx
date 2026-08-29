@@ -271,7 +271,7 @@ export function ProductPreview() {
       <div className="relative">
         <div
           ref={scrollRef}
-          className="relative flex items-center gap-2 overflow-x-auto overflow-y-hidden px-8 pb-1 scrollbar-hide scroll-smooth md:px-0"
+          className="relative flex items-center gap-2 overflow-x-auto overflow-y-hidden px-9 pb-1 scrollbar-hide scroll-smooth md:px-0"
         >
           {views.map((v) => {
             const Icon = v.icon;
