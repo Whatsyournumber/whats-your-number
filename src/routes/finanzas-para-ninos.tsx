@@ -59,8 +59,10 @@ import stageBoy from "@/assets/kid-stage-boy.jpg";
 import stageTeen from "@/assets/kid-stage-teen.jpg";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { FaqSection } from "@/components/faq-section";
 import { useT } from "@/hooks/use-language";
 import { cn } from "@/lib/utils";
+import { KIDS_FAQS, buildLandingFaqJsonLd } from "@/lib/landing-faqs";
 
 import { useLiveCount, formatCount } from "@/components/live-count";
 import photoMit from "@/assets/uni/us-mit.jpg";
