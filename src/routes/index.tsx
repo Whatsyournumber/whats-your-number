@@ -680,10 +680,7 @@ export function Landing() {
             >
               <img
                 src={ctaLifestyle}
-                alt={t(
-                  "Pareja organizando sus finanzas personales para familias en casa con WhatsYournumber",
-                  "Couple using WhatsYournumber for personal finance for families at home",
-                )}
+                alt={t("finanzas personales para familias", "personal finance for families")}
                 loading="lazy"
                 width={1280}
                 height={960}
