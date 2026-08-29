@@ -271,7 +271,7 @@ export function ProductPreview() {
       <div className="relative">
         <div
           ref={scrollRef}
-          className="relative flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide scroll-smooth"
+          className="relative flex items-center gap-2 overflow-x-auto overflow-y-hidden px-8 pb-1 scrollbar-hide scroll-smooth md:px-0"
         >
           {views.map((v) => {
             const Icon = v.icon;
@@ -309,14 +309,14 @@ export function ProductPreview() {
           onClick={() => scrollTabs("left")}
           aria-label={t("Anterior", "Previous")}
           className={cn(
-            "absolute left-0 top-1/2 z-10 -translate-y-1/2 md:hidden",
-            "flex h-7 w-7 items-center justify-center rounded-full",
-            "bg-card/80 text-muted-foreground shadow-sm backdrop-blur-sm ring-1 ring-border/40",
+            "absolute left-1 top-1/2 z-10 -translate-y-1/2 md:hidden",
+            "flex h-6 w-6 items-center justify-center rounded-full",
+            "bg-card/70 text-muted-foreground/80 backdrop-blur-sm ring-1 ring-border/30",
             "transition-all duration-200",
             canScroll.left ? "translate-x-0 opacity-100" : "-translate-x-2 opacity-0 pointer-events-none",
           )}
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-3.5 w-3.5" />
         </button>
 
         <button
@@ -324,14 +324,14 @@ export function ProductPreview() {
           onClick={() => scrollTabs("right")}
           aria-label={t("Siguiente", "Next")}
           className={cn(
-            "absolute right-0 top-1/2 z-10 -translate-y-1/2 md:hidden",
-            "flex h-7 w-7 items-center justify-center rounded-full",
-            "bg-card/80 text-muted-foreground shadow-sm backdrop-blur-sm ring-1 ring-border/40",
+            "absolute right-1 top-1/2 z-10 -translate-y-1/2 md:hidden",
+            "flex h-6 w-6 items-center justify-center rounded-full",
+            "bg-card/70 text-muted-foreground/80 backdrop-blur-sm ring-1 ring-border/30",
             "transition-all duration-200",
             canScroll.right ? "translate-x-0 opacity-100" : "translate-x-2 opacity-0 pointer-events-none",
           )}
         >
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-3.5 w-3.5" />
         </button>
       </div>
 
