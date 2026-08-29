@@ -2760,10 +2760,7 @@ export function KidsFinanceLanding() {
             <div className="relative h-72 md:absolute md:inset-y-0 md:right-0 md:h-full md:w-[58%]">
               <img
                 src={ctaFamily}
-                alt={t(
-                  "Familia revisando sus finanzas juntos",
-                  "Family reviewing their finances together",
-                )}
+                alt={t("app de finanzas para niños en familia", "finance app for kids and families")}
                 loading="lazy"
                 width={1408}
                 height={912}
