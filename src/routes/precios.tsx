@@ -296,12 +296,15 @@ function Pricing() {
           </p>
         </section>
 
-        <section className="mt-10 grid gap-4 md:grid-cols-3">
+        <section className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {plans.map((plan) => {
+            const isContact = "contact" in plan && plan.contact;
             const price = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
             const period = isYearly ? t("/año", "/year") : t("/mes", "/mo");
             const equivalentMonthly =
-              isYearly && plan.monthlyPrice > 0 ? monthlyEquivalent(plan.yearlyPrice, currency) : null;
+              !isContact && isYearly && (plan.monthlyPrice ?? 0) > 0 && plan.yearlyPrice != null
+                ? monthlyEquivalent(plan.yearlyPrice, currency)
+                : null;
             const isFamily = plan.name === "Familiar";
             const yearlyBadge = isFamily
               ? t("3 meses gratis · 25% OFF", "3 months free · 25% OFF")
