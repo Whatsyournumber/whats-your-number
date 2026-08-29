@@ -526,3 +526,11 @@ input[type="number"] {
 @utility animate-pop {
   animation: pop 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
+
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
