@@ -81,26 +81,26 @@ const DEMO_UNI_PHOTOS: Record<string, string> = {
 export const Route = createFileRoute("/finanzas-para-ninos")({
   head: () => ({
     meta: [
-      { title: "Educación Financiera para Niños | App de Finanzas para Niños" },
+      { title: "Finanzas para Niños | Ahorro, Inversión y Mesada" },
       {
         name: "description",
         content:
-          "La app de finanzas para niños que combina educación financiera, mesada y tareas. Enseña a ahorrar a los niños y calcula el ahorro para la universidad de tus hijos con IA.",
+          "Planifica cuánto tendrá tu hijo a los 18 para la universidad, crea su cartera, administra su mesada y tareas, y enséñale el valor del dinero | Comienza ya",
       },
-      { property: "og:title", content: "Educación Financiera para Niños | App de Finanzas para Niños" },
+      { property: "og:title", content: "Finanzas para Niños | Ahorro, Inversión y Mesada" },
       {
         property: "og:description",
         content:
-          "La app de finanzas para niños que combina educación financiera, mesada y tareas. Enseña a ahorrar a los niños y calcula el ahorro para la universidad de tus hijos con IA.",
+          "Planifica cuánto tendrá tu hijo a los 18 para la universidad, crea su cartera, administra su mesada y tareas, y enséñale el valor del dinero | Comienza ya",
       },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "es_ES" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Educación Financiera para Niños | App de Finanzas para Niños" },
+      { name: "twitter:title", content: "Finanzas para Niños | Ahorro, Inversión y Mesada" },
       {
         name: "twitter:description",
         content:
-          "La app de finanzas para niños que combina educación financiera, mesada y tareas. Enseña a ahorrar a los niños y calcula el ahorro para la universidad de tus hijos con IA.",
+          "Planifica cuánto tendrá tu hijo a los 18 para la universidad, crea su cartera, administra su mesada y tareas, y enséñale el valor del dinero | Comienza ya",
       },
       { property: "og:url", content: "https://whatsyour-number.com/finanzas-para-ninos" },
       { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
