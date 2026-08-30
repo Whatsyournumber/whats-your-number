@@ -12,7 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import heroImg from "@/assets/auth-hero-v3.jpg";
+import heroImg from "@/assets/auth-hero-v4.jpg";
 import reviewCamila from "@/assets/review-camila.jpg";
 import reviewMaria from "@/assets/review-maria.jpg";
 import reviewMariana from "@/assets/review-mariana.jpg";
@@ -167,29 +167,29 @@ function ReviewCard({ index }: { index: number }) {
     <AnimatePresence mode="wait">
       <motion.figure
         key={r.name}
-        initial={{ opacity: 0, y: 8 }}
+        initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -8 }}
+        exit={{ opacity: 0, y: -6 }}
         transition={{ duration: 0.3 }}
-        className="flex items-center gap-4"
+        className="flex items-center gap-3"
       >
         <img
           src={r.image}
           alt={r.name}
-          className="h-11 w-11 shrink-0 rounded-full object-cover ring-2 ring-white/20"
+          className="h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-white/20"
         />
         <div className="min-w-0">
-          <div className="flex gap-0.5">
-            {Array.from({ length: 5 }).map((_, s) => (
-              <Star key={s} className="h-3 w-3 fill-primary text-primary" />
-            ))}
+          <div className="flex items-center gap-2">
+            <div className="flex gap-0.5">
+              {Array.from({ length: 5 }).map((_, s) => (
+                <Star key={s} className="h-2.5 w-2.5 fill-primary text-primary" />
+              ))}
+            </div>
+            <figcaption className="text-[11px] font-medium text-white">{r.name}</figcaption>
           </div>
-          <blockquote className="mt-1.5 text-xs leading-relaxed text-white/80">
+          <blockquote className="mt-1 line-clamp-2 text-[11px] leading-snug text-white/70">
             “{tt(r.quote[0], r.quote[1])}”
           </blockquote>
-          <figcaption className="mt-1 text-[11px] font-medium text-white">
-            {r.name}
-          </figcaption>
         </div>
       </motion.figure>
     </AnimatePresence>
