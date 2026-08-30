@@ -278,7 +278,7 @@ function SidePanel() {
         </div>
       </div>
 
-      <Reviews className="mt-10 grid max-w-md grid-cols-2 gap-3" />
+      <Reviews index={index} className="relative mt-10 max-w-md" />
     </div>
   );
 }
