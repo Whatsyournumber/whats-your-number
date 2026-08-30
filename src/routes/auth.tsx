@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { motion } from "motion/react";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Loader2, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -89,6 +89,168 @@ function GoogleMark() {
         d="M12 4.75c1.76 0 3.35.61 4.6 1.8l3.44-3.44C17.95 1.16 15.24 0 12 0A12 12 0 0 0 1.28 6.61l4 3.1C6.23 6.86 8.88 4.75 12 4.75Z"
       />
     </svg>
+  );
+}
+
+const SLIDES: { title: [string, string]; body: [string, string] }[] = [
+  {
+    title: ["Conoce tu número", "Know your number"],
+    body: [
+      "Descubre cuánto necesitas para alcanzar tu libertad financiera.",
+      "Discover exactly how much you need to reach financial freedom.",
+    ],
+  },
+  {
+    title: ["Controla tus gastos", "Track your spending"],
+    body: [
+      "Sube tus estados de cuenta y la IA clasifica todo por ti.",
+      "Upload your statements and AI categorizes everything for you.",
+    ],
+  },
+  {
+    title: ["Haz crecer tu patrimonio", "Grow your net worth"],
+    body: [
+      "Portafolio, metas y plan de retiro en un solo lugar.",
+      "Portfolio, goals and retirement plan in one place.",
+    ],
+  },
+];
+
+const REVIEWS = [
+  {
+    initials: "MR",
+    name: "Mariana Robles",
+    role: ["Fundadora · CDMX", "Founder · Mexico City"] as [string, string],
+    quote: [
+      "Subí seis meses de estados de cuenta y en minutos vi a dónde se iba realmente mi dinero.",
+      "I uploaded six months of statements and in minutes saw where my money was really going.",
+    ] as [string, string],
+  },
+  {
+    initials: "CO",
+    name: "Camila Ortiz",
+    role: ["Médica · Bogotá", "Doctor · Bogotá"] as [string, string],
+    quote: [
+      "La IA detectó suscripciones que pagaba sin usar. Se pagó sola el primer mes.",
+      "The AI detected subscriptions I was paying for without using. It paid for itself in month one.",
+    ] as [string, string],
+  },
+];
+
+function Reviews({ className }: { className?: string }) {
+  const tt = useT();
+  return (
+    <div className={className}>
+      {REVIEWS.map((r) => (
+        <figure key={r.name} className="surface flex flex-col gap-2 p-4">
+          <div className="flex gap-0.5">
+            {Array.from({ length: 5 }).map((_, s) => (
+              <Star key={s} className="h-3 w-3 fill-primary text-primary" />
+            ))}
+          </div>
+          <blockquote className="text-xs leading-relaxed text-muted-foreground">
+            “{tt(r.quote[0], r.quote[1])}”
+          </blockquote>
+          <figcaption className="mt-1 flex items-center gap-2">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-elevated text-[10px] font-semibold text-primary ring-1 ring-border">
+              {r.initials}
+            </span>
+            <span className="text-[11px]">
+              <span className="block font-medium text-foreground">{r.name}</span>
+              <span className="text-muted-foreground">{tt(r.role[0], r.role[1])}</span>
+            </span>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  );
+}
+
+function SidePanel() {
+  const tt = useT();
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const id = window.setInterval(() => setIndex((i) => (i + 1) % SLIDES.length), 5000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  const slide = SLIDES[index] ?? SLIDES[0]!;
+
+  return (
+    <div className="relative hidden flex-col justify-between lg:flex">
+      <div>
+        <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight">
+          {tt("Tu dinero.", "Your money.")}
+          <br />
+          {tt("Tu futuro.", "Your future.")}
+          <br />
+          <span className="text-primary">{tt("Tu número.", "Your number.")}</span>
+        </h1>
+        <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
+          {tt(
+            "La plataforma todo-en-uno para entender dónde estás y construir tu libertad financiera.",
+            "The all-in-one platform to understand where you stand and build your financial freedom.",
+          )}
+        </p>
+
+        {/* Slider: los 3 puntos clave */}
+        <div className="mt-10 max-w-md">
+          <div className="surface relative min-h-[120px] p-5">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.3 }}
+              >
+                <p className="text-sm font-semibold text-foreground">
+                  <span className="mr-2 text-primary">{index + 1}.</span>
+                  {tt(slide.title[0], slide.title[1])}
+                </p>
+                <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+                  {tt(slide.body[0], slide.body[1])}
+                </p>
+              </motion.div>
+            </AnimatePresence>
+            <div className="absolute right-4 top-4 flex gap-1">
+              <button
+                type="button"
+                aria-label={tt("Anterior", "Previous")}
+                onClick={() => setIndex((index - 1 + SLIDES.length) % SLIDES.length)}
+                className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground"
+              >
+                <ChevronLeft className="h-3.5 w-3.5" />
+              </button>
+              <button
+                type="button"
+                aria-label={tt("Siguiente", "Next")}
+                onClick={() => setIndex((index + 1) % SLIDES.length)}
+                className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground"
+              >
+                <ChevronRight className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
+          <div className="mt-3 flex gap-1.5">
+            {SLIDES.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                aria-label={`${i + 1}`}
+                onClick={() => setIndex(i)}
+                className={`h-1.5 rounded-full transition-all ${
+                  i === index ? "w-5 bg-primary" : "w-1.5 bg-muted-foreground/30"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <Reviews className="mt-10 grid max-w-md grid-cols-2 gap-3" />
+    </div>
   );
 }
 
@@ -219,11 +381,18 @@ function AuthPage() {
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-12">
       <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.10] blur-3xl" />
 
+      <div
+        className={`relative z-10 grid w-full items-center gap-12 lg:gap-16 ${
+          isAffiliate ? "max-w-sm" : "max-w-5xl lg:grid-cols-2"
+        }`}
+      >
+        {!isAffiliate && <SidePanel />}
+
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
-        className="relative z-10 w-full max-w-sm"
+        className="w-full max-w-sm justify-self-center lg:justify-self-end"
       >
         <div className="mb-6 flex items-center justify-between">
           <Link to="/" className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
@@ -409,7 +578,10 @@ function AuthPage() {
 
           <p className="mt-5 text-center text-[11px] text-muted-foreground">{t("auth.legal")}</p>
         </div>
+
+        {!isAffiliate && <Reviews className="mt-6 grid gap-3 sm:grid-cols-2 lg:hidden" />}
       </motion.div>
+      </div>
     </div>
   );
 }
