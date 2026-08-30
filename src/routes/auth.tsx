@@ -13,7 +13,7 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import heroImg from "@/assets/auth-hero.jpg";
+import heroAsset from "@/assets/hero-man-laptop-v3.jpg.asset.json";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
