@@ -1,10 +1,21 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft, ChevronLeft, ChevronRight, Loader2, Star } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+  Lock,
+  Sparkles,
+  Star,
+  Target,
+  TrendingUp,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import lighthouseImg from "@/assets/auth-lighthouse.jpg";
+import heroImg from "@/assets/auth-hero.jpg";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
@@ -94,8 +105,9 @@ function GoogleMark() {
   );
 }
 
-const SLIDES: { title: [string, string]; body: [string, string] }[] = [
+const POINTS: { icon: typeof Target; title: [string, string]; body: [string, string] }[] = [
   {
+    icon: Target,
     title: ["Conoce tu número", "Know your number"],
     body: [
       "Descubre cuánto necesitas para alcanzar tu libertad financiera.",
@@ -103,26 +115,35 @@ const SLIDES: { title: [string, string]; body: [string, string] }[] = [
     ],
   },
   {
-    title: ["Controla tus gastos", "Track your spending"],
+    icon: TrendingUp,
+    title: ["Ve cómo llegar", "See how to get there"],
     body: [
-      "Sube tus estados de cuenta y la IA clasifica todo por ti.",
-      "Upload your statements and AI categorizes everything for you.",
+      "Analiza gastos, patrimonio y metas con un plan claro y personalizado.",
+      "Analyze spending, net worth and goals with a clear, personal plan.",
     ],
   },
   {
-    title: ["Haz crecer tu patrimonio", "Grow your net worth"],
+    icon: Sparkles,
+    title: ["Decide mejor con IA", "Decide better with AI"],
     body: [
-      "Portafolio, metas y plan de retiro en un solo lugar.",
-      "Portfolio, goals and retirement plan in one place.",
+      "Convierte tus números en próximos pasos concretos en segundos.",
+      "Turn your numbers into concrete next steps in seconds.",
     ],
   },
 ];
 
 const REVIEWS = [
   {
+    initials: "MP",
+    name: "María P.",
+    quote: [
+      "La IA me ha ayudado a tomar mejores decisiones con mi dinero. Totalmente recomendada.",
+      "The AI has helped me make better decisions with my money. Totally recommended.",
+    ] as [string, string],
+  },
+  {
     initials: "MR",
     name: "Mariana Robles",
-    role: ["Fundadora · CDMX", "Founder · Mexico City"] as [string, string],
     quote: [
       "Subí seis meses de estados de cuenta y en minutos vi a dónde se iba realmente mi dinero.",
       "I uploaded six months of statements and in minutes saw where my money was really going.",
@@ -131,7 +152,6 @@ const REVIEWS = [
   {
     initials: "CO",
     name: "Camila Ortiz",
-    role: ["Médica · Bogotá", "Doctor · Bogotá"] as [string, string],
     quote: [
       "La IA detectó suscripciones que pagaba sin usar. Se pagó sola el primer mes.",
       "The AI detected subscriptions I was paying for without using. It paid for itself in month one.",
@@ -139,146 +159,174 @@ const REVIEWS = [
   },
 ];
 
-function Reviews({ className, index }: { className?: string; index?: number }) {
+function ReviewCard({ index, light }: { index: number; light?: boolean }) {
   const tt = useT();
-  const [internal, setInternal] = useState(0);
-
-  useEffect(() => {
-    if (index !== undefined) return;
-    const id = window.setInterval(() => setInternal((i) => (i + 1) % REVIEWS.length), 6000);
-    return () => window.clearInterval(id);
-  }, [index]);
-
-  const r = REVIEWS[(index ?? internal) % REVIEWS.length] ?? REVIEWS[0]!;
+  const r = REVIEWS[index % REVIEWS.length] ?? REVIEWS[0]!;
 
   return (
-    <div className={className}>
-      <AnimatePresence mode="wait">
-        <motion.figure
-          key={r.name}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.3 }}
-          className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-black/30 p-4 backdrop-blur-md"
-        >
+    <AnimatePresence mode="wait">
+      <motion.figure
+        key={r.name}
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -8 }}
+        transition={{ duration: 0.3 }}
+        className={`flex items-center gap-4 rounded-2xl border p-5 backdrop-blur-md ${
+          light ? "border-border bg-card" : "border-white/10 bg-black/30"
+        }`}
+      >
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary ring-1 ring-primary/30">
+          {r.initials}
+        </span>
+        <div className="min-w-0">
           <div className="flex gap-0.5">
             {Array.from({ length: 5 }).map((_, s) => (
               <Star key={s} className="h-3 w-3 fill-primary text-primary" />
             ))}
           </div>
-          <blockquote className="text-xs leading-relaxed text-muted-foreground">
+          <blockquote className={`mt-1.5 text-xs leading-relaxed ${light ? "text-muted-foreground" : "text-white/75"}`}>
             “{tt(r.quote[0], r.quote[1])}”
           </blockquote>
-          <figcaption className="mt-1 flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-elevated text-[10px] font-semibold text-primary ring-1 ring-border">
-              {r.initials}
-            </span>
-            <span className="text-[11px]">
-              <span className="block font-medium text-foreground">{r.name}</span>
-              <span className="text-muted-foreground">{tt(r.role[0], r.role[1])}</span>
-            </span>
+          <figcaption className={`mt-1 text-[11px] font-medium ${light ? "text-foreground" : "text-white"}`}>
+            {r.name}
           </figcaption>
-        </motion.figure>
-      </AnimatePresence>
+        </div>
+      </motion.figure>
+    </AnimatePresence>
+  );
+}
+
+function PointsCarousel({
+  index,
+  onChange,
+  light,
+}: {
+  index: number;
+  onChange: (i: number) => void;
+  light?: boolean;
+}) {
+  const tt = useT();
+  const prev = () => onChange((index - 1 + POINTS.length) % POINTS.length);
+  const next = () => onChange((index + 1) % POINTS.length);
+
+  const arrowCls = `flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-colors ${
+    light
+      ? "border-border text-muted-foreground hover:bg-elevated hover:text-foreground"
+      : "border-white/15 text-white/70 hover:bg-white/10 hover:text-white"
+  }`;
+
+  return (
+    <div>
+      <div
+        className={`flex items-center gap-3 rounded-2xl border p-5 backdrop-blur-md ${
+          light ? "border-border bg-card" : "border-white/10 bg-black/30"
+        }`}
+      >
+        <button type="button" aria-label={tt("Anterior", "Previous")} onClick={prev} className={arrowCls}>
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+        <div className="grid flex-1 grid-cols-3 gap-4">
+          {POINTS.map((p, i) => {
+            const Icon = p.icon;
+            const active = i === index;
+            return (
+              <button
+                key={p.title[1]}
+                type="button"
+                onClick={() => onChange(i)}
+                className="flex flex-col items-center gap-1.5 text-center"
+              >
+                <Icon
+                  className={`h-5 w-5 transition-colors ${
+                    active ? "text-primary" : light ? "text-muted-foreground/60" : "text-white/40"
+                  }`}
+                />
+                <span
+                  className={`text-xs font-semibold transition-colors ${
+                    active ? (light ? "text-foreground" : "text-white") : light ? "text-foreground/70" : "text-white/60"
+                  }`}
+                >
+                  {tt(p.title[0], p.title[1])}
+                </span>
+                <span
+                  className={`text-[11px] leading-snug ${
+                    light ? "text-muted-foreground" : "text-white/55"
+                  } ${active ? "" : "hidden sm:block"}`}
+                >
+                  {tt(p.body[0], p.body[1])}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+        <button type="button" aria-label={tt("Siguiente", "Next")} onClick={next} className={arrowCls}>
+          <ChevronRight className="h-4 w-4" />
+        </button>
+      </div>
+      <div className="mt-3 flex justify-center gap-1.5">
+        {POINTS.map((_, i) => (
+          <button
+            key={i}
+            type="button"
+            aria-label={`${i + 1}`}
+            onClick={() => onChange(i)}
+            className={`h-1.5 rounded-full transition-all ${
+              i === index ? "w-5 bg-primary" : light ? "w-1.5 bg-muted-foreground/30" : "w-1.5 bg-white/25"
+            }`}
+          />
+        ))}
+      </div>
     </div>
   );
 }
 
+/** Panel hero fotográfico (desktop): foto a pantalla completa + puntos + review. */
 function SidePanel() {
   const tt = useT();
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const id = window.setInterval(() => setIndex((i) => (i + 1) % SLIDES.length), 5000);
+    const id = window.setInterval(() => setIndex((i) => (i + 1) % POINTS.length), 5000);
     return () => window.clearInterval(id);
   }, []);
 
-  const slide = SLIDES[index] ?? SLIDES[0]!;
-
   return (
-    <div className="relative hidden flex-col justify-between overflow-hidden rounded-3xl p-8 lg:flex lg:self-stretch">
-      {/* Foto del faro + degradados para legibilidad */}
+    <div className="relative hidden min-h-screen flex-col justify-between overflow-hidden lg:flex">
       <img
-        src={lighthouseImg}
+        src={heroImg}
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[65%_center] brightness-[1.35]"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center brightness-[0.9]"
       />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/90 via-background/35 to-transparent" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-background/30" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/70 via-background/20 to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/40 to-background/10" />
 
-      <div className="relative">
-        <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight">
+      <div className="relative p-10">
+        <BrandLogo />
+      </div>
+
+      <div className="relative flex flex-col gap-8 p-10 pt-0">
+        <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight text-white xl:text-6xl">
           {tt("Tu dinero.", "Your money.")}
           <br />
           {tt("Tu futuro.", "Your future.")}
           <br />
           <span className="text-primary">{tt("Tu número.", "Your number.")}</span>
         </h1>
-        <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
-          {tt(
-            "La plataforma todo-en-uno para entender dónde estás y construir tu libertad financiera.",
-            "The all-in-one platform to understand where you stand and build your financial freedom.",
-          )}
-        </p>
 
-        {/* Slider: los 3 puntos clave */}
-        <div className="mt-10 max-w-md">
-          <div className="relative min-h-[120px] rounded-2xl border border-white/10 bg-black/30 p-5 backdrop-blur-md">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.3 }}
-              >
-                <p className="text-sm font-semibold text-foreground">
-                  <span className="mr-2 text-primary">{index + 1}.</span>
-                  {tt(slide.title[0], slide.title[1])}
-                </p>
-                <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
-                  {tt(slide.body[0], slide.body[1])}
-                </p>
-              </motion.div>
-            </AnimatePresence>
-            <div className="absolute right-4 top-4 flex gap-1">
-              <button
-                type="button"
-                aria-label={tt("Anterior", "Previous")}
-                onClick={() => setIndex((index - 1 + SLIDES.length) % SLIDES.length)}
-                className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground"
-              >
-                <ChevronLeft className="h-3.5 w-3.5" />
-              </button>
-              <button
-                type="button"
-                aria-label={tt("Siguiente", "Next")}
-                onClick={() => setIndex((index + 1) % SLIDES.length)}
-                className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-elevated hover:text-foreground"
-              >
-                <ChevronRight className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          </div>
-          <div className="mt-3 flex gap-1.5">
-            {SLIDES.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                aria-label={`${i + 1}`}
-                onClick={() => setIndex(i)}
-                className={`h-1.5 rounded-full transition-all ${
-                  i === index ? "w-5 bg-primary" : "w-1.5 bg-muted-foreground/30"
-                }`}
-              />
-            ))}
-          </div>
+        <div className="max-w-xl">
+          <PointsCarousel index={index} onChange={setIndex} />
         </div>
-      </div>
 
-      <Reviews index={index} className="relative mt-10 max-w-md" />
+        <div className="max-w-xl">
+          <ReviewCard index={index} />
+        </div>
+
+        <p className="flex items-center gap-2 text-[11px] text-white/60">
+          <Lock className="h-3.5 w-3.5 text-primary" />
+          {tt("Tus datos son privados y cifrados.", "Your data is private and encrypted.")}
+        </p>
+      </div>
     </div>
   );
 }
@@ -297,6 +345,7 @@ function AuthPage() {
   const [fullName, setFullName] = useState("");
   const [busy, setBusy] = useState(false);
   const [promo, setPromo] = useState("");
+  const [point, setPoint] = useState(0);
 
   const loading = authLoading || subscriptionLoading;
 
@@ -304,6 +353,11 @@ function AuthPage() {
   useEffect(() => {
     if (isAffiliate) startAffiliateWizard();
   }, [isAffiliate]);
+
+  useEffect(() => {
+    const id = window.setInterval(() => setPoint((i) => (i + 1) % POINTS.length), 5000);
+    return () => window.clearInterval(id);
+  }, []);
 
   useEffect(() => {
     if (loading || !user) return;
@@ -335,7 +389,6 @@ function AuthPage() {
       active = false;
     };
   }, [loading, user, isPatrimonio, navigate, next]);
-
 
   const setMode = (value: "login" | "signup") =>
     navigate({ to: "/auth", search: (prev) => ({ ...prev, mode: value }) });
@@ -406,210 +459,226 @@ function AuthPage() {
     }
   };
 
-  return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-12">
-      <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.10] blur-3xl" />
+  const card = (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
+      className="w-full max-w-md"
+    >
+      <div className="mb-5 flex items-center justify-between">
+        <Link to="/" className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="h-3.5 w-3.5" /> {t("auth.back")}
+        </Link>
+        <LanguageToggle />
+      </div>
 
-      <div
-        className={`relative z-10 grid w-full items-center gap-12 lg:gap-16 ${
-          isAffiliate ? "max-w-sm" : "max-w-5xl lg:grid-cols-2"
-        }`}
-      >
-        {!isAffiliate && <SidePanel />}
+      {/* Tarjeta clara de contraste sobre el fondo dark */}
+      <div className="rounded-3xl bg-white p-8 text-slate-900 shadow-2xl shadow-black/40 sm:p-9">
+        {isAffiliate && (
+          <div className="mb-6 flex flex-nowrap items-center justify-center gap-x-2">
+            {[
+              tt("Crea tu cuenta", "Create account"),
+              tt("Sobre ti", "About you"),
+              tt("Tu link", "Your link"),
+              tt("Comparte", "Share"),
+            ].map((label, i) => {
+              const active = i === 0;
+              return (
+                <div key={label} className="flex items-center gap-2">
+                  {i > 0 && <span className="h-px w-3 bg-slate-200" />}
+                  <span className={`h-1.5 w-1.5 rounded-full ${active ? "bg-primary" : "bg-slate-300"}`} />
+                  <span className={`text-[10px] ${active ? "font-medium text-slate-900" : "text-slate-400"}`}>
+                    {label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
 
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35 }}
-        className="w-full max-w-sm justify-self-center lg:justify-self-end"
-      >
-        <div className="mb-6 flex items-center justify-between">
-          <Link to="/" className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
-            <ArrowLeft className="h-3.5 w-3.5" /> {t("auth.back")}
-          </Link>
-          <LanguageToggle />
+        <div className="flex flex-col items-center text-center">
+          {isAffiliate ? (
+            <>
+              <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-primary">
+                {tt("Programa de afiliados", "Affiliate program")}
+              </span>
+              <h1 className="font-display text-2xl font-semibold leading-tight tracking-tight">
+                {mode === "signup"
+                  ? tt("Crea tu cuenta de afiliado", "Create your affiliate account")
+                  : tt("Entra a tu panel de afiliado", "Sign in to your affiliate panel")}
+              </h1>
+              <p className="mt-2 text-xs leading-relaxed text-slate-500">
+                {tt("Es gratis · Genera 30% · Dinero pasivo cada mes", "It's free · Earn 30% · Passive income every month")}
+              </p>
+            </>
+          ) : (
+            <>
+              <BrandLogo />
+              <p className="mt-5 font-display text-2xl font-semibold tracking-tight">
+                {mode === "signup"
+                  ? tt("Crea tu cuenta gratis", "Create your free account")
+                  : tt("Bienvenido de vuelta", "Welcome back")}
+              </p>
+              <p className="mt-1.5 text-xs leading-relaxed text-slate-500">
+                {tt(
+                  "Tu futuro financiero empieza conociendo tu número.",
+                  "Your financial future starts by knowing your number.",
+                )}
+              </p>
+            </>
+          )}
         </div>
 
-        <div className="surface p-7">
-          {isAffiliate && (
-            <div className="mb-6 flex flex-nowrap items-center justify-center gap-x-2">
-              {[
-                tt("Crea tu cuenta", "Create account"),
-                tt("Sobre ti", "About you"),
-                tt("Tu link", "Your link"),
-                tt("Comparte", "Share"),
-              ].map((label, i) => {
-                const active = i === 0;
-                const done = false;
-                return (
-                  <div key={label} className="flex items-center gap-2">
-                    {i > 0 && <span className="h-px w-3 bg-border" />}
-                    <span
-                      className={`h-1.5 w-1.5 rounded-full ${
-                        active || done ? "bg-primary" : "bg-muted-foreground/30"
-                      }`}
-                    />
-                    <span
-                      className={`text-[10px] ${active ? "font-medium text-foreground" : "text-muted-foreground"}`}
-                    >
-                      {label}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-          <div className="flex flex-col items-center text-center">
-            {isAffiliate ? (
-              <>
-                <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-primary">
-                  {tt("Programa de afiliados", "Affiliate program")}
-                </span>
-                <h1 className="font-display text-2xl font-semibold leading-tight tracking-tight">
-                  <span className="bg-gradient-to-br from-foreground via-foreground to-primary bg-clip-text text-transparent">
-                    {mode === "signup"
-                      ? tt("Crea tu cuenta de afiliado", "Create your affiliate account")
-                      : tt("Entra a tu panel de afiliado", "Sign in to your affiliate panel")}
-                  </span>
-                </h1>
-                <p className="mt-2 whitespace-nowrap text-xs leading-relaxed text-muted-foreground">
-                  {tt(
-                    "Es gratis · Genera 30% · Dinero pasivo cada mes",
-                    "It's free · Earn 30% · Passive income every month",
-                  )}
-                </p>
-              </>
-            ) : (
-              <>
-                <BrandLogo />
-                <p className="mt-4 font-display text-lg font-semibold tracking-tight">
-                  {mode === "signup" ? t("auth.title.signup") : t("auth.title.login")}
-                </p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {mode === "signup" ? t("auth.subtitle.signup") : t("auth.subtitle.login")}
-                </p>
-              </>
-            )}
-          </div>
+        {/* Google primero, como en la referencia */}
+        <Button
+          variant="outline"
+          className="mt-7 w-full gap-2 rounded-xl border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+          onClick={() => void onOAuth()}
+          disabled={busy}
+        >
+          <GoogleMark />
+          {tt("Continuar con Google", "Continue with Google")}
+        </Button>
 
+        <div className="my-5 flex items-center gap-3">
+          <span className="h-px flex-1 bg-slate-200" />
+          <span className="text-[11px] text-slate-400">{tt("o continúa con email", "or continue with email")}</span>
+          <span className="h-px flex-1 bg-slate-200" />
+        </div>
 
-
-          <div className="mt-6 grid grid-cols-2 gap-1 rounded-full bg-elevated/60 p-1 text-xs">
-            {(["login", "signup"] as const).map((value) => (
-              <button
-                key={value}
-                type="button"
-                onClick={() => setMode(value)}
-                className={`rounded-full px-3 py-1.5 font-medium transition-colors ${
-                  mode === value ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {value === "login" ? t("auth.login") : t("auth.signup")}
-              </button>
-            ))}
-          </div>
-
-          <form onSubmit={onSubmit} className="mt-6 space-y-3.5">
-            {mode === "signup" && (
-              <div>
-                <Label htmlFor="fullName" className="text-xs text-muted-foreground">
-                  {t("auth.name")}
-                </Label>
-                <Input
-                  id="fullName"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Tu nombre"
-                  className="mt-1.5 rounded-xl"
-                  autoComplete="name"
-                />
-              </div>
-            )}
+        <form onSubmit={onSubmit} className="space-y-3.5">
+          {mode === "signup" && (
             <div>
-              <Label htmlFor="email" className="text-xs text-muted-foreground">
-                {t("auth.email")}
+              <Label htmlFor="fullName" className="text-xs text-slate-500">
+                {t("auth.name")}
               </Label>
               <Input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@email.com"
-                className="mt-1.5 rounded-xl"
-                autoComplete="email"
+                id="fullName"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder={tt("Tu nombre", "Your name")}
+                className="mt-1.5 rounded-xl border-slate-200 bg-white text-slate-900 placeholder:text-slate-400"
+                autoComplete="name"
               />
             </div>
-            <div>
-              <div className="flex items-baseline justify-between">
-                <Label htmlFor="password" className="text-xs text-muted-foreground">
-                  {t("auth.password")}
-                </Label>
-                {mode === "login" && (
-                  <button
-                    type="button"
-                    onClick={() => void onForgot()}
-                    className="text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
-                  >
-                    {tt("¿Olvidaste tu contraseña?", "Forgot your password?")}
-                  </button>
-                )}
-              </div>
-              <Input
-                id="password"
-                type="password"
-                required
-                minLength={6}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="mt-1.5 rounded-xl"
-                autoComplete={mode === "signup" ? "new-password" : "current-password"}
-              />
+          )}
+          <div>
+            <Label htmlFor="email" className="text-xs text-slate-500">
+              {t("auth.email")}
+            </Label>
+            <Input
+              id="email"
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="tu@email.com"
+              className="mt-1.5 rounded-xl border-slate-200 bg-white text-slate-900 placeholder:text-slate-400"
+              autoComplete="email"
+            />
+          </div>
+          <div>
+            <div className="flex items-baseline justify-between">
+              <Label htmlFor="password" className="text-xs text-slate-500">
+                {t("auth.password")}
+              </Label>
+              {mode === "login" && (
+                <button
+                  type="button"
+                  onClick={() => void onForgot()}
+                  className="text-xs text-primary underline-offset-2 hover:underline"
+                >
+                  {tt("¿Olvidaste tu contraseña?", "Forgot your password?")}
+                </button>
+              )}
             </div>
-
-
-            {mode === "signup" && (
-              <div>
-                <Label htmlFor="promo" className="text-xs text-muted-foreground">
-                  {t("auth.promo.label")}
-                </Label>
-                <Input
-                  id="promo"
-                  value={promo}
-                  onChange={(e) => setPromo(e.target.value.toUpperCase())}
-                  className="mt-1.5 rounded-xl uppercase tracking-wide"
-                />
-              </div>
-            )}
-
-            <Button type="submit" className="w-full rounded-full" disabled={busy}>
-              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {mode === "signup" ? t("auth.submit.signup") : t("auth.submit.login")}
-            </Button>
-          </form>
-
-          <div className="my-5 flex items-center gap-3">
-            <span className="h-px flex-1 bg-border" />
-            <span className="text-[11px] uppercase tracking-widest text-muted-foreground">{t("auth.or")}</span>
-            <span className="h-px flex-1 bg-border" />
+            <Input
+              id="password"
+              type="password"
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              className="mt-1.5 rounded-xl border-slate-200 bg-white text-slate-900 placeholder:text-slate-400"
+              autoComplete={mode === "signup" ? "new-password" : "current-password"}
+            />
           </div>
 
-          <Button
-            variant="outline"
-            className="w-full gap-2 rounded-full bg-background"
-            onClick={() => void onOAuth()}
-            disabled={busy}
-          >
-            <GoogleMark />
-            {t("auth.google")}
+          {mode === "signup" && (
+            <div>
+              <Label htmlFor="promo" className="text-xs text-slate-500">
+                {t("auth.promo.label")}
+              </Label>
+              <Input
+                id="promo"
+                value={promo}
+                onChange={(e) => setPromo(e.target.value.toUpperCase())}
+                className="mt-1.5 rounded-xl border-slate-200 bg-white uppercase tracking-wide text-slate-900 placeholder:text-slate-400"
+              />
+            </div>
+          )}
+
+          <Button type="submit" className="w-full rounded-xl" disabled={busy}>
+            {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {mode === "signup" ? t("auth.submit.signup") : tt("Entrar", "Sign in")}
           </Button>
+        </form>
 
-          <p className="mt-5 text-center text-[11px] text-muted-foreground">{t("auth.legal")}</p>
+        <p className="mt-5 text-center text-xs text-slate-500">
+          {mode === "login" ? (
+            <>
+              {tt("¿Aún no tienes cuenta?", "Don't have an account yet?")}{" "}
+              <button
+                type="button"
+                onClick={() => setMode("signup")}
+                className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
+              >
+                {tt("Crear cuenta gratis", "Create free account")} <ArrowRight className="h-3 w-3" />
+              </button>
+            </>
+          ) : (
+            <>
+              {tt("¿Ya tienes cuenta?", "Already have an account?")}{" "}
+              <button
+                type="button"
+                onClick={() => setMode("login")}
+                className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
+              >
+                {tt("Entrar", "Sign in")} <ArrowRight className="h-3 w-3" />
+              </button>
+            </>
+          )}
+        </p>
+
+        <p className="mt-4 text-center text-[11px] text-slate-400">{t("auth.legal")}</p>
+      </div>
+    </motion.div>
+  );
+
+  if (isAffiliate) {
+    return (
+      <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-12">
+        <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.10] blur-3xl" />
+        <div className="relative z-10">{card}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background lg:grid lg:grid-cols-2">
+      <SidePanel />
+
+      <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 overflow-hidden px-4 py-12">
+        <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl" />
+        {card}
+
+        {/* Móvil: puntos + review debajo de la tarjeta */}
+        <div className="w-full max-w-md space-y-6 lg:hidden">
+          <PointsCarousel index={point} onChange={setPoint} />
+          <ReviewCard index={point} />
         </div>
-
-        {!isAffiliate && <Reviews className="mt-6 lg:hidden" />}
-      </motion.div>
       </div>
     </div>
   );
