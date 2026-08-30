@@ -15,7 +15,7 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import heroImg from "@/assets/auth-hero-v2.jpg";
+import heroImg from "@/assets/auth-hero-v3.jpg";
 import reviewCamila from "@/assets/review-camila.jpg";
 import reviewMaria from "@/assets/review-maria.jpg";
 import reviewMariana from "@/assets/review-mariana.jpg";
@@ -290,16 +290,7 @@ function SidePanel() {
   }, []);
 
   return (
-    <div className="relative hidden min-h-screen flex-col justify-between overflow-hidden lg:flex">
-      <img
-        src={heroImg}
-        alt=""
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center"
-      />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/80 via-background/30 to-transparent" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/50 to-background/20" />
-
+    <div className="relative hidden min-h-screen flex-col justify-between lg:flex">
       <div className="relative p-10">
         <BrandLogo />
       </div>
@@ -676,10 +667,24 @@ function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background lg:grid lg:grid-cols-[1.55fr_1fr]">
+    <div className="relative min-h-screen overflow-hidden bg-background lg:grid lg:grid-cols-[1.55fr_1fr]">
+      {/* Fondo infinito: la foto cubre toda la página, sin cortes ni bordes,
+          y pasa por debajo de la tarjeta flotante */}
+      <img
+        src={heroImg}
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 hidden h-full w-full object-cover object-left lg:block"
+      />
+      {/* Izquierda legible */}
+      <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-background/70 via-transparent to-transparent lg:block" />
+      <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-background/90 via-transparent to-background/30 lg:block" />
+      {/* Derecha: fundido a oscuro bajo la tarjeta */}
+      <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[42%] bg-gradient-to-l from-background via-background/70 to-transparent lg:block" />
+
       <SidePanel />
 
-      <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 overflow-hidden bg-slate-200 px-6 py-10 lg:px-10">
+      <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 bg-slate-200 px-6 py-10 lg:bg-transparent lg:px-10">
         <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
         {card}
 
