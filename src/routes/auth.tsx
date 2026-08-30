@@ -111,26 +111,26 @@ function GoogleMark() {
 const POINTS: { icon: typeof Target; title: [string, string]; body: [string, string] }[] = [
   {
     icon: Target,
-    title: ["Conoce tu número", "Know your number"],
+    title: ["1. Descubre tu número", "1. Discover your number"],
     body: [
-      "Descubre cuánto necesitas para alcanzar tu libertad financiera.",
-      "Discover exactly how much you need to reach financial freedom.",
+      "Calcula cuánto necesitas para alcanzar tu libertad financiera.",
+      "Calculate how much you need to reach financial freedom.",
     ],
   },
   {
     icon: TrendingUp,
-    title: ["Ve cómo llegar", "See how to get there"],
+    title: ["2. Mira dónde estás", "2. See where you stand"],
     body: [
-      "Analiza gastos, patrimonio y metas con un plan claro y personalizado.",
-      "Analyze spending, net worth and goals with a clear, personal plan.",
+      "Analiza tus gastos, patrimonio e inversiones en un solo lugar.",
+      "Analyze your spending, net worth and investments in one place.",
     ],
   },
   {
     icon: Sparkles,
-    title: ["Decide mejor con IA", "Decide better with AI"],
+    title: ["3. Obtén tu plan con IA", "3. Get your AI plan"],
     body: [
-      "Convierte tus números en próximos pasos concretos en segundos.",
-      "Turn your numbers into concrete next steps in seconds.",
+      "Recibe próximos pasos personalizados para acercarte a tus metas.",
+      "Get personalized next steps to move closer to your goals.",
     ],
   },
 ];
@@ -162,7 +162,7 @@ const REVIEWS = [
   },
 ];
 
-function ReviewCard({ index, light }: { index: number; light?: boolean }) {
+function ReviewCard({ index }: { index: number }) {
   const tt = useT();
   const r = REVIEWS[index % REVIEWS.length] ?? REVIEWS[0]!;
 
@@ -174,7 +174,7 @@ function ReviewCard({ index, light }: { index: number; light?: boolean }) {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -8 }}
         transition={{ duration: 0.3 }}
-        className={`flex items-center gap-4 ${light ? "rounded-2xl border border-white/10 bg-black/20 p-5 backdrop-blur-sm" : ""}`}
+        className="flex items-center gap-4"
       >
         <img
           src={r.image}
