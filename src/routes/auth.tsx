@@ -617,14 +617,28 @@ function AuthPage() {
     <div className="min-h-screen bg-background lg:grid lg:grid-cols-2">
       <SidePanel />
 
-      <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 overflow-hidden px-4 py-12 lg:bg-white">
+      <div className="relative flex min-h-screen flex-col items-center justify-center gap-7 overflow-hidden px-4 py-10 lg:bg-white">
         <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
         {card}
 
-        {/* Móvil: puntos + review debajo de la tarjeta */}
-        <div className="w-full max-w-md space-y-6 lg:hidden">
-          <PointsCarousel index={point} onChange={setPoint} />
-          <ReviewCard index={point} />
+        {/* Puntos + review debajo de la tarjeta (claros en desktop, oscuros en móvil) */}
+        <div className="w-full max-w-md space-y-6">
+          <div className="lg:hidden">
+            <PointsCarousel index={point} onChange={setPoint} />
+            <div className="mt-6">
+              <ReviewCard index={point} />
+            </div>
+          </div>
+          <div className="hidden lg:block">
+            <PointsCarousel index={point} onChange={setPoint} light />
+            <div className="mt-6">
+              <ReviewCard index={point} light />
+            </div>
+            <p className="mt-6 flex items-center justify-center gap-2 text-[11px] text-slate-400">
+              <Lock className="h-3.5 w-3.5 text-primary" />
+              {tt("Tus datos son privados y cifrados.", "Your data is private and encrypted.")}
+            </p>
+          </div>
         </div>
       </div>
     </div>
