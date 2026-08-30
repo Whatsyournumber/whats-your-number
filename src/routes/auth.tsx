@@ -4,6 +4,8 @@ import { ArrowLeft, ChevronLeft, ChevronRight, Loader2, Star } from "lucide-reac
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+import lighthouseImg from "@/assets/auth-lighthouse.jpg";
+
 import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -137,12 +139,29 @@ const REVIEWS = [
   },
 ];
 
-function Reviews({ className }: { className?: string }) {
+function Reviews({ className, index }: { className?: string; index?: number }) {
   const tt = useT();
+  const [internal, setInternal] = useState(0);
+
+  useEffect(() => {
+    if (index !== undefined) return;
+    const id = window.setInterval(() => setInternal((i) => (i + 1) % REVIEWS.length), 6000);
+    return () => window.clearInterval(id);
+  }, [index]);
+
+  const r = REVIEWS[(index ?? internal) % REVIEWS.length] ?? REVIEWS[0]!;
+
   return (
     <div className={className}>
-      {REVIEWS.map((r) => (
-        <figure key={r.name} className="surface flex flex-col gap-2 p-4">
+      <AnimatePresence mode="wait">
+        <motion.figure
+          key={r.name}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.3 }}
+          className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-black/30 p-4 backdrop-blur-md"
+        >
           <div className="flex gap-0.5">
             {Array.from({ length: 5 }).map((_, s) => (
               <Star key={s} className="h-3 w-3 fill-primary text-primary" />
@@ -160,8 +179,8 @@ function Reviews({ className }: { className?: string }) {
               <span className="text-muted-foreground">{tt(r.role[0], r.role[1])}</span>
             </span>
           </figcaption>
-        </figure>
-      ))}
+        </motion.figure>
+      </AnimatePresence>
     </div>
   );
 }
@@ -178,8 +197,18 @@ function SidePanel() {
   const slide = SLIDES[index] ?? SLIDES[0]!;
 
   return (
-    <div className="relative hidden flex-col justify-between lg:flex">
-      <div>
+    <div className="relative hidden flex-col justify-between overflow-hidden rounded-3xl p-8 lg:flex lg:self-stretch">
+      {/* Foto del faro + degradados para legibilidad */}
+      <img
+        src={lighthouseImg}
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[65%_center] brightness-[1.35]"
+      />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/90 via-background/35 to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-background/30" />
+
+      <div className="relative">
         <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight">
           {tt("Tu dinero.", "Your money.")}
           <br />
@@ -196,7 +225,7 @@ function SidePanel() {
 
         {/* Slider: los 3 puntos clave */}
         <div className="mt-10 max-w-md">
-          <div className="surface relative min-h-[120px] p-5">
+          <div className="relative min-h-[120px] rounded-2xl border border-white/10 bg-black/30 p-5 backdrop-blur-md">
             <AnimatePresence mode="wait">
               <motion.div
                 key={index}
@@ -249,7 +278,7 @@ function SidePanel() {
         </div>
       </div>
 
-      <Reviews className="mt-10 grid max-w-md grid-cols-2 gap-3" />
+      <Reviews index={index} className="relative mt-10 max-w-md" />
     </div>
   );
 }
@@ -579,7 +608,7 @@ function AuthPage() {
           <p className="mt-5 text-center text-[11px] text-muted-foreground">{t("auth.legal")}</p>
         </div>
 
-        {!isAffiliate && <Reviews className="mt-6 grid gap-3 sm:grid-cols-2 lg:hidden" />}
+        {!isAffiliate && <Reviews className="mt-6 lg:hidden" />}
       </motion.div>
       </div>
     </div>
