@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { useRouter, useRouterState } from "@tanstack/react-router";
 
 import { detectLang } from "@/lib/geo";
+import { langFromPath, localizedPath } from "@/lib/lang-routes";
 
 export type Lang = "es" | "en";
 
