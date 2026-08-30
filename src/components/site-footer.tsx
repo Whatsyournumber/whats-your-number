@@ -28,7 +28,7 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
   const homeHref = lang === "en" ? "/en" : "/";
   const blogHref = lang === "en" ? "/en/blog" : "/blog";
   const kidsHref = lang === "en" ? "/en/finance-for-kids" : "/finanzas-para-ninos";
-  const demoHref = lang === "en" ? "/en/demo?start=1" : "/demo?start=1";
+  const demoHref = lang === "en" ? "/en/demo?start=1" : "/calculadora-libertad-financiera?start=1";
 
   const linkClass = "text-left text-sm text-muted-foreground transition-colors hover:text-primary";
   const renderLink = (l: FooterLink) =>
