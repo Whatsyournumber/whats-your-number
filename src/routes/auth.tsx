@@ -15,7 +15,7 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import heroImg from "@/assets/auth-hero-v2.jpg";
+import heroImg from "@/assets/auth-hero-v3.jpg";
 import reviewCamila from "@/assets/review-camila.jpg";
 import reviewMaria from "@/assets/review-maria.jpg";
 import reviewMariana from "@/assets/review-mariana.jpg";
@@ -290,16 +290,7 @@ function SidePanel() {
   }, []);
 
   return (
-    <div className="relative hidden min-h-screen flex-col justify-between overflow-hidden lg:flex">
-      <img
-        src={heroImg}
-        alt=""
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center"
-      />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/80 via-background/30 to-transparent" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/50 to-background/20" />
-
+    <div className="relative hidden min-h-screen flex-col justify-between lg:flex">
       <div className="relative p-10">
         <BrandLogo />
       </div>
