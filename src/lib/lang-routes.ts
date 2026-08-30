@@ -2,6 +2,8 @@
 
 const ES_TO_EN: Array<[string, string]> = [
   ["/finanzas-para-ninos", "/en/finance-for-kids"],
+  ["/calculadora-ahorro-universidad", "/en/college-savings-calculator"],
+  ["/demo-ninos", "/en/college-savings-calculator"],
   ["/calculadora-libertad-financiera", "/en/financial-freedom-calculator"],
   ["/demo", "/en/financial-freedom-calculator"],
   ["/blog", "/en/blog"],

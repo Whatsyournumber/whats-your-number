@@ -12,6 +12,7 @@ const DESCRIPTION =
   "Calcula cuánto ahorrar e invertir cada mes para construir el fondo universitario que tu hijo necesitará a los 18 años | Gratis y sin registro";
 
 const ES_URL = "https://whatsyour-number.com/calculadora-ahorro-universidad";
+const EN_URL = "https://whatsyour-number.com/en/college-savings-calculator";
 
 export const Route = createFileRoute("/calculadora-ahorro-universidad")({
   validateSearch: demoSearchSchema,
@@ -33,6 +34,7 @@ export const Route = createFileRoute("/calculadora-ahorro-universidad")({
     links: [
       { rel: "canonical", href: ES_URL },
       { rel: "alternate", hrefLang: "es", href: ES_URL },
+      { rel: "alternate", hrefLang: "en", href: EN_URL },
       { rel: "alternate", hrefLang: "x-default", href: ES_URL },
     ],
   }),
