@@ -641,8 +641,8 @@ function AuthPage() {
 
         {/* Móvil: puntos + review debajo de la tarjeta */}
         <div className="w-full max-w-md space-y-6 lg:hidden">
-          <PointsCarousel index={point} onChange={setPoint} light />
-          <ReviewCard index={point} light />
+          <PointsCarousel index={point} onChange={setPoint} />
+          <ReviewCard index={point} />
         </div>
       </div>
     </div>
