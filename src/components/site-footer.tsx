@@ -22,8 +22,13 @@ type FooterLink = { label: string; to: string; policy?: boolean; external?: bool
 
 export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolean; affiliates?: boolean } = {}) {
   const t = useT();
+  const { lang } = useLanguage();
   const [open, setOpen] = useState(false);
   const [policiesOpen, setPoliciesOpen] = useState(false);
+  const homeHref = lang === "en" ? "/en" : "/";
+  const blogHref = lang === "en" ? "/en/blog" : "/blog";
+  const kidsHref = lang === "en" ? "/en/finance-for-kids" : "/finanzas-para-ninos";
+  const demoHref = lang === "en" ? "/en/demo" : "/demo";
 
   const linkClass = "text-left text-sm text-muted-foreground transition-colors hover:text-primary";
   const renderLink = (l: FooterLink) =>
