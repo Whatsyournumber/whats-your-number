@@ -14,7 +14,7 @@ const DESCRIPTION =
   "Calculate how much capital you need to live off your investments and reach financial freedom. Answer 3 questions in 30 seconds. Free, no sign-up.";
 
 const EN_URL = "https://whatsyour-number.com/en/demo";
-const ES_URL = "https://whatsyour-number.com/calculadora-libertad-financiera";
+const ES_URL = "https://whatsyour-number.com/demo";
 
 export const Route = createFileRoute("/en/demo")({
   validateSearch: demoSearchSchema,
