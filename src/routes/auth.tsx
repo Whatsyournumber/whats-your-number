@@ -175,7 +175,7 @@ function SidePanel() {
     return () => window.clearInterval(id);
   }, []);
 
-  const slide = SLIDES[index];
+  const slide = SLIDES[index] ?? SLIDES[0]!;
 
   return (
     <div className="relative hidden flex-col justify-between lg:flex">
