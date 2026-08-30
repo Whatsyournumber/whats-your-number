@@ -5,11 +5,11 @@ const demoSearchSchema = z.object({
   start: z.coerce.number().optional(),
 });
 
-// Se conserva la URL descriptiva anterior y se redirige a la URL pública corta.
-export const Route = createFileRoute("/calculadora-libertad-financiera")({
+// URL SEO anterior: se conserva como redirección hacia la URL inglesa corta.
+export const Route = createFileRoute("/en/financial-freedom-calculator")({
   validateSearch: demoSearchSchema,
   beforeLoad: ({ search }) => {
     // eslint-disable-next-line @typescript-eslint/only-throw-error
-    throw redirect({ to: "/demo", search });
+    throw redirect({ to: "/en/demo", search });
   },
 });

@@ -1,4 +1,4 @@
-import { createFileRoute, Link, redirect, useSearch } from "@tanstack/react-router";
+import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { z } from "zod";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, ArrowRight, RotateCcw, Sparkles, Target } from "lucide-react";
@@ -16,11 +16,40 @@ const demoSearchSchema = z.object({
 
 export const Route = createFileRoute("/demo")({
   validateSearch: demoSearchSchema,
-  beforeLoad: ({ search }) => {
-    // La URL pública canónica del demo es /calculadora-libertad-financiera (SEO).
-    // eslint-disable-next-line @typescript-eslint/only-throw-error
-    throw redirect({ to: "/calculadora-libertad-financiera", search });
-  },
+  head: () => ({
+    meta: [
+      { title: "Calculadora de Libertad Financiera | Descubre tu Número" },
+      {
+        name: "description",
+        content:
+          "Calcula cuánto capital necesitas para vivir de tus inversiones y alcanzar tu libertad financiera. Responde 3 preguntas en 30 segundos. Gratis y sin registro.",
+      },
+      { property: "og:title", content: "Calculadora de Libertad Financiera | Descubre tu Número" },
+      {
+        property: "og:description",
+        content:
+          "Calcula cuánto capital necesitas para vivir de tus inversiones y alcanzar tu libertad financiera. 3 preguntas, 30 segundos, gratis y sin registro.",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:locale", content: "es_ES" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Calculadora de Libertad Financiera | Descubre tu Número" },
+      {
+        name: "twitter:description",
+        content:
+          "Calcula cuánto capital necesitas para vivir de tus inversiones y alcanzar tu libertad financiera. 3 preguntas, 30 segundos, gratis y sin registro.",
+      },
+      { property: "og:url", content: "https://whatsyour-number.com/demo" },
+      { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
+      { name: "twitter:image", content: "https://whatsyour-number.com/og-cover.jpg" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://whatsyour-number.com/demo" },
+      { rel: "alternate", hrefLang: "es", href: "https://whatsyour-number.com/demo" },
+      { rel: "alternate", hrefLang: "en", href: "https://whatsyour-number.com/en/demo" },
+      { rel: "alternate", hrefLang: "x-default", href: "https://whatsyour-number.com/demo" },
+    ],
+  }),
 });
 
 const RETURN_RATE = 0.07;
@@ -40,7 +69,7 @@ function yearsToTarget(target: number, current: number, monthly: number) {
 
 export function DemoPage() {
   const t = useT();
-  const { start } = useSearch({ from: "/calculadora-libertad-financiera" });
+  const { start } = useSearch({ strict: false }) as { start?: number };
   const [currency, setCurrency] = useState<"EUR" | "USD">("EUR");
   const [step, setStep] = useState(start === 1 ? 1 : 0); // 0 = intro, 1..3 = preguntas, 4 = resultado
   const [monthlyLife, setMonthlyLife] = useState("");

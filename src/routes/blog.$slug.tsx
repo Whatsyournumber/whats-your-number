@@ -198,7 +198,7 @@ export function BlogArticleView({ slug }: { slug: string }) {
 
   const related = blogPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
   const isKids = postCategory(post.slug)?.id === "ninos";
-  const demoTo = isKids ? "/demo-ninos" : "/demo";
+  const demoTo = isKids ? "/demo-ninos" : lang === "en" ? "/en/demo" : "/demo";
 
   return (
     <div className="relative min-h-screen overflow-x-clip bg-background">

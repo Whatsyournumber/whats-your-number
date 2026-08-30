@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 
 import { BrandLogo, KidsBrandLogo } from "@/components/brand-logo";
 import { PoliciesDialog } from "@/components/policies-dialog";
-import { useT } from "@/hooks/use-language";
+import { useLanguage, useT } from "@/hooks/use-language";
 
 const socials = [
   { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/whatis.your.number/" },
@@ -22,8 +22,13 @@ type FooterLink = { label: string; to: string; policy?: boolean; external?: bool
 
 export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolean; affiliates?: boolean } = {}) {
   const t = useT();
+  const { lang } = useLanguage();
   const [open, setOpen] = useState(false);
   const [policiesOpen, setPoliciesOpen] = useState(false);
+  const homeHref = lang === "en" ? "/en" : "/";
+  const blogHref = lang === "en" ? "/en/blog" : "/blog";
+  const kidsHref = lang === "en" ? "/en/finance-for-kids" : "/finanzas-para-ninos";
+  const demoHref = lang === "en" ? "/en/demo" : "/demo";
 
   const linkClass = "text-left text-sm text-muted-foreground transition-colors hover:text-primary";
   const renderLink = (l: FooterLink) =>
@@ -60,43 +65,43 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
         ? {
             title: t("Producto", "Product"),
             links: [
-              { label: t("Funciones", "Features"), to: "/finanzas-para-ninos#funciones" },
-              { label: t("Precios", "Pricing"), to: "/precios" },
+               { label: t("Funciones", "Features"), to: `${kidsHref}#funciones` },
+               { label: t("Precios", "Pricing"), to: "/precios" },
               { label: t("Programa de afiliados", "Affiliate program"), to: "/afiliados", external: true },
             ],
           }
         : {
             title: t("Producto", "Product"),
             links: [
-              { label: t("Funciones", "Features"), to: "/#funciones" },
-              { label: t("Precios", "Pricing"), to: "/#precios" },
-              { label: t("Programa de afiliados", "Affiliate program"), to: "/afiliados", external: true },
+               { label: t("Funciones", "Features"), to: `${homeHref}#funciones` },
+               { label: t("Precios", "Pricing"), to: `${homeHref}#precios` },
+               { label: t("Programa de afiliados", "Affiliate program"), to: "/afiliados", external: true },
             ],
           },
     affiliates
       ? {
           title: t("Recursos", "Resources"),
           links: [
-            { label: "Blog", to: "/blog" },
-            { label: t("Finanzas para adultos", "Adult finance"), to: "/", external: true },
-            { label: t("Finanzas para niños", "Kids finance"), to: "/finanzas-para-ninos", external: true },
+             { label: "Blog", to: blogHref },
+             { label: t("Finanzas para adultos", "Adult finance"), to: homeHref, external: true },
+             { label: t("Finanzas para niños", "Kids finance"), to: kidsHref, external: true },
           ],
         }
       : kids
         ? {
             title: t("Recursos", "Resources"),
             links: [
-              { label: "Blog", to: "/blog" },
-              { label: t("Demo gratis", "Free demo"), to: "/demo-ninos" },
-              { label: t("Finanzas para adultos", "Adult finance"), to: "/" },
+               { label: "Blog", to: blogHref },
+               { label: t("Demo gratis", "Free demo"), to: "/demo-ninos" },
+               { label: t("Finanzas para adultos", "Adult finance"), to: homeHref },
             ],
           }
         : {
             title: t("Recursos", "Resources"),
             links: [
-              { label: "Blog", to: "/blog" },
-              { label: t("Demo gratis", "Free demo"), to: "/demo" },
-              { label: t("Finanzas para niños", "Kids finance"), to: "/finanzas-para-ninos", external: true },
+               { label: "Blog", to: blogHref },
+               { label: t("Demo gratis", "Free demo"), to: demoHref },
+               { label: t("Finanzas para niños", "Kids finance"), to: kidsHref, external: true },
             ],
           },
     {

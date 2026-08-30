@@ -19,24 +19,32 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
   const t = useT();
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
-  const isKidsLanding = pathname === "/finanzas-para-ninos";
+  const isEnglishPath = pathname === "/en" || pathname.startsWith("/en/");
+  const isKidsLanding = pathname === "/finanzas-para-ninos" || pathname === "/en/finance-for-kids";
   const isLight = variant === "light";
-  const showCurrency = pathname !== "/" && !isKidsLanding;
+  const showCurrency = pathname !== "/" && pathname !== "/en" && !isKidsLanding;
 
 
 
   const tabs = [
-    { label: t("Cómo funciona", "How it works"), to: "/", hash: "funciones" },
+    { label: t("Cómo funciona", "How it works"), to: isEnglishPath ? "/en" : "/", hash: "funciones" },
     { label: t("Precios", "Pricing"), to: "/precios" },
-    { label: "Blog", to: "/blog" },
-    { label: t("Finanzas para niños", "Kids finance"), to: "/finanzas-para-ninos" },
-    { label: "demo", to: "/demo", search: { start: 1 }, icon: true },
+    { label: "Blog", to: isEnglishPath ? "/en/blog" : "/blog" },
+    {
+      label: t("Finanzas para niños", "Kids finance"),
+      to: isEnglishPath ? "/en/finance-for-kids" : "/finanzas-para-ninos",
+    },
+    { label: "demo", to: isEnglishPath ? "/en/demo" : "/demo", search: { start: 1 }, icon: true },
   ] as const;
 
   const kidsTabs = [
-    { label: t("Cómo funciona", "How it works"), to: "/finanzas-para-ninos", hash: "funciones" },
-    { label: "Blog", to: "/blog" },
-    { label: t("Finanzas para adultos", "Adult finance"), to: "/" },
+    {
+      label: t("Cómo funciona", "How it works"),
+      to: isEnglishPath ? "/en/finance-for-kids" : "/finanzas-para-ninos",
+      hash: "funciones",
+    },
+    { label: "Blog", to: isEnglishPath ? "/en/blog" : "/blog" },
+    { label: t("Finanzas para adultos", "Adult finance"), to: isEnglishPath ? "/en" : "/" },
     { label: t("Precios", "Pricing"), to: "/precios" },
     { label: "demo", to: "/demo-ninos", search: { start: 1 } },
   ] as const;

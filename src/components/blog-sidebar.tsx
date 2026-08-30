@@ -39,6 +39,7 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
   const t = useT();
   const { lang } = useLanguage();
   const blogHref = lang === "en" ? "/en/blog" : "/blog";
+  const demoHref = lang === "en" ? "/en/demo?start=1" : "/demo?start=1";
 
   return (
     <div className="sticky top-24 space-y-5">
@@ -80,7 +81,7 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
         )}
 
         <a
-          href={activeCategory === "ninos" ? "/demo-ninos?start=1" : "/demo?start=1"}
+          href={activeCategory === "ninos" ? "/demo-ninos?start=1" : demoHref}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
