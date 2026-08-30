@@ -17,6 +17,7 @@ import { Route as AdvisorRouteImport } from './routes/advisor'
 import { Route as AfiliadosRouteImport } from './routes/afiliados'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BlogRouteImport } from './routes/blog'
+import { Route as CalculadoraAhorroUniversidadRouteImport } from './routes/calculadora-ahorro-universidad'
 import { Route as CalculadoraLibertadFinancieraRouteImport } from './routes/calculadora-libertad-financiera'
 import { Route as CashFlowRouteImport } from './routes/cash-flow'
 import { Route as CiudadesRouteImport } from './routes/ciudades'
@@ -116,6 +117,12 @@ const BlogRoute = BlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CalculadoraAhorroUniversidadRoute =
+  CalculadoraAhorroUniversidadRouteImport.update({
+    id: '/calculadora-ahorro-universidad',
+    path: '/calculadora-ahorro-universidad',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const CalculadoraLibertadFinancieraRoute =
   CalculadoraLibertadFinancieraRouteImport.update({
     id: '/calculadora-libertad-financiera',
@@ -426,6 +433,7 @@ export interface FileRoutesByFullPath {
   '/afiliados': typeof AfiliadosRoute
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
+  '/calculadora-ahorro-universidad': typeof CalculadoraAhorroUniversidadRoute
   '/calculadora-libertad-financiera': typeof CalculadoraLibertadFinancieraRoute
   '/cash-flow': typeof CashFlowRoute
   '/ciudades': typeof CiudadesRoute
@@ -492,6 +500,7 @@ export interface FileRoutesByTo {
   '/advisor': typeof AdvisorRoute
   '/afiliados': typeof AfiliadosRoute
   '/auth': typeof AuthRoute
+  '/calculadora-ahorro-universidad': typeof CalculadoraAhorroUniversidadRoute
   '/calculadora-libertad-financiera': typeof CalculadoraLibertadFinancieraRoute
   '/cash-flow': typeof CashFlowRoute
   '/ciudades': typeof CiudadesRoute
@@ -559,6 +568,7 @@ export interface FileRoutesById {
   '/afiliados': typeof AfiliadosRoute
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
+  '/calculadora-ahorro-universidad': typeof CalculadoraAhorroUniversidadRoute
   '/calculadora-libertad-financiera': typeof CalculadoraLibertadFinancieraRoute
   '/cash-flow': typeof CashFlowRoute
   '/ciudades': typeof CiudadesRoute
@@ -629,6 +639,7 @@ export interface FileRouteTypes {
     | '/afiliados'
     | '/auth'
     | '/blog'
+    | '/calculadora-ahorro-universidad'
     | '/calculadora-libertad-financiera'
     | '/cash-flow'
     | '/ciudades'
@@ -695,6 +706,7 @@ export interface FileRouteTypes {
     | '/advisor'
     | '/afiliados'
     | '/auth'
+    | '/calculadora-ahorro-universidad'
     | '/calculadora-libertad-financiera'
     | '/cash-flow'
     | '/ciudades'
@@ -761,6 +773,7 @@ export interface FileRouteTypes {
     | '/afiliados'
     | '/auth'
     | '/blog'
+    | '/calculadora-ahorro-universidad'
     | '/calculadora-libertad-financiera'
     | '/cash-flow'
     | '/ciudades'
@@ -830,6 +843,7 @@ export interface RootRouteChildren {
   AfiliadosRoute: typeof AfiliadosRoute
   AuthRoute: typeof AuthRoute
   BlogRoute: typeof BlogRouteWithChildren
+  CalculadoraAhorroUniversidadRoute: typeof CalculadoraAhorroUniversidadRoute
   CalculadoraLibertadFinancieraRoute: typeof CalculadoraLibertadFinancieraRoute
   CashFlowRoute: typeof CashFlowRoute
   CiudadesRoute: typeof CiudadesRoute
@@ -925,6 +939,13 @@ declare module '@tanstack/react-router' {
       path: '/blog'
       fullPath: '/blog'
       preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calculadora-ahorro-universidad': {
+      id: '/calculadora-ahorro-universidad'
+      path: '/calculadora-ahorro-universidad'
+      fullPath: '/calculadora-ahorro-universidad'
+      preLoaderRoute: typeof CalculadoraAhorroUniversidadRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/calculadora-libertad-financiera': {
@@ -1421,6 +1442,7 @@ const rootRouteChildren: RootRouteChildren = {
   AfiliadosRoute: AfiliadosRoute,
   AuthRoute: AuthRoute,
   BlogRoute: BlogRouteWithChildren,
+  CalculadoraAhorroUniversidadRoute: CalculadoraAhorroUniversidadRoute,
   CalculadoraLibertadFinancieraRoute: CalculadoraLibertadFinancieraRoute,
   CashFlowRoute: CashFlowRoute,
   CiudadesRoute: CiudadesRoute,
