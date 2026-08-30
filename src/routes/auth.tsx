@@ -187,10 +187,10 @@ function ReviewCard({ index }: { index: number }) {
               <Star key={s} className="h-3 w-3 fill-primary text-primary" />
             ))}
           </div>
-          <blockquote className={`mt-1.5 text-xs leading-relaxed ${light ? "text-white/80" : "text-white/75"}`}>
+          <blockquote className="mt-1.5 text-xs leading-relaxed text-white/80">
             “{tt(r.quote[0], r.quote[1])}”
           </blockquote>
-          <figcaption className={`mt-1 text-[11px] font-medium ${light ? "text-white" : "text-white"}`}>
+          <figcaption className="mt-1 text-[11px] font-medium text-white">
             {r.name}
           </figcaption>
         </div>
@@ -199,79 +199,39 @@ function ReviewCard({ index }: { index: number }) {
   );
 }
 
-function PointsCarousel({
-  index,
-  onChange,
-  light,
-}: {
-  index: number;
-  onChange: (i: number) => void;
-  light?: boolean;
-}) {
+function PointsCarousel({ index, onChange }: { index: number; onChange: (i: number) => void }) {
   const tt = useT();
-  const prev = () => onChange((index - 1 + POINTS.length) % POINTS.length);
-  const next = () => onChange((index + 1) % POINTS.length);
 
   return (
-    <div className={`rounded-3xl p-5 ${light ? "border border-white/10 bg-black/20 backdrop-blur-sm" : ""}`}>
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={prev}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-white/70 transition-colors hover:bg-white/15 hover:text-white"
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </button>
-        <div className={`grid flex-1 grid-cols-3 ${light ? "divide-x divide-white/10" : "divide-x divide-white/10"}`}>
-          {POINTS.map((p, i) => {
-            const Icon = p.icon;
-            const active = i === index;
-            return (
-              <button
-                key={p.title[1]}
-                type="button"
-                onClick={() => onChange(i)}
-                className="flex flex-col items-center gap-1.5 px-2 text-center"
-              >
-                <Icon
-                  className={`h-5 w-5 transition-colors ${
-                    active ? "text-primary" : light ? "text-white/40" : "text-white/40"
-                  }`}
-                />
-                <span
-                  className={`text-xs font-semibold transition-colors ${
-                    active ? "text-white" : "text-white/60"
-                  }`}
-                >
-                  {tt(p.title[0], p.title[1])}
-                </span>
-                <span
-                  className={`text-[11px] leading-snug text-white/55 ${active ? "" : "hidden sm:block"}`}
-                >
-                  {tt(p.body[0], p.body[1])}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-        <button
-          type="button"
-          onClick={next}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-white/70 transition-colors hover:bg-white/15 hover:text-white"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </button>
+    <div>
+      <div className="grid grid-cols-3 divide-x divide-white/10">
+        {POINTS.map((p, i) => {
+          const Icon = p.icon;
+          const active = i === index;
+          return (
+            <button
+              key={p.title[1]}
+              type="button"
+              onClick={() => onChange(i)}
+              className="flex flex-col items-start gap-2 px-5 text-left first:pl-0 last:pr-0"
+            >
+              <Icon className={`h-6 w-6 transition-colors ${active ? "text-primary" : "text-white/40"}`} />
+              <span className={`text-sm font-semibold transition-colors ${active ? "text-white" : "text-white/60"}`}>
+                {tt(p.title[0], p.title[1])}
+              </span>
+              <span className="text-xs leading-snug text-white/55">{tt(p.body[0], p.body[1])}</span>
+            </button>
+          );
+        })}
       </div>
-      <div className="mt-3 flex justify-center gap-1.5">
+      <div className="mt-4 flex gap-1.5">
         {POINTS.map((_, i) => (
           <button
             key={i}
             type="button"
             aria-label={`${i + 1}`}
             onClick={() => onChange(i)}
-            className={`h-1.5 rounded-full transition-all ${
-              i === index ? "w-5 bg-primary" : "w-1.5 bg-white/25"
-            }`}
+            className={`h-1.5 rounded-full transition-all ${i === index ? "w-5 bg-primary" : "w-1.5 bg-white/25"}`}
           />
         ))}
       </div>
