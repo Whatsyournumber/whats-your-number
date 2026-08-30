@@ -58,16 +58,21 @@ function HighlightDesc({ desc, highlight }: { desc: string; highlight?: string }
 const META_TITLE_ES = "Controla tus Gastos, Patrimonio y Libertad Financiera";
 const META_DESC_ES =
   "Controla tus gastos e ingresos, patrimonio e inversiones, y descubre cuánto necesitas para tu retiro y libertad financiera. Potenciado por IA | Comienza ya";
+const SOCIAL_TITLE_ES = "La libertad financiera tiene un número. ¿Cuál es el tuyo?";
+const SOCIAL_DESC_ES =
+  "Controla tus gastos, patrimonio e inversiones y descubre cuánto necesitas para alcanzar tu libertad financiera. Potenciado por IA | Comienza ya";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: META_TITLE_ES },
       { name: "description", content: META_DESC_ES },
-      { property: "og:title", content: META_TITLE_ES },
-      { property: "og:description", content: META_DESC_ES },
+      { property: "og:title", content: SOCIAL_TITLE_ES },
+      { property: "og:description", content: SOCIAL_DESC_ES },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: SOCIAL_TITLE_ES },
+      { name: "twitter:description", content: SOCIAL_DESC_ES },
       { property: "og:url", content: "https://whatsyour-number.com" },
       { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
       { name: "twitter:image", content: "https://whatsyour-number.com/og-cover.jpg" },

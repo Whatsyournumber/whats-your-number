@@ -8,19 +8,24 @@ import { useLanguage } from "@/hooks/use-language";
 const TITLE = "Track Spending, Net Worth & Financial Freedom Number";
 const DESCRIPTION =
   "Track income, expenses, net worth and investments, and discover how much you need for early retirement and financial freedom. Powered by AI | Start free";
+const SOCIAL_TITLE = "Financial freedom has a number. What's yours?";
+const SOCIAL_DESCRIPTION =
+  "Track your spending, net worth and investments and discover how much you need to reach financial freedom. Powered by AI | Start free";
 
 export const Route = createFileRoute("/en/")({
   head: () => ({
     meta: [
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESCRIPTION },
+      { property: "og:title", content: SOCIAL_TITLE },
+      { property: "og:description", content: SOCIAL_DESCRIPTION },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "en_US" },
       { property: "og:url", content: "https://whatsyour-number.com/en" },
       { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: SOCIAL_TITLE },
+      { name: "twitter:description", content: SOCIAL_DESCRIPTION },
       { name: "twitter:image", content: "https://whatsyour-number.com/og-cover.jpg" },
     ],
     links: [
