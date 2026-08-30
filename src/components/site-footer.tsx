@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 
 import { BrandLogo, KidsBrandLogo } from "@/components/brand-logo";
 import { PoliciesDialog } from "@/components/policies-dialog";
-import { useT } from "@/hooks/use-language";
+import { useLanguage, useT } from "@/hooks/use-language";
 
 const socials = [
   { icon: Instagram, label: "Instagram", href: "https://www.instagram.com/whatis.your.number/" },
