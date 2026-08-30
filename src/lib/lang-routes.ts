@@ -31,7 +31,16 @@ export function localizedPath(pathname: string, target: "es" | "en"): string | n
 }
 
 /** Idioma implícito en la URL (null si la ruta no es específica de idioma). */
-export function langFromPath(pathname: string): "en" | null {
+export function langFromPath(pathname: string): "es" | "en" | null {
   const clean = pathname.replace(/\/+$/, "") || "/";
-  return clean === "/en" || clean.startsWith("/en/") ? "en" : null;
+  if (clean === "/en" || clean.startsWith("/en/")) return "en";
+  if (
+    clean === "/" ||
+    clean === "/blog" ||
+    clean.startsWith("/blog/") ||
+    clean === "/demo" ||
+    clean === "/finanzas-para-ninos" ||
+    clean.startsWith("/finanzas-para-ninos/")
+  ) return "es";
+  return null;
 }

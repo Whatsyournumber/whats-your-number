@@ -74,9 +74,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
-    // Las URLs /en/* mandan sobre la preferencia guardada.
-    if (langFromPath(pathname) === "en") {
-      setLangState("en");
+    // Las rutas públicas localizadas mandan sobre la preferencia guardada.
+    const pathLang = langFromPath(pathname);
+    if (pathLang) {
+      setLangState(pathLang);
       return;
     }
     const stored = window.localStorage.getItem(STORAGE_KEY);
