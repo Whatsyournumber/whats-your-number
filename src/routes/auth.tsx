@@ -608,7 +608,7 @@ function AuthPage() {
           <p className="mt-5 text-center text-[11px] text-muted-foreground">{t("auth.legal")}</p>
         </div>
 
-        {!isAffiliate && <Reviews className="mt-6 grid gap-3 sm:grid-cols-2 lg:hidden" />}
+        {!isAffiliate && <Reviews className="mt-6 lg:hidden" />}
       </motion.div>
       </div>
     </div>
