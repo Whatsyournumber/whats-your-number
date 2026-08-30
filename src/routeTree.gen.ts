@@ -52,6 +52,7 @@ import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout/success'
 import { Route as EnIndexRouteImport } from './routes/en.index'
 import { Route as EnBlogRouteImport } from './routes/en.blog'
+import { Route as EnFinanceForKidsRouteImport } from './routes/en.finance-for-kids'
 import { Route as EnFinanzasParaNinosRouteImport } from './routes/en.finanzas-para-ninos'
 import { Route as NinosIndexRouteImport } from './routes/ninos/index'
 import { Route as NinosOnboardingRouteImport } from './routes/ninos/onboarding'
@@ -291,6 +292,11 @@ const EnBlogRoute = EnBlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => EnRoute,
 } as any)
+const EnFinanceForKidsRoute = EnFinanceForKidsRouteImport.update({
+  id: '/finance-for-kids',
+  path: '/finance-for-kids',
+  getParentRoute: () => EnRoute,
+} as any)
 const EnFinanzasParaNinosRoute = EnFinanzasParaNinosRouteImport.update({
   id: '/finanzas-para-ninos',
   path: '/finanzas-para-ninos',
@@ -439,6 +445,7 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/en/blog': typeof EnBlogRouteWithChildren
+  '/en/finance-for-kids': typeof EnFinanceForKidsRoute
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
@@ -500,6 +507,7 @@ export interface FileRoutesByTo {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
+  '/en/finance-for-kids': typeof EnFinanceForKidsRoute
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
@@ -566,6 +574,7 @@ export interface FileRoutesById {
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/en/blog': typeof EnBlogRouteWithChildren
+  '/en/finance-for-kids': typeof EnFinanceForKidsRoute
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
@@ -633,6 +642,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/checkout/success'
     | '/en/blog'
+    | '/en/finance-for-kids'
     | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
@@ -694,6 +704,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/blog/$slug'
     | '/checkout/success'
+    | '/en/finance-for-kids'
     | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
@@ -759,6 +770,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/checkout/success'
     | '/en/blog'
+    | '/en/finance-for-kids'
     | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
@@ -1135,6 +1147,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnBlogRouteImport
       parentRoute: typeof EnRoute
     }
+    '/en/finance-for-kids': {
+      id: '/en/finance-for-kids'
+      path: '/finance-for-kids'
+      fullPath: '/en/finance-for-kids'
+      preLoaderRoute: typeof EnFinanceForKidsRouteImport
+      parentRoute: typeof EnRoute
+    }
     '/en/finanzas-para-ninos': {
       id: '/en/finanzas-para-ninos'
       path: '/finanzas-para-ninos'
@@ -1335,12 +1354,14 @@ const EnBlogRouteWithChildren =
 
 interface EnRouteChildren {
   EnBlogRoute: typeof EnBlogRouteWithChildren
+  EnFinanceForKidsRoute: typeof EnFinanceForKidsRoute
   EnFinanzasParaNinosRoute: typeof EnFinanzasParaNinosRoute
   EnIndexRoute: typeof EnIndexRoute
 }
 
 const EnRouteChildren: EnRouteChildren = {
   EnBlogRoute: EnBlogRouteWithChildren,
+  EnFinanceForKidsRoute: EnFinanceForKidsRoute,
   EnFinanzasParaNinosRoute: EnFinanzasParaNinosRoute,
   EnIndexRoute: EnIndexRoute,
 }
