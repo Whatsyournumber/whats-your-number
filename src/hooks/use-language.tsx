@@ -72,10 +72,11 @@ const LanguageContext = createContext<Ctx>({ lang: "es", setLang: () => {}, t: (
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("es");
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const pathLang = langFromPath(pathname);
+  const activeLang = pathLang ?? lang;
 
   useEffect(() => {
     // Las rutas públicas localizadas mandan sobre la preferencia guardada.
-    const pathLang = langFromPath(pathname);
     if (pathLang) {
       setLangState(pathLang);
       return;
@@ -86,7 +87,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       return;
     }
     setLangState(detectLang());
-  }, [pathname]);
+  }, [pathLang]);
 
   const setLang = (next: Lang) => {
     setLangState(next);
@@ -94,7 +95,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t: (key) => DICT[lang][key] ?? DICT.es[key] }}>
+    <LanguageContext.Provider value={{ lang: activeLang, setLang, t: (key) => DICT[activeLang][key] ?? DICT.es[key] }}>
       {children}
     </LanguageContext.Provider>
   );
