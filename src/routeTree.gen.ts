@@ -17,6 +17,7 @@ import { Route as AdvisorRouteImport } from './routes/advisor'
 import { Route as AfiliadosRouteImport } from './routes/afiliados'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BlogRouteImport } from './routes/blog'
+import { Route as CalculadoraLibertadFinancieraRouteImport } from './routes/calculadora-libertad-financiera'
 import { Route as CashFlowRouteImport } from './routes/cash-flow'
 import { Route as CiudadesRouteImport } from './routes/ciudades'
 import { Route as ConfiguracionRouteImport } from './routes/configuracion'
@@ -112,6 +113,12 @@ const BlogRoute = BlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CalculadoraLibertadFinancieraRoute =
+  CalculadoraLibertadFinancieraRouteImport.update({
+    id: '/calculadora-libertad-financiera',
+    path: '/calculadora-libertad-financiera',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const CashFlowRoute = CashFlowRouteImport.update({
   id: '/cash-flow',
   path: '/cash-flow',
@@ -400,6 +407,7 @@ export interface FileRoutesByFullPath {
   '/afiliados': typeof AfiliadosRoute
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
+  '/calculadora-libertad-financiera': typeof CalculadoraLibertadFinancieraRoute
   '/cash-flow': typeof CashFlowRoute
   '/ciudades': typeof CiudadesRoute
   '/configuracion': typeof ConfiguracionRoute
@@ -462,6 +470,7 @@ export interface FileRoutesByTo {
   '/advisor': typeof AdvisorRoute
   '/afiliados': typeof AfiliadosRoute
   '/auth': typeof AuthRoute
+  '/calculadora-libertad-financiera': typeof CalculadoraLibertadFinancieraRoute
   '/cash-flow': typeof CashFlowRoute
   '/ciudades': typeof CiudadesRoute
   '/configuracion': typeof ConfiguracionRoute
@@ -525,6 +534,7 @@ export interface FileRoutesById {
   '/afiliados': typeof AfiliadosRoute
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
+  '/calculadora-libertad-financiera': typeof CalculadoraLibertadFinancieraRoute
   '/cash-flow': typeof CashFlowRoute
   '/ciudades': typeof CiudadesRoute
   '/configuracion': typeof ConfiguracionRoute
@@ -591,6 +601,7 @@ export interface FileRouteTypes {
     | '/afiliados'
     | '/auth'
     | '/blog'
+    | '/calculadora-libertad-financiera'
     | '/cash-flow'
     | '/ciudades'
     | '/configuracion'
@@ -653,6 +664,7 @@ export interface FileRouteTypes {
     | '/advisor'
     | '/afiliados'
     | '/auth'
+    | '/calculadora-libertad-financiera'
     | '/cash-flow'
     | '/ciudades'
     | '/configuracion'
@@ -715,6 +727,7 @@ export interface FileRouteTypes {
     | '/afiliados'
     | '/auth'
     | '/blog'
+    | '/calculadora-libertad-financiera'
     | '/cash-flow'
     | '/ciudades'
     | '/configuracion'
@@ -780,6 +793,7 @@ export interface RootRouteChildren {
   AfiliadosRoute: typeof AfiliadosRoute
   AuthRoute: typeof AuthRoute
   BlogRoute: typeof BlogRouteWithChildren
+  CalculadoraLibertadFinancieraRoute: typeof CalculadoraLibertadFinancieraRoute
   CashFlowRoute: typeof CashFlowRoute
   CiudadesRoute: typeof CiudadesRoute
   ConfiguracionRoute: typeof ConfiguracionRoute
@@ -874,6 +888,13 @@ declare module '@tanstack/react-router' {
       path: '/blog'
       fullPath: '/blog'
       preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calculadora-libertad-financiera': {
+      id: '/calculadora-libertad-financiera'
+      path: '/calculadora-libertad-financiera'
+      fullPath: '/calculadora-libertad-financiera'
+      preLoaderRoute: typeof CalculadoraLibertadFinancieraRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cash-flow': {
@@ -1336,6 +1357,7 @@ const rootRouteChildren: RootRouteChildren = {
   AfiliadosRoute: AfiliadosRoute,
   AuthRoute: AuthRoute,
   BlogRoute: BlogRouteWithChildren,
+  CalculadoraLibertadFinancieraRoute: CalculadoraLibertadFinancieraRoute,
   CashFlowRoute: CashFlowRoute,
   CiudadesRoute: CiudadesRoute,
   ConfiguracionRoute: ConfiguracionRoute,
