@@ -203,10 +203,10 @@ function SidePanel() {
         src={lighthouseImg}
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[70%_center]"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[65%_center] brightness-[1.35]"
       />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/95 via-background/55 to-transparent" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-background/40" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/90 via-background/35 to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-background/30" />
 
       <div className="relative">
         <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight">
