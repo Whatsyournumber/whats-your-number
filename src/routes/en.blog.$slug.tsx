@@ -5,6 +5,7 @@ import { BlogArticleView } from "@/routes/blog.$slug";
 import { getPost } from "@/lib/blog-posts";
 import { getAuthor } from "@/lib/blog-authors";
 import { absoluteUrl, buildArticleJsonLd, buildBreadcrumbJsonLd, buildFaqJsonLd, postIsoDate } from "@/lib/blog-jsonld";
+import { blogSeoDescription, blogSeoTitle } from "@/lib/blog-seo";
 import { useLanguage } from "@/hooks/use-language";
 
 export const Route = createFileRoute("/en/blog/$slug")({
