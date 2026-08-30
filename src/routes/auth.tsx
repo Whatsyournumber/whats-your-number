@@ -417,7 +417,7 @@ function AuthPage() {
       transition={{ duration: 0.35 }}
       className="w-full max-w-md"
     >
-      <div className="mb-5 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between">
         <Link
           to="/"
           className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground lg:text-slate-400 lg:hover:text-slate-700"
@@ -427,8 +427,8 @@ function AuthPage() {
         <LanguageToggle />
       </div>
 
-      {/* Tarjeta clara: box flotante con sombra premium */}
-      <div className="min-h-[720px] rounded-[2rem] bg-white p-8 py-12 text-slate-900 shadow-[0_32px_80px_-28px_rgba(0,0,0,0.22)] sm:p-10 sm:py-16">
+      {/* Tarjeta clara: box flotante con sombra premium, compacta para una sola pantalla */}
+      <div className="rounded-[2rem] bg-white p-7 text-slate-900 shadow-[0_32px_80px_-28px_rgba(0,0,0,0.22)] sm:p-9 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
         {isAffiliate && (
           <div className="mb-6 flex flex-nowrap items-center justify-center gap-x-2">
             {[
@@ -620,7 +620,7 @@ function AuthPage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-background lg:grid lg:grid-cols-[1.55fr_1fr]">
+    <div className="relative min-h-screen overflow-hidden bg-background lg:grid lg:h-screen lg:grid-cols-[1.55fr_1fr] lg:overflow-hidden">
       {/* Fondo infinito: la foto cubre toda la página, sin cortes ni bordes,
           y pasa por debajo de la tarjeta flotante */}
       <img
@@ -637,7 +637,7 @@ function AuthPage() {
 
       <SidePanel />
 
-      <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 bg-slate-200 px-6 py-10 lg:bg-transparent lg:px-10">
+      <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 bg-slate-200 px-6 py-10 lg:h-screen lg:min-h-0 lg:bg-transparent lg:px-10 lg:py-6">
         <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
         {card}
 
