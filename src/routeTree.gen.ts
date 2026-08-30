@@ -53,7 +53,9 @@ import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout/success'
 import { Route as EnIndexRouteImport } from './routes/en.index'
 import { Route as EnBlogRouteImport } from './routes/en.blog'
+import { Route as EnCollegeSavingsCalculatorRouteImport } from './routes/en.college-savings-calculator'
 import { Route as EnDemoRouteImport } from './routes/en.demo'
+import { Route as EnDemoNinosRouteImport } from './routes/en.demo-ninos'
 import { Route as EnFinanceForKidsRouteImport } from './routes/en.finance-for-kids'
 import { Route as EnFinancialFreedomCalculatorRouteImport } from './routes/en.financial-freedom-calculator'
 import { Route as EnFinanzasParaNinosRouteImport } from './routes/en.finanzas-para-ninos'
@@ -301,9 +303,20 @@ const EnBlogRoute = EnBlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => EnRoute,
 } as any)
+const EnCollegeSavingsCalculatorRoute =
+  EnCollegeSavingsCalculatorRouteImport.update({
+    id: '/college-savings-calculator',
+    path: '/college-savings-calculator',
+    getParentRoute: () => EnRoute,
+  } as any)
 const EnDemoRoute = EnDemoRouteImport.update({
   id: '/demo',
   path: '/demo',
+  getParentRoute: () => EnRoute,
+} as any)
+const EnDemoNinosRoute = EnDemoNinosRouteImport.update({
+  id: '/demo-ninos',
+  path: '/demo-ninos',
   getParentRoute: () => EnRoute,
 } as any)
 const EnFinanceForKidsRoute = EnFinanceForKidsRouteImport.update({
@@ -466,7 +479,9 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/en/blog': typeof EnBlogRouteWithChildren
+  '/en/college-savings-calculator': typeof EnCollegeSavingsCalculatorRoute
   '/en/demo': typeof EnDemoRoute
+  '/en/demo-ninos': typeof EnDemoNinosRoute
   '/en/finance-for-kids': typeof EnFinanceForKidsRoute
   '/en/financial-freedom-calculator': typeof EnFinancialFreedomCalculatorRoute
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
@@ -531,7 +546,9 @@ export interface FileRoutesByTo {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
+  '/en/college-savings-calculator': typeof EnCollegeSavingsCalculatorRoute
   '/en/demo': typeof EnDemoRoute
+  '/en/demo-ninos': typeof EnDemoNinosRoute
   '/en/finance-for-kids': typeof EnFinanceForKidsRoute
   '/en/financial-freedom-calculator': typeof EnFinancialFreedomCalculatorRoute
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
@@ -601,7 +618,9 @@ export interface FileRoutesById {
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/en/blog': typeof EnBlogRouteWithChildren
+  '/en/college-savings-calculator': typeof EnCollegeSavingsCalculatorRoute
   '/en/demo': typeof EnDemoRoute
+  '/en/demo-ninos': typeof EnDemoNinosRoute
   '/en/finance-for-kids': typeof EnFinanceForKidsRoute
   '/en/financial-freedom-calculator': typeof EnFinancialFreedomCalculatorRoute
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
@@ -672,7 +691,9 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/checkout/success'
     | '/en/blog'
+    | '/en/college-savings-calculator'
     | '/en/demo'
+    | '/en/demo-ninos'
     | '/en/finance-for-kids'
     | '/en/financial-freedom-calculator'
     | '/en/finanzas-para-ninos'
@@ -737,7 +758,9 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/blog/$slug'
     | '/checkout/success'
+    | '/en/college-savings-calculator'
     | '/en/demo'
+    | '/en/demo-ninos'
     | '/en/finance-for-kids'
     | '/en/financial-freedom-calculator'
     | '/en/finanzas-para-ninos'
@@ -806,7 +829,9 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/checkout/success'
     | '/en/blog'
+    | '/en/college-savings-calculator'
     | '/en/demo'
+    | '/en/demo-ninos'
     | '/en/finance-for-kids'
     | '/en/financial-freedom-calculator'
     | '/en/finanzas-para-ninos'
@@ -1193,11 +1218,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnBlogRouteImport
       parentRoute: typeof EnRoute
     }
+    '/en/college-savings-calculator': {
+      id: '/en/college-savings-calculator'
+      path: '/college-savings-calculator'
+      fullPath: '/en/college-savings-calculator'
+      preLoaderRoute: typeof EnCollegeSavingsCalculatorRouteImport
+      parentRoute: typeof EnRoute
+    }
     '/en/demo': {
       id: '/en/demo'
       path: '/demo'
       fullPath: '/en/demo'
       preLoaderRoute: typeof EnDemoRouteImport
+      parentRoute: typeof EnRoute
+    }
+    '/en/demo-ninos': {
+      id: '/en/demo-ninos'
+      path: '/demo-ninos'
+      fullPath: '/en/demo-ninos'
+      preLoaderRoute: typeof EnDemoNinosRouteImport
       parentRoute: typeof EnRoute
     }
     '/en/finance-for-kids': {
@@ -1414,7 +1453,9 @@ const EnBlogRouteWithChildren =
 
 interface EnRouteChildren {
   EnBlogRoute: typeof EnBlogRouteWithChildren
+  EnCollegeSavingsCalculatorRoute: typeof EnCollegeSavingsCalculatorRoute
   EnDemoRoute: typeof EnDemoRoute
+  EnDemoNinosRoute: typeof EnDemoNinosRoute
   EnFinanceForKidsRoute: typeof EnFinanceForKidsRoute
   EnFinancialFreedomCalculatorRoute: typeof EnFinancialFreedomCalculatorRoute
   EnFinanzasParaNinosRoute: typeof EnFinanzasParaNinosRoute
@@ -1423,7 +1464,9 @@ interface EnRouteChildren {
 
 const EnRouteChildren: EnRouteChildren = {
   EnBlogRoute: EnBlogRouteWithChildren,
+  EnCollegeSavingsCalculatorRoute: EnCollegeSavingsCalculatorRoute,
   EnDemoRoute: EnDemoRoute,
+  EnDemoNinosRoute: EnDemoNinosRoute,
   EnFinanceForKidsRoute: EnFinanceForKidsRoute,
   EnFinancialFreedomCalculatorRoute: EnFinancialFreedomCalculatorRoute,
   EnFinanzasParaNinosRoute: EnFinanzasParaNinosRoute,
