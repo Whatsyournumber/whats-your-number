@@ -225,7 +225,7 @@ function SidePanel() {
 
         {/* Slider: los 3 puntos clave */}
         <div className="mt-10 max-w-md">
-          <div className="surface relative min-h-[120px] p-5">
+          <div className="relative min-h-[120px] rounded-2xl border border-white/10 bg-black/30 p-5 backdrop-blur-md">
             <AnimatePresence mode="wait">
               <motion.div
                 key={index}
