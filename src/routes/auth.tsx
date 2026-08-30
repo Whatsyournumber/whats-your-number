@@ -3,10 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowLeft,
   ArrowRight,
-  ChevronLeft,
-  ChevronRight,
   Loader2,
-  Lock,
   Sparkles,
   Star,
   Target,
@@ -111,26 +108,26 @@ function GoogleMark() {
 const POINTS: { icon: typeof Target; title: [string, string]; body: [string, string] }[] = [
   {
     icon: Target,
-    title: ["Conoce tu número", "Know your number"],
+    title: ["1. Descubre tu número", "1. Discover your number"],
     body: [
-      "Descubre cuánto necesitas para alcanzar tu libertad financiera.",
-      "Discover exactly how much you need to reach financial freedom.",
+      "Calcula cuánto necesitas para alcanzar tu libertad financiera.",
+      "Calculate how much you need to reach financial freedom.",
     ],
   },
   {
     icon: TrendingUp,
-    title: ["Ve cómo llegar", "See how to get there"],
+    title: ["2. Mira dónde estás", "2. See where you stand"],
     body: [
-      "Analiza gastos, patrimonio y metas con un plan claro y personalizado.",
-      "Analyze spending, net worth and goals with a clear, personal plan.",
+      "Analiza tus gastos, patrimonio e inversiones en un solo lugar.",
+      "Analyze your spending, net worth and investments in one place.",
     ],
   },
   {
     icon: Sparkles,
-    title: ["Decide mejor con IA", "Decide better with AI"],
+    title: ["3. Obtén tu plan con IA", "3. Get your AI plan"],
     body: [
-      "Convierte tus números en próximos pasos concretos en segundos.",
-      "Turn your numbers into concrete next steps in seconds.",
+      "Recibe próximos pasos personalizados para acercarte a tus metas.",
+      "Get personalized next steps to move closer to your goals.",
     ],
   },
 ];
@@ -162,7 +159,7 @@ const REVIEWS = [
   },
 ];
 
-function ReviewCard({ index, light }: { index: number; light?: boolean }) {
+function ReviewCard({ index }: { index: number }) {
   const tt = useT();
   const r = REVIEWS[index % REVIEWS.length] ?? REVIEWS[0]!;
 
@@ -174,7 +171,7 @@ function ReviewCard({ index, light }: { index: number; light?: boolean }) {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -8 }}
         transition={{ duration: 0.3 }}
-        className={`flex items-center gap-4 ${light ? "rounded-2xl border border-white/10 bg-black/20 p-5 backdrop-blur-sm" : ""}`}
+        className="flex items-center gap-4"
       >
         <img
           src={r.image}
@@ -187,10 +184,10 @@ function ReviewCard({ index, light }: { index: number; light?: boolean }) {
               <Star key={s} className="h-3 w-3 fill-primary text-primary" />
             ))}
           </div>
-          <blockquote className={`mt-1.5 text-xs leading-relaxed ${light ? "text-white/80" : "text-white/75"}`}>
+          <blockquote className="mt-1.5 text-xs leading-relaxed text-white/80">
             “{tt(r.quote[0], r.quote[1])}”
           </blockquote>
-          <figcaption className={`mt-1 text-[11px] font-medium ${light ? "text-white" : "text-white"}`}>
+          <figcaption className="mt-1 text-[11px] font-medium text-white">
             {r.name}
           </figcaption>
         </div>
@@ -199,79 +196,39 @@ function ReviewCard({ index, light }: { index: number; light?: boolean }) {
   );
 }
 
-function PointsCarousel({
-  index,
-  onChange,
-  light,
-}: {
-  index: number;
-  onChange: (i: number) => void;
-  light?: boolean;
-}) {
+function PointsCarousel({ index, onChange }: { index: number; onChange: (i: number) => void }) {
   const tt = useT();
-  const prev = () => onChange((index - 1 + POINTS.length) % POINTS.length);
-  const next = () => onChange((index + 1) % POINTS.length);
 
   return (
-    <div className={`rounded-3xl p-5 ${light ? "border border-white/10 bg-black/20 backdrop-blur-sm" : ""}`}>
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={prev}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-white/70 transition-colors hover:bg-white/15 hover:text-white"
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </button>
-        <div className={`grid flex-1 grid-cols-3 ${light ? "divide-x divide-white/10" : "divide-x divide-white/10"}`}>
-          {POINTS.map((p, i) => {
-            const Icon = p.icon;
-            const active = i === index;
-            return (
-              <button
-                key={p.title[1]}
-                type="button"
-                onClick={() => onChange(i)}
-                className="flex flex-col items-center gap-1.5 px-2 text-center"
-              >
-                <Icon
-                  className={`h-5 w-5 transition-colors ${
-                    active ? "text-primary" : light ? "text-white/40" : "text-white/40"
-                  }`}
-                />
-                <span
-                  className={`text-xs font-semibold transition-colors ${
-                    active ? "text-white" : "text-white/60"
-                  }`}
-                >
-                  {tt(p.title[0], p.title[1])}
-                </span>
-                <span
-                  className={`text-[11px] leading-snug text-white/55 ${active ? "" : "hidden sm:block"}`}
-                >
-                  {tt(p.body[0], p.body[1])}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-        <button
-          type="button"
-          onClick={next}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-white/70 transition-colors hover:bg-white/15 hover:text-white"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </button>
+    <div>
+      <div className="grid grid-cols-3 divide-x divide-white/10">
+        {POINTS.map((p, i) => {
+          const Icon = p.icon;
+          const active = i === index;
+          return (
+            <button
+              key={p.title[1]}
+              type="button"
+              onClick={() => onChange(i)}
+              className="flex flex-col items-start gap-2 px-5 text-left first:pl-0 last:pr-0"
+            >
+              <Icon className={`h-6 w-6 transition-colors ${active ? "text-primary" : "text-white/40"}`} />
+              <span className={`text-sm font-semibold transition-colors ${active ? "text-white" : "text-white/60"}`}>
+                {tt(p.title[0], p.title[1])}
+              </span>
+              <span className="text-xs leading-snug text-white/55">{tt(p.body[0], p.body[1])}</span>
+            </button>
+          );
+        })}
       </div>
-      <div className="mt-3 flex justify-center gap-1.5">
+      <div className="mt-4 flex gap-1.5">
         {POINTS.map((_, i) => (
           <button
             key={i}
             type="button"
             aria-label={`${i + 1}`}
             onClick={() => onChange(i)}
-            className={`h-1.5 rounded-full transition-all ${
-              i === index ? "w-5 bg-primary" : "w-1.5 bg-white/25"
-            }`}
+            className={`h-1.5 rounded-full transition-all ${i === index ? "w-5 bg-primary" : "w-1.5 bg-white/25"}`}
           />
         ))}
       </div>
@@ -290,40 +247,34 @@ function SidePanel() {
   }, []);
 
   return (
-    <div className="relative hidden min-h-screen flex-col justify-between lg:flex">
+    <div className="relative hidden min-h-screen flex-col lg:flex">
       <div className="relative p-10">
         <BrandLogo />
       </div>
 
-      <div className="relative flex flex-col gap-8 p-10 pt-0">
+      {/* Bloque de texto empujado hacia la parte baja del panel */}
+      <div className="relative mt-auto flex flex-col gap-10 p-10 pb-12">
         <div>
           <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight text-white xl:text-6xl">
-            {tt("Tu dinero.", "Your money.")}
+            {tt("Descubre", "Discover")}
             <br />
-            {tt("Tu futuro.", "Your future.")}
-            <br />
-            <span className="text-primary">{tt("Tu número.", "Your number.")}</span>
+            <span className="text-primary">{tt("tu número.", "your number.")}</span>
           </h1>
-          <p className="mt-4 max-w-md text-sm leading-relaxed text-white/70">
+          <p className="mt-5 max-w-md text-base leading-relaxed text-white/70">
             {tt(
-              "La plataforma todo-en-uno para entender dónde estás y construir tu libertad financiera.",
-              "The all-in-one platform to understand where you stand and build your financial freedom.",
+              "Toma mejores decisiones hoy para tu libertad financiera mañana.",
+              "Make better decisions today for your financial freedom tomorrow.",
             )}
           </p>
         </div>
 
         <div className="max-w-xl">
-          <PointsCarousel index={index} onChange={setIndex} light />
+          <PointsCarousel index={index} onChange={setIndex} />
         </div>
 
         <div className="max-w-md">
-          <ReviewCard index={index} light />
+          <ReviewCard index={index} />
         </div>
-
-        <p className="flex items-center gap-2 text-[11px] text-white/60">
-          <Lock className="h-3.5 w-3.5 text-primary" />
-          {tt("Tus datos son privados y cifrados.", "Your data is private and encrypted.")}
-        </p>
       </div>
     </div>
   );
@@ -688,10 +639,10 @@ function AuthPage() {
         <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
         {card}
 
-        {/* Móvil: puntos + review debajo de la tarjeta */}
-        <div className="w-full max-w-md space-y-6 lg:hidden">
-          <PointsCarousel index={point} onChange={setPoint} light />
-          <ReviewCard index={point} light />
+        {/* Móvil: puntos + review debajo de la tarjeta (fondo oscuro para contraste) */}
+        <div className="w-full max-w-md space-y-6 rounded-3xl bg-slate-900 p-6 lg:hidden">
+          <PointsCarousel index={point} onChange={setPoint} />
+          <ReviewCard index={point} />
         </div>
       </div>
     </div>
