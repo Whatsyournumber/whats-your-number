@@ -183,6 +183,17 @@ export function DemoPage() {
               exit={{ opacity: 0, x: -24 }}
               transition={{ duration: 0.28 }}
             >
+              {step === 1 && (
+                <div className="mb-10 flex flex-col items-center text-center">
+                  <BrandLogo />
+                  <h1 className="mt-5 font-display text-2xl font-semibold leading-tight tracking-tight">
+                    {t("Calculador de tu", "Your financial")}
+                    <span className="block bg-gradient-to-r from-primary to-foreground bg-clip-text text-transparent">
+                      {t("libertad financiera", "freedom calculator")}
+                    </span>
+                  </h1>
+                </div>
+              )}
               <div className="flex items-center gap-1.5">
                 {[1, 2, 3].map((i) => (
                   <span
