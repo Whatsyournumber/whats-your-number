@@ -180,7 +180,7 @@ const PUBLIC_PATHS = [
   "/blog",
   "/en/blog",
   "/demo",
-  "/en/demo",
+  "/en/financial-freedom-calculator",
   "/calculadora-libertad-financiera",
   "/en/financial-freedom-calculator",
   "/demo-ninos",

@@ -12,7 +12,7 @@ const DESCRIPTION =
   "Calcula cuánto capital necesitas para vivir de tus inversiones y alcanzar tu libertad financiera. Responde 3 preguntas en 30 segundos. Gratis y sin registro.";
 
 const ES_URL = "https://whatsyour-number.com/calculadora-libertad-financiera";
-const EN_URL = "https://whatsyour-number.com/en/demo";
+const EN_URL = "https://whatsyour-number.com/en/financial-freedom-calculator";
 
 export const Route = createFileRoute("/calculadora-libertad-financiera")({
   validateSearch: demoSearchSchema,

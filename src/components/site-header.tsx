@@ -34,7 +34,7 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
       label: t("Finanzas para niños", "Kids finance"),
       to: isEnglishPath ? "/en/finance-for-kids" : "/finanzas-para-ninos",
     },
-    { label: "demo", to: isEnglishPath ? "/en/demo" : "/demo", search: { start: 1 }, icon: true },
+    { label: "demo", to: isEnglishPath ? "/en/financial-freedom-calculator" : "/calculadora-libertad-financiera", search: { start: 1 }, icon: true },
   ] as const;
 
   const kidsTabs = [
