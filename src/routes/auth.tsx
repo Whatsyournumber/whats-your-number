@@ -649,8 +649,8 @@ function AuthPage() {
     <div className="min-h-screen bg-background lg:grid lg:grid-cols-2">
       <SidePanel />
 
-      <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 overflow-hidden px-4 py-12">
-        <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl" />
+      <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 overflow-hidden px-4 py-12 lg:bg-white">
+        <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
         {card}
 
         {/* Móvil: puntos + review debajo de la tarjeta */}
