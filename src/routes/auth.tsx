@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { motion } from "motion/react";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Loader2, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
