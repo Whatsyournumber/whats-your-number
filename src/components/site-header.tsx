@@ -126,7 +126,7 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
       {/* Desktop */}
       <div className="hidden items-center justify-between lg:flex">
         <div className="flex items-center gap-3">
-          <Link to={isKidsLanding ? "/finanzas-para-ninos" : "/"} className="shrink-0">
+          <Link to={isKidsLanding ? (isEnglishPath ? "/en/finance-for-kids" : "/finanzas-para-ninos") : (isEnglishPath ? "/en" : "/")} className="shrink-0">
             {isKidsLanding ? <KidsBrandLogo /> : <BrandLogo />}
           </Link>
           <nav className="flex items-center gap-1">{visibleTabs.map(renderTab)}</nav>
@@ -149,7 +149,7 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
                   <span className="sr-only">{t("Abrir menú", "Open menu")}</span>
                 </Button>
               </SheetTrigger>
-              <Link to={isKidsLanding ? "/finanzas-para-ninos" : "/"} className="min-w-0">
+              <Link to={isKidsLanding ? (isEnglishPath ? "/en/finance-for-kids" : "/finanzas-para-ninos") : (isEnglishPath ? "/en" : "/")} className="min-w-0">
                 {isKidsLanding ? <KidsBrandLogo className="h-7" compact /> : <BrandLogo className="h-7" compact />}
               </Link>
             </div>

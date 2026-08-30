@@ -199,6 +199,8 @@ export function BlogArticleView({ slug }: { slug: string }) {
   const related = blogPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
   const isKids = postCategory(post.slug)?.id === "ninos";
   const demoTo = isKids ? "/demo-ninos" : lang === "en" ? "/en/demo" : "/demo";
+  const blogTo = lang === "en" ? "/en/blog" : "/blog";
+  const homeTo = lang === "en" ? "/en" : "/";
 
   return (
     <div className="relative min-h-screen overflow-x-clip bg-background">
@@ -208,7 +210,7 @@ export function BlogArticleView({ slug }: { slug: string }) {
 
       <main className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-24">
         <Link
-          to="/blog"
+          to={blogTo}
           className="mt-8 inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
         >
           <ArrowLeft className="h-3.5 w-3.5" /> {t("Volver al blog", "Back to blog")}
@@ -457,7 +459,7 @@ export function BlogArticleView({ slug }: { slug: string }) {
                   : t("pruébalo en el demo", "try it in the demo")}
               </Link>
               {t(" o descubre ", " or discover ")}
-              <Link to="/" className="font-medium text-primary hover:text-primary/80">
+              <Link to={homeTo} className="font-medium text-primary hover:text-primary/80">
                 {t("cómo funciona WhatsYournumber", "how WhatsYournumber works")}
               </Link>
               {"."}
@@ -546,9 +548,10 @@ export function BlogArticleView({ slug }: { slug: string }) {
           <h2 className="text-sm font-semibold">{t("Sigue leyendo", "Keep reading")}</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-3">
             {related.map((r) => (
-              <a
+              <Link
                 key={r.slug}
-                href={`/blog/${r.slug}`}
+                to={lang === "en" ? "/en/blog/$slug" : "/blog/$slug"}
+                params={{ slug: r.slug }}
                 className="surface group overflow-hidden"
               >
                 <img
@@ -560,7 +563,7 @@ export function BlogArticleView({ slug }: { slug: string }) {
                   className="h-28 w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <p className="p-4 text-sm font-medium leading-snug">{r.title[lang]}</p>
-              </a>
+              </Link>
             ))}
           </div>
         </section>

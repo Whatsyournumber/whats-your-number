@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { LanguageToggle, useT } from "@/hooks/use-language";
+import { LanguageToggle, useLanguage, useT } from "@/hooks/use-language";
 import { saveDemoSnapshot } from "@/lib/demo-snapshot";
 
 const demoSearchSchema = z.object({
@@ -50,6 +50,7 @@ export const Route = createFileRoute("/demo")({
       { rel: "alternate", hrefLang: "x-default", href: "https://whatsyour-number.com/demo" },
     ],
   }),
+  component: DemoPage,
 });
 
 const RETURN_RATE = 0.07;
@@ -69,6 +70,7 @@ function yearsToTarget(target: number, current: number, monthly: number) {
 
 export function DemoPage() {
   const t = useT();
+  const { lang } = useLanguage();
   const { start } = useSearch({ strict: false }) as { start?: number };
   const [currency, setCurrency] = useState<"EUR" | "USD">("EUR");
   const [step, setStep] = useState(start === 1 ? 1 : 0); // 0 = intro, 1..3 = preguntas, 4 = resultado
@@ -152,7 +154,7 @@ export function DemoPage() {
       <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[900px] -translate-x-1/2 rounded-full opacity-[0.12] blur-3xl" />
 
       <header className="relative z-10 mx-auto flex w-full max-w-lg items-center justify-between">
-        <Link to="/" className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
+        <Link to={lang === "en" ? "/en" : "/"} className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-3.5 w-3.5" /> {t("Inicio", "Home")}
         </Link>
         <div className="flex items-center gap-2">

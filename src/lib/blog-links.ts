@@ -128,7 +128,8 @@ const DEMO_LINK: InternalLink = {
     { es: "prueba el demo", en: "try the demo" },
     { es: "calcula tu número", en: "calculate your number" },
   ],
-  to: "/demo",
+  to: "/demo?start=1",
+  enTo: "/en/demo?start=1",
   note: { es: "Demo interactivo en minutos, sin registro.", en: "Interactive demo in minutes, no signup." },
 };
 const KIDS_HUB: InternalLink = {

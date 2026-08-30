@@ -477,7 +477,7 @@ function Pricing() {
           </p>
           <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button asChild size="lg" className="rounded-full px-6">
-              <Link to="/demo">
+              <Link to="/demo" search={{ start: 1 }}>
                 {t("Descubrir mi número gratis", "Discover my number free")}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
