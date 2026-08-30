@@ -31,6 +31,9 @@ export const Route = createFileRoute("/calculadora-libertad-financiera")({
     ],
     links: [
       { rel: "canonical", href: "https://whatsyour-number.com/calculadora-libertad-financiera" },
+      { rel: "alternate", hrefLang: "es", href: "https://whatsyour-number.com/calculadora-libertad-financiera" },
+      { rel: "alternate", hrefLang: "en", href: "https://whatsyour-number.com/en/demo" },
+      { rel: "alternate", hrefLang: "x-default", href: "https://whatsyour-number.com/calculadora-libertad-financiera" },
     ],
   }),
   component: DemoPage,

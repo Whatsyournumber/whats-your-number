@@ -109,7 +109,7 @@ export const Route = createFileRoute("/finanzas-para-ninos")({
     links: [
       { rel: "canonical", href: "https://whatsyour-number.com/finanzas-para-ninos" },
       { rel: "alternate", hrefLang: "es", href: "https://whatsyour-number.com/finanzas-para-ninos" },
-      { rel: "alternate", hrefLang: "en", href: "https://whatsyour-number.com/en/finanzas-para-ninos" },
+      { rel: "alternate", hrefLang: "en", href: "https://whatsyour-number.com/en/finance-for-kids" },
       { rel: "alternate", hrefLang: "x-default", href: "https://whatsyour-number.com/finanzas-para-ninos" },
     ],
     scripts: [
