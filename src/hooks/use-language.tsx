@@ -117,6 +117,17 @@ export function useT() {
 /** Selector minimalista ES / EN. */
 export function LanguageToggle({ className = "" }: { className?: string }) {
   const { lang, setLang } = useLanguage();
+  const router = useRouter();
+  const location = useRouterState({ select: (s) => s.location });
+
+  const handleSelect = (code: Lang) => {
+    setLang(code);
+    const next = localizedPath(location.pathname, code);
+    if (next) {
+      void router.navigate({ to: next, search: location.search as never, hash: location.hash });
+    }
+  };
+
   return (
     <div className={`inline-flex items-center rounded-full border border-white/10 bg-black/30 p-0.5 text-[11px] shadow-sm backdrop-blur-md ${className}`}>
       {(["es", "en"] as const).map((code) => (
