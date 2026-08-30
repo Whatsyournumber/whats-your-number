@@ -250,40 +250,34 @@ function SidePanel() {
   }, []);
 
   return (
-    <div className="relative hidden min-h-screen flex-col justify-between lg:flex">
+    <div className="relative hidden min-h-screen flex-col lg:flex">
       <div className="relative p-10">
         <BrandLogo />
       </div>
 
-      <div className="relative flex flex-col gap-8 p-10 pt-0">
+      {/* Bloque de texto empujado hacia la parte baja del panel */}
+      <div className="relative mt-auto flex flex-col gap-10 p-10 pb-12">
         <div>
           <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight text-white xl:text-6xl">
-            {tt("Tu dinero.", "Your money.")}
+            {tt("Descubre", "Discover")}
             <br />
-            {tt("Tu futuro.", "Your future.")}
-            <br />
-            <span className="text-primary">{tt("Tu número.", "Your number.")}</span>
+            <span className="text-primary">{tt("tu número.", "your number.")}</span>
           </h1>
-          <p className="mt-4 max-w-md text-sm leading-relaxed text-white/70">
+          <p className="mt-5 max-w-md text-base leading-relaxed text-white/70">
             {tt(
-              "La plataforma todo-en-uno para entender dónde estás y construir tu libertad financiera.",
-              "The all-in-one platform to understand where you stand and build your financial freedom.",
+              "Toma mejores decisiones hoy para tu libertad financiera mañana.",
+              "Make better decisions today for your financial freedom tomorrow.",
             )}
           </p>
         </div>
 
         <div className="max-w-xl">
-          <PointsCarousel index={index} onChange={setIndex} light />
+          <PointsCarousel index={index} onChange={setIndex} />
         </div>
 
         <div className="max-w-md">
-          <ReviewCard index={index} light />
+          <ReviewCard index={index} />
         </div>
-
-        <p className="flex items-center gap-2 text-[11px] text-white/60">
-          <Lock className="h-3.5 w-3.5 text-primary" />
-          {tt("Tus datos son privados y cifrados.", "Your data is private and encrypted.")}
-        </p>
       </div>
     </div>
   );
