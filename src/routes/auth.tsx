@@ -197,7 +197,7 @@ function SidePanel() {
   const slide = SLIDES[index] ?? SLIDES[0]!;
 
   return (
-    <div className="relative hidden flex-col justify-between overflow-hidden rounded-3xl p-2 lg:flex lg:self-stretch">
+    <div className="relative hidden flex-col justify-between overflow-hidden rounded-3xl p-8 lg:flex lg:self-stretch">
       {/* Foto del faro + degradados para legibilidad */}
       <img
         src={lighthouseImg}
