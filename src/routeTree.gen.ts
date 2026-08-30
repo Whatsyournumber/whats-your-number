@@ -53,6 +53,7 @@ import { Route as CheckoutSuccessRouteImport } from './routes/checkout/success'
 import { Route as EnIndexRouteImport } from './routes/en.index'
 import { Route as EnBlogRouteImport } from './routes/en.blog'
 import { Route as EnFinanceForKidsRouteImport } from './routes/en.finance-for-kids'
+import { Route as EnFinancialFreedomCalculatorRouteImport } from './routes/en.financial-freedom-calculator'
 import { Route as EnFinanzasParaNinosRouteImport } from './routes/en.finanzas-para-ninos'
 import { Route as NinosIndexRouteImport } from './routes/ninos/index'
 import { Route as NinosOnboardingRouteImport } from './routes/ninos/onboarding'
@@ -297,6 +298,12 @@ const EnFinanceForKidsRoute = EnFinanceForKidsRouteImport.update({
   path: '/finance-for-kids',
   getParentRoute: () => EnRoute,
 } as any)
+const EnFinancialFreedomCalculatorRoute =
+  EnFinancialFreedomCalculatorRouteImport.update({
+    id: '/financial-freedom-calculator',
+    path: '/financial-freedom-calculator',
+    getParentRoute: () => EnRoute,
+  } as any)
 const EnFinanzasParaNinosRoute = EnFinanzasParaNinosRouteImport.update({
   id: '/finanzas-para-ninos',
   path: '/finanzas-para-ninos',
@@ -446,6 +453,7 @@ export interface FileRoutesByFullPath {
   '/checkout/success': typeof CheckoutSuccessRoute
   '/en/blog': typeof EnBlogRouteWithChildren
   '/en/finance-for-kids': typeof EnFinanceForKidsRoute
+  '/en/financial-freedom-calculator': typeof EnFinancialFreedomCalculatorRoute
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
@@ -508,6 +516,7 @@ export interface FileRoutesByTo {
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/en/finance-for-kids': typeof EnFinanceForKidsRoute
+  '/en/financial-freedom-calculator': typeof EnFinancialFreedomCalculatorRoute
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
@@ -575,6 +584,7 @@ export interface FileRoutesById {
   '/checkout/success': typeof CheckoutSuccessRoute
   '/en/blog': typeof EnBlogRouteWithChildren
   '/en/finance-for-kids': typeof EnFinanceForKidsRoute
+  '/en/financial-freedom-calculator': typeof EnFinancialFreedomCalculatorRoute
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
@@ -643,6 +653,7 @@ export interface FileRouteTypes {
     | '/checkout/success'
     | '/en/blog'
     | '/en/finance-for-kids'
+    | '/en/financial-freedom-calculator'
     | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
@@ -705,6 +716,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/checkout/success'
     | '/en/finance-for-kids'
+    | '/en/financial-freedom-calculator'
     | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
@@ -771,6 +783,7 @@ export interface FileRouteTypes {
     | '/checkout/success'
     | '/en/blog'
     | '/en/finance-for-kids'
+    | '/en/financial-freedom-calculator'
     | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
@@ -1154,6 +1167,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnFinanceForKidsRouteImport
       parentRoute: typeof EnRoute
     }
+    '/en/financial-freedom-calculator': {
+      id: '/en/financial-freedom-calculator'
+      path: '/financial-freedom-calculator'
+      fullPath: '/en/financial-freedom-calculator'
+      preLoaderRoute: typeof EnFinancialFreedomCalculatorRouteImport
+      parentRoute: typeof EnRoute
+    }
     '/en/finanzas-para-ninos': {
       id: '/en/finanzas-para-ninos'
       path: '/finanzas-para-ninos'
@@ -1355,6 +1375,7 @@ const EnBlogRouteWithChildren =
 interface EnRouteChildren {
   EnBlogRoute: typeof EnBlogRouteWithChildren
   EnFinanceForKidsRoute: typeof EnFinanceForKidsRoute
+  EnFinancialFreedomCalculatorRoute: typeof EnFinancialFreedomCalculatorRoute
   EnFinanzasParaNinosRoute: typeof EnFinanzasParaNinosRoute
   EnIndexRoute: typeof EnIndexRoute
 }
@@ -1362,6 +1383,7 @@ interface EnRouteChildren {
 const EnRouteChildren: EnRouteChildren = {
   EnBlogRoute: EnBlogRouteWithChildren,
   EnFinanceForKidsRoute: EnFinanceForKidsRoute,
+  EnFinancialFreedomCalculatorRoute: EnFinancialFreedomCalculatorRoute,
   EnFinanzasParaNinosRoute: EnFinanzasParaNinosRoute,
   EnIndexRoute: EnIndexRoute,
 }
