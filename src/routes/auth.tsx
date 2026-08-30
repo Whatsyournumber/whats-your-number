@@ -3,8 +3,6 @@ import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowLeft,
   ArrowRight,
-  ChevronLeft,
-  ChevronRight,
   Loader2,
   Lock,
   Sparkles,
@@ -171,11 +169,9 @@ function ReviewCard({ index, light }: { index: number; light?: boolean }) {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -8 }}
         transition={{ duration: 0.3 }}
-        className={`flex items-center gap-4 rounded-2xl border p-5 backdrop-blur-md ${
-          light ? "border-border bg-card" : "border-white/10 bg-black/30"
-        }`}
+        className={`flex items-center gap-4 ${light ? "rounded-2xl border border-border bg-card p-5" : ""}`}
       >
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary ring-1 ring-primary/30">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary ring-1 ring-primary/30">
           {r.initials}
         </span>
         <div className="min-w-0">
@@ -206,62 +202,42 @@ function PointsCarousel({
   light?: boolean;
 }) {
   const tt = useT();
-  const prev = () => onChange((index - 1 + POINTS.length) % POINTS.length);
-  const next = () => onChange((index + 1) % POINTS.length);
-
-  const arrowCls = `flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-colors ${
-    light
-      ? "border-border text-muted-foreground hover:bg-elevated hover:text-foreground"
-      : "border-white/15 text-white/70 hover:bg-white/10 hover:text-white"
-  }`;
 
   return (
     <div>
-      <div
-        className={`flex items-center gap-3 rounded-2xl border p-5 backdrop-blur-md ${
-          light ? "border-border bg-card" : "border-white/10 bg-black/30"
-        }`}
-      >
-        <button type="button" aria-label={tt("Anterior", "Previous")} onClick={prev} className={arrowCls}>
-          <ChevronLeft className="h-4 w-4" />
-        </button>
-        <div className="grid flex-1 grid-cols-3 gap-4">
-          {POINTS.map((p, i) => {
-            const Icon = p.icon;
-            const active = i === index;
-            return (
-              <button
-                key={p.title[1]}
-                type="button"
-                onClick={() => onChange(i)}
-                className="flex flex-col items-center gap-1.5 text-center"
+      <div className={`grid grid-cols-3 ${light ? "divide-x divide-border" : "divide-x divide-white/10"}`}>
+        {POINTS.map((p, i) => {
+          const Icon = p.icon;
+          const active = i === index;
+          return (
+            <button
+              key={p.title[1]}
+              type="button"
+              onClick={() => onChange(i)}
+              className="flex flex-col items-center gap-1.5 px-3 text-center"
+            >
+              <Icon
+                className={`h-5 w-5 transition-colors ${
+                  active ? "text-primary" : light ? "text-muted-foreground/60" : "text-white/40"
+                }`}
+              />
+              <span
+                className={`text-xs font-semibold transition-colors ${
+                  active ? (light ? "text-foreground" : "text-white") : light ? "text-foreground/70" : "text-white/60"
+                }`}
               >
-                <Icon
-                  className={`h-5 w-5 transition-colors ${
-                    active ? "text-primary" : light ? "text-muted-foreground/60" : "text-white/40"
-                  }`}
-                />
-                <span
-                  className={`text-xs font-semibold transition-colors ${
-                    active ? (light ? "text-foreground" : "text-white") : light ? "text-foreground/70" : "text-white/60"
-                  }`}
-                >
-                  {tt(p.title[0], p.title[1])}
-                </span>
-                <span
-                  className={`text-[11px] leading-snug ${
-                    light ? "text-muted-foreground" : "text-white/55"
-                  } ${active ? "" : "hidden sm:block"}`}
-                >
-                  {tt(p.body[0], p.body[1])}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-        <button type="button" aria-label={tt("Siguiente", "Next")} onClick={next} className={arrowCls}>
-          <ChevronRight className="h-4 w-4" />
-        </button>
+                {tt(p.title[0], p.title[1])}
+              </span>
+              <span
+                className={`text-[11px] leading-snug ${
+                  light ? "text-muted-foreground" : "text-white/55"
+                } ${active ? "" : "hidden sm:block"}`}
+              >
+                {tt(p.body[0], p.body[1])}
+              </span>
+            </button>
+          );
+        })}
       </div>
       <div className="mt-3 flex justify-center gap-1.5">
         {POINTS.map((_, i) => (
@@ -467,14 +443,17 @@ function AuthPage() {
       className="w-full max-w-md"
     >
       <div className="mb-5 flex items-center justify-between">
-        <Link to="/" className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground lg:text-slate-400 lg:hover:text-slate-700"
+        >
           <ArrowLeft className="h-3.5 w-3.5" /> {t("auth.back")}
         </Link>
         <LanguageToggle />
       </div>
 
-      {/* Tarjeta clara de contraste sobre el fondo dark */}
-      <div className="rounded-3xl bg-white p-8 text-slate-900 shadow-2xl shadow-black/40 sm:p-9">
+      {/* Tarjeta clara: flotante en móvil, integrada al panel blanco en desktop */}
+      <div className="rounded-3xl bg-white p-8 text-slate-900 shadow-2xl shadow-black/40 sm:p-9 lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none">
         {isAffiliate && (
           <div className="mb-6 flex flex-nowrap items-center justify-center gap-x-2">
             {[
@@ -670,8 +649,8 @@ function AuthPage() {
     <div className="min-h-screen bg-background lg:grid lg:grid-cols-2">
       <SidePanel />
 
-      <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 overflow-hidden px-4 py-12">
-        <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl" />
+      <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 overflow-hidden px-4 py-12 lg:bg-white">
+        <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
         {card}
 
         {/* Móvil: puntos + review debajo de la tarjeta */}
