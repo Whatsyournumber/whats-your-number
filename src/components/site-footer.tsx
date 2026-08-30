@@ -92,7 +92,7 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
             title: t("Recursos", "Resources"),
             links: [
                { label: "Blog", to: blogHref },
-               { label: t("Demo gratis", "Free demo"), to: "/calculadora-ahorro-universidad" },
+               { label: t("Demo gratis", "Free demo"), to: lang === "en" ? "/en/college-savings-calculator" : "/calculadora-ahorro-universidad" },
                { label: t("Finanzas para adultos", "Adult finance"), to: homeHref },
             ],
           }
