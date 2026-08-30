@@ -381,7 +381,11 @@ function AuthPage() {
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-12">
       <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.10] blur-3xl" />
 
-      <div className="relative z-10 grid w-full max-w-5xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
+      <div
+        className={`relative z-10 grid w-full items-center gap-12 lg:gap-16 ${
+          isAffiliate ? "max-w-sm" : "max-w-5xl lg:grid-cols-2"
+        }`}
+      >
         {!isAffiliate && <SidePanel />}
 
       <motion.div
