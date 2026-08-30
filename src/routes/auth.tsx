@@ -3,10 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowLeft,
   ArrowRight,
-  ChevronLeft,
-  ChevronRight,
   Loader2,
-  Lock,
   Sparkles,
   Star,
   Target,
