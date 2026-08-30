@@ -71,15 +71,21 @@ const LanguageContext = createContext<Ctx>({ lang: "es", setLang: () => {}, t: (
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("es");
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
+    // Las URLs /en/* mandan sobre la preferencia guardada.
+    if (langFromPath(pathname) === "en") {
+      setLangState("en");
+      return;
+    }
     const stored = window.localStorage.getItem(STORAGE_KEY);
     if (stored === "en" || stored === "es") {
       setLangState(stored);
       return;
     }
     setLangState(detectLang());
-  }, []);
+  }, [pathname]);
 
   const setLang = (next: Lang) => {
     setLangState(next);
