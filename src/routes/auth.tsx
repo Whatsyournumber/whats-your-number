@@ -256,52 +256,20 @@ function PointsCarousel({
   );
 }
 
-/** Panel hero fotográfico (desktop): foto a pantalla completa + puntos + review. */
+/** Panel hero fotográfico (desktop): solo la foto, limpia, sin textos encima. */
 function SidePanel() {
-  const tt = useT();
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const id = window.setInterval(() => setIndex((i) => (i + 1) % POINTS.length), 5000);
-    return () => window.clearInterval(id);
-  }, []);
-
   return (
-    <div className="relative hidden min-h-screen flex-col justify-between overflow-hidden lg:flex">
+    <div className="relative hidden min-h-screen overflow-hidden lg:block">
       <img
-        src={heroImg}
+        src={heroAsset.url}
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center brightness-[0.9]"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center"
       />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/70 via-background/20 to-transparent" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/40 to-background/10" />
-
+      {/* Velo sutil solo para que respire el logo en la esquina oscura */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/60 via-transparent to-transparent" />
       <div className="relative p-10">
         <BrandLogo />
-      </div>
-
-      <div className="relative flex flex-col gap-8 p-10 pt-0">
-        <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight text-white xl:text-6xl">
-          {tt("Tu dinero.", "Your money.")}
-          <br />
-          {tt("Tu futuro.", "Your future.")}
-          <br />
-          <span className="text-primary">{tt("Tu número.", "Your number.")}</span>
-        </h1>
-
-        <div className="max-w-xl">
-          <PointsCarousel index={index} onChange={setIndex} />
-        </div>
-
-        <div className="max-w-xl">
-          <ReviewCard index={index} />
-        </div>
-
-        <p className="flex items-center gap-2 text-[11px] text-white/60">
-          <Lock className="h-3.5 w-3.5 text-primary" />
-          {tt("Tus datos son privados y cifrados.", "Your data is private and encrypted.")}
-        </p>
       </div>
     </div>
   );
