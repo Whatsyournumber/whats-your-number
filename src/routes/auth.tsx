@@ -4,6 +4,8 @@ import { ArrowLeft, ChevronLeft, ChevronRight, Loader2, Star } from "lucide-reac
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+import lighthouseImg from "@/assets/auth-lighthouse.jpg";
+
 import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
