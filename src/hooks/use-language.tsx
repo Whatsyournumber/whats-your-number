@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { useRouter, useRouterState } from "@tanstack/react-router";
 
 import { detectLang } from "@/lib/geo";
+import { langFromPath, localizedPath } from "@/lib/lang-routes";
 
 export type Lang = "es" | "en";
 
@@ -69,15 +71,21 @@ const LanguageContext = createContext<Ctx>({ lang: "es", setLang: () => {}, t: (
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>("es");
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
+    // Las URLs /en/* mandan sobre la preferencia guardada.
+    if (langFromPath(pathname) === "en") {
+      setLangState("en");
+      return;
+    }
     const stored = window.localStorage.getItem(STORAGE_KEY);
     if (stored === "en" || stored === "es") {
       setLangState(stored);
       return;
     }
     setLangState(detectLang());
-  }, []);
+  }, [pathname]);
 
   const setLang = (next: Lang) => {
     setLangState(next);
@@ -109,13 +117,24 @@ export function useT() {
 /** Selector minimalista ES / EN. */
 export function LanguageToggle({ className = "" }: { className?: string }) {
   const { lang, setLang } = useLanguage();
+  const router = useRouter();
+  const location = useRouterState({ select: (s) => s.location });
+
+  const handleSelect = (code: Lang) => {
+    setLang(code);
+    const next = localizedPath(location.pathname, code);
+    if (next) {
+      void router.navigate({ to: next, search: location.search as never, hash: location.hash });
+    }
+  };
+
   return (
     <div className={`inline-flex items-center rounded-full border border-white/10 bg-black/30 p-0.5 text-[11px] shadow-sm backdrop-blur-md ${className}`}>
       {(["es", "en"] as const).map((code) => (
         <button
           key={code}
           type="button"
-          onClick={() => setLang(code)}
+          onClick={() => handleSelect(code)}
           className={`rounded-full px-2.5 py-1 uppercase tracking-wide transition-colors ${
             lang === code
               ? "bg-foreground text-background"
