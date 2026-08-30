@@ -55,21 +55,17 @@ function HighlightDesc({ desc, highlight }: { desc: string; highlight?: string }
   );
 }
 
+const META_TITLE_ES = "Controla tus Gastos, Patrimonio y Libertad Financiera";
+const META_DESC_ES =
+  "Controla tus gastos e ingresos, patrimonio e inversiones, y descubre cuánto necesitas para tu retiro y libertad financiera. Potenciado por IA | Comienza ya";
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "¿Cuál Es Tu Número para Retiro? | Calculadora de Libertad Financiera" },
-      {
-        name: "description",
-        content:
-          "Descubre cuál es tu número para retiro con la calculadora de libertad financiera. Control de gastos e ingresos, calculadora de patrimonio y jubilación y comparador de costo de vida en una sola app de finanzas personales para familias.",
-      },
-      { property: "og:title", content: "¿Cuál Es Tu Número para Retiro? | Calculadora de Libertad Financiera" },
-      {
-        property: "og:description",
-        content:
-          "Descubre cuál es tu número para retiro: control de gastos e ingresos, calculadora de patrimonio y jubilación y comparador de costo de vida en una sola plataforma.",
-      },
+      { title: META_TITLE_ES },
+      { name: "description", content: META_DESC_ES },
+      { property: "og:title", content: META_TITLE_ES },
+      { property: "og:description", content: META_DESC_ES },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:url", content: "https://whatsyour-number.com" },
