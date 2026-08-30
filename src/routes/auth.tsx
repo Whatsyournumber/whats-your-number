@@ -475,7 +475,7 @@ function AuthPage() {
       </div>
 
       {/* Tarjeta clara: box flotante con sombra premium */}
-      <div className="rounded-[2rem] bg-white p-7 text-slate-900 shadow-[0_32px_80px_-28px_rgba(0,0,0,0.22)] sm:p-9">
+      <div className="min-h-[720px] rounded-[2rem] bg-white p-8 py-12 text-slate-900 shadow-[0_32px_80px_-28px_rgba(0,0,0,0.22)] sm:p-10 sm:py-16">
         {isAffiliate && (
           <div className="mb-6 flex flex-nowrap items-center justify-center gap-x-2">
             {[
