@@ -639,8 +639,8 @@ function AuthPage() {
         <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
         {card}
 
-        {/* Móvil: puntos + review debajo de la tarjeta */}
-        <div className="w-full max-w-md space-y-6 lg:hidden">
+        {/* Móvil: puntos + review debajo de la tarjeta (fondo oscuro para contraste) */}
+        <div className="w-full max-w-md space-y-6 rounded-3xl bg-slate-900 p-6 lg:hidden">
           <PointsCarousel index={point} onChange={setPoint} />
           <ReviewCard index={point} />
         </div>
