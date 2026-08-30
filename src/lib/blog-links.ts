@@ -138,7 +138,7 @@ const KIDS_HUB: InternalLink = {
     { es: "tus hijos", en: "your kids" },
   ],
   to: "/finanzas-para-ninos",
-  enTo: "/en/finanzas-para-ninos",
+  enTo: "/en/finance-for-kids",
   note: { es: "La experiencia para que tus hijos aprendan invirtiendo.", en: "The experience where your kids learn by investing." },
 };
 const PRICING_LINK: InternalLink = {
