@@ -13,7 +13,7 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import heroImg from "@/assets/auth-hero.jpg";
+import heroAsset from "@/assets/hero-man-laptop-v3.jpg.asset.json";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
@@ -256,52 +256,20 @@ function PointsCarousel({
   );
 }
 
-/** Panel hero fotográfico (desktop): foto a pantalla completa + puntos + review. */
+/** Panel hero fotográfico (desktop): solo la foto, limpia, sin textos encima. */
 function SidePanel() {
-  const tt = useT();
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const id = window.setInterval(() => setIndex((i) => (i + 1) % POINTS.length), 5000);
-    return () => window.clearInterval(id);
-  }, []);
-
   return (
-    <div className="relative hidden min-h-screen flex-col justify-between overflow-hidden lg:flex">
+    <div className="relative hidden min-h-screen overflow-hidden lg:block">
       <img
-        src={heroImg}
+        src={heroAsset.url}
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center brightness-[0.9]"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center"
       />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/70 via-background/20 to-transparent" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/40 to-background/10" />
-
+      {/* Velo sutil solo para que respire el logo en la esquina oscura */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/60 via-transparent to-transparent" />
       <div className="relative p-10">
         <BrandLogo />
-      </div>
-
-      <div className="relative flex flex-col gap-8 p-10 pt-0">
-        <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight text-white xl:text-6xl">
-          {tt("Tu dinero.", "Your money.")}
-          <br />
-          {tt("Tu futuro.", "Your future.")}
-          <br />
-          <span className="text-primary">{tt("Tu número.", "Your number.")}</span>
-        </h1>
-
-        <div className="max-w-xl">
-          <PointsCarousel index={index} onChange={setIndex} />
-        </div>
-
-        <div className="max-w-xl">
-          <ReviewCard index={index} />
-        </div>
-
-        <p className="flex items-center gap-2 text-[11px] text-white/60">
-          <Lock className="h-3.5 w-3.5 text-primary" />
-          {tt("Tus datos son privados y cifrados.", "Your data is private and encrypted.")}
-        </p>
       </div>
     </div>
   );
@@ -440,9 +408,9 @@ function AuthPage() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35 }}
-      className="w-full max-w-md"
+      className="w-full max-w-sm"
     >
-      <div className="mb-5 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between">
         <Link
           to="/"
           className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground lg:text-slate-400 lg:hover:text-slate-700"
@@ -452,8 +420,8 @@ function AuthPage() {
         <LanguageToggle />
       </div>
 
-      {/* Tarjeta clara: flotante en móvil, integrada al panel blanco en desktop */}
-      <div className="rounded-3xl bg-white p-8 text-slate-900 shadow-2xl shadow-black/40 sm:p-9 lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none">
+      {/* Tarjeta clara flotante: compacta como en la referencia */}
+      <div className="rounded-3xl bg-white p-7 text-slate-900 shadow-2xl shadow-black/40 sm:p-8 lg:shadow-xl lg:shadow-slate-900/10 lg:ring-1 lg:ring-slate-100">
         {isAffiliate && (
           <div className="mb-6 flex flex-nowrap items-center justify-center gap-x-2">
             {[
@@ -649,14 +617,28 @@ function AuthPage() {
     <div className="min-h-screen bg-background lg:grid lg:grid-cols-2">
       <SidePanel />
 
-      <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 overflow-hidden px-4 py-12 lg:bg-white">
+      <div className="relative flex min-h-screen flex-col items-center justify-center gap-7 overflow-hidden px-4 py-10 lg:bg-white">
         <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
         {card}
 
-        {/* Móvil: puntos + review debajo de la tarjeta */}
-        <div className="w-full max-w-md space-y-6 lg:hidden">
-          <PointsCarousel index={point} onChange={setPoint} />
-          <ReviewCard index={point} />
+        {/* Puntos + review debajo de la tarjeta (claros en desktop, oscuros en móvil) */}
+        <div className="w-full max-w-md space-y-6">
+          <div className="lg:hidden">
+            <PointsCarousel index={point} onChange={setPoint} />
+            <div className="mt-6">
+              <ReviewCard index={point} />
+            </div>
+          </div>
+          <div className="hidden lg:block">
+            <PointsCarousel index={point} onChange={setPoint} light />
+            <div className="mt-6">
+              <ReviewCard index={point} light />
+            </div>
+            <p className="mt-6 flex items-center justify-center gap-2 text-[11px] text-slate-400">
+              <Lock className="h-3.5 w-3.5 text-primary" />
+              {tt("Tus datos son privados y cifrados.", "Your data is private and encrypted.")}
+            </p>
+          </div>
         </div>
       </div>
     </div>
