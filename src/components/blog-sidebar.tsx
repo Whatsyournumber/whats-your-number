@@ -81,7 +81,7 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
         )}
 
         <a
-          href={activeCategory === "ninos" ? "/demo-ninos?start=1" : demoHref}
+          href={activeCategory === "ninos" ? "/calculadora-ahorro-universidad?start=1" : demoHref}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
