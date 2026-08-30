@@ -184,6 +184,7 @@ const PUBLIC_PATHS = [
   "/calculadora-libertad-financiera",
   "/en/financial-freedom-calculator",
   "/demo-ninos",
+  "/calculadora-ahorro-universidad",
   "/privacidad",
   "/terminos",
   "/reembolsos",
