@@ -134,7 +134,7 @@ export function LanguageToggle({ className = "" }: { className?: string }) {
         <button
           key={code}
           type="button"
-          onClick={() => setLang(code)}
+          onClick={() => handleSelect(code)}
           className={`rounded-full px-2.5 py-1 uppercase tracking-wide transition-colors ${
             lang === code
               ? "bg-foreground text-background"
