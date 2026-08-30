@@ -5,6 +5,7 @@ import { BlogArticleView } from "@/routes/blog.$slug";
 import { getPost } from "@/lib/blog-posts";
 import { getAuthor } from "@/lib/blog-authors";
 import { absoluteUrl, buildArticleJsonLd, buildBreadcrumbJsonLd, buildFaqJsonLd, postIsoDate } from "@/lib/blog-jsonld";
+import { blogSeoDescription, blogSeoTitle } from "@/lib/blog-seo";
 import { useLanguage } from "@/hooks/use-language";
 
 export const Route = createFileRoute("/en/blog/$slug")({
@@ -15,8 +16,8 @@ export const Route = createFileRoute("/en/blog/$slug")({
   },
   head: ({ params }) => {
     const post = getPost(params.slug);
-    const title = post ? `${post.title.en} — WhatsYournumber` : "Article — WhatsYournumber";
-    const description = post?.excerpt.en ?? "Articles about personal finance, investing and AI.";
+    const title = blogSeoTitle(params.slug, "en");
+    const description = blogSeoDescription(params.slug, "en");
     const author = getAuthor(params.slug);
     const url = `https://whatsyour-number.com/en/blog/${params.slug}`;
     const image = absoluteUrl(post?.image);
@@ -24,8 +25,8 @@ export const Route = createFileRoute("/en/blog/$slug")({
     const jsonLd = buildArticleJsonLd(params.slug, "en");
     return {
       meta: [
-        { title: title.slice(0, 70) },
-        { name: "description", content: description.slice(0, 158) },
+        { title },
+        { name: "description", content: description },
         { name: "author", content: author.name },
         { property: "og:title", content: title },
         { property: "og:description", content: description },

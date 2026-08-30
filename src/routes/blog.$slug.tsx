@@ -14,6 +14,7 @@ import { postCategory } from "@/lib/blog-categories";
 import { absoluteUrl, buildArticleJsonLd, buildBreadcrumbJsonLd, buildFaqJsonLd, getPostFaqs, postIsoDate } from "@/lib/blog-jsonld";
 import { getPostLinks, type PostLinks } from "@/lib/blog-links";
 import { ShareArticle } from "@/components/share-article";
+import { blogSeoDescription, blogSeoTitle } from "@/lib/blog-seo";
 
 
 export const Route = createFileRoute("/blog/$slug")({
@@ -24,8 +25,8 @@ export const Route = createFileRoute("/blog/$slug")({
   },
   head: ({ params }) => {
     const post = getPost(params.slug);
-    const title = post ? `${post.title.es} — WhatsYournumber` : "Artículo — WhatsYournumber";
-    const description = post?.excerpt.es ?? "Artículos sobre finanzas personales, inversión y IA.";
+    const title = blogSeoTitle(params.slug, "es");
+    const description = blogSeoDescription(params.slug, "es");
     const author = getAuthor(params.slug);
     const url = `https://whatsyour-number.com/blog/${params.slug}`;
     const image = absoluteUrl(post?.image);
@@ -33,8 +34,8 @@ export const Route = createFileRoute("/blog/$slug")({
     const jsonLd = buildArticleJsonLd(params.slug, "es");
     return {
       meta: [
-        { title: title.slice(0, 70) },
-        { name: "description", content: description.slice(0, 158) },
+        { title },
+        { name: "description", content: description },
         { name: "author", content: author.name },
         { property: "og:title", content: title },
         { property: "og:description", content: description },
