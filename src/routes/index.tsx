@@ -35,7 +35,7 @@ import { Button } from "@/components/ui/button";
 import { FaqSection } from "@/components/faq-section";
 import { useAuth } from "@/hooks/use-auth";
 import { useSubscription } from "@/hooks/use-subscription";
-import { useT } from "@/hooks/use-language";
+import { useLanguage, useT } from "@/hooks/use-language";
 import { HOME_FAQS, buildLandingFaqJsonLd } from "@/lib/landing-faqs";
 import { useEffect } from "react";
 
@@ -183,7 +183,7 @@ function DemoCard() {
 
 
 
-      <Link to="/demo" search={{ start: 1 }} className="group block">
+      <Link to={demoTo} search={{ start: 1 }} className="group block">
         <div className="surface glow relative overflow-hidden p-8 transition-transform duration-300 hover:scale-[1.01] md:p-12">
           <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.08]" />
           <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
@@ -262,6 +262,8 @@ function DemoCard() {
 
 export function Landing() {
   const t = useT();
+  const { lang } = useLanguage();
+  const demoTo = lang === "en" ? "/en/demo" : "/demo";
   const liveCount = useLiveCount(1200);
   const { user, loading: authLoading } = useAuth();
   const { isPatrimonio, loading: subscriptionLoading } = useSubscription();
@@ -508,7 +510,7 @@ export function Landing() {
 
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3 md:justify-start">
                 <Button asChild size="lg" className="gap-2 rounded-full px-6">
-                  <Link to="/demo" search={{ start: 1 }}>
+                  <Link to={demoTo} search={{ start: 1 }}>
                     {t("Descubre tu número", "Discover your number")} <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Button>
@@ -709,7 +711,7 @@ export function Landing() {
                 </p>
                 <div className="mt-5 flex flex-wrap items-center gap-3">
                   <Button asChild size="lg" className="gap-2 rounded-full px-6">
-                    <Link to="/demo" search={{ start: 1 }}>
+                    <Link to={demoTo} search={{ start: 1 }}>
                       {t("Probar demo gratis", "Try free demo")} <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Button>

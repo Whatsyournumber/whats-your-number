@@ -31,6 +31,7 @@ export function BlogIndex() {
   const activeCatMeta = blogCategories.find((c) => c.id === rawCat);
   const activeCat = activeCatMeta?.id ?? null;
   const blogHref = lang === "en" ? "/en/blog" : "/blog";
+  const articleHref = (slug: string) => `${blogHref}/${slug}`;
 
   const featured = blogPosts[0]!;
   const listed = activeCat ? postsByCategory(activeCat) : blogPosts.slice(1);
@@ -94,7 +95,7 @@ export function BlogIndex() {
         {!activeCat && (
         <a
 
-          href={`/blog/${featured.slug}`}
+          href={articleHref(featured.slug)}
           target="_blank"
           rel="noopener noreferrer"
           className="surface group mt-10 grid overflow-hidden md:grid-cols-2"
@@ -135,7 +136,7 @@ export function BlogIndex() {
 
             <a
               key={post.slug}
-              href={`/blog/${post.slug}`}
+              href={articleHref(post.slug)}
               target="_blank"
               rel="noopener noreferrer"
               className="surface group flex flex-col overflow-hidden"
