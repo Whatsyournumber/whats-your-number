@@ -5,9 +5,9 @@ import { HOME_FAQS, buildLandingFaqJsonLd } from "@/lib/landing-faqs";
 import { Landing } from "@/routes/index";
 import { useLanguage } from "@/hooks/use-language";
 
-const TITLE = "What Is Your Number for Retirement? | Financial Freedom Calculator";
+const TITLE = "Track Spending, Net Worth & Financial Freedom Number";
 const DESCRIPTION =
-  "Discover what is your number for retirement with the Financial Freedom Calculator. The personal income and expense tracker, net worth and retirement calculator, and investment and net worth tracker built for personal finance for families.";
+  "Track income, expenses, net worth and investments, and discover how much you need for early retirement and financial freedom. Powered by AI | Start free";
 
 export const Route = createFileRoute("/en/")({
   head: () => ({
