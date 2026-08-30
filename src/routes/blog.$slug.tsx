@@ -14,6 +14,7 @@ import { postCategory } from "@/lib/blog-categories";
 import { absoluteUrl, buildArticleJsonLd, buildBreadcrumbJsonLd, buildFaqJsonLd, getPostFaqs, postIsoDate } from "@/lib/blog-jsonld";
 import { getPostLinks, type PostLinks } from "@/lib/blog-links";
 import { ShareArticle } from "@/components/share-article";
+import { blogSeoDescription, blogSeoTitle } from "@/lib/blog-seo";
 
 
 export const Route = createFileRoute("/blog/$slug")({
