@@ -65,43 +65,43 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
         ? {
             title: t("Producto", "Product"),
             links: [
-              { label: t("Funciones", "Features"), to: "/finanzas-para-ninos#funciones" },
-              { label: t("Precios", "Pricing"), to: "/precios" },
+               { label: t("Funciones", "Features"), to: `${kidsHref}#funciones` },
+               { label: t("Precios", "Pricing"), to: "/precios" },
               { label: t("Programa de afiliados", "Affiliate program"), to: "/afiliados", external: true },
             ],
           }
         : {
             title: t("Producto", "Product"),
             links: [
-              { label: t("Funciones", "Features"), to: "/#funciones" },
-              { label: t("Precios", "Pricing"), to: "/#precios" },
-              { label: t("Programa de afiliados", "Affiliate program"), to: "/afiliados", external: true },
+               { label: t("Funciones", "Features"), to: `${homeHref}#funciones` },
+               { label: t("Precios", "Pricing"), to: `${homeHref}#precios` },
+               { label: t("Programa de afiliados", "Affiliate program"), to: "/afiliados", external: true },
             ],
           },
     affiliates
       ? {
           title: t("Recursos", "Resources"),
           links: [
-            { label: "Blog", to: "/blog" },
-            { label: t("Finanzas para adultos", "Adult finance"), to: "/", external: true },
-            { label: t("Finanzas para niños", "Kids finance"), to: "/finanzas-para-ninos", external: true },
+             { label: "Blog", to: blogHref },
+             { label: t("Finanzas para adultos", "Adult finance"), to: homeHref, external: true },
+             { label: t("Finanzas para niños", "Kids finance"), to: kidsHref, external: true },
           ],
         }
       : kids
         ? {
             title: t("Recursos", "Resources"),
             links: [
-              { label: "Blog", to: "/blog" },
-              { label: t("Demo gratis", "Free demo"), to: "/demo-ninos" },
-              { label: t("Finanzas para adultos", "Adult finance"), to: "/" },
+               { label: "Blog", to: blogHref },
+               { label: t("Demo gratis", "Free demo"), to: "/demo-ninos" },
+               { label: t("Finanzas para adultos", "Adult finance"), to: homeHref },
             ],
           }
         : {
             title: t("Recursos", "Resources"),
             links: [
-              { label: "Blog", to: "/blog" },
-              { label: t("Demo gratis", "Free demo"), to: "/demo" },
-              { label: t("Finanzas para niños", "Kids finance"), to: "/finanzas-para-ninos", external: true },
+               { label: "Blog", to: blogHref },
+               { label: t("Demo gratis", "Free demo"), to: demoHref },
+               { label: t("Finanzas para niños", "Kids finance"), to: kidsHref, external: true },
             ],
           },
     {
