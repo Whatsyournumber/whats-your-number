@@ -579,7 +579,7 @@ function AuthPage() {
           </Button>
         </form>
 
-        <p className="mt-5 text-center text-xs text-slate-500">
+        <p className="mt-4 text-center text-xs text-slate-500">
           {mode === "login" ? (
             <>
               {tt("¿Aún no tienes cuenta?", "Don't have an account yet?")}{" "}
@@ -605,7 +605,7 @@ function AuthPage() {
           )}
         </p>
 
-        <p className="mt-4 text-center text-[11px] text-slate-400">{t("auth.legal")}</p>
+        <p className="mt-3 text-center text-[11px] text-slate-400">{t("auth.legal")}</p>
       </div>
     </motion.div>
   );
