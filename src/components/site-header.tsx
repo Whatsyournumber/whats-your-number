@@ -19,9 +19,9 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
   const t = useT();
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
-  const isKidsLanding = pathname === "/finanzas-para-ninos";
+  const isKidsLanding = pathname === "/finanzas-para-ninos" || pathname === "/en/finance-for-kids";
   const isLight = variant === "light";
-  const showCurrency = pathname !== "/" && !isKidsLanding;
+  const showCurrency = pathname !== "/" && pathname !== "/en" && !isKidsLanding;
 
 
 

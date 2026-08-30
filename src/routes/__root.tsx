@@ -172,7 +172,25 @@ function RootComponent() {
   );
 }
 
-const PUBLIC_PATHS = ["/", "/en", "/auth", "/precios", "/blog", "/en/blog", "/demo", "/demo-ninos", "/privacidad", "/terminos", "/reembolsos", "/finanzas-para-ninos", "/en/finanzas-para-ninos"];
+const PUBLIC_PATHS = [
+  "/",
+  "/en",
+  "/auth",
+  "/precios",
+  "/blog",
+  "/en/blog",
+  "/demo",
+  "/en/demo",
+  "/calculadora-libertad-financiera",
+  "/en/financial-freedom-calculator",
+  "/demo-ninos",
+  "/privacidad",
+  "/terminos",
+  "/reembolsos",
+  "/finanzas-para-ninos",
+  "/en/finanzas-para-ninos",
+  "/en/finance-for-kids",
+];
 // El onboarding tiene su propio gate de sesión y layout a pantalla completa.
 const BARE_PATHS = ["/onboarding", "/elegir", "/ninos"];
 
