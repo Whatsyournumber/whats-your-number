@@ -381,11 +381,14 @@ function AuthPage() {
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-12">
       <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.10] blur-3xl" />
 
+      <div className="relative z-10 grid w-full max-w-5xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
+        {!isAffiliate && <SidePanel />}
+
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
-        className="relative z-10 w-full max-w-sm"
+        className="w-full max-w-sm justify-self-center lg:justify-self-end"
       >
         <div className="mb-6 flex items-center justify-between">
           <Link to="/" className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
