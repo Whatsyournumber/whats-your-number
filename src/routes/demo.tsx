@@ -50,6 +50,7 @@ export const Route = createFileRoute("/demo")({
       { rel: "alternate", hrefLang: "x-default", href: "https://whatsyour-number.com/demo" },
     ],
   }),
+  component: DemoPage,
 });
 
 const RETURN_RATE = 0.07;
