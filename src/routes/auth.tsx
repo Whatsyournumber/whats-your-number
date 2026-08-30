@@ -468,12 +468,12 @@ function AuthPage() {
             </>
           ) : (
             <>
-              <h2 className="font-display text-3xl font-semibold tracking-tight text-slate-900">
+              <h2 className="font-display text-2xl font-semibold tracking-tight text-slate-900">
                 {mode === "signup"
                   ? tt("Crea tu cuenta gratis", "Create your free account")
                   : tt("Bienvenido de vuelta", "Welcome back")}
               </h2>
-              <p className="mt-2 text-sm leading-relaxed text-slate-500">
+              <p className="mt-1.5 text-sm leading-relaxed text-slate-500">
                 {tt(
                   "Tu futuro financiero empieza conociendo tu número.",
                   "Your financial future starts by knowing your number.",
@@ -486,7 +486,7 @@ function AuthPage() {
         {/* Google primero, como en la referencia */}
         <Button
           variant="outline"
-          className="mt-6 w-full gap-2 rounded-xl border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+          className="mt-5 w-full gap-2 rounded-xl border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900"
           onClick={() => void onOAuth()}
           disabled={busy}
         >
@@ -494,13 +494,13 @@ function AuthPage() {
           {tt("Continuar con Google", "Continue with Google")}
         </Button>
 
-        <div className="my-4 flex items-center gap-3">
+        <div className="my-3 flex items-center gap-3">
           <span className="h-px flex-1 bg-slate-200" />
           <span className="text-[11px] text-slate-400">{tt("o continúa con email", "or continue with email")}</span>
           <span className="h-px flex-1 bg-slate-200" />
         </div>
 
-        <form onSubmit={onSubmit} className="space-y-3.5">
+        <form onSubmit={onSubmit} className="space-y-3">
           {mode === "signup" && (
             <div>
               <Label htmlFor="fullName" className="text-xs text-slate-500">
