@@ -150,8 +150,8 @@ function Pricing() {
       priceId: null,
       contact: true,
       desc: t(
-        "Planning patrimonial para tus clientes.\nReportes bajo tu marca.\nHerramientas que escalan contigo.",
-        "Wealth planning for your clients.\nBranded reports under your identity.\nTools that scale with you.",
+        "Planning patrimonial B2B.\nReportes bajo tu marca.\nEscalabilidad para tu equipo.",
+        "B2B wealth planning.\nBranded reports.\nScalable for your team.",
       ),
       features: [
         t("Todo lo de Familiar para cada miembro", "Everything in Familiar for each member"),
