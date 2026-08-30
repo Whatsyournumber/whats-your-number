@@ -5,9 +5,9 @@ import { KIDS_FAQS, buildLandingFaqJsonLd } from "@/lib/landing-faqs";
 import { KidsFinanceLanding } from "@/routes/finanzas-para-ninos";
 import { useLanguage } from "@/hooks/use-language";
 
-const TITLE = "Kids Finance | Plan Their Financial Future & College Fund";
+const TITLE = "Finance for Kids | Saving, Investing & Allowance";
 const DESCRIPTION =
-  "Teach your children the value of money, saving and investing. Calculate how much to save for their college fund and help them build a stronger financial future from an early age.";
+  "Plan how much your child could have by 18 for college, build their first portfolio, manage allowance and chores, and teach them the value of money | Start free";
 
 export const Route = createFileRoute("/en/finanzas-para-ninos")({
   head: () => ({
