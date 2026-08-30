@@ -30,8 +30,10 @@ export const Route = createFileRoute("/en/college-savings-calculator")({
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESCRIPTION },
       { property: "og:url", content: EN_URL },
-      { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
-      { name: "twitter:image", content: "https://whatsyour-number.com/og-cover.jpg" },
+      { property: "og:image", content: "https://whatsyour-number.com/og-college-en.jpg" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { name: "twitter:image", content: "https://whatsyour-number.com/og-college-en.jpg" },
     ],
     links: [
       { rel: "canonical", href: EN_URL },
