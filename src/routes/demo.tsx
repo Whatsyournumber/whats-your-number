@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useSearch } from "@tanstack/react-router";
 import { z } from "zod";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeft, ArrowRight, RotateCcw, Sparkles, Target } from "lucide-react";
@@ -16,28 +16,11 @@ const demoSearchSchema = z.object({
 
 export const Route = createFileRoute("/demo")({
   validateSearch: demoSearchSchema,
-  head: () => ({
-    meta: [
-      { title: "Descubre tu número — WhatsYournumber" },
-      {
-        name: "description",
-        content:
-          "Demo gratis sin registro: responde 3 preguntas y descubre en 30 segundos cuánto capital necesitas para vivir de tus inversiones.",
-      },
-      { property: "og:title", content: "Descubre tu número — WhatsYournumber" },
-      {
-        property: "og:description",
-        content: "Tres preguntas, cero registro. Tu número de libertad financiera al instante.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:url", content: "https://whatsyour-number.com/demo" },
-      { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
-      { name: "twitter:image", content: "https://whatsyour-number.com/og-cover.jpg" },
-    ],
-    links: [{ rel: "canonical", href: "https://whatsyour-number.com/demo" }],
-  }),
-  component: DemoPage,
+  beforeLoad: ({ search }) => {
+    // La URL pública canónica del demo es /calculadora-libertad-financiera (SEO).
+    // eslint-disable-next-line @typescript-eslint/only-throw-error
+    throw redirect({ to: "/calculadora-libertad-financiera", search });
+  },
 });
 
 const RETURN_RATE = 0.07;
@@ -55,7 +38,7 @@ function yearsToTarget(target: number, current: number, monthly: number) {
   return null;
 }
 
-function DemoPage() {
+export function DemoPage() {
   const t = useT();
   const { start } = useSearch({ from: "/demo" });
   const [currency, setCurrency] = useState<"EUR" | "USD">("EUR");
