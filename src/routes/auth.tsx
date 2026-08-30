@@ -3,8 +3,6 @@ import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowLeft,
   ArrowRight,
-  ChevronLeft,
-  ChevronRight,
   Loader2,
   Lock,
   Sparkles,
@@ -445,14 +443,17 @@ function AuthPage() {
       className="w-full max-w-md"
     >
       <div className="mb-5 flex items-center justify-between">
-        <Link to="/" className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground lg:text-slate-400 lg:hover:text-slate-700"
+        >
           <ArrowLeft className="h-3.5 w-3.5" /> {t("auth.back")}
         </Link>
         <LanguageToggle />
       </div>
 
-      {/* Tarjeta clara de contraste sobre el fondo dark */}
-      <div className="rounded-3xl bg-white p-8 text-slate-900 shadow-2xl shadow-black/40 sm:p-9">
+      {/* Tarjeta clara: flotante en móvil, integrada al panel blanco en desktop */}
+      <div className="rounded-3xl bg-white p-8 text-slate-900 shadow-2xl shadow-black/40 sm:p-9 lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none">
         {isAffiliate && (
           <div className="mb-6 flex flex-nowrap items-center justify-center gap-x-2">
             {[
