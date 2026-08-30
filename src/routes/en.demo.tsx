@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { z } from "zod";
 
-import { DemoPage } from "./demo";
+import { DemoPage } from "@/components/demo-page";
 import { useLanguage } from "@/hooks/use-language";
 
 const demoSearchSchema = z.object({
@@ -14,7 +14,7 @@ const DESCRIPTION =
   "Calculate how much capital you need to live off your investments and reach financial freedom. Answer 3 questions in 30 seconds. Free, no sign-up.";
 
 const EN_URL = "https://whatsyour-number.com/en/demo";
-const ES_URL = "https://whatsyour-number.com/demo";
+const ES_URL = "https://whatsyour-number.com/calculadora-libertad-financiera";
 
 export const Route = createFileRoute("/en/demo")({
   validateSearch: demoSearchSchema,

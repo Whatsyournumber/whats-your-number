@@ -90,7 +90,7 @@ function Pricing() {
         t("Your next city", "Your next city"),
       ],
       cta: t("Empezar gratis", "Start for free"),
-      href: "/demo",
+      href: "/calculadora-libertad-financiera",
       highlight: false,
     },
     {
@@ -429,7 +429,7 @@ function Pricing() {
                     }`}
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <Link to={plan.name === "Free" ? "/demo" : "/auth"} search={plan.name === "Free" ? {} : { mode: "signup" }}>
+                    <Link to={plan.name === "Free" ? "/calculadora-libertad-financiera" : "/auth"} search={plan.name === "Free" ? {} : { mode: "signup" }}>
                       {plan.cta}
                     </Link>
                   </Button>
@@ -477,7 +477,7 @@ function Pricing() {
           </p>
           <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button asChild size="lg" className="rounded-full px-6">
-              <Link to="/demo" search={{ start: 1 }}>
+              <Link to="/calculadora-libertad-financiera" search={{ start: 1 }}>
                 {t("Descubrir mi número gratis", "Discover my number free")}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>

@@ -2,6 +2,7 @@
 
 const ES_TO_EN: Array<[string, string]> = [
   ["/finanzas-para-ninos", "/en/finance-for-kids"],
+  ["/calculadora-libertad-financiera", "/en/demo"],
   ["/demo", "/en/demo"],
   ["/blog", "/en/blog"],
   ["/", "/en"],
@@ -39,6 +40,7 @@ export function langFromPath(pathname: string): "es" | "en" | null {
     clean === "/blog" ||
     clean.startsWith("/blog/") ||
     clean === "/demo" ||
+    clean === "/calculadora-libertad-financiera" ||
     clean === "/finanzas-para-ninos" ||
     clean.startsWith("/finanzas-para-ninos/")
   ) return "es";
