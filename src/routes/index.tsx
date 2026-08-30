@@ -154,6 +154,8 @@ export const Route = createFileRoute("/")({
 
 function DemoCard() {
   const t = useT();
+  const { lang } = useLanguage();
+  const demoTo = lang === "en" ? "/en/demo" : "/demo";
 
   const steps = [
     { label: t("Gasto mensual ideal", "Ideal monthly spending"), value: "€5,000" },
