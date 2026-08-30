@@ -210,25 +210,27 @@ function PointsCarousel({ index, onChange }: { index: number; onChange: (i: numb
               key={p.title[1]}
               type="button"
               onClick={() => onChange(i)}
-              className="flex flex-col items-start gap-2 px-5 text-left first:pl-0 last:pr-0"
+              className="flex items-start gap-2.5 px-4 text-left first:pl-0 last:pr-0"
             >
-              <Icon className={`h-6 w-6 transition-colors ${active ? "text-primary" : "text-white/40"}`} />
-              <span className={`text-sm font-semibold transition-colors ${active ? "text-white" : "text-white/60"}`}>
-                {tt(p.title[0], p.title[1])}
+              <Icon className={`mt-0.5 h-4 w-4 shrink-0 transition-colors ${active ? "text-primary" : "text-white/40"}`} />
+              <span className="min-w-0">
+                <span className={`block text-xs font-semibold leading-tight transition-colors ${active ? "text-white" : "text-white/60"}`}>
+                  {tt(p.title[0], p.title[1])}
+                </span>
+                <span className="mt-1 block text-[10px] leading-snug text-white/50">{tt(p.body[0], p.body[1])}</span>
               </span>
-              <span className="text-xs leading-snug text-white/55">{tt(p.body[0], p.body[1])}</span>
             </button>
           );
         })}
       </div>
-      <div className="mt-4 flex gap-1.5">
+      <div className="mt-3 flex gap-1.5">
         {POINTS.map((_, i) => (
           <button
             key={i}
             type="button"
             aria-label={`${i + 1}`}
             onClick={() => onChange(i)}
-            className={`h-1.5 rounded-full transition-all ${i === index ? "w-5 bg-primary" : "w-1.5 bg-white/25"}`}
+            className={`h-1 rounded-full transition-all ${i === index ? "w-5 bg-primary" : "w-1.5 bg-white/25"}`}
           />
         ))}
       </div>
@@ -247,20 +249,20 @@ function SidePanel() {
   }, []);
 
   return (
-    <div className="relative hidden min-h-screen flex-col lg:flex">
-      <div className="relative p-10">
+    <div className="relative hidden h-screen flex-col lg:flex">
+      <div className="relative p-8 pb-0">
         <BrandLogo />
       </div>
 
       {/* Bloque de texto empujado hacia la parte baja del panel */}
-      <div className="relative mt-auto flex flex-col gap-10 p-10 pb-12">
+      <div className="relative mt-auto flex flex-col gap-6 p-8 pb-8">
         <div>
-          <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight text-white xl:text-6xl">
+          <h1 className="font-display text-4xl font-semibold leading-[1.05] tracking-tight text-white xl:text-5xl">
             {tt("Descubre", "Discover")}
             <br />
             <span className="text-primary">{tt("tu número.", "your number.")}</span>
           </h1>
-          <p className="mt-5 max-w-md text-base leading-relaxed text-white/70">
+          <p className="mt-3 max-w-md text-sm leading-relaxed text-white/70">
             {tt(
               "Toma mejores decisiones hoy para tu libertad financiera mañana.",
               "Make better decisions today for your financial freedom tomorrow.",
@@ -268,12 +270,12 @@ function SidePanel() {
           </p>
         </div>
 
-        <div className="max-w-xl">
+        {/* Parte de abajo: puntos compactos + review en una sola franja */}
+        <div className="max-w-xl border-t border-white/10 pt-5">
           <PointsCarousel index={index} onChange={setIndex} />
-        </div>
-
-        <div className="max-w-md">
-          <ReviewCard index={index} />
+          <div className="mt-5">
+            <ReviewCard index={index} />
+          </div>
         </div>
       </div>
     </div>
