@@ -3,6 +3,8 @@ import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowLeft,
   ArrowRight,
+  ChevronLeft,
+  ChevronRight,
   Loader2,
   Lock,
   Sparkles,
@@ -13,7 +15,10 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import heroImg from "@/assets/auth-hero.jpg";
+import heroImg from "@/assets/auth-hero-v2.jpg";
+import reviewCamila from "@/assets/review-camila.jpg";
+import reviewMaria from "@/assets/review-maria.jpg";
+import reviewMariana from "@/assets/review-mariana.jpg";
 
 import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
@@ -132,7 +137,7 @@ const POINTS: { icon: typeof Target; title: [string, string]; body: [string, str
 
 const REVIEWS = [
   {
-    initials: "MP",
+    image: reviewMaria,
     name: "María P.",
     quote: [
       "La IA me ha ayudado a tomar mejores decisiones con mi dinero. Totalmente recomendada.",
@@ -140,7 +145,7 @@ const REVIEWS = [
     ] as [string, string],
   },
   {
-    initials: "MR",
+    image: reviewMariana,
     name: "Mariana Robles",
     quote: [
       "Subí seis meses de estados de cuenta y en minutos vi a dónde se iba realmente mi dinero.",
@@ -148,7 +153,7 @@ const REVIEWS = [
     ] as [string, string],
   },
   {
-    initials: "CO",
+    image: reviewCamila,
     name: "Camila Ortiz",
     quote: [
       "La IA detectó suscripciones que pagaba sin usar. Se pagó sola el primer mes.",
@@ -169,21 +174,23 @@ function ReviewCard({ index, light }: { index: number; light?: boolean }) {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -8 }}
         transition={{ duration: 0.3 }}
-        className={`flex items-center gap-4 ${light ? "rounded-2xl border border-border bg-card p-5" : ""}`}
+        className={`flex items-center gap-4 ${light ? "rounded-2xl border border-white/10 bg-black/20 p-5 backdrop-blur-sm" : ""}`}
       >
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary ring-1 ring-primary/30">
-          {r.initials}
-        </span>
+        <img
+          src={r.image}
+          alt={r.name}
+          className="h-11 w-11 shrink-0 rounded-full object-cover ring-2 ring-white/20"
+        />
         <div className="min-w-0">
           <div className="flex gap-0.5">
             {Array.from({ length: 5 }).map((_, s) => (
               <Star key={s} className="h-3 w-3 fill-primary text-primary" />
             ))}
           </div>
-          <blockquote className={`mt-1.5 text-xs leading-relaxed ${light ? "text-muted-foreground" : "text-white/75"}`}>
+          <blockquote className={`mt-1.5 text-xs leading-relaxed ${light ? "text-white/80" : "text-white/75"}`}>
             “{tt(r.quote[0], r.quote[1])}”
           </blockquote>
-          <figcaption className={`mt-1 text-[11px] font-medium ${light ? "text-foreground" : "text-white"}`}>
+          <figcaption className={`mt-1 text-[11px] font-medium ${light ? "text-white" : "text-white"}`}>
             {r.name}
           </figcaption>
         </div>
@@ -202,42 +209,58 @@ function PointsCarousel({
   light?: boolean;
 }) {
   const tt = useT();
+  const prev = () => onChange((index - 1 + POINTS.length) % POINTS.length);
+  const next = () => onChange((index + 1) % POINTS.length);
 
   return (
-    <div>
-      <div className={`grid grid-cols-3 ${light ? "divide-x divide-border" : "divide-x divide-white/10"}`}>
-        {POINTS.map((p, i) => {
-          const Icon = p.icon;
-          const active = i === index;
-          return (
-            <button
-              key={p.title[1]}
-              type="button"
-              onClick={() => onChange(i)}
-              className="flex flex-col items-center gap-1.5 px-3 text-center"
-            >
-              <Icon
-                className={`h-5 w-5 transition-colors ${
-                  active ? "text-primary" : light ? "text-muted-foreground/60" : "text-white/40"
-                }`}
-              />
-              <span
-                className={`text-xs font-semibold transition-colors ${
-                  active ? (light ? "text-foreground" : "text-white") : light ? "text-foreground/70" : "text-white/60"
-                }`}
+    <div className={`rounded-3xl p-5 ${light ? "border border-white/10 bg-black/20 backdrop-blur-sm" : ""}`}>
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={prev}
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-white/70 transition-colors hover:bg-white/15 hover:text-white"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+        <div className={`grid flex-1 grid-cols-3 ${light ? "divide-x divide-white/10" : "divide-x divide-white/10"}`}>
+          {POINTS.map((p, i) => {
+            const Icon = p.icon;
+            const active = i === index;
+            return (
+              <button
+                key={p.title[1]}
+                type="button"
+                onClick={() => onChange(i)}
+                className="flex flex-col items-center gap-1.5 px-2 text-center"
               >
-                {tt(p.title[0], p.title[1])}
-              </span>
-              <span
-                className={`text-[11px] leading-snug ${
-                  light ? "text-muted-foreground" : "text-white/55"
-                } ${active ? "" : "hidden sm:block"}`}
-              >
-                {tt(p.body[0], p.body[1])}
-              </span>
-            </button>
-          );
-        })}
+                <Icon
+                  className={`h-5 w-5 transition-colors ${
+                    active ? "text-primary" : light ? "text-white/40" : "text-white/40"
+                  }`}
+                />
+                <span
+                  className={`text-xs font-semibold transition-colors ${
+                    active ? "text-white" : "text-white/60"
+                  }`}
+                >
+                  {tt(p.title[0], p.title[1])}
+                </span>
+                <span
+                  className={`text-[11px] leading-snug text-white/55 ${active ? "" : "hidden sm:block"}`}
+                >
+                  {tt(p.body[0], p.body[1])}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+        <button
+          type="button"
+          onClick={next}
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-white/70 transition-colors hover:bg-white/15 hover:text-white"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </button>
       </div>
       <div className="mt-3 flex justify-center gap-1.5">
         {POINTS.map((_, i) => (
@@ -247,7 +270,7 @@ function PointsCarousel({
             aria-label={`${i + 1}`}
             onClick={() => onChange(i)}
             className={`h-1.5 rounded-full transition-all ${
-              i === index ? "w-5 bg-primary" : light ? "w-1.5 bg-muted-foreground/30" : "w-1.5 bg-white/25"
+              i === index ? "w-5 bg-primary" : "w-1.5 bg-white/25"
             }`}
           />
         ))}
@@ -272,30 +295,38 @@ function SidePanel() {
         src={heroImg}
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center brightness-[0.9]"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center"
       />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/70 via-background/20 to-transparent" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/40 to-background/10" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background/80 via-background/30 to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/50 to-background/20" />
 
       <div className="relative p-10">
         <BrandLogo />
       </div>
 
       <div className="relative flex flex-col gap-8 p-10 pt-0">
-        <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight text-white xl:text-6xl">
-          {tt("Tu dinero.", "Your money.")}
-          <br />
-          {tt("Tu futuro.", "Your future.")}
-          <br />
-          <span className="text-primary">{tt("Tu número.", "Your number.")}</span>
-        </h1>
-
-        <div className="max-w-xl">
-          <PointsCarousel index={index} onChange={setIndex} />
+        <div>
+          <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight text-white xl:text-6xl">
+            {tt("Tu dinero.", "Your money.")}
+            <br />
+            {tt("Tu futuro.", "Your future.")}
+            <br />
+            <span className="text-primary">{tt("Tu número.", "Your number.")}</span>
+          </h1>
+          <p className="mt-4 max-w-md text-sm leading-relaxed text-white/70">
+            {tt(
+              "La plataforma todo-en-uno para entender dónde estás y construir tu libertad financiera.",
+              "The all-in-one platform to understand where you stand and build your financial freedom.",
+            )}
+          </p>
         </div>
 
         <div className="max-w-xl">
-          <ReviewCard index={index} />
+          <PointsCarousel index={index} onChange={setIndex} light />
+        </div>
+
+        <div className="max-w-md">
+          <ReviewCard index={index} light />
         </div>
 
         <p className="flex items-center gap-2 text-[11px] text-white/60">
@@ -452,8 +483,8 @@ function AuthPage() {
         <LanguageToggle />
       </div>
 
-      {/* Tarjeta clara: flotante en móvil, integrada al panel blanco en desktop */}
-      <div className="rounded-3xl bg-white p-8 text-slate-900 shadow-2xl shadow-black/40 sm:p-9 lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none">
+      {/* Tarjeta clara: box flotante con sombra premium */}
+      <div className="rounded-[2rem] bg-white p-7 text-slate-900 shadow-[0_32px_80px_-28px_rgba(0,0,0,0.22)] sm:p-9">
         {isAffiliate && (
           <div className="mb-6 flex flex-nowrap items-center justify-center gap-x-2">
             {[
@@ -493,13 +524,12 @@ function AuthPage() {
             </>
           ) : (
             <>
-              <BrandLogo />
-              <p className="mt-5 font-display text-2xl font-semibold tracking-tight">
+              <h2 className="font-display text-3xl font-semibold tracking-tight text-slate-900">
                 {mode === "signup"
                   ? tt("Crea tu cuenta gratis", "Create your free account")
                   : tt("Bienvenido de vuelta", "Welcome back")}
-              </p>
-              <p className="mt-1.5 text-xs leading-relaxed text-slate-500">
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-slate-500">
                 {tt(
                   "Tu futuro financiero empieza conociendo tu número.",
                   "Your financial future starts by knowing your number.",
@@ -512,7 +542,7 @@ function AuthPage() {
         {/* Google primero, como en la referencia */}
         <Button
           variant="outline"
-          className="mt-7 w-full gap-2 rounded-xl border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+          className="mt-6 w-full gap-2 rounded-xl border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900"
           onClick={() => void onOAuth()}
           disabled={busy}
         >
@@ -520,7 +550,7 @@ function AuthPage() {
           {tt("Continuar con Google", "Continue with Google")}
         </Button>
 
-        <div className="my-5 flex items-center gap-3">
+        <div className="my-4 flex items-center gap-3">
           <span className="h-px flex-1 bg-slate-200" />
           <span className="text-[11px] text-slate-400">{tt("o continúa con email", "or continue with email")}</span>
           <span className="h-px flex-1 bg-slate-200" />
@@ -646,17 +676,17 @@ function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background lg:grid lg:grid-cols-2">
+    <div className="min-h-screen bg-background lg:grid lg:grid-cols-[1.55fr_1fr]">
       <SidePanel />
 
-      <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 overflow-hidden px-4 py-12 lg:bg-white">
+      <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 overflow-hidden bg-slate-200 px-6 py-10 lg:px-10">
         <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
         {card}
 
         {/* Móvil: puntos + review debajo de la tarjeta */}
         <div className="w-full max-w-md space-y-6 lg:hidden">
-          <PointsCarousel index={point} onChange={setPoint} />
-          <ReviewCard index={point} />
+          <PointsCarousel index={point} onChange={setPoint} light />
+          <ReviewCard index={point} light />
         </div>
       </div>
     </div>
