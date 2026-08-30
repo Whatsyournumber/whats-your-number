@@ -197,8 +197,18 @@ function SidePanel() {
   const slide = SLIDES[index] ?? SLIDES[0]!;
 
   return (
-    <div className="relative hidden flex-col justify-between lg:flex">
-      <div>
+    <div className="relative hidden flex-col justify-between overflow-hidden lg:flex">
+      {/* Foto del faro + degradados para legibilidad */}
+      <img
+        src={lighthouseImg}
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center opacity-90"
+      />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-background via-background/75 to-background/10" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/60" />
+
+      <div className="relative">
         <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight">
           {tt("Tu dinero.", "Your money.")}
           <br />
