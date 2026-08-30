@@ -28,8 +28,10 @@ export const Route = createFileRoute("/calculadora-ahorro-universidad")({
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESCRIPTION },
       { property: "og:url", content: ES_URL },
-      { property: "og:image", content: "https://whatsyour-number.com/og-cover.jpg" },
-      { name: "twitter:image", content: "https://whatsyour-number.com/og-cover.jpg" },
+      { property: "og:image", content: "https://whatsyour-number.com/og-college-es.jpg" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { name: "twitter:image", content: "https://whatsyour-number.com/og-college-es.jpg" },
     ],
     links: [
       { rel: "canonical", href: ES_URL },
