@@ -12,7 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import heroImg from "@/assets/auth-hero-v3.jpg";
+import heroImg from "@/assets/auth-hero-v4.jpg";
 import reviewCamila from "@/assets/review-camila.jpg";
 import reviewMaria from "@/assets/review-maria.jpg";
 import reviewMariana from "@/assets/review-mariana.jpg";
@@ -167,29 +167,29 @@ function ReviewCard({ index }: { index: number }) {
     <AnimatePresence mode="wait">
       <motion.figure
         key={r.name}
-        initial={{ opacity: 0, y: 8 }}
+        initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -8 }}
+        exit={{ opacity: 0, y: -6 }}
         transition={{ duration: 0.3 }}
-        className="flex items-center gap-4"
+        className="flex items-center gap-3"
       >
         <img
           src={r.image}
           alt={r.name}
-          className="h-11 w-11 shrink-0 rounded-full object-cover ring-2 ring-white/20"
+          className="h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-white/20"
         />
         <div className="min-w-0">
-          <div className="flex gap-0.5">
-            {Array.from({ length: 5 }).map((_, s) => (
-              <Star key={s} className="h-3 w-3 fill-primary text-primary" />
-            ))}
+          <div className="flex items-center gap-2">
+            <div className="flex gap-0.5">
+              {Array.from({ length: 5 }).map((_, s) => (
+                <Star key={s} className="h-2.5 w-2.5 fill-primary text-primary" />
+              ))}
+            </div>
+            <figcaption className="text-[11px] font-medium text-white">{r.name}</figcaption>
           </div>
-          <blockquote className="mt-1.5 text-xs leading-relaxed text-white/80">
+          <blockquote className="mt-1 line-clamp-2 text-[11px] leading-snug text-white/70">
             “{tt(r.quote[0], r.quote[1])}”
           </blockquote>
-          <figcaption className="mt-1 text-[11px] font-medium text-white">
-            {r.name}
-          </figcaption>
         </div>
       </motion.figure>
     </AnimatePresence>
@@ -210,25 +210,27 @@ function PointsCarousel({ index, onChange }: { index: number; onChange: (i: numb
               key={p.title[1]}
               type="button"
               onClick={() => onChange(i)}
-              className="flex flex-col items-start gap-2 px-5 text-left first:pl-0 last:pr-0"
+              className="flex items-start gap-2.5 px-4 text-left first:pl-0 last:pr-0"
             >
-              <Icon className={`h-6 w-6 transition-colors ${active ? "text-primary" : "text-white/40"}`} />
-              <span className={`text-sm font-semibold transition-colors ${active ? "text-white" : "text-white/60"}`}>
-                {tt(p.title[0], p.title[1])}
+              <Icon className={`mt-0.5 h-4 w-4 shrink-0 transition-colors ${active ? "text-primary" : "text-white/40"}`} />
+              <span className="min-w-0">
+                <span className={`block text-xs font-semibold leading-tight transition-colors ${active ? "text-white" : "text-white/60"}`}>
+                  {tt(p.title[0], p.title[1])}
+                </span>
+                <span className="mt-1 block text-[10px] leading-snug text-white/50">{tt(p.body[0], p.body[1])}</span>
               </span>
-              <span className="text-xs leading-snug text-white/55">{tt(p.body[0], p.body[1])}</span>
             </button>
           );
         })}
       </div>
-      <div className="mt-4 flex gap-1.5">
+      <div className="mt-3 flex gap-1.5">
         {POINTS.map((_, i) => (
           <button
             key={i}
             type="button"
             aria-label={`${i + 1}`}
             onClick={() => onChange(i)}
-            className={`h-1.5 rounded-full transition-all ${i === index ? "w-5 bg-primary" : "w-1.5 bg-white/25"}`}
+            className={`h-1 rounded-full transition-all ${i === index ? "w-5 bg-primary" : "w-1.5 bg-white/25"}`}
           />
         ))}
       </div>
@@ -247,20 +249,20 @@ function SidePanel() {
   }, []);
 
   return (
-    <div className="relative hidden min-h-screen flex-col lg:flex">
-      <div className="relative p-10">
+    <div className="relative hidden h-screen flex-col lg:flex">
+      <div className="relative p-8 pb-0">
         <BrandLogo />
       </div>
 
       {/* Bloque de texto empujado hacia la parte baja del panel */}
-      <div className="relative mt-auto flex flex-col gap-10 p-10 pb-12">
+      <div className="relative mt-auto flex flex-col gap-6 p-8 pb-8">
         <div>
-          <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight text-white xl:text-6xl">
+          <h1 className="font-display text-4xl font-semibold leading-[1.05] tracking-tight text-white xl:text-5xl">
             {tt("Descubre", "Discover")}
             <br />
             <span className="text-primary">{tt("tu número.", "your number.")}</span>
           </h1>
-          <p className="mt-5 max-w-md text-base leading-relaxed text-white/70">
+          <p className="mt-3 max-w-md text-sm leading-relaxed text-white/70">
             {tt(
               "Toma mejores decisiones hoy para tu libertad financiera mañana.",
               "Make better decisions today for your financial freedom tomorrow.",
@@ -268,12 +270,12 @@ function SidePanel() {
           </p>
         </div>
 
-        <div className="max-w-xl">
+        {/* Parte de abajo: puntos compactos + review en una sola franja */}
+        <div className="max-w-xl border-t border-white/10 pt-5">
           <PointsCarousel index={index} onChange={setIndex} />
-        </div>
-
-        <div className="max-w-md">
-          <ReviewCard index={index} />
+          <div className="mt-5">
+            <ReviewCard index={index} />
+          </div>
         </div>
       </div>
     </div>
@@ -415,7 +417,7 @@ function AuthPage() {
       transition={{ duration: 0.35 }}
       className="w-full max-w-md"
     >
-      <div className="mb-5 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between">
         <Link
           to="/"
           className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground lg:text-slate-400 lg:hover:text-slate-700"
@@ -425,8 +427,8 @@ function AuthPage() {
         <LanguageToggle />
       </div>
 
-      {/* Tarjeta clara: box flotante con sombra premium */}
-      <div className="min-h-[720px] rounded-[2rem] bg-white p-8 py-12 text-slate-900 shadow-[0_32px_80px_-28px_rgba(0,0,0,0.22)] sm:p-10 sm:py-16">
+      {/* Tarjeta clara: box flotante con sombra premium, compacta para una sola pantalla */}
+      <div className="rounded-[2rem] bg-white p-7 text-slate-900 shadow-[0_32px_80px_-28px_rgba(0,0,0,0.22)] sm:p-9 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
         {isAffiliate && (
           <div className="mb-6 flex flex-nowrap items-center justify-center gap-x-2">
             {[
@@ -466,12 +468,12 @@ function AuthPage() {
             </>
           ) : (
             <>
-              <h2 className="font-display text-3xl font-semibold tracking-tight text-slate-900">
+              <h2 className="font-display text-2xl font-semibold tracking-tight text-slate-900">
                 {mode === "signup"
                   ? tt("Crea tu cuenta gratis", "Create your free account")
                   : tt("Bienvenido de vuelta", "Welcome back")}
               </h2>
-              <p className="mt-2 text-sm leading-relaxed text-slate-500">
+              <p className="mt-1.5 text-sm leading-relaxed text-slate-500">
                 {tt(
                   "Tu futuro financiero empieza conociendo tu número.",
                   "Your financial future starts by knowing your number.",
@@ -484,7 +486,7 @@ function AuthPage() {
         {/* Google primero, como en la referencia */}
         <Button
           variant="outline"
-          className="mt-6 w-full gap-2 rounded-xl border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+          className="mt-5 w-full gap-2 rounded-xl border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900"
           onClick={() => void onOAuth()}
           disabled={busy}
         >
@@ -492,13 +494,13 @@ function AuthPage() {
           {tt("Continuar con Google", "Continue with Google")}
         </Button>
 
-        <div className="my-4 flex items-center gap-3">
+        <div className="my-3 flex items-center gap-3">
           <span className="h-px flex-1 bg-slate-200" />
           <span className="text-[11px] text-slate-400">{tt("o continúa con email", "or continue with email")}</span>
           <span className="h-px flex-1 bg-slate-200" />
         </div>
 
-        <form onSubmit={onSubmit} className="space-y-3.5">
+        <form onSubmit={onSubmit} className="space-y-3">
           {mode === "signup" && (
             <div>
               <Label htmlFor="fullName" className="text-xs text-slate-500">
@@ -577,7 +579,7 @@ function AuthPage() {
           </Button>
         </form>
 
-        <p className="mt-5 text-center text-xs text-slate-500">
+        <p className="mt-4 text-center text-xs text-slate-500">
           {mode === "login" ? (
             <>
               {tt("¿Aún no tienes cuenta?", "Don't have an account yet?")}{" "}
@@ -603,7 +605,7 @@ function AuthPage() {
           )}
         </p>
 
-        <p className="mt-4 text-center text-[11px] text-slate-400">{t("auth.legal")}</p>
+        <p className="mt-3 text-center text-[11px] text-slate-400">{t("auth.legal")}</p>
       </div>
     </motion.div>
   );
@@ -618,7 +620,7 @@ function AuthPage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-background lg:grid lg:grid-cols-[1.55fr_1fr]">
+    <div className="relative min-h-screen overflow-hidden bg-background lg:grid lg:h-screen lg:grid-cols-[1.55fr_1fr] lg:overflow-hidden">
       {/* Fondo infinito: la foto cubre toda la página, sin cortes ni bordes,
           y pasa por debajo de la tarjeta flotante */}
       <img
@@ -635,7 +637,7 @@ function AuthPage() {
 
       <SidePanel />
 
-      <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 bg-slate-200 px-6 py-10 lg:bg-transparent lg:px-10">
+      <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 bg-slate-200 px-6 py-10 lg:h-screen lg:min-h-0 lg:bg-transparent lg:px-10 lg:py-6">
         <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
         {card}
 
