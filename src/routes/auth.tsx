@@ -139,12 +139,29 @@ const REVIEWS = [
   },
 ];
 
-function Reviews({ className }: { className?: string }) {
+function Reviews({ className, index }: { className?: string; index?: number }) {
   const tt = useT();
+  const [internal, setInternal] = useState(0);
+
+  useEffect(() => {
+    if (index !== undefined) return;
+    const id = window.setInterval(() => setInternal((i) => (i + 1) % REVIEWS.length), 6000);
+    return () => window.clearInterval(id);
+  }, [index]);
+
+  const r = REVIEWS[(index ?? internal) % REVIEWS.length] ?? REVIEWS[0]!;
+
   return (
     <div className={className}>
-      {REVIEWS.map((r) => (
-        <figure key={r.name} className="surface flex flex-col gap-2 p-4">
+      <AnimatePresence mode="wait">
+        <motion.figure
+          key={r.name}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.3 }}
+          className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-black/30 p-4 backdrop-blur-md"
+        >
           <div className="flex gap-0.5">
             {Array.from({ length: 5 }).map((_, s) => (
               <Star key={s} className="h-3 w-3 fill-primary text-primary" />
@@ -162,8 +179,8 @@ function Reviews({ className }: { className?: string }) {
               <span className="text-muted-foreground">{tt(r.role[0], r.role[1])}</span>
             </span>
           </figcaption>
-        </figure>
-      ))}
+        </motion.figure>
+      </AnimatePresence>
     </div>
   );
 }
