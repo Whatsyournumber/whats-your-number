@@ -41,6 +41,8 @@ export function langFromPath(pathname: string): "es" | "en" | null {
     clean.startsWith("/blog/") ||
     clean === "/demo" ||
     clean === "/calculadora-libertad-financiera" ||
+    clean === "/calculadora-ahorro-universidad" ||
+    clean === "/demo-ninos" ||
     clean === "/finanzas-para-ninos" ||
     clean.startsWith("/finanzas-para-ninos/")
   ) return "es";
