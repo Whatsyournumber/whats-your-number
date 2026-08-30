@@ -408,9 +408,9 @@ function AuthPage() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35 }}
-      className="w-full max-w-md"
+      className="w-full max-w-sm"
     >
-      <div className="mb-5 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between">
         <Link
           to="/"
           className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground lg:text-slate-400 lg:hover:text-slate-700"
@@ -420,8 +420,8 @@ function AuthPage() {
         <LanguageToggle />
       </div>
 
-      {/* Tarjeta clara: flotante en móvil, integrada al panel blanco en desktop */}
-      <div className="rounded-3xl bg-white p-8 text-slate-900 shadow-2xl shadow-black/40 sm:p-9 lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none">
+      {/* Tarjeta clara flotante: compacta como en la referencia */}
+      <div className="rounded-3xl bg-white p-7 text-slate-900 shadow-2xl shadow-black/40 sm:p-8 lg:shadow-xl lg:shadow-slate-900/10 lg:ring-1 lg:ring-slate-100">
         {isAffiliate && (
           <div className="mb-6 flex flex-nowrap items-center justify-center gap-x-2">
             {[
