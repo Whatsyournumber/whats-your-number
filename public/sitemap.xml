@@ -24,15 +24,15 @@
   <url>
     <loc>https://whatsyour-number.com/calculadora-libertad-financiera</loc>
     <xhtml:link rel="alternate" hreflang="es" href="https://whatsyour-number.com/calculadora-libertad-financiera"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://whatsyour-number.com/en/demo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://whatsyour-number.com/en/financial-freedom-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://whatsyour-number.com/calculadora-libertad-financiera"/>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://whatsyour-number.com/en/demo</loc>
+    <loc>https://whatsyour-number.com/en/financial-freedom-calculator</loc>
     <xhtml:link rel="alternate" hreflang="es" href="https://whatsyour-number.com/calculadora-libertad-financiera"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://whatsyour-number.com/en/demo"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://whatsyour-number.com/en/financial-freedom-calculator"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://whatsyour-number.com/calculadora-libertad-financiera"/>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>

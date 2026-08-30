@@ -129,7 +129,7 @@ const DEMO_LINK: InternalLink = {
     { es: "calcula tu número", en: "calculate your number" },
   ],
   to: "/calculadora-libertad-financiera?start=1",
-  enTo: "/en/demo?start=1",
+  enTo: "/en/financial-freedom-calculator?start=1",
   note: { es: "Demo interactivo en minutos, sin registro.", en: "Interactive demo in minutes, no signup." },
 };
 const KIDS_HUB: InternalLink = {

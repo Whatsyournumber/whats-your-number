@@ -39,7 +39,7 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
   const t = useT();
   const { lang } = useLanguage();
   const blogHref = lang === "en" ? "/en/blog" : "/blog";
-  const demoHref = lang === "en" ? "/en/demo?start=1" : "/calculadora-libertad-financiera?start=1";
+  const demoHref = lang === "en" ? "/en/financial-freedom-calculator?start=1" : "/calculadora-libertad-financiera?start=1";
 
   return (
     <div className="sticky top-24 space-y-5">

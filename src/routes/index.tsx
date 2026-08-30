@@ -155,7 +155,7 @@ export const Route = createFileRoute("/")({
 function DemoCard() {
   const t = useT();
   const { lang } = useLanguage();
-  const demoTo = lang === "en" ? "/en/demo" : "/calculadora-libertad-financiera";
+  const demoTo = lang === "en" ? "/en/financial-freedom-calculator" : "/calculadora-libertad-financiera";
 
   const steps = [
     { label: t("Gasto mensual ideal", "Ideal monthly spending"), value: "€5,000" },
@@ -265,7 +265,7 @@ function DemoCard() {
 export function Landing() {
   const t = useT();
   const { lang } = useLanguage();
-  const demoTo = lang === "en" ? "/en/demo" : "/calculadora-libertad-financiera";
+  const demoTo = lang === "en" ? "/en/financial-freedom-calculator" : "/calculadora-libertad-financiera";
   const liveCount = useLiveCount(1200);
   const { user, loading: authLoading } = useAuth();
   const { isPatrimonio, loading: subscriptionLoading } = useSubscription();
