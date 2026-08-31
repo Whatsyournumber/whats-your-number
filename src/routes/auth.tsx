@@ -238,7 +238,7 @@ function PointsCarousel({ index, onChange, variant = "general" }: { index: numbe
   return (
     <div>
       <div className="grid grid-cols-3 divide-x divide-white/10">
-        {POINTS.map((p, i) => {
+        {points.map((p, i) => {
           const Icon = p.icon;
           const active = i === index;
           return (
@@ -260,7 +260,7 @@ function PointsCarousel({ index, onChange, variant = "general" }: { index: numbe
         })}
       </div>
       <div className="mt-3 flex gap-1.5">
-        {POINTS.map((_, i) => (
+        {points.map((_, i) => (
           <button
             key={i}
             type="button"
