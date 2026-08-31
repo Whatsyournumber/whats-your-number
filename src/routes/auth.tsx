@@ -215,7 +215,7 @@ function PointsCarousel({ index, onChange }: { index: number; onChange: (i: numb
             >
               <Icon className={`mt-0.5 h-4 w-4 shrink-0 transition-colors lg:h-5 lg:w-5 ${active ? "text-primary" : "text-white/40"}`} />
               <span className="min-w-0">
-                <span className={`block text-xs font-semibold leading-tight transition-colors lg:text-sm ${active ? "text-white" : "text-white/60"}`}>
+                <span className={`block text-xs font-semibold leading-tight transition-colors lg:text-base lg:whitespace-nowrap ${active ? "text-white" : "text-white/60"}`}>
                   {tt(p.title[0], p.title[1])}
                 </span>
                 <span className="mt-1 block text-[10px] leading-snug text-white/50 lg:text-xs">{tt(p.body[0], p.body[1])}</span>
