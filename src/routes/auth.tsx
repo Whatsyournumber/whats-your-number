@@ -680,6 +680,9 @@ function AuthPage() {
 
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center gap-8 bg-slate-200 px-6 py-10 lg:h-screen lg:min-h-0 lg:bg-transparent lg:px-10 lg:py-6">
         <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
+        <div className="flex justify-center lg:hidden">
+          <BrandLogo variant="light" />
+        </div>
         {card}
 
         {/* Móvil: solo reviews debajo de la tarjeta */}
