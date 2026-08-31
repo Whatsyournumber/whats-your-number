@@ -687,7 +687,7 @@ function AuthPage() {
         {card}
 
         {/* Móvil: solo reviews debajo de la tarjeta */}
-        <div className="w-full max-w-md rounded-3xl bg-slate-900 p-5 lg:hidden">
+        <div className="w-full max-w-md px-2 lg:hidden">
           <ReviewCard index={point} />
         </div>
       </div>
