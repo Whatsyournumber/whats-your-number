@@ -716,10 +716,10 @@ function AuthPage() {
         src={isKids ? kidsHeroImg : heroImg}
         alt=""
         aria-hidden="true"
-        className={`pointer-events-none absolute inset-x-0 top-0 hidden w-full lg:block ${
+        className={`pointer-events-none absolute top-0 hidden lg:block ${
           isKids
-            ? "h-[68%] top-[4%] object-contain object-left"
-            : "h-[118%] -translate-y-[15%] object-cover object-[left_5%_top_0%]"
+            ? "left-0 h-[72%] w-auto max-w-[92%] object-contain object-left"
+            : "inset-x-0 h-[118%] w-full -translate-y-[15%] object-cover object-[left_5%_top_0%]"
         }`}
       />
       {/* Izquierda legible */}
