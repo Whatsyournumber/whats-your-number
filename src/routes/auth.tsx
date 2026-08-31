@@ -671,8 +671,10 @@ function AuthPage() {
         src={heroImg}
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 hidden h-full w-full -translate-y-[15%] object-cover object-[left_5%_top_0%] lg:block"
+        className="pointer-events-none absolute inset-0 h-full w-full -translate-y-[15%] object-cover object-[center_top] lg:object-[left_5%_top_0%]"
       />
+      {/* Mobile: overlay oscuro suave para que la tarjeta blanca y el review blanco se lean */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/60 lg:hidden" />
       {/* Izquierda legible */}
       <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-background/70 via-transparent to-transparent lg:block" />
       <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-background/90 via-transparent to-background/30 lg:block" />
@@ -681,13 +683,16 @@ function AuthPage() {
 
       <SidePanel />
 
-      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center gap-8 bg-slate-200 px-6 py-10 lg:h-screen lg:min-h-0 lg:bg-transparent lg:px-10 lg:py-6">
+      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center gap-8 px-6 py-10 lg:h-screen lg:min-h-0 lg:bg-transparent lg:px-10 lg:py-6">
         <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
         {card}
 
-        {/* Móvil: solo reviews debajo de la tarjeta */}
-        <div className="w-full max-w-md rounded-3xl bg-slate-900 p-5 lg:hidden">
-          <ReviewCard index={point} />
+        {/* Móvil: reviews sin box, solo degradado negro suave y difuminado detrás */}
+        <div className="relative w-full max-w-md lg:hidden">
+          <div className="absolute -inset-6 bg-gradient-to-t from-black/80 via-black/45 to-transparent blur-2xl" />
+          <div className="relative">
+            <ReviewCard index={point} />
+          </div>
         </div>
       </div>
     </div>
