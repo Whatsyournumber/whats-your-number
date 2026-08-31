@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowLeft,
   ArrowRight,
+  CheckCircle2,
   Loader2,
   Sparkles,
   Star,
@@ -427,8 +428,8 @@ function AuthPage() {
         <LanguageToggle />
       </div>
 
-      {/* Tarjeta clara: box flotante con sombra premium, compacta para una sola pantalla */}
-      <div className="rounded-[2rem] bg-white p-7 text-slate-900 shadow-[0_32px_80px_-28px_rgba(0,0,0,0.22)] sm:p-9 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
+      {/* Tarjeta clara: box flotante alto con sombra premium */}
+      <div className="flex flex-col rounded-[2rem] bg-white p-7 text-slate-900 shadow-[0_32px_80px_-28px_rgba(0,0,0,0.22)] sm:p-9 lg:max-h-[calc(100vh-6rem)] lg:min-h-[calc(100vh-9rem)] lg:justify-center lg:overflow-y-auto">
         {isAffiliate && (
           <div className="mb-6 flex flex-nowrap items-center justify-center gap-x-2">
             {[
@@ -532,20 +533,9 @@ function AuthPage() {
             />
           </div>
           <div>
-            <div className="flex items-baseline justify-between">
-              <Label htmlFor="password" className="text-xs text-slate-500">
-                {t("auth.password")}
-              </Label>
-              {mode === "login" && (
-                <button
-                  type="button"
-                  onClick={() => void onForgot()}
-                  className="text-xs text-primary underline-offset-2 hover:underline"
-                >
-                  {tt("¿Olvidaste tu contraseña?", "Forgot your password?")}
-                </button>
-              )}
-            </div>
+            <Label htmlFor="password" className="text-xs text-slate-500">
+              {t("auth.password")}
+            </Label>
             <Input
               id="password"
               type="password"
@@ -557,6 +547,17 @@ function AuthPage() {
               className="mt-1.5 rounded-xl border-slate-200 bg-white text-slate-900 placeholder:text-slate-400"
               autoComplete={mode === "signup" ? "new-password" : "current-password"}
             />
+            {mode === "login" && (
+              <div className="mt-1.5 text-right">
+                <button
+                  type="button"
+                  onClick={() => void onForgot()}
+                  className="text-xs font-medium text-primary underline-offset-2 hover:underline"
+                >
+                  {tt("¿Olvidaste tu contraseña?", "Forgot your password?")}
+                </button>
+              </div>
+            )}
           </div>
 
           {mode === "signup" && (
@@ -573,11 +574,30 @@ function AuthPage() {
             </div>
           )}
 
-          <Button type="submit" className="w-full rounded-xl" disabled={busy}>
-            {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {mode === "signup" ? t("auth.submit.signup") : tt("Entrar", "Sign in")}
+          <Button
+            type="submit"
+            className="mt-1 h-12 w-full gap-2 rounded-2xl text-base font-semibold"
+            disabled={busy}
+          >
+            {busy && <Loader2 className="h-4 w-4 animate-spin" />}
+            {mode === "signup" ? tt("Descubre tu número", "Discover your number") : tt("Entrar", "Sign in")}
+            <ArrowRight className="h-4 w-4" />
           </Button>
         </form>
+
+        {/* 3 puntos de confianza, como en la referencia */}
+        <div className="mt-4 flex items-center justify-center divide-x divide-slate-200">
+          {[
+            tt("Gratis", "Free"),
+            tt("Sin tarjeta", "No card"),
+            tt("Tus datos son privados", "Your data stays private"),
+          ].map((label) => (
+            <span key={label} className="flex items-center gap-1.5 px-3 text-[11px] text-slate-500 first:pl-0 last:pr-0">
+              <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-primary" />
+              {label}
+            </span>
+          ))}
+        </div>
 
         <p className="mt-4 text-center text-xs text-slate-500">
           {mode === "login" ? (
