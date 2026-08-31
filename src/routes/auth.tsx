@@ -685,9 +685,12 @@ function AuthPage() {
         <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
         {card}
 
-        {/* Móvil: solo reviews debajo de la tarjeta */}
-        <div className="w-full max-w-md rounded-3xl bg-slate-900 p-5 lg:hidden">
-          <ReviewCard index={point} />
+        {/* Móvil: reviews sin card, sobre fondo con degradado negro difuminado */}
+        <div className="relative w-full max-w-md lg:hidden">
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent blur-2xl" />
+          <div className="relative px-2 pt-8 pb-3">
+            <ReviewCard index={point} />
+          </div>
         </div>
       </div>
     </div>
