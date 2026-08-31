@@ -477,10 +477,10 @@ function AuthPage() {
                   ? tt("Crea tu cuenta gratis", "Create your free account")
                   : tt("Bienvenido de vuelta", "Welcome back")}
               </h2>
-              <p className="mt-1.5 text-sm leading-relaxed text-slate-500">
+              <p className="mt-1.5 whitespace-nowrap text-sm leading-relaxed text-slate-500">
                 {tt(
-                  "Tu futuro financiero empieza conociendo tu número.",
-                  "Your financial future starts by knowing your number.",
+                  "Sigamos construyendo tu libertad financiera.",
+                  "Let's keep building your financial freedom.",
                 )}
               </p>
             </>
@@ -600,18 +600,27 @@ function AuthPage() {
         </form>
 
         {/* 3 puntos de confianza, como en la referencia */}
-        <div className="mt-4 flex items-center justify-center divide-x divide-slate-200">
-          {[
-            tt("Gratis", "Free"),
-            tt("Sin tarjeta", "No card"),
-            tt("Tus datos son privados", "Your data stays private"),
-          ].map((label) => (
-            <span key={label} className="flex items-center gap-1.5 px-3 text-[11px] text-slate-500 first:pl-0 last:pr-0">
-              <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-primary" />
-              {label}
+        {mode === "login" ? (
+          <div className="mt-4 flex items-center justify-center text-center">
+            <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-[11px] text-slate-500">
+              <span aria-hidden="true">🔒</span>
+              {tt("Tus datos se guardan de forma privada y cifrada.", "Your data is stored privately and encrypted.")}
             </span>
-          ))}
-        </div>
+          </div>
+        ) : (
+          <div className="mt-4 flex items-center justify-center divide-x divide-slate-200">
+            {[
+              tt("Gratis", "Free"),
+              tt("Sin tarjeta", "No card"),
+              tt("Tus datos son privados", "Your data stays private"),
+            ].map((label) => (
+              <span key={label} className="flex items-center gap-1.5 px-3 text-[11px] text-slate-500 first:pl-0 last:pr-0">
+                <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-primary" />
+                {label}
+              </span>
+            ))}
+          </div>
+        )}
 
         <p className="mt-4 text-center text-xs text-slate-500">
           {mode === "login" ? (
@@ -671,6 +680,9 @@ function AuthPage() {
 
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center gap-8 bg-slate-200 px-6 py-10 lg:h-screen lg:min-h-0 lg:bg-transparent lg:px-10 lg:py-6">
         <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
+        <div className="flex justify-center lg:hidden">
+          <BrandLogo variant="light" />
+        </div>
         {card}
 
         {/* Móvil: solo reviews debajo de la tarjeta */}
