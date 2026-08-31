@@ -274,12 +274,9 @@ function SidePanel() {
         <div className="w-full border-t border-white/10 pt-5">
           <PointsCarousel index={index} onChange={setIndex} />
           <div className="relative isolate mt-5">
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -inset-x-8 -inset-y-5 -z-10 bg-gradient-to-t from-background/80 via-background/35 to-transparent blur-xl"
-            />
             <ReviewCard index={index} />
           </div>
+
         </div>
       </div>
     </div>
