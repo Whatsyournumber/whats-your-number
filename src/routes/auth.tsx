@@ -271,7 +271,7 @@ function SidePanel() {
         </div>
 
         {/* Parte de abajo: puntos compactos + review en una sola franja */}
-        <div className="w-full rounded-3xl border border-white/10 bg-black/30 p-6 backdrop-blur-xl">
+        <div className="w-full rounded-3xl border border-white/10 bg-gradient-to-t from-black/40 via-black/15 to-transparent p-6 backdrop-blur-2xl">
           <PointsCarousel index={index} onChange={setIndex} />
           <div className="mt-5">
             <ReviewCard index={index} />
@@ -686,7 +686,7 @@ function AuthPage() {
         {card}
 
         {/* Móvil: solo reviews debajo de la tarjeta */}
-        <div className="w-full max-w-md rounded-3xl border border-white/10 bg-black/40 p-5 backdrop-blur-2xl lg:hidden">
+        <div className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-950/65 p-5 backdrop-blur-3xl lg:hidden">
           <ReviewCard index={point} />
         </div>
       </div>
