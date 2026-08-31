@@ -254,10 +254,6 @@ function SidePanel() {
 
   return (
     <div className="relative hidden h-screen flex-col lg:flex">
-      <div className="relative p-8 pb-0">
-        <BrandLogo />
-      </div>
-
       {/* Bloque de texto empujado hacia la parte baja del panel */}
       <div className="relative mt-auto flex flex-col gap-6 p-8 pb-8">
         <div className="w-full">
