@@ -21,6 +21,7 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
   const { pathname } = useLocation();
   const isEnglishPath = pathname === "/en" || pathname.startsWith("/en/");
   const isKidsLanding = pathname === "/finanzas-para-ninos" || pathname === "/en/finance-for-kids";
+  const authFlow = isKidsLanding ? "kids" as const : undefined;
   const isLight = variant === "light";
   const showCurrency = pathname !== "/" && pathname !== "/en" && !isKidsLanding;
 
@@ -96,12 +97,12 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
           isLight && "border-slate-200 bg-white/60 text-slate-700 hover:bg-white/80 hover:text-slate-900",
         )}
       >
-        <Link to="/auth" search={{ mode: "login" }}>
+        <Link to="/auth" search={{ mode: "login", ...(authFlow ? { flow: authFlow } : {}) }}>
           {t("Iniciar sesión", "Sign in")}
         </Link>
       </Button>
       <Button asChild size="sm" className="rounded-full text-xs whitespace-nowrap shadow-sm">
-        <Link to="/auth" search={{ mode: "signup" }}>
+        <Link to="/auth" search={{ mode: "signup", ...(authFlow ? { flow: authFlow } : {}) }}>
           {t("Crear cuenta", "Sign up")}
         </Link>
       </Button>
@@ -115,7 +116,7 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
     </Button>
   ) : (
     <Button asChild size="sm" className="h-8 rounded-full px-3 text-xs">
-      <Link to="/auth" search={{ mode: "signup" }}>
+      <Link to="/auth" search={{ mode: "signup", ...(authFlow ? { flow: authFlow } : {}) }}>
         {t("Crear cuenta", "Sign up")}
       </Link>
     </Button>
@@ -172,12 +173,12 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
                       isLight && "border-slate-200 bg-white/60 text-slate-700 hover:bg-white/80 hover:text-slate-900",
                     )}
                   >
-                    <Link to="/auth" search={{ mode: "login" }}>
+                    <Link to="/auth" search={{ mode: "login", ...(authFlow ? { flow: authFlow } : {}) }}>
                       {t("Iniciar sesión", "Sign in")}
                     </Link>
                   </Button>
                   <Button asChild size="sm" className="h-8 rounded-full px-3 text-xs whitespace-nowrap shadow-sm">
-                    <Link to="/auth" search={{ mode: "signup" }}>
+                    <Link to="/auth" search={{ mode: "signup", ...(authFlow ? { flow: authFlow } : {}) }}>
                       {t("Crear cuenta", "Sign up")}
                     </Link>
                   </Button>
@@ -204,14 +205,14 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
                       size="sm"
                       className="rounded-full sm:hidden"
                     >
-                      <Link to="/auth" search={{ mode: "login" }}>
+                      <Link to="/auth" search={{ mode: "login", ...(authFlow ? { flow: authFlow } : {}) }}>
                         {t("Iniciar sesión", "Sign in")}
                       </Link>
                     </Button>
                   </SheetClose>
                   <SheetClose asChild>
                     <Button asChild size="sm" className="rounded-full">
-                      <Link to="/auth" search={{ mode: "signup" }}>
+                      <Link to="/auth" search={{ mode: "signup", ...(authFlow ? { flow: authFlow } : {}) }}>
                         {t("Crear cuenta", "Sign up")}
                       </Link>
                     </Button>
