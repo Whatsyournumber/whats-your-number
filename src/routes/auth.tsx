@@ -234,10 +234,15 @@ const KIDS_POINTS: { icon: typeof Target; title: [string, string]; body: [string
 function PointsCarousel({ index, onChange, variant = "general" }: { index: number; onChange: (i: number) => void; variant?: "general" | "kids" }) {
   const tt = useT();
   const points = variant === "kids" ? KIDS_POINTS : POINTS;
+  const isKids = variant === "kids";
+  const divider = isKids ? "divide-border" : "divide-white/10";
+  const inactiveIcon = isKids ? "text-muted-foreground/60" : "text-white/40";
+  const inactiveTitle = isKids ? "text-muted-foreground" : "text-white/60";
+  const body = isKids ? "text-muted-foreground" : "text-white/50";
 
   return (
     <div>
-      <div className="grid grid-cols-3 divide-x divide-white/10">
+      <div className={`grid grid-cols-3 divide-x ${divider}`}>
         {points.map((p, i) => {
           const Icon = p.icon;
           const active = i === index;
@@ -248,12 +253,12 @@ function PointsCarousel({ index, onChange, variant = "general" }: { index: numbe
               onClick={() => onChange(i)}
               className="flex items-start gap-2.5 px-4 text-left first:pl-0 last:pr-0"
             >
-              <Icon className={`mt-0.5 h-4 w-4 shrink-0 transition-colors lg:h-5 lg:w-5 ${active ? "text-primary" : "text-white/40"}`} />
+              <Icon className={`mt-0.5 h-4 w-4 shrink-0 transition-colors lg:h-5 lg:w-5 ${active ? "text-primary" : inactiveIcon}`} />
               <span className="min-w-0">
-                <span className={`block text-xs font-semibold leading-tight transition-colors lg:text-base lg:whitespace-nowrap ${active ? "text-white" : "text-white/60"}`}>
+                <span className={`block text-xs font-semibold leading-tight transition-colors lg:text-base lg:whitespace-nowrap ${active ? (isKids ? "text-foreground" : "text-white") : inactiveTitle}`}>
                   {tt(p.title[0], p.title[1])}
                 </span>
-                <span className="mt-1 block text-[10px] leading-snug text-white/50 lg:text-xs">{tt(p.body[0], p.body[1])}</span>
+                <span className={`mt-1 block text-[10px] leading-snug lg:text-xs ${body}`}>{tt(p.body[0], p.body[1])}</span>
               </span>
             </button>
           );
@@ -266,7 +271,7 @@ function PointsCarousel({ index, onChange, variant = "general" }: { index: numbe
             type="button"
             aria-label={`${i + 1}`}
             onClick={() => onChange(i)}
-            className={`h-1 rounded-full transition-all ${i === index ? "w-5 bg-primary" : "w-1.5 bg-white/25"}`}
+            className={`h-1 rounded-full transition-all ${i === index ? "w-5 bg-primary" : isKids ? "w-1.5 bg-border" : "w-1.5 bg-white/25"}`}
           />
         ))}
       </div>
