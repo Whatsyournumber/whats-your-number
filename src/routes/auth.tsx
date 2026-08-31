@@ -717,7 +717,7 @@ function AuthPage() {
         alt=""
         aria-hidden="true"
         className={`pointer-events-none absolute inset-x-0 top-0 hidden w-full object-cover lg:block ${
-          isKids ? "h-full translate-y-0 object-[58%_50%]" : "h-[118%] -translate-y-[15%] object-[left_5%_top_0%]"
+          isKids ? "h-full object-[center_38%]" : "h-[118%] -translate-y-[15%] object-[left_5%_top_0%]"
         }`}
       />
       {/* Izquierda legible */}
@@ -729,7 +729,7 @@ function AuthPage() {
       <SidePanel variant={isKids ? "kids" : "general"} />
 
       <div className={`relative z-10 flex min-h-screen flex-col items-center justify-center gap-8 px-6 py-10 lg:h-screen lg:min-h-0 lg:bg-transparent lg:px-10 lg:py-6 ${isKids ? "bg-background" : "bg-slate-200"}`}>
-        {isKids && <img src={kidsHeroImg} alt={tt("familia aprendiendo sobre dinero", "family learning about money")} className="pointer-events-none absolute inset-x-0 top-0 h-48 w-full object-cover object-[center_42%] opacity-90 lg:hidden" />}
+        {isKids && <img src={kidsHeroImg} alt={tt("familia aprendiendo sobre dinero", "family learning about money")} className="pointer-events-none absolute inset-x-0 top-0 h-48 w-full object-cover object-[center_35%] opacity-90 lg:hidden" />}
         {isKids && <div className="pointer-events-none absolute inset-x-0 top-0 h-52 bg-gradient-to-b from-transparent to-background lg:hidden" />}
         <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
         {card}
