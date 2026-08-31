@@ -15,7 +15,7 @@ import { toast } from "sonner";
 
 import heroImg from "@/assets/auth-hero-v4.jpg";
 import reviewCamila from "@/assets/review-camila.jpg";
-import reviewMaria from "@/assets/review-maria.jpg";
+import reviewCarlos from "@/assets/review-carlos.jpg";
 import reviewMariana from "@/assets/review-mariana.jpg";
 
 import { BrandLogo } from "@/components/brand-logo";
