@@ -254,10 +254,6 @@ function SidePanel() {
 
   return (
     <div className="relative hidden h-screen flex-col lg:flex">
-      <div className="relative p-8 pb-0">
-        <BrandLogo />
-      </div>
-
       {/* Bloque de texto empujado hacia la parte baja del panel */}
       <div className="relative mt-auto flex flex-col gap-6 p-8 pb-8">
         <div className="w-full">
@@ -456,12 +452,12 @@ function AuthPage() {
           </div>
         )}
 
-        {/* Logo dentro del box en mobile, como en la referencia */}
-        <div className="mb-5 flex justify-center lg:hidden">
-          <BrandLogo variant="light" />
-        </div>
-
         <div className="flex flex-col items-center text-center">
+          {/* Logo dentro del box, justo encima del título, como en mobile */}
+          <div className="mb-3 flex justify-center">
+            <BrandLogo variant="light" />
+          </div>
+
           {isAffiliate ? (
             <>
               <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-primary">
