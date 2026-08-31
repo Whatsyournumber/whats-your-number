@@ -659,7 +659,7 @@ function AuthPage() {
         src={heroImg}
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 hidden h-full w-full origin-top-left scale-[1.12] -translate-y-[5%] object-cover object-[left_top] lg:block"
+        className="pointer-events-none absolute inset-0 hidden h-full w-full object-cover object-[left_5%] lg:block"
       />
       {/* Izquierda legible */}
       <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-background/70 via-transparent to-transparent lg:block" />
