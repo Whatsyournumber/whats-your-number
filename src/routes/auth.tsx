@@ -477,10 +477,10 @@ function AuthPage() {
                   ? tt("Crea tu cuenta gratis", "Create your free account")
                   : tt("Bienvenido de vuelta", "Welcome back")}
               </h2>
-              <p className="mt-1.5 text-sm leading-relaxed text-slate-500">
+              <p className="mt-1.5 whitespace-nowrap text-sm leading-relaxed text-slate-500">
                 {tt(
-                  "Tu futuro financiero empieza conociendo tu número.",
-                  "Your financial future starts by knowing your number.",
+                  "Sigamos construyendo tu libertad financiera.",
+                  "Let's keep building your financial freedom.",
                 )}
               </p>
             </>
