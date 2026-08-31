@@ -135,11 +135,11 @@ const POINTS: { icon: typeof Target; title: [string, string]; body: [string, str
 
 const REVIEWS = [
   {
-    image: reviewMaria,
-    name: "María P.",
+    image: reviewCarlos,
+    name: "Carlos R.",
     quote: [
-      "La IA me ha ayudado a tomar mejores decisiones con mi dinero. Totalmente recomendada.",
-      "The AI has helped me make better decisions with my money. Totally recommended.",
+      "Por fin puedo hacer tracking de todo mi patrimonio en un solo lugar. Un game changer.",
+      "I can finally track all my net worth in one place. A total game changer.",
     ] as [string, string],
   },
   {
