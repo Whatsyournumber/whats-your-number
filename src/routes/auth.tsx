@@ -484,10 +484,9 @@ function AuthPage() {
                   : tt("Bienvenido de vuelta", "Welcome back")}
               </h2>
               <p className="mt-1.5 whitespace-nowrap text-sm leading-relaxed text-slate-500">
-                {tt(
-                  "Sigamos construyendo tu libertad financiera.",
-                  "Let's keep building your financial freedom.",
-                )}
+                {mode === "signup"
+                  ? tt("Todo empieza con un número. Descubre el tuyo.", "Everything starts with a number. Discover yours.")
+                  : tt("Sigamos construyendo tu libertad financiera.", "Let's keep building your financial freedom.")}
               </p>
             </>
           )}
