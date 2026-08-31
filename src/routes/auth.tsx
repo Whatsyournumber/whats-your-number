@@ -180,7 +180,7 @@ function ReviewCard({ index }: { index: number }) {
         <img
           src={r.image}
           alt={r.name}
-          className="h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-white/20 lg:h-11 lg:w-11"
+          className="h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-slate-900/10 lg:h-11 lg:w-11 lg:ring-white/20"
         />
         <div className="min-w-0">
           <div className="flex items-center gap-2 whitespace-nowrap">
@@ -189,9 +189,9 @@ function ReviewCard({ index }: { index: number }) {
                 <Star key={s} className="h-2.5 w-2.5 fill-primary text-primary lg:h-3.5 lg:w-3.5" />
               ))}
             </div>
-            <figcaption className="text-[11px] font-medium text-white lg:text-sm">{r.name}</figcaption>
+            <figcaption className="text-[11px] font-medium text-slate-900 lg:text-sm lg:text-white">{r.name}</figcaption>
           </div>
-          <blockquote className="mt-1 line-clamp-2 text-[11px] leading-snug text-white/70 lg:text-sm lg:leading-relaxed">
+          <blockquote className="mt-1 line-clamp-2 text-[11px] leading-snug text-slate-600 lg:text-sm lg:leading-relaxed lg:text-white/70">
             “{tt(r.quote[0], r.quote[1])}”
           </blockquote>
         </div>
