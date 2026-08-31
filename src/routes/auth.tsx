@@ -17,6 +17,10 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import heroImg from "@/assets/auth-hero-v4.jpg";
+import kidsHeroImg from "@/assets/kids-hero-family.jpg";
+import kidDad from "@/assets/kid-face-dad.jpg";
+import kidMom from "@/assets/kid-face-mom.jpg";
+import kidSofia from "@/assets/kid-face-sofia.jpg";
 import reviewCamila from "@/assets/review-camila.jpg";
 import reviewCarlos from "@/assets/review-carlos.jpg";
 import reviewMariana from "@/assets/review-mariana.jpg";
@@ -34,7 +38,7 @@ import { setPendingPromoCode } from "@/lib/pending-promo";
 import { getPendingCheckoutPlan } from "@/lib/pending-checkout";
 import { startAffiliateWizard } from "@/lib/affiliate-wizard-state";
 
-type AuthSearch = { mode: "login" | "signup"; next?: string; flow?: "affiliate" };
+type AuthSearch = { mode: "login" | "signup"; next?: string; flow?: "affiliate" | "kids" };
 
 /**
  * Navega al destino guardado. Las rutas con query o punto (p. ej. el
@@ -65,10 +69,11 @@ export const Route = createFileRoute("/auth")({
         ? rawNext
         : undefined;
     const affiliate = search["flow"] === "affiliate";
+    const kids = search["flow"] === "kids";
     return {
       mode: search["mode"] === "signup" || (affiliate && search["mode"] !== "login") ? "signup" : "login",
       ...(next ? { next } : affiliate ? { next: "/afiliados" } : {}),
-      ...(affiliate ? { flow: "affiliate" as const } : {}),
+      ...(affiliate ? { flow: "affiliate" as const } : kids ? { flow: "kids" as const } : {}),
     };
   },
 
@@ -163,9 +168,17 @@ const REVIEWS = [
   },
 ];
 
-function ReviewCard({ index }: { index: number }) {
+function ReviewCard({ index, variant = "general" }: { index: number; variant?: "general" | "kids" }) {
   const tt = useT();
-  const r = REVIEWS[index % REVIEWS.length] ?? REVIEWS[0]!;
+  const reviews = variant === "kids"
+    ? [
+        { image: kidMom, name: "Lucía Pérez", quote: ["En un mes entendió el interés compuesto mejor que yo a los 25.", "In a month she understood compound interest better than I did at 25."] as [string, string] },
+        { image: kidDad, name: "Andrés Duarte", quote: ["Las tareas dejaron de ser pelea: ahora las hace porque ve subir su número.", "Chores stopped being a fight: he does them because he sees his number go up."] as [string, string] },
+        { image: kidSofia, name: "Sarah Mitchell", quote: ["Ahora mi hija sabe el valor del dinero y el esfuerzo de conseguir su bicicleta.", "Now my daughter understands the value of money and the effort behind a new bike."] as [string, string] },
+      ]
+    : REVIEWS;
+  const r = reviews[index % reviews.length] ?? reviews[0];
+  if (!r) return null;
 
   return (
     <AnimatePresence mode="wait">
@@ -200,8 +213,27 @@ function ReviewCard({ index }: { index: number }) {
   );
 }
 
-function PointsCarousel({ index, onChange }: { index: number; onChange: (i: number) => void }) {
+const KIDS_POINTS: { icon: typeof Target; title: [string, string]; body: [string, string] }[] = [
+  {
+    icon: Target,
+    title: ["1. Planifica su futuro", "1. Plan their future"],
+    body: ["Calcula cuánto tendrá a los 18 para sus grandes sueños.", "See how much they could have by 18 for their biggest dreams."],
+  },
+  {
+    icon: TrendingUp,
+    title: ["2. Enseña hábitos", "2. Teach money habits"],
+    body: ["Ahorro, mesada e inversión en una experiencia familiar.", "Saving, allowance and investing in one family experience."],
+  },
+  {
+    icon: Sparkles,
+    title: ["3. Crecen juntos", "3. Grow together"],
+    body: ["Un plan visual para que cada pequeño avance cuente.", "A visual plan that makes every small step count."],
+  },
+];
+
+function PointsCarousel({ index, onChange, variant = "general" }: { index: number; onChange: (i: number) => void; variant?: "general" | "kids" }) {
   const tt = useT();
+  const points = variant === "kids" ? KIDS_POINTS : POINTS;
 
   return (
     <div>
@@ -243,12 +275,13 @@ function PointsCarousel({ index, onChange }: { index: number; onChange: (i: numb
 }
 
 /** Panel hero fotográfico (desktop): foto a pantalla completa + puntos + review. */
-function SidePanel() {
+function SidePanel({ variant = "general" }: { variant?: "general" | "kids" }) {
   const tt = useT();
   const [index, setIndex] = useState(0);
+  const points = variant === "kids" ? KIDS_POINTS : POINTS;
 
   useEffect(() => {
-    const id = window.setInterval(() => setIndex((i) => (i + 1) % POINTS.length), 5000);
+    const id = window.setInterval(() => setIndex((i) => (i + 1) % points.length), 5000);
     return () => window.clearInterval(id);
   }, []);
 
@@ -258,23 +291,27 @@ function SidePanel() {
       <div className="relative mt-auto flex flex-col gap-6 p-8 pb-8">
         <div className="w-full">
           <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight text-white xl:text-6xl">
-            {tt("Descubre", "Discover")}
+            {variant === "kids" ? tt("Construye", "Build") : tt("Descubre", "Discover")}
             <br />
-            <span className="text-primary">{tt("tu número.", "your number.")}</span>
+            <span className="text-primary">{variant === "kids" ? tt("su futuro.", "their future.") : tt("tu número.", "your number.")}</span>
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/70 lg:text-xl lg:leading-relaxed">
             {tt(
-              "Toma mejores decisiones hoy para tu libertad financiera mañana.",
-              "Make better decisions today for your financial freedom tomorrow.",
+              variant === "kids"
+                ? "Planifica su futuro y enséñale a manejar el dinero desde pequeño."
+                : "Toma mejores decisiones hoy para tu libertad financiera mañana.",
+              variant === "kids"
+                ? "Plan their future and teach them about money from day one."
+                : "Make better decisions today for your financial freedom tomorrow.",
             )}
           </p>
         </div>
 
         {/* Parte de abajo: puntos compactos + review integrada en el fondo */}
         <div className="w-full border-t border-white/10 pt-5">
-          <PointsCarousel index={index} onChange={setIndex} />
+          <PointsCarousel index={index} onChange={setIndex} variant={variant} />
           <div className="relative isolate mt-5">
-            <ReviewCard index={index} />
+            <ReviewCard index={index} variant={variant} />
           </div>
 
         </div>
@@ -286,6 +323,7 @@ function SidePanel() {
 function AuthPage() {
   const { mode, next, flow } = Route.useSearch();
   const isAffiliate = flow === "affiliate";
+  const isKids = flow === "kids";
   const navigate = useNavigate();
 
   const { user, loading: authLoading } = useAuth();
@@ -421,7 +459,7 @@ function AuthPage() {
     >
       <div className="mb-4 flex items-center justify-between">
         <Link
-          to="/"
+          to={isKids ? "/finanzas-para-ninos" : "/"}
           className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground lg:text-slate-400 lg:hover:text-slate-700"
         >
           <ArrowLeft className="h-3.5 w-3.5" /> {t("auth.back")}
@@ -669,10 +707,10 @@ function AuthPage() {
       {/* Fondo infinito: la foto cubre toda la página, sin cortes ni bordes,
           y pasa por debajo de la tarjeta flotante */}
       <img
-        src={heroImg}
+        src={isKids ? kidsHeroImg : heroImg}
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 hidden h-[118%] w-full -translate-y-[15%] object-cover object-[left_5%_top_0%] lg:block"
+        className={`pointer-events-none absolute inset-x-0 top-0 hidden h-[118%] w-full -translate-y-[15%] object-cover lg:block ${isKids ? "object-[center_38%]" : "object-[left_5%_top_0%]"}`}
       />
       {/* Izquierda legible */}
       <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-background/70 via-transparent to-transparent lg:block" />
@@ -680,15 +718,18 @@ function AuthPage() {
       {/* Derecha: fundido a oscuro bajo la tarjeta */}
       <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[42%] bg-gradient-to-l from-background via-background/70 to-transparent lg:block" />
 
-      <SidePanel />
+      <SidePanel variant={isKids ? "kids" : "general"} />
 
-      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center gap-8 bg-slate-200 px-6 py-10 lg:h-screen lg:min-h-0 lg:bg-transparent lg:px-10 lg:py-6">
+      <div className={`relative z-10 flex min-h-screen flex-col items-center justify-center gap-8 px-6 py-10 lg:h-screen lg:min-h-0 lg:bg-transparent lg:px-10 lg:py-6 ${isKids ? "bg-background" : "bg-slate-200"}`}>
+        {isKids && <img src={kidsHeroImg} alt={tt("familia aprendiendo sobre dinero", "family learning about money")} className="pointer-events-none absolute inset-x-0 top-0 h-48 w-full object-cover object-[center_42%] opacity-90 lg:hidden" />}
+        {isKids && <div className="pointer-events-none absolute inset-x-0 top-0 h-52 bg-gradient-to-b from-transparent to-background lg:hidden" />}
         <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
         {card}
 
         {/* Móvil: solo reviews debajo de la tarjeta */}
         <div className="w-full max-w-md px-2 lg:hidden">
-          <ReviewCard index={point} />
+          {isKids && <div className="mb-5"><PointsCarousel index={point} onChange={setPoint} variant="kids" /></div>}
+          <ReviewCard index={point} variant={isKids ? "kids" : "general"} />
         </div>
       </div>
     </div>
