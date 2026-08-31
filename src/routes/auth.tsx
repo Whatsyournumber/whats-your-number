@@ -7,6 +7,7 @@ import {
   Eye,
   EyeOff,
   Loader2,
+  Lock,
   Sparkles,
   Star,
   Target,
@@ -455,6 +456,11 @@ function AuthPage() {
           </div>
         )}
 
+        {/* Logo dentro del box en mobile, como en la referencia */}
+        <div className="mb-5 flex justify-center lg:hidden">
+          <BrandLogo variant="light" />
+        </div>
+
         <div className="flex flex-col items-center text-center">
           {isAffiliate ? (
             <>
@@ -603,7 +609,9 @@ function AuthPage() {
         {mode === "login" ? (
           <div className="mt-4 flex items-center justify-center text-center">
             <span className="inline-flex items-center gap-1.5 whitespace-nowrap text-[11px] text-slate-500">
-              <span aria-hidden="true">🔒</span>
+              <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-emerald-100 text-[10px] text-emerald-600" aria-hidden="true">
+                <Lock className="h-2.5 w-2.5" />
+              </span>
               {tt("Tus datos se guardan de forma privada y cifrada.", "Your data is stored privately and encrypted.")}
             </span>
           </div>
@@ -680,9 +688,6 @@ function AuthPage() {
 
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center gap-8 bg-slate-200 px-6 py-10 lg:h-screen lg:min-h-0 lg:bg-transparent lg:px-10 lg:py-6">
         <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
-        <div className="flex justify-center lg:hidden">
-          <BrandLogo variant="light" />
-        </div>
         {card}
 
         {/* Móvil: solo reviews debajo de la tarjeta */}
