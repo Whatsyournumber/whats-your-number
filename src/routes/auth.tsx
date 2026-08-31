@@ -258,12 +258,12 @@ function SidePanel() {
       {/* Bloque de texto empujado hacia la parte baja del panel */}
       <div className="relative mt-auto flex flex-col gap-6 p-8 pb-8">
         <div>
-          <h1 className="font-display text-4xl font-semibold leading-[1.05] tracking-tight text-white xl:text-5xl">
+          <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight text-white xl:text-6xl">
             {tt("Descubre", "Discover")}
             <br />
             <span className="text-primary">{tt("tu número.", "your number.")}</span>
           </h1>
-          <p className="mt-3 max-w-md text-sm leading-relaxed text-white/70">
+          <p className="mt-4 max-w-lg text-base leading-relaxed text-white/70 lg:text-lg">
             {tt(
               "Toma mejores decisiones hoy para tu libertad financiera mañana.",
               "Make better decisions today for your financial freedom tomorrow.",
