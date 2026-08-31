@@ -484,10 +484,9 @@ function AuthPage() {
                   : tt("Bienvenido de vuelta", "Welcome back")}
               </h2>
               <p className="mt-1.5 whitespace-nowrap text-sm leading-relaxed text-slate-500">
-                {tt(
-                  "Sigamos construyendo tu libertad financiera.",
-                  "Let's keep building your financial freedom.",
-                )}
+                {mode === "signup"
+                  ? tt("Todo empieza con un número. Descubre el tuyo.", "Everything starts with a number. Discover yours.")
+                  : tt("Sigamos construyendo tu libertad financiera.", "Let's keep building your financial freedom.")}
               </p>
             </>
           )}
@@ -616,13 +615,13 @@ function AuthPage() {
             </span>
           </div>
         ) : (
-          <div className="mt-4 flex items-center justify-center divide-x divide-slate-200">
+          <div className="mt-4 flex flex-nowrap items-center justify-center divide-x divide-slate-200">
             {[
               tt("Gratis", "Free"),
               tt("Sin tarjeta", "No card"),
-              tt("Tus datos son privados", "Your data stays private"),
+              tt("Datos privados", "Private data"),
             ].map((label) => (
-              <span key={label} className="flex items-center gap-1.5 px-3 text-[11px] text-slate-500 first:pl-0 last:pr-0">
+              <span key={label} className="flex items-center gap-1.5 whitespace-nowrap px-2 text-[11px] text-slate-500 first:pl-0 last:pr-0 sm:px-3">
                 <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-primary" />
                 {label}
               </span>
