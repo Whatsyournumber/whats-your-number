@@ -271,7 +271,7 @@ function SidePanel() {
         </div>
 
         {/* Parte de abajo: puntos compactos + review en una sola franja */}
-        <div className="w-full rounded-3xl border border-white/10 bg-gradient-to-t from-black/40 via-black/15 to-transparent p-6 backdrop-blur-2xl">
+        <div className="w-full border-t border-white/10 pt-5">
           <PointsCarousel index={index} onChange={setIndex} />
           <div className="mt-5">
             <ReviewCard index={index} />
@@ -675,7 +675,7 @@ function AuthPage() {
       />
       {/* Izquierda legible */}
       <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-background/70 via-transparent to-transparent lg:block" />
-      <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-background/75 via-background/20 to-transparent lg:block" />
+      <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-background/90 via-transparent to-background/30 lg:block" />
       {/* Derecha: fundido a oscuro bajo la tarjeta */}
       <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[42%] bg-gradient-to-l from-background via-background/70 to-transparent lg:block" />
 
@@ -685,9 +685,12 @@ function AuthPage() {
         <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
         {card}
 
-        {/* Móvil: solo reviews debajo de la tarjeta */}
-        <div className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-950/65 p-5 backdrop-blur-3xl lg:hidden">
-          <ReviewCard index={point} />
+        {/* Móvil: reviews sin card, sobre fondo con degradado negro difuminado */}
+        <div className="relative w-full max-w-md lg:hidden">
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent blur-2xl" />
+          <div className="relative px-2 pt-8 pb-3">
+            <ReviewCard index={point} />
+          </div>
         </div>
       </div>
     </div>
