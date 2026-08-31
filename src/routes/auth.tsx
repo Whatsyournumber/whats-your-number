@@ -15,7 +15,7 @@ import { toast } from "sonner";
 
 import heroImg from "@/assets/auth-hero-v4.jpg";
 import reviewCamila from "@/assets/review-camila.jpg";
-import reviewMaria from "@/assets/review-maria.jpg";
+import reviewCarlos from "@/assets/review-carlos.jpg";
 import reviewMariana from "@/assets/review-mariana.jpg";
 
 import { BrandLogo } from "@/components/brand-logo";
@@ -135,11 +135,11 @@ const POINTS: { icon: typeof Target; title: [string, string]; body: [string, str
 
 const REVIEWS = [
   {
-    image: reviewMaria,
-    name: "María P.",
+    image: reviewCarlos,
+    name: "Carlos R.",
     quote: [
-      "La IA me ha ayudado a tomar mejores decisiones con mi dinero. Totalmente recomendada.",
-      "The AI has helped me make better decisions with my money. Totally recommended.",
+      "Por fin puedo hacer tracking de todo mi patrimonio en un solo lugar. Un game changer.",
+      "I can finally track all my net worth in one place. A total game changer.",
     ] as [string, string],
   },
   {
@@ -168,7 +168,7 @@ function ReviewCard({ index }: { index: number }) {
     <AnimatePresence mode="wait">
       <motion.figure
         key={r.name}
-        initial={{ opacity: 0, y: 6 }}
+        initial={{ opacity: 1, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -6 }}
         transition={{ duration: 0.3 }}
@@ -177,18 +177,18 @@ function ReviewCard({ index }: { index: number }) {
         <img
           src={r.image}
           alt={r.name}
-          className="h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-white/20"
+          className="h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-white/20 lg:h-11 lg:w-11"
         />
         <div className="min-w-0">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 whitespace-nowrap">
             <div className="flex gap-0.5">
               {Array.from({ length: 5 }).map((_, s) => (
-                <Star key={s} className="h-2.5 w-2.5 fill-primary text-primary" />
+                <Star key={s} className="h-2.5 w-2.5 fill-primary text-primary lg:h-3.5 lg:w-3.5" />
               ))}
             </div>
-            <figcaption className="text-[11px] font-medium text-white">{r.name}</figcaption>
+            <figcaption className="text-[11px] font-medium text-white lg:text-sm">{r.name}</figcaption>
           </div>
-          <blockquote className="mt-1 line-clamp-2 text-[11px] leading-snug text-white/70">
+          <blockquote className="mt-1 line-clamp-2 text-[11px] leading-snug text-white/70 lg:text-sm lg:leading-relaxed">
             “{tt(r.quote[0], r.quote[1])}”
           </blockquote>
         </div>
@@ -213,12 +213,12 @@ function PointsCarousel({ index, onChange }: { index: number; onChange: (i: numb
               onClick={() => onChange(i)}
               className="flex items-start gap-2.5 px-4 text-left first:pl-0 last:pr-0"
             >
-              <Icon className={`mt-0.5 h-4 w-4 shrink-0 transition-colors ${active ? "text-primary" : "text-white/40"}`} />
+              <Icon className={`mt-0.5 h-4 w-4 shrink-0 transition-colors lg:h-5 lg:w-5 ${active ? "text-primary" : "text-white/40"}`} />
               <span className="min-w-0">
-                <span className={`block text-xs font-semibold leading-tight transition-colors ${active ? "text-white" : "text-white/60"}`}>
+                <span className={`block text-xs font-semibold leading-tight transition-colors lg:text-base lg:whitespace-nowrap ${active ? "text-white" : "text-white/60"}`}>
                   {tt(p.title[0], p.title[1])}
                 </span>
-                <span className="mt-1 block text-[10px] leading-snug text-white/50">{tt(p.body[0], p.body[1])}</span>
+                <span className="mt-1 block text-[10px] leading-snug text-white/50 lg:text-xs">{tt(p.body[0], p.body[1])}</span>
               </span>
             </button>
           );
@@ -257,13 +257,13 @@ function SidePanel() {
 
       {/* Bloque de texto empujado hacia la parte baja del panel */}
       <div className="relative mt-auto flex flex-col gap-6 p-8 pb-8">
-        <div>
-          <h1 className="font-display text-4xl font-semibold leading-[1.05] tracking-tight text-white xl:text-5xl">
+        <div className="w-full">
+          <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight text-white xl:text-6xl">
             {tt("Descubre", "Discover")}
             <br />
             <span className="text-primary">{tt("tu número.", "your number.")}</span>
           </h1>
-          <p className="mt-3 max-w-md text-sm leading-relaxed text-white/70">
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/70 lg:text-xl lg:leading-relaxed">
             {tt(
               "Toma mejores decisiones hoy para tu libertad financiera mañana.",
               "Make better decisions today for your financial freedom tomorrow.",
@@ -272,7 +272,7 @@ function SidePanel() {
         </div>
 
         {/* Parte de abajo: puntos compactos + review en una sola franja */}
-        <div className="max-w-xl border-t border-white/10 pt-5">
+        <div className="w-full border-t border-white/10 pt-5">
           <PointsCarousel index={index} onChange={setIndex} />
           <div className="mt-5">
             <ReviewCard index={index} />
@@ -413,7 +413,7 @@ function AuthPage() {
 
   const card = (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 1, y: 0 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35 }}
       className="w-full max-w-md"
@@ -638,7 +638,7 @@ function AuthPage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-background lg:grid lg:h-screen lg:grid-cols-[1.55fr_1fr] lg:overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden bg-background lg:grid lg:h-screen lg:grid-cols-[1.65fr_1fr] lg:overflow-hidden">
       {/* Fondo infinito: la foto cubre toda la página, sin cortes ni bordes,
           y pasa por debajo de la tarjeta flotante */}
       <img
@@ -655,13 +655,12 @@ function AuthPage() {
 
       <SidePanel />
 
-      <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 bg-slate-200 px-6 py-10 lg:h-screen lg:min-h-0 lg:bg-transparent lg:px-10 lg:py-6">
+      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center gap-8 bg-slate-200 px-6 py-10 lg:h-screen lg:min-h-0 lg:bg-transparent lg:px-10 lg:py-6">
         <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
         {card}
 
-        {/* Móvil: puntos + review debajo de la tarjeta (fondo oscuro para contraste) */}
-        <div className="w-full max-w-md space-y-6 rounded-3xl bg-slate-900 p-6 lg:hidden">
-          <PointsCarousel index={point} onChange={setPoint} />
+        {/* Móvil: solo reviews debajo de la tarjeta */}
+        <div className="w-full max-w-md rounded-3xl bg-slate-900 p-5 lg:hidden">
           <ReviewCard index={point} />
         </div>
       </div>
