@@ -258,14 +258,14 @@ function SidePanel() {
       </div>
 
       {/* Bloque de texto empujado hacia la parte baja del panel */}
-      <div className="relative mt-auto flex flex-col gap-6 p-8 pb-8">
+      <div className="relative mt-auto flex flex-col gap-5 p-8 pb-24">
         <div className="w-full">
           <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight text-white xl:text-6xl">
             {tt("Descubre", "Discover")}
             <br />
             <span className="text-primary">{tt("tu número.", "your number.")}</span>
           </h1>
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/70 lg:text-xl lg:leading-relaxed">
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/70 lg:text-lg lg:leading-relaxed">
             {tt(
               "Toma mejores decisiones hoy para tu libertad financiera mañana.",
               "Make better decisions today for your financial freedom tomorrow.",
@@ -659,7 +659,7 @@ function AuthPage() {
         src={heroImg}
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 hidden h-full w-full object-cover object-[left_30%] lg:block"
+        className="pointer-events-none absolute inset-0 hidden h-full w-full object-cover object-[left_12%] lg:block"
       />
       {/* Izquierda legible */}
       <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-background/70 via-transparent to-transparent lg:block" />
