@@ -4,6 +4,8 @@ import {
   ArrowLeft,
   ArrowRight,
   CheckCircle2,
+  Eye,
+  EyeOff,
   Loader2,
   Sparkles,
   Star,
@@ -294,6 +296,7 @@ function AuthPage() {
   const tt = useT();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [fullName, setFullName] = useState("");
   const [busy, setBusy] = useState(false);
   const [promo, setPromo] = useState("");
@@ -536,17 +539,28 @@ function AuthPage() {
             <Label htmlFor="password" className="text-xs text-slate-500">
               {t("auth.password")}
             </Label>
-            <Input
-              id="password"
-              type="password"
-              required
-              minLength={6}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="mt-1.5 rounded-xl border-slate-200 bg-white text-slate-900 placeholder:text-slate-400"
-              autoComplete={mode === "signup" ? "new-password" : "current-password"}
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                required
+                minLength={6}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="mt-1.5 rounded-xl border-slate-200 bg-white pr-10 text-slate-900 placeholder:text-slate-400"
+                autoComplete={mode === "signup" ? "new-password" : "current-password"}
+              />
+              <button
+                type="button"
+                tabIndex={-1}
+                onClick={() => setShowPassword((s) => !s)}
+                aria-label={showPassword ? tt("Ocultar contraseña", "Hide password") : tt("Mostrar contraseña", "Show password")}
+                className="absolute right-2.5 top-1/2 mt-[3px] -translate-y-1/2 rounded-md p-1 text-slate-400 transition-colors hover:text-slate-600 focus-visible:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
             {mode === "login" && (
               <div className="mt-1.5 text-right">
                 <button
@@ -645,7 +659,7 @@ function AuthPage() {
         src={heroImg}
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 hidden h-full w-full object-cover object-left lg:block"
+        className="pointer-events-none absolute inset-0 hidden h-full w-full object-cover object-[left_30%] lg:block"
       />
       {/* Izquierda legible */}
       <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-background/70 via-transparent to-transparent lg:block" />
