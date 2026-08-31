@@ -718,7 +718,7 @@ function AuthPage() {
         aria-hidden="true"
         className={`pointer-events-none absolute inset-x-0 top-0 hidden w-full lg:block ${
           isKids
-            ? "h-[58%] top-[6%] object-contain object-center"
+            ? "h-[68%] top-[4%] object-contain object-left"
             : "h-[118%] -translate-y-[15%] object-cover object-[left_5%_top_0%]"
         }`}
       />
