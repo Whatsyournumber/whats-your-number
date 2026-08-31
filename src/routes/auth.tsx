@@ -624,8 +624,6 @@ function AuthPage() {
             </>
           )}
         </p>
-
-        <p className="mt-3 text-center text-[11px] text-slate-400">{t("auth.legal")}</p>
       </div>
     </motion.div>
   );
