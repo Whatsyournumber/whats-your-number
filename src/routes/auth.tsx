@@ -257,13 +257,13 @@ function SidePanel() {
 
       {/* Bloque de texto empujado hacia la parte baja del panel */}
       <div className="relative mt-auto flex flex-col gap-6 p-8 pb-8">
-        <div>
+        <div className="w-full">
           <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight text-white xl:text-6xl">
             {tt("Descubre", "Discover")}
             <br />
             <span className="text-primary">{tt("tu número.", "your number.")}</span>
           </h1>
-          <p className="mt-4 max-w-lg text-base leading-relaxed text-white/70 lg:text-lg">
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/70 lg:text-xl lg:leading-relaxed">
             {tt(
               "Toma mejores decisiones hoy para tu libertad financiera mañana.",
               "Make better decisions today for your financial freedom tomorrow.",
@@ -272,7 +272,7 @@ function SidePanel() {
         </div>
 
         {/* Parte de abajo: puntos compactos + review en una sola franja */}
-        <div className="max-w-xl border-t border-white/10 pt-5">
+        <div className="w-full border-t border-white/10 pt-5">
           <PointsCarousel index={index} onChange={setIndex} />
           <div className="mt-5">
             <ReviewCard index={index} />
