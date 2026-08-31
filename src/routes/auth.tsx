@@ -270,10 +270,14 @@ function SidePanel() {
           </p>
         </div>
 
-        {/* Parte de abajo: puntos compactos + review en una sola franja */}
+        {/* Parte de abajo: puntos compactos + review integrada en el fondo */}
         <div className="w-full border-t border-white/10 pt-5">
           <PointsCarousel index={index} onChange={setIndex} />
-          <div className="mt-5">
+          <div className="relative isolate mt-5">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -inset-x-8 -inset-y-5 -z-10 bg-gradient-to-t from-background/80 via-background/35 to-transparent blur-xl"
+            />
             <ReviewCard index={index} />
           </div>
         </div>
