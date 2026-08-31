@@ -638,7 +638,7 @@ function AuthPage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-background lg:grid lg:h-screen lg:grid-cols-[1.55fr_1fr] lg:overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden bg-background lg:grid lg:h-screen lg:grid-cols-[1.65fr_1fr] lg:overflow-hidden">
       {/* Fondo infinito: la foto cubre toda la página, sin cortes ni bordes,
           y pasa por debajo de la tarjeta flotante */}
       <img
@@ -655,7 +655,7 @@ function AuthPage() {
 
       <SidePanel />
 
-      <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 bg-slate-200 px-6 py-10 lg:h-screen lg:min-h-0 lg:bg-transparent lg:px-10 lg:py-6">
+      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center gap-8 bg-slate-200 px-6 py-10 lg:h-screen lg:min-h-0 lg:bg-transparent lg:px-10 lg:py-6">
         <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
         {card}
 
