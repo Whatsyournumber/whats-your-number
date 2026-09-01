@@ -6,29 +6,29 @@ import { blogCategories, categoryCount } from "@/lib/blog-categories";
 
 function AnimatedDemoLogo({ className = "" }: { className?: string }) {
   return (
-    <div className={`relative mx-auto flex h-32 w-32 shrink-0 items-center justify-center ${className}`}>
-      <div className="absolute inset-0 animate-pulse rounded-full bg-primary/15 blur-3xl" />
+    <div className={`relative mx-auto flex h-20 w-20 shrink-0 items-center justify-center ${className}`}>
+      <div className="absolute inset-0 animate-pulse rounded-full bg-primary/15 blur-2xl" />
       {[0, 1, 2].map((i) => (
         <motion.span
           key={i}
           className="absolute rounded-full border border-primary/30"
-          initial={{ width: 74, height: 74, opacity: 0.6 }}
-          animate={{ width: 128, height: 128, opacity: 0 }}
+          initial={{ width: 48, height: 48, opacity: 0.6 }}
+          animate={{ width: 80, height: 80, opacity: 0 }}
           transition={{ duration: 3, repeat: Infinity, delay: i, ease: "easeOut" }}
         />
       ))}
       <motion.span
-        className="absolute h-[112px] w-[112px] rounded-full border border-dashed border-primary/25"
+        className="absolute h-[70px] w-[70px] rounded-full border border-dashed border-primary/25"
         animate={{ rotate: 360 }}
         transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
       />
       <motion.div
         animate={{ scale: [1, 1.04, 1] }}
         transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
-        className="relative flex h-24 w-24 items-center justify-center rounded-full bg-elevated ring-1 ring-border transition-transform duration-300 group-hover:scale-105"
+        className="relative flex h-[60px] w-[60px] items-center justify-center rounded-full bg-elevated ring-1 ring-border transition-transform duration-300 group-hover:scale-105"
       >
         <span className="absolute inset-2 rounded-full ring-1 ring-primary/40" />
-        <span className="relative font-display text-4xl font-bold leading-none text-primary">?</span>
+        <span className="relative font-display text-2xl font-bold leading-none text-primary">?</span>
       </motion.div>
     </div>
   );
@@ -42,24 +42,18 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
   const demoHref = lang === "en" ? "/en/financial-freedom-calculator?start=1" : "/calculadora-libertad-financiera?start=1";
 
   return (
-    <div className="sticky top-24 space-y-5">
-      <div className="surface p-5">
+    <div className="sticky top-24 max-h-[calc(100vh-6rem)] space-y-3 overflow-y-auto pr-1">
+      <div className="surface p-4">
         {activeCategory === "ninos" ? (
           <>
             <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
               <Sparkles className="h-3 w-3" />
               {t("Demo gratis", "Free demo")}
             </div>
-            <p className="mt-3 whitespace-nowrap font-display text-[15px] font-semibold leading-tight">
+            <p className="mt-2 whitespace-nowrap font-display text-[15px] font-semibold leading-tight">
               {t("El número de tu hijo en 30seg", "Your child's number in 30s")}
             </p>
-            <AnimatedDemoLogo className="mt-4" />
-            <p className="mt-4 text-center text-sm leading-relaxed text-muted-foreground">
-              {t(
-                "Calculamos cuánto necesita a los 18 años para ir a cualquier universidad.",
-                "We calculate how much they need by age 18 to go to any university.",
-              )}
-            </p>
+            <AnimatedDemoLogo className="mt-2" />
           </>
         ) : (
           <>
@@ -67,16 +61,10 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
               <Sparkles className="h-3 w-3" />
               {t("Demo gratis", "Free demo")}
             </div>
-            <p className="mt-3 whitespace-nowrap font-display text-[15px] font-semibold leading-tight">
+            <p className="mt-2 whitespace-nowrap font-display text-[15px] font-semibold leading-tight">
               {t("Descubre tu número en 30seg", "Your number in 30s")}
             </p>
-            <AnimatedDemoLogo className="mt-4" />
-            <p className="mt-4 text-center text-sm leading-relaxed text-muted-foreground">
-              {t(
-                "El número para retirarte y alcanzar tu libertad financiera antes.",
-                "The number to retire and reach financial freedom sooner.",
-              )}
-            </p>
+            <AnimatedDemoLogo className="mt-2" />
           </>
         )}
 
@@ -84,7 +72,7 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
           href={activeCategory === "ninos" ? "/calculadora-ahorro-universidad?start=1" : demoHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
         >
           {activeCategory === "ninos"
             ? t("Probar demo para tu hijo", "Try demo for your child")
@@ -94,11 +82,11 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
       </div>
 
 
-      <nav className="surface p-6" aria-label={t("Categorías del blog", "Blog categories")}>
+      <nav className="surface p-4" aria-label={t("Categorías del blog", "Blog categories")}>
         <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-primary">
           <Tag className="h-3.5 w-3.5" /> {t("Categorías", "Categories")}
         </p>
-        <ul className="mt-4 space-y-1">
+        <ul className="mt-2 space-y-0">
           {blogCategories.map((c) => {
             const count = categoryCount(c.id);
             const href = `${blogHref}?cat=${c.id}`;
@@ -106,7 +94,7 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
               <li key={c.id}>
                 <a
                   href={href}
-                  className={`flex items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-elevated hover:text-primary ${
+                  className={`flex items-center justify-between gap-3 rounded-lg px-3 py-1.5 text-sm transition-colors hover:bg-elevated hover:text-primary ${
                     activeCategory === c.id ? "bg-elevated text-primary" : "text-muted-foreground"
                   }`}
                 >
