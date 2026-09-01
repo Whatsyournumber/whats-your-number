@@ -121,9 +121,10 @@ function Onboarding() {
     const draft: Draft = {
       step, name, age, theme, avatar, city, currency, allowance, frequency, split,
       wishTitle: wish.title, wishPrice, initial, savedNow, targetAge, expected, goal: goal as string,
+      ...(memberId ? { memberId } : {}),
     };
     window.localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-  }, [step, name, age, theme, avatar, city, currency, allowance, frequency, split, wish, wishPrice, initial, savedNow, targetAge, expected, goal]);
+  }, [step, name, age, theme, avatar, city, currency, allowance, frequency, split, wish, wishPrice, initial, savedNow, targetAge, expected, goal, memberId]);
 
   useKidTheme(theme);
 
