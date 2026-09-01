@@ -468,27 +468,6 @@ function ProfileSelector() {
                       onClick={(e) => e.stopPropagation()}
                       onKeyDown={(e) => e.stopPropagation()}
                     >
-                      <span className="flex justify-center gap-0.5 rounded-full bg-secondary p-0.5 text-[10px] font-semibold">
-                        {(["parent", "boy", "girl"] as const).map((r) => {
-                          const active =
-                            r === "parent" ? m.role === "parent" : m.role === "child" && (m.theme === r || (r === "boy" && m.theme !== "girl"));
-                          const adultBlocked = r === "parent" && m.role !== "parent" && adultCount >= MAX_ADULTS;
-                          return (
-                            <button
-                              key={r}
-                              type="button"
-                              disabled={adultBlocked}
-                              title={adultBlocked ? t("Máximo 2 adultos", "Max 2 adults") : undefined}
-                              onClick={() => void saveRole(m, r)}
-                              className={`flex-1 rounded-full px-1.5 py-1 transition disabled:cursor-not-allowed disabled:opacity-40 ${
-                                active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
-                              }`}
-                            >
-                              {r === "parent" ? t("Adulto", "Adult") : r === "boy" ? t("Niño", "Boy") : t("Niña", "Girl")}
-                            </button>
-                          );
-                        })}
-                      </span>
                       <input
                         defaultValue={m.name}
                         aria-label={t("Nombre", "Name")}
