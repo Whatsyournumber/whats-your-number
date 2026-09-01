@@ -186,7 +186,7 @@ function Pricing() {
         t("Account manager y SLA garantizado", "Account manager and guaranteed SLA"),
       ],
       cta: t("Contactar", "Contact us"),
-      href: "mailto:hello@whats-your-number.com?subject=Plan%20Corporativo%20B2B",
+      href: "mailto:hello@whatsyour-number.com?subject=Plan%20Corporativo%20B2B",
       highlight: false,
     },
   ];
