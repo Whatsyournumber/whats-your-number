@@ -140,6 +140,7 @@ function ProfileSelector() {
   }, []);
 
   const parents = members.filter((m) => m.role === "parent");
+  const holderParent = parents[0];
   const kids = members.filter((m) => m.role === "child");
   // El titular de la cuenta es siempre el primer adulto; los demás adultos son filas "parent".
   const adultCount = 1 + parents.length;
