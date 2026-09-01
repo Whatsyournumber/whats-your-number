@@ -300,7 +300,61 @@ function ProfileSelector() {
                 </button>
               ))}
 
-              {kids.length < maxKids ? (
+              {plan === "family" ? (
+                <>
+                  {showKidSlot ? (
+                    <button
+                      onClick={() => router.navigate({ to: "/ninos/onboarding" })}
+                      className="group flex flex-col items-center gap-3 outline-none"
+                    >
+                      <span className="grid aspect-square w-full place-items-center rounded-2xl border-2 border-dashed border-border text-muted-foreground transition-all duration-200 group-hover:scale-105 group-hover:border-primary group-hover:text-primary">
+                        <Plus className="h-10 w-10" />
+                      </span>
+                      <span className="text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
+                        {t("Añadir hijo/a", "Add a child")}
+                      </span>
+                    </button>
+                  ) : null}
+
+                  {showFlexSlot ? (
+                    <button
+                      onClick={() => setShowFlexChoice(true)}
+                      className="group flex flex-col items-center gap-3 outline-none"
+                    >
+                      <span className="grid aspect-square w-full place-items-center rounded-2xl border-2 border-dashed border-border text-muted-foreground transition-all duration-200 group-hover:scale-105 group-hover:border-primary group-hover:text-primary">
+                        <UserPlus className="h-9 w-9" />
+                      </span>
+                      <span className="min-w-0 text-center">
+                        <span className="block truncate text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
+                          {t("Añadir perfil", "Add a profile")}
+                        </span>
+                        <span className="block text-[11px] text-muted-foreground/70">
+                          {t("Adulto o niño/a", "Adult or child")}
+                        </span>
+                      </span>
+                    </button>
+                  ) : null}
+
+                  {showPaidSlot ? (
+                    <button
+                      onClick={() => setShowUnlock(true)}
+                      className="group flex flex-col items-center gap-3 outline-none"
+                    >
+                      <span className="grid aspect-square w-full place-items-center rounded-2xl border-2 border-dashed border-border text-muted-foreground transition-all duration-200 group-hover:scale-105 group-hover:border-primary group-hover:text-primary">
+                        <Lock className="h-9 w-9" />
+                      </span>
+                      <span className="min-w-0 text-center">
+                        <span className="block truncate text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
+                          {t("Perfil extra", "Extra profile")}
+                        </span>
+                        <span className="block text-[11px] text-muted-foreground/70">
+                          {t("Desbloquear", "Unlock")}
+                        </span>
+                      </span>
+                    </button>
+                  ) : null}
+                </>
+              ) : kids.length < maxKids ? (
                 <button
                   onClick={() => router.navigate({ to: "/ninos/onboarding" })}
                   className="group flex flex-col items-center gap-3 outline-none"
@@ -331,25 +385,6 @@ function ProfileSelector() {
                   </span>
                 </button>
               )}
-
-              {canAddAdult ? (
-                <button
-                  onClick={() => setShowAddAdult(true)}
-                  className="group flex flex-col items-center gap-3 outline-none"
-                >
-                  <span className="grid aspect-square w-full place-items-center rounded-2xl border-2 border-dashed border-border text-muted-foreground transition-all duration-200 group-hover:scale-105 group-hover:border-primary group-hover:text-primary">
-                    <UserPlus className="h-9 w-9" />
-                  </span>
-                  <span className="min-w-0 text-center">
-                    <span className="block truncate text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
-                      {t("Añadir adulto", "Add an adult")}
-                    </span>
-                    <span className="block text-[11px] text-muted-foreground/70">
-                      {t("Pareja o tutor", "Partner or guardian")}
-                    </span>
-                  </span>
-                </button>
-              ) : null}
             </div>
 
             {plan === "family" ? (
