@@ -42,8 +42,8 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
   const demoHref = lang === "en" ? "/en/financial-freedom-calculator?start=1" : "/calculadora-libertad-financiera?start=1";
 
   return (
-    <div className="sticky top-24 space-y-5">
-      <div className="surface p-5">
+    <div className="sticky top-24 max-h-[calc(100vh-6rem)] space-y-4 overflow-y-auto pr-1">
+      <div className="surface p-4">
         {activeCategory === "ninos" ? (
           <>
             <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
@@ -53,8 +53,8 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
             <p className="mt-3 whitespace-nowrap font-display text-[15px] font-semibold leading-tight">
               {t("El número de tu hijo en 30seg", "Your child's number in 30s")}
             </p>
-            <AnimatedDemoLogo className="mt-4" />
-            <p className="mt-4 text-center text-sm leading-relaxed text-muted-foreground">
+            <AnimatedDemoLogo className="mt-3" />
+            <p className="mt-3 text-center text-sm leading-relaxed text-muted-foreground">
               {t(
                 "Calculamos cuánto necesita a los 18 años para ir a cualquier universidad.",
                 "We calculate how much they need by age 18 to go to any university.",
@@ -70,8 +70,8 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
             <p className="mt-3 whitespace-nowrap font-display text-[15px] font-semibold leading-tight">
               {t("Descubre tu número en 30seg", "Your number in 30s")}
             </p>
-            <AnimatedDemoLogo className="mt-4" />
-            <p className="mt-4 text-center text-sm leading-relaxed text-muted-foreground">
+            <AnimatedDemoLogo className="mt-3" />
+            <p className="mt-3 text-center text-sm leading-relaxed text-muted-foreground">
               {t(
                 "El número para retirarte y alcanzar tu libertad financiera antes.",
                 "The number to retire and reach financial freedom sooner.",
@@ -84,7 +84,7 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
           href={activeCategory === "ninos" ? "/calculadora-ahorro-universidad?start=1" : demoHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
         >
           {activeCategory === "ninos"
             ? t("Probar demo para tu hijo", "Try demo for your child")
@@ -94,11 +94,11 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
       </div>
 
 
-      <nav className="surface p-6" aria-label={t("Categorías del blog", "Blog categories")}>
+      <nav className="surface p-5" aria-label={t("Categorías del blog", "Blog categories")}>
         <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-primary">
           <Tag className="h-3.5 w-3.5" /> {t("Categorías", "Categories")}
         </p>
-        <ul className="mt-4 space-y-1">
+        <ul className="mt-3 space-y-0.5">
           {blogCategories.map((c) => {
             const count = categoryCount(c.id);
             const href = `${blogHref}?cat=${c.id}`;
@@ -106,7 +106,7 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
               <li key={c.id}>
                 <a
                   href={href}
-                  className={`flex items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-elevated hover:text-primary ${
+                  className={`flex items-center justify-between gap-3 rounded-lg px-3 py-1.5 text-sm transition-colors hover:bg-elevated hover:text-primary ${
                     activeCategory === c.id ? "bg-elevated text-primary" : "text-muted-foreground"
                   }`}
                 >
