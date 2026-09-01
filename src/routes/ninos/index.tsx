@@ -437,11 +437,12 @@ function ProfileSelector() {
                       />
                     </span>
                   ) : null}
-                  {manage && m.role === "child" ? (
+                  {manage ? (
                     <span
                       role="button"
                       tabIndex={0}
-                      aria-label={t("Borrar perfil", "Delete profile")}
+                      aria-label={t("Eliminar perfil", "Delete profile")}
+                      title={t("Eliminar perfil", "Delete profile")}
                       onClick={(e) => {
                         e.stopPropagation();
                         setPendingDelete(m);
@@ -453,9 +454,9 @@ function ProfileSelector() {
                           setPendingDelete(m);
                         }
                       }}
-                      className="absolute -right-1.5 -top-1.5 z-10 grid h-7 w-7 place-items-center rounded-full bg-destructive/90 text-destructive-foreground shadow-md ring-2 ring-background opacity-0 transition-all duration-200 hover:scale-105 hover:bg-destructive group-hover:opacity-100"
+                      className="absolute -right-1.5 -top-1.5 z-10 grid h-7 w-7 place-items-center rounded-full bg-card text-muted-foreground shadow-md ring-1 ring-border transition-all duration-200 hover:scale-105 hover:bg-destructive hover:text-destructive-foreground hover:ring-destructive"
                     >
-                      <X className="h-3.5 w-3.5" strokeWidth={2.5} />
+                      <Trash2 className="h-3.5 w-3.5" strokeWidth={2.25} />
                     </span>
                   ) : null}
                   {manage ? (
@@ -464,19 +465,26 @@ function ProfileSelector() {
                       onClick={(e) => e.stopPropagation()}
                       onKeyDown={(e) => e.stopPropagation()}
                     >
-                      <span className="flex justify-center gap-1 rounded-full bg-secondary p-0.5 text-[10px] font-semibold">
-                        {(["parent", "child"] as const).map((r) => (
-                          <button
-                            key={r}
-                            type="button"
-                            onClick={() => void saveRole(m, r)}
-                            className={`flex-1 rounded-full px-2 py-1 transition ${
-                              m.role === r ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
-                            }`}
-                          >
-                            {r === "parent" ? t("Adulto", "Adult") : t("Niño/a", "Child")}
-                          </button>
-                        ))}
+                      <span className="flex justify-center gap-0.5 rounded-full bg-secondary p-0.5 text-[10px] font-semibold">
+                        {(["parent", "boy", "girl"] as const).map((r) => {
+                          const active =
+                            r === "parent" ? m.role === "parent" : m.role === "child" && (m.theme === r || (r === "boy" && m.theme !== "girl"));
+                          const adultBlocked = r === "parent" && m.role !== "parent" && adultCount >= MAX_ADULTS;
+                          return (
+                            <button
+                              key={r}
+                              type="button"
+                              disabled={adultBlocked}
+                              title={adultBlocked ? t("Máximo 2 adultos", "Max 2 adults") : undefined}
+                              onClick={() => void saveRole(m, r)}
+                              className={`flex-1 rounded-full px-1.5 py-1 transition disabled:cursor-not-allowed disabled:opacity-40 ${
+                                active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                              }`}
+                            >
+                              {r === "parent" ? t("Adulto", "Adult") : r === "boy" ? t("Niño", "Boy") : t("Niña", "Girl")}
+                            </button>
+                          );
+                        })}
                       </span>
                       <input
                         defaultValue={m.name}
