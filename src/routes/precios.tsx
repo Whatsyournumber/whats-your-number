@@ -355,13 +355,13 @@ function Pricing() {
                     setSelectedPlan(isSelected ? null : plan.name);
                   }
                 }}
-                className={`surface relative flex cursor-pointer flex-col p-6 transition-all ${
-                  plan.highlight && selectedPlan !== "Familiar"
+                className={`surface relative flex cursor-pointer flex-col p-6 outline-none transition-all focus:outline-none focus-visible:outline-none ${
+                  plan.highlight && !isSelected && !selectedPlan
                     ? "bg-gradient-to-b from-primary/5 to-transparent ring-1 ring-primary/40"
                     : ""
                 } ${
                   isSelected
-                    ? "bg-positive/[0.04] ring-1 ring-positive/50 shadow-[0_0_24px_-6px_hsl(var(--positive)/0.35)]"
+                    ? "bg-positive/[0.06] ring-2 ring-positive/70 shadow-[0_0_36px_-6px_hsl(var(--positive)/0.45)]"
                     : ""
                 }`}
               >
