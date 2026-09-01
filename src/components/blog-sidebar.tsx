@@ -68,12 +68,11 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
           </>
         )}
 
-        <hr className="my-3 border-border/50" />
         <a
           href={activeCategory === "ninos" ? "/calculadora-ahorro-universidad?start=1" : demoHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
         >
           {activeCategory === "ninos"
             ? t("Probar demo para tu hijo", "Try demo for your child")
