@@ -6,15 +6,21 @@ import type { Subscription } from "@/hooks/use-subscription";
 
 export type { Subscription };
 
-/** Perfiles de niño permitidos por plan. */
+/** Perfiles de niño permitidos por plan (cuando no aplica el cupo familiar). */
 export const KID_LIMITS: Record<string, number> = {
   free: 2,
   pro: 2,
   family: 2,
 };
 
-/** Coste mensual de cada perfil adicional a partir del límite incluido. */
-export const EXTRA_KID_PRICE_USD = 5;
+/**
+ * Plan Familiar: 3 perfiles en total contando adultos e hijos.
+ * Ej. 2 adultos + 1 hijo, o 1 adulto + 2 hijos. El 4º perfil se paga aparte.
+ */
+export const FAMILY_TOTAL_SEATS = 3;
+
+/** Coste mensual de cada perfil adicional a partir del límite incluido (tier standard). */
+export const EXTRA_KID_PRICE_USD = 3;
 
 export function isActive(sub?: Subscription | null): boolean {
   if (!sub) return false;
