@@ -50,6 +50,7 @@ function ProfileSelector() {
   const [pendingDelete, setPendingDelete] = useState<Member | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [showUnlock, setShowUnlock] = useState(false);
+  const [showFlexChoice, setShowFlexChoice] = useState(false);
   const [showAddAdult, setShowAddAdult] = useState(false);
   const [adultName, setAdultName] = useState("");
   const [adultAvatar, setAdultAvatar] = useState(ADULT_AVATARS[0]!);
@@ -144,8 +145,14 @@ function ProfileSelector() {
   const adultCount = 1 + parents.length;
   const maxKids = kidLimit(subscription, adultCount);
   const usedSeats = adultCount + kids.length;
-  const canAddAdult =
-    plan === "family" && adultCount < 2 && usedSeats < FAMILY_TOTAL_SEATS;
+  // Plan Familiar: 3 perfiles gratis (titular incluido) -> 1º hijo/a, 2º adulto o niño, el siguiente es de pago.
+  const freeSlotsLeft = Math.max(0, FAMILY_TOTAL_SEATS - usedSeats);
+  const showKidSlot = plan === "family" && kids.length === 0 && freeSlotsLeft > 0;
+  const showFlexSlot =
+    plan === "family" &&
+    parents.length === 0 &&
+    ((kids.length === 0 && freeSlotsLeft > 1) || (kids.length > 0 && freeSlotsLeft > 0));
+  const showPaidSlot = plan === "family" && freeSlotsLeft === 0;
 
   async function openAdult() {
     const { data: auth } = await supabase.auth.getUser();
@@ -293,7 +300,61 @@ function ProfileSelector() {
                 </button>
               ))}
 
-              {kids.length < maxKids ? (
+              {plan === "family" ? (
+                <>
+                  {showKidSlot ? (
+                    <button
+                      onClick={() => router.navigate({ to: "/ninos/onboarding" })}
+                      className="group flex flex-col items-center gap-3 outline-none"
+                    >
+                      <span className="grid aspect-square w-full place-items-center rounded-2xl border-2 border-dashed border-border text-muted-foreground transition-all duration-200 group-hover:scale-105 group-hover:border-primary group-hover:text-primary">
+                        <Plus className="h-10 w-10" />
+                      </span>
+                      <span className="text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
+                        {t("Añadir hijo/a", "Add a child")}
+                      </span>
+                    </button>
+                  ) : null}
+
+                  {showFlexSlot ? (
+                    <button
+                      onClick={() => setShowFlexChoice(true)}
+                      className="group flex flex-col items-center gap-3 outline-none"
+                    >
+                      <span className="grid aspect-square w-full place-items-center rounded-2xl border-2 border-dashed border-border text-muted-foreground transition-all duration-200 group-hover:scale-105 group-hover:border-primary group-hover:text-primary">
+                        <UserPlus className="h-9 w-9" />
+                      </span>
+                      <span className="min-w-0 text-center">
+                        <span className="block truncate text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
+                          {t("Añadir perfil", "Add a profile")}
+                        </span>
+                        <span className="block text-[11px] text-muted-foreground/70">
+                          {t("Adulto o niño/a", "Adult or child")}
+                        </span>
+                      </span>
+                    </button>
+                  ) : null}
+
+                  {showPaidSlot ? (
+                    <button
+                      onClick={() => setShowUnlock(true)}
+                      className="group flex flex-col items-center gap-3 outline-none"
+                    >
+                      <span className="grid aspect-square w-full place-items-center rounded-2xl border-2 border-dashed border-border text-muted-foreground transition-all duration-200 group-hover:scale-105 group-hover:border-primary group-hover:text-primary">
+                        <Lock className="h-9 w-9" />
+                      </span>
+                      <span className="min-w-0 text-center">
+                        <span className="block truncate text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
+                          {t("Perfil extra", "Extra profile")}
+                        </span>
+                        <span className="block text-[11px] text-muted-foreground/70">
+                          {t("Desbloquear", "Unlock")}
+                        </span>
+                      </span>
+                    </button>
+                  ) : null}
+                </>
+              ) : kids.length < maxKids ? (
                 <button
                   onClick={() => router.navigate({ to: "/ninos/onboarding" })}
                   className="group flex flex-col items-center gap-3 outline-none"
@@ -324,25 +385,6 @@ function ProfileSelector() {
                   </span>
                 </button>
               )}
-
-              {canAddAdult ? (
-                <button
-                  onClick={() => setShowAddAdult(true)}
-                  className="group flex flex-col items-center gap-3 outline-none"
-                >
-                  <span className="grid aspect-square w-full place-items-center rounded-2xl border-2 border-dashed border-border text-muted-foreground transition-all duration-200 group-hover:scale-105 group-hover:border-primary group-hover:text-primary">
-                    <UserPlus className="h-9 w-9" />
-                  </span>
-                  <span className="min-w-0 text-center">
-                    <span className="block truncate text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
-                      {t("Añadir adulto", "Add an adult")}
-                    </span>
-                    <span className="block text-[11px] text-muted-foreground/70">
-                      {t("Pareja o tutor", "Partner or guardian")}
-                    </span>
-                  </span>
-                </button>
-              ) : null}
             </div>
 
             {plan === "family" ? (
@@ -352,6 +394,63 @@ function ProfileSelector() {
                   `Profiles used: ${usedSeats} of ${FAMILY_TOTAL_SEATS} (adults and kids).`,
                 )}
               </p>
+            ) : null}
+
+            {showFlexChoice ? (
+              <div
+                className="fixed inset-0 z-50 grid place-items-center bg-background/80 p-5 backdrop-blur-sm"
+                role="dialog"
+                aria-modal="true"
+              >
+                <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 text-left shadow-2xl">
+                  <h2 className="font-display text-xl font-semibold text-foreground">
+                    {t("¿Qué perfil quieres añadir?", "Which profile do you want to add?")}
+                  </h2>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {t(
+                      "Este perfil está incluido en tu plan Familiar.",
+                      "This profile is included in your Family plan.",
+                    )}
+                  </p>
+                  <div className="mt-5 grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => {
+                        setShowFlexChoice(false);
+                        setShowAddAdult(true);
+                      }}
+                      className="group flex flex-col items-center gap-2 rounded-2xl border border-border p-4 transition hover:border-primary"
+                    >
+                      <UserPlus className="h-7 w-7 text-muted-foreground transition group-hover:text-primary" />
+                      <span className="text-sm font-semibold text-foreground">
+                        {t("Adulto", "Adult")}
+                      </span>
+                      <span className="text-[11px] text-muted-foreground">
+                        {t("Pareja o tutor", "Partner or guardian")}
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowFlexChoice(false);
+                        router.navigate({ to: "/ninos/onboarding" });
+                      }}
+                      className="group flex flex-col items-center gap-2 rounded-2xl border border-border p-4 transition hover:border-primary"
+                    >
+                      <Plus className="h-7 w-7 text-muted-foreground transition group-hover:text-primary" />
+                      <span className="text-sm font-semibold text-foreground">
+                        {t("Niño/a", "Child")}
+                      </span>
+                      <span className="text-[11px] text-muted-foreground">
+                        {t("Aprende practicando", "Learns by doing")}
+                      </span>
+                    </button>
+                  </div>
+                  <div className="mt-5 flex justify-end">
+                    <Button variant="ghost" onClick={() => setShowFlexChoice(false)}>
+                      {t("Cancelar", "Cancel")}
+                    </Button>
+                  </div>
+                </div>
+              </div>
             ) : null}
 
             {showAddAdult ? (
