@@ -245,7 +245,7 @@ function ProfileSelector() {
 
   function open(member: Member) {
     select(member.id);
-    if (member.role === "parent") router.navigate({ to: "/ninos/padres" });
+    if (member.role === "parent") void openAdult();
     else if (!member.onboarded) router.navigate({ to: "/ninos/onboarding" });
     else router.navigate({ to: "/ninos/kid/numero" });
   }
