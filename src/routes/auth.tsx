@@ -330,7 +330,7 @@ function SidePanel({ variant = "general" }: { variant?: "general" | "kids" }) {
 }
 
 function AuthPage() {
-  const { mode, next, flow } = Route.useSearch();
+  const { mode, next, flow, plan } = Route.useSearch();
   const isAffiliate = flow === "affiliate";
   const isKids = flow === "kids";
   const navigate = useNavigate();
@@ -348,6 +348,13 @@ function AuthPage() {
   const [point, setPoint] = useState(0);
 
   const loading = authLoading || subscriptionLoading;
+  const requestedCheckoutPlan = plan === "familiar" || plan === "pro" ? plan : null;
+
+  // El plan también viaja en la URL para sobrevivir al cambio de pantalla,
+  // mientras sessionStorage conserva el checkout si hay confirmación de email.
+  useEffect(() => {
+    if (requestedCheckoutPlan) setPendingCheckoutPlan(requestedCheckoutPlan);
+  }, [requestedCheckoutPlan]);
 
   // Registro de afiliado: al terminar debe caer directo en los pasos del wizard.
   useEffect(() => {
@@ -361,8 +368,9 @@ function AuthPage() {
 
   useEffect(() => {
     if (loading || !user) return;
-    if (getPendingCheckoutPlan()) {
-      navigate({ to: "/precios" });
+    const pendingPlan = getPendingCheckoutPlan();
+    if (pendingPlan) {
+      navigate({ to: "/precios", search: { plan: pendingPlan } });
       return;
     }
     // El plan Familiar siempre entra por la pantalla de perfiles.
@@ -399,12 +407,16 @@ function AuthPage() {
     try {
       if (mode === "signup") {
         if (promo.trim()) setPendingPromoCode(promo);
-        const pendingCheckout = getPendingCheckoutPlan();
+        const pendingCheckout = requestedCheckoutPlan ?? getPendingCheckoutPlan();
+        if (pendingCheckout) setPendingCheckoutPlan(pendingCheckout);
+        const emailDestination = pendingCheckout
+          ? `/precios?plan=${pendingCheckout}`
+          : (next ?? "/onboarding");
         const { error } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}${pendingCheckout ? "/precios" : (next ?? "/onboarding")}`,
+            emailRedirectTo: `${window.location.origin}${emailDestination}`,
             data: { full_name: fullName },
           },
         });
@@ -450,7 +462,8 @@ function AuthPage() {
         return;
       }
       if (result.redirected) return;
-      if (getPendingCheckoutPlan()) navigate({ to: "/precios" });
+      const pendingPlan = getPendingCheckoutPlan();
+      if (pendingPlan) navigate({ to: "/precios", search: { plan: pendingPlan } });
       else goNext(next, "/dashboard", navigate);
     } catch (error) {
       console.error(error);

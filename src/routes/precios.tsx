@@ -437,15 +437,19 @@ function Pricing() {
                           ? "bg-positive text-positive-foreground hover:bg-positive/90"
                           : ""
                       }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedPlan(plan.name);
-                        setPendingCheckoutPlan(plan.name === "Familiar" ? "familiar" : "pro");
-                      }}
                     >
                       <Link
                         to="/auth"
-                        search={plan.name === "Familiar" ? { mode: "signup", flow: "kids" } : { mode: "signup" }}
+                        search={
+                          plan.name === "Familiar"
+                            ? { mode: "signup", flow: "kids", plan: "familiar" }
+                            : { mode: "signup", plan: "pro" }
+                        }
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedPlan(plan.name);
+                          setPendingCheckoutPlan(plan.name === "Familiar" ? "familiar" : "pro");
+                        }}
                       >
                         {plan.cta}
                       </Link>
