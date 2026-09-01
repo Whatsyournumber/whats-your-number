@@ -419,6 +419,7 @@ function Pricing() {
                     }`}
                     onClick={(e) => {
                       e.stopPropagation();
+                      setSelectedPlan(plan.name);
                       handleCta(plan);
                     }}
                     disabled={loading}
