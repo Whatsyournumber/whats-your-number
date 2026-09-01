@@ -449,7 +449,10 @@ function Pricing() {
                         ? "bg-positive text-positive-foreground hover:bg-positive/90"
                         : ""
                     }`}
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedPlan(plan.name);
+                    }}
                   >
                     <Link to={plan.name === "Free" ? "/calculadora-libertad-financiera" : "/auth"} search={plan.name === "Free" ? {} : { mode: "signup" }}>
                       {plan.cta}
