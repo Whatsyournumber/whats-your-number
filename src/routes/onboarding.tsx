@@ -10,6 +10,7 @@ import {
   Compass,
   CreditCard,
   Loader2,
+  LogOut,
   Pencil,
   Search,
   Sparkles,
