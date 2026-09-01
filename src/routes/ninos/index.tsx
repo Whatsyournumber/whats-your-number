@@ -176,35 +176,6 @@ function ProfileSelector() {
     await queryClient.refetchQueries({ queryKey: ["kid_members"] });
   }
 
-  async function saveRole(m: Member, kind: "parent" | "boy" | "girl") {
-    const role = kind === "parent" ? "parent" : "child";
-    if (role === m.role && (role === "parent" || m.theme === kind)) return;
-    if (role === "parent" && m.role !== "parent" && adultCount >= MAX_ADULTS) {
-      toast.error(t("Solo se permiten 2 adultos por plan", "Only 2 adults are allowed per plan"));
-      return;
-    }
-    const patch =
-      role === "parent"
-        ? { role, theme: "parent", avatar: ADULT_AVATARS[0]!, onboarded: true, subtitle: null }
-        : m.role === "child"
-          ? { theme: kind }
-          : { role, theme: kind, avatar: KID_AVATARS[0]!, age: m.age > 0 ? m.age : 8, onboarded: true, subtitle: null };
-    try {
-      const { error } = await supabase.from("kid_members").update(patch).eq("id", m.id);
-      if (error) throw error;
-      await queryClient.refetchQueries({ queryKey: ["kid_members"] });
-      toast.success(
-        role === "parent"
-          ? t(`${m.name} ahora es un perfil de adulto`, `${m.name} is now an adult profile`)
-          : kind === "girl"
-            ? t(`${m.name} ahora es un perfil de niña`, `${m.name} is now a girl profile`)
-            : t(`${m.name} ahora es un perfil de niño`, `${m.name} is now a boy profile`),
-      );
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : t("No se pudo cambiar el tipo", "Could not change type"));
-    }
-  }
-
   async function saveField(m: Member, field: "name" | "subtitle", raw: string) {
     const value = raw.trim();
     const current = field === "name" ? m.name : (m.subtitle ?? "");
@@ -468,27 +439,6 @@ function ProfileSelector() {
                       onClick={(e) => e.stopPropagation()}
                       onKeyDown={(e) => e.stopPropagation()}
                     >
-                      <span className="flex justify-center gap-0.5 rounded-full bg-secondary p-0.5 text-[10px] font-semibold">
-                        {(["parent", "boy", "girl"] as const).map((r) => {
-                          const active =
-                            r === "parent" ? m.role === "parent" : m.role === "child" && (m.theme === r || (r === "boy" && m.theme !== "girl"));
-                          const adultBlocked = r === "parent" && m.role !== "parent" && adultCount >= MAX_ADULTS;
-                          return (
-                            <button
-                              key={r}
-                              type="button"
-                              disabled={adultBlocked}
-                              title={adultBlocked ? t("Máximo 2 adultos", "Max 2 adults") : undefined}
-                              onClick={() => void saveRole(m, r)}
-                              className={`flex-1 rounded-full px-1.5 py-1 transition disabled:cursor-not-allowed disabled:opacity-40 ${
-                                active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
-                              }`}
-                            >
-                              {r === "parent" ? t("Adulto", "Adult") : r === "boy" ? t("Niño", "Boy") : t("Niña", "Girl")}
-                            </button>
-                          );
-                        })}
-                      </span>
                       <input
                         defaultValue={m.name}
                         aria-label={t("Nombre", "Name")}
