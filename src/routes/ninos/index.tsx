@@ -9,6 +9,9 @@ import { toast } from "sonner";
 import { useActiveProfile, useCreateParent, useMembers, useSubscription } from "@/hooks/use-mfn";
 import { THEME_ATTR, type Member } from "@/lib/mfn";
 import { FAMILY_TOTAL_SEATS, activePlan, kidLimit, planLabel } from "@/lib/mfn-plan";
+
+/** Máximo de adultos por cuenta (titular incluido). */
+const MAX_ADULTS = 2;
 import { useRegionalPricing } from "@/hooks/use-regional-pricing";
 import { EXTRA_SEAT_PRICE, formatMoney } from "@/lib/pricing-tiers";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
