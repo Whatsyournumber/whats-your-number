@@ -320,10 +320,15 @@ function ProfileSelector() {
                   ) : null}
                   {manage ? (
                     <span
-                      className="w-full space-y-1"
+                      className="w-full space-y-1.5"
                       onClick={(e) => e.stopPropagation()}
                       onKeyDown={(e) => e.stopPropagation()}
                     >
+                      <AvatarPicker
+                        options={m.role === "parent" ? ADULT_AVATARS : KID_AVATARS}
+                        value={m.avatar}
+                        onPick={(a) => void saveAvatar(m, a)}
+                      />
                       <input
                         defaultValue={m.name}
                         aria-label={t("Nombre", "Name")}
