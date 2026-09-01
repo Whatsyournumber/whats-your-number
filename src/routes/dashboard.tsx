@@ -288,7 +288,8 @@ function Dashboard() {
             <AreaChart data={months} margin={{ left: 4, right: 8, top: 8 }}>
               <defs>
                 <linearGradient id="nw" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--color-chart-1)" stopOpacity={0.45} />
+                  <stop offset="0%" stopColor="var(--color-chart-1)" stopOpacity={0.5} />
+                  <stop offset="70%" stopColor="var(--color-chart-1)" stopOpacity={0.12} />
                   <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0} />
                 </linearGradient>
               </defs>
@@ -304,9 +305,16 @@ function Dashboard() {
                   label={{ value: `WhatsYournumber · ${fmtCompact(targetNumber)}`, position: "insideTopRight", fill: "var(--color-muted-foreground)", fontSize: 11 }}
                 />
               )}
-              <Area type="monotone" dataKey="netWorth" name={t("Acumulado", "Accumulated")} stroke="var(--color-chart-1)" strokeWidth={2.5} fill="url(#nw)" />
+              <Area
+                type="monotone"
+                dataKey="netWorth"
+                name={t("Acumulado", "Accumulated")}
+                stroke="var(--color-chart-1)"
+                strokeWidth={3}
+                fill="url(#nw)"
+                activeDot={{ r: 5, stroke: "var(--color-background)", strokeWidth: 2, fill: "var(--color-chart-1)" }}
+              />
             </AreaChart>
-
           </ResponsiveContainer>
         </Panel>
 
@@ -367,7 +375,7 @@ function Dashboard() {
               <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
               <XAxis dataKey="label" {...axisProps} />
               <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={78} fontSize={10} />
-              <Tooltip content={<ChartTooltip />} cursor={{ fill: "var(--color-muted)", opacity: 0.35 }} />
+              <Tooltip content={<ChartTooltip />} cursor={{ fill: "var(--color-muted)", opacity: 0.28 }} />
               <Bar dataKey="income" name={t("Ingresos", "Income")} fill="var(--color-chart-1)" radius={[6, 6, 0, 0]} />
               <Bar dataKey="expenses" name={t("Gastos", "Expenses")} fill="var(--color-chart-5)" radius={[6, 6, 0, 0]} />
             </BarChart>
@@ -381,7 +389,15 @@ function Dashboard() {
               <XAxis dataKey="label" {...axisProps} />
               <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={78} fontSize={10} />
               <Tooltip content={<ChartTooltip />} />
-              <Line type="monotone" dataKey="savings" name={t("Ahorro", "Savings")} stroke="var(--color-chart-4)" strokeWidth={2.5} dot={false} />
+              <Line
+                type="monotone"
+                dataKey="savings"
+                name={t("Ahorro", "Savings")}
+                stroke="var(--color-chart-4)"
+                strokeWidth={3}
+                dot={false}
+                activeDot={{ r: 5, stroke: "var(--color-background)", strokeWidth: 2, fill: "var(--color-chart-4)" }}
+              />
             </LineChart>
           </ResponsiveContainer>
         </Panel>

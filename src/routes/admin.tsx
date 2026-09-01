@@ -32,9 +32,6 @@ import {
   adminDeleteUser,
 } from "@/lib/admin.functions";
 import { adminMarkCommissionsPaid, adminUpdateAffiliate } from "@/utils/affiliates.functions";
-import { AdminLinkedInPanel } from "@/components/admin-linkedin-panel";
-
-
 export const Route = createFileRoute("/admin")({
   ssr: false,
   beforeLoad: async () => {
@@ -317,7 +314,6 @@ function AdminPage() {
           <TabsTrigger value="statements">{t("Estados de cuenta", "Statements")}</TabsTrigger>
           <TabsTrigger value="promos">{t("Invitaciones", "Invites")}</TabsTrigger>
           <TabsTrigger value="affiliates">{t("Afiliados", "Affiliates")}</TabsTrigger>
-          <TabsTrigger value="linkedin">LinkedIn</TabsTrigger>
         </TabsList>
 
         <TabsContent value="users" className="mt-4">
@@ -656,9 +652,6 @@ function AdminPage() {
               </Table>
             </div>
           </Panel>
-        </TabsContent>
-        <TabsContent value="linkedin" className="mt-4">
-          <AdminLinkedInPanel />
         </TabsContent>
       </Tabs>
     </PageShell>
