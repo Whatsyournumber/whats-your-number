@@ -278,12 +278,39 @@ function ProfileSelector() {
           <>
             <div className="mt-12 grid grid-cols-2 gap-6 sm:grid-cols-4 sm:gap-8">
               <button
-                onClick={() => void openAdult()}
+                onClick={() => {
+                  if (manage) return;
+                  void openAdult();
+                }}
                 className="group flex flex-col items-center gap-3 outline-none"
               >
-                <span className="grid aspect-square w-full place-items-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4">
-                  <LineChart className="h-10 w-10 sm:h-12 sm:w-12" />
+                <span
+                  role={manage ? "button" : undefined}
+                  onClick={
+                    manage
+                      ? (e) => {
+                          e.stopPropagation();
+                          setPickerFor(pickerFor === "holder" ? null : "holder");
+                        }
+                      : undefined
+                  }
+                  className={`grid aspect-square w-full place-items-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4 ${manage ? "cursor-pointer ring-2 ring-primary/40" : ""}`}
+                >
+                  {holderAvatar ? (
+                    <span className="text-5xl sm:text-6xl">{holderAvatar}</span>
+                  ) : (
+                    <LineChart className="h-10 w-10 sm:h-12 sm:w-12" />
+                  )}
                 </span>
+                {manage && pickerFor === "holder" ? (
+                  <span
+                    className="w-full"
+                    onClick={(e) => e.stopPropagation()}
+                    onKeyDown={(e) => e.stopPropagation()}
+                  >
+                    <AvatarPicker options={ADULT_AVATARS} value={holderAvatar} onPick={saveHolderAvatar} />
+                  </span>
+                ) : null}
                 {manage ? (
                   <span
                     className="w-full space-y-1"
