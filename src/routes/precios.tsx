@@ -371,12 +371,8 @@ function Pricing() {
                     : ""
                 }`}
               >
-                {(isSelected || (plan.highlight && !selectedPlan)) && (
-                  <span
-                    className={`absolute right-5 top-5 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${
-                      isSelected ? "bg-positive/90 text-positive-foreground" : "bg-primary text-primary-foreground"
-                    }`}
-                  >
+                {plan.highlight && (
+                  <span className="absolute right-5 top-5 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground">
                     {t("Más popular", "Most popular")}
                   </span>
                 )}
