@@ -26,15 +26,29 @@ export function ChartTooltip({
   const f = formatter ?? ((v: number) => fmt(v));
   const shownLabel = labelFormatter ? labelFormatter(label, payload) : label;
   return (
-    <div className="rounded-xl border border-border bg-popover/95 px-3 py-2 text-xs shadow-lg backdrop-blur">
-      {shownLabel !== undefined && <p className="mb-1 font-medium text-popover-foreground">{shownLabel}</p>}
+    <div
+      className="rounded-2xl border px-4 py-3 text-xs backdrop-blur-sm"
+      style={{
+        backgroundColor: "var(--chart-tooltip-bg)",
+        borderColor: "var(--chart-tooltip-border)",
+        color: "var(--chart-tooltip-fg)",
+        boxShadow: "var(--chart-tooltip-shadow)",
+      }}
+    >
+      {shownLabel !== undefined && (
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide" style={{ color: "var(--chart-tooltip-muted)" }}>
+          {shownLabel}
+        </p>
+      )}
 
-      <div className="space-y-1">
+      <div className="space-y-1.5">
         {payload.map((p, i) => (
-          <div key={i} className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full" style={{ background: p.color }} />
-            <span className="text-muted-foreground">{p.name}</span>
-            <span className="numeric ml-auto font-medium text-popover-foreground">
+          <div key={i} className="flex items-center gap-2.5">
+            <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: p.color }} />
+            <span className="text-[13px]" style={{ color: "var(--chart-tooltip-muted)" }}>
+              {p.name}
+            </span>
+            <span className="numeric ml-auto text-[13px] font-bold" style={{ color: "var(--chart-tooltip-fg)" }}>
               {typeof p.value === "number" ? f(p.value) : p.value}
             </span>
           </div>
