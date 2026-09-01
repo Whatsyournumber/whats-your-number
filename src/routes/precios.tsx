@@ -363,18 +363,18 @@ function Pricing() {
                 }}
                 className={`surface relative flex cursor-pointer flex-col p-6 outline-none transition-all focus:outline-none focus-visible:outline-none ${
                   plan.highlight && !isSelected && !selectedPlan
-                    ? "bg-gradient-to-b from-primary/5 to-transparent ring-1 ring-primary/40"
+                    ? "bg-gradient-to-b from-primary/[0.03] to-transparent ring-1 ring-primary/30"
                     : ""
                 } ${
                   isSelected
-                    ? "z-10 border-2 border-positive bg-positive/[0.07] ring-2 ring-positive/60 shadow-2xl shadow-positive/40"
+                    ? "z-10 border border-positive/40 bg-positive/[0.03] shadow-lg shadow-positive/10"
                     : ""
                 }`}
               >
                 {(isSelected || (plan.highlight && !selectedPlan)) && (
                   <span
                     className={`absolute right-5 top-5 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${
-                      isSelected ? "bg-positive text-positive-foreground" : "bg-primary text-primary-foreground"
+                      isSelected ? "bg-positive/90 text-positive-foreground" : "bg-primary text-primary-foreground"
                     }`}
                   >
                     {t("Más popular", "Most popular")}
