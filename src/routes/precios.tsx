@@ -404,7 +404,7 @@ function Pricing() {
                 <ul className="mt-6 flex-1 space-y-2.5">
                   {plan.features.map((f) => (
                     <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                      <Check className={`mt-0.5 h-4 w-4 shrink-0 transition-colors ${isSelected ? "text-positive" : "text-primary"}`} />
                       {f}
                     </li>
                   ))}
