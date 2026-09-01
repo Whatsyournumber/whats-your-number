@@ -314,7 +314,6 @@ function AdminPage() {
           <TabsTrigger value="statements">{t("Estados de cuenta", "Statements")}</TabsTrigger>
           <TabsTrigger value="promos">{t("Invitaciones", "Invites")}</TabsTrigger>
           <TabsTrigger value="affiliates">{t("Afiliados", "Affiliates")}</TabsTrigger>
-          <TabsTrigger value="linkedin">LinkedIn</TabsTrigger>
         </TabsList>
 
         <TabsContent value="users" className="mt-4">
