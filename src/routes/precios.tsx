@@ -67,6 +67,12 @@ function Pricing() {
     setDiscount(getPendingDiscount());
   }, []);
 
+  useEffect(() => {
+    if (planParam === "familiar") setSelectedPlan("Familiar");
+    else if (planParam === "pro") setSelectedPlan("Pro");
+    else if (planParam === "free") setSelectedPlan("Free");
+  }, [planParam]);
+
 
   const isYearly = billing === "yearly";
 
