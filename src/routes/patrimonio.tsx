@@ -203,8 +203,35 @@ function PatrimonioContent() {
   const etfTotal = sumKinds(["etf", "other"]);
   const splitFunds = bondsTotal + notesTotal + etfTotal > 0;
 
+  // Valor en tiempo real por rubro: si hay detalle de posiciones, cada rubro se
+  // recalcula con los precios de mercado (cripto, acciones, ETF…) en vez del total estático del perfil.
+  const LIVE_KINDS: Record<string, string[]> = {
+    assets_cash: ["cash"],
+    assets_bank: ["bank", "money_market"],
+    assets_retirement: ["retirement"],
+    assets_etf: ["etf", "other", "bond", "tbill", "note", "structured"],
+    assets_stocks: ["stock"],
+    assets_crypto: ["crypto"],
+    assets_property: ["property"],
+  };
+  const hasDetail = holdings.length > 0;
+  const liveAssets = hasDetail
+    ? assets.map((a) => (LIVE_KINDS[a.key] ? { ...a, value: sumKinds(LIVE_KINDS[a.key]!) } : a)).filter((a) => a.value > 0)
+    : assets;
+
+  // Variación del día ponderada por rubro (solo posiciones con ticker y precio real).
+  const dayChangeOf = (kinds: string[]): number | null => {
+    const rows = detailRows.filter((r) => kinds.includes(r.kind) && r.ticker && r.livePrice);
+    const base = rows.reduce((s, r) => s + r.value, 0);
+    if (!base) return null;
+    return rows.reduce((s, r) => s + r.value * (dayChange[r.ticker!.toUpperCase()] ?? 0), 0) / base;
+  };
+  const liveKeys = new Set(
+    detailRows.filter((r) => r.ticker && r.livePrice).map((r) => Object.keys(LIVE_KINDS).find((k) => LIVE_KINDS[k]!.includes(r.kind)) ?? ""),
+  );
+
   const baseAssets = splitFunds
-    ? assets.flatMap((a) =>
+    ? liveAssets.flatMap((a) =>
         a.key === "assets_etf"
           ? [
               { key: "assets_etf", name: t("ETFs / fondos", "ETFs / funds"), value: etfTotal, color: a.color },
@@ -213,15 +240,15 @@ function PatrimonioContent() {
             ].filter((r) => r.value > 0)
           : [a],
       )
-    : assets;
+    : liveAssets;
 
   const assetRows = (futureTotal > 0
     ? [...baseAssets, { key: "assets_future", name: t("Activos futuros", "Future assets"), value: futureTotal, color: "var(--color-chart-3)" }]
     : baseAssets
   ).slice().sort((a, b) => b.value - a.value);
 
-  const totalAssetsAll = d.totalAssets + futureTotal;
-  const netWorthAll = d.netWorth + futureTotal;
+  const totalAssetsAll = hasDetail ? assetRows.reduce((s, a) => s + a.value, 0) : d.totalAssets + futureTotal;
+  const netWorthAll = totalAssetsAll - d.totalLiabilities;
 
   return (
     <PageShell>
