@@ -59,7 +59,7 @@ function Pricing() {
   const resumedCheckout = useRef(false);
   const [discount, setDiscount] = useState<PendingDiscount | null>(null);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(
-    planParam === "familiar" ? "Familiar" : planParam === "pro" ? "Pro" : null,
+    planParam === "familiar" ? "Familiar" : "Pro",
   );
   const { prices, currency } = useRegionalPricing();
 
@@ -138,7 +138,7 @@ function Pricing() {
         t("Reportes mensuales automáticos", "Automatic monthly reports"),
       ],
       cta: t("Empezar con Pro", "Get started with Pro"),
-      highlight: false,
+      highlight: true,
     },
     {
       name: "Familiar",
@@ -161,7 +161,7 @@ function Pricing() {
         t("Soporte prioritario en 24h", "Priority support within 24h"),
       ],
       cta: t("Empezar con Familiar", "Get started with Familiar"),
-      highlight: true,
+      highlight: false,
     },
     {
       name: "Corporativo",
