@@ -86,6 +86,11 @@ function ProfileSelector() {
   const [showAddAdult, setShowAddAdult] = useState(false);
   const [adultName, setAdultName] = useState("");
   const [adultAvatar, setAdultAvatar] = useState(ADULT_AVATARS[0]!);
+  const [showAddKid, setShowAddKid] = useState(false);
+  const [kidName, setKidName] = useState("");
+  const [kidAge, setKidAge] = useState("8");
+  const [kidTheme, setKidTheme] = useState<"boy" | "girl">("boy");
+  const [kidAvatar, setKidAvatar] = useState(KID_AVATARS[0]!);
   const [holderAvatar, setHolderAvatar] = useState(() =>
     typeof window !== "undefined" ? (localStorage.getItem("holder_avatar") ?? "") : "",
   );
@@ -100,6 +105,21 @@ function ProfileSelector() {
     setHolderAvatar(a);
     localStorage.setItem("holder_avatar", a);
     setPickerFor(null);
+  }
+
+  function addKid() {
+    const name = kidName.trim();
+    const age = Math.min(17, Math.max(0, Number(kidAge) || 0));
+    if (!name) return;
+    // Prellena el onboarding del niño/a con nombre, edad y emoji elegidos aquí.
+    window.localStorage.setItem(
+      "mfn-kid-onboarding-draft",
+      JSON.stringify({ step: 1, name, age, theme: kidTheme, avatar: kidAvatar }),
+    );
+    setShowAddKid(false);
+    setKidName("");
+    setKidAge("8");
+    router.navigate({ to: "/ninos/onboarding" });
   }
 
   async function addAdult() {
