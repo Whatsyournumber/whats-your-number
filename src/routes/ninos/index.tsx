@@ -372,11 +372,27 @@ function ProfileSelector() {
                           }
                         : undefined
                     }
-                    className={`grid aspect-square w-full place-items-center rounded-2xl bg-secondary text-5xl ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4 sm:text-6xl ${manage ? "cursor-pointer ring-2 ring-primary/40" : ""}`}
+                    className={`relative grid aspect-square w-full place-items-center rounded-2xl bg-secondary text-5xl ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4 sm:text-6xl ${manage ? "cursor-pointer ring-2 ring-primary/40" : ""}`}
                   >
                     {m.avatar}
                   </span>
-                  {m.role === "child" ? (
+                  {manage && pickerFor === m.id ? (
+                    <span
+                      className="w-full"
+                      onClick={(e) => e.stopPropagation()}
+                      onKeyDown={(e) => e.stopPropagation()}
+                    >
+                      <AvatarPicker
+                        options={m.role === "parent" ? ADULT_AVATARS : KID_AVATARS}
+                        value={m.avatar}
+                        onPick={(a) => {
+                          void saveAvatar(m, a);
+                          setPickerFor(null);
+                        }}
+                      />
+                    </span>
+                  ) : null}
+                  {manage && m.role === "child" ? (
                     <span
                       role="button"
                       tabIndex={0}
@@ -417,16 +433,6 @@ function ProfileSelector() {
                           </button>
                         ))}
                       </span>
-                      {pickerFor === m.id ? (
-                        <AvatarPicker
-                          options={m.role === "parent" ? ADULT_AVATARS : KID_AVATARS}
-                          value={m.avatar}
-                          onPick={(a) => {
-                            void saveAvatar(m, a);
-                            setPickerFor(null);
-                          }}
-                        />
-                      ) : null}
                       <input
                         defaultValue={m.name}
                         aria-label={t("Nombre", "Name")}
