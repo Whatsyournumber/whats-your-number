@@ -653,9 +653,6 @@ function AdminPage() {
             </div>
           </Panel>
         </TabsContent>
-        <TabsContent value="linkedin" className="mt-4">
-          <AdminLinkedInPanel />
-        </TabsContent>
       </Tabs>
     </PageShell>
   );
