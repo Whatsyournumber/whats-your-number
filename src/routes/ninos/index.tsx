@@ -325,9 +325,83 @@ function ProfileSelector() {
                 </button>
               )}
 
-
-
+              {canAddAdult ? (
+                <button
+                  onClick={() => setShowAddAdult(true)}
+                  className="group flex flex-col items-center gap-3 outline-none"
+                >
+                  <span className="grid aspect-square w-full place-items-center rounded-2xl border-2 border-dashed border-border text-muted-foreground transition-all duration-200 group-hover:scale-105 group-hover:border-primary group-hover:text-primary">
+                    <UserPlus className="h-9 w-9" />
+                  </span>
+                  <span className="min-w-0 text-center">
+                    <span className="block truncate text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
+                      {t("Añadir adulto", "Add an adult")}
+                    </span>
+                    <span className="block text-[11px] text-muted-foreground/70">
+                      {t("Pareja o tutor", "Partner or guardian")}
+                    </span>
+                  </span>
+                </button>
+              ) : null}
             </div>
+
+            {plan === "family" ? (
+              <p className="mt-6 text-xs text-muted-foreground">
+                {t(
+                  `Perfiles usados: ${usedSeats} de ${FAMILY_TOTAL_SEATS} (adultos e hijos).`,
+                  `Profiles used: ${usedSeats} of ${FAMILY_TOTAL_SEATS} (adults and kids).`,
+                )}
+              </p>
+            ) : null}
+
+            {showAddAdult ? (
+              <div
+                className="fixed inset-0 z-50 grid place-items-center bg-background/80 p-5 backdrop-blur-sm"
+                role="dialog"
+                aria-modal="true"
+              >
+                <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 text-left shadow-2xl">
+                  <h2 className="font-display text-xl font-semibold text-foreground">
+                    {t("Añadir otro adulto", "Add another adult")}
+                  </h2>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {t(
+                      "Tu pareja o tutor tendrá su propio acceso al panel de padres.",
+                      "Your partner or guardian gets their own access to the parent dashboard.",
+                    )}
+                  </p>
+                  <input
+                    className={`${inputClass} mt-4`}
+                    value={adultName}
+                    onChange={(e) => setAdultName(e.target.value)}
+                    placeholder={t("Nombre", "Name")}
+                    aria-label={t("Nombre", "Name")}
+                  />
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {ADULT_AVATARS.map((a) => (
+                      <button
+                        key={a}
+                        type="button"
+                        onClick={() => setAdultAvatar(a)}
+                        className={`grid h-11 w-11 place-items-center rounded-2xl text-2xl ${
+                          adultAvatar === a ? "bg-primary/15 ring-2 ring-primary" : "bg-secondary"
+                        }`}
+                      >
+                        {a}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-6 flex justify-end gap-2">
+                    <Button variant="ghost" onClick={() => setShowAddAdult(false)}>
+                      {t("Cancelar", "Cancel")}
+                    </Button>
+                    <Button onClick={() => void addAdult()} disabled={createParent.isPending || !adultName.trim()}>
+                      {createParent.isPending ? t("Creando…", "Creating…") : t("Crear perfil", "Create profile")}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ) : null}
 
             <div className="mt-14 flex flex-wrap items-center gap-3">
               <Button variant="ghost" onClick={() => setManage((v) => !v)}>
