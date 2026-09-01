@@ -124,6 +124,26 @@ function ProfileSelector() {
     await queryClient.refetchQueries({ queryKey: ["kid_members"] });
   }
 
+  async function saveRole(m: Member, role: "parent" | "child") {
+    if (role === m.role) return;
+    const patch =
+      role === "parent"
+        ? { role, theme: "parent", avatar: ADULT_AVATARS[0]!, onboarded: true, subtitle: null }
+        : { role, theme: "boy", avatar: KID_AVATARS[0]!, age: m.age > 0 ? m.age : 8, onboarded: true, subtitle: null };
+    try {
+      const { error } = await supabase.from("kid_members").update(patch).eq("id", m.id);
+      if (error) throw error;
+      await queryClient.refetchQueries({ queryKey: ["kid_members"] });
+      toast.success(
+        role === "parent"
+          ? t(`${m.name} ahora es un perfil de adulto`, `${m.name} is now an adult profile`)
+          : t(`${m.name} ahora es un perfil de niño/a`, `${m.name} is now a child profile`),
+      );
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : t("No se pudo cambiar el tipo", "Could not change type"));
+    }
+  }
+
   async function saveField(m: Member, field: "name" | "subtitle", raw: string) {
     const value = raw.trim();
     const current = field === "name" ? m.name : (m.subtitle ?? "");
@@ -320,6 +340,20 @@ function ProfileSelector() {
                       onClick={(e) => e.stopPropagation()}
                       onKeyDown={(e) => e.stopPropagation()}
                     >
+                      <span className="flex justify-center gap-1 rounded-full bg-secondary p-0.5 text-[10px] font-semibold">
+                        {(["parent", "child"] as const).map((r) => (
+                          <button
+                            key={r}
+                            type="button"
+                            onClick={() => void saveRole(m, r)}
+                            className={`flex-1 rounded-full px-2 py-1 transition ${
+                              m.role === r ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                            }`}
+                          >
+                            {r === "parent" ? t("Adulto", "Adult") : t("Niño/a", "Child")}
+                          </button>
+                        ))}
+                      </span>
                       <AvatarPicker
                         options={m.role === "parent" ? ADULT_AVATARS : KID_AVATARS}
                         value={m.avatar}
@@ -567,7 +601,8 @@ function ProfileSelector() {
 
             <div className="mt-14 flex flex-wrap items-center gap-3">
               <Button variant="ghost" onClick={() => setManage((v) => !v)}>
-                <Settings className="h-4 w-4" /> {t("Gestionar perfiles", "Manage profiles")}
+                <Settings className="h-4 w-4" />{" "}
+                {manage ? t("Listo", "Done") : t("Editar perfiles", "Edit profiles")}
               </Button>
               <Button
                 variant="soft"
