@@ -54,6 +54,9 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
               {t("El número de tu hijo en 30seg", "Your child's number in 30s")}
             </p>
             <AnimatedDemoLogo className="mt-2" />
+            <p className="mt-2 whitespace-nowrap text-center text-[12px] leading-snug text-muted-foreground">
+              {t("El fondo universitario que necesita antes de los 18.", "The college fund they'll need before 18.")}
+            </p>
           </>
         ) : (
           <>
@@ -65,6 +68,9 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
               {t("Descubre tu número en 30seg", "Your number in 30s")}
             </p>
             <AnimatedDemoLogo className="mt-2" />
+            <p className="mt-2 whitespace-nowrap text-center text-[12px] leading-snug text-muted-foreground">
+              {t("El capital para vivir de tus inversiones.", "The capital to live off your investments.")}
+            </p>
           </>
         )}
 
