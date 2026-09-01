@@ -108,19 +108,34 @@ function ProfileSelector() {
     setPickerFor(null);
   }
 
-  function addKid() {
+  async function addKid() {
     const name = kidName.trim();
     const age = Math.min(17, Math.max(0, Number(kidAge) || 0));
     if (!name) return;
-    // Prellena el onboarding del niño/a con nombre, edad y emoji elegidos aquí.
-    window.localStorage.setItem(
-      "mfn-kid-onboarding-draft",
-      JSON.stringify({ step: 1, name, age, theme: kidTheme, avatar: kidAvatar }),
-    );
-    setShowAddKid(false);
-    setKidName("");
-    setKidAge("8");
-    router.navigate({ to: "/ninos/onboarding" });
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const user_id = auth.user?.id;
+      if (!user_id) throw new Error(t("Sesión no disponible", "Session not available"));
+      // Guardamos el perfil al instante: nombre + emoji aparecen ya en la sección de perfiles.
+      const { data: member, error } = await supabase
+        .from("kid_members")
+        .insert({ user_id, name, role: "child", theme: kidTheme, avatar: kidAvatar, age, onboarded: false })
+        .select("*")
+        .single();
+      if (error) throw error;
+      // Borrador para que, al abrir su perfil, el onboarding retome sin repetir nombre ni emoji.
+      window.localStorage.setItem(
+        "mfn-kid-onboarding-draft",
+        JSON.stringify({ step: 1, name, age, theme: kidTheme, avatar: kidAvatar, memberId: member.id }),
+      );
+      await queryClient.refetchQueries({ queryKey: ["kid_members"] });
+      toast.success(t(`Perfil de ${name} creado`, `${name}'s profile created`));
+      setShowAddKid(false);
+      setKidName("");
+      setKidAge("8");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : t("No se pudo crear el perfil", "Could not create profile"));
+    }
   }
 
   async function addAdult() {

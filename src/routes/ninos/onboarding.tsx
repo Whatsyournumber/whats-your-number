@@ -40,6 +40,8 @@ type Draft = {
   step: number; name: string; age: number; theme: "boy" | "girl"; avatar: string; city: string;
   currency: string; allowance: number; frequency: string; split: { spend: number; save: number; grow: number };
   wishTitle: string; wishPrice: number; initial: number; savedNow: number; targetAge: number; expected: number; goal: string;
+  // Perfil ya creado desde la sección de perfiles: el onboarding lo actualiza, no duplica.
+  memberId?: string;
 };
 
 function readDraft(): Partial<Draft> | null {
@@ -79,6 +81,7 @@ function Onboarding() {
   const [expected, setExpected] = useState(10);
   const [goal, setGoal] = useState(FUND_GOALS[0]!);
   const restored = useRef(false);
+  const [memberId, setMemberId] = useState<string | null>(null);
 
   // Restaura el borrador si el padre salió a mitad del onboarding.
   useEffect(() => {
@@ -86,6 +89,7 @@ function Onboarding() {
     restored.current = true;
     if (!d) return;
     if (typeof d.step === "number") setStep(Math.min(5, Math.max(0, d.step)));
+    if (typeof d.memberId === "string") setMemberId(d.memberId);
     if (d.name) setName(d.name);
     if (typeof d.age === "number") setAge(d.age);
     if (d.theme) setTheme(d.theme);
@@ -117,9 +121,10 @@ function Onboarding() {
     const draft: Draft = {
       step, name, age, theme, avatar, city, currency, allowance, frequency, split,
       wishTitle: wish.title, wishPrice, initial, savedNow, targetAge, expected, goal: goal as string,
+      ...(memberId ? { memberId } : {}),
     };
     window.localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-  }, [step, name, age, theme, avatar, city, currency, allowance, frequency, split, wish, wishPrice, initial, savedNow, targetAge, expected, goal]);
+  }, [step, name, age, theme, avatar, city, currency, allowance, frequency, split, wish, wishPrice, initial, savedNow, targetAge, expected, goal, memberId]);
 
   useKidTheme(theme);
 
@@ -146,8 +151,9 @@ function Onboarding() {
 
   async function finish() {
     // El titular cuenta como primer adulto; las filas "parent" son adultos adicionales.
+    // Con memberId el perfil ya existe (creado desde Perfiles): no vuelve a consumir cupo.
     const maxKids = kidLimit(subscription, 1 + members.filter((m) => m.role === "parent").length);
-    if (members.filter((m) => m.role === "child").length >= maxKids) {
+    if (!memberId && members.filter((m) => m.role === "child").length >= maxKids) {
       toast.error(
         t(
           `Tu plan permite ${maxKids} ${maxKids === 1 ? "perfil" : "perfiles"} de niño`,
@@ -163,28 +169,42 @@ function Onboarding() {
       const user_id = auth.user?.id;
       if (!user_id) throw new Error(t("Sesión no disponible", "Session not available"));
 
-      const { data: member, error } = await supabase
-        .from("kid_members")
-        .insert({
-          user_id,
-          name: name.trim(),
-          role: "child",
-          theme,
-          avatar,
-          age,
-          currency,
-          base_currency: currency,
+      const values = {
+        name: name.trim(),
+        role: "child",
+        theme,
+        avatar,
+        age,
+        currency,
+        base_currency: currency,
 
-          allowance_amount: allowance,
-          allowance_frequency: frequency,
-          split_spend: split.spend,
-          split_save: split.save,
-          split_grow: split.grow,
-          onboarded: true,
-        })
-        .select("*")
-        .single();
-      if (error) throw error;
+        allowance_amount: allowance,
+        allowance_frequency: frequency,
+        split_spend: split.spend,
+        split_save: split.save,
+        split_grow: split.grow,
+        onboarded: true,
+      };
+      let member: { id: string };
+      if (memberId) {
+        // Perfil pre-creado desde la sección de perfiles: se actualiza, no se duplica.
+        const { data: updated, error } = await supabase
+          .from("kid_members")
+          .update(values)
+          .eq("id", memberId)
+          .select("id")
+          .single();
+        if (error) throw error;
+        member = updated;
+      } else {
+        const { data: inserted, error } = await supabase
+          .from("kid_members")
+          .insert({ user_id, ...values })
+          .select("id")
+          .single();
+        if (error) throw error;
+        member = inserted;
+      }
 
       await supabase.from("kid_future_funds").insert({
         user_id,
@@ -245,13 +265,9 @@ function Onboarding() {
       select(member.id);
       // Refresca la lista de perfiles antes de navegar para que el guard
       // del panel infantil encuentre al nuevo perfil y no rebote a /ninos.
-      queryClient.setQueryData<Member[]>(["kid_members"], (prev) => [
-        ...(prev ?? []),
-        member as Member,
-      ]);
       await queryClient.refetchQueries({ queryKey: ["kid_members"] });
       toast.success(
-        t(`¡${member.name} ya tiene su primer número!`, `${member.name} now has a first number!`),
+        t(`¡${name.trim()} ya tiene su primer número!`, `${name.trim()} now has a first number!`),
       );
       await router.navigate({ to: "/ninos/kid/numero" });
 
