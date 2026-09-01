@@ -139,9 +139,11 @@ export function useFixedExpenses() {
   // Guarda un gasto personalizado en la cuenta (debounce por fila).
   const saveCustom = useCallback(
     (item: FixedExpense, position: number) => {
+      console.log("DBG saveCustom", item.id, userId);
       if (!userId) return;
       if (saveTimers.current[item.id]) clearTimeout(saveTimers.current[item.id]);
       saveTimers.current[item.id] = setTimeout(() => {
+        console.log("DBG timer fired", item.id);
         // El builder solo ejecuta la petición al hacer await/then.
         void (async () => {
           const { error } = await supabase.from("custom_fixed_expenses").upsert({
