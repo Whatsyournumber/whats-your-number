@@ -226,7 +226,7 @@ function ProfileSelector() {
     plan === "family" &&
     parents.length === 0 &&
     ((kids.length === 0 && freeSlotsLeft > 1) || (kids.length > 0 && freeSlotsLeft > 0));
-  const showPaidSlot = plan === "family" && freeSlotsLeft === 0;
+  
 
   async function openAdult() {
     const { data: auth } = await supabase.auth.getUser();
