@@ -173,12 +173,19 @@ function ProfileSelector() {
     await queryClient.refetchQueries({ queryKey: ["kid_members"] });
   }
 
-  async function saveRole(m: Member, role: "parent" | "child") {
-    if (role === m.role) return;
+  async function saveRole(m: Member, kind: "parent" | "boy" | "girl") {
+    const role = kind === "parent" ? "parent" : "child";
+    if (role === m.role && (role === "parent" || m.theme === kind)) return;
+    if (role === "parent" && m.role !== "parent" && adultCount >= MAX_ADULTS) {
+      toast.error(t("Solo se permiten 2 adultos por plan", "Only 2 adults are allowed per plan"));
+      return;
+    }
     const patch =
       role === "parent"
         ? { role, theme: "parent", avatar: ADULT_AVATARS[0]!, onboarded: true, subtitle: null }
-        : { role, theme: "boy", avatar: KID_AVATARS[0]!, age: m.age > 0 ? m.age : 8, onboarded: true, subtitle: null };
+        : m.role === "child"
+          ? { theme: kind }
+          : { role, theme: kind, avatar: KID_AVATARS[0]!, age: m.age > 0 ? m.age : 8, onboarded: true, subtitle: null };
     try {
       const { error } = await supabase.from("kid_members").update(patch).eq("id", m.id);
       if (error) throw error;
@@ -186,7 +193,9 @@ function ProfileSelector() {
       toast.success(
         role === "parent"
           ? t(`${m.name} ahora es un perfil de adulto`, `${m.name} is now an adult profile`)
-          : t(`${m.name} ahora es un perfil de niño/a`, `${m.name} is now a child profile`),
+          : kind === "girl"
+            ? t(`${m.name} ahora es un perfil de niña`, `${m.name} is now a girl profile`)
+            : t(`${m.name} ahora es un perfil de niño`, `${m.name} is now a boy profile`),
       );
     } catch (e) {
       toast.error(e instanceof Error ? e.message : t("No se pudo cambiar el tipo", "Could not change type"));
