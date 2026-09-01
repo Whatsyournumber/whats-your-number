@@ -136,6 +136,26 @@ export function useFixedExpenses() {
     [onboardingKeys],
   );
 
+  // Guarda un gasto personalizado en la cuenta (debounce por fila).
+  const saveCustom = useCallback(
+    (item: FixedExpense, position: number) => {
+      if (!userId) return;
+      if (saveTimers.current[item.id]) clearTimeout(saveTimers.current[item.id]);
+      saveTimers.current[item.id] = setTimeout(() => {
+        void supabase
+          .from("custom_fixed_expenses")
+          .upsert({
+            id: item.id,
+            user_id: userId,
+            name: item.name,
+            amount: Number.isFinite(item.amount) ? item.amount : 0,
+            position,
+          });
+      }, 400);
+    },
+    [userId],
+  );
+
   const update = useCallback(
     (id: string, patch: Partial<FixedExpense>) => {
       const next = items.map((i) => (i.id === id ? { ...i, ...patch } : i));
