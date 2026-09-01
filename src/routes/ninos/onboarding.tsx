@@ -265,13 +265,9 @@ function Onboarding() {
       select(member.id);
       // Refresca la lista de perfiles antes de navegar para que el guard
       // del panel infantil encuentre al nuevo perfil y no rebote a /ninos.
-      queryClient.setQueryData<Member[]>(["kid_members"], (prev) => [
-        ...(prev ?? []),
-        member as Member,
-      ]);
       await queryClient.refetchQueries({ queryKey: ["kid_members"] });
       toast.success(
-        t(`¡${member.name} ya tiene su primer número!`, `${member.name} now has a first number!`),
+        t(`¡${name.trim()} ya tiene su primer número!`, `${name.trim()} now has a first number!`),
       );
       await router.navigate({ to: "/ninos/kid/numero" });
 
