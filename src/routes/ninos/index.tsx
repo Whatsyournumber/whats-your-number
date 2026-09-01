@@ -496,7 +496,7 @@ function ProfileSelector() {
                 <>
                   {showKidSlot ? (
                     <button
-                      onClick={() => router.navigate({ to: "/ninos/onboarding" })}
+                      onClick={() => setShowAddKid(true)}
                       className="group flex flex-col items-center gap-3 outline-none"
                     >
                       <span className="grid aspect-square w-full place-items-center rounded-2xl border-2 border-dashed border-border text-muted-foreground transition-all duration-200 group-hover:scale-105 group-hover:border-primary group-hover:text-primary">
@@ -546,7 +546,7 @@ function ProfileSelector() {
                 </>
               ) : kids.length < maxKids ? (
                 <button
-                  onClick={() => router.navigate({ to: "/ninos/onboarding" })}
+                  onClick={() => setShowAddKid(true)}
                   className="group flex flex-col items-center gap-3 outline-none"
                 >
                   <span className="grid aspect-square w-full place-items-center rounded-2xl border-2 border-dashed border-border text-muted-foreground transition-all duration-200 group-hover:scale-105 group-hover:border-primary group-hover:text-primary">
@@ -621,7 +621,7 @@ function ProfileSelector() {
                     <button
                       onClick={() => {
                         setShowFlexChoice(false);
-                        router.navigate({ to: "/ninos/onboarding" });
+                        setShowAddKid(true);
                       }}
                       className="group flex flex-col items-center gap-2 rounded-2xl border border-border p-4 transition hover:border-primary"
                     >
