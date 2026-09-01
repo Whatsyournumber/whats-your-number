@@ -142,15 +142,17 @@ export function useFixedExpenses() {
       if (!userId) return;
       if (saveTimers.current[item.id]) clearTimeout(saveTimers.current[item.id]);
       saveTimers.current[item.id] = setTimeout(() => {
-        void supabase
-          .from("custom_fixed_expenses")
-          .upsert({
+        // El builder solo ejecuta la petición al hacer await/then.
+        void (async () => {
+          const { error } = await supabase.from("custom_fixed_expenses").upsert({
             id: item.id,
             user_id: userId,
             name: item.name,
             amount: Number.isFinite(item.amount) ? item.amount : 0,
             position,
           });
+          if (error) console.error("custom_fixed_expenses upsert", error.message);
+        })();
       }, 400);
     },
     [userId],
@@ -204,7 +206,12 @@ export function useFixedExpenses() {
 
       persist(next);
       if (saveTimers.current[id]) clearTimeout(saveTimers.current[id]);
-      if (userId) void supabase.from("custom_fixed_expenses").delete().eq("id", id).eq("user_id", userId);
+      if (userId) {
+        void (async () => {
+          const { error } = await supabase.from("custom_fixed_expenses").delete().eq("id", id).eq("user_id", userId);
+          if (error) console.error("custom_fixed_expenses delete", error.message);
+        })();
+      }
     },
     [items, persist, save, userId],
   );
