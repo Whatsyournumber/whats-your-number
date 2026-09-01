@@ -396,6 +396,63 @@ function ProfileSelector() {
               </p>
             ) : null}
 
+            {showFlexChoice ? (
+              <div
+                className="fixed inset-0 z-50 grid place-items-center bg-background/80 p-5 backdrop-blur-sm"
+                role="dialog"
+                aria-modal="true"
+              >
+                <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 text-left shadow-2xl">
+                  <h2 className="font-display text-xl font-semibold text-foreground">
+                    {t("¿Qué perfil quieres añadir?", "Which profile do you want to add?")}
+                  </h2>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {t(
+                      "Este perfil está incluido en tu plan Familiar.",
+                      "This profile is included in your Family plan.",
+                    )}
+                  </p>
+                  <div className="mt-5 grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => {
+                        setShowFlexChoice(false);
+                        setShowAddAdult(true);
+                      }}
+                      className="group flex flex-col items-center gap-2 rounded-2xl border border-border p-4 transition hover:border-primary"
+                    >
+                      <UserPlus className="h-7 w-7 text-muted-foreground transition group-hover:text-primary" />
+                      <span className="text-sm font-semibold text-foreground">
+                        {t("Adulto", "Adult")}
+                      </span>
+                      <span className="text-[11px] text-muted-foreground">
+                        {t("Pareja o tutor", "Partner or guardian")}
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowFlexChoice(false);
+                        router.navigate({ to: "/ninos/onboarding" });
+                      }}
+                      className="group flex flex-col items-center gap-2 rounded-2xl border border-border p-4 transition hover:border-primary"
+                    >
+                      <Plus className="h-7 w-7 text-muted-foreground transition group-hover:text-primary" />
+                      <span className="text-sm font-semibold text-foreground">
+                        {t("Niño/a", "Child")}
+                      </span>
+                      <span className="text-[11px] text-muted-foreground">
+                        {t("Aprende practicando", "Learns by doing")}
+                      </span>
+                    </button>
+                  </div>
+                  <div className="mt-5 flex justify-end">
+                    <Button variant="ghost" onClick={() => setShowFlexChoice(false)}>
+                      {t("Cancelar", "Cancel")}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
             {showAddAdult ? (
               <div
                 className="fixed inset-0 z-50 grid place-items-center bg-background/80 p-5 backdrop-blur-sm"
