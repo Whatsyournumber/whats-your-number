@@ -78,6 +78,7 @@ function ProfileSelector() {
   const { t, lang } = useI18n();
   const { profile, save: saveProfile } = useProfile();
   const [manage, setManage] = useState(false);
+  const [pickerFor, setPickerFor] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<Member | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [showUnlock, setShowUnlock] = useState(false);
@@ -85,9 +86,18 @@ function ProfileSelector() {
   const [showAddAdult, setShowAddAdult] = useState(false);
   const [adultName, setAdultName] = useState("");
   const [adultAvatar, setAdultAvatar] = useState(ADULT_AVATARS[0]!);
+  const [holderAvatar, setHolderAvatar] = useState(() =>
+    typeof window !== "undefined" ? (localStorage.getItem("holder_avatar") ?? "") : "",
+  );
   const createParent = useCreateParent();
   const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
   const queryClient = useQueryClient();
+
+  function saveHolderAvatar(a: string) {
+    setHolderAvatar(a);
+    localStorage.setItem("holder_avatar", a);
+    setPickerFor(null);
+  }
 
   async function addAdult() {
     const name = adultName.trim();
