@@ -112,6 +112,16 @@ function ProfileSelector() {
     });
   }
 
+  async function saveAvatar(m: Member, avatar: string) {
+    if (avatar === m.avatar) return;
+    queryClient.setQueryData<Member[]>(["kid_members"], (prev) =>
+      prev?.map((x) => (x.id === m.id ? { ...x, avatar } : x)),
+    );
+    const { error } = await supabase.from("kid_members").update({ avatar }).eq("id", m.id);
+    if (error) toast.error(error.message);
+    await queryClient.refetchQueries({ queryKey: ["kid_members"] });
+  }
+
   async function saveField(m: Member, field: "name" | "subtitle", raw: string) {
     const value = raw.trim();
     const current = field === "name" ? m.name : (m.subtitle ?? "");
