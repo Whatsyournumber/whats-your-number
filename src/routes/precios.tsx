@@ -58,8 +58,9 @@ function Pricing() {
   const { openCheckout, loading } = usePaddleCheckout();
   const resumedCheckout = useRef(false);
   const [discount, setDiscount] = useState<PendingDiscount | null>(null);
+  const highlightedName = planParam === "familiar" ? "Familiar" : "Pro";
   const [selectedPlan, setSelectedPlan] = useState<string | null>(
-    planParam === "familiar" ? "Familiar" : "Pro",
+    planParam === "familiar" ? "Familiar" : planParam === "free" ? "Free" : "Pro",
   );
   const { prices, currency } = useRegionalPricing();
 
@@ -138,7 +139,7 @@ function Pricing() {
         t("Reportes mensuales automáticos", "Automatic monthly reports"),
       ],
       cta: t("Empezar con Pro", "Get started with Pro"),
-      highlight: true,
+      highlight: highlightedName === "Pro",
     },
     {
       name: "Familiar",
@@ -161,7 +162,7 @@ function Pricing() {
         t("Soporte prioritario en 24h", "Priority support within 24h"),
       ],
       cta: t("Empezar con Familiar", "Get started with Familiar"),
-      highlight: false,
+      highlight: highlightedName === "Familiar",
     },
     {
       name: "Corporativo",
@@ -357,8 +358,9 @@ function Pricing() {
             return (
               <div
                 key={plan.name}
-                className={`surface relative flex flex-col p-6 outline-none transition-all focus:outline-none focus-visible:outline-none ${
-                  plan.highlight && !isSelected && !selectedPlan
+                onClick={() => setSelectedPlan(plan.name)}
+                className={`surface relative flex flex-col cursor-pointer p-6 outline-none transition-all focus:outline-none focus-visible:outline-none ${
+                  plan.highlight && !isSelected
                     ? "bg-gradient-to-b from-primary/[0.03] to-transparent ring-1 ring-primary/30"
                     : ""
                 } ${
