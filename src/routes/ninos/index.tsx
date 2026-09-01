@@ -500,24 +500,22 @@ function ProfileSelector() {
                     </button>
                   ) : null}
 
-                  {showPaidSlot ? (
-                    <button
-                      onClick={() => setShowUnlock(true)}
-                      className="group flex flex-col items-center gap-3 outline-none"
-                    >
-                      <span className="grid aspect-square w-full place-items-center rounded-2xl border-2 border-dashed border-border text-muted-foreground transition-all duration-200 group-hover:scale-105 group-hover:border-primary group-hover:text-primary">
-                        <Lock className="h-9 w-9" />
+                  <button
+                    onClick={() => setShowUnlock(true)}
+                    className="group flex flex-col items-center gap-3 outline-none"
+                  >
+                    <span className="grid aspect-square w-full place-items-center rounded-2xl border-2 border-dashed border-border text-muted-foreground transition-all duration-200 group-hover:scale-105 group-hover:border-primary group-hover:text-primary">
+                      <Lock className="h-9 w-9" />
+                    </span>
+                    <span className="min-w-0 text-center">
+                      <span className="block truncate text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
+                        {t("Perfil extra", "Extra profile")}
                       </span>
-                      <span className="min-w-0 text-center">
-                        <span className="block truncate text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
-                          {t("Perfil extra", "Extra profile")}
-                        </span>
-                        <span className="block text-[11px] text-muted-foreground/70">
-                          {t("Desbloquear", "Unlock")}
-                        </span>
+                      <span className="block text-[11px] text-muted-foreground/70">
+                        {t("Desbloquear", "Unlock")}
                       </span>
-                    </button>
-                  ) : null}
+                    </span>
+                  </button>
                 </>
               ) : kids.length < maxKids ? (
                 <button
