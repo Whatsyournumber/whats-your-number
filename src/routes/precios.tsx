@@ -358,8 +358,9 @@ function Pricing() {
             return (
               <div
                 key={plan.name}
-                className={`surface relative flex flex-col p-6 outline-none transition-all focus:outline-none focus-visible:outline-none ${
-                  plan.highlight && !isSelected && !selectedPlan
+                onClick={() => setSelectedPlan(plan.name)}
+                className={`surface relative flex flex-col cursor-pointer p-6 outline-none transition-all focus:outline-none focus-visible:outline-none ${
+                  plan.highlight && !isSelected
                     ? "bg-gradient-to-b from-primary/[0.03] to-transparent ring-1 ring-primary/30"
                     : ""
                 } ${
