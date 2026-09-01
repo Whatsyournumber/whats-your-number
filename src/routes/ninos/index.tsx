@@ -13,7 +13,36 @@ import { EXTRA_SEAT_PRICE, formatMoney } from "@/lib/pricing-tiers";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 
-const ADULT_AVATARS = ["🧑", "👩", "👨", "👵", "👴"];
+const ADULT_AVATARS = ["👨‍💼", "👩‍💼", "🧔‍♂️", "👩‍🦰", "👨‍🦱", "👩‍🦱", "🧑‍🎓", "👨‍🍳", "👩‍⚕️", "👨‍🚀", "🦸‍♀️", "🦸‍♂️", "👵", "👴"];
+const KID_AVATARS = ["🦊", "🐼", "🐯", "🐨", "🦁", "🐙", "🐧", "🐸", "🐲", "🦖", "🦄", "🐰", "🐱", "🦢", "🦋", "🐞", "🐝", "🦩", "🐬", "🦜", "🚀", "⚽", "🎨", "🎸"];
+
+function AvatarPicker({
+  options,
+  value,
+  onPick,
+}: {
+  options: string[];
+  value: string;
+  onPick: (a: string) => void;
+}) {
+  return (
+    <div className="flex flex-wrap justify-center gap-1.5">
+      {options.map((a) => (
+        <button
+          key={a}
+          type="button"
+          onClick={() => onPick(a)}
+          className={`grid h-8 w-8 place-items-center rounded-lg text-lg transition ${
+            value === a ? "bg-primary/15 ring-2 ring-primary" : "bg-secondary hover:bg-primary/10"
+          }`}
+        >
+          {a}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 
 
 export const Route = createFileRoute("/ninos/")({
