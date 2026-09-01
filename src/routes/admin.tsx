@@ -32,9 +32,6 @@ import {
   adminDeleteUser,
 } from "@/lib/admin.functions";
 import { adminMarkCommissionsPaid, adminUpdateAffiliate } from "@/utils/affiliates.functions";
-import { AdminLinkedInPanel } from "@/components/admin-linkedin-panel";
-
-
 export const Route = createFileRoute("/admin")({
   ssr: false,
   beforeLoad: async () => {
