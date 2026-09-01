@@ -411,9 +411,9 @@ function Pricing() {
                 </ul>
                 {plan.priceId ? (
                   <Button
-                    variant={plan.highlight || isSelected ? "default" : "outline"}
+                    variant={isSelected || (plan.highlight && !selectedPlan) ? "default" : "outline"}
                     className={`mt-8 w-full rounded-full ${
-                      isSelected && !plan.highlight
+                      isSelected
                         ? "bg-positive text-positive-foreground hover:bg-positive/90"
                         : ""
                     }`}
@@ -439,9 +439,9 @@ function Pricing() {
                 ) : (
                   <Button
                     asChild
-                    variant={plan.highlight || isSelected ? "default" : "outline"}
+                    variant={isSelected || (plan.highlight && !selectedPlan) ? "default" : "outline"}
                     className={`mt-8 w-full rounded-full ${
-                      isSelected && !plan.highlight
+                      isSelected
                         ? "bg-positive text-positive-foreground hover:bg-positive/90"
                         : ""
                     }`}
