@@ -433,7 +433,10 @@ function Pricing() {
                     className={`mt-8 w-full rounded-full ${
                       isSelected ? "bg-positive text-positive-foreground hover:bg-positive/90" : ""
                     }`}
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedPlan(plan.name);
+                    }}
                   >
                     <a href={plan.href}>{plan.cta}</a>
                   </Button>
