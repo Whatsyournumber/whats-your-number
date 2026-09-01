@@ -131,7 +131,7 @@ function Pricing() {
         t("Reportes mensuales automáticos", "Automatic monthly reports"),
       ],
       cta: t("Empezar con Pro", "Get started with Pro"),
-      highlight: true,
+      highlight: planParam !== "familiar",
     },
     {
       name: "Familiar",
@@ -154,7 +154,7 @@ function Pricing() {
         t("Soporte prioritario en 24h", "Priority support within 24h"),
       ],
       cta: t("Empezar con Familiar", "Get started with Familiar"),
-      highlight: false,
+      highlight: planParam === "familiar",
     },
     {
       name: "Corporativo",
@@ -179,7 +179,7 @@ function Pricing() {
         t("Account manager y SLA garantizado", "Account manager and guaranteed SLA"),
       ],
       cta: t("Contactar", "Contact us"),
-      href: "mailto:hello@whatsyour-number.com?subject=Plan%20Corporativo%20B2B",
+      href: "mailto:hello@whats-your-number.com?subject=Plan%20Corporativo%20B2B",
       highlight: false,
     },
   ];
