@@ -77,7 +77,7 @@ function usePlanCopy() {
       ),
       features: [
         t("Todo lo de Pro", "Everything in Pro"),
-        t("Perfiles familiares compartidos", "Shared family profiles"),
+        t("3 perfiles: p. ej. 2 adultos + 1 hijo o 1 adulto + 2 hijos", "3 profiles: e.g. 2 adults + 1 kid or 1 adult + 2 kids"),
         t("Plan de ahorro e inversión para cada hijo", "Savings and investment plan for each child"),
         t("Simulador de universidad y educación", "College and education simulator"),
         t("Meta de patrimonio a los 18 años de tu hijo", "Net worth goal by your child's 18th birthday"),
@@ -172,7 +172,7 @@ export function PlanChangeDialog({
   const isUpgrade = to === "patrimonio";
 
   const gains = [
-    t("Perfiles familiares compartidos", "Shared family profiles"),
+    t("3 perfiles: p. ej. 2 adultos + 1 hijo o 1 adulto + 2 hijos", "3 profiles: e.g. 2 adults + 1 kid or 1 adult + 2 kids"),
     t("Plan de ahorro e inversión para cada hijo", "Savings and investment plan for each child"),
     t("Simulador de universidad y educación", "College and education simulator"),
     t("Meta de patrimonio a los 18 años de tu hijo", "Net worth goal by your child's 18th birthday"),
