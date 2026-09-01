@@ -39,7 +39,7 @@ import { setPendingPromoCode } from "@/lib/pending-promo";
 import { getPendingCheckoutPlan, setPendingCheckoutPlan } from "@/lib/pending-checkout";
 import { startAffiliateWizard } from "@/lib/affiliate-wizard-state";
 
-type AuthSearch = { mode: "login" | "signup"; next?: string; flow?: "affiliate" | "kids"; plan?: "familiar" | "pro" };
+type AuthSearch = { mode: "login" | "signup"; next?: string; flow?: "affiliate" | "kids"; plan?: "familiar" | "pro" | "free" };
 
 /**
  * Navega al destino guardado. Las rutas con query o punto (p. ej. el
@@ -75,6 +75,9 @@ export const Route = createFileRoute("/auth")({
       mode: search["mode"] === "signup" || (affiliate && search["mode"] !== "login") ? "signup" : "login",
       ...(next ? { next } : affiliate ? { next: "/afiliados" } : {}),
       ...(affiliate ? { flow: "affiliate" as const } : kids ? { flow: "kids" as const } : {}),
+      ...(search["plan"] === "familiar" || search["plan"] === "pro" || search["plan"] === "free"
+        ? { plan: search["plan"] as "familiar" | "pro" | "free" }
+        : {}),
     };
   },
 
