@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { useAuth } from "@/hooks/use-auth";
 import { useLanguage } from "@/hooks/use-language";
 import { useProfile, type Profile } from "@/hooks/use-profile";
+import { supabase } from "@/integrations/supabase/client";
 import { convertMoneyValue } from "@/lib/fx";
 import { FIXED_FIELDS } from "@/lib/onboarding";
 
