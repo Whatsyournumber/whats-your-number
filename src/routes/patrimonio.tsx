@@ -203,8 +203,35 @@ function PatrimonioContent() {
   const etfTotal = sumKinds(["etf", "other"]);
   const splitFunds = bondsTotal + notesTotal + etfTotal > 0;
 
+  // Valor en tiempo real por rubro: si hay detalle de posiciones, cada rubro se
+  // recalcula con los precios de mercado (cripto, acciones, ETF…) en vez del total estático del perfil.
+  const LIVE_KINDS: Record<string, string[]> = {
+    assets_cash: ["cash"],
+    assets_bank: ["bank", "money_market"],
+    assets_retirement: ["retirement"],
+    assets_etf: ["etf", "other", "bond", "tbill", "note", "structured"],
+    assets_stocks: ["stock"],
+    assets_crypto: ["crypto"],
+    assets_property: ["property"],
+  };
+  const hasDetail = holdings.length > 0;
+  const liveAssets = hasDetail
+    ? assets.map((a) => (LIVE_KINDS[a.key] ? { ...a, value: sumKinds(LIVE_KINDS[a.key]!) } : a)).filter((a) => a.value > 0)
+    : assets;
+
+  // Variación del día ponderada por rubro (solo posiciones con ticker y precio real).
+  const dayChangeOf = (kinds: string[]): number | null => {
+    const rows = detailRows.filter((r) => kinds.includes(r.kind) && r.ticker && r.livePrice);
+    const base = rows.reduce((s, r) => s + r.value, 0);
+    if (!base) return null;
+    return rows.reduce((s, r) => s + r.value * (dayChange[r.ticker!.toUpperCase()] ?? 0), 0) / base;
+  };
+  const liveKeys = new Set(
+    detailRows.filter((r) => r.ticker && r.livePrice).map((r) => Object.keys(LIVE_KINDS).find((k) => LIVE_KINDS[k]!.includes(r.kind)) ?? ""),
+  );
+
   const baseAssets = splitFunds
-    ? assets.flatMap((a) =>
+    ? liveAssets.flatMap((a) =>
         a.key === "assets_etf"
           ? [
               { key: "assets_etf", name: t("ETFs / fondos", "ETFs / funds"), value: etfTotal, color: a.color },
@@ -213,15 +240,15 @@ function PatrimonioContent() {
             ].filter((r) => r.value > 0)
           : [a],
       )
-    : assets;
+    : liveAssets;
 
   const assetRows = (futureTotal > 0
     ? [...baseAssets, { key: "assets_future", name: t("Activos futuros", "Future assets"), value: futureTotal, color: "var(--color-chart-3)" }]
     : baseAssets
   ).slice().sort((a, b) => b.value - a.value);
 
-  const totalAssetsAll = d.totalAssets + futureTotal;
-  const netWorthAll = d.netWorth + futureTotal;
+  const totalAssetsAll = hasDetail ? assetRows.reduce((s, a) => s + a.value, 0) : d.totalAssets + futureTotal;
+  const netWorthAll = totalAssetsAll - d.totalLiabilities;
 
   return (
     <PageShell>
@@ -297,11 +324,22 @@ function PatrimonioContent() {
             {assetRows.map((a) => {
               const info = ASSET_CLASS[a.key];
               const risk = info ? RISK_LABEL[info.risk] : null;
+              const kinds = a.key === "assets_bonds" ? ["bond", "tbill"] : a.key === "assets_structured" ? ["note", "structured"] : a.key === "assets_etf" && splitFunds ? ["etf", "other"] : LIVE_KINDS[a.key];
+              const live = kinds ? liveKeys.has(a.key) || detailRows.some((r) => kinds.includes(r.kind) && r.ticker && r.livePrice) : false;
+              const chg = live && kinds ? dayChangeOf(kinds) : null;
               return (
                 <div key={a.name} className="flex items-center gap-2.5 rounded-xl bg-elevated/60 p-3">
                   <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: a.color }} />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{a.name}</p>
+                    <p className="flex items-center gap-1.5 truncate text-sm font-medium">
+                      {a.name}
+                      {live && (
+                        <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-positive/25 bg-positive/10 px-1.5 py-px text-[10px] font-medium text-positive/90">
+                          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-positive" />
+                          {t("en vivo", "live")}
+                        </span>
+                      )}
+                    </p>
                     {info && (
                       <div className="flex flex-wrap items-center gap-1.5">
                         <span className="truncate text-[11px] text-muted-foreground">{t(info.es, info.en)}</span>
@@ -314,7 +352,14 @@ function PatrimonioContent() {
                     )}
                   </div>
 
-                  <span className="numeric ml-auto text-sm font-semibold">{fmt(a.value)}</span>
+                  <div className="ml-auto text-right">
+                    <p className="numeric text-sm font-semibold">{fmt(a.value)}</p>
+                    {chg !== null && (
+                      <p className={`numeric text-[11px] font-medium ${chg >= 0 ? "text-positive" : "text-negative"}`}>
+                        {chg >= 0 ? "+" : ""}{chg.toFixed(2)}% {t("hoy", "today")}
+                      </p>
+                    )}
+                  </div>
                 </div>
               );
             })}
