@@ -741,7 +741,6 @@ function AuthPage() {
 
         {/* Móvil: solo reviews debajo de la tarjeta */}
         <div className="w-full max-w-md px-2 lg:hidden">
-          {isKids && <div className="mb-5"><PointsCarousel index={point} onChange={setPoint} variant="kids" /></div>}
           <ReviewCard index={point} variant={isKids ? "kids" : "general"} />
         </div>
       </div>
