@@ -67,6 +67,12 @@ function Pricing() {
     setDiscount(getPendingDiscount());
   }, []);
 
+  useEffect(() => {
+    if (planParam === "familiar") setSelectedPlan("Familiar");
+    else if (planParam === "pro") setSelectedPlan("Pro");
+    else if (planParam === "free") setSelectedPlan("Free");
+  }, [planParam]);
+
 
   const isYearly = billing === "yearly";
 
@@ -361,7 +367,7 @@ function Pricing() {
                     : ""
                 } ${
                   isSelected
-                    ? "bg-positive/[0.06] ring-2 ring-positive/70 shadow-[0_0_36px_-6px_hsl(var(--positive)/0.45)]"
+                    ? "bg-positive/[0.08] ring-[3px] ring-positive/80 shadow-[0_0_44px_-4px_hsl(var(--positive)/0.55)]"
                     : ""
                 }`}
               >
@@ -404,7 +410,7 @@ function Pricing() {
                 <ul className="mt-6 flex-1 space-y-2.5">
                   {plan.features.map((f) => (
                     <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                      <Check className={`mt-0.5 h-4 w-4 shrink-0 transition-colors ${isSelected ? "text-positive" : "text-primary"}`} />
                       {f}
                     </li>
                   ))}
@@ -419,6 +425,7 @@ function Pricing() {
                     }`}
                     onClick={(e) => {
                       e.stopPropagation();
+                      setSelectedPlan(plan.name);
                       handleCta(plan);
                     }}
                     disabled={loading}
@@ -432,7 +439,10 @@ function Pricing() {
                     className={`mt-8 w-full rounded-full ${
                       isSelected ? "bg-positive text-positive-foreground hover:bg-positive/90" : ""
                     }`}
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedPlan(plan.name);
+                    }}
                   >
                     <a href={plan.href}>{plan.cta}</a>
                   </Button>
@@ -445,7 +455,10 @@ function Pricing() {
                         ? "bg-positive text-positive-foreground hover:bg-positive/90"
                         : ""
                     }`}
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedPlan(plan.name);
+                    }}
                   >
                     <Link to={plan.name === "Free" ? "/calculadora-libertad-financiera" : "/auth"} search={plan.name === "Free" ? {} : { mode: "signup" }}>
                       {plan.cta}
