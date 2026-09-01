@@ -67,6 +67,16 @@ export const TIER_PRICES: Record<PricingTier, { pro: PlanPrice; family: PlanPric
   },
 };
 
+/**
+ * Perfil extra del plan Familiar (a partir del 4º perfil, contando adultos e hijos).
+ * Escala con el tier regional igual que el resto de precios.
+ */
+export const EXTRA_SEAT_PRICE: Record<PricingTier, number> = {
+  accessible: 2,
+  standard: 3,
+  premium: 4,
+};
+
 export type DisplayCurrency = "USD" | "EUR";
 
 /** Europa (incl. no-UE): mostramos precios en EUR. */

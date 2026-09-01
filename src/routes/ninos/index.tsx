@@ -7,7 +7,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useActiveProfile, useMembers, useSubscription } from "@/hooks/use-mfn";
 import { THEME_ATTR, type Member } from "@/lib/mfn";
-import { EXTRA_KID_PRICE_USD, activePlan, kidLimit, planLabel } from "@/lib/mfn-plan";
+import { activePlan, kidLimit, planLabel } from "@/lib/mfn-plan";
+import { useRegionalPricing } from "@/hooks/use-regional-pricing";
+import { EXTRA_SEAT_PRICE, formatMoney } from "@/lib/pricing-tiers";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 
@@ -109,7 +111,8 @@ function ProfileSelector() {
   }
 
   const plan = activePlan(subscription);
-  const maxKids = kidLimit(subscription);
+  const { tier: pricingTier, currency: pricingCurrency } = useRegionalPricing();
+  const extraSeatPrice = formatMoney(EXTRA_SEAT_PRICE[pricingTier], pricingCurrency);
 
 
   useEffect(() => {
@@ -118,6 +121,7 @@ function ProfileSelector() {
 
   const parents = members.filter((m) => m.role === "parent");
   const kids = members.filter((m) => m.role === "child");
+  const maxKids = kidLimit(subscription, Math.max(1, parents.length));
 
   async function openAdult() {
     const { data: auth } = await supabase.auth.getUser();
@@ -380,8 +384,8 @@ function ProfileSelector() {
                   </h2>
                   <p className="mt-2 text-sm text-muted-foreground">
                     {t(
-                      `Tu plan incluye ${maxKids} perfiles de niño. Añade uno más por $${EXTRA_KID_PRICE_USD}/mes, cancela cuando quieras.`,
-                      `Your plan includes ${maxKids} child profiles. Add one more for $${EXTRA_KID_PRICE_USD}/mo, cancel anytime.`,
+                      `Tu plan Familiar incluye 3 perfiles en total (adultos e hijos). Añade uno más por ${extraSeatPrice}/mes, cancela cuando quieras.`,
+                      `Your Family plan includes 3 profiles in total (adults and kids). Add one more for ${extraSeatPrice}/mo, cancel anytime.`,
                     )}
                   </p>
                   <div className="mt-6 flex justify-end gap-2">
@@ -395,7 +399,7 @@ function ProfileSelector() {
                     >
                       {checkoutLoading
                         ? t("Abriendo…", "Opening…")
-                        : t(`Pagar $${EXTRA_KID_PRICE_USD}/mes`, `Pay $${EXTRA_KID_PRICE_USD}/mo`)}
+                        : t(`Pagar ${extraSeatPrice}/mes`, `Pay ${extraSeatPrice}/mo`)}
                     </button>
                   </div>
                 </div>

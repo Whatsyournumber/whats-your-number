@@ -87,7 +87,7 @@ function Onboarding() {
   }
 
   async function finish() {
-    const maxKids = kidLimit(subscription);
+    const maxKids = kidLimit(subscription, Math.max(1, members.filter((m) => m.role === "parent").length));
     if (members.filter((m) => m.role === "child").length >= maxKids) {
       toast.error(
         t(
