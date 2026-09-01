@@ -30,6 +30,7 @@ import {
 } from "recharts";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
+import { ChartTooltip } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -399,9 +400,9 @@ function BlogBackOffice() {
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
                   <XAxis dataKey="date" tick={{ fontSize: 11 }} tickFormatter={(d: string) => d.slice(5)} />
                   <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
-                  <RTooltip />
-                  <Bar dataKey="pageviews" name="Páginas vistas" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="visitors" name="Visitantes" fill="hsl(var(--muted-foreground))" radius={[4, 4, 0, 0]} />
+                  <RTooltip cursor={{ fill: "var(--color-muted)", opacity: 0.18 }} content={<ChartTooltip formatter={(v: number) => v.toLocaleString("es-ES")} />} />
+                  <Bar dataKey="pageviews" name="Páginas vistas" fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="visitors" name="Visitantes" fill="var(--color-chart-2)" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -492,9 +493,9 @@ function BlogBackOffice() {
                       <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
                       <XAxis dataKey="date" tick={{ fontSize: 11 }} tickFormatter={(d: string) => d.slice(5)} />
                       <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
-                      <RTooltip />
-                      <Bar dataKey="pageviews" name="Páginas vistas" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="users" name="Usuarios" fill="hsl(var(--muted-foreground))" radius={[4, 4, 0, 0]} />
+                      <RTooltip cursor={{ fill: "var(--color-muted)", opacity: 0.18 }} content={<ChartTooltip formatter={(v: number) => v.toLocaleString("es-ES")} />} />
+                      <Bar dataKey="pageviews" name="Páginas vistas" fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="users" name="Usuarios" fill="var(--color-chart-2)" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -571,8 +572,8 @@ function BlogBackOffice() {
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
                   <XAxis dataKey="date" tick={{ fontSize: 11 }} tickFormatter={(d: string) => d.slice(5)} />
                   <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
-                  <RTooltip />
-                  <Bar dataKey="views" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                  <RTooltip cursor={{ fill: "var(--color-muted)", opacity: 0.18 }} content={<ChartTooltip formatter={(v: number) => v.toLocaleString("es-ES")} />} />
+                  <Bar dataKey="views" fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
