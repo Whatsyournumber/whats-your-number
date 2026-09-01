@@ -89,6 +89,9 @@ function ProfileSelector() {
   const [holderAvatar, setHolderAvatar] = useState(() =>
     typeof window !== "undefined" ? (localStorage.getItem("holder_avatar") ?? "") : "",
   );
+  const [holderSubtitle, setHolderSubtitle] = useState(() =>
+    typeof window !== "undefined" ? (localStorage.getItem("holder_subtitle") ?? "") : "",
+  );
   const createParent = useCreateParent();
   const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
   const queryClient = useQueryClient();
@@ -327,6 +330,19 @@ function ProfileSelector() {
                       }}
                       className="w-full rounded-lg border border-border bg-background px-2 py-1 text-center text-sm font-semibold text-foreground outline-none focus:border-primary"
                     />
+                    <input
+                      defaultValue={holderSubtitle}
+                      aria-label={t("Subtítulo", "Subtitle")}
+                      placeholder={t("Padre / Madre", "Parent")}
+                      onBlur={(e) => {
+                        const v = e.target.value.trim();
+                        if (v !== holderSubtitle) {
+                          setHolderSubtitle(v);
+                          localStorage.setItem("holder_subtitle", v);
+                        }
+                      }}
+                      className="w-full rounded-lg border border-border bg-background px-2 py-1 text-center text-xs text-muted-foreground outline-none focus:border-primary"
+                    />
                   </span>
                 ) : (
                   <span className="min-w-0 text-center">
@@ -334,7 +350,7 @@ function ProfileSelector() {
                       {profile.full_name?.trim() || t("Padre / Madre", "Parent")}
                     </span>
                     <span className="block text-[11px] text-muted-foreground/70">
-                      {t("Padre / Madre", "Parent")}
+                      {holderSubtitle.trim() || t("Padre / Madre", "Parent")}
                     </span>
                   </span>
                 )}
