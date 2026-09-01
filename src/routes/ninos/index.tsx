@@ -344,10 +344,24 @@ function ProfileSelector() {
               {[...parents, ...kids].map((m) => (
                 <button
                   key={m.id}
-                  onClick={() => open(m)}
+                  onClick={() => {
+                    if (manage) return;
+                    open(m);
+                  }}
                   className="group relative flex flex-col items-center gap-3 outline-none"
                 >
-                  <span className="grid aspect-square w-full place-items-center rounded-2xl bg-secondary text-5xl ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4 sm:text-6xl">
+                  <span
+                    role={manage ? "button" : undefined}
+                    onClick={
+                      manage
+                        ? (e) => {
+                            e.stopPropagation();
+                            setPickerFor(pickerFor === m.id ? null : m.id);
+                          }
+                        : undefined
+                    }
+                    className={`grid aspect-square w-full place-items-center rounded-2xl bg-secondary text-5xl ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4 sm:text-6xl ${manage ? "cursor-pointer ring-2 ring-primary/40" : ""}`}
+                  >
                     {m.avatar}
                   </span>
                   {m.role === "child" ? (
