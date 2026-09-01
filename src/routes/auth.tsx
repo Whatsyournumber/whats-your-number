@@ -526,8 +526,12 @@ function AuthPage() {
               </h2>
               <p className="mt-1.5 whitespace-nowrap text-sm leading-relaxed text-slate-500">
                 {mode === "signup"
-                  ? tt("Todo empieza con un número. Descubre el suyo.", "Everything starts with a number. Discover theirs.")
-                  : tt("Sigamos construyendo su libertad financiera.", "Let's keep building their financial freedom.")}
+                  ? isKids
+                    ? tt("Todo empieza con un número. Descubre el suyo.", "Everything starts with a number. Discover theirs.")
+                    : tt("Todo empieza con un número. Descubre el tuyo.", "Everything starts with a number. Discover yours.")
+                  : isKids
+                    ? tt("Sigamos construyendo su libertad financiera.", "Let's keep building their financial freedom.")
+                    : tt("Sigamos construyendo tu libertad financiera.", "Let's keep building your financial freedom.")}
               </p>
             </>
           )}
