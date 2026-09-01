@@ -95,7 +95,7 @@ function Onboarding() {
           `Your plan allows ${maxKids} child ${maxKids === 1 ? "profile" : "profiles"}`,
         ),
       );
-      router.navigate({ to: "/precios" });
+      router.navigate({ to: "/precios", search: { plan: "familiar" } });
       return;
     }
     setSaving(true);
