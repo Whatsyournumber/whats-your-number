@@ -151,8 +151,9 @@ function Onboarding() {
 
   async function finish() {
     // El titular cuenta como primer adulto; las filas "parent" son adultos adicionales.
+    // Con memberId el perfil ya existe (creado desde Perfiles): no vuelve a consumir cupo.
     const maxKids = kidLimit(subscription, 1 + members.filter((m) => m.role === "parent").length);
-    if (members.filter((m) => m.role === "child").length >= maxKids) {
+    if (!memberId && members.filter((m) => m.role === "child").length >= maxKids) {
       toast.error(
         t(
           `Tu plan permite ${maxKids} ${maxKids === 1 ? "perfil" : "perfiles"} de niño`,
@@ -168,28 +169,42 @@ function Onboarding() {
       const user_id = auth.user?.id;
       if (!user_id) throw new Error(t("Sesión no disponible", "Session not available"));
 
-      const { data: member, error } = await supabase
-        .from("kid_members")
-        .insert({
-          user_id,
-          name: name.trim(),
-          role: "child",
-          theme,
-          avatar,
-          age,
-          currency,
-          base_currency: currency,
+      const values = {
+        name: name.trim(),
+        role: "child",
+        theme,
+        avatar,
+        age,
+        currency,
+        base_currency: currency,
 
-          allowance_amount: allowance,
-          allowance_frequency: frequency,
-          split_spend: split.spend,
-          split_save: split.save,
-          split_grow: split.grow,
-          onboarded: true,
-        })
-        .select("*")
-        .single();
-      if (error) throw error;
+        allowance_amount: allowance,
+        allowance_frequency: frequency,
+        split_spend: split.spend,
+        split_save: split.save,
+        split_grow: split.grow,
+        onboarded: true,
+      };
+      let member: { id: string };
+      if (memberId) {
+        // Perfil pre-creado desde la sección de perfiles: se actualiza, no se duplica.
+        const { data: updated, error } = await supabase
+          .from("kid_members")
+          .update(values)
+          .eq("id", memberId)
+          .select("id")
+          .single();
+        if (error) throw error;
+        member = updated;
+      } else {
+        const { data: inserted, error } = await supabase
+          .from("kid_members")
+          .insert({ user_id, ...values })
+          .select("id")
+          .single();
+        if (error) throw error;
+        member = inserted;
+      }
 
       await supabase.from("kid_future_funds").insert({
         user_id,
