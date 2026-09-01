@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import heroImg from "@/assets/auth-hero-v4.jpg";
-import kidsHeroAsset from "@/assets/kids-auth-family.png.asset.json";
+import kidsHeroAsset from "@/assets/kids-auth-family-v3.png.asset.json";
 const kidsHeroImg = kidsHeroAsset.url;
 import kidDad from "@/assets/kids-review-dad2.jpg";
 import kidMom from "@/assets/kids-review-mom2.jpg";
