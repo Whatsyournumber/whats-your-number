@@ -177,14 +177,19 @@ export function useFixedExpenses() {
       }
 
       persist(next);
+      const idx = next.findIndex((i) => i.id === id);
+      const item = next[idx];
+      if (item) saveCustom(item, idx);
     },
-    [items, persist, save],
+    [items, persist, save, saveCustom],
   );
 
-  const add = useCallback(
-    () => persist([...items, { id: crypto.randomUUID(), name: "Nuevo gasto fijo", amount: 0 }]),
-    [items, persist],
-  );
+  const add = useCallback(() => {
+    const item: FixedExpense = { id: crypto.randomUUID(), name: "Nuevo gasto fijo", amount: 0 };
+    const next = [...items, item];
+    persist(next);
+    saveCustom(item, next.length - 1);
+  }, [items, persist, saveCustom]);
 
   const remove = useCallback(
     (id: string) => {
@@ -198,8 +203,10 @@ export function useFixedExpenses() {
       }
 
       persist(next);
+      if (saveTimers.current[id]) clearTimeout(saveTimers.current[id]);
+      if (userId) void supabase.from("custom_fixed_expenses").delete().eq("id", id).eq("user_id", userId);
     },
-    [items, persist, save],
+    [items, persist, save, userId],
   );
 
   const total = items.reduce((s, i) => s + (Number.isFinite(i.amount) ? i.amount : 0), 0);
