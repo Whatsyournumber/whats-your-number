@@ -1,6 +1,6 @@
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { LineChart, Lock, Plus, Settings, Trash2, UserPlus, X } from "lucide-react";
+import { Lock, Plus, Settings, Trash2, UserPlus, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button, inputClass } from "@/components/mfn-ui";
 import { useQueryClient } from "@tanstack/react-query";
@@ -245,7 +245,7 @@ function ProfileSelector() {
 
   function open(member: Member) {
     select(member.id);
-    if (member.role === "parent") router.navigate({ to: "/ninos/padres" });
+    if (member.role === "parent") void openAdult();
     else if (!member.onboarded) router.navigate({ to: "/ninos/onboarding" });
     else router.navigate({ to: "/ninos/kid/numero" });
   }
@@ -297,13 +297,9 @@ function ProfileSelector() {
                         }
                       : undefined
                   }
-                  className={`grid aspect-square w-full place-items-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4 ${manage ? "cursor-pointer ring-2 ring-primary/40" : ""}`}
+                  className={`grid aspect-square w-full place-items-center rounded-2xl bg-secondary ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4 ${manage ? "cursor-pointer ring-2 ring-primary/40" : ""}`}
                 >
-                  {holderAvatar ? (
-                    <span className="text-5xl sm:text-6xl">{holderAvatar}</span>
-                  ) : (
-                    <LineChart className="h-10 w-10 sm:h-12 sm:w-12" />
-                  )}
+                  <span className="text-5xl sm:text-6xl">{holderAvatar || ADULT_AVATARS[0]}</span>
                 </span>
                 {manage && pickerFor === "holder" ? (
                   <span
