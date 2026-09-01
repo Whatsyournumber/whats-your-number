@@ -6,29 +6,29 @@ import { blogCategories, categoryCount } from "@/lib/blog-categories";
 
 function AnimatedDemoLogo({ className = "" }: { className?: string }) {
   return (
-    <div className={`relative mx-auto flex h-24 w-24 shrink-0 items-center justify-center ${className}`}>
+    <div className={`relative mx-auto flex h-20 w-20 shrink-0 items-center justify-center ${className}`}>
       <div className="absolute inset-0 animate-pulse rounded-full bg-primary/15 blur-2xl" />
       {[0, 1, 2].map((i) => (
         <motion.span
           key={i}
           className="absolute rounded-full border border-primary/30"
-          initial={{ width: 56, height: 56, opacity: 0.6 }}
-          animate={{ width: 96, height: 96, opacity: 0 }}
+          initial={{ width: 48, height: 48, opacity: 0.6 }}
+          animate={{ width: 80, height: 80, opacity: 0 }}
           transition={{ duration: 3, repeat: Infinity, delay: i, ease: "easeOut" }}
         />
       ))}
       <motion.span
-        className="absolute h-[84px] w-[84px] rounded-full border border-dashed border-primary/25"
+        className="absolute h-[70px] w-[70px] rounded-full border border-dashed border-primary/25"
         animate={{ rotate: 360 }}
         transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
       />
       <motion.div
         animate={{ scale: [1, 1.04, 1] }}
         transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
-        className="relative flex h-[72px] w-[72px] items-center justify-center rounded-full bg-elevated ring-1 ring-border transition-transform duration-300 group-hover:scale-105"
+        className="relative flex h-[60px] w-[60px] items-center justify-center rounded-full bg-elevated ring-1 ring-border transition-transform duration-300 group-hover:scale-105"
       >
         <span className="absolute inset-2 rounded-full ring-1 ring-primary/40" />
-        <span className="relative font-display text-3xl font-bold leading-none text-primary">?</span>
+        <span className="relative font-display text-2xl font-bold leading-none text-primary">?</span>
       </motion.div>
     </div>
   );
