@@ -367,7 +367,7 @@ function Pricing() {
                     : ""
                 } ${
                   isSelected
-                    ? "bg-positive/[0.08] ring-[3px] ring-positive/80 shadow-[0_0_44px_-4px_hsl(var(--positive)/0.55)]"
+                    ? "z-10 border-2 border-positive bg-positive/[0.07] ring-2 ring-positive/60 shadow-2xl shadow-positive/40"
                     : ""
                 }`}
               >
