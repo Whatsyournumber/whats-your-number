@@ -297,7 +297,7 @@ function ProfileSelector() {
                         }
                       : undefined
                   }
-                  className={`grid aspect-square w-full place-items-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4 ${manage ? "cursor-pointer ring-2 ring-primary/40" : ""}`}
+                  className={`grid aspect-square w-full place-items-center rounded-2xl bg-secondary ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4 ${manage ? "cursor-pointer ring-2 ring-primary/40" : ""}`}
                 >
                   <span className="text-5xl sm:text-6xl">{holderAvatar || ADULT_AVATARS[0]}</span>
                 </span>
