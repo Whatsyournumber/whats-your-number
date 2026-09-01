@@ -89,6 +89,9 @@ function ProfileSelector() {
   const [holderAvatar, setHolderAvatar] = useState(() =>
     typeof window !== "undefined" ? (localStorage.getItem("holder_avatar") ?? "") : "",
   );
+  const [holderSubtitle, setHolderSubtitle] = useState(() =>
+    typeof window !== "undefined" ? (localStorage.getItem("holder_subtitle") ?? "") : "",
+  );
   const createParent = useCreateParent();
   const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
   const queryClient = useQueryClient();
