@@ -36,10 +36,10 @@ import { useSubscription } from "@/hooks/use-subscription";
 import { lovable } from "@/integrations/lovable/index";
 import { supabase } from "@/integrations/supabase/client";
 import { setPendingPromoCode } from "@/lib/pending-promo";
-import { getPendingCheckoutPlan } from "@/lib/pending-checkout";
+import { getPendingCheckoutPlan, setPendingCheckoutPlan } from "@/lib/pending-checkout";
 import { startAffiliateWizard } from "@/lib/affiliate-wizard-state";
 
-type AuthSearch = { mode: "login" | "signup"; next?: string; flow?: "affiliate" | "kids" };
+type AuthSearch = { mode: "login" | "signup"; next?: string; flow?: "affiliate" | "kids"; plan?: "familiar" | "pro" };
 
 /**
  * Navega al destino guardado. Las rutas con query o punto (p. ej. el

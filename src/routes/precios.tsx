@@ -225,7 +225,11 @@ function Pricing() {
     const selectedPlan = plan.name === "Familiar" ? "familiar" : "pro";
     setPendingCheckoutPlan(selectedPlan);
     if (!user) {
-      navigate({ to: "/auth", search: { mode: "signup" } });
+      if (plan.name === "Familiar") {
+        navigate({ to: "/auth", search: { mode: "signup", flow: "kids" } });
+      } else {
+        navigate({ to: "/auth", search: { mode: "signup" } });
+      }
       return;
     }
     const checkoutOptions: {
@@ -353,15 +357,7 @@ function Pricing() {
             return (
               <div
                 key={plan.name}
-                role="button"
-                tabIndex={0}
-                onClick={() => setSelectedPlan(isSelected ? null : plan.name)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    setSelectedPlan(isSelected ? null : plan.name);
-                  }
-                }}
-                className={`surface relative flex cursor-pointer flex-col p-6 outline-none transition-all focus:outline-none focus-visible:outline-none ${
+                className={`surface relative flex flex-col p-6 outline-none transition-all focus:outline-none focus-visible:outline-none ${
                   plan.highlight && !isSelected && !selectedPlan
                     ? "bg-gradient-to-b from-primary/[0.03] to-transparent ring-1 ring-primary/30"
                     : ""
@@ -412,22 +408,47 @@ function Pricing() {
                   ))}
                 </ul>
                 {plan.priceId ? (
-                  <Button
-                    variant={isSelected || (plan.highlight && !selectedPlan) ? "default" : "outline"}
-                    className={`mt-8 w-full rounded-full ${
-                      isSelected
-                        ? "bg-positive text-positive-foreground hover:bg-positive/90"
-                        : ""
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedPlan(plan.name);
-                      handleCta(plan);
-                    }}
-                    disabled={loading}
-                  >
-                    {plan.cta}
-                  </Button>
+                  user ? (
+                    <Button
+                      type="button"
+                      variant={isSelected || (plan.highlight && !selectedPlan) ? "default" : "outline"}
+                      className={`mt-8 w-full rounded-full ${
+                        isSelected
+                          ? "bg-positive text-positive-foreground hover:bg-positive/90"
+                          : ""
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedPlan(plan.name);
+                        handleCta(plan);
+                      }}
+                      disabled={loading}
+                    >
+                      {plan.cta}
+                    </Button>
+                  ) : (
+                    <Button
+                      asChild
+                      variant={isSelected || (plan.highlight && !selectedPlan) ? "default" : "outline"}
+                      className={`mt-8 w-full rounded-full ${
+                        isSelected
+                          ? "bg-positive text-positive-foreground hover:bg-positive/90"
+                          : ""
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedPlan(plan.name);
+                        setPendingCheckoutPlan(plan.name === "Familiar" ? "familiar" : "pro");
+                      }}
+                    >
+                      <Link
+                        to="/auth"
+                        search={plan.name === "Familiar" ? { mode: "signup", flow: "kids" } : { mode: "signup" }}
+                      >
+                        {plan.cta}
+                      </Link>
+                    </Button>
+                  )
                 ) : isContact ? (
                   <Button
                     asChild
