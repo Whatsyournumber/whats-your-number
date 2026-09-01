@@ -324,11 +324,22 @@ function PatrimonioContent() {
             {assetRows.map((a) => {
               const info = ASSET_CLASS[a.key];
               const risk = info ? RISK_LABEL[info.risk] : null;
+              const kinds = a.key === "assets_bonds" ? ["bond", "tbill"] : a.key === "assets_structured" ? ["note", "structured"] : a.key === "assets_etf" && splitFunds ? ["etf", "other"] : LIVE_KINDS[a.key];
+              const live = kinds ? liveKeys.has(a.key) || detailRows.some((r) => kinds.includes(r.kind) && r.ticker && r.livePrice) : false;
+              const chg = live && kinds ? dayChangeOf(kinds) : null;
               return (
                 <div key={a.name} className="flex items-center gap-2.5 rounded-xl bg-elevated/60 p-3">
                   <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: a.color }} />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{a.name}</p>
+                    <p className="flex items-center gap-1.5 truncate text-sm font-medium">
+                      {a.name}
+                      {live && (
+                        <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-positive/25 bg-positive/10 px-1.5 py-px text-[10px] font-medium text-positive/90">
+                          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-positive" />
+                          {t("en vivo", "live")}
+                        </span>
+                      )}
+                    </p>
                     {info && (
                       <div className="flex flex-wrap items-center gap-1.5">
                         <span className="truncate text-[11px] text-muted-foreground">{t(info.es, info.en)}</span>
@@ -341,7 +352,14 @@ function PatrimonioContent() {
                     )}
                   </div>
 
-                  <span className="numeric ml-auto text-sm font-semibold">{fmt(a.value)}</span>
+                  <div className="ml-auto text-right">
+                    <p className="numeric text-sm font-semibold">{fmt(a.value)}</p>
+                    {chg !== null && (
+                      <p className={`numeric text-[11px] font-medium ${chg >= 0 ? "text-positive" : "text-negative"}`}>
+                        {chg >= 0 ? "+" : ""}{chg.toFixed(2)}% {t("hoy", "today")}
+                      </p>
+                    )}
+                  </div>
                 </div>
               );
             })}
