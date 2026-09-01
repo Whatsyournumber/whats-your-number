@@ -2720,6 +2720,7 @@ export function KidsFinanceLanding() {
               <div className="mt-6 flex flex-wrap items-center gap-3 md:mt-9">
                 <Link
                   to="/precios"
+                  search={{ plan: "familiar" }}
                   className="kid-gradient inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-background shadow-lg transition-all hover:gap-3 md:px-6 md:py-3"
                 >
                   {t("Crear plan Familiar", "Create Family plan")} <ArrowRight className="h-4 w-4" />
@@ -2836,6 +2837,7 @@ export function KidsFinanceLanding() {
                 </p>
                 <Link
                   to="/precios"
+                  search={{ plan: "familiar" }}
                   className="kid-gradient mt-7 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-background shadow-lg transition-all hover:gap-3"
                 >
                   {t("Crear mi plan Familiar", "Create my Family plan")}{" "}

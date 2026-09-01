@@ -17,7 +17,18 @@ import { formatMoney, monthlyEquivalent } from "@/lib/pricing-tiers";
 import { clearPendingDiscount, getPendingDiscount, type PendingDiscount } from "@/lib/pending-discount";
 
 
+type PricingSearch = {
+  plan?: "familiar" | "pro" | "free";
+};
+
 export const Route = createFileRoute("/precios")({
+  validateSearch: (search: Record<string, unknown>): PricingSearch => {
+    const plan = search["plan"];
+    if (plan === "familiar" || plan === "pro" || plan === "free") {
+      return { plan };
+    }
+    return {};
+  },
   head: () => ({
     meta: [
       { title: "Precios — WhatsYournumber" },
@@ -42,11 +53,14 @@ function Pricing() {
   const t = useT();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { plan: planParam } = Route.useSearch();
   const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
   const { openCheckout, loading } = usePaddleCheckout();
   const resumedCheckout = useRef(false);
   const [discount, setDiscount] = useState<PendingDiscount | null>(null);
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(
+    planParam === "familiar" ? "Familiar" : planParam === "pro" ? "Pro" : null,
+  );
   const { prices, currency } = useRegionalPricing();
 
   useEffect(() => {
@@ -118,7 +132,7 @@ function Pricing() {
         t("Reportes mensuales automáticos", "Automatic monthly reports"),
       ],
       cta: t("Empezar con Pro", "Get started with Pro"),
-      highlight: true,
+      highlight: planParam !== "familiar",
     },
     {
       name: "Familiar",
@@ -141,7 +155,7 @@ function Pricing() {
         t("Soporte prioritario en 24h", "Priority support within 24h"),
       ],
       cta: t("Empezar con Familiar", "Get started with Familiar"),
-      highlight: false,
+      highlight: planParam === "familiar",
     },
     {
       name: "Corporativo",
@@ -166,7 +180,7 @@ function Pricing() {
         t("Account manager y SLA garantizado", "Account manager and guaranteed SLA"),
       ],
       cta: t("Contactar", "Contact us"),
-      href: "mailto:hello@whatsyour-number.com?subject=Plan%20Corporativo%20B2B",
+      href: "mailto:hello@whats-your-number.com?subject=Plan%20Corporativo%20B2B",
       highlight: false,
     },
   ];
@@ -342,7 +356,7 @@ function Pricing() {
                   }
                 }}
                 className={`surface relative flex cursor-pointer flex-col p-6 transition-all ${
-                  plan.highlight
+                  plan.highlight && selectedPlan !== "Familiar"
                     ? "bg-gradient-to-b from-primary/5 to-transparent ring-1 ring-primary/40"
                     : ""
                 } ${
