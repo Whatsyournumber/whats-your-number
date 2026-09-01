@@ -138,7 +138,7 @@ function Pricing() {
         t("Reportes mensuales automáticos", "Automatic monthly reports"),
       ],
       cta: t("Empezar con Pro", "Get started with Pro"),
-      highlight: planParam !== "familiar",
+      highlight: true,
     },
     {
       name: "Familiar",
@@ -161,7 +161,7 @@ function Pricing() {
         t("Soporte prioritario en 24h", "Priority support within 24h"),
       ],
       cta: t("Empezar con Familiar", "Get started with Familiar"),
-      highlight: planParam === "familiar",
+      highlight: false,
     },
     {
       name: "Corporativo",
@@ -371,12 +371,8 @@ function Pricing() {
                     : ""
                 }`}
               >
-                {(isSelected || (plan.highlight && !selectedPlan)) && (
-                  <span
-                    className={`absolute right-5 top-5 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${
-                      isSelected ? "bg-positive/90 text-positive-foreground" : "bg-primary text-primary-foreground"
-                    }`}
-                  >
+                {plan.highlight && (
+                  <span className="absolute right-5 top-5 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground">
                     {t("Más popular", "Most popular")}
                   </span>
                 )}
