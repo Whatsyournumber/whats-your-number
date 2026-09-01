@@ -206,7 +206,12 @@ export function useFixedExpenses() {
 
       persist(next);
       if (saveTimers.current[id]) clearTimeout(saveTimers.current[id]);
-      if (userId) void supabase.from("custom_fixed_expenses").delete().eq("id", id).eq("user_id", userId);
+      if (userId) {
+        void (async () => {
+          const { error } = await supabase.from("custom_fixed_expenses").delete().eq("id", id).eq("user_id", userId);
+          if (error) console.error("custom_fixed_expenses delete", error.message);
+        })();
+      }
     },
     [items, persist, save, userId],
   );
