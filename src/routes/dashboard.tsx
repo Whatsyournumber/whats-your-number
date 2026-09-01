@@ -288,7 +288,8 @@ function Dashboard() {
             <AreaChart data={months} margin={{ left: 4, right: 8, top: 8 }}>
               <defs>
                 <linearGradient id="nw" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--color-chart-1)" stopOpacity={0.45} />
+                  <stop offset="0%" stopColor="var(--color-chart-1)" stopOpacity={0.5} />
+                  <stop offset="70%" stopColor="var(--color-chart-1)" stopOpacity={0.12} />
                   <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0} />
                 </linearGradient>
               </defs>
@@ -304,9 +305,16 @@ function Dashboard() {
                   label={{ value: `WhatsYournumber · ${fmtCompact(targetNumber)}`, position: "insideTopRight", fill: "var(--color-muted-foreground)", fontSize: 11 }}
                 />
               )}
-              <Area type="monotone" dataKey="netWorth" name={t("Acumulado", "Accumulated")} stroke="var(--color-chart-1)" strokeWidth={2.5} fill="url(#nw)" />
+              <Area
+                type="monotone"
+                dataKey="netWorth"
+                name={t("Acumulado", "Accumulated")}
+                stroke="var(--color-chart-1)"
+                strokeWidth={3}
+                fill="url(#nw)"
+                activeDot={{ r: 5, stroke: "var(--color-background)", strokeWidth: 2, fill: "var(--color-chart-1)" }}
+              />
             </AreaChart>
-
           </ResponsiveContainer>
         </Panel>
 
