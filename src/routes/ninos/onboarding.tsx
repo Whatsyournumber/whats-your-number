@@ -81,6 +81,7 @@ function Onboarding() {
   const [expected, setExpected] = useState(10);
   const [goal, setGoal] = useState(FUND_GOALS[0]!);
   const restored = useRef(false);
+  const [memberId, setMemberId] = useState<string | null>(null);
 
   // Restaura el borrador si el padre salió a mitad del onboarding.
   useEffect(() => {
@@ -88,6 +89,7 @@ function Onboarding() {
     restored.current = true;
     if (!d) return;
     if (typeof d.step === "number") setStep(Math.min(5, Math.max(0, d.step)));
+    if (typeof d.memberId === "string") setMemberId(d.memberId);
     if (d.name) setName(d.name);
     if (typeof d.age === "number") setAge(d.age);
     if (d.theme) setTheme(d.theme);
