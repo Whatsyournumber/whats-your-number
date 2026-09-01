@@ -656,7 +656,13 @@ function ProfileSelector() {
             ) : null}
 
             <div className="mt-14 flex flex-wrap items-center gap-3">
-              <Button variant="ghost" onClick={() => setManage((v) => !v)}>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setPickerFor(null);
+                  setManage((v) => !v);
+                }}
+              >
                 <Settings className="h-4 w-4" />{" "}
                 {manage ? t("Listo", "Done") : t("Editar perfiles", "Edit profiles")}
               </Button>
