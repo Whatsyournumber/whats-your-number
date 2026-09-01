@@ -1,5 +1,5 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { toast } from "sonner";
@@ -34,6 +34,22 @@ export const Route = createFileRoute("/ninos/onboarding")({
 const AVATARS_BOY = ["🦊", "🐼", "🐯", "🐨", "🦁", "🐙", "🐧", "🐸", "🐲", "🦖"];
 const AVATARS_GIRL = ["🦄", "🐰", "🐱", "🦢", "🦋", "🐞", "🐝", "🦩", "🐬", "🦜"];
 const STEPS = [0, 1, 2, 3, 4, 5];
+const DRAFT_KEY = "mfn-kid-onboarding-draft";
+
+type Draft = {
+  step: number; name: string; age: number; theme: "boy" | "girl"; avatar: string; city: string;
+  currency: string; allowance: number; frequency: string; split: { spend: number; save: number; grow: number };
+  wishTitle: string; wishPrice: number; initial: number; savedNow: number; targetAge: number; expected: number; goal: string;
+};
+
+function readDraft(): Partial<Draft> | null {
+  try {
+    const raw = window.localStorage.getItem(DRAFT_KEY);
+    return raw ? (JSON.parse(raw) as Partial<Draft>) : null;
+  } catch {
+    return null;
+  }
+}
 
 function Onboarding() {
   const router = useRouter();
@@ -62,6 +78,48 @@ function Onboarding() {
   const [targetAge, setTargetAge] = useState(18);
   const [expected, setExpected] = useState(10);
   const [goal, setGoal] = useState(FUND_GOALS[0]!);
+  const restored = useRef(false);
+
+  // Restaura el borrador si el padre salió a mitad del onboarding.
+  useEffect(() => {
+    const d = readDraft();
+    restored.current = true;
+    if (!d) return;
+    if (typeof d.step === "number") setStep(Math.min(5, Math.max(0, d.step)));
+    if (d.name) setName(d.name);
+    if (typeof d.age === "number") setAge(d.age);
+    if (d.theme) setTheme(d.theme);
+    if (d.avatar) setAvatar(d.avatar);
+    if (d.city) setCity(d.city);
+    if (d.currency) setCurrency(d.currency);
+    if (typeof d.allowance === "number") setAllowance(d.allowance);
+    if (d.frequency) setFrequency(d.frequency);
+    if (d.split) setSplit(d.split);
+    if (d.wishTitle) {
+      const found = WISH_IDEAS.find((w) => w.title === d.wishTitle);
+      if (found) setWish(found);
+    }
+    if (typeof d.wishPrice === "number") setWishPrice(d.wishPrice);
+    if (typeof d.initial === "number") setInitial(d.initial);
+    if (typeof d.savedNow === "number") setSavedNow(d.savedNow);
+    if (typeof d.targetAge === "number") setTargetAge(d.targetAge);
+    if (typeof d.expected === "number") setExpected(d.expected);
+    if (d.goal) {
+      const g = FUND_GOALS.find((x) => x === d.goal);
+      if (g) setGoal(g);
+    }
+    if (d.name) toast.message(t("Retomamos donde lo dejaste", "Picking up where you left off"));
+  }, []);
+
+  // Guarda el borrador en cada cambio.
+  useEffect(() => {
+    if (!restored.current) return;
+    const draft: Draft = {
+      step, name, age, theme, avatar, city, currency, allowance, frequency, split,
+      wishTitle: wish.title, wishPrice, initial, savedNow, targetAge, expected, goal: goal as string,
+    };
+    window.localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  }, [step, name, age, theme, avatar, city, currency, allowance, frequency, split, wish, wishPrice, initial, savedNow, targetAge, expected, goal]);
 
   useKidTheme(theme);
 
@@ -183,6 +241,7 @@ function Onboarding() {
         seedHoldings(initial).map((h) => ({ ...h, user_id, member_id: member.id })),
       );
 
+      window.localStorage.removeItem(DRAFT_KEY);
       select(member.id);
       // Refresca la lista de perfiles antes de navegar para que el guard
       // del panel infantil encuentre al nuevo perfil y no rebote a /ninos.
