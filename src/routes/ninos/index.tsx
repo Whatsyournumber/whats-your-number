@@ -253,33 +253,30 @@ function ProfileSelector() {
                 <span className="grid aspect-square w-full place-items-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4">
                   <LineChart className="h-10 w-10 sm:h-12 sm:w-12" />
                 </span>
-                {manage && holderParent ? (
+                {manage ? (
                   <span
                     className="w-full space-y-1"
                     onClick={(e) => e.stopPropagation()}
                     onKeyDown={(e) => e.stopPropagation()}
                   >
                     <input
-                      defaultValue={holderParent.name}
+                      defaultValue={profile.full_name}
                       aria-label={t("Nombre", "Name")}
-                      onBlur={(e) => void saveField(holderParent, "name", e.target.value)}
+                      placeholder={t("Tu nombre", "Your name")}
+                      onBlur={(e) => {
+                        const v = e.target.value.trim();
+                        if (v && v !== profile.full_name) void saveProfile({ full_name: v });
+                      }}
                       className="w-full rounded-lg border border-border bg-background px-2 py-1 text-center text-sm font-semibold text-foreground outline-none focus:border-primary"
-                    />
-                    <input
-                      defaultValue={holderParent.subtitle ?? ""}
-                      aria-label={t("Subtítulo", "Subtitle")}
-                      placeholder={t("Padre / Madre", "Parent")}
-                      onBlur={(e) => void saveField(holderParent, "subtitle", e.target.value)}
-                      className="w-full rounded-lg border border-border bg-background px-2 py-1 text-center text-[11px] text-muted-foreground outline-none placeholder:text-muted-foreground/60 focus:border-primary"
                     />
                   </span>
                 ) : (
                   <span className="min-w-0 text-center">
                     <span className="block truncate text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
-                      {holderParent?.name || t("Padre / Madre", "Parent")}
+                      {profile.full_name?.trim() || t("Padre / Madre", "Parent")}
                     </span>
                     <span className="block text-[11px] text-muted-foreground/70">
-                      {holderParent?.subtitle || t("Padre / Madre", "Parent")}
+                      {t("Padre / Madre", "Parent")}
                     </span>
                   </span>
                 )}
