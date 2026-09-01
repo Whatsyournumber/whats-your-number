@@ -355,18 +355,22 @@ function Pricing() {
                     setSelectedPlan(isSelected ? null : plan.name);
                   }
                 }}
-                className={`surface relative flex cursor-pointer flex-col p-6 transition-all ${
-                  plan.highlight && selectedPlan !== "Familiar"
+                className={`surface relative flex cursor-pointer flex-col p-6 outline-none transition-all focus:outline-none focus-visible:outline-none ${
+                  plan.highlight && !isSelected && !selectedPlan
                     ? "bg-gradient-to-b from-primary/5 to-transparent ring-1 ring-primary/40"
                     : ""
                 } ${
                   isSelected
-                    ? "bg-positive/[0.04] ring-1 ring-positive/50 shadow-[0_0_24px_-6px_hsl(var(--positive)/0.35)]"
+                    ? "bg-positive/[0.06] ring-2 ring-positive/70 shadow-[0_0_36px_-6px_hsl(var(--positive)/0.45)]"
                     : ""
                 }`}
               >
-                {plan.highlight && (
-                  <span className="absolute right-5 top-5 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground">
+                {(isSelected || (plan.highlight && !selectedPlan)) && (
+                  <span
+                    className={`absolute right-5 top-5 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${
+                      isSelected ? "bg-positive text-positive-foreground" : "bg-primary text-primary-foreground"
+                    }`}
+                  >
                     {t("Más popular", "Most popular")}
                   </span>
                 )}
@@ -407,9 +411,9 @@ function Pricing() {
                 </ul>
                 {plan.priceId ? (
                   <Button
-                    variant={plan.highlight || isSelected ? "default" : "outline"}
+                    variant={isSelected || (plan.highlight && !selectedPlan) ? "default" : "outline"}
                     className={`mt-8 w-full rounded-full ${
-                      isSelected && !plan.highlight
+                      isSelected
                         ? "bg-positive text-positive-foreground hover:bg-positive/90"
                         : ""
                     }`}
@@ -435,9 +439,9 @@ function Pricing() {
                 ) : (
                   <Button
                     asChild
-                    variant={plan.highlight || isSelected ? "default" : "outline"}
+                    variant={isSelected || (plan.highlight && !selectedPlan) ? "default" : "outline"}
                     className={`mt-8 w-full rounded-full ${
-                      isSelected && !plan.highlight
+                      isSelected
                         ? "bg-positive text-positive-foreground hover:bg-positive/90"
                         : ""
                     }`}
