@@ -40,6 +40,8 @@ type Draft = {
   step: number; name: string; age: number; theme: "boy" | "girl"; avatar: string; city: string;
   currency: string; allowance: number; frequency: string; split: { spend: number; save: number; grow: number };
   wishTitle: string; wishPrice: number; initial: number; savedNow: number; targetAge: number; expected: number; goal: string;
+  // Perfil ya creado desde la sección de perfiles: el onboarding lo actualiza, no duplica.
+  memberId?: string;
 };
 
 function readDraft(): Partial<Draft> | null {
