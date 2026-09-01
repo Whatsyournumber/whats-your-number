@@ -75,6 +75,9 @@ export const Route = createFileRoute("/auth")({
       mode: search["mode"] === "signup" || (affiliate && search["mode"] !== "login") ? "signup" : "login",
       ...(next ? { next } : affiliate ? { next: "/afiliados" } : {}),
       ...(affiliate ? { flow: "affiliate" as const } : kids ? { flow: "kids" as const } : {}),
+      ...(search["plan"] === "familiar" || search["plan"] === "pro" || search["plan"] === "free"
+        ? { plan: search["plan"] as "familiar" | "pro" | "free" }
+        : {}),
     };
   },
 
