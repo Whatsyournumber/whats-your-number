@@ -12,8 +12,38 @@ import { useRegionalPricing } from "@/hooks/use-regional-pricing";
 import { EXTRA_SEAT_PRICE, formatMoney } from "@/lib/pricing-tiers";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
+import { useProfile } from "@/hooks/use-profile";
 
-const ADULT_AVATARS = ["🧑", "👩", "👨", "👵", "👴"];
+const ADULT_AVATARS = ["👨‍💼", "👩‍💼", "🧔‍♂️", "👩‍🦰", "👨‍🦱", "👩‍🦱", "🧑‍🎓", "👨‍🍳", "👩‍⚕️", "👨‍🚀", "🦸‍♀️", "🦸‍♂️", "👵", "👴"];
+const KID_AVATARS = ["🦊", "🐼", "🐯", "🐨", "🦁", "🐙", "🐧", "🐸", "🐲", "🦖", "🦄", "🐰", "🐱", "🦢", "🦋", "🐞", "🐝", "🦩", "🐬", "🦜", "🚀", "⚽", "🎨", "🎸"];
+
+function AvatarPicker({
+  options,
+  value,
+  onPick,
+}: {
+  options: string[];
+  value: string;
+  onPick: (a: string) => void;
+}) {
+  return (
+    <div className="flex flex-wrap justify-center gap-1.5">
+      {options.map((a) => (
+        <button
+          key={a}
+          type="button"
+          onClick={() => onPick(a)}
+          className={`grid h-8 w-8 place-items-center rounded-lg text-lg transition ${
+            value === a ? "bg-primary/15 ring-2 ring-primary" : "bg-secondary hover:bg-primary/10"
+          }`}
+        >
+          {a}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 
 
 export const Route = createFileRoute("/ninos/")({
@@ -46,6 +76,7 @@ function ProfileSelector() {
   const { data: subscription } = useSubscription();
   const { select } = useActiveProfile();
   const { t, lang } = useI18n();
+  const { profile, save: saveProfile } = useProfile();
   const [manage, setManage] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<Member | null>(null);
   const [deleting, setDeleting] = useState(false);
@@ -81,6 +112,16 @@ function ProfileSelector() {
       customData: { userId: user?.id ?? "", type: "extra_kid_profile" },
       successUrl: `${window.location.origin}/ninos`,
     });
+  }
+
+  async function saveAvatar(m: Member, avatar: string) {
+    if (avatar === m.avatar) return;
+    queryClient.setQueryData<Member[]>(["kid_members"], (prev) =>
+      prev?.map((x) => (x.id === m.id ? { ...x, avatar } : x)),
+    );
+    const { error } = await supabase.from("kid_members").update({ avatar }).eq("id", m.id);
+    if (error) toast.error(error.message);
+    await queryClient.refetchQueries({ queryKey: ["kid_members"] });
   }
 
   async function saveField(m: Member, field: "name" | "subtitle", raw: string) {
@@ -140,7 +181,6 @@ function ProfileSelector() {
   }, []);
 
   const parents = members.filter((m) => m.role === "parent");
-  const holderParent = parents[0];
   const kids = members.filter((m) => m.role === "child");
   // El titular de la cuenta es siempre el primer adulto; los demás adultos son filas "parent".
   const adultCount = 1 + parents.length;
@@ -214,35 +254,30 @@ function ProfileSelector() {
                 <span className="grid aspect-square w-full place-items-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4">
                   <LineChart className="h-10 w-10 sm:h-12 sm:w-12" />
                 </span>
-                {manage && holderParent ? (
+                {manage ? (
                   <span
                     className="w-full space-y-1"
                     onClick={(e) => e.stopPropagation()}
                     onKeyDown={(e) => e.stopPropagation()}
                   >
                     <input
-                      defaultValue={holderParent.name}
+                      defaultValue={profile.full_name}
                       aria-label={t("Nombre", "Name")}
-                      onBlur={(e) => void saveField(holderParent, "name", e.target.value)}
+                      placeholder={t("Tu nombre", "Your name")}
+                      onBlur={(e) => {
+                        const v = e.target.value.trim();
+                        if (v && v !== profile.full_name) void saveProfile({ full_name: v });
+                      }}
                       className="w-full rounded-lg border border-border bg-background px-2 py-1 text-center text-sm font-semibold text-foreground outline-none focus:border-primary"
-                    />
-                    <input
-                      defaultValue={holderParent.subtitle ?? ""}
-                      aria-label={t("Subtítulo", "Subtitle")}
-                      placeholder={t("Padre / Madre", "Parent")}
-                      onBlur={(e) => void saveField(holderParent, "subtitle", e.target.value)}
-                      className="w-full rounded-lg border border-border bg-background px-2 py-1 text-center text-[11px] text-muted-foreground outline-none placeholder:text-muted-foreground/60 focus:border-primary"
                     />
                   </span>
                 ) : (
                   <span className="min-w-0 text-center">
                     <span className="block truncate text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
-                      {parents[0]?.name
-                        ? `${parents[0].name} (${t("padre", "parent")})`
-                        : t("Padre / Madre", "Parent")}
+                      {profile.full_name?.trim() || t("Padre / Madre", "Parent")}
                     </span>
                     <span className="block text-[11px] text-muted-foreground/70">
-                      {t("Mis finanzas", "My finances")}
+                      {t("Padre / Madre", "Parent")}
                     </span>
                   </span>
                 )}
@@ -281,10 +316,15 @@ function ProfileSelector() {
                   ) : null}
                   {manage ? (
                     <span
-                      className="w-full space-y-1"
+                      className="w-full space-y-1.5"
                       onClick={(e) => e.stopPropagation()}
                       onKeyDown={(e) => e.stopPropagation()}
                     >
+                      <AvatarPicker
+                        options={m.role === "parent" ? ADULT_AVATARS : KID_AVATARS}
+                        value={m.avatar}
+                        onPick={(a) => void saveAvatar(m, a)}
+                      />
                       <input
                         defaultValue={m.name}
                         aria-label={t("Nombre", "Name")}
