@@ -17,7 +17,17 @@ import { formatMoney, monthlyEquivalent } from "@/lib/pricing-tiers";
 import { clearPendingDiscount, getPendingDiscount, type PendingDiscount } from "@/lib/pending-discount";
 
 
+type PricingSearch = {
+  plan?: "familiar" | "pro" | "free";
+};
+
 export const Route = createFileRoute("/precios")({
+  validateSearch: (search: Record<string, unknown>): PricingSearch => {
+    const plan = search["plan"];
+    return {
+      plan: plan === "familiar" || plan === "pro" || plan === "free" ? plan : undefined,
+    };
+  },
   head: () => ({
     meta: [
       { title: "Precios — WhatsYournumber" },
@@ -42,11 +52,14 @@ function Pricing() {
   const t = useT();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { plan: planParam } = Route.useSearch();
   const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
   const { openCheckout, loading } = usePaddleCheckout();
   const resumedCheckout = useRef(false);
   const [discount, setDiscount] = useState<PendingDiscount | null>(null);
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(
+    planParam === "familiar" ? "Familiar" : planParam === "pro" ? "Pro" : null,
+  );
   const { prices, currency } = useRegionalPricing();
 
   useEffect(() => {
@@ -342,7 +355,7 @@ function Pricing() {
                   }
                 }}
                 className={`surface relative flex cursor-pointer flex-col p-6 transition-all ${
-                  plan.highlight
+                  plan.highlight && selectedPlan !== "Familiar"
                     ? "bg-gradient-to-b from-primary/5 to-transparent ring-1 ring-primary/40"
                     : ""
                 } ${
