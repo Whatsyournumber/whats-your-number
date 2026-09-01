@@ -275,10 +275,10 @@ export function Landing() {
 
   useEffect(() => {
     if (loading || !user) return;
-    // Solo redirige la primera vez tras iniciar sesión; si el usuario vuelve
-    // al home a propósito (logo), se queda aquí.
-    if (sessionStorage.getItem("wyn_chooser_seen") === "1") return;
-    sessionStorage.setItem("wyn_chooser_seen", "1");
+    // Después de iniciar sesión con Google el navegador puede volver al home;
+    // este flag (colocado antes del OAuth) fuerza el salto al dashboard/ninos.
+    if (sessionStorage.getItem("wyn_post_oauth_redirect") !== "1") return;
+    sessionStorage.removeItem("wyn_post_oauth_redirect");
     // El plan Familiar siempre entra por el selector de perfiles.
     navigate({ to: isPatrimonio ? "/ninos" : "/dashboard", replace: true });
   }, [loading, user, isPatrimonio, navigate]);
