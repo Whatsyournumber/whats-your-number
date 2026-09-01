@@ -24,9 +24,10 @@ type PricingSearch = {
 export const Route = createFileRoute("/precios")({
   validateSearch: (search: Record<string, unknown>): PricingSearch => {
     const plan = search["plan"];
-    return {
-      plan: plan === "familiar" || plan === "pro" || plan === "free" ? plan : undefined,
-    };
+    if (plan === "familiar" || plan === "pro" || plan === "free") {
+      return { plan };
+    }
+    return {};
   },
   head: () => ({
     meta: [
