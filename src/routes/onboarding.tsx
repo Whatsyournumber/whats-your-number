@@ -10,6 +10,7 @@ import {
   Compass,
   CreditCard,
   Loader2,
+  LogOut,
   Pencil,
   Search,
   Sparkles,
@@ -321,6 +322,18 @@ function OnboardingPage() {
             <span className="numeric w-16 text-right text-[11px] text-muted-foreground">
               {saving ? t("Guardando…", "Saving…") : isSummary ? "" : `${step} / ${QUESTIONS}`}
             </span>
+            <button
+              type="button"
+              onClick={async () => {
+                await supabase.auth.signOut();
+                navigate({ to: "/" });
+              }}
+              className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
+              aria-label={t("Salir y usar otra cuenta", "Sign out and use another account")}
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              {t("Salir", "Sign out")}
+            </button>
           </div>
         </div>
       )}
