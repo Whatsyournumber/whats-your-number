@@ -1,7 +1,7 @@
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 
 import { useEffect, useState } from "react";
-import { Lock, Plus, Settings, Trash2, UserPlus, X } from "lucide-react";
+import { Lock, Plus, Settings, Trash2, UserPlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button, inputClass } from "@/components/mfn-ui";
 import { useQueryClient } from "@tanstack/react-query";
@@ -639,18 +639,21 @@ function ProfileSelector() {
                   </p>
                   <div className="mt-5 grid grid-cols-2 gap-3">
                     <button
+                      disabled={adultCount >= MAX_ADULTS}
                       onClick={() => {
                         setShowFlexChoice(false);
                         setShowAddAdult(true);
                       }}
-                      className="group flex flex-col items-center gap-2 rounded-2xl border border-border p-4 transition hover:border-primary"
+                      className="group flex flex-col items-center gap-2 rounded-2xl border border-border p-4 transition hover:border-primary disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-border"
                     >
                       <UserPlus className="h-7 w-7 text-muted-foreground transition group-hover:text-primary" />
                       <span className="text-sm font-semibold text-foreground">
                         {t("Adulto", "Adult")}
                       </span>
                       <span className="text-[11px] text-muted-foreground">
-                        {t("Pareja o tutor", "Partner or guardian")}
+                        {adultCount >= MAX_ADULTS
+                          ? t("Máximo 2 adultos", "Max 2 adults")
+                          : t("Pareja o tutor", "Partner or guardian")}
                       </span>
                     </button>
                     <button
@@ -851,13 +854,18 @@ function ProfileSelector() {
               >
                 <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-2xl">
                   <h2 className="font-display text-xl font-semibold text-foreground">
-                    {t("¿Seguro que quieres borrarlo?", "Are you sure you want to delete it?")}
+                    {t("¿Estás seguro que quieres eliminar el perfil?", "Are you sure you want to delete this profile?")}
                   </h2>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    {t(
-                      `Se borrará el perfil de ${pendingDelete.name} con sus bolsillos, tareas, deseos y Fondo del Futuro. Esta acción no se puede deshacer.`,
-                      `${pendingDelete.name}'s profile will be deleted along with pockets, tasks, wishes and Future Fund. This can't be undone.`,
-                    )}
+                    {pendingDelete.role === "parent"
+                      ? t(
+                          `Se eliminará el perfil de adulto de ${pendingDelete.name}. Podrás crear otro perfil en su lugar. Esta acción no se puede deshacer.`,
+                          `${pendingDelete.name}'s adult profile will be deleted. You can create another profile in its place. This can't be undone.`,
+                        )
+                      : t(
+                          `Se eliminará el perfil de ${pendingDelete.name} con sus bolsillos, tareas, deseos y Fondo del Futuro. Podrás crear otro perfil en su lugar. Esta acción no se puede deshacer.`,
+                          `${pendingDelete.name}'s profile will be deleted along with pockets, tasks, wishes and Future Fund. You can create another profile in its place. This can't be undone.`,
+                        )}
                   </p>
                   <div className="mt-6 flex justify-end gap-2">
                     <Button variant="ghost" onClick={() => setPendingDelete(null)}>
@@ -869,7 +877,7 @@ function ProfileSelector() {
                       className="inline-flex items-center gap-2 rounded-full bg-destructive px-5 py-2.5 text-sm font-semibold text-destructive-foreground transition hover:opacity-90 disabled:opacity-60"
                     >
                       <Trash2 className="h-4 w-4" />
-                      {deleting ? t("Borrando…", "Deleting…") : t("Sí, borrar", "Yes, delete")}
+                      {deleting ? t("Eliminando…", "Deleting…") : t("Sí, eliminar", "Yes, delete")}
                     </button>
                   </div>
                 </div>
