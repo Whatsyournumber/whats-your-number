@@ -58,8 +58,9 @@ function Pricing() {
   const { openCheckout, loading } = usePaddleCheckout();
   const resumedCheckout = useRef(false);
   const [discount, setDiscount] = useState<PendingDiscount | null>(null);
+  const highlightedName = planParam === "familiar" ? "Familiar" : "Pro";
   const [selectedPlan, setSelectedPlan] = useState<string | null>(
-    planParam === "familiar" ? "Familiar" : "Pro",
+    planParam === "familiar" ? "Familiar" : planParam === "free" ? "Free" : "Pro",
   );
   const { prices, currency } = useRegionalPricing();
 
