@@ -405,11 +405,16 @@ function ProfileSelector() {
                           </button>
                         ))}
                       </span>
-                      <AvatarPicker
-                        options={m.role === "parent" ? ADULT_AVATARS : KID_AVATARS}
-                        value={m.avatar}
-                        onPick={(a) => void saveAvatar(m, a)}
-                      />
+                      {pickerFor === m.id ? (
+                        <AvatarPicker
+                          options={m.role === "parent" ? ADULT_AVATARS : KID_AVATARS}
+                          value={m.avatar}
+                          onPick={(a) => {
+                            void saveAvatar(m, a);
+                            setPickerFor(null);
+                          }}
+                        />
+                      ) : null}
                       <input
                         defaultValue={m.name}
                         aria-label={t("Nombre", "Name")}
