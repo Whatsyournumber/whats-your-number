@@ -40,8 +40,16 @@ export function activePlan(sub?: Subscription | null): string {
   return "free";
 }
 
-export function kidLimit(sub?: Subscription | null): number {
-  return KID_LIMITS[activePlan(sub)] ?? 1;
+/**
+ * Perfiles de niño disponibles.
+ * En el plan Familiar el cupo es compartido con los adultos: 3 en total.
+ */
+export function kidLimit(sub?: Subscription | null, parentCount = 1): number {
+  const plan = activePlan(sub);
+  if (plan === "family") {
+    return Math.max(1, FAMILY_TOTAL_SEATS - Math.max(1, parentCount));
+  }
+  return KID_LIMITS[plan] ?? 1;
 }
 
 export function planLabel(plan: string, lang: "es" | "en"): string {
