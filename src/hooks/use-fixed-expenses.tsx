@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { useAuth } from "@/hooks/use-auth";
 import { useLanguage } from "@/hooks/use-language";
 import { useProfile, type Profile } from "@/hooks/use-profile";
+import { supabase } from "@/integrations/supabase/client";
 import { convertMoneyValue } from "@/lib/fx";
 import { FIXED_FIELDS } from "@/lib/onboarding";
 
@@ -32,28 +34,70 @@ export function useFixedExpenses() {
   const zeroHold = useRef<Set<string>>(new Set());
   const { profile, save } = useProfile();
   const { lang } = useLanguage();
+  const { user } = useAuth();
+  const userId = user?.id ?? null;
 
   const onboardingKeys = useMemo(() => new Set(FIXED_FIELDS.map((f) => f.key as string)), []);
 
-  // Carga solo los items personalizados desde localStorage. No se filtra por nombre:
-  // "Internet", "Transporte" o "Renta garaje" pueden ser gastos personalizados válidos.
+  // Carga los gastos personalizados: primero la caché local (respuesta instantánea) y
+  // después la cuenta, que es la fuente de verdad y sobrevive a cerrar sesión o cambiar de equipo.
   useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as FixedExpense[];
-        if (Array.isArray(parsed)) {
-          const custom = parsed.filter((i) => !onboardingKeys.has(i.id));
-          setItems(custom);
-          // Limpia los duplicados heredados del almacenamiento.
-          if (custom.length !== parsed.length) window.localStorage.setItem(KEY, JSON.stringify(custom));
-        }
+    let cancelled = false;
+    const readLocal = () => {
+      try {
+        const raw = window.localStorage.getItem(KEY);
+        const parsed = raw ? (JSON.parse(raw) as FixedExpense[]) : [];
+        return Array.isArray(parsed) ? parsed.filter((i) => !onboardingKeys.has(i.id)) : [];
+      } catch {
+        return [];
       }
-    } catch {
-      /* ignore */
+    };
+
+    const local = readLocal();
+    if (local.length) setItems(local);
+
+    if (!userId) {
+      setHydrated(true);
+      return;
     }
-    setHydrated(true);
-  }, [onboardingKeys]);
+
+    void (async () => {
+      const { data, error } = await supabase
+        .from("custom_fixed_expenses")
+        .select("id, name, amount, position")
+        .eq("user_id", userId)
+        .order("position", { ascending: true });
+      if (cancelled) return;
+      if (error) {
+        setHydrated(true);
+        return;
+      }
+      let remote: FixedExpense[] = (data ?? []).map((r) => ({
+        id: r.id,
+        name: r.name,
+        amount: Number(r.amount) || 0,
+      }));
+      // Primera vez con sesión: subimos lo que ya existía en este navegador.
+      if (!remote.length && local.length) {
+        await supabase.from("custom_fixed_expenses").insert(
+          local.map((i, idx) => ({ id: i.id, user_id: userId, name: i.name, amount: i.amount, position: idx })),
+        );
+        remote = local;
+      }
+      if (cancelled) return;
+      setItems(remote);
+      try {
+        window.localStorage.setItem(KEY, JSON.stringify(remote));
+      } catch {
+        /* ignore */
+      }
+      setHydrated(true);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [onboardingKeys, userId]);
 
   // Sincroniza los gastos fijos estándar con el onboarding (fuente de verdad),
   // en el mismo orden y con las etiquetas del onboarding.
@@ -92,6 +136,26 @@ export function useFixedExpenses() {
     [onboardingKeys],
   );
 
+  // Guarda un gasto personalizado en la cuenta (debounce por fila).
+  const saveCustom = useCallback(
+    (item: FixedExpense, position: number) => {
+      if (!userId) return;
+      if (saveTimers.current[item.id]) clearTimeout(saveTimers.current[item.id]);
+      saveTimers.current[item.id] = setTimeout(() => {
+        void supabase
+          .from("custom_fixed_expenses")
+          .upsert({
+            id: item.id,
+            user_id: userId,
+            name: item.name,
+            amount: Number.isFinite(item.amount) ? item.amount : 0,
+            position,
+          });
+      }, 400);
+    },
+    [userId],
+  );
+
   const update = useCallback(
     (id: string, patch: Partial<FixedExpense>) => {
       const next = items.map((i) => (i.id === id ? { ...i, ...patch } : i));
@@ -113,14 +177,19 @@ export function useFixedExpenses() {
       }
 
       persist(next);
+      const idx = next.findIndex((i) => i.id === id);
+      const item = next[idx];
+      if (item) saveCustom(item, idx);
     },
-    [items, persist, save],
+    [items, persist, save, saveCustom],
   );
 
-  const add = useCallback(
-    () => persist([...items, { id: crypto.randomUUID(), name: "Nuevo gasto fijo", amount: 0 }]),
-    [items, persist],
-  );
+  const add = useCallback(() => {
+    const item: FixedExpense = { id: crypto.randomUUID(), name: "Nuevo gasto fijo", amount: 0 };
+    const next = [...items, item];
+    persist(next);
+    saveCustom(item, next.length - 1);
+  }, [items, persist, saveCustom]);
 
   const remove = useCallback(
     (id: string) => {
@@ -134,8 +203,10 @@ export function useFixedExpenses() {
       }
 
       persist(next);
+      if (saveTimers.current[id]) clearTimeout(saveTimers.current[id]);
+      if (userId) void supabase.from("custom_fixed_expenses").delete().eq("id", id).eq("user_id", userId);
     },
-    [items, persist, save],
+    [items, persist, save, userId],
   );
 
   const total = items.reduce((s, i) => s + (Number.isFinite(i.amount) ? i.amount : 0), 0);
