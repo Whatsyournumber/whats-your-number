@@ -692,6 +692,84 @@ function ProfileSelector() {
               </div>
             ) : null}
 
+            {showAddKid ? (
+              <div
+                className="fixed inset-0 z-50 grid place-items-center bg-background/80 p-5 backdrop-blur-sm"
+                role="dialog"
+                aria-modal="true"
+              >
+                <div className="max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-2xl border border-border bg-card p-6 text-left shadow-2xl">
+                  <h2 className="font-display text-xl font-semibold text-foreground">
+                    {t("Añadir hijo/a", "Add a child")}
+                  </h2>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {t(
+                      "Elige su nombre y su emoji. Después configuramos su mesada, bolsillos y Fondo del Futuro.",
+                      "Pick their name and emoji. Next we'll set up allowance, pockets and the Future Fund.",
+                    )}
+                  </p>
+                  <input
+                    className={`${inputClass} mt-4`}
+                    value={kidName}
+                    onChange={(e) => setKidName(e.target.value)}
+                    placeholder={t("Nombre", "Name")}
+                    aria-label={t("Nombre", "Name")}
+                  />
+                  <div className="mt-3 flex gap-2">
+                    <input
+                      type="number"
+                      min={0}
+                      max={17}
+                      className={`${inputClass} flex-1`}
+                      value={kidAge}
+                      onChange={(e) => setKidAge(e.target.value)}
+                      placeholder={t("Edad", "Age")}
+                      aria-label={t("Edad", "Age")}
+                    />
+                    <span className="flex flex-1 justify-center gap-1 self-center rounded-full bg-secondary p-0.5 text-[11px] font-semibold">
+                      {(["boy", "girl"] as const).map((g) => (
+                        <button
+                          key={g}
+                          type="button"
+                          onClick={() => {
+                            setKidTheme(g);
+                            setKidAvatar(KID_AVATARS[g === "boy" ? 0 : 10]!);
+                          }}
+                          className={`flex-1 rounded-full px-2 py-1.5 transition ${
+                            kidTheme === g ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          {g === "boy" ? t("Niño", "Boy") : t("Niña", "Girl")}
+                        </button>
+                      ))}
+                    </span>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {(kidTheme === "boy" ? KID_AVATARS.slice(0, 10) : KID_AVATARS.slice(10, 20)).map((a) => (
+                      <button
+                        key={a}
+                        type="button"
+                        onClick={() => setKidAvatar(a)}
+                        className={`grid h-11 w-11 place-items-center rounded-2xl text-2xl ${
+                          kidAvatar === a ? "bg-primary/15 ring-2 ring-primary" : "bg-secondary"
+                        }`}
+                      >
+                        {a}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-6 flex justify-end gap-2">
+                    <Button variant="ghost" onClick={() => setShowAddKid(false)}>
+                      {t("Cancelar", "Cancel")}
+                    </Button>
+                    <Button onClick={addKid} disabled={!kidName.trim()}>
+                      {t("Continuar", "Continue")}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
             <div className="mt-14 flex flex-wrap items-center gap-3">
               <Button
                 variant="ghost"
