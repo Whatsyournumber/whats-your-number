@@ -375,7 +375,7 @@ function Dashboard() {
               <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
               <XAxis dataKey="label" {...axisProps} />
               <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={78} fontSize={10} />
-              <Tooltip content={<ChartTooltip />} cursor={{ fill: "var(--color-muted)", opacity: 0.35 }} />
+              <Tooltip content={<ChartTooltip />} cursor={{ fill: "var(--color-muted)", opacity: 0.28 }} />
               <Bar dataKey="income" name={t("Ingresos", "Income")} fill="var(--color-chart-1)" radius={[6, 6, 0, 0]} />
               <Bar dataKey="expenses" name={t("Gastos", "Expenses")} fill="var(--color-chart-5)" radius={[6, 6, 0, 0]} />
             </BarChart>
@@ -389,7 +389,15 @@ function Dashboard() {
               <XAxis dataKey="label" {...axisProps} />
               <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={78} fontSize={10} />
               <Tooltip content={<ChartTooltip />} />
-              <Line type="monotone" dataKey="savings" name={t("Ahorro", "Savings")} stroke="var(--color-chart-4)" strokeWidth={2.5} dot={false} />
+              <Line
+                type="monotone"
+                dataKey="savings"
+                name={t("Ahorro", "Savings")}
+                stroke="var(--color-chart-4)"
+                strokeWidth={3}
+                dot={false}
+                activeDot={{ r: 5, stroke: "var(--color-background)", strokeWidth: 2, fill: "var(--color-chart-4)" }}
+              />
             </LineChart>
           </ResponsiveContainer>
         </Panel>
