@@ -1,7 +1,7 @@
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 
 import { useEffect, useState } from "react";
-import { Lock, Plus, Settings, Trash2, UserPlus, X } from "lucide-react";
+import { Lock, Plus, Settings, Trash2, UserPlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button, inputClass } from "@/components/mfn-ui";
 import { useQueryClient } from "@tanstack/react-query";
@@ -9,6 +9,9 @@ import { toast } from "sonner";
 import { useActiveProfile, useCreateParent, useMembers, useSubscription } from "@/hooks/use-mfn";
 import { THEME_ATTR, type Member } from "@/lib/mfn";
 import { FAMILY_TOTAL_SEATS, activePlan, kidLimit, planLabel } from "@/lib/mfn-plan";
+
+/** Máximo de adultos por cuenta (titular incluido). */
+const MAX_ADULTS = 2;
 import { useRegionalPricing } from "@/hooks/use-regional-pricing";
 import { EXTRA_SEAT_PRICE, formatMoney } from "@/lib/pricing-tiers";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
@@ -173,12 +176,19 @@ function ProfileSelector() {
     await queryClient.refetchQueries({ queryKey: ["kid_members"] });
   }
 
-  async function saveRole(m: Member, role: "parent" | "child") {
-    if (role === m.role) return;
+  async function saveRole(m: Member, kind: "parent" | "boy" | "girl") {
+    const role = kind === "parent" ? "parent" : "child";
+    if (role === m.role && (role === "parent" || m.theme === kind)) return;
+    if (role === "parent" && m.role !== "parent" && adultCount >= MAX_ADULTS) {
+      toast.error(t("Solo se permiten 2 adultos por plan", "Only 2 adults are allowed per plan"));
+      return;
+    }
     const patch =
       role === "parent"
         ? { role, theme: "parent", avatar: ADULT_AVATARS[0]!, onboarded: true, subtitle: null }
-        : { role, theme: "boy", avatar: KID_AVATARS[0]!, age: m.age > 0 ? m.age : 8, onboarded: true, subtitle: null };
+        : m.role === "child"
+          ? { theme: kind }
+          : { role, theme: kind, avatar: KID_AVATARS[0]!, age: m.age > 0 ? m.age : 8, onboarded: true, subtitle: null };
     try {
       const { error } = await supabase.from("kid_members").update(patch).eq("id", m.id);
       if (error) throw error;
@@ -186,7 +196,9 @@ function ProfileSelector() {
       toast.success(
         role === "parent"
           ? t(`${m.name} ahora es un perfil de adulto`, `${m.name} is now an adult profile`)
-          : t(`${m.name} ahora es un perfil de niño/a`, `${m.name} is now a child profile`),
+          : kind === "girl"
+            ? t(`${m.name} ahora es un perfil de niña`, `${m.name} is now a girl profile`)
+            : t(`${m.name} ahora es un perfil de niño`, `${m.name} is now a boy profile`),
       );
     } catch (e) {
       toast.error(e instanceof Error ? e.message : t("No se pudo cambiar el tipo", "Could not change type"));
@@ -428,11 +440,12 @@ function ProfileSelector() {
                       />
                     </span>
                   ) : null}
-                  {manage && m.role === "child" ? (
+                  {manage ? (
                     <span
                       role="button"
                       tabIndex={0}
-                      aria-label={t("Borrar perfil", "Delete profile")}
+                      aria-label={t("Eliminar perfil", "Delete profile")}
+                      title={t("Eliminar perfil", "Delete profile")}
                       onClick={(e) => {
                         e.stopPropagation();
                         setPendingDelete(m);
@@ -444,9 +457,9 @@ function ProfileSelector() {
                           setPendingDelete(m);
                         }
                       }}
-                      className="absolute -right-1.5 -top-1.5 z-10 grid h-7 w-7 place-items-center rounded-full bg-destructive/90 text-destructive-foreground shadow-md ring-2 ring-background opacity-0 transition-all duration-200 hover:scale-105 hover:bg-destructive group-hover:opacity-100"
+                      className="absolute -right-1.5 -top-1.5 z-10 grid h-7 w-7 place-items-center rounded-full bg-card text-muted-foreground shadow-md ring-1 ring-border transition-all duration-200 hover:scale-105 hover:bg-destructive hover:text-destructive-foreground hover:ring-destructive"
                     >
-                      <X className="h-3.5 w-3.5" strokeWidth={2.5} />
+                      <Trash2 className="h-3.5 w-3.5" strokeWidth={2.25} />
                     </span>
                   ) : null}
                   {manage ? (
@@ -455,19 +468,26 @@ function ProfileSelector() {
                       onClick={(e) => e.stopPropagation()}
                       onKeyDown={(e) => e.stopPropagation()}
                     >
-                      <span className="flex justify-center gap-1 rounded-full bg-secondary p-0.5 text-[10px] font-semibold">
-                        {(["parent", "child"] as const).map((r) => (
-                          <button
-                            key={r}
-                            type="button"
-                            onClick={() => void saveRole(m, r)}
-                            className={`flex-1 rounded-full px-2 py-1 transition ${
-                              m.role === r ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
-                            }`}
-                          >
-                            {r === "parent" ? t("Adulto", "Adult") : t("Niño/a", "Child")}
-                          </button>
-                        ))}
+                      <span className="flex justify-center gap-0.5 rounded-full bg-secondary p-0.5 text-[10px] font-semibold">
+                        {(["parent", "boy", "girl"] as const).map((r) => {
+                          const active =
+                            r === "parent" ? m.role === "parent" : m.role === "child" && (m.theme === r || (r === "boy" && m.theme !== "girl"));
+                          const adultBlocked = r === "parent" && m.role !== "parent" && adultCount >= MAX_ADULTS;
+                          return (
+                            <button
+                              key={r}
+                              type="button"
+                              disabled={adultBlocked}
+                              title={adultBlocked ? t("Máximo 2 adultos", "Max 2 adults") : undefined}
+                              onClick={() => void saveRole(m, r)}
+                              className={`flex-1 rounded-full px-1.5 py-1 transition disabled:cursor-not-allowed disabled:opacity-40 ${
+                                active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                              }`}
+                            >
+                              {r === "parent" ? t("Adulto", "Adult") : r === "boy" ? t("Niño", "Boy") : t("Niña", "Girl")}
+                            </button>
+                          );
+                        })}
                       </span>
                       <input
                         defaultValue={m.name}
@@ -619,18 +639,21 @@ function ProfileSelector() {
                   </p>
                   <div className="mt-5 grid grid-cols-2 gap-3">
                     <button
+                      disabled={adultCount >= MAX_ADULTS}
                       onClick={() => {
                         setShowFlexChoice(false);
                         setShowAddAdult(true);
                       }}
-                      className="group flex flex-col items-center gap-2 rounded-2xl border border-border p-4 transition hover:border-primary"
+                      className="group flex flex-col items-center gap-2 rounded-2xl border border-border p-4 transition hover:border-primary disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-border"
                     >
                       <UserPlus className="h-7 w-7 text-muted-foreground transition group-hover:text-primary" />
                       <span className="text-sm font-semibold text-foreground">
                         {t("Adulto", "Adult")}
                       </span>
                       <span className="text-[11px] text-muted-foreground">
-                        {t("Pareja o tutor", "Partner or guardian")}
+                        {adultCount >= MAX_ADULTS
+                          ? t("Máximo 2 adultos", "Max 2 adults")
+                          : t("Pareja o tutor", "Partner or guardian")}
                       </span>
                     </button>
                     <button
@@ -831,13 +854,18 @@ function ProfileSelector() {
               >
                 <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-2xl">
                   <h2 className="font-display text-xl font-semibold text-foreground">
-                    {t("¿Seguro que quieres borrarlo?", "Are you sure you want to delete it?")}
+                    {t("¿Estás seguro que quieres eliminar el perfil?", "Are you sure you want to delete this profile?")}
                   </h2>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    {t(
-                      `Se borrará el perfil de ${pendingDelete.name} con sus bolsillos, tareas, deseos y Fondo del Futuro. Esta acción no se puede deshacer.`,
-                      `${pendingDelete.name}'s profile will be deleted along with pockets, tasks, wishes and Future Fund. This can't be undone.`,
-                    )}
+                    {pendingDelete.role === "parent"
+                      ? t(
+                          `Se eliminará el perfil de adulto de ${pendingDelete.name}. Podrás crear otro perfil en su lugar. Esta acción no se puede deshacer.`,
+                          `${pendingDelete.name}'s adult profile will be deleted. You can create another profile in its place. This can't be undone.`,
+                        )
+                      : t(
+                          `Se eliminará el perfil de ${pendingDelete.name} con sus bolsillos, tareas, deseos y Fondo del Futuro. Podrás crear otro perfil en su lugar. Esta acción no se puede deshacer.`,
+                          `${pendingDelete.name}'s profile will be deleted along with pockets, tasks, wishes and Future Fund. You can create another profile in its place. This can't be undone.`,
+                        )}
                   </p>
                   <div className="mt-6 flex justify-end gap-2">
                     <Button variant="ghost" onClick={() => setPendingDelete(null)}>
@@ -849,7 +877,7 @@ function ProfileSelector() {
                       className="inline-flex items-center gap-2 rounded-full bg-destructive px-5 py-2.5 text-sm font-semibold text-destructive-foreground transition hover:opacity-90 disabled:opacity-60"
                     >
                       <Trash2 className="h-4 w-4" />
-                      {deleting ? t("Borrando…", "Deleting…") : t("Sí, borrar", "Yes, delete")}
+                      {deleting ? t("Eliminando…", "Deleting…") : t("Sí, eliminar", "Yes, delete")}
                     </button>
                   </div>
                 </div>
