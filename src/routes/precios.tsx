@@ -138,7 +138,7 @@ function Pricing() {
         t("Reportes mensuales automáticos", "Automatic monthly reports"),
       ],
       cta: t("Empezar con Pro", "Get started with Pro"),
-      highlight: true,
+      highlight: false,
     },
     {
       name: "Familiar",
@@ -161,7 +161,7 @@ function Pricing() {
         t("Soporte prioritario en 24h", "Priority support within 24h"),
       ],
       cta: t("Empezar con Familiar", "Get started with Familiar"),
-      highlight: false,
+      highlight: true,
     },
     {
       name: "Corporativo",
