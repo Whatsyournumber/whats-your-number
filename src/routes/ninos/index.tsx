@@ -214,23 +214,23 @@ function ProfileSelector() {
                 <span className="grid aspect-square w-full place-items-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4">
                   <LineChart className="h-10 w-10 sm:h-12 sm:w-12" />
                 </span>
-                {manage && parents[0] ? (
+                {manage && holderParent ? (
                   <span
                     className="w-full space-y-1"
                     onClick={(e) => e.stopPropagation()}
                     onKeyDown={(e) => e.stopPropagation()}
                   >
                     <input
-                      defaultValue={parents[0].name}
+                      defaultValue={holderParent.name}
                       aria-label={t("Nombre", "Name")}
-                      onBlur={(e) => void saveField(parents[0], "name", e.target.value)}
+                      onBlur={(e) => void saveField(holderParent, "name", e.target.value)}
                       className="w-full rounded-lg border border-border bg-background px-2 py-1 text-center text-sm font-semibold text-foreground outline-none focus:border-primary"
                     />
                     <input
-                      defaultValue={parents[0].subtitle ?? ""}
+                      defaultValue={holderParent.subtitle ?? ""}
                       aria-label={t("Subtítulo", "Subtitle")}
                       placeholder={t("Padre / Madre", "Parent")}
-                      onBlur={(e) => void saveField(parents[0], "subtitle", e.target.value)}
+                      onBlur={(e) => void saveField(holderParent, "subtitle", e.target.value)}
                       className="w-full rounded-lg border border-border bg-background px-2 py-1 text-center text-[11px] text-muted-foreground outline-none placeholder:text-muted-foreground/60 focus:border-primary"
                     />
                   </span>
