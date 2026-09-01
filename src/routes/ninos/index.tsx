@@ -145,8 +145,14 @@ function ProfileSelector() {
   const adultCount = 1 + parents.length;
   const maxKids = kidLimit(subscription, adultCount);
   const usedSeats = adultCount + kids.length;
-  const canAddAdult =
-    plan === "family" && adultCount < 2 && usedSeats < FAMILY_TOTAL_SEATS;
+  // Plan Familiar: 3 perfiles gratis (titular incluido) -> 1º hijo/a, 2º adulto o niño, el siguiente es de pago.
+  const freeSlotsLeft = Math.max(0, FAMILY_TOTAL_SEATS - usedSeats);
+  const showKidSlot = plan === "family" && kids.length === 0 && freeSlotsLeft > 0;
+  const showFlexSlot =
+    plan === "family" &&
+    parents.length === 0 &&
+    ((kids.length === 0 && freeSlotsLeft > 1) || (kids.length > 0 && freeSlotsLeft > 0));
+  const showPaidSlot = plan === "family" && freeSlotsLeft === 0;
 
   async function openAdult() {
     const { data: auth } = await supabase.auth.getUser();
