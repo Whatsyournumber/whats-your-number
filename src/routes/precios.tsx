@@ -139,7 +139,7 @@ function Pricing() {
         t("Reportes mensuales automáticos", "Automatic monthly reports"),
       ],
       cta: t("Empezar con Pro", "Get started with Pro"),
-      highlight: true,
+      highlight: highlightedName === "Pro",
     },
     {
       name: "Familiar",
