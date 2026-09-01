@@ -78,6 +78,7 @@ function ProfileSelector() {
   const { t, lang } = useI18n();
   const { profile, save: saveProfile } = useProfile();
   const [manage, setManage] = useState(false);
+  const [pickerFor, setPickerFor] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<Member | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [showUnlock, setShowUnlock] = useState(false);
@@ -85,9 +86,18 @@ function ProfileSelector() {
   const [showAddAdult, setShowAddAdult] = useState(false);
   const [adultName, setAdultName] = useState("");
   const [adultAvatar, setAdultAvatar] = useState(ADULT_AVATARS[0]!);
+  const [holderAvatar, setHolderAvatar] = useState(() =>
+    typeof window !== "undefined" ? (localStorage.getItem("holder_avatar") ?? "") : "",
+  );
   const createParent = useCreateParent();
   const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
   const queryClient = useQueryClient();
+
+  function saveHolderAvatar(a: string) {
+    setHolderAvatar(a);
+    localStorage.setItem("holder_avatar", a);
+    setPickerFor(null);
+  }
 
   async function addAdult() {
     const name = adultName.trim();
@@ -268,12 +278,39 @@ function ProfileSelector() {
           <>
             <div className="mt-12 grid grid-cols-2 gap-6 sm:grid-cols-4 sm:gap-8">
               <button
-                onClick={() => void openAdult()}
+                onClick={() => {
+                  if (manage) return;
+                  void openAdult();
+                }}
                 className="group flex flex-col items-center gap-3 outline-none"
               >
-                <span className="grid aspect-square w-full place-items-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4">
-                  <LineChart className="h-10 w-10 sm:h-12 sm:w-12" />
+                <span
+                  role={manage ? "button" : undefined}
+                  onClick={
+                    manage
+                      ? (e) => {
+                          e.stopPropagation();
+                          setPickerFor(pickerFor === "holder" ? null : "holder");
+                        }
+                      : undefined
+                  }
+                  className={`grid aspect-square w-full place-items-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4 ${manage ? "cursor-pointer ring-2 ring-primary/40" : ""}`}
+                >
+                  {holderAvatar ? (
+                    <span className="text-5xl sm:text-6xl">{holderAvatar}</span>
+                  ) : (
+                    <LineChart className="h-10 w-10 sm:h-12 sm:w-12" />
+                  )}
                 </span>
+                {manage && pickerFor === "holder" ? (
+                  <span
+                    className="w-full"
+                    onClick={(e) => e.stopPropagation()}
+                    onKeyDown={(e) => e.stopPropagation()}
+                  >
+                    <AvatarPicker options={ADULT_AVATARS} value={holderAvatar} onPick={saveHolderAvatar} />
+                  </span>
+                ) : null}
                 {manage ? (
                   <span
                     className="w-full space-y-1"
@@ -307,10 +344,24 @@ function ProfileSelector() {
               {[...parents, ...kids].map((m) => (
                 <button
                   key={m.id}
-                  onClick={() => open(m)}
+                  onClick={() => {
+                    if (manage) return;
+                    open(m);
+                  }}
                   className="group relative flex flex-col items-center gap-3 outline-none"
                 >
-                  <span className="grid aspect-square w-full place-items-center rounded-2xl bg-secondary text-5xl ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4 sm:text-6xl">
+                  <span
+                    role={manage ? "button" : undefined}
+                    onClick={
+                      manage
+                        ? (e) => {
+                            e.stopPropagation();
+                            setPickerFor(pickerFor === m.id ? null : m.id);
+                          }
+                        : undefined
+                    }
+                    className={`grid aspect-square w-full place-items-center rounded-2xl bg-secondary text-5xl ring-0 ring-primary/60 transition-all duration-200 group-hover:scale-105 group-hover:ring-4 group-focus-visible:ring-4 sm:text-6xl ${manage ? "cursor-pointer ring-2 ring-primary/40" : ""}`}
+                  >
                     {m.avatar}
                   </span>
                   {m.role === "child" ? (
@@ -354,11 +405,16 @@ function ProfileSelector() {
                           </button>
                         ))}
                       </span>
-                      <AvatarPicker
-                        options={m.role === "parent" ? ADULT_AVATARS : KID_AVATARS}
-                        value={m.avatar}
-                        onPick={(a) => void saveAvatar(m, a)}
-                      />
+                      {pickerFor === m.id ? (
+                        <AvatarPicker
+                          options={m.role === "parent" ? ADULT_AVATARS : KID_AVATARS}
+                          value={m.avatar}
+                          onPick={(a) => {
+                            void saveAvatar(m, a);
+                            setPickerFor(null);
+                          }}
+                        />
+                      ) : null}
                       <input
                         defaultValue={m.name}
                         aria-label={t("Nombre", "Name")}
@@ -600,7 +656,13 @@ function ProfileSelector() {
             ) : null}
 
             <div className="mt-14 flex flex-wrap items-center gap-3">
-              <Button variant="ghost" onClick={() => setManage((v) => !v)}>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setPickerFor(null);
+                  setManage((v) => !v);
+                }}
+              >
                 <Settings className="h-4 w-4" />{" "}
                 {manage ? t("Listo", "Done") : t("Editar perfiles", "Edit profiles")}
               </Button>
