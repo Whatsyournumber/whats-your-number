@@ -87,7 +87,8 @@ function Onboarding() {
   }
 
   async function finish() {
-    const maxKids = kidLimit(subscription, Math.max(1, members.filter((m) => m.role === "parent").length));
+    // El titular cuenta como primer adulto; las filas "parent" son adultos adicionales.
+    const maxKids = kidLimit(subscription, 1 + members.filter((m) => m.role === "parent").length);
     if (members.filter((m) => m.role === "child").length >= maxKids) {
       toast.error(
         t(

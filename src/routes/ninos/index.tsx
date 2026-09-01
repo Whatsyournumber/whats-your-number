@@ -1,17 +1,19 @@
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { LineChart, Lock, Plus, Settings, Trash2, X } from "lucide-react";
+import { LineChart, Lock, Plus, Settings, Trash2, UserPlus, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/mfn-ui";
+import { Button, inputClass } from "@/components/mfn-ui";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useActiveProfile, useMembers, useSubscription } from "@/hooks/use-mfn";
+import { useActiveProfile, useCreateParent, useMembers, useSubscription } from "@/hooks/use-mfn";
 import { THEME_ATTR, type Member } from "@/lib/mfn";
-import { activePlan, kidLimit, planLabel } from "@/lib/mfn-plan";
+import { FAMILY_TOTAL_SEATS, activePlan, kidLimit, planLabel } from "@/lib/mfn-plan";
 import { useRegionalPricing } from "@/hooks/use-regional-pricing";
 import { EXTRA_SEAT_PRICE, formatMoney } from "@/lib/pricing-tiers";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
+
+const ADULT_AVATARS = ["🧑", "👩", "👨", "👵", "👴"];
 
 
 export const Route = createFileRoute("/ninos/")({
@@ -48,8 +50,25 @@ function ProfileSelector() {
   const [pendingDelete, setPendingDelete] = useState<Member | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [showUnlock, setShowUnlock] = useState(false);
+  const [showAddAdult, setShowAddAdult] = useState(false);
+  const [adultName, setAdultName] = useState("");
+  const [adultAvatar, setAdultAvatar] = useState(ADULT_AVATARS[0]!);
+  const createParent = useCreateParent();
   const { openCheckout, loading: checkoutLoading } = usePaddleCheckout();
   const queryClient = useQueryClient();
+
+  async function addAdult() {
+    const name = adultName.trim();
+    if (!name) return;
+    try {
+      await createParent.mutateAsync({ name, avatar: adultAvatar });
+      toast.success(t(`Perfil de ${name} creado`, `${name}'s profile created`));
+      setShowAddAdult(false);
+      setAdultName("");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : t("No se pudo crear el perfil", "Could not create profile"));
+    }
+  }
 
   async function unlockExtraProfile() {
     const { data } = await supabase.auth.getUser();
@@ -121,7 +140,12 @@ function ProfileSelector() {
 
   const parents = members.filter((m) => m.role === "parent");
   const kids = members.filter((m) => m.role === "child");
-  const maxKids = kidLimit(subscription, Math.max(1, parents.length));
+  // El titular de la cuenta es siempre el primer adulto; los demás adultos son filas "parent".
+  const adultCount = 1 + parents.length;
+  const maxKids = kidLimit(subscription, adultCount);
+  const usedSeats = adultCount + kids.length;
+  const canAddAdult =
+    plan === "family" && adultCount < 2 && usedSeats < FAMILY_TOTAL_SEATS;
 
   async function openAdult() {
     const { data: auth } = await supabase.auth.getUser();
