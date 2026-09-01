@@ -452,11 +452,16 @@ function AuthPage() {
     if (promo.trim()) setPendingPromoCode(promo);
     setBusy(true);
     try {
+      // Marca para que, si el OAuth redirige al navegador principal de vuelta
+      // al home, la landing sepa enviar al usuario al dashboard en lugar de
+      // quedarse en la página pública.
+      sessionStorage.setItem("wyn_post_oauth_redirect", "1");
       // El helper administrado detecta la URL pública correcta y coordina el
       // popup con la vista previa. Pasar parámetros manuales aquí puede dejar
       // una ventana `about:blank` en navegadores embebidos.
       const result = await lovable.auth.signInWithOAuth("google");
       if (result.error) {
+        sessionStorage.removeItem("wyn_post_oauth_redirect");
         toast.error(t("auth.toast.oauth"));
         setBusy(false);
         return;
@@ -466,6 +471,7 @@ function AuthPage() {
       if (pendingPlan) navigate({ to: "/precios", search: { plan: pendingPlan } });
       else goNext(next, "/dashboard", navigate);
     } catch (error) {
+      sessionStorage.removeItem("wyn_post_oauth_redirect");
       console.error(error);
       toast.error(t("auth.toast.oauth"));
       setBusy(false);
