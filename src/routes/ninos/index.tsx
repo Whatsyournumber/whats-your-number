@@ -12,6 +12,7 @@ import { useRegionalPricing } from "@/hooks/use-regional-pricing";
 import { EXTRA_SEAT_PRICE, formatMoney } from "@/lib/pricing-tiers";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
+import { useProfile } from "@/hooks/use-profile";
 
 const ADULT_AVATARS = ["👨‍💼", "👩‍💼", "🧔‍♂️", "👩‍🦰", "👨‍🦱", "👩‍🦱", "🧑‍🎓", "👨‍🍳", "👩‍⚕️", "👨‍🚀", "🦸‍♀️", "🦸‍♂️", "👵", "👴"];
 const KID_AVATARS = ["🦊", "🐼", "🐯", "🐨", "🦁", "🐙", "🐧", "🐸", "🐲", "🦖", "🦄", "🐰", "🐱", "🦢", "🦋", "🐞", "🐝", "🦩", "🐬", "🦜", "🚀", "⚽", "🎨", "🎸"];
@@ -75,6 +76,7 @@ function ProfileSelector() {
   const { data: subscription } = useSubscription();
   const { select } = useActiveProfile();
   const { t, lang } = useI18n();
+  const { profile, save: saveProfile } = useProfile();
   const [manage, setManage] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<Member | null>(null);
   const [deleting, setDeleting] = useState(false);
@@ -179,7 +181,6 @@ function ProfileSelector() {
   }, []);
 
   const parents = members.filter((m) => m.role === "parent");
-  const holderParent = parents[0];
   const kids = members.filter((m) => m.role === "child");
   // El titular de la cuenta es siempre el primer adulto; los demás adultos son filas "parent".
   const adultCount = 1 + parents.length;
