@@ -30,7 +30,7 @@ export type CheckResult = {
   key: CheckKey;
   label: { es: string; en: string };
   ok: boolean;
-  detail: string;
+  detail: { es: string; en: string };
 };
 
 export type PostAudit = {
@@ -101,55 +101,55 @@ export function auditPost(post: BlogPost, lang: Lang): PostAudit {
       key: "words",
       label: { es: `Mínimo ${MIN_WORDS} palabras`, en: `At least ${MIN_WORDS} words` },
       ok: words >= MIN_WORDS,
-      detail: `${words.toLocaleString("es-ES")} palabras`,
+      detail: { es: `${words.toLocaleString("es-ES")} palabras`, en: `${words.toLocaleString("en-US")} words` },
     },
     {
       key: "images",
       label: { es: `Mínimo ${MIN_IMAGES} imágenes`, en: `At least ${MIN_IMAGES} images` },
       ok: images >= MIN_IMAGES,
-      detail: `${images} imágenes`,
+      detail: { es: `${images} imágenes`, en: `${images} images` },
     },
     {
       key: "charts",
       label: { es: "Gráficas interactivas", en: "Interactive charts" },
       ok: charts >= 1,
-      detail: `${charts}`,
+      detail: { es: `${charts}`, en: `${charts}` },
     },
     {
       key: "table",
       label: { es: "Tabla comparativa", en: "Comparison table" },
       ok: table,
-      detail: table ? "sí" : "falta",
+      detail: table ? { es: "sí", en: "yes" } : { es: "falta", en: "missing" },
     },
     {
       key: "quotes",
       label: { es: "Citas de expertos", en: "Expert quotes" },
       ok: quotes >= 2,
-      detail: `${quotes}`,
+      detail: { es: `${quotes}`, en: `${quotes}` },
     },
     {
       key: "case",
       label: { es: "Caso de éxito real", en: "Real success case" },
       ok: hasCase(post),
-      detail: hasCase(post) ? "sí" : "falta",
+      detail: hasCase(post) ? { es: "sí", en: "yes" } : { es: "falta", en: "missing" },
     },
     {
       key: "faq",
       label: { es: "FAQ + schema", en: "FAQ + schema" },
       ok: faqs >= 3,
-      detail: `${faqs} preguntas`,
+      detail: { es: `${faqs} preguntas`, en: `${faqs} questions` },
     },
     {
       key: "insight",
       label: { es: "Cierre \"Nuestra visión\" + CTA", en: '"Our insight" close + CTA' },
       ok: post.takeaway[lang].trim().length > 120,
-      detail: post.takeaway[lang].trim().length > 120 ? "sí" : "falta",
+      detail: post.takeaway[lang].trim().length > 120 ? { es: "sí", en: "yes" } : { es: "falta", en: "missing" },
     },
     {
       key: "links",
       label: { es: "Enlaces internos + externo", en: "Internal + external links" },
       ok: links >= 2,
-      detail: `${links}`,
+      detail: { es: `${links}`, en: `${links}` },
     },
     {
       key: "keywords",
@@ -158,13 +158,13 @@ export function auditPost(post: BlogPost, lang: Lang): PostAudit {
         en: `${MIN_KEYWORDS_PER_POST} keywords with ${MIN_KEYWORD_VOLUME}+ monthly searches`,
       },
       ok: strongKeywords.length >= MIN_KEYWORDS_PER_POST,
-      detail: `${strongKeywords.length}/${keywords.length}`,
+      detail: { es: `${strongKeywords.length}/${keywords.length}`, en: `${strongKeywords.length}/${keywords.length}` },
     },
     {
       key: "alt",
       label: { es: "Alt text en todas las imágenes", en: "Alt text on every image" },
       ok: altOk,
-      detail: altOk ? "sí" : `faltan ${missingAlt}`,
+      detail: altOk ? { es: "sí", en: "yes" } : { es: `faltan ${missingAlt}`, en: `${missingAlt} missing` },
     },
   ];
 
