@@ -25,7 +25,7 @@ export function PricingComparison() {
       others: [false, false, false],
     },
     {
-      feature: t("Asesor de IA con tus datos reales", "AI advisor on your real data"),
+      feature: t("Asistente de IA con tus datos reales", "AI assistant on your real data"),
       us: true,
       others: ["partial", "partial", false],
     },
