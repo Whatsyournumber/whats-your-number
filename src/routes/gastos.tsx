@@ -289,6 +289,7 @@ function Gastos() {
     }
   };
   const [dragName, setDragName] = useState<string | null>(null);
+  const [dragTx, setDragTx] = useState<{ id: string; from: string } | null>(null);
 
   const detailRows = useMemo(() => {
     // Las categorías base se muestran primero; las creadas por el usuario al final.
@@ -1025,8 +1026,8 @@ function Gastos() {
         variant="minimal"
         title={t("Gastos variables", "Variable expenses")}
         description={t(
-          "Solo categorías con gastos · puedes ordenarlas arrastrándolas y agregar nuevas categorías.",
-          "Only categories with spending · drag to reorder and add new categories.",
+          "Solo categorías con gastos · arrastra para ordenarlas, agregar nuevas o mover un movimiento a otra categoría.",
+          "Only categories with spending · drag to reorder, add new ones or move a transaction to another category.",
         )}
         actions={
           <div className="flex flex-wrap items-center gap-2">
