@@ -62,9 +62,11 @@ export function SubscriptionManager() {
         return;
       }
       toast.success(
-        res.upgraded
-          ? t("Plan mejorado. Ya tienes acceso completo.", "Plan upgraded. You have full access now.")
-          : t("Cambio programado: mantienes tu plan actual hasta el final del periodo pagado.", "Change scheduled: you keep your current plan until the paid period ends."),
+        res.instant
+          ? t("Plan cambiado. Ya está activo en tu cuenta.", "Plan switched. It's active on your account now.")
+          : res.upgraded
+            ? t("Plan mejorado. Ya tienes acceso completo.", "Plan upgraded. You have full access now.")
+            : t("Cambio programado: mantienes tu plan actual hasta el final del periodo pagado.", "Change scheduled: you keep your current plan until the paid period ends."),
       );
     } catch {
       toast.error(t("No pudimos cambiar el plan.", "We couldn't change the plan."));
