@@ -963,7 +963,17 @@ function Gastos() {
         variant="minimal"
         title={t("Gastos variables", "Variable expenses")}
         description={t("Solo categorías con gastos; puedes cargarlos manualmente con su fecha.", "Only categories with spending; you can add them manually with their date.")}
-        actions={<ManualExpenseDialog categories={categories.names} />}
+        actions={
+          <div className="flex flex-wrap items-center gap-2">
+            <Button asChild size="sm" className="gap-2 rounded-full">
+              <Link to="/configuracion">
+                <Upload className="h-3.5 w-3.5" />
+                {t("Importar gastos", "Import expenses")}
+              </Link>
+            </Button>
+            <ManualExpenseDialog categories={categories.names} />
+          </div>
+        }
       >
         <Accordion type="single" collapsible className="w-full">
           {detailRows.map((c, i) => {
