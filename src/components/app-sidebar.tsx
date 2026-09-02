@@ -11,7 +11,7 @@ import {
   Sparkles,
   Target,
   Bot,
-  Settings,
+  Upload,
   Wallet,
   UserCog,
   CreditCard,
@@ -85,7 +85,7 @@ export function AppSidebar() {
     { title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserCog },
     { title: t("Suscripción", "Subscription"), url: "/suscripcion", icon: CreditCard },
     
-    { title: t("Cargar tus gastos", "Upload your expenses"), url: "/configuracion", icon: Settings },
+    { title: t("Importar gastos", "Import expenses"), url: "/configuracion", icon: Upload },
   ] as const;
 
   const adminItems = isSuperAdmin
