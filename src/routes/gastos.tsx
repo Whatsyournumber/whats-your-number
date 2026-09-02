@@ -328,20 +328,22 @@ function Gastos() {
 
 
   // ---- Comparación mes vs mes ----
+  // Todos los meses con gastos, sin depender del periodo seleccionado arriba.
   const monthKeys = useMemo(() => {
     const set = new Set<string>();
     for (const t of expenses) {
-      if (!inRange(t, from, to)) continue;
-      set.add(format(parseISO(t.tx_date!), "yyyy-MM"));
+      if (!t.tx_date) continue;
+      set.add(format(parseISO(t.tx_date), "yyyy-MM"));
     }
     return [...set].sort().reverse();
-  }, [expenses, from, to]);
+  }, [expenses]);
 
 
   const [monthA, setMonthA] = useState<string | null>(null);
   const [monthB, setMonthB] = useState<string | null>(null);
   const mA = (monthA && monthKeys.includes(monthA) ? monthA : monthKeys[0]) ?? null;
-  const mB = (monthB && monthKeys.includes(monthB) ? monthB : monthKeys[1] ?? monthKeys[0]) ?? null;
+  const defaultB = monthKeys.find((k) => k !== mA) ?? monthKeys[0];
+  const mB = (monthB && monthKeys.includes(monthB) ? monthB : defaultB) ?? null;
 
 
   const monthCompare = useMemo(() => {
@@ -371,6 +373,12 @@ function Gastos() {
   const monthDelta =
     monthCompare.bTotal > 0 ? ((monthCompare.aTotal - monthCompare.bTotal) / monthCompare.bTotal) * 100 : 0;
 
+  // Meses distintos dentro del periodo seleccionado (para los KPIs de arriba).
+  const periodMonths = useMemo(
+    () => new Set(current.filter((t) => t.tx_date).map((t) => format(parseISO(t.tx_date!), "yyyy-MM"))).size,
+    [current],
+  );
+
   // ---- Gasto objetivo ----
   const { target, setTarget } = useSpendTarget(Math.round(profile.monthly_expenses || 0));
   const isLongRange = days > 31;
@@ -378,7 +386,7 @@ function Gastos() {
   // Para rangos largos, el promedio mensual es el promedio de los totales mensuales
   // reales (variable del mes + fijos del mes). Así cada mes analizado pesa igual.
   const monthlyAverage = useMemo(() => {
-    if (monthKeys.length === 0) return fixed.total;
+    if (periodMonths === 0) return fixed.total;
     const map = new Map<string, number>();
     for (const t of current) {
       const key = format(parseISO(t.tx_date!), "yyyy-MM");
@@ -386,7 +394,7 @@ function Gastos() {
     }
     const monthlyTotals = Array.from(map.values()).map((v) => v + fixed.total);
     return monthlyTotals.reduce((s, v) => s + v, 0) / monthlyTotals.length;
-  }, [current, fixed.total, monthKeys.length]);
+  }, [current, fixed.total, periodMonths]);
 
   const monthlyRun = isLongRange ? monthlyAverage : fixed.total + (variableTotal / days) * 30;
   const avgMonthlyVariable = monthlyAverage - fixed.total;
@@ -697,10 +705,10 @@ function Gastos() {
         title={isLongRange ? t("Promedio mensual vs objetivo", "Monthly average vs target") : t("Gasto objetivo mensual", "Monthly spend target")}
         description={
           isLongRange
-            ? monthKeys.length > 0
+            ? periodMonths > 0
               ? t(
-                  `Promedio mensual de los ${monthKeys.length} meses analizados vs. tu techo de gasto.`,
-                  `Monthly average of the ${monthKeys.length} months analyzed vs. your spending ceiling.`,
+                  `Promedio mensual de los ${periodMonths} meses analizados vs. tu techo de gasto.`,
+                  `Monthly average of the ${periodMonths} months analyzed vs. your spending ceiling.`,
                 )
               : t("Promedio mensual vs. tu techo de gasto.", "Monthly average vs. your spending ceiling.")
             : t("Ritmo actual vs. tu techo de gasto según tu número.", "Current pace vs. your spending ceiling based on your number.")
@@ -724,7 +732,7 @@ function Gastos() {
               <span className="numeric text-xl font-semibold">{fmt(monthlyRun)}</span>
               <span className="text-xs text-muted-foreground">
                 {isLongRange
-                  ? t(`promedio mensual de ${monthKeys.length} meses`, `monthly average of ${monthKeys.length} months`)
+                  ? t(`promedio mensual de ${periodMonths} meses`, `monthly average of ${periodMonths} months`)
                   : t("ritmo mensual estimado", "estimated monthly pace")}
                 {" · "}
                 {t("objetivo", "target")} {fmt(target)}/{t("mes", "mo")}
