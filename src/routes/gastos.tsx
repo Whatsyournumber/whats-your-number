@@ -612,8 +612,11 @@ function Gastos() {
               <p className="text-sm font-medium">{t("Aún no hay estados de cuenta procesados", "No statements processed yet")}</p>
               <p className="text-xs text-muted-foreground">{t("Sube tus EEFF en PDF o CSV para ver el detalle real.", "Upload your statements as PDF or CSV to see the real detail.")}</p>
             </div>
-            <Button asChild className="ml-auto">
-              <Link to="/configuracion">{t("Cargar tus gastos", "Upload your expenses")}</Link>
+            <Button asChild className="ml-auto gap-2">
+              <Link to="/configuracion">
+                <Upload className="h-4 w-4" />
+                {t("Importar gastos", "Import expenses")}
+              </Link>
             </Button>
           </div>
         </Panel>
