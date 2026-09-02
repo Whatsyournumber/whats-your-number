@@ -1048,13 +1048,25 @@ function Gastos() {
               <AccordionItem
                 key={c.name}
                 value={c.name}
-                className={cn("border-border", dragName === c.name && "opacity-60")}
+                className={cn(
+                  "border-border transition-colors",
+                  dragName === c.name && "opacity-60",
+                  dragTx && dragTx.from !== c.name && "rounded-lg ring-1 ring-primary/30",
+                )}
                 onDragOver={(e) => {
-                  if (dragName) e.preventDefault();
+                  if (dragName || dragTx) e.preventDefault();
                 }}
                 onDrop={(e) => {
                   e.preventDefault();
-                  reorderTo(c.name);
+                  if (dragTx) {
+                    if (dragTx.from !== c.name) {
+                      moveTxToCategory(dragTx.id, c.name);
+                      toast.success(t(`Movido a ${tc(c.name)}`, `Moved to ${tc(c.name)}`));
+                    }
+                    setDragTx(null);
+                  } else {
+                    reorderTo(c.name);
+                  }
                   setDragName(null);
                 }}
               >
