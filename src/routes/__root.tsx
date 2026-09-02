@@ -9,7 +9,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { Loader2, LogOut, Upload } from "lucide-react";
+import { Loader2, LogOut } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -296,12 +296,6 @@ function AppShell() {
             <AskAiSearch />
 
             <div className="ml-auto flex items-center gap-2">
-              <Button asChild variant="outline" size="sm" className="gap-2 rounded-full">
-                <Link to="/configuracion">
-                  <Upload className="h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">{t("Importar", "Import")}</span>
-                </Link>
-              </Button>
               <ThemeToggle />
               <CurrencyToggle />
               <LanguageToggle />
