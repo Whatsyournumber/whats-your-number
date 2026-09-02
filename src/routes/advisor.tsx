@@ -16,9 +16,9 @@ export const Route = createFileRoute("/advisor")({
   head: () => ({
     meta: [
       { title: "Asistente IA — WhatsYournumber" },
-      { name: "description", content: "Insights automáticos, detección de gastos inusuales y respuestas en lenguaje natural sobre tus finanzas." },
-      { property: "og:title", content: "AI Advisor — Finance OS" },
-      { property: "og:description", content: "Tu CFO personal: pregúntale a tus datos financieros en lenguaje natural." },
+      { name: "description", content: "Resúmenes automáticos y respuestas educativas en lenguaje natural sobre tus propios datos financieros." },
+      { property: "og:title", content: "Asistente IA — WhatsYournumber" },
+      { property: "og:description", content: "Tu asistente de datos: resúmenes y simulaciones educativas sobre tus finanzas." },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),

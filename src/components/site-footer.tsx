@@ -218,6 +218,12 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
 
 
         <div className="mx-auto flex h-full max-w-6xl flex-col items-center gap-3 px-4 pb-5 pt-10 text-center md:flex-row md:justify-between md:gap-4 md:px-6 md:py-0 md:text-left">
+          <p className="max-w-xl text-[11px] leading-relaxed text-muted-foreground/80 md:text-left">
+            {t(
+              "WhatsYournumber es un software de seguimiento de finanzas personales. No ofrece asesoría financiera, fiscal ni de inversión; todo el contenido y las respuestas de IA son educativos.",
+              "WhatsYournumber is personal finance tracking software. It does not provide financial, tax or investment advice; all content and AI answers are educational.",
+            )}
+          </p>
           <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs text-muted-foreground md:justify-start md:text-sm">
             <span>© {new Date().getFullYear()}</span>
             <span className="hidden text-border md:inline">|</span>
