@@ -111,6 +111,7 @@ function pct(value: number) {
 }
 
 function BlogBackOffice() {
+  const t = useT();
   const { isAdmin, loading } = useRoles();
   const [days, setDays] = useState(28);
 
@@ -734,6 +735,9 @@ function BlogBackOffice() {
 
 function AuditCard({ audit, date }: { audit: PostAudit; date?: string | undefined }) {
   const [open, setOpen] = useState(false);
+  const { lang } = useLanguage();
+  const t = useT();
+  const locale = lang === "en" ? "en-US" : "es-ES";
   return (
     <div className="rounded-xl border border-border/60 p-4">
       <button type="button" onClick={() => setOpen((v) => !v)} className="w-full text-left">
@@ -741,8 +745,11 @@ function AuditCard({ audit, date }: { audit: PostAudit; date?: string | undefine
           <div className="min-w-0 flex-1">
             <p className="truncate font-medium">{audit.title}</p>
             <p className="text-xs text-muted-foreground">
-              {date ? `Publicado el ${date} · ` : ""}
-              {audit.words.toLocaleString("es-ES")} palabras · {audit.images} imágenes
+              {date ? `${t("Publicado el", "Published")} ${date} · ` : ""}
+              {t(
+                `${audit.words.toLocaleString(locale)} palabras · ${audit.images} imágenes`,
+                `${audit.words.toLocaleString(locale)} words · ${audit.images} images`,
+              )}
             </p>
           </div>
           <Badge variant={audit.score === 100 ? "default" : "secondary"}>{audit.score}%</Badge>
@@ -758,7 +765,7 @@ function AuditCard({ audit, date }: { audit: PostAudit; date?: string | undefine
               ) : (
                 <XCircle className="h-4 w-4 shrink-0 text-destructive" />
               )}
-              <span className={check.ok ? "" : "text-destructive"}>{check.label.es}</span>
+              <span className={check.ok ? "" : "text-destructive"}>{check.label[lang]}</span>
               <span className="ml-auto text-xs text-muted-foreground">{check.detail}</span>
             </li>
           ))}
