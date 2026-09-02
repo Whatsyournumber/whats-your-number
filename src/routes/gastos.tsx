@@ -1023,9 +1023,38 @@ function Gastos() {
             const prev = prevByCategory.get(c.name) ?? 0;
             const variation = prev > 0 ? ((c.amount - prev) / prev) * 100 : null;
             return (
-              <AccordionItem key={c.name} value={c.name} className="border-border">
+              <AccordionItem
+                key={c.name}
+                value={c.name}
+                className={cn("border-border", dragName === c.name && "opacity-60")}
+                onDragOver={(e) => {
+                  if (dragName) e.preventDefault();
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  reorderTo(c.name);
+                  setDragName(null);
+                }}
+              >
                 <AccordionTrigger className="py-2 hover:no-underline">
                   <div className="flex w-full min-w-0 items-center gap-2 pr-2 sm:gap-3 sm:pr-3">
+                    <span
+                      draggable
+                      onDragStart={(e) => {
+                        e.stopPropagation();
+                        setDragName(c.name);
+                      }}
+                      onDragEnd={() => setDragName(null)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      aria-label={t("Arrastrar para reordenar", "Drag to reorder")}
+                      title={t("Arrastrar para reordenar", "Drag to reorder")}
+                      className="shrink-0 cursor-grab text-muted-foreground/50 transition hover:text-foreground active:cursor-grabbing"
+                    >
+                      <GripVertical className="h-3.5 w-3.5" />
+                    </span>
                     <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
                     <span className="min-w-0 flex-1 truncate text-left text-sm font-medium">{tc(c.name)}</span>
                     <span
