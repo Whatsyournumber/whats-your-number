@@ -92,12 +92,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:site_name", content: "WhatsYournumber" },
       { property: "og:locale", content: "es_ES" },
-      { property: "og:title", content: "Finanzas Personales con IA | Controla Gastos, Patrimonio y Retiro" },
+      { property: "og:title", content: "La libertad financiera tiene un número. ¿Cuál es el tuyo?" },
       {
         property: "og:description",
         content:
-          "Controla tus gastos, patrimonio, inversiones y flujo de caja en una sola plataforma. Descubre cómo cada decisión financiera te acerca o aleja de tu número de retiro.",
+          "Controla tus gastos, patrimonio e inversiones y descubre cuánto necesitas para alcanzar tu libertad financiera. Potenciado por IA | Comienza ya",
       },
+
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: "#04100c" },
