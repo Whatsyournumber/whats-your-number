@@ -78,7 +78,7 @@ export function CheckoutWelcome() {
             <div className="mt-6 flex flex-col gap-2">
               <Button onClick={() => setOpen(false)}>{t("Ir a mi dashboard", "Go to my dashboard")}</Button>
               <Button variant="ghost" asChild onClick={() => setOpen(false)}>
-                <Link to="/advisor">{t("Probar el AI Advisor", "Try the AI Advisor")}</Link>
+                <Link to="/advisor">{t("Probar el Asistente IA", "Try the AI Assistant")}</Link>
               </Button>
             </div>
           </motion.div>
