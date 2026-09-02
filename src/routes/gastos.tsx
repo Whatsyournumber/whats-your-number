@@ -172,7 +172,29 @@ function Gastos() {
     () => buildTravelDays(transactions, categories.rules),
     [transactions, categories.rules],
   );
-  const categoryOf = (t: Tx) => categorizeTxWithTravel(t, categories.rules, travelDays);
+  // Reasignaciones manuales: el usuario arrastra un movimiento a otra categoría.
+  const TX_CAT_KEY = "wyn-tx-category-overrides";
+  const [txCat, setTxCat] = useState<Record<string, string>>({});
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(TX_CAT_KEY);
+      if (raw) setTxCat(JSON.parse(raw) as Record<string, string>);
+    } catch {
+      /* noop */
+    }
+  }, []);
+  const moveTxToCategory = (id: string, category: string) => {
+    setTxCat((prev) => {
+      const next = { ...prev, [id]: category };
+      try {
+        localStorage.setItem(TX_CAT_KEY, JSON.stringify(next));
+      } catch {
+        /* noop */
+      }
+      return next;
+    });
+  };
+  const categoryOf = (t: Tx) => txCat[t.id] ?? categorizeTxWithTravel(t, categories.rules, travelDays);
   const [range, setRange] = usePersistedRange(() => buildPresets(t)[0]!.range());
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [detailCat, setDetailCat] = useState<string | null>(null);
@@ -220,7 +242,7 @@ function Gastos() {
       map.set(k, prev);
     }
     return [...map.values()].sort((a, b) => b.amount - a.amount);
-  }, [current, categories.rules]);
+  }, [current, categories.rules, txCat]);
 
   const prevByCategory = useMemo(() => {
     const map = new Map<string, number>();
@@ -229,7 +251,7 @@ function Gastos() {
       map.set(k, (map.get(k) ?? 0) + Math.abs(t.amount));
     }
     return map;
-  }, [previous, categories.rules]);
+  }, [previous, categories.rules, txCat]);
 
   // Gastos fijos prorrateados al rango elegido (30 días -> 90 días, etc.)
   const periodFactor = days / 30;
@@ -267,6 +289,7 @@ function Gastos() {
     }
   };
   const [dragName, setDragName] = useState<string | null>(null);
+  const [dragTx, setDragTx] = useState<{ id: string; from: string } | null>(null);
 
   const detailRows = useMemo(() => {
     // Las categorías base se muestran primero; las creadas por el usuario al final.
@@ -1003,8 +1026,8 @@ function Gastos() {
         variant="minimal"
         title={t("Gastos variables", "Variable expenses")}
         description={t(
-          "Solo categorías con gastos · puedes ordenarlas arrastrándolas y agregar nuevas categorías.",
-          "Only categories with spending · drag to reorder and add new categories.",
+          "Solo categorías con gastos · arrastra para ordenarlas, agregar nuevas o mover un movimiento a otra categoría.",
+          "Only categories with spending · drag to reorder, add new ones or move a transaction to another category.",
         )}
         actions={
           <div className="flex flex-wrap items-center gap-2">
@@ -1026,13 +1049,25 @@ function Gastos() {
               <AccordionItem
                 key={c.name}
                 value={c.name}
-                className={cn("border-border", dragName === c.name && "opacity-60")}
+                className={cn(
+                  "border-border transition-colors",
+                  dragName === c.name && "opacity-60",
+                  dragTx && dragTx.from !== c.name && "rounded-lg ring-1 ring-primary/30",
+                )}
                 onDragOver={(e) => {
-                  if (dragName) e.preventDefault();
+                  if (dragName || dragTx) e.preventDefault();
                 }}
                 onDrop={(e) => {
                   e.preventDefault();
-                  reorderTo(c.name);
+                  if (dragTx) {
+                    if (dragTx.from !== c.name) {
+                      moveTxToCategory(dragTx.id, c.name);
+                      toast.success(t(`Movido a ${tc(c.name)}`, `Moved to ${tc(c.name)}`));
+                    }
+                    setDragTx(null);
+                  } else {
+                    reorderTo(c.name);
+                  }
                   setDragName(null);
                 }}
               >
@@ -1107,7 +1142,21 @@ function Gastos() {
                         .slice()
                         .sort((a: Tx, b: Tx) => (a.tx_date! < b.tx_date! ? 1 : -1))
                         .map((tx: Tx) => (
-                          <li key={tx.id} className="flex items-center gap-3 rounded-lg px-2 py-1 hover:bg-elevated/50">
+                          <li
+                            key={tx.id}
+                            draggable
+                            onDragStart={(e) => {
+                              e.stopPropagation();
+                              setDragTx({ id: tx.id, from: c.name });
+                            }}
+                            onDragEnd={() => setDragTx(null)}
+                            title={t("Arrastra a otra categoría para reasignarlo", "Drag to another category to reassign")}
+                            className={cn(
+                              "flex cursor-grab items-center gap-3 rounded-lg px-2 py-1 hover:bg-elevated/50 active:cursor-grabbing",
+                              dragTx?.id === tx.id && "opacity-50",
+                            )}
+                          >
+                            <GripVertical className="h-3 w-3 shrink-0 text-muted-foreground/40" />
                             <span className="w-16 shrink-0 text-xs text-muted-foreground">
                               {format(parseISO(tx.tx_date!), "d MMM", { locale: es })}
                             </span>
