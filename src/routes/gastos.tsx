@@ -242,7 +242,7 @@ function Gastos() {
       map.set(k, prev);
     }
     return [...map.values()].sort((a, b) => b.amount - a.amount);
-  }, [current, categories.rules]);
+  }, [current, categories.rules, txCat]);
 
   const prevByCategory = useMemo(() => {
     const map = new Map<string, number>();
@@ -251,7 +251,7 @@ function Gastos() {
       map.set(k, (map.get(k) ?? 0) + Math.abs(t.amount));
     }
     return map;
-  }, [previous, categories.rules]);
+  }, [previous, categories.rules, txCat]);
 
   // Gastos fijos prorrateados al rango elegido (30 días -> 90 días, etc.)
   const periodFactor = days / 30;
