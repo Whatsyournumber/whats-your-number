@@ -81,7 +81,7 @@ export function AppSidebar() {
   const secondary = [
     ...familyItems,
     ...affiliateItems,
-    { title: "AI Advisor", url: "/advisor", icon: Bot },
+    { title: t("Asistente IA", "AI Assistant"), url: "/advisor", icon: Bot },
     { title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserCog },
     { title: t("Suscripción", "Subscription"), url: "/suscripcion", icon: CreditCard },
     

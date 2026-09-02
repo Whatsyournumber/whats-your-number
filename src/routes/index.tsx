@@ -374,10 +374,10 @@ export function Landing() {
       icon: Bot,
       number: "03",
       titleLight: t("Pregúntale a tu", "Ask your"),
-      titleAccent: t("IA Financial Advisor.", "AI Financial Advisor."),
+      titleAccent: t("Asistente de IA.", "AI Assistant."),
       desc: t(
-        "Tu asesor conoce tus números, analiza escenarios y te ayuda a tomar mejores decisiones financieras.",
-        "Your advisor knows your numbers, analyzes scenarios and helps you make better financial decisions.",
+        "Tu asistente resume tus números, simula escenarios y te da contenido educativo para entender mejor tus finanzas.",
+        "Your assistant summarizes your numbers, simulates scenarios and gives you educational content to better understand your finances.",
       ),
     },
   ];

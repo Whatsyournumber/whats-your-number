@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/advisor")({
   head: () => ({
     meta: [
-      { title: "AI Advisor — Finance OS" },
+      { title: "Asistente IA — WhatsYournumber" },
       { name: "description", content: "Insights automáticos, detección de gastos inusuales y respuestas en lenguaje natural sobre tus finanzas." },
       { property: "og:title", content: "AI Advisor — Finance OS" },
       { property: "og:description", content: "Tu CFO personal: pregúntale a tus datos financieros en lenguaje natural." },
@@ -155,10 +155,10 @@ function Advisor() {
       <PageShell>
         <PageHeader
           eyebrow={t("Inteligencia", "Intelligence")}
-          title="AI Advisor"
+          title={t("Asistente IA", "AI Assistant")}
           subtitle={t(
-            "Insights automáticos y respuestas en lenguaje natural sobre tu vida financiera.",
-            "Automatic insights and natural language answers about your financial life.",
+            "Resúmenes automáticos y respuestas educativas en lenguaje natural sobre tus propios datos. Contenido educativo, no asesoría financiera.",
+            "Automatic summaries and educational answers in natural language about your own data. Educational content, not financial advice.",
           )}
         />
 
