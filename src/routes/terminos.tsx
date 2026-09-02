@@ -35,8 +35,8 @@ function TerminosPage() {
       <LegalSection title={t("1. Quién presta el servicio", "1. Who provides the service")}>
         <p>
           {t(
-            "WhatsYournumber es operado por el proveedor del servicio. Al usar el servicio contratas directamente con el Proveedor.",
-            "WhatsYournumber is operated by the service provider. By using the service you contract directly with the Provider.",
+            "WhatsYournumber es operado por Oscar Alvarez. Al usar el servicio contratas directamente con Oscar Alvarez.",
+            "WhatsYournumber is operated by Oscar Alvarez. By using the service you contract directly with Oscar Alvarez.",
           )}
         </p>
       </LegalSection>

@@ -35,8 +35,8 @@ function PrivacidadPage() {
       <LegalSection title={t("1. Responsable del tratamiento", "1. Data controller")}>
         <p>
           {t(
-            "El operador de WhatsYournumber actúa como responsable del tratamiento de tus datos personales. Puedes gestionar tus datos y ejercer tus derechos desde tu perfil.",
-            "The operator of WhatsYournumber acts as the data controller for your personal data. You can manage your data and exercise your rights from your profile.",
+            "Oscar Alvarez, operador de WhatsYournumber, actúa como responsable del tratamiento de tus datos personales. Puedes gestionar tus datos y ejercer tus derechos desde tu perfil.",
+            "Oscar Alvarez, operator of WhatsYournumber, acts as the data controller for your personal data. You can manage your data and exercise your rights from your profile.",
           )}
         </p>
       </LegalSection>
