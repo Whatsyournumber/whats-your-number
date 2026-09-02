@@ -118,16 +118,34 @@ export const changePlan = createServerFn({ method: "POST" })
 
     const { data: sub } = await query.order("created_at", { ascending: false }).limit(1).maybeSingle();
 
-    if (
-      !sub ||
-      sub.paddle_subscription_id.startsWith("trial_") ||
-      sub.paddle_subscription_id.startsWith("promo_")
-    ) {
-      return { ok: false, reason: "no_subscription" as const };
+    if (!sub) return { ok: false, reason: "no_subscription" as const };
+
+    // Writes to subscriptions require the service-role client (RLS grants
+    // authenticated SELECT only).
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const isUpgrade = (TIER_RANK[targetProduct] ?? 0) > (TIER_RANK[sub.product_id] ?? 0);
+
+    // Invite-code (promo_) and free-trial (trial_) access: no Paddle
+    // subscription behind it, so the plan switches instantly in the account
+    // (keeps the promo/trial period and the promo price marker intact).
+    const isPromo = sub.paddle_subscription_id.startsWith("promo_");
+    const isTrial = sub.paddle_subscription_id.startsWith("trial_");
+    if (isPromo || isTrial) {
+      const { error } = await supabaseAdmin
+        .from("subscriptions")
+        .update({
+          product_id: targetProduct,
+          ...(isTrial ? { price_id: data.priceId } : {}),
+          access_product_id: null,
+          access_until: null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("paddle_subscription_id", sub.paddle_subscription_id);
+      if (error) throw error;
+      return { ok: true, upgraded: isUpgrade, instant: true } as const;
     }
 
     const env = sub.environment as PaddleEnv;
-    const isUpgrade = (TIER_RANK[targetProduct] ?? 0) > (TIER_RANK[sub.product_id] ?? 0);
 
     const paddle = getPaddleClient(env);
     const priceRes = await gatewayFetch(env, `/prices?external_id=${encodeURIComponent(data.priceId)}`);
@@ -148,7 +166,7 @@ export const changePlan = createServerFn({ method: "POST" })
 
     // The new plan must be persisted here too: the subscription.updated webhook
     // only carries status/period, so without this the user keeps the old tier.
-    await supabase
+    const { error } = await supabaseAdmin
       .from("subscriptions")
       .update({
         ...hold,
@@ -157,8 +175,9 @@ export const changePlan = createServerFn({ method: "POST" })
         updated_at: new Date().toISOString(),
       })
       .eq("paddle_subscription_id", sub.paddle_subscription_id);
+    if (error) throw error;
 
-    return { ok: true, upgraded: isUpgrade } as const;
+    return { ok: true, upgraded: isUpgrade, instant: false } as const;
   });
 
 
