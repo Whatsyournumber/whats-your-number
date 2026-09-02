@@ -1002,7 +1002,10 @@ function Gastos() {
       <Panel
         variant="minimal"
         title={t("Gastos variables", "Variable expenses")}
-        description={t("Solo categorías con gastos; puedes cargarlos manualmente con su fecha.", "Only categories with spending; you can add them manually with their date.")}
+        description={t(
+          "Solo categorías con gastos · puedes ordenarlas arrastrándolas y agregar nuevas categorías.",
+          "Only categories with spending · drag to reorder and add new categories.",
+        )}
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild size="sm" className="gap-2 rounded-full">
