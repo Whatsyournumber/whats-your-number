@@ -328,20 +328,22 @@ function Gastos() {
 
 
   // ---- Comparación mes vs mes ----
+  // Todos los meses con gastos, sin depender del periodo seleccionado arriba.
   const monthKeys = useMemo(() => {
     const set = new Set<string>();
     for (const t of expenses) {
-      if (!inRange(t, from, to)) continue;
-      set.add(format(parseISO(t.tx_date!), "yyyy-MM"));
+      if (!t.tx_date) continue;
+      set.add(format(parseISO(t.tx_date), "yyyy-MM"));
     }
     return [...set].sort().reverse();
-  }, [expenses, from, to]);
+  }, [expenses]);
 
 
   const [monthA, setMonthA] = useState<string | null>(null);
   const [monthB, setMonthB] = useState<string | null>(null);
   const mA = (monthA && monthKeys.includes(monthA) ? monthA : monthKeys[0]) ?? null;
-  const mB = (monthB && monthKeys.includes(monthB) ? monthB : monthKeys[1] ?? monthKeys[0]) ?? null;
+  const defaultB = monthKeys.find((k) => k !== mA) ?? monthKeys[0];
+  const mB = (monthB && monthKeys.includes(monthB) ? monthB : defaultB) ?? null;
 
 
   const monthCompare = useMemo(() => {
