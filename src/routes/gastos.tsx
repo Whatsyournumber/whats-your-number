@@ -11,7 +11,7 @@ import {
   subMonths,
 } from "date-fns";
 import { es } from "date-fns/locale";
-import { BarChart3, CalendarIcon, ChevronDown, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
+import { BarChart3, CalendarIcon, ChevronDown, GripVertical, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { buildTravelDays, categorizeTx, categorizeTxWithTravel } from "@/lib/categorize";
@@ -247,6 +247,27 @@ function Gastos() {
 
   // Categorías con gastos visibles por defecto; toggle para ver vacías
   const showEmptyCategories = false;
+  // Orden manual (drag & drop) persistido localmente
+  const CAT_ORDER_KEY = "wyn-category-order";
+  const [catOrder, setCatOrder] = useState<string[]>([]);
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(CAT_ORDER_KEY);
+      if (raw) setCatOrder(JSON.parse(raw) as string[]);
+    } catch {
+      /* noop */
+    }
+  }, []);
+  const persistOrder = (next: string[]) => {
+    setCatOrder(next);
+    try {
+      localStorage.setItem(CAT_ORDER_KEY, JSON.stringify(next));
+    } catch {
+      /* noop */
+    }
+  };
+  const [dragName, setDragName] = useState<string | null>(null);
+
   const detailRows = useMemo(() => {
     // Las categorías base se muestran primero; las creadas por el usuario al final.
     const customNames = new Set(categories.items.map((i) => i.name.trim()).filter(Boolean));
@@ -258,9 +279,28 @@ function Gastos() {
       map.delete(name);
     }
     const rest = Array.from(map.values()).filter((c) => c.amount > 0 || showEmptyCategories);
-    // Siempre de mayor a menor monto, sin importar si la categoría es propia o base.
-    return [...ordered, ...rest].sort((a, b) => b.amount - a.amount);
-  }, [byCategory, categories.names, categories.items, showEmptyCategories]);
+    const all = [...ordered, ...rest].sort((a, b) => b.amount - a.amount);
+    if (catOrder.length === 0) return all;
+    const idx = (n: string) => {
+      const i = catOrder.indexOf(n);
+      return i === -1 ? Number.MAX_SAFE_INTEGER : i;
+    };
+    return all.slice().sort((a, b) => {
+      const d = idx(a.name) - idx(b.name);
+      return d !== 0 ? d : b.amount - a.amount;
+    });
+  }, [byCategory, categories.names, categories.items, showEmptyCategories, catOrder]);
+
+  const reorderTo = (target: string) => {
+    if (!dragName || dragName === target) return;
+    const base = detailRows.map((r) => r.name);
+    const from = base.indexOf(dragName);
+    const to = base.indexOf(target);
+    if (from === -1 || to === -1) return;
+    const next = base.slice();
+    next.splice(to, 0, next.splice(from, 1)[0]!);
+    persistOrder(next);
+  };
 
 
 
@@ -962,7 +1002,10 @@ function Gastos() {
       <Panel
         variant="minimal"
         title={t("Gastos variables", "Variable expenses")}
-        description={t("Solo categorías con gastos; puedes cargarlos manualmente con su fecha.", "Only categories with spending; you can add them manually with their date.")}
+        description={t(
+          "Solo categorías con gastos · puedes ordenarlas arrastrándolas y agregar nuevas categorías.",
+          "Only categories with spending · drag to reorder and add new categories.",
+        )}
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild size="sm" className="gap-2 rounded-full">
@@ -980,9 +1023,38 @@ function Gastos() {
             const prev = prevByCategory.get(c.name) ?? 0;
             const variation = prev > 0 ? ((c.amount - prev) / prev) * 100 : null;
             return (
-              <AccordionItem key={c.name} value={c.name} className="border-border">
+              <AccordionItem
+                key={c.name}
+                value={c.name}
+                className={cn("border-border", dragName === c.name && "opacity-60")}
+                onDragOver={(e) => {
+                  if (dragName) e.preventDefault();
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  reorderTo(c.name);
+                  setDragName(null);
+                }}
+              >
                 <AccordionTrigger className="py-2 hover:no-underline">
                   <div className="flex w-full min-w-0 items-center gap-2 pr-2 sm:gap-3 sm:pr-3">
+                    <span
+                      draggable
+                      onDragStart={(e) => {
+                        e.stopPropagation();
+                        setDragName(c.name);
+                      }}
+                      onDragEnd={() => setDragName(null)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      aria-label={t("Arrastrar para reordenar", "Drag to reorder")}
+                      title={t("Arrastrar para reordenar", "Drag to reorder")}
+                      className="shrink-0 cursor-grab text-muted-foreground/50 transition hover:text-foreground active:cursor-grabbing"
+                    >
+                      <GripVertical className="h-3.5 w-3.5" />
+                    </span>
                     <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
                     <span className="min-w-0 flex-1 truncate text-left text-sm font-medium">{tc(c.name)}</span>
                     <span
