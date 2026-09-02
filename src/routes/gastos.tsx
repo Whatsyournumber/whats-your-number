@@ -1141,7 +1141,21 @@ function Gastos() {
                         .slice()
                         .sort((a: Tx, b: Tx) => (a.tx_date! < b.tx_date! ? 1 : -1))
                         .map((tx: Tx) => (
-                          <li key={tx.id} className="flex items-center gap-3 rounded-lg px-2 py-1 hover:bg-elevated/50">
+                          <li
+                            key={tx.id}
+                            draggable
+                            onDragStart={(e) => {
+                              e.stopPropagation();
+                              setDragTx({ id: tx.id, from: c.name });
+                            }}
+                            onDragEnd={() => setDragTx(null)}
+                            title={t("Arrastra a otra categoría para reasignarlo", "Drag to another category to reassign")}
+                            className={cn(
+                              "flex cursor-grab items-center gap-3 rounded-lg px-2 py-1 hover:bg-elevated/50 active:cursor-grabbing",
+                              dragTx?.id === tx.id && "opacity-50",
+                            )}
+                          >
+                            <GripVertical className="h-3 w-3 shrink-0 text-muted-foreground/40" />
                             <span className="w-16 shrink-0 text-xs text-muted-foreground">
                               {format(parseISO(tx.tx_date!), "d MMM", { locale: es })}
                             </span>
