@@ -39,6 +39,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useRoles } from "@/hooks/use-role";
+import { useT, useLanguage } from "@/hooks/use-language";
 import { blogPosts } from "@/lib/blog-posts";
 import { auditAllPosts, MIN_WORDS, type PostAudit } from "@/lib/blog-audit";
 import {
@@ -110,6 +111,7 @@ function pct(value: number) {
 }
 
 function BlogBackOffice() {
+  const t = useT();
   const { isAdmin, loading } = useRoles();
   const [days, setDays] = useState(28);
 
@@ -667,10 +669,12 @@ function BlogBackOffice() {
         <TabsContent value="checklist" className="space-y-6">
           <Panel className="p-6">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-lg font-semibold">Checklist SEO / GEO por artículo</h2>
+              <h2 className="text-lg font-semibold">{t("Checklist SEO / GEO por artículo", "SEO / GEO checklist per article")}</h2>
               <span className="text-sm text-muted-foreground">
-                {totalWords.toLocaleString("es-ES")} palabras en total · objetivo {MIN_WORDS.toLocaleString("es-ES")} por
-                artículo
+                {t(
+                  `${totalWords.toLocaleString("es-ES")} palabras en total · objetivo ${MIN_WORDS.toLocaleString("es-ES")} por artículo`,
+                  `${totalWords.toLocaleString("en-US")} words in total · target ${MIN_WORDS.toLocaleString("en-US")} per article`,
+                )}
               </span>
             </div>
             <div className="space-y-4">
@@ -731,6 +735,9 @@ function BlogBackOffice() {
 
 function AuditCard({ audit, date }: { audit: PostAudit; date?: string | undefined }) {
   const [open, setOpen] = useState(false);
+  const { lang } = useLanguage();
+  const t = useT();
+  const locale = lang === "en" ? "en-US" : "es-ES";
   return (
     <div className="rounded-xl border border-border/60 p-4">
       <button type="button" onClick={() => setOpen((v) => !v)} className="w-full text-left">
@@ -738,8 +745,11 @@ function AuditCard({ audit, date }: { audit: PostAudit; date?: string | undefine
           <div className="min-w-0 flex-1">
             <p className="truncate font-medium">{audit.title}</p>
             <p className="text-xs text-muted-foreground">
-              {date ? `Publicado el ${date} · ` : ""}
-              {audit.words.toLocaleString("es-ES")} palabras · {audit.images} imágenes
+              {date ? `${t("Publicado el", "Published")} ${date} · ` : ""}
+              {t(
+                `${audit.words.toLocaleString(locale)} palabras · ${audit.images} imágenes`,
+                `${audit.words.toLocaleString(locale)} words · ${audit.images} images`,
+              )}
             </p>
           </div>
           <Badge variant={audit.score === 100 ? "default" : "secondary"}>{audit.score}%</Badge>
@@ -755,8 +765,8 @@ function AuditCard({ audit, date }: { audit: PostAudit; date?: string | undefine
               ) : (
                 <XCircle className="h-4 w-4 shrink-0 text-destructive" />
               )}
-              <span className={check.ok ? "" : "text-destructive"}>{check.label.es}</span>
-              <span className="ml-auto text-xs text-muted-foreground">{check.detail}</span>
+              <span className={check.ok ? "" : "text-destructive"}>{check.label[lang]}</span>
+              <span className="ml-auto text-xs text-muted-foreground">{check.detail[lang]}</span>
             </li>
           ))}
         </ul>
