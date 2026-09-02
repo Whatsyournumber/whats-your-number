@@ -89,7 +89,7 @@ export function useFixedExpenses() {
         remote = local;
       }
       if (cancelled) return;
-      setItems(remote);
+      setCustom(remote);
       try {
         window.localStorage.setItem(KEY, JSON.stringify(remote));
       } catch {
