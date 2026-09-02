@@ -172,7 +172,29 @@ function Gastos() {
     () => buildTravelDays(transactions, categories.rules),
     [transactions, categories.rules],
   );
-  const categoryOf = (t: Tx) => categorizeTxWithTravel(t, categories.rules, travelDays);
+  // Reasignaciones manuales: el usuario arrastra un movimiento a otra categoría.
+  const TX_CAT_KEY = "wyn-tx-category-overrides";
+  const [txCat, setTxCat] = useState<Record<string, string>>({});
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(TX_CAT_KEY);
+      if (raw) setTxCat(JSON.parse(raw) as Record<string, string>);
+    } catch {
+      /* noop */
+    }
+  }, []);
+  const moveTxToCategory = (id: string, category: string) => {
+    setTxCat((prev) => {
+      const next = { ...prev, [id]: category };
+      try {
+        localStorage.setItem(TX_CAT_KEY, JSON.stringify(next));
+      } catch {
+        /* noop */
+      }
+      return next;
+    });
+  };
+  const categoryOf = (t: Tx) => txCat[t.id] ?? categorizeTxWithTravel(t, categories.rules, travelDays);
   const [range, setRange] = usePersistedRange(() => buildPresets(t)[0]!.range());
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [detailCat, setDetailCat] = useState<string | null>(null);
