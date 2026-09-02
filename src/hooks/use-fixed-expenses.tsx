@@ -52,9 +52,13 @@ export function useFixedExpenses() {
         return [];
       }
     };
+    // Solo reemplaza los personalizados: las filas estándar (onboarding) ya
+    // presentes se conservan aunque el perfil haya llegado antes que esta carga.
+    const setCustom = (custom: FixedExpense[]) =>
+      setItems((prev) => [...prev.filter((i) => onboardingKeys.has(i.id)), ...custom]);
 
     const local = readLocal();
-    if (local.length) setItems(local);
+    if (local.length) setCustom(local);
 
     if (!userId) {
       setHydrated(true);
@@ -85,7 +89,7 @@ export function useFixedExpenses() {
         remote = local;
       }
       if (cancelled) return;
-      setItems(remote);
+      setCustom(remote);
       try {
         window.localStorage.setItem(KEY, JSON.stringify(remote));
       } catch {
