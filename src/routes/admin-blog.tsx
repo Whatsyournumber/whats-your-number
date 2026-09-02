@@ -766,7 +766,7 @@ function AuditCard({ audit, date }: { audit: PostAudit; date?: string | undefine
                 <XCircle className="h-4 w-4 shrink-0 text-destructive" />
               )}
               <span className={check.ok ? "" : "text-destructive"}>{check.label[lang]}</span>
-              <span className="ml-auto text-xs text-muted-foreground">{check.detail}</span>
+              <span className="ml-auto text-xs text-muted-foreground">{check.detail[lang]}</span>
             </li>
           ))}
         </ul>
