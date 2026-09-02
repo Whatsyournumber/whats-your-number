@@ -668,10 +668,12 @@ function BlogBackOffice() {
         <TabsContent value="checklist" className="space-y-6">
           <Panel className="p-6">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-lg font-semibold">Checklist SEO / GEO por artículo</h2>
+              <h2 className="text-lg font-semibold">{t("Checklist SEO / GEO por artículo", "SEO / GEO checklist per article")}</h2>
               <span className="text-sm text-muted-foreground">
-                {totalWords.toLocaleString("es-ES")} palabras en total · objetivo {MIN_WORDS.toLocaleString("es-ES")} por
-                artículo
+                {t(
+                  `${totalWords.toLocaleString("es-ES")} palabras en total · objetivo ${MIN_WORDS.toLocaleString("es-ES")} por artículo`,
+                  `${totalWords.toLocaleString("en-US")} words in total · target ${MIN_WORDS.toLocaleString("en-US")} per article`,
+                )}
               </span>
             </div>
             <div className="space-y-4">
