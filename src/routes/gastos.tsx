@@ -542,56 +542,63 @@ function Gastos() {
         title={t("¿En qué se fue mi dinero?", "Where did my money go?")}
         subtitle={t("Gastos fijos + variable de tus estados de cuenta, comparado periodo a periodo.", "Fixed + variable spend from your statements, compared period over period.")}
         actions={
-          <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
-            <PopoverTrigger asChild>
-              <Button variant="outline" className="justify-start gap-2 text-left font-normal">
-                <CalendarIcon className="h-4 w-4" />
-                <span className="text-xs md:text-sm">{rangeLabel}</span>
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="end">
-              <div className="flex flex-wrap gap-1.5 border-b border-border p-3">
-                {presets.map((p) => (
-                  <Button
-                    key={p.id}
-                    size="sm"
-                    variant="secondary"
-                    className="h-7 rounded-full text-[11px]"
-                    onClick={() => {
-                      setRange(p.range());
-                      setCalendarOpen(false);
-                    }}
-                  >
-                    {p.label}
+          <div className="flex flex-wrap items-center gap-2">
+            <Button asChild size="sm" className="gap-2 rounded-full">
+              <Link to="/configuracion">
+                <Upload className="h-3.5 w-3.5" />
+                {t("Importar gastos", "Import expenses")}
+              </Link>
+            </Button>
+            <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="justify-start gap-2 text-left font-normal">
+                  <CalendarIcon className="h-4 w-4" />
+                  <span className="text-xs md:text-sm">{rangeLabel}</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="end">
+                <div className="flex flex-wrap gap-1.5 border-b border-border p-3">
+                  {presets.map((p) => (
+                    <Button
+                      key={p.id}
+                      size="sm"
+                      variant="secondary"
+                      className="h-7 rounded-full text-[11px]"
+                      onClick={() => {
+                        setRange(p.range());
+                        setCalendarOpen(false);
+                      }}
+                    >
+                      {p.label}
+                    </Button>
+                  ))}
+                </div>
+                <div className="flex items-center gap-2 border-b border-border px-3 py-2 text-xs">
+                  <span className="text-muted-foreground">{t("Inicio", "Start")}:</span>
+                  <span className="font-medium">{range?.from ? format(range.from, "d MMM yyyy", { locale: es }) : "—"}</span>
+                  <span className="text-muted-foreground">{t("Fin", "End")}:</span>
+                  <span className="font-medium">{range?.to ? format(range.to, "d MMM yyyy", { locale: es }) : "—"}</span>
+                </div>
+                <Calendar
+                  mode="range"
+                  selected={range}
+                  defaultMonth={range?.from ?? new Date()}
+                  onDayClick={handleDayClick}
+                  numberOfMonths={2}
+                  locale={es}
+                  className={cn("p-3 pointer-events-auto")}
+                />
+                <div className="flex items-center justify-between gap-2 border-t border-border p-3">
+                  <Button size="sm" variant="ghost" onClick={() => setRange(presets[0]!.range())}>
+                    {t("Restablecer", "Reset")}
                   </Button>
-                ))}
-              </div>
-              <div className="flex items-center gap-2 border-b border-border px-3 py-2 text-xs">
-                <span className="text-muted-foreground">{t("Inicio", "Start")}:</span>
-                <span className="font-medium">{range?.from ? format(range.from, "d MMM yyyy", { locale: es }) : "—"}</span>
-                <span className="text-muted-foreground">{t("Fin", "End")}:</span>
-                <span className="font-medium">{range?.to ? format(range.to, "d MMM yyyy", { locale: es }) : "—"}</span>
-              </div>
-              <Calendar
-                mode="range"
-                selected={range}
-                defaultMonth={range?.from ?? new Date()}
-                onDayClick={handleDayClick}
-                numberOfMonths={2}
-                locale={es}
-                className={cn("p-3 pointer-events-auto")}
-              />
-              <div className="flex items-center justify-between gap-2 border-t border-border p-3">
-                <Button size="sm" variant="ghost" onClick={() => setRange(presets[0]!.range())}>
-                  {t("Restablecer", "Reset")}
-                </Button>
-                <Button size="sm" disabled={!range?.from || !range?.to} onClick={() => setCalendarOpen(false)}>
-                  {t("Aplicar", "Apply")}
-                </Button>
-              </div>
-            </PopoverContent>
-          </Popover>
-
+                  <Button size="sm" disabled={!range?.from || !range?.to} onClick={() => setCalendarOpen(false)}>
+                    {t("Aplicar", "Apply")}
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
         }
       />
 
