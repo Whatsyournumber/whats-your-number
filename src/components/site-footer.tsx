@@ -18,7 +18,7 @@ function openExternalSocial(event: React.MouseEvent<HTMLAnchorElement>, href: st
   if (externalWindow) externalWindow.opener = null;
 }
 
-type FooterLink = { label: string; to: string; policy?: boolean; external?: boolean; anchor?: boolean };
+type FooterLink = { label: string; to: string; policy?: boolean; external?: boolean; anchor?: boolean; className?: string };
 
 export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolean; affiliates?: boolean } = {}) {
   const t = useT();
@@ -31,24 +31,26 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
   const demoHref = lang === "en" ? "/en/financial-freedom-calculator?start=1" : "/calculadora-libertad-financiera?start=1";
 
   const linkClass = "text-left text-sm text-muted-foreground transition-colors hover:text-primary";
-  const renderLink = (l: FooterLink) =>
-    l.policy ? (
-      <button type="button" onClick={() => setPoliciesOpen(true)} className={linkClass}>
+  const renderLink = (l: FooterLink) => {
+    const className = [linkClass, l.className].filter(Boolean).join(" ");
+    return l.policy ? (
+      <button type="button" onClick={() => setPoliciesOpen(true)} className={className}>
         {l.label}
       </button>
     ) : l.anchor ? (
-      <a href={l.to} className={linkClass}>
+      <a href={l.to} className={className}>
         {l.label}
       </a>
     ) : l.external ? (
-      <a href={l.to} target="_blank" rel="noopener noreferrer" className={linkClass}>
+      <a href={l.to} target="_blank" rel="noopener noreferrer" className={className}>
         {l.label}
       </a>
     ) : (
-      <Link to={l.to} className={linkClass}>
+      <Link to={l.to} className={className}>
         {l.label}
       </Link>
     );
+  };
 
 
   const columns = [
@@ -92,7 +94,7 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
             title: t("Recursos", "Resources"),
             links: [
                { label: "Blog", to: blogHref },
-               { label: t("Calculador de libertad financiera", "Financial freedom calculator"), to: lang === "en" ? "/en/college-savings-calculator" : "/calculadora-ahorro-universidad" },
+               { label: t("Calculador de libertad financiera", "Financial freedom calculator"), to: lang === "en" ? "/en/college-savings-calculator" : "/calculadora-ahorro-universidad", className: "whitespace-nowrap text-xs md:text-[13px]" },
                { label: t("Finanzas para adultos", "Adult finance"), to: homeHref },
             ],
           }
@@ -100,7 +102,7 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
             title: t("Recursos", "Resources"),
             links: [
                { label: "Blog", to: blogHref },
-               { label: t("Calculador de libertad financiera", "Financial freedom calculator"), to: demoHref },
+               { label: t("Calculador de libertad financiera", "Financial freedom calculator"), to: demoHref, className: "whitespace-nowrap text-xs md:text-[13px]" },
                { label: t("Finanzas para niños", "Kids finance"), to: kidsHref, external: true },
             ],
           },
@@ -149,7 +151,7 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
           >
             <div className="mx-auto w-full max-w-6xl px-6 pt-14 pb-6">
               {/* Desktop layout */}
-              <div className="hidden md:grid md:grid-cols-[1.6fr_repeat(3,1fr)] md:gap-12">
+              <div className="hidden md:grid md:grid-cols-[1.6fr_repeat(3,1fr)] md:gap-14">
                 <div>
                   {kids ? <KidsBrandLogo /> : <BrandLogo />}
                   <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
@@ -194,7 +196,7 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-8">
+                <div className="grid grid-cols-2 gap-10">
                   {columns.map((col) => (
                     <div key={col.title}>
                       <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground">{col.title}</h3>
