@@ -119,10 +119,10 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
       type="button"
       onClick={() => setOpen((v) => !v)}
       aria-label={open ? t("Cerrar menú", "Close menu") : t("Abrir menú", "Open menu")}
-      className="group absolute left-1/2 top-0 z-20 -translate-x-1/2 -translate-y-1/2"
+      className="group absolute left-1/2 top-0 z-30 -translate-x-1/2 -translate-y-1/2"
     >
       <div className="relative flex h-16 w-28 items-center justify-center overflow-hidden">
-        <div className="absolute bottom-0 h-14 w-14 rounded-full bg-elevated/90 ring-1 ring-border/60 transition-transform duration-300 group-hover:scale-105 group-active:scale-95" />
+        <div className="absolute bottom-0 h-14 w-14 rounded-full bg-elevated ring-1 ring-border/60 transition-transform duration-300 group-hover:scale-105 group-active:scale-95" />
         <motion.div
           animate={{ rotate: open ? 135 : 0 }}
           transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
