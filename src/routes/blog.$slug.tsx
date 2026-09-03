@@ -503,23 +503,23 @@ export function BlogArticleView({ slug }: { slug: string }) {
           <p className="font-display text-lg font-semibold leading-snug">
             {isKids
               ? t(
-                  "Prueba el demo gratis y descubre el número de tu hijo a los 18",
-                  "Try the free demo and discover your child's number at 18",
+                  "Prueba la calculadora gratis y descubre el número de tu hijo a los 18",
+                  "Try the free calculator and discover your child's number at 18",
                 )
               : t(
-                  "Prueba el demo gratis y entiende tu libertad financiera",
-                  "Try the free demo and understand your financial freedom",
+                  "Prueba la calculadora gratis y entiende tu libertad financiera",
+                  "Try the free calculator and understand your financial freedom",
                 )}
           </p>
           <p className="mt-2 max-w-xl text-sm text-muted-foreground">
             {isKids
               ? t(
-                  "Haz el demo gratis en minutos: calcula cuánto tendrá tu hijo invirtiendo en el S&P 500 al 10% anual. Si ya tienes cuenta, entra y continúa donde lo dejaste.",
-                  "Take the free demo in minutes: calculate what your child will have investing in the S&P 500 at 10% a year. Already have an account? Sign in and pick up where you left off.",
+                  "Haz la calculadora gratis en minutos: calcula cuánto tendrá tu hijo invirtiendo en el S&P 500 al 10% anual. Si ya tienes cuenta, entra y continúa donde lo dejaste.",
+                  "Use the free calculator in minutes: calculate what your child will have investing in the S&P 500 at 10% a year. Already have an account? Sign in and pick up where you left off.",
                 )
               : t(
-                  "Haz el demo gratis en minutos: calcula tu patrimonio, tu runway y tu número sin pagar nada. Si ya tienes cuenta, entra y continúa donde lo dejaste.",
-                  "Take the free demo in minutes: calculate your net worth, runway and number at no cost. Already have an account? Sign in and pick up where you left off.",
+                  "Haz la calculadora gratis en minutos: calcula tu patrimonio, tu runway y tu número sin pagar nada. Si ya tienes cuenta, entra y continúa donde lo dejaste.",
+                  "Use the free calculator in minutes: calculate your net worth, runway and number at no cost. Already have an account? Sign in and pick up where you left off.",
                 )}
           </p>
           <div className="mt-5 flex flex-wrap items-center gap-3">
