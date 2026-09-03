@@ -242,18 +242,86 @@ export function ManualExpenseDialog({
 
           <div className="grid gap-1.5">
             <Label>{t("Categoría", "Category")}</Label>
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="max-h-72">
-                {categories.map((name) => (
-                  <SelectItem key={name} value={name}>
-                    {translateCategory(name, lang)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Popover open={catOpen} onOpenChange={setCatOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={catOpen}
+                  className="justify-between font-normal"
+                >
+                  <span>{translateCategory(category, lang)}</span>
+                  <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                <Command filter={(value, search) => value.toLowerCase().includes(search.toLowerCase()) ? 1 : 0}>
+                  <CommandInput
+                    placeholder={t("Buscar o crear categoría", "Search or create category")}
+                    value={catQuery}
+                    onValueChange={setCatQuery}
+                  />
+                  <CommandList>
+                    <CommandEmpty>
+                      {canCreate ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const name = normalizedQuery;
+                            onAddCategory?.(name);
+                            setCategory(name);
+                            setCatQuery("");
+                            setCatOpen(false);
+                          }}
+                          className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-accent-foreground hover:bg-accent"
+                        >
+                          <Plus className="h-4 w-4" />
+                          {t("Crear", "Create")} “{normalizedQuery}”
+                        </button>
+                      ) : (
+                        t("No se encontraron categorías", "No categories found")
+                      )}
+                    </CommandEmpty>
+                    <CommandGroup>
+                      {categories.map((name) => (
+                        <CommandItem
+                          key={name}
+                          value={name}
+                          onSelect={() => {
+                            setCategory(name);
+                            setCatQuery("");
+                            setCatOpen(false);
+                          }}
+                        >
+                          <span className="flex-1">{translateCategory(name, lang)}</span>
+                          {category === name && <Check className="h-4 w-4" />}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                    {canCreate && (
+                      <>
+                        <CommandSeparator />
+                        <CommandGroup>
+                          <CommandItem
+                            value={`__create__${normalizedQuery}`}
+                            onSelect={() => {
+                              const name = normalizedQuery;
+                              onAddCategory?.(name);
+                              setCategory(name);
+                              setCatQuery("");
+                              setCatOpen(false);
+                            }}
+                          >
+                            <Plus className="mr-2 h-4 w-4" />
+                            {t("Crear categoría", "Create category")} “{normalizedQuery}”
+                          </CommandItem>
+                        </CommandGroup>
+                      </>
+                    )}
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div className="grid gap-1.5">
