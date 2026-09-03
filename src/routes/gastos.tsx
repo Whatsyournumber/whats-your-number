@@ -1013,8 +1013,8 @@ function Gastos() {
         variant="minimal"
         title={t("Gastos variables", "Variable expenses")}
         description={t(
-          "Solo categorías con gastos · arrastra para ordenarlas, agregar nuevas o mover un movimiento a otra categoría.",
-          "Only categories with spending · drag to reorder, add new ones or move a transaction to another category.",
+          "Solo categorías con gastos · ordenadas de mayor a menor. Arrastra un movimiento a otra categoría para reasignarlo.",
+          "Only categories with spending · sorted highest to lowest. Drag a transaction to another category to reassign it.",
         )}
         actions={
           <div className="flex flex-wrap items-center gap-2">
@@ -1038,11 +1038,10 @@ function Gastos() {
                 value={c.name}
                 className={cn(
                   "border-border transition-colors",
-                  dragName === c.name && "opacity-60",
                   dragTx && dragTx.from !== c.name && "rounded-lg ring-1 ring-primary/30",
                 )}
                 onDragOver={(e) => {
-                  if (dragName || dragTx) e.preventDefault();
+                  if (dragTx) e.preventDefault();
                 }}
                 onDrop={(e) => {
                   e.preventDefault();
@@ -1052,31 +1051,11 @@ function Gastos() {
                       toast.success(t(`Movido a ${tc(c.name)}`, `Moved to ${tc(c.name)}`));
                     }
                     setDragTx(null);
-                  } else {
-                    reorderTo(c.name);
                   }
-                  setDragName(null);
                 }}
               >
                 <AccordionTrigger className="py-2 hover:no-underline">
                   <div className="flex w-full min-w-0 items-center gap-2 pr-2 sm:gap-3 sm:pr-3">
-                    <span
-                      draggable
-                      onDragStart={(e) => {
-                        e.stopPropagation();
-                        setDragName(c.name);
-                      }}
-                      onDragEnd={() => setDragName(null)}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                      }}
-                      aria-label={t("Arrastrar para reordenar", "Drag to reorder")}
-                      title={t("Arrastrar para reordenar", "Drag to reorder")}
-                      className="shrink-0 cursor-grab text-muted-foreground/50 transition hover:text-foreground active:cursor-grabbing"
-                    >
-                      <GripVertical className="h-3.5 w-3.5" />
-                    </span>
                     <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
                     <span className="min-w-0 flex-1 truncate text-left text-sm font-medium">{tc(c.name)}</span>
                     <span
