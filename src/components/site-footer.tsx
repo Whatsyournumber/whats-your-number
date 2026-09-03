@@ -196,7 +196,7 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-8">
+                <div className="grid grid-cols-2 gap-10">
                   {columns.map((col) => (
                     <div key={col.title}>
                       <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground">{col.title}</h3>
