@@ -158,7 +158,7 @@ function DemoCard() {
   const demoTo = lang === "en" ? "/en/financial-freedom-calculator" : "/calculadora-libertad-financiera";
 
   const steps = [
-    { label: t("Gasto mensual ideal", "Ideal monthly spending"), value: "€5,000" },
+    { label: t("Salario mensual pasivo deseado", "Desired passive monthly salary"), value: "€5,000" },
     { label: t("Patrimonio hoy", "Net worth today"), value: "€350,000" },
     { label: t("Tu número", "Your number"), value: "€1.5M" },
   ];
@@ -195,7 +195,7 @@ function DemoCard() {
             <div className="max-w-md text-center md:text-left">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                 <Sparkles className="h-3.5 w-3.5" />
-                {t("Demo gratis", "Free demo")}
+                {t("Calculadora de libertad financiera gratis", "Free financial freedom calculator")}
               </span>
               <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight md:text-3xl">
                 {t("Descubre tu número en 30 segundos", "Discover your number in 30 seconds")}
@@ -714,7 +714,7 @@ export function Landing() {
                 <div className="mt-5 flex flex-wrap items-center gap-3">
                   <Button asChild size="lg" className="gap-2 rounded-full px-6">
                     <Link to={demoTo} search={{ start: 1 }}>
-                      {t("Probar demo gratis", "Try free demo")} <ArrowRight className="h-4 w-4" />
+                      {t("Probar calculadora gratis", "Try free calculator")} <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Button>
                   <Button asChild size="lg" variant="outline" className="rounded-full px-6">

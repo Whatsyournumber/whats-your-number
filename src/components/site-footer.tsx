@@ -92,7 +92,7 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
             title: t("Recursos", "Resources"),
             links: [
                { label: "Blog", to: blogHref },
-               { label: t("Demo gratis", "Free demo"), to: lang === "en" ? "/en/college-savings-calculator" : "/calculadora-ahorro-universidad" },
+               { label: t("Calculadora de libertad financiera gratis", "Free financial freedom calculator"), to: lang === "en" ? "/en/college-savings-calculator" : "/calculadora-ahorro-universidad" },
                { label: t("Finanzas para adultos", "Adult finance"), to: homeHref },
             ],
           }
@@ -100,7 +100,7 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
             title: t("Recursos", "Resources"),
             links: [
                { label: "Blog", to: blogHref },
-               { label: t("Demo gratis", "Free demo"), to: demoHref },
+               { label: t("Calculadora de libertad financiera gratis", "Free financial freedom calculator"), to: demoHref },
                { label: t("Finanzas para niños", "Kids finance"), to: kidsHref, external: true },
             ],
           },
