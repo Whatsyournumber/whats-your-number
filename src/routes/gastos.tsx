@@ -41,7 +41,7 @@ import { useCategories } from "@/hooks/use-categories";
 
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useProfile } from "@/hooks/use-profile";
-import { useTransactions, type Tx } from "@/hooks/use-transactions";
+import { useTransactions, sameMerchant, type Tx } from "@/hooks/use-transactions";
 import { compact, FIXED_FIELDS, money } from "@/lib/onboarding";
 import { getSpendAdvice } from "@/lib/spend-advice.functions";
 import { getPaddleEnvironment } from "@/lib/paddle";
@@ -218,7 +218,25 @@ function Gastos() {
   const prevTo = subDays(from, 1);
   const prevFrom = subDays(prevTo, days - 1);
 
-  const expenses = useMemo(() => transactions.filter(isExpense), [transactions]);
+  // Si un movimiento coincide en importe y nombre con un gasto fijo,
+  // se cuenta solo como fijo y no se duplica en variables.
+  const matchesFixed = useMemo(() => {
+    const rows = fixed.items
+      .filter((i) => Number(i.amount) > 0)
+      .map((i) => ({ amount: Math.abs(Number(i.amount)).toFixed(2), name: i.name }));
+    return (t: Tx) => {
+      const amount = Math.abs(Number(t.amount)).toFixed(2);
+      return rows.some(
+        (r) => r.amount === amount && (sameMerchant(r.name, t.merchant) || sameMerchant(r.name, t.description)),
+      );
+    };
+  }, [fixed.items]);
+
+  const expenses = useMemo(
+    () => transactions.filter((t) => isExpense(t) && !matchesFixed(t)),
+    [transactions, matchesFixed],
+  );
+
   const current = useMemo(() => expenses.filter((t) => inRange(t, from, to)), [expenses, from, to]);
   const previous = useMemo(() => expenses.filter((t) => inRange(t, prevFrom, prevTo)), [expenses, prevFrom, prevTo]);
 
