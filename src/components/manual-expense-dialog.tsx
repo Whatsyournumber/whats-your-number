@@ -71,7 +71,13 @@ async function ensureManualStatement(userId: string) {
   return data.id;
 }
 
-export function ManualExpenseDialog({ categories }: { categories: string[] }) {
+export function ManualExpenseDialog({
+  categories,
+  onAddCategory,
+}: {
+  categories: string[];
+  onAddCategory?: (name: string) => void;
+}) {
   const t = useT();
   const { lang } = useLanguage();
   const { user } = useAuth();
@@ -85,8 +91,15 @@ export function ManualExpenseDialog({ categories }: { categories: string[] }) {
   const [amount, setAmount] = useState<number>(0);
   const [precision, setPrecision] = useState<"day" | "month">("day");
   const [saving, setSaving] = useState(false);
+  const [catOpen, setCatOpen] = useState(false);
+  const [catQuery, setCatQuery] = useState("");
 
   const currency = (profile?.currency as string) || "EUR";
+
+  const normalizedQuery = catQuery.trim();
+  const canCreate =
+    normalizedQuery.length > 0 &&
+    !categories.some((c) => c.toLowerCase() === normalizedQuery.toLowerCase());
 
   /** Fecha efectiva: día exacto o primer día del mes seleccionado. */
   const effectiveDate = precision === "month" ? new Date(date.getFullYear(), date.getMonth(), 1) : date;
