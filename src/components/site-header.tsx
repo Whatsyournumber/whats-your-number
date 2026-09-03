@@ -73,7 +73,7 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
       {tab.label === "demo" ? (
         <span className="inline-flex items-center gap-1.5 text-primary">
           <Sparkles className="h-3.5 w-3.5" />
-          {t("Calculadora de libertad financiera gratis", "Free financial freedom calculator")}
+          {t("Demo gratis", "Free demo")}
         </span>
       ) : (
         tab.label
