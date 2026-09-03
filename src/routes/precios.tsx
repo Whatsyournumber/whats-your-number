@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { ArrowRight, Check, CreditCard, ShieldCheck, Sparkles, Target, Zap } from "lucide-react";
+import { ArrowRight, Check, ShieldCheck, Sparkles, Target, Zap } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { PricingComparison, PricingFaq } from "@/components/pricing-comparison";
-import { PromoCodeRedeem } from "@/components/promo-code-redeem";
 import { SiteFooter } from "@/components/site-footer";
 import { PaymentTestModeBanner } from "@/components/payment-test-mode-banner";
 import { Button } from "@/components/ui/button";
