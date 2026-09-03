@@ -368,6 +368,12 @@ function AuthPage() {
 
   useEffect(() => {
     if (loading || !user) return;
+    // Flujo de afiliado: cualquier cuenta (nueva o existente, con o sin
+    // onboarding) sigue directo al wizard de afiliados.
+    if (isAffiliate) {
+      goNext(next, "/afiliados", navigate);
+      return;
+    }
     const pendingPlan = getPendingCheckoutPlan();
     if (pendingPlan) {
       navigate({ to: "/precios", search: { plan: pendingPlan } });
