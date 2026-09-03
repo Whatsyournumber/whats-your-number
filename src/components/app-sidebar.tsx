@@ -98,7 +98,11 @@ export function AppSidebar() {
     return (
       <SidebarMenuItem key={item.url}>
         <SidebarMenuButton asChild isActive={active} tooltip={item.title} className="h-8 gap-2 px-2">
-          <Link to={item.url} className="flex items-center gap-2">
+          <Link
+            to={item.url}
+            className="flex items-center gap-2"
+            onClick={() => setOpenMobile(false)}
+          >
             <item.icon className="h-3.5 w-3.5 shrink-0" />
             <span className="truncate text-sm leading-none">{item.title}</span>
           </Link>
