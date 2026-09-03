@@ -403,8 +403,8 @@ export function Landing() {
       role: t("Ingeniero de software · Madrid", "Software engineer · Madrid"),
       initials: "DF",
       quote: t(
-        "El módulo de portafolio comparado con el S&P 500 me hizo cambiar dos posiciones. Es la primera app de finanzas que se siente hecha para pensar, no solo para registrar.",
-        "The portfolio module compared to the S&P 500 made me change two positions. It's the first finance app that feels built for thinking, not just recording.",
+        "Ahora puedo seguir en tiempo real todos mis activos, acciones y saber cuánto realmente valgo con mis propiedades y cripto incluidas, y comparar vs el S&P 500. Recomendado.",
+        "Now I can track all my assets and stocks in real time and know what I'm really worth with properties and crypto included, and compare against the S&P 500. Recommended.",
       ),
     },
     {
