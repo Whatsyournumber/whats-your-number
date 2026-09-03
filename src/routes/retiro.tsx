@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { motion } from "motion/react";
 import { Pencil, X } from "lucide-react";
+import { ScrollX } from "@/components/scroll-x";
 
 import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
@@ -629,7 +630,7 @@ function RetiroContent() {
         title={t("Escenarios: renta mensual según tu capital", "Scenarios: monthly income based on your capital")}
         description={`${t("Cuánto podrías retirar cada mes según el capital acumulado y la rentabilidad anual. En verde, lo que cubre tus gastos de", "How much you could withdraw monthly based on accumulated capital and annual return. In green, what covers your expenses of")} ${fmt(d.expenses)}.`}
       >
-        <div className="overflow-x-auto">
+        <ScrollX>
           <table className="w-full min-w-[640px] border-collapse text-sm">
             <thead>
               <tr className="border-b border-border text-xs uppercase tracking-[0.12em] text-muted-foreground">
@@ -671,7 +672,7 @@ function RetiroContent() {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollX>
         <p className="mt-3 text-xs text-muted-foreground">{t("Renta mensual = capital × rentabilidad anual ÷ 12.", "Monthly income = capital × annual return ÷ 12.")}</p>
       </Panel>
 

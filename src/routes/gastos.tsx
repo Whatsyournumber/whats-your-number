@@ -18,7 +18,8 @@ import { buildTravelDays, categorizeTx, categorizeTxWithTravel } from "@/lib/cat
 import { useLanguage, useT } from "@/hooks/use-language";
 import { translateCategory, translateFixedName } from "@/lib/i18n-data";
 import type { DateRange } from "react-day-picker";
-import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, ComposedChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Bar, BarChart, CartesianGrid, Cell, Line, ComposedChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 
@@ -156,6 +157,7 @@ function sum(list: Tx[]) {
 
 function Gastos() {
   const t = useT();
+  const isMobile = useIsMobile();
   const presets = useMemo(() => buildPresets(t), [t]);
   const { profile } = useProfile();
   const currency = profile.currency || "EUR";
@@ -606,7 +608,7 @@ function Gastos() {
                   <span className="text-xs md:text-sm">{rangeLabel}</span>
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="end">
+              <PopoverContent className="flex max-h-[80vh] w-[min(92vw,44rem)] flex-col p-0 sm:w-auto" align="end" collisionPadding={12}>
                 <div className="flex flex-wrap gap-1.5 border-b border-border p-3">
                   {presets.map((p) => (
                     <Button
@@ -629,16 +631,18 @@ function Gastos() {
                   <span className="text-muted-foreground">{t("Fin", "End")}:</span>
                   <span className="font-medium">{range?.to ? format(range.to, "d MMM yyyy", { locale: es }) : "—"}</span>
                 </div>
-                <Calendar
-                  mode="range"
-                  selected={range}
-                  defaultMonth={range?.from ?? new Date()}
-                  onDayClick={handleDayClick}
-                  numberOfMonths={2}
-                  locale={es}
-                  className={cn("p-3 pointer-events-auto")}
-                />
-                <div className="flex items-center justify-between gap-2 border-t border-border p-3">
+                <div className="min-h-0 flex-1 overflow-y-auto">
+                  <Calendar
+                    mode="range"
+                    selected={range}
+                    defaultMonth={range?.from ?? new Date()}
+                    onDayClick={handleDayClick}
+                    numberOfMonths={isMobile ? 1 : 2}
+                    locale={es}
+                    className={cn("p-3 pointer-events-auto")}
+                  />
+                </div>
+                <div className="sticky bottom-0 flex shrink-0 items-center justify-between gap-2 border-t border-border bg-popover p-3">
                   <Button size="sm" variant="ghost" onClick={() => setRange(presets[0]!.range())}>
                     {t("Restablecer", "Reset")}
                   </Button>
@@ -796,6 +800,19 @@ function Gastos() {
 
 
         <Panel variant="minimal" title={t("Evolución del gasto", "Spend evolution")} description={`${t("Comparando con", "Comparing with")} ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="flex h-full flex-col p-3 md:p-5 lg:col-span-2">
+          <div className="mb-1 flex flex-nowrap items-center justify-end gap-3 overflow-hidden text-[10px] text-muted-foreground sm:gap-4 sm:text-xs">
+            {[
+              { c: "#5B6370", l: t("Anterior", "Previous"), full: t("Periodo anterior", "Previous period") },
+              { c: "#FF7B7B", l: t("Actual", "Current"), full: t("Este periodo", "This period") },
+              { c: "#E6C86C", l: t("Fijos", "Fixed"), full: t("Fijos (prorrateado)", "Fixed (prorated)") },
+            ].map((it) => (
+              <span key={it.c} className="flex min-w-0 items-center gap-1.5">
+                <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: it.c }} />
+                <span className="truncate sm:hidden">{it.l}</span>
+                <span className="hidden truncate sm:inline">{it.full}</span>
+              </span>
+            ))}
+          </div>
           <div className="h-[320px] md:h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={series} margin={{ left: -16, right: 0, top: 12 }}>
@@ -803,12 +820,6 @@ function Gastos() {
                 <XAxis dataKey="label" {...axisProps} interval="preserveStartEnd" minTickGap={18} />
                 <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={52} />
                 <Tooltip content={<ChartTooltip formatter={fmt} />} cursor={{ fill: "var(--color-muted)", opacity: 0.3 }} />
-                <Legend
-                  verticalAlign="top"
-                  align="right"
-                  iconType="circle"
-                  wrapperStyle={{ fontSize: 12, paddingBottom: 12, color: "var(--color-muted-foreground)" }}
-                />
                 <Bar dataKey="anterior" name={t("Periodo anterior", "Previous period")} fill="#5B6370" fillOpacity={0.85} radius={[5, 5, 0, 0]} barSize={12} />
                 <Bar dataKey="gasto" name={t("Este periodo", "This period")} fill="#FF7B7B" radius={[5, 5, 0, 0]} barSize={12} />
                 <Line dataKey="fijo" name={t("Fijos (prorrateado)", "Fixed (prorated)")} stroke="#E6C86C" strokeWidth={2.5} strokeDasharray="6 6" dot={false} activeDot={false} />
