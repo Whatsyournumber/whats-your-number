@@ -195,7 +195,7 @@ function DemoCard() {
             <div className="max-w-md text-center md:text-left">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                 <Sparkles className="h-3.5 w-3.5" />
-                {t("Demo gratis", "Free demo")}
+                {t("Calculadora de libertad financiera gratis", "Free financial freedom calculator")}
               </span>
               <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight md:text-3xl">
                 {t("Descubre tu número en 30 segundos", "Discover your number in 30 seconds")}
