@@ -666,7 +666,11 @@ function AuthPage() {
             disabled={busy}
           >
             {busy && <Loader2 className="h-4 w-4 animate-spin" />}
-            {mode === "signup" ? tt("Descubre tu número", "Discover your number") : tt("Entrar", "Sign in")}
+            {mode === "signup"
+              ? isKids
+                ? tt("Descubre su número", "Discover their number")
+                : tt("Descubre tu número", "Discover your number")
+              : tt("Entrar", "Sign in")}
             <ArrowRight className="h-4 w-4" />
           </Button>
         </form>
