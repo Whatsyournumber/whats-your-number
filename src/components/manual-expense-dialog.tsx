@@ -93,13 +93,24 @@ export function ManualExpenseDialog({
   const [saving, setSaving] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
   const [catQuery, setCatQuery] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [newCat, setNewCat] = useState("");
 
   const currency = (profile?.currency as string) || "EUR";
 
-  const normalizedQuery = catQuery.trim();
-  const canCreate =
-    normalizedQuery.length > 0 &&
-    !categories.some((c) => c.toLowerCase() === normalizedQuery.toLowerCase());
+  const trimmedNew = newCat.trim();
+  const canCreateNew =
+    trimmedNew.length > 0 &&
+    !categories.some((c) => c.toLowerCase() === trimmedNew.toLowerCase());
+
+  const confirmNewCategory = () => {
+    if (!canCreateNew) return;
+    onAddCategory?.(trimmedNew);
+    setCategory(trimmedNew);
+    setNewCat("");
+    setCreating(false);
+  };
+
 
   /** Fecha efectiva: día exacto o primer día del mes seleccionado. */
   const effectiveDate = precision === "month" ? new Date(date.getFullYear(), date.getMonth(), 1) : date;
