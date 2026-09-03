@@ -17,6 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { initGeoCurrency } from "@/lib/geo";
 import { AppSidebar } from "@/components/app-sidebar";
 import { AskAiSearch } from "@/components/ask-ai-search";
 import { ConsentBanner } from "@/components/consent-banner";

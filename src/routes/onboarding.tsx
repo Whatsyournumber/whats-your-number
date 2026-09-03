@@ -54,7 +54,7 @@ import { comfortableCostEur } from "@/lib/city-cost";
 import { currencyForCountry } from "@/lib/country-currency";
 
 import { cn } from "@/lib/utils";
-import { detectCurrency } from "@/lib/geo";
+import { defaultCurrency } from "@/lib/geo";
 import { useT } from "@/hooks/use-language";
 import { useSubscription } from "@/hooks/use-subscription";
 import { Amount } from "@/components/ui/amount";
@@ -156,7 +156,7 @@ function OnboardingPage() {
   const { isPatrimonio } = useSubscription();
   const [step, setStep] = useState(1);
 
-  const [data, setData] = useState<OnboardingData>({ ...emptyOnboarding, currency: detectCurrency(), monthly_expenses: 0 });
+  const [data, setData] = useState<OnboardingData>({ ...emptyOnboarding, currency: defaultCurrency(), monthly_expenses: 0 });
   const [life, setLife] = useState<LifeData>(emptyLife);
   const [ready, setReady] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -184,7 +184,7 @@ function OnboardingPage() {
       }
       if (row) {
         const r = row as Record<string, unknown>;
-        const next = { ...emptyOnboarding, currency: detectCurrency() };
+        const next = { ...emptyOnboarding, currency: defaultCurrency() };
         for (const key of Object.keys(emptyOnboarding) as (keyof OnboardingData)[]) {
           const v = r[key];
           if (v !== null && v !== undefined) (next as Record<string, unknown>)[key] = typeof v === "string" ? v : Number(v);
@@ -240,7 +240,7 @@ function OnboardingPage() {
     });
   const setL = <K extends keyof LifeData>(key: K, value: LifeData[K]) => setLife((l) => ({ ...l, [key]: value }));
 
-  const cur = data.currency || detectCurrency();
+  const cur = data.currency || defaultCurrency();
   // Las tasas del día alimentan la conversión del objetivo estimado.
   const { updatedAt: fxUpdatedAt } = useFxRates();
   const desiredIncome = useMemo(
