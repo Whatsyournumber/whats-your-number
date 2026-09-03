@@ -46,7 +46,7 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
     },
     { label: "Blog", to: isEnglishPath ? "/en/blog" : "/blog" },
     { label: t("Finanzas para adultos", "Adult finance"), to: isEnglishPath ? "/en" : "/" },
-    { label: t("Precios", "Pricing"), to: "/precios" },
+    { label: t("Precios", "Pricing"), to: "/precios", search: { plan: "familiar" } },
     { label: "demo", to: isEnglishPath ? "/en/college-savings-calculator" : "/calculadora-ahorro-universidad", search: { start: 1 } },
   ] as const;
 
