@@ -743,7 +743,9 @@ function AuthPage() {
             </>
           ) : (
             <>
-              {tt("¿Ya tienes cuenta?", "Already have an account?")}{" "}
+              {isAffiliate
+                ? tt("¿Ya usas WhatsYournumber? Usa el mismo correo y contraseña.", "Already use WhatsYournumber? Use the same email and password.")
+                : tt("¿Ya tienes cuenta?", "Already have an account?")}{" "}
               <button
                 type="button"
                 onClick={() => setMode("login")}
