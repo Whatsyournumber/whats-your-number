@@ -218,14 +218,14 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
 
 
         <div className="mx-auto flex h-full max-w-6xl flex-col items-center gap-3 px-4 pb-5 pt-10 text-center md:flex-row md:justify-between md:gap-4 md:px-6 md:py-0 md:text-left">
-          <div className="max-w-xl text-[11px] leading-relaxed text-muted-foreground/80 md:text-left">
+          <div className="max-w-xl text-[10px] leading-4 text-muted-foreground/80 md:text-left">
             <p>
               {t(
                 "WhatsYournumber es un software de seguimiento de finanzas personales.",
                 "WhatsYournumber is personal finance tracking software.",
               )}
             </p>
-            <p className="mt-1">
+            <p className="mt-0.5">
               {t(
                 "No ofrece asesoría financiera, fiscal ni de inversión; todo el contenido y las respuestas de IA son educativos.",
                 "It does not provide financial, tax or investment advice; all content and AI answers are educational.",
