@@ -31,24 +31,26 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
   const demoHref = lang === "en" ? "/en/financial-freedom-calculator?start=1" : "/calculadora-libertad-financiera?start=1";
 
   const linkClass = "text-left text-sm text-muted-foreground transition-colors hover:text-primary";
-  const renderLink = (l: FooterLink) =>
-    l.policy ? (
-      <button type="button" onClick={() => setPoliciesOpen(true)} className={linkClass}>
+  const renderLink = (l: FooterLink) => {
+    const className = [linkClass, l.className].filter(Boolean).join(" ");
+    return l.policy ? (
+      <button type="button" onClick={() => setPoliciesOpen(true)} className={className}>
         {l.label}
       </button>
     ) : l.anchor ? (
-      <a href={l.to} className={linkClass}>
+      <a href={l.to} className={className}>
         {l.label}
       </a>
     ) : l.external ? (
-      <a href={l.to} target="_blank" rel="noopener noreferrer" className={linkClass}>
+      <a href={l.to} target="_blank" rel="noopener noreferrer" className={className}>
         {l.label}
       </a>
     ) : (
-      <Link to={l.to} className={linkClass}>
+      <Link to={l.to} className={className}>
         {l.label}
       </Link>
     );
+  };
 
 
   const columns = [
