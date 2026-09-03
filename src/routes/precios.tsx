@@ -1,16 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, Check, CreditCard, ShieldCheck, Sparkles, Zap } from "lucide-react";
+import { motion } from "motion/react";
+import { ArrowRight, Check, ShieldCheck, Sparkles, Target, Zap } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { PricingComparison, PricingFaq } from "@/components/pricing-comparison";
-import { PromoCodeRedeem } from "@/components/promo-code-redeem";
 import { SiteFooter } from "@/components/site-footer";
 import { PaymentTestModeBanner } from "@/components/payment-test-mode-banner";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
-import { useT } from "@/hooks/use-language";
+import { useLanguage, useT } from "@/hooks/use-language";
 import { getPendingCheckoutPlan, setPendingCheckoutPlan } from "@/lib/pending-checkout";
 import { useRegionalPricing } from "@/hooks/use-regional-pricing";
 import { formatMoney, monthlyEquivalent } from "@/lib/pricing-tiers";
@@ -51,6 +51,7 @@ export const Route = createFileRoute("/precios")({
 
 function Pricing() {
   const t = useT();
+  const { lang } = useLanguage();
   const { user } = useAuth();
   const navigate = useNavigate();
   const { plan: planParam } = Route.useSearch();
@@ -516,33 +517,85 @@ function Pricing() {
         <PricingFaq />
 
         {/* CTA final */}
-        <section className="mt-16 rounded-2xl border border-border bg-gradient-to-br from-elevated/80 to-background p-8 text-center md:p-12">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <CreditCard className="h-5 w-5" />
-          </div>
-          <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight md:text-3xl">
-            {t("¿Listo para conocer tu número?", "Ready to know your number?")}
-          </h2>
-          <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
-            {t(
-              "Empieza gratis en 30 segundos. Sin tarjeta, sin compromiso, solo claridad financiera.",
-              "Start free in 30 seconds. No card, no commitment, just financial clarity.",
-            )}
-          </p>
-          <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button asChild size="lg" className="gap-2 rounded-full px-6">
-              <Link to="/auth" search={{ mode: "signup" }}>
-                {t("Probar Pro 14 días gratis", "Try Pro 14 days free")}
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-          <p className="mt-4 text-[11px] text-muted-foreground">
-            {t("Sin tarjeta de crédito · Cancela cuando quieras", "No credit card · Cancel anytime")}
-          </p>
-          <div className="mx-auto mt-8 max-w-md text-left">
-            <PromoCodeRedeem />
-          </div>
+        <section className="mt-16">
+          <Link
+            to={lang === "en" ? "/en/financial-freedom-calculator" : "/calculadora-libertad-financiera"}
+            search={{ start: 1 }}
+            className="group block"
+          >
+            <div className="surface glow relative overflow-hidden p-8 transition-transform duration-300 hover:scale-[1.01] md:p-12">
+              <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.08]" />
+              <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+
+              <div className="relative flex flex-col items-center gap-8 md:flex-row md:justify-between">
+                <div className="max-w-md text-center md:text-left">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                    <Sparkles className="h-3.5 w-3.5" />
+                    {t("Calculadora de libertad financiera", "Financial freedom calculator")}
+                  </span>
+                  <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight md:text-3xl">
+                    {t("Descubre tu número en 30 segundos", "Discover your number in 30 seconds")}
+                  </h2>
+                  <p className="mt-3 text-sm text-muted-foreground">
+                    {t(
+                      "3 preguntas. Sin registros. Sin conectar bancos. Entiendes cuando dinero necesitas para no volver a trabajar.",
+                      "3 questions. No sign-ups. No bank connections. Understand how much money you need to never work again.",
+                    )}
+                  </p>
+                  <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-lg transition-all group-hover:gap-3">
+                    {t("Probar ahora gratis", "Try now for free")} <ArrowRight className="h-4 w-4" />
+                  </div>
+                </div>
+
+                <div className="relative flex h-52 w-52 shrink-0 items-center justify-center">
+                  <div className="absolute inset-0 animate-pulse rounded-full bg-primary/15 blur-3xl" />
+                  {[0, 1, 2].map((i) => (
+                    <motion.span
+                      key={i}
+                      className="absolute rounded-full border border-primary/30"
+                      initial={{ width: 120, height: 120, opacity: 0.6 }}
+                      animate={{ width: 208, height: 208, opacity: 0 }}
+                      transition={{ duration: 3, repeat: Infinity, delay: i, ease: "easeOut" }}
+                    />
+                  ))}
+                  <motion.span
+                    className="absolute h-44 w-44 rounded-full border border-dashed border-primary/25"
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
+                  />
+                  <motion.div
+                    animate={{ scale: [1, 1.04, 1] }}
+                    transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+                    className="relative flex h-40 w-40 items-center justify-center rounded-full bg-elevated ring-1 ring-border transition-transform duration-300 group-hover:scale-105"
+                  >
+                    <span className="absolute inset-3 rounded-full ring-1 ring-primary/40" />
+                    <Target className="absolute h-24 w-24 text-primary/20" strokeWidth={1} />
+                    <span className="relative font-display text-6xl font-bold leading-none text-primary">?</span>
+                  </motion.div>
+                </div>
+              </div>
+
+              <div className="relative mt-8 grid gap-3 sm:grid-cols-3">
+                {[
+                  { label: t("Salario mensual pasivo deseado", "Desired passive monthly salary"), value: "€5,000" },
+                  { label: t("Patrimonio hoy", "Net worth today"), value: "€350,000" },
+                  { label: t("Tu número", "Your number"), value: "€1.5M" },
+                ].map((item, i) => (
+                  <motion.div
+                    key={item.label}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                    className="surface px-4 py-3 text-center"
+                  >
+                    <p className="text-[11px] uppercase tracking-wider text-muted-foreground">{item.label}</p>
+                    <p className="numeric mt-1 text-lg font-semibold">{item.value}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </Link>
         </section>
 
       </main>
