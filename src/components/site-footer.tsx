@@ -94,7 +94,7 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
             title: t("Recursos", "Resources"),
             links: [
                { label: t("Blog de libertad financiera", "Financial freedom blog"), to: blogHref },
-               { label: t("Calculador de libertad financiera", "Financial freedom calculator"), to: lang === "en" ? "/en/college-savings-calculator" : "/calculadora-ahorro-universidad", className: "whitespace-nowrap text-xs md:text-[13px]" },
+               { label: t("Calculadora de universidad", "College savings calculator"), to: lang === "en" ? "/en/college-savings-calculator" : "/calculadora-ahorro-universidad", className: "whitespace-nowrap text-xs md:text-[13px]" },
                { label: t("Finanzas para adultos", "Adult finance"), to: homeHref },
             ],
           }
