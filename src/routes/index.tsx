@@ -754,16 +754,16 @@ export function Landing() {
 
         <DemoCard />
 
-        <section className="mt-24 md:mt-32">
+        <section className="relative -mx-6 mt-24 bg-black py-16 text-white md:mx-0 md:mt-32 md:bg-transparent md:py-0 md:text-foreground">
 
-          <div className="mb-10 text-center">
+          <div className="mb-10 px-6 text-center md:px-0">
             <span className="text-xs font-medium uppercase tracking-wider text-primary">
               {t("Lo que dicen", "What people say")}
             </span>
-            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight md:text-4xl">
+            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white md:text-4xl md:text-foreground">
               {t("Personas que ya encontraron su número", "People who already found their number")}
             </h2>
-            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
+            <p className="mx-auto mt-3 max-w-xl text-sm text-white/70 md:text-muted-foreground">
               {t(
                 "Historias reales de usuarios que pasaron de la confusión a la claridad financiera.",
                 "Real stories from users who moved from confusion to financial clarity.",
@@ -771,7 +771,7 @@ export function Landing() {
             </p>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 px-6 md:grid-cols-3 md:px-0">
             {reviews.map((r, i) => (
               <motion.figure
                 key={r.name}
@@ -779,21 +779,21 @@ export function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.07 }}
-                className="surface flex flex-col p-6"
+                className="flex flex-col rounded-2xl border border-white/[0.08] bg-black p-6 md:surface"
               >
                 <div className="flex gap-0.5">
                   {Array.from({ length: 5 }).map((_, s) => (
                     <Star key={s} className="h-3.5 w-3.5 fill-primary text-primary" />
                   ))}
                 </div>
-                <blockquote className="mt-4 text-sm leading-relaxed text-muted-foreground">“{r.quote}”</blockquote>
+                <blockquote className="mt-4 text-sm leading-relaxed text-white/90 md:text-muted-foreground">“{r.quote}”</blockquote>
                 <figcaption className="mt-5 flex items-center gap-3">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-elevated text-xs font-semibold text-primary ring-1 ring-border">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-xs font-semibold text-white ring-1 ring-white/20 md:bg-elevated md:text-primary md:ring-border">
                     {r.initials}
                   </span>
                   <span className="text-xs">
-                    <span className="block font-medium text-foreground">{r.name}</span>
-                    <span className="text-muted-foreground">{r.role}</span>
+                    <span className="block font-medium text-white md:text-foreground">{r.name}</span>
+                    <span className="text-white/70 md:text-muted-foreground">{r.role}</span>
                   </span>
                 </figcaption>
               </motion.figure>
