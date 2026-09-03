@@ -193,7 +193,7 @@ function DemoCard() {
 
           <div className="relative flex flex-col items-center gap-8 md:flex-row md:justify-between">
             <div className="max-w-md text-center md:text-left">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+              <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                 <Sparkles className="h-3.5 w-3.5" />
                 {t("Calculadora de libertad financiera", "Financial freedom calculator")}
               </span>
