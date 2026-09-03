@@ -52,6 +52,7 @@ export const Route = createFileRoute("/precios")({
 
 function Pricing() {
   const t = useT();
+  const { lang } = useLanguage();
   const { user } = useAuth();
   const navigate = useNavigate();
   const { plan: planParam } = Route.useSearch();
