@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { CalendarIcon, Loader2, PencilLine, ChevronDown } from "lucide-react";
+import { CalendarIcon, Check, ChevronDown, Loader2, PencilLine, Plus } from "lucide-react";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -16,6 +16,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "@/components/ui/command";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -28,7 +37,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { NumberInput } from "@/components/ui/number-input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/use-auth";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
@@ -63,7 +71,13 @@ async function ensureManualStatement(userId: string) {
   return data.id;
 }
 
-export function ManualExpenseDialog({ categories }: { categories: string[] }) {
+export function ManualExpenseDialog({
+  categories,
+  onAddCategory,
+}: {
+  categories: string[];
+  onAddCategory?: (name: string) => void;
+}) {
   const t = useT();
   const { lang } = useLanguage();
   const { user } = useAuth();
@@ -77,8 +91,15 @@ export function ManualExpenseDialog({ categories }: { categories: string[] }) {
   const [amount, setAmount] = useState<number>(0);
   const [precision, setPrecision] = useState<"day" | "month">("day");
   const [saving, setSaving] = useState(false);
+  const [catOpen, setCatOpen] = useState(false);
+  const [catQuery, setCatQuery] = useState("");
 
   const currency = (profile?.currency as string) || "EUR";
+
+  const normalizedQuery = catQuery.trim();
+  const canCreate =
+    normalizedQuery.length > 0 &&
+    !categories.some((c) => c.toLowerCase() === normalizedQuery.toLowerCase());
 
   /** Fecha efectiva: día exacto o primer día del mes seleccionado. */
   const effectiveDate = precision === "month" ? new Date(date.getFullYear(), date.getMonth(), 1) : date;
@@ -221,18 +242,86 @@ export function ManualExpenseDialog({ categories }: { categories: string[] }) {
 
           <div className="grid gap-1.5">
             <Label>{t("Categoría", "Category")}</Label>
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="max-h-72">
-                {categories.map((name) => (
-                  <SelectItem key={name} value={name}>
-                    {translateCategory(name, lang)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Popover open={catOpen} onOpenChange={setCatOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={catOpen}
+                  className="justify-between font-normal"
+                >
+                  <span>{translateCategory(category, lang)}</span>
+                  <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                <Command filter={(value, search) => value.toLowerCase().includes(search.toLowerCase()) ? 1 : 0}>
+                  <CommandInput
+                    placeholder={t("Buscar o crear categoría", "Search or create category")}
+                    value={catQuery}
+                    onValueChange={setCatQuery}
+                  />
+                  <CommandList>
+                    <CommandEmpty>
+                      {canCreate ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const name = normalizedQuery;
+                            onAddCategory?.(name);
+                            setCategory(name);
+                            setCatQuery("");
+                            setCatOpen(false);
+                          }}
+                          className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-accent-foreground hover:bg-accent"
+                        >
+                          <Plus className="h-4 w-4" />
+                          {t("Crear", "Create")} “{normalizedQuery}”
+                        </button>
+                      ) : (
+                        t("No se encontraron categorías", "No categories found")
+                      )}
+                    </CommandEmpty>
+                    <CommandGroup>
+                      {categories.map((name) => (
+                        <CommandItem
+                          key={name}
+                          value={name}
+                          onSelect={() => {
+                            setCategory(name);
+                            setCatQuery("");
+                            setCatOpen(false);
+                          }}
+                        >
+                          <span className="flex-1">{translateCategory(name, lang)}</span>
+                          {category === name && <Check className="h-4 w-4" />}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                    {canCreate && (
+                      <>
+                        <CommandSeparator />
+                        <CommandGroup>
+                          <CommandItem
+                            value={`__create__${normalizedQuery}`}
+                            onSelect={() => {
+                              const name = normalizedQuery;
+                              onAddCategory?.(name);
+                              setCategory(name);
+                              setCatQuery("");
+                              setCatOpen(false);
+                            }}
+                          >
+                            <Plus className="mr-2 h-4 w-4" />
+                            {t("Crear categoría", "Create category")} “{normalizedQuery}”
+                          </CommandItem>
+                        </CommandGroup>
+                      </>
+                    )}
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div className="grid gap-1.5">

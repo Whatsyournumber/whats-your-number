@@ -1024,7 +1024,7 @@ function Gastos() {
                 {t("Importar gastos", "Import expenses")}
               </Link>
             </Button>
-            <ManualExpenseDialog categories={categories.names} />
+            <ManualExpenseDialog categories={categories.names} onAddCategory={(name) => categories.add(name)} />
           </div>
         }
       >
