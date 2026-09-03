@@ -157,6 +157,11 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  // Detección de moneda por IP (Europa → EUR, resto → USD), una sola vez.
+  useEffect(() => {
+    void initGeoCurrency();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
