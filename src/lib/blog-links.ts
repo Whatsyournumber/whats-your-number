@@ -122,15 +122,15 @@ const BORING_LINK = post(
 );
 
 const DEMO_LINK: InternalLink = {
-  label: { es: "calcular tu número gratis", en: "calculate your number for free" },
+  label: { es: "calcular tu libertad financiera gratis", en: "calculate your financial freedom for free" },
   aliases: [
-    { es: "demo gratis", en: "free demo" },
-    { es: "prueba el demo", en: "try the demo" },
+    { es: "calculadora de libertad financiera gratis", en: "free financial freedom calculator" },
+    { es: "prueba la calculadora", en: "try the calculator" },
     { es: "calcula tu número", en: "calculate your number" },
   ],
   to: "/calculadora-libertad-financiera?start=1",
   enTo: "/en/financial-freedom-calculator?start=1",
-  note: { es: "Demo interactivo en minutos, sin registro.", en: "Interactive demo in minutes, no signup." },
+  note: { es: "Calculadora interactiva en minutos, sin registro.", en: "Interactive calculator in minutes, no signup." },
 };
 const KIDS_HUB: InternalLink = {
   label: { es: "finanzas para niños", en: "money skills for kids" },

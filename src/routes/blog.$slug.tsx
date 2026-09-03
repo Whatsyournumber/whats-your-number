@@ -529,8 +529,8 @@ export function BlogArticleView({ slug }: { slug: string }) {
               className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
             >
               {isKids
-                ? t("Hacer el demo para tu hijo", "Try the demo for your child")
-                : t("Hacer el demo gratis", "Try the free demo")}{" "}
+                ? t("Hacer la calculadora para tu hijo", "Try the calculator for your child")
+                : t("Hacer la calculadora gratis", "Try the free calculator")}{" "}
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
