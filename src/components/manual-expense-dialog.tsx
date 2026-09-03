@@ -22,7 +22,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
+  
 } from "@/components/ui/command";
 import {
   Dialog,
@@ -93,13 +93,24 @@ export function ManualExpenseDialog({
   const [saving, setSaving] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
   const [catQuery, setCatQuery] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [newCat, setNewCat] = useState("");
 
   const currency = (profile?.currency as string) || "EUR";
 
-  const normalizedQuery = catQuery.trim();
-  const canCreate =
-    normalizedQuery.length > 0 &&
-    !categories.some((c) => c.toLowerCase() === normalizedQuery.toLowerCase());
+  const trimmedNew = newCat.trim();
+  const canCreateNew =
+    trimmedNew.length > 0 &&
+    !categories.some((c) => c.toLowerCase() === trimmedNew.toLowerCase());
+
+  const confirmNewCategory = () => {
+    if (!canCreateNew) return;
+    onAddCategory?.(trimmedNew);
+    setCategory(trimmedNew);
+    setNewCat("");
+    setCreating(false);
+  };
+
 
   /** Fecha efectiva: día exacto o primer día del mes seleccionado. */
   const effectiveDate = precision === "month" ? new Date(date.getFullYear(), date.getMonth(), 1) : date;
@@ -242,87 +253,100 @@ export function ManualExpenseDialog({
 
           <div className="grid gap-1.5">
             <Label>{t("Categoría", "Category")}</Label>
-            <Popover open={catOpen} onOpenChange={setCatOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={catOpen}
-                  className="justify-between font-normal"
-                >
-                  <span>{translateCategory(category, lang)}</span>
-                  <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            {creating ? (
+              <div className="flex gap-2">
+                <Input
+                  autoFocus
+                  value={newCat}
+                  onChange={(e) => setNewCat(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      confirmNewCategory();
+                    }
+                    if (e.key === "Escape") {
+                      e.preventDefault();
+                      setCreating(false);
+                      setNewCat("");
+                    }
+                  }}
+                  placeholder={t("Nombre de la categoría", "Category name")}
+                />
+                <Button type="button" onClick={confirmNewCategory} disabled={!canCreateNew}>
+                  {t("Añadir", "Add")}
                 </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
-                <Command filter={(value, search) => value.toLowerCase().includes(search.toLowerCase()) ? 1 : 0}>
-                  <CommandInput
-                    placeholder={t("Buscar o crear categoría", "Search or create category")}
-                    value={catQuery}
-                    onValueChange={setCatQuery}
-                  />
-                  <CommandList>
-                    <CommandEmpty>
-                      {canCreate ? (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const name = normalizedQuery;
-                            onAddCategory?.(name);
-                            setCategory(name);
-                            setCatQuery("");
-                            setCatOpen(false);
-                          }}
-                          className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-accent-foreground hover:bg-accent"
-                        >
-                          <Plus className="h-4 w-4" />
-                          {t("Crear", "Create")} “{normalizedQuery}”
-                        </button>
-                      ) : (
-                        t("No se encontraron categorías", "No categories found")
-                      )}
-                    </CommandEmpty>
-                    <CommandGroup>
-                      {categories.map((name) => (
-                        <CommandItem
-                          key={name}
-                          value={name}
-                          onSelect={() => {
-                            setCategory(name);
-                            setCatQuery("");
-                            setCatOpen(false);
-                          }}
-                        >
-                          <span className="flex-1">{translateCategory(name, lang)}</span>
-                          {category === name && <Check className="h-4 w-4" />}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                    {canCreate && (
-                      <>
-                        <CommandSeparator />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => {
+                    setCreating(false);
+                    setNewCat("");
+                  }}
+                >
+                  {t("Cancelar", "Cancel")}
+                </Button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <Popover open={catOpen} onOpenChange={setCatOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={catOpen}
+                      className="flex-1 justify-between font-normal"
+                    >
+                      <span>{translateCategory(category, lang)}</span>
+                      <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                    <Command filter={(value, search) => value.toLowerCase().includes(search.toLowerCase()) ? 1 : 0}>
+                      <CommandInput
+                        placeholder={t("Buscar categoría", "Search category")}
+                        value={catQuery}
+                        onValueChange={setCatQuery}
+                      />
+                      <CommandList>
+                        <CommandEmpty>
+                          {t("No se encontraron categorías", "No categories found")}
+                        </CommandEmpty>
                         <CommandGroup>
-                          <CommandItem
-                            value={`__create__${normalizedQuery}`}
-                            onSelect={() => {
-                              const name = normalizedQuery;
-                              onAddCategory?.(name);
-                              setCategory(name);
-                              setCatQuery("");
-                              setCatOpen(false);
-                            }}
-                          >
-                            <Plus className="mr-2 h-4 w-4" />
-                            {t("Crear categoría", "Create category")} “{normalizedQuery}”
-                          </CommandItem>
+                          {categories.map((name) => (
+                            <CommandItem
+                              key={name}
+                              value={name}
+                              onSelect={() => {
+                                setCategory(name);
+                                setCatQuery("");
+                                setCatOpen(false);
+                              }}
+                            >
+                              <span className="flex-1">{translateCategory(name, lang)}</span>
+                              {category === name && <Check className="h-4 w-4" />}
+                            </CommandItem>
+                          ))}
                         </CommandGroup>
-                      </>
-                    )}
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="gap-1.5 shrink-0"
+                  onClick={() => {
+                    setCreating(true);
+                    setNewCat("");
+                  }}
+                >
+                  <Plus className="h-4 w-4" />
+                  {t("Nueva", "New")}
+                </Button>
+              </div>
+            )}
           </div>
+
 
           <div className="grid gap-1.5">
             <Label>{t("Descripción (opcional)", "Description (optional)")}</Label>
