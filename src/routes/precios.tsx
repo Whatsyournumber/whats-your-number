@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, Check, CreditCard, ShieldCheck, Sparkles, Zap } from "lucide-react";
+import { motion } from "motion/react";
+import { ArrowRight, Check, CreditCard, ShieldCheck, Sparkles, Target, Zap } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { PricingComparison, PricingFaq } from "@/components/pricing-comparison";
