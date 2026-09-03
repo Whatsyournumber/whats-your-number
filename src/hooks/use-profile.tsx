@@ -3,7 +3,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { emptyLife, emptyOnboarding, type LifeData, type OnboardingData } from "@/lib/onboarding";
-import { detectCurrency } from "@/lib/geo";
+import { defaultCurrency } from "@/lib/geo";
+
 
 export type Profile = OnboardingData & LifeData & { completed: boolean };
 
