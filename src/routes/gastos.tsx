@@ -41,7 +41,7 @@ import { useCategories } from "@/hooks/use-categories";
 
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useProfile } from "@/hooks/use-profile";
-import { useTransactions, type Tx } from "@/hooks/use-transactions";
+import { useTransactions, sameMerchant, type Tx } from "@/hooks/use-transactions";
 import { compact, FIXED_FIELDS, money } from "@/lib/onboarding";
 import { getSpendAdvice } from "@/lib/spend-advice.functions";
 import { getPaddleEnvironment } from "@/lib/paddle";
