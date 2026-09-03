@@ -18,7 +18,7 @@ function openExternalSocial(event: React.MouseEvent<HTMLAnchorElement>, href: st
   if (externalWindow) externalWindow.opener = null;
 }
 
-type FooterLink = { label: string; to: string; policy?: boolean; external?: boolean; anchor?: boolean };
+type FooterLink = { label: string; to: string; policy?: boolean; external?: boolean; anchor?: boolean; className?: string };
 
 export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolean; affiliates?: boolean } = {}) {
   const t = useT();
