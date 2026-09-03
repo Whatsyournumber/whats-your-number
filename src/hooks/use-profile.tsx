@@ -11,7 +11,7 @@ export type Profile = OnboardingData & LifeData & { completed: boolean };
 const empty: Profile = { ...emptyOnboarding, ...emptyLife, completed: false };
 
 function rowToProfile(row: Record<string, unknown> | null): Profile {
-  const next: Profile = { ...empty, currency: detectCurrency() };
+  const next: Profile = { ...empty, currency: defaultCurrency() };
   if (!row) return next;
   for (const key of Object.keys(emptyOnboarding) as (keyof OnboardingData)[]) {
     const v = row[key];
