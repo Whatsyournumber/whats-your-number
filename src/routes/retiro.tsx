@@ -671,7 +671,7 @@ function RetiroContent() {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollX>
         <p className="mt-3 text-xs text-muted-foreground">{t("Renta mensual = capital × rentabilidad anual ÷ 12.", "Monthly income = capital × annual return ÷ 12.")}</p>
       </Panel>
 
