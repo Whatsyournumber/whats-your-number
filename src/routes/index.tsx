@@ -202,8 +202,8 @@ function DemoCard() {
               </h2>
               <p className="mt-3 text-sm text-muted-foreground">
                 {t(
-                  "3 preguntas. Sin registro. Sin conectar bancos. Solo tu ritmo, tu patrimonio y tu meta.",
-                  "3 questions. No sign-up. No bank connections. Just your pace, your net worth and your goal.",
+                  "3 preguntas. Sin registros. Sin conectar bancos. Entiendes cuando dinero necesitas para no volver a trabajar.",
+                  "3 questions. No sign-ups. No bank connections. Understand how much money you need to never work again.",
                 )}
               </p>
               <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-lg transition-all group-hover:gap-3">
