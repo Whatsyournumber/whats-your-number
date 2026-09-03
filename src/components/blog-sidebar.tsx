@@ -48,7 +48,7 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
           <>
             <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
               <Sparkles className="h-3 w-3" />
-              {t("Demo gratis", "Free demo")}
+              {t("Calculadora de libertad financiera gratis", "Free financial freedom calculator")}
             </div>
             <p className="mt-2 whitespace-nowrap font-display text-[15px] font-semibold leading-tight">
               {t("El número de tu hijo en 30seg", "Your child's number in 30s")}
@@ -62,7 +62,7 @@ export function BlogSidebar({ activeCategory }: { activeCategory?: string | unde
           <>
             <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
               <Sparkles className="h-3 w-3" />
-              {t("Demo gratis", "Free demo")}
+              {t("Calculadora de libertad financiera gratis", "Free financial freedom calculator")}
             </div>
             <p className="mt-2 whitespace-nowrap font-display text-[15px] font-semibold leading-tight">
               {t("Descubre tu número en 30seg", "Your number in 30s")}

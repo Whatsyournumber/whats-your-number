@@ -101,7 +101,7 @@ function Pricing() {
         "Discover your number in 30 seconds and organize your basic finances.",
       ),
       features: [
-        t("Demo gratuito: tu número en 3 preguntas", "Free demo: your number in 3 questions"),
+        t("Calculadora gratuita: tu número en 3 preguntas", "Free calculator: your number in 3 questions"),
         t("1 cuenta conectada o manual", "1 connected or manual account"),
         t("5 importaciones de EEFF al mes", "5 statement imports per month"),
         t("Dashboard con tu número y cash flow", "Dashboard with your number and cash flow"),
