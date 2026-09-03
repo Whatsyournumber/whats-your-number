@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { CalendarIcon, Check, Loader2, PencilLine, ChevDown, Plus, ChevronDown } from "lucide-react";
+import { CalendarIcon, Check, ChevronDown, Loader2, PencilLine, Plus } from "lucide-react";
 import { toast } from "sonner";
 import {
   DropdownMenu,
