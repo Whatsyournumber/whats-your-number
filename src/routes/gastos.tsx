@@ -287,26 +287,6 @@ function Gastos() {
 
   // Categorías con gastos visibles por defecto; toggle para ver vacías
   const showEmptyCategories = false;
-  // Orden manual (drag & drop) persistido localmente
-  const CAT_ORDER_KEY = "wyn-category-order";
-  const [catOrder, setCatOrder] = useState<string[]>([]);
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(CAT_ORDER_KEY);
-      if (raw) setCatOrder(JSON.parse(raw) as string[]);
-    } catch {
-      /* noop */
-    }
-  }, []);
-  const persistOrder = (next: string[]) => {
-    setCatOrder(next);
-    try {
-      localStorage.setItem(CAT_ORDER_KEY, JSON.stringify(next));
-    } catch {
-      /* noop */
-    }
-  };
-  const [dragName, setDragName] = useState<string | null>(null);
   const [dragTx, setDragTx] = useState<{ id: string; from: string } | null>(null);
 
   const detailRows = useMemo(() => {
@@ -320,28 +300,9 @@ function Gastos() {
       map.delete(name);
     }
     const rest = Array.from(map.values()).filter((c) => c.amount > 0 || showEmptyCategories);
-    const all = [...ordered, ...rest].sort((a, b) => b.amount - a.amount);
-    if (catOrder.length === 0) return all;
-    const idx = (n: string) => {
-      const i = catOrder.indexOf(n);
-      return i === -1 ? Number.MAX_SAFE_INTEGER : i;
-    };
-    return all.slice().sort((a, b) => {
-      const d = idx(a.name) - idx(b.name);
-      return d !== 0 ? d : b.amount - a.amount;
-    });
-  }, [byCategory, categories.names, categories.items, showEmptyCategories, catOrder]);
-
-  const reorderTo = (target: string) => {
-    if (!dragName || dragName === target) return;
-    const base = detailRows.map((r) => r.name);
-    const from = base.indexOf(dragName);
-    const to = base.indexOf(target);
-    if (from === -1 || to === -1) return;
-    const next = base.slice();
-    next.splice(to, 0, next.splice(from, 1)[0]!);
-    persistOrder(next);
-  };
+    // Siempre del monto más alto al más bajo, sin importar el mes seleccionado.
+    return [...ordered, ...rest].sort((a, b) => b.amount - a.amount);
+  }, [byCategory, categories.names, categories.items, showEmptyCategories]);
 
 
 
@@ -1052,8 +1013,8 @@ function Gastos() {
         variant="minimal"
         title={t("Gastos variables", "Variable expenses")}
         description={t(
-          "Solo categorías con gastos · arrastra para ordenarlas, agregar nuevas o mover un movimiento a otra categoría.",
-          "Only categories with spending · drag to reorder, add new ones or move a transaction to another category.",
+          "Solo categorías con gastos · ordenadas de mayor a menor. Arrastra un movimiento a otra categoría para reasignarlo.",
+          "Only categories with spending · sorted highest to lowest. Drag a transaction to another category to reassign it.",
         )}
         actions={
           <div className="flex flex-wrap items-center gap-2">
@@ -1077,11 +1038,10 @@ function Gastos() {
                 value={c.name}
                 className={cn(
                   "border-border transition-colors",
-                  dragName === c.name && "opacity-60",
                   dragTx && dragTx.from !== c.name && "rounded-lg ring-1 ring-primary/30",
                 )}
                 onDragOver={(e) => {
-                  if (dragName || dragTx) e.preventDefault();
+                  if (dragTx) e.preventDefault();
                 }}
                 onDrop={(e) => {
                   e.preventDefault();
@@ -1091,31 +1051,11 @@ function Gastos() {
                       toast.success(t(`Movido a ${tc(c.name)}`, `Moved to ${tc(c.name)}`));
                     }
                     setDragTx(null);
-                  } else {
-                    reorderTo(c.name);
                   }
-                  setDragName(null);
                 }}
               >
                 <AccordionTrigger className="py-2 hover:no-underline">
                   <div className="flex w-full min-w-0 items-center gap-2 pr-2 sm:gap-3 sm:pr-3">
-                    <span
-                      draggable
-                      onDragStart={(e) => {
-                        e.stopPropagation();
-                        setDragName(c.name);
-                      }}
-                      onDragEnd={() => setDragName(null)}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                      }}
-                      aria-label={t("Arrastrar para reordenar", "Drag to reorder")}
-                      title={t("Arrastrar para reordenar", "Drag to reorder")}
-                      className="shrink-0 cursor-grab text-muted-foreground/50 transition hover:text-foreground active:cursor-grabbing"
-                    >
-                      <GripVertical className="h-3.5 w-3.5" />
-                    </span>
                     <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
                     <span className="min-w-0 flex-1 truncate text-left text-sm font-medium">{tc(c.name)}</span>
                     <span
