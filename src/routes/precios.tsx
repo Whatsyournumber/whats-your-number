@@ -11,7 +11,7 @@ import { PaymentTestModeBanner } from "@/components/payment-test-mode-banner";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
-import { useT } from "@/hooks/use-language";
+import { useLanguage, useT } from "@/hooks/use-language";
 import { getPendingCheckoutPlan, setPendingCheckoutPlan } from "@/lib/pending-checkout";
 import { useRegionalPricing } from "@/hooks/use-regional-pricing";
 import { formatMoney, monthlyEquivalent } from "@/lib/pricing-tiers";
