@@ -287,26 +287,6 @@ function Gastos() {
 
   // Categorías con gastos visibles por defecto; toggle para ver vacías
   const showEmptyCategories = false;
-  // Orden manual (drag & drop) persistido localmente
-  const CAT_ORDER_KEY = "wyn-category-order";
-  const [catOrder, setCatOrder] = useState<string[]>([]);
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(CAT_ORDER_KEY);
-      if (raw) setCatOrder(JSON.parse(raw) as string[]);
-    } catch {
-      /* noop */
-    }
-  }, []);
-  const persistOrder = (next: string[]) => {
-    setCatOrder(next);
-    try {
-      localStorage.setItem(CAT_ORDER_KEY, JSON.stringify(next));
-    } catch {
-      /* noop */
-    }
-  };
-  const [dragName, setDragName] = useState<string | null>(null);
   const [dragTx, setDragTx] = useState<{ id: string; from: string } | null>(null);
 
   const detailRows = useMemo(() => {
@@ -320,28 +300,9 @@ function Gastos() {
       map.delete(name);
     }
     const rest = Array.from(map.values()).filter((c) => c.amount > 0 || showEmptyCategories);
-    const all = [...ordered, ...rest].sort((a, b) => b.amount - a.amount);
-    if (catOrder.length === 0) return all;
-    const idx = (n: string) => {
-      const i = catOrder.indexOf(n);
-      return i === -1 ? Number.MAX_SAFE_INTEGER : i;
-    };
-    return all.slice().sort((a, b) => {
-      const d = idx(a.name) - idx(b.name);
-      return d !== 0 ? d : b.amount - a.amount;
-    });
-  }, [byCategory, categories.names, categories.items, showEmptyCategories, catOrder]);
-
-  const reorderTo = (target: string) => {
-    if (!dragName || dragName === target) return;
-    const base = detailRows.map((r) => r.name);
-    const from = base.indexOf(dragName);
-    const to = base.indexOf(target);
-    if (from === -1 || to === -1) return;
-    const next = base.slice();
-    next.splice(to, 0, next.splice(from, 1)[0]!);
-    persistOrder(next);
-  };
+    // Siempre del monto más alto al más bajo, sin importar el mes seleccionado.
+    return [...ordered, ...rest].sort((a, b) => b.amount - a.amount);
+  }, [byCategory, categories.names, categories.items, showEmptyCategories]);
 
 
 
