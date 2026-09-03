@@ -530,15 +530,10 @@ function Pricing() {
             )}
           </p>
           <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button asChild size="lg" className="rounded-full px-6">
-              <Link to="/calculadora-libertad-financiera" search={{ start: 1 }}>
-                {t("Descubrir mi número gratis", "Discover my number free")}
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="rounded-full px-6">
+            <Button asChild size="lg" className="gap-2 rounded-full px-6">
               <Link to="/auth" search={{ mode: "signup" }}>
                 {t("Probar Pro 14 días gratis", "Try Pro 14 days free")}
+                <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
           </div>
