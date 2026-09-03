@@ -2598,6 +2598,7 @@ function FamilyProfiles() {
         ))}
         <Link
           to="/precios"
+          search={{ plan: "familiar" }}
           className="surface flex flex-col items-center justify-center p-6 text-center transition-colors hover:border-kid-grape/40"
         >
           <span className="flex h-16 w-16 items-center justify-center rounded-full text-2xl text-muted-foreground ring-1 ring-border">
