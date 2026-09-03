@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { motion } from "motion/react";
 import { Pencil, X } from "lucide-react";
+import { ScrollX } from "@/components/scroll-x";
 
 import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
