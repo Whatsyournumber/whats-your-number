@@ -81,6 +81,46 @@ function timeZone(): string {
   }
 }
 
+const GEO_CACHE_KEY = "wyn-geo-currency";
+
+/**
+ * Moneda por defecto: primero el resultado cacheado de la detección por IP
+ * (Europa → EUR, resto del mundo → USD); si aún no llegó, fallback por zona
+ * horaria/locale.
+ */
+export function defaultCurrency(): Currency {
+  if (typeof window === "undefined") return "USD";
+  try {
+    const cached = localStorage.getItem(GEO_CACHE_KEY);
+    if (cached === "EUR" || cached === "USD") return cached;
+  } catch {
+    // localStorage no disponible
+  }
+  return detectCurrency();
+}
+
+/** Lanza la detección por IP una sola vez y cachea el resultado. */
+export async function initGeoCurrency(): Promise<void> {
+  if (typeof window === "undefined") return;
+  try {
+    if (localStorage.getItem(GEO_CACHE_KEY)) return;
+  } catch {
+    return;
+  }
+  try {
+    const { detectRegionByIp } = await import("@/lib/geo-currency.functions");
+    const result = await detectRegionByIp();
+    const currency = result?.currency === "EUR" ? "EUR" : "USD";
+    localStorage.setItem(GEO_CACHE_KEY, currency);
+  } catch {
+    try {
+      localStorage.setItem(GEO_CACHE_KEY, detectCurrency());
+    } catch {
+      // sin caché disponible
+    }
+  }
+}
+
 /** EUR si el visitante está en la UE, USD en el resto del mundo. */
 export function detectCurrency(): Currency {
   if (typeof window === "undefined") return "USD";
