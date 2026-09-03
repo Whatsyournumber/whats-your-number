@@ -197,7 +197,7 @@ function ReviewCard({ index, variant = "general" }: { index: number; variant?: "
         <img
           src={r.image}
           alt={r.name}
-          className="h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-slate-900/10 lg:h-11 lg:w-11 lg:ring-white/20"
+          className="h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-white/20 lg:h-11 lg:w-11"
         />
         <div className="min-w-0">
           <div className="flex items-center gap-2 whitespace-nowrap">
@@ -206,9 +206,9 @@ function ReviewCard({ index, variant = "general" }: { index: number; variant?: "
                 <Star key={s} className="h-2.5 w-2.5 fill-primary text-primary lg:h-3.5 lg:w-3.5" />
               ))}
             </div>
-            <figcaption className="text-[11px] font-medium text-slate-900 lg:text-sm lg:text-white">{r.name}</figcaption>
+            <figcaption className="text-[11px] font-medium text-white lg:text-sm">{r.name}</figcaption>
           </div>
-          <blockquote className="mt-1 line-clamp-2 text-[11px] leading-snug text-slate-600 lg:text-sm lg:leading-relaxed lg:text-white/70">
+          <blockquote className="mt-1 line-clamp-2 text-[11px] leading-snug text-white/70 lg:text-sm lg:leading-relaxed">
             “{tt(r.quote[0], r.quote[1])}”
           </blockquote>
         </div>
@@ -759,7 +759,7 @@ function AuthPage() {
 
       <SidePanel variant={isKids ? "kids" : "general"} />
 
-      <div className={`relative z-10 flex min-h-screen flex-col items-center justify-center gap-8 px-6 py-10 lg:h-screen lg:min-h-0 lg:bg-transparent lg:px-10 lg:py-6 ${isKids ? "bg-background" : "bg-slate-200"}`}>
+      <div className={`relative z-10 flex min-h-screen flex-col items-center justify-center gap-8 px-6 py-10 lg:h-screen lg:min-h-0 lg:bg-transparent lg:px-10 lg:py-6 ${isKids ? "bg-background" : "bg-background"}`}>
         <div className="wealth-gradient pointer-events-none absolute -top-40 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-[0.08] blur-3xl lg:hidden" />
         {card}
 
