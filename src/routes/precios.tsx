@@ -534,7 +534,7 @@ function Pricing() {
                     {t("Calculadora de libertad financiera", "Financial freedom calculator")}
                   </span>
                   <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight md:text-3xl">
-                    {t("Descubre tu número en 30 segundos", "Discover your number in 30 seconds")}
+                    {t("¿Listo para conocer tu número?", "Ready to discover your number?")}
                   </h2>
                   <p className="mt-3 text-sm text-muted-foreground">
                     {t(
@@ -542,8 +542,17 @@ function Pricing() {
                       "3 questions. No sign-ups. No bank connections. Understand how much money you need to never work again.",
                     )}
                   </p>
-                  <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-lg transition-all group-hover:gap-3">
-                    {t("Probar ahora gratis", "Try now for free")} <ArrowRight className="h-4 w-4" />
+                  <div className="mt-6 flex flex-wrap items-center justify-center gap-3 md:justify-start">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-lg transition-all group-hover:gap-3">
+                      {t("Probar ahora gratis", "Try now for free")} <ArrowRight className="h-4 w-4" />
+                    </div>
+                    <Link
+                      to="/auth"
+                      search={{ mode: "signup" }}
+                      className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-5 py-2.5 text-sm font-medium text-foreground shadow-sm transition-all hover:bg-elevated hover:text-foreground"
+                    >
+                      {t("Probar Pro 14 días gratis", "Try Pro 14 days free")}
+                    </Link>
                   </div>
                 </div>
 
