@@ -402,7 +402,7 @@ function AuthPage() {
     return () => {
       active = false;
     };
-  }, [loading, user, isPatrimonio, navigate, next]);
+  }, [loading, user, isPatrimonio, isAffiliate, navigate, next]);
 
   const setMode = (value: "login" | "signup") =>
     navigate({ to: "/auth", search: (prev) => ({ ...prev, mode: value }) });
@@ -418,7 +418,7 @@ function AuthPage() {
         const emailDestination = pendingCheckout
           ? `/precios?plan=${pendingCheckout}`
           : (next ?? "/onboarding");
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -426,6 +426,29 @@ function AuthPage() {
             data: { full_name: fullName },
           },
         });
+        // Correo ya registrado: puede venir como error explícito o como un
+        // usuario "fantasma" sin identidades. En ambos casos reutilizamos la
+        // cuenta existente e intentamos entrar con la misma contraseña.
+        const alreadyRegistered =
+          (error && /already|registered|exists/i.test(error.message)) ||
+          (!error && data.user && (data.user.identities?.length ?? 0) === 0);
+        if (alreadyRegistered) {
+          const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
+          if (loginError) {
+            toast.info(
+              tt(
+                "Ya tienes una cuenta con este correo. Entra con tu contraseña para continuar.",
+                "You already have an account with this email. Sign in with your password to continue.",
+              ),
+            );
+            setMode("login");
+            return;
+          }
+          toast.success(
+            tt("Bienvenido de vuelta: usamos tu cuenta existente.", "Welcome back: we're using your existing account."),
+          );
+          return;
+        }
         if (error) throw error;
         toast.success(t("auth.toast.signup"));
       } else {
