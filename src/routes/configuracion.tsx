@@ -57,41 +57,6 @@ function Configuracion() {
           </Panel>
         </TabsContent>
 
-        <TabsContent value="cuentas" className="space-y-4">
-          <Panel title={t("Cuentas y tarjetas", "Accounts and cards")}>
-            <div className="grid gap-3 md:grid-cols-2">
-              {accounts.map((a) => (
-                <div key={a.last4} className="surface relative overflow-hidden p-4">
-                  <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.06]" />
-                  <div className="relative">
-                    <p className="text-xs text-muted-foreground">{a.bank}</p>
-                    <p className="text-sm font-medium">{a.name}</p>
-                    <p className="numeric mt-3 text-xl font-semibold">{fmt(a.balance)}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {a.type} ···· {a.last4}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Panel>
-          <Panel title={t("Ingresos recurrentes", "Recurring income")}>
-            <div className="grid gap-3 sm:grid-cols-3">
-              {[
-                { name: t("Salario", "Salary"), amount: 12400 },
-                { name: t("Consultoría", "Consulting"), amount: 2800 },
-                { name: t("Dividendos", "Dividends"), amount: 1200 },
-              ].map((i) => (
-                <div key={i.name} className="rounded-xl bg-elevated/60 p-4">
-                  <p className="text-sm font-medium">{i.name}</p>
-                  <p className="numeric mt-1 text-lg font-semibold">{fmt(i.amount)}</p>
-                  <p className="text-xs text-muted-foreground">{t("mensual", "monthly")}</p>
-                </div>
-              ))}
-            </div>
-          </Panel>
-        </TabsContent>
-
         <TabsContent value="categorias" className="space-y-4">
           <Panel title={t("Categorías, subcategorías y presupuestos", "Categories, subcategories and budgets")}>
             <div className="grid gap-3 md:grid-cols-2">
