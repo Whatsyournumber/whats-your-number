@@ -559,7 +559,7 @@ function Dashboard() {
           description={t("Tu progreso hacia lo que te importa.", "Your progress toward what matters.")}
           actions={
             <Button asChild size="sm" variant="outline" className="gap-1 rounded-full">
-              <Link to="/life-planner">
+              <Link to="/mi-perfil">
                 <Pencil className="h-4 w-4" />
                 <span className="hidden sm:inline">{t("Cambiar meta", "Change goal")}</span>
               </Link>
@@ -661,10 +661,11 @@ function Dashboard() {
               }
 
               const goalTextColor = pct >= 75 ? "text-positive" : pct >= 50 ? "text-warning" : "text-negative";
+              const goalHref = isCityGoal ? "/ciudades" : g.name === "Fondo de emergencia" ? "/mi-perfil" : "/retiro";
 
               return (
                 <li key={g.name}>
-                  <Link to="/retiro" className="group flex items-start gap-2.5 rounded-2xl p-1.5 transition-colors hover:bg-elevated/40">
+                  <Link to={goalHref} className="group flex items-start gap-2.5 rounded-2xl p-1.5 transition-colors hover:bg-elevated/40">
                     <span className="grid h-9 w-9 shrink-0 place-items-center rounded-2xl bg-elevated/60 text-lg">
                       {g.emoji}
                     </span>
