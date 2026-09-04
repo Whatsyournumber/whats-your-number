@@ -976,7 +976,7 @@ function Gastos() {
               </Select>
               <span
                 className={cn(
-                  "order-last w-full justify-start rounded-full px-2.5 py-1 text-left text-xs font-medium sm:order-none sm:ml-auto sm:w-auto",
+                  "order-last flex h-8 w-full items-center justify-start rounded-full px-3 text-left text-xs font-medium sm:order-none sm:ml-auto sm:h-auto sm:w-auto sm:px-2.5 sm:py-1",
                   monthDelta > 0 ? "bg-negative/12 text-negative" : "bg-positive/12 text-positive",
                 )}
               >
