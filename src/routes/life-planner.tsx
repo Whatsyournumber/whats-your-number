@@ -360,8 +360,10 @@ function LifePlannerContent() {
                   data={data}
                   profile={profile}
                   baseMonths={baseMonths}
+                  isPrimary={primary?.id === s.g.id}
                   onEdit={() => setDraft(draftFromGoal(s.g))}
                   onRemove={() => void remove(s.g.id)}
+                  onSetPrimary={() => setPrimary(s.g.id)}
                 />
               ))}
             </div>
