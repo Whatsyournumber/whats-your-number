@@ -37,7 +37,7 @@ import { useIndexReturns } from "@/hooks/use-index-returns";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useQuotes } from "@/hooks/use-market";
 import { cn } from "@/lib/utils";
-import { buildInsights } from "@/lib/onboarding";
+import { buildInsights, lifestyles } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
 import { readDemoSnapshot, type DemoSnapshot } from "@/lib/demo-snapshot";
@@ -85,6 +85,28 @@ function greeting(t: (es: string, en: string) => string) {
   if (h < 12) return t("Buenos días", "Good morning");
   if (h < 20) return t("Buenas tardes", "Good afternoon");
   return t("Buenas noches", "Good evening");
+}
+
+const lifestyleLabelEn: Record<string, string> = {
+  minimalista: "minimalist",
+  comodo: "comfortable",
+  premium: "premium",
+  lujo: "luxury",
+};
+
+const maritalLabelEn: Record<string, string> = {
+  Soltero: "single",
+  "En pareja": "in a relationship",
+  Casado: "married",
+  Divorciado: "divorced",
+};
+
+function lifestyleSubtitle(profile: ReturnType<typeof useProfile>["profile"], t: (es: string, en: string) => string) {
+  const style = lifestyles.find((l) => l.value === profile.lifestyle)?.label.toLowerCase() ?? t("cómodo", "comfortable");
+  const status = profile.marital_status || t("soltero", "single");
+  const styleEn = lifestyleLabelEn[profile.lifestyle] ?? "comfortable";
+  const statusEn = maritalLabelEn[profile.marital_status] ?? "single";
+  return t(`Estilo de vida ${style}, ${status.toLowerCase()}`, `${styleEn} lifestyle, ${statusEn}`);
 }
 
 function Dashboard() {
@@ -563,8 +585,12 @@ function Dashboard() {
               })();
               const years = yearsToTarget(right, left, g.monthly, portfolioRate);
 
+              const isCityGoal = g.emoji === "🌍";
+
               let subtitle: string;
-              if (pct >= 100) {
+              if (isCityGoal) {
+                subtitle = lifestyleSubtitle(profile, t);
+              } else if (pct >= 100) {
                 if (g.name === "Fondo de emergencia") {
                   const monthsCovered = Math.round(left / Math.max(1, d.expenses));
                   subtitle = t(
