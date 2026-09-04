@@ -53,6 +53,37 @@ export const adminDeleteSubscription = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const adminCreatePromoCode = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { code: string; product_id?: string; duration_days?: number; max_uses?: number; note?: string }) => {
+    if (!data?.code?.trim()) throw new Error("code required");
+    return {
+      code: data.code.trim().toUpperCase(),
+      product_id: data.product_id?.trim() || "pro_plan",
+      duration_days: Math.max(1, Math.min(36500, Number(data.duration_days) || 30)),
+      max_uses: Math.max(1, Math.min(100000, Number(data.max_uses) || 25)),
+      note: data.note?.trim() || null,
+    };
+  })
+  .handler(async ({ data, context }) => {
+    await assertSuperAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: inserted, error } = await supabaseAdmin
+      .from("promo_codes")
+      .insert({
+        code: data.code,
+        product_id: data.product_id,
+        duration_days: data.duration_days,
+        max_uses: data.max_uses,
+        note: data.note,
+        active: true,
+      })
+      .select("id,code")
+      .single();
+    if (error) throw new Error(error.message);
+    return inserted;
+  });
+
 export const adminDeletePromoCode = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { id: string }) => {
