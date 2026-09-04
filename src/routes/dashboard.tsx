@@ -587,6 +587,9 @@ function Dashboard() {
 
               const sp500Rate = indexLive['sp500']?.cagr10y ?? indexLive['sp500']?.ytdPct ?? 10;
 
+              const goalBarColor = (value: number) =>
+                value >= 75 ? "bg-positive" : value >= 50 ? "bg-warning" : "bg-negative";
+
               if (g.name === "Cartera de inversión") {
                 const diff = portfolioRate - sp500Rate;
                 const progress = sp500Rate > 0 ? Math.min(100, Math.max(0, (portfolioRate / sp500Rate) * 100)) : 0;
