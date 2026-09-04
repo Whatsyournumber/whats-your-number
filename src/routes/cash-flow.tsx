@@ -144,7 +144,7 @@ function CashFlow() {
       if (tx.amount >= 0) continue;
       const cat = categorizeTxWithTravel(tx as Tx, rules, travelDays);
       const v = Math.abs(tx.amount);
-      if (WANT_CATS.has(cat)) {
+      if (isWant(cat)) {
         wants += v;
         wantsBy.set(cat, (wantsBy.get(cat) ?? 0) + v);
       } else {
