@@ -719,6 +719,7 @@ function PortafolioContent() {
       <PageHeader
         eyebrow={t("Inversiones", "Investments")}
         title={t("Portfolio", "Portfolio")}
+        subtitle={t("Todos tus activos en tiempo real", "All your assets in real time")}
         actions={
           <Popover open={evoOpen} onOpenChange={setEvoOpen}>
             <PopoverTrigger asChild>
