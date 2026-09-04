@@ -91,7 +91,6 @@ function PortafolioContent() {
   const [newSymbol, setNewSymbol] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [evoIdx, setEvoIdx] = useState<number | null>(null);
-  const [evoOpen, setEvoOpen] = useState(false);
   const searchQuery = useSymbolSearch(newSymbol);
 
   // Precios reales para las posiciones con ticker + unidades.
