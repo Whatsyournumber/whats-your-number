@@ -276,7 +276,7 @@ function PatrimonioContent() {
                 </defs>
                 <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
                 <XAxis dataKey="label" {...axisProps} />
-                <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={isMobile ? 38 : 48} />
+                <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={isMobile ? 42 : 48} />
                 <Tooltip content={<ChartTooltip />} />
                 <Area type="monotone" dataKey="netWorth" name={t("Patrimonio", "Net worth")} stroke="var(--color-chart-2)" strokeWidth={2.5} fill="url(#pw)" />
               </AreaChart>

@@ -748,10 +748,10 @@ function PortafolioContent() {
             </div>
           ) : (
             <ResponsiveContainer width="100%" height={290}>
-              <LineChart data={benchmarkData} margin={{ left: isMobile ? -26 : -18, right: isMobile ? 2 : 8 }}>
+              <LineChart data={benchmarkData} margin={{ left: isMobile ? 0 : -18, right: isMobile ? 4 : 8 }}>
                 <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
                 <XAxis dataKey="label" {...axisProps} />
-                <YAxis {...axisProps} tickFormatter={(v) => `${v}%`} width={isMobile ? 34 : 46} />
+                <YAxis {...axisProps} tickFormatter={(v) => `${v}%`} width={isMobile ? 38 : 46} />
                 <Tooltip content={<ChartTooltip formatter={(v) => `${v.toFixed(1)}%`} />} />
                 <Line type="monotone" dataKey="portfolio" name={t("Portafolio", "Portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.5} dot={false} />
                 <Line type="monotone" dataKey="bench" name={benchName} stroke="var(--color-chart-8)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
