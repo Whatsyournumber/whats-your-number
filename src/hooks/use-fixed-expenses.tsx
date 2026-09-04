@@ -232,12 +232,15 @@ export function useFixedExpenses() {
 export function convertStoredFixedExpenses(from: string, to: string) {
   if (!from || !to || from.toUpperCase() === to.toUpperCase()) return;
   try {
-    const raw = window.localStorage.getItem(KEY);
-    if (raw) {
+    // Convierte la caché de invitado y la de cada cuenta (claves con prefijo).
+    const keys = Object.keys(window.localStorage).filter((k) => k === KEY || k.startsWith(`${KEY}:`));
+    for (const key of keys) {
+      const raw = window.localStorage.getItem(key);
+      if (!raw) continue;
       const parsed = JSON.parse(raw) as FixedExpense[];
       if (Array.isArray(parsed)) {
         const next = parsed.map((i) => ({ ...i, amount: convertMoneyValue(Number(i.amount) || 0, from, to) }));
-        window.localStorage.setItem(KEY, JSON.stringify(next));
+        window.localStorage.setItem(key, JSON.stringify(next));
       }
     }
     const target = window.localStorage.getItem(TARGET_KEY);
