@@ -940,7 +940,8 @@ function Gastos() {
       <Panel
         variant="minimal"
         title={t("Comparar mes vs mes", "Compare month vs month")}
-        description={t("Elige dos meses de tus EEFF y mira dónde cambió el gasto", "Pick two months from your statements and see where spend changed")}
+        description={t("Compara dos meses de tus EEFF", "Compare two statement months")}
+        descriptionClassName="line-clamp-1 sm:line-clamp-none"
         bleedMobile
       >
         {monthKeys.length === 0 ? (
@@ -975,7 +976,7 @@ function Gastos() {
               </Select>
               <span
                 className={cn(
-                  "ml-auto rounded-full px-2.5 py-1 text-xs font-medium",
+                  "order-last w-full justify-start rounded-full px-2.5 py-1 text-left text-xs font-medium sm:order-none sm:ml-auto sm:w-auto",
                   monthDelta > 0 ? "bg-negative/12 text-negative" : "bg-positive/12 text-positive",
                 )}
               >
