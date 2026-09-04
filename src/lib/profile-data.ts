@@ -178,10 +178,12 @@ export function buildDataset(p: Profile): Dataset {
       monthly: savings,
       displayCurrent: income,
       displayTarget: cityMonthlySafe,
-      progressPct: Math.min(100, Math.round((cityMonthlySafe / Math.max(1, income)) * 100)),
-      note: `${p.city ? `Vivir en ${p.city}` : "Ciudad objetivo"}: ${fmt(cityMonthlySafe)}/mes · ahorro ${fmt(cityCapacitySafe)}/mes · te retiras en ${
-        yearsToNumberSafe === 0 ? "menos de 1 año" : yearsToNumberSafe !== null ? `${yearsToNumberSafe} años` : "+60 años"
-      }`,
+      progressPct: income >= cityMonthlySafe ? 100 : Math.min(100, Math.round((cityMonthlySafe / Math.max(1, income)) * 100)),
+      note: p.city
+        ? `${p.city}: ${fmt(cityMonthlySafe)}/mes · ${
+            income >= cityMonthlySafe ? "ya puedes vivir allí" : `ahorro ${fmt(cityCapacitySafe)}/mes`
+          }`
+        : `Ciudad objetivo: ${fmt(cityMonthlySafe)}/mes`,
     },
   ];
 

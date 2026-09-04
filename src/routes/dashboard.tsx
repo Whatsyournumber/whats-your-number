@@ -34,6 +34,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useTransactions } from "@/hooks/use-transactions";
 import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useIndexReturns } from "@/hooks/use-index-returns";
+import { holdingValue, useHoldings } from "@/hooks/use-holdings";
+import { useQuotes } from "@/hooks/use-market";
 import { cn } from "@/lib/utils";
 import { buildInsights } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
@@ -99,6 +101,13 @@ function Dashboard() {
   const realMonths = buildRealMonths(transactions, d.netWorth);
   const fixed = useFixedExpenses();
   const { live: indexLive } = useIndexReturns();
+  const { holdings } = useHoldings();
+  const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
+  const holdingQuotes = useQuotes(holdingSymbols);
+  const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
+  const dayChange: Record<string, number> = Object.fromEntries(
+    (holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.changePct ?? 0]),
+  );
   const months = (realMonths ?? d.months).map((month) => {
     const expenses = month.expenses + (realMonths ? fixed.total : 0);
     return { ...month, expenses, income: d.income, savings: d.income - expenses };
@@ -529,7 +538,29 @@ function Dashboard() {
               const left = g.displayCurrent ?? g.current;
               const right = g.displayTarget ?? g.target;
               const remaining = Math.max(0, right - left);
-              const portfolioRate = profile.expected_return || 7;
+              const portfolioRate = (() => {
+                const investKinds = ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured"];
+                const list = holdings.filter((h) => investKinds.includes(h.kind));
+                let totalValue = 0;
+                let weightedReturn = 0;
+                for (const h of list) {
+                  const value = holdingValue(h, prices);
+                  if (value <= 0) continue;
+                  const tk = h.ticker?.toUpperCase();
+                  const marketCost = h.cost_basis > 0 ? h.cost_basis : 0;
+                  let marketGrowth: number | null = null;
+                  if (tk && marketCost > 0 && value > 0) {
+                    marketGrowth = (value - marketCost) / marketCost;
+                  } else if (tk && dayChange[tk] !== undefined) {
+                    marketGrowth = dayChange[tk] / 100;
+                  }
+                  const growth = marketGrowth !== null ? marketGrowth : (h.expected_return || 7) / 100;
+                  totalValue += value;
+                  weightedReturn += value * growth;
+                }
+                if (totalValue > 0) return (weightedReturn / totalValue) * 100;
+                return profile.expected_return || 7;
+              })();
               const years = yearsToTarget(right, left, g.monthly, portfolioRate);
 
               let subtitle: string;
@@ -579,7 +610,7 @@ function Dashboard() {
                           {fmtCompact(g.current)} {t(`al ${portfolioRate.toFixed(0)}%`, `at ${portfolioRate.toFixed(0)}%`)}
                         </p>
                         <Progress value={progress} className="mt-2 h-2" />
-                        <p className="mt-1.5 text-[11px] text-muted-foreground">
+                        <p className="mt-1.5 line-clamp-1 text-[11px] text-muted-foreground">
                           {t(`vs ${sp500Rate.toFixed(0)}% S&P 500`, `vs ${sp500Rate.toFixed(0)}% S&P 500`)}
                         </p>
                       </div>
@@ -606,7 +637,7 @@ function Dashboard() {
                         {fmtCompact(left)} {t("de", "of")} {fmtCompact(right)}
                       </p>
                       <Progress value={pct} className="mt-2 h-2" />
-                      <p className="mt-1.5 text-[11px] text-muted-foreground">{subtitle}</p>
+                      <p className="mt-1.5 line-clamp-1 text-[11px] text-muted-foreground">{subtitle}</p>
                     </div>
                   </Link>
                 </li>
