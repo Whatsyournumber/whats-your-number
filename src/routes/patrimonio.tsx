@@ -262,7 +262,12 @@ function PatrimonioContent() {
 
   return (
     <PageShell>
-      <PageHeader eyebrow={t("Balance", "Balance")} title={t("Patrimonio", "Net worth")} subtitle={t("Todo lo que tienes y lo que debes, en una sola vista.", "Everything you own and owe, in one view.")} />
+      <PageHeader
+        eyebrow={t("Balance", "Balance")}
+        title={t("Patrimonio", "Net worth")}
+        subtitle={t("Todo lo que tienes y lo que debes, en una sola vista.", "Everything you own and owe, in one view.")}
+        actions={<MonthEvolutionPicker availableKeys={realKeys} value={evoMonth} onChange={setEvoMonth} />}
+      />
 
       <div className="grid gap-4 sm:grid-cols-3">
         <KpiCard label={t("Patrimonio neto", "Net worth")} value={fmt(netWorthAll)} delta={growth} hint={t("últimos 12 meses", "last 12 months")} accent index={0} />
