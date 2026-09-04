@@ -527,7 +527,8 @@ function Dashboard() {
               const left = g.displayCurrent ?? g.current;
               const right = g.displayTarget ?? g.target;
               const remaining = Math.max(0, right - left);
-              const years = yearsToTarget(right, left, g.monthly, profile.expected_return || 7);
+              const portfolioRate = profile.expected_return || 7;
+              const years = yearsToTarget(right, left, g.monthly, portfolioRate);
 
               let subtitle: string;
               if (pct >= 100) {
@@ -542,6 +543,22 @@ function Dashboard() {
                 }
               } else if (g.note) {
                 subtitle = translateGoalNote(g.note, lang);
+              } else if (g.name === "Cartera de inversión" && remaining > 0) {
+                const yearsSP = yearsToTarget(right, left, g.monthly, 10);
+                const base = t(
+                  `Te faltan ${fmtCompact(remaining)}`,
+                  `You need ${fmtCompact(remaining)}`,
+                );
+                const compare = isMobile
+                  ? t(
+                      `${portfolioRate}% cartera ~${years}a · 10% S&P500 ~${yearsSP}a`,
+                      `${portfolioRate}% portfolio ~${years}y · 10% S&P500 ~${yearsSP}y`,
+                    )
+                  : t(
+                      `${portfolioRate}% de tu cartera ~${years} años · 10% S&P500 ~${yearsSP} años`,
+                      `${portfolioRate}% of your portfolio ~${years} years · 10% S&P500 ~${yearsSP} years`,
+                    );
+                subtitle = `${base} • ${compare}`;
               } else if (remaining > 0 && years > 0 && years < 99) {
                 subtitle = t(
                   `Te faltan ${fmtCompact(remaining)} • ~ ${years} años al ritmo actual`,
