@@ -24,7 +24,7 @@ export function PageHeader({
 }: {
   eyebrow?: string;
   title: string;
-  subtitle?: string;
+  subtitle?: ReactNode;
   actions?: ReactNode;
 }) {
   return (
@@ -35,9 +35,9 @@ export function PageHeader({
         )}
         <h1 className="mt-1 text-2xl font-semibold md:text-3xl">{title}</h1>
         {subtitle && (
-          <p className="mt-1 max-w-2xl text-sm text-muted-foreground max-sm:text-[11px] max-sm:whitespace-nowrap max-sm:truncate">
+          <div className="mt-1 max-w-2xl text-sm text-muted-foreground max-sm:text-[11px] max-sm:whitespace-nowrap max-sm:truncate">
             {subtitle}
-          </p>
+          </div>
         )}
       </div>
       {actions && <div className="flex items-center gap-2">{actions}</div>}
