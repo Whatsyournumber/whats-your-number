@@ -8,6 +8,7 @@ import { ScrollX } from "@/components/scroll-x";
 import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
+import { MonthEvolutionPicker } from "@/components/month-evolution-picker";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,8 @@ import { toast } from "sonner";
 import { useProfile } from "@/hooks/use-profile";
 import { useHoldings, holdingValue } from "@/hooks/use-holdings";
 import { useQuotes } from "@/hooks/use-market";
+import { useTransactions } from "@/hooks/use-transactions";
+import { buildRealMonths } from "@/lib/real-months";
 
 import { useT } from "@/hooks/use-language";
 import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
