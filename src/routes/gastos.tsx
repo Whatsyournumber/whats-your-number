@@ -800,16 +800,16 @@ function Gastos() {
 
 
         <Panel variant="minimal" title={t("Evolución del gasto", "Spend evolution")} description={`${t("Comparando con", "Comparing with")} ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="flex h-full flex-col p-3 md:p-5 lg:col-span-2">
-          <div className="mb-1 flex flex-nowrap items-center justify-end gap-3 overflow-hidden text-[10px] text-muted-foreground sm:gap-4 sm:text-xs">
+          <div className="mb-1 flex flex-nowrap items-center justify-end gap-2 overflow-hidden text-[10px] text-muted-foreground sm:gap-4 sm:text-xs">
             {[
               { c: "#5B6370", l: t("Anterior", "Previous"), full: t("Periodo anterior", "Previous period") },
               { c: "#FF7B7B", l: t("Actual", "Current"), full: t("Este periodo", "This period") },
               { c: "#E6C86C", l: t("Fijos", "Fixed"), full: t("Fijos (prorrateado)", "Fixed (prorated)") },
             ].map((it) => (
-              <span key={it.c} className="flex min-w-0 items-center gap-1.5">
+              <span key={it.c} className="flex shrink-0 items-center gap-1.5 whitespace-nowrap">
                 <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: it.c }} />
-                <span className="truncate sm:hidden">{it.l}</span>
-                <span className="hidden truncate sm:inline">{it.full}</span>
+                <span className="sm:hidden">{it.l}</span>
+                <span className="hidden sm:inline">{it.full}</span>
               </span>
             ))}
           </div>
