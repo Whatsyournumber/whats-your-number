@@ -280,9 +280,54 @@ function Dashboard() {
       <CheckoutWelcome />
       <SubscriptionStatusBanner className="mb-4" />
       <PageHeader
-        eyebrow={new Date().toLocaleDateString(lang, { month: "long", year: "numeric" })}
+        eyebrow={activeDate.toLocaleDateString(lang, { month: "long", year: "numeric" })}
         title={firstName ? `${greeting(t)} ${firstName}` : greeting(t)}
         subtitle={headerSubtitle}
+        actions={
+          <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="gap-2 rounded-full">
+                <CalendarIcon className="h-4 w-4" />
+                <span className="text-xs md:text-sm">{monthRangeLabel}</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="end" collisionPadding={12} className="w-[min(92vw,20rem)] p-3">
+              <div className="mb-3 flex items-center justify-between">
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setPickerYear((y) => y - 1)}>
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <span className="text-sm font-medium">{pickerYear}</span>
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setPickerYear((y) => y + 1)}>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {Array.from({ length: 12 }, (_, m) => {
+                  const key = `${pickerYear}-${String(m + 1).padStart(2, "0")}`;
+                  const available = monthKeys.includes(key);
+                  return (
+                    <Button
+                      key={key}
+                      size="sm"
+                      variant={key === activeKey ? "default" : "ghost"}
+                      disabled={!available}
+                      className="rounded-lg capitalize"
+                      onClick={() => {
+                        setMonthKey(key);
+                        setPickerOpen(false);
+                      }}
+                    >
+                      {new Date(pickerYear, m, 1).toLocaleDateString(lang, { month: "short" }).replace(/\./g, "")}
+                    </Button>
+                  );
+                })}
+              </div>
+              <p className="mt-3 text-xs text-muted-foreground">
+                {t("Solo meses con datos disponibles.", "Only months with available data.")}
+              </p>
+            </PopoverContent>
+          </Popover>
+        }
       />
 
       {!isLoading && !d.hasData && (
