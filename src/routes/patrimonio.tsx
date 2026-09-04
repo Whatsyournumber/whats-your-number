@@ -281,7 +281,6 @@ function PatrimonioContent() {
           title={t("Crecimiento del patrimonio", "Net worth growth")}
           className="flex flex-col p-3 md:p-5 lg:col-span-2"
           bleedMobile
-          actions={<MonthEvolutionPicker availableKeys={realKeys} value={evoMonth} onChange={setEvoMonth} />}
         >
           <div className="min-h-[340px] flex-1 md:min-h-[420px] lg:min-h-0">
             <ResponsiveContainer width="100%" height="100%">
