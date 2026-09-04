@@ -84,6 +84,14 @@ function RetiroContent() {
     .reduce((s, h) => s + holdingValue(h, prices), 0);
   const investable = holdings.length ? investableFromHoldings : investableFallback;
 
+  // Evolución mensual real de lo invertible (reconstruida desde tus EEFF).
+  const { transactions } = useTransactions();
+  const evoMonths = buildRealMonths(transactions, investable);
+  const evoKeys = (evoMonths ?? []).map((m) => m.month).filter((k): k is string => /^\d{4}-\d{2}$/.test(k ?? ""));
+  const [evoMonth, setEvoMonth] = useState<string | null>(null);
+  const evoIdx = evoMonth ? evoKeys.indexOf(evoMonth) : -1;
+  const evoChartMonths = evoIdx >= 0 ? (evoMonths ?? []).slice(0, evoIdx + 1) : (evoMonths ?? []);
+
   const progressPct = plan.targetCapital > 0 ? Math.max(0, (investable / plan.targetCapital) * 100) : 0;
 
 
