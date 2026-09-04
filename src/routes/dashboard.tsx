@@ -101,6 +101,13 @@ function Dashboard() {
   const realMonths = buildRealMonths(transactions, d.netWorth);
   const fixed = useFixedExpenses();
   const { live: indexLive } = useIndexReturns();
+  const { holdings } = useHoldings();
+  const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
+  const holdingQuotes = useQuotes(holdingSymbols);
+  const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
+  const dayChange: Record<string, number> = Object.fromEntries(
+    (holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.changePct ?? 0]),
+  );
   const months = (realMonths ?? d.months).map((month) => {
     const expenses = month.expenses + (realMonths ? fixed.total : 0);
     return { ...month, expenses, income: d.income, savings: d.income - expenses };
