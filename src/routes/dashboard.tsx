@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useTransactions } from "@/hooks/use-transactions";
 import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { cn } from "@/lib/utils";
@@ -290,7 +291,7 @@ function Dashboard() {
         
         <Panel title={t("Evolución de cuál tu número", "Evolution of your number")} description={t("Progreso hacia tu número para el retiro · últimos 12 meses", "Progress toward your retirement number · last 12 months")} className="lg:col-span-2" bleedMobile>
           <ResponsiveContainer width="100%" height={280}>
-            <AreaChart data={months} margin={{ left: 4, right: 8, top: 8 }}>
+            <AreaChart data={months} margin={chartMargin}>
               <defs>
                 <linearGradient id="nw" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="var(--color-chart-1)" stopOpacity={0.5} />
@@ -300,7 +301,7 @@ function Dashboard() {
               </defs>
               <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
               <XAxis dataKey="label" {...axisProps} />
-              <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={78} fontSize={10} domain={[0, (dataMax: number) => Math.max(dataMax, targetNumber) * 1.08]} />
+              <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={axisW} fontSize={isMobile ? 9 : 10} domain={[0, (dataMax: number) => Math.max(dataMax, targetNumber) * 1.08]} />
               <Tooltip content={<ChartTooltip />} />
               {targetNumber > 0 && (
                 <ReferenceLine
@@ -376,10 +377,10 @@ function Dashboard() {
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel title={t("Ingresos vs gastos", "Income vs expenses")} className="lg:col-span-2" bleedMobile>
           <ResponsiveContainer width="100%" height={240}>
-            <BarChart data={months} margin={{ left: 4, right: 8 }} barGap={2}>
+            <BarChart data={months} margin={chartMargin} barGap={2}>
               <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
               <XAxis dataKey="label" {...axisProps} />
-              <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={78} fontSize={10} />
+              <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={axisW} fontSize={isMobile ? 9 : 10} />
               <Tooltip content={<ChartTooltip />} cursor={{ fill: "var(--color-muted)", opacity: 0.28 }} />
               <Bar dataKey="income" name={t("Ingresos", "Income")} fill="var(--color-chart-1)" radius={[6, 6, 0, 0]} />
               <Bar dataKey="expenses" name={t("Gastos", "Expenses")} fill="var(--color-chart-5)" radius={[6, 6, 0, 0]} />
@@ -389,10 +390,10 @@ function Dashboard() {
 
         <Panel title={t("Evolución del ahorro", "Savings evolution")} bleedMobile>
           <ResponsiveContainer width="100%" height={240}>
-            <LineChart data={months} margin={{ left: 4, right: 8 }}>
+            <LineChart data={months} margin={chartMargin}>
               <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
               <XAxis dataKey="label" {...axisProps} />
-              <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={78} fontSize={10} />
+              <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={axisW} fontSize={isMobile ? 9 : 10} />
               <Tooltip content={<ChartTooltip />} />
               <Line
                 type="monotone"
