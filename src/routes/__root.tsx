@@ -9,7 +9,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { Loader2, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -143,17 +143,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="es" className="dark">
+    <html lang="es" className="dark" style={{ backgroundColor: "oklch(0.16 0.012 265)" }}>
       <head>
+        <meta name="theme-color" content="#0b1020" />
         <HeadContent />
       </head>
-      <body>
+      <body style={{ backgroundColor: "oklch(0.16 0.012 265)" }}>
         {children}
         <Scripts />
       </body>
     </html>
   );
 }
+
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
@@ -285,11 +287,20 @@ function AppShell() {
 
   if (loading || !user || !onboardingChecked) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+      <div className="min-h-screen bg-background p-4 sm:p-6">
+        <div className="mx-auto w-full max-w-6xl space-y-4">
+          <div className="h-8 w-40 animate-pulse rounded-lg bg-muted/50" />
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted/40" />
+            ))}
+          </div>
+          <div className="h-64 animate-pulse rounded-2xl bg-muted/30" />
+        </div>
       </div>
     );
   }
+
 
 
   return (
