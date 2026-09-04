@@ -263,16 +263,25 @@ function CashFlow() {
         </div>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard label={t("Ingresos", "Income")} value={fmt(totalIncome)} hint={usingStatements ? t("Abonos de tus EEFF", "Credits from your statements") : t("Según tu perfil", "Based on your profile")} accent index={0} />
+      <div className="grid gap-4 sm:grid-cols-3">
         <KpiCard
           label={t("Necesidades", "Needs")}
           value={fmt(buckets[0]!.amount)}
           hint={`${((buckets[0]!.amount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
+          index={0}
+        />
+        <KpiCard
+          label={t("Ahorro / inversiones", "Savings / investments")}
+          value={fmt(buckets[2]!.amount)}
+          hint={`${((buckets[2]!.amount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
           index={1}
         />
-        <KpiCard label={t("Deseos / lifestyle", "Wants / lifestyle")} value={fmt(buckets[1]!.amount)} hint={hasReal ? `${monthTx.length} ${t("movimientos", "transactions")}` : t("Según tu perfil", "Based on your profile")} index={2} />
-        <KpiCard label={t("Flujo libre", "Free flow")} value={fmt(buckets[3]!.amount)} index={3} />
+        <KpiCard
+          label={t("Deseos / lifestyle", "Wants / lifestyle")}
+          value={fmt(buckets[1]!.amount)}
+          hint={`${((buckets[1]!.amount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
+          index={2}
+        />
       </div>
 
       <Panel title={t("Flujo de dinero", "Money flow")} description={t("Ingresos → destino final", "Income → final destination")}>
