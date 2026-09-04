@@ -509,23 +509,69 @@ function Dashboard() {
       <TopCitiesPanel profile={profile} netWorth={d.netWorth} monthlySavings={d.savings} fmt={fmt} />
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title={t("Tus objetivos", "Your goals")} description={t("Calculados con tus cifras", "Calculated from your numbers")}>
-          <ul className="space-y-3">
+        <Panel
+          title={t("Tus metas financieras", "Your financial goals")}
+          description={t("Tu progreso hacia lo que te importa.", "Your progress toward what matters.")}
+          actions={
+            <Button asChild size="sm" variant="outline" className="gap-1 rounded-full">
+              <Link to="/life-planner">
+                <Plus className="h-4 w-4" />
+                <span className="hidden sm:inline">{t("Añadir meta", "Add goal")}</span>
+              </Link>
+            </Button>
+          }
+        >
+          <ul className="space-y-2">
             {d.goals.map((g) => {
               const pct = g.progressPct ?? (g.target > 0 ? Math.min(100, (g.current / g.target) * 100) : 0);
               const left = g.displayCurrent ?? g.current;
               const right = g.displayTarget ?? g.target;
+              const remaining = Math.max(0, right - left);
+              const years = yearsToTarget(right, left, g.monthly, profile.expected_return || 7);
+
+              let subtitle: string;
+              if (pct >= 100) {
+                if (g.name === "Fondo de emergencia") {
+                  const monthsCovered = Math.round(left / Math.max(1, d.expenses));
+                  subtitle = t(
+                    `Meta alcanzada • ~ ${monthsCovered} meses de gastos cubiertos`,
+                    `Goal reached • ~ ${monthsCovered} months of expenses covered`,
+                  );
+                } else {
+                  subtitle = t("Meta alcanzada", "Goal reached");
+                }
+              } else if (g.note) {
+                subtitle = translateGoalNote(g.note, lang);
+              } else if (remaining > 0 && years > 0 && years < 99) {
+                subtitle = t(
+                  `Te faltan ${fmtCompact(remaining)} • ~ ${years} años al ritmo actual`,
+                  `You need ${fmtCompact(remaining)} • ~ ${years} years at current pace`,
+                );
+              } else {
+                subtitle = t("En camino", "On track");
+              }
+
               return (
                 <li key={g.name}>
-                  <div className="flex items-center gap-2 text-sm">
-                    <span>{g.emoji}</span>
-                    <span className="font-medium">{translateGoalName(g.name, lang)}</span>
-                    <span className="numeric ml-auto text-xs text-muted-foreground">
-                      {fmtCompact(left)} / {fmtCompact(right)}
+                  <Link to="/retiro" className="group flex items-start gap-3 rounded-2xl p-2 transition-colors hover:bg-elevated/40">
+                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-elevated/60 text-xl">
+                      {g.emoji}
                     </span>
-                  </div>
-                  <Progress value={pct} className="mt-2 h-1" />
-                  {g.note && <p className="mt-1.5 text-[11px] text-muted-foreground">{translateGoalNote(g.note, lang)}</p>}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="min-w-0 truncate font-medium">{translateGoalName(g.name, lang)}</span>
+                        <span className="numeric ml-auto shrink-0 text-sm font-semibold text-positive">
+                          {pct.toFixed(0)}%
+                        </span>
+                        <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
+                      </div>
+                      <p className="mt-0.5 text-sm text-muted-foreground">
+                        {fmtCompact(left)} {t("de", "of")} {fmtCompact(right)}
+                      </p>
+                      <Progress value={pct} className="mt-2 h-2" />
+                      <p className="mt-1.5 text-[11px] text-muted-foreground">{subtitle}</p>
+                    </div>
+                  </Link>
                 </li>
               );
             })}
