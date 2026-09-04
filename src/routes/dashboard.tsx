@@ -37,7 +37,7 @@ import { useIndexReturns } from "@/hooks/use-index-returns";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useQuotes } from "@/hooks/use-market";
 import { cn } from "@/lib/utils";
-import { buildInsights } from "@/lib/onboarding";
+import { buildInsights, lifestyles } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
 import { readDemoSnapshot, type DemoSnapshot } from "@/lib/demo-snapshot";
