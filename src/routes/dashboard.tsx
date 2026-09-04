@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight, Banknote, CalendarIcon, ChevronLeft, ChevronRight, Home, PiggyBank, TrendingUp, Wallet } from "lucide-react";
+import { ArrowUpRight, Banknote, CalendarIcon, ChevronLeft, ChevronRight, Home, PiggyBank, Plus, TrendingUp, Wallet } from "lucide-react";
 import { toast } from "sonner";
 import {
   Area,
