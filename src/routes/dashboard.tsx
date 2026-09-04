@@ -267,16 +267,18 @@ function Dashboard() {
             : priority === "organizar"
               ? t("Tus números. Tu progreso. Tu objetivo de organizar tus finanzas.", "Your numbers. Your progress. Your goal to organize your finances.")
               : t("Tus números. Tu progreso. Tu objetivo de alcanzar tu libertad financiera.", "Your numbers. Your progress. Your goal to reach financial freedom.");
-  const numberTitle =
-    goalMode === "home"
+  const numberTitle = primary
+    ? primary.name
+    : goalMode === "home"
       ? t("Tu entrada", "Your down payment")
       : goalMode === "business"
         ? priority === "otro"
           ? t("Tu objetivo", "Your goal")
           : t("Tu negocio", "Your business")
         : t("Tu Número", "Your Number");
-  const numberDescription =
-    goalMode === "home"
+  const numberDescription = primary
+    ? t("Capital para tu meta principal", "Capital for your primary goal")
+    : goalMode === "home"
       ? t("Capital para la entrada de tu vivienda", "Capital for your home down payment")
       : goalMode === "business"
         ? priority === "otro"
@@ -289,8 +291,9 @@ function Dashboard() {
             : priority === "organizar"
               ? t("El número que ordena tu dinero", "The number that organizes your money")
               : t(`Libertad estimada a los ${plan.freedomAge} años`, `Freedom estimated at age ${plan.freedomAge}`);
-  const numberLabel =
-    goalMode === "home"
+  const numberLabel = primary
+    ? t("Meta principal", "Primary goal")
+    : goalMode === "home"
       ? t("Entrada objetivo", "Target down payment")
       : goalMode === "business"
         ? t("Capital objetivo", "Target capital")
@@ -301,8 +304,9 @@ function Dashboard() {
             : priority === "organizar"
               ? t("Número organizador", "Organizing number")
               : "Your Number";
-  const numberHint =
-    goalMode === "home"
+  const numberHint = primary
+    ? `${primary.emoji} ${t("Meta activa", "Active goal")}`
+    : goalMode === "home"
       ? t("Para comprar tu vivienda", "To buy your home")
       : goalMode === "business"
         ? priority === "otro" && goalNote
