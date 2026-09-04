@@ -1,13 +1,16 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Trash2 } from "lucide-react";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { StatementImporter } from "@/components/statement-importer";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { categories, excludedTypes, fmt, rules, topMerchants } from "@/lib/data";
+import { categories, excludedTypes, fmt, topMerchants } from "@/lib/data";
+import { useCategoryRules } from "@/hooks/use-category-rules";
 import { useT } from "@/hooks/use-language";
 
 export const Route = createFileRoute("/configuracion")({
