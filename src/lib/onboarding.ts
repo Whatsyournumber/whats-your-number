@@ -270,6 +270,41 @@ export function compact(v: number, currency = "USD") {
   return `${sign}${s}${Math.round(abs)}`;
 }
 
+/**
+ * Acorta un importe ya formateado ("1.458.600 US$") a "1,46M US$" para que nunca
+ * se corte con puntos suspensivos en las tarjetas.
+ */
+export function shortenMoneyString(text: string): string {
+  return text.replace(/-?\d[\d.,\s]*\d|-?\d/g, (match) => {
+    const cleaned = match.replace(/\s/g, "");
+    const lastDot = cleaned.lastIndexOf(".");
+    const lastComma = cleaned.lastIndexOf(",");
+    const decimalSep = lastDot > lastComma ? "." : lastComma > lastDot ? "," : "";
+    let intPart = cleaned;
+    if (decimalSep) {
+      const idx = cleaned.lastIndexOf(decimalSep);
+      const decimals = cleaned.slice(idx + 1);
+      // separador de miles si tiene 3 dígitos y hay más grupos
+      if (!(decimals.length === 3 && /[.,]/.test(cleaned.slice(0, idx)))) {
+        intPart = cleaned.slice(0, idx);
+      }
+    }
+    const n = Number(intPart.replace(/[.,]/g, ""));
+    if (!Number.isFinite(n)) return match;
+    const sign = cleaned.startsWith("-") ? "-" : "";
+    const abs = Math.abs(n);
+    const round = (x: number) => {
+      const v = x >= 100 ? Math.round(x) : Math.round(x * 10) / 10;
+      return String(v).replace(".", ",");
+    };
+    if (abs >= 1_000_000_000) return `${sign}${round(abs / 1_000_000_000)}B`;
+    if (abs >= 1_000_000) return `${sign}${round(abs / 1_000_000)}M`;
+    if (abs >= 100_000) return `${sign}${round(abs / 1_000)}K`;
+    return match;
+  });
+}
+
+
 
 /* ─────────── Onboarding premium: objetivos, ciudades y estilo de vida ─────────── */
 
