@@ -114,16 +114,26 @@ function CashFlow() {
     "Viajes",
     "Restaurantes",
     "Delivery",
-
     "Entretenimiento",
+    "Ocio",
+    "Salidas",
     "Nightlife",
     "Deportes",
+    "Gimnasio",
     "Compras",
+    "Ropa",
     "Tecnología",
+    "Tecnologia",
     "Apps",
+    "Suscripciones",
     "Hobbies",
-
+    "Lifestyle",
+    "Belleza",
+    "Regalos",
+    "Mascotas",
   ]);
+  const isWant = (cat: string) => WANT_CATS.has(cat) || /viaje|restaur|delivery|ocio|salida|night|deporte|gym|gimnasio|compra|ropa|tecnolog|app|suscrip|hobb|lifestyle|belleza|regalo|mascota|entreten/i.test(cat);
+
   const travelDays = useMemo(() => buildTravelDays(monthTx as Tx[], rules), [monthTx, rules]);
   const spend = useMemo(() => {
     let wants = 0;
