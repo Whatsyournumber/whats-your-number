@@ -173,15 +173,21 @@ function Dashboard() {
   const swr = Math.min(15, Math.max(1, profile.withdrawal_rate || 7)) / 100;
   const desiredIncome =
     plan.desiredIncome > 0 ? plan.desiredIncome : current.expenses > 0 ? current.expenses : demo?.monthlySpend ?? 0;
-  const targetNumber = plan.targetCapital > 0 ? plan.targetCapital : (desiredIncome * 12) / swr;
-  const numberNetWorth = d.netWorth > 0 ? d.netWorth : demo?.netWorth ?? 0;
+  const baseTargetNumber = plan.targetCapital > 0 ? plan.targetCapital : (desiredIncome * 12) / swr;
+  const baseNumberNetWorth = d.netWorth > 0 ? d.netWorth : demo?.netWorth ?? 0;
+  const baseMonthlyContribution = current.savings > 0 ? current.savings : demo?.monthlyInvest ?? 0;
+
+  // Si el usuario eligió una meta principal en Life Planner, "Tu Número" refleja esa meta.
+  const targetNumber = primary ? primary.cost : baseTargetNumber;
+  const numberNetWorth = primary ? primary.saved : baseNumberNetWorth;
+  const monthlyContribution = primary ? primary.monthly : baseMonthlyContribution;
   const numberProgress = targetNumber > 0 ? Math.min(100, Math.max(0, (numberNetWorth / targetNumber) * 100)) : 0;
-  const monthlyContribution = current.savings > 0 ? current.savings : demo?.monthlyInvest ?? 0;
-  const numberYearsLeft =
-    plan.targetCapital > 0
+  const numberYearsLeft = primary
+    ? yearsToTarget(primary.cost, primary.saved, primary.monthly, profile.expected_return || 7)
+    : plan.targetCapital > 0
       ? plan.yearsLeft
-      : yearsToTarget(targetNumber, numberNetWorth, monthlyContribution, profile.expected_return || 7);
-  const usingDemo = plan.targetCapital <= 0 && targetNumber > 0;
+      : yearsToTarget(baseTargetNumber, baseNumberNetWorth, baseMonthlyContribution, profile.expected_return || 7);
+  const usingDemo = !primary && plan.targetCapital <= 0 && baseTargetNumber > 0;
 
   const [mortgage, setMortgage] = useState({ balance: 0, rate: 0, term: 0 });
   useEffect(() => {
