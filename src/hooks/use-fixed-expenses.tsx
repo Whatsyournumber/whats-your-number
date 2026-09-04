@@ -43,9 +43,12 @@ export function useFixedExpenses() {
   // después la cuenta, que es la fuente de verdad y sobrevive a cerrar sesión o cambiar de equipo.
   useEffect(() => {
     let cancelled = false;
+    // La caché local va por cuenta: sin sesión usa la clave de invitado y con
+    // sesión una clave propia, para que una cuenta nueva no herede gastos de otra.
+    const storageKey = userId ? `${KEY}:${userId}` : KEY;
     const readLocal = () => {
       try {
-        const raw = window.localStorage.getItem(KEY);
+        const raw = window.localStorage.getItem(storageKey);
         const parsed = raw ? (JSON.parse(raw) as FixedExpense[]) : [];
         return Array.isArray(parsed) ? parsed.filter((i) => !onboardingKeys.has(i.id)) : [];
       } catch {
