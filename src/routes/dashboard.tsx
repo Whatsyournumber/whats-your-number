@@ -532,7 +532,7 @@ function Dashboard() {
             </Button>
           }
         >
-          <ul className="space-y-2">
+          <ul className="space-y-1">
             {d.goals.map((g) => {
               const pct = g.progressPct ?? (g.target > 0 ? Math.min(100, (g.current / g.target) * 100) : 0);
               const left = g.displayCurrent ?? g.current;
@@ -568,8 +568,8 @@ function Dashboard() {
                 if (g.name === "Fondo de emergencia") {
                   const monthsCovered = Math.round(left / Math.max(1, d.expenses));
                   subtitle = t(
-                    `Meta alcanzada • ~ ${monthsCovered} meses de gastos cubiertos`,
-                    `Goal reached • ~ ${monthsCovered} months of expenses covered`,
+                    `Min 6 meses de tu salario - ${monthsCovered} meses cubiertos`,
+                    `Min 6 months of your salary - ${monthsCovered} months covered`,
                   );
                 } else {
                   subtitle = t("Meta alcanzada", "Goal reached");
@@ -594,8 +594,8 @@ function Dashboard() {
                 const diffColor = diff >= 0 ? "text-positive" : "text-negative";
                 return (
                   <li key={g.name}>
-                    <Link to="/portafolio" className="group flex items-start gap-3 rounded-2xl p-2 transition-colors hover:bg-elevated/40">
-                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-elevated/60 text-xl">
+                    <Link to="/portafolio" className="group flex items-start gap-2.5 rounded-2xl p-1.5 transition-colors hover:bg-elevated/40">
+                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-2xl bg-elevated/60 text-lg">
                         {g.emoji}
                       </span>
                       <div className="min-w-0 flex-1">
@@ -606,11 +606,11 @@ function Dashboard() {
                           </span>
                           <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
                         </div>
-                        <p className="mt-0.5 text-sm text-muted-foreground">
+                        <p className="text-sm text-muted-foreground">
                           {fmtCompact(g.current)} {t(`al ${portfolioRate.toFixed(0)}%`, `at ${portfolioRate.toFixed(0)}%`)}
                         </p>
-                        <Progress value={progress} className="mt-2 h-2" />
-                        <p className="mt-1.5 line-clamp-1 text-[11px] text-muted-foreground">
+                        <Progress value={progress} className="mt-1.5 h-1.5" />
+                        <p className="mt-1 line-clamp-1 text-[11px] text-muted-foreground">
                           {t(`vs ${sp500Rate.toFixed(0)}% S&P 500`, `vs ${sp500Rate.toFixed(0)}% S&P 500`)}
                         </p>
                       </div>
@@ -621,8 +621,8 @@ function Dashboard() {
 
               return (
                 <li key={g.name}>
-                  <Link to="/retiro" className="group flex items-start gap-3 rounded-2xl p-2 transition-colors hover:bg-elevated/40">
-                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-elevated/60 text-xl">
+                  <Link to="/retiro" className="group flex items-start gap-2.5 rounded-2xl p-1.5 transition-colors hover:bg-elevated/40">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-2xl bg-elevated/60 text-lg">
                       {g.emoji}
                     </span>
                     <div className="min-w-0 flex-1">
@@ -633,11 +633,11 @@ function Dashboard() {
                         </span>
                         <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
                       </div>
-                      <p className="mt-0.5 text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground">
                         {fmtCompact(left)} {t("de", "of")} {fmtCompact(right)}
                       </p>
-                      <Progress value={pct} className="mt-2 h-2" />
-                      <p className="mt-1.5 line-clamp-1 text-[11px] text-muted-foreground">{subtitle}</p>
+                      <Progress value={pct} className="mt-1.5 h-1.5" />
+                      <p className="mt-1 line-clamp-1 text-[11px] text-muted-foreground">{subtitle}</p>
                     </div>
                   </Link>
                 </li>
