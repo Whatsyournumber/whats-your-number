@@ -414,31 +414,6 @@ function RetiroContent() {
         </p>
       </div>
 
-      {evoMonths && evoMonths.length > 1 && (
-        <Panel
-          title={t("Evolución de tus inversiones", "Your investments evolution")}
-          description={t("Mes a mes, según tus estados de cuenta.", "Month by month, from your statements.")}
-          bleedMobile
-        >
-          <div className="min-h-[240px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={evoChartMonths} margin={{ left: isMobile ? 0 : -8, right: isMobile ? 4 : 8, top: 8, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="evoInv" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.45} />
-                    <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
-                <XAxis dataKey="label" {...axisProps} />
-                <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={isMobile ? 42 : 56} />
-                <Tooltip content={<ChartTooltip />} />
-                <Area type="monotone" dataKey="netWorth" name={t("Invertible", "Investable")} stroke="var(--color-chart-2)" strokeWidth={2.5} fill="url(#evoInv)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </Panel>
-      )}
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel
