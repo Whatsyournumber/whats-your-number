@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { NumberInput } from "@/components/ui/number-input";
 import { cn } from "@/lib/utils";
+import { shortenMoneyString } from "@/lib/onboarding";
 
 export function EditableKpiCard({
   label,
@@ -112,17 +113,15 @@ export function EditableKpiCard({
         <p
           className={cn(
             "numeric relative mt-3 truncate text-ellipsis whitespace-nowrap font-semibold leading-tight",
-            value.length > 22
-              ? "text-base md:text-lg"
-              : value.length > 16
-                ? "text-lg md:text-xl"
-                : value.length > 11
-                  ? "text-xl md:text-2xl"
-                  : "text-2xl md:text-3xl",
+            (value.length > 13 ? shortenMoneyString(value) : value).length > 16
+              ? "text-lg md:text-xl"
+              : (value.length > 13 ? shortenMoneyString(value) : value).length > 11
+                ? "text-xl md:text-2xl"
+                : "text-2xl md:text-3xl",
           )}
           title={value}
         >
-          {value}
+          {value.length > 13 ? shortenMoneyString(value) : value}
         </p>
       )}
 
