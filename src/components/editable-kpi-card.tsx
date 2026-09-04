@@ -7,9 +7,26 @@ import { useState } from "react";
 import { NumberInput } from "@/components/ui/number-input";
 import { cn } from "@/lib/utils";
 
-type BaseProps = {
+export function EditableKpiCard({
+  label,
+  value,
+  rawValue = 0,
+  onChange = () => {},
+  format = (n: number) => String(n),
+  delta,
+  hint,
+  icon: Icon,
+  accent = false,
+  inverse = false,
+  index = 0,
+  variant = "default",
+  editHref,
+}: {
   label: string;
   value: string;
+  rawValue?: number;
+  onChange?: (v: number) => void;
+  format?: (n: number) => string;
   delta?: number;
   hint?: string;
   icon?: LucideIcon;
@@ -17,41 +34,8 @@ type BaseProps = {
   inverse?: boolean;
   index?: number;
   variant?: "default" | "flat";
-};
-
-type InlineEditProps = BaseProps & {
-  rawValue: number;
-  onChange: (v: number) => void;
-  format: (n: number) => string;
-  editHref?: never;
-};
-
-type LinkEditProps = BaseProps & {
-  editHref: string;
-  rawValue?: never;
-  onChange?: never;
-  format?: never;
-};
-
-export function EditableKpiCard(props: InlineEditProps | LinkEditProps) {
-  const {
-    label,
-    value,
-    delta,
-    hint,
-    icon: Icon,
-    accent = false,
-    inverse = false,
-    index = 0,
-    variant = "default",
-    editHref,
-  } = props;
-
-  const isInline = !editHref;
-  const rawValue = isInline ? props.rawValue : 0;
-  const onChange = isInline ? props.onChange : () => {};
-  const format = isInline ? props.format : (n: number) => String(n);
-
+  editHref?: string;
+}) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(rawValue);
 
@@ -107,12 +91,12 @@ export function EditableKpiCard(props: InlineEditProps | LinkEditProps) {
         </div>
       </div>
 
-      {isInline && editing ? (
+      {!editHref && editing ? (
         <div className="mt-3">
           <NumberInput
             value={draft}
             onChange={setDraft}
-            format
+            format={format}
             autoFocus
             onKeyDown={(e) => {
               if (e.key === "Enter") commit();
