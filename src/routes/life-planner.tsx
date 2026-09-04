@@ -105,6 +105,7 @@ function LifePlannerContent() {
   const t = useT();
   const { profile } = useProfile();
   const { goals, create, update, remove, reorder, busy } = useLifeGoals();
+  const { primary, setPrimary } = usePrimaryGoal();
   const data = buildDataset(profile);
   const [draft, setDraft] = useState<Draft | null>(null);
 
