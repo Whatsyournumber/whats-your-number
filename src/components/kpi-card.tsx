@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import type { LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { shortenMoneyString } from "@/lib/onboarding";
 
 export function KpiCard({
   label,
@@ -25,6 +26,8 @@ export function KpiCard({
   index?: number;
   variant?: "default" | "flat";
 }) {
+  const display = value.length > 13 ? shortenMoneyString(value) : value;
+
   const good = delta === undefined ? true : inverse ? delta < 0 : delta > 0;
 
   return (
@@ -49,17 +52,17 @@ export function KpiCard({
       <p
         className={cn(
           "numeric relative mt-3 truncate text-ellipsis whitespace-nowrap font-semibold leading-tight",
-          value.length > 22
+          display.length > 22
             ? "text-base md:text-lg"
-            : value.length > 16
+            : display.length > 16
               ? "text-lg md:text-xl"
-              : value.length > 11
+              : display.length > 11
                 ? "text-xl md:text-2xl"
                 : "text-2xl md:text-3xl",
         )}
         title={value}
       >
-        {value}
+        {display}
       </p>
       <div className="relative mt-auto flex items-center gap-2 pt-2">
         {delta !== undefined && (
