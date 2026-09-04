@@ -66,7 +66,7 @@ export function Panel({
     <section
       className={cn(
         "overflow-hidden p-5",
-        bleedMobile && "p-0 sm:p-5",
+        bleedMobile && "px-2 py-4 sm:p-5",
         variant === "default" && "surface",
         variant === "minimal" && "rounded-2xl border border-border/60 bg-card/40",
         className,
@@ -76,7 +76,7 @@ export function Panel({
         <div
           className={cn(
             "mb-4 flex items-start justify-between gap-3",
-            bleedMobile && "px-5 pt-5 sm:px-0 sm:pt-0",
+            bleedMobile && "px-3 pt-1 sm:px-0 sm:pt-0",
           )}
         >
           <div className="flex min-w-0 items-center gap-3">
