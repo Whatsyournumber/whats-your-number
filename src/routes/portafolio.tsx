@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, TrendingUp, X } from "lucide-react";
+import { CalendarDays, Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, TrendingUp, X } from "lucide-react";
 import { useState } from "react";
+import { motion } from "motion/react";
 import { CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { PlanGate } from "@/components/plan-gate";
@@ -11,6 +12,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useMarketSeries, useQuotes, useSymbolSearch, useWatchlist } from "@/hooks/use-market";
@@ -88,6 +90,8 @@ function PortafolioContent() {
   const [benchmark, setBenchmark] = useState<"sp500" | "nasdaq" | "world">("sp500");
   const [newSymbol, setNewSymbol] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [evoIdx, setEvoIdx] = useState<number | null>(null);
+  const [evoOpen, setEvoOpen] = useState(false);
   const searchQuery = useSymbolSearch(newSymbol);
 
   // Precios reales para las posiciones con ticker + unidades.
