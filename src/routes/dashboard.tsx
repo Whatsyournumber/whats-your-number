@@ -34,6 +34,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useTransactions } from "@/hooks/use-transactions";
 import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useIndexReturns } from "@/hooks/use-index-returns";
+import { holdingValue, useHoldings } from "@/hooks/use-holdings";
+import { useQuotes } from "@/hooks/use-market";
 import { cn } from "@/lib/utils";
 import { buildInsights } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
