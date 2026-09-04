@@ -87,6 +87,28 @@ function greeting(t: (es: string, en: string) => string) {
   return t("Buenas noches", "Good evening");
 }
 
+const lifestyleLabelEn: Record<string, string> = {
+  minimalista: "minimalist",
+  comodo: "comfortable",
+  premium: "premium",
+  lujo: "luxury",
+};
+
+const maritalLabelEn: Record<string, string> = {
+  Soltero: "single",
+  "En pareja": "in a relationship",
+  Casado: "married",
+  Divorciado: "divorced",
+};
+
+function lifestyleSubtitle(profile: ReturnType<typeof useProfile>["profile"], t: (es: string, en: string) => string) {
+  const style = lifestyles.find((l) => l.value === profile.lifestyle)?.label.toLowerCase() ?? t("cómodo", "comfortable");
+  const status = profile.marital_status || t("soltero", "single");
+  const styleEn = lifestyleLabelEn[profile.lifestyle] ?? "comfortable";
+  const statusEn = maritalLabelEn[profile.marital_status] ?? "single";
+  return t(`Estilo de vida ${style}, ${status.toLowerCase()}`, `${styleEn} lifestyle, ${statusEn}`);
+}
+
 function Dashboard() {
   const t = useT();
   const { lang } = useLanguage();
