@@ -96,7 +96,7 @@ export function EditableKpiCard({
           <NumberInput
             value={draft}
             onChange={setDraft}
-            format={format}
+            format
             autoFocus
             onKeyDown={(e) => {
               if (e.key === "Enter") commit();
