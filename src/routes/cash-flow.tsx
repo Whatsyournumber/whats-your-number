@@ -211,8 +211,12 @@ function CashFlow() {
       ].sort((a, b) => b.amount - a.amount)
     : [];
   const wantsBreakdown = hasReal
-    ? [...spend.wantsBy.entries()].map(([label, amount]) => ({ label: translateCategory(label, lang), amount })).sort((a, b) => b.amount - a.amount)
+    ? [
+        ...wantFixedItems.map((i) => ({ label: `${translateFixedName(i.name, lang)} (${t("fijo", "fixed")})`, amount: i.amount })),
+        ...[...spend.wantsBy.entries()].map(([label, amount]) => ({ label: translateCategory(label, lang), amount })),
+      ].sort((a, b) => b.amount - a.amount)
     : [];
+
   const saveBreakdown = hasReal
     ? [
         ...(retirementContribution > fixedSavings
