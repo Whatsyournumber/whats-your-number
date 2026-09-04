@@ -241,9 +241,14 @@ function CashFlow() {
           eyebrow={activeMonth ? monthLabel(activeMonth) : t("Sin EEFF cargados", "No statements uploaded")}
           title={t("Distribución del dinero", "Money Distribution")}
           subtitle={
-            hasReal
-              ? t("Cómo se reparte cada dólar que entra, según tus estados de cuenta cargados.", "How every dollar you receive is allocated, based on your uploaded statements.")
-              : t("Carga tus estados de cuenta en «Cargar tus gastos» para ver tu flujo real. Mientras tanto, usamos tu perfil.", "Upload your statements in \u00abUpload your expenses\u00bb to see your real flow. Meanwhile, we use your profile.")
+            <span className="hidden sm:inline">
+              {t("Cómo se reparte cada dólar basado en rule of money (40% 40% 20%), según tus estados de cuenta cargados.", "How every dollar is split based on the rule of money (40% 40% 20%), according to your uploaded statements.")}
+            </span>
+          }
+          subtitleMobile={
+            <span className="sm:hidden">
+              {t("Cómo se reparte cada dólar basado en rule of money (40% 40% 20%).", "How every dollar is split based on the rule of money (40% 40% 20%).")}
+            </span>
           }
         />
 
