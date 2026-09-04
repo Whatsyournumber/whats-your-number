@@ -186,6 +186,27 @@ function AdminPage() {
     }
   };
 
+  const runCreatePromo = async () => {
+    setPromoBusy(true);
+    try {
+      await adminCreatePromoCode({ data: {
+        code: promoForm.code,
+        product_id: promoForm.product_id,
+        duration_days: Number(promoForm.duration_days),
+        max_uses: Number(promoForm.max_uses),
+        note: promoForm.note,
+      }});
+      toast.success(t("Código creado", "Code created"));
+      setPromoForm({ code: "", product_id: "pro_plan", duration_days: "30", max_uses: "25", note: "" });
+      setPromoDialogOpen(false);
+      await queryClient.invalidateQueries({ queryKey: ["admin", "promos"] });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : t("No se pudo crear el código", "Could not create code"));
+    } finally {
+      setPromoBusy(false);
+    }
+  };
+
 
   const enabled = isSuperAdmin;
 
