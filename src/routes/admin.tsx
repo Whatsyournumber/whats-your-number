@@ -113,6 +113,27 @@ function fmtDate(value: string | null) {
   return new Date(value).toLocaleDateString("es-ES", { day: "2-digit", month: "short", year: "numeric" });
 }
 
+function subStatusLabel(status: string, t: (es: string, en: string) => string) {
+  switch (status) {
+    case "trialing":
+      return t("En prueba", "On trial");
+    case "active":
+      return t("Activa", "Active");
+    case "past_due":
+      return t("Pago atrasado", "Past due");
+    case "canceled":
+      return t("Cancelada", "Canceled");
+    case "unpaid":
+      return t("No pagada", "Unpaid");
+    case "paused":
+      return t("Pausada", "Paused");
+    case "incomplete":
+      return t("Incompleta", "Incomplete");
+    default:
+      return status;
+  }
+}
+
 function DeleteAction({
   title,
   description,
@@ -481,7 +502,7 @@ function AdminPage() {
                         <TableCell className="font-medium">{u?.email ?? s.user_id.slice(0, 8)}</TableCell>
                         <TableCell>{s.product_id.replace("_plan", "")}</TableCell>
                         <TableCell>
-                          <Badge variant={["active", "trialing"].includes(s.status) ? "default" : "secondary"}>{s.status}</Badge>
+                          <Badge variant={["active", "trialing"].includes(s.status) ? "default" : "secondary"}>{subStatusLabel(s.status, t)}</Badge>
                         </TableCell>
                         <TableCell className="text-muted-foreground">{s.environment}</TableCell>
                         <TableCell className="numeric text-muted-foreground">{fmtDate(s.current_period_end)}</TableCell>
