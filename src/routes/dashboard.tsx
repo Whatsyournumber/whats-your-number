@@ -585,8 +585,12 @@ function Dashboard() {
               })();
               const years = yearsToTarget(right, left, g.monthly, portfolioRate);
 
+              const isCityGoal = g.emoji === "🌍";
+
               let subtitle: string;
-              if (pct >= 100) {
+              if (isCityGoal) {
+                subtitle = lifestyleSubtitle(profile, t);
+              } else if (pct >= 100) {
                 if (g.name === "Fondo de emergencia") {
                   const monthsCovered = Math.round(left / Math.max(1, d.expenses));
                   subtitle = t(
