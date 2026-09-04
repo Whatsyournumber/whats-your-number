@@ -85,6 +85,11 @@ function greeting(t: (es: string, en: string) => string) {
 function Dashboard() {
   const t = useT();
   const { lang } = useLanguage();
+  const isMobile = useIsMobile();
+  // En móvil el eje y los márgenes se comprimen para que el gráfico use todo el ancho.
+  const axisW = isMobile ? 40 : 78;
+  const chartMargin = isMobile ? { left: -12, right: 2, top: 8 } : { left: 4, right: 8, top: 8 };
+
   const { profile, isLoading, save } = useProfile();
   const { transactions } = useTransactions();
   const d = buildDataset(profile);
