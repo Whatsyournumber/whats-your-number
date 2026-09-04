@@ -39,6 +39,7 @@ import { CategoryChat } from "@/components/category-chat";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { useCategories } from "@/hooks/use-categories";
+import { useCategoryRules } from "@/hooks/use-category-rules";
 
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useProfile } from "@/hooks/use-profile";
@@ -185,6 +186,7 @@ function Gastos() {
       /* noop */
     }
   }, []);
+  const learned = useCategoryRules();
   const moveTxToCategory = (id: string, category: string) => {
     setTxCat((prev) => {
       const next = { ...prev, [id]: category };
@@ -195,8 +197,12 @@ function Gastos() {
       }
       return next;
     });
+    // Aprende la regla comercio → categoría para aplicarla la próxima vez.
+    const tx = transactions.find((x) => x.id === id);
+    if (tx) learned.learn(tx.merchant || tx.description, category);
   };
-  const categoryOf = (t: Tx) => txCat[t.id] ?? categorizeTxWithTravel(t, categories.rules, travelDays);
+  const categoryOf = (t: Tx) =>
+    txCat[t.id] ?? learned.resolve(t.merchant, t.description) ?? categorizeTxWithTravel(t, categories.rules, travelDays);
   const [range, setRange] = usePersistedRange(() => buildPresets(t)[0]!.range());
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [detailCat, setDetailCat] = useState<string | null>(null);
@@ -262,7 +268,7 @@ function Gastos() {
       map.set(k, prev);
     }
     return [...map.values()].sort((a, b) => b.amount - a.amount);
-  }, [current, categories.rules, txCat]);
+  }, [current, categories.rules, txCat, learned.rules]);
 
   const prevByCategory = useMemo(() => {
     const map = new Map<string, number>();
@@ -271,7 +277,7 @@ function Gastos() {
       map.set(k, (map.get(k) ?? 0) + Math.abs(t.amount));
     }
     return map;
-  }, [previous, categories.rules, txCat]);
+  }, [previous, categories.rules, txCat, learned.rules]);
 
   // Gastos fijos prorrateados al rango elegido (30 días -> 90 días, etc.)
   const periodFactor = days / 30;

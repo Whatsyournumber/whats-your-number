@@ -1,13 +1,16 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Trash2 } from "lucide-react";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { StatementImporter } from "@/components/statement-importer";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { categories, excludedTypes, fmt, rules, topMerchants } from "@/lib/data";
+import { categories, excludedTypes, fmt, topMerchants } from "@/lib/data";
+import { useCategoryRules } from "@/hooks/use-category-rules";
 import { useT } from "@/hooks/use-language";
 
 export const Route = createFileRoute("/configuracion")({
@@ -25,6 +28,7 @@ export const Route = createFileRoute("/configuracion")({
 
 function Configuracion() {
   const t = useT();
+  const learned = useCategoryRules();
   return (
     <PageShell>
       <PageHeader eyebrow={t("Sistema", "System")} title={t("Importar gastos", "Import expenses")} subtitle={t("Importa tus estados de cuenta, cuentas y reglas de clasificación.", "Upload your statements, accounts and classification rules.")} />
@@ -90,22 +94,42 @@ function Configuracion() {
         </TabsContent>
 
         <TabsContent value="reglas">
-          <Panel title={t("Reglas automáticas", "Automatic rules")} description={t("Cuando corriges una categoría, la IA aprende y la aplica la próxima vez", "When you correct a category, the AI learns and applies it next time")}>
-            <div className="space-y-2">
-              {rules.map((r) => (
-                <div key={r.match} className="flex flex-wrap items-center gap-3 rounded-xl bg-elevated/60 px-3 py-2.5">
-                  <code className="rounded-md bg-muted px-2 py-1 text-xs">{r.match}</code>
-                  <span className="text-xs text-muted-foreground">→</span>
-                  <span className="text-sm font-medium">{r.category}</span>
-                  <span className="text-xs text-muted-foreground">/ {r.sub}</span>
-                  {r.learned && (
-                    <Badge className="ml-auto rounded-full text-[10px]" variant="secondary">
-                      {t("Aprendida por IA", "Learned by AI")}
-                    </Badge>
-                  )}
-                </div>
-              ))}
-            </div>
+          <Panel
+            title={t("Reglas automáticas", "Automatic rules")}
+            description={t(
+              "Se crean desde Gastos: cuando mueves un movimiento a otra categoría, se guarda aquí y se aplica la próxima vez.",
+              "Created from Expenses: when you move a transaction to another category, it's saved here and applied next time.",
+            )}
+          >
+            {learned.rules.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-border/70 px-4 py-6 text-center">
+                <p className="text-sm text-muted-foreground">
+                  {t("Aún no tienes reglas. Arrastra un movimiento a otra categoría en Gastos para crear la primera.", "No rules yet. Drag a transaction to another category in Expenses to create the first one.")}
+                </p>
+                <Button asChild size="sm" variant="outline" className="mt-3 rounded-full">
+                  <Link to="/gastos">{t("Ir a Gastos", "Go to Expenses")}</Link>
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {learned.rules.map((r) => (
+                  <div key={r.id} className="flex flex-wrap items-center gap-2 rounded-xl bg-elevated/60 px-3 py-2.5 sm:gap-3">
+                    <code className="max-w-[55%] truncate rounded-md bg-muted px-2 py-1 text-xs">{r.match}</code>
+                    <span className="text-xs text-muted-foreground">→</span>
+                    <span className="text-sm font-medium">{r.category}</span>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="ml-auto h-7 w-7 text-muted-foreground hover:text-destructive"
+                      aria-label={t("Eliminar regla", "Delete rule")}
+                      onClick={() => learned.remove(r.id)}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
           </Panel>
         </TabsContent>
 
