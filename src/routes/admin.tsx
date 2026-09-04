@@ -1,7 +1,7 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Users, CreditCard, FileText, TrendingUp, Trash2, Handshake } from "lucide-react";
+import { Users, CreditCard, FileText, TrendingUp, Trash2, Handshake, Plus } from "lucide-react";
 import { toast } from "sonner";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
@@ -20,12 +20,30 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useRoles } from "@/hooks/use-role";
 import { useT } from "@/hooks/use-language";
 import {
+  adminCreatePromoCode,
   adminDeletePromoCode,
   adminDeletePromoRedemption,
   adminDeleteSubscription,
