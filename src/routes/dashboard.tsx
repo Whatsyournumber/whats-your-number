@@ -612,7 +612,7 @@ function Dashboard() {
                         <p className="text-sm text-muted-foreground">
                           {fmtCompact(g.current)} {t(`al ${portfolioRate.toFixed(0)}%`, `at ${portfolioRate.toFixed(0)}%`)}
                         </p>
-                        <Progress value={progress} className="mt-1.5 h-1.5" />
+                        <Progress value={progress} indicatorClassName={goalBarColor(progress)} className="mt-1.5 h-1.5" />
                         <p className="mt-1 line-clamp-1 text-[11px] text-muted-foreground">
                           {t(`vs ${sp500Rate.toFixed(0)}% S&P 500`, `vs ${sp500Rate.toFixed(0)}% S&P 500`)}
                         </p>
