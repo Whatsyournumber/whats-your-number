@@ -206,7 +206,7 @@ function Dashboard() {
         : priority === "patrimonio"
           ? t("Hasta dónde puede crecer tu patrimonio", "How far your wealth can grow")
           : priority === "gastos"
-            ? t("Capital para vivir de tus inversiones", "Capital to live off your investments")
+            ? t("El capital que te da control total", "The capital that gives you total control")
             : priority === "organizar"
               ? t("El número que ordena tu dinero", "The number that organizes your money")
               : t(`Libertad estimada a los ${plan.freedomAge} años`, `Freedom estimated at age ${plan.freedomAge}`);
@@ -215,7 +215,13 @@ function Dashboard() {
       ? t("Entrada objetivo", "Target down payment")
       : goalMode === "business"
         ? t("Capital objetivo", "Target capital")
-        : "Your Number";
+        : priority === "patrimonio"
+          ? t("Patrimonio objetivo", "Target wealth")
+          : priority === "gastos"
+            ? t("Capital de control", "Control capital")
+            : priority === "organizar"
+              ? t("Número organizador", "Organizing number")
+              : "Your Number";
   const numberHint =
     goalMode === "home"
       ? t("Para comprar tu vivienda", "To buy your home")
@@ -223,7 +229,13 @@ function Dashboard() {
         ? priority === "otro" && goalNote
           ? t(`Para ${goalNote}`, `For ${goalNote}`)
           : t("Para arrancar tu negocio", "To start your business")
-        : t(`Para vivir con ${fmt(desiredIncome)} al mes`, `To live on ${fmt(desiredIncome)} a month`);
+        : priority === "patrimonio"
+          ? t("Para hacer crecer tu patrimonio", "To grow your wealth")
+          : priority === "gastos"
+            ? t("Para controlar tus gastos mensuales", "To control your monthly spending")
+            : priority === "organizar"
+              ? t("Para organizar tus finanzas", "To organize your finances")
+              : t(`Para vivir con ${fmt(desiredIncome)} al mes`, `To live on ${fmt(desiredIncome)} a month`);
 
 
   return (
