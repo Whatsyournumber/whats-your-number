@@ -98,6 +98,7 @@ function Dashboard() {
   const d = buildDataset(profile);
   const realMonths = buildRealMonths(transactions, d.netWorth);
   const fixed = useFixedExpenses();
+  const { live: indexLive } = useIndexReturns();
   const months = (realMonths ?? d.months).map((month) => {
     const expenses = month.expenses + (realMonths ? fixed.total : 0);
     return { ...month, expenses, income: d.income, savings: d.income - expenses };
