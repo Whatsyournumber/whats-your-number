@@ -119,6 +119,7 @@ function Dashboard() {
   const chartMargin = isMobile ? { left: 0, right: 4, top: 8 } : { left: 4, right: 8, top: 8 };
 
   const { profile, isLoading, save } = useProfile();
+  const { primary } = usePrimaryGoal();
   const { transactions } = useTransactions();
   const d = buildDataset(profile);
   const realMonths = buildRealMonths(transactions, d.netWorth);
