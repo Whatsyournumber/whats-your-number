@@ -712,9 +712,72 @@ function PortafolioContent() {
     </div>
   );
 
+  const calendarLabel = evoPoint ? evoPoint.label : t("Actual", "Current");
+
   return (
     <PageShell>
-      <PageHeader eyebrow={t("Inversiones", "Investments")} title={t("Portafolio", "Portfolio")} subtitle={t("Rendimiento consolidado de tus posiciones frente al mercado.", "Consolidated performance of your positions against the market.")} />
+      <PageHeader
+        eyebrow={t("Inversiones", "Investments")}
+        title={t("Rendimiento", "Performance")}
+        actions={
+          <Popover open={evoOpen} onOpenChange={setEvoOpen}>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="gap-2 rounded-full">
+                <CalendarIcon className="h-4 w-4" />
+                <span className="text-xs md:text-sm">{calendarLabel}</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="end" collisionPadding={12} className="w-[min(92vw,20rem)] p-3">
+              <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                {t("Evolución · últimos 12 meses", "Evolution · last 12 months")}
+              </p>
+              {benchmarkData.length === 0 ? (
+                <p className="text-xs text-muted-foreground">{t("Mercado no disponible", "Market unavailable")}</p>
+              ) : (
+                <div className="grid grid-cols-3 gap-1.5">
+                  {benchmarkData.map((p, i) => {
+                    const active = evoIdx === i;
+                    return (
+                      <button
+                        key={`${p.label}-${i}`}
+                        type="button"
+                        onClick={() => {
+                          setEvoIdx(active ? null : i);
+                          setEvoOpen(false);
+                        }}
+                        className={cn(
+                          "rounded-lg border px-1.5 py-1.5 text-center transition",
+                          active
+                            ? "border-primary/50 bg-primary/15 text-foreground"
+                            : "border-border/50 bg-elevated/40 text-muted-foreground hover:text-foreground",
+                        )}
+                      >
+                        <span className="block text-[11px] font-medium">{p.label}</span>
+                        <span className={cn("numeric block text-[10px]", p.portfolio >= 0 ? "text-positive" : "text-negative")}>
+                          {p.portfolio > 0 ? "+" : ""}
+                          {p.portfolio.toFixed(1)}%
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+              {evoPoint && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEvoIdx(null);
+                    setEvoOpen(false);
+                  }}
+                  className="mt-2 w-full text-center text-[11px] text-muted-foreground hover:text-foreground"
+                >
+                  {t("Volver al rendimiento actual", "Back to current return")}
+                </button>
+              )}
+            </PopoverContent>
+          </Popover>
+        }
+      />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard label={t("Valor actual", "Current value")} value={fmt(totalValue)} accent index={0} />
