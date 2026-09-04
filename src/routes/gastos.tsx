@@ -805,7 +805,7 @@ function Gastos() {
               <ComposedChart data={series} margin={{ left: isMobile ? -26 : -16, right: 0, top: 12 }}>
                 <CartesianGrid strokeDasharray="4 6" stroke="var(--color-border)" vertical={false} />
                 <XAxis dataKey="label" {...axisProps} interval="preserveStartEnd" minTickGap={18} />
-                <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={isMobile ? 38 : 52} />
+                <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={isMobile ? 42 : 52} />
                 <Tooltip content={<ChartTooltip formatter={fmt} />} cursor={{ fill: "var(--color-muted)", opacity: 0.3 }} />
                 <Bar dataKey="anterior" name={t("Periodo anterior", "Previous period")} fill="#5B6370" fillOpacity={0.85} radius={[5, 5, 0, 0]} barSize={12} />
                 <Bar dataKey="gasto" name={t("Este periodo", "This period")} fill="#FF7B7B" radius={[5, 5, 0, 0]} barSize={12} />
@@ -986,7 +986,7 @@ function Gastos() {
 
             <div className="mt-3">
               <ResponsiveContainer width="100%" height={260}>
-                <BarChart data={monthCompare.rows.slice(0, 10)} margin={{ left: isMobile ? -24 : -8, right: isMobile ? 2 : 8 }}>
+                <BarChart data={monthCompare.rows.slice(0, 10)} margin={{ left: isMobile ? 0 : -8, right: isMobile ? 4 : 8 }}>
                   <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
                   <XAxis
                     dataKey="name"

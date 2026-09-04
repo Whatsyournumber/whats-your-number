@@ -428,7 +428,7 @@ function RetiroContent() {
           <div className="min-h-[260px] flex-1">
 
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data} margin={{ left: isMobile ? -24 : -8, right: isMobile ? 2 : 8, top: 8, bottom: 0 }}>
+            <AreaChart data={data} margin={{ left: isMobile ? 0 : -8, right: isMobile ? 4 : 8, top: 8, bottom: 0 }}>
 
               <defs>
                 <linearGradient id="ret" x1="0" y1="0" x2="0" y2="1">
