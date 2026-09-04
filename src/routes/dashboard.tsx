@@ -559,7 +559,7 @@ function Dashboard() {
           description={t("Tu progreso hacia lo que te importa.", "Your progress toward what matters.")}
           actions={
             <Button asChild size="sm" variant="outline" className="gap-1 rounded-full">
-              <Link to="/life-planner">
+              <Link to="/mi-perfil">
                 <Pencil className="h-4 w-4" />
                 <span className="hidden sm:inline">{t("Cambiar meta", "Change goal")}</span>
               </Link>
