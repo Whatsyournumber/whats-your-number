@@ -518,11 +518,7 @@ function Pricing() {
 
         {/* CTA final */}
         <section className="mt-16">
-          <Link
-            to={lang === "en" ? "/en/financial-freedom-calculator" : "/calculadora-libertad-financiera"}
-            search={{ start: 1 }}
-            className="group block"
-          >
+          <div className="group">
             <div className="surface glow relative overflow-hidden p-8 transition-transform duration-300 hover:scale-[1.01] md:p-12">
               <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.08]" />
               <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
@@ -543,16 +539,26 @@ function Pricing() {
                     )}
                   </p>
                   <div className="mt-6 flex flex-wrap items-center justify-center gap-3 md:justify-start">
-                    <div className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-lg transition-all group-hover:gap-3">
-                      {t("Probar ahora gratis", "Try now for free")} <ArrowRight className="h-4 w-4" />
-                    </div>
-                    <Link
-                      to="/auth"
-                      search={{ mode: "signup" }}
-                      className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-5 py-2.5 text-sm font-medium text-foreground shadow-sm transition-all hover:bg-elevated hover:text-foreground"
+                    <Button
+                      asChild
+                      className="inline-flex h-auto items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-lg transition-all group-hover:gap-3"
                     >
-                      {t("Probar Pro 14 días gratis", "Try Pro 14 days free")}
-                    </Link>
+                      <Link
+                        to={lang === "en" ? "/en/financial-freedom-calculator" : "/calculadora-libertad-financiera"}
+                        search={{ start: 1 }}
+                      >
+                        {t("Probar ahora gratis", "Try now for free")} <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="inline-flex h-auto items-center gap-2 rounded-full border border-border bg-card/80 px-5 py-2.5 text-sm font-medium text-foreground shadow-sm transition-all hover:bg-elevated hover:text-foreground"
+                    >
+                      <Link to="/auth" search={{ mode: "signup" }}>
+                        {t("Probar Pro 14 días gratis", "Try Pro 14 days free")}
+                      </Link>
+                    </Button>
                   </div>
                 </div>
 
@@ -604,7 +610,7 @@ function Pricing() {
                 ))}
               </div>
             </div>
-          </Link>
+          </div>
         </section>
 
       </main>
