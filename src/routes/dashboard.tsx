@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight, Banknote, Home, PiggyBank, TrendingUp, Wallet } from "lucide-react";
+import { ArrowUpRight, Banknote, CalendarIcon, ChevronLeft, ChevronRight, Home, PiggyBank, TrendingUp, Wallet } from "lucide-react";
 import { toast } from "sonner";
 import {
   Area,
@@ -26,6 +26,7 @@ import { CheckoutWelcome } from "@/components/checkout-welcome";
 import { SubscriptionStatusBanner } from "@/components/subscription-status-banner";
 
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Progress } from "@/components/ui/progress";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
