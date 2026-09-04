@@ -94,7 +94,7 @@ export function useFixedExpenses() {
       if (cancelled) return;
       setCustom(remote);
       try {
-        window.localStorage.setItem(KEY, JSON.stringify(remote));
+        window.localStorage.setItem(storageKey, JSON.stringify(remote));
       } catch {
         /* ignore */
       }
@@ -135,12 +135,12 @@ export function useFixedExpenses() {
       setItems(next);
       try {
         const custom = next.filter((i) => !onboardingKeys.has(i.id));
-        window.localStorage.setItem(KEY, JSON.stringify(custom));
+        window.localStorage.setItem(userId ? `${KEY}:${userId}` : KEY, JSON.stringify(custom));
       } catch {
         /* ignore */
       }
     },
-    [onboardingKeys],
+    [onboardingKeys, userId],
   );
 
   // Guarda un gasto personalizado en la cuenta (debounce por fila).
