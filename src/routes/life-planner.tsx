@@ -16,7 +16,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { motion } from "motion/react";
-import { CalendarDays, Compass, GripVertical, Pencil, Plus, Sparkles, Target, Trash2, TrendingDown, TrendingUp, Wallet } from "lucide-react";
+import { CalendarDays, Compass, GripVertical, Pencil, Plus, Sparkles, Star, Target, Trash2, TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { PlanGate } from "@/components/plan-gate";
