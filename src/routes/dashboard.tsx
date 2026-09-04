@@ -661,10 +661,11 @@ function Dashboard() {
               }
 
               const goalTextColor = pct >= 75 ? "text-positive" : pct >= 50 ? "text-warning" : "text-negative";
+              const goalHref = isCityGoal ? "/ciudades" : g.name === "Fondo de emergencia" ? "/mi-perfil" : "/retiro";
 
               return (
                 <li key={g.name}>
-                  <Link to="/retiro" className="group flex items-start gap-2.5 rounded-2xl p-1.5 transition-colors hover:bg-elevated/40">
+                  <Link to={goalHref} className="group flex items-start gap-2.5 rounded-2xl p-1.5 transition-colors hover:bg-elevated/40">
                     <span className="grid h-9 w-9 shrink-0 place-items-center rounded-2xl bg-elevated/60 text-lg">
                       {g.emoji}
                     </span>
