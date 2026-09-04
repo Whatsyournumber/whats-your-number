@@ -174,6 +174,20 @@ function Dashboard() {
   const goalMode = plan.mode;
   const priority = (profile as { priority?: string }).priority || "libertad";
   const goalNote = ((profile as { goal_note?: string }).goal_note || "").trim();
+  const headerSubtitle =
+    goalMode === "home"
+      ? t("Tus números. Tu progreso. Tu casa.", "Your numbers. Your progress. Your home.")
+      : goalMode === "business"
+        ? priority === "otro" && goalNote
+          ? t(`Tus números. Tu progreso. ${goalNote}.`, `Your numbers. Your progress. ${goalNote}.`)
+          : t("Tus números. Tu progreso. Tu negocio.", "Your numbers. Your progress. Your business.")
+        : priority === "patrimonio"
+          ? t("Tus números. Tu progreso. Tu patrimonio.", "Your numbers. Your progress. Your wealth.")
+          : priority === "gastos"
+            ? t("Tus números. Tu progreso. Tu control.", "Your numbers. Your progress. Your control.")
+            : priority === "organizar"
+              ? t("Tus números. Tu progreso. Tu orden.", "Your numbers. Your progress. Your order.")
+              : t("Tus números. Tu progreso. Tu libertad.", "Your numbers. Your progress. Your freedom.");
   const numberTitle =
     goalMode === "home"
       ? t("Tu entrada", "Your down payment")
@@ -219,7 +233,7 @@ function Dashboard() {
       <PageHeader
         eyebrow={new Date().toLocaleDateString(lang, { month: "long", year: "numeric" })}
         title={firstName ? `${greeting(t)} ${firstName}` : greeting(t)}
-        subtitle={t("Tus números. Tu progreso. Tu libertad.", "Your numbers. Your progress. Your freedom.")}
+        subtitle={headerSubtitle}
       />
 
       {!isLoading && !d.hasData && (
