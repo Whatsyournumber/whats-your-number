@@ -1,7 +1,7 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Users, CreditCard, FileText, TrendingUp, Trash2, Handshake, Plus } from "lucide-react";
+import { Users, CreditCard, FileText, TrendingUp, Trash2, Handshake, Plus, Pencil } from "lucide-react";
 import { toast } from "sonner";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
@@ -44,6 +44,7 @@ import { useRoles } from "@/hooks/use-role";
 import { useT } from "@/hooks/use-language";
 import {
   adminCreatePromoCode,
+  adminUpdatePromoCode,
   adminDeletePromoCode,
   adminDeletePromoRedemption,
   adminDeleteSubscription,
@@ -175,6 +176,30 @@ function AdminPage() {
     note: "",
   });
   const [promoBusy, setPromoBusy] = useState(false);
+  const [promoEditId, setPromoEditId] = useState<string | null>(null);
+  const [promoActive, setPromoActive] = useState(true);
+
+  const emptyPromoForm = { code: "", product_id: "pro_plan", duration_days: "30", max_uses: "25", note: "" };
+
+  const openCreatePromo = () => {
+    setPromoEditId(null);
+    setPromoActive(true);
+    setPromoForm(emptyPromoForm);
+    setPromoDialogOpen(true);
+  };
+
+  const openEditPromo = (c: { id: string; code: string; product_id: string; duration_days: number; max_uses: number; note?: string | null; active: boolean }) => {
+    setPromoEditId(c.id);
+    setPromoActive(c.active);
+    setPromoForm({
+      code: c.code,
+      product_id: c.product_id,
+      duration_days: String(c.duration_days),
+      max_uses: String(c.max_uses),
+      note: c.note ?? "",
+    });
+    setPromoDialogOpen(true);
+  };
 
   const runDelete = async (fn: () => Promise<unknown>, okMsg: string) => {
     try {
@@ -189,24 +214,30 @@ function AdminPage() {
   const runCreatePromo = async () => {
     setPromoBusy(true);
     try {
-      await adminCreatePromoCode({ data: {
+      const payload = {
         code: promoForm.code,
         product_id: promoForm.product_id,
         duration_days: Number(promoForm.duration_days),
         max_uses: Number(promoForm.max_uses),
         note: promoForm.note,
-      }});
-      toast.success(t("Código creado", "Code created"));
-      setPromoForm({ code: "", product_id: "pro_plan", duration_days: "30", max_uses: "25", note: "" });
+      };
+      if (promoEditId) {
+        await adminUpdatePromoCode({ data: { ...payload, id: promoEditId, active: promoActive } });
+        toast.success(t("Código actualizado", "Code updated"));
+      } else {
+        await adminCreatePromoCode({ data: payload });
+        toast.success(t("Código creado", "Code created"));
+      }
+      setPromoForm(emptyPromoForm);
+      setPromoEditId(null);
       setPromoDialogOpen(false);
       await queryClient.invalidateQueries({ queryKey: ["admin", "promos"] });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : t("No se pudo crear el código", "Could not create code"));
+      toast.error(err instanceof Error ? err.message : t("No se pudo guardar el código", "Could not save code"));
     } finally {
       setPromoBusy(false);
     }
   };
-
 
   const enabled = isSuperAdmin;
 
@@ -533,14 +564,14 @@ function AdminPage() {
             actions={
               <Dialog open={promoDialogOpen} onOpenChange={setPromoDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button size="sm" className="rounded-full">
+                  <Button size="sm" className="rounded-full" onClick={openCreatePromo}>
                     <Plus className="mr-1 h-4 w-4" />
                     {t("Crear código", "Create code")}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-md">
                   <DialogHeader>
-                    <DialogTitle>{t("Nuevo código de invitación", "New invite code")}</DialogTitle>
+                    <DialogTitle>{promoEditId ? t("Editar código", "Edit code") : t("Nuevo código de invitación", "New invite code")}</DialogTitle>
                     <DialogDescription>{t("Genera un código para dar acceso Pro gratis.", "Generate a code to grant free Pro access.")}</DialogDescription>
                   </DialogHeader>
                   <div className="grid gap-4 py-2">
@@ -596,11 +627,25 @@ function AdminPage() {
                         placeholder={t("Ej. Campaña YouTube", "E.g. YouTube campaign")}
                       />
                     </div>
+                    {promoEditId && (
+                      <div className="space-y-2">
+                        <Label>{t("Estado", "Status")}</Label>
+                        <Select value={promoActive ? "active" : "inactive"} onValueChange={(v) => setPromoActive(v === "active")}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="active">{t("Activo", "Active")}</SelectItem>
+                            <SelectItem value="inactive">{t("Inactivo", "Inactive")}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
                   </div>
                   <DialogFooter>
                     <Button variant="outline" onClick={() => setPromoDialogOpen(false)} type="button">{t("Cancelar", "Cancel")}</Button>
                     <Button onClick={runCreatePromo} disabled={promoBusy || !promoForm.code.trim()} type="button">
-                      {promoBusy ? t("Creando…", "Creating…") : t("Crear código", "Create code")}
+                      {promoBusy ? t("Guardando…", "Saving…") : promoEditId ? t("Guardar cambios", "Save changes") : t("Crear código", "Create code")}
                     </Button>
                   </DialogFooter>
                 </DialogContent>
@@ -612,8 +657,6 @@ function AdminPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>{t("Código", "Code")}</TableHead>
-                    <TableHead>{t("Correo", "Email")}</TableHead>
-                    <TableHead>{t("País", "Country")}</TableHead>
                     <TableHead>Plan</TableHead>
                     <TableHead>{t("Días", "Days")}</TableHead>
                     <TableHead>{t("Usos", "Uses")}</TableHead>
@@ -632,6 +675,16 @@ function AdminPage() {
                         <Badge variant={c.active ? "default" : "secondary"}>{c.active ? t("activo", "active") : t("inactivo", "inactive")}</Badge>
                       </TableCell>
                       <TableCell className="text-right">
+                        <div className="flex items-center justify-end gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                          onClick={() => openEditPromo(c)}
+                          aria-label={t("Editar código", "Edit code")}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
                         <DeleteAction
                           title={t("Borrar código", "Delete code")}
                           description={t("Se eliminará el código {x} y sus canjes registrados.", "Code {x} and its recorded redemptions will be deleted.").replace("{x}", c.code)}
@@ -639,6 +692,7 @@ function AdminPage() {
                             runDelete(() => adminDeletePromoCode({ data: { id: c.id } }), t("Código eliminado", "Code deleted"))
                           }
                         />
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
