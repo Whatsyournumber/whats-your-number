@@ -268,7 +268,7 @@ function CashFlow() {
           label={t("Ingresos", "Income")}
           value={fmt(totalIncome)}
           hint={usingStatements ? t("Abonos de tus EEFF", "Credits from your statements") : t("Según tu perfil", "Based on your profile")}
-          tooltip={<BreakdownTooltip items={incomeLines.slice(0, 8)} fmt={fmt} total={totalIncome} />}
+          tooltip={<BreakdownTooltip items={incomeLines.slice(0, 8).map((i) => ({ label: i.name, amount: i.amount }))} fmt={fmt} total={totalIncome} />}
           accent
           index={0}
         />
