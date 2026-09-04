@@ -349,13 +349,7 @@ function RetiroContent() {
         {goalMode !== "business" && (
           <KpiCard label={t("Cómo voy", "How I'm doing")} value={`${progressPct.toFixed(1)}%`} hint={t("del capital objetivo", "of target capital")} index={2} />
         )}
-        <Link to="/gastos" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
-          <KpiCard label={t("Gastos mensuales", "Monthly expenses")} value={fmt(d.expenses)} hint={`${fmt(d.expenses * 12)} ${t("al año", "per year")}`} index={3} />
-        </Link>
-        {goalMode !== "business" && (
-          <KpiCard label={t("Aportes estimados al año", "Estimated contributions per year")} value={fmt(retirement.contributionsYTD)} index={4} />
-        )}
-        {isGoal ? (
+        {isGoal && (
           <KpiCard
             label={t("Porcentaje de mi ingreso", "Share of my income")}
             value={
@@ -370,10 +364,8 @@ function RetiroContent() {
                   ? t("ya tienes el capital 🎯", "you already have the capital 🎯")
                   : `${t("de tu ingreso durante", "of your income for")} ${yearsLabel}`
             }
-            index={4}
+            index={3}
           />
-        ) : (
-          <KpiCard label={t("Rentabilidad esperada", "Expected return")} value={`${swr}%`} hint={t("anual · tu tasa de retiro", "annual · your withdrawal rate")} index={4} />
         )}
         {isGoal && (
           <KpiCard
