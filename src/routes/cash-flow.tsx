@@ -501,7 +501,7 @@ function Row({
             </TooltipContent>
           )}
         </Tooltip>
-        <span className="numeric flex items-baseline gap-2">
+        <span className="numeric flex shrink-0 items-baseline gap-2 whitespace-nowrap">
           <span className="font-medium">{fmt(value)}</span>
           <span>
             {p.toFixed(0)}% <span className="text-xs text-muted-foreground">/ {target}%</span>
