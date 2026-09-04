@@ -33,6 +33,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTransactions } from "@/hooks/use-transactions";
 import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
+import { useIndexReturns } from "@/hooks/use-index-returns";
 import { cn } from "@/lib/utils";
 import { buildInsights } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
