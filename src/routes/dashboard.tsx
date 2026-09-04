@@ -557,6 +557,10 @@ function Dashboard() {
               const sp500Rate = indexLive['sp500']?.cagr10y ?? indexLive['sp500']?.ytdPct ?? 10;
 
               if (g.name === "Cartera de inversión") {
+                const diff = portfolioRate - sp500Rate;
+                const progress = sp500Rate > 0 ? Math.min(100, Math.max(0, (portfolioRate / sp500Rate) * 100)) : 0;
+                const diffText = `${diff >= 0 ? "+" : ""}${diff.toFixed(0)}%`;
+                const diffColor = diff >= 0 ? "text-positive" : "text-negative";
                 return (
                   <li key={g.name}>
                     <Link to="/portafolio" className="group flex items-start gap-3 rounded-2xl p-2 transition-colors hover:bg-elevated/40">
@@ -566,12 +570,15 @@ function Dashboard() {
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
                           <span className="min-w-0 truncate font-medium">{translateGoalName(g.name, lang)}</span>
-                          <span className="numeric ml-auto shrink-0 text-sm font-semibold text-positive">
-                            {portfolioRate.toFixed(0)}%
+                          <span className={cn("numeric ml-auto shrink-0 text-sm font-semibold", diffColor)}>
+                            {diffText}
                           </span>
                           <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
                         </div>
-                        <p className="mt-0.5 text-sm text-muted-foreground">{fmtCompact(g.current)}</p>
+                        <p className="mt-0.5 text-sm text-muted-foreground">
+                          {fmtCompact(g.current)} {t(`al ${portfolioRate.toFixed(0)}%`, `at ${portfolioRate.toFixed(0)}%`)}
+                        </p>
+                        <Progress value={progress} className="mt-2 h-2" />
                         <p className="mt-1.5 text-[11px] text-muted-foreground">
                           {t(`vs ${sp500Rate.toFixed(0)}% S&P 500`, `vs ${sp500Rate.toFixed(0)}% S&P 500`)}
                         </p>
