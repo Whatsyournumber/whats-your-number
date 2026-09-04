@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CalendarDays, Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, TrendingUp, X } from "lucide-react";
+import { CalendarIcon, Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, TrendingUp, X } from "lucide-react";
 import { useState } from "react";
 import { motion } from "motion/react";
 import { CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -12,7 +12,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useMarketSeries, useQuotes, useSymbolSearch, useWatchlist } from "@/hooks/use-market";
@@ -91,6 +91,7 @@ function PortafolioContent() {
   const [newSymbol, setNewSymbol] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [evoIdx, setEvoIdx] = useState<number | null>(null);
+  const [evoOpen, setEvoOpen] = useState(false);
   const searchQuery = useSymbolSearch(newSymbol);
 
   // Precios reales para las posiciones con ticker + unidades.
@@ -711,50 +712,72 @@ function PortafolioContent() {
     </div>
   );
 
+  const calendarLabel = evoPoint ? evoPoint.label : t("Actual", "Current");
+
   return (
     <PageShell>
-      <PageHeader eyebrow={t("Inversiones", "Investments")} title={t("Portafolio", "Portfolio")} subtitle={t("Rendimiento consolidado de tus posiciones frente al mercado.", "Consolidated performance of your positions against the market.")} />
-
-      {/* Selector de mes arriba, separado del box de rendimiento */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1">
-        <CalendarDays className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-        <span className="shrink-0 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-          {t("Evolución · últimos 12 meses", "Evolution · last 12 months")}
-        </span>
-        {benchmarkData.length === 0 ? (
-          <span className="text-xs text-muted-foreground">{t("Mercado no disponible", "Market unavailable")}</span>
-        ) : (
-          <>
-            {benchmarkData.map((p, i) => {
-              const active = evoIdx === i;
-              return (
+      <PageHeader
+        eyebrow={t("Inversiones", "Investments")}
+        title={t("Rendimiento", "Performance")}
+        actions={
+          <Popover open={evoOpen} onOpenChange={setEvoOpen}>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="gap-2 rounded-full">
+                <CalendarIcon className="h-4 w-4" />
+                <span className="text-xs md:text-sm">{calendarLabel}</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="end" collisionPadding={12} className="w-[min(92vw,20rem)] p-3">
+              <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                {t("Evolución · últimos 12 meses", "Evolution · last 12 months")}
+              </p>
+              {benchmarkData.length === 0 ? (
+                <p className="text-xs text-muted-foreground">{t("Mercado no disponible", "Market unavailable")}</p>
+              ) : (
+                <div className="grid grid-cols-3 gap-1.5">
+                  {benchmarkData.map((p, i) => {
+                    const active = evoIdx === i;
+                    return (
+                      <button
+                        key={`${p.label}-${i}`}
+                        type="button"
+                        onClick={() => {
+                          setEvoIdx(active ? null : i);
+                          setEvoOpen(false);
+                        }}
+                        className={cn(
+                          "rounded-lg border px-1.5 py-1.5 text-center transition",
+                          active
+                            ? "border-primary/50 bg-primary/15 text-foreground"
+                            : "border-border/50 bg-elevated/40 text-muted-foreground hover:text-foreground",
+                        )}
+                      >
+                        <span className="block text-[11px] font-medium">{p.label}</span>
+                        <span className={cn("numeric block text-[10px]", p.portfolio >= 0 ? "text-positive" : "text-negative")}>
+                          {p.portfolio > 0 ? "+" : ""}
+                          {p.portfolio.toFixed(1)}%
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+              {evoPoint && (
                 <button
-                  key={`${p.label}-${i}`}
                   type="button"
-                  onClick={() => setEvoIdx(active ? null : i)}
-                  className={cn(
-                    "shrink-0 rounded-full border px-2.5 py-1 text-[11px] transition",
-                    active
-                      ? "border-primary/50 bg-primary/15 text-foreground"
-                      : "border-border/50 bg-elevated/40 text-muted-foreground hover:text-foreground",
-                  )}
+                  onClick={() => {
+                    setEvoIdx(null);
+                    setEvoOpen(false);
+                  }}
+                  className="mt-2 w-full text-center text-[11px] text-muted-foreground hover:text-foreground"
                 >
-                  {p.label}
+                  {t("Volver al rendimiento actual", "Back to current return")}
                 </button>
-              );
-            })}
-            {evoIdx !== null && (
-              <button
-                type="button"
-                onClick={() => setEvoIdx(null)}
-                className="shrink-0 whitespace-nowrap text-[11px] text-muted-foreground hover:text-foreground"
-              >
-                {t("Volver al actual", "Back to current")}
-              </button>
-            )}
-          </>
-        )}
-      </div>
+              )}
+            </PopoverContent>
+          </Popover>
+        }
+      />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard label={t("Valor actual", "Current value")} value={fmt(totalValue)} accent index={0} />
@@ -764,27 +787,25 @@ function PortafolioContent() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.15, ease: "easeOut" }}
-          className="surface relative flex h-full items-center justify-between overflow-hidden p-5"
+          className="surface relative flex h-full flex-col overflow-hidden p-5"
         >
-          <div className="flex min-w-0 flex-col">
-            <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-              {t("Rendimiento", "Return")}
-            </p>
-            <p
-              className={cn(
-                "numeric mt-0.5 text-2xl font-semibold leading-tight md:text-3xl",
-                shownRet > 0 ? "text-positive" : shownRet < 0 ? "text-negative" : "text-foreground",
-              )}
-            >
-              {shownRet > 0 ? "+" : ""}
-              {shownRet.toFixed(1)}%
-            </p>
-          </div>
-          <div className="flex min-w-0 items-center gap-2 pl-3">
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+            {t("Rendimiento del portafolio", "Portfolio return")}
+          </p>
+          <p
+            className={cn(
+              "numeric relative mt-3 truncate text-2xl font-semibold leading-tight md:text-3xl",
+              shownRet > 0 ? "text-positive" : shownRet < 0 ? "text-negative" : "text-foreground",
+            )}
+          >
+            {shownRet > 0 ? "+" : ""}
+            {shownRet.toFixed(1)}%
+          </p>
+          <div className="relative mt-auto flex items-center gap-2 pt-2">
             {shownBench !== null && (
               <span
                 className={cn(
-                  "shrink-0 rounded-full px-2 py-0.5 text-xs font-medium",
+                  "rounded-full px-2 py-0.5 text-xs font-medium",
                   shownRet - shownBench >= 0 ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative",
                 )}
               >
@@ -794,7 +815,7 @@ function PortafolioContent() {
             )}
             <span className="truncate text-xs text-muted-foreground">
               {evoPoint
-                ? t(`vs ${benchName}`, `vs ${benchName}`)
+                ? t(`${evoPoint.label} · vs ${benchName}`, `${evoPoint.label} · vs ${benchName}`)
                 : shownBench !== null
                   ? t(`vs ${benchName} 12m`, `vs ${benchName} 12m`)
                   : t("Promedio ponderado real", "Real weighted average")}
