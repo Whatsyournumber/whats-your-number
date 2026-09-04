@@ -1009,6 +1009,7 @@ function Gastos() {
           "Solo categorías con gastos · ordenadas de mayor a menor. Arrastra un movimiento a otra categoría para reasignarlo.",
           "Only categories with spending · sorted highest to lowest. Drag a transaction to another category to reassign it.",
         )}
+        descriptionClassName="line-clamp-2 sm:line-clamp-none"
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild size="sm" className="gap-2 rounded-full">

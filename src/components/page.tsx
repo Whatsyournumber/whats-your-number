@@ -44,6 +44,7 @@ export function PageHeader({
 export function Panel({
   title,
   description,
+  descriptionClassName,
   actions,
   icon,
   className,
@@ -52,6 +53,7 @@ export function Panel({
 }: {
   title?: ReactNode;
   description?: string;
+  descriptionClassName?: string;
   actions?: ReactNode;
   icon?: ReactNode;
   className?: string;
@@ -80,7 +82,7 @@ export function Panel({
                 <h2 className={cn(icon ? "text-xl font-semibold tracking-tight" : "text-sm font-semibold")}>{title}</h2>
               )}
               {description && (
-                <p className={cn("mt-0.5 text-muted-foreground", icon ? "text-sm" : "text-[0.8125rem]")}>{description}</p>
+                <p title={description} className={cn("mt-0.5 text-muted-foreground", icon ? "text-sm" : "text-[0.8125rem]", descriptionClassName)}>{description}</p>
               )}
 
             </div>
