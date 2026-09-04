@@ -471,7 +471,7 @@ function Row({
 
   return (
     <div>
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
         <Tooltip>
           <TooltipTrigger asChild>
             <span className="inline-flex cursor-help items-center gap-1.5 text-muted-foreground">
