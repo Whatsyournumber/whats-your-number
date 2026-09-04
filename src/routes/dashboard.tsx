@@ -219,7 +219,7 @@ function Dashboard() {
       <PageHeader
         eyebrow={new Date().toLocaleDateString(lang, { month: "long", year: "numeric" })}
         title={firstName ? `${greeting(t)} ${firstName}` : greeting(t)}
-        subtitle={t("Tus números reales, calculados desde tu perfil financiero.", "Your real numbers, calculated from your financial profile.")}
+        subtitle={t("Tus números. Tu progreso. Tu libertad.", "Your numbers. Your progress. Your freedom.")}
       />
 
       {!isLoading && !d.hasData && (
@@ -289,7 +289,7 @@ function Dashboard() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         
-        <Panel title={t("Evolución de cuál tu número", "Evolution of your number")} description={t("Progreso hacia tu número para el retiro · últimos 12 meses", "Progress toward your retirement number · last 12 months")} className="lg:col-span-2" bleedMobile>
+        <Panel title={t("Evolución de cuál tu número", "Evolution of your number")} description={t("Progreso hacia tu número para el retiro · últimos 12 meses", "Progress toward your retirement number · last 12 months")} descriptionClassName="line-clamp-1 sm:line-clamp-none" className="lg:col-span-2" bleedMobile>
           <ResponsiveContainer width="100%" height={280}>
             <AreaChart data={months} margin={chartMargin}>
               <defs>
