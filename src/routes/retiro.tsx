@@ -26,9 +26,9 @@ import { Amount } from "@/components/ui/amount";
 export const Route = createFileRoute("/retiro")({
   head: () => ({
     meta: [
-      { title: "WhatsYournumber — Tu número de retiro" },
+      { title: "WhatsYourNumber" },
       { name: "description", content: "Tu número: capital objetivo, aportes, rentabilidad anual y simulador de proyección." },
-      { property: "og:title", content: "WhatsYournumber — Tu número de retiro" },
+      { property: "og:title", content: "WhatsYourNumber" },
       { property: "og:description", content: "Proyecta tu número ajustando aporte mensual, rentabilidad y edad objetivo." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -217,7 +217,7 @@ function RetiroContent() {
     <PageShell>
       <PageHeader
         eyebrow={t("Largo plazo", "Long term")}
-        title={t("Calculadora de retiro — WhatsYournumber", "Retirement Calculator — WhatsYournumber")}
+        title={t("WhatsYourNumber", "WhatsYourNumber")}
         subtitle={headerSubtitle}
       />
 
