@@ -718,7 +718,7 @@ function PortafolioContent() {
     <PageShell>
       <PageHeader
         eyebrow={t("Inversiones", "Investments")}
-        title={t("Rendimiento", "Performance")}
+        title={t("Portfolio", "Portfolio")}
         actions={
           <Popover open={evoOpen} onOpenChange={setEvoOpen}>
             <PopoverTrigger asChild>
