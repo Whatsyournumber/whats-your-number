@@ -941,41 +941,44 @@ function Gastos() {
         variant="minimal"
         title={t("Comparar mes vs mes", "Compare month vs month")}
         description={t("Elige dos meses de tus EEFF y mira dónde cambió el gasto", "Pick two months from your statements and see where spend changed")}
+        descriptionClassName="line-clamp-1 sm:line-clamp-none"
         bleedMobile
       >
         {monthKeys.length === 0 ? (
           <p className="px-5 text-sm text-muted-foreground sm:px-0">{t("Carga tus EEFF para comparar meses.", "Upload your statements to compare months.")}</p>
         ) : (
           <>
-            <div className="flex flex-wrap items-center gap-3 px-5 sm:px-0">
-              <Select value={mA ?? ""} onValueChange={(v) => setMonthA(v)}>
-                <SelectTrigger className="h-8 w-[180px] text-sm capitalize">
-                  <SelectValue placeholder={t("Mes A", "Month A")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {monthKeys.map((k) => (
-                    <SelectItem key={k} value={k} className="capitalize">
-                      {monthLabel(k)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <span className="text-xs text-muted-foreground">{t("vs.", "vs.")}</span>
-              <Select value={mB ?? ""} onValueChange={(v) => setMonthB(v)}>
-                <SelectTrigger className="h-8 w-[180px] text-sm capitalize">
-                  <SelectValue placeholder={t("Mes B", "Month B")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {monthKeys.map((k) => (
-                    <SelectItem key={k} value={k} className="capitalize">
-                      {monthLabel(k)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-5 sm:flex sm:flex-wrap sm:items-center sm:px-0">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+                <Select value={mA ?? ""} onValueChange={(v) => setMonthA(v)}>
+                  <SelectTrigger className="h-8 w-full text-sm capitalize sm:w-[180px]">
+                    <SelectValue placeholder={t("Mes A", "Month A")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {monthKeys.map((k) => (
+                      <SelectItem key={k} value={k} className="capitalize">
+                        {monthLabel(k)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <span className="hidden text-xs text-muted-foreground sm:inline">{t("vs.", "vs.")}</span>
+                <Select value={mB ?? ""} onValueChange={(v) => setMonthB(v)}>
+                  <SelectTrigger className="h-8 w-full text-sm capitalize sm:w-[180px]">
+                    <SelectValue placeholder={t("Mes B", "Month B")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {monthKeys.map((k) => (
+                      <SelectItem key={k} value={k} className="capitalize">
+                        {monthLabel(k)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <span
                 className={cn(
-                  "ml-auto rounded-full px-2.5 py-1 text-xs font-medium",
+                  "shrink-0 self-center rounded-full px-2.5 py-1 text-xs font-medium sm:ml-auto",
                   monthDelta > 0 ? "bg-negative/12 text-negative" : "bg-positive/12 text-positive",
                 )}
               >
