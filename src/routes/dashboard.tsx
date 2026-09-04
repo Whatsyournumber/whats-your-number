@@ -622,6 +622,8 @@ function Dashboard() {
                 );
               }
 
+              const goalTextColor = pct >= 75 ? "text-positive" : pct >= 50 ? "text-warning" : "text-negative";
+
               return (
                 <li key={g.name}>
                   <Link to="/retiro" className="group flex items-start gap-2.5 rounded-2xl p-1.5 transition-colors hover:bg-elevated/40">
@@ -631,7 +633,7 @@ function Dashboard() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="min-w-0 truncate font-medium">{translateGoalName(g.name, lang)}</span>
-                        <span className="numeric ml-auto shrink-0 text-sm font-semibold text-positive">
+                        <span className={cn("numeric ml-auto shrink-0 text-sm font-semibold", goalTextColor)}>
                           {pct.toFixed(0)}%
                         </span>
                         <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
@@ -639,7 +641,7 @@ function Dashboard() {
                       <p className="text-sm text-muted-foreground">
                         {fmtCompact(left)} {t("de", "of")} {fmtCompact(right)}
                       </p>
-                      <Progress value={pct} className="mt-1.5 h-1.5" />
+                      <Progress value={pct} indicatorClassName={goalBarColor(pct)} className="mt-1.5 h-1.5" />
                       <p className="mt-1 line-clamp-1 text-[11px] text-muted-foreground">{subtitle}</p>
                     </div>
                   </Link>
