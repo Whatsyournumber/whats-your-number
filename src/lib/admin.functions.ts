@@ -112,3 +112,27 @@ export const adminDeletePromoRedemption = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+export const adminUpdatePromoCode = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { id: string; code: string; product_id?: string; duration_days?: number; max_uses?: number; note?: string; active?: boolean }) => {
+    if (!data?.id) throw new Error("id required");
+    if (!data?.code?.trim()) throw new Error("code required");
+    return {
+      id: data.id,
+      code: data.code.trim().toUpperCase(),
+      product_id: data.product_id?.trim() || "pro_plan",
+      duration_days: Math.max(1, Math.min(36500, Number(data.duration_days) || 30)),
+      max_uses: Math.max(1, Math.min(100000, Number(data.max_uses) || 25)),
+      note: data.note?.trim() || null,
+      active: data.active ?? true,
+    };
+  })
+  .handler(async ({ data, context }) => {
+    await assertSuperAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { id, ...patch } = data;
+    const { error } = await supabaseAdmin.from("promo_codes").update(patch).eq("id", id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
