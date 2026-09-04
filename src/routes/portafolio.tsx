@@ -338,6 +338,11 @@ function PortafolioContent() {
   const maxDrawdown = maxDD * 100;
   const hasStats = benchmarkData.length > 3;
 
+  // KPI "Rendimiento del portafolio": promedio ponderado real; con el calendario se ve el punto de cada mes.
+  const evoPoint = evoIdx !== null ? benchmarkData[evoIdx] ?? null : null;
+  const shownRet = evoPoint ? evoPoint.portfolio : weightedReturn;
+  const shownBench: number | null = evoPoint ? evoPoint.bench : benchmarkData.length ? bench12 : null;
+
   // ---- Distribución objetivo universal (glidepath por horizonte) ----
   const horizon = yearsToRetire;
   const targetEquity = Math.min(80, Math.max(30, 100 - (profile.age ?? 35) * 0.8));
