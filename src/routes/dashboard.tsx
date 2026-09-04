@@ -568,8 +568,8 @@ function Dashboard() {
                 if (g.name === "Fondo de emergencia") {
                   const monthsCovered = Math.round(left / Math.max(1, d.expenses));
                   subtitle = t(
-                    `Meta alcanzada • ~ ${monthsCovered} meses de gastos cubiertos`,
-                    `Goal reached • ~ ${monthsCovered} months of expenses covered`,
+                    `Min 6 meses de tu salario - ${monthsCovered} meses cubiertos`,
+                    `Min 6 months of your salary - ${monthsCovered} months covered`,
                   );
                 } else {
                   subtitle = t("Meta alcanzada", "Goal reached");
