@@ -532,7 +532,7 @@ function Dashboard() {
             </Button>
           }
         >
-          <ul className="space-y-2">
+          <ul className="space-y-1">
             {d.goals.map((g) => {
               const pct = g.progressPct ?? (g.target > 0 ? Math.min(100, (g.current / g.target) * 100) : 0);
               const left = g.displayCurrent ?? g.current;
