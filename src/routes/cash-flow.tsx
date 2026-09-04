@@ -164,18 +164,25 @@ function CashFlow() {
     () => fixed.items.filter((i) => /ahorro|inver|saving|invest/i.test(i.name)),
     [fixed.items],
   );
-  const needFixedItems = useMemo(
+  const activeFixedItems = useMemo(
     () => fixed.items.filter((i) => !/ahorro|inver|saving|invest/i.test(i.name) && (i.amount || 0) > 0),
     [fixed.items],
   );
+  // Gastos fijos de estilo de vida (gimnasio, streaming, ocio…) suman a Deseos, no a Necesidades.
+  const FIXED_WANT_RE = /gym|gimnasio|netflix|spotify|hbo|disney|prime|streaming|suscrip|club|padel|pádel|golf|ocio|viaje|hobby|hobbies|lifestyle|belleza|peluquer|mascota/i;
+  const wantFixedItems = useMemo(() => activeFixedItems.filter((i) => FIXED_WANT_RE.test(i.name)), [activeFixedItems]);
+  const needFixedItems = useMemo(() => activeFixedItems.filter((i) => !FIXED_WANT_RE.test(i.name)), [activeFixedItems]);
   const fixedSavings = savingItems.reduce((s, i) => s + (i.amount || 0), 0);
   const fixedNeeds = needFixedItems.reduce((s, i) => s + (i.amount || 0), 0);
+  const fixedWants = wantFixedItems.reduce((s, i) => s + (i.amount || 0), 0);
 
   // Aporte mensual al fondo de retiro (misma fuente que la pestaña «Fondo de retiro»).
   const retirementContribution = Math.max(0, Math.round(d.retirement.monthlyContribution || 0));
 
+  // Necesidades = gastos fijos de necesidad + gastos variables de necesidad.
   const fixedAmount = hasReal ? fixedNeeds + spend.needs : d.cashFlow.buckets[0]!.amount;
-  const lifestyleAmount = hasReal ? spend.wants : d.cashFlow.buckets[1]!.amount;
+  // Deseos / lifestyle = gastos variables de deseo + gastos fijos de lifestyle.
+  const lifestyleAmount = hasReal ? spend.wants + fixedWants : d.cashFlow.buckets[1]!.amount;
   // El bucket de inversión lee tanto los gastos fijos de ahorro como el aporte al fondo de retiro
   // (se toma el mayor de ambos para no duplicar el mismo dinero).
   const investAmount = hasReal
@@ -185,8 +192,8 @@ function CashFlow() {
   const freeAmount = Math.max(0, totalIncome - fixedAmount - lifestyleAmount - investAmount);
 
   const buckets = [
-    { name: t("Gastos fijos", "Fixed expenses"), amount: fixedAmount, color: "var(--color-chart-2)" },
-    { name: t("Lifestyle", "Lifestyle"), amount: lifestyleAmount, color: "var(--color-chart-3)" },
+    { name: t("Necesidades", "Needs"), amount: fixedAmount, color: "var(--color-chart-2)" },
+    { name: t("Deseos / lifestyle", "Wants / lifestyle"), amount: lifestyleAmount, color: "var(--color-chart-3)" },
     { name: t("Inversiones / ahorro", "Investments / savings"), amount: investAmount, color: "var(--color-chart-1)" },
     { name: t("Flujo libre", "Free flow"), amount: freeAmount, color: "var(--color-chart-4)" },
   ];
@@ -195,6 +202,7 @@ function CashFlow() {
   const needsAmount = fixedAmount;
   const wantsAmount = lifestyleAmount;
   const saveAmount = investAmount + freeAmount;
+
 
   const needsBreakdown = hasReal
     ? [
