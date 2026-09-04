@@ -240,13 +240,14 @@ function CashFlow() {
         <PageHeader
           eyebrow={activeMonth ? monthLabel(activeMonth) : t("Sin EEFF cargados", "No statements uploaded")}
           title={t("Distribución del dinero", "Money Distribution")}
+          subtitleClassName="sm:whitespace-nowrap"
           subtitle={
             <>
               <span className="hidden sm:inline">
-                {t("Cómo se reparte cada dólar basado en rule of money (40% 40% 20%), según tus estados de cuenta cargados.", "How every dollar is split based on the rule of money (40% 40% 20%), according to your uploaded statements.")}
+                {t("Cómo se reparte cada dólar: rule of money (40 | 40 | 20), según tus EEFF cargados.", "How every dollar is split: rule of money (40 | 40 | 20), per your statements.")}
               </span>
               <span className="sm:hidden">
-                {t("Cómo se reparte cada dólar basado en rule of money (40% 40% 20%).", "How every dollar is split based on the rule of money (40% 40% 20%).")}
+                {t("Cómo se reparte cada dólar: rule of money (40 | 40 | 20).", "How every dollar is split: rule of money (40 | 40 | 20).")}
               </span>
             </>
           }

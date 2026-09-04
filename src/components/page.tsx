@@ -20,11 +20,13 @@ export function PageHeader({
   eyebrow,
   title,
   subtitle,
+  subtitleClassName,
   actions,
 }: {
   eyebrow?: string;
   title: string;
   subtitle?: ReactNode;
+  subtitleClassName?: string;
   actions?: ReactNode;
 }) {
   return (
@@ -35,7 +37,7 @@ export function PageHeader({
         )}
         <h1 className="mt-1 text-2xl font-semibold md:text-3xl">{title}</h1>
         {subtitle && (
-          <div className="mt-1 max-w-2xl text-sm text-muted-foreground max-sm:text-[11px] max-sm:whitespace-nowrap max-sm:truncate">
+          <div className={cn("mt-1 max-w-2xl text-sm text-muted-foreground max-sm:text-[11px] max-sm:whitespace-nowrap max-sm:truncate", subtitleClassName)}>
             {subtitle}
           </div>
         )}
