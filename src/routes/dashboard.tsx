@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight, Banknote, CalendarIcon, ChevronLeft, ChevronRight, Home, PiggyBank, Plus, TrendingUp, Wallet } from "lucide-react";
+import { ArrowUpRight, Banknote, CalendarIcon, ChevronLeft, ChevronRight, Home, Pencil, PiggyBank, TrendingUp, Wallet } from "lucide-react";
 import { toast } from "sonner";
 import {
   Area,
@@ -36,6 +36,7 @@ import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useIndexReturns } from "@/hooks/use-index-returns";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useQuotes } from "@/hooks/use-market";
+import { usePrimaryGoal } from "@/hooks/use-primary-goal";
 import { cn } from "@/lib/utils";
 import { buildInsights, lifestyles } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
@@ -118,6 +119,7 @@ function Dashboard() {
   const chartMargin = isMobile ? { left: 0, right: 4, top: 8 } : { left: 4, right: 8, top: 8 };
 
   const { profile, isLoading, save } = useProfile();
+  const { primary } = usePrimaryGoal();
   const { transactions } = useTransactions();
   const d = buildDataset(profile);
   const realMonths = buildRealMonths(transactions, d.netWorth);
@@ -171,15 +173,21 @@ function Dashboard() {
   const swr = Math.min(15, Math.max(1, profile.withdrawal_rate || 7)) / 100;
   const desiredIncome =
     plan.desiredIncome > 0 ? plan.desiredIncome : current.expenses > 0 ? current.expenses : demo?.monthlySpend ?? 0;
-  const targetNumber = plan.targetCapital > 0 ? plan.targetCapital : (desiredIncome * 12) / swr;
-  const numberNetWorth = d.netWorth > 0 ? d.netWorth : demo?.netWorth ?? 0;
+  const baseTargetNumber = plan.targetCapital > 0 ? plan.targetCapital : (desiredIncome * 12) / swr;
+  const baseNumberNetWorth = d.netWorth > 0 ? d.netWorth : demo?.netWorth ?? 0;
+  const baseMonthlyContribution = current.savings > 0 ? current.savings : demo?.monthlyInvest ?? 0;
+
+  // Si el usuario eligió una meta principal en Life Planner, "Tu Número" refleja esa meta.
+  const targetNumber = primary ? primary.cost : baseTargetNumber;
+  const numberNetWorth = primary ? primary.saved : baseNumberNetWorth;
+  const monthlyContribution = primary ? primary.monthly : baseMonthlyContribution;
   const numberProgress = targetNumber > 0 ? Math.min(100, Math.max(0, (numberNetWorth / targetNumber) * 100)) : 0;
-  const monthlyContribution = current.savings > 0 ? current.savings : demo?.monthlyInvest ?? 0;
-  const numberYearsLeft =
-    plan.targetCapital > 0
+  const numberYearsLeft = primary
+    ? yearsToTarget(primary.cost, primary.saved, primary.monthly, profile.expected_return || 7)
+    : plan.targetCapital > 0
       ? plan.yearsLeft
-      : yearsToTarget(targetNumber, numberNetWorth, monthlyContribution, profile.expected_return || 7);
-  const usingDemo = plan.targetCapital <= 0 && targetNumber > 0;
+      : yearsToTarget(baseTargetNumber, baseNumberNetWorth, baseMonthlyContribution, profile.expected_return || 7);
+  const usingDemo = !primary && plan.targetCapital <= 0 && baseTargetNumber > 0;
 
   const [mortgage, setMortgage] = useState({ balance: 0, rate: 0, term: 0 });
   useEffect(() => {
@@ -259,16 +267,18 @@ function Dashboard() {
             : priority === "organizar"
               ? t("Tus números. Tu progreso. Tu objetivo de organizar tus finanzas.", "Your numbers. Your progress. Your goal to organize your finances.")
               : t("Tus números. Tu progreso. Tu objetivo de alcanzar tu libertad financiera.", "Your numbers. Your progress. Your goal to reach financial freedom.");
-  const numberTitle =
-    goalMode === "home"
+  const numberTitle = primary
+    ? primary.name
+    : goalMode === "home"
       ? t("Tu entrada", "Your down payment")
       : goalMode === "business"
         ? priority === "otro"
           ? t("Tu objetivo", "Your goal")
           : t("Tu negocio", "Your business")
         : t("Tu Número", "Your Number");
-  const numberDescription =
-    goalMode === "home"
+  const numberDescription = primary
+    ? t("Capital para tu meta principal", "Capital for your primary goal")
+    : goalMode === "home"
       ? t("Capital para la entrada de tu vivienda", "Capital for your home down payment")
       : goalMode === "business"
         ? priority === "otro"
@@ -281,8 +291,9 @@ function Dashboard() {
             : priority === "organizar"
               ? t("El número que ordena tu dinero", "The number that organizes your money")
               : t(`Libertad estimada a los ${plan.freedomAge} años`, `Freedom estimated at age ${plan.freedomAge}`);
-  const numberLabel =
-    goalMode === "home"
+  const numberLabel = primary
+    ? t("Meta principal", "Primary goal")
+    : goalMode === "home"
       ? t("Entrada objetivo", "Target down payment")
       : goalMode === "business"
         ? t("Capital objetivo", "Target capital")
@@ -293,8 +304,9 @@ function Dashboard() {
             : priority === "organizar"
               ? t("Número organizador", "Organizing number")
               : "Your Number";
-  const numberHint =
-    goalMode === "home"
+  const numberHint = primary
+    ? `${primary.emoji} ${t("Meta activa", "Active goal")}`
+    : goalMode === "home"
       ? t("Para comprar tu vivienda", "To buy your home")
       : goalMode === "business"
         ? priority === "otro" && goalNote
@@ -548,8 +560,8 @@ function Dashboard() {
           actions={
             <Button asChild size="sm" variant="outline" className="gap-1 rounded-full">
               <Link to="/life-planner">
-                <Plus className="h-4 w-4" />
-                <span className="hidden sm:inline">{t("Añadir meta", "Add goal")}</span>
+                <Pencil className="h-4 w-4" />
+                <span className="hidden sm:inline">{t("Cambiar meta", "Change goal")}</span>
               </Link>
             </Button>
           }

@@ -16,7 +16,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { motion } from "motion/react";
-import { CalendarDays, Compass, GripVertical, Pencil, Plus, Sparkles, Target, Trash2, TrendingDown, TrendingUp, Wallet } from "lucide-react";
+import { CalendarDays, Compass, GripVertical, Pencil, Plus, Sparkles, Star, Target, Trash2, TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { PlanGate } from "@/components/plan-gate";
@@ -34,6 +34,7 @@ import { NumberInput } from "@/components/ui/number-input";
 import { Label } from "@/components/ui/label";
 import { useT } from "@/hooks/use-language";
 import { useLifeGoals, type LifeGoal } from "@/hooks/use-life-goals";
+import { usePrimaryGoal } from "@/hooks/use-primary-goal";
 import { useProfile } from "@/hooks/use-profile";
 import { GOAL_TEMPLATES, defaultValues, parseMeta, templateById, type TemplateId } from "@/lib/goal-templates";
 import { addMonths, formatImpact, monthsToTarget, yearsDiff, type SimGoal } from "@/lib/life-planner";
@@ -104,6 +105,7 @@ function LifePlannerContent() {
   const t = useT();
   const { profile } = useProfile();
   const { goals, create, update, remove, reorder, busy } = useLifeGoals();
+  const { primary, setPrimary } = usePrimaryGoal();
   const data = buildDataset(profile);
   const [draft, setDraft] = useState<Draft | null>(null);
 
@@ -358,8 +360,10 @@ function LifePlannerContent() {
                   data={data}
                   profile={profile}
                   baseMonths={baseMonths}
+                  isPrimary={primary?.id === s.g.id}
                   onEdit={() => setDraft(draftFromGoal(s.g))}
                   onRemove={() => void remove(s.g.id)}
+                  onSetPrimary={() => setPrimary(s.g.id)}
                 />
               ))}
             </div>
@@ -530,16 +534,20 @@ function SortableGoalCard({
   data,
   profile,
   baseMonths,
+  isPrimary,
   onEdit,
   onRemove,
+  onSetPrimary,
 }: {
   g: LifeGoal;
   idx: number;
   data: ReturnType<typeof buildDataset>;
   profile: ReturnType<typeof useProfile>["profile"];
   baseMonths: number | null;
+  isPrimary?: boolean;
   onEdit: () => void;
   onRemove: () => void;
+  onSetPrimary?: () => void;
 }) {
   const t = useT();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: g.id });
@@ -588,6 +596,19 @@ function SortableGoalCard({
           </div>
         </div>
         <div className="ml-auto flex gap-1">
+          <button
+            className={cn(
+              "rounded-md p-1.5 transition",
+              isPrimary
+                ? "text-positive hover:bg-elevated hover:text-positive"
+                : "text-muted-foreground hover:bg-elevated hover:text-foreground",
+            )}
+            onClick={onSetPrimary}
+            aria-label={isPrimary ? t("Meta principal", "Primary goal") : t("Establecer como meta principal", "Set as primary goal")}
+            title={isPrimary ? t("Meta principal", "Primary goal") : t("Establecer como meta principal", "Set as primary goal")}
+          >
+            <Star className={cn("h-3.5 w-3.5", isPrimary && "fill-current")} />
+          </button>
           <button
             className="rounded-md p-1.5 text-muted-foreground transition hover:bg-elevated hover:text-foreground"
             onClick={onEdit}
