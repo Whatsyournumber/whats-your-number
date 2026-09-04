@@ -1,15 +1,18 @@
 import type { ReactNode } from "react";
 import { motion } from "motion/react";
 import type { LucideIcon } from "lucide-react";
+import { HelpCircle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { shortenMoneyString } from "@/lib/onboarding";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export function KpiCard({
   label,
   value,
   delta,
   hint,
+  tooltip,
   icon: Icon,
   accent = false,
   inverse = false,
@@ -20,6 +23,7 @@ export function KpiCard({
   value: string;
   delta?: number;
   hint?: ReactNode;
+  tooltip?: ReactNode;
   icon?: LucideIcon;
   accent?: boolean;
   inverse?: boolean;
@@ -76,7 +80,26 @@ export function KpiCard({
             {delta.toFixed(1)}%
           </span>
         )}
-        {hint && <span className="text-xs text-muted-foreground">{hint}</span>}
+        {tooltip ? (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="inline-flex cursor-help items-center gap-1 text-xs text-muted-foreground">
+                {hint}
+                <HelpCircle className="h-3 w-3 text-muted-foreground/60" />
+              </span>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="max-w-[260px] p-0">
+              <div className="space-y-2 p-3">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-xs font-semibold text-foreground">{label}</p>
+                </div>
+                {tooltip}
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        ) : (
+          hint && <span className="text-xs text-muted-foreground">{hint}</span>
+        )}
       </div>
     </motion.div>
   );

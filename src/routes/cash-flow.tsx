@@ -263,24 +263,35 @@ function CashFlow() {
         </div>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <KpiCard
+          label={t("Ingresos", "Income")}
+          value={fmt(totalIncome)}
+          hint={usingStatements ? t("Abonos de tus EEFF", "Credits from your statements") : t("Según tu perfil", "Based on your profile")}
+          tooltip={<BreakdownTooltip items={incomeLines.slice(0, 8).map((i) => ({ label: i.name, amount: i.amount }))} fmt={fmt} total={totalIncome} />}
+          accent
+          index={0}
+        />
         <KpiCard
           label={t("Necesidades", "Needs")}
           value={fmt(buckets[0]!.amount)}
           hint={`${((buckets[0]!.amount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
-          index={0}
+          tooltip={<BreakdownTooltip items={needsBreakdown} fmt={fmt} total={buckets[0]!.amount} />}
+          index={1}
         />
         <KpiCard
           label={t("Ahorro / inversiones", "Savings / investments")}
           value={fmt(buckets[2]!.amount)}
           hint={`${((buckets[2]!.amount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
-          index={1}
+          tooltip={<BreakdownTooltip items={saveBreakdown} fmt={fmt} total={buckets[2]!.amount} />}
+          index={2}
         />
         <KpiCard
           label={t("Deseos / lifestyle", "Wants / lifestyle")}
           value={fmt(buckets[1]!.amount)}
           hint={`${((buckets[1]!.amount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
-          index={2}
+          tooltip={<BreakdownTooltip items={wantsBreakdown} fmt={fmt} total={buckets[1]!.amount} />}
+          index={3}
         />
       </div>
 
@@ -498,6 +509,36 @@ function Row({
       <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted">
         <div className={`h-full rounded-full ${colorClass}`} style={{ width: `${Math.min(p, 100)}%` }} />
       </div>
+    </div>
+  );
+}
+
+function BreakdownTooltip({
+  items,
+  fmt,
+  total,
+}: {
+  items: { label: string; amount: number }[];
+  fmt: (n: number) => string;
+  total: number;
+}) {
+  const t = useT();
+  return (
+    <div className="space-y-2">
+      <p className="text-[11px] text-muted-foreground">
+        {fmt(total)} {t("actual", "actual")}
+      </p>
+      {items.length > 0 && (
+        <ul className="space-y-1 border-t border-border/50 pt-2">
+          {items.slice(0, 8).map((item, i) => (
+            <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+              <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-primary" />
+              <span className="flex-1 leading-relaxed">{item.label}</span>
+              <span className="numeric shrink-0 text-xs">{fmt(item.amount)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
