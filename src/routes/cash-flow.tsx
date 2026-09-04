@@ -389,7 +389,7 @@ function CashFlow() {
       </Panel>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")} description={t("Distribución ideal de tu ingreso", "Ideal income distribution")}>
+        <Panel className="hidden lg:block" title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")} description={t("Distribución ideal de tu ingreso", "Ideal income distribution")}>
           <div className="space-y-3 text-sm">
             <Row
               label={t("Necesidades", "Needs")}
