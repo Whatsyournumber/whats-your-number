@@ -12,7 +12,7 @@ export function EditableKpiCard({
   value,
   rawValue = 0,
   onChange = () => {},
-  format = (n: number) => String(n),
+  valueFormatter = (n: number) => String(n),
   delta,
   hint,
   icon: Icon,
@@ -26,7 +26,7 @@ export function EditableKpiCard({
   value: string;
   rawValue?: number;
   onChange?: (v: number) => void;
-  format?: (n: number) => string;
+  valueFormatter?: (n: number) => string;
   delta?: number;
   hint?: string;
   icon?: LucideIcon;
