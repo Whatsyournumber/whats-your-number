@@ -166,6 +166,15 @@ function AdminPage() {
   const { isSuperAdmin, loading: rolesLoading } = useRoles();
   const [search, setSearch] = useState("");
   const queryClient = useQueryClient();
+  const [promoDialogOpen, setPromoDialogOpen] = useState(false);
+  const [promoForm, setPromoForm] = useState({
+    code: "",
+    product_id: "pro_plan",
+    duration_days: "30",
+    max_uses: "25",
+    note: "",
+  });
+  const [promoBusy, setPromoBusy] = useState(false);
 
   const runDelete = async (fn: () => Promise<unknown>, okMsg: string) => {
     try {
