@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
+import { MonthEvolutionPicker } from "@/components/month-evolution-picker";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
@@ -68,6 +69,13 @@ function PatrimonioContent() {
   const months = buildRealMonths(transactions, d.netWorth) ?? d.months;
   const growth =
     months[0]!.netWorth > 0 ? ((d.netWorth - months[0]!.netWorth) / Math.abs(months[0]!.netWorth)) * 100 : 0;
+
+  // Calendario de evolución: elegir un mes recorta la gráfica hasta ese mes.
+  const monthKeys = months.map((m, i) => (m as { month?: string }).month ?? `idx-${i}`);
+  const realKeys = monthKeys.filter((k) => /^\d{4}-\d{2}$/.test(k));
+  const [evoMonth, setEvoMonth] = useState<string | null>(null);
+  const evoIdx = evoMonth ? monthKeys.indexOf(evoMonth) : -1;
+  const chartMonths = evoIdx >= 0 ? months.slice(0, evoIdx + 1) : months;
 
   // Precios reales para posiciones con ticker.
   const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
@@ -264,10 +272,15 @@ function PatrimonioContent() {
 
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title={t("Crecimiento del patrimonio", "Net worth growth")} className="flex flex-col p-3 md:p-5 lg:col-span-2" bleedMobile>
+        <Panel
+          title={t("Crecimiento del patrimonio", "Net worth growth")}
+          className="flex flex-col p-3 md:p-5 lg:col-span-2"
+          bleedMobile
+          actions={<MonthEvolutionPicker availableKeys={realKeys} value={evoMonth} onChange={setEvoMonth} />}
+        >
           <div className="min-h-[340px] flex-1 md:min-h-[420px] lg:min-h-0">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={months} margin={{ left: isMobile ? 0 : -20, right: isMobile ? 4 : 0, top: 8 }}>
+              <AreaChart data={chartMonths} margin={{ left: isMobile ? 0 : -20, right: isMobile ? 4 : 0, top: 8 }}>
                 <defs>
                   <linearGradient id="pw" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.45} />

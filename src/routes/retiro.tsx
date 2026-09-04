@@ -8,6 +8,7 @@ import { ScrollX } from "@/components/scroll-x";
 import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
+import { MonthEvolutionPicker } from "@/components/month-evolution-picker";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,8 @@ import { toast } from "sonner";
 import { useProfile } from "@/hooks/use-profile";
 import { useHoldings, holdingValue } from "@/hooks/use-holdings";
 import { useQuotes } from "@/hooks/use-market";
+import { useTransactions } from "@/hooks/use-transactions";
+import { buildRealMonths } from "@/lib/real-months";
 
 import { useT } from "@/hooks/use-language";
 import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
@@ -80,6 +83,14 @@ function RetiroContent() {
     .filter((h) => h.kind !== "property" && h.kind !== "debt")
     .reduce((s, h) => s + holdingValue(h, prices), 0);
   const investable = holdings.length ? investableFromHoldings : investableFallback;
+
+  // Evolución mensual real de lo invertible (reconstruida desde tus EEFF).
+  const { transactions } = useTransactions();
+  const evoMonths = buildRealMonths(transactions, investable);
+  const evoKeys = (evoMonths ?? []).map((m) => m.month).filter((k): k is string => /^\d{4}-\d{2}$/.test(k ?? ""));
+  const [evoMonth, setEvoMonth] = useState<string | null>(null);
+  const evoIdx = evoMonth ? evoKeys.indexOf(evoMonth) : -1;
+  const evoChartMonths = evoIdx >= 0 ? (evoMonths ?? []).slice(0, evoIdx + 1) : (evoMonths ?? []);
 
   const progressPct = plan.targetCapital > 0 ? Math.max(0, (investable / plan.targetCapital) * 100) : 0;
 
@@ -409,6 +420,33 @@ function RetiroContent() {
           {t("Vas al", "You're at")} {progressPct.toFixed(1)}% · {t("te faltan", "you still need")} {fmt(Math.max(0, plan.targetCapital - investable))} {t("en inversiones que generen retorno.", "in return-generating investments.")}
         </p>
       </div>
+
+      {evoMonths && evoMonths.length > 1 && (
+        <Panel
+          title={t("Evolución de tus inversiones", "Your investments evolution")}
+          description={t("Mes a mes, según tus estados de cuenta.", "Month by month, from your statements.")}
+          bleedMobile
+          actions={<MonthEvolutionPicker availableKeys={evoKeys} value={evoMonth} onChange={setEvoMonth} />}
+        >
+          <div className="min-h-[240px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={evoChartMonths} margin={{ left: isMobile ? 0 : -8, right: isMobile ? 4 : 8, top: 8, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="evoInv" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.45} />
+                    <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
+                <XAxis dataKey="label" {...axisProps} />
+                <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={isMobile ? 42 : 56} />
+                <Tooltip content={<ChartTooltip />} />
+                <Area type="monotone" dataKey="netWorth" name={t("Invertible", "Investable")} stroke="var(--color-chart-2)" strokeWidth={2.5} fill="url(#evoInv)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </Panel>
+      )}
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel
