@@ -219,7 +219,6 @@ function RetiroContent() {
         eyebrow={t("Largo plazo", "Long term")}
         title={t("WhatsYourNumber", "WhatsYourNumber")}
         subtitle={headerSubtitle}
-        actions={<MonthEvolutionPicker availableKeys={evoKeys} value={evoMonth} onChange={setEvoMonth} />}
       />
 
 
