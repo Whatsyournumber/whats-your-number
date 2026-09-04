@@ -101,10 +101,34 @@ function Dashboard() {
     return { ...month, expenses, income: d.income, savings: d.income - expenses };
   });
 
+  // Selector de mes (por defecto el mes pasado completo).
+  const monthKeys = months.map((m, i) => (m as { month?: string }).month ?? `idx-${i}`);
+  const defaultKey = (() => {
+    const now = new Date();
+    const prev = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const key = `${prev.getFullYear()}-${String(prev.getMonth() + 1).padStart(2, "0")}`;
+    return monthKeys.includes(key) ? key : monthKeys[monthKeys.length - 1] ?? key;
+  })();
+  const [monthKey, setMonthKey] = useState<string | null>(null);
+  const activeKey = monthKey && monthKeys.includes(monthKey) ? monthKey : defaultKey;
+  const activeIndex = Math.max(0, monthKeys.indexOf(activeKey));
+  const [pickerOpen, setPickerOpen] = useState(false);
+
   const hasHistory = Boolean(realMonths && realMonths.length > 1);
-  const current = months[months.length - 1] ?? d.current;
-  const previous = months[months.length - 2] ?? current;
+  const current = months[activeIndex] ?? months[months.length - 1] ?? d.current;
+  const previous = months[activeIndex - 1] ?? current;
   const { fmt, fmtCompact, plan } = d;
+
+  // Rango completo del mes seleccionado, para la etiqueta del calendario.
+  const activeDate = /^\d{4}-\d{2}$/.test(activeKey)
+    ? new Date(Number(activeKey.slice(0, 4)), Number(activeKey.slice(5, 7)) - 1, 1)
+    : new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1);
+  const rangeStart = activeDate;
+  const rangeEnd = new Date(activeDate.getFullYear(), activeDate.getMonth() + 1, 0);
+  const dayFmt = (date: Date) =>
+    date.toLocaleDateString(lang, { day: "numeric", month: "short", year: "numeric" }).replace(/\./g, "");
+  const monthRangeLabel = `${dayFmt(rangeStart)} — ${dayFmt(rangeEnd)}`;
+  const [pickerYear, setPickerYear] = useState(activeDate.getFullYear());
 
   // Snapshot del demo gratuito: se usa solo si el perfil aún no tiene cifras.
   const [demo, setDemo] = useState<DemoSnapshot | null>(null);
