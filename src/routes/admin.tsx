@@ -527,7 +527,86 @@ function AdminPage() {
         </TabsContent>
 
         <TabsContent value="promos" className="mt-4 space-y-4">
-          <Panel title={t("Códigos de invitación", "Invite codes")} description={t("Comparte el código para dar acceso Pro gratis", "Share the code to grant free Pro access")}>
+          <Panel
+            title={t("Códigos de invitación", "Invite codes")}
+            description={t("Comparte el código para dar acceso Pro gratis", "Share the code to grant free Pro access")}
+            actions={
+              <Dialog open={promoDialogOpen} onOpenChange={setPromoDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button size="sm" className="rounded-full">
+                    <Plus className="mr-1 h-4 w-4" />
+                    {t("Crear código", "Create code")}
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>{t("Nuevo código de invitación", "New invite code")}</DialogTitle>
+                    <DialogDescription>{t("Genera un código para dar acceso Pro gratis.", "Generate a code to grant free Pro access.")}</DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="promo-code">{t("Código", "Code")}</Label>
+                      <Input
+                        id="promo-code"
+                        value={promoForm.code}
+                        onChange={(e) => setPromoForm((f) => ({ ...f, code: e.target.value.toUpperCase() }))}
+                        placeholder="EJ. PRO30"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>{t("Plan", "Plan")}</Label>
+                      <Select value={promoForm.product_id} onValueChange={(v) => setPromoForm((f) => ({ ...f, product_id: v }))}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="pro_plan">Pro</SelectItem>
+                          <SelectItem value="family_plan">Family</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="promo-days">{t("Días", "Days")}</Label>
+                        <Input
+                          id="promo-days"
+                          type="number"
+                          min={1}
+                          value={promoForm.duration_days}
+                          onChange={(e) => setPromoForm((f) => ({ ...f, duration_days: e.target.value }))}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="promo-uses">{t("Usos máx.", "Max uses")}</Label>
+                        <Input
+                          id="promo-uses"
+                          type="number"
+                          min={1}
+                          value={promoForm.max_uses}
+                          onChange={(e) => setPromoForm((f) => ({ ...f, max_uses: e.target.value }))}
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="promo-note">{t("Nota", "Note")}</Label>
+                      <Input
+                        id="promo-note"
+                        value={promoForm.note}
+                        onChange={(e) => setPromoForm((f) => ({ ...f, note: e.target.value }))}
+                        placeholder={t("Ej. Campaña YouTube", "E.g. YouTube campaign")}
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setPromoDialogOpen(false)} type="button">{t("Cancelar", "Cancel")}</Button>
+                    <Button onClick={runCreatePromo} disabled={promoBusy || !promoForm.code.trim()} type="button">
+                      {promoBusy ? t("Creando…", "Creating…") : t("Crear código", "Create code")}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            }
+          >
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
