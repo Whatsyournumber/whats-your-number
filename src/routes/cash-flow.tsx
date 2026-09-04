@@ -263,24 +263,35 @@ function CashFlow() {
         </div>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <KpiCard
+          label={t("Ingresos", "Income")}
+          value={fmt(totalIncome)}
+          hint={usingStatements ? t("Abonos de tus EEFF", "Credits from your statements") : t("Según tu perfil", "Based on your profile")}
+          tooltip={<BreakdownTooltip items={incomeLines.slice(0, 8)} fmt={fmt} total={totalIncome} />}
+          accent
+          index={0}
+        />
         <KpiCard
           label={t("Necesidades", "Needs")}
           value={fmt(buckets[0]!.amount)}
           hint={`${((buckets[0]!.amount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
-          index={0}
+          tooltip={<BreakdownTooltip items={needsBreakdown} fmt={fmt} total={buckets[0]!.amount} />}
+          index={1}
         />
         <KpiCard
           label={t("Ahorro / inversiones", "Savings / investments")}
           value={fmt(buckets[2]!.amount)}
           hint={`${((buckets[2]!.amount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
-          index={1}
+          tooltip={<BreakdownTooltip items={saveBreakdown} fmt={fmt} total={buckets[2]!.amount} />}
+          index={2}
         />
         <KpiCard
           label={t("Deseos / lifestyle", "Wants / lifestyle")}
           value={fmt(buckets[1]!.amount)}
           hint={`${((buckets[1]!.amount / totalIncome) * 100).toFixed(0)}% ${t("del ingreso", "of income")}`}
-          index={2}
+          tooltip={<BreakdownTooltip items={wantsBreakdown} fmt={fmt} total={buckets[1]!.amount} />}
+          index={3}
         />
       </div>
 
