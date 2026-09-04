@@ -283,7 +283,7 @@ function Dashboard() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         
-        <Panel title={t("Evolución de cuál tu número", "Evolution of your number")} description={t("Progreso hacia tu número para el retiro · últimos 12 meses", "Progress toward your retirement number · last 12 months")} className="lg:col-span-2">
+        <Panel title={t("Evolución de cuál tu número", "Evolution of your number")} description={t("Progreso hacia tu número para el retiro · últimos 12 meses", "Progress toward your retirement number · last 12 months")} className="lg:col-span-2" bleedMobile>
           <ResponsiveContainer width="100%" height={280}>
             <AreaChart data={months} margin={{ left: 4, right: 8, top: 8 }}>
               <defs>
@@ -369,7 +369,7 @@ function Dashboard() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title={t("Ingresos vs gastos", "Income vs expenses")} className="lg:col-span-2">
+        <Panel title={t("Ingresos vs gastos", "Income vs expenses")} className="lg:col-span-2" bleedMobile>
           <ResponsiveContainer width="100%" height={240}>
             <BarChart data={months} margin={{ left: 4, right: 8 }} barGap={2}>
               <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
@@ -382,7 +382,7 @@ function Dashboard() {
           </ResponsiveContainer>
         </Panel>
 
-        <Panel title={t("Evolución del ahorro", "Savings evolution")}>
+        <Panel title={t("Evolución del ahorro", "Savings evolution")} bleedMobile>
           <ResponsiveContainer width="100%" height={240}>
             <LineChart data={months} margin={{ left: 4, right: 8 }}>
               <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />

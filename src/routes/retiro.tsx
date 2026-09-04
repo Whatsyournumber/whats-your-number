@@ -421,6 +421,7 @@ function RetiroContent() {
               : `${t("Saldo estimado a los", "Estimated balance at")} ${retireAge} ${t("años", "years old")}`
           }
           className="flex flex-col lg:col-span-2"
+          bleedMobile
         >
           <div className="min-h-[260px] flex-1">
 

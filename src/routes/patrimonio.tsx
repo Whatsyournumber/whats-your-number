@@ -262,7 +262,7 @@ function PatrimonioContent() {
 
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title={t("Crecimiento del patrimonio", "Net worth growth")} className="flex flex-col p-3 md:p-5 lg:col-span-2">
+        <Panel title={t("Crecimiento del patrimonio", "Net worth growth")} className="flex flex-col p-3 md:p-5 lg:col-span-2" bleedMobile>
           <div className="min-h-[340px] flex-1 md:min-h-[420px] lg:min-h-0">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={months} margin={{ left: -20, right: 0, top: 8 }}>
@@ -282,9 +282,9 @@ function PatrimonioContent() {
           </div>
         </Panel>
 
-        <Panel title={t("Asset allocation", "Asset allocation")} className="flex flex-col">
+        <Panel title={t("Asset allocation", "Asset allocation")} className="flex flex-col" bleedMobile>
           {assetRows.length === 0 ? (
-            <div className="space-y-3 py-8 text-center">
+            <div className="space-y-3 px-5 py-8 text-center sm:px-0">
               <p className="text-sm text-muted-foreground">{t("Aún no registras activos.", "You haven't recorded any assets yet.")}</p>
               <Button asChild size="sm" className="rounded-full">
                 <Link to="/mi-perfil">{t("Añadir mis activos", "Add my assets")}</Link>
@@ -304,7 +304,7 @@ function PatrimonioContent() {
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-              <ul className="mt-2 shrink-0 space-y-1.5">
+              <ul className="mt-2 shrink-0 space-y-1.5 px-5 sm:px-0">
                 {assetRows.map((a) => (
                   <li key={a.name} className="flex items-center gap-2 text-xs">
                     <span className="h-2 w-2 rounded-full" style={{ background: a.color }} />

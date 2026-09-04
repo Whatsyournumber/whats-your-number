@@ -49,6 +49,7 @@ export function Panel({
   icon,
   className,
   variant = "default",
+  bleedMobile = false,
   children,
 }: {
   title?: ReactNode;
@@ -58,26 +59,33 @@ export function Panel({
   icon?: ReactNode;
   className?: string;
   variant?: "default" | "minimal";
+  bleedMobile?: boolean;
   children: ReactNode;
 }) {
   return (
     <section
       className={cn(
-        "p-5",
+        "overflow-hidden p-5",
+        bleedMobile && "p-0 sm:p-5",
         variant === "default" && "surface",
         variant === "minimal" && "rounded-2xl border border-border/60 bg-card/40",
         className,
       )}
     >
       {(title || actions) && (
-        <div className="mb-4 flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3">
+        <div
+          className={cn(
+            "mb-4 flex items-start justify-between gap-3",
+            bleedMobile && "px-5 pt-5 sm:px-0 sm:pt-0",
+          )}
+        >
+          <div className="flex min-w-0 items-center gap-3">
             {icon && (
               <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-primary/15 text-primary [&_svg]:h-5 [&_svg]:w-5">
                 {icon}
               </span>
             )}
-            <div>
+            <div className="min-w-0">
               {title && (
                 <h2 className={cn(icon ? "text-xl font-semibold tracking-tight" : "text-sm font-semibold")}>{title}</h2>
               )}
