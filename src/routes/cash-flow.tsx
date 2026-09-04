@@ -383,7 +383,7 @@ function CashFlow() {
         </div>
       </Panel>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 lg:grid-cols-3">
         <Panel title={t("Regla 40 / 40 / 20", "40 / 40 / 20 rule")} description={t("Distribución ideal de tu ingreso", "Ideal income distribution")}>
           <div className="space-y-3 text-sm">
             <Row
@@ -471,7 +471,7 @@ function Row({
 
   return (
     <div>
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
         <Tooltip>
           <TooltipTrigger asChild>
             <span className="inline-flex cursor-help items-center gap-1.5 text-muted-foreground">
@@ -501,7 +501,7 @@ function Row({
             </TooltipContent>
           )}
         </Tooltip>
-        <span className="numeric flex items-baseline gap-2">
+        <span className="numeric flex shrink-0 items-baseline gap-2 whitespace-nowrap">
           <span className="font-medium">{fmt(value)}</span>
           <span>
             {p.toFixed(0)}% <span className="text-xs text-muted-foreground">/ {target}%</span>
