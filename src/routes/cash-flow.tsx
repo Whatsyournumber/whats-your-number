@@ -512,3 +512,33 @@ function Row({
     </div>
   );
 }
+
+function BreakdownTooltip({
+  items,
+  fmt,
+  total,
+}: {
+  items: { label: string; amount: number }[];
+  fmt: (n: number) => string;
+  total: number;
+}) {
+  const t = useT();
+  return (
+    <div className="space-y-2">
+      <p className="text-[11px] text-muted-foreground">
+        {fmt(total)} {t("actual", "actual")}
+      </p>
+      {items.length > 0 && (
+        <ul className="space-y-1 border-t border-border/50 pt-2">
+          {items.slice(0, 8).map((item, i) => (
+            <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+              <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-primary" />
+              <span className="flex-1 leading-relaxed">{item.label}</span>
+              <span className="numeric shrink-0 text-xs">{fmt(item.amount)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
