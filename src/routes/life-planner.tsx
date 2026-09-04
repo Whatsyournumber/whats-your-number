@@ -534,16 +534,20 @@ function SortableGoalCard({
   data,
   profile,
   baseMonths,
+  isPrimary,
   onEdit,
   onRemove,
+  onSetPrimary,
 }: {
   g: LifeGoal;
   idx: number;
   data: ReturnType<typeof buildDataset>;
   profile: ReturnType<typeof useProfile>["profile"];
   baseMonths: number | null;
+  isPrimary?: boolean;
   onEdit: () => void;
   onRemove: () => void;
+  onSetPrimary?: () => void;
 }) {
   const t = useT();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: g.id });
