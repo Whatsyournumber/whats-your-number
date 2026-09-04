@@ -637,7 +637,7 @@ function Dashboard() {
                         {fmtCompact(left)} {t("de", "of")} {fmtCompact(right)}
                       </p>
                       <Progress value={pct} className="mt-2 h-2" />
-                      <p className="mt-1.5 text-[11px] text-muted-foreground">{subtitle}</p>
+                      <p className="mt-1.5 line-clamp-1 text-[11px] text-muted-foreground">{subtitle}</p>
                     </div>
                   </Link>
                 </li>
