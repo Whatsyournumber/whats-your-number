@@ -8,7 +8,6 @@ import { ScrollX } from "@/components/scroll-x";
 import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
-import { MonthEvolutionPicker } from "@/components/month-evolution-picker";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
@@ -18,8 +17,6 @@ import { toast } from "sonner";
 import { useProfile } from "@/hooks/use-profile";
 import { useHoldings, holdingValue } from "@/hooks/use-holdings";
 import { useQuotes } from "@/hooks/use-market";
-import { useTransactions } from "@/hooks/use-transactions";
-import { buildRealMonths } from "@/lib/real-months";
 
 import { useT } from "@/hooks/use-language";
 import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
@@ -83,14 +80,6 @@ function RetiroContent() {
     .filter((h) => h.kind !== "property" && h.kind !== "debt")
     .reduce((s, h) => s + holdingValue(h, prices), 0);
   const investable = holdings.length ? investableFromHoldings : investableFallback;
-
-  // Evolución mensual real de lo invertible (reconstruida desde tus EEFF).
-  const { transactions } = useTransactions();
-  const evoMonths = buildRealMonths(transactions, investable);
-  const evoKeys = (evoMonths ?? []).map((m) => m.month).filter((k): k is string => /^\d{4}-\d{2}$/.test(k ?? ""));
-  const [evoMonth, setEvoMonth] = useState<string | null>(null);
-  const evoIdx = evoMonth ? evoKeys.indexOf(evoMonth) : -1;
-  const evoChartMonths = evoIdx >= 0 ? (evoMonths ?? []).slice(0, evoIdx + 1) : (evoMonths ?? []);
 
   const progressPct = plan.targetCapital > 0 ? Math.max(0, (investable / plan.targetCapital) * 100) : 0;
 
