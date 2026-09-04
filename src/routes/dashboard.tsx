@@ -538,7 +538,29 @@ function Dashboard() {
               const left = g.displayCurrent ?? g.current;
               const right = g.displayTarget ?? g.target;
               const remaining = Math.max(0, right - left);
-              const portfolioRate = profile.expected_return || 7;
+              const portfolioRate = (() => {
+                const investKinds = ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured"];
+                const list = holdings.filter((h) => investKinds.includes(h.kind));
+                let totalValue = 0;
+                let weightedReturn = 0;
+                for (const h of list) {
+                  const value = holdingValue(h, prices);
+                  if (value <= 0) continue;
+                  const tk = h.ticker?.toUpperCase();
+                  const marketCost = h.cost_basis > 0 ? h.cost_basis : 0;
+                  let marketGrowth: number | null = null;
+                  if (tk && marketCost > 0 && value > 0) {
+                    marketGrowth = (value - marketCost) / marketCost;
+                  } else if (tk && dayChange[tk] !== undefined) {
+                    marketGrowth = dayChange[tk] / 100;
+                  }
+                  const growth = marketGrowth !== null ? marketGrowth : (h.expected_return || 7) / 100;
+                  totalValue += value;
+                  weightedReturn += value * growth;
+                }
+                if (totalValue > 0) return (weightedReturn / totalValue) * 100;
+                return profile.expected_return || 7;
+              })();
               const years = yearsToTarget(right, left, g.monthly, portfolioRate);
 
               let subtitle: string;
