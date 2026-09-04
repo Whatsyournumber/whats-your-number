@@ -289,22 +289,10 @@ function Dashboard() {
         <EditableKpiCard
           label={t("Ingresos", "Income")}
           value={fmt(current.income)}
-          rawValue={Math.round(current.income)}
-          onChange={(v) => {
-            const other =
-              (Number(profile.income_bonus) || 0) +
-              (Number(profile.income_rent) || 0) +
-              (Number(profile.income_other) || 0);
-            void save({ income_salary: Math.max(0, v - other) }).then(() => {
-              toast.success(t("Ingresos actualizados", "Income updated"), {
-                description: t("Dashboard y análisis se recalculan con tu nuevo ingreso.", "Dashboard and analysis recalculate with your new income."),
-              });
-            });
-          }}
+          editHref="/mi-perfil"
           {...(hasHistory ? { delta: delta(current.income, previous.income) } : {})}
           icon={Banknote}
           index={1}
-          format={fmt}
         />
         <KpiCard label={t("Gastos", "Expenses")} value={fmt(current.expenses)} {...(hasHistory ? { delta: delta(current.expenses, previous.expenses) } : {})} inverse icon={TrendingUp} index={2} />
         <KpiCard label={t("Ahorro", "Savings")} value={fmt(current.savings)} {...(hasHistory ? { delta: delta(current.savings, previous.savings) } : {})} icon={PiggyBank} index={3} />

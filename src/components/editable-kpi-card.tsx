@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import { Pencil } from "lucide-react";
 import { motion } from "motion/react";
+import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { NumberInput } from "@/components/ui/number-input";
@@ -9,8 +10,9 @@ import { cn } from "@/lib/utils";
 export function EditableKpiCard({
   label,
   value,
-  rawValue,
-  onChange,
+  rawValue = 0,
+  onChange = () => {},
+  valueFormatter = (n: number) => String(n),
   delta,
   hint,
   icon: Icon,
@@ -18,12 +20,13 @@ export function EditableKpiCard({
   inverse = false,
   index = 0,
   variant = "default",
-  format,
+  editHref,
 }: {
   label: string;
   value: string;
-  rawValue: number;
-  onChange: (v: number) => void;
+  rawValue?: number;
+  onChange?: (v: number) => void;
+  valueFormatter?: (n: number) => string;
   delta?: number;
   hint?: string;
   icon?: LucideIcon;
@@ -31,7 +34,7 @@ export function EditableKpiCard({
   inverse?: boolean;
   index?: number;
   variant?: "default" | "flat";
-  format: (n: number) => string;
+  editHref?: string;
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(rawValue);
@@ -47,6 +50,25 @@ export function EditableKpiCard({
   };
 
   const good = delta === undefined ? true : inverse ? delta < 0 : delta > 0;
+
+  const EditButton = editHref ? (
+    <Link
+      to={editHref}
+      className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+      aria-label="Edit"
+    >
+      <Pencil className="h-3.5 w-3.5" />
+    </Link>
+  ) : (
+    <button
+      type="button"
+      onClick={startEdit}
+      className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+      aria-label="Edit"
+    >
+      <Pencil className="h-3.5 w-3.5" />
+    </button>
+  );
 
   return (
     <motion.div
@@ -65,18 +87,11 @@ export function EditableKpiCard({
         <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{label}</p>
         <div className="flex items-center gap-2">
           {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
-          <button
-            type="button"
-            onClick={startEdit}
-            className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-            aria-label="Edit"
-          >
-            <Pencil className="h-3.5 w-3.5" />
-          </button>
+          {EditButton}
         </div>
       </div>
 
-      {editing ? (
+      {!editHref && editing ? (
         <div className="mt-3">
           <NumberInput
             value={draft}
