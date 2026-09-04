@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, TrendingUp, X } from "lucide-react";
+import { CalendarDays, Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, TrendingUp, X } from "lucide-react";
 import { useState } from "react";
+import { motion } from "motion/react";
 import { CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { PlanGate } from "@/components/plan-gate";
@@ -11,6 +12,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useMarketSeries, useQuotes, useSymbolSearch, useWatchlist } from "@/hooks/use-market";
@@ -88,6 +90,8 @@ function PortafolioContent() {
   const [benchmark, setBenchmark] = useState<"sp500" | "nasdaq" | "world">("sp500");
   const [newSymbol, setNewSymbol] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [evoIdx, setEvoIdx] = useState<number | null>(null);
+  const [evoOpen, setEvoOpen] = useState(false);
   const searchQuery = useSymbolSearch(newSymbol);
 
   // Precios reales para las posiciones con ticker + unidades.
@@ -337,6 +341,11 @@ function PortafolioContent() {
   }
   const maxDrawdown = maxDD * 100;
   const hasStats = benchmarkData.length > 3;
+
+  // KPI "Rendimiento del portafolio": promedio ponderado real; con el calendario se ve el punto de cada mes.
+  const evoPoint = evoIdx !== null ? benchmarkData[evoIdx] ?? null : null;
+  const shownRet = evoPoint ? evoPoint.portfolio : weightedReturn;
+  const shownBench: number | null = evoPoint ? evoPoint.bench : benchmarkData.length ? bench12 : null;
 
   // ---- Distribución objetivo universal (glidepath por horizonte) ----
   const horizon = yearsToRetire;
@@ -709,9 +718,111 @@ function PortafolioContent() {
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard label={t("Valor actual", "Current value")} value={fmt(totalValue)} accent index={0} />
-        <KpiCard label={t("Costo invertido", "Invested cost")} value={fmt(totalCost)} index={1} />
-        <KpiCard label={t("Ganancia total", "Total gain")} value={fmt(totalGain)} delta={totalCost > 0 ? (totalGain / totalCost) * 100 : 0} index={2} />
-        <KpiCard label={t("Ganancia mensual", "Monthly gain")} value={fmt(Math.round(totalGain / 12))} index={3} />
+        <KpiCard label={t("Ganancia total", "Total gain")} value={fmt(totalGain)} delta={totalCost > 0 ? (totalGain / totalCost) * 100 : 0} index={1} />
+        <KpiCard label={t("Ganancia mensual", "Monthly gain")} value={fmt(Math.round(totalGain / 12))} index={2} />
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.15, ease: "easeOut" }}
+          className="surface relative flex h-full flex-col overflow-hidden p-5"
+        >
+          <div className="relative flex items-start justify-between gap-3">
+            <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              {t("Rendimiento del portafolio", "Portfolio return")}
+            </p>
+            <Popover open={evoOpen} onOpenChange={setEvoOpen}>
+              <PopoverTrigger asChild>
+                <button
+                  type="button"
+                  aria-label={t("Ver evolución por mes", "See monthly evolution")}
+                  className={cn(
+                    "rounded-full border border-border/60 p-1.5 text-muted-foreground transition hover:text-foreground",
+                    evoPoint && "border-primary/40 text-primary",
+                  )}
+                >
+                  <CalendarDays className="h-3.5 w-3.5" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-64 p-3">
+                <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                  {t("Evolución · últimos 12 meses", "Evolution · last 12 months")}
+                </p>
+                {benchmarkData.length === 0 ? (
+                  <p className="text-xs text-muted-foreground">{t("Mercado no disponible", "Market unavailable")}</p>
+                ) : (
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {benchmarkData.map((p, i) => {
+                      const active = evoIdx === i;
+                      return (
+                        <button
+                          key={`${p.label}-${i}`}
+                          type="button"
+                          onClick={() => {
+                            setEvoIdx(active ? null : i);
+                            setEvoOpen(false);
+                          }}
+                          className={cn(
+                            "rounded-lg border px-1.5 py-1.5 text-center transition",
+                            active
+                              ? "border-primary/50 bg-primary/15 text-foreground"
+                              : "border-border/50 bg-elevated/40 text-muted-foreground hover:text-foreground",
+                          )}
+                        >
+                          <span className="block text-[11px] font-medium">{p.label}</span>
+                          <span className={cn("numeric block text-[10px]", p.portfolio >= 0 ? "text-positive" : "text-negative")}>
+                            {p.portfolio > 0 ? "+" : ""}
+                            {p.portfolio.toFixed(1)}%
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+                {evoPoint && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEvoIdx(null);
+                      setEvoOpen(false);
+                    }}
+                    className="mt-2 w-full text-center text-[11px] text-muted-foreground hover:text-foreground"
+                  >
+                    {t("Volver al rendimiento actual", "Back to current return")}
+                  </button>
+                )}
+              </PopoverContent>
+            </Popover>
+          </div>
+          <p
+            className={cn(
+              "numeric relative mt-3 truncate text-2xl font-semibold leading-tight md:text-3xl",
+              shownRet > 0 ? "text-positive" : shownRet < 0 ? "text-negative" : "text-foreground",
+            )}
+          >
+            {shownRet > 0 ? "+" : ""}
+            {shownRet.toFixed(1)}%
+          </p>
+          <div className="relative mt-auto flex items-center gap-2 pt-2">
+            {shownBench !== null && (
+              <span
+                className={cn(
+                  "rounded-full px-2 py-0.5 text-xs font-medium",
+                  shownRet - shownBench >= 0 ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative",
+                )}
+              >
+                {shownRet - shownBench > 0 ? "+" : ""}
+                {(shownRet - shownBench).toFixed(1)}%
+              </span>
+            )}
+            <span className="truncate text-xs text-muted-foreground">
+              {evoPoint
+                ? t(`${evoPoint.label} · vs ${benchName}`, `${evoPoint.label} · vs ${benchName}`)
+                : shownBench !== null
+                  ? t(`vs ${benchName} 12m`, `vs ${benchName} 12m`)
+                  : t("Promedio ponderado real", "Real weighted average")}
+            </span>
+          </div>
+        </motion.div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
