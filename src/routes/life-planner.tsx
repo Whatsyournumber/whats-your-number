@@ -597,6 +597,19 @@ function SortableGoalCard({
         </div>
         <div className="ml-auto flex gap-1">
           <button
+            className={cn(
+              "rounded-md p-1.5 transition",
+              isPrimary
+                ? "text-positive hover:bg-elevated hover:text-positive"
+                : "text-muted-foreground hover:bg-elevated hover:text-foreground",
+            )}
+            onClick={onSetPrimary}
+            aria-label={isPrimary ? t("Meta principal", "Primary goal") : t("Establecer como meta principal", "Set as primary goal")}
+            title={isPrimary ? t("Meta principal", "Primary goal") : t("Establecer como meta principal", "Set as primary goal")}
+          >
+            <Star className={cn("h-3.5 w-3.5", isPrimary && "fill-current")} />
+          </button>
+          <button
             className="rounded-md p-1.5 text-muted-foreground transition hover:bg-elevated hover:text-foreground"
             onClick={onEdit}
             aria-label={t("Editar meta", "Edit goal")}
