@@ -32,7 +32,6 @@ function Configuracion() {
       <Tabs defaultValue="importacion">
         <TabsList className="mb-4 w-full sm:w-auto">
           <TabsTrigger value="importacion">{t("Importación", "Import")}</TabsTrigger>
-          <TabsTrigger value="cuentas">{t("Cuentas", "Accounts")}</TabsTrigger>
           <TabsTrigger value="categorias">{t("Categorías", "Categories")}</TabsTrigger>
           <TabsTrigger value="reglas">{t("Reglas", "Rules")}</TabsTrigger>
           <TabsTrigger value="preferencias">{t("Preferencias", "Preferences")}</TabsTrigger>
