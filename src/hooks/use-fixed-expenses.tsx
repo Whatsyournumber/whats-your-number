@@ -43,9 +43,12 @@ export function useFixedExpenses() {
   // después la cuenta, que es la fuente de verdad y sobrevive a cerrar sesión o cambiar de equipo.
   useEffect(() => {
     let cancelled = false;
+    // La caché local va por cuenta: sin sesión usa la clave de invitado y con
+    // sesión una clave propia, para que una cuenta nueva no herede gastos de otra.
+    const storageKey = userId ? `${KEY}:${userId}` : KEY;
     const readLocal = () => {
       try {
-        const raw = window.localStorage.getItem(KEY);
+        const raw = window.localStorage.getItem(storageKey);
         const parsed = raw ? (JSON.parse(raw) as FixedExpense[]) : [];
         return Array.isArray(parsed) ? parsed.filter((i) => !onboardingKeys.has(i.id)) : [];
       } catch {
@@ -91,7 +94,7 @@ export function useFixedExpenses() {
       if (cancelled) return;
       setCustom(remote);
       try {
-        window.localStorage.setItem(KEY, JSON.stringify(remote));
+        window.localStorage.setItem(storageKey, JSON.stringify(remote));
       } catch {
         /* ignore */
       }
@@ -132,12 +135,12 @@ export function useFixedExpenses() {
       setItems(next);
       try {
         const custom = next.filter((i) => !onboardingKeys.has(i.id));
-        window.localStorage.setItem(KEY, JSON.stringify(custom));
+        window.localStorage.setItem(userId ? `${KEY}:${userId}` : KEY, JSON.stringify(custom));
       } catch {
         /* ignore */
       }
     },
-    [onboardingKeys],
+    [onboardingKeys, userId],
   );
 
   // Guarda un gasto personalizado en la cuenta (debounce por fila).
@@ -229,12 +232,15 @@ export function useFixedExpenses() {
 export function convertStoredFixedExpenses(from: string, to: string) {
   if (!from || !to || from.toUpperCase() === to.toUpperCase()) return;
   try {
-    const raw = window.localStorage.getItem(KEY);
-    if (raw) {
+    // Convierte la caché de invitado y la de cada cuenta (claves con prefijo).
+    const keys = Object.keys(window.localStorage).filter((k) => k === KEY || k.startsWith(`${KEY}:`));
+    for (const key of keys) {
+      const raw = window.localStorage.getItem(key);
+      if (!raw) continue;
       const parsed = JSON.parse(raw) as FixedExpense[];
       if (Array.isArray(parsed)) {
         const next = parsed.map((i) => ({ ...i, amount: convertMoneyValue(Number(i.amount) || 0, from, to) }));
-        window.localStorage.setItem(KEY, JSON.stringify(next));
+        window.localStorage.setItem(key, JSON.stringify(next));
       }
     }
     const target = window.localStorage.getItem(TARGET_KEY);
