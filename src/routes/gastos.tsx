@@ -39,6 +39,7 @@ import { CategoryChat } from "@/components/category-chat";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { CategoryDetailDialog } from "@/components/category-detail-dialog";
 import { useCategories } from "@/hooks/use-categories";
+import { useCategoryRules } from "@/hooks/use-category-rules";
 
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useProfile } from "@/hooks/use-profile";
