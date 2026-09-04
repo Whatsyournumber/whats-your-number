@@ -734,10 +734,10 @@ function Gastos() {
 
 
       <div className="grid items-stretch gap-3 lg:grid-cols-3">
-        <Panel variant="minimal" title={t("Distribución por categoría", "Spend by category")} description={t("Solo gastos variables del periodo seleccionado.", "Variable spend only for the selected period.")} className="flex h-full flex-col">
+        <Panel variant="minimal" title={t("Distribución por categoría", "Spend by category")} description={t("Solo gastos variables del periodo seleccionado.", "Variable spend only for the selected period.")} className="flex h-full flex-col" bleedMobile>
 
           {donutData.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{t("Sin movimientos en este rango.", "No transactions in this range.")}</p>
+            <p className="px-5 text-sm text-muted-foreground sm:px-0">{t("Sin movimientos en este rango.", "No transactions in this range.")}</p>
           ) : (
             <>
               <div className="relative">
@@ -768,7 +768,7 @@ function Gastos() {
                   </p>
                 </div>
               </div>
-              <ul className="mt-auto grid grid-cols-1 gap-x-4 gap-y-1.5 pt-4">
+              <ul className="mt-auto grid grid-cols-1 gap-x-4 gap-y-1.5 px-5 pt-4 sm:px-0">
                 {donutData.slice(0, 8).map((c, i) => (
                   <li key={c.name} className="flex items-center gap-2 text-sm">
                     <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
@@ -786,8 +786,8 @@ function Gastos() {
 
 
 
-        <Panel variant="minimal" title={t("Evolución del gasto", "Spend evolution")} description={`${t("Comparando con", "Comparing with")} ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="flex h-full flex-col p-3 md:p-5 lg:col-span-2">
-          <div className="mb-1 flex flex-nowrap items-center justify-end gap-2 overflow-hidden text-[10px] text-muted-foreground sm:gap-4 sm:text-xs">
+        <Panel variant="minimal" title={t("Evolución del gasto", "Spend evolution")} description={`${t("Comparando con", "Comparing with")} ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="flex h-full flex-col p-3 md:p-5 lg:col-span-2" bleedMobile>
+          <div className="mb-1 flex flex-nowrap items-center justify-end gap-2 overflow-hidden px-5 text-[10px] text-muted-foreground sm:px-0 sm:gap-4 sm:text-xs">
             {[
               { c: "#5B6370", l: t("Anterior", "Previous"), full: t("Periodo anterior", "Previous period") },
               { c: "#FF7B7B", l: t("Actual", "Current"), full: t("Este periodo", "This period") },
@@ -813,7 +813,7 @@ function Gastos() {
               </ComposedChart>
             </ResponsiveContainer>
           </div>
-          <div className="mt-auto grid grid-cols-2 gap-2 pt-4 sm:grid-cols-4">
+          <div className="mt-auto grid grid-cols-2 gap-2 px-5 pt-4 sm:px-0 sm:grid-cols-4">
             {[
               { l: t("Este periodo", "This period"), v: fmt(variableTotal) },
               { l: t("Periodo anterior", "Previous period"), v: fmt(prevVariable) },
@@ -829,7 +829,7 @@ function Gastos() {
               </div>
             ))}
           </div>
-          <p className="mt-3 text-xs text-muted-foreground">
+          <p className="mt-3 px-5 text-xs text-muted-foreground sm:px-0">
             {t("Periodo anterior", "Previous period")}: <span className="numeric font-medium">{fmt(prevTotal)}</span>
           </p>
         </Panel>
@@ -941,12 +941,13 @@ function Gastos() {
         variant="minimal"
         title={t("Comparar mes vs mes", "Compare month vs month")}
         description={t("Elige dos meses de tus EEFF y mira dónde cambió el gasto", "Pick two months from your statements and see where spend changed")}
+        bleedMobile
       >
         {monthKeys.length === 0 ? (
-          <p className="text-sm text-muted-foreground">{t("Carga tus EEFF para comparar meses.", "Upload your statements to compare months.")}</p>
+          <p className="px-5 text-sm text-muted-foreground sm:px-0">{t("Carga tus EEFF para comparar meses.", "Upload your statements to compare months.")}</p>
         ) : (
           <>
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3 px-5 sm:px-0">
               <Select value={mA ?? ""} onValueChange={(v) => setMonthA(v)}>
                 <SelectTrigger className="h-8 w-[180px] text-sm capitalize">
                   <SelectValue placeholder={t("Mes A", "Month A")} />

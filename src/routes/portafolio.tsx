@@ -738,6 +738,7 @@ function PortafolioContent() {
               ))}
             </div>
           }
+        bleedMobile
         >
           {benchmarkData.length === 0 ? (
             <div className="flex h-[290px] items-center justify-center text-sm text-muted-foreground">
@@ -756,7 +757,7 @@ function PortafolioContent() {
             </ResponsiveContainer>
           )}
 
-          <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-border/40 pt-3 lg:grid-cols-4">
+          <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-border/40 px-5 pt-3 sm:px-0 lg:grid-cols-4">
             {marketRiskMetrics.map((m) => (
               <div key={m.label}>
                 <p className="truncate text-[10px] font-medium text-muted-foreground">{m.label}</p>
@@ -781,7 +782,7 @@ function PortafolioContent() {
         </Panel>
 
 
-        <Panel title={t("Composición", "Composition")}>
+        <Panel title={t("Composición", "Composition")} bleedMobile>
           <ResponsiveContainer width="100%" height={210}>
             <PieChart>
               <Pie data={allocation} dataKey="value" nameKey="name" innerRadius={58} outerRadius={96} paddingAngle={3} stroke="none">
@@ -792,7 +793,7 @@ function PortafolioContent() {
               <Tooltip content={<ChartTooltip />} />
             </PieChart>
           </ResponsiveContainer>
-          <ul className="mt-3 space-y-1.5">
+          <ul className="mt-3 space-y-1.5 px-5 sm:px-0">
             {allocation.map((a) => (
               <li key={a.name} className="flex items-center gap-2 text-xs">
                 <span className="h-2 w-2 rounded-full" style={{ background: a.color }} />
