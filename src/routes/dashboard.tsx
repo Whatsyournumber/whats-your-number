@@ -176,18 +176,18 @@ function Dashboard() {
   const goalNote = ((profile as { goal_note?: string }).goal_note || "").trim();
   const headerSubtitle =
     goalMode === "home"
-      ? t("Tus números. Tu progreso. Tu casa.", "Your numbers. Your progress. Your home.")
+      ? t("Tus números. Tu progreso. Tu casa propia.", "Your numbers. Your progress. Your own home.")
       : goalMode === "business"
         ? priority === "otro" && goalNote
           ? t(`Tus números. Tu progreso. ${goalNote}.`, `Your numbers. Your progress. ${goalNote}.`)
-          : t("Tus números. Tu progreso. Tu negocio.", "Your numbers. Your progress. Your business.")
+          : t("Tus números. Tu progreso. Tu negocio en marcha.", "Your numbers. Your progress. Your business running.")
         : priority === "patrimonio"
-          ? t("Tus números. Tu progreso. Tu patrimonio.", "Your numbers. Your progress. Your wealth.")
+          ? t("Tus números. Tu progreso. Tu patrimonio creciendo.", "Your numbers. Your progress. Your wealth growing.")
           : priority === "gastos"
-            ? t("Tus números. Tu progreso. Tu control.", "Your numbers. Your progress. Your control.")
+            ? t("Tus números. Tu progreso. Tu control total.", "Your numbers. Your progress. Your total control.")
             : priority === "organizar"
-              ? t("Tus números. Tu progreso. Tu orden.", "Your numbers. Your progress. Your order.")
-              : t("Tus números. Tu progreso. Tu libertad.", "Your numbers. Your progress. Your freedom.");
+              ? t("Tus números. Tu progreso. Tu orden financiero.", "Your numbers. Your progress. Your financial order.")
+              : t("Tus números. Tu progreso. Tu libertad financiera.", "Your numbers. Your progress. Your financial freedom.");
   const numberTitle =
     goalMode === "home"
       ? t("Tu entrada", "Your down payment")
