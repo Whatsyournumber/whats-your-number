@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight, Banknote, CalendarIcon, ChevronLeft, ChevronRight, Home, PiggyBank, Plus, TrendingUp, Wallet } from "lucide-react";
+import { ArrowUpRight, Banknote, CalendarIcon, ChevronLeft, ChevronRight, Home, Pencil, PiggyBank, TrendingUp, Wallet } from "lucide-react";
 import { toast } from "sonner";
 import {
   Area,
@@ -36,6 +36,7 @@ import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useIndexReturns } from "@/hooks/use-index-returns";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useQuotes } from "@/hooks/use-market";
+import { usePrimaryGoal } from "@/hooks/use-primary-goal";
 import { cn } from "@/lib/utils";
 import { buildInsights, lifestyles } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
