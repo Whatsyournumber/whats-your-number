@@ -570,6 +570,34 @@ function Dashboard() {
                 subtitle = t("En camino", "On track");
               }
 
+              const portfolioRate = profile.expected_return || 7;
+              const sp500Rate = indexLive.sp500?.cagr10y ?? indexLive.sp500?.ytdPct ?? 10;
+
+              if (g.name === "Cartera de inversión") {
+                return (
+                  <li key={g.name}>
+                    <Link to="/portafolio" className="group flex items-start gap-3 rounded-2xl p-2 transition-colors hover:bg-elevated/40">
+                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-elevated/60 text-xl">
+                        {g.emoji}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="min-w-0 truncate font-medium">{translateGoalName(g.name, lang)}</span>
+                          <span className="numeric ml-auto shrink-0 text-sm font-semibold text-positive">
+                            {portfolioRate.toFixed(0)}%
+                          </span>
+                          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
+                        </div>
+                        <p className="mt-0.5 text-sm text-muted-foreground">{fmtCompact(g.current)}</p>
+                        <p className="mt-1.5 text-[11px] text-muted-foreground">
+                          {t(`vs ${sp500Rate.toFixed(0)}% S&P 500`, `vs ${sp500Rate.toFixed(0)}% S&P 500`)}
+                        </p>
+                      </div>
+                    </Link>
+                  </li>
+                );
+              }
+
               return (
                 <li key={g.name}>
                   <Link to="/retiro" className="group flex items-start gap-3 rounded-2xl p-2 transition-colors hover:bg-elevated/40">
