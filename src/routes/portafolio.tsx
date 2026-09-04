@@ -789,73 +789,9 @@ function PortafolioContent() {
           transition={{ duration: 0.35, delay: 0.15, ease: "easeOut" }}
           className="surface relative flex h-full flex-col overflow-hidden p-5"
         >
-          <div className="relative flex items-start justify-between gap-3">
-            <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-              {t("Rendimiento del portafolio", "Portfolio return")}
-            </p>
-            <Popover open={evoOpen} onOpenChange={setEvoOpen}>
-              <PopoverTrigger asChild>
-                <button
-                  type="button"
-                  aria-label={t("Ver evolución por mes", "See monthly evolution")}
-                  className={cn(
-                    "rounded-full border border-border/60 p-1.5 text-muted-foreground transition hover:text-foreground",
-                    evoPoint && "border-primary/40 text-primary",
-                  )}
-                >
-                  <CalendarDays className="h-3.5 w-3.5" />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent align="end" className="w-64 p-3">
-                <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-                  {t("Evolución · últimos 12 meses", "Evolution · last 12 months")}
-                </p>
-                {benchmarkData.length === 0 ? (
-                  <p className="text-xs text-muted-foreground">{t("Mercado no disponible", "Market unavailable")}</p>
-                ) : (
-                  <div className="grid grid-cols-3 gap-1.5">
-                    {benchmarkData.map((p, i) => {
-                      const active = evoIdx === i;
-                      return (
-                        <button
-                          key={`${p.label}-${i}`}
-                          type="button"
-                          onClick={() => {
-                            setEvoIdx(active ? null : i);
-                            setEvoOpen(false);
-                          }}
-                          className={cn(
-                            "rounded-lg border px-1.5 py-1.5 text-center transition",
-                            active
-                              ? "border-primary/50 bg-primary/15 text-foreground"
-                              : "border-border/50 bg-elevated/40 text-muted-foreground hover:text-foreground",
-                          )}
-                        >
-                          <span className="block text-[11px] font-medium">{p.label}</span>
-                          <span className={cn("numeric block text-[10px]", p.portfolio >= 0 ? "text-positive" : "text-negative")}>
-                            {p.portfolio > 0 ? "+" : ""}
-                            {p.portfolio.toFixed(1)}%
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-                {evoPoint && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setEvoIdx(null);
-                      setEvoOpen(false);
-                    }}
-                    className="mt-2 w-full text-center text-[11px] text-muted-foreground hover:text-foreground"
-                  >
-                    {t("Volver al rendimiento actual", "Back to current return")}
-                  </button>
-                )}
-              </PopoverContent>
-            </Popover>
-          </div>
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+            {t("Rendimiento del portafolio", "Portfolio return")}
+          </p>
           <p
             className={cn(
               "numeric relative mt-3 truncate text-2xl font-semibold leading-tight md:text-3xl",
