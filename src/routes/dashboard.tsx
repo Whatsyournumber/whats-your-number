@@ -176,18 +176,18 @@ function Dashboard() {
   const goalNote = ((profile as { goal_note?: string }).goal_note || "").trim();
   const headerSubtitle =
     goalMode === "home"
-      ? t("Tus números. Tu progreso. Tu objetivo de comprar tu casa.", "Your numbers. Your progress. Your goal to buy your home.")
+      ? t("Tus números. Tu progreso. Tu objetivo: comprar tu casa.", "Your numbers. Your progress. Your goal: buy your home.")
       : goalMode === "business"
         ? priority === "otro" && goalNote
           ? t(`Tus números. Tu progreso. Tu objetivo: ${goalNote}.`, `Your numbers. Your progress. Your goal: ${goalNote}.`)
-          : t("Tus números. Tu progreso. Tu objetivo de crecer tu negocio.", "Your numbers. Your progress. Your goal to grow your business.")
+          : t("Tus números. Tu progreso. Tu objetivo: crecer tu negocio.", "Your numbers. Your progress. Your goal: grow your business.")
         : priority === "patrimonio"
-          ? t("Tus números. Tu progreso. Tu objetivo de crecer tu patrimonio.", "Your numbers. Your progress. Your goal to grow your wealth.")
+          ? t("Tus números. Tu progreso. Tu objetivo: crecer tu patrimonio.", "Your numbers. Your progress. Your goal: grow your wealth.")
           : priority === "gastos"
-            ? t("Tus números. Tu progreso. Tu objetivo de controlar tus gastos.", "Your numbers. Your progress. Your goal to control your spending.")
+            ? t("Tus números. Tu progreso. Tu objetivo: controlar tus gastos.", "Your numbers. Your progress. Your goal: control your spending.")
             : priority === "organizar"
-              ? t("Tus números. Tu progreso. Tu objetivo de organizar tus finanzas.", "Your numbers. Your progress. Your goal to organize your finances.")
-              : t("Tus números. Tu progreso. Tu objetivo de alcanzar tu libertad financiera.", "Your numbers. Your progress. Your goal to reach financial freedom.");
+              ? t("Tus números. Tu progreso. Tu objetivo: organizar tus finanzas.", "Your numbers. Your progress. Your goal: organize your finances.")
+              : t("Tus números. Tu progreso. Tu objetivo: alcanzar tu libertad financiera.", "Your numbers. Your progress. Your goal: reach financial freedom.");
   const numberTitle =
     goalMode === "home"
       ? t("Tu entrada", "Your down payment")

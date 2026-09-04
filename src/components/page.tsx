@@ -29,12 +29,16 @@ export function PageHeader({
 }) {
   return (
     <header className="flex flex-wrap items-end justify-between gap-4">
-      <div>
+      <div className="min-w-0">
         {eyebrow && (
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">{eyebrow}</p>
         )}
         <h1 className="mt-1 text-2xl font-semibold md:text-3xl">{title}</h1>
-        {subtitle && <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{subtitle}</p>}
+        {subtitle && (
+          <p className="mt-1 max-w-2xl text-sm text-muted-foreground max-sm:text-[11px] max-sm:whitespace-nowrap max-sm:truncate">
+            {subtitle}
+          </p>
+        )}
       </div>
       {actions && <div className="flex items-center gap-2">{actions}</div>}
     </header>
