@@ -8,6 +8,7 @@ import { ScrollX } from "@/components/scroll-x";
 import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,6 +40,7 @@ export const Route = createFileRoute("/retiro")({
 
 
 function RetiroContent() {
+  const isMobile = useIsMobile();
   const t = useT();
   const { profile, save, saving } = useProfile();
   const { holdings } = useHoldings();
@@ -426,7 +428,7 @@ function RetiroContent() {
           <div className="min-h-[260px] flex-1">
 
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data} margin={{ left: -8, right: 8, top: 8, bottom: 0 }}>
+            <AreaChart data={data} margin={{ left: isMobile ? -24 : -8, right: isMobile ? 2 : 8, top: 8, bottom: 0 }}>
 
               <defs>
                 <linearGradient id="ret" x1="0" y1="0" x2="0" y2="1">
@@ -440,7 +442,7 @@ function RetiroContent() {
                 {...axisProps}
                 tickFormatter={(v) => (data.length > 10 ? `${v}a` : `${v} ${t("años", "yrs")}`)}
               />
-              <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={62} />
+              <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={isMobile ? 40 : 62} />
               <Tooltip
                 content={<ChartTooltip />}
                 labelFormatter={(v) =>

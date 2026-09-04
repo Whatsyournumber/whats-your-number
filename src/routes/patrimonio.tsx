@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { useT } from "@/hooks/use-language";
@@ -57,6 +58,7 @@ const RISK_LABEL: Record<RiskLevel, { es: string; en: string; cls: string }> = {
 };
 
 function PatrimonioContent() {
+  const isMobile = useIsMobile();
   const t = useT();
   const { profile } = useProfile();
   const { transactions } = useTransactions();
@@ -265,7 +267,7 @@ function PatrimonioContent() {
         <Panel title={t("Crecimiento del patrimonio", "Net worth growth")} className="flex flex-col p-3 md:p-5 lg:col-span-2" bleedMobile>
           <div className="min-h-[340px] flex-1 md:min-h-[420px] lg:min-h-0">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={months} margin={{ left: -20, right: 0, top: 8 }}>
+              <AreaChart data={months} margin={{ left: isMobile ? -28 : -20, right: 0, top: 8 }}>
                 <defs>
                   <linearGradient id="pw" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.45} />
@@ -274,7 +276,7 @@ function PatrimonioContent() {
                 </defs>
                 <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
                 <XAxis dataKey="label" {...axisProps} />
-                <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={48} />
+                <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={isMobile ? 38 : 48} />
                 <Tooltip content={<ChartTooltip />} />
                 <Area type="monotone" dataKey="netWorth" name={t("Patrimonio", "Net worth")} stroke="var(--color-chart-2)" strokeWidth={2.5} fill="url(#pw)" />
               </AreaChart>
