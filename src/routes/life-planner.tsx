@@ -34,6 +34,7 @@ import { NumberInput } from "@/components/ui/number-input";
 import { Label } from "@/components/ui/label";
 import { useT } from "@/hooks/use-language";
 import { useLifeGoals, type LifeGoal } from "@/hooks/use-life-goals";
+import { usePrimaryGoal } from "@/hooks/use-primary-goal";
 import { useProfile } from "@/hooks/use-profile";
 import { GOAL_TEMPLATES, defaultValues, parseMeta, templateById, type TemplateId } from "@/lib/goal-templates";
 import { addMonths, formatImpact, monthsToTarget, yearsDiff, type SimGoal } from "@/lib/life-planner";
