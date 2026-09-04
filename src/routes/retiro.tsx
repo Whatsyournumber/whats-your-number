@@ -230,6 +230,7 @@ function RetiroContent() {
         eyebrow={t("Largo plazo", "Long term")}
         title={t("WhatsYourNumber", "WhatsYourNumber")}
         subtitle={headerSubtitle}
+        actions={<MonthEvolutionPicker availableKeys={evoKeys} value={evoMonth} onChange={setEvoMonth} />}
       />
 
 
@@ -426,7 +427,6 @@ function RetiroContent() {
           title={t("Evolución de tus inversiones", "Your investments evolution")}
           description={t("Mes a mes, según tus estados de cuenta.", "Month by month, from your statements.")}
           bleedMobile
-          actions={<MonthEvolutionPicker availableKeys={evoKeys} value={evoMonth} onChange={setEvoMonth} />}
         >
           <div className="min-h-[240px]">
             <ResponsiveContainer width="100%" height="100%">

@@ -262,7 +262,12 @@ function PatrimonioContent() {
 
   return (
     <PageShell>
-      <PageHeader eyebrow={t("Balance", "Balance")} title={t("Patrimonio", "Net worth")} subtitle={t("Todo lo que tienes y lo que debes, en una sola vista.", "Everything you own and owe, in one view.")} />
+      <PageHeader
+        eyebrow={t("Balance", "Balance")}
+        title={t("Patrimonio", "Net worth")}
+        subtitle={t("Todo lo que tienes y lo que debes, en una sola vista.", "Everything you own and owe, in one view.")}
+        actions={<MonthEvolutionPicker availableKeys={realKeys} value={evoMonth} onChange={setEvoMonth} />}
+      />
 
       <div className="grid gap-4 sm:grid-cols-3">
         <KpiCard label={t("Patrimonio neto", "Net worth")} value={fmt(netWorthAll)} delta={growth} hint={t("últimos 12 meses", "last 12 months")} accent index={0} />
@@ -276,7 +281,6 @@ function PatrimonioContent() {
           title={t("Crecimiento del patrimonio", "Net worth growth")}
           className="flex flex-col p-3 md:p-5 lg:col-span-2"
           bleedMobile
-          actions={<MonthEvolutionPicker availableKeys={realKeys} value={evoMonth} onChange={setEvoMonth} />}
         >
           <div className="min-h-[340px] flex-1 md:min-h-[420px] lg:min-h-0">
             <ResponsiveContainer width="100%" height="100%">
