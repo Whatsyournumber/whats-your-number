@@ -73,7 +73,6 @@ type ProfileRow = {
   id: string;
   full_name: string | null;
   email: string | null;
-  phone: string | null;
   created_at: string;
 };
 
@@ -247,7 +246,7 @@ function AdminPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("id,full_name,email,phone,created_at")
+        .select("id,full_name,email,created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data ?? []) as ProfileRow[];
@@ -409,7 +408,6 @@ function AdminPage() {
                   <TableRow>
                     <TableHead>{t("Nombre", "Name")}</TableHead>
                     <TableHead>Email</TableHead>
-                    <TableHead>{t("Teléfono", "Phone")}</TableHead>
                     <TableHead>{t("País", "Country")}</TableHead>
                     <TableHead>Onboarding</TableHead>
                     <TableHead>Plan</TableHead>
@@ -425,7 +423,6 @@ function AdminPage() {
                       <TableRow key={u.id}>
                         <TableCell className="font-medium">{u.full_name ?? "—"}</TableCell>
                         <TableCell className="text-muted-foreground">{u.email ?? "—"}</TableCell>
-                        <TableCell className="text-muted-foreground">{u.phone ?? "—"}</TableCell>
                         <TableCell className="text-muted-foreground">{o?.country ?? "—"}</TableCell>
                         <TableCell>
                           <Badge variant={o?.completed ? "default" : "secondary"}>{o?.completed ? t("Completo", "Complete") : t("Pendiente", "Pending")}</Badge>
@@ -448,7 +445,7 @@ function AdminPage() {
                   })}
                   {filteredUsers.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={8} className="text-center text-muted-foreground">
+                      <TableCell colSpan={7} className="text-center text-muted-foreground">
                         Sin resultados
                       </TableCell>
                     </TableRow>
