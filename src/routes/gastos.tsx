@@ -707,7 +707,9 @@ function Gastos() {
               <span className="text-xs text-muted-foreground">
                 {isLongRange
                   ? t(`promedio mensual de ${periodMonths} meses`, `monthly average of ${periodMonths} months`)
-                  : t("ritmo mensual estimado", "estimated monthly pace")}
+                  : canProject
+                    ? t("ritmo mensual estimado", "estimated monthly pace")
+                    : t("acumulado del mes", "month-to-date spend")}
                 {" · "}
                 {t("objetivo", "target")} {fmt(target)}/{t("mes", "mo")}
               </span>
@@ -729,7 +731,7 @@ function Gastos() {
               />
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              {targetPct.toFixed(0)}% {t("del objetivo", "of target")} · {t("fijos", "fixed")} {fmt(fixed.total)} + {t("variable", "variable")} {fmt(isLongRange ? avgMonthlyVariable : (variableTotal / days) * 30)}
+              {targetPct.toFixed(0)}% {t("del objetivo", "of target")} · {t("fijos", "fixed")} {fmt(fixed.total)} + {t("variable", "variable")} {fmt(isLongRange ? avgMonthlyVariable : canProject ? (variableTotal / days) * 30 : variableTotal)}
             </p>
           </div>
         </div>
