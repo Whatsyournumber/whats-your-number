@@ -545,22 +545,6 @@ function Dashboard() {
                 }
               } else if (g.note) {
                 subtitle = translateGoalNote(g.note, lang);
-              } else if (g.name === "Cartera de inversión" && remaining > 0) {
-                const yearsSP = yearsToTarget(right, left, g.monthly, 10);
-                const base = t(
-                  `Te faltan ${fmtCompact(remaining)}`,
-                  `You need ${fmtCompact(remaining)}`,
-                );
-                const compare = isMobile
-                  ? t(
-                      `${portfolioRate}% cartera ~${years}a · 10% S&P500 ~${yearsSP}a`,
-                      `${portfolioRate}% portfolio ~${years}y · 10% S&P500 ~${yearsSP}y`,
-                    )
-                  : t(
-                      `${portfolioRate}% de tu cartera ~${years} años · 10% S&P500 ~${yearsSP} años`,
-                      `${portfolioRate}% of your portfolio ~${years} years · 10% S&P500 ~${yearsSP} years`,
-                    );
-                subtitle = `${base} • ${compare}`;
               } else if (remaining > 0 && years > 0 && years < 99) {
                 subtitle = t(
                   `Te faltan ${fmtCompact(remaining)} • ~ ${years} años al ritmo actual`,
@@ -570,8 +554,7 @@ function Dashboard() {
                 subtitle = t("En camino", "On track");
               }
 
-              const portfolioRate = profile.expected_return || 7;
-              const sp500Rate = indexLive.sp500?.cagr10y ?? indexLive.sp500?.ytdPct ?? 10;
+              const sp500Rate = indexLive['sp500']?.cagr10y ?? indexLive['sp500']?.ytdPct ?? 10;
 
               if (g.name === "Cartera de inversión") {
                 return (
