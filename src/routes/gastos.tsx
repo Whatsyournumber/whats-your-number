@@ -185,6 +185,7 @@ function Gastos() {
       /* noop */
     }
   }, []);
+  const learned = useCategoryRules();
   const moveTxToCategory = (id: string, category: string) => {
     setTxCat((prev) => {
       const next = { ...prev, [id]: category };
@@ -195,8 +196,12 @@ function Gastos() {
       }
       return next;
     });
+    // Aprende la regla comercio → categoría para aplicarla la próxima vez.
+    const tx = transactions.find((x) => x.id === id);
+    if (tx) learned.learn(tx.merchant || tx.description, category);
   };
-  const categoryOf = (t: Tx) => txCat[t.id] ?? categorizeTxWithTravel(t, categories.rules, travelDays);
+  const categoryOf = (t: Tx) =>
+    txCat[t.id] ?? learned.resolve(t.merchant, t.description) ?? categorizeTxWithTravel(t, categories.rules, travelDays);
   const [range, setRange] = usePersistedRange(() => buildPresets(t)[0]!.range());
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [detailCat, setDetailCat] = useState<string | null>(null);
