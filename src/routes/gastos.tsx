@@ -383,7 +383,11 @@ function Gastos() {
     return monthlyTotals.reduce((s, v) => s + v, 0) / monthlyTotals.length;
   }, [current, fixed.total, periodMonths]);
 
-  const monthlyRun = isLongRange ? monthlyAverage : fixed.total + (variableTotal / days) * 30;
+  // Proyectar solo con suficientes días de datos; si el mes va empezando, mostrar lo acumulado real
+  const canProject = days >= 14;
+  const monthlyRun = isLongRange
+    ? monthlyAverage
+    : fixed.total + (canProject ? (variableTotal / days) * 30 : variableTotal);
   const avgMonthlyVariable = monthlyAverage - fixed.total;
   const targetPct = target > 0 ? (monthlyRun / target) * 100 : 0;
 
