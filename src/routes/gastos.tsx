@@ -656,25 +656,6 @@ function Gastos() {
         }
       />
 
-      {!hasData && !isLoading && (
-        <Panel variant="minimal">
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-elevated">
-              <Upload className="h-5 w-5 text-muted-foreground" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-sm font-medium">{t("Aún no hay estados de cuenta procesados", "No statements processed yet")}</p>
-              <p className="text-xs text-muted-foreground">{t("Sube tus EEFF en PDF o CSV para ver el detalle real.", "Upload your statements as PDF or CSV to see the real detail.")}</p>
-            </div>
-            <Button asChild className="ml-auto gap-2">
-              <Link to="/configuracion">
-                <Upload className="h-4 w-4" />
-                {t("Importar gastos", "Import expenses")}
-              </Link>
-            </Button>
-          </div>
-        </Panel>
-      )}
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard variant="flat" label={t("Gasto del periodo", "Period spend")} value={fmt(total)} delta={Number(delta.toFixed(1))} hint={t("fijos + variables", "fixed + variable")} inverse accent index={0} />
