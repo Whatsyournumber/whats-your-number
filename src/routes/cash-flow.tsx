@@ -222,9 +222,9 @@ function CashFlow() {
 
   const saveBreakdown = hasReal
     ? [
-        ...(retirementContribution > fixedSavings
-          ? [{ label: t("Fondo de retiro (aporte mensual)", "Retirement fund (monthly contribution)"), amount: retirementContribution }]
-          : savingItems.map((i) => ({ label: `${translateFixedName(i.name, lang)} (${t("fijo", "fixed")})`, amount: i.amount }))),
+        ...(useFixedSavings
+          ? savingItems.map((i) => ({ label: `${translateFixedName(i.name, lang)} (${t("fijo", "fixed")})`, amount: i.amount }))
+          : [{ label: t("Fondo de retiro (aporte mensual)", "Retirement fund (monthly contribution)"), amount: retirementContribution }]),
         { label: t("Flujo libre del mes", "Free flow this month"), amount: freeAmount },
       ].sort((a, b) => b.amount - a.amount)
     : [];
