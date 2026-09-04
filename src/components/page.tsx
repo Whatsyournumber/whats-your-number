@@ -44,6 +44,7 @@ export function PageHeader({
 export function Panel({
   title,
   description,
+  descriptionClassName,
   actions,
   icon,
   className,
@@ -52,6 +53,7 @@ export function Panel({
 }: {
   title?: ReactNode;
   description?: string;
+  descriptionClassName?: string;
   actions?: ReactNode;
   icon?: ReactNode;
   className?: string;
