@@ -28,6 +28,7 @@ export const Route = createFileRoute("/configuracion")({
 
 function Configuracion() {
   const t = useT();
+  const learned = useCategoryRules();
   return (
     <PageShell>
       <PageHeader eyebrow={t("Sistema", "System")} title={t("Importar gastos", "Import expenses")} subtitle={t("Importa tus estados de cuenta, cuentas y reglas de clasificación.", "Upload your statements, accounts and classification rules.")} />
