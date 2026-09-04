@@ -12,6 +12,7 @@ export function KpiCard({
   value,
   delta,
   hint,
+  tooltip,
   icon: Icon,
   accent = false,
   inverse = false,
@@ -22,6 +23,7 @@ export function KpiCard({
   value: string;
   delta?: number;
   hint?: ReactNode;
+  tooltip?: ReactNode;
   icon?: LucideIcon;
   accent?: boolean;
   inverse?: boolean;
