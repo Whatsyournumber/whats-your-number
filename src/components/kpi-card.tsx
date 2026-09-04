@@ -1,9 +1,11 @@
 import type { ReactNode } from "react";
 import { motion } from "motion/react";
 import type { LucideIcon } from "lucide-react";
+import { HelpCircle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { shortenMoneyString } from "@/lib/onboarding";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export function KpiCard({
   label,
