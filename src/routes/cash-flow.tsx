@@ -149,11 +149,16 @@ function CashFlow() {
 
   const hasReal = hasData && monthTx.length > 0;
 
-  // Todos los gastos fijos del usuario cuentan como gasto fijo (incluidos los de ahorro programado).
-  const needFixedItems = useMemo(
-    () => fixed.items.filter((i) => (i.amount || 0) > 0),
+  // Ahorro explícito dentro de los gastos fijos (p. ej. «Fondo de ahorro»).
+  const savingItems = useMemo(
+    () => fixed.items.filter((i) => /ahorro|inver|saving|invest/i.test(i.name)),
     [fixed.items],
   );
+  const needFixedItems = useMemo(
+    () => fixed.items.filter((i) => !/ahorro|inver|saving|invest/i.test(i.name) && (i.amount || 0) > 0),
+    [fixed.items],
+  );
+  const fixedSavings = savingItems.reduce((s, i) => s + (i.amount || 0), 0);
   const fixedNeeds = needFixedItems.reduce((s, i) => s + (i.amount || 0), 0);
 
   // Aporte mensual al fondo de retiro (misma fuente que la pestaña «Fondo de retiro»).
@@ -161,12 +166,11 @@ function CashFlow() {
 
   const fixedAmount = hasReal ? fixedNeeds + spend.needs : d.cashFlow.buckets[0]!.amount;
   const lifestyleAmount = hasReal ? spend.wants : d.cashFlow.buckets[1]!.amount;
-  // El bucket de inversión sólo cuenta el aporte al fondo de retiro: los ahorros
-  // que ya están listados como gasto fijo no se duplican aquí.
+  // El bucket de inversión lee tanto los gastos fijos de ahorro como el aporte al fondo de retiro
+  // (se toma el mayor de ambos para no duplicar el mismo dinero).
   const investAmount = hasReal
-    ? retirementContribution
+    ? Math.max(fixedSavings, retirementContribution)
     : Math.max(d.cashFlow.buckets[2]!.amount, retirementContribution);
-
 
   const freeAmount = Math.max(0, totalIncome - fixedAmount - lifestyleAmount - investAmount);
 
@@ -193,13 +197,12 @@ function CashFlow() {
     : [];
   const saveBreakdown = hasReal
     ? [
-        ...(retirementContribution > 0
+        ...(retirementContribution > fixedSavings
           ? [{ label: t("Fondo de retiro (aporte mensual)", "Retirement fund (monthly contribution)"), amount: retirementContribution }]
-          : []),
+          : savingItems.map((i) => ({ label: `${translateFixedName(i.name, lang)} (${t("fijo", "fixed")})`, amount: i.amount }))),
         { label: t("Flujo libre del mes", "Free flow this month"), amount: freeAmount },
       ].sort((a, b) => b.amount - a.amount)
     : [];
-
 
 
   const cash = profile.assets_cash + profile.assets_bank;
