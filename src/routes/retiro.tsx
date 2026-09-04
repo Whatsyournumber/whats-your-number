@@ -8,6 +8,7 @@ import { ScrollX } from "@/components/scroll-x";
 import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,6 +40,7 @@ export const Route = createFileRoute("/retiro")({
 
 
 function RetiroContent() {
+  const isMobile = useIsMobile();
   const t = useT();
   const { profile, save, saving } = useProfile();
   const { holdings } = useHoldings();

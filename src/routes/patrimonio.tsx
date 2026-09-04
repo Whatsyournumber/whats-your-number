@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { useT } from "@/hooks/use-language";
@@ -57,6 +58,7 @@ const RISK_LABEL: Record<RiskLevel, { es: string; en: string; cls: string }> = {
 };
 
 function PatrimonioContent() {
+  const isMobile = useIsMobile();
   const t = useT();
   const { profile } = useProfile();
   const { transactions } = useTransactions();

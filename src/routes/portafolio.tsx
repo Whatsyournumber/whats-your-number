@@ -7,6 +7,7 @@ import { CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContaine
 import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,6 +46,7 @@ const chartColors = [
 ];
 
 function PortafolioContent() {
+  const isMobile = useIsMobile();
   const t = useT();
   const { lang } = useLanguage();
 
