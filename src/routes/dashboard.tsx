@@ -610,7 +610,7 @@ function Dashboard() {
                           {fmtCompact(g.current)} {t(`al ${portfolioRate.toFixed(0)}%`, `at ${portfolioRate.toFixed(0)}%`)}
                         </p>
                         <Progress value={progress} className="mt-2 h-2" />
-                        <p className="mt-1.5 text-[11px] text-muted-foreground">
+                        <p className="mt-1.5 line-clamp-1 text-[11px] text-muted-foreground">
                           {t(`vs ${sp500Rate.toFixed(0)}% S&P 500`, `vs ${sp500Rate.toFixed(0)}% S&P 500`)}
                         </p>
                       </div>
