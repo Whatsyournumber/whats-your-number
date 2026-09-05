@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   PieChart,
@@ -42,6 +42,8 @@ import { useT } from "@/hooks/use-language";
 import { useRoles } from "@/hooks/use-role";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useMyAffiliate } from "@/hooks/use-affiliate";
+import { useActiveMember } from "@/hooks/use-mfn";
+import { kidZoneEnabled } from "@/lib/mfn";
 
 export function AppSidebar() {
   const { state, setOpenMobile } = useSidebar();
