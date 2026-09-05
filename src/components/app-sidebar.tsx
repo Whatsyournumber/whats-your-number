@@ -119,9 +119,9 @@ export function AppSidebar() {
               onClick={() => setOpenMobile(false)}
               className="justify-self-start"
             >
-              <span className="inline-flex items-center gap-1 rounded-full bg-card/70 px-3 py-1.5 text-sm font-semibold tracking-tight ring-1 ring-border/50 backdrop-blur-sm">
+              <span className="inline-flex items-center gap-1 text-sm font-semibold tracking-tight">
+                <ChevronRight className="h-3.5 w-3.5 rotate-180 text-muted-foreground" />
                 {t("Perfiles", "Profiles")}
-                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
               </span>
             </Link>
             <div className="flex justify-center">
@@ -136,6 +136,7 @@ export function AppSidebar() {
             <div />
           </div>
         ) : (
+
 
           <div className="flex items-center gap-2.5">
             <BrandMark className="h-8 w-8 shrink-0" />
