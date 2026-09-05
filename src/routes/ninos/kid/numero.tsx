@@ -183,7 +183,7 @@ function MyNumber({ member }: { member: Member }) {
               }
             : null,
         },
-      }),
+      }).catch(() => null),
   });
 
   return (
