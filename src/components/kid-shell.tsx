@@ -243,7 +243,7 @@ export function KidShell({ member, children }: { member: Member; children: React
                           <Link
                             to={tab.to}
                             activeOptions={{ exact: true }}
-                            className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-secondary hover:text-foreground [&.nav-pill-active]:bg-primary/10 [&.nav-pill-active]:text-primary"
+                            className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-secondary hover:text-foreground [&.nav-pill-active]:bg-primary [&.nav-pill-active]:text-primary-foreground"
                             activeProps={{ className: "nav-pill-active" }}
                           >
                             <tab.icon className="h-4.5 w-4.5 shrink-0" />
@@ -262,7 +262,7 @@ export function KidShell({ member, children }: { member: Member; children: React
                         <Link
                           to={tab.to}
                           activeOptions={{ exact: true }}
-                          className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-secondary hover:text-foreground [&.nav-pill-active]:bg-primary/10 [&.nav-pill-active]:text-primary"
+                          className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-secondary hover:text-foreground [&.nav-pill-active]:bg-primary [&.nav-pill-active]:text-primary-foreground"
                           activeProps={{ className: "nav-pill-active" }}
                         >
                           <tab.icon className="h-4.5 w-4.5 shrink-0" />
