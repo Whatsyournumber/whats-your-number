@@ -196,8 +196,8 @@ export function AppSidebar() {
       </SidebarContent>
 
       {!collapsed && (
-        <SidebarFooter className="p-2">
-          <div className="surface p-2.5">
+        <SidebarFooter className="border-t border-border/60 bg-card/30 p-0">
+          <div className="w-full p-3">
             <p className="text-[11px] text-muted-foreground">WhatsYournumber</p>
             <p className="numeric mt-0.5 text-base font-semibold">{data.fmtCompact(data.plan.targetCapital)}</p>
             {data.plan.mode !== "freedom" ? (
@@ -227,8 +227,6 @@ export function AppSidebar() {
                 {t("/mes", "/mo")}
               </p>
             )}
-
-
           </div>
         </SidebarFooter>
       )}
