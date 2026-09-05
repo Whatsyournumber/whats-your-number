@@ -889,7 +889,11 @@ function PortafolioContent() {
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel
           title={t(`Portafolio vs ${benchName}`, `Portfolio vs ${benchName}`)}
-          description={t("Datos reales de mercado · últimos 12 meses", "Real market data · last 12 months")}
+          description={
+            futureCount > 0
+              ? t(`Real 12m + proyección compuesta hasta ${evoPoint?.label}`, `Actual 12m + compound projection to ${evoPoint?.label}`)
+              : t("Datos reales de mercado · últimos 12 meses", "Real market data · last 12 months")
+          }
           className="lg:col-span-2"
           actions={
             <div className="flex rounded-full border border-border/60 p-0.5">
