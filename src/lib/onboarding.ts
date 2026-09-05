@@ -284,8 +284,10 @@ export function shortenMoneyString(text: string): string {
     if (decimalSep) {
       const idx = cleaned.lastIndexOf(decimalSep);
       const decimals = cleaned.slice(idx + 1);
-      // separador de miles si tiene 3 dígitos y hay más grupos
-      if (!(decimals.length === 3 && /[.,]/.test(cleaned.slice(0, idx)))) {
+      const hasMoreGroups = /[.,]/.test(cleaned.slice(0, idx));
+      const isAllZeros = decimals.length > 0 && decimals.split("").every((c) => c === "0");
+      // separador de miles si tiene 3 dígitos y (hay más grupos o son puros ceros)
+      if (!(decimals.length === 3 && (hasMoreGroups || isAllZeros))) {
         intPart = cleaned.slice(0, idx);
       }
     }
