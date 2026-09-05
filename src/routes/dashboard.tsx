@@ -162,13 +162,18 @@ function Dashboard() {
   });
 
   // Selector de mes (por defecto el mes pasado completo).
+  // Sin EEFF importados la serie es una estimación y solo el último mes refleja
+  // exactamente los datos del perfil, así que ese es el mes por defecto.
   const monthKeys = months.map((m, i) => (m as { month?: string }).month ?? `idx-${i}`);
+  const lastKey = monthKeys[monthKeys.length - 1] ?? "";
   const defaultKey = (() => {
+    if (!realMonths) return lastKey;
     const now = new Date();
     const prev = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     const key = `${prev.getFullYear()}-${String(prev.getMonth() + 1).padStart(2, "0")}`;
-    return monthKeys.includes(key) ? key : monthKeys[monthKeys.length - 1] ?? key;
+    return monthKeys.includes(key) ? key : lastKey || key;
   })();
+
   const [monthKey, setMonthKey] = useState<string | null>(null);
   const activeKey = monthKey && monthKeys.includes(monthKey) ? monthKey : defaultKey;
   const activeIndex = Math.max(0, monthKeys.indexOf(activeKey));
