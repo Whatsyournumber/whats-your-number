@@ -22,26 +22,21 @@ export function MobileBottomNav() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
-      <div className="flex w-full items-center justify-around border-t border-border/40 bg-background/90 px-2 pb-[env(safe-area-inset-bottom,0px)] pt-2 shadow-[0_-8px_30px_-10px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+      <div className="flex w-full items-center justify-around bg-background/90 px-2 pb-[env(safe-area-inset-bottom,0px)] pt-2 shadow-[0_-8px_30px_-10px_rgba(0,0,0,0.35)] backdrop-blur-xl">
         {tabs.map((tab) => {
           const active = pathname === tab.url;
           return (
             <Link
               key={tab.url}
               to={tab.url}
-              className="group relative flex min-w-0 flex-1 flex-col items-center gap-1 px-1 py-1 transition-colors"
+              className="group flex min-w-0 flex-1 flex-col items-center gap-1 px-1 py-1 transition-colors"
             >
-              <div className="relative flex h-7 items-center justify-center">
-                <tab.icon
-                  className={`h-[22px] w-[22px] shrink-0 transition-colors ${
-                    active ? "text-primary/85" : "text-muted-foreground group-hover:text-foreground"
-                  }`}
-                  strokeWidth={active ? 2.2 : 1.9}
-                />
-                {active && (
-                  <span className="absolute -bottom-1.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-primary/70" />
-                )}
-              </div>
+              <tab.icon
+                className={`h-[22px] w-[22px] shrink-0 transition-colors ${
+                  active ? "text-primary/85" : "text-muted-foreground group-hover:text-foreground"
+                }`}
+                strokeWidth={active ? 2.2 : 1.9}
+              />
               <span
                 className={`truncate text-[10px] font-medium leading-none ${
                   active ? "text-primary/90" : "text-muted-foreground group-hover:text-foreground"
