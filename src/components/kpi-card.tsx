@@ -9,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 
 export function KpiCard({
   label,
+  labelSm,
   value,
   delta,
   hint,
@@ -20,6 +21,7 @@ export function KpiCard({
   variant = "default",
 }: {
   label: string;
+  labelSm?: string;
   value: string;
   delta?: number;
   hint?: ReactNode;
