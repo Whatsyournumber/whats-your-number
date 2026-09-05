@@ -136,8 +136,6 @@ function PatrimonioContent() {
   const d = buildDataset(profile);
   const { fmt, fmtCompact, assets } = d;
   const months = buildRealMonths(transactions, d.netWorth) ?? d.months;
-  const growth =
-    months[0]!.netWorth > 0 ? ((d.netWorth - months[0]!.netWorth) / Math.abs(months[0]!.netWorth)) * 100 : 0;
   // Variación mensual: patrimonio actual vs el mes anterior de la serie.
   const prevMonth = months.length > 1 ? months[months.length - 2]!.netWorth : 0;
   const growthMonth = prevMonth !== 0 ? ((d.netWorth - prevMonth) / Math.abs(prevMonth)) * 100 : 0;
