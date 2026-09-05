@@ -118,51 +118,32 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon" className="border-r">
       <SidebarHeader className="px-3 py-3">
-        <div className="flex items-center gap-2.5">
-          <BrandMark className="h-8 w-8 shrink-0" />
-          {!collapsed && (
-            <div className="min-w-0">
-              <p className="truncate font-display text-sm font-semibold">WhatsYournumber</p>
-              <p className="truncate text-xs text-muted-foreground">{t("Tu CFO personal", "Your personal CFO")}</p>
+        {isMobile ? (
+          <div className="flex items-center justify-between pr-10">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setOpenMobile(false)}
+                className="grid h-9 w-9 place-items-center rounded-full border border-border/60 bg-card/60 text-foreground transition hover:bg-secondary"
+                aria-label={t("Cerrar menú", "Close menu")}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <span className="font-display text-lg font-semibold tracking-tight">{t("Perfiles", "Profiles")}</span>
             </div>
-          )}
-        </div>
-      </SidebarHeader>
-
-      {isMobile && members.length > 0 && (
-        <div className="border-b border-border/60 px-3 pb-3">
-          <p className="px-1 pb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
-            {t("Perfiles familiares", "Family profiles")}
-          </p>
-          <div className="flex flex-col gap-1.5">
-            {members.map((m) => {
-              const active = activeMember?.id === m.id;
-              return (
-                <button
-                  key={m.id}
-                  onClick={() => {
-                    selectProfile(m.id);
-                    setOpenMobile(false);
-                    navigate({ to: kidZoneEnabled(m) ? "/ninos/kid/numero" : "/ninos/kid/futuro" });
-                  }}
-                  className={`flex items-center gap-3 rounded-2xl border px-3 py-2 text-left transition ${
-                    active
-                      ? "border-primary/50 bg-primary/10"
-                      : "border-border/60 bg-card/60 hover:bg-secondary"
-                  }`}
-                >
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-xl">
-                    {m.avatar}
-                  </span>
-                  <span className={`truncate text-sm font-semibold ${active ? "text-primary" : "text-foreground"}`}>
-                    {m.name}
-                  </span>
-                </button>
-              );
-            })}
+            <BrandMark className="h-9 w-9 shrink-0" />
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="flex items-center gap-2.5">
+            <BrandMark className="h-8 w-8 shrink-0" />
+            {!collapsed && (
+              <div className="min-w-0">
+                <p className="truncate font-display text-sm font-semibold">WhatsYournumber</p>
+                <p className="truncate text-xs text-muted-foreground">{t("Tu CFO personal", "Your personal CFO")}</p>
+              </div>
+            )}
+          </div>
+        )}
+      </SidebarHeader>
 
       <SidebarContent className={isMobile ? "flex-1 gap-0.5 overflow-y-auto" : "flex-none gap-0.5 overflow-hidden"}>
         <SidebarGroup className="p-1.5">
