@@ -19,6 +19,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { initGeoCurrency } from "@/lib/geo";
 import { AppSidebar } from "@/components/app-sidebar";
+import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { AskAiSearch } from "@/components/ask-ai-search";
 import { ConsentBanner } from "@/components/consent-banner";
 import { GoogleAnalytics } from "@/components/google-analytics";
@@ -331,9 +332,10 @@ function AppShell() {
             </div>
           </header>
           {/* Required: nested routes render here. */}
-          <main className="flex-1">
+          <main className="flex-1 pb-24 lg:pb-0">
             <Outlet />
           </main>
+          <MobileBottomNav />
         </div>
       </div>
     </SidebarProvider>
