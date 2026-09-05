@@ -920,13 +920,19 @@ function PortafolioContent() {
             </div>
           ) : (
             <ResponsiveContainer width="100%" height={290}>
-              <LineChart data={benchmarkData} margin={{ left: isMobile ? 0 : -18, right: isMobile ? 4 : 8 }}>
+              <LineChart data={chartData} margin={{ left: isMobile ? 0 : -18, right: isMobile ? 4 : 8 }}>
                 <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
-                <XAxis dataKey="label" {...axisProps} />
+                <XAxis dataKey="label" {...axisProps} interval={futureCount > 0 ? 1 : 0} />
                 <YAxis {...axisProps} tickFormatter={(v) => `${v}%`} width={isMobile ? 38 : 46} />
                 <Tooltip content={<ChartTooltip formatter={(v) => `${v.toFixed(1)}%`} />} />
-                <Line type="monotone" dataKey="portfolio" name={t("Portafolio", "Portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.5} dot={false} />
-                <Line type="monotone" dataKey="bench" name={benchName} stroke="var(--color-chart-8)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
+                <Line type="monotone" dataKey="portfolio" name={t("Portafolio", "Portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.5} dot={false} connectNulls={false} />
+                <Line type="monotone" dataKey="bench" name={benchName} stroke="var(--color-chart-8)" strokeWidth={2} strokeDasharray="4 4" dot={false} connectNulls={false} />
+                {futureCount > 0 && (
+                  <>
+                    <Line type="monotone" dataKey="portfolioProj" name={t("Portafolio · proyección", "Portfolio · projection")} stroke="var(--color-chart-1)" strokeWidth={2.5} strokeDasharray="2 5" dot={false} connectNulls={false} />
+                    <Line type="monotone" dataKey="benchProj" name={t(`${benchName} · proyección`, `${benchName} · projection`)} stroke="var(--color-chart-8)" strokeWidth={1.5} strokeDasharray="2 5" strokeOpacity={0.7} dot={false} connectNulls={false} />
+                  </>
+                )}
               </LineChart>
             </ResponsiveContainer>
           )}
