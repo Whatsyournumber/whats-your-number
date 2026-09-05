@@ -14,6 +14,7 @@ import {
   PanelLeftOpen,
   SlidersHorizontal,
   Users,
+  X,
 } from "lucide-react";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
@@ -214,22 +215,30 @@ export function KidShell({ member, children }: { member: Member; children: React
                 <Menu className="h-4.5 w-4.5" />
               </button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-full sm:max-w-xs">
-              <div className="flex flex-col gap-6 pt-8">
-                <div className="relative flex h-10 items-center justify-center">
+            <SheetContent side="left" className="w-full sm:max-w-xs [&>button]:hidden">
+              <div className="flex flex-col gap-6">
+                <div className="grid h-10 grid-cols-3 items-center">
                   <SheetClose asChild>
                     <Link
                       to="/ninos"
-                      className="absolute left-0 top-1/2 -translate-y-1/2"
+                      className="flex items-center gap-1 text-sm font-semibold tracking-tight"
                     >
-                      <span className="inline-flex items-center gap-1 text-sm font-semibold tracking-tight">
-                        <ChevronRight className="h-3.5 w-3.5 rotate-180 text-muted-foreground" />
-                        {t("Perfiles", "Profiles")}
-                      </span>
+                      <ChevronRight className="h-3.5 w-3.5 rotate-180 text-muted-foreground" />
+                      {t("Perfiles", "Profiles")}
                     </Link>
                   </SheetClose>
-                  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                  <div className="flex justify-center">
                     <KidsBrandLogo />
+                  </div>
+                  <div className="flex justify-end">
+                    <SheetClose asChild>
+                      <button
+                        aria-label={t("Cerrar menú", "Close menu")}
+                        className="grid h-9 w-9 place-items-center rounded-full text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+                      >
+                        <X className="h-5 w-5" />
+                      </button>
+                    </SheetClose>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 rounded-2xl border border-border/60 bg-card/60 p-3">
