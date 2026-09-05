@@ -99,6 +99,34 @@ const BETA_BY_CLASS: Record<string, number> = {
   assets_private_equity: 1.4,
 };
 
+const VOL_BY_CLASS: Record<string, number> = {
+  assets_cash: 0,
+  assets_bank: 0,
+  assets_bonds: 0.05,
+  assets_structured: 0.08,
+  assets_etf: 0.15,
+  assets_retirement: 0.10,
+  assets_property: 0.12,
+  assets_stocks: 0.20,
+  assets_crypto: 0.60,
+  assets_future: 0.30,
+  assets_private_equity: 0.35,
+};
+
+const RETURN_BY_CLASS: Record<string, number> = {
+  assets_cash: 0.0,
+  assets_bank: 0.01,
+  assets_bonds: 0.04,
+  assets_structured: 0.05,
+  assets_etf: 0.07,
+  assets_retirement: 0.05,
+  assets_property: 0.06,
+  assets_stocks: 0.09,
+  assets_crypto: 0.15,
+  assets_future: 0.12,
+  assets_private_equity: 0.11,
+};
+
 function PatrimonioContent() {
   const isMobile = useIsMobile();
   const t = useT();
