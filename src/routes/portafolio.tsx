@@ -776,38 +776,52 @@ function PortafolioContent() {
               </Button>
             </PopoverTrigger>
             <PopoverContent align="end" collisionPadding={12} className="w-[min(92vw,20rem)] p-3">
-              <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-                {t("Evolución · últimos 12 meses", "Evolution · last 12 months")}
-              </p>
               {benchmarkData.length === 0 ? (
                 <p className="text-xs text-muted-foreground">{t("Mercado no disponible", "Market unavailable")}</p>
               ) : (
-                <div className="grid grid-cols-3 gap-1.5">
-                  {benchmarkData.map((p, i) => {
-                    const active = evoIdx === i;
-                    return (
-                      <button
-                        key={`${p.label}-${i}`}
-                        type="button"
-                        onClick={() => {
-                          setEvoIdx(active ? null : i);
-                          setEvoOpen(false);
-                        }}
-                        className={cn(
-                          "rounded-lg border px-1.5 py-1.5 text-center transition",
-                          active
-                            ? "border-primary/50 bg-primary/15 text-foreground"
-                            : "border-border/50 bg-elevated/40 text-muted-foreground hover:text-foreground",
-                        )}
-                      >
-                        <span className="block text-[11px] font-medium">{p.label}</span>
-                        <span className={cn("numeric block text-[10px]", p.portfolio >= 0 ? "text-positive" : "text-negative")}>
-                          {p.portfolio > 0 ? "+" : ""}
-                          {p.portfolio.toFixed(1)}%
-                        </span>
-                      </button>
-                    );
-                  })}
+                <div className="max-h-[60vh] overflow-y-auto pr-0.5">
+                  {[
+                    { title: t("Últimos 12 meses · real", "Last 12 months · actual"), offset: 0, items: benchmarkData },
+                    {
+                      title: t(`Próximos 12 meses · proyección al ${weightedReturn.toFixed(1)}% anual`, `Next 12 months · projected at ${weightedReturn.toFixed(1)}% a year`),
+                      offset: benchmarkData.length,
+                      items: projectedData,
+                    },
+                  ].map((group) => (
+                    <div key={group.title} className="mb-3 last:mb-0">
+                      <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">{group.title}</p>
+                      <div className="grid grid-cols-3 gap-1.5">
+                        {group.items.map((p, k) => {
+                          const i = group.offset + k;
+                          const active = evoIdx === i;
+                          const future = group.offset > 0;
+                          return (
+                            <button
+                              key={`${p.label}-${i}`}
+                              type="button"
+                              onClick={() => {
+                                setEvoIdx(active ? null : i);
+                                setEvoOpen(false);
+                              }}
+                              className={cn(
+                                "rounded-lg border px-1.5 py-1.5 text-center transition",
+                                active
+                                  ? "border-primary/50 bg-primary/15 text-foreground"
+                                  : "border-border/50 bg-elevated/40 text-muted-foreground hover:text-foreground",
+                                future && !active && "border-dashed",
+                              )}
+                            >
+                              <span className="block text-[11px] font-medium">{p.label}</span>
+                              <span className={cn("numeric block text-[10px]", p.portfolio >= 0 ? "text-positive" : "text-negative")}>
+                                {p.portfolio > 0 ? "+" : ""}
+                                {p.portfolio.toFixed(1)}%
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
               {evoPoint && (
