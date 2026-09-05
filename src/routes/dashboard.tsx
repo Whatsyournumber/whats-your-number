@@ -604,11 +604,11 @@ function Dashboard() {
                 subtitle = lifestyleSubtitle(profile, t);
               } else if (pct >= 100) {
                 if (g.name === "Fondo de emergencia") {
-                  const monthlySalary = Math.max(1, profile.income_salary || d.income);
-                  const monthsCovered = Math.round(left / monthlySalary);
+                  const monthlyExpenses = Math.max(1, profile.monthly_expenses || d.expenses);
+                  const monthsCovered = Math.round(left / monthlyExpenses);
                   subtitle = t(
-                    `Min 6 meses de tu salario - ${monthsCovered} meses cubiertos`,
-                    `Min 6 months of your salary - ${monthsCovered} months covered`,
+                    `Min 6 meses de tus gastos objetivo - ${monthsCovered} meses cubiertos`,
+                    `Min 6 months of your target expenses - ${monthsCovered} months covered`,
                   );
                 } else {
                   subtitle = t("Meta alcanzada", "Goal reached");
