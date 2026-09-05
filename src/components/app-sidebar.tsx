@@ -115,28 +115,25 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r">
       <SidebarHeader className="px-3 py-3">
         {isMobile ? (
-          <div className="flex items-center justify-between pr-14">
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setOpenMobile(false)}
-                className="grid h-9 w-9 place-items-center rounded-full border border-border/60 bg-card/60 text-foreground transition hover:bg-secondary"
-                aria-label={t("Cerrar menú", "Close menu")}
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
+          <div className="flex items-center justify-center pr-14">
+            <Link
+              to="/ninos"
+              onClick={() => setOpenMobile(false)}
+              className="flex items-center gap-2.5"
+            >
               <span className="font-display text-lg font-semibold tracking-tight">{t("Perfiles", "Profiles")}</span>
-            </div>
-            {tier === "patrimonio" ? (
-              <BrandMark className="h-9 w-9 shrink-0" />
-            ) : (
-              <div className="flex items-center gap-2.5">
-                <BrandMark className="h-8 w-8 shrink-0" />
-                <div className="min-w-0">
-                  <p className="truncate font-display text-sm font-semibold">WhatsYournumber</p>
-                  <p className="truncate text-xs text-muted-foreground">{t("Tu CFO personal", "Your personal CFO")}</p>
+              {tier === "patrimonio" ? (
+                <BrandMark className="h-9 w-9 shrink-0" />
+              ) : (
+                <div className="flex items-center gap-2">
+                  <BrandMark className="h-8 w-8 shrink-0" />
+                  <div className="min-w-0 text-left">
+                    <p className="truncate font-display text-sm font-semibold">WhatsYournumber</p>
+                    <p className="truncate text-xs text-muted-foreground">{t("Tu CFO personal", "Your personal CFO")}</p>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </Link>
           </div>
         ) : (
           <div className="flex items-center gap-2.5">
