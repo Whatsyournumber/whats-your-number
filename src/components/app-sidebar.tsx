@@ -42,15 +42,12 @@ import { useT } from "@/hooks/use-language";
 import { useRoles } from "@/hooks/use-role";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useMyAffiliate } from "@/hooks/use-affiliate";
-import { useActiveMember } from "@/hooks/use-mfn";
-import { kidZoneEnabled } from "@/lib/mfn";
 
 export function AppSidebar() {
   const { state, setOpenMobile, isMobile } = useSidebar();
   const collapsed = state === "collapsed" && !isMobile;
   const pathname = useRouterState({ select: (r) => r.location.pathname });
-  const navigate = useNavigate();
-  const { member: activeMember, members, select: selectProfile } = useActiveMember();
+  const { profile } = useProfile();
   const { profile } = useProfile();
   const data = buildDataset(profile);
   const t = useT();
