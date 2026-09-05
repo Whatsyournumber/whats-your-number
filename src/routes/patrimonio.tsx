@@ -311,7 +311,7 @@ function PatrimonioContent() {
             </div>
           ) : (
             <>
-              <div className="min-h-[230px] flex-1 lg:min-h-0">
+              <div className="h-[230px] w-full shrink-0 sm:h-[260px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie data={assetRows} dataKey="value" nameKey="name" innerRadius="42%" outerRadius="78%" paddingAngle={3} stroke="none">
