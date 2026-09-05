@@ -217,12 +217,6 @@ function PortafolioContent() {
   const gainPositions = enriched.filter((h) => !gainExcludedTypes.has(h.type));
   const totalGain = gainPositions.reduce((s, h) => s + (h.value - h.cost), 0);
   const totalCostForGain = gainPositions.reduce((s, h) => s + h.cost, 0);
-  // Rentabilidad real: promedio ponderado por capital invertido, solo de rubros que rinden
-  // (excluye efectivo, posiciones sin ganancia, cripto y ETF).
-  const yieldingHoldings = gainPositions.filter((h) => h.cost > 0 && h.value !== h.cost);
-  const yieldingCost = yieldingHoldings.reduce((s, h) => s + h.cost, 0);
-  const yieldingGain = yieldingHoldings.reduce((s, h) => s + (h.value - h.cost), 0);
-  const totalRet = yieldingCost ? (yieldingGain / yieldingCost) * 100 : 0;
 
   const dividends = enriched.reduce((s, h) => s + h.dividends, 0);
 
@@ -977,9 +971,9 @@ function PortafolioContent() {
 
             <div>
               <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
-              <p className={cn("numeric text-base font-bold", totalRet >= 0 ? "text-positive" : "text-negative")}>
-                {totalRet > 0 ? "+" : ""}
-                {totalRet.toFixed(1)}%
+              <p className={cn("numeric text-base font-bold", weightedReturn >= 0 ? "text-positive" : "text-negative")}>
+                {weightedReturn > 0 ? "+" : ""}
+                {weightedReturn.toFixed(1)}%
               </p>
             </div>
           </div>
