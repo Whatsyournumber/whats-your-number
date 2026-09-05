@@ -31,6 +31,9 @@ export function KpiCard({
   variant?: "default" | "flat";
 }) {
   const display = value.length > 13 ? shortenMoneyString(value) : value;
+  // Versión corta (K/M) para pantallas pequeñas cuando el importe completo no cabe.
+  const short = value.length > 10 ? shortenMoneyString(value) : value;
+  const useResponsiveShort = short !== value;
 
   const good = delta === undefined ? true : inverse ? delta < 0 : delta > 0;
 
@@ -66,7 +69,14 @@ export function KpiCard({
         )}
         title={value}
       >
-        {display}
+        {useResponsiveShort ? (
+          <>
+            <span className="lg:hidden">{short}</span>
+            <span className="hidden lg:inline">{display}</span>
+          </>
+        ) : (
+          display
+        )}
       </p>
       <div className="relative mt-auto flex items-center gap-2 pt-2">
         {delta !== undefined && (
