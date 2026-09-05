@@ -51,7 +51,7 @@ export function AppSidebar() {
   const data = buildDataset(profile);
   const t = useT();
   const { isSuperAdmin } = useRoles();
-  const { isPatrimonio } = useSubscription();
+  const { isPatrimonio, tier } = useSubscription();
   const { affiliate } = useMyAffiliate();
 
   const primary = [
