@@ -129,6 +129,41 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
 
+      {isMobile && members.length > 0 && (
+        <div className="border-b border-border/60 px-3 pb-3">
+          <p className="px-1 pb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+            {t("Perfiles familiares", "Family profiles")}
+          </p>
+          <div className="flex flex-col gap-1.5">
+            {members.map((m) => {
+              const active = activeMember?.id === m.id;
+              return (
+                <button
+                  key={m.id}
+                  onClick={() => {
+                    selectProfile(m.id);
+                    setOpenMobile(false);
+                    navigate({ to: kidZoneEnabled(m) ? "/ninos/kid/numero" : "/ninos/kid/futuro" });
+                  }}
+                  className={`flex items-center gap-3 rounded-2xl border px-3 py-2 text-left transition ${
+                    active
+                      ? "border-primary/50 bg-primary/10"
+                      : "border-border/60 bg-card/60 hover:bg-secondary"
+                  }`}
+                >
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-xl">
+                    {m.avatar}
+                  </span>
+                  <span className={`truncate text-sm font-semibold ${active ? "text-primary" : "text-foreground"}`}>
+                    {m.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       <SidebarContent className="flex-none gap-0.5 overflow-hidden">
         <SidebarGroup className="p-1.5">
           <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
