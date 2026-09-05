@@ -157,7 +157,7 @@ export function buildDataset(p: Profile): Dataset {
       name: "Fondo de emergencia",
       emoji: "🛟",
       current: p.assets_cash + p.assets_bank,
-      target: Math.max(1, expenses) * 6,
+      target: Math.round((Math.max(1, expenses) * 6) / 1000) * 1000,
       deadline: String(year + 1),
       monthly: Math.round(savings * 0.2),
     },
