@@ -58,6 +58,47 @@ const RISK_LABEL: Record<RiskLevel, { es: string; en: string; cls: string }> = {
   high: { es: "riesgo alto", en: "high risk", cls: "text-negative/90 border-negative/25 bg-negative/10" },
 };
 
+function stdDev(values: number[]): number {
+  if (values.length < 2) return 0;
+  const mean = values.reduce((a, b) => a + b, 0) / values.length;
+  const variance = values.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / (values.length - 1);
+  return Math.sqrt(variance);
+}
+
+function monthlyReturns(values: number[]): number[] {
+  const r: number[] = [];
+  for (let i = 1; i < values.length; i++) {
+    const prev = values[i - 1]!;
+    r.push(prev === 0 ? 0 : (values[i]! - prev) / prev);
+  }
+  return r;
+}
+
+function maxDrawdown(values: number[]): number {
+  if (values.length === 0) return 0;
+  let peak = values[0]!;
+  let dd = 0;
+  for (const v of values) {
+    if (v > peak) peak = v;
+    if (peak > 0) dd = Math.max(dd, (peak - v) / peak);
+  }
+  return -dd;
+}
+
+const BETA_BY_CLASS: Record<string, number> = {
+  assets_cash: 0,
+  assets_bank: 0,
+  assets_bonds: 0.3,
+  assets_structured: 0.5,
+  assets_etf: 0.7,
+  assets_retirement: 0.6,
+  assets_property: 0.8,
+  assets_stocks: 1.1,
+  assets_crypto: 1.5,
+  assets_future: 1.3,
+  assets_private_equity: 1.4,
+};
+
 function PatrimonioContent() {
   const isMobile = useIsMobile();
   const t = useT();
