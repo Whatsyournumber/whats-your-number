@@ -332,7 +332,7 @@ function AppShell() {
             </div>
           </header>
           {/* Required: nested routes render here. */}
-          <main className="flex-1 pb-24 lg:pb-0">
+          <main className="flex-1 pb-20 lg:pb-0">
             <Outlet />
           </main>
           <MobileBottomNav />
