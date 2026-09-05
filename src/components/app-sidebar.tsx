@@ -48,7 +48,6 @@ export function AppSidebar() {
   const collapsed = state === "collapsed" && !isMobile;
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const { profile } = useProfile();
-  const { profile } = useProfile();
   const data = buildDataset(profile);
   const t = useT();
   const { isSuperAdmin } = useRoles();
