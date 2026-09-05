@@ -198,7 +198,7 @@ export function KidShell({ member, children }: { member: Member; children: React
         <ProfileCard member={member} collapsed={collapsed} />
       </aside>
 
-      <div className="min-w-0 flex-1 pb-36 lg:pb-0">
+      <div className="min-w-0 flex-1 pb-24 lg:pb-0">
         <header className="relative z-20 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-4 pt-5 sm:px-6 lg:flex lg:justify-between lg:gap-3 lg:px-10 lg:pt-6">
           <button
             onClick={() => router.navigate({ to: "/ninos" })}
