@@ -13,6 +13,7 @@ import treeImg from "@/assets/kid-tree.png";
 import { KidPage, PageTitle } from "@/components/kid-page";
 import { useI18n } from "@/lib/mfn-i18n";
 import { useFund, useMovements, useTasks, useWishes } from "@/hooks/use-mfn";
+import { useAuth } from "@/hooks/use-auth";
 import {
   buddyLines,
   disclaimer,
