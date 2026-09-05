@@ -31,6 +31,9 @@ export function KpiCard({
   variant?: "default" | "flat";
 }) {
   const display = value.length > 13 ? shortenMoneyString(value) : value;
+  // Versión corta (K/M) para pantallas pequeñas cuando el importe completo no cabe.
+  const short = value.length > 10 ? shortenMoneyString(value) : value;
+  const useResponsiveShort = short !== value;
 
   const good = delta === undefined ? true : inverse ? delta < 0 : delta > 0;
 
