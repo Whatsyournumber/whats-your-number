@@ -69,7 +69,14 @@ export function KpiCard({
         )}
         title={value}
       >
-        {display}
+        {useResponsiveShort ? (
+          <>
+            <span className="lg:hidden">{short}</span>
+            <span className="hidden lg:inline">{display}</span>
+          </>
+        ) : (
+          display
+        )}
       </p>
       <div className="relative mt-auto flex items-center gap-2 pt-2">
         {delta !== undefined && (
