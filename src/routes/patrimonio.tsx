@@ -301,6 +301,61 @@ function PatrimonioContent() {
   const totalAssetsAll = hasDetail ? assetRows.reduce((s, a) => s + a.value, 0) : d.totalAssets + futureTotal;
   const netWorthAll = totalAssetsAll - d.totalLiabilities;
 
+  // Métricas de riesgo del patrimonio basadas en la evolución seleccionada y el allocation actual.
+  const netWorthSeries = chartMonths.map((m) => m.netWorth);
+  const mReturns = monthlyReturns(netWorthSeries);
+  const volatility = mReturns.length > 1 ? stdDev(mReturns) * Math.sqrt(12) * 100 : 0;
+  const drawdown = maxDrawdown(netWorthSeries) * 100;
+  const portfolioBeta =
+    totalAssetsAll > 0
+      ? assetRows.reduce((s, a) => s + (a.value / totalAssetsAll) * (BETA_BY_CLASS[a.key] ?? 0.8), 0)
+      : 0;
+  const startNW = netWorthSeries[0] ?? 0;
+  const endNW = netWorthSeries[netWorthSeries.length - 1] ?? 0;
+  const years = Math.max(1, netWorthSeries.length - 1) / 12;
+  const cagr = startNW > 0 ? Math.pow(endNW / startNW, 1 / years) - 1 : 0;
+  const riskFreeRate = 0.045;
+  const sharpe = volatility > 0 ? (cagr - riskFreeRate) / (volatility / 100) : 0;
+
+  const riskMetrics = [
+    {
+      key: "volatility",
+      label: t("Volatilidad", "Volatility"),
+      value: `${volatility.toFixed(1)}%`,
+      badge: volatility < 10 ? t("BAJA", "LOW") : volatility < 20 ? t("MEDIA", "MEDIUM") : t("ALTA", "HIGH"),
+      tone: volatility < 10 ? "positive" : volatility < 20 ? "mid" : "negative",
+    },
+    {
+      key: "beta",
+      label: t("Beta", "Beta"),
+      value: portfolioBeta.toFixed(2),
+      badge: portfolioBeta < 0.8 ? t("DEFENSIVA", "DEFENSIVE") : portfolioBeta < 1.1 ? t("NEUTRA", "NEUTRAL") : t("AGRESIVA", "AGGRESSIVE"),
+      tone: portfolioBeta < 0.8 ? "positive" : portfolioBeta < 1.1 ? "mid" : "negative",
+    },
+    {
+      key: "drawdown",
+      label: t("Caída máxima", "Max drawdown"),
+      value: `${drawdown.toFixed(1)}%`,
+      badge: drawdown > -10 ? t("CONTROLADA", "CONTROLLED") : drawdown > -20 ? t("MODERADA", "MODERATE") : t("ALTA", "HIGH"),
+      tone: drawdown > -10 ? "positive" : drawdown > -20 ? "mid" : "negative",
+    },
+    {
+      key: "sharpe",
+      label: t("Sharpe", "Sharpe"),
+      value: sharpe.toFixed(2),
+      badge: sharpe >= 1 ? t("ALTO", "HIGH") : sharpe >= 0.5 ? t("ACEPTABLE", "FAIR") : t("BAJO", "LOW"),
+      tone: sharpe >= 1 ? "positive" : sharpe >= 0.5 ? "mid" : "negative",
+    },
+  ];
+
+  const riskBadgeClass = (tone: string) =>
+    cn(
+      "shrink-0 whitespace-nowrap rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
+      tone === "positive" && "border-positive/25 bg-positive/10 text-positive",
+      tone === "mid" && "border-chart-4/25 bg-chart-4/10 text-chart-4",
+      tone === "negative" && "border-negative/25 bg-negative/10 text-negative",
+    );
+
   return (
     <PageShell>
       <PageHeader
