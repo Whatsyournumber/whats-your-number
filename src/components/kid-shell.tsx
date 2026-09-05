@@ -14,6 +14,7 @@ import {
   PanelLeftOpen,
   SlidersHorizontal,
   Users,
+  X,
 } from "lucide-react";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
