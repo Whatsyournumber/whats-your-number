@@ -8,11 +8,13 @@ import {
   Star,
   Wallet,
   ChevronLeft,
+  Menu,
   PanelLeftClose,
   PanelLeftOpen,
   SlidersHorizontal,
   Users,
 } from "lucide-react";
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { THEME_ATTR, kidZoneEnabled, money, pocketTotals, type Member } from "@/lib/mfn";
 import { useMovements } from "@/hooks/use-mfn";
@@ -71,8 +73,21 @@ function ProfileCard({ member, collapsed }: { member: Member; collapsed: boolean
 export function useKidTheme(theme?: string) {
   useEffect(() => {
     const root = document.documentElement;
-    if (theme) root.setAttribute(THEME_ATTR, theme);
-    return () => root.removeAttribute(THEME_ATTR);
+    if (!theme) return;
+    root.setAttribute(THEME_ATTR, theme);
+    // La app fija un fondo oscuro inline en <html> y <body>; el tema infantil es
+    // claro, así que lo retiramos mientras esté activo para que no mate el contraste.
+    const prevBg = root.style.backgroundColor;
+    const prevBodyBg = document.body.style.backgroundColor;
+    root.style.backgroundColor = "";
+    document.body.style.backgroundColor = "";
+    root.style.colorScheme = "light";
+    return () => {
+      root.removeAttribute(THEME_ATTR);
+      root.style.backgroundColor = prevBg;
+      document.body.style.backgroundColor = prevBodyBg;
+      root.style.colorScheme = "";
+    };
   }, [theme]);
 }
 
@@ -84,6 +99,7 @@ export function KidShell({ member, children }: { member: Member; children: React
   const { t, lang } = useI18n();
   const label = (tab: { label: string; labelEn: string }) => (lang === "en" ? tab.labelEn : tab.label);
   const [collapsed, setCollapsed] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
     setCollapsed(window.localStorage.getItem("mfn-nav-collapsed") === "1");
   }, []);
@@ -185,25 +201,85 @@ export function KidShell({ member, children }: { member: Member; children: React
         <ProfileCard member={member} collapsed={collapsed} />
       </aside>
 
-      <div className="min-w-0 flex-1 pb-36 lg:pb-0">
-        <header className="relative z-20 flex items-center justify-between gap-3 px-5 pt-6 sm:px-6 lg:px-10">
+      <div className="min-w-0 flex-1 pb-24 lg:pb-0">
+        <header className="relative z-20 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-4 pt-5 sm:px-6 lg:flex lg:justify-between lg:gap-3 lg:px-10 lg:pt-6">
           <button
             onClick={() => router.navigate({ to: "/ninos" })}
-            className="flex items-center gap-2 text-xs font-semibold text-muted-foreground lg:hidden"
+            className="flex min-w-0 items-center gap-1.5 text-xs font-semibold text-muted-foreground lg:hidden"
           >
-            <ChevronLeft className="h-4 w-4" /> {t("Perfiles", "Profiles")}
+            <ChevronLeft className="h-4 w-4 shrink-0" />
+            <span className="truncate">{t("Perfiles", "Profiles")}</span>
           </button>
-          <span className="glass-nav flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-bold text-foreground lg:hidden">
-            <span className="text-base">{member.avatar}</span> ⭐ {member.xp} · 🔥 {member.streak}
-          </span>
-          <div className="ml-auto flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-1.5 lg:ml-auto">
+            <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+              <SheetTrigger asChild>
+                <button
+                  aria-label={t("Abrir menú", "Open menu")}
+                  className="glass-nav grid h-9 w-9 shrink-0 place-items-center rounded-full border text-foreground lg:hidden"
+                >
+                  <Menu className="h-4.5 w-4.5" />
+                </button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-full sm:max-w-xs">
+                <div className="flex flex-col gap-6 pt-8">
+                  <div className="flex items-center gap-3 rounded-2xl border border-border/60 bg-card/60 p-3">
+                    <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary/10 text-2xl">
+                      {member.avatar}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-bold text-foreground">{member.name}</p>
+                      <p className="text-[11px] font-semibold text-muted-foreground">
+                        ⭐ {member.xp} · 🔥 {member.streak}
+                      </p>
+                    </div>
+                  </div>
+                  {kidTabs.length ? (
+                    <nav className="flex flex-col gap-1.5">
+                      <p className="px-1 pb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                        {t(`Para ${member.name}`, `For ${member.name}`)}
+                      </p>
+                      {kidTabs.map((tab) => (
+                        <SheetClose asChild key={tab.to}>
+                          <Link
+                            to={tab.to}
+                            activeOptions={{ exact: true }}
+                            className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-secondary hover:text-foreground [&.nav-pill-active]:bg-primary [&.nav-pill-active]:text-primary-foreground"
+                            activeProps={{ className: "nav-pill-active" }}
+                          >
+                            <tab.icon className="h-4.5 w-4.5 shrink-0" />
+                            <span className="truncate">{label(tab)}</span>
+                          </Link>
+                        </SheetClose>
+                      ))}
+                    </nav>
+                  ) : null}
+                  <nav className="flex flex-col gap-1.5 border-t border-border/60 pt-4">
+                    <p className="px-1 pb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                      {t("Para papás", "For parents")}
+                    </p>
+                    {PARENT_TABS.map((tab) => (
+                      <SheetClose asChild key={tab.to}>
+                        <Link
+                          to={tab.to}
+                          activeOptions={{ exact: true }}
+                          className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-secondary hover:text-foreground [&.nav-pill-active]:bg-primary [&.nav-pill-active]:text-primary-foreground"
+                          activeProps={{ className: "nav-pill-active" }}
+                        >
+                          <tab.icon className="h-4.5 w-4.5 shrink-0" />
+                          <span className="truncate">{label(tab)}</span>
+                        </Link>
+                      </SheetClose>
+                    ))}
+                  </nav>
+                </div>
+              </SheetContent>
+            </Sheet>
             <LangToggle />
             <CurrencySelect
               memberId={member.id}
               currency={member.currency}
               baseCurrency={member.base_currency}
             />
-
           </div>
         </header>
         <main className="mx-auto w-full max-w-[1600px] px-5 py-5 sm:px-6 lg:px-8 lg:py-6">
@@ -211,21 +287,7 @@ export function KidShell({ member, children }: { member: Member; children: React
         </main>
       </div>
 
-      <div className="glass-nav fixed inset-x-0 bottom-0 z-30 border-t lg:hidden">
-        <div className="mx-auto flex max-w-lg items-center gap-2 px-3 pt-2">
-          {PARENT_TABS.map((tab) => (
-            <Link
-              key={tab.to}
-              to={tab.to}
-              activeOptions={{ exact: true }}
-              activeProps={{ className: "nav-pill-active" }}
-              className="flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full border border-border/60 bg-secondary/60 px-2 py-1.5 text-[11px] font-semibold text-muted-foreground"
-            >
-              <tab.icon className="h-3.5 w-3.5 shrink-0" />
-              <span className="truncate">{label(tab)}</span>
-            </Link>
-          ))}
-        </div>
+      <div className="glass-nav fixed inset-x-0 bottom-0 z-30 border-t bg-background/95 backdrop-blur lg:hidden">
         <nav className="mx-auto flex max-w-lg items-stretch justify-between gap-1 px-2 py-2">
           {kidTabs.map((tab) => (
             <Link
