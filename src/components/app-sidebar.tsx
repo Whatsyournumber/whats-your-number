@@ -19,6 +19,7 @@ import {
   Users,
   Handshake,
   ChevronRight,
+  X,
 } from "lucide-react";
 
 
@@ -125,12 +126,18 @@ export function AppSidebar() {
               </span>
             </Link>
             <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2">
-              <BrandMark className="h-8 w-8 shrink-0" />
-              <div className="min-w-0 text-left">
-                <p className="truncate font-display text-sm font-semibold">WhatsYournumber</p>
-                <p className="truncate text-xs text-muted-foreground">{t("Tu CFO personal", "Your personal CFO")}</p>
-              </div>
+              <BrandMark className="h-7 w-7 shrink-0" />
+              <p className="whitespace-nowrap font-display text-sm font-semibold leading-none">
+                Whats<span className="text-primary">Yournumber</span>
+              </p>
             </div>
+            <button
+              onClick={() => setOpenMobile(false)}
+              aria-label={t("Cerrar menú", "Close menu")}
+              className="absolute right-0 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+            >
+              <X className="h-5 w-5" />
+            </button>
           </div>
         ) : (
 
