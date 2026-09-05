@@ -216,6 +216,20 @@ export function KidShell({ member, children }: { member: Member; children: React
             </SheetTrigger>
             <SheetContent side="left" className="w-full sm:max-w-xs">
               <div className="flex flex-col gap-6 pt-8">
+                <div className="relative flex items-center justify-center pr-12">
+                  <SheetClose asChild>
+                    <Link
+                      to="/ninos"
+                      className="absolute left-0 top-1/2 -translate-y-1/2"
+                    >
+                      <span className="inline-flex items-center gap-1 text-sm font-semibold tracking-tight">
+                        <ChevronRight className="h-3.5 w-3.5 rotate-180 text-muted-foreground" />
+                        {t("Perfiles", "Profiles")}
+                      </span>
+                    </Link>
+                  </SheetClose>
+                  <KidsBrandLogo />
+                </div>
                 <div className="flex items-center gap-3 rounded-2xl border border-border/60 bg-card/60 p-3">
                   <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary/10 text-2xl">
                     {member.avatar}
