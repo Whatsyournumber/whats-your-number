@@ -13,6 +13,7 @@ import treeImg from "@/assets/kid-tree.png";
 import { KidPage, PageTitle } from "@/components/kid-page";
 import { useI18n } from "@/lib/mfn-i18n";
 import { useFund, useMovements, useTasks, useWishes } from "@/hooks/use-mfn";
+import { useAuth } from "@/hooks/use-auth";
 import {
   buddyLines,
   disclaimer,
@@ -154,12 +155,13 @@ function MyNumber({ member }: { member: Member }) {
   const line = lines[(member.xp / 10) % lines.length | 0] ?? lines[0];
 
   const buddyTipFn = useServerFn(getBuddyTip);
+  const { session } = useAuth();
   const { data: buddyTip, isFetching: buddyThinking } = useQuery({
     queryKey: ["kid-buddy-tip", member.id, lang, Math.round(today), Math.round(projection.future)],
-    enabled: movements.length > 0,
+    enabled: movements.length > 0 && !!session,
     staleTime: 1000 * 60 * 2,
     refetchOnWindowFocus: false,
-
+    throwOnError: false,
     retry: false,
     queryFn: () =>
       buddyTipFn({
@@ -182,7 +184,7 @@ function MyNumber({ member }: { member: Member }) {
               }
             : null,
         },
-      }),
+      }).catch(() => null),
   });
 
   return (
