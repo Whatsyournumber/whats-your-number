@@ -75,14 +75,17 @@ export function useKidTheme(theme?: string) {
     const root = document.documentElement;
     if (!theme) return;
     root.setAttribute(THEME_ATTR, theme);
-    // La app fija un fondo oscuro inline en <html>; el tema infantil es claro,
-    // así que lo retiramos mientras esté activo para que no mate el contraste.
+    // La app fija un fondo oscuro inline en <html> y <body>; el tema infantil es
+    // claro, así que lo retiramos mientras esté activo para que no mate el contraste.
     const prevBg = root.style.backgroundColor;
+    const prevBodyBg = document.body.style.backgroundColor;
     root.style.backgroundColor = "";
+    document.body.style.backgroundColor = "";
     root.style.colorScheme = "light";
     return () => {
       root.removeAttribute(THEME_ATTR);
       root.style.backgroundColor = prevBg;
+      document.body.style.backgroundColor = prevBodyBg;
       root.style.colorScheme = "";
     };
   }, [theme]);
