@@ -51,7 +51,7 @@ export function AppSidebar() {
   const data = buildDataset(profile);
   const t = useT();
   const { isSuperAdmin } = useRoles();
-  const { isPatrimonio } = useSubscription();
+  const { isPatrimonio, tier } = useSubscription();
   const { affiliate } = useMyAffiliate();
 
   const primary = [
@@ -126,7 +126,17 @@ export function AppSidebar() {
               </button>
               <span className="font-display text-lg font-semibold tracking-tight">{t("Perfiles", "Profiles")}</span>
             </div>
-            <BrandMark className="h-9 w-9 shrink-0" />
+            {tier === "patrimonio" ? (
+              <BrandMark className="h-9 w-9 shrink-0" />
+            ) : (
+              <div className="flex items-center gap-2.5">
+                <BrandMark className="h-8 w-8 shrink-0" />
+                <div className="min-w-0">
+                  <p className="truncate font-display text-sm font-semibold">WhatsYournumber</p>
+                  <p className="truncate text-xs text-muted-foreground">{t("Tu CFO personal", "Your personal CFO")}</p>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div className="flex items-center gap-2.5">
