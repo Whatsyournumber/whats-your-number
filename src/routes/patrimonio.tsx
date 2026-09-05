@@ -395,6 +395,20 @@ function PatrimonioContent() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
+
+          <div className="mt-4 border-t border-border pt-4">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+              {riskMetrics.map((m) => (
+                <div key={m.key} className="flex flex-col gap-1.5">
+                  <span className="text-xs text-muted-foreground">{m.label}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="numeric text-xl font-semibold tracking-tight">{m.value}</span>
+                    <span className={riskBadgeClass(m.tone)}>{m.badge}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </Panel>
 
         <Panel title={t("Asset allocation", "Asset allocation")} className="flex flex-col" bleedMobile>
