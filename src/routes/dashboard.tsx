@@ -604,7 +604,8 @@ function Dashboard() {
                 subtitle = lifestyleSubtitle(profile, t);
               } else if (pct >= 100) {
                 if (g.name === "Fondo de emergencia") {
-                  const monthsCovered = Math.round(left / Math.max(1, d.expenses));
+                  const monthlySalary = Math.max(1, profile.income_salary || d.income);
+                  const monthsCovered = Math.round(left / monthlySalary);
                   subtitle = t(
                     `Min 6 meses de tu salario - ${monthsCovered} meses cubiertos`,
                     `Min 6 months of your salary - ${monthsCovered} months covered`,
