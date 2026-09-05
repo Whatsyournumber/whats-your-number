@@ -58,6 +58,75 @@ const RISK_LABEL: Record<RiskLevel, { es: string; en: string; cls: string }> = {
   high: { es: "riesgo alto", en: "high risk", cls: "text-negative/90 border-negative/25 bg-negative/10" },
 };
 
+function stdDev(values: number[]): number {
+  if (values.length < 2) return 0;
+  const mean = values.reduce((a, b) => a + b, 0) / values.length;
+  const variance = values.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / (values.length - 1);
+  return Math.sqrt(variance);
+}
+
+function monthlyReturns(values: number[]): number[] {
+  const r: number[] = [];
+  for (let i = 1; i < values.length; i++) {
+    const prev = values[i - 1]!;
+    r.push(prev === 0 ? 0 : (values[i]! - prev) / prev);
+  }
+  return r;
+}
+
+function maxDrawdown(values: number[]): number {
+  if (values.length === 0) return 0;
+  let peak = values[0]!;
+  let dd = 0;
+  for (const v of values) {
+    if (v > peak) peak = v;
+    if (peak > 0) dd = Math.max(dd, (peak - v) / peak);
+  }
+  return -dd;
+}
+
+const BETA_BY_CLASS: Record<string, number> = {
+  assets_cash: 0,
+  assets_bank: 0,
+  assets_bonds: 0.3,
+  assets_structured: 0.5,
+  assets_etf: 0.7,
+  assets_retirement: 0.6,
+  assets_property: 0.8,
+  assets_stocks: 1.1,
+  assets_crypto: 1.5,
+  assets_future: 1.3,
+  assets_private_equity: 1.4,
+};
+
+const VOL_BY_CLASS: Record<string, number> = {
+  assets_cash: 0,
+  assets_bank: 0,
+  assets_bonds: 0.05,
+  assets_structured: 0.08,
+  assets_etf: 0.15,
+  assets_retirement: 0.10,
+  assets_property: 0.12,
+  assets_stocks: 0.20,
+  assets_crypto: 0.60,
+  assets_future: 0.30,
+  assets_private_equity: 0.35,
+};
+
+const RETURN_BY_CLASS: Record<string, number> = {
+  assets_cash: 0.0,
+  assets_bank: 0.01,
+  assets_bonds: 0.04,
+  assets_structured: 0.05,
+  assets_etf: 0.07,
+  assets_retirement: 0.05,
+  assets_property: 0.06,
+  assets_stocks: 0.09,
+  assets_crypto: 0.15,
+  assets_future: 0.12,
+  assets_private_equity: 0.11,
+};
+
 function PatrimonioContent() {
   const isMobile = useIsMobile();
   const t = useT();
@@ -260,6 +329,66 @@ function PatrimonioContent() {
   const totalAssetsAll = hasDetail ? assetRows.reduce((s, a) => s + a.value, 0) : d.totalAssets + futureTotal;
   const netWorthAll = totalAssetsAll - d.totalLiabilities;
 
+  // Métricas de riesgo del patrimonio basadas en el allocation actual.
+  const weights = assetRows.map((a) => ({ ...a, weight: totalAssetsAll > 0 ? a.value / totalAssetsAll : 0 }));
+  const portfolioBeta =
+    totalAssetsAll > 0
+      ? weights.reduce((s, a) => s + a.weight * (BETA_BY_CLASS[a.key] ?? 0.8), 0)
+      : 0;
+  const portfolioVolatility =
+    totalAssetsAll > 0
+      ? Math.sqrt(weights.reduce((s, a) => s + Math.pow(a.weight * (VOL_BY_CLASS[a.key] ?? 0.10), 2), 0)) * 100
+      : 0;
+  const portfolioExpectedReturn =
+    totalAssetsAll > 0
+      ? weights.reduce((s, a) => s + a.weight * (RETURN_BY_CLASS[a.key] ?? 0.05), 0)
+      : 0;
+  const netWorthSeries = chartMonths.map((m) => m.netWorth);
+  const historicalDrawdown = maxDrawdown(netWorthSeries) * 100;
+  const estimatedDrawdown = -1.5 * portfolioVolatility;
+  const drawdown = Math.min(historicalDrawdown, estimatedDrawdown);
+  const riskFreeRate = 0.045;
+  const sharpe = portfolioVolatility > 0 ? (portfolioExpectedReturn - riskFreeRate) / (portfolioVolatility / 100) : 0;
+
+  const riskMetrics = [
+    {
+      key: "volatility",
+      label: t("Volatilidad", "Volatility"),
+      value: `${portfolioVolatility.toFixed(1)}%`,
+      badge: portfolioVolatility < 10 ? t("BAJA", "LOW") : portfolioVolatility < 20 ? t("MEDIA", "MEDIUM") : t("ALTA", "HIGH"),
+      tone: portfolioVolatility < 10 ? "positive" : portfolioVolatility < 20 ? "mid" : "negative",
+    },
+    {
+      key: "beta",
+      label: t("Beta", "Beta"),
+      value: portfolioBeta.toFixed(2),
+      badge: portfolioBeta < 0.8 ? t("DEFENSIVA", "DEFENSIVE") : portfolioBeta < 1.1 ? t("NEUTRA", "NEUTRAL") : t("AGRESIVA", "AGGRESSIVE"),
+      tone: portfolioBeta < 0.8 ? "positive" : portfolioBeta < 1.1 ? "mid" : "negative",
+    },
+    {
+      key: "drawdown",
+      label: t("Caída máxima", "Max drawdown"),
+      value: `${drawdown.toFixed(1)}%`,
+      badge: drawdown > -10 ? t("CONTROLADA", "CONTROLLED") : drawdown > -20 ? t("MODERADA", "MODERATE") : t("ALTA", "HIGH"),
+      tone: drawdown > -10 ? "positive" : drawdown > -20 ? "mid" : "negative",
+    },
+    {
+      key: "sharpe",
+      label: t("Sharpe", "Sharpe"),
+      value: sharpe.toFixed(2),
+      badge: sharpe >= 1 ? t("ALTO", "HIGH") : sharpe >= 0.5 ? t("ACEPTABLE", "FAIR") : t("BAJO", "LOW"),
+      tone: sharpe >= 1 ? "positive" : sharpe >= 0.5 ? "mid" : "negative",
+    },
+  ];
+
+  const riskBadgeClass = (tone: string) =>
+    cn(
+      "shrink-0 whitespace-nowrap rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
+      tone === "positive" && "border-positive/25 bg-positive/10 text-positive",
+      tone === "mid" && "border-chart-4/25 bg-chart-4/10 text-chart-4",
+      tone === "negative" && "border-negative/25 bg-negative/10 text-negative",
+    );
+
   return (
     <PageShell>
       <PageHeader
@@ -298,6 +427,20 @@ function PatrimonioContent() {
                 <Area type="monotone" dataKey="netWorth" name={t("Patrimonio", "Net worth")} stroke="var(--color-chart-2)" strokeWidth={2.5} fill="url(#pw)" />
               </AreaChart>
             </ResponsiveContainer>
+          </div>
+
+          <div className="mt-4 border-t border-border pt-4">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+              {riskMetrics.map((m) => (
+                <div key={m.key} className="flex flex-col gap-1.5">
+                  <span className="text-xs text-muted-foreground">{m.label}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="numeric text-xl font-semibold tracking-tight">{m.value}</span>
+                    <span className={riskBadgeClass(m.tone)}>{m.badge}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </Panel>
 
