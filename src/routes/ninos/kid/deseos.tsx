@@ -189,23 +189,23 @@ function MyDreams({ member }: { member: Member }) {
 
   return (
     <>
-      <header className="mb-5 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
-        <div className="min-w-0">
-          <h1 className="flex items-center gap-2 font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-            <span>⭐</span> {t("Mis Sueños", "My Dreams")}
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {t("Cada moneda que ahorras te acerca a algo increíble.", "Every coin you save brings you closer to something amazing.")}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button onClick={() => setOpen((v) => !v)}>
-            <Plus className="h-4 w-4" /> {t("Nuevo sueño", "New dream")}
-          </Button>
-          <span className="grid size-10 place-items-center rounded-full border border-border text-muted-foreground">
+      <header className="mb-5">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h1 className="flex items-center gap-2 whitespace-nowrap font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+              <span>⭐</span> {t("Mis Sueños", "My Dreams")}
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {t("Cada moneda que ahorras te acerca a algo increíble.", "Every coin you save brings you closer to something amazing.")}
+            </p>
+          </div>
+          <span className="grid size-10 shrink-0 place-items-center rounded-full border border-border text-muted-foreground">
             <Bell className="h-4 w-4" />
           </span>
         </div>
+        <Button className="mt-4 w-full sm:w-auto" onClick={() => setOpen((v) => !v)}>
+          <Plus className="h-4 w-4" /> {t("Nuevo sueño", "New dream")}
+        </Button>
       </header>
 
       <Card className="mb-4">
