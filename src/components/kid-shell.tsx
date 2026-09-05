@@ -202,62 +202,35 @@ export function KidShell({ member, children }: { member: Member; children: React
       </aside>
 
       <div className="min-w-0 flex-1 pb-24 lg:pb-0">
-        <header className="relative z-20 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-4 pt-5 sm:px-6 lg:flex lg:justify-between lg:gap-3 lg:px-10 lg:pt-6">
-          <button
-            onClick={() => router.navigate({ to: "/ninos" })}
-            className="flex min-w-0 items-center gap-1.5 text-xs font-semibold text-muted-foreground lg:hidden"
-          >
-            <ChevronLeft className="h-4 w-4 shrink-0" />
-            <span className="truncate">{t("Perfiles", "Profiles")}</span>
-          </button>
-          <div className="flex shrink-0 items-center gap-1.5 lg:ml-auto">
-            <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
-              <SheetTrigger asChild>
-                <button
-                  aria-label={t("Abrir menú", "Open menu")}
-                  className="glass-nav grid h-9 w-9 shrink-0 place-items-center rounded-full border text-foreground lg:hidden"
-                >
-                  <Menu className="h-4.5 w-4.5" />
-                </button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-full sm:max-w-xs">
-                <div className="flex flex-col gap-6 pt-8">
-                  <div className="flex items-center gap-3 rounded-2xl border border-border/60 bg-card/60 p-3">
-                    <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary/10 text-2xl">
-                      {member.avatar}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-bold text-foreground">{member.name}</p>
-                      <p className="text-[11px] font-semibold text-muted-foreground">
-                        ⭐ {member.xp} · 🔥 {member.streak}
-                      </p>
-                    </div>
+        <header className="relative z-20 flex items-center justify-between gap-2 px-4 pt-5 sm:px-6 lg:justify-end lg:gap-3 lg:px-10 lg:pt-6">
+          <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+            <SheetTrigger asChild>
+              <button
+                aria-label={t("Abrir menú", "Open menu")}
+                className="glass-nav grid h-9 w-9 shrink-0 place-items-center rounded-full border text-foreground lg:hidden"
+              >
+                <Menu className="h-4.5 w-4.5" />
+              </button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-full sm:max-w-xs">
+              <div className="flex flex-col gap-6 pt-8">
+                <div className="flex items-center gap-3 rounded-2xl border border-border/60 bg-card/60 p-3">
+                  <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary/10 text-2xl">
+                    {member.avatar}
                   </div>
-                  {kidTabs.length ? (
-                    <nav className="flex flex-col gap-1.5">
-                      <p className="px-1 pb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                        {t(`Para ${member.name}`, `For ${member.name}`)}
-                      </p>
-                      {kidTabs.map((tab) => (
-                        <SheetClose asChild key={tab.to}>
-                          <Link
-                            to={tab.to}
-                            activeOptions={{ exact: true }}
-                            className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-secondary hover:text-foreground [&.nav-pill-active]:bg-primary [&.nav-pill-active]:text-primary-foreground"
-                            activeProps={{ className: "nav-pill-active" }}
-                          >
-                            <tab.icon className="h-4.5 w-4.5 shrink-0" />
-                            <span className="truncate">{label(tab)}</span>
-                          </Link>
-                        </SheetClose>
-                      ))}
-                    </nav>
-                  ) : null}
-                  <nav className="flex flex-col gap-1.5 border-t border-border/60 pt-4">
-                    <p className="px-1 pb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                      {t("Para papás", "For parents")}
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-bold text-foreground">{member.name}</p>
+                    <p className="text-[11px] font-semibold text-muted-foreground">
+                      ⭐ {member.xp} · 🔥 {member.streak}
                     </p>
-                    {PARENT_TABS.map((tab) => (
+                  </div>
+                </div>
+                {kidTabs.length ? (
+                  <nav className="flex flex-col gap-1.5">
+                    <p className="px-1 pb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                      {t(`Para ${member.name}`, `For ${member.name}`)}
+                    </p>
+                    {kidTabs.map((tab) => (
                       <SheetClose asChild key={tab.to}>
                         <Link
                           to={tab.to}
@@ -271,9 +244,40 @@ export function KidShell({ member, children }: { member: Member; children: React
                       </SheetClose>
                     ))}
                   </nav>
-                </div>
-              </SheetContent>
-            </Sheet>
+                ) : null}
+                <nav className="flex flex-col gap-1.5 border-t border-border/60 pt-4">
+                  <p className="px-1 pb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                    {t("Para papás", "For parents")}
+                  </p>
+                  <SheetClose asChild>
+                    <Link
+                      to="/ninos"
+                      activeOptions={{ exact: true }}
+                      className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-secondary hover:text-foreground [&.nav-pill-active]:bg-primary [&.nav-pill-active]:text-primary-foreground"
+                      activeProps={{ className: "nav-pill-active" }}
+                    >
+                      <Users className="h-4.5 w-4.5 shrink-0" />
+                      <span className="truncate">{t("Perfiles", "Profiles")}</span>
+                    </Link>
+                  </SheetClose>
+                  {PARENT_TABS.filter((tab) => tab.to !== "/ninos").map((tab) => (
+                    <SheetClose asChild key={tab.to}>
+                      <Link
+                        to={tab.to}
+                        activeOptions={{ exact: true }}
+                        className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-secondary hover:text-foreground [&.nav-pill-active]:bg-primary [&.nav-pill-active]:text-primary-foreground"
+                        activeProps={{ className: "nav-pill-active" }}
+                      >
+                        <tab.icon className="h-4.5 w-4.5 shrink-0" />
+                        <span className="truncate">{label(tab)}</span>
+                      </Link>
+                    </SheetClose>
+                  ))}
+                </nav>
+              </div>
+            </SheetContent>
+          </Sheet>
+          <div className="flex shrink-0 items-center gap-1.5 lg:ml-auto">
             <LangToggle />
             <CurrencySelect
               memberId={member.id}
