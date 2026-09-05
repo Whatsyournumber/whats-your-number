@@ -70,17 +70,12 @@ export function AppSidebar() {
 
 
 
-  const familyItems: { title: string; url: string; icon: typeof Users }[] = isPatrimonio
-    ? [{ title: t("Perfil familiar", "Family profile"), url: "/ninos", icon: Users }]
-    : [];
-
   const affiliateItems: { title: string; url: string; icon: typeof Users }[] =
     affiliate && affiliate.status !== "disabled"
       ? [{ title: t("Programa de afiliados", "Affiliate program"), url: "/afiliados", icon: Handshake }]
       : [];
 
   const secondary = [
-    ...familyItems,
     ...affiliateItems,
     { title: t("Asistente IA", "AI Assistant"), url: "/advisor", icon: Bot },
     { title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserCog },
@@ -88,6 +83,7 @@ export function AppSidebar() {
     
     { title: t("Importar gastos", "Import expenses"), url: "/configuracion", icon: Upload },
   ] as const;
+
 
   const adminItems = isSuperAdmin
     ? ([{ title: t("Panel admin", "Admin panel"), url: "/admin", icon: ShieldCheck }] as const)
