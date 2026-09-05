@@ -21,28 +21,30 @@ export function MobileBottomNav() {
   ];
 
   return (
-    <nav className="fixed inset-x-3 bottom-3 z-40 lg:hidden">
-      <div className="mx-auto flex max-w-md items-center justify-between gap-1 rounded-[2rem] border border-border/60 bg-card/85 px-2 py-2 shadow-[0_16px_50px_-16px_rgba(0,0,0,0.65)] backdrop-blur-xl">
+    <nav className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
+      <div className="flex w-full items-center justify-around border-t border-border/40 bg-background/90 px-2 pb-[env(safe-area-inset-bottom,0px)] pt-2 shadow-[0_-8px_30px_-10px_rgba(0,0,0,0.35)] backdrop-blur-xl">
         {tabs.map((tab) => {
           const active = pathname === tab.url;
           return (
             <Link
               key={tab.url}
               to={tab.url}
-              className="flex min-w-0 flex-1 flex-col items-center gap-1.5 rounded-2xl px-1 py-1 transition-colors"
+              className="group relative flex min-w-0 flex-1 flex-col items-center gap-1 px-1 py-1 transition-colors"
             >
-              <div
-                className={`flex h-11 w-11 items-center justify-center rounded-full transition-all ${
-                  active
-                    ? "bg-primary text-primary-foreground shadow-[0_0_16px_-4px_var(--color-primary)]"
-                    : "bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-                }`}
-              >
-                <tab.icon className="h-5 w-5 shrink-0" strokeWidth={active ? 2.4 : 2} />
+              <div className="relative flex h-7 items-center justify-center">
+                <tab.icon
+                  className={`h-[22px] w-[22px] shrink-0 transition-colors ${
+                    active ? "text-primary/85" : "text-muted-foreground group-hover:text-foreground"
+                  }`}
+                  strokeWidth={active ? 2.2 : 1.9}
+                />
+                {active && (
+                  <span className="absolute -bottom-1.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-primary/70" />
+                )}
               </div>
               <span
-                className={`truncate text-[10px] font-semibold leading-none ${
-                  active ? "text-primary" : "text-muted-foreground"
+                className={`truncate text-[10px] font-medium leading-none ${
+                  active ? "text-primary/90" : "text-muted-foreground group-hover:text-foreground"
                 }`}
               >
                 {tab.title}
