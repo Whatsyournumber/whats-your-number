@@ -350,34 +350,39 @@ function PatrimonioContent() {
   const riskFreeRate = 0.045;
   const sharpe = portfolioVolatility > 0 ? (portfolioExpectedReturn - riskFreeRate) / (portfolioVolatility / 100) : 0;
 
+  const riskAllocation = {
+    low: assetRows
+      .filter((a) => ASSET_CLASS[a.key]?.risk === "low")
+      .reduce((s, a) => s + a.value, 0),
+    mid: assetRows
+      .filter((a) => ASSET_CLASS[a.key]?.risk === "mid")
+      .reduce((s, a) => s + a.value, 0),
+    high: assetRows
+      .filter((a) => ASSET_CLASS[a.key]?.risk === "high")
+      .reduce((s, a) => s + a.value, 0),
+  };
+
   const riskMetrics = [
     {
-      key: "volatility",
-      label: t("Volatilidad", "Volatility"),
-      value: `${portfolioVolatility.toFixed(1)}%`,
-      badge: portfolioVolatility < 10 ? t("BAJA", "LOW") : portfolioVolatility < 20 ? t("MEDIA", "MEDIUM") : t("ALTA", "HIGH"),
-      tone: portfolioVolatility < 10 ? "positive" : portfolioVolatility < 20 ? "mid" : "negative",
+      key: "low",
+      label: t("Riesgo bajo", "Low risk"),
+      value: `${totalAssetsAll > 0 ? ((riskAllocation.low / totalAssetsAll) * 100).toFixed(0) : "0"}%`,
+      badge: t("BAJA", "LOW"),
+      tone: "positive" as const,
     },
     {
-      key: "beta",
-      label: t("Beta", "Beta"),
-      value: portfolioBeta.toFixed(2),
-      badge: portfolioBeta < 0.8 ? t("DEFENSIVA", "DEFENSIVE") : portfolioBeta < 1.1 ? t("NEUTRA", "NEUTRAL") : t("AGRESIVA", "AGGRESSIVE"),
-      tone: portfolioBeta < 0.8 ? "positive" : portfolioBeta < 1.1 ? "mid" : "negative",
+      key: "mid",
+      label: t("Riesgo medio", "Medium risk"),
+      value: `${totalAssetsAll > 0 ? ((riskAllocation.mid / totalAssetsAll) * 100).toFixed(0) : "0"}%`,
+      badge: t("MEDIA", "MEDIUM"),
+      tone: "mid" as const,
     },
     {
-      key: "drawdown",
-      label: t("Caída máxima", "Max drawdown"),
-      value: `${drawdown.toFixed(1)}%`,
-      badge: drawdown > -10 ? t("CONTROLADA", "CONTROLLED") : drawdown > -20 ? t("MODERADA", "MODERATE") : t("ALTA", "HIGH"),
-      tone: drawdown > -10 ? "positive" : drawdown > -20 ? "mid" : "negative",
-    },
-    {
-      key: "sharpe",
-      label: t("Sharpe", "Sharpe"),
-      value: sharpe.toFixed(2),
-      badge: sharpe >= 1 ? t("ALTO", "HIGH") : sharpe >= 0.5 ? t("ACEPTABLE", "FAIR") : t("BAJO", "LOW"),
-      tone: sharpe >= 1 ? "positive" : sharpe >= 0.5 ? "mid" : "negative",
+      key: "high",
+      label: t("Riesgo alto", "High risk"),
+      value: `${totalAssetsAll > 0 ? ((riskAllocation.high / totalAssetsAll) * 100).toFixed(0) : "0"}%`,
+      badge: t("ALTA", "HIGH"),
+      tone: "negative" as const,
     },
   ];
 
@@ -430,7 +435,7 @@ function PatrimonioContent() {
           </div>
 
           <div className="mt-4 border-t border-border pt-4">
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            <div className="grid grid-cols-3 gap-4">
               {riskMetrics.map((m) => (
                 <div key={m.key} className="flex flex-col gap-1.5">
                   <span className="text-xs text-muted-foreground">{m.label}</span>
