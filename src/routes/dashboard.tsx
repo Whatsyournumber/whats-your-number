@@ -597,7 +597,8 @@ function Dashboard() {
               const right = g.displayTarget ?? g.target;
               const remaining = Math.max(0, right - left);
               const portfolioRate = (() => {
-                const investKinds = ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured"];
+                // El rendimiento de la cartera excluye cripto y ETF para reflejar la ganancia operativa neta.
+                const investKinds = ["stock", "other", "bond", "tbill", "note", "structured"];
                 const list = holdings.filter((h) => investKinds.includes(h.kind));
                 let totalValue = 0;
                 let weightedReturn = 0;
