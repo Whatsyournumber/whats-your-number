@@ -405,9 +405,23 @@ function PatrimonioContent() {
       />
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <KpiCard label={t("Patrimonio neto", "Net worth")} value={fmt(netWorthAll)} delta={growthMonth} hint={t("vs el mes pasado", "vs last month")} accent index={0} />
+        <KpiCard
+          label={t("Patrimonio neto", "Net worth")}
+          labelSm={t("Patrimonio", "Net worth")}
+          value={fmt(netWorthAll)}
+          delta={growthMonth}
+          hint={t("vs el mes pasado", "vs last month")}
+          accent
+          index={0}
+        />
         <KpiCard label={t("Activos", "Assets")} value={fmt(totalAssetsAll)} index={1} />
-        <KpiCard label={t("Pasivos", "Liabilities")} value={fmt(d.totalLiabilities)} inverse index={2} />
+        <KpiCard
+          label={t("Pasivos", "Liabilities")}
+          labelSm={t("Deudas", "Debts")}
+          value={fmt(d.totalLiabilities)}
+          inverse
+          index={2}
+        />
       </div>
 
 

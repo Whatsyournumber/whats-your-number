@@ -9,6 +9,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 
 export function KpiCard({
   label,
+  labelSm,
   value,
   delta,
   hint,
@@ -20,6 +21,7 @@ export function KpiCard({
   variant = "default",
 }: {
   label: string;
+  labelSm?: string;
   value: string;
   delta?: number;
   hint?: ReactNode;
@@ -53,17 +55,27 @@ export function KpiCard({
         <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.08]" />
       )}
       <div className="relative flex items-start justify-between gap-3">
-        <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{label}</p>
-        {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
+        <p className="min-w-0 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+          {labelSm ? (
+            <>
+              <span className="sm:hidden">{label}</span>
+              <span className="hidden sm:inline lg:hidden">{labelSm}</span>
+              <span className="hidden lg:inline">{label}</span>
+            </>
+          ) : (
+            label
+          )}
+        </p>
+        {Icon && <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />}
       </div>
       <p
         className={cn(
           "numeric relative mt-3 truncate text-ellipsis whitespace-nowrap font-semibold leading-tight",
-          display.length > 22
+          value.length > 22
             ? "text-base md:text-lg"
-            : display.length > 16
+            : value.length > 16
               ? "text-lg md:text-xl"
-              : display.length > 11
+              : value.length > 11
                 ? "text-xl md:text-2xl"
                 : "text-2xl md:text-3xl",
         )}
@@ -71,7 +83,8 @@ export function KpiCard({
       >
         {useResponsiveShort ? (
           <>
-            <span className="lg:hidden">{short}</span>
+            <span className="sm:hidden">{value}</span>
+            <span className="hidden sm:inline lg:hidden">{short}</span>
             <span className="hidden lg:inline">{display}</span>
           </>
         ) : (
