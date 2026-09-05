@@ -149,7 +149,9 @@ function Dashboard() {
     })
     .filter((h) => h.value > 0);
   const portfolioValue = portfolioPositions.reduce((s, h) => s + h.value, 0);
-  const yieldingPositions = portfolioPositions.filter((h) => h.cost > 0 && h.value !== h.cost);
+  // El rendimiento mostrado excluye cripto y ETF para reflejar la ganancia operativa neta.
+  const gainPositions = portfolioPositions.filter((h) => h.kind !== "crypto" && h.kind !== "etf");
+  const yieldingPositions = gainPositions.filter((h) => h.cost > 0 && h.value !== h.cost);
   const yieldingCost = yieldingPositions.reduce((s, h) => s + h.cost, 0);
   const yieldingGain = yieldingPositions.reduce((s, h) => s + (h.value - h.cost), 0);
   const portfolioReturn = yieldingCost ? (yieldingGain / yieldingCost) * 100 : 0;
