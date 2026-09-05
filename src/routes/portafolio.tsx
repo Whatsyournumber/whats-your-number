@@ -346,53 +346,10 @@ function PortafolioContent() {
   const maxDrawdown = maxDD * 100;
   const hasStats = benchmarkData.length > 3;
 
-  // ---- Proyección compuesta a 12 meses: tu portafolio al rendimiento real ponderado, el índice a su ritmo de 12m ----
-  const MONTHS_SHORT = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-  const FUTURE_MONTHS = 12;
-  const portMonthly = Math.pow(1 + weightedReturn / 100, 1 / 12) - 1;
-  const benchAnnual = benchmarkData.length ? bench12 : 0;
-  const benchMonthly = Math.pow(1 + Math.max(-0.95, benchAnnual / 100), 1 / 12) - 1;
-  const now = new Date();
-  const projectedData = benchmarkData.length
-    ? Array.from({ length: FUTURE_MONTHS }, (_, k) => {
-        const d = new Date(now.getFullYear(), now.getMonth() + k + 1, 1);
-        const n = k + 1;
-        const yy = String(d.getFullYear()).slice(-2);
-        return {
-          label: `${MONTHS_SHORT[d.getMonth()]} '${yy}`,
-          portfolio: ((1 + port12 / 100) * Math.pow(1 + portMonthly, n) - 1) * 100,
-          bench: ((1 + bench12 / 100) * Math.pow(1 + benchMonthly, n) - 1) * 100,
-          projected: true,
-        };
-      })
-    : [];
-  const allPoints = [...benchmarkData.map((p) => ({ ...p, projected: false })), ...projectedData];
-
-  // KPI "Rendimiento del portafolio": promedio ponderado real; con el calendario se ve el punto de cada mes
-  // (pasado real o futuro proyectado en compound).
-  const evoPoint = evoIdx !== null ? allPoints[evoIdx] ?? null : null;
+  // KPI "Rendimiento del portafolio": promedio ponderado real; con el calendario se ve el punto de cada mes.
+  const evoPoint = evoIdx !== null ? benchmarkData[evoIdx] ?? null : null;
   const shownRet = evoPoint ? evoPoint.portfolio : weightedReturn;
   const shownBench: number | null = evoPoint ? evoPoint.bench : benchmarkData.length ? bench12 : null;
-
-  // Gráfica: histórico real + tramo proyectado (punteado) hasta el mes futuro elegido.
-  const futureCount = evoPoint?.projected ? evoIdx! - benchmarkData.length + 1 : 0;
-  const lastHist = benchmarkData[benchmarkData.length - 1];
-  const chartData = [
-    ...benchmarkData.map((p) => ({
-      label: p.label,
-      portfolio: p.portfolio,
-      bench: p.bench,
-      portfolioProj: p === lastHist && futureCount > 0 ? p.portfolio : undefined,
-      benchProj: p === lastHist && futureCount > 0 ? p.bench : undefined,
-    })),
-    ...projectedData.slice(0, futureCount).map((p) => ({
-      label: p.label,
-      portfolio: undefined,
-      bench: undefined,
-      portfolioProj: p.portfolio,
-      benchProj: p.bench,
-    })),
-  ];
 
   // ---- Distribución objetivo universal (glidepath por horizonte) ----
   const horizon = yearsToRetire;
@@ -776,52 +733,38 @@ function PortafolioContent() {
               </Button>
             </PopoverTrigger>
             <PopoverContent align="end" collisionPadding={12} className="w-[min(92vw,20rem)] p-3">
+              <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                {t("Evolución · últimos 12 meses", "Evolution · last 12 months")}
+              </p>
               {benchmarkData.length === 0 ? (
                 <p className="text-xs text-muted-foreground">{t("Mercado no disponible", "Market unavailable")}</p>
               ) : (
-                <div className="max-h-[60vh] overflow-y-auto pr-0.5">
-                  {[
-                    { title: t("Últimos 12 meses · real", "Last 12 months · actual"), offset: 0, items: benchmarkData },
-                    {
-                      title: t(`Próximos 12 meses · proyección al ${weightedReturn.toFixed(1)}% anual`, `Next 12 months · projected at ${weightedReturn.toFixed(1)}% a year`),
-                      offset: benchmarkData.length,
-                      items: projectedData,
-                    },
-                  ].map((group) => (
-                    <div key={group.title} className="mb-3 last:mb-0">
-                      <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">{group.title}</p>
-                      <div className="grid grid-cols-3 gap-1.5">
-                        {group.items.map((p, k) => {
-                          const i = group.offset + k;
-                          const active = evoIdx === i;
-                          const future = group.offset > 0;
-                          return (
-                            <button
-                              key={`${p.label}-${i}`}
-                              type="button"
-                              onClick={() => {
-                                setEvoIdx(active ? null : i);
-                                setEvoOpen(false);
-                              }}
-                              className={cn(
-                                "rounded-lg border px-1.5 py-1.5 text-center transition",
-                                active
-                                  ? "border-primary/50 bg-primary/15 text-foreground"
-                                  : "border-border/50 bg-elevated/40 text-muted-foreground hover:text-foreground",
-                                future && !active && "border-dashed",
-                              )}
-                            >
-                              <span className="block text-[11px] font-medium">{p.label}</span>
-                              <span className={cn("numeric block text-[10px]", p.portfolio >= 0 ? "text-positive" : "text-negative")}>
-                                {p.portfolio > 0 ? "+" : ""}
-                                {p.portfolio.toFixed(1)}%
-                              </span>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ))}
+                <div className="grid grid-cols-3 gap-1.5">
+                  {benchmarkData.map((p, i) => {
+                    const active = evoIdx === i;
+                    return (
+                      <button
+                        key={`${p.label}-${i}`}
+                        type="button"
+                        onClick={() => {
+                          setEvoIdx(active ? null : i);
+                          setEvoOpen(false);
+                        }}
+                        className={cn(
+                          "rounded-lg border px-1.5 py-1.5 text-center transition",
+                          active
+                            ? "border-primary/50 bg-primary/15 text-foreground"
+                            : "border-border/50 bg-elevated/40 text-muted-foreground hover:text-foreground",
+                        )}
+                      >
+                        <span className="block text-[11px] font-medium">{p.label}</span>
+                        <span className={cn("numeric block text-[10px]", p.portfolio >= 0 ? "text-positive" : "text-negative")}>
+                          {p.portfolio > 0 ? "+" : ""}
+                          {p.portfolio.toFixed(1)}%
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               )}
               {evoPoint && (
@@ -877,9 +820,7 @@ function PortafolioContent() {
             )}
             <span className="truncate text-xs text-muted-foreground">
               {evoPoint
-                ? evoPoint.projected
-                  ? t(`${evoPoint.label} · proyección vs ${benchName}`, `${evoPoint.label} · projected vs ${benchName}`)
-                  : t(`${evoPoint.label} · vs ${benchName}`, `${evoPoint.label} · vs ${benchName}`)
+                ? t(`${evoPoint.label} · vs ${benchName}`, `${evoPoint.label} · vs ${benchName}`)
                 : shownBench !== null
                   ? t(`vs ${benchName} 12m`, `vs ${benchName} 12m`)
                   : t("Promedio ponderado real", "Real weighted average")}
@@ -891,11 +832,7 @@ function PortafolioContent() {
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel
           title={t(`Portafolio vs ${benchName}`, `Portfolio vs ${benchName}`)}
-          description={
-            futureCount > 0
-              ? t(`Real 12m + proyección compuesta hasta ${evoPoint?.label}`, `Actual 12m + compound projection to ${evoPoint?.label}`)
-              : t("Datos reales de mercado · últimos 12 meses", "Real market data · last 12 months")
-          }
+          description={t("Datos reales de mercado · últimos 12 meses", "Real market data · last 12 months")}
           className="lg:col-span-2"
           actions={
             <div className="flex rounded-full border border-border/60 p-0.5">
@@ -926,19 +863,13 @@ function PortafolioContent() {
             </div>
           ) : (
             <ResponsiveContainer width="100%" height={290}>
-              <LineChart data={chartData} margin={{ left: isMobile ? 0 : -18, right: isMobile ? 4 : 8 }}>
+              <LineChart data={benchmarkData} margin={{ left: isMobile ? 0 : -18, right: isMobile ? 4 : 8 }}>
                 <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
-                <XAxis dataKey="label" {...axisProps} interval={futureCount > 0 ? 1 : 0} />
+                <XAxis dataKey="label" {...axisProps} />
                 <YAxis {...axisProps} tickFormatter={(v) => `${v}%`} width={isMobile ? 38 : 46} />
                 <Tooltip content={<ChartTooltip formatter={(v) => `${v.toFixed(1)}%`} />} />
-                <Line type="monotone" dataKey="portfolio" name={t("Portafolio", "Portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.5} dot={false} connectNulls={false} />
-                <Line type="monotone" dataKey="bench" name={benchName} stroke="var(--color-chart-8)" strokeWidth={2} strokeDasharray="4 4" dot={false} connectNulls={false} />
-                {futureCount > 0 && (
-                  <Line type="monotone" dataKey="portfolioProj" name={t("Portafolio · proyección", "Portfolio · projection")} stroke="var(--color-chart-1)" strokeWidth={2.5} strokeDasharray="2 5" dot={false} connectNulls={false} />
-                )}
-                {futureCount > 0 && (
-                  <Line type="monotone" dataKey="benchProj" name={t(`${benchName} · proyección`, `${benchName} · projection`)} stroke="var(--color-chart-8)" strokeWidth={1.5} strokeDasharray="2 5" strokeOpacity={0.7} dot={false} connectNulls={false} />
-                )}
+                <Line type="monotone" dataKey="portfolio" name={t("Portafolio", "Portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.5} dot={false} />
+                <Line type="monotone" dataKey="bench" name={benchName} stroke="var(--color-chart-8)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
               </LineChart>
             </ResponsiveContainer>
           )}
