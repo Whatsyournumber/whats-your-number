@@ -96,6 +96,7 @@ export function KidShell({ member, children }: { member: Member; children: React
   const { t, lang } = useI18n();
   const label = (tab: { label: string; labelEn: string }) => (lang === "en" ? tab.labelEn : tab.label);
   const [collapsed, setCollapsed] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
     setCollapsed(window.localStorage.getItem("mfn-nav-collapsed") === "1");
   }, []);
