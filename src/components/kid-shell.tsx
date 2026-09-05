@@ -73,8 +73,18 @@ function ProfileCard({ member, collapsed }: { member: Member; collapsed: boolean
 export function useKidTheme(theme?: string) {
   useEffect(() => {
     const root = document.documentElement;
-    if (theme) root.setAttribute(THEME_ATTR, theme);
-    return () => root.removeAttribute(THEME_ATTR);
+    if (!theme) return;
+    root.setAttribute(THEME_ATTR, theme);
+    // La app fija un fondo oscuro inline en <html>; el tema infantil es claro,
+    // así que lo retiramos mientras esté activo para que no mate el contraste.
+    const prevBg = root.style.backgroundColor;
+    root.style.backgroundColor = "";
+    root.style.colorScheme = "light";
+    return () => {
+      root.removeAttribute(THEME_ATTR);
+      root.style.backgroundColor = prevBg;
+      root.style.colorScheme = "";
+    };
   }, [theme]);
 }
 
