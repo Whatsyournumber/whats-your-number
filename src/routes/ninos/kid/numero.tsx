@@ -154,12 +154,13 @@ function MyNumber({ member }: { member: Member }) {
   const line = lines[(member.xp / 10) % lines.length | 0] ?? lines[0];
 
   const buddyTipFn = useServerFn(getBuddyTip);
+  const { session } = useAuth();
   const { data: buddyTip, isFetching: buddyThinking } = useQuery({
     queryKey: ["kid-buddy-tip", member.id, lang, Math.round(today), Math.round(projection.future)],
-    enabled: movements.length > 0,
+    enabled: movements.length > 0 && !!session,
     staleTime: 1000 * 60 * 2,
     refetchOnWindowFocus: false,
-
+    throwOnError: false,
     retry: false,
     queryFn: () =>
       buddyTipFn({
