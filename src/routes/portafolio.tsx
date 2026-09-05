@@ -977,9 +977,9 @@ function PortafolioContent() {
 
             <div>
               <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
-              <p className={cn("numeric text-base font-bold", totalRet >= 0 ? "text-positive" : "text-negative")}>
-                {totalRet > 0 ? "+" : ""}
-                {totalRet.toFixed(1)}%
+              <p className={cn("numeric text-base font-bold", weightedReturn >= 0 ? "text-positive" : "text-negative")}>
+                {weightedReturn > 0 ? "+" : ""}
+                {weightedReturn.toFixed(1)}%
               </p>
             </div>
           </div>
