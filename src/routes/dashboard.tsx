@@ -145,7 +145,7 @@ function Dashboard() {
       else if (tk && dayChange[tk] !== undefined) marketGrowth = dayChange[tk] / 100;
       const growth = marketGrowth !== null ? marketGrowth : (h.expected_return || 7) / 100;
       const cost = h.cost_basis > 0 ? h.cost_basis : Math.round(value / (1 + growth));
-      return { value, cost };
+      return { value, cost, kind: h.kind };
     })
     .filter((h) => h.value > 0);
   const portfolioValue = portfolioPositions.reduce((s, h) => s + h.value, 0);
