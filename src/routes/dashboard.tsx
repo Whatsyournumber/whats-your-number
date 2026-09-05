@@ -132,6 +132,28 @@ function Dashboard() {
   const dayChange: Record<string, number> = Object.fromEntries(
     (holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.changePct ?? 0]),
   );
+
+  // Métricas reales del portafolio (mismo cálculo que /portafolio).
+  const portfolioPositions = holdings
+    .filter((h) => ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured", "cash", "bank", "money_market"].includes(h.kind))
+    .map((h) => {
+      const value = holdingValue(h, prices);
+      const tk = h.ticker?.toUpperCase();
+      const marketCost = h.cost_basis > 0 ? h.cost_basis : 0;
+      let marketGrowth: number | null = null;
+      if (tk && marketCost > 0 && value > 0) marketGrowth = (value - marketCost) / marketCost;
+      else if (tk && dayChange[tk] !== undefined) marketGrowth = dayChange[tk] / 100;
+      const growth = marketGrowth !== null ? marketGrowth : (h.expected_return || 7) / 100;
+      const cost = h.cost_basis > 0 ? h.cost_basis : Math.round(value / (1 + growth));
+      return { value, cost };
+    })
+    .filter((h) => h.value > 0);
+  const portfolioValue = portfolioPositions.reduce((s, h) => s + h.value, 0);
+  const yieldingPositions = portfolioPositions.filter((h) => h.cost > 0 && h.value !== h.cost);
+  const yieldingCost = yieldingPositions.reduce((s, h) => s + h.cost, 0);
+  const yieldingGain = yieldingPositions.reduce((s, h) => s + (h.value - h.cost), 0);
+  const portfolioReturn = yieldingCost ? (yieldingGain / yieldingCost) * 100 : 0;
+
   const months = (realMonths ?? d.months).map((month) => {
     const expenses = month.expenses + (realMonths ? fixed.total : 0);
     return { ...month, expenses, income: d.income, savings: d.income - expenses };
@@ -630,8 +652,8 @@ function Dashboard() {
                 value >= 75 ? "bg-positive" : value >= 50 ? "bg-warning" : "bg-negative";
 
               if (g.name === "Cartera de inversión") {
-                const diff = portfolioRate - sp500Rate;
-                const progress = sp500Rate > 0 ? Math.min(100, Math.max(0, (portfolioRate / sp500Rate) * 100)) : 0;
+                const diff = portfolioReturn - sp500Rate;
+                const progress = sp500Rate > 0 ? Math.min(100, Math.max(0, (portfolioReturn / sp500Rate) * 100)) : 0;
                 const diffText = `${diff >= 0 ? "+" : ""}${diff.toFixed(0)}%`;
                 const diffColor = diff >= 0 ? "text-positive" : "text-negative";
                 return (
@@ -649,7 +671,7 @@ function Dashboard() {
                           <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {fmtCompact(g.current)} {t(`al ${portfolioRate.toFixed(0)}%`, `at ${portfolioRate.toFixed(0)}%`)}
+                          {fmtCompact(portfolioValue)} {t(`al ${portfolioReturn.toFixed(0)}%`, `at ${portfolioReturn.toFixed(0)}%`)}
                         </p>
                         <Progress value={progress} indicatorClassName={goalBarColor(progress)} className="mt-1.5 h-1.5" />
                         <p className="mt-1 line-clamp-1 text-[11px] text-muted-foreground">
