@@ -217,7 +217,7 @@ export function KidShell({ member, children }: { member: Member; children: React
             </SheetTrigger>
             <SheetContent side="left" className="w-full sm:max-w-xs [&>button]:hidden">
               <div className="flex flex-col gap-6">
-                <div className="grid h-10 grid-cols-3 items-center">
+                <div className="relative flex h-10 items-center">
                   <SheetClose asChild>
                     <Link
                       to="/ninos"
@@ -227,10 +227,10 @@ export function KidShell({ member, children }: { member: Member; children: React
                       {t("Perfiles", "Profiles")}
                     </Link>
                   </SheetClose>
-                  <div className="flex justify-center">
+                  <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
                     <KidsBrandLogo />
                   </div>
-                  <div className="flex justify-end">
+                  <div className="ml-auto">
                     <SheetClose asChild>
                       <button
                         aria-label={t("Cerrar menú", "Close menu")}
@@ -276,17 +276,6 @@ export function KidShell({ member, children }: { member: Member; children: React
                   <p className="px-1 pb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
                     {t("Para papás", "For parents")}
                   </p>
-                  <SheetClose asChild>
-                    <Link
-                      to="/ninos"
-                      activeOptions={{ exact: true }}
-                      className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-secondary hover:text-foreground [&.nav-pill-active]:bg-primary [&.nav-pill-active]:text-primary-foreground"
-                      activeProps={{ className: "nav-pill-active" }}
-                    >
-                      <Users className="h-4.5 w-4.5 shrink-0" />
-                      <span className="truncate">{t("Perfiles", "Profiles")}</span>
-                    </Link>
-                  </SheetClose>
                   {PARENT_TABS.filter((tab) => tab.to !== "/ninos").map((tab) => (
                     <SheetClose asChild key={tab.to}>
                       <Link
