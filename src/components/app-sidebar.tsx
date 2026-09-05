@@ -113,30 +113,30 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r">
       <SidebarHeader className="px-3 py-3">
         {isMobile ? (
-          <div className="grid grid-cols-3 items-center pr-14">
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 pr-12">
             <Link
               to="/ninos"
               onClick={() => setOpenMobile(false)}
               className="justify-self-start"
             >
-              <span className="font-display text-lg font-semibold tracking-tight">{t("Perfiles", "Profiles")}</span>
+              <span className="inline-flex items-center gap-1 rounded-full bg-card/70 px-3 py-1.5 text-sm font-semibold tracking-tight ring-1 ring-border/50 backdrop-blur-sm">
+                {t("Perfiles", "Profiles")}
+                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+              </span>
             </Link>
             <div className="flex justify-center">
-              {tier === "patrimonio" ? (
-                <BrandMark className="h-9 w-9 shrink-0" />
-              ) : (
-                <div className="flex items-center gap-2">
-                  <BrandMark className="h-8 w-8 shrink-0" />
-                  <div className="hidden min-w-0 text-left sm:block">
-                    <p className="truncate font-display text-sm font-semibold">WhatsYournumber</p>
-                    <p className="truncate text-xs text-muted-foreground">{t("Tu CFO personal", "Your personal CFO")}</p>
-                  </div>
+              <div className="flex items-center gap-2">
+                <BrandMark className="h-8 w-8 shrink-0" />
+                <div className="min-w-0 text-left">
+                  <p className="truncate font-display text-sm font-semibold">WhatsYournumber</p>
+                  <p className="truncate text-xs text-muted-foreground">{t("Tu CFO personal", "Your personal CFO")}</p>
                 </div>
-              )}
+              </div>
             </div>
             <div />
           </div>
         ) : (
+
           <div className="flex items-center gap-2.5">
             <BrandMark className="h-8 w-8 shrink-0" />
             {!collapsed && (
