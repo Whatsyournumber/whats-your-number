@@ -121,7 +121,18 @@ export function EditableKpiCard({
           )}
           title={value}
         >
-          {value.length > 13 ? shortenMoneyString(value) : value}
+          {(() => {
+            const display = value.length > 13 ? shortenMoneyString(value) : value;
+            const short = value.length > 10 ? shortenMoneyString(value) : value;
+            return short !== value ? (
+              <>
+                <span className="lg:hidden">{short}</span>
+                <span className="hidden lg:inline">{display}</span>
+              </>
+            ) : (
+              display
+            );
+          })()}
         </p>
       )}
 
