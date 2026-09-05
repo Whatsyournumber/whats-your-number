@@ -346,10 +346,53 @@ function PortafolioContent() {
   const maxDrawdown = maxDD * 100;
   const hasStats = benchmarkData.length > 3;
 
-  // KPI "Rendimiento del portafolio": promedio ponderado real; con el calendario se ve el punto de cada mes.
-  const evoPoint = evoIdx !== null ? benchmarkData[evoIdx] ?? null : null;
+  // ---- Proyección compuesta a 12 meses: tu portafolio al rendimiento real ponderado, el índice a su ritmo de 12m ----
+  const MONTHS_SHORT = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+  const FUTURE_MONTHS = 12;
+  const portMonthly = Math.pow(1 + weightedReturn / 100, 1 / 12) - 1;
+  const benchAnnual = benchmarkData.length ? bench12 : 0;
+  const benchMonthly = Math.pow(1 + Math.max(-0.95, benchAnnual / 100), 1 / 12) - 1;
+  const now = new Date();
+  const projectedData = benchmarkData.length
+    ? Array.from({ length: FUTURE_MONTHS }, (_, k) => {
+        const d = new Date(now.getFullYear(), now.getMonth() + k + 1, 1);
+        const n = k + 1;
+        const yy = String(d.getFullYear()).slice(-2);
+        return {
+          label: `${MONTHS_SHORT[d.getMonth()]} '${yy}`,
+          portfolio: ((1 + port12 / 100) * Math.pow(1 + portMonthly, n) - 1) * 100,
+          bench: ((1 + bench12 / 100) * Math.pow(1 + benchMonthly, n) - 1) * 100,
+          projected: true,
+        };
+      })
+    : [];
+  const allPoints = [...benchmarkData.map((p) => ({ ...p, projected: false })), ...projectedData];
+
+  // KPI "Rendimiento del portafolio": promedio ponderado real; con el calendario se ve el punto de cada mes
+  // (pasado real o futuro proyectado en compound).
+  const evoPoint = evoIdx !== null ? allPoints[evoIdx] ?? null : null;
   const shownRet = evoPoint ? evoPoint.portfolio : weightedReturn;
   const shownBench: number | null = evoPoint ? evoPoint.bench : benchmarkData.length ? bench12 : null;
+
+  // Gráfica: histórico real + tramo proyectado (punteado) hasta el mes futuro elegido.
+  const futureCount = evoPoint?.projected ? evoIdx! - benchmarkData.length + 1 : 0;
+  const lastHist = benchmarkData[benchmarkData.length - 1];
+  const chartData = [
+    ...benchmarkData.map((p) => ({
+      label: p.label,
+      portfolio: p.portfolio,
+      bench: p.bench,
+      portfolioProj: p === lastHist && futureCount > 0 ? p.portfolio : undefined,
+      benchProj: p === lastHist && futureCount > 0 ? p.bench : undefined,
+    })),
+    ...projectedData.slice(0, futureCount).map((p) => ({
+      label: p.label,
+      portfolio: undefined,
+      bench: undefined,
+      portfolioProj: p.portfolio,
+      benchProj: p.bench,
+    })),
+  ];
 
   // ---- Distribución objetivo universal (glidepath por horizonte) ----
   const horizon = yearsToRetire;
