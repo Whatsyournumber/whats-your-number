@@ -354,9 +354,9 @@ function PatrimonioContent() {
     {
       key: "volatility",
       label: t("Volatilidad", "Volatility"),
-      value: `${volatility.toFixed(1)}%`,
-      badge: volatility < 10 ? t("BAJA", "LOW") : volatility < 20 ? t("MEDIA", "MEDIUM") : t("ALTA", "HIGH"),
-      tone: volatility < 10 ? "positive" : volatility < 20 ? "mid" : "negative",
+      value: `${portfolioVolatility.toFixed(1)}%`,
+      badge: portfolioVolatility < 10 ? t("BAJA", "LOW") : portfolioVolatility < 20 ? t("MEDIA", "MEDIUM") : t("ALTA", "HIGH"),
+      tone: portfolioVolatility < 10 ? "positive" : portfolioVolatility < 20 ? "mid" : "negative",
     },
     {
       key: "beta",
