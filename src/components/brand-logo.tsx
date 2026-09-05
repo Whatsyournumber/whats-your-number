@@ -82,11 +82,11 @@ export function KidsBrandMark({ className }: { className?: string }) {
 
 export function KidsBrandLogo({ className, compact }: { className?: string; compact?: boolean }) {
   return (
-    <span className={cn("flex min-w-0 items-center gap-2.5", className)}>
-      <BrandMark className="h-9 w-9 shrink-0" />
+    <span className={cn("flex min-w-0 items-center gap-2", className)}>
+      <BrandMark className="h-8 w-8 shrink-0" />
       <span
         className={cn(
-          "truncate font-display text-sm font-semibold leading-none tracking-tight",
+          "whitespace-nowrap font-display text-xs font-semibold leading-none tracking-tight sm:text-sm",
           compact && "hidden sm:inline",
         )}
       >
