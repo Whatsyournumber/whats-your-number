@@ -132,6 +132,28 @@ function Dashboard() {
   const dayChange: Record<string, number> = Object.fromEntries(
     (holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.changePct ?? 0]),
   );
+
+  // Métricas reales del portafolio (mismo cálculo que /portafolio).
+  const portfolioPositions = holdings
+    .filter((h) => ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured", "cash", "bank", "money_market"].includes(h.kind))
+    .map((h) => {
+      const value = holdingValue(h, prices);
+      const tk = h.ticker?.toUpperCase();
+      const marketCost = h.cost_basis > 0 ? h.cost_basis : 0;
+      let marketGrowth: number | null = null;
+      if (tk && marketCost > 0 && value > 0) marketGrowth = (value - marketCost) / marketCost;
+      else if (tk && dayChange[tk] !== undefined) marketGrowth = dayChange[tk] / 100;
+      const growth = marketGrowth !== null ? marketGrowth : (h.expected_return || 7) / 100;
+      const cost = h.cost_basis > 0 ? h.cost_basis : Math.round(value / (1 + growth));
+      return { value, cost };
+    })
+    .filter((h) => h.value > 0);
+  const portfolioValue = portfolioPositions.reduce((s, h) => s + h.value, 0);
+  const yieldingPositions = portfolioPositions.filter((h) => h.cost > 0 && h.value !== h.cost);
+  const yieldingCost = yieldingPositions.reduce((s, h) => s + h.cost, 0);
+  const yieldingGain = yieldingPositions.reduce((s, h) => s + (h.value - h.cost), 0);
+  const portfolioReturn = yieldingCost ? (yieldingGain / yieldingCost) * 100 : 0;
+
   const months = (realMonths ?? d.months).map((month) => {
     const expenses = month.expenses + (realMonths ? fixed.total : 0);
     return { ...month, expenses, income: d.income, savings: d.income - expenses };
