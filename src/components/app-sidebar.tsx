@@ -114,25 +114,28 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r">
       <SidebarHeader className="px-3 py-3">
         {isMobile ? (
-          <div className="flex items-center justify-center pr-14">
+          <div className="grid grid-cols-3 items-center pr-14">
             <Link
               to="/ninos"
               onClick={() => setOpenMobile(false)}
-              className="flex items-center gap-2.5"
+              className="justify-self-start"
             >
               <span className="font-display text-lg font-semibold tracking-tight">{t("Perfiles", "Profiles")}</span>
+            </Link>
+            <div className="flex justify-center">
               {tier === "patrimonio" ? (
                 <BrandMark className="h-9 w-9 shrink-0" />
               ) : (
                 <div className="flex items-center gap-2">
                   <BrandMark className="h-8 w-8 shrink-0" />
-                  <div className="min-w-0 text-left">
+                  <div className="hidden min-w-0 text-left sm:block">
                     <p className="truncate font-display text-sm font-semibold">WhatsYournumber</p>
                     <p className="truncate text-xs text-muted-foreground">{t("Tu CFO personal", "Your personal CFO")}</p>
                   </div>
                 </div>
               )}
-            </Link>
+            </div>
+            <div />
           </div>
         ) : (
           <div className="flex items-center gap-2.5">
