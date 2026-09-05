@@ -46,9 +46,11 @@ import { useActiveMember } from "@/hooks/use-mfn";
 import { kidZoneEnabled } from "@/lib/mfn";
 
 export function AppSidebar() {
-  const { state, setOpenMobile } = useSidebar();
-  const collapsed = state === "collapsed";
+  const { state, setOpenMobile, isMobile } = useSidebar();
+  const collapsed = state === "collapsed" && !isMobile;
   const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const navigate = useNavigate();
+  const { member: activeMember, members, select: selectProfile } = useActiveMember();
   const { profile } = useProfile();
   const data = buildDataset(profile);
   const t = useT();
