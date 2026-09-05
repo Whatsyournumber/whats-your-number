@@ -73,9 +73,17 @@ export async function fetchYearSeries(symbol: string): Promise<SeriesPoint[]> {
     const t = stamps[i];
     if (typeof c === "number" && typeof t === "number") points.push({ t, c });
   }
-  if (points.length < 2) return [];
-  const base = points[0]!.c;
-  return points.map((p) => {
+  // Yahoo suele añadir una barra extra con el precio de hoy en el mismo mes que la última barra mensual:
+  // nos quedamos con el último cierre de cada mes para no repetir "Sep, Sep".
+  const byMonth = new Map<string, { t: number; c: number }>();
+  for (const p of points) {
+    const d = new Date(p.t * 1000);
+    byMonth.set(`${d.getUTCFullYear()}-${d.getUTCMonth()}`, p);
+  }
+  const deduped = [...byMonth.values()].sort((a, b) => a.t - b.t);
+  if (deduped.length < 2) return [];
+  const base = deduped[0]!.c;
+  return deduped.map((p) => {
     const date = new Date(p.t * 1000);
     return { label: MONTHS[date.getUTCMonth()]!, value: ((p.c - base) / base) * 100 };
   });
