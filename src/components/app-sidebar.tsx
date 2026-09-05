@@ -113,27 +113,24 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r">
       <SidebarHeader className="px-3 py-3">
         {isMobile ? (
-          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 pr-12">
+          <div className="relative flex items-center justify-center py-1 pr-12">
             <Link
               to="/ninos"
               onClick={() => setOpenMobile(false)}
-              className="justify-self-start"
+              className="absolute left-0 top-1/2 -translate-y-1/2"
             >
               <span className="inline-flex items-center gap-1 text-sm font-semibold tracking-tight">
                 <ChevronRight className="h-3.5 w-3.5 rotate-180 text-muted-foreground" />
                 {t("Perfiles", "Profiles")}
               </span>
             </Link>
-            <div className="flex justify-center">
-              <div className="flex items-center gap-2">
-                <BrandMark className="h-8 w-8 shrink-0" />
-                <div className="min-w-0 text-left">
-                  <p className="truncate font-display text-sm font-semibold">WhatsYournumber</p>
-                  <p className="truncate text-xs text-muted-foreground">{t("Tu CFO personal", "Your personal CFO")}</p>
-                </div>
+            <div className="flex items-center gap-2">
+              <BrandMark className="h-8 w-8 shrink-0" />
+              <div className="min-w-0 text-left">
+                <p className="truncate font-display text-sm font-semibold">WhatsYournumber</p>
+                <p className="truncate text-xs text-muted-foreground">{t("Tu CFO personal", "Your personal CFO")}</p>
               </div>
             </div>
-            <div />
           </div>
         ) : (
 
