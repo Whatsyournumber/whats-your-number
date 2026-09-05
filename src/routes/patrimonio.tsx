@@ -329,21 +329,26 @@ function PatrimonioContent() {
   const totalAssetsAll = hasDetail ? assetRows.reduce((s, a) => s + a.value, 0) : d.totalAssets + futureTotal;
   const netWorthAll = totalAssetsAll - d.totalLiabilities;
 
-  // Métricas de riesgo del patrimonio basadas en la evolución seleccionada y el allocation actual.
-  const netWorthSeries = chartMonths.map((m) => m.netWorth);
-  const mReturns = monthlyReturns(netWorthSeries);
-  const volatility = mReturns.length > 1 ? stdDev(mReturns) * Math.sqrt(12) * 100 : 0;
-  const drawdown = maxDrawdown(netWorthSeries) * 100;
+  // Métricas de riesgo del patrimonio basadas en el allocation actual.
+  const weights = assetRows.map((a) => ({ ...a, weight: totalAssetsAll > 0 ? a.value / totalAssetsAll : 0 }));
   const portfolioBeta =
     totalAssetsAll > 0
-      ? assetRows.reduce((s, a) => s + (a.value / totalAssetsAll) * (BETA_BY_CLASS[a.key] ?? 0.8), 0)
+      ? weights.reduce((s, a) => s + a.weight * (BETA_BY_CLASS[a.key] ?? 0.8), 0)
       : 0;
-  const startNW = netWorthSeries[0] ?? 0;
-  const endNW = netWorthSeries[netWorthSeries.length - 1] ?? 0;
-  const years = Math.max(1, netWorthSeries.length - 1) / 12;
-  const cagr = startNW > 0 ? Math.pow(endNW / startNW, 1 / years) - 1 : 0;
+  const portfolioVolatility =
+    totalAssetsAll > 0
+      ? Math.sqrt(weights.reduce((s, a) => s + Math.pow(a.weight * (VOL_BY_CLASS[a.key] ?? 0.10), 2), 0)) * 100
+      : 0;
+  const portfolioExpectedReturn =
+    totalAssetsAll > 0
+      ? weights.reduce((s, a) => s + a.weight * (RETURN_BY_CLASS[a.key] ?? 0.05), 0)
+      : 0;
+  const netWorthSeries = chartMonths.map((m) => m.netWorth);
+  const historicalDrawdown = maxDrawdown(netWorthSeries) * 100;
+  const estimatedDrawdown = -1.5 * portfolioVolatility;
+  const drawdown = Math.min(historicalDrawdown, estimatedDrawdown);
   const riskFreeRate = 0.045;
-  const sharpe = volatility > 0 ? (cagr - riskFreeRate) / (volatility / 100) : 0;
+  const sharpe = portfolioVolatility > 0 ? (portfolioExpectedReturn - riskFreeRate) / (portfolioVolatility / 100) : 0;
 
   const riskMetrics = [
     {
