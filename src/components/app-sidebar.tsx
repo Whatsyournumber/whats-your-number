@@ -164,7 +164,7 @@ export function AppSidebar() {
         </div>
       )}
 
-      <SidebarContent className="flex-none gap-0.5 overflow-hidden">
+      <SidebarContent className={isMobile ? "flex-1 gap-0.5 overflow-y-auto" : "flex-none gap-0.5 overflow-hidden"}>
         <SidebarGroup className="p-1.5">
           <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
             {t("Patrimonio", "Net Worth")}
