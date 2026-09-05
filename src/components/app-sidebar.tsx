@@ -115,7 +115,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r">
       <SidebarHeader className="px-3 py-3">
         {isMobile ? (
-          <div className="flex items-center justify-between pr-10">
+          <div className="flex items-center justify-between pr-14">
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setOpenMobile(false)}
