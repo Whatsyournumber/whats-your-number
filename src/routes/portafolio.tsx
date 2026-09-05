@@ -877,7 +877,9 @@ function PortafolioContent() {
             )}
             <span className="truncate text-xs text-muted-foreground">
               {evoPoint
-                ? t(`${evoPoint.label} · vs ${benchName}`, `${evoPoint.label} · vs ${benchName}`)
+                ? evoPoint.projected
+                  ? t(`${evoPoint.label} · proyección vs ${benchName}`, `${evoPoint.label} · projected vs ${benchName}`)
+                  : t(`${evoPoint.label} · vs ${benchName}`, `${evoPoint.label} · vs ${benchName}`)
                 : shownBench !== null
                   ? t(`vs ${benchName} 12m`, `vs ${benchName} 12m`)
                   : t("Promedio ponderado real", "Real weighted average")}
