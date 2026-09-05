@@ -19,6 +19,7 @@ import {
   Users,
   Handshake,
   ChevronRight,
+  X,
 } from "lucide-react";
 
 
