@@ -284,21 +284,7 @@ export function KidShell({ member, children }: { member: Member; children: React
         </main>
       </div>
 
-      <div className="glass-nav fixed inset-x-0 bottom-0 z-30 border-t lg:hidden">
-        <div className="mx-auto flex max-w-lg items-center gap-2 px-3 pt-2">
-          {PARENT_TABS.map((tab) => (
-            <Link
-              key={tab.to}
-              to={tab.to}
-              activeOptions={{ exact: true }}
-              activeProps={{ className: "nav-pill-active" }}
-              className="flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full border border-border/60 bg-secondary/60 px-2 py-1.5 text-[11px] font-semibold text-muted-foreground"
-            >
-              <tab.icon className="h-3.5 w-3.5 shrink-0" />
-              <span className="truncate">{label(tab)}</span>
-            </Link>
-          ))}
-        </div>
+      <div className="glass-nav fixed inset-x-0 bottom-0 z-30 border-t bg-background/95 backdrop-blur lg:hidden">
         <nav className="mx-auto flex max-w-lg items-stretch justify-between gap-1 px-2 py-2">
           {kidTabs.map((tab) => (
             <Link
