@@ -212,10 +212,14 @@ function PortafolioContent() {
 
   const totalValue = enriched.reduce((s, h) => s + h.value, 0);
   const totalCost = enriched.reduce((s, h) => s + h.cost, 0);
-  const totalGain = totalValue - totalCost;
+  // Ganancia total: excluye cripto y ETF por requerimiento de negocio.
+  const gainExcludedTypes = new Set(["Cripto", "ETF"]);
+  const gainPositions = enriched.filter((h) => !gainExcludedTypes.has(h.type));
+  const totalGain = gainPositions.reduce((s, h) => s + (h.value - h.cost), 0);
+  const totalCostForGain = gainPositions.reduce((s, h) => s + h.cost, 0);
   // Rentabilidad real: promedio ponderado por capital invertido, solo de rubros que rinden
-  // (excluye efectivo y posiciones sin ganancia).
-  const yieldingHoldings = enriched.filter((h) => h.cost > 0 && h.value !== h.cost);
+  // (excluye efectivo, posiciones sin ganancia, cripto y ETF).
+  const yieldingHoldings = gainPositions.filter((h) => h.cost > 0 && h.value !== h.cost);
   const yieldingCost = yieldingHoldings.reduce((s, h) => s + h.cost, 0);
   const yieldingGain = yieldingHoldings.reduce((s, h) => s + (h.value - h.cost), 0);
   const totalRet = yieldingCost ? (yieldingGain / yieldingCost) * 100 : 0;
@@ -242,7 +246,7 @@ function PortafolioContent() {
   const cashWeight = totalValue
     ? enriched.filter((h) => h.type === "Cash").reduce((s, h) => s + h.value, 0) / totalValue
     : 0;
-  const annualGain = enriched.reduce((s, h) => s + h.value * h.growth, 0);
+  const annualGain = gainPositions.reduce((s, h) => s + h.value * h.growth, 0);
   const top = [...enriched].sort((a, b) => b.value - a.value)[0];
   const concentration = top && totalValue ? (top.value / totalValue) * 100 : 0;
   const netAnnual = (totalValue * weightedReturn) / 100;
@@ -782,7 +786,7 @@ function PortafolioContent() {
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard label={t("Valor actual", "Current value")} value={fmt(totalValue)} accent index={0} />
-        <KpiCard label={t("Ganancia total", "Total gain")} value={fmt(totalGain)} delta={totalCost > 0 ? (totalGain / totalCost) * 100 : 0} index={1} />
+        <KpiCard label={t("Ganancia total", "Total gain")} value={fmt(totalGain)} delta={totalCostForGain > 0 ? (totalGain / totalCostForGain) * 100 : 0} index={1} />
         <KpiCard label={t("Ganancia mensual", "Monthly gain")} value={fmt(Math.round(totalGain / 12))} index={2} />
         <motion.div
           initial={{ opacity: 0, y: 10 }}

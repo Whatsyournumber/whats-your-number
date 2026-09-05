@@ -145,11 +145,13 @@ function Dashboard() {
       else if (tk && dayChange[tk] !== undefined) marketGrowth = dayChange[tk] / 100;
       const growth = marketGrowth !== null ? marketGrowth : (h.expected_return || 7) / 100;
       const cost = h.cost_basis > 0 ? h.cost_basis : Math.round(value / (1 + growth));
-      return { value, cost };
+      return { value, cost, kind: h.kind };
     })
     .filter((h) => h.value > 0);
   const portfolioValue = portfolioPositions.reduce((s, h) => s + h.value, 0);
-  const yieldingPositions = portfolioPositions.filter((h) => h.cost > 0 && h.value !== h.cost);
+  // El rendimiento mostrado excluye cripto y ETF para reflejar la ganancia operativa neta.
+  const gainPositions = portfolioPositions.filter((h) => h.kind !== "crypto" && h.kind !== "etf");
+  const yieldingPositions = gainPositions.filter((h) => h.cost > 0 && h.value !== h.cost);
   const yieldingCost = yieldingPositions.reduce((s, h) => s + h.cost, 0);
   const yieldingGain = yieldingPositions.reduce((s, h) => s + (h.value - h.cost), 0);
   const portfolioReturn = yieldingCost ? (yieldingGain / yieldingCost) * 100 : 0;
@@ -595,7 +597,8 @@ function Dashboard() {
               const right = g.displayTarget ?? g.target;
               const remaining = Math.max(0, right - left);
               const portfolioRate = (() => {
-                const investKinds = ["etf", "stock", "crypto", "other", "bond", "tbill", "note", "structured"];
+                // El rendimiento de la cartera excluye cripto y ETF para reflejar la ganancia operativa neta.
+                const investKinds = ["stock", "other", "bond", "tbill", "note", "structured"];
                 const list = holdings.filter((h) => investKinds.includes(h.kind));
                 let totalValue = 0;
                 let weightedReturn = 0;
