@@ -216,7 +216,7 @@ export function KidShell({ member, children }: { member: Member; children: React
             </SheetTrigger>
             <SheetContent side="left" className="w-full sm:max-w-xs">
               <div className="flex flex-col gap-6 pt-8">
-                <div className="relative flex items-center justify-center pr-12">
+                <div className="relative flex h-10 items-center justify-center">
                   <SheetClose asChild>
                     <Link
                       to="/ninos"
@@ -228,7 +228,9 @@ export function KidShell({ member, children }: { member: Member; children: React
                       </span>
                     </Link>
                   </SheetClose>
-                  <KidsBrandLogo />
+                  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <KidsBrandLogo />
+                  </div>
                 </div>
                 <div className="flex items-center gap-3 rounded-2xl border border-border/60 bg-card/60 p-3">
                   <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary/10 text-2xl">

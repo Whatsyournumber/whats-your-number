@@ -113,7 +113,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r">
       <SidebarHeader className="px-3 py-3">
         {isMobile ? (
-          <div className="relative flex items-center justify-center py-1 pr-12">
+          <div className="relative flex h-10 items-center justify-center">
             <Link
               to="/ninos"
               onClick={() => setOpenMobile(false)}
@@ -124,7 +124,7 @@ export function AppSidebar() {
                 {t("Perfiles", "Profiles")}
               </span>
             </Link>
-            <div className="flex items-center gap-2">
+            <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2">
               <BrandMark className="h-8 w-8 shrink-0" />
               <div className="min-w-0 text-left">
                 <p className="truncate font-display text-sm font-semibold">WhatsYournumber</p>
