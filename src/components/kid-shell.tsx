@@ -8,11 +8,13 @@ import {
   Star,
   Wallet,
   ChevronLeft,
+  Menu,
   PanelLeftClose,
   PanelLeftOpen,
   SlidersHorizontal,
   Users,
 } from "lucide-react";
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { THEME_ATTR, kidZoneEnabled, money, pocketTotals, type Member } from "@/lib/mfn";
 import { useMovements } from "@/hooks/use-mfn";
