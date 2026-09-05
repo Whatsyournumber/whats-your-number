@@ -52,8 +52,9 @@ export function AppSidebar() {
   const data = buildDataset(profile);
   const t = useT();
   const { isSuperAdmin } = useRoles();
-  const { isPatrimonio, tier } = useSubscription();
+  const { tier } = useSubscription();
   const { affiliate } = useMyAffiliate();
+
 
   const primary = [
     { title: t("Dashboard", "Dashboard"), url: "/dashboard", icon: LayoutDashboard },
