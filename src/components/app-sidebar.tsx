@@ -199,7 +199,7 @@ export function AppSidebar() {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold text-foreground">{fullName}</p>
-                <p className="truncate text-xs text-muted-foreground">{email}</p>
+                <p className="truncate text-xs text-muted-foreground">{t("Mis datos", "My data")}</p>
               </div>
               <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
             </Link>
