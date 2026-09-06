@@ -431,7 +431,40 @@ function AdminPage() {
               placeholder={t("Buscar por nombre o email…", "Search by name or email…")}
               className="mb-4 max-w-sm"
             />
-            <div className="overflow-x-auto">
+            {/* Mobile: cards */}
+            <div className="space-y-2 sm:hidden">
+              {filteredUsers.map((u) => {
+                const o = onbByUser.get(u.id);
+                const s = subByUser.get(u.id);
+                return (
+                  <div key={u.id} className="rounded-xl border border-border/60 bg-muted/20 p-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold">{u.full_name ?? "—"}</p>
+                        <p className="truncate text-xs text-muted-foreground">{u.email ?? "—"}</p>
+                      </div>
+                      <DeleteAction
+                        title={t("Borrar usuario", "Delete user")}
+                        description={t("Se eliminará la cuenta de {x} y todos sus datos (perfil, gastos, estados de cuenta, suscripciones). Esta acción no se puede deshacer.", "The account {x} and all its data (profile, expenses, statements, subscriptions) will be deleted. This cannot be undone.").replace("{x}", u.email ?? u.id)}
+                        onConfirm={() =>
+                          runDelete(() => adminDeleteUser({ data: { userId: u.id } }), t("Usuario eliminado", "User deleted"))
+                        }
+                      />
+                    </div>
+                    <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                      <Badge variant={s ? "default" : "outline"}>{s ? s.product_id.replace("_plan", "") : "free"}</Badge>
+                      <Badge variant={o?.completed ? "default" : "secondary"}>{o?.completed ? t("Completo", "Complete") : t("Pendiente", "Pending")}</Badge>
+                      <span className="text-[11px] text-muted-foreground">{o?.country ? `${o.country} · ` : ""}{fmtDate(u.created_at)}</span>
+                    </div>
+                  </div>
+                );
+              })}
+              {filteredUsers.length === 0 && (
+                <p className="py-6 text-center text-sm text-muted-foreground">{t("Sin resultados", "No results")}</p>
+              )}
+            </div>
+            {/* Desktop: table */}
+            <div className="hidden overflow-x-auto sm:block">
               <Table>
                 <TableHeader>
                   <TableRow>
