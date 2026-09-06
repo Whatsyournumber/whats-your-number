@@ -120,19 +120,19 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r">
       <SidebarHeader className="px-3 py-3">
         {isMobile ? (
-          <div className="grid h-12 grid-cols-[1fr_auto_1fr] items-center">
+          <div className="relative flex h-10 items-center justify-center">
             <Link
               to="/ninos"
               onClick={() => setOpenMobile(false)}
-              className="justify-self-start outline-none"
+              className="absolute left-0 top-1/2 -translate-y-1/2"
             >
               <span className="inline-flex items-center gap-1 text-sm font-semibold tracking-tight">
                 <ChevronRight className="h-3.5 w-3.5 rotate-180 text-muted-foreground" />
                 {t("Perfiles", "Profiles")}
               </span>
             </Link>
-            <div className="flex items-center gap-2 justify-self-center">
-              <BrandMark className="h-6 w-6 shrink-0" />
+            <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2">
+              <BrandMark className="h-7 w-7 shrink-0" />
               <p className="whitespace-nowrap font-display text-sm font-semibold leading-none">
                 Whats<span className="text-primary">Yournumber</span>
               </p>
@@ -140,7 +140,7 @@ export function AppSidebar() {
             <button
               onClick={() => setOpenMobile(false)}
               aria-label={t("Cerrar menú", "Close menu")}
-              className="grid h-9 w-9 place-items-center justify-self-end rounded-full text-muted-foreground outline-none transition hover:bg-secondary hover:text-foreground"
+              className="absolute right-0 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full text-muted-foreground transition hover:bg-secondary hover:text-foreground"
             >
               <X className="h-5 w-5" />
             </button>
