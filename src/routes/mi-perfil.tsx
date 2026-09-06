@@ -178,7 +178,7 @@ function MiPerfil() {
 
     setDirty(false);
     toast.success(t("Cambios guardados", "Changes saved"), {
-      description: t("Recalculamos todos los números de tus pestañas.", "We recalculamos every number across your tabs."),
+      description: t("Recalculamos todos los números de tus pestañas.", "We recalculated every number across your tabs."),
     });
   };
 
