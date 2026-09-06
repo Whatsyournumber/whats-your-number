@@ -20,6 +20,7 @@ import {
   Handshake,
   ChevronRight,
   X,
+  UserRound,
 } from "lucide-react";
 
 
@@ -44,6 +45,7 @@ import { useT } from "@/hooks/use-language";
 import { useRoles } from "@/hooks/use-role";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useMyAffiliate } from "@/hooks/use-affiliate";
+import { useAuth } from "@/hooks/use-auth";
 
 export function AppSidebar() {
   const { state, setOpenMobile, isMobile } = useSidebar();
@@ -55,6 +57,18 @@ export function AppSidebar() {
   const { isSuperAdmin } = useRoles();
   const { tier } = useSubscription();
   const { affiliate } = useMyAffiliate();
+  const { user } = useAuth();
+
+  const googleAvatar =
+    (user?.user_metadata?.["avatar_url"] as string | undefined) ??
+    (user?.user_metadata?.["picture"] as string | undefined) ??
+    null;
+  const fullName =
+    (user?.user_metadata?.["full_name"] as string | undefined) ??
+    (user?.user_metadata?.["name"] as string | undefined) ??
+    user?.email ??
+    "";
+  const email = user?.email ?? "";
 
 
   const primary = [
