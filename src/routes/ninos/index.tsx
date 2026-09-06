@@ -77,7 +77,7 @@ export const Route = createFileRoute("/ninos/")({
 function ProfileSelector() {
   const router = useRouter();
   const { data: members = [], isLoading } = useMembers();
-  const { data: subscription } = useSubscription();
+  const { data: subscription, tier: subTier } = useSubscription();
   const { select } = useActiveProfile();
   const { t, lang } = useI18n();
   const { profile, save: saveProfile } = useProfile();
@@ -274,10 +274,10 @@ function ProfileSelector() {
       <div className="mx-auto w-full max-w-4xl px-5 py-14 sm:px-8 sm:py-20">
         <div className="flex items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+            <p className="whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.14em] text-primary sm:text-xs sm:tracking-[0.2em]">
               My First Number
             </p>
-            <span className="rounded-full bg-secondary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground">
+            <span className="whitespace-nowrap rounded-full bg-secondary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground">
               {t("Plan", "Plan")} {planLabel(plan, lang === "en" ? "en" : "es")}
             </span>
           </div>
