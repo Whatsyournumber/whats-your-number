@@ -3,7 +3,15 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /** Contenedor con scroll horizontal, degradados sutiles y botones de desplazamiento. */
-export function ScrollX({ children, className }: { children: React.ReactNode; className?: string }) {
+export function ScrollX({
+  children,
+  className,
+  controlsPosition = "center",
+}: {
+  children: React.ReactNode;
+  className?: string;
+  controlsPosition?: "center" | "top";
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const [state, setState] = useState({ left: false, right: false });
 
@@ -29,6 +37,8 @@ export function ScrollX({ children, className }: { children: React.ReactNode; cl
     el.scrollBy({ left: dir * Math.max(160, el.clientWidth * 0.7), behavior: "smooth" });
   };
 
+  const isTop = controlsPosition === "top";
+
   return (
     <div className={cn("relative", className)}>
       <div ref={ref} onScroll={update} className="overflow-x-auto scroll-smooth">
@@ -37,12 +47,15 @@ export function ScrollX({ children, className }: { children: React.ReactNode; cl
 
       {state.left && (
         <>
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-card to-transparent" />
+          {!isTop && <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-card to-transparent" />}
           <button
             type="button"
             aria-label="Scroll left"
             onClick={() => nudge(-1)}
-            className="absolute left-1 top-1/2 z-10 -translate-y-1/2 rounded-full border border-border/70 bg-card/90 p-1.5 text-muted-foreground shadow-sm backdrop-blur transition hover:text-foreground"
+            className={cn(
+              "absolute left-1 z-10 rounded-full border border-border/70 bg-card/90 p-1.5 text-muted-foreground shadow-sm backdrop-blur transition hover:text-foreground",
+              isTop ? "top-3" : "top-1/2 -translate-y-1/2",
+            )}
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
@@ -51,12 +64,15 @@ export function ScrollX({ children, className }: { children: React.ReactNode; cl
 
       {state.right && (
         <>
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-card to-transparent" />
+          {!isTop && <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-card to-transparent" />}
           <button
             type="button"
             aria-label="Scroll right"
             onClick={() => nudge(1)}
-            className="absolute right-1 top-1/2 z-10 -translate-y-1/2 rounded-full border border-border/70 bg-card/90 p-1.5 text-muted-foreground shadow-sm backdrop-blur transition hover:text-foreground"
+            className={cn(
+              "absolute right-1 z-10 rounded-full border border-border/70 bg-card/90 p-1.5 text-muted-foreground shadow-sm backdrop-blur transition hover:text-foreground",
+              isTop ? "top-3" : "top-1/2 -translate-y-1/2",
+            )}
           >
             <ChevronRight className="h-4 w-4" />
           </button>
