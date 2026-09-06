@@ -839,7 +839,7 @@ function PortafolioContent() {
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel
           title={t("Rendimiento", "Performance")}
-          description={t(`vs ${benchName} · 12 meses`, `vs ${benchName} · 12 months`)}
+          description={t(`vs ${benchName} · 12m`, `vs ${benchName} · 12m`)}
           className="lg:col-span-2"
           actions={
             <div className="flex flex-nowrap items-center rounded-full border border-border/60 p-0.5">
