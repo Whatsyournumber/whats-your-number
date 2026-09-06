@@ -1,9 +1,7 @@
 import { Block, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Camera, ChevronLeft, Loader2, RefreshCw, Save, Target, UserRound, Wallet } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { ChevronLeft, Loader2, RefreshCw, Save, Target, UserRound, Wallet } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-
-import { supabase } from "@/integrations/supabase/client";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { WealthEditor } from "@/components/wealth-editor";
@@ -73,9 +71,6 @@ function MiPerfil() {
   const [form, setForm] = useState<Profile>(profile);
   const { holdings, isLoading: loadingHoldings, saveAll } = useHoldings();
   const [wealth, setWealth] = useState<Holding[]>([]);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [uploadingAvatar, setUploadingAvatar] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(googleAvatar);
 
 
   const [dirty, setDirty] = useState(false);
@@ -180,50 +175,6 @@ function MiPerfil() {
     toast.success(t("Cambios guardados", "Changes saved"), {
       description: t("Recalculamos todos los números de tus pestañas.", "We recalculated every number across your tabs."),
     });
-  };
-
-  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !user) return;
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error(t("La foto es muy pesada", "Photo is too large"), {
-        description: t("Máximo 2 MB.", "Max 2 MB."),
-      });
-      return;
-    }
-    setUploadingAvatar(true);
-    try {
-      const path = `${user.id}/avatar`;
-      const { error: uploadError } = await supabase.storage.from("avatars").upload(path, file, {
-        upsert: true,
-        contentType: file.type,
-      });
-      if (uploadError) throw uploadError;
-
-      const { data: signedData, error: signedError } = await supabase.storage
-        .from("avatars")
-        .createSignedUrl(path, 60 * 60 * 24 * 365);
-      if (signedError) throw signedError;
-
-      const signedUrl = signedData?.signedUrl;
-      if (!signedUrl) throw new Error("No signed URL returned");
-
-      const { error: updateError } = await supabase.auth.updateUser({
-        data: { avatar_url: signedUrl },
-      });
-      if (updateError) throw updateError;
-
-      setAvatarUrl(signedUrl);
-      toast.success(t("Foto actualizada", "Photo updated"));
-    } catch (err) {
-      console.error("[mi-perfil] avatar upload failed", err);
-      toast.error(t("No pudimos subir la foto", "We couldn't upload the photo"), {
-        description: err instanceof Error ? err.message : String(err ?? ""),
-      });
-    } finally {
-      setUploadingAvatar(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    }
   };
 
 
@@ -341,40 +292,18 @@ function MiPerfil() {
 
           <PageShell>
             <div className="flex items-center gap-4 sm:gap-6">
-              <div className="relative shrink-0">
-                {avatarUrl ? (
-                  <img
-                    src={avatarUrl}
-                    alt={form.full_name || googleName || t("Foto de perfil", "Profile photo")}
-                    className="h-20 w-20 shrink-0 rounded-full object-cover ring-2 ring-primary/30 sm:h-24 sm:w-24"
-                    referrerPolicy="no-referrer"
-                  />
-                ) : (
-                  <div className="grid h-20 w-20 shrink-0 place-items-center rounded-full bg-secondary ring-2 ring-primary/30 sm:h-24 sm:w-24">
-                    <UserRound className="h-10 w-10 text-muted-foreground sm:h-11 sm:w-11" />
-                  </div>
-                )}
-                <button
-                  type="button"
-                  disabled={uploadingAvatar}
-                  onClick={() => fileInputRef.current?.click()}
-                  className="absolute -bottom-1 -right-1 grid h-8 w-8 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg ring-2 ring-background hover:bg-primary/90 disabled:opacity-50 sm:h-9 sm:w-9"
-                  aria-label={t("Editar foto", "Edit photo")}
-                >
-                  {uploadingAvatar ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Camera className="h-4 w-4" />
-                  )}
-                </button>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleAvatarChange}
+              {googleAvatar ? (
+                <img
+                  src={googleAvatar}
+                  alt={form.full_name || googleName || t("Foto de perfil", "Profile photo")}
+                  className="h-20 w-20 shrink-0 rounded-full object-cover ring-2 ring-primary/30 sm:h-24 sm:w-24"
+                  referrerPolicy="no-referrer"
                 />
-              </div>
+              ) : (
+                <div className="grid h-20 w-20 shrink-0 place-items-center rounded-full bg-secondary ring-2 ring-primary/30 sm:h-24 sm:w-24">
+                  <UserRound className="h-10 w-10 text-muted-foreground sm:h-11 sm:w-11" />
+                </div>
+              )}
               <div className="min-w-0 flex-1">
                 <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                   {t("Perfil financiero", "Financial profile")}
@@ -382,16 +311,16 @@ function MiPerfil() {
                 <h1 className="truncate text-2xl font-bold text-foreground sm:text-3xl">
                   {form.full_name || googleName || t("Tu cuenta", "Your account")}
                 </h1>
+                {user?.email && (
+                  <p className="truncate text-sm text-muted-foreground">{user.email}</p>
+                )}
                 <button
                   type="button"
-                  onClick={() => {
-                    const el = document.getElementById("profile-data-section");
-                    el?.scrollIntoView({ behavior: "smooth", block: "start" });
-                  }}
-                  className="mt-1 inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground"
+                  onClick={() => navigate({ to: "/mi-perfil" })}
+                  className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
                 >
-                  {t("Ver datos", "View data")}
-                  <ChevronLeft className="h-4 w-4 rotate-180" />
+                  <ChevronLeft className="h-4 w-4" />
+                  {t("Ver mis datos", "See my data")}
                 </button>
               </div>
             </div>
@@ -425,7 +354,6 @@ function MiPerfil() {
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
         <Panel
-          id="profile-data-section"
           icon={<UserRound />}
           title={t("Sobre ti", "About you")}
           description={t("Tus datos base para las proyecciones.", "Your base data for the projections.")}
