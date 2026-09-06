@@ -425,6 +425,7 @@ function MiPerfil() {
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
         <Panel
+          id="profile-data-section"
           icon={<UserRound />}
           title={t("Sobre ti", "About you")}
           description={t("Tus datos base para las proyecciones.", "Your base data for the projections.")}
