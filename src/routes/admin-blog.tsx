@@ -867,39 +867,87 @@ function KeywordGroupPanel({
         </p>
       )}
       {serpError && <p className="mb-3 text-xs text-destructive">{serpError}</p>}
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Keyword objetivo</TableHead>
-            <TableHead className="w-20">Idioma</TableHead>
-            <TableHead className="w-28">País</TableHead>
-            <TableHead className="text-right">Clics</TableHead>
-            <TableHead className="text-right">Impresiones</TableHead>
-            <TableHead className="text-right">Posición</TableHead>
-            <TableHead className="text-right">Pos. alternativa</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {group.keywords.flatMap((kw) =>
-            (["es", "en"] as const).map((lang) => (
-              <TableRow key={`${group.id}-${lang}-${kw[lang]}`}>
-                <TableCell className="font-medium">{kw[lang]}</TableCell>
-                <TableCell className="uppercase text-xs text-muted-foreground">{lang}</TableCell>
-                <TableCell className="text-xs text-muted-foreground">
-                  {SERP_REGION_LABEL[lang === "es" ? "es" : "us"]}
-                </TableCell>
-                <RankCells rank={rankMap.get(kw[lang].toLowerCase())} />
-                <SerpCell
-                  rank={serpMap.get(`${lang === "es" ? "es" : "us"}|${kw[lang].toLowerCase()}`)}
-                  measuring={measuring}
-                />
-              </TableRow>
-            )),
-          )}
-        </TableBody>
-      </Table>
+      {/* Mobile: cards */}
+      <div className="space-y-2 sm:hidden">
+        {group.keywords.flatMap((kw) =>
+          (["es", "en"] as const).map((lang) => {
+            const rank = rankMap.get(kw[lang].toLowerCase());
+            const srank = serpMap.get(`${lang === "es" ? "es" : "us"}|${kw[lang].toLowerCase()}`);
+            const hasRank = rank && !(rank.position === null && rank.impressions === 0);
+            return (
+              <div key={`${group.id}-${lang}-${kw[lang]}`} className="rounded-xl border border-border/60 bg-muted/20 p-3">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="min-w-0 text-sm font-medium leading-snug">{kw[lang]}</p>
+                  <Badge variant="outline" className="shrink-0 uppercase">{lang}</Badge>
+                </div>
+                <p className="mt-0.5 text-[11px] text-muted-foreground">{SERP_REGION_LABEL[lang === "es" ? "es" : "us"]}</p>
+                <div className="mt-2 grid grid-cols-4 gap-1 rounded-lg bg-background/60 px-2 py-1.5 text-center">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Clics</p>
+                    <p className="text-xs font-semibold">{hasRank ? rank.clicks : "—"}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Impr.</p>
+                    <p className="text-xs font-semibold">{hasRank ? rank.impressions : "—"}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Pos.</p>
+                    <p className="text-xs font-semibold">{hasRank && rank.position !== null ? rank.position.toFixed(1) : "—"}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Pos. alt.</p>
+                    <p className="text-xs font-semibold">{serpText(srank, measuring)}</p>
+                  </div>
+                </div>
+              </div>
+            );
+          }),
+        )}
+      </div>
+      {/* Desktop: table */}
+      <div className="hidden overflow-x-auto sm:block">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Keyword objetivo</TableHead>
+              <TableHead className="w-20">Idioma</TableHead>
+              <TableHead className="w-28">País</TableHead>
+              <TableHead className="text-right">Clics</TableHead>
+              <TableHead className="text-right">Impresiones</TableHead>
+              <TableHead className="text-right">Posición</TableHead>
+              <TableHead className="text-right">Pos. alternativa</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {group.keywords.flatMap((kw) =>
+              (["es", "en"] as const).map((lang) => (
+                <TableRow key={`${group.id}-${lang}-${kw[lang]}`}>
+                  <TableCell className="font-medium">{kw[lang]}</TableCell>
+                  <TableCell className="uppercase text-xs text-muted-foreground">{lang}</TableCell>
+                  <TableCell className="text-xs text-muted-foreground">
+                    {SERP_REGION_LABEL[lang === "es" ? "es" : "us"]}
+                  </TableCell>
+                  <RankCells rank={rankMap.get(kw[lang].toLowerCase())} />
+                  <SerpCell
+                    rank={serpMap.get(`${lang === "es" ? "es" : "us"}|${kw[lang].toLowerCase()}`)}
+                    measuring={measuring}
+                  />
+                </TableRow>
+              )),
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </Panel>
   );
+}
+
+function serpText(rank: SerpRank | undefined, measuring: boolean): string {
+  if (measuring && !rank) return "…";
+  if (!rank) return "—";
+  if (rank.error) return "—";
+  if (rank.position === null) return ">30";
+  return `#${rank.position}`;
 }
 
 function SerpCell({ rank, measuring }: { rank: SerpRank | undefined; measuring: boolean }) {
