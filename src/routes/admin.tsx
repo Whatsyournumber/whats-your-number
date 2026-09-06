@@ -407,13 +407,24 @@ function AdminPage() {
       </div>
 
       <Tabs defaultValue="users" className="w-full">
-        <TabsList>
-          <TabsTrigger value="users">{t("Usuarios", "Users")}</TabsTrigger>
-          <TabsTrigger value="subs">{t("Pagos y suscripciones", "Payments & subscriptions")}</TabsTrigger>
-          <TabsTrigger value="statements">{t("Estados de cuenta", "Statements")}</TabsTrigger>
-          <TabsTrigger value="promos">{t("Invitaciones", "Invites")}</TabsTrigger>
-          <TabsTrigger value="affiliates">{t("Afiliados", "Affiliates")}</TabsTrigger>
-        </TabsList>
+        <div className="-mx-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <TabsList className="w-max flex-nowrap justify-start">
+            <TabsTrigger value="users" className="shrink-0">
+              <span className="sm:hidden">{t("Usuarios", "Users")}</span>
+              <span className="hidden sm:inline">{t("Usuarios", "Users")}</span>
+            </TabsTrigger>
+            <TabsTrigger value="subs" className="shrink-0">
+              <span className="sm:hidden">{t("Pagos", "Payments")}</span>
+              <span className="hidden sm:inline">{t("Pagos y suscripciones", "Payments & subscriptions")}</span>
+            </TabsTrigger>
+            <TabsTrigger value="statements" className="shrink-0">
+              <span className="sm:hidden">{t("Estados", "Statements")}</span>
+              <span className="hidden sm:inline">{t("Estados de cuenta", "Statements")}</span>
+            </TabsTrigger>
+            <TabsTrigger value="promos" className="shrink-0">{t("Invitaciones", "Invites")}</TabsTrigger>
+            <TabsTrigger value="affiliates" className="shrink-0">{t("Afiliados", "Affiliates")}</TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="users" className="mt-4">
           <Panel title={t("Registros", "Sign-ups")} description={`${filteredUsers.length} ${t("usuarios", "users")}`}>
