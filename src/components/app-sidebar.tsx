@@ -16,7 +16,6 @@ import {
   UserCog,
   CreditCard,
   ShieldCheck,
-  Users,
   Handshake,
   ChevronRight,
   X,
@@ -86,23 +85,15 @@ export function AppSidebar() {
 
 
 
-  const affiliateItems: { title: string; url: string; icon: typeof Users }[] =
+  const affiliateItems: { title: string; url: string; icon: typeof Handshake }[] =
     affiliate && affiliate.status !== "disabled"
       ? [{ title: t("Programa de afiliados", "Affiliate program"), url: "/afiliados", icon: Handshake }]
       : [];
 
-  const familyItems: { title: string; url: string; icon: typeof Users }[] =
-    tier === "patrimonio"
-      ? [{ title: t("Perfil familiar", "Family profiles"), url: "/ninos", icon: Users }]
-      : [];
-
   const secondary = [
     ...affiliateItems,
-    ...familyItems,
     { title: t("Asistente IA", "AI Assistant"), url: "/advisor", icon: Bot },
-    { title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserCog },
     { title: t("Suscripción", "Subscription"), url: "/suscripcion", icon: CreditCard },
-    
     { title: t("Importar gastos", "Import expenses"), url: "/configuracion", icon: Upload },
   ] as const;
 
@@ -199,7 +190,10 @@ export function AppSidebar() {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold text-foreground">{fullName}</p>
-                <p className="truncate text-xs text-muted-foreground">{t("Mis datos", "My data")}</p>
+                <p className="flex items-center gap-1 truncate text-xs text-muted-foreground">
+                  <UserCog className="h-3 w-3" />
+                  {t("Mis datos", "My data")}
+                </p>
               </div>
               <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
             </Link>
