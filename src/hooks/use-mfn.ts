@@ -16,8 +16,8 @@ import { useSubscription as useWynSubscription } from "@/hooks/use-subscription"
 
 /** Suscripción de WhatsYourNumber adaptada a la forma { data } que usa la zona infantil. */
 export function useSubscription() {
-  const { subscription, loading } = useWynSubscription();
-  return { data: subscription ?? null, isLoading: loading };
+  const { subscription, loading, tier } = useWynSubscription();
+  return { data: subscription ?? null, isLoading: loading, tier };
 }
 
 async function requireUser() {
