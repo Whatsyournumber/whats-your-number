@@ -623,67 +623,73 @@ function RetiroContent() {
         </Panel>
       </div>
 
-      <Panel
-        title={t("Escenarios de renta mensual", "Monthly income scenarios")}
-        description={`${t("En verde, lo que cubre tus gastos de", "In green, what covers your expenses of")} ${fmt(d.expenses)}.`}
-        actions={<ScrollXButtons state={scenariosScroll.state} nudge={scenariosScroll.nudge} />}
-      >
-        <div ref={scenariosScroll.ref} onScroll={scenariosScroll.update} className="overflow-x-auto scroll-smooth">
-          <table className="w-full min-w-[640px] border-collapse text-sm">
-            <thead>
-              <tr className="border-b border-border text-xs uppercase tracking-[0.12em] text-muted-foreground">
-                <th className="px-3 py-2 text-left font-medium">{t("Capital", "Capital")}</th>
-                {rates.map((rr) => (
-                  <th key={rr} className="px-3 py-2 text-right font-medium">
-                    {rr}%
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {capitals.map((cap) => {
-                const isNumberRow = cap === roundNice(baseNumber);
-                return (
-                  <tr
-                    key={cap}
-                    className={cn(
-                      "relative border-b border-border/60 last:border-0 hover:bg-elevated/40",
-                      isNumberRow && "border-primary/30 bg-primary/[0.04] shadow-[0_0_20px_hsl(var(--primary)/5%)]",
-                    )}
-                  >
-                    <td className={cn("numeric px-3 text-left font-semibold", isNumberRow ? "pb-4 pt-6" : "py-3")}>
-                      {fmt(cap)}
-                      {isNumberRow && (
-                        <span className="absolute -top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-primary-foreground shadow-lg shadow-primary/20">
-                          <span className="h-1 w-1 animate-pulse rounded-full bg-primary-foreground" />
-                          {t("tu número", "your number")}
-                        </span>
-                      )}
-                    </td>
-                    {rates.map((rr) => {
-                      const inc = (cap * (rr / 100)) / 12;
-                      const covers = inc >= d.expenses && d.expenses > 0;
-                      return (
-                        <td
-                          key={rr}
-                          className={cn(
-                            "numeric px-3 text-right",
-                            isNumberRow ? "pb-4 pt-6" : "py-3",
-                            covers && "font-medium text-positive",
-                          )}
-                        >
-                          {fmt(Math.round(inc))}
-                        </td>
-                      );
-                    })}
+      {/* Standard of living = ingreso/gasto mensual objetivo. El usuario lo edita en "Tu número". */}
+      {(() => {
+        const standardOfLiving = Math.max(0, wantMonthly || d.expenses);
+        return (
+          <Panel
+            title={t("Escenarios de renta mensual", "Monthly income scenarios")}
+            description={`${t("En verde, lo que cubre tu gasto objetivo de", "In green, what covers your standard of living of")} ${fmt(standardOfLiving)}.`}
+            actions={<ScrollXButtons state={scenariosScroll.state} nudge={scenariosScroll.nudge} />}
+          >
+            <div ref={scenariosScroll.ref} onScroll={scenariosScroll.update} className="overflow-x-auto scroll-smooth">
+              <table className="w-full min-w-[640px] border-collapse text-sm">
+                <thead>
+                  <tr className="border-b border-border text-xs uppercase tracking-[0.12em] text-muted-foreground">
+                    <th className="px-3 py-2 text-left font-medium">{t("Capital", "Capital")}</th>
+                    {rates.map((rr) => (
+                      <th key={rr} className="px-3 py-2 text-right font-medium">
+                        {rr}%
+                      </th>
+                    ))}
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-        <p className="mt-3 text-xs text-muted-foreground">{t("Renta mensual = capital × rentabilidad anual ÷ 12.", "Monthly income = capital × annual return ÷ 12.")}</p>
-      </Panel>
+                </thead>
+                <tbody>
+                  {capitals.map((cap) => {
+                    const isNumberRow = cap === roundNice(baseNumber);
+                    return (
+                      <tr
+                        key={cap}
+                        className={cn(
+                          "relative border-b border-border/60 last:border-0 hover:bg-elevated/40",
+                          isNumberRow && "border-primary/30 bg-primary/[0.04] shadow-[0_0_20px_hsl(var(--primary)/5%)]",
+                        )}
+                      >
+                        <td className={cn("numeric px-3 text-left font-semibold", isNumberRow ? "pb-4 pt-6" : "py-3")}>
+                          {fmt(cap)}
+                          {isNumberRow && (
+                            <span className="absolute -top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-primary-foreground shadow-lg shadow-primary/20">
+                              <span className="h-1 w-1 animate-pulse rounded-full bg-primary-foreground" />
+                              {t("tu número", "your number")}
+                            </span>
+                          )}
+                        </td>
+                        {rates.map((rr) => {
+                          const inc = (cap * (rr / 100)) / 12;
+                          const covers = inc >= standardOfLiving && standardOfLiving > 0;
+                          return (
+                            <td
+                              key={rr}
+                              className={cn(
+                                "numeric px-3 text-right",
+                                isNumberRow ? "pb-4 pt-6" : "py-3",
+                                covers && "font-medium text-positive",
+                              )}
+                            >
+                              {fmt(Math.round(inc))}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground">{t("Renta mensual = capital × rentabilidad anual ÷ 12.", "Monthly income = capital × annual return ÷ 12.")}</p>
+          </Panel>
+        );
+      })()}
 
     </PageShell>
   );
