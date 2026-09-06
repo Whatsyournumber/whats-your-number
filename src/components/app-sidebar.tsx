@@ -98,11 +98,10 @@ export function AppSidebar() {
 
   const secondary = [
     ...affiliateItems,
-    ...familyItems,
+    ...(isMobile ? [] : familyItems),
     { title: t("Asistente IA", "AI Assistant"), url: "/advisor", icon: Bot },
-    { title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserCog },
+    ...(isMobile ? [] : [{ title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserCog } as const]),
     { title: t("Suscripción", "Subscription"), url: "/suscripcion", icon: CreditCard },
-    
     { title: t("Importar gastos", "Import expenses"), url: "/configuracion", icon: Upload },
   ] as const;
 
