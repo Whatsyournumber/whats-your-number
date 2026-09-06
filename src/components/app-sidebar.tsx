@@ -85,7 +85,7 @@ export function AppSidebar() {
 
 
 
-  const affiliateItems: { title: string; url: string; icon: typeof Users }[] =
+  const affiliateItems: { title: string; url: string; icon: typeof Handshake }[] =
     affiliate && affiliate.status !== "disabled"
       ? [{ title: t("Programa de afiliados", "Affiliate program"), url: "/afiliados", icon: Handshake }]
       : [];
