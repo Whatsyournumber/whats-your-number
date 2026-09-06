@@ -407,13 +407,21 @@ function AdminPage() {
       </div>
 
       <Tabs defaultValue="users" className="w-full">
-        <TabsList>
-          <TabsTrigger value="users">{t("Usuarios", "Users")}</TabsTrigger>
-          <TabsTrigger value="subs">{t("Pagos y suscripciones", "Payments & subscriptions")}</TabsTrigger>
-          <TabsTrigger value="statements">{t("Estados de cuenta", "Statements")}</TabsTrigger>
-          <TabsTrigger value="promos">{t("Invitaciones", "Invites")}</TabsTrigger>
-          <TabsTrigger value="affiliates">{t("Afiliados", "Affiliates")}</TabsTrigger>
-        </TabsList>
+        <div className="-mx-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <TabsList className="w-max flex-nowrap justify-start">
+            <TabsTrigger value="users" className="shrink-0">{t("Usuarios", "Users")}</TabsTrigger>
+            <TabsTrigger value="subs" className="shrink-0">
+              <span className="sm:hidden">{t("Pagos", "Payments")}</span>
+              <span className="hidden sm:inline">{t("Pagos y suscripciones", "Payments & subscriptions")}</span>
+            </TabsTrigger>
+            <TabsTrigger value="statements" className="shrink-0">
+              <span className="sm:hidden">{t("Estados", "Statements")}</span>
+              <span className="hidden sm:inline">{t("Estados de cuenta", "Statements")}</span>
+            </TabsTrigger>
+            <TabsTrigger value="promos" className="shrink-0">{t("Invitaciones", "Invites")}</TabsTrigger>
+            <TabsTrigger value="affiliates" className="shrink-0">{t("Afiliados", "Affiliates")}</TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="users" className="mt-4">
           <Panel title={t("Registros", "Sign-ups")} description={`${filteredUsers.length} ${t("usuarios", "users")}`}>
@@ -423,7 +431,40 @@ function AdminPage() {
               placeholder={t("Buscar por nombre o email…", "Search by name or email…")}
               className="mb-4 max-w-sm"
             />
-            <div className="overflow-x-auto">
+            {/* Mobile: cards */}
+            <div className="space-y-2 sm:hidden">
+              {filteredUsers.map((u) => {
+                const o = onbByUser.get(u.id);
+                const s = subByUser.get(u.id);
+                return (
+                  <div key={u.id} className="rounded-xl border border-border/60 bg-muted/20 p-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold">{u.full_name ?? "—"}</p>
+                        <p className="truncate text-xs text-muted-foreground">{u.email ?? "—"}</p>
+                      </div>
+                      <DeleteAction
+                        title={t("Borrar usuario", "Delete user")}
+                        description={t("Se eliminará la cuenta de {x} y todos sus datos (perfil, gastos, estados de cuenta, suscripciones). Esta acción no se puede deshacer.", "The account {x} and all its data (profile, expenses, statements, subscriptions) will be deleted. This cannot be undone.").replace("{x}", u.email ?? u.id)}
+                        onConfirm={() =>
+                          runDelete(() => adminDeleteUser({ data: { userId: u.id } }), t("Usuario eliminado", "User deleted"))
+                        }
+                      />
+                    </div>
+                    <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                      <Badge variant={s ? "default" : "outline"}>{s ? s.product_id.replace("_plan", "") : "free"}</Badge>
+                      <Badge variant={o?.completed ? "default" : "secondary"}>{o?.completed ? t("Completo", "Complete") : t("Pendiente", "Pending")}</Badge>
+                      <span className="text-[11px] text-muted-foreground">{o?.country ? `${o.country} · ` : ""}{fmtDate(u.created_at)}</span>
+                    </div>
+                  </div>
+                );
+              })}
+              {filteredUsers.length === 0 && (
+                <p className="py-6 text-center text-sm text-muted-foreground">{t("Sin resultados", "No results")}</p>
+              )}
+            </div>
+            {/* Desktop: table */}
+            <div className="hidden overflow-x-auto sm:block">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -480,7 +521,39 @@ function AdminPage() {
 
         <TabsContent value="subs" className="mt-4">
           <Panel title={t("Suscripciones", "Subscriptions")} description={`${subs.length} ${t("registros", "records")} · MRR ${mrr} US$`}>
-            <div className="overflow-x-auto">
+            {/* Mobile: cards */}
+            <div className="space-y-2 sm:hidden">
+              {subs.map((s) => {
+                const u = users.find((x) => x.id === s.user_id);
+                return (
+                  <div key={s.id} className="rounded-xl border border-border/60 bg-muted/20 p-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold">{u?.email ?? s.user_id.slice(0, 8)}</p>
+                        <p className="text-xs text-muted-foreground">{t("Renueva", "Renews")} {fmtDate(s.current_period_end)}</p>
+                      </div>
+                      <DeleteAction
+                        title={t("Borrar suscripción", "Delete subscription")}
+                        description={t("Se eliminará este registro de suscripción y el usuario perderá el acceso asociado. No cancela el cobro en la pasarela de pago.", "This subscription record will be deleted and the user will lose the associated access. It does not cancel billing at the payment provider.")}
+                        onConfirm={() =>
+                          runDelete(() => adminDeleteSubscription({ data: { id: s.id } }), t("Suscripción eliminada", "Subscription deleted"))
+                        }
+                      />
+                    </div>
+                    <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                      <Badge variant="outline">{s.product_id.replace("_plan", "")}</Badge>
+                      <Badge variant={["active", "trialing"].includes(s.status) ? "default" : "secondary"}>{subStatusLabel(s.status, t)}</Badge>
+                      {s.cancel_at_period_end && <Badge variant="secondary">{t("Cancela al final", "Cancels at end")}</Badge>}
+                    </div>
+                  </div>
+                );
+              })}
+              {subs.length === 0 && (
+                <p className="py-6 text-center text-sm text-muted-foreground">{t("Sin suscripciones todavía", "No subscriptions yet")}</p>
+              )}
+            </div>
+            {/* Desktop: table */}
+            <div className="hidden overflow-x-auto sm:block">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -536,7 +609,27 @@ function AdminPage() {
 
         <TabsContent value="statements" className="mt-4">
           <Panel title={t("Estados de cuenta cargados", "Uploaded statements")} description={`${stmts.length} ${t("archivos", "files")}`}>
-            <div className="overflow-x-auto">
+            {/* Mobile: cards */}
+            <div className="space-y-2 sm:hidden">
+              {stmts.map((s) => {
+                const u = users.find((x) => x.id === s.user_id);
+                return (
+                  <div key={s.id} className="rounded-xl border border-border/60 bg-muted/20 p-3">
+                    <p className="truncate text-sm font-semibold">{u?.email ?? s.user_id.slice(0, 8)}</p>
+                    <p className="truncate text-xs text-muted-foreground">{s.file_name}</p>
+                    <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                      <Badge variant={s.status === "processed" ? "default" : "secondary"}>{s.status}</Badge>
+                      <span className="text-[11px] text-muted-foreground">{s.transactions_count} tx · {fmtDate(s.created_at)}</span>
+                    </div>
+                  </div>
+                );
+              })}
+              {stmts.length === 0 && (
+                <p className="py-6 text-center text-sm text-muted-foreground">{t("Sin archivos", "No files")}</p>
+              )}
+            </div>
+            {/* Desktop: table */}
+            <div className="hidden overflow-x-auto sm:block">
               <Table>
                 <TableHeader>
                   <TableRow>
