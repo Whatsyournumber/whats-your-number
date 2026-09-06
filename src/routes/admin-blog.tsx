@@ -214,15 +214,15 @@ function BlogBackOffice() {
       <div className="mb-6 flex flex-wrap items-center gap-2">
         {[7, 28, 90].map((d) => (
           <Button key={d} size="sm" variant={days === d ? "default" : "outline"} onClick={() => setDays(d)}>
-            {d} días
+            {d} {t("días", "days")}
           </Button>
         ))}
         <Button size="sm" variant="ghost" asChild className="ml-auto">
-          <Link to="/admin">← Panel general</Link>
+          <Link to="/admin">← {t("Panel general", "Admin panel")}</Link>
         </Button>
       </div>
 
-      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mb-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <KpiCard label="Visitas al blog" value={(traffic.data?.totalViews ?? 0).toLocaleString("es-ES")} icon={Eye} />
         <KpiCard
           label="Lectores únicos"
@@ -238,15 +238,20 @@ function BlogBackOffice() {
       </div>
 
       <Tabs defaultValue="kws-home">
-        <TabsList className="mb-6 flex-wrap">
-          <TabsTrigger value="kws-home">Kws Home</TabsTrigger>
-          <TabsTrigger value="kws-blog">Kws Blog</TabsTrigger>
-          <TabsTrigger value="trafico">Tráfico por artículo</TabsTrigger>
-          <TabsTrigger value="llm">IA & LLM</TabsTrigger>
-          <TabsTrigger value="checklist">Checklist SEO</TabsTrigger>
-          <TabsTrigger value="difusion">Difusión</TabsTrigger>
-          <TabsTrigger value="conexiones">Conexiones</TabsTrigger>
-        </TabsList>
+        <div className="mb-6 -mx-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <TabsList className="w-max flex-nowrap justify-start">
+            <TabsTrigger value="kws-home" className="shrink-0">Kws Home</TabsTrigger>
+            <TabsTrigger value="kws-blog" className="shrink-0">Kws Blog</TabsTrigger>
+            <TabsTrigger value="trafico" className="shrink-0">
+              <span className="sm:hidden">Tráfico</span>
+              <span className="hidden sm:inline">Tráfico por artículo</span>
+            </TabsTrigger>
+            <TabsTrigger value="llm" className="shrink-0">IA & LLM</TabsTrigger>
+            <TabsTrigger value="checklist" className="shrink-0">Checklist SEO</TabsTrigger>
+            <TabsTrigger value="difusion" className="shrink-0">Difusión</TabsTrigger>
+            <TabsTrigger value="conexiones" className="shrink-0">Conexiones</TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* ------------------------------ Kws Home ------------------------------ */}
         <TabsContent value="kws-home" className="space-y-6">
