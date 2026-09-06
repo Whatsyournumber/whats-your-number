@@ -223,7 +223,7 @@ function ProfileSelector() {
     }
   }
 
-  const plan = activePlan(subscription);
+  const plan = subTier === "patrimonio" ? "family" : subTier === "pro" ? "pro" : "free";
   const { tier: pricingTier, currency: pricingCurrency } = useRegionalPricing();
   const extraSeatPrice = formatMoney(EXTRA_SEAT_PRICE[pricingTier], pricingCurrency);
 
