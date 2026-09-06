@@ -22,6 +22,7 @@ import { useT } from "@/hooks/use-language";
 import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
 import { Amount } from "@/components/ui/amount";
+import { currencySymbol } from "@/lib/onboarding";
 
 export const Route = createFileRoute("/retiro")({
   head: () => ({
@@ -259,12 +260,19 @@ function RetiroContent() {
               <div>
                 <label className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">{t("Ingreso mensual deseado", "Desired monthly income")}</label>
                 <Input
-                  type="number"
+                  type="text"
                   inputMode="numeric"
                   className="numeric mt-2 h-auto border-0 bg-transparent px-0 py-0 text-3xl font-semibold tracking-tight shadow-none focus-visible:ring-0"
-                  value={wantMonthly || ""}
-                  onChange={(e) => setWantMonthly(Number(e.target.value || 0))}
-                  placeholder="10000"
+                  value={(() => {
+                    if (!wantMonthly) return "";
+                    const sym = currencySymbol(profile.currency || "USD");
+                    return `${sym} ${Math.round(wantMonthly).toLocaleString("en-US")}`;
+                  })()}
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, "");
+                    setWantMonthly(digits ? Number(digits) : 0);
+                  }}
+                  placeholder={`${currencySymbol(profile.currency || "USD")} 10,000`}
                 />
               </div>
               <div>
