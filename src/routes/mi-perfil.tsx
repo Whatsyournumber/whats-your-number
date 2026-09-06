@@ -178,8 +178,52 @@ function MiPerfil() {
 
     setDirty(false);
     toast.success(t("Cambios guardados", "Changes saved"), {
-      description: t("Recalculamos todos los números de tus pestañas.", "We recalculated every number across your tabs."),
+      description: t("Recalculamos todos los números de tus pestañas.", "We recalculamos every number across your tabs."),
     });
+  };
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error(t("La foto es muy pesada", "Photo is too large"), {
+        description: t("Máximo 2 MB.", "Max 2 MB."),
+      });
+      return;
+    }
+    setUploadingAvatar(true);
+    try {
+      const path = `${user.id}/avatar`;
+      const { error: uploadError } = await supabase.storage.from("avatars").upload(path, file, {
+        upsert: true,
+        contentType: file.type,
+      });
+      if (uploadError) throw uploadError;
+
+      const { data: signedData, error: signedError } = await supabase.storage
+        .from("avatars")
+        .createSignedUrl(path, 60 * 60 * 24 * 365);
+      if (signedError) throw signedError;
+
+      const signedUrl = signedData?.signedUrl;
+      if (!signedUrl) throw new Error("No signed URL returned");
+
+      const { error: updateError } = await supabase.auth.updateUser({
+        data: { avatar_url: signedUrl },
+      });
+      if (updateError) throw updateError;
+
+      setAvatarUrl(signedUrl);
+      toast.success(t("Foto actualizada", "Photo updated"));
+    } catch (err) {
+      console.error("[mi-perfil] avatar upload failed", err);
+      toast.error(t("No pudimos subir la foto", "We couldn't upload the photo"), {
+        description: err instanceof Error ? err.message : String(err ?? ""),
+      });
+    } finally {
+      setUploadingAvatar(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
   };
 
 
