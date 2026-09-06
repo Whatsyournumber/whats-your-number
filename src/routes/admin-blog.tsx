@@ -317,7 +317,7 @@ function BlogBackOffice() {
 
           {gscOk && (
             <>
-              <div className="grid gap-4 sm:grid-cols-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
                 <KpiCard label="Clics" value={gscOk.totals.clicks.toLocaleString("es-ES")} icon={MousePointerClick} />
                 <KpiCard label="Impresiones" value={gscOk.totals.impressions.toLocaleString("es-ES")} icon={Eye} />
                 <KpiCard label="CTR" value={pct(gscOk.totals.ctr)} icon={BarChart3} />
@@ -442,13 +442,13 @@ function BlogBackOffice() {
                 {lovableAnalytics.period.start} → {lovableAnalytics.period.end}
               </Badge>
             </div>
-            <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mb-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
               <KpiCard label="Visitantes" value={lovableAnalytics.totals.visitors.toLocaleString("es-ES")} icon={Globe2} />
               <KpiCard label="Páginas vistas" value={lovableAnalytics.totals.pageviews.toLocaleString("es-ES")} icon={Eye} />
               <KpiCard label="Páginas / visita" value={lovableAnalytics.totals.pageviewsPerVisit.toFixed(2)} icon={BarChart3} />
               <KpiCard label="Rebote" value={`${lovableAnalytics.totals.bounceRate} %`} icon={MousePointerClick} />
             </div>
-            <div className="h-64">
+            <div className="h-52 sm:h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={lovableAnalytics.byDay}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
@@ -536,12 +536,12 @@ function BlogBackOffice() {
               </div>
             ) : (
               <>
-                <div className="mb-6 grid gap-4 sm:grid-cols-3">
+                <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
                   <KpiCard label="Usuarios" value={ga4.data.totals.users.toLocaleString("es-ES")} icon={Globe2} />
                   <KpiCard label="Sesiones" value={ga4.data.totals.sessions.toLocaleString("es-ES")} icon={MousePointerClick} />
                   <KpiCard label="Páginas vistas" value={ga4.data.totals.pageviews.toLocaleString("es-ES")} icon={Eye} />
                 </div>
-                <div className="mb-6 h-64">
+                <div className="mb-6 h-52 sm:h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={ga4.data.byDay}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
@@ -620,7 +620,7 @@ function BlogBackOffice() {
           <Panel className="p-6">
 
             <h2 className="mb-4 text-lg font-semibold">Visitas al blog por día (analítica propia)</h2>
-            <div className="h-64">
+            <div className="h-52 sm:h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={traffic.data?.byDay ?? []}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
@@ -1153,6 +1153,7 @@ function DistributionPanel() {
       {links.length > 0 && (
         <Panel className="p-6">
           <h3 className="mb-4 font-semibold">Enlaces difundidos ({links.length})</h3>
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -1195,6 +1196,7 @@ function DistributionPanel() {
               ))}
             </TableBody>
           </Table>
+          </div>
         </Panel>
       )}
 
@@ -1203,6 +1205,7 @@ function DistributionPanel() {
           <p className="mb-4 text-sm text-muted-foreground">
             {report.urls} URLs enviadas · {new Date(report.ranAt).toLocaleString("es-ES")}
           </p>
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -1227,6 +1230,7 @@ function DistributionPanel() {
               ))}
             </TableBody>
           </Table>
+          </div>
         </Panel>
       )}
     </>
@@ -1261,7 +1265,7 @@ function LlmPanel({
 
   return (
     <>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <KpiCard label="Visitas desde IA" value={(data?.aiViews ?? 0).toLocaleString("es-ES")} icon={Sparkles} />
         <KpiCard label="% del tráfico" value={data ? pct(data.aiShare) : "—"} icon={BarChart3} />
         <KpiCard label="Asistente líder" value={top?.label ?? "—"} icon={Rocket} />
@@ -1281,6 +1285,7 @@ function LlmPanel({
         <p className="mb-4 text-sm text-muted-foreground">
           Visitas que llegan directamente desde una respuesta generada por un asistente de IA en los últimos {days} días.
         </p>
+        <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
