@@ -412,14 +412,11 @@ function MiPerfil() {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  {t("Perfil financiero", "Financial profile")}
+                  {t("Mis datos", "My data")}
                 </p>
                 <h1 className="truncate text-2xl font-bold text-foreground sm:text-3xl">
                   {form.full_name || googleName || t("Tu cuenta", "Your account")}
                 </h1>
-                {user?.email && (
-                  <p className="truncate text-sm text-muted-foreground">{user.email}</p>
-                )}
                 <div className="mt-2 flex flex-wrap items-center gap-3">
                   <button
                     type="button"
