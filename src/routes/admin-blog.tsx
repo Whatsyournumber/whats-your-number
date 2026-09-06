@@ -324,63 +324,110 @@ function BlogBackOffice() {
                 <KpiCard label="Posición media" value={gscOk.totals.position.toFixed(1)} icon={Search} />
               </div>
 
-              <Panel className="p-6">
+              <Panel className="p-4 sm:p-6">
                 <h2 className="mb-4 text-lg font-semibold">Keywords que traen tráfico al blog</h2>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Keyword</TableHead>
-                      <TableHead className="text-right">Clics</TableHead>
-                      <TableHead className="text-right">Impresiones</TableHead>
-                      <TableHead className="text-right">CTR</TableHead>
-                      <TableHead className="text-right">Posición</TableHead>
-            <TableHead className="text-right">Pos. alternativa</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {gscOk.queries.slice(0, 50).map((row: GscRow) => (
-                      <TableRow key={row.keys[0]}>
-                        <TableCell className="font-medium">{row.keys[0]}</TableCell>
-                        <TableCell className="text-right">{row.clicks}</TableCell>
-                        <TableCell className="text-right">{row.impressions}</TableCell>
-                        <TableCell className="text-right">{pct(row.ctr)}</TableCell>
-                        <TableCell className="text-right">{row.position.toFixed(1)}</TableCell>
-                      </TableRow>
-                    ))}
-                    {gscOk.queries.length === 0 && (
+                {/* Mobile: cards */}
+                <div className="space-y-2 sm:hidden">
+                  {gscOk.queries.slice(0, 50).map((row: GscRow) => (
+                    <div key={row.keys[0]} className="rounded-xl border border-border/60 bg-muted/20 p-3">
+                      <p className="text-sm font-medium leading-snug">{row.keys[0]}</p>
+                      <div className="mt-2 grid grid-cols-4 gap-1 rounded-lg bg-background/60 px-2 py-1.5 text-center">
+                        <div>
+                          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Clics</p>
+                          <p className="text-xs font-semibold">{row.clicks}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Impr.</p>
+                          <p className="text-xs font-semibold">{row.impressions}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">CTR</p>
+                          <p className="text-xs font-semibold">{pct(row.ctr)}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Pos.</p>
+                          <p className="text-xs font-semibold">{row.position.toFixed(1)}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  {gscOk.queries.length === 0 && (
+                    <p className="py-6 text-center text-sm text-muted-foreground">
+                      Google todavía no reporta consultas para el blog en este periodo.
+                    </p>
+                  )}
+                </div>
+                {/* Desktop: table */}
+                <div className="hidden overflow-x-auto sm:block">
+                  <Table>
+                    <TableHeader>
                       <TableRow>
-                        <TableCell colSpan={5} className="text-center text-muted-foreground">
-                          Google todavía no reporta consultas para el blog en este periodo.
-                        </TableCell>
+                        <TableHead>Keyword</TableHead>
+                        <TableHead className="text-right">Clics</TableHead>
+                        <TableHead className="text-right">Impresiones</TableHead>
+                        <TableHead className="text-right">CTR</TableHead>
+                        <TableHead className="text-right">Posición</TableHead>
                       </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {gscOk.queries.slice(0, 50).map((row: GscRow) => (
+                        <TableRow key={row.keys[0]}>
+                          <TableCell className="font-medium">{row.keys[0]}</TableCell>
+                          <TableCell className="text-right">{row.clicks}</TableCell>
+                          <TableCell className="text-right">{row.impressions}</TableCell>
+                          <TableCell className="text-right">{pct(row.ctr)}</TableCell>
+                          <TableCell className="text-right">{row.position.toFixed(1)}</TableCell>
+                        </TableRow>
+                      ))}
+                      {gscOk.queries.length === 0 && (
+                        <TableRow>
+                          <TableCell colSpan={5} className="text-center text-muted-foreground">
+                            Google todavía no reporta consultas para el blog en este periodo.
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
               </Panel>
 
-              <Panel className="p-6">
+              <Panel className="p-4 sm:p-6">
                 <h2 className="mb-4 text-lg font-semibold">Páginas del blog en Google</h2>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>URL</TableHead>
-                      <TableHead className="text-right">Clics</TableHead>
-                      <TableHead className="text-right">Impresiones</TableHead>
-                      <TableHead className="text-right">Posición</TableHead>
-            <TableHead className="text-right">Pos. alternativa</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {gscOk.pages.slice(0, 30).map((row: GscRow) => (
-                      <TableRow key={row.keys[0]}>
-                        <TableCell className="max-w-[380px] truncate">{row.keys[0]}</TableCell>
-                        <TableCell className="text-right">{row.clicks}</TableCell>
-                        <TableCell className="text-right">{row.impressions}</TableCell>
-                        <TableCell className="text-right">{row.position.toFixed(1)}</TableCell>
+                {/* Mobile: cards */}
+                <div className="space-y-2 sm:hidden">
+                  {gscOk.pages.slice(0, 30).map((row: GscRow) => (
+                    <div key={row.keys[0]} className="rounded-xl border border-border/60 bg-muted/20 p-3">
+                      <p className="break-all text-xs font-medium leading-snug">{row.keys[0].replace(/^https?:\/\//, "")}</p>
+                      <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
+                        <span>{row.clicks} clics</span>·<span>{row.impressions} impr.</span>·
+                        <span>pos. {row.position.toFixed(1)}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {/* Desktop: table */}
+                <div className="hidden overflow-x-auto sm:block">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>URL</TableHead>
+                        <TableHead className="text-right">Clics</TableHead>
+                        <TableHead className="text-right">Impresiones</TableHead>
+                        <TableHead className="text-right">Posición</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {gscOk.pages.slice(0, 30).map((row: GscRow) => (
+                        <TableRow key={row.keys[0]}>
+                          <TableCell className="max-w-[380px] truncate">{row.keys[0]}</TableCell>
+                          <TableCell className="text-right">{row.clicks}</TableCell>
+                          <TableCell className="text-right">{row.impressions}</TableCell>
+                          <TableCell className="text-right">{row.position.toFixed(1)}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               </Panel>
             </>
           )}
