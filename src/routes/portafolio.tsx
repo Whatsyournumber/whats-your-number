@@ -293,9 +293,9 @@ function PortafolioContent() {
   const series = seriesQuery.data?.series ?? {};
   const benchSymbol = benchmark === "nasdaq" ? "^IXIC" : benchmark === "world" ? "URTH" : "^GSPC";
   const benchName = benchmark === "nasdaq" ? "Nasdaq 100" : benchmark === "world" ? "MSCI World" : "S&P 500";
-  const benchSeries = series[benchSymbol] ?? [];
-  const spy = series["SPY"] ?? [];
-  const btc = series["BTC-USD"] ?? [];
+  const benchSeries = (series[benchSymbol] ?? []).slice(-12);
+  const spy = (series["SPY"] ?? []).slice(-12);
+  const btc = (series["BTC-USD"] ?? []).slice(-12);
   const equityValue = profile.assets_etf + profile.assets_retirement + profile.assets_stocks;
   const cryptoValue = profile.assets_crypto;
   const cashValue = profile.assets_cash + profile.assets_bank;
