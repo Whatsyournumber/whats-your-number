@@ -521,7 +521,39 @@ function AdminPage() {
 
         <TabsContent value="subs" className="mt-4">
           <Panel title={t("Suscripciones", "Subscriptions")} description={`${subs.length} ${t("registros", "records")} · MRR ${mrr} US$`}>
-            <div className="overflow-x-auto">
+            {/* Mobile: cards */}
+            <div className="space-y-2 sm:hidden">
+              {subs.map((s) => {
+                const u = users.find((x) => x.id === s.user_id);
+                return (
+                  <div key={s.id} className="rounded-xl border border-border/60 bg-muted/20 p-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold">{u?.email ?? s.user_id.slice(0, 8)}</p>
+                        <p className="text-xs text-muted-foreground">{t("Renueva", "Renews")} {fmtDate(s.current_period_end)}</p>
+                      </div>
+                      <DeleteAction
+                        title={t("Borrar suscripción", "Delete subscription")}
+                        description={t("Se eliminará este registro de suscripción y el usuario perderá el acceso asociado. No cancela el cobro en la pasarela de pago.", "This subscription record will be deleted and the user will lose the associated access. It does not cancel billing at the payment provider.")}
+                        onConfirm={() =>
+                          runDelete(() => adminDeleteSubscription({ data: { id: s.id } }), t("Suscripción eliminada", "Subscription deleted"))
+                        }
+                      />
+                    </div>
+                    <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                      <Badge variant="outline">{s.product_id.replace("_plan", "")}</Badge>
+                      <Badge variant={["active", "trialing"].includes(s.status) ? "default" : "secondary"}>{subStatusLabel(s.status, t)}</Badge>
+                      {s.cancel_at_period_end && <Badge variant="secondary">{t("Cancela al final", "Cancels at end")}</Badge>}
+                    </div>
+                  </div>
+                );
+              })}
+              {subs.length === 0 && (
+                <p className="py-6 text-center text-sm text-muted-foreground">{t("Sin suscripciones todavía", "No subscriptions yet")}</p>
+              )}
+            </div>
+            {/* Desktop: table */}
+            <div className="hidden overflow-x-auto sm:block">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -577,7 +609,27 @@ function AdminPage() {
 
         <TabsContent value="statements" className="mt-4">
           <Panel title={t("Estados de cuenta cargados", "Uploaded statements")} description={`${stmts.length} ${t("archivos", "files")}`}>
-            <div className="overflow-x-auto">
+            {/* Mobile: cards */}
+            <div className="space-y-2 sm:hidden">
+              {stmts.map((s) => {
+                const u = users.find((x) => x.id === s.user_id);
+                return (
+                  <div key={s.id} className="rounded-xl border border-border/60 bg-muted/20 p-3">
+                    <p className="truncate text-sm font-semibold">{u?.email ?? s.user_id.slice(0, 8)}</p>
+                    <p className="truncate text-xs text-muted-foreground">{s.file_name}</p>
+                    <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                      <Badge variant={s.status === "processed" ? "default" : "secondary"}>{s.status}</Badge>
+                      <span className="text-[11px] text-muted-foreground">{s.transactions_count} tx · {fmtDate(s.created_at)}</span>
+                    </div>
+                  </div>
+                );
+              })}
+              {stmts.length === 0 && (
+                <p className="py-6 text-center text-sm text-muted-foreground">{t("Sin archivos", "No files")}</p>
+              )}
+            </div>
+            {/* Desktop: table */}
+            <div className="hidden overflow-x-auto sm:block">
               <Table>
                 <TableHeader>
                   <TableRow>
