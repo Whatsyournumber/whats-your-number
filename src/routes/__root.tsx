@@ -324,7 +324,7 @@ function AppShell() {
               <LanguageToggle />
               <Link
                 to="/mi-perfil"
-                className="relative shrink-0 rounded-full outline-none ring-offset-2 ring-offset-background transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-primary"
+                className="relative hidden shrink-0 rounded-full outline-none ring-offset-2 ring-offset-background transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-primary sm:flex"
                 aria-label={t("Ver mis datos", "See my data")}
               >
                 {googleAvatar ? (
