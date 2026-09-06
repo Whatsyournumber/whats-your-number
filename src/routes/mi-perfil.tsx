@@ -325,6 +325,30 @@ function MiPerfil() {
           title={t("Sobre ti", "About you")}
           description={t("Tus datos base para las proyecciones.", "Your base data for the projections.")}
         >
+          {(googleAvatar || user?.email) && (
+            <div className="mb-4 flex items-center gap-3 rounded-2xl bg-muted/40 p-3">
+              {googleAvatar ? (
+                <img
+                  src={googleAvatar}
+                  alt={form.full_name || googleName || t("Foto de perfil", "Profile photo")}
+                  className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-primary/30"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-secondary ring-2 ring-primary/30">
+                  <UserRound className="h-6 w-6 text-muted-foreground" />
+                </div>
+              )}
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-foreground">
+                  {form.full_name || googleName || t("Tu cuenta", "Your account")}
+                </p>
+                {user?.email && (
+                  <p className="truncate text-xs text-muted-foreground">{user.email}</p>
+                )}
+              </div>
+            </div>
+          )}
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label={t("Nombre", "Name")}>
               <Input value={form.full_name} onChange={(e) => set("full_name", e.target.value)} placeholder={t("Tu nombre", "Your name")} />
