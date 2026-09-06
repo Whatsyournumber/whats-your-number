@@ -214,15 +214,15 @@ function BlogBackOffice() {
       <div className="mb-6 flex flex-wrap items-center gap-2">
         {[7, 28, 90].map((d) => (
           <Button key={d} size="sm" variant={days === d ? "default" : "outline"} onClick={() => setDays(d)}>
-            {d} días
+            {d} {t("días", "days")}
           </Button>
         ))}
         <Button size="sm" variant="ghost" asChild className="ml-auto">
-          <Link to="/admin">← Panel general</Link>
+          <Link to="/admin">← {t("Panel general", "Admin panel")}</Link>
         </Button>
       </div>
 
-      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mb-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <KpiCard label="Visitas al blog" value={(traffic.data?.totalViews ?? 0).toLocaleString("es-ES")} icon={Eye} />
         <KpiCard
           label="Lectores únicos"
@@ -238,15 +238,20 @@ function BlogBackOffice() {
       </div>
 
       <Tabs defaultValue="kws-home">
-        <TabsList className="mb-6 flex-wrap">
-          <TabsTrigger value="kws-home">Kws Home</TabsTrigger>
-          <TabsTrigger value="kws-blog">Kws Blog</TabsTrigger>
-          <TabsTrigger value="trafico">Tráfico por artículo</TabsTrigger>
-          <TabsTrigger value="llm">IA & LLM</TabsTrigger>
-          <TabsTrigger value="checklist">Checklist SEO</TabsTrigger>
-          <TabsTrigger value="difusion">Difusión</TabsTrigger>
-          <TabsTrigger value="conexiones">Conexiones</TabsTrigger>
-        </TabsList>
+        <div className="mb-6 -mx-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <TabsList className="w-max flex-nowrap justify-start">
+            <TabsTrigger value="kws-home" className="shrink-0">Kws Home</TabsTrigger>
+            <TabsTrigger value="kws-blog" className="shrink-0">Kws Blog</TabsTrigger>
+            <TabsTrigger value="trafico" className="shrink-0">
+              <span className="sm:hidden">Tráfico</span>
+              <span className="hidden sm:inline">Tráfico por artículo</span>
+            </TabsTrigger>
+            <TabsTrigger value="llm" className="shrink-0">IA & LLM</TabsTrigger>
+            <TabsTrigger value="checklist" className="shrink-0">Checklist SEO</TabsTrigger>
+            <TabsTrigger value="difusion" className="shrink-0">Difusión</TabsTrigger>
+            <TabsTrigger value="conexiones" className="shrink-0">Conexiones</TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* ------------------------------ Kws Home ------------------------------ */}
         <TabsContent value="kws-home" className="space-y-6">
@@ -312,70 +317,117 @@ function BlogBackOffice() {
 
           {gscOk && (
             <>
-              <div className="grid gap-4 sm:grid-cols-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
                 <KpiCard label="Clics" value={gscOk.totals.clicks.toLocaleString("es-ES")} icon={MousePointerClick} />
                 <KpiCard label="Impresiones" value={gscOk.totals.impressions.toLocaleString("es-ES")} icon={Eye} />
                 <KpiCard label="CTR" value={pct(gscOk.totals.ctr)} icon={BarChart3} />
                 <KpiCard label="Posición media" value={gscOk.totals.position.toFixed(1)} icon={Search} />
               </div>
 
-              <Panel className="p-6">
+              <Panel className="p-4 sm:p-6">
                 <h2 className="mb-4 text-lg font-semibold">Keywords que traen tráfico al blog</h2>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Keyword</TableHead>
-                      <TableHead className="text-right">Clics</TableHead>
-                      <TableHead className="text-right">Impresiones</TableHead>
-                      <TableHead className="text-right">CTR</TableHead>
-                      <TableHead className="text-right">Posición</TableHead>
-            <TableHead className="text-right">Pos. alternativa</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {gscOk.queries.slice(0, 50).map((row: GscRow) => (
-                      <TableRow key={row.keys[0]}>
-                        <TableCell className="font-medium">{row.keys[0]}</TableCell>
-                        <TableCell className="text-right">{row.clicks}</TableCell>
-                        <TableCell className="text-right">{row.impressions}</TableCell>
-                        <TableCell className="text-right">{pct(row.ctr)}</TableCell>
-                        <TableCell className="text-right">{row.position.toFixed(1)}</TableCell>
-                      </TableRow>
-                    ))}
-                    {gscOk.queries.length === 0 && (
+                {/* Mobile: cards */}
+                <div className="space-y-2 sm:hidden">
+                  {gscOk.queries.slice(0, 50).map((row: GscRow) => (
+                    <div key={row.keys[0]} className="rounded-xl border border-border/60 bg-muted/20 p-3">
+                      <p className="text-sm font-medium leading-snug">{row.keys[0]}</p>
+                      <div className="mt-2 grid grid-cols-4 gap-1 rounded-lg bg-background/60 px-2 py-1.5 text-center">
+                        <div>
+                          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Clics</p>
+                          <p className="text-xs font-semibold">{row.clicks}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Impr.</p>
+                          <p className="text-xs font-semibold">{row.impressions}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">CTR</p>
+                          <p className="text-xs font-semibold">{pct(row.ctr)}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Pos.</p>
+                          <p className="text-xs font-semibold">{row.position.toFixed(1)}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  {gscOk.queries.length === 0 && (
+                    <p className="py-6 text-center text-sm text-muted-foreground">
+                      Google todavía no reporta consultas para el blog en este periodo.
+                    </p>
+                  )}
+                </div>
+                {/* Desktop: table */}
+                <div className="hidden overflow-x-auto sm:block">
+                  <Table>
+                    <TableHeader>
                       <TableRow>
-                        <TableCell colSpan={5} className="text-center text-muted-foreground">
-                          Google todavía no reporta consultas para el blog en este periodo.
-                        </TableCell>
+                        <TableHead>Keyword</TableHead>
+                        <TableHead className="text-right">Clics</TableHead>
+                        <TableHead className="text-right">Impresiones</TableHead>
+                        <TableHead className="text-right">CTR</TableHead>
+                        <TableHead className="text-right">Posición</TableHead>
                       </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {gscOk.queries.slice(0, 50).map((row: GscRow) => (
+                        <TableRow key={row.keys[0]}>
+                          <TableCell className="font-medium">{row.keys[0]}</TableCell>
+                          <TableCell className="text-right">{row.clicks}</TableCell>
+                          <TableCell className="text-right">{row.impressions}</TableCell>
+                          <TableCell className="text-right">{pct(row.ctr)}</TableCell>
+                          <TableCell className="text-right">{row.position.toFixed(1)}</TableCell>
+                        </TableRow>
+                      ))}
+                      {gscOk.queries.length === 0 && (
+                        <TableRow>
+                          <TableCell colSpan={5} className="text-center text-muted-foreground">
+                            Google todavía no reporta consultas para el blog en este periodo.
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
               </Panel>
 
-              <Panel className="p-6">
+              <Panel className="p-4 sm:p-6">
                 <h2 className="mb-4 text-lg font-semibold">Páginas del blog en Google</h2>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>URL</TableHead>
-                      <TableHead className="text-right">Clics</TableHead>
-                      <TableHead className="text-right">Impresiones</TableHead>
-                      <TableHead className="text-right">Posición</TableHead>
-            <TableHead className="text-right">Pos. alternativa</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {gscOk.pages.slice(0, 30).map((row: GscRow) => (
-                      <TableRow key={row.keys[0]}>
-                        <TableCell className="max-w-[380px] truncate">{row.keys[0]}</TableCell>
-                        <TableCell className="text-right">{row.clicks}</TableCell>
-                        <TableCell className="text-right">{row.impressions}</TableCell>
-                        <TableCell className="text-right">{row.position.toFixed(1)}</TableCell>
+                {/* Mobile: cards */}
+                <div className="space-y-2 sm:hidden">
+                  {gscOk.pages.slice(0, 30).map((row: GscRow) => (
+                    <div key={row.keys[0]} className="rounded-xl border border-border/60 bg-muted/20 p-3">
+                      <p className="break-all text-xs font-medium leading-snug">{(row.keys[0] ?? "").replace(/^https?:\/\//, "")}</p>
+                      <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
+                        <span>{row.clicks} clics</span>·<span>{row.impressions} impr.</span>·
+                        <span>pos. {row.position.toFixed(1)}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {/* Desktop: table */}
+                <div className="hidden overflow-x-auto sm:block">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>URL</TableHead>
+                        <TableHead className="text-right">Clics</TableHead>
+                        <TableHead className="text-right">Impresiones</TableHead>
+                        <TableHead className="text-right">Posición</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {gscOk.pages.slice(0, 30).map((row: GscRow) => (
+                        <TableRow key={row.keys[0]}>
+                          <TableCell className="max-w-[380px] truncate">{row.keys[0]}</TableCell>
+                          <TableCell className="text-right">{row.clicks}</TableCell>
+                          <TableCell className="text-right">{row.impressions}</TableCell>
+                          <TableCell className="text-right">{row.position.toFixed(1)}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               </Panel>
             </>
           )}
@@ -390,13 +442,13 @@ function BlogBackOffice() {
                 {lovableAnalytics.period.start} → {lovableAnalytics.period.end}
               </Badge>
             </div>
-            <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mb-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
               <KpiCard label="Visitantes" value={lovableAnalytics.totals.visitors.toLocaleString("es-ES")} icon={Globe2} />
               <KpiCard label="Páginas vistas" value={lovableAnalytics.totals.pageviews.toLocaleString("es-ES")} icon={Eye} />
               <KpiCard label="Páginas / visita" value={lovableAnalytics.totals.pageviewsPerVisit.toFixed(2)} icon={BarChart3} />
               <KpiCard label="Rebote" value={`${lovableAnalytics.totals.bounceRate} %`} icon={MousePointerClick} />
             </div>
-            <div className="h-64">
+            <div className="h-52 sm:h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={lovableAnalytics.byDay}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
@@ -484,12 +536,12 @@ function BlogBackOffice() {
               </div>
             ) : (
               <>
-                <div className="mb-6 grid gap-4 sm:grid-cols-3">
+                <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
                   <KpiCard label="Usuarios" value={ga4.data.totals.users.toLocaleString("es-ES")} icon={Globe2} />
                   <KpiCard label="Sesiones" value={ga4.data.totals.sessions.toLocaleString("es-ES")} icon={MousePointerClick} />
                   <KpiCard label="Páginas vistas" value={ga4.data.totals.pageviews.toLocaleString("es-ES")} icon={Eye} />
                 </div>
-                <div className="mb-6 h-64">
+                <div className="mb-6 h-52 sm:h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={ga4.data.byDay}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
@@ -568,7 +620,7 @@ function BlogBackOffice() {
           <Panel className="p-6">
 
             <h2 className="mb-4 text-lg font-semibold">Visitas al blog por día (analítica propia)</h2>
-            <div className="h-64">
+            <div className="h-52 sm:h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={traffic.data?.byDay ?? []}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
@@ -581,50 +633,80 @@ function BlogBackOffice() {
             </div>
           </Panel>
 
-          <Panel className="p-6">
+          <Panel className="p-4 sm:p-6">
             <h2 className="mb-4 text-lg font-semibold">Artículos más leídos</h2>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Artículo</TableHead>
-                  <TableHead className="text-right">Visitas</TableHead>
-                  <TableHead className="text-right">Únicos</TableHead>
-                  <TableHead className="text-right">ES / EN</TableHead>
-                  <TableHead />
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {(traffic.data?.byPost ?? []).map((row) => {
-                  const post = blogPosts.find((p) => p.slug === row.slug);
-                  return (
-                    <TableRow key={row.slug}>
-                      <TableCell className="max-w-[420px] truncate font-medium">
-                        {post?.title.es ?? row.slug}
-                      </TableCell>
-                      <TableCell className="text-right">{row.views}</TableCell>
-                      <TableCell className="text-right">{row.sessions}</TableCell>
-                      <TableCell className="text-right text-muted-foreground">
-                        {row.es} / {row.en}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Button size="sm" variant="ghost" asChild>
-                          <Link to="/blog/$slug" params={{ slug: row.slug }} target="_blank">
-                            <ArrowUpRight className="h-4 w-4" />
-                          </Link>
-                        </Button>
+            {/* Mobile: cards */}
+            <div className="space-y-2 sm:hidden">
+              {(traffic.data?.byPost ?? []).map((row) => {
+                const post = blogPosts.find((p) => p.slug === row.slug);
+                return (
+                  <div key={row.slug} className="rounded-xl border border-border/60 bg-muted/20 p-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="min-w-0 text-sm font-medium leading-snug">{post?.title.es ?? row.slug}</p>
+                      <Button size="icon" variant="ghost" className="h-7 w-7 shrink-0" asChild>
+                        <Link to="/blog/$slug" params={{ slug: row.slug }} target="_blank">
+                          <ArrowUpRight className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </div>
+                    <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
+                      <span className="font-semibold text-foreground">{row.views} visitas</span>·
+                      <span>{row.sessions} únicos</span>·<span>ES {row.es} / EN {row.en}</span>
+                    </div>
+                  </div>
+                );
+              })}
+              {(traffic.data?.byPost.length ?? 0) === 0 && (
+                <p className="py-6 text-center text-sm text-muted-foreground">
+                  Todavía no hay visitas registradas en este periodo.
+                </p>
+              )}
+            </div>
+            {/* Desktop: table */}
+            <div className="hidden overflow-x-auto sm:block">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Artículo</TableHead>
+                    <TableHead className="text-right">Visitas</TableHead>
+                    <TableHead className="text-right">Únicos</TableHead>
+                    <TableHead className="text-right">ES / EN</TableHead>
+                    <TableHead />
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(traffic.data?.byPost ?? []).map((row) => {
+                    const post = blogPosts.find((p) => p.slug === row.slug);
+                    return (
+                      <TableRow key={row.slug}>
+                        <TableCell className="max-w-[420px] truncate font-medium">
+                          {post?.title.es ?? row.slug}
+                        </TableCell>
+                        <TableCell className="text-right">{row.views}</TableCell>
+                        <TableCell className="text-right">{row.sessions}</TableCell>
+                        <TableCell className="text-right text-muted-foreground">
+                          {row.es} / {row.en}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button size="sm" variant="ghost" asChild>
+                            <Link to="/blog/$slug" params={{ slug: row.slug }} target="_blank">
+                              <ArrowUpRight className="h-4 w-4" />
+                            </Link>
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                  {(traffic.data?.byPost.length ?? 0) === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center text-muted-foreground">
+                        Todavía no hay visitas registradas en este periodo.
                       </TableCell>
                     </TableRow>
-                  );
-                })}
-                {(traffic.data?.byPost.length ?? 0) === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={5} className="text-center text-muted-foreground">
-                      Todavía no hay visitas registradas en este periodo.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </Panel>
 
           <div className="grid gap-6 lg:grid-cols-2">
@@ -862,39 +944,87 @@ function KeywordGroupPanel({
         </p>
       )}
       {serpError && <p className="mb-3 text-xs text-destructive">{serpError}</p>}
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Keyword objetivo</TableHead>
-            <TableHead className="w-20">Idioma</TableHead>
-            <TableHead className="w-28">País</TableHead>
-            <TableHead className="text-right">Clics</TableHead>
-            <TableHead className="text-right">Impresiones</TableHead>
-            <TableHead className="text-right">Posición</TableHead>
-            <TableHead className="text-right">Pos. alternativa</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {group.keywords.flatMap((kw) =>
-            (["es", "en"] as const).map((lang) => (
-              <TableRow key={`${group.id}-${lang}-${kw[lang]}`}>
-                <TableCell className="font-medium">{kw[lang]}</TableCell>
-                <TableCell className="uppercase text-xs text-muted-foreground">{lang}</TableCell>
-                <TableCell className="text-xs text-muted-foreground">
-                  {SERP_REGION_LABEL[lang === "es" ? "es" : "us"]}
-                </TableCell>
-                <RankCells rank={rankMap.get(kw[lang].toLowerCase())} />
-                <SerpCell
-                  rank={serpMap.get(`${lang === "es" ? "es" : "us"}|${kw[lang].toLowerCase()}`)}
-                  measuring={measuring}
-                />
-              </TableRow>
-            )),
-          )}
-        </TableBody>
-      </Table>
+      {/* Mobile: cards */}
+      <div className="space-y-2 sm:hidden">
+        {group.keywords.flatMap((kw) =>
+          (["es", "en"] as const).map((lang) => {
+            const rank = rankMap.get(kw[lang].toLowerCase());
+            const srank = serpMap.get(`${lang === "es" ? "es" : "us"}|${kw[lang].toLowerCase()}`);
+            const hasRank = rank && !(rank.position === null && rank.impressions === 0);
+            return (
+              <div key={`${group.id}-${lang}-${kw[lang]}`} className="rounded-xl border border-border/60 bg-muted/20 p-3">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="min-w-0 text-sm font-medium leading-snug">{kw[lang]}</p>
+                  <Badge variant="outline" className="shrink-0 uppercase">{lang}</Badge>
+                </div>
+                <p className="mt-0.5 text-[11px] text-muted-foreground">{SERP_REGION_LABEL[lang === "es" ? "es" : "us"]}</p>
+                <div className="mt-2 grid grid-cols-4 gap-1 rounded-lg bg-background/60 px-2 py-1.5 text-center">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Clics</p>
+                    <p className="text-xs font-semibold">{hasRank ? rank.clicks : "—"}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Impr.</p>
+                    <p className="text-xs font-semibold">{hasRank ? rank.impressions : "—"}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Pos.</p>
+                    <p className="text-xs font-semibold">{hasRank && rank.position !== null ? rank.position.toFixed(1) : "—"}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Pos. alt.</p>
+                    <p className="text-xs font-semibold">{serpText(srank, measuring)}</p>
+                  </div>
+                </div>
+              </div>
+            );
+          }),
+        )}
+      </div>
+      {/* Desktop: table */}
+      <div className="hidden overflow-x-auto sm:block">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Keyword objetivo</TableHead>
+              <TableHead className="w-20">Idioma</TableHead>
+              <TableHead className="w-28">País</TableHead>
+              <TableHead className="text-right">Clics</TableHead>
+              <TableHead className="text-right">Impresiones</TableHead>
+              <TableHead className="text-right">Posición</TableHead>
+              <TableHead className="text-right">Pos. alternativa</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {group.keywords.flatMap((kw) =>
+              (["es", "en"] as const).map((lang) => (
+                <TableRow key={`${group.id}-${lang}-${kw[lang]}`}>
+                  <TableCell className="font-medium">{kw[lang]}</TableCell>
+                  <TableCell className="uppercase text-xs text-muted-foreground">{lang}</TableCell>
+                  <TableCell className="text-xs text-muted-foreground">
+                    {SERP_REGION_LABEL[lang === "es" ? "es" : "us"]}
+                  </TableCell>
+                  <RankCells rank={rankMap.get(kw[lang].toLowerCase())} />
+                  <SerpCell
+                    rank={serpMap.get(`${lang === "es" ? "es" : "us"}|${kw[lang].toLowerCase()}`)}
+                    measuring={measuring}
+                  />
+                </TableRow>
+              )),
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </Panel>
   );
+}
+
+function serpText(rank: SerpRank | undefined, measuring: boolean): string {
+  if (measuring && !rank) return "…";
+  if (!rank) return "—";
+  if (rank.error) return "—";
+  if (rank.position === null) return ">30";
+  return `#${rank.position}`;
 }
 
 function SerpCell({ rank, measuring }: { rank: SerpRank | undefined; measuring: boolean }) {
@@ -1023,6 +1153,7 @@ function DistributionPanel() {
       {links.length > 0 && (
         <Panel className="p-6">
           <h3 className="mb-4 font-semibold">Enlaces difundidos ({links.length})</h3>
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -1065,6 +1196,7 @@ function DistributionPanel() {
               ))}
             </TableBody>
           </Table>
+          </div>
         </Panel>
       )}
 
@@ -1073,6 +1205,7 @@ function DistributionPanel() {
           <p className="mb-4 text-sm text-muted-foreground">
             {report.urls} URLs enviadas · {new Date(report.ranAt).toLocaleString("es-ES")}
           </p>
+          <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -1097,6 +1230,7 @@ function DistributionPanel() {
               ))}
             </TableBody>
           </Table>
+          </div>
         </Panel>
       )}
     </>
@@ -1131,7 +1265,7 @@ function LlmPanel({
 
   return (
     <>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <KpiCard label="Visitas desde IA" value={(data?.aiViews ?? 0).toLocaleString("es-ES")} icon={Sparkles} />
         <KpiCard label="% del tráfico" value={data ? pct(data.aiShare) : "—"} icon={BarChart3} />
         <KpiCard label="Asistente líder" value={top?.label ?? "—"} icon={Rocket} />
@@ -1151,6 +1285,7 @@ function LlmPanel({
         <p className="mb-4 text-sm text-muted-foreground">
           Visitas que llegan directamente desde una respuesta generada por un asistente de IA en los últimos {days} días.
         </p>
+        <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
@@ -1180,10 +1315,12 @@ function LlmPanel({
             )}
           </TableBody>
         </Table>
+        </div>
       </Panel>
 
       <Panel className="p-6">
         <h2 className="mb-4 text-lg font-semibold">Artículos que la IA está citando más</h2>
+        <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
@@ -1213,6 +1350,7 @@ function LlmPanel({
             )}
           </TableBody>
         </Table>
+        </div>
       </Panel>
 
       {(data?.byCountry.length ?? 0) > 0 && (
