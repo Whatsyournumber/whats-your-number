@@ -88,6 +88,8 @@ function PortafolioContent() {
   const quotesQuery = useQuotes(watchlist.symbols);
   const seriesQuery = useMarketSeries(["^GSPC", "^IXIC", "URTH", "SPY", "BTC-USD"]);
   const [benchmark, setBenchmark] = useState<"sp500" | "nasdaq" | "world">("sp500");
+  const [aiExpanded, setAiExpanded] = useState(false);
+
   const [newSymbol, setNewSymbol] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [evoIdx, setEvoIdx] = useState<number | null>(null);
