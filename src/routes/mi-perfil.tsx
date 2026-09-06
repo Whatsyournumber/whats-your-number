@@ -291,8 +291,33 @@ function MiPerfil() {
 
 
           <PageShell>
+            <div className="flex items-end gap-4 sm:gap-6">
+              {googleAvatar ? (
+                <img
+                  src={googleAvatar}
+                  alt={form.full_name || googleName || t("Foto de perfil", "Profile photo")}
+                  className="h-24 w-24 shrink-0 rounded-full object-cover ring-2 ring-primary/30 sm:h-28 sm:w-28"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <div className="grid h-24 w-24 shrink-0 place-items-center rounded-full bg-secondary ring-2 ring-primary/30 sm:h-28 sm:w-28">
+                  <UserRound className="h-11 w-11 text-muted-foreground sm:h-12 sm:w-12" />
+                </div>
+              )}
+              <div className="min-w-0 pb-1">
+                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  {t("Perfil financiero", "Financial profile")}
+                </p>
+                <h1 className="truncate text-2xl font-bold text-foreground sm:text-3xl">
+                  {form.full_name || googleName || t("Tu cuenta", "Your account")}
+                </h1>
+                {user?.email && (
+                  <p className="truncate text-sm text-muted-foreground">{user.email}</p>
+                )}
+              </div>
+            </div>
+
             <PageHeader
-              eyebrow={t("Perfil financiero", "Financial profile")}
               title={t("Mis datos", "My data")}
               subtitle={t(
                 "Edita cualquier campo: patrimonio, dashboard, retiro y objetivos se recalculan con tus números.",
