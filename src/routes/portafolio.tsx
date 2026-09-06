@@ -825,11 +825,11 @@ function PortafolioContent() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel
-          title={t(`Portafolio vs ${benchName}`, `Portfolio vs ${benchName}`)}
-          description={t("Datos reales de mercado · últimos 12 meses", "Real market data · last 12 months")}
+          title={t("Rendimiento", "Performance")}
+          description={t(`vs ${benchName} · 12 meses`, `vs ${benchName} · 12 months`)}
           className="lg:col-span-2"
           actions={
-            <div className="flex rounded-full border border-border/60 p-0.5">
+            <div className="flex flex-nowrap items-center rounded-full border border-border/60 p-0.5">
               {([
                 { k: "sp500", l: "S&P 500" },
                 { k: "nasdaq", l: "Nasdaq" },
@@ -840,8 +840,10 @@ function PortafolioContent() {
                   type="button"
                   onClick={() => setBenchmark(b.k)}
                   className={cn(
-                    "rounded-full px-2.5 py-1 text-[11px] transition",
-                    benchmark === b.k ? "bg-primary/15 text-foreground" : "text-muted-foreground hover:text-foreground",
+                    "shrink-0 whitespace-nowrap rounded-full px-2 py-1 text-[10px] font-medium transition sm:px-2.5 sm:text-[11px]",
+                    benchmark === b.k
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground",
                   )}
                 >
                   {b.l}
@@ -856,10 +858,17 @@ function PortafolioContent() {
               {seriesQuery.isLoading ? t("Cargando mercado…", "Loading market…") : t("Mercado no disponible", "Market unavailable")}
             </div>
           ) : (
-            <ResponsiveContainer width="100%" height={290}>
-              <LineChart data={benchmarkData} margin={{ left: isMobile ? 0 : -18, right: isMobile ? 4 : 8 }}>
+            <ResponsiveContainer width="100%" height={isMobile ? 260 : 290}>
+              <LineChart data={benchmarkData} margin={{ left: isMobile ? 0 : -18, right: isMobile ? 4 : 8, bottom: isMobile ? 16 : 8 }}>
                 <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
-                <XAxis dataKey="label" {...axisProps} />
+                <XAxis
+                  dataKey="label"
+                  {...axisProps}
+                  tick={{ ...axisProps, fontSize: isMobile ? 9 : 11 }}
+                  interval={0}
+                  angle={isMobile ? 0 : 0}
+                  height={isMobile ? 28 : 22}
+                />
                 <YAxis {...axisProps} tickFormatter={(v) => `${v}%`} width={isMobile ? 38 : 46} />
                 <Tooltip content={<ChartTooltip formatter={(v) => `${v.toFixed(1)}%`} />} />
                 <Line type="monotone" dataKey="portfolio" name={t("Portafolio", "Portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.5} dot={false} />
