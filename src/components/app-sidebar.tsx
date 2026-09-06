@@ -77,8 +77,14 @@ export function AppSidebar() {
       ? [{ title: t("Programa de afiliados", "Affiliate program"), url: "/afiliados", icon: Handshake }]
       : [];
 
+  const familyItems: { title: string; url: string; icon: typeof Users }[] =
+    tier === "patrimonio"
+      ? [{ title: t("Perfil familiar", "Family profiles"), url: "/ninos", icon: Users }]
+      : [];
+
   const secondary = [
     ...affiliateItems,
+    ...familyItems,
     { title: t("Asistente IA", "AI Assistant"), url: "/advisor", icon: Bot },
     { title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserCog },
     { title: t("Suscripción", "Subscription"), url: "/suscripcion", icon: CreditCard },
