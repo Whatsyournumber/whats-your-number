@@ -626,7 +626,7 @@ function RetiroContent() {
         title={t("Escenarios: renta mensual según tu capital", "Scenarios: monthly income based on your capital")}
         description={`${t("Cuánto podrías retirar cada mes según el capital acumulado y la rentabilidad anual. En verde, lo que cubre tus gastos de", "How much you could withdraw monthly based on accumulated capital and annual return. In green, what covers your expenses of")} ${fmt(d.expenses)}.`}
       >
-        <ScrollX>
+        <ScrollX controlsPosition="top">
           <table className="w-full min-w-[640px] border-collapse text-sm">
             <thead>
               <tr className="border-b border-border text-xs uppercase tracking-[0.12em] text-muted-foreground">
@@ -639,33 +639,44 @@ function RetiroContent() {
               </tr>
             </thead>
             <tbody>
-              {capitals.map((cap) => (
-                <tr
-                  key={cap}
-                  className={cn(
-                    "border-b border-border/60 last:border-0 hover:bg-elevated/40",
-                    cap === roundNice(baseNumber) && "bg-primary/5",
-                  )}
-                >
-                  <td className="numeric px-3 py-3 text-left font-semibold">
-                    {fmt(cap)}
-                    {cap === roundNice(baseNumber) && (
-                      <span className="ml-2 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] uppercase tracking-wide text-primary">
-                        {t("tu número", "your number")}
-                      </span>
+              {capitals.map((cap) => {
+                const isNumberRow = cap === roundNice(baseNumber);
+                return (
+                  <tr
+                    key={cap}
+                    className={cn(
+                      "relative border-b border-border/60 last:border-0 hover:bg-elevated/40",
+                      isNumberRow && "border-primary/30 bg-primary/[0.04] shadow-[0_0_20px_hsl(var(--primary)/5%)]",
                     )}
-                  </td>
-                  {rates.map((rr) => {
-                    const inc = (cap * (rr / 100)) / 12;
-                    const covers = inc >= d.expenses && d.expenses > 0;
-                    return (
-                      <td key={rr} className={`numeric px-3 py-3 text-right ${covers ? "font-medium text-positive" : ""}`}>
-                        {fmt(Math.round(inc))}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
+                  >
+                    <td className={cn("numeric px-3 text-left font-semibold", isNumberRow ? "pb-4 pt-6" : "py-3")}>
+                      {fmt(cap)}
+                      {isNumberRow && (
+                        <span className="absolute -top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-primary-foreground shadow-lg shadow-primary/20">
+                          <span className="h-1 w-1 animate-pulse rounded-full bg-primary-foreground" />
+                          {t("tu número", "your number")}
+                        </span>
+                      )}
+                    </td>
+                    {rates.map((rr) => {
+                      const inc = (cap * (rr / 100)) / 12;
+                      const covers = inc >= d.expenses && d.expenses > 0;
+                      return (
+                        <td
+                          key={rr}
+                          className={cn(
+                            "numeric px-3 text-right",
+                            isNumberRow ? "pb-4 pt-6" : "py-3",
+                            covers && "font-medium text-positive",
+                          )}
+                        >
+                          {fmt(Math.round(inc))}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </ScrollX>
