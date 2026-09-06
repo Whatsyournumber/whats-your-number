@@ -190,7 +190,10 @@ export function AppSidebar() {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold text-foreground">{fullName}</p>
-                <p className="truncate text-xs text-muted-foreground">{t("Mis datos", "My data")}</p>
+                <p className="flex items-center gap-1 truncate text-xs text-muted-foreground">
+                  <UserCog className="h-3 w-3" />
+                  {t("Mis datos", "My data")}
+                </p>
               </div>
               <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
             </Link>
