@@ -320,7 +320,7 @@ function MiPerfil() {
                   className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
                 >
                   <ChevronLeft className="h-4 w-4" />
-                  {t("Ver mis datos", "See my data")}
+                  {t("Editar foto", "Edit photo")}
                 </button>
               </div>
             </div>
