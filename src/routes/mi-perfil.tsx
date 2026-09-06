@@ -291,38 +291,33 @@ function MiPerfil() {
 
 
           <PageShell>
-            <div className="flex items-center gap-4 sm:gap-6">
-              {googleAvatar ? (
-                <img
-                  src={googleAvatar}
-                  alt={form.full_name || googleName || t("Foto de perfil", "Profile photo")}
-                  className="h-20 w-20 shrink-0 rounded-full object-cover ring-2 ring-primary/30 sm:h-24 sm:w-24"
-                  referrerPolicy="no-referrer"
-                />
-              ) : (
-                <div className="grid h-20 w-20 shrink-0 place-items-center rounded-full bg-secondary ring-2 ring-primary/30 sm:h-24 sm:w-24">
-                  <UserRound className="h-10 w-10 text-muted-foreground sm:h-11 sm:w-11" />
-                </div>
-              )}
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  {t("Perfil financiero", "Financial profile")}
-                </p>
-                <h1 className="truncate text-2xl font-bold text-foreground sm:text-3xl">
-                  {form.full_name || googleName || t("Tu cuenta", "Your account")}
-                </h1>
-                {user?.email && (
-                  <p className="truncate text-sm text-muted-foreground">{user.email}</p>
+            <div className="flex flex-col items-center text-center">
+              <div className="relative">
+                {googleAvatar ? (
+                  <img
+                    src={googleAvatar}
+                    alt={form.full_name || googleName || t("Foto de perfil", "Profile photo")}
+                    className="h-24 w-24 shrink-0 rounded-full object-cover ring-2 ring-primary/30 sm:h-28 sm:w-28"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <div className="grid h-24 w-24 shrink-0 place-items-center rounded-full bg-secondary ring-2 ring-primary/30 sm:h-28 sm:w-28">
+                    <UserRound className="h-11 w-11 text-muted-foreground sm:h-12 sm:w-12" />
+                  </div>
                 )}
-                <button
-                  type="button"
-                  onClick={() => navigate({ to: "/mi-perfil" })}
-                  className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                  {t("Ver mis datos", "See my data")}
-                </button>
+                <span className="absolute bottom-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-positive ring-2 ring-background">
+                  <span className="h-2.5 w-2.5 rounded-full bg-background" />
+                </span>
               </div>
+              <p className="mt-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                {t("Perfil financiero", "Financial profile")}
+              </p>
+              <h1 className="mt-0.5 max-w-full truncate text-2xl font-bold text-foreground sm:text-3xl">
+                {form.full_name || googleName || t("Tu cuenta", "Your account")}
+              </h1>
+              {user?.email && (
+                <p className="mt-0.5 max-w-full truncate text-sm text-muted-foreground">{user.email}</p>
+              )}
             </div>
 
             <PageHeader
