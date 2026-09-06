@@ -451,13 +451,13 @@ function MiPerfil() {
           <Stat label={t("Your Number", "Your Number")} value={preview.fmt(preview.plan.targetCapital)} short={preview.fmtCompact(preview.plan.targetCapital)} />
           <Stat label={t("Libertad", "Freedom")} value={`${preview.plan.freedomAge} ${t("años", "years")}`} />
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button variant="outline" className="gap-2 rounded-full" onClick={() => navigate({ to: "/onboarding" })}>
-            <RefreshCw className="h-4 w-4" />
+        <div className="flex w-full flex-row gap-2 lg:w-auto">
+          <Button variant="outline" className="flex-1 gap-2 whitespace-nowrap rounded-full lg:flex-none" onClick={() => navigate({ to: "/onboarding" })}>
+            <RefreshCw className="h-4 w-4 shrink-0" />
             {t("Rehacer onboarding", "Redo onboarding")}
           </Button>
-          <Button className="gap-2 rounded-full" onClick={() => void onSave()} disabled={saving || !dirty}>
-            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+          <Button className="flex-1 gap-2 whitespace-nowrap rounded-full lg:flex-none" onClick={() => void onSave()} disabled={saving || !dirty}>
+            {saving ? <Loader2 className="h-4 w-4 shrink-0 animate-spin" /> : <Save className="h-4 w-4 shrink-0" />}
             {t("Guardar cambios", "Save changes")}
           </Button>
         </div>
