@@ -420,17 +420,8 @@ function MiPerfil() {
                 {user?.email && (
                   <p className="truncate text-sm text-muted-foreground">{user.email}</p>
                 )}
-                <div className="mt-2 flex flex-wrap items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => fileRef.current?.click()}
-                    disabled={avatarUploading}
-                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline disabled:opacity-50"
-                  >
-                    <Camera className="h-4 w-4" />
-                    {t("Editar foto", "Edit photo")}
-                  </button>
-                  {avatarUrl && (
+                {avatarUrl && (
+                  <div className="mt-2 flex flex-wrap items-center gap-3">
                     <button
                       type="button"
                       onClick={() => void removeAvatar()}
@@ -440,8 +431,8 @@ function MiPerfil() {
                       <X className="h-4 w-4" />
                       {t("Quitar foto", "Remove photo")}
                     </button>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </div>
 
