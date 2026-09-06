@@ -1084,7 +1084,7 @@ function PortafolioContent() {
                 onClick={() => setAiExpanded((v) => !v)}
                 className="self-start rounded-full bg-elevated px-3 py-1 text-xs font-medium text-foreground transition hover:bg-elevated/80"
               >
-                {aiExpanded ? t("Ver menos", "Show less") : "+2"}
+                {aiExpanded ? t("Ver menos", "Show less") : t("Ver más", "See more")}
               </button>
             )}
 
