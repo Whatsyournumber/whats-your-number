@@ -380,18 +380,36 @@ function MiPerfil() {
 
           <PageShell>
             <div className="flex items-center gap-4 sm:gap-6">
-              {googleAvatar ? (
-                <img
-                  src={googleAvatar}
-                  alt={form.full_name || googleName || t("Foto de perfil", "Profile photo")}
-                  className="h-20 w-20 shrink-0 rounded-full object-cover ring-2 ring-primary/30 sm:h-24 sm:w-24"
-                  referrerPolicy="no-referrer"
+              <div className="relative shrink-0">
+                {avatarUrl ? (
+                  <img
+                    src={avatarUrl}
+                    alt={form.full_name || googleName || t("Foto de perfil", "Profile photo")}
+                    className="h-20 w-20 shrink-0 rounded-full object-cover ring-2 ring-primary/30 sm:h-24 sm:w-24"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <div className="grid h-20 w-20 shrink-0 place-items-center rounded-full bg-secondary ring-2 ring-primary/30 sm:h-24 sm:w-24">
+                    <UserRound className="h-10 w-10 text-muted-foreground sm:h-11 sm:w-11" />
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  disabled={avatarUploading}
+                  className="absolute -bottom-1 -right-1 grid h-8 w-8 place-items-center rounded-full bg-primary text-primary-foreground shadow-md transition-transform hover:scale-105 active:scale-95 disabled:opacity-50"
+                  aria-label={t("Cambiar foto", "Change photo")}
+                >
+                  {avatarUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
+                </button>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/*"
+                  className="sr-only"
+                  onChange={(e) => void handleAvatarChange(e)}
                 />
-              ) : (
-                <div className="grid h-20 w-20 shrink-0 place-items-center rounded-full bg-secondary ring-2 ring-primary/30 sm:h-24 sm:w-24">
-                  <UserRound className="h-10 w-10 text-muted-foreground sm:h-11 sm:w-11" />
-                </div>
-              )}
+              </div>
               <div className="min-w-0 flex-1">
                 <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                   {t("Perfil financiero", "Financial profile")}
@@ -402,14 +420,28 @@ function MiPerfil() {
                 {user?.email && (
                   <p className="truncate text-sm text-muted-foreground">{user.email}</p>
                 )}
-                <button
-                  type="button"
-                  onClick={() => navigate({ to: "/mi-perfil" })}
-                  className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                  {t("Editar foto", "Edit photo")}
-                </button>
+                <div className="mt-2 flex flex-wrap items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => fileRef.current?.click()}
+                    disabled={avatarUploading}
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline disabled:opacity-50"
+                  >
+                    <Camera className="h-4 w-4" />
+                    {t("Editar foto", "Edit photo")}
+                  </button>
+                  {avatarUrl && (
+                    <button
+                      type="button"
+                      onClick={() => void removeAvatar()}
+                      disabled={avatarUploading}
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-destructive hover:underline disabled:opacity-50"
+                    >
+                      <X className="h-4 w-4" />
+                      {t("Quitar foto", "Remove photo")}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 
