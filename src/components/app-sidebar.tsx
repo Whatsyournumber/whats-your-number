@@ -98,11 +98,10 @@ export function AppSidebar() {
 
   const secondary = [
     ...affiliateItems,
-    ...familyItems,
+    ...(isMobile ? [] : familyItems),
     { title: t("Asistente IA", "AI Assistant"), url: "/advisor", icon: Bot },
-    { title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserCog },
+    ...(isMobile ? [] : [{ title: t("Mis datos", "My data"), url: "/mi-perfil", icon: UserCog } as const]),
     { title: t("Suscripción", "Subscription"), url: "/suscripcion", icon: CreditCard },
-    
     { title: t("Importar gastos", "Import expenses"), url: "/configuracion", icon: Upload },
   ] as const;
 
@@ -199,7 +198,7 @@ export function AppSidebar() {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold text-foreground">{fullName}</p>
-                <p className="truncate text-xs text-muted-foreground">{t("Mis datos", "My data")}</p>
+                <p className="truncate text-xs text-muted-foreground">⚙️ {t("Mis datos", "My data")}</p>
               </div>
               <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
             </Link>
