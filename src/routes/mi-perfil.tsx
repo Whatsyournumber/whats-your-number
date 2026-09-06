@@ -1,5 +1,5 @@
 import { Block, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Loader2, RefreshCw, Save, Target, UserRound, Wallet } from "lucide-react";
+import { ChevronLeft, Loader2, RefreshCw, Save, Target, UserRound, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -291,20 +291,20 @@ function MiPerfil() {
 
 
           <PageShell>
-            <div className="flex items-end gap-4 sm:gap-6">
+            <div className="flex items-center gap-4 sm:gap-6">
               {googleAvatar ? (
                 <img
                   src={googleAvatar}
                   alt={form.full_name || googleName || t("Foto de perfil", "Profile photo")}
-                  className="h-24 w-24 shrink-0 rounded-full object-cover ring-2 ring-primary/30 sm:h-28 sm:w-28"
+                  className="h-20 w-20 shrink-0 rounded-full object-cover ring-2 ring-primary/30 sm:h-24 sm:w-24"
                   referrerPolicy="no-referrer"
                 />
               ) : (
-                <div className="grid h-24 w-24 shrink-0 place-items-center rounded-full bg-secondary ring-2 ring-primary/30 sm:h-28 sm:w-28">
-                  <UserRound className="h-11 w-11 text-muted-foreground sm:h-12 sm:w-12" />
+                <div className="grid h-20 w-20 shrink-0 place-items-center rounded-full bg-secondary ring-2 ring-primary/30 sm:h-24 sm:w-24">
+                  <UserRound className="h-10 w-10 text-muted-foreground sm:h-11 sm:w-11" />
                 </div>
               )}
-              <div className="min-w-0 pb-1">
+              <div className="min-w-0 flex-1">
                 <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                   {t("Perfil financiero", "Financial profile")}
                 </p>
@@ -314,6 +314,14 @@ function MiPerfil() {
                 {user?.email && (
                   <p className="truncate text-sm text-muted-foreground">{user.email}</p>
                 )}
+                <button
+                  type="button"
+                  onClick={() => navigate({ to: "/mi-perfil" })}
+                  className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  {t("Ver mis datos", "See my data")}
+                </button>
               </div>
             </div>
 
