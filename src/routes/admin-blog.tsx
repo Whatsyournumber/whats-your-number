@@ -1315,10 +1315,12 @@ function LlmPanel({
             )}
           </TableBody>
         </Table>
+        </div>
       </Panel>
 
       <Panel className="p-6">
         <h2 className="mb-4 text-lg font-semibold">Artículos que la IA está citando más</h2>
+        <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
@@ -1348,6 +1350,7 @@ function LlmPanel({
             )}
           </TableBody>
         </Table>
+        </div>
       </Panel>
 
       {(data?.byCountry.length ?? 0) > 0 && (
