@@ -62,40 +62,14 @@ function MiPerfil() {
   const tr = (label: string) => translateOption(label, lang);
   const { profile, isLoading, save, saving } = useProfile();
   const { user } = useAuth();
-  const googleAvatar =
-    (user?.user_metadata?.["avatar_url"] as string | undefined) ??
-    (user?.user_metadata?.["picture"] as string | undefined) ??
-    null;
   const googleName = (user?.user_metadata?.["full_name"] as string | undefined) ?? null;
   const navigate = useNavigate();
   const [form, setForm] = useState<Profile>(profile);
   const { holdings, isLoading: loadingHoldings, saveAll } = useHoldings();
   const [wealth, setWealth] = useState<Holding[]>([]);
 
-
   const [dirty, setDirty] = useState(false);
   const [pendingGoal, setPendingGoal] = useState<string | null>(null);
-  const fileRef = useRef<HTMLInputElement>(null);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(googleAvatar);
-  const [avatarUploading, setAvatarUploading] = useState(false);
-
-  const { data: profileAvatar } = useQuery({
-    queryKey: ["profile-avatar", user?.id],
-    enabled: Boolean(user?.id),
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("avatar_url")
-        .eq("id", user!.id)
-        .maybeSingle();
-      if (error) throw error;
-      return (data?.avatar_url as string | null) ?? null;
-    },
-  });
-
-  useEffect(() => {
-    setAvatarUrl(profileAvatar ?? googleAvatar);
-  }, [profileAvatar, googleAvatar]);
   // Tasas del día: necesarias para reconvertir los importes al cambiar de moneda.
   useFxRates();
 
@@ -169,72 +143,6 @@ function MiPerfil() {
       convertStoredFixedExpenses(from, next);
       return { ...convertProfileCurrency(f, from, next), ...(extra ?? {}), currency: next };
     });
-  };
-
-  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !user) return;
-    if (!file.type.startsWith("image/")) {
-      toast.error(t("Selecciona una imagen", "Select an image"));
-      return;
-    }
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error(t("Máximo 2 MB", "Maximum 2 MB"));
-      return;
-    }
-    setAvatarUploading(true);
-    try {
-      const folder = user.id;
-      const filename = `${Date.now()}-${file.name.replace(/[^\w.\-]/g, "_")}`;
-      const path = `${folder}/${filename}`;
-      const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, {
-        contentType: file.type,
-        upsert: false,
-      });
-      if (upErr) throw upErr;
-
-      const { data: signed, error: signedErr } = await supabase.storage
-        .from("avatars")
-        .createSignedUrl(path, 60 * 60 * 24 * 365);
-      if (signedErr) throw signedErr;
-      const publicUrl = signed.signedUrl;
-
-      const { error: profErr } = await supabase
-        .from("profiles")
-        .update({ avatar_url: publicUrl })
-        .eq("id", user.id);
-      if (profErr) throw profErr;
-
-      const { error: authErr } = await supabase.auth.updateUser({
-        data: { avatar_url: publicUrl, picture: publicUrl },
-      });
-      if (authErr) throw authErr;
-
-      setAvatarUrl(publicUrl);
-      toast.success(t("Foto actualizada", "Photo updated"));
-    } catch (err) {
-      console.error(err);
-      toast.error(t("No se pudo subir la foto", "Could not upload photo"));
-    } finally {
-      setAvatarUploading(false);
-      if (fileRef.current) fileRef.current.value = "";
-    }
-  };
-
-  const removeAvatar = async () => {
-    if (!user) return;
-    setAvatarUploading(true);
-    try {
-      setAvatarUrl(null);
-      await supabase.from("profiles").update({ avatar_url: null }).eq("id", user.id);
-      await supabase.auth.updateUser({ data: { avatar_url: null, picture: null } });
-      toast.success(t("Foto eliminada", "Photo removed"));
-    } catch (err) {
-      console.error(err);
-      toast.error(t("No se pudo eliminar la foto", "Could not remove photo"));
-    } finally {
-      setAvatarUploading(false);
-    }
   };
 
   const merged: Profile = { ...form, ...wealthTotals(wealth) };
