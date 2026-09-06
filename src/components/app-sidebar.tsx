@@ -175,6 +175,37 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent className={isMobile ? "flex-1 gap-0.5 overflow-y-auto" : "flex-none gap-0.5 overflow-hidden"}>
+        {isMobile && (
+          <SidebarGroup className="p-1.5">
+            <Link
+              to="/mi-perfil"
+              onClick={() => setOpenMobile(false)}
+              className="surface flex items-center gap-3 rounded-xl p-3 transition-colors hover:bg-accent/50"
+            >
+              <div className="relative shrink-0">
+                {googleAvatar ? (
+                  <img
+                    src={googleAvatar}
+                    alt={t("Foto de perfil", "Profile photo")}
+                    className="h-12 w-12 rounded-full object-cover ring-2 ring-primary/30"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <div className="grid h-12 w-12 place-items-center rounded-full bg-secondary ring-2 ring-primary/30">
+                    <UserRound className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                )}
+                <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-positive ring-2 ring-background" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold text-foreground">{fullName}</p>
+                <p className="truncate text-xs text-muted-foreground">{email}</p>
+              </div>
+              <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+            </Link>
+          </SidebarGroup>
+        )}
+
         <SidebarGroup className="p-1.5">
           <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
             {t("Patrimonio", "Net Worth")}
