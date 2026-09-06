@@ -683,7 +683,7 @@ function RetiroContent() {
                               key={rr}
                               className={cn(
                                 "numeric px-3 text-right",
-                                isNumberRow ? "pb-4 pt-6" : "py-3",
+                                isNumberRow ? "pb-5 pt-5" : "py-3",
                                 covers && "font-medium text-positive",
                               )}
                             >
