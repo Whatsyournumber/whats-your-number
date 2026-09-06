@@ -872,7 +872,7 @@ function PortafolioContent() {
             </div>
           ) : (
             <ResponsiveContainer width="100%" height={isMobile ? 260 : 290}>
-              <LineChart data={benchmarkData} margin={{ left: isMobile ? 0 : -18, right: isMobile ? 4 : 8, bottom: isMobile ? 16 : 8 }}>
+              <LineChart data={benchmarkData} margin={{ left: isMobile ? 0 : -18, right: isMobile ? 18 : 8, bottom: isMobile ? 16 : 8 }}>
                 <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
                 <XAxis
                   dataKey="label"
