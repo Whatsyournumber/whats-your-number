@@ -22,6 +22,7 @@ import { useT } from "@/hooks/use-language";
 import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
 import { Amount } from "@/components/ui/amount";
+import { currencySymbol } from "@/lib/onboarding";
 
 export const Route = createFileRoute("/retiro")({
   head: () => ({
