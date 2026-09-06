@@ -111,6 +111,14 @@ function MiPerfil() {
     if (!dirty) setForm(profile);
   }, [profile, dirty]);
 
+  // Prefill name from the Google account when the profile has none yet.
+  useEffect(() => {
+    if (dirty) return;
+    if (!profile.full_name && googleName) {
+      setForm((f) => (f.full_name ? f : { ...f, full_name: googleName }));
+    }
+  }, [profile.full_name, googleName, dirty]);
+
   // Detalle del patrimonio: si nunca lo editaste, lo sembramos con los totales del perfil.
   useEffect(() => {
     if (dirty || loadingHoldings) return;
