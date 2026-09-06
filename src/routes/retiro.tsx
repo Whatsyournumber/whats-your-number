@@ -664,14 +664,16 @@ function RetiroContent() {
                           isNumberRow && "border-primary/30 bg-primary/[0.04] shadow-[0_0_20px_hsl(var(--primary)/5%)]",
                         )}
                       >
-                        <td className={cn("numeric px-3 text-left font-semibold", isNumberRow ? "pb-4 pt-6" : "py-3")}>
-                          {fmt(cap)}
-                          {isNumberRow && (
-                            <span className="absolute -top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-primary-foreground shadow-lg shadow-primary/20">
-                              <span className="h-1 w-1 animate-pulse rounded-full bg-primary-foreground" />
-                              {t("tu número", "your number")}
-                            </span>
-                          )}
+                        <td className={cn("numeric px-3 text-left font-semibold", isNumberRow ? "pb-5 pt-5" : "py-3")}>
+                          <div className="flex flex-col items-start gap-1.5">
+                            {fmt(cap)}
+                            {isNumberRow && (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-primary/85 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-primary-foreground">
+                                <span className="h-1 w-1 rounded-full bg-primary-foreground" />
+                                {t("tu número", "your number")}
+                              </span>
+                            )}
+                          </div>
                         </td>
                         {rates.map((rr) => {
                           const inc = (cap * (rr / 100)) / 12;
@@ -681,7 +683,7 @@ function RetiroContent() {
                               key={rr}
                               className={cn(
                                 "numeric px-3 text-right",
-                                isNumberRow ? "pb-4 pt-6" : "py-3",
+                                isNumberRow ? "pb-5 pt-5" : "py-3",
                                 covers && "font-medium text-positive",
                               )}
                             >
