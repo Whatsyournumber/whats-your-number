@@ -409,10 +409,7 @@ function AdminPage() {
       <Tabs defaultValue="users" className="w-full">
         <div className="-mx-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <TabsList className="w-max flex-nowrap justify-start">
-            <TabsTrigger value="users" className="shrink-0">
-              <span className="sm:hidden">{t("Usuarios", "Users")}</span>
-              <span className="hidden sm:inline">{t("Usuarios", "Users")}</span>
-            </TabsTrigger>
+            <TabsTrigger value="users" className="shrink-0">{t("Usuarios", "Users")}</TabsTrigger>
             <TabsTrigger value="subs" className="shrink-0">
               <span className="sm:hidden">{t("Pagos", "Payments")}</span>
               <span className="hidden sm:inline">{t("Pagos y suscripciones", "Payments & subscriptions")}</span>
