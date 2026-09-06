@@ -257,13 +257,14 @@ function RetiroContent() {
                 </button>
               </div>
               <div>
-                <label className="text-[11px] uppercase tracking-wide text-muted-foreground">{t("Ingreso mensual", "Monthly income")}</label>
+                <label className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">{t("Ingreso mensual", "Monthly income")}</label>
                 <Input
                   type="number"
-                  className="mt-1 h-9 border-0 border-b border-border bg-transparent px-0 text-lg font-medium shadow-none focus-visible:ring-0"
+                  inputMode="numeric"
+                  className="numeric mt-2 h-auto border-0 bg-transparent px-0 py-0 text-3xl font-semibold tracking-tight shadow-none focus-visible:ring-0"
                   value={wantMonthly || ""}
                   onChange={(e) => setWantMonthly(Number(e.target.value || 0))}
-                  placeholder="7000"
+                  placeholder="10000"
                 />
               </div>
               <div>
