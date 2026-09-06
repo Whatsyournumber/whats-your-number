@@ -16,7 +16,6 @@ import {
   UserCog,
   CreditCard,
   ShieldCheck,
-  Users,
   Handshake,
   ChevronRight,
   X,
