@@ -322,25 +322,6 @@ function AppShell() {
               <ThemeToggle />
               <CurrencyToggle />
               <LanguageToggle />
-              <Link
-                to="/mi-perfil"
-                className="relative hidden shrink-0 rounded-full outline-none ring-offset-2 ring-offset-background transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-primary sm:flex"
-                aria-label={t("Ver mis datos", "See my data")}
-              >
-                {googleAvatar ? (
-                  <img
-                    src={googleAvatar}
-                    alt={t("Foto de perfil", "Profile photo")}
-                    className="h-8 w-8 rounded-full object-cover ring-2 ring-primary/30 sm:h-9 sm:w-9"
-                    referrerPolicy="no-referrer"
-                  />
-                ) : (
-                  <div className="grid h-8 w-8 place-items-center rounded-full bg-secondary ring-2 ring-primary/30 sm:h-9 sm:w-9">
-                    <UserRound className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                )}
-                <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-positive ring-2 ring-background" />
-              </Link>
               <Button
                 variant="ghost"
                 size="sm"
