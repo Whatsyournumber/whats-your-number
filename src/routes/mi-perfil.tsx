@@ -452,12 +452,12 @@ function MiPerfil() {
           <Stat label={t("Libertad", "Freedom")} value={`${preview.plan.freedomAge} ${t("años", "years")}`} />
         </div>
         <div className="flex w-full flex-row gap-2 lg:w-auto">
-          <Button variant="outline" className="flex-1 gap-2 whitespace-nowrap rounded-full lg:flex-none" onClick={() => navigate({ to: "/onboarding" })}>
-            <RefreshCw className="h-4 w-4 shrink-0" />
+          <Button variant="outline" className="flex-1 gap-1.5 whitespace-nowrap rounded-full h-9 px-3 text-xs lg:h-10 lg:px-4 lg:text-sm lg:flex-none" onClick={() => navigate({ to: "/onboarding" })}>
+            <RefreshCw className="h-3.5 w-3.5 shrink-0 lg:h-4 lg:w-4" />
             {t("Rehacer onboarding", "Redo onboarding")}
           </Button>
-          <Button className="flex-1 gap-2 whitespace-nowrap rounded-full lg:flex-none" onClick={() => void onSave()} disabled={saving || !dirty}>
-            {saving ? <Loader2 className="h-4 w-4 shrink-0 animate-spin" /> : <Save className="h-4 w-4 shrink-0" />}
+          <Button className="flex-1 gap-1.5 whitespace-nowrap rounded-full h-9 px-3 text-xs lg:h-10 lg:px-4 lg:text-sm lg:flex-none" onClick={() => void onSave()} disabled={saving || !dirty}>
+            {saving ? <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin lg:h-4 lg:w-4" /> : <Save className="h-3.5 w-3.5 shrink-0 lg:h-4 lg:w-4" />}
             {t("Guardar cambios", "Save changes")}
           </Button>
         </div>
