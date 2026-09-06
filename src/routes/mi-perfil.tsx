@@ -73,6 +73,9 @@ function MiPerfil() {
   const [form, setForm] = useState<Profile>(profile);
   const { holdings, isLoading: loadingHoldings, saveAll } = useHoldings();
   const [wealth, setWealth] = useState<Holding[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(googleAvatar);
 
 
   const [dirty, setDirty] = useState(false);
