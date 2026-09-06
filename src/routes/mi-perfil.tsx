@@ -1,7 +1,9 @@
 import { Block, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronLeft, Loader2, RefreshCw, Save, Target, UserRound, Wallet } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Camera, ChevronLeft, Loader2, RefreshCw, Save, Target, UserRound, Wallet } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+
+import { supabase } from "@/integrations/supabase/client";
 
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { WealthEditor } from "@/components/wealth-editor";
