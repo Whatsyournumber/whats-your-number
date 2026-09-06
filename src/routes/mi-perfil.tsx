@@ -63,10 +63,10 @@ function MiPerfil() {
   const { profile, isLoading, save, saving } = useProfile();
   const { user } = useAuth();
   const googleAvatar =
-    (user?.user_metadata?.avatar_url as string | undefined) ??
-    (user?.user_metadata?.picture as string | undefined) ??
+    (user?.user_metadata?.["avatar_url"] as string | undefined) ??
+    (user?.user_metadata?.["picture"] as string | undefined) ??
     null;
-  const googleName = (user?.user_metadata?.full_name as string | undefined) ?? null;
+  const googleName = (user?.user_metadata?.["full_name"] as string | undefined) ?? null;
   const navigate = useNavigate();
   const [form, setForm] = useState<Profile>(profile);
   const { holdings, isLoading: loadingHoldings, saveAll } = useHoldings();
