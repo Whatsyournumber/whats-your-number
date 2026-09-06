@@ -24,6 +24,7 @@ import { useLanguage, useT } from "@/hooks/use-language";
 import { translateOption } from "@/lib/i18n-data";
 
 import { useProfile, type Profile } from "@/hooks/use-profile";
+import { useAuth } from "@/hooks/use-auth";
 import { seedHoldingsFromTotals, useHoldings, wealthTotals, type Holding } from "@/hooks/use-holdings";
 import {
   childrenOptions,
@@ -60,6 +61,12 @@ function MiPerfil() {
   const { lang } = useLanguage();
   const tr = (label: string) => translateOption(label, lang);
   const { profile, isLoading, save, saving } = useProfile();
+  const { user } = useAuth();
+  const googleAvatar =
+    (user?.user_metadata?.["avatar_url"] as string | undefined) ??
+    (user?.user_metadata?.["picture"] as string | undefined) ??
+    null;
+  const googleName = (user?.user_metadata?.["full_name"] as string | undefined) ?? null;
   const navigate = useNavigate();
   const [form, setForm] = useState<Profile>(profile);
   const { holdings, isLoading: loadingHoldings, saveAll } = useHoldings();
@@ -103,6 +110,14 @@ function MiPerfil() {
   useEffect(() => {
     if (!dirty) setForm(profile);
   }, [profile, dirty]);
+
+  // Prefill name from the Google account when the profile has none yet.
+  useEffect(() => {
+    if (dirty) return;
+    if (!profile.full_name && googleName) {
+      setForm((f) => (f.full_name ? f : { ...f, full_name: googleName }));
+    }
+  }, [profile.full_name, googleName, dirty]);
 
   // Detalle del patrimonio: si nunca lo editaste, lo sembramos con los totales del perfil.
   useEffect(() => {
@@ -310,6 +325,30 @@ function MiPerfil() {
           title={t("Sobre ti", "About you")}
           description={t("Tus datos base para las proyecciones.", "Your base data for the projections.")}
         >
+          {(googleAvatar || user?.email) && (
+            <div className="mb-4 flex items-center gap-3 rounded-2xl bg-muted/40 p-3">
+              {googleAvatar ? (
+                <img
+                  src={googleAvatar}
+                  alt={form.full_name || googleName || t("Foto de perfil", "Profile photo")}
+                  className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-primary/30"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-secondary ring-2 ring-primary/30">
+                  <UserRound className="h-6 w-6 text-muted-foreground" />
+                </div>
+              )}
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-foreground">
+                  {form.full_name || googleName || t("Tu cuenta", "Your account")}
+                </p>
+                {user?.email && (
+                  <p className="truncate text-xs text-muted-foreground">{user.email}</p>
+                )}
+              </div>
+            </div>
+          )}
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label={t("Nombre", "Name")}>
               <Input value={form.full_name} onChange={(e) => set("full_name", e.target.value)} placeholder={t("Tu nombre", "Your name")} />
