@@ -397,7 +397,7 @@ function BlogBackOffice() {
                 <div className="space-y-2 sm:hidden">
                   {gscOk.pages.slice(0, 30).map((row: GscRow) => (
                     <div key={row.keys[0]} className="rounded-xl border border-border/60 bg-muted/20 p-3">
-                      <p className="break-all text-xs font-medium leading-snug">{row.keys[0].replace(/^https?:\/\//, "")}</p>
+                      <p className="break-all text-xs font-medium leading-snug">{(row.keys[0] ?? "").replace(/^https?:\/\//, "")}</p>
                       <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
                         <span>{row.clicks} clics</span>·<span>{row.impressions} impr.</span>·
                         <span>pos. {row.position.toFixed(1)}</span>
