@@ -20,7 +20,6 @@ import {
   Handshake,
   ChevronRight,
   X,
-  UserRound,
 } from "lucide-react";
 
 
