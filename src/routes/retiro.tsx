@@ -624,8 +624,8 @@ function RetiroContent() {
       </div>
 
       <Panel
-        title={t("Escenarios: renta mensual según tu capital", "Scenarios: monthly income based on your capital")}
-        description={`${t("Cuánto podrías retirar cada mes según el capital acumulado y la rentabilidad anual. En verde, lo que cubre tus gastos de", "How much you could withdraw monthly based on accumulated capital and annual return. In green, what covers your expenses of")} ${fmt(d.expenses)}.`}
+        title={t("Escenarios de renta mensual", "Monthly income scenarios")}
+        description={`${t("En verde, lo que cubre tus gastos de", "In green, what covers your expenses of")} ${fmt(d.expenses)}.`}
         actions={<ScrollXButtons state={scenariosScroll.state} nudge={scenariosScroll.nudge} />}
       >
         <div ref={scenariosScroll.ref} onScroll={scenariosScroll.update} className="overflow-x-auto scroll-smooth">
