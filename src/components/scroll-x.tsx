@@ -2,18 +2,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-/** Contenedor con scroll horizontal, degradados sutiles y botones de desplazamiento. */
-export function ScrollX({
-  children,
-  className,
-  controlsPosition = "center",
-}: {
-  children: React.ReactNode;
-  className?: string;
-  controlsPosition?: "center" | "top";
-}) {
+type ScrollXState = { left: boolean; right: boolean };
+
+/** Hook con estado y control de un contenedor con scroll horizontal. */
+export function useScrollX() {
   const ref = useRef<HTMLDivElement>(null);
-  const [state, setState] = useState({ left: false, right: false });
+  const [state, setState] = useState<ScrollXState>({ left: false, right: false });
 
   const update = useCallback(() => {
     const el = ref.current;
@@ -31,12 +25,50 @@ export function ScrollX({
     return () => ro.disconnect();
   }, [update]);
 
-  const nudge = (dir: 1 | -1) => {
+  const nudge = useCallback((dir: 1 | -1) => {
     const el = ref.current;
     if (!el) return;
     el.scrollBy({ left: dir * Math.max(160, el.clientWidth * 0.7), behavior: "smooth" });
-  };
+  }, []);
 
+  return { ref, state, update, nudge };
+}
+
+/** Par de flechas para cabeceras de sección; se deshabilitan en los extremos. */
+export function ScrollXButtons({
+  state,
+  nudge,
+  className,
+}: {
+  state: ScrollXState;
+  nudge: (dir: 1 | -1) => void;
+  className?: string;
+}) {
+  const base =
+    "grid h-8 w-8 place-items-center rounded-full border border-border/70 bg-elevated/60 text-muted-foreground transition hover:border-primary/40 hover:text-foreground disabled:pointer-events-none disabled:opacity-30";
+  return (
+    <div className={cn("flex shrink-0 items-center gap-1.5", className)}>
+      <button type="button" aria-label="Scroll left" onClick={() => nudge(-1)} disabled={!state.left} className={base}>
+        <ChevronLeft className="h-4 w-4" />
+      </button>
+      <button type="button" aria-label="Scroll right" onClick={() => nudge(1)} disabled={!state.right} className={base}>
+        <ChevronRight className="h-4 w-4" />
+      </button>
+    </div>
+  );
+}
+
+/** Contenedor con scroll horizontal, degradados sutiles y botones de desplazamiento flotantes. */
+export function ScrollX({
+  children,
+  className,
+  controlsPosition = "center",
+}: {
+  children: React.ReactNode;
+  className?: string;
+  controlsPosition?: "center" | "top";
+}) {
+  const { ref, state, update, nudge } = useScrollX();
   const isTop = controlsPosition === "top";
 
   return (
