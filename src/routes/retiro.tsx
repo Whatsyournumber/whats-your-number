@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { motion } from "motion/react";
 import { Pencil, X } from "lucide-react";
-import { ScrollX } from "@/components/scroll-x";
+import { ScrollXButtons, useScrollX } from "@/components/scroll-x";
 
 import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
@@ -172,6 +172,7 @@ function RetiroContent() {
     new Set([0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3].map((m) => roundNice(baseNumber * m)).filter((v) => v > 0)),
   ).sort((a, b) => a - b);
   const rates = [4, 6, 8, 10, 12];
+  const scenariosScroll = useScrollX();
 
   // El subtítulo siempre cambia según el objetivo elegido en el onboarding / perfil.
   const priority = (profile as { priority?: string }).priority || "libertad";
@@ -625,8 +626,9 @@ function RetiroContent() {
       <Panel
         title={t("Escenarios: renta mensual según tu capital", "Scenarios: monthly income based on your capital")}
         description={`${t("Cuánto podrías retirar cada mes según el capital acumulado y la rentabilidad anual. En verde, lo que cubre tus gastos de", "How much you could withdraw monthly based on accumulated capital and annual return. In green, what covers your expenses of")} ${fmt(d.expenses)}.`}
+        actions={<ScrollXButtons state={scenariosScroll.state} nudge={scenariosScroll.nudge} />}
       >
-        <ScrollX controlsPosition="top">
+        <div ref={scenariosScroll.ref} onScroll={scenariosScroll.update} className="overflow-x-auto scroll-smooth">
           <table className="w-full min-w-[640px] border-collapse text-sm">
             <thead>
               <tr className="border-b border-border text-xs uppercase tracking-[0.12em] text-muted-foreground">
@@ -679,7 +681,7 @@ function RetiroContent() {
               })}
             </tbody>
           </table>
-        </ScrollX>
+        </div>
         <p className="mt-3 text-xs text-muted-foreground">{t("Renta mensual = capital × rentabilidad anual ÷ 12.", "Monthly income = capital × annual return ÷ 12.")}</p>
       </Panel>
 
