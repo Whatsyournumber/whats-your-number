@@ -633,50 +633,80 @@ function BlogBackOffice() {
             </div>
           </Panel>
 
-          <Panel className="p-6">
+          <Panel className="p-4 sm:p-6">
             <h2 className="mb-4 text-lg font-semibold">Artículos más leídos</h2>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Artículo</TableHead>
-                  <TableHead className="text-right">Visitas</TableHead>
-                  <TableHead className="text-right">Únicos</TableHead>
-                  <TableHead className="text-right">ES / EN</TableHead>
-                  <TableHead />
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {(traffic.data?.byPost ?? []).map((row) => {
-                  const post = blogPosts.find((p) => p.slug === row.slug);
-                  return (
-                    <TableRow key={row.slug}>
-                      <TableCell className="max-w-[420px] truncate font-medium">
-                        {post?.title.es ?? row.slug}
-                      </TableCell>
-                      <TableCell className="text-right">{row.views}</TableCell>
-                      <TableCell className="text-right">{row.sessions}</TableCell>
-                      <TableCell className="text-right text-muted-foreground">
-                        {row.es} / {row.en}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Button size="sm" variant="ghost" asChild>
-                          <Link to="/blog/$slug" params={{ slug: row.slug }} target="_blank">
-                            <ArrowUpRight className="h-4 w-4" />
-                          </Link>
-                        </Button>
+            {/* Mobile: cards */}
+            <div className="space-y-2 sm:hidden">
+              {(traffic.data?.byPost ?? []).map((row) => {
+                const post = blogPosts.find((p) => p.slug === row.slug);
+                return (
+                  <div key={row.slug} className="rounded-xl border border-border/60 bg-muted/20 p-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="min-w-0 text-sm font-medium leading-snug">{post?.title.es ?? row.slug}</p>
+                      <Button size="icon" variant="ghost" className="h-7 w-7 shrink-0" asChild>
+                        <Link to="/blog/$slug" params={{ slug: row.slug }} target="_blank">
+                          <ArrowUpRight className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </div>
+                    <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
+                      <span className="font-semibold text-foreground">{row.views} visitas</span>·
+                      <span>{row.sessions} únicos</span>·<span>ES {row.es} / EN {row.en}</span>
+                    </div>
+                  </div>
+                );
+              })}
+              {(traffic.data?.byPost.length ?? 0) === 0 && (
+                <p className="py-6 text-center text-sm text-muted-foreground">
+                  Todavía no hay visitas registradas en este periodo.
+                </p>
+              )}
+            </div>
+            {/* Desktop: table */}
+            <div className="hidden overflow-x-auto sm:block">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Artículo</TableHead>
+                    <TableHead className="text-right">Visitas</TableHead>
+                    <TableHead className="text-right">Únicos</TableHead>
+                    <TableHead className="text-right">ES / EN</TableHead>
+                    <TableHead />
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(traffic.data?.byPost ?? []).map((row) => {
+                    const post = blogPosts.find((p) => p.slug === row.slug);
+                    return (
+                      <TableRow key={row.slug}>
+                        <TableCell className="max-w-[420px] truncate font-medium">
+                          {post?.title.es ?? row.slug}
+                        </TableCell>
+                        <TableCell className="text-right">{row.views}</TableCell>
+                        <TableCell className="text-right">{row.sessions}</TableCell>
+                        <TableCell className="text-right text-muted-foreground">
+                          {row.es} / {row.en}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button size="sm" variant="ghost" asChild>
+                            <Link to="/blog/$slug" params={{ slug: row.slug }} target="_blank">
+                              <ArrowUpRight className="h-4 w-4" />
+                            </Link>
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                  {(traffic.data?.byPost.length ?? 0) === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={5} className="text-center text-muted-foreground">
+                        Todavía no hay visitas registradas en este periodo.
                       </TableCell>
                     </TableRow>
-                  );
-                })}
-                {(traffic.data?.byPost.length ?? 0) === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={5} className="text-center text-muted-foreground">
-                      Todavía no hay visitas registradas en este periodo.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </Panel>
 
           <div className="grid gap-6 lg:grid-cols-2">
