@@ -293,9 +293,22 @@ function PortafolioContent() {
   const series = seriesQuery.data?.series ?? {};
   const benchSymbol = benchmark === "nasdaq" ? "^IXIC" : benchmark === "world" ? "URTH" : "^GSPC";
   const benchName = benchmark === "nasdaq" ? "Nasdaq 100" : benchmark === "world" ? "MSCI World" : "S&P 500";
-  const benchSeries = (series[benchSymbol] ?? []).slice(-12);
-  const spy = (series["SPY"] ?? []).slice(-12);
-  const btc = (series["BTC-USD"] ?? []).slice(-12);
+  // Últimos 12 meses únicos: evita etiquetas duplicadas si Yahoo devuelve un punto extra.
+  const last12Unique = (s: { label: string; value: number }[]) => {
+    const out: { label: string; value: number }[] = [];
+    const seen = new Set<string>();
+    for (let i = s.length - 1; i >= 0; i--) {
+      const p = s[i]!;
+      if (seen.has(p.label)) continue;
+      seen.add(p.label);
+      out.unshift(p);
+      if (out.length >= 12) break;
+    }
+    return out;
+  };
+  const benchSeries = last12Unique(series[benchSymbol] ?? []);
+  const spy = last12Unique(series["SPY"] ?? []);
+  const btc = last12Unique(series["BTC-USD"] ?? []);
   const equityValue = profile.assets_etf + profile.assets_retirement + profile.assets_stocks;
   const cryptoValue = profile.assets_crypto;
   const cashValue = profile.assets_cash + profile.assets_bank;
