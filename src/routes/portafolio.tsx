@@ -88,6 +88,8 @@ function PortafolioContent() {
   const quotesQuery = useQuotes(watchlist.symbols);
   const seriesQuery = useMarketSeries(["^GSPC", "^IXIC", "URTH", "SPY", "BTC-USD"]);
   const [benchmark, setBenchmark] = useState<"sp500" | "nasdaq" | "world">("sp500");
+  const [aiExpanded, setAiExpanded] = useState(false);
+
   const [newSymbol, setNewSymbol] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [evoIdx, setEvoIdx] = useState<number | null>(null);
@@ -1067,9 +1069,25 @@ function PortafolioContent() {
               </span>
             </div>
 
-            <p className="text-[13px] leading-relaxed text-muted-foreground">
+            <p
+              className={cn(
+                "text-[13px] leading-relaxed text-muted-foreground",
+                isMobile && (aiExpanded ? "line-clamp-5" : "line-clamp-3"),
+              )}
+            >
               {metricSummary} {insight.isLoading ? t("Analizando…", "Analyzing…") : aiAdvice}
             </p>
+
+            {isMobile && (
+              <button
+                type="button"
+                onClick={() => setAiExpanded((v) => !v)}
+                className="self-start rounded-full bg-elevated px-3 py-1 text-xs font-medium text-foreground transition hover:bg-elevated/80"
+              >
+                {aiExpanded ? t("Ver menos", "Show less") : "+2"}
+              </button>
+            )}
+
           </div>
         </div>
       </Panel>
