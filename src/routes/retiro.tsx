@@ -666,13 +666,13 @@ function RetiroContent() {
                       >
                         <td className={cn("numeric px-3 text-left font-semibold", isNumberRow ? "pb-5 pt-5" : "py-3")}>
                           <div className="flex flex-col items-start gap-1.5">
-                            {fmt(cap)}
                             {isNumberRow && (
                               <span className="inline-flex items-center gap-1 rounded-full bg-primary/85 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-primary-foreground">
                                 <span className="h-1 w-1 rounded-full bg-primary-foreground" />
                                 {t("tu número", "your number")}
                               </span>
                             )}
+                            {fmt(cap)}
                           </div>
                         </td>
                         {rates.map((rr) => {
