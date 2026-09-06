@@ -257,7 +257,7 @@ function RetiroContent() {
                 </button>
               </div>
               <div>
-                <label className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">{t("Ingreso mensual", "Monthly income")}</label>
+                <label className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">{t("Ingreso mensual deseado", "Desired monthly income")}</label>
                 <Input
                   type="number"
                   inputMode="numeric"
