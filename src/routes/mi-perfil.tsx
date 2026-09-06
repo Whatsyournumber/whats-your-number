@@ -77,6 +77,27 @@ function MiPerfil() {
 
   const [dirty, setDirty] = useState(false);
   const [pendingGoal, setPendingGoal] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(googleAvatar);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+
+  const { data: profileAvatar } = useQuery({
+    queryKey: ["profile-avatar", user?.id],
+    enabled: Boolean(user?.id),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("avatar_url")
+        .eq("id", user!.id)
+        .maybeSingle();
+      if (error) throw error;
+      return (data?.avatar_url as string | null) ?? null;
+    },
+  });
+
+  useEffect(() => {
+    setAvatarUrl(profileAvatar ?? googleAvatar);
+  }, [profileAvatar, googleAvatar]);
   // Tasas del día: necesarias para reconvertir los importes al cambiar de moneda.
   useFxRates();
 
