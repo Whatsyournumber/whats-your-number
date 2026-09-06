@@ -417,9 +417,9 @@ function MiPerfil() {
                 <h1 className="truncate text-2xl font-bold text-foreground sm:text-3xl">
                   {form.full_name || googleName || t("Tu cuenta", "Your account")}
                 </h1>
-                {user?.email && (
-                  <p className="truncate text-sm text-muted-foreground">{user.email}</p>
-                )}
+                <p className="truncate text-sm font-semibold text-primary">
+                  {t("Mis datos", "My data")}
+                </p>
                 <div className="mt-2 flex flex-wrap items-center gap-3">
                   <button
                     type="button"
