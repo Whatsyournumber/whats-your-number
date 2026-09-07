@@ -169,14 +169,14 @@ export function AppSidebar() {
               </Button>
             </div>
             {tier === "patrimonio" && (
-              <Link
-                to="/ninos"
-                onClick={() => setOpenMobile(false)}
+              <button
+                type="button"
+                onClick={() => setShowProfiles(true)}
                 className="flex h-8 items-center gap-1.5 pl-0.5 text-sm font-semibold tracking-tight"
               >
                 <span>{t("Perfiles", "Profiles")}</span>
                 <ChevronRight className="h-4 w-4 text-muted-foreground" />
-              </Link>
+              </button>
             )}
           </div>
         ) : (
