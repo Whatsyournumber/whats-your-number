@@ -81,6 +81,30 @@ function ProfileCard({ member, collapsed }: { member: Member; collapsed: boolean
   );
 }
 
+function MobileProfileCard({ member }: { member: Member }) {
+  const { t } = useI18n();
+  const { data: movements = [] } = useMovements(member.id);
+  const totals = pocketTotals(movements);
+  const saved = totals.gastar + totals.ahorrar + totals.crecer;
+
+  return (
+    <div className="mt-auto flex items-center gap-3 rounded-3xl border border-border/60 bg-card/70 p-3">
+      <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-primary/10 text-2xl ring-1 ring-primary/20">
+        {member.avatar}
+      </div>
+      <div className="min-w-0">
+        <p className="truncate text-sm font-bold text-foreground">{member.name}</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+          {t("Mi primer número", "My first number")}
+        </p>
+        <p className="mt-0.5 whitespace-nowrap font-display text-[21px] font-extrabold leading-tight tracking-tight text-primary">
+          {money(saved, member.currency)}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 
 
 /** Aplica el tema visual del perfil (niño / niña / neutro). */
