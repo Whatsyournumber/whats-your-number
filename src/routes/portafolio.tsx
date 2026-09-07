@@ -1139,50 +1139,57 @@ function PortafolioContent() {
                 <p className="text-sm text-muted-foreground">{t("Añade hasta 5 activos para simular", "Add up to 5 assets to simulate")}</p>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2">
+                <div className="grid grid-cols-[auto_minmax(0,1.3fr)_minmax(0,0.95fr)_minmax(0,0.95fr)_minmax(0,0.85fr)_auto] items-center gap-1.5 px-2">
+                  <span className="h-7 w-7 shrink-0" />
+                  <span className="text-[10px] font-medium text-muted-foreground">{t("Activo", "Asset")}</span>
+                  <span className="text-[10px] font-medium text-muted-foreground">{t("Monto", "Amount")}</span>
+                  <span className="text-[10px] font-medium text-muted-foreground">{t("Mensual", "Monthly")}</span>
+                  <span className="text-[10px] font-medium text-muted-foreground">{t("Rend. %", "Return %")}</span>
+                  <span className="h-8 w-8 shrink-0" />
+                </div>
                 {simAssets.map((asset, index) => {
                   const key = asset.ticker.trim().toUpperCase();
                   const auto = key ? simDayChange[key] : undefined;
                   const color = chartColors[index % chartColors.length]!;
                   return (
-                    <div key={asset.id} className="rounded-xl border border-border/50 bg-elevated/30 p-2">
-                      <div className="grid grid-cols-[auto_minmax(0,1.3fr)_minmax(0,0.95fr)_minmax(0,0.95fr)_minmax(0,0.85fr)_auto] items-center gap-2">
+                    <div key={asset.id} className="rounded-xl border border-border/50 bg-elevated/30 p-1.5">
+                      <div className="grid grid-cols-[auto_minmax(0,1.3fr)_minmax(0,0.95fr)_minmax(0,0.95fr)_minmax(0,0.85fr)_auto] items-center gap-1.5">
                         <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-elevated" style={{ color }}>
                           <TrendingUp className="h-3.5 w-3.5" />
                         </span>
                         <Input
                           value={asset.ticker}
                           onChange={(event) => updateSimAsset(asset.id, { ticker: event.target.value.toUpperCase() })}
-                          placeholder={t("Ticker", "Ticker")}
                           aria-label={t("Ticker del activo", "Asset ticker")}
-                          className="h-8 min-w-0 px-2 text-xs uppercase"
+                          className="h-8 min-w-0 border-0 bg-transparent px-2 text-xs uppercase shadow-none focus-visible:ring-1"
                         />
                         <Input
                           type="number"
                           min={0}
                           value={asset.amount === 0 ? "" : Math.round(asset.amount)}
-                          placeholder={t("Monto", "Amount")}
+                          aria-label={t("Monto", "Amount")}
                           onChange={(event) => updateSimAsset(asset.id, { amount: Math.max(0, Number(event.target.value) || 0) })}
-                          className="numeric h-8 min-w-0 px-2 text-xs"
+                          className="numeric h-8 min-w-0 border-0 bg-transparent px-2 text-xs shadow-none focus-visible:ring-1"
                         />
                         <Input
                           type="number"
                           min={0}
                           value={asset.contribution === 0 ? "" : Math.round(asset.contribution)}
-                          placeholder={t("Mensual", "Monthly")}
+                          aria-label={t("Mensual", "Monthly")}
                           onChange={(event) => updateSimAsset(asset.id, { contribution: Math.max(0, Number(event.target.value) || 0) })}
-                          className="numeric h-8 min-w-0 px-2 text-xs"
+                          className="numeric h-8 min-w-0 border-0 bg-transparent px-2 text-xs shadow-none focus-visible:ring-1"
                         />
                         <Input
                           type="number"
                           step="0.1"
                           value={asset.manualReturn ?? (auto !== undefined ? Number(auto.toFixed(2)) : "")}
-                          placeholder={t("% anual", "% annual")}
+                          aria-label={t("Rendimiento %", "Return %")}
                           onChange={(event) => {
                             const raw = event.target.value;
                             updateSimAsset(asset.id, { manualReturn: raw === "" ? null : Number(raw) });
                           }}
-                          className="numeric h-8 min-w-0 px-2 text-xs"
+                          className="numeric h-8 min-w-0 border-0 bg-transparent px-2 text-xs shadow-none focus-visible:ring-1"
                         />
                         <Button
                           type="button"
