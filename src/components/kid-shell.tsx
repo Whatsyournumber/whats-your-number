@@ -355,9 +355,9 @@ export function KidShell({ member, children }: { member: Member; children: React
                 variant="ghost"
                 size="sm"
                 className="gap-2 rounded-full"
-                onClick={() => {
+                onClick={async () => {
+                  await signOut();
                   navigate({ to: "/", replace: true });
-                  void signOut();
                 }}
               >
                 <LogOut className="h-3.5 w-3.5" />
