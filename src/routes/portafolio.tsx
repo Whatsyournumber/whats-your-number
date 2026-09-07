@@ -168,11 +168,10 @@ function SimAssetRow({
       >
         <X className="h-3 w-3" />
       </Button>
-      <div className="grid grid-cols-[1rem_minmax(0,2.2fr)_minmax(0,1.7fr)_minmax(0,1.3fr)_minmax(0,1fr)] items-center gap-1.5">
+      <div className="grid grid-cols-[1rem_minmax(0,1.6fr)_minmax(0,2fr)_minmax(0,1.7fr)_minmax(0,0.8fr)] items-center gap-1.5">
         <TrendingUp className="h-3 w-3 shrink-0" style={{ color }} />
 
         <div className="relative min-w-0">
-          <Search className="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={open ? query : asset.ticker}
             placeholder={t("Buscar", "Search")}
@@ -187,14 +186,9 @@ function SimAssetRow({
               setOpen(true);
               onChange({ ticker: event.target.value.toUpperCase(), name: undefined });
             }}
-            className="h-9 min-w-0 truncate border-border/40 bg-elevated/50 pl-6 pr-2 text-sm font-semibold uppercase placeholder:font-normal placeholder:normal-case placeholder:text-muted-foreground"
+            className="h-9 min-w-0 truncate border-border/40 bg-elevated/50 pl-2 pr-2 text-sm font-semibold uppercase placeholder:font-normal placeholder:normal-case placeholder:text-muted-foreground"
           />
 
-          {!open && asset.name && (
-            <span className="pointer-events-none absolute -bottom-3.5 left-6 truncate text-[10px] text-muted-foreground">
-              {asset.name}
-            </span>
-          )}
           {open && query.trim().length >= 1 && (
             <div className="absolute left-0 top-10 z-30 w-[min(22rem,80vw)] overflow-hidden rounded-xl border border-border/60 bg-card/95 shadow-2xl backdrop-blur-xl">
               {search.isFetching && hits.length === 0 && (
@@ -1303,7 +1297,7 @@ function PortafolioContent() {
               </div>
             ) : (
               <div className="space-y-2">
-                <div className="grid grid-cols-[1rem_minmax(0,2.2fr)_minmax(0,1.7fr)_minmax(0,1.3fr)_minmax(0,1fr)] items-center gap-1.5 px-1 pr-5">
+                <div className="grid grid-cols-[1rem_minmax(0,1.6fr)_minmax(0,2fr)_minmax(0,1.7fr)_minmax(0,0.8fr)] items-center gap-1.5 px-1 pr-5">
                   <span className="w-4 shrink-0" />
                   <span className="truncate text-[10px] font-medium text-muted-foreground">{t("Activo", "Asset")}</span>
                   <span className="truncate text-[10px] font-medium text-muted-foreground">{t("Monto", "Amount")}</span>
