@@ -6,7 +6,7 @@ import { motion } from "motion/react";
 import { Area, CartesianGrid, ComposedChart, Line, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { PlanGate } from "@/components/plan-gate";
-import { ChartTooltip, axisProps } from "@/components/chart-kit";
+import { axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
@@ -21,6 +21,76 @@ import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
 import { buildDataset } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
+
+function SimTooltip({
+  active,
+  payload,
+  label,
+  data,
+  formatter,
+  lang,
+}: {
+  active?: boolean;
+  payload?: { name?: string; value?: number | string; color?: string; dataKey?: string }[];
+  label?: React.ReactNode;
+  data: Array<Record<string, number | string>>;
+  formatter: (v: number) => string;
+  lang: string;
+}) {
+  if (!active || !payload?.length) return null;
+  const f = formatter;
+  const index = data.findIndex((d) => d["label"] === label);
+  const prev = index > 0 ? data[index - 1] : null;
+  const pctLocale = lang === "es" ? "es-ES" : "en-US";
+  const seen = new Set<string>();
+  return (
+    <div
+      className="rounded-2xl border px-4 py-3 text-xs backdrop-blur-sm"
+      style={{
+        backgroundColor: "var(--chart-tooltip-bg)",
+        borderColor: "var(--chart-tooltip-border)",
+        color: "var(--chart-tooltip-fg)",
+        boxShadow: "var(--chart-tooltip-shadow)",
+      }}
+    >
+      {label !== undefined && (
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide" style={{ color: "var(--chart-tooltip-muted)" }}>
+          {label}
+        </p>
+      )}
+      <div className="space-y-1.5">
+        {payload.map((p, i) => {
+          const key = p.dataKey ?? String(i);
+          if (seen.has(key)) return null;
+          seen.add(key);
+          const value = typeof p.value === "number" ? p.value : 0;
+          const prevValue = prev && typeof prev[key] === "number" ? (prev[key] as number) : null;
+          const pct = prevValue && prevValue > 0 ? ((value - prevValue) / prevValue) * 100 : null;
+          const pctText = pct !== null ? new Intl.NumberFormat(pctLocale, { signDisplay: "exceptZero", maximumFractionDigits: 1 }).format(pct) + "%" : null;
+          const up = pct !== null && pct >= 0;
+          return (
+            <div key={i} className="flex items-center gap-2.5">
+              <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: p.color }} />
+              <span className="text-[13px]" style={{ color: "var(--chart-tooltip-muted)" }}>
+                {p.name}
+              </span>
+              <div className="ml-auto flex items-baseline gap-1.5">
+                <span className="numeric text-[13px] font-bold" style={{ color: "var(--chart-tooltip-fg)" }}>
+                  {f(value)}
+                </span>
+                {pctText && (
+                  <span className={cn("numeric text-[11px] font-medium", up ? "text-positive" : "text-negative")}>
+                    {pctText}
+                  </span>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 
 export const Route = createFileRoute("/portafolio")({
@@ -1002,7 +1072,7 @@ function PortafolioContent() {
                     Math.abs(v) >= 1e6 ? `${(v / 1e6).toFixed(1)}M` : `${Math.round(v / 1000)}K`
                   }
                 />
-                <Tooltip content={<ChartTooltip formatter={(v: number) => fmt(Math.round(v))} />} />
+                <Tooltip content={<SimTooltip data={simData} formatter={(v: number) => fmt(Math.round(v))} lang={lang} />} />
                 {hasSim ? (
                   <ReferenceLine
                     x={simData[todayIndex]?.label ?? ""}
