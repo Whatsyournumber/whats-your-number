@@ -47,6 +47,7 @@ import { useRoles } from "@/hooks/use-role";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useMyAffiliate } from "@/hooks/use-affiliate";
 import { useAuth } from "@/hooks/use-auth";
+import { useProfileAvatar } from "@/hooks/use-profile-avatar";
 
 export function AppSidebar() {
   const { state, setOpenMobile, isMobile } = useSidebar();
@@ -59,11 +60,7 @@ export function AppSidebar() {
   const { tier } = useSubscription();
   const { affiliate } = useMyAffiliate();
   const { user } = useAuth();
-
-  const googleAvatar =
-    (user?.user_metadata?.["avatar_url"] as string | undefined) ??
-    (user?.user_metadata?.["picture"] as string | undefined) ??
-    null;
+  const { avatarUrl: googleAvatar } = useProfileAvatar();
   const primary = [
     { title: t("Dashboard", "Dashboard"), url: "/dashboard", icon: LayoutDashboard },
     { title: t("Análisis de Gastos", "Spending Analysis"), url: "/gastos", icon: PieChart },

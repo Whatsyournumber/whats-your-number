@@ -29,6 +29,7 @@ import { AffiliateTracker } from "@/components/affiliate-tracker";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
+import { useProfileAvatar } from "@/hooks/use-profile-avatar";
 import { useMyAffiliate } from "@/hooks/use-affiliate";
 import { useAffiliateWizardActive } from "@/lib/affiliate-wizard-state";
 
@@ -259,10 +260,7 @@ function AppShell() {
   const [onboardingChecked, setOnboardingChecked] = useState(false);
   const t = useT();
 
-  const googleAvatar =
-    (user?.user_metadata?.["avatar_url"] as string | undefined) ??
-    (user?.user_metadata?.["picture"] as string | undefined) ??
-    null;
+  const { avatarUrl: googleAvatar } = useProfileAvatar();
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth", search: { mode: "login" } });
