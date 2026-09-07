@@ -738,7 +738,7 @@ function HeroStat({
         <Icon className="h-4 w-4" />
       </span>
       <div className="min-w-0">
-        <p className="text-[11px] leading-relaxed text-muted-foreground">{label}</p>
+        <p className="truncate text-[11px] leading-relaxed text-muted-foreground whitespace-nowrap">{label}</p>
         <p className={`numeric break-words text-base font-semibold leading-tight ${tone === "up" ? "text-emerald-300" : tone === "down" ? "text-amber-400" : ""}`}>
           {value}
         </p>
