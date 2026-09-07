@@ -157,7 +157,7 @@ function SimAssetRow({
   };
 
   return (
-    <div className="relative rounded-xl border border-border/50 bg-elevated/30 p-1.5 pr-1">
+    <div className="relative rounded-xl border border-border/50 bg-elevated/30 p-1 pr-5">
       <Button
         type="button"
         variant="ghost"
@@ -168,13 +168,11 @@ function SimAssetRow({
       >
         <X className="h-3 w-3" />
       </Button>
-      <div className="grid grid-cols-[auto_minmax(0,2.4fr)_minmax(0,1.6fr)_minmax(0,1.2fr)_minmax(0,0.9fr)] items-center gap-2">
-        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-elevated" style={{ color }}>
-          <TrendingUp className="h-3.5 w-3.5" />
-        </span>
+      <div className="grid grid-cols-[1rem_minmax(0,2.2fr)_minmax(0,1.7fr)_minmax(0,1.3fr)_minmax(0,1fr)] items-center gap-1.5">
+        <TrendingUp className="h-3 w-3 shrink-0" style={{ color }} />
 
         <div className="relative min-w-0">
-          <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+          <Search className="pointer-events-none absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={open ? query : asset.ticker}
             placeholder={t("Buscar", "Search")}
@@ -189,16 +187,16 @@ function SimAssetRow({
               setOpen(true);
               onChange({ ticker: event.target.value.toUpperCase(), name: undefined });
             }}
-            className="h-10 min-w-0 truncate border-border/40 bg-elevated/50 pl-8 pr-2 text-sm font-semibold uppercase placeholder:font-normal placeholder:normal-case placeholder:text-muted-foreground"
+            className="h-9 min-w-0 truncate border-border/40 bg-elevated/50 pl-6 pr-2 text-sm font-semibold uppercase placeholder:font-normal placeholder:normal-case placeholder:text-muted-foreground"
           />
 
           {!open && asset.name && (
-            <span className="pointer-events-none absolute -bottom-3.5 left-8 truncate text-[10px] text-muted-foreground">
+            <span className="pointer-events-none absolute -bottom-3.5 left-6 truncate text-[10px] text-muted-foreground">
               {asset.name}
             </span>
           )}
           {open && query.trim().length >= 1 && (
-            <div className="absolute left-0 top-11 z-30 w-[min(22rem,80vw)] overflow-hidden rounded-xl border border-border/60 bg-card/95 shadow-2xl backdrop-blur-xl">
+            <div className="absolute left-0 top-10 z-30 w-[min(22rem,80vw)] overflow-hidden rounded-xl border border-border/60 bg-card/95 shadow-2xl backdrop-blur-xl">
               {search.isFetching && hits.length === 0 && (
                 <p className="px-3 py-2 text-xs text-muted-foreground">{t("Buscando…", "Searching…")}</p>
               )}
@@ -227,7 +225,7 @@ function SimAssetRow({
         </div>
 
         <div className="relative min-w-0">
-          <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+          <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">
             {symbol}
           </span>
           <Input
@@ -236,12 +234,12 @@ function SimAssetRow({
             aria-label={t("Monto", "Amount")}
             placeholder="0"
             onChange={(event) => onChange({ amount: parseNum(event.target.value) })}
-            className="numeric h-10 min-w-0 border-border/40 bg-elevated/50 pl-6 pr-2 text-sm font-semibold"
+            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-5 pr-1.5 text-sm font-semibold"
           />
         </div>
 
         <div className="relative min-w-0">
-          <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+          <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">
             {symbol}
           </span>
           <Input
@@ -250,7 +248,7 @@ function SimAssetRow({
             aria-label={t("Mensual", "Monthly")}
             placeholder="0"
             onChange={(event) => onChange({ contribution: parseNum(event.target.value) })}
-            className="numeric h-10 min-w-0 border-border/40 bg-elevated/50 pl-6 pr-2 text-sm"
+            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-5 pr-1.5 text-sm"
           />
         </div>
 
@@ -270,9 +268,9 @@ function SimAssetRow({
               const raw = event.target.value.replace(",", ".").replace(/[^\d.-]/g, "");
               onChange({ manualReturn: raw === "" ? null : Number(raw) });
             }}
-            className="numeric h-10 min-w-0 border-border/40 bg-elevated/50 pl-2 pr-5 text-sm"
+            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-2 pr-4 text-sm"
           />
-          <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+          <span className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">
             %
           </span>
         </div>
@@ -1305,8 +1303,8 @@ function PortafolioContent() {
               </div>
             ) : (
               <div className="space-y-2">
-                <div className="grid grid-cols-[auto_minmax(0,2.4fr)_minmax(0,1.6fr)_minmax(0,1.2fr)_minmax(0,0.9fr)] items-center gap-2 px-2 pr-6">
-                  <span className="h-7 w-7 shrink-0" />
+                <div className="grid grid-cols-[1rem_minmax(0,2.2fr)_minmax(0,1.7fr)_minmax(0,1.3fr)_minmax(0,1fr)] items-center gap-1.5 px-1 pr-5">
+                  <span className="w-4 shrink-0" />
                   <span className="truncate text-[10px] font-medium text-muted-foreground">{t("Activo", "Asset")}</span>
                   <span className="truncate text-[10px] font-medium text-muted-foreground">{t("Monto", "Amount")}</span>
                   <span className="truncate text-[10px] font-medium text-muted-foreground">{t("Mensual", "Monthly")}</span>
