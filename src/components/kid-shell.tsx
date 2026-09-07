@@ -27,14 +27,14 @@ import { CurrencySelect } from "@/components/mfn-currency-select";
 const TABS = [
   { to: "/ninos/kid/numero", label: "Inicio", labelEn: "Home", icon: Home },
   { to: "/ninos/kid/dinero", label: "Mi dinero", labelEn: "My Money", icon: Wallet },
-  { to: "/ninos/kid/tareas", label: "Tareas", labelEn: "Tasks", icon: CheckSquare },
-  { to: "/ninos/kid/deseos", label: "Sueños", labelEn: "Dreams", icon: Star },
+  { to: "/ninos/kid/tareas", label: "Mis tareas", labelEn: "My Tasks", icon: CheckSquare },
+  { to: "/ninos/kid/deseos", label: "Mis sueños", labelEn: "My Dreams", icon: Star },
 ] as const;
 
 const PARENT_TABS = [
   { to: "/ninos", label: "Perfiles", labelEn: "Profiles", icon: Users },
-  { to: "/ninos/kid/futuro", label: "Planificador", labelEn: "Planner", icon: Rocket },
-  { to: "/ninos/kid/universidades", label: "Universidad", labelEn: "University", icon: GraduationCap },
+  { to: "/ninos/kid/futuro", label: "Fondo para la universidad", labelEn: "College fund", icon: Rocket },
+  { to: "/ninos/kid/universidades", label: "Buscador de universidades", labelEn: "University finder", icon: GraduationCap },
   { to: "/ninos/kid/datos", label: "Ajustes", labelEn: "Settings", icon: SlidersHorizontal },
 ] as const;
 
