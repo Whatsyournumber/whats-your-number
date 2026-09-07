@@ -158,3 +158,46 @@ export async function fetchIndexStat(symbol: string): Promise<IndexStat | null> 
     currency: live?.meta?.currency ?? hist?.meta?.currency ?? "USD",
   };
 }
+
+export type AssetStat = {
+  symbol: string;
+  name: string;
+  price: number;
+  /** Retorno anual compuesto histórico (%) */
+  cagr: number;
+  /** Volatilidad anualizada (%) a partir de retornos mensuales */
+  vol: number;
+};
+
+/** Rendimiento y volatilidad reales de un activo, calculados con el histórico mensual. */
+export async function fetchAssetStat(symbol: string): Promise<AssetStat | null> {
+  const hist = await chart(symbol, "10y", "1mo");
+  if (!hist) return null;
+  const closes = hist.indicators?.quote?.[0]?.close ?? [];
+  const stamps = hist.timestamp ?? [];
+  const pts: { t: number; c: number }[] = [];
+  for (let i = 0; i < stamps.length; i += 1) {
+    const c = closes[i];
+    const t = stamps[i];
+    if (typeof c === "number" && typeof t === "number" && c > 0) pts.push({ t, c });
+  }
+  if (pts.length < 13) return null;
+  const first = pts[0]!;
+  const last = pts[pts.length - 1]!;
+  const years = Math.max(1, (last.t - first.t) / (365.25 * 24 * 3600));
+  const cagr = (Math.pow(last.c / first.c, 1 / years) - 1) * 100;
+
+  const rets: number[] = [];
+  for (let i = 1; i < pts.length; i += 1) rets.push(pts[i]!.c / pts[i - 1]!.c - 1);
+  const mean = rets.reduce((s, x) => s + x, 0) / rets.length;
+  const variance = rets.reduce((s, x) => s + (x - mean) ** 2, 0) / Math.max(1, rets.length - 1);
+  const vol = Math.sqrt(variance) * Math.sqrt(12) * 100;
+
+  return {
+    symbol: hist.meta?.symbol ?? symbol,
+    name: hist.meta?.shortName ?? hist.meta?.longName ?? symbol,
+    price: hist.meta?.regularMarketPrice ?? last.c,
+    cagr: Number.isFinite(cagr) ? cagr : 0,
+    vol: Number.isFinite(vol) ? vol : 0,
+  };
+}
