@@ -31,7 +31,7 @@ export function NumberInput({
   style?: React.CSSProperties;
 }) {
   const pretty = (v: number) =>
-    v === 0 ? "" : format ? v.toLocaleString(getWynMoneyLocale(), { useGrouping: "always" }) : String(v);
+    v === 0 ? "" : format ? v.toLocaleString(getWynMoneyLocale(), { useGrouping: "always" as unknown as boolean }) : String(v);
   const [text, setText] = useState(pretty(value));
   const ref = useRef<HTMLInputElement>(null);
 

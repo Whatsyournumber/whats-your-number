@@ -265,7 +265,7 @@ export function num(v: number, decimals = 0) {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
     // "always": en español 4 cifras también llevan separador de miles (5.130).
-    useGrouping: "always",
+    useGrouping: "always" as unknown as boolean,
   });
 }
 
@@ -275,7 +275,7 @@ export function money(v: number, currency = "USD") {
     currency: currency || "USD",
     currencyDisplay: "narrowSymbol",
     maximumFractionDigits: 0,
-    useGrouping: "always",
+    useGrouping: "always" as unknown as boolean,
   }).format(Number.isFinite(v) ? v : 0);
 }
 
