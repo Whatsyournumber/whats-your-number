@@ -132,7 +132,7 @@ export function AppSidebar() {
                 to="/mi-perfil"
                 onClick={() => setOpenMobile(false)}
                 aria-label={t("Mis datos", "My data")}
-                className="relative ml-6 h-9 w-9 shrink-0"
+                className="relative ml-0.5 h-9 w-9 shrink-0"
               >
                 {googleAvatar ? (
                   <img
