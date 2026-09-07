@@ -61,6 +61,7 @@ export function AppSidebar() {
   const { tier } = useSubscription();
   const { affiliate } = useMyAffiliate();
   const { user } = useAuth();
+  const [showProfiles, setShowProfiles] = useState(false);
 
   const googleAvatar =
     (user?.user_metadata?.["avatar_url"] as string | undefined) ??
