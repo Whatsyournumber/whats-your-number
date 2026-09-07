@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarIcon, Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, TrendingUp, X } from "lucide-react";
 import { useState } from "react";
 import { motion } from "motion/react";
-import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
@@ -20,7 +20,6 @@ import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
 import { buildDataset } from "@/lib/profile-data";
-import { PortfolioSimulator } from "@/components/portfolio-simulator";
 import { cn } from "@/lib/utils";
 
 
@@ -634,19 +633,15 @@ function PortafolioContent() {
   ));
 
   const types = ["ETF", "Acción", "Renta fija", "Estructurado", "Retiro", "Cripto", "Inmueble", "Cash"] as const;
-  const activeTypes = types.filter((ty) => enriched.some((h) => h.type === ty && h.value > 0));
-
-  // Semillas del simulador: tus posiciones reales con ticker (las 5 mayores).
-  const simSeedRows = holdings
-    .filter((h) => h.ticker && holdingValue(h, prices) > 0)
-    .map((h) => ({
-      symbol: h.ticker!.toUpperCase(),
-      label: h.label || h.ticker!,
-      initial: holdingValue(h, prices),
-      monthly: Math.round(h.monthly_contribution || 0),
+  const allocation = types
+    .map((ty, i) => ({
+      name: ty,
+      value: enriched.filter((h) => h.type === ty).reduce((s, h) => s + h.value, 0),
+      color: chartColors[i]!,
     }))
-    .sort((a, b) => b.initial - a.initial)
-    .slice(0, 5);
+    .filter((a) => a.value > 0)
+    .sort((a, b) => b.value - a.value);
+  const activeTypes = types.filter((ty) => enriched.some((h) => h.type === ty && h.value > 0));
 
   const rows = (list: typeof enriched) => (
     <div className="space-y-2">
@@ -921,14 +916,29 @@ function PortafolioContent() {
           </div>
         </Panel>
 
-      </div>
 
-      <PortfolioSimulator
-        fmt={fmt}
-        realTotal={totalValue}
-        realReturn={weightedReturn}
-        seedRows={simSeedRows}
-      />
+        <Panel title={t("Composición", "Composition")} bleedMobile>
+          <ResponsiveContainer width="100%" height={210}>
+            <PieChart>
+              <Pie data={allocation} dataKey="value" nameKey="name" innerRadius={58} outerRadius={96} paddingAngle={3} stroke="none">
+                {allocation.map((a) => (
+                  <Cell key={a.name} fill={a.color} />
+                ))}
+              </Pie>
+              <Tooltip content={<ChartTooltip />} />
+            </PieChart>
+          </ResponsiveContainer>
+          <ul className="mt-3 space-y-1.5 px-5 sm:px-0">
+            {allocation.map((a) => (
+              <li key={a.name} className="flex items-center gap-2 text-xs">
+                <span className="h-2 w-2 rounded-full" style={{ background: a.color }} />
+                <span className="text-muted-foreground">{typeLabels[a.name]}</span>
+                <span className="numeric ml-auto font-medium">{totalValue > 0 ? ((a.value / totalValue) * 100).toFixed(0) : 0}%</span>
+              </li>
+            ))}
+          </ul>
+        </Panel>
+      </div>
 
       <Panel
         title={t("Posiciones", "Positions")}
