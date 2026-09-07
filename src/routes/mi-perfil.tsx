@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Block, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Camera, ChevronLeft, Loader2, RefreshCw, Save, Target, UserRound, Wallet, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -78,6 +78,7 @@ function MiPerfil() {
   const [dirty, setDirty] = useState(false);
   const [pendingGoal, setPendingGoal] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const queryClient = useQueryClient();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(googleAvatar);
   const [avatarUploading, setAvatarUploading] = useState(false);
 
@@ -213,6 +214,7 @@ function MiPerfil() {
       if (authErr) throw authErr;
 
       setAvatarUrl(publicUrl);
+      queryClient.setQueryData(["profile-avatar", user.id], publicUrl);
       toast.success(t("Foto actualizada", "Photo updated"));
     } catch (err) {
       console.error(err);
@@ -229,6 +231,7 @@ function MiPerfil() {
     try {
       setAvatarUrl(null);
       await supabase.from("profiles").update({ avatar_url: null }).eq("id", user.id);
+      queryClient.setQueryData(["profile-avatar", user.id], null);
       await supabase.auth.updateUser({ data: { avatar_url: null, picture: null } });
       toast.success(t("Foto eliminada", "Photo removed"));
     } catch (err) {
