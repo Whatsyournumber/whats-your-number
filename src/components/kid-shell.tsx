@@ -1,11 +1,14 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouter } from "@tanstack/react-router";
 import {
+  Bot,
   CheckSquare,
+  CreditCard,
   Home,
   Rocket,
   GraduationCap,
   Star,
+  UserCog,
   Wallet,
   ChevronLeft,
   ChevronRight,
@@ -38,6 +41,14 @@ const PARENT_TABS = [
   { to: "/ninos/kid/datos", label: "Ajustes", labelEn: "Settings", icon: SlidersHorizontal },
 ] as const;
 
+const MOBILE_PARENT_TABS = [
+  { to: "/ninos/kid/futuro", label: "Fondo Universidad", labelEn: "College fund", icon: Rocket },
+  { to: "/ninos/kid/universidades", label: "Buscador universidades", labelEn: "University finder", icon: GraduationCap },
+  { to: "/ninos/kid/datos", label: "Mis datos", labelEn: "My data", icon: UserCog },
+  { to: "/suscripcion", label: "Suscripción", labelEn: "Subscription", icon: CreditCard },
+  { to: "/advisor", label: "Asistente IA", labelEn: "AI Assistant", icon: Bot },
+] as const;
+
 function ProfileCard({ member, collapsed }: { member: Member; collapsed: boolean }) {
   const { t } = useI18n();
   const { data: movements = [] } = useMovements(member.id);
@@ -63,6 +74,30 @@ function ProfileCard({ member, collapsed }: { member: Member; collapsed: boolean
           {t("Mi primer número", "My first number")}
         </p>
         <p className="mt-0.5 whitespace-nowrap font-display text-[19px] font-extrabold leading-tight tracking-tight text-primary">
+          {money(saved, member.currency)}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function MobileProfileCard({ member }: { member: Member }) {
+  const { t } = useI18n();
+  const { data: movements = [] } = useMovements(member.id);
+  const totals = pocketTotals(movements);
+  const saved = totals.gastar + totals.ahorrar + totals.crecer;
+
+  return (
+    <div className="mt-auto flex items-center gap-3 rounded-3xl border border-border/60 bg-card/70 p-3">
+      <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-primary/10 text-2xl ring-1 ring-primary/20">
+        {member.avatar}
+      </div>
+      <div className="min-w-0">
+        <p className="truncate text-sm font-bold text-foreground">{member.name}</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+          {t("Mi primer número", "My first number")}
+        </p>
+        <p className="mt-0.5 whitespace-nowrap font-display text-[21px] font-extrabold leading-tight tracking-tight text-primary">
           {money(saved, member.currency)}
         </p>
       </div>
@@ -215,8 +250,8 @@ export function KidShell({ member, children }: { member: Member; children: React
                 <Menu className="h-4.5 w-4.5" />
               </button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-full sm:max-w-xs [&>button]:hidden">
-              <div className="flex flex-col gap-6">
+            <SheetContent side="left" className="h-full w-full sm:max-w-xs [&>button]:hidden">
+              <div className="flex h-full flex-col gap-6">
                 <div className="space-y-2">
                   <div className="relative flex h-10 items-center justify-between">
                     <SheetClose asChild>
@@ -277,7 +312,7 @@ export function KidShell({ member, children }: { member: Member; children: React
                   <p className="px-1 pb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
                     {t("Para papás", "For parents")}
                   </p>
-                  {PARENT_TABS.filter((tab) => tab.to !== "/ninos").map((tab) => (
+                  {MOBILE_PARENT_TABS.map((tab) => (
                     <SheetClose asChild key={tab.to}>
                       <Link
                         to={tab.to}
@@ -291,6 +326,7 @@ export function KidShell({ member, children }: { member: Member; children: React
                     </SheetClose>
                   ))}
                 </nav>
+                <MobileProfileCard member={member} />
               </div>
             </SheetContent>
           </Sheet>
