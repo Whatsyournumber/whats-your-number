@@ -1,14 +1,16 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { Link, useRouter } from "@tanstack/react-router";
+import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import {
   
   CheckSquare,
   CreditCard,
   Home,
+  LogOut,
   Rocket,
   GraduationCap,
   Star,
   UserCog,
+  UserRound,
   Wallet,
   ChevronLeft,
   ChevronRight,
@@ -20,10 +22,12 @@ import {
   X,
 } from "lucide-react";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { KidsBrandLogo } from "@/components/brand-logo";
 import { THEME_ATTR, kidZoneEnabled, money, pocketTotals, type Member } from "@/lib/mfn";
 import { useMovements } from "@/hooks/use-mfn";
+import { useAuth } from "@/hooks/use-auth";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
 import { CurrencySelect } from "@/components/mfn-currency-select";
 
