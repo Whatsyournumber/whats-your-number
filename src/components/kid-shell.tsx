@@ -151,7 +151,7 @@ export function KidShell({ member, children }: { member: Member; children: React
       <aside
         className={cn(
           "glass-nav sticky top-0 hidden h-screen shrink-0 flex-col overflow-hidden border-r py-5 transition-[width] duration-300 lg:flex",
-          collapsed ? "w-[78px] px-2" : "w-60 px-3",
+          collapsed ? "w-[78px] px-2" : "w-64 px-3",
         )}
       >
         <div className={cn("flex items-center", collapsed ? "justify-center" : "justify-between gap-2")}>
@@ -195,7 +195,7 @@ export function KidShell({ member, children }: { member: Member; children: React
                   <span className={cn("nav-icon", isActive && "nav-icon-active")}>
                     <tab.icon className="h-4 w-4" />
                   </span>
-                  {collapsed ? null : <span className="truncate">{label(tab)}</span>}
+                  {collapsed ? null : <span className="min-w-0 whitespace-nowrap">{label(tab)}</span>}
                 </>
               )}
             </Link>
@@ -220,7 +220,7 @@ export function KidShell({ member, children }: { member: Member; children: React
               to={tab.to}
               activeOptions={{ exact: true }}
               activeProps={{ className: "nav-pill-active" }}
-              className={cn("nav-pill text-sm", collapsed && "justify-center px-0")}
+              className={cn("nav-pill text-[13px]", collapsed && "justify-center px-0")}
               title={collapsed ? label(tab) : undefined}
             >
               {({ isActive }: { isActive: boolean }) => (
@@ -228,7 +228,7 @@ export function KidShell({ member, children }: { member: Member; children: React
                   <span className={cn("nav-icon", isActive && "nav-icon-active")}>
                     <tab.icon className="h-4 w-4" />
                   </span>
-                  {collapsed ? null : <span className="truncate">{label(tab)}</span>}
+                  {collapsed ? null : <span className="min-w-0 whitespace-nowrap">{label(tab)}</span>}
                 </>
               )}
             </Link>
