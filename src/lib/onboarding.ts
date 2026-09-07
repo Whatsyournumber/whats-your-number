@@ -264,6 +264,8 @@ export function num(v: number, decimals = 0) {
   return n.toLocaleString(moneyLocale, {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
+    // "always": en español 4 cifras también llevan separador de miles (5.130).
+    useGrouping: "always" as unknown as boolean,
   });
 }
 
@@ -271,9 +273,12 @@ export function money(v: number, currency = "USD") {
   return new Intl.NumberFormat(moneyLocale, {
     style: "currency",
     currency: currency || "USD",
+    currencyDisplay: "narrowSymbol",
     maximumFractionDigits: 0,
+    useGrouping: "always" as unknown as boolean,
   }).format(Number.isFinite(v) ? v : 0);
 }
+
 
 export function currencySymbol(currency = "USD") {
   const parts = new Intl.NumberFormat("en-US", {

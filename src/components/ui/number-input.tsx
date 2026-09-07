@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { Input } from "@/components/ui/input";
+import { getWynMoneyLocale } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
 
 export function NumberInput({
@@ -29,7 +30,8 @@ export function NumberInput({
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   style?: React.CSSProperties;
 }) {
-  const pretty = (v: number) => (v === 0 ? "" : format ? v.toLocaleString("es-ES") : String(v));
+  const pretty = (v: number) =>
+    v === 0 ? "" : format ? v.toLocaleString(getWynMoneyLocale(), { useGrouping: "always" as unknown as boolean }) : String(v);
   const [text, setText] = useState(pretty(value));
   const ref = useRef<HTMLInputElement>(null);
 
