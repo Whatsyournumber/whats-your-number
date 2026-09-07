@@ -301,7 +301,7 @@ export function KidShell({ member, children }: { member: Member; children: React
                           activeProps={{ className: "nav-pill-active" }}
                         >
                           <tab.icon className="h-4.5 w-4.5 shrink-0" />
-                          <span className="truncate">{label(tab)}</span>
+                          <span className="whitespace-normal leading-tight">{label(tab)}</span>
                         </Link>
                       </SheetClose>
                     ))}
