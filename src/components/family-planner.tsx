@@ -636,7 +636,7 @@ export function FamilyPlanner({
                 {v.isLive && live[v.key]?.changePct != null ? (
                   <span className="opacity-70">
                     {live[v.key]!.changePct >= 0 ? "+" : ""}
-                    {live[v.key]!.changePct.toFixed(1)}% hoy
+                    {pct(live[v.key]!.changePct)} {t("hoy", "today")}
                   </span>
                 ) : null}
               </button>
@@ -667,8 +667,8 @@ export function FamilyPlanner({
             {t("Fuente:", "Source:")}{" "}
             {liveNow
               ? t(
-                  `datos reales de mercado · ${vehicleName} ${liveNow.cagr10y != null ? t("x","x") === "x" && `${pct(liveNow.cagr10y)}${lang === "en" ? " yearly (10y)" : " anual (10 años)"}` : ""}${liveTime ? ` · actualizado ${liveTime}` : ""}`,
-                  `live market data · ${vehicleName} ${liveNow.cagr10y != null ? `${liveNow.cagr10y.toFixed(1)}% yearly (10y)` : ""}${liveTime ? ` · updated ${liveTime}` : ""}`,
+                  `datos reales de mercado · ${vehicleName} ${liveNow.cagr10y != null ? `${pct(liveNow.cagr10y)} anual (10 años)` : ""}${liveTime ? ` · actualizado ${liveTime}` : ""}`,
+                  `live market data · ${vehicleName} ${liveNow.cagr10y != null ? `${pct(liveNow.cagr10y)} yearly (10y)` : ""}${liveTime ? ` · updated ${liveTime}` : ""}`,
                 )
               : lang === "en"
                 ? vehicle.sourceEn
