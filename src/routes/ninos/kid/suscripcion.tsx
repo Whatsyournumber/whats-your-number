@@ -28,13 +28,6 @@ function KidSubscription() {
   const { t } = useI18n();
   return (
     <>
-      <Link
-        to="/ninos"
-        className="mb-3 inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground transition hover:text-foreground"
-      >
-        <ChevronLeft className="h-4 w-4" />
-        {t("Volver a perfiles", "Back to profiles")}
-      </Link>
       <PageTitle
         emoji="💳"
         title={t("Suscripción", "Subscription")}
