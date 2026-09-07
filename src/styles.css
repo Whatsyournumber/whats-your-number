@@ -324,6 +324,8 @@ input[type="number"] {
   --accent-foreground: oklch(0.25 0.05 255);
   --border: oklch(0.9 0.03 232);
   --input: oklch(0.9 0.03 232);
+  --popover: oklch(0.995 0.006 232);
+  --popover-foreground: oklch(0.24 0.05 258);
   --ring: oklch(0.55 0.18 250);
   --elevated: oklch(0.965 0.02 232);
   --grad-surface: linear-gradient(160deg, oklch(0.995 0.006 232), oklch(0.955 0.025 232));
@@ -354,6 +356,8 @@ input[type="number"] {
   --accent-foreground: oklch(0.27 0.05 340);
   --border: oklch(0.9 0.03 350);
   --input: oklch(0.9 0.03 350);
+  --popover: oklch(0.995 0.006 350);
+  --popover-foreground: oklch(0.26 0.05 340);
   --ring: oklch(0.63 0.2 355);
   --elevated: oklch(0.965 0.02 350);
   --grad-surface: linear-gradient(160deg, oklch(0.995 0.006 350), oklch(0.955 0.025 350));
