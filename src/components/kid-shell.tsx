@@ -263,14 +263,15 @@ export function KidShell({ member, children }: { member: Member; children: React
               <div className="flex h-full flex-col gap-3">
                 <div className="space-y-1">
                   <div className="relative flex h-10 items-center justify-between">
-                    <SheetClose asChild>
+                  <SheetClose asChild>
                       <Link
-                        to="/ninos"
+                        to="/ninos/kid/datos"
                         onClick={() => setMenuOpen(false)}
-                        aria-label={t("Perfiles", "Profiles")}
+                        aria-label={t("Mis datos", "My data")}
                         className="relative ml-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/10 text-2xl ring-1 ring-primary/30"
                       >
                         {member.avatar}
+                        <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-positive ring-2 ring-background" />
                       </Link>
                     </SheetClose>
                     <div className="absolute left-1/2 top-1/2 flex min-w-0 -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-2">
