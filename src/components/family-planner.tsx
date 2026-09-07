@@ -53,6 +53,8 @@ function StatCard({
   suffix?: string;
   action?: React.ReactNode;
 }) {
+  const [editing, setEditing] = useState(false);
+  const display = Number.isInteger(value) ? num(value, 0) : num(value, 1);
   return (
     <div className="min-w-0 px-4 py-3.5 sm:px-5 sm:py-4">
       <div className="flex items-center gap-2.5">
@@ -64,20 +66,21 @@ function StatCard({
       <div className="mt-1.5 flex h-8 items-baseline gap-1 overflow-hidden">
         {onChange ? (
           <input
-            type="number"
+            type="text"
             inputMode="numeric"
-            value={value === 0 ? "" : value}
+            value={editing ? (value === 0 ? "" : String(value)) : display}
             placeholder="0"
-            max={max}
+            onFocus={() => setEditing(true)}
+            onBlur={() => setEditing(false)}
             onChange={(e) => {
-              const n = Math.max(0, Number(e.target.value));
+              const n = Math.max(0, Number(e.target.value.replace(/[^\d.]/g, "")));
               onChange(max !== undefined ? Math.min(max, n) : n);
             }}
             className="w-full min-w-0 rounded-lg bg-transparent font-display text-2xl font-semibold leading-8 tracking-tight text-foreground outline-none focus:bg-primary/5 sm:text-[24px]"
           />
         ) : (
           <span className="truncate font-display text-2xl font-semibold leading-8 tracking-tight text-foreground sm:text-[24px]">
-            {value}
+            {display}
           </span>
         )}
         {suffix ? (
