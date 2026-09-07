@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useProfile } from "@/hooks/use-profile";
 import { useT } from "@/hooks/use-language";
 import { convertProfileCurrency, ensureLiveRates, getRatesUpdatedAt } from "@/lib/fx";
-import { currencies } from "@/lib/onboarding";
+import { currencies, currencyDisplay } from "@/lib/onboarding";
 
 /** Selector de moneda: reconvierte todos los importes del perfil a la divisa elegida. */
 export function CurrencyToggle({ className = "" }: { className?: string }) {
@@ -52,7 +52,7 @@ export function CurrencyToggle({ className = "" }: { className?: string }) {
     >
       {currencies.map((c) => (
         <option key={c.code} value={c.code}>
-          {c.code}
+          {currencyDisplay(c.code, c.symbol)}
         </option>
       ))}
     </select>

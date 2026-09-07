@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { CURRENCIES } from "@/lib/mfn-currencies";
+import { currencyDisplay } from "@/lib/onboarding";
 import { useI18n } from "@/lib/mfn-i18n";
 import { useUpdateMember } from "@/hooks/use-mfn";
 import { useFx } from "@/lib/mfn-fx";
@@ -57,7 +58,7 @@ export function CurrencySelect({
       >
         {CURRENCIES.map((c) => (
           <option key={c.code} value={c.code}>
-            {c.code} {c.symbol}
+            {currencyDisplay(c.code, c.symbol)}
           </option>
         ))}
       </select>
