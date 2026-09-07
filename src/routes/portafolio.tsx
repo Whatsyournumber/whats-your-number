@@ -156,11 +156,19 @@ function SimAssetRow({
     return digits ? Math.max(0, Number(digits)) : 0;
   };
 
-  const autoShown = asset.manualReturn === null && auto !== undefined;
-
   return (
-    <div className="rounded-xl border border-border/50 bg-elevated/30 px-2 py-2">
-      <div className="grid grid-cols-[28px_minmax(0,2.2fr)_minmax(0,1.4fr)_minmax(0,1fr)_74px_28px] items-center gap-2">
+    <div className="relative rounded-xl border border-border/50 bg-elevated/30 p-1.5 pr-1">
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        className="absolute -top-1.5 -right-1.5 z-10 h-5 w-5 shrink-0 rounded-full border border-border/40 bg-background/80 text-[10px] text-muted-foreground backdrop-blur-sm hover:text-negative"
+        aria-label={t("Quitar activo", "Remove asset")}
+        onClick={onRemove}
+      >
+        <X className="h-3 w-3" />
+      </Button>
+      <div className="grid grid-cols-[auto_minmax(0,2fr)_minmax(0,1.5fr)_minmax(0,0.9fr)_minmax(0,0.6fr)] items-center gap-2">
         <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-elevated" style={{ color }}>
           <TrendingUp className="h-3.5 w-3.5" />
         </span>
@@ -181,10 +189,15 @@ function SimAssetRow({
               setOpen(true);
               onChange({ ticker: event.target.value.toUpperCase(), name: undefined });
             }}
-            className="h-9 min-w-0 border-border/40 bg-elevated/50 pl-8 pr-2 text-sm font-semibold uppercase"
+            className="h-10 min-w-0 border-border/40 bg-elevated/50 pl-8 pr-2 text-sm font-semibold uppercase"
           />
+          {!open && asset.name && (
+            <span className="pointer-events-none absolute -bottom-3.5 left-8 truncate text-[10px] text-muted-foreground">
+              {asset.name}
+            </span>
+          )}
           {open && query.trim().length >= 1 && (
-            <div className="absolute left-0 top-10 z-30 w-[min(22rem,80vw)] overflow-hidden rounded-xl border border-border/60 bg-card/95 shadow-2xl backdrop-blur-xl">
+            <div className="absolute left-0 top-11 z-30 w-[min(22rem,80vw)] overflow-hidden rounded-xl border border-border/60 bg-card/95 shadow-2xl backdrop-blur-xl">
               {search.isFetching && hits.length === 0 && (
                 <p className="px-3 py-2 text-xs text-muted-foreground">{t("Buscando…", "Searching…")}</p>
               )}
@@ -194,7 +207,7 @@ function SimAssetRow({
                   type="button"
                   onMouseDown={(event) => event.preventDefault()}
                   onClick={() => {
-                    onChange({ ticker: h.symbol.toUpperCase(), name: h.name, manualReturn: null });
+                    onChange({ ticker: h.symbol.toUpperCase(), name: h.name });
                     setOpen(false);
                   }}
                   className="flex w-full items-center gap-2 px-3 py-2 text-left transition hover:bg-elevated/70"
@@ -222,7 +235,7 @@ function SimAssetRow({
             aria-label={t("Monto", "Amount")}
             placeholder="0"
             onChange={(event) => onChange({ amount: parseNum(event.target.value) })}
-            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-6 pr-2 text-sm font-semibold"
+            className="numeric h-10 min-w-0 border-border/40 bg-elevated/50 pl-6 pr-2 text-sm font-semibold"
           />
         </div>
 
@@ -256,32 +269,13 @@ function SimAssetRow({
               const raw = event.target.value.replace(",", ".").replace(/[^\d.-]/g, "");
               onChange({ manualReturn: raw === "" ? null : Number(raw) });
             }}
-            className={`numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-1.5 pr-4 text-xs ${autoShown ? "text-primary" : ""}`}
+            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-1.5 pr-4 text-xs"
           />
           <span className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">
             %
           </span>
         </div>
-
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="h-7 w-7 shrink-0 rounded-full text-muted-foreground hover:text-negative"
-          aria-label={t("Quitar activo", "Remove asset")}
-          onClick={onRemove}
-        >
-          <X className="h-3.5 w-3.5" />
-        </Button>
       </div>
-
-      {(asset.name || autoShown) && (
-        <p className="mt-1 truncate pl-[36px] text-[10px] text-muted-foreground">
-          {asset.name}
-          {asset.name && autoShown ? " · " : ""}
-          {autoShown ? t("rendimiento automático", "automatic return") : ""}
-        </p>
-      )}
     </div>
   );
 }
@@ -1308,13 +1302,12 @@ function PortafolioContent() {
               </div>
             ) : (
               <div className="space-y-2">
-                <div className="grid grid-cols-[28px_minmax(0,2.2fr)_minmax(0,1.4fr)_minmax(0,1fr)_74px_28px] items-center gap-2 px-2">
-                  <span className="h-4 w-7 shrink-0" />
+                <div className="grid grid-cols-[auto_minmax(0,2fr)_minmax(0,1.5fr)_minmax(0,0.9fr)_minmax(0,0.6fr)] items-center gap-2 px-2 pr-6">
+                  <span className="h-7 w-7 shrink-0" />
                   <span className="text-[10px] font-medium text-muted-foreground">{t("Activo", "Asset")}</span>
                   <span className="text-[10px] font-medium text-muted-foreground">{t("Monto", "Amount")}</span>
                   <span className="text-[10px] font-medium text-muted-foreground">{t("Mensual", "Monthly")}</span>
                   <span className="text-[10px] font-medium text-muted-foreground">{t("Rend. %", "Return %")}</span>
-                  <span />
                 </div>
                 {simAssets.map((asset, index) => {
                   const key = asset.ticker.trim().toUpperCase();
