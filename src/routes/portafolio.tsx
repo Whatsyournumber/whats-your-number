@@ -634,14 +634,6 @@ function PortafolioContent() {
   ));
 
   const types = ["ETF", "Acción", "Renta fija", "Estructurado", "Retiro", "Cripto", "Inmueble", "Cash"] as const;
-  const allocation = types
-    .map((ty, i) => ({
-      name: ty,
-      value: enriched.filter((h) => h.type === ty).reduce((s, h) => s + h.value, 0),
-      color: chartColors[i]!,
-    }))
-    .filter((a) => a.value > 0)
-    .sort((a, b) => b.value - a.value);
   const activeTypes = types.filter((ty) => enriched.some((h) => h.type === ty && h.value > 0));
 
   // Semillas del simulador: tus posiciones reales con ticker (las 5 mayores).
