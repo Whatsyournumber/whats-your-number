@@ -1,6 +1,9 @@
 // Demo dataset for the Personal Finance OS. All amounts in USD.
 // Replace with Lovable Cloud queries when the backend is enabled.
 
+import { getWynMoneyLocale } from "@/lib/onboarding";
+
+
 export type Month = {
   month: string;
   label: string;

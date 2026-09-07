@@ -3,6 +3,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 
 import { detectLang } from "@/lib/geo";
 import { langFromPath, localizedPath } from "@/lib/lang-routes";
+import { setWynMoneyLocale } from "@/lib/onboarding";
 
 export type Lang = "es" | "en";
 
