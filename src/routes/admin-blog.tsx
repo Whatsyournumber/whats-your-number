@@ -623,10 +623,12 @@ function BlogBackOffice() {
             </Panel>
           </div>
 
-          <Panel className="p-6">
-
-            <h2 className="mb-4 text-lg font-semibold">Visitas al blog por día (analítica propia)</h2>
-            <div className="h-52 sm:h-64">
+          <Panel className="p-4 sm:p-6" bleedMobile>
+            <h2 className="mb-4 truncate text-base font-semibold sm:text-lg">
+              <span className="sm:hidden">Visitas al blog por día</span>
+              <span className="hidden sm:inline">Visitas al blog por día (analítica propia)</span>
+            </h2>
+            <div className="h-56 sm:h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={traffic.data?.byDay ?? []}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
