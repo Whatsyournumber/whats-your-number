@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouter } from "@tanstack/react-router";
 import {
-  Bot,
+  
   CheckSquare,
   CreditCard,
   Home,
@@ -36,9 +36,9 @@ const TABS = [
 
 const PARENT_TABS = [
   { to: "/ninos", label: "Perfiles", labelEn: "Profiles", icon: Users },
-  { to: "/ninos/kid/futuro", label: "Fondo para la universidad", labelEn: "College fund", icon: Rocket },
-  { to: "/ninos/kid/universidades", label: "Buscador de universidades", labelEn: "University finder", icon: GraduationCap },
-  { to: "/ninos/kid/datos", label: "Ajustes", labelEn: "Settings", icon: SlidersHorizontal },
+  { to: "/ninos/kid/futuro", label: "Fondo Universidad", labelEn: "College fund", icon: Rocket },
+  { to: "/ninos/kid/universidades", label: "Buscador universidades", labelEn: "University finder", icon: GraduationCap },
+  { to: "/ninos/kid/datos", label: "Mis datos", labelEn: "My data", icon: UserCog },
 ] as const;
 
 const MOBILE_PARENT_TABS = [
@@ -46,7 +46,6 @@ const MOBILE_PARENT_TABS = [
   { to: "/ninos/kid/universidades", label: "Buscador universidades", labelEn: "University finder", icon: GraduationCap },
   { to: "/ninos/kid/datos", label: "Mis datos", labelEn: "My data", icon: UserCog },
   { to: "/ninos/kid/suscripcion", label: "Suscripción", labelEn: "Subscription", icon: CreditCard },
-  { to: "/ninos/kid/ia", label: "Asistente IA", labelEn: "AI Assistant", icon: Bot },
 ] as const;
 
 function ProfileCard({ member, collapsed }: { member: Member; collapsed: boolean }) {
