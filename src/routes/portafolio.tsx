@@ -916,29 +916,14 @@ function PortafolioContent() {
           </div>
         </Panel>
 
-
-        <Panel title={t("Composición", "Composition")} bleedMobile>
-          <ResponsiveContainer width="100%" height={210}>
-            <PieChart>
-              <Pie data={allocation} dataKey="value" nameKey="name" innerRadius={58} outerRadius={96} paddingAngle={3} stroke="none">
-                {allocation.map((a) => (
-                  <Cell key={a.name} fill={a.color} />
-                ))}
-              </Pie>
-              <Tooltip content={<ChartTooltip />} />
-            </PieChart>
-          </ResponsiveContainer>
-          <ul className="mt-3 space-y-1.5 px-5 sm:px-0">
-            {allocation.map((a) => (
-              <li key={a.name} className="flex items-center gap-2 text-xs">
-                <span className="h-2 w-2 rounded-full" style={{ background: a.color }} />
-                <span className="text-muted-foreground">{typeLabels[a.name]}</span>
-                <span className="numeric ml-auto font-medium">{totalValue > 0 ? ((a.value / totalValue) * 100).toFixed(0) : 0}%</span>
-              </li>
-            ))}
-          </ul>
-        </Panel>
       </div>
+
+      <PortfolioSimulator
+        fmt={fmt}
+        realTotal={totalValue}
+        realReturn={weightedReturn}
+        seedRows={simSeedRows}
+      />
 
       <Panel
         title={t("Posiciones", "Positions")}
