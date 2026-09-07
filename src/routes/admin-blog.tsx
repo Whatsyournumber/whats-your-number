@@ -547,7 +547,7 @@ function BlogBackOffice() {
                   <KpiCard label="Sesiones" value={ga4.data.totals.sessions.toLocaleString("es-ES")} icon={MousePointerClick} />
                   <KpiCard label="Páginas vistas" value={ga4.data.totals.pageviews.toLocaleString("es-ES")} icon={Eye} />
                 </div>
-                <div className="mb-6 h-52 sm:h-64">
+                <div className="mb-6 h-56 sm:h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={ga4.data.byDay}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
