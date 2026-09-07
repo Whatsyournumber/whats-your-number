@@ -435,9 +435,9 @@ function BlogBackOffice() {
 
         {/* ---------------------------- Tráfico interno --------------------------- */}
         <TabsContent value="trafico" className="space-y-6">
-          <Panel className="p-6">
+          <Panel className="p-4 sm:p-6" bleedMobile>
             <div className="mb-4 flex items-center justify-between gap-2">
-              <h2 className="shrink text-sm font-semibold sm:text-base lg:text-lg">
+              <h2 className="shrink truncate text-sm font-semibold sm:text-base lg:text-lg">
                 <span className="sm:hidden">Tráfico global</span>
                 <span className="hidden sm:inline">Tráfico global del sitio (analítica de Lovable)</span>
               </h2>
@@ -451,7 +451,7 @@ function BlogBackOffice() {
               <KpiCard label="Páginas / visita" value={lovableAnalytics.totals.pageviewsPerVisit.toFixed(2)} icon={BarChart3} />
               <KpiCard label="Rebote" value={`${lovableAnalytics.totals.bounceRate} %`} icon={MousePointerClick} />
             </div>
-            <div className="h-52 sm:h-64">
+            <div className="h-56 sm:h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={lovableAnalytics.byDay}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
