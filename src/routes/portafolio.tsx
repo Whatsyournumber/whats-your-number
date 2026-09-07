@@ -184,7 +184,7 @@ function SimAssetRow({
             onChange={(event) => {
               setQuery(event.target.value);
               setOpen(true);
-              onChange({ ticker: event.target.value.toUpperCase(), name: undefined });
+              onChange({ ticker: event.target.value.toUpperCase(), name: undefined, manualReturn: null });
             }}
             className="h-9 min-w-0 truncate border-border/40 bg-elevated/50 pl-2 pr-2 text-sm font-semibold uppercase placeholder:font-normal placeholder:normal-case placeholder:text-muted-foreground"
           />
@@ -200,7 +200,7 @@ function SimAssetRow({
                   type="button"
                   onMouseDown={(event) => event.preventDefault()}
                   onClick={() => {
-                    onChange({ ticker: h.symbol.toUpperCase(), name: h.name });
+                    onChange({ ticker: h.symbol.toUpperCase(), name: h.name, manualReturn: null });
                     setOpen(false);
                   }}
                   className="flex w-full items-center gap-2 px-3 py-2 text-left transition hover:bg-elevated/70"
