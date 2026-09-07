@@ -47,8 +47,6 @@ import { useRoles } from "@/hooks/use-role";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useMyAffiliate } from "@/hooks/use-affiliate";
 import { useAuth } from "@/hooks/use-auth";
-import { ProfileSwitcher } from "@/components/profile-switcher";
-import { useState } from "react";
 
 export function AppSidebar() {
   const { state, setOpenMobile, isMobile } = useSidebar();
@@ -61,7 +59,6 @@ export function AppSidebar() {
   const { tier } = useSubscription();
   const { affiliate } = useMyAffiliate();
   const { user } = useAuth();
-  const [showProfiles, setShowProfiles] = useState(false);
 
   const googleAvatar =
     (user?.user_metadata?.["avatar_url"] as string | undefined) ??
@@ -169,14 +166,14 @@ export function AppSidebar() {
               </Button>
             </div>
             {tier === "patrimonio" && (
-              <button
-                type="button"
-                onClick={() => setShowProfiles(true)}
+              <Link
+                to="/ninos"
+                onClick={() => setOpenMobile(false)}
                 className="flex h-8 items-center gap-1.5 pl-0.5 text-sm font-semibold tracking-tight"
               >
                 <span>{t("Perfiles", "Profiles")}</span>
                 <ChevronRight className="h-4 w-4 text-muted-foreground" />
-              </button>
+              </Link>
             )}
           </div>
         ) : (
@@ -194,42 +191,34 @@ export function AppSidebar() {
         )}
       </SidebarHeader>
 
-      <SidebarContent className={isMobile ? "relative flex-1 gap-0.5 overflow-y-auto" : "flex-none gap-0.5 overflow-hidden"}>
-        {isMobile && showProfiles ? (
-          <div className="absolute inset-0 z-10 bg-background px-3 py-3">
-            <ProfileSwitcher onClose={() => setShowProfiles(false)} onSelected={() => setOpenMobile(false)} />
-          </div>
-        ) : (
-          <>
-            <SidebarGroup className="p-1.5">
-              <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
-                {t("Patrimonio", "Net Worth")}
-              </SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu className="gap-0.5">{primary.map(renderItem)}</SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
+      <SidebarContent className={isMobile ? "flex-1 gap-0.5 overflow-y-auto" : "flex-none gap-0.5 overflow-hidden"}>
+        <SidebarGroup className="p-1.5">
+          <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
+            {t("Patrimonio", "Net Worth")}
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu className="gap-0.5">{primary.map(renderItem)}</SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
-            <div className="mx-auto my-1.5 h-px w-2/3 bg-gradient-to-r from-transparent via-border to-transparent" />
+        <div className="mx-auto my-1.5 h-px w-2/3 bg-gradient-to-r from-transparent via-border to-transparent" />
 
-            <SidebarGroup className="p-1.5">
-              <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
-                {t("Inteligencia", "Intelligence")}
-              </SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu className="gap-0.5">{secondary.map(renderItem)}</SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
+        <SidebarGroup className="p-1.5">
+          <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
+            {t("Inteligencia", "Intelligence")}
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu className="gap-0.5">{secondary.map(renderItem)}</SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
-            {adminItems.length > 0 && (
-              <SidebarGroup className="p-1.5">
-                <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">Admin</SidebarGroupLabel>
-                <SidebarGroupContent>
-                  <SidebarMenu className="gap-0.5">{adminItems.map(renderItem)}</SidebarMenu>
-                </SidebarGroupContent>
-              </SidebarGroup>
-            )}
-          </>
+        {adminItems.length > 0 && (
+          <SidebarGroup className="p-1.5">
+            <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">Admin</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu className="gap-0.5">{adminItems.map(renderItem)}</SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
         )}
       </SidebarContent>
 

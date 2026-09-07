@@ -217,40 +217,41 @@ export function KidShell({ member, children }: { member: Member; children: React
             </SheetTrigger>
             <SheetContent side="left" className="w-full sm:max-w-xs [&>button]:hidden">
               <div className="flex flex-col gap-6">
-                <div className="relative flex h-10 items-center">
-                  <SheetClose asChild>
-                    <Link
-                      to="/ninos"
-                      className="flex items-center gap-1 text-sm font-semibold tracking-tight"
-                    >
-                      <ChevronRight className="h-3.5 w-3.5 rotate-180 text-muted-foreground" />
-                      {t("Perfiles", "Profiles")}
-                    </Link>
-                  </SheetClose>
-                  <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <KidsBrandLogo />
-                  </div>
-                  <div className="ml-auto">
+                <div className="space-y-2">
+                  <div className="relative flex h-10 items-center justify-between">
+                    <SheetClose asChild>
+                      <Link
+                        to="/ninos"
+                        onClick={() => setMenuOpen(false)}
+                        aria-label={t("Perfiles", "Profiles")}
+                        className="relative ml-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/10 text-2xl ring-1 ring-primary/30"
+                      >
+                        {member.avatar}
+                      </Link>
+                    </SheetClose>
+                    <div className="absolute left-1/2 top-1/2 flex min-w-0 -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-2">
+                      <KidsBrandLogo className="shrink-0" />
+                    </div>
                     <SheetClose asChild>
                       <button
+                        onClick={() => setMenuOpen(false)}
                         aria-label={t("Cerrar menú", "Close menu")}
-                        className="grid h-9 w-9 place-items-center rounded-full text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+                        className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-muted-foreground transition hover:bg-secondary hover:text-foreground"
                       >
                         <X className="h-5 w-5" />
                       </button>
                     </SheetClose>
                   </div>
-                </div>
-                <div className="flex items-center gap-3 rounded-2xl border border-border/60 bg-card/60 p-3">
-                  <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary/10 text-2xl">
-                    {member.avatar}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-bold text-foreground">{member.name}</p>
-                    <p className="text-[11px] font-semibold text-muted-foreground">
-                      ⭐ {member.xp} · 🔥 {member.streak}
-                    </p>
-                  </div>
+                  <SheetClose asChild>
+                    <Link
+                      to="/ninos"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex h-8 items-center gap-1.5 pl-0.5 text-sm font-semibold tracking-tight"
+                    >
+                      <span>{t("Perfiles", "Profiles")}</span>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    </Link>
+                  </SheetClose>
                 </div>
                 {kidTabs.length ? (
                   <nav className="flex flex-col gap-1.5">
