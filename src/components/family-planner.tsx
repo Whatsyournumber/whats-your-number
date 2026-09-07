@@ -29,6 +29,7 @@ import {
   monthsUntil,
   num,
   pct,
+  currencySymbol,
 } from "@/lib/mfn";
 import { useI18n } from "@/lib/mfn-i18n";
 import { useIndexReturns } from "@/hooks/use-index-returns";
@@ -44,6 +45,7 @@ function StatCard({
   suffix,
   action,
   max,
+  currency,
 }: {
   icon: React.ReactNode;
   label: string;
@@ -53,9 +55,11 @@ function StatCard({
   onChange?: (n: number) => void;
   suffix?: string;
   action?: React.ReactNode;
+  currency?: string;
 }) {
   const [editing, setEditing] = useState(false);
-  const display = Number.isInteger(value) ? num(value, 0) : num(value, 1);
+  const number = Number.isInteger(value) ? num(value, 0) : num(value, 1);
+  const display = currency ? `${currencySymbol(currency)} ${number}` : number;
   return (
     <div className="min-w-0 px-4 py-3.5 sm:px-5 sm:py-4">
       <div className="flex items-center gap-2.5">
@@ -565,6 +569,7 @@ export function FamilyPlanner({
             icon={<Wallet className="h-4 w-4" />}
             label={t("Capital inicial", "Initial capital")}
             value={base}
+            currency={currency}
             hint={t("Hoy", "Today")}
             onChange={(v) => {
               setBaseTouched(true);
@@ -575,6 +580,7 @@ export function FamilyPlanner({
             icon={<CalendarDays className="h-4 w-4" />}
             label={t("Aporte mensual", "Monthly contribution")}
             value={monthly}
+            currency={currency}
             hint={t("Cada mes", "Every month")}
             onChange={setMonthly}
           />
@@ -582,6 +588,7 @@ export function FamilyPlanner({
             icon={<Target className="h-4 w-4" />}
             label={t("Objetivo", "Goal")}
             value={target}
+            currency={currency}
             hint={t(`A los ${targetAge} años`, `At age ${targetAge}`)}
             onChange={setTarget}
           />
