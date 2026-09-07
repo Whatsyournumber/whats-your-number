@@ -47,6 +47,8 @@ const chartColors = [
   "var(--color-chart-8)",
 ];
 
+type SimAsset = { id: string; ticker: string; amount: number; contribution: number; manualReturn: number | null };
+
 function PortafolioContent() {
   const isMobile = useIsMobile();
   const t = useT();
