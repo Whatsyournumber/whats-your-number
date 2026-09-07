@@ -20,6 +20,7 @@ import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
 import { buildDataset } from "@/lib/profile-data";
+import { currencySymbol } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
 
 function SimTooltip({
