@@ -254,7 +254,7 @@ export function getWynMoneyLocale() {
 }
 
 /** Separador decimal del locale activo (para abreviaturas K/M/B). */
-function decimalSep() {
+function moneyDecimalSep() {
   return moneyLocale === "en-US" ? "." : ",";
 }
 
@@ -290,7 +290,7 @@ export function compact(v: number, currency = "USD") {
   const abs = Math.abs(n);
   const sign = n < 0 ? "-" : "";
   const round = (x: number) =>
-    x >= 100 ? String(Math.round(x)) : x.toFixed(1).replace(/\.0$/, "").replace(".", decimalSep());
+    x >= 100 ? String(Math.round(x)) : x.toFixed(1).replace(/\.0$/, "").replace(".", moneyDecimalSep());
   if (abs >= 1_000_000_000) return `${sign}${s}${round(abs / 1_000_000_000)}B`;
   if (abs >= 1_000_000) return `${sign}${s}${round(abs / 1_000_000)}M`;
   if (abs >= 1_000) return `${sign}${s}${round(abs / 1_000)}K`;
@@ -324,7 +324,7 @@ export function shortenMoneyString(text: string): string {
     const abs = Math.abs(n);
     const round = (x: number) => {
       const v = x >= 100 ? Math.round(x) : Math.round(x * 10) / 10;
-      return String(v).replace(".", decimalSep());
+      return String(v).replace(".", moneyDecimalSep());
     };
     if (abs >= 1_000_000_000) return `${sign}${round(abs / 1_000_000_000)}B`;
     if (abs >= 1_000_000) return `${sign}${round(abs / 1_000_000)}M`;
