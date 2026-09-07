@@ -693,18 +693,20 @@ function PortafolioContent() {
     real: totalValue * ((1 + p.portfolio / 100) / (1 + port12 / 100)),
     bench: totalValue * ((1 + p.bench / 100) / (1 + bench12 / 100)),
   }));
+  const hasSim = simAssets.some((a) => (a.amount || 0) > 0 || (a.contribution || 0) > 0);
   const projPoints = Array.from({ length: simYears + 1 }, (_, y) => ({
     label: y === 0 ? t("Hoy", "Today") : String(thisYear + y),
-    base: fv(simRate, y),
     opt: fv(optRate, y),
     pes: fv(pesRate, y),
     benchProj: fv(benchCagr, y),
   }));
   const simStep = simYears > 20 ? 5 : simYears > 10 ? 3 : 2;
-  const simData = [
-    ...histPoints.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench })),
-    ...projPoints.filter((p, i) => i === 0 || i === simYears || i % simStep === 0),
-  ];
+  const simData = hasSim
+    ? [
+        ...histPoints.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench })),
+        ...projPoints.filter((p, i) => i === 0 || i === simYears || i % simStep === 0),
+      ]
+    : histPoints.map((h) => ({ label: h.label, real: h.real, bench: h.bench }));
   const todayIndex = histPoints.length - 1;
   const simResult = projPoints[projPoints.length - 1]!;
 
