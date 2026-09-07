@@ -958,7 +958,7 @@ function PortafolioContent() {
                 />
                 <Tooltip content={<ChartTooltip formatter={(v: number) => fmt(Math.round(v))} />} />
                 <ReferenceLine
-                  x={simData[todayIndex]?.label}
+                  x={simData[todayIndex]?.label ?? ""}
                   stroke="var(--color-border)"
                   strokeDasharray="4 4"
                   label={{ value: t("Hoy", "Today"), position: "top", fill: "var(--color-muted-foreground)", fontSize: 10 }}
