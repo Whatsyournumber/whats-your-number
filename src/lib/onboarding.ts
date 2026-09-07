@@ -289,11 +289,12 @@ export function compact(v: number, currency = "USD") {
   const s = currencySymbol(currency);
   const abs = Math.abs(n);
   const sign = n < 0 ? "-" : "";
-  const round = (x: number) => (x >= 100 ? Math.round(x).toString() : x.toFixed(1).replace(/\.0$/, ""));
+  const round = (x: number) =>
+    x >= 100 ? String(Math.round(x)) : x.toFixed(1).replace(/\.0$/, "").replace(".", decimalSep());
   if (abs >= 1_000_000_000) return `${sign}${s}${round(abs / 1_000_000_000)}B`;
   if (abs >= 1_000_000) return `${sign}${s}${round(abs / 1_000_000)}M`;
   if (abs >= 1_000) return `${sign}${s}${round(abs / 1_000)}K`;
-  return `${sign}${s}${Math.round(abs)}`;
+  return `${sign}${s}${num(abs)}`;
 }
 
 /**
