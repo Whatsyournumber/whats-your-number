@@ -57,12 +57,6 @@ export function AppSidebar() {
   const { isSuperAdmin } = useRoles();
   const { tier } = useSubscription();
   const { affiliate } = useMyAffiliate();
-  const { user } = useAuth();
-
-  const googleAvatar =
-    (user?.user_metadata?.["avatar_url"] as string | undefined) ??
-    (user?.user_metadata?.["picture"] as string | undefined) ??
-    null;
   const primary = [
     { title: t("Dashboard", "Dashboard"), url: "/dashboard", icon: LayoutDashboard },
     { title: t("Análisis de Gastos", "Spending Analysis"), url: "/gastos", icon: PieChart },
