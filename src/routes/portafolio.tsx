@@ -341,9 +341,11 @@ function PortafolioContent() {
     setSimAssets((current) => current.map((item) => (item.id === id ? { ...item, ...patch } : item)));
   const simTickers = simAssets.map((a) => a.ticker.trim().toUpperCase()).filter(Boolean);
   const simCurrencySymbol = currencySymbol(profile.currency || "EUR");
-  const simQuotes = useQuotes(simTickers);
+  const simReturnsQuery = useSymbolReturns(simTickers);
   const simDayChange: Record<string, number> = Object.fromEntries(
-    (simQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.changePct ?? 0]),
+    Object.entries(simReturnsQuery.data?.returns ?? {})
+      .filter(([, v]) => typeof v === "number" && Number.isFinite(v))
+      .map(([k, v]) => [k.toUpperCase(), Math.round((v as number) * 10) / 10]),
   );
   const searchQuery = useSymbolSearch(newSymbol);
 
