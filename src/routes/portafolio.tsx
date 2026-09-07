@@ -993,19 +993,20 @@ function PortafolioContent() {
                   }
                 />
                 <Tooltip content={<ChartTooltip formatter={(v: number) => fmt(Math.round(v))} />} />
-                <ReferenceLine
-                  x={simData[todayIndex]?.label ?? ""}
-                  stroke="var(--color-border)"
-                  strokeDasharray="4 4"
-                  label={{ value: t("Hoy", "Today"), position: "top", fill: "var(--color-muted-foreground)", fontSize: 10 }}
-                />
-                <Area type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="none" fill="url(#simOpt)" />
+                {hasSim ? (
+                  <ReferenceLine
+                    x={simData[todayIndex]?.label ?? ""}
+                    stroke="var(--color-border)"
+                    strokeDasharray="4 4"
+                    label={{ value: t("Hoy", "Today"), position: "top", fill: "var(--color-muted-foreground)", fontSize: 10 }}
+                  />
+                ) : null}
+                {hasSim ? <Area type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="none" fill="url(#simOpt)" /> : null}
                 <Line type="monotone" dataKey="real" name={t("Tu portafolio", "Your portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.6} dot={false} connectNulls />
-                <Line type="monotone" dataKey="base" name={t("Proyección", "Projection")} stroke="var(--color-chart-1)" strokeWidth={2.4} strokeDasharray="5 5" dot={false} connectNulls />
-                <Line type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="var(--color-positive)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls />
-                <Line type="monotone" dataKey="pes" name={t("Pesimista", "Pessimistic")} stroke="var(--color-negative)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls />
+                {hasSim ? <Line type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="var(--color-positive)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls /> : null}
+                {hasSim ? <Line type="monotone" dataKey="pes" name={t("Pesimista", "Pessimistic")} stroke="var(--color-negative)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls /> : null}
                 <Line type="monotone" dataKey="bench" name={benchName} stroke="var(--color-chart-8)" strokeWidth={1.8} strokeDasharray="2 5" dot={false} connectNulls />
-                <Line type="monotone" dataKey="benchProj" name={benchName} stroke="var(--color-chart-8)" strokeWidth={1.6} strokeDasharray="2 5" dot={false} connectNulls />
+                {hasSim ? <Line type="monotone" dataKey="benchProj" name={benchName} stroke="var(--color-chart-8)" strokeWidth={1.6} strokeDasharray="2 5" dot={false} connectNulls /> : null}
               </ComposedChart>
             </ResponsiveContainer>
           )}
