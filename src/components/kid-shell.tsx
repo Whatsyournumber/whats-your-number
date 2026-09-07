@@ -88,16 +88,16 @@ function MobileProfileCard({ member }: { member: Member }) {
   const saved = totals.gastar + totals.ahorrar + totals.crecer;
 
   return (
-    <div className="mt-auto flex items-center gap-3 rounded-3xl border border-border/60 bg-card/70 p-3">
-      <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-primary/10 text-2xl ring-1 ring-primary/20">
+    <div className="mt-auto flex items-center gap-2.5 rounded-2xl border border-border/60 bg-card/70 p-2.5">
+      <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary/10 text-xl ring-1 ring-primary/20">
         {member.avatar}
       </div>
       <div className="min-w-0">
         <p className="truncate text-sm font-bold text-foreground">{member.name}</p>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+        <p className="text-[9px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
           {t("Mi primer número", "My first number")}
         </p>
-        <p className="mt-0.5 whitespace-nowrap font-display text-[21px] font-extrabold leading-tight tracking-tight text-primary">
+        <p className="whitespace-nowrap font-display text-lg font-extrabold leading-tight tracking-tight text-primary">
           {money(saved, member.currency)}
         </p>
       </div>
