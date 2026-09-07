@@ -1071,7 +1071,7 @@ function PortafolioContent() {
                     Math.abs(v) >= 1e6 ? `${(v / 1e6).toFixed(1)}M` : `${Math.round(v / 1000)}K`
                   }
                 />
-                <Tooltip content={<ChartTooltip formatter={(v: number) => fmt(Math.round(v))} />} />
+                <Tooltip content={<SimTooltip data={simData} formatter={(v: number) => fmt(Math.round(v))} lang={lang} />} />
                 {hasSim ? (
                   <ReferenceLine
                     x={simData[todayIndex]?.label ?? ""}
