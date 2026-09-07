@@ -324,7 +324,7 @@ export function shortenMoneyString(text: string): string {
     const abs = Math.abs(n);
     const round = (x: number) => {
       const v = x >= 100 ? Math.round(x) : Math.round(x * 10) / 10;
-      return String(v).replace(".", ",");
+      return String(v).replace(".", decimalSep());
     };
     if (abs >= 1_000_000_000) return `${sign}${round(abs / 1_000_000_000)}B`;
     if (abs >= 1_000_000) return `${sign}${round(abs / 1_000_000)}M`;
