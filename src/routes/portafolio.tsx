@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarIcon, Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, TrendingUp, X } from "lucide-react";
 import { useState } from "react";
 import { motion } from "motion/react";
-import { CartesianGrid, Cell, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Area, CartesianGrid, ComposedChart, Line, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { PlanGate } from "@/components/plan-gate";
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
@@ -94,6 +94,9 @@ function PortafolioContent() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [evoIdx, setEvoIdx] = useState<number | null>(null);
   const [evoOpen, setEvoOpen] = useState(false);
+  const [simYears, setSimYears] = useState(20);
+  const [simMonthly, setSimMonthly] = useState<number | null>(null);
+  const [simReturn, setSimReturn] = useState<number | null>(null);
   const searchQuery = useSymbolSearch(newSymbol);
 
   // Precios reales para las posiciones con ticker + unidades.
