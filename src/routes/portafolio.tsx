@@ -339,6 +339,7 @@ function PortafolioContent() {
   const updateSimAsset = (id: string, patch: Partial<SimAsset>) =>
     setSimAssets((current) => current.map((item) => (item.id === id ? { ...item, ...patch } : item)));
   const simTickers = simAssets.map((a) => a.ticker.trim().toUpperCase()).filter(Boolean);
+  const simCurrencySymbol = currencySymbol(profile.currency || "EUR");
   const simQuotes = useQuotes(simTickers);
   const simDayChange: Record<string, number> = Object.fromEntries(
     (simQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.changePct ?? 0]),
