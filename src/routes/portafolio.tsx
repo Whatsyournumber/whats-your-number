@@ -949,14 +949,18 @@ function PortafolioContent() {
               <span className="h-0.5 w-4 rounded-full bg-[var(--color-chart-8)]" />
               {benchName}
             </span>
-            <span className="flex items-center gap-1.5 text-muted-foreground">
-              <span className="h-0.5 w-4 rounded-full bg-positive" />
-              {t("Optimista", "Optimistic")}
-            </span>
-            <span className="flex items-center gap-1.5 text-muted-foreground">
-              <span className="h-0.5 w-4 rounded-full bg-negative" />
-              {t("Pesimista", "Pessimistic")}
-            </span>
+            {hasSim ? (
+              <>
+                <span className="flex items-center gap-1.5 text-muted-foreground">
+                  <span className="h-0.5 w-4 rounded-full bg-positive" />
+                  {t("Optimista", "Optimistic")}
+                </span>
+                <span className="flex items-center gap-1.5 text-muted-foreground">
+                  <span className="h-0.5 w-4 rounded-full bg-negative" />
+                  {t("Pesimista", "Pessimistic")}
+                </span>
+              </>
+            ) : null}
           </div>
 
           {simData.length === 0 ? (
