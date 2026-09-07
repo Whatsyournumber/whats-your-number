@@ -20,6 +20,7 @@ import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
 import { buildDataset } from "@/lib/profile-data";
+import { PortfolioSimulator } from "@/components/portfolio-simulator";
 import { cn } from "@/lib/utils";
 
 
