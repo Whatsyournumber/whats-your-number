@@ -1143,7 +1143,6 @@ function PortafolioContent() {
                 {simAssets.map((asset, index) => {
                   const key = asset.ticker.trim().toUpperCase();
                   const auto = key ? simDayChange[key] : undefined;
-                  const share = simPortfolioTotal > 0 ? (asset.amount / simPortfolioTotal) * 100 : 0;
                   const color = chartColors[index % chartColors.length]!;
                   return (
                     <div key={asset.id} className="rounded-xl border border-border/50 bg-elevated/30 p-2">
