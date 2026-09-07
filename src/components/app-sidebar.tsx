@@ -39,6 +39,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { BrandMark } from "@/components/brand-logo";
+import { Button } from "@/components/ui/button";
 import { useProfile } from "@/hooks/use-profile";
 import { buildDataset } from "@/lib/profile-data";
 import { useT } from "@/hooks/use-language";
@@ -63,14 +64,6 @@ export function AppSidebar() {
     (user?.user_metadata?.["avatar_url"] as string | undefined) ??
     (user?.user_metadata?.["picture"] as string | undefined) ??
     null;
-  const fullName =
-    (user?.user_metadata?.["full_name"] as string | undefined) ??
-    (user?.user_metadata?.["name"] as string | undefined) ??
-    user?.email ??
-    "";
-  const email = user?.email ?? "";
-
-
   const primary = [
     { title: t("Dashboard", "Dashboard"), url: "/dashboard", icon: LayoutDashboard },
     { title: t("Análisis de Gastos", "Spending Analysis"), url: "/gastos", icon: PieChart },
@@ -133,30 +126,55 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r">
       <SidebarHeader className="px-3 py-3">
         {isMobile ? (
-          <div className="relative flex h-10 items-center justify-center">
+          <div className="space-y-2">
+            <div className="grid h-10 grid-cols-[2.25rem_minmax(0,1fr)_2.25rem] items-center gap-2">
             <Link
-              to="/ninos"
+              to="/mi-perfil"
               onClick={() => setOpenMobile(false)}
-              className="absolute left-0 top-1/2 -translate-y-1/2"
+              aria-label={t("Mis datos", "My data")}
+              className="relative h-9 w-9 shrink-0"
             >
-              <span className="inline-flex items-center gap-1 text-sm font-semibold tracking-tight">
-                <ChevronRight className="h-3.5 w-3.5 rotate-180 text-muted-foreground" />
-                {t("Perfiles", "Profiles")}
-              </span>
+              {googleAvatar ? (
+                <img
+                  src={googleAvatar}
+                  alt={t("Foto de perfil", "Profile photo")}
+                  className="h-9 w-9 rounded-full object-cover ring-1 ring-primary/30"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <span className="grid h-9 w-9 place-items-center rounded-full bg-secondary ring-1 ring-primary/30">
+                  <UserRound className="h-4 w-4 text-muted-foreground" />
+                </span>
+              )}
+              <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-positive ring-2 ring-background" />
             </Link>
-            <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2">
+            <div className="flex min-w-0 items-center justify-center gap-2">
               <BrandMark className="h-7 w-7 shrink-0" />
               <p className="whitespace-nowrap font-display text-sm font-semibold leading-none">
                 Whats<span className="text-primary">Yournumber</span>
               </p>
             </div>
-            <button
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
               onClick={() => setOpenMobile(false)}
               aria-label={t("Cerrar menú", "Close menu")}
-              className="absolute right-0 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+              className="h-9 w-9 shrink-0 rounded-full text-muted-foreground hover:bg-secondary hover:text-foreground"
             >
               <X className="h-5 w-5" />
-            </button>
+            </Button>
+            </div>
+            {tier === "patrimonio" && (
+              <Link
+                to="/ninos"
+                onClick={() => setOpenMobile(false)}
+                className="flex h-8 items-center justify-between border-t border-border/60 pt-2 text-sm font-semibold tracking-tight"
+              >
+                <span>{t("Perfiles", "Profiles")}</span>
+                <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              </Link>
+            )}
           </div>
         ) : (
 
@@ -174,40 +192,6 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent className={isMobile ? "flex-1 gap-0.5 overflow-y-auto" : "flex-none gap-0.5 overflow-hidden"}>
-        {isMobile && (
-          <SidebarGroup className="p-1.5">
-            <Link
-              to="/mi-perfil"
-              onClick={() => setOpenMobile(false)}
-              className="surface flex items-center gap-3 rounded-xl p-3 transition-colors hover:bg-accent/50"
-            >
-              <div className="relative shrink-0">
-                {googleAvatar ? (
-                  <img
-                    src={googleAvatar}
-                    alt={t("Foto de perfil", "Profile photo")}
-                    className="h-12 w-12 rounded-full object-cover ring-2 ring-primary/30"
-                    referrerPolicy="no-referrer"
-                  />
-                ) : (
-                  <div className="grid h-12 w-12 place-items-center rounded-full bg-secondary ring-2 ring-primary/30">
-                    <UserRound className="h-5 w-5 text-muted-foreground" />
-                  </div>
-                )}
-                <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-positive ring-2 ring-background" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-foreground">{fullName}</p>
-                <p className="flex items-center gap-1 truncate text-xs text-muted-foreground">
-                  <UserCog className="h-3.5 w-3.5" />
-                  {t("Mis datos", "My data")}
-                </p>
-              </div>
-              <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-            </Link>
-          </SidebarGroup>
-        )}
-
         <SidebarGroup className="p-1.5">
           <SidebarGroupLabel className="h-6 text-[10px] uppercase tracking-wide">
             {t("Patrimonio", "Net Worth")}
