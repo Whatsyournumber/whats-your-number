@@ -27,6 +27,7 @@ import {
   monthlyNeeded,
   monthsToTarget,
   monthsUntil,
+  pct,
 } from "@/lib/mfn";
 import { useI18n } from "@/lib/mfn-i18n";
 import { useIndexReturns } from "@/hooks/use-index-returns";
