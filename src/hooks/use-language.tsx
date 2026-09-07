@@ -75,6 +75,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const pathLang = langFromPath(pathname);
   const activeLang = pathLang ?? lang;
+  // Síncrono: el próximo render ya formatea números con , o . según el idioma.
+  setWynMoneyLocale(activeLang);
 
   useEffect(() => {
     // Las rutas públicas localizadas mandan sobre la preferencia guardada.
