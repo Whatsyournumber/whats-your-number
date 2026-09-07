@@ -989,12 +989,15 @@ function PortafolioContent() {
                   {...axisProps}
                   tick={{ ...axisProps, fontSize: isMobile ? 9 : 11 }}
                   interval="preserveStartEnd"
-                  minTickGap={isMobile ? 14 : 8}
-                  height={isMobile ? 26 : 22}
+                  minTickGap={isMobile ? 10 : 6}
+                  tickMargin={6}
+                  height={isMobile ? 24 : 20}
                 />
                 <YAxis
                   {...axisProps}
-                  width={isMobile ? 40 : 52}
+                  width={isMobile ? 38 : 44}
+                  domain={[(dataMin: number) => Math.max(0, Math.floor(dataMin * 0.94)), (dataMax: number) => Math.ceil(dataMax * 1.04)]}
+                  tickMargin={4}
                   tickFormatter={(v: number) =>
                     Math.abs(v) >= 1e6 ? `${(v / 1e6).toFixed(1)}M` : `${Math.round(v / 1000)}K`
                   }
