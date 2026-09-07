@@ -19,7 +19,6 @@ import {
   Users,
   Handshake,
   ChevronLeft,
-  ChevronRight,
   X,
   UserRound,
 } from "lucide-react";
@@ -170,10 +169,10 @@ export function AppSidebar() {
               <Link
                 to="/ninos"
                 onClick={() => setOpenMobile(false)}
-                className="flex h-8 items-center gap-1.5 text-sm font-semibold tracking-tight"
+                className="flex h-8 items-center gap-1.5 pl-0.5 text-sm font-semibold tracking-tight"
               >
+                <ChevronLeft className="h-4 w-4 text-muted-foreground" />
                 <span>{t("Perfiles", "Profiles")}</span>
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
               </Link>
             )}
           </div>
