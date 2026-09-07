@@ -1305,12 +1305,12 @@ function PortafolioContent() {
               </div>
             ) : (
               <div className="space-y-2">
-                <div className="grid grid-cols-[auto_minmax(0,2fr)_minmax(0,1.5fr)_minmax(0,0.9fr)_minmax(0,0.6fr)] items-center gap-2 px-2 pr-6">
+                <div className="grid grid-cols-[auto_minmax(0,2.4fr)_minmax(0,1.6fr)_minmax(0,1.2fr)_minmax(0,0.9fr)] items-center gap-2 px-2 pr-6">
                   <span className="h-7 w-7 shrink-0" />
-                  <span className="text-[10px] font-medium text-muted-foreground">{t("Activo", "Asset")}</span>
-                  <span className="text-[10px] font-medium text-muted-foreground">{t("Monto", "Amount")}</span>
-                  <span className="text-[10px] font-medium text-muted-foreground">{t("Mensual", "Monthly")}</span>
-                  <span className="text-[10px] font-medium text-muted-foreground">{t("Rend. %", "Return %")}</span>
+                  <span className="truncate text-[10px] font-medium text-muted-foreground">{t("Activo", "Asset")}</span>
+                  <span className="truncate text-[10px] font-medium text-muted-foreground">{t("Monto", "Amount")}</span>
+                  <span className="truncate text-[10px] font-medium text-muted-foreground">{t("Mensual", "Monthly")}</span>
+                  <span className="truncate text-[10px] font-medium text-muted-foreground">{t("Rend.", "Return")}</span>
                 </div>
                 {simAssets.map((asset, index) => {
                   const key = asset.ticker.trim().toUpperCase();
