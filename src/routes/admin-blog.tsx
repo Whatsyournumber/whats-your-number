@@ -436,9 +436,9 @@ function BlogBackOffice() {
         {/* ---------------------------- Tráfico interno --------------------------- */}
         <TabsContent value="trafico" className="space-y-6">
           <Panel className="p-6">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-lg font-semibold">Tráfico global del sitio (analítica de Lovable)</h2>
-              <Badge variant="outline">
+            <div className="mb-4 flex items-center justify-between gap-2">
+              <h2 className="shrink truncate text-sm font-semibold sm:text-base lg:text-lg">Tráfico global del sitio (analítica de Lovable)</h2>
+              <Badge variant="outline" className="shrink-0 text-[10px] sm:text-xs">
                 {lovableAnalytics.period.start} → {lovableAnalytics.period.end}
               </Badge>
             </div>
@@ -455,8 +455,8 @@ function BlogBackOffice() {
                   <XAxis dataKey="date" tick={{ fontSize: 11 }} tickFormatter={(d: string) => d.slice(5)} />
                   <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
                   <RTooltip cursor={{ fill: "var(--color-muted)", opacity: 0.18 }} content={<ChartTooltip formatter={(v: number) => v.toLocaleString("es-ES")} />} />
-                  <Bar dataKey="pageviews" name="Páginas vistas" fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="visitors" name="Visitantes" fill="var(--color-chart-2)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="pageviews" name="Páginas vistas" fill="var(--color-chart-1)" radius={[10, 10, 0, 0]} />
+                  <Bar dataKey="visitors" name="Visitantes" fill="var(--color-chart-2)" radius={[10, 10, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -548,8 +548,8 @@ function BlogBackOffice() {
                       <XAxis dataKey="date" tick={{ fontSize: 11 }} tickFormatter={(d: string) => d.slice(5)} />
                       <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
                       <RTooltip cursor={{ fill: "var(--color-muted)", opacity: 0.18 }} content={<ChartTooltip formatter={(v: number) => v.toLocaleString("es-ES")} />} />
-                      <Bar dataKey="pageviews" name="Páginas vistas" fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="users" name="Usuarios" fill="var(--color-chart-2)" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="pageviews" name="Páginas vistas" fill="var(--color-chart-1)" radius={[10, 10, 0, 0]} />
+                      <Bar dataKey="users" name="Usuarios" fill="var(--color-chart-2)" radius={[10, 10, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -627,7 +627,7 @@ function BlogBackOffice() {
                   <XAxis dataKey="date" tick={{ fontSize: 11 }} tickFormatter={(d: string) => d.slice(5)} />
                   <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
                   <RTooltip cursor={{ fill: "var(--color-muted)", opacity: 0.18 }} content={<ChartTooltip formatter={(v: number) => v.toLocaleString("es-ES")} />} />
-                  <Bar dataKey="views" fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="views" fill="var(--color-chart-1)" radius={[10, 10, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
