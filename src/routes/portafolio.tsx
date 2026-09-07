@@ -39,7 +39,7 @@ function SimTooltip({
 }) {
   if (!active || !payload?.length) return null;
   const f = formatter;
-  const index = data.findIndex((d) => d.label === label);
+  const index = data.findIndex((d) => d["label"] === label);
   const prev = index > 0 ? data[index - 1] : null;
   const pctLocale = lang === "es" ? "es-ES" : "en-US";
   const seen = new Set<string>();
@@ -67,6 +67,7 @@ function SimTooltip({
           const prevValue = prev && typeof prev[key] === "number" ? (prev[key] as number) : null;
           const pct = prevValue && prevValue > 0 ? ((value - prevValue) / prevValue) * 100 : null;
           const pctText = pct !== null ? new Intl.NumberFormat(pctLocale, { signDisplay: "exceptZero", maximumFractionDigits: 1 }).format(pct) + "%" : null;
+          const up = pct !== null && pct >= 0;
           return (
             <div key={i} className="flex items-center gap-2.5">
               <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: p.color }} />
@@ -78,7 +79,7 @@ function SimTooltip({
                   {f(value)}
                 </span>
                 {pctText && (
-                  <span className={cn("numeric text-[11px] font-medium", pct >= 0 ? "text-positive" : "text-negative")}>
+                  <span className={cn("numeric text-[11px] font-medium", up ? "text-positive" : "text-negative")}>
                     {pctText}
                   </span>
                 )}
