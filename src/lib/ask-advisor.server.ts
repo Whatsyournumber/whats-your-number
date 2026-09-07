@@ -1,6 +1,15 @@
 import { streamText } from "ai";
 
 import { createLovableAiGatewayProvider } from "./ai-gateway.server";
+import { blogPosts } from "./blog-posts";
+
+/** Catálogo compacto de artículos para que la IA pueda recomendar lecturas reales. */
+function blogCatalog(lang: "es" | "en") {
+  const base = lang === "en" ? "/en/blog/" : "/blog/";
+  return blogPosts
+    .map((p) => `- [${p.title[lang]}](${base}${p.slug}) — ${p.tag[lang]}: ${p.excerpt[lang].slice(0, 160)}`)
+    .join("\n");
+}
 
 export type AskAdvisorInput = {
   question: string;
