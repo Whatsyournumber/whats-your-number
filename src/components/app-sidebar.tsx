@@ -169,7 +169,7 @@ export function AppSidebar() {
               <Link
                 to="/ninos"
                 onClick={() => setOpenMobile(false)}
-                className="flex h-8 items-center gap-1.5 text-sm font-semibold tracking-tight"
+                className="flex h-8 items-center gap-1.5 pl-2 text-sm font-semibold tracking-tight"
               >
                 <ChevronLeft className="h-4 w-4 text-muted-foreground" />
                 <span>{t("Perfiles", "Profiles")}</span>
