@@ -258,12 +258,16 @@ function AppShell() {
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const [onboardingChecked, setOnboardingChecked] = useState(false);
+  const signingOutRef = useRef(false);
   const t = useT();
 
   const { avatarUrl: googleAvatar } = useProfileAvatar();
 
   useEffect(() => {
-    if (!loading && !user) navigate({ to: "/auth", search: { mode: "login" } });
+    if (!loading && !user) {
+      if (signingOutRef.current) return;
+      navigate({ to: "/auth", search: { mode: "login" } });
+    }
   }, [loading, user, navigate]);
 
   // Primera vez: si no completó el onboarding, lo enviamos allí.
