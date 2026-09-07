@@ -241,7 +241,7 @@ function SimAssetRow({
         </div>
 
         <div className="relative min-w-0">
-          <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">
+          <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
             {symbol}
           </span>
           <Input
@@ -250,7 +250,7 @@ function SimAssetRow({
             aria-label={t("Mensual", "Monthly")}
             placeholder="0"
             onChange={(event) => onChange({ contribution: parseNum(event.target.value) })}
-            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-5 pr-1.5 text-xs"
+            className="numeric h-10 min-w-0 border-border/40 bg-elevated/50 pl-6 pr-2 text-sm"
           />
         </div>
 
@@ -261,7 +261,7 @@ function SimAssetRow({
               asset.manualReturn !== null
                 ? String(asset.manualReturn)
                 : auto !== undefined
-                  ? String(Number(auto.toFixed(2)))
+                  ? String(Number(auto.toFixed(1)))
                   : ""
             }
             aria-label={t("Rendimiento %", "Return %")}
@@ -270,9 +270,9 @@ function SimAssetRow({
               const raw = event.target.value.replace(",", ".").replace(/[^\d.-]/g, "");
               onChange({ manualReturn: raw === "" ? null : Number(raw) });
             }}
-            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-1.5 pr-4 text-xs"
+            className="numeric h-10 min-w-0 border-border/40 bg-elevated/50 pl-2 pr-5 text-sm"
           />
-          <span className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">
+          <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
             %
           </span>
         </div>
