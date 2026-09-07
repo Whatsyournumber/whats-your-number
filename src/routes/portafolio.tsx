@@ -646,6 +646,40 @@ function PortafolioContent() {
     .sort((a, b) => b.value - a.value);
   const activeTypes = types.filter((ty) => enriched.some((h) => h.type === ty && h.value > 0));
 
+  // ---- Simulador de rendimiento: histórico real + proyección ----
+  const simRate = simReturn ?? Math.round(Math.max(1, Math.min(20, weightedReturn || 8)) * 10) / 10;
+  const simContrib = simMonthly ?? 0;
+  const benchCagr = Math.max(1, Math.min(15, bench12 || 8));
+  const fv = (rate: number, years: number) => {
+    const r = rate / 100;
+    const growth = Math.pow(1 + r, years);
+    const contrib = r === 0 ? simContrib * 12 * years : simContrib * 12 * ((growth - 1) / r);
+    return totalValue * growth + contrib;
+  };
+  const optRate = simRate + 4;
+  const pesRate = Math.max(0, simRate - 5);
+  const thisYear = new Date().getFullYear();
+  const histPoints = benchmarkData.map((p) => ({
+    label: p.label,
+    real: totalValue * ((1 + p.portfolio / 100) / (1 + port12 / 100)),
+    bench: totalValue * ((1 + p.bench / 100) / (1 + bench12 / 100)),
+  }));
+  const projPoints = Array.from({ length: simYears + 1 }, (_, y) => ({
+    label: y === 0 ? t("Hoy", "Today") : String(thisYear + y),
+    base: fv(simRate, y),
+    opt: fv(optRate, y),
+    pes: fv(pesRate, y),
+    benchProj: fv(benchCagr, y),
+  }));
+  const simStep = simYears > 20 ? 5 : simYears > 10 ? 3 : 2;
+  const simData = [
+    ...histPoints.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench })),
+    ...projPoints.filter((p, i) => i === 0 || i === simYears || i % simStep === 0),
+  ];
+  const todayIndex = histPoints.length - 1;
+  const simResult = projPoints[projPoints.length - 1]!;
+
+
   const rows = (list: typeof enriched) => (
     <div className="space-y-2">
       {[...list].sort((a, b) => {
