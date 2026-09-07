@@ -569,6 +569,7 @@ export function FamilyPlanner({
             icon={<Wallet className="h-4 w-4" />}
             label={t("Capital inicial", "Initial capital")}
             value={base}
+            currency={currency}
             hint={t("Hoy", "Today")}
             onChange={(v) => {
               setBaseTouched(true);
@@ -579,6 +580,7 @@ export function FamilyPlanner({
             icon={<CalendarDays className="h-4 w-4" />}
             label={t("Aporte mensual", "Monthly contribution")}
             value={monthly}
+            currency={currency}
             hint={t("Cada mes", "Every month")}
             onChange={setMonthly}
           />
@@ -586,6 +588,7 @@ export function FamilyPlanner({
             icon={<Target className="h-4 w-4" />}
             label={t("Objetivo", "Goal")}
             value={target}
+            currency={currency}
             hint={t(`A los ${targetAge} años`, `At age ${targetAge}`)}
             onChange={setTarget}
           />
