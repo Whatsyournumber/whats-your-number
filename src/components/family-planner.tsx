@@ -151,7 +151,7 @@ function Ring({ pct, caption }: { pct: number; caption: string }) {
         <div className="absolute inset-0 grid place-items-center">
           <div className="text-center">
             <p className="font-display text-2xl font-semibold tracking-tight text-foreground">
-              {Math.round(v)}%
+              {pct(v, 0)}
             </p>
             <p className="text-[11px] text-muted-foreground">{caption}</p>
           </div>
