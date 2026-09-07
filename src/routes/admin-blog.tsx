@@ -437,7 +437,10 @@ function BlogBackOffice() {
         <TabsContent value="trafico" className="space-y-6">
           <Panel className="p-6">
             <div className="mb-4 flex items-center justify-between gap-2">
-              <h2 className="shrink truncate text-sm font-semibold sm:text-base lg:text-lg">Tráfico global del sitio (analítica de Lovable)</h2>
+              <h2 className="shrink text-sm font-semibold sm:text-base lg:text-lg">
+                <span className="sm:hidden">Tráfico global</span>
+                <span className="hidden sm:inline">Tráfico global del sitio (analítica de Lovable)</span>
+              </h2>
               <Badge variant="outline" className="shrink-0 text-[10px] sm:text-xs">
                 {lovableAnalytics.period.start} → {lovableAnalytics.period.end}
               </Badge>
