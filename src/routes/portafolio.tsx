@@ -910,10 +910,14 @@ function PortafolioContent() {
       <div className="grid gap-4 lg:grid-cols-5">
         <Panel
           title={t("Simulador de rendimiento", "Performance simulator")}
-          description={t(
-            `Histórico real y proyección a ${simYears} años · vs ${benchName}`,
-            `Real history and ${simYears}-year projection · vs ${benchName}`,
-          )}
+          description={
+            hasSim
+              ? t(
+                  `Histórico real y proyección a ${simYears} años · vs ${benchName}`,
+                  `Real history and ${simYears}-year projection · vs ${benchName}`,
+                )
+              : t(`Histórico real · vs ${benchName}`, `Real history · vs ${benchName}`)
+          }
           className="lg:col-span-3"
           actions={
             <div className="flex flex-nowrap items-center rounded-full border border-border/60 p-0.5">
