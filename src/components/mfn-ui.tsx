@@ -294,6 +294,8 @@ export function Donut({
           </Pie>
           <Tooltip
             contentStyle={tooltipStyle()}
+            labelStyle={{ color: "var(--color-popover-foreground)", fontWeight: 700, textTransform: "capitalize" }}
+            itemStyle={{ color: "var(--color-popover-foreground)" }}
             formatter={(v: number | string) => money(Number(v), currency)}
           />
 

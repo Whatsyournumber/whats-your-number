@@ -167,6 +167,7 @@ function MilestoneChart({
   yMax: number;
   height?: number;
 }) {
+  const { t } = useI18n();
   const axis = {
     stroke: "var(--color-muted-foreground)",
     fontSize: 11,
@@ -220,11 +221,14 @@ function MilestoneChart({
               fontSize: 12,
               color: "var(--color-popover-foreground)",
             }}
+            labelStyle={{ color: "var(--color-popover-foreground)", fontWeight: 700, textTransform: "capitalize" }}
+            itemStyle={{ color: "var(--color-popover-foreground)" }}
             formatter={(v: number | string) => money(Number(v), currency)}
           />
           <Area
             type="monotone"
             dataKey="objetivo"
+            name={t("Objetivo", "Goal")}
             stroke="var(--color-muted-foreground)"
             strokeWidth={1.5}
             strokeDasharray="5 5"
@@ -234,6 +238,7 @@ function MilestoneChart({
           <Area
             type="monotone"
             dataKey="valor"
+            name={t("Tu fondo", "Your fund")}
             stroke="var(--color-primary)"
             strokeWidth={3}
             fill="url(#fp-fill)"
