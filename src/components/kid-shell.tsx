@@ -1,11 +1,14 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouter } from "@tanstack/react-router";
 import {
+  Bot,
   CheckSquare,
+  CreditCard,
   Home,
   Rocket,
   GraduationCap,
   Star,
+  UserCog,
   Wallet,
   ChevronLeft,
   ChevronRight,
