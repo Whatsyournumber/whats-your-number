@@ -972,8 +972,11 @@ function PortafolioContent() {
               {seriesQuery.isLoading ? t("Cargando mercado…", "Loading market…") : t("Mercado no disponible", "Market unavailable")}
             </div>
           ) : (
-            <ResponsiveContainer width="100%" height={isMobile ? 280 : 330}>
-              <ComposedChart data={simData} margin={{ left: isMobile ? 0 : -10, right: isMobile ? 12 : 12, bottom: isMobile ? 14 : 8 }}>
+            <ResponsiveContainer width="100%" height={isMobile ? 300 : 380}>
+              <ComposedChart
+                data={simData}
+                margin={{ top: 8, left: isMobile ? -14 : -8, right: 4, bottom: isMobile ? 10 : 4 }}
+              >
                 <defs>
                   <linearGradient id="simOpt" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="var(--color-positive)" stopOpacity={0.22} />
