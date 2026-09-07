@@ -1300,7 +1300,7 @@ function PortafolioContent() {
               </div>
             ) : (
               <div className="space-y-2">
-                <div className="grid grid-cols-[auto_minmax(0,1.7fr)_minmax(0,1.3fr)_minmax(0,0.8fr)_minmax(0,0.65fr)] items-center gap-2 px-2 pr-6">
+                <div className="grid grid-cols-[auto_minmax(0,2fr)_minmax(0,1.5fr)_minmax(0,0.9fr)_minmax(0,0.6fr)] items-center gap-2 px-2 pr-6">
                   <span className="h-7 w-7 shrink-0" />
                   <span className="text-[10px] font-medium text-muted-foreground">{t("Activo", "Asset")}</span>
                   <span className="text-[10px] font-medium text-muted-foreground">{t("Monto", "Amount")}</span>
@@ -1309,59 +1309,18 @@ function PortafolioContent() {
                 </div>
                 {simAssets.map((asset, index) => {
                   const key = asset.ticker.trim().toUpperCase();
-                  const auto = key ? simDayChange[key] : undefined;
-                  const color = chartColors[index % chartColors.length]!;
                   return (
-                    <div key={asset.id} className="relative rounded-xl border border-border/50 bg-elevated/30 p-1.5 pr-1">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="absolute -top-1.5 -right-1.5 z-10 h-5 w-5 shrink-0 rounded-full border border-border/40 bg-background/80 text-[10px] text-muted-foreground backdrop-blur-sm hover:text-negative"
-                        aria-label={t("Quitar activo", "Remove asset")}
-                        onClick={() => setSimAssets((current) => current.filter((item) => item.id !== asset.id))}
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
-                      <div className="grid grid-cols-[auto_minmax(0,1.7fr)_minmax(0,1.3fr)_minmax(0,0.8fr)_minmax(0,0.65fr)] items-center gap-2">
-                        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-elevated" style={{ color }}>
-                          <TrendingUp className="h-3.5 w-3.5" />
-                        </span>
-                        <Input
-                          value={asset.ticker}
-                          onChange={(event) => updateSimAsset(asset.id, { ticker: event.target.value.toUpperCase() })}
-                          aria-label={t("Ticker del activo", "Asset ticker")}
-                          className="h-9 min-w-0 border-border/40 bg-elevated/50 px-2.5 text-sm uppercase"
-                        />
-                        <Input
-                          type="number"
-                          min={0}
-                          value={asset.amount === 0 ? "" : Math.round(asset.amount)}
-                          aria-label={t("Monto", "Amount")}
-                          onChange={(event) => updateSimAsset(asset.id, { amount: Math.max(0, Number(event.target.value) || 0) })}
-                          className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 px-2.5 text-sm"
-                        />
-                        <Input
-                          type="number"
-                          min={0}
-                          value={asset.contribution === 0 ? "" : Math.round(asset.contribution)}
-                          aria-label={t("Mensual", "Monthly")}
-                          onChange={(event) => updateSimAsset(asset.id, { contribution: Math.max(0, Number(event.target.value) || 0) })}
-                          className="numeric h-8 min-w-0 border-border/40 bg-elevated/50 px-2 text-xs"
-                        />
-                        <Input
-                          type="number"
-                          step="0.1"
-                          value={asset.manualReturn ?? (auto !== undefined ? Number(auto.toFixed(2)) : "")}
-                          aria-label={t("Rendimiento %", "Return %")}
-                          onChange={(event) => {
-                            const raw = event.target.value;
-                            updateSimAsset(asset.id, { manualReturn: raw === "" ? null : Number(raw) });
-                          }}
-                          className="numeric h-8 min-w-0 border-border/40 bg-elevated/50 px-2 text-xs"
-                        />
-                      </div>
-                    </div>
+                    <SimAssetRow
+                      key={asset.id}
+                      asset={asset}
+                      color={chartColors[index % chartColors.length]!}
+                      auto={key ? simDayChange[key] : undefined}
+                      symbol={simCurrencySymbol}
+                      locale={lang === "es" ? "es-ES" : "en-US"}
+                      t={t}
+                      onChange={(patch) => updateSimAsset(asset.id, patch)}
+                      onRemove={() => setSimAssets((current) => current.filter((item) => item.id !== asset.id))}
+                    />
                   );
                 })}
               </div>
