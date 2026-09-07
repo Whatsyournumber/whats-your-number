@@ -650,20 +650,16 @@ function PortafolioContent() {
     .sort((a, b) => b.value - a.value);
   const activeTypes = types.filter((ty) => enriched.some((h) => h.type === ty && h.value > 0));
 
-  // ---- Simulador de rendimiento: histórico real + proyección ----
-  const simulatorTypes = [
-    ...allocation.map((a) => a.name),
-    ...simExtraTypes.filter((ty) => !allocation.some((a) => a.name === ty)),
-  ].filter((ty) => !simHiddenTypes.includes(ty));
+  // ---- Simulador de rendimiento: comienza limpio con 1 activo, hasta 5 ----
+  const simulatorTypes = simExtraTypes.filter((ty) => !simHiddenTypes.includes(ty));
   const simulatorAssets = simulatorTypes.map((ty, index) => {
-    const source = allocation.find((a) => a.name === ty);
-    const amount = simAmounts[ty] ?? source?.value ?? 0;
-    const defaultContribution = totalValue > 0 && source ? (simMonthly ?? 0) * (source.value / totalValue) : 0;
+    const amount = simAmounts[ty] ?? 0;
+    const contribution = simContributions[ty] ?? 0;
     return {
       type: ty,
       amount,
-      contribution: simContributions[ty] ?? defaultContribution,
-      color: source?.color ?? chartColors[(activeTypes.length + index) % chartColors.length]!,
+      contribution,
+      color: chartColors[index % chartColors.length]!,
     };
   });
   const simPortfolioTotal = simulatorAssets.reduce((sum, asset) => sum + asset.amount, 0);
