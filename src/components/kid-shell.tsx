@@ -220,7 +220,7 @@ export function KidShell({ member, children }: { member: Member; children: React
               to={tab.to}
               activeOptions={{ exact: true }}
               activeProps={{ className: "nav-pill-active" }}
-              className={cn("nav-pill text-[13px]", collapsed && "justify-center px-0")}
+              className={cn("nav-pill text-sm", collapsed && "justify-center px-0")}
               title={collapsed ? label(tab) : undefined}
             >
               {({ isActive }: { isActive: boolean }) => (
@@ -280,7 +280,7 @@ export function KidShell({ member, children }: { member: Member; children: React
                     <Link
                       to="/ninos"
                       onClick={() => setMenuOpen(false)}
-                      className="flex h-7 items-center gap-1 pl-0.5 text-[13px] font-semibold tracking-tight"
+                      className="flex h-7 items-center gap-1 pl-0.5 text-sm font-semibold tracking-tight"
                     >
                       <span>{t("Perfiles", "Profiles")}</span>
                       <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
