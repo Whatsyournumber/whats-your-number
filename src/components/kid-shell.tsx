@@ -45,8 +45,8 @@ const MOBILE_PARENT_TABS = [
   { to: "/ninos/kid/futuro", label: "Fondo Universidad", labelEn: "College fund", icon: Rocket },
   { to: "/ninos/kid/universidades", label: "Buscador universidades", labelEn: "University finder", icon: GraduationCap },
   { to: "/ninos/kid/datos", label: "Mis datos", labelEn: "My data", icon: UserCog },
-  { to: "/suscripcion", label: "Suscripción", labelEn: "Subscription", icon: CreditCard },
-  { to: "/advisor", label: "Asistente IA", labelEn: "AI Assistant", icon: Bot },
+  { to: "/ninos/kid/suscripcion", label: "Suscripción", labelEn: "Subscription", icon: CreditCard },
+  { to: "/ninos/kid/ia", label: "Asistente IA", labelEn: "AI Assistant", icon: Bot },
 ] as const;
 
 function ProfileCard({ member, collapsed }: { member: Member; collapsed: boolean }) {
