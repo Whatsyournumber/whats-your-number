@@ -24,16 +24,27 @@ function Rich({ text }: { text: string }) {
         const bullet = /^\s*[-*]\s+/.test(line);
         const heading = /^#{1,6}\s+/.test(line);
         const clean = line.replace(/^\s*[-*]\s+/, "").replace(/^#{1,6}\s+/, "");
-        const parts = clean.split(/(\*\*[^*]+\*\*)/g);
-        const body = parts.map((p, j) =>
-          p.startsWith("**") && p.endsWith("**") ? (
+        const parts = clean.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/g);
+        const body = parts.map((p, j) => {
+          const link = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(p);
+          if (link)
+            return (
+              <a
+                key={j}
+                href={link[2]}
+                className="font-medium text-primary underline underline-offset-2 hover:opacity-80"
+              >
+                {link[1]}
+              </a>
+            );
+          return p.startsWith("**") && p.endsWith("**") ? (
             <strong key={j} className="font-semibold text-foreground">
               {p.slice(2, -2)}
             </strong>
           ) : (
             <span key={j}>{p}</span>
-          ),
-        );
+          );
+        });
         if (heading)
           return (
             <p key={i} className="pt-1 text-sm font-semibold text-foreground">
