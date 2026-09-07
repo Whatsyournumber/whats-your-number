@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useLanguage, useT } from "@/hooks/use-language";
-import { useMarketSeries, useQuotes, useSymbolSearch, useWatchlist } from "@/hooks/use-market";
+import { useMarketSeries, useQuotes, useSymbolReturns, useSymbolSearch, useWatchlist } from "@/hooks/use-market";
 import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
@@ -168,7 +168,7 @@ function SimAssetRow({
       >
         <X className="h-3 w-3" />
       </Button>
-      <div className="grid grid-cols-[auto_minmax(0,2fr)_minmax(0,1.5fr)_minmax(0,0.9fr)_minmax(0,0.6fr)] items-center gap-2">
+      <div className="grid grid-cols-[auto_minmax(0,2.4fr)_minmax(0,1.6fr)_minmax(0,1.2fr)_minmax(0,0.9fr)] items-center gap-2">
         <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-elevated" style={{ color }}>
           <TrendingUp className="h-3.5 w-3.5" />
         </span>
@@ -177,7 +177,7 @@ function SimAssetRow({
           <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={open ? query : asset.ticker}
-            placeholder={t("Buscar activo…", "Search asset…")}
+            placeholder={t("Buscar", "Search")}
             aria-label={t("Buscar activo", "Search asset")}
             onFocus={() => {
               setQuery(asset.ticker);
@@ -189,8 +189,9 @@ function SimAssetRow({
               setOpen(true);
               onChange({ ticker: event.target.value.toUpperCase(), name: undefined });
             }}
-            className="h-10 min-w-0 border-border/40 bg-elevated/50 pl-8 pr-2 text-sm font-semibold uppercase"
+            className="h-10 min-w-0 truncate border-border/40 bg-elevated/50 pl-8 pr-2 text-sm font-semibold uppercase placeholder:font-normal placeholder:normal-case placeholder:text-muted-foreground"
           />
+
           {!open && asset.name && (
             <span className="pointer-events-none absolute -bottom-3.5 left-8 truncate text-[10px] text-muted-foreground">
               {asset.name}
@@ -240,7 +241,7 @@ function SimAssetRow({
         </div>
 
         <div className="relative min-w-0">
-          <span className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">
+          <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
             {symbol}
           </span>
           <Input
@@ -249,7 +250,7 @@ function SimAssetRow({
             aria-label={t("Mensual", "Monthly")}
             placeholder="0"
             onChange={(event) => onChange({ contribution: parseNum(event.target.value) })}
-            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-5 pr-1.5 text-xs"
+            className="numeric h-10 min-w-0 border-border/40 bg-elevated/50 pl-6 pr-2 text-sm"
           />
         </div>
 
@@ -260,7 +261,7 @@ function SimAssetRow({
               asset.manualReturn !== null
                 ? String(asset.manualReturn)
                 : auto !== undefined
-                  ? String(Number(auto.toFixed(2)))
+                  ? String(Number(auto.toFixed(1)))
                   : ""
             }
             aria-label={t("Rendimiento %", "Return %")}
@@ -269,9 +270,9 @@ function SimAssetRow({
               const raw = event.target.value.replace(",", ".").replace(/[^\d.-]/g, "");
               onChange({ manualReturn: raw === "" ? null : Number(raw) });
             }}
-            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-1.5 pr-4 text-xs"
+            className="numeric h-10 min-w-0 border-border/40 bg-elevated/50 pl-2 pr-5 text-sm"
           />
-          <span className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">
+          <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
             %
           </span>
         </div>
@@ -341,9 +342,11 @@ function PortafolioContent() {
     setSimAssets((current) => current.map((item) => (item.id === id ? { ...item, ...patch } : item)));
   const simTickers = simAssets.map((a) => a.ticker.trim().toUpperCase()).filter(Boolean);
   const simCurrencySymbol = currencySymbol(profile.currency || "EUR");
-  const simQuotes = useQuotes(simTickers);
+  const simReturnsQuery = useSymbolReturns(simTickers);
   const simDayChange: Record<string, number> = Object.fromEntries(
-    (simQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.changePct ?? 0]),
+    Object.entries(simReturnsQuery.data?.returns ?? {})
+      .filter(([, v]) => typeof v === "number" && Number.isFinite(v))
+      .map(([k, v]) => [k.toUpperCase(), Math.round((v as number) * 10) / 10]),
   );
   const searchQuery = useSymbolSearch(newSymbol);
 
@@ -1302,12 +1305,12 @@ function PortafolioContent() {
               </div>
             ) : (
               <div className="space-y-2">
-                <div className="grid grid-cols-[auto_minmax(0,2fr)_minmax(0,1.5fr)_minmax(0,0.9fr)_minmax(0,0.6fr)] items-center gap-2 px-2 pr-6">
+                <div className="grid grid-cols-[auto_minmax(0,2.4fr)_minmax(0,1.6fr)_minmax(0,1.2fr)_minmax(0,0.9fr)] items-center gap-2 px-2 pr-6">
                   <span className="h-7 w-7 shrink-0" />
-                  <span className="text-[10px] font-medium text-muted-foreground">{t("Activo", "Asset")}</span>
-                  <span className="text-[10px] font-medium text-muted-foreground">{t("Monto", "Amount")}</span>
-                  <span className="text-[10px] font-medium text-muted-foreground">{t("Mensual", "Monthly")}</span>
-                  <span className="text-[10px] font-medium text-muted-foreground">{t("Rend. %", "Return %")}</span>
+                  <span className="truncate text-[10px] font-medium text-muted-foreground">{t("Activo", "Asset")}</span>
+                  <span className="truncate text-[10px] font-medium text-muted-foreground">{t("Monto", "Amount")}</span>
+                  <span className="truncate text-[10px] font-medium text-muted-foreground">{t("Mensual", "Monthly")}</span>
+                  <span className="truncate text-[10px] font-medium text-muted-foreground">{t("Rend.", "Return")}</span>
                 </div>
                 {simAssets.map((asset, index) => {
                   const key = asset.ticker.trim().toUpperCase();

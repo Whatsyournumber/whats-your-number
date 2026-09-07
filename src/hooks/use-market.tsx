@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 
-import { getMarketQuotes, getMarketSeries, searchMarketSymbols } from "@/lib/market.functions";
+import { getMarketQuotes, getMarketSeries, getSymbolReturns, searchMarketSymbols } from "@/lib/market.functions";
 
 const STORE_KEY = "wyn.watchlist";
 export const DEFAULT_WATCHLIST = ["SPY", "QQQ", "VOO", "AAPL", "NVDA", "BTC-USD", "ETH-USD"];
@@ -77,5 +77,14 @@ export function useSymbolSearch(query: string) {
     queryFn: () => searchMarketSymbols({ data: { query: q } }),
     enabled: q.length >= 1,
     staleTime: 5 * 60_000,
+  });
+}
+
+export function useSymbolReturns(symbols: string[]) {
+  return useQuery({
+    queryKey: ["market-symbol-returns", symbols.join(",")],
+    queryFn: () => getSymbolReturns({ data: { symbols } }),
+    enabled: symbols.length > 0,
+    staleTime: 30 * 60_000,
   });
 }
