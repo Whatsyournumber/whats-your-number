@@ -312,7 +312,7 @@ export function KidShell({ member, children }: { member: Member; children: React
                   <p className="px-1 pb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
                     {t("Para papás", "For parents")}
                   </p>
-                  {PARENT_TABS.filter((tab) => tab.to !== "/ninos").map((tab) => (
+                  {MOBILE_PARENT_TABS.map((tab) => (
                     <SheetClose asChild key={tab.to}>
                       <Link
                         to={tab.to}
@@ -326,6 +326,7 @@ export function KidShell({ member, children }: { member: Member; children: React
                     </SheetClose>
                   ))}
                 </nav>
+                <MobileProfileCard member={member} />
               </div>
             </SheetContent>
           </Sheet>
