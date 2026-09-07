@@ -1054,30 +1054,6 @@ function PortafolioContent() {
             {simulatorAssets.length === 0 ? (
               <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border/60 bg-elevated/30 py-10">
                 <p className="text-sm text-muted-foreground">{t("Añade hasta 5 activos para simular", "Add up to 5 assets to simulate")}</p>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button type="button" variant="outline" size="sm" className="gap-1.5">
-                      <Plus className="h-4 w-4" />
-                      {t("Añadir activo", "Add asset")}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent align="center" className="w-56 p-2">
-                    {types.filter((ty) => !simulatorTypes.includes(ty)).map((ty) => (
-                      <Button
-                        key={ty}
-                        type="button"
-                        variant="ghost"
-                        className="w-full justify-start"
-                        onClick={() => {
-                          setSimExtraTypes((current) => current.includes(ty) ? current : [...current, ty]);
-                          setSimHiddenTypes((current) => current.filter((item) => item !== ty));
-                        }}
-                      >
-                        {typeLabels[ty]}
-                      </Button>
-                    ))}
-                  </PopoverContent>
-                </Popover>
               </div>
             ) : (
               <>
