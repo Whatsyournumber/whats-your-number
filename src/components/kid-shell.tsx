@@ -251,8 +251,8 @@ export function KidShell({ member, children }: { member: Member; children: React
               </button>
             </SheetTrigger>
             <SheetContent side="left" className="h-full w-full sm:max-w-xs [&>button]:hidden">
-              <div className="flex h-full flex-col gap-6">
-                <div className="space-y-2">
+              <div className="flex h-full flex-col gap-3">
+                <div className="space-y-1">
                   <div className="relative flex h-10 items-center justify-between">
                     <SheetClose asChild>
                       <Link
@@ -281,16 +281,16 @@ export function KidShell({ member, children }: { member: Member; children: React
                     <Link
                       to="/ninos"
                       onClick={() => setMenuOpen(false)}
-                      className="flex h-8 items-center gap-1.5 pl-0.5 text-sm font-semibold tracking-tight"
+                      className="flex h-7 items-center gap-1 pl-0.5 text-[13px] font-semibold tracking-tight"
                     >
                       <span>{t("Perfiles", "Profiles")}</span>
-                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                      <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
                     </Link>
                   </SheetClose>
                 </div>
                 {kidTabs.length ? (
-                  <nav className="flex flex-col gap-1.5">
-                    <p className="px-1 pb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                  <nav className="flex flex-col gap-1">
+                    <p className="px-1 pb-0.5 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
                       {t(`Para ${member.name}`, `For ${member.name}`)}
                     </p>
                     {kidTabs.map((tab) => (
@@ -298,7 +298,7 @@ export function KidShell({ member, children }: { member: Member; children: React
                         <Link
                           to={tab.to}
                           activeOptions={{ exact: true }}
-                          className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-secondary hover:text-foreground [&.nav-pill-active]:bg-primary [&.nav-pill-active]:text-primary-foreground"
+                          className="flex items-center gap-3 rounded-2xl px-3 py-2 text-sm font-semibold text-muted-foreground transition hover:bg-secondary hover:text-foreground [&.nav-pill-active]:bg-primary [&.nav-pill-active]:text-primary-foreground"
                           activeProps={{ className: "nav-pill-active" }}
                         >
                           <tab.icon className="h-4.5 w-4.5 shrink-0" />
@@ -308,8 +308,8 @@ export function KidShell({ member, children }: { member: Member; children: React
                     ))}
                   </nav>
                 ) : null}
-                <nav className="flex flex-col gap-1.5 border-t border-border/60 pt-4">
-                  <p className="px-1 pb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                <nav className="flex flex-col gap-1 border-t border-border/60 pt-2">
+                  <p className="px-1 pb-0.5 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
                     {t("Para papás", "For parents")}
                   </p>
                   {MOBILE_PARENT_TABS.map((tab) => (
@@ -317,7 +317,7 @@ export function KidShell({ member, children }: { member: Member; children: React
                       <Link
                         to={tab.to}
                         activeOptions={{ exact: true }}
-                        className="flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-secondary hover:text-foreground [&.nav-pill-active]:bg-primary [&.nav-pill-active]:text-primary-foreground"
+                        className="flex items-center gap-3 rounded-2xl px-3 py-2 text-sm font-semibold text-muted-foreground transition hover:bg-secondary hover:text-foreground [&.nav-pill-active]:bg-primary [&.nav-pill-active]:text-primary-foreground"
                         activeProps={{ className: "nav-pill-active" }}
                       >
                         <tab.icon className="h-4.5 w-4.5 shrink-0" />
