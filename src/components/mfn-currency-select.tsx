@@ -53,7 +53,7 @@ export function CurrencySelect({
           update.mutate({ id: memberId, patch: { currency: e.target.value } });
           flash();
         }}
-        className={`rounded-full border border-border/70 bg-secondary/60 px-2.5 py-1 text-[11px] font-bold text-foreground outline-none ${className}`}
+        className={`h-7 rounded-full border border-border/70 bg-secondary/60 px-2 text-[11px] font-bold uppercase tracking-wide text-foreground shadow-sm outline-none transition-colors hover:bg-secondary ${className}`}
       >
         {CURRENCIES.map((c) => (
           <option key={c.code} value={c.code}>
