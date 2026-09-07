@@ -74,6 +74,7 @@ import { Route as NinosKidDeseosRouteImport } from './routes/ninos/kid/deseos'
 import { Route as NinosKidDineroRouteImport } from './routes/ninos/kid/dinero'
 import { Route as NinosKidFuturoRouteImport } from './routes/ninos/kid/futuro'
 import { Route as NinosKidNumeroRouteImport } from './routes/ninos/kid/numero'
+import { Route as NinosKidSuscripcionRouteImport } from './routes/ninos/kid/suscripcion'
 import { Route as NinosKidTareasRouteImport } from './routes/ninos/kid/tareas'
 import { Route as NinosKidUniversidadesRouteImport } from './routes/ninos/kid/universidades'
 import { Route as ApiPublicLinkedinCallbackRouteImport } from './routes/api/public/linkedin/callback'
@@ -413,6 +414,11 @@ const NinosKidNumeroRoute = NinosKidNumeroRouteImport.update({
   path: '/kid/numero',
   getParentRoute: () => NinosRouteRoute,
 } as any)
+const NinosKidSuscripcionRoute = NinosKidSuscripcionRouteImport.update({
+  id: '/kid/suscripcion',
+  path: '/kid/suscripcion',
+  getParentRoute: () => NinosRouteRoute,
+} as any)
 const NinosKidTareasRoute = NinosKidTareasRouteImport.update({
   id: '/kid/tareas',
   path: '/kid/tareas',
@@ -501,6 +507,7 @@ export interface FileRoutesByFullPath {
   '/ninos/kid/dinero': typeof NinosKidDineroRoute
   '/ninos/kid/futuro': typeof NinosKidFuturoRoute
   '/ninos/kid/numero': typeof NinosKidNumeroRoute
+  '/ninos/kid/suscripcion': typeof NinosKidSuscripcionRoute
   '/ninos/kid/tareas': typeof NinosKidTareasRoute
   '/ninos/kid/universidades': typeof NinosKidUniversidadesRoute
   '/en/blog/': typeof EnBlogIndexRoute
@@ -568,6 +575,7 @@ export interface FileRoutesByTo {
   '/ninos/kid/dinero': typeof NinosKidDineroRoute
   '/ninos/kid/futuro': typeof NinosKidFuturoRoute
   '/ninos/kid/numero': typeof NinosKidNumeroRoute
+  '/ninos/kid/suscripcion': typeof NinosKidSuscripcionRoute
   '/ninos/kid/tareas': typeof NinosKidTareasRoute
   '/ninos/kid/universidades': typeof NinosKidUniversidadesRoute
   '/en/blog': typeof EnBlogIndexRoute
@@ -640,6 +648,7 @@ export interface FileRoutesById {
   '/ninos/kid/dinero': typeof NinosKidDineroRoute
   '/ninos/kid/futuro': typeof NinosKidFuturoRoute
   '/ninos/kid/numero': typeof NinosKidNumeroRoute
+  '/ninos/kid/suscripcion': typeof NinosKidSuscripcionRoute
   '/ninos/kid/tareas': typeof NinosKidTareasRoute
   '/ninos/kid/universidades': typeof NinosKidUniversidadesRoute
   '/en/blog/': typeof EnBlogIndexRoute
@@ -713,6 +722,7 @@ export interface FileRouteTypes {
     | '/ninos/kid/dinero'
     | '/ninos/kid/futuro'
     | '/ninos/kid/numero'
+    | '/ninos/kid/suscripcion'
     | '/ninos/kid/tareas'
     | '/ninos/kid/universidades'
     | '/en/blog/'
@@ -780,6 +790,7 @@ export interface FileRouteTypes {
     | '/ninos/kid/dinero'
     | '/ninos/kid/futuro'
     | '/ninos/kid/numero'
+    | '/ninos/kid/suscripcion'
     | '/ninos/kid/tareas'
     | '/ninos/kid/universidades'
     | '/en/blog'
@@ -851,6 +862,7 @@ export interface FileRouteTypes {
     | '/ninos/kid/dinero'
     | '/ninos/kid/futuro'
     | '/ninos/kid/numero'
+    | '/ninos/kid/suscripcion'
     | '/ninos/kid/tareas'
     | '/ninos/kid/universidades'
     | '/en/blog/'
@@ -1365,6 +1377,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NinosKidNumeroRouteImport
       parentRoute: typeof NinosRouteRoute
     }
+    '/ninos/kid/suscripcion': {
+      id: '/ninos/kid/suscripcion'
+      path: '/kid/suscripcion'
+      fullPath: '/ninos/kid/suscripcion'
+      preLoaderRoute: typeof NinosKidSuscripcionRouteImport
+      parentRoute: typeof NinosRouteRoute
+    }
     '/ninos/kid/tareas': {
       id: '/ninos/kid/tareas'
       path: '/kid/tareas'
@@ -1405,6 +1424,7 @@ interface NinosRouteRouteChildren {
   NinosKidDineroRoute: typeof NinosKidDineroRoute
   NinosKidFuturoRoute: typeof NinosKidFuturoRoute
   NinosKidNumeroRoute: typeof NinosKidNumeroRoute
+  NinosKidSuscripcionRoute: typeof NinosKidSuscripcionRoute
   NinosKidTareasRoute: typeof NinosKidTareasRoute
   NinosKidUniversidadesRoute: typeof NinosKidUniversidadesRoute
 }
@@ -1418,6 +1438,7 @@ const NinosRouteRouteChildren: NinosRouteRouteChildren = {
   NinosKidDineroRoute: NinosKidDineroRoute,
   NinosKidFuturoRoute: NinosKidFuturoRoute,
   NinosKidNumeroRoute: NinosKidNumeroRoute,
+  NinosKidSuscripcionRoute: NinosKidSuscripcionRoute,
   NinosKidTareasRoute: NinosKidTareasRoute,
   NinosKidUniversidadesRoute: NinosKidUniversidadesRoute,
 }
