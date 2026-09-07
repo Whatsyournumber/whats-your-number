@@ -644,6 +644,18 @@ function PortafolioContent() {
     .sort((a, b) => b.value - a.value);
   const activeTypes = types.filter((ty) => enriched.some((h) => h.type === ty && h.value > 0));
 
+  // Semillas del simulador: tus posiciones reales con ticker (las 5 mayores).
+  const simSeedRows = holdings
+    .filter((h) => h.ticker && holdingValue(h, prices) > 0)
+    .map((h) => ({
+      symbol: h.ticker!.toUpperCase(),
+      label: h.label || h.ticker!,
+      initial: holdingValue(h, prices),
+      monthly: Math.round(h.monthly_contribution || 0),
+    }))
+    .sort((a, b) => b.initial - a.initial)
+    .slice(0, 5);
+
   const rows = (list: typeof enriched) => (
     <div className="space-y-2">
       {[...list].sort((a, b) => {
