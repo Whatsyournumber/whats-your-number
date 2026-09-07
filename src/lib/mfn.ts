@@ -174,7 +174,7 @@ export function money(value: number, currency = "EUR", compact = false) {
   return new Intl.NumberFormat(moneyLocale, {
     style: "currency",
     currency: currency || "EUR",
-    useGrouping: "always",
+    useGrouping: true,
     maximumFractionDigits: compact ? 1 : amount % 1 === 0 ? 0 : 2,
     notation: compact ? "compact" : "standard",
   }).format(amount);
@@ -183,7 +183,7 @@ export function money(value: number, currency = "EUR", compact = false) {
 /** Número con separador decimal según el idioma activo (ES: coma, EN: punto). */
 export function num(value: number, decimals = 1) {
   return new Intl.NumberFormat(moneyLocale, {
-    useGrouping: "always",
+    useGrouping: true,
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
   }).format(Number.isFinite(value) ? value : 0);
