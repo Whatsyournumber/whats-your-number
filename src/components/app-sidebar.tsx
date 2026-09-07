@@ -18,7 +18,7 @@ import {
   ShieldCheck,
   Users,
   Handshake,
-  ChevronLeft,
+  ChevronRight,
   X,
   UserRound,
 } from "lucide-react";
