@@ -45,3 +45,23 @@ export const getIndexReturns = createServerFn({ method: "GET" }).handler(async (
     updatedAt: Date.now(),
   };
 });
+
+/** Rendimiento anualizado (CAGR) de activos concretos, para el simulador. */
+export const getSymbolReturns = createServerFn({ method: "GET" })
+  .inputValidator((input: { symbols: string[] }) => ({
+    symbols: (input?.symbols ?? [])
+      .map((s) => String(s).trim().toUpperCase())
+      .filter((s) => /^[A-Z0-9.^=:&/-]{1,20}$/.test(s))
+      .slice(0, 5),
+  }))
+  .handler(async ({ data }) => {
+    const { fetchIndexStat } = await import("./market.server");
+    const entries = await Promise.all(
+      data.symbols.map(async (s) => {
+        const stat = await fetchIndexStat(s);
+        const annual = stat?.cagr5y ?? stat?.cagr10y ?? stat?.ytdPct ?? null;
+        return [s, annual] as const;
+      }),
+    );
+    return { returns: Object.fromEntries(entries), updatedAt: Date.now() };
+  });
