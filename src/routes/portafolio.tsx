@@ -1023,6 +1023,32 @@ function PortafolioContent() {
           title={t("Configura tu simulación", "Configure your simulation")}
           description={t("Ajusta los montos y distribución de tu cartera", "Adjust your portfolio amounts and allocation")}
           className="lg:col-span-2"
+          actions={
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button type="button" variant="outline" size="sm" className="gap-1.5" disabled={simulatorAssets.length >= 5}>
+                  <Plus className="h-4 w-4" />
+                  {t("Añadir activo", "Add asset")}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-56 p-2">
+                {types.filter((ty) => !simulatorTypes.includes(ty)).map((ty) => (
+                  <Button
+                    key={ty}
+                    type="button"
+                    variant="ghost"
+                    className="w-full justify-start"
+                    onClick={() => {
+                      setSimExtraTypes((current) => current.includes(ty) ? current : [...current, ty]);
+                      setSimHiddenTypes((current) => current.filter((item) => item !== ty));
+                    }}
+                  >
+                    {typeLabels[ty]}
+                  </Button>
+                ))}
+              </PopoverContent>
+            </Popover>
+          }
         >
           <div className="space-y-5">
             {simulatorAssets.length === 0 ? (
