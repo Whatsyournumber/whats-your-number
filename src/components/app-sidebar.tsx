@@ -47,6 +47,8 @@ import { useRoles } from "@/hooks/use-role";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useMyAffiliate } from "@/hooks/use-affiliate";
 import { useAuth } from "@/hooks/use-auth";
+import { ProfileSwitcher } from "@/components/profile-switcher";
+import { useState } from "react";
 
 export function AppSidebar() {
   const { state, setOpenMobile, isMobile } = useSidebar();
