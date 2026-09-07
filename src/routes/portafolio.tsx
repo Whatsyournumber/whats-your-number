@@ -1017,166 +1017,163 @@ function PortafolioContent() {
 
         <Panel
           title={t("Configura tu simulación", "Configure your simulation")}
-          description={t("Ajusta los montos y distribución de tu cartera", "Adjust your portfolio amounts and allocation")}
+          description={t("Añade activos y su rendimiento para proyectar", "Add assets and their return to project")}
           className="lg:col-span-2"
           actions={
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button type="button" variant="outline" size="sm" className="gap-1.5" disabled={simulatorAssets.length >= 5}>
-                  <Plus className="h-4 w-4" />
-                  {t("Añadir activo", "Add asset")}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent align="end" className="w-56 p-2">
-                {types.filter((ty) => !simulatorTypes.includes(ty)).map((ty) => (
-                  <Button
-                    key={ty}
-                    type="button"
-                    variant="ghost"
-                    className="w-full justify-start"
-                    onClick={() => {
-                      setSimExtraTypes((current) => current.includes(ty) ? current : [...current, ty]);
-                      setSimHiddenTypes((current) => current.filter((item) => item !== ty));
-                    }}
-                  >
-                    {typeLabels[ty]}
-                  </Button>
-                ))}
-              </PopoverContent>
-            </Popover>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+              disabled={simAssets.length >= 5}
+              onClick={addSimAsset}
+            >
+              <Plus className="h-4 w-4" />
+              {t("Añadir activo", "Add asset")}
+            </Button>
           }
         >
-          <div className="space-y-5">
-            {simulatorAssets.length === 0 ? (
+          <div className="space-y-4">
+            {simAssets.length === 0 ? (
               <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border/60 bg-elevated/30 py-10">
                 <p className="text-sm text-muted-foreground">{t("Añade hasta 5 activos para simular", "Add up to 5 assets to simulate")}</p>
               </div>
             ) : (
-              <>
-                <div className="grid grid-cols-[minmax(0,1fr)_90px_84px_42px_32px] gap-2 text-[10px] font-medium text-muted-foreground">
-                  <span>{t("Activo", "Asset")}</span>
-                  <span>{t("Monto inicial", "Initial amount")}</span>
-                  <span>{t("Aporte mensual", "Monthly")}</span>
-                  <span className="text-right">%</span>
-                  <span />
-                </div>
-
-                <div className="space-y-3">
-                  {simulatorAssets.map((asset) => {
-                    const percentage = simPortfolioTotal > 0 ? (asset.amount / simPortfolioTotal) * 100 : 0;
-                    return (
-                      <div key={asset.type} className="grid grid-cols-[minmax(0,1fr)_90px_84px_42px_32px] items-center gap-2">
-                        <div className="flex min-w-0 items-center gap-2.5">
+              <div className="space-y-3">
+                {simAssets.map((asset, index) => {
+                  const key = asset.ticker.trim().toUpperCase();
+                  const auto = key ? simDayChange[key] : undefined;
+                  const share = simPortfolioTotal > 0 ? (asset.amount / simPortfolioTotal) * 100 : 0;
+                  const color = chartColors[index % chartColors.length]!;
+                  return (
+                    <div key={asset.id} className="rounded-xl border border-border/50 bg-elevated/30 p-3">
+                      <div className="flex items-center gap-2">
+                        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-elevated" style={{ color }}>
+                          <TrendingUp className="h-4 w-4" />
+                        </span>
+                        <Input
+                          value={asset.ticker}
+                          onChange={(event) => updateSimAsset(asset.id, { ticker: event.target.value.toUpperCase() })}
+                          placeholder={t("Ticker (ej. SPY)", "Ticker (e.g. SPY)")}
+                          aria-label={t("Ticker del activo", "Asset ticker")}
+                          className="h-9 min-w-0 flex-1 text-xs uppercase"
+                        />
+                        {auto !== undefined ? (
                           <span
-                            className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-elevated"
-                            style={{ color: asset.color }}
+                            className={cn(
+                              "numeric shrink-0 rounded-full px-2 py-1 text-[10px] font-semibold",
+                              auto >= 0 ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative",
+                            )}
                           >
-                            <TrendingUp className="h-4 w-4" />
+                            {auto >= 0 ? "+" : ""}{auto.toFixed(2)}% {t("hoy", "today")}
                           </span>
-                          <div className="min-w-0">
-                            <p className="truncate text-xs font-semibold text-foreground">{typeLabels[asset.type as (typeof types)[number]]}</p>
-                            <p className="truncate text-[10px] text-muted-foreground">
-                              {enriched.find((holding) => holding.type === asset.type)?.ticker ?? asset.type}
-                            </p>
-                          </div>
-                        </div>
-                        <Input
-                          aria-label={`${typeLabels[asset.type as (typeof types)[number]]} ${t("monto inicial", "initial amount")}`}
-                          type="number"
-                          min={0}
-                          value={Math.round(asset.amount)}
-                          onChange={(event) => setSimAmounts((current) => ({ ...current, [asset.type]: Math.max(0, Number(event.target.value) || 0) }))}
-                          className="numeric h-10 px-2 text-xs"
-                        />
-                        <Input
-                          aria-label={`${typeLabels[asset.type as (typeof types)[number]]} ${t("aporte mensual", "monthly contribution")}`}
-                          type="number"
-                          min={0}
-                          value={Math.round(asset.contribution)}
-                          onChange={(event) => {
-                            const next = Math.max(0, Number(event.target.value) || 0);
-                            setSimContributions((current) => ({ ...current, [asset.type]: next }));
-                            setSimMonthly(null);
-                          }}
-                          className="numeric h-10 px-2 text-xs"
-                        />
-                        <div className="min-w-0 text-right">
-                          <p className="numeric text-xs font-semibold text-foreground">{percentage.toFixed(0)}%</p>
-                          <div className="mt-1 h-1 overflow-hidden rounded-full bg-muted">
-                            <div className="h-full rounded-full" style={{ width: `${Math.min(100, percentage)}%`, background: asset.color }} />
-                          </div>
-                        </div>
+                        ) : null}
                         <Button
                           type="button"
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 text-muted-foreground hover:text-negative"
+                          className="h-8 w-8 shrink-0 text-muted-foreground hover:text-negative"
                           aria-label={t("Quitar activo", "Remove asset")}
-                          onClick={() => {
-                            setSimExtraTypes((current) => current.filter((item) => item !== asset.type));
-                            setSimAmounts((current) => {
-                              const next = { ...current };
-                              delete next[asset.type];
-                              return next;
-                            });
-                            setSimContributions((current) => {
-                              const next = { ...current };
-                              delete next[asset.type];
-                              return next;
-                            });
-                          }}
+                          onClick={() => setSimAssets((current) => current.filter((item) => item.id !== asset.id))}
                         >
                           <X className="h-4 w-4" />
                         </Button>
                       </div>
-                    );
-                  })}
-                </div>
 
-                <div className="flex items-center justify-between border-t border-border/50 pt-4">
-                  <p className="text-[10px] text-muted-foreground">
-                    {simulatorAssets.length}/5 {t("activos", "assets")}
-                  </p>
-                  <div className="text-right">
-                    <p className="text-[10px] text-muted-foreground">{t("Total", "Total")}</p>
-                    <p className="numeric text-sm font-semibold text-foreground">100%</p>
-                  </div>
-                </div>
+                      <div className="mt-2 grid grid-cols-3 gap-2">
+                        <label className="block">
+                          <span className="text-[10px] text-muted-foreground">{t("Monto", "Amount")}</span>
+                          <Input
+                            type="number"
+                            min={0}
+                            value={Math.round(asset.amount)}
+                            onChange={(event) => updateSimAsset(asset.id, { amount: Math.max(0, Number(event.target.value) || 0) })}
+                            className="numeric mt-1 h-9 px-2 text-xs"
+                          />
+                        </label>
+                        <label className="block">
+                          <span className="text-[10px] text-muted-foreground">{t("Mensual", "Monthly")}</span>
+                          <Input
+                            type="number"
+                            min={0}
+                            value={Math.round(asset.contribution)}
+                            onChange={(event) => updateSimAsset(asset.id, { contribution: Math.max(0, Number(event.target.value) || 0) })}
+                            className="numeric mt-1 h-9 px-2 text-xs"
+                          />
+                        </label>
+                        <label className="block">
+                          <span className="text-[10px] text-muted-foreground">
+                            {auto !== undefined && asset.manualReturn === null ? t("Rend. auto", "Auto return") : t("Rend. %", "Return %")}
+                          </span>
+                          <Input
+                            type="number"
+                            step="0.1"
+                            value={asset.manualReturn ?? (auto !== undefined ? Number(auto.toFixed(2)) : "")}
+                            placeholder={t("% anual", "% annual")}
+                            onChange={(event) => {
+                              const raw = event.target.value;
+                              updateSimAsset(asset.id, { manualReturn: raw === "" ? null : Number(raw) });
+                            }}
+                            className="numeric mt-1 h-9 px-2 text-xs"
+                          />
+                        </label>
+                      </div>
 
-                <label className="block border-t border-border/50 pt-4">
-                  <span className="mb-2 flex items-center justify-between text-[11px] font-medium text-muted-foreground">
-                    <span>{t("Horizonte de tiempo", "Time horizon")}</span>
-                    <span className="numeric rounded-lg border border-border/60 bg-elevated/50 px-3 py-1.5 text-xs font-semibold text-foreground">
-                      {simYears} {t("años", "years")}
-                    </span>
-                  </span>
-                  <input
-                    type="range"
-                    min={5}
-                    max={30}
-                    step={1}
-                    value={simYears}
-                    onChange={(event) => setSimYears(Number(event.target.value))}
-                    className="w-full accent-[var(--color-primary)]"
-                  />
-                </label>
-
-                <div className="grid grid-cols-2 gap-3 border-t border-border/50 pt-4">
-                  <div className="rounded-xl border border-positive/20 bg-positive/5 p-3">
-                    <p className="text-[10px] font-medium text-positive">{t("Escenario optimista", "Optimistic scenario")}</p>
-                    <p className="numeric mt-1 text-lg font-bold text-positive">{fmt(Math.round(simResult.opt))}</p>
-                    <p className="text-[10px] text-positive/80">+{optRate.toFixed(0)}% {t("anual", "annual")}</p>
-                  </div>
-                  <div className="rounded-xl border border-negative/20 bg-negative/5 p-3">
-                    <p className="text-[10px] font-medium text-negative">{t("Escenario pesimista", "Pessimistic scenario")}</p>
-                    <p className="numeric mt-1 text-lg font-bold text-negative">{fmt(Math.round(simResult.pes))}</p>
-                    <p className="text-[10px] text-negative/80">+{pesRate.toFixed(0)}% {t("anual", "annual")}</p>
-                  </div>
-                </div>
-              </>
+                      <div className="mt-2 flex items-center gap-2">
+                        <div className="h-1 flex-1 overflow-hidden rounded-full bg-muted">
+                          <div className="h-full rounded-full" style={{ width: `${Math.min(100, share)}%`, background: color }} />
+                        </div>
+                        <span className="numeric text-[10px] font-semibold text-muted-foreground">{share.toFixed(0)}%</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             )}
+
+            <div className="flex items-center justify-between border-t border-border/50 pt-4">
+              <p className="text-[10px] text-muted-foreground">
+                {simAssets.length}/5 {t("activos", "assets")}
+              </p>
+              <div className="text-right">
+                <p className="text-[10px] text-muted-foreground">{t("Rendimiento medio", "Average return")}</p>
+                <p className="numeric text-sm font-semibold text-foreground">{simRate.toFixed(1)}%</p>
+              </div>
+            </div>
+
+            <label className="block border-t border-border/50 pt-4">
+              <span className="mb-2 flex items-center justify-between text-[11px] font-medium text-muted-foreground">
+                <span>{t("Horizonte de tiempo", "Time horizon")}</span>
+                <span className="numeric rounded-lg border border-border/60 bg-elevated/50 px-3 py-1.5 text-xs font-semibold text-foreground">
+                  {simYears} {t("años", "years")}
+                </span>
+              </span>
+              <input
+                type="range"
+                min={5}
+                max={30}
+                step={1}
+                value={simYears}
+                onChange={(event) => setSimYears(Number(event.target.value))}
+                className="w-full accent-[var(--color-primary)]"
+              />
+            </label>
+
+            <div className="grid grid-cols-2 gap-3 border-t border-border/50 pt-4">
+              <div className="rounded-xl border border-positive/20 bg-positive/5 p-3">
+                <p className="text-[10px] font-medium text-positive">{t("Escenario optimista", "Optimistic scenario")}</p>
+                <p className="numeric mt-1 text-lg font-bold text-positive">{fmt(Math.round(simResult.opt))}</p>
+                <p className="text-[10px] text-positive/80">+{optRate.toFixed(0)}% {t("anual", "annual")}</p>
+              </div>
+              <div className="rounded-xl border border-negative/20 bg-negative/5 p-3">
+                <p className="text-[10px] font-medium text-negative">{t("Escenario pesimista", "Pessimistic scenario")}</p>
+                <p className="numeric mt-1 text-lg font-bold text-negative">{fmt(Math.round(simResult.pes))}</p>
+                <p className="text-[10px] text-negative/80">+{pesRate.toFixed(0)}% {t("anual", "annual")}</p>
+              </div>
+            </div>
           </div>
         </Panel>
+
       </div>
 
       <Panel
