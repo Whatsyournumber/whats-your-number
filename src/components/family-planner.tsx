@@ -27,6 +27,7 @@ import {
   monthlyNeeded,
   monthsToTarget,
   monthsUntil,
+  num,
   pct,
 } from "@/lib/mfn";
 import { useI18n } from "@/lib/mfn-i18n";
