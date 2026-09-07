@@ -465,9 +465,12 @@ function BlogBackOffice() {
             </div>
           </Panel>
 
-          <Panel className="p-6">
+          <Panel className="p-4 sm:p-6" bleedMobile>
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-lg font-semibold">Tráfico global del sitio (Google Analytics 4)</h2>
+              <h2 className="min-w-0 truncate text-base font-semibold sm:text-lg">
+                <span className="sm:hidden">Tráfico GA4</span>
+                <span className="hidden sm:inline">Tráfico global del sitio (Google Analytics 4)</span>
+              </h2>
               <div className="flex flex-wrap items-center gap-2">
                 <Button
                   size="sm"
