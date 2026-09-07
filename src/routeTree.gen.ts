@@ -73,6 +73,7 @@ import { Route as NinosKidDatosRouteImport } from './routes/ninos/kid/datos'
 import { Route as NinosKidDeseosRouteImport } from './routes/ninos/kid/deseos'
 import { Route as NinosKidDineroRouteImport } from './routes/ninos/kid/dinero'
 import { Route as NinosKidFuturoRouteImport } from './routes/ninos/kid/futuro'
+import { Route as NinosKidIaRouteImport } from './routes/ninos/kid/ia'
 import { Route as NinosKidNumeroRouteImport } from './routes/ninos/kid/numero'
 import { Route as NinosKidSuscripcionRouteImport } from './routes/ninos/kid/suscripcion'
 import { Route as NinosKidTareasRouteImport } from './routes/ninos/kid/tareas'
@@ -409,6 +410,11 @@ const NinosKidFuturoRoute = NinosKidFuturoRouteImport.update({
   path: '/kid/futuro',
   getParentRoute: () => NinosRouteRoute,
 } as any)
+const NinosKidIaRoute = NinosKidIaRouteImport.update({
+  id: '/kid/ia',
+  path: '/kid/ia',
+  getParentRoute: () => NinosRouteRoute,
+} as any)
 const NinosKidNumeroRoute = NinosKidNumeroRouteImport.update({
   id: '/kid/numero',
   path: '/kid/numero',
@@ -506,6 +512,7 @@ export interface FileRoutesByFullPath {
   '/ninos/kid/deseos': typeof NinosKidDeseosRoute
   '/ninos/kid/dinero': typeof NinosKidDineroRoute
   '/ninos/kid/futuro': typeof NinosKidFuturoRoute
+  '/ninos/kid/ia': typeof NinosKidIaRoute
   '/ninos/kid/numero': typeof NinosKidNumeroRoute
   '/ninos/kid/suscripcion': typeof NinosKidSuscripcionRoute
   '/ninos/kid/tareas': typeof NinosKidTareasRoute
@@ -574,6 +581,7 @@ export interface FileRoutesByTo {
   '/ninos/kid/deseos': typeof NinosKidDeseosRoute
   '/ninos/kid/dinero': typeof NinosKidDineroRoute
   '/ninos/kid/futuro': typeof NinosKidFuturoRoute
+  '/ninos/kid/ia': typeof NinosKidIaRoute
   '/ninos/kid/numero': typeof NinosKidNumeroRoute
   '/ninos/kid/suscripcion': typeof NinosKidSuscripcionRoute
   '/ninos/kid/tareas': typeof NinosKidTareasRoute
@@ -647,6 +655,7 @@ export interface FileRoutesById {
   '/ninos/kid/deseos': typeof NinosKidDeseosRoute
   '/ninos/kid/dinero': typeof NinosKidDineroRoute
   '/ninos/kid/futuro': typeof NinosKidFuturoRoute
+  '/ninos/kid/ia': typeof NinosKidIaRoute
   '/ninos/kid/numero': typeof NinosKidNumeroRoute
   '/ninos/kid/suscripcion': typeof NinosKidSuscripcionRoute
   '/ninos/kid/tareas': typeof NinosKidTareasRoute
@@ -721,6 +730,7 @@ export interface FileRouteTypes {
     | '/ninos/kid/deseos'
     | '/ninos/kid/dinero'
     | '/ninos/kid/futuro'
+    | '/ninos/kid/ia'
     | '/ninos/kid/numero'
     | '/ninos/kid/suscripcion'
     | '/ninos/kid/tareas'
@@ -789,6 +799,7 @@ export interface FileRouteTypes {
     | '/ninos/kid/deseos'
     | '/ninos/kid/dinero'
     | '/ninos/kid/futuro'
+    | '/ninos/kid/ia'
     | '/ninos/kid/numero'
     | '/ninos/kid/suscripcion'
     | '/ninos/kid/tareas'
@@ -861,6 +872,7 @@ export interface FileRouteTypes {
     | '/ninos/kid/deseos'
     | '/ninos/kid/dinero'
     | '/ninos/kid/futuro'
+    | '/ninos/kid/ia'
     | '/ninos/kid/numero'
     | '/ninos/kid/suscripcion'
     | '/ninos/kid/tareas'
@@ -1370,6 +1382,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NinosKidFuturoRouteImport
       parentRoute: typeof NinosRouteRoute
     }
+    '/ninos/kid/ia': {
+      id: '/ninos/kid/ia'
+      path: '/kid/ia'
+      fullPath: '/ninos/kid/ia'
+      preLoaderRoute: typeof NinosKidIaRouteImport
+      parentRoute: typeof NinosRouteRoute
+    }
     '/ninos/kid/numero': {
       id: '/ninos/kid/numero'
       path: '/kid/numero'
@@ -1423,6 +1442,7 @@ interface NinosRouteRouteChildren {
   NinosKidDeseosRoute: typeof NinosKidDeseosRoute
   NinosKidDineroRoute: typeof NinosKidDineroRoute
   NinosKidFuturoRoute: typeof NinosKidFuturoRoute
+  NinosKidIaRoute: typeof NinosKidIaRoute
   NinosKidNumeroRoute: typeof NinosKidNumeroRoute
   NinosKidSuscripcionRoute: typeof NinosKidSuscripcionRoute
   NinosKidTareasRoute: typeof NinosKidTareasRoute
@@ -1437,6 +1457,7 @@ const NinosRouteRouteChildren: NinosRouteRouteChildren = {
   NinosKidDeseosRoute: NinosKidDeseosRoute,
   NinosKidDineroRoute: NinosKidDineroRoute,
   NinosKidFuturoRoute: NinosKidFuturoRoute,
+  NinosKidIaRoute: NinosKidIaRoute,
   NinosKidNumeroRoute: NinosKidNumeroRoute,
   NinosKidSuscripcionRoute: NinosKidSuscripcionRoute,
   NinosKidTareasRoute: NinosKidTareasRoute,
