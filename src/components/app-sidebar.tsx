@@ -126,46 +126,45 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r">
       <SidebarHeader className="px-3 py-3">
         {isMobile ? (
-          <div className="flex flex-col items-center gap-2">
-            <div className="flex w-full items-center justify-between">
-              <div className="w-9" />
-              <div className="flex min-w-0 items-center justify-center gap-2">
-                <BrandMark className="h-7 w-7 shrink-0" />
-                <p className="whitespace-nowrap font-display text-sm font-semibold leading-none">
-                  Whats<span className="text-primary">Yournumber</span>
-                </p>
-              </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() => setOpenMobile(false)}
-                aria-label={t("Cerrar menú", "Close menu")}
-                className="h-9 w-9 shrink-0 rounded-full text-muted-foreground hover:bg-secondary hover:text-foreground"
-              >
-                <X className="h-5 w-5" />
-              </Button>
-            </div>
+          <div className="space-y-2">
+            <div className="grid h-10 grid-cols-[2.25rem_minmax(0,1fr)_2.25rem] items-center gap-2">
             <Link
               to="/mi-perfil"
               onClick={() => setOpenMobile(false)}
               aria-label={t("Mis datos", "My data")}
-              className="relative h-10 w-10"
+              className="relative h-9 w-9 shrink-0"
             >
               {googleAvatar ? (
                 <img
                   src={googleAvatar}
                   alt={t("Foto de perfil", "Profile photo")}
-                  className="h-10 w-10 rounded-full object-cover ring-1 ring-primary/30"
+                  className="h-9 w-9 rounded-full object-cover ring-1 ring-primary/30"
                   referrerPolicy="no-referrer"
                 />
               ) : (
-                <span className="grid h-10 w-10 place-items-center rounded-full bg-secondary ring-1 ring-primary/30">
-                  <UserRound className="h-5 w-5 text-muted-foreground" />
+                <span className="grid h-9 w-9 place-items-center rounded-full bg-secondary ring-1 ring-primary/30">
+                  <UserRound className="h-4 w-4 text-muted-foreground" />
                 </span>
               )}
               <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-positive ring-2 ring-background" />
             </Link>
+            <div className="flex min-w-0 items-center justify-center gap-2">
+              <BrandMark className="h-7 w-7 shrink-0" />
+              <p className="whitespace-nowrap font-display text-sm font-semibold leading-none">
+                Whats<span className="text-primary">Yournumber</span>
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => setOpenMobile(false)}
+              aria-label={t("Cerrar menú", "Close menu")}
+              className="h-9 w-9 shrink-0 rounded-full text-muted-foreground hover:bg-secondary hover:text-foreground"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+            </div>
             {tier === "patrimonio" && (
               <Link
                 to="/ninos"
