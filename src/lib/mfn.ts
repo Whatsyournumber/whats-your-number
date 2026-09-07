@@ -179,6 +179,19 @@ export function money(value: number, currency = "EUR", compact = false) {
   }).format(amount);
 }
 
+/** Número con separador decimal según el idioma activo (ES: coma, EN: punto). */
+export function num(value: number, decimals = 1) {
+  return new Intl.NumberFormat(moneyLocale, {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  }).format(Number.isFinite(value) ? value : 0);
+}
+
+/** Porcentaje localizado, ej. ES "14,5%" / EN "14.5%". */
+export function pct(value: number, decimals = 1) {
+  return `${num(value, decimals)}%`;
+}
+
 
 
 /** Proyección con aportes mensuales y capitalización mensual. */

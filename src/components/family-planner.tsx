@@ -27,6 +27,7 @@ import {
   monthlyNeeded,
   monthsToTarget,
   monthsUntil,
+  pct,
 } from "@/lib/mfn";
 import { useI18n } from "@/lib/mfn-i18n";
 import { useIndexReturns } from "@/hooks/use-index-returns";
@@ -363,7 +364,7 @@ export function FamilyPlanner({
   const future = Math.round(futureValue(base, monthly, horizon, rate));
   const contributed = Math.round(monthly * horizon);
   const growth = Math.max(0, future - base - contributed);
-  const pct = target > 0 ? (future / target) * 100 : 0;
+  const goalPct = target > 0 ? (future / target) * 100 : 0;
   const toGoal = monthsToTarget(target, base, monthly, rate);
   const reached = toGoal !== null && toGoal <= horizon;
   const needed = Math.round(monthlyNeeded(target, base, horizon, rate));
@@ -504,7 +505,7 @@ export function FamilyPlanner({
           </div>
 
           <div className="flex flex-col items-center justify-center rounded-[24px] bg-muted/40 p-4 text-center">
-            <Ring pct={pct} caption={t("del objetivo", "of the goal")} />
+            <Ring pct={goalPct} caption={t("del objetivo", "of the goal")} />
             <p className="mt-3 text-center text-[13px] leading-snug text-muted-foreground">
               {toGoal === null
                 ? t("Aumenta el aporte para alcanzar la meta", "Raise the contribution to reach the goal")
@@ -599,7 +600,7 @@ export function FamilyPlanner({
             suffix={t("anual", "yearly")}
             hint={
               liveNow
-                ? `${vehicleName} · ${t("real", "real")} ${liveNow.cagr10y != null ? `${liveNow.cagr10y.toFixed(1)}%` : ""} · ${liveTime ?? ""}`
+                ? `${vehicleName} · ${t("real", "real")} ${liveNow.cagr10y != null ? pct(liveNow.cagr10y) : ""} · ${liveTime ?? ""}`
                 : vehicleName
             }
             action={
@@ -636,7 +637,7 @@ export function FamilyPlanner({
                 {v.isLive && live[v.key]?.changePct != null ? (
                   <span className="opacity-70">
                     {live[v.key]!.changePct >= 0 ? "+" : ""}
-                    {live[v.key]!.changePct.toFixed(1)}% hoy
+                    {pct(live[v.key]!.changePct)} {t("hoy", "today")}
                   </span>
                 ) : null}
               </button>
@@ -667,8 +668,8 @@ export function FamilyPlanner({
             {t("Fuente:", "Source:")}{" "}
             {liveNow
               ? t(
-                  `datos reales de mercado · ${vehicleName} ${liveNow.cagr10y != null ? `${liveNow.cagr10y.toFixed(1)}% anual (10 años)` : ""}${liveTime ? ` · actualizado ${liveTime}` : ""}`,
-                  `live market data · ${vehicleName} ${liveNow.cagr10y != null ? `${liveNow.cagr10y.toFixed(1)}% yearly (10y)` : ""}${liveTime ? ` · updated ${liveTime}` : ""}`,
+                  `datos reales de mercado · ${vehicleName} ${liveNow.cagr10y != null ? `${pct(liveNow.cagr10y)} anual (10 años)` : ""}${liveTime ? ` · actualizado ${liveTime}` : ""}`,
+                  `live market data · ${vehicleName} ${liveNow.cagr10y != null ? `${pct(liveNow.cagr10y)} yearly (10y)` : ""}${liveTime ? ` · updated ${liveTime}` : ""}`,
                 )
               : lang === "en"
                 ? vehicle.sourceEn

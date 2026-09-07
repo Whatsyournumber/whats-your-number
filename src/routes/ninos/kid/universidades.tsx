@@ -8,7 +8,7 @@ import heroBoy from "@/assets/uni-hero-boy.jpg";
 import { useFund, useMovements } from "@/hooks/use-mfn";
 import { useProfile } from "@/hooks/use-profile";
 
-import { money, pocketTotals, type Member } from "@/lib/mfn";
+import { money, pct, pocketTotals, type Member } from "@/lib/mfn";
 import { useI18n } from "@/lib/mfn-i18n";
 import { useFx } from "@/lib/mfn-fx";
 import {
@@ -1100,8 +1100,8 @@ function FilterLegendTip() {
     {
       k: t("Actualización", "Update"),
       v: t(
-        `Precios indexados a ${PRICE_YEAR} · se ajustan automáticamente cada año (+${(ANNUAL_INFLATION * 100).toFixed(1)}% inflación educativa).`,
-        `Prices indexed to ${PRICE_YEAR} · auto-adjusted every year (+${(ANNUAL_INFLATION * 100).toFixed(1)}% education inflation).`,
+        `Precios indexados a ${PRICE_YEAR} · se ajustan automáticamente cada año (+${pct(ANNUAL_INFLATION * 100)} inflación educativa).`,
+        `Prices indexed to ${PRICE_YEAR} · auto-adjusted every year (+${pct(ANNUAL_INFLATION * 100)} education inflation).`,
       ),
     },
 
