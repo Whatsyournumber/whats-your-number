@@ -135,11 +135,7 @@ export function KidShell({ member, children }: { member: Member; children: React
   const kidTabs = showKidTabs ? TABS : [];
   const router = useRouter();
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
-  const googleAvatar =
-    (user?.user_metadata?.["avatar_url"] as string | undefined) ??
-    (user?.user_metadata?.["picture"] as string | undefined) ??
-    null;
+  const { signOut } = useAuth();
   const { t, lang } = useI18n();
   const label = (tab: { label: string; labelEn: string }) => (lang === "en" ? tab.labelEn : tab.label);
   const [collapsed, setCollapsed] = useState(false);
