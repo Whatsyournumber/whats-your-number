@@ -10,7 +10,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { LogOut, UserRound } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
 
@@ -258,12 +258,16 @@ function AppShell() {
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const [onboardingChecked, setOnboardingChecked] = useState(false);
+  const signingOutRef = useRef(false);
   const t = useT();
 
   const { avatarUrl: googleAvatar } = useProfileAvatar();
 
   useEffect(() => {
-    if (!loading && !user) navigate({ to: "/auth", search: { mode: "login" } });
+    if (!loading && !user) {
+      if (signingOutRef.current) return;
+      navigate({ to: "/auth", search: { mode: "login" } });
+    }
   }, [loading, user, navigate]);
 
   // Primera vez: si no completó el onboarding, lo enviamos allí.
@@ -343,9 +347,10 @@ function AppShell() {
                 variant="ghost"
                 size="sm"
                 className="gap-2 rounded-full"
-                onClick={() => {
+                onClick={async () => {
+                  signingOutRef.current = true;
+                  await signOut();
                   navigate({ to: "/", replace: true });
-                  void signOut();
                 }}
               >
                 <LogOut className="h-3.5 w-3.5" />
