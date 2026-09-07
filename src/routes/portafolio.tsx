@@ -121,7 +121,7 @@ const chartColors = [
 type SimAsset = {
   id: string;
   ticker: string;
-  name?: string;
+  name?: string | undefined;
   amount: number;
   contribution: number;
   manualReturn: number | null;
