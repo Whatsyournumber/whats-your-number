@@ -1,7 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import {
-  
   CheckSquare,
   CreditCard,
   Home,
@@ -10,7 +9,6 @@ import {
   GraduationCap,
   Star,
   UserCog,
-  UserRound,
   Wallet,
   ChevronLeft,
   ChevronRight,
@@ -18,7 +16,6 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   SlidersHorizontal,
-  
   X,
 } from "lucide-react";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -138,11 +135,7 @@ export function KidShell({ member, children }: { member: Member; children: React
   const kidTabs = showKidTabs ? TABS : [];
   const router = useRouter();
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
-  const googleAvatar =
-    (user?.user_metadata?.["avatar_url"] as string | undefined) ??
-    (user?.user_metadata?.["picture"] as string | undefined) ??
-    null;
+  const { signOut } = useAuth();
   const { t, lang } = useI18n();
   const label = (tab: { label: string; labelEn: string }) => (lang === "en" ? tab.labelEn : tab.label);
   const [collapsed, setCollapsed] = useState(false);
@@ -263,14 +256,15 @@ export function KidShell({ member, children }: { member: Member; children: React
               <div className="flex h-full flex-col gap-3">
                 <div className="space-y-1">
                   <div className="relative flex h-10 items-center justify-between">
-                    <SheetClose asChild>
+                  <SheetClose asChild>
                       <Link
-                        to="/ninos"
+                        to="/ninos/kid/datos"
                         onClick={() => setMenuOpen(false)}
-                        aria-label={t("Perfiles", "Profiles")}
+                        aria-label={t("Mis datos", "My data")}
                         className="relative ml-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary/10 text-2xl ring-1 ring-primary/30"
                       >
                         {member.avatar}
+                        <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-positive ring-2 ring-background" />
                       </Link>
                     </SheetClose>
                     <div className="absolute left-1/2 top-1/2 flex min-w-0 -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-2">
@@ -348,22 +342,13 @@ export function KidShell({ member, children }: { member: Member; children: React
             <LangToggle />
             <div className="hidden items-center gap-2 lg:flex">
               <Link
-                to="/mi-perfil"
+                to="/ninos/kid/datos"
                 className="relative shrink-0 rounded-full outline-none ring-offset-2 ring-offset-background transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-primary"
-                aria-label={t("Ver mis datos", "See my data")}
+                aria-label={t("Mis datos", "My data")}
               >
-                {googleAvatar ? (
-                  <img
-                    src={googleAvatar}
-                    alt={t("Foto de perfil", "Profile photo")}
-                    className="h-8 w-8 rounded-full object-cover ring-2 ring-primary/30"
-                    referrerPolicy="no-referrer"
-                  />
-                ) : (
-                  <div className="grid h-8 w-8 place-items-center rounded-full bg-secondary ring-2 ring-primary/30">
-                    <UserRound className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                )}
+                <div className="grid h-8 w-8 place-items-center rounded-full bg-primary/10 text-lg ring-2 ring-primary/30">
+                  {member.avatar}
+                </div>
                 <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-positive ring-2 ring-background" />
               </Link>
               <Button
