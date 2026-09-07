@@ -877,8 +877,11 @@ function PortafolioContent() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel
-          title={t("Rendimiento", "Performance")}
-          description={t(`vs ${benchName} · 12m`, `vs ${benchName} · 12m`)}
+          title={t("Simulador de rendimiento", "Performance simulator")}
+          description={t(
+            `Histórico real y proyección a ${simYears} años · vs ${benchName}`,
+            `Real history and ${simYears}-year projection · vs ${benchName}`,
+          )}
           className="lg:col-span-2"
           actions={
             <div className="flex flex-nowrap items-center rounded-full border border-border/60 p-0.5">
@@ -905,27 +908,69 @@ function PortafolioContent() {
           }
         bleedMobile
         >
-          {benchmarkData.length === 0 ? (
+          <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 px-5 text-[11px] sm:px-0">
+            <span className="flex items-center gap-1.5 text-foreground">
+              <span className="h-2 w-2 rounded-full bg-[var(--color-chart-1)]" />
+              {t("Tu portafolio", "Your portfolio")}
+            </span>
+            <span className="flex items-center gap-1.5 text-muted-foreground">
+              <span className="h-0.5 w-4 rounded-full bg-[var(--color-chart-8)]" />
+              {benchName}
+            </span>
+            <span className="flex items-center gap-1.5 text-muted-foreground">
+              <span className="h-0.5 w-4 rounded-full bg-positive" />
+              {t("Optimista", "Optimistic")}
+            </span>
+            <span className="flex items-center gap-1.5 text-muted-foreground">
+              <span className="h-0.5 w-4 rounded-full bg-negative" />
+              {t("Pesimista", "Pessimistic")}
+            </span>
+          </div>
+
+          {simData.length === 0 ? (
             <div className="flex h-[290px] items-center justify-center text-sm text-muted-foreground">
               {seriesQuery.isLoading ? t("Cargando mercado…", "Loading market…") : t("Mercado no disponible", "Market unavailable")}
             </div>
           ) : (
-            <ResponsiveContainer width="100%" height={isMobile ? 260 : 290}>
-              <LineChart data={benchmarkData} margin={{ left: isMobile ? 0 : -18, right: isMobile ? 18 : 8, bottom: isMobile ? 16 : 8 }}>
+            <ResponsiveContainer width="100%" height={isMobile ? 280 : 330}>
+              <ComposedChart data={simData} margin={{ left: isMobile ? 0 : -10, right: isMobile ? 12 : 12, bottom: isMobile ? 14 : 8 }}>
+                <defs>
+                  <linearGradient id="simOpt" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--color-positive)" stopOpacity={0.22} />
+                    <stop offset="100%" stopColor="var(--color-positive)" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
                 <XAxis
                   dataKey="label"
                   {...axisProps}
                   tick={{ ...axisProps, fontSize: isMobile ? 9 : 11 }}
-                  interval={0}
-                  angle={isMobile ? 0 : 0}
-                  height={isMobile ? 28 : 22}
+                  interval="preserveStartEnd"
+                  minTickGap={isMobile ? 14 : 8}
+                  height={isMobile ? 26 : 22}
                 />
-                <YAxis {...axisProps} tickFormatter={(v) => `${v}%`} width={isMobile ? 38 : 46} />
-                <Tooltip content={<ChartTooltip formatter={(v) => `${v.toFixed(1)}%`} />} />
-                <Line type="monotone" dataKey="portfolio" name={t("Portafolio", "Portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.5} dot={false} />
-                <Line type="monotone" dataKey="bench" name={benchName} stroke="var(--color-chart-8)" strokeWidth={2} strokeDasharray="4 4" dot={false} />
-              </LineChart>
+                <YAxis
+                  {...axisProps}
+                  width={isMobile ? 40 : 52}
+                  tickFormatter={(v: number) =>
+                    Math.abs(v) >= 1e6 ? `${(v / 1e6).toFixed(1)}M` : `${Math.round(v / 1000)}K`
+                  }
+                />
+                <Tooltip content={<ChartTooltip formatter={(v: number) => fmt(Math.round(v))} />} />
+                <ReferenceLine
+                  x={simData[todayIndex]?.label}
+                  stroke="var(--color-border)"
+                  strokeDasharray="4 4"
+                  label={{ value: t("Hoy", "Today"), position: "top", fill: "var(--color-muted-foreground)", fontSize: 10 }}
+                />
+                <Area type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="none" fill="url(#simOpt)" />
+                <Line type="monotone" dataKey="real" name={t("Tu portafolio", "Your portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.6} dot={false} connectNulls />
+                <Line type="monotone" dataKey="base" name={t("Proyección", "Projection")} stroke="var(--color-chart-1)" strokeWidth={2.4} strokeDasharray="5 5" dot={false} connectNulls />
+                <Line type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="var(--color-positive)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls />
+                <Line type="monotone" dataKey="pes" name={t("Pesimista", "Pessimistic")} stroke="var(--color-negative)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls />
+                <Line type="monotone" dataKey="bench" name={benchName} stroke="var(--color-chart-8)" strokeWidth={1.8} strokeDasharray="2 5" dot={false} connectNulls />
+                <Line type="monotone" dataKey="benchProj" name={benchName} stroke="var(--color-chart-8)" strokeWidth={1.6} strokeDasharray="2 5" dot={false} connectNulls />
+              </ComposedChart>
             </ResponsiveContainer>
           )}
 
@@ -953,27 +998,91 @@ function PortafolioContent() {
           </div>
         </Panel>
 
-
-        <Panel title={t("Composición", "Composition")} bleedMobile>
-          <ResponsiveContainer width="100%" height={210}>
-            <PieChart>
-              <Pie data={allocation} dataKey="value" nameKey="name" innerRadius={58} outerRadius={96} paddingAngle={3} stroke="none">
-                {allocation.map((a) => (
-                  <Cell key={a.name} fill={a.color} />
+        <Panel
+          title={t("Configura tu simulación", "Configure your simulation")}
+          description={t("Ajusta horizonte, aporte y rendimiento", "Adjust horizon, contribution and return")}
+        >
+          <div className="space-y-4">
+            <div>
+              <p className="mb-1.5 text-[11px] font-medium text-muted-foreground">{t("Horizonte", "Horizon")}</p>
+              <div className="flex flex-wrap gap-1.5">
+                {[5, 10, 15, 20, 30].map((y) => (
+                  <button
+                    key={y}
+                    type="button"
+                    onClick={() => setSimYears(y)}
+                    className={cn(
+                      "rounded-full px-2.5 py-1 text-[11px] font-medium transition",
+                      simYears === y ? "bg-primary text-primary-foreground" : "bg-elevated/70 text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    {y} {t("años", "yrs")}
+                  </button>
                 ))}
-              </Pie>
-              <Tooltip content={<ChartTooltip />} />
-            </PieChart>
-          </ResponsiveContainer>
-          <ul className="mt-3 space-y-1.5 px-5 sm:px-0">
-            {allocation.map((a) => (
-              <li key={a.name} className="flex items-center gap-2 text-xs">
-                <span className="h-2 w-2 rounded-full" style={{ background: a.color }} />
-                <span className="text-muted-foreground">{typeLabels[a.name]}</span>
-                <span className="numeric ml-auto font-medium">{totalValue > 0 ? ((a.value / totalValue) * 100).toFixed(0) : 0}%</span>
-              </li>
-            ))}
-          </ul>
+              </div>
+            </div>
+
+            <label className="block">
+              <span className="mb-1.5 block text-[11px] font-medium text-muted-foreground">
+                {t("Aporte mensual", "Monthly contribution")}
+              </span>
+              <Input
+                type="number"
+                min={0}
+                value={simContrib}
+                onChange={(e) => setSimMonthly(Math.max(0, Number(e.target.value) || 0))}
+                className="h-9"
+              />
+            </label>
+
+            <label className="block">
+              <span className="mb-1.5 flex items-center justify-between text-[11px] font-medium text-muted-foreground">
+                <span>{t("Rendimiento anual esperado", "Expected annual return")}</span>
+                <span className="numeric text-foreground">{simRate.toFixed(1)}%</span>
+              </span>
+              <input
+                type="range"
+                min={1}
+                max={20}
+                step={0.5}
+                value={simRate}
+                onChange={(e) => setSimReturn(Number(e.target.value))}
+                className="w-full accent-[var(--color-primary)]"
+              />
+            </label>
+
+            <div className="rounded-2xl border border-border/50 bg-elevated/50 p-3">
+              <p className="text-[11px] text-muted-foreground">
+                {t(`Resultado en ${simYears} años`, `Result in ${simYears} years`)}
+              </p>
+              <p className="numeric mt-0.5 text-xl font-bold text-foreground">{fmt(Math.round(simResult.base))}</p>
+              <div className="mt-2 grid grid-cols-2 gap-2 text-[11px]">
+                <div>
+                  <p className="text-muted-foreground">{t("Pesimista", "Pessimistic")}</p>
+                  <p className="numeric font-semibold text-negative">{fmt(Math.round(simResult.pes))}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">{t("Optimista", "Optimistic")}</p>
+                  <p className="numeric font-semibold text-positive">{fmt(Math.round(simResult.opt))}</p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <p className="mb-1.5 text-[11px] font-medium text-muted-foreground">{t("Tu cartera hoy", "Your portfolio today")}</p>
+              <ul className="space-y-1.5">
+                {allocation.map((a) => (
+                  <li key={a.name} className="flex items-center gap-2 text-xs">
+                    <span className="h-2 w-2 rounded-full" style={{ background: a.color }} />
+                    <span className="truncate text-muted-foreground">{typeLabels[a.name]}</span>
+                    <span className="numeric ml-auto font-medium">
+                      {totalValue > 0 ? ((a.value / totalValue) * 100).toFixed(0) : 0}%
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </Panel>
       </div>
 
