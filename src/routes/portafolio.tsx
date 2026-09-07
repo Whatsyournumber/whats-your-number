@@ -1072,7 +1072,7 @@ function PortafolioContent() {
             <p
               className={cn(
                 "text-[13px] leading-relaxed text-muted-foreground",
-                isMobile && (aiExpanded ? "line-clamp-5" : "line-clamp-3"),
+                isMobile && (aiExpanded ? "line-clamp-none" : "line-clamp-3"),
               )}
             >
               {metricSummary} {insight.isLoading ? t("Analizando…", "Analyzing…") : aiAdvice}
