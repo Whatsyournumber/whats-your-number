@@ -1112,7 +1112,19 @@ function PortafolioContent() {
                           size="icon"
                           className="h-8 w-8 text-muted-foreground hover:text-negative"
                           aria-label={t("Quitar activo", "Remove asset")}
-                          onClick={() => setSimHiddenTypes((current) => [...current, asset.type])}
+                          onClick={() => {
+                            setSimExtraTypes((current) => current.filter((item) => item !== asset.type));
+                            setSimAmounts((current) => {
+                              const next = { ...current };
+                              delete next[asset.type];
+                              return next;
+                            });
+                            setSimContributions((current) => {
+                              const next = { ...current };
+                              delete next[asset.type];
+                              return next;
+                            });
+                          }}
                         >
                           <X className="h-4 w-4" />
                         </Button>
