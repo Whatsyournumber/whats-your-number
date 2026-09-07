@@ -241,8 +241,34 @@ export function buildPlan(d: OnboardingData): NorthPlan {
   };
 }
 
+/** Locale numérico de la app adulta: ES → coma decimal, EN → punto decimal. */
+let moneyLocale: "es-ES" | "en-US" = "es-ES";
+
+/** Fija el locale de formato según el idioma activo (llamado desde LanguageProvider). */
+export function setWynMoneyLocale(lang: "es" | "en") {
+  moneyLocale = lang === "en" ? "en-US" : "es-ES";
+}
+
+export function getWynMoneyLocale() {
+  return moneyLocale;
+}
+
+/** Separador decimal del locale activo (para abreviaturas K/M/B). */
+function decimalSep() {
+  return moneyLocale === "en-US" ? "." : ",";
+}
+
+/** Formatea un número con separadores del locale activo (sin símbolo de moneda). */
+export function num(v: number, decimals = 0) {
+  const n = Number.isFinite(v) ? v : 0;
+  return n.toLocaleString(moneyLocale, {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+}
+
 export function money(v: number, currency = "USD") {
-  return new Intl.NumberFormat("es", {
+  return new Intl.NumberFormat(moneyLocale, {
     style: "currency",
     currency: currency || "USD",
     maximumFractionDigits: 0,
