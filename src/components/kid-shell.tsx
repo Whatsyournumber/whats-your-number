@@ -349,22 +349,13 @@ export function KidShell({ member, children }: { member: Member; children: React
             <LangToggle />
             <div className="hidden items-center gap-2 lg:flex">
               <Link
-                to="/mi-perfil"
+                to="/ninos/kid/datos"
                 className="relative shrink-0 rounded-full outline-none ring-offset-2 ring-offset-background transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-primary"
-                aria-label={t("Ver mis datos", "See my data")}
+                aria-label={t("Mis datos", "My data")}
               >
-                {googleAvatar ? (
-                  <img
-                    src={googleAvatar}
-                    alt={t("Foto de perfil", "Profile photo")}
-                    className="h-8 w-8 rounded-full object-cover ring-2 ring-primary/30"
-                    referrerPolicy="no-referrer"
-                  />
-                ) : (
-                  <div className="grid h-8 w-8 place-items-center rounded-full bg-secondary ring-2 ring-primary/30">
-                    <UserRound className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                )}
+                <div className="grid h-8 w-8 place-items-center rounded-full bg-primary/10 text-lg ring-2 ring-primary/30">
+                  {member.avatar}
+                </div>
                 <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-positive ring-2 ring-background" />
               </Link>
               <Button
