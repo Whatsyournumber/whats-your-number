@@ -250,8 +250,8 @@ export function KidShell({ member, children }: { member: Member; children: React
                 <Menu className="h-4.5 w-4.5" />
               </button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-full sm:max-w-xs [&>button]:hidden">
-              <div className="flex flex-col gap-6">
+            <SheetContent side="left" className="h-full w-full sm:max-w-xs [&>button]:hidden">
+              <div className="flex h-full flex-col gap-6">
                 <div className="space-y-2">
                   <div className="relative flex h-10 items-center justify-between">
                     <SheetClose asChild>
