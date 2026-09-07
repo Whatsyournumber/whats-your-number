@@ -99,7 +99,7 @@ function PortafolioContent() {
   const [simReturn, setSimReturn] = useState<number | null>(null);
   const [simAmounts, setSimAmounts] = useState<Record<string, number>>({});
   const [simContributions, setSimContributions] = useState<Record<string, number>>({});
-  const [simExtraTypes, setSimExtraTypes] = useState<string[]>([]);
+  const [simExtraTypes, setSimExtraTypes] = useState<string[]>(["ETF"]);
   const [simHiddenTypes, setSimHiddenTypes] = useState<string[]>([]);
   const searchQuery = useSymbolSearch(newSymbol);
 
