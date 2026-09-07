@@ -1,14 +1,16 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { Link, useRouter } from "@tanstack/react-router";
+import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import {
   
   CheckSquare,
   CreditCard,
   Home,
+  LogOut,
   Rocket,
   GraduationCap,
   Star,
   UserCog,
+  UserRound,
   Wallet,
   ChevronLeft,
   ChevronRight,
@@ -20,10 +22,12 @@ import {
   X,
 } from "lucide-react";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { KidsBrandLogo } from "@/components/brand-logo";
 import { THEME_ATTR, kidZoneEnabled, money, pocketTotals, type Member } from "@/lib/mfn";
 import { useMovements } from "@/hooks/use-mfn";
+import { useAuth } from "@/hooks/use-auth";
 import { useI18n, LangToggle } from "@/lib/mfn-i18n";
 import { CurrencySelect } from "@/components/mfn-currency-select";
 
@@ -133,6 +137,12 @@ export function KidShell({ member, children }: { member: Member; children: React
   const showKidTabs = kidZoneEnabled(member);
   const kidTabs = showKidTabs ? TABS : [];
   const router = useRouter();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+  const googleAvatar =
+    (user?.user_metadata?.["avatar_url"] as string | undefined) ??
+    (user?.user_metadata?.["picture"] as string | undefined) ??
+    null;
   const { t, lang } = useI18n();
   const label = (tab: { label: string; labelEn: string }) => (lang === "en" ? tab.labelEn : tab.label);
   const [collapsed, setCollapsed] = useState(false);
@@ -329,13 +339,46 @@ export function KidShell({ member, children }: { member: Member; children: React
               </div>
             </SheetContent>
           </Sheet>
-          <div className="flex shrink-0 items-center gap-1.5 lg:ml-auto">
-            <LangToggle />
+          <div className="flex shrink-0 items-center gap-1.5 lg:ml-auto lg:gap-2">
             <CurrencySelect
               memberId={member.id}
               currency={member.currency}
               baseCurrency={member.base_currency}
             />
+            <LangToggle />
+            <div className="hidden items-center gap-2 lg:flex">
+              <Link
+                to="/mi-perfil"
+                className="relative shrink-0 rounded-full outline-none ring-offset-2 ring-offset-background transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-primary"
+                aria-label={t("Ver mis datos", "See my data")}
+              >
+                {googleAvatar ? (
+                  <img
+                    src={googleAvatar}
+                    alt={t("Foto de perfil", "Profile photo")}
+                    className="h-8 w-8 rounded-full object-cover ring-2 ring-primary/30"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <div className="grid h-8 w-8 place-items-center rounded-full bg-secondary ring-2 ring-primary/30">
+                    <UserRound className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                )}
+                <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-positive ring-2 ring-background" />
+              </Link>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-2 rounded-full"
+                onClick={() => {
+                  navigate({ to: "/", replace: true });
+                  void signOut();
+                }}
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                <span>{t("Salir", "Log out")}</span>
+              </Button>
+            </div>
           </div>
         </header>
         <main className="mx-auto w-full max-w-[1600px] px-5 py-5 sm:px-6 lg:px-8 lg:py-6">
