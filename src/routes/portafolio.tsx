@@ -1162,7 +1162,7 @@ function PortafolioContent() {
                           value={asset.ticker}
                           onChange={(event) => updateSimAsset(asset.id, { ticker: event.target.value.toUpperCase() })}
                           aria-label={t("Ticker del activo", "Asset ticker")}
-                          className="h-8 min-w-0 border-0 bg-transparent px-2 text-xs uppercase shadow-none focus-visible:ring-1"
+                          className="h-8 min-w-0 border-border/40 bg-elevated/50 px-2 text-xs uppercase"
                         />
                         <Input
                           type="number"
@@ -1170,7 +1170,7 @@ function PortafolioContent() {
                           value={asset.amount === 0 ? "" : Math.round(asset.amount)}
                           aria-label={t("Monto", "Amount")}
                           onChange={(event) => updateSimAsset(asset.id, { amount: Math.max(0, Number(event.target.value) || 0) })}
-                          className="numeric h-8 min-w-0 border-0 bg-transparent px-2 text-xs shadow-none focus-visible:ring-1"
+                          className="numeric h-8 min-w-0 border-border/40 bg-elevated/50 px-2 text-xs"
                         />
                         <Input
                           type="number"
@@ -1178,7 +1178,7 @@ function PortafolioContent() {
                           value={asset.contribution === 0 ? "" : Math.round(asset.contribution)}
                           aria-label={t("Mensual", "Monthly")}
                           onChange={(event) => updateSimAsset(asset.id, { contribution: Math.max(0, Number(event.target.value) || 0) })}
-                          className="numeric h-8 min-w-0 border-0 bg-transparent px-2 text-xs shadow-none focus-visible:ring-1"
+                          className="numeric h-8 min-w-0 border-border/40 bg-elevated/50 px-2 text-xs"
                         />
                         <Input
                           type="number"
@@ -1189,7 +1189,7 @@ function PortafolioContent() {
                             const raw = event.target.value;
                             updateSimAsset(asset.id, { manualReturn: raw === "" ? null : Number(raw) });
                           }}
-                          className="numeric h-8 min-w-0 border-0 bg-transparent px-2 text-xs shadow-none focus-visible:ring-1"
+                          className="numeric h-8 min-w-0 border-border/40 bg-elevated/50 px-2 text-xs"
                         />
                         <Button
                           type="button"
