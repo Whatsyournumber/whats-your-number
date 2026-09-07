@@ -693,18 +693,20 @@ function PortafolioContent() {
     real: totalValue * ((1 + p.portfolio / 100) / (1 + port12 / 100)),
     bench: totalValue * ((1 + p.bench / 100) / (1 + bench12 / 100)),
   }));
+  const hasSim = simAssets.some((a) => (a.amount || 0) > 0 || (a.contribution || 0) > 0);
   const projPoints = Array.from({ length: simYears + 1 }, (_, y) => ({
     label: y === 0 ? t("Hoy", "Today") : String(thisYear + y),
-    base: fv(simRate, y),
     opt: fv(optRate, y),
     pes: fv(pesRate, y),
     benchProj: fv(benchCagr, y),
   }));
   const simStep = simYears > 20 ? 5 : simYears > 10 ? 3 : 2;
-  const simData = [
-    ...histPoints.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench })),
-    ...projPoints.filter((p, i) => i === 0 || i === simYears || i % simStep === 0),
-  ];
+  const simData = hasSim
+    ? [
+        ...histPoints.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench })),
+        ...projPoints.filter((p, i) => i === 0 || i === simYears || i % simStep === 0),
+      ]
+    : histPoints.map((h) => ({ label: h.label, real: h.real, bench: h.bench }));
   const todayIndex = histPoints.length - 1;
   const simResult = projPoints[projPoints.length - 1]!;
 
@@ -908,10 +910,14 @@ function PortafolioContent() {
       <div className="grid gap-4 lg:grid-cols-5">
         <Panel
           title={t("Simulador de rendimiento", "Performance simulator")}
-          description={t(
-            `Histórico real y proyección a ${simYears} años · vs ${benchName}`,
-            `Real history and ${simYears}-year projection · vs ${benchName}`,
-          )}
+          description={
+            hasSim
+              ? t(
+                  `Histórico real y proyección a ${simYears} años · vs ${benchName}`,
+                  `Real history and ${simYears}-year projection · vs ${benchName}`,
+                )
+              : t(`Histórico real · vs ${benchName}`, `Real history · vs ${benchName}`)
+          }
           className="lg:col-span-3"
           actions={
             <div className="flex flex-nowrap items-center rounded-full border border-border/60 p-0.5">
@@ -947,14 +953,18 @@ function PortafolioContent() {
               <span className="h-0.5 w-4 rounded-full bg-[var(--color-chart-8)]" />
               {benchName}
             </span>
-            <span className="flex items-center gap-1.5 text-muted-foreground">
-              <span className="h-0.5 w-4 rounded-full bg-positive" />
-              {t("Optimista", "Optimistic")}
-            </span>
-            <span className="flex items-center gap-1.5 text-muted-foreground">
-              <span className="h-0.5 w-4 rounded-full bg-negative" />
-              {t("Pesimista", "Pessimistic")}
-            </span>
+            {hasSim ? (
+              <>
+                <span className="flex items-center gap-1.5 text-muted-foreground">
+                  <span className="h-0.5 w-4 rounded-full bg-positive" />
+                  {t("Optimista", "Optimistic")}
+                </span>
+                <span className="flex items-center gap-1.5 text-muted-foreground">
+                  <span className="h-0.5 w-4 rounded-full bg-negative" />
+                  {t("Pesimista", "Pessimistic")}
+                </span>
+              </>
+            ) : null}
           </div>
 
           {simData.length === 0 ? (
@@ -987,19 +997,20 @@ function PortafolioContent() {
                   }
                 />
                 <Tooltip content={<ChartTooltip formatter={(v: number) => fmt(Math.round(v))} />} />
-                <ReferenceLine
-                  x={simData[todayIndex]?.label ?? ""}
-                  stroke="var(--color-border)"
-                  strokeDasharray="4 4"
-                  label={{ value: t("Hoy", "Today"), position: "top", fill: "var(--color-muted-foreground)", fontSize: 10 }}
-                />
-                <Area type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="none" fill="url(#simOpt)" />
+                {hasSim ? (
+                  <ReferenceLine
+                    x={simData[todayIndex]?.label ?? ""}
+                    stroke="var(--color-border)"
+                    strokeDasharray="4 4"
+                    label={{ value: t("Hoy", "Today"), position: "top", fill: "var(--color-muted-foreground)", fontSize: 10 }}
+                  />
+                ) : null}
+                {hasSim ? <Area type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="none" fill="url(#simOpt)" /> : null}
                 <Line type="monotone" dataKey="real" name={t("Tu portafolio", "Your portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.6} dot={false} connectNulls />
-                <Line type="monotone" dataKey="base" name={t("Proyección", "Projection")} stroke="var(--color-chart-1)" strokeWidth={2.4} strokeDasharray="5 5" dot={false} connectNulls />
-                <Line type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="var(--color-positive)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls />
-                <Line type="monotone" dataKey="pes" name={t("Pesimista", "Pessimistic")} stroke="var(--color-negative)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls />
+                {hasSim ? <Line type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="var(--color-positive)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls /> : null}
+                {hasSim ? <Line type="monotone" dataKey="pes" name={t("Pesimista", "Pessimistic")} stroke="var(--color-negative)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls /> : null}
                 <Line type="monotone" dataKey="bench" name={benchName} stroke="var(--color-chart-8)" strokeWidth={1.8} strokeDasharray="2 5" dot={false} connectNulls />
-                <Line type="monotone" dataKey="benchProj" name={benchName} stroke="var(--color-chart-8)" strokeWidth={1.6} strokeDasharray="2 5" dot={false} connectNulls />
+                {hasSim ? <Line type="monotone" dataKey="benchProj" name={benchName} stroke="var(--color-chart-8)" strokeWidth={1.6} strokeDasharray="2 5" dot={false} connectNulls /> : null}
               </ComposedChart>
             </ResponsiveContainer>
           )}
