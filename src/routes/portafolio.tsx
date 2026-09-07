@@ -97,6 +97,10 @@ function PortafolioContent() {
   const [simYears, setSimYears] = useState(20);
   const [simMonthly, setSimMonthly] = useState<number | null>(null);
   const [simReturn, setSimReturn] = useState<number | null>(null);
+  const [simAmounts, setSimAmounts] = useState<Record<string, number>>({});
+  const [simContributions, setSimContributions] = useState<Record<string, number>>({});
+  const [simExtraTypes, setSimExtraTypes] = useState<string[]>([]);
+  const [simHiddenTypes, setSimHiddenTypes] = useState<string[]>([]);
   const searchQuery = useSymbolSearch(newSymbol);
 
   // Precios reales para las posiciones con ticker + unidades.
@@ -647,22 +651,39 @@ function PortafolioContent() {
   const activeTypes = types.filter((ty) => enriched.some((h) => h.type === ty && h.value > 0));
 
   // ---- Simulador de rendimiento: histórico real + proyección ----
+  const simulatorTypes = [
+    ...allocation.map((a) => a.name),
+    ...simExtraTypes.filter((ty) => !allocation.some((a) => a.name === ty)),
+  ].filter((ty) => !simHiddenTypes.includes(ty));
+  const simulatorAssets = simulatorTypes.map((ty, index) => {
+    const source = allocation.find((a) => a.name === ty);
+    const amount = simAmounts[ty] ?? source?.value ?? 0;
+    const defaultContribution = totalValue > 0 && source ? (simMonthly ?? 0) * (source.value / totalValue) : 0;
+    return {
+      type: ty,
+      amount,
+      contribution: simContributions[ty] ?? defaultContribution,
+      color: source?.color ?? chartColors[(activeTypes.length + index) % chartColors.length]!,
+    };
+  });
+  const simPortfolioTotal = simulatorAssets.reduce((sum, asset) => sum + asset.amount, 0);
+  const simContributionTotal = simulatorAssets.reduce((sum, asset) => sum + asset.contribution, 0);
   const simRate = simReturn ?? Math.round(Math.max(1, Math.min(20, weightedReturn || 8)) * 10) / 10;
-  const simContrib = simMonthly ?? 0;
+  const simContrib = simContributionTotal;
   const benchCagr = Math.max(1, Math.min(15, bench12 || 8));
   const fv = (rate: number, years: number) => {
     const r = rate / 100;
     const growth = Math.pow(1 + r, years);
     const contrib = r === 0 ? simContrib * 12 * years : simContrib * 12 * ((growth - 1) / r);
-    return totalValue * growth + contrib;
+    return simPortfolioTotal * growth + contrib;
   };
   const optRate = simRate + 4;
   const pesRate = Math.max(0, simRate - 5);
   const thisYear = new Date().getFullYear();
   const histPoints = benchmarkData.map((p) => ({
     label: p.label,
-    real: totalValue * ((1 + p.portfolio / 100) / (1 + port12 / 100)),
-    bench: totalValue * ((1 + p.bench / 100) / (1 + bench12 / 100)),
+    real: simPortfolioTotal * ((1 + p.portfolio / 100) / (1 + port12 / 100)),
+    bench: simPortfolioTotal * ((1 + p.bench / 100) / (1 + bench12 / 100)),
   }));
   const projPoints = Array.from({ length: simYears + 1 }, (_, y) => ({
     label: y === 0 ? t("Hoy", "Today") : String(thisYear + y),
@@ -875,14 +896,14 @@ function PortafolioContent() {
         </motion.div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid gap-4 lg:grid-cols-5">
         <Panel
           title={t("Simulador de rendimiento", "Performance simulator")}
           description={t(
             `Histórico real y proyección a ${simYears} años · vs ${benchName}`,
             `Real history and ${simYears}-year projection · vs ${benchName}`,
           )}
-          className="lg:col-span-2"
+          className="lg:col-span-3"
           actions={
             <div className="flex flex-nowrap items-center rounded-full border border-border/60 p-0.5">
               {([
@@ -1000,38 +1021,124 @@ function PortafolioContent() {
 
         <Panel
           title={t("Configura tu simulación", "Configure your simulation")}
-          description={t("Ajusta horizonte, aporte y rendimiento", "Adjust horizon, contribution and return")}
+          description={t("Ajusta los montos y distribución de tu cartera", "Adjust your portfolio amounts and allocation")}
+          className="lg:col-span-2"
         >
-          <div className="space-y-4">
-            <div>
-              <p className="mb-1.5 text-[11px] font-medium text-muted-foreground">{t("Horizonte", "Horizon")}</p>
-              <div className="flex flex-wrap gap-1.5">
-                {[5, 10, 15, 20, 30].map((y) => (
-                  <button
-                    key={y}
-                    type="button"
-                    onClick={() => setSimYears(y)}
-                    className={cn(
-                      "rounded-full px-2.5 py-1 text-[11px] font-medium transition",
-                      simYears === y ? "bg-primary text-primary-foreground" : "bg-elevated/70 text-muted-foreground hover:text-foreground",
-                    )}
-                  >
-                    {y} {t("años", "yrs")}
-                  </button>
-                ))}
+          <div className="space-y-5">
+            <div className="grid grid-cols-[minmax(0,1fr)_90px_84px_42px_32px] gap-2 text-[10px] font-medium text-muted-foreground">
+              <span>{t("Activo", "Asset")}</span>
+              <span>{t("Monto inicial", "Initial amount")}</span>
+              <span>{t("Aporte mensual", "Monthly")}</span>
+              <span className="text-right">%</span>
+              <span />
+            </div>
+
+            <div className="space-y-3">
+              {simulatorAssets.map((asset) => {
+                const percentage = simPortfolioTotal > 0 ? (asset.amount / simPortfolioTotal) * 100 : 0;
+                return (
+                  <div key={asset.type} className="grid grid-cols-[minmax(0,1fr)_90px_84px_42px_32px] items-center gap-2">
+                    <div className="flex min-w-0 items-center gap-2.5">
+                      <span
+                        className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-elevated"
+                        style={{ color: asset.color }}
+                      >
+                        <TrendingUp className="h-4 w-4" />
+                      </span>
+                      <div className="min-w-0">
+                        <p className="truncate text-xs font-semibold text-foreground">{typeLabels[asset.type as (typeof types)[number]]}</p>
+                        <p className="truncate text-[10px] text-muted-foreground">
+                          {enriched.find((holding) => holding.type === asset.type)?.ticker ?? asset.type}
+                        </p>
+                      </div>
+                    </div>
+                    <Input
+                      aria-label={`${typeLabels[asset.type as (typeof types)[number]]} ${t("monto inicial", "initial amount")}`}
+                      type="number"
+                      min={0}
+                      value={Math.round(asset.amount)}
+                      onChange={(event) => setSimAmounts((current) => ({ ...current, [asset.type]: Math.max(0, Number(event.target.value) || 0) }))}
+                      className="numeric h-10 px-2 text-xs"
+                    />
+                    <Input
+                      aria-label={`${typeLabels[asset.type as (typeof types)[number]]} ${t("aporte mensual", "monthly contribution")}`}
+                      type="number"
+                      min={0}
+                      value={Math.round(asset.contribution)}
+                      onChange={(event) => {
+                        const next = Math.max(0, Number(event.target.value) || 0);
+                        setSimContributions((current) => ({ ...current, [asset.type]: next }));
+                        setSimMonthly(null);
+                      }}
+                      className="numeric h-10 px-2 text-xs"
+                    />
+                    <div className="min-w-0 text-right">
+                      <p className="numeric text-xs font-semibold text-foreground">{percentage.toFixed(0)}%</p>
+                      <div className="mt-1 h-1 overflow-hidden rounded-full bg-muted">
+                        <div className="h-full rounded-full" style={{ width: `${Math.min(100, percentage)}%`, background: asset.color }} />
+                      </div>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-muted-foreground hover:text-negative"
+                      aria-label={t("Quitar activo", "Remove asset")}
+                      onClick={() => setSimHiddenTypes((current) => [...current, asset.type])}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="flex items-center justify-between border-t border-border/50 pt-4">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button type="button" variant="outline" size="sm" className="gap-1.5">
+                    <Plus className="h-4 w-4" />
+                    {t("Añadir activo", "Add asset")}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="w-56 p-2">
+                  {types.filter((ty) => !simulatorTypes.includes(ty)).map((ty) => (
+                    <Button
+                      key={ty}
+                      type="button"
+                      variant="ghost"
+                      className="w-full justify-start"
+                      onClick={() => {
+                        setSimExtraTypes((current) => current.includes(ty) ? current : [...current, ty]);
+                        setSimHiddenTypes((current) => current.filter((item) => item !== ty));
+                      }}
+                    >
+                      {typeLabels[ty]}
+                    </Button>
+                  ))}
+                </PopoverContent>
+              </Popover>
+              <div className="text-right">
+                <p className="text-[10px] text-muted-foreground">{t("Total", "Total")}</p>
+                <p className="numeric text-sm font-semibold text-foreground">100%</p>
               </div>
             </div>
 
-            <label className="block">
-              <span className="mb-1.5 block text-[11px] font-medium text-muted-foreground">
-                {t("Aporte mensual", "Monthly contribution")}
+            <label className="block border-t border-border/50 pt-4">
+              <span className="mb-2 flex items-center justify-between text-[11px] font-medium text-muted-foreground">
+                <span>{t("Horizonte de tiempo", "Time horizon")}</span>
+                <span className="numeric rounded-lg border border-border/60 bg-elevated/50 px-3 py-1.5 text-xs font-semibold text-foreground">
+                  {simYears} {t("años", "years")}
+                </span>
               </span>
-              <Input
-                type="number"
-                min={0}
-                value={simContrib}
-                onChange={(e) => setSimMonthly(Math.max(0, Number(e.target.value) || 0))}
-                className="h-9"
+              <input
+                type="range"
+                min={5}
+                max={30}
+                step={1}
+                value={simYears}
+                onChange={(event) => setSimYears(Number(event.target.value))}
+                className="w-full accent-[var(--color-primary)]"
               />
             </label>
 
@@ -1040,47 +1147,15 @@ function PortafolioContent() {
                 <span>{t("Rendimiento anual esperado", "Expected annual return")}</span>
                 <span className="numeric text-foreground">{simRate.toFixed(1)}%</span>
               </span>
-              <input
-                type="range"
-                min={1}
-                max={20}
-                step={0.5}
-                value={simRate}
-                onChange={(e) => setSimReturn(Number(e.target.value))}
-                className="w-full accent-[var(--color-primary)]"
-              />
+              <input type="range" min={1} max={20} step={0.5} value={simRate} onChange={(event) => setSimReturn(Number(event.target.value))} className="w-full accent-[var(--color-primary)]" />
             </label>
 
-            <div className="rounded-2xl border border-border/50 bg-elevated/50 p-3">
-              <p className="text-[11px] text-muted-foreground">
-                {t(`Resultado en ${simYears} años`, `Result in ${simYears} years`)}
-              </p>
+            <div className="rounded-xl border border-border/50 bg-elevated/50 p-3">
+              <p className="text-[11px] text-muted-foreground">{t(`Resultado en ${simYears} años`, `Result in ${simYears} years`)}</p>
               <p className="numeric mt-0.5 text-xl font-bold text-foreground">{fmt(Math.round(simResult.base))}</p>
-              <div className="mt-2 grid grid-cols-2 gap-2 text-[11px]">
-                <div>
-                  <p className="text-muted-foreground">{t("Pesimista", "Pessimistic")}</p>
-                  <p className="numeric font-semibold text-negative">{fmt(Math.round(simResult.pes))}</p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground">{t("Optimista", "Optimistic")}</p>
-                  <p className="numeric font-semibold text-positive">{fmt(Math.round(simResult.opt))}</p>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <p className="mb-1.5 text-[11px] font-medium text-muted-foreground">{t("Tu cartera hoy", "Your portfolio today")}</p>
-              <ul className="space-y-1.5">
-                {allocation.map((a) => (
-                  <li key={a.name} className="flex items-center gap-2 text-xs">
-                    <span className="h-2 w-2 rounded-full" style={{ background: a.color }} />
-                    <span className="truncate text-muted-foreground">{typeLabels[a.name]}</span>
-                    <span className="numeric ml-auto font-medium">
-                      {totalValue > 0 ? ((a.value / totalValue) * 100).toFixed(0) : 0}%
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              <p className="mt-1 text-[10px] text-muted-foreground">
+                {t("Aportes mensuales", "Monthly contributions")}: <span className="numeric text-foreground">{fmt(Math.round(simContrib))}</span>
+              </p>
             </div>
           </div>
         </Panel>
