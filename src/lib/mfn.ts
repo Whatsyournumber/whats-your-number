@@ -171,14 +171,25 @@ export function getFxFactor() {
 
 export function money(value: number, currency = "EUR", compact = false) {
   const amount = (value || 0) * fxFactor;
+  const abs = Math.abs(amount);
+  // Importes largos se abrevian con K / M / B para que nunca se corten.
+  if (compact || abs >= 100_000) {
+    const sign = amount < 0 ? "-" : "";
+    const sym = currencySymbol(currency);
+    const unit = abs >= 1_000_000_000 ? "B" : abs >= 1_000_000 ? "M" : abs >= 1_000 ? "K" : "";
+    const div = unit === "B" ? 1e9 : unit === "M" ? 1e6 : unit === "K" ? 1e3 : 1;
+    const scaled = abs / div;
+    return `${sign}${sym}${num(scaled, scaled >= 100 ? 0 : 1)}${unit}`;
+  }
   return new Intl.NumberFormat(moneyLocale, {
     style: "currency",
     currency: currency || "EUR",
     useGrouping: true,
-    maximumFractionDigits: compact ? 1 : amount % 1 === 0 ? 0 : 2,
-    notation: compact ? "compact" : "standard",
+    maximumFractionDigits: amount % 1 === 0 ? 0 : 2,
+    notation: "standard",
   }).format(amount);
 }
+
 
 /** Número con separador decimal según el idioma activo (ES: coma, EN: punto). */
 export function num(value: number, decimals = 1) {
