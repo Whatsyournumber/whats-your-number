@@ -59,7 +59,8 @@ export const getSymbolReturns = createServerFn({ method: "GET" })
     const entries = await Promise.all(
       data.symbols.map(async (s) => {
         const stat = await fetchIndexStat(s);
-        const annual = stat?.cagr5y ?? stat?.cagr10y ?? stat?.ytdPct ?? null;
+        // Rendimiento actual en tiempo real: lo que lleva el año (YTD) en vivo.
+        const annual = stat?.ytdPct ?? stat?.cagr5y ?? stat?.cagr10y ?? null;
         return [s, annual] as const;
       }),
     );
