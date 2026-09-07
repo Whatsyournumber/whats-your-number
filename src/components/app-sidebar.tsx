@@ -64,14 +64,6 @@ export function AppSidebar() {
     (user?.user_metadata?.["avatar_url"] as string | undefined) ??
     (user?.user_metadata?.["picture"] as string | undefined) ??
     null;
-  const fullName =
-    (user?.user_metadata?.["full_name"] as string | undefined) ??
-    (user?.user_metadata?.["name"] as string | undefined) ??
-    user?.email ??
-    "";
-  const email = user?.email ?? "";
-
-
   const primary = [
     { title: t("Dashboard", "Dashboard"), url: "/dashboard", icon: LayoutDashboard },
     { title: t("Análisis de Gastos", "Spending Analysis"), url: "/gastos", icon: PieChart },
