@@ -10,13 +10,13 @@ import { useI18n } from "@/lib/mfn-i18n";
 export const Route = createFileRoute("/ninos/kid/futuro")({
   head: () => ({
     meta: [
-      { title: "Fondo para la universidad | My First Number" },
+      { title: "Fondo universidad | My First Number" },
       {
         name: "description",
         content:
           "Tu Fondo del Futuro: mira cómo el interés compuesto convierte pequeños aportes en tu primer patrimonio.",
       },
-      { property: "og:title", content: "Fondo para la universidad | My First Number" },
+      { property: "og:title", content: "Fondo universidad | My First Number" },
       {
         property: "og:description",
         content: "Simulador de largo plazo con portfolio infantil y aprendizaje financiero.",

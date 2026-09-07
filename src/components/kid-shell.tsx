@@ -25,7 +25,7 @@ import { useI18n, LangToggle } from "@/lib/mfn-i18n";
 import { CurrencySelect } from "@/components/mfn-currency-select";
 
 const TABS = [
-  { to: "/ninos/kid/numero", label: "Inicio", labelEn: "Home", icon: Home },
+  { to: "/ninos/kid/numero", label: "Mi número", labelEn: "My number", icon: Home },
   { to: "/ninos/kid/dinero", label: "Mi dinero", labelEn: "My Money", icon: Wallet },
   { to: "/ninos/kid/tareas", label: "Mis tareas", labelEn: "My Tasks", icon: CheckSquare },
   { to: "/ninos/kid/deseos", label: "Mis sueños", labelEn: "My Dreams", icon: Star },
@@ -33,8 +33,8 @@ const TABS = [
 
 const PARENT_TABS = [
   { to: "/ninos", label: "Perfiles", labelEn: "Profiles", icon: Users },
-  { to: "/ninos/kid/futuro", label: "Fondo para la universidad", labelEn: "College fund", icon: Rocket },
-  { to: "/ninos/kid/universidades", label: "Buscador de universidades", labelEn: "University finder", icon: GraduationCap },
+  { to: "/ninos/kid/futuro", label: "Fondo universidad", labelEn: "College fund", icon: Rocket },
+  { to: "/ninos/kid/universidades", label: "Buscador universidades", labelEn: "University finder", icon: GraduationCap },
   { to: "/ninos/kid/datos", label: "Ajustes", labelEn: "Settings", icon: SlidersHorizontal },
 ] as const;
 
@@ -101,6 +101,9 @@ export function KidShell({ member, children }: { member: Member; children: React
   const router = useRouter();
   const { t, lang } = useI18n();
   const label = (tab: { label: string; labelEn: string }) => (lang === "en" ? tab.labelEn : tab.label);
+  const { data: movements = [] } = useMovements(member.id);
+  const totals = pocketTotals(movements);
+  const kidNumber = totals.gastar + totals.ahorrar + totals.crecer;
   const [collapsed, setCollapsed] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
@@ -194,7 +197,7 @@ export function KidShell({ member, children }: { member: Member; children: React
                   <span className={cn("nav-icon", isActive && "nav-icon-active")}>
                     <tab.icon className="h-4 w-4" />
                   </span>
-                  {collapsed ? null : <span className="truncate">{label(tab)}</span>}
+                  {collapsed ? null : <span className="truncate text-[13px] leading-tight">{label(tab)}</span>}
                 </>
               )}
             </Link>
@@ -204,7 +207,7 @@ export function KidShell({ member, children }: { member: Member; children: React
         <ProfileCard member={member} collapsed={collapsed} />
       </aside>
 
-      <div className="min-w-0 flex-1 pb-24 lg:pb-0">
+      <div className="min-w-0 flex-1 pb-28 lg:pb-0">
         <header className="relative z-20 flex items-center justify-between gap-2 px-4 pt-5 sm:px-6 lg:justify-end lg:gap-3 lg:px-10 lg:pt-6">
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
@@ -309,26 +312,40 @@ export function KidShell({ member, children }: { member: Member; children: React
       </div>
 
       <div className="glass-nav fixed inset-x-0 bottom-0 z-30 border-t bg-background/95 backdrop-blur lg:hidden">
-        <nav className="mx-auto flex max-w-lg items-stretch justify-between gap-1 px-2 py-2">
-          {kidTabs.map((tab) => (
-            <Link
-              key={tab.to}
-              to={tab.to}
-              activeOptions={{ exact: true }}
-              className="flex min-w-0 flex-1 flex-col items-center gap-1 rounded-2xl px-1 py-1.5 text-[10px] font-semibold text-muted-foreground"
-            >
-              {({ isActive }: { isActive: boolean }) => (
-                <>
-                  <span className={cn("nav-icon h-9 w-9", isActive && "nav-icon-active bg-primary text-primary-foreground animate-pop")}>
-                    <tab.icon className="h-4.5 w-4.5" />
-                  </span>
-                  <span className={cn("truncate", isActive && "text-primary")}>
-                    {label(tab).replace("Mi ", "").replace("Mis ", "").replace("My ", "")}
-                  </span>
-                </>
-              )}
-            </Link>
-          ))}
+        <nav className="mx-auto flex max-w-lg items-stretch justify-between gap-1 px-2 pb-[env(safe-area-inset-bottom,0px)] pt-1.5">
+          {kidTabs.map((tab, idx) => {
+            const isNumberTab = idx === 0;
+            const tabLabel = isNumberTab
+              ? label(tab)
+              : label(tab).replace("Mi ", "").replace("Mis ", "").replace("My ", "");
+            return (
+              <Link
+                key={tab.to}
+                to={tab.to}
+                activeOptions={{ exact: true }}
+                className="flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-2xl px-1 py-1 text-[10px] font-semibold text-muted-foreground"
+              >
+                {({ isActive }: { isActive: boolean }) => (
+                  <>
+                    <span className={cn("nav-icon h-8 w-8", isActive && "nav-icon-active bg-primary text-primary-foreground animate-pop")}>
+                      <tab.icon className="h-4 w-4" />
+                    </span>
+                    <span className={cn("truncate leading-none", isActive && "text-primary")}>{tabLabel}</span>
+                    {isNumberTab ? (
+                      <span
+                        className={cn(
+                          "truncate font-display text-[10px] font-bold leading-none",
+                          isActive ? "text-primary" : "text-muted-foreground/80",
+                        )}
+                      >
+                        {money(kidNumber, member.currency, true)}
+                      </span>
+                    ) : null}
+                  </>
+                )}
+              </Link>
+            );
+          })}
         </nav>
       </div>
 
