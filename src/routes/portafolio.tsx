@@ -1303,8 +1303,8 @@ function PortafolioContent() {
               </div>
             ) : (
               <div className="space-y-2">
-                <div className="grid grid-cols-[auto_minmax(0,2.4fr)_minmax(0,1.6fr)_minmax(0,1.2fr)_minmax(0,0.9fr)] items-center gap-2 px-2 pr-6">
-                  <span className="h-7 w-7 shrink-0" />
+                <div className="grid grid-cols-[1rem_minmax(0,2.2fr)_minmax(0,1.7fr)_minmax(0,1.3fr)_minmax(0,1fr)] items-center gap-1.5 px-1 pr-5">
+                  <span className="w-4 shrink-0" />
                   <span className="truncate text-[10px] font-medium text-muted-foreground">{t("Activo", "Asset")}</span>
                   <span className="truncate text-[10px] font-medium text-muted-foreground">{t("Monto", "Amount")}</span>
                   <span className="truncate text-[10px] font-medium text-muted-foreground">{t("Mensual", "Monthly")}</span>
