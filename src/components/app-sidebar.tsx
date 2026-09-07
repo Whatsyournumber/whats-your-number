@@ -46,7 +46,6 @@ import { useT } from "@/hooks/use-language";
 import { useRoles } from "@/hooks/use-role";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useMyAffiliate } from "@/hooks/use-affiliate";
-import { useAuth } from "@/hooks/use-auth";
 
 export function AppSidebar() {
   const { state, setOpenMobile, isMobile } = useSidebar();
