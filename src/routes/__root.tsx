@@ -29,6 +29,7 @@ import { AffiliateTracker } from "@/components/affiliate-tracker";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
+import { useProfileAvatar } from "@/hooks/use-profile-avatar";
 import { useMyAffiliate } from "@/hooks/use-affiliate";
 import { useAffiliateWizardActive } from "@/lib/affiliate-wizard-state";
 
