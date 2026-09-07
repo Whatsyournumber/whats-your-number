@@ -241,8 +241,34 @@ export function buildPlan(d: OnboardingData): NorthPlan {
   };
 }
 
+/** Locale numérico de la app adulta: ES → coma decimal, EN → punto decimal. */
+let moneyLocale: "es-ES" | "en-US" = "es-ES";
+
+/** Fija el locale de formato según el idioma activo (llamado desde LanguageProvider). */
+export function setWynMoneyLocale(lang: "es" | "en") {
+  moneyLocale = lang === "en" ? "en-US" : "es-ES";
+}
+
+export function getWynMoneyLocale() {
+  return moneyLocale;
+}
+
+/** Separador decimal del locale activo (para abreviaturas K/M/B). */
+function moneyDecimalSep() {
+  return moneyLocale === "en-US" ? "." : ",";
+}
+
+/** Formatea un número con separadores del locale activo (sin símbolo de moneda). */
+export function num(v: number, decimals = 0) {
+  const n = Number.isFinite(v) ? v : 0;
+  return n.toLocaleString(moneyLocale, {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+}
+
 export function money(v: number, currency = "USD") {
-  return new Intl.NumberFormat("es", {
+  return new Intl.NumberFormat(moneyLocale, {
     style: "currency",
     currency: currency || "USD",
     maximumFractionDigits: 0,
@@ -263,11 +289,12 @@ export function compact(v: number, currency = "USD") {
   const s = currencySymbol(currency);
   const abs = Math.abs(n);
   const sign = n < 0 ? "-" : "";
-  const round = (x: number) => (x >= 100 ? Math.round(x).toString() : x.toFixed(1).replace(/\.0$/, ""));
+  const round = (x: number) =>
+    x >= 100 ? String(Math.round(x)) : x.toFixed(1).replace(/\.0$/, "").replace(".", moneyDecimalSep());
   if (abs >= 1_000_000_000) return `${sign}${s}${round(abs / 1_000_000_000)}B`;
   if (abs >= 1_000_000) return `${sign}${s}${round(abs / 1_000_000)}M`;
   if (abs >= 1_000) return `${sign}${s}${round(abs / 1_000)}K`;
-  return `${sign}${s}${Math.round(abs)}`;
+  return `${sign}${s}${num(abs)}`;
 }
 
 /**
@@ -297,7 +324,7 @@ export function shortenMoneyString(text: string): string {
     const abs = Math.abs(n);
     const round = (x: number) => {
       const v = x >= 100 ? Math.round(x) : Math.round(x * 10) / 10;
-      return String(v).replace(".", ",");
+      return String(v).replace(".", moneyDecimalSep());
     };
     if (abs >= 1_000_000_000) return `${sign}${round(abs / 1_000_000_000)}B`;
     if (abs >= 1_000_000) return `${sign}${round(abs / 1_000_000)}M`;

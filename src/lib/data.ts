@@ -1,6 +1,9 @@
 // Demo dataset for the Personal Finance OS. All amounts in USD.
 // Replace with Lovable Cloud queries when the backend is enabled.
 
+import { getWynMoneyLocale } from "@/lib/onboarding";
+
+
 export type Month = {
   month: string;
   label: string;
@@ -522,7 +525,7 @@ export const accounts = [
 ];
 
 export const fmt = (n: number, decimals = 0) =>
-  new Intl.NumberFormat("en-US", {
+  new Intl.NumberFormat(getWynMoneyLocale(), {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: decimals,
@@ -530,6 +533,7 @@ export const fmt = (n: number, decimals = 0) =>
   }).format(n);
 
 export const fmtCompact = (n: number) =>
-  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", notation: "compact", maximumFractionDigits: 1 }).format(n);
+  new Intl.NumberFormat(getWynMoneyLocale(), { style: "currency", currency: "USD", notation: "compact", maximumFractionDigits: 1 }).format(n);
 
-export const pct = (n: number) => `${n > 0 ? "+" : ""}${n.toFixed(1)}%`;
+export const pct = (n: number) =>
+  `${n > 0 ? "+" : ""}${n.toLocaleString(getWynMoneyLocale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
