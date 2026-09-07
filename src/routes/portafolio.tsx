@@ -1140,21 +1140,30 @@ function PortafolioContent() {
               </div>
             ) : (
               <div className="space-y-2">
-                <div className="grid grid-cols-[auto_minmax(0,1.3fr)_minmax(0,0.95fr)_minmax(0,0.95fr)_minmax(0,0.85fr)_auto] items-center gap-1.5 px-2">
+                <div className="grid grid-cols-[auto_minmax(0,1.7fr)_minmax(0,1.3fr)_minmax(0,0.8fr)_minmax(0,0.65fr)] items-center gap-2 px-2 pr-6">
                   <span className="h-7 w-7 shrink-0" />
                   <span className="text-[10px] font-medium text-muted-foreground">{t("Activo", "Asset")}</span>
                   <span className="text-[10px] font-medium text-muted-foreground">{t("Monto", "Amount")}</span>
                   <span className="text-[10px] font-medium text-muted-foreground">{t("Mensual", "Monthly")}</span>
                   <span className="text-[10px] font-medium text-muted-foreground">{t("Rend. %", "Return %")}</span>
-                  <span className="h-8 w-8 shrink-0" />
                 </div>
                 {simAssets.map((asset, index) => {
                   const key = asset.ticker.trim().toUpperCase();
                   const auto = key ? simDayChange[key] : undefined;
                   const color = chartColors[index % chartColors.length]!;
                   return (
-                    <div key={asset.id} className="rounded-xl border border-border/50 bg-elevated/30 p-1.5">
-                      <div className="grid grid-cols-[auto_minmax(0,1.3fr)_minmax(0,0.95fr)_minmax(0,0.95fr)_minmax(0,0.85fr)_auto] items-center gap-1.5">
+                    <div key={asset.id} className="relative rounded-xl border border-border/50 bg-elevated/30 p-1.5 pr-1">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute -top-1.5 -right-1.5 z-10 h-5 w-5 shrink-0 rounded-full border border-border/40 bg-background/80 text-[10px] text-muted-foreground backdrop-blur-sm hover:text-negative"
+                        aria-label={t("Quitar activo", "Remove asset")}
+                        onClick={() => setSimAssets((current) => current.filter((item) => item.id !== asset.id))}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                      <div className="grid grid-cols-[auto_minmax(0,1.7fr)_minmax(0,1.3fr)_minmax(0,0.8fr)_minmax(0,0.65fr)] items-center gap-2">
                         <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-elevated" style={{ color }}>
                           <TrendingUp className="h-3.5 w-3.5" />
                         </span>
@@ -1162,7 +1171,7 @@ function PortafolioContent() {
                           value={asset.ticker}
                           onChange={(event) => updateSimAsset(asset.id, { ticker: event.target.value.toUpperCase() })}
                           aria-label={t("Ticker del activo", "Asset ticker")}
-                          className="h-8 min-w-0 border-border/40 bg-elevated/50 px-2 text-xs uppercase"
+                          className="h-9 min-w-0 border-border/40 bg-elevated/50 px-2.5 text-sm uppercase"
                         />
                         <Input
                           type="number"
@@ -1170,7 +1179,7 @@ function PortafolioContent() {
                           value={asset.amount === 0 ? "" : Math.round(asset.amount)}
                           aria-label={t("Monto", "Amount")}
                           onChange={(event) => updateSimAsset(asset.id, { amount: Math.max(0, Number(event.target.value) || 0) })}
-                          className="numeric h-8 min-w-0 border-border/40 bg-elevated/50 px-2 text-xs"
+                          className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 px-2.5 text-sm"
                         />
                         <Input
                           type="number"
@@ -1191,16 +1200,6 @@ function PortafolioContent() {
                           }}
                           className="numeric h-8 min-w-0 border-border/40 bg-elevated/50 px-2 text-xs"
                         />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 shrink-0 text-muted-foreground hover:text-negative"
-                          aria-label={t("Quitar activo", "Remove asset")}
-                          onClick={() => setSimAssets((current) => current.filter((item) => item.id !== asset.id))}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
                       </div>
                     </div>
                   );
