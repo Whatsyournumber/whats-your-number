@@ -95,13 +95,24 @@ function PortafolioContent() {
   const [evoIdx, setEvoIdx] = useState<number | null>(null);
   const [evoOpen, setEvoOpen] = useState(false);
   const [simYears, setSimYears] = useState(20);
-  const [simMonthly, setSimMonthly] = useState<number | null>(null);
-  const [simReturn, setSimReturn] = useState<number | null>(null);
-  const [simAmounts, setSimAmounts] = useState<Record<string, number>>({});
-  const [simContributions, setSimContributions] = useState<Record<string, number>>({});
-  const [simExtraTypes, setSimExtraTypes] = useState<string[]>(["ETF"]);
-  const [simHiddenTypes, setSimHiddenTypes] = useState<string[]>([]);
+  const [simAssets, setSimAssets] = useState<SimAsset[]>([
+    { id: "sim-1", ticker: "", amount: 0, contribution: 0, manualReturn: null },
+  ]);
+  const addSimAsset = () =>
+    setSimAssets((current) =>
+      current.length >= 5
+        ? current
+        : [...current, { id: `sim-${Date.now()}`, ticker: "", amount: 0, contribution: 0, manualReturn: null }],
+    );
+  const updateSimAsset = (id: string, patch: Partial<SimAsset>) =>
+    setSimAssets((current) => current.map((item) => (item.id === id ? { ...item, ...patch } : item)));
+  const simTickers = simAssets.map((a) => a.ticker.trim().toUpperCase()).filter(Boolean);
+  const simQuotes = useQuotes(simTickers);
+  const simDayChange: Record<string, number> = Object.fromEntries(
+    (simQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.changePct ?? 0]),
+  );
   const searchQuery = useSymbolSearch(newSymbol);
+
 
   // Precios reales para las posiciones con ticker + unidades.
   const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
