@@ -1,5 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ChevronLeft } from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
 
 import { Card } from "@/components/mfn-ui";
 import { KidPage, PageTitle } from "@/components/kid-page";
