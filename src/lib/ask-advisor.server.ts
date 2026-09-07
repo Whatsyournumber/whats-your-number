@@ -42,7 +42,17 @@ export async function generateAdvisorAnswer(input: AskAdvisorInput): Promise<str
 
   const result = streamText({
     model: gateway("google/gemini-3.6-flash"),
-    system: `${input.lang === "en" ? SYSTEM_EN : SYSTEM_ES}\n\nDatos financieros del usuario (contexto):\n${input.context}`,
+    system: `${input.lang === "en" ? SYSTEM_EN : SYSTEM_ES}
+
+${
+  input.lang === "en"
+    ? `When one or two of the articles below genuinely match the question (business ideas, investing, net worth, freedom number, kids, expenses...), end the answer with a line "**Related reading**" and 1-2 markdown links taken EXACTLY from this catalog (never invent slugs or titles). If nothing fits, add nothing.`
+    : `Cuando uno o dos de los artículos de abajo encajen de verdad con la pregunta (ideas de negocio, inversión, patrimonio, número de libertad, hijos, gastos...), termina la respuesta con una línea "**Lectura relacionada**" y 1-2 enlaces markdown tomados EXACTAMENTE de este catálogo (nunca inventes slugs ni títulos). Si no encaja ninguno, no añadas nada.`
+}
+${blogCatalog(input.lang)}
+
+Datos financieros del usuario (contexto):
+${input.context}`,
     messages: [...input.history.slice(-8), { role: "user" as const, content: input.question }],
     onError: ({ error }) => {
       streamError = error;
