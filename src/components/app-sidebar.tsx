@@ -47,6 +47,7 @@ import { useRoles } from "@/hooks/use-role";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useMyAffiliate } from "@/hooks/use-affiliate";
 import { useAuth } from "@/hooks/use-auth";
+import { useProfileAvatar } from "@/hooks/use-profile-avatar";
 
 export function AppSidebar() {
   const { state, setOpenMobile, isMobile } = useSidebar();
