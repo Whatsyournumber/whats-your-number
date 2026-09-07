@@ -534,6 +534,12 @@ export const currencies: CurrencyOption[] = (() => {
   }));
 })();
 
+/** Etiqueta de moneda: código + símbolo, sin duplicar cuando el símbolo es el propio código. */
+export function currencyDisplay(code: string, symbol?: string): string {
+  const s = symbol ?? CURRENCY_SYMBOLS[code] ?? "";
+  return s && s !== code ? `${code} ${s}` : code;
+}
+
 /** Gastos fijos declarados en el onboarding, listos para la pestaña de Gastos. */
 export const FIXED_FIELDS = [
   { key: "fixed_housing", es: "Hipoteca / Alquiler", en: "Mortgage / Rent", emoji: "\u{1F3E0}" },
