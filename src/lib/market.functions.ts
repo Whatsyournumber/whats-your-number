@@ -45,3 +45,17 @@ export const getIndexReturns = createServerFn({ method: "GET" }).handler(async (
     updatedAt: Date.now(),
   };
 });
+
+/** Rendimiento y volatilidad reales por activo para el simulador de portafolio. */
+export const getAssetStats = createServerFn({ method: "GET" })
+  .inputValidator((input: { symbols: string[] }) => ({
+    symbols: (input?.symbols ?? [])
+      .map((s) => String(s).trim().toUpperCase())
+      .filter((s) => /^[A-Z0-9.^=:&/-]{1,20}$/.test(s))
+      .slice(0, 8),
+  }))
+  .handler(async ({ data }) => {
+    const { fetchAssetStat } = await import("./market.server");
+    const entries = await Promise.all(data.symbols.map(async (s) => [s, await fetchAssetStat(s)] as const));
+    return { stats: Object.fromEntries(entries), updatedAt: Date.now() };
+  });
