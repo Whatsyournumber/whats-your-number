@@ -650,36 +650,35 @@ function PortafolioContent() {
     .sort((a, b) => b.value - a.value);
   const activeTypes = types.filter((ty) => enriched.some((h) => h.type === ty && h.value > 0));
 
-  // ---- Simulador de rendimiento: comienza limpio con 1 activo, hasta 5 ----
-  const simulatorTypes = simExtraTypes.filter((ty) => !simHiddenTypes.includes(ty));
-  const simulatorAssets = simulatorTypes.map((ty, index) => {
-    const amount = simAmounts[ty] ?? 0;
-    const contribution = simContributions[ty] ?? 0;
-    return {
-      type: ty,
-      amount,
-      contribution,
-      color: chartColors[index % chartColors.length]!,
-    };
-  });
-  const simPortfolioTotal = simulatorAssets.reduce((sum, asset) => sum + asset.amount, 0);
-  const simContributionTotal = simulatorAssets.reduce((sum, asset) => sum + asset.contribution, 0);
-  const simRate = simReturn ?? Math.round(Math.max(1, Math.min(20, weightedReturn || 8)) * 10) / 10;
-  const simContrib = simContributionTotal;
+  // ---- Simulador: la gráfica arranca con lo real y el futuro cambia al añadir activos ----
+  const simAddedTotal = simAssets.reduce((sum, asset) => sum + (asset.amount || 0), 0);
+  const simContrib = simAssets.reduce((sum, asset) => sum + (asset.contribution || 0), 0);
+  const simPortfolioTotal = simAddedTotal;
+  const simStartValue = totalValue + simAddedTotal;
+  const fallbackRate = Math.round(Math.max(1, Math.min(20, weightedReturn || 8)) * 10) / 10;
+  const assetRate = (asset: SimAsset) => {
+    if (asset.manualReturn !== null && Number.isFinite(asset.manualReturn)) return asset.manualReturn;
+    const key = asset.ticker.trim().toUpperCase();
+    const auto = key ? simDayChange[key] : undefined;
+    return auto !== undefined ? auto : fallbackRate;
+  };
+  const simRate = simAddedTotal > 0
+    ? simAssets.reduce((sum, asset) => sum + assetRate(asset) * (asset.amount || 0), 0) / simAddedTotal
+    : fallbackRate;
   const benchCagr = Math.max(1, Math.min(15, bench12 || 8));
   const fv = (rate: number, years: number) => {
     const r = rate / 100;
     const growth = Math.pow(1 + r, years);
     const contrib = r === 0 ? simContrib * 12 * years : simContrib * 12 * ((growth - 1) / r);
-    return simPortfolioTotal * growth + contrib;
+    return simStartValue * growth + contrib;
   };
   const optRate = simRate + 4;
   const pesRate = Math.max(0, simRate - 5);
   const thisYear = new Date().getFullYear();
   const histPoints = benchmarkData.map((p) => ({
     label: p.label,
-    real: simPortfolioTotal * ((1 + p.portfolio / 100) / (1 + port12 / 100)),
-    bench: simPortfolioTotal * ((1 + p.bench / 100) / (1 + bench12 / 100)),
+    real: totalValue * ((1 + p.portfolio / 100) / (1 + port12 / 100)),
+    bench: totalValue * ((1 + p.bench / 100) / (1 + bench12 / 100)),
   }));
   const projPoints = Array.from({ length: simYears + 1 }, (_, y) => ({
     label: y === 0 ? t("Hoy", "Today") : String(thisYear + y),
@@ -695,6 +694,7 @@ function PortafolioContent() {
   ];
   const todayIndex = histPoints.length - 1;
   const simResult = projPoints[projPoints.length - 1]!;
+
 
 
   const rows = (list: typeof enriched) => (
