@@ -1308,12 +1308,13 @@ function PortafolioContent() {
               </div>
             ) : (
               <div className="space-y-2">
-                <div className="grid grid-cols-[auto_minmax(0,2fr)_minmax(0,1.5fr)_minmax(0,0.9fr)_minmax(0,0.6fr)] items-center gap-2 px-2 pr-6">
-                  <span className="h-7 w-7 shrink-0" />
+                <div className="grid grid-cols-[28px_minmax(0,2.2fr)_minmax(0,1.4fr)_minmax(0,1fr)_74px_28px] items-center gap-2 px-2">
+                  <span className="h-4 w-7 shrink-0" />
                   <span className="text-[10px] font-medium text-muted-foreground">{t("Activo", "Asset")}</span>
                   <span className="text-[10px] font-medium text-muted-foreground">{t("Monto", "Amount")}</span>
                   <span className="text-[10px] font-medium text-muted-foreground">{t("Mensual", "Monthly")}</span>
                   <span className="text-[10px] font-medium text-muted-foreground">{t("Rend. %", "Return %")}</span>
+                  <span />
                 </div>
                 {simAssets.map((asset, index) => {
                   const key = asset.ticker.trim().toUpperCase();
