@@ -36,15 +36,19 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     const stored = localStorage.getItem(LANG_KEY) as Lang | null;
     const initial: Lang =
       stored ?? (navigator.language?.toLowerCase().startsWith("en") ? "en" : "es");
+    // Fijar el locale de formato ANTES de re-renderizar para que los
+    // importes ya salgan con , o . correctos en el primer paint.
+    setMoneyLocale(initial === "en" ? "en-US" : "es-ES");
     setLangState(initial);
   }, []);
 
   useEffect(() => {
-    setMoneyLocale(lang === "en" ? "en-US" : "es-ES");
     document.documentElement.lang = lang;
   }, [lang]);
 
   const setLang = useCallback((l: Lang) => {
+    // Síncrono: el próximo render ya formatea con el nuevo idioma.
+    setMoneyLocale(l === "en" ? "en-US" : "es-ES");
     setLangState(l);
     localStorage.setItem(LANG_KEY, l);
   }, []);
