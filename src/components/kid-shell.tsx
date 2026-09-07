@@ -1,7 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import {
-  
   CheckSquare,
   CreditCard,
   Home,
@@ -10,7 +9,6 @@ import {
   GraduationCap,
   Star,
   UserCog,
-  UserRound,
   Wallet,
   ChevronLeft,
   ChevronRight,
@@ -18,7 +16,6 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   SlidersHorizontal,
-  
   X,
 } from "lucide-react";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
