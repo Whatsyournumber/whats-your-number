@@ -1,21 +1,28 @@
 /** Monedas soportadas y ciudades base para deducir la moneda en el onboarding. */
 
+import { currencies as WYN_CURRENCIES } from "@/lib/onboarding";
+
 export type CurrencyInfo = { code: string; symbol: string; es: string; en: string };
 
-export const CURRENCIES: CurrencyInfo[] = [
-  { code: "EUR", symbol: "€", es: "Euro", en: "Euro" },
-  { code: "USD", symbol: "$", es: "Dólar estadounidense", en: "US Dollar" },
-  { code: "GBP", symbol: "£", es: "Libra esterlina", en: "British Pound" },
-  { code: "MXN", symbol: "$", es: "Peso mexicano", en: "Mexican Peso" },
-  { code: "COP", symbol: "$", es: "Peso colombiano", en: "Colombian Peso" },
-  { code: "PEN", symbol: "S/", es: "Sol peruano", en: "Peruvian Sol" },
-  { code: "CLP", symbol: "$", es: "Peso chileno", en: "Chilean Peso" },
-  { code: "ARS", symbol: "$", es: "Peso argentino", en: "Argentine Peso" },
-  { code: "BRL", symbol: "R$", es: "Real brasileño", en: "Brazilian Real" },
-  { code: "CHF", symbol: "CHF", es: "Franco suizo", en: "Swiss Franc" },
-  { code: "CAD", symbol: "$", es: "Dólar canadiense", en: "Canadian Dollar" },
-  { code: "AUD", symbol: "$", es: "Dólar australiano", en: "Australian Dollar" },
-];
+function nameIn(locale: "es" | "en", code: string) {
+  try {
+    const dn = new Intl.DisplayNames([locale], { type: "currency" });
+    const name = dn.of(code);
+    if (name && name !== code) return name.charAt(0).toUpperCase() + name.slice(1);
+  } catch {
+    /* Intl no disponible */
+  }
+  return code;
+}
+
+/** Misma lista de monedas que WhatsYourNumber, con las más usadas arriba. */
+export const CURRENCIES: CurrencyInfo[] = WYN_CURRENCIES.map((c) => ({
+  code: c.code,
+  symbol: c.symbol,
+  es: nameIn("es", c.code),
+  en: nameIn("en", c.code),
+}));
+
 
 export type CityInfo = { city: string; country: string; currency: string; flag: string };
 
