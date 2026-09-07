@@ -91,7 +91,7 @@ function KidAi({ member }: { member: Member }) {
       }).catch(() => null),
   });
 
-  const doneTasks = tasks.filter((task) => task.done).length;
+  const doneTasks = tasks.filter((task) => task.status === "done" || !!task.approved_at).length;
   const dreamMissing = nextDream ? Math.max(0, Number(nextDream.price) - Number(nextDream.saved)) : 0;
   const dreamMonths = dreamMissing > 0 && pace > 0 ? Math.ceil(dreamMissing / pace) : 0;
 
