@@ -160,11 +160,12 @@ function PatrimonioContent() {
     const nwSlice = chartMonths.slice(chartMonths.length - compareLen);
     const bSlice = benchSeriesRaw.slice(benchSeriesRaw.length - compareLen);
     const n0 = nwSlice[0]!.netWorth;
-    const b0 = bSlice[0]!.value || 1;
+    const b0 = bSlice[0]!.value;
     return nwSlice.map((m, i) => ({
       label: m.label,
       netWorth: n0 !== 0 ? ((m.netWorth - n0) / Math.abs(n0)) * 100 : 0,
-      bench: ((bSlice[i]!.value - b0) / b0) * 100,
+      // La serie de mercado ya viene en % acumulado; se re-basea restando el primer punto.
+      bench: bSlice[i]!.value - b0,
     }));
   })();
 
