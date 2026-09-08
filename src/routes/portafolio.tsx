@@ -1148,7 +1148,7 @@ function PortafolioContent() {
 
       <div className="grid gap-4 lg:grid-cols-5">
         <Panel
-          title={t("Simulador de rendimiento", "Performance simulator")}
+          title={t("Simulador del Portfolio", "Portfolio Simulator")}
           description={
             hasSim
               ? t(
