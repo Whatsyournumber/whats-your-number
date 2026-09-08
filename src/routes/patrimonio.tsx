@@ -469,7 +469,7 @@ function PatrimonioContent() {
                   className={cn(
                     "shrink-0 whitespace-nowrap rounded-full px-2 py-1 text-[10px] font-medium transition sm:px-2.5 sm:text-[11px]",
                     benchmark === b.k
-                      ? "bg-chart-2 text-background shadow-sm"
+                      ? "border border-chart-2/50 bg-chart-2/15 text-chart-2 shadow-sm"
                       : "text-muted-foreground hover:text-foreground",
                   )}
                 >
