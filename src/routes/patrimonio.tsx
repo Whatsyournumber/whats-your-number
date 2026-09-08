@@ -479,15 +479,15 @@ function PatrimonioContent() {
             </div>
           }
         >
-          <div className="mb-2 flex flex-wrap items-center justify-center gap-4 text-xs text-muted-foreground sm:gap-6">
-            <div className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-chart-2" />
+          <div className="mb-2 flex flex-wrap items-center justify-start gap-4 text-xs sm:gap-6">
+            <div className="flex items-center gap-2 text-positive">
+              <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-positive" />
               <span>{t("Tu portafolio", "Your portfolio")}</span>
             </div>
             {comparing && (
-              <div className="flex items-center gap-2">
-                <span className="relative h-0.5 w-4 shrink-0 bg-chart-8">
-                  <span className="absolute inset-0 border-t border-dashed border-chart-8" />
+              <div className="flex items-center gap-2 text-chart-2">
+                <span className="relative h-0.5 w-4 shrink-0 bg-chart-2">
+                  <span className="absolute inset-0 border-t border-dashed border-chart-2" />
                 </span>
                 <span>{benchName}</span>
               </div>
@@ -502,8 +502,8 @@ function PatrimonioContent() {
               >
                 <defs>
                   <linearGradient id="pw" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.45} />
-                    <stop offset="100%" stopColor="var(--color-chart-2)" stopOpacity={0} />
+                    <stop offset="0%" stopColor="var(--color-positive)" stopOpacity={0.45} />
+                    <stop offset="100%" stopColor="var(--color-positive)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
@@ -537,7 +537,7 @@ function PatrimonioContent() {
                   type="monotone"
                   dataKey="netWorth"
                   name={t("Tu patrimonio", "Your net worth")}
-                  stroke="var(--color-chart-2)"
+                  stroke="var(--color-positive)"
                   strokeWidth={2.5}
                   fill={comparing ? "none" : "url(#pw)"}
                 />
@@ -546,7 +546,7 @@ function PatrimonioContent() {
                     type="monotone"
                     dataKey="bench"
                     name={benchName}
-                    stroke="var(--color-chart-8)"
+                    stroke="var(--color-chart-2)"
                     strokeWidth={2}
                     strokeDasharray="5 5"
                     dot={false}
