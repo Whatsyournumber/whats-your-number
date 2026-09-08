@@ -543,6 +543,12 @@ function PortafolioContent() {
     ? enriched.filter((h) => h.type === "Cash").reduce((s, h) => s + h.value, 0) / totalValue
     : 0;
   const annualGain = gainPositions.reduce((s, h) => s + h.value * h.growth, 0);
+  // Totales del tab activo en Posiciones (Todos = cartera completa).
+  const [posTab, setPosTab] = useState<string>("Todos");
+  const tabList = posTab === "Todos" ? enriched : enriched.filter((h) => h.type === posTab);
+  const tabValue = tabList.reduce((s, h) => s + h.value, 0);
+  const tabAnnualGain = tabList.filter((h) => !gainExcludedTypes.has(h.type)).reduce((s, h) => s + h.value * h.growth, 0);
+  const tabWeightedReturn = tabValue ? tabList.reduce((s, h) => s + h.growth * 100 * h.value, 0) / tabValue : 0;
   const top = [...enriched].sort((a, b) => b.value - a.value)[0];
   const concentration = top && totalValue ? (top.value / totalValue) * 100 : 0;
   const netAnnual = (totalValue * weightedReturn) / 100;
@@ -1596,7 +1602,7 @@ function PortafolioContent() {
           </Link>
         }
       >
-        <Tabs defaultValue="Todos">
+        <Tabs value={posTab} onValueChange={setPosTab}>
           <TabsList className="mb-4">
             <TabsTrigger value="Todos">{t("Todos", "All")}</TabsTrigger>
             {activeTypes.map((ty) => (
