@@ -170,7 +170,7 @@ function SimAssetRow({
       >
         <X className="h-3 w-3" />
       </Button>
-      <div className="grid grid-cols-[1rem_minmax(0,1.6fr)_minmax(0,2fr)_minmax(0,1.7fr)_minmax(3rem,1fr)] items-center gap-1.5 lg:gap-1">
+      <div className="grid grid-cols-[1rem_minmax(0,1.6fr)_minmax(0,2fr)_minmax(0,1.7fr)_minmax(4rem,1fr)] items-center gap-1.5 lg:gap-1">
         <TrendingUp className="h-3 w-3 shrink-0" style={{ color }} />
 
         <div className="relative min-w-0">
