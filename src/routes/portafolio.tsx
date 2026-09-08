@@ -980,10 +980,12 @@ function PortafolioContent() {
   const benchRef = benchRefMap[benchmark];
   const benchCagr = benchRef.base;
 
+  // Compuesto mensual: los aportes mensuales se reinvierten mes a mes.
   const fv = (rate: number, years: number) => {
-    const r = rate / 100;
-    const growth = Math.pow(1 + r, years);
-    const contrib = r === 0 ? simContrib * 12 * years : simContrib * 12 * ((growth - 1) / r);
+    const months = Math.round(years * 12);
+    const rm = Math.pow(1 + rate / 100, 1 / 12) - 1;
+    const growth = Math.pow(1 + rm, months);
+    const contrib = rm === 0 ? simContrib * months : simContrib * ((growth - 1) / rm);
     return simStartValue * growth + contrib;
   };
   // Base = rendimiento del propio portafolio; al añadir activos se promedia ponderado con lo nuevo.
