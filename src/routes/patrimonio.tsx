@@ -172,7 +172,7 @@ function PatrimonioContent() {
   })();
 
   // Precios reales para posiciones con ticker.
-  const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
+  const holdingSymbols = holdings.filter((h) => h.ticker && (h.quantity > 0 || h.cost_basis > 0 || h.manual_value > 0)).map((h) => h.ticker!);
   const holdingQuotes = useQuotes(holdingSymbols);
   const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
   const dayChange: Record<string, number> = Object.fromEntries(
@@ -726,7 +726,7 @@ function PatrimonioContent() {
                       r.targetYear ? String(r.targetYear) : null,
                       r.probability != null && r.probability < 100 ? `${r.probability}%` : null,
                     ].filter(Boolean);
-                const isEtf = r.kind === "etf" || r.kind === "crypto";
+                const isEtf = r.kind === "etf" || r.kind === "crypto" || (r.kind === "stock" && r.livePrice);
                 const tk = r.ticker?.toUpperCase();
                 const today = tk && dayChange[tk] !== undefined ? dayChange[tk] : null;
                 return (
