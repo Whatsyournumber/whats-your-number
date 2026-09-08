@@ -56,14 +56,16 @@ export function buildRealMonths(
 
   const rows = window.map((key) => {
     const { income, expenses } = agg.get(key) ?? { income: 0, expenses: 0 };
+    const contributed = Math.round(contributions[key] ?? 0);
     return {
       month: key,
       label: MONTH_LABELS[Number(key.slice(5, 7)) - 1]!,
       income: Math.round(income),
       expenses: Math.round(expenses),
-      savings: Math.round(income - expenses),
+      // El ahorro del mes incluye los aportes/compras de activos hechos en esa fecha.
+      savings: Math.round(income - expenses) + contributed,
       netWorth: 0,
-      investments: Math.round(Math.max(0, income - expenses) * fallbackInvestRatio),
+      investments: Math.round(Math.max(0, income - expenses) * fallbackInvestRatio) + Math.max(0, contributed),
     } satisfies DerivedMonth;
   });
 
@@ -73,6 +75,7 @@ export function buildRealMonths(
     rows[i]!.netWorth = Math.round(value);
     value -= rows[i]!.savings;
   }
+
 
   return rows;
 }
