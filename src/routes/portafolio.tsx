@@ -992,11 +992,12 @@ function PortafolioContent() {
     label: y === 0 ? t("Hoy", "Today") : String(thisYear + y),
     opt: fv(optRate, y),
     pes: fv(pesRate, y),
-    benchProj: fv(benchCagr, y),
+    bench: fv(benchCagr, y),
   }));
-  const simStep = simYears > 20 ? 5 : simYears > 10 ? 3 : 2;
-  const historyMonths = isMobile ? 6 : 12;
+  // Con proyección, el histórico se comprime para que el futuro ocupe la mitad de la gráfica.
+  const historyMonths = hasSim ? (isMobile ? 4 : 6) : isMobile ? 6 : 12;
   const histSlice = histPoints.slice(-historyMonths);
+  const simStep = Math.max(1, Math.round(simYears / Math.max(3, histSlice.length - 1)));
   const lastHist = histSlice[histSlice.length - 1];
   const simData = hasSim
     ? [
@@ -1006,6 +1007,7 @@ function PortafolioContent() {
           .map((p, i) => (i === 0 ? { ...p, real: lastHist?.real, bench: lastHist?.bench } : p)),
       ]
     : histSlice.map((h) => ({ label: h.label, real: h.real, bench: h.bench }));
+
   const todayIndex = histSlice.length - 1;
   const simTicks = simData.map((d) => d.label);
   const simResult = projPoints[projPoints.length - 1]!;
