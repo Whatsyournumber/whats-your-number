@@ -1281,7 +1281,7 @@ function PortafolioContent() {
         </Panel>
 
         <Panel
-          title={t("Configuración del Simulador del Portfolio", "Portfolio Simulator Configuration")}
+          title={t("Configuración del Portfolio", "Portfolio Configuration")}
           description={t("Añade hasta 5 activos y proyecta", "Add up to 5 assets and project")}
           descriptionClassName="truncate whitespace-nowrap"
           className="lg:col-span-2"
