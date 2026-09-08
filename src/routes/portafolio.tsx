@@ -188,7 +188,7 @@ function SimAssetRow({
               setOpen(true);
               onChange({ ticker: event.target.value.toUpperCase(), name: undefined, manualReturn: null });
             }}
-            className="h-9 min-w-0 truncate border-border/40 bg-elevated/50 pl-2 pr-2 text-sm font-semibold uppercase placeholder:font-normal placeholder:normal-case placeholder:text-muted-foreground"
+            className="h-9 min-w-0 truncate border-border/40 bg-elevated/50 pl-2 pr-2 !text-xs font-semibold uppercase placeholder:font-normal placeholder:normal-case placeholder:text-muted-foreground md:!text-xs"
           />
 
           {open && query.trim().length >= 1 && (
