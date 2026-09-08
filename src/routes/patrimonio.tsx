@@ -145,7 +145,7 @@ function PatrimonioContent() {
   const realKeys = monthKeys.filter((k) => /^\d{4}-\d{2}$/.test(k));
   const [evoMonth, setEvoMonth] = useState<string | null>(null);
   const evoIdx = evoMonth ? monthKeys.indexOf(evoMonth) : -1;
-  const chartMonths = evoIdx >= 0 ? months.slice(0, evoIdx + 1) : months;
+  const chartMonths = (evoIdx >= 0 ? months.slice(0, evoIdx + 1) : months).slice(-12);
 
   // Comparación contra benchmarks: patrimonio e índice indexados a % desde el primer mes.
   const [benchmark, setBenchmark] = useState<"none" | "sp500" | "nasdaq" | "world">("none");
@@ -166,6 +166,8 @@ function PatrimonioContent() {
       netWorth: m.netWorth,
       // El índice se escala a dinero: parte del mismo patrimonio inicial y aplica su % real.
       bench: n0 * (1 + (bSlice[i]!.value - b0) / 100),
+      netPct: n0 !== 0 ? ((m.netWorth - n0) / Math.abs(n0)) * 100 : 0,
+      benchPct: bSlice[i]!.value - b0,
     }));
   })();
 
@@ -500,7 +502,22 @@ function PatrimonioContent() {
                   tickFormatter={(v) => fmtCompact(Number(v))}
                   width={isMobile ? 42 : 48}
                 />
-                <Tooltip content={<ChartTooltip />} />
+                <Tooltip
+                  content={
+                    <ChartTooltip
+                      {...(comparing
+                        ? {
+                            formatter: (v: number, item) => {
+                              const row = item?.payload as { netPct?: number; benchPct?: number } | undefined;
+                              const pct = item?.dataKey === "bench" ? row?.benchPct : row?.netPct;
+                              const pctTxt = pct !== undefined ? ` · ${pct >= 0 ? "+" : ""}${pct.toFixed(1)}%` : "";
+                              return `${fmt(v)}${pctTxt}`;
+                            },
+                          }
+                        : {})}
+                    />
+                  }
+                />
                 <Area
                   type="monotone"
                   dataKey="netWorth"
