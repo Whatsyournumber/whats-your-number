@@ -1197,23 +1197,23 @@ function PortafolioContent() {
           actions={!isMobile ? benchmarkButtons : undefined}
           bleedMobile
         >
-          <div className="mb-3 flex flex-nowrap items-center gap-x-3 gap-y-1.5 overflow-x-auto no-scrollbar px-5 text-[11px] sm:flex-wrap sm:px-0">
-            <span className="flex shrink-0 items-center gap-1.5 text-foreground">
-              <span className="h-2 w-2 rounded-full bg-[var(--color-chart-1)]" />
+          <div className="mb-3 flex flex-nowrap items-center gap-x-2 gap-y-1.5 overflow-x-auto no-scrollbar px-0 text-[10px] sm:flex-wrap sm:gap-x-4 sm:text-[11px] sm:px-0">
+            <span className="flex shrink-0 items-center gap-1 text-foreground">
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-chart-1)] sm:h-2 sm:w-2" />
               {t("Tu portafolio", "Your portfolio")}
             </span>
-            <span className="flex shrink-0 items-center gap-1.5 text-muted-foreground">
-              <span className="h-0.5 w-4 rounded-full bg-[var(--color-chart-2)]" />
+            <span className="flex shrink-0 items-center gap-1 text-muted-foreground">
+              <span className="h-0.5 w-3 rounded-full bg-[var(--color-chart-2)] sm:w-4" />
               {benchName}
             </span>
             {hasSim ? (
               <>
-                <span className="flex shrink-0 items-center gap-1.5 text-muted-foreground">
-                  <span className="h-0.5 w-4 rounded-full bg-positive" />
+                <span className="flex shrink-0 items-center gap-1 text-muted-foreground">
+                  <span className="h-0.5 w-3 rounded-full bg-positive sm:w-4" />
                   {t("Optimista", "Optimistic")}
                 </span>
-                <span className="flex shrink-0 items-center gap-1.5 text-muted-foreground">
-                  <span className="h-0.5 w-4 rounded-full bg-negative" />
+                <span className="flex shrink-0 items-center gap-1 text-muted-foreground">
+                  <span className="h-0.5 w-3 rounded-full bg-negative sm:w-4" />
                   {t("Pesimista", "Pessimistic")}
                 </span>
               </>
