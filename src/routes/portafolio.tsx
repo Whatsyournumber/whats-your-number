@@ -188,7 +188,7 @@ function SimAssetRow({
               setOpen(true);
               onChange({ ticker: event.target.value.toUpperCase(), name: undefined, manualReturn: null });
             }}
-            className="h-9 min-w-0 truncate border-border/40 bg-elevated/50 pl-2 pr-2 text-sm font-semibold uppercase placeholder:font-normal placeholder:normal-case placeholder:text-muted-foreground"
+            className="h-9 min-w-0 truncate border-border/40 bg-elevated/50 pl-2 pr-2 !text-xs font-semibold uppercase placeholder:font-normal placeholder:normal-case placeholder:text-muted-foreground md:!text-xs"
           />
 
           {open && query.trim().length >= 1 && (
@@ -230,7 +230,7 @@ function SimAssetRow({
             aria-label={t("Monto", "Amount")}
             placeholder="0"
             onChange={(event) => onChange({ amount: parseNum(event.target.value) })}
-            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-5 pr-1.5 text-sm font-semibold"
+            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-5 pr-1.5 !text-xs font-semibold md:!text-xs"
           />
         </div>
 
@@ -244,7 +244,7 @@ function SimAssetRow({
             aria-label={t("Mensual", "Monthly")}
             placeholder="0"
             onChange={(event) => onChange({ contribution: parseNum(event.target.value) })}
-            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-5 pr-1.5 text-sm"
+            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-5 pr-1.5 !text-xs md:!text-xs"
           />
         </div>
 
@@ -270,7 +270,7 @@ function SimAssetRow({
               onChange({ manualReturn: raw === "" || !Number.isFinite(parsed) ? null : parsed });
             }}
 
-            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-2 pr-5 !text-[11px] md:!text-[11px]"
+            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-2 pr-5 !text-xs md:!text-xs"
           />
           <span className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-[9px] text-muted-foreground">
             %
