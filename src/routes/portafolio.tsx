@@ -1235,7 +1235,7 @@ function PortafolioContent() {
               {seriesQuery.isLoading ? t("Cargando mercado…", "Loading market…") : t("Mercado no disponible", "Market unavailable")}
             </div>
           ) : (
-            <div className="min-h-[340px] w-full md:min-h-[420px]">
+            <div className="h-[340px] w-full md:h-[420px]">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart
                 data={simData}
@@ -1251,9 +1251,6 @@ function PortafolioContent() {
                 <XAxis
                   dataKey="label"
                   {...axisProps}
-                  ticks={simTicks}
-                  interval={0}
-                  minTickGap={0}
                 />
                 <YAxis
                   {...axisProps}
