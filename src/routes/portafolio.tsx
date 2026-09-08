@@ -1217,8 +1217,8 @@ function PortafolioContent() {
                   dataKey="label"
                   {...axisProps}
                   tick={{ ...axisProps, fontSize: isMobile ? 9 : 11 }}
-                  interval="preserveStartEnd"
-                  minTickGap={isMobile ? 10 : 6}
+                  ticks={simTicks}
+                  interval={0}
                   tickMargin={6}
                   height={isMobile ? 24 : 20}
                 />
