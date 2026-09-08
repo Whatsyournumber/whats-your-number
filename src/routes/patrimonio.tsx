@@ -449,7 +449,7 @@ function PatrimonioContent() {
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel
           title={comparing ? t("Rendimiento", "Performance") : t("Crecimiento del patrimonio", "Net worth growth")}
-          description={comparing ? t(`vs ${benchName} · ${compareLen}m`, `vs ${benchName} · ${compareLen}m`) : undefined}
+          {...(comparing ? { description: t(`vs ${benchName} · ${compareLen}m`, `vs ${benchName} · ${compareLen}m`) } : {})}
           className="flex flex-col p-3 md:p-5 lg:col-span-2"
           bleedMobile
           actions={
@@ -498,7 +498,7 @@ function PatrimonioContent() {
                 <Tooltip
                   content={
                     <ChartTooltip
-                      formatter={comparing ? (v) => `${v.toFixed(1)}%` : undefined}
+                      {...(comparing ? { formatter: (v: number) => `${v.toFixed(1)}%` } : {})}
                     />
                   }
                 />
