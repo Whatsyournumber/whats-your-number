@@ -1308,7 +1308,7 @@ function PortafolioContent() {
           title={t("Configuración del Portfolio", "Portfolio Configuration")}
           description={
             isMobile
-              ? t("Añade activos y proyecta", "Add assets and project")
+              ? t("Añade 5 activos y proyecta tu portfolio", "Add 5 assets and project your portfolio")
               : t("Añade hasta 5 activos y proyecta", "Add up to 5 assets and project")
           }
           descriptionClassName="truncate whitespace-nowrap"
