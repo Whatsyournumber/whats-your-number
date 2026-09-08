@@ -1012,7 +1012,9 @@ function PortafolioContent() {
         ...histSlice.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench })),
         ...projPoints
           .filter((p, i) => i === 0 || i === simYears || i % simStep === 0)
-          .map((p, i) => (i === 0 ? { ...p, real: lastHist?.real, bench: lastHist?.bench } : p)),
+          // En "Hoy" todas las series arrancan del mismo punto para que el compuesto se mida igual.
+          .map((p, i) => (i === 0 ? { ...p, real: simStartValue, bench: simStartValue } : p)),
+
       ]
     : histSlice.map((h) => ({ label: h.label, real: h.real, bench: h.bench }));
 
