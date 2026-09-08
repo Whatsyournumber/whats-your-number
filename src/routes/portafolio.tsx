@@ -1185,11 +1185,19 @@ function PortafolioContent() {
                 {t("Evolución · últimos 12 meses", "Evolution · last 12 months")}
               </p>
               {benchmarkData.length === 0 ? (
-                <p className="text-xs text-muted-foreground">{t("Mercado no disponible", "Market unavailable")}</p>
+                <p className="text-xs text-muted-foreground">
+                  {hasPortfolio
+                    ? t("Mercado no disponible", "Market unavailable")
+                    : t("Aún no hay histórico: añade tus activos", "No history yet: add your assets")}
+                </p>
               ) : (
                 <div className="grid grid-cols-3 gap-1.5">
                   {benchmarkData.map((p, i) => {
                     const active = evoIdx === i;
+                    // Variación del mes (mes vs mes anterior), no acumulado.
+                    const prev = benchmarkData[i - 1]?.portfolio;
+                    const monthChange =
+                      prev === undefined ? null : ((1 + p.portfolio / 100) / (1 + prev / 100) - 1) * 100;
                     return (
                       <button
                         key={`${p.label}-${i}`}
@@ -1206,15 +1214,26 @@ function PortafolioContent() {
                         )}
                       >
                         <span className="block text-[11px] font-medium">{p.label}</span>
-                        <span className={cn("numeric block text-[10px]", p.portfolio >= 0 ? "text-positive" : "text-negative")}>
-                          {p.portfolio > 0 ? "+" : ""}
-                          {p.portfolio.toFixed(1)}%
+                        <span
+                          className={cn(
+                            "numeric block text-[10px]",
+                            monthChange === null
+                              ? "text-muted-foreground"
+                              : monthChange >= 0
+                                ? "text-positive"
+                                : "text-negative",
+                          )}
+                        >
+                          {monthChange === null
+                            ? "—"
+                            : `${monthChange > 0 ? "+" : ""}${monthChange.toFixed(1)}%`}
                         </span>
                       </button>
                     );
                   })}
                 </div>
               )}
+
               {evoPoint && (
                 <button
                   type="button"
