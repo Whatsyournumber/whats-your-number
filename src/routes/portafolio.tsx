@@ -1447,19 +1447,34 @@ function PortafolioContent() {
                       <Info className="h-3.5 w-3.5" />
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent align="end" side="top" className="w-64 space-y-1.5 p-3 text-xs">
-                    <p className="font-medium text-foreground">{t("Últimos 30 años", "Last 30 years")}</p>
-                    <p className="flex items-center justify-between gap-3 text-muted-foreground">
-                      <span>{t(`Histórico ${benchName}`, `${benchName} historical`)}</span>
-                      <span className="numeric text-foreground">≈{benchRef.histLabel}</span>
+                  <PopoverContent align="end" side="top" className="w-72 space-y-1.5 p-3 text-xs">
+                    <p className="font-medium text-foreground">
+                      {hasSim
+                        ? t("Con activos en el simulador", "With simulator assets")
+                        : t("Según tu portafolio actual", "Based on your current portfolio")}
+                    </p>
+                    <p className="text-[11px] leading-snug text-muted-foreground">
+                      {hasSim
+                        ? t(
+                            `Promediamos el rendimiento de tu portafolio (${portfolioRate.toFixed(1)}%) con el de los activos añadidos (${simRate.toFixed(1)}%), ponderado por monto.`,
+                            `We average your portfolio return (${portfolioRate.toFixed(1)}%) with the added assets (${simRate.toFixed(1)}%), weighted by amount.`,
+                          )
+                        : t(
+                            "Partimos del rendimiento promedio de tu portafolio actual.",
+                            "We start from your current portfolio's average return.",
+                          )}
                     </p>
                     <p className="flex items-center justify-between gap-3 text-muted-foreground">
-                      <span>{t("Escenario optimista", "Optimistic scenario")}</span>
-                      <span className="numeric text-positive">{benchRef.opt.toFixed(1)}%</span>
+                      <span>{hasSim ? t("Promedio combinado", "Blended average") : t("Rendimiento promedio", "Average return")}</span>
+                      <span className="numeric text-foreground">{blendedRate.toFixed(1)}%</span>
                     </p>
                     <p className="flex items-center justify-between gap-3 text-muted-foreground">
-                      <span>{t("Escenario pesimista", "Pessimistic scenario")}</span>
-                      <span className="numeric text-negative">{benchRef.cons.toFixed(1)}%</span>
+                      <span>{t("Optimista (+3 pts)", "Optimistic (+3 pts)")}</span>
+                      <span className="numeric text-positive">{optRate.toFixed(1)}%</span>
+                    </p>
+                    <p className="flex items-center justify-between gap-3 text-muted-foreground">
+                      <span>{t("Pesimista (−3 pts)", "Pessimistic (−3 pts)")}</span>
+                      <span className="numeric text-negative">{pesRate.toFixed(1)}%</span>
                     </p>
                   </PopoverContent>
                 </Popover>
