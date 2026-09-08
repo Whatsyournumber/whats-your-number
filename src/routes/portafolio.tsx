@@ -316,6 +316,7 @@ function PortafolioContent() {
   const { holdings } = useHoldings();
   const d = buildDataset(profile);
   const fmt = (n: number, _dec?: number) => d.fmt(n);
+  const fmtCompact = (n: number) => d.fmtCompact(n);
   const r = Math.max(0, profile.expected_return || 7) / 100;
 
   const watchlist = useWatchlist();
@@ -945,7 +946,7 @@ function PortafolioContent() {
     benchProj: fv(benchCagr, y),
   }));
   const simStep = simYears > 20 ? 5 : simYears > 10 ? 3 : 2;
-  const histSlice = hasSim ? histPoints.slice(-6) : histPoints;
+  const histSlice = histPoints.slice(-12);
   const lastHist = histSlice[histSlice.length - 1];
   const simData = hasSim
     ? [
@@ -1234,10 +1235,11 @@ function PortafolioContent() {
               {seriesQuery.isLoading ? t("Cargando mercado…", "Loading market…") : t("Mercado no disponible", "Market unavailable")}
             </div>
           ) : (
-            <ResponsiveContainer width="100%" height={isMobile ? 300 : 380}>
+            <div className="min-h-[340px] w-full md:min-h-[420px]">
+            <ResponsiveContainer width="100%" height="100%">
               <ComposedChart
                 data={simData}
-                margin={{ top: 8, left: isMobile ? 0 : -8, right: isMobile ? 0 : 4, bottom: isMobile ? 10 : 4 }}
+                margin={{ left: isMobile ? 0 : -20, right: isMobile ? 4 : 0, top: 8 }}
               >
                 <defs>
                   <linearGradient id="simOpt" x1="0" y1="0" x2="0" y2="1">
@@ -1249,22 +1251,15 @@ function PortafolioContent() {
                 <XAxis
                   dataKey="label"
                   {...axisProps}
-                  tick={{ ...axisProps, fontSize: 11 }}
                   ticks={simTicks}
-                  interval={isMobile ? 1 : 0}
-                  tickMargin={6}
-                  padding={{ left: isMobile ? 4 : 10, right: isMobile ? 10 : 26 }}
-                  height={isMobile ? 26 : 20}
+                  interval={0}
+                  minTickGap={0}
                 />
                 <YAxis
                   {...axisProps}
-                  tick={{ ...axisProps, fontSize: 11 }}
-                  width={isMobile ? 64 : 54}
+                  width={isMobile ? 42 : 48}
                   domain={[(dataMin: number) => Math.max(0, Math.floor(dataMin * 0.94)), (dataMax: number) => Math.ceil(dataMax * 1.04)]}
-                  tickMargin={6}
-                  tickFormatter={(v: number) =>
-                    Math.abs(v) >= 1e6 ? `${(v / 1e6).toFixed(1)}M` : `${Math.round(v / 1000)}K`
-                  }
+                  tickFormatter={(v: number) => fmtCompact(Number(v))}
                 />
                 <Tooltip content={<SimTooltip data={simData} formatter={(v: number) => fmt(Math.round(v))} lang={lang} />} />
                 {hasSim ? (
@@ -1278,6 +1273,7 @@ function PortafolioContent() {
                 {hasSim ? <Line type="monotone" dataKey="benchProj" name={benchName} stroke="var(--color-chart-2)" strokeWidth={1.6} strokeDasharray="2 5" dot={false} connectNulls /> : null}
               </ComposedChart>
             </ResponsiveContainer>
+            </div>
           )}
 
           <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-border/40 px-5 pt-3 sm:px-0 lg:grid-cols-4">
