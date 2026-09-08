@@ -316,6 +316,7 @@ function PortafolioContent() {
   const { holdings } = useHoldings();
   const d = buildDataset(profile);
   const fmt = (n: number, _dec?: number) => d.fmt(n);
+  const fmtCompact = (n: number) => d.fmtCompact(n);
   const r = Math.max(0, profile.expected_return || 7) / 100;
 
   const watchlist = useWatchlist();
@@ -554,22 +555,24 @@ function PortafolioContent() {
   const benchReturnsQuery = useSymbolReturns([benchSymbol]);
   const benchHistCagrRaw = benchReturnsQuery.data?.cagr?.[benchSymbol];
 
-  // Últimos 12 meses únicos: evita etiquetas duplicadas si Yahoo devuelve un punto extra.
-  const last12Unique = (s: { label: string; value: number }[]) => {
-    const out: { label: string; value: number }[] = [];
-    const seen = new Set<string>();
-    for (let i = s.length - 1; i >= 0; i--) {
-      const p = s[i]!;
-      if (seen.has(p.label)) continue;
-      seen.add(p.label);
-      out.unshift(p);
-      if (out.length >= 12) break;
-    }
-    return out;
+  // Doce meses naturales completos. Si el mercado omite un mes, conserva el
+  // último cierre conocido para que el eje y las series sigan alineados.
+  const monthLabels = Array.from({ length: 12 }, (_, i) => {
+    const date = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth() - 11 + i, 1));
+    const names = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+    return names[date.getUTCMonth()]!;
+  });
+  const normalize12 = (s: { label: string; value: number }[]) => {
+    const latestByMonth = new Map(s.map((point) => [point.label, point.value]));
+    let last = latestByMonth.get(monthLabels[0]!) ?? s[0]?.value ?? 0;
+    return monthLabels.map((label) => {
+      last = latestByMonth.get(label) ?? last;
+      return { label, value: last };
+    });
   };
-  const benchSeries = last12Unique(series[benchSymbol] ?? []);
-  const spy = last12Unique(series["SPY"] ?? []);
-  const btc = last12Unique(series["BTC-USD"] ?? []);
+  const benchSeries = normalize12(series[benchSymbol] ?? []);
+  const spy = normalize12(series["SPY"] ?? []);
+  const btc = normalize12(series["BTC-USD"] ?? []);
   const equityValue = profile.assets_etf + profile.assets_retirement + profile.assets_stocks;
   const cryptoValue = profile.assets_crypto;
   const cashValue = profile.assets_cash + profile.assets_bank;
@@ -945,7 +948,7 @@ function PortafolioContent() {
     benchProj: fv(benchCagr, y),
   }));
   const simStep = simYears > 20 ? 5 : simYears > 10 ? 3 : 2;
-  const histSlice = hasSim ? histPoints.slice(-6) : histPoints;
+  const histSlice = hasSim ? histPoints.slice(-6) : histPoints.slice(-12);
   const lastHist = histSlice[histSlice.length - 1];
   const simData = hasSim
     ? [
@@ -1234,10 +1237,11 @@ function PortafolioContent() {
               {seriesQuery.isLoading ? t("Cargando mercado…", "Loading market…") : t("Mercado no disponible", "Market unavailable")}
             </div>
           ) : (
-            <ResponsiveContainer width="100%" height={isMobile ? 300 : 380}>
+            <div className="h-[340px] w-full md:h-[420px]">
+            <ResponsiveContainer width="100%" height="100%">
               <ComposedChart
                 data={simData}
-                margin={{ top: 8, left: isMobile ? 0 : -8, right: isMobile ? 0 : 4, bottom: isMobile ? 10 : 4 }}
+                margin={{ left: isMobile ? 0 : -20, right: isMobile ? 4 : 0, top: 8 }}
               >
                 <defs>
                   <linearGradient id="simOpt" x1="0" y1="0" x2="0" y2="1">
@@ -1249,22 +1253,14 @@ function PortafolioContent() {
                 <XAxis
                   dataKey="label"
                   {...axisProps}
-                  tick={{ ...axisProps, fontSize: 11 }}
-                  ticks={simTicks}
-                  interval={isMobile ? 1 : 0}
-                  tickMargin={6}
-                  padding={{ left: isMobile ? 4 : 10, right: isMobile ? 10 : 26 }}
-                  height={isMobile ? 26 : 20}
+                  interval={0}
+                  minTickGap={0}
                 />
                 <YAxis
                   {...axisProps}
-                  tick={{ ...axisProps, fontSize: 11 }}
-                  width={isMobile ? 64 : 54}
+                  width={isMobile ? 42 : 48}
                   domain={[(dataMin: number) => Math.max(0, Math.floor(dataMin * 0.94)), (dataMax: number) => Math.ceil(dataMax * 1.04)]}
-                  tickMargin={6}
-                  tickFormatter={(v: number) =>
-                    Math.abs(v) >= 1e6 ? `${(v / 1e6).toFixed(1)}M` : `${Math.round(v / 1000)}K`
-                  }
+                  tickFormatter={(v: number) => fmtCompact(Number(v))}
                 />
                 <Tooltip content={<SimTooltip data={simData} formatter={(v: number) => fmt(Math.round(v))} lang={lang} />} />
                 {hasSim ? (
@@ -1278,6 +1274,7 @@ function PortafolioContent() {
                 {hasSim ? <Line type="monotone" dataKey="benchProj" name={benchName} stroke="var(--color-chart-2)" strokeWidth={1.6} strokeDasharray="2 5" dot={false} connectNulls /> : null}
               </ComposedChart>
             </ResponsiveContainer>
+            </div>
           )}
 
           <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-border/40 px-5 pt-3 sm:px-0 lg:grid-cols-4">
