@@ -1629,22 +1629,22 @@ function PortafolioContent() {
             </div>
             <div>
               <p className="text-[11px] text-muted-foreground">{t("Valor", "Value")}</p>
-              <p className="numeric text-base font-bold text-foreground">{fmt(totalValue)}</p>
+              <p className="numeric text-base font-bold text-foreground">{fmt(tabValue)}</p>
             </div>
             <div>
               <p className="text-[11px] text-muted-foreground">{t("Ganancia anual", "Annual gain")}</p>
-              <p className="numeric text-base font-bold text-positive">{fmt(Math.round(annualGain))}</p>
+              <p className="numeric text-base font-bold text-positive">{fmt(Math.round(tabAnnualGain))}</p>
             </div>
             <div>
               <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
-              <p className="numeric text-base font-bold text-positive">{fmt(Math.round(annualGain / 12))}</p>
+              <p className="numeric text-base font-bold text-positive">{fmt(Math.round(tabAnnualGain / 12))}</p>
             </div>
 
             <div>
               <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
-              <p className={cn("numeric text-base font-bold", weightedReturn >= 0 ? "text-positive" : "text-negative")}>
-                {weightedReturn > 0 ? "+" : ""}
-                {weightedReturn.toFixed(1)}%
+              <p className={cn("numeric text-base font-bold", tabWeightedReturn >= 0 ? "text-positive" : "text-negative")}>
+                {tabWeightedReturn > 0 ? "+" : ""}
+                {tabWeightedReturn.toFixed(1)}%
               </p>
             </div>
           </div>
