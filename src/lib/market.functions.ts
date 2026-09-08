@@ -61,8 +61,15 @@ export const getSymbolReturns = createServerFn({ method: "GET" })
         const stat = await fetchIndexStat(s);
         // Rendimiento actual en tiempo real: lo que lleva el año (YTD) en vivo.
         const annual = stat?.ytdPct ?? stat?.cagr5y ?? stat?.cagr10y ?? null;
-        return [s, annual] as const;
+        // Rendimiento histórico anualizado a largo plazo, para proyectar.
+        const longRun = stat?.cagr10y ?? stat?.cagr5y ?? stat?.ytdPct ?? null;
+        return [s, { annual, longRun }] as const;
       }),
     );
-    return { returns: Object.fromEntries(entries), updatedAt: Date.now() };
+    return {
+      returns: Object.fromEntries(entries.map(([s, v]) => [s, v.annual])),
+      cagr: Object.fromEntries(entries.map(([s, v]) => [s, v.longRun])),
+      updatedAt: Date.now(),
+    };
   });
+
