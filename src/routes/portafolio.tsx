@@ -1237,7 +1237,7 @@ function PortafolioContent() {
             <ResponsiveContainer width="100%" height={isMobile ? 300 : 380}>
               <ComposedChart
                 data={simData}
-                margin={{ top: 8, left: isMobile ? 6 : -8, right: 4, bottom: isMobile ? 10 : 4 }}
+                margin={{ top: 8, left: isMobile ? 0 : -8, right: isMobile ? 0 : 4, bottom: isMobile ? 10 : 4 }}
               >
                 <defs>
                   <linearGradient id="simOpt" x1="0" y1="0" x2="0" y2="1">
@@ -1249,17 +1249,17 @@ function PortafolioContent() {
                 <XAxis
                   dataKey="label"
                   {...axisProps}
-                  tick={{ ...axisProps, fontSize: isMobile ? 11 : 11 }}
+                  tick={{ ...axisProps, fontSize: 11 }}
                   ticks={simTicks}
-                  interval={0}
+                  interval={isMobile ? 1 : 0}
                   tickMargin={6}
-                  padding={{ left: 10, right: 26 }}
-                  height={isMobile ? 24 : 20}
+                  padding={{ left: isMobile ? 4 : 10, right: isMobile ? 10 : 26 }}
+                  height={isMobile ? 26 : 20}
                 />
                 <YAxis
                   {...axisProps}
-                  tick={{ ...axisProps, fontSize: isMobile ? 11 : 11 }}
-                  width={isMobile ? 70 : 44}
+                  tick={{ ...axisProps, fontSize: 11 }}
+                  width={isMobile ? 64 : 54}
                   domain={[(dataMin: number) => Math.max(0, Math.floor(dataMin * 0.94)), (dataMax: number) => Math.ceil(dataMax * 1.04)]}
                   tickMargin={6}
                   tickFormatter={(v: number) =>
