@@ -1259,9 +1259,9 @@ function PortafolioContent() {
                   }}
                   ticks={simTicks}
                   interval={isMobile ? 1 : 0}
-                  tickMargin={6}
-                  padding={{ left: isMobile ? 0 : 10, right: isMobile ? 6 : 26 }}
-                  height={isMobile ? 28 : 20}
+                  tickMargin={4}
+                  padding={{ left: isMobile ? 0 : 10, right: isMobile ? 4 : 26 }}
+                  height={isMobile ? 26 : 20}
                 />
                 <YAxis
                   {...axisProps}
@@ -1273,9 +1273,9 @@ function PortafolioContent() {
                     fontWeight: 500,
                     letterSpacing: "-0.01em",
                   }}
-                  width={isMobile ? 70 : 54}
+                  width={isMobile ? 56 : 54}
                   domain={[(dataMin: number) => Math.max(0, Math.floor(dataMin * 0.94)), (dataMax: number) => Math.ceil(dataMax * 1.04)]}
-                  tickMargin={6}
+                  tickMargin={4}
                   tickFormatter={(v: number) =>
                     new Intl.NumberFormat(lang === "es" ? "es-ES" : "en-US", {
                       style: "currency",
