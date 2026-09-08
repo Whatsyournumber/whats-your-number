@@ -397,7 +397,7 @@ function PortafolioContent() {
 
 
   // Precios reales para las posiciones con ticker + unidades.
-  const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
+  const holdingSymbols = holdings.filter((h) => h.ticker && (h.quantity > 0 || h.cost_basis > 0 || h.manual_value > 0)).map((h) => h.ticker!);
   const holdingQuotes = useQuotes(holdingSymbols);
   const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
   // Cambio diario por ticker (para derivar retorno del mercado en ETFs/acciones/cripto).
@@ -1038,8 +1038,9 @@ function PortafolioContent() {
         if (aC !== bC) return aC - bC;
         return b.value - a.value;
       }).map((h) => {
-        const isEtf = h.type === "ETF" || h.type === "Cripto";
         const tk = h.ticker?.toUpperCase();
+        const hasLive = Boolean(tk && prices[tk]);
+        const isEtf = h.type === "ETF" || h.type === "Cripto" || (h.type === "Acción" && hasLive);
         const today = tk && dayChange[tk] !== undefined ? dayChange[tk] : null;
         return (
         <div key={h.ticker} className="grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 md:grid-cols-6">
