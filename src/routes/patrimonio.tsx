@@ -319,9 +319,27 @@ function PatrimonioContent() {
     assets_property: ["property"],
   };
   const hasDetail = holdings.length > 0;
-  const liveAssets = hasDetail
+  const LIVE_NAMES: Record<string, { name: string; color: string }> = {
+    assets_stocks: { name: t("Acciones", "Stocks"), color: "var(--color-chart-4)" },
+  };
+  const liveAssetsBase = hasDetail
     ? assets.map((a) => (LIVE_KINDS[a.key] ? { ...a, value: sumKinds(LIVE_KINDS[a.key]!) } : a)).filter((a) => a.value > 0)
     : assets;
+  // Rubros con valor real pero ausentes del perfil (p. ej. acciones añadidas directamente): se agregan.
+  const liveAssets = hasDetail
+    ? [
+        ...liveAssetsBase,
+        ...Object.entries(LIVE_KINDS)
+          .filter(([key]) => !liveAssetsBase.some((a) => a.key === key))
+          .map(([key, kinds]) => ({
+            key,
+            name: LIVE_NAMES[key]?.name ?? key,
+            value: sumKinds(kinds),
+            color: LIVE_NAMES[key]?.color ?? "var(--color-chart-1)",
+          }))
+          .filter((r) => r.value > 0),
+      ]
+    : liveAssetsBase;
 
   // Variación del día ponderada por rubro (solo posiciones con ticker y precio real).
   const dayChangeOf = (kinds: string[]): number | null => {
