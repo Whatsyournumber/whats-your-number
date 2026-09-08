@@ -1501,12 +1501,12 @@ function PortafolioContent() {
               <span className="mb-2 flex items-center justify-between text-[11px] font-medium text-muted-foreground">
                 <span>{t("Horizonte de tiempo", "Time horizon")}</span>
                 <span className="numeric rounded-lg border border-border/60 bg-elevated/50 px-3 py-1.5 text-xs font-semibold text-foreground">
-                  {simYears} {t("años", "years")}
+                  {simYears} {simYears === 1 ? t("año", "year") : t("años", "years")}
                 </span>
               </span>
               <input
                 type="range"
-                min={5}
+                min={1}
                 max={30}
                 step={1}
                 value={simYears}
