@@ -948,7 +948,8 @@ function PortafolioContent() {
     benchProj: fv(benchCagr, y),
   }));
   const simStep = simYears > 20 ? 5 : simYears > 10 ? 3 : 2;
-  const histSlice = hasSim ? histPoints.slice(-6) : histPoints.slice(-12);
+  const historyMonths = isMobile ? 6 : 12;
+  const histSlice = histPoints.slice(-historyMonths);
   const lastHist = histSlice[histSlice.length - 1];
   const simData = hasSim
     ? [
@@ -957,7 +958,7 @@ function PortafolioContent() {
           .filter((p, i) => i === 0 || i === simYears || i % simStep === 0)
           .map((p, i) => (i === 0 ? { ...p, real: lastHist?.real, bench: lastHist?.bench } : p)),
       ]
-    : histPoints.map((h) => ({ label: h.label, real: h.real, bench: h.bench }));
+    : histSlice.map((h) => ({ label: h.label, real: h.real, bench: h.bench }));
   const todayIndex = histSlice.length - 1;
   const simTicks = simData.map((d) => d.label);
   const simResult = projPoints[projPoints.length - 1]!;
@@ -1241,7 +1242,7 @@ function PortafolioContent() {
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart
                 data={simData}
-                margin={{ left: isMobile ? 0 : -20, right: isMobile ? 4 : 0, top: 8 }}
+                margin={{ left: 0, right: isMobile ? 4 : 8, top: 8 }}
               >
                 <defs>
                   <linearGradient id="simOpt" x1="0" y1="0" x2="0" y2="1">
@@ -1258,7 +1259,7 @@ function PortafolioContent() {
                 />
                 <YAxis
                   {...axisProps}
-                  width={isMobile ? 42 : 48}
+                  width={isMobile ? 48 : 68}
                   domain={[(dataMin: number) => Math.max(0, Math.floor(dataMin * 0.94)), (dataMax: number) => Math.ceil(dataMax * 1.04)]}
                   tickFormatter={(v: number) => fmtCompact(Number(v))}
                 />
