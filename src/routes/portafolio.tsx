@@ -1201,7 +1201,7 @@ function PortafolioContent() {
           actions={!isMobile ? benchmarkButtons : undefined}
           bleedMobile
         >
-          <div className="mb-3 flex flex-nowrap items-center gap-x-2 gap-y-1.5 overflow-x-auto no-scrollbar px-0 text-[10px] sm:flex-wrap sm:gap-x-4 sm:text-[11px] sm:px-0">
+          <div className="mb-3 flex flex-nowrap items-center gap-x-2 gap-y-1.5 overflow-x-auto no-scrollbar px-3 text-[10px] sm:flex-wrap sm:gap-x-4 sm:px-0 sm:text-[11px]">
             <span className="flex shrink-0 items-center gap-1 text-foreground">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-chart-1)] sm:h-2 sm:w-2" />
               {t("Tu portafolio", "Your portfolio")}
@@ -1224,7 +1224,7 @@ function PortafolioContent() {
             ) : null}
           </div>
           {isMobile && (
-            <div className="mb-3 flex items-center px-5 sm:px-0">
+            <div className="mb-3 flex items-center px-3 sm:px-0">
               {benchmarkButtons}
             </div>
           )}
@@ -1258,10 +1258,10 @@ function PortafolioContent() {
                 />
                 <YAxis
                   {...axisProps}
-                  tick={{ ...axisProps, fontSize: isMobile ? 12 : 11 }}
-                  width={isMobile ? 46 : 44}
+                  tick={{ ...axisProps, fontSize: isMobile ? 13 : 11 }}
+                  width={isMobile ? 52 : 44}
                   domain={[(dataMin: number) => Math.max(0, Math.floor(dataMin * 0.94)), (dataMax: number) => Math.ceil(dataMax * 1.04)]}
-                  tickMargin={4}
+                  tickMargin={6}
                   tickFormatter={(v: number) =>
                     Math.abs(v) >= 1e6 ? `${(v / 1e6).toFixed(1)}M` : `${Math.round(v / 1000)}K`
                   }
@@ -1308,7 +1308,7 @@ function PortafolioContent() {
           title={t("Configuración del Portfolio", "Portfolio Configuration")}
           description={
             isMobile
-              ? t("Añade activos y proyecta", "Add assets and project")
+              ? t("Añade 5 activos y proyecta tu portfolio", "Add 5 assets and project your portfolio")
               : t("Añade hasta 5 activos y proyecta", "Add up to 5 assets and project")
           }
           descriptionClassName="truncate whitespace-nowrap"
