@@ -1277,9 +1277,9 @@ function PortafolioContent() {
                   domain={[(dataMin: number) => Math.max(0, Math.floor(dataMin * 0.94)), (dataMax: number) => Math.ceil(dataMax * 1.04)]}
                   tickMargin={6}
                   tickFormatter={(v: number) =>
-                    new Intl.NumberFormat(locale, {
+                    new Intl.NumberFormat(lang === "es" ? "es-ES" : "en-US", {
                       style: "currency",
-                      currency: profile.currency_code || "USD",
+                      currency: profile.currency || "USD",
                       notation: "compact",
                       maximumFractionDigits: 1,
                     }).format(v)
