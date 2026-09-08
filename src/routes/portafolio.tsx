@@ -244,7 +244,7 @@ function SimAssetRow({
             aria-label={t("Mensual", "Monthly")}
             placeholder="0"
             onChange={(event) => onChange({ contribution: parseNum(event.target.value) })}
-            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-5 pr-1.5 text-sm"
+            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-5 pr-1.5 !text-xs md:!text-xs"
           />
         </div>
 
