@@ -397,7 +397,7 @@ function PortafolioContent() {
 
 
   // Precios reales para las posiciones con ticker + unidades.
-  const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
+  const holdingSymbols = holdings.filter((h) => h.ticker && (h.quantity > 0 || h.cost_basis > 0 || h.manual_value > 0)).map((h) => h.ticker!);
   const holdingQuotes = useQuotes(holdingSymbols);
   const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
   // Cambio diario por ticker (para derivar retorno del mercado en ETFs/acciones/cripto).
