@@ -92,20 +92,20 @@ export function SiteFooter({ kids = false, affiliates = false }: { kids?: boolea
       : kids
         ? {
             title: t("Recursos", "Resources"),
-            links: [
-               { label: t("Blog de libertad financiera", "Financial freedom blog"), to: blogHref },
-               { label: t("Calculadora de universidad", "College savings calculator"), to: lang === "en" ? "/en/college-savings-calculator" : "/calculadora-ahorro-universidad", className: "whitespace-nowrap text-xs md:text-[13px]" },
-               { label: t("Finanzas para adultos", "Adult finance"), to: homeHref },
-            ],
-          }
-        : {
-            title: t("Recursos", "Resources"),
-            links: [
-               { label: t("Blog de libertad financiera", "Financial freedom blog"), to: blogHref },
-               { label: t("Calculador de libertad financiera", "Financial freedom calculator"), to: demoHref, className: "whitespace-nowrap text-xs md:text-[13px]" },
-               { label: t("Finanzas para niños", "Kids finance"), to: kidsHref, external: true },
-            ],
-          },
+             links: [
+                { label: t("Blog de libertad financiera", "Financial freedom blog"), to: blogHref },
+                { label: t("Calculadora de universidad", "College savings calculator"), to: lang === "en" ? "/en/college-savings-calculator" : "/calculadora-ahorro-universidad" },
+                { label: t("Finanzas para adultos", "Adult finance"), to: homeHref },
+             ],
+           }
+         : {
+             title: t("Recursos", "Resources"),
+             links: [
+                { label: t("Blog de libertad financiera", "Financial freedom blog"), to: blogHref },
+                { label: t("Calculador de libertad financiera", "Financial freedom calculator"), to: demoHref },
+                { label: t("Finanzas para niños", "Kids finance"), to: kidsHref, external: true },
+             ],
+           },
     {
       title: "Legal",
       links: [
