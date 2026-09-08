@@ -1201,7 +1201,7 @@ function PortafolioContent() {
           actions={!isMobile ? benchmarkButtons : undefined}
           bleedMobile
         >
-          <div className="mb-3 flex flex-nowrap items-center gap-x-2 gap-y-1.5 overflow-x-auto no-scrollbar px-0 text-[10px] sm:flex-wrap sm:gap-x-4 sm:text-[11px] sm:px-0">
+          <div className="mb-3 flex flex-nowrap items-center gap-x-2 gap-y-1.5 overflow-x-auto no-scrollbar px-3 text-[10px] sm:flex-wrap sm:gap-x-4 sm:px-0 sm:text-[11px]">
             <span className="flex shrink-0 items-center gap-1 text-foreground">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-chart-1)] sm:h-2 sm:w-2" />
               {t("Tu portafolio", "Your portfolio")}
@@ -1224,7 +1224,7 @@ function PortafolioContent() {
             ) : null}
           </div>
           {isMobile && (
-            <div className="mb-3 flex items-center px-5 sm:px-0">
+            <div className="mb-3 flex items-center px-3 sm:px-0">
               {benchmarkButtons}
             </div>
           )}
