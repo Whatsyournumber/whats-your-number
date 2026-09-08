@@ -922,9 +922,13 @@ function PortafolioContent() {
     ? clampRate(simAssets.reduce((sum, asset) => sum + assetRate(asset) * (asset.amount || 0), 0) / simAddedTotal)
     : fallbackRate;
 
-  const benchCagr = Math.max(1, Math.min(15,
-    typeof benchHistCagrRaw === "number" && Number.isFinite(benchHistCagrRaw) ? benchHistCagrRaw : (bench12 || 8),
-  ));
+  // Referencias históricas de los últimos 30 años por índice.
+  const benchRef = benchmark === "nasdaq"
+    ? { hist: 13.5, histLabel: "13–14%", cons: 9, base: 11, opt: 14 }
+    : benchmark === "world"
+      ? { hist: 9, histLabel: "8.5–9.5%", cons: 6.5, base: 8, opt: 10 }
+      : { hist: 10.2, histLabel: "10.2%", cons: 7, base: 9, opt: 11 };
+  const benchCagr = benchRef.base;
 
   const fv = (rate: number, years: number) => {
     const r = rate / 100;
@@ -932,9 +936,9 @@ function PortafolioContent() {
     const contrib = r === 0 ? simContrib * 12 * years : simContrib * 12 * ((growth - 1) / r);
     return simStartValue * growth + contrib;
   };
-  // Escenarios del benchmark: ±3 puntos sobre el CAGR histórico del índice seleccionado.
-  const optRate = benchCagr + 3;
-  const pesRate = Math.max(0, benchCagr - 3);
+  const optRate = benchRef.opt;
+  const pesRate = benchRef.cons;
+
   const thisYear = new Date().getFullYear();
   const histPoints = benchmarkData.map((p) => ({
     label: p.label,
@@ -1413,11 +1417,20 @@ function PortafolioContent() {
                       <Info className="h-3.5 w-3.5" />
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent align="end" side="top" className="w-60 p-2.5 text-xs">
-                    {t(
-                      `Optimista = promedio histórico de ${benchName} (${benchCagr.toFixed(0)}%) + 3%. Pesimista = promedio histórico (${benchCagr.toFixed(0)}%) − 3%.`,
-                      `Optimistic = ${benchName} historical average (${benchCagr.toFixed(0)}%) + 3%. Pessimistic = historical average (${benchCagr.toFixed(0)}%) − 3%.`,
-                    )}
+                  <PopoverContent align="end" side="top" className="w-64 space-y-1.5 p-3 text-xs">
+                    <p className="font-medium text-foreground">{t("Últimos 30 años", "Last 30 years")}</p>
+                    <p className="flex items-center justify-between gap-3 text-muted-foreground">
+                      <span>{t(`Histórico ${benchName}`, `${benchName} historical`)}</span>
+                      <span className="numeric text-foreground">≈{benchRef.histLabel}</span>
+                    </p>
+                    <p className="flex items-center justify-between gap-3 text-muted-foreground">
+                      <span>{t("Escenario optimista", "Optimistic scenario")}</span>
+                      <span className="numeric text-positive">{benchRef.opt}%</span>
+                    </p>
+                    <p className="flex items-center justify-between gap-3 text-muted-foreground">
+                      <span>{t("Escenario pesimista", "Pessimistic scenario")}</span>
+                      <span className="numeric text-negative">{benchRef.cons}%</span>
+                    </p>
                   </PopoverContent>
                 </Popover>
               </div>
@@ -1427,15 +1440,16 @@ function PortafolioContent() {
                     {isMobile ? t("Optimista compuesto", "Compound optimistic") : t("Escenario optimista compuesto", "Optimistic compound scenario")}
                   </p>
                   <p className="numeric mt-1 text-lg font-bold text-positive">{fmt(Math.round(simResult.opt))}</p>
-                  <p className="text-[10px] text-positive/80">+{optRate.toFixed(0)}% {t("anual", "annual")}</p>
+                  <p className="text-[10px] text-positive/80">+{optRate}% {t("anual", "annual")}</p>
                 </div>
                 <div className="rounded-xl border border-negative/20 bg-negative/5 p-3">
                   <p className="truncate text-[10px] font-medium text-negative">
                     {isMobile ? t("Pesimista compuesto", "Compound pessimistic") : t("Escenario pesimista compuesto", "Pessimistic compound scenario")}
                   </p>
                   <p className="numeric mt-1 text-lg font-bold text-negative">{fmt(Math.round(simResult.pes))}</p>
-                  <p className="text-[10px] text-negative/80">+{pesRate.toFixed(0)}% {t("anual", "annual")}</p>
+                  <p className="text-[10px] text-negative/80">+{pesRate}% {t("anual", "annual")}</p>
                 </div>
+
               </div>
             </div>
           </div>
