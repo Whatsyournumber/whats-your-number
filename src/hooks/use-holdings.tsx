@@ -39,7 +39,10 @@ export type Holding = {
   probability: number;
   note: string | null;
   position: number;
+  /** Fecha de alta del activo (para ubicar el aporte en el mes correcto). */
+  created_at?: string | null;
 };
+
 
 type Row = Record<string, unknown>;
 
@@ -62,6 +65,8 @@ function toHolding(r: Row, i: number): Holding {
     probability: r["probability"] == null ? 100 : num(r["probability"]),
     note: (r["note"] as string | null) ?? null,
     position: r["position"] == null ? i : num(r["position"]),
+    created_at: (r["created_at"] as string | null) ?? null,
+
   };
 }
 
