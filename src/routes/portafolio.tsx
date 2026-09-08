@@ -1093,11 +1093,17 @@ function PortafolioContent() {
                   <span className="numeric whitespace-nowrap text-foreground">≈{ref.histLabel}</span>
                 </p>
                 <p className="flex items-center justify-between gap-3 text-muted-foreground">
-                  <span className="whitespace-nowrap">{t("Escenario optimista", "Optimistic scenario")}</span>
+                  <span className="flex items-center gap-1.5 whitespace-nowrap">
+                    <span className="h-2 w-2 rounded-full bg-positive" />
+                    {t("Escenario optimista", "Optimistic scenario")}
+                  </span>
                   <span className="numeric whitespace-nowrap text-positive">{ref.opt.toFixed(1)}%</span>
                 </p>
                 <p className="flex items-center justify-between gap-3 text-muted-foreground">
-                  <span className="whitespace-nowrap">{t("Escenario pesimista", "Pessimistic scenario")}</span>
+                  <span className="flex items-center gap-1.5 whitespace-nowrap">
+                    <span className="h-2 w-2 rounded-full bg-negative" />
+                    {t("Escenario pesimista", "Pessimistic scenario")}
+                  </span>
                   <span className="numeric whitespace-nowrap text-negative">{ref.cons.toFixed(1)}%</span>
                 </p>
               </TooltipContent>
