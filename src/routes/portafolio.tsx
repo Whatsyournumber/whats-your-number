@@ -1281,7 +1281,7 @@ function PortafolioContent() {
         </Panel>
 
         <Panel
-          title={t("Configuración de Portfolio", "Portfolio Configuration")}
+          title={t("Configuración del Simulador del Portfolio", "Portfolio Simulator Configuration")}
           description={t("Añade hasta 5 activos y proyecta", "Add up to 5 assets and project")}
           descriptionClassName="truncate whitespace-nowrap"
           className="lg:col-span-2"
@@ -1290,7 +1290,7 @@ function PortafolioContent() {
               type="button"
               variant="outline"
               size="sm"
-              className="gap-1.5"
+              className="gap-1.5 self-end"
               disabled={simAssets.length >= 5}
               onClick={addSimAsset}
             >
