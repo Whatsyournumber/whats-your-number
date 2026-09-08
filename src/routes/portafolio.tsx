@@ -1170,10 +1170,10 @@ function PortafolioContent() {
                   type="button"
                   onClick={() => setBenchmark(b.k)}
                   className={cn(
-                    "shrink-0 whitespace-nowrap rounded-full px-2 py-1 text-[10px] font-medium transition sm:px-2.5 sm:text-[11px]",
+                    "shrink-0 whitespace-nowrap rounded-full border px-2 py-1 text-[10px] font-medium transition sm:px-2.5 sm:text-[11px]",
                     benchmark === b.k
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground",
+                      ? "border-chart-2/50 bg-chart-2/15 text-chart-2 shadow-sm"
+                      : "border-transparent text-muted-foreground hover:text-foreground",
                   )}
                 >
                   {b.l}
@@ -1189,7 +1189,7 @@ function PortafolioContent() {
               {t("Tu portafolio", "Your portfolio")}
             </span>
             <span className="flex items-center gap-1.5 text-muted-foreground">
-              <span className="h-0.5 w-4 rounded-full bg-[var(--color-chart-8)]" />
+              <span className="h-0.5 w-4 rounded-full bg-[var(--color-chart-2)]" />
               {benchName}
             </span>
             {hasSim ? (
@@ -1250,8 +1250,8 @@ function PortafolioContent() {
                 <Line type="monotone" dataKey="real" name={t("Tu portafolio", "Your portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.6} dot={false} connectNulls />
                 {hasSim ? <Line type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="var(--color-positive)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls /> : null}
                 {hasSim ? <Line type="monotone" dataKey="pes" name={t("Pesimista", "Pessimistic")} stroke="var(--color-negative)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls /> : null}
-                <Line type="monotone" dataKey="bench" name={benchName} stroke="var(--color-chart-8)" strokeWidth={1.8} strokeDasharray="2 5" dot={false} connectNulls />
-                {hasSim ? <Line type="monotone" dataKey="benchProj" name={benchName} stroke="var(--color-chart-8)" strokeWidth={1.6} strokeDasharray="2 5" dot={false} connectNulls /> : null}
+                <Line type="monotone" dataKey="bench" name={benchName} stroke="var(--color-chart-2)" strokeWidth={1.8} strokeDasharray="2 5" dot={false} connectNulls />
+                {hasSim ? <Line type="monotone" dataKey="benchProj" name={benchName} stroke="var(--color-chart-2)" strokeWidth={1.6} strokeDasharray="2 5" dot={false} connectNulls /> : null}
               </ComposedChart>
             </ResponsiveContainer>
           )}
