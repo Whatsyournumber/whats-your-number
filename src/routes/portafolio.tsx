@@ -1189,7 +1189,7 @@ function PortafolioContent() {
               {t("Tu portafolio", "Your portfolio")}
             </span>
             <span className="flex items-center gap-1.5 text-muted-foreground">
-              <span className="h-0.5 w-4 rounded-full bg-[var(--color-chart-8)]" />
+              <span className="h-0.5 w-4 rounded-full bg-[var(--color-chart-2)]" />
               {benchName}
             </span>
             {hasSim ? (
