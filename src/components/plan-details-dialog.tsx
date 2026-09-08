@@ -62,7 +62,7 @@ function usePlanCopy() {
         t("WhatsYournumber acorde con tu objetivo", "WhatsYournumber tailored to your goal"),
         t("Simulador de retiro temprano", "Early retirement simulator"),
         t("Portafolio y benchmark de mercado", "Portfolio and market benchmark"),
-        t("Reportes mensuales automáticos", "Automatic monthly reports"),
+        t("Simulador futuro de tu portafolio en tiempo real", "Real-time future portfolio simulator"),
       ],
     },
     patrimonio: {
