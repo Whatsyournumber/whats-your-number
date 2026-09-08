@@ -163,9 +163,9 @@ function PatrimonioContent() {
     const b0 = bSlice[0]!.value;
     return nwSlice.map((m, i) => ({
       label: m.label,
-      netWorth: n0 !== 0 ? ((m.netWorth - n0) / Math.abs(n0)) * 100 : 0,
-      // La serie de mercado ya viene en % acumulado; se re-basea restando el primer punto.
-      bench: bSlice[i]!.value - b0,
+      netWorth: m.netWorth,
+      // El índice se escala a dinero: parte del mismo patrimonio inicial y aplica su % real.
+      bench: n0 * (1 + (bSlice[i]!.value - b0) / 100),
     }));
   })();
 
@@ -493,23 +493,21 @@ function PatrimonioContent() {
                 <XAxis dataKey="label" {...axisProps} />
                 <YAxis
                   {...axisProps}
-                  tickFormatter={(v) => (comparing ? `${Number(v).toFixed(0)}%` : fmtCompact(Number(v)))}
+                  domain={[
+                    (dataMin: number) => (dataMin >= 0 ? dataMin * 0.92 : dataMin * 1.08),
+                    (dataMax: number) => (dataMax >= 0 ? dataMax * 1.08 : dataMax * 0.92),
+                  ]}
+                  tickFormatter={(v) => fmtCompact(Number(v))}
                   width={isMobile ? 42 : 48}
                 />
-                <Tooltip
-                  content={
-                    <ChartTooltip
-                      {...(comparing ? { formatter: (v: number) => `${v.toFixed(1)}%` } : {})}
-                    />
-                  }
-                />
+                <Tooltip content={<ChartTooltip />} />
                 <Area
                   type="monotone"
                   dataKey="netWorth"
                   name={t("Tu patrimonio", "Your net worth")}
                   stroke="var(--color-chart-2)"
                   strokeWidth={2.5}
-                  fill="url(#pw)"
+                  fill={comparing ? "none" : "url(#pw)"}
                 />
                 {comparing && (
                   <Line
@@ -525,19 +523,6 @@ function PatrimonioContent() {
               </ComposedChart>
             </ResponsiveContainer>
           </div>
-
-          {comparing && (
-            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 px-5 text-[11px] sm:px-0">
-              <span className="flex items-center gap-1.5 text-foreground">
-                <span className="h-2 w-2 rounded-full bg-[var(--color-chart-2)]" />
-                {t("Tu patrimonio", "Your net worth")}
-              </span>
-              <span className="flex items-center gap-1.5 text-muted-foreground">
-                <span className="h-0.5 w-4 rounded-full bg-[var(--color-chart-8)]" />
-                {benchName}
-              </span>
-            </div>
-          )}
 
           <div className="mt-4 border-t border-border pt-4">
             <div className="grid grid-cols-3 gap-4">
