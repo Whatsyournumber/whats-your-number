@@ -1184,7 +1184,7 @@ function PortafolioContent() {
         </motion.div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid gap-4 lg:grid-cols-5">
         <Panel
           title={t("Simulador del Portfolio", "Portfolio Simulator")}
           titleClassName="truncate whitespace-nowrap"
@@ -1201,7 +1201,7 @@ function PortafolioContent() {
               : t(`Histórico real · vs ${benchName}`, `Real history · vs ${benchName}`)
           }
           descriptionClassName="truncate whitespace-nowrap"
-          className="lg:col-span-2"
+          className="lg:col-span-3 lg:!p-4"
           actions={!isMobile ? benchmarkButtons : undefined}
           bleedMobile
         >
