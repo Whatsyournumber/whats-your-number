@@ -543,6 +543,12 @@ function PortafolioContent() {
     ? enriched.filter((h) => h.type === "Cash").reduce((s, h) => s + h.value, 0) / totalValue
     : 0;
   const annualGain = gainPositions.reduce((s, h) => s + h.value * h.growth, 0);
+  // Totales del tab activo en Posiciones (Todos = cartera completa).
+  const [posTab, setPosTab] = useState<string>("Todos");
+  const tabList = posTab === "Todos" ? enriched : enriched.filter((h) => h.type === posTab);
+  const tabValue = tabList.reduce((s, h) => s + h.value, 0);
+  const tabAnnualGain = tabList.filter((h) => !gainExcludedTypes.has(h.type)).reduce((s, h) => s + h.value * h.growth, 0);
+  const tabWeightedReturn = tabValue ? tabList.reduce((s, h) => s + h.growth * 100 * h.value, 0) / tabValue : 0;
   const top = [...enriched].sort((a, b) => b.value - a.value)[0];
   const concentration = top && totalValue ? (top.value / totalValue) * 100 : 0;
   const netAnnual = (totalValue * weightedReturn) / 100;
@@ -1596,7 +1602,7 @@ function PortafolioContent() {
           </Link>
         }
       >
-        <Tabs defaultValue="Todos">
+        <Tabs value={posTab} onValueChange={setPosTab}>
           <TabsList className="mb-4">
             <TabsTrigger value="Todos">{t("Todos", "All")}</TabsTrigger>
             {activeTypes.map((ty) => (
@@ -1623,22 +1629,22 @@ function PortafolioContent() {
             </div>
             <div>
               <p className="text-[11px] text-muted-foreground">{t("Valor", "Value")}</p>
-              <p className="numeric text-base font-bold text-foreground">{fmt(totalValue)}</p>
+              <p className="numeric text-base font-bold text-foreground">{fmt(tabValue)}</p>
             </div>
             <div>
               <p className="text-[11px] text-muted-foreground">{t("Ganancia anual", "Annual gain")}</p>
-              <p className="numeric text-base font-bold text-positive">{fmt(Math.round(annualGain))}</p>
+              <p className="numeric text-base font-bold text-positive">{fmt(Math.round(tabAnnualGain))}</p>
             </div>
             <div>
               <p className="text-[11px] text-muted-foreground">{t("Ganancia mensual", "Monthly gain")}</p>
-              <p className="numeric text-base font-bold text-positive">{fmt(Math.round(annualGain / 12))}</p>
+              <p className="numeric text-base font-bold text-positive">{fmt(Math.round(tabAnnualGain / 12))}</p>
             </div>
 
             <div>
               <p className="text-[11px] text-muted-foreground">{t("Rentabilidad", "Return")}</p>
-              <p className={cn("numeric text-base font-bold", weightedReturn >= 0 ? "text-positive" : "text-negative")}>
-                {weightedReturn > 0 ? "+" : ""}
-                {weightedReturn.toFixed(1)}%
+              <p className={cn("numeric text-base font-bold", tabWeightedReturn >= 0 ? "text-positive" : "text-negative")}>
+                {tabWeightedReturn > 0 ? "+" : ""}
+                {tabWeightedReturn.toFixed(1)}%
               </p>
             </div>
           </div>
