@@ -932,8 +932,9 @@ function PortafolioContent() {
     const contrib = r === 0 ? simContrib * 12 * years : simContrib * 12 * ((growth - 1) / r);
     return simStartValue * growth + contrib;
   };
-  const optRate = simRate + 4;
-  const pesRate = Math.max(0, simRate - 5);
+  // Escenarios del benchmark: ±3 puntos sobre el CAGR histórico del índice seleccionado.
+  const optRate = benchCagr + 3;
+  const pesRate = Math.max(0, benchCagr - 3);
   const thisYear = new Date().getFullYear();
   const histPoints = benchmarkData.map((p) => ({
     label: p.label,
