@@ -1403,16 +1403,16 @@ function PortafolioContent() {
               />
             </label>
 
-            <div className="grid grid-cols-2 gap-3 border-t border-border/50 pt-4 lg:grid-cols-1">
+            <div className="grid grid-cols-2 gap-3 border-t border-border/50 pt-4">
               <div className="rounded-xl border border-positive/20 bg-positive/5 p-3">
-                <p className="truncate text-[10px] font-medium text-positive lg:text-[11px]">
+                <p className="truncate text-[10px] font-medium text-positive">
                   {isMobile ? t("Optimista compuesto", "Compound optimistic") : t("Escenario optimista compuesto", "Optimistic compound scenario")}
                 </p>
                 <p className="numeric mt-1 text-lg font-bold text-positive">{fmt(Math.round(simResult.opt))}</p>
                 <p className="text-[10px] text-positive/80">+{optRate.toFixed(0)}% {t("anual", "annual")}</p>
               </div>
               <div className="rounded-xl border border-negative/20 bg-negative/5 p-3">
-                <p className="truncate text-[10px] font-medium text-negative lg:text-[11px]">
+                <p className="truncate text-[10px] font-medium text-negative">
                   {isMobile ? t("Pesimista compuesto", "Compound pessimistic") : t("Escenario pesimista compuesto", "Pessimistic compound scenario")}
                 </p>
                 <p className="numeric mt-1 text-lg font-bold text-negative">{fmt(Math.round(simResult.pes))}</p>
