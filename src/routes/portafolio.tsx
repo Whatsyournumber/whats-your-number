@@ -1017,16 +1017,15 @@ function PortafolioContent() {
   const simData = hasSim
     ? [
         ...histSlice.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench })),
-        ...projPoints
-          .filter((p, i) => i === 0 || i === simYears || i % simStep === 0)
-          // En "Hoy" todas las series arrancan del mismo punto para que el compuesto se mida igual.
-          .map((p, i) => (i === 0 ? { ...p, real: simStartValue, bench: simStartValue } : p)),
-
+        // Todos los años proyectados, compuestos año a año.
+        ...projPoints.map((p, i) => (i === 0 ? { ...p, real: simStartValue, bench: simStartValue } : p)),
       ]
     : histSlice.map((h) => ({ label: h.label, real: h.real, bench: h.bench }));
 
   const todayIndex = histSlice.length - 1;
-  const simTicks = simData.map((d) => d.label);
+  const simTicks = simData
+    .map((d) => d.label)
+    .filter((label, i) => i <= todayIndex || (i - todayIndex) % simStep === 0 || i === simData.length - 1);
   const simResult = projPoints[projPoints.length - 1]!;
 
 
