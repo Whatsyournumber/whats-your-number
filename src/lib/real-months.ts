@@ -10,10 +10,17 @@ const MONTH_LABELS = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "S
 export function buildRealMonths(
   transactions: Tx[],
   currentNetWorth: number,
-  fallbackInvestRatio = 0.6,
-  maxMonths = 12,
+  opts?: {
+    /** Aportes/compras de activos por mes (clave YYYY-MM) que suman al patrimonio de ese mes. */
+    contributions?: Record<string, number>;
+    fallbackInvestRatio?: number;
+    maxMonths?: number;
+  },
 ): DerivedMonth[] | null {
-  if (!transactions.length) return null;
+  const fallbackInvestRatio = opts?.fallbackInvestRatio ?? 0.6;
+  const maxMonths = opts?.maxMonths ?? 12;
+  const contributions = opts?.contributions ?? {};
+  if (!transactions.length && Object.keys(contributions).length === 0) return null;
 
   const agg = new Map<string, { income: number; expenses: number }>();
   for (const tx of transactions) {
@@ -24,11 +31,17 @@ export function buildRealMonths(
     else row.expenses += Math.abs(tx.amount);
     agg.set(key, row);
   }
+  for (const key of Object.keys(contributions)) {
+    if (!agg.has(key)) agg.set(key, { income: 0, expenses: 0 });
+  }
   if (agg.size === 0) return null;
 
+  const now = new Date();
+  const nowKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
   const keys = [...agg.keys()].sort();
   const first = keys[0]!;
-  const last = keys[keys.length - 1]!;
+  // La serie siempre llega hasta el mes actual para reflejar aportes recientes.
+  const last = [keys[keys.length - 1]!, nowKey].sort().pop()!;
 
   // Rellena los meses intermedios sin movimientos para que la línea sea continua.
   const ordered: string[] = [];
@@ -39,6 +52,7 @@ export function buildRealMonths(
     cursor.setMonth(cursor.getMonth() + 1);
   }
   const window = ordered.slice(-maxMonths);
+
 
   const rows = window.map((key) => {
     const { income, expenses } = agg.get(key) ?? { income: 0, expenses: 0 };
