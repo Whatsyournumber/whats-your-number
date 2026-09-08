@@ -928,13 +928,15 @@ function PortafolioContent() {
     benchProj: fv(benchCagr, y),
   }));
   const simStep = simYears > 20 ? 5 : simYears > 10 ? 3 : 2;
+  const histSlice = hasSim ? histPoints.slice(-6) : histPoints;
   const simData = hasSim
     ? [
-        ...histPoints.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench })),
+        ...histSlice.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench })),
         ...projPoints.filter((p, i) => i === 0 || i === simYears || i % simStep === 0),
       ]
     : histPoints.map((h) => ({ label: h.label, real: h.real, bench: h.bench }));
-  const todayIndex = histPoints.length - 1;
+  const todayIndex = histSlice.length - 1;
+  const simTicks = simData.map((d) => d.label);
   const simResult = projPoints[projPoints.length - 1]!;
 
 
