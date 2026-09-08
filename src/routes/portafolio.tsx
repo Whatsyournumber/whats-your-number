@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CalendarIcon, Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, TrendingUp, X } from "lucide-react";
+import { CalendarIcon, Info, Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, TrendingUp, X } from "lucide-react";
 import { useState } from "react";
 import { motion } from "motion/react";
 import { Area, CartesianGrid, ComposedChart, Line, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -932,8 +932,9 @@ function PortafolioContent() {
     const contrib = r === 0 ? simContrib * 12 * years : simContrib * 12 * ((growth - 1) / r);
     return simStartValue * growth + contrib;
   };
-  const optRate = simRate + 4;
-  const pesRate = Math.max(0, simRate - 5);
+  // Escenarios del benchmark: ±3 puntos sobre el CAGR histórico del índice seleccionado.
+  const optRate = benchCagr + 3;
+  const pesRate = Math.max(0, benchCagr - 3);
   const thisYear = new Date().getFullYear();
   const histPoints = benchmarkData.map((p) => ({
     label: p.label,
@@ -1403,20 +1404,38 @@ function PortafolioContent() {
               />
             </label>
 
-            <div className="grid grid-cols-2 gap-3 border-t border-border/50 pt-4">
-              <div className="rounded-xl border border-positive/20 bg-positive/5 p-3">
-                <p className="truncate text-[10px] font-medium text-positive">
-                  {isMobile ? t("Optimista compuesto", "Compound optimistic") : t("Escenario optimista compuesto", "Optimistic compound scenario")}
-                </p>
-                <p className="numeric mt-1 text-lg font-bold text-positive">{fmt(Math.round(simResult.opt))}</p>
-                <p className="text-[10px] text-positive/80">+{optRate.toFixed(0)}% {t("anual", "annual")}</p>
+            <div className="space-y-2 border-t border-border/50 pt-4">
+              <div className="flex items-center justify-between">
+                <p className="text-[10px] font-medium text-muted-foreground">{t("Escenarios", "Scenarios")}</p>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button type="button" className="inline-flex h-5 w-5 items-center justify-center rounded-full text-muted-foreground hover:text-foreground" aria-label={t("Cómo se calcula", "How it is calculated")}>
+                      <Info className="h-3.5 w-3.5" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent align="end" side="top" className="w-56 p-2.5 text-xs">
+                    {t(
+                      `Optimista = promedio histórico de ${benchName} + 3%. Pesimista = promedio histórico − 3%.`,
+                      `Optimistic = ${benchName} historical average + 3%. Pessimistic = historical average − 3%.`,
+                    )}
+                  </PopoverContent>
+                </Popover>
               </div>
-              <div className="rounded-xl border border-negative/20 bg-negative/5 p-3">
-                <p className="truncate text-[10px] font-medium text-negative">
-                  {isMobile ? t("Pesimista compuesto", "Compound pessimistic") : t("Escenario pesimista compuesto", "Pessimistic compound scenario")}
-                </p>
-                <p className="numeric mt-1 text-lg font-bold text-negative">{fmt(Math.round(simResult.pes))}</p>
-                <p className="text-[10px] text-negative/80">+{pesRate.toFixed(0)}% {t("anual", "annual")}</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-xl border border-positive/20 bg-positive/5 p-3">
+                  <p className="truncate text-[10px] font-medium text-positive">
+                    {isMobile ? t("Optimista compuesto", "Compound optimistic") : t("Escenario optimista compuesto", "Optimistic compound scenario")}
+                  </p>
+                  <p className="numeric mt-1 text-lg font-bold text-positive">{fmt(Math.round(simResult.opt))}</p>
+                  <p className="text-[10px] text-positive/80">+{optRate.toFixed(0)}% {t("anual", "annual")}</p>
+                </div>
+                <div className="rounded-xl border border-negative/20 bg-negative/5 p-3">
+                  <p className="truncate text-[10px] font-medium text-negative">
+                    {isMobile ? t("Pesimista compuesto", "Compound pessimistic") : t("Escenario pesimista compuesto", "Pessimistic compound scenario")}
+                  </p>
+                  <p className="numeric mt-1 text-lg font-bold text-negative">{fmt(Math.round(simResult.pes))}</p>
+                  <p className="text-[10px] text-negative/80">+{pesRate.toFixed(0)}% {t("anual", "annual")}</p>
+                </div>
               </div>
             </div>
           </div>
