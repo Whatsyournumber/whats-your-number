@@ -161,14 +161,21 @@ function PatrimonioContent() {
     const bSlice = benchSeriesRaw.slice(benchSeriesRaw.length - compareLen);
     const n0 = nwSlice[0]!.netWorth;
     const b0 = bSlice[0]!.value;
-    return nwSlice.map((m, i) => ({
-      label: m.label,
-      netWorth: m.netWorth,
+    return nwSlice.map((m, i) => {
       // El índice se escala a dinero: parte del mismo patrimonio inicial y aplica su % real.
-      bench: n0 * (1 + (bSlice[i]!.value - b0) / 100),
-      netPct: n0 !== 0 ? ((m.netWorth - n0) / Math.abs(n0)) * 100 : 0,
-      benchPct: bSlice[i]!.value - b0,
-    }));
+      const bench = n0 * (1 + (bSlice[i]!.value - b0) / 100);
+      const prevNet = i > 0 ? nwSlice[i - 1]!.netWorth : undefined;
+      const prevBench = i > 0 ? n0 * (1 + (bSlice[i - 1]!.value - b0) / 100) : undefined;
+      return {
+        label: m.label,
+        netWorth: m.netWorth,
+        bench,
+        // Variación real del mes: incluye aportes nuevos y aportes mensuales.
+        netPct: prevNet !== undefined && prevNet !== 0 ? ((m.netWorth - prevNet) / Math.abs(prevNet)) * 100 : undefined,
+        netDelta: prevNet !== undefined ? m.netWorth - prevNet : undefined,
+        benchPct: prevBench !== undefined && prevBench !== 0 ? ((bench - prevBench) / Math.abs(prevBench)) * 100 : undefined,
+      };
+    });
   })();
 
   // Precios reales para posiciones con ticker.
@@ -541,10 +548,15 @@ function PatrimonioContent() {
                       {...(comparing
                         ? {
                             formatter: (v: number, item) => {
-                              const row = item?.payload as { netPct?: number; benchPct?: number } | undefined;
-                              const pct = item?.dataKey === "bench" ? row?.benchPct : row?.netPct;
-                              const pctTxt = pct !== undefined ? ` · ${pct >= 0 ? "+" : ""}${pct.toFixed(1)}%` : "";
-                              return `${fmt(v)}${pctTxt}`;
+                              const row = item?.payload as { netPct?: number; benchPct?: number; netDelta?: number } | undefined;
+                              const isBench = item?.dataKey === "bench";
+                              const pct = isBench ? row?.benchPct : row?.netPct;
+                              const delta = isBench ? undefined : row?.netDelta;
+                              const sign = (n: number) => (n >= 0 ? "+" : "-");
+                              const deltaTxt =
+                                delta !== undefined && Math.round(delta) !== 0 ? ` · ${sign(delta)}${fmt(Math.abs(delta))}` : "";
+                              const pctTxt = pct !== undefined ? ` · ${sign(pct)}${Math.abs(pct).toFixed(1)}%` : "";
+                              return `${fmt(v)}${deltaTxt}${pctTxt}`;
                             },
                           }
                         : {})}
