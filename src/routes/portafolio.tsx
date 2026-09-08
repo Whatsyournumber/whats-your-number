@@ -542,6 +542,10 @@ function PortafolioContent() {
   const series = seriesQuery.data?.series ?? {};
   const benchSymbol = benchmark === "nasdaq" ? "^IXIC" : benchmark === "world" ? "URTH" : "^GSPC";
   const benchName = benchmark === "nasdaq" ? "Nasdaq 100" : benchmark === "world" ? "MSCI World" : "S&P 500";
+  // CAGR histórico real del índice (10y, con 5y/YTD como respaldo) para proyectarlo igual que lo real.
+  const benchReturnsQuery = useSymbolReturns([benchSymbol]);
+  const benchHistCagrRaw = benchReturnsQuery.data?.cagr?.[benchSymbol];
+
   // Últimos 12 meses únicos: evita etiquetas duplicadas si Yahoo devuelve un punto extra.
   const last12Unique = (s: { label: string; value: number }[]) => {
     const out: { label: string; value: number }[] = [];
