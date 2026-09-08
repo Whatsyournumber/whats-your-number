@@ -623,11 +623,16 @@ function PortafolioContent() {
   const base = equityValue + cryptoValue + cashValue;
   const wEq = base ? equityValue / base : 1;
   const wCr = base ? cryptoValue / base : 0;
-  const benchmarkData = benchSeries.map((p, i) => ({
-    label: p.label,
-    bench: p.value,
-    portfolio: (spy[i]?.value ?? p.value) * wEq + (btc[i]?.value ?? 0) * wCr,
-  }));
+  // Sin activos cargados no hay histórico real: no inventamos una serie.
+  const hasPortfolio = base > 0;
+  const benchmarkData = hasPortfolio
+    ? benchSeries.map((p, i) => ({
+        label: p.label,
+        bench: p.value,
+        portfolio: (spy[i]?.value ?? p.value) * wEq + (btc[i]?.value ?? 0) * wCr,
+      }))
+    : [];
+
 
   // ---- Estadística real: volatilidad, drawdown, beta, correlación, Sharpe ----
   const toReturns = (vals: number[]) =>
