@@ -69,11 +69,14 @@ function SimTooltip({
         {payload.map((p, i) => {
           const key = p.dataKey ?? String(i);
           if (seen.has(key)) return null;
+          // En "Hoy" solo mostramos el portafolio real y el índice de referencia.
+          if (isToday && (key === "opt" || key === "pes")) return null;
           seen.add(key);
           const value = typeof p.value === "number" ? p.value : 0;
-          // Base = primer valor de la serie (crecimiento compuesto acumulado, todo reinvertido).
+          // Crecimiento compuesto: en la proyección se mide desde "Hoy"; en el histórico, desde el primer mes.
           let baseValue: number | null = null;
-          for (let j = 0; j <= index && j < data.length; j += 1) {
+          const start = todayIndex >= 0 && index > todayIndex ? todayIndex : 0;
+          for (let j = start; j <= index && j < data.length; j += 1) {
             const v = data[j]?.[key];
             if (typeof v === "number" && v > 0) {
               baseValue = v;
@@ -81,6 +84,7 @@ function SimTooltip({
             }
           }
           const pct = baseValue && baseValue > 0 && index >= 0 ? ((value - baseValue) / baseValue) * 100 : null;
+
           const pctText = pct !== null ? new Intl.NumberFormat(pctLocale, { signDisplay: "exceptZero", maximumFractionDigits: 1 }).format(pct) + "%" : null;
           const up = pct !== null && pct >= 0;
           return (
