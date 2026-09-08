@@ -909,7 +909,10 @@ function PortafolioContent() {
   const simRate = simAddedTotal > 0
     ? simAssets.reduce((sum, asset) => sum + assetRate(asset) * (asset.amount || 0), 0) / simAddedTotal
     : fallbackRate;
-  const benchCagr = Math.max(1, Math.min(15, bench12 || 8));
+  const benchCagr = Math.max(1, Math.min(15,
+    typeof benchHistCagrRaw === "number" && Number.isFinite(benchHistCagrRaw) ? benchHistCagrRaw : (bench12 || 8),
+  ));
+
   const fv = (rate: number, years: number) => {
     const r = rate / 100;
     const growth = Math.pow(1 + r, years);
