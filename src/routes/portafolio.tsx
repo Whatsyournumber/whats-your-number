@@ -1375,14 +1375,14 @@ function PortafolioContent() {
               </div>
             )}
 
-            <div className="flex items-center justify-between border-t border-border/50 pt-4">
-              <p className="text-[10px] text-muted-foreground">
+            <div className="grid grid-cols-[1rem_minmax(0,1.6fr)_minmax(0,2fr)_minmax(0,1.7fr)_minmax(0,0.8fr)] items-center gap-1.5 border-t border-border/50 px-1 pr-5 pt-4">
+              <span className="w-4 shrink-0" />
+              <p className="truncate text-[10px] text-muted-foreground">
                 {simAssets.length}/5 {t("activos", "assets")}
               </p>
-              <div className="text-right">
-                <p className="text-[10px] text-muted-foreground">{t("Rendimiento medio", "Average return")}</p>
-                <p className="numeric text-sm font-semibold text-foreground">{simRate.toFixed(1)}%</p>
-              </div>
+              <p className="numeric truncate text-xs font-semibold text-foreground">{fmt(simPortfolioTotal)}</p>
+              <p className="numeric truncate text-xs font-semibold text-foreground">{fmt(simContrib)}</p>
+              <p className="numeric truncate text-xs font-semibold text-foreground">{simRate.toFixed(1)}%</p>
             </div>
 
             <label className="block border-t border-border/50 pt-4">
@@ -1405,12 +1405,12 @@ function PortafolioContent() {
 
             <div className="grid grid-cols-2 gap-3 border-t border-border/50 pt-4">
               <div className="rounded-xl border border-positive/20 bg-positive/5 p-3">
-                <p className="text-[10px] font-medium text-positive">{t("Escenario optimista", "Optimistic scenario")}</p>
+                <p className="text-[10px] font-medium text-positive">{t("Escenario optimista compuesto", "Compound optimistic scenario")}</p>
                 <p className="numeric mt-1 text-lg font-bold text-positive">{fmt(Math.round(simResult.opt))}</p>
                 <p className="text-[10px] text-positive/80">+{optRate.toFixed(0)}% {t("anual", "annual")}</p>
               </div>
               <div className="rounded-xl border border-negative/20 bg-negative/5 p-3">
-                <p className="text-[10px] font-medium text-negative">{t("Escenario pesimista", "Pessimistic scenario")}</p>
+                <p className="text-[10px] font-medium text-negative">{t("Escenario pesimista compuesto", "Compound pessimistic scenario")}</p>
                 <p className="numeric mt-1 text-lg font-bold text-negative">{fmt(Math.round(simResult.pes))}</p>
                 <p className="text-[10px] text-negative/80">+{pesRate.toFixed(0)}% {t("anual", "annual")}</p>
               </div>
