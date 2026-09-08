@@ -542,6 +542,10 @@ function PortafolioContent() {
   const series = seriesQuery.data?.series ?? {};
   const benchSymbol = benchmark === "nasdaq" ? "^IXIC" : benchmark === "world" ? "URTH" : "^GSPC";
   const benchName = benchmark === "nasdaq" ? "Nasdaq 100" : benchmark === "world" ? "MSCI World" : "S&P 500";
+  // CAGR histórico real del índice (10y, con 5y/YTD como respaldo) para proyectarlo igual que lo real.
+  const benchReturnsQuery = useSymbolReturns([benchSymbol]);
+  const benchHistCagrRaw = benchReturnsQuery.data?.cagr?.[benchSymbol];
+
   // Últimos 12 meses únicos: evita etiquetas duplicadas si Yahoo devuelve un punto extra.
   const last12Unique = (s: { label: string; value: number }[]) => {
     const out: { label: string; value: number }[] = [];
@@ -905,7 +909,10 @@ function PortafolioContent() {
   const simRate = simAddedTotal > 0
     ? simAssets.reduce((sum, asset) => sum + assetRate(asset) * (asset.amount || 0), 0) / simAddedTotal
     : fallbackRate;
-  const benchCagr = Math.max(1, Math.min(15, bench12 || 8));
+  const benchCagr = Math.max(1, Math.min(15,
+    typeof benchHistCagrRaw === "number" && Number.isFinite(benchHistCagrRaw) ? benchHistCagrRaw : (bench12 || 8),
+  ));
+
   const fv = (rate: number, years: number) => {
     const r = rate / 100;
     const growth = Math.pow(1 + r, years);
