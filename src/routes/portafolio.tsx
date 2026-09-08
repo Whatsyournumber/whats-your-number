@@ -42,9 +42,10 @@ function SimTooltip({
   if (!active || !payload?.length) return null;
   const f = formatter;
   const index = data.findIndex((d) => d["label"] === label);
-  const prev = index > 0 ? data[index - 1] : null;
   const pctLocale = lang === "es" ? "es-ES" : "en-US";
   const seen = new Set<string>();
+  const seriesColor = (key: string, fallback?: string) =>
+    key === "opt" ? "var(--color-positive)" : key === "pes" ? "var(--color-negative)" : fallback;
   return (
     <div
       className="rounded-2xl border px-4 py-3 text-xs backdrop-blur-sm"
@@ -66,13 +67,21 @@ function SimTooltip({
           if (seen.has(key)) return null;
           seen.add(key);
           const value = typeof p.value === "number" ? p.value : 0;
-          const prevValue = prev && typeof prev[key] === "number" ? (prev[key] as number) : null;
-          const pct = prevValue && prevValue > 0 ? ((value - prevValue) / prevValue) * 100 : null;
+          // Base = primer valor de la serie (crecimiento compuesto acumulado, todo reinvertido).
+          let baseValue: number | null = null;
+          for (let j = 0; j <= index && j < data.length; j += 1) {
+            const v = data[j]?.[key];
+            if (typeof v === "number" && v > 0) {
+              baseValue = v;
+              break;
+            }
+          }
+          const pct = baseValue && baseValue > 0 && index >= 0 ? ((value - baseValue) / baseValue) * 100 : null;
           const pctText = pct !== null ? new Intl.NumberFormat(pctLocale, { signDisplay: "exceptZero", maximumFractionDigits: 1 }).format(pct) + "%" : null;
           const up = pct !== null && pct >= 0;
           return (
             <div key={i} className="flex items-center gap-2.5">
-              <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: p.color }} />
+              <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: seriesColor(key, p.color) }} />
               <span className="text-[13px]" style={{ color: "var(--chart-tooltip-muted)" }}>
                 {p.name}
               </span>
@@ -88,6 +97,7 @@ function SimTooltip({
               </div>
             </div>
           );
+
         })}
       </div>
     </div>
