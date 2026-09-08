@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Area, AreaChart, Cell, Line, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
+import { Area, AreaChart, Cell, ComposedChart, Line, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
 import { Pencil } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -479,7 +479,7 @@ function PatrimonioContent() {
         >
           <div className="min-h-[340px] flex-1 md:min-h-[420px] lg:min-h-0">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart
+              <ComposedChart
                 data={comparing ? compareData : chartMonths}
                 margin={{ left: isMobile ? 0 : -20, right: isMobile ? 4 : 0, top: 8 }}
               >
@@ -522,7 +522,7 @@ function PatrimonioContent() {
                     dot={false}
                   />
                 )}
-              </AreaChart>
+              </ComposedChart>
             </ResponsiveContainer>
           </div>
 
