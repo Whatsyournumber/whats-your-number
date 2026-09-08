@@ -936,10 +936,13 @@ function PortafolioContent() {
   }));
   const simStep = simYears > 20 ? 5 : simYears > 10 ? 3 : 2;
   const histSlice = hasSim ? histPoints.slice(-6) : histPoints;
+  const lastHist = histSlice[histSlice.length - 1];
   const simData = hasSim
     ? [
         ...histSlice.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench })),
-        ...projPoints.filter((p, i) => i === 0 || i === simYears || i % simStep === 0),
+        ...projPoints
+          .filter((p, i) => i === 0 || i === simYears || i % simStep === 0)
+          .map((p, i) => (i === 0 ? { ...p, real: lastHist?.real, bench: lastHist?.bench } : p)),
       ]
     : histPoints.map((h) => ({ label: h.label, real: h.real, bench: h.bench }));
   const todayIndex = histSlice.length - 1;
@@ -1227,6 +1230,7 @@ function PortafolioContent() {
                   ticks={simTicks}
                   interval={0}
                   tickMargin={6}
+                  padding={{ left: 10, right: 26 }}
                   height={isMobile ? 24 : 20}
                 />
                 <YAxis
