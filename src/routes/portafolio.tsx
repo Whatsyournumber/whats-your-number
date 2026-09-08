@@ -170,7 +170,7 @@ function SimAssetRow({
       >
         <X className="h-3 w-3" />
       </Button>
-      <div className="grid grid-cols-[1rem_minmax(0,1.6fr)_minmax(0,2fr)_minmax(0,1.7fr)_minmax(0,0.8fr)] items-center gap-1.5">
+      <div className="grid grid-cols-[1rem_minmax(0,1.6fr)_minmax(0,2fr)_minmax(0,1.7fr)_minmax(0,0.8fr)] items-center gap-1.5 lg:gap-1">
         <TrendingUp className="h-3 w-3 shrink-0" style={{ color }} />
 
         <div className="relative min-w-0">
@@ -192,7 +192,7 @@ function SimAssetRow({
           />
 
           {open && query.trim().length >= 1 && (
-            <div className="absolute left-0 top-10 z-30 w-[min(22rem,80vw)] overflow-hidden rounded-xl border border-border/60 bg-card/95 shadow-2xl backdrop-blur-xl">
+            <div className="absolute left-0 top-10 z-30 w-[min(16rem,85vw)] overflow-hidden rounded-xl border border-border/60 bg-card/95 shadow-2xl backdrop-blur-xl">
               {search.isFetching && hits.length === 0 && (
                 <p className="px-3 py-2 text-xs text-muted-foreground">{t("Buscando…", "Searching…")}</p>
               )}
@@ -1184,7 +1184,7 @@ function PortafolioContent() {
         </motion.div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-5">
+      <div className="grid gap-4 lg:grid-cols-3">
         <Panel
           title={t("Simulador del Portfolio", "Portfolio Simulator")}
           titleClassName="truncate whitespace-nowrap"
@@ -1201,7 +1201,7 @@ function PortafolioContent() {
               : t(`Histórico real · vs ${benchName}`, `Real history · vs ${benchName}`)
           }
           descriptionClassName="truncate whitespace-nowrap"
-          className="lg:col-span-3"
+          className="lg:col-span-2"
           actions={!isMobile ? benchmarkButtons : undefined}
           bleedMobile
         >
@@ -1310,7 +1310,7 @@ function PortafolioContent() {
               : t("Añade hasta 5 activos y proyecta", "Add up to 5 assets and project")
           }
           descriptionClassName="truncate whitespace-nowrap"
-          className="lg:col-span-2"
+          className="lg:col-span-1"
           actions={
             !isMobile ? (
               <Button
@@ -1349,7 +1349,7 @@ function PortafolioContent() {
               </div>
             ) : (
               <div className="space-y-2">
-                <div className="grid grid-cols-[1rem_minmax(0,1.6fr)_minmax(0,2fr)_minmax(0,1.7fr)_minmax(0,0.8fr)] items-center gap-1.5 px-1 pr-5">
+                <div className="grid grid-cols-[1rem_minmax(0,1.6fr)_minmax(0,2fr)_minmax(0,1.7fr)_minmax(0,0.8fr)] items-center gap-1.5 px-1 pr-5 lg:gap-1">
                   <span className="w-4 shrink-0" />
                   <span className="truncate text-[10px] font-medium text-muted-foreground">{t("Activo", "Asset")}</span>
                   <span className="truncate text-[10px] font-medium text-muted-foreground">{t("Monto", "Amount")}</span>
@@ -1375,7 +1375,7 @@ function PortafolioContent() {
               </div>
             )}
 
-            <div className="grid grid-cols-[1rem_minmax(0,1.6fr)_minmax(0,2fr)_minmax(0,1.7fr)_minmax(0,0.8fr)] items-center gap-1.5 border-t border-border/50 px-1 pr-5 pt-4">
+            <div className="grid grid-cols-[1rem_minmax(0,1.6fr)_minmax(0,2fr)_minmax(0,1.7fr)_minmax(0,0.8fr)] items-center gap-1.5 border-t border-border/50 px-1 pr-5 pt-4 lg:gap-1">
               <span className="w-4 shrink-0" />
               <p className="truncate text-[10px] text-muted-foreground">
                 {simAssets.length}/5 {t("activos", "assets")}
@@ -1403,14 +1403,18 @@ function PortafolioContent() {
               />
             </label>
 
-            <div className="grid grid-cols-2 gap-3 border-t border-border/50 pt-4">
+            <div className="grid grid-cols-2 gap-3 border-t border-border/50 pt-4 lg:grid-cols-1">
               <div className="rounded-xl border border-positive/20 bg-positive/5 p-3">
-                <p className="text-[10px] font-medium text-positive">{t("Optimista compuesto", "Compound optimistic")}</p>
+                <p className="truncate text-[10px] font-medium text-positive lg:text-[11px]">
+                  {isMobile ? t("Optimista compuesto", "Compound optimistic") : t("Escenario optimista compuesto", "Optimistic compound scenario")}
+                </p>
                 <p className="numeric mt-1 text-lg font-bold text-positive">{fmt(Math.round(simResult.opt))}</p>
                 <p className="text-[10px] text-positive/80">+{optRate.toFixed(0)}% {t("anual", "annual")}</p>
               </div>
               <div className="rounded-xl border border-negative/20 bg-negative/5 p-3">
-                <p className="text-[10px] font-medium text-negative">{t("Pesimista compuesto", "Compound pessimistic")}</p>
+                <p className="truncate text-[10px] font-medium text-negative lg:text-[11px]">
+                  {isMobile ? t("Pesimista compuesto", "Compound pessimistic") : t("Escenario pesimista compuesto", "Pessimistic compound scenario")}
+                </p>
                 <p className="numeric mt-1 text-lg font-bold text-negative">{fmt(Math.round(simResult.pes))}</p>
                 <p className="text-[10px] text-negative/80">+{pesRate.toFixed(0)}% {t("anual", "annual")}</p>
               </div>
