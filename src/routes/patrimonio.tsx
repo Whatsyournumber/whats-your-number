@@ -520,19 +520,6 @@ function PatrimonioContent() {
             </ResponsiveContainer>
           </div>
 
-          {comparing && (
-            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 px-5 text-[11px] sm:px-0">
-              <span className="flex items-center gap-1.5 text-foreground">
-                <span className="h-2 w-2 rounded-full bg-[var(--color-chart-2)]" />
-                {t("Tu patrimonio", "Your net worth")}
-              </span>
-              <span className="flex items-center gap-1.5 text-muted-foreground">
-                <span className="h-0.5 w-4 rounded-full bg-[var(--color-chart-8)]" />
-                {benchName}
-              </span>
-            </div>
-          )}
-
           <div className="mt-4 border-t border-border pt-4">
             <div className="grid grid-cols-3 gap-4">
               {riskMetrics.map((m) => (
