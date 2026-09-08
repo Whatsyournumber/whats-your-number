@@ -342,6 +342,57 @@ function PatrimonioContent() {
   const totalAssetsAll = hasDetail ? assetRows.reduce((s, a) => s + a.value, 0) : d.totalAssets + futureTotal;
   const netWorthAll = totalAssetsAll - d.totalLiabilities;
 
+  // Aportes/compras de activos agrupados por el mes real en que se registraron.
+  const holdingContributions = (() => {
+    const map: Record<string, number> = {};
+    for (const h of holdings) {
+      if (h.kind === "debt") continue;
+      const date = h.created_at;
+      if (!date) continue;
+      const key = String(date).slice(0, 7);
+      const value = h.manual_value || h.cost_basis || 0;
+      if (!value) continue;
+      map[key] = (map[key] ?? 0) + value;
+    }
+    return map;
+  })();
+  // La serie mensual cierra exactamente en el patrimonio neto en vivo que se muestra arriba.
+  const months = buildRealMonths(transactions, netWorthAll, { contributions: holdingContributions }) ?? d.months;
+
+  // Variación mensual: patrimonio actual vs el mes anterior de la serie.
+  const prevMonth = months.length > 1 ? months[months.length - 2]!.netWorth : 0;
+  const growthMonth = prevMonth !== 0 ? ((netWorthAll - prevMonth) / Math.abs(prevMonth)) * 100 : 0;
+
+  // Calendario de evolución: elegir un mes recorta la gráfica hasta ese mes.
+  const monthKeys = months.map((m, i) => (m as { month?: string }).month ?? `idx-${i}`);
+  const realKeys = monthKeys.filter((k) => /^\d{4}-\d{2}$/.test(k));
+  const evoIdx = evoMonth ? monthKeys.indexOf(evoMonth) : -1;
+  const chartMonths = (evoIdx >= 0 ? months.slice(0, evoIdx + 1) : months).slice(-12);
+
+  // Comparación contra benchmarks: patrimonio e índice indexados a % desde el primer mes.
+  const benchSymbol = benchmark === "nasdaq" ? "^IXIC" : benchmark === "world" ? "URTH" : "^GSPC";
+  const benchName = benchmark === "nasdaq" ? "Nasdaq 100" : benchmark === "world" ? "MSCI World" : "S&P 500";
+  const benchSeriesRaw = benchmark === "none" ? [] : (seriesQuery.data?.series?.[benchSymbol] ?? []);
+  const compareLen = Math.min(chartMonths.length, benchSeriesRaw.length);
+  const comparing = benchmark !== "none" && compareLen > 1;
+  const compareData = (() => {
+    if (!comparing) return [];
+    const nwSlice = chartMonths.slice(chartMonths.length - compareLen);
+    const bSlice = benchSeriesRaw.slice(benchSeriesRaw.length - compareLen);
+    const n0 = nwSlice[0]!.netWorth;
+    const b0 = bSlice[0]!.value;
+    return nwSlice.map((m, i) => ({
+      label: m.label,
+      netWorth: m.netWorth,
+      // El índice se escala a dinero: parte del mismo patrimonio inicial y aplica su % real.
+      bench: n0 * (1 + (bSlice[i]!.value - b0) / 100),
+      netPct: n0 !== 0 ? ((m.netWorth - n0) / Math.abs(n0)) * 100 : 0,
+      benchPct: bSlice[i]!.value - b0,
+    }));
+  })();
+
+
+
   // Métricas de riesgo del patrimonio basadas en el allocation actual.
   const weights = assetRows.map((a) => ({ ...a, weight: totalAssetsAll > 0 ? a.value / totalAssetsAll : 0 }));
   const portfolioBeta =
