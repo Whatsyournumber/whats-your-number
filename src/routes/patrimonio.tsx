@@ -479,6 +479,21 @@ function PatrimonioContent() {
             </div>
           }
         >
+          <div className="mb-2 flex flex-wrap items-center justify-center gap-4 text-xs text-muted-foreground sm:gap-6">
+            <div className="flex items-center gap-2">
+              <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-chart-2" />
+              <span>{t("Tu portafolio", "Your portfolio")}</span>
+            </div>
+            {comparing && (
+              <div className="flex items-center gap-2">
+                <span className="relative h-0.5 w-4 shrink-0 bg-chart-8">
+                  <span className="absolute inset-0 border-t border-dashed border-chart-8" />
+                </span>
+                <span>{benchName}</span>
+              </div>
+            )}
+          </div>
+
           <div className="min-h-[340px] flex-1 md:min-h-[420px] lg:min-h-0">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart
@@ -539,21 +554,6 @@ function PatrimonioContent() {
                 )}
               </ComposedChart>
             </ResponsiveContainer>
-          </div>
-
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-4 text-xs text-muted-foreground sm:gap-6">
-            <div className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-chart-2" />
-              <span>{t("Tu portafolio", "Your portfolio")}</span>
-            </div>
-            {comparing && (
-              <div className="flex items-center gap-2">
-                <span className="relative h-0.5 w-4 shrink-0 bg-chart-8">
-                  <span className="absolute inset-0 border-t border-dashed border-chart-8" />
-                </span>
-                <span>{benchName}</span>
-              </div>
-            )}
           </div>
 
           <div className="mt-4 border-t border-border pt-4">
