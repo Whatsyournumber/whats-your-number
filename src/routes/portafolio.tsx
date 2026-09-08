@@ -31,6 +31,7 @@ function SimTooltip({
   data,
   formatter,
   lang,
+  todayIndex = -1,
 }: {
   active?: boolean;
   payload?: { name?: string; value?: number | string; color?: string; dataKey?: string }[];
@@ -38,14 +39,17 @@ function SimTooltip({
   data: Array<Record<string, number | string>>;
   formatter: (v: number) => string;
   lang: string;
+  todayIndex?: number;
 }) {
   if (!active || !payload?.length) return null;
   const f = formatter;
   const index = data.findIndex((d) => d["label"] === label);
+  const isToday = todayIndex >= 0 && index === todayIndex;
   const pctLocale = lang === "es" ? "es-ES" : "en-US";
   const seen = new Set<string>();
   const seriesColor = (key: string, fallback?: string) =>
     key === "opt" ? "var(--color-positive)" : key === "pes" ? "var(--color-negative)" : fallback;
+
   return (
     <div
       className="rounded-2xl border px-4 py-3 text-xs backdrop-blur-sm"
