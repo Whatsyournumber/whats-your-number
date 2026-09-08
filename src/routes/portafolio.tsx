@@ -922,9 +922,13 @@ function PortafolioContent() {
     ? clampRate(simAssets.reduce((sum, asset) => sum + assetRate(asset) * (asset.amount || 0), 0) / simAddedTotal)
     : fallbackRate;
 
-  const benchCagr = Math.max(1, Math.min(15,
-    typeof benchHistCagrRaw === "number" && Number.isFinite(benchHistCagrRaw) ? benchHistCagrRaw : (bench12 || 8),
-  ));
+  // Referencias históricas de los últimos 30 años por índice.
+  const benchRef = benchmark === "nasdaq"
+    ? { hist: 13.5, histLabel: "13–14%", cons: 9, base: 11, opt: 14 }
+    : benchmark === "world"
+      ? { hist: 9, histLabel: "8.5–9.5%", cons: 6.5, base: 8, opt: 10 }
+      : { hist: 10.2, histLabel: "10.2%", cons: 7, base: 9, opt: 11 };
+  const benchCagr = benchRef.base;
 
   const fv = (rate: number, years: number) => {
     const r = rate / 100;
@@ -932,9 +936,9 @@ function PortafolioContent() {
     const contrib = r === 0 ? simContrib * 12 * years : simContrib * 12 * ((growth - 1) / r);
     return simStartValue * growth + contrib;
   };
-  // Escenarios del benchmark: ±3 puntos sobre el CAGR histórico del índice seleccionado.
-  const optRate = benchCagr + 3;
-  const pesRate = Math.max(0, benchCagr - 3);
+  const optRate = benchRef.opt;
+  const pesRate = benchRef.cons;
+
   const thisYear = new Date().getFullYear();
   const histPoints = benchmarkData.map((p) => ({
     label: p.label,
