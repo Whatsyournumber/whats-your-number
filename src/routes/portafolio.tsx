@@ -31,6 +31,7 @@ function SimTooltip({
   data,
   formatter,
   lang,
+  todayIndex = -1,
 }: {
   active?: boolean;
   payload?: { name?: string; value?: number | string; color?: string; dataKey?: string }[];
@@ -38,14 +39,17 @@ function SimTooltip({
   data: Array<Record<string, number | string>>;
   formatter: (v: number) => string;
   lang: string;
+  todayIndex?: number;
 }) {
   if (!active || !payload?.length) return null;
   const f = formatter;
   const index = data.findIndex((d) => d["label"] === label);
+  const isToday = todayIndex >= 0 && index === todayIndex;
   const pctLocale = lang === "es" ? "es-ES" : "en-US";
   const seen = new Set<string>();
   const seriesColor = (key: string, fallback?: string) =>
     key === "opt" ? "var(--color-positive)" : key === "pes" ? "var(--color-negative)" : fallback;
+
   return (
     <div
       className="rounded-2xl border px-4 py-3 text-xs backdrop-blur-sm"
@@ -65,11 +69,14 @@ function SimTooltip({
         {payload.map((p, i) => {
           const key = p.dataKey ?? String(i);
           if (seen.has(key)) return null;
+          // En "Hoy" solo mostramos el portafolio real y el índice de referencia.
+          if (isToday && (key === "opt" || key === "pes")) return null;
           seen.add(key);
           const value = typeof p.value === "number" ? p.value : 0;
-          // Base = primer valor de la serie (crecimiento compuesto acumulado, todo reinvertido).
+          // Crecimiento compuesto: en la proyección se mide desde "Hoy"; en el histórico, desde el primer mes.
           let baseValue: number | null = null;
-          for (let j = 0; j <= index && j < data.length; j += 1) {
+          const start = todayIndex >= 0 && index > todayIndex ? todayIndex : 0;
+          for (let j = start; j <= index && j < data.length; j += 1) {
             const v = data[j]?.[key];
             if (typeof v === "number" && v > 0) {
               baseValue = v;
@@ -77,6 +84,7 @@ function SimTooltip({
             }
           }
           const pct = baseValue && baseValue > 0 && index >= 0 ? ((value - baseValue) / baseValue) * 100 : null;
+
           const pctText = pct !== null ? new Intl.NumberFormat(pctLocale, { signDisplay: "exceptZero", maximumFractionDigits: 1 }).format(pct) + "%" : null;
           const up = pct !== null && pct >= 0;
           return (
@@ -1004,7 +1012,9 @@ function PortafolioContent() {
         ...histSlice.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench })),
         ...projPoints
           .filter((p, i) => i === 0 || i === simYears || i % simStep === 0)
-          .map((p, i) => (i === 0 ? { ...p, real: lastHist?.real, bench: lastHist?.bench } : p)),
+          // En "Hoy" todas las series arrancan del mismo punto para que el compuesto se mida igual.
+          .map((p, i) => (i === 0 ? { ...p, real: simStartValue, bench: simStartValue } : p)),
+
       ]
     : histSlice.map((h) => ({ label: h.label, real: h.real, bench: h.bench }));
 
@@ -1341,7 +1351,7 @@ function PortafolioContent() {
                   domain={[(dataMin: number) => Math.max(0, Math.floor(dataMin * 0.94)), (dataMax: number) => Math.ceil(dataMax * 1.04)]}
                   tickFormatter={(v: number) => fmtCompact(Number(v))}
                 />
-                <Tooltip content={<SimTooltip data={simData as unknown as Array<Record<string, number | string>>} formatter={(v: number) => fmt(Math.round(v))} lang={lang} />} />
+                <Tooltip content={<SimTooltip data={simData as unknown as Array<Record<string, number | string>>} formatter={(v: number) => fmt(Math.round(v))} lang={lang} todayIndex={hasSim ? todayIndex : -1} />} />
                 {hasSim ? (
                   <ReferenceLine x={simData[todayIndex]?.label ?? ""} stroke="var(--color-border)" strokeDasharray="4 4" />
                 ) : null}
