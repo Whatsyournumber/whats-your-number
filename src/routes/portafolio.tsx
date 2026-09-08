@@ -270,9 +270,9 @@ function SimAssetRow({
               onChange({ manualReturn: raw === "" || !Number.isFinite(parsed) ? null : parsed });
             }}
 
-            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-2 pr-6 text-xs"
+            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-2 pr-5 !text-[11px] md:!text-[11px]"
           />
-          <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">
+          <span className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-[9px] text-muted-foreground">
             %
           </span>
         </div>
