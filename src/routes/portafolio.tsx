@@ -307,7 +307,7 @@ function PortafolioContent() {
 
   const typeLabels: Record<(typeof types)[number], string> = {
     ETF: t("ETF", "ETF"),
-    "Acción": t("Acción", "Stock"),
+    "Acción": t("Acciones", "Stocks"),
     "Renta fija": t("Renta fija", "Fixed income"),
     Estructurado: t("Producto estructurado", "Structured product"),
     Retiro: t("Fondo de retiro", "Retirement fund"),
