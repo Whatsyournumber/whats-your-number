@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tooltip as UiTooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useMarketSeries, useQuotes, useSymbolReturns, useSymbolSearch, useWatchlist } from "@/hooks/use-market";
 import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
@@ -923,11 +924,12 @@ function PortafolioContent() {
     : fallbackRate;
 
   // Referencias históricas de los últimos 30 años por índice.
-  const benchRef = benchmark === "nasdaq"
-    ? { hist: 13.5, histLabel: "13–14%", cons: 9, base: 11, opt: 14 }
-    : benchmark === "world"
-      ? { hist: 9, histLabel: "8.5–9.5%", cons: 6.5, base: 8, opt: 10 }
-      : { hist: 10.2, histLabel: "10.2%", cons: 7, base: 9, opt: 11 };
+  const benchRefMap = {
+    sp500: { hist: 10.2, histLabel: "10.2%", cons: 7, base: 9, opt: 11, fullName: "S&P 500" },
+    nasdaq: { hist: 13.5, histLabel: "13–14%", cons: 9, base: 11, opt: 14, fullName: "Nasdaq 100" },
+    world: { hist: 9, histLabel: "8.5–9.5%", cons: 6.5, base: 8, opt: 10, fullName: "MSCI World" },
+  };
+  const benchRef = benchRefMap[benchmark];
   const benchCagr = benchRef.base;
 
   const fv = (rate: number, years: number) => {
@@ -1055,27 +1057,50 @@ function PortafolioContent() {
   const calendarLabel = evoPoint ? evoPoint.label : t("Actual", "Current");
 
   const benchmarkButtons = (
-    <div className="flex flex-nowrap items-center rounded-full border border-border/60 p-0.5">
-      {([
-        { k: "sp500", l: "S&P 500" },
-        { k: "nasdaq", l: "Nasdaq" },
-        { k: "world", l: "MSCI World" },
-      ] as const).map((b) => (
-        <button
-          key={b.k}
-          type="button"
-          onClick={() => setBenchmark(b.k)}
-          className={cn(
-            "shrink-0 whitespace-nowrap rounded-full border px-2 py-1 text-[10px] font-medium transition sm:px-2.5 sm:text-[11px]",
-            benchmark === b.k
-              ? "border-chart-2/50 bg-chart-2/15 text-chart-2 shadow-sm"
-              : "border-transparent text-muted-foreground hover:text-foreground",
-          )}
-        >
-          {b.l}
-        </button>
-      ))}
-    </div>
+    <TooltipProvider delayDuration={150}>
+      <div className="flex flex-nowrap items-center rounded-full border border-border/60 p-0.5">
+        {([
+          { k: "sp500", l: "S&P 500" },
+          { k: "nasdaq", l: "Nasdaq" },
+          { k: "world", l: "MSCI World" },
+        ] as const).map((b) => {
+          const ref = benchRefMap[b.k];
+          return (
+            <UiTooltip key={b.k}>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={() => setBenchmark(b.k)}
+                  className={cn(
+                    "shrink-0 whitespace-nowrap rounded-full border px-2 py-1 text-[10px] font-medium transition sm:px-2.5 sm:text-[11px]",
+                    benchmark === b.k
+                      ? "border-chart-2/50 bg-chart-2/15 text-chart-2 shadow-sm"
+                      : "border-transparent text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {b.l}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" align="center" className="w-52 space-y-1 p-2.5 text-xs">
+                <p className="font-medium text-foreground">{t("Últimos 30 años", "Last 30 years")}</p>
+                <p className="flex items-center justify-between gap-3 text-muted-foreground">
+                  <span>{t(`Histórico ${ref.fullName}`, `${ref.fullName} historical`)}</span>
+                  <span className="numeric text-foreground">≈{ref.histLabel}</span>
+                </p>
+                <p className="flex items-center justify-between gap-3 text-muted-foreground">
+                  <span>{t("Escenario optimista", "Optimistic scenario")}</span>
+                  <span className="numeric text-positive">{ref.opt.toFixed(1)}%</span>
+                </p>
+                <p className="flex items-center justify-between gap-3 text-muted-foreground">
+                  <span>{t("Escenario pesimista", "Pessimistic scenario")}</span>
+                  <span className="numeric text-negative">{ref.cons.toFixed(1)}%</span>
+                </p>
+              </TooltipContent>
+            </UiTooltip>
+          );
+        })}
+      </div>
+    </TooltipProvider>
   );
 
   return (
