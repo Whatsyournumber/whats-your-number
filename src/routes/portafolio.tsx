@@ -148,6 +148,7 @@ function SimAssetRow({
 }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
+  const [returnDraft, setReturnDraft] = useState<string | null>(null);
   const search = useSymbolSearch(open ? query : "");
   const hits = (search.data?.hits ?? []).slice(0, 6);
   const group = (n: number) => new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }).format(n);
@@ -155,6 +156,7 @@ function SimAssetRow({
     const digits = raw.replace(/[^\d]/g, "");
     return digits ? Math.max(0, Number(digits)) : 0;
   };
+
 
   return (
     <div className="relative rounded-xl border border-border/50 bg-elevated/30 p-1 pr-5">
@@ -250,18 +252,24 @@ function SimAssetRow({
           <Input
             inputMode="decimal"
             value={
-              asset.manualReturn !== null
-                ? String(asset.manualReturn)
-                : auto !== undefined
-                  ? String(Number(auto.toFixed(1)))
-                  : ""
+              returnDraft !== null
+                ? returnDraft
+                : asset.manualReturn !== null && Number.isFinite(asset.manualReturn)
+                  ? String(asset.manualReturn)
+                  : auto !== undefined
+                    ? String(Number(auto.toFixed(1)))
+                    : ""
             }
             aria-label={t("Rendimiento %", "Return %")}
             placeholder="0"
+            onBlur={() => setReturnDraft(null)}
             onChange={(event) => {
               const raw = event.target.value.replace(",", ".").replace(/[^\d.-]/g, "");
-              onChange({ manualReturn: raw === "" ? null : Number(raw) });
+              setReturnDraft(raw);
+              const parsed = Number(raw);
+              onChange({ manualReturn: raw === "" || !Number.isFinite(parsed) ? null : parsed });
             }}
+
             className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-2 pr-4 text-sm"
           />
           <span className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">
@@ -900,15 +908,17 @@ function PortafolioContent() {
   const simPortfolioTotal = simAddedTotal;
   const simStartValue = totalValue + simAddedTotal;
   const fallbackRate = Math.round(Math.max(1, Math.min(20, weightedReturn || 8)) * 10) / 10;
+  const clampRate = (r: number) => Math.max(-20, Math.min(30, r));
   const assetRate = (asset: SimAsset) => {
-    if (asset.manualReturn !== null && Number.isFinite(asset.manualReturn)) return asset.manualReturn;
+    if (asset.manualReturn !== null && Number.isFinite(asset.manualReturn)) return clampRate(asset.manualReturn);
     const key = asset.ticker.trim().toUpperCase();
     const auto = key ? simDayChange[key] : undefined;
-    return auto !== undefined ? auto : fallbackRate;
+    return auto !== undefined && Number.isFinite(auto) ? clampRate(auto) : fallbackRate;
   };
   const simRate = simAddedTotal > 0
-    ? simAssets.reduce((sum, asset) => sum + assetRate(asset) * (asset.amount || 0), 0) / simAddedTotal
+    ? clampRate(simAssets.reduce((sum, asset) => sum + assetRate(asset) * (asset.amount || 0), 0) / simAddedTotal)
     : fallbackRate;
+
   const benchCagr = Math.max(1, Math.min(15,
     typeof benchHistCagrRaw === "number" && Number.isFinite(benchHistCagrRaw) ? benchHistCagrRaw : (bench12 || 8),
   ));
