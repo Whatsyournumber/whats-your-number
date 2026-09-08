@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarIcon, Info, Pencil, Plus, RefreshCw, Search, ShieldCheck, Sparkles, TrendingUp, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { Area, CartesianGrid, ComposedChart, Line, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
@@ -42,9 +42,10 @@ function SimTooltip({
   if (!active || !payload?.length) return null;
   const f = formatter;
   const index = data.findIndex((d) => d["label"] === label);
-  const prev = index > 0 ? data[index - 1] : null;
   const pctLocale = lang === "es" ? "es-ES" : "en-US";
   const seen = new Set<string>();
+  const seriesColor = (key: string, fallback?: string) =>
+    key === "opt" ? "var(--color-positive)" : key === "pes" ? "var(--color-negative)" : fallback;
   return (
     <div
       className="rounded-2xl border px-4 py-3 text-xs backdrop-blur-sm"
@@ -66,13 +67,21 @@ function SimTooltip({
           if (seen.has(key)) return null;
           seen.add(key);
           const value = typeof p.value === "number" ? p.value : 0;
-          const prevValue = prev && typeof prev[key] === "number" ? (prev[key] as number) : null;
-          const pct = prevValue && prevValue > 0 ? ((value - prevValue) / prevValue) * 100 : null;
+          // Base = primer valor de la serie (crecimiento compuesto acumulado, todo reinvertido).
+          let baseValue: number | null = null;
+          for (let j = 0; j <= index && j < data.length; j += 1) {
+            const v = data[j]?.[key];
+            if (typeof v === "number" && v > 0) {
+              baseValue = v;
+              break;
+            }
+          }
+          const pct = baseValue && baseValue > 0 && index >= 0 ? ((value - baseValue) / baseValue) * 100 : null;
           const pctText = pct !== null ? new Intl.NumberFormat(pctLocale, { signDisplay: "exceptZero", maximumFractionDigits: 1 }).format(pct) + "%" : null;
           const up = pct !== null && pct >= 0;
           return (
             <div key={i} className="flex items-center gap-2.5">
-              <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: p.color }} />
+              <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: seriesColor(key, p.color) }} />
               <span className="text-[13px]" style={{ color: "var(--chart-tooltip-muted)" }}>
                 {p.name}
               </span>
@@ -88,6 +97,7 @@ function SimTooltip({
               </div>
             </div>
           );
+
         })}
       </div>
     </div>
@@ -330,10 +340,35 @@ function PortafolioContent() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [evoIdx, setEvoIdx] = useState<number | null>(null);
   const [evoOpen, setEvoOpen] = useState(false);
+  const SIM_KEY = "wyn:portfolio-sim:v1";
   const [simYears, setSimYears] = useState(20);
   const [simAssets, setSimAssets] = useState<SimAsset[]>([
     { id: "sim-1", ticker: "", amount: 0, contribution: 0, manualReturn: null },
   ]);
+  const [simLoaded, setSimLoaded] = useState(false);
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(SIM_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as { years?: number; assets?: SimAsset[] };
+        if (typeof parsed.years === "number") setSimYears(parsed.years);
+        if (Array.isArray(parsed.assets) && parsed.assets.length) setSimAssets(parsed.assets.slice(0, 5));
+      }
+    } catch {
+      /* ignore */
+    }
+    setSimLoaded(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    if (!simLoaded) return;
+    try {
+      localStorage.setItem(SIM_KEY, JSON.stringify({ years: simYears, assets: simAssets }));
+    } catch {
+      /* ignore */
+    }
+  }, [simLoaded, simYears, simAssets]);
+
   const addSimAsset = () =>
     setSimAssets((current) =>
       current.length >= 5
