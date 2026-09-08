@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Area, AreaChart, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
+import { Area, AreaChart, Cell, Line, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
 import { Pencil } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -17,7 +17,7 @@ import { useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
-import { useQuotes } from "@/hooks/use-market";
+import { useMarketSeries, useQuotes } from "@/hooks/use-market";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
 
@@ -146,6 +146,27 @@ function PatrimonioContent() {
   const [evoMonth, setEvoMonth] = useState<string | null>(null);
   const evoIdx = evoMonth ? monthKeys.indexOf(evoMonth) : -1;
   const chartMonths = evoIdx >= 0 ? months.slice(0, evoIdx + 1) : months;
+
+  // Comparación contra benchmarks: patrimonio e índice indexados a % desde el primer mes.
+  const [benchmark, setBenchmark] = useState<"none" | "sp500" | "nasdaq" | "world">("none");
+  const seriesQuery = useMarketSeries(["^GSPC", "^IXIC", "URTH"]);
+  const benchSymbol = benchmark === "nasdaq" ? "^IXIC" : benchmark === "world" ? "URTH" : "^GSPC";
+  const benchName = benchmark === "nasdaq" ? "Nasdaq 100" : benchmark === "world" ? "MSCI World" : "S&P 500";
+  const benchSeriesRaw = benchmark === "none" ? [] : (seriesQuery.data?.series?.[benchSymbol] ?? []);
+  const compareLen = Math.min(chartMonths.length, benchSeriesRaw.length);
+  const comparing = benchmark !== "none" && compareLen > 1;
+  const compareData = (() => {
+    if (!comparing) return [];
+    const nwSlice = chartMonths.slice(chartMonths.length - compareLen);
+    const bSlice = benchSeriesRaw.slice(benchSeriesRaw.length - compareLen);
+    const n0 = nwSlice[0]!.netWorth;
+    const b0 = bSlice[0]!.value || 1;
+    return nwSlice.map((m, i) => ({
+      label: m.label,
+      netWorth: n0 !== 0 ? ((m.netWorth - n0) / Math.abs(n0)) * 100 : 0,
+      bench: ((bSlice[i]!.value - b0) / b0) * 100,
+    }));
+  })();
 
   // Precios reales para posiciones con ticker.
   const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
