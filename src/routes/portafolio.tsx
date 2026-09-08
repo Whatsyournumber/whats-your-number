@@ -1201,7 +1201,7 @@ function PortafolioContent() {
               : t(`Histórico real · vs ${benchName}`, `Real history · vs ${benchName}`)
           }
           descriptionClassName="truncate whitespace-nowrap"
-          className="lg:col-span-3 lg:!p-4"
+          className="lg:col-span-3 lg:!p-3"
           actions={!isMobile ? benchmarkButtons : undefined}
           bleedMobile
         >
