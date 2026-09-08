@@ -1187,12 +1187,16 @@ function PortafolioContent() {
           description={
             hasSim
               ? t(
-                  `Histórico real y proyección a ${simYears} años · vs ${benchName}`,
-                  `Real history and ${simYears}-year projection · vs ${benchName}`,
+                  isMobile
+                    ? `Histórico + proyección ${simYears}a · vs ${benchName}`
+                    : `Histórico real y proyección a ${simYears} años · vs ${benchName}`,
+                  isMobile
+                    ? `History + projection ${simYears}y · vs ${benchName}`
+                    : `Real history and ${simYears}-year projection · vs ${benchName}`,
                 )
               : t(`Histórico real · vs ${benchName}`, `Real history · vs ${benchName}`)
           }
-          descriptionClassName="line-clamp-2"
+          descriptionClassName="truncate whitespace-nowrap"
           className="lg:col-span-3"
           actions={!isMobile ? benchmarkButtons : undefined}
           bleedMobile
@@ -1254,7 +1258,8 @@ function PortafolioContent() {
                 />
                 <YAxis
                   {...axisProps}
-                  width={isMobile ? 38 : 44}
+                  tick={{ ...axisProps, fontSize: isMobile ? 12 : 11 }}
+                  width={isMobile ? 46 : 44}
                   domain={[(dataMin: number) => Math.max(0, Math.floor(dataMin * 0.94)), (dataMax: number) => Math.ceil(dataMax * 1.04)]}
                   tickMargin={4}
                   tickFormatter={(v: number) =>
@@ -1301,24 +1306,45 @@ function PortafolioContent() {
 
         <Panel
           title={t("Configuración del Portfolio", "Portfolio Configuration")}
-          description={t("Añade hasta 5 activos y proyecta", "Add up to 5 assets and project")}
+          description={
+            isMobile
+              ? t("Añade activos y proyecta", "Add assets and project")
+              : t("Añade hasta 5 activos y proyecta", "Add up to 5 assets and project")
+          }
           descriptionClassName="truncate whitespace-nowrap"
           className="lg:col-span-2"
           actions={
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="gap-1.5 self-end"
-              disabled={simAssets.length >= 5}
-              onClick={addSimAsset}
-            >
-              <Plus className="h-4 w-4" />
-              {t("Añadir activo", "Add asset")}
-            </Button>
+            !isMobile ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="gap-1.5 self-end"
+                disabled={simAssets.length >= 5}
+                onClick={addSimAsset}
+              >
+                <Plus className="h-4 w-4" />
+                {t("Añadir activo", "Add asset")}
+              </Button>
+            ) : undefined
           }
         >
           <div className="space-y-4">
+            {isMobile && (
+              <div className="flex">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5"
+                  disabled={simAssets.length >= 5}
+                  onClick={addSimAsset}
+                >
+                  <Plus className="h-4 w-4" />
+                  {t("Añadir activo", "Add asset")}
+                </Button>
+              </div>
+            )}
             {simAssets.length === 0 ? (
               <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border/60 bg-elevated/30 py-10">
                 <p className="text-sm text-muted-foreground">{t("Añade hasta 5 activos para simular", "Add up to 5 assets to simulate")}</p>
