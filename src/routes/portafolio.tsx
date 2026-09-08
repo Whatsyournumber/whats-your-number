@@ -330,10 +330,35 @@ function PortafolioContent() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [evoIdx, setEvoIdx] = useState<number | null>(null);
   const [evoOpen, setEvoOpen] = useState(false);
+  const SIM_KEY = "wyn:portfolio-sim:v1";
   const [simYears, setSimYears] = useState(20);
   const [simAssets, setSimAssets] = useState<SimAsset[]>([
     { id: "sim-1", ticker: "", amount: 0, contribution: 0, manualReturn: null },
   ]);
+  const [simLoaded, setSimLoaded] = useState(false);
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(SIM_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as { years?: number; assets?: SimAsset[] };
+        if (typeof parsed.years === "number") setSimYears(parsed.years);
+        if (Array.isArray(parsed.assets) && parsed.assets.length) setSimAssets(parsed.assets.slice(0, 5));
+      }
+    } catch {
+      /* ignore */
+    }
+    setSimLoaded(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    if (!simLoaded) return;
+    try {
+      localStorage.setItem(SIM_KEY, JSON.stringify({ years: simYears, assets: simAssets }));
+    } catch {
+      /* ignore */
+    }
+  }, [simLoaded, simYears, simAssets]);
+
   const addSimAsset = () =>
     setSimAssets((current) =>
       current.length >= 5
