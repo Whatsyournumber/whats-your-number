@@ -163,9 +163,9 @@ function PatrimonioContent() {
     const b0 = bSlice[0]!.value;
     return nwSlice.map((m, i) => ({
       label: m.label,
-      netWorth: n0 !== 0 ? ((m.netWorth - n0) / Math.abs(n0)) * 100 : 0,
-      // La serie de mercado ya viene en % acumulado; se re-basea restando el primer punto.
-      bench: bSlice[i]!.value - b0,
+      netWorth: m.netWorth,
+      // El índice se escala a dinero: parte del mismo patrimonio inicial y aplica su % real.
+      bench: n0 * (1 + (bSlice[i]!.value - b0) / 100),
     }));
   })();
 
@@ -493,23 +493,17 @@ function PatrimonioContent() {
                 <XAxis dataKey="label" {...axisProps} />
                 <YAxis
                   {...axisProps}
-                  tickFormatter={(v) => (comparing ? `${Number(v).toFixed(0)}%` : fmtCompact(Number(v)))}
+                  tickFormatter={(v) => fmtCompact(Number(v))}
                   width={isMobile ? 42 : 48}
                 />
-                <Tooltip
-                  content={
-                    <ChartTooltip
-                      {...(comparing ? { formatter: (v: number) => `${v.toFixed(1)}%` } : {})}
-                    />
-                  }
-                />
+                <Tooltip content={<ChartTooltip />} />
                 <Area
                   type="monotone"
                   dataKey="netWorth"
                   name={t("Tu patrimonio", "Your net worth")}
                   stroke="var(--color-chart-2)"
                   strokeWidth={2.5}
-                  fill="url(#pw)"
+                  fill={comparing ? "none" : "url(#pw)"}
                 />
                 {comparing && (
                   <Line
