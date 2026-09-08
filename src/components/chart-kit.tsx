@@ -17,9 +17,9 @@ export function ChartTooltip({
   labelFormatter,
 }: {
   active?: boolean;
-  payload?: { name?: string; value?: number | string; color?: string; dataKey?: string }[];
+  payload?: { name?: string; value?: number | string; color?: string; dataKey?: string; payload?: unknown }[];
   label?: ReactNode;
-  formatter?: (v: number) => string;
+  formatter?: (v: number, item?: { dataKey?: string; payload?: unknown }) => string;
   labelFormatter?: (label: any, payload: any) => ReactNode;
 }) {
   if (!active || !payload?.length) return null;
@@ -49,7 +49,7 @@ export function ChartTooltip({
               {p.name}
             </span>
             <span className="numeric ml-auto text-[13px] font-bold" style={{ color: "var(--chart-tooltip-fg)" }}>
-              {typeof p.value === "number" ? f(p.value) : p.value}
+              {typeof p.value === "number" ? f(p.value, p) : p.value}
             </span>
           </div>
         ))}
