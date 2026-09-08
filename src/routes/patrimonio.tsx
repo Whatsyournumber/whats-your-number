@@ -135,7 +135,22 @@ function PatrimonioContent() {
   const { holdings } = useHoldings();
   const d = buildDataset(profile);
   const { fmt, fmtCompact, assets } = d;
-  const months = buildRealMonths(transactions, d.netWorth) ?? d.months;
+  // Aportes/compras de activos agrupados por el mes real en que se registraron.
+  const holdingContributions = (() => {
+    const map: Record<string, number> = {};
+    for (const h of holdings) {
+      if (h.kind === "debt") continue;
+      const date = h.created_at;
+      if (!date) continue;
+      const key = String(date).slice(0, 7);
+      const value = h.manual_value || h.cost_basis || 0;
+      if (!value) continue;
+      map[key] = (map[key] ?? 0) + value;
+    }
+    return map;
+  })();
+  const months = buildRealMonths(transactions, d.netWorth, { contributions: holdingContributions }) ?? d.months;
+
   // Variación mensual: patrimonio actual vs el mes anterior de la serie.
   const prevMonth = months.length > 1 ? months[months.length - 2]!.netWorth : 0;
   const growthMonth = prevMonth !== 0 ? ((d.netWorth - prevMonth) / Math.abs(prevMonth)) * 100 : 0;
