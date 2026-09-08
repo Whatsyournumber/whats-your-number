@@ -548,10 +548,15 @@ function PatrimonioContent() {
                       {...(comparing
                         ? {
                             formatter: (v: number, item) => {
-                              const row = item?.payload as { netPct?: number; benchPct?: number } | undefined;
-                              const pct = item?.dataKey === "bench" ? row?.benchPct : row?.netPct;
-                              const pctTxt = pct !== undefined ? ` · ${pct >= 0 ? "+" : ""}${pct.toFixed(1)}%` : "";
-                              return `${fmt(v)}${pctTxt}`;
+                              const row = item?.payload as { netPct?: number; benchPct?: number; netDelta?: number } | undefined;
+                              const isBench = item?.dataKey === "bench";
+                              const pct = isBench ? row?.benchPct : row?.netPct;
+                              const delta = isBench ? undefined : row?.netDelta;
+                              const sign = (n: number) => (n >= 0 ? "+" : "-");
+                              const deltaTxt =
+                                delta !== undefined && Math.round(delta) !== 0 ? ` · ${sign(delta)}${fmt(Math.abs(delta))}` : "";
+                              const pctTxt = pct !== undefined ? ` · ${sign(pct)}${Math.abs(pct).toFixed(1)}%` : "";
+                              return `${fmt(v)}${deltaTxt}${pctTxt}`;
                             },
                           }
                         : {})}
