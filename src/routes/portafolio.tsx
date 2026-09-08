@@ -1081,19 +1081,19 @@ function PortafolioContent() {
                   {b.l}
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="top" align="center" className="w-52 space-y-1 p-2.5 text-xs">
+              <TooltipContent side="top" align="center" className="w-56 space-y-1 p-2.5 text-xs">
                 <p className="font-medium text-foreground">{t("Últimos 30 años", "Last 30 years")}</p>
                 <p className="flex items-center justify-between gap-3 text-muted-foreground">
-                  <span>{t(`Histórico ${ref.fullName}`, `${ref.fullName} historical`)}</span>
-                  <span className="numeric text-foreground">≈{ref.histLabel}</span>
+                  <span className="whitespace-nowrap">{t(`Histórico ${ref.fullName}`, `${ref.fullName} historical`)}</span>
+                  <span className="numeric whitespace-nowrap text-foreground">≈{ref.histLabel}</span>
                 </p>
                 <p className="flex items-center justify-between gap-3 text-muted-foreground">
-                  <span>{t("Escenario optimista", "Optimistic scenario")}</span>
-                  <span className="numeric text-positive">{ref.opt.toFixed(1)}%</span>
+                  <span className="whitespace-nowrap">{t("Escenario optimista", "Optimistic scenario")}</span>
+                  <span className="numeric whitespace-nowrap text-positive">{ref.opt.toFixed(1)}%</span>
                 </p>
                 <p className="flex items-center justify-between gap-3 text-muted-foreground">
-                  <span>{t("Escenario pesimista", "Pessimistic scenario")}</span>
-                  <span className="numeric text-negative">{ref.cons.toFixed(1)}%</span>
+                  <span className="whitespace-nowrap">{t("Escenario pesimista", "Pessimistic scenario")}</span>
+                  <span className="numeric whitespace-nowrap text-negative">{ref.cons.toFixed(1)}%</span>
                 </p>
               </TooltipContent>
             </UiTooltip>
