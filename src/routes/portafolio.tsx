@@ -992,11 +992,12 @@ function PortafolioContent() {
     label: y === 0 ? t("Hoy", "Today") : String(thisYear + y),
     opt: fv(optRate, y),
     pes: fv(pesRate, y),
-    benchProj: fv(benchCagr, y),
+    bench: fv(benchCagr, y),
   }));
-  const simStep = simYears > 20 ? 5 : simYears > 10 ? 3 : 2;
-  const historyMonths = isMobile ? 6 : 12;
+  // Con proyección, el histórico se comprime para que el futuro ocupe la mitad de la gráfica.
+  const historyMonths = hasSim ? (isMobile ? 4 : 6) : isMobile ? 6 : 12;
   const histSlice = histPoints.slice(-historyMonths);
+  const simStep = Math.max(1, Math.round(simYears / Math.max(3, histSlice.length - 1)));
   const lastHist = histSlice[histSlice.length - 1];
   const simData = hasSim
     ? [
@@ -1006,6 +1007,7 @@ function PortafolioContent() {
           .map((p, i) => (i === 0 ? { ...p, real: lastHist?.real, bench: lastHist?.bench } : p)),
       ]
     : histSlice.map((h) => ({ label: h.label, real: h.real, bench: h.bench }));
+
   const todayIndex = histSlice.length - 1;
   const simTicks = simData.map((d) => d.label);
   const simResult = projPoints[projPoints.length - 1]!;
@@ -1339,7 +1341,7 @@ function PortafolioContent() {
                   domain={[(dataMin: number) => Math.max(0, Math.floor(dataMin * 0.94)), (dataMax: number) => Math.ceil(dataMax * 1.04)]}
                   tickFormatter={(v: number) => fmtCompact(Number(v))}
                 />
-                <Tooltip content={<SimTooltip data={simData} formatter={(v: number) => fmt(Math.round(v))} lang={lang} />} />
+                <Tooltip content={<SimTooltip data={simData as unknown as Array<Record<string, number | string>>} formatter={(v: number) => fmt(Math.round(v))} lang={lang} />} />
                 {hasSim ? (
                   <ReferenceLine x={simData[todayIndex]?.label ?? ""} stroke="var(--color-border)" strokeDasharray="4 4" />
                 ) : null}
@@ -1348,7 +1350,7 @@ function PortafolioContent() {
                 {hasSim ? <Line type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="var(--color-positive)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls /> : null}
                 {hasSim ? <Line type="monotone" dataKey="pes" name={t("Pesimista", "Pessimistic")} stroke="var(--color-negative)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls /> : null}
                 <Line type="monotone" dataKey="bench" name={benchName} stroke="var(--color-chart-2)" strokeWidth={1.8} strokeDasharray="2 5" dot={false} connectNulls />
-                {hasSim ? <Line type="monotone" dataKey="benchProj" name={benchName} stroke="var(--color-chart-2)" strokeWidth={1.6} strokeDasharray="2 5" dot={false} connectNulls /> : null}
+                
               </ComposedChart>
             </ResponsiveContainer>
             </div>
