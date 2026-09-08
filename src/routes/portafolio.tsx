@@ -1237,7 +1237,7 @@ function PortafolioContent() {
             <ResponsiveContainer width="100%" height={isMobile ? 300 : 380}>
               <ComposedChart
                 data={simData}
-                margin={{ top: 8, left: isMobile ? 0 : -8, right: isMobile ? 2 : 4, bottom: isMobile ? 10 : 4 }}
+                margin={{ top: 8, left: isMobile ? 0 : -8, right: isMobile ? 0 : 4, bottom: isMobile ? 10 : 4 }}
               >
                 <defs>
                   <linearGradient id="simOpt" x1="0" y1="0" x2="0" y2="1">
@@ -1249,40 +1249,21 @@ function PortafolioContent() {
                 <XAxis
                   dataKey="label"
                   {...axisProps}
-                  tick={{
-                    ...axisProps,
-                    fill: "var(--color-muted-foreground)",
-                    fontFamily: "var(--font-sans)",
-                    fontSize: isMobile ? 12 : 11,
-                    fontWeight: 500,
-                    letterSpacing: "-0.01em",
-                  }}
+                  tick={{ ...axisProps, fontSize: 11 }}
                   ticks={simTicks}
                   interval={isMobile ? 1 : 0}
-                  tickMargin={4}
-                  padding={{ left: isMobile ? 0 : 10, right: isMobile ? 4 : 26 }}
+                  tickMargin={6}
+                  padding={{ left: isMobile ? 4 : 10, right: isMobile ? 10 : 26 }}
                   height={isMobile ? 26 : 20}
                 />
                 <YAxis
                   {...axisProps}
-                  tick={{
-                    ...axisProps,
-                    fill: "var(--color-muted-foreground)",
-                    fontFamily: "var(--font-sans)",
-                    fontSize: isMobile ? 12 : 11,
-                    fontWeight: 500,
-                    letterSpacing: "-0.01em",
-                  }}
-                  width={isMobile ? 56 : 54}
+                  tick={{ ...axisProps, fontSize: 11 }}
+                  width={isMobile ? 64 : 54}
                   domain={[(dataMin: number) => Math.max(0, Math.floor(dataMin * 0.94)), (dataMax: number) => Math.ceil(dataMax * 1.04)]}
-                  tickMargin={4}
+                  tickMargin={6}
                   tickFormatter={(v: number) =>
-                    new Intl.NumberFormat(lang === "es" ? "es-ES" : "en-US", {
-                      style: "currency",
-                      currency: profile.currency || "USD",
-                      notation: "compact",
-                      maximumFractionDigits: 1,
-                    }).format(v)
+                    Math.abs(v) >= 1e6 ? `${(v / 1e6).toFixed(1)}M` : `${Math.round(v / 1000)}K`
                   }
                 />
                 <Tooltip content={<SimTooltip data={simData} formatter={(v: number) => fmt(Math.round(v))} lang={lang} />} />
