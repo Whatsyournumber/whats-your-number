@@ -938,8 +938,13 @@ function PortafolioContent() {
     const contrib = r === 0 ? simContrib * 12 * years : simContrib * 12 * ((growth - 1) / r);
     return simStartValue * growth + contrib;
   };
-  const optRate = benchRef.opt;
-  const pesRate = benchRef.cons;
+  // Base = rendimiento del propio portafolio; al añadir activos se promedia ponderado con lo nuevo.
+  const portfolioRate = clampRate(weightedReturn || benchRef.base);
+  const blendedRate = simAddedTotal > 0 && totalValue + simAddedTotal > 0
+    ? clampRate((portfolioRate * totalValue + simRate * simAddedTotal) / (totalValue + simAddedTotal))
+    : portfolioRate;
+  const optRate = clampRate(blendedRate + 3);
+  const pesRate = clampRate(blendedRate - 3);
 
   const thisYear = new Date().getFullYear();
   const histPoints = benchmarkData.map((p) => ({
