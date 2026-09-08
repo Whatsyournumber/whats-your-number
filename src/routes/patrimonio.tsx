@@ -469,7 +469,7 @@ function PatrimonioContent() {
                   className={cn(
                     "shrink-0 whitespace-nowrap rounded-full px-2 py-1 text-[10px] font-medium transition sm:px-2.5 sm:text-[11px]",
                     benchmark === b.k
-                      ? "bg-[var(--color-chart-8)] text-white shadow-sm"
+                      ? "bg-primary text-primary-foreground shadow-sm"
                       : "text-muted-foreground hover:text-foreground",
                   )}
                 >
@@ -539,19 +539,6 @@ function PatrimonioContent() {
                 )}
               </ComposedChart>
             </ResponsiveContainer>
-
-            <div className="mt-3 flex flex-wrap items-center justify-center gap-5 sm:gap-6">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span className="h-2.5 w-2.5 rounded-full bg-[var(--color-chart-2)]" />
-                <span>{t("Tu patrimonio", "Your net worth")}</span>
-              </div>
-              {comparing && (
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <span className="h-0.5 w-4 bg-[var(--color-chart-8)]" />
-                  <span>{benchName}</span>
-                </div>
-              )}
-            </div>
           </div>
 
           <div className="mt-4 border-t border-border pt-4">
