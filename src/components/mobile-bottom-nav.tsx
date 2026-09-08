@@ -22,7 +22,7 @@ export function MobileBottomNav() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 lg:hidden">
-      <div className="flex w-full items-center justify-around bg-background/90 px-2 pb-[env(safe-area-inset-bottom,0px)] pt-2 shadow-[0_-8px_30px_-10px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+      <div className="flex w-full items-center justify-around bg-background/90 px-2 pb-[max(env(safe-area-inset-bottom,0px),10px)] pt-3 shadow-[0_-8px_30px_-10px_rgba(0,0,0,0.35)] backdrop-blur-xl">
         {tabs.map((tab) => {
           const active = pathname === tab.url;
           return (
@@ -32,13 +32,13 @@ export function MobileBottomNav() {
               className="group flex min-w-0 flex-1 flex-col items-center gap-1 px-1 py-1 transition-colors"
             >
               <tab.icon
-                className={`h-[22px] w-[22px] shrink-0 transition-colors ${
+                className={`h-6 w-6 shrink-0 transition-colors ${
                   active ? "text-primary/85" : "text-muted-foreground group-hover:text-foreground"
                 }`}
                 strokeWidth={active ? 2.2 : 1.9}
               />
               <span
-                className={`truncate text-[10px] font-medium leading-none ${
+                className={`truncate text-[11px] font-medium leading-tight ${
                   active ? "text-primary/90" : "text-muted-foreground group-hover:text-foreground"
                 }`}
               >

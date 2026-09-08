@@ -1405,12 +1405,12 @@ function PortafolioContent() {
 
             <div className="grid grid-cols-2 gap-3 border-t border-border/50 pt-4">
               <div className="rounded-xl border border-positive/20 bg-positive/5 p-3">
-                <p className="text-[10px] font-medium text-positive">{t("Escenario optimista compuesto", "Compound optimistic scenario")}</p>
+                <p className="text-[10px] font-medium text-positive">{t("Optimista compuesto", "Compound optimistic")}</p>
                 <p className="numeric mt-1 text-lg font-bold text-positive">{fmt(Math.round(simResult.opt))}</p>
                 <p className="text-[10px] text-positive/80">+{optRate.toFixed(0)}% {t("anual", "annual")}</p>
               </div>
               <div className="rounded-xl border border-negative/20 bg-negative/5 p-3">
-                <p className="text-[10px] font-medium text-negative">{t("Escenario pesimista compuesto", "Compound pessimistic scenario")}</p>
+                <p className="text-[10px] font-medium text-negative">{t("Pesimista compuesto", "Compound pessimistic")}</p>
                 <p className="numeric mt-1 text-lg font-bold text-negative">{fmt(Math.round(simResult.pes))}</p>
                 <p className="text-[10px] text-negative/80">+{pesRate.toFixed(0)}% {t("anual", "annual")}</p>
               </div>
