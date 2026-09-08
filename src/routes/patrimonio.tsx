@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Area, AreaChart, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
+import { Area, AreaChart, Cell, ComposedChart, Line, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
 import { Pencil } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -17,7 +17,7 @@ import { useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
-import { useQuotes } from "@/hooks/use-market";
+import { useMarketSeries, useQuotes } from "@/hooks/use-market";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
 
@@ -146,6 +146,28 @@ function PatrimonioContent() {
   const [evoMonth, setEvoMonth] = useState<string | null>(null);
   const evoIdx = evoMonth ? monthKeys.indexOf(evoMonth) : -1;
   const chartMonths = evoIdx >= 0 ? months.slice(0, evoIdx + 1) : months;
+
+  // Comparación contra benchmarks: patrimonio e índice indexados a % desde el primer mes.
+  const [benchmark, setBenchmark] = useState<"none" | "sp500" | "nasdaq" | "world">("none");
+  const seriesQuery = useMarketSeries(["^GSPC", "^IXIC", "URTH"]);
+  const benchSymbol = benchmark === "nasdaq" ? "^IXIC" : benchmark === "world" ? "URTH" : "^GSPC";
+  const benchName = benchmark === "nasdaq" ? "Nasdaq 100" : benchmark === "world" ? "MSCI World" : "S&P 500";
+  const benchSeriesRaw = benchmark === "none" ? [] : (seriesQuery.data?.series?.[benchSymbol] ?? []);
+  const compareLen = Math.min(chartMonths.length, benchSeriesRaw.length);
+  const comparing = benchmark !== "none" && compareLen > 1;
+  const compareData = (() => {
+    if (!comparing) return [];
+    const nwSlice = chartMonths.slice(chartMonths.length - compareLen);
+    const bSlice = benchSeriesRaw.slice(benchSeriesRaw.length - compareLen);
+    const n0 = nwSlice[0]!.netWorth;
+    const b0 = bSlice[0]!.value;
+    return nwSlice.map((m, i) => ({
+      label: m.label,
+      netWorth: n0 !== 0 ? ((m.netWorth - n0) / Math.abs(n0)) * 100 : 0,
+      // La serie de mercado ya viene en % acumulado; se re-basea restando el primer punto.
+      bench: bSlice[i]!.value - b0,
+    }));
+  })();
 
   // Precios reales para posiciones con ticker.
   const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
@@ -427,13 +449,40 @@ function PatrimonioContent() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel
-          title={t("Crecimiento del patrimonio", "Net worth growth")}
+          title={comparing ? t("Rendimiento", "Performance") : t("Crecimiento del patrimonio", "Net worth growth")}
+          {...(comparing ? { description: t(`vs ${benchName} · ${compareLen}m`, `vs ${benchName} · ${compareLen}m`) } : {})}
           className="flex flex-col p-3 md:p-5 lg:col-span-2"
           bleedMobile
+          actions={
+            <div className="flex flex-nowrap items-center rounded-full border border-border/60 p-0.5">
+              {([
+                { k: "sp500", l: "S&P 500" },
+                { k: "nasdaq", l: "Nasdaq" },
+                { k: "world", l: "MSCI World" },
+              ] as const).map((b) => (
+                <button
+                  key={b.k}
+                  type="button"
+                  onClick={() => setBenchmark((cur) => (cur === b.k ? "none" : b.k))}
+                  className={cn(
+                    "shrink-0 whitespace-nowrap rounded-full px-2 py-1 text-[10px] font-medium transition sm:px-2.5 sm:text-[11px]",
+                    benchmark === b.k
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {b.l}
+                </button>
+              ))}
+            </div>
+          }
         >
           <div className="min-h-[340px] flex-1 md:min-h-[420px] lg:min-h-0">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartMonths} margin={{ left: isMobile ? 0 : -20, right: isMobile ? 4 : 0, top: 8 }}>
+              <ComposedChart
+                data={comparing ? compareData : chartMonths}
+                margin={{ left: isMobile ? 0 : -20, right: isMobile ? 4 : 0, top: 8 }}
+              >
                 <defs>
                   <linearGradient id="pw" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="var(--color-chart-2)" stopOpacity={0.45} />
@@ -442,12 +491,53 @@ function PatrimonioContent() {
                 </defs>
                 <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
                 <XAxis dataKey="label" {...axisProps} />
-                <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={isMobile ? 42 : 48} />
-                <Tooltip content={<ChartTooltip />} />
-                <Area type="monotone" dataKey="netWorth" name={t("Patrimonio", "Net worth")} stroke="var(--color-chart-2)" strokeWidth={2.5} fill="url(#pw)" />
-              </AreaChart>
+                <YAxis
+                  {...axisProps}
+                  tickFormatter={(v) => (comparing ? `${Number(v).toFixed(0)}%` : fmtCompact(Number(v)))}
+                  width={isMobile ? 42 : 48}
+                />
+                <Tooltip
+                  content={
+                    <ChartTooltip
+                      {...(comparing ? { formatter: (v: number) => `${v.toFixed(1)}%` } : {})}
+                    />
+                  }
+                />
+                <Area
+                  type="monotone"
+                  dataKey="netWorth"
+                  name={t("Tu patrimonio", "Your net worth")}
+                  stroke="var(--color-chart-2)"
+                  strokeWidth={2.5}
+                  fill="url(#pw)"
+                />
+                {comparing && (
+                  <Line
+                    type="monotone"
+                    dataKey="bench"
+                    name={benchName}
+                    stroke="var(--color-chart-8)"
+                    strokeWidth={2}
+                    strokeDasharray="5 5"
+                    dot={false}
+                  />
+                )}
+              </ComposedChart>
             </ResponsiveContainer>
           </div>
+
+          {comparing && (
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 px-5 text-[11px] sm:px-0">
+              <span className="flex items-center gap-1.5 text-foreground">
+                <span className="h-2 w-2 rounded-full bg-[var(--color-chart-2)]" />
+                {t("Tu patrimonio", "Your net worth")}
+              </span>
+              <span className="flex items-center gap-1.5 text-muted-foreground">
+                <span className="h-0.5 w-4 rounded-full bg-[var(--color-chart-8)]" />
+                {benchName}
+              </span>
+            </div>
+          )}
 
           <div className="mt-4 border-t border-border pt-4">
             <div className="grid grid-cols-3 gap-4">
