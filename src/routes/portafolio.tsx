@@ -1273,8 +1273,8 @@ function PortafolioContent() {
         </Panel>
 
         <Panel
-          title={t("Simulador de Portfolio", "Portfolio Simulator")}
-          description={t("Añade 5 activos y mira su proyección en tiempo real", "Add 5 assets and see their real-time projection")}
+          title={t("Configuración de Portfolio", "Portfolio Configuration")}
+          description={t("Añade hasta 5 activos y proyecta", "Add up to 5 assets and project")}
           descriptionClassName="truncate whitespace-nowrap"
           className="lg:col-span-2"
           actions={
