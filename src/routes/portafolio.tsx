@@ -1310,7 +1310,7 @@ function PortafolioContent() {
               : t("Añade hasta 5 activos y proyecta", "Add up to 5 assets and project")
           }
           descriptionClassName="truncate whitespace-nowrap"
-          className="lg:col-span-2 lg:!p-4"
+          className="lg:col-span-2 lg:!p-3"
           actions={
             !isMobile ? (
               <Button
