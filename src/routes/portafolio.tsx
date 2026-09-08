@@ -1045,6 +1045,30 @@ function PortafolioContent() {
 
   const calendarLabel = evoPoint ? evoPoint.label : t("Actual", "Current");
 
+  const benchmarkButtons = (
+    <div className="flex flex-nowrap items-center rounded-full border border-border/60 p-0.5">
+      {([
+        { k: "sp500", l: "S&P 500" },
+        { k: "nasdaq", l: "Nasdaq" },
+        { k: "world", l: "MSCI World" },
+      ] as const).map((b) => (
+        <button
+          key={b.k}
+          type="button"
+          onClick={() => setBenchmark(b.k)}
+          className={cn(
+            "shrink-0 whitespace-nowrap rounded-full border px-2 py-1 text-[10px] font-medium transition sm:px-2.5 sm:text-[11px]",
+            benchmark === b.k
+              ? "border-chart-2/50 bg-chart-2/15 text-chart-2 shadow-sm"
+              : "border-transparent text-muted-foreground hover:text-foreground",
+          )}
+        >
+          {b.l}
+        </button>
+      ))}
+    </div>
+  );
+
   return (
     <PageShell>
       <PageHeader
@@ -1159,6 +1183,7 @@ function PortafolioContent() {
       <div className="grid gap-4 lg:grid-cols-5">
         <Panel
           title={t("Simulador del Portfolio", "Portfolio Simulator")}
+          titleClassName="truncate whitespace-nowrap"
           description={
             hasSim
               ? t(
@@ -1167,54 +1192,38 @@ function PortafolioContent() {
                 )
               : t(`Histórico real · vs ${benchName}`, `Real history · vs ${benchName}`)
           }
+          descriptionClassName="line-clamp-2"
           className="lg:col-span-3"
-          actions={
-            <div className="flex flex-nowrap items-center rounded-full border border-border/60 p-0.5">
-              {([
-                { k: "sp500", l: "S&P 500" },
-                { k: "nasdaq", l: "Nasdaq" },
-                { k: "world", l: "MSCI World" },
-              ] as const).map((b) => (
-                <button
-                  key={b.k}
-                  type="button"
-                  onClick={() => setBenchmark(b.k)}
-                  className={cn(
-                    "shrink-0 whitespace-nowrap rounded-full border px-2 py-1 text-[10px] font-medium transition sm:px-2.5 sm:text-[11px]",
-                    benchmark === b.k
-                      ? "border-chart-2/50 bg-chart-2/15 text-chart-2 shadow-sm"
-                      : "border-transparent text-muted-foreground hover:text-foreground",
-                  )}
-                >
-                  {b.l}
-                </button>
-              ))}
-            </div>
-          }
-        bleedMobile
+          actions={!isMobile ? benchmarkButtons : undefined}
+          bleedMobile
         >
-          <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 px-5 text-[11px] sm:px-0">
-            <span className="flex items-center gap-1.5 text-foreground">
+          <div className="mb-3 flex flex-nowrap items-center gap-x-3 gap-y-1.5 overflow-x-auto no-scrollbar px-5 text-[11px] sm:flex-wrap sm:px-0">
+            <span className="flex shrink-0 items-center gap-1.5 text-foreground">
               <span className="h-2 w-2 rounded-full bg-[var(--color-chart-1)]" />
               {t("Tu portafolio", "Your portfolio")}
             </span>
-            <span className="flex items-center gap-1.5 text-muted-foreground">
+            <span className="flex shrink-0 items-center gap-1.5 text-muted-foreground">
               <span className="h-0.5 w-4 rounded-full bg-[var(--color-chart-2)]" />
               {benchName}
             </span>
             {hasSim ? (
               <>
-                <span className="flex items-center gap-1.5 text-muted-foreground">
+                <span className="flex shrink-0 items-center gap-1.5 text-muted-foreground">
                   <span className="h-0.5 w-4 rounded-full bg-positive" />
                   {t("Optimista", "Optimistic")}
                 </span>
-                <span className="flex items-center gap-1.5 text-muted-foreground">
+                <span className="flex shrink-0 items-center gap-1.5 text-muted-foreground">
                   <span className="h-0.5 w-4 rounded-full bg-negative" />
                   {t("Pesimista", "Pessimistic")}
                 </span>
               </>
             ) : null}
           </div>
+          {isMobile && (
+            <div className="mb-3 flex items-center px-5 sm:px-0">
+              {benchmarkButtons}
+            </div>
+          )}
 
           {simData.length === 0 ? (
             <div className="flex h-[290px] items-center justify-center text-sm text-muted-foreground">
