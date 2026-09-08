@@ -148,6 +148,7 @@ function SimAssetRow({
 }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
+  const [returnDraft, setReturnDraft] = useState<string | null>(null);
   const search = useSymbolSearch(open ? query : "");
   const hits = (search.data?.hits ?? []).slice(0, 6);
   const group = (n: number) => new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }).format(n);
@@ -155,6 +156,7 @@ function SimAssetRow({
     const digits = raw.replace(/[^\d]/g, "");
     return digits ? Math.max(0, Number(digits)) : 0;
   };
+
 
   return (
     <div className="relative rounded-xl border border-border/50 bg-elevated/30 p-1 pr-5">
