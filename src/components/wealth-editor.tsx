@@ -415,11 +415,11 @@ function Summary({ label, value, hint, accent, negative }: { label: string; valu
 
 function InlineRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="grid gap-1.5 sm:grid-cols-[minmax(6rem,0.45fr)_1fr] sm:items-center sm:gap-3">
-      <Label className="min-w-0 whitespace-nowrap text-xs font-medium text-muted-foreground sm:self-center">
+    <div className="grid gap-1 sm:grid-cols-[7.5rem_1fr] sm:items-center sm:gap-3">
+      <Label className="min-w-0 text-xs font-medium text-muted-foreground sm:self-center">
         {label}
       </Label>
-      <div className="w-full min-w-0 sm:max-w-[16rem] sm:justify-self-end">{children}</div>
+      <div className="min-w-0">{children}</div>
     </div>
   );
 }
