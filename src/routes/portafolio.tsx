@@ -252,18 +252,24 @@ function SimAssetRow({
           <Input
             inputMode="decimal"
             value={
-              asset.manualReturn !== null
-                ? String(asset.manualReturn)
-                : auto !== undefined
-                  ? String(Number(auto.toFixed(1)))
-                  : ""
+              returnDraft !== null
+                ? returnDraft
+                : asset.manualReturn !== null && Number.isFinite(asset.manualReturn)
+                  ? String(asset.manualReturn)
+                  : auto !== undefined
+                    ? String(Number(auto.toFixed(1)))
+                    : ""
             }
             aria-label={t("Rendimiento %", "Return %")}
             placeholder="0"
+            onBlur={() => setReturnDraft(null)}
             onChange={(event) => {
               const raw = event.target.value.replace(",", ".").replace(/[^\d.-]/g, "");
-              onChange({ manualReturn: raw === "" ? null : Number(raw) });
+              setReturnDraft(raw);
+              const parsed = Number(raw);
+              onChange({ manualReturn: raw === "" || !Number.isFinite(parsed) ? null : parsed });
             }}
+
             className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-2 pr-4 text-sm"
           />
           <span className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">
