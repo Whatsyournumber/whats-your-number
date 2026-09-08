@@ -908,15 +908,17 @@ function PortafolioContent() {
   const simPortfolioTotal = simAddedTotal;
   const simStartValue = totalValue + simAddedTotal;
   const fallbackRate = Math.round(Math.max(1, Math.min(20, weightedReturn || 8)) * 10) / 10;
+  const clampRate = (r: number) => Math.max(-20, Math.min(30, r));
   const assetRate = (asset: SimAsset) => {
-    if (asset.manualReturn !== null && Number.isFinite(asset.manualReturn)) return asset.manualReturn;
+    if (asset.manualReturn !== null && Number.isFinite(asset.manualReturn)) return clampRate(asset.manualReturn);
     const key = asset.ticker.trim().toUpperCase();
     const auto = key ? simDayChange[key] : undefined;
-    return auto !== undefined ? auto : fallbackRate;
+    return auto !== undefined && Number.isFinite(auto) ? clampRate(auto) : fallbackRate;
   };
   const simRate = simAddedTotal > 0
-    ? simAssets.reduce((sum, asset) => sum + assetRate(asset) * (asset.amount || 0), 0) / simAddedTotal
+    ? clampRate(simAssets.reduce((sum, asset) => sum + assetRate(asset) * (asset.amount || 0), 0) / simAddedTotal)
     : fallbackRate;
+
   const benchCagr = Math.max(1, Math.min(15,
     typeof benchHistCagrRaw === "number" && Number.isFinite(benchHistCagrRaw) ? benchHistCagrRaw : (bench12 || 8),
   ));
