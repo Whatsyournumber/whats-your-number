@@ -924,11 +924,12 @@ function PortafolioContent() {
     : fallbackRate;
 
   // Referencias históricas de los últimos 30 años por índice.
-  const benchRef = benchmark === "nasdaq"
-    ? { hist: 13.5, histLabel: "13–14%", cons: 9, base: 11, opt: 14 }
-    : benchmark === "world"
-      ? { hist: 9, histLabel: "8.5–9.5%", cons: 6.5, base: 8, opt: 10 }
-      : { hist: 10.2, histLabel: "10.2%", cons: 7, base: 9, opt: 11 };
+  const benchRefMap = {
+    sp500: { hist: 10.2, histLabel: "10.2%", cons: 7, base: 9, opt: 11, fullName: "S&P 500" },
+    nasdaq: { hist: 13.5, histLabel: "13–14%", cons: 9, base: 11, opt: 14, fullName: "Nasdaq 100" },
+    world: { hist: 9, histLabel: "8.5–9.5%", cons: 6.5, base: 8, opt: 10, fullName: "MSCI World" },
+  };
+  const benchRef = benchRefMap[benchmark];
   const benchCagr = benchRef.base;
 
   const fv = (rate: number, years: number) => {
