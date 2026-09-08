@@ -980,10 +980,12 @@ function PortafolioContent() {
   const benchRef = benchRefMap[benchmark];
   const benchCagr = benchRef.base;
 
+  // Compuesto mensual: los aportes mensuales se reinvierten mes a mes.
   const fv = (rate: number, years: number) => {
-    const r = rate / 100;
-    const growth = Math.pow(1 + r, years);
-    const contrib = r === 0 ? simContrib * 12 * years : simContrib * 12 * ((growth - 1) / r);
+    const months = Math.round(years * 12);
+    const rm = Math.pow(1 + rate / 100, 1 / 12) - 1;
+    const growth = Math.pow(1 + rm, months);
+    const contrib = rm === 0 ? simContrib * months : simContrib * ((growth - 1) / rm);
     return simStartValue * growth + contrib;
   };
   // Base = rendimiento del propio portafolio; al añadir activos se promedia ponderado con lo nuevo.
@@ -1015,16 +1017,15 @@ function PortafolioContent() {
   const simData = hasSim
     ? [
         ...histSlice.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench })),
-        ...projPoints
-          .filter((p, i) => i === 0 || i === simYears || i % simStep === 0)
-          // En "Hoy" todas las series arrancan del mismo punto para que el compuesto se mida igual.
-          .map((p, i) => (i === 0 ? { ...p, real: simStartValue, bench: simStartValue } : p)),
-
+        // Todos los años proyectados, compuestos año a año.
+        ...projPoints.map((p, i) => (i === 0 ? { ...p, real: simStartValue, bench: simStartValue } : p)),
       ]
     : histSlice.map((h) => ({ label: h.label, real: h.real, bench: h.bench }));
 
   const todayIndex = histSlice.length - 1;
-  const simTicks = simData.map((d) => d.label);
+  const simTicks = simData
+    .map((d) => d.label)
+    .filter((label, i) => i <= todayIndex || (i - todayIndex) % simStep === 0 || i === simData.length - 1);
   const simResult = projPoints[projPoints.length - 1]!;
 
 
