@@ -159,7 +159,7 @@ function SimAssetRow({
 
 
   return (
-    <div className="relative rounded-xl border border-border/50 bg-elevated/30 p-1 pr-5">
+    <div className="relative rounded-xl border border-border/50 bg-elevated/30 p-1 pr-4">
       <Button
         type="button"
         variant="ghost"
@@ -170,7 +170,7 @@ function SimAssetRow({
       >
         <X className="h-3 w-3" />
       </Button>
-      <div className="grid grid-cols-[1rem_minmax(0,1.6fr)_minmax(0,2fr)_minmax(0,1.7fr)_minmax(0,0.8fr)] items-center gap-1.5 lg:gap-1">
+      <div className="grid grid-cols-[1rem_minmax(0,1.6fr)_minmax(0,2fr)_minmax(0,1.7fr)_minmax(4rem,1fr)] items-center gap-1.5 lg:gap-1">
         <TrendingUp className="h-3 w-3 shrink-0" style={{ color }} />
 
         <div className="relative min-w-0">
@@ -270,9 +270,9 @@ function SimAssetRow({
               onChange({ manualReturn: raw === "" || !Number.isFinite(parsed) ? null : parsed });
             }}
 
-            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-2 pr-5 text-sm"
+            className="numeric h-9 min-w-0 border-border/40 bg-elevated/50 pl-2 pr-5 !text-[11px] md:!text-[11px]"
           />
-          <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">
+          <span className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-[9px] text-muted-foreground">
             %
           </span>
         </div>
@@ -1354,7 +1354,7 @@ function PortafolioContent() {
               </div>
             ) : (
               <div className="space-y-2">
-                <div className="grid grid-cols-[1rem_minmax(0,1.6fr)_minmax(0,2fr)_minmax(0,1.7fr)_minmax(0,0.8fr)] items-center gap-1.5 px-1 pr-5 lg:gap-1">
+                <div className="grid grid-cols-[1rem_minmax(0,1.6fr)_minmax(0,2fr)_minmax(0,1.7fr)_minmax(4rem,1fr)] items-center gap-1.5 px-1 pr-4 lg:gap-1">
                   <span className="w-4 shrink-0" />
                   <span className="truncate text-[10px] font-medium text-muted-foreground">{t("Activo", "Asset")}</span>
                   <span className="truncate text-[10px] font-medium text-muted-foreground">{t("Monto", "Amount")}</span>
@@ -1380,7 +1380,7 @@ function PortafolioContent() {
               </div>
             )}
 
-            <div className="grid grid-cols-[1rem_minmax(0,1.6fr)_minmax(0,2fr)_minmax(0,1.7fr)_minmax(0,0.8fr)] items-center gap-1.5 border-t border-border/50 px-1 pr-5 pt-4 lg:gap-1">
+            <div className="grid grid-cols-[1rem_minmax(0,1.6fr)_minmax(0,2fr)_minmax(0,1.7fr)_minmax(4rem,1fr)] items-center gap-1.5 border-t border-border/50 px-1 pr-4 pt-4 lg:gap-1">
               <span className="w-4 shrink-0" />
               <p className="truncate text-[10px] text-muted-foreground">
                 {simAssets.length}/5 {t("activos", "assets")}
