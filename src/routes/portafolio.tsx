@@ -555,22 +555,24 @@ function PortafolioContent() {
   const benchReturnsQuery = useSymbolReturns([benchSymbol]);
   const benchHistCagrRaw = benchReturnsQuery.data?.cagr?.[benchSymbol];
 
-  // Últimos 12 meses únicos: evita etiquetas duplicadas si Yahoo devuelve un punto extra.
-  const last12Unique = (s: { label: string; value: number }[]) => {
-    const out: { label: string; value: number }[] = [];
-    const seen = new Set<string>();
-    for (let i = s.length - 1; i >= 0; i--) {
-      const p = s[i]!;
-      if (seen.has(p.label)) continue;
-      seen.add(p.label);
-      out.unshift(p);
-      if (out.length >= 12) break;
-    }
-    return out;
+  // Doce meses naturales completos. Si el mercado omite un mes, conserva el
+  // último cierre conocido para que el eje y las series sigan alineados.
+  const monthLabels = Array.from({ length: 12 }, (_, i) => {
+    const date = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth() - 11 + i, 1));
+    const names = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+    return names[date.getUTCMonth()]!;
+  });
+  const normalize12 = (s: { label: string; value: number }[]) => {
+    const latestByMonth = new Map(s.map((point) => [point.label, point.value]));
+    let last = latestByMonth.get(monthLabels[0]!) ?? s[0]?.value ?? 0;
+    return monthLabels.map((label) => {
+      last = latestByMonth.get(label) ?? last;
+      return { label, value: last };
+    });
   };
-  const benchSeries = last12Unique(series[benchSymbol] ?? []);
-  const spy = last12Unique(series["SPY"] ?? []);
-  const btc = last12Unique(series["BTC-USD"] ?? []);
+  const benchSeries = normalize12(series[benchSymbol] ?? []);
+  const spy = normalize12(series["SPY"] ?? []);
+  const btc = normalize12(series["BTC-USD"] ?? []);
   const equityValue = profile.assets_etf + profile.assets_retirement + profile.assets_stocks;
   const cryptoValue = profile.assets_crypto;
   const cashValue = profile.assets_cash + profile.assets_bank;
@@ -946,7 +948,7 @@ function PortafolioContent() {
     benchProj: fv(benchCagr, y),
   }));
   const simStep = simYears > 20 ? 5 : simYears > 10 ? 3 : 2;
-  const histSlice = histPoints.slice(-12);
+  const histSlice = hasSim ? histPoints.slice(-6) : histPoints.slice(-12);
   const lastHist = histSlice[histSlice.length - 1];
   const simData = hasSim
     ? [
@@ -1251,6 +1253,8 @@ function PortafolioContent() {
                 <XAxis
                   dataKey="label"
                   {...axisProps}
+                  interval={0}
+                  minTickGap={0}
                 />
                 <YAxis
                   {...axisProps}
