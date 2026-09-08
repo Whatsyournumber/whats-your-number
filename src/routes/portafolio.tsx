@@ -1413,10 +1413,10 @@ function PortafolioContent() {
                       <Info className="h-3.5 w-3.5" />
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent align="end" side="top" className="w-56 p-2.5 text-xs">
+                  <PopoverContent align="end" side="top" className="w-60 p-2.5 text-xs">
                     {t(
-                      `Optimista = promedio histórico de ${benchName} + 3%. Pesimista = promedio histórico − 3%.`,
-                      `Optimistic = ${benchName} historical average + 3%. Pessimistic = historical average − 3%.`,
+                      `Optimista = promedio histórico de ${benchName} (${benchCagr.toFixed(0)}%) + 3%. Pesimista = promedio histórico (${benchCagr.toFixed(0)}%) − 3%.`,
+                      `Optimistic = ${benchName} historical average (${benchCagr.toFixed(0)}%) + 3%. Pessimistic = historical average (${benchCagr.toFixed(0)}%) − 3%.`,
                     )}
                   </PopoverContent>
                 </Popover>
