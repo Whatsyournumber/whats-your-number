@@ -98,13 +98,15 @@ export function newHolding(kind: HoldingKind, label = "", position = 0): Holding
   };
 }
 
-/** Valor actual de una posición: precio de mercado si hay ticker + unidades, si no el valor manual. */
+/** Valor actual de una posición: precio de mercado si hay ticker + unidades, si no el valor manual; como último recurso, el monto de compra. */
 export function holdingValue(h: Holding, prices?: Record<string, number>): number {
   if (h.ticker && h.quantity > 0) {
     const p = prices?.[h.ticker.toUpperCase()];
     if (p && p > 0) return Math.round(h.quantity * p);
   }
-  return Math.round(h.manual_value);
+  if (h.manual_value > 0) return Math.round(h.manual_value);
+  if (h.cost_basis > 0) return Math.round(h.cost_basis);
+  return 0;
 }
 
 export type WealthTotals = {
