@@ -1045,6 +1045,30 @@ function PortafolioContent() {
 
   const calendarLabel = evoPoint ? evoPoint.label : t("Actual", "Current");
 
+  const benchmarkButtons = (
+    <div className="flex flex-nowrap items-center rounded-full border border-border/60 p-0.5">
+      {([
+        { k: "sp500", l: "S&P 500" },
+        { k: "nasdaq", l: "Nasdaq" },
+        { k: "world", l: "MSCI World" },
+      ] as const).map((b) => (
+        <button
+          key={b.k}
+          type="button"
+          onClick={() => setBenchmark(b.k)}
+          className={cn(
+            "shrink-0 whitespace-nowrap rounded-full border px-2 py-1 text-[10px] font-medium transition sm:px-2.5 sm:text-[11px]",
+            benchmark === b.k
+              ? "border-chart-2/50 bg-chart-2/15 text-chart-2 shadow-sm"
+              : "border-transparent text-muted-foreground hover:text-foreground",
+          )}
+        >
+          {b.l}
+        </button>
+      ))}
+    </div>
+  );
+
   return (
     <PageShell>
       <PageHeader
