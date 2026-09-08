@@ -1233,12 +1233,7 @@ function PortafolioContent() {
                 />
                 <Tooltip content={<SimTooltip data={simData} formatter={(v: number) => fmt(Math.round(v))} lang={lang} />} />
                 {hasSim ? (
-                  <ReferenceLine
-                    x={simData[todayIndex]?.label ?? ""}
-                    stroke="var(--color-border)"
-                    strokeDasharray="4 4"
-                    label={{ value: t("Hoy", "Today"), position: "top", fill: "var(--color-muted-foreground)", fontSize: 10 }}
-                  />
+                  <ReferenceLine x={simData[todayIndex]?.label ?? ""} stroke="var(--color-border)" strokeDasharray="4 4" />
                 ) : null}
                 {hasSim ? <Area type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="none" fill="url(#simOpt)" /> : null}
                 <Line type="monotone" dataKey="real" name={t("Tu portafolio", "Your portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.6} dot={false} connectNulls />
