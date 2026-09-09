@@ -1058,8 +1058,8 @@ function PortafolioContent() {
     real: totalValue * ((1 + p.portfolio / 100) / (1 + port12 / 100)),
     bench: totalValue * ((1 + p.bench / 100) / (1 + bench12 / 100)),
     asset: hasFocus ? (focusSeries[i]?.price ?? undefined) : undefined,
-    // % del S&P 500 en el mismo mes; luego se indexa al primer precio visible del activo.
-    spPct: hasFocus ? spy[i]?.value : undefined,
+    // % del índice seleccionado (S&P 500 / Nasdaq 100 / MSCI World) en el mismo mes.
+    spPct: hasFocus ? benchSeries[i]?.value : undefined,
   }));
   const hasSim = simAssets.some((a) => (a.amount || 0) > 0 || (a.contribution || 0) > 0);
   const projPoints = Array.from({ length: simYears + 1 }, (_, y) => ({
@@ -1073,7 +1073,7 @@ function PortafolioContent() {
   const histSlice = histPoints.slice(-historyMonths);
   const simStep = Math.max(1, Math.round(simYears / Math.max(3, histSlice.length - 1)));
   const lastHist = histSlice[histSlice.length - 1];
-  // S&P 500 indexado al primer precio visible del activo, para comparar en la misma escala.
+  // Índice seleccionado, indexado al primer precio visible del activo, para comparar en la misma escala.
   const spBaseIdx = hasFocus ? histSlice.findIndex((h) => typeof h.spPct === "number" && typeof h.asset === "number") : -1;
   const spBase = spBaseIdx >= 0 ? (histSlice[spBaseIdx]!.spPct ?? 0) : 0;
   const spIndex = (h: { spPct?: number | undefined; asset?: number | undefined }) =>
@@ -1117,7 +1117,7 @@ function PortafolioContent() {
           key={h.ticker}
           role="button"
           tabIndex={0}
-          title={t("Toca para ver su evolución vs S&P 500", "Tap to see its evolution vs S&P 500")}
+          title={t(`Toca para ver su evolución vs ${benchName}`, `Tap to see its evolution vs ${benchName}`)}
           onClick={() => setFocusTicker((cur) => (tk && cur === tk ? null : tk ?? null))}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
@@ -1453,7 +1453,7 @@ function PortafolioContent() {
             {hasFocus ? (
               <span className="flex shrink-0 items-center gap-1 text-muted-foreground">
                 <span className="h-0.5 w-3 rounded-full bg-[var(--color-chart-2)] sm:w-4" />
-                S&P 500
+                {benchName}
               </span>
             ) : null}
             {!focusTicker ? (
@@ -1527,7 +1527,7 @@ function PortafolioContent() {
                   <Line
                     type="monotone"
                     dataKey="sp"
-                    name="S&P 500"
+                    name={benchName}
                     stroke="var(--color-chart-2)"
                     strokeWidth={1.8}
                     strokeDasharray="2 5"
