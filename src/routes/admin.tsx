@@ -367,6 +367,10 @@ function AdminPage() {
 
   const onbByUser = useMemo(() => new Map(onb.map((o) => [o.user_id, o])), [onb]);
   const subByUser = useMemo(() => new Map(subs.map((s) => [s.user_id, s])), [subs]);
+  const promoByUser = useMemo(
+    () => new Map((promos.data?.redemptions ?? []).map((r) => [r.user_id, r])),
+    [promos.data?.redemptions],
+  );
 
   const activeSubs = subs.filter((s) => ["active", "trialing", "past_due"].includes(s.status));
   const mrr = activeSubs.reduce((acc, s) => acc + (PRICES[s.product_id] ?? 0), 0);
