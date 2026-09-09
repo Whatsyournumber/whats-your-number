@@ -55,7 +55,7 @@ import { currencyForCountry } from "@/lib/country-currency";
 
 import { cn } from "@/lib/utils";
 import { defaultCurrency } from "@/lib/geo";
-import { useT } from "@/hooks/use-language";
+import { useT, LanguageToggle } from "@/hooks/use-language";
 import { useSubscription } from "@/hooks/use-subscription";
 import { Amount } from "@/components/ui/amount";
 
@@ -322,6 +322,7 @@ function OnboardingPage() {
             <span className="numeric w-16 text-right text-[11px] text-muted-foreground">
               {saving ? t("Guardando…", "Saving…") : isSummary ? "" : `${step} / ${QUESTIONS}`}
             </span>
+            <LanguageToggle />
             <button
               type="button"
               onClick={async () => {
@@ -1014,14 +1015,11 @@ function OnboardingPage() {
                 <ArrowLeft className="mr-2 h-4 w-4" /> {t("Atrás", "Back")}
               </Button>
             ) : (
-              <Button
-                variant="ghost"
-                size="lg"
-                className="rounded-full"
-                onClick={() => navigate({ to: isPatrimonio ? "/ninos" : "/" })}
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />{" "}
-                {isPatrimonio ? t("Perfiles", "Profiles") : t("Inicio", "Home")}
+              <Button asChild variant="ghost" size="lg" className="rounded-full">
+                <Link to={isPatrimonio ? "/ninos" : "/"}>
+                  <ArrowLeft className="mr-2 h-4 w-4" />{" "}
+                  {isPatrimonio ? t("Perfiles", "Profiles") : t("Inicio", "Home")}
+                </Link>
               </Button>
             )}
 
