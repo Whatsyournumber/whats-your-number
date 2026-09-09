@@ -133,15 +133,28 @@ function Dashboard() {
 
   // Patrimonio vivo: cuando hay detalle de activos se recalcula con precios de
   // mercado en tiempo real (mismo total que /patrimonio); si no, se usa el perfil.
+  // Para cada rubro se usan las posiciones reales si existen; si no, se conserva
+  // el valor declarado en el perfil, igual que en /patrimonio.
   const liveNetWorth = (() => {
     if (!holdings.length) return d.netWorth;
     const wt = wealthTotals(holdings, prices);
+    const profileMap = Object.fromEntries(d.assets.map((a) => [a.key, a.value]));
+    const categoryValue = (key: keyof WealthTotals, kinds: string[]) => {
+      const hasAny = holdings.some((h) => kinds.includes(h.kind));
+      return hasAny ? wt[key] : (profileMap[key] ?? 0);
+    };
+    const cash = categoryValue("assets_cash", ["cash"]);
+    const bank = categoryValue("assets_bank", ["bank", "money_market"]);
+    const retirement = categoryValue("assets_retirement", ["retirement"]);
+    const etf = categoryValue("assets_etf", ["etf", "other", "bond", "tbill", "note", "structured"]);
+    const stocks = categoryValue("assets_stocks", ["stock"]);
+    const crypto = categoryValue("assets_crypto", ["crypto"]);
+    const property = categoryValue("assets_property", ["property"]);
     const futureTotal = holdings
       .filter((h) => h.kind === "future")
       .reduce((s, h) => s + Math.round(holdingValue(h, prices) * (h.probability / 100)), 0);
-    const assets =
-      wt.assets_cash + wt.assets_bank + wt.assets_retirement + wt.assets_etf + wt.assets_stocks + wt.assets_crypto + wt.assets_property + futureTotal;
-    return assets - wt.liabilities;
+    const assets = cash + bank + retirement + etf + stocks + crypto + property + futureTotal;
+    return assets - d.totalLiabilities;
   })();
 
   // Aportes/compras de activos agrupados por mes real, igual que en /patrimonio,
