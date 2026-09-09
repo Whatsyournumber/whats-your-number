@@ -118,7 +118,7 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
 
   const mobileAuthButton = user ? (
     <Button asChild size="sm" className="h-8 rounded-full px-3 text-xs">
-      <Link to={homeTo}>{t("Dashboard", "Dashboard")}</Link>
+      <Link to={ctaTo}>{mobileCtaLabel}</Link>
     </Button>
   ) : (
     <Button asChild size="sm" className="h-8 rounded-full px-3 text-xs">
