@@ -90,7 +90,7 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
 
   const authButtons = user ? (
     <Button asChild size="sm" className="rounded-full">
-      <Link to={homeTo}>{t("Ir al dashboard", "Go to dashboard")}</Link>
+      <Link to={ctaTo}>{ctaLabel}</Link>
     </Button>
   ) : (
     <>
