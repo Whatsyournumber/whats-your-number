@@ -404,7 +404,10 @@ function Dashboard() {
                       size="sm"
                       variant={key === activeKey ? "default" : "ghost"}
                       disabled={!available}
-                      className="rounded-lg capitalize"
+                      className={cn(
+                        "rounded-lg capitalize",
+                        key === activeKey && "bg-emerald-500/90 text-white hover:bg-emerald-600",
+                      )}
                       onClick={() => {
                         setMonthKey(key);
                         setPickerOpen(false);
