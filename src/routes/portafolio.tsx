@@ -1423,8 +1423,19 @@ function PortafolioContent() {
               >
                 <span className="h-0.5 w-3 rounded-full bg-[var(--color-chart-4)] sm:w-4" />
                 {focusTicker}
+                {hasFocus ? (
+                  <span className={cn("numeric font-semibold", focusPerf >= 0 ? "text-positive" : "text-negative")}>
+                    {focusPerf >= 0 ? "+" : ""}
+                    {focusPerf.toFixed(1)}%
+                  </span>
+                ) : null}
                 <span className="text-muted-foreground">✕</span>
               </button>
+            ) : null}
+            {focusTicker && !hasFocus && !seriesQuery.isLoading ? (
+              <span className="shrink-0 text-[10px] text-muted-foreground sm:text-[11px]">
+                {t("Sin datos de mercado", "No market data")}
+              </span>
             ) : null}
           </div>
           {isMobile && (
