@@ -72,7 +72,7 @@ const STAGE_ESTIMATED_SECONDS: Record<JobStage, number> = {
   error: 0,
 };
 
-export function StatementImporter() {
+export function StatementImporter({ showHeader = true }: { showHeader?: boolean }) {
   const t = useT();
   const { user, signOut } = useAuth();
   const { isFree } = useSubscription();
@@ -343,11 +343,15 @@ export function StatementImporter() {
   return (
     <div className="space-y-4">
       <Panel
-        title={t("Importar gastos", "Import expenses")}
-        description={t(
-          "PDF, CSV bancarios o capturas de pantalla — la IA lee, extrae y clasifica cada movimiento",
-          "Card PDFs, bank CSVs or screenshots — AI reads, extracts and classifies each transaction",
-        )}
+        {...(showHeader
+          ? {
+              title: t("Importar gastos", "Import expenses"),
+              description: t(
+                "PDF, CSV bancarios o capturas de pantalla — la IA lee, extrae y clasifica cada movimiento",
+                "Card PDFs, bank CSVs or screenshots — AI reads, extracts and classifies each transaction",
+              ),
+            }
+          : {})}
       >
         <div className="relative">
           <div
