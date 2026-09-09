@@ -976,10 +976,10 @@ function OnboardingPage() {
                     </span>
                     {t("Sube tus Estados financieros", "Upload your financial statements")}
                   </h3>
-                  <p className="mt-2 whitespace-nowrap text-xs text-muted-foreground sm:text-sm">
+                  <p className="mt-2 whitespace-nowrap text-sm text-muted-foreground">
                     {t(
-                      "Extraemos fecha, comercio, descripción, monto y moneda · PDF, CSV o captura · máx. 15 MB",
-                      "We extract date, merchant, description, amount and currency · PDF, CSV or screenshot · max 15 MB",
+                      "La IA lee y clasifica tus movimientos para rellenar Gastos Variable, 100% encriptado.",
+                      "AI reads and classifies your transactions to fill Variable Expenses, 100% encrypted.",
                     )}
                   </p>
                   <div className="mt-5 rounded-3xl border border-dashed border-border bg-elevated/30 p-4">
