@@ -1079,7 +1079,22 @@ function PortafolioContent() {
         const isEtf = h.type === "ETF" || h.type === "Cripto" || (h.type === "Acción" && hasLive);
         const today = tk && dayChange[tk] !== undefined ? dayChange[tk] : null;
         return (
-        <div key={h.ticker} className="grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 md:grid-cols-6">
+        <div
+          key={h.ticker}
+          role="button"
+          tabIndex={0}
+          onClick={() => setFocusTicker((cur) => (tk && cur === tk ? null : tk ?? null))}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setFocusTicker((cur) => (tk && cur === tk ? null : tk ?? null));
+            }
+          }}
+          className={cn(
+            "grid cursor-pointer grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 transition hover:bg-elevated md:grid-cols-6",
+            tk && focusTicker === tk && "ring-1 ring-[var(--color-chart-4)]/60",
+          )}
+        >
           <div className="col-span-2 md:col-span-2">
             <p className="text-sm font-medium">{h.ticker}</p>
             <p className="truncate text-xs text-muted-foreground">{h.type === "Cripto" ? t("Cripto", "Crypto") : h.name}</p>
