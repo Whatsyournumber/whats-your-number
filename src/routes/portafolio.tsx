@@ -1060,7 +1060,7 @@ function PortafolioContent() {
 
   const todayIndex = histSlice.length - 1;
   const simTicks = simData
-    .map((d) => d.label)
+    .map((d) => d["label"])
     .filter((label, i) => i <= todayIndex || (i - todayIndex) % simStep === 0 || i === simData.length - 1);
   const simResult = projPoints[projPoints.length - 1]!;
 
@@ -1441,7 +1441,7 @@ function PortafolioContent() {
                 />
                 <Tooltip content={<SimTooltip data={simData as unknown as Array<Record<string, number | string>>} formatter={(v: number) => fmt(Math.round(v))} lang={lang} todayIndex={hasSim ? todayIndex : -1} />} />
                 {hasSim ? (
-                  <ReferenceLine x={simData[todayIndex]?.label ?? ""} stroke="var(--color-border)" strokeDasharray="4 4" />
+                  <ReferenceLine x={simData[todayIndex]?.["label"] ?? ""} stroke="var(--color-border)" strokeDasharray="4 4" />
                 ) : null}
                 {hasSim ? <Area type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="none" fill="url(#simOpt)" /> : null}
                 <Line type="monotone" dataKey="real" name={t("Tu portafolio", "Your portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.6} dot={false} connectNulls />
