@@ -1068,17 +1068,24 @@ function PortafolioContent() {
   const histSlice = histPoints.slice(-historyMonths);
   const simStep = Math.max(1, Math.round(simYears / Math.max(3, histSlice.length - 1)));
   const lastHist = histSlice[histSlice.length - 1];
+  // S&P 500 indexado al primer precio visible del activo, para comparar en la misma escala.
+  const spBaseIdx = hasFocus ? histSlice.findIndex((h) => typeof h.spPct === "number" && typeof h.asset === "number") : -1;
+  const spBase = spBaseIdx >= 0 ? (histSlice[spBaseIdx]!.spPct ?? 0) : 0;
+  const spIndex = (h: { spPct?: number; asset?: number }) =>
+    hasFocus && typeof h.spPct === "number" && typeof h.asset === "number" && spBaseIdx >= 0
+      ? (histSlice[spBaseIdx]!.asset ?? 0) * (1 + ((h.spPct ?? 0) - spBase) / 100)
+      : undefined;
   const simData: Array<Record<string, number | string | undefined>> = hasSim
     ? [
-        ...histSlice.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench, asset: h.asset })),
+        ...histSlice.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench, asset: h.asset, sp: spIndex(h) })),
         // Todos los años proyectados, compuestos año a año.
         ...projPoints.map((p, i) =>
           i === 0
-            ? { ...p, real: simStartValue, bench: simStartValue, asset: lastHist?.asset }
+            ? { ...p, real: simStartValue, bench: simStartValue, asset: lastHist?.asset, sp: lastHist ? spIndex(lastHist) : undefined }
             : p,
         ),
       ]
-    : histSlice.map((h) => ({ label: h.label, real: h.real, bench: h.bench, asset: h.asset }));
+    : histSlice.map((h) => ({ label: h.label, real: h.real, bench: h.bench, asset: h.asset, sp: spIndex(h) }));
 
   const todayIndex = histSlice.length - 1;
   const simTicks = simData
