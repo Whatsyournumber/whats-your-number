@@ -144,7 +144,23 @@ function Dashboard() {
     return assets - wt.liabilities;
   })();
 
-  const realMonths = buildRealMonths(transactions, liveNetWorth);
+  // Aportes/compras de activos agrupados por el mes real en que se registraron,
+  // igual que en /patrimonio, para que el mes actual refleje el ahorro aportado.
+  const holdingContributions = (() => {
+    const map: Record<string, number> = {};
+    for (const h of holdings) {
+      if (h.kind === "debt") continue;
+      const date = h.created_at;
+      if (!date) continue;
+      const key = String(date).slice(0, 7);
+      const value = h.manual_value || h.cost_basis || 0;
+      if (!value) continue;
+      map[key] = (map[key] ?? 0) + value;
+    }
+    return map;
+  })();
+
+  const realMonths = buildRealMonths(transactions, liveNetWorth, { contributions: holdingContributions });
   const dayChange: Record<string, number> = Object.fromEntries(
     (holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.changePct ?? 0]),
   );
