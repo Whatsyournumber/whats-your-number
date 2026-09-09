@@ -154,8 +154,10 @@ function SimAssetRow({
   symbol,
   locale,
   t,
+  focused,
   onChange,
   onRemove,
+  onToggleFocus,
 }: {
   asset: SimAsset;
   color: string;
@@ -163,8 +165,10 @@ function SimAssetRow({
   symbol: string;
   locale: string;
   t: (es: string, en: string) => string;
+  focused: boolean;
   onChange: (patch: Partial<SimAsset>) => void;
   onRemove: () => void;
+  onToggleFocus: () => void;
 }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -191,7 +195,18 @@ function SimAssetRow({
         <X className="h-3 w-3" />
       </Button>
       <div className="grid grid-cols-[1rem_minmax(0,1.6fr)_minmax(0,2fr)_minmax(0,1.7fr)_minmax(4rem,1fr)] items-center gap-1.5 lg:gap-1">
-        <TrendingUp className="h-3 w-3 shrink-0" style={{ color }} />
+        <button
+          type="button"
+          onClick={onToggleFocus}
+          aria-label={t("Ver evolución en la gráfica", "Show evolution on the chart")}
+          title={t("Ver evolución en la gráfica", "Show evolution on the chart")}
+          className={cn(
+            "flex h-4 w-4 shrink-0 items-center justify-center rounded-full transition",
+            focused ? "bg-[var(--color-chart-4)]/20" : "hover:bg-elevated",
+          )}
+        >
+          <TrendingUp className="h-3 w-3 shrink-0" style={{ color: focused ? "var(--color-chart-4)" : color }} />
+        </button>
 
         <div className="relative min-w-0">
           <Input
@@ -1022,9 +1037,13 @@ function PortafolioContent() {
   const focusHolding = focusTicker
     ? enriched.find((h) => (h.ticker ?? "").toUpperCase() === focusTicker)
     : undefined;
+  // También desde el simulador: si el activo no está en el portafolio, usa su monto configurado.
+  const focusSimAsset = focusTicker
+    ? simAssets.find((a) => a.ticker.trim().toUpperCase() === focusTicker)
+    : undefined;
   const focusSeries = focusTicker ? normalize12(series[focusTicker] ?? []) : [];
   const focusLast = focusSeries.length ? focusSeries[focusSeries.length - 1]!.value : 0;
-  const focusValue = focusHolding?.value ?? 0;
+  const focusValue = focusHolding?.value ?? ((focusSimAsset?.amount || 0) > 0 ? focusSimAsset!.amount : totalValue);
   const hasFocus = Boolean(focusTicker) && focusSeries.length > 0 && focusValue > 0;
   const histPoints = benchmarkData.map((p, i) => ({
     label: p.label,
@@ -1556,8 +1575,16 @@ function PortafolioContent() {
                       symbol={simCurrencySymbol}
                       locale={lang === "es" ? "es-ES" : "en-US"}
                       t={t}
+                      focused={Boolean(key) && focusTicker === key}
                       onChange={(patch) => updateSimAsset(asset.id, patch)}
-                      onRemove={() => setSimAssets((current) => current.filter((item) => item.id !== asset.id))}
+                      onRemove={() => {
+                        if (key && focusTicker === key) setFocusTicker(null);
+                        setSimAssets((current) => current.filter((item) => item.id !== asset.id));
+                      }}
+                      onToggleFocus={() => {
+                        if (!key) return;
+                        setFocusTicker((cur) => (cur === key ? null : key));
+                      }}
                     />
                   );
                 })}
