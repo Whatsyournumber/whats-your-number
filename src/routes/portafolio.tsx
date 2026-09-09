@@ -647,12 +647,12 @@ function PortafolioContent() {
     const names = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
     return names[date.getUTCMonth()]!;
   });
-  const normalize12 = (s: { label: string; value: number }[]) => {
-    const latestByMonth = new Map(s.map((point) => [point.label, point.value]));
-    let last = latestByMonth.get(monthLabels[0]!) ?? s[0]?.value ?? 0;
+  const normalize12 = (s: { label: string; value: number; price?: number }[]) => {
+    const latestByMonth = new Map(s.map((point) => [point.label, point]));
+    let last = latestByMonth.get(monthLabels[0]!) ?? s[0] ?? { label: monthLabels[0]!, value: 0 };
     return monthLabels.map((label) => {
       last = latestByMonth.get(label) ?? last;
-      return { label, value: last };
+      return { label, value: last.value, price: last.price };
     });
   };
   const benchSeries = normalize12(series[benchSymbol] ?? []);
