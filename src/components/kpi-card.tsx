@@ -25,7 +25,7 @@ export function KpiCard({
   labelSm?: string;
   value: string;
   delta?: number;
-  deltaValue?: string;
+  deltaValue?: string | undefined;
   hint?: ReactNode;
   tooltip?: ReactNode;
   icon?: LucideIcon;

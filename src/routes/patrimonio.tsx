@@ -130,6 +130,7 @@ const RETURN_BY_CLASS: Record<string, number> = {
 function PatrimonioContent() {
   const isMobile = useIsMobile();
   const t = useT();
+  const { lang } = useLanguage();
   const { profile } = useProfile();
   const { transactions } = useTransactions();
   const { holdings } = useHoldings();
