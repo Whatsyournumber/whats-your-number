@@ -1058,8 +1058,8 @@ function PortafolioContent() {
     real: totalValue * ((1 + p.portfolio / 100) / (1 + port12 / 100)),
     bench: totalValue * ((1 + p.bench / 100) / (1 + bench12 / 100)),
     asset: hasFocus ? (focusSeries[i]?.price ?? undefined) : undefined,
-    // % del S&P 500 en el mismo mes; luego se indexa al primer precio visible del activo.
-    spPct: hasFocus ? spy[i]?.value : undefined,
+    // % del índice seleccionado (S&P 500 / Nasdaq 100 / MSCI World) en el mismo mes.
+    spPct: hasFocus ? benchSeries[i]?.value : undefined,
   }));
   const hasSim = simAssets.some((a) => (a.amount || 0) > 0 || (a.contribution || 0) > 0);
   const projPoints = Array.from({ length: simYears + 1 }, (_, y) => ({
