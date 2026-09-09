@@ -187,8 +187,7 @@ function Dashboard() {
   const defaultKey = (() => {
     if (!realMonths) return lastKey;
     const now = new Date();
-    const prev = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const key = `${prev.getFullYear()}-${String(prev.getMonth() + 1).padStart(2, "0")}`;
+    const key = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
     return monthKeys.includes(key) ? key : lastKey || key;
   })();
 
@@ -404,7 +403,10 @@ function Dashboard() {
                       size="sm"
                       variant={key === activeKey ? "default" : "ghost"}
                       disabled={!available}
-                      className="rounded-lg capitalize"
+                      className={cn(
+                        "rounded-lg capitalize",
+                        key === activeKey && "bg-emerald-500/90 text-white hover:bg-emerald-600",
+                      )}
                       onClick={() => {
                         setMonthKey(key);
                         setPickerOpen(false);
@@ -445,10 +447,7 @@ function Dashboard() {
             {...(hasHistory
               ? {
                   delta: delta(current.netWorth, previous.netWorth),
-                  deltaValue: fmt(Math.abs(current.netWorth - previous.netWorth)),
-                  hint: previous.month
-                    ? t(`vs ${new Date(previous.month).toLocaleDateString(lang, { month: "long" })}`, `vs ${new Date(previous.month).toLocaleDateString(lang, { month: "long" })}`)
-                    : t("vs mes anterior", "vs last month"),
+                  hint: t("vs mes anterior", "vs last month"),
                 }
               : {})}
             icon={Wallet}

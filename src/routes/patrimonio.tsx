@@ -474,15 +474,7 @@ function PatrimonioContent() {
           labelSm={t("Patrimonio", "Net worth")}
           value={fmt(netWorthAll)}
           delta={growthMonth}
-          deltaValue={prevMonth !== 0 ? fmt(Math.abs(netWorthAll - prevMonth)) : undefined}
-          hint={
-            months.length > 1 && months[months.length - 2]?.month
-              ? t(
-                  `vs ${new Date(months[months.length - 2]!.month!).toLocaleDateString(lang === "en" ? "en-US" : "es-ES", { month: "long" })}`,
-                  `vs ${new Date(months[months.length - 2]!.month!).toLocaleDateString("en-US", { month: "long" })}`,
-                )
-              : t("vs el mes pasado", "vs last month")
-          }
+          hint={t("vs el mes pasado", "vs last month")}
           accent
           index={0}
         />
