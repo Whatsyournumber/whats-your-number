@@ -172,9 +172,11 @@ function Dashboard() {
   const yieldingGain = yieldingPositions.reduce((s, h) => s + (h.value - h.cost), 0);
   const portfolioReturn = yieldingCost ? (yieldingGain / yieldingCost) * 100 : 0;
 
-  const months = (realMonths ?? d.months).map((month) => {
+  const months = (realMonths ?? d.months).map((month, i, arr) => {
     const expenses = month.expenses + (realMonths ? fixed.total : 0);
-    return { ...month, expenses, income: d.income, savings: d.income - expenses };
+    // El último mes siempre refleja el patrimonio vivo (precios de mercado incluidos).
+    const netWorth = i === arr.length - 1 ? liveNetWorth : month.netWorth;
+    return { ...month, expenses, income: d.income, savings: d.income - expenses, netWorth };
   });
 
   // Selector de mes (por defecto el mes pasado completo).
@@ -219,7 +221,7 @@ function Dashboard() {
   const desiredIncome =
     plan.desiredIncome > 0 ? plan.desiredIncome : current.expenses > 0 ? current.expenses : demo?.monthlySpend ?? 0;
   const baseTargetNumber = plan.targetCapital > 0 ? plan.targetCapital : (desiredIncome * 12) / swr;
-  const baseNumberNetWorth = d.netWorth > 0 ? d.netWorth : demo?.netWorth ?? 0;
+  const baseNumberNetWorth = liveNetWorth > 0 ? liveNetWorth : demo?.netWorth ?? 0;
   const baseMonthlyContribution = current.savings > 0 ? current.savings : demo?.monthlyInvest ?? 0;
 
   // Si el usuario eligió una meta principal en Life Planner, "Tu Número" refleja esa meta.
