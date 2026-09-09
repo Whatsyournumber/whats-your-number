@@ -13,7 +13,7 @@ import { MonthEvolutionPicker } from "@/components/month-evolution-picker";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
-import { useT } from "@/hooks/use-language";
+import { useT, useLanguage } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
