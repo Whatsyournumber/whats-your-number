@@ -1424,10 +1424,13 @@ function PortafolioContent() {
                 <span className="h-0.5 w-3 rounded-full bg-[var(--color-chart-4)] sm:w-4" />
                 {focusTicker}
                 {hasFocus ? (
-                  <span className={cn("numeric font-semibold", focusPerf >= 0 ? "text-positive" : "text-negative")}>
-                    {focusPerf >= 0 ? "+" : ""}
-                    {focusPerf.toFixed(1)}%
-                  </span>
+                  <>
+                    <span className="numeric font-semibold">{fmtUsd(focusLast)}</span>
+                    <span className={cn("numeric font-semibold", focusPerf >= 0 ? "text-positive" : "text-negative")}>
+                      {focusPerf >= 0 ? "+" : ""}
+                      {focusPerf.toFixed(1)}%
+                    </span>
+                  </>
                 ) : null}
                 <span className="text-muted-foreground">✕</span>
               </button>
