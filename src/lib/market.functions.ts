@@ -17,7 +17,7 @@ export const getMarketSeries = createServerFn({ method: "GET" })
     symbols: (input?.symbols ?? [])
       .map((s) => String(s).trim().toUpperCase())
       .filter((s) => /^[A-Z0-9.^=:&/-]{1,20}$/.test(s))
-      .slice(0, 5),
+      .slice(0, 10),
   }))
   .handler(async ({ data }) => {
     const { fetchYearSeries } = await import("./market.server");
