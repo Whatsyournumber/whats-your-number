@@ -342,7 +342,11 @@ function PortafolioContent() {
 
   const watchlist = useWatchlist();
   const quotesQuery = useQuotes(watchlist.symbols);
-  const seriesQuery = useMarketSeries(["^GSPC", "^IXIC", "URTH", "SPY", "BTC-USD"]);
+  // Al tocar un activo, su serie real se añade a la gráfica del simulador.
+  const [focusTicker, setFocusTicker] = useState<string | null>(null);
+  const seriesQuery = useMarketSeries(
+    ["^GSPC", "^IXIC", "URTH", "SPY", "BTC-USD", ...(focusTicker ? [focusTicker] : [])],
+  );
   const [benchmark, setBenchmark] = useState<"sp500" | "nasdaq" | "world">("sp500");
   const [aiExpanded, setAiExpanded] = useState(false);
 
@@ -1014,10 +1018,21 @@ function PortafolioContent() {
   const pesRate = clampRate(blendedRate - 3);
 
   const thisYear = new Date().getFullYear();
-  const histPoints = benchmarkData.map((p) => ({
+  // Activo tocado: su serie real de 12 meses, escalada a su valor actual.
+  const focusHolding = focusTicker
+    ? enriched.find((h) => (h.ticker ?? "").toUpperCase() === focusTicker)
+    : undefined;
+  const focusSeries = focusTicker ? normalize12(series[focusTicker] ?? []) : [];
+  const focusLast = focusSeries.length ? focusSeries[focusSeries.length - 1]!.value : 0;
+  const focusValue = focusHolding?.value ?? 0;
+  const hasFocus = Boolean(focusTicker) && focusSeries.length > 0 && focusValue > 0;
+  const histPoints = benchmarkData.map((p, i) => ({
     label: p.label,
     real: totalValue * ((1 + p.portfolio / 100) / (1 + port12 / 100)),
     bench: totalValue * ((1 + p.bench / 100) / (1 + bench12 / 100)),
+    asset: hasFocus
+      ? focusValue * ((1 + (focusSeries[i]?.value ?? 0) / 100) / (1 + focusLast / 100))
+      : undefined,
   }));
   const hasSim = simAssets.some((a) => (a.amount || 0) > 0 || (a.contribution || 0) > 0);
   const projPoints = Array.from({ length: simYears + 1 }, (_, y) => ({
@@ -1031,17 +1046,21 @@ function PortafolioContent() {
   const histSlice = histPoints.slice(-historyMonths);
   const simStep = Math.max(1, Math.round(simYears / Math.max(3, histSlice.length - 1)));
   const lastHist = histSlice[histSlice.length - 1];
-  const simData = hasSim
+  const simData: Array<Record<string, number | string | undefined>> = hasSim
     ? [
-        ...histSlice.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench })),
+        ...histSlice.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench, asset: h.asset })),
         // Todos los años proyectados, compuestos año a año.
-        ...projPoints.map((p, i) => (i === 0 ? { ...p, real: simStartValue, bench: simStartValue } : p)),
+        ...projPoints.map((p, i) =>
+          i === 0
+            ? { ...p, real: simStartValue, bench: simStartValue, asset: lastHist?.asset }
+            : p,
+        ),
       ]
-    : histSlice.map((h) => ({ label: h.label, real: h.real, bench: h.bench }));
+    : histSlice.map((h) => ({ label: h.label, real: h.real, bench: h.bench, asset: h.asset }));
 
   const todayIndex = histSlice.length - 1;
   const simTicks = simData
-    .map((d) => d.label)
+    .map((d) => d["label"])
     .filter((label, i) => i <= todayIndex || (i - todayIndex) % simStep === 0 || i === simData.length - 1);
   const simResult = projPoints[projPoints.length - 1]!;
 
@@ -1060,7 +1079,22 @@ function PortafolioContent() {
         const isEtf = h.type === "ETF" || h.type === "Cripto" || (h.type === "Acción" && hasLive);
         const today = tk && dayChange[tk] !== undefined ? dayChange[tk] : null;
         return (
-        <div key={h.ticker} className="grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 md:grid-cols-6">
+        <div
+          key={h.ticker}
+          role="button"
+          tabIndex={0}
+          onClick={() => setFocusTicker((cur) => (tk && cur === tk ? null : tk ?? null))}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setFocusTicker((cur) => (tk && cur === tk ? null : tk ?? null));
+            }
+          }}
+          className={cn(
+            "grid cursor-pointer grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 transition hover:bg-elevated md:grid-cols-6",
+            tk && focusTicker === tk && "ring-1 ring-[var(--color-chart-4)]/60",
+          )}
+        >
           <div className="col-span-2 md:col-span-2">
             <p className="text-sm font-medium">{h.ticker}</p>
             <p className="truncate text-xs text-muted-foreground">{h.type === "Cripto" ? t("Cripto", "Crypto") : h.name}</p>
@@ -1357,6 +1391,17 @@ function PortafolioContent() {
                 </span>
               </>
             ) : null}
+            {focusTicker ? (
+              <button
+                type="button"
+                onClick={() => setFocusTicker(null)}
+                className="flex shrink-0 items-center gap-1 rounded-full border border-[var(--color-chart-4)]/40 px-2 py-0.5 text-[10px] text-foreground sm:text-[11px]"
+              >
+                <span className="h-0.5 w-3 rounded-full bg-[var(--color-chart-4)] sm:w-4" />
+                {focusTicker}
+                <span className="text-muted-foreground">✕</span>
+              </button>
+            ) : null}
           </div>
           {isMobile && (
             <div className="mb-3 flex items-center px-3 sm:px-0">
@@ -1396,13 +1441,26 @@ function PortafolioContent() {
                 />
                 <Tooltip content={<SimTooltip data={simData as unknown as Array<Record<string, number | string>>} formatter={(v: number) => fmt(Math.round(v))} lang={lang} todayIndex={hasSim ? todayIndex : -1} />} />
                 {hasSim ? (
-                  <ReferenceLine x={simData[todayIndex]?.label ?? ""} stroke="var(--color-border)" strokeDasharray="4 4" />
+                  <ReferenceLine x={simData[todayIndex]?.["label"] ?? ""} stroke="var(--color-border)" strokeDasharray="4 4" />
                 ) : null}
                 {hasSim ? <Area type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="none" fill="url(#simOpt)" /> : null}
                 <Line type="monotone" dataKey="real" name={t("Tu portafolio", "Your portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.6} dot={false} connectNulls />
                 {hasSim ? <Line type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="var(--color-positive)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls /> : null}
                 {hasSim ? <Line type="monotone" dataKey="pes" name={t("Pesimista", "Pessimistic")} stroke="var(--color-negative)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls /> : null}
                 <Line type="monotone" dataKey="bench" name={benchName} stroke="var(--color-chart-2)" strokeWidth={1.8} strokeDasharray="2 5" dot={false} connectNulls />
+                {hasFocus ? <YAxis yAxisId="asset" hide domain={["dataMin", "dataMax"]} /> : null}
+                {hasFocus ? (
+                  <Line
+                    yAxisId="asset"
+                    type="monotone"
+                    dataKey="asset"
+                    name={focusTicker ?? ""}
+                    stroke="var(--color-chart-4)"
+                    strokeWidth={2.2}
+                    dot={false}
+                    connectNulls
+                  />
+                ) : null}
                 
               </ComposedChart>
             </ResponsiveContainer>
