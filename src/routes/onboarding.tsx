@@ -978,8 +978,8 @@ function OnboardingPage() {
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                     {t(
-                      "Con esto rellenamos automáticamente tu pestaña de Gastos, luego podrás agregar más ;)",
-                      "With this we automatically fill your Expenses tab, then you can add more ;)",
+                      "Sube PDF, CSV o capturas de pantalla. La IA lee y clasifica tus movimientos para rellenar tu pestaña de Gastos automáticamente.",
+                      "Upload PDF, CSV or screenshots. AI reads and classifies your transactions to fill your Expenses tab automatically.",
                     )}
                   </p>
                   <div className="mt-5 rounded-3xl border border-dashed border-border bg-elevated/30 p-4">
