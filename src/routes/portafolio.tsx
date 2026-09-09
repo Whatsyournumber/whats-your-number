@@ -1467,9 +1467,9 @@ function PortafolioContent() {
                   {...axisProps}
                   width={isMobile ? 48 : 68}
                   domain={[(dataMin: number) => Math.max(0, Math.floor(dataMin * 0.94)), (dataMax: number) => Math.ceil(dataMax * 1.04)]}
-                  tickFormatter={(v: number) => fmtCompact(Number(v))}
+                  tickFormatter={(v: number) => (hasFocus ? fmtUsdCompact(Number(v)) : fmtCompact(Number(v)))}
                 />
-                <Tooltip content={<SimTooltip data={simData as unknown as Array<Record<string, number | string>>} formatter={(v: number) => fmt(Math.round(v))} lang={lang} todayIndex={hasSim ? todayIndex : -1} />} />
+                <Tooltip content={<SimTooltip data={simData as unknown as Array<Record<string, number | string>>} formatter={(v: number) => (hasFocus ? fmtUsd(v) : fmt(Math.round(v)))} lang={lang} todayIndex={hasSim && !hasFocus ? todayIndex : -1} />} />
                 {hasSim && !hasFocus ? (
                   <ReferenceLine x={simData[todayIndex]?.["label"] ?? ""} stroke="var(--color-border)" strokeDasharray="4 4" />
                 ) : null}
