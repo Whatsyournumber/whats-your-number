@@ -294,7 +294,7 @@ function AdminPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("subscriptions")
-        .select("id,user_id,product_id,status,environment,current_period_end,cancel_at_period_end,created_at")
+        .select("id,user_id,product_id,price_id,status,environment,current_period_end,cancel_at_period_end,created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data ?? []) as SubscriptionRow[];
