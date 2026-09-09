@@ -1892,7 +1892,7 @@ function PortafolioContent() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-positive opacity-70" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-positive shadow-[0_0_10px_var(--positive)]" />
             </span>
-            {t("Mercado en vivo", "Live market")}
+            {t("Live market tracker", "Live market tracker")}
           </span>
         }
         description={t("ETFs, acciones y cripto · precios reales, actualizados cada minuto", "ETFs, stocks and crypto · real prices, refreshed every minute")}
