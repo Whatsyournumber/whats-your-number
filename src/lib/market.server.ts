@@ -9,7 +9,7 @@ export type Quote = {
   currency: string;
 };
 
-export type SeriesPoint = { label: string; value: number };
+export type SeriesPoint = { label: string; value: number; price?: number };
 
 type ChartResult = {
   meta: {
