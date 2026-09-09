@@ -1233,7 +1233,15 @@ function editDistance(a: string, b: string) {
   return prev[n] ?? 0;
 }
 
-function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof cities)[number]) => void }) {
+function CityPicker({
+  value,
+  onSelect,
+  lifestyleFactor = 1,
+}: {
+  value: string;
+  onSelect: (c: (typeof cities)[number]) => void;
+  lifestyleFactor?: number;
+}) {
   const t = useT();
   const [q, setQ] = useState("");
   const term = norm(q);
