@@ -1501,7 +1501,19 @@ function PortafolioContent() {
                     dataKey="asset"
                     name={focusTicker ?? ""}
                     stroke="var(--color-chart-4)"
-                    strokeWidth={2.4}
+                    strokeWidth={2.6}
+                    dot={false}
+                    connectNulls
+                  />
+                ) : null}
+                {hasFocus ? (
+                  <Line
+                    type="monotone"
+                    dataKey="sp"
+                    name="S&P 500"
+                    stroke="var(--color-chart-2)"
+                    strokeWidth={1.8}
+                    strokeDasharray="2 5"
                     dot={false}
                     connectNulls
                   />
