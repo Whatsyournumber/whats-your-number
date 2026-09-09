@@ -353,6 +353,11 @@ function PortafolioContent() {
   const d = buildDataset(profile);
   const fmt = (n: number, _dec?: number) => d.fmt(n);
   const fmtCompact = (n: number) => d.fmtCompact(n);
+  // Precio de mercado real del ticker (siempre cotiza en USD).
+  const fmtUsd = (n: number) =>
+    n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: n < 10 ? 2 : 0 });
+  const fmtUsdCompact = (n: number) =>
+    n >= 1000 ? `$${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}K` : fmtUsd(n);
   const r = Math.max(0, profile.expected_return || 7) / 100;
 
   const watchlist = useWatchlist();
@@ -1033,30 +1038,21 @@ function PortafolioContent() {
   const pesRate = clampRate(blendedRate - 3);
 
   const thisYear = new Date().getFullYear();
-  // Activo tocado: su serie real de 12 meses, escalada a su valor actual.
-  const focusHolding = focusTicker
-    ? enriched.find((h) => (h.ticker ?? "").toUpperCase() === focusTicker)
-    : undefined;
-  // También desde el simulador: si el activo no está en el portafolio, usa su monto configurado.
-  const focusSimAsset = focusTicker
-    ? simAssets.find((a) => a.ticker.trim().toUpperCase() === focusTicker)
-    : undefined;
+  // Activo tocado: su serie real de 12 meses de precio.
   const focusRaw = focusTicker ? (series[focusTicker] ?? []) : [];
   // Solo dibujamos la evolución si hay datos reales de mercado (al menos 2 puntos distintos).
   const focusHasData = focusRaw.length >= 2 && new Set(focusRaw.map((p) => p.value)).size > 1;
   const focusSeries = focusHasData ? normalize12(focusRaw) : [];
-  const focusValue = focusHolding?.value ?? ((focusSimAsset?.amount || 0) > 0 ? focusSimAsset!.amount : totalValue);
-  const hasFocus = Boolean(focusTicker) && focusSeries.length > 0 && focusValue > 0;
-  // Anclada al primer mes visible: la línea refleja la evolución % real del activo.
+  const hasFocus = Boolean(focusTicker) && focusSeries.length > 0;
+  // Precio real del ticker (USD): la línea y el tooltip muestran su cotización mensual.
   const focusFirst = focusSeries.length ? focusSeries[0]!.value : 0;
-  const focusPerf = hasFocus ? focusSeries[focusSeries.length - 1]!.value - focusFirst : 0;
+  const focusLast = focusSeries.length ? focusSeries[focusSeries.length - 1]!.value : 0;
+  const focusPerf = hasFocus && focusFirst > 0 ? ((focusLast - focusFirst) / focusFirst) * 100 : 0;
   const histPoints = benchmarkData.map((p, i) => ({
     label: p.label,
     real: totalValue * ((1 + p.portfolio / 100) / (1 + port12 / 100)),
     bench: totalValue * ((1 + p.bench / 100) / (1 + bench12 / 100)),
-    asset: hasFocus
-      ? focusValue * (1 + ((focusSeries[i]?.value ?? focusFirst) - focusFirst) / 100)
-      : undefined,
+    asset: hasFocus ? focusSeries[i]?.value : undefined,
   }));
   const hasSim = simAssets.some((a) => (a.amount || 0) > 0 || (a.contribution || 0) > 0);
   const projPoints = Array.from({ length: simYears + 1 }, (_, y) => ({
@@ -1428,10 +1424,13 @@ function PortafolioContent() {
                 <span className="h-0.5 w-3 rounded-full bg-[var(--color-chart-4)] sm:w-4" />
                 {focusTicker}
                 {hasFocus ? (
-                  <span className={cn("numeric font-semibold", focusPerf >= 0 ? "text-positive" : "text-negative")}>
-                    {focusPerf >= 0 ? "+" : ""}
-                    {focusPerf.toFixed(1)}%
-                  </span>
+                  <>
+                    <span className="numeric font-semibold">{fmtUsd(focusLast)}</span>
+                    <span className={cn("numeric font-semibold", focusPerf >= 0 ? "text-positive" : "text-negative")}>
+                      {focusPerf >= 0 ? "+" : ""}
+                      {focusPerf.toFixed(1)}%
+                    </span>
+                  </>
                 ) : null}
                 <span className="text-muted-foreground">✕</span>
               </button>
@@ -1476,9 +1475,9 @@ function PortafolioContent() {
                   {...axisProps}
                   width={isMobile ? 48 : 68}
                   domain={[(dataMin: number) => Math.max(0, Math.floor(dataMin * 0.94)), (dataMax: number) => Math.ceil(dataMax * 1.04)]}
-                  tickFormatter={(v: number) => fmtCompact(Number(v))}
+                  tickFormatter={(v: number) => (hasFocus ? fmtUsdCompact(Number(v)) : fmtCompact(Number(v)))}
                 />
-                <Tooltip content={<SimTooltip data={simData as unknown as Array<Record<string, number | string>>} formatter={(v: number) => fmt(Math.round(v))} lang={lang} todayIndex={hasSim ? todayIndex : -1} />} />
+                <Tooltip content={<SimTooltip data={simData as unknown as Array<Record<string, number | string>>} formatter={(v: number) => (hasFocus ? fmtUsd(v) : fmt(Math.round(v)))} lang={lang} todayIndex={hasSim && !hasFocus ? todayIndex : -1} />} />
                 {hasSim && !hasFocus ? (
                   <ReferenceLine x={simData[todayIndex]?.["label"] ?? ""} stroke="var(--color-border)" strokeDasharray="4 4" />
                 ) : null}
