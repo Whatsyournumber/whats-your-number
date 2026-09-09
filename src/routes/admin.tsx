@@ -90,6 +90,7 @@ type SubscriptionRow = {
   id: string;
   user_id: string;
   product_id: string;
+  price_id: string | null;
   status: string;
   environment: string;
   current_period_end: string | null;
@@ -293,7 +294,7 @@ function AdminPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("subscriptions")
-        .select("id,user_id,product_id,status,environment,current_period_end,cancel_at_period_end,created_at")
+        .select("id,user_id,product_id,price_id,status,environment,current_period_end,cancel_at_period_end,created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data ?? []) as SubscriptionRow[];
@@ -366,6 +367,10 @@ function AdminPage() {
 
   const onbByUser = useMemo(() => new Map(onb.map((o) => [o.user_id, o])), [onb]);
   const subByUser = useMemo(() => new Map(subs.map((s) => [s.user_id, s])), [subs]);
+  const promoByUser = useMemo(
+    () => new Map((promos.data?.redemptions ?? []).map((r) => [r.user_id, r])),
+    [promos.data?.redemptions],
+  );
 
   const activeSubs = subs.filter((s) => ["active", "trialing", "past_due"].includes(s.status));
   const mrr = activeSubs.reduce((acc, s) => acc + (PRICES[s.product_id] ?? 0), 0);
@@ -436,6 +441,7 @@ function AdminPage() {
               {filteredUsers.map((u) => {
                 const o = onbByUser.get(u.id);
                 const s = subByUser.get(u.id);
+                const usedCode = Boolean(s?.price_id?.startsWith("promo_") || promoByUser.has(u.id));
                 return (
                   <div key={u.id} className="rounded-xl border border-border/60 bg-muted/20 p-3">
                     <div className="flex items-start justify-between gap-2">
@@ -453,6 +459,11 @@ function AdminPage() {
                     </div>
                     <div className="mt-2 flex flex-wrap items-center gap-1.5">
                       <Badge variant={s ? "default" : "outline"}>{s ? s.product_id.replace("_plan", "") : "free"}</Badge>
+                      {usedCode && (
+                        <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
+                          {t("código", "code")}
+                        </Badge>
+                      )}
                       <Badge variant={o?.completed ? "default" : "secondary"}>{o?.completed ? t("Completo", "Complete") : t("Pendiente", "Pending")}</Badge>
                       <span className="text-[11px] text-muted-foreground">{o?.country ? `${o.country} · ` : ""}{fmtDate(u.created_at)}</span>
                     </div>
@@ -481,6 +492,7 @@ function AdminPage() {
                   {filteredUsers.map((u) => {
                     const o = onbByUser.get(u.id);
                     const s = subByUser.get(u.id);
+                    const usedCode = Boolean(s?.price_id?.startsWith("promo_") || promoByUser.has(u.id));
                     return (
                       <TableRow key={u.id}>
                         <TableCell className="font-medium">{u.full_name ?? "—"}</TableCell>
@@ -490,7 +502,14 @@ function AdminPage() {
                           <Badge variant={o?.completed ? "default" : "secondary"}>{o?.completed ? t("Completo", "Complete") : t("Pendiente", "Pending")}</Badge>
                         </TableCell>
                         <TableCell>
-                          <Badge variant={s ? "default" : "outline"}>{s ? s.product_id.replace("_plan", "") : "free"}</Badge>
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            <Badge variant={s ? "default" : "outline"}>{s ? s.product_id.replace("_plan", "") : "free"}</Badge>
+                            {usedCode && (
+                              <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
+                                {t("código", "code")}
+                              </Badge>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell className="numeric text-muted-foreground">{fmtDate(u.created_at)}</TableCell>
                         <TableCell className="text-right">
