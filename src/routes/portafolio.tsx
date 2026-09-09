@@ -1376,6 +1376,17 @@ function PortafolioContent() {
                 </span>
               </>
             ) : null}
+            {focusTicker ? (
+              <button
+                type="button"
+                onClick={() => setFocusTicker(null)}
+                className="flex shrink-0 items-center gap-1 rounded-full border border-[var(--color-chart-4)]/40 px-2 py-0.5 text-[10px] text-foreground sm:text-[11px]"
+              >
+                <span className="h-0.5 w-3 rounded-full bg-[var(--color-chart-4)] sm:w-4" />
+                {focusTicker}
+                <span className="text-muted-foreground">✕</span>
+              </button>
+            ) : null}
           </div>
           {isMobile && (
             <div className="mb-3 flex items-center px-3 sm:px-0">
