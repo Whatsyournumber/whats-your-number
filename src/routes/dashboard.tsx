@@ -144,7 +144,23 @@ function Dashboard() {
     return assets - wt.liabilities;
   })();
 
-  const realMonths = buildRealMonths(transactions, liveNetWorth);
+  // Aportes/compras de activos agrupados por mes real, igual que en /patrimonio,
+  // para que la serie mensual refleje correctamente los aportes recientes.
+  const holdingContributions = (() => {
+    const map: Record<string, number> = {};
+    for (const h of holdings) {
+      if (h.kind === "debt") continue;
+      const date = h.created_at;
+      if (!date) continue;
+      const key = String(date).slice(0, 7);
+      const value = h.manual_value || h.cost_basis || 0;
+      if (!value) continue;
+      map[key] = (map[key] ?? 0) + value;
+    }
+    return map;
+  })();
+
+  const realMonths = buildRealMonths(transactions, liveNetWorth, { contributions: holdingContributions });
   const dayChange: Record<string, number> = Object.fromEntries(
     (holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.changePct ?? 0]),
   );
@@ -445,10 +461,7 @@ function Dashboard() {
             {...(hasHistory
               ? {
                   delta: delta(current.netWorth, previous.netWorth),
-                  deltaValue: fmt(Math.abs(current.netWorth - previous.netWorth)),
-                  hint: previous.month
-                    ? t(`vs ${new Date(previous.month).toLocaleDateString(lang, { month: "long" })}`, `vs ${new Date(previous.month).toLocaleDateString(lang, { month: "long" })}`)
-                    : t("vs mes anterior", "vs last month"),
+                  hint: t("vs mes anterior", "vs last month"),
                 }
               : {})}
             icon={Wallet}
