@@ -154,8 +154,10 @@ function SimAssetRow({
   symbol,
   locale,
   t,
+  focused,
   onChange,
   onRemove,
+  onToggleFocus,
 }: {
   asset: SimAsset;
   color: string;
@@ -163,8 +165,10 @@ function SimAssetRow({
   symbol: string;
   locale: string;
   t: (es: string, en: string) => string;
+  focused: boolean;
   onChange: (patch: Partial<SimAsset>) => void;
   onRemove: () => void;
+  onToggleFocus: () => void;
 }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -191,7 +195,18 @@ function SimAssetRow({
         <X className="h-3 w-3" />
       </Button>
       <div className="grid grid-cols-[1rem_minmax(0,1.6fr)_minmax(0,2fr)_minmax(0,1.7fr)_minmax(4rem,1fr)] items-center gap-1.5 lg:gap-1">
-        <TrendingUp className="h-3 w-3 shrink-0" style={{ color }} />
+        <button
+          type="button"
+          onClick={onToggleFocus}
+          aria-label={t("Ver evolución en la gráfica", "Show evolution on the chart")}
+          title={t("Ver evolución en la gráfica", "Show evolution on the chart")}
+          className={cn(
+            "flex h-4 w-4 shrink-0 items-center justify-center rounded-full transition",
+            focused ? "bg-[var(--color-chart-4)]/20" : "hover:bg-elevated",
+          )}
+        >
+          <TrendingUp className="h-3 w-3 shrink-0" style={{ color: focused ? "var(--color-chart-4)" : color }} />
+        </button>
 
         <div className="relative min-w-0">
           <Input
