@@ -9,6 +9,7 @@ import {
   Check,
   Compass,
   CreditCard,
+  FileUp,
   Loader2,
   LogOut,
   Pencil,
@@ -831,14 +832,6 @@ function OnboardingPage() {
                       value={data.income_other}
                       onChange={(v) => set("income_other", v)}
                     />
-                    <MoneyField
-                      emoji="🧾"
-                      label={t("Gasto mensual", "Monthly expenses")}
-                      desc={t("Aproximado, todo incluido", "Approximate, all included")}
-                      currency={cur}
-                      value={data.monthly_expenses}
-                      onChange={(v) => set("monthly_expenses", v)}
-                    />
                   </div>
                 </div>
 
@@ -977,11 +970,16 @@ function OnboardingPage() {
                 </div>
 
                 <div className="mt-10">
-                  <h3 className="font-display text-xl font-semibold">📄 {t("Sube tus extractos financieros", "Upload your financial statements")}</h3>
+                  <h3 className="font-display flex items-center gap-2.5 text-xl font-semibold">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/15 text-primary">
+                      <FileUp className="h-5 w-5" />
+                    </span>
+                    {t("Sube tus Estados financieros", "Upload your financial statements")}
+                  </h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                     {t(
-                      "Nuestra IA analizará automáticamente tus ingresos, gastos, inversiones y patrimonio. Aceptamos PDF y CSV de bancos, brokers y exchanges.",
-                      "Our AI will automatically analyze your income, expenses, investments and net worth. We accept PDF and CSV from banks, brokers and exchanges.",
+                      "La IA analiza tus extractos y detecta automáticamente tus gastos variables. Aceptamos PDF y CSV de bancos, brokers y exchanges.",
+                      "AI analyzes your statements and automatically detects your variable expenses. We accept PDF and CSV from banks, brokers and exchanges.",
                     )}
                   </p>
                   <div className="mt-5 rounded-3xl border border-dashed border-border bg-elevated/30 p-4">
