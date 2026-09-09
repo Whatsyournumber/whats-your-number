@@ -342,7 +342,11 @@ function PortafolioContent() {
 
   const watchlist = useWatchlist();
   const quotesQuery = useQuotes(watchlist.symbols);
-  const seriesQuery = useMarketSeries(["^GSPC", "^IXIC", "URTH", "SPY", "BTC-USD"]);
+  // Al tocar un activo, su serie real se añade a la gráfica del simulador.
+  const [focusTicker, setFocusTicker] = useState<string | null>(null);
+  const seriesQuery = useMarketSeries(
+    ["^GSPC", "^IXIC", "URTH", "SPY", "BTC-USD", ...(focusTicker ? [focusTicker] : [])],
+  );
   const [benchmark, setBenchmark] = useState<"sp500" | "nasdaq" | "world">("sp500");
   const [aiExpanded, setAiExpanded] = useState(false);
 
