@@ -1041,16 +1041,21 @@ function PortafolioContent() {
   const focusSimAsset = focusTicker
     ? simAssets.find((a) => a.ticker.trim().toUpperCase() === focusTicker)
     : undefined;
-  const focusSeries = focusTicker ? normalize12(series[focusTicker] ?? []) : [];
-  const focusLast = focusSeries.length ? focusSeries[focusSeries.length - 1]!.value : 0;
+  const focusRaw = focusTicker ? (series[focusTicker] ?? []) : [];
+  // Solo dibujamos la evolución si hay datos reales de mercado (al menos 2 puntos distintos).
+  const focusHasData = focusRaw.length >= 2 && new Set(focusRaw.map((p) => p.value)).size > 1;
+  const focusSeries = focusHasData ? normalize12(focusRaw) : [];
   const focusValue = focusHolding?.value ?? ((focusSimAsset?.amount || 0) > 0 ? focusSimAsset!.amount : totalValue);
   const hasFocus = Boolean(focusTicker) && focusSeries.length > 0 && focusValue > 0;
+  // Anclada al primer mes visible: la línea refleja la evolución % real del activo.
+  const focusFirst = focusSeries.length ? focusSeries[0]!.value : 0;
+  const focusPerf = hasFocus ? focusSeries[focusSeries.length - 1]!.value - focusFirst : 0;
   const histPoints = benchmarkData.map((p, i) => ({
     label: p.label,
     real: totalValue * ((1 + p.portfolio / 100) / (1 + port12 / 100)),
     bench: totalValue * ((1 + p.bench / 100) / (1 + bench12 / 100)),
     asset: hasFocus
-      ? focusValue * ((1 + (focusSeries[i]?.value ?? 0) / 100) / (1 + focusLast / 100))
+      ? focusValue * (1 + ((focusSeries[i]?.value ?? focusFirst) - focusFirst) / 100)
       : undefined,
   }));
   const hasSim = simAssets.some((a) => (a.amount || 0) > 0 || (a.contribution || 0) > 0);
@@ -1418,8 +1423,19 @@ function PortafolioContent() {
               >
                 <span className="h-0.5 w-3 rounded-full bg-[var(--color-chart-4)] sm:w-4" />
                 {focusTicker}
+                {hasFocus ? (
+                  <span className={cn("numeric font-semibold", focusPerf >= 0 ? "text-positive" : "text-negative")}>
+                    {focusPerf >= 0 ? "+" : ""}
+                    {focusPerf.toFixed(1)}%
+                  </span>
+                ) : null}
                 <span className="text-muted-foreground">✕</span>
               </button>
+            ) : null}
+            {focusTicker && !hasFocus && !seriesQuery.isLoading ? (
+              <span className="shrink-0 text-[10px] text-muted-foreground sm:text-[11px]">
+                {t("Sin datos de mercado", "No market data")}
+              </span>
             ) : null}
           </div>
           {isMobile && (
