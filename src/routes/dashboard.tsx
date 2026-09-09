@@ -141,7 +141,7 @@ function Dashboard() {
     const profileMap = Object.fromEntries(d.assets.map((a) => [a.key, a.value]));
     const categoryValue = (key: keyof WealthTotals, kinds: string[]) => {
       const hasAny = holdings.some((h) => kinds.includes(h.kind));
-      return hasAny ? wt[key] : (profileMap[key] ?? 0);
+      return hasAny ? wt[key] : (profileMap[String(key)] ?? 0);
     };
     const cash = categoryValue("assets_cash", ["cash"]);
     const bank = categoryValue("assets_bank", ["bank", "money_market"]);
