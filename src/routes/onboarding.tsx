@@ -23,7 +23,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { FIXED_FIELDS, totalFixedExpenses } from "@/lib/onboarding";
-import { StatementImporter } from "@/components/statement-importer";
+
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import {
