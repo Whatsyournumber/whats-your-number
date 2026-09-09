@@ -360,15 +360,18 @@ function PatrimonioContent() {
   // La serie mensual cierra exactamente en el patrimonio neto en vivo que se muestra arriba.
   const months = buildRealMonths(transactions, netWorthAll, { contributions: holdingContributions }) ?? d.months;
 
-  // Variación mensual: patrimonio actual vs el mes anterior de la serie.
-  const prevMonth = months.length > 1 ? months[months.length - 2]!.netWorth : 0;
-  const growthMonth = prevMonth !== 0 ? ((netWorthAll - prevMonth) / Math.abs(prevMonth)) * 100 : 0;
-
-  // Calendario de evolución: elegir un mes recorta la gráfica hasta ese mes.
+  // Calendario de evolución: elegir un mes recorta la gráfica y mueve las tarjetas a ese mes.
   const monthKeys = months.map((m, i) => (m as { month?: string }).month ?? `idx-${i}`);
   const realKeys = monthKeys.filter((k) => /^\d{4}-\d{2}$/.test(k));
   const evoIdx = evoMonth ? monthKeys.indexOf(evoMonth) : -1;
   const chartMonths = (evoIdx >= 0 ? months.slice(0, evoIdx + 1) : months).slice(-12);
+
+  // Valores de las tarjetas: con mes elegido, muestran ese mes; sin elegir, el vivo.
+  const selIdx = evoIdx >= 0 ? evoIdx : months.length - 1;
+  const selNetWorth = months[selIdx]?.netWorth ?? netWorthAll;
+  const selPrev = selIdx > 0 ? (months[selIdx - 1]?.netWorth ?? 0) : 0;
+  const growthMonth = selPrev !== 0 ? ((selNetWorth - selPrev) / Math.abs(selPrev)) * 100 : 0;
+  const selAssets = selNetWorth + d.totalLiabilities;
 
   // Comparación contra benchmarks: patrimonio e índice indexados a % desde el primer mes.
   const benchSymbol = benchmark === "nasdaq" ? "^IXIC" : benchmark === "world" ? "URTH" : "^GSPC";
@@ -472,13 +475,13 @@ function PatrimonioContent() {
         <KpiCard
           label={t("Patrimonio neto", "Net worth")}
           labelSm={t("Patrimonio", "Net worth")}
-          value={fmt(netWorthAll)}
+          value={fmt(selNetWorth)}
           delta={growthMonth}
-          hint={t("vs el mes pasado", "vs last month")}
+          hint={evoIdx >= 0 ? t("vs el mes anterior", "vs previous month") : t("vs el mes pasado", "vs last month")}
           accent
           index={0}
         />
-        <KpiCard label={t("Activos", "Assets")} value={fmt(totalAssetsAll)} index={1} />
+        <KpiCard label={t("Activos", "Assets")} value={fmt(selAssets)} index={1} />
         <KpiCard
           label={t("Pasivos", "Liabilities")}
           labelSm={t("Deudas", "Debts")}
