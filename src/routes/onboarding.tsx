@@ -23,7 +23,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { FIXED_FIELDS, totalFixedExpenses } from "@/lib/onboarding";
-import { StatementImporter } from "@/components/statement-importer";
+
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -978,13 +978,10 @@ function OnboardingPage() {
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                     {t(
-                      "Con esto rellenamos automáticamente tu pestaña de Gastos, luego podrás agregar más ;)",
-                      "With this we automatically fill your Expenses tab, then you can add more ;)",
+                      "Puedes subir PDF de tarjetas, CSV bancarios o capturas de pantalla — la IA extrae y clasifica cada movimiento de tus gastos variables.",
+                      "You can upload card PDFs, bank CSVs or screenshots — the AI extracts and classifies every variable expense movement.",
                     )}
                   </p>
-                  <div className="mt-5 rounded-3xl border border-dashed border-border bg-elevated/30 p-4">
-                    <StatementImporter />
-                  </div>
                 </div>
 
                 <Button size="lg" className="mt-8 h-14 w-full rounded-full text-base" onClick={build}>
