@@ -9,7 +9,7 @@ export type Quote = {
   currency: string;
 };
 
-export type SeriesPoint = { label: string; value: number };
+export type SeriesPoint = { label: string; value: number; price?: number };
 
 type ChartResult = {
   meta: {
@@ -77,7 +77,7 @@ export async function fetchYearSeries(symbol: string): Promise<SeriesPoint[]> {
   const base = points[0]!.c;
   return points.map((p) => {
     const date = new Date(p.t * 1000);
-    return { label: MONTHS[date.getUTCMonth()]!, value: ((p.c - base) / base) * 100 };
+    return { label: MONTHS[date.getUTCMonth()]!, value: ((p.c - base) / base) * 100, price: p.c };
   });
 }
 

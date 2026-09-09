@@ -647,12 +647,12 @@ function PortafolioContent() {
     const names = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
     return names[date.getUTCMonth()]!;
   });
-  const normalize12 = (s: { label: string; value: number }[]) => {
-    const latestByMonth = new Map(s.map((point) => [point.label, point.value]));
-    let last = latestByMonth.get(monthLabels[0]!) ?? s[0]?.value ?? 0;
+  const normalize12 = (s: { label: string; value: number; price?: number }[]) => {
+    const latestByMonth = new Map(s.map((point) => [point.label, point]));
+    let last = latestByMonth.get(monthLabels[0]!) ?? s[0] ?? { label: monthLabels[0]!, value: 0 };
     return monthLabels.map((label) => {
       last = latestByMonth.get(label) ?? last;
-      return { label, value: last };
+      return { label, value: last.value, price: last.price };
     });
   };
   const benchSeries = normalize12(series[benchSymbol] ?? []);
@@ -1038,21 +1038,23 @@ function PortafolioContent() {
   const pesRate = clampRate(blendedRate - 3);
 
   const thisYear = new Date().getFullYear();
-  // Activo tocado: su serie real de 12 meses de precio.
+  // Activo tocado: su serie real de 12 meses de precio (USD), más el S&P 500 indexado para comparar.
   const focusRaw = focusTicker ? (series[focusTicker] ?? []) : [];
-  // Solo dibujamos la evolución si hay datos reales de mercado (al menos 2 puntos distintos).
-  const focusHasData = focusRaw.length >= 2 && new Set(focusRaw.map((p) => p.value)).size > 1;
+  // Solo dibujamos la evolución si hay datos reales de mercado (al menos 2 precios distintos).
+  const focusPrices = focusRaw.map((p) => p.price ?? 0).filter((n) => n > 0);
+  const focusHasData = focusPrices.length >= 2 && new Set(focusPrices).size > 1;
   const focusSeries = focusHasData ? normalize12(focusRaw) : [];
   const hasFocus = Boolean(focusTicker) && focusSeries.length > 0;
-  // Precio real del ticker (USD): la línea y el tooltip muestran su cotización mensual.
-  const focusFirst = focusSeries.length ? focusSeries[0]!.value : 0;
-  const focusLast = focusSeries.length ? focusSeries[focusSeries.length - 1]!.value : 0;
+  const focusFirst = focusSeries.length ? (focusSeries[0]!.price ?? 0) : 0;
+  const focusLast = focusSeries.length ? (focusSeries[focusSeries.length - 1]!.price ?? 0) : 0;
   const focusPerf = hasFocus && focusFirst > 0 ? ((focusLast - focusFirst) / focusFirst) * 100 : 0;
   const histPoints = benchmarkData.map((p, i) => ({
     label: p.label,
     real: totalValue * ((1 + p.portfolio / 100) / (1 + port12 / 100)),
     bench: totalValue * ((1 + p.bench / 100) / (1 + bench12 / 100)),
-    asset: hasFocus ? focusSeries[i]?.value : undefined,
+    asset: hasFocus ? (focusSeries[i]?.price ?? undefined) : undefined,
+    // % del S&P 500 en el mismo mes; luego se indexa al primer precio visible del activo.
+    spPct: hasFocus ? spy[i]?.value : undefined,
   }));
   const hasSim = simAssets.some((a) => (a.amount || 0) > 0 || (a.contribution || 0) > 0);
   const projPoints = Array.from({ length: simYears + 1 }, (_, y) => ({
@@ -1066,17 +1068,24 @@ function PortafolioContent() {
   const histSlice = histPoints.slice(-historyMonths);
   const simStep = Math.max(1, Math.round(simYears / Math.max(3, histSlice.length - 1)));
   const lastHist = histSlice[histSlice.length - 1];
+  // S&P 500 indexado al primer precio visible del activo, para comparar en la misma escala.
+  const spBaseIdx = hasFocus ? histSlice.findIndex((h) => typeof h.spPct === "number" && typeof h.asset === "number") : -1;
+  const spBase = spBaseIdx >= 0 ? (histSlice[spBaseIdx]!.spPct ?? 0) : 0;
+  const spIndex = (h: { spPct?: number | undefined; asset?: number | undefined }) =>
+    hasFocus && typeof h.spPct === "number" && typeof h.asset === "number" && spBaseIdx >= 0
+      ? (histSlice[spBaseIdx]!.asset ?? 0) * (1 + ((h.spPct ?? 0) - spBase) / 100)
+      : undefined;
   const simData: Array<Record<string, number | string | undefined>> = hasSim
     ? [
-        ...histSlice.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench, asset: h.asset })),
+        ...histSlice.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench, asset: h.asset, sp: spIndex(h) })),
         // Todos los años proyectados, compuestos año a año.
         ...projPoints.map((p, i) =>
           i === 0
-            ? { ...p, real: simStartValue, bench: simStartValue, asset: lastHist?.asset }
+            ? { ...p, real: simStartValue, bench: simStartValue, asset: lastHist?.asset, sp: lastHist ? spIndex(lastHist) : undefined }
             : p,
         ),
       ]
-    : histSlice.map((h) => ({ label: h.label, real: h.real, bench: h.bench, asset: h.asset }));
+    : histSlice.map((h) => ({ label: h.label, real: h.real, bench: h.bench, asset: h.asset, sp: spIndex(h) }));
 
   const todayIndex = histSlice.length - 1;
   const simTicks = simData
@@ -1103,6 +1112,7 @@ function PortafolioContent() {
           key={h.ticker}
           role="button"
           tabIndex={0}
+          title={t("Toca para ver su evolución vs S&P 500", "Tap to see its evolution vs S&P 500")}
           onClick={() => setFocusTicker((cur) => (tk && cur === tk ? null : tk ?? null))}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
@@ -1435,6 +1445,17 @@ function PortafolioContent() {
                 <span className="text-muted-foreground">✕</span>
               </button>
             ) : null}
+            {hasFocus ? (
+              <span className="flex shrink-0 items-center gap-1 text-muted-foreground">
+                <span className="h-0.5 w-3 rounded-full bg-[var(--color-chart-2)] sm:w-4" />
+                S&P 500
+              </span>
+            ) : null}
+            {!focusTicker ? (
+              <span className="shrink-0 text-[10px] text-muted-foreground/80 sm:text-[11px]">
+                {t("Toca ↗ en un activo para ver su evolución", "Tap ↗ on an asset to see its evolution")}
+              </span>
+            ) : null}
             {focusTicker && !hasFocus && !seriesQuery.isLoading ? (
               <span className="shrink-0 text-[10px] text-muted-foreground sm:text-[11px]">
                 {t("Sin datos de mercado", "No market data")}
@@ -1492,7 +1513,19 @@ function PortafolioContent() {
                     dataKey="asset"
                     name={focusTicker ?? ""}
                     stroke="var(--color-chart-4)"
-                    strokeWidth={2.4}
+                    strokeWidth={2.6}
+                    dot={false}
+                    connectNulls
+                  />
+                ) : null}
+                {hasFocus ? (
+                  <Line
+                    type="monotone"
+                    dataKey="sp"
+                    name="S&P 500"
+                    stroke="var(--color-chart-2)"
+                    strokeWidth={1.8}
+                    strokeDasharray="2 5"
                     dot={false}
                     connectNulls
                   />
