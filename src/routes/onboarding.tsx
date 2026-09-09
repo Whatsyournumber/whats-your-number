@@ -978,8 +978,8 @@ function OnboardingPage() {
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                     {t(
-                      "La IA analiza tus extractos y detecta automáticamente tus gastos variables. Aceptamos PDF y CSV de bancos, brokers y exchanges.",
-                      "AI analyzes your statements and automatically detects your variable expenses. We accept PDF and CSV from banks, brokers and exchanges.",
+                      "Con esto rellenamos automáticamente tu pestaña de Gastos, luego podrás agregar más ;)",
+                      "With this we automatically fill your Expenses tab, then you can add more ;)",
                     )}
                   </p>
                   <div className="mt-5 rounded-3xl border border-dashed border-border bg-elevated/30 p-4">
