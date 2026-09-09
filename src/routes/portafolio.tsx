@@ -1038,21 +1038,23 @@ function PortafolioContent() {
   const pesRate = clampRate(blendedRate - 3);
 
   const thisYear = new Date().getFullYear();
-  // Activo tocado: su serie real de 12 meses de precio.
+  // Activo tocado: su serie real de 12 meses de precio (USD), más el S&P 500 indexado para comparar.
   const focusRaw = focusTicker ? (series[focusTicker] ?? []) : [];
-  // Solo dibujamos la evolución si hay datos reales de mercado (al menos 2 puntos distintos).
-  const focusHasData = focusRaw.length >= 2 && new Set(focusRaw.map((p) => p.value)).size > 1;
+  // Solo dibujamos la evolución si hay datos reales de mercado (al menos 2 precios distintos).
+  const focusPrices = focusRaw.map((p) => p.price ?? 0).filter((n) => n > 0);
+  const focusHasData = focusPrices.length >= 2 && new Set(focusPrices).size > 1;
   const focusSeries = focusHasData ? normalize12(focusRaw) : [];
   const hasFocus = Boolean(focusTicker) && focusSeries.length > 0;
-  // Precio real del ticker (USD): la línea y el tooltip muestran su cotización mensual.
-  const focusFirst = focusSeries.length ? focusSeries[0]!.value : 0;
-  const focusLast = focusSeries.length ? focusSeries[focusSeries.length - 1]!.value : 0;
+  const focusFirst = focusSeries.length ? (focusSeries[0]!.price ?? 0) : 0;
+  const focusLast = focusSeries.length ? (focusSeries[focusSeries.length - 1]!.price ?? 0) : 0;
   const focusPerf = hasFocus && focusFirst > 0 ? ((focusLast - focusFirst) / focusFirst) * 100 : 0;
   const histPoints = benchmarkData.map((p, i) => ({
     label: p.label,
     real: totalValue * ((1 + p.portfolio / 100) / (1 + port12 / 100)),
     bench: totalValue * ((1 + p.bench / 100) / (1 + bench12 / 100)),
-    asset: hasFocus ? focusSeries[i]?.value : undefined,
+    asset: hasFocus ? (focusSeries[i]?.price ?? undefined) : undefined,
+    // % del S&P 500 en el mismo mes; luego se indexa al primer precio visible del activo.
+    spPct: hasFocus ? spy[i]?.value : undefined,
   }));
   const hasSim = simAssets.some((a) => (a.amount || 0) > 0 || (a.contribution || 0) > 0);
   const projPoints = Array.from({ length: simYears + 1 }, (_, y) => ({
