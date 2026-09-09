@@ -492,6 +492,7 @@ function AdminPage() {
                   {filteredUsers.map((u) => {
                     const o = onbByUser.get(u.id);
                     const s = subByUser.get(u.id);
+                    const usedCode = Boolean(s?.price_id?.startsWith("promo_") || promoByUser.has(u.id));
                     return (
                       <TableRow key={u.id}>
                         <TableCell className="font-medium">{u.full_name ?? "—"}</TableCell>
@@ -501,7 +502,14 @@ function AdminPage() {
                           <Badge variant={o?.completed ? "default" : "secondary"}>{o?.completed ? t("Completo", "Complete") : t("Pendiente", "Pending")}</Badge>
                         </TableCell>
                         <TableCell>
-                          <Badge variant={s ? "default" : "outline"}>{s ? s.product_id.replace("_plan", "") : "free"}</Badge>
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            <Badge variant={s ? "default" : "outline"}>{s ? s.product_id.replace("_plan", "") : "free"}</Badge>
+                            {usedCode && (
+                              <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
+                                {t("código", "code")}
+                              </Badge>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell className="numeric text-muted-foreground">{fmtDate(u.created_at)}</TableCell>
                         <TableCell className="text-right">
