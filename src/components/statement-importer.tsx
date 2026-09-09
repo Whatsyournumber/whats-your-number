@@ -72,7 +72,7 @@ const STAGE_ESTIMATED_SECONDS: Record<JobStage, number> = {
   error: 0,
 };
 
-export function StatementImporter() {
+export function StatementImporter({ showHeader = true }: { showHeader?: boolean }) {
   const t = useT();
   const { user, signOut } = useAuth();
   const { isFree } = useSubscription();
