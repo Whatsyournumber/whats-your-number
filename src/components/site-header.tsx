@@ -15,8 +15,13 @@ import { useT, LanguageToggle } from "@/hooks/use-language";
 
 export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" }) {
   const { user } = useAuth();
+  const { profile } = useProfile();
   const { isPatrimonio } = useSubscription();
-  const homeTo = isPatrimonio ? "/ninos" : "/dashboard";
+  const dashboardTo = isPatrimonio ? "/ninos" : "/dashboard";
+  const onboardingCompleted = Boolean(profile?.completed);
+  const ctaTo = user && !onboardingCompleted ? "/onboarding" : dashboardTo;
+  const ctaLabel = user && !onboardingCompleted ? t("Onboarding", "Onboarding") : t("Ir al dashboard", "Go to dashboard");
+  const mobileCtaLabel = user && !onboardingCompleted ? t("Onboarding", "Onboarding") : t("Dashboard", "Dashboard");
   const t = useT();
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
