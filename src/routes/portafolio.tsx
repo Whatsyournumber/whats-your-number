@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Tooltip as UiTooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useAuth } from "@/hooks/use-auth";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useMarketSeries, useQuotes, useSymbolReturns, useSymbolSearch, useWatchlist } from "@/hooks/use-market";
 import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
@@ -332,6 +333,7 @@ function PortafolioContent() {
                   ? t("Cripto", "Crypto")
                   : t("Activo", "Asset");
   const { profile } = useProfile();
+  const { user } = useAuth();
   const { holdings } = useHoldings();
   const d = buildDataset(profile);
   const fmt = (n: number, _dec?: number) => d.fmt(n);
@@ -348,34 +350,43 @@ function PortafolioContent() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [evoIdx, setEvoIdx] = useState<number | null>(null);
   const [evoOpen, setEvoOpen] = useState(false);
-  const SIM_KEY = "wyn:portfolio-sim:v1";
+  const simUserId = user?.id ?? null;
+  const SIM_KEY = simUserId ? `wyn:portfolio-sim:v1:${simUserId}` : null;
   const [simYears, setSimYears] = useState(20);
   const [simAssets, setSimAssets] = useState<SimAsset[]>([
     { id: "sim-1", ticker: "", amount: 0, contribution: 0, manualReturn: null },
   ]);
   const [simLoaded, setSimLoaded] = useState(false);
   useEffect(() => {
+    if (!SIM_KEY) return;
+    setSimLoaded(false);
+    // Cada cuenta arranca limpia: solo cargamos lo que ese usuario guardó.
+    let years = 20;
+    let assets: SimAsset[] = [{ id: "sim-1", ticker: "", amount: 0, contribution: 0, manualReturn: null }];
     try {
+      localStorage.removeItem("wyn:portfolio-sim:v1");
       const raw = localStorage.getItem(SIM_KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as { years?: number; assets?: SimAsset[] };
-        if (typeof parsed.years === "number") setSimYears(parsed.years);
-        if (Array.isArray(parsed.assets) && parsed.assets.length) setSimAssets(parsed.assets.slice(0, 5));
+        if (typeof parsed.years === "number") years = parsed.years;
+        if (Array.isArray(parsed.assets) && parsed.assets.length) assets = parsed.assets.slice(0, 5);
       }
     } catch {
       /* ignore */
     }
+    setSimYears(years);
+    setSimAssets(assets);
     setSimLoaded(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [SIM_KEY]);
   useEffect(() => {
-    if (!simLoaded) return;
+    if (!simLoaded || !SIM_KEY) return;
     try {
       localStorage.setItem(SIM_KEY, JSON.stringify({ years: simYears, assets: simAssets }));
     } catch {
       /* ignore */
     }
-  }, [simLoaded, simYears, simAssets]);
+  }, [simLoaded, SIM_KEY, simYears, simAssets]);
+
 
   const addSimAsset = () =>
     setSimAssets((current) =>
