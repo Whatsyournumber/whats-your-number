@@ -976,10 +976,10 @@ function OnboardingPage() {
                     </span>
                     {t("Sube tus Estados financieros", "Upload your financial statements")}
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  <p className="mt-2 truncate whitespace-nowrap text-sm text-muted-foreground">
                     {t(
-                      "Sube PDF, CSV o capturas de pantalla. La IA lee y clasifica tus movimientos para rellenar tu pestaña de Gastos automáticamente.",
-                      "Upload PDF, CSV or screenshots. AI reads and classifies your transactions to fill your Expenses tab automatically.",
+                      "La IA lee y clasifica tus movimientos para rellenar tu pestaña de Gastos Variable automáticamente, 100% encriptado para tu privacidad.",
+                      "AI reads and classifies your transactions to fill your Variable Expenses tab automatically, 100% encrypted for your privacy.",
                     )}
                   </p>
                   <div className="mt-5 rounded-3xl border border-dashed border-border bg-elevated/30 p-4">
