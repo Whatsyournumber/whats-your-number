@@ -343,11 +343,11 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
   return (
     <div className="space-y-4">
       <Panel
-        title={t("Importar gastos", "Import expenses")}
-        description={t(
+        title={showHeader ? t("Importar gastos", "Import expenses") : undefined}
+        description={showHeader ? t(
           "PDF, CSV bancarios o capturas de pantalla — la IA lee, extrae y clasifica cada movimiento",
           "Card PDFs, bank CSVs or screenshots — AI reads, extracts and classifies each transaction",
-        )}
+        ) : undefined}
       >
         <div className="relative">
           <div
