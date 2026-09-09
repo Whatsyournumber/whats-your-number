@@ -1374,7 +1374,7 @@ function CityPicker({
     remote.find((c) => c.name === value) ??
     (value ? { name: value, country: "", currency: "USD", cost: comfortableCostEur({ name: value }) } : undefined);
   const cityCost = (c: (typeof cities)[number]) => {
-    const v = convertAmount(c.cost, "EUR", c.currency);
+    const v = convertAmount(c.cost * lifestyleFactor, "EUR", c.currency);
     const step = v >= 100000 ? 5000 : v >= 10000 ? 500 : v >= 1000 ? 50 : 10;
     return Math.round(v / step) * step;
   };
