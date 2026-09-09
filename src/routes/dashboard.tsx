@@ -34,7 +34,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useTransactions } from "@/hooks/use-transactions";
 import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useIndexReturns } from "@/hooks/use-index-returns";
-import { holdingValue, useHoldings } from "@/hooks/use-holdings";
+import { holdingValue, useHoldings, wealthTotals } from "@/hooks/use-holdings";
 import { useQuotes } from "@/hooks/use-market";
 import { usePrimaryGoal } from "@/hooks/use-primary-goal";
 import { cn } from "@/lib/utils";
@@ -122,13 +122,29 @@ function Dashboard() {
   const { primary } = usePrimaryGoal();
   const { transactions } = useTransactions();
   const d = buildDataset(profile);
-  const realMonths = buildRealMonths(transactions, d.netWorth);
   const fixed = useFixedExpenses();
   const { live: indexLive } = useIndexReturns();
   const { holdings } = useHoldings();
-  const holdingSymbols = holdings.filter((h) => h.ticker && h.quantity > 0).map((h) => h.ticker!);
+  const holdingSymbols = holdings
+    .filter((h) => h.ticker && (h.quantity > 0 || h.cost_basis > 0 || h.manual_value > 0))
+    .map((h) => h.ticker!);
   const holdingQuotes = useQuotes(holdingSymbols);
   const prices = Object.fromEntries((holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.price]));
+
+  // Patrimonio vivo: cuando hay detalle de activos se recalcula con precios de
+  // mercado en tiempo real (mismo total que /patrimonio); si no, se usa el perfil.
+  const liveNetWorth = (() => {
+    if (!holdings.length) return d.netWorth;
+    const wt = wealthTotals(holdings, prices);
+    const futureTotal = holdings
+      .filter((h) => h.kind === "future")
+      .reduce((s, h) => s + Math.round(holdingValue(h, prices) * (h.probability / 100)), 0);
+    const assets =
+      wt.assets_cash + wt.assets_bank + wt.assets_retirement + wt.assets_etf + wt.assets_stocks + wt.assets_crypto + wt.assets_property + futureTotal;
+    return assets - wt.liabilities;
+  })();
+
+  const realMonths = buildRealMonths(transactions, liveNetWorth);
   const dayChange: Record<string, number> = Object.fromEntries(
     (holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.changePct ?? 0]),
   );
