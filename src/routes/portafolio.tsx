@@ -1575,8 +1575,16 @@ function PortafolioContent() {
                       symbol={simCurrencySymbol}
                       locale={lang === "es" ? "es-ES" : "en-US"}
                       t={t}
+                      focused={Boolean(key) && focusTicker === key}
                       onChange={(patch) => updateSimAsset(asset.id, patch)}
-                      onRemove={() => setSimAssets((current) => current.filter((item) => item.id !== asset.id))}
+                      onRemove={() => {
+                        if (key && focusTicker === key) setFocusTicker(null);
+                        setSimAssets((current) => current.filter((item) => item.id !== asset.id));
+                      }}
+                      onToggleFocus={() => {
+                        if (!key) return;
+                        setFocusTicker((cur) => (cur === key ? null : key));
+                      }}
                     />
                   );
                 })}
