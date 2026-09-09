@@ -34,7 +34,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useTransactions } from "@/hooks/use-transactions";
 import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useIndexReturns } from "@/hooks/use-index-returns";
-import { holdingValue, useHoldings, wealthTotals } from "@/hooks/use-holdings";
+import { holdingValue, useHoldings, wealthTotals, type WealthTotals } from "@/hooks/use-holdings";
 import { useQuotes } from "@/hooks/use-market";
 import { usePrimaryGoal } from "@/hooks/use-primary-goal";
 import { cn } from "@/lib/utils";
