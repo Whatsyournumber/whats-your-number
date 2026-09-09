@@ -442,7 +442,15 @@ function Dashboard() {
           <KpiCard
             label={t("Patrimonio neto", "Net worth")}
             value={fmt(current.netWorth)}
-            {...(hasHistory ? { delta: delta(current.netWorth, previous.netWorth), hint: t("vs mes anterior", "vs last month") } : {})}
+            {...(hasHistory
+              ? {
+                  delta: delta(current.netWorth, previous.netWorth),
+                  deltaValue: fmt(Math.abs(current.netWorth - previous.netWorth)),
+                  hint: previous.month
+                    ? t(`vs ${new Date(previous.month).toLocaleDateString(lang, { month: "long" })}`, `vs ${new Date(previous.month).toLocaleDateString(lang, { month: "long" })}`)
+                    : t("vs mes anterior", "vs last month"),
+                }
+              : {})}
             icon={Wallet}
             accent
             index={0}

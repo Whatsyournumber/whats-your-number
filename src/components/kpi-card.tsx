@@ -12,6 +12,7 @@ export function KpiCard({
   labelSm,
   value,
   delta,
+  deltaValue,
   hint,
   tooltip,
   icon: Icon,
@@ -24,6 +25,7 @@ export function KpiCard({
   labelSm?: string;
   value: string;
   delta?: number;
+  deltaValue?: string | undefined;
   hint?: ReactNode;
   tooltip?: ReactNode;
   icon?: LucideIcon;
@@ -91,16 +93,19 @@ export function KpiCard({
           display
         )}
       </p>
-      <div className="relative mt-auto flex items-center gap-2 pt-2">
+      <div className="relative mt-auto flex flex-wrap items-center gap-2 pt-2">
         {delta !== undefined && (
           <span
             className={cn(
-              "rounded-full px-2 py-0.5 text-xs font-medium",
+              "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium",
               good ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative",
             )}
           >
-            {delta > 0 ? "+" : ""}
-            {delta.toFixed(1)}%
+            <span>
+              {delta > 0 ? "+" : ""}
+              {delta.toFixed(1)}%
+            </span>
+            {deltaValue && <span className="opacity-80">({deltaValue})</span>}
           </span>
         )}
         {tooltip ? (

@@ -13,7 +13,7 @@ import { MonthEvolutionPicker } from "@/components/month-evolution-picker";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Button } from "@/components/ui/button";
-import { useT } from "@/hooks/use-language";
+import { useT, useLanguage } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
@@ -130,6 +130,7 @@ const RETURN_BY_CLASS: Record<string, number> = {
 function PatrimonioContent() {
   const isMobile = useIsMobile();
   const t = useT();
+  const { lang } = useLanguage();
   const { profile } = useProfile();
   const { transactions } = useTransactions();
   const { holdings } = useHoldings();
@@ -473,7 +474,15 @@ function PatrimonioContent() {
           labelSm={t("Patrimonio", "Net worth")}
           value={fmt(netWorthAll)}
           delta={growthMonth}
-          hint={t("vs el mes pasado", "vs last month")}
+          deltaValue={prevMonth !== 0 ? fmt(Math.abs(netWorthAll - prevMonth)) : undefined}
+          hint={
+            months.length > 1 && months[months.length - 2]?.month
+              ? t(
+                  `vs ${new Date(months[months.length - 2]!.month!).toLocaleDateString(lang === "en" ? "en-US" : "es-ES", { month: "long" })}`,
+                  `vs ${new Date(months[months.length - 2]!.month!).toLocaleDateString("en-US", { month: "long" })}`,
+                )
+              : t("vs el mes pasado", "vs last month")
+          }
           accent
           index={0}
         />
