@@ -90,6 +90,7 @@ type SubscriptionRow = {
   id: string;
   user_id: string;
   product_id: string;
+  price_id: string | null;
   status: string;
   environment: string;
   current_period_end: string | null;
