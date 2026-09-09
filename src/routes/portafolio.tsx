@@ -1422,6 +1422,19 @@ function PortafolioContent() {
                 {hasSim ? <Line type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="var(--color-positive)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls /> : null}
                 {hasSim ? <Line type="monotone" dataKey="pes" name={t("Pesimista", "Pessimistic")} stroke="var(--color-negative)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls /> : null}
                 <Line type="monotone" dataKey="bench" name={benchName} stroke="var(--color-chart-2)" strokeWidth={1.8} strokeDasharray="2 5" dot={false} connectNulls />
+                {hasFocus ? <YAxis yAxisId="asset" hide domain={["dataMin", "dataMax"]} /> : null}
+                {hasFocus ? (
+                  <Line
+                    yAxisId="asset"
+                    type="monotone"
+                    dataKey="asset"
+                    name={focusTicker ?? ""}
+                    stroke="var(--color-chart-4)"
+                    strokeWidth={2.2}
+                    dot={false}
+                    connectNulls
+                  />
+                ) : null}
                 
               </ComposedChart>
             </ResponsiveContainer>
