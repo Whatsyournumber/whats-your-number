@@ -353,6 +353,11 @@ function PortafolioContent() {
   const d = buildDataset(profile);
   const fmt = (n: number, _dec?: number) => d.fmt(n);
   const fmtCompact = (n: number) => d.fmtCompact(n);
+  // Precio de mercado real del ticker (siempre cotiza en USD).
+  const fmtUsd = (n: number) =>
+    n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: n < 10 ? 2 : 0 });
+  const fmtUsdCompact = (n: number) =>
+    n >= 1000 ? `$${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}K` : fmtUsd(n);
   const r = Math.max(0, profile.expected_return || 7) / 100;
 
   const watchlist = useWatchlist();
