@@ -1043,7 +1043,7 @@ function PortafolioContent() {
     : undefined;
   const focusSeries = focusTicker ? normalize12(series[focusTicker] ?? []) : [];
   const focusLast = focusSeries.length ? focusSeries[focusSeries.length - 1]!.value : 0;
-  const focusValue = focusHolding?.value ?? (focusSimAsset?.amount || 0) || totalValue;
+  const focusValue = focusHolding?.value ?? ((focusSimAsset?.amount || 0) > 0 ? focusSimAsset!.amount : totalValue);
   const hasFocus = Boolean(focusTicker) && focusSeries.length > 0 && focusValue > 0;
   const histPoints = benchmarkData.map((p, i) => ({
     label: p.label,
