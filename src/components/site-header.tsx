@@ -9,14 +9,20 @@ import { CurrencyToggle } from "@/components/currency-toggle";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/use-auth";
+import { useProfile } from "@/hooks/use-profile";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useT, LanguageToggle } from "@/hooks/use-language";
 
 export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" }) {
   const { user } = useAuth();
+  const { profile } = useProfile();
   const { isPatrimonio } = useSubscription();
-  const homeTo = isPatrimonio ? "/ninos" : "/dashboard";
   const t = useT();
+  const dashboardTo = isPatrimonio ? "/ninos" : "/dashboard";
+  const onboardingCompleted = Boolean(profile?.completed);
+  const ctaTo = user && !onboardingCompleted ? "/onboarding" : dashboardTo;
+  const ctaLabel = user && !onboardingCompleted ? t("Onboarding", "Onboarding") : t("Ir al dashboard", "Go to dashboard");
+  const mobileCtaLabel = user && !onboardingCompleted ? t("Onboarding", "Onboarding") : t("Dashboard", "Dashboard");
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
   const isEnglishPath = pathname === "/en" || pathname.startsWith("/en/");
@@ -84,7 +90,7 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
 
   const authButtons = user ? (
     <Button asChild size="sm" className="rounded-full">
-      <Link to={homeTo}>{t("Ir al dashboard", "Go to dashboard")}</Link>
+      <Link to={ctaTo}>{ctaLabel}</Link>
     </Button>
   ) : (
     <>
@@ -112,7 +118,7 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
 
   const mobileAuthButton = user ? (
     <Button asChild size="sm" className="h-8 rounded-full px-3 text-xs">
-      <Link to={homeTo}>{t("Dashboard", "Dashboard")}</Link>
+      <Link to={ctaTo}>{mobileCtaLabel}</Link>
     </Button>
   ) : (
     <Button asChild size="sm" className="h-8 rounded-full px-3 text-xs">
@@ -160,7 +166,7 @@ export function SiteHeader({ variant = "dark" }: { variant?: "dark" | "light" })
 
               {user ? (
                 <Button asChild size="sm" className="h-8 rounded-full px-3 text-xs">
-                  <Link to={homeTo}>{t("Dashboard", "Dashboard")}</Link>
+                  <Link to={ctaTo}>{mobileCtaLabel}</Link>
                 </Button>
               ) : (
                 <>
