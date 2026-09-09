@@ -1037,9 +1037,13 @@ function PortafolioContent() {
   const focusHolding = focusTicker
     ? enriched.find((h) => (h.ticker ?? "").toUpperCase() === focusTicker)
     : undefined;
+  // También desde el simulador: si el activo no está en el portafolio, usa su monto configurado.
+  const focusSimAsset = focusTicker
+    ? simAssets.find((a) => a.ticker.trim().toUpperCase() === focusTicker)
+    : undefined;
   const focusSeries = focusTicker ? normalize12(series[focusTicker] ?? []) : [];
   const focusLast = focusSeries.length ? focusSeries[focusSeries.length - 1]!.value : 0;
-  const focusValue = focusHolding?.value ?? 0;
+  const focusValue = focusHolding?.value ?? (focusSimAsset?.amount || 0) || totalValue;
   const hasFocus = Boolean(focusTicker) && focusSeries.length > 0 && focusValue > 0;
   const histPoints = benchmarkData.map((p, i) => ({
     label: p.label,
