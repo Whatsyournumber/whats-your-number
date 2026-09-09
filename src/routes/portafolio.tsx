@@ -1073,7 +1073,7 @@ function PortafolioContent() {
   const histSlice = histPoints.slice(-historyMonths);
   const simStep = Math.max(1, Math.round(simYears / Math.max(3, histSlice.length - 1)));
   const lastHist = histSlice[histSlice.length - 1];
-  // S&P 500 indexado al primer precio visible del activo, para comparar en la misma escala.
+  // Índice seleccionado, indexado al primer precio visible del activo, para comparar en la misma escala.
   const spBaseIdx = hasFocus ? histSlice.findIndex((h) => typeof h.spPct === "number" && typeof h.asset === "number") : -1;
   const spBase = spBaseIdx >= 0 ? (histSlice[spBaseIdx]!.spPct ?? 0) : 0;
   const spIndex = (h: { spPct?: number | undefined; asset?: number | undefined }) =>
@@ -1453,7 +1453,7 @@ function PortafolioContent() {
             {hasFocus ? (
               <span className="flex shrink-0 items-center gap-1 text-muted-foreground">
                 <span className="h-0.5 w-3 rounded-full bg-[var(--color-chart-2)] sm:w-4" />
-                S&P 500
+                {benchName}
               </span>
             ) : null}
             {!focusTicker ? (
@@ -1527,7 +1527,7 @@ function PortafolioContent() {
                   <Line
                     type="monotone"
                     dataKey="sp"
-                    name="S&P 500"
+                    name={benchName}
                     stroke="var(--color-chart-2)"
                     strokeWidth={1.8}
                     strokeDasharray="2 5"
