@@ -969,8 +969,22 @@ function OnboardingPage() {
                   <span className="numeric text-xl font-semibold text-primary">{money(netWorth(data), cur)}</span>
                 </div>
 
-                <div className="mt-10 rounded-3xl border border-dashed border-border bg-elevated/30 p-4">
-                  <StatementImporter />
+                <div className="mt-10">
+                  <h3 className="font-display flex items-center gap-2.5 text-xl font-semibold">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/15 text-primary">
+                      <FileUp className="h-5 w-5" />
+                    </span>
+                    {t("Sube tus Estados financieros", "Upload your financial statements")}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    {t(
+                      "Con esto rellenamos automáticamente tu pestaña de Gastos, luego podrás agregar más ;)",
+                      "With this we automatically fill your Expenses tab, then you can add more ;)",
+                    )}
+                  </p>
+                  <div className="mt-5 rounded-3xl border border-dashed border-border bg-elevated/30 p-4">
+                    <StatementImporter />
+                  </div>
                 </div>
 
                 <Button size="lg" className="mt-8 h-14 w-full rounded-full text-base" onClick={build}>
