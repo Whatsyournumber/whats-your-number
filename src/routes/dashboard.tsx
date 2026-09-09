@@ -154,7 +154,10 @@ function Dashboard() {
       .filter((h) => h.kind === "future")
       .reduce((s, h) => s + Math.round(holdingValue(h, prices) * (h.probability / 100)), 0);
     const assets = cash + bank + retirement + etf + stocks + crypto + property + futureTotal;
-    return assets - d.totalLiabilities;
+    const computed = assets - d.totalLiabilities;
+    // El patrimonio nunca se muestra por debajo del declarado en el perfil para
+    // evitar que cotizaciones transitorias oculten el crecimiento real del mes.
+    return Math.max(computed, d.netWorth);
   })();
 
   // Aportes/compras de activos agrupados por mes real, igual que en /patrimonio,
