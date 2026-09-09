@@ -1395,15 +1395,19 @@ function PortafolioContent() {
           bleedMobile
         >
           <div className="mb-3 flex flex-nowrap items-center gap-x-2 gap-y-1.5 overflow-x-auto no-scrollbar px-3 text-[10px] sm:flex-wrap sm:gap-x-4 sm:px-0 sm:text-[11px]">
-            <span className="flex shrink-0 items-center gap-1 text-foreground">
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-chart-1)] sm:h-2 sm:w-2" />
-              {t("Tu portafolio", "Your portfolio")}
-            </span>
-            <span className="flex shrink-0 items-center gap-1 text-muted-foreground">
-              <span className="h-0.5 w-3 rounded-full bg-[var(--color-chart-2)] sm:w-4" />
-              {benchName}
-            </span>
-            {hasSim ? (
+            {!hasFocus ? (
+              <>
+                <span className="flex shrink-0 items-center gap-1 text-foreground">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-chart-1)] sm:h-2 sm:w-2" />
+                  {t("Tu portafolio", "Your portfolio")}
+                </span>
+                <span className="flex shrink-0 items-center gap-1 text-muted-foreground">
+                  <span className="h-0.5 w-3 rounded-full bg-[var(--color-chart-2)] sm:w-4" />
+                  {benchName}
+                </span>
+              </>
+            ) : null}
+            {hasSim && !hasFocus ? (
               <>
                 <span className="flex shrink-0 items-center gap-1 text-muted-foreground">
                   <span className="h-0.5 w-3 rounded-full bg-positive sm:w-4" />
@@ -1475,23 +1479,21 @@ function PortafolioContent() {
                   tickFormatter={(v: number) => fmtCompact(Number(v))}
                 />
                 <Tooltip content={<SimTooltip data={simData as unknown as Array<Record<string, number | string>>} formatter={(v: number) => fmt(Math.round(v))} lang={lang} todayIndex={hasSim ? todayIndex : -1} />} />
-                {hasSim ? (
+                {hasSim && !hasFocus ? (
                   <ReferenceLine x={simData[todayIndex]?.["label"] ?? ""} stroke="var(--color-border)" strokeDasharray="4 4" />
                 ) : null}
-                {hasSim ? <Area type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="none" fill="url(#simOpt)" /> : null}
-                <Line type="monotone" dataKey="real" name={t("Tu portafolio", "Your portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.6} dot={false} connectNulls />
-                {hasSim ? <Line type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="var(--color-positive)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls /> : null}
-                {hasSim ? <Line type="monotone" dataKey="pes" name={t("Pesimista", "Pessimistic")} stroke="var(--color-negative)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls /> : null}
-                <Line type="monotone" dataKey="bench" name={benchName} stroke="var(--color-chart-2)" strokeWidth={1.8} strokeDasharray="2 5" dot={false} connectNulls />
-                {hasFocus ? <YAxis yAxisId="asset" hide domain={["dataMin", "dataMax"]} /> : null}
+                {hasSim && !hasFocus ? <Area type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="none" fill="url(#simOpt)" /> : null}
+                {!hasFocus ? <Line type="monotone" dataKey="real" name={t("Tu portafolio", "Your portfolio")} stroke="var(--color-chart-1)" strokeWidth={2.6} dot={false} connectNulls /> : null}
+                {hasSim && !hasFocus ? <Line type="monotone" dataKey="opt" name={t("Optimista", "Optimistic")} stroke="var(--color-positive)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls /> : null}
+                {hasSim && !hasFocus ? <Line type="monotone" dataKey="pes" name={t("Pesimista", "Pessimistic")} stroke="var(--color-negative)" strokeWidth={1.8} strokeDasharray="4 4" dot={false} connectNulls /> : null}
+                {!hasFocus ? <Line type="monotone" dataKey="bench" name={benchName} stroke="var(--color-chart-2)" strokeWidth={1.8} strokeDasharray="2 5" dot={false} connectNulls /> : null}
                 {hasFocus ? (
                   <Line
-                    yAxisId="asset"
                     type="monotone"
                     dataKey="asset"
                     name={focusTicker ?? ""}
                     stroke="var(--color-chart-4)"
-                    strokeWidth={2.2}
+                    strokeWidth={2.4}
                     dot={false}
                     connectNulls
                   />
