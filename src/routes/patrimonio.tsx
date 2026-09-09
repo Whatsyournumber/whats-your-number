@@ -475,13 +475,13 @@ function PatrimonioContent() {
         <KpiCard
           label={t("Patrimonio neto", "Net worth")}
           labelSm={t("Patrimonio", "Net worth")}
-          value={fmt(netWorthAll)}
+          value={fmt(selNetWorth)}
           delta={growthMonth}
-          hint={t("vs el mes pasado", "vs last month")}
+          hint={evoIdx >= 0 ? t("vs el mes anterior", "vs previous month") : t("vs el mes pasado", "vs last month")}
           accent
           index={0}
         />
-        <KpiCard label={t("Activos", "Assets")} value={fmt(totalAssetsAll)} index={1} />
+        <KpiCard label={t("Activos", "Assets")} value={fmt(selAssets)} index={1} />
         <KpiCard
           label={t("Pasivos", "Liabilities")}
           labelSm={t("Deudas", "Debts")}
