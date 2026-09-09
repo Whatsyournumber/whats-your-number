@@ -941,8 +941,8 @@ function OnboardingPage() {
                   <SubQuestion title={t("Tus gastos fijos mensuales", "Your monthly fixed expenses")} />
                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                     {t(
-                      "La letra de la hipoteca, servicios, seguros… Con esto rellenamos automáticamente tu pestaña de Gastos.",
-                      "Your mortgage payment, utilities, insurance… We use this to auto-fill your Expenses tab.",
+                      "Con esto rellenamos automáticamente tu pestaña de Gastos, luego podrás agregar más ;)",
+                      "With this we automatically fill your Expenses tab, then you can add more ;)",
                     )}
                   </p>
                   <div className="mt-4 space-y-2.5">
