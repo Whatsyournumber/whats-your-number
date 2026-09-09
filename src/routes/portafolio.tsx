@@ -1018,10 +1018,21 @@ function PortafolioContent() {
   const pesRate = clampRate(blendedRate - 3);
 
   const thisYear = new Date().getFullYear();
-  const histPoints = benchmarkData.map((p) => ({
+  // Activo tocado: su serie real de 12 meses, escalada a su valor actual.
+  const focusHolding = focusTicker
+    ? enriched.find((h) => (h.ticker ?? "").toUpperCase() === focusTicker)
+    : undefined;
+  const focusSeries = focusTicker ? normalize12(series[focusTicker] ?? []) : [];
+  const focusLast = focusSeries.length ? focusSeries[focusSeries.length - 1]!.value : 0;
+  const focusValue = focusHolding?.value ?? 0;
+  const hasFocus = Boolean(focusTicker) && focusSeries.length > 0 && focusValue > 0;
+  const histPoints = benchmarkData.map((p, i) => ({
     label: p.label,
     real: totalValue * ((1 + p.portfolio / 100) / (1 + port12 / 100)),
     bench: totalValue * ((1 + p.bench / 100) / (1 + bench12 / 100)),
+    asset: hasFocus
+      ? focusValue * ((1 + (focusSeries[i]?.value ?? 0) / 100) / (1 + focusLast / 100))
+      : undefined,
   }));
   const hasSim = simAssets.some((a) => (a.amount || 0) > 0 || (a.contribution || 0) > 0);
   const projPoints = Array.from({ length: simYears + 1 }, (_, y) => ({
@@ -1035,13 +1046,17 @@ function PortafolioContent() {
   const histSlice = histPoints.slice(-historyMonths);
   const simStep = Math.max(1, Math.round(simYears / Math.max(3, histSlice.length - 1)));
   const lastHist = histSlice[histSlice.length - 1];
-  const simData = hasSim
+  const simData: Array<Record<string, number | string | undefined>> = hasSim
     ? [
-        ...histSlice.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench })),
+        ...histSlice.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench, asset: h.asset })),
         // Todos los años proyectados, compuestos año a año.
-        ...projPoints.map((p, i) => (i === 0 ? { ...p, real: simStartValue, bench: simStartValue } : p)),
+        ...projPoints.map((p, i) =>
+          i === 0
+            ? { ...p, real: simStartValue, bench: simStartValue, asset: lastHist?.asset }
+            : p,
+        ),
       ]
-    : histSlice.map((h) => ({ label: h.label, real: h.real, bench: h.bench }));
+    : histSlice.map((h) => ({ label: h.label, real: h.real, bench: h.bench, asset: h.asset }));
 
   const todayIndex = histSlice.length - 1;
   const simTicks = simData
