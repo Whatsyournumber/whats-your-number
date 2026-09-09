@@ -1117,7 +1117,7 @@ function PortafolioContent() {
           key={h.ticker}
           role="button"
           tabIndex={0}
-          title={t("Toca para ver su evolución vs S&P 500", "Tap to see its evolution vs S&P 500")}
+          title={t(`Toca para ver su evolución vs ${benchName}`, `Tap to see its evolution vs ${benchName}`)}
           onClick={() => setFocusTicker((cur) => (tk && cur === tk ? null : tk ?? null))}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
