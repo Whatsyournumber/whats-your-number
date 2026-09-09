@@ -525,47 +525,6 @@ function OnboardingPage() {
 
             {step === 5 && (
               <Screen
-                title={t(
-                  "¿Dónde te gustaría vivir cuando alcances tu libertad financiera?",
-                  "Where would you like to live once you reach financial freedom?",
-                )}
-                hint={t(
-                  "Analizaremos el coste de vida de esa ciudad para tu familia y personalizaremos tu objetivo financiero.",
-                  "We'll analyze that city's cost of living for your household and personalize your financial goal.",
-                )}
-              >
-                <CityPicker
-                  value={life.city}
-                  onSelect={(c) => {
-                    setL("city", c.name);
-                    setData((d) => ({ ...d, country: c.country, currency: c.currency }));
-                  }}
-                />
-                {life.city && (() => {
-                  const kidsCount = life.children === "1" ? 1 : life.children === "2" ? 2 : life.children === "3+" ? 3 : 0;
-                  const hasPartner = life.marital_status === "Casado" || life.marital_status === "En pareja";
-                  const parts: string[] = [t("ti", "you")];
-                  if (hasPartner) parts.push(t("tu pareja", "your partner"));
-                  if (kidsCount > 0) parts.push(`${kidsCount} ${kidsCount === 1 ? t("hijo", "child") : t("hijos", "children")}`);
-                  if (life.plans_children === "Sí") parts.push(t("hijos planeados", "planned children"));
-                  return (
-                    <div className="mt-8 space-y-1 text-center text-sm text-muted-foreground">
-                      <p>
-                        {t("Ingreso necesario estimado en", "Estimated income needed in")} {life.city}:{" "}
-                        <span className="numeric text-foreground">{money(desiredIncome, cur)}</span> {t("al mes.", "per month.")}
-                      </p>
-                      <p className="text-xs">
-                        {t("Calculado para", "Calculated for")} {parts.join(t(" y ", " and "))}.
-                      </p>
-                    </div>
-                  );
-                })()}
-              </Screen>
-            )}
-
-
-            {step === 6 && (
-              <Screen
                 title={t("¿Cómo te gustaría vivir?", "How would you like to live?")}
                 hint={t(
                   "Selecciona el estilo de vida que quieres mantener cuando alcances tu libertad financiera.",
@@ -628,6 +587,49 @@ function OnboardingPage() {
                 })()}
               </Screen>
             )}
+
+
+            {step === 6 && (
+              <Screen
+                title={t(
+                  "¿Dónde te gustaría vivir cuando alcances tu libertad financiera?",
+                  "Where would you like to live once you reach financial freedom?",
+                )}
+                hint={t(
+                  "Analizaremos el coste de vida de esa ciudad para tu familia y personalizaremos tu objetivo financiero.",
+                  "We'll analyze that city's cost of living for your household and personalize your financial goal.",
+                )}
+              >
+                <CityPicker
+                  value={life.city}
+                  lifestyleFactor={lifestyles.find((l) => l.value === life.lifestyle)?.factor ?? 1}
+                  onSelect={(c) => {
+                    setL("city", c.name);
+                    setData((d) => ({ ...d, country: c.country, currency: c.currency }));
+                  }}
+                />
+                {life.city && (() => {
+                  const kidsCount = life.children === "1" ? 1 : life.children === "2" ? 2 : life.children === "3+" ? 3 : 0;
+                  const hasPartner = life.marital_status === "Casado" || life.marital_status === "En pareja";
+                  const parts: string[] = [t("ti", "you")];
+                  if (hasPartner) parts.push(t("tu pareja", "your partner"));
+                  if (kidsCount > 0) parts.push(`${kidsCount} ${kidsCount === 1 ? t("hijo", "child") : t("hijos", "children")}`);
+                  if (life.plans_children === "Sí") parts.push(t("hijos planeados", "planned children"));
+                  return (
+                    <div className="mt-8 space-y-1 text-center text-sm text-muted-foreground">
+                      <p>
+                        {t("Ingreso necesario estimado en", "Estimated income needed in")} {life.city}:{" "}
+                        <span className="numeric text-foreground">{money(desiredIncome, cur)}</span> {t("al mes.", "per month.")}
+                      </p>
+                      <p className="text-xs">
+                        {t("Calculado para", "Calculated for")} {parts.join(t(" y ", " and "))}.
+                      </p>
+                    </div>
+                  );
+                })()}
+              </Screen>
+            )}
+
 
             {step === 7 && (
               <Screen title={t("¿Tienes vivienda propia?", "Do you own your home?")}>
