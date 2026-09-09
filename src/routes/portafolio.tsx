@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Tooltip as UiTooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useAuth } from "@/hooks/use-auth";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useMarketSeries, useQuotes, useSymbolReturns, useSymbolSearch, useWatchlist } from "@/hooks/use-market";
 import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
@@ -332,6 +333,7 @@ function PortafolioContent() {
                   ? t("Cripto", "Crypto")
                   : t("Activo", "Asset");
   const { profile } = useProfile();
+  const { user } = useAuth();
   const { holdings } = useHoldings();
   const d = buildDataset(profile);
   const fmt = (n: number, _dec?: number) => d.fmt(n);
