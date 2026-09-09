@@ -287,8 +287,8 @@ function OnboardingPage() {
     }
     if (step === 2) return !!data.age;
     if (step === 4) return !!life.marital_status && !!life.children && !!life.plans_children;
-    if (step === 5) return !!life.city;
-    if (step === 6) return !!life.lifestyle && !!life.travel_frequency;
+    if (step === 5) return !!life.lifestyle && !!life.travel_frequency;
+    if (step === 6) return !!life.city;
     if (step === 7) return !!life.housing;
     return true;
   };
@@ -525,47 +525,6 @@ function OnboardingPage() {
 
             {step === 5 && (
               <Screen
-                title={t(
-                  "¿Dónde te gustaría vivir cuando alcances tu libertad financiera?",
-                  "Where would you like to live once you reach financial freedom?",
-                )}
-                hint={t(
-                  "Analizaremos el coste de vida de esa ciudad para tu familia y personalizaremos tu objetivo financiero.",
-                  "We'll analyze that city's cost of living for your household and personalize your financial goal.",
-                )}
-              >
-                <CityPicker
-                  value={life.city}
-                  onSelect={(c) => {
-                    setL("city", c.name);
-                    setData((d) => ({ ...d, country: c.country, currency: c.currency }));
-                  }}
-                />
-                {life.city && (() => {
-                  const kidsCount = life.children === "1" ? 1 : life.children === "2" ? 2 : life.children === "3+" ? 3 : 0;
-                  const hasPartner = life.marital_status === "Casado" || life.marital_status === "En pareja";
-                  const parts: string[] = [t("ti", "you")];
-                  if (hasPartner) parts.push(t("tu pareja", "your partner"));
-                  if (kidsCount > 0) parts.push(`${kidsCount} ${kidsCount === 1 ? t("hijo", "child") : t("hijos", "children")}`);
-                  if (life.plans_children === "Sí") parts.push(t("hijos planeados", "planned children"));
-                  return (
-                    <div className="mt-8 space-y-1 text-center text-sm text-muted-foreground">
-                      <p>
-                        {t("Ingreso necesario estimado en", "Estimated income needed in")} {life.city}:{" "}
-                        <span className="numeric text-foreground">{money(desiredIncome, cur)}</span> {t("al mes.", "per month.")}
-                      </p>
-                      <p className="text-xs">
-                        {t("Calculado para", "Calculated for")} {parts.join(t(" y ", " and "))}.
-                      </p>
-                    </div>
-                  );
-                })()}
-              </Screen>
-            )}
-
-
-            {step === 6 && (
-              <Screen
                 title={t("¿Cómo te gustaría vivir?", "How would you like to live?")}
                 hint={t(
                   "Selecciona el estilo de vida que quieres mantener cuando alcances tu libertad financiera.",
@@ -628,6 +587,49 @@ function OnboardingPage() {
                 })()}
               </Screen>
             )}
+
+
+            {step === 6 && (
+              <Screen
+                title={t(
+                  "¿Dónde te gustaría vivir cuando alcances tu libertad financiera?",
+                  "Where would you like to live once you reach financial freedom?",
+                )}
+                hint={t(
+                  "Analizaremos el coste de vida de esa ciudad para tu familia y personalizaremos tu objetivo financiero.",
+                  "We'll analyze that city's cost of living for your household and personalize your financial goal.",
+                )}
+              >
+                <CityPicker
+                  value={life.city}
+                  lifestyleFactor={lifestyles.find((l) => l.value === life.lifestyle)?.factor ?? 1}
+                  onSelect={(c) => {
+                    setL("city", c.name);
+                    setData((d) => ({ ...d, country: c.country, currency: c.currency }));
+                  }}
+                />
+                {life.city && (() => {
+                  const kidsCount = life.children === "1" ? 1 : life.children === "2" ? 2 : life.children === "3+" ? 3 : 0;
+                  const hasPartner = life.marital_status === "Casado" || life.marital_status === "En pareja";
+                  const parts: string[] = [t("ti", "you")];
+                  if (hasPartner) parts.push(t("tu pareja", "your partner"));
+                  if (kidsCount > 0) parts.push(`${kidsCount} ${kidsCount === 1 ? t("hijo", "child") : t("hijos", "children")}`);
+                  if (life.plans_children === "Sí") parts.push(t("hijos planeados", "planned children"));
+                  return (
+                    <div className="mt-8 space-y-1 text-center text-sm text-muted-foreground">
+                      <p>
+                        {t("Ingreso necesario estimado en", "Estimated income needed in")} {life.city}:{" "}
+                        <span className="numeric text-foreground">{money(desiredIncome, cur)}</span> {t("al mes.", "per month.")}
+                      </p>
+                      <p className="text-xs">
+                        {t("Calculado para", "Calculated for")} {parts.join(t(" y ", " and "))}.
+                      </p>
+                    </div>
+                  );
+                })()}
+              </Screen>
+            )}
+
 
             {step === 7 && (
               <Screen title={t("¿Tienes vivienda propia?", "Do you own your home?")}>
@@ -1231,7 +1233,15 @@ function editDistance(a: string, b: string) {
   return prev[n] ?? 0;
 }
 
-function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof cities)[number]) => void }) {
+function CityPicker({
+  value,
+  onSelect,
+  lifestyleFactor = 1,
+}: {
+  value: string;
+  onSelect: (c: (typeof cities)[number]) => void;
+  lifestyleFactor?: number;
+}) {
   const t = useT();
   const [q, setQ] = useState("");
   const term = norm(q);
@@ -1364,7 +1374,7 @@ function CityPicker({ value, onSelect }: { value: string; onSelect: (c: (typeof 
     remote.find((c) => c.name === value) ??
     (value ? { name: value, country: "", currency: "USD", cost: comfortableCostEur({ name: value }) } : undefined);
   const cityCost = (c: (typeof cities)[number]) => {
-    const v = convertAmount(c.cost, "EUR", c.currency);
+    const v = convertAmount(c.cost * lifestyleFactor, "EUR", c.currency);
     const step = v >= 100000 ? 5000 : v >= 10000 ? 500 : v >= 1000 ? 50 : 10;
     return Math.round(v / step) * step;
   };
