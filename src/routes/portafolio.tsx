@@ -1033,14 +1033,7 @@ function PortafolioContent() {
   const pesRate = clampRate(blendedRate - 3);
 
   const thisYear = new Date().getFullYear();
-  // Activo tocado: su serie real de 12 meses, escalada a su valor actual.
-  const focusHolding = focusTicker
-    ? enriched.find((h) => (h.ticker ?? "").toUpperCase() === focusTicker)
-    : undefined;
-  // También desde el simulador: si el activo no está en el portafolio, usa su monto configurado.
-  const focusSimAsset = focusTicker
-    ? simAssets.find((a) => a.ticker.trim().toUpperCase() === focusTicker)
-    : undefined;
+  // Activo tocado: su serie real de 12 meses de precio.
   const focusRaw = focusTicker ? (series[focusTicker] ?? []) : [];
   // Solo dibujamos la evolución si hay datos reales de mercado (al menos 2 puntos distintos).
   const focusHasData = focusRaw.length >= 2 && new Set(focusRaw.map((p) => p.value)).size > 1;
