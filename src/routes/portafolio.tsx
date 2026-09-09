@@ -1444,6 +1444,17 @@ function PortafolioContent() {
                 <span className="text-muted-foreground">✕</span>
               </button>
             ) : null}
+            {hasFocus ? (
+              <span className="flex shrink-0 items-center gap-1 text-muted-foreground">
+                <span className="h-0.5 w-3 rounded-full bg-[var(--color-chart-2)] sm:w-4" />
+                S&P 500
+              </span>
+            ) : null}
+            {!focusTicker ? (
+              <span className="shrink-0 text-[10px] text-muted-foreground/80 sm:text-[11px]">
+                {t("Toca ↗ en un activo para ver su evolución", "Tap ↗ on an asset to see its evolution")}
+              </span>
+            ) : null}
             {focusTicker && !hasFocus && !seriesQuery.isLoading ? (
               <span className="shrink-0 text-[10px] text-muted-foreground sm:text-[11px]">
                 {t("Sin datos de mercado", "No market data")}
