@@ -365,7 +365,7 @@ function PortafolioContent() {
   // Al tocar un activo, su serie real se añade a la gráfica del simulador.
   const [focusTicker, setFocusTicker] = useState<string | null>(null);
   const seriesQuery = useMarketSeries(
-    ["^GSPC", "^IXIC", "URTH", "SPY", "BTC-USD", ...(focusTicker ? [focusTicker] : [])],
+    ["^GSPC", "^NDX", "URTH", "SPY", "BTC-USD", ...(focusTicker ? [focusTicker] : [])],
   );
   const [benchmark, setBenchmark] = useState<"sp500" | "nasdaq" | "world">("sp500");
   const [aiExpanded, setAiExpanded] = useState(false);
@@ -634,7 +634,8 @@ function PortafolioContent() {
 
   // Real market series: benchmarks vs a blend that mirrors your allocation (equities → SPY, crypto → BTC, cash → 0%).
   const series = seriesQuery.data?.series ?? {};
-  const benchSymbol = benchmark === "nasdaq" ? "^IXIC" : benchmark === "world" ? "URTH" : "^GSPC";
+  // Índices reales: S&P 500 (^GSPC), Nasdaq 100 (^NDX) y MSCI World (URTH, ETF que replica el índice).
+  const benchSymbol = benchmark === "nasdaq" ? "^NDX" : benchmark === "world" ? "URTH" : "^GSPC";
   const benchName = benchmark === "nasdaq" ? "Nasdaq 100" : benchmark === "world" ? "MSCI World" : "S&P 500";
   // CAGR histórico real del índice (10y, con 5y/YTD como respaldo) para proyectarlo igual que lo real.
   const benchReturnsQuery = useSymbolReturns([benchSymbol]);
@@ -1019,7 +1020,11 @@ function PortafolioContent() {
     world: { hist: 9, histLabel: "8.5–9.5%", cons: 6.5, base: 8, opt: 10, fullName: "MSCI World" },
   };
   const benchRef = benchRefMap[benchmark];
-  const benchCagr = benchRef.base;
+  // Proyección del índice con su CAGR real a 10 años cuando el mercado responde; si no, la referencia histórica.
+  const benchCagr =
+    typeof benchHistCagrRaw === "number" && Number.isFinite(benchHistCagrRaw)
+      ? clampRate(benchHistCagrRaw)
+      : benchRef.base;
 
   // Compuesto mensual: los aportes mensuales se reinvierten mes a mes.
   const fv = (rate: number, years: number) => {
