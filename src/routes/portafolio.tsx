@@ -1071,7 +1071,7 @@ function PortafolioContent() {
   // S&P 500 indexado al primer precio visible del activo, para comparar en la misma escala.
   const spBaseIdx = hasFocus ? histSlice.findIndex((h) => typeof h.spPct === "number" && typeof h.asset === "number") : -1;
   const spBase = spBaseIdx >= 0 ? (histSlice[spBaseIdx]!.spPct ?? 0) : 0;
-  const spIndex = (h: { spPct?: number; asset?: number }) =>
+  const spIndex = (h: { spPct?: number | undefined; asset?: number | undefined }) =>
     hasFocus && typeof h.spPct === "number" && typeof h.asset === "number" && spBaseIdx >= 0
       ? (histSlice[spBaseIdx]!.asset ?? 0) * (1 + ((h.spPct ?? 0) - spBase) / 100)
       : undefined;
