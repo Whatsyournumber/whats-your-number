@@ -1020,7 +1020,11 @@ function PortafolioContent() {
     world: { hist: 9, histLabel: "8.5–9.5%", cons: 6.5, base: 8, opt: 10, fullName: "MSCI World" },
   };
   const benchRef = benchRefMap[benchmark];
-  const benchCagr = benchRef.base;
+  // Proyección del índice con su CAGR real a 10 años cuando el mercado responde; si no, la referencia histórica.
+  const benchCagr =
+    typeof benchHistCagrRaw === "number" && Number.isFinite(benchHistCagrRaw)
+      ? clampRate(benchHistCagrRaw)
+      : benchRef.base;
 
   // Compuesto mensual: los aportes mensuales se reinvierten mes a mes.
   const fv = (rate: number, years: number) => {
