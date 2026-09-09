@@ -9,6 +9,7 @@ import { CurrencyToggle } from "@/components/currency-toggle";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/use-auth";
+import { useProfile } from "@/hooks/use-profile";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useT, LanguageToggle } from "@/hooks/use-language";
 
