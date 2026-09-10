@@ -61,7 +61,7 @@ export function Panel({
 }: {
   title?: ReactNode;
   titleClassName?: string;
-  description?: string;
+  description?: ReactNode;
   descriptionClassName?: string;
   actions?: ReactNode;
   icon?: ReactNode;
