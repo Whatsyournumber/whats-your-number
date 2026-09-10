@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 
 import { PlanGate } from "@/components/plan-gate";
-import { ChartTooltip, axisProps } from "@/components/chart-kit";
+import { ChartTooltip, axisMoneyTicks, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
 import { MonthEvolutionPicker } from "@/components/month-evolution-picker";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -530,6 +530,14 @@ function PatrimonioContent() {
       tone === "mid" && "border-chart-4/25 bg-chart-4/10 text-chart-4",
       tone === "negative" && "border-negative/25 bg-negative/10 text-negative",
     );
+
+  // Eje Y con ticks explícitos y unidad consistente (K/M/B) para que siempre
+  // tenga sentido con el número real del portafolio y no salten unidades raras.
+  const yValues = comparing
+    ? compareData.flatMap((m) => [m.netWorth, m.bench])
+    : chartMonths.map((m) => m.netWorth);
+  const { ticks: yTicks, formatter: yTickFormatter } = axisMoneyTicks(yValues, d.currency);
+  const yMax = yTicks[yTicks.length - 1] ?? "dataMax";
 
   return (
     <PageShell>
