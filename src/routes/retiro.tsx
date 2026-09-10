@@ -172,7 +172,7 @@ function RetiroContent() {
   // Escenarios: tu número exacto en el centro, 4 valores por arriba y 4 por debajo.
   const capitals = Array.from(
     new Set(
-      [0.29, 0.465, 0.6, 0.7, 1, 1.2, 1.5, 2, 3.5]
+      [0.29, 0.465, 0.6, 0.7, 1, 1.167, 1.458, 1.75, 2.917]
         .map((m) => {
           const v = baseNumber * m;
           return m === 1 ? baseNumber : roundNice(v);
