@@ -638,7 +638,7 @@ function RetiroContent() {
         return (
           <Panel
             title={t("Escenarios de renta mensual", "Monthly income scenarios")}
-            description={`${t("En verde, lo que aún no cubre tu gasto objetivo de", "In green, what still doesn't cover your standard of living of")} ${fmt(standardOfLiving)}.`}
+            description={`${t("En verde, lo que aún no cubre tu gasto objetivo de", "In green, what still doesn't cover your standard of living of")} ${fmt(standardOfLiving)} · ${t("Objetivo", "Target")}: 7%.`}
             actions={<ScrollXButtons state={scenariosScroll.state} nudge={scenariosScroll.nudge} />}
           >
             <div ref={scenariosScroll.ref} onScroll={scenariosScroll.update} className="overflow-x-auto scroll-smooth">
