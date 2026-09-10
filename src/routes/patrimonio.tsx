@@ -17,7 +17,7 @@ import { useT, useLanguage } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
-import { useMarketSeries, useQuotes } from "@/hooks/use-market";
+import { useDailySeries, useMarketSeries, useQuotes } from "@/hooks/use-market";
 import { marketReturnPct } from "@/lib/holding-return";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
@@ -153,6 +153,8 @@ function PatrimonioContent() {
   // Series mensuales reales para deducir el precio del día de compra cuando no hay unidades.
   const holdingSeriesQuery = useMarketSeries(holdingSymbols);
   const holdingSeries = holdingSeriesQuery.data?.series ?? {};
+  // Cierres diarios: rentabilidad exacta desde el día de compra (compras de hace días).
+  const holdingDaily = useDailySeries(holdingSymbols).data?.series ?? {};
 
   // Pasivos: deudas explícitas (TDC, préstamos) + hipotecas ligadas a propiedades.
   const debtRows = holdings
@@ -218,7 +220,7 @@ function PatrimonioContent() {
       // Rentabilidad de acciones/ETF/cripto: precio de hoy vs precio del día de compra.
       const tickerKey = h.ticker?.toUpperCase() ?? null;
       const priceRate = tickerKey
-        ? marketReturnPct(h, prices[tickerKey] ?? null, holdingSeries[tickerKey] ?? null)
+        ? marketReturnPct(h, prices[tickerKey] ?? null, holdingSeries[tickerKey] ?? null, holdingDaily[tickerKey] ?? null)
         : null;
       const rate =
         priceRate !== null

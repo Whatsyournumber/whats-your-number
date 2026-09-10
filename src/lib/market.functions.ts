@@ -27,6 +27,22 @@ export const getMarketSeries = createServerFn({ method: "GET" })
     return { series: Object.fromEntries(entries), updatedAt: Date.now() };
   });
 
+/** Cierres diarios recientes de los tickers del usuario (precio exacto del día de compra). */
+export const getDailySeries = createServerFn({ method: "GET" })
+  .inputValidator((input: { symbols: string[] }) => ({
+    symbols: (input?.symbols ?? [])
+      .map((s) => String(s).trim().toUpperCase())
+      .filter((s) => /^[A-Z0-9.^=:&/-]{1,20}$/.test(s))
+      .slice(0, 10),
+  }))
+  .handler(async ({ data }) => {
+    const { fetchDailySeries } = await import("./market.server");
+    const entries = await Promise.all(
+      data.symbols.map(async (s) => [s, await fetchDailySeries(s)] as const),
+    );
+    return { series: Object.fromEntries(entries), updatedAt: Date.now() };
+  });
+
 export const searchMarketSymbols = createServerFn({ method: "GET" })
   .inputValidator((input: { query: string }) => ({ query: String(input?.query ?? "").trim().slice(0, 40) }))
   .handler(async ({ data }) => {

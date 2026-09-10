@@ -81,6 +81,22 @@ export async function fetchYearSeries(symbol: string): Promise<SeriesPoint[]> {
   });
 }
 
+export type DailyPoint = { t: number; price: number };
+
+/** Cierres diarios de los últimos ~3 meses (para precio exacto del día de compra). */
+export async function fetchDailySeries(symbol: string): Promise<DailyPoint[]> {
+  const r = await chart(symbol, "3mo", "1d");
+  const closes = r?.indicators?.quote?.[0]?.close ?? [];
+  const stamps = r?.timestamp ?? [];
+  const points: DailyPoint[] = [];
+  for (let i = 0; i < stamps.length; i += 1) {
+    const c = closes[i];
+    const t = stamps[i];
+    if (typeof c === "number" && c > 0 && typeof t === "number") points.push({ t, price: c });
+  }
+  return points;
+}
+
 export type SymbolHit = { symbol: string; name: string; type: string; exchange: string };
 
 export async function searchSymbols(query: string): Promise<SymbolHit[]> {

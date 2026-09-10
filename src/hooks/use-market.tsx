@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 
-import { getMarketQuotes, getMarketSeries, getSymbolReturns, searchMarketSymbols } from "@/lib/market.functions";
+import { getDailySeries, getMarketQuotes, getMarketSeries, getSymbolReturns, searchMarketSymbols } from "@/lib/market.functions";
 
 const STORE_KEY = "wyn.watchlist";
 export const DEFAULT_WATCHLIST = ["SPY", "QQQ", "VOO", "AAPL", "NVDA", "BTC-USD", "ETH-USD"];
@@ -64,6 +64,17 @@ export function useMarketSeries(symbols: string[]) {
   return useQuery({
     queryKey: ["market-series", symbols.join(",")],
     queryFn: () => getMarketSeries({ data: { symbols } }),
+    enabled: symbols.length > 0,
+    refetchInterval: 5 * 60_000,
+    staleTime: 5 * 60_000,
+  });
+}
+
+/** Cierres diarios recientes: permite calcular la rentabilidad desde el día exacto de compra. */
+export function useDailySeries(symbols: string[]) {
+  return useQuery({
+    queryKey: ["market-daily", symbols.join(",")],
+    queryFn: () => getDailySeries({ data: { symbols } }),
     enabled: symbols.length > 0,
     refetchInterval: 5 * 60_000,
     staleTime: 5 * 60_000,

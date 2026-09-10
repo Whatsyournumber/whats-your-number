@@ -17,7 +17,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Tooltip as UiTooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/use-auth";
 import { useLanguage, useT } from "@/hooks/use-language";
-import { useMarketSeries, useQuotes, useSymbolReturns, useSymbolSearch, useWatchlist } from "@/hooks/use-market";
+import { useDailySeries, useMarketSeries, useQuotes, useSymbolReturns, useSymbolSearch, useWatchlist } from "@/hooks/use-market";
 import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
@@ -376,6 +376,10 @@ function PortafolioContent() {
     holdings.filter((h) => h.ticker).map((h) => h.ticker!.toUpperCase()),
   );
   const holdingSeries = holdingSeriesQuery.data?.series ?? {};
+  // Cierres diarios: rentabilidad exacta desde el día de compra (compras de hace días).
+  const holdingDaily = useDailySeries(
+    holdings.filter((h) => h.ticker).map((h) => h.ticker!.toUpperCase()),
+  ).data?.series ?? {};
   const [benchmark, setBenchmark] = useState<"sp500" | "nasdaq" | "world">("sp500");
   const [aiExpanded, setAiExpanded] = useState(false);
 
@@ -498,7 +502,7 @@ function PortafolioContent() {
               ? Math.round(h.cost_basis)
               : Math.round(value / (1 + growth)),
         // Rentabilidad real: precio de hoy vs precio del día de compra.
-        priceRet: tk ? marketReturnPct(h, prices[tk] ?? null, holdingSeries[tk] ?? null) : null,
+        priceRet: tk ? marketReturnPct(h, prices[tk] ?? null, holdingSeries[tk] ?? null, holdingDaily[tk] ?? null) : null,
         improvements: h.kind === "property" ? Math.round(h.quantity || 0) : 0,
         years:
           h.kind === "property" && h.target_year && h.target_year > 1900
