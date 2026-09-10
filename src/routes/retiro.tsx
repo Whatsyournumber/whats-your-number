@@ -172,7 +172,7 @@ function RetiroContent() {
   const capitals = Array.from(
     new Set([0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3].map((m) => roundNice(baseNumber * m)).filter((v) => v > 0)),
   ).sort((a, b) => a - b);
-  const rates = [4, 6, 8, 10, 12];
+  const rates = [4, 5, 6, 7, 8];
   const scenariosScroll = useScrollX();
 
   // El subtítulo siempre cambia según el objetivo elegido en el onboarding / perfil.
