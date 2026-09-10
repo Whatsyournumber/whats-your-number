@@ -519,6 +519,7 @@ function PortafolioContent() {
         growth: 0,
         income: 0,
         cost: cash,
+        priceRet: null,
         improvements: 0,
         years: 0,
       });
