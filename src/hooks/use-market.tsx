@@ -70,6 +70,17 @@ export function useMarketSeries(symbols: string[]) {
   });
 }
 
+/** Cierres diarios recientes: permite calcular la rentabilidad desde el día exacto de compra. */
+export function useDailySeries(symbols: string[]) {
+  return useQuery({
+    queryKey: ["market-daily", symbols.join(",")],
+    queryFn: () => getDailySeries({ data: { symbols } }),
+    enabled: symbols.length > 0,
+    refetchInterval: 5 * 60_000,
+    staleTime: 5 * 60_000,
+  });
+}
+
 export function useSymbolSearch(query: string) {
   const q = query.trim();
   return useQuery({
