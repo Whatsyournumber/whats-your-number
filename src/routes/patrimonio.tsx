@@ -373,6 +373,33 @@ function PatrimonioContent() {
   const growthMonth = selPrev !== 0 ? ((selNetWorth - selPrev) / Math.abs(selPrev)) * 100 : 0;
   const selAssets = selNetWorth + d.totalLiabilities;
 
+  // Rentabilidad pura del portafolio: rendimiento mes a mes SIN contar aportes
+  // (crecimiento ≠ rendimiento). Índice acumulado base 1 alineado con chartMonths.
+  const cumReturn: number[] = [0];
+  for (let i = 1; i < chartMonths.length; i += 1) {
+    const prev = chartMonths[i - 1]!.netWorth;
+    const cur = chartMonths[i]!.netWorth;
+    const key = (chartMonths[i] as { month?: string }).month ?? "";
+    const contrib = holdingContributions[key] ?? 0;
+    const r = prev !== 0 ? (cur - prev - contrib) / Math.abs(prev) : 0;
+    cumReturn.push(cumReturn[i - 1]! * (1 + 0) + 0); // placeholder replaced below
+  }
+  // recalcula correctamente (acumulado compuesto)
+  for (let i = 1; i < chartMonths.length; i += 1) {
+    const prev = chartMonths[i - 1]!.netWorth;
+    const cur = chartMonths[i]!.netWorth;
+    const key = (chartMonths[i] as { month?: string }).month ?? "";
+    const contrib = holdingContributions[key] ?? 0;
+    const r = prev !== 0 ? (cur - prev - contrib) / Math.abs(prev) : 0;
+    cumReturn[i] = (1 + cumReturn[i - 1]!) * (1 + r) - 1;
+  }
+  const elapsedMonths = Math.max(0, chartMonths.length - 1);
+  const periodReturnPct = elapsedMonths > 0 ? cumReturn[cumReturn.length - 1]! * 100 : 0;
+  const annualizedReturnPct =
+    elapsedMonths > 0 && 1 + cumReturn[cumReturn.length - 1]! > 0
+      ? (Math.pow(1 + cumReturn[cumReturn.length - 1]!, 12 / elapsedMonths) - 1) * 100
+      : 0;
+
   // Comparación contra benchmarks: patrimonio e índice indexados a % desde el primer mes.
   const benchSymbol = benchmark === "nasdaq" ? "^IXIC" : benchmark === "world" ? "URTH" : "^GSPC";
   const benchName = benchmark === "nasdaq" ? "Nasdaq 100" : benchmark === "world" ? "MSCI World" : "S&P 500";
