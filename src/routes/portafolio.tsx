@@ -1170,6 +1170,11 @@ function PortafolioContent() {
                     ? h.strike.toLocaleString("en-US", { maximumFractionDigits: h.strike < 10 ? 4 : 2 })
                     : "—"}
                 </p>
+                {h.units ? (
+                  <p className="numeric text-[11px] text-muted-foreground/80">
+                    {h.units.toLocaleString(lang === "es" ? "es-ES" : "en-US", { maximumFractionDigits: 4 })} {h.ticker?.replace("-USD", "")}
+                  </p>
+                ) : null}
               </div>
               <div>
                 <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
