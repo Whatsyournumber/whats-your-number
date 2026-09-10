@@ -149,6 +149,9 @@ function PatrimonioContent() {
   const dayChange: Record<string, number> = Object.fromEntries(
     (holdingQuotes.data?.quotes ?? []).map((q) => [q.symbol.toUpperCase(), q.changePct ?? 0]),
   );
+  // Series mensuales reales para deducir el precio del día de compra cuando no hay unidades.
+  const holdingSeriesQuery = useMarketSeries(holdingSymbols);
+  const holdingSeries = holdingSeriesQuery.data?.series ?? {};
 
   // Pasivos: deudas explícitas (TDC, préstamos) + hipotecas ligadas a propiedades.
   const debtRows = holdings
