@@ -451,16 +451,23 @@ function PatrimonioContent() {
     const b0 = bSlice[0]!.value;
     return nwSlice.map((m, i) => {
       // El índice se escala a dinero: mismo patrimonio base con el rendimiento real del índice.
-      const benchPct = bSlice[i]!.value - b0;
-      const netPct = base > 0 ? ((m.netWorth - base) / base) * 100 : 0;
+      const benchCum = bSlice[i]!.value - b0;
+      const benchValue = base * (1 + benchCum / 100);
+      // Porcentajes del tooltip: variación mes a mes (no acumulada).
+      const prevNet = i > 0 ? nwSlice[i - 1]!.netWorth : 0;
+      const prevBenchCum = i > 0 ? bSlice[i - 1]!.value - b0 : 0;
+      const prevBench = i > 0 ? base * (1 + prevBenchCum / 100) : 0;
+      const netPct = i > 0 && prevNet > 0 ? ((m.netWorth - prevNet) / prevNet) * 100 : 0;
+      const benchPct = i > 0 && prevBench > 0 ? ((benchValue - prevBench) / prevBench) * 100 : 0;
       return {
         label: m.label,
         netWorth: m.netWorth,
-        bench: base * (1 + benchPct / 100),
+        bench: benchValue,
         netPct,
         benchPct,
       };
     });
+
   })();
 
 
