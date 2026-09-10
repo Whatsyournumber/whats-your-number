@@ -437,7 +437,7 @@ function PatrimonioContent() {
   const selAssets = selNetWorth + d.totalLiabilities;
 
   // Comparación contra benchmarks: patrimonio e índice indexados a % desde el primer mes.
-  const benchSymbol = benchmark === "nasdaq" ? "^IXIC" : benchmark === "world" ? "URTH" : "^GSPC";
+  const benchSymbol = benchmark === "nasdaq" ? "^NDX" : benchmark === "world" ? "URTH" : "^GSPC";
   const benchName = benchmark === "nasdaq" ? "Nasdaq 100" : benchmark === "world" ? "MSCI World" : "S&P 500";
   const benchSeriesRaw = benchmark === "none" ? [] : (seriesQuery.data?.series?.[benchSymbol] ?? []);
   const compareLen = Math.min(chartMonths.length, benchSeriesRaw.length);
