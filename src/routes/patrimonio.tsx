@@ -638,12 +638,10 @@ function PatrimonioContent() {
                 <XAxis dataKey="label" {...axisProps} />
                 <YAxis
                   {...axisProps}
-                  domain={[
-                    (dataMin: number) => (dataMin >= 0 ? dataMin * 0.92 : dataMin * 1.08),
-                    (dataMax: number) => (dataMax >= 0 ? dataMax * 1.08 : dataMax * 0.92),
-                  ]}
-                  tickFormatter={(v) => fmtCompact(Number(v))}
-                  width={isMobile ? 42 : 48}
+                  domain={[0, yMax]}
+                  ticks={yTicks}
+                  tickFormatter={yTickFormatter}
+                  width={isMobile ? 50 : 64}
                 />
                 <Tooltip
                   content={
