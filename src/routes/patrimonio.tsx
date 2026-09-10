@@ -453,12 +453,10 @@ function PatrimonioContent() {
       // El índice se escala a dinero: mismo patrimonio base con el rendimiento real del índice.
       const benchCum = bSlice[i]!.value - b0;
       const benchValue = base * (1 + benchCum / 100);
-      // Porcentajes del tooltip: variación mes a mes (no acumulada).
-      const prevNet = i > 0 ? nwSlice[i - 1]!.netWorth : 0;
-      const prevBenchCum = i > 0 ? bSlice[i - 1]!.value - b0 : 0;
-      const prevBench = i > 0 ? base * (1 + prevBenchCum / 100) : 0;
-      const netPct = i > 0 && prevNet > 0 ? ((m.netWorth - prevNet) / prevNet) * 100 : 0;
-      const benchPct = i > 0 && prevBench > 0 ? ((benchValue - prevBench) / prevBench) * 100 : 0;
+      // Tooltip: el portfolio muestra la misma rentabilidad del box (overallRate);
+      // el índice muestra su rendimiento acumulado real del período (como antes).
+      const netPct = overallRate;
+      const benchPct = benchCum;
       return {
         label: m.label,
         netWorth: m.netWorth,
