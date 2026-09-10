@@ -642,7 +642,7 @@ function RetiroContent() {
             actions={<ScrollXButtons state={scenariosScroll.state} nudge={scenariosScroll.nudge} />}
           >
             <div ref={scenariosScroll.ref} onScroll={scenariosScroll.update} className="overflow-x-auto scroll-smooth">
-              <table className="w-full min-w-[1100px] border-collapse text-sm">
+              <table className="w-full min-w-[900px] border-collapse text-sm">
                 <thead>
                   <tr className="border-b border-border text-xs uppercase tracking-[0.12em] text-muted-foreground">
                     <th className="px-3 py-2 text-left font-medium">{t("Capital", "Capital")}</th>
@@ -683,8 +683,8 @@ function RetiroContent() {
                         </td>
                         {rates.map((rr) => {
                           const inc = Math.round((cap * (rr / 100)) / 12);
+                          const isWithinTarget = inc <= standardOfLiving && standardOfLiving > 0;
                           const isTarget = rr === 7;
-                          const isGreenInTargetColumn = isTarget && inc <= standardOfLiving && standardOfLiving > 0;
                           return (
                             <td
                               key={rr}
@@ -692,8 +692,8 @@ function RetiroContent() {
                                 "numeric px-3 text-right transition-colors",
                                 isNumberRow ? "pb-5 pt-5" : "py-3",
                                 isTarget && "bg-primary/[0.06]",
-                                isGreenInTargetColumn && "font-semibold text-positive",
-                                !isGreenInTargetColumn && isTarget && "font-semibold text-primary",
+                                isWithinTarget && "font-semibold text-positive",
+                                !isWithinTarget && isTarget && "font-semibold text-primary",
                               )}
                             >
                               {fmt(inc)}
