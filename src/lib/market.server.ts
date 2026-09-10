@@ -67,12 +67,17 @@ export async function fetchYearSeries(symbol: string): Promise<SeriesPoint[]> {
   const r = await chart(symbol, "1y", "1mo");
   const closes = r?.indicators?.quote?.[0]?.close ?? [];
   const stamps = r?.timestamp ?? [];
-  const points: { t: number; c: number }[] = [];
+  // Yahoo repite el mes en curso (vela mensual + cierre vivo): nos quedamos con
+  // el último cierre de cada mes para no duplicar puntos ni falsear el % del mes.
+  const byMonth = new Map<string, { t: number; c: number }>();
   for (let i = 0; i < stamps.length; i += 1) {
     const c = closes[i];
     const t = stamps[i];
-    if (typeof c === "number" && typeof t === "number") points.push({ t, c });
+    if (typeof c !== "number" || typeof t !== "number" || c <= 0) continue;
+    const d = new Date(t * 1000);
+    byMonth.set(`${d.getUTCFullYear()}-${d.getUTCMonth()}`, { t, c });
   }
+  const points = [...byMonth.values()].sort((a, b) => a.t - b.t);
   if (points.length < 2) return [];
   const base = points[0]!.c;
   return points.map((p) => {
