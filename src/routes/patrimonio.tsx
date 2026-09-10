@@ -380,7 +380,7 @@ function PatrimonioContent() {
     const map: Record<string, number> = {};
     for (const h of holdings) {
       if (h.kind === "debt") continue;
-      const date = h.created_at;
+      const date = h.purchased_at ?? h.created_at;
       if (!date) continue;
       const key = String(date).slice(0, 7);
       const value = h.manual_value || h.cost_basis || 0;
@@ -399,7 +399,11 @@ function PatrimonioContent() {
       .filter((h) => h.kind !== "debt")
       .reduce((s, h) => s + (h.manual_value || h.cost_basis || 0), 0);
     const staticBase = Math.max(0, totalAssetsAll - holdingsNow);
-    let cum = 0;
+    // Compras anteriores al primer mes visible ya forman parte del patrimonio desde el inicio.
+    const firstKey = (rawMonths[0] as { month?: string } | undefined)?.month ?? "";
+    let cum = Object.entries(holdingContributions)
+      .filter(([k]) => k < firstKey)
+      .reduce((s, [, v]) => s + v, 0);
     return rawMonths.map((m, i) => {
       const key = (m as { month?: string }).month ?? "";
       if (/^\d{4}-\d{2}$/.test(key)) cum += holdingContributions[key] ?? 0;

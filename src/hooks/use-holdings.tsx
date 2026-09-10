@@ -41,6 +41,8 @@ export type Holding = {
   position: number;
   /** Fecha de alta del activo (para ubicar el aporte en el mes correcto). */
   created_at?: string | null;
+  /** Fecha real de compra; si falta, se usa created_at. */
+  purchased_at?: string | null;
 };
 
 
@@ -66,7 +68,7 @@ function toHolding(r: Row, i: number): Holding {
     note: (r["note"] as string | null) ?? null,
     position: r["position"] == null ? i : num(r["position"]),
     created_at: (r["created_at"] as string | null) ?? null,
-
+    purchased_at: (r["purchased_at"] as string | null) ?? null,
   };
 }
 

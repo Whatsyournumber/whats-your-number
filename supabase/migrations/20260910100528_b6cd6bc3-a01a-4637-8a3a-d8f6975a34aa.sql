@@ -1,0 +1,1 @@
+ALTER TABLE public.holdings ADD COLUMN purchased_at date;

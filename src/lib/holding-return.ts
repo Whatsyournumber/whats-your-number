@@ -8,13 +8,14 @@ import type { DailyPoint, SeriesPoint } from "@/lib/market.server";
  * 3) Si no, el cierre real del mes en que se registró el activo (serie de 12 meses).
  */
 export function purchaseUnitPrice(
-  h: { quantity: number; cost_basis: number; created_at?: string | null },
+  h: { quantity: number; cost_basis: number; created_at?: string | null; purchased_at?: string | null },
   series?: SeriesPoint[] | null,
   daily?: DailyPoint[] | null,
 ): number | null {
   if (h.quantity > 0 && h.cost_basis > 0) return h.cost_basis / h.quantity;
-  if (!h.created_at) return null;
-  const bought = new Date(h.created_at);
+  const boughtRaw = h.purchased_at ?? h.created_at;
+  if (!boughtRaw) return null;
+  const bought = new Date(boughtRaw);
   if (Number.isNaN(bought.getTime())) return null;
   const boughtSec = bought.getTime() / 1000;
 
@@ -39,7 +40,7 @@ export function purchaseUnitPrice(
 
 /** Rentabilidad % del activo: precio de hoy vs precio del día de compra. */
 export function marketReturnPct(
-  h: { quantity: number; cost_basis: number; created_at?: string | null },
+  h: { quantity: number; cost_basis: number; created_at?: string | null; purchased_at?: string | null },
   livePrice: number | null | undefined,
   series?: SeriesPoint[] | null,
   daily?: DailyPoint[] | null,
