@@ -593,8 +593,9 @@ function PatrimonioContent() {
                             formatter: (v: number, item) => {
                               const row = item?.payload as { netPct?: number; benchPct?: number } | undefined;
                               const pct = item?.dataKey === "bench" ? row?.benchPct : row?.netPct;
-                              const pctTxt = pct !== undefined ? ` · ${pct >= 0 ? "+" : ""}${pct.toFixed(1)}%` : "";
-                              return `${fmt(v)}${pctTxt}`;
+                              const pctTxt = pct !== undefined ? `${pct >= 0 ? "+" : ""}${pct.toFixed(1)}%` : "";
+                              // El índice va escalado a dinero solo para dibujarse: se muestra su % real.
+                              return item?.dataKey === "bench" ? pctTxt : `${fmt(v)} · ${pctTxt}`;
                             },
                           }
                         : {})}
