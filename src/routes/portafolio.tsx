@@ -21,6 +21,7 @@ import { useMarketSeries, useQuotes, useSymbolReturns, useSymbolSearch, useWatch
 import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
+import { marketReturnPct } from "@/lib/holding-return";
 import { buildDataset } from "@/lib/profile-data";
 import { currencySymbol } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
@@ -370,6 +371,11 @@ function PortafolioContent() {
   const seriesQuery = useMarketSeries(
     ["^GSPC", "^NDX", "URTH", "SPY", "BTC-USD", ...(focusTicker ? [focusTicker] : [])],
   );
+  // Series mensuales reales de mis posiciones: sirven para el precio del día de compra.
+  const holdingSeriesQuery = useMarketSeries(
+    holdings.filter((h) => h.ticker).map((h) => h.ticker!.toUpperCase()),
+  );
+  const holdingSeries = holdingSeriesQuery.data?.series ?? {};
   const [benchmark, setBenchmark] = useState<"sp500" | "nasdaq" | "world">("sp500");
   const [aiExpanded, setAiExpanded] = useState(false);
 
@@ -491,6 +497,8 @@ function PortafolioContent() {
             : h.cost_basis > 0
               ? Math.round(h.cost_basis)
               : Math.round(value / (1 + growth)),
+        // Rentabilidad real: precio de hoy vs precio del día de compra.
+        priceRet: tk ? marketReturnPct(h, prices[tk] ?? null, holdingSeries[tk] ?? null) : null,
         improvements: h.kind === "property" ? Math.round(h.quantity || 0) : 0,
         years:
           h.kind === "property" && h.target_year && h.target_year > 1900
@@ -512,16 +520,17 @@ function PortafolioContent() {
         growth: 0,
         income: 0,
         cost: cash,
+        priceRet: null,
         improvements: 0,
         years: 0,
       });
   }
 
   const fallback = [
-    { ticker: t("ETFs / fondos", "ETFs / funds"), name: t("Fondos indexados y ETFs", "Index funds and ETFs"), type: "ETF" as const, value: profile.assets_etf, growth: r, income: 0, cost: Math.round(profile.assets_etf / (1 + r)), improvements: 0, years: 0 },
-    { ticker: t("Acciones", "Stocks"), name: t("Posiciones individuales", "Individual positions"), type: "Acción" as const, value: profile.assets_stocks, growth: r * 1.3, income: 0, cost: Math.round(profile.assets_stocks / (1 + r * 1.3)), improvements: 0, years: 0 },
-    { ticker: t("Cripto", "Crypto"), name: t("Activos digitales", "Digital assets"), type: "Cripto" as const, value: profile.assets_crypto, growth: r * 2, income: 0, cost: Math.round(profile.assets_crypto / (1 + r * 2)), improvements: 0, years: 0 },
-    { ticker: t("Efectivo", "Cash"), name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"), type: "Cash" as const, value: profile.assets_cash + profile.assets_bank, growth: 0, income: 0, cost: profile.assets_cash + profile.assets_bank, improvements: 0, years: 0 },
+    { ticker: t("ETFs / fondos", "ETFs / funds"), name: t("Fondos indexados y ETFs", "Index funds and ETFs"), type: "ETF" as const, value: profile.assets_etf, growth: r, income: 0, cost: Math.round(profile.assets_etf / (1 + r)), priceRet: null, improvements: 0, years: 0 },
+    { ticker: t("Acciones", "Stocks"), name: t("Posiciones individuales", "Individual positions"), type: "Acción" as const, value: profile.assets_stocks, growth: r * 1.3, income: 0, cost: Math.round(profile.assets_stocks / (1 + r * 1.3)), priceRet: null, improvements: 0, years: 0 },
+    { ticker: t("Cripto", "Crypto"), name: t("Activos digitales", "Digital assets"), type: "Cripto" as const, value: profile.assets_crypto, growth: r * 2, income: 0, cost: Math.round(profile.assets_crypto / (1 + r * 2)), priceRet: null, improvements: 0, years: 0 },
+    { ticker: t("Efectivo", "Cash"), name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"), type: "Cash" as const, value: profile.assets_cash + profile.assets_bank, growth: 0, income: 0, cost: profile.assets_cash + profile.assets_bank, priceRet: null, improvements: 0, years: 0 },
   ].filter((h) => h.value > 0);
 
   const positions = detailed.length ? detailed : fallback;
@@ -544,7 +553,8 @@ function PortafolioContent() {
                   : 0,
           ),
     gain: h.value - h.cost,
-    ret: h.cost ? ((h.value - h.cost) / h.cost) * 100 : 0,
+    // Rentabilidad: precio de mercado de hoy vs precio del día de compra; si no hay precio, valor vs costo.
+    ret: h.priceRet !== null ? h.priceRet : h.cost ? ((h.value - h.cost) / h.cost) * 100 : 0,
     cagr:
       h.cost > 0 && h.years > 0 ? (Math.pow(h.value / h.cost, 1 / h.years) - 1) * 100 : null,
   }));
