@@ -96,7 +96,7 @@ function SimTooltip({
               </span>
               <div className="ml-auto flex items-baseline gap-1.5">
                 <span className="numeric text-[13px] font-bold" style={{ color: "var(--chart-tooltip-fg)" }}>
-                  {f(value)}
+                  {f(displayValue)}
                 </span>
                 {pctText && (
                   <span className={cn("numeric text-[11px] font-medium", up ? "text-positive" : "text-negative")}>
