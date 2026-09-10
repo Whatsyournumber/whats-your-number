@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 
 import { PlanGate } from "@/components/plan-gate";
-import { ChartTooltip, axisProps } from "@/components/chart-kit";
+import { ChartTooltip, axisMoneyTicks, axisProps } from "@/components/chart-kit";
 import { KpiCard } from "@/components/kpi-card";
 import { MonthEvolutionPicker } from "@/components/month-evolution-picker";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -136,7 +136,7 @@ function PatrimonioContent() {
   const { transactions } = useTransactions();
   const { holdings } = useHoldings();
   const d = buildDataset(profile);
-  const { fmt, fmtCompact, assets } = d;
+  const { fmt, assets } = d;
   const [evoMonth, setEvoMonth] = useState<string | null>(null);
   const [benchmark, setBenchmark] = useState<"none" | "sp500" | "nasdaq" | "world">("none");
   const seriesQuery = useMarketSeries(["^GSPC", "^IXIC", "URTH"]);
@@ -531,6 +531,14 @@ function PatrimonioContent() {
       tone === "negative" && "border-negative/25 bg-negative/10 text-negative",
     );
 
+  // Eje Y con ticks explícitos y unidad consistente (K/M/B) para que siempre
+  // tenga sentido con el número real del portafolio y no salten unidades raras.
+  const yValues = comparing
+    ? compareData.flatMap((m) => [m.netWorth, m.bench])
+    : chartMonths.map((m) => m.netWorth);
+  const { ticks: yTicks, formatter: yTickFormatter } = axisMoneyTicks(yValues, d.currency);
+  const yMax = yTicks[yTicks.length - 1] ?? "dataMax";
+
   return (
     <PageShell>
       <PageHeader
@@ -630,12 +638,10 @@ function PatrimonioContent() {
                 <XAxis dataKey="label" {...axisProps} />
                 <YAxis
                   {...axisProps}
-                  domain={[
-                    (dataMin: number) => (dataMin >= 0 ? dataMin * 0.92 : dataMin * 1.08),
-                    (dataMax: number) => (dataMax >= 0 ? dataMax * 1.08 : dataMax * 0.92),
-                  ]}
-                  tickFormatter={(v) => fmtCompact(Number(v))}
-                  width={isMobile ? 42 : 48}
+                  domain={[0, yMax]}
+                  ticks={yTicks}
+                  tickFormatter={yTickFormatter}
+                  width={isMobile ? 50 : 64}
                 />
                 <Tooltip
                   content={
