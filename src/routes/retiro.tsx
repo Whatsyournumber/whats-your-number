@@ -669,7 +669,7 @@ function RetiroContent() {
                 </thead>
                 <tbody>
                   {capitals.map((cap) => {
-                    const isNumberRow = cap === roundNice(baseNumber);
+                    const isNumberRow = cap === baseNumber;
                     return (
                       <tr
                         key={cap}
