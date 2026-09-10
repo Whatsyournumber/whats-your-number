@@ -390,7 +390,26 @@ function PatrimonioContent() {
     return map;
   })();
   // La serie mensual cierra exactamente en el patrimonio neto en vivo que se muestra arriba.
-  const months = buildRealMonths(transactions, netWorthAll, { contributions: holdingContributions }) ?? d.months;
+  const rawMonths = buildRealMonths(transactions, netWorthAll, { contributions: holdingContributions }) ?? d.months;
+  // El pasado no puede bajar de cero ni superar lo realmente comprado hasta esa fecha:
+  // cada mes se limita al valor actual de los activos sin fecha + lo acumulado en compras.
+  const months = (() => {
+    if (!hasDetail) return rawMonths;
+    const holdingsNow = holdings
+      .filter((h) => h.kind !== "debt")
+      .reduce((s, h) => s + (h.manual_value || h.cost_basis || 0), 0);
+    const staticBase = Math.max(0, totalAssetsAll - holdingsNow);
+    let cum = 0;
+    return rawMonths.map((m, i) => {
+      const key = (m as { month?: string }).month ?? "";
+      if (/^\d{4}-\d{2}$/.test(key)) cum += holdingContributions[key] ?? 0;
+      // El último mes siempre es el patrimonio en vivo (incluye plusvalías sobre el costo).
+      if (i === rawMonths.length - 1) return { ...m, netWorth: Math.round(netWorthAll) };
+      const cap = staticBase + cum;
+      const nw = Math.max(0, Math.min(m.netWorth, cap));
+      return nw === m.netWorth ? m : { ...m, netWorth: Math.round(nw) };
+    });
+  })();
 
   // Calendario de evolución: elegir un mes recorta la gráfica y mueve las tarjetas a ese mes.
   const monthKeys = months.map((m, i) => (m as { month?: string }).month ?? `idx-${i}`);
