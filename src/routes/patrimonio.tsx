@@ -264,6 +264,16 @@ function PatrimonioContent() {
   const yieldingBase = totalGainRows.reduce((s, r) => s + r.value, 0);
   const visibleRate = yieldingBase ? (visibleAnnual / yieldingBase) * 100 : 0;
 
+  // Rentabilidad global del patrimonio (KPI superior): mismos rubros generadores de renta,
+  // calculada sobre TODO el portfolio para que coincida con la fila Total en "Todos".
+  const overallGainRows = detailRows.filter((r) =>
+    ["property", "bond", "structured", "future"].includes(r.kind),
+  );
+  const overallAnnual = Math.round(overallGainRows.reduce((s, r) => s + r.annual, 0));
+  const overallYieldingBase = overallGainRows.reduce((s, r) => s + r.value, 0);
+  const overallRate = overallYieldingBase ? (overallAnnual / overallYieldingBase) * 100 : 0;
+
+
 
 
   // Activos futuros (trading, venta de empresa…) ponderados: suman al patrimonio y al allocation.
