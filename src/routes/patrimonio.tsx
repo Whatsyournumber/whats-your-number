@@ -399,18 +399,25 @@ function PatrimonioContent() {
   const comparing = benchmark !== "none" && compareLen > 1;
   const compareData = (() => {
     if (!comparing) return [];
-    const nwSlice = chartMonths.slice(chartMonths.length - compareLen);
+    const start = chartMonths.length - compareLen;
+    const nwSlice = chartMonths.slice(start);
     const bSlice = benchSeriesRaw.slice(benchSeriesRaw.length - compareLen);
     const n0 = nwSlice[0]!.netWorth;
     const b0 = bSlice[0]!.value;
-    return nwSlice.map((m, i) => ({
-      label: m.label,
-      netWorth: m.netWorth,
-      // El índice se escala a dinero: parte del mismo patrimonio inicial y aplica su % real.
-      bench: n0 * (1 + (bSlice[i]!.value - b0) / 100),
-      netPct: n0 !== 0 ? ((m.netWorth - n0) / Math.abs(n0)) * 100 : 0,
-      benchPct: bSlice[i]!.value - b0,
-    }));
+    const r0 = cumReturn[start] ?? 0;
+    return nwSlice.map((m, i) => {
+      // Rendimiento puro (sin aportes) relativo al primer mes visible.
+      const netPct = ((1 + (cumReturn[start + i] ?? 0)) / (1 + r0) - 1) * 100;
+      const benchPct = bSlice[i]!.value - b0;
+      return {
+        label: m.label,
+        netWorth: m.netWorth,
+        // El índice se escala a dinero: parte del mismo patrimonio inicial y aplica su % real.
+        bench: n0 * (1 + benchPct / 100),
+        netPct,
+        benchPct,
+      };
+    });
   })();
 
 
