@@ -697,22 +697,7 @@ function PatrimonioContent() {
                   tickFormatter={(v) => fmtCompact(Number(v))}
                   width={isMobile ? 42 : 48}
                 />
-                <Tooltip
-                  content={
-                    <ChartTooltip
-                      {...(comparing
-                        ? {
-                            formatter: (v: number, item) => {
-                              const row = item?.payload as { netPct?: number; benchPct?: number } | undefined;
-                              const pct = item?.dataKey === "bench" ? row?.benchPct : row?.netPct;
-                              const pctTxt = pct !== undefined ? ` · ${pct >= 0 ? "+" : ""}${pct.toFixed(1)}%` : "";
-                              return `${fmt(v)}${pctTxt}`;
-                            },
-                          }
-                        : {})}
-                    />
-                  }
-                />
+                <Tooltip content={<WealthTooltip />} />
                 <Area
                   type="monotone"
                   dataKey="netWorth"
