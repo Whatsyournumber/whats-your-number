@@ -162,17 +162,8 @@ function RetiroContent() {
     if (isGoal) setMonthly(requiredMonthly);
   }, [requiredMonthly, isGoal]);
 
-  // Escenarios de renta mensual: se construyen alrededor de TU número (el que estás editando).
-  const baseNumber = targetNow > 0 ? targetNow : 1_000_000;
-  const roundNice = (v: number) => {
-    if (v <= 0) return 0;
-    const mag = Math.pow(10, Math.floor(Math.log10(v)) - 1);
-    return Math.max(mag, Math.round(v / mag) * mag);
-  };
-  const capitals = Array.from(
-    new Set([0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3].map((m) => roundNice(baseNumber * m)).filter((v) => v > 0)),
-  ).sort((a, b) => a - b);
-  const rates = [4, 6, 8, 10, 12];
+  // Escenarios de renta mensual: filas = ingreso mensual objetivo, columnas = tasa de retiro.
+  const rates = [4, 5, 6, 7, 8, 9, 10, 11, 12];
   const scenariosScroll = useScrollX();
 
   // El subtítulo siempre cambia según el objetivo elegido en el onboarding / perfil.
