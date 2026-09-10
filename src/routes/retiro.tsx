@@ -626,17 +626,25 @@ function RetiroContent() {
       {/* Standard of living = ingreso/gasto mensual objetivo. El usuario lo edita en "Tu número". */}
       {(() => {
         const standardOfLiving = Math.max(0, wantMonthly || d.expenses);
+        const standardRounded = Math.max(1000, Math.round(standardOfLiving / 1000) * 1000);
+        const monthlyIncomes = Array.from(
+          new Set([
+            1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000,
+            12500, 15000, 17500, 20000, 25000, 30000, 40000, 50000,
+            standardRounded,
+          ]),
+        ).sort((a, b) => a - b);
         return (
           <Panel
             title={t("Escenarios de renta mensual", "Monthly income scenarios")}
-            description={`${t("En verde, lo que aún no cubre tu gasto objetivo de", "In green, what still doesn't cover your standard of living of")} ${fmt(standardOfLiving)}.`}
+            description={`${t("En verde, lo que cubre tu gasto objetivo de", "In green, what covers your standard of living of")} ${fmt(standardOfLiving)}.`}
             actions={<ScrollXButtons state={scenariosScroll.state} nudge={scenariosScroll.nudge} />}
           >
             <div ref={scenariosScroll.ref} onScroll={scenariosScroll.update} className="overflow-x-auto scroll-smooth">
               <table className="w-full min-w-[640px] border-collapse text-sm">
                 <thead>
                   <tr className="border-b border-border text-xs uppercase tracking-[0.12em] text-muted-foreground">
-                    <th className="px-3 py-2 text-left font-medium">{t("Capital", "Capital")}</th>
+                    <th className="px-3 py-2 text-left font-medium">{t("Ingreso mensual", "Monthly income")}</th>
                     {rates.map((rr) => (
                       <th key={rr} className="px-3 py-2 text-right font-medium">
                         {rr}%
@@ -645,11 +653,12 @@ function RetiroContent() {
                   </tr>
                 </thead>
                 <tbody>
-                  {capitals.map((cap) => {
-                    const isNumberRow = cap === roundNice(baseNumber);
+                  {monthlyIncomes.map((inc) => {
+                    const isNumberRow = inc === standardRounded;
+                    const covers = inc >= standardOfLiving && standardOfLiving > 0;
                     return (
                       <tr
-                        key={cap}
+                        key={inc}
                         className={cn(
                           "relative border-b border-border/60 last:border-0 hover:bg-elevated/40",
                           isNumberRow && "border-primary/30 bg-primary/[0.04] shadow-[0_0_20px_hsl(var(--primary)/5%)]",
@@ -663,22 +672,21 @@ function RetiroContent() {
                                 {t("tu número", "your number")}
                               </span>
                             )}
-                            {fmt(cap)}
+                            {fmt(inc)}
                           </div>
                         </td>
                         {rates.map((rr) => {
-                          const inc = Math.round((cap * (rr / 100)) / 12);
-                          const shortfall = inc < standardOfLiving && standardOfLiving > 0;
+                          const cap = Math.round((inc * 12) / (rr / 100));
                           return (
                             <td
                               key={rr}
                               className={cn(
                                 "numeric px-3 text-right transition-colors",
                                 isNumberRow ? "pb-5 pt-5" : "py-3",
-                                shortfall && "font-semibold text-positive",
+                                covers && "font-semibold text-positive",
                               )}
                             >
-                              {fmt(inc)}
+                              {fmt(cap)}
                             </td>
                           );
                         })}
@@ -688,7 +696,7 @@ function RetiroContent() {
                 </tbody>
               </table>
             </div>
-            <p className="mt-3 text-xs text-muted-foreground">{t("Renta mensual = capital × rentabilidad anual ÷ 12.", "Monthly income = capital × annual return ÷ 12.")}</p>
+            <p className="mt-3 text-xs text-muted-foreground">{t("Capital necesario = ingreso mensual × 12 ÷ rentabilidad anual.", "Required capital = monthly income × 12 ÷ annual return.")}</p>
           </Panel>
         );
       })()}
