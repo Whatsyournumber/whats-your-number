@@ -645,8 +645,22 @@ function RetiroContent() {
         const standardOfLiving = Math.max(0, wantMonthly || d.expenses);
         return (
           <Panel
-            title={t("Escenarios de renta mensual para retirarte", "Monthly income scenarios to retire")}
-            description={`${t("En verde, los importes de hasta", "In green, amounts up to")} ${fmt(standardOfLiving)} · ${t("tu número", "your number")} ${fmtCompact(baseNumber)} · ${t("Objetivo", "Target")}: 7%.`}
+            title={
+              <>
+                <span className="hidden sm:inline">{t("Escenarios de renta mensual para retirarte", "Monthly income scenarios to retire")}</span>
+                <span className="sm:hidden">{t("Escenarios de retiro", "Retirement scenarios")}</span>
+              </>
+            }
+            description={
+              <>
+                <span className="hidden sm:block">{t("En verde, los importes de hasta", "In green, amounts up to")} {fmt(standardOfLiving)} · {t("tu número", "your number")} {fmtCompact(baseNumber)} · {t("Objetivo", "Target")}: 7%.</span>
+                <span className="sm:hidden">
+                  {t("Verde = hasta", "Green = up to")} {fmt(standardOfLiving)} · {t("Objetivo", "Target")}: 7%
+                  <br />
+                  {t("Tu número", "Your number")}: {fmtCompact(baseNumber)}
+                </span>
+              </>
+            }
             actions={<ScrollXButtons state={scenariosScroll.state} nudge={scenariosScroll.nudge} />}
           >
             <div ref={scenariosScroll.ref} onScroll={scenariosScroll.update} className="overflow-x-auto scroll-smooth">
