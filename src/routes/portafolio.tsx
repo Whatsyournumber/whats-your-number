@@ -1084,15 +1084,15 @@ function PortafolioContent() {
       : undefined;
   const simData: Array<Record<string, number | string | undefined>> = hasSim
     ? [
-        ...histSlice.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench, asset: h.asset, sp: spIndex(h) })),
+        ...histSlice.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench, asset: h.asset, sp: spIndex(h), spReal: h.spReal })),
         // Todos los años proyectados, compuestos año a año.
         ...projPoints.map((p, i) =>
           i === 0
-            ? { ...p, real: simStartValue, bench: simStartValue, asset: lastHist?.asset, sp: lastHist ? spIndex(lastHist) : undefined }
+            ? { ...p, real: simStartValue, bench: simStartValue, asset: lastHist?.asset, sp: lastHist ? spIndex(lastHist) : undefined, spReal: lastHist?.spReal }
             : p,
         ),
       ]
-    : histSlice.map((h) => ({ label: h.label, real: h.real, bench: h.bench, asset: h.asset, sp: spIndex(h) }));
+    : histSlice.map((h) => ({ label: h.label, real: h.real, bench: h.bench, asset: h.asset, sp: spIndex(h), spReal: h.spReal }));
 
   const todayIndex = histSlice.length - 1;
   const simTicks = simData
