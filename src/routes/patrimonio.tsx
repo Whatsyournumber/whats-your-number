@@ -417,12 +417,11 @@ function PatrimonioContent() {
     const bSlice = benchSeriesRaw.slice(benchSeriesRaw.length - compareLen);
     const n0 = nwSlice[0]!.netWorth;
     const b0 = bSlice[0]!.value;
-    // Hipótesis: tu patrimonio inicial invertido directamente en el índice, con su % real.
-    const base = Math.abs(n0);
     return nwSlice.map((m, i) => ({
       label: m.label,
       netWorth: m.netWorth,
-      bench: base * (1 + (bSlice[i]!.value - b0) / 100),
+      // El índice se escala a dinero: parte del mismo patrimonio inicial y aplica su % real.
+      bench: n0 * (1 + (bSlice[i]!.value - b0) / 100),
       netPct: n0 !== 0 ? ((m.netWorth - n0) / Math.abs(n0)) * 100 : 0,
       benchPct: bSlice[i]!.value - b0,
     }));
@@ -629,7 +628,7 @@ function PatrimonioContent() {
                   <Line
                     type="monotone"
                     dataKey="bench"
-                    name={t(`Invertido en ${benchName}`, `Invested in ${benchName}`)}
+                    name={benchName}
                     stroke="var(--color-chart-2)"
                     strokeWidth={2}
                     strokeDasharray="5 5"
