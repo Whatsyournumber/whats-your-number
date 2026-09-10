@@ -1060,6 +1060,8 @@ function PortafolioContent() {
     asset: hasFocus ? (focusSeries[i]?.price ?? undefined) : undefined,
     // % del índice seleccionado (S&P 500 / Nasdaq 100 / MSCI World) en el mismo mes.
     spPct: hasFocus ? benchSeries[i]?.value : undefined,
+    // Nivel real del índice (p. ej. S&P 500 = 7.636) para mostrarlo en el tooltip.
+    spReal: hasFocus ? benchSeries[i]?.price : undefined,
   }));
   const hasSim = simAssets.some((a) => (a.amount || 0) > 0 || (a.contribution || 0) > 0);
   const projPoints = Array.from({ length: simYears + 1 }, (_, y) => ({
