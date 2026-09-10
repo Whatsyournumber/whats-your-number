@@ -529,6 +529,7 @@ function PortafolioContent() {
         cost: cash,
         priceRet: null,
         strike: null,
+        units: null,
         improvements: 0,
         years: 0,
       });
