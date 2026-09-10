@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 
-import { getMarketQuotes, getMarketSeries, getSymbolReturns, searchMarketSymbols } from "@/lib/market.functions";
+import { getDailySeries, getMarketQuotes, getMarketSeries, getSymbolReturns, searchMarketSymbols } from "@/lib/market.functions";
 
 const STORE_KEY = "wyn.watchlist";
 export const DEFAULT_WATCHLIST = ["SPY", "QQQ", "VOO", "AAPL", "NVDA", "BTC-USD", "ETH-USD"];
