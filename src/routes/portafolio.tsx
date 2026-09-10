@@ -85,6 +85,9 @@ function SimTooltip({
             }
           }
           const pct = baseValue && baseValue > 0 && index >= 0 ? ((value - baseValue) / baseValue) * 100 : null;
+          // El índice se dibuja re-escalado para comparar; en el tooltip mostramos su nivel real (S&P 500 = 7.636).
+          const realIndexLevel = index >= 0 ? data[index]?.["spReal"] : undefined;
+          const displayValue = key === "sp" && typeof realIndexLevel === "number" && realIndexLevel > 0 ? realIndexLevel : value;
 
           const pctText = pct !== null ? new Intl.NumberFormat(pctLocale, { signDisplay: "exceptZero", maximumFractionDigits: 1 }).format(pct) + "%" : null;
           const up = pct !== null && pct >= 0;
