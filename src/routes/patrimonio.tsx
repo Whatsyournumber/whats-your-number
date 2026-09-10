@@ -502,10 +502,11 @@ function PatrimonioContent() {
         <KpiCard
           label={t("Rentabilidad estimada", "Estimated return")}
           labelSm={t("Rent. estimada", "Est. return")}
-          value={`${(portfolioExpectedReturn * 100).toFixed(1)}%`}
-          hint={t("anual según allocation", "annual based on allocation")}
+          value={`${overallRate.toFixed(1)}%`}
+          hint={t("anual sobre activos con renta", "annual on income assets")}
           index={3}
         />
+
       </div>
 
 
