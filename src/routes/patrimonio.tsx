@@ -18,7 +18,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useDailySeries, useMarketSeries, useQuotes } from "@/hooks/use-market";
-import { marketReturnPct } from "@/lib/holding-return";
+import { marketReturnPct, purchaseUnitPrice } from "@/lib/holding-return";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
 
@@ -240,6 +240,10 @@ function PatrimonioContent() {
         sub: kindLabel(h.kind),
         ticker: h.ticker,
         cost,
+        // Strike price: precio por unidad al que se compró el activo.
+        strike: tickerKey
+          ? purchaseUnitPrice(h, holdingSeries[tickerKey] ?? null, holdingDaily[tickerKey] ?? null)
+          : null,
         livePrice: h.ticker ? (prices[h.ticker.toUpperCase()] ?? null) : null,
         quantity: h.quantity,
         value: weighted,
