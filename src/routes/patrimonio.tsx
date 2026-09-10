@@ -449,10 +449,17 @@ function PatrimonioContent() {
     // Base: primer patrimonio positivo del tramo (evita bases 0/negativas que disparan los %).
     const base = nwSlice.find((m) => m.netWorth > 0)?.netWorth ?? nwSlice[nwSlice.length - 1]?.netWorth ?? 0;
     const b0 = bSlice[0]!.value;
+    // El índice arranca con el mismo patrimonio base y, cada vez que se añade un activo
+    // (compra registrada en ese mes), ese dinero también entra en el índice y crece con su %.
+    let benchValue = base;
     return nwSlice.map((m, i) => {
-      // El índice se escala a dinero: mismo patrimonio base con el rendimiento real del índice.
+      const key = (m as { month?: string }).month ?? "";
+      if (i > 0) {
+        const prev = bSlice[i - 1]!.value;
+        const monthlyRet = (bSlice[i]!.value - prev) / (100 + prev);
+        benchValue = benchValue * (1 + monthlyRet) + (holdingContributions[key] ?? 0);
+      }
       const benchCum = bSlice[i]!.value - b0;
-      const benchValue = base * (1 + benchCum / 100);
       // Tooltip: el portfolio muestra la misma rentabilidad del box (overallRate);
       // el índice muestra su rendimiento acumulado real del período (como antes).
       const netPct = overallRate;
@@ -460,11 +467,12 @@ function PatrimonioContent() {
       return {
         label: m.label,
         netWorth: m.netWorth,
-        bench: benchValue,
+        bench: Math.max(0, benchValue),
         netPct,
         benchPct,
       };
     });
+
 
   })();
 
