@@ -856,11 +856,18 @@ function PatrimonioContent() {
                 const isEtf = r.kind === "etf" || r.kind === "crypto" || (r.kind === "stock" && r.livePrice);
                 const tk = r.ticker?.toUpperCase();
                 const today = tk && dayChange[tk] !== undefined ? dayChange[tk] : null;
+                const extraMeta =
+                  r.kind === "property" && r.cost > 0
+                    ? t(`Compra ${fmt(r.cost)}`, `Cost ${fmt(r.cost)}`)
+                    : r.kind === "stock" && r.monthlyContribution > 0
+                      ? t(`+${fmt(r.monthlyContribution)}/mes`, `+${fmt(r.monthlyContribution)}/mo`)
+                      : "";
+                const subtitle = extraMeta ? `${r.sub} · ${extraMeta}` : r.sub;
                 return (
                   <div key={r.id} className="grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 md:grid-cols-6">
                     <div className="col-span-2 md:col-span-2 min-w-0">
                       <p className="truncate text-sm font-medium">{r.ticker || r.label}</p>
-                      <p className="truncate text-xs text-muted-foreground">{r.sub}</p>
+                      <p className="truncate text-xs text-muted-foreground">{subtitle}</p>
                     </div>
                     {isEtf ? (
                       <>
