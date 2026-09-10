@@ -505,6 +505,7 @@ function PortafolioContent() {
         priceRet: tk ? marketReturnPct(h, prices[tk] ?? null, holdingSeries[tk] ?? null, holdingDaily[tk] ?? null) : null,
         // Strike price: precio por unidad al que se compró.
         strike: tk ? purchaseUnitPrice(h, holdingSeries[tk] ?? null, holdingDaily[tk] ?? null) : null,
+        units: h.quantity && h.quantity > 0 ? h.quantity : null,
         improvements: h.kind === "property" ? Math.round(h.quantity || 0) : 0,
         years:
           h.kind === "property" && h.target_year && h.target_year > 1900
