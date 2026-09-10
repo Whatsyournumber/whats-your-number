@@ -400,9 +400,11 @@ function PatrimonioContent() {
       .reduce((s, h) => s + (h.manual_value || h.cost_basis || 0), 0);
     const staticBase = Math.max(0, totalAssetsAll - holdingsNow);
     let cum = 0;
-    return rawMonths.map((m) => {
+    return rawMonths.map((m, i) => {
       const key = (m as { month?: string }).month ?? "";
       if (/^\d{4}-\d{2}$/.test(key)) cum += holdingContributions[key] ?? 0;
+      // El último mes siempre es el patrimonio en vivo (incluye plusvalías sobre el costo).
+      if (i === rawMonths.length - 1) return { ...m, netWorth: Math.round(netWorthAll) };
       const cap = staticBase + cum;
       const nw = Math.max(0, Math.min(m.netWorth, cap));
       return nw === m.netWorth ? m : { ...m, netWorth: Math.round(nw) };
