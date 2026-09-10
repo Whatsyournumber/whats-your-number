@@ -638,7 +638,7 @@ function RetiroContent() {
         return (
           <Panel
             title={t("Escenarios de renta mensual", "Monthly income scenarios")}
-            description={`${t("En verde, lo que cubre tu gasto objetivo de", "In green, what covers your standard of living of")} ${fmt(standardOfLiving)}.`}
+            description={`${t("En verde, lo que aún no cubre tu gasto objetivo de", "In green, what still doesn't cover your standard of living of")} ${fmt(standardOfLiving)}.`}
             actions={<ScrollXButtons state={scenariosScroll.state} nudge={scenariosScroll.nudge} />}
           >
             <div ref={scenariosScroll.ref} onScroll={scenariosScroll.update} className="overflow-x-auto scroll-smooth">
@@ -677,14 +677,14 @@ function RetiroContent() {
                         </td>
                         {rates.map((rr) => {
                           const inc = Math.round((cap * (rr / 100)) / 12);
-                          const covers = inc >= standardOfLiving && standardOfLiving > 0;
+                          const shortfall = inc < standardOfLiving && standardOfLiving > 0;
                           return (
                             <td
                               key={rr}
                               className={cn(
                                 "numeric px-3 text-right transition-colors",
                                 isNumberRow ? "pb-5 pt-5" : "py-3",
-                                covers && "font-semibold text-positive",
+                                shortfall && "font-semibold text-positive",
                               )}
                             >
                               {fmt(inc)}
