@@ -637,12 +637,12 @@ function RetiroContent() {
         const standardOfLiving = Math.max(0, wantMonthly || d.expenses);
         return (
           <Panel
-            title={t("Escenarios de renta mensual", "Monthly income scenarios")}
-            description={`${t("En verde, los importes de hasta", "In green, amounts up to")} ${fmt(standardOfLiving)} · ${t("Objetivo", "Target")}: 7%.`}
+            title={t("Escenarios de renta mensual para retirarte", "Monthly income scenarios to retire")}
+            description={`${t("En verde, los importes de hasta", "In green, amounts up to")} ${fmt(standardOfLiving)} · ${t("tu número", "your number")} ${fmtCompact(baseNumber)} · ${t("Objetivo", "Target")}: 7%.`}
             actions={<ScrollXButtons state={scenariosScroll.state} nudge={scenariosScroll.nudge} />}
           >
             <div ref={scenariosScroll.ref} onScroll={scenariosScroll.update} className="overflow-x-auto scroll-smooth">
-              <table className="w-full min-w-[900px] border-collapse text-sm">
+              <table className="w-full min-w-[900px] lg:min-w-[1280px] border-collapse text-sm">
                 <thead>
                   <tr className="border-b border-border text-xs uppercase tracking-[0.12em] text-muted-foreground">
                     <th className="px-3 py-2 text-left font-medium">{t("Capital", "Capital")}</th>
