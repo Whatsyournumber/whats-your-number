@@ -169,12 +169,12 @@ function RetiroContent() {
     const mag = Math.pow(10, Math.floor(Math.log10(v)) - 1);
     return Math.max(mag, Math.round(v / mag) * mag);
   };
+  // Escenarios: tu número exacto en el centro, 5 valores por arriba y 5 por debajo.
   const capitals = Array.from(
     new Set(
-      [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3]
+      [0.29, 0.465, 0.6, 0.7, 0.9, 1, 1.2, 1.5, 2, 2.5, 3.5]
         .map((m) => {
           const v = baseNumber * m;
-          // La fila "tu número" usa el valor exacto del input; el resto se redondea para leer mejor.
           return m === 1 ? baseNumber : roundNice(v);
         })
         .filter((v) => v > 0),
