@@ -694,8 +694,8 @@ function RetiroContent() {
                                 "numeric px-3 text-right transition-colors",
                                 isNumberRow ? "pb-5 pt-5" : "py-3",
                                 isTarget && "bg-primary/[0.06]",
-                                isWithinTarget && "font-semibold text-positive",
-                                !isWithinTarget && isTarget && "font-semibold text-primary",
+                                isTarget && isWithinTarget && "font-semibold text-positive",
+                                isTarget && !isWithinTarget && "font-semibold text-foreground",
                               )}
                             >
                               {fmt(inc)}
