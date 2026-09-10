@@ -373,24 +373,6 @@ function PatrimonioContent() {
   const growthMonth = selPrev !== 0 ? ((selNetWorth - selPrev) / Math.abs(selPrev)) * 100 : 0;
   const selAssets = selNetWorth + d.totalLiabilities;
 
-  // Rentabilidad pura del portafolio: rendimiento mes a mes SIN contar aportes
-  // (crecimiento ≠ rendimiento). Índice acumulado compuesto alineado con chartMonths.
-  const cumReturn: number[] = [0];
-  for (let i = 1; i < chartMonths.length; i += 1) {
-    const prev = chartMonths[i - 1]!.netWorth;
-    const cur = chartMonths[i]!.netWorth;
-    const key = (chartMonths[i] as { month?: string }).month ?? "";
-    const contrib = holdingContributions[key] ?? 0;
-    const r = prev !== 0 ? (cur - prev - contrib) / Math.abs(prev) : 0;
-    cumReturn.push((1 + cumReturn[i - 1]!) * (1 + r) - 1);
-  }
-  const elapsedMonths = Math.max(0, chartMonths.length - 1);
-  const periodReturnPct = elapsedMonths > 0 ? cumReturn[cumReturn.length - 1]! * 100 : 0;
-  const annualizedReturnPct =
-    elapsedMonths > 0 && 1 + cumReturn[cumReturn.length - 1]! > 0
-      ? (Math.pow(1 + cumReturn[cumReturn.length - 1]!, 12 / elapsedMonths) - 1) * 100
-      : 0;
-
   // Comparación contra benchmarks: patrimonio e índice indexados a % desde el primer mes.
   const benchSymbol = benchmark === "nasdaq" ? "^IXIC" : benchmark === "world" ? "URTH" : "^GSPC";
   const benchName = benchmark === "nasdaq" ? "Nasdaq 100" : benchmark === "world" ? "MSCI World" : "S&P 500";
@@ -399,25 +381,18 @@ function PatrimonioContent() {
   const comparing = benchmark !== "none" && compareLen > 1;
   const compareData = (() => {
     if (!comparing) return [];
-    const start = chartMonths.length - compareLen;
-    const nwSlice = chartMonths.slice(start);
+    const nwSlice = chartMonths.slice(chartMonths.length - compareLen);
     const bSlice = benchSeriesRaw.slice(benchSeriesRaw.length - compareLen);
     const n0 = nwSlice[0]!.netWorth;
     const b0 = bSlice[0]!.value;
-    const r0 = cumReturn[start] ?? 0;
-    return nwSlice.map((m, i) => {
-      // Rendimiento puro (sin aportes) relativo al primer mes visible.
-      const netPct = ((1 + (cumReturn[start + i] ?? 0)) / (1 + r0) - 1) * 100;
-      const benchPct = bSlice[i]!.value - b0;
-      return {
-        label: m.label,
-        netWorth: m.netWorth,
-        // El índice se escala a dinero: parte del mismo patrimonio inicial y aplica su % real.
-        bench: n0 * (1 + benchPct / 100),
-        netPct,
-        benchPct,
-      };
-    });
+    return nwSlice.map((m, i) => ({
+      label: m.label,
+      netWorth: m.netWorth,
+      // El índice se escala a dinero: parte del mismo patrimonio inicial y aplica su % real.
+      bench: n0 * (1 + (bSlice[i]!.value - b0) / 100),
+      netPct: n0 !== 0 ? ((m.netWorth - n0) / Math.abs(n0)) * 100 : 0,
+      benchPct: bSlice[i]!.value - b0,
+    }));
   })();
 
 
@@ -593,9 +568,8 @@ function PatrimonioContent() {
                             formatter: (v: number, item) => {
                               const row = item?.payload as { netPct?: number; benchPct?: number } | undefined;
                               const pct = item?.dataKey === "bench" ? row?.benchPct : row?.netPct;
-                              const pctTxt = pct !== undefined ? `${pct >= 0 ? "+" : ""}${pct.toFixed(1)}%` : "";
-                              // El índice va escalado a dinero solo para dibujarse: se muestra su % real.
-                              return item?.dataKey === "bench" ? pctTxt : `${fmt(v)} · ${pctTxt}`;
+                              const pctTxt = pct !== undefined ? ` · ${pct >= 0 ? "+" : ""}${pct.toFixed(1)}%` : "";
+                              return `${fmt(v)}${pctTxt}`;
                             },
                           }
                         : {})}
@@ -624,62 +598,6 @@ function PatrimonioContent() {
               </ComposedChart>
             </ResponsiveContainer>
           </div>
-
-          {elapsedMonths > 0 && (
-            <div className="mt-4 rounded-2xl border border-border/60 bg-elevated/40 p-4">
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                  {t("Rentabilidad del portafolio", "Portfolio return")}
-                </p>
-                <span className="text-[11px] text-muted-foreground">
-                  {t(`${elapsedMonths} ${elapsedMonths === 1 ? "mes" : "meses"} · sin contar aportes`, `${elapsedMonths} ${elapsedMonths === 1 ? "month" : "months"} · contributions excluded`)}
-                </span>
-              </div>
-              <div className="mt-3 grid grid-cols-3 gap-3">
-                <div>
-                  <p className="text-[11px] text-muted-foreground">{t("Período", "Period")}</p>
-                  <p className={cn("numeric text-lg font-semibold", periodReturnPct >= 0 ? "text-positive" : "text-negative")}>
-                    {periodReturnPct >= 0 ? "+" : ""}{periodReturnPct.toFixed(1)}%
-                  </p>
-                </div>
-                <div>
-                  <p className="text-[11px] text-muted-foreground">{t("Anualizada", "Annualized")}</p>
-                  <p className={cn("numeric text-lg font-semibold", annualizedReturnPct >= 0 ? "text-positive" : "text-negative")}>
-                    {annualizedReturnPct >= 0 ? "+" : ""}{annualizedReturnPct.toFixed(1)}%
-                  </p>
-                </div>
-                {comparing && compareData.length > 0 && (
-                  <div>
-                    <p className="text-[11px] text-muted-foreground">{benchName}</p>
-                    <p className={cn("numeric text-lg font-semibold", (compareData[compareData.length - 1]!.benchPct ?? 0) >= 0 ? "text-chart-2" : "text-negative")}>
-                      {(compareData[compareData.length - 1]!.benchPct ?? 0) >= 0 ? "+" : ""}
-                      {(compareData[compareData.length - 1]!.benchPct ?? 0).toFixed(1)}%
-                    </p>
-                  </div>
-                )}
-              </div>
-              <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-                {comparing && compareData.length > 0
-                  ? (() => {
-                      const benchPct = compareData[compareData.length - 1]!.benchPct ?? 0;
-                      const diff = periodReturnPct - benchPct;
-                      return diff >= 0
-                        ? t(
-                            `Tu portafolio rinde ${diff.toFixed(1)} pts más que el ${benchName} en el período, midiendo solo el rendimiento de tus activos.`,
-                            `Your portfolio beats the ${benchName} by ${diff.toFixed(1)} pts over the period, measuring only asset performance.`,
-                          )
-                        : t(
-                            `Tu portafolio rinde ${Math.abs(diff).toFixed(1)} pts menos que el ${benchName} en el período, midiendo solo el rendimiento de tus activos.`,
-                            `Your portfolio trails the ${benchName} by ${Math.abs(diff).toFixed(1)} pts over the period, measuring only asset performance.`,
-                          );
-                    })()
-                  : t(
-                      "Rendimiento real de tus activos en el período, descontando lo que has ido aportando.",
-                      "Real performance of your assets over the period, excluding what you contributed.",
-                    )}
-              </p>
-            </div>
-          )}
 
           <div className="mt-4 border-t border-border pt-4">
             <div className="grid grid-cols-3 gap-4">
