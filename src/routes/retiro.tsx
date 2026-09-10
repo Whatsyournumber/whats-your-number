@@ -683,8 +683,8 @@ function RetiroContent() {
                         </td>
                         {rates.map((rr) => {
                           const inc = Math.round((cap * (rr / 100)) / 12);
+                          const isWithinTarget = inc <= standardOfLiving && standardOfLiving > 0;
                           const isTarget = rr === 7;
-                          const isWithinTarget = isTarget && inc <= standardOfLiving && standardOfLiving > 0;
                           return (
                             <td
                               key={rr}
