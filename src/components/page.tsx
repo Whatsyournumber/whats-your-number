@@ -61,7 +61,7 @@ export function Panel({
 }: {
   title?: ReactNode;
   titleClassName?: string;
-  description?: string;
+  description?: ReactNode;
   descriptionClassName?: string;
   actions?: ReactNode;
   icon?: ReactNode;
@@ -98,7 +98,7 @@ export function Panel({
                 <h2 className={cn(icon ? "text-xl font-semibold tracking-tight" : "text-sm font-semibold", titleClassName)}>{title}</h2>
               )}
               {description && (
-                <p title={description} className={cn("mt-0.5 text-muted-foreground", icon ? "text-sm" : "text-[0.8125rem]", descriptionClassName)}>{description}</p>
+                <p className={cn("mt-0.5 text-muted-foreground", icon ? "text-sm" : "text-[0.8125rem]", descriptionClassName)}>{description}</p>
               )}
 
             </div>
