@@ -677,14 +677,14 @@ function RetiroContent() {
                         </td>
                         {rates.map((rr) => {
                           const inc = Math.round((cap * (rr / 100)) / 12);
-                          const covers = inc >= standardOfLiving && standardOfLiving > 0;
+                          const shortfall = inc < standardOfLiving && standardOfLiving > 0;
                           return (
                             <td
                               key={rr}
                               className={cn(
                                 "numeric px-3 text-right transition-colors",
                                 isNumberRow ? "pb-5 pt-5" : "py-3",
-                                covers && "font-semibold text-positive",
+                                shortfall && "font-semibold text-positive",
                               )}
                             >
                               {fmt(inc)}
