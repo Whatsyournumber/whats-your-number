@@ -357,6 +357,7 @@ export type Database = {
           note: string | null
           position: number
           probability: number
+          purchased_at: string | null
           quantity: number
           target_year: number | null
           ticker: string | null
@@ -377,6 +378,7 @@ export type Database = {
           note?: string | null
           position?: number
           probability?: number
+          purchased_at?: string | null
           quantity?: number
           target_year?: number | null
           ticker?: string | null
@@ -397,6 +399,7 @@ export type Database = {
           note?: string | null
           position?: number
           probability?: number
+          purchased_at?: string | null
           quantity?: number
           target_year?: number | null
           ticker?: string | null
