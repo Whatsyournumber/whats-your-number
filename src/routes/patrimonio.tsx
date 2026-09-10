@@ -18,6 +18,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useMarketSeries, useQuotes } from "@/hooks/use-market";
+import { marketReturnPct } from "@/lib/holding-return";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
 
