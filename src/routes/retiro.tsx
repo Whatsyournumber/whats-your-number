@@ -691,8 +691,9 @@ function RetiroContent() {
                               className={cn(
                                 "numeric px-3 text-right transition-colors",
                                 isNumberRow ? "pb-5 pt-5" : "py-3",
-                                isTarget && "bg-primary/[0.06] font-semibold text-primary",
-                                !isTarget && covers && "font-semibold text-positive",
+                                isTarget && "bg-primary/[0.06]",
+                                covers && "font-semibold text-positive",
+                                !covers && isTarget && "font-semibold text-primary",
                               )}
                             >
                               {fmt(inc)}
