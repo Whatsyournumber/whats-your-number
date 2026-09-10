@@ -85,6 +85,9 @@ function SimTooltip({
             }
           }
           const pct = baseValue && baseValue > 0 && index >= 0 ? ((value - baseValue) / baseValue) * 100 : null;
+          // El índice se dibuja re-escalado para comparar; en el tooltip mostramos su nivel real (S&P 500 = 7.636).
+          const realIndexLevel = index >= 0 ? data[index]?.["spReal"] : undefined;
+          const displayValue = key === "sp" && typeof realIndexLevel === "number" && realIndexLevel > 0 ? realIndexLevel : value;
 
           const pctText = pct !== null ? new Intl.NumberFormat(pctLocale, { signDisplay: "exceptZero", maximumFractionDigits: 1 }).format(pct) + "%" : null;
           const up = pct !== null && pct >= 0;
@@ -96,7 +99,7 @@ function SimTooltip({
               </span>
               <div className="ml-auto flex items-baseline gap-1.5">
                 <span className="numeric text-[13px] font-bold" style={{ color: "var(--chart-tooltip-fg)" }}>
-                  {f(value)}
+                  {f(displayValue)}
                 </span>
                 {pctText && (
                   <span className={cn("numeric text-[11px] font-medium", up ? "text-positive" : "text-negative")}>
@@ -1060,6 +1063,8 @@ function PortafolioContent() {
     asset: hasFocus ? (focusSeries[i]?.price ?? undefined) : undefined,
     // % del índice seleccionado (S&P 500 / Nasdaq 100 / MSCI World) en el mismo mes.
     spPct: hasFocus ? benchSeries[i]?.value : undefined,
+    // Nivel real del índice (p. ej. S&P 500 = 7.636) para mostrarlo en el tooltip.
+    spReal: hasFocus ? benchSeries[i]?.price : undefined,
   }));
   const hasSim = simAssets.some((a) => (a.amount || 0) > 0 || (a.contribution || 0) > 0);
   const projPoints = Array.from({ length: simYears + 1 }, (_, y) => ({
@@ -1082,15 +1087,15 @@ function PortafolioContent() {
       : undefined;
   const simData: Array<Record<string, number | string | undefined>> = hasSim
     ? [
-        ...histSlice.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench, asset: h.asset, sp: spIndex(h) })),
+        ...histSlice.slice(0, -1).map((h) => ({ label: h.label, real: h.real, bench: h.bench, asset: h.asset, sp: spIndex(h), spReal: h.spReal })),
         // Todos los años proyectados, compuestos año a año.
         ...projPoints.map((p, i) =>
           i === 0
-            ? { ...p, real: simStartValue, bench: simStartValue, asset: lastHist?.asset, sp: lastHist ? spIndex(lastHist) : undefined }
+            ? { ...p, real: simStartValue, bench: simStartValue, asset: lastHist?.asset, sp: lastHist ? spIndex(lastHist) : undefined, spReal: lastHist?.spReal }
             : p,
         ),
       ]
-    : histSlice.map((h) => ({ label: h.label, real: h.real, bench: h.bench, asset: h.asset, sp: spIndex(h) }));
+    : histSlice.map((h) => ({ label: h.label, real: h.real, bench: h.bench, asset: h.asset, sp: spIndex(h), spReal: h.spReal }));
 
   const todayIndex = histSlice.length - 1;
   const simTicks = simData
