@@ -21,7 +21,7 @@ import { useDailySeries, useMarketSeries, useQuotes, useSymbolReturns, useSymbol
 import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
-import { marketReturnPct } from "@/lib/holding-return";
+import { marketReturnPct, purchaseUnitPrice } from "@/lib/holding-return";
 import { buildDataset } from "@/lib/profile-data";
 import { currencySymbol } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
@@ -503,6 +503,8 @@ function PortafolioContent() {
               : Math.round(value / (1 + growth)),
         // Rentabilidad real: precio de hoy vs precio del día de compra.
         priceRet: tk ? marketReturnPct(h, prices[tk] ?? null, holdingSeries[tk] ?? null, holdingDaily[tk] ?? null) : null,
+        // Strike price: precio por unidad al que se compró.
+        strike: tk ? purchaseUnitPrice(h, holdingSeries[tk] ?? null, holdingDaily[tk] ?? null) : null,
         improvements: h.kind === "property" ? Math.round(h.quantity || 0) : 0,
         years:
           h.kind === "property" && h.target_year && h.target_year > 1900
@@ -525,16 +527,17 @@ function PortafolioContent() {
         income: 0,
         cost: cash,
         priceRet: null,
+        strike: null,
         improvements: 0,
         years: 0,
       });
   }
 
   const fallback = [
-    { ticker: t("ETFs / fondos", "ETFs / funds"), name: t("Fondos indexados y ETFs", "Index funds and ETFs"), type: "ETF" as const, value: profile.assets_etf, growth: r, income: 0, cost: Math.round(profile.assets_etf / (1 + r)), priceRet: null, improvements: 0, years: 0 },
-    { ticker: t("Acciones", "Stocks"), name: t("Posiciones individuales", "Individual positions"), type: "Acción" as const, value: profile.assets_stocks, growth: r * 1.3, income: 0, cost: Math.round(profile.assets_stocks / (1 + r * 1.3)), priceRet: null, improvements: 0, years: 0 },
-    { ticker: t("Cripto", "Crypto"), name: t("Activos digitales", "Digital assets"), type: "Cripto" as const, value: profile.assets_crypto, growth: r * 2, income: 0, cost: Math.round(profile.assets_crypto / (1 + r * 2)), priceRet: null, improvements: 0, years: 0 },
-    { ticker: t("Efectivo", "Cash"), name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"), type: "Cash" as const, value: profile.assets_cash + profile.assets_bank, growth: 0, income: 0, cost: profile.assets_cash + profile.assets_bank, priceRet: null, improvements: 0, years: 0 },
+    { ticker: t("ETFs / fondos", "ETFs / funds"), name: t("Fondos indexados y ETFs", "Index funds and ETFs"), type: "ETF" as const, value: profile.assets_etf, growth: r, income: 0, cost: Math.round(profile.assets_etf / (1 + r)), priceRet: null, strike: null, improvements: 0, years: 0 },
+    { ticker: t("Acciones", "Stocks"), name: t("Posiciones individuales", "Individual positions"), type: "Acción" as const, value: profile.assets_stocks, growth: r * 1.3, income: 0, cost: Math.round(profile.assets_stocks / (1 + r * 1.3)), priceRet: null, strike: null, improvements: 0, years: 0 },
+    { ticker: t("Cripto", "Crypto"), name: t("Activos digitales", "Digital assets"), type: "Cripto" as const, value: profile.assets_crypto, growth: r * 2, income: 0, cost: Math.round(profile.assets_crypto / (1 + r * 2)), priceRet: null, strike: null, improvements: 0, years: 0 },
+    { ticker: t("Efectivo", "Cash"), name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"), type: "Cash" as const, value: profile.assets_cash + profile.assets_bank, growth: 0, income: 0, cost: profile.assets_cash + profile.assets_bank, priceRet: null, strike: null, improvements: 0, years: 0 },
   ].filter((h) => h.value > 0);
 
   const positions = detailed.length ? detailed : fallback;
@@ -1160,8 +1163,12 @@ function PortafolioContent() {
                 <p className="numeric text-sm font-medium">{fmt(h.value)}</p>
               </div>
               <div>
-                <p className="text-[11px] text-muted-foreground">{t("Valor compra", "Purchase value")}</p>
-                <p className="numeric text-sm text-muted-foreground">{fmt(h.cost)}</p>
+                <p className="text-[11px] text-muted-foreground">{t("Strike price", "Strike price")}</p>
+                <p className="numeric text-sm text-muted-foreground">
+                  {h.strike && h.strike > 0
+                    ? h.strike.toLocaleString("en-US", { maximumFractionDigits: h.strike < 10 ? 4 : 2 })
+                    : "—"}
+                </p>
               </div>
               <div>
                 <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">

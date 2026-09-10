@@ -754,7 +754,7 @@ function InvestmentCard({
           <InlineRow label={t("Monto de compra", "Purchase amount")}>
             <Money value={h.cost_basis} onChange={(n) => onPatch({ cost_basis: n })} />
           </InlineRow>
-          <InlineRow label={t("Precio de compra", "Purchase price")}>
+          <InlineRow label={t("Strike price (precio de compra)", "Strike price")}>
             <DerivedPrice
               value={buyPrice}
               onCommit={(n) => {

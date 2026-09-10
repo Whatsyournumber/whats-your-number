@@ -18,7 +18,7 @@ import { useProfile } from "@/hooks/use-profile";
 import { useTransactions } from "@/hooks/use-transactions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useDailySeries, useMarketSeries, useQuotes } from "@/hooks/use-market";
-import { marketReturnPct } from "@/lib/holding-return";
+import { marketReturnPct, purchaseUnitPrice } from "@/lib/holding-return";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
 
@@ -240,6 +240,10 @@ function PatrimonioContent() {
         sub: kindLabel(h.kind),
         ticker: h.ticker,
         cost,
+        // Strike price: precio por unidad al que se compró el activo.
+        strike: tickerKey
+          ? purchaseUnitPrice(h, holdingSeries[tickerKey] ?? null, holdingDaily[tickerKey] ?? null)
+          : null,
         livePrice: h.ticker ? (prices[h.ticker.toUpperCase()] ?? null) : null,
         quantity: h.quantity,
         value: weighted,
@@ -827,8 +831,12 @@ function PatrimonioContent() {
                           <p className="numeric text-sm font-medium">{fmt(r.value)}</p>
                         </div>
                         <div>
-                          <p className="text-[11px] text-muted-foreground">{t("Valor compra", "Purchase value")}</p>
-                          <p className="numeric text-sm text-muted-foreground">{r.cost > 0 ? fmt(r.cost) : "—"}</p>
+                          <p className="text-[11px] text-muted-foreground">{t("Strike price", "Strike price")}</p>
+                          <p className="numeric text-sm text-muted-foreground">
+                            {r.strike && r.strike > 0
+                              ? r.strike.toLocaleString("en-US", { maximumFractionDigits: r.strike < 10 ? 4 : 2 })
+                              : "—"}
+                          </p>
                         </div>
                         <div>
                           <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
