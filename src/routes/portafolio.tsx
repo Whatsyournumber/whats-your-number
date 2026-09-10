@@ -552,7 +552,8 @@ function PortafolioContent() {
                   : 0,
           ),
     gain: h.value - h.cost,
-    ret: h.cost ? ((h.value - h.cost) / h.cost) * 100 : 0,
+    // Rentabilidad: precio de mercado de hoy vs precio del día de compra; si no hay precio, valor vs costo.
+    ret: h.priceRet !== null ? h.priceRet : h.cost ? ((h.value - h.cost) / h.cost) * 100 : 0,
     cagr:
       h.cost > 0 && h.years > 0 ? (Math.pow(h.value / h.cost, 1 / h.years) - 1) * 100 : null,
   }));
