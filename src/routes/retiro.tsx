@@ -650,7 +650,7 @@ function RetiroContent() {
             actions={<ScrollXButtons state={scenariosScroll.state} nudge={scenariosScroll.nudge} />}
           >
             <div ref={scenariosScroll.ref} onScroll={scenariosScroll.update} className="overflow-x-auto scroll-smooth">
-              <table className="w-full min-w-[900px] lg:min-w-[1280px] border-collapse text-sm">
+              <table className="w-full min-w-[900px] lg:min-w-[1440px] border-collapse text-sm">
                 <thead>
                   <tr className="border-b border-border text-xs uppercase tracking-[0.12em] text-muted-foreground">
                     <th className="px-3 py-2 text-left font-medium">{t("Capital", "Capital")}</th>
