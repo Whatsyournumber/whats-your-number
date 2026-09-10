@@ -162,7 +162,7 @@ function RetiroContent() {
     if (isGoal) setMonthly(requiredMonthly);
   }, [requiredMonthly, isGoal]);
 
-  // Escenarios de renta mensual: se construyen alrededor de TU número (el que estás editando).
+  // Escenarios de renta mensual: se construyen alrededor de TU número exacto (el que estás editando).
   const baseNumber = targetNow > 0 ? targetNow : 1_000_000;
   const roundNice = (v: number) => {
     if (v <= 0) return 0;
@@ -170,7 +170,15 @@ function RetiroContent() {
     return Math.max(mag, Math.round(v / mag) * mag);
   };
   const capitals = Array.from(
-    new Set([0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3].map((m) => roundNice(baseNumber * m)).filter((v) => v > 0)),
+    new Set(
+      [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3]
+        .map((m) => {
+          const v = baseNumber * m;
+          // La fila "tu número" usa el valor exacto del input; el resto se redondea para leer mejor.
+          return m === 1 ? baseNumber : roundNice(v);
+        })
+        .filter((v) => v > 0),
+    ),
   ).sort((a, b) => a - b);
   const rates = [4, 5, 6, 7, 8, 9, 10, 11, 12];
   const scenariosScroll = useScrollX();
