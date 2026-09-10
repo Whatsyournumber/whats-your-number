@@ -853,18 +853,25 @@ function PatrimonioContent() {
                       ? t("Plusvalía", "Market gain")
                       : t("Ganancia anual", "Annual gain");
                 const gainTone = annual > 0 ? "text-positive" : annual < 0 ? "text-negative" : "text-muted-foreground";
-                const isMarketRow = r.kind === "etf" || r.kind === "crypto";
                 const qtyFmt = r.quantity > 0 ? Number(r.quantity.toPrecision(6)).toString() : null;
-                const meta = isMarketRow
-                  ? [r.sub, r.ticker && r.quantity > 0 ? `${qtyFmt} u.` : null].filter(Boolean)
-                  : [
-                      r.sub,
-                      r.ticker && r.quantity > 0 ? `${qtyFmt} u.` : null,
-                      r.cost > 0 ? t(`Compra ${fmt(r.cost)}`, `Cost ${fmt(r.cost)}`) : null,
-                      r.monthlyContribution > 0 ? t(`+${fmt(r.monthlyContribution)}/mes`, `+${fmt(r.monthlyContribution)}/mo`) : null,
-                      r.targetYear ? String(r.targetYear) : null,
-                      r.probability != null && r.probability < 100 ? `${r.probability}%` : null,
-                    ].filter(Boolean);
+                const meta =
+                  r.kind === "etf"
+                    ? []
+                    : r.kind === "crypto"
+                      ? [t("Cripto", "Crypto")]
+                      : r.kind === "stock"
+                        ? [
+                            r.sub,
+                            r.monthlyContribution > 0 ? t(`+${fmt(r.monthlyContribution)}/mes`, `+${fmt(r.monthlyContribution)}/mo`) : null,
+                          ].filter(Boolean)
+                        : [
+                            r.sub,
+                            r.ticker && r.quantity > 0 ? `${qtyFmt} u.` : null,
+                            r.cost > 0 ? t(`Compra ${fmt(r.cost)}`, `Cost ${fmt(r.cost)}`) : null,
+                            r.monthlyContribution > 0 ? t(`+${fmt(r.monthlyContribution)}/mes`, `+${fmt(r.monthlyContribution)}/mo`) : null,
+                            r.targetYear ? String(r.targetYear) : null,
+                            r.probability != null && r.probability < 100 ? `${r.probability}%` : null,
+                          ].filter(Boolean);
                 const isEtf = r.kind === "etf" || r.kind === "crypto" || (r.kind === "stock" && r.livePrice);
                 const tk = r.ticker?.toUpperCase();
                 const today = tk && dayChange[tk] !== undefined ? dayChange[tk] : null;
@@ -876,9 +883,8 @@ function PatrimonioContent() {
                         {r.ticker ? <span className="ml-2 text-xs text-muted-foreground">{r.ticker}</span> : null}
                       </p>
                       <p className="truncate text-xs text-muted-foreground">
-                        {r.kind === "crypto" ? t("Cripto", "Crypto") : r.kind === "etf" ? "" : meta.join(" · ")}
+                        {meta.join(" · ")}
                       </p>
-
                     </div>
                     {isEtf ? (
                       <>
