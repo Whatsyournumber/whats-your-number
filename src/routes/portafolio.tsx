@@ -370,6 +370,11 @@ function PortafolioContent() {
   const seriesQuery = useMarketSeries(
     ["^GSPC", "^NDX", "URTH", "SPY", "BTC-USD", ...(focusTicker ? [focusTicker] : [])],
   );
+  // Series mensuales reales de mis posiciones: sirven para el precio del día de compra.
+  const holdingSeriesQuery = useMarketSeries(
+    holdings.filter((h) => h.ticker).map((h) => h.ticker!.toUpperCase()),
+  );
+  const holdingSeries = holdingSeriesQuery.data?.series ?? {};
   const [benchmark, setBenchmark] = useState<"sp500" | "nasdaq" | "world">("sp500");
   const [aiExpanded, setAiExpanded] = useState(false);
 
