@@ -21,6 +21,7 @@ import { useMarketSeries, useQuotes, useSymbolReturns, useSymbolSearch, useWatch
 import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
+import { marketReturnPct } from "@/lib/holding-return";
 import { buildDataset } from "@/lib/profile-data";
 import { currencySymbol } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
