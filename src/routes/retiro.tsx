@@ -647,8 +647,14 @@ function RetiroContent() {
                   <tr className="border-b border-border text-xs uppercase tracking-[0.12em] text-muted-foreground">
                     <th className="px-3 py-2 text-left font-medium">{t("Capital", "Capital")}</th>
                     {rates.map((rr) => (
-                      <th key={rr} className="px-3 py-2 text-right font-medium">
-                        {rr}%
+                      <th
+                        key={rr}
+                        className={cn(
+                          "px-3 py-2 text-right font-medium",
+                          rr === 7 && "bg-primary/[0.08] text-primary",
+                        )}
+                      >
+                        {rr}%{rr === 7 && <span className="ml-1 text-[9px] font-black uppercase tracking-wider">★</span>}
                       </th>
                     ))}
                   </tr>
