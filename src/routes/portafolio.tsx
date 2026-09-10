@@ -1163,7 +1163,7 @@ function PortafolioContent() {
                 <p className="numeric text-sm font-medium">{fmt(h.value)}</p>
               </div>
               <div>
-                <p className="text-[11px] text-muted-foreground">{t("Strike price", "Strike price")}</p>
+                <p className="text-[11px] text-muted-foreground">{h.type === "Cripto" ? t("Precio promedio", "Average price") : t("Strike price", "Strike price")}</p>
                 <p className="numeric text-sm text-muted-foreground">
                   {h.strike && h.strike > 0
                     ? h.strike.toLocaleString("en-US", { maximumFractionDigits: h.strike < 10 ? 4 : 2 })

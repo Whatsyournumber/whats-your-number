@@ -831,7 +831,7 @@ function PatrimonioContent() {
                           <p className="numeric text-sm font-medium">{fmt(r.value)}</p>
                         </div>
                         <div>
-                          <p className="text-[11px] text-muted-foreground">{t("Strike price", "Strike price")}</p>
+                          <p className="text-[11px] text-muted-foreground">{r.kind === "crypto" ? t("Precio promedio", "Average price") : t("Strike price", "Strike price")}</p>
                           <p className="numeric text-sm text-muted-foreground">
                             {r.strike && r.strike > 0
                               ? r.strike.toLocaleString("en-US", { maximumFractionDigits: r.strike < 10 ? 4 : 2 })
