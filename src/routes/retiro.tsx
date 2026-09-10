@@ -684,9 +684,7 @@ function RetiroContent() {
                         {rates.map((rr) => {
                           const inc = Math.round((cap * (rr / 100)) / 12);
                           const isTarget = rr === 7;
-                          const isWithinTarget = isTarget
-                            ? inc <= 10_000
-                            : inc <= standardOfLiving && standardOfLiving > 0;
+                          const isWithinTarget = inc <= standardOfLiving && standardOfLiving > 0;
                           return (
                             <td
                               key={rr}
@@ -694,8 +692,7 @@ function RetiroContent() {
                                 "numeric px-3 text-right transition-colors",
                                 isNumberRow ? "pb-5 pt-5" : "py-3",
                                 isTarget && "bg-primary/[0.06]",
-                                isTarget && isWithinTarget && "font-semibold text-positive",
-                                isTarget && !isWithinTarget && "font-semibold text-foreground",
+                                isWithinTarget && "font-semibold text-positive",
                               )}
                             >
                               {fmt(inc)}
