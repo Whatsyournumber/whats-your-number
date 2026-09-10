@@ -496,6 +496,8 @@ function PortafolioContent() {
             : h.cost_basis > 0
               ? Math.round(h.cost_basis)
               : Math.round(value / (1 + growth)),
+        // Rentabilidad real: precio de hoy vs precio del día de compra.
+        priceRet: tk ? marketReturnPct(h, prices[tk] ?? null, holdingSeries[tk] ?? null) : null,
         improvements: h.kind === "property" ? Math.round(h.quantity || 0) : 0,
         years:
           h.kind === "property" && h.target_year && h.target_year > 1900
