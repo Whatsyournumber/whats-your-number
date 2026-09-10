@@ -162,8 +162,17 @@ function RetiroContent() {
     if (isGoal) setMonthly(requiredMonthly);
   }, [requiredMonthly, isGoal]);
 
-  // Escenarios de renta mensual: filas = ingreso mensual objetivo, columnas = tasa de retiro.
-  const rates = [4, 5, 6, 7, 8, 9, 10, 11, 12];
+  // Escenarios de renta mensual: se construyen alrededor de TU número (el que estás editando).
+  const baseNumber = targetNow > 0 ? targetNow : 1_000_000;
+  const roundNice = (v: number) => {
+    if (v <= 0) return 0;
+    const mag = Math.pow(10, Math.floor(Math.log10(v)) - 1);
+    return Math.max(mag, Math.round(v / mag) * mag);
+  };
+  const capitals = Array.from(
+    new Set([0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3].map((m) => roundNice(baseNumber * m)).filter((v) => v > 0)),
+  ).sort((a, b) => a - b);
+  const rates = [4, 6, 8, 10, 12];
   const scenariosScroll = useScrollX();
 
   // El subtítulo siempre cambia según el objetivo elegido en el onboarding / perfil.
@@ -626,25 +635,17 @@ function RetiroContent() {
       {/* Standard of living = ingreso/gasto mensual objetivo. El usuario lo edita en "Tu número". */}
       {(() => {
         const standardOfLiving = Math.max(0, wantMonthly || d.expenses);
-        const standardRounded = Math.max(1000, Math.round(standardOfLiving / 1000) * 1000);
-        const monthlyIncomes = Array.from(
-          new Set([
-            1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000,
-            12500, 15000, 17500, 20000, 25000, 30000, 40000, 50000,
-            standardRounded,
-          ]),
-        ).sort((a, b) => a - b);
         return (
           <Panel
             title={t("Escenarios de renta mensual", "Monthly income scenarios")}
-            description={`${t("En verde, lo que cubre tu gasto objetivo de", "In green, what covers your standard of living of")} ${fmt(standardOfLiving)}.`}
+            description={`${t("En verde, lo que aún no cubre tu gasto objetivo de", "In green, what still doesn't cover your standard of living of")} ${fmt(standardOfLiving)}.`}
             actions={<ScrollXButtons state={scenariosScroll.state} nudge={scenariosScroll.nudge} />}
           >
             <div ref={scenariosScroll.ref} onScroll={scenariosScroll.update} className="overflow-x-auto scroll-smooth">
               <table className="w-full min-w-[640px] border-collapse text-sm">
                 <thead>
                   <tr className="border-b border-border text-xs uppercase tracking-[0.12em] text-muted-foreground">
-                    <th className="px-3 py-2 text-left font-medium">{t("Ingreso mensual", "Monthly income")}</th>
+                    <th className="px-3 py-2 text-left font-medium">{t("Capital", "Capital")}</th>
                     {rates.map((rr) => (
                       <th key={rr} className="px-3 py-2 text-right font-medium">
                         {rr}%
@@ -653,12 +654,11 @@ function RetiroContent() {
                   </tr>
                 </thead>
                 <tbody>
-                  {monthlyIncomes.map((inc) => {
-                    const isNumberRow = inc === standardRounded;
-                    const covers = inc >= standardOfLiving && standardOfLiving > 0;
+                  {capitals.map((cap) => {
+                    const isNumberRow = cap === roundNice(baseNumber);
                     return (
                       <tr
-                        key={inc}
+                        key={cap}
                         className={cn(
                           "relative border-b border-border/60 last:border-0 hover:bg-elevated/40",
                           isNumberRow && "border-primary/30 bg-primary/[0.04] shadow-[0_0_20px_hsl(var(--primary)/5%)]",
@@ -672,21 +672,22 @@ function RetiroContent() {
                                 {t("tu número", "your number")}
                               </span>
                             )}
-                            {fmt(inc)}
+                            {fmt(cap)}
                           </div>
                         </td>
                         {rates.map((rr) => {
-                          const cap = Math.round((inc * 12) / (rr / 100));
+                          const inc = Math.round((cap * (rr / 100)) / 12);
+                          const shortfall = inc < standardOfLiving && standardOfLiving > 0;
                           return (
                             <td
                               key={rr}
                               className={cn(
                                 "numeric px-3 text-right transition-colors",
                                 isNumberRow ? "pb-5 pt-5" : "py-3",
-                                covers && "font-semibold text-positive",
+                                shortfall && "font-semibold text-positive",
                               )}
                             >
-                              {fmt(cap)}
+                              {fmt(inc)}
                             </td>
                           );
                         })}
@@ -696,7 +697,7 @@ function RetiroContent() {
                 </tbody>
               </table>
             </div>
-            <p className="mt-3 text-xs text-muted-foreground">{t("Capital necesario = ingreso mensual × 12 ÷ rentabilidad anual.", "Required capital = monthly income × 12 ÷ annual return.")}</p>
+            <p className="mt-3 text-xs text-muted-foreground">{t("Renta mensual = capital × rentabilidad anual ÷ 12.", "Monthly income = capital × annual return ÷ 12.")}</p>
           </Panel>
         );
       })()}
