@@ -648,7 +648,7 @@ function RetiroContent() {
             title={
               <>
                 <span className="hidden sm:inline">{t("Escenarios de renta mensual para retirarte", "Monthly income scenarios to retire")}</span>
-                <span className="sm:hidden">{t("Escenarios de retiro", "Retirement scenarios")}</span>
+                <span className="sm:hidden">{t("Escenarios de retiro mensual", "Monthly retirement scenarios")}</span>
               </>
             }
             description={
