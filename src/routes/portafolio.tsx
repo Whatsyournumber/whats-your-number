@@ -505,6 +505,7 @@ function PortafolioContent() {
         priceRet: tk ? marketReturnPct(h, prices[tk] ?? null, holdingSeries[tk] ?? null, holdingDaily[tk] ?? null) : null,
         // Strike price: precio por unidad al que se compró.
         strike: tk ? purchaseUnitPrice(h, holdingSeries[tk] ?? null, holdingDaily[tk] ?? null) : null,
+        units: h.quantity && h.quantity > 0 ? h.quantity : null,
         improvements: h.kind === "property" ? Math.round(h.quantity || 0) : 0,
         years:
           h.kind === "property" && h.target_year && h.target_year > 1900
@@ -528,16 +529,17 @@ function PortafolioContent() {
         cost: cash,
         priceRet: null,
         strike: null,
+        units: null,
         improvements: 0,
         years: 0,
       });
   }
 
   const fallback = [
-    { ticker: t("ETFs / fondos", "ETFs / funds"), name: t("Fondos indexados y ETFs", "Index funds and ETFs"), type: "ETF" as const, value: profile.assets_etf, growth: r, income: 0, cost: Math.round(profile.assets_etf / (1 + r)), priceRet: null, strike: null, improvements: 0, years: 0 },
-    { ticker: t("Acciones", "Stocks"), name: t("Posiciones individuales", "Individual positions"), type: "Acción" as const, value: profile.assets_stocks, growth: r * 1.3, income: 0, cost: Math.round(profile.assets_stocks / (1 + r * 1.3)), priceRet: null, strike: null, improvements: 0, years: 0 },
-    { ticker: t("Cripto", "Crypto"), name: t("Activos digitales", "Digital assets"), type: "Cripto" as const, value: profile.assets_crypto, growth: r * 2, income: 0, cost: Math.round(profile.assets_crypto / (1 + r * 2)), priceRet: null, strike: null, improvements: 0, years: 0 },
-    { ticker: t("Efectivo", "Cash"), name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"), type: "Cash" as const, value: profile.assets_cash + profile.assets_bank, growth: 0, income: 0, cost: profile.assets_cash + profile.assets_bank, priceRet: null, strike: null, improvements: 0, years: 0 },
+    { ticker: t("ETFs / fondos", "ETFs / funds"), name: t("Fondos indexados y ETFs", "Index funds and ETFs"), type: "ETF" as const, value: profile.assets_etf, growth: r, income: 0, cost: Math.round(profile.assets_etf / (1 + r)), priceRet: null, strike: null, units: null, improvements: 0, years: 0 },
+    { ticker: t("Acciones", "Stocks"), name: t("Posiciones individuales", "Individual positions"), type: "Acción" as const, value: profile.assets_stocks, growth: r * 1.3, income: 0, cost: Math.round(profile.assets_stocks / (1 + r * 1.3)), priceRet: null, strike: null, units: null, improvements: 0, years: 0 },
+    { ticker: t("Cripto", "Crypto"), name: t("Activos digitales", "Digital assets"), type: "Cripto" as const, value: profile.assets_crypto, growth: r * 2, income: 0, cost: Math.round(profile.assets_crypto / (1 + r * 2)), priceRet: null, strike: null, units: null, improvements: 0, years: 0 },
+    { ticker: t("Efectivo", "Cash"), name: t("Efectivo y cuentas bancarias", "Cash and bank accounts"), type: "Cash" as const, value: profile.assets_cash + profile.assets_bank, growth: 0, income: 0, cost: profile.assets_cash + profile.assets_bank, priceRet: null, strike: null, units: null, improvements: 0, years: 0 },
   ].filter((h) => h.value > 0);
 
   const positions = detailed.length ? detailed : fallback;
@@ -1169,6 +1171,11 @@ function PortafolioContent() {
                     ? h.strike.toLocaleString("en-US", { maximumFractionDigits: h.strike < 10 ? 4 : 2 })
                     : "—"}
                 </p>
+                {h.units ? (
+                  <p className="numeric text-[11px] text-muted-foreground/80">
+                    {h.units.toLocaleString(lang === "es" ? "es-ES" : "en-US", { maximumFractionDigits: 4 })} {h.ticker?.replace("-USD", "")}
+                  </p>
+                ) : null}
               </div>
               <div>
                 <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">

@@ -837,6 +837,11 @@ function PatrimonioContent() {
                               ? r.strike.toLocaleString("en-US", { maximumFractionDigits: r.strike < 10 ? 4 : 2 })
                               : "—"}
                           </p>
+                          {r.quantity && r.quantity > 0 && r.kind !== "property" ? (
+                            <p className="numeric text-[11px] text-muted-foreground/80">
+                              {r.quantity.toLocaleString(lang === "es" ? "es-ES" : "en-US", { maximumFractionDigits: 4 })} {r.ticker?.replace("-USD", "")}
+                            </p>
+                          ) : null}
                         </div>
                         <div>
                           <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
