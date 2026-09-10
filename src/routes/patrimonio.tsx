@@ -415,17 +415,23 @@ function PatrimonioContent() {
     if (!comparing) return [];
     const nwSlice = chartMonths.slice(chartMonths.length - compareLen);
     const bSlice = benchSeriesRaw.slice(benchSeriesRaw.length - compareLen);
-    const n0 = nwSlice[0]!.netWorth;
+    // Base: primer patrimonio positivo del tramo (evita bases 0/negativas que disparan los %).
+    const base = nwSlice.find((m) => m.netWorth > 0)?.netWorth ?? nwSlice[nwSlice.length - 1]?.netWorth ?? 0;
     const b0 = bSlice[0]!.value;
-    return nwSlice.map((m, i) => ({
-      label: m.label,
-      netWorth: m.netWorth,
-      // El índice se escala a dinero: parte del mismo patrimonio inicial y aplica su % real.
-      bench: n0 * (1 + (bSlice[i]!.value - b0) / 100),
-      netPct: n0 !== 0 ? ((m.netWorth - n0) / Math.abs(n0)) * 100 : 0,
-      benchPct: bSlice[i]!.value - b0,
-    }));
+    return nwSlice.map((m, i) => {
+      // El índice se escala a dinero: mismo patrimonio base con el rendimiento real del índice.
+      const benchPct = bSlice[i]!.value - b0;
+      const netPct = base > 0 ? ((m.netWorth - base) / base) * 100 : 0;
+      return {
+        label: m.label,
+        netWorth: m.netWorth,
+        bench: base * (1 + benchPct / 100),
+        netPct,
+        benchPct,
+      };
+    });
   })();
+
 
 
 
