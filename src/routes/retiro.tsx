@@ -701,7 +701,7 @@ function RetiroContent() {
                               {fmt(inc)}
                             </td>
                           );
-                        })
+                        })}
                       </tr>
                     );
                   })}
