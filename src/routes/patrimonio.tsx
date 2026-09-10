@@ -853,38 +853,14 @@ function PatrimonioContent() {
                       ? t("Plusvalía", "Market gain")
                       : t("Ganancia anual", "Annual gain");
                 const gainTone = annual > 0 ? "text-positive" : annual < 0 ? "text-negative" : "text-muted-foreground";
-                const qtyFmt = r.quantity > 0 ? Number(r.quantity.toPrecision(6)).toString() : null;
-                const meta =
-                  r.kind === "etf"
-                    ? []
-                    : r.kind === "crypto"
-                      ? [t("Cripto", "Crypto")]
-                      : r.kind === "stock"
-                        ? [
-                            r.sub,
-                            r.monthlyContribution > 0 ? t(`+${fmt(r.monthlyContribution)}/mes`, `+${fmt(r.monthlyContribution)}/mo`) : null,
-                          ].filter(Boolean)
-                        : [
-                            r.sub,
-                            r.ticker && r.quantity > 0 ? `${qtyFmt} u.` : null,
-                            r.cost > 0 ? t(`Compra ${fmt(r.cost)}`, `Cost ${fmt(r.cost)}`) : null,
-                            r.monthlyContribution > 0 ? t(`+${fmt(r.monthlyContribution)}/mes`, `+${fmt(r.monthlyContribution)}/mo`) : null,
-                            r.targetYear ? String(r.targetYear) : null,
-                            r.probability != null && r.probability < 100 ? `${r.probability}%` : null,
-                          ].filter(Boolean);
                 const isEtf = r.kind === "etf" || r.kind === "crypto" || (r.kind === "stock" && r.livePrice);
                 const tk = r.ticker?.toUpperCase();
                 const today = tk && dayChange[tk] !== undefined ? dayChange[tk] : null;
                 return (
                   <div key={r.id} className="grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 md:grid-cols-6">
                     <div className="col-span-2 md:col-span-2 min-w-0">
-                      <p className="truncate text-sm font-medium">
-                        {r.label}
-                        {r.ticker ? <span className="ml-2 text-xs text-muted-foreground">{r.ticker}</span> : null}
-                      </p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {meta.join(" · ")}
-                      </p>
+                      <p className="truncate text-sm font-medium">{r.ticker || r.label}</p>
+                      <p className="truncate text-xs text-muted-foreground">{r.sub}</p>
                     </div>
                     {isEtf ? (
                       <>
@@ -899,7 +875,7 @@ function PatrimonioContent() {
                               ? r.strike.toLocaleString("en-US", { maximumFractionDigits: r.strike < 10 ? 4 : 2 })
                               : "—"}
                           </p>
-                          {r.quantity && r.quantity > 0 && r.kind !== "property" ? (
+                          {r.quantity && r.quantity > 0 && r.kind !== "property" && r.kind !== "etf" ? (
                             <p className="numeric text-[11px] text-muted-foreground/80">
                               {r.quantity.toLocaleString(lang === "es" ? "es-ES" : "en-US", { maximumFractionDigits: 4 })} {r.ticker?.replace("-USD", "")}
                             </p>
