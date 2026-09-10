@@ -172,7 +172,7 @@ function RetiroContent() {
   const capitals = Array.from(
     new Set([0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3].map((m) => roundNice(baseNumber * m)).filter((v) => v > 0)),
   ).sort((a, b) => a - b);
-  const rates = [4, 5, 6, 7, 8];
+  const rates = [4, 5, 6, 7, 8, 9, 10, 11, 12];
   const scenariosScroll = useScrollX();
 
   // El subtítulo siempre cambia según el objetivo elegido en el onboarding / perfil.
@@ -638,11 +638,11 @@ function RetiroContent() {
         return (
           <Panel
             title={t("Escenarios de renta mensual", "Monthly income scenarios")}
-            description={`${t("En verde, lo que aún no cubre tu gasto objetivo de", "In green, what still doesn't cover your standard of living of")} ${fmt(standardOfLiving)} · ${t("Objetivo", "Target")}: 7%.`}
+            description={`${t("En verde, lo que cubre tu gasto objetivo de", "In green, what covers your standard of living of")} ${fmt(standardOfLiving)} · ${t("Objetivo", "Target")}: 7%.`}
             actions={<ScrollXButtons state={scenariosScroll.state} nudge={scenariosScroll.nudge} />}
           >
             <div ref={scenariosScroll.ref} onScroll={scenariosScroll.update} className="overflow-x-auto scroll-smooth">
-              <table className="w-full min-w-[640px] border-collapse text-sm">
+              <table className="w-full min-w-[900px] border-collapse text-sm">
                 <thead>
                   <tr className="border-b border-border text-xs uppercase tracking-[0.12em] text-muted-foreground">
                     <th className="px-3 py-2 text-left font-medium">{t("Capital", "Capital")}</th>
@@ -660,48 +660,33 @@ function RetiroContent() {
                   </tr>
                 </thead>
                 <tbody>
-                  {capitals.map((cap) => {
-                    const isNumberRow = cap === roundNice(baseNumber);
-                    return (
-                      <tr
-                        key={cap}
-                        className={cn(
-                          "relative border-b border-border/60 last:border-0 hover:bg-elevated/40",
-                          isNumberRow && "border-primary/30 bg-primary/[0.04] shadow-[0_0_20px_hsl(var(--primary)/5%)]",
-                        )}
-                      >
-                        <td className={cn("numeric px-3 text-left font-semibold", isNumberRow ? "pb-5 pt-5" : "py-3")}>
-                          <div className="flex flex-col items-start gap-1.5">
-                            {isNumberRow && (
-                              <span className="inline-flex items-center gap-1 rounded-full bg-primary/85 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-primary-foreground">
-                                <span className="h-1 w-1 rounded-full bg-primary-foreground" />
-                                {t("tu número", "your number")}
-                              </span>
+                  {capitals.map((cap) => (
+                    <tr
+                      key={cap}
+                      className="relative border-b border-border/60 last:border-0 hover:bg-elevated/40"
+                    >
+                      <td className="numeric px-3 py-3 text-left font-semibold">
+                        {fmt(cap)}
+                      </td>
+                      {rates.map((rr) => {
+                        const inc = Math.round((cap * (rr / 100)) / 12);
+                        const covers = inc >= standardOfLiving && standardOfLiving > 0;
+                        const isTarget = rr === 7;
+                        return (
+                          <td
+                            key={rr}
+                            className={cn(
+                              "numeric px-3 py-3 text-right transition-colors",
+                              isTarget && "bg-primary/[0.06] font-semibold text-primary",
+                              !isTarget && covers && "font-semibold text-positive",
                             )}
-                            {fmt(cap)}
-                          </div>
-                        </td>
-                        {rates.map((rr) => {
-                          const inc = Math.round((cap * (rr / 100)) / 12);
-                          const shortfall = inc < standardOfLiving && standardOfLiving > 0;
-                          const isTarget = rr === 7;
-                          return (
-                            <td
-                              key={rr}
-                              className={cn(
-                                "numeric px-3 text-right transition-colors",
-                                isNumberRow ? "pb-5 pt-5" : "py-3",
-                                isTarget && "bg-primary/[0.06] font-semibold text-primary",
-                                !isTarget && shortfall && "font-semibold text-positive",
-                              )}
-                            >
-                              {fmt(inc)}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    );
-                  })}
+                          >
+                            {fmt(inc)}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
