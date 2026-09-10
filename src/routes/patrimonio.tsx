@@ -427,103 +427,6 @@ function PatrimonioContent() {
     }));
   })();
 
-  // Comparativa del tooltip: rendimiento mensual del patrimonio y de cada índice,
-  // más cuánto valdría el patrimonio si esa inversión se hubiera hecho en el índice.
-  const INDEX_LIST = [
-    { key: "^GSPC", name: "S&P 500", color: "var(--color-chart-2)" },
-    { key: "^IXIC", name: "Nasdaq 100", color: "var(--color-chart-3)" },
-    { key: "URTH", name: "MSCI World", color: "var(--color-chart-4)" },
-  ] as const;
-
-  const tooltipCompare: Record<
-    string,
-    { ownPct: number; rows: { name: string; color: string; value: number; pct: number }[] }
-  > = {};
-  {
-    const nwAll = comparing ? compareData.map((r) => ({ label: r.label, netWorth: r.netWorth })) : chartMonths;
-    nwAll.forEach((m, i) => {
-      const prev = i > 0 ? nwAll[i - 1]!.netWorth : 0;
-      tooltipCompare[m.label] = {
-        ownPct: i > 0 && prev !== 0 ? ((m.netWorth - prev) / Math.abs(prev)) * 100 : 0,
-        rows: [],
-      };
-    });
-    const base0 = nwAll[0]?.netWorth ?? 0;
-    for (const idx of INDEX_LIST) {
-      const raw = seriesQuery.data?.series?.[idx.key] ?? [];
-      const len = Math.min(nwAll.length, raw.length);
-      if (len < 2) continue;
-      const nwSlice = nwAll.slice(nwAll.length - len);
-      const bSlice = raw.slice(raw.length - len);
-      const b0 = bSlice[0]!.value;
-      nwSlice.forEach((m, j) => {
-        const v = bSlice[j]!.value;
-        const vPrev = j > 0 ? bSlice[j - 1]!.value : v;
-        const monthPct = j > 0 ? ((1 + v / 100) / (1 + vPrev / 100) - 1) * 100 : 0;
-        tooltipCompare[m.label]?.rows.push({
-          name: idx.name,
-          color: idx.color,
-          value: base0 * (1 + (v - b0) / 100),
-          pct: monthPct,
-        });
-      });
-    }
-  }
-
-  const pctTxt = (p: number) => `${p >= 0 ? "+" : ""}${p.toFixed(1)}%`;
-
-  const WealthTooltip = ({ active, label }: { active?: boolean; label?: string }) => {
-    if (!active || !label) return null;
-    const info = tooltipCompare[label];
-    if (!info) return null;
-    const row = (comparing ? compareData : chartMonths).find((r) => r.label === label);
-    if (!row) return null;
-    return (
-      <div
-        className="rounded-2xl border px-4 py-3 text-xs backdrop-blur-sm"
-        style={{
-          backgroundColor: "var(--chart-tooltip-bg)",
-          borderColor: "var(--chart-tooltip-border)",
-          color: "var(--chart-tooltip-fg)",
-          boxShadow: "var(--chart-tooltip-shadow)",
-        }}
-      >
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide" style={{ color: "var(--chart-tooltip-muted)" }}>
-          {label}
-        </p>
-        <div className="flex items-center gap-2.5">
-          <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: "var(--color-positive)" }} />
-          <span className="text-[13px]" style={{ color: "var(--chart-tooltip-muted)" }}>
-            {t("Tu portafolio", "Your portfolio")}
-          </span>
-          <span className="numeric ml-auto text-[13px] font-bold">
-            {fmt(row.netWorth)} · {pctTxt(info.ownPct)}
-          </span>
-        </div>
-        {info.rows.length > 0 && (
-          <>
-            <p className="mt-2.5 mb-1 text-[10px] uppercase tracking-wide" style={{ color: "var(--chart-tooltip-muted)" }}>
-              {t("Si estuviera invertido en", "If invested in")}
-            </p>
-            <div className="space-y-1.5">
-              {info.rows.map((r) => (
-                <div key={r.name} className="flex items-center gap-2.5">
-                  <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: r.color }} />
-                  <span className="text-[13px]" style={{ color: "var(--chart-tooltip-muted)" }}>
-                    {r.name}
-                  </span>
-                  <span className="numeric ml-auto text-[13px] font-bold">
-                    {fmt(r.value)} · {pctTxt(r.pct)}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-      </div>
-    );
-  };
-
 
 
   // Métricas de riesgo del patrimonio basadas en el allocation actual.
@@ -697,7 +600,22 @@ function PatrimonioContent() {
                   tickFormatter={(v) => fmtCompact(Number(v))}
                   width={isMobile ? 42 : 48}
                 />
-                <Tooltip content={<WealthTooltip />} />
+                <Tooltip
+                  content={
+                    <ChartTooltip
+                      {...(comparing
+                        ? {
+                            formatter: (v: number, item) => {
+                              const row = item?.payload as { netPct?: number; benchPct?: number } | undefined;
+                              const pct = item?.dataKey === "bench" ? row?.benchPct : row?.netPct;
+                              const pctTxt = pct !== undefined ? ` · ${pct >= 0 ? "+" : ""}${pct.toFixed(1)}%` : "";
+                              return `${fmt(v)}${pctTxt}`;
+                            },
+                          }
+                        : {})}
+                    />
+                  }
+                />
                 <Area
                   type="monotone"
                   dataKey="netWorth"
