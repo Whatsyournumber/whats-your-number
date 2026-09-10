@@ -471,7 +471,7 @@ function PatrimonioContent() {
         actions={<MonthEvolutionPicker availableKeys={realKeys} value={evoMonth} onChange={setEvoMonth} />}
       />
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <KpiCard
           label={t("Patrimonio neto", "Net worth")}
           labelSm={t("Patrimonio", "Net worth")}
@@ -488,6 +488,13 @@ function PatrimonioContent() {
           value={fmt(d.totalLiabilities)}
           inverse
           index={2}
+        />
+        <KpiCard
+          label={t("Rentabilidad estimada", "Estimated return")}
+          labelSm={t("Rent. estimada", "Est. return")}
+          value={`${(portfolioExpectedReturn * 100).toFixed(1)}%`}
+          hint={t("anual según allocation", "annual based on allocation")}
+          index={3}
         />
       </div>
 
