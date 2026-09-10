@@ -878,13 +878,8 @@ function PatrimonioContent() {
                 return (
                   <div key={r.id} className="grid grid-cols-2 items-center gap-3 rounded-xl bg-elevated/60 p-3 md:grid-cols-6">
                     <div className="col-span-2 md:col-span-2 min-w-0">
-                      <p className="truncate text-sm font-medium">
-                        {r.label}
-                        {r.ticker ? <span className="ml-2 text-xs text-muted-foreground">{r.ticker}</span> : null}
-                      </p>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {meta.join(" · ")}
-                      </p>
+                      <p className="truncate text-sm font-medium">{r.ticker || r.label}</p>
+                      <p className="truncate text-xs text-muted-foreground">{r.sub}</p>
                     </div>
                     {isEtf ? (
                       <>
