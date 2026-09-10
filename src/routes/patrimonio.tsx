@@ -214,7 +214,19 @@ function PatrimonioContent() {
       else if (h.kind === "cash") annual = 0;
       else if (marketGain !== null) annual = Math.round(marketGain);
       else annual = Math.round((weighted * (h.expected_return || 0)) / 100);
-      const rate = marketGain !== null ? (marketGain / marketCost) * 100 : weighted > 0 ? (annual / weighted) * 100 : 0;
+      // Rentabilidad de acciones/ETF/cripto: precio de hoy vs precio del día de compra.
+      const tickerKey = h.ticker?.toUpperCase() ?? null;
+      const priceRate = tickerKey
+        ? marketReturnPct(h, prices[tickerKey] ?? null, holdingSeries[tickerKey] ?? null)
+        : null;
+      const rate =
+        priceRate !== null
+          ? priceRate
+          : marketGain !== null
+            ? (marketGain / marketCost) * 100
+            : weighted > 0
+              ? (annual / weighted) * 100
+              : 0;
 
 
       return {
