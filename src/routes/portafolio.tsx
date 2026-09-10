@@ -376,6 +376,10 @@ function PortafolioContent() {
     holdings.filter((h) => h.ticker).map((h) => h.ticker!.toUpperCase()),
   );
   const holdingSeries = holdingSeriesQuery.data?.series ?? {};
+  // Cierres diarios: rentabilidad exacta desde el día de compra (compras de hace días).
+  const holdingDaily = useDailySeries(
+    holdings.filter((h) => h.ticker).map((h) => h.ticker!.toUpperCase()),
+  ).data?.series ?? {};
   const [benchmark, setBenchmark] = useState<"sp500" | "nasdaq" | "world">("sp500");
   const [aiExpanded, setAiExpanded] = useState(false);
 

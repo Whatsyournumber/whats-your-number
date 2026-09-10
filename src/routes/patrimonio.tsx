@@ -153,6 +153,8 @@ function PatrimonioContent() {
   // Series mensuales reales para deducir el precio del día de compra cuando no hay unidades.
   const holdingSeriesQuery = useMarketSeries(holdingSymbols);
   const holdingSeries = holdingSeriesQuery.data?.series ?? {};
+  // Cierres diarios: rentabilidad exacta desde el día de compra (compras de hace días).
+  const holdingDaily = useDailySeries(holdingSymbols).data?.series ?? {};
 
   // Pasivos: deudas explícitas (TDC, préstamos) + hipotecas ligadas a propiedades.
   const debtRows = holdings
