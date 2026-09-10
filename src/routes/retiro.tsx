@@ -660,33 +660,48 @@ function RetiroContent() {
                   </tr>
                 </thead>
                 <tbody>
-                  {capitals.map((cap) => (
-                    <tr
-                      key={cap}
-                      className="relative border-b border-border/60 last:border-0 hover:bg-elevated/40"
-                    >
-                      <td className="numeric px-3 py-3 text-left font-semibold">
-                        {fmt(cap)}
-                      </td>
-                      {rates.map((rr) => {
-                        const inc = Math.round((cap * (rr / 100)) / 12);
-                        const covers = inc >= standardOfLiving && standardOfLiving > 0;
-                        const isTarget = rr === 7;
-                        return (
-                          <td
-                            key={rr}
-                            className={cn(
-                              "numeric px-3 py-3 text-right transition-colors",
-                              isTarget && "bg-primary/[0.06] font-semibold text-primary",
-                              !isTarget && covers && "font-semibold text-positive",
+                  {capitals.map((cap) => {
+                    const isNumberRow = cap === roundNice(baseNumber);
+                    return (
+                      <tr
+                        key={cap}
+                        className={cn(
+                          "relative border-b border-border/60 last:border-0 hover:bg-elevated/40",
+                          isNumberRow && "border-primary/30 bg-primary/[0.04] shadow-[0_0_20px_hsl(var(--primary)/5%)]",
+                        )}
+                      >
+                        <td className={cn("numeric px-3 text-left font-semibold", isNumberRow ? "pb-5 pt-5" : "py-3")}>
+                          <div className="flex flex-col items-start gap-1.5">
+                            {isNumberRow && (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-primary/85 px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-primary-foreground">
+                                <span className="h-1 w-1 rounded-full bg-primary-foreground" />
+                                {t("tu número", "your number")}
+                              </span>
                             )}
-                          >
-                            {fmt(inc)}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
+                            {fmt(cap)}
+                          </div>
+                        </td>
+                        {rates.map((rr) => {
+                          const inc = Math.round((cap * (rr / 100)) / 12);
+                          const covers = inc >= standardOfLiving && standardOfLiving > 0;
+                          const isTarget = rr === 7;
+                          return (
+                            <td
+                              key={rr}
+                              className={cn(
+                                "numeric px-3 text-right transition-colors",
+                                isNumberRow ? "pb-5 pt-5" : "py-3",
+                                isTarget && "bg-primary/[0.06] font-semibold text-primary",
+                                !isTarget && covers && "font-semibold text-positive",
+                              )}
+                            >
+                              {fmt(inc)}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
