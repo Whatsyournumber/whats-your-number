@@ -399,20 +399,28 @@ function PatrimonioContent() {
       .filter((h) => h.kind !== "debt")
       .reduce((s, h) => s + (h.manual_value || h.cost_basis || 0), 0);
     const staticBase = Math.max(0, totalAssetsAll - holdingsNow);
-    // Compras anteriores al primer mes visible ya forman parte del patrimonio desde el inicio.
-    const firstKey = (rawMonths[0] as { month?: string } | undefined)?.month ?? "";
-    let cum = Object.entries(holdingContributions)
-      .filter(([k]) => k < firstKey)
-      .reduce((s, [, v]) => s + v, 0);
-    return rawMonths.map((m, i) => {
+    // Patrimonio de cada mes = base estática + lo realmente comprado (purchased_at) hasta ese mes.
+    // Así las compras antiguas (inmuebles, fondos, cripto) existen en toda la serie y nada sale negativo.
+    const dated: { key: string; value: number }[] = [];
+    for (const h of holdings) {
+      if (h.kind === "debt") continue;
+      const date = h.purchased_at ?? h.created_at;
+      if (!date) continue;
+      const value = h.manual_value || h.cost_basis || 0;
+      if (value > 0) dated.push({ key: String(date).slice(0, 7), value });
+    }
+    const costCum = (upTo: string) => dated.filter((r) => r.key <= upTo).reduce((s, r) => s + r.value, 0);
+    // Serie base por costo real acumulado; se escala suavemente para que cierre en el patrimonio vivo.
+    const baseSeries = rawMonths.map((m) => {
       const key = (m as { month?: string }).month ?? "";
-      if (/^\d{4}-\d{2}$/.test(key)) cum += holdingContributions[key] ?? 0;
-      // El último mes siempre es el patrimonio en vivo (incluye plusvalías sobre el costo).
-      if (i === rawMonths.length - 1) return { ...m, netWorth: Math.round(netWorthAll) };
-      const cap = staticBase + cum;
-      const nw = Math.max(0, Math.min(m.netWorth, cap));
-      return nw === m.netWorth ? m : { ...m, netWorth: Math.round(nw) };
+      return staticBase + costCum(key);
     });
+    const lastBase = baseSeries[baseSeries.length - 1] ?? 0;
+    const factor = lastBase > 0 ? netWorthAll / lastBase : 1;
+    return rawMonths.map((m, i) => ({
+      ...m,
+      netWorth: Math.round(i === rawMonths.length - 1 ? netWorthAll : Math.max(0, baseSeries[i]! * factor)),
+    }));
   })();
 
   // Calendario de evolución: elegir un mes recorta la gráfica y mueve las tarjetas a ese mes.
