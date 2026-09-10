@@ -21,7 +21,7 @@ import { useDailySeries, useMarketSeries, useQuotes, useSymbolReturns, useSymbol
 import { getPortfolioInsight } from "@/lib/portfolio-ai.functions";
 import { holdingValue, useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
-import { marketReturnPct } from "@/lib/holding-return";
+import { marketReturnPct, purchaseUnitPrice } from "@/lib/holding-return";
 import { buildDataset } from "@/lib/profile-data";
 import { currencySymbol } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
@@ -503,6 +503,8 @@ function PortafolioContent() {
               : Math.round(value / (1 + growth)),
         // Rentabilidad real: precio de hoy vs precio del día de compra.
         priceRet: tk ? marketReturnPct(h, prices[tk] ?? null, holdingSeries[tk] ?? null, holdingDaily[tk] ?? null) : null,
+        // Strike price: precio por unidad al que se compró.
+        strike: tk ? purchaseUnitPrice(h, holdingSeries[tk] ?? null, holdingDaily[tk] ?? null) : null,
         improvements: h.kind === "property" ? Math.round(h.quantity || 0) : 0,
         years:
           h.kind === "property" && h.target_year && h.target_year > 1900
