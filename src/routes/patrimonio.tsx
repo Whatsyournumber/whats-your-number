@@ -625,6 +625,62 @@ function PatrimonioContent() {
             </ResponsiveContainer>
           </div>
 
+          {elapsedMonths > 0 && (
+            <div className="mt-4 rounded-2xl border border-border/60 bg-elevated/40 p-4">
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                  {t("Rentabilidad del portafolio", "Portfolio return")}
+                </p>
+                <span className="text-[11px] text-muted-foreground">
+                  {t(`${elapsedMonths} ${elapsedMonths === 1 ? "mes" : "meses"} · sin contar aportes`, `${elapsedMonths} ${elapsedMonths === 1 ? "month" : "months"} · contributions excluded`)}
+                </span>
+              </div>
+              <div className="mt-3 grid grid-cols-3 gap-3">
+                <div>
+                  <p className="text-[11px] text-muted-foreground">{t("Período", "Period")}</p>
+                  <p className={cn("numeric text-lg font-semibold", periodReturnPct >= 0 ? "text-positive" : "text-negative")}>
+                    {periodReturnPct >= 0 ? "+" : ""}{periodReturnPct.toFixed(1)}%
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[11px] text-muted-foreground">{t("Anualizada", "Annualized")}</p>
+                  <p className={cn("numeric text-lg font-semibold", annualizedReturnPct >= 0 ? "text-positive" : "text-negative")}>
+                    {annualizedReturnPct >= 0 ? "+" : ""}{annualizedReturnPct.toFixed(1)}%
+                  </p>
+                </div>
+                {comparing && compareData.length > 0 && (
+                  <div>
+                    <p className="text-[11px] text-muted-foreground">{benchName}</p>
+                    <p className={cn("numeric text-lg font-semibold", (compareData[compareData.length - 1]!.benchPct ?? 0) >= 0 ? "text-chart-2" : "text-negative")}>
+                      {(compareData[compareData.length - 1]!.benchPct ?? 0) >= 0 ? "+" : ""}
+                      {(compareData[compareData.length - 1]!.benchPct ?? 0).toFixed(1)}%
+                    </p>
+                  </div>
+                )}
+              </div>
+              <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+                {comparing && compareData.length > 0
+                  ? (() => {
+                      const benchPct = compareData[compareData.length - 1]!.benchPct ?? 0;
+                      const diff = periodReturnPct - benchPct;
+                      return diff >= 0
+                        ? t(
+                            `Tu portafolio rinde ${diff.toFixed(1)} pts más que el ${benchName} en el período, midiendo solo el rendimiento de tus activos.`,
+                            `Your portfolio beats the ${benchName} by ${diff.toFixed(1)} pts over the period, measuring only asset performance.`,
+                          )
+                        : t(
+                            `Tu portafolio rinde ${Math.abs(diff).toFixed(1)} pts menos que el ${benchName} en el período, midiendo solo el rendimiento de tus activos.`,
+                            `Your portfolio trails the ${benchName} by ${Math.abs(diff).toFixed(1)} pts over the period, measuring only asset performance.`,
+                          );
+                    })()
+                  : t(
+                      "Rendimiento real de tus activos en el período, descontando lo que has ido aportando.",
+                      "Real performance of your assets over the period, excluding what you contributed.",
+                    )}
+              </p>
+            </div>
+          )}
+
           <div className="mt-4 border-t border-border pt-4">
             <div className="grid grid-cols-3 gap-4">
               {riskMetrics.map((m) => (
