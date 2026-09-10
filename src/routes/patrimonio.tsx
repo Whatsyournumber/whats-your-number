@@ -410,14 +410,17 @@ function PatrimonioContent() {
       if (value > 0) dated.push({ key: String(date).slice(0, 7), value });
     }
     const costCum = (upTo: string) => dated.filter((r) => r.key <= upTo).reduce((s, r) => s + r.value, 0);
-    return rawMonths.map((m, i) => {
+    // Serie base por costo real acumulado; se escala suavemente para que cierre en el patrimonio vivo.
+    const baseSeries = rawMonths.map((m) => {
       const key = (m as { month?: string }).month ?? "";
-      // El último mes siempre es el patrimonio en vivo (incluye plusvalías sobre el costo).
-      if (i === rawMonths.length - 1) return { ...m, netWorth: Math.round(netWorthAll) };
-      const cap = staticBase + costCum(key);
-      const nw = Math.max(0, Math.min(m.netWorth, cap));
-      return nw === m.netWorth ? m : { ...m, netWorth: Math.round(nw) };
+      return staticBase + costCum(key);
     });
+    const lastBase = baseSeries[baseSeries.length - 1] ?? 0;
+    const factor = lastBase > 0 ? netWorthAll / lastBase : 1;
+    return rawMonths.map((m, i) => ({
+      ...m,
+      netWorth: Math.round(i === rawMonths.length - 1 ? netWorthAll : Math.max(0, baseSeries[i]! * factor)),
+    }));
   })();
 
   // Calendario de evolución: elegir un mes recorta la gráfica y mueve las tarjetas a ese mes.
