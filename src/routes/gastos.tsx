@@ -335,24 +335,27 @@ function Gastos() {
   const monthCompare = useMemo(() => {
     const totalsOf = (key: string | null) => {
       const map = new Map<string, number>();
+      const daily = new Map<string, number>();
       let total = 0;
-      if (!key) return { map, total };
+      if (!key) return { map, total, mostExpensiveDay: 0 };
       for (const t of expenses) {
         if (format(parseISO(t.tx_date!), "yyyy-MM") !== key) continue;
         const k = categoryOf(t);
         const v = Math.abs(t.amount);
         map.set(k, (map.get(k) ?? 0) + v);
+        daily.set(t.tx_date!, (daily.get(t.tx_date!) ?? 0) + v);
         total += v;
       }
-      return { map, total };
+      return { map, total, mostExpensiveDay: Math.max(0, ...daily.values()) };
     };
     const a = totalsOf(mA);
     const b = totalsOf(mB);
     const names = [...new Set([...a.map.keys(), ...b.map.keys()])];
     const rows = names
       .map((name) => ({ name: tc(name), a: a.map.get(name) ?? 0, b: b.map.get(name) ?? 0 }))
+      .filter((row) => row.a > 0 || row.b > 0)
       .sort((x, y) => y.a + y.b - (x.a + x.b));
-    return { aTotal: a.total, bTotal: b.total, rows };
+    return { aTotal: a.total, bTotal: b.total, aMostExpensiveDay: a.mostExpensiveDay, rows };
   }, [expenses, mA, mB, categories.rules]);
 
   const monthLabel = (k: string | null) => (k ? format(parseISO(`${k}-01`), "MMMM yyyy", { locale: es }) : "—");
@@ -751,7 +754,7 @@ function Gastos() {
 
       <Panel
         variant="minimal"
-        title={t("Comparar mes vs mes", "Compare month vs month")}
+        title={t("Compara tus gastos mes a mes", "Compare your spending month by month")}
         description={t("Compara dos meses de tus EEFF", "Compare two statement months")}
         descriptionClassName="line-clamp-1 sm:line-clamp-none"
         className="flex h-full flex-col lg:col-span-2"
@@ -818,6 +821,22 @@ function Gastos() {
                   <Bar dataKey="b" name={monthLabel(mB)} fill="var(--color-chart-4)" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-2 px-5 sm:px-0 lg:grid-cols-4">
+              {[
+                { label: monthLabel(mA), value: fmt(monthCompare.aTotal) },
+                { label: monthLabel(mB), value: fmt(monthCompare.bTotal) },
+                {
+                  label: t("Variación", "Change"),
+                  value: `${monthCompare.aTotal - monthCompare.bTotal > 0 ? "+" : ""}${fmt(monthCompare.aTotal - monthCompare.bTotal)}`,
+                },
+                { label: t("Día más caro", "Most expensive day"), value: fmt(monthCompare.aMostExpensiveDay) },
+              ].map((item) => (
+                <div key={item.label} className="rounded-lg border border-border/60 bg-elevated/40 px-3 py-2.5">
+                  <p className="truncate text-xs capitalize text-muted-foreground">{item.label}</p>
+                  <p className="numeric mt-0.5 text-sm font-semibold">{item.value}</p>
+                </div>
+              ))}
             </div>
           </>
         )}
