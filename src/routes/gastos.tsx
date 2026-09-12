@@ -952,7 +952,7 @@ function Gastos() {
             `Gastos variables en ${format(new Date(), "MMMM", { locale: es })}`,
             `Variable expenses in ${format(new Date(), "MMMM", { locale: enUS })}`,
           )}
-          description={t("Solo categorías con gastos · Arrastra un movimiento a otra categoría.", "Only categories with spending · Drag a transaction to another category.")}
+          description={t("Solo categorías con gastos · Arrastra para recategorizar.", "Only categories with spending · Drag to recategorize.")}
           className="flex h-full flex-col"
           actions={
             <div className="flex flex-wrap items-center gap-2">
