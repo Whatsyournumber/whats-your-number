@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
-  addDays,
   differenceInCalendarDays,
   endOfMonth,
   format,
@@ -19,7 +18,7 @@ import { useLanguage, useT } from "@/hooks/use-language";
 import { translateCategory, translateFixedName } from "@/lib/i18n-data";
 import type { DateRange } from "react-day-picker";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Bar, BarChart, CartesianGrid, Cell, Line, ComposedChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 
@@ -399,48 +398,6 @@ function Gastos() {
 
 
 
-  const series = useMemo(() => {
-    const byMonth = days > 62;
-    const keyOf = (d: Date) => (byMonth ? format(d, "yyyy-MM") : format(d, "yyyy-MM-dd"));
-    const labelOf = (d: Date) => (byMonth ? format(d, "MMM yy", { locale: es }) : format(d, "d MMM", { locale: es }));
-    const keys: string[] = [];
-    const buckets = new Map<string, { label: string; gasto: number; anterior: number; fijo: number }>();
-    for (let i = 0; i < days; i++) {
-      const d = addDays(from, i);
-      const k = keyOf(d);
-      if (!buckets.has(k)) {
-        keys.push(k);
-        buckets.set(k, { label: labelOf(d), gasto: 0, anterior: 0, fijo: 0 });
-      }
-    }
-    for (const t of current) {
-      const b = buckets.get(keyOf(parseISO(t.tx_date!)));
-      if (b) b.gasto += Math.abs(t.amount);
-    }
-    // periodo anterior alineado posición a posición
-    const prevKeys: string[] = [];
-    const prevBuckets = new Map<string, number>();
-    for (let i = 0; i < days; i++) {
-      const d = addDays(prevFrom, i);
-      const k = keyOf(d);
-      if (!prevBuckets.has(k)) {
-        prevKeys.push(k);
-        prevBuckets.set(k, 0);
-      }
-    }
-    for (const t of previous) {
-      const k = keyOf(parseISO(t.tx_date!));
-      if (prevBuckets.has(k)) prevBuckets.set(k, (prevBuckets.get(k) ?? 0) + Math.abs(t.amount));
-    }
-    keys.forEach((k, i) => {
-      const pk = prevKeys[i];
-      const b = buckets.get(k)!;
-      b.anterior = pk ? (prevBuckets.get(pk) ?? 0) : 0;
-      b.fijo = byMonth ? fixed.total : fixed.total / 30;
-    });
-    return keys.map((k) => buckets.get(k)!);
-  }, [current, previous, from, prevFrom, days, fixed.total]);
-
 
   const merchants = useMemo(() => {
     const map = new Map<string, { name: string; amount: number; count: number }>();
@@ -792,53 +749,79 @@ function Gastos() {
 
 
 
-        <Panel variant="minimal" title={t("Evolución del gasto", "Spend evolution")} description={`${t("Comparando con", "Comparing with")} ${format(prevFrom, "d MMM", { locale: es })} — ${format(prevTo, "d MMM yyyy", { locale: es })}`} className="flex h-full flex-col p-3 md:p-5 lg:col-span-2" bleedMobile>
-          <div className="mb-1 flex flex-nowrap items-center justify-end gap-2 overflow-hidden px-5 text-[10px] text-muted-foreground sm:px-0 sm:gap-4 sm:text-xs">
-            {[
-              { c: "#5B6370", l: t("Anterior", "Previous"), full: t("Periodo anterior", "Previous period") },
-              { c: "#FF7B7B", l: t("Actual", "Current"), full: t("Este periodo", "This period") },
-              { c: "#E6C86C", l: t("Fijos", "Fixed"), full: t("Fijos (prorrateado)", "Fixed (prorated)") },
-            ].map((it) => (
-              <span key={it.c} className="flex shrink-0 items-center gap-1.5 whitespace-nowrap">
-                <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: it.c }} />
-                <span className="sm:hidden">{it.l}</span>
-                <span className="hidden sm:inline">{it.full}</span>
+      <Panel
+        variant="minimal"
+        title={t("Comparar mes vs mes", "Compare month vs month")}
+        description={t("Compara dos meses de tus EEFF", "Compare two statement months")}
+        descriptionClassName="line-clamp-1 sm:line-clamp-none"
+        className="flex h-full flex-col lg:col-span-2"
+        bleedMobile
+      >
+        {monthKeys.length === 0 ? (
+          <p className="px-5 text-sm text-muted-foreground sm:px-0">{t("Carga tus EEFF para comparar meses.", "Upload your statements to compare months.")}</p>
+        ) : (
+          <>
+            <div className="flex flex-wrap items-center gap-3 px-5 sm:px-0">
+              <Select value={mA ?? ""} onValueChange={(v) => setMonthA(v)}>
+                <SelectTrigger className="h-8 w-[180px] text-sm capitalize">
+                  <SelectValue placeholder={t("Mes A", "Month A")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {monthKeys.map((k) => (
+                    <SelectItem key={k} value={k} className="capitalize">
+                      {monthLabel(k)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <span className="text-xs text-muted-foreground">{t("vs.", "vs.")}</span>
+              <Select value={mB ?? ""} onValueChange={(v) => setMonthB(v)}>
+                <SelectTrigger className="h-8 w-[180px] text-sm capitalize">
+                  <SelectValue placeholder={t("Mes B", "Month B")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {monthKeys.map((k) => (
+                    <SelectItem key={k} value={k} className="capitalize">
+                      {monthLabel(k)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <span
+                className={cn(
+                  "order-last flex h-8 w-full items-center justify-start rounded-full px-3 text-left text-xs font-medium sm:order-none sm:ml-auto sm:h-auto sm:w-auto sm:px-2.5 sm:py-1",
+                  monthDelta > 0 ? "bg-negative/12 text-negative" : "bg-positive/12 text-positive",
+                )}
+              >
+                {monthDelta > 0 ? "+" : ""}
+                {monthDelta.toFixed(1)}% · {fmt(monthCompare.aTotal)} vs {fmt(monthCompare.bTotal)}
               </span>
-            ))}
-          </div>
-          <div className="h-[320px] md:h-[400px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart data={series} margin={{ left: isMobile ? -26 : -16, right: 0, top: 12 }}>
-                <CartesianGrid strokeDasharray="4 6" stroke="var(--color-border)" vertical={false} />
-                <XAxis dataKey="label" {...axisProps} interval="preserveStartEnd" minTickGap={18} />
-                <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={isMobile ? 42 : 52} />
-                <Tooltip content={<ChartTooltip formatter={fmt} />} cursor={{ fill: "var(--color-muted)", opacity: 0.3 }} />
-                <Bar dataKey="anterior" name={t("Periodo anterior", "Previous period")} fill="#5B6370" fillOpacity={0.85} radius={[5, 5, 0, 0]} barSize={12} />
-                <Bar dataKey="gasto" name={t("Este periodo", "This period")} fill="#FF7B7B" radius={[5, 5, 0, 0]} barSize={12} />
-                <Line dataKey="fijo" name={t("Fijos (prorrateado)", "Fixed (prorated)")} stroke="#E6C86C" strokeWidth={2.5} strokeDasharray="6 6" dot={false} activeDot={false} />
-              </ComposedChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="mt-auto grid grid-cols-2 gap-2 px-5 pt-4 sm:px-0 sm:grid-cols-4">
-            {[
-              { l: t("Este periodo", "This period"), v: fmt(variableTotal) },
-              { l: t("Periodo anterior", "Previous period"), v: fmt(prevVariable) },
-              {
-                l: t("Variación", "Change"),
-                v: `${variableTotal - prevVariable > 0 ? "+" : ""}${fmt(variableTotal - prevVariable)}`,
-              },
-              { l: t("Día más caro", "Most expensive day"), v: series.length ? fmt(Math.max(...series.map((s) => s.gasto))) : "—" },
-            ].map((k) => (
-              <div key={k.l} className="rounded-xl border border-border/60 bg-elevated/40 px-3 py-2.5">
-                <p className="text-xs text-muted-foreground">{k.l}</p>
-                <p className="numeric text-sm font-semibold">{k.v}</p>
-              </div>
-            ))}
-          </div>
-          <p className="mt-3 px-5 text-xs text-muted-foreground sm:px-0">
-            {t("Periodo anterior", "Previous period")}: <span className="numeric font-medium">{fmt(prevTotal)}</span>
-          </p>
-        </Panel>
+            </div>
+
+            <div className="mt-3">
+              <ResponsiveContainer width="100%" height={260}>
+                <BarChart data={monthCompare.rows.slice(0, 10)} margin={{ left: isMobile ? 0 : -8, right: isMobile ? 4 : 8 }}>
+                  <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
+                  <XAxis
+                    dataKey="name"
+                    {...axisProps}
+                    interval={0}
+                    minTickGap={4}
+                    height={64}
+                    angle={-35}
+                    textAnchor="end"
+                    tickFormatter={(v: string) => (v.length > 12 ? `${v.slice(0, 11)}…` : v)}
+                  />
+                  <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={isMobile ? 40 : 64} />
+                  <Tooltip content={<ChartTooltip formatter={fmt} />} cursor={{ fill: "var(--color-muted)", opacity: 0.3 }} />
+                  <Bar dataKey="a" name={monthLabel(mA)} fill="var(--color-chart-1)" radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="b" name={monthLabel(mB)} fill="var(--color-chart-4)" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </>
+        )}
+      </Panel>
       </div>
 
       <Collapsible open={fixedOpen} onOpenChange={setFixedOpen}>
@@ -942,79 +925,6 @@ function Gastos() {
 
 
 
-
-      <Panel
-        variant="minimal"
-        title={t("Comparar mes vs mes", "Compare month vs month")}
-        description={t("Compara dos meses de tus EEFF", "Compare two statement months")}
-        descriptionClassName="line-clamp-1 sm:line-clamp-none"
-        bleedMobile
-      >
-        {monthKeys.length === 0 ? (
-          <p className="px-5 text-sm text-muted-foreground sm:px-0">{t("Carga tus EEFF para comparar meses.", "Upload your statements to compare months.")}</p>
-        ) : (
-          <>
-            <div className="flex flex-wrap items-center gap-3 px-5 sm:px-0">
-              <Select value={mA ?? ""} onValueChange={(v) => setMonthA(v)}>
-                <SelectTrigger className="h-8 w-[180px] text-sm capitalize">
-                  <SelectValue placeholder={t("Mes A", "Month A")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {monthKeys.map((k) => (
-                    <SelectItem key={k} value={k} className="capitalize">
-                      {monthLabel(k)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <span className="text-xs text-muted-foreground">{t("vs.", "vs.")}</span>
-              <Select value={mB ?? ""} onValueChange={(v) => setMonthB(v)}>
-                <SelectTrigger className="h-8 w-[180px] text-sm capitalize">
-                  <SelectValue placeholder={t("Mes B", "Month B")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {monthKeys.map((k) => (
-                    <SelectItem key={k} value={k} className="capitalize">
-                      {monthLabel(k)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <span
-                className={cn(
-                  "order-last flex h-8 w-full items-center justify-start rounded-full px-3 text-left text-xs font-medium sm:order-none sm:ml-auto sm:h-auto sm:w-auto sm:px-2.5 sm:py-1",
-                  monthDelta > 0 ? "bg-negative/12 text-negative" : "bg-positive/12 text-positive",
-                )}
-              >
-                {monthDelta > 0 ? "+" : ""}
-                {monthDelta.toFixed(1)}% · {fmt(monthCompare.aTotal)} vs {fmt(monthCompare.bTotal)}
-              </span>
-            </div>
-
-            <div className="mt-3">
-              <ResponsiveContainer width="100%" height={260}>
-                <BarChart data={monthCompare.rows.slice(0, 10)} margin={{ left: isMobile ? 0 : -8, right: isMobile ? 4 : 8 }}>
-                  <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
-                  <XAxis
-                    dataKey="name"
-                    {...axisProps}
-                    interval={0}
-                    minTickGap={4}
-                    height={64}
-                    angle={-35}
-                    textAnchor="end"
-                    tickFormatter={(v: string) => (v.length > 12 ? `${v.slice(0, 11)}…` : v)}
-                  />
-                  <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={isMobile ? 40 : 64} />
-                  <Tooltip content={<ChartTooltip formatter={fmt} />} cursor={{ fill: "var(--color-muted)", opacity: 0.3 }} />
-                  <Bar dataKey="a" name={monthLabel(mA)} fill="var(--color-chart-1)" radius={[6, 6, 0, 0]} />
-                  <Bar dataKey="b" name={monthLabel(mB)} fill="var(--color-chart-4)" radius={[6, 6, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </>
-        )}
-      </Panel>
 
       <Panel
         variant="minimal"
