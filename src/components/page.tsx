@@ -48,6 +48,7 @@ export function PageHeader({
 }
 
 export function Panel({
+  id,
   title,
   titleClassName,
   description,
@@ -59,6 +60,7 @@ export function Panel({
   bleedMobile = false,
   children,
 }: {
+  id?: string;
   title?: ReactNode;
   titleClassName?: string;
   description?: ReactNode;
@@ -72,6 +74,7 @@ export function Panel({
 }) {
   return (
     <section
+      id={id}
       className={cn(
         "overflow-hidden p-5",
         bleedMobile && "px-2 py-4 sm:p-5",
