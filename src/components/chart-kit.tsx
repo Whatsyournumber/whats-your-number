@@ -14,27 +14,34 @@ export const axisProps = {
  *  Usa la misma unidad (K/M/B) para todos los ticks según el valor máximo,
  *  evitando saltos entre M y K y etiquetas que se ocultan por solapamiento. */
 export function axisMoneyTicks(values: number[], currency = "USD") {
-  const max = Math.max(0, ...values.map(Math.abs));
-  const useB = max >= 1_000_000_000;
-  const useM = !useB && max >= 1_000_000;
-  const useK = !useB && !useM && max >= 1_000;
+  const nums = values.filter((v) => Number.isFinite(v));
+  const dataMin = nums.length ? Math.min(...nums) : 0;
+  const dataMax = nums.length ? Math.max(...nums) : 0;
+  const span = Math.max(dataMax - dataMin, Math.abs(dataMax) * 0.02, 1);
+
+  const useB = Math.abs(dataMax) >= 1_000_000_000;
+  const useM = !useB && Math.abs(dataMax) >= 1_000_000;
+  const useK = !useB && !useM && Math.abs(dataMax) >= 1_000;
   const divisor = useB ? 1_000_000_000 : useM ? 1_000_000 : useK ? 1_000 : 1;
   const unit = useB ? "B" : useM ? "M" : useK ? "K" : "";
 
-  // Paso base ~5 ticks, redondeado a múltiplos limpios de la unidad elegida.
-  const targetTicks = 5;
-  const rawStep = max / targetTicks;
+  // Paso base ~5 ticks, redondeado a un paso "bonito" (1/2/2.5/5/10 × 10^n).
+  const rawStep = (span * 1.1) / 5;
   const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)));
   const residual = rawStep / magnitude;
   let step = magnitude;
-  if (residual > 1.5 && residual <= 3) step = 2 * magnitude;
-  else if (residual > 3 && residual <= 7) step = 5 * magnitude;
-  else if (residual > 7) step = 10 * magnitude;
+  if (residual <= 1.5) step = magnitude;
+  else if (residual <= 2.25) step = 2 * magnitude;
+  else if (residual <= 3.5) step = 2.5 * magnitude;
+  else if (residual <= 7) step = 5 * magnitude;
+  else step = 10 * magnitude;
 
-  const unitStep = Math.max(divisor, Math.ceil(step / divisor) * divisor);
-
+  // Ticks que cubren el rango real con un pequeño padding, sin forzar el 0 ni
+  // recortar valores negativos.
+  const lo = Math.floor((dataMin - span * 0.05) / step) * step;
+  const hi = Math.ceil((dataMax + span * 0.05) / step) * step;
   const ticks: number[] = [];
-  for (let v = 0; v <= max + unitStep; v += unitStep) {
+  for (let v = lo; v <= hi + step / 2; v += step) {
     ticks.push(Math.round(v));
   }
 
@@ -43,7 +50,7 @@ export function axisMoneyTicks(values: number[], currency = "USD") {
   const formatter = (v: number) => {
     const scaled = v / divisor;
     const formatted =
-      scaled === 0 || scaled >= 100
+      scaled === 0 || Math.abs(scaled) >= 100
         ? String(Math.round(scaled))
         : scaled.toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
     return `${sym}${formatted}${unit}`;

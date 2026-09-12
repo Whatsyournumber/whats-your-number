@@ -288,12 +288,13 @@ function PatrimonioContent() {
 
   // Rentabilidad global del patrimonio (KPI superior): mismos rubros generadores de renta,
   // calculada sobre TODO el portfolio para que coincida con la fila Total en "Todos".
+  // Incluye acciones (su renta ya se calcula vs precio de compra); cripto y ETF quedan fuera por decisión de producto.
   const overallGainRows = detailRows.filter((r) =>
-    ["property", "bond", "structured", "future"].includes(r.kind),
+    ["property", "bond", "structured", "future", "stock"].includes(r.kind),
   );
   const overallAnnual = Math.round(overallGainRows.reduce((s, r) => s + r.annual, 0));
   const overallYieldingBase = overallGainRows.reduce((s, r) => s + r.value, 0);
-  const overallRate = overallYieldingBase ? (overallAnnual / overallYieldingBase) * 100 : 0;
+  const overallRate = overallYieldingBase ? (overallAnnual / overallYieldingBase) * 100 : null;
 
 
 
@@ -461,8 +462,9 @@ function PatrimonioContent() {
       }
       const benchCum = bSlice[i]!.value - b0;
       // Tooltip: el portfolio muestra la misma rentabilidad del box (overallRate);
-      // el índice muestra su rendimiento acumulado real del período (como antes).
-      const netPct = overallRate;
+      // si no hay activos con renta, cae a la variación real del patrimonio del mes.
+      const netPct =
+        overallRate ?? (base !== 0 ? ((m.netWorth - base) / Math.abs(base)) * 100 : 0);
       const benchPct = benchCum;
       return {
         label: m.label,
@@ -550,6 +552,7 @@ function PatrimonioContent() {
     ? compareData.flatMap((m) => [m.netWorth, m.bench])
     : chartMonths.map((m) => m.netWorth);
   const { ticks: yTicks, formatter: yTickFormatter } = axisMoneyTicks(yValues, d.currency);
+  const yMin = yTicks[0] ?? 0;
   const yMax = yTicks[yTicks.length - 1] ?? "dataMax";
 
   return (
@@ -582,8 +585,12 @@ function PatrimonioContent() {
         <KpiCard
           label={t("Rentabilidad estimada", "Estimated return")}
           labelSm={t("Rent. estimada", "Est. return")}
-          value={`${overallRate.toFixed(1)}%`}
-          hint={t("anual sobre activos con renta", "annual on income assets")}
+          value={overallRate === null ? "—" : `${overallRate.toFixed(1)}%`}
+          hint={
+            overallRate === null
+              ? t("sin activos con renta aún", "no income assets yet")
+              : t("anual sobre activos con renta", "annual on income assets")
+          }
           index={3}
         />
 
@@ -651,7 +658,7 @@ function PatrimonioContent() {
                 <XAxis dataKey="label" {...axisProps} />
                 <YAxis
                   {...axisProps}
-                  domain={[0, yMax]}
+                  domain={[yMin, yMax]}
                   ticks={yTicks}
                   tickFormatter={yTickFormatter}
                   width={isMobile ? 50 : 64}
