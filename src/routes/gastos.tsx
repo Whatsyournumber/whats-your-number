@@ -1156,7 +1156,12 @@ function Gastos() {
           </div>
         </Panel>
 
-        <Panel variant="minimal" title={t("Top comercios", "Top merchants")} description={`${merchants.length} ${t("comercios en el periodo", "merchants in the period")}`}>
+        <Panel
+          variant="minimal"
+          title={t("Top comercios", "Top merchants")}
+          description={t("10 comercios que más gastaste", "10 merchants you spent the most on")}
+          className="flex h-full flex-col"
+        >
           {merchants.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t("Sin comercios en este rango.", "No merchants in this range.")}</p>
           ) : (
