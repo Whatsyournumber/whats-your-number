@@ -1235,7 +1235,7 @@ function Gastos() {
 
         <Panel
           variant="minimal"
-          title={t("Top comercios", "Top merchants")}
+          title={isMobile ? t("Top comercios", "Top merchants") : t(topPeriodTitle.es, topPeriodTitle.en)}
           description={t("10 comercios que más gastaste", "10 merchants you spent the most on")}
           className="flex h-full flex-col"
         >
