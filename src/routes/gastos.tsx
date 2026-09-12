@@ -801,9 +801,9 @@ function Gastos() {
               </span>
             </div>
 
-            <div className="mt-3">
-              <ResponsiveContainer width="100%" height={260}>
-                <BarChart data={monthCompare.rows.slice(0, 10)} margin={{ left: isMobile ? 0 : -8, right: isMobile ? 4 : 8 }}>
+            <div className="mt-3 flex-1">
+              <ResponsiveContainer width="100%" height={isMobile ? 260 : 400}>
+                <BarChart data={monthCompare.rows.slice(0, 10)} margin={{ left: isMobile ? 0 : -8, right: isMobile ? 4 : 8, bottom: 8 }}>
                   <CartesianGrid strokeDasharray="3 6" stroke="var(--color-border)" vertical={false} />
                   <XAxis
                     dataKey="name"
