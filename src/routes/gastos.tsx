@@ -10,7 +10,7 @@ import {
   subMonths,
 } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { BarChart3, CalendarIcon, ChevronDown, GripVertical, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
+import { BarChart3, CalendarIcon, ChevronDown, GripVertical, Lightbulb, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { buildTravelDays, categorizeTx, categorizeTxWithTravel } from "@/lib/categorize";
