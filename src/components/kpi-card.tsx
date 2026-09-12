@@ -50,11 +50,14 @@ export function KpiCard({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.05, ease: "easeOut" }}
+      onClick={onClick}
       className={cn(
         "relative flex h-full flex-col overflow-hidden p-5",
+        onClick && "cursor-pointer",
         variant === "default" && "surface",
         variant === "flat" && "rounded-2xl border border-border/60 bg-card/40",
         accent && "glow",
+        className,
       )}
     >
       {accent && (
