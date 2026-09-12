@@ -956,20 +956,18 @@ function Gastos() {
             "Solo categorías con gastos · ordenadas de mayor a menor. Arrastra un movimiento a otra categoría para reasignarlo.",
             "Only categories with spending · sorted highest to lowest. Drag a transaction to another category to reassign it.",
           )}
-          descriptionClassName="line-clamp-2 sm:line-clamp-none"
+          descriptionClassName="line-clamp-1"
           className="flex h-full flex-col"
-          actions={
-            <div className="flex flex-wrap items-center gap-2">
-              <Button asChild size="sm" className="gap-2 rounded-full">
-                <Link to="/configuracion">
-                  <Upload className="h-3.5 w-3.5" />
-                  {t("Importar gastos", "Import expenses")}
-                </Link>
-              </Button>
-              <ManualExpenseDialog categories={categories.names} onAddCategory={(name) => categories.add(name)} />
-            </div>
-          }
         >
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <Button asChild size="sm" className="gap-2 rounded-full">
+              <Link to="/configuracion">
+                <Upload className="h-3.5 w-3.5" />
+                {t("Importar gastos", "Import expenses")}
+              </Link>
+            </Button>
+            <ManualExpenseDialog categories={categories.names} onAddCategory={(name) => categories.add(name)} />
+          </div>
           <Accordion type="single" collapsible className="w-full">
             {detailRows.map((c, i) => {
               const prev = prevByCategory.get(c.name) ?? 0;
