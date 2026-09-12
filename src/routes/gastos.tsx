@@ -945,234 +945,234 @@ function Gastos() {
 
 
 
-      <Panel
-        variant="minimal"
-        title={t("Gastos variables", "Variable expenses")}
-        description={t(
-          "Solo categorías con gastos · ordenadas de mayor a menor. Arrastra un movimiento a otra categoría para reasignarlo.",
-          "Only categories with spending · sorted highest to lowest. Drag a transaction to another category to reassign it.",
-        )}
-        descriptionClassName="line-clamp-2 sm:line-clamp-none"
-        actions={
-          <div className="flex flex-wrap items-center gap-2">
-            <Button asChild size="sm" className="gap-2 rounded-full">
-              <Link to="/configuracion">
-                <Upload className="h-3.5 w-3.5" />
-                {t("Importar gastos", "Import expenses")}
-              </Link>
-            </Button>
-            <ManualExpenseDialog categories={categories.names} onAddCategory={(name) => categories.add(name)} />
-          </div>
-        }
-      >
-        <Accordion type="single" collapsible className="w-full">
-          {detailRows.map((c, i) => {
-            const prev = prevByCategory.get(c.name) ?? 0;
-            const variation = prev > 0 ? ((c.amount - prev) / prev) * 100 : null;
-            return (
-              <AccordionItem
-                key={c.name}
-                value={c.name}
-                className={cn(
-                  "border-border transition-colors",
-                  dragTx && dragTx.from !== c.name && "rounded-lg ring-1 ring-primary/30",
-                )}
-                onDragOver={(e) => {
-                  if (dragTx) e.preventDefault();
-                }}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  if (dragTx) {
-                    if (dragTx.from !== c.name) {
-                      moveTxToCategory(dragTx.id, c.name);
-                      toast.success(t(`Movido a ${tc(c.name)}`, `Moved to ${tc(c.name)}`));
+      <div className="grid items-start gap-3 lg:grid-cols-2">
+        <Panel
+          variant="minimal"
+          title={t("Gastos variables", "Variable expenses")}
+          description={t(
+            "Solo categorías con gastos · ordenadas de mayor a menor. Arrastra un movimiento a otra categoría para reasignarlo.",
+            "Only categories with spending · sorted highest to lowest. Drag a transaction to another category to reassign it.",
+          )}
+          descriptionClassName="line-clamp-2 sm:line-clamp-none"
+          actions={
+            <div className="flex flex-wrap items-center gap-2">
+              <Button asChild size="sm" className="gap-2 rounded-full">
+                <Link to="/configuracion">
+                  <Upload className="h-3.5 w-3.5" />
+                  {t("Importar gastos", "Import expenses")}
+                </Link>
+              </Button>
+              <ManualExpenseDialog categories={categories.names} onAddCategory={(name) => categories.add(name)} />
+            </div>
+          }
+        >
+          <Accordion type="single" collapsible className="w-full">
+            {detailRows.map((c, i) => {
+              const prev = prevByCategory.get(c.name) ?? 0;
+              const variation = prev > 0 ? ((c.amount - prev) / prev) * 100 : null;
+              return (
+                <AccordionItem
+                  key={c.name}
+                  value={c.name}
+                  className={cn(
+                    "border-border transition-colors",
+                    dragTx && dragTx.from !== c.name && "rounded-lg ring-1 ring-primary/30",
+                  )}
+                  onDragOver={(e) => {
+                    if (dragTx) e.preventDefault();
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    if (dragTx) {
+                      if (dragTx.from !== c.name) {
+                        moveTxToCategory(dragTx.id, c.name);
+                        toast.success(t(`Movido a ${tc(c.name)}`, `Moved to ${tc(c.name)}`));
+                      }
+                      setDragTx(null);
                     }
-                    setDragTx(null);
-                  }
-                }}
-              >
-                <AccordionTrigger className="py-2 hover:no-underline">
-                  <div className="flex w-full min-w-0 items-center gap-2 pr-2 sm:gap-3 sm:pr-3">
-                    <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
-                    <span className="min-w-0 flex-1 truncate text-left text-sm font-medium">{tc(c.name)}</span>
-                    <span
-                      role="button"
-                      tabIndex={0}
-                      aria-label={t("Ver análisis", "View analysis")}
-                      title={t("Ver análisis", "View analysis")}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setDetailCat(c.name);
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
+                  }}
+                >
+                  <AccordionTrigger className="py-2 hover:no-underline">
+                    <div className="flex w-full min-w-0 items-center gap-2 pr-2 sm:gap-3 sm:pr-3">
+                      <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
+                      <span className="min-w-0 flex-1 truncate text-left text-sm font-medium">{tc(c.name)}</span>
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        aria-label={t("Ver análisis", "View analysis")}
+                        title={t("Ver análisis", "View analysis")}
+                        onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
                           setDetailCat(c.name);
-                        }
-                      }}
-                      className="shrink-0 rounded-full p-1 text-muted-foreground transition hover:bg-elevated hover:text-foreground"
-                    >
-                      <BarChart3 className="h-3.5 w-3.5" />
-                    </span>
-                    <span className="hidden shrink-0 rounded-full bg-elevated/50 px-2 py-0.5 text-[11px] text-muted-foreground sm:inline">
-                      {`${c.items.length} ${c.items.length === 1 ? t("mov.", "tx") : t("movs.", "txs")}`}
-                    </span>
-
-
-                    {variation !== null && (
-                      <span
-                        className={cn(
-                          "shrink-0 rounded-full px-2 py-0.5 text-[11px]",
-                          variation > 0 ? "bg-negative/12 text-negative" : "bg-positive/12 text-positive",
-                        )}
-                        title={t("vs mes anterior", "vs last month")}
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setDetailCat(c.name);
+                          }
+                        }}
+                        className="shrink-0 rounded-full p-1 text-muted-foreground transition hover:bg-elevated hover:text-foreground"
                       >
-                        {variation > 0 ? "+" : ""}
-                        {variation.toFixed(0)}%
+                        <BarChart3 className="h-3.5 w-3.5" />
                       </span>
+                      <span className="hidden shrink-0 rounded-full bg-elevated/50 px-2 py-0.5 text-[11px] text-muted-foreground sm:inline">
+                        {`${c.items.length} ${c.items.length === 1 ? t("mov.", "tx") : t("movs.", "txs")}`}
+                      </span>
+
+
+                      {variation !== null && (
+                        <span
+                          className={cn(
+                            "shrink-0 rounded-full px-2 py-0.5 text-[11px]",
+                            variation > 0 ? "bg-negative/12 text-negative" : "bg-positive/12 text-positive",
+                          )}
+                          title={t("vs mes anterior", "vs last month")}
+                        >
+                          {variation > 0 ? "+" : ""}
+                          {variation.toFixed(0)}%
+                        </span>
+                      )}
+                      <span className="numeric shrink-0 whitespace-nowrap text-sm font-semibold">{fmt(c.amount)}</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    {c.items.length === 0 ? (
+                      <p className="pl-6 text-sm text-muted-foreground">{t("Sin gastos de esta categoría en el periodo.", "No expenses in this category for the period.")}</p>
+                    ) : (
+                      <ul className="max-h-[320px] space-y-0.5 overflow-auto pl-6">
+                        {c.items
+                          .slice()
+                          .sort((a: Tx, b: Tx) => (a.tx_date! < b.tx_date! ? 1 : -1))
+                          .map((tx: Tx) => (
+                            <li
+                              key={tx.id}
+                              draggable
+                              onDragStart={(e) => {
+                                e.stopPropagation();
+                                setDragTx({ id: tx.id, from: c.name });
+                              }}
+                              onDragEnd={() => setDragTx(null)}
+                              title={t("Arrastra a otra categoría para reasignarlo", "Drag to another category to reassign")}
+                              className={cn(
+                                "flex cursor-grab items-center gap-3 rounded-lg px-2 py-1 hover:bg-elevated/50 active:cursor-grabbing",
+                                dragTx?.id === tx.id && "opacity-50",
+                              )}
+                            >
+                              <GripVertical className="h-3 w-3 shrink-0 text-muted-foreground/40" />
+                              <span className="w-16 shrink-0 text-xs text-muted-foreground">
+                                {format(parseISO(tx.tx_date!), "d MMM", { locale: es })}
+                              </span>
+                              <div className="min-w-0">
+                                <p className="truncate text-sm">{tx.merchant}</p>
+                                <p className="truncate text-xs text-muted-foreground">{tx.subcategory ?? t("Sin subcategoría", "No subcategory")}</p>
+                              </div>
+                              <span className="numeric ml-auto text-sm font-medium">{fmt(Math.abs(tx.amount))}</span>
+                            </li>
+                          ))}
+                      </ul>
                     )}
-                    <span className="numeric shrink-0 whitespace-nowrap text-sm font-semibold">{fmt(c.amount)}</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  {c.items.length === 0 ? (
-                    <p className="pl-6 text-sm text-muted-foreground">{t("Sin gastos de esta categoría en el periodo.", "No expenses in this category for the period.")}</p>
-                  ) : (
-                    <ul className="max-h-[320px] space-y-0.5 overflow-auto pl-6">
-                      {c.items
-                        .slice()
-                        .sort((a: Tx, b: Tx) => (a.tx_date! < b.tx_date! ? 1 : -1))
-                        .map((tx: Tx) => (
-                          <li
-                            key={tx.id}
-                            draggable
-                            onDragStart={(e) => {
-                              e.stopPropagation();
-                              setDragTx({ id: tx.id, from: c.name });
-                            }}
-                            onDragEnd={() => setDragTx(null)}
-                            title={t("Arrastra a otra categoría para reasignarlo", "Drag to another category to reassign")}
-                            className={cn(
-                              "flex cursor-grab items-center gap-3 rounded-lg px-2 py-1 hover:bg-elevated/50 active:cursor-grabbing",
-                              dragTx?.id === tx.id && "opacity-50",
-                            )}
-                          >
-                            <GripVertical className="h-3 w-3 shrink-0 text-muted-foreground/40" />
-                            <span className="w-16 shrink-0 text-xs text-muted-foreground">
-                              {format(parseISO(tx.tx_date!), "d MMM", { locale: es })}
-                            </span>
-                            <div className="min-w-0">
-                              <p className="truncate text-sm">{tx.merchant}</p>
-                              <p className="truncate text-xs text-muted-foreground">{tx.subcategory ?? t("Sin subcategoría", "No subcategory")}</p>
-                            </div>
-                            <span className="numeric ml-auto text-sm font-medium">{fmt(Math.abs(tx.amount))}</span>
-                          </li>
-                        ))}
-                    </ul>
-                  )}
-                </AccordionContent>
-              </AccordionItem>
-            );
-          })}
-        </Accordion>
+                  </AccordionContent>
+                </AccordionItem>
+              );
+            })}
+          </Accordion>
 
-        {detailCat && (
-          <CategoryDetailDialog
-            open={Boolean(detailCat)}
-            onOpenChange={(v) => !v && setDetailCat(null)}
-            name={tc(detailCat)}
-            items={detailRows.find((r) => r.name === detailCat)?.items ?? []}
-            amount={detailRows.find((r) => r.name === detailCat)?.amount ?? 0}
-            prevAmount={prevByCategory.get(detailCat) ?? 0}
-            periodTotal={variableTotal}
-            days={days}
-            fmt={fmt}
-            fmtCompact={fmtCompact}
-          />
-        )}
+          {detailCat && (
+            <CategoryDetailDialog
+              open={Boolean(detailCat)}
+              onOpenChange={(v) => !v && setDetailCat(null)}
+              name={tc(detailCat)}
+              items={detailRows.find((r) => r.name === detailCat)?.items ?? []}
+              amount={detailRows.find((r) => r.name === detailCat)?.amount ?? 0}
+              prevAmount={prevByCategory.get(detailCat) ?? 0}
+              periodTotal={variableTotal}
+              days={days}
+              fmt={fmt}
+              fmtCompact={fmtCompact}
+            />
+          )}
 
-        <div className="mt-3 space-y-2 border-t border-border pt-3">
-          <CategoryChat
-            categories={categories.names}
-            items={categories.items}
-            customRules={categories.rules.map((r) => ({ name: r.name, keywords: r.hints }))}
-            merchants={merchantsForAi}
-            onCreate={(name, keywords) => categories.add(name, keywords)}
-            onUpdate={categories.update}
-            onRemove={categories.remove}
-          />
-        </div>
-
-        <div className="mt-4 space-y-2">
-          <p className="text-xs font-medium text-muted-foreground">{t("Categorías propias", "Custom categories")}</p>
-          <div className="grid gap-2">
-            {categories.items.map((cat) => (
-              <div key={cat.id} className="flex items-center gap-2 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
-                <Input
-                  value={cat.name}
-                  onChange={(e) => categories.update(cat.id, { name: e.target.value })}
-                  className="h-7 flex-1 border-transparent bg-transparent text-sm focus-visible:bg-background"
-                  placeholder={t("Nombre", "Name")}
-                />
-                <Input
-                  value={cat.keywords}
-                  onChange={(e) => categories.update(cat.id, { keywords: e.target.value })}
-                  className="h-7 flex-[1.5] border-transparent bg-transparent text-sm text-muted-foreground focus-visible:bg-background"
-                  placeholder={t("Palabras clave", "Keywords")}
-                />
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-7 w-7 text-primary hover:bg-primary/10"
-                  disabled={autoCatId !== null || !cat.name.trim()}
-                  onClick={() => void autoAssign(cat)}
-                  aria-label={t("Añadir movimientos con IA", "Add movements with AI")}
-                  title={t("Añadir movimientos con IA", "Add movements with AI")}
-                >
-                  {autoCatId === cat.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-                </Button>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-7 w-7 text-muted-foreground hover:text-negative"
-                  onClick={() => categories.remove(cat.id)}
-                  aria-label={t("Eliminar categoría", "Delete category")}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
+          <div className="mt-3 space-y-2 border-t border-border pt-3">
+            <CategoryChat
+              categories={categories.names}
+              items={categories.items}
+              customRules={categories.rules.map((r) => ({ name: r.name, keywords: r.hints }))}
+              merchants={merchantsForAi}
+              onCreate={(name, keywords) => categories.add(name, keywords)}
+              onUpdate={categories.update}
+              onRemove={categories.remove}
+            />
           </div>
-          <Button size="sm" variant="outline" className="gap-2" onClick={() => categories.add()}>
-            <Plus className="h-4 w-4" /> {t("Añadir categoría", "Add category")}
-          </Button>
-        </div>
-      </Panel>
 
-
-
-      <Panel variant="minimal" title={t("Top comercios", "Top merchants")} description={`${merchants.length} ${t("comercios en el periodo", "merchants in the period")}`}>
-        {merchants.length === 0 ? (
-          <p className="text-sm text-muted-foreground">{t("Sin comercios en este rango.", "No merchants in this range.")}</p>
-        ) : (
-          <ul className="grid gap-2 md:grid-cols-2">
-            {merchants.slice(0, 10).map((m) => (
-              <li key={m.name} className="flex items-center gap-3 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
-                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-muted text-[10px] font-semibold">
-                  {m.name.slice(0, 2).toUpperCase()}
-                </span>
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium">{m.name}</p>
-                  <p className="text-xs text-muted-foreground">{m.count} {t("transacciones", "transactions")}</p>
+          <div className="mt-4 space-y-2">
+            <p className="text-xs font-medium text-muted-foreground">{t("Categorías propias", "Custom categories")}</p>
+            <div className="grid gap-2">
+              {categories.items.map((cat) => (
+                <div key={cat.id} className="flex items-center gap-2 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
+                  <Input
+                    value={cat.name}
+                    onChange={(e) => categories.update(cat.id, { name: e.target.value })}
+                    className="h-7 flex-1 border-transparent bg-transparent text-sm focus-visible:bg-background"
+                    placeholder={t("Nombre", "Name")}
+                  />
+                  <Input
+                    value={cat.keywords}
+                    onChange={(e) => categories.update(cat.id, { keywords: e.target.value })}
+                    className="h-7 flex-[1.5] border-transparent bg-transparent text-sm text-muted-foreground focus-visible:bg-background"
+                    placeholder={t("Palabras clave", "Keywords")}
+                  />
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-7 w-7 text-primary hover:bg-primary/10"
+                    disabled={autoCatId !== null || !cat.name.trim()}
+                    onClick={() => void autoAssign(cat)}
+                    aria-label={t("Añadir movimientos con IA", "Add movements with AI")}
+                    title={t("Añadir movimientos con IA", "Add movements with AI")}
+                  >
+                    {autoCatId === cat.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                  </Button>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-7 w-7 text-muted-foreground hover:text-negative"
+                    onClick={() => categories.remove(cat.id)}
+                    aria-label={t("Eliminar categoría", "Delete category")}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
-                <span className="numeric ml-auto text-sm font-semibold">{fmt(m.amount)}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Panel>
+              ))}
+            </div>
+            <Button size="sm" variant="outline" className="gap-2" onClick={() => categories.add()}>
+              <Plus className="h-4 w-4" /> {t("Añadir categoría", "Add category")}
+            </Button>
+          </div>
+        </Panel>
+
+        <Panel variant="minimal" title={t("Top comercios", "Top merchants")} description={`${merchants.length} ${t("comercios en el periodo", "merchants in the period")}`}>
+          {merchants.length === 0 ? (
+            <p className="text-sm text-muted-foreground">{t("Sin comercios en este rango.", "No merchants in this range.")}</p>
+          ) : (
+            <ul className="grid gap-2">
+              {merchants.slice(0, 10).map((m) => (
+                <li key={m.name} className="flex items-center gap-3 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-muted text-[10px] font-semibold">
+                    {m.name.slice(0, 2).toUpperCase()}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium">{m.name}</p>
+                    <p className="text-xs text-muted-foreground">{m.count} {t("transacciones", "transactions")}</p>
+                  </div>
+                  <span className="numeric ml-auto text-sm font-semibold">{fmt(m.amount)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Panel>
+      </div>
       <Panel
         variant="minimal"
         title={t("Recomendaciones de la IA", "AI recommendations")}
