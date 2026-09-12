@@ -631,7 +631,16 @@ function Gastos() {
         <KpiCard variant="flat" label={t("Gasto del periodo", "Period spend")} value={fmt(total)} delta={Number(delta.toFixed(1))} hint={t("fijos + variables", "fixed + variable")} inverse accent index={0} />
         <KpiCard variant="flat" label={t("Gastos fijos", "Fixed expenses")} value={fmt(isLongRange ? fixed.total * monthsInRange : fixed.total)} hint={isLongRange ? t(`${monthsInRange} meses en el periodo`, `${monthsInRange} months in the period`) : t("mensual, editable", "monthly, editable")} index={1} />
         <KpiCard variant="flat" label={t("Gasto variable (EEFF)", "Variable spend (statements)")} value={fmt(variable)} hint={`${current.length} ${t("transacciones", "transactions")}`} index={2} />
-        <KpiCard variant="flat" label={t("Promedio diario", "Daily average")} value={fmt(total / days)} hint={`${days} ${t("días", "days")}`} index={3} />
+        <KpiCard
+          variant="flat"
+          label={t("¿Cuánto puedo ahorrar?", "How much can I save?")}
+          value={fmt(advice ? totalSaving : Math.max(0, monthlyRun - target))}
+          hint={t("Ver recomendaciones de la IA", "See AI recommendations")}
+          icon={Lightbulb}
+          index={3}
+          className="border-primary/30 bg-primary/[0.06] hover:border-primary/50 hover:bg-primary/[0.09]"
+          onClick={() => document.getElementById("ai-savings")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+        />
       </div>
 
       <Panel
