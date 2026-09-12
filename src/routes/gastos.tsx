@@ -9,7 +9,7 @@ import {
   subDays,
   subMonths,
 } from "date-fns";
-import { es } from "date-fns/locale";
+import { enUS, es } from "date-fns/locale";
 import { BarChart3, CalendarIcon, ChevronDown, GripVertical, Loader2, Plus, Sparkles, Trash2, Upload } from "lucide-react";
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -945,15 +945,19 @@ function Gastos() {
 
 
 
-      <div className="grid items-start gap-3 lg:grid-cols-[2fr_1fr]">
+      <div className="grid items-stretch gap-3 lg:grid-cols-[2fr_1fr]">
         <Panel
           variant="minimal"
-          title={t("Gastos variables", "Variable expenses")}
+          title={t(
+            `Gastos variables en ${format(new Date(), "MMMM", { locale: es })}`,
+            `Variable expenses in ${format(new Date(), "MMMM", { locale: enUS })}`,
+          )}
           description={t(
             "Solo categorías con gastos · ordenadas de mayor a menor. Arrastra un movimiento a otra categoría para reasignarlo.",
             "Only categories with spending · sorted highest to lowest. Drag a transaction to another category to reassign it.",
           )}
           descriptionClassName="line-clamp-2 sm:line-clamp-none"
+          className="flex h-full flex-col"
           actions={
             <div className="flex flex-wrap items-center gap-2">
               <Button asChild size="sm" className="gap-2 rounded-full">
@@ -1152,7 +1156,12 @@ function Gastos() {
           </div>
         </Panel>
 
-        <Panel variant="minimal" title={t("Top comercios", "Top merchants")} description={`${merchants.length} ${t("comercios en el periodo", "merchants in the period")}`}>
+        <Panel
+          variant="minimal"
+          title={t("Top comercios", "Top merchants")}
+          description={t("10 comercios que más gastaste", "10 merchants you spent the most on")}
+          className="flex h-full flex-col"
+        >
           {merchants.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t("Sin comercios en este rango.", "No merchants in this range.")}</p>
           ) : (
