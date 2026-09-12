@@ -700,6 +700,58 @@ function Gastos() {
 
 
       <div className="grid items-stretch gap-3 lg:grid-cols-3">
+        <Panel variant="minimal" title={t("Distribución por categoría", "Spend by category")} description={t("Solo gastos variables del periodo seleccionado.", "Variable spend only for the selected period.")} className="flex h-full flex-col" bleedMobile>
+
+          {donutData.length === 0 ? (
+            <p className="px-5 text-sm text-muted-foreground sm:px-0">{t("Sin movimientos en este rango.", "No transactions in this range.")}</p>
+          ) : (
+            <>
+              <div className="relative">
+                <ResponsiveContainer width="100%" height={320}>
+                  <PieChart>
+                    <Pie
+                      data={donutData}
+                      dataKey="amount"
+                      nameKey="name"
+                      innerRadius={90}
+                      outerRadius={130}
+                      paddingAngle={2}
+                      stroke="none"
+                    >
+                      {donutData.map((c, i) => (
+                        <Cell key={c.name} fill={palette[i % palette.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip content={<ChartTooltip formatter={fmt} />} />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                  <p className="text-3xl font-semibold"><Amount full={fmt(variableTotal)} short={fmtCompact(variableTotal)} from="lg" /></p>
+                  <p className="text-sm text-muted-foreground">{t("gasto variable del periodo", "variable period spend")}</p>
+                  <p className={cn("numeric mt-0.5 text-xs", variableDelta > 0 ? "text-negative" : "text-positive")}>
+                    {variableDelta > 0 ? "+" : ""}
+                    {variableDelta.toFixed(1)}% {t("vs. periodo anterior", "vs. previous period")}
+                  </p>
+                </div>
+              </div>
+              <ul className="mt-auto grid grid-cols-1 gap-x-4 gap-y-1.5 px-5 pt-4 sm:px-0">
+                {donutData.slice(0, 8).map((c, i) => (
+                  <li key={c.name} className="flex items-center gap-2 text-sm">
+                    <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
+                    <span className="text-muted-foreground">
+                      {tc(c.name)}
+                      {c.fixed ? ` · ${t("fijo", "fixed")}` : ""}
+                    </span>
+                    <span className="numeric ml-auto font-medium">{((c.amount / Math.max(1, total)) * 100).toFixed(0)}%</span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </Panel>
+
+
+
       <Panel
         variant="minimal"
         title={t("Compara tus gastos variables mes a mes", "Compare your variable expenses month by month")}
@@ -789,80 +841,6 @@ function Gastos() {
           </>
         )}
       </Panel>
-
-      <Panel variant="minimal" title={t("Top comercios", "Top merchants")} description={`${merchants.length} ${t("comercios en el periodo", "merchants in the period")}`} className="flex h-full flex-col" bleedMobile>
-        {merchants.length === 0 ? (
-          <p className="px-5 text-sm text-muted-foreground sm:px-0">{t("Sin comercios en este rango.", "No merchants in this range.")}</p>
-        ) : (
-          <ul className="grid gap-2">
-            {merchants.slice(0, 10).map((m) => (
-              <li key={m.name} className="flex items-center gap-3 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
-                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-muted text-[10px] font-semibold">
-                  {m.name.slice(0, 2).toUpperCase()}
-                </span>
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium">{m.name}</p>
-                  <p className="text-xs text-muted-foreground">{m.count} {t("transacciones", "transactions")}</p>
-                </div>
-                <span className="numeric ml-auto text-sm font-semibold">{fmt(m.amount)}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Panel>
-
-      </div>
-
-      <div className="grid gap-3">
-        <Panel variant="minimal" title={t("Distribución por categoría", "Spend by category")} description={t("Solo gastos variables del periodo seleccionado.", "Variable spend only for the selected period.")} className="flex h-full flex-col" bleedMobile>
-
-          {donutData.length === 0 ? (
-            <p className="px-5 text-sm text-muted-foreground sm:px-0">{t("Sin movimientos en este rango.", "No transactions in this range.")}</p>
-          ) : (
-            <>
-              <div className="relative">
-                <ResponsiveContainer width="100%" height={320}>
-                  <PieChart>
-                    <Pie
-                      data={donutData}
-                      dataKey="amount"
-                      nameKey="name"
-                      innerRadius={90}
-                      outerRadius={130}
-                      paddingAngle={2}
-                      stroke="none"
-                    >
-                      {donutData.map((c, i) => (
-                        <Cell key={c.name} fill={palette[i % palette.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip content={<ChartTooltip formatter={fmt} />} />
-                  </PieChart>
-                </ResponsiveContainer>
-                <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                  <p className="text-3xl font-semibold"><Amount full={fmt(variableTotal)} short={fmtCompact(variableTotal)} from="lg" /></p>
-                  <p className="text-sm text-muted-foreground">{t("gasto variable del periodo", "variable period spend")}</p>
-                  <p className={cn("numeric mt-0.5 text-xs", variableDelta > 0 ? "text-negative" : "text-positive")}>
-                    {variableDelta > 0 ? "+" : ""}
-                    {variableDelta.toFixed(1)}% {t("vs. periodo anterior", "vs. previous period")}
-                  </p>
-                </div>
-              </div>
-              <ul className="mt-auto grid grid-cols-1 gap-x-4 gap-y-1.5 px-5 pt-4 sm:px-0">
-                {donutData.slice(0, 8).map((c, i) => (
-                  <li key={c.name} className="flex items-center gap-2 text-sm">
-                    <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: palette[i % palette.length] }} />
-                    <span className="text-muted-foreground">
-                      {tc(c.name)}
-                      {c.fixed ? ` · ${t("fijo", "fixed")}` : ""}
-                    </span>
-                    <span className="numeric ml-auto font-medium">{((c.amount / Math.max(1, total)) * 100).toFixed(0)}%</span>
-                  </li>
-                ))}
-              </ul>
-            </>
-          )}
-        </Panel>
       </div>
 
       <Collapsible open={fixedOpen} onOpenChange={setFixedOpen}>
@@ -1173,7 +1151,29 @@ function Gastos() {
         </div>
       </Panel>
 
-<Panel
+
+
+      <Panel variant="minimal" title={t("Top comercios", "Top merchants")} description={`${merchants.length} ${t("comercios en el periodo", "merchants in the period")}`}>
+        {merchants.length === 0 ? (
+          <p className="text-sm text-muted-foreground">{t("Sin comercios en este rango.", "No merchants in this range.")}</p>
+        ) : (
+          <ul className="grid gap-2 md:grid-cols-2">
+            {merchants.slice(0, 10).map((m) => (
+              <li key={m.name} className="flex items-center gap-3 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-muted text-[10px] font-semibold">
+                  {m.name.slice(0, 2).toUpperCase()}
+                </span>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium">{m.name}</p>
+                  <p className="text-xs text-muted-foreground">{m.count} {t("transacciones", "transactions")}</p>
+                </div>
+                <span className="numeric ml-auto text-sm font-semibold">{fmt(m.amount)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Panel>
+      <Panel
         variant="minimal"
         title={t("Recomendaciones de la IA", "AI recommendations")}
         description={t("Acciones concretas ordenadas por impacto, y cuánto te acercan a tu número", "Concrete actions ranked by impact, and how much closer they get you to your number")}
