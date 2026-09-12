@@ -1217,7 +1217,9 @@ function Gastos() {
         id="ai-savings"
         variant="minimal"
         title={t("Analisis de Gastos innecesarios según tu IA personal", "Unnecessary expenses by your personal AI")}
+        titleClassName="line-clamp-1 text-base sm:text-xl sm:line-clamp-none"
         description={t("Acciones concretas ordenadas por impacto, y cuánto te acercan a tu número", "Concrete actions ranked by impact, and how much closer they get you to your number")}
+        descriptionClassName="line-clamp-2 sm:line-clamp-none"
         actions={
           <Button size="sm" variant="outline" onClick={runAdvice} disabled={adviceLoading || !hasData}>
             {adviceLoading ? (
