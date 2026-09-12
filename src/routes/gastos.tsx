@@ -536,6 +536,26 @@ function Gastos() {
     return y === null ? null : Math.max(0, baseYears - y);
   };
   const totalSaving = (advice ?? []).reduce((s, a) => s + Math.max(0, a.monthlySaving), 0);
+
+  const specificSavingHint = useMemo(() => {
+    if (!advice?.[0]) return null;
+    const first = advice[0];
+    const catName = first.label.trim();
+    const cat = byCategory.find((c) => c.name.toLowerCase() === catName.toLowerCase());
+    if (cat && cat.items.length > 0) {
+      const merchantMap = new Map<string, number>();
+      for (const t of cat.items) {
+        const key = (t.merchant || t.description || "").trim();
+        if (!key) continue;
+        merchantMap.set(key, (merchantMap.get(key) ?? 0) + Math.abs(t.amount));
+      }
+      const top = [...merchantMap.entries()].sort((a, b) => b[1] - a[1])[0];
+      if (top && top[1] > 0) {
+        return { ...first, label: top[0] };
+      }
+    }
+    return first;
+  }, [advice, byCategory]);
   const yearsWithAll =
     totalSaving > 0
       ? yearsToFreedom(
@@ -636,9 +656,11 @@ function Gastos() {
           label={t("¿Cuánto puedo ahorrar?", "How much can I save?")}
           value={fmt(advice ? totalSaving : Math.max(0, monthlyRun - target))}
           hint={
-            advice?.[0]
-              ? `${t("Ahorra", "Save")} ${fmt(advice[0].monthlySaving)}${t("/mes", "/mo")} ${t("en", "on")} ${advice[0].label} · ${t("ver detalle", "see detail")}`
-              : t("Descubre dónde ahorrar · ver detalle", "Find where to save · see detail")
+            <span className="line-clamp-1">
+              {specificSavingHint
+                ? `${t("Ahorra", "Save")} ${fmt(specificSavingHint.monthlySaving)}${t("/mes", "/mo")} ${t("en", "on")} ${specificSavingHint.label} · ${t("ver detalle", "see detail")}`
+                : t("Descubre dónde ahorrar · ver detalle", "Find where to save · see detail")}
+            </span>
           }
           icon={Lightbulb}
           index={3}
