@@ -945,15 +945,19 @@ function Gastos() {
 
 
 
-      <div className="grid items-start gap-3 lg:grid-cols-[2fr_1fr]">
+      <div className="grid items-stretch gap-3 lg:grid-cols-[2fr_1fr]">
         <Panel
           variant="minimal"
-          title={t("Gastos variables", "Variable expenses")}
+          title={t(
+            `Gastos variables en ${format(new Date(), "MMMM", { locale: es })}`,
+            `Variable expenses in ${format(new Date(), "MMMM", { locale: enUS })}`,
+          )}
           description={t(
             "Solo categorías con gastos · ordenadas de mayor a menor. Arrastra un movimiento a otra categoría para reasignarlo.",
             "Only categories with spending · sorted highest to lowest. Drag a transaction to another category to reassign it.",
           )}
           descriptionClassName="line-clamp-2 sm:line-clamp-none"
+          className="flex h-full flex-col"
           actions={
             <div className="flex flex-wrap items-center gap-2">
               <Button asChild size="sm" className="gap-2 rounded-full">
