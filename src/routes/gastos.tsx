@@ -983,10 +983,7 @@ function Gastos() {
       <div className="grid items-stretch gap-3 lg:grid-cols-[2fr_1fr]">
         <Panel
           variant="minimal"
-          title={t(
-            `Gastos variables en ${format(new Date(), "MMMM", { locale: es })}`,
-            `Variable expenses in ${format(new Date(), "MMMM", { locale: enUS })}`,
-          )}
+          title={t("Gastos variables", "Variable expenses")}
           description={t("Solo categorías con gastos · Arrastra para recategorizar.", "Only categories with spending · Drag to recategorize.")}
           className="flex h-full flex-col"
           actions={
