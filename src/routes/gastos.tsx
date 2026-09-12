@@ -472,6 +472,27 @@ function Gastos() {
       ? `${format(range.from, "d MMM yyyy", { locale: es })} — ${format(range.to, "d MMM yyyy", { locale: es })}`
       : t("Selecciona un rango", "Select a range");
 
+  const variablePeriodTitle = useMemo(() => {
+    if (!range?.from) return { es: "Gastos variables", en: "Variable expenses" };
+    if (!range.to) {
+      return {
+        es: `Gastos variables en ${format(range.from, "MMMM", { locale: es })}`,
+        en: `Variable expenses in ${format(range.from, "MMMM", { locale: enUS })}`,
+      };
+    }
+    const sameMonth = range.from.getMonth() === range.to.getMonth() && range.from.getFullYear() === range.to.getFullYear();
+    if (sameMonth) {
+      return {
+        es: `Gastos variables en ${format(range.from, "MMMM", { locale: es })}`,
+        en: `Variable expenses in ${format(range.from, "MMMM", { locale: enUS })}`,
+      };
+    }
+    return {
+      es: `Gastos variables: ${format(range.from, "MMMM", { locale: es })} — ${format(range.to, "MMMM", { locale: es })}`,
+      en: `Variable expenses: ${format(range.from, "MMMM", { locale: enUS })} — ${format(range.to, "MMMM", { locale: enUS })}`,
+    };
+  }, [range]);
+
   const adviceKey = `${rangeLabel}|${variableTotal.toFixed(0)}|${fixed.total}|${target}`;
   const lastAdviceKey = useRef<string | null>(null);
 
@@ -986,12 +1007,7 @@ function Gastos() {
           title={
             <>
               <span className="sm:hidden">{t("Gastos variables", "Variable expenses")}</span>
-              <span className="hidden sm:inline">
-                {t(
-                  `Gastos variables en ${format(new Date(), "MMMM", { locale: es })}`,
-                  `Variable expenses in ${format(new Date(), "MMMM", { locale: enUS })}`,
-                )}
-              </span>
+              <span className="hidden sm:inline">{t(variablePeriodTitle.es, variablePeriodTitle.en)}</span>
             </>
           }
           description={t("Solo categorías con gastos · Arrastra para recategorizar.", "Only categories with spending · Drag to recategorize.")}
