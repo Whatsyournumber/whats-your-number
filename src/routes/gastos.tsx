@@ -473,23 +473,24 @@ function Gastos() {
       : t("Selecciona un rango", "Select a range");
 
   const variablePeriodTitle = useMemo(() => {
+    const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
     if (!range?.from) return { es: "Gastos variables", en: "Variable expenses" };
     if (!range.to) {
       return {
-        es: `Gastos variables en ${format(range.from, "MMMM", { locale: es })}`,
-        en: `Variable expenses in ${format(range.from, "MMMM", { locale: enUS })}`,
+        es: `Gastos variables en ${cap(format(range.from, "MMMM", { locale: es }))}`,
+        en: `Variable expenses in ${cap(format(range.from, "MMMM", { locale: enUS }))}`,
       };
     }
     const sameMonth = range.from.getMonth() === range.to.getMonth() && range.from.getFullYear() === range.to.getFullYear();
     if (sameMonth) {
       return {
-        es: `Gastos variables en ${format(range.from, "MMMM", { locale: es })}`,
-        en: `Variable expenses in ${format(range.from, "MMMM", { locale: enUS })}`,
+        es: `Gastos variables en ${cap(format(range.from, "MMMM", { locale: es }))}`,
+        en: `Variable expenses in ${cap(format(range.from, "MMMM", { locale: enUS }))}`,
       };
     }
     return {
-      es: `Gastos variables: ${format(range.from, "MMMM", { locale: es })} — ${format(range.to, "MMMM", { locale: es })}`,
-      en: `Variable expenses: ${format(range.from, "MMMM", { locale: enUS })} — ${format(range.to, "MMMM", { locale: enUS })}`,
+      es: `Gastos variables: ${cap(format(range.from, "MMMM", { locale: es }))} — ${cap(format(range.to, "MMMM", { locale: es }))}`,
+      en: `Variable expenses: ${cap(format(range.from, "MMMM", { locale: enUS }))} — ${cap(format(range.to, "MMMM", { locale: enUS }))}`,
     };
   }, [range]);
 
