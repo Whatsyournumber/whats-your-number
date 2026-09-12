@@ -1188,6 +1188,7 @@ function Gastos() {
         </Panel>
       </div>
       <Panel
+        id="ai-savings"
         variant="minimal"
         title={t("Recomendaciones de la IA", "AI recommendations")}
         description={t("Acciones concretas ordenadas por impacto, y cuánto te acercan a tu número", "Concrete actions ranked by impact, and how much closer they get you to your number")}
