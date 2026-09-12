@@ -41,7 +41,7 @@ const SYSTEM = `Eres un asesor financiero personal directo y práctico. Responde
 Devuelve 4 acciones (3 si no hay datos suficientes), ordenadas por ahorro mensual estimado de mayor a menor.
 Reglas:
 - "label": el rubro o comercio real del contexto (máx. 3 palabras).
-- "diagnosis": UNA frase de máximo 14 palabras con el monto y el % vs. periodo anterior o vs. objetivo.
+- "diagnosis": UNA frase de máximo 14 palabras que mencione el periodo analizado, el monto y el % vs. periodo anterior o vs. objetivo.
 - "action": empieza con un verbo en imperativo, máximo 12 palabras, concreta y medible.
 - "monthlySaving": número realista en la moneda dada, sin símbolos ni texto.
 - "overspent": true si ese rubro subió vs. el periodo anterior o rompe el objetivo.
