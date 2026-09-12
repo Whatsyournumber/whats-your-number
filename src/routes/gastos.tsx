@@ -1216,7 +1216,7 @@ function Gastos() {
       <Panel
         id="ai-savings"
         variant="minimal"
-        title={t("Gastos innecesarios según tu IA personal", "Unnecessary expenses by your personal AI")}
+        title={t("Analisis de Gastos innecesarios según tu IA personal", "Unnecessary expenses by your personal AI")}
         description={t("Acciones concretas ordenadas por impacto, y cuánto te acercan a tu número", "Concrete actions ranked by impact, and how much closer they get you to your number")}
         actions={
           <Button size="sm" variant="outline" onClick={runAdvice} disabled={adviceLoading || !hasData}>
