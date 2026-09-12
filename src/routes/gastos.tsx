@@ -1093,6 +1093,28 @@ function Gastos() {
           />
         )}
 
+        <div className="mt-4 space-y-2">
+          <p className="text-xs font-medium text-muted-foreground">{t("Top comercios", "Top merchants")}</p>
+          {merchants.length === 0 ? (
+            <p className="text-sm text-muted-foreground">{t("Sin comercios en este rango.", "No merchants in this range.")}</p>
+          ) : (
+            <ul className="grid gap-2 md:grid-cols-2">
+              {merchants.slice(0, 10).map((m) => (
+                <li key={m.name} className="flex items-center gap-3 rounded-xl border border-border/60 bg-elevated/40 px-3 py-2">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-muted text-[10px] font-semibold">
+                    {m.name.slice(0, 2).toUpperCase()}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium">{m.name}</p>
+                    <p className="text-xs text-muted-foreground">{m.count} {t("transacciones", "transactions")}</p>
+                  </div>
+                  <span className="numeric ml-auto text-sm font-semibold">{fmt(m.amount)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
         <div className="mt-3 space-y-2 border-t border-border pt-3">
           <CategoryChat
             categories={categories.names}
