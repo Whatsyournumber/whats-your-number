@@ -21,6 +21,7 @@ export function KpiCard({
   index = 0,
   variant = "default",
   className,
+  iconClassName,
   onClick,
 }: {
   label: string;
@@ -36,6 +37,7 @@ export function KpiCard({
   index?: number;
   variant?: "default" | "flat";
   className?: string;
+  iconClassName?: string;
   onClick?: () => void;
 }) {
   const display = value.length > 13 ? shortenMoneyString(value) : value;
@@ -75,7 +77,7 @@ export function KpiCard({
             label
           )}
         </p>
-        {Icon && <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />}
+        {Icon && <Icon className={cn("h-4 w-4 shrink-0 text-muted-foreground", iconClassName)} />}
       </div>
       <p
         className={cn(

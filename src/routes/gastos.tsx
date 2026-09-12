@@ -635,10 +635,10 @@ function Gastos() {
           variant="flat"
           label={t("¿Cuánto puedo ahorrar?", "How much can I save?")}
           value={fmt(advice ? totalSaving : Math.max(0, monthlyRun - target))}
-          hint={t("Ver recomendaciones de la IA", "See AI recommendations")}
+          hint={t("Ahorra en mkt, viajes o cafés · ver detalle", "Save on mkt, travel, or coffee · see detail")}
           icon={Lightbulb}
           index={3}
-          className="border-primary/30 bg-primary/[0.06] hover:border-primary/50 hover:bg-primary/[0.09]"
+          iconClassName="text-primary"
           onClick={() => document.getElementById("ai-savings")?.scrollIntoView({ behavior: "smooth", block: "start" })}
         />
       </div>
