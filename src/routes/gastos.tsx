@@ -983,10 +983,7 @@ function Gastos() {
       <div className="grid items-stretch gap-3 lg:grid-cols-[2fr_1fr]">
         <Panel
           variant="minimal"
-          title={t(
-            `Gastos variables en ${format(new Date(), "MMMM", { locale: es })}`,
-            `Variable expenses in ${format(new Date(), "MMMM", { locale: enUS })}`,
-          )}
+          title={t("Gastos variables", "Variable expenses")}
           description={t("Solo categorías con gastos · Arrastra para recategorizar.", "Only categories with spending · Drag to recategorize.")}
           className="flex h-full flex-col"
           actions={
@@ -1217,18 +1214,18 @@ function Gastos() {
         id="ai-savings"
         variant="minimal"
         title={t("Analisis de Gastos innecesarios según tu IA personal", "Unnecessary expenses by your personal AI")}
-        titleClassName="line-clamp-1 text-base sm:text-xl sm:line-clamp-none"
+        titleClassName="text-xs sm:text-xl"
         description={t("Acciones concretas ordenadas por impacto, y cuánto te acercan a tu número", "Concrete actions ranked by impact, and how much closer they get you to your number")}
         descriptionClassName="line-clamp-2 sm:line-clamp-none"
         actions={
           <Button size="sm" variant="outline" onClick={runAdvice} disabled={adviceLoading || !hasData}>
             {adviceLoading ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" /> {t("Analizando", "Analyzing")}
+                <Loader2 className="h-4 w-4 animate-spin" /> <span className="hidden sm:inline">{t("Analizando", "Analyzing")}</span>
               </>
             ) : (
               <>
-                <Sparkles className="h-4 w-4" /> {t("Actualizar", "Refresh")}
+                <Sparkles className="h-4 w-4" /> <span className="hidden sm:inline">{t("Actualizar", "Refresh")}</span>
               </>
             )}
           </Button>
