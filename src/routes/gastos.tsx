@@ -1214,18 +1214,18 @@ function Gastos() {
         id="ai-savings"
         variant="minimal"
         title={t("Analisis de Gastos innecesarios según tu IA personal", "Unnecessary expenses by your personal AI")}
-        titleClassName="line-clamp-1 text-base sm:text-xl sm:line-clamp-none"
+        titleClassName="text-xs sm:text-xl"
         description={t("Acciones concretas ordenadas por impacto, y cuánto te acercan a tu número", "Concrete actions ranked by impact, and how much closer they get you to your number")}
         descriptionClassName="line-clamp-2 sm:line-clamp-none"
         actions={
           <Button size="sm" variant="outline" onClick={runAdvice} disabled={adviceLoading || !hasData}>
             {adviceLoading ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" /> {t("Analizando", "Analyzing")}
+                <Loader2 className="h-4 w-4 animate-spin" /> <span className="hidden sm:inline">{t("Analizando", "Analyzing")}</span>
               </>
             ) : (
               <>
-                <Sparkles className="h-4 w-4" /> {t("Actualizar", "Refresh")}
+                <Sparkles className="h-4 w-4" /> <span className="hidden sm:inline">{t("Actualizar", "Refresh")}</span>
               </>
             )}
           </Button>
