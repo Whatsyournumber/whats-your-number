@@ -983,7 +983,17 @@ function Gastos() {
       <div className="grid items-stretch gap-3 lg:grid-cols-[2fr_1fr]">
         <Panel
           variant="minimal"
-          title={t("Gastos variables", "Variable expenses")}
+          title={
+            <>
+              <span className="sm:hidden">{t("Gastos variables", "Variable expenses")}</span>
+              <span className="hidden sm:inline">
+                {t(
+                  `Gastos variables en ${format(new Date(), "MMMM", { locale: es })}`,
+                  `Variable expenses in ${format(new Date(), "MMMM", { locale: enUS })}`,
+                )}
+              </span>
+            </>
+          }
           description={t("Solo categorías con gastos · Arrastra para recategorizar.", "Only categories with spending · Drag to recategorize.")}
           className="flex h-full flex-col"
           actions={
@@ -1213,7 +1223,12 @@ function Gastos() {
       <Panel
         id="ai-savings"
         variant="minimal"
-        title={t("Analisis de Gastos innecesarios según tu IA personal", "Unnecessary expenses by your personal AI")}
+        title={
+          <>
+            <span className="sm:hidden">{t("Gastos innecesarios según tu IA", "Unnecessary expenses by your AI")}</span>
+            <span className="hidden sm:inline">{t("Analisis de Gastos innecesarios según tu IA personal", "Unnecessary expenses by your personal AI")}</span>
+          </>
+        }
         titleClassName="text-xs sm:text-xl"
         description={t("Acciones concretas ordenadas por impacto, y cuánto te acercan a tu número", "Concrete actions ranked by impact, and how much closer they get you to your number")}
         descriptionClassName="line-clamp-2 sm:line-clamp-none"
