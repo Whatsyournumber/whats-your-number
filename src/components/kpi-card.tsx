@@ -20,6 +20,8 @@ export function KpiCard({
   inverse = false,
   index = 0,
   variant = "default",
+  className,
+  onClick,
 }: {
   label: string;
   labelSm?: string;
@@ -33,6 +35,8 @@ export function KpiCard({
   inverse?: boolean;
   index?: number;
   variant?: "default" | "flat";
+  className?: string;
+  onClick?: () => void;
 }) {
   const display = value.length > 13 ? shortenMoneyString(value) : value;
   // Versión corta (K/M) para pantallas pequeñas cuando el importe completo no cabe.
