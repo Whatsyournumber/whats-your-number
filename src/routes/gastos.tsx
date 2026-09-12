@@ -1257,7 +1257,7 @@ function Gastos() {
               </>
             ) : (
               <>
-                <Sparkles className="h-4 w-4" /> <span className="hidden sm:inline">{t("Actualizar", "Refresh")}</span>
+                <Sparkles className="h-4 w-4" /> <span className="hidden sm:inline">{t("Buscar otros gastos", "Find other expenses")}</span>
               </>
             )}
           </Button>
