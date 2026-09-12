@@ -494,6 +494,28 @@ function Gastos() {
     };
   }, [range]);
 
+  const topPeriodTitle = useMemo(() => {
+    const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+    if (!range?.from) return { es: "Top comercios", en: "Top merchants" };
+    if (!range.to) {
+      return {
+        es: `Top comercios en ${cap(format(range.from, "MMMM", { locale: es }))}`,
+        en: `Top merchants in ${cap(format(range.from, "MMMM", { locale: enUS }))}`,
+      };
+    }
+    const sameMonth = range.from.getMonth() === range.to.getMonth() && range.from.getFullYear() === range.to.getFullYear();
+    if (sameMonth) {
+      return {
+        es: `Top comercios en ${cap(format(range.from, "MMMM", { locale: es }))}`,
+        en: `Top merchants in ${cap(format(range.from, "MMMM", { locale: enUS }))}`,
+      };
+    }
+    return {
+      es: `Top comercios: ${cap(format(range.from, "MMMM", { locale: es }))} — ${cap(format(range.to, "MMMM", { locale: es }))}`,
+      en: `Top merchants: ${cap(format(range.from, "MMMM", { locale: enUS }))} — ${cap(format(range.to, "MMMM", { locale: enUS }))}`,
+    };
+  }, [range]);
+
   const adviceKey = `${rangeLabel}|${variableTotal.toFixed(0)}|${fixed.total}|${target}`;
   const lastAdviceKey = useRef<string | null>(null);
 
