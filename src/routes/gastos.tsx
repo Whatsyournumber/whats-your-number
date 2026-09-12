@@ -945,7 +945,7 @@ function Gastos() {
 
 
 
-      <div className="grid items-start gap-3 lg:grid-cols-2">
+      <div className="grid items-start gap-3 lg:grid-cols-[2fr_1fr]">
         <Panel
           variant="minimal"
           title={t("Gastos variables", "Variable expenses")}
