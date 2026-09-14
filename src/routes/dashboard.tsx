@@ -499,14 +499,7 @@ function Dashboard() {
           label={t("Ingresos", "Income")}
           value={fmt(current.income)}
           editHref="/mi-perfil"
-          hint={
-            current.income > 0
-              ? t(
-                  `Disponible después de fijos: ${fmt(Math.max(0, current.income - fixed.total))}`,
-                  `Available after fixed expenses: ${fmt(Math.max(0, current.income - fixed.total))}`,
-                )
-              : t("Ingreso mensual estimado", "Estimated monthly income")
-          }
+          hint={incomeHint}
           icon={Banknote}
           index={1}
         />
