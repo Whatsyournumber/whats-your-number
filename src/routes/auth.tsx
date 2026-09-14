@@ -699,19 +699,6 @@ function AuthPage() {
             )}
           </div>
 
-          {mode === "signup" && (
-            <div>
-              <Label htmlFor="promo" className="text-xs text-slate-500">
-                {t("auth.promo.label")}
-              </Label>
-              <Input
-                id="promo"
-                value={promo}
-                onChange={(e) => setPromo(e.target.value.toUpperCase())}
-                className="mt-1.5 rounded-xl border-slate-200 bg-white uppercase tracking-wide text-slate-900 placeholder:text-slate-400"
-              />
-            </div>
-          )}
 
           <Button
             type="submit"
