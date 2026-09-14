@@ -925,7 +925,13 @@ function OnboardingPage() {
                 )}
 
                 <div className="mt-8">
-                  <SubQuestion title={t("Activos", "Assets")} />
+                  <SubQuestion
+                    title={
+                      household
+                        ? t("Activos (en pareja)", "Assets (as a couple)")
+                        : t("Activos", "Assets")
+                    }
+                  />
                   <div className="mt-4 space-y-2.5">
                     <MoneyField
                       emoji="💵"
@@ -988,7 +994,13 @@ function OnboardingPage() {
                 </div>
 
                 <div className="mt-8">
-                  <SubQuestion title={t("Pasivos", "Liabilities")} />
+                  <SubQuestion
+                    title={
+                      household
+                        ? t("Pasivos (en pareja)", "Liabilities (as a couple)")
+                        : t("Pasivos", "Liabilities")
+                    }
+                  />
                   <div className="mt-4 space-y-2.5">
                     <MoneyField
                       emoji="💳"
@@ -1027,7 +1039,13 @@ function OnboardingPage() {
 
 
                 <div className="mt-8">
-                  <SubQuestion title={t("Tus gastos fijos mensuales", "Your monthly fixed expenses")} />
+                  <SubQuestion
+                    title={
+                      household
+                        ? t("Gastos fijos mensuales (en pareja)", "Monthly fixed expenses (as a couple)")
+                        : t("Tus gastos fijos mensuales", "Your monthly fixed expenses")
+                    }
+                  />
                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                     {t(
                       "Con esto rellenamos automáticamente tu pestaña de Gastos, luego podrás agregar más ;)",
