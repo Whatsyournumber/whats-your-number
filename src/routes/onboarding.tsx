@@ -801,7 +801,7 @@ function OnboardingPage() {
                     <p className="text-xs text-muted-foreground">{t("En la que verás todos tus importes", "The one you'll see all your amounts in")}</p>
                   </div>
                   <select
-                    className="h-8 appearance-none rounded-full border-0 bg-transparent pr-6 pl-3 text-right text-sm font-medium focus:ring-1 focus:ring-primary/30"
+                    className="h-8 rounded-full border border-border/30 bg-background/50 px-4 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-primary/30"
                     value={cur}
                     onChange={(e) => set("currency", e.target.value)}
                   >
