@@ -839,7 +839,10 @@ function Gastos() {
 
         {budgetRows.length > 0 && (
           <Collapsible open={budgetRowsOpen} onOpenChange={setBudgetRowsOpen} className="mt-5 border-t border-border/60 pt-4">
-            <CollapsibleTrigger className="flex w-full items-center justify-between gap-2 py-1 text-left">
+            <CollapsibleTrigger
+              className="flex w-full items-center justify-between gap-2 py-1 text-left"
+              aria-label={t("Mostrar u ocultar plan por categoría", "Show or hide category plan")}
+            >
               <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
                 {t("Plan por categoría", "Category plan")}
               </p>
