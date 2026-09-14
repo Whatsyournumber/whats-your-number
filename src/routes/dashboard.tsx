@@ -475,7 +475,14 @@ function Dashboard() {
           label={t("Ingresos", "Income")}
           value={fmt(current.income)}
           editHref="/mi-perfil"
-          {...(hasHistory ? { delta: delta(current.income, previous.income) } : {})}
+          hint={
+            current.expenses > 0
+              ? t(
+                  `Cubre el ${Math.min(999, Math.round((current.income / current.expenses) * 100))}% de tus gastos`,
+                  `Covers ${Math.min(999, Math.round((current.income / current.expenses) * 100))}% of your expenses`,
+                )
+              : t("Ingreso mensual estimado", "Estimated monthly income")
+          }
           icon={Banknote}
           index={1}
         />
