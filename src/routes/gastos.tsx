@@ -209,6 +209,7 @@ function Gastos() {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [detailCat, setDetailCat] = useState<string | null>(null);
   const [fixedOpen, setFixedOpen] = useState(true);
+  const [budgetRowsOpen, setBudgetRowsOpen] = useState(true);
 
   // Selección explícita: 1er clic = inicio, 2º clic = fin, 3er clic = nuevo inicio.
   const handleDayClick = (day: Date) => {
