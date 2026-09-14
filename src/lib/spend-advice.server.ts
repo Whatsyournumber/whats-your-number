@@ -77,7 +77,21 @@ Gasto por categoría:
 ${cats || "- sin datos"}
 
 Top comercios:
-${merch || "- sin datos"}`;
+${merch || "- sin datos"}
+
+Plan de gasto por categoría (plan vs. real mensual):
+${
+  input.budgets && input.budgets.length
+    ? input.budgets
+        .map(
+          (b) =>
+            `- ${b.name}: plan ${b.planned.toFixed(0)} · real ${b.actual.toFixed(0)} ${
+              b.planned > 0 && b.actual > b.planned ? "(EXCEDIDO)" : ""
+            }`,
+        )
+        .join("\n")
+    : "- (el usuario no definió plan)"
+}`;
 
   const result = await generateText({
     model: gateway("google/gemini-3.6-flash"),
