@@ -795,7 +795,7 @@ function OnboardingPage() {
                   </p>
                 </div>
 
-                <div className="mt-5 flex items-center justify-between gap-3 rounded-2xl border border-border/60 bg-elevated/40 px-5 py-3">
+                <div className="flex items-center justify-between gap-4 py-3">
                   <div>
                     <p className="text-sm font-medium">{t("Moneda", "Currency")}</p>
                     <p className="text-xs text-muted-foreground">{t("En la que verás todos tus importes", "The one you'll see all your amounts in")}</p>
