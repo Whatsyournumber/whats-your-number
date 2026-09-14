@@ -240,11 +240,9 @@ function ProfileSelector() {
   const usedSeats = adultCount + kids.length;
   // Plan Familiar: 3 perfiles gratis (titular incluido) -> 1º hijo/a, 2º adulto o niño, el siguiente es de pago.
   const freeSlotsLeft = Math.max(0, FAMILY_TOTAL_SEATS - usedSeats);
-  const showKidSlot = plan === "family" && kids.length === 0 && freeSlotsLeft > 0;
-  const showFlexSlot =
-    plan === "family" &&
-    parents.length === 0 &&
-    ((kids.length === 0 && freeSlotsLeft > 1) || (kids.length > 0 && freeSlotsLeft > 0));
+  // Un único hueco flexible: el padre decide si el perfil es adulto o niño/a.
+  const showFlexSlot = plan === "family" && freeSlotsLeft > 0;
+
   
 
   async function openAdult() {
@@ -479,21 +477,8 @@ function ProfileSelector() {
 
               {plan === "family" ? (
                 <>
-                  {showKidSlot ? (
-                    <button
-                      onClick={() => setShowAddKid(true)}
-                      className="group flex flex-col items-center gap-3 outline-none"
-                    >
-                      <span className="grid aspect-square w-full place-items-center rounded-2xl border-2 border-dashed border-border text-muted-foreground transition-all duration-200 group-hover:scale-105 group-hover:border-primary group-hover:text-primary">
-                        <Plus className="h-10 w-10" />
-                      </span>
-                      <span className="text-sm font-semibold text-muted-foreground transition-colors group-hover:text-foreground">
-                        {t("Añadir hijo/a", "Add a child")}
-                      </span>
-                    </button>
-                  ) : null}
-
                   {showFlexSlot ? (
+
                     <button
                       onClick={() => setShowFlexChoice(true)}
                       className="group flex flex-col items-center gap-3 outline-none"
