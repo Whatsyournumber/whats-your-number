@@ -209,6 +209,7 @@ function Gastos() {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [detailCat, setDetailCat] = useState<string | null>(null);
   const [fixedOpen, setFixedOpen] = useState(true);
+  const [budgetRowsOpen, setBudgetRowsOpen] = useState(true);
 
   // Selección explícita: 1er clic = inicio, 2º clic = fin, 3er clic = nuevo inicio.
   const handleDayClick = (day: Date) => {
@@ -837,46 +838,54 @@ function Gastos() {
         </div>
 
         {budgetRows.length > 0 && (
-          <div className="mt-5 border-t border-border/60 pt-4">
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <Collapsible open={budgetRowsOpen} onOpenChange={setBudgetRowsOpen} className="mt-5 border-t border-border/60 pt-4">
+            <CollapsibleTrigger
+              className="flex w-full items-center justify-between gap-2 py-1 text-left"
+              aria-label={t("Mostrar u ocultar plan por categoría", "Show or hide category plan")}
+            >
               <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
                 {t("Plan por categoría", "Category plan")}
               </p>
-              <p className="text-xs text-muted-foreground">
-                {t("Plan", "Plan")} {fmt(budgetPlanTotal)}
-                {overBudget.length > 0 && (
-                  <span className="text-negative">
-                    {" · "}
-                    {overBudget.length} {t("categorías excedidas", "categories over plan")}
-                  </span>
-                )}
-              </p>
-            </div>
-            <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {budgetRows.map((row) => {
-                const pct = row.planned > 0 ? (row.actual / row.planned) * 100 : 0;
-                const over = row.actual > row.planned;
-                return (
-                  <div key={row.id} className="rounded-xl border border-border/50 px-3 py-2">
-                    <div className="flex items-baseline justify-between gap-2">
-                      <span className="truncate text-sm">
-                        {row.emoji} {row.name}
-                      </span>
-                      <span className={cn("numeric shrink-0 text-xs", over ? "text-negative" : "text-positive")}>
-                        {fmt(row.actual)} / {fmt(row.planned)}
-                      </span>
+              <div className="flex items-center gap-2">
+                <p className="text-xs text-muted-foreground">
+                  {t("Plan", "Plan")} {fmt(budgetPlanTotal)}
+                  {overBudget.length > 0 && (
+                    <span className="text-negative">
+                      {" · "}
+                      {overBudget.length} {t("categorías excedidas", "categories over plan")}
+                    </span>
+                  )}
+                </p>
+                <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
+              </div>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                {budgetRows.map((row) => {
+                  const pct = row.planned > 0 ? (row.actual / row.planned) * 100 : 0;
+                  const over = row.actual > row.planned;
+                  return (
+                    <div key={row.id} className="rounded-xl border border-border/50 px-3 py-2">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <span className="truncate text-sm">
+                          {row.emoji} {row.name}
+                        </span>
+                        <span className={cn("numeric shrink-0 text-xs", over ? "text-negative" : "text-positive")}>
+                          {fmt(row.actual)} / {fmt(row.planned)}
+                        </span>
+                      </div>
+                      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
+                        <div
+                          className={cn("h-full rounded-full", over ? "bg-negative" : "bg-positive")}
+                          style={{ width: `${Math.min(100, pct)}%` }}
+                        />
+                      </div>
                     </div>
-                    <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
-                      <div
-                        className={cn("h-full rounded-full", over ? "bg-negative" : "bg-positive")}
-                        style={{ width: `${Math.min(100, pct)}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+                  );
+                })}
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
         )}
       </Panel>
 
