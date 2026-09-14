@@ -209,7 +209,7 @@ function Gastos() {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [detailCat, setDetailCat] = useState<string | null>(null);
   const [fixedOpen, setFixedOpen] = useState(true);
-  const [budgetRowsOpen, setBudgetRowsOpen] = useState(true);
+  const [budgetRowsOpen, setBudgetRowsOpen] = useState(false);
 
   // Selección explícita: 1er clic = inicio, 2º clic = fin, 3er clic = nuevo inicio.
   const handleDayClick = (day: Date) => {
@@ -800,7 +800,7 @@ function Gastos() {
 
         <div className="grid gap-6 border-t border-border/50 pt-4 md:grid-cols-[200px_1fr] md:items-center md:border-t-0 md:pt-0">
           <div>
-            <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{t("Objetivo", "Target")}</p>
+            <p className="cursor-pointer text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground" onClick={() => setBudgetRowsOpen(true)}>{t("Objetivo", "Target")}</p>
             <div className="mt-2 flex items-center gap-2">
               <NumberInput
                 value={target}
