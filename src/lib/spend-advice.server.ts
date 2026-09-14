@@ -67,6 +67,10 @@ export async function generateSpendAdvice(input: AdviceInput): Promise<SpendAdvi
     .map((m) => `- ${m.name}: ${m.amount.toFixed(0)} ${input.currency} en ${m.count} compras`)
     .join("\n");
 
+  const overBudget = (input.budgets ?? [])
+    .filter((b) => b.planned > 0 && b.actual > b.planned)
+    .sort((a, b) => (b.actual - b.planned) - (a.actual - a.planned))[0];
+
   const prompt = `Moneda: ${input.currency}
 Periodo analizado: ${input.periodLabel}
 Gasto variable del periodo: ${input.total.toFixed(0)} (periodo anterior: ${input.prevTotal.toFixed(0)})
