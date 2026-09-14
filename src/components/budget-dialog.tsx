@@ -21,13 +21,11 @@ type Props = {
   onOpenChange: (v: boolean) => void;
   lines: BudgetLine[];
   onSave: (lines: BudgetLine[]) => void;
-  /** Gasto real mensual por categoría del presupuesto (id -> monto). */
-  actualById: Map<string, number>;
   fmt: (n: number) => string;
 };
 
 /** Pop-up para definir un objetivo de gasto personalizado por categoría. */
-export function BudgetDialog({ open, onOpenChange, lines, onSave, actualById, fmt }: Props) {
+export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) {
   const t = useT();
   const { lang } = useLanguage();
   const [draft, setDraft] = useState<BudgetLine[]>([]);
