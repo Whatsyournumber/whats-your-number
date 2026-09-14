@@ -821,7 +821,7 @@ function Gastos() {
                 )}
               >
                 {monthlyRun <= target
-                  ? `${fmt(target - monthlyRun)} ${t("por debajo", "under")}`
+                  ? `${fmt(target - monthlyRun)} ${t("que puedes invertir", "you can invest")}`
                   : `${fmt(monthlyRun - target)} ${t("por encima", "over")}`}
               </span>
             </div>
