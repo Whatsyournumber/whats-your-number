@@ -21,8 +21,11 @@ const errorMiddleware = createMiddleware().server(async ({ next }) => {
 // Start installs this automatically when src/start.ts is absent; defining the
 // file opts out, so re-add it explicitly to keep server functions protected
 // from cross-site requests.
+// www.dominio y dominio raíz son "same-site" pero no "same-origin": sin esto
+// las llamadas del cliente responden 403 Forbidden.
 const csrfMiddleware = createCsrfMiddleware({
   filter: (ctx) => ctx.handlerType === "serverFn",
+  secFetchSite: ["same-origin", "same-site"],
 });
 
 export const startInstance = createStart(() => ({
