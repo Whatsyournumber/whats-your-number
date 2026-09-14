@@ -784,8 +784,8 @@ function Gastos() {
           <Button variant="outline" size="sm" onClick={() => setBudgetOpen(true)}>
             <Plus className="mr-1 h-4 w-4" />
             {budgetRows.length
-              ? t("Editar plan por categoría", "Edit category plan")
-              : t("Objetivo personalizado", "Custom plan")}
+              ? t("Editar plan de gastos personalizado", "Edit custom spending plan")
+              : t("Plan de gastos personalizado", "Custom spending plan")}
           </Button>
         }
       >
