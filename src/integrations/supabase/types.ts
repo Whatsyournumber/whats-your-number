@@ -996,6 +996,7 @@ export type Database = {
       onboarding_profiles: {
         Row: {
           age: number | null
+          analysis_scope: string | null
           assets_bank: number | null
           assets_cash: number | null
           assets_crypto: number | null
@@ -1016,6 +1017,7 @@ export type Database = {
           desired_retirement_income: number | null
           down_payment_pct: number | null
           expected_return: number | null
+          expenses_partner: number | null
           fixed_education: number
           fixed_housing: number
           fixed_insurance: number
@@ -1032,6 +1034,8 @@ export type Database = {
           id: string
           income_bonus: number | null
           income_other: number | null
+          income_partner_other: number | null
+          income_partner_salary: number | null
           income_rent: number | null
           income_salary: number | null
           liabilities: number | null
@@ -1055,6 +1059,7 @@ export type Database = {
         }
         Insert: {
           age?: number | null
+          analysis_scope?: string | null
           assets_bank?: number | null
           assets_cash?: number | null
           assets_crypto?: number | null
@@ -1075,6 +1080,7 @@ export type Database = {
           desired_retirement_income?: number | null
           down_payment_pct?: number | null
           expected_return?: number | null
+          expenses_partner?: number | null
           fixed_education?: number
           fixed_housing?: number
           fixed_insurance?: number
@@ -1091,6 +1097,8 @@ export type Database = {
           id?: string
           income_bonus?: number | null
           income_other?: number | null
+          income_partner_other?: number | null
+          income_partner_salary?: number | null
           income_rent?: number | null
           income_salary?: number | null
           liabilities?: number | null
@@ -1114,6 +1122,7 @@ export type Database = {
         }
         Update: {
           age?: number | null
+          analysis_scope?: string | null
           assets_bank?: number | null
           assets_cash?: number | null
           assets_crypto?: number | null
@@ -1134,6 +1143,7 @@ export type Database = {
           desired_retirement_income?: number | null
           down_payment_pct?: number | null
           expected_return?: number | null
+          expenses_partner?: number | null
           fixed_education?: number
           fixed_housing?: number
           fixed_insurance?: number
@@ -1150,6 +1160,8 @@ export type Database = {
           id?: string
           income_bonus?: number | null
           income_other?: number | null
+          income_partner_other?: number | null
+          income_partner_salary?: number | null
           income_rent?: number | null
           income_salary?: number | null
           liabilities?: number | null
