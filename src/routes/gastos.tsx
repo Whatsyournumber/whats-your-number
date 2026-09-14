@@ -393,6 +393,55 @@ function Gastos() {
   const avgMonthlyVariable = monthlyAverage - fixed.total;
   const targetPct = target > 0 ? (monthlyRun / target) * 100 : 0;
 
+  // ---- Plan de gasto por categoría ----
+  const budgets = useSpendBudgets();
+  const [budgetOpen, setBudgetOpen] = useState(false);
+
+  /** Factor para llevar el gasto variable del periodo a base mensual. */
+  const toMonthly = isLongRange ? (periodMonths > 0 ? 1 / periodMonths : 1) : canProject ? 30 / days : 1;
+
+  /** Gasto real mensual por categoría del plan (variables + fijos que coincidan). */
+  const actualByBudget = useMemo(() => {
+    const map = new Map<string, number>();
+    const match = (name: string) => {
+      const n = name.trim().toLowerCase();
+      return BUDGET_CATEGORIES.find((c) => c.aliases.some((a) => n === a || n.includes(a)))?.id ?? null;
+    };
+    for (const c of byCategory) {
+      const id = match(c.name);
+      if (id) map.set(id, (map.get(id) ?? 0) + c.amount * toMonthly);
+    }
+    for (const item of fixed.items) {
+      const amount = Number(item.amount) || 0;
+      if (amount <= 0) continue;
+      const id = match(item.name);
+      if (id) map.set(id, (map.get(id) ?? 0) + amount);
+    }
+    return map;
+  }, [byCategory, fixed.items, toMonthly]);
+
+  const budgetRows = useMemo(
+    () =>
+      budgets.lines
+        .filter((l) => l.amount > 0)
+        .map((l) => {
+          const cat = findBudgetCategory(l.id);
+          const name = cat ? t(cat.es, cat.en) : (l.label ?? l.id);
+          return {
+            id: l.id,
+            name,
+            emoji: cat?.emoji ?? l.emoji ?? "📦",
+            planned: l.amount,
+            actual: actualByBudget.get(l.id) ?? 0,
+          };
+        })
+        .sort((a, b) => b.actual - b.planned - (a.actual - a.planned)),
+    [budgets.lines, actualByBudget, t],
+  );
+
+  const budgetPlanTotal = budgetRows.reduce((s, r) => s + r.planned, 0);
+  const overBudget = budgetRows.filter((r) => r.actual > r.planned);
+
   // ---- Recomendaciones IA ----
   const [advice, setAdvice] = useState<AdviceAction[] | null>(null);
   const [adviceLoading, setAdviceLoading] = useState(false);
