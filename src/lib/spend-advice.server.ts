@@ -13,6 +13,8 @@ export type AdviceInput = {
   monthlyRun: number;
   categories: { name: string; amount: number; prevAmount: number }[];
   merchants: { name: string; amount: number; count: number }[];
+  /** Plan de gasto por categoría definido por el usuario. */
+  budgets?: { name: string; planned: number; actual: number }[];
 };
 
 export const adviceSchema = z.object({
