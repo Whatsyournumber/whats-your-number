@@ -47,7 +47,8 @@ Reglas:
 - "action": empieza con un verbo en imperativo, máximo 12 palabras, concreta y medible.
 - "monthlySaving": número realista en la moneda dada, sin símbolos ni texto.
 - "overspent": true si ese rubro subió vs. el periodo anterior o rompe el objetivo.
-- Si hay un "Plan de gasto por categoría", prioriza las categorías donde el gasto real supera lo planificado y dilo explícitamente en "diagnosis" (real vs. plan).
+- Si hay un "Plan de gasto por categoría", las categorías EXCEDIDAS van primero, ordenadas por cuánto se pasaron (mayor exceso primero), y "diagnosis" debe decir real vs. plan y el exceso (ej. "1.596 vs. 500 de plan, +219%").
+- La primera acción SIEMPRE debe ser la categoría donde más se excedió el plan, si existe plan.
 No inventes datos: usa solo categorías y comercios del contexto.`;
 
 export async function generateSpendAdvice(input: AdviceInput): Promise<SpendAdvice> {
@@ -66,6 +67,10 @@ export async function generateSpendAdvice(input: AdviceInput): Promise<SpendAdvi
     .map((m) => `- ${m.name}: ${m.amount.toFixed(0)} ${input.currency} en ${m.count} compras`)
     .join("\n");
 
+  const overBudget = (input.budgets ?? [])
+    .filter((b) => b.planned > 0 && b.actual > b.planned)
+    .sort((a, b) => (b.actual - b.planned) - (a.actual - a.planned))[0];
+
   const prompt = `Moneda: ${input.currency}
 Periodo analizado: ${input.periodLabel}
 Gasto variable del periodo: ${input.total.toFixed(0)} (periodo anterior: ${input.prevTotal.toFixed(0)})
@@ -82,16 +87,23 @@ ${merch || "- sin datos"}
 Plan de gasto por categoría (plan vs. real mensual):
 ${
   input.budgets && input.budgets.length
-    ? input.budgets
+    ? [...input.budgets]
+        .sort((a, b) => (b.actual - b.planned) - (a.actual - a.planned))
         .map(
           (b) =>
-            `- ${b.name}: plan ${b.planned.toFixed(0)} · real ${b.actual.toFixed(0)} ${
-              b.planned > 0 && b.actual > b.planned ? "(EXCEDIDO)" : ""
+            `- ${b.name}: plan ${b.planned.toFixed(0)} · real ${b.actual.toFixed(0)}${
+              b.planned > 0 && b.actual > b.planned
+                ? ` (EXCEDIDO en ${(b.actual - b.planned).toFixed(0)}, +${Math.round(((b.actual - b.planned) / b.planned) * 100)}%)`
+                : ""
             }`,
         )
         .join("\n")
     : "- (el usuario no definió plan)"
-}`;
+}${
+    overBudget
+      ? `\n\nCategoría donde MÁS se excedió el plan: ${overBudget.name} (real ${overBudget.actual.toFixed(0)} vs. plan ${overBudget.planned.toFixed(0)}). Debe ser la primera acción.`
+      : ""
+  }`;
 
   const result = await generateText({
     model: gateway("google/gemini-3.6-flash"),
