@@ -791,20 +791,10 @@ function Gastos() {
             </p>
           </div>
           <Button className="w-full sm:w-auto" variant="outline" size="sm" onClick={() => setBudgetOpen(true)}>
-            {monthlyRun <= target ? (
-              <>
-                <TrendingUp className="h-4 w-4" />
-                <span className="sm:hidden">{t(`Invierte ${fmt(target - monthlyRun)}`, `Invest ${fmt(target - monthlyRun)}`)}</span>
-                <span className="hidden sm:inline">{t(`Invierte tus ${fmt(target - monthlyRun)} extra`, `Invest your extra ${fmt(target - monthlyRun)}`)}</span>
-              </>
-            ) : (
-              <>
-                <Plus className="h-4 w-4" />
-                {budgetRows.length
-                  ? t("Editar plan de gastos personalizado", "Edit custom spending plan")
-                  : t("Plan de gastos personalizado", "Custom spending plan")}
-              </>
-            )}
+            <Plus className="h-4 w-4" />
+            {budgetRows.length
+              ? t("Editar plan de gastos personalizado", "Edit custom spending plan")
+              : t("Plan de gastos personalizado", "Custom spending plan")}
           </Button>
         </div>
 
@@ -831,7 +821,7 @@ function Gastos() {
                 )}
               >
                 {monthlyRun <= target
-                  ? `${fmt(target - monthlyRun)} ${t("por debajo", "under")}`
+                  ? `${fmt(target - monthlyRun)} ${t("que puedes invertir", "you can invest")}`
                   : `${fmt(monthlyRun - target)} ${t("por encima", "over")}`}
               </span>
             </div>
