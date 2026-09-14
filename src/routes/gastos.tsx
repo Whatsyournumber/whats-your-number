@@ -852,9 +852,12 @@ function Gastos() {
               className="flex w-full items-center justify-between gap-2 py-1 text-left"
               aria-label={t("Mostrar u ocultar plan por categoría", "Show or hide category plan")}
             >
-              <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                {t("Plan de gastos personalizado", "Custom spending plan")}
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                  {t("Plan de gastos personalizado", "Custom spending plan")}
+                </p>
+                <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
+              </div>
               <div className="flex items-center gap-2">
                 <p className="text-xs text-muted-foreground">
                   {t("Plan", "Plan")} {fmt(budgetPlanTotal)}
@@ -865,7 +868,17 @@ function Gastos() {
                     </span>
                   )}
                 </p>
-                <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setBudgetOpen(true);
+                  }}
+                  className="grid h-7 w-7 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  aria-label={t("Editar plan de gastos personalizado", "Edit custom spending plan")}
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                </button>
               </div>
             </CollapsibleTrigger>
             <CollapsibleContent>
