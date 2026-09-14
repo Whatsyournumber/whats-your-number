@@ -588,30 +588,6 @@ function AuthPage() {
           )}
         </div>
 
-        {mode === "signup" && (
-          <div className="mt-5">
-            <Label htmlFor="promo" className="text-xs text-slate-500">
-              {t("auth.promo.label")}
-            </Label>
-            <Input
-              id="promo"
-              value={promo}
-              onChange={(e) => {
-                const value = e.target.value.toUpperCase();
-                setPromo(value);
-                if (value.trim()) setPendingPromoCode(value);
-              }}
-              className="mt-1.5 rounded-xl border-slate-200 bg-white uppercase tracking-wide text-slate-900 placeholder:text-slate-400"
-            />
-            <p className="mt-1 text-[11px] text-slate-400">
-              {tt(
-                "Se aplica también si te registras con Google.",
-                "It also applies if you sign up with Google.",
-              )}
-            </p>
-          </div>
-        )}
-
         {/* Google primero, como en la referencia */}
         <Button
           variant="outline"
@@ -699,6 +675,29 @@ function AuthPage() {
             )}
           </div>
 
+          {mode === "signup" && (
+            <div>
+              <Label htmlFor="promo" className="text-xs text-slate-500">
+                {t("auth.promo.label")}
+              </Label>
+              <Input
+                id="promo"
+                value={promo}
+                onChange={(e) => {
+                  const value = e.target.value.toUpperCase();
+                  setPromo(value);
+                  if (value.trim()) setPendingPromoCode(value);
+                }}
+                className="mt-1.5 rounded-xl border-slate-200 bg-white uppercase tracking-wide text-slate-900 placeholder:text-slate-400"
+              />
+              <p className="mt-1 text-[11px] text-slate-400">
+                {tt(
+                  "Se aplica también si te registras con Google.",
+                  "It also applies if you sign up with Google.",
+                )}
+              </p>
+            </div>
+          )}
 
           <Button
             type="submit"
