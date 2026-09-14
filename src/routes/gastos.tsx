@@ -41,6 +41,9 @@ import { useCategories } from "@/hooks/use-categories";
 import { useCategoryRules } from "@/hooks/use-category-rules";
 
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
+import { useSpendBudgets } from "@/hooks/use-spend-budgets";
+import { BudgetDialog } from "@/components/budget-dialog";
+import { BUDGET_CATEGORIES, findBudgetCategory } from "@/lib/budget-categories";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions, sameMerchant, type Tx } from "@/hooks/use-transactions";
 import { compact, FIXED_FIELDS, money } from "@/lib/onboarding";
@@ -393,6 +396,55 @@ function Gastos() {
   const avgMonthlyVariable = monthlyAverage - fixed.total;
   const targetPct = target > 0 ? (monthlyRun / target) * 100 : 0;
 
+  // ---- Plan de gasto por categoría ----
+  const budgets = useSpendBudgets();
+  const [budgetOpen, setBudgetOpen] = useState(false);
+
+  /** Factor para llevar el gasto variable del periodo a base mensual. */
+  const toMonthly = isLongRange ? (periodMonths > 0 ? 1 / periodMonths : 1) : canProject ? 30 / days : 1;
+
+  /** Gasto real mensual por categoría del plan (variables + fijos que coincidan). */
+  const actualByBudget = useMemo(() => {
+    const map = new Map<string, number>();
+    const match = (name: string) => {
+      const n = name.trim().toLowerCase();
+      return BUDGET_CATEGORIES.find((c) => c.aliases.some((a) => n === a || n.includes(a)))?.id ?? null;
+    };
+    for (const c of byCategory) {
+      const id = match(c.name);
+      if (id) map.set(id, (map.get(id) ?? 0) + c.amount * toMonthly);
+    }
+    for (const item of fixed.items) {
+      const amount = Number(item.amount) || 0;
+      if (amount <= 0) continue;
+      const id = match(item.name);
+      if (id) map.set(id, (map.get(id) ?? 0) + amount);
+    }
+    return map;
+  }, [byCategory, fixed.items, toMonthly]);
+
+  const budgetRows = useMemo(
+    () =>
+      budgets.lines
+        .filter((l) => l.amount > 0)
+        .map((l) => {
+          const cat = findBudgetCategory(l.id);
+          const name = cat ? t(cat.es, cat.en) : (l.label ?? l.id);
+          return {
+            id: l.id,
+            name,
+            emoji: cat?.emoji ?? l.emoji ?? "📦",
+            planned: l.amount,
+            actual: actualByBudget.get(l.id) ?? 0,
+          };
+        })
+        .sort((a, b) => b.actual - b.planned - (a.actual - a.planned)),
+    [budgets.lines, actualByBudget, t],
+  );
+
+  const budgetPlanTotal = budgetRows.reduce((s, r) => s + r.planned, 0);
+  const overBudget = budgetRows.filter((r) => r.actual > r.planned);
+
   // ---- Recomendaciones IA ----
   const [advice, setAdvice] = useState<AdviceAction[] | null>(null);
   const [adviceLoading, setAdviceLoading] = useState(false);
@@ -516,7 +568,7 @@ function Gastos() {
     };
   }, [range]);
 
-  const adviceKey = `${rangeLabel}|${variableTotal.toFixed(0)}|${fixed.total}|${target}`;
+  const adviceKey = `${rangeLabel}|${variableTotal.toFixed(0)}|${fixed.total}|${target}|${budgetPlanTotal}`;
   const lastAdviceKey = useRef<string | null>(null);
 
   const runAdvice = async () => {
@@ -539,6 +591,7 @@ function Gastos() {
             prevAmount: prevByCategory.get(c.name) ?? 0,
           })),
           merchants: merchants.slice(0, 10).map((m) => ({ name: m.name, amount: m.amount, count: m.count })),
+          budgets: budgetRows.map((b) => ({ name: b.name, planned: b.planned, actual: b.actual })),
         },
       });
       setAdvice(res.actions);
@@ -726,6 +779,14 @@ function Gastos() {
               : t("Promedio mensual vs. tu techo de gasto.", "Monthly average vs. your spending ceiling.")
             : t("Ritmo actual vs. tu techo de gasto según tu número.", "Current pace vs. your spending ceiling based on your number.")
         }
+        actions={
+          <Button variant="outline" size="sm" onClick={() => setBudgetOpen(true)}>
+            <Plus className="mr-1 h-4 w-4" />
+            {budgetRows.length
+              ? t("Editar plan por categoría", "Edit category plan")
+              : t("Objetivo personalizado", "Custom plan")}
+          </Button>
+        }
       >
         <div className="grid gap-5 md:grid-cols-[200px_1fr] md:items-center">
           <div>
@@ -774,7 +835,65 @@ function Gastos() {
             </p>
           </div>
         </div>
+
+        {budgetRows.length > 0 && (
+          <div className="mt-5 border-t border-border/60 pt-4">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                {t("Plan por categoría", "Category plan")}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {t("Plan", "Plan")} {fmt(budgetPlanTotal)}
+                {overBudget.length > 0 && (
+                  <span className="text-negative">
+                    {" · "}
+                    {overBudget.length} {t("categorías excedidas", "categories over plan")}
+                  </span>
+                )}
+              </p>
+            </div>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {budgetRows.map((row) => {
+                const pct = row.planned > 0 ? (row.actual / row.planned) * 100 : 0;
+                const over = row.actual > row.planned;
+                return (
+                  <div key={row.id} className="rounded-xl border border-border/50 px-3 py-2">
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span className="truncate text-sm">
+                        {row.emoji} {row.name}
+                      </span>
+                      <span className={cn("numeric shrink-0 text-xs", over ? "text-negative" : "text-positive")}>
+                        {fmt(row.actual)} / {fmt(row.planned)}
+                      </span>
+                    </div>
+                    <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
+                      <div
+                        className={cn("h-full rounded-full", over ? "bg-negative" : "bg-positive")}
+                        style={{ width: `${Math.min(100, pct)}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </Panel>
+
+      <BudgetDialog
+        open={budgetOpen}
+        onOpenChange={setBudgetOpen}
+        lines={budgets.lines}
+        onSave={(next) => {
+          budgets.save(next);
+          const totalPlan = next.reduce((s, l) => s + (l.amount || 0), 0);
+          if (totalPlan > 0) setTarget(Math.round(totalPlan));
+          toast.success(t("Plan de gasto guardado", "Spending plan saved"));
+        }}
+        actualById={actualByBudget}
+        fmt={fmt}
+      />
+
 
 
 

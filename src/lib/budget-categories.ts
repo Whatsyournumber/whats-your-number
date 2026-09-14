@@ -1,0 +1,66 @@
+/** Catálogo de categorías para el objetivo de gasto personalizado. */
+export type BudgetGroup = "essentials" | "lifestyle" | "other";
+
+export type BudgetCategory = {
+  id: string;
+  emoji: string;
+  es: string;
+  en: string;
+  group: BudgetGroup;
+  /** Nombres de categorías de la app (en minúscula) que suman a esta categoría. */
+  aliases: string[];
+};
+
+export const BUDGET_CATEGORIES: BudgetCategory[] = [
+  { id: "housing", emoji: "🏠", es: "Vivienda", en: "Housing", group: "essentials", aliases: ["vivienda", "housing", "alquiler", "hipoteca"] },
+  { id: "utilities", emoji: "💡", es: "Servicios", en: "Utilities", group: "essentials", aliases: ["servicios", "utilities"] },
+  { id: "groceries", emoji: "🛒", es: "Supermercado", en: "Groceries", group: "essentials", aliases: ["mercado", "supermercado", "groceries"] },
+  { id: "transport", emoji: "🚗", es: "Transporte", en: "Transport", group: "essentials", aliases: ["transporte", "transport", "coche", "car"] },
+  { id: "insurance", emoji: "🛡️", es: "Seguros", en: "Insurance", group: "essentials", aliases: ["seguros", "insurance", "bancos & seguros", "banks & insurance"] },
+  { id: "health", emoji: "🏥", es: "Salud", en: "Health", group: "essentials", aliases: ["salud", "health"] },
+  { id: "education", emoji: "🎓", es: "Educación", en: "Education", group: "essentials", aliases: ["educacion", "educación", "education", "colegio", "school"] },
+  { id: "family", emoji: "👨‍👩‍👧", es: "Hijos/Familia", en: "Kids/Family", group: "essentials", aliases: ["hijos", "familia", "family", "kids"] },
+  { id: "debt", emoji: "💳", es: "Deudas/préstamos", en: "Debt/loans", group: "essentials", aliases: ["deudas", "prestamos", "préstamos", "debt", "loans"] },
+
+  { id: "restaurants", emoji: "🍽️", es: "Restaurantes", en: "Restaurants", group: "lifestyle", aliases: ["restaurantes", "restaurants"] },
+  { id: "delivery", emoji: "🛵", es: "Delivery", en: "Delivery", group: "lifestyle", aliases: ["delivery"] },
+  { id: "travel", emoji: "✈️", es: "Viajes", en: "Travel", group: "lifestyle", aliases: ["viajes", "travel"] },
+  { id: "nightlife", emoji: "🎉", es: "Ocio/Nightlife", en: "Nightlife", group: "lifestyle", aliases: ["nightlife", "ocio"] },
+  { id: "shopping", emoji: "🛍️", es: "Compras", en: "Shopping", group: "lifestyle", aliases: ["compras", "shopping"] },
+  { id: "clothing", emoji: "👕", es: "Ropa", en: "Clothing", group: "lifestyle", aliases: ["ropa", "clothing"] },
+  { id: "beauty", emoji: "💇", es: "Cuidado personal", en: "Personal care", group: "lifestyle", aliases: ["belleza", "cuidado personal", "beauty", "personal care"] },
+  { id: "gym", emoji: "🏋️", es: "Gimnasio/Deportes", en: "Gym/Sports", group: "lifestyle", aliases: ["deportes", "gimnasio", "sports", "gym"] },
+  { id: "apps", emoji: "📱", es: "Apps/Suscripciones", en: "Apps/Subscriptions", group: "lifestyle", aliases: ["apps", "suscripciones", "subscriptions"] },
+  { id: "entertainment", emoji: "🎮", es: "Entretenimiento", en: "Entertainment", group: "lifestyle", aliases: ["entretenimiento", "entertainment"] },
+  { id: "pets", emoji: "🐶", es: "Mascotas", en: "Pets", group: "lifestyle", aliases: ["mascotas", "pets"] },
+  { id: "gifts", emoji: "🎁", es: "Regalos", en: "Gifts", group: "lifestyle", aliases: ["regalos", "gifts"] },
+
+  { id: "professional", emoji: "💼", es: "Gastos profesionales", en: "Professional expenses", group: "other", aliases: ["profesionales", "professional", "marketing digital", "digital marketing"] },
+  { id: "donations", emoji: "❤️", es: "Donaciones", en: "Donations", group: "other", aliases: ["donaciones", "donations"] },
+  { id: "second-home", emoji: "🏡", es: "Segunda vivienda", en: "Second home", group: "other", aliases: ["segunda vivienda", "second home"] },
+  { id: "other", emoji: "📦", es: "Otros", en: "Other", group: "other", aliases: ["otros", "other"] },
+];
+
+/** Las 12 que se muestran por defecto. */
+export const DEFAULT_BUDGET_IDS = [
+  "housing",
+  "utilities",
+  "groceries",
+  "transport",
+  "insurance",
+  "health",
+  "restaurants",
+  "delivery",
+  "travel",
+  "nightlife",
+  "shopping",
+  "apps",
+];
+
+export const GROUP_LABELS: Record<BudgetGroup, { es: string; en: string }> = {
+  essentials: { es: "Esenciales", en: "Essentials" },
+  lifestyle: { es: "Estilo de vida", en: "Lifestyle" },
+  other: { es: "Otros", en: "Other" },
+};
+
+export const findBudgetCategory = (id: string) => BUDGET_CATEGORIES.find((c) => c.id === id);

@@ -13,6 +13,8 @@ export type AdviceInput = {
   monthlyRun: number;
   categories: { name: string; amount: number; prevAmount: number }[];
   merchants: { name: string; amount: number; count: number }[];
+  /** Plan de gasto por categoría definido por el usuario. */
+  budgets?: { name: string; planned: number; actual: number }[];
 };
 
 export const adviceSchema = z.object({
@@ -45,6 +47,7 @@ Reglas:
 - "action": empieza con un verbo en imperativo, máximo 12 palabras, concreta y medible.
 - "monthlySaving": número realista en la moneda dada, sin símbolos ni texto.
 - "overspent": true si ese rubro subió vs. el periodo anterior o rompe el objetivo.
+- Si hay un "Plan de gasto por categoría", prioriza las categorías donde el gasto real supera lo planificado y dilo explícitamente en "diagnosis" (real vs. plan).
 No inventes datos: usa solo categorías y comercios del contexto.`;
 
 export async function generateSpendAdvice(input: AdviceInput): Promise<SpendAdvice> {
@@ -74,7 +77,21 @@ Gasto por categoría:
 ${cats || "- sin datos"}
 
 Top comercios:
-${merch || "- sin datos"}`;
+${merch || "- sin datos"}
+
+Plan de gasto por categoría (plan vs. real mensual):
+${
+  input.budgets && input.budgets.length
+    ? input.budgets
+        .map(
+          (b) =>
+            `- ${b.name}: plan ${b.planned.toFixed(0)} · real ${b.actual.toFixed(0)} ${
+              b.planned > 0 && b.actual > b.planned ? "(EXCEDIDO)" : ""
+            }`,
+        )
+        .join("\n")
+    : "- (el usuario no definió plan)"
+}`;
 
   const result = await generateText({
     model: gateway("google/gemini-3.6-flash"),
