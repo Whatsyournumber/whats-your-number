@@ -784,8 +784,8 @@ function Gastos() {
           <Button variant="outline" size="sm" onClick={() => setBudgetOpen(true)}>
             <Plus className="mr-1 h-4 w-4" />
             {budgetRows.length
-              ? t("Editar plan por categoría", "Edit category plan")
-              : t("Objetivo personalizado", "Custom plan")}
+              ? t("Editar plan de gastos personalizado", "Edit custom spending plan")
+              : t("Plan de gastos personalizado", "Custom spending plan")}
           </Button>
         }
       >
@@ -844,7 +844,7 @@ function Gastos() {
               aria-label={t("Mostrar u ocultar plan por categoría", "Show or hide category plan")}
             >
               <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                {t("Plan por categoría", "Category plan")}
+                {t("Plan de gastos personalizado", "Custom spending plan")}
               </p>
               <div className="flex items-center gap-2">
                 <p className="text-xs text-muted-foreground">
