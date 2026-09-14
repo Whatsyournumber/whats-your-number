@@ -844,7 +844,7 @@ function Gastos() {
               aria-label={t("Mostrar u ocultar plan por categoría", "Show or hide category plan")}
             >
               <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                {t("Plan por categoría", "Category plan")}
+                {t("Plan de gastos personalizado", "Custom spending plan")}
               </p>
               <div className="flex items-center gap-2">
                 <p className="text-xs text-muted-foreground">
