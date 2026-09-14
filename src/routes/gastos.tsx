@@ -769,27 +769,33 @@ function Gastos() {
 
       <Panel
         variant="minimal"
-        title={isLongRange ? t("Promedio mensual vs objetivo", "Monthly average vs target") : t("Gasto objetivo mensual", "Monthly spend target")}
-        description={
-          isLongRange
-            ? periodMonths > 0
-              ? t(
-                  `Promedio mensual de los ${periodMonths} meses analizados vs. tu techo de gasto.`,
-                  `Monthly average of the ${periodMonths} months analyzed vs. your spending ceiling.`,
-                )
-              : t("Promedio mensual vs. tu techo de gasto.", "Monthly average vs. your spending ceiling.")
-            : t("Ritmo actual vs. tu techo de gasto según tu número.", "Current pace vs. your spending ceiling based on your number.")
-        }
-        actions={
-          <Button variant="outline" size="sm" onClick={() => setBudgetOpen(true)}>
-            <Plus className="mr-1 h-4 w-4" />
+        className="p-4 sm:p-5"
+      >
+        <div className="mb-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
+          <div className="min-w-0">
+            <h2 className="text-base font-semibold sm:text-sm">
+              {isLongRange ? t("Promedio mensual vs objetivo", "Monthly average vs target") : t("Gasto objetivo mensual", "Monthly spend target")}
+            </h2>
+            <p className="mt-1 text-xs leading-5 text-muted-foreground sm:text-[0.8125rem]">
+              {isLongRange
+                ? periodMonths > 0
+                  ? t(
+                      `Promedio mensual de los ${periodMonths} meses analizados vs. tu techo de gasto.`,
+                      `Monthly average of the ${periodMonths} months analyzed vs. your spending ceiling.`,
+                    )
+                  : t("Promedio mensual vs. tu techo de gasto.", "Monthly average vs. your spending ceiling.")
+                : t("Ritmo actual vs. tu techo de gasto según tu número.", "Current pace vs. your spending ceiling based on your number.")}
+            </p>
+          </div>
+          <Button className="w-full sm:w-auto" variant="outline" size="sm" onClick={() => setBudgetOpen(true)}>
+            <Plus className="h-4 w-4" />
             {budgetRows.length
               ? t("Editar plan de gastos personalizado", "Edit custom spending plan")
               : t("Plan de gastos personalizado", "Custom spending plan")}
           </Button>
-        }
-      >
-        <div className="grid gap-5 md:grid-cols-[200px_1fr] md:items-center">
+        </div>
+
+        <div className="grid gap-6 border-t border-border/50 pt-4 md:grid-cols-[200px_1fr] md:items-center md:border-t-0 md:pt-0">
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{t("Objetivo", "Target")}</p>
             <div className="mt-2 flex items-center gap-2">
@@ -802,10 +808,11 @@ function Gastos() {
               <span className="text-xs text-muted-foreground">{t("/mes", "/mo")}</span>
             </div>
           </div>
-          <div>
-            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span className="numeric text-xl font-semibold">{fmt(monthlyRun)}</span>
-              <span className="text-xs text-muted-foreground">
+          <div className="min-w-0">
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
+              <div className="min-w-0">
+                <span className="numeric block text-2xl font-semibold sm:text-xl">{fmt(monthlyRun)}</span>
+                <span className="mt-1 block text-xs leading-5 text-muted-foreground">
                 {isLongRange
                   ? t(`promedio mensual de ${periodMonths} meses`, `monthly average of ${periodMonths} months`)
                   : canProject
@@ -813,10 +820,11 @@ function Gastos() {
                     : t("acumulado del mes", "month-to-date spend")}
                 {" · "}
                 {t("objetivo", "target")} {fmt(target)}/{t("mes", "mo")}
-              </span>
+                </span>
+              </div>
               <span
                 className={cn(
-                  "ml-auto rounded-full px-2 py-0.5 text-xs font-medium",
+                  "shrink-0 rounded-full px-2 py-1 text-xs font-medium",
                   monthlyRun <= target ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative",
                 )}
               >
