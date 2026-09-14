@@ -476,10 +476,10 @@ function Dashboard() {
           value={fmt(current.income)}
           editHref="/mi-perfil"
           hint={
-            current.expenses > 0
+            current.income > 0
               ? t(
-                  `Cubre el ${Math.min(999, Math.round((current.income / current.expenses) * 100))}% de tus gastos`,
-                  `Covers ${Math.min(999, Math.round((current.income / current.expenses) * 100))}% of your expenses`,
+                  `Disponible después de fijos: ${fmt(Math.max(0, current.income - fixed.total))}`,
+                  `Available after fixed expenses: ${fmt(Math.max(0, current.income - fixed.total))}`,
                 )
               : t("Ingreso mensual estimado", "Estimated monthly income")
           }
