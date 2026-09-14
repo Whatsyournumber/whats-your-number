@@ -779,10 +779,9 @@ function OnboardingPage() {
 
             {step === 9 && (
               <Screen
-                title={t("Hablemos de tu patrimonio", "Let's talk about your net worth")}
-                hint={t(
-                  "Antes de analizar tus movimientos, queremos conocer una estimación de tu patrimonio actual. Si no conoces alguna cifra, puedes dejarla en 0 o editarla más adelante.",
-                  "Before analyzing your transactions, we want an estimate of your current net worth. If you don't know a figure, leave it at 0 or edit it later.",
+                title={t(
+                  "Estima tu patrimonio actual (puedes completarlo luego)",
+                  "Estimate your current net worth (you can complete it later)",
                 )}
               >
                 <div className="flex gap-3 rounded-2xl border border-primary/25 bg-primary/5 px-5 py-4">
