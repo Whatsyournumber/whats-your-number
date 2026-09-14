@@ -14,6 +14,10 @@ const schema = z.object({
   environment: z.enum(["sandbox", "live"]).default("live"),
   categories: z.array(z.object({ name: z.string(), amount: z.number(), prevAmount: z.number() })),
   merchants: z.array(z.object({ name: z.string(), amount: z.number(), count: z.number() })),
+  budgets: z
+    .array(z.object({ name: z.string(), planned: z.number(), actual: z.number() }))
+    .optional()
+    .default([]),
 });
 
 export const getSpendAdvice = createServerFn({ method: "POST" })
