@@ -1060,13 +1060,13 @@ function Gastos() {
         <Panel
           variant="minimal"
           title={t("Gastos fijos mensuales", "Monthly fixed expenses")}
-          description={t("Edita el monto mensual; abajo se muestra lo que representa en el periodo seleccionado.", "Edit the monthly amount; below you see what it represents for the selected period.")}
+          description={t("Edita el monto mensual y revisa el total del periodo.", "Edit the monthly amount and check the period total.")}
           actions={
             <div className="flex items-center gap-3">
               {!fixedOpen && (
                 <div className="flex flex-col items-end">
-                  <span className="numeric text-sm font-semibold">{fmt(fixed.total)}{t("/mes", "/mo")}</span>
-                  <span className="numeric text-[11px] text-muted-foreground">
+                  <span className="numeric hidden text-sm font-semibold sm:block">{fmt(fixed.total)}{t("/mes", "/mo")}</span>
+                  <span className="numeric text-sm font-semibold sm:text-[11px] sm:font-normal sm:text-muted-foreground">
                     {isLongRange
                       ? `${fmt(fixed.total * monthsInRange)} · ${t(`${monthsInRange} meses`, `${monthsInRange} months`)}`
                       : `${fmt(fixed.total)} ${t("en este periodo", "in this period")}`}
