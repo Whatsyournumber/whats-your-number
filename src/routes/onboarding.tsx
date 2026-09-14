@@ -814,6 +814,35 @@ function OnboardingPage() {
                   </select>
                 </div>
 
+                {hasPartner && (
+                  <div className="mt-5 flex items-center justify-between gap-3 rounded-2xl border border-border/60 bg-elevated/40 px-5 py-3">
+                    <div>
+                      <p className="text-sm">{t("Análisis de", "Analysis for")}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {t("Elige si calculamos solo lo tuyo o el hogar completo", "Choose if we calculate just yours or the full household")}
+                      </p>
+                    </div>
+                    <div className="flex gap-2">
+                      {analysisScopeOptions.map((o) => (
+                        <button
+                          key={o.value}
+                          type="button"
+                          onClick={() => setL("analysis_scope", o.value)}
+                          className={cn(
+                            "rounded-full border px-4 py-2 text-xs font-semibold transition",
+                            life.analysis_scope === o.value
+                              ? "border-primary/60 bg-primary/15 text-foreground"
+                              : "border-border/60 bg-background/50 text-muted-foreground hover:border-primary/40 hover:text-foreground",
+                          )}
+                        >
+                          {t(o.label, o.en)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+
 
                 <div className="mt-6">
                   <SubQuestion
