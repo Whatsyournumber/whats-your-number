@@ -780,20 +780,17 @@ function OnboardingPage() {
             {step === 9 && (
               <Screen
                 title={t(
-                  "Estima tu patrimonio actual (puedes completarlo luego)",
-                  "Estimate your current net worth (you can complete it later)",
+                  "Hablemos de tu patrimonio",
+                  "Let's talk about your net worth",
                 )}
               >
-                <div className="flex gap-3 rounded-2xl border border-primary/25 bg-primary/5 px-5 py-4">
-                  <span className="text-lg">🤖</span>
-                  <p className="text-xs leading-relaxed text-muted-foreground">
-                    {t(
-                      "No te preocupes si no conoces estos números. Nuestra IA puede calcularlos automáticamente analizando tus extractos financieros. Solo completa lo que conozcas —",
-                      "Don't worry if you don't know these numbers. Our AI can calculate them automatically by analyzing your financial statements. Just fill in what you know —",
-                    )}{" "}
-                    <span className="text-foreground">{t("podrás modificarlo cuando quieras", "you can edit it anytime")}</span>.
-                  </p>
-                </div>
+                <p className="mx-auto max-w-xl text-center text-sm text-muted-foreground">
+                  🤖 {t(
+                    "No te preocupes si no conoces estos números. Nuestra IA puede calcularlos automáticamente analizando tus extractos financieros.",
+                    "Don't worry if you don't know these numbers. Our AI can calculate them automatically by analyzing your financial statements.",
+                  )}{" "}
+                  <span className="text-foreground">{t("Puedes completarlo luego", "You can complete it later")}</span>.
+                </p>
 
                 <div className="flex items-center justify-between gap-4 py-3">
                   <div>
