@@ -792,51 +792,53 @@ function OnboardingPage() {
                   <span className="text-foreground">{t("Puedes completarlo luego", "You can complete it later")}</span>.
                 </p>
 
-                <div className="flex items-center justify-between gap-4 py-3">
-                  <div>
-                    <p className="text-sm font-medium">{t("Moneda", "Currency")}</p>
-                    <p className="text-xs text-muted-foreground">{t("En la que verás todos tus importes", "The one you'll see all your amounts in")}</p>
-                  </div>
-                  <select
-                    className="h-8 rounded-full border border-border/30 bg-background/50 px-4 text-sm font-medium focus:outline-none focus:ring-1 focus:ring-primary/30"
-                    value={cur}
-                    onChange={(e) => set("currency", e.target.value)}
-                  >
-                    {currencies.map((c) => (
-                      <option key={c.code} value={c.code}>
-                        {c.code} · {t(c.label, CURRENCY_EN[c.code] ?? c.label)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {hasPartner && (
-                  <div className="flex items-center justify-between gap-4 border-t border-border/30 py-3">
+                <div className="mt-8 space-y-1">
+                  <div className="flex items-center justify-between gap-4 py-2">
                     <div>
-                      <p className="text-sm font-medium">{t("Análisis de", "Analysis for")}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {t("Solo tuyo o el hogar completo", "Just yours or the full household")}
-                      </p>
+                      <p className="text-sm font-medium">{t("Moneda", "Currency")}</p>
+                      <p className="text-[11px] leading-tight text-muted-foreground/80">{t("En la que verás todos tus importes", "The one you'll see all your amounts in")}</p>
                     </div>
-                    <div className="flex gap-1 rounded-full border border-border/40 bg-background/50 p-1">
-                      {analysisScopeOptions.map((o) => (
-                        <button
-                          key={o.value}
-                          type="button"
-                          onClick={() => setL("analysis_scope", o.value)}
-                          className={cn(
-                            "rounded-full px-3 py-1 text-xs font-medium transition",
-                            life.analysis_scope === o.value
-                              ? "bg-primary/15 text-foreground"
-                              : "text-muted-foreground hover:text-foreground",
-                          )}
-                        >
-                          {t(o.label, o.en)}
-                        </button>
+                    <select
+                      className="h-8 rounded-full border-0 bg-transparent px-0 text-sm font-medium focus:outline-none focus:ring-0"
+                      value={cur}
+                      onChange={(e) => set("currency", e.target.value)}
+                    >
+                      {currencies.map((c) => (
+                        <option key={c.code} value={c.code}>
+                          {c.code} · {t(c.label, CURRENCY_EN[c.code] ?? c.label)}
+                        </option>
                       ))}
-                    </div>
+                    </select>
                   </div>
-                )}
+
+                  {hasPartner && (
+                    <div className="flex items-center justify-between gap-4 border-t border-border/20 py-2">
+                      <div>
+                        <p className="text-sm font-medium">{t("Análisis de", "Analysis for")}</p>
+                        <p className="text-[11px] leading-tight text-muted-foreground/80">
+                          {t("Solo tuyo o el hogar completo", "Just yours or the full household")}
+                        </p>
+                      </div>
+                      <div className="flex gap-1 rounded-full p-1">
+                        {analysisScopeOptions.map((o) => (
+                          <button
+                            key={o.value}
+                            type="button"
+                            onClick={() => setL("analysis_scope", o.value)}
+                            className={cn(
+                              "rounded-full px-3 py-1 text-xs font-medium transition",
+                              life.analysis_scope === o.value
+                                ? "bg-primary/15 text-foreground"
+                                : "text-muted-foreground hover:text-foreground",
+                            )}
+                          >
+                            {t(o.label, o.en)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
 
 
 
