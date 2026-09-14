@@ -47,6 +47,7 @@ Reglas:
 - "action": empieza con un verbo en imperativo, máximo 12 palabras, concreta y medible.
 - "monthlySaving": número realista en la moneda dada, sin símbolos ni texto.
 - "overspent": true si ese rubro subió vs. el periodo anterior o rompe el objetivo.
+- Si hay un "Plan de gasto por categoría", prioriza las categorías donde el gasto real supera lo planificado y dilo explícitamente en "diagnosis" (real vs. plan).
 No inventes datos: usa solo categorías y comercios del contexto.`;
 
 export async function generateSpendAdvice(input: AdviceInput): Promise<SpendAdvice> {
