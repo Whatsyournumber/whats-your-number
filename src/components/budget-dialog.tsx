@@ -14,7 +14,7 @@ import { NumberInput } from "@/components/ui/number-input";
 import { useLanguage, useT } from "@/hooks/use-language";
 import type { BudgetLine } from "@/hooks/use-spend-budgets";
 import { BUDGET_CATEGORIES, DEFAULT_BUDGET_IDS, GROUP_LABELS, findBudgetCategory, type BudgetGroup } from "@/lib/budget-categories";
-import { cn } from "@/lib/utils";
+
 
 type Props = {
   open: boolean;
@@ -157,7 +157,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
 
         <div className="flex items-center justify-between border-t border-border/60 pt-3">
           <div>
-            <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">{t("Total del plan", "Plan total")}</p>
+            <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">{t("Tu objetivo", "Your goal")}</p>
             <p className="numeric text-lg font-semibold">
               {fmt(total)}
               <span className="ml-1 text-xs font-normal text-muted-foreground">{t("/mes", "/mo")}</span>
