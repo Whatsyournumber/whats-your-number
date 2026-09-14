@@ -83,16 +83,23 @@ ${merch || "- sin datos"}
 Plan de gasto por categoría (plan vs. real mensual):
 ${
   input.budgets && input.budgets.length
-    ? input.budgets
+    ? [...input.budgets]
+        .sort((a, b) => (b.actual - b.planned) - (a.actual - a.planned))
         .map(
           (b) =>
-            `- ${b.name}: plan ${b.planned.toFixed(0)} · real ${b.actual.toFixed(0)} ${
-              b.planned > 0 && b.actual > b.planned ? "(EXCEDIDO)" : ""
+            `- ${b.name}: plan ${b.planned.toFixed(0)} · real ${b.actual.toFixed(0)}${
+              b.planned > 0 && b.actual > b.planned
+                ? ` (EXCEDIDO en ${(b.actual - b.planned).toFixed(0)}, +${Math.round(((b.actual - b.planned) / b.planned) * 100)}%)`
+                : ""
             }`,
         )
         .join("\n")
     : "- (el usuario no definió plan)"
-}`;
+}${
+    overBudget
+      ? `\n\nCategoría donde MÁS se excedió el plan: ${overBudget.name} (real ${overBudget.actual.toFixed(0)} vs. plan ${overBudget.planned.toFixed(0)}). Debe ser la primera acción.`
+      : ""
+  }`;
 
   const result = await generateText({
     model: gateway("google/gemini-3.6-flash"),
