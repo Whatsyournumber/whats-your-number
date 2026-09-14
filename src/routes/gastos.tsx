@@ -779,6 +779,14 @@ function Gastos() {
               : t("Promedio mensual vs. tu techo de gasto.", "Monthly average vs. your spending ceiling.")
             : t("Ritmo actual vs. tu techo de gasto según tu número.", "Current pace vs. your spending ceiling based on your number.")
         }
+        actions={
+          <Button variant="outline" size="sm" onClick={() => setBudgetOpen(true)}>
+            <Plus className="mr-1 h-4 w-4" />
+            {budgetRows.length
+              ? t("Editar plan por categoría", "Edit category plan")
+              : t("Objetivo personalizado", "Custom plan")}
+          </Button>
+        }
       >
         <div className="grid gap-5 md:grid-cols-[200px_1fr] md:items-center">
           <div>
