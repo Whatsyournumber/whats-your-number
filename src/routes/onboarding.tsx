@@ -503,9 +503,7 @@ function OnboardingPage() {
             {step === 4 && (
               <Screen title={t("¿Cuál es tu situación familiar?", "What's your family situation?")}>
                 <ChipGroup
-                  options={maritalOptions
-                    .filter((m) => m === "Soltero" || m === "En pareja")
-                    .map((m) => ({ value: m, label: t(m, MARITAL_EN[m] ?? m) }))}
+                  options={maritalOptions.map((m) => ({ value: m, label: t(m, MARITAL_EN[m] ?? m) }))}
                   value={life.marital_status}
                   onSelect={(v) => setL("marital_status", v)}
                 />
