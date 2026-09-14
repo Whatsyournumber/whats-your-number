@@ -890,7 +890,7 @@ function Gastos() {
           if (totalPlan > 0) setTarget(Math.round(totalPlan));
           toast.success(t("Plan de gasto guardado", "Spending plan saved"));
         }}
-        actualById={actualByBudget}
+        
         fmt={fmt}
       />
 
