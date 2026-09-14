@@ -295,6 +295,30 @@ function Dashboard() {
       : t("Ver simulador", "Open simulator");
   const savingsRate = current.income > 0 ? (current.savings / current.income) * 100 : 0;
   const prevRate = previous.income > 0 ? (previous.savings / previous.income) * 100 : 0;
+
+  const incomeHint = (() => {
+    if (current.income <= 0) return t("Ingreso mensual estimado", "Estimated monthly income");
+    if (current.income >= current.expenses) {
+      return t(
+        `Cubre tus gastos · ahorras ${fmt(current.savings)}/mes`,
+        `Covers your expenses · saving ${fmt(current.savings)}/mo`,
+      );
+    }
+    const deficit = current.expenses - current.income;
+    const monthsUntilDry =
+      liveNetWorth > 0 && deficit > 0 ? Math.max(1, Math.floor(liveNetWorth / deficit)) : null;
+    const dryDate = monthsUntilDry
+      ? new Date(new Date().setMonth(new Date().getMonth() + monthsUntilDry)).toLocaleDateString(lang, {
+          month: "short",
+          year: "numeric",
+        })
+      : null;
+    return t(
+      `No cubre · te faltan ${fmt(deficit)}/mes${dryDate ? ` · sin fondos en ${dryDate}` : ""}`,
+      `Doesn't cover · short ${fmt(deficit)}/mo${dryDate ? ` · out of funds by ${dryDate}` : ""}`,
+    );
+  })();
+
   const insights = buildInsights(plan, profile, profile, d.currency, lang);
   const firstName = (profile.full_name || "").trim().split(" ")[0];
 
@@ -475,14 +499,7 @@ function Dashboard() {
           label={t("Ingresos", "Income")}
           value={fmt(current.income)}
           editHref="/mi-perfil"
-          hint={
-            current.income > 0
-              ? t(
-                  `Disponible después de fijos: ${fmt(Math.max(0, current.income - fixed.total))}`,
-                  `Available after fixed expenses: ${fmt(Math.max(0, current.income - fixed.total))}`,
-                )
-              : t("Ingreso mensual estimado", "Estimated monthly income")
-          }
+          hint={incomeHint}
           icon={Banknote}
           index={1}
         />
