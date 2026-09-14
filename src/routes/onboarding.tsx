@@ -38,6 +38,7 @@ import {
   goals,
   housingOptions,
   lifestyles,
+  analysisScopeOptions,
   maritalOptions,
   money,
   netWorth,
@@ -242,6 +243,9 @@ function OnboardingPage() {
   const setL = <K extends keyof LifeData>(key: K, value: LifeData[K]) => setLife((l) => ({ ...l, [key]: value }));
 
   const cur = data.currency || defaultCurrency();
+  const hasPartner = life.marital_status === "Casado" || life.marital_status === "En pareja";
+  // Análisis de hogar: pedimos ingresos y gastos de las dos personas.
+  const household = hasPartner && life.analysis_scope === "pareja";
   // Las tasas del día alimentan la conversión del objetivo estimado.
   const { updatedAt: fxUpdatedAt } = useFxRates();
   const desiredIncome = useMemo(
@@ -287,7 +291,13 @@ function OnboardingPage() {
       return !!life.goal;
     }
     if (step === 2) return !!data.age;
-    if (step === 4) return !!life.marital_status && !!life.children && !!life.plans_children;
+    if (step === 4)
+      return (
+        !!life.marital_status &&
+        (!hasPartner || !!life.analysis_scope) &&
+        !!life.children &&
+        !!life.plans_children
+      );
     if (step === 5) return !!life.lifestyle && !!life.travel_frequency;
     if (step === 6) return !!life.city;
     if (step === 7) return !!life.housing;
@@ -498,7 +508,17 @@ function OnboardingPage() {
                   onSelect={(v) => setL("marital_status", v)}
                 />
                 <AnimatePresence>
-                  {life.marital_status && (
+                  {hasPartner && (
+                    <Reveal>
+                      <SubQuestion title={t("¿Sobre quién hacemos el análisis?", "Who should we analyze?")} />
+                      <ChipGroup
+                        options={analysisScopeOptions.map((o) => ({ value: o.value, label: t(o.label, o.en) }))}
+                        value={life.analysis_scope}
+                        onSelect={(v) => setL("analysis_scope", v)}
+                      />
+                    </Reveal>
+                  )}
+                  {life.marital_status && (!hasPartner || life.analysis_scope) && (
                     <Reveal>
                       <SubQuestion title={t("¿Tienes hijos?", "Do you have children?")} />
                       <ChipGroup options={childrenOptions.map((c) => ({ value: c, label: c }))} value={life.children} onSelect={(v) => setL("children", v)} />
@@ -564,7 +584,6 @@ function OnboardingPage() {
                 </AnimatePresence>
                 {life.lifestyle && life.travel_frequency && (() => {
                   const kidsCount = life.children === "1" ? 1 : life.children === "2" ? 2 : life.children === "3+" ? 3 : 0;
-                  const hasPartner = life.marital_status === "Casado" || life.marital_status === "En pareja";
                   const family = hasPartner || kidsCount > 0 || life.plans_children === "Sí";
                   const parts: string[] = [];
                   if (hasPartner) parts.push(t("pareja", "partner"));
@@ -611,7 +630,6 @@ function OnboardingPage() {
                 />
                 {life.city && (() => {
                   const kidsCount = life.children === "1" ? 1 : life.children === "2" ? 2 : life.children === "3+" ? 3 : 0;
-                  const hasPartner = life.marital_status === "Casado" || life.marital_status === "En pareja";
                   const parts: string[] = [t("ti", "you")];
                   if (hasPartner) parts.push(t("tu pareja", "your partner"));
                   if (kidsCount > 0) parts.push(`${kidsCount} ${kidsCount === 1 ? t("hijo", "child") : t("hijos", "children")}`);
@@ -798,7 +816,13 @@ function OnboardingPage() {
 
 
                 <div className="mt-6">
-                  <SubQuestion title={t("Ingresos y flujo mensual", "Income and monthly flow")} />
+                  <SubQuestion
+                    title={
+                      household
+                        ? t("Tus ingresos mensuales", "Your monthly income")
+                        : t("Ingresos y flujo mensual", "Income and monthly flow")
+                    }
+                  />
                   <div className="mt-4 space-y-2.5">
                     <MoneyField
                       emoji="🪙"
@@ -834,6 +858,44 @@ function OnboardingPage() {
                     />
                   </div>
                 </div>
+
+                {household && (
+                  <div className="mt-8">
+                    <SubQuestion title={t("Ingresos y gastos de tu pareja", "Your partner's income and expenses")} />
+                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                      {t(
+                        "Los sumamos a los tuyos para calcular el número del hogar.",
+                        "We add them to yours to calculate your household number.",
+                      )}
+                    </p>
+                    <div className="mt-4 space-y-2.5">
+                      <MoneyField
+                        emoji="🪙"
+                        label={t("Salario mensual de tu pareja", "Partner's monthly salary")}
+                        desc={t("Neto, después de impuestos", "Net, after taxes")}
+                        currency={cur}
+                        value={data.income_partner_salary ?? 0}
+                        onChange={(v) => set("income_partner_salary", v)}
+                      />
+                      <MoneyField
+                        emoji="✨"
+                        label={t("Otros ingresos de tu pareja", "Partner's other income")}
+                        desc={t("Bonos, alquileres, dividendos…", "Bonuses, rent, dividends…")}
+                        currency={cur}
+                        value={data.income_partner_other ?? 0}
+                        onChange={(v) => set("income_partner_other", v)}
+                      />
+                      <MoneyField
+                        emoji="💳"
+                        label={t("Gastos mensuales de tu pareja", "Partner's monthly expenses")}
+                        desc={t("Los que no están en tus gastos fijos", "The ones not included in your fixed expenses")}
+                        currency={cur}
+                        value={data.expenses_partner ?? 0}
+                        onChange={(v) => set("expenses_partner", v)}
+                      />
+                    </div>
+                  </div>
+                )}
 
                 <div className="mt-8">
                   <SubQuestion title={t("Activos", "Assets")} />
