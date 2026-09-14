@@ -1500,9 +1500,11 @@ function Gastos() {
                       </span>
                     </div>
                     <p className="hidden text-xs leading-relaxed text-muted-foreground sm:block">{a.diagnosis}</p>
-                    <p className="line-clamp-2 text-sm font-medium text-foreground/90 sm:line-clamp-none">→ {a.action}</p>
+                    <p className="text-sm font-medium text-foreground/90">→ {a.action}</p>
                     <div className="mt-1 flex flex-wrap items-center gap-3 pt-1 text-xs">
-                      <span className="text-positive">+{fmt(a.monthlySaving)}{t("/mes", "/mo")}</span>
+                      <span className="inline-flex items-center rounded-full bg-positive/15 px-2 py-1 text-xs font-semibold text-positive sm:bg-transparent sm:px-0 sm:py-0 sm:font-medium">
+                        +{fmt(a.monthlySaving)}{t("/mes", "/mo")}
+                      </span>
                       <span className="hidden text-muted-foreground sm:inline">{fmtCompact(fv)} {t("al 7% en", "at 7% in")} {horizonYears.toFixed(0)}a</span>
                       {gain !== null && gain > 0 && (
                         <span className="inline-flex items-center gap-1 text-positive">
