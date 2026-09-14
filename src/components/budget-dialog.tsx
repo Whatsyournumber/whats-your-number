@@ -87,27 +87,29 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, actualById, fm
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-2">
-          {draft.map((l) => {
-            const actual = actualById.get(l.id) ?? 0;
-            const over = l.amount > 0 && actual > l.amount;
+        <div className="space-y-4">
+          {(["essentials", "lifestyle", "other"] as BudgetGroup[]).map((g) => {
+            const groupLines = draft.filter((l) => (findBudgetCategory(l.id)?.group ?? "other") === g);
+            if (!groupLines.length) return null;
             return (
-              <div key={l.id} className="flex items-center gap-3 rounded-xl border border-border/50 px-3 py-2">
-                <span className="min-w-0 flex-1 truncate text-sm">{label(l)}</span>
-                {actual > 0 && (
-                  <span className={cn("hidden shrink-0 text-xs sm:block", over ? "text-negative" : "text-muted-foreground")}>
-                    {t("real", "actual")} {fmt(actual)}
-                  </span>
-                )}
-                <NumberInput value={l.amount} onChange={(v) => setAmount(l.id, v)} format className="h-9 w-28 text-sm" />
-                <button
-                  type="button"
-                  onClick={() => removeLine(l.id)}
-                  className="text-muted-foreground transition hover:text-negative"
-                  aria-label={t("Quitar", "Remove")}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
+              <div key={g} className="space-y-2">
+                <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                  {t(GROUP_LABELS[g].es, GROUP_LABELS[g].en)}
+                </p>
+                {groupLines.map((l) => (
+                  <div key={l.id} className="flex items-center gap-3 rounded-xl border border-border/50 px-3 py-2">
+                    <span className="min-w-0 flex-1 truncate text-sm">{label(l)}</span>
+                    <NumberInput value={l.amount} onChange={(v) => setAmount(l.id, v)} format className="h-9 w-28 text-sm" />
+                    <button
+                      type="button"
+                      onClick={() => removeLine(l.id)}
+                      className="text-muted-foreground transition hover:text-negative"
+                      aria-label={t("Quitar", "Remove")}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
               </div>
             );
           })}
