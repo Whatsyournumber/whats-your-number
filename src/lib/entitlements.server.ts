@@ -40,24 +40,31 @@ export async function getUserTier(
     .maybeSingle();
   if (roleRow) return "patrimonio";
 
-  const { data } = await supabase
+  // Look at every environment: a live subscription must still work when the
+  // client build points at sandbox (preview) and vice versa.
+  const { data: rows } = await supabase
     .from("subscriptions")
-    .select("product_id,status,current_period_end,access_product_id,access_until")
+    .select("product_id,status,current_period_end,access_product_id,access_until,environment")
     .eq("user_id", userId)
-    .eq("environment", environment)
     .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(20);
 
-  if (!data) return "free";
-  if (!isActive(data.status as string, data.current_period_end as string | null)) return "free";
+  void environment;
+  if (!rows?.length) return "free";
 
-  const held =
-    data.access_product_id && data.access_until && new Date(data.access_until as string) > new Date()
-      ? (data.access_product_id as string)
-      : null;
-  return tierFromProduct(held ?? (data.product_id as string));
+  let best: PlanTier = "free";
+  for (const data of rows) {
+    if (!isActive(data.status as string, data.current_period_end as string | null)) continue;
+    const held =
+      data.access_product_id && data.access_until && new Date(data.access_until as string) > new Date()
+        ? (data.access_product_id as string)
+        : null;
+    const tier = tierFromProduct(held ?? (data.product_id as string));
+    if (RANK[tier] > RANK[best]) best = tier;
+  }
+  return best;
 }
+
 
 export async function requireTier(
   supabase: SupabaseClient,

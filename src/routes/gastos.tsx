@@ -600,7 +600,7 @@ function Gastos() {
       const raw = e instanceof Error ? e.message : "";
       const generic = t("No pudimos generar las recomendaciones. Inténtalo de nuevo.", "We couldn't generate recommendations. Please try again.");
       const upgrade = t("Esta función está incluida en Pro.", "This feature is included in Pro.");
-      setAdviceError(/forbidden|unauthorized|401|403/i.test(raw) ? upgrade : raw || generic);
+      setAdviceError(/upgrade_required|requires the pro plan|requires the patrimonio plan/i.test(raw) ? upgrade : raw || generic);
     } finally {
       setAdviceLoading(false);
     }
