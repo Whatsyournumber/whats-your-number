@@ -12,6 +12,11 @@ export type OnboardingData = {
   income_bonus: number;
   income_rent: number;
   income_other: number;
+  /** Ingresos de la pareja (solo cuando el análisis es de hogar). */
+  income_partner_salary?: number;
+  income_partner_other?: number;
+  /** Gastos mensuales que aporta la pareja (solo análisis de hogar). */
+  expenses_partner?: number;
   monthly_expenses: number;
   monthly_savings: number;
   fixed_housing: number;
@@ -56,6 +61,9 @@ export const emptyOnboarding: OnboardingData = {
   income_bonus: 0,
   income_rent: 0,
   income_other: 0,
+  income_partner_salary: 0,
+  income_partner_other: 0,
+  expenses_partner: 0,
   monthly_expenses: 0,
   monthly_savings: 0,
   fixed_housing: 0,
@@ -138,7 +146,14 @@ export const riskProfiles = [
 ];
 
 export function totalIncome(d: OnboardingData) {
-  return d.income_salary + d.income_bonus + d.income_rent + d.income_other;
+  return (
+    d.income_salary +
+    d.income_bonus +
+    d.income_rent +
+    d.income_other +
+    (d.income_partner_salary ?? 0) +
+    (d.income_partner_other ?? 0)
+  );
 }
 
 export function totalAssets(d: OnboardingData) {
@@ -177,7 +192,7 @@ export type NorthPlan = {
 /** Capital needed using the user's safe withdrawal rate (default 4%) on the desired annual income. */
 export function buildPlan(d: OnboardingData): NorthPlan {
   const income = totalIncome(d);
-  const expenses = d.monthly_expenses;
+  const expenses = d.monthly_expenses + (d.expenses_partner ?? 0);
   const savings = d.monthly_savings || Math.max(0, income - expenses);
   const savingsRate = income > 0 ? (savings / income) * 100 : 0;
   const age = d.age ?? 30;
@@ -347,6 +362,8 @@ export type LifeData = {
   goal_note: string;
   city: string;
   marital_status: string;
+  /** "individual" = solo tú · "pareja" = análisis de hogar con dos personas. */
+  analysis_scope: string;
   children: string;
   plans_children: string;
   lifestyle: string;
@@ -359,6 +376,7 @@ export const emptyLife: LifeData = {
   goal_note: "",
   city: "",
   marital_status: "",
+  analysis_scope: "",
   children: "",
   plans_children: "",
   lifestyle: "",
@@ -377,6 +395,12 @@ export const goals = [
 ];
 
 export const maritalOptions = ["Soltero", "En pareja", "Casado", "Divorciado"];
+/** Con pareja/casado el usuario elige si el análisis es solo suyo o del hogar. */
+export const analysisScopeOptions = [
+  { value: "individual", label: "Solo mis números", en: "Just my numbers" },
+  { value: "pareja", label: "Los dos (hogar)", en: "Both of us (household)" },
+];
+
 export const childrenOptions = ["0", "1", "2", "3+"];
 export const plansChildrenOptions = ["Sí", "No", "No estoy seguro"];
 
