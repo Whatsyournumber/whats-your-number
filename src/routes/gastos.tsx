@@ -809,19 +809,8 @@ function Gastos() {
             </div>
           </div>
           <div className="min-w-0">
-            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
-              <div className="min-w-0">
-                <span className="numeric block text-2xl font-semibold sm:text-xl">{fmt(monthlyRun)}</span>
-                <span className="mt-1 block text-xs leading-5 text-muted-foreground">
-                {isLongRange
-                  ? t(`promedio mensual de ${periodMonths} meses`, `monthly average of ${periodMonths} months`)
-                  : canProject
-                    ? t("ritmo mensual estimado", "estimated monthly pace")
-                    : t("acumulado del mes", "month-to-date spend")}
-                {" · "}
-                {t("objetivo", "target")} {fmt(target)}/{t("mes", "mo")}
-                </span>
-              </div>
+            <div className="flex items-baseline justify-between gap-2">
+              <span className="numeric text-2xl font-semibold sm:text-xl">{fmt(monthlyRun)}</span>
               <span
                 className={cn(
                   "shrink-0 rounded-full px-2 py-1 text-xs font-medium",
@@ -833,6 +822,15 @@ function Gastos() {
                   : `${fmt(monthlyRun - target)} ${t("por encima", "over")}`}
               </span>
             </div>
+            <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+              {isLongRange
+                ? t(`promedio mensual de ${periodMonths} meses`, `monthly average of ${periodMonths} months`)
+                : canProject
+                  ? t("ritmo mensual estimado", "estimated monthly pace")
+                  : t("acumulado del mes", "month-to-date spend")}
+              {" · "}
+              {t("objetivo", "target")} {fmt(target)}/{t("mes", "mo")}
+            </span>
             <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
               <div
                 className={cn("h-full rounded-full", monthlyRun <= target ? "bg-positive" : "bg-negative")}
