@@ -816,9 +816,7 @@ function Gastos() {
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
               <h2 className="text-base font-semibold sm:text-sm">
-                {isLongRange
-                  ? t("Promedio mensual vs objetivo", "Monthly average vs target")
-                  : t("Gasto objetivo mensual", "Monthly spend target")}
+                {t("Gasto objetivo mensual", "Monthly spend target")}
               </h2>
               <Button
                 variant="ghost"
