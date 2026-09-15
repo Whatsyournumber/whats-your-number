@@ -82,7 +82,8 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [donePopup, setDonePopup] = useState<{ inserted: number; files: number } | null>(null);
+  // DEMO PREVIEW: muestra el popup al cargar para revisarlo; quitar después
+  const [donePopup, setDonePopup] = useState<{ inserted: number; files: number } | null>({ inserted: 42, files: 1 });
   const runProcess = useServerFn(processStatement);
 
   const setJob = (id: string, patch: Partial<Job>) =>
