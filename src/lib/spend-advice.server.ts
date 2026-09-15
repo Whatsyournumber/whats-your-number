@@ -11,7 +11,7 @@ export type AdviceInput = {
   fixedTotal: number;
   target: number;
   monthlyRun: number;
-  categories: { name: string; amount: number; prevAmount: number }[];
+  categories: { name: string; amount: number; prevAmount: number; count?: number | undefined }[];
   merchants: {
     name: string;
     amount: number;
@@ -59,6 +59,7 @@ Reglas:
 - La primera acción SIEMPRE debe ser la categoría donde más se excedió el plan, si existe plan.
 - CON PLAN: toda recomendación debe apoyarse en el plan del usuario. "action" debe citar el monto del plan como límite ("hasta X de plan"), y "monthlySaving" NUNCA puede superar el exceso (real − plan) de esa categoría, ni inventar recortes imposibles.
 - SÉ CONCRETO: siempre que puedas, nombra el comercio real que causa el exceso dentro de esa categoría y el monto exacto (ej. "Transporte: plan 200, real 443; Uber subió 300 más que el periodo anterior"). Usa los comercios del contexto que pertenecen a esa categoría.
+- USA LA FRECUENCIA: cuando el contexto trae número de compras, calcula cuántas veces gastó y el ticket promedio (monto ÷ compras) y construye la acción con esos números: "Saliste 20 veces a comer (80 de media); baja a 10 salidas y cumples tu plan de 500". Di siempre cuántas veces y el promedio, y cuántas veces debería hacerlo para ajustarse al plan (veces objetivo = plan ÷ ticket promedio, redondeado hacia abajo).
 - RECOMIENDA CON INTELIGENCIA, no solo "gasta menos": primero propón cómo pagar menos por lo MISMO antes de recortar el consumo. Ejemplos según el rubro: trenes/vuelos (IRYO, Renfe, aerolíneas) → "Compra los pasajes con 2-4 semanas de antelación, salen hasta X más baratos"; hoteles/viajes → reserva con antelación o compara fechas; delivery → pide directo al restaurante o recoge tú mismo; supermercado → marca blanca o compras semanales planificadas; suscripciones → plan anual o familiar; seguros → compara ofertas anuales; gasolina → estaciones low-cost. Elige el truco que aplique al comercio real del contexto y estima el ahorro en "monthlySaving".
 No inventes datos: usa solo categorías y comercios del contexto.`;
 
