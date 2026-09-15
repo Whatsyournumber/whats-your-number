@@ -39,8 +39,10 @@ export const getSpendAdvice = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) => schema.parse(data))
   .handler(async ({ data, context }) => {
-    const { requireTier } = await import("./entitlements.server");
-    await requireTier(context.supabase as never, context.userId, data.environment, "pro");
+    const { getUserTier } = await import("./entitlements.server");
+    const tier = await getUserTier(context.supabase as never, context.userId, data.environment);
+    // Sin plan Pro devolvemos una respuesta normal (sin error) para no romper la página.
+    if (tier === "free") return { actions: [], upgradeRequired: "pro" as const };
     const { generateSpendAdvice } = await import("./spend-advice.server");
 
     const supabase = context.supabase as never as {

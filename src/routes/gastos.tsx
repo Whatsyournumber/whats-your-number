@@ -679,6 +679,11 @@ function Gastos() {
           budgets: budgetRows.map((b) => ({ name: b.name, planned: b.planned, actual: b.actual })),
         },
       });
+      if ((res as { upgradeRequired?: string }).upgradeRequired) {
+        adviceBlocked.current = true;
+        setAdviceError(t("Esta función está incluida en Pro.", "This feature is included in Pro."));
+        return;
+      }
       setAdvice(res.actions);
     } catch (e) {
       const raw = e instanceof Error ? e.message : "";
