@@ -48,11 +48,11 @@ import targetIcon from "@/assets/target-icon-v2.png.asset.json";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions, sameMerchant, type Tx } from "@/hooks/use-transactions";
 import { compact, FIXED_FIELDS, money } from "@/lib/onboarding";
-import { getSpendAdvice } from "@/lib/spend-advice.functions";
+import { getSpendAdvice, rateSpendAdvice } from "@/lib/spend-advice.functions";
 import { getPaddleEnvironment } from "@/lib/paddle";
 import { buildDataset } from "@/lib/profile-data";
 import { yearsToFreedom } from "@/lib/lifestyle-cities";
-import { ArrowDownRight, ArrowUpRight, TrendingUp } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Brain, ThumbsDown, ThumbsUp, TrendingUp } from "lucide-react";
 
 type AdviceAction = {
   label: string;
