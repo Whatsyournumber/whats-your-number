@@ -807,42 +807,43 @@ function Gastos() {
       </div>
 
       <Panel variant="minimal" className="p-5 sm:p-6">
-        <div className="mb-0 flex items-start gap-3">
-          <img
-            src={targetIcon.url}
-            alt=""
-            className="h-11 w-11 shrink-0 rounded-full object-cover"
-          />
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <h2 className="text-base font-semibold sm:text-sm">
-                {t("Gasto objetivo mensual", "Monthly spend target")}
-              </h2>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7 shrink-0 text-muted-foreground"
-                onClick={() => setBudgetOpen(true)}
-                aria-label={budgetRows.length ? t("Editar plan", "Edit plan") : t("Plan de gastos", "Spending plan")}
-              >
-                {budgetRows.length ? <Pencil className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
-              </Button>
+        <div className="grid gap-y-1.5 md:grid-cols-[240px_1fr] md:items-start md:gap-x-6">
+          <div className="min-w-0">
+            <div className="flex items-start gap-3">
+              <img
+                src={targetIcon.url}
+                alt=""
+                className="h-11 w-11 shrink-0 rounded-full object-cover"
+              />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-base font-semibold sm:text-sm">
+                    {t("Gasto objetivo mensual", "Monthly spend target")}
+                  </h2>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 shrink-0 text-muted-foreground"
+                    onClick={() => setBudgetOpen(true)}
+                    aria-label={budgetRows.length ? t("Editar plan", "Edit plan") : t("Plan de gastos", "Spending plan")}
+                  >
+                    {budgetRows.length ? <Pencil className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
+                  </Button>
+                </div>
+                <p className="mt-1.5 text-xs leading-5 text-muted-foreground sm:text-[0.8125rem]">
+                  {t("Limita tus gastos mensuales", "Limit your monthly spending")}
+                </p>
+              </div>
             </div>
-            <p className="mt-1.5 text-xs leading-5 text-muted-foreground sm:text-[0.8125rem]">
-              {t("Limita tus gastos mensuales", "Limit your monthly spending")}
-            </p>
-          </div>
-        </div>
-
-        <div className="grid gap-y-1.5 md:grid-cols-[240px_1fr] md:items-center md:gap-x-6">
-          <div className="relative flex items-center pl-[3.25rem]">
-            <span className="pointer-events-none absolute left-[calc(3.25rem+0.75rem)] text-sm font-semibold text-muted-foreground">$</span>
-            <NumberInput
-              value={target}
-              onChange={setTarget}
-              format
-              className="h-11 w-full pl-7 text-base font-semibold"
-            />
+            <div className="relative mt-5 flex items-center pl-[3.25rem]">
+              <span className="pointer-events-none absolute left-[calc(3.25rem+0.75rem)] text-sm font-semibold text-muted-foreground">$</span>
+              <NumberInput
+                value={target}
+                onChange={setTarget}
+                format
+                className="h-11 w-full pl-7 text-base font-semibold"
+              />
+            </div>
           </div>
           <div className="flex flex-col gap-2">
             <div className="flex items-baseline justify-between gap-2">
