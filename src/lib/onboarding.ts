@@ -156,6 +156,11 @@ export function totalIncome(d: OnboardingData) {
   );
 }
 
+/** Gasto mensual total del análisis (incluye a la pareja cuando el análisis es del hogar). */
+export function totalExpenses(d: OnboardingData) {
+  return d.monthly_expenses + (d.expenses_partner ?? 0);
+}
+
 export function totalAssets(d: OnboardingData) {
   return (
     d.assets_cash + d.assets_bank + d.assets_retirement + d.assets_etf + d.assets_stocks + d.assets_crypto + d.assets_property
@@ -192,7 +197,7 @@ export type NorthPlan = {
 /** Capital needed using the user's safe withdrawal rate (default 4%) on the desired annual income. */
 export function buildPlan(d: OnboardingData): NorthPlan {
   const income = totalIncome(d);
-  const expenses = d.monthly_expenses + (d.expenses_partner ?? 0);
+  const expenses = totalExpenses(d);
   const savings = d.monthly_savings || Math.max(0, income - expenses);
   const savingsRate = income > 0 ? (savings / income) * 100 : 0;
   const age = d.age ?? 30;
