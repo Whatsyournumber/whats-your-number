@@ -850,15 +850,6 @@ function Gastos() {
                   : `${fmt(monthlyRun - target)} ${t("que gastaste de más", "over budget")}`}
               </span>
             </div>
-            <span className="mt-1 block text-xs leading-5 text-muted-foreground">
-              {isLongRange
-                ? t(`promedio mensual de ${periodMonths} meses`, `monthly average of ${periodMonths} months`)
-                : canProject
-                  ? t("ritmo mensual estimado", "estimated monthly pace")
-                  : t("acumulado del mes", "month-to-date spend")}
-              {" · "}
-              {t("objetivo", "target")} {fmt(target)}/{t("mes", "mo")}
-            </span>
             <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
               <div
                 className={cn("h-full rounded-full", monthlyRun <= target ? "bg-positive" : "bg-negative")}
