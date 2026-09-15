@@ -255,15 +255,12 @@ function LifePlannerContent() {
         <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.12]" />
         <div className="relative grid gap-6 lg:grid-cols-[1.2fr_2fr]">
           <div className="lg:border-r lg:border-border/60 lg:pr-6">
-            <h2 className="text-2xl font-semibold">{t("Independencia financiera anticipada", "Early financial independence")}</h2>
+            <h2 className="whitespace-nowrap text-xl font-semibold sm:text-2xl">{t("Independencia financiera anticipada", "Early financial independence")}</h2>
             <p className="mt-1 text-sm text-muted-foreground">
               {t("Cada decisión de vida te acerca o aleja de tu número.", "Every life decision brings you closer to or further from your number.")}
             </p>
-            <div className="mt-5 flex items-center justify-between text-xs text-muted-foreground">
-              <span>{t("Avance actual con nuevas decisiones", "Current progress with new decisions")}</span>
-              <span className="numeric text-sm font-semibold text-foreground">{progress.toFixed(0)}%</span>
-            </div>
-            <div className="relative mt-2 h-2.5 overflow-hidden rounded-full bg-muted">
+            <div className="mt-5 flex items-center gap-3">
+              <div className="relative h-2.5 flex-1 overflow-hidden rounded-full bg-muted">
               {/* Referencia sin metas de vida */}
               <div
                 className="absolute inset-y-0 left-0 rounded-full bg-primary/25"
