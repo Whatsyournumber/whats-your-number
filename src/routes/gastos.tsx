@@ -876,7 +876,7 @@ function Gastos() {
             </div>
           </div>
           <div className="order-5 md:col-start-2">
-            <div className="relative mt-1 h-4 text-xs text-muted-foreground">
+            <div className="relative h-4 text-xs text-muted-foreground">
               {monthlyRun > target && targetBoundaryPct >= 10 && targetBoundaryPct <= 90 && (
                 <span
                   className="numeric absolute top-0 -translate-x-1/2"
@@ -887,7 +887,7 @@ function Gastos() {
               )}
               <span className="numeric absolute right-0 top-0">{fmt(monthlyRun)}</span>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               {t("fijos", "fixed")} {fmt(fixed.total)} · {t("variable", "variable")} {fmt(isLongRange ? avgMonthlyVariable : canProject ? (variableTotal / days) * 30 : variableTotal)} · {targetPct.toFixed(0)}% {t("del objetivo", "of target")}
             </p>
           </div>
