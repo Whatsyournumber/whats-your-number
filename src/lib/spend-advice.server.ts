@@ -70,41 +70,95 @@ Reglas:
 - La primera acción SIEMPRE debe ser la categoría donde más se excedió el plan, si existe plan.
 - CON PLAN: toda recomendación debe apoyarse en el plan del usuario. "action" debe citar el monto del plan como límite ("hasta X de plan"), y "monthlySaving" NUNCA puede superar el exceso (real − plan) de esa categoría, ni inventar recortes imposibles.
 - SÉ CONCRETO: siempre que puedas, nombra el comercio real que causa el exceso dentro de esa categoría y el monto exacto (ej. "Transporte: plan 200, real 443; Uber subió 300 más que el periodo anterior"). Usa los comercios del contexto que pertenecen a esa categoría.
-- USA LA FRECUENCIA: cuando el contexto trae número de compras, calcula cuántas veces gastó y el ticket promedio (monto ÷ compras) y construye la acción con esos números: "Saliste 20 veces a comer (80 de media); baja a 10 salidas y cumples tu plan de 500". Di siempre cuántas veces y el promedio, y cuántas veces debería hacerlo para ajustarse al plan (veces objetivo = plan ÷ ticket promedio, redondeado hacia abajo).
-- RECOMIENDA CON INTELIGENCIA, no solo "gasta menos": primero propón cómo pagar menos por lo MISMO antes de recortar el consumo. Ejemplos según el rubro: trenes/vuelos (IRYO, Renfe, aerolíneas) → "Compra los pasajes con 2-4 semanas de antelación, salen hasta X más baratos"; hoteles/viajes → reserva con antelación o compara fechas; delivery → pide directo al restaurante o recoge tú mismo; supermercado → marca blanca o compras semanales planificadas; suscripciones → plan anual o familiar; seguros → compara ofertas anuales; gasolina → estaciones low-cost. Elige el truco que aplique al comercio real del contexto y estima el ahorro en "monthlySaving".
+- MONTOS CON SÍMBOLO: cada cifra de dinero dentro de "diagnosis" y "action" lleva el símbolo de la moneda pegado al número (ej. "$23 media", "$1.050 de plan"). Nunca escribas un monto sin símbolo. "monthlySaving" sí va como número puro.
+- USA LA FRECUENCIA: cuando el contexto trae número de compras, calcula cuántas veces gastó y el ticket promedio (monto ÷ compras) y construye la acción con esos números: "Saliste 20 veces a comer ($80 media); baja a 10 salidas y cumples tu plan de $500". Di siempre cuántas veces y el promedio con símbolo, y cuántas veces debería hacerlo para ajustarse al plan (veces objetivo = plan ÷ ticket promedio, redondeado hacia abajo).
+- RECOMIENDA CON INTELIGENCIA, no solo "gasta menos": primero propón cómo pagar menos por lo MISMO antes de recortar el consumo.
+- CADA CAJA CON SU PROPIA LÓGICA: nunca repitas el mismo tipo de consejo en dos cajas. Usa el manual del rubro:
+  · Bancos, tarjetas y seguros → busca intereses, comisiones de mantenimiento, descubiertos y cuotas de tarjeta: si pagas la tarjeta completa a tiempo no deberías pagar intereses; negocia o cambia a una cuenta sin comisiones y revisa duplicidad de coberturas.
+  · Trenes, vuelos y viajes → compra con 2-4 semanas de antelación, compara fechas y evita cambios de última hora.
+  · Restaurantes y delivery → frecuencia y ticket medio: baja el número de salidas o pide directo al restaurante en vez de por app.
+  · Supermercado → marca blanca, lista semanal y evitar compras de conveniencia.
+  · Apps y suscripciones → cancela las que no usas, pasa a plan anual o familiar.
+  · Transporte diario (Uber, taxi) → abono de transporte o combinar con transporte público en las horas caras.
+  · Ocio, compras y ropa → regla de 48 horas, límite de salidas al mes, cupones y segunda mano.
+  · Salud, educación, hijos → compara proveedores y aprovecha deducciones o pagos anuales, no recortes lo esencial.
+  · Gasolina y coche → estaciones low-cost, mantenimiento preventivo y revisar seguros del vehículo.
+  Elige el truco que aplique al comercio real del contexto y estima el ahorro en "monthlySaving".
 - MEMORIA DEL USUARIO: si el contexto trae "Historial de análisis previos", personaliza. Haz seguimiento: reconoce si mejoró o empeoró en la categoría respecto a los análisis anteriores ("el mes pasado te dije X: bajaste/subiste Y"), no repitas la misma acción con las mismas palabras y sube el nivel de concreción cuando el rubro se repite.
 - Si el usuario marcó una recomendación como "no aplica", NO vuelvas a proponer esa misma acción para ese rubro: propone un ángulo distinto.
 - Si marcó una recomendación como "útil" o "ya la hice", da el siguiente paso de esa misma línea (subir el listón, automatizar el ahorro, invertir lo liberado).
 No inventes datos: usa solo categorías y comercios del contexto.`;
 
-function smartTip(category: string, merchant?: string): string {
+/** Símbolo de la moneda para escribir montos como "$23 media". */
+function currencySymbol(currency: string): string {
+  const c = (currency || "USD").toUpperCase();
+  if (c === "EUR") return "€";
+  if (c === "GBP") return "£";
+  if (c === "USD" || c.endsWith("USD")) return "$";
+  return "$";
+}
+
+function money(amount: number, currency: string): string {
+  return `${currencySymbol(currency)}${Math.round(amount).toLocaleString("es-ES")}`;
+}
+
+/** Consejo propio de cada rubro: cada caja tiene su lógica de ayuda. */
+function smartTip(category: string, merchant: string | undefined, ctx: { currency: string; avg?: number; count?: number }): string {
   const name = merchant || category;
-  const lower = category.toLowerCase();
-  if (lower.includes("tren") || lower.includes("transport") || lower.includes("viaje") || lower.includes("vuelo")) {
-    return `Compra los pasajes de ${name} con 2-4 semanas de antelación para encontrar mejores precios`;
+  const lower = `${category} ${merchant ?? ""}`.toLowerCase();
+  const cur = ctx.currency;
+  const avg = ctx.avg && ctx.avg > 0 ? money(ctx.avg, cur) : null;
+  const freq = ctx.count && ctx.count > 1 ? `${ctx.count} pagos${avg ? ` (${avg} media)` : ""}` : null;
+
+  if (lower.includes("banc") || lower.includes("tarjeta") || lower.includes("bank") || lower.includes("comisi") || lower.includes("interes") || lower.includes("crédit") || lower.includes("credit")) {
+    return `Revisa intereses y comisiones de ${name}${freq ? `: ${freq}` : ""}; paga la tarjeta completa a tiempo y pide cuenta sin mantenimiento`;
   }
-  if (lower.includes("restaurant") || lower.includes("comida") || lower.includes("delivery")) {
-    return `Cocina una o dos comidas más en casa y reduce pedidos a ${name}`;
+  if (lower.includes("seguro") || lower.includes("insur")) {
+    return `Compara la prima anual de ${name} y elimina coberturas duplicadas antes de renovar`;
   }
-  if (lower.includes("app") || lower.includes("suscrip") || lower.includes("software")) {
-    return `Revisa suscripciones de ${name} y cancela las que no uses o baja a plan anual`;
+  if (lower.includes("deuda") || lower.includes("préstam") || lower.includes("prestam") || lower.includes("loan")) {
+    return `Amortiza primero la deuda de ${name} con el interés más alto y evita refinanciar a más plazo`;
   }
-  if (lower.includes("super") || lower.includes("grocer")) {
-    return `Planifica la compra semanal en ${name} y apuesta por marca blanca`;
+  if (lower.includes("tren") || lower.includes("viaje") || lower.includes("vuelo") || lower.includes("flight") || lower.includes("hotel")) {
+    return `Compra los pasajes de ${name} con 2-4 semanas de antelación${avg ? `; hoy pagas ${avg} de media` : ""}`;
   }
-  if (lower.includes("gasolin") || lower.includes("combustible")) {
-    return `Usa apps de comparación para repostar en ${name} a mejor precio`;
+  if (lower.includes("transport") || lower.includes("uber") || lower.includes("taxi") || lower.includes("cabify")) {
+    return `Cambia ${freq ? `${freq} en ` : ""}${name} por abono de transporte en los trayectos del día a día`;
   }
-  if (lower.includes("seguro")) {
-    return `Compara ofertas anuales de ${name} y negocia la prima`;
+  if (lower.includes("delivery") || lower.includes("glovo") || lower.includes("ubereats") || lower.includes("just eat")) {
+    return `Pide directo al restaurante o recoge tú mismo${freq ? `: ${freq} en ${name}` : ` en ${name}`}`;
   }
-  if (lower.includes("compra") || lower.includes("shopping") || lower.includes("ropa")) {
-    return `Espera 48 horas antes de comprar en ${name} y busca cupones`;
+  if (lower.includes("restaurant") || lower.includes("comida") || lower.includes("food")) {
+    return `Baja las salidas a ${name}${freq ? `: ${freq}` : ""} y reserva las comidas fuera para el fin de semana`;
+  }
+  if (lower.includes("app") || lower.includes("suscrip") || lower.includes("software") || lower.includes("stream")) {
+    return `Cancela las suscripciones de ${name} que no usas y pasa el resto a plan anual o familiar`;
+  }
+  if (lower.includes("super") || lower.includes("grocer") || lower.includes("mercado")) {
+    return `Haz una lista semanal en ${name} y cambia a marca blanca en básicos`;
+  }
+  if (lower.includes("gasolin") || lower.includes("combustible") || lower.includes("coche") || lower.includes("auto")) {
+    return `Reposta en estaciones low-cost cerca de ${name} y agenda el mantenimiento preventivo`;
+  }
+  if (lower.includes("compra") || lower.includes("shopping") || lower.includes("ropa") || lower.includes("moda")) {
+    return `Aplica la regla de 48 horas antes de comprar en ${name} y busca cupones o segunda mano`;
   }
   if (lower.includes("ocio") || lower.includes("nightlife") || lower.includes("entreten")) {
-    return `Busca días con descuento o happy hour en ${name}`;
+    return `Fija un tope de salidas al mes en ${name} y busca días con descuento`;
   }
-  return `Revisa los gastos recurrentes en ${name} y elimina los que no aporten valor`;
+  if (lower.includes("gimnas") || lower.includes("gym") || lower.includes("cuidado") || lower.includes("belle")) {
+    return `Pasa ${name} a cuota anual o bono de sesiones y cancela lo que no uses`;
+  }
+  if (lower.includes("salud") || lower.includes("educa") || lower.includes("hijo") || lower.includes("colegi")) {
+    return `Compara proveedores de ${name} y paga por año para aprovechar descuentos, sin recortar lo esencial`;
+  }
+  if (lower.includes("servici") || lower.includes("luz") || lower.includes("agua") || lower.includes("internet") || lower.includes("telefon")) {
+    return `Renegocia la tarifa de ${name} o cambia de compañía: la permanencia suele estar vencida`;
+  }
+  if (lower.includes("vivienda") || lower.includes("alquil") || lower.includes("hipotec")) {
+    return `Revisa las condiciones de ${name}: renegocia el diferencial o compara la hipoteca con otra entidad`;
+  }
+  return `Revisa los pagos recurrentes de ${name}${freq ? ` (${freq})` : ""} y elimina los que no aporten valor`;
 }
 
 function buildFallbackActions(input: AdviceInput, existing: SpendAdvice["actions"], needed: number): SpendAdvice["actions"] {
@@ -127,8 +181,11 @@ function buildFallbackActions(input: AdviceInput, existing: SpendAdvice["actions
     );
     out.push({
       label: b.name,
-      diagnosis: `${input.periodLabel}: gastaste ${b.actual.toFixed(0)} vs. ${b.planned.toFixed(0)} de plan, un exceso de +${Math.round((excess / b.planned) * 100)}%.`,
-      action: smartTip(b.name, merchant?.name),
+      diagnosis: `${input.periodLabel}: gastaste ${money(b.actual, input.currency)} vs. ${money(b.planned, input.currency)} de plan, un exceso de +${Math.round((excess / b.planned) * 100)}%.`,
+      action: smartTip(b.name, merchant?.name, {
+        currency: input.currency,
+        ...(merchant?.count ? { count: merchant.count, avg: merchant.amount / merchant.count } : {}),
+      }),
       monthlySaving: Math.min(excess, Math.round(excess * 0.5)),
       overspent: true,
     });
@@ -150,9 +207,12 @@ function buildFallbackActions(input: AdviceInput, existing: SpendAdvice["actions
       label: c.name,
       diagnosis:
         diff > 0 && c.prevAmount > 0
-          ? `${input.periodLabel}: gastaste ${c.amount.toFixed(0)} en ${c.name}, un ${pct}% más que el periodo anterior.`
-          : `${input.periodLabel}: gastaste ${c.amount.toFixed(0)} en ${c.name}.`,
-      action: smartTip(c.name, merchant?.name),
+          ? `${input.periodLabel}: gastaste ${money(c.amount, input.currency)} en ${c.name}${c.count ? ` en ${c.count} pagos (${money(c.amount / c.count, input.currency)} media)` : ""}, un ${pct}% más que el periodo anterior.`
+          : `${input.periodLabel}: gastaste ${money(c.amount, input.currency)} en ${c.name}${c.count ? ` en ${c.count} pagos (${money(c.amount / c.count, input.currency)} media)` : ""}.`,
+      action: smartTip(c.name, merchant?.name, {
+        currency: input.currency,
+        ...(c.count ? { count: c.count, avg: c.amount / c.count } : {}),
+      }),
       monthlySaving: Math.max(10, Math.round(c.amount * 0.15)),
       overspent: diff > 0,
     });
@@ -170,9 +230,12 @@ function buildFallbackActions(input: AdviceInput, existing: SpendAdvice["actions
       label: m.name,
       diagnosis:
         diff > 0
-          ? `${input.periodLabel}: gastaste ${m.amount.toFixed(0)} en ${m.name}, ${diff.toFixed(0)} más que el periodo anterior.`
-          : `${input.periodLabel}: gastaste ${m.amount.toFixed(0)} en ${m.name}.`,
-      action: smartTip(m.category || m.name, m.name),
+          ? `${input.periodLabel}: gastaste ${money(m.amount, input.currency)} en ${m.name}${m.count ? ` en ${m.count} pagos (${money(m.amount / m.count, input.currency)} media)` : ""}, ${money(diff, input.currency)} más que el periodo anterior.`
+          : `${input.periodLabel}: gastaste ${money(m.amount, input.currency)} en ${m.name}${m.count ? ` en ${m.count} pagos (${money(m.amount / m.count, input.currency)} media)` : ""}.`,
+      action: smartTip(m.category || m.name, m.name, {
+        currency: input.currency,
+        ...(m.count ? { count: m.count, avg: m.amount / m.count } : {}),
+      }),
       monthlySaving: Math.max(10, Math.round(m.amount * 0.12)),
       overspent: diff > 0,
     });
@@ -214,7 +277,7 @@ export async function generateSpendAdvice(input: AdviceInput): Promise<SpendAdvi
     .map((c) => {
       const freq =
         c.count && c.count > 0
-          ? ` · ${c.count} compras · ticket promedio ${(c.amount / c.count).toFixed(0)}`
+          ? ` · ${c.count} compras · ticket promedio ${money(c.amount / c.count, input.currency)}`
           : "";
       return `- ${c.name}: ${c.amount.toFixed(0)} ${input.currency} (periodo anterior ${c.prevAmount.toFixed(0)})${freq}`;
     })
@@ -280,7 +343,7 @@ ${
       }`
     : "";
 
-  const prompt = `Moneda: ${input.currency}
+  const prompt = `Moneda: ${input.currency} (escribe cada monto con el símbolo "${currencySymbol(input.currency)}" pegado al número, ej. "${currencySymbol(input.currency)}23 media")
 Periodo analizado: ${input.periodLabel}
 Gasto variable del periodo: ${input.total.toFixed(0)} (periodo anterior: ${input.prevTotal.toFixed(0)})
 Gastos fijos mensuales: ${input.fixedTotal.toFixed(0)}
