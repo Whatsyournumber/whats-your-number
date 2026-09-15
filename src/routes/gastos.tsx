@@ -911,8 +911,8 @@ function Gastos() {
               )}
             </div>
           </div>
-          <div className="order-5 -mt-5 md:col-start-2">
-            <div className="relative h-4 text-xs text-muted-foreground">
+          <div className="order-5 mt-1.5 md:-mt-5 md:col-start-2">
+            <div className="relative h-4 text-[0.625rem] text-muted-foreground sm:text-xs">
               <span className="numeric absolute left-0 top-0">{fmt(0)}</span>
               {monthlyRun > target && targetBoundaryPct >= 10 && targetBoundaryPct <= 90 && (
                 <span
@@ -933,15 +933,15 @@ function Gastos() {
               className="flex w-full items-center justify-between gap-2 py-1 text-left"
               aria-label={t("Mostrar u ocultar plan por categoría", "Show or hide category plan")}
             >
-              <div className="flex min-w-0 items-center gap-2">
-                <p className="whitespace-nowrap text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              <div className="flex min-w-0 items-center gap-1.5">
+                <p className="whitespace-nowrap text-[0.625rem] font-medium uppercase tracking-[0.08em] text-muted-foreground sm:text-xs sm:tracking-[0.14em]">
                   {t("Gasto real vs objetivo", "Actual vs target")}
                 </p>
                 <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
               </div>
-              <div className="flex shrink-0 items-center gap-2">
-                <p className="whitespace-nowrap text-xs text-muted-foreground">
-                  {t("Plan", "Plan")} {fmt(budgetPlanTotal)}
+              <div className="flex shrink-0 items-center gap-1">
+                <p className="whitespace-nowrap text-[0.625rem] text-muted-foreground sm:text-xs">
+                  <span className="hidden sm:inline">{t("Plan", "Plan")} {fmt(budgetPlanTotal)}</span>
                   {overBudget.length > 0 && (
                     <span className="text-negative">
                       {" · "}
