@@ -1,17 +1,21 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { BASE_CATEGORIES, type CategoryRule } from "@/lib/categorize";
+import { useAuth } from "@/hooks/use-auth";
 
 export type CustomCategory = { id: string; name: string; keywords: string };
 
 const KEY = "whatsyournumber:custom-categories";
 
-/** Categorías personalizadas del usuario (nombre + palabras clave), guardadas en el navegador. */
+/** Categorías personalizadas del usuario (nombre + palabras clave), guardadas por cuenta en el navegador. */
 export function useCategories() {
+  const { user } = useAuth();
+  const storageKey = useMemo(() => (user?.id ? `${KEY}:${user.id}` : `${KEY}:anon`), [user?.id]);
   const [items, setItems] = useState<CustomCategory[]>([]);
 
   useEffect(() => {
+    setItems([]);
     try {
-      const raw = window.localStorage.getItem(KEY);
+      const raw = window.localStorage.getItem(storageKey);
       if (raw) {
         const parsed = JSON.parse(raw) as CustomCategory[];
         if (Array.isArray(parsed)) setItems(parsed);
@@ -19,16 +23,19 @@ export function useCategories() {
     } catch {
       /* ignore */
     }
-  }, []);
+  }, [storageKey]);
 
-  const persist = useCallback((next: CustomCategory[]) => {
-    setItems(next);
-    try {
-      window.localStorage.setItem(KEY, JSON.stringify(next));
-    } catch {
-      /* ignore */
-    }
-  }, []);
+  const persist = useCallback(
+    (next: CustomCategory[]) => {
+      setItems(next);
+      try {
+        window.localStorage.setItem(storageKey, JSON.stringify(next));
+      } catch {
+        /* ignore */
+      }
+    },
+    [storageKey],
+  );
 
   const add = useCallback(
     (name = "Nueva categoría", keywords = "") => {
