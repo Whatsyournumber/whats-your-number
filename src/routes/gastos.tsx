@@ -449,12 +449,12 @@ function Gastos() {
             id: l.id,
             name,
             emoji: cat?.emoji ?? l.emoji ?? "📦",
-            planned: l.amount,
+            planned: l.amount * budgetMonths,
             actual: actualByBudget.get(l.id) ?? 0,
           };
         })
         .sort((a, b) => b.actual - b.planned - (a.actual - a.planned)),
-    [budgets.lines, actualByBudget, t],
+    [budgets.lines, actualByBudget, budgetMonths, t],
   );
 
   const budgetPlanTotal = budgetRows.reduce((s, r) => s + r.planned, 0);
