@@ -277,7 +277,7 @@ export async function generateSpendAdvice(input: AdviceInput): Promise<SpendAdvi
     .map((c) => {
       const freq =
         c.count && c.count > 0
-          ? ` · ${c.count} compras · ticket promedio ${(c.amount / c.count).toFixed(0)}`
+          ? ` · ${c.count} compras · ticket promedio ${money(c.amount / c.count, input.currency)}`
           : "";
       return `- ${c.name}: ${c.amount.toFixed(0)} ${input.currency} (periodo anterior ${c.prevAmount.toFixed(0)})${freq}`;
     })
