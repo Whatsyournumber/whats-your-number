@@ -826,7 +826,7 @@ function Gastos() {
           </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-[200px_1fr] md:items-start">
+        <div className="grid gap-5 md:grid-cols-[200px_1fr] md:items-center">
           <div className="relative flex items-center">
             <span className="pointer-events-none absolute left-3 text-sm font-semibold text-muted-foreground">$</span>
             <NumberInput
@@ -837,13 +837,7 @@ function Gastos() {
             />
           </div>
           <div className="min-w-0">
-            <div className="h-2 overflow-hidden rounded-full bg-muted">
-              <div
-                className={cn("h-full rounded-full", monthlyRun <= target ? "bg-positive" : "bg-negative")}
-                style={{ width: `${Math.min(100, targetPct)}%` }}
-              />
-            </div>
-            <div className="mt-3 flex items-baseline justify-between gap-2">
+            <div className="flex items-baseline justify-between gap-2">
               <span className="numeric text-2xl font-semibold sm:text-xl">{fmt(monthlyRun)}</span>
               <span
                 className={cn(
@@ -865,6 +859,12 @@ function Gastos() {
               {" · "}
               {t("objetivo", "target")} {fmt(target)}/{t("mes", "mo")}
             </span>
+            <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
+              <div
+                className={cn("h-full rounded-full", monthlyRun <= target ? "bg-positive" : "bg-negative")}
+                style={{ width: `${Math.min(100, targetPct)}%` }}
+              />
+            </div>
             <p className="mt-2 text-xs text-muted-foreground">
               {targetPct.toFixed(0)}% {t("del objetivo", "of target")} · {t("fijos", "fixed")} {fmt(fixed.total)} + {t("variable", "variable")} {fmt(isLongRange ? avgMonthlyVariable : canProject ? (variableTotal / days) * 30 : variableTotal)}
             </p>
