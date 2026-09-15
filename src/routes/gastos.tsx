@@ -468,15 +468,22 @@ function Gastos() {
 
 
   const merchants = useMemo(() => {
-    const map = new Map<string, { name: string; amount: number; count: number }>();
+    const map = new Map<string, { name: string; amount: number; count: number; category: string }>();
     for (const t of current) {
-      const prev = map.get(t.merchant) ?? { name: t.merchant, amount: 0, count: 0 };
+      const prev = map.get(t.merchant) ?? { name: t.merchant, amount: 0, count: 0, category: categoryOf(t) };
       prev.amount += Math.abs(t.amount);
       prev.count += 1;
       map.set(t.merchant, prev);
     }
     return [...map.values()].sort((a, b) => b.amount - a.amount);
-  }, [current]);
+  }, [current, categories.rules, txCat, learned.rules]);
+
+  /** Gasto por comercio del periodo anterior, para detectar subidas concretas. */
+  const prevByMerchant = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const t of previous) map.set(t.merchant, (map.get(t.merchant) ?? 0) + Math.abs(t.amount));
+    return map;
+  }, [previous]);
 
   /** Comercios del periodo con su categoría actual, para el chat de categorías. */
   const merchantsForAi = useMemo(
@@ -603,7 +610,13 @@ function Gastos() {
             amount: c.amount,
             prevAmount: prevByCategory.get(c.name) ?? 0,
           })),
-          merchants: merchants.slice(0, 10).map((m) => ({ name: m.name, amount: m.amount, count: m.count })),
+          merchants: merchants.slice(0, 14).map((m) => ({
+            name: m.name,
+            amount: m.amount,
+            count: m.count,
+            category: m.category,
+            prevAmount: prevByMerchant.get(m.name) ?? 0,
+          })),
           budgets: budgetRows.map((b) => ({ name: b.name, planned: b.planned, actual: b.actual })),
         },
       });
