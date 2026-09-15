@@ -834,30 +834,30 @@ function Gastos() {
       </div>
 
       <Panel variant="minimal" className="p-5 sm:p-6">
-        <div className="grid gap-x-5 gap-y-3 md:grid-cols-[220px_minmax(0,1fr)] md:items-start lg:grid-cols-[minmax(280px,0.9fr)_minmax(0,1.1fr)] lg:gap-x-6">
+        <div className="grid gap-x-5 gap-y-3 md:grid-cols-[240px_minmax(0,1fr)] md:items-start lg:grid-cols-[minmax(280px,0.9fr)_minmax(0,1.1fr)] lg:gap-x-6">
           <div className="order-1 min-w-0">
             <div className="flex items-start gap-3">
               <img
                 src={targetIcon.url}
                 alt=""
-                className="h-11 w-11 shrink-0 rounded-full object-cover"
+                className="h-9 w-9 shrink-0 rounded-full object-cover lg:h-11 lg:w-11"
               />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <h2 className="whitespace-nowrap text-sm font-semibold sm:text-base">
+                  <h2 className="whitespace-nowrap text-xs font-semibold sm:text-sm lg:text-base">
                     {t("Gasto objetivo mensual", "Monthly spend target")}
                   </h2>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-7 w-7 shrink-0 text-muted-foreground"
+                    className="h-6 w-6 shrink-0 text-muted-foreground lg:h-7 lg:w-7"
                     onClick={() => setBudgetOpen(true)}
                     aria-label={budgetRows.length ? t("Editar plan", "Edit plan") : t("Plan de gastos", "Spending plan")}
                   >
-                    {budgetRows.length ? <Pencil className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
+                    {budgetRows.length ? <Pencil className="h-3 w-3 lg:h-3.5 lg:w-3.5" /> : <Plus className="h-3 w-3 lg:h-3.5 lg:w-3.5" />}
                   </Button>
                 </div>
-                <p className="mt-1.5 whitespace-nowrap text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs">
+                <p className="mt-1 whitespace-nowrap text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs lg:mt-1.5">
                   {t("Limita tus gastos mensuales", "Limit your monthly spending")}
                 </p>
               </div>
@@ -884,7 +884,7 @@ function Gastos() {
                 </span>
               </span>
             </div>
-            <p className="whitespace-nowrap text-xs text-muted-foreground">
+            <p className="whitespace-nowrap text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs md:text-[0.6875rem] lg:text-xs">
               <span className="md:hidden">{runPeriodHint}</span>
               <span className="hidden md:inline">{runPeriodCompactHint}</span>
               {" · "}{targetPct.toFixed(0)}% {t("del objetivo", "of target")}
