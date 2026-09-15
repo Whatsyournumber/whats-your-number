@@ -647,6 +647,7 @@ function Gastos() {
 
   const adviceKey = `${rangeLabel}|${variableTotal.toFixed(0)}|${fixed.total}|${target}|${budgetPlanTotal}`;
   const lastAdviceKey = useRef<string | null>(null);
+  const adviceBlocked = useRef(false);
 
   const runAdvice = async () => {
     setAdviceLoading(true);
@@ -683,7 +684,9 @@ function Gastos() {
       const raw = e instanceof Error ? e.message : "";
       const generic = t("No pudimos generar las recomendaciones. Inténtalo de nuevo.", "We couldn't generate recommendations. Please try again.");
       const upgrade = t("Esta función está incluida en Pro.", "This feature is included in Pro.");
-      setAdviceError(/upgrade_required|requires the pro plan|requires the patrimonio plan/i.test(raw) ? upgrade : raw || generic);
+      const needsUpgrade = /upgrade_required|requires the pro plan|requires the patrimonio plan/i.test(raw);
+      if (needsUpgrade) adviceBlocked.current = true;
+      setAdviceError(needsUpgrade ? upgrade : raw || generic);
     } finally {
       setAdviceLoading(false);
     }
@@ -692,7 +695,7 @@ function Gastos() {
 
 
   useEffect(() => {
-    if (!hasData || adviceLoading) return;
+    if (!hasData || adviceLoading || adviceBlocked.current) return;
     if (lastAdviceKey.current === adviceKey) return;
     lastAdviceKey.current = adviceKey;
     const id = setTimeout(() => void runAdvice(), 600);
