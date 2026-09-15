@@ -427,16 +427,16 @@ function Gastos() {
     };
     for (const c of byCategory) {
       const id = match(c.name);
-      if (id) map.set(id, (map.get(id) ?? 0) + c.amount * toMonthly);
+      if (id) map.set(id, (map.get(id) ?? 0) + c.amount);
     }
     for (const item of fixed.items) {
       const amount = Number(item.amount) || 0;
       if (amount <= 0) continue;
       const id = match(item.name);
-      if (id) map.set(id, (map.get(id) ?? 0) + amount);
+      if (id) map.set(id, (map.get(id) ?? 0) + amount * budgetMonths);
     }
     return map;
-  }, [byCategory, fixed.items, toMonthly, customLines]);
+  }, [byCategory, fixed.items, budgetMonths, customLines]);
 
   const budgetRows = useMemo(
     () =>
