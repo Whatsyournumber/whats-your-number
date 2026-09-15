@@ -195,6 +195,7 @@ export function buildDataset(p: Profile): Dataset {
     { name: "Salario", amount: p.income_salary },
     { name: "Bonos", amount: p.income_bonus },
     { name: "Alquileres", amount: p.income_rent },
+    { name: "Negocio extra", amount: p.income_business ?? 0 },
     { name: "Otros ingresos", amount: p.income_other },
   ].filter((l) => l.amount > 0);
 
