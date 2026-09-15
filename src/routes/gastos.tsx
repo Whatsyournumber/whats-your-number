@@ -951,16 +951,15 @@ function Gastos() {
             >
               <div className="flex min-w-0 items-center gap-1.5">
                 <p className="whitespace-nowrap text-[0.625rem] font-medium uppercase tracking-[0.08em] text-muted-foreground sm:text-xs sm:tracking-[0.14em]">
-                  {t("Gasto real vs objetivo", "Actual vs target")}
+                  <span className="sm:hidden">{t("Gasto real vs objetivo", "Actual vs target")}</span>
+                  <span className="hidden sm:inline">{t("Gasto real vs objetivo por categoría", "Actual vs target by category")}</span>
                 </p>
                 <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
               </div>
               <div className="flex shrink-0 items-center gap-1">
-                <p className="whitespace-nowrap text-[0.625rem] text-muted-foreground sm:text-xs">
-                  <span className="hidden sm:inline">{t("Plan", "Plan")} {fmt(budgetPlanTotal)}</span>
+                <p className="whitespace-nowrap text-[0.625rem] text-muted-foreground sm:hidden">
                   {overBudget.length > 0 && (
                     <span className="text-negative">
-                      <span className="hidden sm:inline">{" · "}</span>
                       {overBudget.length} {t("excedidas", "over")}
                     </span>
                   )}
