@@ -343,7 +343,7 @@ ${
       }`
     : "";
 
-  const prompt = `Moneda: ${input.currency}
+  const prompt = `Moneda: ${input.currency} (escribe cada monto con el símbolo "${currencySymbol(input.currency)}" pegado al número, ej. "${currencySymbol(input.currency)}23 media")
 Periodo analizado: ${input.periodLabel}
 Gasto variable del periodo: ${input.total.toFixed(0)} (periodo anterior: ${input.prevTotal.toFixed(0)})
 Gastos fijos mensuales: ${input.fixedTotal.toFixed(0)}
