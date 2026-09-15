@@ -131,9 +131,23 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
     void qc.invalidateQueries({ queryKey: ["profile"] });
   };
 
+  /** Fechas reales (primera y última) de los movimientos recién importados. */
+  const newTxRange = async (statementIds: string[]) => {
+    if (statementIds.length === 0) return {} as { from?: string; to?: string };
+    const { data } = await supabase
+      .from("imported_transactions")
+      .select("tx_date")
+      .in("statement_id", statementIds)
+      .not("tx_date", "is", null)
+      .order("tx_date", { ascending: true });
+    const dates = (data ?? []).map((r) => r.tx_date as string).filter(Boolean);
+    if (dates.length === 0) return {} as { from?: string; to?: string };
+    return { from: dates[0]!, to: dates[dates.length - 1]! };
+  };
+
   const processMutation = useMutation({
     mutationFn: (statementId: string) => runProcess({ data: { statementId, environment: getPaddleEnvironment() } }),
-    onSuccess: (result) => {
+    onSuccess: async (result, statementId) => {
       if (result.upgradeRequired) {
         toast.error(
           t(
