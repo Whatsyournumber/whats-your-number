@@ -403,8 +403,8 @@ function Gastos() {
   const budgets = useSpendBudgets();
   const [budgetOpen, setBudgetOpen] = useState(false);
 
-  /** Factor para llevar el gasto variable del periodo a base mensual. */
-  const toMonthly = isLongRange ? (periodMonths > 0 ? 1 / periodMonths : 1) : canProject ? 30 / days : 1;
+  /** Meses cubiertos por el periodo seleccionado: el objetivo mensual se multiplica por este factor. */
+  const budgetMonths = isLongRange ? Math.max(1, periodMonths) : 1;
 
   /** Gasto real mensual por categoría del plan (variables + fijos que coincidan). */
   const customLines = useMemo(
@@ -427,16 +427,16 @@ function Gastos() {
     };
     for (const c of byCategory) {
       const id = match(c.name);
-      if (id) map.set(id, (map.get(id) ?? 0) + c.amount * toMonthly);
+      if (id) map.set(id, (map.get(id) ?? 0) + c.amount);
     }
     for (const item of fixed.items) {
       const amount = Number(item.amount) || 0;
       if (amount <= 0) continue;
       const id = match(item.name);
-      if (id) map.set(id, (map.get(id) ?? 0) + amount);
+      if (id) map.set(id, (map.get(id) ?? 0) + amount * budgetMonths);
     }
     return map;
-  }, [byCategory, fixed.items, toMonthly, customLines]);
+  }, [byCategory, fixed.items, budgetMonths, customLines]);
 
   const budgetRows = useMemo(
     () =>
@@ -449,12 +449,12 @@ function Gastos() {
             id: l.id,
             name,
             emoji: cat?.emoji ?? l.emoji ?? "📦",
-            planned: l.amount,
+            planned: l.amount * budgetMonths,
             actual: actualByBudget.get(l.id) ?? 0,
           };
         })
         .sort((a, b) => b.actual - b.planned - (a.actual - a.planned)),
-    [budgets.lines, actualByBudget, t],
+    [budgets.lines, actualByBudget, budgetMonths, t],
   );
 
   const budgetPlanTotal = budgetRows.reduce((s, r) => s + r.planned, 0);
@@ -901,7 +901,7 @@ function Gastos() {
             >
               <div className="flex items-center gap-2">
                 <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                  {t("Plan de gastos personalizado", "Custom spending plan")}
+                  {t("Gasto objetivo por categoría vs gasto real", "Target vs actual spending by category")}
                 </p>
                 <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
               </div>
