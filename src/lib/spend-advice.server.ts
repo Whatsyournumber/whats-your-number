@@ -51,6 +51,7 @@ Reglas:
 - La primera acción SIEMPRE debe ser la categoría donde más se excedió el plan, si existe plan.
 - CON PLAN: toda recomendación debe apoyarse en el plan del usuario. "action" debe citar el monto del plan como límite ("hasta X de plan"), y "monthlySaving" NUNCA puede superar el exceso (real − plan) de esa categoría, ni inventar recortes imposibles. Ignora categorías dentro de plan salvo que falten excedidas.
 - SIN PLAN: usa los datos reales y, además, la ÚLTIMA acción debe ser "label": "Plan de gastos", invitando a definir un plan personalizado con topes concretos para sus 2-3 categorías mayores (menciona los montos reales); "monthlySaving" conservador (≈10% de esas categorías) y "overspent": false.
+- SÉ CONCRETO: siempre que puedas, nombra el comercio real que causa el exceso dentro de esa categoría y el monto exacto (ej. "Transporte: plan 200, real 443; Uber subió 300 más que el periodo anterior"). Usa los comercios del contexto que pertenecen a esa categoría.
 No inventes datos: usa solo categorías y comercios del contexto.`;
 
 export async function generateSpendAdvice(input: AdviceInput): Promise<SpendAdvice> {
