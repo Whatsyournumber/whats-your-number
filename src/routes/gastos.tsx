@@ -801,9 +801,8 @@ function Gastos() {
       >
         <div className="mb-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
           <div className="min-w-0">
-            <h2 className="flex items-center gap-2 text-base font-semibold sm:text-sm">
-              <span>🎯</span>
-              {isLongRange ? t("Promedio mensual vs objetivo", "Monthly average vs target") : t("Objetivo mensual", "Monthly target")}
+            <h2 className="text-base font-semibold sm:text-sm">
+              {isLongRange ? t("Promedio mensual vs objetivo", "Monthly average vs target") : t("Gasto objetivo mensual", "Monthly spend target")}
             </h2>
             <p className="mt-1 text-xs leading-5 text-muted-foreground sm:text-[0.8125rem]">
               {isLongRange
@@ -813,21 +812,14 @@ function Gastos() {
                       `Monthly average of the ${periodMonths} months analyzed vs. your spending ceiling.`,
                     )
                   : t("Promedio mensual vs. tu techo de gasto.", "Monthly average vs. your spending ceiling.")
-                : t("Lima tus gastos", "Trim your expenses")}
+                : t("Ritmo actual vs. tu techo de gasto según tu número.", "Current pace vs. your spending ceiling based on your number.")}
             </p>
           </div>
-          <Button className="w-full gap-1.5 sm:w-auto" variant="outline" size="sm" onClick={() => setBudgetOpen(true)}>
-            {budgetRows.length > 0 ? (
-              <>
-                <Pencil className="h-4 w-4" />
-                <span className="hidden sm:inline">{t("Editar plan", "Edit plan")}</span>
-              </>
-            ) : (
-              <>
-                <Plus className="h-4 w-4" />
-                <span className="hidden sm:inline">{t("Crear plan", "Create plan")}</span>
-              </>
-            )}
+          <Button className="w-full sm:w-auto" variant="outline" size="sm" onClick={() => setBudgetOpen(true)}>
+            <Plus className="h-4 w-4" />
+            {budgetRows.length
+              ? t("Editar plan de gastos personalizado", "Edit custom spending plan")
+              : t("Plan de gastos personalizado", "Custom spending plan")}
           </Button>
         </div>
 
@@ -901,6 +893,17 @@ function Gastos() {
                     </span>
                   )}
                 </p>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setBudgetOpen(true);
+                  }}
+                  className="grid h-7 w-7 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  aria-label={t("Editar plan de gastos personalizado", "Edit custom spending plan")}
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                </button>
               </div>
             </CollapsibleTrigger>
             <CollapsibleContent>
