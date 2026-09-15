@@ -807,7 +807,7 @@ function Gastos() {
       </div>
 
       <Panel variant="minimal" className="p-5 sm:p-6">
-        <div className="mb-4 flex items-start gap-3">
+        <div className="mb-3 flex items-start gap-3">
           <img
             src={targetIcon.url}
             alt=""
