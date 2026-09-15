@@ -797,12 +797,24 @@ function Gastos() {
       </div>
 
       <Panel variant="minimal" className="p-4 sm:p-5">
-        <div className="mb-4 flex items-start justify-between gap-3">
-          <h2 className="text-base font-semibold sm:text-sm">
-            {isLongRange
-              ? t("🎯 Promedio mensual vs objetivo", "🎯 Monthly average vs target")
-              : t("🎯 Gasto objetivo mensual", "🎯 Monthly spend target")}
-          </h2>
+        <div className="mb-5 flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <div className="flex items-center gap-3">
+              <img
+                src={targetIcon.url}
+                alt=""
+                className="h-9 w-9 shrink-0 rounded-full object-cover"
+              />
+              <h2 className="text-base font-semibold sm:text-sm">
+                {isLongRange
+                  ? t("Promedio mensual vs objetivo", "Monthly average vs target")
+                  : t("Gasto objetivo mensual", "Monthly spend target")}
+              </h2>
+            </div>
+            <p className="mt-1 text-xs leading-5 text-muted-foreground sm:text-[0.8125rem]">
+              {t("Limita tus gastos mensuales", "Limit your monthly spending")}
+            </p>
+          </div>
           <Button className="w-full shrink-0 sm:w-auto" variant="outline" size="sm" onClick={() => setBudgetOpen(true)}>
             <Plus className="h-4 w-4" />
             {budgetRows.length
@@ -812,14 +824,14 @@ function Gastos() {
         </div>
 
         <div className="grid gap-5 md:grid-cols-[200px_1fr] md:items-center">
-          <div className="flex items-center gap-2">
+          <div className="relative flex items-center">
+            <span className="pointer-events-none absolute left-3 text-sm font-semibold text-muted-foreground">$</span>
             <NumberInput
               value={target}
               onChange={setTarget}
               format
-              className="h-10 w-full text-base font-semibold"
+              className="h-11 w-full pl-7 text-base font-semibold"
             />
-            <span className="shrink-0 text-xs text-muted-foreground">{t("/mes", "/mo")}</span>
           </div>
           <div className="min-w-0">
             <div className="flex items-baseline justify-between gap-2">
