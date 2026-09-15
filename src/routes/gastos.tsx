@@ -1148,7 +1148,7 @@ function Gastos() {
                     tickFormatter={(v: string) => (v.length > 12 ? `${v.slice(0, 11)}…` : v)}
                   />
                   <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={isMobile ? 40 : 64} />
-                  <Tooltip content={<ChartTooltip formatter={fmt} />} cursor={{ fill: "var(--color-muted)", opacity: 0.3 }} />
+                  <RTooltip content={<ChartTooltip formatter={fmt} />} cursor={{ fill: "var(--color-muted)", opacity: 0.3 }} />
                   <Bar dataKey="a" name={monthLabel(mA)} fill="var(--color-chart-1)" radius={[6, 6, 0, 0]} />
                   <Bar dataKey="b" name={monthLabel(mB)} fill="var(--color-chart-4)" radius={[6, 6, 0, 0]} />
                 </BarChart>
