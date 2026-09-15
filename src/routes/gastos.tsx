@@ -1455,6 +1455,19 @@ function Gastos() {
         }
       >
         {adviceError && <p className="text-sm text-negative">{adviceError}</p>}
+        {budgetRows.length === 0 && hasData && (
+          <div className="mb-3 flex flex-col gap-2 rounded-2xl border border-primary/25 bg-primary/[0.05] p-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-xs text-muted-foreground sm:text-sm">
+              {t(
+                "Define tu plan de gastos personalizado y la IA te recomendará según tus propios límites.",
+                "Set your custom spending plan and the AI will advise you against your own limits.",
+              )}
+            </p>
+            <Button size="sm" variant="outline" className="shrink-0" onClick={() => setBudgetOpen(true)}>
+              <Plus className="h-4 w-4" /> {t("Crear plan", "Create plan")}
+            </Button>
+          </div>
+        )}
         {!advice && !adviceError && (
           <p className="text-sm text-muted-foreground">
             {hasData
