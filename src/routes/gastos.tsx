@@ -836,31 +836,41 @@ function Gastos() {
               className="h-11 w-full pl-7 text-base font-semibold"
             />
           </div>
-          <div className="flex items-baseline justify-between gap-2 md:justify-end">
-            <span className="numeric text-2xl font-semibold sm:text-xl">{fmt(monthlyRun)}</span>
-            <span
-              className={cn(
-                "shrink-0 rounded-full px-2 py-1 text-xs font-medium",
-                monthlyRun <= target ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative",
-              )}
-            >
-              {monthlyRun <= target
-                ? `${fmt(target - monthlyRun)} ${t("que puedes invertir", "you can invest")}`
-                : `${fmt(monthlyRun - target)} ${t("que gastaste de más", "over budget")}`}
-            </span>
+          <div className="flex flex-col gap-3">
+            <div className="flex items-baseline justify-between gap-2">
+              <span className="numeric text-2xl font-semibold sm:text-xl">{fmt(monthlyRun)}</span>
+              <span
+                className={cn(
+                  "shrink-0 rounded-full px-2 py-1 text-xs font-medium",
+                  monthlyRun <= target ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative",
+                )}
+              >
+                {monthlyRun <= target
+                  ? `${fmt(target - monthlyRun)} ${t("que puedes invertir", "you can invest")}`
+                  : `${fmt(monthlyRun - target)} ${t("que gastaste de más", "over budget")}`}
+              </span>
+            </div>
+            <div>
+              <div className="flex h-2 overflow-hidden rounded-full bg-muted">
+                {monthlyRun <= target ? (
+                  <div className="h-full rounded-full bg-positive" style={{ width: `${Math.min(100, targetPct)}%` }} />
+                ) : (
+                  <>
+                    <div className="h-full bg-positive" style={{ width: `${Math.min(100, (target / monthlyRun) * 100)}%` }} />
+                    <div className="h-full flex-1 bg-negative" />
+                  </>
+                )}
+              </div>
+              <div className="mt-1.5 flex justify-between text-xs text-muted-foreground">
+                <span>0 {currency}</span>
+                {monthlyRun > target && <span className="numeric">{fmt(target)}</span>}
+                <span className="numeric">{fmt(monthlyRun)}</span>
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {t("fijos", "fixed")} {fmt(fixed.total)} · {t("variable", "variable")} {fmt(isLongRange ? avgMonthlyVariable : canProject ? (variableTotal / days) * 30 : variableTotal)} · {targetPct.toFixed(0)}% {t("del objetivo", "of target")}
+              </p>
+            </div>
           </div>
-        </div>
-
-        <div className="mt-5 pl-[3.25rem]">
-          <div className="h-2 overflow-hidden rounded-full bg-muted">
-            <div
-              className={cn("h-full rounded-full", monthlyRun <= target ? "bg-positive" : "bg-negative")}
-              style={{ width: `${Math.min(100, targetPct)}%` }}
-            />
-          </div>
-          <p className="mt-2 text-xs text-muted-foreground">
-            {targetPct.toFixed(0)}% {t("del objetivo", "of target")} · {t("fijos", "fixed")} {fmt(fixed.total)} + {t("variable", "variable")} {fmt(isLongRange ? avgMonthlyVariable : canProject ? (variableTotal / days) * 30 : variableTotal)}
-          </p>
         </div>
 
         {budgetRows.length > 0 && (
