@@ -274,6 +274,8 @@ function LifePlannerContent() {
                   progressDelta < -0.05 ? "bg-amber-400" : progressDelta > 0.05 ? "bg-emerald-300" : "bg-primary"
                 }`}
               />
+              </div>
+              <span className="numeric text-sm font-semibold text-foreground">{progress.toFixed(0)}%</span>
             </div>
             {Math.abs(monthsDelta ?? 0) > 0 && (
               <p className="mt-2 text-xs text-muted-foreground">
