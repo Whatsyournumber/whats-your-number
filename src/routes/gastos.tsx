@@ -877,8 +877,9 @@ function Gastos() {
               )}
             </div>
           </div>
-          <div className="order-5 -mt-2 md:col-start-2">
+          <div className="order-5 -mt-5 md:col-start-2">
             <div className="relative h-4 text-xs text-muted-foreground">
+              <span className="numeric absolute left-0 top-0">{fmt(0)}</span>
               {monthlyRun > target && targetBoundaryPct >= 10 && targetBoundaryPct <= 90 && (
                 <span
                   className="numeric absolute top-0 -translate-x-1/2"
