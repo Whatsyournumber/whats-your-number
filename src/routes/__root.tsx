@@ -295,7 +295,7 @@ function AppShell() {
     };
   }, [loading, user, navigate]);
 
-  if (isPopupTest || (typeof window !== "undefined" && (loading || !user || !onboardingChecked))) {
+  if (!isPopupTest && (loading || !user || !onboardingChecked)) {
     return (
       <div className="min-h-screen bg-background p-4 sm:p-6">
         <div className="mx-auto w-full max-w-6xl space-y-4">
