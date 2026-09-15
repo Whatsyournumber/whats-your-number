@@ -113,12 +113,22 @@ function MiPerfil() {
     return () => window.removeEventListener("beforeunload", handler);
   }, [dirty]);
 
+  const withPartner = form.marital_status === "Casado" || form.marital_status === "En pareja";
   const moneyFields: { key: keyof Profile; label: string; group: "income" | "assets" | "flow" }[] = [
     { key: "income_salary", label: t("Salario mensual", "Monthly salary"), group: "income" },
+    ...(withPartner
+      ? [
+          { key: "income_partner_salary" as keyof Profile, label: t("Salario de tu pareja", "Partner's salary"), group: "income" as const },
+          { key: "income_partner_other" as keyof Profile, label: t("Otros ingresos de tu pareja", "Partner's other income"), group: "income" as const },
+        ]
+      : []),
     { key: "income_bonus", label: t("Bonos / variables", "Bonuses / variable pay"), group: "income" },
     { key: "income_rent", label: t("Alquileres", "Rental income"), group: "income" },
     { key: "income_other", label: t("Otros ingresos", "Other income"), group: "income" },
     { key: "monthly_expenses", label: t("Gastos mensuales", "Monthly expenses"), group: "flow" },
+    ...(withPartner
+      ? [{ key: "expenses_partner" as keyof Profile, label: t("Gastos de tu pareja", "Partner's expenses"), group: "flow" as const }]
+      : []),
     { key: "monthly_savings", label: t("Ahorro mensual", "Monthly savings"), group: "flow" },
     { key: "desired_retirement_income", label: t("Ingreso mensual deseado al retirarte", "Desired monthly income at retirement"), group: "flow" },
     { key: "assets_cash", label: t("Efectivo", "Cash"), group: "assets" },
