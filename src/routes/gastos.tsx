@@ -799,7 +799,7 @@ function Gastos() {
         variant="minimal"
         className="p-4 sm:p-5"
       >
-        <div className="mb-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
+        <div className="mb-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
           <div className="min-w-0">
             <h2 className="text-base font-semibold sm:text-sm">
               {isLongRange ? t("Promedio mensual vs objetivo", "Monthly average vs target") : t("Gasto objetivo mensual", "Monthly spend target")}
@@ -815,17 +815,30 @@ function Gastos() {
                 : t("Ritmo actual vs. tu techo de gasto según tu número.", "Current pace vs. your spending ceiling based on your number.")}
             </p>
           </div>
-          <Button className="w-full sm:w-auto" variant="outline" size="sm" onClick={() => setBudgetOpen(true)}>
-            <Plus className="h-4 w-4" />
-            {budgetRows.length
-              ? t("Editar plan de gastos personalizado", "Edit custom spending plan")
-              : t("Plan de gastos personalizado", "Custom spending plan")}
-          </Button>
+          <div className="flex items-center gap-2 sm:w-44 lg:w-60">
+            <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
+              <div
+                className={cn("h-full rounded-full", monthlyRun <= target ? "bg-positive" : "bg-negative")}
+                style={{ width: `${Math.min(100, targetPct)}%` }}
+              />
+            </div>
+            <span className="numeric text-xs font-semibold">{targetPct.toFixed(0)}%</span>
+          </div>
         </div>
 
         <div className="grid gap-6 border-t border-border/50 pt-4 md:grid-cols-[200px_1fr] md:items-center md:border-t-0 md:pt-0">
           <div>
-            <p className="cursor-pointer text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground" onClick={() => setBudgetRowsOpen(true)}>{t("Objetivo", "Target")}</p>
+            <div className="flex items-center gap-1">
+              <p className="cursor-pointer text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground" onClick={() => setBudgetRowsOpen(true)}>{t("Objetivo", "Target")}</p>
+              <button
+                type="button"
+                onClick={() => setBudgetOpen(true)}
+                className="grid h-5 w-5 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                aria-label={t("Abrir plan de gastos personalizado", "Open custom spending plan")}
+              >
+                <Plus className="h-3 w-3" />
+              </button>
+            </div>
             <div className="mt-2 flex items-center gap-2">
               <NumberInput
                 value={target}
@@ -859,14 +872,8 @@ function Gastos() {
               {" · "}
               {t("objetivo", "target")} {fmt(target)}/{t("mes", "mo")}
             </span>
-            <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
-              <div
-                className={cn("h-full rounded-full", monthlyRun <= target ? "bg-positive" : "bg-negative")}
-                style={{ width: `${Math.min(100, targetPct)}%` }}
-              />
-            </div>
-            <p className="mt-2 text-xs text-muted-foreground">
-              {targetPct.toFixed(0)}% {t("del objetivo", "of target")} · {t("fijos", "fixed")} {fmt(fixed.total)} + {t("variable", "variable")} {fmt(isLongRange ? avgMonthlyVariable : canProject ? (variableTotal / days) * 30 : variableTotal)}
+            <p className="mt-3 text-xs text-muted-foreground">
+              {t("fijos", "fixed")} {fmt(fixed.total)} + {t("variable", "variable")} {fmt(isLongRange ? avgMonthlyVariable : canProject ? (variableTotal / days) * 30 : variableTotal)}
             </p>
           </div>
         </div>
