@@ -807,8 +807,8 @@ function Gastos() {
       </div>
 
       <Panel variant="minimal" className="p-5 sm:p-6">
-        <div className="grid gap-y-1.5 md:grid-cols-[240px_1fr] md:items-start md:gap-x-6">
-          <div className="min-w-0">
+        <div className="grid gap-x-6 gap-y-3 md:grid-cols-[240px_1fr] md:items-start">
+          <div className="order-1 min-w-0">
             <div className="flex items-start gap-3">
               <img
                 src={targetIcon.url}
@@ -835,17 +835,8 @@ function Gastos() {
                 </p>
               </div>
             </div>
-            <div className="relative mt-6 flex items-center pl-[3.25rem]">
-              <span className="pointer-events-none absolute left-[calc(3.25rem+0.75rem)] text-sm font-semibold text-muted-foreground">$</span>
-              <NumberInput
-                value={target}
-                onChange={setTarget}
-                format
-                className="h-11 w-full pl-7 text-base font-semibold"
-              />
-            </div>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="order-3 flex flex-col gap-2 md:order-2">
             <div className="flex items-baseline justify-between gap-2">
               <div className="min-w-0">
                 <span className="numeric text-2xl font-semibold sm:text-xl">{fmt(monthlyRun)}</span>
@@ -862,6 +853,17 @@ function Gastos() {
                   : `${fmt(monthlyRun - target)} ${t("que gastaste de más", "over budget")}`}
               </span>
             </div>
+          </div>
+          <div className="relative order-2 flex items-center self-center pl-[3.25rem] md:order-3">
+            <span className="pointer-events-none absolute left-[calc(3.25rem+0.75rem)] text-sm font-semibold text-muted-foreground">$</span>
+            <NumberInput
+              value={target}
+              onChange={setTarget}
+              format
+              className="h-11 w-full pl-7 text-base font-semibold"
+            />
+          </div>
+          <div className="order-4 self-center">
             <div>
               <div className="flex h-2 overflow-hidden rounded-full bg-muted">
                 {monthlyRun <= target ? (
