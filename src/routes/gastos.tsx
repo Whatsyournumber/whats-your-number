@@ -546,6 +546,15 @@ function Gastos() {
       ? `${format(range.from, "d MMM yyyy", { locale: es })} — ${format(range.to, "d MMM yyyy", { locale: es })}`
       : t("Selecciona un rango", "Select a range");
 
+  const runPeriodHint = isLongRange
+    ? t(`Promedio de los últimos ${monthsInRange} meses`, `Average of the last ${monthsInRange} months`)
+    : range?.from && range?.to && range.from.getDate() === 1 && range.from.getMonth() === range.to.getMonth() && range.from.getFullYear() === range.to.getFullYear()
+      ? t(
+          format(range.from, "MMMM", { locale: es }).charAt(0).toUpperCase() + format(range.from, "MMMM", { locale: es }).slice(1),
+          format(range.from, "MMMM", { locale: enUS }).charAt(0).toUpperCase() + format(range.from, "MMMM", { locale: enUS }).slice(1),
+        )
+      : t(`Promedio de los últimos ${days} días`, `Average of the last ${days} days`);
+
   const variablePeriodTitle = useMemo(() => {
     const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
     if (!range?.from) return { es: "Gastos variables", en: "Variable expenses" };
