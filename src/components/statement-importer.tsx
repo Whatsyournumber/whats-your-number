@@ -42,6 +42,15 @@ type TxRow = {
   excluded: boolean;
 };
 
+/** "12 ago 2026 al 3 sep 2026" o un solo día cuando coinciden. */
+const formatSpan = (from: string, to?: string) => {
+  const d = (iso: string) =>
+    new Date(`${iso}T00:00:00`).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+  const a = d(from);
+  const b = to ? d(to) : a;
+  return a === b ? a : `${a} — ${b}`;
+};
+
 const money = (v: number, currency: string) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: currency || "USD", maximumFractionDigits: 2 }).format(v);
 
