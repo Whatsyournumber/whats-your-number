@@ -770,9 +770,10 @@ function Gastos() {
           value={fmt(advice ? totalSaving : Math.max(0, monthlyRun - target))}
           hint={
             specificSavingHint
-              ? `${t("Ahorra", "Save")} ${fmt(specificSavingHint.monthlySaving)}${t("/mes", "/mo")} ${t("en", "on")} ${specificSavingHint.label} · ${t("ver detalle", "see detail")}`
-              : t("Descubre dónde ahorrar · ver detalle", "Find where to save · see detail")
+              ? `${specificSavingHint.label.slice(0, 14).trim()}: ${fmt(specificSavingHint.monthlySaving)}${t("/mes", "/mo")}`
+              : t("Ver recomendaciones", "See recommendations")
           }
+          hintClassName="whitespace-nowrap"
           icon={Lightbulb}
           index={3}
           iconClassName="text-primary"

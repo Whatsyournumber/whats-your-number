@@ -22,6 +22,7 @@ export function KpiCard({
   variant = "default",
   className,
   iconClassName,
+  hintClassName,
   onClick,
 }: {
   label: string;
@@ -38,6 +39,7 @@ export function KpiCard({
   variant?: "default" | "flat";
   className?: string;
   iconClassName?: string;
+  hintClassName?: string;
   onClick?: () => void;
 }) {
   const display = value.length > 13 ? shortenMoneyString(value) : value;
@@ -120,7 +122,7 @@ export function KpiCard({
         {tooltip ? (
           <Tooltip>
             <TooltipTrigger asChild>
-              <span className="inline-flex cursor-help items-center gap-1 text-xs text-muted-foreground">
+              <span className={cn("inline-flex cursor-help items-center gap-1 text-xs text-muted-foreground", hintClassName)}>
                 {hint}
                 <HelpCircle className="h-3 w-3 text-muted-foreground/60" />
               </span>
@@ -135,7 +137,7 @@ export function KpiCard({
             </TooltipContent>
           </Tooltip>
         ) : (
-          hint && <span className="text-xs text-muted-foreground">{hint}</span>
+          hint && <span className={cn("text-xs text-muted-foreground", hintClassName)}>{hint}</span>
         )}
       </div>
     </motion.div>
