@@ -1458,14 +1458,22 @@ function Gastos() {
                         <Input
                           value={cat.keywords}
                           onChange={(e) => categories.update(cat.id, { keywords: e.target.value })}
+                          onKeyDown={(e) => {
+                            if (e.key === "+") {
+                              e.preventDefault();
+                              const cur = cat.keywords.replace(/\s+$/, "");
+                              if (!cur) return;
+                              categories.update(cat.id, { keywords: cur.endsWith(",") ? `${cur} ` : `${cur}, ` });
+                            }
+                          }}
                           className="h-7 flex-[1.5] border-transparent bg-transparent text-sm text-muted-foreground focus-visible:bg-background"
                           placeholder={t("Palabras clave", "Keywords")}
                         />
                       </TooltipTrigger>
                       <TooltipContent side="top" className="max-w-56 text-center">
                         {t(
-                          "Palabras clave separadas por comas: los movimientos que las contengan entran aquí",
-                          "Comma-separated keywords: matching movements land here",
+                          "Agrega palabra clave separada por coma o +",
+                          "Add a keyword separated by comma or +",
                         )}
                       </TooltipContent>
                     </Tooltip>
