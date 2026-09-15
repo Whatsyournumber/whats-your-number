@@ -211,7 +211,16 @@ function Gastos() {
   };
   const categoryOf = (t: Tx) =>
     txCat[t.id] ?? learned.resolve(t.merchant, t.description) ?? categorizeTxWithTravel(t, categories.rules, travelDays);
-  const [range, setRange] = usePersistedRange(() => buildPresets(t)[0]!.range());
+  const search = Route.useSearch();
+  const searchRange = useMemo<DateRange | undefined>(() => {
+    if (!search.from) return undefined;
+    const fromDate = parseISO(search.from);
+    if (Number.isNaN(fromDate.getTime())) return undefined;
+    const toDate = search.to ? parseISO(search.to) : undefined;
+    return { from: fromDate, to: toDate && !Number.isNaN(toDate.getTime()) ? toDate : fromDate };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search.from, search.to]);
+  const [range, setRange] = usePersistedRange(() => buildPresets(t)[0]!.range(), searchRange);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [detailCat, setDetailCat] = useState<string | null>(null);
   const [fixedOpen, setFixedOpen] = useState(true);
