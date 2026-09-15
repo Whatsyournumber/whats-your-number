@@ -31,12 +31,16 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
   const [draft, setDraft] = useState<BudgetLine[]>([]);
   const [adding, setAdding] = useState(false);
   const [customName, setCustomName] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState("");
 
   useEffect(() => {
     if (!open) return;
     setDraft(lines.length ? lines : DEFAULT_BUDGET_IDS.map((id) => ({ id, amount: 0 })));
     setAdding(false);
     setCustomName("");
+    setEditingId(null);
+    setEditingName("");
   }, [open, lines]);
 
   const label = (l: BudgetLine) => {
