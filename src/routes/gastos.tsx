@@ -1640,6 +1640,13 @@ function Gastos() {
                 );
               })}
             </ul>
+            <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+              <Brain className="h-3 w-3 text-primary" />
+              {t(
+                "Tu IA guarda cada análisis y tus respuestas para entenderte mejor cada mes.",
+                "Your AI saves every analysis and your answers to understand you better each month.",
+              )}
+            </p>
           </div>
         )}
 
