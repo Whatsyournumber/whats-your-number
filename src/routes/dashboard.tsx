@@ -303,16 +303,10 @@ function Dashboard() {
     if (current.income <= 0) return t("Ingreso mensual estimado", "Estimated monthly income");
     if (current.income > current.expenses) {
       const rate = savingsRate;
-      if (rate >= 40) {
-        return t(
-          `Puedes ahorrar/invertir ${rate.toFixed(0)}% de tu ingreso · meta 40% lograda`,
-          `You can save/invest ${rate.toFixed(0)}% of your income · 40% goal reached`,
-        );
-      }
       if (rate >= 20) {
         return t(
-          `Puedes ahorrar/invertir ${rate.toFixed(0)}% de tu ingreso · meta 40%`,
-          `You can save/invest ${rate.toFixed(0)}% of your income · 40% goal`,
+          `Puedes ahorrar/invertir ${rate.toFixed(0)}% de tu ingreso`,
+          `You can save/invest ${rate.toFixed(0)}% of your income`,
         );
       }
       return t(
