@@ -299,14 +299,14 @@ function LifePlannerContent() {
             <HeroStat icon={Target} label={t("Patrimonio objetivo", "Target capital")} value={<Amount full={data.fmt(target)} short={data.fmtCompact(target)} from="xl" />} />
             <HeroStat
               icon={CalendarDays}
-              label={t("Fecha estimada de retiro", "Estimated freedom date")}
+              label={t("Retiro estimado", "Freedom date")}
               value={
                 retireDate
                   ? retireDate.toLocaleDateString("es", { month: "long", year: "numeric" }).replace(/^./, (c) => c.toUpperCase())
                   : t("+60 años", "+60 years")
               }
             />
-            <HeroStat icon={Wallet} label={t("Patrimonio líquido actual", "Current liquid net worth")} value={<Amount full={data.fmt(start)} short={data.fmtCompact(start)} from="xl" />} />
+            <HeroStat icon={Wallet} label={t("Patrimonio líquido", "Liquid net worth")} value={<Amount full={data.fmt(start)} short={data.fmtCompact(start)} from="xl" />} />
             <HeroStat
               icon={Compass}
               label={t("Con nuevas decisiones", "With new decisions")}

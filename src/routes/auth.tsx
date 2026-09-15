@@ -208,7 +208,7 @@ function ReviewCard({ index, variant = "general" }: { index: number; variant?: "
             </div>
             <figcaption className="text-[11px] font-medium text-white lg:text-sm">{r.name}</figcaption>
           </div>
-          <blockquote className="mt-1 line-clamp-2 text-[11px] leading-snug text-white/70 lg:text-sm lg:leading-relaxed">
+          <blockquote className="mt-1 text-[11px] leading-snug text-white/70 lg:text-sm lg:leading-relaxed">
             “{tt(r.quote[0], r.quote[1])}”
           </blockquote>
         </div>

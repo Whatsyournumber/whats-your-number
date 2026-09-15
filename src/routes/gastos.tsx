@@ -1010,7 +1010,6 @@ function Gastos() {
         variant="minimal"
         title={t("Compara tus gastos variables mes a mes", "Compare your variable expenses month by month")}
         description={t("Compara dos meses de tus EEFF", "Compare two statement months")}
-        descriptionClassName="line-clamp-1 sm:line-clamp-none"
         className="flex h-full flex-col lg:col-span-2"
         bleedMobile
       >
@@ -1446,14 +1445,14 @@ function Gastos() {
         titleClassName="text-xs sm:text-xl"
         description={
           <>
-            {t("Acciones concretas ordenadas por impacto, y cuánto te acercan a tu número", "Concrete actions ranked by impact, and how much closer they get you to your number")}
+            {t("Acciones ordenadas por impacto", "Actions ranked by impact")}
             <span className="ml-2 hidden items-center gap-1 align-middle rounded-full border border-border/60 bg-elevated/50 px-2 py-0.5 text-[10px] text-muted-foreground sm:inline-flex">
               <CalendarIcon className="h-3 w-3" />
               {rangeLabel}
             </span>
           </>
         }
-        descriptionClassName="line-clamp-2 sm:line-clamp-none"
+        
         actions={
           <Button size="sm" variant="outline" onClick={runAdvice} disabled={adviceLoading || !hasData}>
             {adviceLoading ? (

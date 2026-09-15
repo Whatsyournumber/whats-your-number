@@ -556,3 +556,8 @@ input[type="number"] {
     display: none;
   }
 }
+
+/* Nunca mostrar "…": cortar limpio o envolver el texto */
+.truncate {
+  text-overflow: clip;
+}

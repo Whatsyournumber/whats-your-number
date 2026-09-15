@@ -588,7 +588,7 @@ export function Landing() {
                     <br />
                     <span className="text-primary">{card.titleAccent}</span>
                   </h3>
-                  <p className="mt-2 line-clamp-2 min-h-[3rem] text-sm leading-relaxed text-muted-foreground/80">
+                  <p className="mt-2 min-h-[3rem] text-sm leading-relaxed text-muted-foreground/80">
                     {card.desc}
                   </p>
                 </div>
