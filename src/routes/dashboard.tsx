@@ -331,12 +331,10 @@ function Dashboard() {
 
   const savingsRateHint =
     current.income <= 0
-      ? t("Meta 40% · mínimo 20%", "40% goal · 20% minimum")
-      : savingsRate >= 40
-        ? t("Meta 40% lograda", "40% goal reached")
-        : savingsRate >= 20
-          ? t("Puedes llegar a la meta 40%", "You can still reach the 40% goal")
-          : t("Vas muy justo · busca extra para el 20%", "Cutting it close · find extra for the 20%");
+      ? t("Mínimo 20% del ingreso", "20% minimum")
+      : savingsRate >= 20
+        ? t("Por encima del 20% mínimo", "Above the 20% minimum")
+        : t("Vas muy justo · busca extra para el 20%", "Cutting it close · find extra for the 20%");
 
 
   const insights = buildInsights(plan, profile, profile, d.currency, lang);
