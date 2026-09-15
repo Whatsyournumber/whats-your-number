@@ -562,7 +562,7 @@ function MiPerfil() {
         >
           <div className="grid gap-4 sm:grid-cols-2">
             {moneyFields
-              .filter((f) => f.group === "income" || f.group === "flow")
+              .filter((f) => f.group === "income")
               .map((f) => (
                 <Field key={String(f.key)} label={f.label}>
                   <Input
