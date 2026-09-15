@@ -21,6 +21,17 @@ export type AdviceInput = {
   }[];
   /** Plan de gasto por categoría definido por el usuario. */
   budgets?: { name: string; planned: number; actual: number }[];
+  /** Análisis anteriores guardados de este usuario (más reciente primero). */
+  history?: {
+    periodLabel: string;
+    total: number;
+    target: number;
+    createdAt: string;
+    snapshot?: unknown;
+    actions?: { label?: string; action?: string; monthlySaving?: number }[];
+  }[];
+  /** Cómo valoró el usuario recomendaciones anteriores. */
+  feedback?: { label: string; action: string; verdict: "useful" | "not_useful" | "done" }[];
 };
 
 export const adviceSchema = z.object({
