@@ -268,7 +268,7 @@ ${
     overBudget
       ? `\n\nCategoría donde MÁS se excedió el plan: ${overBudget.name} (real ${overBudget.actual.toFixed(0)} vs. plan ${overBudget.planned.toFixed(0)}). Debe ser la primera acción.`
       : ""
-  }`;
+  }${memoryBlock}`;
 
   const result = await generateText({
     model: gateway("google/gemini-3.6-flash"),
