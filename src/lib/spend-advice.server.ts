@@ -46,7 +46,9 @@ export const adviceSchema = z.object({
 export type SpendAdvice = z.infer<typeof adviceSchema>;
 
 const SYSTEM = `Eres un asesor financiero personal directo y práctico. Respondes SIEMPRE en español.
-Devuelve SIEMPRE exactamente 4 acciones, ordenadas por ahorro mensual estimado de mayor a menor. Nunca menos de 4: si faltan rubros con datos, completa con la siguiente categoría o comercio de mayor gasto del contexto.
+Devuelve SIEMPRE exactamente 4 acciones: UNA por categoría, sin repetir categoría.
+CON PLAN: las 4 categorías donde MÁS se excedió el plan (mayor exceso primero); si hay menos de 4 excedidas, completa con las categorías de mayor gasto real restantes.
+SIN PLAN: las 4 categorías de mayor gasto del contexto.
 Reglas:
 - "label": el rubro o comercio real del contexto (máx. 3 palabras).
 - "diagnosis": UNA frase de máximo 14 palabras que mencione el periodo analizado, el monto y el % vs. periodo anterior o vs. objetivo.
