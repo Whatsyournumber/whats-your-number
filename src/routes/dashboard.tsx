@@ -307,20 +307,20 @@ function Dashboard() {
       const rate = savingsRate;
       if (rate >= 40) {
         return t(
-          `Puedes invertir ${fmt(current.savings)}/mes · ${rate.toFixed(0)}% del ingreso · meta 40% lograda`,
-          `You can invest ${fmt(current.savings)}/mo · ${rate.toFixed(0)}% of income · 40% goal reached`,
+          `Puedes ahorrar/invertir ${fmt(current.savings)}/mes · ${rate.toFixed(0)}% del ingreso · meta 40% lograda`,
+          `You can save/invest ${fmt(current.savings)}/mo · ${rate.toFixed(0)}% of income · 40% goal reached`,
         );
       }
       if (rate >= 20) {
         return t(
-          `Puedes invertir ${fmt(current.savings)}/mes · ${rate.toFixed(0)}% del ingreso · meta 40% = ${fmt(investTarget)}/mes`,
-          `You can invest ${fmt(current.savings)}/mo · ${rate.toFixed(0)}% of income · 40% goal = ${fmt(investTarget)}/mo`,
+          `Puedes ahorrar/invertir ${fmt(current.savings)}/mes · ${rate.toFixed(0)}% · meta 40% = ${fmt(investTarget)}/mes`,
+          `You can save/invest ${fmt(current.savings)}/mo · ${rate.toFixed(0)}% · 40% goal = ${fmt(investTarget)}/mo`,
         );
       }
       const gap = Math.max(0, investMin - current.savings);
       return t(
-        `Solo ahorras ${rate.toFixed(0)}% · busca ${fmt(gap)}/mes extra para llegar al 20% mínimo`,
-        `Saving only ${rate.toFixed(0)}% · find ${fmt(gap)}/mo extra to reach the 20% minimum`,
+        `Vas muy justo · solo ${rate.toFixed(0)}% · necesitas generar ${fmt(gap)}/mes extra`,
+        `Cutting it close · only ${rate.toFixed(0)}% · you need ${fmt(gap)}/mo extra`,
       );
     }
     const deficit = current.expenses - current.income;
@@ -345,7 +345,7 @@ function Dashboard() {
         ? t("Meta 40% lograda", "40% goal reached")
         : savingsRate >= 20
           ? t(`Meta 40% = ${fmt(investTarget)}/mes`, `40% goal = ${fmt(investTarget)}/mo`)
-          : t(`Mínimo 20% = ${fmt(investMin)}/mes`, `20% minimum = ${fmt(investMin)}/mo`);
+          : t(`Muy justo · mínimo 20% = ${fmt(investMin)}/mes`, `Cutting it close · 20% minimum = ${fmt(investMin)}/mo`);
 
 
   const insights = buildInsights(plan, profile, profile, d.currency, lang);
