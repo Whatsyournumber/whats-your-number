@@ -181,8 +181,11 @@ function buildFallbackActions(input: AdviceInput, existing: SpendAdvice["actions
     );
     out.push({
       label: b.name,
-      diagnosis: `${input.periodLabel}: gastaste ${b.actual.toFixed(0)} vs. ${b.planned.toFixed(0)} de plan, un exceso de +${Math.round((excess / b.planned) * 100)}%.`,
-      action: smartTip(b.name, merchant?.name),
+      diagnosis: `${input.periodLabel}: gastaste ${money(b.actual, input.currency)} vs. ${money(b.planned, input.currency)} de plan, un exceso de +${Math.round((excess / b.planned) * 100)}%.`,
+      action: smartTip(b.name, merchant?.name, {
+        currency: input.currency,
+        ...(merchant?.count ? { count: merchant.count, avg: merchant.amount / merchant.count } : {}),
+      }),
       monthlySaving: Math.min(excess, Math.round(excess * 0.5)),
       overspent: true,
     });
