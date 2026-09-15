@@ -117,10 +117,7 @@ function MiPerfil() {
   const moneyFields: { key: keyof Profile; label: string; group: "income" | "assets" | "flow" }[] = [
     { key: "income_salary", label: t("Salario mensual", "Monthly salary"), group: "income" },
     ...(withPartner
-      ? [
-          { key: "income_partner_salary" as keyof Profile, label: t("Salario de tu pareja", "Partner's salary"), group: "income" as const },
-          { key: "income_partner_other" as keyof Profile, label: t("Otros ingresos de tu pareja", "Partner's other income"), group: "income" as const },
-        ]
+      ? [{ key: "income_partner_salary" as keyof Profile, label: t("Ingreso de la pareja", "Partner's income"), group: "income" as const }]
       : []),
     { key: "income_bonus", label: t("Bonos / variables", "Bonuses / variable pay"), group: "income" },
     { key: "income_rent", label: t("Alquileres", "Rental income"), group: "income" },
