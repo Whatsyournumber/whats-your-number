@@ -157,7 +157,8 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
         );
         return;
       }
-      setDonePopup({ inserted: result.inserted, files: 1 });
+      const span = await newTxRange([statementId]);
+      setDonePopup({ inserted: result.inserted, files: 1, ...span });
       refreshAll();
     },
 
