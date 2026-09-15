@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Panel } from "@/components/page";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/use-auth";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useT } from "@/hooks/use-language";
@@ -81,6 +82,7 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [donePopup, setDonePopup] = useState<{ inserted: number; files: number } | null>(null);
   const runProcess = useServerFn(processStatement);
 
   const setJob = (id: string, patch: Partial<Job>) =>
@@ -136,12 +138,7 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
         );
         return;
       }
-      toast.success(
-        t(
-          `${result.inserted} movimientos clasificados por IA · actualizando tus módulos`,
-          `${result.inserted} transactions classified by AI · updating your modules`,
-        ),
-      );
+      setDonePopup({ inserted: result.inserted, files: 1 });
       refreshAll();
     },
 
@@ -251,6 +248,7 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
 
       // 2) Analizamos de uno en uno: la IA no aguanta 10 archivos a la vez.
       let stopped = false;
+      let totalInserted = 0;
       for (let i = 0; i < queue.length; i++) {
         const { jobId, statementId } = queue[i]!;
         if (stopped) {
@@ -277,6 +275,7 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
             stage: "done",
             message: t(`${result.inserted} movimientos`, `${result.inserted} transactions`),
           });
+          totalInserted += result.inserted;
         } catch (err) {
           const msg = err instanceof Error ? err.message : t("Error de análisis", "Analysis error");
           setJob(jobId, { stage: "error", message: msg });
@@ -284,6 +283,8 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
         }
         refreshAll();
       }
+
+      if (totalInserted > 0) setDonePopup({ inserted: totalInserted, files: queue.length });
 
 
     } catch (error) {
@@ -337,7 +338,7 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
       refreshAll();
     }
     setPendingProgress(null);
-    if (done > 0) toast.success(t(`${done} movimientos importados`, `${done} transactions imported`));
+    if (done > 0) setDonePopup({ inserted: done, files: pending.length });
   };
 
   return (
@@ -560,6 +561,33 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
           )}
         </Panel>
       </div>
+
+      <Dialog open={donePopup !== null} onOpenChange={(open) => { if (!open) setDonePopup(null); }}>
+        <DialogContent className="max-w-sm rounded-2xl">
+          <DialogHeader>
+            <DialogTitle>{t("Lectura completada", "Reading complete")}</DialogTitle>
+            <DialogDescription>
+              {donePopup &&
+                t(
+                  `Leímos ${donePopup.inserted} movimientos de ${donePopup.files} ${donePopup.files === 1 ? "archivo" : "archivos"}. ¿Quieres ir a ver el desglose en Análisis de gastos?`,
+                  `We read ${donePopup.inserted} transactions from ${donePopup.files} ${donePopup.files === 1 ? "file" : "files"}. Want to see the breakdown in Expense analysis?`,
+                )}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex-row gap-2 sm:justify-end">
+            <DialogClose asChild>
+              <Button variant="outline" className="rounded-full">
+                {t("Quedarme aquí", "Stay here")}
+              </Button>
+            </DialogClose>
+            <DialogClose asChild>
+              <Button asChild className="rounded-full">
+                <Link to="/gastos">{t("Ver desglose", "See breakdown")}</Link>
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
