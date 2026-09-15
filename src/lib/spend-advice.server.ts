@@ -197,10 +197,13 @@ export async function generateSpendAdvice(input: AdviceInput): Promise<SpendAdvi
   const gateway = createLovableAiGatewayProvider(apiKey);
 
   const cats = input.categories
-    .map(
-      (c) =>
-        `- ${c.name}: ${c.amount.toFixed(0)} ${input.currency} (periodo anterior ${c.prevAmount.toFixed(0)})`,
-    )
+    .map((c) => {
+      const freq =
+        c.count && c.count > 0
+          ? ` · ${c.count} compras · ticket promedio ${(c.amount / c.count).toFixed(0)}`
+          : "";
+      return `- ${c.name}: ${c.amount.toFixed(0)} ${input.currency} (periodo anterior ${c.prevAmount.toFixed(0)})${freq}`;
+    })
     .join("\n");
   const merch = input.merchants
     .map((m) => {
