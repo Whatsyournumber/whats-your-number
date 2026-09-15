@@ -122,6 +122,10 @@ function Dashboard() {
   const { primary } = usePrimaryGoal();
   const { transactions } = useTransactions();
   const d = buildDataset(profile);
+  // Análisis de hogar: los números incluyen a la pareja cuando así se eligió.
+  const household =
+    (profile.marital_status === "Casado" || profile.marital_status === "En pareja") &&
+    profile.analysis_scope === "pareja";
   const fixed = useFixedExpenses();
   const { live: indexLive } = useIndexReturns();
   const { holdings } = useHoldings();
@@ -513,7 +517,7 @@ function Dashboard() {
           />
         </Link>
         <EditableKpiCard
-          label={t("Ingresos", "Income")}
+          label={household ? t("Ingresos (en pareja)", "Income (as a couple)") : t("Ingresos", "Income")}
           value={fmt(current.income)}
           editHref="/mi-perfil"
           hint={incomeHint}
