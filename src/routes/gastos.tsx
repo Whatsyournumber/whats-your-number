@@ -871,6 +871,7 @@ function Gastos() {
               </p>
             </div>
           </div>
+        </div>
 
         {budgetRows.length > 0 && (
           <Collapsible open={budgetRowsOpen} onOpenChange={setBudgetRowsOpen} className="mt-5 border-t border-border/60 pt-4">
