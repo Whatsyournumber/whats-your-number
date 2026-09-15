@@ -517,7 +517,7 @@ function Dashboard() {
           />
         </Link>
         <EditableKpiCard
-          label={t("Ingresos", "Income")}
+          label={household ? t("Ingresos (en pareja)", "Income (as a couple)") : t("Ingresos", "Income")}
           value={fmt(current.income)}
           editHref="/mi-perfil"
           hint={incomeHint}
