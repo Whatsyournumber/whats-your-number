@@ -970,10 +970,10 @@ function Gastos() {
                   return (
                     <div key={row.id} className="rounded-xl border border-border/50 px-3 py-2">
                       <div className="flex items-baseline justify-between gap-2">
-                        <span className="truncate text-sm">
+                        <span className="min-w-0 flex-1 truncate text-[0.6875rem] leading-4">
                           {row.emoji} {row.name}
                         </span>
-                        <span className={cn("numeric shrink-0 text-xs", over ? "text-negative" : "text-positive")}>
+                        <span className={cn("numeric shrink-0 text-[0.6875rem] leading-4", over ? "text-negative" : "text-positive")}>
                           {fmt(row.actual)} / {fmt(row.planned)}
                         </span>
                       </div>
