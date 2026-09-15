@@ -535,7 +535,7 @@ export function FamilyPlanner({
                 Buddy
               </p>
             </div>
-            <p key={tip.key} className="animate-rise line-clamp-2 text-[13px] leading-snug text-foreground">
+            <p key={tip.key} className="animate-rise text-[13px] leading-snug text-foreground">
               {tip.body}
             </p>
 

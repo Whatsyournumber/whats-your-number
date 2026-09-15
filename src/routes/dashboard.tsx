@@ -527,7 +527,7 @@ function Dashboard() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         
-        <Panel title={t("Evolución de cuál tu número", "Evolution of your number")} description={t("Avance hacia tu número de retiro", "Advance toward your retirement number")} descriptionClassName="line-clamp-1 sm:line-clamp-none" className="lg:col-span-2" bleedMobile>
+        <Panel title={t("Evolución de cuál tu número", "Evolution of your number")} description={t("Avance hacia tu número de retiro", "Advance toward your retirement number")} className="lg:col-span-2" bleedMobile>
           <ResponsiveContainer width="100%" height={280}>
             <AreaChart data={months} margin={chartMargin}>
               <defs>
@@ -749,7 +749,7 @@ function Dashboard() {
                           {fmtCompact(portfolioValue)} {t(`al ${portfolioReturn.toFixed(0)}%`, `at ${portfolioReturn.toFixed(0)}%`)}
                         </p>
                         <Progress value={progress} indicatorClassName={goalBarColor(progress)} className="mt-1.5 h-1.5" />
-                        <p className="mt-1 line-clamp-1 text-[11px] text-muted-foreground">
+                        <p className="mt-1 truncate text-[11px] text-muted-foreground">
                           {t(`vs ${sp500Rate.toFixed(0)}% S&P 500`, `vs ${sp500Rate.toFixed(0)}% S&P 500`)}
                         </p>
                       </div>
@@ -779,7 +779,7 @@ function Dashboard() {
                         {fmtCompact(left)} {t("de", "of")} {fmtCompact(right)}
                       </p>
                       <Progress value={pct} indicatorClassName={goalBarColor(pct)} className="mt-1.5 h-1.5" />
-                      <p className="mt-1 line-clamp-1 text-[11px] text-muted-foreground">{subtitle}</p>
+                      <p className="mt-1 truncate text-[11px] text-muted-foreground">{subtitle}</p>
                     </div>
                   </Link>
                 </li>

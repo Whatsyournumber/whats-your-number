@@ -1452,7 +1452,7 @@ function Gastos() {
             </span>
           </>
         }
-        descriptionClassName="line-clamp-2 sm:line-clamp-none"
+        
         actions={
           <Button size="sm" variant="outline" onClick={runAdvice} disabled={adviceLoading || !hasData}>
             {adviceLoading ? (
