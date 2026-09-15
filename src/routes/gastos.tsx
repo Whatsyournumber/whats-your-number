@@ -892,8 +892,8 @@ function Gastos() {
               {" · "}{targetPct.toFixed(0)}% {t("del objetivo", "of target")}
             </p>
           </div>
-          <div className="relative order-2 flex items-center self-center pl-[3.25rem] md:order-3">
-            <span className="pointer-events-none absolute left-[calc(3.25rem+0.75rem)] text-sm font-semibold text-muted-foreground">$</span>
+          <div className="relative order-2 flex items-center self-start md:order-3 md:self-center md:pl-[3.25rem]">
+            <span className="pointer-events-none absolute left-3 text-sm font-semibold text-muted-foreground md:left-[calc(3.25rem+0.75rem)]">$</span>
             <NumberInput
               value={target}
               onChange={setTarget}
