@@ -307,20 +307,20 @@ function Dashboard() {
       const rate = savingsRate;
       if (rate >= 40) {
         return t(
-          `Invierte ${fmt(current.savings)}/mes · ${rate.toFixed(0)}% del ingreso, meta 40% lograda`,
-          `Invest ${fmt(current.savings)}/mo · ${rate.toFixed(0)}% of income, 40% goal reached`,
+          `Puedes invertir ${fmt(current.savings)}/mes · ${rate.toFixed(0)}% del ingreso · meta 40% lograda`,
+          `You can invest ${fmt(current.savings)}/mo · ${rate.toFixed(0)}% of income · 40% goal reached`,
         );
       }
       if (rate >= 20) {
         return t(
-          `Puedes invertir ${fmt(current.savings)}/mes · ${rate.toFixed(0)}% · meta 40% = ${fmt(investTarget)}`,
-          `You can invest ${fmt(current.savings)}/mo · ${rate.toFixed(0)}% · 40% goal = ${fmt(investTarget)}`,
+          `Puedes invertir ${fmt(current.savings)}/mes · ${rate.toFixed(0)}% del ingreso · meta 40% = ${fmt(investTarget)}/mes`,
+          `You can invest ${fmt(current.savings)}/mo · ${rate.toFixed(0)}% of income · 40% goal = ${fmt(investTarget)}/mo`,
         );
       }
       const gap = Math.max(0, investMin - current.savings);
       return t(
-        `Solo ${rate.toFixed(0)}% · busca ${fmt(gap)}/mes extra para llegar al 20% mínimo`,
-        `Only ${rate.toFixed(0)}% · find ${fmt(gap)}/mo extra to reach the 20% minimum`,
+        `Solo ahorras ${rate.toFixed(0)}% · busca ${fmt(gap)}/mes extra para llegar al 20% mínimo`,
+        `Saving only ${rate.toFixed(0)}% · find ${fmt(gap)}/mo extra to reach the 20% minimum`,
       );
     }
     const deficit = current.expenses - current.income;
@@ -333,8 +333,8 @@ function Dashboard() {
         })
       : null;
     return t(
-      `No cubre · te faltan ${fmt(deficit)}/mes${dryDate ? ` · sin fondos en ${dryDate}` : ""}`,
-      `Doesn't cover · short ${fmt(deficit)}/mo${dryDate ? ` · out of funds by ${dryDate}` : ""}`,
+      `No cubre tus gastos · te faltan ${fmt(deficit)}/mes${dryDate ? ` · sin fondos en ${dryDate}` : ""}`,
+      `Doesn't cover expenses · short ${fmt(deficit)}/mo${dryDate ? ` · out of funds by ${dryDate}` : ""}`,
     );
   })();
 
