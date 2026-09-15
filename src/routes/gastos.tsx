@@ -807,7 +807,7 @@ function Gastos() {
       </div>
 
       <Panel variant="minimal" className="p-5 sm:p-6">
-        <div className="mb-3 flex items-start gap-3">
+        <div className="mb-2.5 flex items-start gap-3">
           <img
             src={targetIcon.url}
             alt=""
@@ -834,7 +834,7 @@ function Gastos() {
           </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-[240px_1fr] md:items-center">
+        <div className="grid gap-2.5 md:grid-cols-[240px_1fr] md:items-center">
           <div className="relative flex items-center pl-[3.25rem]">
             <span className="pointer-events-none absolute left-[calc(3.25rem+0.75rem)] text-sm font-semibold text-muted-foreground">$</span>
             <NumberInput
