@@ -125,7 +125,31 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                 </p>
                 {groupLines.map((l) => (
                   <div key={l.id} className="flex items-center gap-3 rounded-xl border border-border/50 px-3 py-2">
-                    <span className="min-w-0 flex-1 truncate text-sm">{label(l)}</span>
+                    {editingId === l.id ? (
+                      <Input
+                        autoFocus
+                        value={editingName}
+                        onChange={(e) => setEditingName(e.target.value)}
+                        onBlur={() => commitEdit(l.id)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") commitEdit(l.id);
+                          if (e.key === "Escape") setEditingId(null);
+                        }}
+                        className="h-9 min-w-0 flex-1 text-sm"
+                      />
+                    ) : (
+                      <span className="min-w-0 flex-1 truncate text-sm">{label(l)}</span>
+                    )}
+                    {isCustom(l.id) && editingId !== l.id ? (
+                      <button
+                        type="button"
+                        onClick={() => startEdit(l)}
+                        className="text-muted-foreground transition hover:text-primary"
+                        aria-label={t("Editar", "Edit")}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                    ) : null}
                     <NumberInput value={l.amount} onChange={(v) => setAmount(l.id, v)} format className="h-9 w-28 text-sm" />
                     <button
                       type="button"
