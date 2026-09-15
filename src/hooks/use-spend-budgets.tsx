@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { DEFAULT_BUDGET_IDS } from "@/lib/budget-categories";
 
-export type BudgetLine = { id: string; amount: number; label?: string; emoji?: string };
+export type BudgetLine = { id: string; amount: number; label?: string; emoji?: string; keywords?: string[] };
 
 const KEY = "whatsyournumber:spend-budgets";
 

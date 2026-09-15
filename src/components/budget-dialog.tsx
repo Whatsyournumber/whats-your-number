@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Check, Pencil, Plus, Trash2 } from "lucide-react";
+import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -88,6 +88,26 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
     setEditingName("");
   };
 
+  const [keywordDraft, setKeywordDraft] = useState<Record<string, string>>({});
+
+  const addKeyword = (id: string) => {
+    const kw = (keywordDraft[id] ?? "").trim().toLowerCase();
+    if (!kw) return;
+    setDraft((d) =>
+      d.map((l) =>
+        l.id === id && !(l.keywords ?? []).includes(kw)
+          ? { ...l, keywords: [...(l.keywords ?? []), kw] }
+          : l,
+      ),
+    );
+    setKeywordDraft((k) => ({ ...k, [id]: "" }));
+  };
+
+  const removeKeyword = (id: string, kw: string) =>
+    setDraft((d) =>
+      d.map((l) => (l.id === id ? { ...l, keywords: (l.keywords ?? []).filter((k) => k !== kw) } : l)),
+    );
+
   const addCategory = (id: string) => {
     setDraft((d) => [...d, { id, amount: 0 }]);
     setAdding(false);
@@ -124,41 +144,84 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                   {t(GROUP_LABELS[g].es, GROUP_LABELS[g].en)}
                 </p>
                 {groupLines.map((l) => (
-                  <div key={l.id} className="flex items-center gap-3 rounded-xl border border-border/50 px-3 py-2">
-                    {editingId === l.id ? (
-                      <Input
-                        autoFocus
-                        value={editingName}
-                        onChange={(e) => setEditingName(e.target.value)}
-                        onBlur={() => commitEdit(l.id)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") commitEdit(l.id);
-                          if (e.key === "Escape") setEditingId(null);
-                        }}
-                        className="h-9 min-w-0 flex-1 text-sm"
-                      />
-                    ) : (
-                      <span className="min-w-0 flex-1 truncate text-sm">{label(l)}</span>
-                    )}
-                    {isCustom(l.id) && editingId !== l.id ? (
+                  <div key={l.id} className="rounded-xl border border-border/50 px-3 py-2">
+                    <div className="flex items-center gap-3">
+                      {editingId === l.id ? (
+                        <Input
+                          autoFocus
+                          value={editingName}
+                          onChange={(e) => setEditingName(e.target.value)}
+                          onBlur={() => commitEdit(l.id)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") commitEdit(l.id);
+                            if (e.key === "Escape") setEditingId(null);
+                          }}
+                          className="h-9 min-w-0 flex-1 text-sm"
+                        />
+                      ) : (
+                        <span className="min-w-0 flex-1 truncate text-sm">{label(l)}</span>
+                      )}
+                      {isCustom(l.id) && editingId !== l.id ? (
+                        <button
+                          type="button"
+                          onClick={() => startEdit(l)}
+                          className="text-muted-foreground transition hover:text-primary"
+                          aria-label={t("Editar", "Edit")}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                      ) : null}
+                      <NumberInput value={l.amount} onChange={(v) => setAmount(l.id, v)} format className="h-9 w-28 text-sm" />
                       <button
                         type="button"
-                        onClick={() => startEdit(l)}
-                        className="text-muted-foreground transition hover:text-primary"
-                        aria-label={t("Editar", "Edit")}
+                        onClick={() => removeLine(l.id)}
+                        className="text-muted-foreground transition hover:text-negative"
+                        aria-label={t("Quitar", "Remove")}
                       >
-                        <Pencil className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4" />
                       </button>
+                    </div>
+                    {isCustom(l.id) ? (
+                      <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                        {(l.keywords ?? []).map((kw) => (
+                          <span
+                            key={kw}
+                            className="flex items-center gap-1 rounded-full bg-muted/60 px-2 py-0.5 text-[11px] text-muted-foreground ring-1 ring-border/50"
+                          >
+                            {kw}
+                            <button
+                              type="button"
+                              onClick={() => removeKeyword(l.id, kw)}
+                              className="transition hover:text-negative"
+                              aria-label={t("Quitar palabra clave", "Remove keyword")}
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </span>
+                        ))}
+                        <Input
+                          value={keywordDraft[l.id] ?? ""}
+                          onChange={(e) => setKeywordDraft((k) => ({ ...k, [l.id]: e.target.value }))}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              addKeyword(l.id);
+                            }
+                          }}
+                          placeholder={t("Palabra clave (ej: uber)", "Keyword (e.g. uber)")}
+                          className="h-7 w-36 rounded-full px-2.5 text-[11px]"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => addKeyword(l.id)}
+                          disabled={!(keywordDraft[l.id] ?? "").trim()}
+                          className="flex h-7 w-7 items-center justify-center rounded-full border border-border/60 text-muted-foreground transition hover:border-primary/50 hover:text-primary disabled:opacity-40"
+                          aria-label={t("Añadir palabra clave", "Add keyword")}
+                        >
+                          <Plus className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
                     ) : null}
-                    <NumberInput value={l.amount} onChange={(v) => setAmount(l.id, v)} format className="h-9 w-28 text-sm" />
-                    <button
-                      type="button"
-                      onClick={() => removeLine(l.id)}
-                      className="text-muted-foreground transition hover:text-negative"
-                      aria-label={t("Quitar", "Remove")}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
                   </div>
                 ))}
               </div>
