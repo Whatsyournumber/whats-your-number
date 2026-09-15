@@ -144,8 +144,12 @@ function smartTip(category: string, merchant: string | undefined, ctx: { currenc
   if (lower.includes("compra") || lower.includes("shopping") || lower.includes("ropa") || lower.includes("moda")) {
     return `Aplica la regla de 48 horas antes de comprar en ${name} y busca cupones o segunda mano`;
   }
-  if (lower.includes("ocio") || lower.includes("nightlife") || lower.includes("entreten")) {
-    return `Fija un tope de salidas al mes en ${name} y busca días con descuento`;
+  if (lower.includes("nightlife") || lower.includes("nocturn") || lower.includes("discot") || lower.includes("club") || lower.includes("copa") || lower.includes("bares") || lower.includes("bar ")) {
+    const base = `Limita tus salidas a ${name} al mes o reduce el coste por salida: copas en casa antes, happy hour y zonas sin consumición mínima`;
+    return freq ? `Saliste ${freq} en ${name}; elige: menos noches al mes o baja la media por noche` : base;
+  }
+  if (lower.includes("ocio") || lower.includes("entreten")) {
+    return `Pon un tope de salidas al mes en ${name} o baja el coste por salida buscando días con descuento`;
   }
   if (lower.includes("gimnas") || lower.includes("gym") || lower.includes("cuidado") || lower.includes("belle")) {
     return `Pasa ${name} a cuota anual o bono de sesiones y cancela lo que no uses`;
