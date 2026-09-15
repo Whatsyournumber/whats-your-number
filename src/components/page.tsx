@@ -35,9 +35,9 @@ export function PageHeader({
         {eyebrow && (
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">{eyebrow}</p>
         )}
-        <h1 className="mt-1 text-2xl font-semibold md:text-3xl">{title}</h1>
+        <h1 className="mt-1 text-3xl font-semibold tracking-tight md:text-4xl">{title}</h1>
         {subtitle && (
-          <div className={cn("mt-1 max-w-2xl text-sm text-muted-foreground max-sm:text-[11px] max-sm:whitespace-nowrap max-sm:truncate", subtitleClassName)}>
+          <div className={cn("mt-1.5 max-w-2xl text-base text-muted-foreground max-sm:text-sm max-sm:whitespace-nowrap max-sm:truncate", subtitleClassName)}>
             {subtitle}
           </div>
         )}
