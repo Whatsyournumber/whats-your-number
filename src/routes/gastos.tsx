@@ -578,6 +578,10 @@ function Gastos() {
         )
       : t(`Promedio de los últimos ${days} días`, `Average of the last ${days} days`);
 
+  const runPeriodCompactHint = isLongRange
+    ? t(`Promedio ${monthsInRange} meses`, `${monthsInRange}-month average`)
+    : runPeriodHint;
+
   const variablePeriodTitle = useMemo(() => {
     const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
     if (!range?.from) return { es: "Gastos variables", en: "Variable expenses" };
@@ -830,7 +834,7 @@ function Gastos() {
       </div>
 
       <Panel variant="minimal" className="p-5 sm:p-6">
-        <div className="grid gap-x-6 gap-y-3 md:grid-cols-[240px_1fr] md:items-start">
+        <div className="grid gap-x-5 gap-y-3 md:grid-cols-[220px_minmax(0,1fr)] md:items-start lg:grid-cols-[minmax(280px,0.9fr)_minmax(0,1.1fr)] lg:gap-x-6">
           <div className="order-1 min-w-0">
             <div className="flex items-start gap-3">
               <img
@@ -859,25 +863,32 @@ function Gastos() {
               </div>
             </div>
           </div>
-          <div className="order-3 flex flex-col gap-2 md:order-2 md:-mb-2 md:self-end">
-            <div className="flex items-baseline justify-between gap-2">
-              <div className="min-w-0">
-                <span className="numeric text-2xl font-semibold sm:text-xl">{fmt(monthlyRun)}</span>
-                <p className="mt-0.5 text-xs text-muted-foreground">
-                  {runPeriodHint} · {targetPct.toFixed(0)}% {t("del objetivo", "of target")}
-                </p>
-              </div>
+          <div className="order-3 flex min-w-0 flex-col gap-1 md:order-2 md:-mb-2 md:self-end">
+            <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 md:flex-nowrap">
+              <span className="numeric shrink-0 text-2xl font-semibold sm:text-xl md:text-2xl">{fmt(monthlyRun)}</span>
               <span
                 className={cn(
-                  "shrink-0 rounded-full px-2 py-1 text-xs font-medium",
+                  "shrink-0 whitespace-nowrap rounded-full px-2 py-1 text-xs font-medium",
                   monthlyRun <= target ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative",
                 )}
               >
-                {monthlyRun <= target
-                  ? `${fmt(target - monthlyRun)} ${t("que puedes invertir", "you can invest")}`
-                  : `${fmt(monthlyRun - target)} ${t("que gastaste de más", "over budget")}`}
+                <span className="md:hidden lg:inline">
+                  {monthlyRun <= target
+                    ? `${fmt(target - monthlyRun)} ${t("que puedes invertir", "you can invest")}`
+                    : `${fmt(monthlyRun - target)} ${t("que gastaste de más", "over budget")}`}
+                </span>
+                <span className="hidden md:inline lg:hidden">
+                  {monthlyRun <= target
+                    ? `${fmt(target - monthlyRun)} ${t("disponibles", "available")}`
+                    : `${fmt(monthlyRun - target)} ${t("de más", "over")}`}
+                </span>
               </span>
             </div>
+            <p className="whitespace-nowrap text-xs text-muted-foreground">
+              <span className="md:hidden">{runPeriodHint}</span>
+              <span className="hidden md:inline">{runPeriodCompactHint}</span>
+              {" · "}{targetPct.toFixed(0)}% {t("del objetivo", "of target")}
+            </p>
           </div>
           <div className="relative order-2 flex items-center self-center pl-[3.25rem] md:order-3">
             <span className="pointer-events-none absolute left-[calc(3.25rem+0.75rem)] text-sm font-semibold text-muted-foreground">$</span>
@@ -905,7 +916,7 @@ function Gastos() {
               <span className="numeric absolute left-0 top-0">{fmt(0)}</span>
               {monthlyRun > target && targetBoundaryPct >= 10 && targetBoundaryPct <= 90 && (
                 <span
-                  className="numeric absolute top-0 -translate-x-1/2"
+                  className="numeric absolute top-0 -translate-x-full pr-1 lg:-translate-x-1/2 lg:pr-0"
                   style={{ left: `${targetBoundaryPct}%` }}
                 >
                   {fmt(target)}
