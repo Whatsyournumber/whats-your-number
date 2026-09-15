@@ -298,8 +298,6 @@ function Dashboard() {
 
   // Regla 40 / 40 / 20: necesidades 40%, ahorro e inversión 40%, deseos 20%.
   // Mínimo aceptable para ahorrar o invertir: 20% del ingreso.
-  const investTarget = current.income * 0.4;
-  const investMin = current.income * 0.2;
 
   const incomeHint = (() => {
     if (current.income <= 0) return t("Ingreso mensual estimado", "Estimated monthly income");
