@@ -610,7 +610,13 @@ function Gastos() {
             amount: c.amount,
             prevAmount: prevByCategory.get(c.name) ?? 0,
           })),
-          merchants: merchants.slice(0, 10).map((m) => ({ name: m.name, amount: m.amount, count: m.count })),
+          merchants: merchants.slice(0, 14).map((m) => ({
+            name: m.name,
+            amount: m.amount,
+            count: m.count,
+            category: m.category,
+            prevAmount: prevByMerchant.get(m.name) ?? 0,
+          })),
           budgets: budgetRows.map((b) => ({ name: b.name, planned: b.planned, actual: b.actual })),
         },
       });
