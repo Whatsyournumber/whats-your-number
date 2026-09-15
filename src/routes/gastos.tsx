@@ -44,6 +44,7 @@ import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { BudgetDialog } from "@/components/budget-dialog";
 import { BUDGET_CATEGORIES, findBudgetCategory } from "@/lib/budget-categories";
+import targetIcon from "@/assets/target-icon.png.asset.json";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions, sameMerchant, type Tx } from "@/hooks/use-transactions";
 import { compact, FIXED_FIELDS, money } from "@/lib/onboarding";
