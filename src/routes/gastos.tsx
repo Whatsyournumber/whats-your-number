@@ -422,8 +422,13 @@ function Gastos() {
     () =>
       budgets.lines
         .filter((l) => l.id.startsWith("custom:"))
-        .map((l) => ({ id: l.id, alias: (l.label ?? l.id.slice(7)).trim().toLowerCase() }))
-        .filter((l) => l.alias.length > 2),
+        .map((l) => ({
+          id: l.id,
+          aliases: [(l.label ?? l.id.slice(7)), ...(l.keywords ?? [])]
+            .map((k) => k.trim().toLowerCase())
+            .filter((k) => k.length > 2),
+        }))
+        .filter((l) => l.aliases.length > 0),
     [budgets.lines],
   );
 
@@ -432,7 +437,9 @@ function Gastos() {
     const match = (name: string) => {
       const n = name.trim().toLowerCase();
       // Las categorías propias del usuario tienen prioridad por ser más específicas.
-      const custom = customLines.find((c) => n === c.alias || n.includes(c.alias) || c.alias.includes(n));
+      const custom = customLines.find((c) =>
+        c.aliases.some((a) => n === a || n.includes(a) || a.includes(n)),
+      );
       if (custom) return custom.id;
       return BUDGET_CATEGORIES.find((c) => c.aliases.some((a) => n === a || n.includes(a)))?.id ?? null;
     };
