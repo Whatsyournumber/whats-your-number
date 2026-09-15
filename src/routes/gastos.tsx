@@ -872,8 +872,7 @@ function Gastos() {
                   </>
                 )}
               </div>
-              <div className="relative mt-1.5 h-4 text-xs text-muted-foreground">
-                <span className="absolute left-0 top-0">0 {currency}</span>
+              <div className="relative mt-1 h-4 text-xs text-muted-foreground">
                 {monthlyRun > target && targetBoundaryPct >= 10 && targetBoundaryPct <= 90 && (
                   <span
                     className="numeric absolute top-0 -translate-x-1/2"
