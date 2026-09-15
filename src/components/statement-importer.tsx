@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { CheckCircle2, FileSpreadsheet, FileText, ImageIcon, Loader2, Lock, Sparkles, Trash2, TriangleAlert, Upload } from "lucide-react";
+import { ArrowRight, CalendarDays, CheckCircle2, FileSpreadsheet, FileText, ImageIcon, Loader2, Lock, Sparkles, Trash2, TriangleAlert, Upload } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
@@ -598,38 +598,65 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
       </div>
 
       <Dialog open={donePopup !== null} onOpenChange={(open) => { if (!open) setDonePopup(null); }}>
-        <DialogContent className="max-w-sm rounded-2xl">
-          <DialogHeader>
-            <DialogTitle>{t("Lectura completada", "Reading complete")}</DialogTitle>
-            <DialogDescription>
-              {donePopup &&
-                (() => {
-                  const files = `${donePopup.files} ${donePopup.files === 1 ? t("archivo", "file") : t("archivos", "files")}`;
-                  const span = donePopup.from ? formatSpan(donePopup.from, donePopup.to) : null;
-                  return t(
-                    `Leímos ${donePopup.inserted} movimientos de ${files}${span ? ` del ${span}` : ""}. ¿Quieres ver el desglose de tus gastos nuevos?`,
-                    `We read ${donePopup.inserted} transactions from ${files}${span ? ` covering ${span}` : ""}. Want to see the breakdown of your new expenses?`,
-                  );
-                })()}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="flex-row gap-2 sm:justify-end">
-            <DialogClose asChild>
-              <Button variant="outline" className="rounded-full">
-                {t("Quedarme aquí", "Stay here")}
-              </Button>
-            </DialogClose>
-            <DialogClose asChild>
-              <Button asChild className="rounded-full">
-                <Link
-                  to="/gastos"
-                  search={donePopup?.from ? { from: donePopup.from, to: donePopup.to ?? donePopup.from } : {}}
-                >
-                  {t("Ver desglose de gastos nuevos", "See new expenses")}
-                </Link>
-              </Button>
-            </DialogClose>
-          </DialogFooter>
+        <DialogContent className="max-w-[360px] gap-0 overflow-hidden rounded-3xl border-border/60 p-0 text-center">
+          <div className="relative bg-gradient-to-b from-primary/15 to-transparent px-6 pt-8 pb-5">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/15 ring-1 ring-primary/30">
+              <CheckCircle2 className="h-7 w-7 text-primary" />
+            </div>
+            <DialogHeader className="mt-4 space-y-1 text-center sm:text-center">
+              <DialogTitle className="text-lg font-semibold tracking-tight">
+                {t("Lectura completada", "Reading complete")}
+              </DialogTitle>
+              <DialogDescription className="sr-only">
+                {t("Resumen de los movimientos leídos", "Summary of the transactions read")}
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+          <div className="px-6 pb-6">
+            {donePopup && (
+              <div className="rounded-2xl bg-muted/50 px-4 py-4 ring-1 ring-border/50">
+                <p className="text-3xl font-semibold tracking-tight text-foreground tabular-nums">
+                  {donePopup.inserted}
+                </p>
+                <p className="mt-0.5 text-sm text-muted-foreground">
+                  {t("movimientos nuevos", "new transactions")}
+                </p>
+                <div className="mt-3 flex flex-wrap items-center justify-center gap-1.5 text-xs text-muted-foreground">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-background/80 px-2.5 py-1 ring-1 ring-border/50">
+                    <FileText className="h-3 w-3" />
+                    {donePopup.files} {donePopup.files === 1 ? t("archivo", "file") : t("archivos", "files")}
+                  </span>
+                  {donePopup.from && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-background/80 px-2.5 py-1 ring-1 ring-border/50">
+                      <CalendarDays className="h-3 w-3" />
+                      {formatSpan(donePopup.from, donePopup.to)}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+            <p className="mt-4 text-sm leading-snug text-muted-foreground">
+              {t("¿Quieres ver el desglose de tus gastos nuevos?", "Want to see the breakdown of your new expenses?")}
+            </p>
+            <DialogFooter className="mt-4 flex-col gap-2 sm:flex-col sm:justify-center">
+              <DialogClose asChild>
+                <Button asChild size="lg" className="w-full rounded-full text-base font-medium">
+                  <Link
+                    to="/gastos"
+                    search={donePopup?.from ? { from: donePopup.from, to: donePopup.to ?? donePopup.from } : {}}
+                  >
+                    {t("Ver desglose", "See breakdown")}
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </DialogClose>
+              <DialogClose asChild>
+                <Button variant="ghost" className="w-full rounded-full text-muted-foreground">
+                  {t("Quedarme aquí", "Stay here")}
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

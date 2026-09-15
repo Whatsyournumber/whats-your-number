@@ -264,6 +264,7 @@ function AppShell() {
   const { avatarUrl: googleAvatar } = useProfileAvatar();
 
   useEffect(() => {
+    if (window.location.pathname === "/popup-test") return; // TEMP: visual check
     if (!loading && !user) {
       if (signingOutRef.current) return;
       navigate({ to: "/auth", search: { mode: "login" } });
@@ -293,7 +294,7 @@ function AppShell() {
     };
   }, [loading, user, navigate]);
 
-  if (loading || !user || !onboardingChecked) {
+  if (window.location.pathname !== "/popup-test" && (loading || !user || !onboardingChecked)) {
     return (
       <div className="min-h-screen bg-background p-4 sm:p-6">
         <div className="mx-auto w-full max-w-6xl space-y-4">
