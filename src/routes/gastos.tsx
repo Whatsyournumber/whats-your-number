@@ -944,7 +944,7 @@ function Gastos() {
                   <span className="hidden sm:inline">{t("Plan", "Plan")} {fmt(budgetPlanTotal)}</span>
                   {overBudget.length > 0 && (
                     <span className="text-negative">
-                      {" · "}
+                      <span className="hidden sm:inline">{" · "}</span>
                       {overBudget.length} {t("excedidas", "over")}
                     </span>
                   )}
