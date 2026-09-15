@@ -123,9 +123,6 @@ function MiPerfil() {
     { key: "income_rent", label: t("Alquileres", "Rental income"), group: "income" },
     { key: "income_other", label: t("Otros ingresos", "Other income"), group: "income" },
     { key: "monthly_expenses", label: t("Gastos mensuales", "Monthly expenses"), group: "flow" },
-    ...(withPartner
-      ? [{ key: "expenses_partner" as keyof Profile, label: t("Gastos de tu pareja", "Partner's expenses"), group: "flow" as const }]
-      : []),
     { key: "monthly_savings", label: t("Ahorro mensual", "Monthly savings"), group: "flow" },
     { key: "desired_retirement_income", label: t("Ingreso mensual deseado al retirarte", "Desired monthly income at retirement"), group: "flow" },
     { key: "assets_cash", label: t("Efectivo", "Cash"), group: "assets" },
