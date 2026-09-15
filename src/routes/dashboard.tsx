@@ -343,8 +343,8 @@ function Dashboard() {
       : savingsRate >= 40
         ? t("Meta 40% lograda", "40% goal reached")
         : savingsRate >= 20
-          ? t(`Meta 40% = ${fmt(investTarget)}/mes`, `40% goal = ${fmt(investTarget)}/mo`)
-          : t(`Muy justo · mínimo 20% = ${fmt(investMin)}/mes`, `Cutting it close · 20% minimum = ${fmt(investMin)}/mo`);
+          ? t("Puedes llegar a la meta 40%", "You can still reach the 40% goal")
+          : t("Vas muy justo · busca extra para el 20%", "Cutting it close · find extra for the 20%");
 
 
   const insights = buildInsights(plan, profile, profile, d.currency, lang);
