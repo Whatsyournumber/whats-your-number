@@ -817,7 +817,7 @@ function Gastos() {
               />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <h2 className="text-base font-semibold sm:text-sm">
+                  <h2 className="whitespace-nowrap text-sm font-semibold sm:text-base">
                     {t("Gasto objetivo mensual", "Monthly spend target")}
                   </h2>
                   <Button
@@ -830,12 +830,12 @@ function Gastos() {
                     {budgetRows.length ? <Pencil className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
                   </Button>
                 </div>
-                <p className="mt-1.5 text-xs leading-5 text-muted-foreground sm:text-[0.8125rem]">
+                <p className="mt-2 text-xs leading-5 text-muted-foreground sm:text-[0.8125rem]">
                   {t("Limita tus gastos mensuales", "Limit your monthly spending")}
                 </p>
               </div>
             </div>
-            <div className="relative mt-5 flex items-center pl-[3.25rem]">
+            <div className="relative mt-6 flex items-center pl-[3.25rem]">
               <span className="pointer-events-none absolute left-[calc(3.25rem+0.75rem)] text-sm font-semibold text-muted-foreground">$</span>
               <NumberInput
                 value={target}
