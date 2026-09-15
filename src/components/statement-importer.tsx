@@ -594,10 +594,14 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
             <DialogTitle>{t("Lectura completada", "Reading complete")}</DialogTitle>
             <DialogDescription>
               {donePopup &&
-                t(
-                  `Leímos ${donePopup.inserted} movimientos de ${donePopup.files} ${donePopup.files === 1 ? "archivo" : "archivos"}. ¿Quieres ir a ver el desglose en Análisis de gastos?`,
-                  `We read ${donePopup.inserted} transactions from ${donePopup.files} ${donePopup.files === 1 ? "file" : "files"}. Want to see the breakdown in Expense analysis?`,
-                )}
+                (() => {
+                  const files = `${donePopup.files} ${donePopup.files === 1 ? t("archivo", "file") : t("archivos", "files")}`;
+                  const span = donePopup.from ? formatSpan(donePopup.from, donePopup.to) : null;
+                  return t(
+                    `Leímos ${donePopup.inserted} movimientos de ${files}${span ? ` del ${span}` : ""}. ¿Quieres ver el desglose de tus gastos nuevos?`,
+                    `We read ${donePopup.inserted} transactions from ${files}${span ? ` covering ${span}` : ""}. Want to see the breakdown of your new expenses?`,
+                  );
+                })()}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex-row gap-2 sm:justify-end">
