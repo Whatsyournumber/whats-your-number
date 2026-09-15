@@ -434,7 +434,7 @@ function Gastos() {
       if (id) map.set(id, (map.get(id) ?? 0) + amount);
     }
     return map;
-  }, [byCategory, fixed.items, toMonthly]);
+  }, [byCategory, fixed.items, toMonthly, customLines]);
 
   const budgetRows = useMemo(
     () =>
