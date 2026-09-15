@@ -13,7 +13,15 @@ const schema = z.object({
   monthlyRun: z.number(),
   environment: z.enum(["sandbox", "live"]).default("live"),
   categories: z.array(z.object({ name: z.string(), amount: z.number(), prevAmount: z.number() })),
-  merchants: z.array(z.object({ name: z.string(), amount: z.number(), count: z.number() })),
+  merchants: z.array(
+    z.object({
+      name: z.string(),
+      amount: z.number(),
+      count: z.number(),
+      category: z.string().optional(),
+      prevAmount: z.number().optional(),
+    }),
+  ),
   budgets: z
     .array(z.object({ name: z.string(), planned: z.number(), actual: z.number() }))
     .optional()
