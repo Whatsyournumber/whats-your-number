@@ -1611,6 +1611,30 @@ function Gastos() {
                           <span className="hidden sm:inline">{t(" a tu número", " to your number")}</span>
                         </span>
                       )}
+                      <span className="ml-auto inline-flex items-center gap-1">
+                        <button
+                          type="button"
+                          aria-label={t("Me sirve", "Useful")}
+                          onClick={() => void rate(a, "useful")}
+                          className={cn(
+                            "rounded-full border border-border/60 p-1 transition-colors hover:border-positive/50 hover:text-positive",
+                            ratings[`${a.label}|${a.action}`] === "useful" && "border-positive/60 bg-positive/12 text-positive",
+                          )}
+                        >
+                          <ThumbsUp className="h-3 w-3" />
+                        </button>
+                        <button
+                          type="button"
+                          aria-label={t("No aplica", "Not for me")}
+                          onClick={() => void rate(a, "not_useful")}
+                          className={cn(
+                            "rounded-full border border-border/60 p-1 transition-colors hover:border-negative/50 hover:text-negative",
+                            ratings[`${a.label}|${a.action}`] === "not_useful" && "border-negative/60 bg-negative/12 text-negative",
+                          )}
+                        >
+                          <ThumbsDown className="h-3 w-3" />
+                        </button>
+                      </span>
                     </div>
                   </li>
                 );
