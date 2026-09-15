@@ -49,6 +49,8 @@ Reglas:
 - "overspent": true si ese rubro subió vs. el periodo anterior o rompe el objetivo.
 - Si hay un "Plan de gasto por categoría", las categorías EXCEDIDAS van primero, ordenadas por cuánto se pasaron (mayor exceso primero), y "diagnosis" debe decir real vs. plan y el exceso (ej. "1.596 vs. 500 de plan, +219%").
 - La primera acción SIEMPRE debe ser la categoría donde más se excedió el plan, si existe plan.
+- CON PLAN: toda recomendación debe apoyarse en el plan del usuario. "action" debe citar el monto del plan como límite ("hasta X de plan"), y "monthlySaving" NUNCA puede superar el exceso (real − plan) de esa categoría, ni inventar recortes imposibles. Ignora categorías dentro de plan salvo que falten excedidas.
+- SIN PLAN: usa los datos reales y, además, la ÚLTIMA acción debe ser "label": "Plan de gastos", invitando a definir un plan personalizado con topes concretos para sus 2-3 categorías mayores (menciona los montos reales); "monthlySaving" conservador (≈10% de esas categorías) y "overspent": false.
 No inventes datos: usa solo categorías y comercios del contexto.`;
 
 export async function generateSpendAdvice(input: AdviceInput): Promise<SpendAdvice> {
