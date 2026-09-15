@@ -862,7 +862,7 @@ function Gastos() {
                 )}
               </div>
               <div className="mt-1.5 flex justify-between text-xs text-muted-foreground">
-                <span>0 $</span>
+                <span>0 {currency}</span>
                 {monthlyRun > target && <span className="numeric">{fmt(target)}</span>}
                 <span className="numeric">{fmt(monthlyRun)}</span>
               </div>
