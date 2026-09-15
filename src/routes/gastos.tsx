@@ -844,7 +844,7 @@ function Gastos() {
               className="h-11 w-full pl-7 text-base font-semibold"
             />
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
             <div className="flex items-baseline justify-between gap-2">
               <div className="min-w-0">
                 <span className="numeric text-2xl font-semibold sm:text-xl">{fmt(monthlyRun)}</span>
