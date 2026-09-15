@@ -857,7 +857,7 @@ function Gastos() {
                     {budgetRows.length ? <Pencil className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
                   </Button>
                 </div>
-                <p className="mt-2 text-xs leading-5 text-muted-foreground sm:text-[0.8125rem]">
+                <p className="mt-1.5 whitespace-nowrap text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs">
                   {t("Limita tus gastos mensuales", "Limit your monthly spending")}
                 </p>
               </div>
@@ -970,10 +970,10 @@ function Gastos() {
                   return (
                     <div key={row.id} className="rounded-xl border border-border/50 px-3 py-2">
                       <div className="flex items-baseline justify-between gap-2">
-                        <span className="truncate text-sm">
+                        <span className="min-w-0 flex-1 truncate text-[0.6875rem] leading-4">
                           {row.emoji} {row.name}
                         </span>
-                        <span className={cn("numeric shrink-0 text-xs", over ? "text-negative" : "text-positive")}>
+                        <span className={cn("numeric shrink-0 text-[0.6875rem] leading-4", over ? "text-negative" : "text-positive")}>
                           {fmt(row.actual)} / {fmt(row.planned)}
                         </span>
                       </div>
