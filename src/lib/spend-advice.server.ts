@@ -236,6 +236,50 @@ export async function generateSpendAdvice(input: AdviceInput): Promise<SpendAdvi
     .filter((b) => b.planned > 0 && b.actual > b.planned)
     .sort((a, b) => (b.actual - b.planned) - (a.actual - a.planned))[0];
 
+  // --- Memoria del usuario: análisis previos y feedback ---
+  const history = (input.history ?? []).slice(0, 5);
+  const feedback = input.feedback ?? [];
+  const rejected = feedback.filter((f) => f.verdict === "not_useful");
+  const accepted = feedback.filter((f) => f.verdict === "useful" || f.verdict === "done");
+  const repeated = new Map<string, number>();
+  for (const h of history) for (const a of h.actions ?? []) {
+    const key = (a.label ?? "").trim();
+    if (key) repeated.set(key, (repeated.get(key) ?? 0) + 1);
+  }
+  const recurring = [...repeated.entries()].filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1]);
+
+  const memoryBlock = history.length || feedback.length
+    ? `
+
+Historial de análisis previos de este usuario (más reciente primero):
+${
+        history
+          .map(
+            (h) =>
+              `- ${h.periodLabel}: gasto ${h.total.toFixed(0)} vs. objetivo ${h.target.toFixed(0)} · te recomendé: ${
+                (h.actions ?? [])
+                  .map((a) => `${a.label ?? ""} (${a.action ?? ""})`)
+                  .filter((s) => s.trim() !== " ()")
+                  .join("; ") || "sin datos"
+              }`,
+          )
+          .join("\n") || "- sin análisis previos"
+      }
+${
+        recurring.length
+          ? `\nRubros que se repiten en tus análisis (${recurring.map(([k, n]) => `${k} x${n}`).join(", ")}): ya se lo dijiste antes, sé más específico y exige un paso concreto.`
+          : ""
+      }${
+        rejected.length
+          ? `\nRecomendaciones que el usuario marcó como "no aplica" (NO repetirlas): ${rejected.map((f) => `${f.label}: ${f.action}`).join(" | ")}`
+          : ""
+      }${
+        accepted.length
+          ? `\nRecomendaciones que el usuario marcó como útiles o ya hechas (da el siguiente paso): ${accepted.map((f) => `${f.label}: ${f.action}`).join(" | ")}`
+          : ""
+      }`
+    : "";
+
   const prompt = `Moneda: ${input.currency}
 Periodo analizado: ${input.periodLabel}
 Gasto variable del periodo: ${input.total.toFixed(0)} (periodo anterior: ${input.prevTotal.toFixed(0)})
