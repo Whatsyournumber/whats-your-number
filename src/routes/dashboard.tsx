@@ -328,18 +328,18 @@ function Dashboard() {
   const goalNote = ((profile as { goal_note?: string }).goal_note || "").trim();
   const headerSubtitle = isMobile
     ? goalMode === "home"
-      ? t("Tus números. Tu progreso. Tu objetivo: comprar tu casa.", "Your numbers. Your progress. Your goal: buy your home.")
+      ? t("Tu objetivo: comprar tu casa.", "Your goal: buy your home.")
       : goalMode === "business"
         ? priority === "otro" && goalNote
-          ? t(`Tus números. Tu progreso. Tu objetivo: ${goalNote}.`, `Your numbers. Your progress. Your goal: ${goalNote}.`)
-          : t("Tus números. Tu progreso. Tu objetivo: crecer tu negocio.", "Your numbers. Your progress. Your goal: grow your business.")
+          ? t(`Tu objetivo: ${goalNote}.`, `Your goal: ${goalNote}.`)
+          : t("Tu objetivo: crecer tu negocio.", "Your goal: grow your business.")
         : priority === "patrimonio"
-          ? t("Tus números. Tu progreso. Tu objetivo: crecer tu patrimonio.", "Your numbers. Your progress. Your goal: grow your wealth.")
+          ? t("Tu objetivo: crecer tu patrimonio.", "Your goal: grow your wealth.")
           : priority === "gastos"
-            ? t("Tus números. Tu progreso. Tu objetivo: controlar tus gastos.", "Your numbers. Your progress. Your goal: control your spending.")
+            ? t("Tu objetivo: controlar tus gastos.", "Your goal: control your spending.")
             : priority === "organizar"
-              ? t("Tus números. Tu progreso. Tu objetivo: organizar tus finanzas.", "Your numbers. Your progress. Your goal: organize your finances.")
-              : t("Tus números. Tu progreso. Tu objetivo: alcanzar tu libertad financiera.", "Your numbers. Your progress. Your goal: reach financial freedom.")
+              ? t("Tu objetivo: organizar tus finanzas.", "Your goal: organize your finances.")
+              : t("Tu objetivo: tu libertad financiera.", "Your goal: financial freedom.")
     : goalMode === "home"
       ? t("Tus números. Tu progreso. Tu objetivo de comprar tu casa.", "Your numbers. Your progress. Your goal to buy your home.")
       : goalMode === "business"
