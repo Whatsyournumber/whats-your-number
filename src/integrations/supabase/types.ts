@@ -1033,6 +1033,7 @@ export type Database = {
           housing: string | null
           id: string
           income_bonus: number | null
+          income_business: number
           income_other: number | null
           income_partner_other: number | null
           income_partner_salary: number | null
@@ -1096,6 +1097,7 @@ export type Database = {
           housing?: string | null
           id?: string
           income_bonus?: number | null
+          income_business?: number
           income_other?: number | null
           income_partner_other?: number | null
           income_partner_salary?: number | null
@@ -1159,6 +1161,7 @@ export type Database = {
           housing?: string | null
           id?: string
           income_bonus?: number | null
+          income_business?: number
           income_other?: number | null
           income_partner_other?: number | null
           income_partner_salary?: number | null

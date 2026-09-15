@@ -1,0 +1,1 @@
+ALTER TABLE public.onboarding_profiles ADD COLUMN IF NOT EXISTS income_business numeric DEFAULT 0 NOT NULL;
