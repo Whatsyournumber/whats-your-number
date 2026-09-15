@@ -58,6 +58,7 @@ export function Panel({
   className,
   variant = "default",
   bleedMobile = false,
+  actionsBelowMobile = false,
   children,
 }: {
   id?: string;
@@ -70,6 +71,7 @@ export function Panel({
   className?: string;
   variant?: "default" | "minimal";
   bleedMobile?: boolean;
+  actionsBelowMobile?: boolean;
   children: ReactNode;
 }) {
   return (
