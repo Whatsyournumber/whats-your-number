@@ -117,7 +117,7 @@ function MiPerfil() {
   const moneyFields: { key: keyof Profile; label: string; group: "income" | "assets" | "flow" }[] = [
     { key: "income_salary", label: t("Salario mensual", "Monthly salary"), group: "income" },
     ...(withPartner
-      ? [{ key: "income_partner_salary" as keyof Profile, label: t("Ingreso en pareja", "Partner's income"), group: "income" as const }]
+      ? [{ key: "income_partner_salary" as keyof Profile, label: t("Ingreso de tu pareja", "Your partner's income"), group: "income" as const }]
       : []),
     { key: "income_business", label: t("Ingreso negocio extra", "Extra business income"), group: "income" },
     { key: "income_bonus", label: t("Bonos / variables", "Bonuses / variable pay"), group: "income" },
@@ -558,7 +558,7 @@ function MiPerfil() {
 
         <Panel
           icon={<Wallet />}
-          title={t("Ingresos y flujo", "Income & flow")}
+          title={withPartner ? t("Ingreso en pareja", "Income as a couple") : t("Ingresos y flujo", "Income & flow")}
           description={t("Importes mensuales de entrada y salida.", "Monthly inflow and outflow amounts.")}
         >
           <div className="grid gap-4 sm:grid-cols-2">
