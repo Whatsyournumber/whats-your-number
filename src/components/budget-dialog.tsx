@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useLanguage, useT } from "@/hooks/use-language";
 import type { BudgetLine } from "@/hooks/use-spend-budgets";
 import { BUDGET_CATEGORIES, DEFAULT_BUDGET_IDS, GROUP_LABELS, findBudgetCategory, type BudgetGroup } from "@/lib/budget-categories";
@@ -182,47 +183,68 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                       </button>
                     </div>
                     {isCustom(l.id) ? (
-                      <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                        {(l.keywords ?? []).map((kw) => (
-                          <span
-                            key={kw}
-                            className="flex items-center gap-1 rounded-full bg-muted/60 px-2 py-0.5 text-[11px] text-muted-foreground ring-1 ring-border/50"
-                          >
-                            {kw}
-                            <button
-                              type="button"
-                              onClick={() => removeKeyword(l.id, kw)}
-                              className="transition hover:text-negative"
-                              aria-label={t("Quitar palabra clave", "Remove keyword")}
-                              title={t("Quitar palabra clave", "Remove keyword")}
+                      <TooltipProvider delayDuration={200}>
+                        <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                          {(l.keywords ?? []).map((kw) => (
+                            <span
+                              key={kw}
+                              className="flex items-center gap-1 rounded-full bg-muted/60 px-2 py-0.5 text-[11px] text-muted-foreground ring-1 ring-border/50"
                             >
-                              <X className="h-3 w-3" />
-                            </button>
-                          </span>
-                        ))}
-                        <Input
-                          value={keywordDraft[l.id] ?? ""}
-                          onChange={(e) => setKeywordDraft((k) => ({ ...k, [l.id]: e.target.value }))}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              e.preventDefault();
-                              addKeyword(l.id);
-                            }
-                          }}
-                          placeholder={t("Palabra clave (ej: uber)", "Keyword (e.g. uber)")}
-                          className="h-7 w-36 rounded-full px-2.5 text-[11px]"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => addKeyword(l.id)}
-                          disabled={!(keywordDraft[l.id] ?? "").trim()}
-                          className="flex h-7 w-7 items-center justify-center rounded-full border border-border/60 text-muted-foreground transition hover:border-primary/50 hover:text-primary disabled:opacity-40"
-                          title={t("Escribe la palabra clave y presiona + para añadirla", "Type the keyword and press + to add it")}
-                          aria-label={t("Añadir palabra clave", "Add keyword")}
-                        >
-                          <Plus className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
+                              {kw}
+                              <button
+                                type="button"
+                                onClick={() => removeKeyword(l.id, kw)}
+                                className="transition hover:text-negative"
+                                aria-label={t("Quitar palabra clave", "Remove keyword")}
+                                title={t("Quitar palabra clave", "Remove keyword")}
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                            </span>
+                          ))}
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Input
+                                value={keywordDraft[l.id] ?? ""}
+                                onChange={(e) => setKeywordDraft((k) => ({ ...k, [l.id]: e.target.value }))}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    e.preventDefault();
+                                    addKeyword(l.id);
+                                  }
+                                }}
+                                placeholder={t("Palabra clave (ej: uber)", "Keyword (e.g. uber)")}
+                                className="h-7 w-36 rounded-full px-2.5 text-[11px]"
+                              />
+                            </TooltipTrigger>
+                            <TooltipContent side="top">
+                              {t(
+                                "Escribe la palabra clave y presiona + para añadirla",
+                                "Type the keyword and press + to add it",
+                              )}
+                            </TooltipContent>
+                          </Tooltip>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                type="button"
+                                onClick={() => addKeyword(l.id)}
+                                disabled={!(keywordDraft[l.id] ?? "").trim()}
+                                className="flex h-7 w-7 items-center justify-center rounded-full border border-border/60 text-muted-foreground transition hover:border-primary/50 hover:text-primary disabled:opacity-40"
+                                aria-label={t("Añadir palabra clave", "Add keyword")}
+                              >
+                                <Plus className="h-3.5 w-3.5" />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top">
+                              {t(
+                                "Escribe la palabra clave y presiona + para añadirla",
+                                "Type the keyword and press + to add it",
+                              )}
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                      </TooltipProvider>
                     ) : null}
                   </div>
                 ))}
