@@ -901,7 +901,7 @@ function Gastos() {
             >
               <div className="flex items-center gap-2">
                 <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                  {t("Plan de gastos personalizado", "Custom spending plan")}
+                  {t("Gasto objetivo por categoría vs gasto real", "Target vs actual spending by category")}
                 </p>
                 <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
               </div>
