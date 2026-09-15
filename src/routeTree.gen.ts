@@ -38,7 +38,6 @@ import { Route as MiPerfilRouteImport } from './routes/mi-perfil'
 import { Route as NinosRouteRouteImport } from './routes/ninos/route'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PatrimonioRouteImport } from './routes/patrimonio'
-import { Route as PopupTestRouteImport } from './routes/popup-test'
 import { Route as PortafolioRouteImport } from './routes/portafolio'
 import { Route as PreciosRouteImport } from './routes/precios'
 import { Route as PrivacidadRouteImport } from './routes/privacidad'
@@ -227,11 +226,6 @@ const OnboardingRoute = OnboardingRouteImport.update({
 const PatrimonioRoute = PatrimonioRouteImport.update({
   id: '/patrimonio',
   path: '/patrimonio',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PopupTestRoute = PopupTestRouteImport.update({
-  id: '/popup-test',
-  path: '/popup-test',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PortafolioRoute = PortafolioRouteImport.update({
@@ -484,7 +478,6 @@ export interface FileRoutesByFullPath {
   '/mi-perfil': typeof MiPerfilRoute
   '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
-  '/popup-test': typeof PopupTestRoute
   '/portafolio': typeof PortafolioRoute
   '/precios': typeof PreciosRoute
   '/privacidad': typeof PrivacidadRoute
@@ -555,7 +548,6 @@ export interface FileRoutesByTo {
   '/mi-perfil': typeof MiPerfilRoute
   '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
-  '/popup-test': typeof PopupTestRoute
   '/portafolio': typeof PortafolioRoute
   '/precios': typeof PreciosRoute
   '/privacidad': typeof PrivacidadRoute
@@ -629,7 +621,6 @@ export interface FileRoutesById {
   '/mi-perfil': typeof MiPerfilRoute
   '/onboarding': typeof OnboardingRoute
   '/patrimonio': typeof PatrimonioRoute
-  '/popup-test': typeof PopupTestRoute
   '/portafolio': typeof PortafolioRoute
   '/precios': typeof PreciosRoute
   '/privacidad': typeof PrivacidadRoute
@@ -705,7 +696,6 @@ export interface FileRouteTypes {
     | '/mi-perfil'
     | '/onboarding'
     | '/patrimonio'
-    | '/popup-test'
     | '/portafolio'
     | '/precios'
     | '/privacidad'
@@ -776,7 +766,6 @@ export interface FileRouteTypes {
     | '/mi-perfil'
     | '/onboarding'
     | '/patrimonio'
-    | '/popup-test'
     | '/portafolio'
     | '/precios'
     | '/privacidad'
@@ -849,7 +838,6 @@ export interface FileRouteTypes {
     | '/mi-perfil'
     | '/onboarding'
     | '/patrimonio'
-    | '/popup-test'
     | '/portafolio'
     | '/precios'
     | '/privacidad'
@@ -924,7 +912,6 @@ export interface RootRouteChildren {
   MiPerfilRoute: typeof MiPerfilRoute
   OnboardingRoute: typeof OnboardingRoute
   PatrimonioRoute: typeof PatrimonioRoute
-  PopupTestRoute: typeof PopupTestRoute
   PortafolioRoute: typeof PortafolioRoute
   PreciosRoute: typeof PreciosRoute
   PrivacidadRoute: typeof PrivacidadRoute
@@ -1148,13 +1135,6 @@ declare module '@tanstack/react-router' {
       path: '/patrimonio'
       fullPath: '/patrimonio'
       preLoaderRoute: typeof PatrimonioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/popup-test': {
-      id: '/popup-test'
-      path: '/popup-test'
-      fullPath: '/popup-test'
-      preLoaderRoute: typeof PopupTestRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/portafolio': {
@@ -1567,7 +1547,6 @@ const rootRouteChildren: RootRouteChildren = {
   MiPerfilRoute: MiPerfilRoute,
   OnboardingRoute: OnboardingRoute,
   PatrimonioRoute: PatrimonioRoute,
-  PopupTestRoute: PopupTestRoute,
   PortafolioRoute: PortafolioRoute,
   PreciosRoute: PreciosRoute,
   PrivacidadRoute: PrivacidadRoute,
