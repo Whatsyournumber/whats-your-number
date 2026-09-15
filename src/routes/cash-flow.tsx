@@ -132,7 +132,27 @@ function CashFlow() {
     "Regalos",
     "Mascotas",
   ]);
-  const isWant = (cat: string) => WANT_CATS.has(cat) || /viaje|restaur|delivery|ocio|salida|night|deporte|gym|gimnasio|compra|ropa|tecnolog|app|suscrip|hobb|lifestyle|belleza|regalo|mascota|entreten/i.test(cat);
+  const isWant = (cat: string) =>
+    WANT_CATS.has(cat) ||
+    /viaje|restaur|delivery|ocio|salida|night|deporte|gym|gimnasio|compra|ropa|tecnolog|app|suscrip|hobb|lifestyle|belleza|regalo|mascota|entreten|pet|stay|whatsyournumber|marketing/i.test(cat);
+
+  // Categorías personalizadas del plan de gastos (con sus palabras clave) → se clasifican como deseos.
+  const customWants = useMemo(
+    () =>
+      budgetLines
+        .filter((l) => l.id.startsWith("custom:"))
+        .map((l) => {
+          const label = (l.label ?? l.id.slice(7)).trim();
+          return {
+            label,
+            aliases: [label, ...(l.keywords ?? [])]
+              .map((k) => k.trim().toLowerCase())
+              .filter((k) => k.length > 2),
+          };
+        })
+        .filter((c) => c.aliases.length > 0),
+    [budgetLines],
+  );
 
   const travelDays = useMemo(() => buildTravelDays(monthTx as Tx[], rules), [monthTx, rules]);
   const spend = useMemo(() => {
@@ -140,10 +160,21 @@ function CashFlow() {
     let needs = 0;
     const needsBy = new Map<string, number>();
     const wantsBy = new Map<string, number>();
+    const matchCustom = (name: string) => {
+      const n = name.trim().toLowerCase();
+      if (!n) return null;
+      return customWants.find((c) => c.aliases.some((a) => n === a || n.includes(a) || a.includes(n)))?.label ?? null;
+    };
     for (const tx of monthTx) {
       if (tx.amount >= 0) continue;
-      const cat = categorizeTxWithTravel(tx as Tx, rules, travelDays);
       const v = Math.abs(tx.amount);
+      const custom = matchCustom(tx.merchant ?? "");
+      if (custom) {
+        wants += v;
+        wantsBy.set(custom, (wantsBy.get(custom) ?? 0) + v);
+        continue;
+      }
+      const cat = categorizeTxWithTravel(tx as Tx, rules, travelDays);
       if (isWant(cat)) {
         wants += v;
         wantsBy.set(cat, (wantsBy.get(cat) ?? 0) + v);
@@ -155,7 +186,7 @@ function CashFlow() {
       }
     }
     return { wants, needs, total: wants + needs, needsBy, wantsBy };
-  }, [monthTx, rules, travelDays]);
+  }, [monthTx, rules, travelDays, customWants]);
 
   const hasReal = hasData && monthTx.length > 0;
 
