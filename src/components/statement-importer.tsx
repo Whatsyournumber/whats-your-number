@@ -304,7 +304,10 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
         refreshAll();
       }
 
-      if (totalInserted > 0) setDonePopup({ inserted: totalInserted, files: queue.length });
+      if (totalInserted > 0) {
+        const span = await newTxRange(queue.map((q) => q.statementId));
+        setDonePopup({ inserted: totalInserted, files: queue.length, ...span });
+      }
 
 
     } catch (error) {
