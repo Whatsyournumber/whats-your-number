@@ -1055,7 +1055,7 @@ function Gastos() {
                         <Cell key={c.name} fill={palette[i % palette.length]} />
                       ))}
                     </Pie>
-                    <Tooltip content={<ChartTooltip formatter={fmt} />} />
+                    <RTooltip content={<ChartTooltip formatter={fmt} />} />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
