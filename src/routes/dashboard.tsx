@@ -298,8 +298,6 @@ function Dashboard() {
 
   // Regla 40 / 40 / 20: necesidades 40%, ahorro e inversión 40%, deseos 20%.
   // Mínimo aceptable para ahorrar o invertir: 20% del ingreso.
-  const investTarget = current.income * 0.4;
-  const investMin = current.income * 0.2;
 
   const incomeHint = (() => {
     if (current.income <= 0) return t("Ingreso mensual estimado", "Estimated monthly income");
@@ -307,20 +305,19 @@ function Dashboard() {
       const rate = savingsRate;
       if (rate >= 40) {
         return t(
-          `Puedes ahorrar/invertir ${fmt(current.savings)}/mes · ${rate.toFixed(0)}% del ingreso · meta 40% lograda`,
-          `You can save/invest ${fmt(current.savings)}/mo · ${rate.toFixed(0)}% of income · 40% goal reached`,
+          `Puedes ahorrar/invertir ${rate.toFixed(0)}% de tu ingreso · meta 40% lograda`,
+          `You can save/invest ${rate.toFixed(0)}% of your income · 40% goal reached`,
         );
       }
       if (rate >= 20) {
         return t(
-          `Puedes ahorrar/invertir ${fmt(current.savings)}/mes · ${rate.toFixed(0)}% · meta 40% = ${fmt(investTarget)}/mes`,
-          `You can save/invest ${fmt(current.savings)}/mo · ${rate.toFixed(0)}% · 40% goal = ${fmt(investTarget)}/mo`,
+          `Puedes ahorrar/invertir ${rate.toFixed(0)}% de tu ingreso · meta 40%`,
+          `You can save/invest ${rate.toFixed(0)}% of your income · 40% goal`,
         );
       }
-      const gap = Math.max(0, investMin - current.savings);
       return t(
-        `Vas muy justo · solo ${rate.toFixed(0)}% · necesitas generar ${fmt(gap)}/mes extra`,
-        `Cutting it close · only ${rate.toFixed(0)}% · you need ${fmt(gap)}/mo extra`,
+        `Solo ${rate.toFixed(0)}% · necesitas generar extra para llegar al 20%`,
+        `Only ${rate.toFixed(0)}% · you need extra income to reach 20%`,
       );
     }
     const deficit = current.expenses - current.income;
@@ -344,8 +341,8 @@ function Dashboard() {
       : savingsRate >= 40
         ? t("Meta 40% lograda", "40% goal reached")
         : savingsRate >= 20
-          ? t(`Meta 40% = ${fmt(investTarget)}/mes`, `40% goal = ${fmt(investTarget)}/mo`)
-          : t(`Muy justo · mínimo 20% = ${fmt(investMin)}/mes`, `Cutting it close · 20% minimum = ${fmt(investMin)}/mo`);
+          ? t("Puedes llegar a la meta 40%", "You can still reach the 40% goal")
+          : t("Vas muy justo · busca extra para el 20%", "Cutting it close · find extra for the 20%");
 
 
   const insights = buildInsights(plan, profile, profile, d.currency, lang);
