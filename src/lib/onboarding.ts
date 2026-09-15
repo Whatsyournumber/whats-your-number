@@ -12,6 +12,8 @@ export type OnboardingData = {
   income_bonus: number;
   income_rent: number;
   income_other: number;
+  /** Ingreso extra mensual que genera tu negocio o actividad paralela. */
+  income_business: number;
   /** Ingresos de la pareja (solo cuando el análisis es de hogar). */
   income_partner_salary?: number;
   income_partner_other?: number;
@@ -61,6 +63,7 @@ export const emptyOnboarding: OnboardingData = {
   income_bonus: 0,
   income_rent: 0,
   income_other: 0,
+  income_business: 0,
   income_partner_salary: 0,
   income_partner_other: 0,
   expenses_partner: 0,
@@ -151,6 +154,7 @@ export function totalIncome(d: OnboardingData) {
     d.income_bonus +
     d.income_rent +
     d.income_other +
+    (d.income_business ?? 0) +
     (d.income_partner_salary ?? 0) +
     (d.income_partner_other ?? 0)
   );

@@ -96,7 +96,7 @@ export function WealthEditor({ value, onChange, fmt, retireAge, onRetireAge }: P
         <Summary label={t("Deudas", "Debts")} value={amt(debtTotal)} negative />
         <Summary label={t("Patrimonio neto", "Net worth")} value={amt(assetsTotal - debtTotal)} accent />
         <Summary
-          label={t("Aportes / mes", "Contributions / mo")}
+          label={t("Aportes", "Contributions")}
           value={amt(monthlyIn)}
           hint={rentIncome > 0 ? `${t("Renta", "Rent")} ${fmt(rentIncome)}` : undefined}
         />

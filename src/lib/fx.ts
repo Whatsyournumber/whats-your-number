@@ -172,6 +172,7 @@ export const PROFILE_MONEY_FIELDS = [
   "income_bonus",
   "income_rent",
   "income_other",
+  "income_business",
   "income_partner_salary",
   "income_partner_other",
   "expenses_partner",

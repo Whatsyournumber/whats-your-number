@@ -117,8 +117,9 @@ function MiPerfil() {
   const moneyFields: { key: keyof Profile; label: string; group: "income" | "assets" | "flow" }[] = [
     { key: "income_salary", label: t("Salario mensual", "Monthly salary"), group: "income" },
     ...(withPartner
-      ? [{ key: "income_partner_salary" as keyof Profile, label: t("Ingreso de la pareja", "Partner's income"), group: "income" as const }]
+      ? [{ key: "income_partner_salary" as keyof Profile, label: t("Ingreso en pareja", "Partner's income"), group: "income" as const }]
       : []),
+    { key: "income_business", label: t("Ingreso negocio extra", "Extra business income"), group: "income" },
     { key: "income_bonus", label: t("Bonos / variables", "Bonuses / variable pay"), group: "income" },
     { key: "income_rent", label: t("Alquileres", "Rental income"), group: "income" },
     { key: "income_other", label: t("Otros ingresos", "Other income"), group: "income" },
@@ -498,7 +499,7 @@ function MiPerfil() {
                 onChange={(e) => set("expected_return", Number(e.target.value || 0))}
               />
             </Field>
-            <Field label={t("Tasa de retiro para tu número (% anual)", "Withdrawal rate for your number (% annual)")}>
+            <Field label={t("Tasa de retiro (% anual)", "Withdrawal rate (%/yr)")}>
               <Input
                 type="number"
                 step="0.5"
