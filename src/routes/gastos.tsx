@@ -747,7 +747,9 @@ function Gastos() {
       <PageHeader
         eyebrow={t("Análisis de gastos", "Spending analysis")}
         title={t("¿En qué se fue mi dinero?", "Where did my money go?")}
-        subtitle={t("Gastos fijos + variable de tus estados de cuenta, comparado periodo a periodo.", "Fixed + variable spend from your statements, compared period over period.")}
+        subtitle={isMobile
+          ? t("Fijos + variable, mes a mes.", "Fixed + variable, month over month.")
+          : t("Gastos fijos + variable de tus estados de cuenta, comparado periodo a periodo.", "Fixed + variable spend from your statements, compared period over period.")}
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild size="sm" className="gap-2 rounded-full">
