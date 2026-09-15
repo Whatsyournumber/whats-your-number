@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Check, Pencil, Plus, Trash2 } from "lucide-react";
+import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -87,6 +87,26 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
     setEditingId(null);
     setEditingName("");
   };
+
+  const [keywordDraft, setKeywordDraft] = useState<Record<string, string>>({});
+
+  const addKeyword = (id: string) => {
+    const kw = (keywordDraft[id] ?? "").trim().toLowerCase();
+    if (!kw) return;
+    setDraft((d) =>
+      d.map((l) =>
+        l.id === id && !(l.keywords ?? []).includes(kw)
+          ? { ...l, keywords: [...(l.keywords ?? []), kw] }
+          : l,
+      ),
+    );
+    setKeywordDraft((k) => ({ ...k, [id]: "" }));
+  };
+
+  const removeKeyword = (id: string, kw: string) =>
+    setDraft((d) =>
+      d.map((l) => (l.id === id ? { ...l, keywords: (l.keywords ?? []).filter((k) => k !== kw) } : l)),
+    );
 
   const addCategory = (id: string) => {
     setDraft((d) => [...d, { id, amount: 0 }]);
