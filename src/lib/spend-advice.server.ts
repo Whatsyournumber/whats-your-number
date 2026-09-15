@@ -66,7 +66,16 @@ export async function generateSpendAdvice(input: AdviceInput): Promise<SpendAdvi
     )
     .join("\n");
   const merch = input.merchants
-    .map((m) => `- ${m.name}: ${m.amount.toFixed(0)} ${input.currency} en ${m.count} compras`)
+    .map((m) => {
+      const diff = m.prevAmount !== undefined ? m.amount - m.prevAmount : null;
+      const delta =
+        diff === null
+          ? ""
+          : diff > 0
+            ? ` · ${diff.toFixed(0)} más que el periodo anterior`
+            : ` · ${Math.abs(diff).toFixed(0)} menos que el periodo anterior`;
+      return `- ${m.name}${m.category ? ` [categoría: ${m.category}]` : ""}: ${m.amount.toFixed(0)} ${input.currency} en ${m.count} compras${delta}`;
+    })
     .join("\n");
 
   const overBudget = (input.budgets ?? [])
