@@ -464,6 +464,29 @@ function Gastos() {
   const [advice, setAdvice] = useState<AdviceAction[] | null>(null);
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState<string | null>(null);
+  /** Valoraciones que el usuario da a cada recomendación (la IA las recuerda). */
+  const [ratings, setRatings] = useState<Record<string, "useful" | "not_useful">>({});
+
+  const rate = async (a: AdviceAction, verdict: "useful" | "not_useful") => {
+    const key = `${a.label}|${a.action}`;
+    if (ratings[key]) return;
+    setRatings((r) => ({ ...r, [key]: verdict }));
+    try {
+      await rateSpendAdvice({ data: { label: a.label, action: a.action, verdict } });
+      toast.success(
+        verdict === "useful"
+          ? t("Guardado: la IA insistirá por aquí.", "Saved: your AI will keep going this way.")
+          : t("Guardado: la IA no volverá a sugerirlo.", "Saved: your AI won't suggest it again."),
+      );
+    } catch {
+      setRatings((r) => {
+        const next = { ...r };
+        delete next[key];
+        return next;
+      });
+      toast.error(t("No pudimos guardar tu respuesta.", "We couldn't save your answer."));
+    }
+  };
 
 
 
