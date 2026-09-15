@@ -96,7 +96,7 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
     files: number;
     from?: string;
     to?: string;
-  } | null>(null);
+  } | null>({ inserted: 42, files: 1, from: "2026-08-12", to: "2026-09-03" });
   const runProcess = useServerFn(processStatement);
 
   const setJob = (id: string, patch: Partial<Job>) =>
