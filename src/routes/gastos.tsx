@@ -933,19 +933,19 @@ function Gastos() {
               className="flex w-full items-center justify-between gap-2 py-1 text-left"
               aria-label={t("Mostrar u ocultar plan por categoría", "Show or hide category plan")}
             >
-              <div className="flex items-center gap-2">
-                <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                  {t("Gasto real vs objetivo por categoría", "Actual vs target spending by category")}
+              <div className="flex min-w-0 items-center gap-2">
+                <p className="whitespace-nowrap text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                  {t("Gasto real vs objetivo", "Actual vs target")}
                 </p>
                 <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
               </div>
-              <div className="flex items-center gap-2">
-                <p className="text-xs text-muted-foreground">
+              <div className="flex shrink-0 items-center gap-2">
+                <p className="whitespace-nowrap text-xs text-muted-foreground">
                   {t("Plan", "Plan")} {fmt(budgetPlanTotal)}
                   {overBudget.length > 0 && (
                     <span className="text-negative">
                       {" · "}
-                      {overBudget.length} {t("categorías excedidas", "categories over plan")}
+                      {overBudget.length} {t("excedidas", "over")}
                     </span>
                   )}
                 </p>
