@@ -857,7 +857,7 @@ function Gastos() {
                     {budgetRows.length ? <Pencil className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
                   </Button>
                 </div>
-                <p className="mt-2 text-xs leading-5 text-muted-foreground sm:text-[0.8125rem]">
+                <p className="mt-1.5 whitespace-nowrap text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs">
                   {t("Limita tus gastos mensuales", "Limit your monthly spending")}
                 </p>
               </div>
