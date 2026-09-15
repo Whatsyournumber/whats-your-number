@@ -119,10 +119,11 @@ const RANGE_KEY = "wyn.gastos.range";
 const FIXED_FIELD_IDS = new Set(FIXED_FIELDS.map((field) => field.key as string));
 
 /** Mantiene el filtro del calendario aunque cambies de pestaña. */
-function usePersistedRange(fallback: () => DateRange) {
-  const [range, setRange] = useState<DateRange | undefined>(fallback);
+function usePersistedRange(fallback: () => DateRange, override?: DateRange) {
+  const [range, setRange] = useState<DateRange | undefined>(() => override ?? fallback());
 
   useEffect(() => {
+    if (override?.from) return;
     try {
       const raw = localStorage.getItem(RANGE_KEY);
       if (!raw) return;
