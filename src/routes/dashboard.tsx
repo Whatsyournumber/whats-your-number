@@ -296,7 +296,6 @@ function Dashboard() {
   const savingsRate = current.income > 0 ? (current.savings / current.income) * 100 : 0;
   const prevRate = previous.income > 0 ? (previous.savings / previous.income) * 100 : 0;
 
-  // Regla 40 / 40 / 20: necesidades 40%, ahorro e inversión 40%, deseos 20%.
   // Mínimo aceptable para ahorrar o invertir: 20% del ingreso.
 
   const incomeHint = (() => {
