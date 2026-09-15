@@ -846,7 +846,7 @@ function Gastos() {
               />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <h2 className="whitespace-nowrap text-xs font-semibold sm:text-sm lg:text-base">
+                  <h2 className="whitespace-nowrap text-sm font-semibold sm:text-sm lg:text-base">
                     {t("Gasto objetivo mensual", "Monthly spend target")}
                   </h2>
                   <Button
@@ -867,7 +867,7 @@ function Gastos() {
           </div>
           <div className="order-3 flex min-w-0 flex-col gap-1 md:order-2 md:-mb-2 md:self-end">
             <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 md:flex-nowrap">
-              <span className="numeric shrink-0 text-2xl font-semibold sm:text-xl md:text-2xl">{fmt(monthlyRun)}</span>
+              <span className="numeric shrink-0 text-xl font-semibold sm:text-xl md:text-2xl">{fmt(monthlyRun)}</span>
               <span
                 className={cn(
                   "shrink-0 whitespace-nowrap rounded-full px-2 py-1 text-xs font-medium",
