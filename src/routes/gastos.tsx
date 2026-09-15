@@ -609,6 +609,7 @@ function Gastos() {
             name: c.name,
             amount: c.amount,
             prevAmount: prevByCategory.get(c.name) ?? 0,
+            count: c.items.length,
           })),
           merchants: merchants.slice(0, 14).map((m) => ({
             name: m.name,
