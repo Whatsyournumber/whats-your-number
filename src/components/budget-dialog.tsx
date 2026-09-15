@@ -63,6 +63,31 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
 
   const removeLine = (id: string) => setDraft((d) => d.filter((l) => l.id !== id));
 
+  const isCustom = (id: string) => id.startsWith("custom:");
+
+  const startEdit = (l: BudgetLine) => {
+    setEditingId(l.id);
+    setEditingName(l.label ?? l.id.replace(/^custom:/, ""));
+  };
+
+  const commitEdit = (id: string) => {
+    const name = editingName.trim();
+    if (!name) {
+      setEditingId(null);
+      return;
+    }
+    const nextId = `custom:${name.toLowerCase()}`;
+    setDraft((d) =>
+      d.map((l) =>
+        l.id === id
+          ? { ...l, id: d.some((o) => o.id === nextId && o.id !== id) ? l.id : nextId, label: name }
+          : l,
+      ),
+    );
+    setEditingId(null);
+    setEditingName("");
+  };
+
   const addCategory = (id: string) => {
     setDraft((d) => [...d, { id, amount: 0 }]);
     setAdding(false);
