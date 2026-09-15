@@ -62,6 +62,133 @@ Reglas:
 - RECOMIENDA CON INTELIGENCIA, no solo "gasta menos": primero propón cómo pagar menos por lo MISMO antes de recortar el consumo. Ejemplos según el rubro: trenes/vuelos (IRYO, Renfe, aerolíneas) → "Compra los pasajes con 2-4 semanas de antelación, salen hasta X más baratos"; hoteles/viajes → reserva con antelación o compara fechas; delivery → pide directo al restaurante o recoge tú mismo; supermercado → marca blanca o compras semanales planificadas; suscripciones → plan anual o familiar; seguros → compara ofertas anuales; gasolina → estaciones low-cost. Elige el truco que aplique al comercio real del contexto y estima el ahorro en "monthlySaving".
 No inventes datos: usa solo categorías y comercios del contexto.`;
 
+function smartTip(category: string, merchant?: string): string {
+  const name = merchant || category;
+  const lower = category.toLowerCase();
+  if (lower.includes("tren") || lower.includes("transport") || lower.includes("viaje") || lower.includes("vuelo")) {
+    return `Compra los pasajes de ${name} con 2-4 semanas de antelación para encontrar mejores precios`;
+  }
+  if (lower.includes("restaurant") || lower.includes("comida") || lower.includes("delivery")) {
+    return `Cocina una o dos comidas más en casa y reduce pedidos a ${name}`;
+  }
+  if (lower.includes("app") || lower.includes("suscrip") || lower.includes("software")) {
+    return `Revisa suscripciones de ${name} y cancela las que no uses o baja a plan anual`;
+  }
+  if (lower.includes("super") || lower.includes("grocer")) {
+    return `Planifica la compra semanal en ${name} y apuesta por marca blanca`;
+  }
+  if (lower.includes("gasolin") || lower.includes("combustible")) {
+    return `Usa apps de comparación para repostar en ${name} a mejor precio`;
+  }
+  if (lower.includes("seguro")) {
+    return `Compara ofertas anuales de ${name} y negocia la prima`;
+  }
+  if (lower.includes("compra") || lower.includes("shopping") || lower.includes("ropa")) {
+    return `Espera 48 horas antes de comprar en ${name} y busca cupones`;
+  }
+  if (lower.includes("ocio") || lower.includes("nightlife") || lower.includes("entreten")) {
+    return `Busca días con descuento o happy hour en ${name}`;
+  }
+  return `Revisa los gastos recurrentes en ${name} y elimina los que no aporten valor`;
+}
+
+function buildFallbackActions(input: AdviceInput, existing: SpendAdvice["actions"], needed: number): SpendAdvice["actions"] {
+  const used = new Set(existing.map((a) => a.label.toLowerCase()));
+  const out: SpendAdvice["actions"] = [...existing];
+
+  // 1) Categorías excedidas del plan (mayor exceso primero)
+  const overBudgets = [...(input.budgets ?? [])]
+    .filter((b) => b.planned > 0 && b.actual > b.planned)
+    .sort((a, b) => b.actual - b.planned - (a.actual - a.planned));
+
+  for (const b of overBudgets) {
+    if (out.length >= needed) break;
+    const key = b.name.toLowerCase();
+    if (used.has(key)) continue;
+    used.add(key);
+    const excess = b.actual - b.planned;
+    const merchant = input.merchants.find((m) =>
+      m.category?.toLowerCase() === key || m.name.toLowerCase().includes(key),
+    );
+    out.push({
+      label: b.name,
+      diagnosis: `${input.periodLabel}: gastaste ${b.actual.toFixed(0)} vs. ${b.planned.toFixed(0)} de plan, un exceso de +${Math.round((excess / b.planned) * 100)}%.`,
+      action: smartTip(b.name, merchant?.name),
+      monthlySaving: Math.min(excess, Math.round(excess * 0.5)),
+      overspent: true,
+    });
+  }
+
+  // 2) Categorías de mayor gasto real
+  const topCats = [...input.categories].sort((a, b) => b.amount - a.amount);
+  for (const c of topCats) {
+    if (out.length >= needed) break;
+    const key = c.name.toLowerCase();
+    if (used.has(key)) continue;
+    used.add(key);
+    const merchant = input.merchants.find((m) =>
+      m.category?.toLowerCase() === key || m.name.toLowerCase().includes(key),
+    );
+    const diff = c.amount - c.prevAmount;
+    const pct = c.prevAmount > 0 ? Math.round((diff / c.prevAmount) * 100) : 0;
+    out.push({
+      label: c.name,
+      diagnosis:
+        diff > 0 && c.prevAmount > 0
+          ? `${input.periodLabel}: gastaste ${c.amount.toFixed(0)} en ${c.name}, un ${pct}% más que el periodo anterior.`
+          : `${input.periodLabel}: gastaste ${c.amount.toFixed(0)} en ${c.name}.`,
+      action: smartTip(c.name, merchant?.name),
+      monthlySaving: Math.max(10, Math.round(c.amount * 0.15)),
+      overspent: diff > 0,
+    });
+  }
+
+  // 3) Comercios concretos de mayor gasto
+  const topMerchants = [...input.merchants].sort((a, b) => b.amount - a.amount);
+  for (const m of topMerchants) {
+    if (out.length >= needed) break;
+    const key = m.name.toLowerCase();
+    if (used.has(key)) continue;
+    used.add(key);
+    const diff = m.prevAmount !== undefined ? m.amount - m.prevAmount : 0;
+    out.push({
+      label: m.name,
+      diagnosis:
+        diff > 0
+          ? `${input.periodLabel}: gastaste ${m.amount.toFixed(0)} en ${m.name}, ${diff.toFixed(0)} más que el periodo anterior.`
+          : `${input.periodLabel}: gastaste ${m.amount.toFixed(0)} en ${m.name}.`,
+      action: smartTip(m.category || m.name, m.name),
+      monthlySaving: Math.max(10, Math.round(m.amount * 0.12)),
+      overspent: diff > 0,
+    });
+  }
+
+  // 4) Último recurso: boxes genéricos de ahorro
+  const generics = [
+    "Revisa suscripciones automáticas",
+    "Compara seguros anuales",
+    "Planifica las compras del mes",
+    "Usa transporte público o compartido",
+  ];
+  let i = 0;
+  while (out.length < needed && i < generics.length) {
+    const label = generics[i]!;
+    if (!used.has(label.toLowerCase())) {
+      used.add(label.toLowerCase());
+      out.push({
+        label,
+        diagnosis: `${input.periodLabel}: aún no hay un rubro concreto analizado aquí.`,
+        action: label,
+        monthlySaving: Math.max(10, Math.round(input.total * 0.02)),
+        overspent: false,
+      });
+    }
+    i++;
+  }
+
+  return out.slice(0, needed);
+}
+
 export async function generateSpendAdvice(input: AdviceInput): Promise<SpendAdvice> {
   const apiKey = process.env["LOVABLE_API_KEY"];
   if (!apiKey) throw new Error("Falta la configuración de IA (LOVABLE_API_KEY).");
@@ -132,5 +259,8 @@ ${
     output: Output.object({ schema: adviceSchema }),
   });
 
-  return result.output;
+  // Forzamos siempre 4 boxes, completando con datos reales si la IA devolviera menos.
+  const actions = result.output.actions ?? [];
+  const padded = buildFallbackActions(input, actions, 4);
+  return { actions: padded };
 }
