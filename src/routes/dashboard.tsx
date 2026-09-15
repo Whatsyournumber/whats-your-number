@@ -296,12 +296,31 @@ function Dashboard() {
   const savingsRate = current.income > 0 ? (current.savings / current.income) * 100 : 0;
   const prevRate = previous.income > 0 ? (previous.savings / previous.income) * 100 : 0;
 
+  // Regla 40 / 40 / 20: necesidades 40%, ahorro e inversión 40%, deseos 20%.
+  // Mínimo aceptable para ahorrar o invertir: 20% del ingreso.
+  const investTarget = current.income * 0.4;
+  const investMin = current.income * 0.2;
+
   const incomeHint = (() => {
     if (current.income <= 0) return t("Ingreso mensual estimado", "Estimated monthly income");
-    if (current.income >= current.expenses) {
+    if (current.income > current.expenses) {
+      const rate = savingsRate;
+      if (rate >= 40) {
+        return t(
+          `Invierte ${fmt(current.savings)}/mes · ${rate.toFixed(0)}% del ingreso, meta 40% lograda`,
+          `Invest ${fmt(current.savings)}/mo · ${rate.toFixed(0)}% of income, 40% goal reached`,
+        );
+      }
+      if (rate >= 20) {
+        return t(
+          `Puedes invertir ${fmt(current.savings)}/mes · ${rate.toFixed(0)}% · meta 40% = ${fmt(investTarget)}`,
+          `You can invest ${fmt(current.savings)}/mo · ${rate.toFixed(0)}% · 40% goal = ${fmt(investTarget)}`,
+        );
+      }
+      const gap = Math.max(0, investMin - current.savings);
       return t(
-        `Cubre tus gastos · ahorras ${fmt(current.savings)}/mes`,
-        `Covers your expenses · saving ${fmt(current.savings)}/mo`,
+        `Solo ${rate.toFixed(0)}% · busca ${fmt(gap)}/mes extra para llegar al 20% mínimo`,
+        `Only ${rate.toFixed(0)}% · find ${fmt(gap)}/mo extra to reach the 20% minimum`,
       );
     }
     const deficit = current.expenses - current.income;
@@ -318,6 +337,16 @@ function Dashboard() {
       `Doesn't cover · short ${fmt(deficit)}/mo${dryDate ? ` · out of funds by ${dryDate}` : ""}`,
     );
   })();
+
+  const savingsRateHint =
+    current.income <= 0
+      ? t("Meta 40% · mínimo 20%", "40% goal · 20% minimum")
+      : savingsRate >= 40
+        ? t("Meta 40% lograda", "40% goal reached")
+        : savingsRate >= 20
+          ? t(`Meta 40% = ${fmt(investTarget)}/mes`, `40% goal = ${fmt(investTarget)}/mo`)
+          : t(`Mínimo 20% = ${fmt(investMin)}/mes`, `20% minimum = ${fmt(investMin)}/mo`);
+
 
   const insights = buildInsights(plan, profile, profile, d.currency, lang);
   const firstName = (profile.full_name || "").trim().split(" ")[0];
@@ -507,7 +536,7 @@ function Dashboard() {
           <KpiCard label={t("Gastos", "Expenses")} value={fmt(current.expenses)} {...(hasHistory ? { delta: delta(current.expenses, previous.expenses) } : {})} inverse icon={TrendingUp} index={2} />
         </Link>
         <KpiCard label={t("Ahorro", "Savings")} value={fmt(current.savings)} {...(hasHistory ? { delta: delta(current.savings, previous.savings) } : {})} icon={PiggyBank} index={3} />
-        <KpiCard label={t("Tasa de ahorro", "Savings rate")} value={`${savingsRate.toFixed(0)}%`} {...(hasHistory ? { delta: savingsRate - prevRate } : {})} icon={ArrowUpRight} index={4} />
+        <KpiCard label={t("Tasa de ahorro", "Savings rate")} value={`${savingsRate.toFixed(0)}%`} hint={savingsRateHint} {...(hasHistory ? { delta: savingsRate - prevRate } : {})} icon={ArrowUpRight} index={4} />
         <Link to="/hipoteca" className="block transition-transform hover:-translate-y-0.5">
           <KpiCard
             label={t("Hipoteca", "Mortgage")}
