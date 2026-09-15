@@ -840,7 +840,9 @@ function Gastos() {
             <div className="flex items-baseline justify-between gap-2">
               <div className="min-w-0">
                 <span className="numeric text-2xl font-semibold sm:text-xl">{fmt(monthlyRun)}</span>
-                <p className="mt-0.5 text-xs text-muted-foreground">{runPeriodHint}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  {runPeriodHint} · {targetPct.toFixed(0)}% {t("del objetivo", "of target")}
+                </p>
               </div>
               <span
                 className={cn(
@@ -887,9 +889,6 @@ function Gastos() {
               )}
               <span className="numeric absolute right-0 top-0">{fmt(monthlyRun)}</span>
             </div>
-            <p className="text-xs text-muted-foreground">
-              {t("fijos", "fixed")} {fmt(fixed.total)} · {t("variable", "variable")} {fmt(isLongRange ? avgMonthlyVariable : canProject ? (variableTotal / days) * 30 : variableTotal)} · {targetPct.toFixed(0)}% {t("del objetivo", "of target")}
-            </p>
           </div>
         </div>
 
