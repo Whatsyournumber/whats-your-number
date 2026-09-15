@@ -11,6 +11,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { useCategories } from "@/hooks/use-categories";
 import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useProfile } from "@/hooks/use-profile";
+import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { useTransactions, type Tx } from "@/hooks/use-transactions";
 import { buildTravelDays, categorizeTxWithTravel } from "@/lib/categorize";
 import { money } from "@/lib/onboarding";
