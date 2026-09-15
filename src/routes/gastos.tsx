@@ -807,7 +807,7 @@ function Gastos() {
       </div>
 
       <Panel variant="minimal" className="p-5 sm:p-6">
-        <div className="mb-4 flex items-start gap-3">
+        <div className="mb-3 flex items-start gap-3">
           <img
             src={targetIcon.url}
             alt=""
@@ -834,7 +834,7 @@ function Gastos() {
           </div>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-[240px_1fr] md:items-center">
+        <div className="grid gap-4 md:grid-cols-[240px_1fr] md:items-center">
           <div className="relative flex items-center pl-[3.25rem]">
             <span className="pointer-events-none absolute left-[calc(3.25rem+0.75rem)] text-sm font-semibold text-muted-foreground">$</span>
             <NumberInput
@@ -844,7 +844,7 @@ function Gastos() {
               className="h-11 w-full pl-7 text-base font-semibold"
             />
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
             <div className="flex items-baseline justify-between gap-2">
               <div className="min-w-0">
                 <span className="numeric text-2xl font-semibold sm:text-xl">{fmt(monthlyRun)}</span>
@@ -872,8 +872,7 @@ function Gastos() {
                   </>
                 )}
               </div>
-              <div className="relative mt-1.5 h-4 text-xs text-muted-foreground">
-                <span className="absolute left-0 top-0">0 {currency}</span>
+              <div className="relative mt-1 h-4 text-xs text-muted-foreground">
                 {monthlyRun > target && targetBoundaryPct >= 10 && targetBoundaryPct <= 90 && (
                   <span
                     className="numeric absolute top-0 -translate-x-1/2"
