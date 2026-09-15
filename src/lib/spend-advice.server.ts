@@ -230,9 +230,12 @@ function buildFallbackActions(input: AdviceInput, existing: SpendAdvice["actions
       label: m.name,
       diagnosis:
         diff > 0
-          ? `${input.periodLabel}: gastaste ${m.amount.toFixed(0)} en ${m.name}, ${diff.toFixed(0)} más que el periodo anterior.`
-          : `${input.periodLabel}: gastaste ${m.amount.toFixed(0)} en ${m.name}.`,
-      action: smartTip(m.category || m.name, m.name),
+          ? `${input.periodLabel}: gastaste ${money(m.amount, input.currency)} en ${m.name}${m.count ? ` en ${m.count} pagos (${money(m.amount / m.count, input.currency)} media)` : ""}, ${money(diff, input.currency)} más que el periodo anterior.`
+          : `${input.periodLabel}: gastaste ${money(m.amount, input.currency)} en ${m.name}${m.count ? ` en ${m.count} pagos (${money(m.amount / m.count, input.currency)} media)` : ""}.`,
+      action: smartTip(m.category || m.name, m.name, {
+        currency: input.currency,
+        ...(m.count ? { count: m.count, avg: m.amount / m.count } : {}),
+      }),
       monthlySaving: Math.max(10, Math.round(m.amount * 0.12)),
       overspent: diff > 0,
     });
