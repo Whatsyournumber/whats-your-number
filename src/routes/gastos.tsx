@@ -82,9 +82,9 @@ export const Route = createFileRoute("/gastos")({
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
-  validateSearch: (search: Record<string, unknown>) => ({
-    from: typeof search["from"] === "string" ? (search["from"] as string) : undefined,
-    to: typeof search["to"] === "string" ? (search["to"] as string) : undefined,
+  validateSearch: (search: Record<string, unknown>): { from?: string; to?: string } => ({
+    ...(typeof search["from"] === "string" ? { from: search["from"] as string } : {}),
+    ...(typeof search["to"] === "string" ? { to: search["to"] as string } : {}),
   }),
   component: Gastos,
 });
