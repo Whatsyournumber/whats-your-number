@@ -89,6 +89,7 @@ export function Panel({
         <div
           className={cn(
             "mb-4 flex items-start justify-between gap-3",
+            actionsBelowMobile && "flex-col items-stretch gap-2 sm:flex-row sm:items-start",
             bleedMobile && "px-3 pt-1 sm:px-0 sm:pt-0",
           )}
         >
