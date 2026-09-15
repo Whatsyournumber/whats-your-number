@@ -2,6 +2,33 @@
 @source "../src";
 @import "tw-animate-css";
 
+/* Manita (cursor pointer) en todo lo clicable: botones, popups, acordeones, tabs, selects, links */
+button:not(:disabled),
+[role="button"]:not(:disabled),
+[role="checkbox"]:not(:disabled),
+[role="switch"]:not(:disabled),
+[role="radio"]:not(:disabled),
+[role="tab"],
+[role="combobox"],
+[role="option"],
+[role="menuitem"],
+[role="slider"],
+[aria-haspopup]:not(:disabled),
+summary,
+a[href],
+select,
+label[for],
+[data-radix-collection-item],
+.cursor-pointer {
+  cursor: pointer;
+}
+
+button:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+
 @custom-variant dark (&:is(.dark *));
 
 /*
