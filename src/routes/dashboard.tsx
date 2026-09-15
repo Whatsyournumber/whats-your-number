@@ -296,23 +296,16 @@ function Dashboard() {
   const savingsRate = current.income > 0 ? (current.savings / current.income) * 100 : 0;
   const prevRate = previous.income > 0 ? (previous.savings / previous.income) * 100 : 0;
 
-  // Regla 40 / 40 / 20: necesidades 40%, ahorro e inversión 40%, deseos 20%.
   // Mínimo aceptable para ahorrar o invertir: 20% del ingreso.
 
   const incomeHint = (() => {
     if (current.income <= 0) return t("Ingreso mensual estimado", "Estimated monthly income");
     if (current.income > current.expenses) {
       const rate = savingsRate;
-      if (rate >= 40) {
-        return t(
-          `Puedes ahorrar/invertir ${rate.toFixed(0)}% de tu ingreso · meta 40% lograda`,
-          `You can save/invest ${rate.toFixed(0)}% of your income · 40% goal reached`,
-        );
-      }
       if (rate >= 20) {
         return t(
-          `Puedes ahorrar/invertir ${rate.toFixed(0)}% de tu ingreso · meta 40%`,
-          `You can save/invest ${rate.toFixed(0)}% of your income · 40% goal`,
+          `Puedes ahorrar/invertir ${rate.toFixed(0)}% de tu ingreso`,
+          `You can save/invest ${rate.toFixed(0)}% of your income`,
         );
       }
       return t(
@@ -337,12 +330,10 @@ function Dashboard() {
 
   const savingsRateHint =
     current.income <= 0
-      ? t("Meta 40% · mínimo 20%", "40% goal · 20% minimum")
-      : savingsRate >= 40
-        ? t("Meta 40% lograda", "40% goal reached")
-        : savingsRate >= 20
-          ? t("Puedes llegar a la meta 40%", "You can still reach the 40% goal")
-          : t("Vas muy justo · busca extra para el 20%", "Cutting it close · find extra for the 20%");
+      ? t("Mínimo 20% del ingreso", "20% minimum")
+      : savingsRate >= 20
+        ? t("Por encima del 20% mínimo", "Above the 20% minimum")
+        : t("Vas muy justo · busca extra para el 20%", "Cutting it close · find extra for the 20%");
 
 
   const insights = buildInsights(plan, profile, profile, d.currency, lang);
