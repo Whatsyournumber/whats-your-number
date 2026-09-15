@@ -82,7 +82,13 @@ const STAGE_ESTIMATED_SECONDS: Record<JobStage, number> = {
   error: 0,
 };
 
-export function StatementImporter({ showHeader = true }: { showHeader?: boolean }) {
+export function StatementImporter({
+  showHeader = true,
+  showCompletionPopup = true,
+}: {
+  showHeader?: boolean;
+  showCompletionPopup?: boolean;
+}) {
   const t = useT();
   const { user, signOut } = useAuth();
   const { isFree } = useSubscription();
@@ -96,7 +102,7 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
     files: number;
     from?: string;
     to?: string;
-  } | null>({ inserted: 42, files: 1, from: "2026-08-12", to: "2026-09-03" });
+  } | null>(null);
   const runProcess = useServerFn(processStatement);
 
   const setJob = (id: string, patch: Partial<Job>) =>
@@ -597,7 +603,7 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
         </Panel>
       </div>
 
-      <Dialog open={donePopup !== null} onOpenChange={(open) => { if (!open) setDonePopup(null); }}>
+      <Dialog open={showCompletionPopup && donePopup !== null} onOpenChange={(open) => { if (!open) setDonePopup(null); }}>
         <DialogContent className="max-w-[360px] gap-0 overflow-hidden rounded-3xl border-border/60 p-0 text-center">
           <div className="relative bg-gradient-to-b from-primary/15 to-transparent px-6 pt-8 pb-5">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/15 ring-1 ring-primary/30">
