@@ -769,11 +769,9 @@ function Gastos() {
           label={t("¿Cuánto puedo ahorrar?", "How much can I save?")}
           value={fmt(advice ? totalSaving : Math.max(0, monthlyRun - target))}
           hint={
-            <span className="line-clamp-1">
-              {specificSavingHint
-                ? `${t("Ahorra", "Save")} ${fmt(specificSavingHint.monthlySaving)}${t("/mes", "/mo")} ${t("en", "on")} ${specificSavingHint.label} · ${t("ver detalle", "see detail")}`
-                : t("Descubre dónde ahorrar · ver detalle", "Find where to save · see detail")}
-            </span>
+            specificSavingHint
+              ? `${t("Ahorra", "Save")} ${fmt(specificSavingHint.monthlySaving)}${t("/mes", "/mo")} ${t("en", "on")} ${specificSavingHint.label} · ${t("ver detalle", "see detail")}`
+              : t("Descubre dónde ahorrar · ver detalle", "Find where to save · see detail")
           }
           icon={Lightbulb}
           index={3}
