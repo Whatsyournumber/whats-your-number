@@ -612,7 +612,12 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
             </DialogClose>
             <DialogClose asChild>
               <Button asChild className="rounded-full">
-                <Link to="/gastos">{t("Ver desglose", "See breakdown")}</Link>
+                <Link
+                  to="/gastos"
+                  search={donePopup?.from ? { from: donePopup.from, to: donePopup.to ?? donePopup.from } : {}}
+                >
+                  {t("Ver desglose de gastos nuevos", "See new expenses")}
+                </Link>
               </Button>
             </DialogClose>
           </DialogFooter>
