@@ -57,6 +57,7 @@ function CashFlow() {
   const { transactions, hasData } = useTransactions();
   const fixed = useFixedExpenses();
   const { rules } = useCategories();
+  const { lines: budgetLines } = useSpendBudgets();
 
   const months = useMemo(() => {
     const set = new Set<string>();
