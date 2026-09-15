@@ -1262,6 +1262,7 @@ function Gastos() {
       <div className="grid items-stretch gap-3 lg:grid-cols-[2fr_1fr]">
         <Panel
           variant="minimal"
+          actionsBelowMobile
           title={
             <>
               <span className="sm:hidden">{t("Gastos variables", "Variable expenses")}</span>
