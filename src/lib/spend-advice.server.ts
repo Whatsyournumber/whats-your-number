@@ -89,34 +89,76 @@ Reglas:
 - Si marcó una recomendación como "útil" o "ya la hice", da el siguiente paso de esa misma línea (subir el listón, automatizar el ahorro, invertir lo liberado).
 No inventes datos: usa solo categorías y comercios del contexto.`;
 
-function smartTip(category: string, merchant?: string): string {
+/** Símbolo de la moneda para escribir montos como "$23 media". */
+function currencySymbol(currency: string): string {
+  const c = (currency || "USD").toUpperCase();
+  if (c === "EUR") return "€";
+  if (c === "GBP") return "£";
+  if (c === "USD" || c.endsWith("USD")) return "$";
+  return "$";
+}
+
+function money(amount: number, currency: string): string {
+  return `${currencySymbol(currency)}${Math.round(amount).toLocaleString("es-ES")}`;
+}
+
+/** Consejo propio de cada rubro: cada caja tiene su lógica de ayuda. */
+function smartTip(category: string, merchant: string | undefined, ctx: { currency: string; avg?: number; count?: number }): string {
   const name = merchant || category;
-  const lower = category.toLowerCase();
-  if (lower.includes("tren") || lower.includes("transport") || lower.includes("viaje") || lower.includes("vuelo")) {
-    return `Compra los pasajes de ${name} con 2-4 semanas de antelación para encontrar mejores precios`;
+  const lower = `${category} ${merchant ?? ""}`.toLowerCase();
+  const cur = ctx.currency;
+  const avg = ctx.avg && ctx.avg > 0 ? money(ctx.avg, cur) : null;
+  const freq = ctx.count && ctx.count > 1 ? `${ctx.count} pagos${avg ? ` (${avg} media)` : ""}` : null;
+
+  if (lower.includes("banc") || lower.includes("tarjeta") || lower.includes("bank") || lower.includes("comisi") || lower.includes("interes") || lower.includes("crédit") || lower.includes("credit")) {
+    return `Revisa intereses y comisiones de ${name}${freq ? `: ${freq}` : ""}; paga la tarjeta completa a tiempo y pide cuenta sin mantenimiento`;
   }
-  if (lower.includes("restaurant") || lower.includes("comida") || lower.includes("delivery")) {
-    return `Cocina una o dos comidas más en casa y reduce pedidos a ${name}`;
+  if (lower.includes("seguro") || lower.includes("insur")) {
+    return `Compara la prima anual de ${name} y elimina coberturas duplicadas antes de renovar`;
   }
-  if (lower.includes("app") || lower.includes("suscrip") || lower.includes("software")) {
-    return `Revisa suscripciones de ${name} y cancela las que no uses o baja a plan anual`;
+  if (lower.includes("deuda") || lower.includes("préstam") || lower.includes("prestam") || lower.includes("loan")) {
+    return `Amortiza primero la deuda de ${name} con el interés más alto y evita refinanciar a más plazo`;
   }
-  if (lower.includes("super") || lower.includes("grocer")) {
-    return `Planifica la compra semanal en ${name} y apuesta por marca blanca`;
+  if (lower.includes("tren") || lower.includes("viaje") || lower.includes("vuelo") || lower.includes("flight") || lower.includes("hotel")) {
+    return `Compra los pasajes de ${name} con 2-4 semanas de antelación${avg ? `; hoy pagas ${avg} de media` : ""}`;
   }
-  if (lower.includes("gasolin") || lower.includes("combustible")) {
-    return `Usa apps de comparación para repostar en ${name} a mejor precio`;
+  if (lower.includes("transport") || lower.includes("uber") || lower.includes("taxi") || lower.includes("cabify")) {
+    return `Cambia ${freq ? `${freq} en ` : ""}${name} por abono de transporte en los trayectos del día a día`;
   }
-  if (lower.includes("seguro")) {
-    return `Compara ofertas anuales de ${name} y negocia la prima`;
+  if (lower.includes("delivery") || lower.includes("glovo") || lower.includes("ubereats") || lower.includes("just eat")) {
+    return `Pide directo al restaurante o recoge tú mismo${freq ? `: ${freq} en ${name}` : ` en ${name}`}`;
   }
-  if (lower.includes("compra") || lower.includes("shopping") || lower.includes("ropa")) {
-    return `Espera 48 horas antes de comprar en ${name} y busca cupones`;
+  if (lower.includes("restaurant") || lower.includes("comida") || lower.includes("food")) {
+    return `Baja las salidas a ${name}${freq ? `: ${freq}` : ""} y reserva las comidas fuera para el fin de semana`;
+  }
+  if (lower.includes("app") || lower.includes("suscrip") || lower.includes("software") || lower.includes("stream")) {
+    return `Cancela las suscripciones de ${name} que no usas y pasa el resto a plan anual o familiar`;
+  }
+  if (lower.includes("super") || lower.includes("grocer") || lower.includes("mercado")) {
+    return `Haz una lista semanal en ${name} y cambia a marca blanca en básicos`;
+  }
+  if (lower.includes("gasolin") || lower.includes("combustible") || lower.includes("coche") || lower.includes("auto")) {
+    return `Reposta en estaciones low-cost cerca de ${name} y agenda el mantenimiento preventivo`;
+  }
+  if (lower.includes("compra") || lower.includes("shopping") || lower.includes("ropa") || lower.includes("moda")) {
+    return `Aplica la regla de 48 horas antes de comprar en ${name} y busca cupones o segunda mano`;
   }
   if (lower.includes("ocio") || lower.includes("nightlife") || lower.includes("entreten")) {
-    return `Busca días con descuento o happy hour en ${name}`;
+    return `Fija un tope de salidas al mes en ${name} y busca días con descuento`;
   }
-  return `Revisa los gastos recurrentes en ${name} y elimina los que no aporten valor`;
+  if (lower.includes("gimnas") || lower.includes("gym") || lower.includes("cuidado") || lower.includes("belle")) {
+    return `Pasa ${name} a cuota anual o bono de sesiones y cancela lo que no uses`;
+  }
+  if (lower.includes("salud") || lower.includes("educa") || lower.includes("hijo") || lower.includes("colegi")) {
+    return `Compara proveedores de ${name} y paga por año para aprovechar descuentos, sin recortar lo esencial`;
+  }
+  if (lower.includes("servici") || lower.includes("luz") || lower.includes("agua") || lower.includes("internet") || lower.includes("telefon")) {
+    return `Renegocia la tarifa de ${name} o cambia de compañía: la permanencia suele estar vencida`;
+  }
+  if (lower.includes("vivienda") || lower.includes("alquil") || lower.includes("hipotec")) {
+    return `Revisa las condiciones de ${name}: renegocia el diferencial o compara la hipoteca con otra entidad`;
+  }
+  return `Revisa los pagos recurrentes de ${name}${freq ? ` (${freq})` : ""} y elimina los que no aporten valor`;
 }
 
 function buildFallbackActions(input: AdviceInput, existing: SpendAdvice["actions"], needed: number): SpendAdvice["actions"] {
