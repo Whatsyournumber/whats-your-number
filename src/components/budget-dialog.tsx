@@ -208,7 +208,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                                 value={keywordDraft[l.id] ?? ""}
                                 onChange={(e) => setKeywordDraft((k) => ({ ...k, [l.id]: e.target.value }))}
                                 onKeyDown={(e) => {
-                                  if (e.key === "Enter") {
+                                  if (e.key === "Enter" || e.key === "," || e.key === "+") {
                                     e.preventDefault();
                                     addKeyword(l.id);
                                   }
@@ -219,8 +219,8 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                             </TooltipTrigger>
                             <TooltipContent side="top">
                               {t(
-                                "Escribe la palabra clave y presiona + para añadirla",
-                                "Type the keyword and press + to add it",
+                                "Agrega palabra clave separada por coma o +",
+                                "Add a keyword separated by comma or +",
                               )}
                             </TooltipContent>
                           </Tooltip>
@@ -238,8 +238,8 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                             </TooltipTrigger>
                             <TooltipContent side="top">
                               {t(
-                                "Escribe la palabra clave y presiona + para añadirla",
-                                "Type the keyword and press + to add it",
+                                "Agrega palabra clave separada por coma o +",
+                                "Add a keyword separated by comma or +",
                               )}
                             </TooltipContent>
                           </Tooltip>
