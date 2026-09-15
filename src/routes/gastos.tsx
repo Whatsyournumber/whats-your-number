@@ -848,7 +848,10 @@ function Gastos() {
           </div>
           <div className="flex flex-col gap-3">
             <div className="flex items-baseline justify-between gap-2">
-              <span className="numeric text-2xl font-semibold sm:text-xl">{fmt(monthlyRun)}</span>
+              <div className="min-w-0">
+                <span className="numeric text-2xl font-semibold sm:text-xl">{fmt(monthlyRun)}</span>
+                <p className="mt-0.5 text-xs text-muted-foreground">{runPeriodHint}</p>
+              </div>
               <span
                 className={cn(
                   "shrink-0 rounded-full px-2 py-1 text-xs font-medium",
@@ -866,15 +869,22 @@ function Gastos() {
                   <div className="h-full rounded-full bg-positive" style={{ width: `${Math.min(100, targetPct)}%` }} />
                 ) : (
                   <>
-                    <div className="h-full bg-positive" style={{ width: `${Math.min(100, (target / monthlyRun) * 100)}%` }} />
+                    <div className="h-full bg-positive" style={{ width: `${targetBoundaryPct}%` }} />
                     <div className="h-full flex-1 bg-negative" />
                   </>
                 )}
               </div>
-              <div className="mt-1.5 flex justify-between text-xs text-muted-foreground">
-                <span>0 {currency}</span>
-                {monthlyRun > target && <span className="numeric">{fmt(target)}</span>}
-                <span className="numeric">{fmt(monthlyRun)}</span>
+              <div className="relative mt-1.5 h-4 text-xs text-muted-foreground">
+                <span className="absolute left-0 top-0">0 {currency}</span>
+                {monthlyRun > target && targetBoundaryPct >= 10 && targetBoundaryPct <= 90 && (
+                  <span
+                    className="numeric absolute top-0 -translate-x-1/2"
+                    style={{ left: `${targetBoundaryPct}%` }}
+                  >
+                    {fmt(target)}
+                  </span>
+                )}
+                <span className="numeric absolute right-0 top-0">{fmt(monthlyRun)}</span>
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
                 {t("fijos", "fixed")} {fmt(fixed.total)} · {t("variable", "variable")} {fmt(isLongRange ? avgMonthlyVariable : canProject ? (variableTotal / days) * 30 : variableTotal)} · {targetPct.toFixed(0)}% {t("del objetivo", "of target")}
