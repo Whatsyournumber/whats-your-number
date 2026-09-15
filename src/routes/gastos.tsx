@@ -18,7 +18,7 @@ import { useLanguage, useT } from "@/hooks/use-language";
 import { translateCategory, translateFixedName } from "@/lib/i18n-data";
 import type { DateRange } from "react-day-picker";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip as RTooltip, XAxis, YAxis } from "recharts";
 
 import { ChartTooltip, axisProps } from "@/components/chart-kit";
 
@@ -27,6 +27,7 @@ import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
@@ -1054,7 +1055,7 @@ function Gastos() {
                         <Cell key={c.name} fill={palette[i % palette.length]} />
                       ))}
                     </Pie>
-                    <Tooltip content={<ChartTooltip formatter={fmt} />} />
+                    <RTooltip content={<ChartTooltip formatter={fmt} />} />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
@@ -1147,7 +1148,7 @@ function Gastos() {
                     tickFormatter={(v: string) => (v.length > 12 ? `${v.slice(0, 11)}…` : v)}
                   />
                   <YAxis {...axisProps} tickFormatter={(v) => fmtCompact(Number(v))} width={isMobile ? 40 : 64} />
-                  <Tooltip content={<ChartTooltip formatter={fmt} />} cursor={{ fill: "var(--color-muted)", opacity: 0.3 }} />
+                  <RTooltip content={<ChartTooltip formatter={fmt} />} cursor={{ fill: "var(--color-muted)", opacity: 0.3 }} />
                   <Bar dataKey="a" name={monthLabel(mA)} fill="var(--color-chart-1)" radius={[6, 6, 0, 0]} />
                   <Bar dataKey="b" name={monthLabel(mB)} fill="var(--color-chart-4)" radius={[6, 6, 0, 0]} />
                 </BarChart>
@@ -1451,23 +1452,44 @@ function Gastos() {
                     className="h-7 flex-1 border-transparent bg-transparent text-sm focus-visible:bg-background"
                     placeholder={t("Nombre", "Name")}
                   />
-                  <Input
-                    value={cat.keywords}
-                    onChange={(e) => categories.update(cat.id, { keywords: e.target.value })}
-                    className="h-7 flex-[1.5] border-transparent bg-transparent text-sm text-muted-foreground focus-visible:bg-background"
-                    placeholder={t("Palabras clave", "Keywords")}
-                  />
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="h-7 w-7 text-primary hover:bg-primary/10"
-                    disabled={autoCatId !== null || !cat.name.trim()}
-                    onClick={() => void autoAssign(cat)}
-                    aria-label={t("Añadir movimientos con IA", "Add movements with AI")}
-                    title={t("Añadir movimientos con IA", "Add movements with AI")}
-                  >
-                    {autoCatId === cat.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-                  </Button>
+                  <TooltipProvider delayDuration={200}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Input
+                          value={cat.keywords}
+                          onChange={(e) => categories.update(cat.id, { keywords: e.target.value })}
+                          className="h-7 flex-[1.5] border-transparent bg-transparent text-sm text-muted-foreground focus-visible:bg-background"
+                          placeholder={t("Palabras clave", "Keywords")}
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="max-w-56 text-center">
+                        {t(
+                          "Palabras clave separadas por comas: los movimientos que las contengan entran aquí",
+                          "Comma-separated keywords: matching movements land here",
+                        )}
+                      </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-7 w-7 text-primary hover:bg-primary/10"
+                          disabled={autoCatId !== null || !cat.name.trim()}
+                          onClick={() => void autoAssign(cat)}
+                          aria-label={t("Añadir movimientos con IA", "Add movements with AI")}
+                        >
+                          {autoCatId === cat.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="max-w-56 text-center">
+                        {t(
+                          "Busca con IA los movimientos de tus palabras clave y añádelos a esta categoría",
+                          "AI finds movements matching your keywords and adds them here",
+                        )}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                   <Button
                     size="icon"
                     variant="ghost"
