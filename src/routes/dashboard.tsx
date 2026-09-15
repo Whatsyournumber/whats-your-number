@@ -307,20 +307,19 @@ function Dashboard() {
       const rate = savingsRate;
       if (rate >= 40) {
         return t(
-          `Puedes ahorrar/invertir ${fmt(current.savings)}/mes · ${rate.toFixed(0)}% del ingreso · meta 40% lograda`,
-          `You can save/invest ${fmt(current.savings)}/mo · ${rate.toFixed(0)}% of income · 40% goal reached`,
+          `Puedes ahorrar/invertir ${rate.toFixed(0)}% de tu ingreso · meta 40% lograda`,
+          `You can save/invest ${rate.toFixed(0)}% of your income · 40% goal reached`,
         );
       }
       if (rate >= 20) {
         return t(
-          `Puedes ahorrar/invertir ${fmt(current.savings)}/mes · ${rate.toFixed(0)}% · meta 40% = ${fmt(investTarget)}/mes`,
-          `You can save/invest ${fmt(current.savings)}/mo · ${rate.toFixed(0)}% · 40% goal = ${fmt(investTarget)}/mo`,
+          `Puedes ahorrar/invertir ${rate.toFixed(0)}% de tu ingreso · meta 40%`,
+          `You can save/invest ${rate.toFixed(0)}% of your income · 40% goal`,
         );
       }
-      const gap = Math.max(0, investMin - current.savings);
       return t(
-        `Vas muy justo · solo ${rate.toFixed(0)}% · necesitas generar ${fmt(gap)}/mes extra`,
-        `Cutting it close · only ${rate.toFixed(0)}% · you need ${fmt(gap)}/mo extra`,
+        `Solo ${rate.toFixed(0)}% · necesitas generar extra para llegar al 20%`,
+        `Only ${rate.toFixed(0)}% · you need extra income to reach 20%`,
       );
     }
     const deficit = current.expenses - current.income;
