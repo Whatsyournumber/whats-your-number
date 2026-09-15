@@ -916,7 +916,10 @@ function Gastos() {
               <span className="numeric absolute left-0 top-0">{fmt(0)}</span>
               {monthlyRun > target && targetBoundaryPct >= 10 && targetBoundaryPct <= 90 && (
                 <span
-                  className="numeric absolute top-0 -translate-x-full pr-1 lg:-translate-x-1/2 lg:pr-0"
+                  className={cn(
+                    "numeric absolute top-0 -translate-x-full pr-1 lg:-translate-x-1/2 lg:pr-0",
+                    targetBoundaryPct > 62 && "hidden sm:block",
+                  )}
                   style={{ left: `${targetBoundaryPct}%` }}
                 >
                   {fmt(target)}
