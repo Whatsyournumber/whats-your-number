@@ -1502,15 +1502,7 @@ function Gastos() {
           </>
         }
         titleClassName="text-xs sm:text-xl"
-        description={
-          <>
-            {t("Acciones ordenadas por impacto", "Actions ranked by impact")}
-            <span className="ml-2 hidden items-center gap-1 align-middle rounded-full border border-border/60 bg-elevated/50 px-2 py-0.5 text-[10px] text-muted-foreground sm:inline-flex">
-              <CalendarIcon className="h-3 w-3" />
-              {rangeLabel}
-            </span>
-          </>
-        }
+        description={t("Acciones ordenadas por impacto", "Actions ranked by impact")}
         
         actions={
           <Button size="sm" variant="outline" onClick={runAdvice} disabled={adviceLoading || !hasData}>
