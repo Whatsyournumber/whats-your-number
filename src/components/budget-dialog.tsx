@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Check, Plus, Trash2 } from "lucide-react";
+import { Check, Pencil, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -31,12 +31,16 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
   const [draft, setDraft] = useState<BudgetLine[]>([]);
   const [adding, setAdding] = useState(false);
   const [customName, setCustomName] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState("");
 
   useEffect(() => {
     if (!open) return;
     setDraft(lines.length ? lines : DEFAULT_BUDGET_IDS.map((id) => ({ id, amount: 0 })));
     setAdding(false);
     setCustomName("");
+    setEditingId(null);
+    setEditingName("");
   }, [open, lines]);
 
   const label = (l: BudgetLine) => {
@@ -58,6 +62,31 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
     setDraft((d) => d.map((l) => (l.id === id ? { ...l, amount } : l)));
 
   const removeLine = (id: string) => setDraft((d) => d.filter((l) => l.id !== id));
+
+  const isCustom = (id: string) => id.startsWith("custom:");
+
+  const startEdit = (l: BudgetLine) => {
+    setEditingId(l.id);
+    setEditingName(l.label ?? l.id.replace(/^custom:/, ""));
+  };
+
+  const commitEdit = (id: string) => {
+    const name = editingName.trim();
+    if (!name) {
+      setEditingId(null);
+      return;
+    }
+    const nextId = `custom:${name.toLowerCase()}`;
+    setDraft((d) =>
+      d.map((l) =>
+        l.id === id
+          ? { ...l, id: d.some((o) => o.id === nextId && o.id !== id) ? l.id : nextId, label: name }
+          : l,
+      ),
+    );
+    setEditingId(null);
+    setEditingName("");
+  };
 
   const addCategory = (id: string) => {
     setDraft((d) => [...d, { id, amount: 0 }]);
@@ -96,7 +125,31 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                 </p>
                 {groupLines.map((l) => (
                   <div key={l.id} className="flex items-center gap-3 rounded-xl border border-border/50 px-3 py-2">
-                    <span className="min-w-0 flex-1 truncate text-sm">{label(l)}</span>
+                    {editingId === l.id ? (
+                      <Input
+                        autoFocus
+                        value={editingName}
+                        onChange={(e) => setEditingName(e.target.value)}
+                        onBlur={() => commitEdit(l.id)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") commitEdit(l.id);
+                          if (e.key === "Escape") setEditingId(null);
+                        }}
+                        className="h-9 min-w-0 flex-1 text-sm"
+                      />
+                    ) : (
+                      <span className="min-w-0 flex-1 truncate text-sm">{label(l)}</span>
+                    )}
+                    {isCustom(l.id) && editingId !== l.id ? (
+                      <button
+                        type="button"
+                        onClick={() => startEdit(l)}
+                        className="text-muted-foreground transition hover:text-primary"
+                        aria-label={t("Editar", "Edit")}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                    ) : null}
                     <NumberInput value={l.amount} onChange={(v) => setAmount(l.id, v)} format className="h-9 w-28 text-sm" />
                     <button
                       type="button"
