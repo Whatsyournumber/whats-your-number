@@ -647,6 +647,7 @@ function Gastos() {
 
   const adviceKey = `${rangeLabel}|${variableTotal.toFixed(0)}|${fixed.total}|${target}|${budgetPlanTotal}`;
   const lastAdviceKey = useRef<string | null>(null);
+  const adviceBlocked = useRef(false);
 
   const runAdvice = async () => {
     setAdviceLoading(true);
