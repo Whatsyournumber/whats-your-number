@@ -42,6 +42,15 @@ type TxRow = {
   excluded: boolean;
 };
 
+/** "12 ago 2026 al 3 sep 2026" o un solo día cuando coinciden. */
+const formatSpan = (from: string, to?: string) => {
+  const d = (iso: string) =>
+    new Date(`${iso}T00:00:00`).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+  const a = d(from);
+  const b = to ? d(to) : a;
+  return a === b ? a : `${a} — ${b}`;
+};
+
 const money = (v: number, currency: string) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: currency || "USD", maximumFractionDigits: 2 }).format(v);
 
@@ -82,8 +91,12 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
   const [dragging, setDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [jobs, setJobs] = useState<Job[]>([]);
-  // DEMO PREVIEW: muestra el popup al cargar para revisarlo; quitar después
-  const [donePopup, setDonePopup] = useState<{ inserted: number; files: number } | null>({ inserted: 42, files: 1 });
+  const [donePopup, setDonePopup] = useState<{
+    inserted: number;
+    files: number;
+    from?: string;
+    to?: string;
+  } | null>(null);
   const runProcess = useServerFn(processStatement);
 
   const setJob = (id: string, patch: Partial<Job>) =>
@@ -127,9 +140,23 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
     void qc.invalidateQueries({ queryKey: ["profile"] });
   };
 
+  /** Fechas reales (primera y última) de los movimientos recién importados. */
+  const newTxRange = async (statementIds: string[]) => {
+    if (statementIds.length === 0) return {} as { from?: string; to?: string };
+    const { data } = await supabase
+      .from("imported_transactions")
+      .select("tx_date")
+      .in("statement_id", statementIds)
+      .not("tx_date", "is", null)
+      .order("tx_date", { ascending: true });
+    const dates = (data ?? []).map((r) => r.tx_date as string).filter(Boolean);
+    if (dates.length === 0) return {} as { from?: string; to?: string };
+    return { from: dates[0]!, to: dates[dates.length - 1]! };
+  };
+
   const processMutation = useMutation({
     mutationFn: (statementId: string) => runProcess({ data: { statementId, environment: getPaddleEnvironment() } }),
-    onSuccess: (result) => {
+    onSuccess: async (result, statementId) => {
       if (result.upgradeRequired) {
         toast.error(
           t(
@@ -139,7 +166,8 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
         );
         return;
       }
-      setDonePopup({ inserted: result.inserted, files: 1 });
+      const span = await newTxRange([statementId]);
+      setDonePopup({ inserted: result.inserted, files: 1, ...span });
       refreshAll();
     },
 
@@ -285,7 +313,10 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
         refreshAll();
       }
 
-      if (totalInserted > 0) setDonePopup({ inserted: totalInserted, files: queue.length });
+      if (totalInserted > 0) {
+        const span = await newTxRange(queue.map((q) => q.statementId));
+        setDonePopup({ inserted: totalInserted, files: queue.length, ...span });
+      }
 
 
     } catch (error) {
@@ -339,7 +370,10 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
       refreshAll();
     }
     setPendingProgress(null);
-    if (done > 0) setDonePopup({ inserted: done, files: pending.length });
+    if (done > 0) {
+      const span = await newTxRange(pending.map((s) => s.id));
+      setDonePopup({ inserted: done, files: pending.length, ...span });
+    }
   };
 
   return (
@@ -569,10 +603,14 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
             <DialogTitle>{t("Lectura completada", "Reading complete")}</DialogTitle>
             <DialogDescription>
               {donePopup &&
-                t(
-                  `Leímos ${donePopup.inserted} movimientos de ${donePopup.files} ${donePopup.files === 1 ? "archivo" : "archivos"}. ¿Quieres ir a ver el desglose en Análisis de gastos?`,
-                  `We read ${donePopup.inserted} transactions from ${donePopup.files} ${donePopup.files === 1 ? "file" : "files"}. Want to see the breakdown in Expense analysis?`,
-                )}
+                (() => {
+                  const files = `${donePopup.files} ${donePopup.files === 1 ? t("archivo", "file") : t("archivos", "files")}`;
+                  const span = donePopup.from ? formatSpan(donePopup.from, donePopup.to) : null;
+                  return t(
+                    `Leímos ${donePopup.inserted} movimientos de ${files}${span ? ` del ${span}` : ""}. ¿Quieres ver el desglose de tus gastos nuevos?`,
+                    `We read ${donePopup.inserted} transactions from ${files}${span ? ` covering ${span}` : ""}. Want to see the breakdown of your new expenses?`,
+                  );
+                })()}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex-row gap-2 sm:justify-end">
@@ -583,7 +621,12 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
             </DialogClose>
             <DialogClose asChild>
               <Button asChild className="rounded-full">
-                <Link to="/gastos">{t("Ver desglose", "See breakdown")}</Link>
+                <Link
+                  to="/gastos"
+                  search={donePopup?.from ? { from: donePopup.from, to: donePopup.to ?? donePopup.from } : {}}
+                >
+                  {t("Ver desglose de gastos nuevos", "See new expenses")}
+                </Link>
               </Button>
             </DialogClose>
           </DialogFooter>

@@ -82,6 +82,10 @@ export const Route = createFileRoute("/gastos")({
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
+  validateSearch: (search: Record<string, unknown>): { from?: string; to?: string } => ({
+    ...(typeof search["from"] === "string" ? { from: search["from"] as string } : {}),
+    ...(typeof search["to"] === "string" ? { to: search["to"] as string } : {}),
+  }),
   component: Gastos,
 });
 
@@ -115,10 +119,11 @@ const RANGE_KEY = "wyn.gastos.range";
 const FIXED_FIELD_IDS = new Set(FIXED_FIELDS.map((field) => field.key as string));
 
 /** Mantiene el filtro del calendario aunque cambies de pestaña. */
-function usePersistedRange(fallback: () => DateRange) {
-  const [range, setRange] = useState<DateRange | undefined>(fallback);
+function usePersistedRange(fallback: () => DateRange, override?: DateRange) {
+  const [range, setRange] = useState<DateRange | undefined>(() => override ?? fallback());
 
   useEffect(() => {
+    if (override?.from) return;
     try {
       const raw = localStorage.getItem(RANGE_KEY);
       if (!raw) return;
@@ -206,7 +211,16 @@ function Gastos() {
   };
   const categoryOf = (t: Tx) =>
     txCat[t.id] ?? learned.resolve(t.merchant, t.description) ?? categorizeTxWithTravel(t, categories.rules, travelDays);
-  const [range, setRange] = usePersistedRange(() => buildPresets(t)[0]!.range());
+  const search = Route.useSearch();
+  const searchRange = useMemo<DateRange | undefined>(() => {
+    if (!search.from) return undefined;
+    const fromDate = parseISO(search.from);
+    if (Number.isNaN(fromDate.getTime())) return undefined;
+    const toDate = search.to ? parseISO(search.to) : undefined;
+    return { from: fromDate, to: toDate && !Number.isNaN(toDate.getTime()) ? toDate : fromDate };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search.from, search.to]);
+  const [range, setRange] = usePersistedRange(() => buildPresets(t)[0]!.range(), searchRange);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [detailCat, setDetailCat] = useState<string | null>(null);
   const [fixedOpen, setFixedOpen] = useState(true);
