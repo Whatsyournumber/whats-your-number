@@ -836,7 +836,7 @@ function Gastos() {
               </div>
             </div>
           </div>
-          <div className="order-3 flex flex-col gap-2 md:order-2 md:self-end">
+          <div className="order-3 flex flex-col gap-2 md:order-2 md:-mb-2 md:self-end">
             <div className="flex items-baseline justify-between gap-2">
               <div className="min-w-0">
                 <span className="numeric text-2xl font-semibold sm:text-xl">{fmt(monthlyRun)}</span>
