@@ -80,7 +80,8 @@ Reglas:
   · Supermercado → marca blanca, lista semanal y evitar compras de conveniencia.
   · Apps y suscripciones → cancela las que no usas, pasa a plan anual o familiar.
   · Transporte diario (Uber, taxi) → abono de transporte o combinar con transporte público en las horas caras.
-  · Ocio, compras y ropa → regla de 48 horas, límite de salidas al mes, cupones y segunda mano.
+  · Nightlife (bares, discotecas, copas) → dos palancas, elige una o combina: limita las salidas al mes (cuenta las veces y pon un máximo) o reduce el coste por salida (copas en casa antes, happy hour, zonas sin consumición mínima, turnos de amigo que paga la botella).
+  · Ocio y compras → regla de 48 horas, cupones y segunda mano.
   · Salud, educación, hijos → compara proveedores y aprovecha deducciones o pagos anuales, no recortes lo esencial.
   · Gasolina y coche → estaciones low-cost, mantenimiento preventivo y revisar seguros del vehículo.
   Elige el truco que aplique al comercio real del contexto y estima el ahorro en "monthlySaving".
