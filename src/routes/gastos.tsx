@@ -695,7 +695,7 @@ function Gastos() {
 
 
   useEffect(() => {
-    if (!hasData || adviceLoading) return;
+    if (!hasData || adviceLoading || adviceBlocked.current) return;
     if (lastAdviceKey.current === adviceKey) return;
     lastAdviceKey.current = adviceKey;
     const id = setTimeout(() => void runAdvice(), 600);
