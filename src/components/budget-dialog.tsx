@@ -194,6 +194,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                               onClick={() => removeKeyword(l.id, kw)}
                               className="transition hover:text-negative"
                               aria-label={t("Quitar palabra clave", "Remove keyword")}
+                              title={t("Quitar palabra clave", "Remove keyword")}
                             >
                               <X className="h-3 w-3" />
                             </button>
@@ -216,6 +217,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                           onClick={() => addKeyword(l.id)}
                           disabled={!(keywordDraft[l.id] ?? "").trim()}
                           className="flex h-7 w-7 items-center justify-center rounded-full border border-border/60 text-muted-foreground transition hover:border-primary/50 hover:text-primary disabled:opacity-40"
+                          title={t("Escribe la palabra clave y presiona + para añadirla", "Type the keyword and press + to add it")}
                           aria-label={t("Añadir palabra clave", "Add keyword")}
                         >
                           <Plus className="h-3.5 w-3.5" />
