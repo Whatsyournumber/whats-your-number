@@ -692,8 +692,8 @@ function Gastos() {
         )
       : null;
 
-  // Valor futuro de recortar y reinvertir al 7% anual (capitalización mensual).
-  const RATE = 7;
+  // Valor futuro de recortar y reinvertir en el S&P 500 (10% anual histórico, capitalización mensual).
+  const RATE = 10;
   const horizonYears = Math.min(30, Math.max(5, baseYears ?? 15));
   const futureValue = (monthly: number, years = horizonYears) => {
     const r = RATE / 100 / 12;
@@ -1492,7 +1492,7 @@ function Gastos() {
           <div className="space-y-3">
             <div className="rounded-2xl border border-border/60 bg-elevated/40 p-4">
               <p className="text-xs font-medium text-muted-foreground">
-                {t("Si recortas y lo inviertes al 7%", "If you cut back and invest it at 7%")}
+                {t("Si recortas y lo inviertes en el S&P 500 (10% histórico)", "If you cut back and invest it in the S&P 500 (10% historical)")}
               </p>
               <div className="mt-2 grid gap-3 sm:grid-cols-3">
                 <div>
@@ -1502,7 +1502,7 @@ function Gastos() {
                 <div>
                   <p className="text-xl font-semibold text-positive"><Amount full={fmt(futureValue(totalSaving))} short={fmtCompact(futureValue(totalSaving))} from="xl" /></p>
                   <p className="text-xs text-muted-foreground">
-                    {t("en", "in")} {horizonYears.toFixed(0)} {t("años al 7% anual", "years at 7% a year")}
+                    {t("en", "in")} {horizonYears.toFixed(0)} {t("años en el S&P 500 (10% anual histórico)", "years in the S&P 500 (10% a year, historical)")}
                   </p>
                 </div>
                 <div>
@@ -1558,7 +1558,7 @@ function Gastos() {
                       <span className="inline-flex items-center rounded-full bg-positive/15 px-2 py-1 text-xs font-semibold text-positive sm:bg-transparent sm:px-0 sm:py-0 sm:font-medium">
                         +{fmt(a.monthlySaving)}{t("/mes", "/mo")}
                       </span>
-                      <span className="hidden text-muted-foreground sm:inline">{fmtCompact(fv)} {t("al 7% en", "at 7% in")} {horizonYears.toFixed(0)}a</span>
+                      <span className="hidden text-muted-foreground sm:inline">{fmtCompact(fv)} {t("en S&P 500 en", "in S&P 500 in")} {horizonYears.toFixed(0)}a</span>
                       {gain !== null && gain > 0 && (
                         <span className="inline-flex items-center gap-1 text-positive">
                           <TrendingUp className="h-3 w-3" />
