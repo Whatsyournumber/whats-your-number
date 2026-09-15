@@ -826,9 +826,9 @@ function Gastos() {
           </div>
         </div>
 
-        <div className="grid gap-5 md:grid-cols-[200px_1fr] md:items-center">
-          <div className="relative flex items-center">
-            <span className="pointer-events-none absolute left-3 text-sm font-semibold text-muted-foreground">$</span>
+        <div className="grid gap-5 md:grid-cols-[220px_1fr] md:items-center">
+          <div className="relative flex items-center pl-[3.25rem]">
+            <span className="pointer-events-none absolute left-[calc(3.25rem+0.75rem)] text-sm font-semibold text-muted-foreground">$</span>
             <NumberInput
               value={target}
               onChange={setTarget}
