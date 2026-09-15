@@ -403,8 +403,8 @@ function Gastos() {
   const budgets = useSpendBudgets();
   const [budgetOpen, setBudgetOpen] = useState(false);
 
-  /** Factor para llevar el gasto variable del periodo a base mensual. */
-  const toMonthly = isLongRange ? (periodMonths > 0 ? 1 / periodMonths : 1) : canProject ? 30 / days : 1;
+  /** Meses cubiertos por el periodo seleccionado: el objetivo mensual se multiplica por este factor. */
+  const budgetMonths = isLongRange ? Math.max(1, periodMonths) : 1;
 
   /** Gasto real mensual por categoría del plan (variables + fijos que coincidan). */
   const customLines = useMemo(
