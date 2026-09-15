@@ -255,10 +255,9 @@ function LifePlannerContent() {
         <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.12]" />
         <div className="relative grid gap-6 lg:grid-cols-[1.2fr_2fr]">
           <div className="lg:border-r lg:border-border/60 lg:pr-6">
-            <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">{t("Tu norte", "Your north")}</p>
-            <h2 className="mt-1 text-2xl font-semibold">{t("Independencia financiera", "Financial independence")}</h2>
+            <h2 className="text-2xl font-semibold">{t("Independencia financiera anticipada", "Early financial independence")}</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              {t("Tu objetivo principal y no negociable.", "Your main, non-negotiable goal.")}
+              {t("Cada decisión de vida te acerca o aleja de tu número.", "Every life decision brings you closer to or further from your number.")}
             </p>
             <div className="mt-5 flex items-center justify-between text-xs text-muted-foreground">
               <span>{t("Avance actual con nuevas decisiones", "Current progress with new decisions")}</span>
