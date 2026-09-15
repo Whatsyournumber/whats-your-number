@@ -80,7 +80,8 @@ Reglas:
   · Supermercado → marca blanca, lista semanal y evitar compras de conveniencia.
   · Apps y suscripciones → cancela las que no usas, pasa a plan anual o familiar.
   · Transporte diario (Uber, taxi) → abono de transporte o combinar con transporte público en las horas caras.
-  · Ocio, compras y ropa → regla de 48 horas, límite de salidas al mes, cupones y segunda mano.
+  · Nightlife (bares, discotecas, copas) → dos palancas, elige una o combina: limita las salidas al mes (cuenta las veces y pon un máximo) o reduce el coste por salida (copas en casa antes, happy hour, zonas sin consumición mínima, turnos de amigo que paga la botella).
+  · Ocio y compras → regla de 48 horas, cupones y segunda mano.
   · Salud, educación, hijos → compara proveedores y aprovecha deducciones o pagos anuales, no recortes lo esencial.
   · Gasolina y coche → estaciones low-cost, mantenimiento preventivo y revisar seguros del vehículo.
   Elige el truco que aplique al comercio real del contexto y estima el ahorro en "monthlySaving".
@@ -143,8 +144,12 @@ function smartTip(category: string, merchant: string | undefined, ctx: { currenc
   if (lower.includes("compra") || lower.includes("shopping") || lower.includes("ropa") || lower.includes("moda")) {
     return `Aplica la regla de 48 horas antes de comprar en ${name} y busca cupones o segunda mano`;
   }
-  if (lower.includes("ocio") || lower.includes("nightlife") || lower.includes("entreten")) {
-    return `Fija un tope de salidas al mes en ${name} y busca días con descuento`;
+  if (lower.includes("nightlife") || lower.includes("nocturn") || lower.includes("discot") || lower.includes("club") || lower.includes("copa") || lower.includes("bares") || lower.includes("bar ")) {
+    const base = `Limita tus salidas a ${name} al mes o reduce el coste por salida: copas en casa antes, happy hour y zonas sin consumición mínima`;
+    return freq ? `Saliste ${freq} en ${name}; elige: menos noches al mes o baja la media por noche` : base;
+  }
+  if (lower.includes("ocio") || lower.includes("entreten")) {
+    return `Pon un tope de salidas al mes en ${name} o baja el coste por salida buscando días con descuento`;
   }
   if (lower.includes("gimnas") || lower.includes("gym") || lower.includes("cuidado") || lower.includes("belle")) {
     return `Pasa ${name} a cuota anual o bono de sesiones y cancela lo que no uses`;
