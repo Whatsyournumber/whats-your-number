@@ -1090,7 +1090,7 @@ function OnboardingPage() {
                     )}
                   </p>
                   <div className="mt-5 rounded-3xl border border-dashed border-border bg-elevated/30 p-4">
-                    <StatementImporter showHeader={false} />
+                    <StatementImporter showHeader={false} showCompletionPopup={false} />
                   </div>
                 </div>
 
