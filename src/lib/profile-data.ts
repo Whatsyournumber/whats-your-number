@@ -11,6 +11,7 @@ import {
   netWorth,
   totalAssets,
   totalIncome,
+  totalExpenses,
   type NorthPlan,
 } from "@/lib/onboarding";
 
@@ -66,7 +67,7 @@ export function buildDataset(p: Profile): Dataset {
   const fmtCompact = (n: number) => compact(n, currency);
 
   const income = totalIncome(p);
-  const expenses = p.monthly_expenses;
+  const expenses = totalExpenses(p);
   const savings = p.monthly_savings || Math.max(0, income - expenses);
   const nw = netWorth(p);
   const assetsTotal = totalAssets(p);

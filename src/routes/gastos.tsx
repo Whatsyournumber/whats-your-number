@@ -405,10 +405,22 @@ function Gastos() {
   const toMonthly = isLongRange ? (periodMonths > 0 ? 1 / periodMonths : 1) : canProject ? 30 / days : 1;
 
   /** Gasto real mensual por categoría del plan (variables + fijos que coincidan). */
+  const customLines = useMemo(
+    () =>
+      budgets.lines
+        .filter((l) => l.id.startsWith("custom:"))
+        .map((l) => ({ id: l.id, alias: (l.label ?? l.id.slice(7)).trim().toLowerCase() }))
+        .filter((l) => l.alias.length > 2),
+    [budgets.lines],
+  );
+
   const actualByBudget = useMemo(() => {
     const map = new Map<string, number>();
     const match = (name: string) => {
       const n = name.trim().toLowerCase();
+      // Las categorías propias del usuario tienen prioridad por ser más específicas.
+      const custom = customLines.find((c) => n === c.alias || n.includes(c.alias) || c.alias.includes(n));
+      if (custom) return custom.id;
       return BUDGET_CATEGORIES.find((c) => c.aliases.some((a) => n === a || n.includes(a)))?.id ?? null;
     };
     for (const c of byCategory) {
