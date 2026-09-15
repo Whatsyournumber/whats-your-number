@@ -1268,7 +1268,7 @@ function Gastos() {
               <span className="hidden sm:inline">{t(variablePeriodTitle.es, variablePeriodTitle.en)}</span>
             </>
           }
-          description={t("Solo categorías con gastos · Arrastra para recategorizar.", "Only categories with spending · Drag to recategorize.")}
+          description={t("Arrastra para recategorizar.", "Drag to recategorize.")}
           className="flex h-full flex-col"
           actions={
             <div className="flex flex-wrap items-center gap-2">
