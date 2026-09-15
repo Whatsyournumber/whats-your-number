@@ -828,7 +828,17 @@ function Gastos() {
 
         <div className="grid gap-6 border-t border-border/50 pt-4 md:grid-cols-[200px_1fr] md:items-center md:border-t-0 md:pt-0">
           <div>
-            <p className="cursor-pointer text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground" onClick={() => setBudgetRowsOpen(true)}>{t("Objetivo", "Target")}</p>
+            <div className="flex items-center gap-1">
+              <p className="cursor-pointer text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground" onClick={() => setBudgetRowsOpen(true)}>{t("Objetivo", "Target")}</p>
+              <button
+                type="button"
+                onClick={() => setBudgetOpen(true)}
+                className="grid h-5 w-5 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                aria-label={t("Abrir plan de gastos personalizado", "Open custom spending plan")}
+              >
+                <Plus className="h-3 w-3" />
+              </button>
+            </div>
             <div className="mt-2 flex items-center gap-2">
               <NumberInput
                 value={target}
