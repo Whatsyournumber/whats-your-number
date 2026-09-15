@@ -361,7 +361,10 @@ export function StatementImporter({ showHeader = true }: { showHeader?: boolean 
       refreshAll();
     }
     setPendingProgress(null);
-    if (done > 0) setDonePopup({ inserted: done, files: pending.length });
+    if (done > 0) {
+      const span = await newTxRange(pending.map((s) => s.id));
+      setDonePopup({ inserted: done, files: pending.length, ...span });
+    }
   };
 
   return (
