@@ -499,7 +499,7 @@ function MiPerfil() {
                 onChange={(e) => set("expected_return", Number(e.target.value || 0))}
               />
             </Field>
-            <Field label={t("Tasa de retiro para tu número (% anual)", "Withdrawal rate for your number (% annual)")}>
+            <Field label={t("Tasa de retiro (% anual)", "Withdrawal rate (%/yr)")}>
               <Input
                 type="number"
                 step="0.5"
