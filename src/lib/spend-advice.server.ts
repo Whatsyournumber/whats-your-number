@@ -12,7 +12,13 @@ export type AdviceInput = {
   target: number;
   monthlyRun: number;
   categories: { name: string; amount: number; prevAmount: number }[];
-  merchants: { name: string; amount: number; count: number; category?: string; prevAmount?: number }[];
+  merchants: {
+    name: string;
+    amount: number;
+    count: number;
+    category?: string | undefined;
+    prevAmount?: number | undefined;
+  }[];
   /** Plan de gasto por categoría definido por el usuario. */
   budgets?: { name: string; planned: number; actual: number }[];
 };
