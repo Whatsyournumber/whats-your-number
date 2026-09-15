@@ -122,6 +122,10 @@ function Dashboard() {
   const { primary } = usePrimaryGoal();
   const { transactions } = useTransactions();
   const d = buildDataset(profile);
+  // Análisis de hogar: los números incluyen a la pareja cuando así se eligió.
+  const household =
+    (profile.marital_status === "Casado" || profile.marital_status === "En pareja") &&
+    profile.analysis_scope === "pareja";
   const fixed = useFixedExpenses();
   const { live: indexLive } = useIndexReturns();
   const { holdings } = useHoldings();
