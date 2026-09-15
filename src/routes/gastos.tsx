@@ -397,6 +397,7 @@ function Gastos() {
     : fixed.total + (canProject ? (variableTotal / days) * 30 : variableTotal);
   const avgMonthlyVariable = monthlyAverage - fixed.total;
   const targetPct = target > 0 ? (monthlyRun / target) * 100 : 0;
+  const targetBoundaryPct = monthlyRun > 0 ? Math.min(100, (target / monthlyRun) * 100) : 0;
 
   // ---- Plan de gasto por categoría ----
   const budgets = useSpendBudgets();
