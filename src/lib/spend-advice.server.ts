@@ -21,6 +21,17 @@ export type AdviceInput = {
   }[];
   /** Plan de gasto por categoría definido por el usuario. */
   budgets?: { name: string; planned: number; actual: number }[];
+  /** Análisis anteriores guardados de este usuario (más reciente primero). */
+  history?: {
+    periodLabel: string;
+    total: number;
+    target: number;
+    createdAt: string;
+    snapshot?: unknown;
+    actions?: { label?: string; action?: string; monthlySaving?: number }[];
+  }[];
+  /** Cómo valoró el usuario recomendaciones anteriores. */
+  feedback?: { label: string; action: string; verdict: "useful" | "not_useful" | "done" }[];
 };
 
 export const adviceSchema = z.object({
@@ -61,6 +72,9 @@ Reglas:
 - SÉ CONCRETO: siempre que puedas, nombra el comercio real que causa el exceso dentro de esa categoría y el monto exacto (ej. "Transporte: plan 200, real 443; Uber subió 300 más que el periodo anterior"). Usa los comercios del contexto que pertenecen a esa categoría.
 - USA LA FRECUENCIA: cuando el contexto trae número de compras, calcula cuántas veces gastó y el ticket promedio (monto ÷ compras) y construye la acción con esos números: "Saliste 20 veces a comer (80 de media); baja a 10 salidas y cumples tu plan de 500". Di siempre cuántas veces y el promedio, y cuántas veces debería hacerlo para ajustarse al plan (veces objetivo = plan ÷ ticket promedio, redondeado hacia abajo).
 - RECOMIENDA CON INTELIGENCIA, no solo "gasta menos": primero propón cómo pagar menos por lo MISMO antes de recortar el consumo. Ejemplos según el rubro: trenes/vuelos (IRYO, Renfe, aerolíneas) → "Compra los pasajes con 2-4 semanas de antelación, salen hasta X más baratos"; hoteles/viajes → reserva con antelación o compara fechas; delivery → pide directo al restaurante o recoge tú mismo; supermercado → marca blanca o compras semanales planificadas; suscripciones → plan anual o familiar; seguros → compara ofertas anuales; gasolina → estaciones low-cost. Elige el truco que aplique al comercio real del contexto y estima el ahorro en "monthlySaving".
+- MEMORIA DEL USUARIO: si el contexto trae "Historial de análisis previos", personaliza. Haz seguimiento: reconoce si mejoró o empeoró en la categoría respecto a los análisis anteriores ("el mes pasado te dije X: bajaste/subiste Y"), no repitas la misma acción con las mismas palabras y sube el nivel de concreción cuando el rubro se repite.
+- Si el usuario marcó una recomendación como "no aplica", NO vuelvas a proponer esa misma acción para ese rubro: propone un ángulo distinto.
+- Si marcó una recomendación como "útil" o "ya la hice", da el siguiente paso de esa misma línea (subir el listón, automatizar el ahorro, invertir lo liberado).
 No inventes datos: usa solo categorías y comercios del contexto.`;
 
 function smartTip(category: string, merchant?: string): string {
@@ -222,6 +236,50 @@ export async function generateSpendAdvice(input: AdviceInput): Promise<SpendAdvi
     .filter((b) => b.planned > 0 && b.actual > b.planned)
     .sort((a, b) => (b.actual - b.planned) - (a.actual - a.planned))[0];
 
+  // --- Memoria del usuario: análisis previos y feedback ---
+  const history = (input.history ?? []).slice(0, 5);
+  const feedback = input.feedback ?? [];
+  const rejected = feedback.filter((f) => f.verdict === "not_useful");
+  const accepted = feedback.filter((f) => f.verdict === "useful" || f.verdict === "done");
+  const repeated = new Map<string, number>();
+  for (const h of history) for (const a of h.actions ?? []) {
+    const key = (a.label ?? "").trim();
+    if (key) repeated.set(key, (repeated.get(key) ?? 0) + 1);
+  }
+  const recurring = [...repeated.entries()].filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1]);
+
+  const memoryBlock = history.length || feedback.length
+    ? `
+
+Historial de análisis previos de este usuario (más reciente primero):
+${
+        history
+          .map(
+            (h) =>
+              `- ${h.periodLabel}: gasto ${h.total.toFixed(0)} vs. objetivo ${h.target.toFixed(0)} · te recomendé: ${
+                (h.actions ?? [])
+                  .map((a) => `${a.label ?? ""} (${a.action ?? ""})`)
+                  .filter((s) => s.trim() !== " ()")
+                  .join("; ") || "sin datos"
+              }`,
+          )
+          .join("\n") || "- sin análisis previos"
+      }
+${
+        recurring.length
+          ? `\nRubros que se repiten en tus análisis (${recurring.map(([k, n]) => `${k} x${n}`).join(", ")}): ya se lo dijiste antes, sé más específico y exige un paso concreto.`
+          : ""
+      }${
+        rejected.length
+          ? `\nRecomendaciones que el usuario marcó como "no aplica" (NO repetirlas): ${rejected.map((f) => `${f.label}: ${f.action}`).join(" | ")}`
+          : ""
+      }${
+        accepted.length
+          ? `\nRecomendaciones que el usuario marcó como útiles o ya hechas (da el siguiente paso): ${accepted.map((f) => `${f.label}: ${f.action}`).join(" | ")}`
+          : ""
+      }`
+    : "";
+
   const prompt = `Moneda: ${input.currency}
 Periodo analizado: ${input.periodLabel}
 Gasto variable del periodo: ${input.total.toFixed(0)} (periodo anterior: ${input.prevTotal.toFixed(0)})
@@ -254,7 +312,7 @@ ${
     overBudget
       ? `\n\nCategoría donde MÁS se excedió el plan: ${overBudget.name} (real ${overBudget.actual.toFixed(0)} vs. plan ${overBudget.planned.toFixed(0)}). Debe ser la primera acción.`
       : ""
-  }`;
+  }${memoryBlock}`;
 
   const result = await generateText({
     model: gateway("google/gemini-3.6-flash"),

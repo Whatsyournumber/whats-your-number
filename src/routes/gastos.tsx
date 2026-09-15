@@ -48,11 +48,11 @@ import targetIcon from "@/assets/target-icon-v2.png.asset.json";
 import { useProfile } from "@/hooks/use-profile";
 import { useTransactions, sameMerchant, type Tx } from "@/hooks/use-transactions";
 import { compact, FIXED_FIELDS, money } from "@/lib/onboarding";
-import { getSpendAdvice } from "@/lib/spend-advice.functions";
+import { getSpendAdvice, rateSpendAdvice } from "@/lib/spend-advice.functions";
 import { getPaddleEnvironment } from "@/lib/paddle";
 import { buildDataset } from "@/lib/profile-data";
 import { yearsToFreedom } from "@/lib/lifestyle-cities";
-import { ArrowDownRight, ArrowUpRight, TrendingUp } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Brain, ThumbsDown, ThumbsUp, TrendingUp } from "lucide-react";
 
 type AdviceAction = {
   label: string;
@@ -464,6 +464,29 @@ function Gastos() {
   const [advice, setAdvice] = useState<AdviceAction[] | null>(null);
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState<string | null>(null);
+  /** Valoraciones que el usuario da a cada recomendación (la IA las recuerda). */
+  const [ratings, setRatings] = useState<Record<string, "useful" | "not_useful">>({});
+
+  const rate = async (a: AdviceAction, verdict: "useful" | "not_useful") => {
+    const key = `${a.label}|${a.action}`;
+    if (ratings[key]) return;
+    setRatings((r) => ({ ...r, [key]: verdict }));
+    try {
+      await rateSpendAdvice({ data: { label: a.label, action: a.action, verdict } });
+      toast.success(
+        verdict === "useful"
+          ? t("Guardado: la IA insistirá por aquí.", "Saved: your AI will keep going this way.")
+          : t("Guardado: la IA no volverá a sugerirlo.", "Saved: your AI won't suggest it again."),
+      );
+    } catch {
+      setRatings((r) => {
+        const next = { ...r };
+        delete next[key];
+        return next;
+      });
+      toast.error(t("No pudimos guardar tu respuesta.", "We couldn't save your answer."));
+    }
+  };
 
 
 
@@ -1588,11 +1611,42 @@ function Gastos() {
                           <span className="hidden sm:inline">{t(" a tu número", " to your number")}</span>
                         </span>
                       )}
+                      <span className="ml-auto inline-flex items-center gap-1">
+                        <button
+                          type="button"
+                          aria-label={t("Me sirve", "Useful")}
+                          onClick={() => void rate(a, "useful")}
+                          className={cn(
+                            "rounded-full border border-border/60 p-1 transition-colors hover:border-positive/50 hover:text-positive",
+                            ratings[`${a.label}|${a.action}`] === "useful" && "border-positive/60 bg-positive/12 text-positive",
+                          )}
+                        >
+                          <ThumbsUp className="h-3 w-3" />
+                        </button>
+                        <button
+                          type="button"
+                          aria-label={t("No aplica", "Not for me")}
+                          onClick={() => void rate(a, "not_useful")}
+                          className={cn(
+                            "rounded-full border border-border/60 p-1 transition-colors hover:border-negative/50 hover:text-negative",
+                            ratings[`${a.label}|${a.action}`] === "not_useful" && "border-negative/60 bg-negative/12 text-negative",
+                          )}
+                        >
+                          <ThumbsDown className="h-3 w-3" />
+                        </button>
+                      </span>
                     </div>
                   </li>
                 );
               })}
             </ul>
+            <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+              <Brain className="h-3 w-3 text-primary" />
+              {t(
+                "Tu IA guarda cada análisis y tus respuestas para entenderte mejor cada mes.",
+                "Your AI saves every analysis and your answers to understand you better each month.",
+              )}
+            </p>
           </div>
         )}
 

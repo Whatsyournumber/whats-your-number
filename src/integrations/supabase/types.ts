@@ -1295,6 +1295,72 @@ export type Database = {
           },
         ]
       }
+      spend_ai_feedback: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          label: string
+          note: string | null
+          user_id: string
+          verdict: string
+        }
+        Insert: {
+          action?: string
+          created_at?: string
+          id?: string
+          label: string
+          note?: string | null
+          user_id: string
+          verdict: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          label?: string
+          note?: string | null
+          user_id?: string
+          verdict?: string
+        }
+        Relationships: []
+      }
+      spend_ai_memory: {
+        Row: {
+          actions: Json
+          created_at: string
+          currency: string
+          id: string
+          period_label: string
+          snapshot: Json
+          target: number
+          total: number
+          user_id: string
+        }
+        Insert: {
+          actions?: Json
+          created_at?: string
+          currency?: string
+          id?: string
+          period_label: string
+          snapshot?: Json
+          target?: number
+          total?: number
+          user_id: string
+        }
+        Update: {
+          actions?: Json
+          created_at?: string
+          currency?: string
+          id?: string
+          period_label?: string
+          snapshot?: Json
+          target?: number
+          total?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       statements: {
         Row: {
           created_at: string
