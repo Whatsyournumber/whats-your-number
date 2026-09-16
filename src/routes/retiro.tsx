@@ -364,54 +364,32 @@ function RetiroContent() {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: 0.08, ease: "easeOut" }}
-            className={cn("surface relative overflow-hidden p-5", editingAge ? "ring-1 ring-primary/20" : "cursor-pointer hover:bg-elevated/40")}
-            onClick={() => {
-              if (!editingAge) {
-                setDraftAge(retireAge);
-                setEditingAge(true);
-              }
-            }}
+            transition={{ duration: 0.35, delay: 0.11, ease: "easeOut" }}
+            className="surface relative overflow-hidden p-5"
           >
             <div className="relative flex items-start justify-between gap-3">
               <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                {t("Edad de retiro", "Retirement age")}
+                {t("Aporte mensual al 10%", "Monthly contribution at 10%")}
               </p>
-              <Pencil className="h-4 w-4 text-muted-foreground" />
+              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">S&P 500</span>
             </div>
-            {editingAge ? (
-              <div className="mt-3 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-                <Input
-                  type="text"
-                  inputMode="numeric"
-                  autoFocus
-                  className="numeric h-10 w-24 text-xl font-semibold"
-                  value={draftAge ? String(draftAge) : ""}
-                  onChange={(e) => {
-                    const digits = e.target.value.replace(/\D/g, "");
-                    setDraftAge(digits ? Number(digits) : 0);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Escape") setEditingAge(false);
-                    if (e.key === "Enter") commitAge();
-                  }}
-                />
-                <Button size="sm" className="rounded-full px-4" disabled={saving || draftAge <= retirement.currentAge} onClick={commitAge}>
-                  {saving ? t("Guardando…", "Saving…") : t("Guardar", "Save")}
-                </Button>
-              </div>
-            ) : (
-              <>
-                <p className="numeric relative mt-3 text-2xl font-semibold md:text-3xl">
-                  {retireAge} <span className="text-base font-medium text-muted-foreground">{t("años", "years")}</span>
-                </p>
-                <p className="relative mt-2 text-xs text-muted-foreground">
-                  {t("hoy tienes", "you are")} {retirement.currentAge} · {t("te quedan", "you have")} {Math.max(0, retireAge - retirement.currentAge)} {t("años", "years")}
-                </p>
-              </>
-            )}
+            <p className="numeric relative mt-3 text-2xl font-semibold md:text-3xl">{fmt(sp500Monthly)}</p>
+            <p className="relative mt-2 text-xs">
+              {t("Este mes aportaste", "This month you put in")}{" "}
+              <span className={cn("numeric font-semibold", thisMonthContribution >= sp500Monthly ? "text-positive" : "text-negative")}>
+                {fmt(thisMonthContribution)}
+              </span>
+              {sp500Monthly > 0 && (
+                <span className={cn("ml-1 font-medium", thisMonthContribution >= sp500Monthly ? "text-positive" : "text-negative")}>
+                  {thisMonthContribution >= sp500Monthly
+                    ? t("· vas en camino 🎯", "· on track 🎯")
+                    : `${t("· te faltan", "· you need")} ${fmt(sp500Monthly - thisMonthContribution)}`}
+                </span>
+              )}
+            </p>
           </motion.div>
         )}
+
 
         {!isGoal && (
           <motion.div
