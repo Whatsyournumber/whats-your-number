@@ -9,7 +9,6 @@ import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useCategories } from "@/hooks/use-categories";
-import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useProfile } from "@/hooks/use-profile";
 import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { useTransactions, type Tx } from "@/hooks/use-transactions";
@@ -56,7 +55,6 @@ function CashFlow() {
   const { profile } = useProfile();
   const d = buildDataset(profile);
   const { transactions, hasData } = useTransactions();
-  const fixed = useFixedExpenses();
   const { rules } = useCategories();
   const { lines: budgetLines } = useSpendBudgets();
 
