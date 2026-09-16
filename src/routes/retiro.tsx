@@ -258,7 +258,7 @@ function RetiroContent() {
       />
 
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
         <motion.div
           initial={{ opacity: 0, y: 10 }}
