@@ -268,22 +268,15 @@ function Dashboard() {
   const retirementHint = (() => {
     if (retireYearsLeft <= 0 || baseTargetNumber <= 0) return undefined;
     if (minRetirementMonthly > 0) {
-      return isMobile
-        ? t(
-            `Ahorra ${fmt(minRetirementMonthly)}/mes para tu retiro a los ${retireAgeChosen}`,
-            `Save ${fmt(minRetirementMonthly)}/mo to retire at ${retireAgeChosen}`,
-          )
-        : t(
-            `Necesitas ahorrar ${fmt(minRetirementMonthly)}/mes para tu retiro a los ${retireAgeChosen} años`,
-            `You need to save ${fmt(minRetirementMonthly)}/mo to retire at ${retireAgeChosen}`,
-          );
+      return t(
+        `Ahorra ${fmt(minRetirementMonthly)}/mes · retiro a los ${retireAgeChosen}`,
+        `Save ${fmt(minRetirementMonthly)}/mo · retire at ${retireAgeChosen}`,
+      );
     }
-    return isMobile
-      ? t(`Tu retiro a los ${retireAgeChosen} está cubierto`, `Retiring at ${retireAgeChosen} is covered`)
-      : t(
-          `Con esto ya cubres tu retiro a los ${retireAgeChosen} años`,
-          `This already covers your retirement at ${retireAgeChosen}`,
-        );
+    return t(
+      `Retiro a los ${retireAgeChosen} cubierto`,
+      `Retirement at ${retireAgeChosen} covered`,
+    );
   })();
 
 
