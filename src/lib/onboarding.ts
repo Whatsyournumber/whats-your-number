@@ -199,7 +199,7 @@ export type NorthPlan = {
 };
 
 /** Capital needed using the user's safe withdrawal rate (default 4%) on the desired annual income. */
-export function buildPlan(d: OnboardingData): NorthPlan {
+export function buildPlan(d: OnboardingData & Partial<LifeData>): NorthPlan {
   const income = totalIncome(d);
   const expenses = totalExpenses(d);
   const savings = d.monthly_savings || Math.max(0, income - expenses);
@@ -207,7 +207,26 @@ export function buildPlan(d: OnboardingData): NorthPlan {
   const age = d.age ?? 30;
   const yearsLeft = Math.max(0, d.retire_age - age);
   const swr = Math.min(15, Math.max(1, d.withdrawal_rate || 7)) / 100;
-  const desiredIncome = d.desired_retirement_income || expenses || 0;
+  // Si no guardaste un ingreso deseado, usamos el estimado por ciudad y estilo de
+  // vida del onboarding (el mismo número que viste allí), no tu gasto actual.
+  const lifestyleIncome =
+    d.city || d.lifestyle
+      ? estimateDesiredIncome(
+          {
+            ...emptyLife,
+            city: d.city ?? "",
+            marital_status: d.marital_status ?? "",
+            children: d.children ?? "",
+            plans_children: d.plans_children ?? "",
+            lifestyle: d.lifestyle ?? "",
+            travel_frequency: d.travel_frequency ?? "",
+            housing: d.housing ?? "",
+          },
+          { currency: d.currency },
+        )
+      : 0;
+  const desiredIncome = d.desired_retirement_income || lifestyleIncome || expenses || 0;
+
 
   // Objetivo "primera vivienda": Your Number es la entrada (down payment) que necesitas.
   const homeMode = d.priority === "vivienda" && (d.home_price || 0) > 0;
