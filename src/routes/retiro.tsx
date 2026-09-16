@@ -70,6 +70,8 @@ function RetiroContent() {
   const [editing, setEditing] = useState(false);
   const [editingAge, setEditingAge] = useState(false);
   const [draftAge, setDraftAge] = useState(0);
+  const [editingContribution, setEditingContribution] = useState(false);
+  const [draftContribution, setDraftContribution] = useState(0);
 
   // Solo activos que generan retorno (excluye propiedades). Viene del detalle de "Mis datos".
   const investableFallback =
@@ -144,15 +146,35 @@ function RetiroContent() {
   })();
 
 
+  // Tu aporte mensual: el que elegiste y guardaste; si todavía no elegiste, el sugerido al 10%.
+  const savedContribution =
+    profile.retirement_monthly_contribution > 0 ? Math.round(profile.retirement_monthly_contribution) : 0;
+  const aporteShown = savedContribution || sp500Monthly;
+
+  const commitContribution = () => {
+    const next = Math.max(0, Math.round(draftContribution));
+    setEditingContribution(false);
+    setMonthly(next);
+    if (next === (profile.retirement_monthly_contribution || 0)) return;
+    void save({ retirement_monthly_contribution: next }).then(() =>
+      toast.success(t("Aporte mensual guardado", "Monthly contribution saved")),
+    );
+  };
+
   // El simulador arranca con el aporte mensual sugerido para llegar a tu número
   // a la edad de retiro elegida (al 10% del S&P 500). Después el usuario puede moverlo.
   const simPrefilled = useRef(false);
   useEffect(() => {
     if (isGoal || simPrefilled.current) return;
+    // Si ya tienes un aporte guardado, el simulador respeta el tuyo.
+    if (savedContribution > 0) {
+      simPrefilled.current = true;
+      return;
+    }
     if (sp500Monthly <= 0) return;
     simPrefilled.current = true;
     setMonthly(sp500Monthly);
-  }, [sp500Monthly, isGoal]);
+  }, [sp500Monthly, isGoal, savedContribution]);
   // Lo que de verdad apartaste este mes (tu ahorro mensual actual).
   const thisMonthContribution = Math.max(0, d.savings);
 
