@@ -209,21 +209,18 @@ function CashFlow() {
   const fixedNeeds = needFixedItems.reduce((s, i) => s + (i.amount || 0), 0);
   const fixedWants = wantFixedItems.reduce((s, i) => s + (i.amount || 0), 0);
 
-  // Aporte mensual al fondo de retiro (misma fuente que la pestaña «Fondo de retiro»).
-  const retirementContribution = Math.max(0, Math.round(d.retirement.monthlyContribution || 0));
-
   // Necesidades = gastos fijos de necesidad + gastos variables de necesidad.
   const fixedAmount = hasReal ? fixedNeeds + spend.needs : d.cashFlow.buckets[0]!.amount;
   // Deseos / lifestyle = gastos variables de deseo + gastos fijos de lifestyle.
   const lifestyleAmount = hasReal ? spend.wants + fixedWants : d.cashFlow.buckets[1]!.amount;
-  // El bucket de inversión usa el ahorro real de tus gastos fijos (p. ej. «Progreso» 2.500/mes).
-  // Solo si no hay partida de ahorro fija se usa el aporte estimado del fondo de retiro.
+  // Solo cuenta ahorro o inversión realmente registrado en el mes.
+  // El aporte objetivo de retiro no es un movimiento real y no debe sumarse aquí.
   const useFixedSavings = hasReal && fixedSavings > 0;
   const investAmount = useFixedSavings
     ? fixedSavings
     : hasReal
-      ? retirementContribution
-      : Math.max(d.cashFlow.buckets[2]!.amount, retirementContribution);
+      ? 0
+      : d.cashFlow.buckets[2]!.amount;
 
   const freeAmount = Math.max(0, totalIncome - fixedAmount - lifestyleAmount - investAmount);
 
@@ -257,7 +254,7 @@ function CashFlow() {
     ? [
         ...(useFixedSavings
           ? savingItems.map((i) => ({ label: `${translateFixedName(i.name, lang)} (${t("fijo", "fixed")})`, amount: i.amount }))
-          : [{ label: t("Fondo de retiro (aporte mensual)", "Retirement fund (monthly contribution)"), amount: retirementContribution }]),
+          : []),
         { label: t("Flujo libre del mes", "Free flow this month"), amount: freeAmount },
       ].sort((a, b) => b.amount - a.amount)
     : [];
