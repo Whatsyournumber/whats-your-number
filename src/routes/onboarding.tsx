@@ -1839,8 +1839,13 @@ function SummaryScreen({
             transition={{ delay: 0.05 * i }}
             className="surface px-4 py-3.5"
           >
-            <p className="truncate text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-              {m.emoji} {m.label}
+            <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              <span className="sm:hidden">
+                {m.emoji} {m.short}
+              </span>
+              <span className="hidden sm:inline">
+                {m.emoji} {m.label}
+              </span>
             </p>
             <p className="numeric mt-1 text-lg font-semibold sm:text-xl">{m.value}</p>
           </motion.div>
