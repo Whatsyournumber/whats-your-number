@@ -1651,7 +1651,6 @@ function BuildingScreen({ onDone }: { onDone: () => void }) {
 
 function SummaryScreen({
   data,
-  life,
   plan,
   currency,
   onEnter,
