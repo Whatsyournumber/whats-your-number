@@ -85,6 +85,8 @@ function RetiroContent() {
   const investable = holdings.length ? investableFromHoldings : investableFallback;
 
   const progressPct = plan.targetCapital > 0 ? Math.max(0, (investable / plan.targetCapital) * 100) : 0;
+  const pctBar = Math.min(100, progressPct);
+  const pctShift = pctBar < 10 ? "0%" : pctBar > 90 ? "-100%" : "-50%";
 
 
   const [monthly, setMonthly] = useState(retirement.monthlyContribution);
@@ -543,26 +545,33 @@ function RetiroContent() {
 
       </div>
       <div className="surface p-5">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
-          <div className="min-w-0">
-            <p className="text-sm text-muted-foreground">
-              {t("Progreso hacia tu capital objetivo", "Progress toward your target capital")}
-              {isGoal && goalNote ? `: ${goalNote}` : ""}
-            </p>
-            <p className="numeric mt-1 text-3xl font-semibold md:text-4xl">{progressPct.toFixed(1)}%</p>
-          </div>
-          <div className="sm:text-right">
-            <p className="numeric whitespace-nowrap font-semibold">
-              {fmt(investable)} / {fmt(plan.targetCapital)}
-            </p>
-          </div>
-        </div>
-        <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-elevated">
-          <div className="wealth-gradient h-full rounded-full" style={{ width: `${Math.min(100, progressPct)}%` }} />
-        </div>
-        <p className="mt-2 text-xs text-muted-foreground">
-          {t("Te faltan", "You still need")} {fmt(Math.max(0, plan.targetCapital - investable))} {t("en inversiones que generen retorno.", "in return-generating investments.")}
+        <p className="text-sm text-muted-foreground">
+          {t("Progreso hacia tu capital objetivo", "Progress toward your target capital")}
+          {isGoal && goalNote ? `: ${goalNote}` : ""}
         </p>
+        <div className="relative mt-9 h-2.5 w-full">
+          <div className="h-2.5 w-full overflow-hidden rounded-full bg-elevated">
+            <div className="wealth-gradient h-full rounded-full" style={{ width: `${pctBar}%` }} />
+          </div>
+          <span
+            className="absolute bottom-2 h-2 w-px bg-white/15"
+            style={{ left: `${pctBar}%`, transform: "translateX(-50%)" }}
+          />
+          <span
+            className="numeric absolute bottom-4 whitespace-nowrap text-3xl font-semibold leading-none md:text-4xl"
+            style={{ left: `${pctBar}%`, transform: `translateX(${pctShift})` }}
+          >
+            {progressPct.toFixed(1)}%
+          </span>
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+          <p className="numeric text-xs text-muted-foreground">
+            {fmt(investable)} / {fmt(plan.targetCapital)}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {t("Te faltan", "You still need")} {fmt(Math.max(0, plan.targetCapital - investable))} {t("en inversiones que generen retorno.", "in return-generating investments.")}
+          </p>
+        </div>
       </div>
 
 
