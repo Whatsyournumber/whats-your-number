@@ -1886,12 +1886,12 @@ function SummaryScreen({
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.08 * i }}
-              className="flex items-start gap-3 rounded-2xl border border-border bg-elevated/50 px-4 py-3.5"
+              className="flex h-full items-start gap-3 rounded-2xl border border-border bg-elevated/50 px-4 py-3.5"
             >
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-base">
                 {a.emoji}
               </span>
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold">{a.title}</p>
                 <p className="mt-0.5 text-xs leading-snug text-muted-foreground sm:text-sm">{a.text}</p>
               </div>
