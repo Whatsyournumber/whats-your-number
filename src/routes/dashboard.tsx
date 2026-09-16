@@ -557,7 +557,7 @@ function Dashboard() {
         <Link to="/gastos" className="block transition-transform hover:-translate-y-0.5">
           <KpiCard label={t("Gastos", "Expenses")} value={fmt(current.expenses)} {...(hasHistory ? { delta: delta(current.expenses, previous.expenses) } : {})} inverse icon={TrendingUp} index={2} />
         </Link>
-        <Link to="/cash-flow" className="block transition-transform hover:-translate-y-0.5">
+        <Link to="/retiro" className="block transition-transform hover:-translate-y-0.5">
           <KpiCard
             label={t("Ahorro", "Savings")}
             value={fmt(current.savings)}
