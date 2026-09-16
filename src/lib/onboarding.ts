@@ -495,6 +495,11 @@ export function estimateDesiredIncome(
   return Math.round(value / step) * step;
 }
 
+/**
+ * Insights personalizados: se construyen únicamente con los datos que la persona
+ * ya cargó. Una cuenta nueva (sin datos) recibe los siguientes pasos, nunca
+ * conclusiones genéricas sobre un patrimonio que todavía no existe.
+ */
 export function buildInsights(
   plan: NorthPlan,
   d: OnboardingData,
@@ -506,32 +511,92 @@ export function buildInsights(
   const out: string[] = [];
   const liquid = d.assets_cash + d.assets_bank;
   const assets = totalAssets(d);
-  const cashPct = assets > 0 ? Math.round((liquid / assets) * 100) : 0;
-  const yearsSaved = Math.max(1, Math.round(plan.yearsLeft * 0.12));
+  const income = totalIncome(d);
+  const expenses = totalExpenses(d);
+  const savings = d.monthly_savings || Math.max(0, income - expenses);
+  const name = (d.full_name || "").trim().split(" ")[0] ?? "";
 
-  out.push(
-    en
-      ? `By cutting your monthly spending by 8%, you'd reach your goal about ${yearsSaved} ${yearsSaved === 1 ? "year" : "years"} earlier.`
-      : `Reduciendo tus gastos mensuales un 8%, alcanzarías tu objetivo aproximadamente ${yearsSaved} ${yearsSaved === 1 ? "año" : "años"} antes.`,
-  );
-  if (cashPct >= 25) {
+  // --- Cuenta nueva o perfil incompleto: guiamos, no inventamos conclusiones.
+  if (income <= 0) {
     out.push(
       en
-        ? `Right now ${cashPct}% of your net worth sits in cash. Consider whether that mix fits your goals and risk tolerance.`
-        : `Actualmente el ${cashPct}% de tu patrimonio está en efectivo. Considera si esa distribución encaja con tus objetivos y tu tolerancia al riesgo.`,
-    );
-  } else {
-    out.push(
-      en
-        ? `Your net worth is well diversified: only ${cashPct}% stays in cash, the rest works for you.`
-        : `Tu patrimonio está bien diversificado: solo el ${cashPct}% permanece en efectivo, el resto trabaja para ti.`,
+        ? `${name ? `${name}, add` : "Add"} your monthly income to unlock your personal insights.`
+        : `${name ? `${name}, añade` : "Añade"} tus ingresos mensuales para desbloquear tus insights personales.`,
     );
   }
-  out.push(
-    en
-      ? `At your current saving and investing pace, you're projected to hit your goal at age ${plan.freedomAge} (${money(plan.projected, currency)} estimated).`
-      : `Con el ritmo actual de ahorro e inversión, estás proyectado para alcanzar tu objetivo a los ${plan.freedomAge} años (${money(plan.projected, currency)} estimados).`,
-  );
+  if (assets <= 0 && d.liabilities <= 0) {
+    out.push(
+      en
+        ? "Add your savings, investments and debts so we can calculate your real net worth."
+        : "Añade tus ahorros, inversiones y deudas para calcular tu patrimonio real.",
+    );
+  }
+  if (!life.city) {
+    out.push(
+      en
+        ? "Choose the city and lifestyle you want and we'll turn it into a monthly target."
+        : "Elige la ciudad y el estilo de vida que quieres y lo convertimos en un objetivo mensual.",
+    );
+  }
+  if (out.length >= 3) return out.slice(0, 3);
+
+  // --- Con datos reales: cada línea usa sus propios números.
+  if (income > 0) {
+    const rate = Math.round(plan.savingsRate);
+    if (savings <= 0) {
+      out.push(
+        en
+          ? `You're spending ${money(expenses, currency)} of the ${money(income, currency)} you earn: freeing up 10% would already put ${money(Math.round(income * 0.1), currency)} a month to work.`
+          : `Gastas ${money(expenses, currency)} de los ${money(income, currency)} que ingresas: liberar un 10% ya pondría ${money(Math.round(income * 0.1), currency)} al mes a trabajar.`,
+      );
+    } else if (rate < 20) {
+      const missing = Math.max(0, Math.round(income * 0.2) - savings);
+      out.push(
+        en
+          ? `You save ${rate}% of your income (${money(savings, currency)}/mo): ${money(missing, currency)} more a month gets you to the 20% minimum.`
+          : `Ahorras el ${rate}% de tu ingreso (${money(savings, currency)}/mes): con ${money(missing, currency)} más al mes llegas al mínimo del 20%.`,
+      );
+    } else {
+      const extra = Math.round(savings * 0.1);
+      const yearsSaved = Math.max(1, Math.round(plan.yearsLeft * 0.12));
+      out.push(
+        en
+          ? `You save ${rate}% (${money(savings, currency)}/mo). Adding ${money(extra, currency)} more would bring your goal forward about ${yearsSaved} ${yearsSaved === 1 ? "year" : "years"}.`
+          : `Ahorras el ${rate}% (${money(savings, currency)}/mes). Sumar ${money(extra, currency)} más adelantaría tu objetivo unos ${yearsSaved} ${yearsSaved === 1 ? "año" : "años"}.`,
+      );
+    }
+  }
+
+  if (assets > 0) {
+    const cashPct = Math.round((liquid / assets) * 100);
+    out.push(
+      cashPct >= 25
+        ? en
+          ? `${cashPct}% of your ${money(assets, currency)} sits in cash. Consider whether that mix fits your goals and risk tolerance.`
+          : `El ${cashPct}% de tus ${money(assets, currency)} está en efectivo. Considera si esa distribución encaja con tus objetivos y tu tolerancia al riesgo.`
+        : en
+          ? `Only ${cashPct}% of your ${money(assets, currency)} stays in cash: the rest is already working for you.`
+          : `Solo el ${cashPct}% de tus ${money(assets, currency)} está en efectivo: el resto ya trabaja para ti.`,
+    );
+  }
+
+  if (d.liabilities > 0 && income > 0) {
+    const monthsOfIncome = Math.max(1, Math.round(d.liabilities / income));
+    out.push(
+      en
+        ? `Your debt of ${money(d.liabilities, currency)} equals ${monthsOfIncome} ${monthsOfIncome === 1 ? "month" : "months"} of income: paying it down raises your net worth risk-free.`
+        : `Tu deuda de ${money(d.liabilities, currency)} equivale a ${monthsOfIncome} ${monthsOfIncome === 1 ? "mes" : "meses"} de ingresos: amortizarla sube tu patrimonio sin riesgo.`,
+    );
+  }
+
+  if (income > 0 && savings > 0) {
+    out.push(
+      en
+        ? `At this pace you'd reach your goal at age ${plan.freedomAge} with ${money(plan.projected, currency)} (${Math.round(plan.progress)}% of the way there).`
+        : `A este ritmo alcanzarías tu objetivo a los ${plan.freedomAge} años con ${money(plan.projected, currency)} (llevas el ${Math.round(plan.progress)}%).`,
+    );
+  }
+
   if (life.city) {
     const style = lifestyles.find((l) => l.value === life.lifestyle)?.label.toLowerCase() ?? (en ? "comfortable" : "cómodo");
     out.push(
@@ -540,6 +605,7 @@ export function buildInsights(
         : `Vivir en ${life.city} con un estilo ${style} implica un objetivo de ${money(plan.desiredIncome, currency)} al mes.`,
     );
   }
+
   return out.slice(0, 3);
 }
 
