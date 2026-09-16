@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import { Pencil } from "lucide-react";
 import { motion } from "motion/react";
@@ -29,7 +30,7 @@ export function EditableKpiCard({
   onChange?: (v: number) => void;
   valueFormatter?: (n: number) => string;
   delta?: number;
-  hint?: string;
+  hint?: ReactNode;
   icon?: LucideIcon;
   accent?: boolean;
   inverse?: boolean;

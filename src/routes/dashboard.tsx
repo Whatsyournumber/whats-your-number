@@ -224,10 +224,16 @@ function Dashboard() {
   const current = months[activeIndex] ?? months[months.length - 1] ?? d.current;
   const previous = months[activeIndex - 1] ?? current;
   const { fmt, fmtCompact, plan } = d;
+  const spendPlanUsed = hasSpendTarget && spendTarget > 0
+    ? Math.round((current.expenses / spendTarget) * 100)
+    : 0;
+  const spendPlanTone = spendPlanUsed <= 100 ? "text-positive" : "text-negative";
   const spendPlanHint = hasSpendTarget && spendTarget > 0
-    ? t(
-        `Plan ${fmt(spendTarget)} · ${Math.round((current.expenses / spendTarget) * 100)}% usado`,
-        `Plan ${fmt(spendTarget)} · ${Math.round((current.expenses / spendTarget) * 100)}% used`,
+    ? (
+        <>
+          {t("Plan", "Plan")} <span className={cn("font-semibold", spendPlanTone)}>{fmt(spendTarget)}</span>
+          {" · "}<span className={cn("font-semibold", spendPlanTone)}>{spendPlanUsed}%</span> {t("usado", "used")}
+        </>
       )
     : undefined;
 
@@ -275,14 +281,21 @@ function Dashboard() {
   const retirementHint = (() => {
     if (retireYearsLeft <= 0 || baseTargetNumber <= 0) return undefined;
     if (minRetirementMonthly > 0) {
-      return t(
-        `Ahorra ${fmt(minRetirementMonthly)}/mes · retiro a los ${retireAgeChosen}`,
-        `Save ${fmt(minRetirementMonthly)}/mo · retire at ${retireAgeChosen}`,
+      const isCovered = current.savings >= minRetirementMonthly;
+      const tone = isCovered ? "text-positive" : "text-negative";
+      return (
+        <>
+          {t("Ahorra", "Save")} <span className={cn("font-semibold", tone)}>{fmt(minRetirementMonthly)}</span>
+          {t("/mes · retiro a los ", "/mo · retire at ")}
+          <span className={cn("font-semibold", tone)}>{retireAgeChosen}</span>
+        </>
       );
     }
-    return t(
-      `Retiro a los ${retireAgeChosen} cubierto`,
-      `Retirement at ${retireAgeChosen} covered`,
+    return (
+      <>
+        {t("Retiro a los ", "Retirement at ")}
+        <span className="font-semibold text-positive">{retireAgeChosen}</span> {t("cubierto", "covered")}
+      </>
     );
   })();
 
@@ -352,29 +365,33 @@ function Dashboard() {
     if (current.income > current.expenses) {
       const rate = savingsRate;
       if (rate >= 20) {
-        return t(
-          `Puedes ahorrar/invertir ${rate.toFixed(0)}% de tu ingreso`,
-          `You can save/invest ${rate.toFixed(0)}% of your income`,
+        return (
+          <>
+            {t("Puedes ahorrar/invertir", "You can save/invest")} <span className="font-semibold text-positive">{rate.toFixed(0)}%</span> {t("de tu ingreso", "of your income")}
+          </>
         );
       }
-      return t(
-        `Solo ${rate.toFixed(0)}% · genera extra para el 20%`,
-        `Only ${rate.toFixed(0)}% · find extra for the 20%`,
+      return (
+        <>
+          {t("Solo", "Only")} <span className="font-semibold text-negative">{rate.toFixed(0)}%</span>
+          {t(" · genera extra para el ", " · find extra for the ")}<span className="font-semibold text-negative">20%</span>
+        </>
       );
     }
     const deficit = current.expenses - current.income;
-    return t(
-      `Faltan ${fmt(deficit)}/mes · necesitas extra`,
-      `Short ${fmt(deficit)}/mo · you need extra`,
+    return (
+      <>
+        {t("Faltan", "Short")} <span className="font-semibold text-negative">{fmt(deficit)}</span>{t("/mes · necesitas extra", "/mo · you need extra")}
+      </>
     );
   })();
 
   const savingsRateHint =
     current.income <= 0
-      ? t("Mínimo 20% del ingreso", "20% minimum")
+      ? <>{t("Mínimo", "Minimum")} <span className="font-semibold text-negative">20%</span> {t("del ingreso", "of income")}</>
       : savingsRate >= 20
-        ? t("Por encima del 20% mínimo", "Above the 20% minimum")
-        : t("Vas muy justo · busca extra para el 20%", "Cutting it close · find extra for the 20%");
+        ? <>{t("Por encima del", "Above the")} <span className="font-semibold text-positive">20%</span> {t("mínimo", "minimum")}</>
+        : <>{t("Vas muy justo · busca extra para el", "Busca extra para llegar al")} <span className="font-semibold text-negative">20%</span></>;
 
 
   const insights = buildInsights(plan, profile, profile, d.currency, lang);
