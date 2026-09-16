@@ -1671,190 +1671,170 @@ function SummaryScreen({
   onEdit: () => void;
 }) {
   const t = useT();
-  const insights = buildInsights(plan, data, life, currency);
-  const assets = totalAssets(data);
-  const dist = [
-    { label: t("Ahorros", "Savings"), value: data.assets_cash + data.assets_bank, icon: <Banknote className="h-3.5 w-3.5" /> },
-    { label: t("Inversiones", "Investments"), value: data.assets_etf + data.assets_stocks + data.assets_retirement, icon: <TrendingUp className="h-3.5 w-3.5" /> },
-    { label: t("Cripto", "Crypto"), value: data.assets_crypto, icon: <Bitcoin className="h-3.5 w-3.5" /> },
-    { label: t("Inmuebles", "Real estate"), value: data.assets_property, icon: <Building2 className="h-3.5 w-3.5" /> },
-  ].filter((d) => d.value > 0);
 
   const metrics = [
-    { emoji: "💰", label: t("Patrimonio actual", "Current net worth"), value: money(plan.netWorth, currency) },
-    { emoji: "📈", label: t("Ingreso mensual", "Monthly income"), value: money(plan.income, currency) },
-    { emoji: "💳", label: t("Gasto mensual", "Monthly expenses"), value: money(plan.expenses, currency) },
+    { emoji: "💰", label: t("Patrimonio", "Net worth"), value: compact(plan.netWorth, currency) },
+    { emoji: "📈", label: t("Ingreso", "Income"), value: compact(plan.income, currency) },
+    { emoji: "💳", label: t("Gasto", "Expenses"), value: compact(plan.expenses, currency) },
     { emoji: "💵", label: t("Tasa de ahorro", "Savings rate"), value: `${plan.savingsRate.toFixed(0)}%` },
   ];
 
+  // 3 accionables claros, calculados con los datos del onboarding.
+  const savings = Math.max(0, plan.savings);
+  const invest20 = Math.round(plan.income * 0.2);
+  const gap = Math.max(0, invest20 - savings);
+  const cutPct = plan.expenses > 0 && gap > 0 ? Math.min(40, Math.max(3, Math.ceil((gap / plan.expenses) * 100))) : 0;
+  const needed = minMonthlyForRetirement({
+    target: plan.targetCapital,
+    invested: Math.max(0, plan.netWorth),
+    years: Math.max(1, plan.yearsLeft),
+  });
+  const extra = Math.max(0, Math.round(needed - savings));
+
+  const actions = [
+    {
+      n: 1,
+      title: t("Invierte el 20% de tu ingreso", "Invest 20% of your income"),
+      text: t(
+        `Son ${money(invest20, currency)} al mes. Si no sabes dónde, un índice S&P 500.`,
+        `That's ${money(invest20, currency)} a month. If unsure, an S&P 500 index fund.`,
+      ),
+    },
+    {
+      n: 2,
+      title:
+        cutPct > 0
+          ? t(`Recorta un ${cutPct}% de tus gastos`, `Cut ${cutPct}% of your expenses`)
+          : t("Mantén tus gastos bajo control", "Keep your expenses under control"),
+      text:
+        cutPct > 0
+          ? t(
+              `Libera ${money(gap, currency)} al mes; tu IA te dirá en qué categorías.`,
+              `Free up ${money(gap, currency)} a month; your AI will show which categories.`,
+            )
+          : t(
+              "Ya inviertes más del 20%; tu IA vigilará las fugas cada mes.",
+              "You already invest over 20%; your AI will watch for leaks each month.",
+            ),
+    },
+    {
+      n: 3,
+      title: t("Genera dinero extra", "Generate extra income"),
+      text:
+        extra > 0
+          ? t(
+              `Necesitas ${money(needed, currency)} al mes para tu número: te faltan ${money(extra, currency)}.`,
+              `You need ${money(needed, currency)} a month for your number: you're short ${money(extra, currency)}.`,
+            )
+          : t(
+              "Ya cubres el aporte para tu número; cada euro extra lo adelanta.",
+              "You already cover the contribution for your number; every extra euro speeds it up.",
+            ),
+    },
+  ];
+
   return (
-    <div>
-      <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center text-4xl">
-        🎉
-      </motion.div>
-      <h2 className="mt-5 text-center font-display text-4xl font-semibold sm:text-5xl">{t("Tu Número está listo.", "Your Number is ready.")}</h2>
-      <p className="mx-auto mt-4 max-w-md text-center text-sm leading-relaxed text-muted-foreground">
-        {data.full_name
-          ? t(`${data.full_name}, esto es lo que la IA ha entendido de tus finanzas.`, `${data.full_name}, this is what our AI has understood about your finances.`)
-          : t("Esto es lo que la IA ha entendido de tus finanzas.", "This is what our AI has understood about your finances.")}
-      </p>
-
-      <div className="mt-10 grid grid-cols-2 gap-3">
-        {metrics.map((m, i) => (
-          <motion.div
-            key={m.label}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.06 * i }}
-            className="surface p-5"
-          >
-            <span className="text-base">{m.emoji}</span>
-            <p className="mt-3 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">{m.label}</p>
-            <p className="numeric mt-1.5 text-xl font-semibold">{m.value}</p>
-          </motion.div>
-        ))}
+    <div className="flex flex-col gap-4">
+      <div className="text-center">
+        <h2 className="font-display text-2xl font-semibold sm:text-3xl">
+          🎉 {t("Tu Número está listo.", "Your Number is ready.")}
+        </h2>
+        <p className="mt-1 truncate text-sm text-muted-foreground">
+          {data.full_name
+            ? t(`${data.full_name}, esto entendió la IA de tus finanzas.`, `${data.full_name}, this is what the AI understood.`)
+            : t("Esto entendió la IA de tus finanzas.", "This is what the AI understood about your finances.")}
+        </p>
       </div>
 
-      {dist.length > 0 && (
-        <div className="surface mt-3 p-6">
-          <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">📊 {t("Distribución del patrimonio", "Net worth distribution")}</p>
-          <div className="mt-4 flex h-2.5 overflow-hidden rounded-full bg-muted">
-            {dist.map((d, i) => (
+      <div className="grid gap-3 lg:grid-cols-2">
+        <div className="flex flex-col gap-3">
+          <div className="grid grid-cols-2 gap-2">
+            {metrics.map((m, i) => (
               <motion.div
-                key={d.label}
-                initial={{ width: 0 }}
-                animate={{ width: `${(d.value / assets) * 100}%` }}
-                transition={{ duration: 0.8, delay: 0.1 * i, ease: "easeOut" }}
-                className="h-full"
-                style={{ background: `color-mix(in oklab, var(--color-primary) ${100 - i * 20}%, transparent)` }}
-              />
+                key={m.label}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.05 * i }}
+                className="surface px-4 py-3"
+              >
+                <p className="truncate text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                  {m.emoji} {m.label}
+                </p>
+                <p className="numeric mt-1 text-lg font-semibold">{m.value}</p>
+              </motion.div>
             ))}
           </div>
-          <div className="mt-4 space-y-2">
-            {dist.map((d) => (
-              <div key={d.label} className="flex items-center gap-2 text-sm">
-                <span className="text-muted-foreground">{d.icon}</span>
-                <span className="text-muted-foreground">{d.label}</span>
-                <span className="numeric ml-auto font-medium">{Math.round((d.value / assets) * 100)}%</span>
-                <span className="numeric w-24 text-right text-muted-foreground">{compact(d.value, currency)}</span>
+
+          <div className="surface p-5">
+            <div className="flex items-end justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-[10px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
+                <p className="numeric mt-1 text-3xl font-semibold">
+                  <Amount full={money(plan.targetCapital, currency)} short={compact(plan.targetCapital, currency)} from="md" />
+                </p>
               </div>
-            ))}
+              <div className="shrink-0 text-right">
+                <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                  📅 {t("Libertad", "Freedom")}
+                </p>
+                <p className="numeric mt-1 text-2xl font-semibold text-primary">
+                  {plan.mode === "freedom"
+                    ? `${plan.freedomAge} ${t("años", "yrs")}`
+                    : plan.monthsToGoal > 0
+                      ? `${Math.max(1, Math.ceil(plan.monthsToGoal / 12))} ${t("años", "yrs")}`
+                      : t("Listo", "Ready")}
+                </p>
+              </div>
+            </div>
+            <div className="mt-4">
+              <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                <span>📈 {t("Progreso hacia tu Número", "Progress to your Number")}</span>
+                <span className="numeric text-foreground">{plan.progress.toFixed(1)}%</span>
+              </div>
+              <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.max(1, plan.progress)}%` }}
+                  transition={{ duration: 1, ease: "easeOut" }}
+                  className="h-full rounded-full bg-primary"
+                />
+              </div>
+            </div>
           </div>
         </div>
-      )}
 
-      <div className="surface mt-3 overflow-hidden p-6">
-        <div className="flex flex-col gap-6 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
-          <div className="order-first">
-
-            <p className="text-[11px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
-            <p className="mt-2 text-4xl font-semibold"><Amount full={money(plan.targetCapital, currency)} short={compact(plan.targetCapital, currency)} from="md" /></p>
-            {plan.mode === "home" ? (
-              <p className="mt-2 text-xs text-muted-foreground">
-                {t("La entrada de tu primera vivienda", "The down payment for your first home")} ({money(plan.homePrice, currency)}){". "}
-                {plan.monthlyToGoal > 0
-                  ? t(
-                      `Necesitas ahorrar ${money(plan.monthlyToGoal, currency)} al mes para lograrlo en 3 años.`,
-                      `You need to save ${money(plan.monthlyToGoal, currency)} per month to get there in 3 years.`,
-                    )
-                  : t("Ya tienes cubierta la entrada.", "You already have the down payment covered.")}
-              </p>
-            ) : plan.mode === "business" ? (
-              <p className="mt-2 text-xs text-muted-foreground">
-                {life.goal === "otro"
-                  ? life.goal_note.trim()
-                    ? `${t("El capital para", "The capital for")}: ${life.goal_note.trim()}`
-                    : t("El capital para tu objetivo", "The capital for your goal")
-                  : t("El capital para montar tu negocio", "The capital to start your business")}{". "}
-                {plan.monthlyToGoal > 0
-                  ? t(
-                      `Necesitas ahorrar ${money(plan.monthlyToGoal, currency)} al mes para lograrlo en 3 años.`,
-                      `You need to save ${money(plan.monthlyToGoal, currency)} per month to get there in 3 years.`,
-                    )
-                  : t("Ya tienes el capital cubierto.", "You already have the capital covered.")}
-              </p>
-            ) : (
-              <p className="mt-2 text-xs text-muted-foreground">
-                {t("El capital que te permite vivir con", "The capital that lets you live on")} {money(plan.desiredIncome, currency)} {t("al mes", "per month")}
-                {life.city ? ` ${t("en", "in")} ${life.city}` : ""}.
-              </p>
-            )}
-          </div>
-          <div className="sm:text-right">
-            {plan.mode === "business" || plan.mode === "home" ? (
-              <>
-                <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                  ⏳ {plan.mode === "business" ? t("Montar tu negocio", "Start your business") : t("Comprar tu vivienda", "Buy your home")}
-                </p>
-                <p className="numeric mt-2 text-4xl font-semibold text-primary">
-                  {plan.monthsToGoal > 0
-                    ? `${Math.max(1, Math.ceil(plan.monthsToGoal / 12))} ${plan.monthsToGoal <= 12 ? t("año", "year") : t("años", "years")}`
-                    : t("Listo", "Ready")}
-                </p>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  {plan.monthsToGoal > 0
-                    ? t(
-                        `A tu ritmo de ahorro actual lo alcanzas a los ${(data.age ?? 30) + Math.max(1, Math.ceil(plan.monthsToGoal / 12))} años.`,
-                        `At your current savings rate you reach it at age ${(data.age ?? 30) + Math.max(1, Math.ceil(plan.monthsToGoal / 12))}.`,
-                      )
-                    : t("Ya tienes el capital necesario.", "You already have the capital you need.")}
-                </p>
-              </>
-            ) : (
-              <>
-                <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">📅 {t("Libertad financiera", "Financial freedom")}</p>
-                <p className="numeric mt-2 text-4xl font-semibold text-primary">{plan.freedomAge} {t("años", "years")}</p>
-                <p className="mt-2 text-xs text-muted-foreground">{t("Tu meta eran los", "Your goal was")} {plan.retireAge} {t("años.", "years old.")}</p>
-              </>
-            )}
-          </div>
-
-        </div>
-
-        <div className="mt-6">
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>📈 {t("Progreso hacia tu Número", "Progress towards your Number")}</span>
-            <span className="numeric text-foreground">{plan.progress.toFixed(1)}%</span>
-          </div>
-          <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-muted">
+        <div className="flex flex-col gap-2">
+          <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            ✨ {t("Tus 3 acciones", "Your 3 actions")}
+          </p>
+          {actions.map((a, i) => (
             <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${Math.max(1, plan.progress)}%` }}
-              transition={{ duration: 1.1, ease: "easeOut" }}
-              className="h-full rounded-full bg-primary"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-8">
-        <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">✨ {t("AI Insights", "AI Insights")}</p>
-        <div className="mt-4 space-y-2.5">
-          {insights.map((text, i) => (
-            <motion.div
-              key={text}
-              initial={{ opacity: 0, y: 10 }}
+              key={a.n}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 * i }}
-              className="flex gap-3 rounded-2xl border border-border bg-elevated/50 px-5 py-4"
+              transition={{ delay: 0.1 * i }}
+              className="flex flex-1 gap-3 rounded-2xl border border-border bg-elevated/50 px-4 py-3"
             >
-              <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-              <p className="text-sm leading-relaxed text-muted-foreground">{text}</p>
+              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
+                {a.n}
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold">{a.title}</p>
+                <p className="mt-0.5 text-xs leading-snug text-muted-foreground">{a.text}</p>
+              </div>
             </motion.div>
           ))}
         </div>
       </div>
 
-      <p className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground">
-        <CreditCard className="h-3.5 w-3.5" /> {t("Todas tus respuestas quedan guardadas y las puedes editar cuando quieras.", "All your answers are saved and you can edit them anytime.")}
-      </p>
-
-      <Button size="lg" className="mt-5 h-14 w-full rounded-full text-base" onClick={onEnter}>
-        {t("Entrar a mi dashboard", "Enter my dashboard")} <ArrowRight className="ml-2 h-4 w-4" />
-      </Button>
-      <Button variant="ghost" size="lg" className="mt-2 w-full rounded-full" onClick={onEdit}>
-        <Pencil className="mr-2 h-3.5 w-3.5" /> {t("Editar mis respuestas", "Edit my answers")}
-      </Button>
+      <div className="flex flex-col gap-2 sm:flex-row-reverse sm:items-center">
+        <Button size="lg" className="h-12 flex-1 rounded-full text-base" onClick={onEnter}>
+          {t("Entrar a mi dashboard", "Enter my dashboard")} <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
+        <Button variant="ghost" size="lg" className="rounded-full sm:w-auto" onClick={onEdit}>
+          <Pencil className="mr-2 h-3.5 w-3.5" /> {t("Editar mis respuestas", "Edit my answers")}
+        </Button>
+      </div>
     </div>
   );
 }
