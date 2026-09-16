@@ -27,7 +27,6 @@ import {
   buildPlan,
   childrenOptions,
   cities,
-  compact,
   emptyLife,
   emptyOnboarding,
   estimateDesiredIncome,
@@ -54,7 +53,7 @@ import { cn } from "@/lib/utils";
 import { defaultCurrency } from "@/lib/geo";
 import { useT, LanguageToggle } from "@/hooks/use-language";
 import { useSubscription } from "@/hooks/use-subscription";
-import { Amount } from "@/components/ui/amount";
+
 
 const GOALS_EN: Record<string, string> = {
   libertad: "Achieve financial freedom",
@@ -1673,6 +1672,7 @@ function BuildingScreen({ onDone }: { onDone: () => void }) {
 
 function SummaryScreen({
   data,
+  life,
   plan,
   currency,
   onEnter,
@@ -1688,13 +1688,45 @@ function SummaryScreen({
   const t = useT();
 
   const metrics = [
-    { emoji: "💰", label: t("Patrimonio", "Net worth"), value: money(plan.netWorth, currency) },
-    { emoji: "📈", label: t("Ingreso", "Income"), value: money(plan.income, currency) },
-    { emoji: "💳", label: t("Gasto", "Expenses"), value: money(plan.expenses, currency) },
+    { emoji: "💰", label: t("Patrimonio actual", "Current net worth"), value: money(plan.netWorth, currency) },
+    { emoji: "📈", label: t("Ingreso mensual", "Monthly income"), value: money(plan.income, currency) },
+    { emoji: "💳", label: t("Gasto mensual", "Monthly expenses"), value: money(plan.expenses, currency) },
     { emoji: "💵", label: t("Tasa de ahorro", "Savings rate"), value: `${plan.savingsRate.toFixed(0)}%` },
   ];
 
-  // 3 accionables claros, calculados con los datos del onboarding.
+  // Reparto del patrimonio: solo los activos que realmente has registrado.
+  const assetClasses = [
+    { emoji: "💵", label: t("Efectivo", "Cash"), value: data.assets_cash, bar: "bg-chart-1" },
+    { emoji: "🏦", label: t("Cuentas bancarias", "Bank accounts"), value: data.assets_bank, bar: "bg-chart-2" },
+    { emoji: "🧓", label: t("Plan de pensiones", "Retirement plan"), value: data.assets_retirement, bar: "bg-chart-3" },
+    { emoji: "📊", label: "ETFs", value: data.assets_etf, bar: "bg-chart-4" },
+    { emoji: "📈", label: t("Acciones", "Stocks"), value: data.assets_stocks, bar: "bg-chart-5" },
+    { emoji: "🪙", label: t("Cripto", "Crypto"), value: data.assets_crypto, bar: "bg-chart-6" },
+    { emoji: "🏠", label: t("Inmuebles", "Property"), value: data.assets_property, bar: "bg-chart-7" },
+  ].filter((c) => c.value > 0);
+  const assetTotal = assetClasses.reduce((s, c) => s + c.value, 0);
+
+  const city = (life.city || "").trim();
+  const numberNote =
+    plan.mode === "home"
+      ? t("La entrada que necesitas para tu primera vivienda.", "The down payment you need for your first home.")
+      : plan.mode === "business"
+        ? t("El capital que necesitas para montar tu negocio.", "The capital you need to start your business.")
+        : city
+          ? t(
+              `El capital que te permite vivir con ${money(plan.desiredIncome, currency)} al mes en ${city}.`,
+              `The capital that lets you live on ${money(plan.desiredIncome, currency)} a month in ${city}.`,
+            )
+          : t(
+              `El capital que te permite vivir con ${money(plan.desiredIncome, currency)} al mes.`,
+              `The capital that lets you live on ${money(plan.desiredIncome, currency)} a month.`,
+            );
+  const freedomNote = t(
+    `Tu meta eran los ${plan.retireAge} años.`,
+    `Your goal was age ${plan.retireAge}.`,
+  );
+
+  // 4 accionables claros, calculados con los datos del onboarding.
   const savings = Math.max(0, plan.savings);
   const invest20 = Math.round(plan.income * 0.2);
   const gap = Math.max(0, invest20 - savings);
@@ -1711,7 +1743,7 @@ function SummaryScreen({
 
   const actions = [
     {
-      n: 1,
+      emoji: "🌱",
       title: t("Invierte el 20% de tu ingreso", "Invest 20% of your income"),
       text: t(
         `Son ${money(invest20, currency)} al mes. Si no sabes dónde, un índice S&P 500.`,
@@ -1719,7 +1751,7 @@ function SummaryScreen({
       ),
     },
     {
-      n: 2,
+      emoji: "✂️",
       title:
         cutPct > 0
           ? t(`Recorta un ${cutPct}% de tus gastos`, `Cut ${cutPct}% of your expenses`)
@@ -1736,7 +1768,7 @@ function SummaryScreen({
             ),
     },
     {
-      n: 3,
+      emoji: "🚀",
       title: t("Genera dinero extra", "Generate extra income"),
       text:
         extra > 0
@@ -1750,7 +1782,7 @@ function SummaryScreen({
             ),
     },
     {
-      n: 4,
+      emoji: "🛡️",
       title: t("Ten tu fondo de emergencia", "Build your emergency fund"),
       text:
         emergencyGap > 0
@@ -1766,7 +1798,7 @@ function SummaryScreen({
   ];
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-4">
       <div className="text-center">
         <h2 className="font-display text-2xl font-semibold sm:text-3xl">
           🎉 {t("Tu Número está listo.", "Your Number is ready.")}
@@ -1778,7 +1810,7 @@ function SummaryScreen({
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
         {metrics.map((m, i) => (
           <motion.div
             key={m.label}
@@ -1794,17 +1826,59 @@ function SummaryScreen({
           </motion.div>
         ))}
       </div>
+
       <div className="surface p-5">
-        <div className="flex items-end justify-between gap-4">
+        <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+          📊 {t("Distribución del patrimonio", "Net worth breakdown")}
+        </p>
+        {assetTotal > 0 ? (
+          <>
+            <div className="mt-3 flex h-2.5 overflow-hidden rounded-full bg-muted">
+              {assetClasses.map((c) => (
+                <motion.div
+                  key={c.label}
+                  initial={{ flexGrow: 0 }}
+                  animate={{ flexGrow: c.value }}
+                  transition={{ duration: 0.9, ease: "easeOut" }}
+                  style={{ flexBasis: 0, minWidth: 4 }}
+                  className={cn("h-full", c.bar)}
+                  title={`${c.label} · ${money(c.value, currency)}`}
+                />
+              ))}
+            </div>
+            <div className="mt-3 flex flex-col">
+              {assetClasses.map((c) => (
+                <div
+                  key={c.label}
+                  className="flex items-center justify-between gap-3 border-t border-border/60 py-2 first:border-t-0"
+                >
+                  <span className="min-w-0 truncate text-sm">
+                    {c.emoji} {c.label}
+                  </span>
+                  <span className="numeric shrink-0 text-sm text-muted-foreground">
+                    {((c.value / assetTotal) * 100).toFixed(0)}% · {money(c.value, currency)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <p className="mt-2 text-sm text-muted-foreground">
+            {t("Aún no has registrado activos: añádelos cuando entres a tu dashboard.", "No assets yet: add them once you reach your dashboard.")}
+          </p>
+        )}
+      </div>
+
+      <div className="surface p-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="min-w-0">
             <p className="text-[10px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
-            <p className="numeric mt-1 text-3xl font-semibold">
-              <Amount full={money(plan.targetCapital, currency)} short={compact(plan.targetCapital, currency)} from="md" />
-            </p>
+            <p className="numeric mt-1 text-3xl font-semibold">{money(plan.targetCapital, currency)}</p>
+            <p className="mt-1.5 text-xs leading-snug text-muted-foreground">{numberNote}</p>
           </div>
-          <div className="shrink-0 text-right">
+          <div className="shrink-0 sm:text-right">
             <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-              📅 {t("Libertad", "Freedom")}
+              📅 {t("Libertad financiera", "Financial freedom")}
             </p>
             <p className="numeric mt-1 text-2xl font-semibold text-primary">
               {plan.mode === "freedom"
@@ -1813,6 +1887,7 @@ function SummaryScreen({
                   ? `${Math.max(1, Math.ceil(plan.monthsToGoal / 12))} ${t("años", "yrs")}`
                   : t("Listo", "Ready")}
             </p>
+            <p className="mt-1.5 text-xs leading-snug text-muted-foreground">{freedomNote}</p>
           </div>
         </div>
         <div className="mt-4">
@@ -1838,14 +1913,14 @@ function SummaryScreen({
         <div className="mt-2.5 flex flex-col gap-2.5">
           {actions.map((a, i) => (
             <motion.div
-              key={a.n}
+              key={a.title}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.08 * i }}
               className="flex items-start gap-3 rounded-2xl border border-border bg-elevated/50 px-4 py-3.5"
             >
-              <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
-                {a.n}
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-base">
+                {a.emoji}
               </span>
               <div className="min-w-0">
                 <p className="text-sm font-semibold">{a.title}</p>
@@ -1856,11 +1931,18 @@ function SummaryScreen({
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 sm:flex-row-reverse sm:items-center">
-        <Button size="lg" className="h-12 flex-1 rounded-full text-base" onClick={onEnter}>
+      <p className="text-center text-[11px] leading-snug text-muted-foreground">
+        {t(
+          "Cálculos orientativos con lo que respondiste; no son asesoramiento financiero.",
+          "Estimates based on your answers; not financial advice.",
+        )}
+      </p>
+
+      <div className="flex flex-col gap-2">
+        <Button size="lg" className="h-12 w-full rounded-full text-base" onClick={onEnter}>
           {t("Entrar a mi dashboard", "Enter my dashboard")} <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="lg" className="rounded-full sm:w-auto" onClick={onEdit}>
+        <Button variant="ghost" size="lg" className="w-full rounded-full" onClick={onEdit}>
           <Pencil className="mr-2 h-3.5 w-3.5" /> {t("Editar mis respuestas", "Edit my answers")}
         </Button>
       </div>
