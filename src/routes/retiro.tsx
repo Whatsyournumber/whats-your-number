@@ -125,6 +125,30 @@ function RetiroContent() {
   const targetNow = isGoal ? plan.targetCapital : liveNumber > 0 ? liveNumber : plan.targetCapital;
   const gap = targetNow - final.value;
 
+  // Aporte mensual necesario con rentabilidad histórica del S&P 500 (10% anual)
+  // para llegar a tu número antes de tu edad de retiro.
+  const sp500Monthly = (() => {
+    if (targetNow <= 0) return 0;
+    const yrs = Math.max(1, retireAge - retirement.currentAge);
+    const mr = 0.1 / 12;
+    const months = yrs * 12;
+    const fvCurrent = investable * Math.pow(1 + 0.1, yrs);
+    const remaining = Math.max(0, targetNow - fvCurrent);
+    if (remaining <= 0) return 0;
+    return Math.ceil((remaining * mr) / (Math.pow(1 + mr, months) - 1));
+  })();
+  // Lo que de verdad apartaste este mes (tu ahorro mensual actual).
+  const thisMonthContribution = Math.max(0, d.savings);
+
+  const commitAge = () => {
+    if (!draftAge || draftAge <= retirement.currentAge) return;
+    setEditingAge(false);
+    if (draftAge === profile.retire_age) return;
+    void save({ retire_age: draftAge }).then(() =>
+      toast.success(t("Edad de retiro actualizada", "Retirement age updated")),
+    );
+  };
+
   // Aporte mensual necesario para alcanzar el objetivo (negocio/vivienda) según lo que ya tienes,
   // la rentabilidad elegida y el plazo. En libertad financiera usa tu capacidad de ahorro real.
   const goalReached = isGoal && targetNow > 0 && investable >= targetNow;
