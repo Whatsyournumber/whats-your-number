@@ -1041,14 +1041,14 @@ function OnboardingPage() {
                   <SubQuestion
                     title={
                       household
-                        ? t("Gastos fijos mensuales (en pareja)", "Monthly fixed expenses (as a couple)")
-                        : t("Tus gastos fijos mensuales", "Your monthly fixed expenses")
+                        ? t("Tu plan de gastos mensuales (en pareja)", "Your monthly spending plan (as a couple)")
+                        : t("Tu plan de gastos mensuales", "Your monthly spending plan")
                     }
                   />
                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                     {t(
-                      "Con esto rellenamos automáticamente tu pestaña de Gastos, luego podrás agregar más ;)",
-                      "With this we automatically fill your Expenses tab, then you can add more ;)",
+                      "Pon tus gastos fijos: pasan directo a tu pestaña de Gastos. Los variables los leemos de tus estados financieros.",
+                      "Add your fixed expenses: they go straight to your Expenses tab. We read the variable ones from your statements.",
                     )}
                   </p>
                   <div className="mt-4 space-y-2.5">
