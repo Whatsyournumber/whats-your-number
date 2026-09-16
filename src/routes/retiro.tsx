@@ -410,7 +410,78 @@ function RetiroContent() {
           />
         </Link>
 
-        {goalMode !== "business" && (
+        {!isGoal && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.15, ease: "easeOut" }}
+            className="surface relative flex h-full flex-col overflow-hidden p-5"
+          >
+            <div className="relative flex items-start justify-between gap-3">
+              <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                {t("Edad de retiro", "Retirement age")}
+              </p>
+              {!editingAge && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDraftAge(retireAge);
+                    setEditingAge(true);
+                  }}
+                  className="shrink-0 rounded-full p-1 text-muted-foreground hover:bg-elevated hover:text-foreground"
+                  title={t("Editar edad de retiro", "Edit retirement age")}
+                >
+                  <Pencil className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+            {editingAge ? (
+              <div className="mt-3 flex flex-1 flex-col justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="text"
+                    inputMode="numeric"
+                    autoFocus
+                    className="numeric h-10 w-24 text-2xl font-semibold"
+                    value={draftAge ? String(draftAge) : ""}
+                    onChange={(e) => {
+                      const digits = e.target.value.replace(/\D/g, "");
+                      setDraftAge(digits ? Number(digits) : 0);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Escape") setEditingAge(false);
+                      if (e.key === "Enter") commitAge();
+                    }}
+                  />
+                  <span className="text-xs text-muted-foreground">{t("años", "years")}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Button
+                    size="sm"
+                    className="rounded-full px-4"
+                    disabled={saving || !draftAge || draftAge <= retirement.currentAge}
+                    onClick={commitAge}
+                  >
+                    {saving ? t("Guardando", "Saving") : t("Guardar", "Save")}
+                  </Button>
+                  <Button size="sm" variant="ghost" className="rounded-full px-3" onClick={() => setEditingAge(false)}>
+                    {t("Cancelar", "Cancel")}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <p className="numeric relative mt-3 text-2xl font-semibold md:text-3xl">
+                  {retireAge} <span className="text-base font-medium text-muted-foreground">{t("años", "years")}</span>
+                </p>
+                <p className="relative mt-2 text-xs text-muted-foreground">
+                  {t("hoy tienes", "you are")} {retirement.currentAge} · {t("te quedan", "you have")} {Math.max(0, retireAge - retirement.currentAge)} {t("años", "years")}
+                </p>
+              </>
+            )}
+          </motion.div>
+        )}
+        {isGoal && goalMode !== "business" && (
           <KpiCard label={t("Cómo voy", "How I'm doing")} value={`${progressPct.toFixed(1)}%`} hint={t("del capital objetivo", "of target capital")} index={2} />
         )}
         {isGoal && (
