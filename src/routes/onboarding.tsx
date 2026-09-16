@@ -351,7 +351,7 @@ function OnboardingPage() {
 
       <div
         className={`relative mx-auto flex min-h-[calc(100vh-57px)] flex-col justify-center px-5 ${
-          isSummary ? "max-w-4xl py-8 sm:py-12" : "max-w-2xl py-10 sm:py-16"
+          isSummary ? "max-w-5xl py-4 sm:py-5" : "max-w-2xl py-10 sm:py-16"
         }`}
       >
         <AnimatePresence mode="wait">
