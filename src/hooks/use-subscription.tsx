@@ -47,16 +47,35 @@ export function useSubscription() {
     queryKey: ["subscription", user?.id, environment],
     enabled: Boolean(user),
     queryFn: async () => {
+      // Mirar todos los entornos: un canje/suscripción live debe funcionar
+      // aunque la vista previa apunte a sandbox y viceversa.
       const { data, error } = await supabase
         .from("subscriptions")
         .select("id,user_id,product_id,price_id,status,current_period_end,cancel_at_period_end,access_product_id,access_until,environment,created_at")
         .eq("user_id", user!.id)
-        .eq("environment", environment)
         .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
+        .limit(20);
       if (error) throw error;
-      return (data ?? null) as Subscription | null;
+      const rows = (data ?? []) as Subscription[];
+      const rank: Record<PlanTier, number> = { free: 0, pro: 1, patrimonio: 2 };
+      const effectiveTier = (s: Subscription): PlanTier => {
+        if (!isActive(s.status, s.current_period_end)) return "free";
+        const held =
+          s.access_product_id && s.access_until && new Date(s.access_until) > new Date()
+            ? s.access_product_id
+            : null;
+        return tierFromProduct(held ?? s.product_id);
+      };
+      let bestRow: Subscription | null = null;
+      let bestTier: PlanTier = "free";
+      for (const row of rows) {
+        const t = effectiveTier(row);
+        if (rank[t] > rank[bestTier]) {
+          bestTier = t;
+          bestRow = row;
+        }
+      }
+      return bestRow ?? rows[0] ?? null;
     },
   });
 
