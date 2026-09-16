@@ -1018,13 +1018,24 @@ export type Database = {
           down_payment_pct: number | null
           expected_return: number | null
           expenses_partner: number | null
+          fixed_debt: number
+          fixed_delivery: number
           fixed_education: number
+          fixed_family: number
+          fixed_groceries: number
+          fixed_gym: number
+          fixed_health: number
           fixed_housing: number
           fixed_insurance: number
+          fixed_nightlife: number
           fixed_other: number
+          fixed_professional: number
+          fixed_restaurants: number
           fixed_savings: number
+          fixed_shopping: number
           fixed_subscriptions: number
           fixed_transport: number
+          fixed_travel: number
           fixed_utilities: number
           full_name: string | null
           goal: string | null
@@ -1082,13 +1093,24 @@ export type Database = {
           down_payment_pct?: number | null
           expected_return?: number | null
           expenses_partner?: number | null
+          fixed_debt?: number
+          fixed_delivery?: number
           fixed_education?: number
+          fixed_family?: number
+          fixed_groceries?: number
+          fixed_gym?: number
+          fixed_health?: number
           fixed_housing?: number
           fixed_insurance?: number
+          fixed_nightlife?: number
           fixed_other?: number
+          fixed_professional?: number
+          fixed_restaurants?: number
           fixed_savings?: number
+          fixed_shopping?: number
           fixed_subscriptions?: number
           fixed_transport?: number
+          fixed_travel?: number
           fixed_utilities?: number
           full_name?: string | null
           goal?: string | null
@@ -1146,13 +1168,24 @@ export type Database = {
           down_payment_pct?: number | null
           expected_return?: number | null
           expenses_partner?: number | null
+          fixed_debt?: number
+          fixed_delivery?: number
           fixed_education?: number
+          fixed_family?: number
+          fixed_groceries?: number
+          fixed_gym?: number
+          fixed_health?: number
           fixed_housing?: number
           fixed_insurance?: number
+          fixed_nightlife?: number
           fixed_other?: number
+          fixed_professional?: number
+          fixed_restaurants?: number
           fixed_savings?: number
+          fixed_shopping?: number
           fixed_subscriptions?: number
           fixed_transport?: number
+          fixed_travel?: number
           fixed_utilities?: number
           full_name?: string | null
           goal?: string | null
