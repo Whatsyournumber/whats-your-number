@@ -231,12 +231,16 @@ export function buildPlan(d: OnboardingData): NorthPlan {
   const n = yearsLeft * 12;
   const nw = Math.max(0, netWorth(d));
   const future = nw * Math.pow(1 + monthlyR, n);
-  const contributions = monthlyR > 0 ? savings * ((Math.pow(1 + monthlyR, n) - 1) / monthlyR) : savings * n;
+  // Aporte real: el que el usuario guardó como aporte mensual, o su ahorro mensual si es mayor.
+  const monthlyInvest = Math.max(0, savings, Math.round(d.retirement_monthly_contribution || 0));
+  const contributions =
+    monthlyR > 0 ? monthlyInvest * ((Math.pow(1 + monthlyR, n) - 1) / monthlyR) : monthlyInvest * n;
   const projected = future + contributions;
 
   const ratio = targetCapital > 0 ? projected / targetCapital : 1;
   // Smooth S-curve estimate, capped between 5% and 95% — it is an estimate, not a guarantee.
-  const probability = Math.round(Math.min(95, Math.max(5, 100 / (1 + Math.exp(-6 * (ratio - 0.85))))));
+  const probability = Math.round(Math.min(95, Math.max(5, 100 / (1 + Math.exp(-8 * (ratio - 0.95))))));
+
 
   return {
     netWorth: netWorth(d),
