@@ -1689,7 +1689,13 @@ function PartyPopper() {
           key={i}
           aria-hidden="true"
           initial={{ opacity: 0, x: 0, y: 0, scale: 0.4, rotate: 0 }}
-          animate={{ opacity: [0, 1, 1, 0], x: p.x, y: p.y, scale: 1, rotate: p.r }}
+          animate={{
+            opacity: [0, 1, 1, 0],
+            x: [0, p.x * 0.55, p.x, p.x * 1.1],
+            y: [0, p.y * 0.55, p.y, p.y * 1.25],
+            scale: [0.4, 1, 1, 0.75],
+            rotate: [0, p.r * 0.5, p.r, p.r * 1.15],
+          }}
           transition={{ duration: 0.9, delay: 0.18 + i * 0.03, ease: "easeOut", times: [0, 0.2, 0.7, 1] }}
           className="absolute h-1.5 w-1.5 rounded-[2px]"
           style={{ background: p.c }}
@@ -1698,7 +1704,12 @@ function PartyPopper() {
       <motion.span
         aria-hidden="true"
         initial={{ opacity: 0, scale: 0.2, rotate: -30, y: 6 }}
-        animate={{ opacity: 1, scale: [0.2, 1.35, 0.92, 1.08, 1], rotate: [-30, 14, -8, 4, 0], y: [6, -3, 1, 0, 0] }}
+        animate={{
+          opacity: [0, 1, 1, 1, 1],
+          scale: [0.2, 1.35, 0.92, 1.08, 1],
+          rotate: [-30, 14, -8, 4, 0],
+          y: [6, -3, 1, 0, 0],
+        }}
         transition={{ duration: 0.9, ease: "easeOut", times: [0, 0.3, 0.55, 0.78, 1] }}
         className="relative text-2xl leading-none"
       >
@@ -1707,6 +1718,7 @@ function PartyPopper() {
     </span>
   );
 }
+
 
 function SummaryScreen({
   data,
