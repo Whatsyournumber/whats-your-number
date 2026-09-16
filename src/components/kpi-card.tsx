@@ -141,7 +141,7 @@ export function KpiCard({
             <span className={cn("min-w-0 truncate whitespace-nowrap text-xs text-muted-foreground", hintClassName)}>
               {hint}
             </span>
-          )}
+          )
         )}
       </div>
     </motion.div>
