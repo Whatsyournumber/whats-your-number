@@ -33,6 +33,7 @@ import { Button } from "@/components/ui/button";
 import { NumberInput } from "@/components/ui/number-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import { useAuth } from "@/hooks/use-auth";
 import { useT } from "@/hooks/use-language";
 import { useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
@@ -160,7 +161,10 @@ function healthLabel(score: number) {
 /** Módulo de hipoteca: abonar, renegociar o invertir y su impacto en Your Number. */
 export function MortgageModule() {
   const t = useT();
+  const { user: authUser } = useAuth();
   const { profile, save } = useProfile();
+  // Clave por cuenta: una cuenta nueva no hereda la hipoteca de otra.
+  const storageKey = `whatsyournumber:mortgage:${authUser?.id ?? "anon"}`;
   const d = buildDataset(profile);
   const currency = profile.currency || "EUR";
   const fmt = (n: number) => (Number.isFinite(n) ? money(Math.round(n), currency) : "—");
