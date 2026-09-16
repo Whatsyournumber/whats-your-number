@@ -1720,7 +1720,7 @@ function PartyPopper() {
 }
 
 
-export function SummaryScreen({
+function SummaryScreen({
   data,
   life,
   plan,
