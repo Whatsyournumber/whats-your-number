@@ -726,10 +726,14 @@ function RetiroContent() {
               <Slider
                 className="mt-3"
                 min={0}
-                max={Math.max(500, Math.round(d.savings * 2) || 3000, Math.ceil((sp500Monthly * 2) / 50) * 50)}
+                max={Math.max(500, Math.round(d.savings * 2) || 3000, Math.ceil((aporteShown * 2) / 50) * 50)}
                 step={50}
                 value={[monthly]}
-                onValueChange={([v]) => setMonthly(v ?? 0)}
+                onValueChange={([v]) => {
+                  simTouched.current = true;
+                  setMonthly(v ?? 0);
+                }}
+
                 onValueCommit={([v]) => {
                   // En modo libertad financiera el aporte lo elige el usuario;
                   // lo persistimos para que cash-flow y demás pestañas lo lean.
