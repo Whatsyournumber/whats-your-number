@@ -549,16 +549,17 @@ function RetiroContent() {
           {t("Progreso hacia tu capital objetivo", "Progress toward your target capital")}
           {isGoal && goalNote ? `: ${goalNote}` : ""}
         </p>
-        <div className="relative mt-4 py-5">
+        <div className="relative mt-9 h-2.5 w-full">
           <div className="h-2.5 w-full overflow-hidden rounded-full bg-elevated">
-            <div className="wealth-gradient h-full rounded-full" style={{ width: `${Math.min(100, progressPct)}%` }} />
+            <div className="wealth-gradient h-full rounded-full" style={{ width: `${pctBar}%` }} />
           </div>
           <span
-            className="numeric absolute top-1/2 whitespace-nowrap text-3xl font-semibold md:text-4xl"
-            style={{
-              left: `${Math.min(100, Math.max(0, progressPct))}%`,
-              transform: `translate(${progressPct > 78 ? "calc(-100% - 12px)" : "12px"}, -50%)`,
-            }}
+            className="absolute bottom-2 h-2 w-px bg-white/15"
+            style={{ left: `${pctBar}%`, transform: "translateX(-50%)" }}
+          />
+          <span
+            className="numeric absolute bottom-4 whitespace-nowrap text-3xl font-semibold leading-none md:text-4xl"
+            style={{ left: `${pctBar}%`, transform: `translateX(${pctShift})` }}
           >
             {progressPct.toFixed(1)}%
           </span>
