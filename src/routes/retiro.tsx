@@ -128,18 +128,22 @@ function RetiroContent() {
   const targetNow = isGoal ? plan.targetCapital : liveNumber > 0 ? liveNumber : plan.targetCapital;
   const gap = targetNow - final.value;
 
-  // Aporte mensual necesario con rentabilidad histórica del S&P 500 (10% anual)
-  // para llegar a tu número antes de tu edad de retiro.
+  // Aporte mensual necesario para llegar a tu número antes de tu edad de retiro.
+  // Se usa el rendimiento REAL (10% histórico S&P 500 menos ~3% de inflación),
+  // porque tu número objetivo está expresado en dinero de hoy. Así el aporte baja
+  // cuanto más años tienes por delante, sin caer artificialmente a 0.
   const sp500Monthly = (() => {
     if (targetNow <= 0) return 0;
     const yrs = Math.max(1, retireAge - retirement.currentAge);
-    const mr = 0.1 / 12;
+    const realAnnual = 0.07;
+    const mr = Math.pow(1 + realAnnual, 1 / 12) - 1;
     const months = yrs * 12;
-    const fvCurrent = investable * Math.pow(1 + 0.1, yrs);
-    const remaining = Math.max(0, targetNow - fvCurrent);
+    const fvCurrent = investable * Math.pow(1 + realAnnual, yrs);
+    const remaining = targetNow - fvCurrent;
     if (remaining <= 0) return 0;
     return Math.ceil((remaining * mr) / (Math.pow(1 + mr, months) - 1));
   })();
+
 
   // El simulador arranca con el aporte mensual sugerido para llegar a tu número
   // a la edad de retiro elegida (al 10% del S&P 500). Después el usuario puede moverlo.
