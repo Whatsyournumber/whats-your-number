@@ -68,6 +68,8 @@ function RetiroContent() {
   const numberDirty = wantMonthly !== profile.desired_retirement_income || swr !== (profile.withdrawal_rate || 7);
 
   const [editing, setEditing] = useState(false);
+  const [editingAge, setEditingAge] = useState(false);
+  const [draftAge, setDraftAge] = useState(0);
 
   // Solo activos que generan retorno (excluye propiedades). Viene del detalle de "Mis datos".
   const investableFallback =
