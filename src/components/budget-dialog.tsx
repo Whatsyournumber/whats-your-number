@@ -129,18 +129,33 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[88vh] max-w-2xl overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>
-            {t("Objetivo de gastos mensual personalizado", "Personalized monthly spending goal")}
+      <DialogContent className="max-h-[88vh] max-w-2xl overflow-y-auto pt-0">
+        {/* Cabecera con el mismo lenguaje visual que las tarjetas del Dashboard: etiqueta + cifra grande. */}
+        <DialogHeader className="sticky top-0 z-10 -mx-6 space-y-1.5 bg-background/95 px-6 pb-4 pt-6 text-left backdrop-blur-sm">
+          <DialogTitle className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+
+            {t("Tu plan de gasto mensual", "Your monthly spending plan")}
           </DialogTitle>
-          <DialogDescription>
-            {t(
-              "Define cuánto quieres gastar al mes en cada categoría. La IA revisará si te pasaste de tu plan.",
-              "Set how much you want to spend each month per category. The AI will check if you went over your plan.",
-            )}
+          <p className="numeric text-3xl font-semibold leading-none tracking-tight">
+            {fmt(total)}
+            <span className="ml-1.5 text-xs font-normal tracking-normal text-muted-foreground">
+              {t("/mes", "/mo")}
+            </span>
+          </p>
+          <DialogDescription className="text-xs leading-4 text-muted-foreground">
+            <span className="sm:hidden">
+              {t("Cuánto quieres gastar en cada categoría", "What you want to spend per category")}
+            </span>
+            <span className="hidden sm:inline">
+              {t(
+                "Cuánto quieres gastar en cada categoría · la IA revisa si te pasas",
+                "What you want to spend per category · the AI checks if you go over",
+              )}
+            </span>
           </DialogDescription>
+
         </DialogHeader>
+
 
         <div className="space-y-4">
           {(["essentials", "lifestyle", "other"] as BudgetGroup[]).map((g) => {
@@ -302,16 +317,10 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
           </Button>
         )}
 
-        <div className="flex items-center justify-between border-t border-border/60 pt-3">
-          <div>
-            <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">{t("Tu objetivo", "Your goal")}</p>
-            <p className="numeric text-lg font-semibold">
-              {fmt(total)}
-              <span className="ml-1 text-xs font-normal text-muted-foreground">{t("/mes", "/mo")}</span>
-            </p>
-          </div>
+        <div className="flex items-center justify-end border-t border-border/60 pt-3">
           <Button
             type="button"
+            className="w-full sm:w-auto"
             onClick={() => {
               onSave(draft.filter((l) => Number.isFinite(l.amount)));
               onOpenChange(false);
@@ -321,6 +330,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
             {t("Guardar plan", "Save plan")}
           </Button>
         </div>
+
       </DialogContent>
     </Dialog>
   );
