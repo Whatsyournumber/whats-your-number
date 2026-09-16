@@ -53,19 +53,25 @@ function RetiroContent() {
 
 
   // Editor de "tu número": ingreso mensual deseado y tasa de retiro elegida.
-  const [wantMonthly, setWantMonthly] = useState(profile.desired_retirement_income);
+  // Si nunca guardaste un ingreso deseado, partimos del estimado del onboarding
+  // (tu ciudad y estilo de vida), no de tu gasto actual.
+  const baseDesired =
+    profile.desired_retirement_income ||
+    estimateDesiredIncome(profile, { currency: profile.currency });
+  const [wantMonthly, setWantMonthly] = useState(baseDesired);
   const [swr, setSwr] = useState(profile.withdrawal_rate || 7);
   useEffect(() => {
-    setWantMonthly(profile.desired_retirement_income);
+    setWantMonthly(baseDesired);
     setSwr(profile.withdrawal_rate || 7);
-  }, [profile.desired_retirement_income, profile.withdrawal_rate]);
+  }, [baseDesired, profile.withdrawal_rate]);
 
 
   const d = buildDataset(profile);
   const { retirement, fmt, fmtCompact, plan } = d;
 
   const liveNumber = Math.round((Math.max(0, wantMonthly) * 12) / (Math.min(15, Math.max(3, swr)) / 100));
-  const numberDirty = wantMonthly !== profile.desired_retirement_income || swr !== (profile.withdrawal_rate || 7);
+  const numberDirty = wantMonthly !== baseDesired || swr !== (profile.withdrawal_rate || 7);
+
 
   const [editing, setEditing] = useState(false);
   const [editingAge, setEditingAge] = useState(false);
