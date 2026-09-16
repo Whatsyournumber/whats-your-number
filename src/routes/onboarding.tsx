@@ -1830,20 +1830,21 @@ function SummaryScreen({
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3">
         {metrics.map((m, i) => (
           <motion.div
             key={m.label}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 * i }}
-            className="surface px-4 py-3.5"
+            className="surface flex min-h-[112px] flex-col justify-center px-5 py-4 sm:min-h-[116px]"
           >
+            <span className="mb-3 text-base leading-none" aria-hidden="true">{m.emoji}</span>
             <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
               <span className="sm:hidden">{m.short}</span>
               <span className="hidden sm:inline">{m.label}</span>
             </p>
-            <p className="numeric mt-1 text-lg font-semibold sm:text-xl">{m.value}</p>
+            <p className="numeric mt-1.5 text-lg font-semibold sm:text-xl">{m.value}</p>
           </motion.div>
         ))}
       </div>
