@@ -118,10 +118,11 @@ function RetiroContent() {
   // Sincroniza el simulador cuando el perfil termina de cargar o el usuario edita sus datos.
   // En libertad financiera arranca con la rentabilidad histórica del S&P 500 (10%).
   useEffect(() => {
-    if (isGoal || !simPrefilled.current) setMonthly(retirement.monthlyContribution);
+    if (isGoal) setMonthly(retirement.monthlyContribution);
     setRate(isGoal ? retirement.returnAnnualized : 10);
     setRetireAge(retirement.retireAge);
   }, [retirement.monthlyContribution, retirement.returnAnnualized, retirement.retireAge, isGoal]);
+
 
   useEffect(() => {
     setHorizonYears(defaultHorizon);
@@ -169,15 +170,16 @@ function RetiroContent() {
     );
   };
 
-  // El simulador arranca con el aporte mensual sugerido para llegar a tu número
-  // a la edad de retiro elegida (al 10% del S&P 500). Después el usuario puede moverlo.
-  const simPrefilled = useRef(false);
+  // El simulador arranca con el mismo aporte mensual que muestra la tarjeta
+  // (el sugerido al 10% del S&P 500 o el que guardaste). Se mantiene igual hasta
+  // que el usuario mueve el slider.
+  const simTouched = useRef(false);
   useEffect(() => {
-    if (isGoal || simPrefilled.current) return;
-    if (sp500Monthly <= 0) return;
-    simPrefilled.current = true;
-    setMonthly(sp500Monthly);
-  }, [sp500Monthly, isGoal]);
+    if (isGoal || simTouched.current) return;
+    if (aporteShown <= 0) return;
+    setMonthly(aporteShown);
+  }, [aporteShown, isGoal]);
+
   // Lo que de verdad apartaste este mes (tu ahorro mensual actual).
   const thisMonthContribution = Math.max(0, d.savings);
 
@@ -724,10 +726,14 @@ function RetiroContent() {
               <Slider
                 className="mt-3"
                 min={0}
-                max={Math.max(500, Math.round(d.savings * 2) || 3000, Math.ceil((sp500Monthly * 2) / 50) * 50)}
+                max={Math.max(500, Math.round(d.savings * 2) || 3000, Math.ceil((aporteShown * 2) / 50) * 50)}
                 step={50}
                 value={[monthly]}
-                onValueChange={([v]) => setMonthly(v ?? 0)}
+                onValueChange={([v]) => {
+                  simTouched.current = true;
+                  setMonthly(v ?? 0);
+                }}
+
                 onValueCommit={([v]) => {
                   // En modo libertad financiera el aporte lo elige el usuario;
                   // lo persistimos para que cash-flow y demás pestañas lo lean.
