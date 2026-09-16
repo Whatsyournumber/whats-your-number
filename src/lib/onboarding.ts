@@ -23,12 +23,23 @@ export type OnboardingData = {
   monthly_savings: number;
   fixed_housing: number;
   fixed_utilities: number;
+  fixed_groceries: number;
   fixed_insurance: number;
+  fixed_health: number;
   fixed_transport: number;
   fixed_education: number;
+  fixed_family: number;
+  fixed_debt: number;
   fixed_subscriptions: number;
   fixed_savings: number;
   fixed_other: number;
+  fixed_restaurants: number;
+  fixed_delivery: number;
+  fixed_travel: number;
+  fixed_nightlife: number;
+  fixed_shopping: number;
+  fixed_gym: number;
+  fixed_professional: number;
   assets_cash: number;
   assets_bank: number;
   assets_retirement: number;
@@ -71,12 +82,23 @@ export const emptyOnboarding: OnboardingData = {
   monthly_savings: 0,
   fixed_housing: 0,
   fixed_utilities: 0,
+  fixed_groceries: 0,
   fixed_insurance: 0,
+  fixed_health: 0,
   fixed_transport: 0,
   fixed_education: 0,
+  fixed_family: 0,
+  fixed_debt: 0,
   fixed_subscriptions: 0,
   fixed_savings: 0,
   fixed_other: 0,
+  fixed_restaurants: 0,
+  fixed_delivery: 0,
+  fixed_travel: 0,
+  fixed_nightlife: 0,
+  fixed_shopping: 0,
+  fixed_gym: 0,
+  fixed_professional: 0,
   assets_cash: 0,
   assets_bank: 0,
   assets_retirement: 0,
@@ -717,18 +739,61 @@ export function currencyDisplay(code: string, symbol?: string): string {
   return s && s !== code ? `${code} ${s}` : code;
 }
 
-/** Gastos fijos declarados en el onboarding, listos para la pestaña de Gastos. */
-export const FIXED_FIELDS = [
-  { key: "fixed_housing", es: "Hipoteca / Alquiler", en: "Mortgage / Rent", emoji: "\u{1F3E0}" },
-  
-  { key: "fixed_utilities", es: "Servicios (luz, agua, internet)", en: "Utilities (power, water, internet)", emoji: "\u{1F4A1}" },
-  { key: "fixed_insurance", es: "Seguros (salud, hogar, auto)", en: "Insurance (health, home, car)", emoji: "\u{1F6E1}\uFE0F" },
-  { key: "fixed_transport", es: "Transporte", en: "Transport", emoji: "\u{1F697}" },
-  { key: "fixed_education", es: "Educaci\u00f3n / Colegios", en: "Education / School", emoji: "\u{1F393}" },
-  { key: "fixed_subscriptions", es: "Suscripciones", en: "Subscriptions", emoji: "\u{1F4F1}" },
-  { key: "fixed_other", es: "Otros gastos fijos", en: "Other fixed expenses", emoji: "\u{1F9FE}" },
-] as const satisfies readonly { key: keyof OnboardingData; es: string; en: string; emoji: string }[];
+export type SpendPlanGroup = "essentials" | "lifestyle" | "other";
 
-export function totalFixedExpenses(d: Pick<OnboardingData, (typeof FIXED_FIELDS)[number]["key"]>) {
+/** Secciones del plan de gastos, en el orden en que se muestran. */
+export const SPEND_PLAN_GROUPS: ReadonlyArray<{ id: SpendPlanGroup; es: string; en: string }> = [
+  { id: "essentials", es: "Esenciales", en: "Essentials" },
+  { id: "lifestyle", es: "Estilo de vida", en: "Lifestyle" },
+  { id: "other", es: "Otros", en: "Other" },
+];
+
+/**
+ * Categorías del plan de gastos del onboarding. No son solo gastos fijos:
+ * cada persona anota su gasto mensual total aproximado por categoría.
+ * Las marcadas con `fixed: true` pasan además a la lista de gastos fijos
+ * de la pestaña de Gastos.
+ */
+export const SPEND_PLAN_FIELDS = [
+  { key: "fixed_housing", group: "essentials", fixed: true, emoji: "\u{1F3E0}", es: "Hipoteca / Alquiler", en: "Mortgage / Rent" },
+  { key: "fixed_utilities", group: "essentials", fixed: true, emoji: "\u{1F4A1}", es: "Servicios", en: "Utilities" },
+  { key: "fixed_groceries", group: "essentials", fixed: false, emoji: "\u{1F6D2}", es: "Supermercado", en: "Groceries" },
+  { key: "fixed_transport", group: "essentials", fixed: true, emoji: "\u{1F697}", es: "Transporte", en: "Transport" },
+  { key: "fixed_insurance", group: "essentials", fixed: true, emoji: "\u{1F6E1}\uFE0F", es: "Seguros", en: "Insurance" },
+  { key: "fixed_health", group: "essentials", fixed: false, emoji: "\u{1F3E5}", es: "Salud", en: "Health" },
+  { key: "fixed_education", group: "essentials", fixed: true, emoji: "\u{1F393}", es: "Educaci\u00f3n", en: "Education" },
+  { key: "fixed_family", group: "essentials", fixed: false, emoji: "\u{1F468}\u200D\u{1F469}\u200D\u{1F467}", es: "Familia", en: "Family" },
+  { key: "fixed_debt", group: "essentials", fixed: false, emoji: "\u{1F4B3}", es: "Deudas", en: "Debt" },
+
+  { key: "fixed_restaurants", group: "lifestyle", fixed: false, emoji: "\u{1F37D}\uFE0F", es: "Restaurantes", en: "Restaurants" },
+  { key: "fixed_delivery", group: "lifestyle", fixed: false, emoji: "\u{1F6F5}", es: "Delivery", en: "Delivery" },
+  { key: "fixed_travel", group: "lifestyle", fixed: false, emoji: "✈️", es: "Viajes", en: "Travel" },
+  { key: "fixed_nightlife", group: "lifestyle", fixed: false, emoji: "\u{1F389}", es: "Ocio", en: "Nightlife" },
+  { key: "fixed_shopping", group: "lifestyle", fixed: false, emoji: "\u{1F6CD}\uFE0F", es: "Compras", en: "Shopping" },
+  { key: "fixed_gym", group: "lifestyle", fixed: false, emoji: "\u{1F3CB}\uFE0F", es: "Gimnasio", en: "Gym" },
+  { key: "fixed_subscriptions", group: "lifestyle", fixed: true, emoji: "\u{1F4F1}", es: "Suscripciones", en: "Subscriptions" },
+
+  { key: "fixed_professional", group: "other", fixed: false, emoji: "\u{1F4BC}", es: "Profesionales", en: "Professional" },
+  { key: "fixed_other", group: "other", fixed: true, emoji: "\u{1F9FE}", es: "Otros", en: "Other" },
+] as const satisfies readonly {
+  key: keyof OnboardingData;
+  group: SpendPlanGroup;
+  fixed: boolean;
+  emoji: string;
+  es: string;
+  en: string;
+}[];
+
+export type SpendPlanKey = (typeof SPEND_PLAN_FIELDS)[number]["key"];
+
+/** Gastos fijos declarados en el onboarding, listos para la pestaña de Gastos. */
+export const FIXED_FIELDS = SPEND_PLAN_FIELDS.filter((f) => f.fixed);
+
+/** Gasto total mensual aproximado: la suma de todas las categorías del plan. */
+export function totalSpendPlan(d: Pick<OnboardingData, SpendPlanKey>) {
+  return SPEND_PLAN_FIELDS.reduce((s, f) => s + (Number(d[f.key]) || 0), 0);
+}
+
+export function totalFixedExpenses(d: Pick<OnboardingData, SpendPlanKey>) {
   return FIXED_FIELDS.reduce((s, f) => s + (Number(d[f.key]) || 0), 0);
 }
