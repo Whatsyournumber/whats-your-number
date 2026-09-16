@@ -37,7 +37,12 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
 
   useEffect(() => {
     if (!open) return;
-    setDraft(lines.length ? lines : DEFAULT_BUDGET_IDS.map((id) => ({ id, amount: 0 })));
+    let base = lines.length ? lines : DEFAULT_BUDGET_IDS.map((id) => ({ id, amount: 0 }));
+    // Salud ya no está entre las iniciales: si estaba sin monto, la sustituimos por Gimnasio.
+    if (!base.some((l) => l.id === "gym")) {
+      base = base.map((l) => (l.id === "health" && !l.amount ? { ...l, id: "gym" } : l));
+    }
+    setDraft(base);
     setAdding(false);
     setCustomName("");
     setEditingId(null);
@@ -126,7 +131,9 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[88vh] max-w-2xl overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{t("Objetivo de gasto personalizado", "Custom spending plan")}</DialogTitle>
+          <DialogTitle>
+            {t("Objetivo de gastos mensual personalizado", "Personalized monthly spending goal")}
+          </DialogTitle>
           <DialogDescription>
             {t(
               "Define cuánto quieres gastar al mes en cada categoría. La IA revisará si te pasaste de tu plan.",
