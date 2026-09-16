@@ -564,7 +564,7 @@ function RetiroContent() {
             {progressPct.toFixed(1)}%
           </span>
         </div>
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
           <p className="text-xs text-muted-foreground">
             {t("Te faltan", "You still need")} {fmt(Math.max(0, plan.targetCapital - investable))} {t("en inversiones que generen retorno.", "in return-generating investments.")}
           </p>
