@@ -68,6 +68,8 @@ function RetiroContent() {
   const numberDirty = wantMonthly !== profile.desired_retirement_income || swr !== (profile.withdrawal_rate || 7);
 
   const [editing, setEditing] = useState(false);
+  const [editingAge, setEditingAge] = useState(false);
+  const [draftAge, setDraftAge] = useState(0);
 
   // Solo activos que generan retorno (excluye propiedades). Viene del detalle de "Mis datos".
   const investableFallback =
@@ -122,6 +124,30 @@ function RetiroContent() {
   // El objetivo se compara contra tu meta activa (vivienda/negocio) o el número que editas en vivo.
   const targetNow = isGoal ? plan.targetCapital : liveNumber > 0 ? liveNumber : plan.targetCapital;
   const gap = targetNow - final.value;
+
+  // Aporte mensual necesario con rentabilidad histórica del S&P 500 (10% anual)
+  // para llegar a tu número antes de tu edad de retiro.
+  const sp500Monthly = (() => {
+    if (targetNow <= 0) return 0;
+    const yrs = Math.max(1, retireAge - retirement.currentAge);
+    const mr = 0.1 / 12;
+    const months = yrs * 12;
+    const fvCurrent = investable * Math.pow(1 + 0.1, yrs);
+    const remaining = Math.max(0, targetNow - fvCurrent);
+    if (remaining <= 0) return 0;
+    return Math.ceil((remaining * mr) / (Math.pow(1 + mr, months) - 1));
+  })();
+  // Lo que de verdad apartaste este mes (tu ahorro mensual actual).
+  const thisMonthContribution = Math.max(0, d.savings);
+
+  const commitAge = () => {
+    if (!draftAge || draftAge <= retirement.currentAge) return;
+    setEditingAge(false);
+    if (draftAge === profile.retire_age) return;
+    void save({ retire_age: draftAge }).then(() =>
+      toast.success(t("Edad de retiro actualizada", "Retirement age updated")),
+    );
+  };
 
   // Aporte mensual necesario para alcanzar el objetivo (negocio/vivienda) según lo que ya tienes,
   // la rentabilidad elegida y el plazo. En libertad financiera usa tu capacidad de ahorro real.
@@ -333,6 +359,89 @@ function RetiroContent() {
             </div>
           )}
         </motion.div>
+
+        {!isGoal && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.08, ease: "easeOut" }}
+            className={cn("surface relative overflow-hidden p-5", editingAge ? "ring-1 ring-primary/20" : "cursor-pointer hover:bg-elevated/40")}
+            onClick={() => {
+              if (!editingAge) {
+                setDraftAge(retireAge);
+                setEditingAge(true);
+              }
+            }}
+          >
+            <div className="relative flex items-start justify-between gap-3">
+              <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                {t("Edad de retiro", "Retirement age")}
+              </p>
+              <Pencil className="h-4 w-4 text-muted-foreground" />
+            </div>
+            {editingAge ? (
+              <div className="mt-3 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                <Input
+                  type="text"
+                  inputMode="numeric"
+                  autoFocus
+                  className="numeric h-10 w-24 text-xl font-semibold"
+                  value={draftAge ? String(draftAge) : ""}
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, "");
+                    setDraftAge(digits ? Number(digits) : 0);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape") setEditingAge(false);
+                    if (e.key === "Enter") commitAge();
+                  }}
+                />
+                <Button size="sm" className="rounded-full px-4" disabled={saving || draftAge <= retirement.currentAge} onClick={commitAge}>
+                  {saving ? t("Guardando…", "Saving…") : t("Guardar", "Save")}
+                </Button>
+              </div>
+            ) : (
+              <>
+                <p className="numeric relative mt-3 text-2xl font-semibold md:text-3xl">
+                  {retireAge} <span className="text-base font-medium text-muted-foreground">{t("años", "years")}</span>
+                </p>
+                <p className="relative mt-2 text-xs text-muted-foreground">
+                  {t("hoy tienes", "you are")} {retirement.currentAge} · {t("te quedan", "you have")} {Math.max(0, retireAge - retirement.currentAge)} {t("años", "years")}
+                </p>
+              </>
+            )}
+          </motion.div>
+        )}
+
+        {!isGoal && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.11, ease: "easeOut" }}
+            className="surface relative overflow-hidden p-5"
+          >
+            <div className="relative flex items-start justify-between gap-3">
+              <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                {t("Aporte mensual al 10%", "Monthly contribution at 10%")}
+              </p>
+              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">S&P 500</span>
+            </div>
+            <p className="numeric relative mt-3 text-2xl font-semibold md:text-3xl">{fmt(sp500Monthly)}</p>
+            <p className="relative mt-2 text-xs">
+              {t("Este mes aportaste", "This month you put in")}{" "}
+              <span className={cn("numeric font-semibold", thisMonthContribution >= sp500Monthly ? "text-positive" : "text-negative")}>
+                {fmt(thisMonthContribution)}
+              </span>
+              {sp500Monthly > 0 && (
+                <span className={cn("ml-1 font-medium", thisMonthContribution >= sp500Monthly ? "text-positive" : "text-negative")}>
+                  {thisMonthContribution >= sp500Monthly
+                    ? t("· vas en camino 🎯", "· on track 🎯")
+                    : `${t("· te faltan", "· you need")} ${fmt(sp500Monthly - thisMonthContribution)}`}
+                </span>
+              )}
+            </p>
+          </motion.div>
+        )}
 
         {goalMode === "business" && (
           <KpiCard
