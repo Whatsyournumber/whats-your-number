@@ -461,14 +461,61 @@ function RetiroContent() {
 
       </div>
       <div className="surface p-5">
-        <div className="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-          <span className="min-w-0 text-muted-foreground">
-            {t("Progreso hacia tu capital objetivo", "Progress toward your target capital")}
-            {isGoal && goalNote ? `: ${goalNote}` : ""}
-          </span>
-          <span className="numeric whitespace-nowrap font-semibold sm:text-right">
-            {fmt(investable)} / {fmt(plan.targetCapital)}
-          </span>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+          <div className="min-w-0">
+            <p className="text-sm text-muted-foreground">
+              {t("Progreso hacia tu capital objetivo", "Progress toward your target capital")}
+              {isGoal && goalNote ? `: ${goalNote}` : ""}
+            </p>
+            {!isGoal &&
+              (editingAge ? (
+                <div className="mt-1.5 flex items-center gap-2">
+                  <Input
+                    type="text"
+                    inputMode="numeric"
+                    autoFocus
+                    className="numeric h-9 w-20 text-lg font-semibold"
+                    value={draftAge ? String(draftAge) : ""}
+                    onChange={(e) => {
+                      const digits = e.target.value.replace(/\D/g, "");
+                      setDraftAge(digits ? Number(digits) : 0);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Escape") setEditingAge(false);
+                      if (e.key === "Enter") commitAge();
+                    }}
+                  />
+                  <Button size="sm" className="rounded-full px-4" disabled={saving || draftAge <= retirement.currentAge} onClick={commitAge}>
+                    {saving ? t("Guardando…", "Saving…") : t("Guardar", "Save")}
+                  </Button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDraftAge(retireAge);
+                    setEditingAge(true);
+                  }}
+                  className="mt-1.5 flex items-center gap-2 text-left"
+                  title={t("Editar edad de retiro", "Edit retirement age")}
+                >
+                  <span className="numeric text-3xl font-semibold md:text-4xl">
+                    {retireAge} <span className="text-base font-medium text-muted-foreground">{t("años", "years")}</span>
+                  </span>
+                  <Pencil className="h-4 w-4 shrink-0 text-muted-foreground" />
+                </button>
+              ))}
+          </div>
+          <div className="sm:text-right">
+            <p className="numeric whitespace-nowrap font-semibold">
+              {fmt(investable)} / {fmt(plan.targetCapital)}
+            </p>
+            {!isGoal && !editingAge && (
+              <p className="mt-1 text-xs text-muted-foreground">
+                {t("hoy tienes", "you are")} {retirement.currentAge} · {t("te quedan", "you have")} {Math.max(0, retireAge - retirement.currentAge)} {t("años", "years")}
+              </p>
+            )}
+          </div>
         </div>
         <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-elevated">
           <div className="wealth-gradient h-full rounded-full" style={{ width: `${Math.min(100, progressPct)}%` }} />
