@@ -760,10 +760,9 @@ export const SPEND_PLAN_FIELDS = [
   { key: "fixed_groceries", group: "essentials", fixed: false, emoji: "\u{1F6D2}", es: "Supermercado", en: "Groceries" },
   { key: "fixed_transport", group: "essentials", fixed: true, emoji: "\u{1F697}", es: "Transporte", en: "Transport" },
   { key: "fixed_insurance", group: "essentials", fixed: true, emoji: "\u{1F6E1}\uFE0F", es: "Seguros", en: "Insurance" },
-  { key: "fixed_health", group: "essentials", fixed: false, emoji: "\u{1F3E5}", es: "Salud", en: "Health" },
   { key: "fixed_education", group: "essentials", fixed: true, emoji: "\u{1F393}", es: "Educaci\u00f3n", en: "Education" },
-  { key: "fixed_family", group: "essentials", fixed: false, emoji: "\u{1F468}\u200D\u{1F469}\u200D\u{1F467}", es: "Familia", en: "Family" },
-  { key: "fixed_debt", group: "essentials", fixed: false, emoji: "\u{1F4B3}", es: "Deudas", en: "Debt" },
+  { key: "fixed_family", group: "essentials", fixed: false, kids: true, emoji: "\u{1F9F8}", es: "Ni\u00f1os", en: "Kids" },
+
 
   { key: "fixed_restaurants", group: "lifestyle", fixed: false, emoji: "\u{1F37D}\uFE0F", es: "Restaurantes", en: "Restaurants" },
   { key: "fixed_delivery", group: "lifestyle", fixed: false, emoji: "\u{1F6F5}", es: "Delivery", en: "Delivery" },
@@ -773,12 +772,13 @@ export const SPEND_PLAN_FIELDS = [
   { key: "fixed_gym", group: "lifestyle", fixed: false, emoji: "\u{1F3CB}\uFE0F", es: "Gimnasio", en: "Gym" },
   { key: "fixed_subscriptions", group: "lifestyle", fixed: true, emoji: "\u{1F4F1}", es: "Suscripciones", en: "Subscriptions" },
 
-  { key: "fixed_professional", group: "other", fixed: false, emoji: "\u{1F4BC}", es: "Profesionales", en: "Professional" },
   { key: "fixed_other", group: "other", fixed: true, emoji: "\u{1F9FE}", es: "Otros", en: "Other" },
 ] as const satisfies readonly {
   key: keyof OnboardingData;
   group: SpendPlanGroup;
   fixed: boolean;
+  /** Solo se muestra cuando hay pareja o hijos. */
+  kids?: boolean;
   emoji: string;
   es: string;
   en: string;

@@ -240,6 +240,9 @@ function OnboardingPage() {
   const hasPartner = life.marital_status === "Casado" || life.marital_status === "En pareja";
   // Análisis de hogar: pedimos ingresos y gastos de las dos personas.
   const household = hasPartner && life.analysis_scope === "pareja";
+  // La fila de Niños solo aparece si hay pareja, hijos o planes de tenerlos.
+  const showKidsSpend =
+    hasPartner || (life.children !== "" && life.children !== "0") || life.plans_children === "Sí";
   // Las tasas del día alimentan la conversión del objetivo estimado.
   const { updatedAt: fxUpdatedAt } = useFxRates();
   const desiredIncome = useMemo(
@@ -1050,7 +1053,9 @@ function OnboardingPage() {
                     )}
                   </p>
                   {SPEND_PLAN_GROUPS.map((g) => {
-                    const rows = SPEND_PLAN_FIELDS.filter((f) => f.group === g.id);
+                    const rows = SPEND_PLAN_FIELDS.filter(
+                      (f) => f.group === g.id && (!("kids" in f && f.kids) || showKidsSpend),
+                    );
                     if (!rows.length) return null;
                     return (
                       <div key={g.id} className="mt-6">
