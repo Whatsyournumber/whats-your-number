@@ -227,7 +227,6 @@ function Dashboard() {
   const spendPlanUsed = hasSpendTarget && spendTarget > 0
     ? Math.round((current.expenses / spendTarget) * 100)
     : 0;
-  const spendPlanTone = spendPlanUsed <= 100 ? "text-positive" : "text-negative";
   const spendPlanBadge = spendPlanUsed <= 100
     ? "bg-positive/12 text-positive"
     : "bg-negative/12 text-negative";
