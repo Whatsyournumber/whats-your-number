@@ -772,12 +772,13 @@ export const SPEND_PLAN_FIELDS = [
   { key: "fixed_gym", group: "lifestyle", fixed: false, emoji: "\u{1F3CB}\uFE0F", es: "Gimnasio", en: "Gym" },
   { key: "fixed_subscriptions", group: "lifestyle", fixed: true, emoji: "\u{1F4F1}", es: "Suscripciones", en: "Subscriptions" },
 
-  { key: "fixed_professional", group: "other", fixed: false, emoji: "\u{1F4BC}", es: "Profesionales", en: "Professional" },
   { key: "fixed_other", group: "other", fixed: true, emoji: "\u{1F9FE}", es: "Otros", en: "Other" },
 ] as const satisfies readonly {
   key: keyof OnboardingData;
   group: SpendPlanGroup;
   fixed: boolean;
+  /** Solo se muestra cuando hay pareja o hijos. */
+  kids?: boolean;
   emoji: string;
   es: string;
   en: string;
