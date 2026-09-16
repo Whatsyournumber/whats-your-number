@@ -1153,9 +1153,9 @@ function OnboardingPage() {
 
 
         {step === 9 && (
-          <div className="mt-8">
-            <Button variant="ghost" size="lg" className="rounded-full" onClick={() => go(-1)}>
-              <ArrowLeft className="mr-2 h-4 w-4" /> {t("Atrás", "Back")}
+          <div className="mt-3">
+            <Button variant="ghost" size="sm" className="rounded-full" onClick={() => go(-1)}>
+              <ArrowLeft className="mr-2 h-3.5 w-3.5" /> {t("Atrás", "Back")}
             </Button>
           </div>
         )}
