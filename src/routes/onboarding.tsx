@@ -1879,7 +1879,7 @@ function SummaryScreen({
         <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
           ✨ {t("Tus 4 acciones", "Your 4 actions")}
         </p>
-        <div className="mt-2.5 flex flex-col gap-2.5">
+        <div className="mt-2.5 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
           {actions.map((a, i) => (
             <motion.div
               key={a.title}
