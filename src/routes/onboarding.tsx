@@ -1670,6 +1670,44 @@ function BuildingScreen({ onDone }: { onDone: () => void }) {
 
 /* ───────────────────────── Resumen ───────────────────────── */
 
+const CONFETTI = [
+  { x: -26, y: -18, c: "var(--color-chart-1)", r: -40 },
+  { x: -12, y: -30, c: "var(--color-chart-2)", r: 25 },
+  { x: 6, y: -34, c: "var(--color-chart-3)", r: -15 },
+  { x: 22, y: -22, c: "var(--color-chart-4)", r: 50 },
+  { x: 32, y: -4, c: "var(--color-chart-5)", r: -60 },
+  { x: -32, y: -6, c: "var(--color-chart-6)", r: 35 },
+  { x: -18, y: -12, c: "var(--color-chart-7)", r: -25 },
+  { x: 16, y: -14, c: "var(--color-chart-8)", r: 60 },
+];
+
+function PartyPopper() {
+  return (
+    <span className="relative inline-flex h-9 w-9 shrink-0 items-center justify-center align-middle">
+      {CONFETTI.map((p, i) => (
+        <motion.span
+          key={i}
+          aria-hidden="true"
+          initial={{ opacity: 0, x: 0, y: 0, scale: 0.4, rotate: 0 }}
+          animate={{ opacity: [0, 1, 1, 0], x: p.x, y: p.y, scale: 1, rotate: p.r }}
+          transition={{ duration: 0.9, delay: 0.18 + i * 0.03, ease: "easeOut", times: [0, 0.2, 0.7, 1] }}
+          className="absolute h-1.5 w-1.5 rounded-[2px]"
+          style={{ background: p.c }}
+        />
+      ))}
+      <motion.span
+        aria-hidden="true"
+        initial={{ opacity: 0, scale: 0.2, rotate: -30, y: 6 }}
+        animate={{ opacity: 1, scale: [0.2, 1.35, 0.92, 1.08, 1], rotate: [-30, 14, -8, 4, 0], y: [6, -3, 1, 0, 0] }}
+        transition={{ duration: 0.9, ease: "easeOut", times: [0, 0.3, 0.55, 0.78, 1] }}
+        className="relative text-2xl leading-none"
+      >
+        🎉
+      </motion.span>
+    </span>
+  );
+}
+
 function SummaryScreen({
   data,
   life,
