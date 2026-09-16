@@ -168,15 +168,10 @@ function RetiroContent() {
   const simPrefilled = useRef(false);
   useEffect(() => {
     if (isGoal || simPrefilled.current) return;
-    // Si ya tienes un aporte guardado, el simulador respeta el tuyo.
-    if (savedContribution > 0) {
-      simPrefilled.current = true;
-      return;
-    }
     if (sp500Monthly <= 0) return;
     simPrefilled.current = true;
     setMonthly(sp500Monthly);
-  }, [sp500Monthly, isGoal, savedContribution]);
+  }, [sp500Monthly, isGoal]);
   // Lo que de verdad apartaste este mes (tu ahorro mensual actual).
   const thisMonthContribution = Math.max(0, d.savings);
 
