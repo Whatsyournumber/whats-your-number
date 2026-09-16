@@ -1883,21 +1883,19 @@ function SummaryScreen({
       </div>
 
       <div className="surface p-5">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
-            <p className="text-[10px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
-            <p className="numeric mt-1 text-3xl font-semibold">{money(plan.targetCapital, currency)}</p>
+            <p className="numeric text-3xl font-semibold sm:text-4xl">{money(plan.targetCapital, currency)}</p>
+            <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
             <p className="mt-1.5 text-xs leading-snug text-muted-foreground">{numberNote}</p>
           </div>
           <div className="shrink-0 sm:text-right">
-            <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-              📅 {t("Libertad financiera", "Financial freedom")}
-            </p>
-            <p className="numeric mt-1 text-2xl font-semibold text-primary">
+            <p className="numeric text-2xl font-semibold text-primary">
               {plan.mode === "freedom"
                 ? `${plan.freedomAge} ${t("años", "yrs")}`
                 : plan.monthsToGoal > 0
                   ? `${Math.max(1, Math.ceil(plan.monthsToGoal / 12))} ${t("años", "yrs")}`
+
                   : t("Listo", "Ready")}
             </p>
             <p className="mt-1.5 text-xs leading-snug text-muted-foreground">{freedomNote}</p>
