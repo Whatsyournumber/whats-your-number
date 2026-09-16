@@ -1794,7 +1794,7 @@ function SummaryScreen({
           </motion.div>
         ))}
       </div>
-    <div className="surface p-5">
+      <div className="surface p-5">
         <div className="flex items-end justify-between gap-4">
           <div className="min-w-0">
             <p className="text-[10px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
@@ -1829,7 +1829,7 @@ function SummaryScreen({
             />
           </div>
         </div>
-    </div>
+      </div>
 
       <div>
         <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
