@@ -228,12 +228,15 @@ function Dashboard() {
     ? Math.round((current.expenses / spendTarget) * 100)
     : 0;
   const spendPlanTone = spendPlanUsed <= 100 ? "text-positive" : "text-negative";
+  const spendPlanBadge = spendPlanUsed <= 100
+    ? "bg-positive/12 text-positive"
+    : "bg-negative/12 text-negative";
   const spendPlanHint = hasSpendTarget && spendTarget > 0
     ? (
-        <>
-          {t("Plan", "Plan")} <span className={cn("font-semibold", spendPlanTone)}>{fmt(spendTarget)}</span>
-          {" · "}<span className={cn("font-semibold", spendPlanTone)}>{spendPlanUsed}%</span> {t("usado", "used")}
-        </>
+        <span className="inline-flex items-center gap-1.5">
+          {t("Plan", "Plan")} <span className={cn("rounded-full px-2 py-0.5 font-semibold", spendPlanBadge)}>{fmt(spendTarget)}</span>
+          <span className={cn("rounded-full px-2 py-0.5 font-semibold", spendPlanBadge)}>{spendPlanUsed}%</span> {t("usado", "used")}
+        </span>
       )
     : undefined;
 
@@ -283,19 +286,20 @@ function Dashboard() {
     if (minRetirementMonthly > 0) {
       const isCovered = current.savings >= minRetirementMonthly;
       const tone = isCovered ? "text-positive" : "text-negative";
+      const badge = isCovered ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative";
       return (
-        <>
-          {t("Ahorra", "Save")} <span className={cn("font-semibold", tone)}>{fmt(minRetirementMonthly)}</span>
+        <span className="inline-flex items-center gap-1.5">
+          {t("Ahorra", "Save")} <span className={cn("rounded-full px-2 py-0.5 font-semibold", badge)}>{fmt(minRetirementMonthly)}</span>
           {t("/mes · retiro a los ", "/mo · retire at ")}
-          <span className={cn("font-semibold", tone)}>{retireAgeChosen}</span>
-        </>
+          <span className={cn("rounded-full px-2 py-0.5 font-semibold", badge, tone)}>{retireAgeChosen}</span>
+        </span>
       );
     }
     return (
-      <>
+      <span className="inline-flex items-center gap-1.5">
         {t("Retiro a los ", "Retirement at ")}
-        <span className="font-semibold text-positive">{retireAgeChosen}</span> {t("cubierto", "covered")}
-      </>
+        <span className="rounded-full bg-positive/12 px-2 py-0.5 font-semibold text-positive">{retireAgeChosen}</span> {t("cubierto", "covered")}
+      </span>
     );
   })();
 
@@ -366,32 +370,32 @@ function Dashboard() {
       const rate = savingsRate;
       if (rate >= 20) {
         return (
-          <>
-            {t("Puedes ahorrar/invertir", "You can save/invest")} <span className="font-semibold text-positive">{rate.toFixed(0)}%</span> {t("de tu ingreso", "of your income")}
-          </>
+          <span className="inline-flex items-center gap-1.5">
+            {t("Puedes ahorrar/invertir", "You can save/invest")} <span className="rounded-full bg-positive/12 px-2 py-0.5 font-semibold text-positive">{rate.toFixed(0)}%</span> {t("de tu ingreso", "of your income")}
+          </span>
         );
       }
       return (
-        <>
-          {t("Solo", "Only")} <span className="font-semibold text-negative">{rate.toFixed(0)}%</span>
-          {t(" · genera extra para el ", " · find extra for the ")}<span className="font-semibold text-negative">20%</span>
-        </>
+        <span className="inline-flex items-center gap-1.5">
+          {t("Solo", "Only")} <span className="rounded-full bg-negative/12 px-2 py-0.5 font-semibold text-negative">{rate.toFixed(0)}%</span>
+          {t(" · genera extra para el ", " · find extra for the ")}<span className="rounded-full bg-negative/12 px-2 py-0.5 font-semibold text-negative">20%</span>
+        </span>
       );
     }
     const deficit = current.expenses - current.income;
     return (
-      <>
-        {t("Faltan", "Short")} <span className="font-semibold text-negative">{fmt(deficit)}</span>{t("/mes · necesitas extra", "/mo · you need extra")}
-      </>
+      <span className="inline-flex items-center gap-1.5">
+        {t("Faltan", "Short")} <span className="rounded-full bg-negative/12 px-2 py-0.5 font-semibold text-negative">{fmt(deficit)}</span>{t("/mes · necesitas extra", "/mo · you need extra")}
+      </span>
     );
   })();
 
   const savingsRateHint =
     current.income <= 0
-      ? <>{t("Mínimo", "Minimum")} <span className="font-semibold text-negative">20%</span> {t("del ingreso", "of income")}</>
+      ? <span className="inline-flex items-center gap-1.5">{t("Mínimo", "Minimum")} <span className="rounded-full bg-negative/12 px-2 py-0.5 font-semibold text-negative">20%</span> {t("del ingreso", "of income")}</span>
       : savingsRate >= 20
-        ? <>{t("Por encima del", "Above the")} <span className="font-semibold text-positive">20%</span> {t("mínimo", "minimum")}</>
-        : <>{t("Vas muy justo · busca extra para el", "Busca extra para llegar al")} <span className="font-semibold text-negative">20%</span></>;
+        ? <span className="inline-flex items-center gap-1.5">{t("Por encima del", "Above the")} <span className="rounded-full bg-positive/12 px-2 py-0.5 font-semibold text-positive">20%</span> {t("mínimo", "minimum")}</span>
+        : <span className="inline-flex items-center gap-1.5">{t("Vas muy justo · busca extra para el", "Busca extra para llegar al")} <span className="rounded-full bg-negative/12 px-2 py-0.5 font-semibold text-negative">20%</span></span>;
 
 
   const insights = buildInsights(plan, profile, profile, d.currency, lang);
