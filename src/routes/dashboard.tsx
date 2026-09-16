@@ -259,7 +259,8 @@ function Dashboard() {
   useEffect(() => {
     let stored = { balance: 0, rate: 0, term: 0 };
     try {
-      const raw = window.localStorage.getItem("whatsyournumber:mortgage");
+      // Clave por cuenta: una cuenta nueva no hereda la hipoteca de otra.
+      const raw = window.localStorage.getItem(`whatsyournumber:mortgage:${profileUserId}`);
       if (raw) {
         const parsed = JSON.parse(raw);
         stored = {
