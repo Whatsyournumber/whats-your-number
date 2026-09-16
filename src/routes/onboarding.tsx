@@ -18,6 +18,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { SPEND_PLAN_FIELDS, SPEND_PLAN_GROUPS, totalSpendPlan, type SpendPlanKey } from "@/lib/onboarding";
+import { seedSpendPlanFromOnboarding } from "@/lib/spend-plan-seed";
 import { StatementImporter } from "@/components/statement-importer";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -269,6 +270,8 @@ function OnboardingPage() {
   const finish = () => {
     setStep(SUMMARY_STEP);
     void persist({ completed: true, completed_at: new Date().toISOString(), desired_retirement_income: desiredIncome });
+    // El plan del onboarding queda listo como plan de gastos personalizado.
+    seedSpendPlanFromOnboarding(user?.id ?? null, data);
     // Sin prueba automática: toda cuenta nueva entra en el plan gratis.
   };
 
