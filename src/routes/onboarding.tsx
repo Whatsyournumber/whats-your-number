@@ -1705,6 +1705,9 @@ function SummaryScreen({
     years: Math.max(1, plan.yearsLeft),
   });
   const extra = Math.max(0, Math.round(needed - savings));
+  const liquidCash = Math.max(0, data.assets_cash + data.assets_bank);
+  const emergencyTarget = Math.round(plan.expenses * 6);
+  const emergencyGap = Math.max(0, emergencyTarget - liquidCash);
 
   const actions = [
     {
@@ -1746,6 +1749,20 @@ function SummaryScreen({
               "You already cover the contribution for your number; every extra euro speeds it up.",
             ),
     },
+    {
+      n: 4,
+      title: t("Ten tu fondo de emergencia", "Build your emergency fund"),
+      text:
+        emergencyGap > 0
+          ? t(
+              `Necesitas ${money(emergencyTarget, currency)} (6 meses); tienes ${money(liquidCash, currency)} en efectivo y bancos.`,
+              `You need ${money(emergencyTarget, currency)} (6 months); you hold ${money(liquidCash, currency)} in cash and banks.`,
+            )
+          : t(
+              `Cubierto: ${money(liquidCash, currency)} en efectivo y bancos, más de 6 meses de gastos.`,
+              `Covered: ${money(liquidCash, currency)} in cash and banks, over 6 months of expenses.`,
+            ),
+    },
   ];
 
   return (
@@ -1761,26 +1778,24 @@ function SummaryScreen({
         </p>
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-2">
-        <div className="flex flex-col gap-3">
-          <div className="grid grid-cols-2 gap-2">
-            {metrics.map((m, i) => (
-              <motion.div
-                key={m.label}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 * i }}
-                className="surface px-4 py-3"
-              >
-                <p className="truncate text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                  {m.emoji} {m.label}
-                </p>
-                <p className="numeric mt-1 text-lg font-semibold">{m.value}</p>
-              </motion.div>
-            ))}
-          </div>
-
-          <div className="surface p-5">
+      <div className="flex flex-col gap-3">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {metrics.map((m, i) => (
+            <motion.div
+              key={m.label}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 * i }}
+              className="surface px-4 py-3"
+            >
+              <p className="truncate text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                {m.emoji} {m.label}
+              </p>
+              <p className="numeric mt-1 text-lg font-semibold">{m.value}</p>
+            </motion.div>
+          ))}
+        </div>
+        <div className="surface p-5">
             <div className="flex items-end justify-between gap-4">
               <div className="min-w-0">
                 <p className="text-[10px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
@@ -1815,13 +1830,12 @@ function SummaryScreen({
                 />
               </div>
             </div>
-          </div>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-            ✨ {t("Tus 3 acciones", "Your 3 actions")}
-          </p>
+        <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+          ✨ {t("Tus 4 acciones", "Your 4 actions")}
+        </p>
+        <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
           {actions.map((a, i) => (
             <motion.div
               key={a.n}
