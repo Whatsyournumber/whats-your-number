@@ -267,7 +267,7 @@ export function MortgageModule() {
       setS((prev) => {
         const next = { ...prev, payment: nextPayment };
         try {
-          window.localStorage.setItem(KEY, JSON.stringify(next));
+          window.localStorage.setItem(storageKey, JSON.stringify(next));
         } catch {
           /* ignore */
         }
@@ -296,7 +296,7 @@ export function MortgageModule() {
     const next = { ...s, ...patch };
     setS(next);
     try {
-      window.localStorage.setItem(KEY, JSON.stringify(next));
+      window.localStorage.setItem(storageKey, JSON.stringify(next));
     } catch {
       /* ignore */
     }
