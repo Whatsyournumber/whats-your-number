@@ -108,11 +108,12 @@ function RetiroContent() {
   const [horizonYears, setHorizonYears] = useState(defaultHorizon);
 
   // Sincroniza el simulador cuando el perfil termina de cargar o el usuario edita sus datos.
+  // En libertad financiera arranca con la rentabilidad histórica del S&P 500 (10%).
   useEffect(() => {
     setMonthly(retirement.monthlyContribution);
-    setRate(retirement.returnAnnualized);
+    setRate(isGoal ? retirement.returnAnnualized : 10);
     setRetireAge(retirement.retireAge);
-  }, [retirement.monthlyContribution, retirement.returnAnnualized, retirement.retireAge]);
+  }, [retirement.monthlyContribution, retirement.returnAnnualized, retirement.retireAge, isGoal]);
 
   useEffect(() => {
     setHorizonYears(defaultHorizon);
