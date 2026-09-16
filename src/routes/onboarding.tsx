@@ -1050,7 +1050,9 @@ function OnboardingPage() {
                     )}
                   </p>
                   {SPEND_PLAN_GROUPS.map((g) => {
-                    const rows = SPEND_PLAN_FIELDS.filter((f) => f.group === g.id);
+                    const rows = SPEND_PLAN_FIELDS.filter(
+                      (f) => f.group === g.id && (!("kids" in f && f.kids) || showKidsSpend),
+                    );
                     if (!rows.length) return null;
                     return (
                       <div key={g.id} className="mt-6">
