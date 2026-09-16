@@ -232,7 +232,7 @@ export function MortgageModule() {
       setS((prev) => {
         if (prev.balance === 0) return prev;
         try {
-          window.localStorage.removeItem(KEY);
+          window.localStorage.removeItem(storageKey);
         } catch {
           /* ignore */
         }
@@ -248,7 +248,7 @@ export function MortgageModule() {
       if (prev.balance === mBalance && prev.rate === rate && prev.term === term) return prev;
       const next = { ...prev, balance: mBalance, rate, term, payment };
       try {
-        window.localStorage.setItem(KEY, JSON.stringify(next));
+        window.localStorage.setItem(storageKey, JSON.stringify(next));
       } catch {
         /* ignore */
       }
