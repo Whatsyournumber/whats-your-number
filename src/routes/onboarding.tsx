@@ -1670,6 +1670,56 @@ function BuildingScreen({ onDone }: { onDone: () => void }) {
 
 /* ───────────────────────── Resumen ───────────────────────── */
 
+const CONFETTI = [
+  { x: -26, y: -18, c: "var(--color-chart-1)", r: -40 },
+  { x: -12, y: -30, c: "var(--color-chart-2)", r: 25 },
+  { x: 6, y: -34, c: "var(--color-chart-3)", r: -15 },
+  { x: 22, y: -22, c: "var(--color-chart-4)", r: 50 },
+  { x: 32, y: -4, c: "var(--color-chart-5)", r: -60 },
+  { x: -32, y: -6, c: "var(--color-chart-6)", r: 35 },
+  { x: -18, y: -12, c: "var(--color-chart-7)", r: -25 },
+  { x: 16, y: -14, c: "var(--color-chart-8)", r: 60 },
+];
+
+function PartyPopper() {
+  return (
+    <span className="relative inline-flex h-9 w-9 shrink-0 items-center justify-center align-middle">
+      {CONFETTI.map((p, i) => (
+        <motion.span
+          key={i}
+          aria-hidden="true"
+          initial={{ opacity: 0, x: 0, y: 0, scale: 0.4, rotate: 0 }}
+          animate={{
+            opacity: [0, 1, 1, 0],
+            x: [0, p.x * 0.55, p.x, p.x * 1.1],
+            y: [0, p.y * 0.55, p.y, p.y * 1.25],
+            scale: [0.4, 1, 1, 0.75],
+            rotate: [0, p.r * 0.5, p.r, p.r * 1.15],
+          }}
+          transition={{ duration: 0.9, delay: 0.18 + i * 0.03, ease: "easeOut", times: [0, 0.2, 0.7, 1] }}
+          className="absolute h-1.5 w-1.5 rounded-[2px]"
+          style={{ background: p.c }}
+        />
+      ))}
+      <motion.span
+        aria-hidden="true"
+        initial={{ opacity: 0, scale: 0.2, rotate: -30, y: 6 }}
+        animate={{
+          opacity: [0, 1, 1, 1, 1],
+          scale: [0.2, 1.35, 0.92, 1.08, 1],
+          rotate: [-30, 14, -8, 4, 0],
+          y: [6, -3, 1, 0, 0],
+        }}
+        transition={{ duration: 0.9, ease: "easeOut", times: [0, 0.3, 0.55, 0.78, 1] }}
+        className="relative text-2xl leading-none"
+      >
+        🎉
+      </motion.span>
+    </span>
+  );
+}
+
+
 function SummaryScreen({
   data,
   life,
@@ -1806,18 +1856,24 @@ function SummaryScreen({
     },
   ];
 
+  const firstName = (data.full_name || "").trim().split(/\s+/)[0] ?? "";
+
   return (
     <div className="flex flex-col gap-4">
-      <div className="text-center">
-        <h2 className="font-display text-2xl font-semibold sm:text-3xl">
-          🎉 {t("Tu Número está listo.", "Your Number is ready.")}
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {data.full_name
-            ? t(`${data.full_name}, esto entendió la IA de tus finanzas.`, `${data.full_name}, this is what the AI understood.`)
+      <div className="flex flex-col items-center gap-1.5 text-center">
+        <div className="flex items-center justify-center gap-2">
+          <PartyPopper />
+          <h2 className="font-display text-2xl font-semibold sm:text-3xl">
+            {t("Tu Número está listo.", "Your Number is ready.")}
+          </h2>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          {firstName
+            ? t(`${firstName}, esto entendió la IA de tus finanzas.`, `${firstName}, this is what the AI understood.`)
             : t("Esto entendió la IA de tus finanzas.", "This is what the AI understood about your finances.")}
         </p>
       </div>
+
 
       <div className="grid grid-cols-2 gap-3">
         {metrics.map((m, i) => (
@@ -1839,25 +1895,26 @@ function SummaryScreen({
       </div>
 
       <div className="surface p-5">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
-            <p className="text-[10px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
-            <p className="numeric mt-1 text-3xl font-semibold">{money(plan.targetCapital, currency)}</p>
+            <p className="numeric text-3xl font-semibold sm:text-4xl">{money(plan.targetCapital, currency)}</p>
+            <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
             <p className="mt-1.5 text-xs leading-snug text-muted-foreground">{numberNote}</p>
           </div>
           <div className="shrink-0 sm:text-right">
-            <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-              📅 {t("Libertad financiera", "Financial freedom")}
-            </p>
-            <p className="numeric mt-1 text-2xl font-semibold text-primary">
+            <p className="numeric text-2xl font-semibold text-primary">
               {plan.mode === "freedom"
                 ? `${plan.freedomAge} ${t("años", "yrs")}`
                 : plan.monthsToGoal > 0
                   ? `${Math.max(1, Math.ceil(plan.monthsToGoal / 12))} ${t("años", "yrs")}`
                   : t("Listo", "Ready")}
             </p>
+            <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              📅 {t("Libertad financiera", "Financial freedom")}
+            </p>
             <p className="mt-1.5 text-xs leading-snug text-muted-foreground">{freedomNote}</p>
           </div>
+
         </div>
         <div className="mt-4">
           <div className="flex items-center justify-between text-[11px] text-muted-foreground">
