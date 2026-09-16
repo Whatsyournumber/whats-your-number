@@ -62,6 +62,7 @@ import { Route as EnFinanzasParaNinosRouteImport } from './routes/en.finanzas-pa
 import { Route as NinosIndexRouteImport } from './routes/ninos/index'
 import { Route as NinosOnboardingRouteImport } from './routes/ninos/onboarding'
 import { Route as NinosPadresRouteImport } from './routes/ninos/padres'
+import { Route as NinosPlanPreviewRouteImport } from './routes/ninos.plan-preview'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as ApiPublicDistributeNewPostsRouteImport } from './routes/api/public/distribute-new-posts'
@@ -352,6 +353,11 @@ const NinosPadresRoute = NinosPadresRouteImport.update({
   path: '/padres',
   getParentRoute: () => NinosRouteRoute,
 } as any)
+const NinosPlanPreviewRoute = NinosPlanPreviewRouteImport.update({
+  id: '/plan-preview',
+  path: '/plan-preview',
+  getParentRoute: () => NinosRouteRoute,
+} as any)
 const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
   id: '/.lovable/oauth/consent',
   path: '/.lovable/oauth/consent',
@@ -499,6 +505,7 @@ export interface FileRoutesByFullPath {
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
+  '/ninos/plan-preview': typeof NinosPlanPreviewRoute
   '/blog/': typeof BlogIndexRoute
   '/en/': typeof EnIndexRoute
   '/ninos/': typeof NinosIndexRoute
@@ -568,6 +575,7 @@ export interface FileRoutesByTo {
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
+  '/ninos/plan-preview': typeof NinosPlanPreviewRoute
   '/blog': typeof BlogIndexRoute
   '/en': typeof EnIndexRoute
   '/ninos': typeof NinosIndexRoute
@@ -642,6 +650,7 @@ export interface FileRoutesById {
   '/en/finanzas-para-ninos': typeof EnFinanzasParaNinosRoute
   '/ninos/onboarding': typeof NinosOnboardingRoute
   '/ninos/padres': typeof NinosPadresRoute
+  '/ninos/plan-preview': typeof NinosPlanPreviewRoute
   '/blog/': typeof BlogIndexRoute
   '/en/': typeof EnIndexRoute
   '/ninos/': typeof NinosIndexRoute
@@ -717,6 +726,7 @@ export interface FileRouteTypes {
     | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
+    | '/ninos/plan-preview'
     | '/blog/'
     | '/en/'
     | '/ninos/'
@@ -786,6 +796,7 @@ export interface FileRouteTypes {
     | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
+    | '/ninos/plan-preview'
     | '/blog'
     | '/en'
     | '/ninos'
@@ -859,6 +870,7 @@ export interface FileRouteTypes {
     | '/en/finanzas-para-ninos'
     | '/ninos/onboarding'
     | '/ninos/padres'
+    | '/ninos/plan-preview'
     | '/blog/'
     | '/en/'
     | '/ninos/'
@@ -1305,6 +1317,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NinosPadresRouteImport
       parentRoute: typeof NinosRouteRoute
     }
+    '/ninos/plan-preview': {
+      id: '/ninos/plan-preview'
+      path: '/plan-preview'
+      fullPath: '/ninos/plan-preview'
+      preLoaderRoute: typeof NinosPlanPreviewRouteImport
+      parentRoute: typeof NinosRouteRoute
+    }
     '/.lovable/oauth/consent': {
       id: '/.lovable/oauth/consent'
       path: '/.lovable/oauth/consent'
@@ -1437,6 +1456,7 @@ declare module '@tanstack/react-router' {
 interface NinosRouteRouteChildren {
   NinosOnboardingRoute: typeof NinosOnboardingRoute
   NinosPadresRoute: typeof NinosPadresRoute
+  NinosPlanPreviewRoute: typeof NinosPlanPreviewRoute
   NinosIndexRoute: typeof NinosIndexRoute
   NinosKidDatosRoute: typeof NinosKidDatosRoute
   NinosKidDeseosRoute: typeof NinosKidDeseosRoute
@@ -1452,6 +1472,7 @@ interface NinosRouteRouteChildren {
 const NinosRouteRouteChildren: NinosRouteRouteChildren = {
   NinosOnboardingRoute: NinosOnboardingRoute,
   NinosPadresRoute: NinosPadresRoute,
+  NinosPlanPreviewRoute: NinosPlanPreviewRoute,
   NinosIndexRoute: NinosIndexRoute,
   NinosKidDatosRoute: NinosKidDatosRoute,
   NinosKidDeseosRoute: NinosKidDeseosRoute,
