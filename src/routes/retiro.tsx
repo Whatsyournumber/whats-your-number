@@ -85,6 +85,8 @@ function RetiroContent() {
   const investable = holdings.length ? investableFromHoldings : investableFallback;
 
   const progressPct = plan.targetCapital > 0 ? Math.max(0, (investable / plan.targetCapital) * 100) : 0;
+  const pctBar = Math.min(100, progressPct);
+  const pctShift = pctBar < 10 ? "0%" : pctBar > 90 ? "-100%" : "-50%";
 
 
   const [monthly, setMonthly] = useState(retirement.monthlyContribution);
