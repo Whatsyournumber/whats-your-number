@@ -1688,10 +1688,30 @@ function SummaryScreen({
   const t = useT();
 
   const metrics = [
-    { emoji: "💰", label: t("Patrimonio actual", "Current net worth"), value: money(plan.netWorth, currency) },
-    { emoji: "📈", label: t("Ingreso mensual", "Monthly income"), value: money(plan.income, currency) },
-    { emoji: "💳", label: t("Gasto mensual", "Monthly expenses"), value: money(plan.expenses, currency) },
-    { emoji: "💵", label: t("Tasa de ahorro", "Savings rate"), value: `${plan.savingsRate.toFixed(0)}%` },
+    {
+      emoji: "💰",
+      label: t("Patrimonio actual", "Current net worth"),
+      short: t("Patrimonio", "Net worth"),
+      value: money(plan.netWorth, currency),
+    },
+    {
+      emoji: "📈",
+      label: t("Ingreso mensual", "Monthly income"),
+      short: t("Ingreso", "Income"),
+      value: money(plan.income, currency),
+    },
+    {
+      emoji: "💳",
+      label: t("Gasto mensual", "Monthly expenses"),
+      short: t("Gasto", "Expenses"),
+      value: money(plan.expenses, currency),
+    },
+    {
+      emoji: "💵",
+      label: t("Tasa de ahorro", "Savings rate"),
+      short: t("Ahorro", "Savings"),
+      value: `${plan.savingsRate.toFixed(0)}%`,
+    },
   ];
 
   // Reparto del patrimonio: solo los activos que realmente has registrado.
