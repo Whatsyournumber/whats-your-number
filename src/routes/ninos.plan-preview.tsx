@@ -23,9 +23,9 @@ const AMOUNTS: Record<string, number> = {
   restaurants: 1000,
   delivery: 500,
   travel: 500,
-  entertainment: 1500,
+  nightlife: 1500,
   shopping: 200,
-  subscriptions: 300,
+  apps: 300,
   gym: 40,
 };
 
