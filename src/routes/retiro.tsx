@@ -146,14 +146,16 @@ function RetiroContent() {
   })();
 
 
-  // Tu aporte mensual: el que elegiste y guardaste; si todavía no elegiste, el sugerido al 10%.
-  const savedContribution =
-    profile.retirement_monthly_contribution > 0 ? Math.round(profile.retirement_monthly_contribution) : 0;
-  const aporteShown = savedContribution || sp500Monthly;
+  // Tu aporte mensual: al entrar a la página siempre parte del sugerido al 10% del
+  // S&P 500 (lo que necesitas invertir para llegar a tu número). Si lo editas en esta
+  // visita, se muestra el tuyo; al volver, vuelve al sugerido.
+  const [editedContribution, setEditedContribution] = useState<number | null>(null);
+  const aporteShown = editedContribution ?? sp500Monthly;
 
   const commitContribution = () => {
     const next = Math.max(0, Math.round(draftContribution));
     setEditingContribution(false);
+    setEditedContribution(next);
     setMonthly(next);
     if (next === (profile.retirement_monthly_contribution || 0)) return;
     void save({ retirement_monthly_contribution: next }).then(() =>
