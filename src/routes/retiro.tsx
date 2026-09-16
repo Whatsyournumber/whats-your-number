@@ -375,7 +375,7 @@ function RetiroContent() {
             label={t("Cuánto tengo", "How much I have")}
             value={fmt(investable)}
             icon={Pencil}
-            hint={t("Inversiones, sin inmuebles", "Investments, excluding property")}
+            hint={t("Inversiones, sin inmuebles", "Investments, no property")}
             index={2}
           />
         </Link>
@@ -388,7 +388,7 @@ function RetiroContent() {
             className="surface relative overflow-hidden p-5"
           >
             <p className="whitespace-nowrap text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-              {t("Aporte mensual", "Monthly contribution")}
+              {t("Aporte mensual", "Monthly saving")}
             </p>
             <div className="relative mt-3 flex items-center gap-2">
               <p className="numeric text-2xl font-semibold md:text-3xl">{fmt(sp500Monthly)}</p>
@@ -396,7 +396,7 @@ function RetiroContent() {
                 S&P 500 · 10%
               </span>
             </div>
-            <p className="relative mt-2 text-xs">
+            <p className="relative mt-2 text-[11px]">
               {t("Aportaste", "You put in")}{" "}
               <span className={cn("numeric font-semibold", thisMonthContribution >= sp500Monthly ? "text-positive" : "text-negative")}>
                 {fmt(thisMonthContribution)}
@@ -485,8 +485,8 @@ function RetiroContent() {
                 <p className="numeric relative mt-3 text-2xl font-semibold md:text-3xl">
                   {retireAge} <span className="text-base font-medium text-muted-foreground">{t("años", "years")}</span>
                 </p>
-                <p className="relative mt-2 text-xs text-muted-foreground">
-                  {t("hoy tienes", "you are")} {retirement.currentAge} · {t("te quedan", "you have")} {Math.max(0, retireAge - retirement.currentAge)} {t("años", "years")}
+                <p className="relative mt-2 text-[11px] text-muted-foreground">
+                  {retirement.currentAge} {t("hoy", "today")} · {Math.max(0, retireAge - retirement.currentAge)} {t("años restantes", "yrs left")}
                 </p>
               </>
             )}
