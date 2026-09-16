@@ -1840,12 +1840,8 @@ function SummaryScreen({
             className="surface px-4 py-3.5"
           >
             <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-              <span className="sm:hidden">
-                {m.emoji} {m.short}
-              </span>
-              <span className="hidden sm:inline">
-                {m.emoji} {m.label}
-              </span>
+              <span className="sm:hidden">{m.short}</span>
+              <span className="hidden sm:inline">{m.label}</span>
             </p>
             <p className="numeric mt-1 text-lg font-semibold sm:text-xl">{m.value}</p>
           </motion.div>
