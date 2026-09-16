@@ -1794,42 +1794,42 @@ function SummaryScreen({
           </motion.div>
         ))}
       </div>
-        <div className="surface p-5">
-            <div className="flex items-end justify-between gap-4">
-              <div className="min-w-0">
-                <p className="text-[10px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
-                <p className="numeric mt-1 text-3xl font-semibold">
-                  <Amount full={money(plan.targetCapital, currency)} short={compact(plan.targetCapital, currency)} from="md" />
-                </p>
-              </div>
-              <div className="shrink-0 text-right">
-                <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                  📅 {t("Libertad", "Freedom")}
-                </p>
-                <p className="numeric mt-1 text-2xl font-semibold text-primary">
-                  {plan.mode === "freedom"
-                    ? `${plan.freedomAge} ${t("años", "yrs")}`
-                    : plan.monthsToGoal > 0
-                      ? `${Math.max(1, Math.ceil(plan.monthsToGoal / 12))} ${t("años", "yrs")}`
-                      : t("Listo", "Ready")}
-                </p>
-              </div>
-            </div>
-            <div className="mt-4">
-              <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                <span>📈 {t("Progreso hacia tu Número", "Progress to your Number")}</span>
-                <span className="numeric text-foreground">{plan.progress.toFixed(1)}%</span>
-              </div>
-              <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${Math.max(1, plan.progress)}%` }}
-                  transition={{ duration: 1, ease: "easeOut" }}
-                  className="h-full rounded-full bg-primary"
-                />
-              </div>
-            </div>
+    <div className="surface p-5">
+        <div className="flex items-end justify-between gap-4">
+          <div className="min-w-0">
+            <p className="text-[10px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
+            <p className="numeric mt-1 text-3xl font-semibold">
+              <Amount full={money(plan.targetCapital, currency)} short={compact(plan.targetCapital, currency)} from="md" />
+            </p>
+          </div>
+          <div className="shrink-0 text-right">
+            <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              📅 {t("Libertad", "Freedom")}
+            </p>
+            <p className="numeric mt-1 text-2xl font-semibold text-primary">
+              {plan.mode === "freedom"
+                ? `${plan.freedomAge} ${t("años", "yrs")}`
+                : plan.monthsToGoal > 0
+                  ? `${Math.max(1, Math.ceil(plan.monthsToGoal / 12))} ${t("años", "yrs")}`
+                  : t("Listo", "Ready")}
+            </p>
+          </div>
         </div>
+        <div className="mt-4">
+          <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+            <span>📈 {t("Progreso hacia tu Número", "Progress to your Number")}</span>
+            <span className="numeric text-foreground">{plan.progress.toFixed(1)}%</span>
+          </div>
+          <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${Math.max(1, plan.progress)}%` }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="h-full rounded-full bg-primary"
+            />
+          </div>
+        </div>
+    </div>
 
       <div>
         <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
