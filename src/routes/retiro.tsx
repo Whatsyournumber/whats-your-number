@@ -129,13 +129,12 @@ function RetiroContent() {
   const gap = targetNow - final.value;
 
   // Aporte mensual necesario para llegar a tu número antes de tu edad de retiro.
-  // Se usa el rendimiento REAL (10% histórico S&P 500 menos ~3% de inflación),
-  // porque tu número objetivo está expresado en dinero de hoy. Así el aporte baja
+  // Se usa el rendimiento histórico del S&P 500 (10% anual). Así el aporte baja
   // cuanto más años tienes por delante, sin caer artificialmente a 0.
   const sp500Monthly = (() => {
     if (targetNow <= 0) return 0;
     const yrs = Math.max(1, retireAge - retirement.currentAge);
-    const realAnnual = 0.07;
+    const realAnnual = 0.10;
     const mr = Math.pow(1 + realAnnual, 1 / 12) - 1;
     const months = yrs * 12;
     const fvCurrent = investable * Math.pow(1 + realAnnual, yrs);
@@ -410,7 +409,7 @@ function RetiroContent() {
             <div className="relative mt-3 flex flex-wrap items-center gap-x-2 gap-y-1">
               <p className="numeric text-2xl font-semibold md:text-3xl">{fmt(sp500Monthly)}</p>
               <span className="whitespace-nowrap rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
-                S&P 500 · 7% real
+                S&P 500 · 10% {t("histórico", "historic")}
               </span>
             </div>
             <p className="relative mt-2 text-[11px]">
