@@ -254,7 +254,15 @@ function RetiroContent() {
       <PageHeader
         eyebrow={t("Largo plazo", "Long term")}
         title={t("WhatsYourNumber", "WhatsYourNumber")}
-        subtitle={headerSubtitle}
+        subtitle={
+          isMobile
+            ? goalMode === "home"
+              ? t("Entrada de tu vivienda y tu ahorro.", "Your home down payment and savings.")
+              : goalMode === "business"
+                ? t("Capital para tu objetivo y tu ahorro.", "Capital for your goal and savings.")
+                : t("Cuánto necesitas para no trabajar.", "How much you need to stop working.")
+            : headerSubtitle
+        }
       />
 
 
