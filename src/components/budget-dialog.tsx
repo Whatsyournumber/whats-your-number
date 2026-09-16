@@ -129,9 +129,10 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[88vh] max-w-2xl overflow-y-auto">
+      <DialogContent className="max-h-[88vh] max-w-2xl overflow-y-auto pt-0">
         {/* Cabecera con el mismo lenguaje visual que las tarjetas del Dashboard: etiqueta + cifra grande. */}
-        <DialogHeader className="sticky top-0 z-10 -mx-6 -mt-6 self-start space-y-1.5 bg-background/95 px-6 pb-4 pt-6 text-left backdrop-blur-sm">
+        <DialogHeader className="sticky top-0 z-10 -mx-6 space-y-1.5 bg-background/95 px-6 pb-4 pt-6 text-left backdrop-blur-sm">
+
 
           <DialogTitle className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
             {t("Tu plan de gasto mensual", "Your monthly spending plan")}
