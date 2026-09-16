@@ -243,9 +243,13 @@ export function convertStoredFixedExpenses(from: string, to: string) {
         window.localStorage.setItem(key, JSON.stringify(next));
       }
     }
-    const target = window.localStorage.getItem(TARGET_KEY);
-    if (target !== null && Number.isFinite(Number(target))) {
-      window.localStorage.setItem(TARGET_KEY, String(convertMoneyValue(Number(target), from, to)));
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const k = window.localStorage.key(i);
+      if (!k || !k.startsWith(TARGET_KEY)) continue;
+      const target = window.localStorage.getItem(k);
+      if (target !== null && Number.isFinite(Number(target))) {
+        window.localStorage.setItem(k, String(convertMoneyValue(Number(target), from, to)));
+      }
     }
   } catch {
     /* ignore */
@@ -254,37 +258,41 @@ export function convertStoredFixedExpenses(from: string, to: string) {
 
 const TARGET_KEY = "whatsyournumber:spend-target";
 
-/** Gasto mensual objetivo (target) según tu número, guardado localmente. */
-export function useSpendTarget(initial = 0) {
-  const [target, setTarget] = useState(initial);
+/** Gasto mensual objetivo (target), guardado por cuenta en el navegador. */
+export function useSpendTarget(_initial = 0) {
+  const { user } = useAuth();
+  const storageKey = useMemo(() => `${TARGET_KEY}:${user?.id ?? "anon"}`, [user?.id]);
+  const [target, setTarget] = useState(0);
+  const [hasTarget, setHasTarget] = useState(false);
 
-  // Si el perfil cambia y aún no hay un objetivo guardado, sigue al perfil.
+  // Cada cuenta empieza de cero: solo se usa lo que esa cuenta guardó.
   useEffect(() => {
+    setTarget(0);
+    setHasTarget(false);
     try {
-      if (window.localStorage.getItem(TARGET_KEY) === null) setTarget(initial);
+      const raw = window.localStorage.getItem(storageKey);
+      if (raw !== null && Number.isFinite(Number(raw)) && Number(raw) > 0) {
+        setTarget(Number(raw));
+        setHasTarget(true);
+      }
     } catch {
       /* ignore */
     }
-  }, [initial]);
+  }, [storageKey]);
 
+  const update = useCallback(
+    (v: number) => {
+      setTarget(v);
+      setHasTarget(v > 0);
+      try {
+        window.localStorage.setItem(storageKey, String(v));
+      } catch {
+        /* ignore */
+      }
+    },
+    [storageKey],
+  );
 
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(TARGET_KEY);
-      if (raw !== null && Number.isFinite(Number(raw))) setTarget(Number(raw));
-    } catch {
-      /* ignore */
-    }
-  }, []);
-
-  const update = useCallback((v: number) => {
-    setTarget(v);
-    try {
-      window.localStorage.setItem(TARGET_KEY, String(v));
-    } catch {
-      /* ignore */
-    }
-  }, []);
-
-  return { target, setTarget: update };
+  return { target, setTarget: update, hasTarget };
 }
+

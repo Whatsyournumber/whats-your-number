@@ -389,7 +389,7 @@ function Gastos() {
   );
 
   // ---- Gasto objetivo ----
-  const { target, setTarget } = useSpendTarget(Math.round(profile.monthly_expenses || 0));
+  const { target, setTarget, hasTarget } = useSpendTarget();
   const isLongRange = days > 31;
 
   // Para rangos largos, el promedio mensual es el promedio de los totales mensuales
@@ -892,6 +892,15 @@ function Gastos() {
               </div>
             </div>
           </div>
+          {!hasTarget && budgetRows.length === 0 ? (
+            <div className="order-2 flex md:col-start-2 md:self-center">
+              <Button className="w-full sm:w-auto" onClick={() => setBudgetOpen(true)}>
+                <Plus className="mr-1.5 h-4 w-4" />
+                {t("Crear tu plan de gastos", "Create your spending plan")}
+              </Button>
+            </div>
+          ) : (
+            <>
           <div className="order-3 flex min-w-0 flex-col gap-1 md:order-2 md:-mb-2 md:self-end">
             <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 md:flex-nowrap">
               <span className="numeric shrink-0 text-xl font-semibold sm:text-xl md:text-2xl">{fmt(monthlyRun)}</span>
@@ -957,6 +966,8 @@ function Gastos() {
               <span className="numeric absolute right-0 top-0">{fmt(monthlyRun)}</span>
             </div>
           </div>
+            </>
+          )}
         </div>
 
         {budgetRows.length > 0 && (
