@@ -1315,7 +1315,7 @@ function MoneyField({
           value={value || ""}
           placeholder={hint ?? t("Escribe aquí", "Type here")}
           onChange={(e) => onChange(Number(e.target.value || 0))}
-          className="numeric w-28 border-b border-dashed border-border bg-transparent text-right text-base font-semibold outline-none transition-colors focus:border-primary/60 placeholder:text-xs placeholder:font-normal placeholder:text-muted-foreground/50"
+          className="numeric w-28 max-sm:w-24 border-b border-dashed border-border bg-transparent text-right text-base font-semibold outline-none transition-colors focus:border-primary/60 placeholder:text-xs placeholder:font-normal placeholder:text-muted-foreground/50"
         />
         <span className="text-xs text-muted-foreground">{currency}</span>
       </span>
