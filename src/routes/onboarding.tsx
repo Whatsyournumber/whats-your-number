@@ -352,7 +352,7 @@ function OnboardingPage() {
 
       <div
         className={`relative mx-auto flex min-h-[calc(100vh-57px)] flex-col justify-center px-5 ${
-          isSummary ? "max-w-5xl py-4" : "max-w-2xl py-10 sm:py-16"
+          isSummary ? "max-w-4xl py-8 sm:py-12" : "max-w-2xl py-10 sm:py-16"
         }`}
       >
         <AnimatePresence mode="wait">
@@ -1766,90 +1766,90 @@ function SummaryScreen({
   ];
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5">
       <div className="text-center">
         <h2 className="font-display text-2xl font-semibold sm:text-3xl">
           🎉 {t("Tu Número está listo.", "Your Number is ready.")}
         </h2>
-        <p className="mt-1 truncate text-sm text-muted-foreground">
+        <p className="mt-1 text-sm text-muted-foreground">
           {data.full_name
             ? t(`${data.full_name}, esto entendió la IA de tus finanzas.`, `${data.full_name}, this is what the AI understood.`)
             : t("Esto entendió la IA de tus finanzas.", "This is what the AI understood about your finances.")}
         </p>
       </div>
 
-      <div className="flex flex-col gap-3">
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {metrics.map((m, i) => (
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+        {metrics.map((m, i) => (
+          <motion.div
+            key={m.label}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 * i }}
+            className="surface px-4 py-3.5"
+          >
+            <p className="truncate text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              {m.emoji} {m.label}
+            </p>
+            <p className="numeric mt-1 text-lg font-semibold sm:text-xl">{m.value}</p>
+          </motion.div>
+        ))}
+      </div>
+      <div className="surface p-5">
+        <div className="flex items-end justify-between gap-4">
+          <div className="min-w-0">
+            <p className="text-[10px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
+            <p className="numeric mt-1 text-3xl font-semibold">
+              <Amount full={money(plan.targetCapital, currency)} short={compact(plan.targetCapital, currency)} from="md" />
+            </p>
+          </div>
+          <div className="shrink-0 text-right">
+            <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              📅 {t("Libertad", "Freedom")}
+            </p>
+            <p className="numeric mt-1 text-2xl font-semibold text-primary">
+              {plan.mode === "freedom"
+                ? `${plan.freedomAge} ${t("años", "yrs")}`
+                : plan.monthsToGoal > 0
+                  ? `${Math.max(1, Math.ceil(plan.monthsToGoal / 12))} ${t("años", "yrs")}`
+                  : t("Listo", "Ready")}
+            </p>
+          </div>
+        </div>
+        <div className="mt-4">
+          <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+            <span>📈 {t("Progreso hacia tu Número", "Progress to your Number")}</span>
+            <span className="numeric text-foreground">{plan.progress.toFixed(1)}%</span>
+          </div>
+          <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted">
             <motion.div
-              key={m.label}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.05 * i }}
-              className="surface px-4 py-3"
-            >
-              <p className="truncate text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                {m.emoji} {m.label}
-              </p>
-              <p className="numeric mt-1 text-lg font-semibold">{m.value}</p>
-            </motion.div>
-          ))}
+              initial={{ width: 0 }}
+              animate={{ width: `${Math.max(1, plan.progress)}%` }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="h-full rounded-full bg-primary"
+            />
+          </div>
         </div>
-        <div className="surface p-5">
-            <div className="flex items-end justify-between gap-4">
-              <div className="min-w-0">
-                <p className="text-[10px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
-                <p className="numeric mt-1 text-3xl font-semibold">
-                  <Amount full={money(plan.targetCapital, currency)} short={compact(plan.targetCapital, currency)} from="md" />
-                </p>
-              </div>
-              <div className="shrink-0 text-right">
-                <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                  📅 {t("Libertad", "Freedom")}
-                </p>
-                <p className="numeric mt-1 text-2xl font-semibold text-primary">
-                  {plan.mode === "freedom"
-                    ? `${plan.freedomAge} ${t("años", "yrs")}`
-                    : plan.monthsToGoal > 0
-                      ? `${Math.max(1, Math.ceil(plan.monthsToGoal / 12))} ${t("años", "yrs")}`
-                      : t("Listo", "Ready")}
-                </p>
-              </div>
-            </div>
-            <div className="mt-4">
-              <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                <span>📈 {t("Progreso hacia tu Número", "Progress to your Number")}</span>
-                <span className="numeric text-foreground">{plan.progress.toFixed(1)}%</span>
-              </div>
-              <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${Math.max(1, plan.progress)}%` }}
-                  transition={{ duration: 1, ease: "easeOut" }}
-                  className="h-full rounded-full bg-primary"
-                />
-              </div>
-            </div>
-        </div>
+      </div>
 
+      <div>
         <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
           ✨ {t("Tus 4 acciones", "Your 4 actions")}
         </p>
-        <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-2.5 flex flex-col gap-2.5">
           {actions.map((a, i) => (
             <motion.div
               key={a.n}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 * i }}
-              className="flex flex-1 gap-3 rounded-2xl border border-border bg-elevated/50 px-4 py-3"
+              transition={{ delay: 0.08 * i }}
+              className="flex items-start gap-3 rounded-2xl border border-border bg-elevated/50 px-4 py-3.5"
             >
-              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
+              <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
                 {a.n}
               </span>
               <div className="min-w-0">
                 <p className="text-sm font-semibold">{a.title}</p>
-                <p className="mt-0.5 text-xs leading-snug text-muted-foreground">{a.text}</p>
+                <p className="mt-0.5 text-xs leading-snug text-muted-foreground sm:text-sm">{a.text}</p>
               </div>
             </motion.div>
           ))}
