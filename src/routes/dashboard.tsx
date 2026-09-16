@@ -317,8 +317,8 @@ function Dashboard() {
         );
       }
       return t(
-        `Solo ${rate.toFixed(0)}% · necesitas generar extra para llegar al 20%`,
-        `Only ${rate.toFixed(0)}% · you need extra income to reach 20%`,
+        `Solo ${rate.toFixed(0)}% · genera extra para el 20%`,
+        `Only ${rate.toFixed(0)}% · find extra for the 20%`,
       );
     }
     const deficit = current.expenses - current.income;
