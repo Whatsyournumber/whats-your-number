@@ -246,6 +246,47 @@ function Dashboard() {
   const baseNumberNetWorth = liveNetWorth > 0 ? liveNetWorth : demo?.netWorth ?? 0;
   const baseMonthlyContribution = current.savings > 0 ? current.savings : demo?.monthlyInvest ?? 0;
 
+  // Mínimo mensual para llegar a tu número a la edad de retiro que elegiste
+  // en el onboarding (S&P 500 · 10%, interés compuesto mensual).
+  const investableAssets = holdings.length
+    ? holdings
+        .filter((h) => h.kind !== "property" && h.kind !== "debt")
+        .reduce((s, h) => s + holdingValue(h, prices), 0)
+    : profile.assets_cash +
+      profile.assets_bank +
+      profile.assets_retirement +
+      profile.assets_etf +
+      profile.assets_stocks +
+      profile.assets_crypto;
+  const retireAgeChosen = d.retirement.retireAge;
+  const retireYearsLeft = retireAgeChosen > d.retirement.currentAge ? retireAgeChosen - d.retirement.currentAge : 0;
+  const minRetirementMonthly = minMonthlyForRetirement({
+    target: baseTargetNumber,
+    invested: investableAssets,
+    years: retireYearsLeft,
+  });
+  const retirementHint = (() => {
+    if (retireYearsLeft <= 0 || baseTargetNumber <= 0) return undefined;
+    if (minRetirementMonthly > 0) {
+      return isMobile
+        ? t(
+            `Ahorra ${fmt(minRetirementMonthly)}/mes para tu retiro a los ${retireAgeChosen}`,
+            `Save ${fmt(minRetirementMonthly)}/mo to retire at ${retireAgeChosen}`,
+          )
+        : t(
+            `Necesitas ahorrar ${fmt(minRetirementMonthly)}/mes para tu retiro a los ${retireAgeChosen} años`,
+            `You need to save ${fmt(minRetirementMonthly)}/mo to retire at ${retireAgeChosen}`,
+          );
+    }
+    return isMobile
+      ? t(`Tu retiro a los ${retireAgeChosen} está cubierto`, `Retiring at ${retireAgeChosen} is covered`)
+      : t(
+          `Con esto ya cubres tu retiro a los ${retireAgeChosen} años`,
+          `This already covers your retirement at ${retireAgeChosen}`,
+        );
+  })();
+
+
   // Si el usuario eligió una meta principal en Life Planner, "Tu Número" refleja esa meta.
   const targetNumber = primary ? primary.cost : baseTargetNumber;
   const numberNetWorth = primary ? primary.saved : baseNumberNetWorth;
