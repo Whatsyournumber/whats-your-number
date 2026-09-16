@@ -450,7 +450,7 @@ function RetiroContent() {
                   <Input
                     inputMode="numeric"
                     autoFocus
-                    className="numeric h-10 w-28 text-2xl font-semibold"
+                    className="numeric h-10 w-28 text-2xl font-semibold leading-none"
                     value={draftContribution ? String(draftContribution) : ""}
                     onChange={(e) => {
                       const digits = e.target.value.replace(/[^\d]/g, "");
