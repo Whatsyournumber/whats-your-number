@@ -1746,6 +1746,20 @@ function SummaryScreen({
               "You already cover the contribution for your number; every extra euro speeds it up.",
             ),
     },
+    {
+      n: 4,
+      title: t("Ten tu fondo de emergencia", "Build your emergency fund"),
+      text:
+        emergencyGap > 0
+          ? t(
+              `Necesitas ${money(emergencyTarget, currency)} (6 meses); tienes ${money(liquidCash, currency)} en efectivo y bancos.`,
+              `You need ${money(emergencyTarget, currency)} (6 months); you hold ${money(liquidCash, currency)} in cash and banks.`,
+            )
+          : t(
+              `Cubierto: ${money(liquidCash, currency)} en efectivo y bancos, más de 6 meses de gastos.`,
+              `Covered: ${money(liquidCash, currency)} in cash and banks, over 6 months of expenses.`,
+            ),
+    },
   ];
 
   return (
