@@ -1048,8 +1048,8 @@ function OnboardingPage() {
                   />
                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                     {t(
-                      "Anota tu gasto mensual aproximado en cada categoría: pasa directo a tu pestaña de Gastos.",
-                      "Note your approximate monthly spend per category: it goes straight to your Expenses tab.",
+                      "Solo tus gastos fijos: los variables los leemos de tus estados de cuenta.",
+                      "Fixed expenses only: we read the variable ones from your statements.",
                     )}
                   </p>
                   {SPEND_PLAN_GROUPS.map((g) => {
