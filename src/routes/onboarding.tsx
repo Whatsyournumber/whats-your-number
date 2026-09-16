@@ -1782,12 +1782,12 @@ function SummaryScreen({
       text:
         extra > 0
           ? t(
-              `Necesitas ${money(needed, currency)} al mes para tu número: te faltan ${money(extra, currency)}.`,
-              `You need ${money(needed, currency)} a month for your number: you're short ${money(extra, currency)}.`,
+              `Tu número exige ${money(needed, currency)}/mes: te faltan ${money(extra, currency)}.`,
+              `Your number needs ${money(needed, currency)}/mo: you're short ${money(extra, currency)}.`,
             )
           : t(
-              "Ya cubres el aporte para tu número; cada euro extra lo adelanta.",
-              "You already cover the contribution for your number; every extra euro speeds it up.",
+              "Ya cubres el aporte de tu número; cada extra lo adelanta.",
+              "You already cover it; every extra speeds your number up.",
             ),
     },
     {
@@ -1879,19 +1879,19 @@ function SummaryScreen({
         <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
           ✨ {t("Tus 4 acciones", "Your 4 actions")}
         </p>
-        <div className="mt-2.5 flex flex-col gap-2.5">
+        <div className="mt-2.5 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
           {actions.map((a, i) => (
             <motion.div
               key={a.title}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.08 * i }}
-              className="flex items-start gap-3 rounded-2xl border border-border bg-elevated/50 px-4 py-3.5"
+              className="flex h-full items-start gap-3 rounded-2xl border border-border bg-elevated/50 px-4 py-3.5"
             >
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-base">
                 {a.emoji}
               </span>
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold">{a.title}</p>
                 <p className="mt-0.5 text-xs leading-snug text-muted-foreground sm:text-sm">{a.text}</p>
               </div>
