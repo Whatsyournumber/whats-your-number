@@ -1895,11 +1895,14 @@ function SummaryScreen({
                 ? `${plan.freedomAge} ${t("años", "yrs")}`
                 : plan.monthsToGoal > 0
                   ? `${Math.max(1, Math.ceil(plan.monthsToGoal / 12))} ${t("años", "yrs")}`
-
                   : t("Listo", "Ready")}
+            </p>
+            <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              📅 {t("Libertad financiera", "Financial freedom")}
             </p>
             <p className="mt-1.5 text-xs leading-snug text-muted-foreground">{freedomNote}</p>
           </div>
+
         </div>
         <div className="mt-4">
           <div className="flex items-center justify-between text-[11px] text-muted-foreground">
