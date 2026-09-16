@@ -1782,12 +1782,12 @@ function SummaryScreen({
       text:
         extra > 0
           ? t(
-              `Necesitas ${money(needed, currency)} al mes para tu número: te faltan ${money(extra, currency)}.`,
-              `You need ${money(needed, currency)} a month for your number: you're short ${money(extra, currency)}.`,
+              `Tu número exige ${money(needed, currency)}/mes: te faltan ${money(extra, currency)}.`,
+              `Your number needs ${money(needed, currency)}/mo: you're short ${money(extra, currency)}.`,
             )
           : t(
-              "Ya cubres el aporte para tu número; cada euro extra lo adelanta.",
-              "You already cover the contribution for your number; every extra euro speeds it up.",
+              "Ya cubres el aporte de tu número; cada extra lo adelanta.",
+              "You already cover it; every extra speeds your number up.",
             ),
     },
     {
