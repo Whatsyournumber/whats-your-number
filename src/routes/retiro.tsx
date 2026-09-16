@@ -140,6 +140,16 @@ function RetiroContent() {
     if (remaining <= 0) return 0;
     return Math.ceil((remaining * mr) / (Math.pow(1 + mr, months) - 1));
   })();
+
+  // El simulador arranca con el aporte mensual sugerido para llegar a tu número
+  // a la edad de retiro elegida (al 10% del S&P 500). Después el usuario puede moverlo.
+  const simPrefilled = useRef(false);
+  useEffect(() => {
+    if (isGoal || simPrefilled.current) return;
+    if (sp500Monthly <= 0) return;
+    simPrefilled.current = true;
+    setMonthly(sp500Monthly);
+  }, [sp500Monthly, isGoal]);
   // Lo que de verdad apartaste este mes (tu ahorro mensual actual).
   const thisMonthContribution = Math.max(0, d.savings);
 
