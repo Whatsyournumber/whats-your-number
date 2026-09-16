@@ -33,7 +33,7 @@ import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTransactions } from "@/hooks/use-transactions";
-import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
+import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useIndexReturns } from "@/hooks/use-index-returns";
 import { holdingValue, useHoldings, wealthTotals } from "@/hooks/use-holdings";
 import { useQuotes } from "@/hooks/use-market";
@@ -130,6 +130,7 @@ function Dashboard() {
     (profile.marital_status === "Casado" || profile.marital_status === "En pareja") &&
     profile.analysis_scope === "pareja";
   const fixed = useFixedExpenses();
+  const { target: spendTarget, hasTarget: hasSpendTarget } = useSpendTarget();
   const { live: indexLive } = useIndexReturns();
   const { holdings } = useHoldings();
   const holdingSymbols = holdings
@@ -223,6 +224,12 @@ function Dashboard() {
   const current = months[activeIndex] ?? months[months.length - 1] ?? d.current;
   const previous = months[activeIndex - 1] ?? current;
   const { fmt, fmtCompact, plan } = d;
+  const spendPlanHint = hasSpendTarget && spendTarget > 0
+    ? t(
+        `Plan ${fmt(spendTarget)} · ${Math.round((current.expenses / spendTarget) * 100)}% usado`,
+        `Plan ${fmt(spendTarget)} · ${Math.round((current.expenses / spendTarget) * 100)}% used`,
+      )
+    : undefined;
 
   // Rango completo del mes seleccionado, para la etiqueta del calendario.
   const activeDate = /^\d{4}-\d{2}$/.test(activeKey)
@@ -555,7 +562,15 @@ function Dashboard() {
           index={1}
         />
         <Link to="/gastos" className="block transition-transform hover:-translate-y-0.5">
-          <KpiCard label={t("Gastos", "Expenses")} value={fmt(current.expenses)} {...(hasHistory ? { delta: delta(current.expenses, previous.expenses) } : {})} inverse icon={TrendingUp} index={2} />
+          <KpiCard
+            label={t("Gastos", "Expenses")}
+            value={fmt(current.expenses)}
+            {...(hasHistory ? { delta: delta(current.expenses, previous.expenses) } : {})}
+            {...(spendPlanHint ? { hint: spendPlanHint } : {})}
+            inverse
+            icon={TrendingUp}
+            index={2}
+          />
         </Link>
         <Link to="/retiro" className="block transition-transform hover:-translate-y-0.5">
           <KpiCard
