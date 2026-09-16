@@ -39,7 +39,7 @@ import { holdingValue, useHoldings, wealthTotals } from "@/hooks/use-holdings";
 import { useQuotes } from "@/hooks/use-market";
 import { usePrimaryGoal } from "@/hooks/use-primary-goal";
 import { cn } from "@/lib/utils";
-import { buildInsights, lifestyles } from "@/lib/onboarding";
+import { buildInsights, lifestyles, minMonthlyForRetirement } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
 import { readDemoSnapshot, type DemoSnapshot } from "@/lib/demo-snapshot";
@@ -245,6 +245,40 @@ function Dashboard() {
   const baseTargetNumber = plan.targetCapital > 0 ? plan.targetCapital : (desiredIncome * 12) / swr;
   const baseNumberNetWorth = liveNetWorth > 0 ? liveNetWorth : demo?.netWorth ?? 0;
   const baseMonthlyContribution = current.savings > 0 ? current.savings : demo?.monthlyInvest ?? 0;
+
+  // Mínimo mensual para llegar a tu número a la edad de retiro que elegiste
+  // en el onboarding (S&P 500 · 10%, interés compuesto mensual).
+  const investableAssets = holdings.length
+    ? holdings
+        .filter((h) => h.kind !== "property" && h.kind !== "debt")
+        .reduce((s, h) => s + holdingValue(h, prices), 0)
+    : profile.assets_cash +
+      profile.assets_bank +
+      profile.assets_retirement +
+      profile.assets_etf +
+      profile.assets_stocks +
+      profile.assets_crypto;
+  const retireAgeChosen = d.retirement.retireAge;
+  const retireYearsLeft = retireAgeChosen > d.retirement.currentAge ? retireAgeChosen - d.retirement.currentAge : 0;
+  const minRetirementMonthly = minMonthlyForRetirement({
+    target: baseTargetNumber,
+    invested: investableAssets,
+    years: retireYearsLeft,
+  });
+  const retirementHint = (() => {
+    if (retireYearsLeft <= 0 || baseTargetNumber <= 0) return undefined;
+    if (minRetirementMonthly > 0) {
+      return t(
+        `Ahorra ${fmt(minRetirementMonthly)}/mes · retiro a los ${retireAgeChosen}`,
+        `Save ${fmt(minRetirementMonthly)}/mo · retire at ${retireAgeChosen}`,
+      );
+    }
+    return t(
+      `Retiro a los ${retireAgeChosen} cubierto`,
+      `Retirement at ${retireAgeChosen} covered`,
+    );
+  })();
+
 
   // Si el usuario eligió una meta principal en Life Planner, "Tu Número" refleja esa meta.
   const targetNumber = primary ? primary.cost : baseTargetNumber;
@@ -524,7 +558,14 @@ function Dashboard() {
           <KpiCard label={t("Gastos", "Expenses")} value={fmt(current.expenses)} {...(hasHistory ? { delta: delta(current.expenses, previous.expenses) } : {})} inverse icon={TrendingUp} index={2} />
         </Link>
         <Link to="/cash-flow" className="block transition-transform hover:-translate-y-0.5">
-          <KpiCard label={t("Ahorro", "Savings")} value={fmt(current.savings)} {...(hasHistory ? { delta: delta(current.savings, previous.savings) } : {})} icon={PiggyBank} index={3} />
+          <KpiCard
+            label={t("Ahorro", "Savings")}
+            value={fmt(current.savings)}
+            {...(hasHistory ? { delta: delta(current.savings, previous.savings) } : {})}
+            {...(retirementHint ? { hint: retirementHint } : {})}
+            icon={PiggyBank}
+            index={3}
+          />
         </Link>
         <KpiCard label={t("Tasa de ahorro", "Savings rate")} value={`${savingsRate.toFixed(0)}%`} hint={savingsRateHint} {...(hasHistory ? { delta: savingsRate - prevRate } : {})} icon={ArrowUpRight} index={4} />
         <Link to="/hipoteca" className="block transition-transform hover:-translate-y-0.5">

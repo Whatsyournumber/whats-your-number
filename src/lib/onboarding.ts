@@ -288,6 +288,29 @@ export function buildPlan(d: OnboardingData & Partial<LifeData>): NorthPlan {
   };
 }
 
+/**
+ * Aporte mensual mínimo para alcanzar tu número a la edad de retiro.
+ * Usa el rendimiento histórico del S&P 500 (10% anual) con interés compuesto
+ * mensual: los intereses de cada mes también generan intereses.
+ */
+export function minMonthlyForRetirement(params: {
+  target: number;
+  invested: number;
+  years: number;
+  annual?: number;
+}) {
+  const { target, invested, years, annual = 0.1 } = params;
+  if (!Number.isFinite(target) || target <= 0) return 0;
+  if (!Number.isFinite(years) || years <= 0) return 0;
+  const mr = Math.pow(1 + annual, 1 / 12) - 1;
+  const months = Math.round(years * 12);
+  const remaining = target - Math.max(0, invested) * Math.pow(1 + annual, years);
+  if (remaining <= 0) return 0;
+  const raw = (remaining * mr) / (Math.pow(1 + mr, months) - 1);
+  // Mínimo orientativo: redondeamos al alza a la decena más cercana.
+  return Math.max(10, Math.ceil(raw / 10) * 10);
+}
+
 /** Locale numérico de la app adulta: ES → coma decimal, EN → punto decimal. */
 let moneyLocale: "es-ES" | "en-US" = "es-ES";
 

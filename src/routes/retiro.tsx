@@ -22,7 +22,7 @@ import { useT } from "@/hooks/use-language";
 import { buildDataset, projectRetirementFrom } from "@/lib/profile-data";
 import { cn } from "@/lib/utils";
 import { Amount } from "@/components/ui/amount";
-import { currencySymbol, estimateDesiredIncome } from "@/lib/onboarding";
+import { currencySymbol, estimateDesiredIncome, minMonthlyForRetirement } from "@/lib/onboarding";
 
 export const Route = createFileRoute("/retiro")({
   head: () => ({
@@ -140,17 +140,11 @@ function RetiroContent() {
   // Aporte mensual necesario para llegar a tu número antes de tu edad de retiro.
   // Se usa el rendimiento histórico del S&P 500 (10% anual). Así el aporte baja
   // cuanto más años tienes por delante, sin caer artificialmente a 0.
-  const sp500Monthly = (() => {
-    if (targetNow <= 0) return 0;
-    const yrs = Math.max(1, retireAge - retirement.currentAge);
-    const realAnnual = 0.10;
-    const mr = Math.pow(1 + realAnnual, 1 / 12) - 1;
-    const months = yrs * 12;
-    const fvCurrent = investable * Math.pow(1 + realAnnual, yrs);
-    const remaining = targetNow - fvCurrent;
-    if (remaining <= 0) return 0;
-    return Math.ceil((remaining * mr) / (Math.pow(1 + mr, months) - 1));
-  })();
+  const sp500Monthly = minMonthlyForRetirement({
+    target: targetNow,
+    invested: investable,
+    years: Math.max(1, retireAge - retirement.currentAge),
+  });
 
 
   // Tu aporte mensual: el que elegiste y guardaste; si todavía no elegiste, el sugerido al 10%.
