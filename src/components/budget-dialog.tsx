@@ -144,11 +144,17 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
             </span>
           </p>
           <DialogDescription className="text-xs leading-4 text-muted-foreground">
-            {t(
-              "Cuánto quieres gastar en cada categoría · la IA revisa si te pasas",
-              "What you want to spend per category · the AI checks if you go over",
-            )}
+            <span className="sm:hidden">
+              {t("Cuánto quieres gastar en cada categoría", "What you want to spend per category")}
+            </span>
+            <span className="hidden sm:inline">
+              {t(
+                "Cuánto quieres gastar en cada categoría · la IA revisa si te pasas",
+                "What you want to spend per category · the AI checks if you go over",
+              )}
+            </span>
           </DialogDescription>
+
         </DialogHeader>
 
 
