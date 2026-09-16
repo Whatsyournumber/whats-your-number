@@ -409,7 +409,7 @@ function RetiroContent() {
             <div className="relative mt-3 flex flex-wrap items-center gap-x-2 gap-y-1">
               <p className="numeric text-2xl font-semibold md:text-3xl">{fmt(sp500Monthly)}</p>
               <span className="whitespace-nowrap rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
-                S&P 500 · 10% {t("histórico", "historic")}
+                S&P 500 · 10%
               </span>
             </div>
             <p className="relative mt-2 text-[11px]">
