@@ -1873,7 +1873,7 @@ export function SummaryScreen({
   const firstName = (data.full_name || "").trim().split(/\s+/)[0] ?? "";
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-3 sm:gap-4">
+    <div className="mx-auto -mt-6 flex w-full max-w-5xl flex-col gap-3 sm:-mt-8 sm:gap-4">
       <div className="flex flex-col items-center text-center">
         <PartyPopper />
         <h2 className="font-display -mt-1 text-2xl font-semibold sm:text-3xl">
@@ -1886,26 +1886,7 @@ export function SummaryScreen({
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-2.5">
-        {metrics.map((m, i) => (
-          <motion.div
-            key={m.label}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05 * i }}
-            className="surface flex min-h-20 flex-col justify-center px-4 py-3 sm:min-h-24 sm:px-5"
-          >
-            <p className="text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
-              <span aria-hidden="true" className="mr-1">{m.emoji}</span>
-              <span className="sm:hidden">{m.short}</span>
-              <span className="hidden sm:inline">{m.label}</span>
-            </p>
-            <p className="numeric mt-1.5 text-lg font-semibold sm:text-xl">{m.value}</p>
-          </motion.div>
-        ))}
-      </div>
-
-      <div className="surface px-4 py-3">
+      <div className="surface px-5 py-4 sm:px-6 sm:py-5">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
             <p className="numeric text-2xl font-semibold sm:text-3xl">{money(plan.targetCapital, currency)}</p>
@@ -1940,6 +1921,25 @@ export function SummaryScreen({
             />
           </div>
         </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-3">
+        {metrics.map((m, i) => (
+          <motion.div
+            key={m.label}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 * i }}
+            className="surface flex min-h-24 flex-col justify-center px-4 py-4 sm:min-h-28 sm:px-5"
+          >
+            <p className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+              <span aria-hidden="true" className="mr-1">{m.emoji}</span>
+              <span className="sm:hidden">{m.short}</span>
+              <span className="hidden sm:inline">{m.label}</span>
+            </p>
+            <p className="numeric mt-2 text-xl font-semibold sm:text-2xl">{m.value}</p>
+          </motion.div>
+        ))}
       </div>
 
       <div>
