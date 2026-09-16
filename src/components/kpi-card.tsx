@@ -122,7 +122,7 @@ export function KpiCard({
         {tooltip ? (
           <Tooltip>
             <TooltipTrigger asChild>
-              <span className={cn("inline-flex cursor-help items-center gap-1 text-xs text-muted-foreground", hintClassName)}>
+              <span className={cn("min-w-0 truncate whitespace-nowrap text-xs text-muted-foreground", hintClassName)}>
                 {hint}
                 <HelpCircle className="h-3 w-3 text-muted-foreground/60" />
               </span>

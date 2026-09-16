@@ -148,7 +148,9 @@ export function EditableKpiCard({
             {delta.toFixed(1)}%
           </span>
         )}
-        {hint && !editing && <span className="text-xs text-muted-foreground">{hint}</span>}
+        {hint && !editing && (
+          <span className="min-w-0 truncate whitespace-nowrap text-xs text-muted-foreground">{hint}</span>
+        )}
       </div>
     </motion.div>
   );
