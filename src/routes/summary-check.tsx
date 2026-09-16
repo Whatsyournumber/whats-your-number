@@ -5,7 +5,15 @@ import { SummaryScreen } from "@/routes/onboarding";
 
 export const Route = createFileRoute("/summary-check")({
   head: () => ({
-    meta: [{ title: "Resumen del onboarding" }, { name: "robots", content: "noindex" }],
+    meta: [
+      { title: "Resumen financiero | WhatsYourNumber" },
+      { name: "description", content: "Vista previa de tu resumen financiero personal y tus próximos pasos." },
+      { property: "og:title", content: "Resumen financiero | WhatsYourNumber" },
+      { property: "og:description", content: "Vista previa de tu resumen financiero personal y tus próximos pasos." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "robots", content: "noindex" },
+    ],
   }),
   component: SummaryCheckPage,
 });

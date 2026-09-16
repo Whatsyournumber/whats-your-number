@@ -1671,51 +1671,65 @@ function BuildingScreen({ onDone }: { onDone: () => void }) {
 /* ───────────────────────── Resumen ───────────────────────── */
 
 const CONFETTI = [
-  { x: -26, y: -18, c: "var(--color-chart-1)", r: -40 },
-  { x: -12, y: -30, c: "var(--color-chart-2)", r: 25 },
-  { x: 6, y: -34, c: "var(--color-chart-3)", r: -15 },
-  { x: 22, y: -22, c: "var(--color-chart-4)", r: 50 },
-  { x: 32, y: -4, c: "var(--color-chart-5)", r: -60 },
-  { x: -32, y: -6, c: "var(--color-chart-6)", r: 35 },
-  { x: -18, y: -12, c: "var(--color-chart-7)", r: -25 },
-  { x: 16, y: -14, c: "var(--color-chart-8)", r: 60 },
+  { x: -104, y: -42, c: "var(--color-chart-1)", r: -120 },
+  { x: -86, y: -76, c: "var(--color-chart-2)", r: 160 },
+  { x: -64, y: -98, c: "var(--color-chart-3)", r: -180 },
+  { x: -34, y: -112, c: "var(--color-chart-4)", r: 130 },
+  { x: 0, y: -120, c: "var(--color-chart-5)", r: -150 },
+  { x: 34, y: -112, c: "var(--color-chart-6)", r: 180 },
+  { x: 64, y: -98, c: "var(--color-chart-7)", r: -130 },
+  { x: 86, y: -76, c: "var(--color-chart-8)", r: 150 },
+  { x: 104, y: -42, c: "var(--color-chart-1)", r: -170 },
+  { x: -118, y: 2, c: "var(--color-chart-3)", r: 140 },
+  { x: 118, y: 2, c: "var(--color-chart-5)", r: -140 },
+  { x: -78, y: -26, c: "var(--color-chart-7)", r: 190 },
+  { x: 78, y: -26, c: "var(--color-chart-2)", r: -190 },
+  { x: -48, y: -62, c: "var(--color-chart-6)", r: 125 },
+  { x: 48, y: -62, c: "var(--color-chart-4)", r: -125 },
+  { x: -18, y: -86, c: "var(--color-chart-8)", r: 170 },
+  { x: 18, y: -86, c: "var(--color-chart-1)", r: -170 },
 ];
 
 function PartyPopper() {
   return (
-    <span className="relative inline-flex h-9 w-9 shrink-0 items-center justify-center align-middle">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: [0.5, 1.22, 0.94, 1] }}
+      transition={{ duration: 0.72, ease: "easeOut" }}
+      className="relative flex h-20 w-64 shrink-0 items-center justify-center"
+    >
       {CONFETTI.map((p, i) => (
         <motion.span
           key={i}
           aria-hidden="true"
-          initial={{ opacity: 0, x: 0, y: 0, scale: 0.4, rotate: 0 }}
+          initial={{ opacity: 0, x: 0, y: 16, scale: 0.25, rotate: 0 }}
           animate={{
             opacity: [0, 1, 1, 0],
-            x: [0, p.x * 0.55, p.x, p.x * 1.1],
-            y: [0, p.y * 0.55, p.y, p.y * 1.25],
-            scale: [0.4, 1, 1, 0.75],
-            rotate: [0, p.r * 0.5, p.r, p.r * 1.15],
+            x: [0, p.x * 0.72, p.x, p.x * 1.08],
+            y: [16, p.y * 0.72, p.y, p.y + 28],
+            scale: [0.25, 1.35, 1, 0.7],
+            rotate: [0, p.r * 0.55, p.r, p.r * 1.3],
           }}
-          transition={{ duration: 0.9, delay: 0.18 + i * 0.03, ease: "easeOut", times: [0, 0.2, 0.7, 1] }}
-          className="absolute h-1.5 w-1.5 rounded-[2px]"
+          transition={{ duration: 1.45, delay: 0.12 + (i % 5) * 0.035, ease: "easeOut", times: [0, 0.18, 0.68, 1] }}
+          className="absolute h-2 w-2 rounded-[2px]"
           style={{ background: p.c }}
         />
       ))}
       <motion.span
         aria-hidden="true"
-        initial={{ opacity: 0, scale: 0.2, rotate: -30, y: 6 }}
+        initial={{ opacity: 0, scale: 0.15, rotate: -42, y: 12 }}
         animate={{
-          opacity: [0, 1, 1, 1, 1],
-          scale: [0.2, 1.35, 0.92, 1.08, 1],
-          rotate: [-30, 14, -8, 4, 0],
-          y: [6, -3, 1, 0, 0],
+          opacity: [0, 1, 1, 1, 1, 1],
+          scale: [0.15, 1.55, 0.86, 1.18, 0.96, 1],
+          rotate: [-42, 22, -13, 8, -3, 0],
+          y: [12, -5, 2, -2, 0, 0],
         }}
-        transition={{ duration: 0.9, ease: "easeOut", times: [0, 0.3, 0.55, 0.78, 1] }}
-        className="relative text-2xl leading-none"
+        transition={{ duration: 1.15, ease: "easeOut", times: [0, 0.22, 0.42, 0.62, 0.8, 1] }}
+        className="relative text-5xl leading-none"
       >
         🎉
       </motion.span>
-    </span>
+    </motion.div>
   );
 }
 
@@ -1859,14 +1873,12 @@ export function SummaryScreen({
   const firstName = (data.full_name || "").trim().split(/\s+/)[0] ?? "";
 
   return (
-    <div className="flex flex-col gap-2.5 sm:gap-3">
-      <div className="flex flex-col items-center gap-0.5 text-center">
-        <div className="flex items-center justify-center gap-2">
-          <PartyPopper />
-          <h2 className="font-display text-xl font-semibold sm:text-2xl">
-            {t("Tu Número está listo.", "Your Number is ready.")}
-          </h2>
-        </div>
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-3 sm:gap-4">
+      <div className="flex flex-col items-center text-center">
+        <PartyPopper />
+        <h2 className="font-display -mt-1 text-2xl font-semibold sm:text-3xl">
+          {t("Tu Número está listo.", "Your Number is ready.")}
+        </h2>
         <p className="text-xs text-muted-foreground sm:text-sm">
           {firstName
             ? t(`${firstName}, esto entendió la IA de tus finanzas.`, `${firstName}, this is what the AI understood.`)
@@ -1874,21 +1886,21 @@ export function SummaryScreen({
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2.5">
         {metrics.map((m, i) => (
           <motion.div
             key={m.label}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 * i }}
-            className="surface flex flex-col justify-center px-3.5 py-2.5"
+            className="surface flex min-h-20 flex-col justify-center px-4 py-3 sm:min-h-24 sm:px-5"
           >
             <p className="text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
               <span aria-hidden="true" className="mr-1">{m.emoji}</span>
               <span className="sm:hidden">{m.short}</span>
               <span className="hidden sm:inline">{m.label}</span>
             </p>
-            <p className="numeric mt-1 text-base font-semibold sm:text-lg">{m.value}</p>
+            <p className="numeric mt-1.5 text-lg font-semibold sm:text-xl">{m.value}</p>
           </motion.div>
         ))}
       </div>
