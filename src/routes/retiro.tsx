@@ -649,7 +649,7 @@ function RetiroContent() {
               <Slider
                 className="mt-3"
                 min={0}
-                max={Math.max(500, Math.round(d.savings * 2) || 3000)}
+                max={Math.max(500, Math.round(d.savings * 2) || 3000, Math.ceil((sp500Monthly * 2) / 50) * 50)}
                 step={50}
                 value={[monthly]}
                 onValueChange={([v]) => setMonthly(v ?? 0)}
