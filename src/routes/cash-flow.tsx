@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { HelpCircle } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useLanguage, useT } from "@/hooks/use-language";
-import { translateCategory, translateFixedName } from "@/lib/i18n-data";
+import { translateCategory } from "@/lib/i18n-data";
 
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
@@ -199,23 +199,6 @@ function CashFlow() {
   }, [monthTx, rules, travelDays, customWants]);
 
   const hasReal = hasData && monthTx.length > 0;
-
-  // Ahorro explícito dentro de los gastos fijos (p. ej. «Fondo de ahorro»).
-  const savingItems = useMemo(
-    () => fixed.items.filter((i) => /ahorro|inver|saving|invest/i.test(i.name)),
-    [fixed.items],
-  );
-  const activeFixedItems = useMemo(
-    () => fixed.items.filter((i) => !/ahorro|inver|saving|invest/i.test(i.name) && (i.amount || 0) > 0),
-    [fixed.items],
-  );
-  // Gastos fijos de estilo de vida (gimnasio, streaming, ocio…) suman a Deseos, no a Necesidades.
-  const FIXED_WANT_RE = /gym|gimnasio|netflix|spotify|hbo|disney|prime|streaming|suscrip|club|padel|pádel|golf|ocio|viaje|hobby|hobbies|lifestyle|belleza|peluquer|mascota/i;
-  const wantFixedItems = useMemo(() => activeFixedItems.filter((i) => FIXED_WANT_RE.test(i.name)), [activeFixedItems]);
-  const needFixedItems = useMemo(() => activeFixedItems.filter((i) => !FIXED_WANT_RE.test(i.name)), [activeFixedItems]);
-  const fixedSavings = savingItems.reduce((s, i) => s + (i.amount || 0), 0);
-  const fixedNeeds = needFixedItems.reduce((s, i) => s + (i.amount || 0), 0);
-  const fixedWants = wantFixedItems.reduce((s, i) => s + (i.amount || 0), 0);
 
   // Cuando hay movimientos, toda la distribución sale exclusivamente del mes corriente.
   // No se suman presupuestos, metas ni gastos fijos estimados del perfil.
