@@ -1714,17 +1714,6 @@ function SummaryScreen({
     },
   ];
 
-  // Reparto del patrimonio: solo los activos que realmente has registrado.
-  const assetClasses = [
-    { emoji: "💵", label: t("Efectivo", "Cash"), value: data.assets_cash, bar: "bg-chart-1" },
-    { emoji: "🏦", label: t("Cuentas bancarias", "Bank accounts"), value: data.assets_bank, bar: "bg-chart-2" },
-    { emoji: "🧓", label: t("Plan de pensiones", "Retirement plan"), value: data.assets_retirement, bar: "bg-chart-3" },
-    { emoji: "📊", label: "ETFs", value: data.assets_etf, bar: "bg-chart-4" },
-    { emoji: "📈", label: t("Acciones", "Stocks"), value: data.assets_stocks, bar: "bg-chart-5" },
-    { emoji: "🪙", label: t("Cripto", "Crypto"), value: data.assets_crypto, bar: "bg-chart-6" },
-    { emoji: "🏠", label: t("Inmuebles", "Property"), value: data.assets_property, bar: "bg-chart-7" },
-  ].filter((c) => c.value > 0);
-  const assetTotal = assetClasses.reduce((s, c) => s + c.value, 0);
 
   const city = (life.city || "").trim();
   const numberNote =
@@ -1849,49 +1838,6 @@ function SummaryScreen({
         ))}
       </div>
 
-      <div className="surface p-5">
-        <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-          📊 {t("Distribución del patrimonio", "Net worth breakdown")}
-        </p>
-        {assetTotal > 0 ? (
-          <>
-            <div className="mt-3 flex h-2.5 overflow-hidden rounded-full bg-muted">
-              {assetClasses.map((c) => (
-                <motion.div
-                  key={c.label}
-                  initial={{ flexGrow: 0 }}
-                  animate={{ flexGrow: c.value }}
-                  transition={{ duration: 0.9, ease: "easeOut" }}
-                  style={{ flexBasis: 0, minWidth: 4 }}
-                  className={cn("h-full", c.bar)}
-                  title={`${c.label} · ${money(c.value, currency)}`}
-                />
-              ))}
-            </div>
-            <div className="mt-3 flex flex-col">
-              {assetClasses.map((c) => (
-                <div
-                  key={c.label}
-                  className="flex items-center justify-between gap-3 border-t border-border/60 py-2 first:border-t-0"
-                >
-                  <span className="min-w-0 truncate text-sm">
-                    {c.emoji} {c.label}
-                  </span>
-                  <span className="numeric shrink-0 text-sm text-muted-foreground">
-                    {((c.value / assetTotal) * 100).toFixed(0)}% · {money(c.value, currency)}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </>
-        ) : (
-          <p className="mt-2 text-sm text-muted-foreground">
-            {t("Aún no has registrado activos: añádelos cuando entres a tu dashboard.", "No assets yet: add them once you reach your dashboard.")}
-          </p>
-        )}
-      </div>
-
-      <div className="surface p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="min-w-0">
             <p className="text-[10px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
