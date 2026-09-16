@@ -28,6 +28,7 @@ import { SubscriptionStatusBanner } from "@/components/subscription-status-banne
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Progress } from "@/components/ui/progress";
+import { useAuth } from "@/hooks/use-auth";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -119,6 +120,8 @@ function Dashboard() {
   const chartMargin = isMobile ? { left: 0, right: 4, top: 8 } : { left: 4, right: 8, top: 8 };
 
   const { profile, isLoading, save } = useProfile();
+  const { user: authUser } = useAuth();
+  const profileUserId = authUser?.id ?? "anon";
   const { primary } = usePrimaryGoal();
   const { transactions } = useTransactions();
   const d = buildDataset(profile);
