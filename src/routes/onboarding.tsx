@@ -351,7 +351,7 @@ function OnboardingPage() {
 
       <div
         className={`relative mx-auto flex min-h-[calc(100vh-57px)] flex-col justify-center px-5 ${
-          isSummary ? "max-w-4xl py-8 sm:py-12" : "max-w-2xl py-10 sm:py-16"
+          isSummary ? "max-w-5xl py-4 sm:py-5" : "max-w-2xl py-10 sm:py-16"
         }`}
       >
         <AnimatePresence mode="wait">
@@ -1153,9 +1153,9 @@ function OnboardingPage() {
 
 
         {step === 9 && (
-          <div className="mt-8">
-            <Button variant="ghost" size="lg" className="rounded-full" onClick={() => go(-1)}>
-              <ArrowLeft className="mr-2 h-4 w-4" /> {t("Atrás", "Back")}
+          <div className="mt-3">
+            <Button variant="ghost" size="sm" className="rounded-full" onClick={() => go(-1)}>
+              <ArrowLeft className="mr-2 h-3.5 w-3.5" /> {t("Atrás", "Back")}
             </Button>
           </div>
         )}
@@ -1859,69 +1859,67 @@ function SummaryScreen({
   const firstName = (data.full_name || "").trim().split(/\s+/)[0] ?? "";
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col items-center gap-1.5 text-center">
+    <div className="flex flex-col gap-2.5 sm:gap-3">
+      <div className="flex flex-col items-center gap-0.5 text-center">
         <div className="flex items-center justify-center gap-2">
           <PartyPopper />
-          <h2 className="font-display text-2xl font-semibold sm:text-3xl">
+          <h2 className="font-display text-xl font-semibold sm:text-2xl">
             {t("Tu Número está listo.", "Your Number is ready.")}
           </h2>
         </div>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-xs text-muted-foreground sm:text-sm">
           {firstName
             ? t(`${firstName}, esto entendió la IA de tus finanzas.`, `${firstName}, this is what the AI understood.`)
             : t("Esto entendió la IA de tus finanzas.", "This is what the AI understood about your finances.")}
         </p>
       </div>
 
-
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {metrics.map((m, i) => (
           <motion.div
             key={m.label}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 * i }}
-            className="surface flex min-h-[112px] flex-col justify-center px-5 py-4 sm:min-h-[116px]"
+            className="surface flex flex-col justify-center px-3.5 py-2.5"
           >
-            <span className="mb-3 text-base leading-none" aria-hidden="true">{m.emoji}</span>
-            <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            <p className="text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
+              <span aria-hidden="true" className="mr-1">{m.emoji}</span>
               <span className="sm:hidden">{m.short}</span>
               <span className="hidden sm:inline">{m.label}</span>
             </p>
-            <p className="numeric mt-1.5 text-lg font-semibold sm:text-xl">{m.value}</p>
+            <p className="numeric mt-1 text-base font-semibold sm:text-lg">{m.value}</p>
           </motion.div>
         ))}
       </div>
 
-      <div className="surface p-5">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <div className="surface px-4 py-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
-            <p className="numeric text-3xl font-semibold sm:text-4xl">{money(plan.targetCapital, currency)}</p>
-            <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-primary">🎯 Your Number</p>
-            <p className="mt-1.5 text-xs leading-snug text-muted-foreground">{numberNote}</p>
+            <p className="numeric text-2xl font-semibold sm:text-3xl">{money(plan.targetCapital, currency)}</p>
+            <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-primary">🎯 Your Number</p>
+            <p className="mt-1 text-[11px] leading-snug text-muted-foreground">{numberNote}</p>
           </div>
           <div className="shrink-0 sm:text-right">
-            <p className="numeric text-2xl font-semibold text-primary">
+            <p className="numeric text-xl font-semibold text-primary sm:text-2xl">
               {plan.mode === "freedom"
                 ? `${plan.freedomAge} ${t("años", "yrs")}`
                 : plan.monthsToGoal > 0
                   ? `${Math.max(1, Math.ceil(plan.monthsToGoal / 12))} ${t("años", "yrs")}`
                   : t("Listo", "Ready")}
             </p>
-            <p className="mt-2 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
               📅 {t("Libertad financiera", "Financial freedom")}
             </p>
-            <p className="mt-1.5 text-xs leading-snug text-muted-foreground">{freedomNote}</p>
+            <p className="mt-1 text-[11px] leading-snug text-muted-foreground">{freedomNote}</p>
           </div>
-
         </div>
-        <div className="mt-4">
-          <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+        <div className="mt-2.5">
+          <div className="flex items-center justify-between text-[10px] text-muted-foreground">
             <span>📈 {t("Progreso hacia tu Número", "Progress to your Number")}</span>
             <span className="numeric text-foreground">{plan.progress.toFixed(1)}%</span>
           </div>
-          <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted">
+          <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-muted">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${Math.max(1, plan.progress)}%` }}
@@ -1933,42 +1931,42 @@ function SummaryScreen({
       </div>
 
       <div>
-        <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+        <p className="text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
           ✨ {t("Tus 4 acciones", "Your 4 actions")}
         </p>
-        <div className="mt-2.5 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+        <div className="mt-1.5 grid grid-cols-1 gap-2 sm:grid-cols-2">
           {actions.map((a, i) => (
             <motion.div
               key={a.title}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.08 * i }}
-              className="flex h-full items-start gap-3 rounded-2xl border border-border bg-elevated/50 px-4 py-3.5"
+              className="flex h-full items-start gap-2.5 rounded-2xl border border-border bg-elevated/50 px-3 py-2.5"
             >
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/12 text-base">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/12 text-sm">
                 {a.emoji}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold">{a.title}</p>
-                <p className="mt-0.5 text-xs leading-snug text-muted-foreground sm:text-sm">{a.text}</p>
+                <p className="text-[13px] font-semibold leading-tight">{a.title}</p>
+                <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">{a.text}</p>
               </div>
             </motion.div>
           ))}
         </div>
       </div>
 
-      <p className="text-center text-[11px] leading-snug text-muted-foreground">
+      <p className="text-center text-[10px] leading-snug text-muted-foreground">
         {t(
           "Cálculos orientativos con lo que respondiste; no son asesoramiento financiero.",
           "Estimates based on your answers; not financial advice.",
         )}
       </p>
 
-      <div className="flex flex-col gap-2">
-        <Button size="lg" className="h-12 w-full rounded-full text-base" onClick={onEnter}>
+      <div className="flex flex-col items-center gap-1.5 sm:flex-row sm:justify-center">
+        <Button size="lg" className="h-11 w-full rounded-full text-sm sm:w-auto sm:min-w-[260px]" onClick={onEnter}>
           {t("Entrar a mi dashboard", "Enter my dashboard")} <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="lg" className="w-full rounded-full" onClick={onEdit}>
+        <Button variant="ghost" size="lg" className="h-11 w-full rounded-full text-sm sm:w-auto" onClick={onEdit}>
           <Pencil className="mr-2 h-3.5 w-3.5" /> {t("Editar mis respuestas", "Edit my answers")}
         </Button>
       </div>
