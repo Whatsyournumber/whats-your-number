@@ -261,15 +261,9 @@ const TARGET_KEY = "whatsyournumber:spend-target";
 /** Gasto mensual objetivo (target), guardado por cuenta en el navegador. */
 export function useSpendTarget(_initial = 0) {
   const { user } = useAuth();
-  const { profile } = useProfile();
   const storageKey = useMemo(() => `${TARGET_KEY}:${user?.id ?? "anon"}`, [user?.id]);
   const [target, setTarget] = useState(0);
   const [hasTarget, setHasTarget] = useState(false);
-  // Gastos fijos declarados en el onboarding: dejan el objetivo listo.
-  const fixedTotal = useMemo(
-    () => FIXED_FIELDS.reduce((s, f) => s + (Number(profile[f.key]) || 0), 0),
-    [profile],
-  );
 
   // Cada cuenta empieza de cero: solo se usa lo que esa cuenta guardó.
   useEffect(() => {
@@ -285,18 +279,6 @@ export function useSpendTarget(_initial = 0) {
       /* ignore */
     }
   }, [storageKey]);
-
-  // Sin objetivo guardado, arranca con el total de gastos fijos del onboarding.
-  useEffect(() => {
-    if (hasTarget || fixedTotal <= 0) return;
-    setTarget(fixedTotal);
-    setHasTarget(true);
-    try {
-      window.localStorage.setItem(storageKey, String(fixedTotal));
-    } catch {
-      /* ignore */
-    }
-  }, [hasTarget, fixedTotal, storageKey]);
 
   const update = useCallback(
     (v: number) => {
