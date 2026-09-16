@@ -44,7 +44,6 @@ import { Route as PrivacidadRouteImport } from './routes/privacidad'
 import { Route as ReembolsosRouteImport } from './routes/reembolsos'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RetiroRouteImport } from './routes/retiro'
-import { Route as SummaryCheckRouteImport } from './routes/summary-check'
 import { Route as SuscripcionRouteImport } from './routes/suscripcion'
 import { Route as TerminosRouteImport } from './routes/terminos'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
@@ -257,11 +256,6 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const RetiroRoute = RetiroRouteImport.update({
   id: '/retiro',
   path: '/retiro',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SummaryCheckRoute = SummaryCheckRouteImport.update({
-  id: '/summary-check',
-  path: '/summary-check',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SuscripcionRoute = SuscripcionRouteImport.update({
@@ -490,7 +484,6 @@ export interface FileRoutesByFullPath {
   '/reembolsos': typeof ReembolsosRoute
   '/reset-password': typeof ResetPasswordRoute
   '/retiro': typeof RetiroRoute
-  '/summary-check': typeof SummaryCheckRoute
   '/suscripcion': typeof SuscripcionRoute
   '/terminos': typeof TerminosRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -561,7 +554,6 @@ export interface FileRoutesByTo {
   '/reembolsos': typeof ReembolsosRoute
   '/reset-password': typeof ResetPasswordRoute
   '/retiro': typeof RetiroRoute
-  '/summary-check': typeof SummaryCheckRoute
   '/suscripcion': typeof SuscripcionRoute
   '/terminos': typeof TerminosRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -635,7 +627,6 @@ export interface FileRoutesById {
   '/reembolsos': typeof ReembolsosRoute
   '/reset-password': typeof ResetPasswordRoute
   '/retiro': typeof RetiroRoute
-  '/summary-check': typeof SummaryCheckRoute
   '/suscripcion': typeof SuscripcionRoute
   '/terminos': typeof TerminosRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -711,7 +702,6 @@ export interface FileRouteTypes {
     | '/reembolsos'
     | '/reset-password'
     | '/retiro'
-    | '/summary-check'
     | '/suscripcion'
     | '/terminos'
     | '/.mcp/list-tools'
@@ -782,7 +772,6 @@ export interface FileRouteTypes {
     | '/reembolsos'
     | '/reset-password'
     | '/retiro'
-    | '/summary-check'
     | '/suscripcion'
     | '/terminos'
     | '/.mcp/list-tools'
@@ -855,7 +844,6 @@ export interface FileRouteTypes {
     | '/reembolsos'
     | '/reset-password'
     | '/retiro'
-    | '/summary-check'
     | '/suscripcion'
     | '/terminos'
     | '/.mcp/list-tools'
@@ -930,7 +918,6 @@ export interface RootRouteChildren {
   ReembolsosRoute: typeof ReembolsosRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   RetiroRoute: typeof RetiroRoute
-  SummaryCheckRoute: typeof SummaryCheckRoute
   SuscripcionRoute: typeof SuscripcionRoute
   TerminosRoute: typeof TerminosRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
@@ -1190,13 +1177,6 @@ declare module '@tanstack/react-router' {
       path: '/retiro'
       fullPath: '/retiro'
       preLoaderRoute: typeof RetiroRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/summary-check': {
-      id: '/summary-check'
-      path: '/summary-check'
-      fullPath: '/summary-check'
-      preLoaderRoute: typeof SummaryCheckRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/suscripcion': {
@@ -1573,7 +1553,6 @@ const rootRouteChildren: RootRouteChildren = {
   ReembolsosRoute: ReembolsosRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   RetiroRoute: RetiroRoute,
-  SummaryCheckRoute: SummaryCheckRoute,
   SuscripcionRoute: SuscripcionRoute,
   TerminosRoute: TerminosRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
