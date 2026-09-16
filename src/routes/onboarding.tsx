@@ -50,7 +50,7 @@ import {
   currencies,
 } from "@/lib/onboarding";
 import { useFxRates } from "@/hooks/use-fx-rates";
-import { convertAmount } from "@/lib/fx";
+
 import { lifestyleCities } from "@/lib/lifestyle-cities";
 import { comfortableCostEur } from "@/lib/city-cost";
 import { currencyForCountry } from "@/lib/country-currency";
@@ -622,7 +622,6 @@ function OnboardingPage() {
               >
                 <CityPicker
                   value={life.city}
-                  lifestyleFactor={lifestyles.find((l) => l.value === life.lifestyle)?.factor ?? 1}
                   onSelect={(c) => {
                     setL("city", c.name);
                     setData((d) => ({ ...d, country: c.country, currency: c.currency }));
@@ -1341,11 +1340,9 @@ function editDistance(a: string, b: string) {
 function CityPicker({
   value,
   onSelect,
-  lifestyleFactor = 1,
 }: {
   value: string;
   onSelect: (c: (typeof cities)[number]) => void;
-  lifestyleFactor?: number;
 }) {
   const t = useT();
   const [q, setQ] = useState("");
@@ -1478,11 +1475,6 @@ function CityPicker({
     catalog.find((c) => c.name === value) ??
     remote.find((c) => c.name === value) ??
     (value ? { name: value, country: "", currency: "USD", cost: comfortableCostEur({ name: value }) } : undefined);
-  const cityCost = (c: (typeof cities)[number]) => {
-    const v = convertAmount(c.cost * lifestyleFactor, "EUR", c.currency);
-    const step = v >= 100000 ? 5000 : v >= 10000 ? 500 : v >= 1000 ? 50 : 10;
-    return Math.round(v / step) * step;
-  };
   const customName = q.trim().replace(/\s+/g, " ");
 
   return (
@@ -1547,9 +1539,6 @@ function CityPicker({
           >
             <span className="font-medium">{c.name}</span>
             <span className="text-xs text-muted-foreground">{c.country}</span>
-            <span className="numeric ml-auto text-xs text-muted-foreground">
-              ~{new Intl.NumberFormat("es").format(cityCost(c))} {c.currency}/mes
-            </span>
           </button>
         ))}
       </div>
