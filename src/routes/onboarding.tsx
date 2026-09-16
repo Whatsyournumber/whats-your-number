@@ -1688,9 +1688,9 @@ function SummaryScreen({
   const t = useT();
 
   const metrics = [
-    { emoji: "💰", label: t("Patrimonio", "Net worth"), value: compact(plan.netWorth, currency) },
-    { emoji: "📈", label: t("Ingreso", "Income"), value: compact(plan.income, currency) },
-    { emoji: "💳", label: t("Gasto", "Expenses"), value: compact(plan.expenses, currency) },
+    { emoji: "💰", label: t("Patrimonio", "Net worth"), value: money(plan.netWorth, currency) },
+    { emoji: "📈", label: t("Ingreso", "Income"), value: money(plan.income, currency) },
+    { emoji: "💳", label: t("Gasto", "Expenses"), value: money(plan.expenses, currency) },
     { emoji: "💵", label: t("Tasa de ahorro", "Savings rate"), value: `${plan.savingsRate.toFixed(0)}%` },
   ];
 
