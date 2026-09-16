@@ -3,13 +3,12 @@ import { motion } from "motion/react";
 import { HelpCircle } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useLanguage, useT } from "@/hooks/use-language";
-import { translateCategory, translateFixedName } from "@/lib/i18n-data";
+import { translateCategory } from "@/lib/i18n-data";
 
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useCategories } from "@/hooks/use-categories";
-import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useProfile } from "@/hooks/use-profile";
 import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { useTransactions, type Tx } from "@/hooks/use-transactions";
@@ -56,7 +55,6 @@ function CashFlow() {
   const { profile } = useProfile();
   const d = buildDataset(profile);
   const { transactions, hasData } = useTransactions();
-  const fixed = useFixedExpenses();
   const { rules } = useCategories();
   const { lines: budgetLines } = useSpendBudgets();
 
@@ -160,8 +158,10 @@ function CashFlow() {
   const spend = useMemo(() => {
     let wants = 0;
     let needs = 0;
+    let investments = 0;
     const needsBy = new Map<string, number>();
     const wantsBy = new Map<string, number>();
+    const investmentsBy = new Map<string, number>();
     const matchCustom = (name: string) => {
       const n = name.trim().toLowerCase();
       if (!n) return null;
@@ -177,6 +177,12 @@ function CashFlow() {
         continue;
       }
       const cat = categorizeTxWithTravel(tx as Tx, rules, travelDays);
+      const investmentLabel = `${cat} ${tx.merchant ?? ""}`;
+      if (/ahorro|inver|saving|invest|broker|etf|fondo|bolsa|crypto|cripto/i.test(investmentLabel)) {
+        investments += v;
+        investmentsBy.set(cat, (investmentsBy.get(cat) ?? 0) + v);
+        continue;
+      }
       if (isWant(cat)) {
         wants += v;
         wantsBy.set(cat, (wantsBy.get(cat) ?? 0) + v);
@@ -187,40 +193,16 @@ function CashFlow() {
         needsBy.set(key, (needsBy.get(key) ?? 0) + v);
       }
     }
-    return { wants, needs, total: wants + needs, needsBy, wantsBy };
+    return { wants, needs, investments, total: wants + needs, needsBy, wantsBy, investmentsBy };
   }, [monthTx, rules, travelDays, customWants]);
 
   const hasReal = hasData && monthTx.length > 0;
 
-  // Ahorro explícito dentro de los gastos fijos (p. ej. «Fondo de ahorro»).
-  const savingItems = useMemo(
-    () => fixed.items.filter((i) => /ahorro|inver|saving|invest/i.test(i.name)),
-    [fixed.items],
-  );
-  const activeFixedItems = useMemo(
-    () => fixed.items.filter((i) => !/ahorro|inver|saving|invest/i.test(i.name) && (i.amount || 0) > 0),
-    [fixed.items],
-  );
-  // Gastos fijos de estilo de vida (gimnasio, streaming, ocio…) suman a Deseos, no a Necesidades.
-  const FIXED_WANT_RE = /gym|gimnasio|netflix|spotify|hbo|disney|prime|streaming|suscrip|club|padel|pádel|golf|ocio|viaje|hobby|hobbies|lifestyle|belleza|peluquer|mascota/i;
-  const wantFixedItems = useMemo(() => activeFixedItems.filter((i) => FIXED_WANT_RE.test(i.name)), [activeFixedItems]);
-  const needFixedItems = useMemo(() => activeFixedItems.filter((i) => !FIXED_WANT_RE.test(i.name)), [activeFixedItems]);
-  const fixedSavings = savingItems.reduce((s, i) => s + (i.amount || 0), 0);
-  const fixedNeeds = needFixedItems.reduce((s, i) => s + (i.amount || 0), 0);
-  const fixedWants = wantFixedItems.reduce((s, i) => s + (i.amount || 0), 0);
-
-  // Necesidades = gastos fijos de necesidad + gastos variables de necesidad.
-  const fixedAmount = hasReal ? fixedNeeds + spend.needs : d.cashFlow.buckets[0]!.amount;
-  // Deseos / lifestyle = gastos variables de deseo + gastos fijos de lifestyle.
-  const lifestyleAmount = hasReal ? spend.wants + fixedWants : d.cashFlow.buckets[1]!.amount;
-  // Solo cuenta ahorro o inversión realmente registrado en el mes.
-  // El aporte objetivo de retiro no es un movimiento real y no debe sumarse aquí.
-  const useFixedSavings = hasReal && fixedSavings > 0;
-  const investAmount = useFixedSavings
-    ? fixedSavings
-    : hasReal
-      ? 0
-      : d.cashFlow.buckets[2]!.amount;
+  // Cuando hay movimientos, toda la distribución sale exclusivamente del mes corriente.
+  // No se suman presupuestos, metas ni gastos fijos estimados del perfil.
+  const fixedAmount = hasReal ? spend.needs : d.cashFlow.buckets[0]!.amount;
+  const lifestyleAmount = hasReal ? spend.wants : d.cashFlow.buckets[1]!.amount;
+  const investAmount = hasReal ? spend.investments : d.cashFlow.buckets[2]!.amount;
 
   const freeAmount = Math.max(0, totalIncome - fixedAmount - lifestyleAmount - investAmount);
 
@@ -238,30 +220,26 @@ function CashFlow() {
 
 
   const needsBreakdown = hasReal
-    ? [
-        ...needFixedItems.map((i) => ({ label: `${translateFixedName(i.name, lang)} (${t("fijo", "fixed")})`, amount: i.amount })),
-        ...[...spend.needsBy.entries()].map(([label, amount]) => ({ label: translateCategory(label, lang), amount })),
-      ].sort((a, b) => b.amount - a.amount)
+    ? [...spend.needsBy.entries()]
+        .map(([label, amount]) => ({ label: translateCategory(label, lang), amount }))
+        .sort((a, b) => b.amount - a.amount)
     : [];
   const wantsBreakdown = hasReal
-    ? [
-        ...wantFixedItems.map((i) => ({ label: `${translateFixedName(i.name, lang)} (${t("fijo", "fixed")})`, amount: i.amount })),
-        ...[...spend.wantsBy.entries()].map(([label, amount]) => ({ label: translateCategory(label, lang), amount })),
-      ].sort((a, b) => b.amount - a.amount)
+    ? [...spend.wantsBy.entries()]
+        .map(([label, amount]) => ({ label: translateCategory(label, lang), amount }))
+        .sort((a, b) => b.amount - a.amount)
     : [];
 
   const saveBreakdown = hasReal
     ? [
-        ...(useFixedSavings
-          ? savingItems.map((i) => ({ label: `${translateFixedName(i.name, lang)} (${t("fijo", "fixed")})`, amount: i.amount }))
-          : []),
+        ...[...spend.investmentsBy.entries()].map(([label, amount]) => ({ label: translateCategory(label, lang), amount })),
         { label: t("Flujo libre del mes", "Free flow this month"), amount: freeAmount },
       ].sort((a, b) => b.amount - a.amount)
     : [];
 
 
   const cash = profile.assets_cash + profile.assets_bank;
-  const monthlySpend = hasReal ? fixedNeeds + fixedWants + spend.total : d.expenses;
+  const monthlySpend = hasReal ? spend.total : d.expenses;
   const runway = monthlySpend > 0 ? cash / monthlySpend : 0;
 
   return (
