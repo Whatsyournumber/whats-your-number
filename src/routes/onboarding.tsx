@@ -1705,6 +1705,9 @@ function SummaryScreen({
     years: Math.max(1, plan.yearsLeft),
   });
   const extra = Math.max(0, Math.round(needed - savings));
+  const liquidCash = Math.max(0, data.assets_cash + data.assets_bank);
+  const emergencyTarget = Math.round(plan.expenses * 6);
+  const emergencyGap = Math.max(0, emergencyTarget - liquidCash);
 
   const actions = [
     {
