@@ -389,7 +389,7 @@ function Gastos() {
   );
 
   // ---- Gasto objetivo ----
-  const { target, setTarget } = useSpendTarget(Math.round(profile.monthly_expenses || 0));
+  const { target, setTarget, hasTarget } = useSpendTarget();
   const isLongRange = days > 31;
 
   // Para rangos largos, el promedio mensual es el promedio de los totales mensuales
