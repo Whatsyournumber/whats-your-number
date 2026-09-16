@@ -269,6 +269,8 @@ function OnboardingPage() {
   const finish = () => {
     setStep(SUMMARY_STEP);
     void persist({ completed: true, completed_at: new Date().toISOString(), desired_retirement_income: desiredIncome });
+    // El plan del onboarding queda listo como plan de gastos personalizado.
+    seedSpendPlanFromOnboarding(user?.id ?? null, data);
     // Sin prueba automática: toda cuenta nueva entra en el plan gratis.
   };
 
