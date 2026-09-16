@@ -1844,18 +1844,24 @@ function SummaryScreen({
     },
   ];
 
+  const firstName = (data.full_name || "").trim().split(/\s+/)[0] ?? "";
+
   return (
     <div className="flex flex-col gap-4">
-      <div className="text-center">
-        <h2 className="font-display text-2xl font-semibold sm:text-3xl">
-          🎉 {t("Tu Número está listo.", "Your Number is ready.")}
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {data.full_name
-            ? t(`${data.full_name}, esto entendió la IA de tus finanzas.`, `${data.full_name}, this is what the AI understood.`)
+      <div className="flex flex-col items-center gap-1.5 text-center">
+        <div className="flex items-center justify-center gap-2">
+          <PartyPopper />
+          <h2 className="font-display text-2xl font-semibold sm:text-3xl">
+            {t("Tu Número está listo.", "Your Number is ready.")}
+          </h2>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          {firstName
+            ? t(`${firstName}, esto entendió la IA de tus finanzas.`, `${firstName}, this is what the AI understood.`)
             : t("Esto entendió la IA de tus finanzas.", "This is what the AI understood about your finances.")}
         </p>
       </div>
+
 
       <div className="grid grid-cols-2 gap-3">
         {metrics.map((m, i) => (
