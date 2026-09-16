@@ -3,19 +3,14 @@ import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowLeft,
   ArrowRight,
-  Banknote,
-  Bitcoin,
-  Building2,
   Check,
   Compass,
-  CreditCard,
   FileUp,
   Loader2,
   LogOut,
   Pencil,
   Search,
   Sparkles,
-  TrendingUp,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -27,7 +22,7 @@ import { StatementImporter } from "@/components/statement-importer";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  buildInsights,
+  minMonthlyForRetirement,
   buildPlan,
   childrenOptions,
   cities,
@@ -43,7 +38,6 @@ import {
   money,
   netWorth,
   plansChildrenOptions,
-  totalAssets,
   travelOptions,
   type LifeData,
   type OnboardingData,
