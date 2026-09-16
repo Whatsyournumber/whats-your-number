@@ -404,7 +404,7 @@ function RetiroContent() {
               {sp500Monthly > 0 && (
                 <span className={cn("ml-1 font-medium", thisMonthContribution >= sp500Monthly ? "text-positive" : "text-negative")}>
                   {thisMonthContribution >= sp500Monthly
-                    ? t("· en camino 🎯", "· on track 🎯")
+                    ? t("· en camino", "· on track")
                     : `${t("· faltan", "· short by")} ${fmt(sp500Monthly - thisMonthContribution)}`}
                 </span>
               )}
