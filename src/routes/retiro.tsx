@@ -254,7 +254,15 @@ function RetiroContent() {
       <PageHeader
         eyebrow={t("Largo plazo", "Long term")}
         title={t("WhatsYourNumber", "WhatsYourNumber")}
-        subtitle={headerSubtitle}
+        subtitle={
+          isMobile
+            ? goalMode === "home"
+              ? t("Entrada de tu vivienda y tu ahorro.", "Your home down payment and savings.")
+              : goalMode === "business"
+                ? t("Capital para tu objetivo y tu ahorro.", "Capital for your goal and savings.")
+                : t("Cuánto necesitas para no trabajar.", "How much you need to stop working.")
+            : headerSubtitle
+        }
       />
 
 
@@ -362,6 +370,16 @@ function RetiroContent() {
 
 
 
+        <Link to="/mi-perfil" hash="patrimonio" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
+          <KpiCard
+            label={t("Cuánto tengo", "How much I have")}
+            value={fmt(investable)}
+            icon={Pencil}
+            hint={t("Inversiones, sin inmuebles", "Investments, no property")}
+            index={2}
+          />
+        </Link>
+
         {!isGoal && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -369,23 +387,25 @@ function RetiroContent() {
             transition={{ duration: 0.35, delay: 0.11, ease: "easeOut" }}
             className="surface relative overflow-hidden p-5"
           >
-            <div className="relative flex items-start justify-between gap-3">
-              <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                {t("Aporte mensual al 10%", "Monthly contribution at 10%")}
-              </p>
-              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">S&P 500</span>
+            <p className="whitespace-nowrap text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              {t("Aporte mensual", "Monthly saving")}
+            </p>
+            <div className="relative mt-3 flex flex-wrap items-center gap-x-2 gap-y-1">
+              <p className="numeric text-2xl font-semibold md:text-3xl">{fmt(sp500Monthly)}</p>
+              <span className="whitespace-nowrap rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
+                S&P 500 · 10%
+              </span>
             </div>
-            <p className="numeric relative mt-3 text-2xl font-semibold md:text-3xl">{fmt(sp500Monthly)}</p>
-            <p className="relative mt-2 text-xs">
-              {t("Este mes aportaste", "This month you put in")}{" "}
+            <p className="relative mt-2 text-[11px]">
+              {t("Aportaste", "You put in")}{" "}
               <span className={cn("numeric font-semibold", thisMonthContribution >= sp500Monthly ? "text-positive" : "text-negative")}>
                 {fmt(thisMonthContribution)}
               </span>
               {sp500Monthly > 0 && (
                 <span className={cn("ml-1 font-medium", thisMonthContribution >= sp500Monthly ? "text-positive" : "text-negative")}>
                   {thisMonthContribution >= sp500Monthly
-                    ? t("· vas en camino 🎯", "· on track 🎯")
-                    : `${t("· te faltan", "· you need")} ${fmt(sp500Monthly - thisMonthContribution)}`}
+                    ? t("· en camino", "· on track")
+                    : `${t("· faltan", "· short by")} ${fmt(sp500Monthly - thisMonthContribution)}`}
                 </span>
               )}
             </p>
@@ -400,15 +420,6 @@ function RetiroContent() {
             index={1}
           />
         )}
-        <Link to="/mi-perfil" hash="patrimonio" className="block rounded-[inherit] transition-transform hover:-translate-y-0.5">
-          <KpiCard
-            label={t("Cuánto tengo", "How much I have")}
-            value={fmt(investable)}
-            icon={Pencil}
-            hint={t("Ahorros e inversiones — sin contar propiedades", "Savings and investments — excluding properties")}
-            index={2}
-          />
-        </Link>
 
         {!isGoal && (
           <motion.div
@@ -474,8 +485,8 @@ function RetiroContent() {
                 <p className="numeric relative mt-3 text-2xl font-semibold md:text-3xl">
                   {retireAge} <span className="text-base font-medium text-muted-foreground">{t("años", "years")}</span>
                 </p>
-                <p className="relative mt-2 text-xs text-muted-foreground">
-                  {t("hoy tienes", "you are")} {retirement.currentAge} · {t("te quedan", "you have")} {Math.max(0, retireAge - retirement.currentAge)} {t("años", "years")}
+                <p className="relative mt-2 text-[11px] text-muted-foreground">
+                  {retirement.currentAge} {t("hoy", "today")} · {Math.max(0, retireAge - retirement.currentAge)} {t("años restantes", "yrs left")}
                 </p>
               </>
             )}
