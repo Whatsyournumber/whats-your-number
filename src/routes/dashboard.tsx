@@ -287,7 +287,7 @@ function Dashboard() {
       term: stored.term || fromProfile.term,
     };
     setMortgage(stored);
-  }, [profile.liabilities, profile.mortgage_balance, profile.mortgage_rate, profile.mortgage_term]);
+  }, [profileUserId, profile.liabilities, profile.mortgage_balance, profile.mortgage_rate, profile.mortgage_term]);
 
   const mortgageBalance = mortgage.balance;
   const mortgagePayment =
@@ -295,7 +295,7 @@ function Dashboard() {
       ? paymentFor(mortgage.balance, mortgage.rate, mortgage.term * 12)
       : 0;
   const mortgageHint =
-    mortgage.rate > 0 && mortgage.term > 0
+    mortgage.balance > 0 && mortgage.rate > 0 && mortgage.term > 0
       ? t(
           `${mortgage.rate.toFixed(1)}% • ${mortgage.term} ${mortgage.term === 1 ? "año" : "años"} • ${fmt(mortgagePayment)}/mes`,
           `${mortgage.rate.toFixed(1)}% • ${mortgage.term} ${mortgage.term === 1 ? "year" : "years"} • ${fmt(mortgagePayment)}/mo`,
