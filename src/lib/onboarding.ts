@@ -720,7 +720,7 @@ export function currencyDisplay(code: string, symbol?: string): string {
 /** Gastos fijos declarados en el onboarding, listos para la pestaña de Gastos. */
 export const FIXED_FIELDS = [
   { key: "fixed_housing", es: "Hipoteca / Alquiler", en: "Mortgage / Rent", emoji: "\u{1F3E0}" },
-  { key: "fixed_savings", es: "Fondo de ahorro", en: "Savings fund", emoji: "\u{1F4B0}" },
+  
   { key: "fixed_utilities", es: "Servicios (luz, agua, internet)", en: "Utilities (power, water, internet)", emoji: "\u{1F4A1}" },
   { key: "fixed_insurance", es: "Seguros (salud, hogar, auto)", en: "Insurance (health, home, car)", emoji: "\u{1F6E1}\uFE0F" },
   { key: "fixed_transport", es: "Transporte", en: "Transport", emoji: "\u{1F697}" },
