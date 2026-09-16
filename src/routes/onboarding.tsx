@@ -344,7 +344,11 @@ function OnboardingPage() {
         </div>
       )}
 
-      <div className="relative mx-auto flex min-h-[calc(100vh-57px)] max-w-2xl flex-col justify-center px-5 py-10 sm:py-16">
+      <div
+        className={`relative mx-auto flex min-h-[calc(100vh-57px)] flex-col justify-center px-5 ${
+          isSummary ? "max-w-5xl py-4" : "max-w-2xl py-10 sm:py-16"
+        }`}
+      >
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
