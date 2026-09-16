@@ -28,6 +28,7 @@ import { SubscriptionStatusBanner } from "@/components/subscription-status-banne
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Progress } from "@/components/ui/progress";
+import { useAuth } from "@/hooks/use-auth";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -119,6 +120,8 @@ function Dashboard() {
   const chartMargin = isMobile ? { left: 0, right: 4, top: 8 } : { left: 4, right: 8, top: 8 };
 
   const { profile, isLoading, save } = useProfile();
+  const { user: authUser } = useAuth();
+  const profileUserId = authUser?.id ?? "anon";
   const { primary } = usePrimaryGoal();
   const { transactions } = useTransactions();
   const d = buildDataset(profile);
@@ -259,7 +262,8 @@ function Dashboard() {
   useEffect(() => {
     let stored = { balance: 0, rate: 0, term: 0 };
     try {
-      const raw = window.localStorage.getItem("whatsyournumber:mortgage");
+      // Clave por cuenta: una cuenta nueva no hereda la hipoteca de otra.
+      const raw = window.localStorage.getItem(`whatsyournumber:mortgage:${profileUserId}`);
       if (raw) {
         const parsed = JSON.parse(raw);
         stored = {
@@ -283,7 +287,7 @@ function Dashboard() {
       term: stored.term || fromProfile.term,
     };
     setMortgage(stored);
-  }, [profile.liabilities, profile.mortgage_balance, profile.mortgage_rate, profile.mortgage_term]);
+  }, [profileUserId, profile.liabilities, profile.mortgage_balance, profile.mortgage_rate, profile.mortgage_term]);
 
   const mortgageBalance = mortgage.balance;
   const mortgagePayment =
@@ -291,7 +295,7 @@ function Dashboard() {
       ? paymentFor(mortgage.balance, mortgage.rate, mortgage.term * 12)
       : 0;
   const mortgageHint =
-    mortgage.rate > 0 && mortgage.term > 0
+    mortgage.balance > 0 && mortgage.rate > 0 && mortgage.term > 0
       ? t(
           `${mortgage.rate.toFixed(1)}% • ${mortgage.term} ${mortgage.term === 1 ? "año" : "años"} • ${fmt(mortgagePayment)}/mes`,
           `${mortgage.rate.toFixed(1)}% • ${mortgage.term} ${mortgage.term === 1 ? "year" : "years"} • ${fmt(mortgagePayment)}/mo`,

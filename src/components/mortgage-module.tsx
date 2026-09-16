@@ -33,6 +33,7 @@ import { Button } from "@/components/ui/button";
 import { NumberInput } from "@/components/ui/number-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import { useAuth } from "@/hooks/use-auth";
 import { useT } from "@/hooks/use-language";
 import { useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
@@ -160,7 +161,10 @@ function healthLabel(score: number) {
 /** Módulo de hipoteca: abonar, renegociar o invertir y su impacto en Your Number. */
 export function MortgageModule() {
   const t = useT();
+  const { user: authUser } = useAuth();
   const { profile, save } = useProfile();
+  // Clave por cuenta: una cuenta nueva no hereda la hipoteca de otra.
+  const storageKey = `whatsyournumber:mortgage:${authUser?.id ?? "anon"}`;
   const d = buildDataset(profile);
   const currency = profile.currency || "EUR";
   const fmt = (n: number) => (Number.isFinite(n) ? money(Math.round(n), currency) : "—");
@@ -175,15 +179,16 @@ export function MortgageModule() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    setReady(false);
     try {
-      const raw = window.localStorage.getItem(KEY);
-      if (raw) setS({ ...defaults, ...(JSON.parse(raw) as Partial<MortgageState>) });
+      const raw = window.localStorage.getItem(storageKey);
+      setS(raw ? { ...defaults, ...(JSON.parse(raw) as Partial<MortgageState>) } : { ...defaults });
     } catch {
       /* ignore */
     }
     setReady(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [storageKey]);
 
   // Prefill desde Mis datos / onboarding (fuente de verdad).
   // Propiedades de Mis datos primero: hipoteca pendiente, tasa (%) y año de compra.
@@ -227,7 +232,7 @@ export function MortgageModule() {
       setS((prev) => {
         if (prev.balance === 0) return prev;
         try {
-          window.localStorage.removeItem(KEY);
+          window.localStorage.removeItem(storageKey);
         } catch {
           /* ignore */
         }
@@ -243,7 +248,7 @@ export function MortgageModule() {
       if (prev.balance === mBalance && prev.rate === rate && prev.term === term) return prev;
       const next = { ...prev, balance: mBalance, rate, term, payment };
       try {
-        window.localStorage.setItem(KEY, JSON.stringify(next));
+        window.localStorage.setItem(storageKey, JSON.stringify(next));
       } catch {
         /* ignore */
       }
@@ -262,7 +267,7 @@ export function MortgageModule() {
       setS((prev) => {
         const next = { ...prev, payment: nextPayment };
         try {
-          window.localStorage.setItem(KEY, JSON.stringify(next));
+          window.localStorage.setItem(storageKey, JSON.stringify(next));
         } catch {
           /* ignore */
         }
@@ -291,7 +296,7 @@ export function MortgageModule() {
     const next = { ...s, ...patch };
     setS(next);
     try {
-      window.localStorage.setItem(KEY, JSON.stringify(next));
+      window.localStorage.setItem(storageKey, JSON.stringify(next));
     } catch {
       /* ignore */
     }
