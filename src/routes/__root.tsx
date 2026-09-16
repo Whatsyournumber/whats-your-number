@@ -205,7 +205,7 @@ const PUBLIC_PATHS = [
   "/en/college-savings-calculator",
 ];
 // El onboarding tiene su propio gate de sesión y layout a pantalla completa.
-const BARE_PATHS = ["/onboarding", "/elegir", "/ninos"];
+const BARE_PATHS = ["/onboarding", "/summary-check", "/elegir", "/ninos"];
 
 // Rutas que funcionan con y sin sesión: públicas si no hay usuario, dentro del app si lo hay.
 const HYBRID_PATHS = ["/afiliados"];
