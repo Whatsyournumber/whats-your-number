@@ -170,15 +170,16 @@ function RetiroContent() {
     );
   };
 
-  // El simulador arranca con el aporte mensual sugerido para llegar a tu número
-  // a la edad de retiro elegida (al 10% del S&P 500). Después el usuario puede moverlo.
-  const simPrefilled = useRef(false);
+  // El simulador arranca con el mismo aporte mensual que muestra la tarjeta
+  // (el sugerido al 10% del S&P 500 o el que guardaste). Se mantiene igual hasta
+  // que el usuario mueve el slider.
+  const simTouched = useRef(false);
   useEffect(() => {
-    if (isGoal || simPrefilled.current) return;
-    if (sp500Monthly <= 0) return;
-    simPrefilled.current = true;
-    setMonthly(sp500Monthly);
-  }, [sp500Monthly, isGoal]);
+    if (isGoal || simTouched.current) return;
+    if (aporteShown <= 0) return;
+    setMonthly(aporteShown);
+  }, [aporteShown, isGoal]);
+
   // Lo que de verdad apartaste este mes (tu ahorro mensual actual).
   const thisMonthContribution = Math.max(0, d.savings);
 
