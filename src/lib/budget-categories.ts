@@ -48,7 +48,7 @@ export const DEFAULT_BUDGET_IDS = [
   "groceries",
   "transport",
   "insurance",
-  "health",
+  "gym",
   "restaurants",
   "delivery",
   "travel",
