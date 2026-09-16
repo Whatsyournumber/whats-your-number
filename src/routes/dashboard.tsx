@@ -317,22 +317,14 @@ function Dashboard() {
         );
       }
       return t(
-        `Solo ${rate.toFixed(0)}% · necesitas generar extra para llegar al 20%`,
-        `Only ${rate.toFixed(0)}% · you need extra income to reach 20%`,
+        `Solo ${rate.toFixed(0)}% · genera extra para el 20%`,
+        `Only ${rate.toFixed(0)}% · find extra for the 20%`,
       );
     }
     const deficit = current.expenses - current.income;
-    const monthsUntilDry =
-      liveNetWorth > 0 && deficit > 0 ? Math.max(1, Math.floor(liveNetWorth / deficit)) : null;
-    const dryDate = monthsUntilDry
-      ? new Date(new Date().setMonth(new Date().getMonth() + monthsUntilDry)).toLocaleDateString(lang, {
-          month: "short",
-          year: "numeric",
-        })
-      : null;
     return t(
-      `No cubre tus gastos · te faltan ${fmt(deficit)}/mes${dryDate ? ` · sin fondos en ${dryDate}` : ""}`,
-      `Doesn't cover expenses · short ${fmt(deficit)}/mo${dryDate ? ` · out of funds by ${dryDate}` : ""}`,
+      `Faltan ${fmt(deficit)}/mes · necesitas extra`,
+      `Short ${fmt(deficit)}/mo · you need extra`,
     );
   })();
 
