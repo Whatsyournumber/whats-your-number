@@ -579,7 +579,7 @@ function RetiroContent() {
           <p className="text-xs text-muted-foreground">
             {t("Te faltan", "You still need")} {fmt(Math.max(0, plan.targetCapital - investable))} {t("en inversiones que generen retorno.", "in return-generating investments.")}
           </p>
-          <p className="numeric text-xs text-muted-foreground">
+          <p className="numeric hidden text-xs text-muted-foreground sm:block">
             {fmt(investable)} / {fmt(plan.targetCapital)}
           </p>
         </div>
