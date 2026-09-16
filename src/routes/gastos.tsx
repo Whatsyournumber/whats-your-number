@@ -966,6 +966,8 @@ function Gastos() {
               <span className="numeric absolute right-0 top-0">{fmt(monthlyRun)}</span>
             </div>
           </div>
+            </>
+          )}
         </div>
 
         {budgetRows.length > 0 && (
