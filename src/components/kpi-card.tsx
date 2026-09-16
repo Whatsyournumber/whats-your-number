@@ -137,7 +137,11 @@ export function KpiCard({
             </TooltipContent>
           </Tooltip>
         ) : (
-          hint && <span className={cn("text-xs text-muted-foreground", hintClassName)}>{hint}</span>
+          hint && (
+            <span className={cn("min-w-0 truncate whitespace-nowrap text-xs text-muted-foreground", hintClassName)}>
+              {hint}
+            </span>
+          )}
         )}
       </div>
     </motion.div>
