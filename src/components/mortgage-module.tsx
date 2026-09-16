@@ -179,15 +179,16 @@ export function MortgageModule() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    setReady(false);
     try {
-      const raw = window.localStorage.getItem(KEY);
-      if (raw) setS({ ...defaults, ...(JSON.parse(raw) as Partial<MortgageState>) });
+      const raw = window.localStorage.getItem(storageKey);
+      setS(raw ? { ...defaults, ...(JSON.parse(raw) as Partial<MortgageState>) } : { ...defaults });
     } catch {
       /* ignore */
     }
     setReady(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [storageKey]);
 
   // Prefill desde Mis datos / onboarding (fuente de verdad).
   // Propiedades de Mis datos primero: hipoteca pendiente, tasa (%) y año de compra.
