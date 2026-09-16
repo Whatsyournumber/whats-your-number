@@ -23,6 +23,7 @@ import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
 import { TopCitiesPanel } from "@/components/top-cities";
 import { CheckoutWelcome } from "@/components/checkout-welcome";
+import { SpendPlanCard } from "@/components/spend-plan-card";
 import { SubscriptionStatusBanner } from "@/components/subscription-status-banner";
 
 import { Button } from "@/components/ui/button";
@@ -579,6 +580,17 @@ function Dashboard() {
           />
         </Link>
       </div>
+
+      <SpendPlanCard
+        monthKey={activeKey}
+        monthLabel={monthRangeLabel}
+        monthSpend={current.expenses}
+        fixedItems={fixed.items}
+        transactions={transactions}
+        fmt={fmt}
+      />
+
+
 
 
 
