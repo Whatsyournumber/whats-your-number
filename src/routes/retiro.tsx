@@ -360,35 +360,6 @@ function RetiroContent() {
           )}
         </motion.div>
 
-        {!isGoal && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: 0.11, ease: "easeOut" }}
-            className="surface relative overflow-hidden p-5"
-          >
-            <div className="relative flex items-start justify-between gap-3">
-              <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                {t("Aporte mensual al 10%", "Monthly contribution at 10%")}
-              </p>
-              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">S&P 500</span>
-            </div>
-            <p className="numeric relative mt-3 text-2xl font-semibold md:text-3xl">{fmt(sp500Monthly)}</p>
-            <p className="relative mt-2 text-xs">
-              {t("Este mes aportaste", "This month you put in")}{" "}
-              <span className={cn("numeric font-semibold", thisMonthContribution >= sp500Monthly ? "text-positive" : "text-negative")}>
-                {fmt(thisMonthContribution)}
-              </span>
-              {sp500Monthly > 0 && (
-                <span className={cn("ml-1 font-medium", thisMonthContribution >= sp500Monthly ? "text-positive" : "text-negative")}>
-                  {thisMonthContribution >= sp500Monthly
-                    ? t("· vas en camino 🎯", "· on track 🎯")
-                    : `${t("· te faltan", "· you need")} ${fmt(sp500Monthly - thisMonthContribution)}`}
-                </span>
-              )}
-            </p>
-          </motion.div>
-        )}
 
 
         {!isGoal && (
