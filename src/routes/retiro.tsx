@@ -70,6 +70,8 @@ function RetiroContent() {
   const [editing, setEditing] = useState(false);
   const [editingAge, setEditingAge] = useState(false);
   const [draftAge, setDraftAge] = useState(0);
+  const [editingContribution, setEditingContribution] = useState(false);
+  const [draftContribution, setDraftContribution] = useState(0);
 
   // Solo activos que generan retorno (excluye propiedades). Viene del detalle de "Mis datos".
   const investableFallback =
@@ -144,15 +146,35 @@ function RetiroContent() {
   })();
 
 
+  // Tu aporte mensual: el que elegiste y guardaste; si todavía no elegiste, el sugerido al 10%.
+  const savedContribution =
+    profile.retirement_monthly_contribution > 0 ? Math.round(profile.retirement_monthly_contribution) : 0;
+  const aporteShown = savedContribution || sp500Monthly;
+
+  const commitContribution = () => {
+    const next = Math.max(0, Math.round(draftContribution));
+    setEditingContribution(false);
+    setMonthly(next);
+    if (next === (profile.retirement_monthly_contribution || 0)) return;
+    void save({ retirement_monthly_contribution: next }).then(() =>
+      toast.success(t("Aporte mensual guardado", "Monthly contribution saved")),
+    );
+  };
+
   // El simulador arranca con el aporte mensual sugerido para llegar a tu número
   // a la edad de retiro elegida (al 10% del S&P 500). Después el usuario puede moverlo.
   const simPrefilled = useRef(false);
   useEffect(() => {
     if (isGoal || simPrefilled.current) return;
+    // Si ya tienes un aporte guardado, el simulador respeta el tuyo.
+    if (savedContribution > 0) {
+      simPrefilled.current = true;
+      return;
+    }
     if (sp500Monthly <= 0) return;
     simPrefilled.current = true;
     setMonthly(sp500Monthly);
-  }, [sp500Monthly, isGoal]);
+  }, [sp500Monthly, isGoal, savedContribution]);
   // Lo que de verdad apartaste este mes (tu ahorro mensual actual).
   const thisMonthContribution = Math.max(0, d.savings);
 
@@ -401,30 +423,77 @@ function RetiroContent() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, delay: 0.11, ease: "easeOut" }}
-            className="surface relative overflow-hidden p-5"
+            className="surface relative flex h-full flex-col overflow-hidden p-5"
           >
-            <p className="whitespace-nowrap text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-              {t("Aporte mensual", "Monthly saving")}
-            </p>
-            <div className="relative mt-3 flex flex-wrap items-center gap-x-2 gap-y-1">
-              <p className="numeric text-2xl font-semibold md:text-3xl">{fmt(sp500Monthly)}</p>
-              <span className="whitespace-nowrap rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
-                S&P 500 · 10%
-              </span>
-            </div>
-            <p className="relative mt-2 text-[11px]">
-              {t("Aportaste", "You put in")}{" "}
-              <span className={cn("numeric font-semibold", thisMonthContribution >= sp500Monthly ? "text-positive" : "text-negative")}>
-                {fmt(thisMonthContribution)}
-              </span>
-              {sp500Monthly > 0 && (
-                <span className={cn("ml-1 font-medium", thisMonthContribution >= sp500Monthly ? "text-positive" : "text-negative")}>
-                  {thisMonthContribution >= sp500Monthly
-                    ? t("· en camino", "· on track")
-                    : `${t("· faltan", "· short by")} ${fmt(sp500Monthly - thisMonthContribution)}`}
-                </span>
+            <div className="relative flex items-start justify-between gap-3">
+              <p className="whitespace-nowrap text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                {t("Aporte mensual", "Monthly saving")}
+              </p>
+              {!editingContribution && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDraftContribution(aporteShown);
+                    setEditingContribution(true);
+                  }}
+                  className="shrink-0 rounded-full p-1 text-muted-foreground hover:bg-elevated hover:text-foreground"
+                  title={t("Editar aporte mensual", "Edit monthly contribution")}
+                >
+                  <Pencil className="h-4 w-4" />
+                </button>
               )}
-            </p>
+            </div>
+            {editingContribution ? (
+              <div className="relative mt-3 flex flex-1 flex-col justify-between gap-3">
+                <div className="flex items-center gap-1.5">
+                  <span className="numeric text-lg font-semibold text-muted-foreground">{currencySymbol(d.currency)}</span>
+                  <Input
+                    inputMode="numeric"
+                    autoFocus
+                    className="numeric h-10 w-28 text-2xl font-semibold leading-none"
+                    value={draftContribution ? String(draftContribution) : ""}
+                    onChange={(e) => {
+                      const digits = e.target.value.replace(/[^\d]/g, "");
+                      setDraftContribution(digits ? Number(digits) : 0);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Escape") setEditingContribution(false);
+                      if (e.key === "Enter") commitContribution();
+                    }}
+                  />
+                </div>
+                <div className="flex items-center gap-1">
+                  <Button size="sm" className="rounded-full px-4" disabled={saving} onClick={commitContribution}>
+                    {saving ? t("Guardando", "Saving") : t("Guardar", "Save")}
+                  </Button>
+                  <Button size="sm" variant="ghost" className="rounded-full px-3" onClick={() => setEditingContribution(false)}>
+                    {t("Cancelar", "Cancel")}
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="relative mt-3 flex flex-wrap items-center gap-x-2 gap-y-1">
+                  <p className="numeric text-2xl font-semibold md:text-3xl">{fmt(aporteShown)}</p>
+                  <span className="whitespace-nowrap rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
+                    S&P 500 · 10%
+                  </span>
+                </div>
+                <p className="relative mt-2 text-[11px]">
+                  {t("Aportaste", "You put in")}{" "}
+                  <span className={cn("numeric font-semibold", thisMonthContribution >= aporteShown ? "text-positive" : "text-negative")}>
+                    {fmt(thisMonthContribution)}
+                  </span>
+                  {aporteShown > 0 && (
+                    <span className={cn("ml-1 font-medium", thisMonthContribution >= aporteShown ? "text-positive" : "text-negative")}>
+                      {thisMonthContribution >= aporteShown
+                        ? t("· en camino", "· on track")
+                        : `${t("· faltan", "· short by")} ${fmt(aporteShown - thisMonthContribution)}`}
+                    </span>
+                  )}
+                </p>
+              </>
+            )}
           </motion.div>
         )}
 
