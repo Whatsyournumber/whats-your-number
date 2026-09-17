@@ -593,7 +593,6 @@ function Dashboard() {
           <KpiCard
             label={t("Gastos", "Expenses")}
             value={fmt(current.expenses)}
-            {...(hasHistory ? { delta: delta(current.expenses, previous.expenses) } : {})}
             {...(spendPlanHint ? { hint: spendPlanHint } : {})}
             inverse
             icon={TrendingUp}
