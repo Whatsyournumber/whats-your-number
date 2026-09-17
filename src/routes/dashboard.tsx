@@ -290,29 +290,42 @@ function Dashboard() {
   });
   const retirementHint = (() => {
     if (retireYearsLeft <= 0 || baseTargetNumber <= 0) return undefined;
+    const pill = (n: number | string, tone: string) => (
+      <span className={cn("rounded-full px-1.5 py-0.5 font-semibold", tone)}>{n}</span>
+    );
     if (minRetirementMonthly > 0) {
-      const isCovered = current.savings >= minRetirementMonthly;
-      const badge = isCovered ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative";
-      return (
-        <span className="inline-flex items-center gap-1.5">
-          <span className="hidden sm:inline">{t("Para tu retiro a los ", "To retire at ")}</span>
-          <span className="sm:hidden">{t("Retiro a los ", "Retire at ")}</span>
-          <span className={cn("rounded-full px-2 py-0.5 font-semibold", badge)}>{retireAgeChosen}</span>
-          <span className="hidden sm:inline">{t("años debes invertir", "you need to invest")}</span>
-          <span className="sm:hidden">{t("· invierte", "· invest")}</span>
-          <span className={cn("rounded-full px-2 py-0.5 font-semibold", badge)}>{fmt(minRetirementMonthly)}</span>
+      const tone = current.savings >= minRetirementMonthly ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative";
+      const line = (cls: string, pre: [string, string], mid: [string, string]) => (
+        <span className={cn("inline-flex items-center gap-1", cls)}>
+          {t(pre[0], pre[1])}
+          {pill(retireAgeChosen, tone)}
+          {t(mid[0], mid[1])}
+          {pill(fmt(minRetirementMonthly), tone)}
           {t("/mes", "/mo")}
         </span>
       );
+      return (
+        <>
+          {line("sm:hidden", ["Retiro a los ", "Retire at "], [" · invierte ", " · invest "])}
+          {line("hidden sm:inline-flex lg:hidden", ["Retiro ", "Retire "], [": invierte ", ": invest "])}
+          {line("hidden lg:inline-flex", ["Para tu retiro a los ", "To retire at "], [" debes invertir ", " you must invest "])}
+        </>
+      );
     }
-    return (
-      <span className="inline-flex items-center gap-1.5">
-        <span className="hidden sm:inline">{t("Para tu retiro a los ", "To retire at ")}</span>
-        <span className="sm:hidden">{t("Retiro a los ", "Retire at ")}</span>
-        <span className="rounded-full bg-positive/12 px-2 py-0.5 font-semibold text-positive">{retireAgeChosen}</span>
-        <span className="hidden sm:inline">{t("años ya lo tienes cubierto", "is already covered")}</span>
-        <span className="sm:hidden">{t("· cubierto", "· covered")}</span>
+    const tone = "bg-positive/12 text-positive";
+    const covered = (cls: string, pre: [string, string], tail: [string, string]) => (
+      <span className={cn("inline-flex items-center gap-1", cls)}>
+        {t(pre[0], pre[1])}
+        {pill(retireAgeChosen, tone)}
+        {t(tail[0], tail[1])}
       </span>
+    );
+    return (
+      <>
+        {covered("sm:hidden", ["Retiro a los ", "Retire at "], [" · cubierto", " · covered"])}
+        {covered("hidden sm:inline-flex lg:hidden", ["Retiro ", "Retire "], [": cubierto", ": covered"])}
+        {covered("hidden lg:inline-flex", ["Tu retiro a los ", "Retiring at "], [" ya está cubierto", " is already covered"])}
+      </>
     );
   })();
 
