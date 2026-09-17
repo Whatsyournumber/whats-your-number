@@ -323,7 +323,7 @@ function Dashboard() {
     return (
       <>
         {covered("sm:hidden", ["Retiro a los ", "Retire at "], [" · cubierto", " · covered"])}
-        {covered("hidden sm:inline-flex lg:hidden", ["Retiro ", "Retire "], [": cubierto", ": covered"])}
+        {covered("hidden sm:inline-flex lg:hidden", ["Retiro ", "Retire "], [" · cubierto", " · covered"])}
         {covered("hidden lg:inline-flex", ["Tu retiro a los ", "Retiring at "], [" ya está cubierto", " is already covered"])}
       </>
     );
