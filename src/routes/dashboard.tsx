@@ -227,14 +227,22 @@ function Dashboard() {
   const spendPlanUsed = hasSpendTarget && spendTarget > 0
     ? Math.round((current.expenses / spendTarget) * 100)
     : 0;
-  const spendPlanBadge = spendPlanUsed <= 100
-    ? "bg-positive/12 text-positive"
-    : "bg-negative/12 text-negative";
+  // El plan se supera cuando el gasto real pasa del objetivo del mes.
+  const spendPlanOver = spendPlanUsed > 100;
+  const spendPlanBadge = spendPlanOver
+    ? "bg-negative/12 text-negative"
+    : "bg-positive/12 text-positive";
   const spendPlanHint = hasSpendTarget && spendTarget > 0
     ? (
-        <span className="inline-flex items-center gap-1.5">
-          {t("Plan", "Plan")} <span className={cn("rounded-full px-2 py-0.5 font-semibold", spendPlanBadge)}>{fmt(spendTarget)}</span>
-          <span className={cn("rounded-full px-2 py-0.5 font-semibold", spendPlanBadge)}>{spendPlanUsed}%</span> {t("usado", "used")}
+        <span className="inline-flex min-w-0 items-center gap-1.5">
+          <span className="shrink-0">
+            <span className="sm:hidden">{t("Tu plan", "Your plan")}</span>
+            <span className="hidden sm:inline">{t("Tu plan mensual", "Monthly plan")}</span>
+          </span>
+          <span className={cn("shrink-0 rounded-full px-2 py-0.5 font-semibold", spendPlanBadge)}>{fmt(spendTarget)}</span>
+          <span className={cn("shrink-0 rounded-full px-2 py-0.5 font-semibold", spendPlanBadge)}>
+            {spendPlanOver ? t("Excedido", "Over") : t("En plan", "On track")} {spendPlanUsed}%
+          </span>
         </span>
       )
     : undefined;
