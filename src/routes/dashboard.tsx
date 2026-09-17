@@ -292,20 +292,26 @@ function Dashboard() {
     if (retireYearsLeft <= 0 || baseTargetNumber <= 0) return undefined;
     if (minRetirementMonthly > 0) {
       const isCovered = current.savings >= minRetirementMonthly;
-      const tone = isCovered ? "text-positive" : "text-negative";
       const badge = isCovered ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative";
       return (
         <span className="inline-flex items-center gap-1.5">
-          {t("Ahorra", "Save")} <span className={cn("rounded-full px-2 py-0.5 font-semibold", badge)}>{fmt(minRetirementMonthly)}</span>
-          {t("/mes · retiro a los ", "/mo · retire at ")}
-          <span className={cn("rounded-full px-2 py-0.5 font-semibold", badge, tone)}>{retireAgeChosen}</span>
+          <span className="hidden sm:inline">{t("Para tu retiro a los ", "To retire at ")}</span>
+          <span className="sm:hidden">{t("Retiro a los ", "Retire at ")}</span>
+          <span className={cn("rounded-full px-2 py-0.5 font-semibold", badge)}>{retireAgeChosen}</span>
+          <span className="hidden sm:inline">{t("años debes invertir", "you need to invest")}</span>
+          <span className="sm:hidden">{t("· invierte", "· invest")}</span>
+          <span className={cn("rounded-full px-2 py-0.5 font-semibold", badge)}>{fmt(minRetirementMonthly)}</span>
+          {t("/mes", "/mo")}
         </span>
       );
     }
     return (
       <span className="inline-flex items-center gap-1.5">
-        {t("Retiro a los ", "Retirement at ")}
-        <span className="rounded-full bg-positive/12 px-2 py-0.5 font-semibold text-positive">{retireAgeChosen}</span> {t("cubierto", "covered")}
+        <span className="hidden sm:inline">{t("Para tu retiro a los ", "To retire at ")}</span>
+        <span className="sm:hidden">{t("Retiro a los ", "Retire at ")}</span>
+        <span className="rounded-full bg-positive/12 px-2 py-0.5 font-semibold text-positive">{retireAgeChosen}</span>
+        <span className="hidden sm:inline">{t("años ya lo tienes cubierto", "is already covered")}</span>
+        <span className="sm:hidden">{t("· cubierto", "· covered")}</span>
       </span>
     );
   })();
