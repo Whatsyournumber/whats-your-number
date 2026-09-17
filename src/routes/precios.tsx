@@ -228,9 +228,9 @@ function Pricing() {
     setPendingCheckoutPlan(selectedPlan);
     if (!user) {
       if (plan.name === "Familiar") {
-        navigate({ to: "/auth", search: { mode: "signup", flow: "kids" } });
+        navigate({ to: "/auth", search: { mode: "signup", flow: "kids", plan: "familiar" } });
       } else {
-        navigate({ to: "/auth", search: { mode: "signup" } });
+        navigate({ to: "/auth", search: { mode: "signup", plan: "pro" } });
       }
       return;
     }

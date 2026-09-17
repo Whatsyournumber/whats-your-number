@@ -36,7 +36,7 @@ import { useSubscription } from "@/hooks/use-subscription";
 import { lovable } from "@/integrations/lovable/index";
 import { supabase } from "@/integrations/supabase/client";
 import { setPendingPromoCode } from "@/lib/pending-promo";
-import { getPendingCheckoutPlan, setPendingCheckoutPlan } from "@/lib/pending-checkout";
+import { clearPendingCheckoutPlan, getPendingCheckoutPlan, setPendingCheckoutPlan } from "@/lib/pending-checkout";
 import { startAffiliateWizard } from "@/lib/affiliate-wizard-state";
 
 type AuthSearch = { mode: "login" | "signup"; next?: string; flow?: "affiliate" | "kids"; plan?: "familiar" | "pro" | "free" };
@@ -353,7 +353,10 @@ function AuthPage() {
   // El plan también viaja en la URL para sobrevivir al cambio de pantalla,
   // mientras sessionStorage conserva el checkout si hay confirmación de email.
   useEffect(() => {
+    // Sin plan en la URL el registro es normal: limpiamos cualquier plan
+    // guardado antes para que el usuario vaya al onboarding, no al pago.
     if (requestedCheckoutPlan) setPendingCheckoutPlan(requestedCheckoutPlan);
+    else clearPendingCheckoutPlan();
   }, [requestedCheckoutPlan]);
 
   // Registro de afiliado: al terminar debe caer directo en los pasos del wizard.
