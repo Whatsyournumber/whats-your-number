@@ -39,12 +39,11 @@ import { holdingValue, useHoldings, wealthTotals } from "@/hooks/use-holdings";
 import { useQuotes } from "@/hooks/use-market";
 import { usePrimaryGoal } from "@/hooks/use-primary-goal";
 import { cn } from "@/lib/utils";
-import { buildInsights, lifestyles, minMonthlyForRetirement } from "@/lib/onboarding";
+import { buildInsights, lifestyles, minMonthlyForRetirement, num } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
 import { readDemoSnapshot, type DemoSnapshot } from "@/lib/demo-snapshot";
 import { translateGoalName, translateGoalNote } from "@/lib/i18n-data";
-import { pct } from "@/lib/mfn";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -433,14 +432,14 @@ function Dashboard() {
     if (savingsRate < 0) {
       return (
         <span className="inline-flex items-center gap-1.5">
-          {t("Perdiste", "You lost")} {pill(pct(Math.abs(savingsRate), 1), false)} {t("· busca extra para el", "· find extra for the")} {pill("20%", false)}
+          {t("Perdiste", "You lost")} {pill(`${num(Math.abs(savingsRate), 1)}%`, false)} {t("· busca extra para el", "· find extra for the")} {pill("20%", false)}
         </span>
       );
     }
     const good = savingsRate >= 20;
     return (
       <span className="inline-flex items-center gap-1.5">
-        {t("Ahorraste", "You saved")} {pill(pct(savingsRate, 1), good)} {t(good ? "· Por encima del" : "· Por debajo del", good ? "· Above the" : "· Below the")} {pill("20%", good)} {t("mínimo", "minimum")}
+        {t("Ahorraste", "You saved")} {pill(`${num(savingsRate, 1)}%`, good)} {t(good ? "· Por encima del" : "· Por debajo del", good ? "· Above the" : "· Below the")} {pill("20%", good)} {t("mínimo", "minimum")}
       </span>
     );
   })();
