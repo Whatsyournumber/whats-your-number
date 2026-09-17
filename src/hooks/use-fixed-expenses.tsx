@@ -259,18 +259,27 @@ export function convertStoredFixedExpenses(from: string, to: string) {
 const TARGET_KEY = "whatsyournumber:spend-target";
 
 /** Gasto mensual objetivo (target), guardado por cuenta en el navegador. */
-export function useSpendTarget(_initial = 0) {
+export function useSpendTarget() {
   const { user } = useAuth();
   const storageKey = useMemo(() => `${TARGET_KEY}:${user?.id ?? "anon"}`, [user?.id]);
   const [target, setTarget] = useState(0);
   const [hasTarget, setHasTarget] = useState(false);
 
-  // Cada cuenta empieza de cero: solo se usa lo que esa cuenta guardó.
+  // Cada cuenta usa su propia clave. Si todavía existe el valor legado sin
+  // cuenta, la primera sesión activa lo reclama una sola vez y lo elimina.
   useEffect(() => {
     setTarget(0);
     setHasTarget(false);
     try {
-      const raw = window.localStorage.getItem(storageKey);
+      let raw = window.localStorage.getItem(storageKey);
+      if (raw === null && user?.id) {
+        const legacy = window.localStorage.getItem(TARGET_KEY);
+        if (legacy !== null && Number.isFinite(Number(legacy)) && Number(legacy) > 0) {
+          window.localStorage.setItem(storageKey, legacy);
+          window.localStorage.removeItem(TARGET_KEY);
+          raw = legacy;
+        }
+      }
       if (raw !== null && Number.isFinite(Number(raw)) && Number(raw) > 0) {
         setTarget(Number(raw));
         setHasTarget(true);
@@ -278,7 +287,7 @@ export function useSpendTarget(_initial = 0) {
     } catch {
       /* ignore */
     }
-  }, [storageKey]);
+  }, [storageKey, user?.id]);
 
   const update = useCallback(
     (v: number) => {
