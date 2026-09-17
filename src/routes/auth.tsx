@@ -353,7 +353,10 @@ function AuthPage() {
   // El plan también viaja en la URL para sobrevivir al cambio de pantalla,
   // mientras sessionStorage conserva el checkout si hay confirmación de email.
   useEffect(() => {
+    // Sin plan en la URL el registro es normal: limpiamos cualquier plan
+    // guardado antes para que el usuario vaya al onboarding, no al pago.
     if (requestedCheckoutPlan) setPendingCheckoutPlan(requestedCheckoutPlan);
+    else clearPendingCheckoutPlan();
   }, [requestedCheckoutPlan]);
 
   // Registro de afiliado: al terminar debe caer directo en los pasos del wizard.
