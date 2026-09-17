@@ -39,7 +39,7 @@ import { holdingValue, useHoldings, wealthTotals } from "@/hooks/use-holdings";
 import { useQuotes } from "@/hooks/use-market";
 import { usePrimaryGoal } from "@/hooks/use-primary-goal";
 import { cn } from "@/lib/utils";
-import { buildInsights, lifestyles, minMonthlyForRetirement } from "@/lib/onboarding";
+import { buildInsights, lifestyles, minMonthlyForRetirement, num } from "@/lib/onboarding";
 import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
 import { readDemoSnapshot, type DemoSnapshot } from "@/lib/demo-snapshot";
@@ -386,7 +386,6 @@ function Dashboard() {
         )
       : t("Ver simulador", "Open simulator");
   const savingsRate = current.income > 0 ? (current.savings / current.income) * 100 : 0;
-  const prevRate = previous.income > 0 ? (previous.savings / previous.income) * 100 : 0;
 
   // Mínimo aceptable para ahorrar o invertir: 20% del ingreso.
 
@@ -416,12 +415,34 @@ function Dashboard() {
     );
   })();
 
-  const savingsRateHint =
-    current.income <= 0
-      ? <span className="inline-flex items-center gap-1.5">{t("Mínimo", "Minimum")} <span className="rounded-full bg-negative/12 px-2 py-0.5 font-semibold text-negative">20%</span> {t("del ingreso", "of income")}</span>
-      : savingsRate >= 20
-        ? <span className="inline-flex items-center gap-1.5">{t("Por encima del", "Above the")} <span className="rounded-full bg-positive/12 px-2 py-0.5 font-semibold text-positive">20%</span> {t("mínimo", "minimum")}</span>
-        : <span className="inline-flex items-center gap-1.5">{t("Vas muy justo · busca extra para el", "Busca extra para llegar al")} <span className="rounded-full bg-negative/12 px-2 py-0.5 font-semibold text-negative">20%</span></span>;
+  // "Ahorraste X%" con un decimal (coma en ES, punto en EN) frente al mínimo del 20%.
+  const savingsRateHint = (() => {
+    const pill = (text: string, good: boolean) => (
+      <span className={cn("rounded-full px-2 py-0.5 font-semibold", good ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative")}>
+        {text}
+      </span>
+    );
+    if (current.income <= 0) {
+      return (
+        <span className="inline-flex items-center gap-1.5">
+          {t("Mínimo", "Minimum")} {pill("20%", false)} {t("del ingreso", "of income")}
+        </span>
+      );
+    }
+    if (savingsRate < 0) {
+      return (
+        <span className="inline-flex items-center gap-1.5">
+          {t("Perdiste", "You lost")} {pill(`${num(Math.abs(savingsRate), 1)}%`, false)} {t("· busca extra para el", "· find extra for the")} {pill("20%", false)}
+        </span>
+      );
+    }
+    const good = savingsRate >= 20;
+    return (
+      <span className="inline-flex items-center gap-1.5">
+        {t("Ahorraste", "You saved")} {pill(`${num(savingsRate, 1)}%`, good)} {t(good ? "· Por encima del" : "· Por debajo del", good ? "· Above the" : "· Below the")} {pill("20%", good)} {t("mínimo", "minimum")}
+      </span>
+    );
+  })();
 
 
   const insights = buildInsights(plan, profile, profile, d.currency, lang);
@@ -622,13 +643,12 @@ function Dashboard() {
           <KpiCard
             label={t("Ahorro", "Savings")}
             value={fmt(current.savings)}
-            {...(hasHistory ? { delta: delta(current.savings, previous.savings) } : {})}
             {...(retirementHint ? { hint: retirementHint } : {})}
             icon={PiggyBank}
             index={3}
           />
         </Link>
-        <KpiCard label={t("Tasa de ahorro", "Savings rate")} value={`${savingsRate.toFixed(0)}%`} hint={savingsRateHint} {...(hasHistory ? { delta: savingsRate - prevRate } : {})} icon={ArrowUpRight} index={4} />
+        <KpiCard label={t("Tasa de ahorro", "Savings rate")} value={`${savingsRate.toFixed(0)}%`} hint={savingsRateHint} icon={ArrowUpRight} index={4} />
         <Link to="/hipoteca" className="block transition-transform hover:-translate-y-0.5">
           <KpiCard
             label={t("Hipoteca", "Mortgage")}
