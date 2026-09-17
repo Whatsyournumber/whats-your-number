@@ -68,17 +68,34 @@ export function KpiCard({
         <div className="wealth-gradient pointer-events-none absolute inset-0 opacity-[0.08]" />
       )}
       <div className="relative flex items-start justify-between gap-3">
-        <p className="min-w-0 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-          {labelSm ? (
-            <>
-              <span className="sm:hidden">{label}</span>
-              <span className="hidden sm:inline lg:hidden">{labelSm}</span>
-              <span className="hidden lg:inline">{label}</span>
-            </>
-          ) : (
-            label
+        <div className="flex min-w-0 items-center gap-1.5">
+          <p className="min-w-0 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+            {labelSm ? (
+              <>
+                <span className="sm:hidden">{label}</span>
+                <span className="hidden sm:inline lg:hidden">{labelSm}</span>
+                <span className="hidden lg:inline">{label}</span>
+              </>
+            ) : (
+              label
+            )}
+          </p>
+          {tooltip && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="inline-flex shrink-0 cursor-help text-muted-foreground/60" aria-label={`Información sobre ${label}`}>
+                  <HelpCircle className="h-3 w-3" />
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[260px] p-0">
+                <div className="space-y-2 p-3">
+                  <p className="text-xs font-semibold text-foreground">{label}</p>
+                  {tooltip}
+                </div>
+              </TooltipContent>
+            </Tooltip>
           )}
-        </p>
+        </div>
         {Icon && <Icon className={cn("h-4 w-4 shrink-0 text-muted-foreground", iconClassName)} />}
       </div>
       <p
@@ -119,29 +136,10 @@ export function KpiCard({
             {deltaValue && <span className="opacity-80">({deltaValue})</span>}
           </span>
         )}
-        {tooltip ? (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className={cn("min-w-0 truncate whitespace-nowrap text-xs text-muted-foreground", hintClassName)}>
-                {hint}
-                <HelpCircle className="h-3 w-3 text-muted-foreground/60" />
-              </span>
-            </TooltipTrigger>
-            <TooltipContent side="top" className="max-w-[260px] p-0">
-              <div className="space-y-2 p-3">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-xs font-semibold text-foreground">{label}</p>
-                </div>
-                {tooltip}
-              </div>
-            </TooltipContent>
-          </Tooltip>
-        ) : (
-          hint && (
-            <span className={cn("min-w-0 truncate whitespace-nowrap text-xs text-muted-foreground", hintClassName)}>
-              {hint}
-            </span>
-          )
+        {hint && (
+          <span className={cn("min-w-0 truncate whitespace-nowrap text-xs text-muted-foreground", hintClassName)}>
+            {hint}
+          </span>
         )}
       </div>
     </motion.div>
