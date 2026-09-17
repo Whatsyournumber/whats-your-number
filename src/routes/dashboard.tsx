@@ -239,6 +239,7 @@ function Dashboard() {
             <span className="sm:hidden">{t("Tu plan", "Your plan")}</span>
             <span className="hidden sm:inline">{t("Tu plan mensual", "Monthly plan")}</span>
           </span>
+          <span className="shrink-0 text-foreground">{fmt(spendTarget)}</span>
           <span className={cn("shrink-0 rounded-full px-2 py-0.5 font-semibold", spendPlanBadge)}>
             {spendPlanOver ? t("Excedido", "Over") : t("En plan", "On track")} {spendPlanUsed}%
           </span>
@@ -592,7 +593,6 @@ function Dashboard() {
           <KpiCard
             label={t("Gastos", "Expenses")}
             value={fmt(current.expenses)}
-            {...(hasHistory ? { delta: delta(current.expenses, previous.expenses) } : {})}
             {...(spendPlanHint ? { hint: spendPlanHint } : {})}
             inverse
             icon={TrendingUp}
