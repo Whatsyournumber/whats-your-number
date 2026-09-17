@@ -307,8 +307,8 @@ function Dashboard() {
       return (
         <>
           {line("sm:hidden", ["Retiro a los ", "Retire at "], [" · invierte ", " · invest "])}
-          {line("hidden sm:inline-flex lg:hidden", ["Retiro ", "Retire "], [": invierte ", ": invest "])}
-          {line("hidden lg:inline-flex", ["Para tu retiro a los ", "To retire at "], [" debes invertir ", " you must invest "])}
+          {line("hidden sm:inline-flex lg:hidden", ["Retiro ", "Retire "], [" · invierte ", " · invest "])}
+          {line("hidden lg:inline-flex", ["Retiro a los ", "To retire at "], [" · debes invertir ", " · invest "])}
         </>
       );
     }
