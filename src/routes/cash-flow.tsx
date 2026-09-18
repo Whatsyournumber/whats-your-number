@@ -288,6 +288,7 @@ function CashFlow() {
         ...fixedNeeds
           .filter((item) => Number(item.amount) > 0)
           .map((item) => ({ label: item.name.replace(/^\p{Extended_Pictographic}\s*/u, ""), amount: Number(item.amount) })),
+        ...(savingsFundNeeds > 0 ? [{ label: t("Fondo de ahorro", "Savings fund"), amount: savingsFundNeeds }] : []),
         ...[...spend.needsBy.entries()]
           .map(([label, amount]) => ({ label: translateCategory(label, lang), amount })),
       ]
@@ -296,6 +297,7 @@ function CashFlow() {
   const wantsBreakdown = hasReal
     ? [
         ...fixedWants.filter((item) => Number(item.amount) > 0).map((item) => ({ label: cleanCategoryName(item.name), amount: Number(item.amount) })),
+        ...(savingsFundWants > 0 ? [{ label: t("Fondo de ahorro", "Savings fund"), amount: savingsFundWants }] : []),
         ...[...spend.wantsBy.entries()].map(([label, amount]) => ({ label: translateCategory(label, lang), amount })),
       ]
         .sort((a, b) => b.amount - a.amount)
