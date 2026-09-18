@@ -556,7 +556,7 @@ export function ExpenseLog() {
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={() => fileRef.current?.click()}>
               <ImageIcon className="mr-2 h-4 w-4 text-positive" />
-              {t("Subir foto o captura", "Upload photo or screenshot")}
+              {t("Foto o captura", "Photo or screenshot")}
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={openNewRecurring}>
               <Repeat className="mr-2 h-4 w-4 text-positive" />
@@ -611,7 +611,7 @@ export function ExpenseLog() {
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={() => fileRef.current?.click()}>
               <ImageIcon className="mr-2 h-4 w-4 text-positive" />
-              {t("Subir foto o captura", "Upload photo or screenshot")}
+              {t("Foto o captura", "Photo or screenshot")}
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={openNewRecurring}>
               <Repeat className="mr-2 h-4 w-4 text-positive" />
