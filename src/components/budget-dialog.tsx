@@ -162,7 +162,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
           </DialogTitle>
           <div className="flex items-center gap-2">
             <span className="numeric text-3xl font-semibold">
-              {new Intl.NumberFormat(language === "es" ? "es-ES" : "en-US", { maximumFractionDigits: 0 }).format(total)}
+              {new Intl.NumberFormat(lang === "es" ? "es-ES" : "en-US", { maximumFractionDigits: 0 }).format(total)}
             </span>
             <span className="text-xs text-muted-foreground">{t("/mes", "/mo")}</span>
           </div>
