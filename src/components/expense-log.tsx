@@ -483,11 +483,11 @@ export function ExpenseLog() {
               </div>
             </div>
 
-            <div className="mt-4 grid grid-cols-3 gap-2 border-t border-border/60 pt-3 sm:gap-4 sm:pt-4">
+            <div className="mt-2.5 grid grid-cols-3 gap-2 border-t border-border/60 pt-2.5 sm:mt-3 sm:gap-4 sm:pt-3">
               <div className="min-w-0">
                 <p
                   className={cn(
-                    "numeric truncate text-base font-bold sm:text-xl",
+                    "numeric truncate text-lg font-bold sm:text-2xl",
                     remaining < 0 ? "text-negative" : "text-positive",
                   )}
                 >
@@ -498,13 +498,13 @@ export function ExpenseLog() {
                 </p>
               </div>
               <div className="min-w-0">
-                <p className="numeric truncate text-base font-bold text-positive sm:text-xl">{daysLeft}</p>
+                <p className="numeric truncate text-lg font-bold text-positive sm:text-2xl">{daysLeft}</p>
                 <p className="mt-0.5 truncate text-[11px] text-muted-foreground sm:text-xs">
                   {t("días quedan", "days left")}
                 </p>
               </div>
               <div className="min-w-0">
-                <p className="numeric truncate text-base font-bold text-positive sm:text-xl">
+                <p className="numeric truncate text-lg font-bold text-positive sm:text-2xl">
                   {fmt(perDay)}/{t("día", "day")}
                 </p>
                 <p className="mt-0.5 truncate text-[11px] text-muted-foreground sm:text-xs">
