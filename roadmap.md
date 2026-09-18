@@ -7,3 +7,4 @@
 - [x] Mobile registro-gastos: subtítulo corto + botón redondo + verificado
 - [x] Mobile: tab "Tus gastos" del pie lleva a Registro de gastos
 - [x] Desktop: tarjeta como antes (objetivo editable, anillo abajo izquierda, estado abajo derecha)
+- [x] Nombre en inglés "Expense Tracker" (menú lateral, encabezado y título de la pestaña)

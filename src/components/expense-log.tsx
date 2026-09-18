@@ -402,7 +402,7 @@ export function ExpenseLog() {
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
-            {t("Registro de gastos", "Expense log")}
+            {t("Registro de gastos", "Expense Tracker")}
           </h2>
           <p className="mt-1 text-sm text-muted-foreground sm:hidden">
             {t("Controla tus gastos del día a día", "Track your daily expenses")}
