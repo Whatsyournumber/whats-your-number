@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { ArrowDown, ArrowUp, CalendarDays, Camera, ChevronRight, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Wallet } from "lucide-react";
+import { ArrowDown, ArrowUp, CalendarDays, Camera, ChevronRight, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, TrendingUp, Wallet, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { BudgetDialog } from "@/components/budget-dialog";
@@ -42,6 +42,8 @@ import { SPEND_PLAN_FIELDS, getWynMoneyLocale, money } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
 
 type Draft = { merchant: string; amount: number; date: string; category: string };
+
+const ALERTS_KEY = "whatsyournumber:expense-alerts";
 
 const blobToBase64 = (blob: Blob) =>
   new Promise<string>((resolve, reject) => {
@@ -272,7 +274,28 @@ export function ExpenseLog() {
       .sort((a, b) => b.pct - a.pct);
   }, [planLines, byCategory, fixed.items, customLines, periodFactor, t]);
 
-  const alerts = rows.filter((r) => r.pct >= 80).slice(0, 2);
+  const [dismissed, setDismissed] = useState<string[]>([]);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(`${ALERTS_KEY}:${user?.id ?? "anon"}`);
+      setDismissed(raw ? (JSON.parse(raw) as string[]) : []);
+    } catch {
+      setDismissed([]);
+    }
+  }, [user?.id]);
+
+  const dismissAlert = (id: string) => {
+    const next = [...dismissed, id];
+    setDismissed(next);
+    try {
+      localStorage.setItem(`${ALERTS_KEY}:${user?.id ?? "anon"}`, JSON.stringify(next));
+    } catch {
+      /* storage unavailable: the alert just comes back on next visit */
+    }
+  };
+
+  const alerts = rows.filter((r) => r.pct >= 80 && !dismissed.includes(r.id)).slice(0, 2);
 
   const [draft, setDraft] = useState<Draft | null>(null);
   const [transcript, setTranscript] = useState("");
@@ -449,7 +472,7 @@ export function ExpenseLog() {
           <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
              <div className="grid gap-6 md:grid-cols-[1.15fr_1fr_auto] lg:grid-cols-[1.2fr_1fr_auto_0.9fr]">
                <div className="flex min-w-0 flex-col">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 md:mt-auto">
                   <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-positive/10">
                     <Wallet className="h-5 w-5 text-positive" />
                   </span>
@@ -465,12 +488,12 @@ export function ExpenseLog() {
                     <p className="mt-1 text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
                   </div>
                 </div>
-                <p className="numeric mt-4 whitespace-nowrap text-3xl font-bold sm:text-4xl md:mt-auto md:pl-9 md:pt-5 lg:text-5xl">{fmt(periodTarget)}</p>
+                <p className="numeric mt-3 whitespace-nowrap text-3xl font-bold sm:text-4xl md:pl-9 lg:text-5xl">{fmt(periodTarget)}</p>
               </div>
 
               <div className="flex min-w-0 flex-col border-border md:border-l md:pl-8">
-                <p className="text-sm text-muted-foreground">{t("Gasto del período", "Period spending")}</p>
-                <p className="numeric mt-4 whitespace-nowrap text-3xl font-bold sm:text-4xl md:mt-auto md:pt-5 lg:text-5xl">{fmt(spent)}</p>
+                <p className="text-sm text-muted-foreground md:mt-auto">{t("Gasto del período", "Period spending")}</p>
+                <p className="numeric mt-3 whitespace-nowrap text-3xl font-bold sm:text-4xl lg:text-5xl">{fmt(spent)}</p>
               </div>
 
               <div className="relative h-28 w-28 shrink-0 self-center justify-self-center sm:h-36 sm:w-36 lg:h-40 lg:w-40">
@@ -579,31 +602,49 @@ export function ExpenseLog() {
             </button>
           )}
           {alerts.map((a) => (
-            <button
+            <div
               key={a.id}
-              type="button"
-              onClick={() => setPlanOpen(true)}
               className={cn(
-                "flex w-full items-center gap-2.5 rounded-xl border px-3.5 py-2.5 text-left text-[0.8125rem] transition-colors",
+                "flex w-full items-center gap-1 rounded-xl border px-3.5 py-2 transition-colors",
                 a.pct >= 100
-                  ? "border-negative/25 bg-negative/5 text-negative/90 hover:bg-negative/10"
-                  : "border-amber-500/25 bg-amber-500/5 text-amber-200/90 hover:bg-amber-500/10",
+                  ? "border-negative/25 bg-negative/5 hover:bg-negative/10"
+                  : "border-amber-500/25 bg-amber-500/5 hover:bg-amber-500/10",
               )}
             >
-              <span className="shrink-0 text-sm leading-none">{a.emoji}</span>
-              <span className="min-w-0 flex-1 truncate">
-                {a.pct >= 100
-                  ? t(
-                      `Te pasaste del plan en ${a.name}: ${Math.round(a.pct)}%`,
-                      `You went over plan in ${a.name}: ${Math.round(a.pct)}%`,
-                    )
-                  : t(
-                      `Llevas ${Math.round(a.pct)}% de tu presupuesto en ${a.name.toLowerCase()}`,
-                      `You've used ${Math.round(a.pct)}% of your ${a.name.toLowerCase()} budget`,
-                    )}
-              </span>
-              <ChevronRight className="h-3.5 w-3.5 shrink-0 opacity-50" />
-            </button>
+              <button
+                type="button"
+                onClick={() => setPlanOpen(true)}
+                className={cn(
+                  "flex min-w-0 flex-1 items-center gap-2.5 text-left text-[0.8125rem]",
+                  a.pct >= 100 ? "text-negative/90" : "text-amber-200/90",
+                )}
+              >
+                <span className="shrink-0 text-sm leading-none">{a.emoji}</span>
+                <span className="min-w-0 flex-1 truncate">
+                  {a.pct >= 100
+                    ? t(
+                        `Te pasaste del plan en ${a.name}: ${Math.round(a.pct)}%`,
+                        `You went over plan in ${a.name}: ${Math.round(a.pct)}%`,
+                      )
+                    : t(
+                        `Llevas ${Math.round(a.pct)}% de tu presupuesto en ${a.name.toLowerCase()}`,
+                        `You've used ${Math.round(a.pct)}% of your ${a.name.toLowerCase()} budget`,
+                      )}
+                </span>
+                <ChevronRight className="h-3.5 w-3.5 shrink-0 opacity-50" />
+              </button>
+              <button
+                type="button"
+                onClick={() => dismissAlert(a.id)}
+                aria-label={t("Cerrar aviso", "Dismiss alert")}
+                className={cn(
+                  "shrink-0 rounded-md p-1 opacity-60 transition-opacity hover:opacity-100",
+                  a.pct >= 100 ? "text-negative" : "text-amber-200",
+                )}
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
           ))}
 
           {(target > 0 || monthVariable > 0) && (
