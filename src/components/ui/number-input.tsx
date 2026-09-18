@@ -30,6 +30,7 @@ export function NumberInput({
   autoFocus?: boolean;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   style?: React.CSSProperties;
+  ariaLabel?: string;
 }) {
   const pretty = (v: number) =>
     v === 0 ? "" : format ? v.toLocaleString(getWynMoneyLocale(), { useGrouping: "always" as unknown as boolean }) : String(v);
@@ -45,6 +46,7 @@ export function NumberInput({
   return (
     <Input
       ref={ref}
+      aria-label={ariaLabel}
       type={format ? "text" : "number"}
       inputMode="numeric"
       min={min}
