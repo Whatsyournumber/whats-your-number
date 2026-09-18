@@ -974,28 +974,33 @@ export function ExpenseLog() {
                 <div className="relative mt-4 min-w-0">
                     {(() => {
                       const W = 560;
-                      const H = 232;
+                      const H = 272;
                       const left = 64;
-                      const top = 20;
+                      const top = 22;
                       const plotW = W - left - 8;
-                      const plotH = H - top - 28;
+                      const plotH = H - top - 30;
                       const maxDaily = Math.max(...daily, 0);
-                      const todayIdx = Math.min(todayDay, daysInMonth);
-                      const expectedSoFar = target * (todayIdx / daysInMonth);
-                      // Escala acorde a los gastos reales: cubre el mayor gasto diario y el ritmo esperado hasta hoy.
-                      const yMax = Math.max(maxDaily, expectedSoFar, 1) * 1.12;
-                      const step = plotW / daysInMonth;
-                      const barW = step * 0.62;
-                      const yOf = (v: number) => top + plotH - (v / yMax) * plotH;
-                      const yTicks = [0, 0.5, 1].map((f) => yMax * f);
-                      const xTicks = [...new Set([1, 5, 10, 15, 20, 25, daysInMonth])].filter((d) => d <= daysInMonth);
-                      const expectedPts = Array.from({ length: daysInMonth }, (_, i) => {
-                        const x = left + (i + 0.5) * step;
-                        const y = yOf((target * (i + 1)) / daysInMonth);
-                        return { x, y };
-                      });
                       // Ritmo lineal: el plan del mes repartido igual entre todos los días.
                       const linearDay = daysInMonth > 0 ? target / daysInMonth : 0;
+                      // Techo "bonito" justo por encima del mayor gasto diario: las barras llenan el gráfico.
+                      const niceMax = (v: number) => {
+                        const mag = 10 ** Math.floor(Math.log10(Math.max(v, 1)));
+                        const n = v / mag;
+                        const nice = [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].find((c) => n <= c) ?? 10;
+                        return nice * mag;
+                      };
+                      const yMax = niceMax(Math.max(maxDaily, linearDay, 1) * 1.08);
+                      const step = plotW / daysInMonth;
+                      const barW = step * 0.66;
+                      const yOf = (v: number) => top + plotH - (v / yMax) * plotH;
+                      const yTicks = [0, 0.5, 1].map((f) => yMax * f);
+                      const axis = (v: number) =>
+                        v === 0
+                          ? `${currencySymbol}0`
+                          : v >= 1000
+                            ? `${currencySymbol}${(v / 1000).toFixed(v % 1000 === 0 ? 0 : 1)}K`
+                            : `${currencySymbol}${Math.round(v)}`;
+                      const xTicks = [...new Set([1, 5, 10, 15, 20, 25, daysInMonth])].filter((d) => d <= daysInMonth);
                       const active = hoverDay !== null && hoverDay >= 0 && hoverDay < daysInMonth ? hoverDay : null;
                       const activeReal = active === null ? 0 : daily[active] ?? 0;
                       const activeDiff = activeReal - linearDay;
