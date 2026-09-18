@@ -765,7 +765,7 @@ export function Landing() {
         />
 
         <section className="relative mt-24 min-h-[680px] overflow-hidden bg-background md:mt-32 md:min-h-[520px]">
-          <div className="absolute inset-0 overflow-hidden md:left-[42%]">
+          <div className="absolute inset-0 overflow-hidden md:left-[38%] md:[mask-image:linear-gradient(to_right,transparent_0%,rgba(0,0,0,0.35)_10%,rgba(0,0,0,0.7)_24%,#000_46%)]">
             <img
               src={ctaLifestyle}
               alt={t("Pareja organizando sus finanzas", "Couple organizing their finances")}
@@ -776,7 +776,7 @@ export function Landing() {
             />
           </div>
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background from-6% via-transparent via-30% to-background/20 md:bg-gradient-to-r md:from-background md:from-20% md:via-background/60 md:via-48% md:to-transparent md:to-78%" />
-          <div className="pointer-events-none absolute inset-y-0 left-[36%] hidden w-[26%] bg-gradient-to-r from-background via-background/70 to-transparent md:block" />
+          <div className="pointer-events-none absolute inset-y-0 left-[34%] hidden w-[22%] bg-gradient-to-r from-background via-background/55 to-transparent md:block" />
           <div className="pointer-events-none absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-background to-transparent md:h-16" />
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-background to-transparent md:h-16" />
           <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-background to-transparent md:w-12" />
