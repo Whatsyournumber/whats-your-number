@@ -572,6 +572,14 @@ export function ExpenseLog() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <BudgetDialog
+        open={planOpen}
+        onOpenChange={setPlanOpen}
+        lines={planLines}
+        onSave={(next) => budgets.save(next)}
+        fmt={fmt}
+      />
     </section>
   );
 }
