@@ -10,7 +10,7 @@ export function MobileBottomNav() {
 
   const tabs = [
     { title: t("Inicio", "Home"), url: "/dashboard", icon: Home },
-    { title: t("Tus gastos", "Spending"), url: "/gastos", icon: Wallet },
+    { title: t("Tus gastos", "Spending"), url: "/registro-gastos", icon: Wallet },
     { title: t("Tu número", "Your number"), url: "/retiro", icon: Target },
     ...(isPro
       ? [
