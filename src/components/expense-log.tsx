@@ -456,7 +456,7 @@ export function ExpenseLog() {
                   >
                     {pct > 100 ? t("Sobre el plan", "Over plan") : t("Vas bien", "On track")}
                   </p>
-                  <p className="mt-3 flex items-center gap-1.5 text-[0.6875rem] text-muted-foreground sm:justify-end">
+                  <p className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground sm:justify-end">
                     <Gauge className="h-3 w-3 shrink-0 opacity-70" />
                     {t("Para mantener el plan", "To stay on plan")}
                     <span className="numeric font-semibold text-foreground">
