@@ -154,22 +154,17 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[88vh] max-w-2xl overflow-y-auto pt-0">
-        {/* Cabecera con el total mensual editable. */}
+        {/* Cabecera con el total mensual (no editable; se edita en el pie). */}
         <DialogHeader className="sticky top-0 z-10 -mx-6 space-y-1.5 bg-background/95 px-6 pb-4 pt-6 text-left backdrop-blur-sm">
           <DialogTitle className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
 
             {t("Tu plan de gasto mensual", "Your monthly spending plan")}
           </DialogTitle>
           <div className="flex items-center gap-2">
-            <NumberInput
-              value={total}
-              onChange={setTotal}
-              format
-              aria-label={t("Editar gastos totales", "Edit total expenses")}
-              className="numeric h-auto w-36 border-0 bg-transparent p-0 text-3xl font-semibold shadow-none focus-visible:ring-0 sm:w-44"
-            />
+            <span className="numeric text-3xl font-semibold">
+              {new Intl.NumberFormat(language === "es" ? "es-ES" : "en-US", { maximumFractionDigits: 0 }).format(total)}
+            </span>
             <span className="text-xs text-muted-foreground">{t("/mes", "/mo")}</span>
-            <Pencil className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
           </div>
           <DialogDescription className="text-xs leading-4 text-muted-foreground">
             <span className="sm:hidden">
