@@ -377,182 +377,172 @@ export function ExpenseLog() {
               </p>
             )}
           </div>
-          <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
-            <div className="grid gap-x-5 gap-y-3 md:grid-cols-[240px_minmax(0,1fr)] md:items-start">
-                <div className="order-1 min-w-0">
-                  <div className="flex items-start gap-3">
-                    <img src={targetIcon.url} alt="" className="h-9 w-9 shrink-0 rounded-full object-cover" />
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="whitespace-nowrap text-sm font-semibold sm:text-base">
-                          {t("Gasto objetivo mensual", "Monthly spend target")}
-                        </h3>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6 shrink-0 text-muted-foreground"
-                          onClick={() => setPlanOpen(true)}
-                          aria-label={rows.length ? t("Editar plan", "Edit plan") : t("Plan de gastos", "Spending plan")}
-                        >
-                          {rows.length ? <Pencil className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
-                        </Button>
-                      </div>
-                      <p className="mt-1 text-xs leading-4 text-muted-foreground">
-                        {t("Limita tus gastos mensuales", "Limit your monthly spending")}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                {target <= 0 ? (
-                  <div className="order-2 flex md:col-start-2 md:self-center">
-                    <Button className="w-full sm:w-auto" onClick={() => setPlanOpen(true)}>
-                      <Plus className="mr-1.5 h-4 w-4" />
-                      {t("Crear tu plan de gastos", "Create your spending plan")}
-                    </Button>
-                  </div>
-                ) : (
-                  <>
-                    <div className="order-3 flex min-w-0 flex-col gap-1 md:order-2 md:-mb-2 md:self-end">
-                      <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
-                        <span className="numeric shrink-0 text-xl font-semibold sm:text-2xl">{fmt(spent)}</span>
-                        <span
-                          className={cn(
-                            "shrink-0 whitespace-nowrap rounded-full px-2 py-1 text-xs font-medium",
-                            spent <= target ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative",
-                          )}
-                        >
-                          {spent <= target
-                            ? `${fmt(target - spent)} ${t("que puedes invertir", "you can invest")}`
-                            : `${fmt(spent - target)} ${t("que gastaste de más", "over budget")}`}
-                        </span>
-                      </div>
-                      <p className="whitespace-nowrap text-xs leading-4 text-muted-foreground">
-                        {monthLabel} · {pct.toFixed(0)}% {t("del objetivo", "of target")}
-                      </p>
-                    </div>
-                    <div className="relative order-2 flex items-center self-start md:order-3 md:self-center">
-                      <span className="pointer-events-none absolute left-3 text-sm font-semibold text-muted-foreground">$</span>
-                      <NumberInput
-                        value={target}
-                        onChange={setTarget}
-                        format
-                        className="h-11 w-full pl-7 text-base font-semibold"
-                      />
-                    </div>
-                    <div className="order-4 self-center">
-                      <div className="flex h-2 overflow-hidden rounded-full bg-muted">
-                        {spent <= target ? (
-                          <div className="h-full rounded-full bg-positive" style={{ width: `${Math.min(100, pct)}%` }} />
-                        ) : (
-                          <>
-                            <div className="h-full bg-positive" style={{ width: `${boundaryPct}%` }} />
-                            <div className="h-full flex-1 bg-negative" />
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <div className="order-5 mt-1.5 md:-mt-5 md:col-start-2">
-                      <div className="relative h-4 text-[0.625rem] text-muted-foreground sm:text-xs">
-                        <span className="numeric absolute left-0 top-0">{fmt(0)}</span>
-                        {spent > target && boundaryPct >= 10 && boundaryPct <= 90 && (
-                          <span
-                            className={cn("numeric absolute top-0 -translate-x-full pr-1 lg:-translate-x-1/2 lg:pr-0")}
-                            style={{ left: `${boundaryPct}%` }}
-                          >
-                            {fmt(target)}
-                          </span>
-                        )}
-                        <span className="numeric absolute right-0 top-0">{fmt(spent)}</span>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {rows.length > 0 && (
-                <Collapsible
-                  open={rowsOpen}
-                  onOpenChange={setRowsOpen}
-                  className="mt-5 border-t border-border/60 pt-4"
-                >
-                  <CollapsibleTrigger
-                    className="flex w-full items-center justify-between gap-2 py-1 text-left"
-                    aria-label={t("Mostrar u ocultar plan por categoría", "Show or hide category plan")}
-                  >
-                    <div className="flex min-w-0 items-center gap-1.5">
-                      <p className="whitespace-nowrap text-[0.625rem] font-medium uppercase tracking-[0.08em] text-muted-foreground sm:text-xs sm:tracking-[0.14em]">
-                        <span className="sm:hidden">{t("Gasto real vs objetivo", "Actual vs target")}</span>
-                        <span className="hidden sm:inline">{t("Gasto real vs objetivo por categoría", "Actual vs target by category")}</span>
-                      </p>
-                      <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
-                    </div>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setPlanOpen(true);
-                      }}
-                      className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                      aria-label={t("Editar plan de gastos", "Edit spending plan")}
-                    >
-                      <Pencil className="h-3.5 w-3.5" />
-                    </button>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                      {rows.map((r) => (
-                        <div key={r.id} className="rounded-xl border border-border/50 bg-background/40 px-3.5 py-3">
-                          <div className="flex items-baseline justify-between gap-2">
-                            <span className="min-w-0 flex-1 truncate text-xs leading-4 sm:text-sm">
-                              {r.emoji} {r.name}
-                            </span>
-                            <span
-                              className={cn(
-                                "numeric shrink-0 text-xs leading-4 sm:text-sm",
-                                r.actual > r.planned ? "text-negative" : "text-positive",
-                              )}
-                            >
-                              {fmt(r.actual)} / {fmt(r.planned)}
-                            </span>
-                          </div>
-                          <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-muted">
-                            <div
-                              className={cn("h-full rounded-full", r.actual > r.planned ? "bg-negative" : "bg-positive")}
-                              style={{ width: `${Math.min(100, r.pct)}%` }}
-                            />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CollapsibleContent>
-                </Collapsible>
-              )}
-            </div>
-
           {alerts.map((a) => (
-            <div
+            <button
               key={a.id}
+              type="button"
+              onClick={() => setPlanOpen(true)}
               className={cn(
-                "flex items-center gap-3 rounded-2xl border px-4 py-3 text-sm",
+                "flex w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left text-sm",
                 a.pct >= 100
-                  ? "border-rose-500/40 bg-rose-500/10 text-rose-200"
+                  ? "border-negative/40 bg-negative/10 text-negative"
                   : "border-amber-500/40 bg-amber-500/10 text-amber-200",
               )}
             >
-              <AlertTriangle className="h-4 w-4 shrink-0" />
-              <span>
+              <span
+                className={cn(
+                  "grid h-10 w-10 shrink-0 place-items-center rounded-full text-base",
+                  a.pct >= 100 ? "bg-negative/25" : "bg-amber-500/25",
+                )}
+              >
+                {a.emoji}
+              </span>
+              <span className="min-w-0 flex-1 leading-5">
                 {a.pct >= 100
                   ? t(
-                      `Te pasaste del plan en ${a.name}: ${Math.round(a.pct)}% de ${fmt(a.planned)}.`,
-                      `You went over plan in ${a.name}: ${Math.round(a.pct)}% of ${fmt(a.planned)}.`,
+                      `Te pasaste del plan en ${a.name}: ${Math.round(a.pct)}%.`,
+                      `You went over plan in ${a.name}: ${Math.round(a.pct)}%.`,
                     )
                   : t(
-                      `Vas por el ${Math.round(a.pct)}% de tu plan en ${a.name}.`,
-                      `You're at ${Math.round(a.pct)}% of your plan in ${a.name}.`,
+                      `Has gastado ${Math.round(a.pct)}% de tu presupuesto en ${a.name.toLowerCase()}.`,
+                      `You've spent ${Math.round(a.pct)}% of your ${a.name.toLowerCase()} budget.`,
                     )}
               </span>
-            </div>
+              <ChevronRight className="h-4 w-4 shrink-0 opacity-70" />
+            </button>
           ))}
+
+          <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+            <div className="flex items-center gap-2.5">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-positive/15">
+                <Wallet className="h-4 w-4 text-positive" />
+              </span>
+              <h3 className="text-base font-semibold">{t("Gastos vs plan", "Spending vs plan")}</h3>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 shrink-0 text-muted-foreground"
+                onClick={() => setPlanOpen(true)}
+                aria-label={rows.length ? t("Editar plan", "Edit plan") : t("Plan de gastos", "Spending plan")}
+              >
+                {rows.length ? <Pencil className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
+              </Button>
+            </div>
+
+            {target <= 0 ? (
+              <Button className="mt-4" onClick={() => setPlanOpen(true)}>
+                <Plus className="mr-1.5 h-4 w-4" />
+                {t("Crear tu plan de gastos", "Create your spending plan")}
+              </Button>
+            ) : (
+              <>
+                <div className="mt-4 flex items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="numeric text-4xl font-semibold leading-none sm:text-5xl">{fmt(spent)}</p>
+                    <p className="numeric mt-2 text-lg text-muted-foreground sm:text-xl">
+                      {t("de", "of")} {fmt(target)}
+                    </p>
+                  </div>
+                  <div className="relative h-28 w-28 shrink-0 sm:h-32 sm:w-32">
+                    <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
+                      <circle cx="60" cy="60" r="52" className="stroke-muted" strokeWidth="12" fill="none" />
+                      <circle
+                        cx="60"
+                        cy="60"
+                        r="52"
+                        className={cn(spent > target ? "stroke-negative" : "stroke-positive")}
+                        strokeWidth="12"
+                        strokeLinecap="round"
+                        fill="none"
+                        strokeDasharray={2 * Math.PI * 52}
+                        strokeDashoffset={(2 * Math.PI * 52) * (1 - Math.min(1, pct / 100))}
+                      />
+                    </svg>
+                    <div className="absolute inset-0 grid place-items-center text-center">
+                      <div>
+                        <p className={cn("numeric text-xl font-semibold sm:text-2xl", spent > target && "text-negative")}>
+                          {pct.toFixed(0)}%
+                        </p>
+                        <p className="text-[0.625rem] text-muted-foreground sm:text-xs">{t("del plan", "of plan")}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-5 grid grid-cols-3 divide-x divide-border/60 border-t border-border/60 pt-4">
+                  <div className="pr-3">
+                    <p className={cn("numeric text-lg font-semibold", remaining < 0 ? "text-negative" : "text-positive")}>
+                      {fmt(Math.abs(remaining))}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {remaining < 0 ? t("De más", "Over") : t("Te quedan", "Left")}
+                    </p>
+                  </div>
+                  <div className="px-3">
+                    <p className="numeric text-lg font-semibold text-positive">{daysLeft}</p>
+                    <p className="text-xs text-muted-foreground">{t("días en el mes", "days in the month")}</p>
+                  </div>
+                  <div className="pl-3">
+                    <p className="numeric text-lg font-semibold text-positive">{fmt(perDay)}/{t("día", "day")}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {t("para mantener el plan", "to stay on plan")}
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          {rows.length > 0 && (
+            <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-base font-semibold">{t("Gastos por categoría", "Spending by category")}</h3>
+                <button
+                  type="button"
+                  onClick={() => setPlanOpen(true)}
+                  className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  aria-label={t("Editar plan de gastos", "Edit spending plan")}
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                </button>
+              </div>
+              <ul className="mt-4 space-y-3.5">
+                {rows.map((r) => (
+                  <li key={r.id} className="flex items-center gap-3">
+                    <span
+                      className={cn(
+                        "grid h-10 w-10 shrink-0 place-items-center rounded-full text-base",
+                        r.actual > r.planned ? "bg-negative/20" : "bg-positive/15",
+                      )}
+                    >
+                      {r.emoji}
+                    </span>
+                    <div className="min-w-0 w-32 shrink-0 sm:w-44">
+                      <p className="truncate text-sm leading-5">{r.name}</p>
+                      <p className="numeric text-[0.6875rem] leading-4 text-muted-foreground">
+                        {fmt(r.actual)} / {fmt(r.planned)}
+                      </p>
+                    </div>
+                    <div className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-muted">
+                      <div
+                        className={cn("h-full rounded-full", r.actual > r.planned ? "bg-negative" : "bg-positive")}
+                        style={{ width: `${Math.min(100, r.pct)}%` }}
+                      />
+                    </div>
+                    <span
+                      className={cn(
+                        "numeric w-12 shrink-0 text-right text-sm",
+                        r.actual > r.planned ? "text-negative" : "text-foreground",
+                      )}
+                    >
+                      {Math.round(r.pct)}%
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
 
         <div className="rounded-2xl border border-border bg-card p-4">
           <p className="mb-3 text-sm font-medium">{t("Últimos gastos", "Latest expenses")}</p>
