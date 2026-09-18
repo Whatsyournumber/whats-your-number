@@ -605,7 +605,6 @@ export function ExpenseLog() {
         </div>
       </div>
 
-      <Dialog open={Boolean(draft)} onOpenChange={(open) => !open && setDraft(null)}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>{t("Confirma el gasto", "Confirm the expense")}</DialogTitle>
