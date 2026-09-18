@@ -820,6 +820,7 @@ export function Landing() {
             />
           </div>
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background from-8% via-transparent via-35% to-background/35 md:bg-gradient-to-r md:from-background md:from-20% md:via-background/45 md:via-48% md:to-transparent md:to-72%" />
+          <div className="pointer-events-none absolute inset-y-0 left-[30%] hidden w-[36%] bg-gradient-to-r from-background via-background/85 to-transparent md:block" />
           <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-background to-transparent md:h-24" />
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background to-transparent md:h-24" />
           <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background to-transparent md:w-20" />
