@@ -16,6 +16,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { NumberInput } from "@/components/ui/number-input";
@@ -63,6 +69,7 @@ export function ExpenseLog() {
 
   const [planOpen, setPlanOpen] = useState(false);
   const [recOpen, setRecOpen] = useState(false);
+  const [manualOpen, setManualOpen] = useState(false);
   const [recName, setRecName] = useState("");
   const [recAmount, setRecAmount] = useState(0);
   const [recDay, setRecDay] = useState(1);
