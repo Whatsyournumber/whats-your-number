@@ -19,6 +19,4 @@
 - [x] Registro de gastos: "Tomar foto" abre la cámara y "Foto o captura" sube imagen del teléfono
 - [x] Menú móvil: "Foto o captura" / "Photo or screenshot" en una sola línea
 - [x] Portada: sustituir la foto de la pareja por la nueva (sin el texto incrustado)
-- [x] Portada: sustituir la foto de la pareja por un teléfono con la pantalla de Gastos (pestañas, alerta, Gastos vs plan, categorías, navegación)
-
 
