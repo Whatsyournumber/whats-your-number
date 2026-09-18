@@ -975,12 +975,15 @@ export function ExpenseLog() {
                     {(() => {
                       const W = 560;
                       const H = 232;
-                      const left = 44;
+                      const left = 64;
                       const top = 20;
                       const plotW = W - left - 8;
                       const plotH = H - top - 28;
                       const maxDaily = Math.max(...daily, 0);
-                      const yMax = Math.max(target, maxDaily, 1) * 1.06;
+                      const todayIdx = Math.min(todayDay, daysInMonth);
+                      const expectedSoFar = target * (todayIdx / daysInMonth);
+                      // Escala acorde a los gastos reales: cubre el mayor gasto diario y el ritmo esperado hasta hoy.
+                      const yMax = Math.max(maxDaily, expectedSoFar, 1) * 1.12;
                       const step = plotW / daysInMonth;
                       const barW = step * 0.62;
                       const yOf = (v: number) => top + plotH - (v / yMax) * plotH;
@@ -1013,7 +1016,11 @@ export function ExpenseLog() {
                             <g key={v}>
                               <line x1={left} x2={W - 8} y1={yOf(v)} y2={yOf(v)} className="stroke-border" strokeWidth="1" />
                               <text x={left - 7} y={yOf(v) + 4} textAnchor="end" className="fill-muted-foreground text-[11px]">
-                                {v === 0 ? `${currencySymbol}0` : `${currencySymbol}${Math.round(v)}`}
+                                {v === 0
+                                  ? `${currencySymbol}0`
+                                  : v >= 1000
+                                    ? `${currencySymbol}${(v / 1000).toFixed(v % 1000 === 0 ? 0 : 1)}K`
+                                    : `${currencySymbol}${Math.round(v)}`}
                               </text>
                             </g>
                           ))}
@@ -1046,7 +1053,8 @@ export function ExpenseLog() {
                           {daily.map((v, i) => {
                             if (v <= 0) return null;
                             const x = left + (i + 0.19) * step;
-                            const y = yOf(v);
+                            // Altura mínima para que gastos pequeños también se vean.
+                            const y = Math.min(yOf(v), top + plotH - 4);
                             const isToday = i + 1 === todayDay;
                             const isActive = i === active;
                             return (
