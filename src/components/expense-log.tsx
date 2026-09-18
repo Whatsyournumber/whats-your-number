@@ -613,7 +613,7 @@ export function ExpenseLog() {
                    <span className="numeric text-2xl font-semibold text-muted-foreground">{currencySymbol}</span>
                    <NumberInput
                      value={target}
-                     onChange={(v) => setTarget(Math.round(v || 0))}
+                     onChange={(v) => applyTarget(v)}
                      min={0}
                      format
                      ariaLabel={t("Gasto objetivo mensual", "Monthly spending target")}
