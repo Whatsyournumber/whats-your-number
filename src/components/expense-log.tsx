@@ -38,6 +38,7 @@ import { BASE_CATEGORIES, categorizeTx } from "@/lib/categorize";
 import { captureExpense } from "@/lib/expense-capture.functions";
 import { translateCategory } from "@/lib/i18n-data";
 import { saveExpense } from "@/lib/manual-expense";
+import { supabase } from "@/integrations/supabase/client";
 import { SPEND_PLAN_FIELDS, getWynMoneyLocale, money } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
 
@@ -75,7 +76,29 @@ export function ExpenseLog() {
   const [recName, setRecName] = useState("");
   const [recAmount, setRecAmount] = useState(0);
   const [recDay, setRecDay] = useState(1);
+  const [recEditId, setRecEditId] = useState<string | null>(null);
+  const [editTx, setEditTx] = useState<Tx | null>(null);
+  const [editMerchant, setEditMerchant] = useState("");
+  const [editAmount, setEditAmount] = useState(0);
+  const [editDate, setEditDate] = useState("");
+  const [editCategory, setEditCategory] = useState("");
   const { target: savedTarget, setTarget, hasTarget } = useSpendTarget();
+
+  const openNewRecurring = () => {
+    setRecEditId(null);
+    setRecName("");
+    setRecAmount(0);
+    setRecDay(1);
+    setRecOpen(true);
+  };
+
+  const openEditRecurring = (item: { id: string; name: string; amount: number; dayOfMonth?: number }) => {
+    setRecEditId(item.id);
+    setRecName(item.name);
+    setRecAmount(item.amount);
+    setRecDay(item.dayOfMonth ?? 1);
+    setRecOpen(true);
+  };
 
   const onSaveRecurring = () => {
     const name = recName.trim();
@@ -83,14 +106,80 @@ export function ExpenseLog() {
       toast.error(t("Escribe nombre y monto mayor que cero", "Enter a name and an amount above zero"));
       return;
     }
-    fixed.add(name, Math.round(recAmount), recDay);
-    toast.success(t("Gasto recurrente guardado", "Recurring expense saved"), {
-      description: `${name} · ${fmt(recAmount)}/${t("mes", "mo")} · ${t("día", "day")} ${recDay}`,
-    });
+    if (recEditId) {
+      fixed.update(recEditId, { name, amount: Math.round(recAmount), dayOfMonth: recDay });
+      toast.success(t("Gasto recurrente actualizado", "Recurring expense updated"));
+    } else {
+      fixed.add(name, Math.round(recAmount), recDay);
+      toast.success(t("Gasto recurrente guardado", "Recurring expense saved"), {
+        description: `${name} · ${fmt(recAmount)}/${t("mes", "mo")} · ${t("día", "day")} ${recDay}`,
+      });
+    }
     setRecOpen(false);
+    setRecEditId(null);
     setRecName("");
     setRecAmount(0);
     setRecDay(1);
+  };
+
+  const onDeleteRecurring = () => {
+    if (!recEditId) return;
+    fixed.remove(recEditId);
+    toast.success(t("Gasto recurrente eliminado", "Recurring expense deleted"));
+    setRecOpen(false);
+    setRecEditId(null);
+  };
+
+  const openEditTx = (x: Tx) => {
+    setEditTx(x);
+    setEditMerchant(x.merchant ?? "");
+    setEditAmount(Math.abs(x.amount));
+    setEditDate(x.tx_date ?? format(new Date(), "yyyy-MM-dd"));
+    setEditCategory(categorizeTx(x, categories.rules));
+  };
+
+  const onSaveEditTx = async () => {
+    if (!editTx) return;
+    if (!editAmount || editAmount <= 0) {
+      toast.error(t("Escribe un monto mayor que cero", "Enter an amount greater than zero"));
+      return;
+    }
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from("imported_transactions")
+        .update({
+          merchant: editMerchant.trim() || translateCategory(editCategory, lang),
+          amount: -Math.abs(editAmount),
+          tx_date: editDate,
+          category: editCategory,
+        })
+        .eq("id", editTx.id);
+      if (error) throw new Error(error.message);
+      await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
+      toast.success(t("Gasto actualizado", "Expense updated"));
+      setEditTx(null);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : String(error));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const onDeleteEditTx = async () => {
+    if (!editTx) return;
+    setSaving(true);
+    try {
+      const { error } = await supabase.from("imported_transactions").delete().eq("id", editTx.id);
+      if (error) throw new Error(error.message);
+      await queryClient.invalidateQueries({ queryKey: ["imported-transactions"] });
+      toast.success(t("Gasto eliminado", "Expense deleted"));
+      setEditTx(null);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : String(error));
+    } finally {
+      setSaving(false);
+    }
   };
 
   const currency = profile.currency || "EUR";
@@ -461,7 +550,7 @@ export function ExpenseLog() {
               <Camera className="mr-2 h-4 w-4 text-positive" />
               {t("Foto de recibo", "Receipt photo")}
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setRecOpen(true)}>
+            <DropdownMenuItem onSelect={openNewRecurring}>
               <Repeat className="mr-2 h-4 w-4 text-positive" />
               {t("Recurrente", "Recurring")}
             </DropdownMenuItem>
@@ -512,7 +601,7 @@ export function ExpenseLog() {
               <Camera className="mr-2 h-4 w-4 text-positive" />
               {t("Foto de recibo", "Receipt photo")}
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setRecOpen(true)}>
+            <DropdownMenuItem onSelect={openNewRecurring}>
               <Repeat className="mr-2 h-4 w-4 text-positive" />
               {t("Recurrente", "Recurring")}
             </DropdownMenuItem>
@@ -976,7 +1065,7 @@ export function ExpenseLog() {
                   <h3 className="text-base font-semibold">{t("Próximos pagos", "Upcoming payments")}</h3>
                   <button
                     type="button"
-                    onClick={() => setRecOpen(true)}
+                    onClick={openNewRecurring}
                     className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                     aria-label={t("Añadir gasto recurrente", "Add recurring expense")}
                   >
@@ -1010,6 +1099,14 @@ export function ExpenseLog() {
                             </p>
                           </div>
                           <span className="numeric shrink-0 text-sm font-semibold">{fmt(i.amount)}</span>
+                          <button
+                            type="button"
+                            onClick={() => openEditRecurring(i)}
+                            className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                            aria-label={t("Editar gasto recurrente", "Edit recurring expense")}
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </button>
                         </li>
                       );
                     })}
@@ -1093,6 +1190,14 @@ export function ExpenseLog() {
                     {x.tx_date ? format(parseISO(x.tx_date), "d MMM", { locale }) : ""}
                   </span>
                   <span className="shrink-0 text-sm font-semibold text-rose-300">-{fmt(Math.abs(x.amount))}</span>
+                  <button
+                    type="button"
+                    onClick={() => openEditTx(x as Tx)}
+                    className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    aria-label={t("Editar gasto", "Edit expense")}
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </button>
                 </li>
               ))}
             </ul>
@@ -1153,7 +1258,9 @@ export function ExpenseLog() {
       <Dialog open={recOpen} onOpenChange={setRecOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>{t("Gasto recurrente", "Recurring expense")}</DialogTitle>
+            <DialogTitle>
+              {recEditId ? t("Editar gasto recurrente", "Edit recurring expense") : t("Gasto recurrente", "Recurring expense")}
+            </DialogTitle>
             <DialogDescription>
               {t("Se repite cada mes y cuenta en tu plan.", "It repeats every month and counts toward your plan.")}
             </DialogDescription>
@@ -1187,8 +1294,64 @@ export function ExpenseLog() {
               </Select>
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="gap-2 sm:justify-between">
+            {recEditId ? (
+              <Button type="button" variant="ghost" className="text-negative" onClick={onDeleteRecurring}>
+                {t("Eliminar", "Delete")}
+              </Button>
+            ) : (
+              <span />
+            )}
             <Button onClick={onSaveRecurring}>{t("Guardar", "Save")}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={Boolean(editTx)} onOpenChange={(open) => !open && setEditTx(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("Editar gasto", "Edit expense")}</DialogTitle>
+            <DialogDescription>
+              {t("Corrige el comercio, el monto, la fecha o la categoría.", "Fix the merchant, amount, date or category.")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-3">
+            <div className="grid gap-1.5">
+              <Label>{t("Comercio", "Merchant")}</Label>
+              <Input value={editMerchant} onChange={(e) => setEditMerchant(e.target.value)} />
+            </div>
+            <div className="grid gap-1.5">
+              <Label>{`${t("Monto", "Amount")} (${currency})`}</Label>
+              <NumberInput value={editAmount} onChange={(v) => setEditAmount(v || 0)} min={0} format />
+            </div>
+            <div className="grid gap-1.5">
+              <Label>{t("Fecha", "Date")}</Label>
+              <Input type="date" value={editDate} onChange={(e) => setEditDate(e.target.value)} />
+            </div>
+            <div className="grid gap-1.5">
+              <Label>{t("Categoría", "Category")}</Label>
+              <Select value={editCategory} onValueChange={setEditCategory}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {categoryNames.map((name) => (
+                    <SelectItem key={name} value={name}>
+                      {translateCategory(name, lang)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter className="gap-2 sm:justify-between">
+            <Button type="button" variant="ghost" className="text-negative" onClick={onDeleteEditTx} disabled={saving}>
+              {t("Eliminar", "Delete")}
+            </Button>
+            <Button onClick={onSaveEditTx} disabled={saving}>
+              {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {t("Guardar", "Save")}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
