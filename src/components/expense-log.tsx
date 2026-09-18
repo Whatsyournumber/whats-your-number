@@ -1021,7 +1021,7 @@ export function ExpenseLog() {
                           {yTicks.map((v) => (
                             <g key={v}>
                               <line x1={left} x2={W - 8} y1={yOf(v)} y2={yOf(v)} className="stroke-border" strokeWidth="1" />
-                              <text x={left - 7} y={yOf(v) + 4} textAnchor="end" className="fill-muted-foreground text-[11px]">
+                              <text x={left - 7} y={yOf(v) + 4} textAnchor="end" className="fill-muted-foreground text-[15px] sm:text-[11px]">
                                 {axis(v)}
                               </text>
                             </g>
@@ -1042,7 +1042,7 @@ export function ExpenseLog() {
                                 x={W - 10}
                                 y={yOf(Math.min(linearDay, yMax)) - 7}
                                 textAnchor="end"
-                                className="fill-muted-foreground text-[10px]"
+                                className="fill-muted-foreground text-[13px] sm:text-[10px]"
                               >
                                 {axis(linearDay)}
                               </text>
@@ -1096,7 +1096,7 @@ export function ExpenseLog() {
                             x={left + (todayDay - 0.5) * step}
                             y={top - 6}
                             textAnchor="middle"
-                            className="fill-foreground text-[11px] font-medium"
+                            className="fill-foreground text-[14px] sm:text-[11px] font-medium"
                           >
                             {t("Hoy", "Today")}
                           </text>
@@ -1106,7 +1106,7 @@ export function ExpenseLog() {
                               x={left + (d - 0.5) * step}
                               y={H - 8}
                               textAnchor="middle"
-                              className="fill-muted-foreground text-[11px]"
+                              className="fill-muted-foreground text-[15px] sm:text-[11px]"
                             >
                               {d}
                             </text>
