@@ -411,30 +411,30 @@ export function ExpenseLog() {
 
 
       <div className="space-y-3">
-          <div className="rounded-2xl border border-border bg-card p-5 sm:p-7">
-            <div className="flex items-center gap-3">
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-positive/10">
-                <Wallet className="h-5 w-5 text-positive" />
+          <div className="rounded-2xl border border-border bg-card p-4 sm:p-5">
+            <div className="flex items-center gap-2.5">
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-positive/10">
+                <Wallet className="h-4 w-4 text-positive" />
               </span>
-              <p className="text-xl font-semibold sm:text-2xl">{t("Gastos vs plan", "Spending vs plan")}</p>
+              <p className="text-sm font-semibold">{t("Gastos vs plan", "Spending vs plan")}</p>
               {period === "month" && (
                 <button
                   type="button"
                   onClick={() => setPlanOpen(true)}
                   aria-label={t("Editar el plan", "Edit plan")}
-                  className="ml-1 text-muted-foreground transition-colors hover:text-foreground"
+                  className="ml-0.5 text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  <Plus className="h-6 w-6" />
+                  <Plus className="h-4 w-4" />
                 </button>
               )}
             </div>
 
-            <div className="mt-6 flex flex-col gap-6 sm:mt-8 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mt-3 flex items-center justify-between gap-4">
               <div className="min-w-0">
-                <p className="numeric text-5xl font-bold leading-none tracking-tight sm:text-6xl">
+                <p className="numeric text-3xl font-bold leading-none tracking-tight sm:text-4xl">
                   {fmt(spent)}
                 </p>
-                <div className="mt-3 flex items-center gap-2 text-lg text-muted-foreground sm:text-xl">
+                <div className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground sm:text-sm">
                   <span className="whitespace-nowrap">
                     {t("de", "of")} <span className="numeric">{fmt(periodTarget)}</span>
                   </span>
@@ -446,13 +446,13 @@ export function ExpenseLog() {
                       aria-label={t("Editar el plan", "Edit plan")}
                       className="text-muted-foreground transition-colors hover:text-foreground"
                     >
-                      <Pencil className="h-4 w-4" />
+                      <Pencil className="h-3.5 w-3.5" />
                     </button>
                   )}
                 </div>
               </div>
 
-              <div className="relative h-36 w-36 shrink-0 self-center sm:h-44 sm:w-44">
+              <div className="relative h-20 w-20 shrink-0 sm:h-24 sm:w-24">
                 <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                   <circle cx="60" cy="60" r="52" fill="none" strokeWidth="10" className="stroke-border/30" />
                   <circle
@@ -470,20 +470,20 @@ export function ExpenseLog() {
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <p
                     className={cn(
-                      "numeric text-3xl font-bold sm:text-4xl",
+                      "numeric text-base font-bold leading-none sm:text-lg",
                       pct > 100 ? "text-negative" : "text-positive",
                     )}
                   >
                     {pct.toFixed(0)}%
                   </p>
-                  <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+                  <p className="mt-0.5 text-[10px] text-muted-foreground sm:text-xs">
                     {t("del plan", "of plan")}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-3 gap-3 border-t border-border/60 pt-5 sm:mt-8 sm:gap-6 sm:pt-6">
+            <div className="mt-4 grid grid-cols-3 gap-2 border-t border-border/60 pt-3 sm:gap-4 sm:pt-4">
               <div className="min-w-0">
                 <p
                   className={cn(
