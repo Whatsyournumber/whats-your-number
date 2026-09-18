@@ -300,8 +300,7 @@ export function ExpenseLog() {
           {format(now, "LLLL yyyy", { locale })}
         </span>
       </div>
-      <div className="grid gap-3 lg:grid-cols-[1.35fr_1fr]">
-        <div className="space-y-3">
+      <div className="space-y-3">
           <div className="rounded-2xl border border-border bg-card p-4">
             <p className="mb-3 text-sm font-medium">{t("Agrega un gasto", "Add an expense")}</p>
             <div className="grid grid-cols-3 gap-2">
