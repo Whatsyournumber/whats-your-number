@@ -808,38 +808,40 @@ export function Landing() {
           )}
         />
 
-        <section className="relative mt-24 min-h-[600px] overflow-hidden rounded-lg border border-border bg-background md:mt-32 md:min-h-[520px]">
-          <img
-            src={ctaLifestyle}
-            alt={t("Pareja organizando sus finanzas", "Couple organizing their finances")}
-            loading="lazy"
-            width={1092}
-            height={1250}
-            className="absolute inset-0 h-full w-full object-cover object-[54%_28%] md:object-[82%_32%]"
-          />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/90 to-background/5 md:bg-gradient-to-r md:from-background md:via-background/95 md:to-transparent" />
+        <section className="relative mt-24 min-h-[680px] overflow-hidden bg-background md:mt-32 md:min-h-[520px]">
+          <div className="absolute inset-x-0 top-0 h-[58%] md:inset-y-0 md:left-auto md:right-0 md:h-full md:w-[56%]">
+            <img
+              src={ctaLifestyle}
+              alt={t("Pareja organizando sus finanzas", "Couple organizing their finances")}
+              loading="lazy"
+              width={1092}
+              height={1250}
+              className="h-full w-full object-contain object-top md:object-right"
+            />
+          </div>
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/90 to-transparent md:bg-gradient-to-r md:from-background md:via-background/90 md:to-transparent" />
 
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.45 }}
-            className="relative z-10 flex min-h-[600px] max-w-2xl flex-col justify-end p-7 sm:p-10 md:min-h-[520px] md:justify-center md:p-12 lg:p-14"
+            className="relative z-10 flex min-h-[680px] max-w-xl flex-col justify-end px-6 py-10 sm:px-10 md:min-h-[520px] md:justify-center md:px-10 lg:px-12"
           >
-            <HeartHandshake className="mb-7 h-10 w-10 text-primary" />
-            <h2 className="font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+            <HeartHandshake className="mb-5 h-8 w-8 text-primary" />
+            <h2 className="font-display text-2xl font-semibold leading-tight tracking-tight sm:text-3xl lg:text-4xl">
               {t("Construyan su futuro juntos.", "Build your future together.")}{" "}
               <span className="text-primary">
                 {t("Cada decisión los acerca a su número.", "Every decision brings you closer to your number.")}
               </span>
             </h2>
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            <p className="mt-4 max-w-lg text-sm leading-relaxed text-muted-foreground sm:text-base">
               {t(
                 "Con WhatsYourNumber pueden organizar ingresos, gastos, patrimonio y metas en pareja, sin perder de vista los objetivos de cada uno.",
                 "With WhatsYourNumber, you can organize income, spending, net worth and goals as a couple without losing sight of your individual plans.",
               )}
             </p>
-            <Button asChild size="lg" className="mt-8 w-fit gap-2 rounded-full px-7">
+            <Button asChild className="mt-7 w-fit gap-2 rounded-full px-6">
               <Link to="/auth" search={{ mode: "signup" }}>
                 {t("Crear nuestro plan", "Create our plan")} <ArrowRight className="h-4 w-4" />
               </Link>
