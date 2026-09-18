@@ -687,7 +687,7 @@ export function Landing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4 }}
-              className="surface glow relative overflow-hidden"
+              className="surface glow relative flex min-h-[420px] items-center justify-center overflow-hidden bg-elevated/20 p-4 sm:p-6"
             >
               <img
                 src={expensesTrackerPhoneAsset.url}
@@ -695,14 +695,11 @@ export function Landing() {
                 loading="lazy"
                 width={696}
                 height={1090}
-                className="h-full min-h-[420px] w-full object-cover object-center"
+                className="h-auto max-h-[540px] w-auto max-w-full object-contain"
               />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-8 md:p-10">
-                <h3 className="max-w-sm font-display text-2xl font-semibold tracking-tight md:text-3xl">
-                  {t("¿Cuál es tu número?", "What's your number?")}
-                </h3>
-                <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+              <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
+                <p className="max-w-sm text-sm text-muted-foreground">
                   <span className="sm:hidden">{t("Descúbrelo gratis en 30 segundos.", "Find out free in 30 seconds.")}</span>
                   <span className="hidden sm:inline">
                     {t(
