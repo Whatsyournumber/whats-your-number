@@ -154,12 +154,23 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[88vh] max-w-2xl overflow-y-auto pt-0">
-        {/* Cabecera compacta; el total editable vive junto a la acción de guardado. */}
+        {/* Cabecera con el total mensual editable. */}
         <DialogHeader className="sticky top-0 z-10 -mx-6 space-y-1.5 bg-background/95 px-6 pb-4 pt-6 text-left backdrop-blur-sm">
           <DialogTitle className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
 
             {t("Tu plan de gasto mensual", "Your monthly spending plan")}
           </DialogTitle>
+          <div className="flex items-center gap-2">
+            <NumberInput
+              value={total}
+              onChange={setTotal}
+              format
+              aria-label={t("Editar gastos totales", "Edit total expenses")}
+              className="numeric h-auto w-36 border-0 bg-transparent p-0 text-3xl font-semibold shadow-none focus-visible:ring-0 sm:w-44"
+            />
+            <span className="text-xs text-muted-foreground">{t("/mes", "/mo")}</span>
+            <Pencil className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+          </div>
           <DialogDescription className="text-xs leading-4 text-muted-foreground">
             <span className="sm:hidden">
               {t("Cuánto quieres gastar en cada categoría", "What you want to spend per category")}
@@ -335,26 +346,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
           </Button>
         )}
 
-        <div className="sticky bottom-0 -mx-6 mt-2 border-t border-border/60 bg-background/95 px-6 pb-6 pt-4 backdrop-blur-sm">
-          <div className="mb-4 flex items-end justify-between gap-4">
-            <div className="min-w-0">
-              <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                {t("Gastos totales aprox", "Approximate total expenses")}
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">{t("Objetivo mensual", "Monthly target")}</p>
-            </div>
-            <div className="flex shrink-0 items-baseline gap-2">
-              <NumberInput
-                value={total}
-                onChange={setTotal}
-                format
-                aria-label={t("Editar gastos totales", "Edit total expenses")}
-                className="numeric h-auto w-36 border-0 bg-transparent p-0 text-right text-3xl font-semibold shadow-none focus-visible:ring-0 sm:w-44 sm:text-4xl"
-              />
-              <span className="text-sm text-muted-foreground">{t("/mes", "/mo")}</span>
-              <Pencil className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-            </div>
-          </div>
+        <div className="flex items-center justify-end border-t border-border/60 pt-3">
           <Button
             type="button"
             className="w-full sm:w-auto"
