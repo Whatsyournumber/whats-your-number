@@ -553,83 +553,31 @@ export function ExpenseLog() {
 
 
 
-          <div className="rounded-2xl border border-border bg-card p-4">
-            <p className="mb-3 text-sm font-medium">{t("Agrega un gasto", "Add an expense")}</p>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-              <ManualExpenseDialog
-                categories={categoryNames}
-                onAddCategory={(name) => categories.add(name)}
-                trigger={
-                  <button
-                    type="button"
-                    className="flex flex-col items-center gap-1.5 rounded-xl border border-emerald-500/40 bg-emerald-500/5 px-2 py-4 text-xs font-medium transition hover:bg-emerald-500/10"
-                  >
-                    <PencilLine className="h-5 w-5 text-emerald-400" />
-                    {t("Manual", "Manual")}
-                  </button>
-                }
-              />
-              <button
-                type="button"
-                onClick={recording ? stopRecording : startRecording}
-                disabled={busy === "voice"}
-                className={cn(
-                  "flex flex-col items-center gap-1.5 rounded-xl border border-border bg-background/40 px-2 py-4 text-xs font-medium transition hover:bg-white/5",
-                  recording && "border-rose-500/60 bg-rose-500/10",
-                )}
-              >
-                {busy === "voice" ? (
-                  <Loader2 className="h-5 w-5 animate-spin text-emerald-400" />
-                ) : recording ? (
-                  <Square className="h-5 w-5 text-rose-400" />
-                ) : (
-                  <Mic className="h-5 w-5 text-emerald-400" />
-                )}
-                {recording ? t("Detener", "Stop") : t("Por voz", "By voice")}
-              </button>
-              <button
-                type="button"
-                onClick={() => fileRef.current?.click()}
-                disabled={busy === "receipt"}
-                className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-background/40 px-2 py-4 text-xs font-medium transition hover:bg-white/5"
-              >
-                {busy === "receipt" ? (
-                  <Loader2 className="h-5 w-5 animate-spin text-emerald-400" />
-                ) : (
-                  <Camera className="h-5 w-5 text-emerald-400" />
-                )}
-                {t("Foto de recibo", "Receipt photo")}
-              </button>
-              <button
-                type="button"
-                onClick={() => setRecOpen(true)}
-                className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-background/40 px-2 py-4 text-xs font-medium transition hover:bg-white/5"
-              >
-                <Repeat className="h-5 w-5 text-emerald-400" />
-                {t("Recurrente", "Recurring")}
-              </button>
-              <input
-                ref={fileRef}
-                type="file"
-                accept="image/*"
-                capture="environment"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  e.target.value = "";
-                  if (file) void send("receipt", file);
-                }}
-              />
-            </div>
-            {recording && (
-              <p className="mt-3 text-xs text-rose-300">
-                {t(
-                  "Grabando: di por ejemplo «45 euros en el super de hoy».",
-                  "Recording: say e.g. \u201c45 euros at the supermarket today\u201d.",
-                )}
-              </p>
-            )}
-          </div>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              e.target.value = "";
+              if (file) void send("receipt", file);
+            }}
+          />
+          {recording && (
+            <button
+              type="button"
+              onClick={stopRecording}
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-rose-500/60 bg-rose-500/10 px-3.5 py-2.5 text-xs text-rose-300"
+            >
+              <Square className="h-3.5 w-3.5" />
+              {t(
+                "Grabando: di por ejemplo «45 euros en el super de hoy». Toca para detener.",
+                "Recording: say e.g. \u201c45 euros at the supermarket today\u201d. Tap to stop.",
+              )}
+            </button>
+          )}
           {alerts.map((a) => (
             <button
               key={a.id}
