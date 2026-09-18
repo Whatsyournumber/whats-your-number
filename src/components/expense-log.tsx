@@ -96,10 +96,9 @@ export function ExpenseLog() {
 
   const variableSpend = monthTx.reduce((s, x) => s + Math.abs(x.amount), 0);
   const spent = variableSpend + fixed.total;
-  const plan = budgets.hasBudget
-    ? budgets.total
-    : SPEND_PLAN_FIELDS.reduce((s, f) => s + (Number(profile[f.key]) || 0), 0);
-  const target = hasTarget && savedTarget > 0 ? savedTarget : plan;
+  const onboardingTotal = SPEND_PLAN_FIELDS.reduce((s, f) => s + (Number(profile[f.key]) || 0), 0);
+  const plan = budgets.hasBudget ? budgets.total : onboardingTotal;
+  const target = hasTarget && savedTarget > 0 ? savedTarget : plan > 0 ? plan : onboardingTotal;
   const pct = target > 0 ? (spent / target) * 100 : 0;
   const boundaryPct = spent > 0 ? Math.min(100, (target / spent) * 100) : 0;
   const remaining = target - spent;
