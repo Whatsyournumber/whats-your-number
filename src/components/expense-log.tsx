@@ -285,9 +285,6 @@ export function ExpenseLog() {
     }
   };
 
-  const ringPct = Math.min(100, Math.max(0, pct));
-  const circumference = 2 * Math.PI * 52;
-
   return (
     <section className="space-y-3">
       <div className="flex flex-wrap items-end justify-between gap-2">
@@ -663,7 +660,11 @@ export function ExpenseLog() {
         open={planOpen}
         onOpenChange={setPlanOpen}
         lines={planLines}
-        onSave={(next) => budgets.save(next)}
+        onSave={(next) => {
+          budgets.save(next);
+          const totalPlan = next.reduce((s, l) => s + (l.amount || 0), 0);
+          if (totalPlan > 0) setTarget(Math.round(totalPlan));
+        }}
         fmt={fmt}
       />
     </section>
