@@ -17,6 +17,7 @@ import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
 import { useSpendBudgets } from "@/hooks/use-spend-budgets";
+import { useSyncedSetting } from "@/hooks/use-synced-setting";
 import { sameMerchant, useTransactions, type Tx } from "@/hooks/use-transactions";
 import { buildTravelDays, categorizeTxWithTravel } from "@/lib/categorize";
 import { money } from "@/lib/onboarding";
@@ -44,6 +45,7 @@ const MONTH_LABELS_ES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago",
 const MONTH_LABELS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 type MoneyBucket = "needs" | "savings" | "wants" | "excluded";
 const MONEY_RULE_KEY = "whatsyournumber:money-rule-categories";
+const EMPTY_BUCKETS: Record<string, MoneyBucket> = {};
 const RETIREMENT_FUND_CATEGORY = "Fondo de retiro";
 
 function cleanCategoryName(name: string) {
