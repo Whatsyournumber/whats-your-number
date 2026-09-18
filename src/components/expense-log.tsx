@@ -579,29 +579,29 @@ export function ExpenseLog() {
               </div>
             </div>
 
-            <div className="mt-4 hidden items-center gap-10 lg:flex">
-              <div className="min-w-0 shrink-0">
-                <p className="text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
-                <div className="mt-3 inline-flex min-w-0 items-baseline gap-2">
-                  <span className="numeric text-3xl font-bold">{currencySymbol}</span>
-                  <NumberInput
-                    value={target}
-                    onChange={(v) => setTarget(Math.round(v || 0))}
-                    min={0}
-                    format
-                    ariaLabel={t("Gasto objetivo mensual", "Monthly spending target")}
-                    placeholder="0"
-                    className="numeric h-auto w-44 border-0 bg-transparent px-0 py-0 text-5xl font-bold shadow-none transition-none placeholder:text-foreground focus-visible:ring-0 md:text-5xl"
-                  />
-                </div>
-              </div>
+             <div className="mt-4 hidden items-center gap-8 lg:flex">
+               <div className="min-w-0 shrink-0">
+                 <p className="text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
+                 <div className="mt-3 inline-flex min-w-0 items-baseline gap-1.5 rounded-xl border border-border bg-muted/20 px-4 py-2 transition-colors focus-within:border-positive/60">
+                   <span className="numeric text-2xl font-semibold text-muted-foreground">{currencySymbol}</span>
+                   <NumberInput
+                     value={target}
+                     onChange={(v) => setTarget(Math.round(v || 0))}
+                     min={0}
+                     format
+                     ariaLabel={t("Gasto objetivo mensual", "Monthly spending target")}
+                     placeholder="0"
+                     className="numeric h-auto w-40 border-0 bg-transparent px-0 py-0 text-4xl font-bold shadow-none transition-none placeholder:text-foreground focus-visible:ring-0 md:text-4xl"
+                   />
+                 </div>
+               </div>
 
-              <div className="min-w-0 shrink-0 border-l border-border/60 pl-10">
-                <p className="text-sm text-muted-foreground">{t("Gasto del período", "Period spending")}</p>
-                <p className="numeric mt-1.5 whitespace-nowrap text-5xl font-bold">{fmt(spent)}</p>
-              </div>
+               <div className="min-w-0 shrink-0 border-l border-border/60 pl-8">
+                 <p className="text-sm text-muted-foreground">{t("Gasto del período", "Period spending")}</p>
+                 <p className="numeric mt-1.5 whitespace-nowrap text-4xl font-bold">{fmt(spent)}</p>
+               </div>
 
-              <div className="relative ml-auto h-52 w-52 shrink-0">
+               <div className="relative ml-auto h-44 w-44 shrink-0">
                 <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                   <circle cx="60" cy="60" r="50" fill="none" strokeWidth="9" className="stroke-border/30" />
                   <circle
@@ -617,7 +617,7 @@ export function ExpenseLog() {
                   />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <p className={cn("numeric text-5xl font-bold leading-none", pct > 100 ? "text-negative" : "text-positive")}>
+                  <p className={cn("numeric text-4xl font-bold leading-none", pct > 100 ? "text-negative" : "text-positive")}>
                     {pct.toFixed(0)}%
                   </p>
                   <p className="mt-1.5 text-base text-muted-foreground">{t("del plan", "of plan")}</p>
@@ -626,23 +626,23 @@ export function ExpenseLog() {
 
               <div
                 className={cn(
-                  "flex w-[340px] flex-none items-center gap-4 self-center rounded-xl border p-5 text-left",
-                  isOnPace ? "border-positive/30 bg-positive/10" : "border-negative/30 bg-negative/10",
-                )}
-              >
-                <span
-                  className={cn(
-                    "grid h-11 w-11 shrink-0 place-items-center rounded-lg",
-                    isOnPace ? "bg-positive/15 text-positive" : "bg-negative/15 text-negative",
-                  )}
-                >
-                  {isOnPace ? <ArrowUp className="h-5 w-5" /> : <ArrowDown className="h-5 w-5" />}
-                </span>
-                <div className="min-w-0">
-                  <p className={cn("text-base font-semibold", isOnPace ? "text-positive" : "text-negative")}>
-                    {isOnPace ? t("Vas bien", "On track") : t("Vas por encima", "Above pace")}
-                  </p>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                   "flex w-[280px] flex-none items-center gap-3 self-center rounded-xl border p-4 text-left",
+                   isOnPace ? "border-positive/30 bg-positive/10" : "border-negative/30 bg-negative/10",
+                 )}
+               >
+                 <span
+                   className={cn(
+                     "grid h-9 w-9 shrink-0 place-items-center rounded-lg",
+                     isOnPace ? "bg-positive/15 text-positive" : "bg-negative/15 text-negative",
+                   )}
+                 >
+                   {isOnPace ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
+                 </span>
+                 <div className="min-w-0">
+                   <p className={cn("text-sm font-semibold", isOnPace ? "text-positive" : "text-negative")}>
+                     {isOnPace ? t("Vas bien", "On track") : t("Vas por encima", "Above pace")}
+                   </p>
+                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                     {isOnPace
                       ? t(
                           `Estás ${Math.round(paceDifference)}% por debajo del ritmo esperado`,
@@ -658,7 +658,7 @@ export function ExpenseLog() {
             </div>
 
             <div className="mt-4 hidden gap-8 sm:mt-5 md:grid md:grid-cols-2 lg:hidden">
-              <div className="flex min-w-0 flex-col gap-5">
+              <div className="grid min-w-0 grid-rows-[auto_1fr] justify-items-center gap-5 text-center">
                 <div className="min-w-0">
                   <p className="text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
                   <div className="mt-2 inline-flex min-w-0 items-baseline gap-1 rounded-xl border border-border bg-muted/20 px-3 py-1.5 transition-colors focus-within:border-positive/60">
@@ -673,7 +673,7 @@ export function ExpenseLog() {
                     />
                   </div>
                 </div>
-                <div className="relative h-28 w-28 shrink-0 self-start sm:h-32 sm:w-32 lg:h-36 lg:w-36">
+                <div className="relative h-32 w-32 shrink-0 self-center">
                   <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                     <circle cx="60" cy="60" r="50" fill="none" strokeWidth="9" className="stroke-border/30" />
                     <circle
@@ -697,12 +697,12 @@ export function ExpenseLog() {
                 </div>
               </div>
 
-              <div className="flex min-w-0 flex-col gap-5 md:border-l md:border-border/60 md:pl-8">
+              <div className="grid min-w-0 grid-rows-[auto_1fr] justify-items-center gap-5 text-center md:border-l md:border-border/60 md:pl-8">
                 <div className="min-w-0">
                   <p className="text-sm text-muted-foreground">{t("Gasto del período", "Period spending")}</p>
-                  <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold sm:text-4xl lg:text-5xl">{fmt(spent)}</p>
+                  <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold sm:text-4xl">{fmt(spent)}</p>
                 </div>
-                <div className="flex min-w-0 items-center gap-3 rounded-xl border border-border bg-muted/20 p-3 text-left sm:p-4">
+                <div className="flex w-full min-w-0 items-center gap-3 self-center rounded-xl border border-border bg-muted/20 p-3 text-left sm:p-4">
                   <span
                     className={cn(
                       "grid h-9 w-9 shrink-0 place-items-center rounded-lg",
