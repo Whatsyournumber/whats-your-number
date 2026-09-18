@@ -415,43 +415,51 @@ export function ExpenseLog() {
 
       <div className="space-y-3">
           <div className="rounded-2xl border border-border bg-card p-4 sm:p-5">
-            <div className="flex items-center gap-2.5">
-              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-positive/10">
-                <Wallet className="h-4 w-4 text-positive" />
-              </span>
-              <p className="text-sm font-semibold">{t("Gastos vs plan", "Spending vs plan")}</p>
-              {period === "month" && (
-                <button
-                  type="button"
-                  onClick={() => setPlanOpen(true)}
-                  aria-label={t("Editar el plan", "Edit plan")}
-                  className="ml-0.5 text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  <Plus className="h-4 w-4" />
-                </button>
-              )}
-            </div>
-
-            <div className="mt-2.5 flex items-center justify-between gap-4">
-              <div className="min-w-0">
-                <p className="numeric text-3xl font-bold leading-none tracking-tight sm:text-4xl">
-                  {fmt(spent)}
-                </p>
-                <div className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground sm:text-sm">
-                  <span className="whitespace-nowrap">
-                    {t("de", "of")} <span className="numeric">{fmt(periodTarget)}</span>
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-3">
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-positive/10">
+                    <Wallet className="h-5 w-5 text-positive" />
                   </span>
-                  <span className="numeric whitespace-nowrap">{currency.toUpperCase() === "USD" ? "US$" : currencySymbol}</span>
-                  {period === "month" && (
-                    <button
-                      type="button"
-                      onClick={() => setPlanOpen(true)}
-                      aria-label={t("Editar el plan", "Edit plan")}
-                      className="text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      <Pencil className="h-3.5 w-3.5" />
-                    </button>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="text-base font-semibold sm:text-lg">
+                        {t("Gasto objetivo mensual", "Monthly spending target")}
+                      </p>
+                      {period === "month" && (
+                        <button
+                          type="button"
+                          onClick={() => setPlanOpen(true)}
+                          aria-label={t("Editar el plan", "Edit plan")}
+                          className="shrink-0 text-muted-foreground transition-colors hover:text-foreground"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                      )}
+                    </div>
+                    <p className="mt-0.5 text-sm text-muted-foreground">
+                      {t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex h-14 w-full items-center rounded-xl border border-border bg-background/20 px-4 sm:max-w-xl">
+                  <span className="mr-3 text-lg font-semibold text-muted-foreground">{currencySymbol}</span>
+                  {period === "month" ? (
+                    <NumberInput
+                      value={target}
+                      onChange={(value) => setTarget(Math.max(0, Math.round(value)))}
+                      format
+                      className="numeric h-auto min-w-0 flex-1 border-0 bg-transparent p-0 text-2xl font-semibold shadow-none focus-visible:ring-0"
+                    />
+                  ) : (
+                    <p className="numeric text-2xl font-semibold">{fmt(periodTarget)}</p>
                   )}
+                </div>
+
+                <div className="mt-3 flex items-baseline gap-2 text-sm text-muted-foreground">
+                  <span>{t("Gasto del periodo", "Period spending")}</span>
+                  <span className="numeric text-xl font-bold text-foreground">{fmt(spent)}</span>
                 </div>
               </div>
 
