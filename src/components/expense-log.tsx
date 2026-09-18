@@ -579,13 +579,23 @@ export function ExpenseLog() {
               </div>
             </div>
 
-            <div className="mt-4 hidden gap-6 sm:mt-5 md:grid md:grid-cols-2 md:gap-x-8">
-              <div className="flex min-w-0 flex-col items-center gap-5 text-center">
+            <div className="mt-4 hidden gap-8 sm:mt-5 md:grid md:grid-cols-2">
+              <div className="flex min-w-0 flex-col gap-5">
                 <div className="min-w-0">
                   <p className="text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
-                  <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold sm:text-4xl lg:text-5xl">{fmt(periodTarget)}</p>
+                  <div className="mt-2 inline-flex min-w-0 items-baseline gap-1 rounded-xl border border-border bg-muted/20 px-3 py-1.5 transition-colors focus-within:border-positive/60">
+                    <span className="numeric text-xl font-semibold text-muted-foreground sm:text-2xl">{currencySymbol}</span>
+                    <NumberInput
+                      value={target}
+                      onChange={(v) => setTarget(Math.round(v || 0))}
+                      min={0}
+                      format
+                      ariaLabel={t("Gasto objetivo mensual", "Monthly spending target")}
+                      className="numeric w-28 border-0 bg-transparent px-0 py-0 text-3xl font-bold shadow-none transition-none focus-visible:ring-0 sm:w-32 sm:text-4xl lg:text-5xl"
+                    />
+                  </div>
                 </div>
-                <div className="relative h-28 w-28 shrink-0 self-center sm:h-32 sm:w-32 lg:h-36 lg:w-36">
+                <div className="relative h-28 w-28 shrink-0 self-start sm:h-32 sm:w-32 lg:h-36 lg:w-36">
                   <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                     <circle cx="60" cy="60" r="50" fill="none" strokeWidth="9" className="stroke-border/30" />
                     <circle
@@ -609,12 +619,12 @@ export function ExpenseLog() {
                 </div>
               </div>
 
-              <div className="flex min-w-0 flex-col items-center gap-5 text-center md:border-l md:border-border/60 md:pl-6 lg:pl-8">
+              <div className="flex min-w-0 flex-col gap-5 md:border-l md:border-border/60 md:pl-8">
                 <div className="min-w-0">
                   <p className="text-sm text-muted-foreground">{t("Gasto del período", "Period spending")}</p>
                   <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold sm:text-4xl lg:text-5xl">{fmt(spent)}</p>
                 </div>
-                <div className="flex min-w-0 items-center gap-3 self-center rounded-xl border border-border bg-muted/20 p-3 text-left sm:p-4 md:w-full">
+                <div className="flex min-w-0 items-center gap-3 rounded-xl border border-border bg-muted/20 p-3 text-left sm:p-4">
                   <span
                     className={cn(
                       "grid h-9 w-9 shrink-0 place-items-center rounded-lg",
