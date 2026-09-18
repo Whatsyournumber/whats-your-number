@@ -287,12 +287,12 @@ export function Landing() {
   const features = [
     {
       icon: PieChart,
-      title: t("Análisis de tus gastos", "Your Spending Analysis"),
+      title: t("Tracking de tus gastos diarios", "Daily expense tracking"),
       desc: t(
-        "Sube tus estados de cuenta y en menos de 30 segundos la IA categoriza cada movimiento, compara, detecta sobrecostos y te dice exactamente dónde puedes ahorrar.",
-        "Upload your statements and in under 30 seconds the AI categorizes every transaction, compares, detects overspending and tells you exactly where you can save.",
+        "Registra tus gastos día a día por voz, foto o manualmente, compáralos con tu presupuesto y deja que la IA encuentre oportunidades para ahorrar más y acercarte a tu Número de Vida Libre.",
+        "Track your daily expenses by voice, photo, or manually, compare them with your budget, and let AI find opportunities to save more and move closer to your Financial Freedom Number.",
       ),
-      highlight: t("detecta sobrecostos", "detects overspending"),
+      highlight: t("oportunidades para ahorrar más", "opportunities to save more"),
     },
     {
       icon: Home,
@@ -325,7 +325,7 @@ export function Landing() {
 
   const panelChips = [
     t("Portafolio en vivo", "Live portfolio"),
-    t("Análisis de tus gastos", "Your Spending Analysis"),
+    t("Tracking de tus gastos diarios", "Daily expense tracking"),
     t("Análisis de tu hipoteca", "Your Mortgage Analysis"),
     t("Cash flow 40/40/20", "40/40/20 cash flow"),
     t("Tu Plan de Vida", "Your Life Plan"),
