@@ -1079,9 +1079,9 @@ export function ExpenseLog() {
                           />
                           <text
                             x={left + (todayDay - 0.5) * step}
-                            y={top - 4}
+                            y={top - 6}
                             textAnchor="middle"
-                            className="fill-foreground text-[9px] font-medium"
+                            className="fill-foreground text-[11px] font-medium"
                           >
                             {t("Hoy", "Today")}
                           </text>
