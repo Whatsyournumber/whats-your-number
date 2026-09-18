@@ -12,3 +12,5 @@
 - [x] Desktop: tarjeta más compacta, objetivo en caja editable, caja de estado más pequeña, anillo más a la derecha
 
 - [x] Registro de gastos: tooltip del gráfico diario más simple (una sola línea)
+
+- [ ] Registro de gastos: gráfica diaria un poco más alta y números de eje más acordes (en curso)

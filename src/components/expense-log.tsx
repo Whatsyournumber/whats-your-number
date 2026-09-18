@@ -974,13 +974,13 @@ export function ExpenseLog() {
                 <div className="relative mt-4 min-w-0">
                     {(() => {
                       const W = 560;
-                      const H = 190;
-                      const left = 38;
-                      const top = 16;
+                      const H = 232;
+                      const left = 44;
+                      const top = 20;
                       const plotW = W - left - 8;
-                      const plotH = H - top - 22;
+                      const plotH = H - top - 28;
                       const maxDaily = Math.max(...daily, 0);
-                      const yMax = Math.max(target, maxDaily, 1) * 1.1;
+                      const yMax = Math.max(target, maxDaily, 1) * 1.06;
                       const step = plotW / daysInMonth;
                       const barW = step * 0.62;
                       const yOf = (v: number) => top + plotH - (v / yMax) * plotH;
@@ -997,6 +997,10 @@ export function ExpenseLog() {
                       const activeReal = active === null ? 0 : daily[active] ?? 0;
                       const activeDiff = activeReal - linearDay;
                       const tipLeft = active === null ? 50 : ((left + (active + 0.5) * step) / W) * 100;
+                      // Borde superior de la barra activa: el tooltip se pega justo arriba de ella.
+                      const activeBarTop = active === null ? 0 : yOf(Math.max(daily[active] ?? 0, 0));
+                      // Si la barra llega muy arriba, el tooltip entra debajo del borde para no salirse.
+                      const tipBelow = activeBarTop < top + H * 0.2;
                       return (
                         <>
                         <svg
@@ -1008,7 +1012,7 @@ export function ExpenseLog() {
                           {yTicks.map((v) => (
                             <g key={v}>
                               <line x1={left} x2={W - 8} y1={yOf(v)} y2={yOf(v)} className="stroke-border" strokeWidth="1" />
-                              <text x={left - 6} y={yOf(v) + 3} textAnchor="end" className="fill-muted-foreground text-[9px]">
+                              <text x={left - 7} y={yOf(v) + 4} textAnchor="end" className="fill-muted-foreground text-[11px]">
                                 {v === 0 ? `${currencySymbol}0` : `${currencySymbol}${Math.round(v)}`}
                               </text>
                             </g>
@@ -1075,9 +1079,9 @@ export function ExpenseLog() {
                           />
                           <text
                             x={left + (todayDay - 0.5) * step}
-                            y={top - 4}
+                            y={top - 6}
                             textAnchor="middle"
-                            className="fill-foreground text-[9px] font-medium"
+                            className="fill-foreground text-[11px] font-medium"
                           >
                             {t("Hoy", "Today")}
                           </text>
@@ -1085,9 +1089,9 @@ export function ExpenseLog() {
                             <text
                               key={d}
                               x={left + (d - 0.5) * step}
-                              y={H - 6}
+                              y={H - 8}
                               textAnchor="middle"
-                              className="fill-muted-foreground text-[9px]"
+                              className="fill-muted-foreground text-[11px]"
                             >
                               {d}
                             </text>
@@ -1108,9 +1112,14 @@ export function ExpenseLog() {
                         </svg>
                         {active !== null && (
                           <div
-                            className="pointer-events-none absolute top-1 z-20 -translate-x-1/2 whitespace-nowrap rounded-lg border border-border bg-card/95 px-2.5 py-1.5 text-[11px] shadow-lg backdrop-blur-sm"
-                            style={{ left: `${Math.min(84, Math.max(18, tipLeft))}%` }}
-
+                            className="pointer-events-none absolute z-20 whitespace-nowrap rounded-lg border border-border bg-card/95 px-3 py-1.5 text-[12px] shadow-lg backdrop-blur-sm"
+                            style={{
+                              left: `${Math.min(84, Math.max(18, tipLeft))}%`,
+                              top: `${(Math.max(top, activeBarTop) / H) * 100}%`,
+                              transform: tipBelow
+                                ? "translate(-50%, 10px)"
+                                : "translate(-50%, calc(-100% - 8px))",
+                            }}
                           >
                             <span className="numeric font-medium text-muted-foreground">
                               {format(new Date(now.getFullYear(), now.getMonth(), active + 1), "d MMM", { locale })}
