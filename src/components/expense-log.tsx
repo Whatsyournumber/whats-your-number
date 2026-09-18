@@ -544,6 +544,7 @@ export function ExpenseLog() {
                           )}
                     </p>
                   </div>
+                </div>
               </div>
             </div>
 
