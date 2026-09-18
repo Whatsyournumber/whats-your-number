@@ -1,13 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { HelpCircle } from "lucide-react";
-import { useMemo, useState } from "react";
+import { HelpCircle, Pencil } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { translateCategory } from "@/lib/i18n-data";
 
 import { KpiCard } from "@/components/kpi-card";
 import { PageHeader, PageShell, Panel } from "@/components/page";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useAuth } from "@/hooks/use-auth";
 import { useCategories } from "@/hooks/use-categories";
 import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useProfile } from "@/hooks/use-profile";
@@ -37,6 +41,12 @@ export const Route = createFileRoute("/cash-flow")({
 
 const MONTH_LABELS_ES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 const MONTH_LABELS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+type MoneyBucket = "needs" | "savings" | "wants" | "excluded";
+const MONEY_RULE_KEY = "whatsyournumber:money-rule-categories";
+
+function cleanCategoryName(name: string) {
+  return name.replace(/^\p{Extended_Pictographic}\s*/u, "").trim();
+}
 
 function monthKey(d: string) {
   return d.slice(0, 7);
@@ -51,6 +61,7 @@ function buildMonthLabel(labels: string[]) {
 
 function CashFlow() {
   const t = useT();
+  const { user } = useAuth();
   const { lang } = useLanguage();
   const monthLabel = useMemo(() => buildMonthLabel(lang === "en" ? MONTH_LABELS_EN : MONTH_LABELS_ES), [lang]);
   const { profile } = useProfile();
@@ -59,6 +70,30 @@ function CashFlow() {
   const { rules } = useCategories();
   const fixed = useFixedExpenses();
   const { lines: budgetLines } = useSpendBudgets();
+  const [ruleOpen, setRuleOpen] = useState(false);
+  const [categoryBuckets, setCategoryBuckets] = useState<Record<string, MoneyBucket>>({});
+  const categoryStorageKey = `${MONEY_RULE_KEY}:${user?.id ?? "anon"}`;
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(categoryStorageKey);
+      setCategoryBuckets(raw ? (JSON.parse(raw) as Record<string, MoneyBucket>) : {});
+    } catch {
+      setCategoryBuckets({});
+    }
+  }, [categoryStorageKey]);
+
+  const setCategoryBucket = (category: string, bucket: MoneyBucket) => {
+    setCategoryBuckets((current) => {
+      const next = { ...current, [category]: bucket };
+      try {
+        window.localStorage.setItem(categoryStorageKey, JSON.stringify(next));
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  };
 
   const months = useMemo(() => {
     const set = new Set<string>();
@@ -137,6 +172,9 @@ function CashFlow() {
   const isWant = (cat: string) =>
     WANT_CATS.has(cat) ||
     /viaje|restaur|delivery|ocio|salida|night|deporte|gym|gimnasio|compra|ropa|tecnolog|app|suscrip|hobb|lifestyle|belleza|regalo|mascota|entreten|pet|stay|whatsyournumber|marketing/i.test(cat);
+  const isSaving = (cat: string) => /ahorro|inver|saving|invest|broker|etf|fondo|bolsa|crypto|cripto/i.test(cat);
+  const defaultBucket = (cat: string): MoneyBucket => (isSaving(cat) ? "savings" : isWant(cat) ? "wants" : "needs");
+  const bucketFor = (cat: string): MoneyBucket => categoryBuckets[cleanCategoryName(cat)] ?? defaultBucket(cat);
 
   // Categorías personalizadas del plan de gastos (con sus palabras clave) → se clasifican como deseos.
   const customWants = useMemo(
@@ -188,44 +226,40 @@ function CashFlow() {
       if (matchesFixed(tx as Tx)) continue;
       const v = Math.abs(tx.amount);
       const custom = matchCustom(tx.merchant ?? "");
-      if (custom) {
+      const cat = custom ?? categorizeTxWithTravel(tx as Tx, rules, travelDays);
+      const bucket = bucketFor(cat);
+      if (bucket === "excluded") continue;
+      if (bucket === "wants") {
         wants += v;
-        wantsBy.set(custom, (wantsBy.get(custom) ?? 0) + v);
+        wantsBy.set(cat, (wantsBy.get(cat) ?? 0) + v);
         continue;
       }
-      const cat = categorizeTxWithTravel(tx as Tx, rules, travelDays);
       const investmentLabel = `${cat} ${tx.merchant ?? ""}`;
-      if (/ahorro|inver|saving|invest|broker|etf|fondo|bolsa|crypto|cripto/i.test(investmentLabel)) {
+      if (bucket === "savings" || (categoryBuckets[cleanCategoryName(cat)] === undefined && isSaving(investmentLabel))) {
         investments += v;
         investmentsBy.set(cat, (investmentsBy.get(cat) ?? 0) + v);
         continue;
       }
-      if (isWant(cat)) {
-        wants += v;
-        wantsBy.set(cat, (wantsBy.get(cat) ?? 0) + v);
-      } else {
-        // necesidades + lo no clasificado (se considera necesidad por defecto)
-        needs += v;
-        const key = NEED_CATS.has(cat) ? cat : t("Otros", "Other");
-        needsBy.set(key, (needsBy.get(key) ?? 0) + v);
-      }
+      needs += v;
+      const key = NEED_CATS.has(cat) ? cat : cat || t("Otros", "Other");
+      needsBy.set(key, (needsBy.get(key) ?? 0) + v);
     }
     return { wants, needs, investments, total: wants + needs, needsBy, wantsBy, investmentsBy };
-  }, [monthTx, rules, travelDays, customWants, matchesFixed]);
+  }, [monthTx, rules, travelDays, customWants, matchesFixed, categoryBuckets]);
 
   const hasReal = hasData && monthTx.length > 0;
 
-  const fixedSavings = fixed.items.filter((item) =>
-    /ahorro|inver|saving|invest|broker|etf|fondo|bolsa|crypto|cripto/i.test(item.name),
-  );
+  const fixedSavings = fixed.items.filter((item) => bucketFor(item.name) === "savings");
+  const fixedWants = fixed.items.filter((item) => bucketFor(item.name) === "wants");
+  const fixedNeeds = fixed.items.filter((item) => bucketFor(item.name) === "needs");
   const fixedSavingsAmount = fixedSavings.reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
-  const fixedNeeds = fixed.items.filter((item) => !fixedSavings.some((saving) => saving.id === item.id));
+  const fixedWantsAmount = fixedWants.reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
   const fixedNeedsAmount = fixedNeeds.reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
 
   // Cuando hay movimientos, toda la distribución sale exclusivamente del mes corriente.
   // No se suman presupuestos, metas ni gastos fijos estimados del perfil.
   const fixedAmount = hasReal ? fixedNeedsAmount + spend.needs : d.cashFlow.buckets[0]!.amount;
-  const lifestyleAmount = hasReal ? spend.wants : d.cashFlow.buckets[1]!.amount;
+  const lifestyleAmount = hasReal ? fixedWantsAmount + spend.wants : d.cashFlow.buckets[1]!.amount;
   const investAmount = hasReal ? fixedSavingsAmount + spend.investments : d.cashFlow.buckets[2]!.amount;
 
   const freeAmount = Math.max(0, totalIncome - fixedAmount - lifestyleAmount - investAmount);
@@ -254,8 +288,10 @@ function CashFlow() {
         .sort((a, b) => b.amount - a.amount)
     : [];
   const wantsBreakdown = hasReal
-    ? [...spend.wantsBy.entries()]
-        .map(([label, amount]) => ({ label: translateCategory(label, lang), amount }))
+    ? [
+        ...fixedWants.filter((item) => Number(item.amount) > 0).map((item) => ({ label: cleanCategoryName(item.name), amount: Number(item.amount) })),
+        ...[...spend.wantsBy.entries()].map(([label, amount]) => ({ label: translateCategory(label, lang), amount })),
+      ]
         .sort((a, b) => b.amount - a.amount)
     : [];
 
@@ -263,11 +299,24 @@ function CashFlow() {
     ? [
         ...fixedSavings
           .filter((item) => Number(item.amount) > 0)
-          .map((item) => ({ label: item.name.replace(/^\p{Extended_Pictographic}\s*/u, ""), amount: Number(item.amount) })),
+          .map((item) => ({ label: cleanCategoryName(item.name), amount: Number(item.amount) })),
         ...[...spend.investmentsBy.entries()].map(([label, amount]) => ({ label: translateCategory(label, lang), amount })),
         { label: t("Flujo libre del mes", "Free flow this month"), amount: freeAmount },
       ].sort((a, b) => b.amount - a.amount)
     : [];
+
+  const editableCategories = useMemo(() => {
+    const names = new Set<string>();
+    for (const item of fixed.items) if (Number(item.amount) > 0) names.add(cleanCategoryName(item.name));
+    for (const tx of monthTx) {
+      if (tx.amount >= 0 || matchesFixed(tx as Tx)) continue;
+      const custom = customWants.find((entry) =>
+        entry.aliases.some((alias) => (tx.merchant ?? "").toLowerCase().includes(alias)),
+      )?.label;
+      names.add(custom ?? categorizeTxWithTravel(tx as Tx, rules, travelDays));
+    }
+    return [...names].filter(Boolean).sort((a, b) => a.localeCompare(b, lang));
+  }, [fixed.items, monthTx, matchesFixed, customWants, rules, travelDays, lang]);
 
 
   const cash = profile.assets_cash + profile.assets_bank;
@@ -311,6 +360,13 @@ function CashFlow() {
           ))}
         </div>
       )}
+
+      <div className="flex justify-end">
+        <Button variant="outline" size="sm" className="gap-2" onClick={() => setRuleOpen(true)}>
+          <Pencil className="h-3.5 w-3.5" />
+          {t("Editar categorías", "Edit categories")}
+        </Button>
+      </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard
@@ -474,6 +530,34 @@ function CashFlow() {
           </p>
         </Panel>
       </div>
+      <Dialog open={ruleOpen} onOpenChange={setRuleOpen}>
+        <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>{t("Categorías de tu regla del dinero", "Your money rule categories")}</DialogTitle>
+            <DialogDescription>
+              {t("Elige dónde cuenta cada categoría. Los montos se actualizan al instante.", "Choose where each category counts. Amounts update instantly.")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="divide-y divide-border">
+            {editableCategories.map((category) => (
+              <div key={category} className="flex items-center justify-between gap-4 py-3">
+                <span className="min-w-0 text-sm font-medium">{translateCategory(category, lang)}</span>
+                <Select value={bucketFor(category)} onValueChange={(value) => setCategoryBucket(category, value as MoneyBucket)}>
+                  <SelectTrigger className="w-[190px] shrink-0">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="needs">{t("Necesidades", "Needs")}</SelectItem>
+                    <SelectItem value="savings">{t("Ahorro / inversiones", "Savings / investments")}</SelectItem>
+                    <SelectItem value="wants">{t("Deseos / lifestyle", "Wants / lifestyle")}</SelectItem>
+                    <SelectItem value="excluded">{t("No incluir", "Do not include")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </PageShell>
     </TooltipProvider>
   );
