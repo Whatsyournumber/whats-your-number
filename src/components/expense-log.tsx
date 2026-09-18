@@ -1,10 +1,11 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { endOfMonth, format, parseISO, startOfMonth } from "date-fns";
 import { enUS, es } from "date-fns/locale";
 import { AlertTriangle, Camera, Loader2, Mic, PencilLine, Square } from "lucide-react";
 import { toast } from "sonner";
 
+import { BudgetDialog } from "@/components/budget-dialog";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,14 +25,14 @@ import { useCategories } from "@/hooks/use-categories";
 import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
-import { useSpendBudgets } from "@/hooks/use-spend-budgets";
+import { useSpendBudgets, type BudgetLine } from "@/hooks/use-spend-budgets";
 import { useTransactions, type Tx } from "@/hooks/use-transactions";
 import { BUDGET_CATEGORIES, findBudgetCategory } from "@/lib/budget-categories";
 import { BASE_CATEGORIES, categorizeTx } from "@/lib/categorize";
 import { captureExpense } from "@/lib/expense-capture.functions";
 import { translateCategory } from "@/lib/i18n-data";
 import { saveExpense } from "@/lib/manual-expense";
-import { money } from "@/lib/onboarding";
+import { SPEND_PLAN_FIELDS, money } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
 
 type Draft = { merchant: string; amount: number; date: string; category: string };
@@ -59,6 +60,8 @@ export function ExpenseLog() {
   const fixed = useFixedExpenses();
   const budgets = useSpendBudgets();
   const categories = useCategories();
+
+  const [planOpen, setPlanOpen] = useState(false);
 
   const currency = profile.currency || "EUR";
   const fmt = (n: number) => money(Math.round(n), currency);
@@ -88,7 +91,9 @@ export function ExpenseLog() {
 
   const variableSpend = monthTx.reduce((s, x) => s + Math.abs(x.amount), 0);
   const spent = variableSpend + fixed.total;
-  const plan = budgets.total;
+  const plan = budgets.hasBudget
+    ? budgets.total
+    : SPEND_PLAN_FIELDS.reduce((s, f) => s + (Number(profile[f.key]) || 0), 0);
   const pct = plan > 0 ? (spent / plan) * 100 : 0;
   const remaining = plan - spent;
   const perDay = remaining > 0 ? remaining / daysLeft : 0;
@@ -102,9 +107,29 @@ export function ExpenseLog() {
     return map;
   }, [monthTx, categories.rules]);
 
+  /** Plan del onboarding: las categorías y montos que la persona declaró al registrarse. */
+  const onboardingLines = useMemo<BudgetLine[]>(
+    () =>
+      SPEND_PLAN_FIELDS.filter((f) => (Number(profile[f.key]) || 0) > 0).map((f) => ({
+        id: f.budgetId,
+        amount: Number(profile[f.key]) || 0,
+      })),
+    [profile],
+  );
+
+  // Si la cuenta todavía no tiene plan guardado, se copia el del onboarding
+  // para que Registro de gastos y Análisis de gastos muestren el mismo objetivo.
+  useEffect(() => {
+    if (!budgets.loaded || budgets.hasBudget || onboardingLines.length === 0) return;
+    budgets.save(onboardingLines);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [budgets.loaded, budgets.hasBudget, onboardingLines]);
+
+  const planLines: BudgetLine[] = budgets.hasBudget ? budgets.lines : onboardingLines;
+
   const customLines = useMemo(
     () =>
-      budgets.lines
+      planLines
         .filter((l) => l.id.startsWith("custom:"))
         .map((l) => ({
           id: l.id,
@@ -113,7 +138,7 @@ export function ExpenseLog() {
             .filter((k) => k.length > 2),
         }))
         .filter((l) => l.aliases.length > 0),
-    [budgets.lines],
+    [planLines],
   );
 
   const rows = useMemo(() => {
@@ -134,7 +159,7 @@ export function ExpenseLog() {
       const id = match(item.name);
       if (id) actual.set(id, (actual.get(id) ?? 0) + amount);
     }
-    return budgets.lines
+    return planLines
       .filter((l) => l.amount > 0)
       .map((l) => {
         const cat = findBudgetCategory(l.id);
@@ -149,7 +174,7 @@ export function ExpenseLog() {
         };
       })
       .sort((a, b) => b.pct - a.pct);
-  }, [budgets.lines, byCategory, fixed.items, customLines, t]);
+  }, [planLines, byCategory, fixed.items, customLines, t]);
 
   const alerts = rows.filter((r) => r.pct >= 80).slice(0, 2);
 
@@ -432,9 +457,14 @@ export function ExpenseLog() {
 
           {rows.length > 0 && (
             <div className="rounded-2xl border border-border bg-card p-4">
-              <p className="mb-3 text-sm font-medium">{t("Gastos por categoría", "Spending by category")}</p>
+              <div className="mb-3 flex items-center justify-between gap-2">
+                <p className="text-sm font-medium">{t("Gastos por categoría", "Spending by category")}</p>
+                <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => setPlanOpen(true)}>
+                  {t("Editar plan", "Edit plan")}
+                </Button>
+              </div>
               <div className="space-y-3">
-                {rows.slice(0, 6).map((r) => (
+                {rows.map((r) => (
                   <div key={r.id} className="flex items-center gap-3">
                     <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/5 text-base">
                       {r.emoji}
@@ -542,6 +572,14 @@ export function ExpenseLog() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <BudgetDialog
+        open={planOpen}
+        onOpenChange={setPlanOpen}
+        lines={planLines}
+        onSave={(next) => budgets.save(next)}
+        fmt={fmt}
+      />
     </section>
   );
 }
