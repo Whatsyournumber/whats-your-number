@@ -578,7 +578,6 @@ export function ExpenseLog() {
               </span>
             </div>
           ))}
-        </div>
 
         <div className="rounded-2xl border border-border bg-card p-4">
           <p className="mb-3 text-sm font-medium">{t("Últimos gastos", "Latest expenses")}</p>
