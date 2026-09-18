@@ -986,10 +986,11 @@ export function ExpenseLog() {
                       const niceMax = (v: number) => {
                         const mag = 10 ** Math.floor(Math.log10(Math.max(v, 1)));
                         const n = v / mag;
-                        const nice = [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].find((c) => n <= c) ?? 10;
+                        const nice =
+                          [1, 1.2, 1.4, 1.6, 1.8, 2, 2.5, 3, 3.5, 4, 5, 6, 8, 10].find((c) => n <= c) ?? 10;
                         return nice * mag;
                       };
-                      const yMax = niceMax(Math.max(maxDaily, linearDay, 1) * 1.08);
+                      const yMax = niceMax(Math.max(maxDaily, linearDay, 1) * 1.02);
                       const step = plotW / daysInMonth;
                       const barW = step * 0.66;
                       const yOf = (v: number) => top + plotH - (v / yMax) * plotH;
