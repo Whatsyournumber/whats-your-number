@@ -590,7 +590,8 @@ export function ExpenseLog() {
                     min={0}
                     format
                     ariaLabel={t("Gasto objetivo mensual", "Monthly spending target")}
-                    className="numeric w-36 border-0 bg-transparent px-0 py-0 text-5xl font-bold shadow-none transition-none focus-visible:ring-0"
+                    placeholder="0"
+                    className="numeric w-40 border-0 bg-transparent px-0 py-0 text-5xl font-bold shadow-none transition-none placeholder:text-foreground focus-visible:ring-0"
                   />
                 </div>
               </div>
