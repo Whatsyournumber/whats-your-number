@@ -2,10 +2,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { endOfMonth, format, parseISO, startOfMonth } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { AlertTriangle, Camera, Loader2, Mic, PencilLine, Square } from "lucide-react";
+import { AlertTriangle, Camera, ChevronDown, Loader2, Mic, Pencil, PencilLine, Plus, Square } from "lucide-react";
 import { toast } from "sonner";
 
+import targetIcon from "@/assets/target-icon-v2.png.asset.json";
 import { BudgetDialog } from "@/components/budget-dialog";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +24,7 @@ import { NumberInput } from "@/components/ui/number-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/use-auth";
 import { useCategories } from "@/hooks/use-categories";
-import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
+import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useSpendBudgets, type BudgetLine } from "@/hooks/use-spend-budgets";
