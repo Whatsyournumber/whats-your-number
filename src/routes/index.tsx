@@ -808,46 +808,43 @@ export function Landing() {
           )}
         />
 
-        <section className="mt-24 overflow-hidden rounded-lg border border-border bg-elevated/20 md:mt-32">
-          <div className="grid md:min-h-[500px] md:grid-cols-2">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.45 }}
-              className="flex flex-col justify-center p-7 sm:p-10 md:p-12 lg:p-14"
-            >
-              <HeartHandshake className="mb-7 h-10 w-10 text-primary" />
-              <h2 className="font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
-                {t("Construyan su futuro juntos.", "Build your future together.")}{" "}
-                <span className="text-primary">
-                  {t("Cada decisión los acerca a su número.", "Every decision brings you closer to your number.")}
-                </span>
-              </h2>
-              <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-                {t(
-                  "Con WhatsYourNumber pueden organizar ingresos, gastos, patrimonio y metas en pareja, sin perder de vista los objetivos de cada uno.",
-                  "With WhatsYourNumber, you can organize income, spending, net worth and goals as a couple without losing sight of your individual plans.",
-                )}
-              </p>
-              <Button asChild size="lg" className="mt-8 w-fit gap-2 rounded-full px-7">
-                <Link to="/auth" search={{ mode: "signup" }}>
-                  {t("Crear nuestro plan", "Create our plan")} <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
-            </motion.div>
+        <section className="relative mt-24 min-h-[600px] overflow-hidden rounded-lg border border-border bg-background md:mt-32 md:min-h-[520px]">
+          <img
+            src={ctaLifestyle}
+            alt={t("Pareja organizando sus finanzas", "Couple organizing their finances")}
+            loading="lazy"
+            width={1092}
+            height={1250}
+            className="absolute inset-0 h-full w-full object-cover object-[54%_28%] md:object-[82%_32%]"
+          />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/90 to-background/5 md:bg-gradient-to-r md:from-background md:via-background/95 md:to-transparent" />
 
-            <div className="relative min-h-[380px] md:min-h-full">
-              <img
-                src={ctaLifestyle}
-                alt={t("Pareja organizando sus finanzas", "Couple organizing their finances")}
-                loading="lazy"
-                width={1092}
-                height={1250}
-                className="absolute inset-0 h-full w-full object-cover object-[50%_32%]"
-              />
-            </div>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.45 }}
+            className="relative z-10 flex min-h-[600px] max-w-2xl flex-col justify-end p-7 sm:p-10 md:min-h-[520px] md:justify-center md:p-12 lg:p-14"
+          >
+            <HeartHandshake className="mb-7 h-10 w-10 text-primary" />
+            <h2 className="font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+              {t("Construyan su futuro juntos.", "Build your future together.")}{" "}
+              <span className="text-primary">
+                {t("Cada decisión los acerca a su número.", "Every decision brings you closer to your number.")}
+              </span>
+            </h2>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+              {t(
+                "Con WhatsYourNumber pueden organizar ingresos, gastos, patrimonio y metas en pareja, sin perder de vista los objetivos de cada uno.",
+                "With WhatsYourNumber, you can organize income, spending, net worth and goals as a couple without losing sight of your individual plans.",
+              )}
+            </p>
+            <Button asChild size="lg" className="mt-8 w-fit gap-2 rounded-full px-7">
+              <Link to="/auth" search={{ mode: "signup" }}>
+                {t("Crear nuestro plan", "Create our plan")} <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </motion.div>
         </section>
 
 
