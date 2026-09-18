@@ -693,9 +693,9 @@ export function Landing() {
                 src={ctaLifestyle}
                 alt={t("finanzas personales para familias", "personal finance for families")}
                 loading="lazy"
-                width={1280}
-                height={960}
-                className="h-full min-h-[420px] w-full object-cover"
+                width={1092}
+                height={1250}
+                className="h-full min-h-[420px] w-full object-cover object-center"
               />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-8 md:p-10">
