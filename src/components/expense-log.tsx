@@ -412,7 +412,7 @@ export function ExpenseLog() {
 
       <div className="space-y-3">
           <div className="rounded-2xl border border-border bg-card p-4 sm:p-5">
-            <div className="grid gap-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+            <div className="grid gap-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
               <div className="min-w-0">
                 <div className="flex items-center gap-2.5">
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-positive/10">
@@ -439,17 +439,19 @@ export function ExpenseLog() {
               </div>
 
               <div className="min-w-0 border-t border-border/60 pt-4 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0 sm:text-right">
-                <p className="text-xs text-muted-foreground sm:text-sm">
+                <p className="flex h-9 items-center justify-end gap-1.5 text-xs text-muted-foreground sm:text-sm">
+                  <Gauge className="h-3.5 w-3.5 shrink-0 opacity-70" />
                   {t("Para mantener el plan", "To stay on plan")}
                 </p>
-                <p className="numeric mt-1.5 text-2xl font-semibold sm:text-3xl">
+                <p className="numeric mt-3 text-3xl font-semibold sm:text-4xl">
                   {fmt(perDay)}/{t("día", "day")}
                 </p>
-                <p className={cn("mt-1 text-xs", pct > 100 ? "text-negative" : "text-positive")}>
+                <p className={cn("mt-1 text-xs sm:text-sm", pct > 100 ? "text-negative" : "text-positive")}>
                   {pct.toFixed(0)}% {t("del plan", "of plan")}
                 </p>
               </div>
             </div>
+
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-4">
