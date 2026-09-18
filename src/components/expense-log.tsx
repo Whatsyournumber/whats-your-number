@@ -392,14 +392,18 @@ export function ExpenseLog() {
                     </div>
                     <div className="min-w-0">
                       <p className="numeric text-2xl font-semibold leading-none text-positive sm:text-3xl">{daysLeft}</p>
-                      <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm">{t("días en el mes", "days in the month")}</p>
+                      <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm">
+                        <span className="sm:hidden">{t("días quedan", "days left")}</span>
+                        <span className="hidden sm:inline">{t("días en el mes", "days in the month")}</span>
+                      </p>
                     </div>
                     <div className="min-w-0">
                       <p className="numeric text-2xl font-semibold leading-none text-positive sm:text-3xl">
                         {fmt(perDay)}/{t("día", "day")}
                       </p>
                       <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm">
-                        {t("para mantener el plan", "to stay on plan")}
+                        <span className="sm:hidden">{t("para el plan", "on plan")}</span>
+                        <span className="hidden sm:inline">{t("para mantener el plan", "to stay on plan")}</span>
                       </p>
                     </div>
                   </div>
