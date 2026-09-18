@@ -26,12 +26,12 @@ export const HOME_FAQS: LandingFaq[] = [
   },
   {
     q: {
-      es: "¿Sirve como control de gastos e ingresos mensual?",
-      en: "Does it work as a personal income and expense tracker?",
+      es: "¿Sirve como control de gastos diarios y análisis mensual?",
+      en: "Does it work as a daily expense tracker and monthly analysis?",
     },
     a: {
-      es: "Sí. Tienes control de gastos e ingresos con categorización automática por IA, carga manual o desde estados de cuenta, y un flujo de caja mensual que se conecta directamente con tu número de retiro.",
-      en: "Yes. It works as a personal income and expense tracker with AI auto-categorization, manual entry or statement upload, and a monthly cash flow that feeds directly into your retirement number.",
+      es: "Sí. Tienes el control de tus gastos y un tracker diario donde subes cómo vas frente a tu presupuesto por voz, con foto del recibo, subiendo el recibo o de forma manual cuando estás offline. Y en el análisis de gastos la IA te ayuda a ahorrar más y ves cómo influye en tu número de retiro.",
+      en: "Yes. You get full control of your spending plus a daily tracker where you log how you're doing against your budget by voice, receipt photo, receipt upload, or manually when you're offline. And in the expenses analysis, the AI helps you save more and shows how it affects your retirement number.",
     },
   },
   {
