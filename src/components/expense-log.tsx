@@ -392,11 +392,11 @@ export function ExpenseLog() {
               </Button>
             ) : (
               <>
-                <div className="mt-5 flex flex-wrap items-center gap-4 sm:grid sm:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] sm:items-center sm:gap-7">
+                <div className="mt-5 flex flex-wrap items-center gap-4 lg:grid lg:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] lg:items-center lg:gap-7">
                   <div className="order-1 min-w-0 flex-1">
-                    <p className="numeric text-4xl font-semibold leading-none sm:text-5xl">{fmt(spent)}</p>
+                    <p className="numeric text-3xl font-semibold leading-none sm:text-4xl lg:text-5xl">{fmt(spent)}</p>
                     <div className="mt-3 flex items-center gap-1.5 text-muted-foreground">
-                      <span className="text-xl sm:text-2xl">{t("de", "of")}</span>
+                      <span className="text-lg sm:text-xl lg:text-2xl">{t("de", "of")}</span>
                       {period === "month" ? (
                         <>
                           <NumberInput
@@ -404,18 +404,18 @@ export function ExpenseLog() {
                             onChange={(v) => setTarget(Math.max(0, Math.round(v)))}
                             format
                             aria-label={t("Objetivo mensual", "Monthly goal")}
-                            className="h-auto w-28 border-none bg-transparent p-0 text-xl shadow-none focus-visible:ring-0 sm:w-32 sm:text-2xl"
+                            className="h-auto w-24 border-none bg-transparent p-0 text-lg shadow-none focus-visible:ring-0 sm:w-28 sm:text-xl lg:w-32 lg:text-2xl"
                           />
-                          <span className="numeric text-xl sm:text-2xl">{currencySymbol}</span>
+                          <span className="numeric text-lg sm:text-xl lg:text-2xl">{currencySymbol}</span>
                           <Pencil className="h-3.5 w-3.5 opacity-50" />
                         </>
                       ) : (
-                        <span className="numeric text-xl sm:text-2xl">{fmt(periodTarget)}</span>
+                        <span className="numeric text-lg sm:text-xl lg:text-2xl">{fmt(periodTarget)}</span>
                       )}
                     </div>
                   </div>
 
-                  <div className="relative order-2 h-28 w-28 shrink-0 sm:order-3 sm:h-32 sm:w-32">
+                  <div className="relative order-2 h-24 w-24 shrink-0 sm:h-28 sm:w-28 lg:order-3 lg:h-32 lg:w-32">
                     <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                       <circle cx="60" cy="60" r="52" className="stroke-muted" strokeWidth="12" fill="none" />
                       <circle
@@ -432,7 +432,7 @@ export function ExpenseLog() {
                     </svg>
                     <div className="absolute inset-0 grid place-items-center text-center">
                       <div>
-                        <p className={cn("numeric text-xl font-semibold sm:text-2xl", spent > target && "text-negative")}>
+                        <p className={cn("numeric text-lg font-semibold sm:text-xl lg:text-2xl", spent > target && "text-negative")}>
                           {pct.toFixed(0)}%
                         </p>
                         <p className="text-[0.625rem] text-muted-foreground sm:text-xs">{t("del plan", "of plan")}</p>
@@ -440,33 +440,34 @@ export function ExpenseLog() {
                     </div>
                   </div>
 
-                  <div className="order-3 grid w-full grid-cols-3 gap-3 border-t border-border/60 pt-4 sm:order-2 sm:w-auto sm:gap-5 sm:border-l sm:border-t-0 sm:pl-7 sm:pt-0 lg:gap-8">
+                  <div className="order-3 grid w-full grid-cols-3 gap-2 border-t border-border/60 pt-4 sm:gap-4 lg:order-2 lg:w-auto lg:gap-6 lg:border-l lg:border-t-0 lg:pl-7 lg:pt-0">
                     <div className="min-w-0">
-                      <p className={cn("numeric text-2xl font-semibold leading-none sm:text-3xl", remaining < 0 ? "text-negative" : "text-positive")}>
+                      <p className={cn("numeric text-lg font-semibold leading-none sm:text-2xl lg:text-3xl", remaining < 0 ? "text-negative" : "text-positive")}>
                         {fmt(Math.abs(remaining))}
                       </p>
-                      <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm">
+                      <p className="mt-1.5 text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs lg:text-sm">
                         {remaining < 0 ? t("De más", "Over") : t("Te quedan", "Left")}
                       </p>
                     </div>
                     <div className="min-w-0">
-                      <p className="numeric text-2xl font-semibold leading-none text-positive sm:text-3xl">{daysLeft}</p>
-                      <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm">
-                        <span className="sm:hidden">{t("días quedan", "days left")}</span>
-                        <span className="hidden sm:inline">{t("días en el mes", "days in the month")}</span>
+                      <p className="numeric text-lg font-semibold leading-none text-positive sm:text-2xl lg:text-3xl">{daysLeft}</p>
+                      <p className="mt-1.5 text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs lg:text-sm">
+                        <span className="lg:hidden">{t("días quedan", "days left")}</span>
+                        <span className="hidden lg:inline">{t("días en el mes", "days in the month")}</span>
                       </p>
                     </div>
                     <div className="min-w-0">
-                      <p className="numeric text-2xl font-semibold leading-none text-positive sm:text-3xl">
+                      <p className="numeric text-lg font-semibold leading-none text-positive sm:text-2xl lg:text-3xl">
                         {fmt(perDay)}/{t("día", "day")}
                       </p>
-                      <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm">
-                        <span className="sm:hidden">{t("para el plan", "on plan")}</span>
-                        <span className="hidden sm:inline">{t("para mantener el plan", "to stay on plan")}</span>
+                      <p className="mt-1.5 text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs lg:text-sm">
+                        <span className="lg:hidden">{t("para el plan", "on plan")}</span>
+                        <span className="hidden lg:inline">{t("para mantener el plan", "to stay on plan")}</span>
                       </p>
                     </div>
                   </div>
                 </div>
+
               </>
             )}
           </div>
