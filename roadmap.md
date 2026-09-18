@@ -16,4 +16,6 @@
 - [x] Registro de gastos: gráfica diaria más alta y números de eje legibles y acordes a los gastos reales
 - [x] Registro de gastos: barras que llenan el gráfico y números de eje acordes al gasto real diario
 - [x] Popup del plan: quitar la fila de palabras clave (chips, input y botón +)
+- [x] Registro de gastos: "Tomar foto" abre la cámara y "Foto o captura" sube imagen del teléfono
+- [x] Menú móvil: "Foto o captura" / "Photo or screenshot" en una sola línea
 
