@@ -74,28 +74,14 @@ function CashFlow() {
   const { holdings } = useHoldings();
   const { lines: budgetLines } = useSpendBudgets();
   const [ruleOpen, setRuleOpen] = useState(false);
-  const [categoryBuckets, setCategoryBuckets] = useState<Record<string, MoneyBucket>>({});
-  const categoryStorageKey = `${MONEY_RULE_KEY}:${user?.id ?? "anon"}`;
-
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(categoryStorageKey);
-      setCategoryBuckets(raw ? (JSON.parse(raw) as Record<string, MoneyBucket>) : {});
-    } catch {
-      setCategoryBuckets({});
-    }
-  }, [categoryStorageKey]);
+  // Guardado en la cuenta: las mismas categorías en móvil, tablet y ordenador.
+  const { value: categoryBuckets, save: saveCategoryBuckets } = useSyncedSetting<Record<string, MoneyBucket>>(
+    MONEY_RULE_KEY,
+    EMPTY_BUCKETS,
+  );
 
   const setCategoryBucket = (category: string, bucket: MoneyBucket) => {
-    setCategoryBuckets((current) => {
-      const next = { ...current, [category]: bucket };
-      try {
-        window.localStorage.setItem(categoryStorageKey, JSON.stringify(next));
-      } catch {
-        /* ignore */
-      }
-      return next;
-    });
+    saveCategoryBuckets({ ...categoryBuckets, [category]: bucket });
   };
 
   const months = useMemo(() => {
