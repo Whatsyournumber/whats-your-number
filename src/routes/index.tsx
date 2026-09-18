@@ -22,6 +22,7 @@ import {
 
 
 import expensesTrackerPhoneClean from "@/assets/expenses-tracker-phone-clean.png";
+import expensesTrackerPhoneCleanEn from "@/assets/expenses-tracker-phone-clean-en.png";
 import heroManLaptopAsset from "@/assets/hero-man-laptop.jpg.asset.json";
 import ctaLifestyle from "@/assets/cta-lifestyle.jpg";
 
@@ -672,7 +673,7 @@ export function Landing() {
               className="relative flex min-h-[420px] flex-col items-center justify-center gap-6 p-2 sm:p-4"
             >
               <img
-                src={expensesTrackerPhoneClean}
+                src={lang === "en" ? expensesTrackerPhoneCleanEn : expensesTrackerPhoneClean}
                 alt={t("Registro de gastos en WhatsYourNumber", "WhatsYourNumber expense tracker")}
                 loading="lazy"
                 className="h-auto max-h-[620px] w-auto max-w-full object-contain drop-shadow-[0_24px_60px_rgba(0,0,0,0.45)]"
