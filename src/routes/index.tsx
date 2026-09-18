@@ -805,7 +805,7 @@ export function Landing() {
             </p>
             <Button asChild className="mt-7 w-fit gap-2 rounded-full px-6">
               <Link to="/auth" search={{ mode: "signup" }}>
-                {t("Comienza ya", "Start now")} <ArrowRight className="h-4 w-4" />
+                {t("Comienza gratis ya", "Start free now")} <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
           </motion.div>
