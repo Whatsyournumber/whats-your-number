@@ -65,6 +65,7 @@ export function ExpenseLog() {
   const [recOpen, setRecOpen] = useState(false);
   const [recName, setRecName] = useState("");
   const [recAmount, setRecAmount] = useState(0);
+  const [recDay, setRecDay] = useState(1);
   const { target: savedTarget, setTarget, hasTarget } = useSpendTarget();
 
   const onSaveRecurring = () => {
@@ -73,13 +74,14 @@ export function ExpenseLog() {
       toast.error(t("Escribe nombre y monto mayor que cero", "Enter a name and an amount above zero"));
       return;
     }
-    fixed.add(name, Math.round(recAmount));
+    fixed.add(name, Math.round(recAmount), recDay);
     toast.success(t("Gasto recurrente guardado", "Recurring expense saved"), {
-      description: `${name} · ${fmt(recAmount)}/${t("mes", "mo")}`,
+      description: `${name} · ${fmt(recAmount)}/${t("mes", "mo")} · ${t("día", "day")} ${recDay}`,
     });
     setRecOpen(false);
     setRecName("");
     setRecAmount(0);
+    setRecDay(1);
   };
 
   const currency = profile.currency || "EUR";
@@ -729,6 +731,21 @@ export function ExpenseLog() {
             <div className="grid gap-1.5">
               <Label>{`${t("Monto mensual", "Monthly amount")} (${currency})`}</Label>
               <NumberInput value={recAmount} onChange={(v) => setRecAmount(v || 0)} min={0} format />
+            </div>
+            <div className="grid gap-1.5">
+              <Label>{t("Día del mes en que se cobra", "Day of the month it's charged")}</Label>
+              <Select value={String(recDay)} onValueChange={(v) => setRecDay(Number(v) || 1)}>
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="max-h-60">
+                  {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
+                    <SelectItem key={d} value={String(d)}>
+                      {d}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <DialogFooter>

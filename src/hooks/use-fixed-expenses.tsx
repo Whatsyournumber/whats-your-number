@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { convertMoneyValue } from "@/lib/fx";
 import { FIXED_FIELDS } from "@/lib/onboarding";
 
-export type FixedExpense = { id: string; name: string; amount: number };
+export type FixedExpense = { id: string; name: string; amount: number; dayOfMonth?: number };
 
 const KEY = "whatsyournumber:fixed-expenses";
 
@@ -194,11 +194,12 @@ export function useFixedExpenses() {
   );
 
   const add = useCallback(
-    (name?: string, amount?: number) => {
+    (name?: string, amount?: number, dayOfMonth?: number) => {
       const item: FixedExpense = {
         id: crypto.randomUUID(),
         name: name?.trim() || "Nuevo gasto fijo",
         amount: Math.max(0, Number(amount) || 0),
+        ...(dayOfMonth && dayOfMonth >= 1 && dayOfMonth <= 31 ? { dayOfMonth } : {}),
       };
       const next = [...items, item];
       persist(next);
