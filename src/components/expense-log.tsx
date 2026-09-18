@@ -411,63 +411,107 @@ export function ExpenseLog() {
 
 
       <div className="space-y-3">
-          <div className="rounded-2xl border border-border bg-card p-4 sm:p-5">
-            <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-6">
+          <div className="rounded-2xl border border-border bg-card p-5 sm:p-7">
+            <div className="flex items-center gap-3">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-positive/10">
+                <Wallet className="h-5 w-5 text-positive" />
+              </span>
+              <p className="text-xl font-semibold sm:text-2xl">{t("Gastos vs plan", "Spending vs plan")}</p>
+              {period === "month" && (
+                <button
+                  type="button"
+                  onClick={() => setPlanOpen(true)}
+                  aria-label={t("Editar el plan", "Edit plan")}
+                  className="ml-1 text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <Plus className="h-6 w-6" />
+                </button>
+              )}
+            </div>
+
+            <div className="mt-6 flex flex-col gap-6 sm:mt-8 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0">
-                <div className="flex items-center gap-2.5">
-                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-positive/10">
-                    <Wallet className="h-4 w-4 text-positive" />
+                <p className="numeric text-5xl font-bold leading-none tracking-tight sm:text-6xl">
+                  {fmt(spent)}
+                </p>
+                <div className="mt-3 flex items-center gap-2 text-lg text-muted-foreground sm:text-xl">
+                  <span className="whitespace-nowrap">
+                    {t("de", "of")} <span className="numeric">{fmt(periodTarget)}</span>
                   </span>
-                  <p className="min-w-0 text-xs text-muted-foreground sm:text-sm">
-                    {t("Gasto del periodo", "Period spending")}
+                  <span className="numeric whitespace-nowrap">{currency.toUpperCase() === "USD" ? "US$" : currencySymbol}</span>
+                  {period === "month" && (
+                    <button
+                      type="button"
+                      onClick={() => setPlanOpen(true)}
+                      aria-label={t("Editar el plan", "Edit plan")}
+                      className="text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="relative h-36 w-36 shrink-0 self-center sm:h-44 sm:w-44">
+                <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
+                  <circle cx="60" cy="60" r="52" fill="none" strokeWidth="10" className="stroke-border/30" />
+                  <circle
+                    cx="60"
+                    cy="60"
+                    r="52"
+                    fill="none"
+                    strokeWidth="10"
+                    strokeLinecap="round"
+                    strokeDasharray={2 * Math.PI * 52}
+                    strokeDashoffset={2 * Math.PI * 52 * (1 - Math.min(pct, 100) / 100)}
+                    className={pct > 100 ? "stroke-negative" : "stroke-positive"}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <p
+                    className={cn(
+                      "numeric text-3xl font-bold sm:text-4xl",
+                      pct > 100 ? "text-negative" : "text-positive",
+                    )}
+                  >
+                    {pct.toFixed(0)}%
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+                    {t("del plan", "of plan")}
                   </p>
                 </div>
-                <p className="numeric mt-2 text-3xl font-semibold leading-tight sm:text-4xl">{fmt(spent)}</p>
-                <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">
-                  {t("de", "of")} <span className="numeric">{fmt(periodTarget)}</span>
-                </p>
-                {period === "month" && (
-                  <button
-                    type="button"
-                    onClick={() => setPlanOpen(true)}
-                    className="mt-2 flex items-center gap-1.5 text-xs font-medium text-positive transition-colors hover:text-positive/80 sm:text-sm"
-                  >
-                    <Pencil className="h-3.5 w-3.5 shrink-0" />
-                    {t("Editar el plan", "Edit plan")}
-                  </button>
-                )}
-              </div>
-
-              <div className="mt-3 flex items-center justify-between gap-4 border-t border-border/60 pt-3 sm:mt-0 sm:block sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0 sm:text-center">
-                <p
-                  className={cn(
-                    "numeric text-3xl font-semibold leading-none sm:text-4xl",
-                    pct > 100 ? "text-negative" : "text-positive",
-                  )}
-                >
-                  {pct.toFixed(0)}%
-                </p>
-                <p
-                  className={cn(
-                    "text-sm font-medium",
-                    pct > 100 ? "text-negative" : "text-positive",
-                  )}
-                >
-                  {pct > 100 ? t("Sobre el plan", "Over plan") : t("Vas bien", "On track")}
-                </p>
-              </div>
-
-              <div className="mt-3 flex items-center justify-between gap-4 border-t border-border/60 pt-3 sm:mt-0 sm:block sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0 sm:text-right">
-                <p className="flex items-center gap-1.5 text-xs text-muted-foreground sm:justify-end">
-                  <Gauge className="h-3 w-3 shrink-0 opacity-70" />
-                  {t("Para mantener el plan", "To stay on plan")}
-                </p>
-                <p className="numeric text-lg font-semibold leading-tight sm:text-2xl">
-                  {fmt(perDay)}/{t("día", "day")}
-                </p>
               </div>
             </div>
 
+            <div className="mt-6 grid grid-cols-3 gap-3 border-t border-border/60 pt-5 sm:mt-8 sm:gap-6 sm:pt-6">
+              <div className="min-w-0">
+                <p
+                  className={cn(
+                    "numeric truncate text-xl font-bold sm:text-3xl",
+                    remaining < 0 ? "text-negative" : "text-positive",
+                  )}
+                >
+                  {fmt(Math.abs(remaining))}
+                </p>
+                <p className="mt-1 truncate text-xs text-muted-foreground sm:text-sm">
+                  {remaining < 0 ? t("De más", "Over") : t("Te quedan", "Left")}
+                </p>
+              </div>
+              <div className="min-w-0">
+                <p className="numeric truncate text-xl font-bold text-positive sm:text-3xl">{daysLeft}</p>
+                <p className="mt-1 truncate text-xs text-muted-foreground sm:text-sm">
+                  {t("días quedan", "days left")}
+                </p>
+              </div>
+              <div className="min-w-0">
+                <p className="numeric truncate text-xl font-bold text-positive sm:text-3xl">
+                  {fmt(perDay)}/{t("día", "day")}
+                </p>
+                <p className="mt-1 truncate text-xs text-muted-foreground sm:text-sm">
+                  {t("para el plan", "to stay on plan")}
+                </p>
+              </div>
+            </div>
           </div>
 
 
