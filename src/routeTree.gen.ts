@@ -42,6 +42,7 @@ import { Route as PortafolioRouteImport } from './routes/portafolio'
 import { Route as PreciosRouteImport } from './routes/precios'
 import { Route as PrivacidadRouteImport } from './routes/privacidad'
 import { Route as ReembolsosRouteImport } from './routes/reembolsos'
+import { Route as RegistroGastosRouteImport } from './routes/registro-gastos'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RetiroRouteImport } from './routes/retiro'
 import { Route as SuscripcionRouteImport } from './routes/suscripcion'
@@ -246,6 +247,11 @@ const PrivacidadRoute = PrivacidadRouteImport.update({
 const ReembolsosRoute = ReembolsosRouteImport.update({
   id: '/reembolsos',
   path: '/reembolsos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegistroGastosRoute = RegistroGastosRouteImport.update({
+  id: '/registro-gastos',
+  path: '/registro-gastos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -482,6 +488,7 @@ export interface FileRoutesByFullPath {
   '/precios': typeof PreciosRoute
   '/privacidad': typeof PrivacidadRoute
   '/reembolsos': typeof ReembolsosRoute
+  '/registro-gastos': typeof RegistroGastosRoute
   '/reset-password': typeof ResetPasswordRoute
   '/retiro': typeof RetiroRoute
   '/suscripcion': typeof SuscripcionRoute
@@ -552,6 +559,7 @@ export interface FileRoutesByTo {
   '/precios': typeof PreciosRoute
   '/privacidad': typeof PrivacidadRoute
   '/reembolsos': typeof ReembolsosRoute
+  '/registro-gastos': typeof RegistroGastosRoute
   '/reset-password': typeof ResetPasswordRoute
   '/retiro': typeof RetiroRoute
   '/suscripcion': typeof SuscripcionRoute
@@ -625,6 +633,7 @@ export interface FileRoutesById {
   '/precios': typeof PreciosRoute
   '/privacidad': typeof PrivacidadRoute
   '/reembolsos': typeof ReembolsosRoute
+  '/registro-gastos': typeof RegistroGastosRoute
   '/reset-password': typeof ResetPasswordRoute
   '/retiro': typeof RetiroRoute
   '/suscripcion': typeof SuscripcionRoute
@@ -700,6 +709,7 @@ export interface FileRouteTypes {
     | '/precios'
     | '/privacidad'
     | '/reembolsos'
+    | '/registro-gastos'
     | '/reset-password'
     | '/retiro'
     | '/suscripcion'
@@ -770,6 +780,7 @@ export interface FileRouteTypes {
     | '/precios'
     | '/privacidad'
     | '/reembolsos'
+    | '/registro-gastos'
     | '/reset-password'
     | '/retiro'
     | '/suscripcion'
@@ -842,6 +853,7 @@ export interface FileRouteTypes {
     | '/precios'
     | '/privacidad'
     | '/reembolsos'
+    | '/registro-gastos'
     | '/reset-password'
     | '/retiro'
     | '/suscripcion'
@@ -916,6 +928,7 @@ export interface RootRouteChildren {
   PreciosRoute: typeof PreciosRoute
   PrivacidadRoute: typeof PrivacidadRoute
   ReembolsosRoute: typeof ReembolsosRoute
+  RegistroGastosRoute: typeof RegistroGastosRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   RetiroRoute: typeof RetiroRoute
   SuscripcionRoute: typeof SuscripcionRoute
@@ -1163,6 +1176,13 @@ declare module '@tanstack/react-router' {
       path: '/reembolsos'
       fullPath: '/reembolsos'
       preLoaderRoute: typeof ReembolsosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/registro-gastos': {
+      id: '/registro-gastos'
+      path: '/registro-gastos'
+      fullPath: '/registro-gastos'
+      preLoaderRoute: typeof RegistroGastosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -1551,6 +1571,7 @@ const rootRouteChildren: RootRouteChildren = {
   PreciosRoute: PreciosRoute,
   PrivacidadRoute: PrivacidadRoute,
   ReembolsosRoute: ReembolsosRoute,
+  RegistroGastosRoute: RegistroGastosRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   RetiroRoute: RetiroRoute,
   SuscripcionRoute: SuscripcionRoute,
