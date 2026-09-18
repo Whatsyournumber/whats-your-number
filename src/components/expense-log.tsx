@@ -592,7 +592,7 @@ export function ExpenseLog() {
                     {t("Presupuesto esperado", "Expected budget")}
                   </span>
                 </div>
-                <div className="mt-4 flex flex-col gap-4 sm:flex-row">
+                <div className="mt-4 flex flex-col gap-5 lg:flex-row">
                   <div className="min-w-0 flex-1">
                     {(() => {
                       const W = 560;
@@ -688,24 +688,39 @@ export function ExpenseLog() {
                       );
                     })()}
                   </div>
-                  <div className="flex shrink-0 flex-col justify-center border-t border-border/60 pt-4 sm:w-44 sm:border-l sm:border-t-0 sm:pl-5 sm:pt-0">
-                    <p className="text-xs text-muted-foreground">{t("Proyección de fin de mes", "Month-end projection")}</p>
-                    <p className="numeric mt-1 text-2xl font-semibold sm:text-3xl">{fmt(projection)}</p>
-                    {target > 0 && (
-                      <p className={cn("mt-2 text-sm", projDiff >= 0 ? "text-positive" : "text-negative")}>
-                        {projDiff >= 0
-                          ? t(`${fmt(projDiff)} por debajo de tu presupuesto`, `${fmt(projDiff)} under your budget`)
-                          : t(`${fmt(Math.abs(projDiff))} por encima de tu presupuesto`, `${fmt(Math.abs(projDiff))} over your budget`)}
+                  <div className="flex shrink-0 items-center justify-center gap-5 border-t border-border/60 pt-5 lg:w-56 lg:flex-col lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
+                    <div className="relative h-28 w-28 shrink-0 sm:h-32 sm:w-32">
+                      <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90" role="img">
+                        <circle cx="60" cy="60" r="48" className="stroke-muted" strokeWidth="12" fill="none" />
+                        <circle
+                          cx="60"
+                          cy="60"
+                          r="48"
+                          className={cn(pct > 100 ? "stroke-negative" : "stroke-positive")}
+                          strokeWidth="12"
+                          strokeLinecap="round"
+                          fill="none"
+                          strokeDasharray={2 * Math.PI * 48}
+                          strokeDashoffset={(2 * Math.PI * 48) * (1 - Math.min(1, pct / 100))}
+                        />
+                      </svg>
+                      <div className="absolute inset-0 grid place-items-center text-center">
+                        <div>
+                          <p className={cn("numeric text-2xl font-semibold", pct > 100 && "text-negative")}>{pct.toFixed(0)}%</p>
+                          <p className="text-xs text-muted-foreground">{t("del plan", "of plan")}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="min-w-0 text-left lg:text-center">
+                      <p className={cn("text-base font-semibold", pct > 100 ? "text-negative" : "text-positive")}>
+                        {pct > 100 ? t("Sobre el plan", "Over plan") : t("Vas bien", "On track")}
                       </p>
-                    )}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="mt-4 w-fit border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/10 hover:text-emerald-200"
-                      onClick={() => navigate({ to: "/gastos" })}
-                    >
-                      {t("Ver más", "See more")}
-                    </Button>
+                      <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                        {pct > 100
+                          ? t(`${pct.toFixed(0)}% del objetivo`, `${pct.toFixed(0)}% of target`)
+                          : t(`${Math.max(0, 100 - pct).toFixed(0)}% por debajo del ritmo esperado`, `${Math.max(0, 100 - pct).toFixed(0)}% below the expected pace`)}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
