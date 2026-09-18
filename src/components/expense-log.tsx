@@ -601,7 +601,7 @@ export function ExpenseLog() {
                 <p className="numeric mt-1.5 whitespace-nowrap text-5xl font-bold">{fmt(spent)}</p>
               </div>
 
-              <div className="relative h-40 w-40 shrink-0">
+              <div className="relative ml-auto h-52 w-52 shrink-0">
                 <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                   <circle cx="60" cy="60" r="50" fill="none" strokeWidth="9" className="stroke-border/30" />
                   <circle
@@ -617,27 +617,32 @@ export function ExpenseLog() {
                   />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <p className={cn("numeric text-4xl font-bold leading-none", pct > 100 ? "text-negative" : "text-positive")}>
+                  <p className={cn("numeric text-5xl font-bold leading-none", pct > 100 ? "text-negative" : "text-positive")}>
                     {pct.toFixed(0)}%
                   </p>
-                  <p className="mt-1 text-sm text-muted-foreground">{t("del plan", "of plan")}</p>
+                  <p className="mt-1.5 text-base text-muted-foreground">{t("del plan", "of plan")}</p>
                 </div>
               </div>
 
-              <div className="flex min-w-0 flex-1 items-center gap-3 self-center rounded-xl border border-border bg-muted/20 p-4 text-left">
+              <div
+                className={cn(
+                  "flex w-[340px] flex-none items-center gap-4 self-center rounded-xl border p-5 text-left",
+                  isOnPace ? "border-positive/30 bg-positive/10" : "border-negative/30 bg-negative/10",
+                )}
+              >
                 <span
                   className={cn(
-                    "grid h-9 w-9 shrink-0 place-items-center rounded-lg",
+                    "grid h-11 w-11 shrink-0 place-items-center rounded-lg",
                     isOnPace ? "bg-positive/15 text-positive" : "bg-negative/15 text-negative",
                   )}
                 >
-                  {isOnPace ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
+                  {isOnPace ? <ArrowUp className="h-5 w-5" /> : <ArrowDown className="h-5 w-5" />}
                 </span>
                 <div className="min-w-0">
-                  <p className={cn("text-sm font-semibold", isOnPace ? "text-positive" : "text-negative")}>
+                  <p className={cn("text-base font-semibold", isOnPace ? "text-positive" : "text-negative")}>
                     {isOnPace ? t("Vas bien", "On track") : t("Vas por encima", "Above pace")}
                   </p>
-                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                     {isOnPace
                       ? t(
                           `Estás ${Math.round(paceDifference)}% por debajo del ritmo esperado`,
