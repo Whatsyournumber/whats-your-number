@@ -658,7 +658,7 @@ export function ExpenseLog() {
             </div>
 
             <div className="mt-4 hidden gap-8 sm:mt-5 md:grid md:grid-cols-2 lg:hidden">
-              <div className="flex min-w-0 flex-col gap-5">
+              <div className="grid min-w-0 grid-rows-[auto_1fr] justify-items-center gap-5 text-center">
                 <div className="min-w-0">
                   <p className="text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
                   <div className="mt-2 inline-flex min-w-0 items-baseline gap-1 rounded-xl border border-border bg-muted/20 px-3 py-1.5 transition-colors focus-within:border-positive/60">
@@ -673,7 +673,7 @@ export function ExpenseLog() {
                     />
                   </div>
                 </div>
-                <div className="relative h-28 w-28 shrink-0 self-start sm:h-32 sm:w-32 lg:h-36 lg:w-36">
+                <div className="relative h-32 w-32 shrink-0 self-center">
                   <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                     <circle cx="60" cy="60" r="50" fill="none" strokeWidth="9" className="stroke-border/30" />
                     <circle
@@ -697,12 +697,12 @@ export function ExpenseLog() {
                 </div>
               </div>
 
-              <div className="flex min-w-0 flex-col gap-5 md:border-l md:border-border/60 md:pl-8">
+              <div className="grid min-w-0 grid-rows-[auto_1fr] justify-items-center gap-5 text-center md:border-l md:border-border/60 md:pl-8">
                 <div className="min-w-0">
                   <p className="text-sm text-muted-foreground">{t("Gasto del período", "Period spending")}</p>
-                  <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold sm:text-4xl lg:text-5xl">{fmt(spent)}</p>
+                  <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold sm:text-4xl">{fmt(spent)}</p>
                 </div>
-                <div className="flex min-w-0 items-center gap-3 rounded-xl border border-border bg-muted/20 p-3 text-left sm:p-4">
+                <div className="flex w-full min-w-0 items-center gap-3 self-center rounded-xl border border-border bg-muted/20 p-3 text-left sm:p-4">
                   <span
                     className={cn(
                       "grid h-9 w-9 shrink-0 place-items-center rounded-lg",
