@@ -18,6 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { initGeoCurrency } from "@/lib/geo";
+import { ensureLiveRates } from "@/lib/fx";
 import { AppSidebar } from "@/components/app-sidebar";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { AskAiSearch } from "@/components/ask-ai-search";
@@ -165,6 +166,8 @@ function RootComponent() {
   // Detección de moneda por IP (Europa → EUR, resto → USD), una sola vez.
   useEffect(() => {
     void initGeoCurrency();
+    // Tasas de mercado del día: se cargan una vez para toda la app.
+    void ensureLiveRates();
   }, []);
 
   return (
