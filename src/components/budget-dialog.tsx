@@ -67,6 +67,30 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
   const setAmount = (id: string, amount: number) =>
     setDraft((d) => d.map((l) => (l.id === id ? { ...l, amount } : l)));
 
+  const setTotal = (nextTotal: number) => {
+    const safeTotal = Math.max(0, Math.round(nextTotal));
+    setDraft((current) => {
+      if (!current.length) return current;
+      const currentTotal = current.reduce(
+        (sum, line) => sum + (Number.isFinite(line.amount) ? line.amount : 0),
+        0,
+      );
+      if (currentTotal <= 0) {
+        return current.map((line, index) => ({ ...line, amount: index === 0 ? safeTotal : 0 }));
+      }
+
+      let assigned = 0;
+      return current.map((line, index) => {
+        const amount =
+          index === current.length - 1
+            ? Math.max(0, safeTotal - assigned)
+            : Math.round((Math.max(0, line.amount) / currentTotal) * safeTotal);
+        assigned += amount;
+        return { ...line, amount };
+      });
+    });
+  };
+
   const removeLine = (id: string) => setDraft((d) => d.filter((l) => l.id !== id));
 
   const isCustom = (id: string) => id.startsWith("custom:");
@@ -130,18 +154,12 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[88vh] max-w-2xl overflow-y-auto pt-0">
-        {/* Cabecera con el mismo lenguaje visual que las tarjetas del Dashboard: etiqueta + cifra grande. */}
+        {/* Cabecera compacta; el total editable vive junto a la acción de guardado. */}
         <DialogHeader className="sticky top-0 z-10 -mx-6 space-y-1.5 bg-background/95 px-6 pb-4 pt-6 text-left backdrop-blur-sm">
           <DialogTitle className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
 
             {t("Tu plan de gasto mensual", "Your monthly spending plan")}
           </DialogTitle>
-          <p className="numeric text-3xl font-semibold leading-none tracking-tight">
-            {fmt(total)}
-            <span className="ml-1.5 text-xs font-normal tracking-normal text-muted-foreground">
-              {t("/mes", "/mo")}
-            </span>
-          </p>
           <DialogDescription className="text-xs leading-4 text-muted-foreground">
             <span className="sm:hidden">
               {t("Cuánto quieres gastar en cada categoría", "What you want to spend per category")}
@@ -317,7 +335,26 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
           </Button>
         )}
 
-        <div className="flex items-center justify-end border-t border-border/60 pt-3">
+        <div className="sticky bottom-0 -mx-6 mt-2 border-t border-border/60 bg-background/95 px-6 pb-6 pt-4 backdrop-blur-sm">
+          <div className="mb-4 flex items-end justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                {t("Gastos totales aprox", "Approximate total expenses")}
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">{t("Objetivo mensual", "Monthly target")}</p>
+            </div>
+            <div className="flex shrink-0 items-baseline gap-2">
+              <NumberInput
+                value={total}
+                onChange={setTotal}
+                format
+                aria-label={t("Editar gastos totales", "Edit total expenses")}
+                className="numeric h-auto w-36 border-0 bg-transparent p-0 text-right text-3xl font-semibold shadow-none focus-visible:ring-0 sm:w-44 sm:text-4xl"
+              />
+              <span className="text-sm text-muted-foreground">{t("/mes", "/mo")}</span>
+              <Pencil className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+            </div>
+          </div>
           <Button
             type="button"
             className="w-full sm:w-auto"
