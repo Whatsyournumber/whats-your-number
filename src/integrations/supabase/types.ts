@@ -1397,6 +1397,27 @@ export type Database = {
         }
         Relationships: []
       }
+      spend_plans: {
+        Row: {
+          lines: Json
+          target: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          lines?: Json
+          target?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          lines?: Json
+          target?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       statements: {
         Row: {
           created_at: string
