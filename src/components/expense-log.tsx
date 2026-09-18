@@ -579,7 +579,7 @@ export function ExpenseLog() {
 
 
           {rows.length > 0 && (
-            <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+            <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
               <div className="flex items-center justify-between gap-2">
                 <h3 className="text-base font-semibold">{t("Gastos por categoría", "Spending by category")}</h3>
                 <button
@@ -596,27 +596,29 @@ export function ExpenseLog() {
                   <li key={r.id} className="flex items-center gap-3">
                     <span
                       className={cn(
-                        "grid h-10 w-10 shrink-0 place-items-center rounded-full text-base",
+                        "grid h-9 w-9 shrink-0 place-items-center rounded-full text-base sm:h-10 sm:w-10",
                         r.actual > r.planned ? "bg-negative/20" : "bg-positive/15",
                       )}
                     >
                       {r.emoji}
                     </span>
-                    <div className="min-w-0 w-32 shrink-0 sm:w-44">
-                      <p className="truncate text-sm leading-5">{r.name}</p>
-                      <p className="numeric text-[0.6875rem] leading-4 text-muted-foreground">
-                        {fmt(r.actual)} / {fmt(r.planned)}
-                      </p>
-                    </div>
-                    <div className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-muted">
-                      <div
-                        className={cn("h-full rounded-full", r.actual > r.planned ? "bg-negative" : "bg-positive")}
-                        style={{ width: `${Math.min(100, r.pct)}%` }}
-                      />
+                    <div className="min-w-0 flex-1 lg:flex lg:items-center lg:gap-3">
+                      <div className="min-w-0 lg:w-44 lg:shrink-0">
+                        <p className="truncate text-sm leading-5">{r.name}</p>
+                        <p className="numeric text-[0.6875rem] leading-4 text-muted-foreground">
+                          {fmt(r.actual)} / {fmt(r.planned)}
+                        </p>
+                      </div>
+                      <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted lg:mt-0 lg:min-w-0 lg:flex-1">
+                        <div
+                          className={cn("h-full rounded-full", r.actual > r.planned ? "bg-negative" : "bg-positive")}
+                          style={{ width: `${Math.min(100, r.pct)}%` }}
+                        />
+                      </div>
                     </div>
                     <span
                       className={cn(
-                        "numeric w-12 shrink-0 text-right text-sm",
+                        "numeric w-11 shrink-0 text-right text-sm sm:w-12",
                         r.actual > r.planned ? "text-negative" : "text-foreground",
                       )}
                     >
@@ -626,6 +628,7 @@ export function ExpenseLog() {
                 ))}
               </ul>
             </div>
+
           )}
 
 
