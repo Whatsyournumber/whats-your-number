@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { Camera, ChevronRight, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, Wallet } from "lucide-react";
+import { Camera, ChevronRight, Gauge, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, Wallet } from "lucide-react";
 import { toast } from "sonner";
 
 import { BudgetDialog } from "@/components/budget-dialog";
