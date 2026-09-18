@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, Banknote, CalendarIcon, ChevronLeft, ChevronRight, Home, Pencil, PiggyBank, TrendingUp, Wallet } from "lucide-react";
 import { toast } from "sonner";
@@ -29,11 +29,13 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/use-auth";
+import { useCategories } from "@/hooks/use-categories";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useTransactions } from "@/hooks/use-transactions";
+import { sameMerchant, useTransactions, type Tx } from "@/hooks/use-transactions";
 import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
+import { useSpendBudgets } from "@/hooks/use-spend-budgets";
 import { useIndexReturns } from "@/hooks/use-index-returns";
 import { holdingValue, useHoldings, wealthTotals } from "@/hooks/use-holdings";
 import { useQuotes } from "@/hooks/use-market";
@@ -44,6 +46,7 @@ import { buildDataset } from "@/lib/profile-data";
 import { buildRealMonths } from "@/lib/real-months";
 import { readDemoSnapshot, type DemoSnapshot } from "@/lib/demo-snapshot";
 import { translateGoalName, translateGoalNote } from "@/lib/i18n-data";
+import { buildTravelDays, categorizeTxWithTravel } from "@/lib/categorize";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -130,6 +133,8 @@ function Dashboard() {
     (profile.marital_status === "Casado" || profile.marital_status === "En pareja") &&
     profile.analysis_scope === "pareja";
   const fixed = useFixedExpenses();
+  const { rules } = useCategories();
+  const { lines: budgetLines } = useSpendBudgets();
   const { target: spendTarget, hasTarget: hasSpendTarget } = useSpendTarget();
   const { live: indexLive } = useIndexReturns();
   const { holdings } = useHoldings();
@@ -224,6 +229,61 @@ function Dashboard() {
   const current = months[activeIndex] ?? months[months.length - 1] ?? d.current;
   const previous = months[activeIndex - 1] ?? current;
   const { fmt, fmtCompact, plan } = d;
+
+  // Mismo cálculo de “Ahorro / inversiones” que Distribución del dinero.
+  // Respeta las categorías editadas por la persona y separa la meta de retiro.
+  const [moneyBuckets, setMoneyBuckets] = useState<Record<string, "needs" | "savings" | "wants" | "excluded">>({});
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(`whatsyournumber:money-rule-categories:${profileUserId}`);
+      setMoneyBuckets(raw ? JSON.parse(raw) : {});
+    } catch {
+      setMoneyBuckets({});
+    }
+  }, [profileUserId]);
+  const monthlySavings = useMemo(() => {
+    const clean = (name: string) => name.replace(/^\p{Extended_Pictographic}\s*/u, "").trim();
+    const isWant = (name: string) =>
+      /viaje|restaur|delivery|ocio|salida|night|deporte|gym|gimnasio|compra|ropa|tecnolog|app|suscrip|hobb|lifestyle|belleza|regalo|mascota|entreten|pet|stay|whatsyournumber|marketing/i.test(name);
+    const isSaving = (name: string) => /ahorro|inver|saving|invest|broker|etf|fondo|bolsa|crypto|cripto/i.test(name);
+    const bucketFor = (name: string) => moneyBuckets[clean(name)] ?? (isSaving(name) ? "savings" : isWant(name) ? "wants" : "needs");
+    const monthTransactions = transactions.filter((tx) => tx.tx_date?.slice(0, 7) === activeKey);
+    if (!monthTransactions.length) {
+      const fallbackInvest = d.cashFlow.buckets[2]?.amount ?? 0;
+      const fallbackFree = Math.max(0, d.income - d.cashFlow.buckets.reduce((sum, bucket) => sum + bucket.amount, 0));
+      return fallbackInvest + fallbackFree;
+    }
+    const statementIncome = monthTransactions.filter((tx) => tx.amount > 0).reduce((sum, tx) => sum + tx.amount, 0);
+    const totalIncome = statementIncome > 0 ? statementIncome : d.income;
+    const customCategories = budgetLines
+      .filter((line) => line.id.startsWith("custom:"))
+      .map((line) => {
+        const label = (line.label ?? line.id.slice(7)).trim();
+        return { label, aliases: [label, ...(line.keywords ?? [])].map((word) => word.trim().toLowerCase()).filter((word) => word.length > 2) };
+      });
+    const fixedRows = fixed.items
+      .filter((item) => Number(item.amount) > 0)
+      .map((item) => ({ amount: Math.abs(Number(item.amount)).toFixed(2), name: item.name }));
+    const isFixedTransaction = (tx: Tx) => fixedRows.some(
+      (row) => row.amount === Math.abs(Number(tx.amount)).toFixed(2) && (sameMerchant(row.name, tx.merchant) || sameMerchant(row.name, tx.description)),
+    );
+    const travelDays = buildTravelDays(monthTransactions as Tx[], rules);
+    let needs = fixed.items.filter((item) => bucketFor(item.name) === "needs").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
+    let wants = fixed.items.filter((item) => bucketFor(item.name) === "wants").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
+    let savings = fixed.items.filter((item) => bucketFor(item.name) === "savings").reduce((sum, item) => sum + Math.max(0, Number(item.amount) || 0), 0);
+    for (const tx of monthTransactions) {
+      if (tx.amount >= 0 || isFixedTransaction(tx as Tx)) continue;
+      const merchant = (tx.merchant ?? "").trim().toLowerCase();
+      const custom = customCategories.find((item) => item.aliases.some((alias) => merchant === alias || merchant.includes(alias) || alias.includes(merchant)))?.label;
+      const category = custom ?? categorizeTxWithTravel(tx as Tx, rules, travelDays);
+      const bucket = bucketFor(category);
+      const amount = Math.abs(tx.amount);
+      if (bucket === "needs") needs += amount;
+      else if (bucket === "wants") wants += amount;
+      else if (bucket === "savings" || (moneyBuckets[clean(category)] === undefined && isSaving(`${category} ${tx.merchant ?? ""}`))) savings += amount;
+    }
+    return savings + Math.max(0, totalIncome - needs - wants - savings);
+  }, [activeKey, budgetLines, d.cashFlow.buckets, d.income, fixed.items, moneyBuckets, rules, transactions]);
   const spendPlanUsed = hasSpendTarget && spendTarget > 0
     ? Math.round((current.expenses / spendTarget) * 100)
     : 0;
@@ -288,19 +348,22 @@ function Dashboard() {
     invested: investableAssets,
     years: retireYearsLeft,
   });
+  const retirementMonthlyGoal = profile.retirement_monthly_contribution > 0
+    ? Math.round(profile.retirement_monthly_contribution)
+    : minRetirementMonthly;
   const retirementHint = (() => {
     if (retireYearsLeft <= 0 || baseTargetNumber <= 0) return undefined;
     const pill = (n: number | string, tone: string) => (
       <span className={cn("rounded-full px-1.5 py-0.5 font-semibold", tone)}>{n}</span>
     );
-    if (minRetirementMonthly > 0) {
-      const tone = current.savings >= minRetirementMonthly ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative";
+    if (retirementMonthlyGoal > 0) {
+      const tone = monthlySavings >= retirementMonthlyGoal ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative";
       const line = (cls: string, pre: [string, string], mid: [string, string]) => (
         <span className={cn("inline-flex items-center gap-1", cls)}>
           {t(pre[0], pre[1])}
           {pill(retireAgeChosen, tone)}
           {t(mid[0], mid[1])}
-          {pill(fmt(minRetirementMonthly), tone)}
+          {pill(fmt(retirementMonthlyGoal), tone)}
           {t("/mes", "/mo")}
         </span>
       );
@@ -642,7 +705,7 @@ function Dashboard() {
         <Link to="/retiro" className="block transition-transform hover:-translate-y-0.5">
           <KpiCard
             label={t("Ahorro", "Savings")}
-            value={fmt(profile.retirement_monthly_contribution > 0 ? profile.retirement_monthly_contribution : current.savings)}
+            value={fmt(monthlySavings)}
             {...(retirementHint ? { hint: retirementHint } : {})}
             icon={PiggyBank}
             index={3}
