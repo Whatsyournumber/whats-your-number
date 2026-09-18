@@ -642,7 +642,7 @@ function Dashboard() {
         <Link to="/retiro" className="block transition-transform hover:-translate-y-0.5">
           <KpiCard
             label={t("Ahorro", "Savings")}
-            value={fmt(current.savings)}
+            value={fmt(profile.retirement_monthly_contribution > 0 ? profile.retirement_monthly_contribution : current.savings)}
             {...(retirementHint ? { hint: retirementHint } : {})}
             icon={PiggyBank}
             index={3}
