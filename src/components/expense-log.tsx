@@ -343,6 +343,29 @@ export function ExpenseLog() {
           {format(now, "LLLL yyyy", { locale })}
         </span>
       </div>
+
+      <div className="inline-flex rounded-full border border-border bg-card p-1">
+        {(
+          [
+            { id: "day", es: "Hoy", en: "Today" },
+            { id: "week", es: "Semana", en: "Week" },
+            { id: "month", es: "Mes", en: "Month" },
+          ] as const
+        ).map((p) => (
+          <button
+            key={p.id}
+            type="button"
+            onClick={() => setPeriod(p.id)}
+            className={cn(
+              "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
+              period === p.id ? "bg-positive text-background" : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            {t(p.es, p.en)}
+          </button>
+        ))}
+      </div>
+
       <div className="space-y-3">
           <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
             <div className="flex items-center gap-2.5">
@@ -373,15 +396,21 @@ export function ExpenseLog() {
                     <p className="numeric text-4xl font-semibold leading-none sm:text-5xl">{fmt(spent)}</p>
                     <div className="mt-3 flex items-center gap-1.5 text-muted-foreground">
                       <span className="text-xl sm:text-2xl">{t("de", "of")}</span>
-                      <NumberInput
-                        value={target}
-                        onChange={(v) => setTarget(Math.max(0, Math.round(v)))}
-                        format
-                        aria-label={t("Objetivo mensual", "Monthly goal")}
-                        className="h-auto w-28 border-none bg-transparent p-0 text-xl shadow-none focus-visible:ring-0 sm:w-32 sm:text-2xl"
-                      />
-                      <span className="numeric text-xl sm:text-2xl">{currencySymbol}</span>
-                      <Pencil className="h-3.5 w-3.5 opacity-50" />
+                      {period === "month" ? (
+                        <>
+                          <NumberInput
+                            value={target}
+                            onChange={(v) => setTarget(Math.max(0, Math.round(v)))}
+                            format
+                            aria-label={t("Objetivo mensual", "Monthly goal")}
+                            className="h-auto w-28 border-none bg-transparent p-0 text-xl shadow-none focus-visible:ring-0 sm:w-32 sm:text-2xl"
+                          />
+                          <span className="numeric text-xl sm:text-2xl">{currencySymbol}</span>
+                          <Pencil className="h-3.5 w-3.5 opacity-50" />
+                        </>
+                      ) : (
+                        <span className="numeric text-xl sm:text-2xl">{fmt(periodTarget)}</span>
+                      )}
                     </div>
                   </div>
 
