@@ -64,6 +64,8 @@ export function ExpenseLog() {
   const categories = useCategories();
 
   const [planOpen, setPlanOpen] = useState(false);
+  const [rowsOpen, setRowsOpen] = useState(true);
+  const { target: savedTarget, setTarget, hasTarget } = useSpendTarget();
 
   const currency = profile.currency || "EUR";
   const fmt = (n: number) => money(Math.round(n), currency);
@@ -71,6 +73,7 @@ export function ExpenseLog() {
   const now = new Date();
   const monthStart = startOfMonth(now);
   const monthEnd = endOfMonth(now);
+  const monthLabel = format(now, "LLLL", { locale });
   const daysLeft = Math.max(1, monthEnd.getDate() - now.getDate() + 1);
 
   const categoryNames = useMemo(
