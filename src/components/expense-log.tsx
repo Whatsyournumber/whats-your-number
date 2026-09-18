@@ -963,7 +963,7 @@ export function ExpenseLog() {
                   </span>
                   <span className="flex items-center gap-1.5">
                     <span className="w-4 border-t-2 border-dotted border-muted-foreground" />
-                    {t("Presupuesto esperado", "Expected budget")}
+                    {t("Ritmo del plan", "Plan pace")}
                   </span>
                   <span className="ml-auto hidden text-[11px] text-muted-foreground/70 sm:block">
                     {t("Pasa el cursor", "Hover a day")}
@@ -974,28 +974,34 @@ export function ExpenseLog() {
                 <div className="relative mt-4 min-w-0">
                     {(() => {
                       const W = 560;
-                      const H = 232;
+                      const H = 272;
                       const left = 64;
-                      const top = 20;
+                      const top = 22;
                       const plotW = W - left - 8;
-                      const plotH = H - top - 28;
+                      const plotH = H - top - 30;
                       const maxDaily = Math.max(...daily, 0);
-                      const todayIdx = Math.min(todayDay, daysInMonth);
-                      const expectedSoFar = target * (todayIdx / daysInMonth);
-                      // Escala acorde a los gastos reales: cubre el mayor gasto diario y el ritmo esperado hasta hoy.
-                      const yMax = Math.max(maxDaily, expectedSoFar, 1) * 1.12;
-                      const step = plotW / daysInMonth;
-                      const barW = step * 0.62;
-                      const yOf = (v: number) => top + plotH - (v / yMax) * plotH;
-                      const yTicks = [0, 0.5, 1].map((f) => yMax * f);
-                      const xTicks = [...new Set([1, 5, 10, 15, 20, 25, daysInMonth])].filter((d) => d <= daysInMonth);
-                      const expectedPts = Array.from({ length: daysInMonth }, (_, i) => {
-                        const x = left + (i + 0.5) * step;
-                        const y = yOf((target * (i + 1)) / daysInMonth);
-                        return { x, y };
-                      });
                       // Ritmo lineal: el plan del mes repartido igual entre todos los días.
                       const linearDay = daysInMonth > 0 ? target / daysInMonth : 0;
+                      // Techo "bonito" justo por encima del mayor gasto diario: las barras llenan el gráfico.
+                      const niceMax = (v: number) => {
+                        const mag = 10 ** Math.floor(Math.log10(Math.max(v, 1)));
+                        const n = v / mag;
+                        const nice =
+                          [1, 1.2, 1.4, 1.6, 1.8, 2, 2.5, 3, 3.5, 4, 5, 6, 8, 10].find((c) => n <= c) ?? 10;
+                        return nice * mag;
+                      };
+                      const yMax = niceMax(Math.max(maxDaily, linearDay, 1) * 1.02);
+                      const step = plotW / daysInMonth;
+                      const barW = step * 0.66;
+                      const yOf = (v: number) => top + plotH - (v / yMax) * plotH;
+                      const yTicks = [0, 0.5, 1].map((f) => yMax * f);
+                      const axis = (v: number) =>
+                        v === 0
+                          ? `${currencySymbol}0`
+                          : v >= 1000
+                            ? `${currencySymbol}${(v / 1000).toFixed(v % 1000 === 0 ? 0 : 1)}K`
+                            : `${currencySymbol}${Math.round(v)}`;
+                      const xTicks = [...new Set([1, 5, 10, 15, 20, 25, daysInMonth])].filter((d) => d <= daysInMonth);
                       const active = hoverDay !== null && hoverDay >= 0 && hoverDay < daysInMonth ? hoverDay : null;
                       const activeReal = active === null ? 0 : daily[active] ?? 0;
                       const activeDiff = activeReal - linearDay;
@@ -1015,30 +1021,31 @@ export function ExpenseLog() {
                           {yTicks.map((v) => (
                             <g key={v}>
                               <line x1={left} x2={W - 8} y1={yOf(v)} y2={yOf(v)} className="stroke-border" strokeWidth="1" />
-                              <text x={left - 7} y={yOf(v) + 4} textAnchor="end" className="fill-muted-foreground text-[11px]">
-                                {v === 0
-                                  ? `${currencySymbol}0`
-                                  : v >= 1000
-                                    ? `${currencySymbol}${(v / 1000).toFixed(v % 1000 === 0 ? 0 : 1)}K`
-                                    : `${currencySymbol}${Math.round(v)}`}
+                              <text x={left - 7} y={yOf(v) + 4} textAnchor="end" className="fill-muted-foreground text-[15px] sm:text-[11px]">
+                                {axis(v)}
                               </text>
                             </g>
                           ))}
-                          {target > 0 && (
+                          {linearDay > 0 && (
                             <>
-                              <polyline
-                                points={expectedPts.map((p) => `${p.x},${p.y}`).join(" ")}
-                                fill="none"
+                              <line
+                                x1={left}
+                                x2={W - 8}
+                                y1={yOf(Math.min(linearDay, yMax))}
+                                y2={yOf(Math.min(linearDay, yMax))}
                                 className="stroke-muted-foreground"
                                 strokeWidth="1.5"
                                 strokeDasharray="1 5"
                                 strokeLinecap="round"
                               />
-                              {expectedPts.map((p, i) =>
-                                (i + 1) % 5 === 0 || i === daysInMonth - 1 ? (
-                                  <circle key={i} cx={p.x} cy={p.y} r="2" className="fill-muted-foreground" />
-                                ) : null,
-                              )}
+                              <text
+                                x={W - 10}
+                                y={yOf(Math.min(linearDay, yMax)) - 7}
+                                textAnchor="end"
+                                className="fill-muted-foreground text-[13px] sm:text-[10px]"
+                              >
+                                {axis(linearDay)}
+                              </text>
                             </>
                           )}
                           {active !== null && (
@@ -1052,9 +1059,9 @@ export function ExpenseLog() {
                           )}
                           {daily.map((v, i) => {
                             if (v <= 0) return null;
-                            const x = left + (i + 0.19) * step;
+                            const x = left + (i + 0.17) * step;
                             // Altura mínima para que gastos pequeños también se vean.
-                            const y = Math.min(yOf(v), top + plotH - 4);
+                            const y = Math.min(yOf(v), top + plotH - 7);
                             const isToday = i + 1 === todayDay;
                             const isActive = i === active;
                             return (
@@ -1089,7 +1096,7 @@ export function ExpenseLog() {
                             x={left + (todayDay - 0.5) * step}
                             y={top - 6}
                             textAnchor="middle"
-                            className="fill-foreground text-[11px] font-medium"
+                            className="fill-foreground text-[14px] sm:text-[11px] font-medium"
                           >
                             {t("Hoy", "Today")}
                           </text>
@@ -1099,7 +1106,7 @@ export function ExpenseLog() {
                               x={left + (d - 0.5) * step}
                               y={H - 8}
                               textAnchor="middle"
-                              className="fill-muted-foreground text-[11px]"
+                              className="fill-foreground/70 text-[15px] sm:text-[11px]"
                             >
                               {d}
                             </text>

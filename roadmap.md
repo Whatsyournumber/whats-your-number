@@ -14,5 +14,6 @@
 - [x] Registro de gastos: tooltip del gráfico diario más simple (una sola línea)
 
 - [x] Registro de gastos: gráfica diaria más alta y números de eje legibles y acordes a los gastos reales
+- [x] Registro de gastos: barras que llenan el gráfico y números de eje acordes al gasto real diario
 - [x] Popup del plan: quitar la fila de palabras clave (chips, input y botón +)
 
