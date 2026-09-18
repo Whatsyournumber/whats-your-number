@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
+import { Check, Pencil, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useLanguage, useT } from "@/hooks/use-language";
 import type { BudgetLine } from "@/hooks/use-spend-budgets";
 import { BUDGET_CATEGORIES, DEFAULT_BUDGET_IDS, GROUP_LABELS, findBudgetCategory, type BudgetGroup } from "@/lib/budget-categories";
@@ -118,25 +117,6 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
     setEditingName("");
   };
 
-  const [keywordDraft, setKeywordDraft] = useState<Record<string, string>>({});
-
-  const addKeyword = (id: string) => {
-    const kw = (keywordDraft[id] ?? "").trim().toLowerCase();
-    if (!kw) return;
-    setDraft((d) =>
-      d.map((l) =>
-        l.id === id && !(l.keywords ?? []).includes(kw)
-          ? { ...l, keywords: [...(l.keywords ?? []), kw] }
-          : l,
-      ),
-    );
-    setKeywordDraft((k) => ({ ...k, [id]: "" }));
-  };
-
-  const removeKeyword = (id: string, kw: string) =>
-    setDraft((d) =>
-      d.map((l) => (l.id === id ? { ...l, keywords: (l.keywords ?? []).filter((k) => k !== kw) } : l)),
-    );
 
   const addCategory = (id: string) => {
     setDraft((d) => [...d, { id, amount: 0 }]);
@@ -228,70 +208,6 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
-                    {isCustom(l.id) ? (
-                      <TooltipProvider delayDuration={200}>
-                        <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                          {(l.keywords ?? []).map((kw) => (
-                            <span
-                              key={kw}
-                              className="flex items-center gap-1 rounded-full bg-muted/60 px-2 py-0.5 text-[11px] text-muted-foreground ring-1 ring-border/50"
-                            >
-                              {kw}
-                              <button
-                                type="button"
-                                onClick={() => removeKeyword(l.id, kw)}
-                                className="transition hover:text-negative"
-                                aria-label={t("Quitar palabra clave", "Remove keyword")}
-                                title={t("Quitar palabra clave", "Remove keyword")}
-                              >
-                                <X className="h-3 w-3" />
-                              </button>
-                            </span>
-                          ))}
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Input
-                                value={keywordDraft[l.id] ?? ""}
-                                onChange={(e) => setKeywordDraft((k) => ({ ...k, [l.id]: e.target.value }))}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter" || e.key === "," || e.key === "+") {
-                                    e.preventDefault();
-                                    addKeyword(l.id);
-                                  }
-                                }}
-                                placeholder={t("Palabra clave (ej: uber)", "Keyword (e.g. uber)")}
-                                className="h-7 w-36 rounded-full px-2.5 text-[11px]"
-                              />
-                            </TooltipTrigger>
-                            <TooltipContent side="top">
-                              {t(
-                                "Agrega palabra clave separada por coma o +",
-                                "Add a keyword separated by comma or +",
-                              )}
-                            </TooltipContent>
-                          </Tooltip>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <button
-                                type="button"
-                                onClick={() => addKeyword(l.id)}
-                                disabled={!(keywordDraft[l.id] ?? "").trim()}
-                                className="flex h-7 w-7 items-center justify-center rounded-full border border-border/60 text-muted-foreground transition hover:border-primary/50 hover:text-primary disabled:opacity-40"
-                                aria-label={t("Añadir palabra clave", "Add keyword")}
-                              >
-                                <Plus className="h-3.5 w-3.5" />
-                              </button>
-                            </TooltipTrigger>
-                            <TooltipContent side="top">
-                              {t(
-                                "Agrega palabra clave separada por coma o +",
-                                "Add a keyword separated by comma or +",
-                              )}
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                      </TooltipProvider>
-                    ) : null}
                   </div>
                 ))}
               </div>
@@ -326,7 +242,7 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
               <Input
                 value={customName}
                 onChange={(e) => setCustomName(e.target.value)}
-                placeholder={t("Otra categoría...", "Another category...")}
+                placeholder={t("Otra categoría", "Another category")}
                 className="h-9 text-sm"
               />
               <Button type="button" size="sm" variant="secondary" onClick={addCustom} disabled={!customName.trim()}>
