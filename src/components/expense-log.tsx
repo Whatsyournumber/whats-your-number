@@ -1016,7 +1016,11 @@ export function ExpenseLog() {
                             <g key={v}>
                               <line x1={left} x2={W - 8} y1={yOf(v)} y2={yOf(v)} className="stroke-border" strokeWidth="1" />
                               <text x={left - 7} y={yOf(v) + 4} textAnchor="end" className="fill-muted-foreground text-[11px]">
-                                {v === 0 ? `${currencySymbol}0` : `${currencySymbol}${Math.round(v)}`}
+                                {v === 0
+                                  ? `${currencySymbol}0`
+                                  : v >= 1000
+                                    ? `${currencySymbol}${(v / 1000).toFixed(v % 1000 === 0 ? 0 : 1)}K`
+                                    : `${currencySymbol}${Math.round(v)}`}
                               </text>
                             </g>
                           ))}
