@@ -96,10 +96,9 @@ export function ExpenseLog() {
 
   const variableSpend = monthTx.reduce((s, x) => s + Math.abs(x.amount), 0);
   const spent = variableSpend + fixed.total;
-  const plan = budgets.hasBudget
-    ? budgets.total
-    : SPEND_PLAN_FIELDS.reduce((s, f) => s + (Number(profile[f.key]) || 0), 0);
-  const target = hasTarget && savedTarget > 0 ? savedTarget : plan;
+  const onboardingTotal = SPEND_PLAN_FIELDS.reduce((s, f) => s + (Number(profile[f.key]) || 0), 0);
+  const plan = budgets.hasBudget ? budgets.total : onboardingTotal;
+  const target = hasTarget && savedTarget > 0 ? savedTarget : plan > 0 ? plan : onboardingTotal;
   const pct = target > 0 ? (spent / target) * 100 : 0;
   const boundaryPct = spent > 0 ? Math.min(100, (target / spent) * 100) : 0;
   const remaining = target - spent;
@@ -132,7 +131,15 @@ export function ExpenseLog() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [budgets.loaded, budgets.hasBudget, onboardingLines]);
 
-  const planLines: BudgetLine[] = budgets.hasBudget ? budgets.lines : onboardingLines;
+  // Se muestran siempre las categorías del onboarding; el plan guardado tiene prioridad en el importe.
+  const planLines: BudgetLine[] = useMemo(() => {
+    const merged = new Map<string, BudgetLine>();
+    for (const l of onboardingLines) merged.set(l.id, l);
+    for (const l of budgets.lines) {
+      if (l.amount > 0) merged.set(l.id, l);
+    }
+    return [...merged.values()].filter((l) => l.amount > 0);
+  }, [onboardingLines, budgets.lines]);
 
   const customLines = useMemo(
     () =>
