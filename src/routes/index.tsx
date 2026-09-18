@@ -434,58 +434,12 @@ export function Landing() {
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="relative left-1/2 w-screen -translate-x-1/2"
         >
-          {/* Full-bleed editorial photo, fused with the background */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.9, delay: 0.1, ease: "easeOut" }}
-            className="pointer-events-none absolute inset-y-0 right-0 hidden w-[48%] md:block lg:w-[54%]"
-            style={{
-              WebkitMaskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.08) 12%, rgba(0,0,0,0.35) 32%, rgba(0,0,0,0.75) 52%, #000 90%)",
-              maskImage:
-                "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.08) 12%, rgba(0,0,0,0.35) 32%, rgba(0,0,0,0.75) 52%, #000 90%)",
-            }}
-
-          >
-            <img
-              src={heroManLaptopAsset.url}
-              alt={t("cuál es tu número para retiro", "what is your number for retirement")}
-              width={1536}
-              height={1024}
-              className="h-full w-full object-cover object-[18%_78%] md:object-[20%_82%] lg:object-[22%_86%]"
-              loading="eager"
-              fetchPriority="high"
-            />
-            {/* Soft edge blur for premium fusion */}
-            <div
-              className="pointer-events-none absolute inset-y-0 left-0 w-[22%]"
-              style={{
-                background:
-                  "linear-gradient(to right, var(--background) 0%, transparent 100%)",
-                filter: "blur(28px)",
-                WebkitFilter: "blur(28px)",
-              }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-background/30" />
-          </motion.div>
-
-          {/* Mobile: the photo is the top of the background itself */}
-          <div
-            className="pointer-events-none absolute inset-x-0 top-0 h-[46vh] min-h-[320px] md:hidden"
-            style={{
-              WebkitMaskImage: "linear-gradient(to bottom, #000 62%, transparent 100%)",
-              maskImage: "linear-gradient(to bottom, #000 62%, transparent 100%)",
-            }}
-          >
-            <img
-              src={heroManLaptopAsset.url}
-              alt={t("cuál es tu número para retiro", "what is your number for retirement")}
-              aria-hidden
-              className="h-full w-full object-cover object-[70%_28%]"
-              loading="eager"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-background/20" />
+          {/* Ambient light behind the phone */}
+          <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[52%] md:block">
+            <div className="absolute right-[8%] top-1/2 h-[520px] w-[520px] -translate-y-1/2 rounded-full bg-primary/10 blur-[130px]" />
+          </div>
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[320px] md:hidden">
+            <div className="absolute left-1/2 top-0 h-[280px] w-[280px] -translate-x-1/2 rounded-full bg-primary/10 blur-[110px]" />
           </div>
 
 
