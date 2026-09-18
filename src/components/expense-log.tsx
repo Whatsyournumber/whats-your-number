@@ -149,7 +149,10 @@ export function ExpenseLog() {
     for (const x of transactions) {
       if (x.amount >= 0 || !x.tx_date) continue;
       const d = parseISO(x.tx_date);
-      if (d >= monthStart && d <= monthEnd) arr[d.getDate() - 1] += Math.abs(x.amount);
+      if (d >= monthStart && d <= monthEnd) {
+        const idx = d.getDate() - 1;
+        arr[idx] = (arr[idx] ?? 0) + Math.abs(x.amount);
+      }
     }
     return arr;
     // eslint-disable-next-line react-hooks/exhaustive-deps
