@@ -312,24 +312,6 @@ export function Landing() {
       highlight: t("cuánto vales", "how much you're worth"),
     },
     {
-      icon: RouteIcon,
-      title: t("Tu Plan de Vida", "Your Life Plan"),
-      desc: t(
-        "Simula las decisiones más importantes de tu vida —comprar, emprender, casarte, mudarte— y ve cómo impactan tu patrimonio y retiro.",
-        "Simulate life's biggest decisions —buying, starting a business, marrying, moving— and see how they impact your wealth and retirement.",
-      ),
-      highlight: t("Simula las decisiones", "Simulate the decisions"),
-    },
-    {
-      icon: Globe,
-      title: t("Tu Próxima Ciudad", "Your Next City"),
-      desc: t(
-        "Comparador de costo de vida con más de 150 ciudades: salarios, impuestos, clima y seguridad. Encuentra dónde tu dinero rinde más.",
-        "Cost of living comparison across 150+ cities: salaries, taxes, climate and safety. Find where your money goes further.",
-      ),
-      highlight: t("tu dinero rinde más", "your money goes further"),
-    },
-    {
       icon: Bot,
       title: t("Tu Copiloto Financiero IA", "Your AI Financial Copilot"),
       desc: t(
@@ -695,29 +677,6 @@ export function Landing() {
                 loading="lazy"
                 className="h-auto max-h-[620px] w-auto max-w-full object-contain drop-shadow-[0_24px_60px_rgba(0,0,0,0.45)]"
               />
-              <div className="w-full px-2 sm:px-6">
-                <p className="max-w-sm text-sm text-muted-foreground">
-                  <span className="sm:hidden">{t("Descúbrelo gratis en 30 segundos.", "Find out free in 30 seconds.")}</span>
-                  <span className="hidden sm:inline">
-                    {t(
-                      "Tu número para retiro en 3 preguntas: descúbrelo gratis en 30 segundos.",
-                      "Your retirement number in 3 questions: find out free in 30 seconds.",
-                    )}
-                  </span>
-                </p>
-                <div className="mt-5 flex flex-wrap items-center gap-3">
-                  <Button asChild size="lg" className="gap-2 rounded-full px-6">
-                    <Link to={demoTo} search={{ start: 1 }}>
-                      {t("Probar calculadora gratis", "Try free calculator")} <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </Button>
-                  <Button asChild size="lg" variant="outline" className="rounded-full px-6">
-                    <Link to="/auth" search={{ mode: "signup" }}>
-                      {t("Crear mi cuenta", "Create my account")}
-                    </Link>
-                  </Button>
-                </div>
-              </div>
             </motion.div>
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
