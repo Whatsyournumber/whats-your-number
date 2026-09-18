@@ -21,8 +21,8 @@ import {
 
 
 
-import expensesTrackerPhoneClean from "@/assets/expenses-tracker-phone-clean.png";
-import expensesTrackerPhoneCleanEn from "@/assets/expenses-tracker-phone-clean-en.png";
+import expensesTrackerPhoneClean from "@/assets/expenses-tracker-phone-clean-v2.png";
+import expensesTrackerPhoneCleanEn from "@/assets/expenses-tracker-phone-clean-en-v2.png";
 import heroManLaptopAsset from "@/assets/hero-man-laptop.jpg.asset.json";
 import ctaLifestyle from "@/assets/cta-lifestyle.jpg";
 
