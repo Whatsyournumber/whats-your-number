@@ -447,8 +447,8 @@ export function ExpenseLog() {
 
       <div className="space-y-3">
           <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
-            <div className="grid gap-6 md:grid-cols-[1.15fr_1fr_auto] md:items-center lg:grid-cols-[1.2fr_1fr_auto_0.9fr]">
-              <div className="min-w-0">
+             <div className="grid gap-6 md:grid-cols-[1.15fr_1fr_auto] lg:grid-cols-[1.2fr_1fr_auto_0.9fr]">
+               <div className="flex min-w-0 flex-col">
                 <div className="flex items-center gap-3">
                   <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-positive/10">
                     <Wallet className="h-5 w-5 text-positive" />
@@ -465,15 +465,15 @@ export function ExpenseLog() {
                     <p className="mt-1 text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
                   </div>
                 </div>
-                <p className="numeric mt-5 whitespace-nowrap text-4xl font-bold sm:pl-9 sm:text-5xl">{fmt(periodTarget)}</p>
+                <p className="numeric mt-4 whitespace-nowrap text-3xl font-bold sm:text-4xl md:mt-auto md:pl-9 md:pt-5 lg:text-5xl">{fmt(periodTarget)}</p>
               </div>
 
-              <div className="min-w-0 border-border md:border-l md:pl-8">
+              <div className="flex min-w-0 flex-col border-border md:border-l md:pl-8">
                 <p className="text-sm text-muted-foreground">{t("Gasto del período", "Period spending")}</p>
-                <p className="numeric mt-2 whitespace-nowrap text-4xl font-bold sm:text-5xl">{fmt(spent)}</p>
+                <p className="numeric mt-4 whitespace-nowrap text-3xl font-bold sm:text-4xl md:mt-auto md:pt-5 lg:text-5xl">{fmt(spent)}</p>
               </div>
 
-              <div className="relative h-36 w-36 shrink-0 justify-self-center sm:h-40 sm:w-40">
+              <div className="relative h-28 w-28 shrink-0 self-center justify-self-center sm:h-36 sm:w-36 lg:h-40 lg:w-40">
                   <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                     <circle cx="60" cy="60" r="50" fill="none" strokeWidth="9" className="stroke-border/30" />
                     <circle
@@ -489,7 +489,7 @@ export function ExpenseLog() {
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <p className={cn("numeric text-3xl font-bold leading-none sm:text-4xl", pct > 100 ? "text-negative" : "text-positive")}>
+                    <p className={cn("numeric text-2xl font-bold leading-none sm:text-3xl lg:text-4xl", pct > 100 ? "text-negative" : "text-positive")}>
                       {pct.toFixed(0)}%
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground sm:text-sm">{t("del plan", "of plan")}</p>
