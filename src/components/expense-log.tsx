@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
 import { Camera, ChevronRight, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, Wallet } from "lucide-react";
@@ -140,6 +141,39 @@ export function ExpenseLog() {
   const pct = periodTarget > 0 ? (spent / periodTarget) * 100 : 0;
   const remaining = periodTarget - spent;
   const perDay = remaining > 0 ? remaining / daysLeft : 0;
+
+  // Gasto real por día del mes actual (para el gráfico diario).
+  const daily = useMemo(() => {
+    const arr = Array.from({ length: daysInMonth }, () => 0);
+    for (const x of transactions) {
+      if (x.amount >= 0 || !x.tx_date) continue;
+      const d = parseISO(x.tx_date);
+      if (d >= monthStart && d <= monthEnd) arr[d.getDate() - 1] += Math.abs(x.amount);
+    }
+    return arr;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transactions, daysInMonth, monthStart.getTime(), monthEnd.getTime()]);
+
+  const todayDay = now.getDate();
+  const monthVariable = daily.reduce((s, v) => s + v, 0);
+  const projection = todayDay > 0 ? (monthVariable / todayDay) * daysInMonth + fixed.total : fixed.total;
+  const projDiff = target - projection;
+
+  // Próximos pagos recurrentes ordenados por la fecha en que caen.
+  const upcoming = useMemo(() => {
+    const base = startOfDay(now);
+    return fixed.items
+      .filter((i) => i.amount > 0)
+      .map((i) => {
+        const day = Math.min(Math.max(1, i.dayOfMonth ?? 1), daysInMonth);
+        let next = new Date(now.getFullYear(), now.getMonth(), day);
+        if (next < base) next = new Date(now.getFullYear(), now.getMonth() + 1, Math.min(day, 28));
+        return { ...i, next };
+      })
+      .sort((a, b) => a.next.getTime() - b.next.getTime())
+      .slice(0, 5);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fixed.items, daysInMonth]);
 
   const byCategory = useMemo(() => {
     const map = new Map<string, number>();
