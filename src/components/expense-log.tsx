@@ -61,6 +61,8 @@ export function ExpenseLog() {
   const budgets = useSpendBudgets();
   const categories = useCategories();
 
+  const [planOpen, setPlanOpen] = useState(false);
+
   const currency = profile.currency || "EUR";
   const fmt = (n: number) => money(Math.round(n), currency);
 
