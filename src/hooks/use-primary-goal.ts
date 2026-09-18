@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useSyncedSetting } from "@/hooks/use-synced-setting";
 
 import { useLifeGoals } from "./use-life-goals";
 
@@ -6,25 +6,9 @@ const KEY = "whatsyournumber:primary-goal-id";
 
 export function usePrimaryGoal() {
   const { goals } = useLifeGoals();
-  const [primaryId, setPrimaryIdState] = useState<string | null>(null);
+  const { value: primaryId, save } = useSyncedSetting<string | null>(KEY, null, { legacyKeys: [KEY] });
 
-  useEffect(() => {
-    try {
-      setPrimaryIdState(window.localStorage.getItem(KEY));
-    } catch {
-      setPrimaryIdState(null);
-    }
-  }, []);
-
-  const setPrimary = (id: string | null) => {
-    try {
-      if (id) window.localStorage.setItem(KEY, id);
-      else window.localStorage.removeItem(KEY);
-    } catch {
-      /* ignore */
-    }
-    setPrimaryIdState(id);
-  };
+  const setPrimary = (id: string | null) => save(id);
 
   const primary = primaryId ? goals.find((g) => g.id === primaryId) ?? null : null;
 

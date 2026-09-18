@@ -17,6 +17,7 @@ import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
 import { useHoldings } from "@/hooks/use-holdings";
 import { useProfile } from "@/hooks/use-profile";
 import { useSpendBudgets } from "@/hooks/use-spend-budgets";
+import { useSyncedSetting } from "@/hooks/use-synced-setting";
 import { sameMerchant, useTransactions, type Tx } from "@/hooks/use-transactions";
 import { buildTravelDays, categorizeTxWithTravel } from "@/lib/categorize";
 import { money } from "@/lib/onboarding";
@@ -44,6 +45,7 @@ const MONTH_LABELS_ES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago",
 const MONTH_LABELS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 type MoneyBucket = "needs" | "savings" | "wants" | "excluded";
 const MONEY_RULE_KEY = "whatsyournumber:money-rule-categories";
+const EMPTY_BUCKETS: Record<string, MoneyBucket> = {};
 const RETIREMENT_FUND_CATEGORY = "Fondo de retiro";
 
 function cleanCategoryName(name: string) {
@@ -74,28 +76,14 @@ function CashFlow() {
   const { holdings } = useHoldings();
   const { lines: budgetLines } = useSpendBudgets();
   const [ruleOpen, setRuleOpen] = useState(false);
-  const [categoryBuckets, setCategoryBuckets] = useState<Record<string, MoneyBucket>>({});
-  const categoryStorageKey = `${MONEY_RULE_KEY}:${user?.id ?? "anon"}`;
-
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(categoryStorageKey);
-      setCategoryBuckets(raw ? (JSON.parse(raw) as Record<string, MoneyBucket>) : {});
-    } catch {
-      setCategoryBuckets({});
-    }
-  }, [categoryStorageKey]);
+  // Guardado en la cuenta: las mismas categorías en móvil, tablet y ordenador.
+  const { value: categoryBuckets, save: saveCategoryBuckets } = useSyncedSetting<Record<string, MoneyBucket>>(
+    MONEY_RULE_KEY,
+    EMPTY_BUCKETS,
+  );
 
   const setCategoryBucket = (category: string, bucket: MoneyBucket) => {
-    setCategoryBuckets((current) => {
-      const next = { ...current, [category]: bucket };
-      try {
-        window.localStorage.setItem(categoryStorageKey, JSON.stringify(next));
-      } catch {
-        /* ignore */
-      }
-      return next;
-    });
+    saveCategoryBuckets({ ...categoryBuckets, [category]: bucket });
   };
 
   const months = useMemo(() => {

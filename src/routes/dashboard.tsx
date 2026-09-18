@@ -232,15 +232,10 @@ function Dashboard() {
 
   // Mismo cálculo de “Ahorro / inversiones” que Distribución del dinero.
   // Respeta las categorías editadas por la persona y separa la meta de retiro.
-  const [moneyBuckets, setMoneyBuckets] = useState<Record<string, "needs" | "savings" | "wants" | "excluded">>({});
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(`whatsyournumber:money-rule-categories:${profileUserId}`);
-      setMoneyBuckets(raw ? JSON.parse(raw) : {});
-    } catch {
-      setMoneyBuckets({});
-    }
-  }, [profileUserId]);
+  const { value: moneyBuckets } = useSyncedSetting<Record<string, "needs" | "savings" | "wants" | "excluded">>(
+    "whatsyournumber:money-rule-categories",
+    EMPTY_MONEY_BUCKETS,
+  );
   const monthlyDistribution = useMemo(() => {
     const clean = (name: string) => name.replace(/^\p{Extended_Pictographic}\s*/u, "").trim();
     const isWant = (name: string) =>
