@@ -16,6 +16,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { NumberInput } from "@/components/ui/number-input";
@@ -63,6 +69,7 @@ export function ExpenseLog() {
 
   const [planOpen, setPlanOpen] = useState(false);
   const [recOpen, setRecOpen] = useState(false);
+  const [manualOpen, setManualOpen] = useState(false);
   const [recName, setRecName] = useState("");
   const [recAmount, setRecAmount] = useState(0);
   const [recDay, setRecDay] = useState(1);
@@ -369,48 +376,73 @@ export function ExpenseLog() {
 
   return (
     <section className="space-y-4">
-      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3">
-        <div className="min-w-0">
-          <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
-            {t("Registro de gastos", "Expense log")}
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {t("Controla tus gastos del día a día y mantente dentro de tu plan.", "Track your daily expenses and stay within your plan.")}
-          </p>
-        </div>
-        <ManualExpenseDialog
-          categories={categoryNames}
-          onAddCategory={(name) => categories.add(name)}
-          trigger={
-            <Button className="h-11 shrink-0 px-3 sm:px-5">
-              <Plus className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">{t("Añadir gasto", "Add expense")}</span>
-            </Button>
-          }
-        />
+      <div className="min-w-0">
+        <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
+          {t("Registro de gastos", "Expense log")}
+        </h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {t("Controla tus gastos del día a día y mantente dentro de tu plan.", "Track your daily expenses and stay within your plan.")}
+        </p>
       </div>
 
-      <div className="flex w-full rounded-lg border border-border bg-card p-1 sm:w-80">
-        {(
-          [
-            { id: "month", es: "Mes", en: "Month" },
-            { id: "week", es: "Semana", en: "Week" },
-            { id: "day", es: "Hoy", en: "Today" },
-          ] as const
-        ).map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            onClick={() => setPeriod(p.id)}
-            className={cn(
-              "flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-              period === p.id ? "bg-positive text-background" : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            {t(p.es, p.en)}
-          </button>
-        ))}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex w-full rounded-lg border border-border bg-card p-1 sm:w-80">
+          {(
+            [
+              { id: "month", es: "Mes", en: "Month" },
+              { id: "week", es: "Semana", en: "Week" },
+              { id: "day", es: "Hoy", en: "Today" },
+            ] as const
+          ).map((p) => (
+            <button
+              key={p.id}
+              type="button"
+              onClick={() => setPeriod(p.id)}
+              className={cn(
+                "flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                period === p.id ? "bg-positive text-background" : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {t(p.es, p.en)}
+            </button>
+          ))}
+        </div>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button className="h-11 w-full shrink-0 px-5 sm:w-auto">
+              <Plus className="mr-2 h-4 w-4" />
+              {t("Añadir gasto", "Add expense")}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuItem onSelect={() => setManualOpen(true)}>
+              <PencilLine className="mr-2 h-4 w-4 text-positive" />
+              {t("Manual", "Manual")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => (recording ? stopRecording() : startRecording())}>
+              {recording ? <Square className="mr-2 h-4 w-4 text-negative" /> : <Mic className="mr-2 h-4 w-4 text-positive" />}
+              {recording ? t("Detener", "Stop") : t("Por voz", "By voice")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => fileRef.current?.click()}>
+              <Camera className="mr-2 h-4 w-4 text-positive" />
+              {t("Foto de recibo", "Receipt photo")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => setRecOpen(true)}>
+              <Repeat className="mr-2 h-4 w-4 text-positive" />
+              {t("Recurrente", "Recurring")}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
+
+      <ManualExpenseDialog
+        categories={categoryNames}
+        onAddCategory={(name) => categories.add(name)}
+        open={manualOpen}
+        onOpenChange={setManualOpen}
+      />
+
 
 
       <div className="space-y-3">

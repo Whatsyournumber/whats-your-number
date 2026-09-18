@@ -75,11 +75,15 @@ export function ManualExpenseDialog({
   categories,
   onAddCategory,
   trigger,
+  open: openProp,
+  onOpenChange,
 }: {
   categories: string[];
   onAddCategory?: (name: string) => void;
   /** Botón propio para abrir el diálogo (por defecto, "Cargar manualmente"). */
   trigger?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }) {
   const t = useT();
   const { lang } = useLanguage();
@@ -87,7 +91,12 @@ export function ManualExpenseDialog({
   const { profile } = useProfile();
   const queryClient = useQueryClient();
 
-  const [open, setOpen] = useState(false);
+  const [openState, setOpenState] = useState(false);
+  const open = openProp ?? openState;
+  const setOpen = (value: boolean) => {
+    if (onOpenChange) onOpenChange(value);
+    else setOpenState(value);
+  };
   const [date, setDate] = useState<Date>(new Date());
   const [merchant, setMerchant] = useState("");
   const [category, setCategory] = useState(categories[0] ?? "Otros");
@@ -156,14 +165,16 @@ export function ManualExpenseDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {trigger ?? (
-          <Button size="sm" variant="ghost" className="gap-2">
-            <PencilLine className="h-4 w-4" />
-            {t("Cargar manualmente", "Add manually")}
-          </Button>
-        )}
-      </DialogTrigger>
+      {openProp === undefined && (
+        <DialogTrigger asChild>
+          {trigger ?? (
+            <Button size="sm" variant="ghost" className="gap-2">
+              <PencilLine className="h-4 w-4" />
+              {t("Cargar manualmente", "Add manually")}
+            </Button>
+          )}
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{t("Cargar gasto manualmente", "Add expense manually")}</DialogTitle>
