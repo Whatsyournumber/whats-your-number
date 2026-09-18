@@ -32,7 +32,7 @@ import { BASE_CATEGORIES, categorizeTx } from "@/lib/categorize";
 import { captureExpense } from "@/lib/expense-capture.functions";
 import { translateCategory } from "@/lib/i18n-data";
 import { saveExpense } from "@/lib/manual-expense";
-import { SPEND_PLAN_FIELDS, money } from "@/lib/onboarding";
+import { SPEND_PLAN_FIELDS, getWynMoneyLocale, money } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
 
 type Draft = { merchant: string; amount: number; date: string; category: string };
@@ -66,6 +66,17 @@ export function ExpenseLog() {
 
   const currency = profile.currency || "EUR";
   const fmt = (n: number) => money(Math.round(n), currency);
+  const currencySymbol = useMemo(() => {
+    try {
+      return (
+        new Intl.NumberFormat(getWynMoneyLocale(), { style: "currency", currency })
+          .formatToParts(0)
+          .find((p) => p.type === "currency")?.value ?? "$"
+      );
+    } catch {
+      return "$";
+    }
+  }, [currency]);
 
   const now = new Date();
   const monthStart = startOfMonth(now);
