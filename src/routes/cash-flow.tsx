@@ -347,10 +347,10 @@ function CashFlow() {
           subtitle={
             <>
               <span className="hidden sm:inline">
-                {t("Cómo se reparte cada dólar: rule of money (40 | 40 | 20), según tus EEFF cargados.", "How every dollar is split: rule of money (40 | 40 | 20), per your statements.")}
+                {t("Analizamos cómo se reparte cada dólar | para monitorear tu PLAN de Ahorro / Inversión mensual", "We analyze how every dollar is split | to monitor your monthly Savings / Investment PLAN")}
               </span>
               <span className="sm:hidden">
-                {t("Cómo se reparte cada dólar: rule of money (40 | 40 | 20).", "How every dollar is split: rule of money (40 | 40 | 20).")}
+                {t("Analizamos cada dólar | tu PLAN mensual de ahorro", "We analyze every dollar | your monthly savings PLAN")}
               </span>
             </>
           }
