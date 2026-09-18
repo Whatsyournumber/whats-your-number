@@ -301,7 +301,8 @@ export function ExpenseLog() {
         </span>
       </div>
 
-          <div className="grid gap-x-5 gap-y-3 md:grid-cols-[240px_minmax(0,1fr)] md:items-start">
+      <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+        <div className="grid gap-x-5 gap-y-3 md:grid-cols-[240px_minmax(0,1fr)] md:items-start">
             <div className="order-1 min-w-0">
               <div className="flex items-start gap-3">
                 <img src={targetIcon.url} alt="" className="h-9 w-9 shrink-0 rounded-full object-cover" />
