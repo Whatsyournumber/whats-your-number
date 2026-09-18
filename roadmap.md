@@ -23,4 +23,5 @@
 - [x] Landing: añadir al final una franja para parejas con la foto anterior y mensaje de plan compartido
 - [x] Landing: quitar la franja de seguridad y separar la sección de pareja en texto e imagen
 - [x] Landing: integrar la foto de pareja con degradado continuo, sin corte vertical
+- [x] Landing: mostrar la pareja completa, reducir el mensaje y eliminar bordes de la sección
 
