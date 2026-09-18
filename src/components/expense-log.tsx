@@ -344,7 +344,7 @@ export function ExpenseLog() {
         </span>
       </div>
 
-      <div className="inline-flex rounded-full border border-border bg-card p-1">
+      <div className="flex w-full rounded-full border border-border bg-card p-1 sm:inline-flex sm:w-auto">
         {(
           [
             { id: "day", es: "Hoy", en: "Today" },
@@ -357,7 +357,7 @@ export function ExpenseLog() {
             type="button"
             onClick={() => setPeriod(p.id)}
             className={cn(
-              "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
+              "flex-1 rounded-full px-3 py-1.5 text-sm font-medium transition-colors sm:flex-none sm:px-4",
               period === p.id ? "bg-positive text-background" : "text-muted-foreground hover:text-foreground",
             )}
           >
@@ -366,8 +366,9 @@ export function ExpenseLog() {
         ))}
       </div>
 
+
       <div className="space-y-3">
-          <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+          <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
             <div className="flex items-center gap-2.5">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-positive/15">
                 <Wallet className="h-4 w-4 text-positive" />
@@ -391,11 +392,11 @@ export function ExpenseLog() {
               </Button>
             ) : (
               <>
-                <div className="mt-5 flex flex-wrap items-center gap-4 sm:grid sm:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] sm:items-center sm:gap-7">
+                <div className="mt-5 flex flex-wrap items-center gap-4 lg:grid lg:grid-cols-[minmax(0,auto)_minmax(0,1fr)_auto] lg:items-center lg:gap-7">
                   <div className="order-1 min-w-0 flex-1">
-                    <p className="numeric text-4xl font-semibold leading-none sm:text-5xl">{fmt(spent)}</p>
+                    <p className="numeric text-3xl font-semibold leading-none sm:text-4xl lg:text-5xl">{fmt(spent)}</p>
                     <div className="mt-3 flex items-center gap-1.5 text-muted-foreground">
-                      <span className="text-xl sm:text-2xl">{t("de", "of")}</span>
+                      <span className="text-lg sm:text-xl lg:text-2xl">{t("de", "of")}</span>
                       {period === "month" ? (
                         <>
                           <NumberInput
@@ -403,18 +404,18 @@ export function ExpenseLog() {
                             onChange={(v) => setTarget(Math.max(0, Math.round(v)))}
                             format
                             aria-label={t("Objetivo mensual", "Monthly goal")}
-                            className="h-auto w-28 border-none bg-transparent p-0 text-xl shadow-none focus-visible:ring-0 sm:w-32 sm:text-2xl"
+                            className="h-auto w-24 border-none bg-transparent p-0 text-lg shadow-none focus-visible:ring-0 sm:w-28 sm:text-xl lg:w-32 lg:text-2xl"
                           />
-                          <span className="numeric text-xl sm:text-2xl">{currencySymbol}</span>
+                          <span className="numeric text-lg sm:text-xl lg:text-2xl">{currencySymbol}</span>
                           <Pencil className="h-3.5 w-3.5 opacity-50" />
                         </>
                       ) : (
-                        <span className="numeric text-xl sm:text-2xl">{fmt(periodTarget)}</span>
+                        <span className="numeric text-lg sm:text-xl lg:text-2xl">{fmt(periodTarget)}</span>
                       )}
                     </div>
                   </div>
 
-                  <div className="relative order-2 h-28 w-28 shrink-0 sm:order-3 sm:h-32 sm:w-32">
+                  <div className="relative order-2 h-24 w-24 shrink-0 sm:h-28 sm:w-28 lg:order-3 lg:h-32 lg:w-32">
                     <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                       <circle cx="60" cy="60" r="52" className="stroke-muted" strokeWidth="12" fill="none" />
                       <circle
@@ -431,7 +432,7 @@ export function ExpenseLog() {
                     </svg>
                     <div className="absolute inset-0 grid place-items-center text-center">
                       <div>
-                        <p className={cn("numeric text-xl font-semibold sm:text-2xl", spent > target && "text-negative")}>
+                        <p className={cn("numeric text-lg font-semibold sm:text-xl lg:text-2xl", spent > target && "text-negative")}>
                           {pct.toFixed(0)}%
                         </p>
                         <p className="text-[0.625rem] text-muted-foreground sm:text-xs">{t("del plan", "of plan")}</p>
@@ -439,33 +440,34 @@ export function ExpenseLog() {
                     </div>
                   </div>
 
-                  <div className="order-3 grid w-full grid-cols-3 gap-3 border-t border-border/60 pt-4 sm:order-2 sm:w-auto sm:gap-5 sm:border-l sm:border-t-0 sm:pl-7 sm:pt-0 lg:gap-8">
+                  <div className="order-3 grid w-full grid-cols-3 gap-2 border-t border-border/60 pt-4 sm:gap-4 lg:order-2 lg:w-auto lg:gap-6 lg:border-l lg:border-t-0 lg:pl-7 lg:pt-0">
                     <div className="min-w-0">
-                      <p className={cn("numeric text-2xl font-semibold leading-none sm:text-3xl", remaining < 0 ? "text-negative" : "text-positive")}>
+                      <p className={cn("numeric text-lg font-semibold leading-none sm:text-2xl lg:text-3xl", remaining < 0 ? "text-negative" : "text-positive")}>
                         {fmt(Math.abs(remaining))}
                       </p>
-                      <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm">
+                      <p className="mt-1.5 text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs lg:text-sm">
                         {remaining < 0 ? t("De más", "Over") : t("Te quedan", "Left")}
                       </p>
                     </div>
                     <div className="min-w-0">
-                      <p className="numeric text-2xl font-semibold leading-none text-positive sm:text-3xl">{daysLeft}</p>
-                      <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm">
-                        <span className="sm:hidden">{t("días quedan", "days left")}</span>
-                        <span className="hidden sm:inline">{t("días en el mes", "days in the month")}</span>
+                      <p className="numeric text-lg font-semibold leading-none text-positive sm:text-2xl lg:text-3xl">{daysLeft}</p>
+                      <p className="mt-1.5 text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs lg:text-sm">
+                        <span className="lg:hidden">{t("días quedan", "days left")}</span>
+                        <span className="hidden lg:inline">{t("días en el mes", "days in the month")}</span>
                       </p>
                     </div>
                     <div className="min-w-0">
-                      <p className="numeric text-2xl font-semibold leading-none text-positive sm:text-3xl">
+                      <p className="numeric text-lg font-semibold leading-none text-positive sm:text-2xl lg:text-3xl">
                         {fmt(perDay)}/{t("día", "day")}
                       </p>
-                      <p className="mt-1.5 text-xs text-muted-foreground sm:text-sm">
-                        <span className="sm:hidden">{t("para el plan", "on plan")}</span>
-                        <span className="hidden sm:inline">{t("para mantener el plan", "to stay on plan")}</span>
+                      <p className="mt-1.5 text-[0.6875rem] leading-4 text-muted-foreground sm:text-xs lg:text-sm">
+                        <span className="lg:hidden">{t("para el plan", "on plan")}</span>
+                        <span className="hidden lg:inline">{t("para mantener el plan", "to stay on plan")}</span>
                       </p>
                     </div>
                   </div>
                 </div>
+
               </>
             )}
           </div>
@@ -577,7 +579,7 @@ export function ExpenseLog() {
 
 
           {rows.length > 0 && (
-            <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+            <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
               <div className="flex items-center justify-between gap-2">
                 <h3 className="text-base font-semibold">{t("Gastos por categoría", "Spending by category")}</h3>
                 <button
@@ -594,27 +596,29 @@ export function ExpenseLog() {
                   <li key={r.id} className="flex items-center gap-3">
                     <span
                       className={cn(
-                        "grid h-10 w-10 shrink-0 place-items-center rounded-full text-base",
+                        "grid h-9 w-9 shrink-0 place-items-center rounded-full text-base sm:h-10 sm:w-10",
                         r.actual > r.planned ? "bg-negative/20" : "bg-positive/15",
                       )}
                     >
                       {r.emoji}
                     </span>
-                    <div className="min-w-0 w-32 shrink-0 sm:w-44">
-                      <p className="truncate text-sm leading-5">{r.name}</p>
-                      <p className="numeric text-[0.6875rem] leading-4 text-muted-foreground">
-                        {fmt(r.actual)} / {fmt(r.planned)}
-                      </p>
-                    </div>
-                    <div className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-muted">
-                      <div
-                        className={cn("h-full rounded-full", r.actual > r.planned ? "bg-negative" : "bg-positive")}
-                        style={{ width: `${Math.min(100, r.pct)}%` }}
-                      />
+                    <div className="min-w-0 flex-1 lg:flex lg:items-center lg:gap-3">
+                      <div className="min-w-0 lg:w-44 lg:shrink-0">
+                        <p className="truncate text-sm leading-5">{r.name}</p>
+                        <p className="numeric text-[0.6875rem] leading-4 text-muted-foreground">
+                          {fmt(r.actual)} / {fmt(r.planned)}
+                        </p>
+                      </div>
+                      <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted lg:mt-0 lg:min-w-0 lg:flex-1">
+                        <div
+                          className={cn("h-full rounded-full", r.actual > r.planned ? "bg-negative" : "bg-positive")}
+                          style={{ width: `${Math.min(100, r.pct)}%` }}
+                        />
+                      </div>
                     </div>
                     <span
                       className={cn(
-                        "numeric w-12 shrink-0 text-right text-sm",
+                        "numeric w-11 shrink-0 text-right text-sm sm:w-12",
                         r.actual > r.planned ? "text-negative" : "text-foreground",
                       )}
                     >
@@ -624,6 +628,7 @@ export function ExpenseLog() {
                 ))}
               </ul>
             </div>
+
           )}
 
 
