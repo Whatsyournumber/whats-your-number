@@ -2,10 +2,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { endOfMonth, format, parseISO, startOfMonth } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { AlertTriangle, Camera, Loader2, Mic, PencilLine, Square } from "lucide-react";
+import { AlertTriangle, Camera, ChevronDown, Loader2, Mic, Pencil, PencilLine, Plus, Square } from "lucide-react";
 import { toast } from "sonner";
 
+import targetIcon from "@/assets/target-icon-v2.png.asset.json";
 import { BudgetDialog } from "@/components/budget-dialog";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ManualExpenseDialog } from "@/components/manual-expense-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +24,7 @@ import { NumberInput } from "@/components/ui/number-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/use-auth";
 import { useCategories } from "@/hooks/use-categories";
-import { useFixedExpenses } from "@/hooks/use-fixed-expenses";
+import { useFixedExpenses, useSpendTarget } from "@/hooks/use-fixed-expenses";
 import { useLanguage, useT } from "@/hooks/use-language";
 import { useProfile } from "@/hooks/use-profile";
 import { useSpendBudgets, type BudgetLine } from "@/hooks/use-spend-budgets";
@@ -62,6 +64,8 @@ export function ExpenseLog() {
   const categories = useCategories();
 
   const [planOpen, setPlanOpen] = useState(false);
+  const [rowsOpen, setRowsOpen] = useState(true);
+  const { target: savedTarget, setTarget, hasTarget } = useSpendTarget();
 
   const currency = profile.currency || "EUR";
   const fmt = (n: number) => money(Math.round(n), currency);
@@ -69,6 +73,7 @@ export function ExpenseLog() {
   const now = new Date();
   const monthStart = startOfMonth(now);
   const monthEnd = endOfMonth(now);
+  const monthLabel = format(now, "LLLL", { locale });
   const daysLeft = Math.max(1, monthEnd.getDate() - now.getDate() + 1);
 
   const categoryNames = useMemo(
@@ -94,8 +99,10 @@ export function ExpenseLog() {
   const plan = budgets.hasBudget
     ? budgets.total
     : SPEND_PLAN_FIELDS.reduce((s, f) => s + (Number(profile[f.key]) || 0), 0);
-  const pct = plan > 0 ? (spent / plan) * 100 : 0;
-  const remaining = plan - spent;
+  const target = hasTarget && savedTarget > 0 ? savedTarget : plan;
+  const pct = target > 0 ? (spent / target) * 100 : 0;
+  const boundaryPct = spent > 0 ? Math.min(100, (target / spent) * 100) : 0;
+  const remaining = target - spent;
   const perDay = remaining > 0 ? remaining / daysLeft : 0;
 
   const byCategory = useMemo(() => {
@@ -278,9 +285,6 @@ export function ExpenseLog() {
     }
   };
 
-  const ringPct = Math.min(100, Math.max(0, pct));
-  const circumference = 2 * Math.PI * 52;
-
   return (
     <section className="space-y-3">
       <div className="flex flex-wrap items-end justify-between gap-2">
@@ -296,6 +300,186 @@ export function ExpenseLog() {
           {format(now, "LLLL yyyy", { locale })}
         </span>
       </div>
+
+      <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+        <div className="grid gap-x-5 gap-y-3 md:grid-cols-[240px_minmax(0,1fr)] md:items-start">
+            <div className="order-1 min-w-0">
+              <div className="flex items-start gap-3">
+                <img src={targetIcon.url} alt="" className="h-9 w-9 shrink-0 rounded-full object-cover" />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="whitespace-nowrap text-sm font-semibold sm:text-base">
+                      {t("Gasto objetivo mensual", "Monthly spend target")}
+                    </h3>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 shrink-0 text-muted-foreground"
+                      onClick={() => setPlanOpen(true)}
+                      aria-label={rows.length ? t("Editar plan", "Edit plan") : t("Plan de gastos", "Spending plan")}
+                    >
+                      {rows.length ? <Pencil className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
+                    </Button>
+                  </div>
+                  <p className="mt-1 text-xs leading-4 text-muted-foreground">
+                    {t("Limita tus gastos mensuales", "Limit your monthly spending")}
+                  </p>
+                </div>
+              </div>
+            </div>
+            {target <= 0 ? (
+              <div className="order-2 flex md:col-start-2 md:self-center">
+                <Button className="w-full sm:w-auto" onClick={() => setPlanOpen(true)}>
+                  <Plus className="mr-1.5 h-4 w-4" />
+                  {t("Crear tu plan de gastos", "Create your spending plan")}
+                </Button>
+              </div>
+            ) : (
+              <>
+                <div className="order-3 flex min-w-0 flex-col gap-1 md:order-2 md:-mb-2 md:self-end">
+                  <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
+                    <span className="numeric shrink-0 text-xl font-semibold sm:text-2xl">{fmt(spent)}</span>
+                    <span
+                      className={cn(
+                        "shrink-0 whitespace-nowrap rounded-full px-2 py-1 text-xs font-medium",
+                        spent <= target ? "bg-positive/12 text-positive" : "bg-negative/12 text-negative",
+                      )}
+                    >
+                      {spent <= target
+                        ? `${fmt(target - spent)} ${t("que puedes invertir", "you can invest")}`
+                        : `${fmt(spent - target)} ${t("que gastaste de más", "over budget")}`}
+                    </span>
+                  </div>
+                  <p className="whitespace-nowrap text-xs leading-4 text-muted-foreground">
+                    {monthLabel} · {pct.toFixed(0)}% {t("del objetivo", "of target")}
+                  </p>
+                </div>
+                <div className="relative order-2 flex items-center self-start md:order-3 md:self-center">
+                  <span className="pointer-events-none absolute left-3 text-sm font-semibold text-muted-foreground">$</span>
+                  <NumberInput
+                    value={target}
+                    onChange={setTarget}
+                    format
+                    className="h-11 w-full pl-7 text-base font-semibold"
+                  />
+                </div>
+                <div className="order-4 self-center">
+                  <div className="flex h-2 overflow-hidden rounded-full bg-muted">
+                    {spent <= target ? (
+                      <div className="h-full rounded-full bg-positive" style={{ width: `${Math.min(100, pct)}%` }} />
+                    ) : (
+                      <>
+                        <div className="h-full bg-positive" style={{ width: `${boundaryPct}%` }} />
+                        <div className="h-full flex-1 bg-negative" />
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className="order-5 mt-1.5 md:-mt-5 md:col-start-2">
+                  <div className="relative h-4 text-[0.625rem] text-muted-foreground sm:text-xs">
+                    <span className="numeric absolute left-0 top-0">{fmt(0)}</span>
+                    {spent > target && boundaryPct >= 10 && boundaryPct <= 90 && (
+                      <span
+                        className={cn("numeric absolute top-0 -translate-x-full pr-1 lg:-translate-x-1/2 lg:pr-0")}
+                        style={{ left: `${boundaryPct}%` }}
+                      >
+                        {fmt(target)}
+                      </span>
+                    )}
+                    <span className="numeric absolute right-0 top-0">{fmt(spent)}</span>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          {rows.length > 0 && (
+            <Collapsible open={rowsOpen} onOpenChange={setRowsOpen} className="mt-5 border-t border-border/60 pt-4">
+              <CollapsibleTrigger
+                className="flex w-full items-center justify-between gap-2 py-1 text-left"
+                aria-label={t("Mostrar u ocultar plan por categoría", "Show or hide category plan")}
+              >
+                <div className="flex min-w-0 items-center gap-1.5">
+                  <p className="whitespace-nowrap text-[0.625rem] font-medium uppercase tracking-[0.08em] text-muted-foreground sm:text-xs sm:tracking-[0.14em]">
+                    <span className="sm:hidden">{t("Gasto real vs objetivo", "Actual vs target")}</span>
+                    <span className="hidden sm:inline">{t("Gasto real vs objetivo por categoría", "Actual vs target by category")}</span>
+                  </p>
+                  <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
+                </div>
+                <div className="flex shrink-0 items-center gap-1">
+                  <p className="whitespace-nowrap text-[0.625rem] text-muted-foreground sm:hidden">
+                    {alerts.filter((a) => a.pct >= 100).length > 0 && (
+                      <span className="text-negative">
+                        {alerts.filter((a) => a.pct >= 100).length} {t("excedidas", "over")}
+                      </span>
+                    )}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPlanOpen(true);
+                    }}
+                    className="grid h-7 w-7 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    aria-label={t("Editar plan de gastos", "Edit spending plan")}
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  {rows.map((r) => (
+                    <div key={r.id} className="rounded-xl border border-border/50 px-3 py-2">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <span className="min-w-0 flex-1 truncate text-[0.6875rem] leading-4">
+                          {r.emoji} {r.name}
+                        </span>
+                        <span
+                          className={cn(
+                            "numeric shrink-0 text-[0.6875rem] leading-4",
+                            r.actual > r.planned ? "text-negative" : "text-positive",
+                          )}
+                        >
+                          {fmt(r.actual)} / {fmt(r.planned)}
+                        </span>
+                      </div>
+                      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
+                        <div
+                          className={cn("h-full rounded-full", r.actual > r.planned ? "bg-negative" : "bg-positive")}
+                          style={{ width: `${Math.min(100, r.pct)}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          )}
+
+          {target > 0 && (
+            <div className="mt-4 grid grid-cols-3 gap-3 border-t border-border/60 pt-3 text-center sm:text-left">
+              <div>
+                <p className={cn("text-base font-semibold", remaining >= 0 ? "text-positive" : "text-negative")}>
+                  {fmt(Math.abs(remaining))}
+                </p>
+                <p className="text-[11px] text-muted-foreground">
+                  {remaining >= 0 ? t("Te quedan", "Left") : t("Excedido", "Over")}
+                </p>
+              </div>
+              <div>
+                <p className="text-base font-semibold">{daysLeft}</p>
+                <p className="text-[11px] text-muted-foreground">{t("días en el mes", "days left")}</p>
+              </div>
+              <div>
+                <p className="text-base font-semibold text-positive">{fmt(perDay)}/{t("día", "day")}</p>
+                <p className="text-[11px] text-muted-foreground">
+                  {t("para mantener el plan", "to stay on plan")}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
 
       <div className="grid gap-3 lg:grid-cols-[1.35fr_1fr]">
         <div className="space-y-3">
@@ -393,107 +577,6 @@ export function ExpenseLog() {
               </span>
             </div>
           ))}
-
-          <div className="rounded-2xl border border-border bg-card p-4">
-            <p className="mb-3 text-sm font-medium">{t("Gastos vs plan", "Spending vs plan")}</p>
-            {plan > 0 ? (
-              <>
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-3xl font-semibold tracking-tight">{fmt(spent)}</p>
-                    <p className="text-sm text-muted-foreground">{t("de", "of")} {fmt(plan)}</p>
-                  </div>
-                  <div className="relative h-28 w-28 shrink-0">
-                    <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
-                      <circle cx="60" cy="60" r="52" className="stroke-white/10" strokeWidth="12" fill="none" />
-                      <circle
-                        cx="60"
-                        cy="60"
-                        r="52"
-                        strokeWidth="12"
-                        fill="none"
-                        strokeLinecap="round"
-                        className={pct > 100 ? "stroke-rose-400" : "stroke-emerald-400"}
-                        strokeDasharray={circumference}
-                        strokeDashoffset={circumference * (1 - ringPct / 100)}
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <span className="text-lg font-semibold">{Math.round(pct)}%</span>
-                      <span className="text-[11px] text-muted-foreground">{t("del plan", "of plan")}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-4 grid grid-cols-3 gap-3 border-t border-border/60 pt-3 text-center sm:text-left">
-                  <div>
-                    <p className={cn("text-base font-semibold", remaining >= 0 ? "text-emerald-400" : "text-rose-400")}>
-                      {fmt(Math.abs(remaining))}
-                    </p>
-                    <p className="text-[11px] text-muted-foreground">
-                      {remaining >= 0 ? t("Te quedan", "Left") : t("Excedido", "Over")}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-base font-semibold">{daysLeft}</p>
-                    <p className="text-[11px] text-muted-foreground">{t("días en el mes", "days left")}</p>
-                  </div>
-                  <div>
-                    <p className="text-base font-semibold text-emerald-400">{fmt(perDay)}/{t("día", "day")}</p>
-                    <p className="text-[11px] text-muted-foreground">
-                      {t("para mantener el plan", "to stay on plan")}
-                    </p>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                {t(
-                  "Aún no tienes plan de gastos. Créalo abajo en Gasto objetivo mensual.",
-                  "You don't have a spending plan yet. Create it below in Monthly spending goal.",
-                )}
-              </p>
-            )}
-          </div>
-
-          {rows.length > 0 && (
-            <div className="rounded-2xl border border-border bg-card p-4">
-              <div className="mb-3 flex items-center justify-between gap-2">
-                <p className="text-sm font-medium">{t("Gastos por categoría", "Spending by category")}</p>
-                <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => setPlanOpen(true)}>
-                  {t("Editar plan", "Edit plan")}
-                </Button>
-              </div>
-              <div className="space-y-3">
-                {rows.map((r) => (
-                  <div key={r.id} className="flex items-center gap-3">
-                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/5 text-base">
-                      {r.emoji}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium">{r.name}</p>
-                      <p className="text-[11px] text-muted-foreground">
-                        {fmt(r.actual)} / {fmt(r.planned)}
-                      </p>
-                    </div>
-                    <div className="hidden h-2 w-28 overflow-hidden rounded-full bg-white/10 sm:block md:w-40">
-                      <div
-                        className={cn("h-full rounded-full", r.pct > 100 ? "bg-rose-400" : "bg-emerald-400")}
-                        style={{ width: `${Math.min(100, r.pct)}%` }}
-                      />
-                    </div>
-                    <span
-                      className={cn(
-                        "w-12 shrink-0 text-right text-sm font-semibold",
-                        r.pct > 100 ? "text-rose-400" : "text-emerald-400",
-                      )}
-                    >
-                      {Math.round(r.pct)}%
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
         <div className="rounded-2xl border border-border bg-card p-4">
@@ -577,7 +660,11 @@ export function ExpenseLog() {
         open={planOpen}
         onOpenChange={setPlanOpen}
         lines={planLines}
-        onSave={(next) => budgets.save(next)}
+        onSave={(next) => {
+          budgets.save(next);
+          const totalPlan = next.reduce((s, l) => s + (l.amount || 0), 0);
+          if (totalPlan > 0) setTarget(Math.round(totalPlan));
+        }}
         fmt={fmt}
       />
     </section>
