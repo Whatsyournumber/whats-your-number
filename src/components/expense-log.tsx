@@ -472,7 +472,7 @@ export function ExpenseLog() {
 
           <div className="rounded-2xl border border-border bg-card p-4">
             <p className="mb-3 text-sm font-medium">{t("Agrega un gasto", "Add an expense")}</p>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
               <ManualExpenseDialog
                 categories={categoryNames}
                 onAddCategory={(name) => categories.add(name)}
@@ -516,6 +516,14 @@ export function ExpenseLog() {
                   <Camera className="h-5 w-5 text-emerald-400" />
                 )}
                 {t("Foto de recibo", "Receipt photo")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setRecOpen(true)}
+                className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-background/40 px-2 py-4 text-xs font-medium transition hover:bg-white/5"
+              >
+                <Repeat className="h-5 w-5 text-emerald-400" />
+                {t("Recurrente", "Recurring")}
               </button>
               <input
                 ref={fileRef}
