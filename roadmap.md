@@ -28,4 +28,5 @@
 - [x] Landing: difuminar la foto de pareja arriba y abajo y darle mayor presencia
 - [x] Landing: quitar la línea verde derecha y mostrar mejor la pareja y la laptop
 - [x] Landing: difuminar los cuatro bordes de la foto y eliminar por completo la línea verde derecha
+- [x] Landing: ampliar el difuminado central para eliminar el corte entre fondo y foto
 
