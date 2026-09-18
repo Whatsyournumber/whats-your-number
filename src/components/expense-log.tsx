@@ -465,15 +465,17 @@ export function ExpenseLog() {
                     <p className="mt-1 text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
                   </div>
                 </div>
-                <p className="numeric mt-5 whitespace-nowrap text-4xl font-bold sm:pl-9 sm:text-5xl">{fmt(periodTarget)}</p>
+                <p className="numeric mt-4 whitespace-nowrap text-3xl font-bold sm:mt-5 sm:pl-9 sm:text-4xl lg:text-5xl">{fmt(periodTarget)}</p>
               </div>
 
               <div className="min-w-0 border-border md:border-l md:pl-8">
-                <p className="text-sm text-muted-foreground">{t("Gasto del período", "Period spending")}</p>
-                <p className="numeric mt-2 whitespace-nowrap text-4xl font-bold sm:text-5xl">{fmt(spent)}</p>
+                <div className="flex items-center text-sm text-muted-foreground sm:h-12">
+                  <p>{t("Gasto del período", "Period spending")}</p>
+                </div>
+                <p className="numeric mt-4 whitespace-nowrap text-3xl font-bold sm:mt-5 sm:text-4xl lg:text-5xl">{fmt(spent)}</p>
               </div>
 
-              <div className="relative h-36 w-36 shrink-0 justify-self-center sm:h-40 sm:w-40">
+              <div className="relative h-28 w-28 shrink-0 justify-self-center sm:h-36 sm:w-36 lg:h-40 lg:w-40">
                   <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                     <circle cx="60" cy="60" r="50" fill="none" strokeWidth="9" className="stroke-border/30" />
                     <circle
