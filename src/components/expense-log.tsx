@@ -604,8 +604,7 @@ export function ExpenseLog() {
                     {t("Presupuesto esperado", "Expected budget")}
                   </span>
                 </div>
-                <div className="mt-4 flex flex-col gap-5 lg:flex-row">
-                  <div className="min-w-0 flex-1">
+                <div className="mt-4 min-w-0">
                     {(() => {
                       const W = 560;
                       const H = 190;
