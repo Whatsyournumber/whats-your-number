@@ -1112,9 +1112,14 @@ export function ExpenseLog() {
                         </svg>
                         {active !== null && (
                           <div
-                            className="pointer-events-none absolute top-1 z-20 -translate-x-1/2 whitespace-nowrap rounded-lg border border-border bg-card/95 px-2.5 py-1.5 text-[11px] shadow-lg backdrop-blur-sm"
-                            style={{ left: `${Math.min(84, Math.max(18, tipLeft))}%` }}
-
+                            className="pointer-events-none absolute z-20 whitespace-nowrap rounded-lg border border-border bg-card/95 px-2.5 py-1.5 text-[11px] shadow-lg backdrop-blur-sm"
+                            style={{
+                              left: `${Math.min(84, Math.max(18, tipLeft))}%`,
+                              top: `${(Math.max(top, activeBarTop) / H) * 100}%`,
+                              transform: tipBelow
+                                ? "translate(-50%, 10px)"
+                                : "translate(-50%, calc(-100% - 8px))",
+                            }}
                           >
                             <span className="numeric font-medium text-muted-foreground">
                               {format(new Date(now.getFullYear(), now.getMonth(), active + 1), "d MMM", { locale })}
