@@ -582,15 +582,15 @@ export function ExpenseLog() {
             <div className="mt-4 hidden items-center gap-10 lg:flex">
               <div className="min-w-0 shrink-0">
                 <p className="text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
-                <div className="mt-2 inline-flex min-w-0 items-baseline gap-1 rounded-xl border border-border bg-muted/20 px-3 py-1.5 transition-colors focus-within:border-positive/60">
-                  <span className="numeric text-2xl font-semibold text-muted-foreground">{currencySymbol}</span>
+                <div className="mt-3 inline-flex min-w-0 items-baseline gap-2">
+                  <span className="numeric text-3xl font-bold">{currencySymbol}</span>
                   <NumberInput
                     value={target}
                     onChange={(v) => setTarget(Math.round(v || 0))}
                     min={0}
                     format
                     ariaLabel={t("Gasto objetivo mensual", "Monthly spending target")}
-                    className="numeric w-32 border-0 bg-transparent px-0 py-0 text-5xl font-bold shadow-none transition-none focus-visible:ring-0"
+                    className="numeric w-36 border-0 bg-transparent px-0 py-0 text-5xl font-bold shadow-none transition-none focus-visible:ring-0"
                   />
                 </div>
               </div>
