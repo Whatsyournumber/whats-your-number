@@ -21,7 +21,7 @@ import {
 
 
 
-import expensesTrackerPhoneAsset from "@/assets/expenses-tracker-phone.png.asset.json";
+import expensesTrackerPhoneClean from "@/assets/expenses-tracker-phone-clean.png";
 import heroManLaptopAsset from "@/assets/hero-man-laptop.jpg.asset.json";
 import ctaLifestyle from "@/assets/cta-lifestyle.jpg";
 
@@ -687,18 +687,15 @@ export function Landing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4 }}
-              className="surface glow relative flex min-h-[420px] items-center justify-center overflow-hidden bg-elevated/20 p-4 sm:p-6"
+              className="relative flex min-h-[420px] flex-col items-center justify-center gap-6 p-2 sm:p-4"
             >
               <img
-                src={expensesTrackerPhoneAsset.url}
+                src={expensesTrackerPhoneClean}
                 alt={t("Registro de gastos en WhatsYourNumber", "WhatsYourNumber expense tracker")}
                 loading="lazy"
-                width={696}
-                height={1090}
-                className="h-auto max-h-[540px] w-auto max-w-full object-contain"
+                className="h-auto max-h-[620px] w-auto max-w-full object-contain drop-shadow-[0_24px_60px_rgba(0,0,0,0.45)]"
               />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
+              <div className="w-full px-2 sm:px-6">
                 <p className="max-w-sm text-sm text-muted-foreground">
                   <span className="sm:hidden">{t("Descúbrelo gratis en 30 segundos.", "Find out free in 30 seconds.")}</span>
                   <span className="hidden sm:inline">
