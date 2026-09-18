@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { endOfMonth, format, parseISO, startOfMonth } from "date-fns";
+import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { Camera, ChevronRight, Loader2, Mic, Pencil, PencilLine, Plus, Square, Wallet } from "lucide-react";
+import { Camera, ChevronRight, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, Wallet } from "lucide-react";
 import { toast } from "sonner";
 
 import { BudgetDialog } from "@/components/budget-dialog";
@@ -62,7 +62,25 @@ export function ExpenseLog() {
   const categories = useCategories();
 
   const [planOpen, setPlanOpen] = useState(false);
+  const [recOpen, setRecOpen] = useState(false);
+  const [recName, setRecName] = useState("");
+  const [recAmount, setRecAmount] = useState(0);
   const { target: savedTarget, setTarget, hasTarget } = useSpendTarget();
+
+  const onSaveRecurring = () => {
+    const name = recName.trim();
+    if (!name || recAmount <= 0) {
+      toast.error(t("Escribe nombre y monto mayor que cero", "Enter a name and an amount above zero"));
+      return;
+    }
+    fixed.add(name, Math.round(recAmount));
+    toast.success(t("Gasto recurrente guardado", "Recurring expense saved"), {
+      description: `${name} · ${fmt(recAmount)}/${t("mes", "mo")}`,
+    });
+    setRecOpen(false);
+    setRecName("");
+    setRecAmount(0);
+  };
 
   const currency = profile.currency || "EUR";
   const fmt = (n: number) => money(Math.round(n), currency);
@@ -81,44 +99,54 @@ export function ExpenseLog() {
   const now = new Date();
   const monthStart = startOfMonth(now);
   const monthEnd = endOfMonth(now);
-  const monthLabel = format(now, "LLLL", { locale });
-  const daysLeft = Math.max(1, monthEnd.getDate() - now.getDate() + 1);
+
+  // Periodo de la vista: hoy, última semana o mes completo. El objetivo y los
+  // gastos fijos se prorratean para que la comparación siga siendo justa.
+  const [period, setPeriod] = useState<"day" | "week" | "month">("month");
+  const daysInMonth = monthEnd.getDate();
+  const periodDays = period === "day" ? 1 : period === "week" ? 7 : daysInMonth;
+  const periodFactor = periodDays / daysInMonth;
+  const periodStart =
+    period === "day" ? startOfDay(now) : period === "week" ? startOfDay(subDays(now, 6)) : monthStart;
+  const elapsedDays = Math.min(periodDays, differenceInCalendarDays(now, periodStart) + 1);
+  const daysLeft = Math.max(1, periodDays - elapsedDays + 1);
 
   const categoryNames = useMemo(
     () => [...new Set([...BASE_CATEGORIES, ...categories.rules.map((r) => r.name)])],
     [categories.rules],
   );
 
-  const monthTx = useMemo(
+  const periodTx = useMemo(
     () =>
       transactions
         .filter((x) => x.amount < 0 && x.tx_date)
         .filter((x) => {
           const d = parseISO(x.tx_date!);
-          return d >= monthStart && d <= monthEnd;
+          return d >= periodStart && d <= monthEnd;
         })
         .sort((a, b) => (a.tx_date! < b.tx_date! ? 1 : -1)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [transactions, monthStart.getTime(), monthEnd.getTime()],
+    [transactions, periodStart.getTime(), monthEnd.getTime()],
   );
 
-  const variableSpend = monthTx.reduce((s, x) => s + Math.abs(x.amount), 0);
-  const spent = variableSpend + fixed.total;
+  const variableSpend = periodTx.reduce((s, x) => s + Math.abs(x.amount), 0);
+  const spent = variableSpend + fixed.total * periodFactor;
   const onboardingTotal = SPEND_PLAN_FIELDS.reduce((s, f) => s + (Number(profile[f.key]) || 0), 0);
   const plan = budgets.hasBudget ? budgets.total : onboardingTotal;
   const target = hasTarget && savedTarget > 0 ? savedTarget : plan > 0 ? plan : onboardingTotal;
-  const pct = target > 0 ? (spent / target) * 100 : 0;
-  const remaining = target - spent;
+  const periodTarget = target * periodFactor;
+  const pct = periodTarget > 0 ? (spent / periodTarget) * 100 : 0;
+  const remaining = periodTarget - spent;
   const perDay = remaining > 0 ? remaining / daysLeft : 0;
 
   const byCategory = useMemo(() => {
     const map = new Map<string, number>();
-    for (const x of monthTx) {
+    for (const x of periodTx) {
       const k = categorizeTx(x as Tx, categories.rules);
       map.set(k, (map.get(k) ?? 0) + Math.abs(x.amount));
     }
     return map;
-  }, [monthTx, categories.rules]);
+  }, [periodTx, categories.rules]);
 
   /** Plan del onboarding: las categorías y montos que la persona declaró al registrarse. */
   const onboardingLines = useMemo<BudgetLine[]>(
@@ -175,7 +203,7 @@ export function ExpenseLog() {
       if (id) actual.set(id, (actual.get(id) ?? 0) + amount);
     }
     for (const item of fixed.items) {
-      const amount = Number(item.amount) || 0;
+      const amount = (Number(item.amount) || 0) * periodFactor;
       if (amount <= 0) continue;
       const id = match(item.name);
       if (id) actual.set(id, (actual.get(id) ?? 0) + amount);
@@ -185,17 +213,18 @@ export function ExpenseLog() {
       .map((l) => {
         const cat = findBudgetCategory(l.id);
         const spentCat = actual.get(l.id) ?? 0;
+        const planned = l.amount * periodFactor;
         return {
           id: l.id,
           name: cat ? t(cat.es, cat.en) : (l.label ?? l.id),
           emoji: cat?.emoji ?? l.emoji ?? "📦",
-          planned: l.amount,
+          planned,
           actual: spentCat,
-          pct: l.amount > 0 ? (spentCat / l.amount) * 100 : 0,
+          pct: planned > 0 ? (spentCat / planned) * 100 : 0,
         };
       })
       .sort((a, b) => b.pct - a.pct);
-  }, [planLines, byCategory, fixed.items, customLines, t]);
+  }, [planLines, byCategory, fixed.items, customLines, periodFactor, t]);
 
   const alerts = rows.filter((r) => r.pct >= 80).slice(0, 2);
 
@@ -314,6 +343,29 @@ export function ExpenseLog() {
           {format(now, "LLLL yyyy", { locale })}
         </span>
       </div>
+
+      <div className="inline-flex rounded-full border border-border bg-card p-1">
+        {(
+          [
+            { id: "day", es: "Hoy", en: "Today" },
+            { id: "week", es: "Semana", en: "Week" },
+            { id: "month", es: "Mes", en: "Month" },
+          ] as const
+        ).map((p) => (
+          <button
+            key={p.id}
+            type="button"
+            onClick={() => setPeriod(p.id)}
+            className={cn(
+              "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
+              period === p.id ? "bg-positive text-background" : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            {t(p.es, p.en)}
+          </button>
+        ))}
+      </div>
+
       <div className="space-y-3">
           <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
             <div className="flex items-center gap-2.5">
@@ -344,15 +396,21 @@ export function ExpenseLog() {
                     <p className="numeric text-4xl font-semibold leading-none sm:text-5xl">{fmt(spent)}</p>
                     <div className="mt-3 flex items-center gap-1.5 text-muted-foreground">
                       <span className="text-xl sm:text-2xl">{t("de", "of")}</span>
-                      <NumberInput
-                        value={target}
-                        onChange={(v) => setTarget(Math.max(0, Math.round(v)))}
-                        format
-                        aria-label={t("Objetivo mensual", "Monthly goal")}
-                        className="h-auto w-28 border-none bg-transparent p-0 text-xl shadow-none focus-visible:ring-0 sm:w-32 sm:text-2xl"
-                      />
-                      <span className="numeric text-xl sm:text-2xl">{currencySymbol}</span>
-                      <Pencil className="h-3.5 w-3.5 opacity-50" />
+                      {period === "month" ? (
+                        <>
+                          <NumberInput
+                            value={target}
+                            onChange={(v) => setTarget(Math.max(0, Math.round(v)))}
+                            format
+                            aria-label={t("Objetivo mensual", "Monthly goal")}
+                            className="h-auto w-28 border-none bg-transparent p-0 text-xl shadow-none focus-visible:ring-0 sm:w-32 sm:text-2xl"
+                          />
+                          <span className="numeric text-xl sm:text-2xl">{currencySymbol}</span>
+                          <Pencil className="h-3.5 w-3.5 opacity-50" />
+                        </>
+                      ) : (
+                        <span className="numeric text-xl sm:text-2xl">{fmt(periodTarget)}</span>
+                      )}
                     </div>
                   </div>
 
@@ -414,7 +472,7 @@ export function ExpenseLog() {
 
           <div className="rounded-2xl border border-border bg-card p-4">
             <p className="mb-3 text-sm font-medium">{t("Agrega un gasto", "Add an expense")}</p>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
               <ManualExpenseDialog
                 categories={categoryNames}
                 onAddCategory={(name) => categories.add(name)}
@@ -458,6 +516,14 @@ export function ExpenseLog() {
                   <Camera className="h-5 w-5 text-emerald-400" />
                 )}
                 {t("Foto de recibo", "Receipt photo")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setRecOpen(true)}
+                className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-background/40 px-2 py-4 text-xs font-medium transition hover:bg-white/5"
+              >
+                <Repeat className="h-5 w-5 text-emerald-400" />
+                {t("Recurrente", "Recurring")}
               </button>
               <input
                 ref={fileRef}
@@ -563,13 +629,13 @@ export function ExpenseLog() {
 
         <div className="rounded-2xl border border-border bg-card p-4">
           <p className="mb-3 text-sm font-medium">{t("Últimos gastos", "Latest expenses")}</p>
-          {monthTx.length === 0 ? (
+          {periodTx.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              {t("Aún no registras gastos este mes.", "No expenses logged this month yet.")}
+              {t("Aún no registras gastos en este periodo.", "No expenses logged in this period yet.")}
             </p>
           ) : (
             <ul className="divide-y divide-border/60">
-              {monthTx.slice(0, 6).map((x) => (
+              {periodTx.slice(0, 6).map((x) => (
                 <li key={x.id} className="flex items-center gap-3 py-2.5">
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium">{x.merchant}</p>
@@ -634,6 +700,34 @@ export function ExpenseLog() {
               {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {t("Guardar gasto", "Save expense")}
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={recOpen} onOpenChange={setRecOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("Gasto recurrente", "Recurring expense")}</DialogTitle>
+            <DialogDescription>
+              {t("Se repite cada mes y cuenta en tu plan.", "It repeats every month and counts toward your plan.")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-3">
+            <div className="grid gap-1.5">
+              <Label>{t("Nombre", "Name")}</Label>
+              <Input
+                value={recName}
+                onChange={(e) => setRecName(e.target.value)}
+                placeholder={t("Netflix, gimnasio, alquiler", "Netflix, gym, rent")}
+              />
+            </div>
+            <div className="grid gap-1.5">
+              <Label>{`${t("Monto mensual", "Monthly amount")} (${currency})`}</Label>
+              <NumberInput value={recAmount} onChange={(v) => setRecAmount(v || 0)} min={0} format />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={onSaveRecurring}>{t("Guardar", "Save")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

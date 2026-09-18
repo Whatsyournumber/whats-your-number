@@ -193,12 +193,20 @@ export function useFixedExpenses() {
     [items, persist, save, saveCustom],
   );
 
-  const add = useCallback(() => {
-    const item: FixedExpense = { id: crypto.randomUUID(), name: "Nuevo gasto fijo", amount: 0 };
-    const next = [...items, item];
-    persist(next);
-    saveCustom(item, next.length - 1);
-  }, [items, persist, saveCustom]);
+  const add = useCallback(
+    (name?: string, amount?: number) => {
+      const item: FixedExpense = {
+        id: crypto.randomUUID(),
+        name: name?.trim() || "Nuevo gasto fijo",
+        amount: Math.max(0, Number(amount) || 0),
+      };
+      const next = [...items, item];
+      persist(next);
+      saveCustom(item, next.length - 1);
+      return item.id;
+    },
+    [items, persist, saveCustom],
+  );
 
   const remove = useCallback(
     (id: string) => {
