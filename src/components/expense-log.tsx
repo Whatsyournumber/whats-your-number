@@ -43,6 +43,8 @@ import { cn } from "@/lib/utils";
 
 type Draft = { merchant: string; amount: number; date: string; category: string };
 
+const ALERTS_KEY = "whatsyournumber:expense-alerts";
+
 const blobToBase64 = (blob: Blob) =>
   new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
