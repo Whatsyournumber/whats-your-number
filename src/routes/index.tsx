@@ -809,19 +809,20 @@ export function Landing() {
         />
 
         <section className="relative mt-24 min-h-[680px] overflow-hidden bg-background md:mt-32 md:min-h-[520px]">
-          <div className="absolute inset-0 overflow-hidden md:left-[40%]">
+          <div className="absolute inset-0 overflow-hidden md:left-[36%]">
             <img
               src={ctaLifestyle}
               alt={t("Pareja organizando sus finanzas", "Couple organizing their finances")}
               loading="lazy"
               width={1092}
               height={1250}
-              className="h-full w-[calc(100%+3px)] max-w-none object-cover object-[50%_48%] opacity-100 md:object-[50%_52%]"
+              className="h-full w-full scale-[1.025] object-cover object-[50%_48%] opacity-100 md:object-[50%_52%]"
             />
           </div>
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background from-8% via-transparent via-35% to-background/35 md:bg-gradient-to-r md:from-background md:from-20% md:via-background/45 md:via-48% md:to-transparent md:to-72%" />
           <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-background to-transparent md:h-24" />
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background to-transparent md:h-24" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background to-transparent md:w-20" />
 
           <motion.div
             initial={{ opacity: 0, y: 16 }}
