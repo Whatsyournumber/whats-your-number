@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { differenceInCalendarDays, endOfMonth, format, parseISO, startOfDay, startOfMonth, subDays } from "date-fns";
 import { enUS, es } from "date-fns/locale";
-import { Camera, ChevronRight, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, Wallet } from "lucide-react";
+import { ArrowDown, ArrowUp, Camera, ChevronRight, Loader2, Mic, Pencil, PencilLine, Plus, Repeat, Square, Wallet } from "lucide-react";
 import { toast } from "sonner";
 
 import { BudgetDialog } from "@/components/budget-dialog";
@@ -138,6 +138,9 @@ export function ExpenseLog() {
   const target = hasTarget && savedTarget > 0 ? savedTarget : plan > 0 ? plan : onboardingTotal;
   const periodTarget = target * periodFactor;
   const pct = periodTarget > 0 ? (spent / periodTarget) * 100 : 0;
+  const expectedPacePct = periodDays > 0 ? (elapsedDays / periodDays) * 100 : 0;
+  const paceDifference = Math.abs(pct - expectedPacePct);
+  const isOnPace = pct <= expectedPacePct;
   const remaining = periodTarget - spent;
   const perDay = remaining > 0 ? remaining / daysLeft : 0;
 
@@ -452,33 +455,61 @@ export function ExpenseLog() {
                 </div>
               </div>
 
-              <div className="relative h-20 w-20 shrink-0 sm:h-24 sm:w-24">
-                <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
-                  <circle cx="60" cy="60" r="52" fill="none" strokeWidth="10" className="stroke-border/30" />
-                  <circle
-                    cx="60"
-                    cy="60"
-                    r="52"
-                    fill="none"
-                    strokeWidth="10"
-                    strokeLinecap="round"
-                    strokeDasharray={2 * Math.PI * 52}
-                    strokeDashoffset={2 * Math.PI * 52 * (1 - Math.min(pct, 100) / 100)}
-                    className={pct > 100 ? "stroke-negative" : "stroke-positive"}
-                  />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <p
+              <div className="flex w-36 shrink-0 flex-col items-center sm:w-48">
+                <div className="relative h-32 w-32 sm:h-40 sm:w-40">
+                  <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
+                    <circle cx="60" cy="60" r="50" fill="none" strokeWidth="9" className="stroke-border/30" />
+                    <circle
+                      cx="60"
+                      cy="60"
+                      r="50"
+                      fill="none"
+                      strokeWidth="9"
+                      strokeLinecap="round"
+                      strokeDasharray={2 * Math.PI * 50}
+                      strokeDashoffset={2 * Math.PI * 50 * (1 - Math.min(pct, 100) / 100)}
+                      className={pct > 100 ? "stroke-negative" : "stroke-positive"}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <p
+                      className={cn(
+                        "numeric text-3xl font-bold leading-none sm:text-4xl",
+                        pct > 100 ? "text-negative" : "text-positive",
+                      )}
+                    >
+                      {pct.toFixed(0)}%
+                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+                      {t("del plan", "of plan")}
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-2 flex w-full items-start gap-2">
+                  <span
                     className={cn(
-                      "numeric text-base font-bold leading-none sm:text-lg",
-                      pct > 100 ? "text-negative" : "text-positive",
+                      "mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full",
+                      isOnPace ? "bg-positive/15 text-positive" : "bg-negative/15 text-negative",
                     )}
                   >
-                    {pct.toFixed(0)}%
-                  </p>
-                  <p className="mt-0.5 text-[10px] text-muted-foreground sm:text-xs">
-                    {t("del plan", "of plan")}
-                  </p>
+                    {isOnPace ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
+                  </span>
+                  <div className="min-w-0">
+                    <p className={cn("text-sm font-semibold", isOnPace ? "text-positive" : "text-negative")}> 
+                      {isOnPace ? t("Vas bien", "On track") : t("Vas por encima", "Above pace")}
+                    </p>
+                    <p className="mt-0.5 text-xs leading-snug text-muted-foreground">
+                      {isOnPace
+                        ? t(
+                            `Estás ${Math.round(paceDifference)}% por debajo del ritmo esperado`,
+                            `You're ${Math.round(paceDifference)}% below the expected pace`,
+                          )
+                        : t(
+                            `Estás ${Math.round(paceDifference)}% por encima del ritmo esperado`,
+                            `You're ${Math.round(paceDifference)}% above the expected pace`,
+                          )}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
