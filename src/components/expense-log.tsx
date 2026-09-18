@@ -224,6 +224,33 @@ export function ExpenseLog() {
     return [...merged.values()].filter((l) => l.amount > 0);
   }, [onboardingLines, budgets.lines]);
 
+  /**
+   * Al editar el objetivo mensual se reparte el nuevo total entre las categorías
+   * del plan de forma proporcional, para que el popup muestre el mismo importe.
+   */
+  const applyTarget = (value: number) => {
+    const safeTotal = Math.max(0, Math.round(value || 0));
+    setTarget(safeTotal);
+    const base = planLines;
+    if (!base.length) return;
+    const currentTotal = base.reduce((s, l) => s + (Number.isFinite(l.amount) ? l.amount : 0), 0);
+    if (currentTotal <= 0) {
+      budgets.save(base.map((l, i) => ({ ...l, amount: i === 0 ? safeTotal : 0 })));
+      return;
+    }
+    let assigned = 0;
+    const next = base.map((line, index) => {
+      const amount =
+        index === base.length - 1
+          ? Math.max(0, safeTotal - assigned)
+          : Math.round((Math.max(0, line.amount) / currentTotal) * safeTotal);
+      assigned += amount;
+      return { ...line, amount };
+    });
+    budgets.save(next);
+  };
+
+
   const customLines = useMemo(
     () =>
       planLines
@@ -579,29 +606,29 @@ export function ExpenseLog() {
               </div>
             </div>
 
-             <div className="mt-4 hidden items-center gap-8 lg:flex">
+             <div className="mt-3 hidden items-center gap-6 lg:flex">
                <div className="min-w-0 shrink-0">
                  <p className="text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
-                 <div className="mt-3 inline-flex min-w-0 items-baseline gap-1.5 rounded-xl border border-border bg-muted/20 px-4 py-2 transition-colors focus-within:border-positive/60">
-                   <span className="numeric text-2xl font-semibold text-muted-foreground">{currencySymbol}</span>
+                 <div className="mt-2 inline-flex min-w-0 items-baseline gap-1.5 rounded-xl border border-border bg-muted/20 px-3 py-1.5 transition-colors focus-within:border-positive/60">
+                   <span className="numeric text-xl font-semibold text-muted-foreground">{currencySymbol}</span>
                    <NumberInput
                      value={target}
-                     onChange={(v) => setTarget(Math.round(v || 0))}
+                     onChange={(v) => applyTarget(v)}
                      min={0}
                      format
                      ariaLabel={t("Gasto objetivo mensual", "Monthly spending target")}
                      placeholder="0"
-                     className="numeric h-auto w-40 border-0 bg-transparent px-0 py-0 text-4xl font-bold shadow-none transition-none placeholder:text-foreground focus-visible:ring-0 md:text-4xl"
+                     className="numeric h-auto w-32 border-0 bg-transparent px-0 py-0 text-3xl font-bold shadow-none transition-none placeholder:text-foreground focus-visible:ring-0 md:text-3xl"
                    />
                  </div>
                </div>
 
-               <div className="min-w-0 shrink-0 border-l border-border/60 pl-8">
+               <div className="min-w-0 shrink-0 border-l border-border/60 pl-6">
                  <p className="text-sm text-muted-foreground">{t("Gasto del período", "Period spending")}</p>
-                 <p className="numeric mt-1.5 whitespace-nowrap text-4xl font-bold">{fmt(spent)}</p>
+                 <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold">{fmt(spent)}</p>
                </div>
 
-               <div className="relative ml-auto h-44 w-44 shrink-0">
+               <div className="relative ml-auto h-36 w-36 shrink-0">
                 <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                   <circle cx="60" cy="60" r="50" fill="none" strokeWidth="9" className="stroke-border/30" />
                   <circle
@@ -617,16 +644,16 @@ export function ExpenseLog() {
                   />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <p className={cn("numeric text-4xl font-bold leading-none", pct > 100 ? "text-negative" : "text-positive")}>
+                  <p className={cn("numeric text-3xl font-bold leading-none", pct > 100 ? "text-negative" : "text-positive")}>
                     {pct.toFixed(0)}%
                   </p>
-                  <p className="mt-1.5 text-base text-muted-foreground">{t("del plan", "of plan")}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{t("del plan", "of plan")}</p>
                 </div>
               </div>
 
               <div
                 className={cn(
-                   "flex w-[280px] flex-none items-center gap-3 self-center rounded-xl border p-4 text-left",
+                   "flex w-[252px] flex-none items-center gap-3 self-center rounded-xl border p-3.5 text-left",
                    isOnPace ? "border-positive/30 bg-positive/10" : "border-negative/30 bg-negative/10",
                  )}
                >
@@ -665,7 +692,7 @@ export function ExpenseLog() {
                     <span className="numeric text-xl font-semibold text-muted-foreground sm:text-2xl">{currencySymbol}</span>
                     <NumberInput
                       value={target}
-                      onChange={(v) => setTarget(Math.round(v || 0))}
+                      onChange={(v) => applyTarget(v)}
                       min={0}
                       format
                       ariaLabel={t("Gasto objetivo mensual", "Monthly spending target")}
