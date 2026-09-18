@@ -74,9 +74,12 @@ async function ensureManualStatement(userId: string) {
 export function ManualExpenseDialog({
   categories,
   onAddCategory,
+  trigger,
 }: {
   categories: string[];
   onAddCategory?: (name: string) => void;
+  /** Botón propio para abrir el diálogo (por defecto, "Cargar manualmente"). */
+  trigger?: React.ReactNode;
 }) {
   const t = useT();
   const { lang } = useLanguage();
@@ -154,10 +157,12 @@ export function ManualExpenseDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" variant="ghost" className="gap-2">
-          <PencilLine className="h-4 w-4" />
-          {t("Cargar manualmente", "Add manually")}
-        </Button>
+        {trigger ?? (
+          <Button size="sm" variant="ghost" className="gap-2">
+            <PencilLine className="h-4 w-4" />
+            {t("Cargar manualmente", "Add manually")}
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
