@@ -585,7 +585,6 @@ export function ExpenseLog() {
                   <p className="text-sm text-muted-foreground">{t("Limita tus gastos mensuales", "Set a limit for your monthly spending")}</p>
                   <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold sm:text-4xl lg:text-5xl">{fmt(periodTarget)}</p>
                 </div>
-                {/* placeholder-anchor */}
                 <div className="relative h-28 w-28 shrink-0 self-center sm:h-32 sm:w-32 lg:h-36 lg:w-36">
                   <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                     <circle cx="60" cy="60" r="50" fill="none" strokeWidth="9" className="stroke-border/30" />
@@ -644,27 +643,27 @@ export function ExpenseLog() {
               </div>
             </div>
 
-            <div className="mt-3 grid grid-cols-1 gap-3 border-t border-border/60 pt-3 sm:grid-cols-3 sm:gap-0">
-              <div className="flex min-w-0 items-center gap-2.5 sm:px-2">
-                <span className={cn("grid h-8 w-8 shrink-0 place-items-center rounded-full", remaining < 0 ? "bg-negative/10 text-negative" : "bg-positive/10 text-positive")}>
+            <div className="mt-3 grid grid-cols-3 gap-2 border-t border-border/60 pt-3 sm:gap-0">
+              <div className="flex min-w-0 flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-2.5 sm:px-2">
+                <span className={cn("hidden h-8 w-8 shrink-0 place-items-center rounded-full sm:grid", remaining < 0 ? "bg-negative/10 text-negative" : "bg-positive/10 text-positive")}>
                   <Wallet className="h-4 w-4" />
                 </span>
                 <div className="min-w-0">
-                  <p className={cn("numeric text-lg font-bold leading-tight sm:text-xl", remaining < 0 ? "text-negative" : "text-positive")}>{fmt(Math.abs(remaining))}</p>
+                  <p className={cn("numeric text-base font-bold leading-tight sm:text-xl", remaining < 0 ? "text-negative" : "text-positive")}>{fmt(Math.abs(remaining))}</p>
                   <p className="text-xs text-muted-foreground">{remaining < 0 ? t("De más", "Over") : t("Te quedan", "Left")}</p>
                 </div>
               </div>
-              <div className="flex min-w-0 items-center gap-2.5 sm:border-l sm:border-border sm:px-4">
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-positive/10 text-positive"><CalendarDays className="h-4 w-4" /></span>
+              <div className="flex min-w-0 flex-col items-start gap-1 border-l border-border/60 pl-3 sm:flex-row sm:items-center sm:gap-2.5 sm:border-border sm:px-4">
+                <span className="hidden h-8 w-8 shrink-0 place-items-center rounded-full bg-positive/10 text-positive sm:grid"><CalendarDays className="h-4 w-4" /></span>
                 <div>
-                  <p className="numeric text-lg font-bold leading-tight text-positive sm:text-xl">{daysLeft}</p>
+                  <p className="numeric text-base font-bold leading-tight text-positive sm:text-xl">{daysLeft}</p>
                   <p className="text-xs text-muted-foreground">{t("días quedan", "days left")}</p>
                 </div>
               </div>
-              <div className="flex min-w-0 items-center gap-2.5 sm:border-l sm:border-border sm:px-4">
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-positive/10 text-positive"><TrendingUp className="h-4 w-4" /></span>
+              <div className="flex min-w-0 flex-col items-start gap-1 border-l border-border/60 pl-3 sm:flex-row sm:items-center sm:gap-2.5 sm:border-border sm:px-4">
+                <span className="hidden h-8 w-8 shrink-0 place-items-center rounded-full bg-positive/10 text-positive sm:grid"><TrendingUp className="h-4 w-4" /></span>
                 <div className="min-w-0">
-                  <p className="numeric whitespace-nowrap text-lg font-bold leading-tight text-positive sm:text-xl">{fmt(perDay)}/{t("día", "day")}</p>
+                  <p className="numeric whitespace-nowrap text-base font-bold leading-tight text-positive sm:text-xl">{fmt(perDay)}/{t("día", "day")}</p>
                   <p className="text-xs text-muted-foreground">{t("para el plan", "to stay on plan")}</p>
                 </div>
               </div>
