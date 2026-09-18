@@ -550,7 +550,7 @@ export function ExpenseLog() {
               <Camera className="mr-2 h-4 w-4 text-positive" />
               {t("Foto de recibo", "Receipt photo")}
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setRecOpen(true)}>
+            <DropdownMenuItem onSelect={openNewRecurring}>
               <Repeat className="mr-2 h-4 w-4 text-positive" />
               {t("Recurrente", "Recurring")}
             </DropdownMenuItem>
@@ -601,7 +601,7 @@ export function ExpenseLog() {
               <Camera className="mr-2 h-4 w-4 text-positive" />
               {t("Foto de recibo", "Receipt photo")}
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setRecOpen(true)}>
+            <DropdownMenuItem onSelect={openNewRecurring}>
               <Repeat className="mr-2 h-4 w-4 text-positive" />
               {t("Recurrente", "Recurring")}
             </DropdownMenuItem>
@@ -1065,7 +1065,7 @@ export function ExpenseLog() {
                   <h3 className="text-base font-semibold">{t("Próximos pagos", "Upcoming payments")}</h3>
                   <button
                     type="button"
-                    onClick={() => setRecOpen(true)}
+                    onClick={openNewRecurring}
                     className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                     aria-label={t("Añadir gasto recurrente", "Add recurring expense")}
                   >
@@ -1099,6 +1099,14 @@ export function ExpenseLog() {
                             </p>
                           </div>
                           <span className="numeric shrink-0 text-sm font-semibold">{fmt(i.amount)}</span>
+                          <button
+                            type="button"
+                            onClick={() => openEditRecurring(i)}
+                            className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                            aria-label={t("Editar gasto recurrente", "Edit recurring expense")}
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </button>
                         </li>
                       );
                     })}
@@ -1182,6 +1190,14 @@ export function ExpenseLog() {
                     {x.tx_date ? format(parseISO(x.tx_date), "d MMM", { locale }) : ""}
                   </span>
                   <span className="shrink-0 text-sm font-semibold text-rose-300">-{fmt(Math.abs(x.amount))}</span>
+                  <button
+                    type="button"
+                    onClick={() => openEditTx(x as Tx)}
+                    className="grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    aria-label={t("Editar gasto", "Edit expense")}
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </button>
                 </li>
               ))}
             </ul>
@@ -1242,7 +1258,9 @@ export function ExpenseLog() {
       <Dialog open={recOpen} onOpenChange={setRecOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>{t("Gasto recurrente", "Recurring expense")}</DialogTitle>
+            <DialogTitle>
+              {recEditId ? t("Editar gasto recurrente", "Edit recurring expense") : t("Gasto recurrente", "Recurring expense")}
+            </DialogTitle>
             <DialogDescription>
               {t("Se repite cada mes y cuenta en tu plan.", "It repeats every month and counts toward your plan.")}
             </DialogDescription>
@@ -1276,8 +1294,64 @@ export function ExpenseLog() {
               </Select>
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="gap-2 sm:justify-between">
+            {recEditId ? (
+              <Button type="button" variant="ghost" className="text-negative" onClick={onDeleteRecurring}>
+                {t("Eliminar", "Delete")}
+              </Button>
+            ) : (
+              <span />
+            )}
             <Button onClick={onSaveRecurring}>{t("Guardar", "Save")}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={Boolean(editTx)} onOpenChange={(open) => !open && setEditTx(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("Editar gasto", "Edit expense")}</DialogTitle>
+            <DialogDescription>
+              {t("Corrige el comercio, el monto, la fecha o la categoría.", "Fix the merchant, amount, date or category.")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-3">
+            <div className="grid gap-1.5">
+              <Label>{t("Comercio", "Merchant")}</Label>
+              <Input value={editMerchant} onChange={(e) => setEditMerchant(e.target.value)} />
+            </div>
+            <div className="grid gap-1.5">
+              <Label>{`${t("Monto", "Amount")} (${currency})`}</Label>
+              <NumberInput value={editAmount} onChange={(v) => setEditAmount(v || 0)} min={0} format />
+            </div>
+            <div className="grid gap-1.5">
+              <Label>{t("Fecha", "Date")}</Label>
+              <Input type="date" value={editDate} onChange={(e) => setEditDate(e.target.value)} />
+            </div>
+            <div className="grid gap-1.5">
+              <Label>{t("Categoría", "Category")}</Label>
+              <Select value={editCategory} onValueChange={setEditCategory}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {categoryNames.map((name) => (
+                    <SelectItem key={name} value={name}>
+                      {translateCategory(name, lang)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter className="gap-2 sm:justify-between">
+            <Button type="button" variant="ghost" className="text-negative" onClick={onDeleteEditTx} disabled={saving}>
+              {t("Eliminar", "Delete")}
+            </Button>
+            <Button onClick={onSaveEditTx} disabled={saving}>
+              {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {t("Guardar", "Save")}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
