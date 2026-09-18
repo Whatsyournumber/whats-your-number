@@ -341,7 +341,21 @@ export function BudgetDialog({ open, onOpenChange, lines, onSave, fmt }: Props) 
           </Button>
         )}
 
-        <div className="flex items-center justify-end border-t border-border/60 pt-3">
+        <div className="flex flex-col gap-3 border-t border-border/60 pt-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+              {t("Total", "Total")}
+            </span>
+            <NumberInput
+              value={total}
+              onChange={setTotal}
+              format
+              min={0}
+              aria-label={t("Editar gastos totales", "Edit total expenses")}
+              className="numeric h-9 w-28 text-sm sm:w-32"
+            />
+            <span className="text-xs text-muted-foreground">{t("/mes", "/mo")}</span>
+          </div>
           <Button
             type="button"
             className="w-full sm:w-auto"
