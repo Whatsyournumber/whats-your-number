@@ -1089,9 +1089,9 @@ export function ExpenseLog() {
                             <text
                               key={d}
                               x={left + (d - 0.5) * step}
-                              y={H - 6}
+                              y={H - 8}
                               textAnchor="middle"
-                              className="fill-muted-foreground text-[9px]"
+                              className="fill-muted-foreground text-[11px]"
                             >
                               {d}
                             </text>
