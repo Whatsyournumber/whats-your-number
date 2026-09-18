@@ -21,4 +21,5 @@
 - [x] Landing: sustituir solo la foto inferior de la pareja por la imagen del teléfono de Registro de gastos
 - [x] Landing: reducir el teléfono inferior y quitar el título superpuesto "¿Cuál es tu número?"
 - [x] Landing: añadir al final una franja para parejas con la foto anterior y mensaje de plan compartido
+- [x] Landing: quitar la franja de seguridad y separar la sección de pareja en texto e imagen
 
