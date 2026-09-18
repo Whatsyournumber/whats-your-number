@@ -32,7 +32,7 @@ import { BASE_CATEGORIES, categorizeTx } from "@/lib/categorize";
 import { captureExpense } from "@/lib/expense-capture.functions";
 import { translateCategory } from "@/lib/i18n-data";
 import { saveExpense } from "@/lib/manual-expense";
-import { SPEND_PLAN_FIELDS, money } from "@/lib/onboarding";
+import { SPEND_PLAN_FIELDS, getWynMoneyLocale, money } from "@/lib/onboarding";
 import { cn } from "@/lib/utils";
 
 type Draft = { merchant: string; amount: number; date: string; category: string };
@@ -66,6 +66,17 @@ export function ExpenseLog() {
 
   const currency = profile.currency || "EUR";
   const fmt = (n: number) => money(Math.round(n), currency);
+  const currencySymbol = useMemo(() => {
+    try {
+      return (
+        new Intl.NumberFormat(getWynMoneyLocale(), { style: "currency", currency })
+          .formatToParts(0)
+          .find((p) => p.type === "currency")?.value ?? "$"
+      );
+    } catch {
+      return "$";
+    }
+  }, [currency]);
 
   const now = new Date();
   const monthStart = startOfMonth(now);
@@ -331,9 +342,18 @@ export function ExpenseLog() {
                 <div className="mt-4 flex items-center justify-between gap-4">
                   <div className="min-w-0">
                     <p className="numeric text-4xl font-semibold leading-none sm:text-5xl">{fmt(spent)}</p>
-                    <p className="numeric mt-2 text-lg text-muted-foreground sm:text-xl">
-                      {t("de", "of")} {fmt(target)}
-                    </p>
+                    <div className="mt-3 flex items-center gap-1.5 text-muted-foreground">
+                      <span className="text-xl sm:text-2xl">{t("de", "of")}</span>
+                      <NumberInput
+                        value={target}
+                        onChange={(v) => setTarget(Math.max(0, Math.round(v)))}
+                        format
+                        aria-label={t("Objetivo mensual", "Monthly goal")}
+                        className="h-auto w-28 border-none bg-transparent p-0 text-xl shadow-none focus-visible:ring-0 sm:w-32 sm:text-2xl"
+                      />
+                      <span className="numeric text-xl sm:text-2xl">{currencySymbol}</span>
+                      <Pencil className="h-3.5 w-3.5 opacity-50" />
+                    </div>
                   </div>
                   <div className="relative h-28 w-28 shrink-0 sm:h-32 sm:w-32">
                     <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
