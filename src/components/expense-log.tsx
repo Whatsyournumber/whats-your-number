@@ -623,12 +623,12 @@ export function ExpenseLog() {
                  </div>
                </div>
 
-               <div className="min-w-0 shrink-0 border-l border-border/60 pl-8">
+               <div className="min-w-0 shrink-0 border-l border-border/60 pl-6">
                  <p className="text-sm text-muted-foreground">{t("Gasto del período", "Period spending")}</p>
-                 <p className="numeric mt-1.5 whitespace-nowrap text-4xl font-bold">{fmt(spent)}</p>
+                 <p className="numeric mt-1.5 whitespace-nowrap text-3xl font-bold">{fmt(spent)}</p>
                </div>
 
-               <div className="relative ml-auto h-44 w-44 shrink-0">
+               <div className="relative ml-auto h-36 w-36 shrink-0">
                 <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                   <circle cx="60" cy="60" r="50" fill="none" strokeWidth="9" className="stroke-border/30" />
                   <circle
