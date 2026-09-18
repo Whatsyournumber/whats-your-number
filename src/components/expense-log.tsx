@@ -344,7 +344,7 @@ export function ExpenseLog() {
         </span>
       </div>
 
-      <div className="inline-flex rounded-full border border-border bg-card p-1">
+      <div className="flex w-full rounded-full border border-border bg-card p-1 sm:inline-flex sm:w-auto">
         {(
           [
             { id: "day", es: "Hoy", en: "Today" },
@@ -357,7 +357,7 @@ export function ExpenseLog() {
             type="button"
             onClick={() => setPeriod(p.id)}
             className={cn(
-              "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
+              "flex-1 rounded-full px-3 py-1.5 text-sm font-medium transition-colors sm:flex-none sm:px-4",
               period === p.id ? "bg-positive text-background" : "text-muted-foreground hover:text-foreground",
             )}
           >
@@ -365,6 +365,7 @@ export function ExpenseLog() {
           </button>
         ))}
       </div>
+
 
       <div className="space-y-3">
           <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
