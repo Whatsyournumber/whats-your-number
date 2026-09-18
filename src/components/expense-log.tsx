@@ -128,7 +128,7 @@ export function ExpenseLog() {
       map.set(k, (map.get(k) ?? 0) + Math.abs(x.amount));
     }
     return map;
-  }, [monthTx, categories.rules]);
+  }, [periodTx, categories.rules]);
 
   /** Plan del onboarding: las categorías y montos que la persona declaró al registrarse. */
   const onboardingLines = useMemo<BudgetLine[]>(
@@ -185,7 +185,7 @@ export function ExpenseLog() {
       if (id) actual.set(id, (actual.get(id) ?? 0) + amount);
     }
     for (const item of fixed.items) {
-      const amount = Number(item.amount) || 0;
+      const amount = (Number(item.amount) || 0) * periodFactor;
       if (amount <= 0) continue;
       const id = match(item.name);
       if (id) actual.set(id, (actual.get(id) ?? 0) + amount);
@@ -195,17 +195,18 @@ export function ExpenseLog() {
       .map((l) => {
         const cat = findBudgetCategory(l.id);
         const spentCat = actual.get(l.id) ?? 0;
+        const planned = l.amount * periodFactor;
         return {
           id: l.id,
           name: cat ? t(cat.es, cat.en) : (l.label ?? l.id),
           emoji: cat?.emoji ?? l.emoji ?? "📦",
-          planned: l.amount,
+          planned,
           actual: spentCat,
-          pct: l.amount > 0 ? (spentCat / l.amount) * 100 : 0,
+          pct: planned > 0 ? (spentCat / planned) * 100 : 0,
         };
       })
       .sort((a, b) => b.pct - a.pct);
-  }, [planLines, byCategory, fixed.items, customLines, t]);
+  }, [planLines, byCategory, fixed.items, customLines, periodFactor, t]);
 
   const alerts = rows.filter((r) => r.pct >= 80).slice(0, 2);
 
